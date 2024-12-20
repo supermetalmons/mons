@@ -12,8 +12,7 @@ if ((navigator as any).userAgentData && typeof (navigator as any).userAgentData.
 
 const isTouchDevice: boolean = (() => {
   const hasTouchSupport = "ontouchstart" in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || ((navigator as any).msMaxTouchPoints && (navigator as any).msMaxTouchPoints > 0);
-  const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
-  return Boolean(hasTouchSupport && coarsePointer);
+  return Boolean(hasTouchSupport);
 })();
 
 export const isMobile = isMobileBasedOnUserAgentData || isTouchDevice || /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent);
