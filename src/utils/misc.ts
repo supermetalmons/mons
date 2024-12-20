@@ -1,3 +1,5 @@
+import { isPangchiuBoard } from "../content/boardStyles";
+
 export const isDesktopSafari = (() => {
   const userAgent = window.navigator.userAgent;
   const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
@@ -5,7 +7,7 @@ export const isDesktopSafari = (() => {
   return isSafari && !isIos;
 })();
 
-const isTouchOrMobileDevice = ((navigator as any).userAgentData && (navigator as any).userAgentData.mobile === true) || (typeof window !== "undefined" && ("ontouchstart" in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || window.matchMedia("(pointer: coarse)").matches || /(android|ipad|playbook|silk|mobile|touch)/i.test(navigator.userAgent)));
+const isTouchOrMobileDevice = isPangchiuBoard() || ((navigator as any).userAgentData && (navigator as any).userAgentData.mobile === true) || (typeof window !== "undefined" && ("ontouchstart" in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || window.matchMedia("(pointer: coarse)").matches || /(android|ipad|playbook|silk|mobile|touch)/i.test(navigator.userAgent)));
 
 export const isMobile = isTouchOrMobileDevice || /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent);
 export const isMobileOrVision = isTouchOrMobileDevice || /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini|visionOS/i.test(navigator.userAgent);
