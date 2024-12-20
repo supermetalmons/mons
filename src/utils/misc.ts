@@ -1,5 +1,3 @@
-import { isPangchiuBoard } from "../content/boardStyles";
-
 export const isDesktopSafari = (() => {
   const userAgent = window.navigator.userAgent;
   const isSafari = /^((?!chrome|android).)*safari/i.test(userAgent);
