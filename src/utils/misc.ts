@@ -5,8 +5,12 @@ export const isDesktopSafari = (() => {
   return isSafari && !isIos;
 })();
 
-export const isMobile = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent);
-export const isMobileOrVision = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini|visionOS/i.test(navigator.userAgent);
+// const isTouchDevice = "ontouchstart" in window || navigator.maxTouchPoints > 0;
+// export const isMobile = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent) || isTouchDevice;
+// export const isMobileOrVision = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini|visionOS/i.test(navigator.userAgent) || isTouchDevice;
+
+export const isMobile = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Opera Mini/i.test(navigator.userAgent);
+export const isMobileOrVision = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Opera Mini|visionOS/i.test(navigator.userAgent);
 export const defaultInputEventName = isMobile ? "touchstart" : "click";
 
 export const isModernAndPowerful = (() => {
