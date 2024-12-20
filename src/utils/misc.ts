@@ -5,26 +5,10 @@ export const isDesktopSafari = (() => {
   return isSafari && !isIos;
 })();
 
-let isMobileBasedOnUserAgentData = false;
-if ((navigator as any).userAgentData && typeof (navigator as any).userAgentData.mobile === "boolean") {
-  isMobileBasedOnUserAgentData = (navigator as any).userAgentData.mobile;
-}
+const isTouchOrMobileDevice = ((navigator as any).userAgentData && (navigator as any).userAgentData.mobile === true) || (typeof window !== "undefined" && ("ontouchstart" in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || window.matchMedia("(pointer: coarse)").matches || /(android|ipad|playbook|silk|mobile|touch)/i.test(navigator.userAgent)));
 
-if ((navigator as any).userAgentData && (navigator as any).userAgentData.platform) {
-  const platform = (navigator as any).userAgentData.platform.toLowerCase();
-  const isMobileBasedOnPlatform = platform.includes("android") || platform.includes("ios") || platform.includes("iphone") || platform.includes("ipad") || platform.includes("ipod");
-  if (isMobileBasedOnPlatform) {
-    isMobileBasedOnUserAgentData = true;
-  }
-}
-
-const isTouchDevice: boolean = (() => {
-  const hasTouchSupport = "ontouchstart" in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || ((navigator as any).msMaxTouchPoints && (navigator as any).msMaxTouchPoints > 0);
-  return Boolean(hasTouchSupport);
-})();
-
-export const isMobile = isMobileBasedOnUserAgentData || isTouchDevice || /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent);
-export const isMobileOrVision = isMobileBasedOnUserAgentData || isTouchDevice || /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini|visionOS/i.test(navigator.userAgent);
+export const isMobile = isTouchOrMobileDevice || /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent);
+export const isMobileOrVision = isTouchOrMobileDevice || /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini|visionOS/i.test(navigator.userAgent);
 
 export const defaultInputEventName = isMobile ? "touchstart" : "click";
 
