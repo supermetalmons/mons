@@ -7,11 +7,8 @@ export const isDesktopSafari = (() => {
   return isSafari && !isIos;
 })();
 
-const isTouchOrMobileDevice = isPangchiuBoard() || ((navigator as any).userAgentData && (navigator as any).userAgentData.mobile === true) || (typeof window !== "undefined" && ("ontouchstart" in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || window.matchMedia("(pointer: coarse)").matches || /(android|ipad|playbook|silk|mobile|touch)/i.test(navigator.userAgent)));
-
-export const isMobile = isTouchOrMobileDevice || /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent);
-export const isMobileOrVision = isTouchOrMobileDevice || /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini|visionOS/i.test(navigator.userAgent);
-
+export const isMobile = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent);
+export const isMobileOrVision = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini|visionOS/i.test(navigator.userAgent);
 export const defaultInputEventName = isMobile ? "touchstart" : "click";
 
 export const isModernAndPowerful = (() => {
