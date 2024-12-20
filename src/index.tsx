@@ -147,4 +147,12 @@ if (isMobile) {
   );
 }
 
+document.addEventListener(
+  "contextmenu",
+  function (e) {
+    e.preventDefault();
+  },
+  false
+);
+
 signIn();
