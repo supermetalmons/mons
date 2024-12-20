@@ -10,6 +10,14 @@ if ((navigator as any).userAgentData && typeof (navigator as any).userAgentData.
   isMobileBasedOnUserAgentData = (navigator as any).userAgentData.mobile;
 }
 
+if ((navigator as any).userAgentData && (navigator as any).userAgentData.platform) {
+  const platform = (navigator as any).userAgentData.platform.toLowerCase();
+  const isMobileBasedOnPlatform = platform.includes("android") || platform.includes("ios") || platform.includes("iphone") || platform.includes("ipad") || platform.includes("ipod");
+  if (isMobileBasedOnPlatform) {
+    isMobileBasedOnUserAgentData = true;
+  }
+}
+
 const isTouchDevice: boolean = (() => {
   const hasTouchSupport = "ontouchstart" in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || ((navigator as any).msMaxTouchPoints && (navigator as any).msMaxTouchPoints > 0);
   return Boolean(hasTouchSupport);
