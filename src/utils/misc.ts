@@ -16,8 +16,8 @@ const isTouchDevice: boolean = (() => {
   return Boolean(hasTouchSupport && coarsePointer);
 })();
 
-export const isMobile = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent) || isTouchDevice || isMobileBasedOnUserAgentData;
-export const isMobileOrVision = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini|visionOS/i.test(navigator.userAgent) || isTouchDevice || isMobileBasedOnUserAgentData;
+export const isMobile = isMobileBasedOnUserAgentData || isTouchDevice || /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent);
+export const isMobileOrVision = isMobileBasedOnUserAgentData || isTouchDevice || /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini|visionOS/i.test(navigator.userAgent);
 
 export const defaultInputEventName = isMobile ? "touchstart" : "click";
 
