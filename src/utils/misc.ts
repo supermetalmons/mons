@@ -5,14 +5,19 @@ export const isDesktopSafari = (() => {
   return isSafari && !isIos;
 })();
 
+let isMobileBasedOnUserAgentData = false;
+if ((navigator as any).userAgentData && typeof (navigator as any).userAgentData.mobile === "boolean") {
+  isMobileBasedOnUserAgentData = (navigator as any).userAgentData.mobile;
+}
+
 const isTouchDevice: boolean = (() => {
   const hasTouchSupport = "ontouchstart" in window || (navigator.maxTouchPoints && navigator.maxTouchPoints > 0) || ((navigator as any).msMaxTouchPoints && (navigator as any).msMaxTouchPoints > 0);
   const coarsePointer = window.matchMedia("(pointer: coarse)").matches;
   return Boolean(hasTouchSupport && coarsePointer);
 })();
 
-export const isMobile = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent) || isTouchDevice;
-export const isMobileOrVision = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini|visionOS/i.test(navigator.userAgent) || isTouchDevice;
+export const isMobile = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent) || isTouchDevice || isMobileBasedOnUserAgentData;
+export const isMobileOrVision = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini|visionOS/i.test(navigator.userAgent) || isTouchDevice || isMobileBasedOnUserAgentData;
 
 export const defaultInputEventName = isMobile ? "touchstart" : "click";
 
