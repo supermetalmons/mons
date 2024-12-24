@@ -25,7 +25,7 @@ exports.startMatchTimer = onCall(async (request) => {
     game = mons.MonsGameModel.from_fen(opponentMatchData.fen);
   }
 
-  if (matchData.status == "surrendered" || opponentMatchData.status == "surrendered" || game.winner_color() !== undefined || matchData.timer == "gg" || opponentMatchData.timer == "gg") {
+  if (matchData.status === "surrendered" || opponentMatchData.status === "surrendered" || game.winner_color() !== undefined || matchData.timer === "gg" || opponentMatchData.timer === "gg") {
     throw new HttpsError("failed-precondition", "game is already over.");
   }
 
@@ -48,7 +48,7 @@ exports.startMatchTimer = onCall(async (request) => {
   let activeColor = game.active_color();
   let opponentColorModel = opponentColor === "white" ? mons.Color.White : mons.Color.Black;
 
-  if (activeColor != opponentColorModel) {
+  if (activeColor !== opponentColorModel) {
     throw new HttpsError("failed-precondition", "can't start a timer on your own turn.");
   }
 
@@ -94,7 +94,7 @@ exports.claimMatchVictoryByTimer = onCall(async (request) => {
     game = mons.MonsGameModel.from_fen(opponentMatchData.fen);
   }
 
-  if (matchData.status == "surrendered" || opponentMatchData.status == "surrendered" || matchData.timer == "gg" || opponentMatchData.timer == "gg" || game.winner_color() !== undefined) {
+  if (matchData.status === "surrendered" || opponentMatchData.status === "surrendered" || matchData.timer === "gg" || opponentMatchData.timer === "gg" || game.winner_color() !== undefined) {
     throw new HttpsError("failed-precondition", "game is already over.");
   }
 
@@ -116,7 +116,7 @@ exports.claimMatchVictoryByTimer = onCall(async (request) => {
   let activeColor = game.active_color();
   let opponentColorModel = opponentColor === "white" ? mons.Color.White : mons.Color.Black;
 
-  if (activeColor != opponentColorModel) {
+  if (activeColor !== opponentColorModel) {
     throw new HttpsError("failed-precondition", "can't claim timer victory on your own turn.");
   }
 

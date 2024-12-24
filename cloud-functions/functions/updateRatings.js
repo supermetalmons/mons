@@ -40,35 +40,35 @@ exports.updateRatings = onCall(async (request) => {
   }
 
   var result = "none";
-  if (matchData.status == "surrendered" || opponentMatchData.timer == "gg") {
+  if (matchData.status === "surrendered" || opponentMatchData.timer === "gg") {
     result = "gg";
-  } else if (opponentMatchData.status == "surrendered" || matchData.timer == "gg") {
+  } else if (opponentMatchData.status === "surrendered" || matchData.timer === "gg") {
     result = "win";
   } else {
     const color = matchData.color;
     const opponentColor = opponentMatchData.color;
     const mons = await import("mons-rust");
     var winnerColorFen = "";
-    if (color == "white") {
+    if (color === "white") {
       winnerColorFen = mons.winner(matchData.fen, opponentMatchData.fen, matchData.flatMovesString, opponentMatchData.flatMovesString);
     } else {
       winnerColorFen = mons.winner(opponentMatchData.fen, matchData.fen, opponentMatchData.flatMovesString, matchData.flatMovesString);
     }
-    if (winnerColorFen != "") {
+    if (winnerColorFen !== "") {
       if (winnerColorFen === "x") {
         // TODO: explore corrupted game data to see if there was cheating
       }
 
       var winnerColor = "none";
-      if (winnerColorFen == "w") {
+      if (winnerColorFen === "w") {
         winnerColor = "white";
-      } else if (winnerColorFen == "b") {
+      } else if (winnerColorFen === "b") {
         winnerColor = "black";
       }
 
-      if (winnerColor == color) {
+      if (winnerColor === color) {
         result = "win";
-      } else if (winnerColor == opponentColor) {
+      } else if (winnerColor === opponentColor) {
         result = "gg";
       }
     }
