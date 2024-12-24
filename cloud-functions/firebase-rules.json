@@ -63,7 +63,7 @@
             ".validate": "newData.isString() && newData.val().length > 0"
           }
         },
-        "ethAddress": {
+        "profile": {
           ".write": "auth != null && auth.token.admin === true && !data.exists()",
           ".validate": "newData.isString() && newData.val().length > 0"
         }
