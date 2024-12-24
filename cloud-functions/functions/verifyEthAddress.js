@@ -35,12 +35,12 @@ exports.verifyEthAddress = onCall(async (request) => {
     const userQuery = await firestore.collection("users").where("eth", "==", lowercaseAddress).get();
     // TODO: tune firestore indexing making sure this is quick
 
+    const profileIdRef = db.ref(`players/${uid}/profile`);
     if (userQuery.empty) {
       const docRef = await firestore.collection("users").add({
         eth: lowercaseAddress,
         logins: [uid],
       });
-      const profileIdRef = db.ref(`players/${uid}/profile`);
       await profileIdRef.set(docRef.id);
     } else {
       const userDoc = userQuery.docs[0];
@@ -49,6 +49,7 @@ exports.verifyEthAddress = onCall(async (request) => {
         await userDoc.ref.update({
           logins: [...userData.logins, uid],
         });
+        await profileIdRef.set(userDoc.id);
       }
     }
 
