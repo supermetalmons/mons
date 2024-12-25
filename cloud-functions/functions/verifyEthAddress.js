@@ -16,41 +16,36 @@ exports.verifyEthAddress = onCall(async (request) => {
   const uid = request.auth.uid;
 
   if (fields.success && fields.data.nonce === uid && fields.data.statement === "mons ftw") {
-    // TODO: stop accessing ethAddress in realtime database when the migration is complete
-    const db = admin.database();
-    const ethAddressRef = db.ref(`players/${uid}/ethAddress`);
-    const ethAddressSnapshot = await ethAddressRef.once("value");
-    const existingEthAddress = ethAddressSnapshot.val();
-
-    let responseAddress;
-    if (existingEthAddress === null) {
-      await ethAddressRef.set(address);
-      responseAddress = address;
-    } else {
-      responseAddress = existingEthAddress;
-    }
+    let responseAddress = address;
 
     const firestore = admin.firestore();
-    const lowercaseAddress = address.toLowerCase();
-    const userQuery = await firestore.collection("users").where("eth", "==", lowercaseAddress).get();
-    // TODO: tune firestore indexing making sure this is quick
+    const userQuery = await firestore.collection("users").where("logins", "array-contains", uid).limit(1).get();
 
-    const profileIdRef = db.ref(`players/${uid}/profile`);
     if (userQuery.empty) {
-      const docRef = await firestore.collection("users").add({
-        eth: lowercaseAddress,
-        logins: [uid],
-      });
-      await profileIdRef.set(docRef.id);
+      const db = admin.database();
+      const profileIdRef = db.ref(`players/${uid}/profile`);
+
+      const userWithMatchingEthAddressQuery = await firestore.collection("users").where("eth", "==", address).get();
+      if (userWithMatchingEthAddressQuery.empty) {
+        const docRef = await firestore.collection("users").add({
+          eth: address,
+          logins: [uid],
+        });
+        await profileIdRef.set(docRef.id);
+      } else {
+        const userDoc = userWithMatchingEthAddressQuery.docs[0];
+        const userData = userDoc.data();
+        if (!userData.logins.includes(uid)) {
+          await userDoc.ref.update({
+            logins: [...userData.logins, uid],
+          });
+          await profileIdRef.set(userDoc.id);
+        }
+      }
     } else {
       const userDoc = userQuery.docs[0];
       const userData = userDoc.data();
-      if (!userData.logins.includes(uid)) {
-        await userDoc.ref.update({
-          logins: [...userData.logins, uid],
-        });
-        await profileIdRef.set(userDoc.id);
-      }
+      responseAddress = userData.eth;
     }
 
     return {
