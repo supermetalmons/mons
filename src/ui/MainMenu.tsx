@@ -13,6 +13,33 @@ const RockButtonContainer = styled.div`
   z-index: 10;
 `;
 
+const Crack = styled.div`
+  position: absolute;
+  height: 2px;
+  transform-origin: left center;
+  animation: grow 0.3s ease-out forwards;
+  z-index: 9999;
+
+  @keyframes grow {
+    from {
+      width: 0;
+    }
+    to {
+      width: 100%;
+    }
+  }
+`;
+
+const CrackContainer = styled.div`
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  top: -30px;
+  left: -30px;
+  pointer-events: none;
+  z-index: 9999;
+`;
+
 const RockButton = styled.button`
   display: block;
   background-color: #f9f9f9;
@@ -388,6 +415,7 @@ const ExperimentButton = styled.button`
 
 let getIsMenuOpen: () => boolean;
 export let toggleInfoVisibility: () => void;
+const cracksEnabled = false;
 
 export function hasMainMenuPopupsVisible(): boolean {
   return getIsMenuOpen();
@@ -400,6 +428,21 @@ const MainMenu: React.FC = () => {
   const [clickCount, setClickCount] = useState(0);
   const [showExperimental, setShowExperimental] = useState(false);
   const lastClickTime = useRef(0);
+  const [cracks, setCracks] = useState<Array<{angle: number, color: string}>>([]);
+
+  useEffect(() => {
+    if (cracksEnabled && isMenuOpen) {
+      const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD', '#FFD93D'];
+      const randomColor = colors[Math.floor(Math.random() * colors.length)];
+      const newCracks = Array.from({length: 6}, () => ({
+        angle: Math.random() * 140 + 180,
+        color: randomColor
+      }));
+      setCracks(newCracks);
+    } else {
+      setCracks([]);
+    }
+  }, [isMenuOpen]);
 
   getIsMenuOpen = () => isMenuOpen;
 
@@ -459,6 +502,21 @@ const MainMenu: React.FC = () => {
   return (
     <>
       <RockButtonContainer ref={menuRef}>
+        {isMenuOpen && (
+          <CrackContainer>
+            {cracks.map((crack, i) => (
+              <Crack 
+                key={i}
+                style={{
+                  transform: `rotate(${crack.angle}deg)`,
+                  background: crack.color,
+                  top: '50%',
+                  left: '50%'
+                }}
+              />
+            ))}
+          </CrackContainer>
+        )}
         <RockMenuWrapper
           isOpen={isMenuOpen}
           onMouseLeave={() => {
