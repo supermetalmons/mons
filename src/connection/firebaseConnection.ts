@@ -1,6 +1,7 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, Auth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, Database, ref, set, onValue, off, get, update } from "firebase/database";
+import { getFirestore, Firestore, collection, query, where, limit, getDocs } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
 import { getPlayersEmojiId, didGetEthAddress } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
@@ -12,6 +13,7 @@ class FirebaseConnection {
   private app: FirebaseApp;
   private auth: Auth;
   private db: Database;
+  private firestore: Firestore;
   private functions: Functions;
   private opponentRematchesRef: any = null;
   private matchRefs: { [key: string]: any } = {};
@@ -36,6 +38,7 @@ class FirebaseConnection {
     this.app = initializeApp(firebaseConfig);
     this.auth = getAuth(this.app);
     this.db = getDatabase(this.app);
+    this.firestore = getFirestore(this.app);
     this.functions = getFunctions(this.app);
   }
 
@@ -607,17 +610,14 @@ class FirebaseConnection {
 
   private async getPlayerEthAddress(uid: string): Promise<string> {
     try {
-      const { getFirestore, collection, query, where, limit, getDocs } = require("firebase/firestore");
-
-      const firestore = getFirestore();
-      const usersRef = collection(firestore, "users");
+      const usersRef = collection(this.firestore, "users");
       const q = query(usersRef, where("logins", "array-contains", uid), limit(1));
       const userQuery = await getDocs(q);
 
       if (!userQuery.empty) {
         const userDoc = userQuery.docs[0];
         const userData = userDoc.data();
-        return userData.eth;
+        return userData.eth || "";
       }
     } catch (error) {
       console.error("Error getting player ETH address:", error);
