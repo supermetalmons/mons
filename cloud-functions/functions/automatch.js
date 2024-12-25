@@ -1,5 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
+const { getPlayerEthAddress } = require("./utils");
 
 exports.automatch = onCall(async (request) => {
   if (!request.auth) {
@@ -145,19 +146,6 @@ function generateRandomString(length) {
 
 function generateInviteId() {
   return "auto_" + generateRandomString(11);
-}
-
-async function getPlayerEthAddress(uid) {
-  try {
-    const playerEthAddressRef = admin.database().ref(`players/${uid}/ethAddress`);
-    const playerEthAddressSnapshot = await playerEthAddressRef.once("value");
-    if (playerEthAddressSnapshot && playerEthAddressSnapshot.val()) {
-      return playerEthAddressSnapshot.val();
-    }
-  } catch (error) {
-    console.error("Error getting player ETH address:", error);
-  }
-  return "";
 }
 
 function matchKnownAddress(address) {

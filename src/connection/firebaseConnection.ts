@@ -15,7 +15,6 @@ class FirebaseConnection {
   private functions: Functions;
   private opponentRematchesRef: any = null;
   private matchRefs: { [key: string]: any } = {};
-  private ethAddressRefs: { [key: string]: any } = {};
 
   private uid: string | null = null;
 
@@ -577,11 +576,8 @@ class FirebaseConnection {
 
   private observeMatch(playerId: string, matchId: string): void {
     const matchRef = ref(this.db, `players/${playerId}/matches/${matchId}`);
-    const ethAddressRef = ref(this.db, `players/${playerId}/ethAddress`);
-
     const key = `${matchId}_${playerId}`;
     this.matchRefs[key] = matchRef;
-    this.ethAddressRefs[key] = ethAddressRef;
 
     onValue(
       matchRef,
@@ -596,28 +592,45 @@ class FirebaseConnection {
       }
     );
 
-    onValue(
-      ethAddressRef,
-      (snapshot) => {
-        const ethAddress: string | null = snapshot.val();
+    this.getPlayerEthAddress(playerId)
+      .then((ethAddress) => {
         if (ethAddress) {
           didGetEthAddress(ethAddress, playerId);
         }
-      },
-      (error) => {
-        console.error("Error observing ETH address:", error);
+      })
+      .catch((error) => {
+        console.error("Error getting ETH address:", error);
+      });
+
+    // TODO: start listening for player profile updates when unable to get eth address right away
+  }
+
+  private async getPlayerEthAddress(uid: string): Promise<string> {
+    try {
+      const { getFirestore, collection, query, where, limit, getDocs } = require("firebase/firestore");
+
+      const firestore = getFirestore();
+      const usersRef = collection(firestore, "users");
+      const q = query(usersRef, where("logins", "array-contains", uid), limit(1));
+      const userQuery = await getDocs(q);
+
+      if (!userQuery.empty) {
+        const userDoc = userQuery.docs[0];
+        const userData = userDoc.data();
+        return userData.eth;
       }
-    );
+    } catch (error) {
+      console.error("Error getting player ETH address:", error);
+    }
+    return "";
   }
 
   private stopObservingAllMatches(): void {
     for (const key in this.matchRefs) {
       off(this.matchRefs[key]);
-      off(this.ethAddressRefs[key]);
-      console.log(`Stopped observing match and ETH address for key ${key}`);
+      console.log(`Stopped observing match for key ${key}`);
     }
     this.matchRefs = {};
-    this.ethAddressRefs = {};
   }
 }
 

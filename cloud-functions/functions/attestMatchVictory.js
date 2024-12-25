@@ -4,7 +4,7 @@ const { EAS, SchemaEncoder, EIP712Proxy } = require("@ethereum-attestation-servi
 const { ethers } = require("ethers");
 const glicko2 = require("glicko2");
 const admin = require("firebase-admin");
-const { batchReadWithRetry } = require("./utils");
+const { batchReadWithRetry, getPlayerEthAddress } = require("./utils");
 const BigInt = global.BigInt || Number;
 
 const secretManagerServiceClient = new SecretManagerServiceClient();
@@ -27,23 +27,14 @@ exports.attestMatchVictory = onCall(async (request) => {
   const matchRef = admin.database().ref(`players/${uid}/matches/${matchId}`);
   const inviteRef = admin.database().ref(`invites/${inviteId}`);
   const opponentMatchRef = admin.database().ref(`players/${opponentId}/matches/${matchId}`);
-  const playerEthAddressRef = admin.database().ref(`players/${uid}/ethAddress`);
-  const opponentEthAddressRef = admin.database().ref(`players/${opponentId}/ethAddress`);
 
-  const [matchSnapshot, inviteSnapshot, opponentMatchSnapshot, playerEthAddressSnapshot, opponentEthAddressSnapshot] = 
-    await batchReadWithRetry([
-      matchRef, 
-      inviteRef, 
-      opponentMatchRef, 
-      playerEthAddressRef, 
-      opponentEthAddressRef
-    ]);
+  const [matchSnapshot, inviteSnapshot, opponentMatchSnapshot] = await batchReadWithRetry([matchRef, inviteRef, opponentMatchRef]);
 
   const matchData = matchSnapshot.val();
   const inviteData = inviteSnapshot.val();
   const opponentMatchData = opponentMatchSnapshot.val();
-  const playerEthAddress = playerEthAddressSnapshot.val();
-  const opponentEthAddress = opponentEthAddressSnapshot.val();
+  const playerEthAddress = await getPlayerEthAddress(uid);
+  const opponentEthAddress = await getPlayerEthAddress(opponentId);
 
   if (!((inviteData.hostId === uid && inviteData.guestId === opponentId) || (inviteData.hostId === opponentId && inviteData.guestId === uid))) {
     throw new HttpsError("permission-denied", "Players don't match invite data");
