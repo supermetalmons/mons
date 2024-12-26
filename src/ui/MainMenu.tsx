@@ -17,7 +17,7 @@ const Crack = styled.div`
   position: absolute;
   height: 2px;
   transform-origin: left center;
-  animation: grow 0s ease-out forwards;
+  animation: grow 0.1s ease-out forwards;
   z-index: 9999;
 
   @keyframes grow {
@@ -25,7 +25,7 @@ const Crack = styled.div`
       width: 0;
     }
     to {
-      width: 42%;
+      width: 23%;
     }
   }
 `;
