@@ -1,22 +1,26 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { getPlayerEthAddress } = require("./utils");
+const { getProfile } = require("./utils");
 
 exports.automatch = onCall(async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
 
+  // TODO: instead of eth address, put profile id into automatch model
+
   const uid = request.auth.uid;
-  const ethAddress = await getPlayerEthAddress(uid);
+  const profile = await getProfile(uid);
+  const ethAddress = profile.eth;
+  const profileId = profile.profileId;
   const name = getDisplayNameFromAddress(ethAddress);
   const emojiId = request.data.emojiId;
 
-  const automatchAttemptResult = await attemptAutomatch(uid, ethAddress, name, emojiId, 0);
+  const automatchAttemptResult = await attemptAutomatch(uid, ethAddress, profileId, name, emojiId, 0);
   return automatchAttemptResult;
 });
 
-async function attemptAutomatch(uid, ethAddress, name, emojiId, retryCount) {
+async function attemptAutomatch(uid, ethAddress, profileId, name, emojiId, retryCount) {
   const maxRetryCount = 3;
   if (retryCount > maxRetryCount) {
     return { ok: false };
@@ -54,10 +58,10 @@ async function attemptAutomatch(uid, ethAddress, name, emojiId, retryCount) {
         if (success) {
           sendTelegramMessage(`${existingPlayerName} automatched with ${name} https://mons.link/${firstAutomatchId}`).catch(console.error);
         } else {
-          return await attemptAutomatch(uid, ethAddress, name, emojiId, retryCount + 1);
+          return await attemptAutomatch(uid, ethAddress, profileId, name, emojiId, retryCount + 1);
         }
       } catch (error) {
-        return await attemptAutomatch(uid, ethAddress, name, emojiId, retryCount + 1);
+        return await attemptAutomatch(uid, ethAddress, profileId, name, emojiId, retryCount + 1);
       }
     }
     return {
@@ -88,7 +92,7 @@ async function attemptAutomatch(uid, ethAddress, name, emojiId, retryCount) {
 
     const updates = {};
     updates[`players/${uid}/matches/${inviteId}`] = match;
-    updates[`automatch/${inviteId}`] = { uid: uid, timestamp: admin.database.ServerValue.TIMESTAMP, ethAddress: ethAddress, hostColor: hostColor, password: password };
+    updates[`automatch/${inviteId}`] = { uid: uid, timestamp: admin.database.ServerValue.TIMESTAMP, ethAddress: ethAddress, profileId: profileId, hostColor: hostColor, password: password };
     updates[`invites/${inviteId}`] = invite;
     await admin.database().ref().update(updates);
 

@@ -22,22 +22,28 @@ const batchReadWithRetry = async (refs) => {
   return finalSnapshots;
 };
 
-async function getPlayerEthAddress(uid) {
+async function getProfile(uid) {
   try {
     const firestore = admin.firestore();
     const userQuery = await firestore.collection("users").where("logins", "array-contains", uid).limit(1).get();
     if (!userQuery.empty) {
       const userDoc = userQuery.docs[0];
       const userData = userDoc.data();
-      return userData.eth;
+      return { eth: userData.eth, profileId: userDoc.id };
     }
   } catch (error) {
     console.error("Error getting player ETH address:", error);
   }
-  return "";
+  return { eth: "", profileId: "" };
+}
+
+async function getPlayerEthAddress(uid) {
+  const profile = await getProfile(uid);
+  return profile.eth;
 }
 
 module.exports = {
   batchReadWithRetry,
   getPlayerEthAddress,
+  getProfile,
 };
