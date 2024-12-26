@@ -432,7 +432,7 @@ const MainMenu: React.FC = () => {
 
   useEffect(() => {
     if (cracksEnabled && isMenuOpen) {
-      const colors = ["#FF6B6B", "#FF8C42", "#E84855", "#9B4DCA", "#FFB347", "#FFD93D"];
+      const colors = ["#FFD93D"];
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
       const newCracks = Array.from({ length: 6 }, () => ({
         angle: Math.random() * 140 + 180,
