@@ -7,8 +7,6 @@ exports.automatch = onCall(async (request) => {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
 
-  // TODO: instead of eth address, put profile id into automatch model
-
   const uid = request.auth.uid;
   const profile = await getProfile(uid);
   const ethAddress = profile.eth;
