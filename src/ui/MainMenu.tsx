@@ -17,7 +17,7 @@ const Crack = styled.div`
   position: absolute;
   height: 2px;
   transform-origin: left center;
-  animation: grow 0.3s ease-out forwards;
+  animation: grow 0.05s ease-out forwards;
   z-index: 9999;
 
   @keyframes grow {
@@ -25,7 +25,7 @@ const Crack = styled.div`
       width: 0;
     }
     to {
-      width: 100%;
+      width: 30%;
     }
   }
 `;
@@ -428,15 +428,15 @@ const MainMenu: React.FC = () => {
   const [clickCount, setClickCount] = useState(0);
   const [showExperimental, setShowExperimental] = useState(false);
   const lastClickTime = useRef(0);
-  const [cracks, setCracks] = useState<Array<{angle: number, color: string}>>([]);
+  const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
 
   useEffect(() => {
     if (cracksEnabled && isMenuOpen) {
-      const colors = ['#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', '#FFEEAD', '#FFD93D'];
+      const colors = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEEAD", "#FFD93D"];
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
-      const newCracks = Array.from({length: 6}, () => ({
+      const newCracks = Array.from({ length: 6 }, () => ({
         angle: Math.random() * 140 + 180,
-        color: randomColor
+        color: randomColor,
       }));
       setCracks(newCracks);
     } else {
@@ -505,13 +505,13 @@ const MainMenu: React.FC = () => {
         {isMenuOpen && (
           <CrackContainer>
             {cracks.map((crack, i) => (
-              <Crack 
+              <Crack
                 key={i}
                 style={{
                   transform: `rotate(${crack.angle}deg)`,
                   background: crack.color,
-                  top: '50%',
-                  left: '50%'
+                  top: "50%",
+                  left: "50%",
                 }}
               />
             ))}
