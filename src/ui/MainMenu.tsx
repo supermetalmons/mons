@@ -17,7 +17,7 @@ const Crack = styled.div`
   position: absolute;
   height: 2px;
   transform-origin: left center;
-  animation: grow 0.05s ease-out forwards;
+  animation: grow 0s ease-out forwards;
   z-index: 9999;
 
   @keyframes grow {
@@ -25,7 +25,7 @@ const Crack = styled.div`
       width: 0;
     }
     to {
-      width: 30%;
+      width: 42%;
     }
   }
 `;
@@ -415,7 +415,7 @@ const ExperimentButton = styled.button`
 
 let getIsMenuOpen: () => boolean;
 export let toggleInfoVisibility: () => void;
-const cracksEnabled = false;
+const cracksEnabled = true;
 
 export function hasMainMenuPopupsVisible(): boolean {
   return getIsMenuOpen();
@@ -432,7 +432,7 @@ const MainMenu: React.FC = () => {
 
   useEffect(() => {
     if (cracksEnabled && isMenuOpen) {
-      const colors = ["#FF6B6B", "#4ECDC4", "#45B7D1", "#96CEB4", "#FFEEAD", "#FFD93D"];
+      const colors = ["#FF6B6B", "#FF8C42", "#E84855", "#9B4DCA", "#FFB347", "#FFD93D"];
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
       const newCracks = Array.from({ length: 6 }, () => ({
         angle: Math.random() * 140 + 180,
