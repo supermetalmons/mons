@@ -741,7 +741,8 @@ export function didClickAttestVictoryButton() {
 }
 
 function suggestSavingOnchainRating() {
-  if (isAutomatch()) {
+  const onchainRatingsAreDisabledTmp = true;
+  if (!onchainRatingsAreDisabledTmp && isAutomatch()) {
     setAttestVictoryVisible(true);
     setAttestVictoryEnabled(true);
   }
