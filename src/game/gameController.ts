@@ -618,8 +618,12 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
               sounds.push(Sound.Defeat);
             }
 
-            if (isVictory && !isWatchOnly && hasBothEthAddresses()) {
-              suggestSavingOnchainRating();
+            if (!isWatchOnly && hasBothEthAddresses()) {
+              if (isVictory) {
+                suggestSavingOnchainRating();
+              } else {
+                updateRatingsLocally(false);
+              }
             }
 
             isGameOver = true;
@@ -1028,6 +1032,7 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
   } else if (!onConnect) {
     if (!isWatchOnly) {
       playSounds([Sound.Defeat]);
+      updateRatingsLocally(false);
     }
   }
 }
@@ -1043,6 +1048,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
   if (justConfirmedResignYourself) {
     resignedColor = playerSideColor;
     playSounds([Sound.Defeat]);
+    updateRatingsLocally(false);
   } else {
     resignedColor = resignSenderColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   }
