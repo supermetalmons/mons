@@ -743,7 +743,7 @@ export function didClickAttestVictoryButton() {
 
 function suggestSavingOnchainRating() {
   updateRatings();
-  updateRatingsLocally();
+  updateRatingsLocally(true);
 
   const onchainRatingsAreDisabledTmp = true;
   if (!onchainRatingsAreDisabledTmp && isAutomatch()) {
@@ -752,9 +752,17 @@ function suggestSavingOnchainRating() {
   }
 }
 
-function updateRatingsLocally() {
-  recalculateRatingsLocally(true);
-  Board.recalculateDisplayNames();
+function updateRatingsLocally(isWin: boolean) {
+  const playerSide = playerSideMetadata.ethAddress;
+  const opponentSide = opponentSideMetadata.ethAddress;
+
+  const victoryAddress = isWin ? playerSide : opponentSide;
+  const defeatAddress = isWin ? opponentSide : playerSide;
+
+  if (victoryAddress && defeatAddress) {
+    recalculateRatingsLocally(victoryAddress, defeatAddress);
+    Board.recalculateDisplayNames();
+  }
 }
 
 async function saveOnchainRating(txData: any, matchId: string) {

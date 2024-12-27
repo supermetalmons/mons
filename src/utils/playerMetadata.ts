@@ -29,7 +29,8 @@ export function openEthAddress(address: string) {
   window.open(etherscanUrl, "_blank", "noopener,noreferrer");
 }
 
-export function recalculateRatingsLocally(isVictory: boolean) {
+export function recalculateRatingsLocally(victoryAddress: string, defeatAddress: string) {
+  
   // TODO: implement
 }
 

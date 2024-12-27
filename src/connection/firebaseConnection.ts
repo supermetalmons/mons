@@ -68,7 +68,7 @@ class FirebaseConnection {
           id: doc.id,
           eth: data.eth || "",
           rating: data.rating || 1500,
-          nonce: data.nonce || 0,
+          nonce: data.nonce === undefined ? -1 : data.nonce,
           win: data.win ?? true,
         };
       }
@@ -89,7 +89,7 @@ class FirebaseConnection {
         id: doc.id,
         eth: data.eth || "",
         rating: data.rating || 1500,
-        nonce: data.nonce || 0,
+        nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
       });
     });

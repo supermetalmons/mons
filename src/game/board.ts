@@ -536,14 +536,14 @@ export function recalculateDisplayNames() {
     }
   }
 
-  if (playerSideMetadata.rating === undefined && playerSideMetadata.ethAddress) {
+  if (playerSideMetadata.ethAddress) {
     const rating = getRating(playerSideMetadata.ethAddress);
     if (rating !== undefined) {
       playerSideMetadata.rating = rating;
     }
   }
 
-  if (opponentSideMetadata.rating === undefined && opponentSideMetadata.ethAddress) {
+  if (opponentSideMetadata.ethAddress) {
     const rating = getRating(opponentSideMetadata.ethAddress);
     if (rating !== undefined) {
       opponentSideMetadata.rating = rating;
