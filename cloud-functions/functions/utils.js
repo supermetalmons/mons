@@ -37,13 +37,14 @@ async function getProfileByLoginId(uid) {
   return { eth: "", profileId: "", nonce: 0, rating: 0 };
 }
 
-async function updateUserRatingAndNonce(profileId, newRating, newNonce) {
+async function updateUserRatingAndNonce(profileId, newRating, newNonce, isWin) {
   try {
     const firestore = admin.firestore();
     const userRef = firestore.collection("users").doc(profileId);
     await userRef.update({
       rating: newRating,
       nonce: newNonce,
+      win: isWin,
     });
     return true;
   } catch (error) {

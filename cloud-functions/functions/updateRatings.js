@@ -88,8 +88,8 @@ exports.updateRatings = onCall(async (request) => {
   const newNonce1 = playerProfile.nonce + 1;
   const newNonce2 = opponentProfile.nonce + 1;
   const [newRating1, newRating2] = updateRating(playerProfile.rating, newNonce1, opponentProfile.rating, newNonce2);
-  updateUserRatingAndNonce(playerProfile.profileId, newRating1, newNonce1);
-  updateUserRatingAndNonce(opponentProfile.profileId, newRating2, newNonce2);
+  updateUserRatingAndNonce(playerProfile.profileId, newRating1, newNonce1, true);
+  updateUserRatingAndNonce(opponentProfile.profileId, newRating2, newNonce2, false);
 
   return {
     ok: true,
