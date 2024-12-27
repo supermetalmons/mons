@@ -290,6 +290,19 @@ class FirebaseConnection {
     }
   }
 
+  public async updateRatings(): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const updateRatingsFunction = httpsCallable(this.functions, "updateRatings");
+      const opponentId = this.getOpponentId();
+      const response = await updateRatingsFunction({ inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
+      return response.data;
+    } catch (error) {
+      console.error("Error updating ratings:", error);
+      throw error;
+    }
+  }
+
   public async prepareOnchainVictoryTx(): Promise<any> {
     try {
       await this.ensureAuthenticated();
