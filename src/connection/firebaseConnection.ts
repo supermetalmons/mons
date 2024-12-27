@@ -1,11 +1,11 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, Auth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, Database, ref, set, onValue, off, get, update } from "firebase/database";
-import { getFirestore, Firestore, collection, query, where, limit, getDocs } from "firebase/firestore";
+import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
 import { getPlayersEmojiId, didGetEthAddress } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
-import { Match, Invite, Reaction } from "./connectionModels";
+import { Match, Invite, Reaction, PlayerProfile } from "./connectionModels";
 
 const controllerVersion = 2;
 
@@ -52,6 +52,49 @@ class FirebaseConnection {
       console.error("Failed to sign in anonymously:", error);
       return undefined;
     }
+  }
+
+  public async getProfiles(uids: string[]): Promise<{ [key: string]: PlayerProfile }> {
+    await this.ensureAuthenticated();
+    const usersRef = collection(this.firestore, "users");
+    const profiles: { [key: string]: PlayerProfile } = {};
+    for (const uid of uids) {
+      const q = query(usersRef, where("logins", "array-contains", uid), limit(1));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        const data = doc.data();
+        profiles[uid] = {
+          id: doc.id,
+          eth: data.eth || "",
+          rating: data.rating || 1500,
+          nonce: data.nonce === undefined ? -1 : data.nonce,
+          win: data.win ?? true,
+        };
+      }
+    }
+    return profiles;
+  }
+
+  public async getLeaderboard(): Promise<PlayerProfile[]> {
+    await this.ensureAuthenticated();
+    const usersRef = collection(this.firestore, "users");
+    const q = query(usersRef, orderBy("rating", "desc"), limit(50));
+    const querySnapshot = await getDocs(q);
+
+    const leaderboard: PlayerProfile[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      leaderboard.push({
+        id: doc.id,
+        eth: data.eth || "",
+        rating: data.rating || 1500,
+        nonce: data.nonce === undefined ? -1 : data.nonce,
+        win: data.win ?? true,
+      });
+    });
+
+    return leaderboard;
   }
 
   public async verifyEthAddress(message: string, signature: string): Promise<any> {
@@ -243,6 +286,19 @@ class FirebaseConnection {
       return response.data;
     } catch (error) {
       console.error("Error calling automatch:", error);
+      throw error;
+    }
+  }
+
+  public async updateRatings(): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const updateRatingsFunction = httpsCallable(this.functions, "updateRatings");
+      const opponentId = this.getOpponentId();
+      const response = await updateRatingsFunction({ inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
+      return response.data;
+    } catch (error) {
+      console.error("Error updating ratings:", error);
       throw error;
     }
   }

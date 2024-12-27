@@ -1,7 +1,7 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const glicko2 = require("glicko2");
 const admin = require("firebase-admin");
-const { batchReadWithRetry } = require("./utils");
+const { batchReadWithRetry, getProfileByLoginId, updateUserRatingAndNonce } = require("./utils");
 
 exports.updateRatings = onCall(async (request) => {
   const uid = request.auth.uid;
@@ -16,27 +16,26 @@ exports.updateRatings = onCall(async (request) => {
   const matchRef = admin.database().ref(`players/${uid}/matches/${matchId}`);
   const inviteRef = admin.database().ref(`invites/${inviteId}`);
   const opponentMatchRef = admin.database().ref(`players/${opponentId}/matches/${matchId}`);
-  const playerEthAddressRef = admin.database().ref(`players/${uid}/ethAddress`);
-  const opponentEthAddressRef = admin.database().ref(`players/${opponentId}/ethAddress`);
 
-  const [matchSnapshot, inviteSnapshot, opponentMatchSnapshot, playerEthAddressSnapshot, opponentEthAddressSnapshot] = await batchReadWithRetry([matchRef, inviteRef, opponentMatchRef, playerEthAddressRef, opponentEthAddressRef]);
+  const [matchSnapshot, inviteSnapshot, opponentMatchSnapshot] = await batchReadWithRetry([matchRef, inviteRef, opponentMatchRef]);
 
   const matchData = matchSnapshot.val();
   const inviteData = inviteSnapshot.val();
   const opponentMatchData = opponentMatchSnapshot.val();
-  const playerEthAddress = playerEthAddressSnapshot.val();
-  const opponentEthAddress = opponentEthAddressSnapshot.val();
+
+  const playerProfile = await getProfileByLoginId(uid);
+  const opponentProfile = await getProfileByLoginId(opponentId);
 
   if (!((inviteData.hostId === uid && inviteData.guestId === opponentId) || (inviteData.hostId === opponentId && inviteData.guestId === uid))) {
     throw new HttpsError("permission-denied", "Players don't match invite data");
   }
 
-  if (!playerEthAddress) {
-    throw new HttpsError("failed-precondition", "Player's Ethereum address not found.");
+  if (playerProfile.profileId === "") {
+    throw new HttpsError("failed-precondition", "Player's profile id not found.");
   }
 
-  if (!opponentEthAddress) {
-    throw new HttpsError("failed-precondition", "Opponent's Ethereum address not found.");
+  if (opponentProfile.profileId === "") {
+    throw new HttpsError("failed-precondition", "Opponent's profile id not found.");
   }
 
   var result = "none";
@@ -74,27 +73,23 @@ exports.updateRatings = onCall(async (request) => {
     }
   }
 
-  if (result !== "win" || result !== "gg") {
-    throw new HttpsError("internal", "Cound not confirm match result.");
+  if (result !== "win") {
+    throw new HttpsError("internal", "Could not confirm victory.");
   }
-
-  const recipient1 = playerEthAddress;
-  const recipient2 = opponentEthAddress;
-
-  // TODO: get nonces and current ratings
 
   const nonceRef = admin.database().ref(`players/${uid}/nonces/${matchId}`);
   const nonceSnapshot = await nonceRef.once("value");
   if (!nonceSnapshot.exists()) {
-    await nonceRef.set(nonce1);
-  } else if (nonceSnapshot.val() !== nonce1) {
-    throw new HttpsError("internal", "Can not attest that game anymore");
+    await nonceRef.set(playerProfile.nonce);
+  } else {
+    throw new HttpsError("internal", "Can not update rating with this game anymore");
   }
 
-  const [newRating1, newRating2] = updateRating(targetAttestation1.rating, nonce1, targetAttestation2.rating, nonce2);
-
-  // TODO: save updated ratings
-  // TODO: make sure updated ratings are saved once for a match
+  const newNonce1 = playerProfile.nonce + 1;
+  const newNonce2 = opponentProfile.nonce + 1;
+  const [newRating1, newRating2] = updateRating(playerProfile.rating, newNonce1, opponentProfile.rating, newNonce2);
+  updateUserRatingAndNonce(playerProfile.profileId, newRating1, newNonce1, true);
+  updateUserRatingAndNonce(opponentProfile.profileId, newRating2, newNonce2, false);
 
   return {
     ok: true,

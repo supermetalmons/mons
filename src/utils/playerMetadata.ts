@@ -1,4 +1,6 @@
-import { fetchRatingsFromEAS, RatingData } from "../connection/easGraph";
+import { getProfiles } from "../connection/connection";
+import { PlayerProfile } from "../connection/connectionModels";
+import glicko2 from "glicko2";
 
 export type PlayerMetadata = {
   uid: string;
@@ -28,6 +30,25 @@ export function openEthAddress(address: string) {
   window.open(etherscanUrl, "_blank", "noopener,noreferrer");
 }
 
+export function recalculateRatingsLocally(victoryAddress: string, defeatAddress: string) {
+  const rating1 = getRating(victoryAddress);
+  const rating2 = getRating(defeatAddress);
+  const nonce1 = getNonce(victoryAddress);
+  const nonce2 = getNonce(defeatAddress);
+
+  if (!rating1 || !rating2 || nonce1 === undefined || nonce2 === undefined) {
+    return;
+  }
+
+  const newNonce1 = nonce1 + 1;
+  const newNonce2 = nonce2 + 1;
+
+  const [newRating1, newRating2] = updateRating(rating1, newNonce1, rating2, newNonce2);
+
+  setRatingAndNonce(victoryAddress, newRating1, newNonce1);
+  setRatingAndNonce(defeatAddress, newRating2, newNonce2);
+}
+
 export function getStashedPlayerAddress(uid: string) {
   return ethAddresses[uid];
 }
@@ -35,11 +56,11 @@ export function getStashedPlayerAddress(uid: string) {
 export function resolveEthAddress(address: string, uid: string, onSuccess: () => void) {
   ethAddresses[uid] = address;
   if (!ensDict[address]) {
-    fetchRatingsFromEAS([address])
-      .then((ratingsDict) => {
-        const rating = ratingsDict[address];
-        if (rating !== undefined) {
-          allRatingsDict[address] = rating;
+    getProfiles([uid])
+      .then((profilesDict) => {
+        const profile = profilesDict[uid];
+        if (profile !== undefined) {
+          allProfilesDict[address] = profile;
           onSuccess();
         }
       })
@@ -67,7 +88,20 @@ export function resolveEthAddress(address: string, uid: string, onSuccess: () =>
 
 export function getRating(address: string): number | undefined {
   if (!address) return undefined;
-  return allRatingsDict[address]?.rating;
+  return allProfilesDict[address]?.rating;
+}
+
+function getNonce(address: string): number | undefined {
+  if (!address) return undefined;
+  return allProfilesDict[address]?.nonce;
+}
+
+function setRatingAndNonce(address: string, rating: number, nonce: number): void {
+  if (!address) return;
+  if (allProfilesDict[address]) {
+    allProfilesDict[address].rating = rating;
+    allProfilesDict[address].nonce = nonce;
+  }
 }
 
 export function getEnsName(address: string): string | undefined {
@@ -77,4 +111,25 @@ export function getEnsName(address: string): string | undefined {
 
 const ethAddresses: { [key: string]: string } = {};
 const ensDict: { [key: string]: { name: string; avatar: string } } = {};
-const allRatingsDict: { [key: string]: RatingData } = {};
+const allProfilesDict: { [key: string]: PlayerProfile } = {};
+
+const updateRating = (winRating: number, winPlayerGamesCount: number, lossRating: number, lossPlayerGamesCount: number) => {
+  const settings = {
+    tau: 0.75,
+    rating: 1500,
+    rd: 100,
+    vol: 0.06,
+  };
+
+  const ranking = new glicko2.Glicko2(settings);
+  const adjustRd = (gamesCount: number) => Math.max(60, 350 - gamesCount);
+  const winner = ranking.makePlayer(winRating, adjustRd(winPlayerGamesCount), 0.06);
+  const loser = ranking.makePlayer(lossRating, adjustRd(lossPlayerGamesCount), 0.06);
+  const matches: [any, any, number][] = [[winner, loser, 1]];
+  ranking.updateRatings(matches);
+
+  const newWinRating = Math.round(winner.getRating());
+  const newLossRating = Math.round(loser.getRating());
+
+  return [newWinRating, newLossRating];
+};

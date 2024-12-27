@@ -23,3 +23,11 @@ export interface Reaction {
   variation: number;
   kind: string;
 }
+
+export interface PlayerProfile {
+  id: string;
+  nonce: number;
+  rating: number;
+  win: boolean;
+  eth?: string | null;
+}

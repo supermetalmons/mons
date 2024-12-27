@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getLeaderboard } from "../connection/easGraph";
 import { resolveENS } from "../utils/ensResolver";
+import { getLeaderboard } from "../connection/connection";
 
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
   opacity: ${(props) => (props.show ? 1 : 0)};
@@ -131,8 +131,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
       getLeaderboard()
         .then((ratings) => {
           const leaderboardData = ratings.map((entry) => ({
-            player: entry.recipient,
-            games: entry.numberOfGames,
+            player: entry.eth ?? "",
+            games: entry.nonce + 1,
             rating: Math.round(entry.rating),
             win: entry.win,
             id: entry.id,
@@ -158,8 +158,9 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
     }
   }, [show]);
 
-  const handleRowClick = (id: string) => {
-    window.open(`https://base.easscan.org/attestation/view/${id}`, "_blank", "noopener,noreferrer");
+  const handleRowClick = (address: string) => {
+    window.open(`https://etherscan.io/address/${address}`, "_blank", "noopener,noreferrer");
+    // window.open(`https://base.easscan.org/attestation/view/${id}`, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -176,7 +177,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
             </thead>
             <tbody>
               {data.map((row: LeaderboardEntry, index: number) => (
-                <tr key={index} onClick={() => handleRowClick(row.id)}>
+                <tr key={index} onClick={() => handleRowClick(row.player)}>
                   <td>{row.ensName || row.player.slice(2, 6) + "..." + row.player.slice(-4)}</td>
                   <td>{row.games}</td>
                   <RatingCell win={row.win}>{row.rating}</RatingCell>

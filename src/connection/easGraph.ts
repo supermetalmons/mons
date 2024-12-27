@@ -1,7 +1,7 @@
 const PROXY_ADDRESS = "0x6D132b7cDC2b5A5F7C4DFd6C84C0A776062C58Ae";
 const SCHEMA = "0x5c6e798cbb817442fa075e01b65d5d65d3ac35c2b05c1306e8771a1c8a3adb32";
 
-export type RatingData = {
+export type OnhcainRatingData = {
   numberOfGames: number;
   rating: number;
   id: string;
@@ -9,9 +9,9 @@ export type RatingData = {
   win: boolean;
   ensName?: string | null;
 };
-let cachedLeaderboard: RatingData[] | null = null;
+let cachedLeaderboard: OnhcainRatingData[] | null = null;
 
-export async function getLeaderboard(): Promise<RatingData[]> {
+export async function getOnchainLeaderboard(): Promise<OnhcainRatingData[]> {
   if (cachedLeaderboard && cachedLeaderboard.length > 0) {
     return cachedLeaderboard;
   }
@@ -54,7 +54,7 @@ export async function getLeaderboard(): Promise<RatingData[]> {
   const easResponseJson = await easResponse.json();
   const attestations = easResponseJson.data.attestations;
 
-  const ratings: RatingData[] = [];
+  const ratings: OnhcainRatingData[] = [];
 
   attestations.forEach((attestation: any) => {
     const decodedData = JSON.parse(attestation.decodedDataJson);
@@ -88,8 +88,8 @@ export async function getLeaderboard(): Promise<RatingData[]> {
   return ratings;
 }
 
-export async function fetchRatingsFromEAS(recipients: string[]): Promise<{ [key: string]: RatingData }> {
-  const ratingsDict: { [key: string]: RatingData } = {};
+export async function fetchOnchainRatingsFromEAS(recipients: string[]): Promise<{ [key: string]: OnhcainRatingData }> {
+  const ratingsDict: { [key: string]: OnhcainRatingData } = {};
 
   const easQuery = `
     query Attestation {

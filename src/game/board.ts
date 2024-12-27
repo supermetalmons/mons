@@ -505,7 +505,7 @@ export function setupLoggedInPlayerEthAddress(address: string, uid: string) {
   }
 }
 
-function recalculateDisplayNames() {
+export function recalculateDisplayNames() {
   if (getStashedPlayerAddress(playerSideMetadata.uid) && playerSideMetadata.displayName === undefined) {
     const address = getStashedPlayerAddress(playerSideMetadata.uid);
     const cropped = address.slice(0, 4) + "..." + address.slice(-4);
@@ -536,14 +536,14 @@ function recalculateDisplayNames() {
     }
   }
 
-  if (playerSideMetadata.rating === undefined && playerSideMetadata.ethAddress) {
+  if (playerSideMetadata.ethAddress) {
     const rating = getRating(playerSideMetadata.ethAddress);
     if (rating !== undefined) {
       playerSideMetadata.rating = rating;
     }
   }
 
-  if (opponentSideMetadata.rating === undefined && opponentSideMetadata.ethAddress) {
+  if (opponentSideMetadata.ethAddress) {
     const rating = getRating(opponentSideMetadata.ethAddress);
     if (rating !== undefined) {
       opponentSideMetadata.rating = rating;

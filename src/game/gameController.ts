@@ -4,9 +4,10 @@ import * as Board from "./board";
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
-import { isAutomatch, sendResignStatus, prepareOnchainVictoryTx, sendMove, isCreateNewInviteFlow, sendEmojiUpdate, setupConnection, startTimer, claimVictoryByTimer, sendRematchProposal, sendAutomatchRequest, connectToAutomatch, sendEndMatchIndicator, rematchSeriesEndIsIndicated, connectToGame } from "../connection/connection";
+import { isAutomatch, sendResignStatus, prepareOnchainVictoryTx, sendMove, isCreateNewInviteFlow, sendEmojiUpdate, setupConnection, startTimer, claimVictoryByTimer, sendRematchProposal, sendAutomatchRequest, connectToAutomatch, sendEndMatchIndicator, rematchSeriesEndIsIndicated, connectToGame, updateRatings } from "../connection/connection";
 import { setAttestVictoryVisible, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAttestVictoryEnabled, showButtonForTx, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushButtonDimmed } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
+import { recalculateRatingsLocally } from "../utils/playerMetadata";
 
 const experimentalDrawingDevMode = false;
 
@@ -617,8 +618,12 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
               sounds.push(Sound.Defeat);
             }
 
-            if (isVictory && !isWatchOnly && hasBothEthAddresses()) {
-              suggestSavingOnchainRating();
+            if (!isWatchOnly && hasBothEthAddresses()) {
+              if (isVictory) {
+                suggestSavingOnchainRating();
+              } else {
+                updateRatingsLocally(false);
+              }
             }
 
             isGameOver = true;
@@ -741,10 +746,26 @@ export function didClickAttestVictoryButton() {
 }
 
 function suggestSavingOnchainRating() {
+  updateRatings();
+  updateRatingsLocally(true);
+
   const onchainRatingsAreDisabledTmp = true;
   if (!onchainRatingsAreDisabledTmp && isAutomatch()) {
     setAttestVictoryVisible(true);
     setAttestVictoryEnabled(true);
+  }
+}
+
+function updateRatingsLocally(isWin: boolean) {
+  const playerSide = playerSideMetadata.ethAddress;
+  const opponentSide = opponentSideMetadata.ethAddress;
+
+  const victoryAddress = isWin ? playerSide : opponentSide;
+  const defeatAddress = isWin ? opponentSide : playerSide;
+
+  if (victoryAddress && defeatAddress) {
+    recalculateRatingsLocally(victoryAddress, defeatAddress);
+    Board.recalculateDisplayNames();
   }
 }
 
@@ -1011,6 +1032,7 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
   } else if (!onConnect) {
     if (!isWatchOnly) {
       playSounds([Sound.Defeat]);
+      updateRatingsLocally(false);
     }
   }
 }
@@ -1026,6 +1048,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
   if (justConfirmedResignYourself) {
     resignedColor = playerSideColor;
     playSounds([Sound.Defeat]);
+    updateRatingsLocally(false);
   } else {
     resignedColor = resignSenderColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   }

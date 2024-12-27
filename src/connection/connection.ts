@@ -1,5 +1,5 @@
 import { generateNewInviteId } from "../utils/misc";
-import { Reaction } from "./connectionModels";
+import { PlayerProfile, Reaction } from "./connectionModels";
 
 const initialPath = window.location.pathname.replace(/^\/|\/$/g, "");
 export const isCreateNewInviteFlow = initialPath === "";
@@ -100,12 +100,24 @@ export async function startTimer(): Promise<any> {
   return firebaseConnection.startTimer();
 }
 
+export async function getLeaderboard(): Promise<PlayerProfile[]> {
+  return firebaseConnection.getLeaderboard();
+}
+
+export async function getProfiles(uids: string[]): Promise<{ [key: string]: PlayerProfile }> {
+  return firebaseConnection.getProfiles(uids);
+}
+
 export async function sendAutomatchRequest(): Promise<any> {
   return firebaseConnection.automatch();
 }
 
 export async function claimVictoryByTimer(): Promise<any> {
   return firebaseConnection.claimVictoryByTimer();
+}
+
+export async function updateRatings(): Promise<any> {
+  return firebaseConnection.updateRatings();
 }
 
 export async function prepareOnchainVictoryTx(): Promise<any> {
