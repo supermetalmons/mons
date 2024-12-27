@@ -1,6 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { getProfile } = require("./utils");
+const { getProfileByLoginId } = require("./utils");
 
 exports.automatch = onCall(async (request) => {
   if (!request.auth) {
@@ -8,7 +8,7 @@ exports.automatch = onCall(async (request) => {
   }
 
   const uid = request.auth.uid;
-  const profile = await getProfile(uid);
+  const profile = await getProfileByLoginId(uid);
   const ethAddress = profile.eth;
   const profileId = profile.profileId;
   const name = getDisplayNameFromAddress(ethAddress);
