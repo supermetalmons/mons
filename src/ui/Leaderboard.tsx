@@ -158,8 +158,9 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
     }
   }, [show]);
 
-  const handleRowClick = (id: string) => {
-    window.open(`https://base.easscan.org/attestation/view/${id}`, "_blank", "noopener,noreferrer");
+  const handleRowClick = (address: string) => {
+    window.open(`https://etherscan.io/address/${address}`, "_blank", "noopener,noreferrer");
+    // window.open(`https://base.easscan.org/attestation/view/${id}`, "_blank", "noopener,noreferrer");
   };
 
   return (
@@ -176,7 +177,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
             </thead>
             <tbody>
               {data.map((row: LeaderboardEntry, index: number) => (
-                <tr key={index} onClick={() => handleRowClick(row.id)}>
+                <tr key={index} onClick={() => handleRowClick(row.player)}>
                   <td>{row.ensName || row.player.slice(2, 6) + "..." + row.player.slice(-4)}</td>
                   <td>{row.games}</td>
                   <RatingCell win={row.win}>{row.rating}</RatingCell>
