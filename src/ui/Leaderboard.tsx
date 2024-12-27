@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { getLeaderboard } from "../connection/easGraph";
 import { resolveENS } from "../utils/ensResolver";
+import { getLeaderboard } from "../connection/connection";
 
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
   opacity: ${(props) => (props.show ? 1 : 0)};
@@ -131,8 +131,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
       getLeaderboard()
         .then((ratings) => {
           const leaderboardData = ratings.map((entry) => ({
-            player: entry.recipient,
-            games: entry.numberOfGames,
+            player: entry.eth ?? "",
+            games: entry.nonce + 1,
             rating: Math.round(entry.rating),
             win: entry.win,
             id: entry.id,

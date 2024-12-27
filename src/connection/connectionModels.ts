@@ -30,5 +30,4 @@ export interface PlayerProfile {
   rating: number;
   win: boolean;
   eth?: string | null;
-  ensName?: string | null;
 }

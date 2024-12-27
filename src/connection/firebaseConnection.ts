@@ -1,11 +1,11 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, Auth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, Database, ref, set, onValue, off, get, update } from "firebase/database";
-import { getFirestore, Firestore, collection, query, where, limit, getDocs } from "firebase/firestore";
+import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
 import { getPlayersEmojiId, didGetEthAddress } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
-import { Match, Invite, Reaction } from "./connectionModels";
+import { Match, Invite, Reaction, PlayerProfile } from "./connectionModels";
 
 const controllerVersion = 2;
 
@@ -52,6 +52,26 @@ class FirebaseConnection {
       console.error("Failed to sign in anonymously:", error);
       return undefined;
     }
+  }
+
+  public async getLeaderboard(): Promise<PlayerProfile[]> {
+    const usersRef = collection(this.firestore, "users");
+    const q = query(usersRef, orderBy("rating", "desc"), limit(50));
+    const querySnapshot = await getDocs(q);
+
+    const leaderboard: PlayerProfile[] = [];
+    querySnapshot.forEach((doc) => {
+      const data = doc.data();
+      leaderboard.push({
+        id: doc.id,
+        eth: data.eth || "",
+        rating: data.rating || 1500,
+        nonce: data.nonce || 0,
+        win: data.win ?? true,
+      });
+    });
+
+    return leaderboard;
   }
 
   public async verifyEthAddress(message: string, signature: string): Promise<any> {
