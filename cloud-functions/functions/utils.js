@@ -37,6 +37,21 @@ async function getProfileByLoginId(uid) {
   return { eth: "", profileId: "", nonce: 0, rating: 0 };
 }
 
+async function updateUserRatingAndNonce(profileId, newRating, newNonce) {
+  try {
+    const firestore = admin.firestore();
+    const userRef = firestore.collection("users").doc(profileId);
+    await userRef.update({
+      rating: newRating,
+      nonce: newNonce,
+    });
+    return true;
+  } catch (error) {
+    console.error("Error updating user rating and nonce:", error);
+    return false;
+  }
+}
+
 async function getPlayerEthAddress(uid) {
   const profile = await getProfileByLoginId(uid);
   return profile.eth;
@@ -46,4 +61,5 @@ module.exports = {
   batchReadWithRetry,
   getPlayerEthAddress,
   getProfileByLoginId,
+  updateUserRatingAndNonce,
 };
