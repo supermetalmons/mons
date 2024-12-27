@@ -29,6 +29,10 @@ export function openEthAddress(address: string) {
   window.open(etherscanUrl, "_blank", "noopener,noreferrer");
 }
 
+export function recalculateRatingsLocally(isVictory: boolean) {
+  // TODO: implement
+}
+
 export function getStashedPlayerAddress(uid: string) {
   return ethAddresses[uid];
 }

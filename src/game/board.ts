@@ -505,7 +505,7 @@ export function setupLoggedInPlayerEthAddress(address: string, uid: string) {
   }
 }
 
-function recalculateDisplayNames() {
+export function recalculateDisplayNames() {
   if (getStashedPlayerAddress(playerSideMetadata.uid) && playerSideMetadata.displayName === undefined) {
     const address = getStashedPlayerAddress(playerSideMetadata.uid);
     const cropped = address.slice(0, 4) + "..." + address.slice(-4);

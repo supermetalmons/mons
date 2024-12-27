@@ -7,6 +7,7 @@ import { playSounds, playReaction } from "../content/sounds";
 import { isAutomatch, sendResignStatus, prepareOnchainVictoryTx, sendMove, isCreateNewInviteFlow, sendEmojiUpdate, setupConnection, startTimer, claimVictoryByTimer, sendRematchProposal, sendAutomatchRequest, connectToAutomatch, sendEndMatchIndicator, rematchSeriesEndIsIndicated, connectToGame, updateRatings } from "../connection/connection";
 import { setAttestVictoryVisible, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAttestVictoryEnabled, showButtonForTx, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushButtonDimmed } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
+import { recalculateRatingsLocally } from "../utils/playerMetadata";
 
 const experimentalDrawingDevMode = false;
 
@@ -742,12 +743,18 @@ export function didClickAttestVictoryButton() {
 
 function suggestSavingOnchainRating() {
   updateRatings();
+  updateRatingsLocally();
 
   const onchainRatingsAreDisabledTmp = true;
   if (!onchainRatingsAreDisabledTmp && isAutomatch()) {
     setAttestVictoryVisible(true);
     setAttestVictoryEnabled(true);
   }
+}
+
+function updateRatingsLocally() {
+  recalculateRatingsLocally(true);
+  Board.recalculateDisplayNames();
 }
 
 async function saveOnchainRating(txData: any, matchId: string) {
