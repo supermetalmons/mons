@@ -104,6 +104,10 @@ export async function getLeaderboard(): Promise<PlayerProfile[]> {
   return firebaseConnection.getLeaderboard();
 }
 
+export async function getProfiles(uids: string[]): Promise<{ [key: string]: PlayerProfile }> {
+  return firebaseConnection.getProfiles(uids);
+}
+
 export async function sendAutomatchRequest(): Promise<any> {
   return firebaseConnection.automatch();
 }

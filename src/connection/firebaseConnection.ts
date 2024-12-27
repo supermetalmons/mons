@@ -54,7 +54,30 @@ class FirebaseConnection {
     }
   }
 
+  public async getProfiles(uids: string[]): Promise<{ [key: string]: PlayerProfile }> {
+    await this.ensureAuthenticated();
+    const usersRef = collection(this.firestore, "users");
+    const profiles: { [key: string]: PlayerProfile } = {};
+    for (const uid of uids) {
+      const q = query(usersRef, where("logins", "array-contains", uid), limit(1));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        const doc = querySnapshot.docs[0];
+        const data = doc.data();
+        profiles[uid] = {
+          id: doc.id,
+          eth: data.eth || "",
+          rating: data.rating || 1500,
+          nonce: data.nonce || 0,
+          win: data.win ?? true,
+        };
+      }
+    }
+    return profiles;
+  }
+
   public async getLeaderboard(): Promise<PlayerProfile[]> {
+    await this.ensureAuthenticated();
     const usersRef = collection(this.firestore, "users");
     const q = query(usersRef, orderBy("rating", "desc"), limit(50));
     const querySnapshot = await getDocs(q);

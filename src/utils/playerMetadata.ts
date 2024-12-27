@@ -1,4 +1,5 @@
-import { fetchOnchainRatingsFromEAS, OnhcainRatingData } from "../connection/easGraph";
+import { getProfiles } from "../connection/connection";
+import { PlayerProfile } from "../connection/connectionModels";
 
 export type PlayerMetadata = {
   uid: string;
@@ -35,11 +36,11 @@ export function getStashedPlayerAddress(uid: string) {
 export function resolveEthAddress(address: string, uid: string, onSuccess: () => void) {
   ethAddresses[uid] = address;
   if (!ensDict[address]) {
-    fetchOnchainRatingsFromEAS([address])
-      .then((ratingsDict) => {
-        const rating = ratingsDict[address];
-        if (rating !== undefined) {
-          allRatingsDict[address] = rating;
+    getProfiles([uid])
+      .then((profilesDict) => {
+        const profile = profilesDict[uid];
+        if (profile !== undefined) {
+          allProfilesDict[address] = profile;
           onSuccess();
         }
       })
@@ -67,7 +68,7 @@ export function resolveEthAddress(address: string, uid: string, onSuccess: () =>
 
 export function getRating(address: string): number | undefined {
   if (!address) return undefined;
-  return allRatingsDict[address]?.rating;
+  return allProfilesDict[address]?.rating;
 }
 
 export function getEnsName(address: string): string | undefined {
@@ -77,4 +78,4 @@ export function getEnsName(address: string): string | undefined {
 
 const ethAddresses: { [key: string]: string } = {};
 const ensDict: { [key: string]: { name: string; avatar: string } } = {};
-const allRatingsDict: { [key: string]: OnhcainRatingData } = {};
+const allProfilesDict: { [key: string]: PlayerProfile } = {};
