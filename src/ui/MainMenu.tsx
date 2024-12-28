@@ -19,6 +19,7 @@ const Crack = styled.div`
   transform-origin: left center;
   animation: grow 0.1s ease-out forwards;
   z-index: 9999;
+  transition: transform 5s linear;
 
   @keyframes grow {
     from {
@@ -415,7 +416,6 @@ const ExperimentButton = styled.button`
 
 let getIsMenuOpen: () => boolean;
 export let toggleInfoVisibility: () => void;
-const cracksEnabled = true;
 
 export function hasMainMenuPopupsVisible(): boolean {
   return getIsMenuOpen();
@@ -429,9 +429,13 @@ const MainMenu: React.FC = () => {
   const [showExperimental, setShowExperimental] = useState(false);
   const lastClickTime = useRef(0);
   const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
+  const animationFrameRef = useRef<number>();
+  const activeIndicesRef = useRef<number[]>([]);
 
   useEffect(() => {
-    if (cracksEnabled && isMenuOpen) {
+    const timeoutRefs: NodeJS.Timeout[] = [];
+
+    if (isMenuOpen) {
       const colors = ["#FFD93D"];
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
       const newCracks = Array.from({ length: 6 }, () => ({
@@ -439,9 +443,49 @@ const MainMenu: React.FC = () => {
         color: randomColor,
       }));
       setCracks(newCracks);
+
+      const animateCracks = () => {
+        let indices: number[] = [];
+        while (indices.length < 3) {
+          const randomIndex = Math.floor(Math.random() * 6);
+          if (!indices.includes(randomIndex)) {
+            indices.push(randomIndex);
+          }
+        }
+        activeIndicesRef.current = indices;
+
+        setCracks((prevCracks) => {
+          const newCracks = [...prevCracks];
+          indices.forEach((index) => {
+            newCracks[index] = {
+              ...newCracks[index],
+              angle: Math.random() * 140 + 180,
+            };
+          });
+          return newCracks;
+        });
+
+        animationFrameRef.current = requestAnimationFrame(() => {
+          timeoutRefs.push(setTimeout(animateCracks, 5000));
+        });
+      };
+
+      timeoutRefs.push(setTimeout(animateCracks, 100));
     } else {
       setCracks([]);
+      activeIndicesRef.current = [];
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      timeoutRefs.forEach(clearTimeout);
     }
+
+    return () => {
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
+      timeoutRefs.forEach(clearTimeout);
+    };
   }, [isMenuOpen]);
 
   getIsMenuOpen = () => isMenuOpen;
