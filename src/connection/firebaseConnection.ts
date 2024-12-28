@@ -1,7 +1,7 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, Auth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, Database, ref, set, onValue, off, get, update } from "firebase/database";
-import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy } from "firebase/firestore";
+import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
 import { getPlayersEmojiId, didGetEthAddress } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
@@ -322,6 +322,24 @@ class FirebaseConnection {
     set(ref(this.db, `players/${this.uid}/matches/${this.matchId}/emojiId`), newId).catch((error) => {
       console.error("Error updating emoji:", error);
     });
+  }
+
+  public updateFirestoreEmoji(newId: number): void {
+    const usersRef = collection(this.firestore, "users");
+    const q = query(usersRef, where("logins", "array-contains", this.uid), limit(1));
+    // TODO: do not query user each time, use stored profile id instead
+    getDocs(q)
+      .then((userQuery) => {
+        if (!userQuery.empty) {
+          const userDoc = userQuery.docs[0];
+          const id = userDoc.id;
+          const userDocRef = doc(this.firestore, "users", id);
+          updateDoc(userDocRef, {
+            "custom.emoji": newId,
+          }).catch(() => {});
+        }
+      })
+      .catch(() => {});
   }
 
   public sendVoiceReaction(reaction: Reaction): void {

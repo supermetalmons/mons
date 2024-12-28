@@ -4,9 +4,13 @@ service cloud.firestore {
     match /{document=**} {
       allow read, write: if false;
     }
-
     match /users/{userId} {
       allow read: if request.auth != null;
+      allow update: if request.auth != null
+        && resource.data.logins != null
+        && resource.data.logins.hasAll([request.auth.uid])
+        && request.resource.data.diff(resource.data).removedKeys().size() == 0
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["custom"]);
     }
   }
 }
