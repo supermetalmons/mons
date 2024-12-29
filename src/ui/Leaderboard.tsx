@@ -36,9 +36,22 @@ const LeaderboardTable = styled.table`
     }
   }
 
+  th {
+    padding: 0px 0 5px 0px;
+    color: #777;
+    font-size: 0.777rem;
+
+    @media (prefers-color-scheme: dark) {
+      color: #999;
+    }
+  }
+
+  td {
+    padding: 6px 0 6px 0px;
+  }
+
   th,
   td {
-    padding: 10px;
     border-bottom: 1px solid #ddd;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -49,15 +62,20 @@ const LeaderboardTable = styled.table`
     }
 
     &:nth-child(1) {
-      width: 53%;
+      width: 11%;
+      font-size: 0;
       text-align: left;
     }
     &:nth-child(2) {
-      width: 24%;
+      width: 50%;
       text-align: left;
     }
     &:nth-child(3) {
-      width: 23%;
+      width: 20%;
+      text-align: left;
+    }
+    &:nth-child(4) {
+      width: 19%;
       text-align: left;
     }
   }
@@ -110,6 +128,13 @@ const RatingCell = styled.td<{ win: boolean }>`
   }
 `;
 
+const EmojiImage = styled.img`
+  width: 26px;
+  height: 26px;
+  vertical-align: middle;
+  margin-left: 2px;
+`;
+
 interface LeaderboardProps {
   show: boolean;
 }
@@ -120,6 +145,7 @@ interface LeaderboardEntry {
   rating: number;
   win: boolean;
   id: string;
+  emoji: number;
   ensName?: string | null;
 }
 
@@ -136,6 +162,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
             rating: Math.round(entry.rating),
             win: entry.win,
             id: entry.id,
+            emoji: entry.emoji,
             ensName: null,
           }));
           setData(leaderboardData);
@@ -170,19 +197,26 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
           <LeaderboardTable>
             <thead>
               <tr>
+                <th></th>
                 <th>Player</th>
                 <th>Games</th>
                 <th>Rating</th>
               </tr>
             </thead>
             <tbody>
-              {data.map((row: LeaderboardEntry, index: number) => (
-                <tr key={index} onClick={() => handleRowClick(row.player)}>
-                  <td>{row.ensName || row.player.slice(2, 6) + "..." + row.player.slice(-4)}</td>
-                  <td>{row.games}</td>
-                  <RatingCell win={row.win}>{row.rating}</RatingCell>
-                </tr>
-              ))}
+              {data.map((row: LeaderboardEntry, index: number) => {
+                const emojiData = emojis.getEmoji(row.emoji.toString());
+                return (
+                  <tr key={index} onClick={() => handleRowClick(row.player)}>
+                    <td>
+                      <EmojiImage src={`data:image/webp;base64,${emojiData}`} alt="Player emoji" />
+                    </td>
+                    <td>{row.ensName || row.player.slice(2, 6) + "..." + row.player.slice(-4)}</td>
+                    <td>{row.games}</td>
+                    <RatingCell win={row.win}>{row.rating}</RatingCell>
+                  </tr>
+                );
+              })}
             </tbody>
           </LeaderboardTable>
         </TableWrapper>
@@ -192,3 +226,5 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
     </LeaderboardContainer>
   );
 };
+
+const emojis = (await import("../content/emojis")).emojis;

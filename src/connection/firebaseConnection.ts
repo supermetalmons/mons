@@ -70,6 +70,7 @@ class FirebaseConnection {
           rating: data.rating || 1500,
           nonce: data.nonce === undefined ? -1 : data.nonce,
           win: data.win ?? true,
+          emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(doc.id),
         };
       }
     }
@@ -91,6 +92,7 @@ class FirebaseConnection {
         rating: data.rating || 1500,
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
+        emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(doc.id),
       });
     });
 
@@ -317,6 +319,7 @@ class FirebaseConnection {
   }
 
   public updateEmoji(newId: number): void {
+    // this.updateFirestoreEmoji(newId);
     if (!this.myMatch) return;
     this.myMatch.emojiId = newId;
     set(ref(this.db, `players/${this.uid}/matches/${this.matchId}/emojiId`), newId).catch((error) => {
@@ -709,3 +712,5 @@ class FirebaseConnection {
 }
 
 export const firebaseConnection = new FirebaseConnection();
+
+const emojis = (await import("../content/emojis")).emojis;

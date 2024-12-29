@@ -17,6 +17,10 @@ export const emojis = {
     return getRandomEmojiOtherThan(id);
   },
 
+  getEmojiIdFromString: function (str: string) {
+    return getEmojiIdFromString(str);
+  },
+
   getEmoji: function (id: string) {
     return this.emoji[id];
   },
@@ -64,6 +68,15 @@ export const emojis = {
 };
 
 const emojiKeys = Object.keys(emojis.emoji);
+
+function getEmojiIdFromString(str: string): string {
+  let hash = 0;
+  for (let i = 0; i < str.length; i++) {
+    hash += str.charCodeAt(i);
+  }
+  const index = hash % emojiKeys.length;
+  return emojiKeys[index];
+}
 
 function getRandomEmojiOtherThan(id: string): [string, string] {
   let index = Math.floor(Math.random() * emojiKeys.length);

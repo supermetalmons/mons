@@ -29,5 +29,6 @@ export interface PlayerProfile {
   nonce: number;
   rating: number;
   win: boolean;
+  emoji: number;
   eth?: string | null;
 }
