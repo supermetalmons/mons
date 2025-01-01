@@ -129,7 +129,6 @@ export function connectToGame(inviteId: string, autojoin: boolean) {
     if (uid) {
       firebaseConnection.connectToGame(uid, inviteId, autojoin);
     } else {
-      // TODO: try to reconnect
       console.log("failed to get game info");
     }
   });
@@ -138,7 +137,7 @@ export function connectToGame(inviteId: string, autojoin: boolean) {
 function createNewMatchInvite(completion: any) {
   signIn().then((uid) => {
     if (uid) {
-      firebaseConnection.createInvite(uid, newInviteId); // TODO: retry if failed to create
+      firebaseConnection.createInvite(uid, newInviteId);
       didCreateNewGameInvite = true;
       updatePath(newInviteId);
       completion(true);

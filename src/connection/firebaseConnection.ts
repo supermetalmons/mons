@@ -45,7 +45,6 @@ class FirebaseConnection {
   public async signIn(): Promise<string | undefined> {
     try {
       await signInAnonymously(this.auth);
-      // TODO: make it work with custom sign in with eth
       const uid = this.auth.currentUser?.uid;
       return uid;
     } catch (error) {
@@ -319,12 +318,13 @@ class FirebaseConnection {
   }
 
   public updateEmoji(newId: number): void {
-    // this.updateFirestoreEmoji(newId);
     if (!this.myMatch) return;
     this.myMatch.emojiId = newId;
     set(ref(this.db, `players/${this.uid}/matches/${this.matchId}/emojiId`), newId).catch((error) => {
       console.error("Error updating emoji:", error);
     });
+
+    this.updateFirestoreEmoji(newId);
   }
 
   public updateFirestoreEmoji(newId: number): void {
@@ -642,9 +642,6 @@ class FirebaseConnection {
         } else {
           this.latestInvite!.guestRematches = rematchesString;
         }
-
-        // TODO: handle if waiting for opponent's rematch
-
         if (this.rematchSeriesEndIsIndicated()) {
           didReceiveRematchesSeriesEndIndicator();
           off(this.opponentRematchesRef);

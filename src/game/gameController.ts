@@ -283,7 +283,6 @@ export function didClickClaimVictoryByTimerButton() {
 }
 
 export function didClickHomeButton() {
-  // TODO: might need different navigation depending on the current game state
   window.location.href = "/";
 }
 

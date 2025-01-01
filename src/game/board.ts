@@ -3,7 +3,7 @@ import * as SVG from "../utils/svg";
 import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, updateEmoji, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle } from "./gameController";
 import { Highlight, HighlightKind, InputModifier, Location, Sound, Trace, ItemKind } from "../utils/gameModels";
 import { colors, currentAssetsSet, AssetsSet, isCustomPictureBoardEnabled, isPangchiuBoard, setCurrentAssetsSet } from "../content/boardStyles";
-import { isDesktopSafari, isModernAndPowerful, defaultInputEventName } from "../utils/misc";
+import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
 import { playSounds } from "../content/sounds";
 import { didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible } from "../ui/BottomControls";
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
@@ -1173,10 +1173,6 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
           playSounds([Sound.Click]);
         }
 
-        if (!isModernAndPowerful) {
-          return;
-        }
-
         if (isDesktopSafari) {
           const scale = 1.8;
           const sizeString = (getAvatarSize() * 100).toString();
@@ -1311,7 +1307,7 @@ export function applyHighlights(highlights: Highlight[]) {
 }
 
 export function popOpponentsEmoji() {
-  if (!isModernAndPowerful || !opponentAvatar) {
+  if (!opponentAvatar) {
     return;
   }
 
@@ -1567,19 +1563,13 @@ function createSparklingContainer(location: Location): SVGElement {
   container.appendChild(mask);
   container.setAttribute("mask", `url(#mask-square-${location.toString()})`);
 
-  if (!isModernAndPowerful) {
-    for (let i = 0; i < 19; i++) {
-      createSparkleParticle(location, container, false);
+  const intervalId = setInterval(() => {
+    if (!container.parentNode?.parentNode) {
+      clearInterval(intervalId);
+      return;
     }
-  } else {
-    const intervalId = setInterval(() => {
-      if (!container.parentNode?.parentNode) {
-        clearInterval(intervalId);
-        return;
-      }
-      createSparkleParticle(location, container);
-    }, 230);
-  }
+    createSparkleParticle(location, container);
+  }, 230);
 
   return container;
 }
@@ -1885,9 +1875,6 @@ function addWaves(location: Location) {
 
   let frameIndex = 0;
   wavesSquareElement.appendChild(getWavesFrame(location, frameIndex));
-  if (!isModernAndPowerful) {
-    return;
-  }
   setInterval(() => {
     frameIndex = (frameIndex + 1) % 9;
     wavesSquareElement.innerHTML = "";
