@@ -53,6 +53,10 @@ export const createAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =
     verify: async ({ message, signature }) => {
       const res = await verifyEthAddress(message, signature);
       if (res && res.ok === true) {
+        const emoji = res.emoji;
+        const profileId = res.profileId;
+        console.log(emoji, profileId);
+        // TODO: store response emoji and profileId, and update emoji if needed
         setupLoggedInPlayerEthAddress(res.address, res.uid);
         saveEthAddress(res.uid, res.address);
         setAuthStatus("authenticated");
