@@ -17,6 +17,7 @@ exports.verifyEthAddress = onCall(async (request) => {
 
   if (fields.success && fields.data.nonce === uid && fields.data.statement === "mons ftw") {
     let responseAddress = address;
+    let profileId = null;
 
     const firestore = admin.firestore();
     const userQuery = await firestore.collection("users").where("logins", "array-contains", uid).limit(1).get();
@@ -32,6 +33,7 @@ exports.verifyEthAddress = onCall(async (request) => {
           logins: [uid],
         });
         await profileIdRef.set(docRef.id);
+        profileId = docRef.id;
       } else {
         const userDoc = userWithMatchingEthAddressQuery.docs[0];
         const userData = userDoc.data();
@@ -41,17 +43,20 @@ exports.verifyEthAddress = onCall(async (request) => {
           });
           await profileIdRef.set(userDoc.id);
         }
+        profileId = userDoc.id;
       }
     } else {
       const userDoc = userQuery.docs[0];
       const userData = userDoc.data();
       responseAddress = userData.eth;
+      profileId = userDoc.id;
     }
 
     return {
       ok: true,
       uid: uid,
       address: responseAddress,
+      profileId: profileId,
     };
   } else {
     return {
