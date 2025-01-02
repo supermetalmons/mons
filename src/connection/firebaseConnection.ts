@@ -673,12 +673,17 @@ class FirebaseConnection {
       .then((ethAddress) => {
         if (ethAddress) {
           didGetEthAddress(ethAddress, playerId);
+        } else {
+          this.observeProfile(playerId);
         }
       })
       .catch((error) => {
         console.error("Error getting ETH address:", error);
+        this.observeProfile(playerId);
       });
+  }
 
+  private observeProfile(playerId: string): void {
     // TODO: start listening for player profile updates when unable to get eth address right away
   }
 
