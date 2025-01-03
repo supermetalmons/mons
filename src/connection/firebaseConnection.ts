@@ -17,6 +17,7 @@ class FirebaseConnection {
   private functions: Functions;
   private opponentRematchesRef: any = null;
   private matchRefs: { [key: string]: any } = {};
+  private profileRefs: { [key: string]: any } = {};
 
   private uid: string | null = null;
 
@@ -684,7 +685,25 @@ class FirebaseConnection {
   }
 
   private observeProfile(playerId: string): void {
-    // TODO: start listening for player profile updates when unable to get eth address right away
+    const profileRef = ref(this.db, `players/${playerId}/profile`);
+    this.profileRefs[playerId] = profileRef;
+
+    onValue(profileRef, (snapshot) => {
+      const profile = snapshot.val();
+      if (profile) {
+        off(profileRef);
+        delete this.profileRefs[playerId];
+        this.getPlayerEthAddress(playerId)
+          .then((ethAddress) => {
+            if (ethAddress) {
+              didGetEthAddress(ethAddress, playerId);
+            }
+          })
+          .catch((error) => {
+            console.error("Error getting ETH address after profile update:", error);
+          });
+      }
+    });
   }
 
   private async getPlayerEthAddress(uid: string): Promise<string> {
@@ -710,6 +729,12 @@ class FirebaseConnection {
       console.log(`Stopped observing match for key ${key}`);
     }
     this.matchRefs = {};
+
+    for (const key in this.profileRefs) {
+      off(this.profileRefs[key]);
+      console.log(`Stopped observing profile for key ${key}`);
+    }
+    this.profileRefs = {};
   }
 }
 
