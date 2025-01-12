@@ -3,7 +3,7 @@ import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
 import { subscribeToAuthChanges, signIn, verifyEthAddress } from "./connection";
 import { setupLoggedInPlayerEthAddress } from "../game/board";
-import { storage } from "../utils/localStorage";
+import { storage } from "../utils/storage";
 
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 

@@ -1,5 +1,5 @@
 import * as Board from "../game/board";
-import { storage } from "../utils/localStorage";
+import { storage } from "../utils/storage";
 
 export enum AssetsSet {
   Pixel = "Pixel",

@@ -18,7 +18,7 @@ import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle } from "react-i
 import { isMobileOrVision } from "./utils/misc";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { startPlayingMusic, stopPlayingMusic } from "./content/music";
-import { storage } from './utils/localStorage';
+import { storage } from './utils/storage';
 
 let globalIsMuted: boolean = (() => {
   return storage.getIsMuted(isMobileOrVision);

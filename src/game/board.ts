@@ -10,7 +10,7 @@ import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { newEmptyPlayerMetadata, resolveEthAddress, getStashedPlayerAddress, openEthAddress, getEnsName, getRating } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
 import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
-import { storage } from "../utils/localStorage";
+import { storage } from "../utils/storage";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 
@@ -1045,7 +1045,13 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
   const statusMove = loadImage(emojis.statusMove, "statusMoveEmoji");
   window.addEventListener("resize", updateLayout);
 
-  const [playerEmojiId, playerEmoji] = emojis.getRandomEmoji();
+  let playerEmojiId = storage.getPlayerEmojiId("");
+  if (playerEmojiId === "") {
+    playerEmojiId = emojis.getRandomEmojiId();
+    storage.setPlayerEmojiId(playerEmojiId);
+  }
+
+  const playerEmoji = emojis.getEmoji(playerEmojiId);
   const [opponentEmojiId, opponentEmoji] = emojis.getRandomEmojiOtherThan(playerEmojiId);
 
   playerSideMetadata.emojiId = playerEmojiId;
@@ -1232,6 +1238,7 @@ function pickAndDisplayDifferentEmoji(avatar: SVGElement, isOpponent: boolean) {
     SVG.setImage(avatar, newEmoji);
   } else {
     const [newId, newEmoji] = emojis.getRandomEmojiOtherThan(playerSideMetadata.emojiId);
+    storage.setPlayerEmojiId(newId);
     updateEmoji(parseInt(newId));
     playerSideMetadata.emojiId = newId;
     SVG.setImage(avatar, newEmoji);
