@@ -3,6 +3,7 @@ import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
 import { subscribeToAuthChanges, signIn, verifyEthAddress } from "./connection";
 import { setupLoggedInPlayerEthAddress } from "../game/board";
+import { storage } from "../utils/localStorage";
 
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
@@ -15,7 +16,7 @@ export function useAuthStatus() {
       if (didPerformInitialSetup) { return; }
       didPerformInitialSetup = true;
       if (uid !== null) {
-        const storedAddress = getStoredEthAddress(uid);
+        const storedAddress = storage.getStoredEthAddress(uid);
         if (storedAddress) {
           setupLoggedInPlayerEthAddress(storedAddress, uid);
           setAuthStatus("authenticated");
@@ -58,7 +59,7 @@ export const createAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =
         console.log(emoji, profileId);
         // TODO: store response emoji and profileId, and update emoji if needed
         setupLoggedInPlayerEthAddress(res.address, res.uid);
-        saveEthAddress(res.uid, res.address);
+        storage.saveEthAddress(res.uid, res.address);
         setAuthStatus("authenticated");
         return true;
       } else {
@@ -69,11 +70,3 @@ export const createAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =
 
     signOut: async () => {},
   });
-
-export const saveEthAddress = (uid: string, address: string): void => {
-  localStorage.setItem(`ethAddress_${uid}`, address);
-};
-
-export const getStoredEthAddress = (uid: string): string | null => {
-  return localStorage.getItem(`ethAddress_${uid}`);
-};
