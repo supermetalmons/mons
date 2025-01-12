@@ -5,6 +5,7 @@ const STORAGE_KEYS = {
   ETH_ADDRESS: 'ethAddress_',
   PREFERRED_ASSETS_SET: 'preferredAssetsSet',
   BOARD_COLOR_SET: 'boardColorSet',
+  IS_EXPERIMENTING_WITH_SPRITES: 'isExperimentingWithSprites',
 } as const;
 
 type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];
@@ -54,5 +55,13 @@ export const storage = {
 
   setBoardColorSet: (value: string): void => {
     setItem(STORAGE_KEYS.BOARD_COLOR_SET, value);
+  },
+
+  getIsExperimentingWithSprites: (defaultValue: boolean): boolean => {
+    return getItem(STORAGE_KEYS.IS_EXPERIMENTING_WITH_SPRITES, defaultValue);
+  },
+
+  setIsExperimentingWithSprites: (value: boolean): void => {
+    setItem(STORAGE_KEYS.IS_EXPERIMENTING_WITH_SPRITES, value);
   },
 }; 

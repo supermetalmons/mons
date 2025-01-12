@@ -10,8 +10,9 @@ import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { newEmptyPlayerMetadata, resolveEthAddress, getStashedPlayerAddress, openEthAddress, getEnsName, getRating } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
 import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
+import { storage } from "../utils/localStorage";
 
-let isExperimentingWithSprites = localStorage.getItem("isExperimentingWithSprites") === "true";
+let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 
 export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, pangchiu: boolean) {
   if (defaultMode) {
@@ -24,7 +25,7 @@ export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, 
     setCurrentAssetsSet(AssetsSet.Pangchiu);
     isExperimentingWithSprites = false;
   }
-  localStorage.setItem("isExperimentingWithSprites", isExperimentingWithSprites.toString());
+  storage.setIsExperimentingWithSprites(isExperimentingWithSprites);
 
   updateBoardComponentForBoardStyleChange();
   didToggleItemsStyleSet();
