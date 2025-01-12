@@ -6,6 +6,7 @@ const STORAGE_KEYS = {
   PREFERRED_ASSETS_SET: 'preferredAssetsSet',
   BOARD_COLOR_SET: 'boardColorSet',
   IS_EXPERIMENTING_WITH_SPRITES: 'isExperimentingWithSprites',
+  PLAYER_EMOJI_ID: 'playerEmojiId',
 } as const;
 
 type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];
@@ -63,5 +64,13 @@ export const storage = {
 
   setIsExperimentingWithSprites: (value: boolean): void => {
     setItem(STORAGE_KEYS.IS_EXPERIMENTING_WITH_SPRITES, value);
+  },
+
+  getPlayerEmojiId: (defaultValue: string): string => {
+    return getItem(STORAGE_KEYS.PLAYER_EMOJI_ID, defaultValue);
+  },
+
+  setPlayerEmojiId: (value: string): void => {
+    setItem(STORAGE_KEYS.PLAYER_EMOJI_ID, value);
   },
 }; 
