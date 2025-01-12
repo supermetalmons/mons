@@ -1,7 +1,7 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, Auth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
 import { getDatabase, Database, ref, set, onValue, off, get, update } from "firebase/database";
-import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc } from "firebase/firestore";
+import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc, getDoc } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
 import { getPlayersEmojiId, didGetEthAddress } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
@@ -53,6 +53,24 @@ class FirebaseConnection {
       console.error("Failed to sign in anonymously:", error);
       return undefined;
     }
+  }
+
+  public async getProfileByProfileId(id: string): Promise<PlayerProfile> {
+    await this.ensureAuthenticated();
+    const docRef = doc(this.firestore, "users", id);
+    const docSnap = await getDoc(docRef);
+    if (docSnap.exists()) {
+      const data = docSnap.data();
+      return {
+        id: docSnap.id,
+        eth: data.eth || "",
+        rating: data.rating || 1500,
+        nonce: data.nonce === undefined ? -1 : data.nonce,
+        win: data.win ?? true,
+        emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(docSnap.id),
+      };
+    }
+    throw new Error("Profile not found");
   }
 
   public async getProfiles(uids: string[]): Promise<{ [key: string]: PlayerProfile }> {

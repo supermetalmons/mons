@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
-import { subscribeToAuthChanges, signIn, verifyEthAddress } from "./connection";
+import { subscribeToAuthChanges, signIn, verifyEthAddress, getProfileByProfileId } from "./connection";
 import { setupLoggedInPlayerEthAddress, updateEmojiIfNeeded } from "../game/board";
 import { storage } from "../utils/storage";
 
@@ -21,6 +21,10 @@ export function useAuthStatus() {
         if (storedLoginId === uid && storedEthAddress !== "") {
           setupLoggedInPlayerEthAddress(storedEthAddress, uid);
           setAuthStatus("authenticated");
+          const profileId = storage.getProfileId("");
+          if (profileId !== "") {
+            refreshProfile(profileId);
+          }
         } else {
           setAuthStatus("unauthenticated");
         }
@@ -31,6 +35,18 @@ export function useAuthStatus() {
   }, []);
 
   return { authStatus, setAuthStatus };
+}
+
+async function refreshProfile(profileId: string) {
+  try {
+    const profile = await getProfileByProfileId(profileId);
+    if (profile.emoji !== undefined) {
+      storage.setPlayerEmojiId(profile.emoji.toString());
+      updateEmojiIfNeeded(profile.emoji.toString(), false);
+    }
+  } catch (error) {
+    console.error("Error refreshing profile:", error);
+  }
 }
 
 export const createAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =>
