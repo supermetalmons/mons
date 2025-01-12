@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
 import { subscribeToAuthChanges, signIn, verifyEthAddress } from "./connection";
-import { setupLoggedInPlayerEthAddress } from "../game/board";
+import { setupLoggedInPlayerEthAddress, updateEmojiIfNeeded } from "../game/board";
 import { storage } from "../utils/storage";
 
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
@@ -58,13 +58,13 @@ export const createAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =
       if (res && res.ok === true) {
         const emoji = res.emoji;
         const profileId = res.profileId;
-        // TODO: update displayed emoji if needed
         setupLoggedInPlayerEthAddress(res.address, res.uid);
 
         storage.setEthAddress(res.address);
         storage.setPlayerEmojiId(emoji);
         storage.setProfileId(profileId);
         storage.setLoginId(res.uid);
+        updateEmojiIfNeeded(emoji, false);
 
         setAuthStatus("authenticated");
         return true;
