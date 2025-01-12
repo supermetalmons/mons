@@ -18,10 +18,10 @@ import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle } from "react-i
 import { isMobileOrVision } from "./utils/misc";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { startPlayingMusic, stopPlayingMusic } from "./content/music";
+import { storage } from './utils/localStorage';
 
 let globalIsMuted: boolean = (() => {
-  const isMuted = localStorage.getItem("isMuted");
-  return isMuted === "true" || (isMuted === null && isMobileOrVision);
+  return storage.getIsMuted(isMobileOrVision);
 })();
 
 export const getIsMuted = (): boolean => globalIsMuted;
@@ -35,7 +35,7 @@ const App = () => {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
 
   useEffect(() => {
-    localStorage.setItem("isMuted", isMuted.toString());
+    storage.setIsMuted(isMuted);
     globalIsMuted = isMuted;
     soundPlayer.didBecomeMuted(isMuted);
   }, [isMuted]);
