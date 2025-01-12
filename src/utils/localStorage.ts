@@ -1,6 +1,10 @@
+import { AssetsSet } from "../content/boardStyles";
+
 const STORAGE_KEYS = {
   IS_MUTED: 'isMuted',
   ETH_ADDRESS: 'ethAddress_',
+  PREFERRED_ASSETS_SET: 'preferredAssetsSet',
+  BOARD_COLOR_SET: 'boardColorSet',
 } as const;
 
 type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];
@@ -34,5 +38,21 @@ export const storage = {
 
   getStoredEthAddress: (uid: string): string | null => {
     return getItem(`${STORAGE_KEYS.ETH_ADDRESS}${uid}`, null);
-  }
+  },
+
+  getPreferredAssetsSet: (defaultValue: AssetsSet): AssetsSet => {
+    return getItem(STORAGE_KEYS.PREFERRED_ASSETS_SET, defaultValue);
+  },
+
+  setPreferredAssetsSet: (value: AssetsSet): void => {
+    setItem(STORAGE_KEYS.PREFERRED_ASSETS_SET, value);
+  },
+
+  getBoardColorSet: (defaultValue: string): string => {
+    return getItem(STORAGE_KEYS.BOARD_COLOR_SET, defaultValue);
+  },
+
+  setBoardColorSet: (value: string): void => {
+    setItem(STORAGE_KEYS.BOARD_COLOR_SET, value);
+  },
 }; 

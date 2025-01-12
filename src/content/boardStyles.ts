@@ -1,4 +1,5 @@
 import * as Board from "../game/board";
+import { storage } from "../utils/localStorage";
 
 export enum AssetsSet {
   Pixel = "Pixel",
@@ -6,11 +7,11 @@ export enum AssetsSet {
   Pangchiu = "Pangchiu",
 }
 
-export let currentAssetsSet: AssetsSet = (localStorage.getItem("preferredAssetsSet") as AssetsSet) || AssetsSet.Pixel;
+export let currentAssetsSet: AssetsSet = storage.getPreferredAssetsSet(AssetsSet.Pixel);
 
 export function setCurrentAssetsSet(set: AssetsSet) {
   currentAssetsSet = set;
-  localStorage.setItem("preferredAssetsSet", set);
+  storage.setPreferredAssetsSet(set);
 }
 
 export const isPangchiuBoard = () => currentAssetsSet === AssetsSet.Pangchiu;
@@ -103,15 +104,15 @@ export const colorSets = {
 export type ColorSetKey = keyof typeof colorSets;
 
 let currentColorSetKey: ColorSetKey = (() => {
-  const stored = localStorage.getItem("boardColorSet");
-  return stored && stored in colorSets ? (stored as ColorSetKey) : "default";
+  const stored = storage.getBoardColorSet("default");
+  return stored in colorSets ? (stored as ColorSetKey) : "default";
 })();
 
 export const toggleBoardStyle = () => {
   const keys = Object.keys(colorSets) as ColorSetKey[];
   const currentIndex = keys.indexOf(currentColorSetKey);
   currentColorSetKey = keys[(currentIndex + 1) % keys.length];
-  localStorage.setItem("boardColorSet", currentColorSetKey);
+  storage.setBoardColorSet(currentColorSetKey);
   Board.didToggleBoardColors();
 };
 
