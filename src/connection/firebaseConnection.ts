@@ -322,31 +322,21 @@ class FirebaseConnection {
   }
 
   public updateEmoji(newId: number): void {
+    this.updateFirestoreEmoji(newId);
     if (!this.myMatch) return;
     this.myMatch.emojiId = newId;
     set(ref(this.db, `players/${this.uid}/matches/${this.matchId}/emojiId`), newId).catch((error) => {
       console.error("Error updating emoji:", error);
     });
-
-    this.updateFirestoreEmoji(newId);
   }
 
   public updateFirestoreEmoji(newId: number): void {
-    const usersRef = collection(this.firestore, "users");
-    const q = query(usersRef, where("logins", "array-contains", this.uid), limit(1));
-    // TODO: do not query user each time, use stored profile id instead
-    getDocs(q)
-      .then((userQuery) => {
-        if (!userQuery.empty) {
-          const userDoc = userQuery.docs[0];
-          const id = userDoc.id;
-          const userDocRef = doc(this.firestore, "users", id);
-          updateDoc(userDocRef, {
-            "custom.emoji": newId,
-          }).catch(() => {});
-        }
-      })
-      .catch(() => {});
+    const id = storage.getProfileId("");
+    if (id === "") { return; }
+    const userDocRef = doc(this.firestore, "users", id);
+    updateDoc(userDocRef, {
+      "custom.emoji": newId,
+    }).catch(() => {});
   }
 
   public sendVoiceReaction(reaction: Reaction): void {

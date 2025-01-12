@@ -1,6 +1,6 @@
 import * as MonsWeb from "mons-web";
 import * as SVG from "../utils/svg";
-import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, updateEmoji, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle } from "./gameController";
+import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, sendPlayerEmojiUpdate, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle } from "./gameController";
 import { Highlight, HighlightKind, InputModifier, Location, Sound, Trace, ItemKind } from "../utils/gameModels";
 import { colors, currentAssetsSet, AssetsSet, isCustomPictureBoardEnabled, isPangchiuBoard, setCurrentAssetsSet } from "../content/boardStyles";
 import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
@@ -1233,13 +1233,12 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
 function pickAndDisplayDifferentEmoji(avatar: SVGElement, isOpponent: boolean) {
   if (isOpponent) {
     const [newId, newEmoji] = emojis.getRandomEmojiOtherThan(opponentSideMetadata.emojiId);
-    updateEmoji(parseInt(newId));
     opponentSideMetadata.emojiId = newId;
     SVG.setImage(avatar, newEmoji);
   } else {
     const [newId, newEmoji] = emojis.getRandomEmojiOtherThan(playerSideMetadata.emojiId);
     storage.setPlayerEmojiId(newId);
-    updateEmoji(parseInt(newId));
+    sendPlayerEmojiUpdate(parseInt(newId));
     playerSideMetadata.emojiId = newId;
     SVG.setImage(avatar, newEmoji);
   }

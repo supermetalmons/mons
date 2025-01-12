@@ -327,8 +327,8 @@ export function canChangeEmoji(opponents: boolean): boolean {
   }
 }
 
-export function updateEmoji(newId: number) {
-  if (isOnlineGame && !isWatchOnly) {
+export function sendPlayerEmojiUpdate(newId: number) {
+  if (!isWatchOnly) {
     sendEmojiUpdate(newId);
   }
 }
