@@ -16,9 +16,10 @@ export function useAuthStatus() {
       if (didPerformInitialSetup) { return; }
       didPerformInitialSetup = true;
       if (uid !== null) {
-        const storedAddress = storage.getStoredEthAddress(uid);
-        if (storedAddress) {
-          setupLoggedInPlayerEthAddress(storedAddress, uid);
+        const storedLoginId = storage.getLoginId("");
+        const storedEthAddress = storage.getEthAddress("");
+        if (storedLoginId === uid && storedEthAddress !== "") {
+          setupLoggedInPlayerEthAddress(storedEthAddress, uid);
           setAuthStatus("authenticated");
         } else {
           setAuthStatus("unauthenticated");
@@ -31,6 +32,7 @@ export function useAuthStatus() {
 
   return { authStatus, setAuthStatus };
 }
+
 export const createAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =>
   createAuthenticationAdapter({
     getNonce: async () => {
@@ -56,10 +58,14 @@ export const createAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =
       if (res && res.ok === true) {
         const emoji = res.emoji;
         const profileId = res.profileId;
-        console.log(emoji, profileId);
-        // TODO: store response emoji and profileId, and update emoji if needed
+        // TODO: update displayed emoji if needed
         setupLoggedInPlayerEthAddress(res.address, res.uid);
-        storage.saveEthAddress(res.uid, res.address);
+
+        storage.setEthAddress(res.address);
+        storage.setPlayerEmojiId(emoji);
+        storage.setProfileId(profileId);
+        storage.setLoginId(res.uid);
+
         setAuthStatus("authenticated");
         return true;
       } else {

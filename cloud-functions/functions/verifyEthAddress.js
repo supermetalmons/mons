@@ -9,7 +9,7 @@ exports.verifyEthAddress = onCall(async (request) => {
 
   const message = request.data.message;
   const signature = request.data.signature;
-  let requestEmoji = request.data.emoji ?? 0;
+  let requestEmoji = request.data.emoji ?? 1;
 
   const siweMessage = new SiweMessage(message);
   const fields = await siweMessage.verify({ signature });

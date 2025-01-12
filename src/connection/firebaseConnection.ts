@@ -6,6 +6,7 @@ import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRec
 import { getPlayersEmojiId, didGetEthAddress } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
 import { Match, Invite, Reaction, PlayerProfile } from "./connectionModels";
+import { storage } from "../utils/storage";
 
 const controllerVersion = 2;
 
@@ -103,7 +104,9 @@ class FirebaseConnection {
     try {
       await this.ensureAuthenticated();
       const verifyEthAddressFunction = httpsCallable(this.functions, "verifyEthAddress");
-      const response = await verifyEthAddressFunction({ message, signature });
+      const emojiString = storage.getPlayerEmojiId("0");
+      const emoji = parseInt(emojiString);
+      const response = await verifyEthAddressFunction({ message, signature, emoji });
       return response.data;
     } catch (error) {
       console.error("Error verifying Ethereum address:", error);

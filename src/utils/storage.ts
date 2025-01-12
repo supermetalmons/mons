@@ -2,11 +2,15 @@ import { AssetsSet } from "../content/boardStyles";
 
 const STORAGE_KEYS = {
   IS_MUTED: 'isMuted',
-  ETH_ADDRESS: 'ethAddress_',
+
   PREFERRED_ASSETS_SET: 'preferredAssetsSet',
   BOARD_COLOR_SET: 'boardColorSet',
   IS_EXPERIMENTING_WITH_SPRITES: 'isExperimentingWithSprites',
+
   PLAYER_EMOJI_ID: 'playerEmojiId',
+  LOGIN_ID: 'loginId',
+  PROFILE_ID: 'profileId',
+  ETH_ADDRESS: 'ethAddress',
 } as const;
 
 type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];
@@ -32,14 +36,6 @@ export const storage = {
   
   setIsMuted: (value: boolean): void => {
     setItem(STORAGE_KEYS.IS_MUTED, value);
-  },
-
-  saveEthAddress: (uid: string, address: string): void => {
-    setItem(`${STORAGE_KEYS.ETH_ADDRESS}${uid}`, address);
-  },
-
-  getStoredEthAddress: (uid: string): string | null => {
-    return getItem(`${STORAGE_KEYS.ETH_ADDRESS}${uid}`, null);
   },
 
   getPreferredAssetsSet: (defaultValue: AssetsSet): AssetsSet => {
@@ -72,5 +68,29 @@ export const storage = {
 
   setPlayerEmojiId: (value: string): void => {
     setItem(STORAGE_KEYS.PLAYER_EMOJI_ID, value);
+  },
+
+  getProfileId: (defaultValue: string): string => {
+    return getItem(STORAGE_KEYS.PROFILE_ID, defaultValue);
+  },
+
+  setProfileId: (value: string): void => {
+    setItem(STORAGE_KEYS.PROFILE_ID, value);
+  },
+
+  getLoginId: (defaultValue: string): string => {
+    return getItem(STORAGE_KEYS.LOGIN_ID, defaultValue);
+  },
+
+  setLoginId: (value: string): void => {
+    setItem(STORAGE_KEYS.LOGIN_ID, value);
+  },
+
+  getEthAddress: (defaultValue: string): string => {
+    return getItem(STORAGE_KEYS.ETH_ADDRESS, defaultValue);
+  },
+
+  setEthAddress: (value: string): void => {
+    setItem(STORAGE_KEYS.ETH_ADDRESS, value);
   },
 }; 
