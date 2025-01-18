@@ -54,7 +54,9 @@ async function attemptAutomatch(uid, ethAddress, profileId, name, emojiId, retry
       try {
         const success = await acceptInvite(firstAutomatchId, invite, match, uid);
         if (success) {
-          sendTelegramMessage(`${existingPlayerName} automatched with ${name} https://mons.link/${firstAutomatchId}`).catch(console.error);
+          const matchMessage = `${existingPlayerName} automatched with ${name} https://mons.link/${firstAutomatchId}`;
+          sendTelegramMessage(matchMessage).catch(console.error);
+          sendDiscordMessage(matchMessage).catch(console.error);
         } else {
           return await attemptAutomatch(uid, ethAddress, profileId, name, emojiId, retryCount + 1);
         }
@@ -96,6 +98,7 @@ async function attemptAutomatch(uid, ethAddress, profileId, name, emojiId, retry
 
     const message = `${name} is looking for a match 👉 https://mons.link`;
     sendTelegramMessage(message).catch(console.error);
+    sendDiscordMessage(message).catch(console.error);
 
     return {
       ok: true,
@@ -134,6 +137,29 @@ async function sendTelegramMessage(message) {
     });
   } catch (error) {
     console.error("Error sending Telegram message:", error);
+  }
+}
+
+async function sendDiscordMessage(message) {
+  const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
+
+  if (!discordWebhookUrl) {
+    console.log("Discord webhook URL not configured, skipping message");
+    return;
+  }
+
+  try {
+    fetch(discordWebhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: message,
+      }),
+    });
+  } catch (error) {
+    console.error("Error sending Discord message:", error);
   }
 }
 
