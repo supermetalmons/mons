@@ -121,16 +121,16 @@ async function acceptInvite(firstAutomatchId, invite, match, uid) {
 
 async function sendTelegramMessage(message) {
   const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
-  const telegramChatId = process.env.TELEGRAM_CHAT_ID;
+  const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
 
   try {
     fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
-      method: "POST",
+      method: "POST", 
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        chat_id: telegramChatId,
+        chat_id: telegramExtraChatId,
         text: message,
         disable_web_page_preview: true,
       }),
