@@ -108,8 +108,8 @@ export async function getProfileByProfileId(id: string): Promise<PlayerProfile> 
   return firebaseConnection.getProfileByProfileId(id);
 }
 
-export async function getProfiles(uids: string[]): Promise<{ [key: string]: PlayerProfile }> {
-  return firebaseConnection.getProfiles(uids);
+export async function getProfileByLoginId(loginId: string): Promise<PlayerProfile> {
+  return firebaseConnection.getProfileByLoginId(loginId);
 }
 
 export async function sendAutomatchRequest(): Promise<any> {

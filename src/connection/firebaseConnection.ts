@@ -55,9 +55,9 @@ class FirebaseConnection {
     }
   }
 
-  public async getProfileByProfileId(id: string): Promise<PlayerProfile> {
+  public async getProfileByProfileId(profileId: string): Promise<PlayerProfile> {
     await this.ensureAuthenticated();
-    const docRef = doc(this.firestore, "users", id);
+    const docRef = doc(this.firestore, "users", profileId);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       const data = docSnap.data();
@@ -73,27 +73,24 @@ class FirebaseConnection {
     throw new Error("Profile not found");
   }
 
-  public async getProfiles(uids: string[]): Promise<{ [key: string]: PlayerProfile }> {
+  public async getProfileByLoginId(loginId: string): Promise<PlayerProfile> {
     await this.ensureAuthenticated();
     const usersRef = collection(this.firestore, "users");
-    const profiles: { [key: string]: PlayerProfile } = {};
-    for (const uid of uids) {
-      const q = query(usersRef, where("logins", "array-contains", uid), limit(1));
-      const querySnapshot = await getDocs(q);
-      if (!querySnapshot.empty) {
-        const doc = querySnapshot.docs[0];
-        const data = doc.data();
-        profiles[uid] = {
-          id: doc.id,
-          eth: data.eth || "",
-          rating: data.rating || 1500,
-          nonce: data.nonce === undefined ? -1 : data.nonce,
-          win: data.win ?? true,
-          emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(doc.id),
-        };
-      }
+    const q = query(usersRef, where("logins", "array-contains", loginId), limit(1));
+    const querySnapshot = await getDocs(q);
+    if (!querySnapshot.empty) {
+      const doc = querySnapshot.docs[0];
+      const data = doc.data();
+      return {
+        id: doc.id,
+        eth: data.eth || "",
+        rating: data.rating || 1500,
+        nonce: data.nonce === undefined ? -1 : data.nonce,
+        win: data.win ?? true,
+        emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(doc.id),
+      };
     }
-    return profiles;
+    throw new Error("Profile not found");
   }
 
   public async getLeaderboard(): Promise<PlayerProfile[]> {
@@ -350,7 +347,9 @@ class FirebaseConnection {
 
   public updateFirestoreEmoji(newId: number): void {
     const id = storage.getProfileId("");
-    if (id === "") { return; }
+    if (id === "") {
+      return;
+    }
     const userDocRef = doc(this.firestore, "users", id);
     updateDoc(userDocRef, {
       "custom.emoji": newId,

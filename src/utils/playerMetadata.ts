@@ -1,4 +1,4 @@
-import { getProfiles } from "../connection/connection";
+import { getProfileByLoginId } from "../connection/connection";
 import { PlayerProfile } from "../connection/connectionModels";
 import glicko2 from "glicko2";
 
@@ -56,9 +56,8 @@ export function getStashedPlayerAddress(uid: string) {
 export function resolveEthAddress(address: string, uid: string, onSuccess: () => void) {
   ethAddresses[uid] = address;
   if (!ensDict[address]) {
-    getProfiles([uid])
-      .then((profilesDict) => {
-        const profile = profilesDict[uid];
+    getProfileByLoginId(uid)
+      .then((profile) => {
         if (profile !== undefined) {
           allProfilesDict[address] = profile;
           onSuccess();
