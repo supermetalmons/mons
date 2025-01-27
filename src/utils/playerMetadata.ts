@@ -57,24 +57,22 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
   if (profile.eth === undefined || profile.eth === "" || !profile.eth) {
     return;
   }
-
-  const uid = loginId;
   const address = profile.eth;
+  ethAddresses[loginId] = address;
 
-  // TODO: if rating inside the profile is undefined, make a request — this would correspond to a profile refresh?
-  // TODO: otherwise — no need to repeat profile request
-
-  ethAddresses[uid] = address;
-  if (!ensDict[address]) {
-    getProfileByLoginId(uid)
+  if (profile.rating !== undefined && profile.nonce !== undefined) {
+    allProfilesDict[address] = profile;
+    onSuccess();
+  } else {
+    getProfileByLoginId(loginId)
       .then((profile) => {
-        if (profile !== undefined) {
-          allProfilesDict[address] = profile;
-          onSuccess();
-        }
+        allProfilesDict[address] = profile;
+        onSuccess();
       })
       .catch(() => {});
+  }
 
+  if (!ensDict[address]) {
     fetch(`https://api.ensideas.com/ens/resolve/${address}`)
       .then((response) => {
         if (response.ok) {
