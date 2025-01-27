@@ -7,7 +7,7 @@ import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
 import { playSounds } from "../content/sounds";
 import { didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible } from "../ui/BottomControls";
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
-import { newEmptyPlayerMetadata, resolveEthAddress, getStashedPlayerAddress, openEthAddress, getEnsName, getRating } from "../utils/playerMetadata";
+import { newEmptyPlayerMetadata, getStashedPlayerAddress, openEthAddress, getEnsName, getRating, updatePlayerMetadataWithProfile } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
 import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
@@ -452,11 +452,9 @@ function cleanAllPixels() {
 }
 
 export function didGetPlayerProfile(profile: PlayerProfile, loginId: string) {
-  if (profile.eth !== undefined && profile.eth !== "" && profile.eth) {
-    resolveEthAddress(profile.eth, loginId, () => {
-      recalculateDisplayNames();
-    });
-  }
+  updatePlayerMetadataWithProfile(profile, loginId, () => {
+    recalculateDisplayNames();
+  });
   recalculateDisplayNames();
 }
 
