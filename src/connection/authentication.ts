@@ -102,6 +102,7 @@ export const createAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =
         storage.setPlayerEmojiId(emoji);
         storage.setProfileId(profileId);
         storage.setLoginId(res.uid);
+        // TODO: make sure emoji displayed by the board gets updated, if received one is different, and send it to the ongoing match too, if there is one
         updateEmojiIfNeeded(emoji, false);
 
         setAuthStatus("authenticated");
