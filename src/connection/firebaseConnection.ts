@@ -3,7 +3,7 @@ import { getAuth, Auth, signInAnonymously, onAuthStateChanged } from "firebase/a
 import { getDatabase, Database, ref, set, onValue, off, get, update } from "firebase/database";
 import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc, getDoc } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
-import { getPlayersEmojiId, didGetEthAddress } from "../game/board";
+import { getPlayersEmojiId, didGetPlayerProfile } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
 import { Match, Invite, Reaction, PlayerProfile } from "./connectionModels";
 import { storage } from "../utils/storage";
@@ -682,11 +682,7 @@ class FirebaseConnection {
 
     this.getProfileByLoginId(playerId)
       .then((profile) => {
-        if (profile.eth !== undefined && profile.eth !== "" && profile.eth) {
-          didGetEthAddress(profile.eth, playerId); // TODO: pass back entire profile, not only eth address, there might be sol too
-        } else {
-          this.observeProfile(playerId);
-        }
+        didGetPlayerProfile(profile, playerId);
       })
       .catch((error) => {
         console.error("Error getting player profile:", error);
@@ -705,9 +701,7 @@ class FirebaseConnection {
         delete this.profileRefs[playerId];
         this.getProfileByLoginId(playerId)
           .then((profile) => {
-            if (profile.eth !== undefined && profile.eth !== "" && profile.eth) {
-              didGetEthAddress(profile.eth, playerId); // TODO: pass back entire profile, not only eth address, there might be sol too
-            }
+            didGetPlayerProfile(profile, playerId);
           })
           .catch((error) => {
             console.error("Error getting player profile:", error);

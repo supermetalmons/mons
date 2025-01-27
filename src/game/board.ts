@@ -11,6 +11,7 @@ import { newEmptyPlayerMetadata, resolveEthAddress, getStashedPlayerAddress, ope
 import { preventTouchstartIfNeeded } from "..";
 import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
+import { PlayerProfile } from "../connection/connectionModels";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 
@@ -450,10 +451,12 @@ function cleanAllPixels() {
   }
 }
 
-export function didGetEthAddress(address: string, uid: string) {
-  resolveEthAddress(address, uid, () => {
-    recalculateDisplayNames();
-  });
+export function didGetPlayerProfile(profile: PlayerProfile, loginId: string) {
+  if (profile.eth !== undefined && profile.eth !== "" && profile.eth) {
+    resolveEthAddress(profile.eth, loginId, () => {
+      recalculateDisplayNames();
+    });
+  }
   recalculateDisplayNames();
 }
 
@@ -502,7 +505,10 @@ function renderPlayersNamesLabels() {
 export function setupLoggedInPlayerEthAddress(address: string, uid: string) {
   if (!isWatchOnly) {
     setupPlayerId(uid, false);
-    didGetEthAddress(address, uid);
+    resolveEthAddress(address, uid, () => {
+      recalculateDisplayNames();
+    });
+    recalculateDisplayNames();
   }
 }
 
