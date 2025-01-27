@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
-import { subscribeToAuthChanges, signIn, verifyEthAddress, getProfileByProfileId } from "./connection";
+import { subscribeToAuthChanges, signIn, verifyEthAddress } from "./connection";
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { storage } from "../utils/storage";
 
@@ -34,9 +34,6 @@ export function useAuthStatus() {
             emoji: emoji,
           };
           setupLoggedInPlayerProfile(profile, uid);
-          if (profileId !== "") {
-            refreshProfile(profileId);
-          }
         } else {
           setAuthStatus("unauthenticated");
         }
@@ -47,20 +44,6 @@ export function useAuthStatus() {
   }, []);
 
   return { authStatus, setAuthStatus };
-}
-
-// TODO: remove refreshProfile request from here
-// TODO: in playerMetadata.ts group it with rating / ens update that would happen when it receives a profile with undefined rating
-async function refreshProfile(profileId: string) {
-  try {
-    const profile = await getProfileByProfileId(profileId);
-    if (profile.emoji !== undefined) {
-      storage.setPlayerEmojiId(profile.emoji.toString());
-      updateEmojiIfNeeded(profile.emoji.toString(), false);
-    }
-  } catch (error) {
-    console.error("Error refreshing profile:", error);
-  }
 }
 
 export const createAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =>
@@ -102,7 +85,6 @@ export const createAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =
         storage.setPlayerEmojiId(emoji.toString());
         storage.setProfileId(profileId);
         storage.setLoginId(res.uid);
-        // TODO: make sure emoji displayed by the board gets updated, if received one is different, and send it to the ongoing match too, if there is one
         updateEmojiIfNeeded(emoji, false);
 
         setAuthStatus("authenticated");

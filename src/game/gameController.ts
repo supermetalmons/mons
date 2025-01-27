@@ -329,7 +329,7 @@ export function canChangeEmoji(opponents: boolean): boolean {
 
 export function sendPlayerEmojiUpdate(newId: number) {
   if (!isWatchOnly) {
-    sendEmojiUpdate(newId);
+    sendEmojiUpdate(newId, false);
   }
 }
 

@@ -1,6 +1,8 @@
-import { getProfileByLoginId } from "../connection/connection";
+import { getProfileByLoginId, sendEmojiUpdate } from "../connection/connection";
 import { PlayerProfile } from "../connection/connectionModels";
 import glicko2 from "glicko2";
+import { storage } from "./storage";
+import { updateEmojiIfNeeded } from "../game/board";
 
 export type PlayerMetadata = {
   uid: string;
@@ -53,7 +55,7 @@ export function getStashedPlayerAddress(uid: string) {
   return ethAddresses[uid];
 }
 
-export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId: string, onSuccess: () => void) {
+export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId: string, own: boolean, onSuccess: () => void) {
   if (profile.eth === undefined || profile.eth === "" || !profile.eth) {
     return;
   }
@@ -67,6 +69,11 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
     getProfileByLoginId(loginId)
       .then((profile) => {
         allProfilesDict[address] = profile;
+        if (profile.emoji !== undefined && own) {
+          storage.setPlayerEmojiId(profile.emoji.toString());
+          updateEmojiIfNeeded(profile.emoji.toString(), false);
+          sendEmojiUpdate(profile.emoji, true);
+        }
         onSuccess();
       })
       .catch(() => {});

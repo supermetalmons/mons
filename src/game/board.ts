@@ -451,8 +451,8 @@ function cleanAllPixels() {
   }
 }
 
-export function didGetPlayerProfile(profile: PlayerProfile, loginId: string) {
-  updatePlayerMetadataWithProfile(profile, loginId, () => {
+export function didGetPlayerProfile(profile: PlayerProfile, loginId: string, own: boolean) {
+  updatePlayerMetadataWithProfile(profile, loginId, own, () => {
     recalculateDisplayNames();
   });
   recalculateDisplayNames();
@@ -503,7 +503,7 @@ function renderPlayersNamesLabels() {
 export function setupLoggedInPlayerProfile(profile: PlayerProfile, loginId: string) {
   if (!isWatchOnly) {
     setupPlayerId(loginId, false);
-    didGetPlayerProfile(profile, loginId);
+    didGetPlayerProfile(profile, loginId, true);
   }
 }
 

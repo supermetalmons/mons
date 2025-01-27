@@ -336,8 +336,10 @@ class FirebaseConnection {
     }
   }
 
-  public updateEmoji(newId: number): void {
-    this.updateFirestoreEmoji(newId);
+  public updateEmoji(newId: number, matchOnly: boolean): void {
+    if (!matchOnly) {
+      this.updateFirestoreEmoji(newId);
+    }
     if (!this.myMatch) return;
     this.myMatch.emojiId = newId;
     set(ref(this.db, `players/${this.uid}/matches/${this.matchId}/emojiId`), newId).catch((error) => {
@@ -682,7 +684,7 @@ class FirebaseConnection {
 
     this.getProfileByLoginId(playerId)
       .then((profile) => {
-        didGetPlayerProfile(profile, playerId);
+        didGetPlayerProfile(profile, playerId, false);
       })
       .catch((error) => {
         console.error("Error getting player profile:", error);
@@ -701,7 +703,7 @@ class FirebaseConnection {
         delete this.profileRefs[playerId];
         this.getProfileByLoginId(playerId)
           .then((profile) => {
-            didGetPlayerProfile(profile, playerId);
+            didGetPlayerProfile(profile, playerId, false);
           })
           .catch((error) => {
             console.error("Error getting player profile:", error);

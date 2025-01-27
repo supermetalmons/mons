@@ -82,8 +82,8 @@ export function sendVoiceReaction(reaction: Reaction) {
   firebaseConnection.sendVoiceReaction(reaction);
 }
 
-export function sendEmojiUpdate(newId: number) {
-  firebaseConnection.updateEmoji(newId);
+export function sendEmojiUpdate(newId: number, matchOnly: boolean) {
+  firebaseConnection.updateEmoji(newId, matchOnly);
 }
 
 export async function verifyEthAddress(message: string, signature: string): Promise<any> {
