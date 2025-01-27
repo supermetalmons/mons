@@ -53,6 +53,8 @@ export function getStashedPlayerAddress(uid: string) {
   return ethAddresses[uid];
 }
 
+// TODO: accept full profile as an argument avoiding an additional profile request
+// TODO: if rating inside the profile is undefined, make a request — this would correspond to a profile refresh?
 export function resolveEthAddress(address: string, uid: string, onSuccess: () => void) {
   ethAddresses[uid] = address;
   if (!ensDict[address]) {

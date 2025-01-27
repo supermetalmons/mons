@@ -502,13 +502,10 @@ function renderPlayersNamesLabels() {
   }
 }
 
-export function setupLoggedInPlayerEthAddress(address: string, uid: string) {
+export function setupLoggedInPlayerProfile(profile: PlayerProfile, loginId: string) {
   if (!isWatchOnly) {
-    setupPlayerId(uid, false);
-    resolveEthAddress(address, uid, () => {
-      recalculateDisplayNames();
-    });
-    recalculateDisplayNames();
+    setupPlayerId(loginId, false);
+    didGetPlayerProfile(profile, loginId);
   }
 }
 

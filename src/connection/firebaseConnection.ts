@@ -119,7 +119,7 @@ class FirebaseConnection {
     try {
       await this.ensureAuthenticated();
       const verifyEthAddressFunction = httpsCallable(this.functions, "verifyEthAddress");
-      const emojiString = storage.getPlayerEmojiId("0");
+      const emojiString = storage.getPlayerEmojiId("1");
       const emoji = parseInt(emojiString);
       const response = await verifyEthAddressFunction({ message, signature, emoji });
       return response.data;

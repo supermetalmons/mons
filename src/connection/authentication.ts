@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
 import { subscribeToAuthChanges, signIn, verifyEthAddress, getProfileByProfileId } from "./connection";
-import { setupLoggedInPlayerEthAddress, updateEmojiIfNeeded } from "../game/board";
+import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { storage } from "../utils/storage";
 
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
@@ -13,15 +13,27 @@ export function useAuthStatus() {
   useEffect(() => {
     let didPerformInitialSetup = false;
     subscribeToAuthChanges((uid) => {
-      if (didPerformInitialSetup) { return; }
+      if (didPerformInitialSetup) {
+        return;
+      }
       didPerformInitialSetup = true;
       if (uid !== null) {
         const storedLoginId = storage.getLoginId("");
         const storedEthAddress = storage.getEthAddress("");
         if (storedLoginId === uid && storedEthAddress !== "") {
-          setupLoggedInPlayerEthAddress(storedEthAddress, uid);
           setAuthStatus("authenticated");
           const profileId = storage.getProfileId("");
+          const emojiString = storage.getPlayerEmojiId("1");
+          const emoji = parseInt(emojiString);
+          const profile = {
+            id: profileId,
+            eth: storedEthAddress,
+            rating: undefined,
+            nonce: undefined,
+            win: undefined,
+            emoji: emoji,
+          };
+          setupLoggedInPlayerProfile(profile, uid);
           if (profileId !== "") {
             refreshProfile(profileId);
           }
@@ -37,6 +49,8 @@ export function useAuthStatus() {
   return { authStatus, setAuthStatus };
 }
 
+// TODO: remove refreshProfile request from here
+// TODO: in playerMetadata.ts group it with rating / ens update that would happen when it receives a profile with undefined rating
 async function refreshProfile(profileId: string) {
   try {
     const profile = await getProfileByProfileId(profileId);
@@ -74,7 +88,15 @@ export const createAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =
       if (res && res.ok === true) {
         const emoji = res.emoji;
         const profileId = res.profileId;
-        setupLoggedInPlayerEthAddress(res.address, res.uid);
+        const profile = {
+          id: profileId,
+          eth: res.address,
+          rating: undefined,
+          nonce: undefined,
+          win: undefined,
+          emoji: emoji,
+        };
+        setupLoggedInPlayerProfile(profile, res.uid);
 
         storage.setEthAddress(res.address);
         storage.setPlayerEmojiId(emoji);
