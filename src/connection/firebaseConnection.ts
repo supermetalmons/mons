@@ -680,16 +680,16 @@ class FirebaseConnection {
       }
     );
 
-    this.getPlayerEthAddress(playerId)
-      .then((ethAddress) => {
-        if (ethAddress) {
-          didGetEthAddress(ethAddress, playerId);
+    this.getProfileByLoginId(playerId)
+      .then((profile) => {
+        if (profile.eth !== undefined && profile.eth !== "" && profile.eth) {
+          didGetEthAddress(profile.eth, playerId); // TODO: pass back entire profile, not only eth address, there might be sol too
         } else {
           this.observeProfile(playerId);
         }
       })
       .catch((error) => {
-        console.error("Error getting ETH address:", error);
+        console.error("Error getting player profile:", error);
         this.observeProfile(playerId);
       });
   }
@@ -703,34 +703,17 @@ class FirebaseConnection {
       if (profile) {
         off(profileRef);
         delete this.profileRefs[playerId];
-        this.getPlayerEthAddress(playerId)
-          .then((ethAddress) => {
-            if (ethAddress) {
-              didGetEthAddress(ethAddress, playerId);
+        this.getProfileByLoginId(playerId)
+          .then((profile) => {
+            if (profile.eth !== undefined && profile.eth !== "" && profile.eth) {
+              didGetEthAddress(profile.eth, playerId); // TODO: pass back entire profile, not only eth address, there might be sol too
             }
           })
           .catch((error) => {
-            console.error("Error getting ETH address after profile update:", error);
+            console.error("Error getting player profile:", error);
           });
       }
     });
-  }
-
-  private async getPlayerEthAddress(uid: string): Promise<string> {
-    try {
-      const usersRef = collection(this.firestore, "users");
-      const q = query(usersRef, where("logins", "array-contains", uid), limit(1));
-      const userQuery = await getDocs(q);
-
-      if (!userQuery.empty) {
-        const userDoc = userQuery.docs[0];
-        const userData = userDoc.data();
-        return userData.eth || "";
-      }
-    } catch (error) {
-      console.error("Error getting player ETH address:", error);
-    }
-    return "";
   }
 
   private stopObservingAllMatches(): void {
