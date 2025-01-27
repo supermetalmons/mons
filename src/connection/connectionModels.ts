@@ -26,9 +26,9 @@ export interface Reaction {
 
 export interface PlayerProfile {
   id: string;
-  nonce: number;
-  rating: number;
-  win: boolean;
+  nonce: number | undefined;
+  rating: number | undefined;
+  win: boolean | undefined;
   emoji: number;
   eth?: string | null;
 }

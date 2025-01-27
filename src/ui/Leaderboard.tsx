@@ -158,9 +158,9 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
         .then((ratings) => {
           const leaderboardData = ratings.map((entry) => ({
             player: entry.eth ?? "",
-            games: entry.nonce + 1,
-            rating: Math.round(entry.rating),
-            win: entry.win,
+            games: (entry.nonce ?? -1) + 1,
+            rating: Math.round(entry.rating ?? 1500),
+            win: entry.win ?? true,
             id: entry.id,
             emoji: entry.emoji,
             ensName: null,
