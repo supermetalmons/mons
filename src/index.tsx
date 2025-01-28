@@ -10,7 +10,7 @@ import { ConnectButton, RainbowKitAuthenticationProvider, RainbowKitProvider, li
 import BoardComponent from "./ui/BoardComponent";
 import MainMenu, { toggleInfoVisibility } from "./ui/MainMenu";
 import { config } from "./utils/wagmi";
-import { useAuthStatus, createAuthAdapter } from "./connection/authentication";
+import { useAuthStatus, createEthereumAuthAdapter } from "./connection/authentication";
 import { signIn } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
@@ -30,9 +30,9 @@ const queryClient = new QueryClient();
 
 const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
-  const authenticationAdapter = createAuthAdapter(setAuthStatus);
   const [isMuted, setIsMuted] = useState(globalIsMuted);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
+  const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
 
   useEffect(() => {
     storage.setIsMuted(isMuted);
@@ -67,7 +67,7 @@ const App = () => {
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
-        <RainbowKitAuthenticationProvider adapter={authenticationAdapter} status={authStatus}>
+        <RainbowKitAuthenticationProvider adapter={ethereumAuthAdapter} status={authStatus}>
           <RainbowKitProvider
             showRecentTransactions={false}
             modalSize="compact"

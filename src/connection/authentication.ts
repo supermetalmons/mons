@@ -46,7 +46,7 @@ export function useAuthStatus() {
   return { authStatus, setAuthStatus };
 }
 
-export const createAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =>
+export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =>
   createAuthenticationAdapter({
     getNonce: async () => {
       const nonce = await signIn();
