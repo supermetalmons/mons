@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
-import { ConnectButton, RainbowKitAuthenticationProvider, RainbowKitProvider, lightTheme, darkTheme } from "@rainbow-me/rainbowkit";
+import { RainbowKitAuthenticationProvider, RainbowKitProvider, lightTheme, darkTheme } from "@rainbow-me/rainbowkit";
 
 import BoardComponent from "./ui/BoardComponent";
 import MainMenu, { toggleInfoVisibility } from "./ui/MainMenu";
@@ -18,7 +18,8 @@ import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle } from "react-i
 import { isMobileOrVision } from "./utils/misc";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { startPlayingMusic, stopPlayingMusic } from "./content/music";
-import { storage } from './utils/storage';
+import { storage } from "./utils/storage";
+import ProfileSignIn from "./ui/ProfileSignIn";
 
 let globalIsMuted: boolean = (() => {
   return storage.getIsMuted(isMobileOrVision);
@@ -90,16 +91,7 @@ const App = () => {
                     </button>
                   </div>
                 )}
-                <div className="connect-button-container">
-                  <ConnectButton
-                    showBalance={false}
-                    chainStatus="none"
-                    accountStatus={{
-                      smallScreen: "avatar",
-                      largeScreen: "full",
-                    }}
-                  />
-                </div>
+                {authStatus !== "loading" && <ProfileSignIn />}
               </div>
               <BoardComponent />
               <MainMenu />
