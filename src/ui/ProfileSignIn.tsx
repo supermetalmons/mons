@@ -9,7 +9,18 @@ const Container = styled.div`
   position: relative;
 `;
 
-const SignInButton = styled.button`
+const BaseButton = styled.button`
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+`;
+
+const SignInButton = styled(BaseButton)`
   --color-tint: #007aff;
   --color-dark-tint: #0b84ff;
 
@@ -77,7 +88,7 @@ const ConnectButtonWrapper = styled.div`
   }
 `;
 
-const CustomConnectButton = styled.button`
+const CustomConnectButton = styled(BaseButton)`
   background-color: #627eea;
   color: white;
   padding: 12px 24px;
