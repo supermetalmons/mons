@@ -67,6 +67,9 @@ const ConnectButtonWrapper = styled.div`
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 
   @media (prefers-color-scheme: dark) {
     background-color: #1f1f1f;
@@ -89,6 +92,20 @@ const CustomConnectButton = styled.button`
 
   &:active {
     background-color: #405291;
+  }
+`;
+
+const SolanaButton = styled(CustomConnectButton)`
+  background-color: #9945ff;
+  opacity: 0.5;
+  cursor: not-allowed;
+
+  &:hover {
+    background-color: #9945ff;
+  }
+
+  &:active {
+    background-color: #9945ff;
   }
 `;
 
@@ -134,7 +151,16 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
       {isOpen && (
         <ConnectButtonPopover>
-          <ConnectButtonWrapper>{authStatus === "authenticated" ? <LogoutButton onClick={handleLogout}>Log Out</LogoutButton> : <ConnectButton.Custom>{({ openConnectModal }) => <CustomConnectButton onClick={openConnectModal}>Ethereum</CustomConnectButton>}</ConnectButton.Custom>}</ConnectButtonWrapper>
+          <ConnectButtonWrapper>
+            {authStatus === "authenticated" ? (
+              <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
+            ) : (
+              <>
+                <ConnectButton.Custom>{({ openConnectModal }) => <CustomConnectButton onClick={openConnectModal}>Ethereum</CustomConnectButton>}</ConnectButton.Custom>
+                <SolanaButton disabled>Solana</SolanaButton>
+              </>
+            )}
+          </ConnectButtonWrapper>
         </ConnectButtonPopover>
       )}
     </Container>
