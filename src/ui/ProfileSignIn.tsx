@@ -61,7 +61,6 @@ const ConnectButtonPopover = styled.div`
 `;
 
 const ConnectButtonWrapper = styled.div`
-  min-width: 300px;
   padding: 16px;
   background-color: white;
   border-radius: 12px;
@@ -69,6 +68,25 @@ const ConnectButtonWrapper = styled.div`
 
   @media (prefers-color-scheme: dark) {
     background-color: #1f1f1f;
+  }
+`;
+
+const CustomConnectButton = styled.button`
+  background-color: #627eea;
+  color: white;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:hover {
+    background-color: #4c63bc;
+  }
+
+  &:active {
+    background-color: #405291;
   }
 `;
 
@@ -94,14 +112,13 @@ export const ProfileSignIn: React.FC = () => {
       {isOpen && (
         <ConnectButtonPopover>
           <ConnectButtonWrapper>
-            <ConnectButton
-              showBalance={false}
-              chainStatus="none"
-              accountStatus={{
-                smallScreen: "avatar",
-                largeScreen: "full",
-              }}
-            />
+            <ConnectButton.Custom>
+              {({ openConnectModal }) => (
+                <CustomConnectButton onClick={openConnectModal}>
+                  Ethereum
+                </CustomConnectButton>
+              )}
+            </ConnectButton.Custom>
           </ConnectButtonWrapper>
         </ConnectButtonPopover>
       )}
