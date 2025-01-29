@@ -144,8 +144,8 @@ const InfoPopover = styled.div<{ isOpen: boolean }>`
 `;
 
 const InfoTitle = styled.h2`
-  font-size: 18px;
-  font-weight: 700;
+  font-size: 1rem;
+  font-weight: 888;
   margin: 0 0 15px 0;
   color: #333;
   text-align: left;
@@ -691,7 +691,7 @@ const MainMenu: React.FC = () => {
       </RockButtonContainer>
 
       <InfoPopover isOpen={isInfoOpen}>
-        <CloseButton onClick={() => setIsInfoOpen(false)} style={{ display: "flex" }}>
+        <CloseButton onClick={() => setIsInfoOpen(false)} style={{ display: "flex", fontWeight: 699, fontSize: "1rem" }}>
           ×
         </CloseButton>
         <InfoTitle>HOW TO PLAY MONS</InfoTitle>
