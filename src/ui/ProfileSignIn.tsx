@@ -91,21 +91,30 @@ const ConnectButtonWrapper = styled.div`
 
 const CustomConnectButton = styled(BaseButton)`
   min-width: 130px;
-  background-color: #627eea;
-  color: white;
+  color: #000;
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
   font-weight: bold;
   cursor: pointer;
-  transition: background-color 0.2s;
 
-  &:hover {
-    background-color: #4c63bc;
+  background-color: #f9f9f9;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: #f5f5f5;
+    }
   }
 
-  &:active {
-    background-color: #405291;
+  @media (prefers-color-scheme: dark) {
+    background-color: #252525;
+    color: #f5f5f5;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: #272727;
+      }
+    }
   }
 `;
 
