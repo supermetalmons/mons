@@ -22,13 +22,13 @@ const BaseButton = styled.button`
 `;
 
 const SignInButton = styled(BaseButton)`
-  --color-tint: #007aff;
-  --color-dark-tint: #0b84ff;
+  --color-tint: #0e76fd;
+  --color-dark-tint: #3898ff;
 
-  --color-default: #007aff;
+  --color-default: #0e76fd;
   --color-default-hover: #0069d9;
   --color-default-active: #0056b3;
-  --color-dark-default: #0b84ff;
+  --color-dark-default: #3898ff;
   --color-dark-default-hover: #1a91ff;
   --color-dark-default-active: #299fff;
 
@@ -36,6 +36,7 @@ const SignInButton = styled(BaseButton)`
 
   padding: 8px 16px;
   font-weight: 888;
+  font-size: 0.95rem;
   color: white;
   border-radius: 8px;
   transition: background-color 0.2s;
@@ -76,7 +77,7 @@ const ConnectButtonPopover = styled.div`
 `;
 
 const ConnectButtonWrapper = styled.div`
-  padding: 16px;
+  padding: 8px;
   background-color: white;
   border-radius: 12px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
@@ -96,6 +97,7 @@ const CustomConnectButton = styled(BaseButton)`
   border: none;
   border-radius: 8px;
   font-weight: bold;
+  font-size: 0.81rem;
   cursor: pointer;
 
   background-color: #f9f9f9;
@@ -118,21 +120,10 @@ const CustomConnectButton = styled(BaseButton)`
   }
 `;
 
-const LogoutButton = styled(CustomConnectButton)`
-  min-width: 100px;
-  background-color: #dc3545;
-
-  &:hover {
-    background-color: #c82333;
-  }
-
-  &:active {
-    background-color: #bd2130;
-  }
-`;
+const LogoutButton = styled(CustomConnectButton)``;
 
 let getIsProfilePopupOpen: () => boolean = () => false;
-export let closeProfilePopupIfAny: () => void;
+export let closeProfilePopupIfAny: () => void = () => {};
 
 export function hasProfilePopupVisible(): boolean {
   return getIsProfilePopupOpen();
@@ -192,7 +183,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         <ConnectButtonPopover>
           <ConnectButtonWrapper>
             {authStatus === "authenticated" ? (
-              <LogoutButton onClick={handleLogout}>Log Out</LogoutButton>
+              <LogoutButton onClick={handleLogout}>Sign Out</LogoutButton>
             ) : (
               <>
                 <ConnectButton.Custom>{({ openConnectModal }) => <CustomConnectButton onClick={openConnectModal}>Ethereum</CustomConnectButton>}</ConnectButton.Custom>
