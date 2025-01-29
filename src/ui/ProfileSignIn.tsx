@@ -137,6 +137,7 @@ const LogoutButton = styled(CustomConnectButton)`
 `;
 
 let getIsProfilePopupOpen: () => boolean = () => false;
+export let closeProfilePopupIfAny: () => void;
 
 export function hasProfilePopupVisible(): boolean {
   return getIsProfilePopupOpen();
@@ -166,6 +167,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     signOut()
       .then(() => window.location.reload())
       .catch(() => window.location.reload());
+    setIsOpen(false);
+  };
+
+  closeProfilePopupIfAny = () => {
     setIsOpen(false);
   };
 
