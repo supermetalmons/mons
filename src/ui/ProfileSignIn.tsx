@@ -26,12 +26,10 @@ const SignInButton = styled(BaseButton)<{ isConnected?: boolean }>`
   --color-dark-tint: #3898ff;
 
   --color-default: ${(props) => (props.isConnected ? "#f9f9f9de" : "#0e76fd")};
-  --color-default-hover: ${(props) => (props.isConnected ? "#e0e0e0" : "#0069d9")};
-  --color-default-active: ${(props) => (props.isConnected ? "#d0d0d0" : "#0056b3")};
+  --color-default-hover: ${(props) => (props.isConnected ? "#f5f5f5" : "#0069d9")};
 
   --color-dark-default: ${(props) => (props.isConnected ? "#252525d5" : "#3898ff")};
-  --color-dark-default-hover: ${(props) => (props.isConnected ? "#444" : "#1a91ff")};
-  --color-dark-default-active: ${(props) => (props.isConnected ? "#555" : "#299fff")};
+  --color-dark-default-hover: ${(props) => (props.isConnected ? "#272727" : "#1a91ff")};
 
   background-color: var(--color-default);
 
@@ -49,10 +47,6 @@ const SignInButton = styled(BaseButton)<{ isConnected?: boolean }>`
     }
   }
 
-  &:active {
-    background-color: var(--color-default-active);
-  }
-
   @media (prefers-color-scheme: dark) {
     background-color: var(--color-dark-default);
 
@@ -60,10 +54,6 @@ const SignInButton = styled(BaseButton)<{ isConnected?: boolean }>`
       &:hover {
         background-color: var(--color-dark-default-hover);
       }
-    }
-
-    &:active {
-      background-color: var(--color-dark-default-active);
     }
   }
 `;
