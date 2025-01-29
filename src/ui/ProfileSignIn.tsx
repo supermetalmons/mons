@@ -90,7 +90,7 @@ const CustomConnectButton = styled.button`
   }
 `;
 
-export const ProfileSignIn: React.FC = () => {
+export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -107,18 +107,12 @@ export const ProfileSignIn: React.FC = () => {
 
   return (
     <Container ref={popoverRef}>
-      <SignInButton onClick={() => setIsOpen(!isOpen)}>Sign In</SignInButton>
+      <SignInButton onClick={() => setIsOpen(!isOpen)}>{authStatus === "authenticated" ? "Connected" : "Sign In"}</SignInButton>
 
       {isOpen && (
         <ConnectButtonPopover>
           <ConnectButtonWrapper>
-            <ConnectButton.Custom>
-              {({ openConnectModal }) => (
-                <CustomConnectButton onClick={openConnectModal}>
-                  Ethereum
-                </CustomConnectButton>
-              )}
-            </ConnectButton.Custom>
+            <ConnectButton.Custom>{({ openConnectModal }) => <CustomConnectButton onClick={openConnectModal}>Ethereum</CustomConnectButton>}</ConnectButton.Custom>
           </ConnectButtonWrapper>
         </ConnectButtonPopover>
       )}

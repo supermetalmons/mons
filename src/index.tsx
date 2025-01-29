@@ -91,7 +91,7 @@ const App = () => {
                     </button>
                   </div>
                 )}
-                {authStatus !== "loading" && <ProfileSignIn />}
+                {authStatus !== "loading" && <ProfileSignIn authStatus={authStatus} />}
               </div>
               <BoardComponent />
               <MainMenu />
