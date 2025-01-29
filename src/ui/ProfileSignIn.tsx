@@ -7,17 +7,48 @@ const Container = styled.div`
 `;
 
 const SignInButton = styled.button`
+  --color-tint: #007aff;
+  --color-dark-tint: #0b84ff;
+
+  --color-default: #007aff;
+  --color-default-hover: #0069d9;
+  --color-default-active: #0056b3;
+  --color-dark-default: #0b84ff;
+  --color-dark-default-hover: #1a91ff;
+  --color-dark-default-active: #299fff;
+
+  background-color: var(--color-default);
+
   padding: 8px 16px;
-  background-color: #4f46e5;
+  font-weight: 888;
   color: white;
   border-radius: 8px;
-  font-weight: 500;
   transition: background-color 0.2s;
   border: none;
   cursor: pointer;
 
-  &:hover {
-    background-color: #4338ca;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: var(--color-default-hover);
+    }
+  }
+
+  &:active {
+    background-color: var(--color-default-active);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-dark-default);
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: var(--color-dark-default-hover);
+      }
+    }
+
+    &:active {
+      background-color: var(--color-dark-default-active);
+    }
   }
 `;
 
