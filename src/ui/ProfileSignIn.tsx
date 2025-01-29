@@ -90,6 +90,19 @@ const CustomConnectButton = styled.button`
   }
 `;
 
+const LogoutButton = styled(CustomConnectButton)`
+  min-width: 100px;
+  background-color: #dc3545;
+
+  &:hover {
+    background-color: #c82333;
+  }
+
+  &:active {
+    background-color: #bd2130;
+  }
+`;
+
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
@@ -105,15 +118,19 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const handleLogout = () => {
+    // TODO: Implement logout functionality
+    console.log("Logging out...");
+    setIsOpen(false);
+  };
+
   return (
     <Container ref={popoverRef}>
       <SignInButton onClick={() => setIsOpen(!isOpen)}>{authStatus === "authenticated" ? "Connected" : "Sign In"}</SignInButton>
 
       {isOpen && (
         <ConnectButtonPopover>
-          <ConnectButtonWrapper>
-            <ConnectButton.Custom>{({ openConnectModal }) => <CustomConnectButton onClick={openConnectModal}>Ethereum</CustomConnectButton>}</ConnectButton.Custom>
-          </ConnectButtonWrapper>
+          <ConnectButtonWrapper>{authStatus === "authenticated" ? <LogoutButton onClick={handleLogout}>Log Out</LogoutButton> : <ConnectButton.Custom>{({ openConnectModal }) => <CustomConnectButton onClick={openConnectModal}>Ethereum</CustomConnectButton>}</ConnectButton.Custom>}</ConnectButtonWrapper>
         </ConnectButtonPopover>
       )}
     </Container>
