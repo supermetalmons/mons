@@ -3,6 +3,7 @@ import { ConnectButton } from "@rainbow-me/rainbowkit";
 import styled from "styled-components";
 import { storage } from "../utils/storage";
 import { signOut } from "../connection/connection";
+import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 
 const Container = styled.div`
   position: relative;
@@ -96,6 +97,7 @@ const CustomConnectButton = styled.button`
 `;
 
 const SolanaButton = styled(CustomConnectButton)`
+  min-width: 130px;
   background-color: #9945ff;
   opacity: 0.5;
   cursor: not-allowed;
@@ -122,20 +124,30 @@ const LogoutButton = styled(CustomConnectButton)`
   }
 `;
 
+let getIsProfilePopupOpen: () => boolean = () => false;
+
+export function hasProfilePopupVisible(): boolean {
+  return getIsProfilePopupOpen();
+}
+
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
+  getIsProfilePopupOpen = () => isOpen;
+
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
+      event.stopPropagation();
+      if (isOpen && popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
         setIsOpen(false);
+        didDismissSomethingWithOutsideTapJustNow();
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
+  });
 
   const handleLogout = () => {
     storage.signOut();
@@ -157,7 +169,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
             ) : (
               <>
                 <ConnectButton.Custom>{({ openConnectModal }) => <CustomConnectButton onClick={openConnectModal}>Ethereum</CustomConnectButton>}</ConnectButton.Custom>
-                <SolanaButton disabled>Solana</SolanaButton>
+                <SolanaButton disabled>Solana (soon)</SolanaButton>
               </>
             )}
           </ConnectButtonWrapper>
