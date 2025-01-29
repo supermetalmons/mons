@@ -12,6 +12,7 @@ import { preventTouchstartIfNeeded } from "..";
 import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
+import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 
@@ -1249,7 +1250,7 @@ export function setupBoard() {
   initializeBoardElements();
 
   document.addEventListener(defaultInputEventName, function (event) {
-    if (!didNotDismissAnythingWithOutsideTapJustNow() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible()) {
+    if (!didNotDismissAnythingWithOutsideTapJustNow() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible()) {
       return;
     }
 

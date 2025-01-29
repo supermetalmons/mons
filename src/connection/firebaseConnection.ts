@@ -1,5 +1,5 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
-import { getAuth, Auth, signInAnonymously, onAuthStateChanged } from "firebase/auth";
+import { getAuth, Auth, signInAnonymously, onAuthStateChanged, signOut } from "firebase/auth";
 import { getDatabase, Database, ref, set, onValue, off, get, update } from "firebase/database";
 import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc, getDoc } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
@@ -52,6 +52,16 @@ class FirebaseConnection {
     } catch (error) {
       console.error("Failed to sign in anonymously:", error);
       return undefined;
+    }
+  }
+
+  public async signOut(): Promise<void> {
+    try {
+      await signOut(this.auth);
+      this.uid = null;
+    } catch (error) {
+      console.error("Failed to sign out:", error);
+      throw error;
     }
   }
 

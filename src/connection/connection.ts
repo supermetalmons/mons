@@ -112,6 +112,10 @@ export async function getProfileByLoginId(loginId: string): Promise<PlayerProfil
   return firebaseConnection.getProfileByLoginId(loginId);
 }
 
+export async function signOut(): Promise<void> {
+  return firebaseConnection.signOut();
+}
+
 export async function sendAutomatchRequest(): Promise<any> {
   return firebaseConnection.automatch();
 }

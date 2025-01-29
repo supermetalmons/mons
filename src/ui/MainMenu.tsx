@@ -5,6 +5,7 @@ import styled from "styled-components";
 import { isMobile } from "../utils/misc";
 import { Leaderboard } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
+import { closeProfilePopupIfAny } from "./ProfileSignIn";
 
 const RockButtonContainer = styled.div`
   position: absolute;
@@ -416,6 +417,7 @@ const ExperimentButton = styled.button`
 
 let getIsMenuOpen: () => boolean;
 export let toggleInfoVisibility: () => void;
+export let closeMenuAndInfoIfAny: () => void;
 
 export function hasMainMenuPopupsVisible(): boolean {
   return getIsMenuOpen();
@@ -524,7 +526,15 @@ const MainMenu: React.FC = () => {
   };
 
   toggleInfoVisibility = () => {
+    if (!isInfoOpen) {
+      closeProfilePopupIfAny();
+    }
     setIsInfoOpen(!isInfoOpen);
+  };
+
+  closeMenuAndInfoIfAny = () => {
+    setIsInfoOpen(false);
+    setIsMenuOpen(false);
   };
 
   useEffect(() => {
@@ -656,6 +666,9 @@ const MainMenu: React.FC = () => {
           {...(isMobile
             ? {
                 onTouchStart: (e) => {
+                  if (!isMenuOpen) {
+                    closeProfilePopupIfAny();
+                  }
                   toggleMenu();
                   setIsInfoOpen(false);
                 },
@@ -666,7 +679,12 @@ const MainMenu: React.FC = () => {
                   e.stopPropagation();
                   toggleMenu();
                 },
-                onMouseEnter: () => setIsMenuOpen(true),
+                onMouseEnter: () => {
+                  if (!isMenuOpen) {
+                    closeProfilePopupIfAny();
+                  }
+                  setIsMenuOpen(true);
+                },
               })}>
           <img src={logoBase64} alt="Rock" />
         </RockButton>
