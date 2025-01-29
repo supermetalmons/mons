@@ -4,6 +4,7 @@ import styled from "styled-components";
 import { storage } from "../utils/storage";
 import { signOut } from "../connection/connection";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
+import { closeMenuAndInfoIfAny } from "./MainMenu";
 
 const Container = styled.div`
   position: relative;
@@ -168,9 +169,16 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsOpen(false);
   };
 
+  const handleSignInClick = () => {
+    if (!isOpen) {
+      closeMenuAndInfoIfAny();
+    }
+    setIsOpen(!isOpen);
+  };
+
   return (
     <Container ref={popoverRef}>
-      <SignInButton onClick={() => setIsOpen(!isOpen)}>{authStatus === "authenticated" ? "Connected" : "Sign In"}</SignInButton>
+      <SignInButton onClick={handleSignInClick}>{authStatus === "authenticated" ? "Connected" : "Sign In"}</SignInButton>
 
       {isOpen && (
         <ConnectButtonPopover>

@@ -416,6 +416,7 @@ const ExperimentButton = styled.button`
 
 let getIsMenuOpen: () => boolean;
 export let toggleInfoVisibility: () => void;
+export let closeMenuAndInfoIfAny: () => void;
 
 export function hasMainMenuPopupsVisible(): boolean {
   return getIsMenuOpen();
@@ -525,6 +526,11 @@ const MainMenu: React.FC = () => {
 
   toggleInfoVisibility = () => {
     setIsInfoOpen(!isInfoOpen);
+  };
+
+  closeMenuAndInfoIfAny = () => {
+    setIsInfoOpen(false);
+    setIsMenuOpen(false);
   };
 
   useEffect(() => {
