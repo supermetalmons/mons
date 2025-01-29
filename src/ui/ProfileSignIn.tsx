@@ -90,6 +90,7 @@ const ConnectButtonWrapper = styled.div`
 `;
 
 const CustomConnectButton = styled(BaseButton)`
+  min-width: 130px;
   background-color: #627eea;
   color: white;
   padding: 12px 24px;
@@ -105,21 +106,6 @@ const CustomConnectButton = styled(BaseButton)`
 
   &:active {
     background-color: #405291;
-  }
-`;
-
-const SolanaButton = styled(CustomConnectButton)`
-  min-width: 130px;
-  background-color: #9945ff;
-  opacity: 0.5;
-  cursor: not-allowed;
-
-  &:hover {
-    background-color: #9945ff;
-  }
-
-  &:active {
-    background-color: #9945ff;
   }
 `;
 
@@ -145,6 +131,7 @@ export function hasProfilePopupVisible(): boolean {
 
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [solanaText, setSolanaText] = useState("Solana");
   const popoverRef = useRef<HTMLDivElement>(null);
 
   getIsProfilePopupOpen = () => isOpen;
@@ -181,6 +168,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsOpen(!isOpen);
   };
 
+  const handleSolanaClick = () => {
+    setSolanaText("Soon");
+    setTimeout(() => {
+      setSolanaText("Solana");
+    }, 500);
+  };
+
   return (
     <Container ref={popoverRef}>
       <SignInButton onClick={handleSignInClick}>{authStatus === "authenticated" ? "Connected" : "Sign In"}</SignInButton>
@@ -193,7 +187,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
             ) : (
               <>
                 <ConnectButton.Custom>{({ openConnectModal }) => <CustomConnectButton onClick={openConnectModal}>Ethereum</CustomConnectButton>}</ConnectButton.Custom>
-                <SolanaButton disabled>Solana (soon)</SolanaButton>
+                <CustomConnectButton onClick={handleSolanaClick}>{solanaText}</CustomConnectButton>
               </>
             )}
           </ConnectButtonWrapper>
