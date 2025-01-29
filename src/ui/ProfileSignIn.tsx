@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import styled from "styled-components";
+import { storage } from "../utils/storage";
+import { signOut } from "../connection/connection";
 
 const Container = styled.div`
   position: relative;
@@ -119,8 +121,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   }, []);
 
   const handleLogout = () => {
-    // TODO: Implement logout functionality
-    console.log("Logging out...");
+    storage.signOut();
+    signOut()
+      .then(() => window.location.reload())
+      .catch(() => window.location.reload());
     setIsOpen(false);
   };
 

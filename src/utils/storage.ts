@@ -93,4 +93,11 @@ export const storage = {
   setEthAddress: (value: string): void => {
     setItem(STORAGE_KEYS.ETH_ADDRESS, value);
   },
+
+  signOut: (): void => {
+    localStorage.removeItem(STORAGE_KEYS.PLAYER_EMOJI_ID);
+    localStorage.removeItem(STORAGE_KEYS.LOGIN_ID);
+    localStorage.removeItem(STORAGE_KEYS.PROFILE_ID);
+    localStorage.removeItem(STORAGE_KEYS.ETH_ADDRESS);
+  },
 }; 
