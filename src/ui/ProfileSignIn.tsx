@@ -21,25 +21,25 @@ const BaseButton = styled.button`
   touch-action: none;
 `;
 
-const SignInButton = styled(BaseButton)`
+const SignInButton = styled(BaseButton)<{ isConnected?: boolean }>`
   --color-tint: #0e76fd;
   --color-dark-tint: #3898ff;
 
-  --color-default: #0e76fd;
-  --color-default-hover: #0069d9;
-  --color-default-active: #0056b3;
-  --color-dark-default: #3898ff;
-  --color-dark-default-hover: #1a91ff;
-  --color-dark-default-active: #299fff;
+  --color-default: ${(props) => (props.isConnected ? "#f9f9f9de" : "#0e76fd")};
+  --color-default-hover: ${(props) => (props.isConnected ? "#e0e0e0" : "#0069d9")};
+  --color-default-active: ${(props) => (props.isConnected ? "#d0d0d0" : "#0056b3")};
+
+  --color-dark-default: ${(props) => (props.isConnected ? "#252525d5" : "#3898ff")};
+  --color-dark-default-hover: ${(props) => (props.isConnected ? "#444" : "#1a91ff")};
+  --color-dark-default-active: ${(props) => (props.isConnected ? "#555" : "#299fff")};
 
   background-color: var(--color-default);
 
   padding: 8px 16px;
-  font-weight: 888;
-  font-size: 0.95rem;
-  color: white;
-  border-radius: 8px;
-  transition: background-color 0.2s;
+  font-weight: ${(props) => (props.isConnected ? "750" : "888")};
+  font-size: ${(props) => (props.isConnected ? "0.9rem" : "0.95rem")};
+  color: ${(props) => (props.isConnected ? "#767787c9" : "white")};
+  border-radius: ${(props) => (props.isConnected ? "12px" : "8px")};
   border: none;
   cursor: pointer;
 
@@ -177,7 +177,9 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
   return (
     <Container ref={popoverRef}>
-      <SignInButton onClick={handleSignInClick}>{authStatus === "authenticated" ? "Connected" : "Sign In"}</SignInButton>
+      <SignInButton onClick={handleSignInClick} isConnected={authStatus === "authenticated"}>
+        {authStatus === "authenticated" ? "Connected" : "Sign In"}
+      </SignInButton>
 
       {isOpen && (
         <ConnectButtonPopover>
