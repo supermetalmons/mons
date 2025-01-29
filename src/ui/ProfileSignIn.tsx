@@ -71,7 +71,7 @@ const ConnectButtonPopover = styled.div`
   position: absolute;
   right: 0;
   top: 100%;
-  margin-top: 8px;
+  margin-top: 16px;
   z-index: 50;
 `;
 
@@ -79,13 +79,13 @@ const ConnectButtonWrapper = styled.div`
   padding: 16px;
   background-color: white;
   border-radius: 12px;
-  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: column;
   gap: 8px;
 
   @media (prefers-color-scheme: dark) {
-    background-color: #1f1f1f;
+    background-color: #131313;
   }
 `;
 
