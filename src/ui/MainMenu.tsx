@@ -107,7 +107,7 @@ const RockMenu = styled.div<{ isOpen: boolean; showLeaderboard: boolean }>`
   gap: 6px;
   box-shadow: ${(props) => (props.isOpen ? "0 6px 20px rgba(0, 0, 0, 0.12)" : "none")};
 
-  width: ${(props) => (props.showLeaderboard ? "min(355px, 83dvw)" : "230px")};
+  width: ${(props) => (props.showLeaderboard ? "min(300px, 83dvw)" : "230px")};
   min-height: ${(props) => (props.showLeaderboard ? "69dvh" : "auto")};
 
   transform-origin: top left;

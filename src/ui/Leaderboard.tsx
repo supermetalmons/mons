@@ -38,7 +38,7 @@ const LeaderboardTable = styled.table`
 
   th {
     padding: 0px 0 5px 0px;
-    color: #777;
+    color: #999;
     font-size: 0.777rem;
 
     @media (prefers-color-scheme: dark) {
@@ -69,17 +69,18 @@ const LeaderboardTable = styled.table`
       padding-left: 5px;
     }
     &:nth-child(2) {
-      width: 11%;
+      width: 11.5%;
       font-size: 0;
       text-align: left;
     }
     &:nth-child(3) {
-      width: 63%;
+      width: 62%;
       text-align: left;
     }
     &:nth-child(4) {
-      width: 18%;
-      text-align: left;
+      width: 18.5%;
+      text-align: right;
+      padding-right: 15px;
     }
   }
 
