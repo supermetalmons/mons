@@ -125,6 +125,20 @@ class FirebaseConnection {
     return leaderboard;
   }
 
+  public async verifySolanaAddress(address: string, signature: string): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const verifySolanaAddressFunction = httpsCallable(this.functions, "verifySolanaAddress");
+      const emojiString = storage.getPlayerEmojiId("1");
+      const emoji = parseInt(emojiString);
+      const response = await verifySolanaAddressFunction({ address, signature, emoji });
+      return response.data;
+    } catch (error) {
+      console.error("Error verifying Solana address:", error);
+      throw error;
+    }
+  }
+
   public async verifyEthAddress(message: string, signature: string): Promise<any> {
     try {
       await this.ensureAuthenticated();

@@ -2,9 +2,10 @@ import React, { useState, useRef, useEffect } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import styled from "styled-components";
 import { storage } from "../utils/storage";
-import { signOut } from "../connection/connection";
+import { signOut, verifySolanaAddress } from "../connection/connection";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
+import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 
 const Container = styled.div`
   position: relative;
@@ -167,16 +168,38 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsSolanaConnecting(true);
     try {
       const { connectToSolana } = await import("../connection/solanaConnection");
-      const publicKey = await connectToSolana();
-      setIsOpen(false);
-      console.log("Connected to Solana wallet:", publicKey);
-      // TODO: more handling
+      const { publicKey, signature } = await connectToSolana();
+      setSolanaText("Verifying...");
+      const res = await verifySolanaAddress(publicKey, signature);
+      if (res && res.ok === true) {
+        const emoji = res.emoji;
+        const profileId = res.profileId;
+        const profile = {
+          id: profileId,
+          eth: res.address, // TODO: setup solana instead
+          rating: undefined,
+          nonce: undefined,
+          win: undefined,
+          emoji: emoji,
+        };
+        setupLoggedInPlayerProfile(profile, res.uid);
+        storage.setEthAddress(res.address); // TODO: setup solana instead
+        storage.setPlayerEmojiId(emoji.toString());
+        storage.setProfileId(profileId);
+        storage.setLoginId(res.uid);
+        updateEmojiIfNeeded(emoji, false);
+        // TODO: setAuthStatus("authenticated");
+        setIsOpen(false);
+      }
+      setSolanaText("Solana");
     } catch (error) {
       if ((error as Error).message === "not found") {
         setSolanaText("Not Found");
         setTimeout(() => {
           setSolanaText("Solana");
         }, 500);
+      } else {
+        setSolanaText("Solana");
       }
     } finally {
       setIsSolanaConnecting(false);
