@@ -124,11 +124,11 @@ const LoadingText = styled.div`
 `;
 
 const RatingCell = styled.td<{ win: boolean }>`
-  color: ${(props) => (props.win ? "#2e7d32" : "#c62828")};
-  font-weight: 444;
+  color: ${(props) => (props.win ? "#43a047" : "#e53935")};
+  font-weight: 500;
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.win ? "#66bb6a" : "#ef5350")};
+    color: ${(props) => (props.win ? "#69f0ae" : "#ff5252")};
   }
 `;
 
