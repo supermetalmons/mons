@@ -1,12 +1,11 @@
 import { BaseMessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
+import { signIn } from "./connection";
 
 declare global {
   interface Window {
     solana?: BaseMessageSignerWalletAdapter;
   }
 }
-
-const SIGN_IN_MESSAGE = "Sign this message to verify your Solana wallet ownership";
 
 let walletAdapter: BaseMessageSignerWalletAdapter | null = null;
 
@@ -29,9 +28,12 @@ export async function connectToSolana(): Promise<string> {
       throw new Error("not connected");
     }
 
-    const message = new TextEncoder().encode(SIGN_IN_MESSAGE);
-    const signature = await walletAdapter.signMessage(message);
-    console.log(signature);
+    const nonce = await signIn();
+    if (!nonce) throw new Error("Failed to get nonce");
+
+    const message = `Sign in mons.link with Solana nonce ${nonce}`;
+    const encodedMessage = new TextEncoder().encode(message);
+    const signature = await walletAdapter.signMessage(encodedMessage);
 
     return publicKey.toString();
   } catch (error) {
