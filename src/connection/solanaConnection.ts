@@ -13,7 +13,7 @@ let walletAdapter: BaseMessageSignerWalletAdapter | null = null;
 export async function connectToSolana(): Promise<string> {
   try {
     if (!window.solana) {
-      throw new Error("No Solana wallet found. Please install a Solana wallet extension.");
+      throw new Error("not found");
     }
 
     if (!walletAdapter) {
@@ -26,7 +26,7 @@ export async function connectToSolana(): Promise<string> {
 
     const publicKey = walletAdapter.publicKey;
     if (!publicKey) {
-      throw new Error("Wallet not connected");
+      throw new Error("not connected");
     }
 
     const message = new TextEncoder().encode(SIGN_IN_MESSAGE);

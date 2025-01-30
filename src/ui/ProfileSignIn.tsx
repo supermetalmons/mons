@@ -159,20 +159,19 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   const handleSolanaClick = async () => {
-    setSolanaText("Soon"); // TODO: remove dev tmp
-    setTimeout(() => {
-      setSolanaText("Solana");
-    }, 500);
-
     try {
       const { connectToSolana } = await import("../connection/solanaConnection");
-      setIsOpen(false);
       const publicKey = await connectToSolana();
+      setIsOpen(false);
       console.log("Connected to Solana wallet:", publicKey);
       // TODO: more handling
     } catch (error) {
-      console.error("Failed to connect Solana wallet:", error);
-      // TODO: more handling
+      if ((error as Error).message === "not found") {
+        setSolanaText("Not Found");
+        setTimeout(() => {
+          setSolanaText("Solana");
+        }, 500);
+      }
     }
   };
 
