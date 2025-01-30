@@ -122,6 +122,7 @@ export function hasProfilePopupVisible(): boolean {
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [solanaText, setSolanaText] = useState("Solana");
+  const [isSolanaConnecting, setIsSolanaConnecting] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
   getIsProfilePopupOpen = () => isOpen;
@@ -159,6 +160,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   const handleSolanaClick = async () => {
+    if (isSolanaConnecting) {
+      return;
+    }
+
+    setIsSolanaConnecting(true);
     try {
       const { connectToSolana } = await import("../connection/solanaConnection");
       const publicKey = await connectToSolana();
@@ -172,6 +178,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
           setSolanaText("Solana");
         }, 500);
       }
+    } finally {
+      setIsSolanaConnecting(false);
     }
   };
 
