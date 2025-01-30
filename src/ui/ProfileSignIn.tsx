@@ -166,9 +166,9 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
     try {
       const { connectToSolana } = await import("../connection/solanaConnection");
+      setIsOpen(false);
       const publicKey = await connectToSolana();
       console.log("Connected to Solana wallet:", publicKey);
-      setIsOpen(false);
       // TODO: more handling
     } catch (error) {
       console.error("Failed to connect Solana wallet:", error);
