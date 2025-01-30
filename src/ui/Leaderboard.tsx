@@ -67,15 +67,11 @@ const LeaderboardTable = styled.table`
       text-align: left;
     }
     &:nth-child(2) {
-      width: 50%;
+      width: 60%;
       text-align: left;
     }
     &:nth-child(3) {
-      width: 20%;
-      text-align: left;
-    }
-    &:nth-child(4) {
-      width: 19%;
+      width: 29%;
       text-align: left;
     }
   }
@@ -199,7 +195,6 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
               <tr>
                 <th></th>
                 <th>Player</th>
-                <th>Games</th>
                 <th>Rating</th>
               </tr>
             </thead>
@@ -212,7 +207,6 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
                       <EmojiImage src={`data:image/webp;base64,${emojiData}`} alt="Player emoji" />
                     </td>
                     <td>{row.ensName || row.player.slice(2, 6) + "..." + row.player.slice(-4)}</td>
-                    <td>{row.games}</td>
                     <RatingCell win={row.win}>{row.rating}</RatingCell>
                   </tr>
                 );
