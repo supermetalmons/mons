@@ -66,7 +66,7 @@ const LeaderboardTable = styled.table`
       text-align: left;
       font-size: 0.75rem;
       color: #999;
-      padding-left: 2px;
+      padding-left: 5px;
     }
     &:nth-child(2) {
       width: 11%;
@@ -74,11 +74,11 @@ const LeaderboardTable = styled.table`
       text-align: left;
     }
     &:nth-child(3) {
-      width: 52%;
+      width: 63%;
       text-align: left;
     }
     &:nth-child(4) {
-      width: 29%;
+      width: 18%;
       text-align: left;
     }
   }
