@@ -2,8 +2,6 @@ const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 const { getProfileByLoginId } = require("./utils");
 
-// TODO: update eth with sol
-
 exports.automatch = onCall(async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
@@ -11,16 +9,17 @@ exports.automatch = onCall(async (request) => {
 
   const uid = request.auth.uid;
   const profile = await getProfileByLoginId(uid);
-  const ethAddress = profile.eth;
+  const ethAddress = profile.eth ?? "";
+  const solAddress = profile.sol ?? "";
   const profileId = profile.profileId;
-  const name = getDisplayNameFromAddress(ethAddress);
+  const name = getDisplayNameFromAddress(ethAddress, solAddress);
   const emojiId = request.data.emojiId;
 
-  const automatchAttemptResult = await attemptAutomatch(uid, ethAddress, profileId, name, emojiId, 0);
+  const automatchAttemptResult = await attemptAutomatch(uid, ethAddress, solAddress, profileId, name, emojiId, 0);
   return automatchAttemptResult;
 });
 
-async function attemptAutomatch(uid, ethAddress, profileId, name, emojiId, retryCount) {
+async function attemptAutomatch(uid, ethAddress, solAddress, profileId, name, emojiId, retryCount) {
   const maxRetryCount = 3;
   if (retryCount > maxRetryCount) {
     return { ok: false };
@@ -33,7 +32,7 @@ async function attemptAutomatch(uid, ethAddress, profileId, name, emojiId, retry
     const firstAutomatchId = Object.keys(snapshot.val())[0];
     const existingAutomatchData = snapshot.val()[firstAutomatchId];
     if (existingAutomatchData.uid !== uid) {
-      const existingPlayerName = getDisplayNameFromAddress(existingAutomatchData.ethAddress);
+      const existingPlayerName = getDisplayNameFromAddress(existingAutomatchData.ethAddress, existingAutomatchData.solAddress);
 
       const invite = {
         version: controllerVersion,
@@ -60,10 +59,10 @@ async function attemptAutomatch(uid, ethAddress, profileId, name, emojiId, retry
           sendTelegramMessage(matchMessage).catch(console.error);
           sendDiscordMessage(matchMessage).catch(console.error);
         } else {
-          return await attemptAutomatch(uid, ethAddress, profileId, name, emojiId, retryCount + 1);
+          return await attemptAutomatch(uid, ethAddress, solAddress, profileId, name, emojiId, retryCount + 1);
         }
       } catch (error) {
-        return await attemptAutomatch(uid, ethAddress, profileId, name, emojiId, retryCount + 1);
+        return await attemptAutomatch(uid, ethAddress, solAddress, profileId, name, emojiId, retryCount + 1);
       }
     }
     return {
@@ -94,7 +93,7 @@ async function attemptAutomatch(uid, ethAddress, profileId, name, emojiId, retry
 
     const updates = {};
     updates[`players/${uid}/matches/${inviteId}`] = match;
-    updates[`automatch/${inviteId}`] = { uid: uid, timestamp: admin.database.ServerValue.TIMESTAMP, ethAddress: ethAddress, profileId: profileId, hostColor: hostColor, password: password };
+    updates[`automatch/${inviteId}`] = { uid: uid, timestamp: admin.database.ServerValue.TIMESTAMP, ethAddress: ethAddress, solAddress: solAddress, profileId: profileId, hostColor: hostColor, password: password };
     updates[`invites/${inviteId}`] = invite;
     await admin.database().ref().update(updates);
 
@@ -127,7 +126,7 @@ async function sendTelegramMessage(message) {
 
   try {
     fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
-      method: "POST", 
+      method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
@@ -191,13 +190,16 @@ function matchKnownAddress(address) {
   return knownAddresses[lowerAddress] || null;
 }
 
-function getDisplayNameFromAddress(address) {
-  if (!address) return "anon";
-
-  const knownName = matchKnownAddress(address);
-  if (knownName) return knownName;
-
-  return address.slice(2, 6) + "..." + address.slice(-4);
+function getDisplayNameFromAddress(ethAddress, solAddress) {
+  if (ethAddress && ethAddress !== "") {
+    const knownName = matchKnownAddress(ethAddress);
+    if (knownName) return knownName;
+    return ethAddress.slice(2, 6) + "..." + ethAddress.slice(-4);
+  } else if (solAddress && solAddress !== "") {
+    return solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
+  } else {
+    return "anon";
+  }
 }
 
 const hostColor = Math.random() < 0.5 ? "white" : "black";
