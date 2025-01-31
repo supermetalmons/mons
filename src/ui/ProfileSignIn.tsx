@@ -176,14 +176,14 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         const profileId = res.profileId;
         const profile = {
           id: profileId,
-          eth: res.address, // TODO: setup solana instead
+          sol: res.address,
           rating: undefined,
           nonce: undefined,
           win: undefined,
           emoji: emoji,
         };
         setupLoggedInPlayerProfile(profile, res.uid);
-        storage.setEthAddress(res.address); // TODO: setup solana instead
+        storage.setSolAddress(res.address);
         storage.setPlayerEmojiId(emoji.toString());
         storage.setProfileId(profileId);
         storage.setLoginId(res.uid);

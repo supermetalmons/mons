@@ -7,8 +7,6 @@ import { storage } from "../utils/storage";
 
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
-// TODO: add sol field where needed
-
 export function useAuthStatus() {
   const [authStatus, setAuthStatus] = useState<AuthStatus>("loading");
 
@@ -22,7 +20,8 @@ export function useAuthStatus() {
       if (uid !== null) {
         const storedLoginId = storage.getLoginId("");
         const storedEthAddress = storage.getEthAddress("");
-        if (storedLoginId === uid && storedEthAddress !== "") {
+        const storedSolAddress = storage.getSolAddress("");
+        if (storedLoginId === uid && (storedEthAddress !== "" || storedSolAddress !== "")) {
           setAuthStatus("authenticated");
           const profileId = storage.getProfileId("");
           const emojiString = storage.getPlayerEmojiId("1");
@@ -30,6 +29,7 @@ export function useAuthStatus() {
           const profile = {
             id: profileId,
             eth: storedEthAddress,
+            sol: storedSolAddress,
             rating: undefined,
             nonce: undefined,
             win: undefined,
