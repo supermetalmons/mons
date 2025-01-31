@@ -8,8 +8,6 @@ import { getFunctions, Functions, httpsCallable } from "firebase/functions";
 import { Match, Invite, Reaction, PlayerProfile } from "./connectionModels";
 import { storage } from "../utils/storage";
 
-// TODO: add sol field where needed
-
 const controllerVersion = 2;
 
 class FirebaseConnection {
@@ -75,7 +73,8 @@ class FirebaseConnection {
       const data = docSnap.data();
       return {
         id: docSnap.id,
-        eth: data.eth || "",
+        eth: data.eth || null,
+        sol: data.sol || null,
         rating: data.rating || 1500,
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
@@ -95,7 +94,8 @@ class FirebaseConnection {
       const data = doc.data();
       return {
         id: doc.id,
-        eth: data.eth || "",
+        eth: data.eth || null,
+        sol: data.sol || null,
         rating: data.rating || 1500,
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
@@ -116,7 +116,8 @@ class FirebaseConnection {
       const data = doc.data();
       leaderboard.push({
         id: doc.id,
-        eth: data.eth || "",
+        eth: data.eth || null,
+        sol: data.sol || null,
         rating: data.rating || 1500,
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
