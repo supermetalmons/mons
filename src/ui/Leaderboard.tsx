@@ -144,7 +144,8 @@ interface LeaderboardProps {
 }
 
 interface LeaderboardEntry {
-  player: string;
+  eth?: string | null;
+  sol?: string | null;
   games: number;
   rating: number;
   win: boolean;
@@ -156,13 +157,13 @@ interface LeaderboardEntry {
 export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
   const [data, setData] = useState<LeaderboardEntry[] | null>(null);
 
-  // TODO: add sol field where needed
   useEffect(() => {
     if (show) {
       getLeaderboard()
         .then((ratings) => {
           const leaderboardData = ratings.map((entry) => ({
-            player: entry.eth ?? "",
+            eth: entry.eth,
+            sol: entry.sol,
             games: (entry.nonce ?? -1) + 1,
             rating: Math.round(entry.rating ?? 1500),
             win: entry.win ?? true,
@@ -173,14 +174,16 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
           setData(leaderboardData);
 
           leaderboardData.forEach(async (entry, index) => {
-            const ensName = await resolveENS(entry.player);
-            if (ensName) {
-              setData((prevData) => {
-                if (!prevData) return prevData;
-                const newData = [...prevData];
-                newData[index] = { ...newData[index], ensName };
-                return newData;
-              });
+            if (entry.eth) {
+              const ensName = await resolveENS(entry.eth);
+              if (ensName) {
+                setData((prevData) => {
+                  if (!prevData) return prevData;
+                  const newData = [...prevData];
+                  newData[index] = { ...newData[index], ensName };
+                  return newData;
+                });
+              }
             }
           });
         })
@@ -190,10 +193,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
     }
   }, [show]);
 
-  const handleRowClick = (address: string) => {
-    // TODO: handle sol differently
-    window.open(`https://etherscan.io/address/${address}`, "_blank", "noopener,noreferrer");
-    // window.open(`https://base.easscan.org/attestation/view/${id}`, "_blank", "noopener,noreferrer");
+  const handleRowClick = (eth: string | null | undefined, sol: string | null | undefined) => {
+    if (eth) {
+      window.open(`https://etherscan.io/address/${eth}`, "_blank", "noopener,noreferrer");
+    } else if (sol) {
+      window.open(`https://explorer.solana.com/address/${sol}`, "_blank", "noopener,noreferrer");
+    }
   };
 
   return (
@@ -213,12 +218,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
               {data.map((row: LeaderboardEntry, index: number) => {
                 const emojiData = emojis.getEmoji(row.emoji.toString());
                 return (
-                  <tr key={index} onClick={() => handleRowClick(row.player)}>
+                  <tr key={index} onClick={() => handleRowClick(row.eth, row.sol)}>
                     <td>{index + 1}</td>
                     <td>
                       <EmojiImage src={`data:image/webp;base64,${emojiData}`} alt="Player emoji" />
                     </td>
-                    <td>{row.ensName || row.player.slice(2, 6) + "..." + row.player.slice(-4)}</td>
+                    <td>{row.ensName || (row.eth ? row.eth.slice(2, 6) + "..." + row.eth.slice(-4) : row.sol?.slice(0, 4) + "..." + row.sol?.slice(-4))}</td>
                     <RatingCell win={row.win}>{row.rating}</RatingCell>
                   </tr>
                 );
