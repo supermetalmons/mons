@@ -1,21 +1,20 @@
 import { AssetsSet } from "../content/boardStyles";
 
-// TODO: add sol field where needed
-
 const STORAGE_KEYS = {
-  IS_MUTED: 'isMuted',
+  IS_MUTED: "isMuted",
 
-  PREFERRED_ASSETS_SET: 'preferredAssetsSet',
-  BOARD_COLOR_SET: 'boardColorSet',
-  IS_EXPERIMENTING_WITH_SPRITES: 'isExperimentingWithSprites',
+  PREFERRED_ASSETS_SET: "preferredAssetsSet",
+  BOARD_COLOR_SET: "boardColorSet",
+  IS_EXPERIMENTING_WITH_SPRITES: "isExperimentingWithSprites",
 
-  PLAYER_EMOJI_ID: 'playerEmojiId',
-  LOGIN_ID: 'loginId',
-  PROFILE_ID: 'profileId',
-  ETH_ADDRESS: 'ethAddress',
+  PLAYER_EMOJI_ID: "playerEmojiId",
+  LOGIN_ID: "loginId",
+  PROFILE_ID: "profileId",
+  ETH_ADDRESS: "ethAddress",
+  SOL_ADDRESS: "solAddress",
 } as const;
 
-type StorageKey = typeof STORAGE_KEYS[keyof typeof STORAGE_KEYS];
+type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
 
 function getItem<T>(key: StorageKey | string, defaultValue: T): T {
   const item = localStorage.getItem(key);
@@ -28,14 +27,14 @@ function getItem<T>(key: StorageKey | string, defaultValue: T): T {
 }
 
 function setItem<T>(key: StorageKey | string, value: T): void {
-  localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
+  localStorage.setItem(key, typeof value === "string" ? value : JSON.stringify(value));
 }
 
 export const storage = {
   getIsMuted: (defaultValue: boolean): boolean => {
     return getItem(STORAGE_KEYS.IS_MUTED, defaultValue);
   },
-  
+
   setIsMuted: (value: boolean): void => {
     setItem(STORAGE_KEYS.IS_MUTED, value);
   },
@@ -96,10 +95,19 @@ export const storage = {
     setItem(STORAGE_KEYS.ETH_ADDRESS, value);
   },
 
+  getSolAddress: (defaultValue: string): string => {
+    return getItem(STORAGE_KEYS.SOL_ADDRESS, defaultValue);
+  },
+
+  setSolAddress: (value: string): void => {
+    setItem(STORAGE_KEYS.SOL_ADDRESS, value);
+  },
+
   signOut: (): void => {
     localStorage.removeItem(STORAGE_KEYS.PLAYER_EMOJI_ID);
     localStorage.removeItem(STORAGE_KEYS.LOGIN_ID);
     localStorage.removeItem(STORAGE_KEYS.PROFILE_ID);
     localStorage.removeItem(STORAGE_KEYS.ETH_ADDRESS);
+    localStorage.removeItem(STORAGE_KEYS.SOL_ADDRESS);
   },
-}; 
+};
