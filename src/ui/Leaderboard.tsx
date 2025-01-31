@@ -223,7 +223,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
                     <td>
                       <EmojiImage src={`data:image/webp;base64,${emojiData}`} alt="Player emoji" />
                     </td>
-                    <td>{row.ensName || (row.eth ? row.eth.slice(2, 6) + "..." + row.eth.slice(-4) : row.sol?.slice(0, 4) + "..." + row.sol?.slice(-4))}</td>
+                    <td>{row.ensName || (row.eth ? row.eth.slice(0, 4) + "..." + row.eth.slice(-4) : row.sol?.slice(0, 4) + "..." + row.sol?.slice(-4))}</td>
                     <RatingCell win={row.win}>{row.rating}</RatingCell>
                   </tr>
                 );

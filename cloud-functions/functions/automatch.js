@@ -194,7 +194,7 @@ function getDisplayNameFromAddress(ethAddress, solAddress) {
   if (ethAddress && ethAddress !== "") {
     const knownName = matchKnownAddress(ethAddress);
     if (knownName) return knownName;
-    return ethAddress.slice(2, 6) + "..." + ethAddress.slice(-4);
+    return ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4);
   } else if (solAddress && solAddress !== "") {
     return solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
   } else {
