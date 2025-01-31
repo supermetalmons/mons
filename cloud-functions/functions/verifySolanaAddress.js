@@ -1,5 +1,7 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
+const nacl = require("tweetnacl");
+const bs58 = require("bs58");
 
 exports.verifySolanaAddress = onCall(async (request) => {
   if (!request.auth) {
@@ -7,12 +9,15 @@ exports.verifySolanaAddress = onCall(async (request) => {
   }
 
   const address = request.data.address;
-  const signature = request.data.signature;
+  const signatureStr = request.data.signature;
   let requestEmoji = request.data.emoji ?? 1;
   const uid = request.auth.uid;
   const targetMessage = `Sign in mons.link with Solana nonce ${uid}`;
 
-  const matchingSignature = false; // TODO: implement signature verification
+  const signatureBytes = new Uint8Array(Buffer.from(signatureStr, "base64"));
+  const publicKeyBytes = bs58.default.decode(address);
+  const messageBytes = new TextEncoder().encode(targetMessage);
+  const matchingSignature = nacl.sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
 
   if (matchingSignature) {
     let responseAddress = address;
