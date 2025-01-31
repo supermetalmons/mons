@@ -7,7 +7,7 @@ import { playSounds, playReaction } from "../content/sounds";
 import { isAutomatch, sendResignStatus, prepareOnchainVictoryTx, sendMove, isCreateNewInviteFlow, sendEmojiUpdate, setupConnection, startTimer, claimVictoryByTimer, sendRematchProposal, sendAutomatchRequest, connectToAutomatch, sendEndMatchIndicator, rematchSeriesEndIsIndicated, connectToGame, updateRatings } from "../connection/connection";
 import { setAttestVictoryVisible, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAttestVictoryEnabled, showButtonForTx, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushButtonDimmed } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
-import { recalculateRatingsLocally } from "../utils/playerMetadata";
+import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 
 const experimentalDrawingDevMode = false;
 
@@ -616,9 +616,9 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
               sounds.push(Sound.Defeat);
             }
 
-            if (!isWatchOnly && hasBothEthAddresses()) {
+            if (!isWatchOnly && hasBothEthOrSolAddresses()) {
               if (isVictory) {
-                suggestSavingOnchainRating();
+                updateRatingsAndSuggestSavingOnchainRating();
               } else {
                 updateRatingsLocally(false);
               }
@@ -689,10 +689,9 @@ export function didClickAutomoveButton() {
   automove();
 }
 
-// TODO: add sol field where needed
-function hasBothEthAddresses(): boolean {
-  const playerSide = playerSideMetadata.ethAddress;
-  const opponentSide = opponentSideMetadata.ethAddress;
+function hasBothEthOrSolAddresses(): boolean {
+  const playerSide = playerSideMetadata.ethAddress ?? playerSideMetadata.solAddress;
+  const opponentSide = opponentSideMetadata.ethAddress ?? opponentSideMetadata.solAddress;
   return playerSide !== undefined && opponentSide !== undefined && playerSide !== opponentSide;
 }
 
@@ -744,7 +743,7 @@ export function didClickAttestVictoryButton() {
     });
 }
 
-function suggestSavingOnchainRating() {
+function updateRatingsAndSuggestSavingOnchainRating() {
   updateRatings();
   updateRatingsLocally(true);
 
@@ -756,14 +755,14 @@ function suggestSavingOnchainRating() {
 }
 
 function updateRatingsLocally(isWin: boolean) {
-  const playerSide = playerSideMetadata.ethAddress;
-  const opponentSide = opponentSideMetadata.ethAddress;
+  const playerSide = playerSideMetadata.uid;
+  const opponentSide = opponentSideMetadata.uid;
 
-  const victoryAddress = isWin ? playerSide : opponentSide;
-  const defeatAddress = isWin ? opponentSide : playerSide;
+  const victoryUid = isWin ? playerSide : opponentSide;
+  const defeatUid = isWin ? opponentSide : playerSide;
 
-  if (victoryAddress && defeatAddress) {
-    recalculateRatingsLocally(victoryAddress, defeatAddress);
+  if (victoryUid && defeatUid) {
+    recalculateRatingsLocallyForUids(victoryUid, defeatUid);
     Board.recalculateDisplayNames();
   }
 }
@@ -1025,8 +1024,8 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
 
   if (justClaimedByYourself) {
     playSounds([Sound.Victory]);
-    if (hasBothEthAddresses()) {
-      suggestSavingOnchainRating();
+    if (hasBothEthOrSolAddresses()) {
+      updateRatingsAndSuggestSavingOnchainRating();
     }
   } else if (!onConnect) {
     if (!isWatchOnly) {
@@ -1054,8 +1053,8 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
 
   if (!onConnect && !justConfirmedResignYourself) {
     playSounds([Sound.Victory]);
-    if (!isWatchOnly && hasBothEthAddresses()) {
-      suggestSavingOnchainRating();
+    if (!isWatchOnly && hasBothEthOrSolAddresses()) {
+      updateRatingsAndSuggestSavingOnchainRating();
     }
   }
 
