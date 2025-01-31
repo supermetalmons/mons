@@ -4,6 +4,7 @@ import { SiweMessage } from "siwe";
 import { subscribeToAuthChanges, signIn, verifyEthAddress } from "./connection";
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { storage } from "../utils/storage";
+import { updateProfileDisplayName } from "../ui/ProfileSignIn";
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
 let globalSetAuthStatus: ((status: AuthStatus) => void) | null = null;
@@ -49,6 +50,7 @@ export function useAuthStatus() {
             win: undefined,
             emoji: emoji,
           };
+          updateProfileDisplayName(storedEthAddress, storedSolAddress);
           setupLoggedInPlayerProfile(profile, uid);
         } else {
           setAuthStatus("unauthenticated");
@@ -101,6 +103,7 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
         storage.setPlayerEmojiId(emoji.toString());
         storage.setProfileId(profileId);
         storage.setLoginId(res.uid);
+        updateProfileDisplayName(res.address, null);
         updateEmojiIfNeeded(emoji, false);
 
         setAuthStatus("authenticated");

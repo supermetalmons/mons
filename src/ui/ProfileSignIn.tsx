@@ -121,13 +121,39 @@ export function hasProfilePopupVisible(): boolean {
   return getIsProfilePopupOpen();
 }
 
+let setProfileDisplayNameGlobal: ((name: string) => void) | null = null;
+let pendingEthAddress: string | null = null;
+let pendingSolAddress: string | null = null;
+
+const formatDisplayName = (ethAddress?: string | null, solAddress?: string | null): string => {
+  if (ethAddress) {
+    return ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4);
+  } else if (solAddress) {
+    return solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
+  }
+  pendingEthAddress = null;
+  pendingSolAddress = null;
+  return "";
+};
+
+export const updateProfileDisplayName = (ethAddress?: string | null, solAddress?: string | null) => {
+  if (!setProfileDisplayNameGlobal) {
+    pendingEthAddress = ethAddress ?? null;
+    pendingSolAddress = solAddress ?? null;
+    return;
+  }
+  setProfileDisplayNameGlobal(formatDisplayName(ethAddress, solAddress));
+};
+
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [solanaText, setSolanaText] = useState("Solana");
   const [isSolanaConnecting, setIsSolanaConnecting] = useState(false);
+  const [profileDisplayName, setProfileDisplayName] = useState(() => formatDisplayName(pendingEthAddress, pendingSolAddress));
   const popoverRef = useRef<HTMLDivElement>(null);
 
   getIsProfilePopupOpen = () => isOpen;
+  setProfileDisplayNameGlobal = setProfileDisplayName;
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -188,6 +214,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         storage.setPlayerEmojiId(emoji.toString());
         storage.setProfileId(profileId);
         storage.setLoginId(res.uid);
+        updateProfileDisplayName(null, res.address);
         updateEmojiIfNeeded(emoji, false);
         setAuthStatusGlobally("authenticated");
         setIsOpen(false);
@@ -210,9 +237,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   return (
     <Container ref={popoverRef}>
       <SignInButton onClick={handleSignInClick} isConnected={authStatus === "authenticated"}>
-        {authStatus === "authenticated" ? "Connected" : "Sign In"}
+        {authStatus === "authenticated" ? profileDisplayName || "Connected" : "Sign In"}
       </SignInButton>
-
       {isOpen && (
         <ConnectButtonPopover>
           <ConnectButtonWrapper>
