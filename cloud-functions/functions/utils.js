@@ -22,6 +22,8 @@ const batchReadWithRetry = async (refs) => {
   return finalSnapshots;
 };
 
+// TODO: update eth with sol
+
 async function getProfileByLoginId(uid) {
   try {
     const firestore = admin.firestore();

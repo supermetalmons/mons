@@ -689,6 +689,7 @@ export function didClickAutomoveButton() {
   automove();
 }
 
+// TODO: add sol field where needed
 function hasBothEthAddresses(): boolean {
   const playerSide = playerSideMetadata.ethAddress;
   const opponentSide = opponentSideMetadata.ethAddress;

@@ -7,6 +7,8 @@ import { storage } from "../utils/storage";
 
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
+// TODO: add sol field where needed
+
 export function useAuthStatus() {
   const [authStatus, setAuthStatus] = useState<AuthStatus>("loading");
 

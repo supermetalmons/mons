@@ -4,6 +4,8 @@ import glicko2 from "glicko2";
 import { storage } from "./storage";
 import { updateEmojiIfNeeded } from "../game/board";
 
+// TODO: add sol field where needed
+
 export type PlayerMetadata = {
   uid: string;
   displayName: string | undefined;

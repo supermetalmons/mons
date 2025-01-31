@@ -1,5 +1,7 @@
 import { AssetsSet } from "../content/boardStyles";
 
+// TODO: add sol field where needed
+
 const STORAGE_KEYS = {
   IS_MUTED: 'isMuted',
 

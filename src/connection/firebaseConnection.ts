@@ -8,6 +8,8 @@ import { getFunctions, Functions, httpsCallable } from "firebase/functions";
 import { Match, Invite, Reaction, PlayerProfile } from "./connectionModels";
 import { storage } from "../utils/storage";
 
+// TODO: add sol field where needed
+
 const controllerVersion = 2;
 
 class FirebaseConnection {

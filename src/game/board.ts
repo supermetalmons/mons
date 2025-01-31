@@ -508,6 +508,8 @@ export function setupLoggedInPlayerProfile(profile: PlayerProfile, loginId: stri
   }
 }
 
+// TODO: add sol field where needed
+
 export function recalculateDisplayNames() {
   if (getStashedPlayerAddress(playerSideMetadata.uid) && playerSideMetadata.displayName === undefined) {
     const address = getStashedPlayerAddress(playerSideMetadata.uid);

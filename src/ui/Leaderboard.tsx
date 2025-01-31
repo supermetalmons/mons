@@ -156,6 +156,7 @@ interface LeaderboardEntry {
 export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
   const [data, setData] = useState<LeaderboardEntry[] | null>(null);
 
+  // TODO: add sol field where needed
   useEffect(() => {
     if (show) {
       getLeaderboard()
@@ -190,6 +191,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
   }, [show]);
 
   const handleRowClick = (address: string) => {
+    // TODO: handle sol differently
     window.open(`https://etherscan.io/address/${address}`, "_blank", "noopener,noreferrer");
     // window.open(`https://base.easscan.org/attestation/view/${id}`, "_blank", "noopener,noreferrer");
   };
