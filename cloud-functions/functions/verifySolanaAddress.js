@@ -1,23 +1,20 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
-const { SiweMessage } = require("siwe");
 const admin = require("firebase-admin");
 
-// TODO: reimplement for solana
 exports.verifySolanaAddress = onCall(async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
 
-  const message = request.data.message;
+  const address = request.data.address;
   const signature = request.data.signature;
   let requestEmoji = request.data.emoji ?? 1;
-
-  const siweMessage = new SiweMessage(message);
-  const fields = await siweMessage.verify({ signature });
-  const address = fields.data.address;
   const uid = request.auth.uid;
+  const targetMessage = `Sign in mons.link with Solana nonce ${uid}`;
 
-  if (fields.success && fields.data.nonce === uid && fields.data.statement === "mons ftw") {
+  const matchingSignature = false; // TODO: implement signature verification
+
+  if (matchingSignature) {
     let responseAddress = address;
     let profileId = null;
     let emoji = null;
@@ -29,20 +26,20 @@ exports.verifySolanaAddress = onCall(async (request) => {
       const db = admin.database();
       const profileIdRef = db.ref(`players/${uid}/profile`);
 
-      const userWithMatchingEthAddressQuery = await firestore.collection("users").where("eth", "==", address).get();
-      if (userWithMatchingEthAddressQuery.empty) {
+      const userWithMatchingSolAddressQuery = await firestore.collection("users").where("sol", "==", address).get();
+      if (userWithMatchingSolAddressQuery.empty) {
         const docRef = await firestore.collection("users").add({
-          eth: address,
+          sol: address,
           logins: [uid],
           custom: {
-            emoji: requestEmoji
-          }
+            emoji: requestEmoji,
+          },
         });
         await profileIdRef.set(docRef.id);
         profileId = docRef.id;
         emoji = requestEmoji;
       } else {
-        const userDoc = userWithMatchingEthAddressQuery.docs[0];
+        const userDoc = userWithMatchingSolAddressQuery.docs[0];
         const userData = userDoc.data();
         if (!userData.logins.includes(uid)) {
           await userDoc.ref.update({
@@ -56,7 +53,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
     } else {
       const userDoc = userQuery.docs[0];
       const userData = userDoc.data();
-      responseAddress = userData.eth;
+      responseAddress = userData.sol;
       profileId = userDoc.id;
       emoji = userData.custom?.emoji ?? requestEmoji;
     }
