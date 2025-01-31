@@ -1,12 +1,14 @@
 const admin = require("firebase-admin");
 admin.initializeApp();
 
+const { verifySolanaAddress } = require("./verifySolanaAddress");
 const { verifyEthAddress } = require("./verifyEthAddress");
 const { attestMatchVictory } = require("./attestMatchVictory");
 const { updateRatings } = require("./updateRatings");
 const { startMatchTimer, claimMatchVictoryByTimer } = require("./matchTimers");
 const { automatch } = require("./automatch");
 
+exports.verifySolanaAddress = verifySolanaAddress;
 exports.verifyEthAddress = verifyEthAddress;
 exports.attestMatchVictory = attestMatchVictory;
 exports.startMatchTimer = startMatchTimer;

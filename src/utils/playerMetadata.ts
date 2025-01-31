@@ -8,6 +8,7 @@ export type PlayerMetadata = {
   uid: string;
   displayName: string | undefined;
   ethAddress: string | undefined;
+  solAddress: string | undefined;
   ens: string | undefined;
   emojiId: string;
   voiceReactionText: string;
@@ -19,6 +20,7 @@ export const newEmptyPlayerMetadata = (): PlayerMetadata => ({
   uid: "",
   displayName: undefined,
   ethAddress: undefined,
+  solAddress: undefined,
   ens: undefined,
   emojiId: "",
   voiceReactionText: "",
@@ -26,17 +28,23 @@ export const newEmptyPlayerMetadata = (): PlayerMetadata => ({
   rating: undefined,
 });
 
+export function openSolAddress(address: string) {
+  const explorerBaseUrl = "https://explorer.solana.com/address/";
+  const explorerUrl = explorerBaseUrl + address;
+  window.open(explorerUrl, "_blank", "noopener,noreferrer");
+}
+
 export function openEthAddress(address: string) {
   const etherscanBaseUrl = "https://etherscan.io/address/";
   const etherscanUrl = etherscanBaseUrl + address;
   window.open(etherscanUrl, "_blank", "noopener,noreferrer");
 }
 
-export function recalculateRatingsLocally(victoryAddress: string, defeatAddress: string) {
-  const rating1 = getRating(victoryAddress);
-  const rating2 = getRating(defeatAddress);
-  const nonce1 = getNonce(victoryAddress);
-  const nonce2 = getNonce(defeatAddress);
+export function recalculateRatingsLocallyForUids(victoryUid: string, defeatUid: string) {
+  const rating1 = getRatingForUid(victoryUid);
+  const rating2 = getRatingForUid(defeatUid);
+  const nonce1 = getNonceForUid(victoryUid);
+  const nonce2 = getNonceForUid(defeatUid);
 
   if (!rating1 || !rating2 || nonce1 === undefined || nonce2 === undefined) {
     return;
@@ -47,28 +55,58 @@ export function recalculateRatingsLocally(victoryAddress: string, defeatAddress:
 
   const [newRating1, newRating2] = updateRating(rating1, newNonce1, rating2, newNonce2);
 
-  setRatingAndNonce(victoryAddress, newRating1, newNonce1);
-  setRatingAndNonce(defeatAddress, newRating2, newNonce2);
+  setRatingAndNonceForUid(victoryUid, newRating1, newNonce1);
+  setRatingAndNonceForUid(defeatUid, newRating2, newNonce2);
 }
 
-export function getStashedPlayerAddress(uid: string) {
-  return ethAddresses[uid];
+export function getStashedPlayerSolAddress(uid: string) {
+  return solAddressesForUids[uid];
+}
+
+export function getStashedPlayerEthAddress(uid: string) {
+  return ethAddressesForUids[uid];
 }
 
 export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId: string, own: boolean, onSuccess: () => void) {
-  if (profile.eth === undefined || profile.eth === "" || !profile.eth) {
+  const noSol = profile.sol === undefined || profile.sol === "" || !profile.sol;
+  const noEth = profile.eth === undefined || profile.eth === "" || !profile.eth;
+  if (noSol && noEth) {
     return;
   }
-  const address = profile.eth;
-  ethAddresses[loginId] = address;
+
+  if (noSol) {
+    const ethAddress = profile.eth ?? "";
+    ethAddressesForUids[loginId] = ethAddress;
+    if (!ensDict[loginId]) {
+      fetch(`https://api.ensideas.com/ens/resolve/${ethAddress}`)
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          }
+          return null;
+        })
+        .then((data) => {
+          if (data && data.name && data.name.trim() !== "") {
+            ensDict[loginId] = {
+              name: data.name,
+              avatar: data.avatar,
+            };
+            onSuccess();
+          }
+        })
+        .catch(() => {});
+    }
+  } else {
+    solAddressesForUids[loginId] = profile.sol ?? "";
+  }
 
   if (profile.rating !== undefined && profile.nonce !== undefined) {
-    allProfilesDict[address] = profile;
+    allProfilesDict[loginId] = profile;
     onSuccess();
   } else {
     getProfileByLoginId(loginId)
       .then((profile) => {
-        allProfilesDict[address] = profile;
+        allProfilesDict[loginId] = profile;
         if (profile.emoji !== undefined && own) {
           storage.setPlayerEmojiId(profile.emoji.toString());
           updateEmojiIfNeeded(profile.emoji.toString(), false);
@@ -78,52 +116,33 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
       })
       .catch(() => {});
   }
+}
 
-  if (!ensDict[address]) {
-    fetch(`https://api.ensideas.com/ens/resolve/${address}`)
-      .then((response) => {
-        if (response.ok) {
-          return response.json();
-        }
-        return null;
-      })
-      .then((data) => {
-        if (data && data.name && data.name.trim() !== "") {
-          ensDict[address] = {
-            name: data.name,
-            avatar: data.avatar,
-          };
-          onSuccess();
-        }
-      })
-      .catch(() => {});
+export function getRatingForUid(uid: string): number | undefined {
+  if (!uid) return undefined;
+  return allProfilesDict[uid]?.rating;
+}
+
+function getNonceForUid(uid: string): number | undefined {
+  if (!uid) return undefined;
+  return allProfilesDict[uid]?.nonce;
+}
+
+function setRatingAndNonceForUid(uid: string, rating: number, nonce: number): void {
+  if (!uid) return;
+  if (allProfilesDict[uid]) {
+    allProfilesDict[uid].rating = rating;
+    allProfilesDict[uid].nonce = nonce;
   }
 }
 
-export function getRating(address: string): number | undefined {
-  if (!address) return undefined;
-  return allProfilesDict[address]?.rating;
+export function getEnsNameForUid(uid: string): string | undefined {
+  if (!uid) return undefined;
+  return ensDict[uid]?.name;
 }
 
-function getNonce(address: string): number | undefined {
-  if (!address) return undefined;
-  return allProfilesDict[address]?.nonce;
-}
-
-function setRatingAndNonce(address: string, rating: number, nonce: number): void {
-  if (!address) return;
-  if (allProfilesDict[address]) {
-    allProfilesDict[address].rating = rating;
-    allProfilesDict[address].nonce = nonce;
-  }
-}
-
-export function getEnsName(address: string): string | undefined {
-  if (!address) return undefined;
-  return ensDict[address]?.name;
-}
-
-const ethAddresses: { [key: string]: string } = {};
+const ethAddressesForUids: { [key: string]: string } = {};
+const solAddressesForUids: { [key: string]: string } = {};
 const ensDict: { [key: string]: { name: string; avatar: string } } = {};
 const allProfilesDict: { [key: string]: PlayerProfile } = {};
 

@@ -4,11 +4,25 @@ import { SiweMessage } from "siwe";
 import { subscribeToAuthChanges, signIn, verifyEthAddress } from "./connection";
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { storage } from "../utils/storage";
-
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
+
+let globalSetAuthStatus: ((status: AuthStatus) => void) | null = null;
+
+export function setAuthStatusGlobally(status: AuthStatus) {
+  if (globalSetAuthStatus) {
+    globalSetAuthStatus(status);
+  }
+}
 
 export function useAuthStatus() {
   const [authStatus, setAuthStatus] = useState<AuthStatus>("loading");
+
+  useEffect(() => {
+    globalSetAuthStatus = setAuthStatus;
+    return () => {
+      globalSetAuthStatus = null;
+    };
+  }, [setAuthStatus]);
 
   useEffect(() => {
     let didPerformInitialSetup = false;
@@ -20,7 +34,8 @@ export function useAuthStatus() {
       if (uid !== null) {
         const storedLoginId = storage.getLoginId("");
         const storedEthAddress = storage.getEthAddress("");
-        if (storedLoginId === uid && storedEthAddress !== "") {
+        const storedSolAddress = storage.getSolAddress("");
+        if (storedLoginId === uid && (storedEthAddress !== "" || storedSolAddress !== "")) {
           setAuthStatus("authenticated");
           const profileId = storage.getProfileId("");
           const emojiString = storage.getPlayerEmojiId("1");
@@ -28,6 +43,7 @@ export function useAuthStatus() {
           const profile = {
             id: profileId,
             eth: storedEthAddress,
+            sol: storedSolAddress,
             rating: undefined,
             nonce: undefined,
             win: undefined,

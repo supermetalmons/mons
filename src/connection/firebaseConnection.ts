@@ -73,7 +73,8 @@ class FirebaseConnection {
       const data = docSnap.data();
       return {
         id: docSnap.id,
-        eth: data.eth || "",
+        eth: data.eth || null,
+        sol: data.sol || null,
         rating: data.rating || 1500,
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
@@ -93,7 +94,8 @@ class FirebaseConnection {
       const data = doc.data();
       return {
         id: doc.id,
-        eth: data.eth || "",
+        eth: data.eth || null,
+        sol: data.sol || null,
         rating: data.rating || 1500,
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
@@ -114,7 +116,8 @@ class FirebaseConnection {
       const data = doc.data();
       leaderboard.push({
         id: doc.id,
-        eth: data.eth || "",
+        eth: data.eth || null,
+        sol: data.sol || null,
         rating: data.rating || 1500,
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
@@ -123,6 +126,20 @@ class FirebaseConnection {
     });
 
     return leaderboard;
+  }
+
+  public async verifySolanaAddress(address: string, signature: string): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const verifySolanaAddressFunction = httpsCallable(this.functions, "verifySolanaAddress");
+      const emojiString = storage.getPlayerEmojiId("1");
+      const emoji = parseInt(emojiString);
+      const response = await verifySolanaAddressFunction({ address, signature, emoji });
+      return response.data;
+    } catch (error) {
+      console.error("Error verifying Solana address:", error);
+      throw error;
+    }
   }
 
   public async verifyEthAddress(message: string, signature: string): Promise<any> {

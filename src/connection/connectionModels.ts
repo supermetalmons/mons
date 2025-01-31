@@ -31,4 +31,5 @@ export interface PlayerProfile {
   win: boolean | undefined;
   emoji: number;
   eth?: string | null;
+  sol?: string | null;
 }

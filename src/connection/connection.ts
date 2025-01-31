@@ -96,6 +96,16 @@ export async function verifyEthAddress(message: string, signature: string): Prom
   return firebaseConnection.verifyEthAddress(message, signature);
 }
 
+export async function verifySolanaAddress(address: string, signature: string): Promise<any> {
+  if (!firebaseConnection) {
+    const uid = await signIn();
+    if (!uid) {
+      throw new Error("Failed to authenticate user");
+    }
+  }
+  return firebaseConnection.verifySolanaAddress(address, signature);
+}
+
 export async function startTimer(): Promise<any> {
   return firebaseConnection.startTimer();
 }

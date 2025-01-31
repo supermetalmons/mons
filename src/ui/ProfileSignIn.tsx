@@ -2,9 +2,11 @@ import React, { useState, useRef, useEffect } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import styled from "styled-components";
 import { storage } from "../utils/storage";
-import { signOut } from "../connection/connection";
+import { signOut, verifySolanaAddress } from "../connection/connection";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
+import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
+import { setAuthStatusGlobally } from "../connection/authentication";
 
 const Container = styled.div`
   position: relative;
@@ -122,6 +124,7 @@ export function hasProfilePopupVisible(): boolean {
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [solanaText, setSolanaText] = useState("Solana");
+  const [isSolanaConnecting, setIsSolanaConnecting] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
   getIsProfilePopupOpen = () => isOpen;
@@ -158,11 +161,50 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsOpen(!isOpen);
   };
 
-  const handleSolanaClick = () => {
-    setSolanaText("Soon");
-    setTimeout(() => {
+  const handleSolanaClick = async () => {
+    if (isSolanaConnecting) {
+      return;
+    }
+
+    setIsSolanaConnecting(true);
+    try {
+      const { connectToSolana } = await import("../connection/solanaConnection");
+      const { publicKey, signature } = await connectToSolana();
+      setSolanaText("Verifying...");
+      const res = await verifySolanaAddress(publicKey, signature);
+      if (res && res.ok === true) {
+        const emoji = res.emoji;
+        const profileId = res.profileId;
+        const profile = {
+          id: profileId,
+          sol: res.address,
+          rating: undefined,
+          nonce: undefined,
+          win: undefined,
+          emoji: emoji,
+        };
+        setupLoggedInPlayerProfile(profile, res.uid);
+        storage.setSolAddress(res.address);
+        storage.setPlayerEmojiId(emoji.toString());
+        storage.setProfileId(profileId);
+        storage.setLoginId(res.uid);
+        updateEmojiIfNeeded(emoji, false);
+        setAuthStatusGlobally("authenticated");
+        setIsOpen(false);
+      }
       setSolanaText("Solana");
-    }, 500);
+    } catch (error) {
+      if ((error as Error).message === "not found") {
+        setSolanaText("Not Found");
+        setTimeout(() => {
+          setSolanaText("Solana");
+        }, 500);
+      } else {
+        setSolanaText("Solana");
+      }
+    } finally {
+      setIsSolanaConnecting(false);
+    }
   };
 
   return (

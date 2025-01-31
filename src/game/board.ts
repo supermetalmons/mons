@@ -7,7 +7,7 @@ import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
 import { playSounds } from "../content/sounds";
 import { didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible } from "../ui/BottomControls";
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
-import { newEmptyPlayerMetadata, getStashedPlayerAddress, openEthAddress, getEnsName, getRating, updatePlayerMetadataWithProfile } from "../utils/playerMetadata";
+import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, openSolAddress, openEthAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
 import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
@@ -509,48 +509,58 @@ export function setupLoggedInPlayerProfile(profile: PlayerProfile, loginId: stri
 }
 
 export function recalculateDisplayNames() {
-  if (getStashedPlayerAddress(playerSideMetadata.uid) && playerSideMetadata.displayName === undefined) {
-    const address = getStashedPlayerAddress(playerSideMetadata.uid);
-    const cropped = address.slice(0, 4) + "..." + address.slice(-4);
-    playerSideMetadata.displayName = cropped;
-    playerSideMetadata.ethAddress = address;
+  if (playerSideMetadata.displayName === undefined) {
+    const ethAddress = getStashedPlayerEthAddress(playerSideMetadata.uid);
+    const solAddress = getStashedPlayerSolAddress(playerSideMetadata.uid);
+    if (ethAddress) {
+      const cropped = ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4);
+      playerSideMetadata.displayName = cropped;
+      playerSideMetadata.ethAddress = ethAddress;
+    } else if (solAddress) {
+      const cropped = solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
+      playerSideMetadata.displayName = cropped;
+      playerSideMetadata.solAddress = solAddress;
+    }
   }
 
-  if (getStashedPlayerAddress(opponentSideMetadata.uid) && opponentSideMetadata.displayName === undefined) {
-    const address = getStashedPlayerAddress(opponentSideMetadata.uid);
-    const cropped = address.slice(0, 4) + "..." + address.slice(-4);
-    opponentSideMetadata.displayName = cropped;
-    opponentSideMetadata.ethAddress = address;
+  if (opponentSideMetadata.displayName === undefined) {
+    const ethAddress = getStashedPlayerEthAddress(opponentSideMetadata.uid);
+    const solAddress = getStashedPlayerSolAddress(opponentSideMetadata.uid);
+    if (ethAddress) {
+      const cropped = ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4);
+      opponentSideMetadata.displayName = cropped;
+      opponentSideMetadata.ethAddress = ethAddress;
+    } else if (solAddress) {
+      const cropped = solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
+      opponentSideMetadata.displayName = cropped;
+      opponentSideMetadata.solAddress = solAddress;
+    }
   }
 
-  if (playerSideMetadata.ens === undefined && playerSideMetadata.ethAddress) {
-    const ens = getEnsName(playerSideMetadata.ethAddress);
+  if (playerSideMetadata.ens === undefined) {
+    const ens = getEnsNameForUid(playerSideMetadata.uid);
     if (ens !== undefined) {
       playerSideMetadata.ens = ens;
       playerSideMetadata.displayName = ens;
     }
   }
 
-  if (opponentSideMetadata.ens === undefined && opponentSideMetadata.ethAddress) {
-    const ens = getEnsName(opponentSideMetadata.ethAddress);
+  if (opponentSideMetadata.ens === undefined) {
+    const ens = getEnsNameForUid(opponentSideMetadata.uid);
     if (ens !== undefined) {
       opponentSideMetadata.ens = ens;
       opponentSideMetadata.displayName = ens;
     }
   }
 
-  if (playerSideMetadata.ethAddress) {
-    const rating = getRating(playerSideMetadata.ethAddress);
-    if (rating !== undefined) {
-      playerSideMetadata.rating = rating;
-    }
+  const playerRating = getRatingForUid(playerSideMetadata.uid);
+  if (playerRating !== undefined) {
+    playerSideMetadata.rating = playerRating;
   }
 
-  if (opponentSideMetadata.ethAddress) {
-    const rating = getRating(opponentSideMetadata.ethAddress);
-    if (rating !== undefined) {
-      opponentSideMetadata.rating = rating;
-    }
+  const opponentRating = getRatingForUid(opponentSideMetadata.uid);
+  if (opponentRating !== undefined) {
+    opponentSideMetadata.rating = opponentRating;
   }
 
   renderPlayersNamesLabels();
@@ -582,15 +592,19 @@ export function setupPlayerId(uid: string, opponent: boolean) {
   recalculateDisplayNames();
 }
 
-function canRedirectToEthAddress(opponent: boolean) {
-  let address = opponent ? opponentSideMetadata.ethAddress : playerSideMetadata.ethAddress;
-  return address !== undefined;
+function canRedirectToExplorer(opponent: boolean) {
+  let ethAddress = opponent ? opponentSideMetadata.ethAddress : playerSideMetadata.ethAddress;
+  let solAddress = opponent ? opponentSideMetadata.solAddress : playerSideMetadata.solAddress;
+  return ethAddress !== undefined || solAddress !== undefined;
 }
 
-function redirectToEthAddress(opponent: boolean) {
-  let address = opponent ? opponentSideMetadata.ethAddress : playerSideMetadata.ethAddress;
-  if (address !== undefined) {
-    openEthAddress(address);
+function redirectToAddressOnExplorer(opponent: boolean) {
+  let ethAddress = opponent ? opponentSideMetadata.ethAddress : playerSideMetadata.ethAddress;
+  let solAddress = opponent ? opponentSideMetadata.solAddress : playerSideMetadata.solAddress;
+  if (ethAddress !== undefined) {
+    openEthAddress(ethAddress);
+  } else if (solAddress !== undefined) {
+    openSolAddress(solAddress);
   }
 }
 
@@ -1098,8 +1112,8 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
         return;
       }
 
-      if (canRedirectToEthAddress(isOpponent) && didNotDismissAnythingWithOutsideTapJustNow()) {
-        redirectToEthAddress(isOpponent);
+      if (canRedirectToExplorer(isOpponent) && didNotDismissAnythingWithOutsideTapJustNow()) {
+        redirectToAddressOnExplorer(isOpponent);
         SVG.setFill(nameText, colors.scoreText);
       }
     });
@@ -1109,7 +1123,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
         return;
       }
 
-      if (canRedirectToEthAddress(isOpponent)) {
+      if (canRedirectToExplorer(isOpponent)) {
         SVG.setFill(nameText, "#0071F9");
       }
     });
