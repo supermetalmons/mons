@@ -184,6 +184,7 @@ function matchKnownAddress(address) {
     "0xe26067c76fdbe877f48b0a8400cf5db8b47af0fe": "ivan",
     "0x2bb97367ff26b701a60aedc213640c34f469cf38": "meinong",
     "0xe4790dd79c334e3f848904975272ec17f9f70366": "bosch",
+    "0x54e2459933f110726e9231c5cd8010471950bbde": "GardenParty",
   };
 
   const lowerAddress = address.toLowerCase();
