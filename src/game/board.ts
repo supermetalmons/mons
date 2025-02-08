@@ -426,6 +426,41 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
   animate();
 }
 
+export function runMonsBoardAsDisplayWaitingCirclesAnimation() {
+  if (monsBoardDisplayAnimationTimeout) return;
+
+  let radius = 0;
+  const maxRadius = 5;
+
+  function animate() {
+    cleanAllPixels();
+    drawCircle(radius);
+    radius = radius >= maxRadius ? 0 : radius + 0.5;
+    monsBoardDisplayAnimationTimeout = setTimeout(animate, 200);
+  }
+
+  function drawCircle(radius: number) {
+    const minRadius = radius - 0.5;
+    const maxRadius = radius + 0.5;
+    const minRadiusSquared = minRadius * minRadius;
+    const maxRadiusSquared = maxRadius * maxRadius;
+
+    for (let x = 0; x <= 10; x++) {
+      for (let y = 0; y <= 10; y++) {
+        const dx = x - 5;
+        const dy = y - 5;
+        const distanceSquared = dx * dx + dy * dy;
+
+        if (distanceSquared >= minRadiusSquared && distanceSquared <= maxRadiusSquared) {
+          colorPixel(new Location(x, y), true);
+        }
+      }
+    }
+  }
+
+  animate();
+}
+
 export function stopMonsBoardAsDisplayAnimations() {
   if (monsBoardDisplayAnimationTimeout) {
     clearTimeout(monsBoardDisplayAnimationTimeout);
