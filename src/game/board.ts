@@ -394,33 +394,122 @@ export function runExperimentalMonsBoardAsDisplayAnimation() {
 export function runMonsBoardAsDisplayWaitingAnimation() {
   if (monsBoardDisplayAnimationTimeout) return;
 
-  let radius = 0;
-  const maxRadius = 5;
+  const frames: [number, number][][] = [
+    [],
+    [[5, 5]],
+    [
+      [5, 5],
+      [5, 3],
+      [5, 7],
+      [4, 4],
+      [4, 6],
+      [6, 4],
+      [6, 6],
+      [7, 5],
+    ],
+    [
+      [3, 3],
+      [3, 4],
+      [3, 6],
+      [3, 7],
+      [4, 5],
+      [4, 2],
+      [4, 8],
+      [5, 2],
+      [5, 8],
+      [6, 3],
+      [6, 7],
+      [7, 4],
+      [7, 6],
+      [8, 5],
+    ],
+    [
+      [3, 1],
+      [3, 9],
+      [3, 4],
+      [3, 6],
+      [4, 5],
+      [4, 1],
+      [4, 9],
+      [5, 1],
+      [5, 9],
+      [2, 3],
+      [2, 2],
+      [2, 7],
+      [2, 8],
+      [6, 2],
+      [6, 8],
+      [7, 3],
+      [7, 7],
+      [8, 4],
+      [8, 6],
+      [9, 5],
+    ],
+    [
+      [1, 2],
+      [1, 8],
+      [1, 3],
+      [1, 7],
+      [2, 1],
+      [2, 4],
+      [2, 6],
+      [2, 9],
+      [3, 5],
+      [3, 0],
+      [3, 10],
+      [4, 0],
+      [4, 10],
+      [5, 0],
+      [5, 10],
+      [6, 1],
+      [6, 9],
+      [7, 2],
+      [7, 3],
+      [7, 8],
+      [7, 7],
+      [8, 4],
+      [8, 6],
+      [9, 5],
+    ],
+    [
+      [0, 2],
+      [0, 3],
+      [0, 7],
+      [0, 8],
+      [1, 1],
+      [1, 4],
+      [1, 6],
+      [1, 9],
+      [2, 0],
+      [2, 5],
+      [2, 10],
+      [3, 0],
+      [3, 10],
+      [4, 0],
+      [4, 10],
+      [5, 0],
+      [5, 10],
+      [6, 1],
+      [6, 9],
+      [7, 2],
+      [7, 8],
+      [8, 3],
+      [8, 7],
+      [9, 4],
+      [9, 6],
+      [10, 5],
+    ],
+  ];
+
+  let frameIndex = 0;
 
   function animate() {
     cleanAllPixels();
-    drawCircle(radius);
-    radius = radius >= maxRadius ? 0 : radius + 0.5;
-    monsBoardDisplayAnimationTimeout = setTimeout(animate, 200);
-  }
-
-  function drawCircle(radius: number) {
-    const minRadius = radius - 0.5;
-    const maxRadius = radius + 0.5;
-    const minRadiusSquared = minRadius * minRadius;
-    const maxRadiusSquared = maxRadius * maxRadius;
-
-    for (let x = 0; x <= 10; x++) {
-      for (let y = 0; y <= 10; y++) {
-        const dx = x - 5;
-        const dy = y - 5;
-        const distanceSquared = dx * dx + dy * dy;
-
-        if (distanceSquared >= minRadiusSquared && distanceSquared <= maxRadiusSquared) {
-          colorPixel(new Location(x, y), true);
-        }
-      }
+    for (const [x, y] of frames[frameIndex]) {
+      colorPixel(new Location(x, y), true);
     }
+    frameIndex = (frameIndex + 1) % frames.length;
+    monsBoardDisplayAnimationTimeout = setTimeout(animate, 323);
   }
 
   animate();
@@ -470,7 +559,7 @@ export function stopMonsBoardAsDisplayAnimations() {
 }
 
 function colorPixel(location: Location, white: boolean) {
-  placeItem(white ? mana : manaB, location, white ? ItemKind.Mana : ItemKind.ManaBlack, false);
+  placeItem(white ? angel : angelB, location, white ? ItemKind.Angel : ItemKind.AngelBlack, false);
 }
 
 function cleanAllPixels() {
