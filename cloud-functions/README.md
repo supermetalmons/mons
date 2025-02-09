@@ -5,3 +5,5 @@
 `firebase deploy --only functions`
 
 `firebase deploy --only functions:verifyEthAddress`
+
+`firebase auth:export users.json --format=json`

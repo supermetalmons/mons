@@ -63,6 +63,10 @@ exports.verifySolanaAddress = onCall(async (request) => {
       emoji = userData.custom?.emoji ?? requestEmoji;
     }
 
+    await admin.auth().setCustomUserClaims(uid, {
+      profileId: profileId,
+    });
+
     return {
       ok: true,
       uid: uid,

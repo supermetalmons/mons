@@ -34,8 +34,8 @@ exports.verifyEthAddress = onCall(async (request) => {
           eth: address,
           logins: [uid],
           custom: {
-            emoji: requestEmoji
-          }
+            emoji: requestEmoji,
+          },
         });
         await profileIdRef.set(docRef.id);
         profileId = docRef.id;
@@ -59,6 +59,10 @@ exports.verifyEthAddress = onCall(async (request) => {
       profileId = userDoc.id;
       emoji = userData.custom?.emoji ?? requestEmoji;
     }
+
+    await admin.auth().setCustomUserClaims(uid, {
+      profileId: profileId,
+    });
 
     return {
       ok: true,
