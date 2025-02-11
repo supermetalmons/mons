@@ -744,17 +744,25 @@ export function didClickAttestVictoryButton() {
 }
 
 function updateRatingsAndSuggestSavingOnchainRating() {
+  if (!isAutomatch()) {
+    return;
+  }
+
   updateRatings();
   updateRatingsLocally(true);
 
   const onchainRatingsAreDisabledTmp = true;
-  if (!onchainRatingsAreDisabledTmp && isAutomatch()) {
+  if (!onchainRatingsAreDisabledTmp) {
     setAttestVictoryVisible(true);
     setAttestVictoryEnabled(true);
   }
 }
 
 function updateRatingsLocally(isWin: boolean) {
+  if (!isAutomatch()) {
+    return;
+  }
+
   const playerSide = playerSideMetadata.uid;
   const opponentSide = opponentSideMetadata.uid;
 
