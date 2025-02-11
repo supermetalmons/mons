@@ -559,7 +559,8 @@ export function stopMonsBoardAsDisplayAnimations() {
 }
 
 function colorPixel(location: Location, white: boolean) {
-  placeItem(white ? angel : angelB, location, white ? ItemKind.Angel : ItemKind.AngelBlack, false);
+  const flippedLocation = new Location(isFlipped ? 10 - location.i : location.i, location.j);
+  placeItem(white ? angel : angelB, flippedLocation, white ? ItemKind.Angel : ItemKind.AngelBlack, false);
 }
 
 function cleanAllPixels() {
