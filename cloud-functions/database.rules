@@ -40,7 +40,8 @@
     "players": {
       ".read": true,
       "$userId": {
-        ".write": "auth != null && auth.uid === $userId && newData.exists() && newData.child('matches').exists()",
+        ".write": "auth != null && (auth.uid === $userId || auth.token.admin === true)",
+        ".validate": "newData.exists() && newData.child('matches').exists()",
         "matches": {
           "$matchId": {
             ".write": "(auth != null && auth.uid === $userId && data.child('fen').exists() && newData.exists() && newData.child('fen').exists()) || (auth != null && auth.token.admin === true)",
