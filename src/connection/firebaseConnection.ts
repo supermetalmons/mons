@@ -508,6 +508,10 @@ class FirebaseConnection {
           } else if (inviteData.guestId === uid) {
             this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId);
           } else {
+            // TODO: check in the fastest way possible if game profile matches i.e.
+            // either host id or guest id are within the logins array
+            // or profile value inside the player model === local profileId
+            // write profileIds into invites as well for a faster matching?
             this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
           }
         }
