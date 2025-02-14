@@ -43,7 +43,7 @@
         ".write": "auth != null && auth.uid === $userId && newData.exists() && newData.child('matches').exists()",
         "matches": {
           "$matchId": {
-            ".write": "auth != null && auth.uid === $userId && data.child('fen').exists() && newData.exists() && newData.child('fen').exists()",
+            ".write": "(auth != null && auth.uid === $userId && data.child('fen').exists() && newData.exists() && newData.child('fen').exists()) || (auth != null && auth.token.admin === true)",
             "fen": {
               ".validate": "newData.isString() && newData.val().length > 0"
             },
@@ -51,7 +51,6 @@
               ".validate": "newData.isString() && (!data.exists() || newData.val().contains(data.val()))"
             },
             "timer": {
-              ".write": "(auth != null && auth.uid === $userId && (newData.val() === '' || newData.val() === data.val())) || (auth != null && auth.token.admin === true)",
               ".validate": "newData.isString() && (newData.val() === '' || newData.val() === data.val() || (auth != null && auth.token.admin === true))"
             },
             ".validate": "!data.exists() || ((!data.child('flatMovesString').exists() || (data.child('flatMovesString').exists() && (data.child('fen').val() === newData.child('fen').val() || (data.child('fen').val() != newData.child('fen').val() && data.child('flatMovesString').val() != newData.child('flatMovesString').val())))) && (data.child('flatMovesString').exists() || data.child('fen').exists() && !data.child('flatMovesString').exists() && !newData.child('flatMovesString').exists()))"
