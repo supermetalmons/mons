@@ -5,6 +5,7 @@ import { subscribeToAuthChanges, signIn, verifyEthAddress } from "./connection";
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { storage } from "../utils/storage";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
+import { isWatchOnly } from "../game/gameController";
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
 let globalSetAuthStatus: ((status: AuthStatus) => void) | null = null;
@@ -104,7 +105,9 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
         storage.setProfileId(profileId);
         storage.setLoginId(res.uid);
         updateProfileDisplayName(res.address, null);
-        updateEmojiIfNeeded(emoji, false);
+        if (!isWatchOnly) {
+          updateEmojiIfNeeded(emoji, false);
+        }
 
         setAuthStatus("authenticated");
         return true;

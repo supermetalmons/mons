@@ -7,6 +7,7 @@ import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { setAuthStatusGlobally } from "../connection/authentication";
+import { isWatchOnly } from "../game/gameController";
 
 const Container = styled.div`
   position: relative;
@@ -215,7 +216,9 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         storage.setProfileId(profileId);
         storage.setLoginId(res.uid);
         updateProfileDisplayName(null, res.address);
-        updateEmojiIfNeeded(emoji, false);
+        if (!isWatchOnly) {
+          updateEmojiIfNeeded(emoji, false);
+        }
         setAuthStatusGlobally("authenticated");
         setIsOpen(false);
       }

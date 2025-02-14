@@ -3,6 +3,7 @@ import { PlayerProfile } from "../connection/connectionModels";
 import glicko2 from "glicko2";
 import { storage } from "./storage";
 import { updateEmojiIfNeeded } from "../game/board";
+import { isWatchOnly } from "../game/gameController";
 
 export type PlayerMetadata = {
   uid: string;
@@ -109,7 +110,9 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
         allProfilesDict[loginId] = profile;
         if (profile.emoji !== undefined && own) {
           storage.setPlayerEmojiId(profile.emoji.toString());
-          updateEmojiIfNeeded(profile.emoji.toString(), false);
+          if (!isWatchOnly) {
+            updateEmojiIfNeeded(profile.emoji.toString(), false);
+          }
           sendEmojiUpdate(profile.emoji, true);
         }
         onSuccess();
