@@ -59,13 +59,13 @@
         },
         "nonces": {
           "$matchId": {
-            ".write": "auth != null && auth.token.admin === true && !data.exists()",
-            ".validate": "newData.isString() && newData.val().length > 0"
+            ".write": "auth != null && auth.token.admin === true",
+            ".validate": "!data.exists() && newData.isString() && newData.val().length > 0"
           }
         },
         "profile": {
-          ".write": "auth != null && auth.token.admin === true && !data.exists()",
-          ".validate": "newData.isString() && newData.val().length > 0"
+          ".write": "auth != null && auth.token.admin === true",
+          ".validate": "!data.exists() && newData.isString() && newData.val().length > 0"
         }
       }
     }
