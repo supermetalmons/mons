@@ -9,7 +9,7 @@
     "invites": {
       "$inviteId": {
         ".read": "(data.child('hostId').exists() && data.child('guestId').exists()) || (auth != null && (!data.child('password').exists() || auth.uid === data.child('hostId').val()))",
-          ".write": "(auth != null && !data.exists()) || (auth != null && data.exists() && data.child('password').exists() && newData.child('password').val() === data.child('password').val() && newData.child('hostId').val() === data.child('hostId').val() && !data.child('guestId').exists() && newData.child('guestId').val() === auth.uid && newData.child('version').val() === data.child('version').val() && newData.child('hostColor').val() === data.child('hostColor').val())",
+        ".write": "(auth != null && !data.exists()) || (auth != null && data.exists() && data.child('password').exists() && newData.child('password').val() === data.child('password').val() && newData.child('hostId').val() === data.child('hostId').val() && !data.child('guestId').exists() && newData.child('guestId').val() === auth.uid && newData.child('version').val() === data.child('version').val() && newData.child('hostColor').val() === data.child('hostColor').val())",
         
         "hostId": {
           ".validate": "auth.uid === newData.val() || newData.val() === data.val()"
@@ -45,8 +45,8 @@
           "$matchId": {
             ".write": "auth != null && auth.uid === $userId && data.child('fen').exists() && newData.exists() && newData.child('fen').exists()",
             "fen": {
-                  ".validate": "newData.isString() && newData.val().length > 0"
-                },
+              ".validate": "newData.isString() && newData.val().length > 0"
+            },
             "flatMovesString": {
               ".validate": "newData.isString() && (!data.exists() || newData.val().contains(data.val()))"
             },
