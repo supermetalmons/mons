@@ -391,7 +391,7 @@ export function runExperimentalMonsBoardAsDisplayAnimation() {
   runMonsBoardAsDisplayWaitingAnimation();
 }
 
-export function runMonsBoardAsDisplayWaitingAnimation() {
+export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
   if (monsBoardDisplayAnimationTimeout) return;
 
   const frames: [number, number][][] = [
@@ -515,7 +515,7 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
   animate();
 }
 
-export function runMonsBoardAsDisplayWaitingCirclesAnimation() {
+export function runMonsBoardAsDisplayWaitingAnimation() {
   if (monsBoardDisplayAnimationTimeout) return;
 
   let radius = 0;
@@ -560,7 +560,7 @@ export function stopMonsBoardAsDisplayAnimations() {
 
 function colorPixel(location: Location, white: boolean) {
   const flippedLocation = new Location(isFlipped ? 10 - location.i : location.i, location.j);
-  placeItem(white ? angel : angelB, flippedLocation, white ? ItemKind.Angel : ItemKind.AngelBlack, false);
+  placeItem(white ? mana : manaB, flippedLocation, white ? ItemKind.Mana : ItemKind.ManaBlack, false);
 }
 
 function cleanAllPixels() {
