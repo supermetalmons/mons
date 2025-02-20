@@ -47,6 +47,7 @@ class FirebaseConnection {
   public async signIn(): Promise<string | undefined> {
     try {
       await signInAnonymously(this.auth);
+      // TODO: force getIdToken — refresh custom claims if it is not there while there is an address connected
       const uid = this.auth.currentUser?.uid;
       return uid;
     } catch (error) {
@@ -407,6 +408,7 @@ class FirebaseConnection {
   }
 
   private sendMatchUpdate(): void {
+    // TODO: there are now situations when sending updates into different uid is required
     set(ref(this.db, `players/${this.uid}/matches/${this.matchId}`), this.myMatch)
       .then(() => {
         console.log("Match update sent successfully");
