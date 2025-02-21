@@ -27,12 +27,12 @@
         },
 
         "guestRematches": {
-          ".write": "auth.uid === data.parent().child('guestId').val()",
+          ".write": "auth.uid === data.parent().child('guestId').val() || (auth.token.profileId != null && root.child('players').child(data.parent().child('guestId').val()).child('profile').val() === auth.token.profileId)",
           ".validate": "newData.isString() && (!data.exists() || newData.val().contains(data.val()))"
         },
 
         "hostRematches": {
-          ".write": "auth.uid === data.parent().child('hostId').val()",
+          ".write": "auth.uid === data.parent().child('hostId').val() || (auth.token.profileId != null && root.child('players').child(data.parent().child('hostId').val()).child('profile').val() === auth.token.profileId)",
           ".validate": "newData.isString() && (!data.exists() || newData.val().contains(data.val()))"
         }
       }
