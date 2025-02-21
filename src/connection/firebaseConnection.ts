@@ -181,6 +181,7 @@ class FirebaseConnection {
   }
 
   public sendEndMatchIndicator(): void {
+    // TODO: different with profileId logic
     if (!this.latestInvite || this.rematchSeriesEndIsIndicated()) return;
     const endingAsHost = this.latestInvite.hostId === this.uid;
     const currentRematchesString = endingAsHost ? this.latestInvite.hostRematches : this.latestInvite.guestRematches;
@@ -189,6 +190,7 @@ class FirebaseConnection {
   }
 
   public sendRematchProposal(): void {
+    // TODO: different with profileId logic
     const newRematchProposalIndex = this.getRematchIndexAvailableForNewProposal();
     if (!newRematchProposalIndex || !this.latestInvite || !this.inviteId) {
       return;
@@ -452,6 +454,8 @@ class FirebaseConnection {
   }
 
   private getLatestBothSidesApprovedOrProposedByMeMatchId(): string {
+    // TODO: different with profileId logic
+    // TODO: go through all this.uid checks — these should be different now with profile id logic
     let rematchIndex = this.getLatestBothSidesApprovedRematchIndex();
     if (!this.inviteId || !this.latestInvite) {
       return "";
