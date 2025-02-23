@@ -92,10 +92,10 @@ let supermanaSimple: SVGElement;
 const emojis = (await import("../content/emojis")).emojis;
 
 async function initializeAssets(onStart: boolean) {
-  assets = (await import(`../content/gameAssets/gameAssets${currentAssetsSet}`)).gameAssets;
+  assets = (await import(`../assets/gameAssets${currentAssetsSet}`)).gameAssets;
 
   if (isExperimentingWithSprites) {
-    const sprites = (await import(`../content/gameAssets/monsSprites`)).gameAssets;
+    const sprites = (await import(`../assets/monsSprites`)).gameAssets;
     const allKeys = Object.keys(sprites);
     const getRandomSpriteOfType = (type: string) => {
       const keys = allKeys.filter((k) => k.endsWith(`_${type}`));
@@ -139,10 +139,10 @@ async function initializeAssets(onStart: boolean) {
     Object.values(AssetsSet)
       .filter((set) => set !== currentAssetsSet)
       .forEach((set) => {
-        import(`../content/gameAssets/gameAssets${set}`).catch(() => {});
+        import(`../assets/gameAssets${set}`).catch(() => {});
       });
     if (!isExperimentingWithSprites) {
-      import(`../content/gameAssets/monsSprites`).catch(() => {});
+      import(`../assets/monsSprites`).catch(() => {});
     }
   }
 }
