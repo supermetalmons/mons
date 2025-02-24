@@ -20,7 +20,7 @@ class FirebaseConnection {
   private matchRefs: { [key: string]: any } = {};
   private profileRefs: { [key: string]: any } = {};
 
-  private uid: string | null = null;
+  private loginUid: string | null = null;
 
   private latestInvite: Invite | null = null;
   private myMatch: Match | null = null;
@@ -48,8 +48,8 @@ class FirebaseConnection {
     try {
       await signInAnonymously(this.auth);
       // TODO: force getIdToken — refresh custom claims if it is not there while there is an address connected
-      const uid = this.auth.currentUser?.uid;
-      return uid;
+      const loginUid = this.auth.currentUser?.uid;
+      return loginUid;
     } catch (error) {
       console.error("Failed to sign in anonymously:", error);
       return undefined;
@@ -59,7 +59,7 @@ class FirebaseConnection {
   public async signOut(): Promise<void> {
     try {
       await signOut(this.auth);
-      this.uid = null;
+      this.loginUid = null;
     } catch (error) {
       console.error("Failed to sign out:", error);
       throw error;
@@ -165,8 +165,8 @@ class FirebaseConnection {
 
   private async ensureAuthenticated(): Promise<void> {
     if (!this.auth.currentUser) {
-      const uid = await this.signIn();
-      if (!uid) {
+      const loginUid = await this.signIn();
+      if (!loginUid) {
         throw new Error("Failed to authenticate user");
       }
     }
@@ -181,16 +181,14 @@ class FirebaseConnection {
   }
 
   public sendEndMatchIndicator(): void {
-    // TODO: different with profileId logic
     if (!this.latestInvite || this.rematchSeriesEndIsIndicated()) return;
-    const endingAsHost = this.latestInvite.hostId === this.uid;
+    const endingAsHost = this.latestInvite.hostId === this.loginUid; // TODO: different with profileId logic
     const currentRematchesString = endingAsHost ? this.latestInvite.hostRematches : this.latestInvite.guestRematches;
     const updatedRematchesString = currentRematchesString ? currentRematchesString + "x" : "x";
     set(ref(this.db, `invites/${this.inviteId}/${endingAsHost ? "hostRematches" : "guestRematches"}`), updatedRematchesString);
   }
 
   public sendRematchProposal(): void {
-    // TODO: different with profileId logic
     const newRematchProposalIndex = this.getRematchIndexAvailableForNewProposal();
     if (!newRematchProposalIndex || !this.latestInvite || !this.inviteId) {
       return;
@@ -198,12 +196,11 @@ class FirebaseConnection {
 
     this.stopObservingAllMatches();
 
-    const proposingAsHost = this.latestInvite.hostId === this.uid;
+    const proposingAsHost = this.latestInvite.hostId === this.loginUid; // TODO: different with profileId logic
     const emojiId = getPlayersEmojiId();
     const proposalIndexIsEven = parseInt(newRematchProposalIndex, 10) % 2 === 0;
     const initialGuestColor = this.latestInvite.hostColor === "white" ? "black" : "white";
     const newColor = proposalIndexIsEven ? (proposingAsHost ? this.latestInvite.hostColor : initialGuestColor) : proposingAsHost ? initialGuestColor : this.latestInvite.hostColor;
-    const asHost = this.latestInvite?.hostId === this.uid;
     let newRematchesProposalsString = "";
 
     const inviteId = this.inviteId;
@@ -219,9 +216,9 @@ class FirebaseConnection {
     };
 
     const updates: { [key: string]: any } = {};
-    updates[`players/${this.uid}/matches/${nextMatchId}`] = nextMatch;
+    updates[`players/${this.loginUid}/matches/${nextMatchId}`] = nextMatch; // TODO: different with profileId logic
 
-    if (asHost) {
+    if (proposingAsHost) {
       newRematchesProposalsString = this.latestInvite.hostRematches ? this.latestInvite.hostRematches + ";" + newRematchProposalIndex : newRematchProposalIndex;
       updates[`invites/${this.inviteId}/hostRematches`] = newRematchesProposalsString;
     } else {
@@ -234,7 +231,7 @@ class FirebaseConnection {
         this.myMatch = nextMatch;
         this.matchId = nextMatchId;
         if (this.latestInvite) {
-          if (asHost) {
+          if (proposingAsHost) {
             this.latestInvite.hostRematches = newRematchesProposalsString;
           } else {
             this.latestInvite.guestRematches = newRematchesProposalsString;
@@ -257,7 +254,7 @@ class FirebaseConnection {
   private getRematchIndexAvailableForNewProposal(): string | null {
     if (!this.latestInvite || this.rematchSeriesEndIsIndicated()) return null;
 
-    const proposingAsHost = this.latestInvite.hostId === this.uid;
+    const proposingAsHost = this.latestInvite.hostId === this.loginUid; // TODO: different with profileId logic
     const guestRematchesLength = this.latestInvite.guestRematches ? this.latestInvite.guestRematches.length : 0;
     const hostRematchesLength = this.latestInvite.hostRematches ? this.latestInvite.hostRematches.length : 0;
 
@@ -290,11 +287,11 @@ class FirebaseConnection {
   }
 
   public getOpponentId(): string {
-    if (!this.latestInvite || !this.uid) {
+    if (!this.latestInvite || !this.loginUid) {
       return "";
     }
 
-    if (this.latestInvite.hostId === this.uid) {
+    if (this.latestInvite.hostId === this.loginUid) { // TODO: different with profileId logic
       return this.latestInvite.guestId ?? "";
     } else {
       return this.latestInvite.hostId ?? "";
@@ -372,7 +369,7 @@ class FirebaseConnection {
     }
     if (!this.myMatch) return;
     this.myMatch.emojiId = newId;
-    set(ref(this.db, `players/${this.uid}/matches/${this.matchId}/emojiId`), newId).catch((error) => {
+    set(ref(this.db, `players/${this.loginUid}/matches/${this.matchId}/emojiId`), newId).catch((error) => { // TODO: different with profileId logic
       console.error("Error updating emoji:", error);
     });
   }
@@ -391,7 +388,7 @@ class FirebaseConnection {
   public sendVoiceReaction(reaction: Reaction): void {
     if (!this.myMatch) return;
     this.myMatch.reaction = reaction;
-    set(ref(this.db, `players/${this.uid}/matches/${this.matchId}/reaction`), reaction).catch((error) => {
+    set(ref(this.db, `players/${this.loginUid}/matches/${this.matchId}/reaction`), reaction).catch((error) => { // TODO: different with profileId logic
       console.error("Error sending voice reaction:", error);
     });
   }
@@ -410,8 +407,7 @@ class FirebaseConnection {
   }
 
   private sendMatchUpdate(): void {
-    // TODO: there are now situations when sending updates into different uid is required
-    set(ref(this.db, `players/${this.uid}/matches/${this.matchId}`), this.myMatch)
+    set(ref(this.db, `players/${this.loginUid}/matches/${this.matchId}`), this.myMatch) // TODO: different with profileId logic
       .then(() => {
         console.log("Match update sent successfully");
       })
@@ -454,16 +450,14 @@ class FirebaseConnection {
   }
 
   private getLatestBothSidesApprovedOrProposedByMeMatchId(): string {
-    // TODO: different with profileId logic
-    // TODO: go through all this.uid checks — these should be different now with profile id logic
     let rematchIndex = this.getLatestBothSidesApprovedRematchIndex();
     if (!this.inviteId || !this.latestInvite) {
       return "";
     } else if (!this.rematchSeriesEndIsIndicated() && this.latestInvite.guestRematches?.length !== this.latestInvite.hostRematches?.length) {
       const guestRematchesLength = this.latestInvite.guestRematches?.length ?? 0;
       const hostRematchesLength = this.latestInvite.hostRematches?.length ?? 0;
-      const proposedMoreAsHost = this.latestInvite.hostId === this.uid && hostRematchesLength > guestRematchesLength;
-      const proposedMoreAsGuest = this.latestInvite.guestId === this.uid && guestRematchesLength > hostRematchesLength;
+      const proposedMoreAsHost = this.latestInvite.hostId === this.loginUid && hostRematchesLength > guestRematchesLength; // TODO: different with profileId logic
+      const proposedMoreAsGuest = this.latestInvite.guestId === this.loginUid && guestRematchesLength > hostRematchesLength; // TODO: different with profileId logic
       if (proposedMoreAsHost || proposedMoreAsGuest) {
         rematchIndex = rematchIndex ? rematchIndex + 1 : 1;
         didDiscoverExistingRematchProposalWaitingForResponse();
@@ -477,7 +471,7 @@ class FirebaseConnection {
   }
 
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
-    this.uid = uid;
+    this.loginUid = uid;
     this.inviteId = inviteId;
     const inviteRef = ref(this.db, `invites/${inviteId}`);
     get(inviteRef)
@@ -611,7 +605,7 @@ class FirebaseConnection {
 
         this.myMatch = match;
 
-        set(ref(this.db, `players/${this.uid}/matches/${matchId}`), match)
+        set(ref(this.db, `players/${this.loginUid}/matches/${matchId}`), match)
           .then(() => {
             this.observeMatch(hostId, matchId);
           })
@@ -646,7 +640,7 @@ class FirebaseConnection {
     };
 
     this.myMatch = match;
-    this.uid = uid;
+    this.loginUid = uid;
     this.inviteId = inviteId;
     this.latestInvite = invite;
 
@@ -679,7 +673,7 @@ class FirebaseConnection {
 
   private observeRematchOrEndMatchIndicators() {
     if (this.opponentRematchesRef || !this.latestInvite || this.rematchSeriesEndIsIndicated()) return;
-    const observeAsGuest = !(this.latestInvite.hostId === this.uid);
+    const observeAsGuest = !(this.latestInvite.hostId === this.loginUid); // TODO: different with profileId logic
 
     const observationPath = `invites/${this.inviteId}/${observeAsGuest ? "hostRematches" : "guestRematches"}`;
     this.opponentRematchesRef = ref(this.db, observationPath);
