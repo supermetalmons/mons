@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import styled from "styled-components";
 import { storage } from "../utils/storage";
-import { signOut, verifySolanaAddress } from "../connection/connection";
+import { forceTokenRefresh, signOut, verifySolanaAddress } from "../connection/connection";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
@@ -214,6 +214,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         storage.setSolAddress(res.address);
         storage.setPlayerEmojiId(emoji.toString());
         storage.setProfileId(profileId);
+        forceTokenRefresh();
         storage.setLoginId(res.uid);
         updateProfileDisplayName(null, res.address);
         if (!isWatchOnly) {

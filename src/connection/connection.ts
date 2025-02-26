@@ -134,6 +134,10 @@ export async function claimVictoryByTimer(): Promise<any> {
   return firebaseConnection.claimVictoryByTimer();
 }
 
+export async function forceTokenRefresh(): Promise<any> {
+  return firebaseConnection.forceTokenRefresh();
+}
+
 export async function updateRatings(): Promise<any> {
   return firebaseConnection.updateRatings();
 }

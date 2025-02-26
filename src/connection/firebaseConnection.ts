@@ -8,9 +8,6 @@ import { getFunctions, Functions, httpsCallable } from "firebase/functions";
 import { Match, Invite, Reaction, PlayerProfile } from "./connectionModels";
 import { storage } from "../utils/storage";
 
-const devTmpForceTokenRefresh = false; // TODO: do not push with true
-// TODO: stop using force refresh, perform proper checks
-
 const controllerVersion = 2;
 
 class FirebaseConnection {
@@ -48,18 +45,21 @@ class FirebaseConnection {
     this.functions = getFunctions(this.app);
   }
 
+  public async forceTokenRefresh(): Promise<void> {
+    try {
+      if (!this.auth.currentUser) {
+        console.warn("Cannot refresh token: No authenticated user");
+      } else {
+        await this.auth.currentUser.getIdToken(true);
+      }
+    } catch (error) {
+      console.error("Failed to refresh authentication token:", error);
+    }
+  }
+
   public async signIn(): Promise<string | undefined> {
     try {
       await signInAnonymously(this.auth);
-
-      if (devTmpForceTokenRefresh) {
-        await this.auth.currentUser?.getIdToken(true);
-        // TODO: do not refresh if profileId is already there in custom claims
-        // TODO: do not attempt refresh if there is no connected address
-        // TODO: find a more appropriate moment for a force refresh — right after successful address connection or when connecting to a game
-        // TODO: do not keep force refresh within signIn which might be called too often / in inappropriate moments
-      }
-
       const uid = this.auth.currentUser?.uid;
       return uid;
     } catch (error) {

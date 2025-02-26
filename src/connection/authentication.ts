@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
-import { subscribeToAuthChanges, signIn, verifyEthAddress } from "./connection";
+import { subscribeToAuthChanges, signIn, verifyEthAddress, forceTokenRefresh } from "./connection";
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { storage } from "../utils/storage";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
@@ -103,6 +103,7 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
         storage.setEthAddress(res.address);
         storage.setPlayerEmojiId(emoji.toString());
         storage.setProfileId(profileId);
+        forceTokenRefresh();
         storage.setLoginId(res.uid);
         updateProfileDisplayName(res.address, null);
         if (!isWatchOnly) {
