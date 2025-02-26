@@ -21,6 +21,7 @@ class FirebaseConnection {
   private profileRefs: { [key: string]: any } = {};
 
   private loginUid: string | null = null;
+  private sameProfilePlayerUid: string | null = null;
 
   private latestInvite: Invite | null = null;
   private myMatch: Match | null = null;
@@ -48,8 +49,8 @@ class FirebaseConnection {
     try {
       await signInAnonymously(this.auth);
       // TODO: force getIdToken — refresh custom claims if it is not there while there is an address connected
-      const loginUid = this.auth.currentUser?.uid;
-      return loginUid;
+      const uid = this.auth.currentUser?.uid;
+      return uid;
     } catch (error) {
       console.error("Failed to sign in anonymously:", error);
       return undefined;
@@ -60,6 +61,7 @@ class FirebaseConnection {
     try {
       await signOut(this.auth);
       this.loginUid = null;
+      this.sameProfilePlayerUid = null;
     } catch (error) {
       console.error("Failed to sign out:", error);
       throw error;
@@ -165,8 +167,8 @@ class FirebaseConnection {
 
   private async ensureAuthenticated(): Promise<void> {
     if (!this.auth.currentUser) {
-      const loginUid = await this.signIn();
-      if (!loginUid) {
+      const uid = await this.signIn();
+      if (!uid) {
         throw new Error("Failed to authenticate user");
       }
     }
@@ -182,7 +184,7 @@ class FirebaseConnection {
 
   public sendEndMatchIndicator(): void {
     if (!this.latestInvite || this.rematchSeriesEndIsIndicated()) return;
-    const endingAsHost = this.latestInvite.hostId === this.loginUid; // TODO: different with profileId logic
+    const endingAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid;
     const currentRematchesString = endingAsHost ? this.latestInvite.hostRematches : this.latestInvite.guestRematches;
     const updatedRematchesString = currentRematchesString ? currentRematchesString + "x" : "x";
     set(ref(this.db, `invites/${this.inviteId}/${endingAsHost ? "hostRematches" : "guestRematches"}`), updatedRematchesString);
@@ -196,7 +198,7 @@ class FirebaseConnection {
 
     this.stopObservingAllMatches();
 
-    const proposingAsHost = this.latestInvite.hostId === this.loginUid; // TODO: different with profileId logic
+    const proposingAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid;
     const emojiId = getPlayersEmojiId();
     const proposalIndexIsEven = parseInt(newRematchProposalIndex, 10) % 2 === 0;
     const initialGuestColor = this.latestInvite.hostColor === "white" ? "black" : "white";
@@ -216,7 +218,7 @@ class FirebaseConnection {
     };
 
     const updates: { [key: string]: any } = {};
-    updates[`players/${this.loginUid}/matches/${nextMatchId}`] = nextMatch; // TODO: different with profileId logic
+    updates[`players/${this.sameProfilePlayerUid}/matches/${nextMatchId}`] = nextMatch;
 
     if (proposingAsHost) {
       newRematchesProposalsString = this.latestInvite.hostRematches ? this.latestInvite.hostRematches + ";" + newRematchProposalIndex : newRematchProposalIndex;
@@ -254,7 +256,7 @@ class FirebaseConnection {
   private getRematchIndexAvailableForNewProposal(): string | null {
     if (!this.latestInvite || this.rematchSeriesEndIsIndicated()) return null;
 
-    const proposingAsHost = this.latestInvite.hostId === this.loginUid; // TODO: different with profileId logic
+    const proposingAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid;
     const guestRematchesLength = this.latestInvite.guestRematches ? this.latestInvite.guestRematches.length : 0;
     const hostRematchesLength = this.latestInvite.hostRematches ? this.latestInvite.hostRematches.length : 0;
 
@@ -287,12 +289,11 @@ class FirebaseConnection {
   }
 
   public getOpponentId(): string {
-    if (!this.latestInvite || !this.loginUid) {
+    if (!this.latestInvite || !this.sameProfilePlayerUid) {
       return "";
     }
 
-    if (this.latestInvite.hostId === this.loginUid) {
-      // TODO: different with profileId logic
+    if (this.latestInvite.hostId === this.sameProfilePlayerUid) {
       return this.latestInvite.guestId ?? "";
     } else {
       return this.latestInvite.hostId ?? "";
@@ -370,8 +371,7 @@ class FirebaseConnection {
     }
     if (!this.myMatch) return;
     this.myMatch.emojiId = newId;
-    set(ref(this.db, `players/${this.loginUid}/matches/${this.matchId}/emojiId`), newId).catch((error) => {
-      // TODO: different with profileId logic
+    set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${this.matchId}/emojiId`), newId).catch((error) => {
       console.error("Error updating emoji:", error);
     });
   }
@@ -390,8 +390,7 @@ class FirebaseConnection {
   public sendVoiceReaction(reaction: Reaction): void {
     if (!this.myMatch) return;
     this.myMatch.reaction = reaction;
-    set(ref(this.db, `players/${this.loginUid}/matches/${this.matchId}/reaction`), reaction).catch((error) => {
-      // TODO: different with profileId logic
+    set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${this.matchId}/reaction`), reaction).catch((error) => {
       console.error("Error sending voice reaction:", error);
     });
   }
@@ -410,7 +409,7 @@ class FirebaseConnection {
   }
 
   private sendMatchUpdate(): void {
-    set(ref(this.db, `players/${this.loginUid}/matches/${this.matchId}`), this.myMatch) // TODO: different with profileId logic
+    set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${this.matchId}`), this.myMatch)
       .then(() => {
         console.log("Match update sent successfully");
       })
@@ -459,8 +458,8 @@ class FirebaseConnection {
     } else if (!this.rematchSeriesEndIsIndicated() && this.latestInvite.guestRematches?.length !== this.latestInvite.hostRematches?.length) {
       const guestRematchesLength = this.latestInvite.guestRematches?.length ?? 0;
       const hostRematchesLength = this.latestInvite.hostRematches?.length ?? 0;
-      const proposedMoreAsHost = this.latestInvite.hostId === this.loginUid && hostRematchesLength > guestRematchesLength; // TODO: different with profileId logic
-      const proposedMoreAsGuest = this.latestInvite.guestId === this.loginUid && guestRematchesLength > hostRematchesLength; // TODO: different with profileId logic
+      const proposedMoreAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid && hostRematchesLength > guestRematchesLength;
+      const proposedMoreAsGuest = this.latestInvite.guestId === this.sameProfilePlayerUid && guestRematchesLength > hostRematchesLength;
       if (proposedMoreAsHost || proposedMoreAsGuest) {
         rematchIndex = rematchIndex ? rematchIndex + 1 : 1;
         didDiscoverExistingRematchProposalWaitingForResponse();
@@ -475,7 +474,8 @@ class FirebaseConnection {
 
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
     this.loginUid = uid;
-    // TODO: set publicFacingPlayerUid asap as well — for situations when one of match players has the same profileId
+    this.sameProfilePlayerUid = uid;
+    // TODO: calculate correct sameProfilePlayerUid value asap as well — see if one of match players has the same profileId
     this.inviteId = inviteId;
     const inviteRef = ref(this.db, `invites/${inviteId}`);
     get(inviteRef)
@@ -610,7 +610,7 @@ class FirebaseConnection {
 
         this.myMatch = match;
 
-        set(ref(this.db, `players/${this.loginUid}/matches/${matchId}`), match)
+        set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${matchId}`), match)
           .then(() => {
             this.observeMatch(hostId, matchId);
           })
@@ -646,6 +646,7 @@ class FirebaseConnection {
 
     this.myMatch = match;
     this.loginUid = uid;
+    this.sameProfilePlayerUid = uid;
     this.inviteId = inviteId;
     this.latestInvite = invite;
 
@@ -678,7 +679,7 @@ class FirebaseConnection {
 
   private observeRematchOrEndMatchIndicators() {
     if (this.opponentRematchesRef || !this.latestInvite || this.rematchSeriesEndIsIndicated()) return;
-    const observeAsGuest = !(this.latestInvite.hostId === this.loginUid); // TODO: different with profileId logic
+    const observeAsGuest = !(this.latestInvite.hostId === this.sameProfilePlayerUid);
 
     const observationPath = `invites/${this.inviteId}/${observeAsGuest ? "hostRematches" : "guestRematches"}`;
     this.opponentRematchesRef = ref(this.db, observationPath);
