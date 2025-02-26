@@ -46,7 +46,21 @@ class FirebaseConnection {
   }
 
   public async refreshTokenIfNeeded(): Promise<void> {
-    // TODO: force refresh if token has no claims
+    try {
+      if (!this.auth.currentUser) {
+        console.warn("Cannot refresh token: No authenticated user");
+        return;
+      }
+
+      const token = await this.auth.currentUser.getIdTokenResult();
+
+      if (!token.claims.profileId) {
+        console.log("No profileId in claims, forcing token refresh");
+        await this.forceTokenRefresh();
+      }
+    } catch (error) {
+      console.error("Error checking or refreshing token:", error);
+    }
   }
 
   public async forceTokenRefresh(): Promise<void> {
@@ -541,9 +555,11 @@ class FirebaseConnection {
                     this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
                   } else if (matchingUid === inviteData.hostId) {
                     this.sameProfilePlayerUid = matchingUid;
+                    this.refreshTokenIfNeeded();
                     this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId);
                   } else {
                     this.sameProfilePlayerUid = matchingUid;
+                    this.refreshTokenIfNeeded();
                     this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId ?? "");
                   }
                 })
