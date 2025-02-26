@@ -291,7 +291,8 @@ class FirebaseConnection {
       return "";
     }
 
-    if (this.latestInvite.hostId === this.loginUid) { // TODO: different with profileId logic
+    if (this.latestInvite.hostId === this.loginUid) {
+      // TODO: different with profileId logic
       return this.latestInvite.guestId ?? "";
     } else {
       return this.latestInvite.hostId ?? "";
@@ -369,7 +370,8 @@ class FirebaseConnection {
     }
     if (!this.myMatch) return;
     this.myMatch.emojiId = newId;
-    set(ref(this.db, `players/${this.loginUid}/matches/${this.matchId}/emojiId`), newId).catch((error) => { // TODO: different with profileId logic
+    set(ref(this.db, `players/${this.loginUid}/matches/${this.matchId}/emojiId`), newId).catch((error) => {
+      // TODO: different with profileId logic
       console.error("Error updating emoji:", error);
     });
   }
@@ -388,7 +390,8 @@ class FirebaseConnection {
   public sendVoiceReaction(reaction: Reaction): void {
     if (!this.myMatch) return;
     this.myMatch.reaction = reaction;
-    set(ref(this.db, `players/${this.loginUid}/matches/${this.matchId}/reaction`), reaction).catch((error) => { // TODO: different with profileId logic
+    set(ref(this.db, `players/${this.loginUid}/matches/${this.matchId}/reaction`), reaction).catch((error) => {
+      // TODO: different with profileId logic
       console.error("Error sending voice reaction:", error);
     });
   }
@@ -472,6 +475,7 @@ class FirebaseConnection {
 
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
     this.loginUid = uid;
+    // TODO: set publicFacingPlayerUid asap as well — for situations when one of match players has the same profileId
     this.inviteId = inviteId;
     const inviteRef = ref(this.db, `invites/${inviteId}`);
     get(inviteRef)
@@ -484,6 +488,7 @@ class FirebaseConnection {
 
         this.latestInvite = inviteData;
         this.observeRematchOrEndMatchIndicators();
+        // TODO: make sure sent rematch state after relogin is properly restored after reload
         const matchId = this.getLatestBothSidesApprovedOrProposedByMeMatchId();
         this.matchId = matchId;
 
