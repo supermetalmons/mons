@@ -8,6 +8,9 @@ import { getFunctions, Functions, httpsCallable } from "firebase/functions";
 import { Match, Invite, Reaction, PlayerProfile } from "./connectionModels";
 import { storage } from "../utils/storage";
 
+const devTmpForceTokenRefresh = false; // TODO: do not push with true
+// TODO: stop using force refresh, perform proper checks
+
 const controllerVersion = 2;
 
 class FirebaseConnection {
@@ -48,7 +51,15 @@ class FirebaseConnection {
   public async signIn(): Promise<string | undefined> {
     try {
       await signInAnonymously(this.auth);
-      // TODO: force getIdToken — refresh custom claims if it is not there while there is an address connected
+
+      if (devTmpForceTokenRefresh) {
+        await this.auth.currentUser?.getIdToken(true);
+        // TODO: do not refresh if profileId is already there in custom claims
+        // TODO: do not attempt refresh if there is no connected address
+        // TODO: find a more appropriate moment for a force refresh — right after successful address connection or when connecting to a game
+        // TODO: do not keep force refresh within signIn which might be called too often / in inappropriate moments
+      }
+
       const uid = this.auth.currentUser?.uid;
       return uid;
     } catch (error) {
@@ -654,7 +665,7 @@ class FirebaseConnection {
     this.matchId = matchId;
 
     const updates: { [key: string]: any } = {};
-    updates[`players/${uid}/matches/${matchId}`] = match;
+    updates[`players/${this.loginUid}/matches/${matchId}`] = match;
     updates[`invites/${inviteId}`] = invite;
     update(ref(this.db), updates)
       .then(() => {
