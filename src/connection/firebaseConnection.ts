@@ -45,6 +45,10 @@ class FirebaseConnection {
     this.functions = getFunctions(this.app);
   }
 
+  public async refreshTokenIfNeeded(): Promise<void> {
+    // TODO: force refresh if token has no claims
+  }
+
   public async forceTokenRefresh(): Promise<void> {
     try {
       if (!this.auth.currentUser) {

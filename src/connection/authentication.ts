@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
-import { subscribeToAuthChanges, signIn, verifyEthAddress, forceTokenRefresh } from "./connection";
+import { subscribeToAuthChanges, signIn, verifyEthAddress, forceTokenRefresh, refreshTokenIfNeeded } from "./connection";
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { storage } from "../utils/storage";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
@@ -40,6 +40,7 @@ export function useAuthStatus() {
         const profileId = storage.getProfileId("");
         if (profileId !== "" && storedLoginId === uid && (storedEthAddress !== "" || storedSolAddress !== "")) {
           setAuthStatus("authenticated");
+          refreshTokenIfNeeded();
           const emojiString = storage.getPlayerEmojiId("1");
           const emoji = parseInt(emojiString);
           const profile = {
