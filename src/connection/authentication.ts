@@ -37,9 +37,9 @@ export function useAuthStatus() {
         const storedLoginId = storage.getLoginId("");
         const storedEthAddress = storage.getEthAddress("");
         const storedSolAddress = storage.getSolAddress("");
-        if (storedLoginId === uid && (storedEthAddress !== "" || storedSolAddress !== "")) {
+        const profileId = storage.getProfileId("");
+        if (profileId !== "" && storedLoginId === uid && (storedEthAddress !== "" || storedSolAddress !== "")) {
           setAuthStatus("authenticated");
-          const profileId = storage.getProfileId("");
           const emojiString = storage.getPlayerEmojiId("1");
           const emoji = parseInt(emojiString);
           const profile = {
