@@ -387,9 +387,14 @@ class FirebaseConnection {
     });
   }
 
-  public updateFirestoreEmoji(newId: number): void {
+  private getLocalProfileId(): string | null {
     const id = storage.getProfileId("");
-    if (id === "") {
+    return id === "" ? null : id;
+  }
+
+  public updateFirestoreEmoji(newId: number): void {
+    const id = this.getLocalProfileId();
+    if (id === null) {
       return;
     }
     const userDocRef = doc(this.firestore, "users", id);
@@ -524,11 +529,26 @@ class FirebaseConnection {
           } else if (inviteData.guestId === uid) {
             this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId);
           } else {
-            // TODO: check in the fastest way possible if game profile matches i.e.
-            // either host id or guest id are within the logins array
-            // or profile value inside the player model === local profileId
-            // write profileIds into invites as well for a faster matching?
-            this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
+            const profileId = this.getLocalProfileId();
+            if (profileId !== null) {
+              this.checkBothPlayerProfiles(inviteData.hostId, inviteData.guestId ?? "", profileId)
+                .then((matchingUid) => {
+                  if (matchingUid === null) {
+                    this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
+                  } else if (matchingUid === inviteData.hostId) {
+                    this.sameProfilePlayerUid = matchingUid;
+                    this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId);
+                  } else {
+                    this.sameProfilePlayerUid = matchingUid;
+                    this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId ?? "");
+                  }
+                })
+                .catch(() => {
+                  this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
+                });
+            } else {
+              this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
+            }
           }
         }
       })
@@ -758,6 +778,38 @@ class FirebaseConnection {
           });
       }
     });
+  }
+
+  public async checkBothPlayerProfiles(hostPlayerId: string, guestPlayerId: string, profileValue: string): Promise<string | null> {
+    try {
+      const hostProfileRef = ref(this.db, `players/${hostPlayerId}/profile`);
+
+      if (guestPlayerId === "") {
+        const hostSnapshot = await get(hostProfileRef);
+        const hostProfile = hostSnapshot.val();
+
+        if (hostProfile === profileValue) {
+          return hostPlayerId;
+        }
+      } else {
+        const guestProfileRef = ref(this.db, `players/${guestPlayerId}/profile`);
+
+        const [hostSnapshot, guestSnapshot] = await Promise.all([get(hostProfileRef), get(guestProfileRef)]);
+
+        const hostProfile = hostSnapshot.val();
+        const guestProfile = guestSnapshot.val();
+
+        if (hostProfile === profileValue) {
+          return hostPlayerId;
+        } else if (guestProfile === profileValue) {
+          return guestPlayerId;
+        }
+      }
+
+      return null;
+    } catch {
+      return null;
+    }
   }
 
   private stopObservingAllMatches(): void {
