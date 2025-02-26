@@ -15,7 +15,7 @@ exports.attestMatchVictory = onCall(async (request) => {
   const proxyAddress = "0x6D132b7cDC2b5A5F7C4DFd6C84C0A776062C58Ae";
   const schema = "0x5c6e798cbb817442fa075e01b65d5d65d3ac35c2b05c1306e8771a1c8a3adb32";
 
-  const uid = request.auth.uid;
+  const uid = request.auth.uid; // TODO: update for multi login games
   const inviteId = request.data.inviteId;
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;

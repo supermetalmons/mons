@@ -4,7 +4,7 @@ const admin = require("firebase-admin");
 const { batchReadWithRetry, getProfileByLoginId, updateUserRatingAndNonce } = require("./utils");
 
 exports.updateRatings = onCall(async (request) => {
-  const uid = request.auth.uid;
+  const uid = request.auth.uid; // TODO: update for multi login games
   const inviteId = request.data.inviteId;
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;

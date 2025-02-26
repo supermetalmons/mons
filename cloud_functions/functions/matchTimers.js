@@ -3,7 +3,7 @@ const admin = require("firebase-admin");
 const { batchReadWithRetry } = require("./utils");
 
 exports.startMatchTimer = onCall(async (request) => {
-  const uid = request.auth.uid;
+  const uid = request.auth.uid; // TODO: update for multi login games
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;
 
@@ -65,7 +65,7 @@ exports.startMatchTimer = onCall(async (request) => {
 });
 
 exports.claimMatchVictoryByTimer = onCall(async (request) => {
-  const uid = request.auth.uid;
+  const uid = request.auth.uid; // TODO: update for multi login games
   const inviteId = request.data.inviteId;
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;
