@@ -4,7 +4,8 @@ const admin = require("firebase-admin");
 const { batchReadWithRetry, getProfileByLoginId, updateUserRatingAndNonce } = require("./utils");
 
 exports.updateRatings = onCall(async (request) => {
-  const uid = request.auth.uid; // TODO: update for multi login games
+  const uid = request.auth.uid;
+  const playerId = request.data.playerId;
   const inviteId = request.data.inviteId;
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;
@@ -13,7 +14,7 @@ exports.updateRatings = onCall(async (request) => {
     return { ok: false };
   }
 
-  const matchRef = admin.database().ref(`players/${uid}/matches/${matchId}`);
+  const matchRef = admin.database().ref(`players/${playerId}/matches/${matchId}`);
   const inviteRef = admin.database().ref(`invites/${inviteId}`);
   const opponentMatchRef = admin.database().ref(`players/${opponentId}/matches/${matchId}`);
 
@@ -23,15 +24,22 @@ exports.updateRatings = onCall(async (request) => {
   const inviteData = inviteSnapshot.val();
   const opponentMatchData = opponentMatchSnapshot.val();
 
-  const playerProfile = await getProfileByLoginId(uid);
+  const playerProfile = await getProfileByLoginId(playerId);
   const opponentProfile = await getProfileByLoginId(opponentId);
 
-  if (!((inviteData.hostId === uid && inviteData.guestId === opponentId) || (inviteData.hostId === opponentId && inviteData.guestId === uid))) {
+  if (!((inviteData.hostId === playerId && inviteData.guestId === opponentId) || (inviteData.hostId === opponentId && inviteData.guestId === playerId))) {
     throw new HttpsError("permission-denied", "Players don't match invite data");
   }
 
   if (playerProfile.profileId === "") {
     throw new HttpsError("failed-precondition", "Player's profile id not found.");
+  }
+
+  if (uid !== playerId) {
+    const customClaims = request.auth.token || {};
+    if (!customClaims.profileId || customClaims.profileId !== playerProfile.profileId) {
+      throw new HttpsError("permission-denied", "You don't have permission to perform this action for this player.");
+    }
   }
 
   if (opponentProfile.profileId === "") {
@@ -77,7 +85,7 @@ exports.updateRatings = onCall(async (request) => {
     throw new HttpsError("internal", "Could not confirm victory.");
   }
 
-  const nonceRef = admin.database().ref(`players/${uid}/nonces/${matchId}`);
+  const nonceRef = admin.database().ref(`players/${playerId}/nonces/${matchId}`);
   const nonceSnapshot = await nonceRef.once("value");
   if (!nonceSnapshot.exists()) {
     await nonceRef.set(playerProfile.nonce);
