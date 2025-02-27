@@ -3,14 +3,15 @@ const admin = require("firebase-admin");
 const { batchReadWithRetry } = require("./utils");
 
 exports.startMatchTimer = onCall(async (request) => {
-  const uid = request.auth.uid; // TODO: update for multi login games
+  const playerId = request.data.playerId;
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;
 
-  const matchRef = admin.database().ref(`players/${uid}/matches/${matchId}`);
+  const matchRef = admin.database().ref(`players/${playerId}/matches/${matchId}`);
   const opponentMatchRef = admin.database().ref(`players/${opponentId}/matches/${matchId}`);
 
   const [matchSnapshot, opponentMatchSnapshot] = await batchReadWithRetry([matchRef, opponentMatchRef]);
+  // TODO: verify request.auth.token.profile matches with playerId profile value in realtime database
 
   const matchData = matchSnapshot.val();
   const opponentMatchData = opponentMatchSnapshot.val();
@@ -65,19 +66,20 @@ exports.startMatchTimer = onCall(async (request) => {
 });
 
 exports.claimMatchVictoryByTimer = onCall(async (request) => {
-  const uid = request.auth.uid; // TODO: update for multi login games
   const inviteId = request.data.inviteId;
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;
+  const playerId = request.data.playerId; 
 
-  const matchRef = admin.database().ref(`players/${uid}/matches/${matchId}`);
+  const matchRef = admin.database().ref(`players/${playerId}/matches/${matchId}`);
   const opponentMatchRef = admin.database().ref(`players/${opponentId}/matches/${matchId}`);
   const inviteRef = admin.database().ref(`invites/${inviteId}`);
 
   const [matchSnapshot, opponentMatchSnapshot, inviteSnapshot] = await batchReadWithRetry([matchRef, opponentMatchRef, inviteRef]);
+  // TODO: verify request.auth.token.profile matches with playerId profile value in realtime database
 
   const inviteData = inviteSnapshot.val();
-  if (!((inviteData.hostId === uid && inviteData.guestId === opponentId) || (inviteData.hostId === opponentId && inviteData.guestId === uid))) {
+  if (!((inviteData.hostId === playerId && inviteData.guestId === opponentId) || (inviteData.hostId === opponentId && inviteData.guestId === playerId))) {
     throw new HttpsError("permission-denied", "Players don't match invite data");
   }
 
