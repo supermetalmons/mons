@@ -31,7 +31,7 @@ async function attemptAutomatch(uid, ethAddress, solAddress, profileId, name, em
   if (snapshot.exists()) {
     const firstAutomatchId = Object.keys(snapshot.val())[0];
     const existingAutomatchData = snapshot.val()[firstAutomatchId];
-    if (existingAutomatchData.uid !== uid) { // TODO: update for multi login games — prevent matching different uid with same profile id
+    if (existingAutomatchData.uid !== uid && (profileId === "" || profileId !== existingAutomatchData.profileId)) {
       const existingPlayerName = getDisplayNameFromAddress(existingAutomatchData.ethAddress, existingAutomatchData.solAddress);
 
       const invite = {
