@@ -15,7 +15,8 @@ exports.attestMatchVictory = onCall(async (request) => {
   const proxyAddress = "0x6D132b7cDC2b5A5F7C4DFd6C84C0A776062C58Ae";
   const schema = "0x5c6e798cbb817442fa075e01b65d5d65d3ac35c2b05c1306e8771a1c8a3adb32";
 
-  const uid = request.auth.uid; // TODO: update for multi login games
+  const uid = request.auth.uid;
+  const playerId = request.data.playerId;
   const inviteId = request.data.inviteId;
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;
@@ -24,7 +25,17 @@ exports.attestMatchVictory = onCall(async (request) => {
     return { ok: false };
   }
 
-  const matchRef = admin.database().ref(`players/${uid}/matches/${matchId}`);
+  if (uid !== playerId) {
+    const profileRef = admin.database().ref(`players/${playerId}/profile`);
+    const profileSnapshot = await profileRef.once("value");
+    const profileId = profileSnapshot.val();
+    const customClaims = request.auth.token || {};
+    if (!customClaims.profileId || customClaims.profileId !== profileId) {
+      throw new HttpsError("permission-denied", "You don't have permission to perform this action for this player.");
+    }
+  }
+
+  const matchRef = admin.database().ref(`players/${playerId}/matches/${matchId}`);
   const inviteRef = admin.database().ref(`invites/${inviteId}`);
   const opponentMatchRef = admin.database().ref(`players/${opponentId}/matches/${matchId}`);
 
@@ -33,10 +44,10 @@ exports.attestMatchVictory = onCall(async (request) => {
   const matchData = matchSnapshot.val();
   const inviteData = inviteSnapshot.val();
   const opponentMatchData = opponentMatchSnapshot.val();
-  const playerEthAddress = await getPlayerEthAddress(uid);
+  const playerEthAddress = await getPlayerEthAddress(playerId);
   const opponentEthAddress = await getPlayerEthAddress(opponentId);
 
-  if (!((inviteData.hostId === uid && inviteData.guestId === opponentId) || (inviteData.hostId === opponentId && inviteData.guestId === uid))) {
+  if (!((inviteData.hostId === playerId && inviteData.guestId === opponentId) || (inviteData.hostId === opponentId && inviteData.guestId === playerId))) {
     throw new HttpsError("permission-denied", "Players don't match invite data");
   }
 
@@ -96,7 +107,7 @@ exports.attestMatchVictory = onCall(async (request) => {
   const nonce1 = targetAttestation1.nonce;
   const nonce2 = targetAttestation2.nonce;
 
-  const nonceRef = admin.database().ref(`players/${uid}/nonces/${matchId}`);
+  const nonceRef = admin.database().ref(`players/${playerId}/nonces/${matchId}`);
   const nonceSnapshot = await nonceRef.once("value");
   if (!nonceSnapshot.exists()) {
     await nonceRef.set(nonce1);
