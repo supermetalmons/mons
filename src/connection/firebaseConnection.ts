@@ -334,7 +334,7 @@ class FirebaseConnection {
       await this.ensureAuthenticated();
       const startTimerFunction = httpsCallable(this.functions, "startMatchTimer");
       const opponentId = this.getOpponentId();
-      const response = await startTimerFunction({ inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
+      const response = await startTimerFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
       return response.data;
     } catch (error) {
       console.error("Error starting a timer:", error);
@@ -347,7 +347,7 @@ class FirebaseConnection {
       await this.ensureAuthenticated();
       const claimVictoryByTimerFunction = httpsCallable(this.functions, "claimMatchVictoryByTimer");
       const opponentId = this.getOpponentId();
-      const response = await claimVictoryByTimerFunction({ inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
+      const response = await claimVictoryByTimerFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
       return response.data;
     } catch (error) {
       console.error("Error claiming victory by timer:", error);
@@ -373,7 +373,7 @@ class FirebaseConnection {
       await this.ensureAuthenticated();
       const updateRatingsFunction = httpsCallable(this.functions, "updateRatings");
       const opponentId = this.getOpponentId();
-      const response = await updateRatingsFunction({ inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
+      const response = await updateRatingsFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
       return response.data;
     } catch (error) {
       console.error("Error updating ratings:", error);
@@ -386,7 +386,7 @@ class FirebaseConnection {
       await this.ensureAuthenticated();
       const attestVictoryFunction = httpsCallable(this.functions, "attestMatchVictory");
       const opponentId = this.getOpponentId();
-      const response = await attestVictoryFunction({ inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
+      const response = await attestVictoryFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
       return response.data;
     } catch (error) {
       console.error("Error preparing onchain victory tx:", error);
