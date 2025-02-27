@@ -3,15 +3,25 @@ const admin = require("firebase-admin");
 const { batchReadWithRetry } = require("./utils");
 
 exports.startMatchTimer = onCall(async (request) => {
+  const uid = request.auth.uid;
   const playerId = request.data.playerId;
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;
+
+  if (uid !== playerId) {
+    const profileRef = admin.database().ref(`players/${playerId}/profile`);
+    const profileSnapshot = await profileRef.once("value");
+    const profileId = profileSnapshot.val();
+    const customClaims = request.auth.token || {};
+    if (!customClaims.profileId || customClaims.profileId !== profileId) {
+      throw new HttpsError("permission-denied", "You don't have permission to perform this action for this player.");
+    }
+  }
 
   const matchRef = admin.database().ref(`players/${playerId}/matches/${matchId}`);
   const opponentMatchRef = admin.database().ref(`players/${opponentId}/matches/${matchId}`);
 
   const [matchSnapshot, opponentMatchSnapshot] = await batchReadWithRetry([matchRef, opponentMatchRef]);
-  // TODO: verify request.auth.token.profile matches with playerId profile value in realtime database
 
   const matchData = matchSnapshot.val();
   const opponentMatchData = opponentMatchSnapshot.val();
@@ -66,17 +76,27 @@ exports.startMatchTimer = onCall(async (request) => {
 });
 
 exports.claimMatchVictoryByTimer = onCall(async (request) => {
+  const uid = request.auth.uid;
   const inviteId = request.data.inviteId;
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;
-  const playerId = request.data.playerId; 
+  const playerId = request.data.playerId;
+
+  if (uid !== playerId) {
+    const profileRef = admin.database().ref(`players/${playerId}/profile`);
+    const profileSnapshot = await profileRef.once("value");
+    const profileId = profileSnapshot.val();
+    const customClaims = request.auth.token || {};
+    if (!customClaims.profileId || customClaims.profileId !== profileId) {
+      throw new HttpsError("permission-denied", "You don't have permission to perform this action for this player.");
+    }
+  }
 
   const matchRef = admin.database().ref(`players/${playerId}/matches/${matchId}`);
   const opponentMatchRef = admin.database().ref(`players/${opponentId}/matches/${matchId}`);
   const inviteRef = admin.database().ref(`invites/${inviteId}`);
 
   const [matchSnapshot, opponentMatchSnapshot, inviteSnapshot] = await batchReadWithRetry([matchRef, opponentMatchRef, inviteRef]);
-  // TODO: verify request.auth.token.profile matches with playerId profile value in realtime database
 
   const inviteData = inviteSnapshot.val();
   if (!((inviteData.hostId === playerId && inviteData.guestId === opponentId) || (inviteData.hostId === opponentId && inviteData.guestId === playerId))) {
