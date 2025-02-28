@@ -485,27 +485,6 @@ class FirebaseConnection {
     return lastNumber;
   }
 
-  private getLatestBothSidesApprovedOrProposedByMeMatchId(): string {
-    let rematchIndex = this.getLatestBothSidesApprovedRematchIndex();
-    if (!this.inviteId || !this.latestInvite) {
-      return "";
-    } else if (!this.rematchSeriesEndIsIndicated() && this.latestInvite.guestRematches?.length !== this.latestInvite.hostRematches?.length) {
-      const guestRematchesLength = this.latestInvite.guestRematches?.length ?? 0;
-      const hostRematchesLength = this.latestInvite.hostRematches?.length ?? 0;
-      const proposedMoreAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid && hostRematchesLength > guestRematchesLength;
-      const proposedMoreAsGuest = this.latestInvite.guestId === this.sameProfilePlayerUid && guestRematchesLength > hostRematchesLength;
-      if (proposedMoreAsHost || proposedMoreAsGuest) {
-        rematchIndex = rematchIndex ? rematchIndex + 1 : 1;
-        didDiscoverExistingRematchProposalWaitingForResponse();
-      }
-    }
-    if (!rematchIndex) {
-      return this.inviteId;
-    } else {
-      return this.inviteId + rematchIndex.toString();
-    }
-  }
-
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
     if (this.sameProfilePlayerUid === null || this.loginUid !== uid) {
       this.sameProfilePlayerUid = uid;
@@ -739,6 +718,27 @@ class FirebaseConnection {
         off(inviteRef);
       }
     });
+  }
+
+  private getLatestBothSidesApprovedOrProposedByMeMatchId(): string {
+    let rematchIndex = this.getLatestBothSidesApprovedRematchIndex();
+    if (!this.inviteId || !this.latestInvite) {
+      return "";
+    } else if (!this.rematchSeriesEndIsIndicated() && this.latestInvite.guestRematches?.length !== this.latestInvite.hostRematches?.length) {
+      const guestRematchesLength = this.latestInvite.guestRematches?.length ?? 0;
+      const hostRematchesLength = this.latestInvite.hostRematches?.length ?? 0;
+      const proposedMoreAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid && hostRematchesLength > guestRematchesLength;
+      const proposedMoreAsGuest = this.latestInvite.guestId === this.sameProfilePlayerUid && guestRematchesLength > hostRematchesLength;
+      if (proposedMoreAsHost || proposedMoreAsGuest) {
+        rematchIndex = rematchIndex ? rematchIndex + 1 : 1;
+        didDiscoverExistingRematchProposalWaitingForResponse();
+      }
+    }
+    if (!rematchIndex) {
+      return this.inviteId;
+    } else {
+      return this.inviteId + rematchIndex.toString();
+    }
   }
 
   private observeRematchOrEndMatchIndicators() {
