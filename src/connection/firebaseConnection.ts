@@ -507,9 +507,12 @@ class FirebaseConnection {
   }
 
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
+    if (this.sameProfilePlayerUid === null || this.loginUid !== uid) {
+      this.sameProfilePlayerUid = uid;
+      // TODO: calculate correct sameProfilePlayerUid value asap as well — see if one of match players has the same profileId
+    }
+
     this.loginUid = uid;
-    this.sameProfilePlayerUid = uid;
-    // TODO: calculate correct sameProfilePlayerUid value asap as well — see if one of match players has the same profileId
     this.inviteId = inviteId;
     const inviteRef = ref(this.db, `invites/${inviteId}`);
     get(inviteRef)
@@ -521,8 +524,9 @@ class FirebaseConnection {
         }
 
         this.latestInvite = inviteData;
-        this.observeRematchOrEndMatchIndicators();
         // TODO: make sure sent rematch state after relogin is properly restored after reload
+        // sameProfilePlayerUid used both in observeRematchOrEndMatchIndicators and getLatestBothSidesApprovedOrProposedByMeMatchId might not be properly setup yet
+        this.observeRematchOrEndMatchIndicators();
         const matchId = this.getLatestBothSidesApprovedOrProposedByMeMatchId();
         this.matchId = matchId;
 
@@ -547,27 +551,36 @@ class FirebaseConnection {
           } else if (inviteData.guestId === uid) {
             this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId);
           } else {
-            const profileId = this.getLocalProfileId();
-            if (profileId !== null) {
-              this.checkBothPlayerProfiles(inviteData.hostId, inviteData.guestId ?? "", profileId)
-                .then((matchingUid) => {
-                  if (matchingUid === null) {
-                    this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
-                  } else if (matchingUid === inviteData.hostId) {
-                    this.sameProfilePlayerUid = matchingUid;
-                    this.refreshTokenIfNeeded();
-                    this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId);
-                  } else {
-                    this.sameProfilePlayerUid = matchingUid;
-                    this.refreshTokenIfNeeded();
-                    this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId ?? "");
-                  }
-                })
-                .catch(() => {
-                  this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
-                });
+            if (this.sameProfilePlayerUid !== null && this.sameProfilePlayerUid !== this.loginUid) {
+              if (this.sameProfilePlayerUid === inviteData.hostId) {
+                this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId);
+              } else {
+                this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId ?? "");
+              }
+              this.refreshTokenIfNeeded();
             } else {
-              this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
+              const profileId = this.getLocalProfileId();
+              if (profileId !== null) {
+                this.checkBothPlayerProfiles(inviteData.hostId, inviteData.guestId ?? "", profileId)
+                  .then((matchingUid) => {
+                    if (matchingUid === null) {
+                      this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
+                    } else if (matchingUid === inviteData.hostId) {
+                      this.sameProfilePlayerUid = matchingUid;
+                      this.refreshTokenIfNeeded();
+                      this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId);
+                    } else {
+                      this.sameProfilePlayerUid = matchingUid;
+                      this.refreshTokenIfNeeded();
+                      this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId ?? "");
+                    }
+                  })
+                  .catch(() => {
+                    this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
+                  });
+              } else {
+                this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
+              }
             }
           }
         }
