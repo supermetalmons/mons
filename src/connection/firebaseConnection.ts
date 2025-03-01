@@ -490,14 +490,13 @@ class FirebaseConnection {
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
     if (this.sameProfilePlayerUid === null || this.loginUid !== uid) {
       this.sameProfilePlayerUid = uid;
-      // TODO: calculate correct sameProfilePlayerUid value asap as well — see if one of match players has the same profileId
     }
 
     this.loginUid = uid;
     this.inviteId = inviteId;
     const inviteRef = ref(this.db, `invites/${inviteId}`);
     get(inviteRef)
-      .then((snapshot) => {
+      .then(async (snapshot) => {
         const inviteData: Invite | null = snapshot.val();
         if (!inviteData) {
           console.log("No invite data found");
@@ -507,8 +506,7 @@ class FirebaseConnection {
         this.latestInvite = inviteData;
         this.observeRematchOrEndMatchIndicators();
 
-        // TODO: sameProfilePlayerUid used in getLatestBothSidesApprovedOrProposedByMeMatchId might not be properly setup yet
-        const matchId = this.getLatestBothSidesApprovedOrProposedByMeMatchId();
+        const matchId = await this.getLatestBothSidesApprovedOrProposedByMeMatchId();
         this.matchId = matchId;
 
         if (!inviteData.guestId && inviteData.hostId !== uid) {
@@ -722,7 +720,7 @@ class FirebaseConnection {
     });
   }
 
-  private getLatestBothSidesApprovedOrProposedByMeMatchId(): string {
+  private async getLatestBothSidesApprovedOrProposedByMeMatchId(): Promise<string> {
     let rematchIndex = this.getLatestBothSidesApprovedRematchIndex();
     if (!this.inviteId || !this.latestInvite) {
       return "";
@@ -730,13 +728,14 @@ class FirebaseConnection {
       const guestRematchesLength = this.latestInvite.guestRematches?.length ?? 0;
       const hostRematchesLength = this.latestInvite.hostRematches?.length ?? 0;
 
-      // TODO: might need to load correct sameProfilePlayerUid value first
-
-      const proposedMoreAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid && hostRematchesLength > guestRematchesLength;
-      const proposedMoreAsGuest = this.latestInvite.guestId === this.sameProfilePlayerUid && guestRematchesLength > hostRematchesLength;
-      if (proposedMoreAsHost || proposedMoreAsGuest) {
-        rematchIndex = rematchIndex ? rematchIndex + 1 : 1;
-        didDiscoverExistingRematchProposalWaitingForResponse();
+      if (guestRematchesLength !== hostRematchesLength) {
+        // TODO: make sure to load and setup the correct this.sameProfilePlayerUid value first
+        const proposedMoreAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid && hostRematchesLength > guestRematchesLength;
+        const proposedMoreAsGuest = this.latestInvite.guestId === this.sameProfilePlayerUid && guestRematchesLength > hostRematchesLength;
+        if (proposedMoreAsHost || proposedMoreAsGuest) {
+          rematchIndex = rematchIndex ? rematchIndex + 1 : 1;
+          didDiscoverExistingRematchProposalWaitingForResponse();
+        }
       }
     }
     if (!rematchIndex) {
