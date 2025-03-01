@@ -461,6 +461,7 @@ class FirebaseConnection {
       })
       .catch((error) => {
         console.error("Error sending match update:", error);
+        window.location.reload();
       });
   }
 
