@@ -727,6 +727,9 @@ class FirebaseConnection {
     } else if (!this.rematchSeriesEndIsIndicated() && this.latestInvite.guestRematches?.length !== this.latestInvite.hostRematches?.length) {
       const guestRematchesLength = this.latestInvite.guestRematches?.length ?? 0;
       const hostRematchesLength = this.latestInvite.hostRematches?.length ?? 0;
+
+      // TODO: might need to load correct sameProfilePlayerUid value first
+
       const proposedMoreAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid && hostRematchesLength > guestRematchesLength;
       const proposedMoreAsGuest = this.latestInvite.guestId === this.sameProfilePlayerUid && guestRematchesLength > hostRematchesLength;
       if (proposedMoreAsHost || proposedMoreAsGuest) {
@@ -744,6 +747,8 @@ class FirebaseConnection {
   private observeRematchOrEndMatchIndicators() {
     if (this.opponentRematchesRef || !this.latestInvite || this.rematchSeriesEndIsIndicated()) return;
     const observeAsGuest = !(this.latestInvite.hostId === this.sameProfilePlayerUid);
+
+    // TODO: can we just observe both sides here to avoid these bugs?
 
     const observationPath = `invites/${this.inviteId}/${observeAsGuest ? "hostRematches" : "guestRematches"}`;
     this.opponentRematchesRef = ref(this.db, observationPath);
