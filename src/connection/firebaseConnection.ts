@@ -729,7 +729,17 @@ class FirebaseConnection {
       const hostRematchesLength = this.latestInvite.hostRematches?.length ?? 0;
 
       if (guestRematchesLength !== hostRematchesLength) {
-        // TODO: make sure to load and setup the correct this.sameProfilePlayerUid value first
+        const alreadyHasSamePlayerProfileIdCorrectlySetup = this.sameProfilePlayerUid !== null && this.sameProfilePlayerUid !== this.loginUid;
+        if (!alreadyHasSamePlayerProfileIdCorrectlySetup) {
+          const profileId = this.getLocalProfileId();
+          if (profileId !== null) {
+            const matchingUid = await this.checkBothPlayerProfiles(this.latestInvite.hostId, this.latestInvite.guestId ?? "", profileId);
+            if (matchingUid !== null) {
+              this.sameProfilePlayerUid = matchingUid;
+            }
+          }
+        }
+
         const proposedMoreAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid && hostRematchesLength > guestRematchesLength;
         const proposedMoreAsGuest = this.latestInvite.guestId === this.sameProfilePlayerUid && guestRematchesLength > hostRematchesLength;
         if (proposedMoreAsHost || proposedMoreAsGuest) {
