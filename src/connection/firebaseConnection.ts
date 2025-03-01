@@ -16,7 +16,9 @@ class FirebaseConnection {
   private db: Database;
   private firestore: Firestore;
   private functions: Functions;
-  private opponentRematchesRef: any = null;
+
+  private hostRematchesRef: any = null;
+  private guestRematchesRef: any = null;
   private matchRefs: { [key: string]: any } = {};
   private profileRefs: { [key: string]: any } = {};
 
@@ -503,9 +505,9 @@ class FirebaseConnection {
         }
 
         this.latestInvite = inviteData;
-        // TODO: make sure sent rematch state after relogin is properly restored after reload
-        // sameProfilePlayerUid used both in observeRematchOrEndMatchIndicators and getLatestBothSidesApprovedOrProposedByMeMatchId might not be properly setup yet
         this.observeRematchOrEndMatchIndicators();
+
+        // TODO: sameProfilePlayerUid used in getLatestBothSidesApprovedOrProposedByMeMatchId might not be properly setup yet
         const matchId = this.getLatestBothSidesApprovedOrProposedByMeMatchId();
         this.matchId = matchId;
 
@@ -745,29 +747,46 @@ class FirebaseConnection {
   }
 
   private observeRematchOrEndMatchIndicators() {
-    if (this.opponentRematchesRef || !this.latestInvite || this.rematchSeriesEndIsIndicated()) return;
-    const observeAsGuest = !(this.latestInvite.hostId === this.sameProfilePlayerUid);
+    if ((this.hostRematchesRef && this.guestRematchesRef) || !this.latestInvite || this.rematchSeriesEndIsIndicated()) return;
 
-    // TODO: can we just observe both sides here to avoid these bugs?
+    const hostObservationPath = `invites/${this.inviteId}/hostRematches`;
+    this.hostRematchesRef = ref(this.db, hostObservationPath);
 
-    const observationPath = `invites/${this.inviteId}/${observeAsGuest ? "hostRematches" : "guestRematches"}`;
-    this.opponentRematchesRef = ref(this.db, observationPath);
-
-    onValue(this.opponentRematchesRef, (snapshot) => {
+    onValue(this.hostRematchesRef, (snapshot) => {
       const rematchesString: string | null = snapshot.val();
       if (rematchesString !== null) {
-        if (observeAsGuest) {
-          this.latestInvite!.hostRematches = rematchesString;
-        } else {
-          this.latestInvite!.guestRematches = rematchesString;
-        }
+        this.latestInvite!.hostRematches = rematchesString;
         if (this.rematchSeriesEndIsIndicated()) {
           didReceiveRematchesSeriesEndIndicator();
-          off(this.opponentRematchesRef);
-          this.opponentRematchesRef = null;
+          this.cleanupRematchObservers();
         }
       }
     });
+
+    const guestObservationPath = `invites/${this.inviteId}/guestRematches`;
+    this.guestRematchesRef = ref(this.db, guestObservationPath);
+
+    onValue(this.guestRematchesRef, (snapshot) => {
+      const rematchesString: string | null = snapshot.val();
+      if (rematchesString !== null) {
+        this.latestInvite!.guestRematches = rematchesString;
+        if (this.rematchSeriesEndIsIndicated()) {
+          didReceiveRematchesSeriesEndIndicator();
+          this.cleanupRematchObservers();
+        }
+      }
+    });
+  }
+
+  private cleanupRematchObservers() {
+    if (this.hostRematchesRef) {
+      off(this.hostRematchesRef);
+      this.hostRematchesRef = null;
+    }
+    if (this.guestRematchesRef) {
+      off(this.guestRematchesRef);
+      this.guestRematchesRef = null;
+    }
   }
 
   private observeMatch(playerId: string, matchId: string): void {
