@@ -7,7 +7,7 @@ import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { setAuthStatusGlobally } from "../connection/authentication";
-import { isWatchOnly } from "../game/gameController";
+import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
 
 const Container = styled.div`
   position: relative;
@@ -222,6 +222,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         }
         setAuthStatusGlobally("authenticated");
         setIsOpen(false);
+        handleFreshlySignedInProfileInGameIfNeeded(profileId);
       }
       setSolanaText("Solana");
     } catch (error) {

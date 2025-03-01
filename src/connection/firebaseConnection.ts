@@ -65,6 +65,16 @@ class FirebaseConnection {
     }
   }
 
+  public async seeIfFreshlySignedInProfileIsOneOfThePlayers(profileId: string): Promise<void> {
+    if (!this.latestInvite) {
+      return;
+    }
+    const match = await this.checkBothPlayerProfiles(this.latestInvite.hostId, this.latestInvite.guestId ?? "", profileId);
+    if (match !== null) {
+      window.location.reload();
+    }
+  }
+
   public async forceTokenRefresh(): Promise<void> {
     try {
       if (!this.auth.currentUser) {

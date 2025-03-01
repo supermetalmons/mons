@@ -5,7 +5,7 @@ import { subscribeToAuthChanges, signIn, verifyEthAddress, forceTokenRefresh, re
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { storage } from "../utils/storage";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
-import { isWatchOnly } from "../game/gameController";
+import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
 let globalSetAuthStatus: ((status: AuthStatus) => void) | null = null;
@@ -112,6 +112,7 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
         }
 
         setAuthStatus("authenticated");
+        handleFreshlySignedInProfileInGameIfNeeded(profileId);
         return true;
       } else {
         setAuthStatus("unauthenticated");
