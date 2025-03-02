@@ -1,47 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 
-const BaseButton = styled.button`
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-  -webkit-touch-callout: none;
-  touch-action: none;
-`;
-
-const CustomConnectButton = styled(BaseButton)`
-  min-width: 130px;
-  color: #000;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 8px;
-  font-weight: bold;
-  font-size: 0.81rem;
-  cursor: pointer;
-
-  background-color: #f9f9f9;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background-color: #f5f5f5;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background-color: #252525;
-    color: #f5f5f5;
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        background-color: #272727;
-      }
-    }
-  }
-`;
-
 const NameEditOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -89,15 +48,43 @@ const ButtonsContainer = styled.div`
   gap: 12px;
 `;
 
-const CancelButton = styled(CustomConnectButton)`
+const Button = styled.button`
+  min-width: 130px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  font-size: 0.81rem;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  touch-action: none;
+`;
+
+const CancelButton = styled(Button)`
   background-color: #f0f0f0;
+  color: #000;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: #e0e0e0;
+    }
+  }
 
   @media (prefers-color-scheme: dark) {
     background-color: #333;
+    color: #f5f5f5;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: #444;
+      }
+    }
   }
 `;
 
-const SaveButton = styled(CustomConnectButton)`
+const SaveButton = styled(Button)`
   background-color: #4caf50;
   color: white;
 

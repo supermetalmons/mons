@@ -114,7 +114,26 @@ const CustomConnectButton = styled(BaseButton)`
   }
 `;
 
-const LogoutButton = styled(CustomConnectButton)``;
+const LogoutButton = styled(CustomConnectButton)`
+  background-color: #ff4136;
+  color: white;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: #e60000;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #cc0000;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: #b30000;
+      }
+    }
+  }
+`;
 const EditNameButton = styled(CustomConnectButton)``;
 
 let getIsProfilePopupOpen: () => boolean = () => false;
