@@ -8,6 +8,7 @@ import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { setAuthStatusGlobally } from "../connection/authentication";
 import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
+import { NameEditModal } from "./NameEditModal";
 
 const Container = styled.div`
   position: relative;
@@ -114,6 +115,7 @@ const CustomConnectButton = styled(BaseButton)`
 `;
 
 const LogoutButton = styled(CustomConnectButton)``;
+const EditNameButton = styled(CustomConnectButton)``;
 
 let getIsProfilePopupOpen: () => boolean = () => false;
 export let closeProfilePopupIfAny: () => void = () => {};
@@ -151,6 +153,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const [solanaText, setSolanaText] = useState("Solana");
   const [isSolanaConnecting, setIsSolanaConnecting] = useState(false);
   const [profileDisplayName, setProfileDisplayName] = useState(() => formatDisplayName(pendingEthAddress, pendingSolAddress));
+  const [isEditingName, setIsEditingName] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
   getIsProfilePopupOpen = () => isOpen;
@@ -186,6 +189,22 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       closeMenuAndInfoIfAny();
     }
     setIsOpen(!isOpen);
+  };
+
+  const handleEditDisplayName = () => {
+    setIsEditingName(true);
+    setIsOpen(false);
+  };
+
+  const handleSaveDisplayName = (newName: string) => {
+    // TODO: implement saving a name
+    // setProfileDisplayName(newName);
+    // storage.setCustomDisplayName(newName);
+    setIsEditingName(false);
+  };
+
+  const handleCancelEditName = () => {
+    setIsEditingName(false);
   };
 
   const handleSolanaClick = async () => {
@@ -248,7 +267,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         <ConnectButtonPopover>
           <ConnectButtonWrapper>
             {authStatus === "authenticated" ? (
-              <LogoutButton onClick={handleLogout}>Sign Out</LogoutButton>
+              <>
+                {/* <EditNameButton onClick={handleEditDisplayName}>Edit Name</EditNameButton> */}
+                <LogoutButton onClick={handleLogout}>Sign Out</LogoutButton>
+              </>
             ) : (
               <>
                 <ConnectButton.Custom>{({ openConnectModal }) => <CustomConnectButton onClick={openConnectModal}>Ethereum</CustomConnectButton>}</ConnectButton.Custom>
@@ -258,6 +280,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
           </ConnectButtonWrapper>
         </ConnectButtonPopover>
       )}
+      {isEditingName && <NameEditModal initialName={profileDisplayName} onSave={handleSaveDisplayName} onCancel={handleCancelEditName} />}
     </Container>
   );
 };
