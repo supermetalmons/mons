@@ -7,11 +7,15 @@ const NameEditOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 100;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
 `;
 
 const NameEditPopup = styled.div`
@@ -28,7 +32,7 @@ const NameEditPopup = styled.div`
 `;
 
 const NameInput = styled.input`
-  width: 100%;
+  width: calc(100% - 24px);
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #ddd;
