@@ -29,7 +29,7 @@ async function getProfileByLoginId(uid) {
     if (!userQuery.empty) {
       const userDoc = userQuery.docs[0];
       const userData = userDoc.data();
-      return { nonce: userData.nonce === undefined ? -1 : userData.nonce, rating: userData.rating ?? 1500, eth: userData.eth ?? "", sol: userData.sol ?? "", profileId: userDoc.id };
+      return { nonce: userData.nonce === undefined ? -1 : userData.nonce, rating: userData.rating ?? 1500, eth: userData.eth ?? "", sol: userData.sol ?? "", username: userData.username ?? "", profileId: userDoc.id };
     }
   } catch (error) {
     console.error("Error getting player profile:", error);
