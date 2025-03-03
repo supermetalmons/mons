@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { isMobile } from "../utils/misc";
+import { editUsername } from "../connection/connection";
 
 const NameEditOverlay = styled.div`
   position: fixed;
@@ -215,31 +216,34 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
     if (isValid && !isSubmitting) {
       setIsSubmitting(true);
 
-      // TODO: call cloud function
-
-      setTimeout(() => {
-        const isSuccess = Math.random() > 1; // TODO: dev tmp placeholder
-        if (isSuccess) {
-          onSave(trimmed);
-        } else {
-          const didReceiveValidationErrorResponse = false;
-          if (didReceiveValidationErrorResponse) {
-            const placeholderError = "Server validation failed. Try again."; // TODO: use actual received string
-            setErrorMessage(placeholderError);
-            setIsValid(false);
+      editUsername(trimmed)
+        .then((response) => {
+          if (response.ok) {
+            onSave(trimmed);
           } else {
-            setErrorMessage("Something went wrong. Try again.");
-            setIsValid(true);
+            if (response.validationError) {
+              setErrorMessage(response.validationError);
+              setIsValid(false);
+            } else {
+              setErrorMessage("Something went wrong. Try again.");
+              setIsValid(true);
+            }
           }
-        }
-        setIsSubmitting(false);
+        })
+        .catch((error) => {
+          console.error("Error editing username:", error);
+          setErrorMessage("Something went wrong. Try again.");
+          setIsValid(true);
+        })
+        .finally(() => {
+          setIsSubmitting(false);
 
-        setTimeout(() => {
-          if (inputRef.current) {
-            inputRef.current.focus();
-          }
-        }, 10);
-      }, 3000);
+          setTimeout(() => {
+            if (inputRef.current) {
+              inputRef.current.focus();
+            }
+          }, 10);
+        });
     }
   };
 
