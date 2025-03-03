@@ -20,50 +20,71 @@ const NameEditOverlay = styled.div`
 
 const NameEditPopup = styled.div`
   background-color: white;
-  padding: 24px;
-  border-radius: 12px;
+  padding: 20px;
+  border-radius: 16px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-  width: 90%;
-  max-width: 400px;
+  width: 85%;
+  max-width: 320px;
 
   @media (prefers-color-scheme: dark) {
     background-color: #1a1a1a;
   }
 `;
 
+const Title = styled.h3`
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+  color: #333;
+
+  @media (prefers-color-scheme: dark) {
+    color: #f0f0f0;
+  }
+`;
+
 const NameInput = styled.input`
-  width: calc(100% - 24px);
+  width: 100%;
   padding: 12px;
   border-radius: 8px;
   border: 1px solid #ddd;
   font-size: 1rem;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
+  box-sizing: border-box;
+
+  &:focus {
+    border-color: #007aff;
+    outline: none;
+  }
 
   @media (prefers-color-scheme: dark) {
     background-color: #333;
     color: #f5f5f5;
     border-color: #444;
+
+    &:focus {
+      border-color: #0b84ff;
+    }
   }
 `;
 
 const ButtonsContainer = styled.div`
   display: flex;
-  justify-content: space-between;
-  gap: 12px;
+  justify-content: flex-end;
+  gap: 8px;
 `;
 
 const Button = styled.button`
-  min-width: 130px;
-  padding: 12px 24px;
+  padding: 10px 16px;
   border: none;
   border-radius: 8px;
   font-weight: bold;
-  font-size: 0.81rem;
+  font-size: 0.9rem;
   cursor: pointer;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   outline: none;
   touch-action: none;
+  transition: background-color 0.2s ease;
 `;
 
 const CancelButton = styled(Button)`
@@ -99,6 +120,7 @@ const SaveButton = styled(Button)`
 
   background-color: var(--color-default);
   color: white;
+  min-width: 80px;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -140,10 +162,19 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
     }
   };
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      handleSave();
+    } else if (e.key === "Escape") {
+      onCancel();
+    }
+  };
+
   return (
-    <NameEditOverlay>
-      <NameEditPopup>
-        <NameInput type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus />
+    <NameEditOverlay onClick={onCancel}>
+      <NameEditPopup onClick={(e) => e.stopPropagation()}>
+        <Title>Edit Name</Title>
+        <NameInput type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus onKeyDown={handleKeyDown} />
         <ButtonsContainer>
           <CancelButton onClick={onCancel}>Cancel</CancelButton>
           <SaveButton onClick={handleSave}>Save</SaveButton>
