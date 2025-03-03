@@ -344,6 +344,43 @@ const LinkButton = styled.a`
   }
 `;
 
+const AcademyButton = styled.a`
+  display: block;
+  margin-top: 20px;
+  padding: 10px 15px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  color: #333;
+  text-decoration: none;
+  cursor: pointer;
+  -webkit-touch-callout: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: transparent;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: #f5f5f5;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #252525;
+    color: #f5f5f5;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: #272727;
+      }
+    }
+  }
+`;
+
 const MenuOverlay = styled.div`
   position: absolute;
   top: 45px;
@@ -711,6 +748,9 @@ const MainMenu: React.FC = () => {
         <br />
         <br />
         ☝️ You can <u>carry mana with the central mon</u> (he's a drainer). You can also see an angel, a potion, a bomb, and a supermana.
+        <AcademyButton href="https://ultrametal.neocities.org/academy" target="_blank" rel="noopener noreferrer">
+          Learn more in Mons Academy
+        </AcademyButton>
       </InfoPopover>
     </>
   );
