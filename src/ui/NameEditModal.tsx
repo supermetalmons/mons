@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { isMobile } from "../utils/misc";
 
@@ -175,16 +175,12 @@ export interface NameEditModalProps {
   onCancel: () => void;
 }
 
-// TODO: move exisitng name check into cloud function
-const isNameTaken = (name: string): boolean => {
-  const takenNames = ["admin", "moderator", "test"];
-  return takenNames.includes(name.toLowerCase());
-};
-
 export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSave, onCancel }) => {
   const [customDisplayName, setCustomDisplayName] = useState(initialName);
   const [errorMessage, setErrorMessage] = useState("");
   const [isValid, setIsValid] = useState(true);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     validateName(customDisplayName);
@@ -209,24 +205,46 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
       return;
     }
 
-    if (isNameTaken(name)) {
-      setErrorMessage("That name has been taken. Please choose another.");
-      setIsValid(false);
-      return;
-    }
-
     setErrorMessage("");
     setIsValid(true);
   };
 
   const handleSave = () => {
-    if (isValid) {
-      onSave(customDisplayName.trim());
+    const trimmed = customDisplayName.trim();
+
+    if (isValid && !isSubmitting) {
+      setIsSubmitting(true);
+
+      // TODO: call cloud function
+
+      setTimeout(() => {
+        const isSuccess = Math.random() > 1; // TODO: dev tmp placeholder
+        if (isSuccess) {
+          onSave(trimmed);
+        } else {
+          const didReceiveValidationErrorResponse = false;
+          if (didReceiveValidationErrorResponse) {
+            const placeholderError = "Server validation failed. Try again."; // TODO: use actual received string
+            setErrorMessage(placeholderError);
+            setIsValid(false);
+          } else {
+            setErrorMessage("Something went wrong. Try again.");
+            setIsValid(true);
+          }
+        }
+        setIsSubmitting(false);
+
+        setTimeout(() => {
+          if (inputRef.current) {
+            inputRef.current.focus();
+          }
+        }, 10);
+      }, 3000);
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && isValid) {
+    if (e.key === "Enter" && isValid && !isSubmitting) {
       e.stopPropagation();
       handleSave();
     } else if (e.key === "Escape") {
@@ -239,12 +257,14 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
     <NameEditOverlay onClick={onCancel}>
       <NameEditPopup onClick={(e) => e.stopPropagation()}>
         <Title>Edit Name</Title>
-        <NameInput type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus onKeyDown={handleKeyDown} spellCheck="false" autoCorrect="off" autoCapitalize="off" isValid={isValid} />
+        <NameInput ref={inputRef} type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus onKeyDown={handleKeyDown} spellCheck="false" autoCorrect="off" autoCapitalize="off" isValid={isValid} disabled={isSubmitting} />
         <ErrorMessage>{errorMessage}</ErrorMessage>
         <ButtonsContainer>
-          <CancelButton onClick={onCancel}>Cancel</CancelButton>
-          <SaveButton disabled={!isValid} onClick={handleSave}>
-            Save
+          <CancelButton onClick={onCancel} disabled={isSubmitting}>
+            Cancel
+          </CancelButton>
+          <SaveButton disabled={!isValid || isSubmitting} onClick={handleSave}>
+            {isSubmitting ? "Saving..." : "Save"}
           </SaveButton>
         </ButtonsContainer>
       </NameEditPopup>
