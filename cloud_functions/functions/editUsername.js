@@ -7,7 +7,7 @@ exports.editUsername = onCall(async (request) => {
   }
 
   const newUsername = request.data.username;
-  if (!newUsername || typeof newUsername !== "string") {
+  if (typeof newUsername !== "string") {
     return { ok: false };
   }
 
@@ -25,6 +25,26 @@ exports.editUsername = onCall(async (request) => {
 
   if (usernameBefore === newUsername) {
     return { ok: true };
+  }
+
+  if (newUsername === "") {
+    const userRef = firestore.collection("users").doc(userDoc.id);
+    await userRef.update({ username: newUsername });
+    return { ok: true };
+  }
+
+  if (newUsername.length > 14) {
+    return {
+      ok: false,
+      validationError: "Must be shorter than 15 characters.",
+    };
+  }
+
+  if (!/^[a-zA-Z0-9]+$/.test(newUsername)) {
+    return {
+      ok: false,
+      validationError: "Use only letters and numbers.",
+    };
   }
 
   const takenNameError = "That name has been taken. Please choose another.";
