@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { isMobile } from "../utils/misc";
 
 const NameEditOverlay = styled.div`
   position: fixed;
@@ -10,7 +11,8 @@ const NameEditOverlay = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: ${isMobile ? "flex-start" : "center"};
+  padding-top: ${isMobile ? "59px" : "0"};
   z-index: 100;
 
   @media (prefers-color-scheme: dark) {
