@@ -37,6 +37,7 @@ export function useAuthStatus() {
         const storedLoginId = storage.getLoginId("");
         const storedEthAddress = storage.getEthAddress("");
         const storedSolAddress = storage.getSolAddress("");
+        const storedUsername = storage.getUsername("");
         const profileId = storage.getProfileId("");
         if (profileId !== "" && storedLoginId === uid && (storedEthAddress !== "" || storedSolAddress !== "")) {
           setAuthStatus("authenticated");
@@ -45,6 +46,7 @@ export function useAuthStatus() {
           const emoji = parseInt(emojiString);
           const profile = {
             id: profileId,
+            username: storedUsername,
             eth: storedEthAddress,
             sol: storedSolAddress,
             rating: undefined,
@@ -52,7 +54,7 @@ export function useAuthStatus() {
             win: undefined,
             emoji: emoji,
           };
-          updateProfileDisplayName(storedEthAddress, storedSolAddress);
+          updateProfileDisplayName(storedUsername, storedEthAddress, storedSolAddress);
           setupLoggedInPlayerProfile(profile, uid);
         } else {
           setAuthStatus("unauthenticated");
@@ -91,8 +93,10 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
       if (res && res.ok === true) {
         const emoji = res.emoji;
         const profileId = res.profileId;
+        const username = res.username;
         const profile = {
           id: profileId,
+          username: username,
           eth: res.address,
           rating: undefined,
           nonce: undefined,
@@ -101,12 +105,13 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
         };
         setupLoggedInPlayerProfile(profile, res.uid);
 
+        storage.setUsername(username);
         storage.setEthAddress(res.address);
         storage.setPlayerEmojiId(emoji.toString());
         storage.setProfileId(profileId);
         forceTokenRefresh();
         storage.setLoginId(res.uid);
-        updateProfileDisplayName(res.address, null);
+        updateProfileDisplayName(username, res.address, null);
         if (!isWatchOnly) {
           updateEmojiIfNeeded(emoji, false);
         }

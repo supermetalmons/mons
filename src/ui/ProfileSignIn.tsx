@@ -145,34 +145,39 @@ export function hasProfilePopupVisible(): boolean {
 }
 
 let setProfileDisplayNameGlobal: ((name: string) => void) | null = null;
+let pendingUsername: string | null = null;
 let pendingEthAddress: string | null = null;
 let pendingSolAddress: string | null = null;
 
-const formatDisplayName = (ethAddress: string | null, solAddress: string | null): string => {
-  if (ethAddress) {
+const formatDisplayName = (username: string | null, ethAddress: string | null, solAddress: string | null): string => {
+  if (username) {
+    return username;
+  } else if (ethAddress) {
     return ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4);
   } else if (solAddress) {
     return solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
   }
+  pendingUsername = null;
   pendingEthAddress = null;
   pendingSolAddress = null;
   return "";
 };
 
-export const updateProfileDisplayName = (ethAddress: string | null, solAddress: string | null) => {
+export const updateProfileDisplayName = (username: string | null, ethAddress: string | null, solAddress: string | null) => {
   if (!setProfileDisplayNameGlobal) {
+    pendingUsername = username ?? null;
     pendingEthAddress = ethAddress ?? null;
     pendingSolAddress = solAddress ?? null;
     return;
   }
-  setProfileDisplayNameGlobal(formatDisplayName(ethAddress, solAddress));
+  setProfileDisplayNameGlobal(formatDisplayName(username, ethAddress, solAddress));
 };
 
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [solanaText, setSolanaText] = useState("Solana");
   const [isSolanaConnecting, setIsSolanaConnecting] = useState(false);
-  const [profileDisplayName, setProfileDisplayName] = useState(() => formatDisplayName(pendingEthAddress, pendingSolAddress));
+  const [profileDisplayName, setProfileDisplayName] = useState(() => formatDisplayName(pendingUsername, pendingEthAddress, pendingSolAddress));
   const [isEditingName, setIsEditingName] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
@@ -218,9 +223,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   const handleSaveDisplayName = (newName: string) => {
-    // TODO: implement saving a name
-    // setProfileDisplayName(newName);
-    // storage.setCustomDisplayName(newName);
+    updateProfileDisplayName(newName, storage.getEthAddress(""), storage.getSolAddress(""));
+    storage.setUsername(newName);
     setIsEditingName(false);
   };
 
@@ -245,6 +249,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         const profileId = res.profileId;
         const profile = {
           id: profileId,
+          username: res.username,
           sol: res.address,
           rating: undefined,
           nonce: undefined,
@@ -253,11 +258,12 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         };
         setupLoggedInPlayerProfile(profile, res.uid);
         storage.setSolAddress(res.address);
+        storage.setUsername(res.username);
         storage.setPlayerEmojiId(emoji.toString());
         storage.setProfileId(profileId);
         forceTokenRefresh();
         storage.setLoginId(res.uid);
-        updateProfileDisplayName(null, res.address);
+        updateProfileDisplayName(res.username, null, res.address);
         if (!isWatchOnly) {
           updateEmojiIfNeeded(emoji, false);
         }
@@ -302,7 +308,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
           </ConnectButtonWrapper>
         </ConnectButtonPopover>
       )}
-      {isEditingName && <NameEditModal initialName={profileDisplayName} onSave={handleSaveDisplayName} onCancel={handleCancelEditName} />}
+      {isEditingName && <NameEditModal initialName={storage.getUsername("")} onSave={handleSaveDisplayName} onCancel={handleCancelEditName} />}
     </Container>
   );
 };

@@ -20,6 +20,7 @@ exports.verifyEthAddress = onCall(async (request) => {
     let responseAddress = address;
     let profileId = null;
     let emoji = null;
+    let username = null;
 
     const firestore = admin.firestore();
     const userQuery = await firestore.collection("users").where("logins", "array-contains", uid).limit(1).get();
@@ -51,6 +52,7 @@ exports.verifyEthAddress = onCall(async (request) => {
         }
         profileId = userDoc.id;
         emoji = userData.custom?.emoji ?? requestEmoji;
+        username = userData.username || null;
       }
     } else {
       const userDoc = userQuery.docs[0];
@@ -58,6 +60,7 @@ exports.verifyEthAddress = onCall(async (request) => {
       responseAddress = userData.eth;
       profileId = userDoc.id;
       emoji = userData.custom?.emoji ?? requestEmoji;
+      username = userData.username || null;
     }
 
     await admin.auth().setCustomUserClaims(uid, {
@@ -70,6 +73,7 @@ exports.verifyEthAddress = onCall(async (request) => {
       address: responseAddress,
       profileId: profileId,
       emoji: emoji,
+      username: username,
     };
   } else {
     return {
