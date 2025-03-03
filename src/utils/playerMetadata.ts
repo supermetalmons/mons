@@ -9,6 +9,7 @@ import { updateProfileDisplayName } from "../ui/ProfileSignIn";
 export type PlayerMetadata = {
   uid: string;
   displayName: string | undefined;
+  username: string | undefined;
   ethAddress: string | undefined;
   solAddress: string | undefined;
   ens: string | undefined;
@@ -21,6 +22,7 @@ export type PlayerMetadata = {
 export const newEmptyPlayerMetadata = (): PlayerMetadata => ({
   uid: "",
   displayName: undefined,
+  username: undefined,
   ethAddress: undefined,
   solAddress: undefined,
   ens: undefined,
@@ -61,6 +63,10 @@ export function recalculateRatingsLocallyForUids(victoryUid: string, defeatUid: 
   setRatingAndNonceForUid(defeatUid, newRating2, newNonce2);
 }
 
+export function getStashedUsername(uid: string) {
+  return usernamesForUids[uid];
+}
+
 export function getStashedPlayerSolAddress(uid: string) {
   return solAddressesForUids[uid];
 }
@@ -76,10 +82,12 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
     return;
   }
 
+  usernamesForUids[loginId] = profile.username ?? "";
+
   if (noSol) {
     const ethAddress = profile.eth ?? "";
     ethAddressesForUids[loginId] = ethAddress;
-    if (!ensDict[loginId]) {
+    if (!ensDict[loginId] && !usernamesForUids[loginId]) {
       fetch(`https://api.ensideas.com/ens/resolve/${ethAddress}`)
         .then((response) => {
           if (response.ok) {
@@ -147,6 +155,7 @@ export function getEnsNameForUid(uid: string): string | undefined {
   return ensDict[uid]?.name;
 }
 
+const usernamesForUids: { [key: string]: string } = {};
 const ethAddressesForUids: { [key: string]: string } = {};
 const solAddressesForUids: { [key: string]: string } = {};
 const ensDict: { [key: string]: { name: string; avatar: string } } = {};

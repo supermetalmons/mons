@@ -7,7 +7,7 @@ import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
 import { playSounds } from "../content/sounds";
 import { didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible } from "../ui/BottomControls";
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
-import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, openSolAddress, openEthAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile } from "../utils/playerMetadata";
+import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, openSolAddress, openEthAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
 import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
@@ -635,6 +635,7 @@ export function setupLoggedInPlayerProfile(profile: PlayerProfile, loginId: stri
 
 export function recalculateDisplayNames() {
   if (playerSideMetadata.displayName === undefined) {
+    const username = getStashedUsername(playerSideMetadata.uid);
     const ethAddress = getStashedPlayerEthAddress(playerSideMetadata.uid);
     const solAddress = getStashedPlayerSolAddress(playerSideMetadata.uid);
     if (ethAddress) {
@@ -646,9 +647,15 @@ export function recalculateDisplayNames() {
       playerSideMetadata.displayName = cropped;
       playerSideMetadata.solAddress = solAddress;
     }
+
+    if (username) {
+      playerSideMetadata.username = username;
+      playerSideMetadata.displayName = username;
+    }
   }
 
   if (opponentSideMetadata.displayName === undefined) {
+    const username = getStashedUsername(opponentSideMetadata.uid);
     const ethAddress = getStashedPlayerEthAddress(opponentSideMetadata.uid);
     const solAddress = getStashedPlayerSolAddress(opponentSideMetadata.uid);
     if (ethAddress) {
@@ -660,9 +667,14 @@ export function recalculateDisplayNames() {
       opponentSideMetadata.displayName = cropped;
       opponentSideMetadata.solAddress = solAddress;
     }
+
+    if (username) {
+      opponentSideMetadata.username = username;
+      opponentSideMetadata.displayName = username;
+    }
   }
 
-  if (playerSideMetadata.ens === undefined) {
+  if (playerSideMetadata.ens === undefined && playerSideMetadata.username === undefined) {
     const ens = getEnsNameForUid(playerSideMetadata.uid);
     if (ens !== undefined) {
       playerSideMetadata.ens = ens;
@@ -670,7 +682,7 @@ export function recalculateDisplayNames() {
     }
   }
 
-  if (opponentSideMetadata.ens === undefined) {
+  if (opponentSideMetadata.ens === undefined && opponentSideMetadata.username === undefined) {
     const ens = getEnsNameForUid(opponentSideMetadata.uid);
     if (ens !== undefined) {
       opponentSideMetadata.ens = ens;
