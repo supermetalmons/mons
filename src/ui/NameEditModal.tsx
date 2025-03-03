@@ -50,7 +50,7 @@ const NameInput = styled.input<{ isValid: boolean }>`
   border-radius: 8px;
   border: 1px solid ${(props) => (props.isValid ? "#ddd" : "#ff3b30")};
   font-size: 1rem;
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   box-sizing: border-box;
   spellcheck: false;
   autocorrect: off;
@@ -75,8 +75,10 @@ const NameInput = styled.input<{ isValid: boolean }>`
 const ErrorMessage = styled.div`
   color: #ff3b30;
   font-size: 0.8rem;
-  margin-bottom: 12px;
-  min-height: 1rem;
+  margin-bottom: ${(props) => (props.children ? "16px" : "12px")};
+  height: ${(props) => (props.children ? "1rem" : "0")};
+  display: flex;
+  align-items: center;
 
   @media (prefers-color-scheme: dark) {
     color: #ff453a;
@@ -87,6 +89,7 @@ const ButtonsContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 8px;
+  margin-top: 4px;
 `;
 
 const Button = styled.button`
