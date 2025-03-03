@@ -169,7 +169,6 @@ const SaveButton = styled(Button)<{ disabled: boolean }>`
     }
   }
 `;
-
 export interface NameEditModalProps {
   initialName: string;
   onSave: (name: string) => void;
@@ -260,7 +259,7 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
   return (
     <NameEditOverlay onClick={onCancel}>
       <NameEditPopup onClick={(e) => e.stopPropagation()}>
-        <Title>Edit Name</Title>
+        <Title>{initialName ? "Edit Name" : "Set Name"}</Title>
         <NameInput ref={inputRef} type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus onKeyDown={handleKeyDown} spellCheck="false" autoCorrect="off" autoCapitalize="off" isValid={isValid} disabled={isSubmitting} />
         <ErrorMessage>{errorMessage}</ErrorMessage>
         <ButtonsContainer>

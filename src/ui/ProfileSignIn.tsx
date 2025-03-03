@@ -296,7 +296,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
           <ConnectButtonWrapper>
             {authStatus === "authenticated" ? (
               <>
-                <EditNameButton onClick={handleEditDisplayName}>Edit Name</EditNameButton>
+                <EditNameButton onClick={handleEditDisplayName}>{storage.getUsername("") ? "Edit Name" : "Set Name"}</EditNameButton>
                 <LogoutButton onClick={handleLogout}>Sign Out</LogoutButton>
               </>
             ) : (
