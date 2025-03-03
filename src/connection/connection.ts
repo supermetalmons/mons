@@ -106,6 +106,10 @@ export async function verifySolanaAddress(address: string, signature: string): P
   return firebaseConnection.verifySolanaAddress(address, signature);
 }
 
+export async function editUsername(username: string): Promise<any> {
+  return firebaseConnection.editUsername(username);
+}
+
 export async function startTimer(): Promise<any> {
   return firebaseConnection.startTimer();
 }

@@ -7,6 +7,7 @@ const { attestMatchVictory } = require("./attestMatchVictory");
 const { updateRatings } = require("./updateRatings");
 const { startMatchTimer, claimMatchVictoryByTimer } = require("./matchTimers");
 const { automatch } = require("./automatch");
+const { editUsername } = require("./editUsername");
 
 exports.verifySolanaAddress = verifySolanaAddress;
 exports.verifyEthAddress = verifyEthAddress;
@@ -15,3 +16,4 @@ exports.startMatchTimer = startMatchTimer;
 exports.claimMatchVictoryByTimer = claimMatchVictoryByTimer;
 exports.automatch = automatch;
 exports.updateRatings = updateRatings;
+exports.editUsername = editUsername;

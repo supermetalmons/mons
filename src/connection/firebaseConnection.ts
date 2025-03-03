@@ -172,6 +172,18 @@ class FirebaseConnection {
     return leaderboard;
   }
 
+  public async editUsername(username: string): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const editUsernameFunction = httpsCallable(this.functions, "editUsername");
+      const response = await editUsernameFunction({ username });
+      return response.data;
+    } catch (error) {
+      console.error("Error editing username:", error);
+      throw error;
+    }
+  }
+
   public async verifySolanaAddress(address: string, signature: string): Promise<any> {
     try {
       await this.ensureAuthenticated();

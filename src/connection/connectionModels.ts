@@ -30,6 +30,7 @@ export interface PlayerProfile {
   rating: number | undefined;
   win: boolean | undefined;
   emoji: number;
+  username?: string | null;
   eth?: string | null;
   sol?: string | null;
 }

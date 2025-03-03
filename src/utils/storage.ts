@@ -12,6 +12,7 @@ const STORAGE_KEYS = {
   PROFILE_ID: "profileId",
   ETH_ADDRESS: "ethAddress",
   SOL_ADDRESS: "solAddress",
+  USERNAME: "username",
 } as const;
 
 type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
@@ -103,11 +104,20 @@ export const storage = {
     setItem(STORAGE_KEYS.SOL_ADDRESS, value);
   },
 
+  getUsername: (defaultValue: string): string => {
+    return getItem(STORAGE_KEYS.USERNAME, defaultValue);
+  },
+
+  setUsername: (value: string): void => {
+    setItem(STORAGE_KEYS.USERNAME, value);
+  },
+
   signOut: (): void => {
     localStorage.removeItem(STORAGE_KEYS.PLAYER_EMOJI_ID);
     localStorage.removeItem(STORAGE_KEYS.LOGIN_ID);
     localStorage.removeItem(STORAGE_KEYS.PROFILE_ID);
     localStorage.removeItem(STORAGE_KEYS.ETH_ADDRESS);
     localStorage.removeItem(STORAGE_KEYS.SOL_ADDRESS);
+    localStorage.removeItem(STORAGE_KEYS.USERNAME);
   },
 };
