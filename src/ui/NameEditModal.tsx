@@ -89,22 +89,38 @@ const CancelButton = styled(Button)`
 `;
 
 const SaveButton = styled(Button)`
-  background-color: #4caf50;
+  --color-default: #007aff;
+  --color-default-hover: #0069d9;
+  --color-default-active: #0056b3;
+
+  --color-dark-default: #0b84ff;
+  --color-dark-default-hover: #1a91ff;
+  --color-dark-default-active: #299fff;
+
+  background-color: var(--color-default);
   color: white;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: #45a049;
+      background-color: var(--color-default-hover);
     }
   }
 
+  &:active {
+    background-color: var(--color-default-active);
+  }
+
   @media (prefers-color-scheme: dark) {
-    background-color: #3d8b40;
+    background-color: var(--color-dark-default);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: #367d39;
+        background-color: var(--color-dark-default-hover);
       }
+    }
+
+    &:active {
+      background-color: var(--color-dark-default-active);
     }
   }
 `;
