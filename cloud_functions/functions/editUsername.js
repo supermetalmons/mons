@@ -7,19 +7,49 @@ exports.editUsername = onCall(async (request) => {
   }
 
   const newUsername = request.data.username;
+  if (!newUsername || typeof newUsername !== "string") {
+    return { ok: false };
+  }
+
   const uid = request.auth.uid;
   const firestore = admin.firestore();
   const userQuery = await firestore.collection("users").where("logins", "array-contains", uid).limit(1).get();
 
   if (userQuery.empty) {
     return { ok: false };
-  } else {
-    const userDoc = userQuery.docs[0];
-    const userData = userDoc.data();
-    const usernameBefore = userData.username;
-
-    const takenUsernameError = "That name has been taken. Please choose another."; // TODO: respond with it when username is taken by another user
-
-    return { ok: true }; // TODO: return false when could not update username
   }
+
+  const userDoc = userQuery.docs[0];
+  const userData = userDoc.data();
+  const usernameBefore = userData.username;
+
+  if (usernameBefore === newUsername) {
+    return { ok: true };
+  }
+
+  const takenNameError = "That name has been taken. Please choose another.";
+
+  const usernameQuery = await firestore.collection("users").where("username", "==", newUsername).limit(1).get();
+  if (!usernameQuery.empty) {
+    return {
+      ok: false,
+      validationError: takenNameError,
+    };
+  }
+
+  const result = await firestore.runTransaction(async (transaction) => {
+    const usernameCheckSnapshot = await transaction.get(firestore.collection("users").where("username", "==", newUsername).limit(1));
+    if (!usernameCheckSnapshot.empty) {
+      return {
+        ok: false,
+        validationError: takenNameError,
+      };
+    }
+
+    const userRef = firestore.collection("users").doc(userDoc.id);
+    transaction.update(userRef, { username: newUsername });
+    return { ok: true };
+  });
+
+  return result;
 });
