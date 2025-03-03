@@ -12,14 +12,15 @@ exports.automatch = onCall(async (request) => {
   const ethAddress = profile.eth ?? "";
   const solAddress = profile.sol ?? "";
   const profileId = profile.profileId;
-  const name = getDisplayNameFromAddress(ethAddress, solAddress);
+  const username = profile.username ?? "";
+  const name = getDisplayNameFromAddress(username, ethAddress, solAddress);
   const emojiId = request.data.emojiId;
 
-  const automatchAttemptResult = await attemptAutomatch(uid, ethAddress, solAddress, profileId, name, emojiId, 0);
+  const automatchAttemptResult = await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, 0);
   return automatchAttemptResult;
 });
 
-async function attemptAutomatch(uid, ethAddress, solAddress, profileId, name, emojiId, retryCount) {
+async function attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, retryCount) {
   const maxRetryCount = 3;
   if (retryCount > maxRetryCount) {
     return { ok: false };
@@ -32,7 +33,7 @@ async function attemptAutomatch(uid, ethAddress, solAddress, profileId, name, em
     const firstAutomatchId = Object.keys(snapshot.val())[0];
     const existingAutomatchData = snapshot.val()[firstAutomatchId];
     if (existingAutomatchData.uid !== uid && (profileId === "" || profileId !== existingAutomatchData.profileId)) {
-      const existingPlayerName = getDisplayNameFromAddress(existingAutomatchData.ethAddress, existingAutomatchData.solAddress);
+      const existingPlayerName = getDisplayNameFromAddress(existingAutomatchData.username, existingAutomatchData.ethAddress, existingAutomatchData.solAddress);
 
       const invite = {
         version: controllerVersion,
@@ -59,10 +60,10 @@ async function attemptAutomatch(uid, ethAddress, solAddress, profileId, name, em
           sendTelegramMessage(matchMessage).catch(console.error);
           sendDiscordMessage(matchMessage).catch(console.error);
         } else {
-          return await attemptAutomatch(uid, ethAddress, solAddress, profileId, name, emojiId, retryCount + 1);
+          return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, retryCount + 1);
         }
       } catch (error) {
-        return await attemptAutomatch(uid, ethAddress, solAddress, profileId, name, emojiId, retryCount + 1);
+        return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, retryCount + 1);
       }
     }
     return {
@@ -93,7 +94,7 @@ async function attemptAutomatch(uid, ethAddress, solAddress, profileId, name, em
 
     const updates = {};
     updates[`players/${uid}/matches/${inviteId}`] = match;
-    updates[`automatch/${inviteId}`] = { uid: uid, timestamp: admin.database.ServerValue.TIMESTAMP, ethAddress: ethAddress, solAddress: solAddress, profileId: profileId, hostColor: hostColor, password: password };
+    updates[`automatch/${inviteId}`] = { uid: uid, timestamp: admin.database.ServerValue.TIMESTAMP, username: username, ethAddress: ethAddress, solAddress: solAddress, profileId: profileId, hostColor: hostColor, password: password };
     updates[`invites/${inviteId}`] = invite;
     await admin.database().ref().update(updates);
 
@@ -177,24 +178,10 @@ function generateInviteId() {
   return "auto_" + generateRandomString(11);
 }
 
-function matchKnownAddress(address) {
-  if (!address) return null;
-
-  const knownAddresses = {
-    "0xe26067c76fdbe877f48b0a8400cf5db8b47af0fe": "ivan",
-    "0x2bb97367ff26b701a60aedc213640c34f469cf38": "meinong",
-    "0xe4790dd79c334e3f848904975272ec17f9f70366": "bosch",
-    "0x54e2459933f110726e9231c5cd8010471950bbde": "GardenParty",
-  };
-
-  const lowerAddress = address.toLowerCase();
-  return knownAddresses[lowerAddress] || null;
-}
-
-function getDisplayNameFromAddress(ethAddress, solAddress) {
-  if (ethAddress && ethAddress !== "") {
-    const knownName = matchKnownAddress(ethAddress);
-    if (knownName) return knownName;
+function getDisplayNameFromAddress(username, ethAddress, solAddress) {
+  if (username && username !== "") {
+    return username;
+  } else if (ethAddress && ethAddress !== "") {
     return ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4);
   } else if (solAddress && solAddress !== "") {
     return solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
