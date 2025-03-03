@@ -52,6 +52,9 @@ const NameInput = styled.input`
   font-size: 1rem;
   margin-bottom: 20px;
   box-sizing: border-box;
+  spellcheck: false;
+  autocorrect: off;
+  autocapitalize: off;
 
   &:focus {
     border-color: #007aff;
@@ -176,7 +179,7 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
     <NameEditOverlay onClick={onCancel}>
       <NameEditPopup onClick={(e) => e.stopPropagation()}>
         <Title>Edit Name</Title>
-        <NameInput type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus onKeyDown={handleKeyDown} />
+        <NameInput type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus onKeyDown={handleKeyDown} spellCheck="false" autoCorrect="off" autoCapitalize="off" />
         <ButtonsContainer>
           <CancelButton onClick={onCancel}>Cancel</CancelButton>
           <SaveButton onClick={handleSave}>Save</SaveButton>
