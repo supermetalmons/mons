@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { isMobile } from "../utils/misc";
 
@@ -44,31 +44,42 @@ const Title = styled.h3`
   }
 `;
 
-const NameInput = styled.input`
+const NameInput = styled.input<{ isValid: boolean }>`
   width: 100%;
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid #ddd;
+  border: 1px solid ${(props) => (props.isValid ? "#ddd" : "#ff3b30")};
   font-size: 1rem;
-  margin-bottom: 20px;
+  margin-bottom: 8px;
   box-sizing: border-box;
   spellcheck: false;
   autocorrect: off;
   autocapitalize: off;
 
   &:focus {
-    border-color: #007aff;
+    border-color: ${(props) => (props.isValid ? "#007aff" : "#ff3b30")};
     outline: none;
   }
 
   @media (prefers-color-scheme: dark) {
     background-color: #333;
     color: #f5f5f5;
-    border-color: #444;
+    border-color: ${(props) => (props.isValid ? "#444" : "#ff453a")};
 
     &:focus {
-      border-color: #0b84ff;
+      border-color: ${(props) => (props.isValid ? "#0b84ff" : "#ff453a")};
     }
+  }
+`;
+
+const ErrorMessage = styled.div`
+  color: #ff3b30;
+  font-size: 0.8rem;
+  margin-bottom: 12px;
+  min-height: 1rem;
+
+  @media (prefers-color-scheme: dark) {
+    color: #ff453a;
   }
 `;
 
@@ -114,40 +125,43 @@ const CancelButton = styled(Button)`
   }
 `;
 
-const SaveButton = styled(Button)`
+const SaveButton = styled(Button)<{ disabled: boolean }>`
   --color-default: #007aff;
   --color-default-hover: #0069d9;
   --color-default-active: #0056b3;
+  --color-disabled: #a0a0a0;
 
   --color-dark-default: #0b84ff;
   --color-dark-default-hover: #1a91ff;
   --color-dark-default-active: #299fff;
+  --color-dark-disabled: #555555;
 
-  background-color: var(--color-default);
+  background-color: ${(props) => (props.disabled ? "var(--color-disabled)" : "var(--color-default)")};
   color: white;
   min-width: 80px;
+  opacity: ${(props) => (props.disabled ? 0.7 : 1)};
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: var(--color-default-hover);
+      background-color: ${(props) => (props.disabled ? "var(--color-disabled)" : "var(--color-default-hover)")};
     }
   }
 
   &:active {
-    background-color: var(--color-default-active);
+    background-color: ${(props) => (props.disabled ? "var(--color-disabled)" : "var(--color-default-active)")};
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--color-dark-default);
+    background-color: ${(props) => (props.disabled ? "var(--color-dark-disabled)" : "var(--color-dark-default)")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: var(--color-dark-default-hover);
+        background-color: ${(props) => (props.disabled ? "var(--color-dark-disabled)" : "var(--color-dark-default-hover)")};
       }
     }
 
     &:active {
-      background-color: var(--color-dark-default-active);
+      background-color: ${(props) => (props.disabled ? "var(--color-dark-disabled)" : "var(--color-dark-default-active)")};
     }
   }
 `;
@@ -158,17 +172,58 @@ export interface NameEditModalProps {
   onCancel: () => void;
 }
 
+// TODO: move exisitng name check into cloud function
+const isNameTaken = (name: string): boolean => {
+  const takenNames = ["admin", "moderator", "test"];
+  return takenNames.includes(name.toLowerCase());
+};
+
 export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSave, onCancel }) => {
   const [customDisplayName, setCustomDisplayName] = useState(initialName);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isValid, setIsValid] = useState(true);
+
+  useEffect(() => {
+    validateName(customDisplayName);
+  }, [customDisplayName]);
+
+  const validateName = (name: string) => {
+    if (name.length === 0) {
+      setErrorMessage("");
+      setIsValid(true);
+      return;
+    }
+
+    if (name.length > 14) {
+      setErrorMessage("Must be shorter than 15 characters.");
+      setIsValid(false);
+      return;
+    }
+
+    if (!/^[a-zA-Z0-9]+$/.test(name)) {
+      setErrorMessage("Use only letters and numbers.");
+      setIsValid(false);
+      return;
+    }
+
+    if (isNameTaken(name)) {
+      setErrorMessage("That name has been taken. Please choose another.");
+      setIsValid(false);
+      return;
+    }
+
+    setErrorMessage("");
+    setIsValid(true);
+  };
 
   const handleSave = () => {
-    if (customDisplayName.trim()) {
+    if (isValid) {
       onSave(customDisplayName.trim());
     }
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && isValid) {
       e.stopPropagation();
       handleSave();
     } else if (e.key === "Escape") {
@@ -181,10 +236,13 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
     <NameEditOverlay onClick={onCancel}>
       <NameEditPopup onClick={(e) => e.stopPropagation()}>
         <Title>Edit Name</Title>
-        <NameInput type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus onKeyDown={handleKeyDown} spellCheck="false" autoCorrect="off" autoCapitalize="off" />
+        <NameInput type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus onKeyDown={handleKeyDown} spellCheck="false" autoCorrect="off" autoCapitalize="off" isValid={isValid} />
+        <ErrorMessage>{errorMessage}</ErrorMessage>
         <ButtonsContainer>
           <CancelButton onClick={onCancel}>Cancel</CancelButton>
-          <SaveButton onClick={handleSave}>Save</SaveButton>
+          <SaveButton disabled={!isValid} onClick={handleSave}>
+            Save
+          </SaveButton>
         </ButtonsContainer>
       </NameEditPopup>
     </NameEditOverlay>
