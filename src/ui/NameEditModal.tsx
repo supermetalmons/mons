@@ -169,8 +169,10 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
+      e.stopPropagation();
       handleSave();
     } else if (e.key === "Escape") {
+      e.stopPropagation();
       onCancel();
     }
   };

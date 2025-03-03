@@ -137,10 +137,11 @@ const LogoutButton = styled(CustomConnectButton)`
 const EditNameButton = styled(CustomConnectButton)``;
 
 let getIsProfilePopupOpen: () => boolean = () => false;
+let getIsEditingPopupOpen: () => boolean = () => false;
 export let closeProfilePopupIfAny: () => void = () => {};
 
 export function hasProfilePopupVisible(): boolean {
-  return getIsProfilePopupOpen();
+  return getIsProfilePopupOpen() || getIsEditingPopupOpen();
 }
 
 let setProfileDisplayNameGlobal: ((name: string) => void) | null = null;
@@ -175,6 +176,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const [isEditingName, setIsEditingName] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
+  getIsEditingPopupOpen = () => isEditingName;
   getIsProfilePopupOpen = () => isOpen;
   setProfileDisplayNameGlobal = setProfileDisplayName;
 
@@ -223,6 +225,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   const handleCancelEditName = () => {
+    didDismissSomethingWithOutsideTapJustNow();
     setIsEditingName(false);
   };
 
