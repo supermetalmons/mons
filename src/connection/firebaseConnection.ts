@@ -117,6 +117,7 @@ class FirebaseConnection {
       const data = docSnap.data();
       return {
         id: docSnap.id,
+        username: data.username || null,
         eth: data.eth || null,
         sol: data.sol || null,
         rating: data.rating || 1500,
@@ -138,6 +139,7 @@ class FirebaseConnection {
       const data = doc.data();
       return {
         id: doc.id,
+        username: data.username || null,
         eth: data.eth || null,
         sol: data.sol || null,
         rating: data.rating || 1500,
@@ -160,6 +162,7 @@ class FirebaseConnection {
       const data = doc.data();
       leaderboard.push({
         id: doc.id,
+        username: data.username || null,
         eth: data.eth || null,
         sol: data.sol || null,
         rating: data.rating || 1500,

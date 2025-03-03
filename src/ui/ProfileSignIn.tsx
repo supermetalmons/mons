@@ -148,7 +148,7 @@ let setProfileDisplayNameGlobal: ((name: string) => void) | null = null;
 let pendingEthAddress: string | null = null;
 let pendingSolAddress: string | null = null;
 
-const formatDisplayName = (ethAddress?: string | null, solAddress?: string | null): string => {
+const formatDisplayName = (ethAddress: string | null, solAddress: string | null): string => {
   if (ethAddress) {
     return ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4);
   } else if (solAddress) {
@@ -159,7 +159,7 @@ const formatDisplayName = (ethAddress?: string | null, solAddress?: string | nul
   return "";
 };
 
-export const updateProfileDisplayName = (ethAddress?: string | null, solAddress?: string | null) => {
+export const updateProfileDisplayName = (ethAddress: string | null, solAddress: string | null) => {
   if (!setProfileDisplayNameGlobal) {
     pendingEthAddress = ethAddress ?? null;
     pendingSolAddress = solAddress ?? null;

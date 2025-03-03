@@ -152,6 +152,7 @@ interface LeaderboardEntry {
   id: string;
   emoji: number;
   ensName?: string | null;
+  username?: string | null;
 }
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
@@ -162,6 +163,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
       getLeaderboard()
         .then((ratings) => {
           const leaderboardData = ratings.map((entry) => ({
+            username: entry.username,
             eth: entry.eth,
             sol: entry.sol,
             games: (entry.nonce ?? -1) + 1,
@@ -174,7 +176,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
           setData(leaderboardData);
 
           leaderboardData.forEach(async (entry, index) => {
-            if (entry.eth) {
+            if (entry.eth && !entry.username) {
               const ensName = await resolveENS(entry.eth);
               if (ensName) {
                 setData((prevData) => {
@@ -223,7 +225,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
                     <td>
                       <EmojiImage src={`data:image/webp;base64,${emojiData}`} alt="Player emoji" />
                     </td>
-                    <td>{row.ensName || (row.eth ? row.eth.slice(0, 4) + "..." + row.eth.slice(-4) : row.sol?.slice(0, 4) + "..." + row.sol?.slice(-4))}</td>
+                    <td>{row.username || row.ensName || (row.eth ? row.eth.slice(0, 4) + "..." + row.eth.slice(-4) : row.sol?.slice(0, 4) + "..." + row.sol?.slice(-4))}</td>
                     <RatingCell win={row.win}>{row.rating}</RatingCell>
                   </tr>
                 );
