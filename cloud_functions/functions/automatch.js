@@ -1,6 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { getProfileByLoginId } = require("./utils");
+const { getProfileByLoginId, sendBotMessage } = require("./utils");
 
 exports.automatch = onCall(async (request) => {
   if (!request.auth) {
@@ -58,8 +58,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
         const success = await acceptInvite(firstAutomatchId, invite, match, uid);
         if (success) {
           const matchMessage = `${existingPlayerName} automatched with ${name} https://mons.link/${firstAutomatchId}`;
-          sendTelegramMessage(matchMessage).catch(console.error);
-          sendDiscordMessage(matchMessage).catch(console.error);
+          sendBotMessage(matchMessage).catch(console.error);
         } else {
           return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, retryCount + 1);
         }
@@ -100,8 +99,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
     await admin.database().ref().update(updates);
 
     const message = `${name} is looking for a match 👉 https://mons.link`;
-    sendTelegramMessage(message).catch(console.error);
-    sendDiscordMessage(message).catch(console.error);
+    sendBotMessage(message).catch(console.error);
 
     return {
       ok: true,
@@ -120,50 +118,6 @@ async function acceptInvite(firstAutomatchId, invite, match, uid) {
   const guestIdSnapshot = await guestIdRef.once("value");
   const finalGuestId = guestIdSnapshot.val();
   return finalGuestId === uid;
-}
-
-async function sendTelegramMessage(message) {
-  const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
-  const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
-
-  try {
-    fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        chat_id: telegramExtraChatId,
-        text: message,
-        disable_web_page_preview: true,
-      }),
-    });
-  } catch (error) {
-    console.error("Error sending Telegram message:", error);
-  }
-}
-
-async function sendDiscordMessage(message) {
-  const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
-
-  if (!discordWebhookUrl) {
-    console.log("Discord webhook URL not configured, skipping message");
-    return;
-  }
-
-  try {
-    fetch(discordWebhookUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content: message,
-      }),
-    });
-  } catch (error) {
-    console.error("Error sending Discord message:", error);
-  }
 }
 
 function generateRandomString(length) {

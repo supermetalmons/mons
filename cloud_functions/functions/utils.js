@@ -22,6 +22,55 @@ const batchReadWithRetry = async (refs) => {
   return finalSnapshots;
 };
 
+async function sendBotMessage(message) {
+  sendTelegramMessage(message);
+  sendDiscordMessage(message);
+}
+
+async function sendTelegramMessage(message) {
+  const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
+  const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
+
+  try {
+    fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        chat_id: telegramExtraChatId,
+        text: message,
+        disable_web_page_preview: true,
+      }),
+    });
+  } catch (error) {
+    console.error("Error sending Telegram message:", error);
+  }
+}
+
+async function sendDiscordMessage(message) {
+  const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
+
+  if (!discordWebhookUrl) {
+    console.log("Discord webhook URL not configured, skipping message");
+    return;
+  }
+
+  try {
+    fetch(discordWebhookUrl, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        content: message,
+      }),
+    });
+  } catch (error) {
+    console.error("Error sending Discord message:", error);
+  }
+}
+
 async function getProfileByLoginId(uid) {
   try {
     const firestore = admin.firestore();
@@ -63,4 +112,5 @@ module.exports = {
   getPlayerEthAddress,
   getProfileByLoginId,
   updateUserRatingAndNonce,
+  sendBotMessage,
 };
