@@ -13,14 +13,15 @@ exports.automatch = onCall(async (request) => {
   const solAddress = profile.sol ?? "";
   const profileId = profile.profileId;
   const username = profile.username ?? "";
-  const name = getDisplayNameFromAddress(username, ethAddress, solAddress);
+  const rating = profile.rating ?? "";
+  const name = getDisplayNameFromAddress(username, ethAddress, solAddress, rating);
   const emojiId = request.data.emojiId;
 
-  const automatchAttemptResult = await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, 0);
+  const automatchAttemptResult = await attemptAutomatch(uid, rating, username, ethAddress, solAddress, profileId, name, emojiId, 0);
   return automatchAttemptResult;
 });
 
-async function attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, retryCount) {
+async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, profileId, name, emojiId, retryCount) {
   const maxRetryCount = 3;
   if (retryCount > maxRetryCount) {
     return { ok: false };
@@ -33,7 +34,7 @@ async function attemptAutomatch(uid, username, ethAddress, solAddress, profileId
     const firstAutomatchId = Object.keys(snapshot.val())[0];
     const existingAutomatchData = snapshot.val()[firstAutomatchId];
     if (existingAutomatchData.uid !== uid && (profileId === "" || profileId !== existingAutomatchData.profileId)) {
-      const existingPlayerName = getDisplayNameFromAddress(existingAutomatchData.username, existingAutomatchData.ethAddress, existingAutomatchData.solAddress);
+      const existingPlayerName = getDisplayNameFromAddress(existingAutomatchData.username, existingAutomatchData.ethAddress, existingAutomatchData.solAddress, existingAutomatchData.rating);
 
       const invite = {
         version: controllerVersion,
@@ -94,7 +95,7 @@ async function attemptAutomatch(uid, username, ethAddress, solAddress, profileId
 
     const updates = {};
     updates[`players/${uid}/matches/${inviteId}`] = match;
-    updates[`automatch/${inviteId}`] = { uid: uid, timestamp: admin.database.ServerValue.TIMESTAMP, username: username, ethAddress: ethAddress, solAddress: solAddress, profileId: profileId, hostColor: hostColor, password: password };
+    updates[`automatch/${inviteId}`] = { uid: uid, rating: rating, timestamp: admin.database.ServerValue.TIMESTAMP, username: username, ethAddress: ethAddress, solAddress: solAddress, profileId: profileId, hostColor: hostColor, password: password };
     updates[`invites/${inviteId}`] = invite;
     await admin.database().ref().update(updates);
 
@@ -178,13 +179,14 @@ function generateInviteId() {
   return "auto_" + generateRandomString(11);
 }
 
-function getDisplayNameFromAddress(username, ethAddress, solAddress) {
+function getDisplayNameFromAddress(username, ethAddress, solAddress, rating) {
+  const ratingSuffix = rating === 0 ? "" : ` (${rating})`;
   if (username && username !== "") {
-    return username;
+    return username + ratingSuffix;
   } else if (ethAddress && ethAddress !== "") {
-    return ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4);
+    return ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4) + ratingSuffix;
   } else if (solAddress && solAddress !== "") {
-    return solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
+    return solAddress.slice(0, 4) + "..." + solAddress.slice(-4) + ratingSuffix;
   } else {
     return "anon";
   }
