@@ -56,7 +56,7 @@ export function setImage(element: SVGElement, data: string) {
   element.setAttributeNS("http://www.w3.org/1999/xlink", "href", `data:image/webp;base64,${data}`);
 }
 
-export function setImageUrl(element: SVGElement, url: string) {
+export async function setEmojiImageUrl(element: SVGElement, url: string) {
   element.setAttributeNS("http://www.w3.org/1999/xlink", "href", url);
 }
 
