@@ -139,6 +139,33 @@ const EmojiImage = styled.img`
   margin-left: 2px;
 `;
 
+const EmojiPlaceholder = styled.div`
+  width: 26px;
+  height: 26px;
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+  margin-left: 2px;
+
+  &:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background-color: #e0e0e0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    &:after {
+      background-color: #444;
+    }
+  }
+`;
+
 interface LeaderboardProps {
   show: boolean;
 }
@@ -219,12 +246,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
             <tbody>
               {data.map((row: LeaderboardEntry, index: number) => {
                 const emojiData = emojis.getEmoji(row.emoji.toString());
+                const showPlaceholder = false; // TODO: dev tmp
                 return (
                   <tr key={index} onClick={() => handleRowClick(row.eth, row.sol)}>
                     <td>{index + 1}</td>
-                    <td>
-                      <EmojiImage src={`data:image/webp;base64,${emojiData}`} alt="Player emoji" />
-                    </td>
+                    <td>{showPlaceholder ? <EmojiPlaceholder /> : <EmojiImage src={`data:image/webp;base64,${emojiData}`} alt="Player emoji" />}</td>
                     <td>{row.username || row.ensName || (row.eth ? row.eth.slice(0, 4) + "..." + row.eth.slice(-4) : row.sol?.slice(0, 4) + "..." + row.sol?.slice(-4))}</td>
                     <RatingCell win={row.win}>{row.rating}</RatingCell>
                   </tr>
