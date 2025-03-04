@@ -5,3 +5,4 @@ frontend:
     files:
       - 'gen2/**/*'
       - 'music/**/*'
+      - 'emojipack/**/*'
