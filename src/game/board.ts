@@ -69,6 +69,8 @@ let opponentTimer: SVGElement | undefined;
 let playerTimer: SVGElement | undefined;
 let opponentAvatar: SVGElement | undefined;
 let playerAvatar: SVGElement | undefined;
+let opponentAvatarPlaceholder: SVGElement | undefined;
+let playerAvatarPlaceholder: SVGElement | undefined;
 let activeTimer: SVGElement | null = null;
 
 let assets: any;
@@ -1189,6 +1191,9 @@ const updateLayout = () => {
 
     const avatar = isOpponent ? opponentAvatar! : playerAvatar!;
     SVG.setFrame(avatar, offsetX, y, avatarSize, avatarSize);
+
+    const placeholder = isOpponent ? opponentAvatarPlaceholder! : playerAvatarPlaceholder!;
+    SVG.updateCircle(placeholder, offsetX + avatarSize / 2, y + avatarSize / 2, avatarSize / 3);
   }
 
   updateNamesX();
@@ -1302,14 +1307,23 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     }
 
     const avatar = loadImage("", "avatar");
+    const placeholder = SVG.circle(0, 0, 1);
+    SVG.setFill(placeholder, colors.scoreText);
+    SVG.setOpacity(placeholder, 0.23);
     const emojiUrl = isOpponent ? opponentEmojiUrl : playerEmojiUrl;
     SVG.setEmojiImageUrl(avatar, emojiUrl);
+    avatar.onload = () => {
+      SVG.setHidden(placeholder, true);
+    };
     avatar.style.pointerEvents = "auto";
+    controlsLayer?.append(placeholder);
     controlsLayer?.append(avatar);
     if (isOpponent) {
       opponentAvatar = avatar;
+      opponentAvatarPlaceholder = placeholder;
     } else {
       playerAvatar = avatar;
+      playerAvatarPlaceholder = placeholder;
     }
 
     if (allHiddenInitially) {
