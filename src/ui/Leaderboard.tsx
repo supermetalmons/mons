@@ -184,6 +184,7 @@ interface LeaderboardEntry {
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
   const [data, setData] = useState<LeaderboardEntry[] | null>(null);
+  const [loadedEmojis, setLoadedEmojis] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     if (show) {
@@ -230,6 +231,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
     }
   };
 
+  const handleEmojiLoad = (emojiKey: string) => {
+    setLoadedEmojis((prev) => new Set(prev).add(emojiKey));
+  };
+
   return (
     <LeaderboardContainer show={show}>
       {data ? (
@@ -245,12 +250,17 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
             </thead>
             <tbody>
               {data.map((row: LeaderboardEntry, index: number) => {
-                const emojiData = emojis.getEmoji(row.emoji.toString());
-                const showPlaceholder = false; // TODO: dev tmp
+                const emojiUrl = emojis.getEmojiUrl(row.emoji.toString());
+                const emojiKey = `${row.id}-${row.emoji}`;
+                const isEmojiLoaded = loadedEmojis.has(emojiKey);
+
                 return (
                   <tr key={index} onClick={() => handleRowClick(row.eth, row.sol)}>
                     <td>{index + 1}</td>
-                    <td>{showPlaceholder ? <EmojiPlaceholder /> : <EmojiImage src={`data:image/webp;base64,${emojiData}`} alt="Player emoji" />}</td>
+                    <td>
+                      {!isEmojiLoaded && <EmojiPlaceholder />}
+                      <EmojiImage src={emojiUrl} alt="Player emoji" style={{ display: isEmojiLoaded ? "inline-block" : "none" }} onLoad={() => handleEmojiLoad(emojiKey)} />
+                    </td>
                     <td>{row.username || row.ensName || (row.eth ? row.eth.slice(0, 4) + "..." + row.eth.slice(-4) : row.sol?.slice(0, 4) + "..." + row.sol?.slice(-4))}</td>
                     <RatingCell win={row.win}>{row.rating}</RatingCell>
                   </tr>

@@ -350,19 +350,19 @@ export function updateEmojiIfNeeded(newEmojiId: string, isOpponentSide: boolean)
   if (currentId === newEmojiId) {
     return;
   }
-  const newEmojiData = emojis.getEmoji(newEmojiId);
-  if (!newEmojiData) {
+  const newEmojiUrl = emojis.getEmojiUrl(newEmojiId);
+  if (!newEmojiUrl) {
     return;
   }
 
   if (isOpponentSide) {
     if (!opponentAvatar) return;
     opponentSideMetadata.emojiId = newEmojiId;
-    SVG.setImage(opponentAvatar, newEmojiData);
+    SVG.setImageUrl(opponentAvatar, newEmojiUrl);
   } else {
     if (!playerAvatar) return;
     playerSideMetadata.emojiId = newEmojiId;
-    SVG.setImage(playerAvatar, newEmojiData);
+    SVG.setImageUrl(playerAvatar, newEmojiUrl);
   }
 }
 
@@ -1204,8 +1204,8 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     storage.setPlayerEmojiId(playerEmojiId);
   }
 
-  const playerEmoji = emojis.getEmoji(playerEmojiId);
-  const [opponentEmojiId, opponentEmoji] = emojis.getRandomEmojiOtherThan(playerEmojiId);
+  const playerEmojiUrl = emojis.getEmojiUrl(playerEmojiId);
+  const [opponentEmojiId, opponentEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(playerEmojiId);
 
   playerSideMetadata.emojiId = playerEmojiId;
   opponentSideMetadata.emojiId = opponentEmojiId;
@@ -1301,7 +1301,9 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
       }
     }
 
-    const avatar = loadImage(isOpponent ? opponentEmoji : playerEmoji, "avatar");
+    const avatar = loadImage("", "avatar");
+    const emojiUrl = isOpponent ? opponentEmojiUrl : playerEmojiUrl;
+    SVG.setImageUrl(avatar, emojiUrl);
     avatar.style.pointerEvents = "auto";
     controlsLayer?.append(avatar);
     if (isOpponent) {
@@ -1385,15 +1387,15 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
 
 function pickAndDisplayDifferentEmoji(avatar: SVGElement, isOpponent: boolean) {
   if (isOpponent) {
-    const [newId, newEmoji] = emojis.getRandomEmojiOtherThan(opponentSideMetadata.emojiId);
+    const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(opponentSideMetadata.emojiId);
     opponentSideMetadata.emojiId = newId;
-    SVG.setImage(avatar, newEmoji);
+    SVG.setImageUrl(avatar, newEmojiUrl);
   } else {
-    const [newId, newEmoji] = emojis.getRandomEmojiOtherThan(playerSideMetadata.emojiId);
+    const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(playerSideMetadata.emojiId);
     storage.setPlayerEmojiId(newId);
     sendPlayerEmojiUpdate(parseInt(newId));
     playerSideMetadata.emojiId = newId;
-    SVG.setImage(avatar, newEmoji);
+    SVG.setImageUrl(avatar, newEmojiUrl);
   }
 }
 
