@@ -71,6 +71,8 @@ let opponentAvatar: SVGElement | undefined;
 let playerAvatar: SVGElement | undefined;
 let opponentAvatarPlaceholder: SVGElement | undefined;
 let playerAvatarPlaceholder: SVGElement | undefined;
+let doNotShowPlayerAvatarPlaceholderAgain = false;
+let doNotShowOpponentAvatarPlaceholderAgain = false;
 let activeTimer: SVGElement | null = null;
 
 let assets: any;
@@ -320,6 +322,11 @@ export function hideBoardPlayersInfo() {
     SVG.setHidden(playerAvatar, true);
   }
 
+  if (playerAvatarPlaceholder && opponentAvatarPlaceholder) {
+    SVG.setHidden(playerAvatarPlaceholder, true);
+    SVG.setHidden(opponentAvatarPlaceholder, true);
+  }
+
   if (playerScoreText && opponentScoreText) {
     playerScoreText.textContent = "";
     opponentScoreText.textContent = "";
@@ -341,6 +348,16 @@ export function resetForNewGame() {
   if (opponentAvatar && playerAvatar) {
     SVG.setHidden(opponentAvatar, false);
     SVG.setHidden(playerAvatar, false);
+  }
+
+  if (playerAvatarPlaceholder && opponentAvatarPlaceholder) {
+    if (!doNotShowPlayerAvatarPlaceholderAgain) {
+      SVG.setHidden(playerAvatarPlaceholder, false);
+    }
+
+    if (!doNotShowOpponentAvatarPlaceholderAgain) {
+      SVG.setHidden(opponentAvatarPlaceholder, false);
+    }
   }
 
   removeHighlights();
@@ -1199,6 +1216,14 @@ const updateLayout = () => {
   updateNamesX();
 };
 
+function doNotShowAvatarPlaceholderAgain(opponent: boolean) {
+  if (opponent) {
+    doNotShowOpponentAvatarPlaceholderAgain = true;
+  } else {
+    doNotShowPlayerAvatarPlaceholderAgain = true;
+  }
+}
+
 export async function setupGameInfoElements(allHiddenInitially: boolean) {
   const statusMove = loadImage(emojis.statusMove, "statusMoveEmoji");
   window.addEventListener("resize", updateLayout);
@@ -1314,6 +1339,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     SVG.setEmojiImageUrl(avatar, emojiUrl);
     avatar.onload = () => {
       SVG.setHidden(placeholder, true);
+      doNotShowAvatarPlaceholderAgain(isOpponent);
     };
     avatar.style.pointerEvents = "auto";
     controlsLayer?.append(placeholder);
@@ -1328,6 +1354,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
 
     if (allHiddenInitially) {
       SVG.setHidden(avatar, true);
+      SVG.setHidden(placeholder, true);
     }
 
     avatar.addEventListener(defaultInputEventName, (event) => {
