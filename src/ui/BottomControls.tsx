@@ -283,7 +283,7 @@ const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   position: absolute;
   bottom: 40px;
   // right: ${(props) => (props.offsetToTheRight ? "22px" : "64px")};
-  right: ${(props) => (props.offsetToTheRight ? "-0px" : "64px")};  // TODO: dev tmp for problems
+  right: ${(props) => (props.offsetToTheRight ? "-0px" : "0px")};  // TODO: dev tmp for problems
   background-color: #f0f0f0;
   border-radius: 8px;
   padding: 8px;
