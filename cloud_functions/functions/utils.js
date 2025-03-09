@@ -22,8 +22,8 @@ const batchReadWithRetry = async (refs) => {
   return finalSnapshots;
 };
 
-async function sendBotMessage(message) {
-  sendTelegramMessage(message);
+async function sendBotMessage(message, silent = false) {
+  sendTelegramMessage(message, silent);
   sendDiscordMessage(message);
 }
 
@@ -72,6 +72,19 @@ async function sendDiscordMessage(message) {
   }
 }
 
+function getDisplayNameFromAddress(username, ethAddress, solAddress, rating) {
+  const ratingSuffix = rating === 0 ? "" : ` (${rating})`;
+  if (username && username !== "") {
+    return username + ratingSuffix;
+  } else if (ethAddress && ethAddress !== "") {
+    return ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4) + ratingSuffix;
+  } else if (solAddress && solAddress !== "") {
+    return solAddress.slice(0, 4) + "..." + solAddress.slice(-4) + ratingSuffix;
+  } else {
+    return "anon";
+  }
+}
+
 async function getProfileByLoginId(uid) {
   try {
     const firestore = admin.firestore();
@@ -84,7 +97,7 @@ async function getProfileByLoginId(uid) {
   } catch (error) {
     console.error("Error getting player profile:", error);
   }
-  return { eth: "", sol: "", profileId: "", nonce: 0, rating: 0 };
+  return { eth: "", sol: "", profileId: "", nonce: 0, rating: 0, username: "" };
 }
 
 async function updateUserRatingAndNonce(profileId, newRating, newNonce, isWin) {
@@ -114,4 +127,5 @@ module.exports = {
   getProfileByLoginId,
   updateUserRatingAndNonce,
   sendBotMessage,
+  getDisplayNameFromAddress,
 };
