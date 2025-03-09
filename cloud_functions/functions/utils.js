@@ -27,7 +27,7 @@ async function sendBotMessage(message) {
   sendDiscordMessage(message);
 }
 
-async function sendTelegramMessage(message) {
+async function sendTelegramMessage(message, silent = false) {
   const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
   const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
 
@@ -41,6 +41,7 @@ async function sendTelegramMessage(message) {
         chat_id: telegramExtraChatId,
         text: message,
         disable_web_page_preview: true,
+        disable_notification: silent,
       }),
     });
   } catch (error) {
