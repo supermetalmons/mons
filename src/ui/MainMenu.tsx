@@ -6,6 +6,7 @@ import { isMobile } from "../utils/misc";
 import { Leaderboard } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
+import { getCurrentGameFen } from "../game/gameController";
 
 const RockButtonContainer = styled.div`
   position: absolute;
@@ -452,6 +453,21 @@ const ExperimentButton = styled.button`
   }
 `;
 
+const CopyBoardButton = styled.button`
+  background: none;
+  border: none;
+  color: #888888;
+  cursor: pointer;
+  font-size: 13px;
+  text-decoration-line: underline;
+  text-decoration-style: dashed;
+  padding: 5px;
+
+  @media (prefers-color-scheme: dark) {
+    color: #999999;
+  }
+`;
+
 let getIsMenuOpen: () => boolean;
 export let toggleInfoVisibility: () => void;
 export let closeMenuAndInfoIfAny: () => void;
@@ -466,6 +482,7 @@ const MainMenu: React.FC = () => {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [clickCount, setClickCount] = useState(0);
   const [showExperimental, setShowExperimental] = useState(false);
+  const [copyButtonText, setCopyButtonText] = useState("copy board snapshot");
   const lastClickTime = useRef(0);
   const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
   const animationFrameRef = useRef<number>();
@@ -560,6 +577,15 @@ const MainMenu: React.FC = () => {
 
   const showExperimentalFeaturesSelection = () => {
     setShowExperimental(true);
+  };
+
+  const copyBoardState = () => {
+    const link = window.location.origin + "/snapshot/" + encodeURIComponent(getCurrentGameFen());
+    navigator.clipboard.writeText(link);
+    setCopyButtonText("copied");
+    setTimeout(() => {
+      setCopyButtonText("copy board snapshot");
+    }, 333);
   };
 
   toggleInfoVisibility = () => {
@@ -682,6 +708,7 @@ const MainMenu: React.FC = () => {
                   }}>
                   pangchiu wip
                 </ExperimentButton>
+                <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
                 <BuildInfo>
                   {process.env.REACT_APP_BUILD_DATETIME
                     ? (() => {

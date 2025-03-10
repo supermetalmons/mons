@@ -48,6 +48,10 @@ var currentInputs: Location[] = [];
 let blackTimerStash: string | null = null;
 let whiteTimerStash: string | null = null;
 
+export function getCurrentGameFen(): string {
+  return game.fen();
+}
+
 export async function go() {
   setupConnection(false);
 
@@ -64,6 +68,8 @@ export async function go() {
     Board.runExperimentalMonsBoardAsDisplayAnimation();
     return;
   }
+
+  // TODO: handle saved board state link
 
   if (isCreateNewInviteFlow) {
     game.locations_with_content().forEach((loc) => {
