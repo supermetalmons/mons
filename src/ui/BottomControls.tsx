@@ -33,8 +33,7 @@ export function didNotDismissAnythingWithOutsideTapJustNow(): boolean {
 const ControlsContainer = styled.div`
   position: fixed;
   bottom: 10px;
-  // right: 10px;
-  right: 6px; // TODO: dev tmp exploration for problems
+  right: 10px;
   left: 49px;
   display: flex;
   gap: 8px;
@@ -282,8 +281,7 @@ const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boolean; isV
 const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   position: absolute;
   bottom: 40px;
-  // right: ${(props) => (props.offsetToTheRight ? "22px" : "64px")};
-  right: ${(props) => (props.offsetToTheRight ? "-0px" : "0px")};  // TODO: dev tmp for problems
+  right: ${(props) => (props.offsetToTheRight ? "22px" : "64px")};
   background-color: #f0f0f0;
   border-radius: 8px;
   padding: 8px;
@@ -297,7 +295,6 @@ const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
 `;
 
 const ReactionButton = styled.button`
-  min-width: 130px; // TODO: dev tmp for problems
   background: none;
   border: none;
   padding: 4px 8px;
@@ -405,6 +402,7 @@ const BottomControls: React.FC = () => {
   const [isResignButtonVisible, setIsResignButtonVisible] = useState(false);
   const [isVoiceReactionButtonVisible, setIsVoiceReactionButtonVisible] = useState(false);
   const [isReactionPickerVisible, setIsReactionPickerVisible] = useState(false);
+  const [isNavigationPopupVisible, setIsNavigationPopupVisible] = useState(false);
   const [isResignConfirmVisible, setIsResignConfirmVisible] = useState(false);
   const [isTimerButtonDisabled, setIsTimerButtonDisabled] = useState(true);
   const [isClaimVictoryVisible, setIsClaimVictoryVisible] = useState(false);
@@ -866,15 +864,17 @@ const BottomControls: React.FC = () => {
             <ReactionButton onClick={() => handleReactionSelect("gg")}>gg</ReactionButton>
           </ReactionPicker>
         )}
-          <ReactionPicker ref={pickerRef} offsetToTheRight={!isResignButtonVisible}>
+        {isNavigationPopupVisible && (
+          <ReactionPicker ref={pickerRef}>
             <ReactionButton onClick={() => handleReactionSelect("yo")}>bosch 3:0</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("wahoo")}>gardenparty 0:1</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("drop")}>Angel Protection</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("slurp")}>Double Spirit</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("gg")}>Mystic Bomber</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("gg")}>Solus Rex</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("gg")}>What Is the Evil Deed</ReactionButton>
+            <ReactionButton onClick={() => handleReactionSelect("yo")}>gardenparty 0:1</ReactionButton>
+            <ReactionButton onClick={() => handleReactionSelect("yo")}>Angel Protection</ReactionButton>
+            <ReactionButton onClick={() => handleReactionSelect("yo")}>Double Spirit</ReactionButton>
+            <ReactionButton onClick={() => handleReactionSelect("yo")}>Mystic Bomber</ReactionButton>
+            <ReactionButton onClick={() => handleReactionSelect("yo")}>Solus Rex</ReactionButton>
+            <ReactionButton onClick={() => handleReactionSelect("yo")}>What Is the Evil Deed</ReactionButton>
           </ReactionPicker>
+        )}
         {isResignConfirmVisible && (
           <ResignConfirmation ref={resignConfirmRef}>
             <ResignButton onClick={handleConfirmResign}>Resign</ResignButton>
