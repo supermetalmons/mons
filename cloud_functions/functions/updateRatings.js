@@ -1,7 +1,7 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const glicko2 = require("glicko2");
 const admin = require("firebase-admin");
-const { batchReadWithRetry, getProfileByLoginId, updateUserRatingAndNonce } = require("./utils");
+const { batchReadWithRetry, getProfileByLoginId, updateUserRatingAndNonce, sendBotMessage, getDisplayNameFromAddress } = require("./utils");
 
 exports.updateRatings = onCall(async (request) => {
   const uid = request.auth.uid;
@@ -98,6 +98,12 @@ exports.updateRatings = onCall(async (request) => {
   const [newRating1, newRating2] = updateRating(playerProfile.rating, newNonce1, opponentProfile.rating, newNonce2);
   updateUserRatingAndNonce(playerProfile.profileId, newRating1, newNonce1, true);
   updateUserRatingAndNonce(opponentProfile.profileId, newRating2, newNonce2, false);
+  
+  const playerProfileDisplayName = getDisplayNameFromAddress(playerProfile.username, playerProfile.eth, playerProfile.sol, 0);
+  const opponentProfileDisplayName = getDisplayNameFromAddress(opponentProfile.username, opponentProfile.eth, opponentProfile.sol, 0);
+
+  const updateRatingMessage = `${playerProfileDisplayName} ${newRating1} ⬆️ • ${opponentProfileDisplayName} ${newRating2} ⬇️`;
+  sendBotMessage(updateRatingMessage, true);
 
   return {
     ok: true,

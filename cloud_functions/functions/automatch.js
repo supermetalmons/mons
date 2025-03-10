@@ -1,6 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { getProfileByLoginId, sendBotMessage } = require("./utils");
+const { getProfileByLoginId, sendBotMessage, getDisplayNameFromAddress } = require("./utils");
 
 exports.automatch = onCall(async (request) => {
   if (!request.auth) {
@@ -131,19 +131,6 @@ function generateRandomString(length) {
 
 function generateInviteId() {
   return "auto_" + generateRandomString(11);
-}
-
-function getDisplayNameFromAddress(username, ethAddress, solAddress, rating) {
-  const ratingSuffix = rating === 0 ? "" : ` (${rating})`;
-  if (username && username !== "") {
-    return username + ratingSuffix;
-  } else if (ethAddress && ethAddress !== "") {
-    return ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4) + ratingSuffix;
-  } else if (solAddress && solAddress !== "") {
-    return solAddress.slice(0, 4) + "..." + solAddress.slice(-4) + ratingSuffix;
-  } else {
-    return "anon";
-  }
 }
 
 const hostColor = Math.random() < 0.5 ? "white" : "black";

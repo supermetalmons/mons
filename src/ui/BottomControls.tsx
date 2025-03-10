@@ -402,6 +402,7 @@ const BottomControls: React.FC = () => {
   const [isResignButtonVisible, setIsResignButtonVisible] = useState(false);
   const [isVoiceReactionButtonVisible, setIsVoiceReactionButtonVisible] = useState(false);
   const [isReactionPickerVisible, setIsReactionPickerVisible] = useState(false);
+  const [isNavigationPopupVisible, setIsNavigationPopupVisible] = useState(false);
   const [isResignConfirmVisible, setIsResignConfirmVisible] = useState(false);
   const [isTimerButtonDisabled, setIsTimerButtonDisabled] = useState(true);
   const [isClaimVictoryVisible, setIsClaimVictoryVisible] = useState(false);
@@ -861,6 +862,17 @@ const BottomControls: React.FC = () => {
             <ReactionButton onClick={() => handleReactionSelect("drop")}>drop</ReactionButton>
             <ReactionButton onClick={() => handleReactionSelect("slurp")}>slurp</ReactionButton>
             <ReactionButton onClick={() => handleReactionSelect("gg")}>gg</ReactionButton>
+          </ReactionPicker>
+        )}
+        {isNavigationPopupVisible && (
+          <ReactionPicker ref={pickerRef}>
+            <ReactionButton onClick={() => handleReactionSelect("yo")}>bosch 3:0</ReactionButton>
+            <ReactionButton onClick={() => handleReactionSelect("yo")}>gardenparty 0:1</ReactionButton>
+            <ReactionButton onClick={() => handleReactionSelect("yo")}>Angel Protection</ReactionButton>
+            <ReactionButton onClick={() => handleReactionSelect("yo")}>Double Spirit</ReactionButton>
+            <ReactionButton onClick={() => handleReactionSelect("yo")}>Mystic Bomber</ReactionButton>
+            <ReactionButton onClick={() => handleReactionSelect("yo")}>Solus Rex</ReactionButton>
+            <ReactionButton onClick={() => handleReactionSelect("yo")}>What Is the Evil Deed</ReactionButton>
           </ReactionPicker>
         )}
         {isResignConfirmVisible && (
