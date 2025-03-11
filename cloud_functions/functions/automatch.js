@@ -58,7 +58,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
         const success = await acceptInvite(firstAutomatchId, invite, match, uid);
         if (success) {
           const matchMessage = `${existingPlayerName} vs. ${name} https://mons.link/${firstAutomatchId}`;
-          sendBotMessage(matchMessage).catch(console.error);
+          sendBotMessage(matchMessage, true).catch(console.error);
         } else {
           return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, retryCount + 1);
         }
