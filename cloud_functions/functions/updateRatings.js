@@ -102,7 +102,7 @@ exports.updateRatings = onCall(async (request) => {
   const playerProfileDisplayName = getDisplayNameFromAddress(playerProfile.username, playerProfile.eth, playerProfile.sol, 0);
   const opponentProfileDisplayName = getDisplayNameFromAddress(opponentProfile.username, opponentProfile.eth, opponentProfile.sol, 0);
 
-  const updateRatingMessage = `${playerProfileDisplayName} ${newRating1}↑\n${opponentProfileDisplayName} ${newRating2}↓`;
+  const updateRatingMessage = `${playerProfileDisplayName} ${newRating1}↑ ${opponentProfileDisplayName} ${newRating2}↓`;
   sendBotMessage(updateRatingMessage, true);
 
   return {
