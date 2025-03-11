@@ -2,7 +2,17 @@ import { generateNewInviteId } from "../utils/misc";
 import { PlayerProfile, Reaction } from "./connectionModels";
 
 const initialPath = window.location.pathname.replace(/^\/|\/$/g, "");
+
 export const isCreateNewInviteFlow = initialPath === "";
+export const isBoardSnapshotFlow = initialPath.startsWith("snapshot/");
+
+export function getSnapshotIdAndClearPathIfNeeded(): string | null {
+  if (isBoardSnapshotFlow) {
+    const snapshotId = initialPath.substring("snapshot/".length);
+    return snapshotId;
+  }
+  return null;
+}
 
 let firebaseConnection: any;
 let newInviteId = "";

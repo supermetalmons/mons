@@ -4,7 +4,7 @@ import * as Board from "./board";
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
-import { isAutomatch, sendResignStatus, prepareOnchainVictoryTx, sendMove, isCreateNewInviteFlow, sendEmojiUpdate, setupConnection, startTimer, claimVictoryByTimer, sendRematchProposal, sendAutomatchRequest, connectToAutomatch, sendEndMatchIndicator, rematchSeriesEndIsIndicated, connectToGame, updateRatings, seeIfFreshlySignedInProfileIsOneOfThePlayers } from "../connection/connection";
+import { isAutomatch, sendResignStatus, prepareOnchainVictoryTx, sendMove, isCreateNewInviteFlow, sendEmojiUpdate, setupConnection, startTimer, claimVictoryByTimer, sendRematchProposal, sendAutomatchRequest, connectToAutomatch, sendEndMatchIndicator, rematchSeriesEndIsIndicated, connectToGame, updateRatings, seeIfFreshlySignedInProfileIsOneOfThePlayers, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded } from "../connection/connection";
 import { setAttestVictoryVisible, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAttestVictoryEnabled, showButtonForTx, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushButtonDimmed } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
@@ -69,9 +69,24 @@ export async function go() {
     return;
   }
 
-  // TODO: handle saved board state link
-
-  if (isCreateNewInviteFlow) {
+  if (isBoardSnapshotFlow) {
+    const snapshot = decodeURIComponent(getSnapshotIdAndClearPathIfNeeded() || "");
+    const gameFromFen = MonsWeb.MonsGameModel.from_fen(snapshot);
+    if (!gameFromFen) return;
+    game = gameFromFen;
+    game.locations_with_content().forEach((loc) => {
+      const location = new Location(loc.i, loc.j);
+      updateLocation(location);
+    });
+    didStartLocalGame = true;
+    setHomeVisible(true);
+    setBrushButtonDimmed(true);
+    setUndoVisible(true);
+    setInviteLinkActionVisible(false);
+    setAutomatchVisible(false);
+    setBotGameOptionVisible(false);
+    setAutomoveActionVisible(true);
+  } else if (isCreateNewInviteFlow) {
     game.locations_with_content().forEach((loc) => {
       const location = new Location(loc.i, loc.j);
       updateLocation(location);
@@ -85,7 +100,10 @@ export async function go() {
     setBrushButtonDimmed(true);
   }
 
-  Board.setupGameInfoElements(!isCreateNewInviteFlow);
+  Board.setupGameInfoElements(!isCreateNewInviteFlow && !isBoardSnapshotFlow);
+  if (isBoardSnapshotFlow) {
+    updateBoardMoveStatuses();
+  }
 }
 
 export function failedToCreateRematchProposal() {
