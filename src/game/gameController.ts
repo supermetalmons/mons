@@ -103,6 +103,7 @@ export async function go() {
   Board.setupGameInfoElements(!isCreateNewInviteFlow && !isBoardSnapshotFlow);
   if (isBoardSnapshotFlow) {
     updateBoardMoveStatuses();
+    Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
   }
 }
 
