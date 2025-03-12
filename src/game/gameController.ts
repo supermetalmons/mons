@@ -8,6 +8,7 @@ import { isAutomatch, sendResignStatus, prepareOnchainVictoryTx, sendMove, isCre
 import { setAttestVictoryVisible, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAttestVictoryEnabled, showButtonForTx, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushButtonDimmed, setNavigationPopupVisible } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
+import { getNextProblem, Problem } from "../content/problems";
 
 const experimentalDrawingDevMode = false;
 
@@ -18,7 +19,7 @@ export let isGameWithBot = false;
 export let isWaitingForRematchResponse = false;
 
 let puzzleMode = false;
-let puzzleFen = "";
+let selectedProblem: Problem | null = null;
 let didStartLocalGame = false;
 let isGameOver = false;
 let isReconnect = false;
@@ -270,6 +271,14 @@ function automove() {
 }
 
 function didConfirmRematchProposal() {
+  if (puzzleMode) {
+    const nextProblem = getNextProblem(selectedProblem!.id);
+    if (nextProblem) {
+      showNextProblem(nextProblem);
+      return;
+    }
+  }
+
   if (!isOnlineGame) {
     window.location.href = "/";
     return;
@@ -728,7 +737,7 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
 }
 
 export function resetToTheStartOfThePuzzle() {
-  const gameFromFen = MonsWeb.MonsGameModel.from_fen(puzzleFen);
+  const gameFromFen = MonsWeb.MonsGameModel.from_fen(selectedProblem!.fen);
   if (!gameFromFen) return;
   game = gameFromFen;
   setNewBoard();
@@ -1148,10 +1157,10 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
   Board.runMonsBoardAsDisplayWaitingAnimation();
 }
 
-export function didSelectPuzzle(id: string, title: string, fen: string) {
-  showPuzzleTitle(title);
+export function didSelectPuzzle(problem: Problem) {
+  showPuzzleTitle(problem.label);
 
-  const gameFromFen = MonsWeb.MonsGameModel.from_fen(fen);
+  const gameFromFen = MonsWeb.MonsGameModel.from_fen(problem.fen);
   if (!gameFromFen) return;
   game = gameFromFen;
   didStartLocalGame = true;
@@ -1167,7 +1176,13 @@ export function didSelectPuzzle(id: string, title: string, fen: string) {
   setNewBoard();
 
   puzzleMode = true;
-  puzzleFen = fen;
+  selectedProblem = problem;
+}
+
+export function showNextProblem(problem: Problem) {
+  isGameOver = false;
+  didSelectPuzzle(problem);
+  updateUndoButtonBasedOnGameState();
 }
 
 export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matchId: string) {
