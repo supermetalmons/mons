@@ -64,6 +64,7 @@ let itemSelectionOverlay: SVGElement | undefined;
 let opponentNameText: SVGElement | undefined;
 let playerNameText: SVGElement | undefined;
 let opponentScoreText: SVGElement | undefined;
+let titleTextElement: SVGElement | undefined;
 let playerScoreText: SVGElement | undefined;
 let opponentTimer: SVGElement | undefined;
 let playerTimer: SVGElement | undefined;
@@ -94,6 +95,12 @@ let supermana: SVGElement;
 let supermanaSimple: SVGElement;
 
 const emojis = (await import("../content/emojis")).emojis;
+
+export function showPuzzleTitle(title: string) {
+  if (titleTextElement) {
+    titleTextElement.textContent = title;
+  }
+}
 
 async function initializeAssets(onStart: boolean) {
   assets = (await import(`../assets/gameAssets${currentAssetsSet}`)).gameAssets;
@@ -1211,6 +1218,11 @@ const updateLayout = () => {
 
     const placeholder = isOpponent ? opponentAvatarPlaceholder! : playerAvatarPlaceholder!;
     SVG.updateCircle(placeholder, offsetX + avatarSize / 2, y + avatarSize / 2, avatarSize / 3);
+
+    if (isOpponent) {
+      titleTextElement!.setAttribute("font-size", (34 * multiplicator).toString());
+      SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.67);
+    }
   }
 
   updateNamesX();
@@ -1239,6 +1251,15 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
 
   playerSideMetadata.emojiId = playerEmojiId;
   opponentSideMetadata.emojiId = opponentEmojiId;
+
+  titleTextElement = document.createElementNS(SVG.ns, "text");
+  SVG.setFill(titleTextElement, colors.scoreText);
+  SVG.setOpacity(titleTextElement, 0.61);
+  titleTextElement.setAttribute("font-weight", "700");
+  titleTextElement.setAttribute("font-style", "italic");
+  titleTextElement.textContent = "";
+  titleTextElement.setAttribute("text-anchor", "middle");
+  controlsLayer?.append(titleTextElement);
 
   for (const isOpponent of [true, false]) {
     const numberText = document.createElementNS(SVG.ns, "text");

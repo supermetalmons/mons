@@ -1,5 +1,5 @@
 import initMonsWeb, * as MonsWeb from "mons-web";
-import { playerSideMetadata, opponentSideMetadata, showVoiceReactionText, setupPlayerId, hideAllMoveStatuses, hideTimerCountdownDigits, showTimer } from "./board";
+import { playerSideMetadata, opponentSideMetadata, showVoiceReactionText, setupPlayerId, hideAllMoveStatuses, hideTimerCountdownDigits, showTimer, showPuzzleTitle } from "./board";
 import * as Board from "./board";
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
@@ -1131,7 +1131,7 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
 }
 
 export function didSelectPuzzle(id: string, title: string, fen: string) {
-  // TODO: display title
+  showPuzzleTitle(title);
 
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(fen);
   if (!gameFromFen) return;
