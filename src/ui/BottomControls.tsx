@@ -307,13 +307,14 @@ const NavigationPicker = styled(ReactionPicker)`
   right: 0;
   min-width: 123px;
   animation: fadeIn 0.1s linear;
+  opacity: 0.95;
 
   @keyframes fadeIn {
     from {
       opacity: 0;
     }
     to {
-      opacity: 1;
+      opacity: 0.95;
     }
   }
 `;
