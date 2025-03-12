@@ -17,6 +17,8 @@ export let isOnlineGame = false;
 export let isGameWithBot = false;
 export let isWaitingForRematchResponse = false;
 
+let puzzleMode = false;
+let puzzleFen = "";
 let didStartLocalGame = false;
 let isGameOver = false;
 let isReconnect = false;
@@ -618,6 +620,11 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
             }
             break;
           case MonsWeb.EventModelKind.NextTurn:
+            if (puzzleMode && game.winner_color() === undefined) {
+              resetToTheStartOfThePuzzle();
+              return;
+            }
+
             sounds.push(Sound.EndTurn);
             if ((!isWatchOnly && isOnlineGame) || isGameWithBot) {
               const playerTurn = isPlayerSideTurn();
@@ -718,6 +725,17 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
 
       break;
   }
+}
+
+export function resetToTheStartOfThePuzzle() {
+  const gameFromFen = MonsWeb.MonsGameModel.from_fen(puzzleFen);
+  if (!gameFromFen) return;
+  game = gameFromFen;
+  setNewBoard();
+  playSounds([Sound.Undo]);
+  Board.removeHighlights();
+  Board.hideItemSelection();
+  updateUndoButtonBasedOnGameState();
 }
 
 export function didClickAutomoveButton() {
@@ -1147,6 +1165,9 @@ export function didSelectPuzzle(id: string, title: string, fen: string) {
   setAutomoveActionVisible(true);
 
   setNewBoard();
+
+  puzzleMode = true;
+  puzzleFen = fen;
 }
 
 export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matchId: string) {
