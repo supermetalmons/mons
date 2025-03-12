@@ -9,6 +9,7 @@ import { setAttestVictoryVisible, setWatchOnlyVisible, showResignButton, showVoi
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem } from "../content/problems";
+import { emojis } from "../content/emojis";
 
 const experimentalDrawingDevMode = false;
 
@@ -1183,6 +1184,7 @@ export function showNextProblem(problem: Problem) {
   isGameOver = false;
   didSelectPuzzle(problem);
   updateUndoButtonBasedOnGameState();
+  Board.updateEmojiIfNeeded(emojis.getRandomEmojiId(), true);
 }
 
 export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matchId: string) {
