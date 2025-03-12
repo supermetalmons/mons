@@ -305,6 +305,16 @@ const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
 const NavigationPicker = styled(ReactionPicker)`
   right: 0;
   min-width: 123px;
+  animation: fadeIn 0.1s linear;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
 `;
 
 const SectionTitle = styled.div`
