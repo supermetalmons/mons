@@ -766,7 +766,7 @@ const BottomControls: React.FC = () => {
       case PrimaryActionType.JoinGame:
         return "Join Game";
       case PrimaryActionType.Rematch:
-        return "🕹️ Play Again";
+        return "Play Next";
       default:
         return "";
     }
