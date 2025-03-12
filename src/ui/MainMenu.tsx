@@ -580,7 +580,9 @@ const MainMenu: React.FC = () => {
   };
 
   const copyBoardState = () => {
-    const link = window.location.origin + "/snapshot/" + encodeURIComponent(getCurrentGameFen());
+    const currentFen = getCurrentGameFen();
+    console.log(currentFen);
+    const link = window.location.origin + "/snapshot/" + encodeURIComponent(currentFen);
     navigator.clipboard.writeText(link);
     setCopyButtonText("copied");
     setTimeout(() => {

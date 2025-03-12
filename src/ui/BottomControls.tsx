@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaPaintBrush, FaStar, FaEnvelope, FaLink, FaShareAlt } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
-import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAttestVictoryButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot } from "../game/gameController";
+import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAttestVictoryButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, didSelectPuzzle } from "../game/gameController";
 import { didClickInviteButton, sendVoiceReaction } from "../connection/connection";
 import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
 import { isMobile } from "../utils/misc";
@@ -38,6 +38,10 @@ const ControlsContainer = styled.div`
   display: flex;
   gap: 8px;
   justify-content: flex-end;
+
+  @media screen and (orientation: portrait) {
+    right: 8px;
+  }
 
   @media screen and (max-width: 430px) {
     gap: 6px;
@@ -76,6 +80,10 @@ export const AppearanceToggleButton = styled.button<{ disabled?: boolean; dimmed
   outline: none;
   -webkit-touch-callout: none;
   touch-action: none;
+
+  @media screen and (orientation: portrait) {
+    left: 8px;
+  }
 
   @media screen and (max-width: 360px) {
     left: 6px;
@@ -294,6 +302,25 @@ const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   }
 `;
 
+const NavigationPicker = styled(ReactionPicker)`
+  right: 0;
+  min-width: 123px;
+`;
+
+const SectionTitle = styled.div`
+  font-size: 0.5rem;
+  font-weight: bold;
+  color: #767787;
+  text-align: left;
+  padding-left: 8px;
+  padding-top: 3px;
+  padding-bottom: 4px;
+
+  @media (prefers-color-scheme: dark) {
+    color: #a0a0a0;
+  }
+`;
+
 const ReactionButton = styled.button`
   background: none;
   border: none;
@@ -348,6 +375,7 @@ let setInviteLinkActionVisible: (visible: boolean) => void;
 let setAutomatchEnabled: (enabled: boolean) => void;
 let setAutomatchVisible: (visible: boolean) => void;
 let setBotGameOptionVisible: (visible: boolean) => void;
+let setNavigationPopupVisible: (visible: boolean) => void;
 let setAutomatchWaitingState: (waiting: boolean) => void;
 
 let setAttestVictoryEnabled: (enabled: boolean) => void;
@@ -410,6 +438,7 @@ const BottomControls: React.FC = () => {
   const [timerConfig, setTimerConfig] = useState({ duration: 90, progress: 0, requestDate: Date.now() });
 
   const pickerRef = useRef<HTMLDivElement>(null);
+  const navigationPickerRef = useRef<HTMLDivElement>(null);
   const voiceReactionButtonRef = useRef<HTMLButtonElement>(null);
   const resignButtonRef = useRef<HTMLButtonElement>(null);
   const resignConfirmRef = useRef<HTMLDivElement>(null);
@@ -551,6 +580,10 @@ const BottomControls: React.FC = () => {
     setIsBotGameButtonVisible(visible);
   };
 
+  setNavigationPopupVisible = (visible: boolean) => {
+    setIsNavigationPopupVisible(visible);
+  };
+
   setInviteLinkActionVisible = (visible: boolean) => {
     setIsInviteLinkButtonVisible(visible);
   };
@@ -685,7 +718,6 @@ const BottomControls: React.FC = () => {
       }, 2000);
     }
   }, []);
-
   const handleUndo = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     if ((event.target as HTMLButtonElement).disabled) return;
     didClickUndoButton();
@@ -742,6 +774,27 @@ const BottomControls: React.FC = () => {
         title: "Play Mons",
       });
     } catch (_) {}
+  };
+
+  const navigationItems = [
+    { id: "mana", label: "Mana 101", fen: "4 0 w 0 0 0 0 0 21 n03y0xs0xd0xa0xe0xn03/n11/n11/n04xxmn01xxmn04/n03xxmn01xxmn01xxmn03/xxQn09S0B/n03xxMn07/n04xxMn06/n11/n01xxMn09/n03E0xA0xn02Y0xn02D0x" },
+    { id: "drainer", label: "Drainer 101", fen: "4 0 w 0 0 0 0 0 9 n03y0xn01d0xa0xe0xn03/n11/n05s0xn05/n04xxmn01xxmn04/n03xxmn03xxmn03/xxQn09xxQ/n03xxMn01xxMn05/n04xxMn03D0Mn02/n07xxMn03/n11/n03E0xA0xn01S0xY0xn03" },
+    { id: "demon", label: "Demon 101", fen: "4 0 w 0 0 0 0 0 15 y0xn04d0xa0xe0xn03/n02xxmn08/D0Mn02xxmE0xn06/n06xxmn01xxmn02/n11/xxQn01s0xn07xxQ/n05xxMn01xxMn03/n04xxMn01xxMn04/n11/n11/n04A0xn01S0xY0xn03" },
+    { id: "spirit", label: "Spirit 101", fen: "4 1 w 0 0 0 0 0 19 n03y0xs0xn01a0xe0xn03/n11/n03xxmn03xxmd0Un02/n04xxmn06/n03xxmn07/xxQn09xxQ/n05xxMn05/n06D0xn04/n11/n06S0xn04/n03E0xA0xn02Y0xn03" },
+    { id: "mystic", label: "Mystic 101", fen: "" },
+    { id: "items", label: "Items 101", fen: "" },
+    { id: "bomb", label: "Bomb 101", fen: "" },
+    { id: "potion", label: "Potion 101", fen: "" },
+    { id: "angel", label: "Angel 101", fen: "" },
+    { id: "supermana", label: "Supermana 101", fen: "" },
+    { id: "manab", label: "Mana 102", fen: "" },
+  ];
+
+  const handleNavigationSelect = (id: string) => {
+    const selectedItem = navigationItems.find((item) => item.id === id);
+    if (selectedItem) {
+      didSelectPuzzle(selectedItem.id, selectedItem.label, selectedItem.fen);
+    }
   };
 
   return (
@@ -865,15 +918,14 @@ const BottomControls: React.FC = () => {
           </ReactionPicker>
         )}
         {isNavigationPopupVisible && (
-          <ReactionPicker ref={pickerRef}>
-            <ReactionButton onClick={() => handleReactionSelect("yo")}>bosch 3:0</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("yo")}>gardenparty 0:1</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("yo")}>Angel Protection</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("yo")}>Double Spirit</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("yo")}>Mystic Bomber</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("yo")}>Solus Rex</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("yo")}>What Is the Evil Deed</ReactionButton>
-          </ReactionPicker>
+          <NavigationPicker ref={navigationPickerRef}>
+            <SectionTitle>BASICS</SectionTitle>
+            {navigationItems.map((item) => (
+              <ReactionButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
+                {item.label}
+              </ReactionButton>
+            ))}
+          </NavigationPicker>
         )}
         {isResignConfirmVisible && (
           <ResignConfirmation ref={resignConfirmRef}>
@@ -885,4 +937,4 @@ const BottomControls: React.FC = () => {
   );
 };
 
-export { BottomControls as default, setBrushButtonDimmed, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, showButtonForTx, setAttestVictoryEnabled, setAutomatchEnabled, setAttestVictoryVisible, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };
+export { BottomControls as default, setBrushButtonDimmed, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setNavigationPopupVisible, setBotGameOptionVisible, setAutomatchWaitingState, showButtonForTx, setAttestVictoryEnabled, setAutomatchEnabled, setAttestVictoryVisible, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };

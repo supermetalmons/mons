@@ -1197,7 +1197,7 @@ const updateLayout = () => {
     timerText.setAttribute("font-size", (50 * multiplicator).toString());
     nameText.setAttribute("font-size", (32 * multiplicator).toString());
 
-    const statusItemsOffsetX = shouldOffsetFromBorders ? 0.15 * multiplicator : 0;
+    const statusItemsOffsetX = shouldOffsetFromBorders ? 0.21 * multiplicator : 0;
     const statusItemsY = y + avatarSize * (isOpponent ? 0.23 : 0.1);
     const statusItemSize = 0.5 * multiplicator;
 

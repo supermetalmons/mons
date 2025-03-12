@@ -5,7 +5,7 @@ import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModi
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
 import { isAutomatch, sendResignStatus, prepareOnchainVictoryTx, sendMove, isCreateNewInviteFlow, sendEmojiUpdate, setupConnection, startTimer, claimVictoryByTimer, sendRematchProposal, sendAutomatchRequest, connectToAutomatch, sendEndMatchIndicator, rematchSeriesEndIsIndicated, connectToGame, updateRatings, seeIfFreshlySignedInProfileIsOneOfThePlayers, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded } from "../connection/connection";
-import { setAttestVictoryVisible, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAttestVictoryEnabled, showButtonForTx, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushButtonDimmed } from "../ui/BottomControls";
+import { setAttestVictoryVisible, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAttestVictoryEnabled, showButtonForTx, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushButtonDimmed, setNavigationPopupVisible } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 
@@ -85,6 +85,7 @@ export async function go() {
     setInviteLinkActionVisible(false);
     setAutomatchVisible(false);
     setBotGameOptionVisible(false);
+    setNavigationPopupVisible(false);
     setAutomoveActionVisible(true);
   } else if (isCreateNewInviteFlow) {
     game.locations_with_content().forEach((loc) => {
@@ -94,6 +95,7 @@ export async function go() {
     setInviteLinkActionVisible(true);
     setAutomatchVisible(true);
     setBotGameOptionVisible(true);
+    setNavigationPopupVisible(true);
   } else {
     isOnlineGame = true;
     setHomeVisible(true);
@@ -168,6 +170,7 @@ export function didClickStartBotGameButton() {
   setInviteLinkActionVisible(false);
   setAutomatchVisible(false);
   setBotGameOptionVisible(false);
+  setNavigationPopupVisible(false);
   setAutomoveActionVisible(true);
   showResignButton();
   Board.setBoardFlipped(true);
@@ -198,6 +201,7 @@ export function didClickAutomatchButton() {
   setAutomoveActionVisible(false);
   setInviteLinkActionVisible(false);
   setBotGameOptionVisible(false);
+  setNavigationPopupVisible(false);
   Board.hideBoardPlayersInfo();
   Board.removeHighlights();
   hideAllMoveStatuses();
@@ -495,6 +499,7 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
         setInviteLinkActionVisible(false);
         setAutomatchVisible(false);
         setBotGameOptionVisible(false);
+        setNavigationPopupVisible(false);
         setAutomoveActionVisible(true);
       }
 
@@ -1116,12 +1121,32 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
   setBrushButtonDimmed(true);
   setAutomatchVisible(false);
   setBotGameOptionVisible(false);
+  setNavigationPopupVisible(false);
   setAutomoveActionVisible(false);
   Board.hideBoardPlayersInfo();
   Board.removeHighlights();
   hideAllMoveStatuses();
   isWaitingForInviteToGetAccepted = true;
   Board.runMonsBoardAsDisplayWaitingAnimation();
+}
+
+export function didSelectPuzzle(id: string, title: string, fen: string) {
+  // TODO: display title
+
+  const gameFromFen = MonsWeb.MonsGameModel.from_fen(fen);
+  if (!gameFromFen) return;
+  game = gameFromFen;
+  didStartLocalGame = true;
+  setHomeVisible(true);
+  setBrushButtonDimmed(true);
+  setUndoVisible(true);
+  setInviteLinkActionVisible(false);
+  setAutomatchVisible(false);
+  setBotGameOptionVisible(false);
+  setNavigationPopupVisible(false);
+  setAutomoveActionVisible(true);
+
+  setNewBoard();
 }
 
 export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matchId: string) {
@@ -1134,6 +1159,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
     setInviteLinkActionVisible(false);
     setAutomatchVisible(false);
     setBotGameOptionVisible(false);
+    setNavigationPopupVisible(false);
     setEndMatchVisible(false);
     showPrimaryAction(PrimaryActionType.None);
     const wasWaitingForRematchResponse = isWaitingForRematchResponse;
