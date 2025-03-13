@@ -316,6 +316,7 @@ const NavigationPicker = styled(ReactionPicker)`
   right: 0pt;
   animation: fadeIn 0.123s linear;
   opacity: 0.888;
+  cursor: pointer;
 
   @keyframes fadeIn {
     from {
@@ -334,6 +335,7 @@ const SectionTitle = styled.div`
   text-align: left;
   padding-left: 8px;
   padding-bottom: 2pt;
+  cursor: pointer;
 
   @media (prefers-color-scheme: dark) {
     color: #a0a0a0;
