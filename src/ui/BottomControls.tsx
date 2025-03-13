@@ -286,7 +286,6 @@ const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boolean; isV
     flex-shrink: 0;
   }
 `;
-
 const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   position: absolute;
   bottom: 40px;
@@ -304,17 +303,26 @@ const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
 `;
 
 const NavigationPicker = styled(ReactionPicker)`
-  right: 0;
-  min-width: 123px;
-  animation: fadeIn 0.1s linear;
-  opacity: 0.95;
+  border-radius: 0pt;
+  position: fixed;
+  bottom: auto;
+  padding-top: 5px;
+  padding-left: 0;
+  padding-right: 2pt;
+  padding-bottom: 4px;
+  gap: 0px;
+  top: 48%;
+  transform: translateY(-50%);
+  right: 0pt;
+  animation: fadeIn 0.123s linear;
+  opacity: 0.888;
 
   @keyframes fadeIn {
     from {
       opacity: 0;
     }
     to {
-      opacity: 0.95;
+      opacity: 0.888;
     }
   }
 `;
@@ -325,8 +333,7 @@ const SectionTitle = styled.div`
   color: #767787;
   text-align: left;
   padding-left: 8px;
-  padding-top: 3px;
-  padding-bottom: 4px;
+  padding-bottom: 2pt;
 
   @media (prefers-color-scheme: dark) {
     color: #a0a0a0;
