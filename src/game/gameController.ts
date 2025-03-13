@@ -19,7 +19,7 @@ export let isOnlineGame = false;
 export let isGameWithBot = false;
 export let isWaitingForRematchResponse = false;
 
-let puzzleMode = false;
+export let puzzleMode = false;
 let selectedProblem: Problem | null = null;
 let didStartLocalGame = false;
 let isGameOver = false;
