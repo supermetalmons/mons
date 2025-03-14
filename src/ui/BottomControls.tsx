@@ -302,14 +302,44 @@ const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   }
 `;
 
+const ReactionButton = styled.button`
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  text-align: left;
+  color: #333;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: #e0e0e0;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: #f0f0f0;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: #444;
+      }
+    }
+  }
+`;
+
+const NavigationPickerButton = styled(ReactionButton)`
+  padding: 6px 8px;
+  padding-right: 15px;
+`;
+
 const NavigationPicker = styled(ReactionPicker)`
   border-radius: 0pt;
   position: fixed;
   bottom: auto;
   padding-top: 5px;
   padding-left: 0;
-  padding-right: 2pt;
-  padding-bottom: 4px;
+  padding-right: 0pt;
+  padding-bottom: 0px;
   gap: 0px;
   top: 48%;
   transform: translateY(-50%);
@@ -342,27 +372,6 @@ const SectionTitle = styled.div`
   }
 `;
 
-const ReactionButton = styled.button`
-  background: none;
-  border: none;
-  padding: 4px 8px;
-  cursor: pointer;
-  text-align: left;
-  color: #333;
-
-  &:hover {
-    background-color: #e0e0e0;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    color: #f0f0f0;
-
-    &:hover {
-      background-color: #444;
-    }
-  }
-`;
-
 const ResignConfirmation = styled(ReactionPicker)`
   right: 10px;
   bottom: 40px;
@@ -376,15 +385,19 @@ const ResignButton = styled(ReactionButton)`
   padding: 8px 16px;
   font-weight: bold;
 
-  &:hover {
-    background-color: #e60000;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: #e60000;
+    }
   }
 
   @media (prefers-color-scheme: dark) {
     background-color: #cc0000;
 
-    &:hover {
-      background-color: #b30000;
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: #b30000;
+      }
     }
   }
 `;
@@ -928,9 +941,9 @@ const BottomControls: React.FC = () => {
           <NavigationPicker ref={navigationPickerRef}>
             <SectionTitle>BASICS</SectionTitle>
             {problems.map((item) => (
-              <ReactionButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
+              <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
                 {item.label}
-              </ReactionButton>
+              </NavigationPickerButton>
             ))}
           </NavigationPicker>
         )}
