@@ -312,8 +312,12 @@ const ReactionButton = styled.button`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: #e0e0e0;
+      background-color: #e8e8e8;
     }
+  }
+
+  &:active {
+    background-color: #e0e0e0;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -321,8 +325,12 @@ const ReactionButton = styled.button`
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: #444;
+        background-color: #3a3a3a;
       }
+    }
+
+    &:active {
+      background-color: #484848;
     }
   }
 `;
@@ -363,6 +371,7 @@ const SectionTitle = styled.div`
   font-weight: bold;
   color: #767787;
   text-align: left;
+  padding-top: 1px;
   padding-left: 8px;
   padding-bottom: 2pt;
   cursor: pointer;
@@ -385,6 +394,10 @@ const ResignButton = styled(ReactionButton)`
   padding: 8px 16px;
   font-weight: bold;
 
+  &:active {
+    background-color: #d30000;
+  }
+
   @media (hover: hover) and (pointer: fine) {
     &:hover {
       background-color: #e60000;
@@ -393,6 +406,10 @@ const ResignButton = styled(ReactionButton)`
 
   @media (prefers-color-scheme: dark) {
     background-color: #cc0000;
+
+    &:active {
+      background-color: #990000;
+    }
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
