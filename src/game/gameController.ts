@@ -658,6 +658,7 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
             playSounds([Sound.Undo]);
             Board.removeHighlights();
             Board.hideItemSelection();
+            Board.hideConfirmationOverlay();
             updateUndoButtonBasedOnGameState();
             return;
           case MonsWeb.EventModelKind.GameOver:
@@ -745,6 +746,7 @@ export function resetToTheStartOfThePuzzle() {
   playSounds([Sound.Undo]);
   Board.removeHighlights();
   Board.hideItemSelection();
+  Board.hideConfirmationOverlay();
   updateUndoButtonBasedOnGameState();
 }
 
@@ -1089,6 +1091,7 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
 
   Board.removeHighlights();
   Board.hideItemSelection();
+  Board.hideConfirmationOverlay();
 
   winnerByTimerColor = winnerColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
@@ -1136,6 +1139,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
 
   Board.removeHighlights();
   Board.hideItemSelection();
+  Board.hideConfirmationOverlay();
 
   if (!onConnect || (didSetWhiteProcessedMovesCount && didSetBlackProcessedMovesCount)) {
     Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);

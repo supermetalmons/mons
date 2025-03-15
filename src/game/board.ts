@@ -60,6 +60,7 @@ const opponentMoveStatusItems: SVGElement[] = [];
 const playerMoveStatusItems: SVGElement[] = [];
 const minHorizontalOffset = 0.21;
 
+let confirmationOverlay: SVGElement | undefined;
 let itemSelectionOverlay: SVGElement | undefined;
 let opponentNameText: SVGElement | undefined;
 let playerNameText: SVGElement | undefined;
@@ -963,6 +964,39 @@ export function hideItemSelection() {
   }
 }
 
+export function hideConfirmationOverlay() {
+  if (confirmationOverlay) {
+    confirmationOverlay.remove();
+  }
+}
+
+export function showConfirmationOverlay(): void {
+  const overlay = document.createElementNS(SVG.ns, "g");
+  confirmationOverlay = overlay;
+
+  const background = document.createElementNS(SVG.ns, "rect");
+  if (isPangchiuBoard()) {
+    SVG.setOrigin(background, -0.83, -0.84);
+    background.style.transform = `scale(${1 / 0.85892388})`;
+    SVG.setSizeStr(background, "100%", "1163.5");
+  } else {
+    SVG.setOrigin(background, 0, 0);
+    SVG.setSizeStr(background, "100%", "1100");
+  }
+
+  SVG.setFill(background, colors.itemSelectionBackground);
+  background.style.backdropFilter = "blur(3px)";
+  overlay.appendChild(background);
+
+  background.addEventListener(defaultInputEventName, (event) => {
+    preventTouchstartIfNeeded(event);
+    event.stopPropagation();
+    overlay.remove();
+  });
+
+  itemsLayer?.appendChild(overlay);
+}
+
 export function showItemSelection(): void {
   const overlay = document.createElementNS(SVG.ns, "g");
   itemSelectionOverlay = overlay;
@@ -1481,9 +1515,8 @@ export function setupBoard() {
       event.preventDefault();
       event.stopPropagation();
     } else if (!target.closest("a, button, select")) {
-      if (itemSelectionOverlay) {
-        itemSelectionOverlay.remove();
-      }
+      hideItemSelection();
+      hideConfirmationOverlay();
       didClickSquare(new Location(-1, -1));
       event.preventDefault();
       event.stopPropagation();
