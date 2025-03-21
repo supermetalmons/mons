@@ -184,7 +184,7 @@ const IconLinkButton = styled.a`
   font-size: 0.75rem;
   font-weight: 777;
   justify-content: center;
-  height: 30px;
+  height: 32px;
   padding: 0 7px;
   border-radius: 6px;
   background-color: #f9f9f9;
