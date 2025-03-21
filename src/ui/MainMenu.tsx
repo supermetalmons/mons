@@ -181,16 +181,20 @@ const MenuTitle = styled.div`
 const IconLinkButton = styled.a`
   display: flex;
   align-items: center;
+  font-size: 0.75rem;
+  font-weight: 777;
   justify-content: center;
-  width: 30px;
   height: 30px;
-  border-radius: 50%;
+  padding: 0 7px;
+  border-radius: 6px;
   background-color: #f9f9f9;
-  color: #333;
+  color: #767787c9;
   text-decoration: none;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
   -webkit-touch-callout: none;
-  touch-action: none;
+  touch-action: pan-x;
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-drag: none;
@@ -199,31 +203,47 @@ const IconLinkButton = styled.a`
   @media (hover: hover) and (pointer: fine) {
     &:hover {
       background-color: #f5f5f5;
+      color: #767787ef;
     }
   }
 
   @media (prefers-color-scheme: dark) {
     background-color: #252525;
-    color: #f5f5f5;
+    color: #767787a9;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
         background-color: #272727;
+        color: #767787f0;
       }
     }
   }
 
   svg {
-    width: 24px;
-    height: 24px;
+    width: 0.75rem;
+    height: 0.75rem;
   }
 `;
 
 const ButtonRow = styled.div`
   display: flex;
-  gap: 6px;
-  margin: 6px 16px;
+  gap: 8px;
+  margin-top: 8px;
+  margin-right: 0px;
+  margin-left: 0px;
+  margin-bottom: 0px;
   align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  white-space: nowrap;
+  padding-bottom: 0px;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const EasLink = styled.a`
@@ -592,6 +612,12 @@ const MainMenu: React.FC = () => {
               )}
             </MenuTitle>
             <ButtonRow>
+              <IconLinkButton href="https://www.supermetalmons.com/collections/all" target="_blank" rel="noopener noreferrer">
+                Shop
+              </IconLinkButton>
+              <IconLinkButton href="https://ultrametal.neocities.org/academy" target="_blank" rel="noopener noreferrer">
+                Academy
+              </IconLinkButton>
               <IconLinkButton href="https://x.com/supermetalx" target="_blank" rel="noopener noreferrer">
                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" stroke="currentColor" stroke-width="0.2" />
@@ -608,8 +634,8 @@ const MainMenu: React.FC = () => {
               <IconLinkButton href="https://opensea.io/collection/super-metal-mons-gen-2" target="_blank" rel="noopener noreferrer">
                 Gen 2
               </IconLinkButton>
-              <IconLinkButton href="https://www.supermetalmons.com/collections/all" target="_blank" rel="noopener noreferrer">
-                IRL
+              <IconLinkButton href="https://opensea.io/collection/theemojipack" target="_blank" rel="noopener noreferrer">
+                EMOJIPACK
               </IconLinkButton>
             </ButtonRow>
             <CloseButton
