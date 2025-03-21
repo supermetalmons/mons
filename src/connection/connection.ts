@@ -96,23 +96,24 @@ export function sendEmojiUpdate(newId: number, matchOnly: boolean) {
   firebaseConnection.updateEmoji(newId, matchOnly);
 }
 
-export async function verifyEthAddress(message: string, signature: string): Promise<any> {
+async function ensureAuthenticated(): Promise<string | undefined> {
   if (!firebaseConnection) {
     const uid = await signIn();
     if (!uid) {
       throw new Error("Failed to authenticate user");
     }
+    return uid;
   }
+  return undefined;
+}
+
+export async function verifyEthAddress(message: string, signature: string): Promise<any> {
+  await ensureAuthenticated();
   return firebaseConnection.verifyEthAddress(message, signature);
 }
 
 export async function verifySolanaAddress(address: string, signature: string): Promise<any> {
-  if (!firebaseConnection) {
-    const uid = await signIn();
-    if (!uid) {
-      throw new Error("Failed to authenticate user");
-    }
-  }
+  await ensureAuthenticated();
   return firebaseConnection.verifySolanaAddress(address, signature);
 }
 
@@ -125,6 +126,7 @@ export async function startTimer(): Promise<any> {
 }
 
 export async function getLeaderboard(): Promise<PlayerProfile[]> {
+  await ensureAuthenticated();
   return firebaseConnection.getLeaderboard();
 }
 
@@ -145,6 +147,7 @@ export async function signOut(): Promise<void> {
 }
 
 export async function sendAutomatchRequest(): Promise<any> {
+  await ensureAuthenticated();
   return firebaseConnection.automatch();
 }
 

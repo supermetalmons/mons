@@ -6,7 +6,7 @@ import { getLeaderboard } from "../connection/connection";
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
   opacity: ${(props) => (props.show ? 1 : 0)};
   height: ${(props) => (props.show ? "calc(69dvh - 10px)" : 0)};
-  margin-top: ${(props) => (props.show ? "-18px" : "-6px")};
+  margin-top: ${(props) => (props.show ? "18px" : "-6px")};
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -244,8 +244,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
               <tr>
                 <th></th>
                 <th></th>
-                <th>Player</th>
-                <th>Rating</th>
+                <th></th>
+                <th></th>
               </tr>
             </thead>
             <tbody>

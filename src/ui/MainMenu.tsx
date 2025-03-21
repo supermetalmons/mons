@@ -479,7 +479,6 @@ export function hasMainMenuPopupsVisible(): boolean {
 const MainMenu: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
-  const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [clickCount, setClickCount] = useState(0);
   const [showExperimental, setShowExperimental] = useState(false);
   const [copyButtonText, setCopyButtonText] = useState("copy board snapshot");
@@ -549,14 +548,9 @@ const MainMenu: React.FC = () => {
   const menuRef = useRef<HTMLDivElement>(null);
 
   const toggleMenu = () => {
-    if (showLeaderboard) {
-      setShowLeaderboard(false);
-    } else {
-      setIsMenuOpen(!isMenuOpen);
-      if (!isMenuOpen) {
-        setShowExperimental(false);
-        setShowLeaderboard(false);
-      }
+    setIsMenuOpen(!isMenuOpen);
+    if (!isMenuOpen) {
+      setShowExperimental(false);
     }
   };
 
@@ -607,7 +601,6 @@ const MainMenu: React.FC = () => {
       if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsMenuOpen(false);
-        setShowLeaderboard(false);
         setShowExperimental(false);
       }
     };
@@ -641,14 +634,13 @@ const MainMenu: React.FC = () => {
           onMouseLeave={() => {
             if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
               setIsMenuOpen(false);
-              setShowLeaderboard(false);
               setShowExperimental(false);
             }
           }}>
-          <RockMenu isOpen={isMenuOpen} showLeaderboard={showLeaderboard}>
+          <RockMenu isOpen={isMenuOpen} showLeaderboard={true}>
             <MenuTitle onClick={!isMobile ? handleTitleClick : undefined} onTouchStart={isMobile ? handleTitleClick : undefined}>
               <MenuTitleText>MONS.LINK</MenuTitleText>
-              {false && showLeaderboard && (
+              {false && (
                 <EasLink href="https://base.easscan.org/schema/view/0x5c6e798cbb817442fa075e01b65d5d65d3ac35c2b05c1306e8771a1c8a3adb32" target="_blank" rel="noopener noreferrer">
                   ✓ EAS
                 </EasLink>
@@ -658,12 +650,11 @@ const MainMenu: React.FC = () => {
               onClick={() => {
                 setIsMenuOpen(false);
                 setShowExperimental(false);
-                setShowLeaderboard(false);
               }}>
               ×
             </CloseButton>
             {showExperimental && <MenuOverlay />}
-            <IconRow hide={showLeaderboard}>
+            <IconRow hide={true}>
               <IconLink href="https://x.com/supermetalx" target="_blank" rel="noopener noreferrer">
                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" stroke="currentColor" stroke-width="0.2" />
@@ -675,7 +666,7 @@ const MainMenu: React.FC = () => {
                 </svg>
               </IconLink>
             </IconRow>
-            <LinkRow hide={showLeaderboard}>
+            <LinkRow hide={true}>
               <LinkButton href="https://opensea.io/collection/supermetalmons" target="_blank" rel="noopener noreferrer">
                 Gen 1
               </LinkButton>
@@ -686,10 +677,7 @@ const MainMenu: React.FC = () => {
                 IRL
               </LinkButton>
             </LinkRow>
-            <LinkRow hide={showLeaderboard}>
-              <LinkButton onClick={() => setShowLeaderboard(true)}>Leaderboard</LinkButton>
-            </LinkRow>
-            <Leaderboard show={showLeaderboard} />
+            <Leaderboard show={true} />
             {showExperimental && (
               <ExperimentalMenu>
                 <ExperimentButton
