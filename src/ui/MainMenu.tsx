@@ -615,7 +615,7 @@ const MainMenu: React.FC = () => {
               <IconLinkButton href="https://www.supermetalmons.com/collections/all" target="_blank" rel="noopener noreferrer">
                 Shop
               </IconLinkButton>
-              <IconLinkButton href="https://ultrametal.neocities.org/academy" target="_blank" rel="noopener noreferrer">
+              <IconLinkButton href="https://mons.academy" target="_blank" rel="noopener noreferrer">
                 Academy
               </IconLinkButton>
               <IconLinkButton href="https://x.com/supermetalx" target="_blank" rel="noopener noreferrer">
@@ -746,7 +746,7 @@ const MainMenu: React.FC = () => {
         <br />
         <br />
         ☝️ You can <u>carry mana with the central mon</u> (he's a drainer). You can also see an angel, a potion, a bomb, and a supermana.
-        <AcademyButton href="https://ultrametal.neocities.org/academy" target="_blank" rel="noopener noreferrer">
+        <AcademyButton href="https://mons.academy" target="_blank" rel="noopener noreferrer">
           Learn more in Mons Academy
         </AcademyButton>
       </InfoPopover>
