@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaPaintBrush, FaStar, FaEnvelope, FaLink, FaShareAlt } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
-import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAttestVictoryButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, didSelectPuzzle, puzzleMode } from "../game/gameController";
+import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAttestVictoryButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode } from "../game/gameController";
 import { didClickInviteButton, sendVoiceReaction } from "../connection/connection";
 import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
 import { isMobile } from "../utils/misc";
@@ -12,7 +12,6 @@ import { playReaction } from "../content/sounds";
 import { newReactionOfKind } from "../content/sounds";
 import { showVoiceReactionText } from "../game/board";
 import { toggleBoardStyle } from "../content/boardStyles";
-import { problems } from "../content/problems";
 
 export enum PrimaryActionType {
   None = "none",
@@ -335,52 +334,6 @@ const ReactionButton = styled.button`
   }
 `;
 
-const NavigationPickerButton = styled(ReactionButton)`
-  padding: 6px 8px;
-  padding-right: 15px;
-`;
-
-const NavigationPicker = styled(ReactionPicker)`
-  border-radius: 0pt;
-  position: fixed;
-  bottom: auto;
-  padding-top: 5px;
-  padding-left: 0;
-  padding-right: 0pt;
-  padding-bottom: 0px;
-  gap: 0px;
-  top: 48%;
-  transform: translateY(-50%);
-  right: 0pt;
-  animation: fadeIn 0.123s linear;
-  opacity: 0.888;
-  cursor: pointer;
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 0.888;
-    }
-  }
-`;
-
-const SectionTitle = styled.div`
-  font-size: 0.5rem;
-  font-weight: bold;
-  color: #767787;
-  text-align: left;
-  padding-top: 1px;
-  padding-left: 8px;
-  padding-bottom: 2pt;
-  cursor: pointer;
-
-  @media (prefers-color-scheme: dark) {
-    color: #a0a0a0;
-  }
-`;
-
 const ResignConfirmation = styled(ReactionPicker)`
   right: 10px;
   bottom: 40px;
@@ -426,7 +379,6 @@ let setInviteLinkActionVisible: (visible: boolean) => void;
 let setAutomatchEnabled: (enabled: boolean) => void;
 let setAutomatchVisible: (visible: boolean) => void;
 let setBotGameOptionVisible: (visible: boolean) => void;
-let setNavigationPopupVisible: (visible: boolean) => void;
 let setAutomatchWaitingState: (waiting: boolean) => void;
 
 let setAttestVictoryEnabled: (enabled: boolean) => void;
@@ -481,7 +433,6 @@ const BottomControls: React.FC = () => {
   const [isResignButtonVisible, setIsResignButtonVisible] = useState(false);
   const [isVoiceReactionButtonVisible, setIsVoiceReactionButtonVisible] = useState(false);
   const [isReactionPickerVisible, setIsReactionPickerVisible] = useState(false);
-  const [isNavigationPopupVisible, setIsNavigationPopupVisible] = useState(false);
   const [isResignConfirmVisible, setIsResignConfirmVisible] = useState(false);
   const [isTimerButtonDisabled, setIsTimerButtonDisabled] = useState(true);
   const [isClaimVictoryVisible, setIsClaimVictoryVisible] = useState(false);
@@ -489,7 +440,6 @@ const BottomControls: React.FC = () => {
   const [timerConfig, setTimerConfig] = useState({ duration: 90, progress: 0, requestDate: Date.now() });
 
   const pickerRef = useRef<HTMLDivElement>(null);
-  const navigationPickerRef = useRef<HTMLDivElement>(null);
   const voiceReactionButtonRef = useRef<HTMLButtonElement>(null);
   const resignButtonRef = useRef<HTMLButtonElement>(null);
   const resignConfirmRef = useRef<HTMLDivElement>(null);
@@ -629,10 +579,6 @@ const BottomControls: React.FC = () => {
 
   setBotGameOptionVisible = (visible: boolean) => {
     setIsBotGameButtonVisible(visible);
-  };
-
-  setNavigationPopupVisible = (visible: boolean) => {
-    setIsNavigationPopupVisible(visible);
   };
 
   setInviteLinkActionVisible = (visible: boolean) => {
@@ -827,13 +773,6 @@ const BottomControls: React.FC = () => {
     } catch (_) {}
   };
 
-  const handleNavigationSelect = (id: string) => {
-    const selectedItem = problems.find((item) => item.id === id);
-    if (selectedItem) {
-      didSelectPuzzle(selectedItem);
-    }
-  };
-
   return (
     <>
       <AppearanceToggleButton dimmed={isBrushButtonDimmed} onClick={!isMobile ? handleBrushClick : undefined} onTouchStart={isMobile ? handleBrushClick : undefined} aria-label="Appearance">
@@ -954,16 +893,6 @@ const BottomControls: React.FC = () => {
             <ReactionButton onClick={() => handleReactionSelect("gg")}>gg</ReactionButton>
           </ReactionPicker>
         )}
-        {isNavigationPopupVisible && (
-          <NavigationPicker ref={navigationPickerRef}>
-            <SectionTitle>BASICS</SectionTitle>
-            {problems.map((item) => (
-              <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
-                {item.label}
-              </NavigationPickerButton>
-            ))}
-          </NavigationPicker>
-        )}
         {isResignConfirmVisible && (
           <ResignConfirmation ref={resignConfirmRef}>
             <ResignButton onClick={handleConfirmResign}>Resign</ResignButton>
@@ -974,4 +903,4 @@ const BottomControls: React.FC = () => {
   );
 };
 
-export { BottomControls as default, setBrushButtonDimmed, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setNavigationPopupVisible, setBotGameOptionVisible, setAutomatchWaitingState, showButtonForTx, setAttestVictoryEnabled, setAutomatchEnabled, setAttestVictoryVisible, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };
+export { BottomControls as default, setBrushButtonDimmed, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, showButtonForTx, setAttestVictoryEnabled, setAutomatchEnabled, setAttestVictoryVisible, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };

@@ -623,16 +623,16 @@ const MainMenu: React.FC = () => {
                   <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" stroke="currentColor" stroke-width="0.2" />
                 </svg>
               </IconLinkButton>
-              <IconLinkButton href="https://t.me/supermetalmons" target="_blank" rel="noopener noreferrer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z" />
-                </svg>
-              </IconLinkButton>
               <IconLinkButton href="https://warpcast.com/~/channel/mons" target="_blank" rel="noopener noreferrer">
                 <svg width="1.2em" height="1.2em" viewBox="0 0 777 777" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="currentColor">
                   <path id="path" d="M145.778 44.556 L630.222 44.556 630.222 733.445 559.111 733.445 559.111 417.889 558.414 417.889 C550.554 330.677 477.258 262.333 388 262.333 298.742 262.333 225.446 330.677 217.586 417.889 L216.889 417.889 216.889 733.445 145.778 733.445 145.778 44.556 Z" />
                   <path id="path-1" d="M16.889 142.333 L45.778 240.111 70.222 240.111 70.222 635.667 C57.949 635.667 48 645.616 48 657.889 L48 684.556 43.556 684.556 C31.283 684.556 21.333 694.505 21.333 706.778 L21.333 733.445 270.222 733.445 270.222 706.778 C270.222 694.505 260.273 684.556 248 684.556 L243.556 684.556 243.556 657.889 C243.556 645.616 233.606 635.667 221.333 635.667 L194.667 635.667 194.667 142.333 16.889 142.333 Z" />
                   <path id="path-2" d="M563.556 635.667 C551.283 635.667 541.333 645.616 541.333 657.889 L541.333 684.556 536.889 684.556 C524.616 684.556 514.667 694.505 514.667 706.778 L514.667 733.445 763.556 733.445 763.556 706.778 C763.556 694.505 753.606 684.556 741.333 684.556 L736.889 684.556 736.889 657.889 C736.889 645.616 726.94 635.667 714.667 635.667 L714.667 240.111 739.111 240.111 768 142.333 590.222 142.333 590.222 635.667 563.556 635.667 Z" />
+                </svg>
+              </IconLinkButton>
+              <IconLinkButton href="https://t.me/supermetalmons" target="_blank" rel="noopener noreferrer">
+                <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z" />
                 </svg>
               </IconLinkButton>
               <IconLinkButton href="https://github.com/supermetalmons" target="_blank" rel="noopener noreferrer">

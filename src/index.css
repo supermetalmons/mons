@@ -169,7 +169,8 @@ img {
 
 .music-button,
 .sound-button,
-.info-button {
+.info-button,
+.list-button {
   border: none;
   cursor: pointer;
   font-size: 13px;
@@ -218,6 +219,49 @@ img {
 
   @media (max-width: 380px) {
     margin-left: 6px;
+  }
+}
+
+.list-button {
+  margin-right: 10px;
+  border-radius: 14px;
+  background-color: #f9f9f9de;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #767787c9;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+
+  @media (max-width: 320px) {
+    margin-right: 6px;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      color: #767787ef;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #252525d5;
+    color: #767787a9;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        color: #767787f0;
+      }
+    }
   }
 }
 
