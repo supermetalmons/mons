@@ -71,7 +71,8 @@ const App = () => {
   };
 
   setNavigationPopupVisible = (visible: boolean) => {
-    setIsNavigationPickerVisible(visible);
+    const hasNewPuzzles = false; // TODO: make it visible only when there are new puzzles
+    setIsNavigationPickerVisible(visible && hasNewPuzzles);
     if (!visible) {
       setIsListButtonVisible(false);
     }
