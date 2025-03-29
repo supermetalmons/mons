@@ -30,8 +30,13 @@ export const getIsMuted = (): boolean => globalIsMuted;
 
 const queryClient = new QueryClient();
 
+let getIsNavigationPopupOpen: () => boolean = () => false;
 export let setNavigationPopupVisible: (visible: boolean) => void;
 export let closeNavigationPopupIfAny: () => void = () => {};
+
+export function hasNavigationPopupVisible(): boolean {
+  return getIsNavigationPopupOpen();
+}
 
 const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
@@ -42,6 +47,8 @@ const App = () => {
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
   const navigationPickerRef = useRef<HTMLDivElement>(null);
   const listButtonRef = useRef<HTMLButtonElement>(null);
+
+  getIsNavigationPopupOpen = () => isNavigationPickerVisible;
 
   useEffect(() => {
     storage.setIsMuted(isMuted);

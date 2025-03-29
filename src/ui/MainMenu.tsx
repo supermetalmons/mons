@@ -127,7 +127,7 @@ const InfoPopover = styled.div<{ isOpen: boolean }>`
   top: 56px;
   right: min(14px, 2.3dvw);
   font-size: 12px;
-  background-color: rgba(249, 249, 249, 0.95);
+  background-color: rgba(250, 250, 250, 0.95);
   border-radius: 7pt;
   padding: 8px;
   width: min(269px, 85dvw);
@@ -145,7 +145,7 @@ const InfoPopover = styled.div<{ isOpen: boolean }>`
   line-height: 2.1;
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba(36, 36, 36, 0.95);
+    background-color: rgba(35, 35, 35, 0.95);
     color: #f5f5f5;
   }
 `;
