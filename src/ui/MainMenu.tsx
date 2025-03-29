@@ -125,7 +125,7 @@ const RockMenu = styled.div<{ isOpen: boolean; showLeaderboard: boolean }>`
 const InfoPopover = styled.div<{ isOpen: boolean }>`
   position: fixed;
   top: 56px;
-  right: min(14px, 2.3dvw);
+  right: 9pt;
   font-size: 12px;
   background-color: rgba(250, 250, 250, 0.95);
   border-radius: 7pt;
