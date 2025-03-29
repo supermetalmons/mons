@@ -124,35 +124,28 @@ const RockMenu = styled.div<{ isOpen: boolean; showLeaderboard: boolean }>`
 
 const InfoPopover = styled.div<{ isOpen: boolean }>`
   position: fixed;
-  top: 63px;
+  top: 56px;
   right: min(14px, 2.3dvw);
   font-size: 12px;
-  background-color: #fff;
-  border-radius: 10px;
-  padding: 20px;
-  width: min(360px, 85dvw);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
-  z-index: 1000;
+  background-color: rgba(249, 249, 249, 0.95);
+  border-radius: 7pt;
+  padding: 8px;
+  width: min(269px, 85dvw);
+  box-shadow: none;
+  z-index: 5;
   opacity: ${(props) => (props.isOpen ? 1 : 0)};
   pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
   white-space: pre-wrap;
   text-align: left;
   cursor: default;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  touch-action: pan-y;
+  -webkit-overflow-scrolling: touch;
+  line-height: 2.1;
 
   @media (prefers-color-scheme: dark) {
-    background-color: #131313;
-    color: #f5f5f5;
-  }
-`;
-
-const InfoTitle = styled.h2`
-  font-size: 1rem;
-  font-weight: 888;
-  margin: 0 0 15px 0;
-  color: #333;
-  text-align: left;
-
-  @media (prefers-color-scheme: dark) {
+    background-color: rgba(36, 36, 36, 0.95);
     color: #f5f5f5;
   }
 `;
@@ -308,43 +301,6 @@ const CloseButton = styled.button`
   @media (prefers-color-scheme: dark) {
     color: #424242;
     background: #232323;
-  }
-`;
-
-const AcademyButton = styled.a`
-  display: block;
-  margin-top: 20px;
-  padding: 10px 15px;
-  text-align: center;
-  font-size: 0.85rem;
-  font-weight: 600;
-  border-radius: 8px;
-  background-color: #f9f9f9;
-  color: #333;
-  text-decoration: none;
-  cursor: pointer;
-  -webkit-touch-callout: none;
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-user-drag: none;
-  -webkit-tap-highlight-color: transparent;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background-color: #f5f5f5;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background-color: #252525;
-    color: #f5f5f5;
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        background-color: #272727;
-      }
-    }
   }
 `;
 
@@ -731,29 +687,17 @@ const MainMenu: React.FC = () => {
       </RockButtonContainer>
 
       <InfoPopover isOpen={isInfoOpen}>
-        <CloseButton onClick={() => setIsInfoOpen(false)} style={{ display: "flex", fontWeight: 699, fontSize: "1rem" }}>
-          ×
-        </CloseButton>
-        <InfoTitle>HOW TO PLAY MONS</InfoTitle>
-        💦 Bring mana to the corners (pools).
+        ☝️ Carry mana with the central mon.
+        <br />
+        💦 Bring mana to the corners.
         <br />
         🎯 Score 5 points to win.
         <br />
-        <br />
-        🔄 On your turn, except the first one:
-        <br />
-        <br />
         👟 Move your mons up to a total of 5 spaces.
         <br />
-        🌟 Use one action: 😈 demon, or 👻 spirit, or 🧙‍♀️ mystic.
+        🌟 Use one action: demon, or spirit, or mystic.
         <br />
-        💧 Move one of your mana by 1 space to end your turn.
-        <br />
-        <br />
-        ☝️ You can <u>carry mana with the central mon</u> (he's a drainer). You can also see an angel, a potion, a bomb, and a supermana.
-        <AcademyButton href="https://mons.academy" target="_blank" rel="noopener noreferrer">
-          Learn more in Mons Academy
-        </AcademyButton>
+        💧 Move one of your mana to end your turn.
       </InfoPopover>
     </>
   );
