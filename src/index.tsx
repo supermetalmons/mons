@@ -1,25 +1,25 @@
 import "@rainbow-me/rainbowkit/styles.css";
 import "./index.css";
 import ReactDOM from "react-dom/client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { RainbowKitAuthenticationProvider, RainbowKitProvider, lightTheme, darkTheme } from "@rainbow-me/rainbowkit";
 
 import BoardComponent from "./ui/BoardComponent";
-import MainMenu, { toggleInfoVisibility } from "./ui/MainMenu";
+import MainMenu, { closeMenuAndInfoIfAny, toggleInfoVisibility } from "./ui/MainMenu";
 import { config } from "./utils/wagmi";
 import { useAuthStatus, createEthereumAuthAdapter } from "./connection/authentication";
 import { signIn } from "./connection/connection";
-import BottomControls from "./ui/BottomControls";
+import BottomControls, { didDismissSomethingWithOutsideTapJustNow } from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
 import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaList } from "react-icons/fa";
 import { isMobileOrVision } from "./utils/misc";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { startPlayingMusic, stopPlayingMusic } from "./content/music";
 import { storage } from "./utils/storage";
-import ProfileSignIn from "./ui/ProfileSignIn";
+import ProfileSignIn, { closeProfilePopupIfAny } from "./ui/ProfileSignIn";
 import NavigationPicker from "./ui/NavigationPicker";
 
 let globalIsMuted: boolean = (() => {
@@ -31,6 +31,7 @@ export const getIsMuted = (): boolean => globalIsMuted;
 const queryClient = new QueryClient();
 
 export let setNavigationPopupVisible: (visible: boolean) => void;
+export let closeNavigationPopupIfAny: () => void = () => {};
 
 const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
@@ -39,12 +40,29 @@ const App = () => {
   const [isNavigationPickerVisible, setIsNavigationPickerVisible] = useState(false);
   const [isListButtonVisible, setIsListButtonVisible] = useState(true);
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
+  const navigationPickerRef = useRef<HTMLDivElement>(null);
+  const listButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     storage.setIsMuted(isMuted);
     globalIsMuted = isMuted;
     soundPlayer.didBecomeMuted(isMuted);
   }, [isMuted]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      event.stopPropagation();
+      if (isNavigationPickerVisible && navigationPickerRef.current && !navigationPickerRef.current.contains(event.target as Node) && !listButtonRef.current?.contains(event.target as Node)) {
+        didDismissSomethingWithOutsideTapJustNow();
+        setIsNavigationPickerVisible(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isNavigationPickerVisible]);
 
   const handleMuteToggle = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -78,7 +96,13 @@ const App = () => {
     }
   };
 
+  closeNavigationPopupIfAny = () => {
+    setIsNavigationPickerVisible(false);
+  };
+
   const handleListButtonClick = () => {
+    closeProfilePopupIfAny();
+    closeMenuAndInfoIfAny();
     setIsNavigationPickerVisible(!isNavigationPickerVisible);
   };
 
@@ -109,7 +133,7 @@ const App = () => {
                       </button>
                     </div>
                     {isListButtonVisible && (
-                      <button className="list-button" onClick={handleListButtonClick} aria-label="Toggle List">
+                      <button className="list-button" onClick={handleListButtonClick} aria-label="Toggle List" ref={listButtonRef}>
                         <FaList />
                       </button>
                     )}
@@ -120,7 +144,11 @@ const App = () => {
               <BoardComponent />
               <MainMenu />
               <BottomControls />
-              {authStatus !== "loading" && isNavigationPickerVisible && <NavigationPicker />}
+              {authStatus !== "loading" && isNavigationPickerVisible && (
+                <div ref={navigationPickerRef}>
+                  <NavigationPicker />
+                </div>
+              )}
             </div>
           </RainbowKitProvider>
         </RainbowKitAuthenticationProvider>

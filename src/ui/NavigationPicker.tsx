@@ -12,7 +12,6 @@ const NavigationPickerContainer = styled.div`
   max-width: 90pt;
   min-width: 88pt;
   overflow-y: auto;
-  animation: fadeIn 0.123s linear;
   opacity: 1;
   cursor: pointer;
   overscroll-behavior: contain;
@@ -26,15 +25,6 @@ const NavigationPickerContainer = styled.div`
   padding-bottom: 0px;
   gap: 0px;
   z-index: 5;
-
-  @keyframes fadeIn {
-    from {
-      opacity: 0;
-    }
-    to {
-      opacity: 1;
-    }
-  }
 
   @media (prefers-color-scheme: dark) {
     background-color: rgba(36, 36, 36, 0.9);

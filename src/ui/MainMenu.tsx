@@ -7,6 +7,7 @@ import { Leaderboard } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
 import { getCurrentGameFen } from "../game/gameController";
+import { closeNavigationPopupIfAny } from "..";
 
 const RockButtonContainer = styled.div`
   position: absolute;
@@ -552,6 +553,7 @@ const MainMenu: React.FC = () => {
   toggleInfoVisibility = () => {
     if (!isInfoOpen) {
       closeProfilePopupIfAny();
+      closeNavigationPopupIfAny();
     }
     setIsInfoOpen(!isInfoOpen);
   };
@@ -703,6 +705,7 @@ const MainMenu: React.FC = () => {
                 onTouchStart: (e) => {
                   if (!isMenuOpen) {
                     closeProfilePopupIfAny();
+                    closeNavigationPopupIfAny();
                   }
                   toggleMenu();
                   setIsInfoOpen(false);
@@ -717,6 +720,7 @@ const MainMenu: React.FC = () => {
                 onMouseEnter: () => {
                   if (!isMenuOpen) {
                     closeProfilePopupIfAny();
+                    closeNavigationPopupIfAny();
                   }
                   setIsMenuOpen(true);
                 },
