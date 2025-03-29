@@ -723,6 +723,7 @@ const MainMenu: React.FC = () => {
                     closeNavigationPopupIfAny();
                   }
                   setIsMenuOpen(true);
+                  setIsInfoOpen(false);
                 },
               })}>
           <img src={logoBase64} alt="Rock" />
