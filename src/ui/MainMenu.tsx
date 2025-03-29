@@ -391,11 +391,12 @@ const CopyBoardButton = styled.button`
 `;
 
 let getIsMenuOpen: () => boolean;
+let getIsInfoOpen: () => boolean;
 export let toggleInfoVisibility: () => void;
 export let closeMenuAndInfoIfAny: () => void;
 
 export function hasMainMenuPopupsVisible(): boolean {
-  return getIsMenuOpen();
+  return getIsMenuOpen() || getIsInfoOpen();
 }
 
 const MainMenu: React.FC = () => {
@@ -466,8 +467,10 @@ const MainMenu: React.FC = () => {
   }, [isMenuOpen]);
 
   getIsMenuOpen = () => isMenuOpen;
+  getIsInfoOpen = () => isInfoOpen;
 
   const menuRef = useRef<HTMLDivElement>(null);
+  const infoRef = useRef<HTMLDivElement>(null);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -533,6 +536,22 @@ const MainMenu: React.FC = () => {
       document.removeEventListener("touchstart", handleTapOutside);
     };
   }, [isMenuOpen]);
+
+  useEffect(() => {
+    const handleTapOutside = (event: any) => {
+      event.stopPropagation();
+      const isInfoButton = event.target.closest(".info-button");
+      if (isInfoOpen && infoRef.current && !infoRef.current.contains(event.target as Node) && !isInfoButton) {
+        didDismissSomethingWithOutsideTapJustNow();
+        setIsInfoOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleTapOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleTapOutside);
+    };
+  }, [isInfoOpen]);
 
   return (
     <>
@@ -686,7 +705,7 @@ const MainMenu: React.FC = () => {
         </RockButton>
       </RockButtonContainer>
 
-      <InfoPopover isOpen={isInfoOpen}>
+      <InfoPopover ref={infoRef} isOpen={isInfoOpen}>
         ☝️ Carry mana with the central mon.
         <br />
         💦 Bring mana to the corners.
