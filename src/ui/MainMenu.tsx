@@ -138,10 +138,6 @@ const InfoPopover = styled.div<{ isOpen: boolean }>`
   white-space: pre-wrap;
   text-align: left;
   cursor: default;
-  overflow-y: auto;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
-  -webkit-overflow-scrolling: touch;
   line-height: 2.1;
 
   @media (prefers-color-scheme: dark) {
