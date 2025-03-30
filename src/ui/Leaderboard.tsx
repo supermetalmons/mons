@@ -107,6 +107,9 @@ const TableWrapper = styled.div`
   ::-webkit-scrollbar {
     z-index: 2;
   }
+
+  overscroll-behavior: contain;
+  touch-action: pan-y;
 `;
 
 const LoadingText = styled.div`
