@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { logoBase64 } from "../content/uiAssets";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import styled from "styled-components";
-import { isMobile } from "../utils/misc";
+import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { Leaderboard } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
@@ -547,9 +547,9 @@ const MainMenu: React.FC = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleTapOutside);
+    document.addEventListener(defaultEarlyInputEventName, handleTapOutside);
     return () => {
-      document.removeEventListener("mousedown", handleTapOutside);
+      document.removeEventListener(defaultEarlyInputEventName, handleTapOutside);
     };
   }, [isInfoOpen]);
 

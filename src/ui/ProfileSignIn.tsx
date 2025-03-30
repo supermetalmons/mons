@@ -9,6 +9,7 @@ import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { setAuthStatusGlobally } from "../connection/authentication";
 import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
 import { NameEditModal } from "./NameEditModal";
+import { defaultEarlyInputEventName } from "../utils/misc";
 
 const Container = styled.div`
   position: relative;
@@ -186,7 +187,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   setProfileDisplayNameGlobal = setProfileDisplayName;
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: TouchEvent | MouseEvent) => {
       event.stopPropagation();
       if (isOpen && popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
         setIsOpen(false);
@@ -194,8 +195,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+    document.addEventListener(defaultEarlyInputEventName, handleClickOutside);
+    return () => document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
   });
 
   const handleLogout = () => {

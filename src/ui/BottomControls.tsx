@@ -6,7 +6,7 @@ import AnimatedHourglassButton from "./AnimatedHourglassButton";
 import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAttestVictoryButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode } from "../game/gameController";
 import { didClickInviteButton, sendVoiceReaction } from "../connection/connection";
 import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
-import { isMobile } from "../utils/misc";
+import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playReaction } from "../content/sounds";
 import { newReactionOfKind } from "../content/sounds";
@@ -446,7 +446,7 @@ const BottomControls: React.FC = () => {
   const hourglassEnableTimeoutRef = useRef<NodeJS.Timeout>();
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: TouchEvent | MouseEvent) => {
       event.stopPropagation();
       if ((pickerRef.current && !pickerRef.current.contains(event.target as Node) && !voiceReactionButtonRef.current?.contains(event.target as Node)) || (resignConfirmRef.current && !resignConfirmRef.current.contains(event.target as Node) && !resignButtonRef.current?.contains(event.target as Node))) {
         didDismissSomethingWithOutsideTapJustNow();
@@ -455,9 +455,9 @@ const BottomControls: React.FC = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener(defaultEarlyInputEventName, handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
     };
   }, []);
 

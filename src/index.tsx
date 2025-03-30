@@ -13,7 +13,7 @@ import { config } from "./utils/wagmi";
 import { useAuthStatus, createEthereumAuthAdapter } from "./connection/authentication";
 import { signIn } from "./connection/connection";
 import BottomControls, { didDismissSomethingWithOutsideTapJustNow } from "./ui/BottomControls";
-import { isMobile } from "./utils/misc";
+import { defaultEarlyInputEventName, isMobile } from "./utils/misc";
 import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaList } from "react-icons/fa";
 import { isMobileOrVision } from "./utils/misc";
 import { soundPlayer } from "./utils/SoundPlayer";
@@ -57,7 +57,7 @@ const App = () => {
   }, [isMuted]);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: TouchEvent | MouseEvent) => {
       event.stopPropagation();
       if (isNavigationPickerVisible && navigationPickerRef.current && !navigationPickerRef.current.contains(event.target as Node) && !listButtonRef.current?.contains(event.target as Node)) {
         didDismissSomethingWithOutsideTapJustNow();
@@ -65,9 +65,9 @@ const App = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener(defaultEarlyInputEventName, handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
     };
   }, [isNavigationPickerVisible]);
 
