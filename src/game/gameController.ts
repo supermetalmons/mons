@@ -1164,7 +1164,7 @@ function showPuzzleInstructions() {
   // TODO: implement custom popup interface
   setTimeout(() => {
     alert(text);
-  }, 100);
+  }, 130);
 }
 
 export function didSelectPuzzle(problem: Problem) {
