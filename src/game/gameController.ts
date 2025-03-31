@@ -1159,6 +1159,14 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
   Board.runMonsBoardAsDisplayWaitingAnimation();
 }
 
+function showPuzzleInstructions() {
+  const text = selectedProblem!.description;
+  // TODO: implement custom popup interface
+  setTimeout(() => {
+    alert(text);
+  }, 100);
+}
+
 export function didSelectPuzzle(problem: Problem) {
   showPuzzleTitle(problem.label);
 
@@ -1179,6 +1187,8 @@ export function didSelectPuzzle(problem: Problem) {
 
   puzzleMode = true;
   selectedProblem = problem;
+
+  showPuzzleInstructions();
 }
 
 export function showNextProblem(problem: Problem) {
