@@ -97,6 +97,7 @@ let supermanaSimple: SVGElement;
 const emojis = (await import("../content/emojis")).emojis;
 
 export function showPuzzleTitle(title: string) {
+  // TODO: also add ? button
   if (titleTextElement) {
     titleTextElement.textContent = title;
   }
