@@ -1159,7 +1159,7 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
   Board.runMonsBoardAsDisplayWaitingAnimation();
 }
 
-function showPuzzleInstructions() {
+export function showPuzzleInstructions() {
   const text = selectedProblem!.description;
   // TODO: implement custom popup interface
   setTimeout(() => {

@@ -1,6 +1,6 @@
 import * as MonsWeb from "mons-web";
 import * as SVG from "../utils/svg";
-import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, sendPlayerEmojiUpdate, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle, puzzleMode } from "./gameController";
+import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, sendPlayerEmojiUpdate, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle, puzzleMode, showPuzzleInstructions } from "./gameController";
 import { Highlight, HighlightKind, InputModifier, Location, Sound, Trace, ItemKind } from "../utils/gameModels";
 import { colors, currentAssetsSet, AssetsSet, isCustomPictureBoardEnabled, isPangchiuBoard, setCurrentAssetsSet } from "../content/boardStyles";
 import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
@@ -65,6 +65,11 @@ let opponentNameText: SVGElement | undefined;
 let playerNameText: SVGElement | undefined;
 let opponentScoreText: SVGElement | undefined;
 let titleTextElement: SVGElement | undefined;
+
+let instructionsButton: SVGElement | undefined;
+let instructionsButtonCircle: SVGElement | undefined;
+let instructionsButtonQuestionMark: SVGElement | undefined;
+
 let playerScoreText: SVGElement | undefined;
 let opponentTimer: SVGElement | undefined;
 let playerTimer: SVGElement | undefined;
@@ -97,9 +102,9 @@ let supermanaSimple: SVGElement;
 const emojis = (await import("../content/emojis")).emojis;
 
 export function showPuzzleTitle(title: string) {
-  // TODO: also add ? button
-  if (titleTextElement) {
+  if (titleTextElement && instructionsButton) {
     titleTextElement.textContent = title;
+    SVG.setHidden(instructionsButton, false);
   }
 }
 
@@ -1223,6 +1228,9 @@ const updateLayout = () => {
     if (isOpponent) {
       titleTextElement!.setAttribute("font-size", (34 * multiplicator).toString());
       SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.67);
+
+      const instructionsButtonSize = 0.33; // TODO: adjust it's children elements as well.
+      SVG.setOrigin(instructionsButton!, 11 - instructionsButtonSize, y + avatarSize * 0.73 - instructionsButtonSize * multiplicator * 0.77);
     }
   }
 
@@ -1261,6 +1269,38 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
   titleTextElement.textContent = "";
   titleTextElement.setAttribute("text-anchor", "middle");
   controlsLayer?.append(titleTextElement);
+
+  instructionsButton = document.createElementNS(SVG.ns, "svg");
+  instructionsButtonCircle = document.createElementNS(SVG.ns, "circle");
+  instructionsButtonCircle.setAttribute("r", "15");
+  instructionsButtonCircle.setAttribute("cx", "15");
+  instructionsButtonCircle.setAttribute("cy", "15");
+  SVG.setFill(instructionsButtonCircle, colors.scoreText);
+  SVG.setOpacity(instructionsButtonCircle, 0.61);
+
+  instructionsButtonQuestionMark = document.createElementNS(SVG.ns, "text");
+  instructionsButtonQuestionMark.setAttribute("x", "15");
+  instructionsButtonQuestionMark.setAttribute("y", "20");
+  instructionsButtonQuestionMark.setAttribute("font-size", "20");
+  instructionsButtonQuestionMark.setAttribute("text-anchor", "middle");
+  instructionsButtonQuestionMark.setAttribute("fill", "white");
+  instructionsButtonQuestionMark.setAttribute("font-weight", "bold");
+  instructionsButtonQuestionMark.textContent = "?";
+
+  instructionsButton.appendChild(instructionsButtonCircle);
+  instructionsButton.appendChild(instructionsButtonQuestionMark);
+  instructionsButton.setAttribute("width", "30");
+  instructionsButton.setAttribute("height", "30");
+  instructionsButton.style.cursor = "pointer";
+  SVG.setHidden(instructionsButton, true);
+
+  instructionsButton.addEventListener(defaultInputEventName, (event) => {
+    event.stopPropagation();
+    preventTouchstartIfNeeded(event);
+    showPuzzleInstructions();
+  });
+
+  controlsLayer?.append(instructionsButton);
 
   for (const isOpponent of [true, false]) {
     const numberText = document.createElementNS(SVG.ns, "text");
