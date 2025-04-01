@@ -1279,7 +1279,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
   instructionsButtonCircle.setAttribute("stroke", colors.scoreText);
   instructionsButtonCircle.setAttribute("stroke-width", "3");
   instructionsButtonCircle.setAttribute("stroke-location", "inside");
-  instructionsButtonCircle.setAttribute("fill", "none");
+  instructionsButtonCircle.setAttribute("fill", "transparent");
   SVG.setOpacity(instructionsButtonCircle, 0.61);
 
   instructionsButtonQuestionMark = document.createElementNS(SVG.ns, "text");
