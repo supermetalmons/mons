@@ -1230,16 +1230,13 @@ const updateLayout = () => {
       SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.67);
 
       if (instructionsButton && instructionsButtonCircle && instructionsButtonQuestionMark) {
-        instructionsButtonCircle.setAttribute("r", "16");
-        instructionsButtonCircle.setAttribute("cx", "16");
-        instructionsButtonCircle.setAttribute("cy", "16");
+        SVG.updateCircle(instructionsButtonCircle, 0.16, 0.16, 0.16);
         instructionsButtonCircle.setAttribute("stroke-width", "3");
 
-        instructionsButtonQuestionMark.setAttribute("x", "16");
-        instructionsButtonQuestionMark.setAttribute("y", "14");
+        SVG.setOrigin(instructionsButtonQuestionMark, 0.16, 0.14);
+
         instructionsButtonQuestionMark.setAttribute("font-size", "24");
-        instructionsButton.setAttribute("width", "32");
-        instructionsButton.setAttribute("height", "32");
+        SVG.setSize(instructionsButton, 0.32, 0.32);
 
         const instructionsButtonSize = 0.33; // TODO: adjust it's children elements as well.
         SVG.setOrigin(instructionsButton, 11 - instructionsButtonSize, y + avatarSize * 0.73 - instructionsButtonSize * multiplicator * 0.85);
