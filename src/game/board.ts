@@ -1230,7 +1230,8 @@ const updateLayout = () => {
       SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.67);
 
       const instructionsButtonSize = 0.33; // TODO: adjust it's children elements as well.
-      SVG.setOrigin(instructionsButton!, 11 - instructionsButtonSize, y + avatarSize * 0.73 - instructionsButtonSize * multiplicator * 0.77);
+
+      SVG.setOrigin(instructionsButton!, 11 - instructionsButtonSize, y + avatarSize * 0.73 - instructionsButtonSize * multiplicator * 0.85);
     }
   }
 
@@ -1272,25 +1273,31 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
 
   instructionsButton = document.createElementNS(SVG.ns, "svg");
   instructionsButtonCircle = document.createElementNS(SVG.ns, "circle");
-  instructionsButtonCircle.setAttribute("r", "15");
-  instructionsButtonCircle.setAttribute("cx", "15");
-  instructionsButtonCircle.setAttribute("cy", "15");
-  SVG.setFill(instructionsButtonCircle, colors.scoreText);
+  instructionsButtonCircle.setAttribute("r", "16");
+  instructionsButtonCircle.setAttribute("cx", "16");
+  instructionsButtonCircle.setAttribute("cy", "16");
+  instructionsButtonCircle.setAttribute("stroke", colors.scoreText);
+  instructionsButtonCircle.setAttribute("stroke-width", "3");
+  instructionsButtonCircle.setAttribute("stroke-location", "inside");
+  instructionsButtonCircle.setAttribute("fill", "none");
   SVG.setOpacity(instructionsButtonCircle, 0.61);
 
   instructionsButtonQuestionMark = document.createElementNS(SVG.ns, "text");
-  instructionsButtonQuestionMark.setAttribute("x", "15");
-  instructionsButtonQuestionMark.setAttribute("y", "20");
-  instructionsButtonQuestionMark.setAttribute("font-size", "20");
+  instructionsButtonQuestionMark.setAttribute("x", "16");
+  instructionsButtonQuestionMark.setAttribute("y", "14");
+  instructionsButtonQuestionMark.setAttribute("font-size", "24");
   instructionsButtonQuestionMark.setAttribute("text-anchor", "middle");
-  instructionsButtonQuestionMark.setAttribute("fill", "white");
-  instructionsButtonQuestionMark.setAttribute("font-weight", "bold");
+  instructionsButtonQuestionMark.setAttribute("dominant-baseline", "central");
+  instructionsButtonQuestionMark.setAttribute("fill", colors.scoreText);
+  instructionsButtonQuestionMark.setAttribute("font-weight", "777");
   instructionsButtonQuestionMark.textContent = "?";
+  SVG.setOpacity(instructionsButtonQuestionMark, 0.61);
 
   instructionsButton.appendChild(instructionsButtonCircle);
   instructionsButton.appendChild(instructionsButtonQuestionMark);
-  instructionsButton.setAttribute("width", "30");
-  instructionsButton.setAttribute("height", "30");
+  instructionsButton.setAttribute("width", "32");
+  instructionsButton.setAttribute("height", "32");
+  instructionsButton.setAttribute("overflow", "visible");
   instructionsButton.style.cursor = "pointer";
   SVG.setHidden(instructionsButton, true);
 
@@ -1307,6 +1314,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     SVG.setFill(numberText, colors.scoreText);
     SVG.setOpacity(numberText, 0.69);
     numberText.setAttribute("font-weight", "600");
+    numberText.setAttribute("overflow", "visible");
     numberText.textContent = allHiddenInitially ? "" : "0";
     controlsLayer?.append(numberText);
     if (isOpponent) {
@@ -1320,6 +1328,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     SVG.setOpacity(timerText, 0.69);
     timerText.setAttribute("font-weight", "600");
     timerText.textContent = "";
+    timerText.setAttribute("overflow", "visible");
     controlsLayer?.append(timerText);
     if (isOpponent) {
       opponentTimer = timerText;
@@ -1333,6 +1342,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     nameText.setAttribute("font-weight", "270");
     nameText.setAttribute("font-style", "italic");
     nameText.style.cursor = "pointer";
+    nameText.setAttribute("overflow", "visible");
     controlsLayer?.append(nameText);
 
     nameText.addEventListener("click", (event) => {
