@@ -1237,7 +1237,7 @@ const updateLayout = () => {
         instructionsButtonQuestionMark.setAttribute("font-size", (instructionsRadius * 150).toString());
         const instructionsWidth = instructionsRadius * 2;
         SVG.setSize(instructionsButton, instructionsWidth, instructionsWidth);
-        SVG.setOrigin(instructionsButton, 11 - instructionsWidth * 1.1 - statusItemsOffsetX, y + avatarSize * 0.67 - instructionsWidth * 0.73);
+        SVG.setOrigin(instructionsButton, 11 - instructionsWidth * 1.1 - statusItemsOffsetX, y + avatarSize * 0.67 - instructionsWidth * 0.81);
       }
     }
   }
@@ -1272,8 +1272,8 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
   titleTextElement = document.createElementNS(SVG.ns, "text");
   SVG.setFill(titleTextElement, colors.scoreText);
   SVG.setOpacity(titleTextElement, 0.61);
-  titleTextElement.setAttribute("font-weight", "700");
-  titleTextElement.setAttribute("font-style", "italic");
+  titleTextElement.setAttribute("font-weight", "699");
+  titleTextElement.setAttribute("font-style", "oblique 23deg");
   titleTextElement.textContent = "";
   titleTextElement.setAttribute("text-anchor", "middle");
   controlsLayer?.append(titleTextElement);
