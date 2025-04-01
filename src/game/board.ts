@@ -8,7 +8,7 @@ import { playSounds } from "../content/sounds";
 import { didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible } from "../ui/BottomControls";
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, openSolAddress, openEthAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername } from "../utils/playerMetadata";
-import { hasNavigationPopupVisible, preventTouchstartIfNeeded } from "..";
+import { hasNavigationPopupOrAlertOverlayVisible, preventTouchstartIfNeeded } from "..";
 import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
@@ -1514,7 +1514,7 @@ export function setupBoard() {
   initializeBoardElements();
 
   document.addEventListener(defaultInputEventName, function (event) {
-    if (!didNotDismissAnythingWithOutsideTapJustNow() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible()) {
+    if (!didNotDismissAnythingWithOutsideTapJustNow() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupOrAlertOverlayVisible()) {
       return;
     }
 

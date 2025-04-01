@@ -10,7 +10,7 @@ import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem } from "../content/problems";
 import { emojis } from "../content/emojis";
-import { setNavigationPopupVisible } from "..";
+import { setNavigationPopupVisible, showFullScreenAlert } from "..";
 
 const experimentalDrawingDevMode = false;
 
@@ -1161,10 +1161,9 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
 
 export function showPuzzleInstructions() {
   const text = selectedProblem!.description;
-  // TODO: implement custom popup interface
   setTimeout(() => {
-    alert(text);
-  }, 130);
+    showFullScreenAlert(text, "win on this turn");
+  }, 1);
 }
 
 export function didSelectPuzzle(problem: Problem) {
