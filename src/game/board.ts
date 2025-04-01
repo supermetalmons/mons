@@ -1229,9 +1229,21 @@ const updateLayout = () => {
       titleTextElement!.setAttribute("font-size", (34 * multiplicator).toString());
       SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.67);
 
-      const instructionsButtonSize = 0.33; // TODO: adjust it's children elements as well.
+      if (instructionsButton && instructionsButtonCircle && instructionsButtonQuestionMark) {
+        instructionsButtonCircle.setAttribute("r", "16");
+        instructionsButtonCircle.setAttribute("cx", "16");
+        instructionsButtonCircle.setAttribute("cy", "16");
+        instructionsButtonCircle.setAttribute("stroke-width", "3");
 
-      SVG.setOrigin(instructionsButton!, 11 - instructionsButtonSize, y + avatarSize * 0.73 - instructionsButtonSize * multiplicator * 0.85);
+        instructionsButtonQuestionMark.setAttribute("x", "16");
+        instructionsButtonQuestionMark.setAttribute("y", "14");
+        instructionsButtonQuestionMark.setAttribute("font-size", "24");
+        instructionsButton.setAttribute("width", "32");
+        instructionsButton.setAttribute("height", "32");
+
+        const instructionsButtonSize = 0.33; // TODO: adjust it's children elements as well.
+        SVG.setOrigin(instructionsButton, 11 - instructionsButtonSize, y + avatarSize * 0.73 - instructionsButtonSize * multiplicator * 0.85);
+      }
     }
   }
 
@@ -1273,19 +1285,12 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
 
   instructionsButton = document.createElementNS(SVG.ns, "svg");
   instructionsButtonCircle = document.createElementNS(SVG.ns, "circle");
-  instructionsButtonCircle.setAttribute("r", "16");
-  instructionsButtonCircle.setAttribute("cx", "16");
-  instructionsButtonCircle.setAttribute("cy", "16");
   instructionsButtonCircle.setAttribute("stroke", colors.scoreText);
-  instructionsButtonCircle.setAttribute("stroke-width", "3");
   instructionsButtonCircle.setAttribute("stroke-location", "inside");
   instructionsButtonCircle.setAttribute("fill", "transparent");
   SVG.setOpacity(instructionsButtonCircle, 0.61);
 
   instructionsButtonQuestionMark = document.createElementNS(SVG.ns, "text");
-  instructionsButtonQuestionMark.setAttribute("x", "16");
-  instructionsButtonQuestionMark.setAttribute("y", "14");
-  instructionsButtonQuestionMark.setAttribute("font-size", "24");
   instructionsButtonQuestionMark.setAttribute("text-anchor", "middle");
   instructionsButtonQuestionMark.setAttribute("dominant-baseline", "central");
   instructionsButtonQuestionMark.setAttribute("fill", colors.scoreText);
@@ -1295,8 +1300,6 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
 
   instructionsButton.appendChild(instructionsButtonCircle);
   instructionsButton.appendChild(instructionsButtonQuestionMark);
-  instructionsButton.setAttribute("width", "32");
-  instructionsButton.setAttribute("height", "32");
   instructionsButton.setAttribute("overflow", "visible");
   instructionsButton.style.cursor = "pointer";
   SVG.setHidden(instructionsButton, true);
