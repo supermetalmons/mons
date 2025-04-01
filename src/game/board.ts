@@ -1227,19 +1227,17 @@ const updateLayout = () => {
 
     if (isOpponent) {
       titleTextElement!.setAttribute("font-size", (34 * multiplicator).toString());
-      SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.67);
+      SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.677);
 
       if (instructionsButton && instructionsButtonCircle && instructionsButtonQuestionMark) {
-        SVG.updateCircle(instructionsButtonCircle, 0.16, 0.16, 0.16);
-        instructionsButtonCircle.setAttribute("stroke-width", "3");
-
-        SVG.setOrigin(instructionsButtonQuestionMark, 0.16, 0.14);
-
-        instructionsButtonQuestionMark.setAttribute("font-size", "24");
-        SVG.setSize(instructionsButton, 0.32, 0.32);
-
-        const instructionsButtonSize = 0.33; // TODO: adjust it's children elements as well.
-        SVG.setOrigin(instructionsButton, 11 - instructionsButtonSize, y + avatarSize * 0.73 - instructionsButtonSize * multiplicator * 0.85);
+        const instructionsRadius = 0.21 * multiplicator;
+        SVG.updateCircle(instructionsButtonCircle, instructionsRadius, instructionsRadius, instructionsRadius);
+        instructionsButtonCircle.setAttribute("stroke-width", (instructionsRadius * 20).toString());
+        SVG.setOrigin(instructionsButtonQuestionMark, instructionsRadius, instructionsRadius * 0.875);
+        instructionsButtonQuestionMark.setAttribute("font-size", (instructionsRadius * 150).toString());
+        const instructionsWidth = instructionsRadius * 2;
+        SVG.setSize(instructionsButton, instructionsWidth, instructionsWidth);
+        SVG.setOrigin(instructionsButton, 11 - instructionsWidth * 1.1 - statusItemsOffsetX, y + avatarSize * 0.67 - instructionsWidth * 0.73);
       }
     }
   }
