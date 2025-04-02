@@ -262,6 +262,13 @@ export function didReceiveRematchesSeriesEndIndicator() {
 }
 
 function automove() {
+  if (puzzleMode && hasFullScreenAlertVisible()) {
+    hideFullScreenAlert();
+    setBoardDimmed(false);
+    setAutomoveActionEnabled(true);
+    return;
+  }
+
   let output = game.smart_automove();
   applyOutput(output, false, true, AssistedInputKind.None);
   if (!isGameWithBot || isPlayerSideTurn()) {
