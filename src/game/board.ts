@@ -8,7 +8,7 @@ import { playSounds } from "../content/sounds";
 import { didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible } from "../ui/BottomControls";
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, openSolAddress, openEthAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername } from "../utils/playerMetadata";
-import { hasNavigationPopupOrAlertOverlayVisible, preventTouchstartIfNeeded } from "..";
+import { hasFullScreenAlertVisible, hasNavigationPopupVisible, hideFullScreenAlert, preventTouchstartIfNeeded } from "..";
 import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
@@ -1302,7 +1302,11 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
   instructionsButton.addEventListener(defaultInputEventName, (event) => {
     event.stopPropagation();
     preventTouchstartIfNeeded(event);
-    showPuzzleInstructions();
+    if (hasFullScreenAlertVisible()) {
+      hideFullScreenAlert();
+    } else {
+      showPuzzleInstructions();
+    }
   });
 
   controlsLayer?.append(instructionsButton);
@@ -1514,7 +1518,7 @@ export function setupBoard() {
   initializeBoardElements();
 
   document.addEventListener(defaultInputEventName, function (event) {
-    if (!didNotDismissAnythingWithOutsideTapJustNow() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupOrAlertOverlayVisible()) {
+    if (!didNotDismissAnythingWithOutsideTapJustNow() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible()) {
       return;
     }
 

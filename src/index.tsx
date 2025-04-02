@@ -31,16 +31,28 @@ export const getIsMuted = (): boolean => globalIsMuted;
 
 const queryClient = new QueryClient();
 
-let getIsNavigationPopupOrAlertOverlayOpen: () => boolean = () => false;
+let getIsNavigationPopupOpen: () => boolean = () => false;
+let getIsFullScreenAlertOpen: () => boolean = () => false;
+
 export let setNavigationPopupVisible: (visible: boolean) => void;
 export let closeNavigationPopupIfAny: () => void = () => {};
 
-export function hasNavigationPopupOrAlertOverlayVisible(): boolean {
-  return getIsNavigationPopupOrAlertOverlayOpen();
+export function hasNavigationPopupVisible(): boolean {
+  return getIsNavigationPopupOpen();
+}
+
+export function hasFullScreenAlertVisible(): boolean {
+  return getIsFullScreenAlertOpen();
 }
 
 let showAlertGlobal: (title: string, subtitle: string) => void;
 let hideAlertGlobal: () => void;
+
+export function hideFullScreenAlert() {
+  if (hideAlertGlobal) {
+    hideAlertGlobal();
+  }
+}
 
 export function showFullScreenAlert(title: string, subtitle: string) {
   if (showAlertGlobal) {
@@ -72,7 +84,8 @@ const App = () => {
     };
   }, []);
 
-  getIsNavigationPopupOrAlertOverlayOpen = () => isNavigationPickerVisible || alertState !== null;
+  getIsNavigationPopupOpen = () => isNavigationPickerVisible;
+  getIsFullScreenAlertOpen = () => alertState !== null;
 
   useEffect(() => {
     storage.setIsMuted(isMuted);
@@ -180,7 +193,7 @@ const App = () => {
                   <NavigationPicker />
                 </div>
               )}
-              {alertState && <FullScreenAlert title={alertState.title} subtitle={alertState.subtitle} onDismiss={hideAlertGlobal} />}
+              {alertState && <FullScreenAlert title={alertState.title} subtitle={alertState.subtitle} />}
             </div>
           </RainbowKitProvider>
         </RainbowKitAuthenticationProvider>

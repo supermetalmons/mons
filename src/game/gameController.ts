@@ -10,7 +10,7 @@ import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem } from "../content/problems";
 import { emojis } from "../content/emojis";
-import { setNavigationPopupVisible, showFullScreenAlert } from "..";
+import { hasFullScreenAlertVisible, hideFullScreenAlert, setNavigationPopupVisible, showFullScreenAlert } from "..";
 
 const experimentalDrawingDevMode = false;
 
@@ -400,6 +400,10 @@ export function didClickSquare(location: Location) {
 }
 
 function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotInput: boolean, assistedInputKind: AssistedInputKind, inputLocation?: Location) {
+  const hadFullScreenAlertVisible = hasFullScreenAlertVisible();
+  if (hadFullScreenAlertVisible) {
+    hideFullScreenAlert();
+  }
   switch (output.kind) {
     case MonsWeb.OutputModelKind.InvalidInput:
       const shouldTryToReselect = assistedInputKind === AssistedInputKind.None && currentInputs.length > 1 && inputLocation && !currentInputs[0].equals(inputLocation);
@@ -408,14 +412,16 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
       Board.removeHighlights();
       if (shouldTryToReselect) {
         processInput(AssistedInputKind.ReselectLastInvalidInput, InputModifier.None, inputLocation);
-      } else if (shouldHelpFindOptions) {
+      } else if (shouldHelpFindOptions && !hadFullScreenAlertVisible) {
         processInput(AssistedInputKind.FindStartLocationsAfterInvalidInput, InputModifier.None);
       }
       break;
     case MonsWeb.OutputModelKind.LocationsToStartFrom:
       const startFromHighlights: Highlight[] = output.locations().map((loc) => new Highlight(new Location(loc.i, loc.j), HighlightKind.StartFromSuggestion, colors.startFromSuggestion));
       Board.removeHighlights();
-      Board.applyHighlights(startFromHighlights);
+      if (!hadFullScreenAlertVisible) {
+        Board.applyHighlights(startFromHighlights);
+      }
       break;
     case MonsWeb.OutputModelKind.NextInputOptions:
       const nextInputs = output.next_inputs();

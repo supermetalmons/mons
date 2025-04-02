@@ -1,12 +1,9 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
-import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
-import { defaultEarlyInputEventName } from "../utils/misc";
 
 interface FullScreenAlertProps {
   title: string;
   subtitle: string;
-  onDismiss: () => void;
 }
 
 const Overlay = styled.div`
@@ -15,15 +12,16 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: "transparent";
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 0;
   cursor: pointer;
+  pointer-events: none;
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: "transparent";
   }
 `;
 
@@ -35,6 +33,7 @@ const Content = styled.div`
   max-width: 320px;
   text-align: center;
   cursor: default;
+  pointer-events: none;
 
   @media (prefers-color-scheme: dark) {
     background-color: rgba(26, 26, 26, 0.97);
@@ -63,20 +62,10 @@ const Subtitle = styled.p`
   }
 `;
 
-const FullScreenAlert: React.FC<FullScreenAlertProps> = ({ title, subtitle, onDismiss }) => {
-  useEffect(() => {
-    const handleClick = (event: TouchEvent | MouseEvent) => {
-      event.stopPropagation();
-      didDismissSomethingWithOutsideTapJustNow();
-      onDismiss();
-    };
-    document.addEventListener(defaultEarlyInputEventName, handleClick);
-    return () => document.removeEventListener(defaultEarlyInputEventName, handleClick);
-  }, [onDismiss]);
-
+const FullScreenAlert: React.FC<FullScreenAlertProps> = ({ title, subtitle }) => {
   return (
     <Overlay>
-      <Content onClick={(e) => e.stopPropagation()}>
+      <Content>
         <Title dangerouslySetInnerHTML={{ __html: title }}></Title>
         {subtitle && <Subtitle>{subtitle}</Subtitle>}
       </Content>
