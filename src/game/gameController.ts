@@ -1,5 +1,5 @@
 import initMonsWeb, * as MonsWeb from "mons-web";
-import { playerSideMetadata, opponentSideMetadata, showVoiceReactionText, setupPlayerId, hideAllMoveStatuses, hideTimerCountdownDigits, showTimer, showPuzzleTitle } from "./board";
+import { playerSideMetadata, opponentSideMetadata, showVoiceReactionText, setupPlayerId, hideAllMoveStatuses, hideTimerCountdownDigits, showTimer, showPuzzleTitle, setBoardDimmed } from "./board";
 import * as Board from "./board";
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
@@ -393,8 +393,10 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
 }
 
 export function didClickSquare(location: Location) {
-  if (isGameOver && puzzleMode && hasFullScreenAlertVisible()) {
+  if (puzzleMode && hasFullScreenAlertVisible()) {
     hideFullScreenAlert();
+    setBoardDimmed(false);
+    return;
   }
 
   if ((isOnlineGame && !didConnect) || isWatchOnly || isGameOver || isWaitingForInviteToGetAccepted) {
@@ -404,10 +406,6 @@ export function didClickSquare(location: Location) {
 }
 
 function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotInput: boolean, assistedInputKind: AssistedInputKind, inputLocation?: Location) {
-  const hadFullScreenAlertVisible = hasFullScreenAlertVisible();
-  if (hadFullScreenAlertVisible) {
-    hideFullScreenAlert();
-  }
   switch (output.kind) {
     case MonsWeb.OutputModelKind.InvalidInput:
       const shouldTryToReselect = assistedInputKind === AssistedInputKind.None && currentInputs.length > 1 && inputLocation && !currentInputs[0].equals(inputLocation);
@@ -416,16 +414,14 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
       Board.removeHighlights();
       if (shouldTryToReselect) {
         processInput(AssistedInputKind.ReselectLastInvalidInput, InputModifier.None, inputLocation);
-      } else if (shouldHelpFindOptions && !hadFullScreenAlertVisible) {
+      } else if (shouldHelpFindOptions) {
         processInput(AssistedInputKind.FindStartLocationsAfterInvalidInput, InputModifier.None);
       }
       break;
     case MonsWeb.OutputModelKind.LocationsToStartFrom:
       const startFromHighlights: Highlight[] = output.locations().map((loc) => new Highlight(new Location(loc.i, loc.j), HighlightKind.StartFromSuggestion, colors.startFromSuggestion));
       Board.removeHighlights();
-      if (!hadFullScreenAlertVisible) {
-        Board.applyHighlights(startFromHighlights);
-      }
+      Board.applyHighlights(startFromHighlights);
       break;
     case MonsWeb.OutputModelKind.NextInputOptions:
       const nextInputs = output.next_inputs();
@@ -1173,9 +1169,14 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
 
 export function showPuzzleInstructions() {
   const text = selectedProblem!.description;
+  setBoardDimmed(true);
   setTimeout(() => {
     showFullScreenAlert(text, "");
   }, 1);
+}
+
+export function cleanupCurrentInputs() {
+  currentInputs = [];
 }
 
 export function didSelectPuzzle(problem: Problem) {

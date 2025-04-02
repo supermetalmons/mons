@@ -1,6 +1,6 @@
 import * as MonsWeb from "mons-web";
 import * as SVG from "../utils/svg";
-import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, sendPlayerEmojiUpdate, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle, puzzleMode, showPuzzleInstructions } from "./gameController";
+import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, sendPlayerEmojiUpdate, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle, puzzleMode, showPuzzleInstructions, cleanupCurrentInputs } from "./gameController";
 import { Highlight, HighlightKind, InputModifier, Location, Sound, Trace, ItemKind } from "../utils/gameModels";
 import { colors, currentAssetsSet, AssetsSet, isCustomPictureBoardEnabled, isPangchiuBoard, setCurrentAssetsSet } from "../content/boardStyles";
 import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
@@ -61,6 +61,7 @@ const playerMoveStatusItems: SVGElement[] = [];
 const minHorizontalOffset = 0.21;
 
 let itemSelectionOverlay: SVGElement | undefined;
+let dimmingOverlay: SVGElement | undefined;
 let opponentNameText: SVGElement | undefined;
 let playerNameText: SVGElement | undefined;
 let opponentScoreText: SVGElement | undefined;
@@ -100,6 +101,45 @@ let supermana: SVGElement;
 let supermanaSimple: SVGElement;
 
 const emojis = (await import("../content/emojis")).emojis;
+
+export function setBoardDimmed(dimmed: boolean) {
+  if (dimmingOverlay && !dimmed) {
+    dimmingOverlay.remove();
+    dimmingOverlay = undefined;
+    return;
+  } else if (dimmed && dimmingOverlay) {
+    dimmingOverlay.remove();
+  }
+
+  const overlay = document.createElementNS(SVG.ns, "g");
+  dimmingOverlay = overlay;
+
+  const background = createFullBoardBackgroundElement();
+  overlay.appendChild(background);
+
+  itemsLayer?.appendChild(overlay);
+
+  if (itemSelectionOverlay) {
+    hideItemSelection();
+    cleanupCurrentInputs();
+  }
+}
+
+function createFullBoardBackgroundElement(): SVGElement {
+  const background = document.createElementNS(SVG.ns, "rect");
+  if (isPangchiuBoard()) {
+    SVG.setOrigin(background, -0.83, -0.84);
+    background.style.transform = `scale(${1 / 0.85892388})`;
+    SVG.setSizeStr(background, "100%", "1163.5");
+  } else {
+    SVG.setOrigin(background, 0, 0);
+    SVG.setSizeStr(background, "100%", "1100");
+  }
+
+  SVG.setFill(background, colors.itemSelectionBackground);
+  background.style.backdropFilter = "blur(3px)";
+  return background;
+}
 
 export function showPuzzleTitle(title: string) {
   if (titleTextElement && instructionsButton) {
@@ -966,6 +1006,7 @@ export function updateScore(white: number, black: number, winnerColor?: MonsWeb.
 export function hideItemSelection() {
   if (itemSelectionOverlay) {
     itemSelectionOverlay.remove();
+    itemSelectionOverlay = undefined;
   }
 }
 
@@ -973,18 +1014,7 @@ export function showItemSelection(): void {
   const overlay = document.createElementNS(SVG.ns, "g");
   itemSelectionOverlay = overlay;
 
-  const background = document.createElementNS(SVG.ns, "rect");
-  if (isPangchiuBoard()) {
-    SVG.setOrigin(background, -0.83, -0.84);
-    background.style.transform = `scale(${1 / 0.85892388})`;
-    SVG.setSizeStr(background, "100%", "1163.5");
-  } else {
-    SVG.setOrigin(background, 0, 0);
-    SVG.setSizeStr(background, "100%", "1100");
-  }
-
-  SVG.setFill(background, colors.itemSelectionBackground);
-  background.style.backdropFilter = "blur(3px)";
+  const background = createFullBoardBackgroundElement();
   overlay.appendChild(background);
 
   function createItemButton(x: number, y: number, asset: string, modifier: InputModifier): void {
@@ -1304,6 +1334,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     preventTouchstartIfNeeded(event);
     if (hasFullScreenAlertVisible()) {
       hideFullScreenAlert();
+      setBoardDimmed(false);
     } else {
       showPuzzleInstructions();
     }
