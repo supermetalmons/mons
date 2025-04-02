@@ -127,7 +127,7 @@ export function flashPuzzleFailure() {
   }, 333);
 }
 
-export function setBoardDimmed(dimmed: boolean, color: string = "#77777735") {
+export function setBoardDimmed(dimmed: boolean, color: string = "#00000023") {
   if (dimmingOverlay && !dimmed) {
     dimmingOverlay.remove();
     dimmingOverlay = undefined;
