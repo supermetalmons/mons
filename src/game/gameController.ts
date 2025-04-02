@@ -695,7 +695,7 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
             if (puzzleMode) {
               Board.flashPuzzleSuccess();
               if (selectedProblem) {
-                showPuzzleTitle(selectedProblem.label + " ✅");
+                showPuzzleTitle(selectedProblem.label + " ✓");
               }
             }
 
