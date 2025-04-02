@@ -8,7 +8,7 @@ import { playSounds } from "../content/sounds";
 import { didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible } from "../ui/BottomControls";
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, openSolAddress, openEthAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername } from "../utils/playerMetadata";
-import { hasFullScreenAlertVisible, hasNavigationPopupVisible, hideFullScreenAlert, preventTouchstartIfNeeded } from "..";
+import { hasNavigationPopupVisible, preventTouchstartIfNeeded } from "..";
 import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
@@ -66,10 +66,6 @@ let opponentNameText: SVGElement | undefined;
 let playerNameText: SVGElement | undefined;
 let opponentScoreText: SVGElement | undefined;
 let titleTextElement: SVGElement | undefined;
-
-let instructionsButton: SVGElement | undefined;
-let instructionsButtonCircle: SVGElement | undefined;
-let instructionsButtonQuestionMark: SVGElement | undefined;
 
 let playerScoreText: SVGElement | undefined;
 let opponentTimer: SVGElement | undefined;
@@ -172,9 +168,8 @@ function createFullBoardBackgroundElement(): SVGElement {
 }
 
 export function showPuzzleTitle(title: string) {
-  if (titleTextElement && instructionsButton) {
+  if (titleTextElement) {
     titleTextElement.textContent = title;
-    SVG.setHidden(instructionsButton, false);
   }
 }
 
@@ -1292,17 +1287,6 @@ const updateLayout = () => {
     if (isOpponent) {
       titleTextElement!.setAttribute("font-size", (34 * multiplicator).toString());
       SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.677);
-
-      if (instructionsButton && instructionsButtonCircle && instructionsButtonQuestionMark) {
-        const instructionsRadius = 0.21 * multiplicator;
-        SVG.updateCircle(instructionsButtonCircle, instructionsRadius, instructionsRadius, instructionsRadius);
-        instructionsButtonCircle.setAttribute("stroke-width", (instructionsRadius * 20).toString());
-        SVG.setOrigin(instructionsButtonQuestionMark, instructionsRadius, instructionsRadius * 0.875);
-        instructionsButtonQuestionMark.setAttribute("font-size", (instructionsRadius * 150).toString());
-        const instructionsWidth = instructionsRadius * 2;
-        SVG.setSize(instructionsButton, instructionsWidth, instructionsWidth);
-        SVG.setOrigin(instructionsButton, 11 - instructionsWidth * 1.1 - statusItemsOffsetX, y + avatarSize * 0.67 - instructionsWidth * 0.81);
-      }
     }
   }
 
@@ -1340,41 +1324,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
   titleTextElement.setAttribute("font-style", "oblique 23deg");
   titleTextElement.textContent = "";
   titleTextElement.setAttribute("text-anchor", "middle");
-  controlsLayer?.append(titleTextElement);
-
-  instructionsButton = document.createElementNS(SVG.ns, "svg");
-  instructionsButtonCircle = document.createElementNS(SVG.ns, "circle");
-  instructionsButtonCircle.setAttribute("stroke", colors.scoreText);
-  instructionsButtonCircle.setAttribute("stroke-location", "inside");
-  instructionsButtonCircle.setAttribute("fill", "transparent");
-  SVG.setOpacity(instructionsButtonCircle, 0.61);
-
-  instructionsButtonQuestionMark = document.createElementNS(SVG.ns, "text");
-  instructionsButtonQuestionMark.setAttribute("text-anchor", "middle");
-  instructionsButtonQuestionMark.setAttribute("dominant-baseline", "central");
-  instructionsButtonQuestionMark.setAttribute("fill", colors.scoreText);
-  instructionsButtonQuestionMark.setAttribute("font-weight", "777");
-  instructionsButtonQuestionMark.textContent = "?";
-  SVG.setOpacity(instructionsButtonQuestionMark, 0.61);
-
-  instructionsButton.appendChild(instructionsButtonCircle);
-  instructionsButton.appendChild(instructionsButtonQuestionMark);
-  instructionsButton.setAttribute("overflow", "visible");
-  instructionsButton.style.cursor = "pointer";
-  SVG.setHidden(instructionsButton, true);
-
-  instructionsButton.addEventListener(defaultInputEventName, (event) => {
-    event.stopPropagation();
-    preventTouchstartIfNeeded(event);
-    if (hasFullScreenAlertVisible()) {
-      hideFullScreenAlert();
-      setBoardDimmed(false);
-    } else {
-      showPuzzleInstructions();
-    }
-  });
-
-  controlsLayer?.append(instructionsButton);
+  controlsLayer?.append(titleTextElement); 
 
   for (const isOpponent of [true, false]) {
     const numberText = document.createElementNS(SVG.ns, "text");
