@@ -103,7 +103,7 @@ let supermanaSimple: SVGElement;
 const emojis = (await import("../content/emojis")).emojis;
 
 export function flashPuzzleSuccess() {
-  const flashColor = "#00C50030";
+  const flashColor = "#00CC0023";
   const flashDuration = 77;
   const flashInterval = 77;
   setBoardDimmed(true, flashColor);
@@ -125,7 +125,7 @@ export function flashPuzzleFailure() {
   }, 333);
 }
 
-export function setBoardDimmed(dimmed: boolean, color: string = "#007aff35") {
+export function setBoardDimmed(dimmed: boolean, color: string = "#77777735") {
   if (dimmingOverlay && !dimmed) {
     dimmingOverlay.remove();
     dimmingOverlay = undefined;
