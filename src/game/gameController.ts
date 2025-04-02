@@ -393,6 +393,10 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
 }
 
 export function didClickSquare(location: Location) {
+  if (isGameOver && puzzleMode && hasFullScreenAlertVisible()) {
+    hideFullScreenAlert();
+  }
+
   if ((isOnlineGame && !didConnect) || isWatchOnly || isGameOver || isWaitingForInviteToGetAccepted) {
     return;
   }
