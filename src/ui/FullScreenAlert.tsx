@@ -26,10 +26,7 @@ const Overlay = styled.div`
 `;
 
 const Content = styled.div`
-  --color-tint: #007aff;
-  --color-dark-tint: #0b84ff;
-  
-  background-color: rgba(255, 255, 255, 0.95);
+  background-color: rgba(250, 250, 250, 0.95);
   padding: 10px;
   border-radius: 16px;
   width: 85%;
@@ -37,22 +34,22 @@ const Content = styled.div`
   text-align: center;
   cursor: default;
   pointer-events: none;
-  border: 4pt solid var(--color-tint);
+  border: 5pt solid #007aff;
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba(26, 26, 26, 0.95);
-    border: 4pt solid var(--color-dark-tint);
+    background-color: rgba(35, 35, 35, 0.95);
+    border: 5pt solid #0b84ff;
+    color: #f5f5f5;
   }
 `;
 
 const Title = styled.h2`
   font-size: 12px;
   font-weight: 500;
-  color: #000;
   line-height: 1.5;
 
   @media (prefers-color-scheme: dark) {
-    color: #fff;
+    color: #f5f5f5;
   }
 `;
 
