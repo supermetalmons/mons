@@ -15,7 +15,7 @@ const Overlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: rgba(0, 0, 0, 0.15);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -23,7 +23,7 @@ const Overlay = styled.div`
   cursor: pointer;
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.3);
   }
 `;
 
@@ -44,11 +44,11 @@ const Content = styled.div`
 const Title = styled.h2`
   font-size: 12px;
   font-weight: 500;
-  color: #333;
+  color: #000;
   line-height: 1.5;
 
   @media (prefers-color-scheme: dark) {
-    color: #f0f0f0;
+    color: #fff;
   }
 `;
 
