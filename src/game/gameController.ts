@@ -5,7 +5,7 @@ import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModi
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
 import { isAutomatch, sendResignStatus, prepareOnchainVictoryTx, sendMove, isCreateNewInviteFlow, sendEmojiUpdate, setupConnection, startTimer, claimVictoryByTimer, sendRematchProposal, sendAutomatchRequest, connectToAutomatch, sendEndMatchIndicator, rematchSeriesEndIsIndicated, connectToGame, updateRatings, seeIfFreshlySignedInProfileIsOneOfThePlayers, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded } from "../connection/connection";
-import { setAttestVictoryVisible, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAttestVictoryEnabled, showButtonForTx, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushButtonDimmed } from "../ui/BottomControls";
+import { setAttestVictoryVisible, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAttestVictoryEnabled, showButtonForTx, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushButtonDimmed, setPlaySamePuzzleAgainButtonVisible } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem } from "../content/problems";
@@ -693,9 +693,7 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
 
             if (puzzleMode) {
               Board.flashPuzzleSuccess();
-              if (selectedProblem) {
-                showPuzzleTitle(selectedProblem.label + " ✅");
-              }
+              setPlaySamePuzzleAgainButtonVisible(true);
             }
 
             if (didStartLocalGame) {
@@ -750,6 +748,12 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
       updateUndoButtonBasedOnGameState();
 
       break;
+  }
+}
+
+export function playSameCompletedPuzzleAgain() {
+  if (selectedProblem) {
+    didSelectPuzzle(selectedProblem, true);
   }
 }
 
@@ -1186,8 +1190,9 @@ export function cleanupCurrentInputs() {
   currentInputs = [];
 }
 
-export function didSelectPuzzle(problem: Problem) {
+export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = false) {
   showPrimaryAction(PrimaryActionType.None);
+  setPlaySamePuzzleAgainButtonVisible(false);
   isGameOver = false;
   currentInputs = [];
   Board.showOpponentAsBotPlayer();
@@ -1211,7 +1216,9 @@ export function didSelectPuzzle(problem: Problem) {
   puzzleMode = true;
   selectedProblem = problem;
 
-  showPuzzleInstructions();
+  if (!skipInstructions) {
+    showPuzzleInstructions();
+  }
   Board.removeHighlights();
   Board.hideItemSelection();
   updateUndoButtonBasedOnGameState();

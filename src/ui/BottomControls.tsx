@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaPaintBrush, FaStar, FaEnvelope, FaLink, FaShareAlt } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
-import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAttestVictoryButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode } from "../game/gameController";
+import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAttestVictoryButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain } from "../game/gameController";
 import { didClickInviteButton, sendVoiceReaction } from "../connection/connection";
 import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
@@ -379,6 +379,7 @@ let setInviteLinkActionVisible: (visible: boolean) => void;
 let setAutomatchEnabled: (enabled: boolean) => void;
 let setAutomatchVisible: (visible: boolean) => void;
 let setBotGameOptionVisible: (visible: boolean) => void;
+let setPlaySamePuzzleAgainButtonVisible: (visible: boolean) => void;
 let setAutomatchWaitingState: (waiting: boolean) => void;
 
 let setAttestVictoryEnabled: (enabled: boolean) => void;
@@ -436,6 +437,8 @@ const BottomControls: React.FC = () => {
   const [isResignConfirmVisible, setIsResignConfirmVisible] = useState(false);
   const [isTimerButtonDisabled, setIsTimerButtonDisabled] = useState(true);
   const [isClaimVictoryVisible, setIsClaimVictoryVisible] = useState(false);
+  const [isSamePuzzleAgainVisible, setIsSamePuzzleAgainVisible] = useState(false);
+
   const [isClaimVictoryButtonDisabled, setIsClaimVictoryButtonDisabled] = useState(false);
   const [timerConfig, setTimerConfig] = useState({ duration: 90, progress: 0, requestDate: Date.now() });
 
@@ -567,6 +570,10 @@ const BottomControls: React.FC = () => {
     setIsAutomoveButtonVisible(false);
     setIsStartTimerVisible(false);
     setIsClaimVictoryButtonDisabled(false);
+  };
+
+  setPlaySamePuzzleAgainButtonVisible = (visible: boolean) => {
+    setIsSamePuzzleAgainVisible(visible);
   };
 
   setEndMatchVisible = (visible: boolean) => {
@@ -715,6 +722,7 @@ const BottomControls: React.FC = () => {
       }, 2000);
     }
   }, []);
+
   const handleUndo = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     if ((event.target as HTMLButtonElement).disabled) return;
     didClickUndoButton();
@@ -725,6 +733,11 @@ const BottomControls: React.FC = () => {
     event.stopPropagation();
     setIsResignConfirmVisible(false);
     didClickConfirmResignButton();
+  };
+
+  const handleSamePuzzleAgainClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    playSameCompletedPuzzleAgain();
   };
 
   const handlePrimaryActionClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -847,6 +860,11 @@ const BottomControls: React.FC = () => {
             </BottomPillButton>
           </>
         )}
+        {isSamePuzzleAgainVisible && (
+          <BottomPillButton onClick={handleSamePuzzleAgainClick} isBlue={true}>
+            {"Victory Lap"}
+          </BottomPillButton>
+        )}
         {primaryAction !== PrimaryActionType.None && <BottomPillButton onClick={handlePrimaryActionClick}>{getPrimaryActionButtonText()}</BottomPillButton>}
         {waitingStateText !== "" && (
           <BottomPillButton disabled={true} isViewOnly={true}>
@@ -903,4 +921,4 @@ const BottomControls: React.FC = () => {
   );
 };
 
-export { BottomControls as default, setBrushButtonDimmed, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, showButtonForTx, setAttestVictoryEnabled, setAutomatchEnabled, setAttestVictoryVisible, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };
+export { BottomControls as default, setBrushButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, showButtonForTx, setAttestVictoryEnabled, setAutomatchEnabled, setAttestVictoryVisible, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };
