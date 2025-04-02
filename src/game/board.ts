@@ -115,6 +115,7 @@ export function setBoardDimmed(dimmed: boolean) {
   dimmingOverlay = overlay;
 
   const background = createFullBoardBackgroundElement();
+  SVG.setFill(background, "#007aff35");
   overlay.appendChild(background);
 
   itemsLayer?.appendChild(overlay);

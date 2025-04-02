@@ -26,7 +26,7 @@ const Overlay = styled.div`
 `;
 
 const Content = styled.div`
-  background-color: rgba(255, 255, 255, 0.97);
+  background-color: rgba(255, 255, 255, 0.95);
   padding: 10px;
   border-radius: 16px;
   width: 85%;
@@ -36,7 +36,7 @@ const Content = styled.div`
   pointer-events: none;
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba(26, 26, 26, 0.97);
+    background-color: rgba(26, 26, 26, 0.95);
   }
 `;
 
