@@ -103,10 +103,25 @@ let supermanaSimple: SVGElement;
 const emojis = (await import("../content/emojis")).emojis;
 
 export function flashPuzzleSuccess() {
-  setBoardDimmed(true, "#00C50050");
+  const flashColor = "#00C50050";
+  const flashDuration = 69;
+  const flashInterval = 69;
+  setBoardDimmed(true, flashColor);
   setTimeout(() => {
     setBoardDimmed(false);
-  }, 777);
+    setTimeout(() => {
+      setBoardDimmed(true, flashColor);
+      setTimeout(() => {
+        setBoardDimmed(false);
+        setTimeout(() => {
+          setBoardDimmed(true, flashColor);
+          setTimeout(() => {
+            setBoardDimmed(false);
+          }, flashDuration);
+        }, flashInterval);
+      }, flashDuration);
+    }, flashInterval);
+  }, flashDuration);
 }
 
 export function flashPuzzleFailure() {
