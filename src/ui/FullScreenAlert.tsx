@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import styled from "styled-components";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { defaultEarlyInputEventName } from "../utils/misc";
 
@@ -8,57 +9,59 @@ interface FullScreenAlertProps {
   onDismiss: () => void;
 }
 
-const styles = {
-  overlay: {
-    position: "fixed" as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: "rgba(0, 0, 0, 0.3)",
-    display: "flex",
-    justifyContent: "center",
-    alignItems: "center",
-    zIndex: 1000,
-    cursor: "pointer",
-  },
-  content: {
-    backgroundColor: "white",
-    padding: "2rem",
-    borderRadius: "1rem",
-    maxWidth: "90%",
-    width: "400px",
-    textAlign: "center" as const,
-    boxShadow: "0 4px 6px rgba(0, 0, 0, 0.1)",
-    cursor: "pointer",
-  },
-  title: {
-    margin: "0 0 1rem 0",
-    fontSize: "1.5rem",
-    fontWeight: 600,
-    color: "#1a1a1a",
-  },
-  subtitle: {
-    margin: 0,
-    fontSize: "1rem",
-    color: "#555",
-    lineHeight: 1.5,
-  },
-  "@media (prefers-color-scheme: dark)": {
-    overlay: {
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-      },
-    content: {
-      backgroundColor: "#1a1a1a",
-    },
-    title: {
-      color: "white",
-    },
-    subtitle: {
-      color: "#ccc",
-    },
-  },
-};
+const Overlay = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  cursor: pointer;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+`;
+
+const Content = styled.div`
+  background-color: rgba(255, 255, 255, 0.97);
+  padding: 10px;
+  border-radius: 16px;
+  width: 85%;
+  max-width: 320px;
+  text-align: center;
+  cursor: default;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: rgba(26, 26, 26, 0.97);
+  }
+`;
+
+const Title = styled.h2`
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  line-height: 1.5;
+
+  @media (prefers-color-scheme: dark) {
+    color: #f0f0f0;
+  }
+`;
+
+const Subtitle = styled.p`
+  margin: 0;
+  font-size: 1rem;
+  color: #555;
+  line-height: 1.5;
+
+  @media (prefers-color-scheme: dark) {
+    color: #ccc;
+  }
+`;
 
 const FullScreenAlert: React.FC<FullScreenAlertProps> = ({ title, subtitle, onDismiss }) => {
   useEffect(() => {
@@ -72,12 +75,12 @@ const FullScreenAlert: React.FC<FullScreenAlertProps> = ({ title, subtitle, onDi
   }, [onDismiss]);
 
   return (
-    <div style={styles.overlay}>
-      <div style={styles.content} onClick={(e) => e.stopPropagation()}>
-        <h2 style={styles.title}>{title}</h2>
-        <p style={styles.subtitle}>{subtitle}</p>
-      </div>
-    </div>
+    <Overlay>
+      <Content onClick={(e) => e.stopPropagation()}>
+        <Title dangerouslySetInnerHTML={{ __html: title }}></Title>
+        {subtitle && <Subtitle>{subtitle}</Subtitle>}
+      </Content>
+    </Overlay>
   );
 };
 

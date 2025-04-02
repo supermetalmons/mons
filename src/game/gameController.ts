@@ -1162,7 +1162,7 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
 export function showPuzzleInstructions() {
   const text = selectedProblem!.description;
   setTimeout(() => {
-    showFullScreenAlert(text, "win on this turn");
+    showFullScreenAlert(text, "");
   }, 1);
 }
 
