@@ -10,7 +10,7 @@ import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem } from "../content/problems";
 import { emojis } from "../content/emojis";
-import { hasFullScreenAlertVisible, hideFullScreenAlert, setNavigationListButtonVisible, showFullScreenAlert } from "..";
+import { closeNavigationPopupIfAny, hasFullScreenAlertVisible, hideFullScreenAlert, setNavigationListButtonVisible, showFullScreenAlert } from "..";
 
 const experimentalDrawingDevMode = false;
 
@@ -522,7 +522,9 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
         setInviteLinkActionVisible(false);
         setAutomatchVisible(false);
         setBotGameOptionVisible(false);
-        setNavigationListButtonVisible(false);
+        if (!puzzleMode) {
+          setNavigationListButtonVisible(false);
+        }
         setAutomoveActionVisible(true);
       }
 
@@ -1177,6 +1179,9 @@ export function showPuzzleInstructions() {
 }
 
 export function didSelectPuzzle(problem: Problem) {
+  isGameOver = false;
+  currentInputs = [];
+  Board.updateEmojiIfNeeded(emojis.getRandomEmojiId(), true);
   showPuzzleTitle(problem.label);
 
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(problem.fen);
@@ -1189,7 +1194,7 @@ export function didSelectPuzzle(problem: Problem) {
   setInviteLinkActionVisible(false);
   setAutomatchVisible(false);
   setBotGameOptionVisible(false);
-  setNavigationListButtonVisible(false);
+  closeNavigationPopupIfAny();
   setAutomoveActionVisible(true);
 
   setNewBoard();
@@ -1198,13 +1203,13 @@ export function didSelectPuzzle(problem: Problem) {
   selectedProblem = problem;
 
   showPuzzleInstructions();
+  Board.removeHighlights();
+  Board.hideItemSelection();
+  updateUndoButtonBasedOnGameState();
 }
 
 export function showNextProblem(problem: Problem) {
-  isGameOver = false;
   didSelectPuzzle(problem);
-  updateUndoButtonBasedOnGameState();
-  Board.updateEmojiIfNeeded(emojis.getRandomEmojiId(), true);
 }
 
 export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matchId: string) {
