@@ -994,7 +994,7 @@ export function hideTimerCountdownDigits() {
 }
 
 export function updateScore(white: number, black: number, winnerColor?: MonsWeb.Color, resignedColor?: MonsWeb.Color, winByTimerColor?: MonsWeb.Color) {
-  const victorySuffix = puzzleMode ? " ✅" : " 🏅";
+  const victorySuffix = " 🏅";
   const surrenderSuffix = " 🏳️";
 
   let whiteSuffix = "";
