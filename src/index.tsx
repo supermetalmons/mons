@@ -34,7 +34,7 @@ const queryClient = new QueryClient();
 let getIsNavigationPopupOpen: () => boolean = () => false;
 let getIsFullScreenAlertOpen: () => boolean = () => false;
 
-export let setNavigationPopupVisible: (visible: boolean) => void;
+export let setNavigationListButtonVisible: (visible: boolean) => void;
 export let closeNavigationPopupIfAny: () => void = () => {};
 
 export function hasNavigationPopupVisible(): boolean {
@@ -132,11 +132,10 @@ const App = () => {
     toggleInfoVisibility();
   };
 
-  setNavigationPopupVisible = (visible: boolean) => {
-    const hasNewPuzzles = false; // TODO: make it visible only when there are new puzzles
-    setIsNavigationPickerVisible(visible && hasNewPuzzles);
+  setNavigationListButtonVisible = (visible: boolean) => {
+    setIsListButtonVisible(visible);
     if (!visible) {
-      setIsListButtonVisible(false);
+      setIsNavigationPickerVisible(false);
     }
   };
 

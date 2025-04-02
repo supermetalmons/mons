@@ -10,7 +10,7 @@ import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem } from "../content/problems";
 import { emojis } from "../content/emojis";
-import { hasFullScreenAlertVisible, hideFullScreenAlert, setNavigationPopupVisible, showFullScreenAlert } from "..";
+import { hasFullScreenAlertVisible, hideFullScreenAlert, setNavigationListButtonVisible, showFullScreenAlert } from "..";
 
 const experimentalDrawingDevMode = false;
 
@@ -90,7 +90,7 @@ export async function go() {
     setInviteLinkActionVisible(false);
     setAutomatchVisible(false);
     setBotGameOptionVisible(false);
-    setNavigationPopupVisible(false);
+    setNavigationListButtonVisible(false);
     setAutomoveActionVisible(true);
   } else if (isCreateNewInviteFlow) {
     game.locations_with_content().forEach((loc) => {
@@ -100,7 +100,7 @@ export async function go() {
     setInviteLinkActionVisible(true);
     setAutomatchVisible(true);
     setBotGameOptionVisible(true);
-    setNavigationPopupVisible(true);
+    setNavigationListButtonVisible(true);
   } else {
     isOnlineGame = true;
     setHomeVisible(true);
@@ -175,7 +175,7 @@ export function didClickStartBotGameButton() {
   setInviteLinkActionVisible(false);
   setAutomatchVisible(false);
   setBotGameOptionVisible(false);
-  setNavigationPopupVisible(false);
+  setNavigationListButtonVisible(false);
   setAutomoveActionVisible(true);
   showResignButton();
   Board.setBoardFlipped(true);
@@ -206,7 +206,7 @@ export function didClickAutomatchButton() {
   setAutomoveActionVisible(false);
   setInviteLinkActionVisible(false);
   setBotGameOptionVisible(false);
-  setNavigationPopupVisible(false);
+  setNavigationListButtonVisible(false);
   Board.hideBoardPlayersInfo();
   Board.removeHighlights();
   hideAllMoveStatuses();
@@ -518,7 +518,7 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
         setInviteLinkActionVisible(false);
         setAutomatchVisible(false);
         setBotGameOptionVisible(false);
-        setNavigationPopupVisible(false);
+        setNavigationListButtonVisible(false);
         setAutomoveActionVisible(true);
       }
 
@@ -1156,7 +1156,7 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
   setBrushButtonDimmed(true);
   setAutomatchVisible(false);
   setBotGameOptionVisible(false);
-  setNavigationPopupVisible(false);
+  setNavigationListButtonVisible(false);
   setAutomoveActionVisible(false);
   Board.hideBoardPlayersInfo();
   Board.removeHighlights();
@@ -1185,7 +1185,7 @@ export function didSelectPuzzle(problem: Problem) {
   setInviteLinkActionVisible(false);
   setAutomatchVisible(false);
   setBotGameOptionVisible(false);
-  setNavigationPopupVisible(false);
+  setNavigationListButtonVisible(false);
   setAutomoveActionVisible(true);
 
   setNewBoard();
@@ -1213,7 +1213,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
     setInviteLinkActionVisible(false);
     setAutomatchVisible(false);
     setBotGameOptionVisible(false);
-    setNavigationPopupVisible(false);
+    setNavigationListButtonVisible(false);
     setEndMatchVisible(false);
     showPrimaryAction(PrimaryActionType.None);
     const wasWaitingForRematchResponse = isWaitingForRematchResponse;
