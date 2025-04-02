@@ -37,11 +37,11 @@ const Content = styled.div`
   text-align: center;
   cursor: default;
   pointer-events: none;
-  border: 3pt solid var(--color-tint);
+  border: 4pt solid var(--color-tint);
 
   @media (prefers-color-scheme: dark) {
     background-color: rgba(26, 26, 26, 0.95);
-    border: 3pt solid var(--color-dark-tint);
+    border: 4pt solid var(--color-dark-tint);
   }
 `;
 

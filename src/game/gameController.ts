@@ -9,7 +9,6 @@ import { setAttestVictoryVisible, setWatchOnlyVisible, showResignButton, showVoi
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem } from "../content/problems";
-import { emojis } from "../content/emojis";
 import { closeNavigationPopupIfAny, hasFullScreenAlertVisible, hideFullScreenAlert, setNavigationListButtonVisible, showFullScreenAlert } from "..";
 
 const experimentalDrawingDevMode = false;
@@ -1191,7 +1190,7 @@ export function didSelectPuzzle(problem: Problem) {
   showPrimaryAction(PrimaryActionType.None);
   isGameOver = false;
   currentInputs = [];
-  Board.updateEmojiIfNeeded(emojis.getRandomEmojiId(), true);
+  Board.showOpponentAsBotPlayer();
   showPuzzleTitle(problem.label);
 
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(problem.fen);
