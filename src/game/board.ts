@@ -1,6 +1,6 @@
 import * as MonsWeb from "mons-web";
 import * as SVG from "../utils/svg";
-import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, sendPlayerEmojiUpdate, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle, showPuzzleInstructions, cleanupCurrentInputs } from "./gameController";
+import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, sendPlayerEmojiUpdate, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle, cleanupCurrentInputs } from "./gameController";
 import { Highlight, HighlightKind, InputModifier, Location, Sound, Trace, ItemKind } from "../utils/gameModels";
 import { colors, currentAssetsSet, AssetsSet, isCustomPictureBoardEnabled, isPangchiuBoard, setCurrentAssetsSet } from "../content/boardStyles";
 import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
@@ -1285,8 +1285,8 @@ const updateLayout = () => {
     SVG.updateCircle(placeholder, offsetX + avatarSize / 2, y + avatarSize / 2, avatarSize / 3);
 
     if (isOpponent) {
-      titleTextElement!.setAttribute("font-size", (34 * multiplicator).toString());
-      SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.677);
+      titleTextElement!.setAttribute("font-size", (32 * multiplicator).toString());
+      SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.65);
     }
   }
 
@@ -1319,12 +1319,12 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
 
   titleTextElement = document.createElementNS(SVG.ns, "text");
   SVG.setFill(titleTextElement, colors.scoreText);
-  SVG.setOpacity(titleTextElement, 0.61);
-  titleTextElement.setAttribute("font-weight", "699");
-  titleTextElement.setAttribute("font-style", "oblique 23deg");
+  SVG.setOpacity(titleTextElement, 0.69);
+  titleTextElement.setAttribute("font-weight", "270");
+  titleTextElement.setAttribute("font-style", "italic");
   titleTextElement.textContent = "";
   titleTextElement.setAttribute("text-anchor", "middle");
-  controlsLayer?.append(titleTextElement); 
+  controlsLayer?.append(titleTextElement);
 
   for (const isOpponent of [true, false]) {
     const numberText = document.createElementNS(SVG.ns, "text");
