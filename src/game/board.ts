@@ -113,6 +113,12 @@ export function flashPuzzleSuccess() {
       setBoardDimmed(true, flashColor);
       setTimeout(() => {
         setBoardDimmed(false);
+        setTimeout(() => {
+          setBoardDimmed(true, flashColor);
+          setTimeout(() => {
+            setBoardDimmed(false);
+          }, flashDuration);
+        }, flashInterval);
       }, flashDuration);
     }, flashInterval);
   }, flashDuration);
