@@ -221,6 +221,10 @@ export async function didToggleItemsStyleSet() {
   allPixelOnlyElements.forEach((element) => {
     SVG.setHidden(element as SVGElement, currentAssetsSet !== AssetsSet.Pixel);
   });
+
+  if (dimmingOverlay) {
+    setBoardDimmed(true);
+  }
 }
 
 function loadImage(data: string, assetType: string, isSpriteSheet: boolean = false): SVGElement {
