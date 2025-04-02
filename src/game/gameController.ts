@@ -641,6 +641,7 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
           case MonsWeb.EventModelKind.NextTurn:
             if (puzzleMode && game.winner_color() === undefined) {
               resetToTheStartOfThePuzzle();
+              Board.flashPuzzleFailure();
               return;
             }
 
@@ -690,6 +691,10 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
             disableAndHideUndoResignAndTimerControls();
             hideTimerCountdownDigits();
             showRematchInterface();
+
+            if (puzzleMode) {
+              Board.flashPuzzleSuccess();
+            }
 
             if (didStartLocalGame) {
               setAutomoveActionVisible(false);
@@ -1180,6 +1185,7 @@ export function cleanupCurrentInputs() {
 }
 
 export function didSelectPuzzle(problem: Problem) {
+  showPrimaryAction(PrimaryActionType.None);
   isGameOver = false;
   currentInputs = [];
   Board.updateEmojiIfNeeded(emojis.getRandomEmojiId(), true);
