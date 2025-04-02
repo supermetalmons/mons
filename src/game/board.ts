@@ -1,6 +1,6 @@
 import * as MonsWeb from "mons-web";
 import * as SVG from "../utils/svg";
-import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, sendPlayerEmojiUpdate, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle, puzzleMode, showPuzzleInstructions, cleanupCurrentInputs } from "./gameController";
+import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, sendPlayerEmojiUpdate, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle, showPuzzleInstructions, cleanupCurrentInputs } from "./gameController";
 import { Highlight, HighlightKind, InputModifier, Location, Sound, Trace, ItemKind } from "../utils/gameModels";
 import { colors, currentAssetsSet, AssetsSet, isCustomPictureBoardEnabled, isPangchiuBoard, setCurrentAssetsSet } from "../content/boardStyles";
 import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
@@ -104,8 +104,8 @@ const emojis = (await import("../content/emojis")).emojis;
 
 export function flashPuzzleSuccess() {
   const flashColor = "#00C50030";
-  const flashDuration = 69;
-  const flashInterval = 69;
+  const flashDuration = 77;
+  const flashInterval = 77;
   setBoardDimmed(true, flashColor);
   setTimeout(() => {
     setBoardDimmed(false);

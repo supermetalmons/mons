@@ -26,6 +26,9 @@ const Overlay = styled.div`
 `;
 
 const Content = styled.div`
+  --color-tint: #007aff;
+  --color-dark-tint: #0b84ff;
+  
   background-color: rgba(255, 255, 255, 0.95);
   padding: 10px;
   border-radius: 16px;
@@ -34,9 +37,11 @@ const Content = styled.div`
   text-align: center;
   cursor: default;
   pointer-events: none;
+  border: 3pt solid var(--color-tint);
 
   @media (prefers-color-scheme: dark) {
     background-color: rgba(26, 26, 26, 0.95);
+    border: 3pt solid var(--color-dark-tint);
   }
 `;
 
