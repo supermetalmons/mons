@@ -28,17 +28,17 @@ const Overlay = styled.div`
 const Content = styled.div`
   background-color: rgba(250, 250, 250, 0.95);
   padding: 10px;
-  border-radius: 12px;
+  border-radius: 7pt;
   width: 85%;
   max-width: 320px;
   text-align: center;
   cursor: default;
   pointer-events: none;
-  border: 5pt solid #007aff;
+  border: 0 solid #007aff;
 
   @media (prefers-color-scheme: dark) {
     background-color: rgba(35, 35, 35, 0.95);
-    border: 5pt solid #0b84ff;
+    border: 0 solid #0b84ff;
     color: #f5f5f5;
   }
 `;
