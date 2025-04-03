@@ -9,7 +9,7 @@ const NavigationPickerContainer = styled.div`
   right: 9pt;
   top: 56px;
   max-height: 146pt;
-  max-width: 90pt;
+  max-width: 110pt;
   min-width: 88pt;
   overflow-y: auto;
   opacity: 1;
@@ -48,6 +48,7 @@ const SectionTitle = styled.div`
 
 const NavigationPickerButton = styled.button`
   background: none;
+  font-size: 13px;
   border: none;
   padding: 6px 8px;
   padding-right: 15px;
