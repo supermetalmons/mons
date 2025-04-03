@@ -394,13 +394,6 @@ let getIsInfoOpen: () => boolean;
 export let toggleInfoVisibility: () => void;
 export let closeMenuAndInfoIfAny: () => void;
 
-const tldrRules = `☝️ Carry mana with the central mon.
-💦 Bring mana to the corners.
-🎯 Score 5 points to win.
-👟 Move your mons up to a total of 5 spaces.
-🌟 Use one action: demon, or spirit, or mystic.
-💧 Move one of your mana to end your turn.`;
-
 export function hasMainMenuPopupsVisible(): boolean {
   return getIsMenuOpen() || getIsInfoOpen();
 }
@@ -712,7 +705,19 @@ const MainMenu: React.FC = () => {
       </RockButtonContainer>
 
       <InfoPopover ref={infoRef} isOpen={isInfoOpen}>
-        {tldrRules}
+        🐻 Carry mana with the drainer (central mon).
+        <br />
+        💦 Bring mana to the corners to score.
+        <br />
+        🏆 Score 5 points to win.
+        <br />
+        <span style={{ opacity: 0.95 }}>⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯</span>
+        <br />
+        👟 Move your mons up to a total of 5 spaces.
+        <br />
+        🌟 Use one action: demon, spirit, or mystic.
+        <br />
+        💧 Use your one mana move to end your turn.
       </InfoPopover>
     </>
   );
