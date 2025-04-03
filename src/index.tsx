@@ -22,6 +22,8 @@ import { storage } from "./utils/storage";
 import ProfileSignIn, { closeProfilePopupIfAny } from "./ui/ProfileSignIn";
 import NavigationPicker from "./ui/NavigationPicker";
 import FullScreenAlert from "./ui/FullScreenAlert";
+import { setBoardDimmed } from "./game/board";
+import { puzzleMode, showPuzzleInstructions } from "./game/gameController";
 
 let globalIsMuted: boolean = (() => {
   return storage.getIsMuted(isMobileOrVision);
@@ -129,7 +131,14 @@ const App = () => {
 
   const handleInfoButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    toggleInfoVisibility();
+    if (alertState !== null) {
+      hideFullScreenAlert();
+      setBoardDimmed(false);
+    } else if (puzzleMode) {
+      showPuzzleInstructions();
+    } else {
+      toggleInfoVisibility();
+    }
   };
 
   setNavigationListButtonVisible = (visible: boolean) => {
