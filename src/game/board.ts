@@ -236,7 +236,7 @@ function createFullBoardBackgroundElement(): SVGElement {
 
 export function showPuzzleTitle(title: string) {
   if (titleTextElement) {
-    titleTextElement.textContent = title;
+    titleTextElement.textContent = `«${title}»`;
   }
 }
 
