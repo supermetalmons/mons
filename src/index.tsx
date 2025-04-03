@@ -134,11 +134,8 @@ const App = () => {
     if (alertState !== null) {
       hideFullScreenAlert();
       setBoardDimmed(false);
-    } else if (puzzleMode) {
-      showPuzzleInstructions();
-    } else {
-      toggleInfoVisibility();
     }
+    toggleInfoVisibility();
   };
 
   setNavigationListButtonVisible = (visible: boolean) => {

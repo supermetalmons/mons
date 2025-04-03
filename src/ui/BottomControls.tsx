@@ -1,17 +1,18 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
-import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaPaintBrush, FaStar, FaEnvelope, FaLink, FaShareAlt } from "react-icons/fa";
+import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaPaintBrush, FaStar, FaEnvelope, FaLink, FaShareAlt, FaQuestion } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
-import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAttestVictoryButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain } from "../game/gameController";
+import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAttestVictoryButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, showPuzzleInstructions } from "../game/gameController";
 import { didClickInviteButton, sendVoiceReaction } from "../connection/connection";
 import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playReaction } from "../content/sounds";
 import { newReactionOfKind } from "../content/sounds";
-import { showVoiceReactionText } from "../game/board";
+import { setBoardDimmed, showVoiceReactionText } from "../game/board";
 import { toggleBoardStyle } from "../content/boardStyles";
+import { hasFullScreenAlertVisible, hideFullScreenAlert } from "..";
 
 export enum PrimaryActionType {
   None = "none",
@@ -381,6 +382,7 @@ let setAutomatchVisible: (visible: boolean) => void;
 let setBotGameOptionVisible: (visible: boolean) => void;
 let setPlaySamePuzzleAgainButtonVisible: (visible: boolean) => void;
 let setAutomatchWaitingState: (waiting: boolean) => void;
+let setInstructionsToggleButtonVisible: (visible: boolean) => void;
 
 let setAttestVictoryEnabled: (enabled: boolean) => void;
 let setAttestVictoryVisible: (visible: boolean) => void;
@@ -431,6 +433,7 @@ const BottomControls: React.FC = () => {
   const [isUndoButtonVisible, setIsUndoButtonVisible] = useState(false);
   const [isAutomoveButtonEnabled, setIsAutomoveButtonEnabled] = useState(true);
   const [isAutomoveButtonVisible, setIsAutomoveButtonVisible] = useState(false);
+  const [isInstructionsButtonVisible, setIsInstructionsButtonVisible] = useState(false);
   const [isResignButtonVisible, setIsResignButtonVisible] = useState(false);
   const [isVoiceReactionButtonVisible, setIsVoiceReactionButtonVisible] = useState(false);
   const [isReactionPickerVisible, setIsReactionPickerVisible] = useState(false);
@@ -576,6 +579,10 @@ const BottomControls: React.FC = () => {
     setIsSamePuzzleAgainVisible(visible);
   };
 
+  setInstructionsToggleButtonVisible = (visible: boolean) => {
+    setIsInstructionsButtonVisible(visible);
+  };
+
   setEndMatchVisible = (visible: boolean) => {
     setIsEndMatchButtonVisible(visible);
   };
@@ -667,6 +674,16 @@ const BottomControls: React.FC = () => {
       setIsResignConfirmVisible(false);
     }
     setIsReactionPickerVisible((prev) => !prev);
+  };
+
+  const handleInstructionsClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    if (hasFullScreenAlertVisible()) {
+      hideFullScreenAlert();
+      setBoardDimmed(false);
+    } else {
+      showPuzzleInstructions();
+    }
   };
 
   const handleResignClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -901,6 +918,11 @@ const BottomControls: React.FC = () => {
             <FaFlag />
           </ControlButton>
         )}
+        {isInstructionsButtonVisible && (
+          <ControlButton onClick={handleInstructionsClick} aria-label="Help" disabled={false}>
+            <FaQuestion />
+          </ControlButton>
+        )}
         {isHomeButtonVisible && (
           <ControlButton onClick={handleHomeClick} aria-label="Home">
             <FaHome />
@@ -925,4 +947,4 @@ const BottomControls: React.FC = () => {
   );
 };
 
-export { BottomControls as default, setBrushButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, showButtonForTx, setAttestVictoryEnabled, setAutomatchEnabled, setAttestVictoryVisible, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };
+export { BottomControls as default, setInstructionsToggleButtonVisible, setBrushButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, showButtonForTx, setAttestVictoryEnabled, setAutomatchEnabled, setAttestVictoryVisible, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };
