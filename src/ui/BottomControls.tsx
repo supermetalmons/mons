@@ -783,7 +783,7 @@ const BottomControls: React.FC = () => {
       case PrimaryActionType.JoinGame:
         return "Join Game";
       case PrimaryActionType.Rematch:
-        return puzzleMode ? "Play Next" : "Play Again";
+        return puzzleMode ? "Next Lesson" : "Play Again";
       default:
         return "";
     }
@@ -884,7 +884,7 @@ const BottomControls: React.FC = () => {
         )}
         {isSamePuzzleAgainVisible && (
           <BottomPillButton onClick={handleSamePuzzleAgainClick} isBlue={true}>
-            {"Victory Lap"}
+            {"Repeat"}
           </BottomPillButton>
         )}
         {waitingStateText !== "" && (
