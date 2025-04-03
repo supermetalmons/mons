@@ -860,12 +860,16 @@ const BottomControls: React.FC = () => {
             </BottomPillButton>
           </>
         )}
+        {primaryAction !== PrimaryActionType.None && (
+          <BottomPillButton isBlue={true} onClick={handlePrimaryActionClick}>
+            {getPrimaryActionButtonText()}
+          </BottomPillButton>
+        )}
         {isSamePuzzleAgainVisible && (
           <BottomPillButton onClick={handleSamePuzzleAgainClick} isBlue={true}>
             {"Victory Lap"}
           </BottomPillButton>
         )}
-        {primaryAction !== PrimaryActionType.None && <BottomPillButton onClick={handlePrimaryActionClick}>{getPrimaryActionButtonText()}</BottomPillButton>}
         {waitingStateText !== "" && (
           <BottomPillButton disabled={true} isViewOnly={true}>
             {waitingStateText}
