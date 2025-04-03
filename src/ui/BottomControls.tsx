@@ -884,7 +884,7 @@ const BottomControls: React.FC = () => {
         )}
         {isSamePuzzleAgainVisible && (
           <BottomPillButton onClick={handleSamePuzzleAgainClick} isBlue={true}>
-            {"Repeat"}
+            {"Victory Lap"}
           </BottomPillButton>
         )}
         {waitingStateText !== "" && (
