@@ -10,6 +10,9 @@ import { setAuthStatusGlobally } from "../connection/authentication";
 import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
 import { NameEditModal } from "./NameEditModal";
 import { defaultEarlyInputEventName } from "../utils/misc";
+import { showShinyCard } from "./ShinyCard";
+
+const shinyCardDevTmp = false; // TODO: remove dev tmp
 
 const Container = styled.div`
   position: relative;
@@ -212,6 +215,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   const handleSignInClick = () => {
+    if (authStatus === "authenticated" && shinyCardDevTmp) {
+      showShinyCard();
+      return;
+    }
+
     if (!isOpen) {
       closeMenuAndInfoIfAny();
     }
