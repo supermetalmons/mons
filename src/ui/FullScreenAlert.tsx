@@ -28,7 +28,7 @@ const Overlay = styled.div`
 const Content = styled.div`
   background-color: rgba(250, 250, 250, 0.95);
   padding: 10px;
-  border-radius: 16px;
+  border-radius: 12px;
   width: 85%;
   max-width: 320px;
   text-align: center;
