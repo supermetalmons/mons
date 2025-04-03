@@ -1321,7 +1321,6 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
   SVG.setFill(titleTextElement, colors.scoreText);
   SVG.setOpacity(titleTextElement, 0.69);
   titleTextElement.setAttribute("font-weight", "270");
-  titleTextElement.setAttribute("font-style", "italic");
   titleTextElement.textContent = "";
   titleTextElement.setAttribute("text-anchor", "middle");
   controlsLayer?.append(titleTextElement);
