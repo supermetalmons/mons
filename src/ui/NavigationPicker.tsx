@@ -6,8 +6,8 @@ import { didSelectPuzzle } from "../game/gameController";
 const NavigationPickerContainer = styled.div`
   position: fixed;
   bottom: auto;
-  right: 9pt;
-  top: 56px;
+  left: 9px;
+  bottom: 50px;
   max-height: 146pt;
   max-width: 110pt;
   min-width: 88pt;

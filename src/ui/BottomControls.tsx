@@ -1,18 +1,17 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
-import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaPaintBrush, FaStar, FaEnvelope, FaLink, FaShareAlt, FaRegQuestionCircle } from "react-icons/fa";
+import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaRegQuestionCircle, FaList } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
 import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAttestVictoryButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, showPuzzleInstructions } from "../game/gameController";
 import { didClickInviteButton, sendVoiceReaction } from "../connection/connection";
-import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playReaction } from "../content/sounds";
 import { newReactionOfKind } from "../content/sounds";
 import { setBoardDimmed, showVoiceReactionText } from "../game/board";
-import { toggleBoardStyle } from "../content/boardStyles";
 import { hasFullScreenAlertVisible, hideFullScreenAlert } from "..";
+import NavigationPicker from "./NavigationPicker";
 
 export enum PrimaryActionType {
   None = "none",
@@ -26,10 +25,19 @@ export function didDismissSomethingWithOutsideTapJustNow() {
   latestModalOutsideTapDismissDate = Date.now();
 }
 
+export let closeNavigationPopupIfAny: () => void = () => {};
+export let setNavigationListButtonVisible: (visible: boolean) => void;
+
 export function didNotDismissAnythingWithOutsideTapJustNow(): boolean {
   let delta = Date.now() - latestModalOutsideTapDismissDate;
   return delta >= 42;
 }
+
+export function hasNavigationPopupVisible(): boolean {
+  return getIsNavigationPopupOpen();
+}
+
+let getIsNavigationPopupOpen: () => boolean = () => false;
 
 const ControlsContainer = styled.div`
   position: fixed;
@@ -59,7 +67,7 @@ const ControlsContainer = styled.div`
   }
 `;
 
-export const AppearanceToggleButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
+export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
   position: fixed;
   bottom: 10px;
   left: 9px;
@@ -169,8 +177,6 @@ export const ControlButton = styled.button<{ disabled?: boolean }>`
 `;
 
 const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boolean; isViewOnly?: boolean; disabled?: boolean }>`
-  /* Base colors */
-
   --color-white: white;
   --color-text-on-pink-disabled: rgba(204, 204, 204, 0.77);
 
@@ -192,8 +198,6 @@ const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boolean; isV
 
   --color-view-only: #f0f0f0;
   --color-view-only-text: #aaa;
-
-  /* Dark mode colors */
 
   --color-dark-default: #0b84ff;
   --color-dark-default-hover: #1a91ff;
@@ -286,6 +290,7 @@ const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boolean; isV
     flex-shrink: 0;
   }
 `;
+
 const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   position: absolute;
   bottom: 40px;
@@ -386,7 +391,7 @@ let setInstructionsToggleButtonVisible: (visible: boolean) => void;
 
 let setAttestVictoryEnabled: (enabled: boolean) => void;
 let setAttestVictoryVisible: (visible: boolean) => void;
-let setBrushButtonDimmed: (dimmed: boolean) => void;
+let setNavigationButtonDimmed: (dimmed: boolean) => void;
 
 let showWaitingStateText: (text: string) => void;
 let showButtonForTx: (hash: string) => void;
@@ -423,7 +428,9 @@ const BottomControls: React.FC = () => {
   const [automatchButtonTmpState, setAutomatchButtonTmpState] = useState(false);
   const [inviteCopiedTmpState, setInviteCopiedTmpState] = useState(false);
   const [isVoiceReactionDisabled, setIsVoiceReactionDisabled] = useState(false);
-  const [isBrushButtonDimmed, setIsBrushButtonDimmed] = useState(false);
+  const [isNavigationButtonDimmed, setIsNavigationButtonDimmed] = useState(false);
+  const [isNavigationListButtonVisible, setIsNavigationListButtonVisible] = useState(true);
+  const [isNavigationPopupVisible, setIsNavigationPopupVisible] = useState(false);
 
   const [txHash, setTxHash] = useState("");
   const [isUndoDisabled, setIsUndoDisabled] = useState(true);
@@ -450,6 +457,8 @@ const BottomControls: React.FC = () => {
   const resignButtonRef = useRef<HTMLButtonElement>(null);
   const resignConfirmRef = useRef<HTMLDivElement>(null);
   const hourglassEnableTimeoutRef = useRef<NodeJS.Timeout>();
+  const navigationPopupRef = useRef<HTMLDivElement>(null);
+  const navigationButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: TouchEvent | MouseEvent) => {
@@ -458,6 +467,11 @@ const BottomControls: React.FC = () => {
         didDismissSomethingWithOutsideTapJustNow();
         setIsReactionPickerVisible(false);
         setIsResignConfirmVisible(false);
+      }
+
+      if (navigationPopupRef.current && !navigationPopupRef.current.contains(event.target as Node) && !navigationButtonRef.current?.contains(event.target as Node)) {
+        didDismissSomethingWithOutsideTapJustNow();
+        setIsNavigationPopupVisible(false);
       }
     };
 
@@ -474,6 +488,10 @@ const BottomControls: React.FC = () => {
       }
     };
   }, []);
+
+  closeNavigationPopupIfAny = () => {
+    setIsNavigationPopupVisible(false);
+  };
 
   const handleAttestVictoryClick = () => {
     if (!isAttestVictoryButtonEnabled) return;
@@ -507,8 +525,17 @@ const BottomControls: React.FC = () => {
     });
   };
 
-  setBrushButtonDimmed = (dimmed: boolean) => {
-    setIsBrushButtonDimmed(dimmed);
+  getIsNavigationPopupOpen = () => isNavigationPopupVisible;
+
+  setNavigationListButtonVisible = (visible: boolean) => {
+    setIsNavigationListButtonVisible(visible);
+    if (!visible) {
+      setIsNavigationPopupVisible(false);
+    }
+  };
+
+  setNavigationButtonDimmed = (dimmed: boolean) => {
+    setIsNavigationButtonDimmed(dimmed);
   };
 
   showVoiceReactionButton = (show: boolean) => {
@@ -789,9 +816,8 @@ const BottomControls: React.FC = () => {
     }
   };
 
-  const handleBrushClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
-    toggleBoardStyle();
-    updateBoardComponentForBoardStyleChange();
+  const handleNavigationButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    setIsNavigationPopupVisible(!isNavigationPopupVisible);
   };
 
   const handleShare = async () => {
@@ -805,9 +831,16 @@ const BottomControls: React.FC = () => {
 
   return (
     <>
-      <AppearanceToggleButton dimmed={isBrushButtonDimmed} onClick={!isMobile ? handleBrushClick : undefined} onTouchStart={isMobile ? handleBrushClick : undefined} aria-label="Appearance">
-        <FaPaintBrush />
-      </AppearanceToggleButton>
+      {isNavigationListButtonVisible && (
+        <NavigationListButton ref={navigationButtonRef} dimmed={isNavigationButtonDimmed} onClick={!isMobile ? handleNavigationButtonClick : undefined} onTouchStart={isMobile ? handleNavigationButtonClick : undefined} aria-label="Navigation">
+          <FaList />
+        </NavigationListButton>
+      )}
+      {isNavigationPopupVisible && (
+        <div ref={navigationPopupRef}>
+          <NavigationPicker />
+        </div>
+      )}
       <ControlsContainer>
         {isEndMatchButtonVisible && (
           <BottomPillButton onClick={handleEndMatchClick} isBlue={!isEndMatchConfirmed} disabled={isEndMatchConfirmed} isViewOnly={isEndMatchConfirmed}>
@@ -947,4 +980,4 @@ const BottomControls: React.FC = () => {
   );
 };
 
-export { BottomControls as default, setInstructionsToggleButtonVisible, setBrushButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, showButtonForTx, setAttestVictoryEnabled, setAutomatchEnabled, setAttestVictoryVisible, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };
+export { BottomControls as default, setInstructionsToggleButtonVisible, setNavigationButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, showButtonForTx, setAttestVictoryEnabled, setAutomatchEnabled, setAttestVictoryVisible, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };

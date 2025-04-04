@@ -1,29 +1,28 @@
 import "@rainbow-me/rainbowkit/styles.css";
 import "./index.css";
 import ReactDOM from "react-dom/client";
-import React, { useCallback, useEffect, useState, useRef } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { RainbowKitAuthenticationProvider, RainbowKitProvider, lightTheme, darkTheme } from "@rainbow-me/rainbowkit";
 
-import BoardComponent from "./ui/BoardComponent";
-import MainMenu, { closeMenuAndInfoIfAny, toggleInfoVisibility } from "./ui/MainMenu";
+import BoardComponent, { updateBoardComponentForBoardStyleChange } from "./ui/BoardComponent";
+import MainMenu, { toggleInfoVisibility } from "./ui/MainMenu";
 import { config } from "./utils/wagmi";
 import { useAuthStatus, createEthereumAuthAdapter } from "./connection/authentication";
 import { signIn } from "./connection/connection";
-import BottomControls, { didDismissSomethingWithOutsideTapJustNow } from "./ui/BottomControls";
-import { defaultEarlyInputEventName, isMobile } from "./utils/misc";
-import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaList } from "react-icons/fa";
+import BottomControls from "./ui/BottomControls";
+import { isMobile } from "./utils/misc";
+import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaPaintBrush } from "react-icons/fa";
 import { isMobileOrVision } from "./utils/misc";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { startPlayingMusic, stopPlayingMusic } from "./content/music";
 import { storage } from "./utils/storage";
-import ProfileSignIn, { closeProfilePopupIfAny } from "./ui/ProfileSignIn";
-import NavigationPicker from "./ui/NavigationPicker";
+import ProfileSignIn from "./ui/ProfileSignIn";
+import { toggleBoardStyle } from "./content/boardStyles";
 import FullScreenAlert from "./ui/FullScreenAlert";
 import { setBoardDimmed } from "./game/board";
-import { puzzleMode, showPuzzleInstructions } from "./game/gameController";
 
 let globalIsMuted: boolean = (() => {
   return storage.getIsMuted(isMobileOrVision);
@@ -33,15 +32,7 @@ export const getIsMuted = (): boolean => globalIsMuted;
 
 const queryClient = new QueryClient();
 
-let getIsNavigationPopupOpen: () => boolean = () => false;
 let getIsFullScreenAlertOpen: () => boolean = () => false;
-
-export let setNavigationListButtonVisible: (visible: boolean) => void;
-export let closeNavigationPopupIfAny: () => void = () => {};
-
-export function hasNavigationPopupVisible(): boolean {
-  return getIsNavigationPopupOpen();
-}
 
 export function hasFullScreenAlertVisible(): boolean {
   return getIsFullScreenAlertOpen();
@@ -66,12 +57,8 @@ const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
   const [isMuted, setIsMuted] = useState(globalIsMuted);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
-  const [isNavigationPickerVisible, setIsNavigationPickerVisible] = useState(false);
-  const [isListButtonVisible, setIsListButtonVisible] = useState(true);
   const [alertState, setAlertState] = useState<{ title: string; subtitle: string } | null>(null);
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
-  const navigationPickerRef = useRef<HTMLDivElement>(null);
-  const listButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     showAlertGlobal = (title: string, subtitle: string) => {
@@ -86,7 +73,6 @@ const App = () => {
     };
   }, []);
 
-  getIsNavigationPopupOpen = () => isNavigationPickerVisible;
   getIsFullScreenAlertOpen = () => alertState !== null;
 
   useEffect(() => {
@@ -94,21 +80,6 @@ const App = () => {
     globalIsMuted = isMuted;
     soundPlayer.didBecomeMuted(isMuted);
   }, [isMuted]);
-
-  useEffect(() => {
-    const handleClickOutside = (event: TouchEvent | MouseEvent) => {
-      event.stopPropagation();
-      if (isNavigationPickerVisible && navigationPickerRef.current && !navigationPickerRef.current.contains(event.target as Node) && !listButtonRef.current?.contains(event.target as Node)) {
-        didDismissSomethingWithOutsideTapJustNow();
-        setIsNavigationPickerVisible(false);
-      }
-    };
-
-    document.addEventListener(defaultEarlyInputEventName, handleClickOutside);
-    return () => {
-      document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
-    };
-  }, [isNavigationPickerVisible]);
 
   const handleMuteToggle = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -138,21 +109,9 @@ const App = () => {
     toggleInfoVisibility();
   };
 
-  setNavigationListButtonVisible = (visible: boolean) => {
-    setIsListButtonVisible(visible);
-    if (!visible) {
-      setIsNavigationPickerVisible(false);
-    }
-  };
-
-  closeNavigationPopupIfAny = () => {
-    setIsNavigationPickerVisible(false);
-  };
-
-  const handleListButtonClick = () => {
-    closeProfilePopupIfAny();
-    closeMenuAndInfoIfAny();
-    setIsNavigationPickerVisible(!isNavigationPickerVisible);
+  const handleAppearanceButtonClick = () => {
+    toggleBoardStyle();
+    updateBoardComponentForBoardStyleChange();
   };
 
   return (
@@ -174,6 +133,9 @@ const App = () => {
                       <button className="info-button" onClick={!isMobile ? handleInfoButtonClick : undefined} onTouchStart={isMobile ? handleInfoButtonClick : undefined}>
                         <FaInfoCircle />
                       </button>
+                      <button className="appearance-button" onClick={!isMobile ? handleAppearanceButtonClick : undefined} onTouchStart={isMobile ? handleAppearanceButtonClick : undefined} aria-label="Appearance">
+                        <FaPaintBrush />
+                      </button>
                       <button className="music-button" onClick={handleMusicToggle} aria-label={isMusicPlaying ? "Stop Music" : "Play Music"}>
                         {isMusicPlaying ? <FaStop /> : <FaMusic />}
                       </button>
@@ -181,11 +143,6 @@ const App = () => {
                         {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
                       </button>
                     </div>
-                    {isListButtonVisible && (
-                      <button className="list-button" onClick={handleListButtonClick} aria-label="Toggle List" ref={listButtonRef}>
-                        <FaList />
-                      </button>
-                    )}
                   </>
                 )}
                 {authStatus !== "loading" && <ProfileSignIn authStatus={authStatus} />}
@@ -193,11 +150,6 @@ const App = () => {
               <BoardComponent />
               <MainMenu />
               <BottomControls />
-              {authStatus !== "loading" && isNavigationPickerVisible && (
-                <div ref={navigationPickerRef}>
-                  <NavigationPicker />
-                </div>
-              )}
               {alertState && <FullScreenAlert title={alertState.title} subtitle={alertState.subtitle} />}
             </div>
           </RainbowKitProvider>

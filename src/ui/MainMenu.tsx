@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef } from "react";
 import { logoBase64 } from "../content/uiAssets";
-import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
+import { didDismissSomethingWithOutsideTapJustNow, closeNavigationPopupIfAny } from "./BottomControls";
 import styled from "styled-components";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { Leaderboard } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
 import { getCurrentGameFen } from "../game/gameController";
-import { closeNavigationPopupIfAny } from "..";
 
 const RockButtonContainer = styled.div`
   position: absolute;
