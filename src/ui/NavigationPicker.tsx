@@ -6,17 +6,13 @@ import { didSelectPuzzle } from "../game/gameController";
 const NavigationPickerContainer = styled.div`
   position: fixed;
   bottom: auto;
-  left: 9px;
+  left: 8px;
   bottom: 50px;
-  max-height: 146pt;
-  max-width: 110pt;
-  min-width: 88pt;
+  max-height: calc(100vh - 120px);
+  max-width: 100pt;
   overflow-y: auto;
   opacity: 1;
   cursor: pointer;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
-  -webkit-overflow-scrolling: touch;
   background-color: rgba(249, 249, 249, 0.9);
   border-radius: 7pt;
   padding-top: 5px;
@@ -25,6 +21,9 @@ const NavigationPickerContainer = styled.div`
   padding-bottom: 0px;
   gap: 0px;
   z-index: 5;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
+  touch-action: none;
 
   @media (prefers-color-scheme: dark) {
     background-color: rgba(36, 36, 36, 0.9);
@@ -93,18 +92,12 @@ const NavigationPicker: React.FC = () => {
     }
   };
 
+  const preventScroll = (e: React.TouchEvent) => {
+    e.preventDefault();
+  };
+
   return (
-    <NavigationPickerContainer
-      ref={navigationPickerRef}
-      onTouchStart={(e) => {
-        e.stopPropagation();
-      }}
-      onTouchMove={(e) => {
-        e.stopPropagation();
-      }}
-      onWheel={(e) => {
-        e.stopPropagation();
-      }}>
+    <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
       <SectionTitle>BASICS</SectionTitle>
       {problems.map((item) => (
         <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
