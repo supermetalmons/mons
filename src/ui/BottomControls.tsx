@@ -429,7 +429,7 @@ const BottomControls: React.FC = () => {
   const [inviteCopiedTmpState, setInviteCopiedTmpState] = useState(false);
   const [isVoiceReactionDisabled, setIsVoiceReactionDisabled] = useState(false);
   const [isNavigationButtonDimmed, setIsNavigationButtonDimmed] = useState(false);
-  const [isNavigationListButtonVisible, setIsNavigationListButtonVisible] = useState(true);
+  const [isNavigationListButtonVisible, setIsNavigationListButtonVisible] = useState(false);
   const [isNavigationPopupVisible, setIsNavigationPopupVisible] = useState(false);
 
   const [txHash, setTxHash] = useState("");
