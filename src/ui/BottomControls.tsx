@@ -43,7 +43,7 @@ const ControlsContainer = styled.div`
   position: fixed;
   bottom: 10px;
   right: 10px;
-  left: 49px;
+  left: 8px;
   display: flex;
   gap: 8px;
   justify-content: flex-end;
@@ -67,7 +67,8 @@ const ControlsContainer = styled.div`
   }
 `;
 
-export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
+// TODO: use it.
+export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
   position: fixed;
   bottom: 10px;
   left: 9px;
@@ -97,6 +98,56 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   @media screen and (max-width: 360px) {
     left: 6px;
   }
+
+  @media screen and (max-width: 320px) {
+    width: 27px;
+  }
+
+  svg {
+    width: 12px;
+    height: 12px;
+    color: #76778788;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover svg {
+      color: #767787af;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #242424;
+    svg {
+      color: #767787a9;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover svg {
+        color: #767787f0;
+      }
+    }
+  }
+`;
+
+export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  opacity: ${(props) => (props.dimmed ? 0.77 : 1)};
+  background-color: #f9f9f9;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
 
   @media screen and (max-width: 320px) {
     width: 27px;
@@ -535,7 +586,8 @@ const BottomControls: React.FC = () => {
   };
 
   setNavigationButtonDimmed = (dimmed: boolean) => {
-    setIsNavigationButtonDimmed(dimmed);
+    // TODO: remake nav button dimming or remove it completely
+    // setIsNavigationButtonDimmed(dimmed);
   };
 
   showVoiceReactionButton = (show: boolean) => {
@@ -831,11 +883,6 @@ const BottomControls: React.FC = () => {
 
   return (
     <>
-      {isNavigationListButtonVisible && (
-        <NavigationListButton ref={navigationButtonRef} dimmed={isNavigationButtonDimmed} onClick={!isMobile ? handleNavigationButtonClick : undefined} onTouchStart={isMobile ? handleNavigationButtonClick : undefined} aria-label="Navigation">
-          <FaList />
-        </NavigationListButton>
-      )}
       {isNavigationPopupVisible && (
         <div ref={navigationPopupRef}>
           <NavigationPicker />
@@ -960,6 +1007,11 @@ const BottomControls: React.FC = () => {
           <ControlButton onClick={handleHomeClick} aria-label="Home">
             <FaHome />
           </ControlButton>
+        )}
+        {isNavigationListButtonVisible && (
+          <NavigationListButton ref={navigationButtonRef} dimmed={isNavigationButtonDimmed} onClick={!isMobile ? handleNavigationButtonClick : undefined} onTouchStart={isMobile ? handleNavigationButtonClick : undefined} aria-label="Navigation">
+            <FaList />
+          </NavigationListButton>
         )}
         {isReactionPickerVisible && (
           <ReactionPicker ref={pickerRef} offsetToTheRight={!isResignButtonVisible}>
