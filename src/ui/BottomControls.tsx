@@ -443,7 +443,7 @@ let setInstructionsToggleButtonVisible: (visible: boolean) => void;
 
 let setAttestVictoryEnabled: (enabled: boolean) => void;
 let setAttestVictoryVisible: (visible: boolean) => void;
-let setNavigationButtonDimmed: (dimmed: boolean) => void;
+let setBrushAndNavigationButtonDimmed: (dimmed: boolean) => void;
 
 let showWaitingStateText: (text: string) => void;
 let showButtonForTx: (hash: string) => void;
@@ -587,9 +587,10 @@ const BottomControls: React.FC = () => {
     }
   };
 
-  setNavigationButtonDimmed = (dimmed: boolean) => {
-    // TODO: remake nav button dimming or remove it completely
+  setBrushAndNavigationButtonDimmed = (dimmed: boolean) => {
+    // TODO: remake nav button dimming
     // setIsNavigationButtonDimmed(dimmed);
+    setIsBrushButtonDimmed(dimmed);
   };
 
   showVoiceReactionButton = (show: boolean) => {
@@ -1042,4 +1043,4 @@ const BottomControls: React.FC = () => {
   );
 };
 
-export { BottomControls as default, setInstructionsToggleButtonVisible, setNavigationButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, showButtonForTx, setAttestVictoryEnabled, setAutomatchEnabled, setAttestVictoryVisible, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };
+export { BottomControls as default, setInstructionsToggleButtonVisible, setBrushAndNavigationButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, showButtonForTx, setAttestVictoryEnabled, setAutomatchEnabled, setAttestVictoryVisible, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };
