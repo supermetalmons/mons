@@ -7,20 +7,19 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { RainbowKitAuthenticationProvider, RainbowKitProvider, lightTheme, darkTheme } from "@rainbow-me/rainbowkit";
 
-import BoardComponent, { updateBoardComponentForBoardStyleChange } from "./ui/BoardComponent";
+import BoardComponent from "./ui/BoardComponent";
 import MainMenu, { toggleInfoVisibility } from "./ui/MainMenu";
 import { config } from "./utils/wagmi";
 import { useAuthStatus, createEthereumAuthAdapter } from "./connection/authentication";
 import { signIn } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
-import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaPaintBrush } from "react-icons/fa";
+import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle } from "react-icons/fa";
 import { isMobileOrVision } from "./utils/misc";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { startPlayingMusic, stopPlayingMusic } from "./content/music";
 import { storage } from "./utils/storage";
 import ProfileSignIn from "./ui/ProfileSignIn";
-import { toggleBoardStyle } from "./content/boardStyles";
 import FullScreenAlert from "./ui/FullScreenAlert";
 import { setBoardDimmed } from "./game/board";
 
@@ -109,11 +108,6 @@ const App = () => {
     toggleInfoVisibility();
   };
 
-  const handleAppearanceButtonClick = () => {
-    toggleBoardStyle();
-    updateBoardComponentForBoardStyleChange();
-  };
-
   return (
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
@@ -132,9 +126,6 @@ const App = () => {
                     <div className="small-top-control-buttons">
                       <button className="info-button" onClick={!isMobile ? handleInfoButtonClick : undefined} onTouchStart={isMobile ? handleInfoButtonClick : undefined}>
                         <FaInfoCircle />
-                      </button>
-                      <button className="appearance-button" onClick={!isMobile ? handleAppearanceButtonClick : undefined} onTouchStart={isMobile ? handleAppearanceButtonClick : undefined} aria-label="Appearance">
-                        <FaPaintBrush />
                       </button>
                       <button className="music-button" onClick={handleMusicToggle} aria-label={isMusicPlaying ? "Stop Music" : "Play Music"}>
                         {isMusicPlaying ? <FaStop /> : <FaMusic />}

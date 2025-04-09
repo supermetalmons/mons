@@ -168,8 +168,7 @@ img {
 
 .music-button,
 .sound-button,
-.info-button,
-.appearance-button {
+.info-button {
   border: none;
   cursor: pointer;
   font-size: 13px;
@@ -207,8 +206,7 @@ img {
 
 .music-button,
 .info-button,
-.sound-button,
-.appearance-button {
+.sound-button {
   margin-left: 2pt;
   margin-right: 2pt;
 
