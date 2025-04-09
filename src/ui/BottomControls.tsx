@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import styled from "styled-components";
-import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaRegQuestionCircle, FaList } from "react-icons/fa";
+import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaRegQuestionCircle, FaList, FaPaintBrush } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
 import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAttestVictoryButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, showPuzzleInstructions } from "../game/gameController";
@@ -12,6 +12,8 @@ import { newReactionOfKind } from "../content/sounds";
 import { setBoardDimmed, showVoiceReactionText } from "../game/board";
 import { hasFullScreenAlertVisible, hideFullScreenAlert } from "..";
 import NavigationPicker from "./NavigationPicker";
+import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
+import { toggleBoardStyle } from "../content/boardStyles";
 
 export enum PrimaryActionType {
   None = "none",
@@ -43,7 +45,7 @@ const ControlsContainer = styled.div`
   position: fixed;
   bottom: 10px;
   right: 10px;
-  left: 8px;
+  left: 46px;
   display: flex;
   gap: 8px;
   justify-content: flex-end;
@@ -67,7 +69,6 @@ const ControlsContainer = styled.div`
   }
 `;
 
-// TODO: use it.
 export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
   position: fixed;
   bottom: 10px;
@@ -480,6 +481,7 @@ const BottomControls: React.FC = () => {
   const [inviteCopiedTmpState, setInviteCopiedTmpState] = useState(false);
   const [isVoiceReactionDisabled, setIsVoiceReactionDisabled] = useState(false);
   const [isNavigationButtonDimmed, setIsNavigationButtonDimmed] = useState(false);
+  const [isBrushButtonDimmed, setIsBrushButtonDimmed] = useState(false);
   const [isNavigationListButtonVisible, setIsNavigationListButtonVisible] = useState(false);
   const [isNavigationPopupVisible, setIsNavigationPopupVisible] = useState(false);
 
@@ -755,6 +757,11 @@ const BottomControls: React.FC = () => {
     setIsReactionPickerVisible((prev) => !prev);
   };
 
+  const handleBrushClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    toggleBoardStyle();
+    updateBoardComponentForBoardStyleChange();
+  };
+
   const handleInstructionsClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     if (hasFullScreenAlertVisible()) {
@@ -883,6 +890,9 @@ const BottomControls: React.FC = () => {
 
   return (
     <>
+      <BrushButton dimmed={isBrushButtonDimmed} onClick={!isMobile ? handleBrushClick : undefined} onTouchStart={isMobile ? handleBrushClick : undefined} aria-label="Appearance">
+        <FaPaintBrush />
+      </BrushButton>
       {isNavigationPopupVisible && (
         <div ref={navigationPopupRef}>
           <NavigationPicker />
