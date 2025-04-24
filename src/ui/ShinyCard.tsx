@@ -1,12 +1,11 @@
 export const showShinyCard = () => {
   const cardContainer = document.createElement("div");
   cardContainer.style.position = "fixed";
-  cardContainer.style.top = "50%";
-  cardContainer.style.left = "50%";
-  cardContainer.style.transform = "translate(-50%, -50%)";
+  cardContainer.style.top = "56px";
+  cardContainer.style.right = "20px";
 
   const aspectRatio = 2430 / 1886;
-  const maxWidth = Math.min(window.innerWidth * 0.8, 300);
+  const maxWidth = Math.min(window.innerWidth * 0.8, 350);
   const width = maxWidth;
   const height = width / aspectRatio;
 
@@ -47,6 +46,7 @@ export const showShinyCard = () => {
   shinyOverlay.style.height = "100%";
   shinyOverlay.style.borderRadius = "15px";
   shinyOverlay.style.background = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
+  shinyOverlay.style.opacity = "0.63";
   shinyOverlay.style.pointerEvents = "none";
 
   const closeButton = document.createElement("div");
@@ -68,6 +68,16 @@ export const showShinyCard = () => {
 
   closeButton.addEventListener("click", () => {
     document.body.removeChild(cardContainer);
+  });
+
+  let currentCardIndex = 0;
+  const maxCardIndex = 36;
+
+  card.addEventListener("click", () => {
+    currentCardIndex = (currentCardIndex + 1) % maxCardIndex;
+    const newCardName = `${currentCardIndex}.PNG`;
+    console.log("New card:", newCardName);
+    img.src = `/assets/${newCardName}`;
   });
 
   cardContainer.addEventListener("mousemove", (e) => {
