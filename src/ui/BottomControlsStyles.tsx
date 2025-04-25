@@ -18,7 +18,6 @@ export const ControlsContainer = styled.div`
   }
 
   @media screen and (max-width: 360px) {
-    gap: 6px;
     right: 6px;
     left: 40px;
   }
@@ -90,6 +89,57 @@ export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean 
 `;
 
 export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boolean; isViewOnly?: boolean; disabled?: boolean }>`
+  height: 32px;
+  font-weight: 888;
+  font-size: 0.88rem;
+  border-radius: 10px;
+  padding: 0px 16px;
+
+  svg {
+    width: 0.9em;
+    height: 0.9em;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+
+  @media screen and (max-width: 433px) {
+    padding: 0px 10px;
+  }
+
+  @media screen and (max-width: 295pt) {
+    padding: 0px 8px;
+  }
+
+  @media screen and (max-width: 500px) {
+    font-size: 0.81rem;
+    font-weight: 750;
+  }
+
+  @media screen and (max-width: 468px) {
+    font-size: 0.77rem;
+    font-weight: 700;
+  }
+
+  @media screen and (max-width: 381px) {
+    font-size: 0.72rem;
+    font-weight: 720;
+  }
+
+  @media screen and (max-width: 365px) {
+    font-size: 0.69rem;
+  }
+
+  @media screen and (max-width: 320px) {
+    font-size: 0.63rem;
+  }
+
+  cursor: ${(props) => (props.isViewOnly || (props.isPink && props.disabled) ? "default" : "pointer")};
+  transition: background-color 0.3s ease;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
   --color-white: white;
   --color-text-on-pink-disabled: rgba(204, 204, 204, 0.77);
 
@@ -129,46 +179,8 @@ export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boole
   --color-dark-view-only-text: #777;
 
   background-color: ${(props) => (props.isViewOnly ? "var(--color-view-only)" : props.isBlue ? "var(--color-blue)" : props.isPink && props.disabled ? "var(--color-pink-disabled)" : props.isPink ? "var(--color-pink)" : "var(--color-default)")};
-  height: 32px;
-  font-weight: 888;
-  font-size: 0.88rem;
   color: ${(props) => (props.isPink && props.disabled ? "var(--color-white)" : props.isViewOnly ? "var(--color-view-only-text)" : props.isBlue ? "var(--color-tint)" : "var(--color-white)")};
   border: none;
-  border-radius: 10px;
-  padding: 0px 16px;
-  @media screen and (max-width: 300pt) {
-    padding: 0px 10px;
-  }
-  @media screen and (max-width: 500px) {
-    font-size: 0.81rem;
-    font-weight: 750;
-  }
-  @media screen and (max-width: 468px) {
-    font-size: 0.77rem;
-    font-weight: 700;
-  }
-  @media screen and (max-width: 433px) {
-    padding: 0px 10px;
-  }
-  @media screen and (max-width: 295pt) {
-    padding: 0px 8px;
-  }
-  @media screen and (max-width: 381px) {
-    font-size: 0.72rem;
-    font-weight: 720;
-  }
-  @media screen and (max-width: 365px) {
-    font-size: 0.69rem;
-  }
-  @media screen and (max-width: 320px) {
-    font-size: 0.63rem;
-  }
-  cursor: ${(props) => (props.isViewOnly || (props.isPink && props.disabled) ? "default" : "pointer")};
-  transition: background-color 0.3s ease;
-  text-align: center;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -194,13 +206,6 @@ export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boole
     &:active {
       background-color: ${(props) => (props.isViewOnly ? "var(--color-dark-view-only)" : props.isBlue ? "var(--color-dark-blue-active)" : props.isPink && props.disabled ? "var(--color-dark-pink-disabled)" : props.isPink ? "var(--color-dark-pink-active)" : "var(--color-dark-default-active)")};
     }
-  }
-
-  svg {
-    width: 0.9em;
-    height: 0.9em;
-    margin-right: 6px;
-    flex-shrink: 0;
   }
 `;
 
