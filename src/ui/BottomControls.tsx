@@ -133,9 +133,8 @@ export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean 
 export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
   width: 32px;
   height: 32px;
-  border-radius: 10px;
-  opacity: ${(props) => (props.dimmed ? 0.77 : 1)};
-  background-color: #f9f9f9;
+  border-radius: ${(props) => (props.dimmed ? "16px" : "10px")};
+  background-color: #f0f0f0;
   border: none;
   display: flex;
   justify-content: center;
@@ -157,24 +156,24 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   svg {
     width: 12px;
     height: 12px;
-    color: #76778788;
+    color: #007aff;
   }
 
   @media (hover: hover) and (pointer: fine) {
-    &:hover svg {
-      color: #767787af;
+    &:hover {
+      background-color: #e0e0e0;
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: #242424;
+    background-color: #333;
     svg {
-      color: #767787a9;
+      color: #0b84ff;
     }
 
     @media (hover: hover) and (pointer: fine) {
-      &:hover svg {
-        color: #767787f0;
+      &:hover {
+        background-color: #444;
       }
     }
   }
@@ -588,8 +587,7 @@ const BottomControls: React.FC = () => {
   };
 
   setBrushAndNavigationButtonDimmed = (dimmed: boolean) => {
-    // TODO: remake nav button dimming
-    // setIsNavigationButtonDimmed(dimmed);
+    setIsNavigationButtonDimmed(dimmed);
     setIsBrushButtonDimmed(dimmed);
   };
 
