@@ -154,9 +154,9 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   }
 
   svg {
-    width: 12px;
-    height: 12px;
-    color: #007aff;
+    width: ${(props) => (props.dimmed ? "13px" : "13px")};
+    height: ${(props) => (props.dimmed ? "13px" : "13px")};
+    color: ${(props) => (props.dimmed ? "#333" : "#007aff")};
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -168,7 +168,7 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   @media (prefers-color-scheme: dark) {
     background-color: #333;
     svg {
-      color: #0b84ff;
+      color: ${(props) => (props.dimmed ? "#f0f0f0" : "#0b84ff")};
     }
 
     @media (hover: hover) and (pointer: fine) {
