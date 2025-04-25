@@ -1,0 +1,389 @@
+import styled from "styled-components";
+
+export const ControlsContainer = styled.div`
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  left: 46px;
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+
+  @media screen and (orientation: portrait) {
+    right: 8px;
+  }
+
+  @media screen and (max-width: 430px) {
+    gap: 6px;
+  }
+
+  @media screen and (max-width: 360px) {
+    gap: 6px;
+    right: 6px;
+    left: 40px;
+  }
+
+  @media screen and (max-width: 320px) {
+    gap: 4px;
+  }
+`;
+
+export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
+  position: fixed;
+  bottom: 10px;
+  left: 9px;
+  width: 32px;
+  height: 32px;
+  border-radius: 10px;
+  opacity: ${(props) => (props.dimmed ? 0.77 : 1)};
+  background-color: #f9f9f9;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+
+  @media screen and (orientation: portrait) {
+    left: 8px;
+  }
+
+  @media screen and (max-width: 360px) {
+    left: 6px;
+  }
+
+  @media screen and (max-width: 320px) {
+    width: 27px;
+  }
+
+  svg {
+    width: 12px;
+    height: 12px;
+    color: #76778788;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover svg {
+      color: #767787af;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #242424;
+    svg {
+      color: #767787a9;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover svg {
+        color: #767787f0;
+      }
+    }
+  }
+`;
+
+export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boolean; isViewOnly?: boolean; disabled?: boolean }>`
+  --color-white: white;
+  --color-text-on-pink-disabled: rgba(204, 204, 204, 0.77);
+
+  --color-tint: #007aff;
+  --color-dark-tint: #0b84ff;
+
+  --color-default: #007aff;
+  --color-default-hover: #0069d9;
+  --color-default-active: #0056b3;
+
+  --color-blue: #f0f0f0;
+  --color-blue-hover: #e0e0e0;
+  --color-blue-active: #d0d0d0;
+
+  --color-pink: #ff69b4;
+  --color-pink-hover: #ff4da6;
+  --color-pink-active: #d1477b;
+  --color-pink-disabled: #ffd1dc;
+
+  --color-view-only: #f0f0f0;
+  --color-view-only-text: #aaa;
+
+  --color-dark-default: #0b84ff;
+  --color-dark-default-hover: #1a91ff;
+  --color-dark-default-active: #299fff;
+
+  --color-dark-blue: #333;
+  --color-dark-blue-hover: #444;
+  --color-dark-blue-active: #555;
+
+  --color-dark-pink: #ff4da6;
+  --color-dark-pink-hover: #ff69b4;
+  --color-dark-pink-active: #ff85c0;
+  --color-dark-pink-disabled: #664d57;
+
+  --color-dark-view-only: #333;
+  --color-dark-view-only-text: #777;
+
+  background-color: ${(props) => (props.isViewOnly ? "var(--color-view-only)" : props.isBlue ? "var(--color-blue)" : props.isPink && props.disabled ? "var(--color-pink-disabled)" : props.isPink ? "var(--color-pink)" : "var(--color-default)")};
+  height: 32px;
+  font-weight: 888;
+  font-size: 0.88rem;
+  color: ${(props) => (props.isPink && props.disabled ? "var(--color-white)" : props.isViewOnly ? "var(--color-view-only-text)" : props.isBlue ? "var(--color-tint)" : "var(--color-white)")};
+  border: none;
+  border-radius: 10px;
+  padding: 0px 16px;
+  @media screen and (max-width: 300pt) {
+    padding: 0px 10px;
+  }
+  @media screen and (max-width: 500px) {
+    font-size: 0.81rem;
+    font-weight: 750;
+  }
+  @media screen and (max-width: 468px) {
+    font-size: 0.77rem;
+    font-weight: 700;
+  }
+  @media screen and (max-width: 433px) {
+    padding: 0px 10px;
+  }
+  @media screen and (max-width: 295pt) {
+    padding: 0px 8px;
+  }
+  @media screen and (max-width: 381px) {
+    font-size: 0.72rem;
+    font-weight: 720;
+  }
+  @media screen and (max-width: 365px) {
+    font-size: 0.69rem;
+  }
+  @media screen and (max-width: 320px) {
+    font-size: 0.63rem;
+  }
+  cursor: ${(props) => (props.isViewOnly || (props.isPink && props.disabled) ? "default" : "pointer")};
+  transition: background-color 0.3s ease;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: ${(props) => (props.isViewOnly ? "var(--color-view-only)" : props.isBlue ? "var(--color-blue-hover)" : props.isPink && props.disabled ? "var(--color-pink-disabled)" : props.isPink ? "var(--color-pink-hover)" : "var(--color-default-hover)")};
+    }
+  }
+
+  &:active {
+    background-color: ${(props) => (props.isViewOnly ? "var(--color-view-only)" : props.isBlue ? "var(--color-blue-active)" : props.isPink && props.disabled ? "var(--color-pink-disabled)" : props.isPink ? "var(--color-pink-active)" : "var(--color-default-active)")};
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: ${(props) => (props.isPink && props.disabled ? "var(--color-text-on-pink-disabled)" : props.isViewOnly ? "var(--color-dark-view-only-text)" : props.isBlue ? "var(--color-dark-tint)" : "var(--color-white)")};
+
+    background-color: ${(props) => (props.isViewOnly ? "var(--color-dark-view-only)" : props.isBlue ? "var(--color-dark-blue)" : props.isPink && props.disabled ? "var(--color-dark-pink-disabled)" : props.isPink ? "var(--color-dark-pink)" : "var(--color-dark-default)")};
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: ${(props) => (props.isViewOnly ? "var(--color-dark-view-only)" : props.isBlue ? "var(--color-dark-blue-hover)" : props.isPink && props.disabled ? "var(--color-dark-pink-disabled)" : props.isPink ? "var(--color-dark-pink-hover)" : "var(--color-dark-default-hover)")};
+      }
+    }
+
+    &:active {
+      background-color: ${(props) => (props.isViewOnly ? "var(--color-dark-view-only)" : props.isBlue ? "var(--color-dark-blue-active)" : props.isPink && props.disabled ? "var(--color-dark-pink-disabled)" : props.isPink ? "var(--color-dark-pink-active)" : "var(--color-dark-default-active)")};
+    }
+  }
+
+  svg {
+    width: 0.9em;
+    height: 0.9em;
+    margin-right: 6px;
+    flex-shrink: 0;
+  }
+`;
+
+export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
+  width: 32px;
+  height: 32px;
+  border-radius: ${(props) => (props.dimmed ? "16px" : "10px")};
+  background-color: #f0f0f0;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+
+  @media screen and (max-width: 320px) {
+    width: 27px;
+  }
+
+  svg {
+    width: ${(props) => (props.dimmed ? "13px" : "13px")};
+    height: ${(props) => (props.dimmed ? "13px" : "13px")};
+    color: ${(props) => (props.dimmed ? "#333" : "#007aff")};
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: #e0e0e0;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #333;
+    svg {
+      color: ${(props) => (props.dimmed ? "#f0f0f0" : "#0b84ff")};
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: #444;
+      }
+    }
+  }
+`;
+
+export const ControlButton = styled.button<{ disabled?: boolean }>`
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: ${(props) => (props.disabled ? "default" : "pointer")};
+  transition: background-color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: ${(props) => (props.disabled ? "#f0f0f0" : "#e0e0e0")};
+    }
+  }
+
+  &:active {
+    background-color: ${(props) => (props.disabled ? "#f0f0f0" : "#d0d0d0")};
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    color: ${(props) => (props.disabled ? "#aaa" : "#333")};
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #333;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: ${(props) => (props.disabled ? "#333" : "#444")};
+      }
+    }
+
+    &:active {
+      background-color: ${(props) => (props.disabled ? "#333" : "#555")};
+    }
+
+    svg {
+      color: ${(props) => (props.disabled ? "#777" : "#f0f0f0")};
+    }
+  }
+`;
+
+export const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
+  position: absolute;
+  bottom: 40px;
+  right: ${(props) => (props.offsetToTheRight ? "22px" : "64px")};
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #333;
+  }
+`;
+
+export const ReactionButton = styled.button`
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  cursor: pointer;
+  text-align: left;
+  color: #333;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: #e8e8e8;
+    }
+  }
+
+  &:active {
+    background-color: #e0e0e0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: #f0f0f0;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: #3a3a3a;
+      }
+    }
+
+    &:active {
+      background-color: #484848;
+    }
+  }
+`;
+
+export const ResignConfirmation = styled(ReactionPicker)`
+  right: 10px;
+  bottom: 40px;
+  padding: 12px;
+`;
+
+export const ResignButton = styled(ReactionButton)`
+  background-color: #ff4136;
+  color: white;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-weight: bold;
+
+  &:active {
+    background-color: #d30000;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: #e60000;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: #cc0000;
+
+    &:active {
+      background-color: #990000;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: #b30000;
+      }
+    }
+  }
+`;
