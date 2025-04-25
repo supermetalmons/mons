@@ -13,17 +13,22 @@ export const ControlsContainer = styled.div`
     right: 8px;
   }
 
-  @media screen and (max-width: 430px) {
+  @media screen and (max-width: 435px) {
     gap: 6px;
   }
 
-  @media screen and (max-width: 360px) {
+  @media screen and (max-width: 387px) {
     right: 6px;
-    left: 40px;
+    left: 38px;
+    gap: 5px;
+  }
+
+  @media screen and (max-width: 359px) {
+    gap: 4px;
   }
 
   @media screen and (max-width: 320px) {
-    gap: 4px;
+    gap: 3px;
   }
 `;
 
@@ -54,12 +59,9 @@ export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean 
     left: 8px;
   }
 
-  @media screen and (max-width: 360px) {
-    left: 6px;
-  }
-
-  @media screen and (max-width: 320px) {
+  @media screen and (max-width: 387px) {
     width: 27px;
+    left: 6px;
   }
 
   svg {
@@ -102,35 +104,64 @@ export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boole
     flex-shrink: 0;
   }
 
-  @media screen and (max-width: 433px) {
-    padding: 0px 10px;
-  }
-
-  @media screen and (max-width: 295pt) {
-    padding: 0px 8px;
-  }
-
-  @media screen and (max-width: 500px) {
+  @media screen and (max-width: 520px) {
     font-size: 0.81rem;
     font-weight: 750;
   }
 
-  @media screen and (max-width: 468px) {
+  @media screen and (max-width: 491px) {
+    padding: 0px 12px;
     font-size: 0.77rem;
+  }
+
+  @media screen and (max-width: 468px) {
+    padding: 0px 10px;
+    font-size: 0.75rem;
     font-weight: 700;
   }
 
-  @media screen and (max-width: 381px) {
-    font-size: 0.72rem;
-    font-weight: 720;
-  }
-
-  @media screen and (max-width: 365px) {
+  @media screen and (max-width: 430px) {
+    padding: 0px 8px;
     font-size: 0.69rem;
   }
 
-  @media screen and (max-width: 320px) {
-    font-size: 0.63rem;
+  @media screen and (max-width: 399px) {
+    font-size: 0.65rem;
+  }
+
+  @media screen and (max-width: 375px) {
+    padding: 0px 7px;
+    font-size: 0.62rem;
+  }
+
+  @media screen and (max-width: 359px) {
+    svg {
+      margin-right: 3px !important;
+    }
+  }
+
+  @media screen and (max-width: 345px) {
+    font-size: 0.59rem;
+  }
+
+  @media screen and (max-width: 331px) {
+    font-size: 0.55rem;
+  }
+
+  @media screen and (max-width: 316px) {
+    font-size: 0.5rem;
+  }
+
+  @media screen and (max-width: 300px) {
+    font-size: 0.42rem;
+  }
+
+  @media screen and (max-width: 275px) {
+    font-size: 0.35rem;
+  }
+
+  @media screen and (max-width: 235px) {
+    font-size: 0.3rem;
   }
 
   cursor: ${(props) => (props.isViewOnly || (props.isPink && props.disabled) ? "default" : "pointer")};
@@ -228,7 +259,7 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   -webkit-touch-callout: none;
   touch-action: none;
 
-  @media screen and (max-width: 320px) {
+  @media screen and (max-width: 387px) {
     width: 27px;
   }
 
