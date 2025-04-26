@@ -13,6 +13,10 @@ const RockButtonContainer = styled.div`
   top: 9pt;
   left: 9pt;
   z-index: 10;
+
+  @media screen and (max-height: 453px) {
+    top: 5pt;
+  }
 `;
 
 const Crack = styled.div`
@@ -145,6 +149,10 @@ const InfoPopover = styled.div<{ isOpen: boolean }>`
   @media (prefers-color-scheme: dark) {
     background-color: rgba(35, 35, 35, 0.95);
     color: #f5f5f5;
+  }
+
+  @media screen and (max-height: 453px) {
+    top: 50px;
   }
 `;
 
@@ -315,6 +323,10 @@ const MenuOverlay = styled.div`
 
   @media (prefers-color-scheme: dark) {
     background: #131313;
+  }
+
+  @media screen and (max-height: 453px) {
+    top: 42px;
   }
 `;
 

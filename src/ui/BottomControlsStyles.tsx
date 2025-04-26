@@ -9,6 +9,10 @@ export const ControlsContainer = styled.div`
   gap: 8px;
   justify-content: flex-end;
 
+  @media screen and (max-height: 453px) {
+    bottom: 6px;
+  }
+
   @media screen and (orientation: portrait) {
     right: 8px;
   }
@@ -54,6 +58,10 @@ export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean 
   outline: none;
   -webkit-touch-callout: none;
   touch-action: none;
+
+  @media screen and (max-height: 453px) {
+    bottom: 6px;
+  }
 
   @media screen and (orientation: portrait) {
     left: 8px;
@@ -353,6 +361,10 @@ export const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   flex-direction: column;
   gap: 4px;
 
+  @media screen and (max-height: 453px) {
+    bottom: 38px;
+  }
+
   @media (prefers-color-scheme: dark) {
     background-color: #333;
   }
@@ -393,7 +405,6 @@ export const ReactionButton = styled.button`
 
 export const ResignConfirmation = styled(ReactionPicker)`
   right: 10px;
-  bottom: 40px;
   padding: 12px;
 `;
 

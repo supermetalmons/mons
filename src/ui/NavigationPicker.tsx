@@ -8,7 +8,7 @@ const NavigationPickerContainer = styled.div`
   bottom: auto;
   right: 8px;
   bottom: 50px;
-  max-height: calc(100vh - 120px);
+  max-height: calc(100vh - 110px);
   max-width: 100pt;
   overflow-y: auto;
   opacity: 1;
@@ -27,6 +27,12 @@ const NavigationPickerContainer = styled.div`
 
   @media (prefers-color-scheme: dark) {
     background-color: rgba(36, 36, 36, 0.9);
+  }
+
+
+  @media screen and (max-height: 453px) {
+    bottom: 44px;
+    max-height: calc(100vh - 100px);
   }
 `;
 

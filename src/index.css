@@ -149,6 +149,10 @@ img {
   right: 9pt;
   display: flex;
   align-items: center;
+
+  @media screen and (max-height: 453px) {
+    top: 5pt;
+  }
 }
 
 .small-top-control-buttons {
