@@ -14,8 +14,20 @@ const RockButtonContainer = styled.div`
   left: 9pt;
   z-index: 10;
 
+  @media screen and (max-height: 500px) {
+    top: 7pt;
+  }
+
   @media screen and (max-height: 453px) {
     top: 5pt;
+  }
+
+  @media screen and (max-width: 420px) {
+    left: 8px;
+  }
+
+  @media screen and (max-width: 387px) {
+    left: 6px;
   }
 `;
 
@@ -100,6 +112,10 @@ const RockMenuWrapper = styled.div<{ isOpen: boolean }>`
   left: -26px;
   padding: 20px;
   pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
+
+  @media screen and (max-width: 420px) {
+    left: -23px;
+  }
 `;
 
 const RockMenu = styled.div<{ isOpen: boolean; showLeaderboard: boolean }>`
@@ -151,8 +167,20 @@ const InfoPopover = styled.div<{ isOpen: boolean }>`
     color: #f5f5f5;
   }
 
+  @media screen and (max-height: 500px) {
+    top: 53px;
+  }
+
   @media screen and (max-height: 453px) {
     top: 50px;
+  }
+
+  @media screen and (max-width: 420px) {
+    right: 8px;
+  }
+
+  @media screen and (max-width: 387px) {
+    right: 6px;
   }
 `;
 

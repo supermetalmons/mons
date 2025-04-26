@@ -150,8 +150,20 @@ img {
   display: flex;
   align-items: center;
 
+  @media screen and (max-height: 500px) {
+    top: 7pt;
+  }
+
   @media screen and (max-height: 453px) {
     top: 5pt;
+  }
+
+  @media screen and (max-width: 420px) {
+    right: 8px;
+  }
+
+  @media screen and (max-width: 387px) {
+    right: 6px;
   }
 }
 
