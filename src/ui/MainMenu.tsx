@@ -692,7 +692,7 @@ const MainMenu: React.FC = () => {
                   onClick={() => {
                     toggleExperimentalMode(false, false, true);
                   }}>
-                  pangchiu wip
+                  pangchiu
                 </ExperimentButton>
                 <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
                 <BuildInfo>
