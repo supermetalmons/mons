@@ -214,7 +214,7 @@ const IconLinkButton = styled.a`
   font-weight: 777;
   justify-content: center;
   height: 32px;
-  padding: 0 7px;
+  padding: 0 9px;
   border-radius: 6px;
   background-color: #f9f9f9;
   color: #8f8f9f;
@@ -252,6 +252,17 @@ const IconLinkButton = styled.a`
     width: 0.77rem;
     height: 0.77rem;
   }
+
+  @media screen and (max-width: 360px) {
+    padding: 0 8px;
+  }
+  @media screen and (max-width: 342px) {
+    padding: 0 7px;
+  }
+
+  @media screen and (max-width: 330px) {
+    padding: 0 6px;
+  }
 `;
 
 const ButtonRow = styled.div`
@@ -272,6 +283,10 @@ const ButtonRow = styled.div`
 
   &::-webkit-scrollbar {
     display: none;
+  }
+
+  @media screen and (max-width: 320px) {
+    gap: 6px;
   }
 `;
 
