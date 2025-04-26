@@ -1,12 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { resolveENS } from "../utils/ensResolver";
 import { getLeaderboard } from "../connection/connection";
 
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
-  opacity: ${(props) => (props.show ? 1 : 0)};
-  height: ${(props) => (props.show ? "calc(69dvh - 10px)" : 0)};
-  margin-top: ${(props) => (props.show ? "-2px" : "-6px")};
+  opacity: 1;
+  height: calc(69dvh - 10px);
+  margin-top: -2px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -188,9 +188,14 @@ interface LeaderboardEntry {
 export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
   const [data, setData] = useState<LeaderboardEntry[] | null>(null);
   const [loadedEmojis, setLoadedEmojis] = useState<Set<string>>(new Set());
+  const tableWrapperRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (show) {
+      if (tableWrapperRef.current) {
+        tableWrapperRef.current.scrollTop = 0;
+      }
+
       getLeaderboard()
         .then((ratings) => {
           const leaderboardData = ratings.map((entry) => ({
@@ -241,7 +246,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
   return (
     <LeaderboardContainer show={show}>
       {data ? (
-        <TableWrapper>
+        <TableWrapper ref={tableWrapperRef}>
           <LeaderboardTable>
             <thead>
               <tr>

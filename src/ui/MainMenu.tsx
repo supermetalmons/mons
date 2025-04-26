@@ -709,7 +709,7 @@ const MainMenu: React.FC = () => {
               ×
             </CloseButton>
             {showExperimental && <MenuOverlay />}
-            <Leaderboard show={true} />
+            <Leaderboard show={isMenuOpen} />
             {showExperimental && (
               <ExperimentalMenu>
                 <ExperimentButton
