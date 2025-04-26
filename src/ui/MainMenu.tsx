@@ -7,6 +7,7 @@ import { Leaderboard } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
 import { getCurrentGameFen } from "../game/gameController";
+import { FaTelegramPlane, FaUniversity } from "react-icons/fa";
 
 const RockButtonContainer = styled.div`
   position: absolute;
@@ -631,7 +632,7 @@ const MainMenu: React.FC = () => {
                 Shop
               </IconLinkButton>
               <IconLinkButton href="https://mons.academy" target="_blank" rel="noopener noreferrer">
-                Academy
+                <FaUniversity />
               </IconLinkButton>
               <IconLinkButton href="https://x.com/supermetalx" target="_blank" rel="noopener noreferrer">
                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
@@ -646,9 +647,7 @@ const MainMenu: React.FC = () => {
                 </svg>
               </IconLinkButton>
               <IconLinkButton href="https://t.me/supermetalmons" target="_blank" rel="noopener noreferrer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="1.2em" height="1.2em" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M1.946 9.315c-.522-.174-.527-.455.01-.634l19.087-6.362c.529-.176.832.12.684.638l-5.454 19.086c-.15.529-.455.547-.679.045L12 14l6-8-8 6-8.054-2.685z" />
-                </svg>
+                <FaTelegramPlane />
               </IconLinkButton>
               <IconLinkButton href="https://github.com/supermetalmons" target="_blank" rel="noopener noreferrer">
                 <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
