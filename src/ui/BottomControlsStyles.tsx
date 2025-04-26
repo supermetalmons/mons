@@ -259,14 +259,19 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   -webkit-touch-callout: none;
   touch-action: none;
 
-  @media screen and (max-width: 387px) {
-    width: ${(props) => (props.dimmed ? "32px" : "27px")};
-  }
-
   svg {
     width: ${(props) => (props.dimmed ? "13px" : "13px")};
     height: ${(props) => (props.dimmed ? "13px" : "13px")};
     color: ${(props) => (props.dimmed ? "#333" : "#007aff")};
+  }
+
+  @media screen and (max-width: 387px) {
+    width: ${(props) => (props.dimmed ? "32px" : "27px")};
+
+    svg {
+      width: ${(props) => (props.dimmed ? "10px" : "10px")};
+      height: ${(props) => (props.dimmed ? "10px" : "10px")};
+    }
   }
 
   @media (hover: hover) and (pointer: fine) {
