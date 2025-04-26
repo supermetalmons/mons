@@ -214,7 +214,7 @@ const IconLinkButton = styled.a`
   font-weight: 777;
   justify-content: center;
   height: 32px;
-  padding: 0 9px;
+  padding: 0 8px;
   border-radius: 6px;
   background-color: #f9f9f9;
   color: #8f8f9f;
@@ -253,9 +253,6 @@ const IconLinkButton = styled.a`
     height: 0.77rem;
   }
 
-  @media screen and (max-width: 360px) {
-    padding: 0 8px;
-  }
   @media screen and (max-width: 342px) {
     padding: 0 7px;
   }
