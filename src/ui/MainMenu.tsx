@@ -216,7 +216,7 @@ const IconLinkButton = styled.a`
   padding: 0 7px;
   border-radius: 6px;
   background-color: #f9f9f9;
-  color: #767787c9;
+  color: #8f8f9f;
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
@@ -231,18 +231,18 @@ const IconLinkButton = styled.a`
   @media (hover: hover) and (pointer: fine) {
     &:hover {
       background-color: #f5f5f5;
-      color: #767787ef;
+      color: #808090;
     }
   }
 
   @media (prefers-color-scheme: dark) {
     background-color: #252525;
-    color: #767787a9;
+    color: #8a8a9a;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
         background-color: #272727;
-        color: #767787f0;
+        color: #9a9aaa;
       }
     }
   }
