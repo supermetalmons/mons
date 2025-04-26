@@ -103,9 +103,10 @@ const TableWrapper = styled.div`
   overflow-y: auto;
   flex: 1;
   -webkit-overflow-scrolling: touch;
-
-  ::-webkit-scrollbar {
-    z-index: 2;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar {
+    display: none;
   }
 
   overscroll-behavior: contain;
@@ -193,7 +194,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
   useEffect(() => {
     if (show) {
       if (tableWrapperRef.current) {
-        tableWrapperRef.current.scrollTop = 0;
+        setTimeout(() => {
+          if (tableWrapperRef.current) {
+            tableWrapperRef.current.scrollTop = 0;
+          }
+        }, 5);
       }
 
       getLeaderboard()
