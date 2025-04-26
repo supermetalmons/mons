@@ -260,7 +260,7 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   touch-action: none;
 
   @media screen and (max-width: 387px) {
-    width: 27px;
+    width: ${(props) => (props.dimmed ? "32px" : "27px")};
   }
 
   svg {
