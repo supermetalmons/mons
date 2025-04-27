@@ -1,3 +1,5 @@
+import { storage } from "../utils/storage";
+
 const maxCardIndex = 36;
 let cardIndex = Math.floor(Math.random() * maxCardIndex);
 
@@ -54,6 +56,13 @@ export const showShinyCard = () => {
   imgBubbles.style.bottom = "0";
   imgBubbles.style.margin = "auto";
   imgBubbles.src = `https://assets.mons.link/cards/bubbles.webp`;
+
+  const emojiImg = document.createElement("img");
+  emojiImg.style.position = "absolute";
+  emojiImg.style.width = "24%";
+  emojiImg.style.top = "13.5%";
+  emojiImg.style.left = "8%";
+  emojiImg.src = `https://assets.mons.link/emojipack/${storage.getPlayerEmojiId("1")}.webp`;
 
   const placeholder = document.createElement("div");
   placeholder.style.position = "absolute";
@@ -201,6 +210,7 @@ export const showShinyCard = () => {
   card.appendChild(placeholder);
   card.appendChild(img);
   card.appendChild(imgBubbles);
+  card.appendChild(emojiImg);
   card.appendChild(shinyOverlay);
   cardContainer.appendChild(card);
   document.body.appendChild(cardContainer);
