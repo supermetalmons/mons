@@ -6,4 +6,5 @@ frontend:
       - 'gen2/**/*'
       - 'music/**/*'
       - 'emojipack/**/*'
+      - 'emojipack_hq/**/*'
       - 'cards/**'
