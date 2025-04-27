@@ -3,7 +3,7 @@ import { storage } from "../utils/storage";
 const maxCardIndex = 36;
 let cardIndex = Math.floor(Math.random() * maxCardIndex);
 
-export const showShinyCard = () => {
+export const showShinyCard = async () => {
   const cardContainer = document.createElement("div");
   cardContainer.style.position = "fixed";
   cardContainer.style.top = "56px";
@@ -72,6 +72,7 @@ export const showShinyCard = () => {
   shinyOverlay.style.background = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
   shinyOverlay.style.opacity = "0.63";
   shinyOverlay.style.pointerEvents = "none";
+  shinyOverlay.style.zIndex = "1";
   // Remove transition property to prevent any abrupt changes
   shinyOverlay.style.transition = "none";
 
@@ -222,6 +223,14 @@ export const showShinyCard = () => {
   });
 
   observer.observe(document.body, { childList: true });
+
+  const assets = (await import(`../assets/gameAssetsPixel`)).gameAssets;
+  const alpha = 0.63;
+  addImageToCard(card, "32.5%", "75%", assets.demon, alpha);
+  addImageToCard(card, "44.7%", "75%", assets.angel, alpha);
+  addImageToCard(card, "57.3%", "75%", assets.drainer, alpha);
+  addImageToCard(card, "69.5%", "75%", assets.spirit, alpha);
+  addImageToCard(card, "82%", "75%", assets.mystic, alpha);
 };
 
 const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, topPosition: string): HTMLElement => {
@@ -239,6 +248,30 @@ const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, to
 
   card.appendChild(textElement);
   return textElement;
+};
+
+const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number): HTMLElement => {
+  const imageContainer = document.createElement("div");
+  imageContainer.style.position = "absolute";
+  imageContainer.style.left = leftPosition;
+  imageContainer.style.top = topPosition;
+  imageContainer.style.width = "10%";
+  imageContainer.style.aspectRatio = "1";
+  imageContainer.style.overflow = "hidden";
+
+  if (imageData) {
+    const img = document.createElement("img");
+    img.style.width = "100%";
+    img.style.height = "100%";
+    img.style.objectFit = "cover";
+    img.style.imageRendering = "pixelated";
+    img.style.opacity = alpha.toString();
+    img.src = `data:image/webp;base64,${imageData}`;
+    imageContainer.appendChild(img);
+  }
+
+  card.appendChild(imageContainer);
+  return imageContainer;
 };
 
 const createOverlayImage = (url: string): HTMLImageElement => {
