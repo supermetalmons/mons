@@ -43,6 +43,16 @@ export const showShinyCard = () => {
 
   img.src = `https://assets.mons.link/cards/bg/${cardIndex}.webp`;
 
+  const placeholder = document.createElement("div");
+  placeholder.style.position = "absolute";
+  placeholder.style.width = "90%";
+  placeholder.style.height = "81%";
+  placeholder.style.backgroundColor = "rgba(255, 255, 255, 0.42)";
+  placeholder.style.borderRadius = "10px";
+  placeholder.style.top = "50%";
+  placeholder.style.left = "50%";
+  placeholder.style.transform = "translate(-50%, -50%)";
+
   const shinyOverlay = document.createElement("div");
   shinyOverlay.style.position = "absolute";
   shinyOverlay.style.top = "0";
@@ -176,6 +186,7 @@ export const showShinyCard = () => {
     transitionProgress = 0;
   });
 
+  card.appendChild(placeholder);
   card.appendChild(img);
   card.appendChild(shinyOverlay);
   cardContainer.appendChild(card);
