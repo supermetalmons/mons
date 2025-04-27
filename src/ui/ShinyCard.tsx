@@ -40,8 +40,20 @@ export const showShinyCard = () => {
   img.style.right = "0";
   img.style.bottom = "0";
   img.style.margin = "auto";
-
   img.src = `https://assets.mons.link/cards/bg/${cardIndex}.webp`;
+
+  const imgBubbles = document.createElement("img");
+  imgBubbles.style.width = "100%";
+  imgBubbles.style.height = "100%";
+  imgBubbles.style.objectFit = "contain";
+  imgBubbles.style.borderRadius = "15px";
+  imgBubbles.style.position = "absolute";
+  imgBubbles.style.top = "0";
+  imgBubbles.style.left = "0";
+  imgBubbles.style.right = "0";
+  imgBubbles.style.bottom = "0";
+  imgBubbles.style.margin = "auto";
+  imgBubbles.src = `https://assets.mons.link/cards/bubbles.webp`;
 
   const placeholder = document.createElement("div");
   placeholder.style.position = "absolute";
@@ -188,6 +200,7 @@ export const showShinyCard = () => {
 
   card.appendChild(placeholder);
   card.appendChild(img);
+  card.appendChild(imgBubbles);
   card.appendChild(shinyOverlay);
   cardContainer.appendChild(card);
   document.body.appendChild(cardContainer);
