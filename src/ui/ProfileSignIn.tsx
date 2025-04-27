@@ -11,6 +11,7 @@ import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game
 import { NameEditModal } from "./NameEditModal";
 import { defaultEarlyInputEventName } from "../utils/misc";
 import { hideShinyCard, showShinyCard } from "./ShinyCard";
+import { enterProfileEditingMode } from "../index";
 
 const Container = styled.div`
   position: relative;
@@ -116,31 +117,11 @@ const CustomConnectButton = styled(BaseButton)`
   }
 `;
 
-const LogoutButton = styled(CustomConnectButton)`
-  background-color: #ff4136;
-  color: white;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background-color: #e60000;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background-color: #cc0000;
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        background-color: #b30000;
-      }
-    }
-  }
-`;
-const EditNameButton = styled(CustomConnectButton)``;
-
 let getIsProfilePopupOpen: () => boolean = () => false;
 let getIsEditingPopupOpen: () => boolean = () => false;
 export let closeProfilePopupIfAny: () => void = () => {};
+export let handleEditDisplayName: () => void;
+export let handleLogout: () => void;
 
 export function hasProfilePopupVisible(): boolean {
   return getIsProfilePopupOpen() || getIsEditingPopupOpen();
@@ -190,13 +171,20 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   useEffect(() => {
     const handleClickOutside = (event: TouchEvent | MouseEvent) => {
       event.stopPropagation();
+      const target = event.target as Node;
       const shinyCardElement = document.querySelector('[data-shiny-card="true"]');
-      const isInsidePopover = popoverRef.current?.contains(event.target as Node) || false;
-      const isInsideShinyCard = shinyCardElement?.contains(event.target as Node) || false;
+      const isInsidePopover = popoverRef.current?.contains(target) || false;
+      const isInsideShinyCard = shinyCardElement?.contains(target) || false;
+
+      if (target instanceof Element && target.closest(".info-button, .sound-button")) {
+        return;
+      }
+
       if (isOpen && !isInsidePopover && !isInsideShinyCard) {
         setIsOpen(false);
         didDismissSomethingWithOutsideTapJustNow();
         hideShinyCard();
+        enterProfileEditingMode(false);
       }
     };
 
@@ -204,25 +192,30 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     return () => document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
   });
 
-  const handleLogout = () => {
+  handleLogout = () => {
     storage.signOut();
     signOut()
       .then(() => window.location.reload())
       .catch(() => window.location.reload());
     setIsOpen(false);
+    hideShinyCard();
+    enterProfileEditingMode(false);
   };
 
   closeProfilePopupIfAny = () => {
     setIsOpen(false);
     hideShinyCard();
+    enterProfileEditingMode(false);
   };
 
   const handleSignInClick = () => {
     if (authStatus === "authenticated") {
       if (isOpen) {
         hideShinyCard();
+        enterProfileEditingMode(false);
       } else {
         showShinyCard();
+        enterProfileEditingMode(true);
       }
     }
 
@@ -233,9 +226,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsOpen(!isOpen);
   };
 
-  const handleEditDisplayName = () => {
+  handleEditDisplayName = () => {
     setIsEditingName(true);
     setIsOpen(false);
+    hideShinyCard();
+    enterProfileEditingMode(false);
   };
 
   const handleSaveDisplayName = (newName: string) => {
@@ -285,6 +280,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         }
         setAuthStatusGlobally("authenticated");
         setIsOpen(false);
+        hideShinyCard();
+        enterProfileEditingMode(false);
         handleFreshlySignedInProfileInGameIfNeeded(profileId);
       }
       setSolanaText("Solana");

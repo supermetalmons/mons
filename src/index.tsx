@@ -14,12 +14,12 @@ import { useAuthStatus, createEthereumAuthAdapter } from "./connection/authentic
 import { signIn } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
-import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle } from "react-icons/fa";
+import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaSignOutAlt, FaEdit } from "react-icons/fa";
 import { isMobileOrVision } from "./utils/misc";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { startPlayingMusic, stopPlayingMusic } from "./content/music";
 import { storage } from "./utils/storage";
-import ProfileSignIn from "./ui/ProfileSignIn";
+import ProfileSignIn, { handleEditDisplayName, handleLogout } from "./ui/ProfileSignIn";
 import FullScreenAlert from "./ui/FullScreenAlert";
 import { setBoardDimmed } from "./game/board";
 
@@ -39,6 +39,7 @@ export function hasFullScreenAlertVisible(): boolean {
 
 let showAlertGlobal: (title: string, subtitle: string) => void;
 let hideAlertGlobal: () => void;
+export let enterProfileEditingMode: (enter: boolean) => void;
 
 export function hideFullScreenAlert() {
   if (hideAlertGlobal) {
@@ -54,10 +55,15 @@ export function showFullScreenAlert(title: string, subtitle: string) {
 
 const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
+  const [isProfileEditingMode, setIsProfileEditingMode] = useState(false);
   const [isMuted, setIsMuted] = useState(globalIsMuted);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [alertState, setAlertState] = useState<{ title: string; subtitle: string } | null>(null);
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
+
+  enterProfileEditingMode = (enter: boolean) => {
+    setIsProfileEditingMode(enter);
+  };
 
   useEffect(() => {
     showAlertGlobal = (title: string, subtitle: string) => {
@@ -99,6 +105,17 @@ const App = () => {
     });
   }, []);
 
+  const handleLogOutButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    event.preventDefault();
+    handleLogout();
+  };
+
+  const handleEditProfileButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    handleEditDisplayName();
+  };
+
   const handleInfoButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     if (alertState !== null) {
@@ -124,15 +141,28 @@ const App = () => {
                 {authStatus !== "loading" && (
                   <>
                     <div className="small-top-control-buttons">
-                      <button className="info-button" onClick={!isMobile ? handleInfoButtonClick : undefined} onTouchStart={isMobile ? handleInfoButtonClick : undefined}>
-                        <FaInfoCircle />
-                      </button>
-                      <button className="music-button" onClick={handleMusicToggle} aria-label={isMusicPlaying ? "Stop Music" : "Play Music"}>
-                        {isMusicPlaying ? <FaStop /> : <FaMusic />}
-                      </button>
-                      <button className="sound-button" onClick={handleMuteToggle} aria-label={isMuted ? "Unmute" : "Mute"}>
-                        {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
-                      </button>
+                      {!isProfileEditingMode ? (
+                        <>
+                          <button className="info-button" onClick={!isMobile ? handleInfoButtonClick : undefined} onTouchStart={isMobile ? handleInfoButtonClick : undefined}>
+                            <FaInfoCircle />
+                          </button>
+                          <button className="music-button" onClick={handleMusicToggle} aria-label={isMusicPlaying ? "Stop Music" : "Play Music"}>
+                            {isMusicPlaying ? <FaStop /> : <FaMusic />}
+                          </button>
+                          <button className="sound-button" onClick={handleMuteToggle} aria-label={isMuted ? "Unmute" : "Mute"}>
+                            {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
+                          </button>
+                        </>
+                      ) : (
+                        <>
+                          <button className="info-button" onClick={!isMobile ? handleEditProfileButtonClick : undefined} onTouchStart={isMobile ? handleEditProfileButtonClick : undefined}>
+                            <FaEdit />
+                          </button>
+                          <button className="sound-button" onClick={handleLogOutButtonClick} aria-label={"Log Out"}>
+                            <FaSignOutAlt />
+                          </button>
+                        </>
+                      )}
                     </div>
                   </>
                 )}
