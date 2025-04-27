@@ -10,9 +10,7 @@ import { setAuthStatusGlobally } from "../connection/authentication";
 import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
 import { NameEditModal } from "./NameEditModal";
 import { defaultEarlyInputEventName } from "../utils/misc";
-import { showShinyCard } from "./ShinyCard";
-
-const shinyCardDevTmp = false; // TODO: remove dev tmp
+import { hideShinyCard, showShinyCard } from "./ShinyCard";
 
 const Container = styled.div`
   position: relative;
@@ -192,9 +190,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   useEffect(() => {
     const handleClickOutside = (event: TouchEvent | MouseEvent) => {
       event.stopPropagation();
-      if (isOpen && popoverRef.current && !popoverRef.current.contains(event.target as Node)) {
+      const shinyCardElement = document.querySelector('[data-shiny-card="true"]');
+      const isInsidePopover = popoverRef.current?.contains(event.target as Node) || false;
+      const isInsideShinyCard = shinyCardElement?.contains(event.target as Node) || false;
+      if (isOpen && !isInsidePopover && !isInsideShinyCard) {
         setIsOpen(false);
         didDismissSomethingWithOutsideTapJustNow();
+        hideShinyCard();
       }
     };
 
@@ -212,17 +214,22 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
   closeProfilePopupIfAny = () => {
     setIsOpen(false);
+    hideShinyCard();
   };
 
   const handleSignInClick = () => {
-    if (authStatus === "authenticated" && shinyCardDevTmp) {
-      showShinyCard();
-      return;
+    if (authStatus === "authenticated") {
+      if (isOpen) {
+        hideShinyCard();
+      } else {
+        showShinyCard();
+      }
     }
 
     if (!isOpen) {
       closeMenuAndInfoIfAny();
     }
+
     setIsOpen(!isOpen);
   };
 
@@ -300,20 +307,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       <SignInButton onClick={handleSignInClick} isConnected={authStatus === "authenticated"}>
         {authStatus === "authenticated" ? profileDisplayName || "Connected" : "Sign In"}
       </SignInButton>
-      {isOpen && (
+      {isOpen && authStatus !== "authenticated" && (
         <ConnectButtonPopover>
           <ConnectButtonWrapper>
-            {authStatus === "authenticated" ? (
-              <>
-                <EditNameButton onClick={handleEditDisplayName}>{storage.getUsername("") ? "Edit Name" : "Set Name"}</EditNameButton>
-                <LogoutButton onClick={handleLogout}>Sign Out</LogoutButton>
-              </>
-            ) : (
-              <>
-                <ConnectButton.Custom>{({ openConnectModal }) => <CustomConnectButton onClick={openConnectModal}>Ethereum</CustomConnectButton>}</ConnectButton.Custom>
-                <CustomConnectButton onClick={handleSolanaClick}>{solanaText}</CustomConnectButton>
-              </>
-            )}
+            <>
+              <ConnectButton.Custom>{({ openConnectModal }) => <CustomConnectButton onClick={openConnectModal}>Ethereum</CustomConnectButton>}</ConnectButton.Custom>
+              <CustomConnectButton onClick={handleSolanaClick}>{solanaText}</CustomConnectButton>
+            </>
           </ConnectButtonWrapper>
         </ConnectButtonPopover>
       )}

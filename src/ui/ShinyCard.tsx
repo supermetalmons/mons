@@ -1,3 +1,6 @@
+const maxCardIndex = 36;
+let cardIndex = Math.floor(Math.random() * maxCardIndex);
+
 export const showShinyCard = () => {
   const cardContainer = document.createElement("div");
   cardContainer.style.position = "fixed";
@@ -13,6 +16,7 @@ export const showShinyCard = () => {
   cardContainer.style.height = `${height}px`;
   cardContainer.style.perspective = "1000px";
   cardContainer.style.zIndex = "1000";
+  cardContainer.setAttribute("data-shiny-card", "true");
 
   const card = document.createElement("div");
   card.style.position = "relative";
@@ -23,6 +27,7 @@ export const showShinyCard = () => {
   card.style.borderRadius = "15px";
   card.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.3)";
   card.style.background = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
+  card.style.cursor = "pointer";
 
   const img = document.createElement("img");
   img.style.width = "100%";
@@ -36,7 +41,7 @@ export const showShinyCard = () => {
   img.style.bottom = "0";
   img.style.margin = "auto";
 
-  img.src = "/assets/card.png";
+  img.src = `https://assets.mons.link/cards/bg/${cardIndex}.webp`;
 
   const shinyOverlay = document.createElement("div");
   shinyOverlay.style.position = "absolute";
@@ -49,35 +54,11 @@ export const showShinyCard = () => {
   shinyOverlay.style.opacity = "0.63";
   shinyOverlay.style.pointerEvents = "none";
 
-  const closeButton = document.createElement("div");
-  closeButton.style.position = "absolute";
-  closeButton.style.top = "10px";
-  closeButton.style.right = "10px";
-  closeButton.style.width = "30px";
-  closeButton.style.height = "30px";
-  closeButton.style.borderRadius = "50%";
-  closeButton.style.background = "rgba(0, 0, 0, 0.5)";
-  closeButton.style.color = "white";
-  closeButton.style.display = "flex";
-  closeButton.style.justifyContent = "center";
-  closeButton.style.alignItems = "center";
-  closeButton.style.cursor = "pointer";
-  closeButton.style.zIndex = "10";
-  closeButton.textContent = "×";
-  closeButton.style.fontSize = "20px";
-
-  closeButton.addEventListener("click", () => {
-    document.body.removeChild(cardContainer);
-  });
-
-  let currentCardIndex = 0;
-  const maxCardIndex = 36;
-
   card.addEventListener("click", () => {
-    currentCardIndex = (currentCardIndex + 1) % maxCardIndex;
-    const newCardName = `${currentCardIndex}.PNG`;
+    cardIndex = (cardIndex + 1) % maxCardIndex;
+    const newCardName = `${cardIndex}.webp`;
     console.log("New card:", newCardName);
-    img.src = `/assets/${newCardName}`;
+    img.src = `https://assets.mons.link/cards/bg/${newCardName}`;
   });
 
   cardContainer.addEventListener("mousemove", (e) => {
@@ -107,4 +88,11 @@ export const showShinyCard = () => {
   card.appendChild(shinyOverlay);
   cardContainer.appendChild(card);
   document.body.appendChild(cardContainer);
+};
+
+export const hideShinyCard = () => {
+  const shinyCard = document.querySelector('[data-shiny-card="true"]');
+  if (shinyCard && shinyCard.parentNode) {
+    shinyCard.parentNode.removeChild(shinyCard);
+  }
 };
