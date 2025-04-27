@@ -55,7 +55,7 @@ export const showShinyCard = () => {
   placeholder.style.position = "absolute";
   placeholder.style.width = "90%";
   placeholder.style.height = "81%";
-  placeholder.style.backgroundColor = "rgba(255, 255, 255, 0.42)";
+  placeholder.style.backgroundColor = "rgba(255, 255, 255, 0.77)";
   placeholder.style.borderRadius = "10px";
   placeholder.style.top = "50%";
   placeholder.style.left = "50%";
