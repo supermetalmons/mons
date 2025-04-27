@@ -62,7 +62,7 @@ export const showShinyCard = () => {
   emojiImg.style.width = "24%";
   emojiImg.style.top = "13.5%";
   emojiImg.style.left = "8%";
-  emojiImg.src = `https://assets.mons.link/emojipack/${storage.getPlayerEmojiId("1")}.webp`;
+  emojiImg.src = `https://assets.mons.link/emojipack_hq/${storage.getPlayerEmojiId("1")}.webp`;
 
   const placeholder = document.createElement("div");
   placeholder.style.position = "absolute";
