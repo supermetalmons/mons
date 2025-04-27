@@ -156,7 +156,6 @@ export const showShinyCard = () => {
     animationFrameId = requestAnimationFrame(animateCard);
   };
 
-  // Start the animation immediately
   animationFrameId = requestAnimationFrame(animateCard);
 
   cardContainer.addEventListener("mousemove", (e) => {
@@ -199,10 +198,15 @@ export const showShinyCard = () => {
   card.appendChild(createOverlayImage("https://assets.mons.link/cards/bubbles.webp"));
   card.appendChild(emojiImg);
   card.appendChild(shinyOverlay);
+
+  addTextToCard(card, "player id", "36.3%", "30%");
+  addTextToCard(card, "9000", "36.3%", "41%");
+  addTextToCard(card, "／人◕ __ ◕人＼", "10%", "52%");
+  addTextToCard(card, "wip", "10%", "63%");
+
   cardContainer.appendChild(card);
   document.body.appendChild(cardContainer);
 
-  // Clean up animation when card is removed
   const observer = new MutationObserver((mutations) => {
     mutations.forEach((mutation) => {
       if (mutation.type === "childList") {
@@ -218,6 +222,23 @@ export const showShinyCard = () => {
   });
 
   observer.observe(document.body, { childList: true });
+};
+
+const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, topPosition: string): HTMLElement => {
+  const textElement = document.createElement("div");
+  textElement.textContent = text;
+  textElement.style.position = "absolute";
+  textElement.style.left = leftPosition;
+  textElement.style.top = topPosition;
+  textElement.style.color = "#D0D0D0";
+  textElement.style.fontFamily = "Arial, sans-serif";
+  textElement.style.fontSize = "16px";
+  textElement.style.transform = "translate(0, -50%)";
+  textElement.style.textShadow = "0px 0px 2px rgba(255, 255, 255, 0.8)";
+  textElement.style.pointerEvents = "none";
+
+  card.appendChild(textElement);
+  return textElement;
 };
 
 const createOverlayImage = (url: string): HTMLImageElement => {
