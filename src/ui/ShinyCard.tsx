@@ -44,19 +44,6 @@ export const showShinyCard = () => {
   img.style.margin = "auto";
   img.src = `https://assets.mons.link/cards/bg/${cardIndex}.webp`;
 
-  const imgBubbles = document.createElement("img");
-  imgBubbles.style.width = "100%";
-  imgBubbles.style.height = "100%";
-  imgBubbles.style.objectFit = "contain";
-  imgBubbles.style.borderRadius = "15px";
-  imgBubbles.style.position = "absolute";
-  imgBubbles.style.top = "0";
-  imgBubbles.style.left = "0";
-  imgBubbles.style.right = "0";
-  imgBubbles.style.bottom = "0";
-  imgBubbles.style.margin = "auto";
-  imgBubbles.src = `https://assets.mons.link/cards/bubbles.webp`;
-
   const emojiImg = document.createElement("img");
   emojiImg.style.position = "absolute";
   emojiImg.style.width = "24%";
@@ -209,7 +196,7 @@ export const showShinyCard = () => {
 
   card.appendChild(placeholder);
   card.appendChild(img);
-  card.appendChild(imgBubbles);
+  card.appendChild(createOverlayImage("https://assets.mons.link/cards/bubbles.webp"));
   card.appendChild(emojiImg);
   card.appendChild(shinyOverlay);
   cardContainer.appendChild(card);
@@ -231,6 +218,21 @@ export const showShinyCard = () => {
   });
 
   observer.observe(document.body, { childList: true });
+};
+
+const createOverlayImage = (url: string): HTMLImageElement => {
+  const overlayImg = document.createElement("img");
+  overlayImg.style.width = "100%";
+  overlayImg.style.height = "100%";
+  overlayImg.style.objectFit = "contain";
+  overlayImg.style.position = "absolute";
+  overlayImg.style.top = "0";
+  overlayImg.style.left = "0";
+  overlayImg.style.right = "0";
+  overlayImg.style.bottom = "0";
+  overlayImg.style.margin = "auto";
+  overlayImg.src = url;
+  return overlayImg;
 };
 
 export const hideShinyCard = () => {
