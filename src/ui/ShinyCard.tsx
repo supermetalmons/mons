@@ -225,7 +225,7 @@ export const showShinyCard = async () => {
   observer.observe(document.body, { childList: true });
 
   const assets = (await import(`../assets/gameAssetsPixel`)).gameAssets;
-  const alpha = 0.63;
+  const alpha = 0.77;
   addImageToCard(card, "32.5%", "75%", assets.demon, alpha);
   addImageToCard(card, "44.7%", "75%", assets.angel, alpha);
   addImageToCard(card, "57.3%", "75%", assets.drainer, alpha);
