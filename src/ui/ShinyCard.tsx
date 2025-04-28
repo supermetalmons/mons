@@ -224,32 +224,41 @@ export const showShinyCard = async () => {
   });
 
   observer.observe(document.body, { childList: true });
-
-  if (colorMonsOnly) {
-    showMons(card);
-  } else {
-    showPlaceholderMons(card);
-  }
+  showMons(card);
 };
 
-async function showMons(card: HTMLElement) {
-  const getRandomSpriteOfType = (await import(`../assets/monsSprites`)).getRandomSpriteOfType;
-  const alpha = 1;
-  addImageToCard(card, "32.5%", "75%", getRandomSpriteOfType("demon"), alpha);
-  addImageToCard(card, "44.7%", "75%", getRandomSpriteOfType("angel"), alpha);
-  addImageToCard(card, "57.3%", "75%", getRandomSpriteOfType("drainer"), alpha);
-  addImageToCard(card, "69.5%", "75%", getRandomSpriteOfType("spirit"), alpha);
-  addImageToCard(card, "82%", "75%", getRandomSpriteOfType("mystic"), alpha);
-}
+let demon = "";
+let angel = "";
+let drainer = "";
+let spirit = "";
+let mystic = "";
 
-async function showPlaceholderMons(card: HTMLElement) {
-  const assets = (await import(`../assets/gameAssetsPixel`)).gameAssets;
-  const alpha = 0.77;
-  addImageToCard(card, "32.5%", "75%", assets.demon, alpha);
-  addImageToCard(card, "44.7%", "75%", assets.angel, alpha);
-  addImageToCard(card, "57.3%", "75%", assets.drainer, alpha);
-  addImageToCard(card, "69.5%", "75%", assets.spirit, alpha);
-  addImageToCard(card, "82%", "75%", assets.mystic, alpha);
+async function showMons(card: HTMLElement) {
+  const alpha = colorMonsOnly ? 1 : 0.77;
+
+  if (!drainer) {
+    if (colorMonsOnly) {
+      const getRandomSpriteOfType = (await import(`../assets/monsSprites`)).getRandomSpriteOfType;
+      demon = getRandomSpriteOfType("demon");
+      angel = getRandomSpriteOfType("angel");
+      drainer = getRandomSpriteOfType("drainer");
+      spirit = getRandomSpriteOfType("spirit");
+      mystic = getRandomSpriteOfType("mystic");
+    } else {
+      const assets = (await import(`../assets/gameAssetsPixel`)).gameAssets;
+      demon = assets.demon;
+      angel = assets.angel;
+      drainer = assets.drainer;
+      spirit = assets.spirit;
+      mystic = assets.mystic;
+    }
+  }
+
+  addImageToCard(card, "32.5%", "75%", demon, alpha);
+  addImageToCard(card, "44.7%", "75%", angel, alpha);
+  addImageToCard(card, "57.3%", "75%", drainer, alpha);
+  addImageToCard(card, "69.5%", "75%", spirit, alpha);
+  addImageToCard(card, "82%", "75%", mystic, alpha);
 }
 
 const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, topPosition: string): HTMLElement => {
