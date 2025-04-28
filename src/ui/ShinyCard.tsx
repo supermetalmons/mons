@@ -332,6 +332,25 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
   return imageContainer;
 };
 
+const addPlaceholderBubbles = (card: HTMLElement): HTMLElement => {
+  const imageContainer = document.createElement("div");
+  imageContainer.style.position = "absolute";
+  imageContainer.style.left = "34.3%";
+  imageContainer.style.top = "25.6%";
+  imageContainer.style.borderRadius = "6px";
+  imageContainer.style.width = "45%";
+  imageContainer.style.height = "9%";
+  imageContainer.style.overflow = "hidden";
+  imageContainer.style.backgroundColor = "white";
+  imageContainer.style.border = "1px solid #D0D0D050";
+  imageContainer.style.boxSizing = "border-box";
+  imageContainer.style.display = "flex";
+  imageContainer.style.justifyContent = "center";
+  imageContainer.style.alignItems = "center";
+  card.appendChild(imageContainer);
+  return imageContainer;
+};
+
 const createOverlayImage = (url: string): HTMLImageElement => {
   const overlayImg = document.createElement("img");
   overlayImg.style.width = "100%";
