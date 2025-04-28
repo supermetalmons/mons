@@ -5,12 +5,19 @@
   --text-color-dark: #e0e0e0;
   --link-color-light: #0071F9;
   --link-color-dark: #009AFF;
+  --card-color: #f5f5f5;
   -webkit-touch-callout: none;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   -webkit-user-callout: none;
   -webkit-highlight: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --card-color: #222222;
+  }
 }
 
 html,

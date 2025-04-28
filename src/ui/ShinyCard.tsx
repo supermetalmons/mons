@@ -63,6 +63,12 @@ export const showShinyCard = async () => {
   img.style.pointerEvents = "none";
   img.draggable = false;
   img.src = `https://assets.mons.link/cards/bg/${cardIndex}.webp`;
+  img.onerror = () => {
+    img.style.visibility = "hidden";
+  };
+  img.onload = () => {
+    img.style.visibility = "visible";
+  };
 
   const emojiImg = document.createElement("img");
   emojiImg.style.position = "absolute";
@@ -73,12 +79,19 @@ export const showShinyCard = async () => {
   emojiImg.style.pointerEvents = "none";
   emojiImg.draggable = false;
   emojiImg.src = `https://assets.mons.link/emojipack_hq/${storage.getPlayerEmojiId("1")}.webp`;
+  emojiImg.onerror = () => {
+    emojiImg.style.visibility = "hidden";
+  };
+  emojiImg.onload = () => {
+    emojiImg.style.visibility = "visible";
+  };
 
   const placeholder = document.createElement("div");
   placeholder.style.position = "absolute";
   placeholder.style.width = "90%";
   placeholder.style.height = "81%";
-  placeholder.style.backgroundColor = "rgba(255, 255, 255, 0.77)";
+  placeholder.style.backgroundColor = "var(--card-color)";
+
   placeholder.style.borderRadius = "10px";
   placeholder.style.top = "50%";
   placeholder.style.left = "50%";
@@ -255,7 +268,10 @@ export const showShinyCard = async () => {
 
   card.appendChild(placeholder);
   card.appendChild(img);
-  card.appendChild(createOverlayImage("https://assets.mons.link/cards/bubbles.webp"));
+
+  const bubblesOverlay = createOverlayImage("https://assets.mons.link/cards/bubbles.webp");
+  card.appendChild(bubblesOverlay);
+
   card.appendChild(emojiImg);
   card.appendChild(shinyOverlay);
 
@@ -360,6 +376,12 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
     img.style.pointerEvents = "none";
     img.draggable = false;
     img.src = `data:image/webp;base64,${imageData}`;
+    img.onerror = () => {
+      img.style.visibility = "hidden";
+    };
+    img.onload = () => {
+      img.style.visibility = "visible";
+    };
     imageContainer.appendChild(img);
   }
 
@@ -403,6 +425,12 @@ const createOverlayImage = (url: string): HTMLImageElement => {
   overlayImg.style.pointerEvents = "none";
   overlayImg.draggable = false;
   overlayImg.src = url;
+  overlayImg.onerror = () => {
+    overlayImg.style.visibility = "hidden";
+  };
+  overlayImg.onload = () => {
+    overlayImg.style.visibility = "visible";
+  };
   return overlayImg;
 };
 
