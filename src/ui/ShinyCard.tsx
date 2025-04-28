@@ -1,3 +1,4 @@
+import { defaultInputEventName } from "../utils/misc";
 import { storage } from "../utils/storage";
 
 const maxCardIndex = 36;
@@ -90,7 +91,7 @@ export const showShinyCard = async () => {
   shinyOverlay.style.transition = "none";
   shinyOverlay.style.willChange = "background"; // Optimize for animations
 
-  card.addEventListener("click", () => {
+  card.addEventListener(defaultInputEventName, () => {
     cardIndex = (cardIndex + 1) % maxCardIndex;
     const newCardName = `${cardIndex}.webp`;
     img.src = `https://assets.mons.link/cards/bg/${newCardName}`;
