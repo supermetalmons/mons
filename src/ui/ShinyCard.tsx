@@ -29,6 +29,8 @@ export const showShinyCard = async () => {
   cardContainer.style.perspective = "1000px";
   cardContainer.style.zIndex = "1000";
   cardContainer.setAttribute("data-shiny-card", "true");
+  cardContainer.style.userSelect = "none";
+  cardContainer.style.touchAction = "none";
   const styleTag = document.createElement("style");
   styleTag.textContent = cardStyles;
   cardContainer.appendChild(styleTag);
@@ -44,6 +46,7 @@ export const showShinyCard = async () => {
   card.style.background = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
   card.style.cursor = "pointer";
   card.style.willChange = "transform"; // Optimize for animations
+  card.style.userSelect = "none";
 
   const img = document.createElement("img");
   img.style.width = "100%";
@@ -56,6 +59,9 @@ export const showShinyCard = async () => {
   img.style.right = "0";
   img.style.bottom = "0";
   img.style.margin = "auto";
+  img.style.userSelect = "none";
+  img.style.pointerEvents = "none";
+  img.draggable = false;
   img.src = `https://assets.mons.link/cards/bg/${cardIndex}.webp`;
 
   const emojiImg = document.createElement("img");
@@ -63,6 +69,9 @@ export const showShinyCard = async () => {
   emojiImg.style.width = "24%";
   emojiImg.style.top = "13.5%";
   emojiImg.style.left = "8%";
+  emojiImg.style.userSelect = "none";
+  emojiImg.style.pointerEvents = "none";
+  emojiImg.draggable = false;
   emojiImg.src = `https://assets.mons.link/emojipack_hq/${storage.getPlayerEmojiId("1")}.webp`;
 
   const placeholder = document.createElement("div");
@@ -74,6 +83,8 @@ export const showShinyCard = async () => {
   placeholder.style.top = "50%";
   placeholder.style.left = "50%";
   placeholder.style.transform = "translate(-50%, -50%)";
+  placeholder.style.userSelect = "none";
+  placeholder.style.pointerEvents = "none";
 
   const shinyOverlay = document.createElement("div");
   shinyOverlay.style.position = "absolute";
@@ -90,11 +101,17 @@ export const showShinyCard = async () => {
   // Remove transition property to prevent any abrupt changes
   shinyOverlay.style.transition = "none";
   shinyOverlay.style.willChange = "background"; // Optimize for animations
+  shinyOverlay.style.userSelect = "none";
 
   card.addEventListener(defaultInputEventName, () => {
     cardIndex = (cardIndex + 1) % maxCardIndex;
     const newCardName = `${cardIndex}.webp`;
     img.src = `https://assets.mons.link/cards/bg/${newCardName}`;
+  });
+
+  cardContainer.addEventListener("contextmenu", (e) => {
+    e.preventDefault();
+    return false;
   });
 
   let isMouseOver = false;
@@ -314,6 +331,7 @@ const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, to
   textElement.style.transform = "translate(0, -50%)";
   textElement.style.textShadow = "0px 0px 2px rgba(255, 255, 255, 0.8)";
   textElement.style.pointerEvents = "none";
+  textElement.style.userSelect = "none";
 
   card.appendChild(textElement);
   return textElement;
@@ -327,6 +345,8 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
   imageContainer.style.width = "10%";
   imageContainer.style.aspectRatio = "1";
   imageContainer.style.overflow = "hidden";
+  imageContainer.style.userSelect = "none";
+  imageContainer.style.pointerEvents = "none";
 
   if (imageData) {
     const img = document.createElement("img");
@@ -336,6 +356,9 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
     img.style.objectPosition = "0% 50%";
     img.style.imageRendering = "pixelated";
     img.style.opacity = alpha.toString();
+    img.style.userSelect = "none";
+    img.style.pointerEvents = "none";
+    img.draggable = false;
     img.src = `data:image/webp;base64,${imageData}`;
     imageContainer.appendChild(img);
   }
@@ -359,6 +382,8 @@ const addPlaceholderBubbles = (card: HTMLElement): HTMLElement => {
   imageContainer.style.display = "flex";
   imageContainer.style.justifyContent = "center";
   imageContainer.style.alignItems = "center";
+  imageContainer.style.userSelect = "none";
+  imageContainer.style.pointerEvents = "none";
   card.appendChild(imageContainer);
   return imageContainer;
 };
@@ -374,6 +399,9 @@ const createOverlayImage = (url: string): HTMLImageElement => {
   overlayImg.style.right = "0";
   overlayImg.style.bottom = "0";
   overlayImg.style.margin = "auto";
+  overlayImg.style.userSelect = "none";
+  overlayImg.style.pointerEvents = "none";
+  overlayImg.draggable = false;
   overlayImg.src = url;
   return overlayImg;
 };
