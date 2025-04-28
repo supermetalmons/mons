@@ -4,11 +4,19 @@ const maxCardIndex = 36;
 let cardIndex = Math.floor(Math.random() * maxCardIndex);
 const colorMonsOnly = true;
 
+const cardStyles = `
+@media screen and (max-width: 420px){
+  [data-shiny-card="true"]{ right:9px !important; }
+}
+@media screen and (max-width: 387px){
+  [data-shiny-card="true"]{ right:7px !important; }
+}`;
+
 export const showShinyCard = async () => {
   const cardContainer = document.createElement("div");
   cardContainer.style.position = "fixed";
   cardContainer.style.top = "56px";
-  cardContainer.style.right = "20px";
+  cardContainer.style.right = "12pt";
 
   const aspectRatio = 2430 / 1886;
   const maxWidth = Math.min(window.innerWidth * 0.8, 350);
@@ -20,6 +28,9 @@ export const showShinyCard = async () => {
   cardContainer.style.perspective = "1000px";
   cardContainer.style.zIndex = "1000";
   cardContainer.setAttribute("data-shiny-card", "true");
+  const styleTag = document.createElement("style");
+  styleTag.textContent = cardStyles;
+  cardContainer.appendChild(styleTag);
 
   const card = document.createElement("div");
   card.style.position = "relative";
