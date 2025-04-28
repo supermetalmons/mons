@@ -9,7 +9,7 @@ import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { setAuthStatusGlobally } from "../connection/authentication";
 import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
 import { NameEditModal } from "./NameEditModal";
-import { defaultEarlyInputEventName } from "../utils/misc";
+import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { hideShinyCard, showShinyCard } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
 
@@ -301,7 +301,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
   return (
     <Container ref={popoverRef}>
-      <SignInButton onClick={handleSignInClick} isConnected={authStatus === "authenticated"}>
+      <SignInButton onClick={!isMobile ? handleSignInClick : undefined} onTouchStart={isMobile ? handleSignInClick : undefined} isConnected={authStatus === "authenticated"}>
         {authStatus === "authenticated" ? profileDisplayName || "Connected" : "Sign In"}
       </SignInButton>
       {isOpen && authStatus !== "authenticated" && (
