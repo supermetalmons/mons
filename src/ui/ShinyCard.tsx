@@ -2,6 +2,7 @@ import { storage } from "../utils/storage";
 
 const maxCardIndex = 36;
 let cardIndex = Math.floor(Math.random() * maxCardIndex);
+const colorMonsOnly = true;
 
 export const showShinyCard = async () => {
   const cardContainer = document.createElement("div");
@@ -224,6 +225,24 @@ export const showShinyCard = async () => {
 
   observer.observe(document.body, { childList: true });
 
+  if (colorMonsOnly) {
+    showMons(card);
+  } else {
+    showPlaceholderMons(card);
+  }
+};
+
+async function showMons(card: HTMLElement) {
+  const getRandomSpriteOfType = (await import(`../assets/monsSprites`)).getRandomSpriteOfType;
+  const alpha = 1;
+  addImageToCard(card, "32.5%", "75%", getRandomSpriteOfType("demon"), alpha);
+  addImageToCard(card, "44.7%", "75%", getRandomSpriteOfType("angel"), alpha);
+  addImageToCard(card, "57.3%", "75%", getRandomSpriteOfType("drainer"), alpha);
+  addImageToCard(card, "69.5%", "75%", getRandomSpriteOfType("spirit"), alpha);
+  addImageToCard(card, "82%", "75%", getRandomSpriteOfType("mystic"), alpha);
+}
+
+async function showPlaceholderMons(card: HTMLElement) {
   const assets = (await import(`../assets/gameAssetsPixel`)).gameAssets;
   const alpha = 0.77;
   addImageToCard(card, "32.5%", "75%", assets.demon, alpha);
@@ -231,7 +250,7 @@ export const showShinyCard = async () => {
   addImageToCard(card, "57.3%", "75%", assets.drainer, alpha);
   addImageToCard(card, "69.5%", "75%", assets.spirit, alpha);
   addImageToCard(card, "82%", "75%", assets.mystic, alpha);
-};
+}
 
 const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, topPosition: string): HTMLElement => {
   const textElement = document.createElement("div");
@@ -264,6 +283,7 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
     img.style.width = "100%";
     img.style.height = "100%";
     img.style.objectFit = "cover";
+    img.style.objectPosition = "0% 50%";
     img.style.imageRendering = "pixelated";
     img.style.opacity = alpha.toString();
     img.src = `data:image/webp;base64,${imageData}`;

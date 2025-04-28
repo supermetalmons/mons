@@ -244,14 +244,8 @@ async function initializeAssets(onStart: boolean) {
   assets = (await import(`../assets/gameAssets${currentAssetsSet}`)).gameAssets;
 
   if (isExperimentingWithSprites) {
-    const sprites = (await import(`../assets/monsSprites`)).gameAssets;
-    const allKeys = Object.keys(sprites);
-    const getRandomSpriteOfType = (type: string) => {
-      const keys = allKeys.filter((k) => k.endsWith(`_${type}`));
-      const randomKey = keys[Math.floor(Math.random() * keys.length)] as keyof typeof sprites;
-      return sprites[randomKey];
-    };
-
+    const getRandomSpriteOfType = (await import(`../assets/monsSprites`)).getRandomSpriteOfType;
+    
     drainer = loadImage(getRandomSpriteOfType("drainer"), "drainer", true);
     angel = loadImage(getRandomSpriteOfType("angel"), "angel", true);
     demon = loadImage(getRandomSpriteOfType("demon"), "demon", true);
