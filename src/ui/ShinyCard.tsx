@@ -26,11 +26,12 @@ export const showShinyCard = async () => {
   card.style.width = "100%";
   card.style.height = "100%";
   card.style.transformStyle = "preserve-3d";
-  card.style.transition = "transform 0.5s ease";
+  card.style.transition = "transform 0.1s ease-out";
   card.style.borderRadius = "15px";
   card.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.3)";
   card.style.background = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
   card.style.cursor = "pointer";
+  card.style.willChange = "transform"; // Optimize for animations
 
   const img = document.createElement("img");
   img.style.width = "100%";
@@ -76,6 +77,7 @@ export const showShinyCard = async () => {
   shinyOverlay.style.zIndex = "1";
   // Remove transition property to prevent any abrupt changes
   shinyOverlay.style.transition = "none";
+  shinyOverlay.style.willChange = "background"; // Optimize for animations
 
   card.addEventListener("click", () => {
     cardIndex = (cardIndex + 1) % maxCardIndex;
@@ -94,14 +96,30 @@ export const showShinyCard = async () => {
   let lastShineY = 50;
   let transitioningFromMouse = false;
   let transitionProgress = 0;
-  const transitionDuration = 180; // Increased for even smoother transition (about 3 seconds at 60fps)
+  const transitionDuration = 180; // Keep original transition duration
+
+  // For smoother mouse tracking
+  let currentRotateX = 0;
+  let currentRotateY = 0;
+  let targetRotateX = 0;
+  let targetRotateY = 0;
+  const easeAmount = 0.15; // Higher value = faster response (0-1)
 
   // Natural floating animation when mouse is not over the card
   const animateCard = () => {
     time += 0.01;
 
     if (isMouseOver) {
-      // When mouse is over, we just store the current position
+      // When mouse is over, smoothly interpolate to target rotation
+      currentRotateX += (targetRotateX - currentRotateX) * easeAmount;
+      currentRotateY += (targetRotateY - currentRotateY) * easeAmount;
+
+      card.style.transform = `rotateY(${currentRotateY}deg) rotateX(${currentRotateX}deg)`;
+
+      // Store these values for smooth transition later
+      lastMouseX = currentRotateX;
+      lastMouseY = currentRotateY;
+
       transitioningFromMouse = false;
       transitionProgress = 0;
     } else {
@@ -119,10 +137,10 @@ export const showShinyCard = async () => {
         const easedT = easeOutCubic(t);
 
         // Interpolate between last mouse position and natural animation for card rotation
-        const rotateX = (1 - easedT) * lastMouseX + easedT * naturalRotateX;
-        const rotateY = (1 - easedT) * lastMouseY + easedT * naturalRotateY;
+        currentRotateX = (1 - easedT) * lastMouseX + easedT * naturalRotateX;
+        currentRotateY = (1 - easedT) * lastMouseY + easedT * naturalRotateY;
 
-        card.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
+        card.style.transform = `rotateY(${currentRotateY}deg) rotateX(${currentRotateX}deg)`;
 
         // Smoothly transition from radial gradient to linear gradient
         if (transitionProgress < transitionDuration) {
@@ -147,8 +165,11 @@ export const showShinyCard = async () => {
           transitioningFromMouse = false;
         }
       } else {
-        // Normal animation when not transitioning - only animate card rotation
-        card.style.transform = `rotateY(${naturalRotateY}deg) rotateX(${naturalRotateX}deg)`;
+        // Normal animation when not transitioning - smoothly animate card rotation
+        currentRotateX += (naturalRotateX - currentRotateX) * 0.05;
+        currentRotateY += (naturalRotateY - currentRotateY) * 0.05;
+
+        card.style.transform = `rotateY(${currentRotateY}deg) rotateX(${currentRotateX}deg)`;
 
         // Use linear gradient for idle state
         shinyOverlay.style.background = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
@@ -158,9 +179,21 @@ export const showShinyCard = async () => {
     animationFrameId = requestAnimationFrame(animateCard);
   };
 
+  // Initialize current rotation to match natural animation
+  currentRotateX = Math.sin(time) * 3;
+  currentRotateY = Math.cos(time * 0.8) * 3;
+
   animationFrameId = requestAnimationFrame(animateCard);
 
+  // Use a throttled version of mousemove for better performance
+  let lastMoveTime = 0;
+  const moveThreshold = 5; // ms between move events
+
   cardContainer.addEventListener("mousemove", (e) => {
+    const now = Date.now();
+    if (now - lastMoveTime < moveThreshold) return;
+    lastMoveTime = now;
+
     isMouseOver = true;
 
     const rect = cardContainer.getBoundingClientRect();
@@ -170,14 +203,9 @@ export const showShinyCard = async () => {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    const rotateY = (x - centerX) / 20;
-    const rotateX = (centerY - y) / 20;
-
-    // Store these values for smooth transition later
-    lastMouseX = rotateX;
-    lastMouseY = rotateY;
-
-    card.style.transform = `rotateY(${rotateY}deg) rotateX(${rotateX}deg)`;
+    // Calculate rotation with increased sensitivity for more dramatic effect
+    targetRotateY = (x - centerX) / 15; // Increased sensitivity (was /20)
+    targetRotateX = (centerY - y) / 15; // Increased sensitivity (was /20)
 
     const percentX = (x / rect.width) * 100;
     const percentY = (y / rect.height) * 100;
@@ -186,6 +214,7 @@ export const showShinyCard = async () => {
     lastShineX = percentX;
     lastShineY = percentY;
 
+    // Apply shine effect immediately for responsive feel
     shinyOverlay.style.background = `radial-gradient(circle at ${percentX}% ${percentY}%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%)`;
   });
 
