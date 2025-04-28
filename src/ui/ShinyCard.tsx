@@ -1,4 +1,4 @@
-import { defaultInputEventName } from "../utils/misc";
+import { isMobile } from "../utils/misc";
 import { storage } from "../utils/storage";
 
 const maxCardIndex = 36;
@@ -115,12 +115,6 @@ export const showShinyCard = async () => {
   shinyOverlay.style.transition = "none";
   shinyOverlay.style.willChange = "background"; // Optimize for animations
   shinyOverlay.style.userSelect = "none";
-
-  card.addEventListener(defaultInputEventName, () => {
-    cardIndex = (cardIndex + 1) % maxCardIndex;
-    const newCardName = `${cardIndex}.webp`;
-    img.src = `https://assets.mons.link/cards/bg/${newCardName}`;
-  });
 
   cardContainer.addEventListener("contextmenu", (e) => {
     e.preventDefault();
@@ -245,7 +239,7 @@ export const showShinyCard = async () => {
   let lastMoveTime = 0;
   const moveThreshold = 5; // ms between move events
 
-  cardContainer.addEventListener("mousemove", (e) => {
+  const handlePointerMove = (e: MouseEvent | TouchEvent) => {
     const now = Date.now();
     if (now - lastMoveTime < moveThreshold) return;
     lastMoveTime = now;
@@ -253,8 +247,21 @@ export const showShinyCard = async () => {
     isMouseOver = true;
 
     const rect = cardContainer.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
+
+    // Get coordinates based on event type
+    let clientX, clientY;
+    if ("touches" in e) {
+      // Touch event
+      clientX = e.touches[0].clientX;
+      clientY = e.touches[0].clientY;
+    } else {
+      // Mouse event
+      clientX = (e as MouseEvent).clientX;
+      clientY = (e as MouseEvent).clientY;
+    }
+
+    const x = clientX - rect.left;
+    const y = clientY - rect.top;
 
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
@@ -272,12 +279,28 @@ export const showShinyCard = async () => {
 
     // Apply shine effect immediately for responsive feel
     shinyOverlay.style.background = `radial-gradient(circle at ${percentX}% ${percentY}%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%)`;
-  });
+  };
 
-  cardContainer.addEventListener("mouseleave", () => {
+  const handlePointerLeave = () => {
     isMouseOver = false;
     transitioningFromMouse = true;
     transitionProgress = 0;
+  };
+
+  cardContainer.addEventListener("mousemove", handlePointerMove);
+  cardContainer.addEventListener("mouseleave", handlePointerLeave);
+  cardContainer.addEventListener("touchmove", handlePointerMove, { passive: true });
+  cardContainer.addEventListener("touchstart", handlePointerMove, { passive: true });
+  cardContainer.addEventListener("touchend", handlePointerLeave);
+  cardContainer.addEventListener("touchcancel", handlePointerLeave);
+
+  card.addEventListener("click", () => {
+    cardIndex = (cardIndex + 1) % maxCardIndex;
+    const newCardName = `${cardIndex}.webp`;
+    img.src = `https://assets.mons.link/cards/bg/${newCardName}`;
+    if (isMobile) {
+      handlePointerLeave();
+    }
   });
 
   card.appendChild(placeholder);
