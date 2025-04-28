@@ -129,7 +129,13 @@ export const showShinyCard = async () => {
 
   let isMouseOver = false;
   let animationFrameId: number | null = null;
-  let time = 0;
+  // Randomize initial time to vary starting position
+  let time = Math.random() * Math.PI * 2;
+  // Delay the start of animation
+  let animationStartDelay = 1500; // ms
+  let animationStartTime = Date.now() + animationStartDelay;
+  // Animation intensity factor (starts at 0 and gradually increases)
+  let animationIntensity = 0;
 
   // Store the last mouse position to smoothly transition back to animation
   let lastMouseX = 50;
@@ -149,6 +155,14 @@ export const showShinyCard = async () => {
 
   // Natural floating animation when mouse is not over the card
   const animateCard = () => {
+    const now = Date.now();
+
+    // Gradually increase animation intensity over time
+    if (now > animationStartTime) {
+      // Increase intensity over 2 seconds until it reaches 1
+      animationIntensity = Math.min(1, (now - animationStartTime) / 2000);
+    }
+
     time += 0.01;
 
     if (isMouseOver) {
@@ -166,8 +180,8 @@ export const showShinyCard = async () => {
       transitionProgress = 0;
     } else {
       // Natural animation values for card rotation only
-      const naturalRotateX = Math.sin(time) * 3;
-      const naturalRotateY = Math.cos(time * 0.8) * 3;
+      const naturalRotateX = Math.sin(time) * 3 * animationIntensity;
+      const naturalRotateY = Math.cos(time * 0.8) * 3 * animationIntensity;
 
       if (transitioningFromMouse) {
         // Increment transition progress
@@ -221,9 +235,9 @@ export const showShinyCard = async () => {
     animationFrameId = requestAnimationFrame(animateCard);
   };
 
-  // Initialize current rotation to match natural animation
-  currentRotateX = Math.sin(time) * 3;
-  currentRotateY = Math.cos(time * 0.8) * 3;
+  // Initialize current rotation to 0 (flat) instead of matching natural animation
+  currentRotateX = 0;
+  currentRotateY = 0;
 
   animationFrameId = requestAnimationFrame(animateCard);
 
