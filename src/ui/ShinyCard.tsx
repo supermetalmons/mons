@@ -349,11 +349,11 @@ async function showMons(card: HTMLElement) {
     }
   }
 
-  addImageToCard(card, "32.5%", "75%", demon, alpha);
-  addImageToCard(card, "44.7%", "75%", angel, alpha);
-  addImageToCard(card, "57.3%", "75%", drainer, alpha);
-  addImageToCard(card, "69.5%", "75%", spirit, alpha);
-  addImageToCard(card, "82%", "75%", mystic, alpha);
+  addImageToCard(card, "32.5%", "75%", demon, alpha, "demon");
+  addImageToCard(card, "44.7%", "75%", angel, alpha, "angel");
+  addImageToCard(card, "57.3%", "75%", drainer, alpha, "drainer");
+  addImageToCard(card, "69.5%", "75%", spirit, alpha, "spirit");
+  addImageToCard(card, "82%", "75%", mystic, alpha, "mystic");
 }
 
 async function showRandomStickers(card: HTMLElement) {
@@ -384,7 +384,7 @@ const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, to
   return textElement;
 };
 
-const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number): HTMLElement => {
+const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number, monType: string = ""): HTMLElement => {
   const imageContainer = document.createElement("div");
   imageContainer.style.position = "absolute";
   imageContainer.style.left = leftPosition;
@@ -393,7 +393,7 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
   imageContainer.style.aspectRatio = "1";
   imageContainer.style.overflow = "hidden";
   imageContainer.style.userSelect = "none";
-  imageContainer.style.pointerEvents = "none";
+  imageContainer.style.pointerEvents = monType ? "auto" : "none";
 
   if (imageData) {
     const img = document.createElement("img");
@@ -413,6 +413,22 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
     img.onload = () => {
       img.style.visibility = "visible";
     };
+
+    if (monType) {
+      imageContainer.addEventListener(defaultInputEventName, async (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const getRandomSpriteOfType = (await import(`../assets/monsSprites`)).getRandomSpriteOfType;
+        let newImageData = getRandomSpriteOfType(monType);
+        const currentSrc = img.src;
+        const currentImageData = currentSrc.split(",")[1];
+        while (newImageData === currentImageData) {
+          newImageData = getRandomSpriteOfType(monType);
+        }
+        img.src = `data:image/webp;base64,${newImageData}`;
+      });
+    }
+
     imageContainer.appendChild(img);
   }
 
