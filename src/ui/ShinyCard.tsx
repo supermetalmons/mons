@@ -19,6 +19,7 @@ const maxCardIndex = 36;
 let cardIndex = Math.floor(Math.random() * maxCardIndex);
 const colorMonsOnly = true;
 const showStickers = false;
+const showCustomNameBubble = false;
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -295,6 +296,10 @@ export const showShinyCard = async () => {
   const bubblesOverlay = createOverlayImage("https://assets.mons.link/cards/bubbles.webp");
   card.appendChild(bubblesOverlay);
 
+  if (showCustomNameBubble) {
+    addNameBubble(card);
+  }
+
   card.appendChild(emojiImg);
   card.appendChild(shinyOverlay);
 
@@ -447,14 +452,18 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
   return imageContainer;
 };
 
-const addPlaceholderBubbles = (card: HTMLElement): HTMLElement => {
+const addNameBubble = (card: HTMLElement) => {
+  createPlaceholderContainer(card, "34.3%", "25.6%", "45%", "9%");
+};
+
+const createPlaceholderContainer = (card: HTMLElement, left: string, top: string, width: string, height: string): HTMLElement => {
   const imageContainer = document.createElement("div");
   imageContainer.style.position = "absolute";
-  imageContainer.style.left = "34.3%";
-  imageContainer.style.top = "25.6%";
+  imageContainer.style.left = left;
+  imageContainer.style.top = top;
   imageContainer.style.borderRadius = "6px";
-  imageContainer.style.width = "45%";
-  imageContainer.style.height = "9%";
+  imageContainer.style.width = width;
+  imageContainer.style.height = height;
   imageContainer.style.overflow = "hidden";
   imageContainer.style.backgroundColor = "white";
   imageContainer.style.border = "1px solid #D0D0D050";
