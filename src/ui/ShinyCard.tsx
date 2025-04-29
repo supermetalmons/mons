@@ -57,7 +57,7 @@ export const showShinyCard = async () => {
   card.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.3)";
   card.style.background = CARD_BACKGROUND_GRADIENT;
   card.style.cursor = "pointer";
-  card.style.willChange = "transform"; // Optimize for animations
+  card.style.willChange = "transform";
   card.style.userSelect = "none";
 
   const img = document.createElement("img");
@@ -125,14 +125,12 @@ export const showShinyCard = async () => {
   shinyOverlay.style.width = "100%";
   shinyOverlay.style.height = "100%";
   shinyOverlay.style.borderRadius = "15px";
-  // Use linear gradient for idle state that looks better
   shinyOverlay.style.background = IDLE_SHINE_GRADIENT;
   shinyOverlay.style.opacity = "0.63";
   shinyOverlay.style.pointerEvents = "none";
   shinyOverlay.style.zIndex = "1";
-  // Remove transition property to prevent any abrupt changes
   shinyOverlay.style.transition = "none";
-  shinyOverlay.style.willChange = "background"; // Optimize for animations
+  shinyOverlay.style.willChange = "background";
   shinyOverlay.style.userSelect = "none";
 
   cardContainer.addEventListener("contextmenu", (e) => {
@@ -142,97 +140,76 @@ export const showShinyCard = async () => {
 
   let isMouseOver = false;
   let animationFrameId: number | null = null;
-  // Randomize initial time to vary starting position
   let time = Math.random() * Math.PI * 2;
-  // Delay the start of animation
-  let animationStartDelay = 1500; // ms
+  let animationStartDelay = 1500;
   let animationStartTime = Date.now() + animationStartDelay;
-  // Animation intensity factor (starts at 0 and gradually increases)
   let animationIntensity = 0;
 
-  // Store the last mouse position to smoothly transition back to animation
   let lastMouseX = 50;
   let lastMouseY = 50;
   let lastShineX = 50;
   let lastShineY = 50;
   let transitioningFromMouse = false;
   let transitionProgress = 0;
-  const transitionDuration = 180; // Keep original transition duration
+  const transitionDuration = 180;
 
-  // For smoother mouse tracking
   let currentRotateX = 0;
   let currentRotateY = 0;
   let targetRotateX = 0;
   let targetRotateY = 0;
-  const easeAmount = 0.15; // Higher value = faster response (0-1)
+  const easeAmount = 0.15;
 
-  // Natural floating animation when mouse is not over the card
   const animateCard = () => {
     const now = Date.now();
 
-    // Gradually increase animation intensity over time
     if (now > animationStartTime) {
-      // Increase intensity over 2 seconds until it reaches 1
       animationIntensity = Math.min(1, (now - animationStartTime) / 2000);
     }
 
     time += 0.01;
 
     if (isMouseOver) {
-      // When mouse is over, smoothly interpolate to target rotation
       currentRotateX += (targetRotateX - currentRotateX) * easeAmount;
       currentRotateY += (targetRotateY - currentRotateY) * easeAmount;
 
       card.style.transform = `rotateY(${currentRotateY}deg) rotateX(${currentRotateX}deg)`;
 
-      // Store these values for smooth transition later
       lastMouseX = currentRotateX;
       lastMouseY = currentRotateY;
 
       transitioningFromMouse = false;
       transitionProgress = 0;
     } else {
-      // Natural animation values for card rotation only
       const naturalRotateX = Math.sin(time) * 3 * animationIntensity;
       const naturalRotateY = Math.cos(time * 0.8) * 3 * animationIntensity;
 
       if (transitioningFromMouse) {
-        // Increment transition progress
         transitionProgress = Math.min(transitionProgress + 1, transitionDuration);
-        const t = transitionProgress / transitionDuration; // 0 to 1
+        const t = transitionProgress / transitionDuration;
 
-        // Smooth easing function
         const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
         const easedT = easeOutCubic(t);
 
-        // Interpolate between last mouse position and natural animation for card rotation
         currentRotateX = (1 - easedT) * lastMouseX + easedT * naturalRotateX;
         currentRotateY = (1 - easedT) * lastMouseY + easedT * naturalRotateY;
 
         card.style.transform = `rotateY(${currentRotateY}deg) rotateX(${currentRotateX}deg)`;
 
-        // Smoothly transition from radial gradient to linear gradient
         if (transitionProgress < transitionDuration) {
-          // During transition, blend between radial and linear gradients
           const radialOpacity = (1 - easedT) * 0.8;
           const linearOpacity = easedT * 0.3;
 
-          // Create a combined background with both gradients
-          // As the transition progresses, the radial gradient fades out while the linear gradient fades in
           shinyOverlay.style.background = TRANSITION_SHINE_GRADIENT(lastShineX, lastShineY, radialOpacity, linearOpacity);
         } else {
-          // When fully transitioned, use only the linear gradient
           shinyOverlay.style.background = IDLE_SHINE_GRADIENT;
           transitioningFromMouse = false;
         }
       } else {
-        // Normal animation when not transitioning - smoothly animate card rotation
         currentRotateX += (naturalRotateX - currentRotateX) * 0.05;
         currentRotateY += (naturalRotateY - currentRotateY) * 0.05;
 
         card.style.transform = `rotateY(${currentRotateY}deg) rotateX(${currentRotateX}deg)`;
 
-        // Use linear gradient for idle state
         shinyOverlay.style.background = IDLE_SHINE_GRADIENT;
       }
     }
@@ -240,15 +217,13 @@ export const showShinyCard = async () => {
     animationFrameId = requestAnimationFrame(animateCard);
   };
 
-  // Initialize current rotation to 0 (flat) instead of matching natural animation
   currentRotateX = 0;
   currentRotateY = 0;
 
   animationFrameId = requestAnimationFrame(animateCard);
 
-  // Use a throttled version of mousemove for better performance
   let lastMoveTime = 0;
-  const moveThreshold = 5; // ms between move events
+  const moveThreshold = 5;
 
   const handlePointerMove = (e: MouseEvent | TouchEvent) => {
     const now = Date.now();
@@ -259,14 +234,11 @@ export const showShinyCard = async () => {
 
     const rect = cardContainer.getBoundingClientRect();
 
-    // Get coordinates based on event type
     let clientX, clientY;
     if ("touches" in e) {
-      // Touch event
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
     } else {
-      // Mouse event
       clientX = (e as MouseEvent).clientX;
       clientY = (e as MouseEvent).clientY;
     }
@@ -277,18 +249,15 @@ export const showShinyCard = async () => {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
 
-    // Calculate rotation with increased sensitivity for more dramatic effect
-    targetRotateY = (x - centerX) / 15; // Increased sensitivity (was /20)
-    targetRotateX = (centerY - y) / 15; // Increased sensitivity (was /20)
+    targetRotateY = (x - centerX) / 15;
+    targetRotateX = (centerY - y) / 15;
 
     const percentX = (x / rect.width) * 100;
     const percentY = (y / rect.height) * 100;
 
-    // Store shine position for smooth transition
     lastShineX = percentX;
     lastShineY = percentY;
 
-    // Apply shine effect immediately for responsive feel
     shinyOverlay.style.background = HOVER_SHINE_GRADIENT(percentX, percentY);
   };
 
