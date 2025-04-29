@@ -19,7 +19,6 @@ const maxCardIndex = 36;
 let cardIndex = Math.floor(Math.random() * maxCardIndex);
 const colorMonsOnly = true;
 const showStickers = false;
-const showCustomNameBubble = false;
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -296,10 +295,6 @@ export const showShinyCard = async () => {
   const bubblesOverlay = createOverlayImage("https://assets.mons.link/cards/bubbles.webp");
   card.appendChild(bubblesOverlay);
 
-  if (showCustomNameBubble) {
-    addNameBubble(card);
-  }
-
   card.appendChild(emojiImg);
   card.appendChild(shinyOverlay);
 
@@ -330,6 +325,11 @@ export const showShinyCard = async () => {
   if (showStickers) {
     showRandomStickers(card);
   }
+
+  addPlaceholderBubble(card, "34.3%", "25.6%", "30%", "9%");
+  addPlaceholderBubble(card, "34.3%", "36.3%", "15.5%", "9%");
+  addPlaceholderBubble(card, "7.4%", "47.3%", "37.5%", "9%");
+  addPlaceholderBubble(card, "7.4%", "58.3%", "13.5%", "9%");
 };
 
 let demon = "";
@@ -452,11 +452,7 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
   return imageContainer;
 };
 
-const addNameBubble = (card: HTMLElement) => {
-  createPlaceholderContainer(card, "34.3%", "25.6%", "45%", "9%");
-};
-
-const createPlaceholderContainer = (card: HTMLElement, left: string, top: string, width: string, height: string): HTMLElement => {
+const addPlaceholderBubble = (card: HTMLElement, left: string, top: string, width: string, height: string, onClick?: () => void): HTMLElement => {
   const imageContainer = document.createElement("div");
   imageContainer.style.position = "absolute";
   imageContainer.style.left = left;
@@ -465,14 +461,25 @@ const createPlaceholderContainer = (card: HTMLElement, left: string, top: string
   imageContainer.style.width = width;
   imageContainer.style.height = height;
   imageContainer.style.overflow = "hidden";
-  imageContainer.style.backgroundColor = "white";
+  imageContainer.style.backgroundColor = "transparent";
+  imageContainer.style.opacity = "0";
   imageContainer.style.border = "1px solid #D0D0D050";
   imageContainer.style.boxSizing = "border-box";
   imageContainer.style.display = "flex";
   imageContainer.style.justifyContent = "center";
   imageContainer.style.alignItems = "center";
   imageContainer.style.userSelect = "none";
-  imageContainer.style.pointerEvents = "none";
+  imageContainer.style.pointerEvents = "auto";
+
+  imageContainer.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (onClick) {
+      onClick();
+    }
+  });
+
   card.appendChild(imageContainer);
   return imageContainer;
 };
