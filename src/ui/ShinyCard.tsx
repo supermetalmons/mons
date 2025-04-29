@@ -4,6 +4,7 @@ import { storage } from "../utils/storage";
 const maxCardIndex = 36;
 let cardIndex = Math.floor(Math.random() * maxCardIndex);
 const colorMonsOnly = true;
+const showStickers = false;
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -336,7 +337,9 @@ export const showShinyCard = async () => {
 
   observer.observe(document.body, { childList: true });
   showMons(card);
-  showRandomStickers(card);
+  if (showStickers) {
+    showRandomStickers(card);
+  }
 };
 
 let demon = "";
