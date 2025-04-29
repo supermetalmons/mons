@@ -300,7 +300,7 @@ export const showShinyCard = async () => {
 
   addTextToCard(card, "player id", "36.3%", "30%");
   addTextToCard(card, "9000", "36.3%", "41%");
-  addTextToCard(card, getRandomAsciimoji(), "10%", "52%");
+  const emoticonTextElement = addTextToCard(card, getRandomAsciimoji(), "10%", "52%");
   addTextToCard(card, "wip", "10%", "63%");
 
   cardContainer.appendChild(card);
@@ -326,10 +326,18 @@ export const showShinyCard = async () => {
     showRandomStickers(card);
   }
 
-  addPlaceholderBubble(card, "34.3%", "25.6%", "30%", "9%");
-  addPlaceholderBubble(card, "34.3%", "36.3%", "15.5%", "9%");
-  addPlaceholderBubble(card, "7.4%", "47.3%", "37.5%", "9%");
-  addPlaceholderBubble(card, "7.4%", "58.3%", "13.5%", "9%");
+  addPlaceholderBubble(card, "34.3%", "25.6%", "30%", "9%", handlePointerLeave);
+  addPlaceholderBubble(card, "34.3%", "36.3%", "15.5%", "9%", handlePointerLeave);
+
+  addPlaceholderBubble(card, "7.4%", "47.3%", "37.5%", "9%", handlePointerLeave, () => {
+    let newEmoji = getRandomAsciimoji();
+    while (newEmoji === emoticonTextElement.textContent) {
+      newEmoji = getRandomAsciimoji();
+    }
+    emoticonTextElement.textContent = newEmoji;
+  });
+
+  addPlaceholderBubble(card, "7.4%", "58.3%", "13.5%", "9%", handlePointerLeave);
 };
 
 let demon = "";
@@ -452,7 +460,7 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
   return imageContainer;
 };
 
-const addPlaceholderBubble = (card: HTMLElement, left: string, top: string, width: string, height: string, onClick?: () => void): HTMLElement => {
+const addPlaceholderBubble = (card: HTMLElement, left: string, top: string, width: string, height: string, handlePointerLeave: any, onClick?: () => void): HTMLElement => {
   const imageContainer = document.createElement("div");
   imageContainer.style.position = "absolute";
   imageContainer.style.left = left;
@@ -475,6 +483,10 @@ const addPlaceholderBubble = (card: HTMLElement, left: string, top: string, widt
   imageContainer.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
+
+    if (isMobile) {
+      handlePointerLeave();
+    }
 
     if (onClick) {
       onClick();
