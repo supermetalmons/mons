@@ -1,4 +1,5 @@
 import { emojis } from "../content/emojis";
+import { getRandomAsciimoji } from "../utils/asciimoji";
 import { defaultInputEventName, isMobile } from "../utils/misc";
 import { storage } from "../utils/storage";
 
@@ -294,7 +295,7 @@ export const showShinyCard = async () => {
 
   addTextToCard(card, "player id", "36.3%", "30%");
   addTextToCard(card, "9000", "36.3%", "41%");
-  addTextToCard(card, "／人◕ __ ◕人＼", "10%", "52%");
+  addTextToCard(card, getRandomAsciimoji(), "10%", "52%");
   addTextToCard(card, "wip", "10%", "63%");
 
   cardContainer.appendChild(card);
