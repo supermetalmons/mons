@@ -470,6 +470,7 @@ const addPlaceholderBubble = (card: HTMLElement, left: string, top: string, widt
   imageContainer.style.alignItems = "center";
   imageContainer.style.userSelect = "none";
   imageContainer.style.pointerEvents = "auto";
+  imageContainer.setAttribute("style", imageContainer.getAttribute("style") + "-webkit-tap-highlight-color: transparent; outline: none; -webkit-touch-callout: none;");
 
   imageContainer.addEventListener("click", (event) => {
     event.preventDefault();
