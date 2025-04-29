@@ -23,10 +23,8 @@ export const showShinyCard = async () => {
   const aspectRatio = 2430 / 1886;
   const maxWidth = Math.min(window.innerWidth * 0.8, 350);
   const width = maxWidth;
-  const height = width / aspectRatio;
-
+  cardContainer.style.aspectRatio = `${aspectRatio}`;
   cardContainer.style.width = `${width}px`;
-  cardContainer.style.height = `${height}px`;
   cardContainer.style.perspective = "1000px";
   cardContainer.style.zIndex = "1000";
   cardContainer.setAttribute("data-shiny-card", "true");
