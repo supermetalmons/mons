@@ -392,11 +392,11 @@ const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, to
   textElement.style.position = "absolute";
   textElement.style.left = leftPosition;
   textElement.style.top = topPosition;
-  textElement.style.color = "#D0D0D0";
+  textElement.style.color = "#DADADA";
   textElement.style.fontFamily = "Arial, sans-serif";
-  textElement.style.fontSize = "15px";
+  textElement.style.fontSize = "14px";
+  textElement.style.fontWeight = "555";
   textElement.style.transform = "translate(0, -50%)";
-  textElement.style.textShadow = "0px 0px 2px rgba(255, 255, 255, 0.8)";
   textElement.style.pointerEvents = "none";
   textElement.style.userSelect = "none";
 
