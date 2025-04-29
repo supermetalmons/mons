@@ -336,6 +336,7 @@ export const showShinyCard = async () => {
 
   observer.observe(document.body, { childList: true });
   showMons(card);
+  showRandomStickers(card);
 };
 
 let demon = "";
@@ -370,6 +371,16 @@ async function showMons(card: HTMLElement) {
   addImageToCard(card, "57.3%", "75%", drainer, alpha);
   addImageToCard(card, "69.5%", "75%", spirit, alpha);
   addImageToCard(card, "82%", "75%", mystic, alpha);
+}
+
+async function showRandomStickers(card: HTMLElement) {
+  const stickerOptions = ["zemred", "super-mana-piece-3", "speklmic", "omom-4", "omom-3", "omom-2", "omom", "omen-statue", "melmut", "lord-idgecreist", "king-snowbie", "hatchat", "gummy-deino", "gerp", "estalibur", "crystal-owg", "crystal-gummy-deino", "crystal-cloud-gabber", "armored-gummoskullj", "applecreme"];
+
+  const randomSticker = stickerOptions[Math.floor(Math.random() * stickerOptions.length)];
+  const stickerUrl = `https://assets.mons.link/cards/stickers/big-mon-top-right/${randomSticker}.webp`;
+
+  const stickers = createOverlayImage(stickerUrl);
+  card.appendChild(stickers);
 }
 
 const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, topPosition: string): HTMLElement => {
