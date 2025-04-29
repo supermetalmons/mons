@@ -1,6 +1,18 @@
 import { isMobile } from "../utils/misc";
 import { storage } from "../utils/storage";
 
+const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
+const IDLE_SHINE_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
+const HOVER_SHINE_GRADIENT = (percentX: number, percentY: number) => `radial-gradient(circle at ${percentX}% ${percentY}%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%)`;
+const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radialOpacity: number, linearOpacity: number) =>
+  `radial-gradient(circle at ${lastShineX}% ${lastShineY}%, 
+    rgba(255,255,255,${radialOpacity}) 0%, 
+    rgba(255,255,255,0) 60%),
+  linear-gradient(135deg, 
+    rgba(255,255,255,0) 0%, 
+    rgba(255,255,255,${linearOpacity}) 50%, 
+    rgba(255,255,255,0) 100%)`;
+
 const maxCardIndex = 36;
 let cardIndex = Math.floor(Math.random() * maxCardIndex);
 const colorMonsOnly = true;
@@ -42,7 +54,7 @@ export const showShinyCard = async () => {
   card.style.transition = "transform 0.1s ease-out";
   card.style.borderRadius = "15px";
   card.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.3)";
-  card.style.background = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
+  card.style.background = CARD_BACKGROUND_GRADIENT;
   card.style.cursor = "pointer";
   card.style.willChange = "transform"; // Optimize for animations
   card.style.userSelect = "none";
@@ -106,7 +118,7 @@ export const showShinyCard = async () => {
   shinyOverlay.style.height = "100%";
   shinyOverlay.style.borderRadius = "15px";
   // Use linear gradient for idle state that looks better
-  shinyOverlay.style.background = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
+  shinyOverlay.style.background = IDLE_SHINE_GRADIENT;
   shinyOverlay.style.opacity = "0.63";
   shinyOverlay.style.pointerEvents = "none";
   shinyOverlay.style.zIndex = "1";
@@ -199,18 +211,10 @@ export const showShinyCard = async () => {
 
           // Create a combined background with both gradients
           // As the transition progresses, the radial gradient fades out while the linear gradient fades in
-          shinyOverlay.style.background = `
-            radial-gradient(circle at ${lastShineX}% ${lastShineY}%, 
-              rgba(255,255,255,${radialOpacity}) 0%, 
-              rgba(255,255,255,0) 60%),
-            linear-gradient(135deg, 
-              rgba(255,255,255,0) 0%, 
-              rgba(255,255,255,${linearOpacity}) 50%, 
-              rgba(255,255,255,0) 100%)
-          `;
+          shinyOverlay.style.background = TRANSITION_SHINE_GRADIENT(lastShineX, lastShineY, radialOpacity, linearOpacity);
         } else {
           // When fully transitioned, use only the linear gradient
-          shinyOverlay.style.background = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
+          shinyOverlay.style.background = IDLE_SHINE_GRADIENT;
           transitioningFromMouse = false;
         }
       } else {
@@ -221,7 +225,7 @@ export const showShinyCard = async () => {
         card.style.transform = `rotateY(${currentRotateY}deg) rotateX(${currentRotateX}deg)`;
 
         // Use linear gradient for idle state
-        shinyOverlay.style.background = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
+        shinyOverlay.style.background = IDLE_SHINE_GRADIENT;
       }
     }
 
@@ -277,7 +281,7 @@ export const showShinyCard = async () => {
     lastShineY = percentY;
 
     // Apply shine effect immediately for responsive feel
-    shinyOverlay.style.background = `radial-gradient(circle at ${percentX}% ${percentY}%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%)`;
+    shinyOverlay.style.background = HOVER_SHINE_GRADIENT(percentX, percentY);
   };
 
   const handlePointerLeave = () => {
