@@ -1,6 +1,6 @@
 import { emojis } from "../content/emojis";
 import { getRandomAsciimoji } from "../utils/asciimoji";
-import { defaultInputEventName, isMobile } from "../utils/misc";
+import { isMobile } from "../utils/misc";
 import { storage } from "../utils/storage";
 
 const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
@@ -99,11 +99,16 @@ export const showShinyCard = async () => {
   };
 
   emojiImg.style.cursor = "pointer";
-  emojiImg.addEventListener(defaultInputEventName, (e) => {
+  emojiImg.addEventListener("click", (e) => {
     // TODO: send and store emoji updates
+    e.preventDefault();
     e.stopPropagation();
     const playerEmojiId = emojis.getRandomEmojiId();
     emojiImg.src = `https://assets.mons.link/emojipack_hq/${playerEmojiId}.webp`;
+
+    if (isMobile) {
+      handlePointerLeave();
+    }
   });
 
   const placeholder = document.createElement("div");
@@ -316,7 +321,7 @@ export const showShinyCard = async () => {
   });
 
   observer.observe(document.body, { childList: true });
-  showMons(card);
+  showMons(card, handlePointerLeave);
   if (showStickers) {
     showRandomStickers(card);
   }
@@ -328,7 +333,7 @@ let drainer = "";
 let spirit = "";
 let mystic = "";
 
-async function showMons(card: HTMLElement) {
+async function showMons(card: HTMLElement, handlePointerLeave: any) {
   const alpha = colorMonsOnly ? 1 : 0.77;
 
   if (!drainer) {
@@ -349,11 +354,11 @@ async function showMons(card: HTMLElement) {
     }
   }
 
-  addImageToCard(card, "32.5%", "75%", demon, alpha, "demon");
-  addImageToCard(card, "44.7%", "75%", angel, alpha, "angel");
-  addImageToCard(card, "57.3%", "75%", drainer, alpha, "drainer");
-  addImageToCard(card, "69.5%", "75%", spirit, alpha, "spirit");
-  addImageToCard(card, "82%", "75%", mystic, alpha, "mystic");
+  addImageToCard(card, "32.5%", "75%", demon, alpha, "demon", handlePointerLeave);
+  addImageToCard(card, "44.7%", "75%", angel, alpha, "angel", handlePointerLeave);
+  addImageToCard(card, "57.3%", "75%", drainer, alpha, "drainer", handlePointerLeave);
+  addImageToCard(card, "69.5%", "75%", spirit, alpha, "spirit", handlePointerLeave);
+  addImageToCard(card, "82%", "75%", mystic, alpha, "mystic", handlePointerLeave);
 }
 
 async function showRandomStickers(card: HTMLElement) {
@@ -384,7 +389,7 @@ const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, to
   return textElement;
 };
 
-const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number, monType: string = ""): HTMLElement => {
+const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number, monType: string = "", handlePointerLeave: any = null): HTMLElement => {
   const imageContainer = document.createElement("div");
   imageContainer.style.position = "absolute";
   imageContainer.style.left = leftPosition;
@@ -394,6 +399,7 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
   imageContainer.style.overflow = "hidden";
   imageContainer.style.userSelect = "none";
   imageContainer.style.pointerEvents = monType ? "auto" : "none";
+  imageContainer.setAttribute("style", imageContainer.getAttribute("style") + "-webkit-tap-highlight-color: transparent; outline: none; -webkit-touch-callout: none;");
 
   if (imageData) {
     const img = document.createElement("img");
@@ -405,6 +411,7 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
     img.style.opacity = alpha.toString();
     img.style.userSelect = "none";
     img.style.pointerEvents = "none";
+    img.setAttribute("style", img.getAttribute("style") + "-webkit-tap-highlight-color: transparent;");
     img.draggable = false;
     img.src = `data:image/webp;base64,${imageData}`;
     img.onerror = () => {
@@ -415,7 +422,7 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
     };
 
     if (monType) {
-      imageContainer.addEventListener(defaultInputEventName, async (event) => {
+      imageContainer.addEventListener("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
         const getRandomSpriteOfType = (await import(`../assets/monsSprites`)).getRandomSpriteOfType;
@@ -426,6 +433,10 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
           newImageData = getRandomSpriteOfType(monType);
         }
         img.src = `data:image/webp;base64,${newImageData}`;
+
+        if (isMobile) {
+          handlePointerLeave();
+        }
       });
     }
 
