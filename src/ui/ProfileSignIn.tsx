@@ -203,6 +203,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   closeProfilePopupIfAny = () => {
+    didDismissSomethingWithOutsideTapJustNow();
     setIsOpen(false);
     hideShinyCard();
     enterProfileEditingMode(false);
