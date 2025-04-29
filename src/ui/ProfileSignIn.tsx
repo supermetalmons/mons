@@ -181,8 +181,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       }
 
       if (isOpen && !isInsidePopover && !isInsideShinyCard) {
-        setIsOpen(false);
         didDismissSomethingWithOutsideTapJustNow();
+        setIsOpen(false);
         hideShinyCard();
         enterProfileEditingMode(false);
       }
