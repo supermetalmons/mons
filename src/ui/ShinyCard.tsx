@@ -1,4 +1,5 @@
-import { isMobile } from "../utils/misc";
+import { emojis } from "../content/emojis";
+import { defaultInputEventName, isMobile } from "../utils/misc";
 import { storage } from "../utils/storage";
 
 const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
@@ -87,7 +88,6 @@ export const showShinyCard = async () => {
   emojiImg.style.top = "13.5%";
   emojiImg.style.left = "8%";
   emojiImg.style.userSelect = "none";
-  emojiImg.style.pointerEvents = "none";
   emojiImg.draggable = false;
   emojiImg.src = `https://assets.mons.link/emojipack_hq/${storage.getPlayerEmojiId("1")}.webp`;
   emojiImg.onerror = () => {
@@ -96,6 +96,14 @@ export const showShinyCard = async () => {
   emojiImg.onload = () => {
     emojiImg.style.visibility = "visible";
   };
+
+  emojiImg.style.cursor = "pointer";
+  emojiImg.addEventListener(defaultInputEventName, (e) => {
+    // TODO: send and store emoji updates
+    e.stopPropagation();
+    const playerEmojiId = emojis.getRandomEmojiId();
+    emojiImg.src = `https://assets.mons.link/emojipack_hq/${playerEmojiId}.webp`;
+  });
 
   const placeholder = document.createElement("div");
   placeholder.style.position = "absolute";
