@@ -15,6 +15,8 @@ import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
 import { toggleBoardStyle } from "../content/boardStyles";
 import { ControlsContainer, BrushButton, NavigationListButton, ControlButton, BottomPillButton, ReactionButton, ReactionPicker, ResignButton, ResignConfirmation } from "./BottomControlsStyles";
 
+const deltaTimeOutsideTap = isMobile ? 42 : 420;
+
 export enum PrimaryActionType {
   None = "none",
   JoinGame = "joinGame",
@@ -30,9 +32,15 @@ export function didDismissSomethingWithOutsideTapJustNow() {
 export let closeNavigationPopupIfAny: () => void = () => {};
 export let setNavigationListButtonVisible: (visible: boolean) => void;
 
+export function resetOutsideTapDismissTimeout() {
+  if (!isMobile) {
+    latestModalOutsideTapDismissDate -= 1000;
+  }
+}
+
 export function didNotDismissAnythingWithOutsideTapJustNow(): boolean {
   let delta = Date.now() - latestModalOutsideTapDismissDate;
-  return delta >= 42;
+  return delta >= deltaTimeOutsideTap;
 }
 
 export function hasNavigationPopupVisible(): boolean {

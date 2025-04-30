@@ -5,7 +5,7 @@ import { Highlight, HighlightKind, InputModifier, Location, Sound, Trace, ItemKi
 import { colors, currentAssetsSet, AssetsSet, isCustomPictureBoardEnabled, isPangchiuBoard, setCurrentAssetsSet } from "../content/boardStyles";
 import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
 import { playSounds } from "../content/sounds";
-import { hasNavigationPopupVisible, didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible } from "../ui/BottomControls";
+import { hasNavigationPopupVisible, didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible, resetOutsideTapDismissTimeout } from "../ui/BottomControls";
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, openSolAddress, openEthAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
@@ -245,7 +245,7 @@ async function initializeAssets(onStart: boolean) {
 
   if (isExperimentingWithSprites) {
     const getRandomSpriteOfType = (await import(`../assets/monsSprites`)).getRandomSpriteOfType;
-    
+
     drainer = loadImage(getRandomSpriteOfType("drainer"), "drainer", true);
     angel = loadImage(getRandomSpriteOfType("angel"), "angel", true);
     demon = loadImage(getRandomSpriteOfType("demon"), "demon", true);
@@ -1593,7 +1593,12 @@ export function setupBoard() {
   initializeBoardElements();
 
   document.addEventListener(defaultInputEventName, function (event) {
-    if (!didNotDismissAnythingWithOutsideTapJustNow() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible()) {
+    const hasVisiblePopups = hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible();
+    const didDismissSmth = !didNotDismissAnythingWithOutsideTapJustNow();
+    if (didDismissSmth || hasVisiblePopups) {
+      if (!hasVisiblePopups && didDismissSmth) {
+        resetOutsideTapDismissTimeout();
+      }
       return;
     }
 
