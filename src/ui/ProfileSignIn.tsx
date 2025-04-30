@@ -9,6 +9,7 @@ import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { setAuthStatusGlobally } from "../connection/authentication";
 import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
 import { NameEditModal } from "./NameEditModal";
+import { InventoryModal } from "./InventoryModal";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { hideShinyCard, showShinyCard } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
@@ -119,12 +120,14 @@ const CustomConnectButton = styled(BaseButton)`
 
 let getIsProfilePopupOpen: () => boolean = () => false;
 let getIsEditingPopupOpen: () => boolean = () => false;
+let getIsInventoryPopupOpen: () => boolean = () => false;
 export let closeProfilePopupIfAny: () => void = () => {};
 export let handleEditDisplayName: () => void;
+export let showInventory: () => void;
 export let handleLogout: () => void;
 
 export function hasProfilePopupVisible(): boolean {
-  return getIsProfilePopupOpen() || getIsEditingPopupOpen();
+  return getIsProfilePopupOpen() || getIsEditingPopupOpen() || getIsInventoryPopupOpen();
 }
 
 let setProfileDisplayNameGlobal: ((name: string) => void) | null = null;
@@ -162,8 +165,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const [isSolanaConnecting, setIsSolanaConnecting] = useState(false);
   const [profileDisplayName, setProfileDisplayName] = useState(() => formatDisplayName(pendingUsername, pendingEthAddress, pendingSolAddress));
   const [isEditingName, setIsEditingName] = useState(false);
+  const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
+  getIsInventoryPopupOpen = () => isInventoryOpen;
   getIsEditingPopupOpen = () => isEditingName;
   getIsProfilePopupOpen = () => isOpen;
   setProfileDisplayNameGlobal = setProfileDisplayName;
@@ -224,6 +229,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsOpen(!isOpen);
   };
 
+  showInventory = () => {
+    setIsInventoryOpen(true);
+  };
+
   handleEditDisplayName = () => {
     setIsEditingName(true);
   };
@@ -232,6 +241,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     updateProfileDisplayName(newName, storage.getEthAddress(""), storage.getSolAddress(""));
     storage.setUsername(newName);
     setIsEditingName(false);
+  };
+
+  const handleDismissInventory = () => {
+    didDismissSomethingWithOutsideTapJustNow();
+    setIsInventoryOpen(false);
   };
 
   const handleCancelEditName = () => {
@@ -310,6 +324,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         </ConnectButtonPopover>
       )}
       {isEditingName && <NameEditModal initialName={storage.getUsername("")} onSave={handleSaveDisplayName} onCancel={handleCancelEditName} />}
+      {isInventoryOpen && <InventoryModal onCancel={handleDismissInventory} />}
     </Container>
   );
 };

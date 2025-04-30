@@ -19,7 +19,7 @@ import { isMobileOrVision } from "./utils/misc";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { startPlayingMusic, stopPlayingMusic } from "./content/music";
 import { storage } from "./utils/storage";
-import ProfileSignIn, { handleLogout } from "./ui/ProfileSignIn";
+import ProfileSignIn, { handleLogout, showInventory } from "./ui/ProfileSignIn";
 import FullScreenAlert from "./ui/FullScreenAlert";
 import { setBoardDimmed } from "./game/board";
 
@@ -118,7 +118,7 @@ const App = () => {
 
   const handleGemButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    // TODO: implement
+    showInventory();
   };
 
   const handleInfoButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -163,7 +163,7 @@ const App = () => {
                           <button className="info-button" onClick={!isMobile ? handleUndoEditButtonClick : undefined} onTouchStart={isMobile ? handleUndoEditButtonClick : undefined} aria-label="Undo" disabled>
                             <FaUndo />
                           </button>
-                          <button className="music-button" onClick={!isMobile ? handleGemButtonClick : undefined} onTouchStart={isMobile ? handleGemButtonClick : undefined} aria-label="NFTs" disabled>
+                          <button className="music-button" onClick={!isMobile ? handleGemButtonClick : undefined} onTouchStart={isMobile ? handleGemButtonClick : undefined} aria-label="NFTs">
                             <FaRegGem />
                           </button>
                           <button className="sound-button" onClick={handleLogOutButtonClick} aria-label={"Log Out"}>
