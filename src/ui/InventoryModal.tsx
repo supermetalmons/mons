@@ -28,8 +28,12 @@ const InventoryPopup = styled.div`
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   width: 85%;
   max-width: 320px;
+  max-height: 42vh;
+  display: flex;
+  flex-direction: column;
   user-select: none;
   outline: none;
+  overflow: hidden;
 
   @media (prefers-color-scheme: dark) {
     background-color: #1a1a1afa;
@@ -58,11 +62,76 @@ const Content = styled.div`
   word-break: break-word;
   overflow-wrap: break-word;
   max-width: 100%;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 
   @media (prefers-color-scheme: dark) {
     color: #d0d0d0;
   }
 `;
+
+const NFTGridContainer = styled.div`
+  overflow-y: auto;
+  margin-top: 16px;
+  flex: 1;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const NFTGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+`;
+
+const NFTImage = styled.img`
+  width: 100%;
+  aspect-ratio: 1/1;
+  object-fit: cover;
+  border-radius: 4px;
+  background: #f5f5f5;
+
+  @media (prefers-color-scheme: dark) {
+    background: #2a2a2a;
+  }
+`;
+
+const NFTImageContainer = styled.div`
+  width: 100%;
+  aspect-ratio: 1/1;
+  border-radius: 4px;
+  background: #f5f5f5;
+  overflow: hidden;
+  cursor: pointer;
+
+  @media (prefers-color-scheme: dark) {
+    background: #2a2a2a;
+  }
+`;
+
+interface NFT {
+  id: string;
+  content: {
+    json_uri: string;
+    links?: {
+      image: string;
+    };
+    metadata: {
+      name: string;
+      image?: string;
+    };
+  };
+  ownership: {
+    owner: string;
+  };
+}
 
 export interface InventoryModalProps {
   onCancel: () => void;
@@ -70,23 +139,46 @@ export interface InventoryModalProps {
 
 export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   const popupRef = useRef<HTMLDivElement>(null);
-  const [balanceInfo, setBalanceInfo] = useState<string | null>(null);
+  const [nfts, setNfts] = useState<NFT[]>([]);
+  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (popupRef.current) {
       popupRef.current.focus();
     }
 
-    const storedSolAddress = storage.getSolAddress("");
+    const apiKey = "";
+    const storedSolAddress = "DfgKdiMKvqWC2RHFuWZr6Mfkqor7KgouK5Pohy6AsYPe"; // storage.getSolAddress(""); // TODO: dev tmp
 
     if (storedSolAddress) {
-      const fetchSolBalance = async () => {
+      const fetchTokens = async () => {
         try {
-          setBalanceInfo(storedSolAddress);
+          const response = await fetch("https://mainnet.helius-rpc.com/?api-key=" + apiKey, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              jsonrpc: "2.0",
+              id: "my-id",
+              method: "searchAssets",
+              params: {
+                ownerAddress: storedSolAddress,
+                grouping: ["collection", "CjL5WpAmf4cMEEGwZGTfTDKWok9a92ykq9aLZrEK2D5H"],
+                page: 1,
+                limit: 50,
+              },
+            }),
+          });
+
+          const data = await response.json();
+          if (data?.result?.items) {
+            setNfts(data.result.items);
+          }
         } catch {}
       };
 
-      fetchSolBalance();
+      fetchTokens();
     }
   }, []);
 
@@ -100,18 +192,44 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     }
   };
 
+  const handleImageLoad = (id: string) => {
+    setLoadedImages((prev) => ({ ...prev, [id]: true }));
+  };
+
+  const handleImageError = (id: string) => {
+    setLoadedImages((prev) => ({ ...prev, [id]: false }));
+  };
+
+  const getNFTImageUrl = (nft: NFT) => {
+    if (nft.content.links?.image) {
+      return nft.content.links.image;
+    }
+    if (nft.content.metadata?.image) {
+      return nft.content.metadata.image;
+    }
+    return nft.content.json_uri;
+  };
+
+  const openNFTOnTensor = (nftId: string) => {
+    window.open(`https://www.tensor.trade/item/${nftId}`, "_blank");
+  };
+
   return (
     <InventoryOverlay onClick={onCancel}>
       <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus>
         <Title>swagpack</Title>
         <Content>
           soon
-          {balanceInfo && (
-            <>
-              <br />
-              <br />
-              {balanceInfo}
-            </>
+          {nfts.length > 0 && (
+            <NFTGridContainer>
+              <NFTGrid>
+                {nfts.map((nft) => (
+                  <NFTImageContainer key={nft.id} onClick={() => openNFTOnTensor(nft.id)}>
+                    {loadedImages[nft.id] !== false && <NFTImage src={getNFTImageUrl(nft)} alt={nft.content.metadata?.name || ""} onLoad={() => handleImageLoad(nft.id)} onError={() => handleImageError(nft.id)} style={{ display: loadedImages[nft.id] === false ? "none" : "block" }} />}
+                  </NFTImageContainer>
+                ))}
+              </NFTGrid>
+            </NFTGridContainer>
           )}
         </Content>
         <ButtonsContainer>
