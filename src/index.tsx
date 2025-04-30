@@ -160,10 +160,10 @@ const App = () => {
                         </>
                       ) : (
                         <>
-                          <button className="info-button" onClick={!isMobile ? handleUndoEditButtonClick : undefined} onTouchStart={isMobile ? handleUndoEditButtonClick : undefined} aria-label="Undo">
+                          <button className="info-button" onClick={!isMobile ? handleUndoEditButtonClick : undefined} onTouchStart={isMobile ? handleUndoEditButtonClick : undefined} aria-label="Undo" disabled>
                             <FaUndo />
                           </button>
-                          <button className="music-button" onClick={!isMobile ? handleGemButtonClick : undefined} onTouchStart={isMobile ? handleGemButtonClick : undefined} aria-label="NFTs">
+                          <button className="music-button" onClick={!isMobile ? handleGemButtonClick : undefined} onTouchStart={isMobile ? handleGemButtonClick : undefined} aria-label="NFTs" disabled>
                             <FaRegGem />
                           </button>
                           <button className="sound-button" onClick={handleLogOutButtonClick} aria-label={"Log Out"}>

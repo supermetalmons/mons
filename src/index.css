@@ -210,8 +210,12 @@ img {
   -webkit-touch-callout: none;
   touch-action: none;
 
+  &:disabled {
+    opacity: 0.5;
+  }
+
   @media (hover: hover) and (pointer: fine) {
-    &:hover {
+    &:hover:not(:disabled) {
       color: #767787ef;
     }
   }
@@ -220,7 +224,7 @@ img {
     color: #767787a9;
 
     @media (hover: hover) and (pointer: fine) {
-      &:hover {
+      &:hover:not(:disabled) {
         color: #767787f0;
       }
     }
