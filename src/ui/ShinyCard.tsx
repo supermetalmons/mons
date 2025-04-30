@@ -274,12 +274,15 @@ export const showShinyCard = async () => {
     transitionProgress = 0;
   };
 
-  cardContainer.addEventListener("mousemove", handlePointerMove);
-  cardContainer.addEventListener("mouseleave", handlePointerLeave);
-  cardContainer.addEventListener("touchmove", handlePointerMove, { passive: true });
-  cardContainer.addEventListener("touchstart", handlePointerMove, { passive: true });
-  cardContainer.addEventListener("touchend", handlePointerLeave);
-  cardContainer.addEventListener("touchcancel", handlePointerLeave);
+  if (isMobile) {
+    cardContainer.addEventListener("touchmove", handlePointerMove, { passive: true });
+    cardContainer.addEventListener("touchstart", handlePointerMove, { passive: true });
+    cardContainer.addEventListener("touchend", handlePointerLeave);
+    cardContainer.addEventListener("touchcancel", handlePointerLeave);
+  } else {
+    cardContainer.addEventListener("mousemove", handlePointerMove);
+    cardContainer.addEventListener("mouseleave", handlePointerLeave);
+  }
 
   card.addEventListener("click", () => {
     cardIndex = (cardIndex + 1) % maxCardIndex;
