@@ -197,9 +197,6 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     signOut()
       .then(() => window.location.reload())
       .catch(() => window.location.reload());
-    setIsOpen(false);
-    hideShinyCard();
-    enterProfileEditingMode(false);
   };
 
   closeProfilePopupIfAny = () => {
