@@ -1,6 +1,7 @@
-import React, { useRef, useEffect } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { ButtonsContainer, SaveButton } from "./NameEditModal";
+import { storage } from "../utils/storage";
 
 const InventoryOverlay = styled.div`
   position: fixed;
@@ -54,6 +55,9 @@ const Content = styled.div`
   margin-bottom: 16px;
   user-select: none;
   cursor: default;
+  word-break: break-word;
+  overflow-wrap: break-word;
+  max-width: 100%;
 
   @media (prefers-color-scheme: dark) {
     color: #d0d0d0;
@@ -66,10 +70,23 @@ export interface InventoryModalProps {
 
 export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   const popupRef = useRef<HTMLDivElement>(null);
+  const [balanceInfo, setBalanceInfo] = useState<string | null>(null);
 
   useEffect(() => {
     if (popupRef.current) {
       popupRef.current.focus();
+    }
+
+    const storedSolAddress = storage.getSolAddress("");
+
+    if (storedSolAddress) {
+      const fetchSolBalance = async () => {
+        try {
+          setBalanceInfo(storedSolAddress);
+        } catch {}
+      };
+
+      fetchSolBalance();
     }
   }, []);
 
@@ -87,7 +104,16 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     <InventoryOverlay onClick={onCancel}>
       <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus>
         <Title>swagpack</Title>
-        <Content>soon</Content>
+        <Content>
+          soon
+          {balanceInfo && (
+            <>
+              <br />
+              <br />
+              {balanceInfo}
+            </>
+          )}
+        </Content>
         <ButtonsContainer>
           <SaveButton onClick={onCancel} disabled={false}>
             OK
