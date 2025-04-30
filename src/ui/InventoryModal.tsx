@@ -74,11 +74,15 @@ const Content = styled.div`
 
 const NFTGridContainer = styled.div`
   overflow-y: auto;
+  overflow-x: hidden;
   margin-top: 16px;
   flex: 1;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
+  width: 100%;
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior: contain;
 
   &::-webkit-scrollbar {
     display: none;
@@ -87,33 +91,40 @@ const NFTGridContainer = styled.div`
 
 const NFTGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(5, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
   gap: 8px;
-`;
-
-const NFTImage = styled.img`
   width: 100%;
-  aspect-ratio: 1/1;
-  object-fit: cover;
-  border-radius: 4px;
-  background: #f5f5f5;
-
-  @media (prefers-color-scheme: dark) {
-    background: #2a2a2a;
-  }
+  padding-right: 4px;
 `;
 
-const NFTImageContainer = styled.div`
+const NFTNameContainer = styled.div`
   width: 100%;
   aspect-ratio: 1/1;
   border-radius: 4px;
   background: #f5f5f5;
   overflow: hidden;
   cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 4px;
+  text-align: center;
+  box-sizing: border-box;
 
   @media (prefers-color-scheme: dark) {
     background: #2a2a2a;
   }
+`;
+
+const NFTName = styled.span`
+  font-size: 0.7rem;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  display: -webkit-box;
+  -webkit-line-clamp: 4;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  max-height: 100%;
 `;
 
 interface NFT {
@@ -140,7 +151,6 @@ export interface InventoryModalProps {
 export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   const popupRef = useRef<HTMLDivElement>(null);
   const [nfts, setNfts] = useState<NFT[]>([]);
-  const [loadedImages, setLoadedImages] = useState<Record<string, boolean>>({});
 
   useEffect(() => {
     if (popupRef.current) {
@@ -192,24 +202,6 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     }
   };
 
-  const handleImageLoad = (id: string) => {
-    setLoadedImages((prev) => ({ ...prev, [id]: true }));
-  };
-
-  const handleImageError = (id: string) => {
-    setLoadedImages((prev) => ({ ...prev, [id]: false }));
-  };
-
-  const getNFTImageUrl = (nft: NFT) => {
-    if (nft.content.links?.image) {
-      return nft.content.links.image;
-    }
-    if (nft.content.metadata?.image) {
-      return nft.content.metadata.image;
-    }
-    return nft.content.json_uri;
-  };
-
   const openNFTOnTensor = (nftId: string) => {
     window.open(`https://www.tensor.trade/item/${nftId}`, "_blank");
   };
@@ -224,9 +216,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
             <NFTGridContainer>
               <NFTGrid>
                 {nfts.map((nft) => (
-                  <NFTImageContainer key={nft.id} onClick={() => openNFTOnTensor(nft.id)}>
-                    {loadedImages[nft.id] !== false && <NFTImage src={getNFTImageUrl(nft)} alt={nft.content.metadata?.name || ""} onLoad={() => handleImageLoad(nft.id)} onError={() => handleImageError(nft.id)} style={{ display: loadedImages[nft.id] === false ? "none" : "block" }} />}
-                  </NFTImageContainer>
+                  <NFTNameContainer key={nft.id} onClick={() => openNFTOnTensor(nft.id)}>
+                    <NFTName>{nft.content.metadata?.name || "Unnamed"}</NFTName>
+                  </NFTNameContainer>
                 ))}
               </NFTGrid>
             </NFTGridContainer>
