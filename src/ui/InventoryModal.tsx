@@ -1,6 +1,6 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect } from "react";
 import styled from "styled-components";
-import { isMobile } from "../utils/misc";
+import { ButtonsContainer, SaveButton } from "./NameEditModal";
 
 const InventoryOverlay = styled.div`
   position: fixed;
@@ -11,8 +11,7 @@ const InventoryOverlay = styled.div`
   background-color: rgba(0, 0, 0, 0.3);
   display: flex;
   justify-content: center;
-  align-items: ${isMobile ? "flex-start" : "center"};
-  padding-top: ${isMobile ? "59px" : "0"};
+  align-items: center;
   z-index: 1023;
   user-select: none;
 
@@ -29,6 +28,7 @@ const InventoryPopup = styled.div`
   width: 85%;
   max-width: 320px;
   user-select: none;
+  outline: none;
 
   @media (prefers-color-scheme: dark) {
     background-color: #1a1a1afa;
@@ -67,11 +67,32 @@ export interface InventoryModalProps {
 export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   const popupRef = useRef<HTMLDivElement>(null);
 
+  useEffect(() => {
+    if (popupRef.current) {
+      popupRef.current.focus();
+    }
+  }, []);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      e.stopPropagation();
+      onCancel();
+    } else if (e.key === "Escape") {
+      e.stopPropagation();
+      onCancel();
+    }
+  };
+
   return (
     <InventoryOverlay onClick={onCancel}>
-      <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()}>
+      <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus>
         <Title>swagpack</Title>
         <Content>soon</Content>
+        <ButtonsContainer>
+          <SaveButton onClick={onCancel} disabled={false}>
+            OK
+          </SaveButton>
+        </ButtonsContainer>
       </InventoryPopup>
     </InventoryOverlay>
   );

@@ -86,14 +86,14 @@ const ErrorMessage = styled.div`
   }
 `;
 
-const ButtonsContainer = styled.div`
+export const ButtonsContainer = styled.div`
   display: flex;
   justify-content: flex-end;
   gap: 8px;
   margin-top: 4px;
 `;
 
-const Button = styled.button`
+export const Button = styled.button`
   padding: 10px 16px;
   border: none;
   border-radius: 8px;
@@ -129,7 +129,7 @@ const CancelButton = styled(Button)`
   }
 `;
 
-const SaveButton = styled(Button)<{ disabled: boolean }>`
+export const SaveButton = styled(Button)<{ disabled: boolean }>`
   --color-default: #007aff;
   --color-default-hover: #0069d9;
   --color-default-active: #0056b3;
