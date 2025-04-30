@@ -107,6 +107,11 @@ async function ensureAuthenticated(): Promise<string | undefined> {
   return undefined;
 }
 
+export async function getNfts(sol: string): Promise<any> {
+  await ensureAuthenticated();
+  return firebaseConnection.getNfts(sol);
+}
+
 export async function verifyEthAddress(message: string, signature: string): Promise<any> {
   await ensureAuthenticated();
   return firebaseConnection.verifyEthAddress(message, signature);

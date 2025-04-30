@@ -201,6 +201,18 @@ class FirebaseConnection {
     }
   }
 
+  public async getNfts(sol: string): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const getNftsFunction = httpsCallable(this.functions, "getNfts");
+      const response = await getNftsFunction({ sol });
+      return response.data;
+    } catch (error) {
+      console.error("Error getting nfts:", error);
+      throw error;
+    }
+  }
+
   public async verifyEthAddress(message: string, signature: string): Promise<any> {
     try {
       await this.ensureAuthenticated();

@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { ButtonsContainer, SaveButton } from "./NameEditModal";
 import { storage } from "../utils/storage";
+import { getNfts } from "../connection/connection";
 
 const InventoryOverlay = styled.div`
   position: fixed;
@@ -157,35 +158,15 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
       popupRef.current.focus();
     }
 
-    const apiKey = "";
-    const storedSolAddress = "DfgKdiMKvqWC2RHFuWZr6Mfkqor7KgouK5Pohy6AsYPe"; // storage.getSolAddress(""); // TODO: dev tmp
+    const storedSolAddress = storage.getSolAddress("");
 
     if (storedSolAddress) {
       const fetchTokens = async () => {
-        try {
-          const response = await fetch("https://mainnet.helius-rpc.com/?api-key=" + apiKey, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              jsonrpc: "2.0",
-              id: "my-id",
-              method: "searchAssets",
-              params: {
-                ownerAddress: storedSolAddress,
-                grouping: ["collection", "CjL5WpAmf4cMEEGwZGTfTDKWok9a92ykq9aLZrEK2D5H"],
-                page: 1,
-                limit: 50,
-              },
-            }),
-          });
-
-          const data = await response.json();
-          if (data?.result?.items) {
-            setNfts(data.result.items);
-          }
-        } catch {}
+        const data = await getNfts(storedSolAddress);
+        console.log(data);
+        if (data?.nfts) {
+          setNfts(data.nfts);
+        }
       };
 
       fetchTokens();
