@@ -14,7 +14,7 @@ const NameEditOverlay = styled.div`
   justify-content: center;
   align-items: ${isMobile ? "flex-start" : "center"};
   padding-top: ${isMobile ? "59px" : "0"};
-  z-index: 100;
+  z-index: 1023;
 
   @media (prefers-color-scheme: dark) {
     background-color: rgba(0, 0, 0, 0.5);

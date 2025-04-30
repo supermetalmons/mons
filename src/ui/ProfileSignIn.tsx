@@ -229,9 +229,6 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
   handleEditDisplayName = () => {
     setIsEditingName(true);
-    setIsOpen(false);
-    hideShinyCard();
-    enterProfileEditingMode(false);
   };
 
   const handleSaveDisplayName = (newName: string) => {
