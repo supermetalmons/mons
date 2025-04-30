@@ -2,6 +2,7 @@ import { emojis } from "../content/emojis";
 import { getRandomAsciimoji } from "../utils/asciimoji";
 import { isMobile } from "../utils/misc";
 import { storage } from "../utils/storage";
+import { handleEditDisplayName } from "./ProfileSignIn";
 
 const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
 const IDLE_SHINE_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
@@ -326,7 +327,9 @@ export const showShinyCard = async () => {
     showRandomStickers(card);
   }
 
-  addPlaceholderBubble(card, "34.3%", "25.6%", "30%", "9%", handlePointerLeave);
+  addPlaceholderBubble(card, "34.3%", "25.6%", "30%", "9%", handlePointerLeave, () => {
+    handleEditDisplayName();
+  });
   addPlaceholderBubble(card, "34.3%", "36.3%", "15.5%", "9%", handlePointerLeave);
 
   addPlaceholderBubble(card, "7.4%", "47.3%", "37.5%", "9%", handlePointerLeave, () => {

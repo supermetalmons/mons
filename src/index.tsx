@@ -14,12 +14,12 @@ import { useAuthStatus, createEthereumAuthAdapter } from "./connection/authentic
 import { signIn } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
-import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaSignOutAlt, FaEdit } from "react-icons/fa";
+import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaUndo, FaRegGem, FaPowerOff } from "react-icons/fa";
 import { isMobileOrVision } from "./utils/misc";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { startPlayingMusic, stopPlayingMusic } from "./content/music";
 import { storage } from "./utils/storage";
-import ProfileSignIn, { handleEditDisplayName, handleLogout } from "./ui/ProfileSignIn";
+import ProfileSignIn, { handleLogout } from "./ui/ProfileSignIn";
 import FullScreenAlert from "./ui/FullScreenAlert";
 import { setBoardDimmed } from "./game/board";
 
@@ -111,9 +111,14 @@ const App = () => {
     handleLogout();
   };
 
-  const handleEditProfileButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+  const handleUndoEditButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    handleEditDisplayName();
+    // TODO: implement
+  };
+
+  const handleGemButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    // TODO: implement
   };
 
   const handleInfoButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -143,7 +148,7 @@ const App = () => {
                     <div className="small-top-control-buttons">
                       {!isProfileEditingMode ? (
                         <>
-                          <button className="info-button" onClick={!isMobile ? handleInfoButtonClick : undefined} onTouchStart={isMobile ? handleInfoButtonClick : undefined}>
+                          <button className="info-button" onClick={!isMobile ? handleInfoButtonClick : undefined} onTouchStart={isMobile ? handleInfoButtonClick : undefined} aria-label="Info">
                             <FaInfoCircle />
                           </button>
                           <button className="music-button" onClick={handleMusicToggle} aria-label={isMusicPlaying ? "Stop Music" : "Play Music"}>
@@ -155,11 +160,15 @@ const App = () => {
                         </>
                       ) : (
                         <>
-                          <button className="info-button" onClick={!isMobile ? handleEditProfileButtonClick : undefined} onTouchStart={isMobile ? handleEditProfileButtonClick : undefined}>
-                            <FaEdit />
+                          <button className="info-button" onClick={!isMobile ? handleUndoEditButtonClick : undefined} onTouchStart={isMobile ? handleUndoEditButtonClick : undefined} aria-label="Undo">
+                            <FaUndo />
+                          </button>
+                          <button className="music-button" onClick={!isMobile ? handleGemButtonClick : undefined} onTouchStart={isMobile ? handleGemButtonClick : undefined} aria-label="NFTs">
+                            <FaRegGem />
                           </button>
                           <button className="sound-button" onClick={handleLogOutButtonClick} aria-label={"Log Out"}>
-                            <FaSignOutAlt />
+                            <FaPowerOff />
+                            {/* <FaEllipsisH /> */}
                           </button>
                         </>
                       )}
