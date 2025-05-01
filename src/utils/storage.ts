@@ -13,6 +13,7 @@ const STORAGE_KEYS = {
   ETH_ADDRESS: "ethAddress",
   SOL_ADDRESS: "solAddress",
   USERNAME: "username",
+  PLAYER_RATING: "playerRating",
 } as const;
 
 type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
@@ -112,6 +113,14 @@ export const storage = {
     setItem(STORAGE_KEYS.USERNAME, value);
   },
 
+  getPlayerRating: (defaultValue: number): number => {
+    return getItem(STORAGE_KEYS.PLAYER_RATING, defaultValue);
+  },
+
+  setPlayerRating: (value: number): void => {
+    setItem(STORAGE_KEYS.PLAYER_RATING, value);
+  },
+
   signOut: (): void => {
     localStorage.removeItem(STORAGE_KEYS.PLAYER_EMOJI_ID);
     localStorage.removeItem(STORAGE_KEYS.LOGIN_ID);
@@ -119,5 +128,6 @@ export const storage = {
     localStorage.removeItem(STORAGE_KEYS.ETH_ADDRESS);
     localStorage.removeItem(STORAGE_KEYS.SOL_ADDRESS);
     localStorage.removeItem(STORAGE_KEYS.USERNAME);
+    localStorage.removeItem(STORAGE_KEYS.PLAYER_RATING);
   },
 };

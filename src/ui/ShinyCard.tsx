@@ -307,7 +307,7 @@ export const showShinyCard = async (displayName: string) => {
 
   const displayNameElement = addTextToCard(card, displayName, "36.3%", "30%");
   displayNameElement.setAttribute("data-shiny-card-display-name", "true");
-  addTextToCard(card, "9000", "36.3%", "41%");
+  addTextToCard(card, storage.getPlayerRating(1500).toString(), "36.3%", "41%");
   const emoticonTextElement = addTextToCard(card, getRandomAsciimoji(), "10%", "52%");
   addTextToCard(card, "wip", "10%", "63%");
 

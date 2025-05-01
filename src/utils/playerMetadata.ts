@@ -120,6 +120,7 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
         if (profile.emoji !== undefined && own) {
           storage.setPlayerEmojiId(profile.emoji.toString());
           storage.setUsername(profile.username ?? "");
+          storage.setPlayerRating(profile.rating ?? 1500);
           updateProfileDisplayName(profile.username ?? "", storage.getEthAddress(""), storage.getSolAddress(""));
           if (!isWatchOnly) {
             updateEmojiIfNeeded(profile.emoji.toString(), false);
