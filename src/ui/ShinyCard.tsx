@@ -20,6 +20,7 @@ const maxCardIndex = 36;
 let cardIndex = Math.floor(Math.random() * maxCardIndex);
 const colorMonsOnly = true;
 const showStickers = false;
+let showsShinyCard = false;
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -30,6 +31,8 @@ const cardStyles = `
 }`;
 
 export const showShinyCard = async (displayName: string) => {
+  showsShinyCard = true;
+
   const cardContainer = document.createElement("div");
   cardContainer.style.position = "fixed";
   cardContainer.style.top = "56px";
@@ -302,7 +305,8 @@ export const showShinyCard = async (displayName: string) => {
   card.appendChild(emojiImg);
   card.appendChild(shinyOverlay);
 
-  addTextToCard(card, displayName, "36.3%", "30%");
+  const displayNameElement = addTextToCard(card, displayName, "36.3%", "30%");
+  displayNameElement.setAttribute("data-shiny-card-display-name", "true");
   addTextToCard(card, "9000", "36.3%", "41%");
   const emoticonTextElement = addTextToCard(card, getRandomAsciimoji(), "10%", "52%");
   addTextToCard(card, "wip", "10%", "63%");
@@ -344,6 +348,16 @@ export const showShinyCard = async (displayName: string) => {
   });
 
   addPlaceholderBubble(card, "7.4%", "58.3%", "13.5%", "9%", handlePointerLeave);
+};
+
+export const updateShinyCardDisplayName = (displayName: string) => {
+  if (!showsShinyCard) {
+    return;
+  }
+  const displayNameElement = document.querySelector('[data-shiny-card-display-name="true"]');
+  if (displayNameElement) {
+    displayNameElement.textContent = displayName;
+  }
 };
 
 let demon = "";
@@ -528,6 +542,7 @@ const createOverlayImage = (url: string): HTMLImageElement => {
 };
 
 export const hideShinyCard = () => {
+  showsShinyCard = false;
   const shinyCard = document.querySelector('[data-shiny-card="true"]');
   if (shinyCard && shinyCard.parentNode) {
     shinyCard.parentNode.removeChild(shinyCard);

@@ -11,7 +11,7 @@ import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game
 import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
-import { hideShinyCard, showShinyCard } from "./ShinyCard";
+import { hideShinyCard, showShinyCard, updateShinyCardDisplayName } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
 
 const Container = styled.div`
@@ -156,7 +156,9 @@ export const updateProfileDisplayName = (username: string | null, ethAddress: st
     pendingSolAddress = solAddress ?? null;
     return;
   }
-  setProfileDisplayNameGlobal(formatDisplayName(username, ethAddress, solAddress));
+  const newDisplayName = formatDisplayName(username, ethAddress, solAddress);
+  setProfileDisplayNameGlobal(newDisplayName);
+  updateShinyCardDisplayName(newDisplayName);
 };
 
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
