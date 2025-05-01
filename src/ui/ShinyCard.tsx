@@ -29,7 +29,7 @@ const cardStyles = `
   [data-shiny-card="true"]{ right:7px !important; }
 }`;
 
-export const showShinyCard = async () => {
+export const showShinyCard = async (displayName: string) => {
   const cardContainer = document.createElement("div");
   cardContainer.style.position = "fixed";
   cardContainer.style.top = "56px";
@@ -302,7 +302,7 @@ export const showShinyCard = async () => {
   card.appendChild(emojiImg);
   card.appendChild(shinyOverlay);
 
-  addTextToCard(card, "player id", "36.3%", "30%");
+  addTextToCard(card, displayName, "36.3%", "30%");
   addTextToCard(card, "9000", "36.3%", "41%");
   const emoticonTextElement = addTextToCard(card, getRandomAsciimoji(), "10%", "52%");
   addTextToCard(card, "wip", "10%", "63%");
@@ -396,7 +396,7 @@ const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, to
   textElement.style.position = "absolute";
   textElement.style.left = leftPosition;
   textElement.style.top = topPosition;
-  textElement.style.color = "#DADADA";
+  textElement.style.color = "#CACACA";
   textElement.style.fontFamily = "Arial, sans-serif";
   textElement.style.fontSize = "14px";
   textElement.style.fontWeight = "555";
