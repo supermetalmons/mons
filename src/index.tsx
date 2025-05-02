@@ -21,7 +21,7 @@ import { startPlayingMusic, stopPlayingMusic } from "./content/music";
 import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory } from "./ui/ProfileSignIn";
 import FullScreenAlert from "./ui/FullScreenAlert";
-import { setBoardDimmed } from "./game/board";
+import { setBoardDimmed, showTalkingDude } from "./game/board";
 
 let globalIsMuted: boolean = (() => {
   return storage.getIsMuted(isMobileOrVision);
@@ -68,9 +68,11 @@ const App = () => {
   useEffect(() => {
     showAlertGlobal = (title: string, subtitle: string) => {
       setAlertState({ title, subtitle });
+      showTalkingDude(true);
     };
     hideAlertGlobal = () => {
       setAlertState(null);
+      showTalkingDude(false);
     };
     return () => {
       showAlertGlobal = () => {};

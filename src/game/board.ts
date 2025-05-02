@@ -77,6 +77,7 @@ let playerAvatarPlaceholder: SVGElement | undefined;
 let doNotShowPlayerAvatarPlaceholderAgain = false;
 let doNotShowOpponentAvatarPlaceholderAgain = false;
 let activeTimer: SVGElement | null = null;
+let talkingDude: SVGElement | null = null;
 
 let assets: any;
 let drainer: SVGElement;
@@ -97,6 +98,25 @@ let supermana: SVGElement;
 let supermanaSimple: SVGElement;
 
 const emojis = (await import("../content/emojis")).emojis;
+
+export async function showTalkingDude(show: boolean) {
+  if (show && talkingDude) {
+    return;
+  } else if (!show && talkingDude) {
+    removeItemAndCleanUpAnimation(talkingDude);
+    talkingDude = null;
+    return;
+  } else if (show) {
+    const sprite = (await import(`../assets/talkingDude`)).talking;
+    const location = new Location(7.67, -1);
+    const img = loadImage(sprite, "talkingDude", true);
+    setCenterTranformOrigin(img, location);
+    SVG.setOrigin(img, location.j, location.i);
+    controlsLayer?.appendChild(img);
+    startAnimation(img, false);
+    talkingDude = img;
+  }
+}
 
 export function flashPuzzleSuccess() {
   launchConfetti();
@@ -326,6 +346,7 @@ function loadImage(data: string, assetType: string, isSpriteSheet: boolean = fal
 }
 
 function loadBoardAssetImage(data: string, assetType: string, isSpriteSheet: boolean = false): SVGElement {
+  const isTalkingDude = assetType === "talkingDude";
   const foreignObject = document.createElementNS(SVG.ns, "foreignObject");
   SVG.setSize(foreignObject, 1, 1);
   foreignObject.setAttribute("class", "item");
@@ -338,7 +359,7 @@ function loadBoardAssetImage(data: string, assetType: string, isSpriteSheet: boo
   div.style.backgroundSize = "100%";
   div.style.backgroundRepeat = "no-repeat";
 
-  if (currentAssetsSet === AssetsSet.Pixel) {
+  if (currentAssetsSet === AssetsSet.Pixel || isTalkingDude) {
     div.style.imageRendering = "pixelated";
   }
 
@@ -346,10 +367,10 @@ function loadBoardAssetImage(data: string, assetType: string, isSpriteSheet: boo
 
   if (isSpriteSheet) {
     foreignObject.setAttribute("data-is-sprite-sheet", "true");
-    foreignObject.setAttribute("data-total-frames", "4");
+    foreignObject.setAttribute("data-total-frames", isTalkingDude ? "5" : "4");
     foreignObject.setAttribute("data-frame-duration", "169");
-    foreignObject.setAttribute("data-frame-width", "1");
-    foreignObject.setAttribute("data-frame-height", "1");
+    foreignObject.setAttribute("data-frame-width", isTalkingDude ? "5" : "1");
+    foreignObject.setAttribute("data-frame-height", isTalkingDude ? "5" : "1");
     const totalFrames = parseInt(foreignObject.getAttribute("data-total-frames") || "1", 10);
     const frameWidth = parseFloat(foreignObject.getAttribute("data-frame-width") || "1");
     const frameHeight = parseFloat(foreignObject.getAttribute("data-frame-height") || "1");
