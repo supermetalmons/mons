@@ -78,6 +78,7 @@ let doNotShowPlayerAvatarPlaceholderAgain = false;
 let doNotShowOpponentAvatarPlaceholderAgain = false;
 let activeTimer: SVGElement | null = null;
 let talkingDude: SVGElement | null = null;
+let talkingDudeIsTalking = true;
 
 let assets: any;
 let drainer: SVGElement;
@@ -100,17 +101,17 @@ let supermanaSimple: SVGElement;
 const emojis = (await import("../content/emojis")).emojis;
 
 export async function toggleFromTalkingToIdle() {
-  // TODO: implement
-  // use original 2 lines sprite sheet
-  // using separate sheets for talking and idle does not work well
+  talkingDudeIsTalking = false;
 }
 
 export async function showTalkingDude(show: boolean) {
   if (show && talkingDude) {
+    talkingDudeIsTalking = true;
     return;
   } else if (!show && talkingDude) {
     removeItemAndCleanUpAnimation(talkingDude);
     talkingDude = null;
+    talkingDudeIsTalking = true;
     return;
   } else if (show) {
     const sprite = (await import(`../assets/talkingDude`)).instructor;
@@ -376,7 +377,7 @@ function loadBoardAssetImage(data: string, assetType: string, isSpriteSheet: boo
     foreignObject.setAttribute("data-total-frames", isTalkingDude ? "5" : "4");
     foreignObject.setAttribute("data-frame-duration", "169");
     foreignObject.setAttribute("data-frame-width", isTalkingDude ? "5" : "1");
-    foreignObject.setAttribute("data-frame-height", isTalkingDude ? "5" : "1");
+    foreignObject.setAttribute("data-frame-height", isTalkingDude ? "10" : "1");
     const totalFrames = parseInt(foreignObject.getAttribute("data-total-frames") || "1", 10);
     const frameWidth = parseFloat(foreignObject.getAttribute("data-frame-width") || "1");
     const frameHeight = parseFloat(foreignObject.getAttribute("data-frame-height") || "1");
@@ -393,6 +394,8 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false): void {
     const frameWidth = parseFloat(image.getAttribute("data-frame-width") || "1");
     const frameHeight = parseFloat(image.getAttribute("data-frame-height") || "1");
 
+    const isTalkingDude = totalFrames === 5;
+
     const initialX = parseFloat(image.getAttribute("x") || "0");
     const initialY = parseFloat(image.getAttribute("y") || "0");
     const clipPathId = `clip-path-${Math.random().toString(36).slice(2, 11)}`;
@@ -403,7 +406,7 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false): void {
     rect.setAttribute("x", initialX.toString());
     rect.setAttribute("y", initialY.toString());
     rect.setAttribute("width", (frameWidth * 100).toString());
-    rect.setAttribute("height", (frameHeight * 100).toString());
+    rect.setAttribute("height", (frameHeight * (isTalkingDude ? 50 : 100)).toString());
     clipPath.appendChild(rect);
 
     const svgRoot = image.ownerSVGElement;
@@ -435,7 +438,9 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false): void {
         const now = Date.now();
         if (now - lastUpdateTime >= frameDuration) {
           const x = initialX - currentFrame * frameWidth * 100;
+          const y = isTalkingDude && talkingDudeIsTalking ? initialY - 500 : initialY;
           image.setAttribute("x", x.toString());
+          image.setAttribute("y", y.toString());
           currentFrame = (currentFrame + 1) % totalFrames;
           lastUpdateTime = now;
         }
