@@ -309,7 +309,10 @@ export const showShinyCard = async (displayName: string) => {
   displayNameElement.setAttribute("data-shiny-card-display-name", "true");
   addTextToCard(card, storage.getPlayerRating(1500).toString(), "36.3%", "41%");
   const emoticonTextElement = addTextToCard(card, getRandomAsciimoji(), "10%", "52%");
-  addTextToCard(card, "wip", "10%", "63%");
+
+  const gpText = "gp: " + (storage.getPlayerNonce(-1) + 1).toString();
+
+  addTextToCard(card, gpText, "9%", "62.7%", "10px");
 
   cardContainer.appendChild(card);
   document.body.appendChild(cardContainer);
@@ -404,7 +407,7 @@ async function showRandomStickers(card: HTMLElement) {
   card.appendChild(stickers);
 }
 
-const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, topPosition: string): HTMLElement => {
+const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, topPosition: string, fontSize: string = "14px"): HTMLElement => {
   const textElement = document.createElement("div");
   textElement.textContent = text;
   textElement.style.position = "absolute";
@@ -412,7 +415,7 @@ const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, to
   textElement.style.top = topPosition;
   textElement.style.color = "#CACACA";
   textElement.style.fontFamily = "Arial, sans-serif";
-  textElement.style.fontSize = "14px";
+  textElement.style.fontSize = fontSize;
   textElement.style.fontWeight = "555";
   textElement.style.transform = "translate(0, -50%)";
   textElement.style.pointerEvents = "none";
