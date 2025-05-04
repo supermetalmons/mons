@@ -14,6 +14,11 @@ const STORAGE_KEYS = {
   SOL_ADDRESS: "solAddress",
   USERNAME: "username",
   PLAYER_RATING: "playerRating",
+  CARD_BACKGROUND_ID: "cardBackgroundId",
+  CARD_SUBTITLE_ID: "cardSubtitleId",
+  CARD_STICKERS: "cardStickers",
+  PROFILE_MONS: "profileMons",
+  PLAYER_NONCE: "playerNonce",
 } as const;
 
 type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
@@ -121,6 +126,46 @@ export const storage = {
     setItem(STORAGE_KEYS.PLAYER_RATING, value);
   },
 
+  getCardBackgroundId: (defaultValue: string): string => {
+    return getItem(STORAGE_KEYS.CARD_BACKGROUND_ID, defaultValue);
+  },
+
+  setCardBackgroundId: (value: string): void => {
+    setItem(STORAGE_KEYS.CARD_BACKGROUND_ID, value);
+  },
+
+  getCardSubtitleId: (defaultValue: string): string => {
+    return getItem(STORAGE_KEYS.CARD_SUBTITLE_ID, defaultValue);
+  },
+
+  setCardSubtitleId: (value: string): void => {
+    setItem(STORAGE_KEYS.CARD_SUBTITLE_ID, value);
+  },
+
+  getCardStickers: (defaultValue: any): any => {
+    return getItem(STORAGE_KEYS.CARD_STICKERS, defaultValue);
+  },
+
+  setCardStickers: (value: any): void => {
+    setItem(STORAGE_KEYS.CARD_STICKERS, value);
+  },
+
+  getProfileMons: (defaultValue: any): any => {
+    return getItem(STORAGE_KEYS.PROFILE_MONS, defaultValue);
+  },
+
+  setProfileMons: (value: any): void => {
+    setItem(STORAGE_KEYS.PROFILE_MONS, value);
+  },
+
+  getPlayerNonce: (defaultValue: number): number => {
+    return getItem(STORAGE_KEYS.PLAYER_NONCE, defaultValue);
+  },
+
+  setPlayerNonce: (value: number): void => {
+    setItem(STORAGE_KEYS.PLAYER_NONCE, value);
+  },
+
   signOut: (): void => {
     localStorage.removeItem(STORAGE_KEYS.PLAYER_EMOJI_ID);
     localStorage.removeItem(STORAGE_KEYS.LOGIN_ID);
@@ -129,5 +174,10 @@ export const storage = {
     localStorage.removeItem(STORAGE_KEYS.SOL_ADDRESS);
     localStorage.removeItem(STORAGE_KEYS.USERNAME);
     localStorage.removeItem(STORAGE_KEYS.PLAYER_RATING);
+    localStorage.removeItem(STORAGE_KEYS.CARD_BACKGROUND_ID);
+    localStorage.removeItem(STORAGE_KEYS.CARD_SUBTITLE_ID);
+    localStorage.removeItem(STORAGE_KEYS.CARD_STICKERS);
+    localStorage.removeItem(STORAGE_KEYS.PROFILE_MONS);
+    localStorage.removeItem(STORAGE_KEYS.PLAYER_NONCE);
   },
 };
