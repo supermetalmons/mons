@@ -99,6 +99,12 @@ let supermanaSimple: SVGElement;
 
 const emojis = (await import("../content/emojis")).emojis;
 
+export async function toggleFromTalkingToIdle() {
+  // TODO: implement
+  // use original 2 lines sprite sheet
+  // using separate sheets for talking and idle does not work well
+}
+
 export async function showTalkingDude(show: boolean) {
   if (show && talkingDude) {
     return;

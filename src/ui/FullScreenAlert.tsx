@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, useLayoutEffect } from "react";
 import styled from "styled-components";
 import { hideFullScreenAlert } from "../index";
+import { toggleFromTalkingToIdle } from "../game/board";
 
 interface FullScreenAlertProps {
   title: string;
@@ -139,6 +140,8 @@ const FullScreenAlert: React.FC<FullScreenAlertProps> = ({ title, subtitle }) =>
         const delay = title[idx] === " " ? 4 : 44;
         idx += 1;
         timer = setTimeout(step, delay);
+      } else {
+        toggleFromTalkingToIdle();
       }
     };
 
