@@ -113,7 +113,7 @@ export async function showTalkingDude(show: boolean) {
     talkingDude = null;
     return;
   } else if (show) {
-    const sprite = (await import(`../assets/talkingDude`)).talking;
+    const sprite = (await import(`../assets/talkingDude`)).instructor;
     const location = new Location(7.67, -1);
     const img = loadImage(sprite, "talkingDude", true);
     setCenterTranformOrigin(img, location);
