@@ -450,13 +450,17 @@ class FirebaseConnection {
   }
 
   public updateFirestoreEmoji(newId: number): void {
+    this.updateFirestoreCustomField("emoji", newId);
+  }
+
+  private updateFirestoreCustomField(fieldName: string, newValue: any): void {
     const id = this.getLocalProfileId();
     if (id === null) {
       return;
     }
     const userDocRef = doc(this.firestore, "users", id);
     updateDoc(userDocRef, {
-      "custom.emoji": newId,
+      [`custom.${fieldName}`]: newValue,
     }).catch(() => {});
   }
 
