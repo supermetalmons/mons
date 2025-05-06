@@ -1,5 +1,5 @@
 import { emojis } from "../content/emojis";
-import { getRandomAsciimoji } from "../utils/asciimoji";
+import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile } from "../utils/misc";
 import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
@@ -17,7 +17,10 @@ const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radia
     rgba(255,255,255,0) 100%)`;
 
 const totalCardBgsCount = 37;
+
+// TODO: read these from local storage / update local storage / send updates to firestore
 let cardIndex = getStableRandomIdForOwnProfile(totalCardBgsCount);
+let asciimojiIndex = getStableRandomIdForOwnProfile(asciimojisCount);
 
 const colorMonsOnly = true;
 const showStickers = false;
@@ -309,7 +312,7 @@ export const showShinyCard = async (displayName: string) => {
   const displayNameElement = addTextToCard(card, displayName, "36.3%", "30%");
   displayNameElement.setAttribute("data-shiny-card-display-name", "true");
   addTextToCard(card, storage.getPlayerRating(1500).toString(), "36.3%", "41%");
-  const emoticonTextElement = addTextToCard(card, getRandomAsciimoji(), "10%", "52%");
+  const emoticonTextElement = addTextToCard(card, getAsciimojiAtIndex(asciimojiIndex), "10%", "52%");
 
   const gpText = "gp: " + (storage.getPlayerNonce(-1) + 1).toString();
 
@@ -344,11 +347,8 @@ export const showShinyCard = async (displayName: string) => {
   addPlaceholderBubble(card, "34.3%", "36.3%", "15.5%", "9%", handlePointerLeave);
 
   addPlaceholderBubble(card, "7.4%", "47.3%", "37.5%", "9%", handlePointerLeave, () => {
-    let newEmoji = getRandomAsciimoji();
-    while (newEmoji === emoticonTextElement.textContent) {
-      newEmoji = getRandomAsciimoji();
-    }
-    emoticonTextElement.textContent = newEmoji;
+    asciimojiIndex = (asciimojiIndex + 1) % asciimojisCount;
+    emoticonTextElement.textContent = getAsciimojiAtIndex(asciimojiIndex);
   });
 
   addPlaceholderBubble(card, "7.4%", "58.3%", "13.5%", "9%", handlePointerLeave);
