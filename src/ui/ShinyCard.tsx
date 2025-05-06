@@ -16,8 +16,9 @@ const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radia
     rgba(255,255,255,${linearOpacity}) 50%, 
     rgba(255,255,255,0) 100%)`;
 
-const maxCardIndex = 36;
-let cardIndex = Math.floor(Math.random() * maxCardIndex);
+const totalCardBgsCount = 37;
+let cardIndex = getStableRandomIdForOwnProfile(totalCardBgsCount);
+
 const colorMonsOnly = true;
 const showStickers = false;
 let showsShinyCard = false;
@@ -288,7 +289,7 @@ export const showShinyCard = async (displayName: string) => {
   }
 
   card.addEventListener("click", () => {
-    cardIndex = (cardIndex + 1) % maxCardIndex;
+    cardIndex = (cardIndex + 1) % totalCardBgsCount;
     const newCardName = `${cardIndex}.webp`;
     img.src = `https://assets.mons.link/cards/bg/${newCardName}`;
     if (isMobile) {
