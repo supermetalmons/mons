@@ -96,6 +96,22 @@ export function sendEmojiUpdate(newId: number, matchOnly: boolean) {
   firebaseConnection.updateEmoji(newId, matchOnly);
 }
 
+export function sendCardBackgroundUpdate(newId: number) {
+  firebaseConnection.updateFirestoreCardBackgroundId(newId);
+}
+
+export function sendCardSubtitleIdUpdate(newId: number) {
+  firebaseConnection.updateFirestoreCardSubtitleId(newId);
+}
+
+export function sendProfileMonsUpdate(mons: string) {
+  firebaseConnection.updateFirestoreProfileMons(mons);
+}
+
+export function sendCardStickersUpdate(stickers: any) {
+  firebaseConnection.updateFirestoreCardStickers(stickers);
+}
+
 async function ensureAuthenticated(): Promise<string | undefined> {
   if (!firebaseConnection) {
     const uid = await signIn();

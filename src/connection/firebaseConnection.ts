@@ -453,6 +453,22 @@ class FirebaseConnection {
     this.updateFirestoreCustomField("emoji", newId);
   }
 
+  public updateFirestoreCardBackgroundId(newId: number): void {
+    this.updateFirestoreCustomField("cardBackgroundId", newId);
+  }
+
+  public updateFirestoreCardSubtitleId(newId: number): void {
+    this.updateFirestoreCustomField("cardSubtitleId", newId);
+  }
+
+  public updateFirestoreProfileMons(mons: string): void {
+    this.updateFirestoreCustomField("profileMons", mons);
+  }
+
+  public updateFirestoreCardStickers(stickers: any): void {
+    this.updateFirestoreCustomField("cardStickers", stickers);
+  }
+
   private updateFirestoreCustomField(fieldName: string, newValue: any): void {
     const id = this.getLocalProfileId();
     if (id === null) {
