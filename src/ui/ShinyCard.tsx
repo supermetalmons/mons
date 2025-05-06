@@ -551,3 +551,13 @@ export const hideShinyCard = () => {
     shinyCard.parentNode.removeChild(shinyCard);
   }
 };
+
+function getStableRandomIdForOwnProfile(totalIdsCount: number): number {
+  const profileId = storage.getProfileId("");
+  let hash = 0;
+  for (let i = 0; i < profileId.length; i++) {
+    hash += profileId.charCodeAt(i);
+  }
+  const index = hash % totalIdsCount;
+  return index;
+}
