@@ -18,9 +18,8 @@ const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radia
 
 const totalCardBgsCount = 37;
 
-// TODO: read these from local storage / update local storage / send updates to firestore
-let cardIndex = getStableRandomIdForOwnProfile(totalCardBgsCount);
-let asciimojiIndex = getStableRandomIdForOwnProfile(asciimojisCount);
+let cardIndex = getStableRandomIdForOwnProfile(totalCardBgsCount); // TODO: read from local storage
+let asciimojiIndex = getStableRandomIdForOwnProfile(asciimojisCount); // TODO: read from local storage
 
 const showStickers = false;
 let showsShinyCard = false;
@@ -293,6 +292,7 @@ export const showShinyCard = async (displayName: string) => {
   card.addEventListener("click", () => {
     cardIndex = (cardIndex + 1) % totalCardBgsCount;
     const newCardName = `${cardIndex}.webp`;
+    // TODO: update local storage, send to firestore
     img.src = `https://assets.mons.link/cards/bg/${newCardName}`;
     if (isMobile) {
       handlePointerLeave();
@@ -348,6 +348,7 @@ export const showShinyCard = async (displayName: string) => {
   addPlaceholderBubble(card, "7.4%", "47.3%", "37.5%", "9%", handlePointerLeave, () => {
     asciimojiIndex = (asciimojiIndex + 1) % asciimojisCount;
     emoticonTextElement.textContent = getAsciimojiAtIndex(asciimojiIndex);
+    // TODO: update local storage, send to firestore
   });
 
   addPlaceholderBubble(card, "7.4%", "58.3%", "13.5%", "9%", handlePointerLeave);
@@ -559,6 +560,7 @@ function getMysticId(): string {
 }
 
 function setupMonsIndexes() {
+  // TODO: read from local storage
   demonIndex = getStableRandomIdForOwnProfile(demonTypes.length);
   angelIndex = getStableRandomIdForOwnProfile(angelTypes.length);
   drainerIndex = getStableRandomIdForOwnProfile(drainerTypes.length);
@@ -611,6 +613,8 @@ async function didClickMonImage(img: HTMLImageElement, monType: string) {
       newId = getMysticId();
       break;
   }
+
+  // TODO: update local storage, send to firestore
 
   const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
   let newImageData = getSpriteByKey(newId);
