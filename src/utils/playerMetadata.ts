@@ -136,7 +136,7 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
           }
 
           if (profile.profileMons) {
-            storage.getProfileMons(profile.profileMons);
+            storage.setProfileMons(profile.profileMons);
           }
 
           updateProfileDisplayName(profile.username ?? "", storage.getEthAddress(""), storage.getSolAddress(""));

@@ -1,4 +1,4 @@
-import { sendCardBackgroundUpdate, sendCardSubtitleIdUpdate } from "../connection/connection";
+import { sendCardBackgroundUpdate, sendCardSubtitleIdUpdate, sendProfileMonsUpdate } from "../connection/connection";
 import { emojis } from "../content/emojis";
 import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile } from "../utils/misc";
@@ -563,12 +563,32 @@ function getMysticId(): string {
 }
 
 function setupMonsIndexes() {
-  // TODO: read from local storage
-  demonIndex = getStableRandomIdForOwnProfile(demonTypes.length);
-  angelIndex = getStableRandomIdForOwnProfile(angelTypes.length);
-  drainerIndex = getStableRandomIdForOwnProfile(drainerTypes.length);
-  spiritIndex = getStableRandomIdForOwnProfile(spiritTypes.length);
-  mysticIndex = getStableRandomIdForOwnProfile(mysticTypes.length);
+  const currentIndexes = storage.getProfileMons("");
+
+  let useDefaultIndexes = true;
+
+  if (currentIndexes && currentIndexes.trim() !== "") {
+    const parts = currentIndexes.split(",");
+    if (parts.length === 5) {
+      const parsedIndexes = parts.map((part) => parseInt(part, 10));
+      if (parsedIndexes.every((index) => !isNaN(index))) {
+        demonIndex = parsedIndexes[0];
+        angelIndex = parsedIndexes[1];
+        drainerIndex = parsedIndexes[2];
+        spiritIndex = parsedIndexes[3];
+        mysticIndex = parsedIndexes[4];
+        useDefaultIndexes = false;
+      }
+    }
+  }
+
+  if (useDefaultIndexes) {
+    demonIndex = getStableRandomIdForOwnProfile(demonTypes.length);
+    angelIndex = getStableRandomIdForOwnProfile(angelTypes.length);
+    drainerIndex = getStableRandomIdForOwnProfile(drainerTypes.length);
+    spiritIndex = getStableRandomIdForOwnProfile(spiritTypes.length);
+    mysticIndex = getStableRandomIdForOwnProfile(mysticTypes.length);
+  }
 }
 
 async function showMons(card: HTMLElement, handlePointerLeave: any) {
@@ -592,34 +612,45 @@ async function showMons(card: HTMLElement, handlePointerLeave: any) {
 }
 
 async function didClickMonImage(img: HTMLImageElement, monType: string) {
+  const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
   let newId = "";
+  let newImageData = "";
 
   switch (monType) {
     case "demon":
       demonIndex = (demonIndex + 1) % demonTypes.length;
       newId = getDemonId();
+      newImageData = getSpriteByKey(newId);
+      demonImageData = newImageData;
       break;
     case "angel":
       angelIndex = (angelIndex + 1) % angelTypes.length;
       newId = getAngelId();
+      newImageData = getSpriteByKey(newId);
+      angelImageData = newImageData;
       break;
     case "drainer":
       drainerIndex = (drainerIndex + 1) % drainerTypes.length;
       newId = getDrainerId();
+      newImageData = getSpriteByKey(newId);
+      drainerImageData = newImageData;
       break;
     case "spirit":
       spiritIndex = (spiritIndex + 1) % spiritTypes.length;
       newId = getSpiritId();
+      newImageData = getSpriteByKey(newId);
+      spiritImageData = newImageData;
       break;
     case "mystic":
       mysticIndex = (mysticIndex + 1) % mysticTypes.length;
       newId = getMysticId();
+      newImageData = getSpriteByKey(newId);
+      mysticImageData = newImageData;
       break;
   }
 
-  // TODO: update local storage, send to firestore
-
-  const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
-  let newImageData = getSpriteByKey(newId);
+  const monsIndexesString = `${demonIndex},${angelIndex},${drainerIndex},${spiritIndex},${mysticIndex}`;
+  storage.setProfileMons(monsIndexesString);
+  sendProfileMonsUpdate(monsIndexesString);
   img.src = `data:image/webp;base64,${newImageData}`;
 }
