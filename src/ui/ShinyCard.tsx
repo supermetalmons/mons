@@ -107,7 +107,7 @@ export const showShinyCard = async (displayName: string) => {
 
   emojiImg.style.cursor = "pointer";
   emojiImg.addEventListener("click", (e) => {
-    // TODO: send and store emoji updates
+    // TODO: send and store emoji updates, and update emoji near the board, and send emoji update into current match
     e.preventDefault();
     e.stopPropagation();
     const playerEmojiId = emojis.getRandomEmojiId();
