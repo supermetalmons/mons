@@ -1,3 +1,4 @@
+import { sendCardBackgroundUpdate, sendCardSubtitleIdUpdate } from "../connection/connection";
 import { emojis } from "../content/emojis";
 import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile } from "../utils/misc";
@@ -18,8 +19,8 @@ const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radia
 
 const totalCardBgsCount = 37;
 
-let cardIndex = getStableRandomIdForOwnProfile(totalCardBgsCount); // TODO: read from local storage
-let asciimojiIndex = getStableRandomIdForOwnProfile(asciimojisCount); // TODO: read from local storage
+let cardIndex = storage.getCardBackgroundId(getStableRandomIdForOwnProfile(totalCardBgsCount));
+let asciimojiIndex = storage.getCardSubtitleId(getStableRandomIdForOwnProfile(asciimojisCount));
 
 const showStickers = false;
 let showsShinyCard = false;
@@ -292,7 +293,8 @@ export const showShinyCard = async (displayName: string) => {
   card.addEventListener("click", () => {
     cardIndex = (cardIndex + 1) % totalCardBgsCount;
     const newCardName = `${cardIndex}.webp`;
-    // TODO: update local storage, send to firestore
+    storage.setCardBackgroundId(cardIndex);
+    sendCardBackgroundUpdate(cardIndex);
     img.src = `https://assets.mons.link/cards/bg/${newCardName}`;
     if (isMobile) {
       handlePointerLeave();
@@ -348,7 +350,8 @@ export const showShinyCard = async (displayName: string) => {
   addPlaceholderBubble(card, "7.4%", "47.3%", "37.5%", "9%", handlePointerLeave, () => {
     asciimojiIndex = (asciimojiIndex + 1) % asciimojisCount;
     emoticonTextElement.textContent = getAsciimojiAtIndex(asciimojiIndex);
-    // TODO: update local storage, send to firestore
+    storage.setCardSubtitleId(asciimojiIndex);
+    sendCardSubtitleIdUpdate(asciimojiIndex);
   });
 
   addPlaceholderBubble(card, "7.4%", "58.3%", "13.5%", "9%", handlePointerLeave);
