@@ -29,3 +29,7 @@ export function getRandomSpriteOfType(type: string): string {
   const randomKey = keys[Math.floor(Math.random() * keys.length)] as keyof typeof gameAssets;
   return gameAssets[randomKey];
 }
+
+export function getSpriteByKey(key: string): string {
+  return gameAssets[key as keyof typeof gameAssets] || "";
+}
