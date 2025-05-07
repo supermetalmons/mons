@@ -19,8 +19,8 @@ const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radia
 
 const totalCardBgsCount = 37;
 
-let cardIndex = storage.getCardBackgroundId(getStableRandomIdForOwnProfile(totalCardBgsCount));
-let asciimojiIndex = storage.getCardSubtitleId(getStableRandomIdForOwnProfile(asciimojisCount));
+let cardIndex = getStableRandomIdForOwnProfile(totalCardBgsCount);
+let asciimojiIndex = getStableRandomIdForOwnProfile(asciimojisCount);
 
 const showStickers = false;
 let showsShinyCard = false;
@@ -34,6 +34,8 @@ const cardStyles = `
 }`;
 
 export const showShinyCard = async (displayName: string) => {
+  cardIndex = storage.getCardBackgroundId(getStableRandomIdForOwnProfile(totalCardBgsCount));
+  asciimojiIndex = storage.getCardSubtitleId(getStableRandomIdForOwnProfile(asciimojisCount));
   showsShinyCard = true;
 
   const cardContainer = document.createElement("div");
