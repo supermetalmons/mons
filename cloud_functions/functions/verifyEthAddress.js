@@ -21,6 +21,12 @@ exports.verifyEthAddress = onCall(async (request) => {
     let profileId = null;
     let emoji = null;
     let username = null;
+    let rating = null;
+    let nonce = null;
+    let cardBackgroundId = null;
+    let cardStickers = null;
+    let cardSubtitleId = null;
+    let profileMons = null;
 
     const firestore = admin.firestore();
     const userQuery = await firestore.collection("users").where("logins", "array-contains", uid).limit(1).get();
@@ -52,6 +58,12 @@ exports.verifyEthAddress = onCall(async (request) => {
         }
         profileId = userDoc.id;
         emoji = userData.custom?.emoji ?? requestEmoji;
+        rating = userData.rating || null;
+        nonce = userData.nonce || null;
+        cardBackgroundId = userData.custom?.cardBackgroundId || null;
+        cardStickers = userData.custom?.cardStickers || null;
+        cardSubtitleId = userData.custom?.cardSubtitleId || null;
+        profileMons = userData.custom?.profileMons || null;
         username = userData.username || null;
       }
     } else {
@@ -60,6 +72,12 @@ exports.verifyEthAddress = onCall(async (request) => {
       responseAddress = userData.eth;
       profileId = userDoc.id;
       emoji = userData.custom?.emoji ?? requestEmoji;
+      rating = userData.rating || null;
+      nonce = userData.nonce || null;
+      cardBackgroundId = userData.custom?.cardBackgroundId || null;
+      cardStickers = userData.custom?.cardStickers || null;
+      cardSubtitleId = userData.custom?.cardSubtitleId || null;
+      profileMons = userData.custom?.profileMons || null;
       username = userData.username || null;
     }
 
@@ -74,6 +92,12 @@ exports.verifyEthAddress = onCall(async (request) => {
       profileId: profileId,
       emoji: emoji,
       username: username,
+      rating: rating,
+      nonce: nonce,
+      cardBackgroundId: cardBackgroundId,
+      cardStickers: cardStickers,
+      cardSubtitleId: cardSubtitleId,
+      profileMons: profileMons,
     };
   } else {
     return {
