@@ -276,8 +276,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
           rating: undefined,
           nonce: undefined,
           win: undefined,
+          cardBackgroundId: undefined,
+          cardSubtitleId: undefined,
+          profileMons: undefined,
+          cardStickers: undefined,
           emoji: emoji,
         };
+        // TODO: setup with correct profile and card id values on auth
         setupLoggedInPlayerProfile(profile, res.uid);
         storage.setSolAddress(res.address);
         storage.setUsername(res.username);

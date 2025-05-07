@@ -126,19 +126,19 @@ export const storage = {
     setItem(STORAGE_KEYS.PLAYER_RATING, value);
   },
 
-  getCardBackgroundId: (defaultValue: string): string => {
+  getCardBackgroundId: (defaultValue: number): number => {
     return getItem(STORAGE_KEYS.CARD_BACKGROUND_ID, defaultValue);
   },
 
-  setCardBackgroundId: (value: string): void => {
+  setCardBackgroundId: (value: number): void => {
     setItem(STORAGE_KEYS.CARD_BACKGROUND_ID, value);
   },
 
-  getCardSubtitleId: (defaultValue: string): string => {
+  getCardSubtitleId: (defaultValue: number): number => {
     return getItem(STORAGE_KEYS.CARD_SUBTITLE_ID, defaultValue);
   },
 
-  setCardSubtitleId: (value: string): void => {
+  setCardSubtitleId: (value: number): void => {
     setItem(STORAGE_KEYS.CARD_SUBTITLE_ID, value);
   },
 
@@ -150,11 +150,11 @@ export const storage = {
     setItem(STORAGE_KEYS.CARD_STICKERS, value);
   },
 
-  getProfileMons: (defaultValue: any): any => {
+  getProfileMons: (defaultValue: string): string => {
     return getItem(STORAGE_KEYS.PROFILE_MONS, defaultValue);
   },
 
-  setProfileMons: (value: any): void => {
+  setProfileMons: (value: string): void => {
     setItem(STORAGE_KEYS.PROFILE_MONS, value);
   },
 

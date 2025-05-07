@@ -124,6 +124,10 @@ class FirebaseConnection {
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
         emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(docSnap.id),
+        cardBackgroundId: data.custom?.cardBackgroundId,
+        cardSubtitleId: data.custom?.cardSubtitleId,
+        profileMons: data.custom?.profileMons,
+        cardStickers: data.custom?.cardStickers,
       };
     }
     throw new Error("Profile not found");
@@ -146,6 +150,10 @@ class FirebaseConnection {
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
         emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(doc.id),
+        cardBackgroundId: data.custom?.cardBackgroundId,
+        cardSubtitleId: data.custom?.cardSubtitleId,
+        profileMons: data.custom?.profileMons,
+        cardStickers: data.custom?.cardStickers,
       };
     }
     throw new Error("Profile not found");
@@ -169,6 +177,10 @@ class FirebaseConnection {
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
         emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(doc.id),
+        cardBackgroundId: data.custom?.cardBackgroundId,
+        cardSubtitleId: data.custom?.cardSubtitleId,
+        profileMons: data.custom?.profileMons,
+        cardStickers: data.custom?.cardStickers,
       });
     });
 

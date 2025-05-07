@@ -122,6 +122,23 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
           storage.setUsername(profile.username ?? "");
           storage.setPlayerRating(profile.rating ?? 1500);
           storage.setPlayerNonce(profile.nonce ?? -1);
+
+          if (profile.cardBackgroundId) {
+            storage.setCardBackgroundId(profile.cardBackgroundId);
+          }
+
+          if (profile.cardStickers) {
+            storage.setCardStickers(profile.cardStickers);
+          }
+
+          if (profile.cardSubtitleId) {
+            storage.setCardSubtitleId(profile.cardSubtitleId);
+          }
+
+          if (profile.profileMons) {
+            storage.getProfileMons(profile.profileMons);
+          }
+
           updateProfileDisplayName(profile.username ?? "", storage.getEthAddress(""), storage.getSolAddress(""));
           if (!isWatchOnly) {
             updateEmojiIfNeeded(profile.emoji.toString(), false);

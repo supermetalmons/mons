@@ -53,7 +53,12 @@ export function useAuthStatus() {
             nonce: undefined,
             win: undefined,
             emoji: emoji,
+            cardBackgroundId: undefined,
+            cardSubtitleId: undefined,
+            profileMons: undefined,
+            cardStickers: undefined,
           };
+          // TODO: setup with correct profile and card id values on auth
           updateProfileDisplayName(storedUsername, storedEthAddress, storedSolAddress);
           setupLoggedInPlayerProfile(profile, uid);
         } else {
@@ -101,9 +106,14 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
           rating: undefined,
           nonce: undefined,
           win: undefined,
+          cardBackgroundId: undefined,
+          cardSubtitleId: undefined,
+          profileMons: undefined,
+          cardStickers: undefined,
           emoji: emoji,
         };
         setupLoggedInPlayerProfile(profile, res.uid);
+        // TODO: setup with correct profile and card id values on auth
 
         storage.setUsername(username);
         storage.setEthAddress(res.address);
