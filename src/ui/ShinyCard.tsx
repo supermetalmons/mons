@@ -22,7 +22,6 @@ const totalCardBgsCount = 37;
 let cardIndex = getStableRandomIdForOwnProfile(totalCardBgsCount);
 let asciimojiIndex = getStableRandomIdForOwnProfile(asciimojisCount);
 
-const colorMonsOnly = true;
 const showStickers = false;
 let showsShinyCard = false;
 
@@ -527,25 +526,57 @@ let drainerImageData = "";
 let spiritImageData = "";
 let mysticImageData = "";
 
+const demonTypes = ["borgalo", "notchur"];
+const angelTypes = ["applecreme", "gerp", "goxfold", "mowch", "mummyfly"];
+const drainerTypes = ["deino", "greenseech", "omom", "supermetaldrop", "zwubbi"];
+const spiritTypes = ["melmut", "omenstatue", "owg"];
+const mysticTypes = ["chamgot", "dart", "estalibur"];
+
+let demonIndex = 0;
+let angelIndex = 0;
+let drainerIndex = 0;
+let spiritIndex = 0;
+let mysticIndex = 0;
+
+function getDemonId(): string {
+  return demonTypes[demonIndex] + "_demon";
+}
+
+function getAngelId(): string {
+  return angelTypes[angelIndex] + "_angel";
+}
+
+function getDrainerId(): string {
+  return drainerTypes[drainerIndex] + "_drainer";
+}
+
+function getSpiritId(): string {
+  return spiritTypes[spiritIndex] + "_spirit";
+}
+
+function getMysticId(): string {
+  return mysticTypes[mysticIndex] + "_mystic";
+}
+
+function setupMonsIndexes() {
+  demonIndex = getStableRandomIdForOwnProfile(demonTypes.length);
+  angelIndex = getStableRandomIdForOwnProfile(angelTypes.length);
+  drainerIndex = getStableRandomIdForOwnProfile(drainerTypes.length);
+  spiritIndex = getStableRandomIdForOwnProfile(spiritTypes.length);
+  mysticIndex = getStableRandomIdForOwnProfile(mysticTypes.length);
+}
+
 async function showMons(card: HTMLElement, handlePointerLeave: any) {
-  const alpha = colorMonsOnly ? 1 : 0.77;
+  const alpha = 1;
 
   if (!drainerImageData) {
-    if (colorMonsOnly) {
-      const getRandomSpriteOfType = (await import(`../assets/monsSprites`)).getRandomSpriteOfType;
-      demonImageData = getRandomSpriteOfType("demon");
-      angelImageData = getRandomSpriteOfType("angel");
-      drainerImageData = getRandomSpriteOfType("drainer");
-      spiritImageData = getRandomSpriteOfType("spirit");
-      mysticImageData = getRandomSpriteOfType("mystic");
-    } else {
-      const assets = (await import(`../assets/gameAssetsPixel`)).gameAssets;
-      demonImageData = assets.demon;
-      angelImageData = assets.angel;
-      drainerImageData = assets.drainer;
-      spiritImageData = assets.spirit;
-      mysticImageData = assets.mystic;
-    }
+    setupMonsIndexes();
+    const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
+    demonImageData = getSpriteByKey(getDemonId());
+    angelImageData = getSpriteByKey(getAngelId());
+    drainerImageData = getSpriteByKey(getDrainerId());
+    spiritImageData = getSpriteByKey(getSpiritId());
+    mysticImageData = getSpriteByKey(getMysticId());
   }
 
   addImageToCard(card, "32.5%", "75%", demonImageData, alpha, "demon", handlePointerLeave);
@@ -556,34 +587,32 @@ async function showMons(card: HTMLElement, handlePointerLeave: any) {
 }
 
 async function didClickMonImage(img: HTMLImageElement, monType: string) {
-  const getRandomSpriteOfType = (await import(`../assets/monsSprites`)).getRandomSpriteOfType;
-  let newImageData = getRandomSpriteOfType(monType);
-  const currentSrc = img.src;
-  const currentImageData = currentSrc.split(",")[1];
-  while (newImageData === currentImageData) {
-    newImageData = getRandomSpriteOfType(monType);
+  let newId = "";
+
+  switch (monType) {
+    case "demon":
+      demonIndex = (demonIndex + 1) % demonTypes.length;
+      newId = getDemonId();
+      break;
+    case "angel":
+      angelIndex = (angelIndex + 1) % angelTypes.length;
+      newId = getAngelId();
+      break;
+    case "drainer":
+      drainerIndex = (drainerIndex + 1) % drainerTypes.length;
+      newId = getDrainerId();
+      break;
+    case "spirit":
+      spiritIndex = (spiritIndex + 1) % spiritTypes.length;
+      newId = getSpiritId();
+      break;
+    case "mystic":
+      mysticIndex = (mysticIndex + 1) % mysticTypes.length;
+      newId = getMysticId();
+      break;
   }
+
+  const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
+  let newImageData = getSpriteByKey(newId);
   img.src = `data:image/webp;base64,${newImageData}`;
 }
-
-// export const gameAssets = {
-//   applecreme_angel:
-//   borgalo_demon:
-//   chamgot_mystic
-//   dart_mystic:
-//   deino_drainer:
-//   estalibur_mystic:
-//   gerp_angel:
-//   goxfold_angel:
-//   greenseech_drainer:
-//   melmut_spirit:
-//   mizzledrone_trickster:
-//   mowch_angel:
-//   mummyfly_angel:
-//   notchur_demon:
-//   omenstatue_spirit:
-//   omom_drainer:
-//   owg_spirit:
-//   supermetaldrop_drainer:
-//   zwubbi_drainer:
-// };
