@@ -282,12 +282,43 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
           cardStickers: undefined,
           emoji: emoji,
         };
-        // TODO: setup with correct profile and card id values on auth
+
+        if (res.rating) {
+          profile.rating = res.rating;
+          storage.setPlayerRating(res.rating);
+        }
+
+        if (res.nonce) {
+          profile.nonce = res.nonce;
+          storage.setPlayerNonce(res.nonce);
+        }
+
+        if (res.cardBackgroundId) {
+          profile.cardBackgroundId = res.cardBackgroundId;
+          storage.setCardBackgroundId(res.cardBackgroundId);
+        }
+
+        if (res.cardStickers) {
+          profile.cardStickers = res.cardStickers;
+          storage.setCardStickers(res.cardStickers);
+        }
+
+        if (res.cardSubtitleId) {
+          profile.cardSubtitleId = res.cardSubtitleId;
+          storage.setCardSubtitleId(res.cardSubtitleId);
+        }
+
+        if (res.profileMons) {
+          profile.profileMons = res.profileMons;
+          storage.setProfileMons(res.profileMons);
+        }
+
         setupLoggedInPlayerProfile(profile, res.uid);
         storage.setSolAddress(res.address);
         storage.setUsername(res.username);
         storage.setPlayerEmojiId(emoji.toString());
         storage.setProfileId(profileId);
+
         forceTokenRefresh();
         storage.setLoginId(res.uid);
         updateProfileDisplayName(res.username, null, res.address);
