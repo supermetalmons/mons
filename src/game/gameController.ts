@@ -10,6 +10,7 @@ import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem } from "../content/problems";
 import { hasFullScreenAlertVisible, hideFullScreenAlert, showFullScreenAlert } from "..";
+import { storage } from "../utils/storage";
 
 const experimentalDrawingDevMode = false;
 
@@ -375,6 +376,9 @@ export function didClickUndoButton() {
 }
 
 export function canChangeEmoji(opponents: boolean): boolean {
+  if (storage.getLoginId("")) {
+    return false;
+  }
   if (isOnlineGame || isGameWithBot) {
     return opponents ? false : !isWatchOnly;
   } else {
@@ -383,9 +387,7 @@ export function canChangeEmoji(opponents: boolean): boolean {
 }
 
 export function sendPlayerEmojiUpdate(newId: number) {
-  if (!isWatchOnly) {
-    sendEmojiUpdate(newId, false);
-  }
+  sendEmojiUpdate(newId, false);
 }
 
 export function isPlayerSideTurn(): boolean {

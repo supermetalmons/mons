@@ -4,6 +4,7 @@ import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile } from "../utils/misc";
 import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
+import { didClickAndChangePlayerEmoji } from "../game/board";
 
 const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
 const IDLE_SHINE_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
@@ -109,10 +110,11 @@ export const showShinyCard = async (displayName: string) => {
 
   emojiImg.style.cursor = "pointer";
   emojiImg.addEventListener("click", (e) => {
-    // TODO: send and store emoji updates, and update emoji near the board, and send emoji update into current match
     e.preventDefault();
     e.stopPropagation();
     const playerEmojiId = emojis.getRandomEmojiId();
+    const newSmallEmojiUrl = emojis.getEmojiUrl(playerEmojiId);
+    didClickAndChangePlayerEmoji(playerEmojiId, newSmallEmojiUrl);
     emojiImg.src = `https://assets.mons.link/emojipack_hq/${playerEmojiId}.webp`;
 
     if (isMobile) {

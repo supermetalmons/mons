@@ -1614,10 +1614,19 @@ function pickAndDisplayDifferentEmoji(avatar: SVGElement, isOpponent: boolean) {
     SVG.setEmojiImageUrl(avatar, newEmojiUrl);
   } else {
     const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(playerSideMetadata.emojiId);
-    storage.setPlayerEmojiId(newId);
-    sendPlayerEmojiUpdate(parseInt(newId));
+    didClickAndChangePlayerEmoji(newId, newEmojiUrl);
+  }
+}
+
+export function didClickAndChangePlayerEmoji(newId: string, newEmojiUrl: string) {
+  storage.setPlayerEmojiId(newId);
+  sendPlayerEmojiUpdate(parseInt(newId));
+
+  if (!isWatchOnly) {
     playerSideMetadata.emojiId = newId;
-    SVG.setEmojiImageUrl(avatar, newEmojiUrl);
+    if (playerAvatar) {
+      SVG.setEmojiImageUrl(playerAvatar, newEmojiUrl);
+    }
   }
 }
 
