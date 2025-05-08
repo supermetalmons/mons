@@ -28,6 +28,7 @@ const showStickers = false;
 let showsShinyCard = false;
 
 let ownEmojiImg: HTMLImageElement | null;
+let ownBgImg: HTMLImageElement | null;
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -297,16 +298,12 @@ export const showShinyCard = async (displayName: string) => {
   }
 
   card.addEventListener("click", () => {
-    // TODO: move update into a separate function
-    cardIndex = (cardIndex + 1) % totalCardBgsCount;
-    const newCardName = `${cardIndex}.webp`;
-    storage.setCardBackgroundId(cardIndex);
-    sendCardBackgroundUpdate(cardIndex);
-    img.src = `https://assets.mons.link/cards/bg/${newCardName}`;
+    updateContent("bg", (cardIndex + 1) % totalCardBgsCount, cardIndex);
     if (isMobile) {
       handlePointerLeave();
     }
   });
+  ownBgImg = img;
 
   card.appendChild(placeholder);
   card.appendChild(img);
@@ -665,16 +662,21 @@ async function didClickMonImage(img: HTMLImageElement, monType: string) {
   img.src = `data:image/webp;base64,${newImageData}`;
 }
 
-let undoQueue: Array<[string, string]> = [];
+let undoQueue: Array<[string, any]> = [];
 
-async function updateContent(contentType: string, newId: string, oldId: string | null) {
+async function updateContent(contentType: string, newId: any, oldId: any | null) {
   switch (contentType) {
     case "emoji":
       const newSmallEmojiUrl = emojis.getEmojiUrl(newId);
       didClickAndChangePlayerEmoji(newId, newSmallEmojiUrl);
-      if (ownEmojiImg) {
-        ownEmojiImg.src = `https://assets.mons.link/emojipack_hq/${newId}.webp`;
-      }
+      ownEmojiImg!.src = `https://assets.mons.link/emojipack_hq/${newId}.webp`;
+      break;
+    case "bg":
+      const newCardName = `${newId}.webp`;
+      storage.setCardBackgroundId(newId);
+      cardIndex = newId;
+      sendCardBackgroundUpdate(newId);
+      ownBgImg!.src = `https://assets.mons.link/cards/bg/${newCardName}`;
       break;
   }
 
