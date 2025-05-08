@@ -29,6 +29,7 @@ let showsShinyCard = false;
 
 let ownEmojiImg: HTMLImageElement | null;
 let ownBgImg: HTMLImageElement | null;
+let ownSubtitleElement: HTMLElement | null;
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -317,7 +318,7 @@ export const showShinyCard = async (displayName: string) => {
   const displayNameElement = addTextToCard(card, displayName, "36.3%", "30%");
   displayNameElement.setAttribute("data-shiny-card-display-name", "true");
   addTextToCard(card, storage.getPlayerRating(1500).toString(), "36.3%", "41%");
-  const emoticonTextElement = addTextToCard(card, getAsciimojiAtIndex(asciimojiIndex), "10%", "52%");
+  ownSubtitleElement = addTextToCard(card, getAsciimojiAtIndex(asciimojiIndex), "10%", "52%");
 
   const gpText = "gp: " + (storage.getPlayerNonce(-1) + 1).toString();
 
@@ -352,11 +353,7 @@ export const showShinyCard = async (displayName: string) => {
   addPlaceholderBubble(card, "34.3%", "36.3%", "15.5%", "9%", handlePointerLeave);
 
   addPlaceholderBubble(card, "7.4%", "47.3%", "37.5%", "9%", handlePointerLeave, () => {
-    // TODO: move update into a separate function
-    asciimojiIndex = (asciimojiIndex + 1) % asciimojisCount;
-    emoticonTextElement.textContent = getAsciimojiAtIndex(asciimojiIndex);
-    storage.setCardSubtitleId(asciimojiIndex);
-    sendCardSubtitleIdUpdate(asciimojiIndex);
+    updateContent("subtitle", (asciimojiIndex + 1) % asciimojisCount, asciimojiIndex);
   });
 
   addPlaceholderBubble(card, "7.4%", "58.3%", "13.5%", "9%", handlePointerLeave);
@@ -677,6 +674,12 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       cardIndex = newId;
       sendCardBackgroundUpdate(newId);
       ownBgImg!.src = `https://assets.mons.link/cards/bg/${newCardName}`;
+      break;
+    case "subtitle":
+      asciimojiIndex = newId;
+      ownSubtitleElement!.textContent = getAsciimojiAtIndex(newId);
+      storage.setCardSubtitleId(newId);
+      sendCardSubtitleIdUpdate(newId);
       break;
   }
 
