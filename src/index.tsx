@@ -22,6 +22,7 @@ import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory } from "./ui/ProfileSignIn";
 import FullScreenAlert from "./ui/FullScreenAlert";
 import { setBoardDimmed, showTalkingDude } from "./game/board";
+import { didClickIdCardEditUndoButton } from "./ui/ShinyCard";
 
 let globalIsMuted: boolean = (() => {
   return storage.getIsMuted(isMobileOrVision);
@@ -40,6 +41,7 @@ export function hasFullScreenAlertVisible(): boolean {
 let showAlertGlobal: (title: string, subtitle: string) => void;
 let hideAlertGlobal: () => void;
 export let enterProfileEditingMode: (enter: boolean) => void;
+export let enableCardEditorUndo: (enable: boolean) => void;
 
 export function hideFullScreenAlert() {
   if (hideAlertGlobal) {
@@ -57,12 +59,17 @@ const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
   const [isProfileEditingMode, setIsProfileEditingMode] = useState(false);
   const [isMuted, setIsMuted] = useState(globalIsMuted);
+  const [isUndoEnabled, setIsUndoEnabled] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [alertState, setAlertState] = useState<{ title: string; subtitle: string } | null>(null);
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
 
   enterProfileEditingMode = (enter: boolean) => {
     setIsProfileEditingMode(enter);
+  };
+
+  enableCardEditorUndo = (enable: boolean) => {
+    setIsUndoEnabled(enable);
   };
 
   useEffect(() => {
@@ -115,7 +122,7 @@ const App = () => {
 
   const handleUndoEditButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    // TODO: implement
+    didClickIdCardEditUndoButton();
   };
 
   const handleGemButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -162,7 +169,7 @@ const App = () => {
                         </>
                       ) : (
                         <>
-                          <button className="info-button" onClick={!isMobile ? handleUndoEditButtonClick : undefined} onTouchStart={isMobile ? handleUndoEditButtonClick : undefined} aria-label="Undo" disabled>
+                          <button className="info-button" onClick={!isMobile ? handleUndoEditButtonClick : undefined} onTouchStart={isMobile ? handleUndoEditButtonClick : undefined} aria-label="Undo" disabled={!isUndoEnabled}>
                             <FaUndo />
                           </button>
                           <button className="music-button" onClick={!isMobile ? handleGemButtonClick : undefined} onTouchStart={isMobile ? handleGemButtonClick : undefined} aria-label="NFTs">

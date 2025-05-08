@@ -5,6 +5,7 @@ import { isMobile } from "../utils/misc";
 import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
 import { didClickAndChangePlayerEmoji } from "../game/board";
+import { enableCardEditorUndo } from "../index";
 
 const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
 const IDLE_SHINE_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
@@ -25,6 +26,8 @@ let asciimojiIndex = getStableRandomIdForOwnProfile(asciimojisCount);
 
 const showStickers = false;
 let showsShinyCard = false;
+
+let ownEmojiImg: HTMLImageElement | null;
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -112,16 +115,14 @@ export const showShinyCard = async (displayName: string) => {
   emojiImg.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
-    // TODO: move update into a separate function
-    const playerEmojiId = getIncrementedEmojiId(storage.getPlayerEmojiId("1"));
-    const newSmallEmojiUrl = emojis.getEmojiUrl(playerEmojiId);
-    didClickAndChangePlayerEmoji(playerEmojiId, newSmallEmojiUrl);
-    emojiImg.src = `https://assets.mons.link/emojipack_hq/${playerEmojiId}.webp`;
-
+    const oldEmojiId = storage.getPlayerEmojiId("1");
+    const playerEmojiId = getIncrementedEmojiId(oldEmojiId);
+    updateContent("emoji", playerEmojiId, oldEmojiId);
     if (isMobile) {
       handlePointerLeave();
     }
   });
+  ownEmojiImg = emojiImg;
 
   const placeholder = document.createElement("div");
   placeholder.style.position = "absolute";
@@ -362,6 +363,7 @@ export const showShinyCard = async (displayName: string) => {
   });
 
   addPlaceholderBubble(card, "7.4%", "58.3%", "13.5%", "9%", handlePointerLeave);
+  updateUndoButton();
 };
 
 export const updateShinyCardDisplayName = (displayName: string) => {
@@ -661,4 +663,35 @@ async function didClickMonImage(img: HTMLImageElement, monType: string) {
   storage.setProfileMons(monsIndexesString);
   sendProfileMonsUpdate(monsIndexesString);
   img.src = `data:image/webp;base64,${newImageData}`;
+}
+
+let undoQueue: Array<[string, string]> = [];
+
+async function updateContent(contentType: string, newId: string, oldId: string | null) {
+  switch (contentType) {
+    case "emoji":
+      const newSmallEmojiUrl = emojis.getEmojiUrl(newId);
+      didClickAndChangePlayerEmoji(newId, newSmallEmojiUrl);
+      if (ownEmojiImg) {
+        ownEmojiImg.src = `https://assets.mons.link/emojipack_hq/${newId}.webp`;
+      }
+      break;
+  }
+
+  if (oldId) {
+    undoQueue.push([contentType, oldId]);
+  }
+
+  updateUndoButton();
+}
+
+async function updateUndoButton() {
+  enableCardEditorUndo(undoQueue && undoQueue.length > 0);
+}
+
+export async function didClickIdCardEditUndoButton() {
+  if (undoQueue.length > 0) {
+    const [contentType, oldId] = undoQueue.pop()!;
+    updateContent(contentType, oldId, null);
+  }
 }
