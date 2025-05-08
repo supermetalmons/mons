@@ -112,6 +112,7 @@ export const showShinyCard = async (displayName: string) => {
   emojiImg.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
+    // TODO: move update into a separate function
     const playerEmojiId = getIncrementedEmojiId(storage.getPlayerEmojiId("1"));
     const newSmallEmojiUrl = emojis.getEmojiUrl(playerEmojiId);
     didClickAndChangePlayerEmoji(playerEmojiId, newSmallEmojiUrl);
@@ -295,6 +296,7 @@ export const showShinyCard = async (displayName: string) => {
   }
 
   card.addEventListener("click", () => {
+    // TODO: move update into a separate function
     cardIndex = (cardIndex + 1) % totalCardBgsCount;
     const newCardName = `${cardIndex}.webp`;
     storage.setCardBackgroundId(cardIndex);
@@ -352,6 +354,7 @@ export const showShinyCard = async (displayName: string) => {
   addPlaceholderBubble(card, "34.3%", "36.3%", "15.5%", "9%", handlePointerLeave);
 
   addPlaceholderBubble(card, "7.4%", "47.3%", "37.5%", "9%", handlePointerLeave, () => {
+    // TODO: move update into a separate function
     asciimojiIndex = (asciimojiIndex + 1) % asciimojisCount;
     emoticonTextElement.textContent = getAsciimojiAtIndex(asciimojiIndex);
     storage.setCardSubtitleId(asciimojiIndex);
@@ -435,6 +438,7 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
       imageContainer.addEventListener("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
+        // TODO: wrap update into a separate function
         didClickMonImage(img, monType);
         if (isMobile) {
           handlePointerLeave();
