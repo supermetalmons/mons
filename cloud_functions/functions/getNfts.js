@@ -14,8 +14,13 @@ exports.getNfts = onCall(async (request) => {
   }
 
   try {
+    let solNfts = [];
+    let ethNfts = [];
+    let solTotal = 0;
+    let ethTotal = 0;
+
     if (sol) {
-      const response = await fetch("https://mainnet.helius-rpc.com/?api-key=" + process.env.HELIUS_API_KEY, {
+      const solResponse = await fetch("https://mainnet.helius-rpc.com/?api-key=" + process.env.HELIUS_API_KEY, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -33,14 +38,15 @@ exports.getNfts = onCall(async (request) => {
         }),
       });
 
-      const data = await response.json();
+      const solData = await solResponse.json();
 
-      if (!response.ok) {
-        throw new HttpsError("internal", "Failed to fetch NFTs from Helius API", data);
+      if (!solResponse.ok) {
+        throw new HttpsError("internal", "Failed to fetch NFTs from Helius API", solData);
       }
 
-      const filteredNfts =
-        data?.result?.items?.map((item) => ({
+      solNfts =
+        solData?.result?.items?.map((item) => ({
+          direct_link: `https://www.tensor.trade/item/${item.id}`,
           id: item.id,
           content: {
             json_uri: item.content?.json_uri || "",
@@ -53,15 +59,14 @@ exports.getNfts = onCall(async (request) => {
           ownership: {
             owner: item.ownership?.owner || "",
           },
+          chain: "solana",
         })) || [];
 
-      return {
-        ok: true,
-        nfts: filteredNfts,
-        total: data?.result?.total || 0,
-      };
-    } else if (eth) {
-      const response = await fetch(`https://api.opensea.io/api/v2/chain/ethereum/account/${eth}/nfts?collection=super-metal-mons-gen-2`, {
+      solTotal = solData?.result?.total || 0;
+    }
+
+    if (eth) {
+      const ethResponse = await fetch(`https://api.opensea.io/api/v2/chain/ethereum/account/${eth}/nfts?collection=super-metal-mons-gen-2`, {
         method: "GET",
         headers: {
           accept: "application/json",
@@ -69,15 +74,16 @@ exports.getNfts = onCall(async (request) => {
         },
       });
 
-      const data = await response.json();
+      const ethData = await ethResponse.json();
 
-      if (!response.ok) {
-        throw new HttpsError("internal", "Failed to fetch NFTs from OpenSea API", data);
+      if (!ethResponse.ok) {
+        throw new HttpsError("internal", "Failed to fetch NFTs from OpenSea API", ethData);
       }
 
-      const filteredNfts =
-        data?.nfts?.map((item) => ({
+      ethNfts =
+        ethData?.nfts?.map((item) => ({
           id: item.identifier,
+          direct_link: item.opensea_url || "",
           content: {
             json_uri: item.metadata_url || "",
             links: {
@@ -91,14 +97,20 @@ exports.getNfts = onCall(async (request) => {
           ownership: {
             owner: eth,
           },
+          chain: "ethereum",
         })) || [];
 
-      return {
-        ok: true,
-        nfts: filteredNfts,
-        total: data?.nfts?.length || 0,
-      };
+      ethTotal = ethData?.nfts?.length || 0;
     }
+
+    const combinedNfts = [...solNfts, ...ethNfts];
+    const totalNfts = solTotal + ethTotal;
+
+    return {
+      ok: true,
+      nfts: combinedNfts,
+      total: totalNfts,
+    };
   } catch (error) {
     console.error("Error fetching NFTs:", error);
     throw new HttpsError("internal", "Failed to fetch NFTs", error);
