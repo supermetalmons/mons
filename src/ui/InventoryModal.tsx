@@ -130,6 +130,7 @@ const NFTName = styled.span`
 
 interface NFT {
   id: string;
+  direct_link: string;
   content: {
     json_uri: string;
     links?: {
@@ -159,11 +160,11 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     }
 
     const storedSolAddress = storage.getSolAddress("");
+    const storedEthAddress = storage.getEthAddress("");
 
-    if (storedSolAddress) {
+    if (storedSolAddress || storedEthAddress) {
       const fetchTokens = async () => {
-        const data = await getNfts(storedSolAddress);
-        console.log(data);
+        const data = await getNfts(storedSolAddress, storedEthAddress);
         if (data?.nfts) {
           setNfts(data.nfts);
         }
@@ -183,8 +184,8 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     }
   };
 
-  const openNFTOnTensor = (nftId: string) => {
-    window.open(`https://www.tensor.trade/item/${nftId}`, "_blank");
+  const openNftOnWeb = (direct: string) => {
+    window.open(direct, "_blank");
   };
 
   return (
@@ -197,7 +198,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
             <NFTGridContainer>
               <NFTGrid>
                 {nfts.map((nft) => (
-                  <NFTNameContainer key={nft.id} onClick={() => openNFTOnTensor(nft.id)}>
+                  <NFTNameContainer key={nft.id} onClick={() => openNftOnWeb(nft.direct_link)}>
                     <NFTName>{nft.content.metadata?.name || "Unnamed"}</NFTName>
                   </NFTNameContainer>
                 ))}
