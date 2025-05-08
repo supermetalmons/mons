@@ -638,53 +638,23 @@ async function showMons(card: HTMLElement, handlePointerLeave: any) {
 }
 
 async function didClickMonImage(monType: string) {
-  const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
-  let newId = "";
-  let newImageData = "";
-  let img: HTMLImageElement | null;
-
   switch (monType) {
     case "demon":
-      demonIndex = (demonIndex + 1) % demonTypes.length;
-      newId = getDemonId();
-      newImageData = getSpriteByKey(newId);
-      demonImageData = newImageData;
-      img = ownDemonImg;
+      updateContent(monType, (demonIndex + 1) % demonTypes.length, demonIndex);
       break;
     case "angel":
-      angelIndex = (angelIndex + 1) % angelTypes.length;
-      newId = getAngelId();
-      newImageData = getSpriteByKey(newId);
-      angelImageData = newImageData;
-      img = ownAngelImg;
+      updateContent(monType, (angelIndex + 1) % angelTypes.length, angelIndex);
       break;
     case "drainer":
-      drainerIndex = (drainerIndex + 1) % drainerTypes.length;
-      newId = getDrainerId();
-      newImageData = getSpriteByKey(newId);
-      drainerImageData = newImageData;
-      img = ownDrainerImg;
+      updateContent(monType, (drainerIndex + 1) % drainerTypes.length, drainerIndex);
       break;
     case "spirit":
-      spiritIndex = (spiritIndex + 1) % spiritTypes.length;
-      newId = getSpiritId();
-      newImageData = getSpriteByKey(newId);
-      spiritImageData = newImageData;
-      img = ownSpiritImg;
+      updateContent(monType, (spiritIndex + 1) % spiritTypes.length, spiritIndex);
       break;
     case "mystic":
-      mysticIndex = (mysticIndex + 1) % mysticTypes.length;
-      newId = getMysticId();
-      newImageData = getSpriteByKey(newId);
-      mysticImageData = newImageData;
-      img = ownMysticImg;
+      updateContent(monType, (mysticIndex + 1) % mysticTypes.length, mysticIndex);
       break;
   }
-
-  const monsIndexesString = `${demonIndex},${angelIndex},${drainerIndex},${spiritIndex},${mysticIndex}`;
-  storage.setProfileMons(monsIndexesString);
-  sendProfileMonsUpdate(monsIndexesString);
-  img!.src = `data:image/webp;base64,${newImageData}`;
 }
 
 let undoQueue: Array<[string, any]> = [];
@@ -709,9 +679,54 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       storage.setCardSubtitleId(newId);
       sendCardSubtitleIdUpdate(newId);
       break;
+    case "demon":
+    case "angel":
+    case "drainer":
+    case "spirit":
+    case "mystic":
+      let newImageData = "";
+      let img: HTMLImageElement | null;
+      const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
+      switch (contentType) {
+        case "demon":
+          demonIndex = newId;
+          newImageData = getSpriteByKey(getDemonId());
+          demonImageData = newImageData;
+          img = ownDemonImg;
+          break;
+        case "angel":
+          angelIndex = newId;
+          newImageData = getSpriteByKey(getAngelId());
+          angelImageData = newImageData;
+          img = ownAngelImg;
+          break;
+        case "drainer":
+          drainerIndex = newId;
+          newImageData = getSpriteByKey(getDrainerId());
+          drainerImageData = newImageData;
+          img = ownDrainerImg;
+          break;
+        case "spirit":
+          spiritIndex = newId;
+          newImageData = getSpriteByKey(getSpiritId());
+          spiritImageData = newImageData;
+          img = ownSpiritImg;
+          break;
+        case "mystic":
+          mysticIndex = newId;
+          newImageData = getSpriteByKey(getMysticId());
+          mysticImageData = newImageData;
+          img = ownMysticImg;
+          break;
+      }
+      img!.src = `data:image/webp;base64,${newImageData}`;
+      const monsIndexesString = `${demonIndex},${angelIndex},${drainerIndex},${spiritIndex},${mysticIndex}`;
+      storage.setProfileMons(monsIndexesString);
+      sendProfileMonsUpdate(monsIndexesString);
+      break;
   }
 
-  if (oldId) {
+  if (oldId !== null) {
     undoQueue.push([contentType, oldId]);
   }
 
