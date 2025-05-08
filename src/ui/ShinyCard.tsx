@@ -30,6 +30,11 @@ let showsShinyCard = false;
 let ownEmojiImg: HTMLImageElement | null;
 let ownBgImg: HTMLImageElement | null;
 let ownSubtitleElement: HTMLElement | null;
+let ownDemonImg: HTMLImageElement | null;
+let ownDrainerImg: HTMLImageElement | null;
+let ownAngelImg: HTMLImageElement | null;
+let ownSpiritImg: HTMLImageElement | null;
+let ownMysticImg: HTMLImageElement | null;
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -434,12 +439,29 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
       imageContainer.addEventListener("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
-        // TODO: wrap update into a separate function
-        didClickMonImage(img, monType);
+        didClickMonImage(monType);
         if (isMobile) {
           handlePointerLeave();
         }
       });
+
+      switch (monType) {
+        case "demon":
+          ownDemonImg = img;
+          break;
+        case "angel":
+          ownAngelImg = img;
+          break;
+        case "drainer":
+          ownDrainerImg = img;
+          break;
+        case "spirit":
+          ownSpiritImg = img;
+          break;
+        case "mystic":
+          ownMysticImg = img;
+          break;
+      }
     }
 
     imageContainer.appendChild(img);
@@ -615,10 +637,11 @@ async function showMons(card: HTMLElement, handlePointerLeave: any) {
   addImageToCard(card, "82%", "75%", mysticImageData, alpha, "mystic", handlePointerLeave);
 }
 
-async function didClickMonImage(img: HTMLImageElement, monType: string) {
+async function didClickMonImage(monType: string) {
   const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
   let newId = "";
   let newImageData = "";
+  let img: HTMLImageElement | null;
 
   switch (monType) {
     case "demon":
@@ -626,37 +649,42 @@ async function didClickMonImage(img: HTMLImageElement, monType: string) {
       newId = getDemonId();
       newImageData = getSpriteByKey(newId);
       demonImageData = newImageData;
+      img = ownDemonImg;
       break;
     case "angel":
       angelIndex = (angelIndex + 1) % angelTypes.length;
       newId = getAngelId();
       newImageData = getSpriteByKey(newId);
       angelImageData = newImageData;
+      img = ownAngelImg;
       break;
     case "drainer":
       drainerIndex = (drainerIndex + 1) % drainerTypes.length;
       newId = getDrainerId();
       newImageData = getSpriteByKey(newId);
       drainerImageData = newImageData;
+      img = ownDrainerImg;
       break;
     case "spirit":
       spiritIndex = (spiritIndex + 1) % spiritTypes.length;
       newId = getSpiritId();
       newImageData = getSpriteByKey(newId);
       spiritImageData = newImageData;
+      img = ownSpiritImg;
       break;
     case "mystic":
       mysticIndex = (mysticIndex + 1) % mysticTypes.length;
       newId = getMysticId();
       newImageData = getSpriteByKey(newId);
       mysticImageData = newImageData;
+      img = ownMysticImg;
       break;
   }
 
   const monsIndexesString = `${demonIndex},${angelIndex},${drainerIndex},${spiritIndex},${mysticIndex}`;
   storage.setProfileMons(monsIndexesString);
   sendProfileMonsUpdate(monsIndexesString);
-  img.src = `data:image/webp;base64,${newImageData}`;
+  img!.src = `data:image/webp;base64,${newImageData}`;
 }
 
 let undoQueue: Array<[string, any]> = [];
