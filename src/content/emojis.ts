@@ -57,3 +57,13 @@ function getRandomEmojiId(): string {
   const id = index.toString();
   return id;
 }
+
+export function getIncrementedEmojiId(currentId: string): string {
+  const currentIndex = parseInt(currentId);
+  if (isNaN(currentIndex)) {
+    return getRandomEmojiId();
+  }
+  
+  const nextIndex = currentIndex % emojipackSize + 1;
+  return nextIndex.toString();
+}

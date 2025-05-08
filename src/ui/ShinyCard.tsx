@@ -1,5 +1,5 @@
 import { sendCardBackgroundUpdate, sendCardSubtitleIdUpdate, sendProfileMonsUpdate } from "../connection/connection";
-import { emojis } from "../content/emojis";
+import { emojis, getIncrementedEmojiId } from "../content/emojis";
 import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile } from "../utils/misc";
 import { storage } from "../utils/storage";
@@ -112,7 +112,7 @@ export const showShinyCard = async (displayName: string) => {
   emojiImg.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
-    const playerEmojiId = emojis.getRandomEmojiId();
+    const playerEmojiId = getIncrementedEmojiId(storage.getPlayerEmojiId("1"));
     const newSmallEmojiUrl = emojis.getEmojiUrl(playerEmojiId);
     didClickAndChangePlayerEmoji(playerEmojiId, newSmallEmojiUrl);
     emojiImg.src = `https://assets.mons.link/emojipack_hq/${playerEmojiId}.webp`;
