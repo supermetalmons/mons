@@ -191,7 +191,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   return (
     <InventoryOverlay onClick={onCancel}>
       <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus>
-        <Title>swagpack</Title>
+        <Title>swag pack</Title>
         <Content>
           soon
           {nfts.length > 0 && (
