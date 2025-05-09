@@ -46,10 +46,12 @@ const cardStyles = `
 }`;
 
 export const showShinyCard = async (profile: PlayerProfile | null, displayName: string, isOtherPlayer: boolean) => {
-  // TODO: use profile model to setup for other players
-
   if (showsShinyCardSomewhere) {
     hideShinyCard();
+  }
+
+  if (isOtherPlayer && !profile) {
+    return;
   }
 
   cardIndex = storage.getCardBackgroundId(getStableRandomIdForOwnProfile(totalCardBgsCount));
