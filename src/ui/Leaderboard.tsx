@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { resolveENS } from "../utils/ensResolver";
 import { getLeaderboard } from "../connection/connection";
+import { showShinyCard } from "./ShinyCard";
 
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
   opacity: 1;
@@ -236,12 +237,16 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
     }
   }, [show]);
 
-  const handleRowClick = (eth: string | null | undefined, sol: string | null | undefined) => {
-    if (eth) {
-      window.open(`https://etherscan.io/address/${eth}`, "_blank", "noopener,noreferrer");
-    } else if (sol) {
-      window.open(`https://explorer.solana.com/address/${sol}`, "_blank", "noopener,noreferrer");
-    }
+  const getDisplayName = (row: LeaderboardEntry): string => {
+    if (row.username) return row.username;
+    if (row.ensName) return row.ensName;
+    if (row.eth) return row.eth.slice(0, 4) + "..." + row.eth.slice(-4);
+    if (row.sol) return row.sol.slice(0, 4) + "..." + row.sol.slice(-4);
+    return "";
+  };
+
+  const handleRowClick = (row: LeaderboardEntry) => {
+    showShinyCard(getDisplayName(row), true);
   };
 
   const handleEmojiLoad = (emojiKey: string) => {
@@ -268,13 +273,13 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
                 const isEmojiLoaded = loadedEmojis.has(emojiKey);
 
                 return (
-                  <tr key={index} onClick={() => handleRowClick(row.eth, row.sol)}>
+                  <tr key={index} onClick={() => handleRowClick(row)}>
                     <td>{index + 1}</td>
                     <td>
                       {!isEmojiLoaded && <EmojiPlaceholder />}
                       <EmojiImage src={emojiUrl} alt="Player emoji" style={{ display: isEmojiLoaded ? "inline-block" : "none" }} onLoad={() => handleEmojiLoad(emojiKey)} />
                     </td>
-                    <td>{row.username || row.ensName || (row.eth ? row.eth.slice(0, 4) + "..." + row.eth.slice(-4) : row.sol?.slice(0, 4) + "..." + row.sol?.slice(-4))}</td>
+                    <td>{getDisplayName(row)}</td>
                     <RatingCell win={row.win}>{row.rating}</RatingCell>
                   </tr>
                 );

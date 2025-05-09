@@ -11,7 +11,7 @@ import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game
 import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
-import { hideShinyCard, showShinyCard, updateShinyCardDisplayName } from "./ShinyCard";
+import { hideShinyCard, showShinyCard, showsShinyCardSomewhere, updateShinyCardDisplayName } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
 
 const Container = styled.div`
@@ -187,7 +187,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         return;
       }
 
-      if (isOpen && !isInsidePopover && !isInsideShinyCard) {
+      if ((isOpen || showsShinyCardSomewhere) && !isInsidePopover && !isInsideShinyCard) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsOpen(false);
         hideShinyCard();
@@ -219,7 +219,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         hideShinyCard();
         enterProfileEditingMode(false);
       } else {
-        showShinyCard(profileDisplayName);
+        showShinyCard(profileDisplayName, false);
         enterProfileEditingMode(true);
       }
     }

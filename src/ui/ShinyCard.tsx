@@ -25,7 +25,7 @@ let cardIndex = getStableRandomIdForOwnProfile(totalCardBgsCount);
 let asciimojiIndex = getStableRandomIdForOwnProfile(asciimojisCount);
 
 const showStickers = false;
-let showsShinyCard = false;
+export let showsShinyCardSomewhere = false;
 
 let ownEmojiImg: HTMLImageElement | null;
 let ownBgImg: HTMLImageElement | null;
@@ -44,15 +44,25 @@ const cardStyles = `
   [data-shiny-card="true"]{ right:7px !important; }
 }`;
 
-export const showShinyCard = async (displayName: string) => {
+export const showShinyCard = async (displayName: string, isOtherPlayer: boolean) => {
+  if (showsShinyCardSomewhere) {
+    hideShinyCard();
+  }
+
   cardIndex = storage.getCardBackgroundId(getStableRandomIdForOwnProfile(totalCardBgsCount));
   asciimojiIndex = storage.getCardSubtitleId(getStableRandomIdForOwnProfile(asciimojisCount));
-  showsShinyCard = true;
+  showsShinyCardSomewhere = true;
 
   const cardContainer = document.createElement("div");
   cardContainer.style.position = "fixed";
-  cardContainer.style.top = "56px";
-  cardContainer.style.right = "12pt";
+  if (isOtherPlayer) {
+    cardContainer.style.top = "56px";
+    cardContainer.style.left = "50%";
+    cardContainer.style.transform = "translateX(-50%)";
+  } else {
+    cardContainer.style.top = "56px";
+    cardContainer.style.right = "12pt";
+  }
 
   const aspectRatio = 2430 / 1886;
   const maxWidth = Math.min(window.innerWidth * 0.8, 350);
@@ -95,7 +105,8 @@ export const showShinyCard = async (displayName: string) => {
   img.style.userSelect = "none";
   img.style.pointerEvents = "none";
   img.draggable = false;
-  img.src = `https://assets.mons.link/cards/bg/${cardIndex}.webp`;
+  img.src = `https://assets.mons.link/cards/bg/${isOtherPlayer ? Math.floor(Math.random() * totalCardBgsCount) : cardIndex}.webp`;
+  // TODO: set actual bg for other players
   img.onerror = () => {
     img.style.visibility = "hidden";
   };
@@ -110,24 +121,32 @@ export const showShinyCard = async (displayName: string) => {
   emojiImg.style.left = "8%";
   emojiImg.style.userSelect = "none";
   emojiImg.draggable = false;
-  emojiImg.src = `https://assets.mons.link/emojipack_hq/${storage.getPlayerEmojiId("1")}.webp`;
-  emojiImg.onerror = () => {
+  emojiImg.src = `https://assets.mons.link/emojipack_hq/${isOtherPlayer ? emojis.getRandomEmojiId() : storage.getPlayerEmojiId("1")}.webp`;
+  // TODO: use actual emojis for other players, use correct one when opening your own card from a different place
+  if (isOtherPlayer) {
     emojiImg.style.visibility = "hidden";
-  };
-  emojiImg.onload = () => {
-    emojiImg.style.visibility = "visible";
-  };
+  } else {
+    emojiImg.onerror = () => {
+      emojiImg.style.visibility = "hidden";
+    };
+    emojiImg.onload = () => {
+      emojiImg.style.visibility = "visible";
+    };
+  }
 
   emojiImg.style.cursor = "pointer";
   emojiImg.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
-    const oldEmojiId = storage.getPlayerEmojiId("1");
-    const playerEmojiId = getIncrementedEmojiId(oldEmojiId);
-    updateContent("emoji", playerEmojiId, oldEmojiId);
     if (isMobile) {
       handlePointerLeave();
     }
+    if (isOtherPlayer) {
+      return;
+    }
+    const oldEmojiId = storage.getPlayerEmojiId("1");
+    const playerEmojiId = getIncrementedEmojiId(oldEmojiId);
+    updateContent("emoji", playerEmojiId, oldEmojiId);
   });
   ownEmojiImg = emojiImg;
 
@@ -304,10 +323,13 @@ export const showShinyCard = async (displayName: string) => {
   }
 
   card.addEventListener("click", () => {
-    updateContent("bg", (cardIndex + 1) % totalCardBgsCount, cardIndex);
     if (isMobile) {
       handlePointerLeave();
     }
+    if (isOtherPlayer) {
+      return;
+    }
+    updateContent("bg", (cardIndex + 1) % totalCardBgsCount, cardIndex);
   });
   ownBgImg = img;
 
@@ -322,12 +344,11 @@ export const showShinyCard = async (displayName: string) => {
 
   const displayNameElement = addTextToCard(card, displayName, "36.3%", "30%");
   displayNameElement.setAttribute("data-shiny-card-display-name", "true");
-  addTextToCard(card, storage.getPlayerRating(1500).toString(), "36.3%", "41%");
-  ownSubtitleElement = addTextToCard(card, getAsciimojiAtIndex(asciimojiIndex), "10%", "52%");
-
+  addTextToCard(card, isOtherPlayer ? "wip" : storage.getPlayerRating(1500).toString(), "36.3%", "41%");
+  ownSubtitleElement = addTextToCard(card, isOtherPlayer ? "wip" : getAsciimojiAtIndex(asciimojiIndex), "10%", "52%");
   const gpText = "gp: " + (storage.getPlayerNonce(-1) + 1).toString();
-
-  addTextToCard(card, gpText, "9%", "62.7%", "10px");
+  addTextToCard(card, isOtherPlayer ? "wip" : gpText, "9%", "62.7%", "10px");
+  // TODO: display actual data for other players
 
   cardContainer.appendChild(card);
   document.body.appendChild(cardContainer);
@@ -347,17 +368,23 @@ export const showShinyCard = async (displayName: string) => {
   });
 
   observer.observe(document.body, { childList: true });
-  showMons(card, handlePointerLeave);
+  showMons(card, handlePointerLeave, isOtherPlayer);
   if (showStickers) {
     showRandomStickers(card);
   }
 
   addPlaceholderBubble(card, "34.3%", "25.6%", "30%", "9%", handlePointerLeave, () => {
+    if (isOtherPlayer) {
+      return;
+    }
     handleEditDisplayName();
   });
   addPlaceholderBubble(card, "34.3%", "36.3%", "15.5%", "9%", handlePointerLeave);
 
   addPlaceholderBubble(card, "7.4%", "47.3%", "37.5%", "9%", handlePointerLeave, () => {
+    if (isOtherPlayer) {
+      return;
+    }
     updateContent("subtitle", (asciimojiIndex + 1) % asciimojisCount, asciimojiIndex);
   });
 
@@ -366,7 +393,7 @@ export const showShinyCard = async (displayName: string) => {
 };
 
 export const updateShinyCardDisplayName = (displayName: string) => {
-  if (!showsShinyCard) {
+  if (!showsShinyCardSomewhere) {
     return;
   }
   const displayNameElement = document.querySelector('[data-shiny-card-display-name="true"]');
@@ -533,7 +560,7 @@ const createOverlayImage = (url: string): HTMLImageElement => {
 };
 
 export const hideShinyCard = () => {
-  showsShinyCard = false;
+  showsShinyCardSomewhere = false;
   const shinyCard = document.querySelector('[data-shiny-card="true"]');
   if (shinyCard && shinyCard.parentNode) {
     shinyCard.parentNode.removeChild(shinyCard);
@@ -617,7 +644,11 @@ function setupMonsIndexes() {
   }
 }
 
-async function showMons(card: HTMLElement, handlePointerLeave: any) {
+async function showMons(card: HTMLElement, handlePointerLeave: any, isOtherPlayer: boolean) {
+  if (isOtherPlayer) {
+    return;
+  }
+  // TODO: show other players mons
   const alpha = 1;
 
   if (!drainerImageData) {

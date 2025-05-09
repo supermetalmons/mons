@@ -13,6 +13,7 @@ import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
 import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
+import { showsShinyCardSomewhere } from "../ui/ShinyCard";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 
@@ -1634,7 +1635,7 @@ export function setupBoard() {
   initializeBoardElements();
 
   document.addEventListener(defaultInputEventName, function (event) {
-    const hasVisiblePopups = hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible();
+    const hasVisiblePopups = hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible() || showsShinyCardSomewhere;
     const didDismissSmth = !didNotDismissAnythingWithOutsideTapJustNow();
     if (didDismissSmth || hasVisiblePopups) {
       if (!hasVisiblePopups && didDismissSmth) {
