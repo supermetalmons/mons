@@ -1,5 +1,5 @@
 import { sendCardBackgroundUpdate, sendCardSubtitleIdUpdate, sendProfileMonsUpdate } from "../connection/connection";
-import { emojis, getIncrementedEmojiId } from "../content/emojis";
+import { emojipackSize, emojis, getIncrementedEmojiId } from "../content/emojis";
 import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile } from "../utils/misc";
 import { storage } from "../utils/storage";
@@ -123,18 +123,13 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   emojiImg.style.left = "8%";
   emojiImg.style.userSelect = "none";
   emojiImg.draggable = false;
-  emojiImg.src = `https://assets.mons.link/emojipack_hq/${isOtherPlayer ? emojis.getRandomEmojiId() : storage.getPlayerEmojiId("1")}.webp`;
-  // TODO: use actual emojis for other players, use correct one when opening your own card from a different place
-  if (isOtherPlayer) {
+  emojiImg.src = `https://assets.mons.link/emojipack_hq/${isOtherPlayer ? getEmojiIdForProfile(profile) : storage.getPlayerEmojiId("1")}.webp`;
+  emojiImg.onerror = () => {
     emojiImg.style.visibility = "hidden";
-  } else {
-    emojiImg.onerror = () => {
-      emojiImg.style.visibility = "hidden";
-    };
-    emojiImg.onload = () => {
-      emojiImg.style.visibility = "visible";
-    };
-  }
+  };
+  emojiImg.onload = () => {
+    emojiImg.style.visibility = "visible";
+  };
 
   emojiImg.style.cursor = "pointer";
   emojiImg.addEventListener("click", (e) => {
@@ -346,12 +341,10 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
 
   const displayNameElement = addTextToCard(card, displayName, "36.3%", "30%");
   displayNameElement.setAttribute("data-shiny-card-display-name", "true");
-  addTextToCard(card, isOtherPlayer ? "wip" : storage.getPlayerRating(1500).toString(), "36.3%", "41%");
-  ownSubtitleElement = addTextToCard(card, isOtherPlayer ? "wip" : getAsciimojiAtIndex(asciimojiIndex), "10%", "52%");
-  const gpText = "gp: " + (storage.getPlayerNonce(-1) + 1).toString();
-  addTextToCard(card, isOtherPlayer ? "wip" : gpText, "9%", "62.7%", "10px");
-  // TODO: display actual data for other players
-
+  addTextToCard(card, isOtherPlayer ? (profile?.rating ?? 1500).toString() : storage.getPlayerRating(1500).toString(), "36.3%", "41%");
+  ownSubtitleElement = addTextToCard(card, getAsciimojiAtIndex(isOtherPlayer ? getSubtitleIdForProfile(profile) : asciimojiIndex), "10%", "52%");
+  const gpText = "gp: " + ((isOtherPlayer ? profile?.nonce ?? -1 : storage.getPlayerNonce(-1)) + 1).toString();
+  addTextToCard(card, gpText, "9%", "62.7%", "10px");
   cardContainer.appendChild(card);
   document.body.appendChild(cardContainer);
 
@@ -570,7 +563,15 @@ export const hideShinyCard = () => {
 };
 
 function getBgIdForProfile(profile: PlayerProfile | null): number {
-  return profile?.cardBackgroundId ?? getStableRandomIdForProfileId(profile?.id || "", totalCardBgsCount);
+  return profile?.cardBackgroundId ?? getStableRandomIdForProfileId(profile?.id ?? "", totalCardBgsCount);
+}
+
+function getEmojiIdForProfile(profile: PlayerProfile | null): number {
+  return profile?.emoji ?? getStableRandomIdForProfileId(profile?.id ?? "", emojipackSize);
+}
+
+function getSubtitleIdForProfile(profile: PlayerProfile | null): number {
+  return profile?.cardSubtitleId ?? getStableRandomIdForProfileId(profile?.id ?? "", asciimojisCount);
 }
 
 function getStableRandomIdForOwnProfile(totalIdsCount: number): number {
