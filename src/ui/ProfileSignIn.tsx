@@ -219,7 +219,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         hideShinyCard();
         enterProfileEditingMode(false);
       } else {
-        showShinyCard(profileDisplayName, false);
+        showShinyCard(null, profileDisplayName, false);
         enterProfileEditingMode(true);
       }
     }

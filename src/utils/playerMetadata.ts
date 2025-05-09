@@ -17,6 +17,7 @@ export type PlayerMetadata = {
   voiceReactionText: string;
   voiceReactionDate: number | undefined;
   rating: number | undefined;
+  profile: PlayerProfile | null;
 };
 
 export const newEmptyPlayerMetadata = (): PlayerMetadata => ({
@@ -30,6 +31,7 @@ export const newEmptyPlayerMetadata = (): PlayerMetadata => ({
   voiceReactionText: "",
   voiceReactionDate: undefined,
   rating: undefined,
+  profile: null,
 });
 
 export function openSolAddress(address: string) {

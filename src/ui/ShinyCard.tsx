@@ -6,6 +6,7 @@ import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
 import { didClickAndChangePlayerEmoji } from "../game/board";
 import { enableCardEditorUndo } from "../index";
+import { PlayerProfile } from "../connection/connectionModels";
 
 const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
 const IDLE_SHINE_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
@@ -44,7 +45,9 @@ const cardStyles = `
   [data-shiny-card="true"]{ right:7px !important; }
 }`;
 
-export const showShinyCard = async (displayName: string, isOtherPlayer: boolean) => {
+export const showShinyCard = async (profile: PlayerProfile | null, displayName: string, isOtherPlayer: boolean) => {
+  // TODO: use profile model to setup for other players
+
   if (showsShinyCardSomewhere) {
     hideShinyCard();
   }

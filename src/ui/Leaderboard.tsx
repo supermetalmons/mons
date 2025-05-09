@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { resolveENS } from "../utils/ensResolver";
 import { getLeaderboard } from "../connection/connection";
 import { showShinyCard } from "./ShinyCard";
+import { PlayerProfile } from "../connection/connectionModels";
 
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
   opacity: 1;
@@ -185,6 +186,7 @@ interface LeaderboardEntry {
   emoji: number;
   ensName?: string | null;
   username?: string | null;
+  profile: PlayerProfile;
 }
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
@@ -203,8 +205,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
       }
 
       getLeaderboard()
-        .then((ratings) => {
-          const leaderboardData = ratings.map((entry) => ({
+        .then((profiles) => {
+          const leaderboardData = profiles.map((entry) => ({
             username: entry.username,
             eth: entry.eth,
             sol: entry.sol,
@@ -214,6 +216,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
             id: entry.id,
             emoji: entry.emoji,
             ensName: null,
+            profile: entry,
           }));
           setData(leaderboardData);
 
@@ -246,7 +249,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
   };
 
   const handleRowClick = (row: LeaderboardEntry) => {
-    showShinyCard(getDisplayName(row), true);
+    showShinyCard(row.profile, getDisplayName(row), true);
   };
 
   const handleEmojiLoad = (emojiKey: string) => {

@@ -7,7 +7,7 @@ import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
 import { playSounds } from "../content/sounds";
 import { hasNavigationPopupVisible, didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible, resetOutsideTapDismissTimeout } from "../ui/BottomControls";
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
-import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, openSolAddress, openEthAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername } from "../utils/playerMetadata";
+import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
 import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
@@ -933,8 +933,7 @@ function canRedirectToExplorer(opponent: boolean) {
 function redirectToAddressOnExplorer(opponent: boolean) {
   const displayName = opponent ? opponentSideMetadata.displayName : playerSideMetadata.displayName;
   if (displayName !== undefined) {
-    showShinyCard(displayName, true);
-    // TODO: pass all necessary data
+    showShinyCard(null, displayName, true); // TODO: pass profile data in there
   }
 }
 
