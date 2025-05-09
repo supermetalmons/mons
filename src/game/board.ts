@@ -13,7 +13,7 @@ import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
 import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
-import { showsShinyCardSomewhere } from "../ui/ShinyCard";
+import { showShinyCard, showsShinyCardSomewhere } from "../ui/ShinyCard";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 
@@ -931,12 +931,10 @@ function canRedirectToExplorer(opponent: boolean) {
 }
 
 function redirectToAddressOnExplorer(opponent: boolean) {
-  let ethAddress = opponent ? opponentSideMetadata.ethAddress : playerSideMetadata.ethAddress;
-  let solAddress = opponent ? opponentSideMetadata.solAddress : playerSideMetadata.solAddress;
-  if (ethAddress !== undefined) {
-    openEthAddress(ethAddress);
-  } else if (solAddress !== undefined) {
-    openSolAddress(solAddress);
+  const displayName = opponent ? opponentSideMetadata.displayName : playerSideMetadata.displayName;
+  if (displayName !== undefined) {
+    showShinyCard(displayName, true);
+    // TODO: pass all necessary data
   }
 }
 
