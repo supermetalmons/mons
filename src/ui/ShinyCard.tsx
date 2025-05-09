@@ -108,8 +108,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   img.style.userSelect = "none";
   img.style.pointerEvents = "none";
   img.draggable = false;
-  img.src = `https://assets.mons.link/cards/bg/${isOtherPlayer ? Math.floor(Math.random() * totalCardBgsCount) : cardIndex}.webp`;
-  // TODO: set actual bg for other players
+  img.src = `https://assets.mons.link/cards/bg/${isOtherPlayer ? getBgIdForProfile(profile) : cardIndex}.webp`;
   img.onerror = () => {
     img.style.visibility = "hidden";
   };
@@ -570,8 +569,16 @@ export const hideShinyCard = () => {
   }
 };
 
+function getBgIdForProfile(profile: PlayerProfile | null): number {
+  return profile?.cardBackgroundId ?? getStableRandomIdForProfileId(profile?.id || "", totalCardBgsCount);
+}
+
 function getStableRandomIdForOwnProfile(totalIdsCount: number): number {
   const profileId = storage.getProfileId("");
+  return getStableRandomIdForProfileId(profileId, totalIdsCount);
+}
+
+function getStableRandomIdForProfileId(profileId: string, totalIdsCount: number): number {
   let hash = 0;
   for (let i = 0; i < profileId.length; i++) {
     hash += profileId.charCodeAt(i);
