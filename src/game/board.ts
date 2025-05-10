@@ -7,7 +7,7 @@ import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
 import { playSounds } from "../content/sounds";
 import { hasNavigationPopupVisible, didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible, resetOutsideTapDismissTimeout } from "../ui/BottomControls";
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
-import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername } from "../utils/playerMetadata";
+import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername, getStashedPlayerProfile } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
 import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
@@ -931,9 +931,11 @@ function canRedirectToExplorer(opponent: boolean) {
 }
 
 function redirectToAddressOnExplorer(opponent: boolean) {
-  const displayName = opponent ? opponentSideMetadata.displayName : playerSideMetadata.displayName;
+  const metadata = opponent ? opponentSideMetadata : playerSideMetadata;
+  const displayName = metadata.displayName;
   if (displayName !== undefined) {
-    showShinyCard(null, displayName, true); // TODO: pass profile data in there
+    const profile = getStashedPlayerProfile(metadata.uid);
+    showShinyCard(profile ?? null, displayName, true);
   }
 }
 

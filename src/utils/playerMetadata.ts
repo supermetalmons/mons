@@ -73,6 +73,11 @@ export function getStashedPlayerSolAddress(uid: string) {
   return solAddressesForUids[uid];
 }
 
+export function getStashedPlayerProfile(uid: string): PlayerProfile | undefined {
+  if (!uid) return undefined;
+  return allProfilesDict[uid];
+}
+
 export function getStashedPlayerEthAddress(uid: string) {
   return ethAddressesForUids[uid];
 }
