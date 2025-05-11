@@ -599,12 +599,6 @@ function getStableRandomIdForProfileId(profileId: string, totalIdsCount: number)
   return index;
 }
 
-let demonImageData = "";
-let angelImageData = "";
-let drainerImageData = "";
-let spiritImageData = "";
-let mysticImageData = "";
-
 const demonTypes = ["borgalo", "notchur"];
 const angelTypes = ["applecreme", "gerp", "goxfold", "mowch", "mummyfly"];
 const drainerTypes = ["deino", "greenseech", "omom", "supermetaldrop", "zwubbi"];
@@ -669,20 +663,14 @@ function setupMonsIndexes(isOtherPlayer: boolean, profile: PlayerProfile | null)
 
 async function showMons(card: HTMLElement, handlePointerLeave: any, isOtherPlayer: boolean, profile: PlayerProfile | null) {
   const alpha = 1;
-
   setupMonsIndexes(isOtherPlayer, profile);
+  // TODO: update onboard mons if needed when incard mons are changed
   const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
-  demonImageData = getSpriteByKey(getDemonId());
-  angelImageData = getSpriteByKey(getAngelId());
-  drainerImageData = getSpriteByKey(getDrainerId());
-  spiritImageData = getSpriteByKey(getSpiritId());
-  mysticImageData = getSpriteByKey(getMysticId());
-
-  addImageToCard(card, "32.5%", "75%", demonImageData, alpha, "demon", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "44.7%", "75%", angelImageData, alpha, "angel", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "57.3%", "75%", drainerImageData, alpha, "drainer", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "69.5%", "75%", spiritImageData, alpha, "spirit", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "82%", "75%", mysticImageData, alpha, "mystic", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "32.5%", "75%", getSpriteByKey(getDemonId()), alpha, "demon", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "44.7%", "75%", getSpriteByKey(getAngelId()), alpha, "angel", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "57.3%", "75%", getSpriteByKey(getDrainerId()), alpha, "drainer", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "69.5%", "75%", getSpriteByKey(getSpiritId()), alpha, "spirit", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "82%", "75%", getSpriteByKey(getMysticId()), alpha, "mystic", handlePointerLeave, isOtherPlayer);
 }
 
 async function didClickMonImage(monType: string) {
@@ -739,31 +727,26 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
         case "demon":
           demonIndex = newId;
           newImageData = getSpriteByKey(getDemonId());
-          demonImageData = newImageData;
           img = ownDemonImg;
           break;
         case "angel":
           angelIndex = newId;
           newImageData = getSpriteByKey(getAngelId());
-          angelImageData = newImageData;
           img = ownAngelImg;
           break;
         case "drainer":
           drainerIndex = newId;
           newImageData = getSpriteByKey(getDrainerId());
-          drainerImageData = newImageData;
           img = ownDrainerImg;
           break;
         case "spirit":
           spiritIndex = newId;
           newImageData = getSpriteByKey(getSpiritId());
-          spiritImageData = newImageData;
           img = ownSpiritImg;
           break;
         case "mystic":
           mysticIndex = newId;
           newImageData = getSpriteByKey(getMysticId());
-          mysticImageData = newImageData;
           img = ownMysticImg;
           break;
       }

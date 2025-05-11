@@ -273,7 +273,7 @@ async function initializeAssets(onStart: boolean) {
 
   if (isExperimentingWithSprites) {
     const getRandomSpriteOfType = (await import(`../assets/monsSprites`)).getRandomSpriteOfType;
-
+    // TODO: load custom selected mons instead as defined within an id card
     drainer = loadImage(getRandomSpriteOfType("drainer"), "drainer", true);
     angel = loadImage(getRandomSpriteOfType("angel"), "angel", true);
     demon = loadImage(getRandomSpriteOfType("demon"), "demon", true);
