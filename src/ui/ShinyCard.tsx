@@ -22,6 +22,7 @@ const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radia
     rgba(255,255,255,0) 100%)`;
 
 const totalCardBgsCount = 37;
+const bubblePlaceholderColor = "white";
 
 let cardIndex = getStableRandomIdForOwnProfile(totalCardBgsCount);
 let asciimojiIndex = getStableRandomIdForOwnProfile(asciimojisCount);
@@ -127,12 +128,25 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     img.style.visibility = "visible";
   };
 
+  const emojiContainer = document.createElement("div");
+  emojiContainer.style.position = "absolute";
+  emojiContainer.style.backgroundColor = bubblePlaceholderColor;
+  emojiContainer.style.width = "24.9%";
+  emojiContainer.style.aspectRatio = "1";
+  emojiContainer.style.top = "13.3%";
+  emojiContainer.style.left = "7.65%";
+  emojiContainer.style.borderRadius = "7%";
+  emojiContainer.style.userSelect = "none";
+  emojiContainer.style.cursor = "pointer";
+
   const emojiImg = document.createElement("img");
   emojiImg.style.position = "absolute";
-  emojiImg.style.width = "24%";
-  emojiImg.style.top = "13.5%";
-  emojiImg.style.left = "8%";
+  emojiImg.style.width = "100%";
+  emojiImg.style.height = "100%";
+  emojiImg.style.top = "0";
+  emojiImg.style.left = "0";
   emojiImg.style.userSelect = "none";
+  emojiImg.style.visibility = "hidden";
   emojiImg.draggable = false;
   emojiImg.src = `https://assets.mons.link/emojipack_hq/${isOtherPlayer ? getEmojiIdForProfile(profile) : storage.getPlayerEmojiId("1")}.webp`;
   emojiImg.onerror = () => {
@@ -141,9 +155,8 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   emojiImg.onload = () => {
     emojiImg.style.visibility = "visible";
   };
-
-  emojiImg.style.cursor = "pointer";
-  emojiImg.addEventListener("click", (e) => {
+  emojiContainer.appendChild(emojiImg);
+  emojiContainer.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
     if (isMobile) {
@@ -344,11 +357,32 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   card.appendChild(placeholder);
   card.appendChild(img);
 
-  const bubblesOverlay = createOverlayImage("https://assets.mons.link/cards/bubbles.webp");
-  card.appendChild(bubblesOverlay);
-
-  card.appendChild(emojiImg);
+  card.appendChild(emojiContainer);
   card.appendChild(shinyOverlay);
+
+  addPlaceholderBubble(card, "34.3%", "25.6%", "30%", "9%", handlePointerLeave, () => {
+    if (isOtherPlayer) {
+      const eth = profile?.eth;
+      const sol = profile?.sol;
+      if (eth) {
+        window.open(`https://etherscan.io/address/${eth}`, "_blank", "noopener,noreferrer");
+      } else if (sol) {
+        window.open(`https://explorer.solana.com/address/${sol}`, "_blank", "noopener,noreferrer");
+      }
+    } else {
+      handleEditDisplayName();
+    }
+  });
+  addPlaceholderBubble(card, "34.3%", "36.3%", "15.5%", "9%", handlePointerLeave);
+
+  addPlaceholderBubble(card, "7.4%", "47.3%", "37.5%", "9%", handlePointerLeave, () => {
+    if (isOtherPlayer) {
+      return;
+    }
+    updateContent("subtitle", (asciimojiIndex + 1) % asciimojisCount, asciimojiIndex);
+  });
+
+  addPlaceholderBubble(card, "7.4%", "58.3%", "13.5%", "9%", handlePointerLeave);
 
   const displayNameElement = addTextToCard(card, displayName, "36.3%", "30%");
   displayNameElement.setAttribute("data-shiny-card-display-name", "true");
@@ -379,29 +413,6 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     showRandomStickers(card);
   }
 
-  addPlaceholderBubble(card, "34.3%", "25.6%", "30%", "9%", handlePointerLeave, () => {
-    if (isOtherPlayer) {
-      const eth = profile?.eth;
-      const sol = profile?.sol;
-      if (eth) {
-        window.open(`https://etherscan.io/address/${eth}`, "_blank", "noopener,noreferrer");
-      } else if (sol) {
-        window.open(`https://explorer.solana.com/address/${sol}`, "_blank", "noopener,noreferrer");
-      }
-    } else {
-      handleEditDisplayName();
-    }
-  });
-  addPlaceholderBubble(card, "34.3%", "36.3%", "15.5%", "9%", handlePointerLeave);
-
-  addPlaceholderBubble(card, "7.4%", "47.3%", "37.5%", "9%", handlePointerLeave, () => {
-    if (isOtherPlayer) {
-      return;
-    }
-    updateContent("subtitle", (asciimojiIndex + 1) % asciimojisCount, asciimojiIndex);
-  });
-
-  addPlaceholderBubble(card, "7.4%", "58.3%", "13.5%", "9%", handlePointerLeave);
   updateUndoButton();
 };
 
@@ -448,7 +459,9 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
   imageContainer.style.position = "absolute";
   imageContainer.style.left = leftPosition;
   imageContainer.style.top = topPosition;
-  imageContainer.style.width = "10%";
+  imageContainer.style.backgroundColor = bubblePlaceholderColor;
+  imageContainer.style.width = "10.7%";
+  imageContainer.style.borderRadius = "10%";
   imageContainer.style.aspectRatio = "1";
   imageContainer.style.overflow = "hidden";
   imageContainer.style.userSelect = "none";
@@ -461,6 +474,7 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
     img.style.height = "100%";
     img.style.objectFit = "cover";
     img.style.objectPosition = "0% 50%";
+    img.style.display = "block";
     img.style.imageRendering = "pixelated";
     img.style.opacity = alpha.toString();
     img.style.userSelect = "none";
@@ -522,9 +536,8 @@ const addPlaceholderBubble = (card: HTMLElement, left: string, top: string, widt
   imageContainer.style.width = width;
   imageContainer.style.height = height;
   imageContainer.style.overflow = "hidden";
-  imageContainer.style.backgroundColor = "transparent";
-  imageContainer.style.opacity = "0";
-  imageContainer.style.border = "1px solid #D0D0D050";
+  imageContainer.style.backgroundColor = bubblePlaceholderColor;
+  imageContainer.style.opacity = "1";
   imageContainer.style.boxSizing = "border-box";
   imageContainer.style.display = "flex";
   imageContainer.style.justifyContent = "center";
@@ -598,11 +611,12 @@ async function showMons(card: HTMLElement, handlePointerLeave: any, isOtherPlaye
   const alpha = 1;
   [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] = getMonsIndexes(isOtherPlayer, profile);
   const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
-  addImageToCard(card, "32.5%", "75%", getSpriteByKey(getMonId(MonType.DEMON, demonIndex)), alpha, "demon", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "44.7%", "75%", getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), alpha, "angel", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "57.3%", "75%", getSpriteByKey(getMonId(MonType.DRAINER, drainerIndex)), alpha, "drainer", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "69.5%", "75%", getSpriteByKey(getMonId(MonType.SPIRIT, spiritIndex)), alpha, "spirit", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "82%", "75%", getSpriteByKey(getMonId(MonType.MYSTIC, mysticIndex)), alpha, "mystic", handlePointerLeave, isOtherPlayer);
+  const y = "74.37%";
+  addImageToCard(card, "32.13%", y, getSpriteByKey(getMonId(MonType.DEMON, demonIndex)), alpha, "demon", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "44.35%", y, getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), alpha, "angel", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "56.85%", y, getSpriteByKey(getMonId(MonType.DRAINER, drainerIndex)), alpha, "drainer", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "69.2%", y, getSpriteByKey(getMonId(MonType.SPIRIT, spiritIndex)), alpha, "spirit", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "81.5%", y, getSpriteByKey(getMonId(MonType.MYSTIC, mysticIndex)), alpha, "mystic", handlePointerLeave, isOtherPlayer);
 }
 
 async function didClickMonImage(monType: string) {
