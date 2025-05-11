@@ -7,6 +7,7 @@ import { handleEditDisplayName } from "./ProfileSignIn";
 import { didClickAndChangePlayerEmoji } from "../game/board";
 import { enableCardEditorUndo } from "../index";
 import { PlayerProfile } from "../connection/connectionModels";
+import { getAngelId, getDemonId, getDrainerId, getMysticId, getSpiritId, mysticTypes, demonTypes, drainerTypes, angelTypes, spiritTypes } from "../utils/namedMons";
 
 const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
 const IDLE_SHINE_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
@@ -24,6 +25,14 @@ const totalCardBgsCount = 37;
 
 let cardIndex = getStableRandomIdForOwnProfile(totalCardBgsCount);
 let asciimojiIndex = getStableRandomIdForOwnProfile(asciimojisCount);
+
+let demonIndex = 0;
+let angelIndex = 0;
+let drainerIndex = 0;
+let spiritIndex = 0;
+let mysticIndex = 0;
+
+let undoQueue: Array<[string, any]> = [];
 
 const showStickers = false;
 export let showsShinyCardSomewhere = false;
@@ -599,38 +608,6 @@ function getStableRandomIdForProfileId(profileId: string, totalIdsCount: number)
   return index;
 }
 
-const demonTypes = ["borgalo", "notchur"];
-const angelTypes = ["applecreme", "gerp", "goxfold", "mowch", "mummyfly"];
-const drainerTypes = ["deino", "greenseech", "omom", "supermetaldrop", "zwubbi"];
-const spiritTypes = ["melmut", "omenstatue", "owg"];
-const mysticTypes = ["chamgot", "dart", "estalibur"];
-
-let demonIndex = 0;
-let angelIndex = 0;
-let drainerIndex = 0;
-let spiritIndex = 0;
-let mysticIndex = 0;
-
-function getDemonId(): string {
-  return demonTypes[demonIndex] + "_demon";
-}
-
-function getAngelId(): string {
-  return angelTypes[angelIndex] + "_angel";
-}
-
-function getDrainerId(): string {
-  return drainerTypes[drainerIndex] + "_drainer";
-}
-
-function getSpiritId(): string {
-  return spiritTypes[spiritIndex] + "_spirit";
-}
-
-function getMysticId(): string {
-  return mysticTypes[mysticIndex] + "_mystic";
-}
-
 function setupMonsIndexes(isOtherPlayer: boolean, profile: PlayerProfile | null) {
   const currentIndexes = isOtherPlayer ? profile?.profileMons ?? "" : storage.getProfileMons("");
 
@@ -666,11 +643,11 @@ async function showMons(card: HTMLElement, handlePointerLeave: any, isOtherPlaye
   setupMonsIndexes(isOtherPlayer, profile);
   // TODO: update onboard mons if needed when incard mons are changed
   const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
-  addImageToCard(card, "32.5%", "75%", getSpriteByKey(getDemonId()), alpha, "demon", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "44.7%", "75%", getSpriteByKey(getAngelId()), alpha, "angel", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "57.3%", "75%", getSpriteByKey(getDrainerId()), alpha, "drainer", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "69.5%", "75%", getSpriteByKey(getSpiritId()), alpha, "spirit", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "82%", "75%", getSpriteByKey(getMysticId()), alpha, "mystic", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "32.5%", "75%", getSpriteByKey(getDemonId(demonIndex)), alpha, "demon", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "44.7%", "75%", getSpriteByKey(getAngelId(angelIndex)), alpha, "angel", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "57.3%", "75%", getSpriteByKey(getDrainerId(drainerIndex)), alpha, "drainer", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "69.5%", "75%", getSpriteByKey(getSpiritId(spiritIndex)), alpha, "spirit", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "82%", "75%", getSpriteByKey(getMysticId(mysticIndex)), alpha, "mystic", handlePointerLeave, isOtherPlayer);
 }
 
 async function didClickMonImage(monType: string) {
@@ -692,8 +669,6 @@ async function didClickMonImage(monType: string) {
       break;
   }
 }
-
-let undoQueue: Array<[string, any]> = [];
 
 async function updateContent(contentType: string, newId: any, oldId: any | null) {
   switch (contentType) {
@@ -726,27 +701,27 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       switch (contentType) {
         case "demon":
           demonIndex = newId;
-          newImageData = getSpriteByKey(getDemonId());
+          newImageData = getSpriteByKey(getDemonId(newId));
           img = ownDemonImg;
           break;
         case "angel":
           angelIndex = newId;
-          newImageData = getSpriteByKey(getAngelId());
+          newImageData = getSpriteByKey(getAngelId(newId));
           img = ownAngelImg;
           break;
         case "drainer":
           drainerIndex = newId;
-          newImageData = getSpriteByKey(getDrainerId());
+          newImageData = getSpriteByKey(getDrainerId(newId));
           img = ownDrainerImg;
           break;
         case "spirit":
           spiritIndex = newId;
-          newImageData = getSpriteByKey(getSpiritId());
+          newImageData = getSpriteByKey(getSpiritId(newId));
           img = ownSpiritImg;
           break;
         case "mystic":
           mysticIndex = newId;
-          newImageData = getSpriteByKey(getMysticId());
+          newImageData = getSpriteByKey(getMysticId(newId));
           img = ownMysticImg;
           break;
       }
