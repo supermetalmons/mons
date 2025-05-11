@@ -281,6 +281,7 @@ const ButtonRow = styled.div`
   padding-bottom: 0px;
   width: 100%;
   -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
 
   &::-webkit-scrollbar {
     display: none;
@@ -288,6 +289,21 @@ const ButtonRow = styled.div`
 
   @media screen and (max-width: 320px) {
     gap: 6px;
+  }
+`;
+
+const CollectionButton = styled(IconLinkButton)`
+  transition: opacity 0.2s ease-out;
+  opacity: 0;
+  animation: fadeIn 0.2s ease-out forwards;
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
   }
 `;
 
@@ -572,11 +588,15 @@ const MainMenu: React.FC = () => {
 
   const handleNftButtonClick = () => {
     setIsNftSubmenuExpanded(true);
-    setTimeout(() => {
+    requestAnimationFrame(() => {
       if (buttonRowRef.current) {
-        buttonRowRef.current.scrollLeft = buttonRowRef.current.scrollWidth;
+        const scrollAmount = buttonRowRef.current.scrollWidth - buttonRowRef.current.clientWidth;
+        buttonRowRef.current.scrollTo({
+          left: scrollAmount,
+          behavior: "smooth",
+        });
       }
-    }, 1);
+    });
   };
 
   toggleInfoVisibility = () => {
@@ -690,15 +710,15 @@ const MainMenu: React.FC = () => {
                 <IconLinkButton onClick={handleNftButtonClick}>NFTs</IconLinkButton>
               ) : (
                 <>
-                  <IconLinkButton href="https://opensea.io/collection/theemojipack" target="_blank" rel="noopener noreferrer">
+                  <CollectionButton href="https://opensea.io/collection/theemojipack" target="_blank" rel="noopener noreferrer">
                     EMOJIPACK
-                  </IconLinkButton>
-                  <IconLinkButton href="https://opensea.io/collection/supermetalmons" target="_blank" rel="noopener noreferrer">
+                  </CollectionButton>
+                  <CollectionButton href="https://opensea.io/collection/supermetalmons" target="_blank" rel="noopener noreferrer">
                     Gen 1
-                  </IconLinkButton>
-                  <IconLinkButton href="https://opensea.io/collection/super-metal-mons-gen-2" target="_blank" rel="noopener noreferrer">
+                  </CollectionButton>
+                  <CollectionButton href="https://opensea.io/collection/super-metal-mons-gen-2" target="_blank" rel="noopener noreferrer">
                     Gen 2
-                  </IconLinkButton>
+                  </CollectionButton>
                 </>
               )}
             </ButtonRow>
