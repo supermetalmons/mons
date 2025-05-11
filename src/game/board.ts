@@ -588,14 +588,6 @@ export function showOpponentAsBotPlayer() {
   SVG.setImage(opponentAvatar, emojis.pc);
 }
 
-export function flipEmojis() {
-  const newPlayerEmoji = opponentSideMetadata.emojiId;
-  const newOpponentEmoji = playerSideMetadata.emojiId;
-
-  updateEmojiIfNeeded(newPlayerEmoji, false);
-  updateEmojiIfNeeded(newOpponentEmoji, true);
-}
-
 export function getPlayersEmojiId(): number {
   return parseInt(playerSideMetadata.emojiId !== "" ? playerSideMetadata.emojiId : "1");
 }
