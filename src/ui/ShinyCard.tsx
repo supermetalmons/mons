@@ -136,6 +136,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   emojiContainer.style.top = "13.3%";
   emojiContainer.style.left = "7.65%";
   emojiContainer.style.borderRadius = "7%";
+  emojiContainer.style.boxShadow = "0 0 2px 2px rgba(0, 0, 0, 0.1)";
   emojiContainer.style.userSelect = "none";
   emojiContainer.style.cursor = "pointer";
 
@@ -360,7 +361,8 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   card.appendChild(emojiContainer);
   card.appendChild(shinyOverlay);
 
-  addPlaceholderBubble(card, "34.3%", "25.6%", "30%", "9%", handlePointerLeave, () => {
+  const textBubbleHeight = "8.6%";
+  addPlaceholderBubble(card, "34.3%", "26%", "30%", textBubbleHeight, handlePointerLeave, () => {
     if (isOtherPlayer) {
       const eth = profile?.eth;
       const sol = profile?.sol;
@@ -373,16 +375,16 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
       handleEditDisplayName();
     }
   });
-  addPlaceholderBubble(card, "34.3%", "36.3%", "15.5%", "9%", handlePointerLeave);
+  addPlaceholderBubble(card, "34.3%", "36.6%", "15.5%", textBubbleHeight, handlePointerLeave);
 
-  addPlaceholderBubble(card, "7.4%", "47.3%", "37.5%", "9%", handlePointerLeave, () => {
+  addPlaceholderBubble(card, "7.4%", "47.5%", "37.5%", textBubbleHeight, handlePointerLeave, () => {
     if (isOtherPlayer) {
       return;
     }
     updateContent("subtitle", (asciimojiIndex + 1) % asciimojisCount, asciimojiIndex);
   });
 
-  addPlaceholderBubble(card, "7.4%", "58.3%", "13.5%", "9%", handlePointerLeave);
+  addPlaceholderBubble(card, "7.4%", "58.7%", "13.5%", textBubbleHeight, handlePointerLeave);
 
   const displayNameElement = addTextToCard(card, displayName, "36.3%", "30%");
   displayNameElement.setAttribute("data-shiny-card-display-name", "true");
@@ -442,7 +444,7 @@ const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, to
   textElement.style.position = "absolute";
   textElement.style.left = leftPosition;
   textElement.style.top = topPosition;
-  textElement.style.color = "#CACACA";
+  textElement.style.color = "#C1C1C1";
   textElement.style.fontFamily = "Arial, sans-serif";
   textElement.style.fontSize = fontSize;
   textElement.style.fontWeight = "555";
@@ -462,6 +464,7 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
   imageContainer.style.backgroundColor = bubblePlaceholderColor;
   imageContainer.style.width = "10.7%";
   imageContainer.style.borderRadius = "10%";
+  imageContainer.style.boxShadow = "0 0 1px 1px rgba(0, 0, 0, 0.1)";
   imageContainer.style.aspectRatio = "1";
   imageContainer.style.overflow = "hidden";
   imageContainer.style.userSelect = "none";
@@ -544,6 +547,7 @@ const addPlaceholderBubble = (card: HTMLElement, left: string, top: string, widt
   imageContainer.style.alignItems = "center";
   imageContainer.style.userSelect = "none";
   imageContainer.style.pointerEvents = "auto";
+  imageContainer.style.boxShadow = "0 0 1px 1px rgba(0, 0, 0, 0.1)";
   imageContainer.setAttribute("style", imageContainer.getAttribute("style") + "-webkit-tap-highlight-color: transparent; outline: none; -webkit-touch-callout: none;");
 
   imageContainer.addEventListener("click", (event) => {
