@@ -1,13 +1,13 @@
 import { sendCardBackgroundUpdate, sendCardSubtitleIdUpdate, sendProfileMonsUpdate } from "../connection/connection";
 import { emojipackSize, emojis, getIncrementedEmojiId } from "../content/emojis";
 import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
-import { isMobile } from "../utils/misc";
+import { isMobile, getStableRandomIdForOwnProfile, getStableRandomIdForProfileId } from "../utils/misc";
 import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
 import { didClickAndChangePlayerEmoji } from "../game/board";
 import { enableCardEditorUndo } from "../index";
 import { PlayerProfile } from "../connection/connectionModels";
-import { getAngelId, getDemonId, getDrainerId, getMysticId, getSpiritId, mysticTypes, demonTypes, drainerTypes, angelTypes, spiritTypes } from "../utils/namedMons";
+import { MonType, getMonId, getDefaultMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes } from "../utils/namedMons";
 
 const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
 const IDLE_SHINE_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
@@ -594,20 +594,6 @@ function getSubtitleIdForProfile(profile: PlayerProfile | null): number {
   return profile?.cardSubtitleId ?? getStableRandomIdForProfileId(profile?.id ?? "", asciimojisCount);
 }
 
-function getStableRandomIdForOwnProfile(totalIdsCount: number): number {
-  const profileId = storage.getProfileId("");
-  return getStableRandomIdForProfileId(profileId, totalIdsCount);
-}
-
-function getStableRandomIdForProfileId(profileId: string, totalIdsCount: number): number {
-  let hash = 0;
-  for (let i = 0; i < profileId.length; i++) {
-    hash += profileId.charCodeAt(i);
-  }
-  const index = hash % totalIdsCount;
-  return index;
-}
-
 function setupMonsIndexes(isOtherPlayer: boolean, profile: PlayerProfile | null) {
   const currentIndexes = isOtherPlayer ? profile?.profileMons ?? "" : storage.getProfileMons("");
 
@@ -630,11 +616,11 @@ function setupMonsIndexes(isOtherPlayer: boolean, profile: PlayerProfile | null)
 
   if (useDefaultIndexes) {
     const profileId = isOtherPlayer ? profile?.id ?? "" : storage.getProfileId("");
-    demonIndex = getStableRandomIdForProfileId(profileId, demonTypes.length);
-    angelIndex = getStableRandomIdForProfileId(profileId, angelTypes.length);
-    drainerIndex = getStableRandomIdForProfileId(profileId, drainerTypes.length);
-    spiritIndex = getStableRandomIdForProfileId(profileId, spiritTypes.length);
-    mysticIndex = getStableRandomIdForProfileId(profileId, mysticTypes.length);
+    demonIndex = getDefaultMonId(MonType.DEMON, profileId);
+    angelIndex = getDefaultMonId(MonType.ANGEL, profileId);
+    drainerIndex = getDefaultMonId(MonType.DRAINER, profileId);
+    spiritIndex = getDefaultMonId(MonType.SPIRIT, profileId);
+    mysticIndex = getDefaultMonId(MonType.MYSTIC, profileId);
   }
 }
 
@@ -643,11 +629,11 @@ async function showMons(card: HTMLElement, handlePointerLeave: any, isOtherPlaye
   setupMonsIndexes(isOtherPlayer, profile);
   // TODO: update onboard mons if needed when incard mons are changed
   const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
-  addImageToCard(card, "32.5%", "75%", getSpriteByKey(getDemonId(demonIndex)), alpha, "demon", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "44.7%", "75%", getSpriteByKey(getAngelId(angelIndex)), alpha, "angel", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "57.3%", "75%", getSpriteByKey(getDrainerId(drainerIndex)), alpha, "drainer", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "69.5%", "75%", getSpriteByKey(getSpiritId(spiritIndex)), alpha, "spirit", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "82%", "75%", getSpriteByKey(getMysticId(mysticIndex)), alpha, "mystic", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "32.5%", "75%", getSpriteByKey(getMonId(MonType.DEMON, demonIndex)), alpha, "demon", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "44.7%", "75%", getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), alpha, "angel", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "57.3%", "75%", getSpriteByKey(getMonId(MonType.DRAINER, drainerIndex)), alpha, "drainer", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "69.5%", "75%", getSpriteByKey(getMonId(MonType.SPIRIT, spiritIndex)), alpha, "spirit", handlePointerLeave, isOtherPlayer);
+  addImageToCard(card, "82%", "75%", getSpriteByKey(getMonId(MonType.MYSTIC, mysticIndex)), alpha, "mystic", handlePointerLeave, isOtherPlayer);
 }
 
 async function didClickMonImage(monType: string) {
@@ -701,27 +687,27 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       switch (contentType) {
         case "demon":
           demonIndex = newId;
-          newImageData = getSpriteByKey(getDemonId(newId));
+          newImageData = getSpriteByKey(getMonId(MonType.DEMON, newId));
           img = ownDemonImg;
           break;
         case "angel":
           angelIndex = newId;
-          newImageData = getSpriteByKey(getAngelId(newId));
+          newImageData = getSpriteByKey(getMonId(MonType.ANGEL, newId));
           img = ownAngelImg;
           break;
         case "drainer":
           drainerIndex = newId;
-          newImageData = getSpriteByKey(getDrainerId(newId));
+          newImageData = getSpriteByKey(getMonId(MonType.DRAINER, newId));
           img = ownDrainerImg;
           break;
         case "spirit":
           spiritIndex = newId;
-          newImageData = getSpriteByKey(getSpiritId(newId));
+          newImageData = getSpriteByKey(getMonId(MonType.SPIRIT, newId));
           img = ownSpiritImg;
           break;
         case "mystic":
           mysticIndex = newId;
-          newImageData = getSpriteByKey(getMysticId(newId));
+          newImageData = getSpriteByKey(getMonId(MonType.MYSTIC, newId));
           img = ownMysticImg;
           break;
       }
