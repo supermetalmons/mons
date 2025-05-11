@@ -372,9 +372,16 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
 
   addPlaceholderBubble(card, "34.3%", "25.6%", "30%", "9%", handlePointerLeave, () => {
     if (isOtherPlayer) {
-      return;
+      const eth = profile?.eth;
+      const sol = profile?.sol;
+      if (eth) {
+        window.open(`https://etherscan.io/address/${eth}`, "_blank", "noopener,noreferrer");
+      } else if (sol) {
+        window.open(`https://explorer.solana.com/address/${sol}`, "_blank", "noopener,noreferrer");
+      }
+    } else {
+      handleEditDisplayName();
     }
-    handleEditDisplayName();
   });
   addPlaceholderBubble(card, "34.3%", "36.3%", "15.5%", "9%", handlePointerLeave);
 
