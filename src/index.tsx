@@ -242,3 +242,34 @@ document.addEventListener(
 );
 
 signIn();
+
+(function suppressThirdPartyErrorOverlay() {
+  if (typeof window === "undefined") return;
+
+  const isBenignLibraryError = (err: unknown) => {
+    try {
+      if (!err) return false;
+      const message = typeof err === "string" ? err : (err as { message?: string }).message ?? "";
+      if (message.includes("this.provider.disconnect is not a function")) {
+        return true;
+      } else {
+        return false;
+      }
+    } catch {
+      return false;
+    }
+  };
+
+  const stop = (evt: { preventDefault(): void; stopImmediatePropagation(): void }) => {
+    evt.preventDefault();
+    evt.stopImmediatePropagation();
+  };
+
+  window.addEventListener(
+    "unhandledrejection",
+    (e) => {
+      if (isBenignLibraryError(e.reason)) stop(e);
+    },
+    { capture: true }
+  );
+})();
