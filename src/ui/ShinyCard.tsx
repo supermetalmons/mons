@@ -623,7 +623,7 @@ async function didClickMonImage(monType: string) {
       updateContent(monType, (mysticIndex + 1) % mysticTypes.length, mysticIndex);
       break;
   }
-  didUpdateIdCardMons(demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex);
+  didUpdateIdCardMons();
 }
 
 async function updateContent(contentType: string, newId: any, oldId: any | null) {

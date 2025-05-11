@@ -14,6 +14,7 @@ import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
 import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
 import { showShinyCard, showsShinyCardSomewhere } from "../ui/ShinyCard";
+import { getMonId, getMonsIndexes, MonType } from "../utils/namedMons";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 
@@ -268,27 +269,44 @@ export function showPuzzleTitle(title: string) {
   }
 }
 
-export async function didUpdateIdCardMons(demonIndex: number, angelIndex: number, drainerIndex: number, spiritIndex: number, mysticIndex: number) {
-  // TODO: update mons on the board if needed
+export async function didUpdateIdCardMons() {
+  if (!isWatchOnly && isExperimentingWithSprites) {
+    didToggleItemsStyleSet(true);
+  }
 }
 
-async function initializeAssets(onStart: boolean) {
+async function initializeAssets(onStart: boolean, isProfileMonsChange: boolean) {
   assets = (await import(`../assets/gameAssets${currentAssetsSet}`)).gameAssets;
 
   if (isExperimentingWithSprites) {
-    const getRandomSpriteOfType = (await import(`../assets/monsSprites`)).getRandomSpriteOfType;
-    // TODO: load custom selected mons instead as defined within an id card
-    drainer = loadImage(getRandomSpriteOfType("drainer"), "drainer", true);
-    angel = loadImage(getRandomSpriteOfType("angel"), "angel", true);
-    demon = loadImage(getRandomSpriteOfType("demon"), "demon", true);
-    spirit = loadImage(getRandomSpriteOfType("spirit"), "spirit", true);
-    mystic = loadImage(getRandomSpriteOfType("mystic"), "mystic", true);
+    const monsSprites = await import(`../assets/monsSprites`);
+    const getRandomSpriteOfType = monsSprites.getRandomSpriteOfType;
+    const getSpriteByKey = monsSprites.getSpriteByKey;
 
-    drainerB = loadImage(getRandomSpriteOfType("drainer"), "drainerB", true);
-    angelB = loadImage(getRandomSpriteOfType("angel"), "angelB", true);
-    demonB = loadImage(getRandomSpriteOfType("demon"), "demonB", true);
-    spiritB = loadImage(getRandomSpriteOfType("spirit"), "spiritB", true);
-    mysticB = loadImage(getRandomSpriteOfType("mystic"), "mysticB", true);
+    // TODO: set correct mons for both sides
+
+    if (storage.getProfileId("")) {
+      const [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] = getMonsIndexes(false, null);
+      drainer = loadImage(getSpriteByKey(getMonId(MonType.DRAINER, drainerIndex)), "drainer", true);
+      angel = loadImage(getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), "angel", true);
+      demon = loadImage(getSpriteByKey(getMonId(MonType.DEMON, demonIndex)), "demon", true);
+      spirit = loadImage(getSpriteByKey(getMonId(MonType.SPIRIT, spiritIndex)), "spirit", true);
+      mystic = loadImage(getSpriteByKey(getMonId(MonType.MYSTIC, mysticIndex)), "mystic", true);
+    } else {
+      drainer = loadImage(getRandomSpriteOfType("drainer"), "drainer", true);
+      angel = loadImage(getRandomSpriteOfType("angel"), "angel", true);
+      demon = loadImage(getRandomSpriteOfType("demon"), "demon", true);
+      spirit = loadImage(getRandomSpriteOfType("spirit"), "spirit", true);
+      mystic = loadImage(getRandomSpriteOfType("mystic"), "mystic", true);
+    }
+
+    if (!isProfileMonsChange) {
+      drainerB = loadImage(getRandomSpriteOfType("drainer"), "drainerB", true);
+      angelB = loadImage(getRandomSpriteOfType("angel"), "angelB", true);
+      demonB = loadImage(getRandomSpriteOfType("demon"), "demonB", true);
+      spiritB = loadImage(getRandomSpriteOfType("spirit"), "spiritB", true);
+      mysticB = loadImage(getRandomSpriteOfType("mystic"), "mysticB", true);
+    }
   } else {
     drainer = loadImage(assets.drainer, "drainer");
     angel = loadImage(assets.angel, "angel");
@@ -322,10 +340,10 @@ async function initializeAssets(onStart: boolean) {
   }
 }
 
-await initializeAssets(true);
+await initializeAssets(true, false);
 
-export async function didToggleItemsStyleSet() {
-  await initializeAssets(false);
+export async function didToggleItemsStyleSet(isProfileMonsChange: boolean = false) {
+  await initializeAssets(false, isProfileMonsChange);
 
   removeHighlights();
   cleanAllPixels();
