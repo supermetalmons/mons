@@ -268,6 +268,10 @@ export function showPuzzleTitle(title: string) {
   }
 }
 
+export async function didUpdateIdCardMons(demonIndex: number, angelIndex: number, drainerIndex: number, spiritIndex: number, mysticIndex: number) {
+  // TODO: update mons on the board if needed
+}
+
 async function initializeAssets(onStart: boolean) {
   assets = (await import(`../assets/gameAssets${currentAssetsSet}`)).gameAssets;
 

@@ -4,7 +4,7 @@ import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile, getStableRandomIdForOwnProfile, getStableRandomIdForProfileId } from "../utils/misc";
 import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
-import { didClickAndChangePlayerEmoji } from "../game/board";
+import { didClickAndChangePlayerEmoji, didUpdateIdCardMons } from "../game/board";
 import { enableCardEditorUndo } from "../index";
 import { PlayerProfile } from "../connection/connectionModels";
 import { MonType, getMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes, getMonsIndexes } from "../utils/namedMons";
@@ -597,7 +597,6 @@ function getSubtitleIdForProfile(profile: PlayerProfile | null): number {
 async function showMons(card: HTMLElement, handlePointerLeave: any, isOtherPlayer: boolean, profile: PlayerProfile | null) {
   const alpha = 1;
   [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] = getMonsIndexes(isOtherPlayer, profile);
-  // TODO: update onboard mons if needed when incard mons are changed
   const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
   addImageToCard(card, "32.5%", "75%", getSpriteByKey(getMonId(MonType.DEMON, demonIndex)), alpha, "demon", handlePointerLeave, isOtherPlayer);
   addImageToCard(card, "44.7%", "75%", getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), alpha, "angel", handlePointerLeave, isOtherPlayer);
@@ -624,6 +623,7 @@ async function didClickMonImage(monType: string) {
       updateContent(monType, (mysticIndex + 1) % mysticTypes.length, mysticIndex);
       break;
   }
+  didUpdateIdCardMons(demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex);
 }
 
 async function updateContent(contentType: string, newId: any, oldId: any | null) {
