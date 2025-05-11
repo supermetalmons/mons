@@ -7,7 +7,7 @@ import { handleEditDisplayName } from "./ProfileSignIn";
 import { didClickAndChangePlayerEmoji } from "../game/board";
 import { enableCardEditorUndo } from "../index";
 import { PlayerProfile } from "../connection/connectionModels";
-import { MonType, getMonId, getDefaultMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes } from "../utils/namedMons";
+import { MonType, getMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes, getMonsIndexes } from "../utils/namedMons";
 
 const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
 const IDLE_SHINE_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
@@ -594,39 +594,9 @@ function getSubtitleIdForProfile(profile: PlayerProfile | null): number {
   return profile?.cardSubtitleId ?? getStableRandomIdForProfileId(profile?.id ?? "", asciimojisCount);
 }
 
-function setupMonsIndexes(isOtherPlayer: boolean, profile: PlayerProfile | null) {
-  const currentIndexes = isOtherPlayer ? profile?.profileMons ?? "" : storage.getProfileMons("");
-
-  let useDefaultIndexes = true;
-
-  if (currentIndexes && currentIndexes.trim() !== "") {
-    const parts = currentIndexes.split(",");
-    if (parts.length === 5) {
-      const parsedIndexes = parts.map((part) => parseInt(part, 10));
-      if (parsedIndexes.every((index) => !isNaN(index))) {
-        demonIndex = parsedIndexes[0];
-        angelIndex = parsedIndexes[1];
-        drainerIndex = parsedIndexes[2];
-        spiritIndex = parsedIndexes[3];
-        mysticIndex = parsedIndexes[4];
-        useDefaultIndexes = false;
-      }
-    }
-  }
-
-  if (useDefaultIndexes) {
-    const profileId = isOtherPlayer ? profile?.id ?? "" : storage.getProfileId("");
-    demonIndex = getDefaultMonId(MonType.DEMON, profileId);
-    angelIndex = getDefaultMonId(MonType.ANGEL, profileId);
-    drainerIndex = getDefaultMonId(MonType.DRAINER, profileId);
-    spiritIndex = getDefaultMonId(MonType.SPIRIT, profileId);
-    mysticIndex = getDefaultMonId(MonType.MYSTIC, profileId);
-  }
-}
-
 async function showMons(card: HTMLElement, handlePointerLeave: any, isOtherPlayer: boolean, profile: PlayerProfile | null) {
   const alpha = 1;
-  setupMonsIndexes(isOtherPlayer, profile);
+  [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] = getMonsIndexes(isOtherPlayer, profile);
   // TODO: update onboard mons if needed when incard mons are changed
   const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
   addImageToCard(card, "32.5%", "75%", getSpriteByKey(getMonId(MonType.DEMON, demonIndex)), alpha, "demon", handlePointerLeave, isOtherPlayer);

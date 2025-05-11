@@ -1,4 +1,6 @@
 import { getStableRandomIdForProfileId } from "../utils/misc";
+import { PlayerProfile } from "../connection/connectionModels";
+import { storage } from "../utils/storage";
 
 export enum MonType {
   DEMON = "demon",
@@ -42,4 +44,41 @@ export function getDefaultMonId(type: MonType, profileId: string): number {
     case MonType.MYSTIC:
       return getStableRandomIdForProfileId(profileId, mysticTypes.length);
   }
+}
+
+export function getMonsIndexes(isOtherPlayer: boolean, profile: PlayerProfile | null): [number, number, number, number, number] {
+  const currentIndexes = isOtherPlayer ? profile?.profileMons ?? "" : storage.getProfileMons("");
+
+  let useDefaultIndexes = true;
+  let demonIndex = 0;
+  let angelIndex = 0;
+  let drainerIndex = 0;
+  let spiritIndex = 0;
+  let mysticIndex = 0;
+
+  if (currentIndexes && currentIndexes.trim() !== "") {
+    const parts = currentIndexes.split(",");
+    if (parts.length === 5) {
+      const parsedIndexes = parts.map((part: string) => parseInt(part, 10));
+      if (parsedIndexes.every((index: number) => !isNaN(index))) {
+        demonIndex = parsedIndexes[0];
+        angelIndex = parsedIndexes[1];
+        drainerIndex = parsedIndexes[2];
+        spiritIndex = parsedIndexes[3];
+        mysticIndex = parsedIndexes[4];
+        useDefaultIndexes = false;
+      }
+    }
+  }
+
+  if (useDefaultIndexes) {
+    const profileId = isOtherPlayer ? profile?.id ?? "" : storage.getProfileId("");
+    demonIndex = getDefaultMonId(MonType.DEMON, profileId);
+    angelIndex = getDefaultMonId(MonType.ANGEL, profileId);
+    drainerIndex = getDefaultMonId(MonType.DRAINER, profileId);
+    spiritIndex = getDefaultMonId(MonType.SPIRIT, profileId);
+    mysticIndex = getDefaultMonId(MonType.MYSTIC, profileId);
+  }
+
+  return [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex];
 }
