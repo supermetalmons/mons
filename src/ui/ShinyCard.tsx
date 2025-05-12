@@ -521,6 +521,7 @@ const addTextBubble = (card: HTMLElement, text: string, left: string, top: strin
   container.style.top = top;
   container.style.borderRadius = "6px";
   container.style.height = height;
+  container.style.maxWidth = "57.5%";
   container.style.padding = "0 9px 0 8px";
   container.style.boxSizing = "border-box";
   container.style.backgroundColor = bubblePlaceholderColor;
