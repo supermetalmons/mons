@@ -48,6 +48,9 @@ let ownAngelImg: HTMLImageElement | null;
 let ownSpiritImg: HTMLImageElement | null;
 let ownMysticImg: HTMLImageElement | null;
 
+let cardResizeObserver: ResizeObserver | null = null;
+let textElements: Array<{ element: HTMLElement; card: HTMLElement }> = [];
+
 const cardStyles = `
 @media screen and (max-width: 420px){
   [data-shiny-card="true"]{ right:9px !important; }
@@ -68,6 +71,20 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   cardIndex = storage.getCardBackgroundId(getStableRandomIdForOwnProfile(totalCardBgsCount));
   asciimojiIndex = storage.getCardSubtitleId(getStableRandomIdForOwnProfile(asciimojisCount));
   showsShinyCardSomewhere = true;
+
+  if (!cardResizeObserver) {
+    cardResizeObserver = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const card = entry.target as HTMLElement;
+        const cardHeight = card.clientHeight;
+        textElements.forEach((item) => {
+          if (item.card === card) {
+            item.element.style.fontSize = `${cardHeight * 0.05}px`;
+          }
+        });
+      }
+    });
+  }
 
   const cardContainer = document.createElement("div");
   cardContainer.style.position = "fixed";
@@ -365,6 +382,10 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   card.appendChild(emojiContainer);
   card.appendChild(shinyOverlay);
 
+  if (cardResizeObserver) {
+    cardResizeObserver.observe(card);
+  }
+
   const textBubbleHeight = "8.6%";
   nameElement = addTextBubble(card, displayName, "34.3%", "26%", textBubbleHeight, handlePointerLeave, () => {
     if (isOtherPlayer) {
@@ -540,11 +561,17 @@ const addTextBubble = (card: HTMLElement, text: string, left: string, top: strin
   textElement.style.whiteSpace = "nowrap";
   textElement.style.color = "#C1C1C1";
   textElement.style.fontFamily = "Arial, sans-serif";
-  textElement.style.fontSize = "14px"; // TODO: make dynamic
-  textElement.style.fontWeight = "555";
+  textElement.style.fontSize = "0.75em";
+  textElement.style.fontWeight = "630";
   textElement.style.pointerEvents = "none";
   textElement.style.userSelect = "none";
   container.appendChild(textElement);
+
+  textElements.push({ element: textElement, card });
+  const cardHeight = card.clientHeight;
+  if (cardHeight > 0) {
+    textElement.style.fontSize = `${cardHeight * 0.05}px`;
+  }
 
   container.addEventListener("click", (event) => {
     event.preventDefault();
@@ -592,6 +619,11 @@ export const hideShinyCard = () => {
   const shinyCard = document.querySelector('[data-shiny-card="true"]');
   if (shinyCard && shinyCard.parentNode) {
     shinyCard.parentNode.removeChild(shinyCard);
+  }
+
+  if (cardResizeObserver) {
+    cardResizeObserver.disconnect();
+    textElements = [];
   }
 };
 
