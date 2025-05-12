@@ -532,26 +532,26 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
 };
 
 const addPlaceholderBubble = (card: HTMLElement, left: string, top: string, width: string, height: string, handlePointerLeave: any, onClick?: () => void): HTMLElement => {
-  const imageContainer = document.createElement("div");
-  imageContainer.style.position = "absolute";
-  imageContainer.style.left = left;
-  imageContainer.style.top = top;
-  imageContainer.style.borderRadius = "6px";
-  imageContainer.style.width = width;
-  imageContainer.style.height = height;
-  imageContainer.style.overflow = "hidden";
-  imageContainer.style.backgroundColor = bubblePlaceholderColor;
-  imageContainer.style.opacity = "1";
-  imageContainer.style.boxSizing = "border-box";
-  imageContainer.style.display = "flex";
-  imageContainer.style.justifyContent = "center";
-  imageContainer.style.alignItems = "center";
-  imageContainer.style.userSelect = "none";
-  imageContainer.style.pointerEvents = "auto";
-  imageContainer.style.boxShadow = "0 0 1px 1px rgba(0, 0, 0, 0.1)";
-  imageContainer.setAttribute("style", imageContainer.getAttribute("style") + "-webkit-tap-highlight-color: transparent; outline: none; -webkit-touch-callout: none;");
+  const container = document.createElement("div");
+  container.style.position = "absolute";
+  container.style.left = left;
+  container.style.top = top;
+  container.style.borderRadius = "6px";
+  container.style.width = width;
+  container.style.height = height;
+  container.style.overflow = "hidden";
+  container.style.backgroundColor = bubblePlaceholderColor;
+  container.style.opacity = "1";
+  container.style.boxSizing = "border-box";
+  container.style.display = "flex";
+  container.style.justifyContent = "center";
+  container.style.alignItems = "center";
+  container.style.userSelect = "none";
+  container.style.pointerEvents = "auto";
+  container.style.boxShadow = "0 0 1px 1px rgba(0, 0, 0, 0.1)";
+  container.setAttribute("style", container.getAttribute("style") + "-webkit-tap-highlight-color: transparent; outline: none; -webkit-touch-callout: none;");
 
-  imageContainer.addEventListener("click", (event) => {
+  container.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
 
@@ -564,8 +564,8 @@ const addPlaceholderBubble = (card: HTMLElement, left: string, top: string, widt
     }
   });
 
-  card.appendChild(imageContainer);
-  return imageContainer;
+  card.appendChild(container);
+  return container;
 };
 
 const createOverlayImage = (url: string): HTMLImageElement => {
