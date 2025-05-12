@@ -2,8 +2,10 @@ export function getAsciimojiAtIndex(index: number): string {
   if (index >= 0 && index < asciimojisShortlist.length) {
     return asciimojisShortlist[index];
   }
-  return "";
+  return defaultAsciimoji;
 }
+
+const defaultAsciimoji = "／人◕ __ ◕人＼"; // TODO: pick a default one, make sure it's available in the list too
 
 export function getRandomAsciimoji(): string {
   const randomIndex = Math.floor(Math.random() * asciimojisShortlist.length);
