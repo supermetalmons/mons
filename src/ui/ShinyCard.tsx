@@ -424,6 +424,7 @@ export const updateShinyCardDisplayName = (displayName: string) => {
   }
   const displayNameElement = document.querySelector('[data-shiny-card-display-name="true"]');
   if (displayNameElement) {
+    // TODO: make sure bubble width gets updated as well
     displayNameElement.textContent = displayName;
   }
 };
