@@ -140,6 +140,9 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   emojiContainer.style.boxShadow = "0 0 2px 2px rgba(0, 0, 0, 0.1)";
   emojiContainer.style.userSelect = "none";
   emojiContainer.style.cursor = "pointer";
+  emojiContainer.style.outline = "none";
+  emojiContainer.style.setProperty("-webkit-tap-highlight-color", "transparent");
+  emojiContainer.style.setProperty("-webkit-touch-callout", "none");
 
   const emojiImg = document.createElement("img");
   emojiImg.style.position = "absolute";
