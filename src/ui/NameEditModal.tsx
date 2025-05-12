@@ -53,9 +53,6 @@ const NameInput = styled.input<{ isValid: boolean }>`
   font-size: 1rem;
   margin-bottom: 4px;
   box-sizing: border-box;
-  spellcheck: false;
-  autocorrect: off;
-  autocapitalize: off;
 
   &:focus {
     border-color: ${(props) => (props.isValid ? "#007aff" : "#ff3b30")};
@@ -260,7 +257,7 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
     <NameEditOverlay onClick={onCancel}>
       <NameEditPopup onClick={(e) => e.stopPropagation()}>
         <Title>{initialName ? "Edit Name" : "Set Name"}</Title>
-        <NameInput ref={inputRef} type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus onKeyDown={handleKeyDown} spellCheck="false" autoCorrect="off" autoCapitalize="off" isValid={isValid} disabled={isSubmitting} />
+        <NameInput ref={inputRef} type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus onKeyDown={handleKeyDown} spellCheck="false" autoCorrect="off" autoCapitalize="off" autoComplete="off" data-form-type="other" data-lpignore="true" inputMode="text" enterKeyHint="done" aria-autocomplete="none" aria-haspopup="false" aria-expanded="false" isValid={isValid} disabled={isSubmitting} />
         <ErrorMessage>{errorMessage}</ErrorMessage>
         <ButtonsContainer>
           <CancelButton onClick={onCancel} disabled={isSubmitting}>
