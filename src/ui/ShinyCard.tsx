@@ -41,6 +41,7 @@ export let showsShinyCardSomewhere = false;
 let ownEmojiImg: HTMLImageElement | null;
 let ownBgImg: HTMLImageElement | null;
 let ownSubtitleElement: HTMLElement | null;
+let nameElement: HTMLElement | null;
 let ownDemonImg: HTMLImageElement | null;
 let ownDrainerImg: HTMLImageElement | null;
 let ownAngelImg: HTMLImageElement | null;
@@ -362,7 +363,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   card.appendChild(shinyOverlay);
 
   const textBubbleHeight = "8.6%";
-  addPlaceholderBubble(card, "34.3%", "26%", "30%", textBubbleHeight, handlePointerLeave, () => {
+  nameElement = addTextBubble(card, displayName, "34.3%", "26%", textBubbleHeight, handlePointerLeave, () => {
     if (isOtherPlayer) {
       const eth = profile?.eth;
       const sol = profile?.sol;
@@ -375,23 +376,21 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
       handleEditDisplayName();
     }
   });
-  addPlaceholderBubble(card, "34.3%", "36.6%", "15.5%", textBubbleHeight, handlePointerLeave);
 
-  addPlaceholderBubble(card, "7.4%", "47.5%", "37.5%", textBubbleHeight, handlePointerLeave, () => {
+  const ratingText = isOtherPlayer ? (profile?.rating ?? 1500).toString() : storage.getPlayerRating(1500).toString();
+  addTextBubble(card, ratingText, "34.3%", "36.6%", textBubbleHeight, handlePointerLeave);
+
+  const subtitleText = getAsciimojiAtIndex(isOtherPlayer ? getSubtitleIdForProfile(profile) : asciimojiIndex);
+  ownSubtitleElement = addTextBubble(card, subtitleText, "7.4%", "47.5%", textBubbleHeight, handlePointerLeave, () => {
     if (isOtherPlayer) {
       return;
     }
     updateContent("subtitle", (asciimojiIndex + 1) % asciimojisCount, asciimojiIndex);
   });
 
-  addPlaceholderBubble(card, "7.4%", "58.7%", "13.5%", textBubbleHeight, handlePointerLeave);
-
-  const displayNameElement = addTextToCard(card, displayName, "36.3%", "30%");
-  displayNameElement.setAttribute("data-shiny-card-display-name", "true");
-  addTextToCard(card, isOtherPlayer ? (profile?.rating ?? 1500).toString() : storage.getPlayerRating(1500).toString(), "36.3%", "41%");
-  ownSubtitleElement = addTextToCard(card, getAsciimojiAtIndex(isOtherPlayer ? getSubtitleIdForProfile(profile) : asciimojiIndex), "10%", "52%");
   const gpText = "gp: " + ((isOtherPlayer ? profile?.nonce ?? -1 : storage.getPlayerNonce(-1)) + 1).toString();
-  addTextToCard(card, gpText, "9%", "62.7%", "10px");
+  addTextBubble(card, gpText, "7.4%", "58.7%", textBubbleHeight, handlePointerLeave);
+
   cardContainer.appendChild(card);
   document.body.appendChild(cardContainer);
 
@@ -422,10 +421,9 @@ export const updateShinyCardDisplayName = (displayName: string) => {
   if (!showsShinyCardSomewhere) {
     return;
   }
-  const displayNameElement = document.querySelector('[data-shiny-card-display-name="true"]');
-  if (displayNameElement) {
-    // TODO: make sure bubble width gets updated as well
-    displayNameElement.textContent = displayName;
+
+  if (nameElement) {
+    nameElement.textContent = displayName;
   }
 };
 
@@ -438,24 +436,6 @@ async function showRandomStickers(card: HTMLElement) {
   const stickers = createOverlayImage(stickerUrl);
   card.appendChild(stickers);
 }
-
-const addTextToCard = (card: HTMLElement, text: string, leftPosition: string, topPosition: string, fontSize: string = "14px"): HTMLElement => {
-  const textElement = document.createElement("div");
-  textElement.textContent = text;
-  textElement.style.position = "absolute";
-  textElement.style.left = leftPosition;
-  textElement.style.top = topPosition;
-  textElement.style.color = "#C1C1C1";
-  textElement.style.fontFamily = "Arial, sans-serif";
-  textElement.style.fontSize = fontSize;
-  textElement.style.fontWeight = "555";
-  textElement.style.transform = "translate(0, -50%)";
-  textElement.style.pointerEvents = "none";
-  textElement.style.userSelect = "none";
-
-  card.appendChild(textElement);
-  return textElement;
-};
 
 const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number, monType: string = "", handlePointerLeave: any, isOtherPlayer: boolean): HTMLElement => {
   const imageContainer = document.createElement("div");
@@ -531,25 +511,36 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
   return imageContainer;
 };
 
-const addPlaceholderBubble = (card: HTMLElement, left: string, top: string, width: string, height: string, handlePointerLeave: any, onClick?: () => void): HTMLElement => {
+const addTextBubble = (card: HTMLElement, text: string, left: string, top: string, height: string, handlePointerLeave: any, onClick?: () => void): HTMLElement => {
   const container = document.createElement("div");
   container.style.position = "absolute";
   container.style.left = left;
   container.style.top = top;
   container.style.borderRadius = "6px";
-  container.style.width = width;
   container.style.height = height;
-  container.style.overflow = "hidden";
+  container.style.padding = "0 8px";
+  container.style.boxSizing = "border-box";
   container.style.backgroundColor = bubblePlaceholderColor;
   container.style.opacity = "1";
-  container.style.boxSizing = "border-box";
-  container.style.display = "flex";
+  container.style.overflow = "hidden";
+  container.style.display = "inline-flex";
   container.style.justifyContent = "center";
   container.style.alignItems = "center";
   container.style.userSelect = "none";
   container.style.pointerEvents = "auto";
   container.style.boxShadow = "0 0 1px 1px rgba(0, 0, 0, 0.1)";
   container.setAttribute("style", container.getAttribute("style") + "-webkit-tap-highlight-color: transparent; outline: none; -webkit-touch-callout: none;");
+
+  const textElement = document.createElement("span");
+  textElement.textContent = text;
+  textElement.style.whiteSpace = "nowrap";
+  textElement.style.color = "#C1C1C1";
+  textElement.style.fontFamily = "Arial, sans-serif";
+  textElement.style.fontSize = "14px"; // TODO: make dynamic
+  textElement.style.fontWeight = "555";
+  textElement.style.pointerEvents = "none";
+  textElement.style.userSelect = "none";
+  container.appendChild(textElement);
 
   container.addEventListener("click", (event) => {
     event.preventDefault();
@@ -565,7 +556,7 @@ const addPlaceholderBubble = (card: HTMLElement, left: string, top: string, widt
   });
 
   card.appendChild(container);
-  return container;
+  return textElement;
 };
 
 const createOverlayImage = (url: string): HTMLImageElement => {
