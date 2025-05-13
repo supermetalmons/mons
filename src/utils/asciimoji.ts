@@ -5,7 +5,7 @@ export function getAsciimojiAtIndex(index: number): string {
   return asciimojisShortlist[0];
 }
 
-const asciimojisShortlist = ["／人◕ __ ◕人＼", "(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧", "(*・‿・)ノ⌒*:･ﾟ✧", "(ﾉ☉ヮ⚆)ﾉ ⌒*:･ﾟ✧", "¯\\_( ͡° ͜ʖ ͡°)_/¯", "(=^･ｪ･^=))ﾉ彡☆", "⊂(◉‿◉)つ", "⊹╰(⌣ʟ⌣)╯⊹"];
+const asciimojisShortlist = ["人(｡◕ ‿ ◕｡)人", "(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧", "(*・‿・)ノ⌒*:･ﾟ✧", "(ﾉ☉ヮ⚆)ﾉ ⌒*:･ﾟ✧", "¯\\_( ͡° ͜ʖ ͡°)_/¯", "(=^･ｪ･^=))ﾉ彡☆", "⊂(◉‿◉)つ", "⊹╰(⌣ʟ⌣)╯⊹", "／人◕ __ ◕人＼"];
 
 export const asciimojisCount = asciimojisShortlist.length;
 
