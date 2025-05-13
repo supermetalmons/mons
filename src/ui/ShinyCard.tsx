@@ -82,6 +82,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
         textElements.forEach((item) => {
           if (item.card === card) {
             item.element.style.fontSize = `${cardHeight * 0.05}px`;
+            item.element.parentElement!.style.borderRadius = `${cardHeight * 0.02}px`;
           }
         });
       }
@@ -552,7 +553,6 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
   container.style.position = "absolute";
   container.style.left = left;
   container.style.top = top;
-  container.style.borderRadius = "6px"; // TODO: use %
   container.style.height = height;
   container.style.maxWidth = "57.5%";
   container.style.padding = "0 9px 0 8px"; // TODO: use %
@@ -583,6 +583,7 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
   const cardHeight = cardContentsLayer.clientHeight;
   if (cardHeight > 0) {
     textElement.style.fontSize = `${cardHeight * 0.05}px`;
+    container.style.borderRadius = `${cardHeight * 0.02}px`;
   }
 
   container.addEventListener("click", (event) => {
