@@ -223,12 +223,12 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
 
   const placeholder = document.createElement("div");
   placeholder.style.position = "absolute";
-  placeholder.style.width = "90%";
-  placeholder.style.height = "81%";
+  placeholder.style.width = "90.5%";
+  placeholder.style.height = "83%";
   placeholder.style.backgroundColor = "var(--card-color)";
 
-  dynamicallyRoundedElements.push({ element: placeholder, radius: 0.05 });
-  placeholder.style.top = "50%";
+  dynamicallyRoundedElements.push({ element: placeholder, radius: 0.035 });
+  placeholder.style.top = "50.7%";
   placeholder.style.left = "50%";
   placeholder.style.transform = "translate(-50%, -50%)";
   placeholder.style.userSelect = "none";
