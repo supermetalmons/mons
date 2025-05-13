@@ -99,7 +99,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     cardContainer.style.right = "12pt";
   }
 
-  const aspectRatio = 2217 / 1623;
+  const aspectRatio = 2217 / 1625;
   const maxWidth = Math.min(window.innerWidth * 0.8, 350);
   const width = maxWidth;
   cardContainer.style.aspectRatio = `${aspectRatio}`;
