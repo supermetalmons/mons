@@ -24,7 +24,8 @@ const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radia
 const totalCardBgsCount = 37;
 const bubblePlaceholderColor = "white";
 
-let cardIndex = getStableRandomIdForOwnProfile(totalCardBgsCount);
+let defaultCardBgIndex = 23;
+let cardIndex = defaultCardBgIndex;
 let asciimojiIndex = getStableRandomIdForOwnProfile(asciimojisCount);
 
 let demonIndex = 0;
@@ -68,7 +69,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     return;
   }
 
-  cardIndex = storage.getCardBackgroundId(getStableRandomIdForOwnProfile(totalCardBgsCount));
+  cardIndex = storage.getCardBackgroundId(defaultCardBgIndex);
   asciimojiIndex = storage.getCardSubtitleId(getStableRandomIdForOwnProfile(asciimojisCount));
   showsShinyCardSomewhere = true;
 
@@ -628,7 +629,7 @@ export const hideShinyCard = () => {
 };
 
 function getBgIdForProfile(profile: PlayerProfile | null): number {
-  return profile?.cardBackgroundId ?? getStableRandomIdForProfileId(profile?.id ?? "", totalCardBgsCount);
+  return profile?.cardBackgroundId ?? defaultCardBgIndex;
 }
 
 function getEmojiIdForProfile(profile: PlayerProfile | null): number {
