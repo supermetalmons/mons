@@ -125,7 +125,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   card.style.transformStyle = "preserve-3d";
   card.style.transition = "transform 0.1s ease-out";
   dynamicallyRoundedElements.push({ element: card, radius: 0.05 });
-  card.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.3)"; // TODO: use % ?
+  card.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.3)";
   card.style.background = CARD_BACKGROUND_GRADIENT;
   card.style.cursor = "pointer";
   card.style.willChange = "transform";
@@ -558,7 +558,7 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
   container.style.top = top;
   container.style.height = height;
   container.style.maxWidth = "57.5%";
-  container.style.padding = "0 9px 0 8px"; // TODO: use %
+  container.style.padding = "0 2.6% 0 2.3%";
   container.style.boxSizing = "border-box";
   container.style.backgroundColor = bubblePlaceholderColor;
   container.style.opacity = "1";
