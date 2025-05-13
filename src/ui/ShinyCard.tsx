@@ -52,6 +52,7 @@ let ownMysticImg: HTMLImageElement | null;
 
 let cardResizeObserver: ResizeObserver | null = null;
 let textElements: Array<{ element: HTMLElement; card: HTMLElement }> = [];
+let dynamicallyRoundedElements: Array<{ element: HTMLElement; radius: number }> = [];
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -84,6 +85,9 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
             item.element.style.fontSize = `${cardHeight * 0.05}px`;
             item.element.parentElement!.style.borderRadius = `${cardHeight * 0.02}px`;
           }
+        });
+        dynamicallyRoundedElements.forEach((item) => {
+          item.element.style.borderRadius = `${cardHeight * item.radius}px`;
         });
       }
     });
@@ -120,7 +124,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   card.style.height = "100%";
   card.style.transformStyle = "preserve-3d";
   card.style.transition = "transform 0.1s ease-out";
-  card.style.borderRadius = "15px"; // TODO: use %
+  dynamicallyRoundedElements.push({ element: card, radius: 0.05 });
   card.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.3)"; // TODO: use % ?
   card.style.background = CARD_BACKGROUND_GRADIENT;
   card.style.cursor = "pointer";
@@ -132,7 +136,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   cardContentsLayer.style.position = "relative";
   cardContentsLayer.style.width = "100%";
   cardContentsLayer.style.aspectRatio = `${2430 / 1886}`;
-  cardContentsLayer.style.borderRadius = "15px"; // TODO: use %
+  dynamicallyRoundedElements.push({ element: cardContentsLayer, radius: 0.05 });
   cardContentsLayer.style.overflow = "hidden";
   cardContentsLayer.style.transform = "translateY(-2.77%) scale(1.03)";
   cardContentsLayer.style.transformOrigin = "center";
@@ -141,7 +145,6 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   img.style.width = "100%";
   img.style.height = "100%";
   img.style.objectFit = "contain";
-  img.style.borderRadius = "15px"; // TODO: use %
   img.style.position = "absolute";
   img.style.top = "0";
   img.style.left = "0";
@@ -212,7 +215,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   placeholder.style.height = "81%";
   placeholder.style.backgroundColor = "var(--card-color)";
 
-  placeholder.style.borderRadius = "10px"; // TODO: use %
+  dynamicallyRoundedElements.push({ element: placeholder, radius: 0.05 });
   placeholder.style.top = "50%";
   placeholder.style.left = "50%";
   placeholder.style.transform = "translate(-50%, -50%)";
@@ -225,7 +228,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   shinyOverlay.style.left = "0";
   shinyOverlay.style.width = "100%";
   shinyOverlay.style.height = "100%";
-  shinyOverlay.style.borderRadius = "15px"; // TODO: use %
+  dynamicallyRoundedElements.push({ element: shinyOverlay, radius: 0.05 });
   shinyOverlay.style.background = IDLE_SHINE_GRADIENT;
   shinyOverlay.style.opacity = "0.63";
   shinyOverlay.style.pointerEvents = "none";
@@ -637,6 +640,7 @@ export const hideShinyCard = () => {
   if (cardResizeObserver) {
     cardResizeObserver.disconnect();
     textElements = [];
+    dynamicallyRoundedElements = [];
   }
 };
 
