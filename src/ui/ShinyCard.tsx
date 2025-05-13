@@ -1,7 +1,7 @@
 import { sendCardBackgroundUpdate, sendCardSubtitleIdUpdate, sendProfileMonsUpdate } from "../connection/connection";
 import { emojipackSize, emojis, getIncrementedEmojiId } from "../content/emojis";
 import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
-import { isMobile, getStableRandomIdForOwnProfile, getStableRandomIdForProfileId } from "../utils/misc";
+import { isMobile, getStableRandomIdForProfileId } from "../utils/misc";
 import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
 import { didClickAndChangePlayerEmoji, didUpdateIdCardMons } from "../game/board";
@@ -25,8 +25,9 @@ const totalCardBgsCount = 37;
 const bubblePlaceholderColor = "white";
 
 let defaultCardBgIndex = 23;
+let defaultSubtitleIndex = 0;
 let cardIndex = defaultCardBgIndex;
-let asciimojiIndex = getStableRandomIdForOwnProfile(asciimojisCount);
+let asciimojiIndex = defaultSubtitleIndex;
 
 let demonIndex = 0;
 let angelIndex = 0;
@@ -70,7 +71,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   }
 
   cardIndex = storage.getCardBackgroundId(defaultCardBgIndex);
-  asciimojiIndex = storage.getCardSubtitleId(getStableRandomIdForOwnProfile(asciimojisCount));
+  asciimojiIndex = storage.getCardSubtitleId(defaultSubtitleIndex);
   showsShinyCardSomewhere = true;
 
   if (!cardResizeObserver) {
@@ -637,7 +638,7 @@ function getEmojiIdForProfile(profile: PlayerProfile | null): number {
 }
 
 function getSubtitleIdForProfile(profile: PlayerProfile | null): number {
-  return profile?.cardSubtitleId ?? getStableRandomIdForProfileId(profile?.id ?? "", asciimojisCount);
+  return profile?.cardSubtitleId ?? defaultSubtitleIndex;
 }
 
 async function showMons(card: HTMLElement, handlePointerLeave: any, isOtherPlayer: boolean, profile: PlayerProfile | null) {

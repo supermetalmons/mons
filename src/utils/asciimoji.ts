@@ -2,14 +2,7 @@ export function getAsciimojiAtIndex(index: number): string {
   if (index >= 0 && index < asciimojisShortlist.length) {
     return asciimojisShortlist[index];
   }
-  return defaultAsciimoji;
-}
-
-const defaultAsciimoji = "／人◕ __ ◕人＼"; // TODO: pick a default one, make sure it's available in the list too
-
-export function getRandomAsciimoji(): string {
-  const randomIndex = Math.floor(Math.random() * asciimojisShortlist.length);
-  return asciimojisShortlist[randomIndex];
+  return asciimojisShortlist[0];
 }
 
 const asciimojisShortlist = ["／人◕ __ ◕人＼", "(ﾉ◕ヮ◕)ﾉ*:・ﾟ✧", "(*・‿・)ノ⌒*:･ﾟ✧", "(ﾉ☉ヮ⚆)ﾉ ⌒*:･ﾟ✧", "¯\\_( ͡° ͜ʖ ͡°)_/¯", "(=^･ｪ･^=))ﾉ彡☆", "⊂(◉‿◉)つ", "⊹╰(⌣ʟ⌣)╯⊹"];
