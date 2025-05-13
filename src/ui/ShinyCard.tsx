@@ -99,7 +99,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     cardContainer.style.right = "12pt";
   }
 
-  const aspectRatio = 2430 / 1886;
+  const aspectRatio = 2217 / 1623;
   const maxWidth = Math.min(window.innerWidth * 0.8, 350);
   const width = maxWidth;
   cardContainer.style.aspectRatio = `${aspectRatio}`;
@@ -125,13 +125,16 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   card.style.cursor = "pointer";
   card.style.willChange = "transform";
   card.style.userSelect = "none";
+  card.style.overflow = "hidden";
 
   const cardContentsLayer = document.createElement("div");
   cardContentsLayer.style.position = "relative";
   cardContentsLayer.style.width = "100%";
-  cardContentsLayer.style.height = "100%";
+  cardContentsLayer.style.aspectRatio = `${2430 / 1886}`;
   cardContentsLayer.style.borderRadius = "15px";
   cardContentsLayer.style.overflow = "hidden";
+  cardContentsLayer.style.transform = "translateY(-2.77%) scale(1.03)";
+  cardContentsLayer.style.transformOrigin = "center";
 
   const img = document.createElement("img");
   img.style.width = "100%";
