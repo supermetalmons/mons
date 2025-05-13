@@ -126,6 +126,13 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   card.style.willChange = "transform";
   card.style.userSelect = "none";
 
+  const cardContentsLayer = document.createElement("div");
+  cardContentsLayer.style.position = "relative";
+  cardContentsLayer.style.width = "100%";
+  cardContentsLayer.style.height = "100%";
+  cardContentsLayer.style.borderRadius = "15px";
+  cardContentsLayer.style.overflow = "hidden";
+
   const img = document.createElement("img");
   img.style.width = "100%";
   img.style.height = "100%";
@@ -378,18 +385,18 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   });
   ownBgImg = img;
 
-  card.appendChild(placeholder);
-  card.appendChild(img);
-
-  card.appendChild(emojiContainer);
-  card.appendChild(shinyOverlay);
+  cardContentsLayer.appendChild(placeholder);
+  cardContentsLayer.appendChild(img);
+  cardContentsLayer.appendChild(emojiContainer);
+  cardContentsLayer.appendChild(shinyOverlay);
+  card.appendChild(cardContentsLayer);
 
   if (cardResizeObserver) {
-    cardResizeObserver.observe(card);
+    cardResizeObserver.observe(cardContentsLayer);
   }
 
   const textBubbleHeight = "8.6%";
-  nameElement = addTextBubble(card, displayName, "34.3%", "26%", textBubbleHeight, handlePointerLeave, () => {
+  nameElement = addTextBubble(cardContentsLayer, displayName, "34.3%", "26%", textBubbleHeight, handlePointerLeave, () => {
     if (isOtherPlayer) {
       const eth = profile?.eth;
       const sol = profile?.sol;
@@ -404,10 +411,10 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   });
 
   const ratingText = isOtherPlayer ? (profile?.rating ?? 1500).toString() : storage.getPlayerRating(1500).toString();
-  addTextBubble(card, ratingText, "34.3%", "36.6%", textBubbleHeight, handlePointerLeave);
+  addTextBubble(cardContentsLayer, ratingText, "34.3%", "36.6%", textBubbleHeight, handlePointerLeave);
 
   const subtitleText = getAsciimojiAtIndex(isOtherPlayer ? getSubtitleIdForProfile(profile) : asciimojiIndex);
-  ownSubtitleElement = addTextBubble(card, subtitleText, "7.4%", "47.5%", textBubbleHeight, handlePointerLeave, () => {
+  ownSubtitleElement = addTextBubble(cardContentsLayer, subtitleText, "7.4%", "47.5%", textBubbleHeight, handlePointerLeave, () => {
     if (isOtherPlayer) {
       return;
     }
@@ -415,7 +422,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   });
 
   const gpText = "gp: " + ((isOtherPlayer ? profile?.nonce ?? -1 : storage.getPlayerNonce(-1)) + 1).toString();
-  addTextBubble(card, gpText, "7.4%", "58.7%", textBubbleHeight, handlePointerLeave);
+  addTextBubble(cardContentsLayer, gpText, "7.4%", "58.7%", textBubbleHeight, handlePointerLeave);
 
   cardContainer.appendChild(card);
   document.body.appendChild(cardContainer);
@@ -435,9 +442,9 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   });
 
   observer.observe(document.body, { childList: true });
-  showMons(card, handlePointerLeave, isOtherPlayer, profile);
+  showMons(cardContentsLayer, handlePointerLeave, isOtherPlayer, profile);
   if (showStickers) {
-    showRandomStickers(card);
+    showRandomStickers(cardContentsLayer);
   }
 
   updateUndoButton();
@@ -453,17 +460,17 @@ export const updateShinyCardDisplayName = (displayName: string) => {
   }
 };
 
-async function showRandomStickers(card: HTMLElement) {
+async function showRandomStickers(cardContentsLayer: HTMLElement) {
   const stickerOptions = ["zemred", "super-mana-piece-3", "speklmic", "omom-4", "omom-3", "omom-2", "omom", "omen-statue", "melmut", "lord-idgecreist", "king-snowbie", "hatchat", "gummy-deino", "gerp", "estalibur", "crystal-owg", "crystal-gummy-deino", "crystal-cloud-gabber", "armored-gummoskullj", "applecreme"];
 
   const randomSticker = stickerOptions[Math.floor(Math.random() * stickerOptions.length)];
   const stickerUrl = `https://assets.mons.link/cards/stickers/big-mon-top-right/${randomSticker}.webp`;
 
   const stickers = createOverlayImage(stickerUrl);
-  card.appendChild(stickers);
+  cardContentsLayer.appendChild(stickers);
 }
 
-const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number, monType: string = "", handlePointerLeave: any, isOtherPlayer: boolean): HTMLElement => {
+const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number, monType: string = "", handlePointerLeave: any, isOtherPlayer: boolean): HTMLElement => {
   const imageContainer = document.createElement("div");
   imageContainer.style.position = "absolute";
   imageContainer.style.left = leftPosition;
@@ -533,11 +540,11 @@ const addImageToCard = (card: HTMLElement, leftPosition: string, topPosition: st
     imageContainer.appendChild(img);
   }
 
-  card.appendChild(imageContainer);
+  cardContentsLayer.appendChild(imageContainer);
   return imageContainer;
 };
 
-const addTextBubble = (card: HTMLElement, text: string, left: string, top: string, height: string, handlePointerLeave: any, onClick?: () => void): HTMLElement => {
+const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: string, top: string, height: string, handlePointerLeave: any, onClick?: () => void): HTMLElement => {
   const container = document.createElement("div");
   container.style.position = "absolute";
   container.style.left = left;
@@ -569,8 +576,8 @@ const addTextBubble = (card: HTMLElement, text: string, left: string, top: strin
   textElement.style.userSelect = "none";
   container.appendChild(textElement);
 
-  textElements.push({ element: textElement, card });
-  const cardHeight = card.clientHeight;
+  textElements.push({ element: textElement, card: cardContentsLayer });
+  const cardHeight = cardContentsLayer.clientHeight;
   if (cardHeight > 0) {
     textElement.style.fontSize = `${cardHeight * 0.05}px`;
   }
@@ -588,7 +595,7 @@ const addTextBubble = (card: HTMLElement, text: string, left: string, top: strin
     }
   });
 
-  card.appendChild(container);
+  cardContentsLayer.appendChild(container);
   return textElement;
 };
 
@@ -641,16 +648,18 @@ function getSubtitleIdForProfile(profile: PlayerProfile | null): number {
   return profile?.cardSubtitleId ?? defaultSubtitleIndex;
 }
 
-async function showMons(card: HTMLElement, handlePointerLeave: any, isOtherPlayer: boolean, profile: PlayerProfile | null) {
+async function showMons(cardContentsLayer: HTMLElement, handlePointerLeave: any, isOtherPlayer: boolean, profile: PlayerProfile | null) {
   const alpha = 1;
   [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] = getMonsIndexes(isOtherPlayer, profile);
   const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
   const y = "74.37%";
-  addImageToCard(card, "32.13%", y, getSpriteByKey(getMonId(MonType.DEMON, demonIndex)), alpha, "demon", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "44.35%", y, getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), alpha, "angel", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "56.85%", y, getSpriteByKey(getMonId(MonType.DRAINER, drainerIndex)), alpha, "drainer", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "69.2%", y, getSpriteByKey(getMonId(MonType.SPIRIT, spiritIndex)), alpha, "spirit", handlePointerLeave, isOtherPlayer);
-  addImageToCard(card, "81.5%", y, getSpriteByKey(getMonId(MonType.MYSTIC, mysticIndex)), alpha, "mystic", handlePointerLeave, isOtherPlayer);
+  addImageToCard(cardContentsLayer, "32.13%", y, getSpriteByKey(getMonId(MonType.DEMON, demonIndex)), alpha, "demon", handlePointerLeave, isOtherPlayer);
+  addImageToCard(cardContentsLayer, "44.35%", y, getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), alpha, "angel", handlePointerLeave, isOtherPlayer);
+  addImageToCard(cardContentsLayer, "32.13%", y, getSpriteByKey(getMonId(MonType.DEMON, demonIndex)), alpha, "demon", handlePointerLeave, isOtherPlayer);
+  addImageToCard(cardContentsLayer, "44.35%", y, getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), alpha, "angel", handlePointerLeave, isOtherPlayer);
+  addImageToCard(cardContentsLayer, "56.85%", y, getSpriteByKey(getMonId(MonType.DRAINER, drainerIndex)), alpha, "drainer", handlePointerLeave, isOtherPlayer);
+  addImageToCard(cardContentsLayer, "69.2%", y, getSpriteByKey(getMonId(MonType.SPIRIT, spiritIndex)), alpha, "spirit", handlePointerLeave, isOtherPlayer);
+  addImageToCard(cardContentsLayer, "81.5%", y, getSpriteByKey(getMonId(MonType.MYSTIC, mysticIndex)), alpha, "mystic", handlePointerLeave, isOtherPlayer);
 }
 
 async function didClickMonImage(monType: string) {
