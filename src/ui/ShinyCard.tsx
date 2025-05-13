@@ -53,6 +53,7 @@ let ownMysticImg: HTMLImageElement | null;
 let cardResizeObserver: ResizeObserver | null = null;
 let textElements: Array<{ element: HTMLElement; card: HTMLElement }> = [];
 let dynamicallyRoundedElements: Array<{ element: HTMLElement; radius: number }> = [];
+let resizeListener: (() => void) | null = null;
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -105,10 +106,21 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   }
 
   const aspectRatio = 2217 / 1625;
-  const maxWidth = Math.min(window.innerWidth * 0.8, 350);
-  const width = maxWidth;
   cardContainer.style.aspectRatio = `${aspectRatio}`;
-  cardContainer.style.width = `${width}px`;
+
+  const updateCardWidth = () => {
+    const calculatedWidth = Math.min(window.innerWidth * 0.8, 350);
+    cardContainer.style.width = `${calculatedWidth}px`;
+    const calculatedHeight = calculatedWidth / aspectRatio;
+    const maxHeight = window.innerHeight * 0.42;
+    if (calculatedHeight > maxHeight) {
+      cardContainer.style.width = `${maxHeight * aspectRatio}px`;
+    }
+  };
+  updateCardWidth();
+  resizeListener = updateCardWidth;
+  window.addEventListener("resize", updateCardWidth);
+
   cardContainer.style.perspective = "1000px";
   cardContainer.style.zIndex = "1000";
   cardContainer.setAttribute("data-shiny-card", "true");
@@ -635,6 +647,11 @@ export const hideShinyCard = () => {
   const shinyCard = document.querySelector('[data-shiny-card="true"]');
   if (shinyCard && shinyCard.parentNode) {
     shinyCard.parentNode.removeChild(shinyCard);
+  }
+
+  if (resizeListener) {
+    window.removeEventListener("resize", resizeListener);
+    resizeListener = null;
   }
 
   if (cardResizeObserver) {
