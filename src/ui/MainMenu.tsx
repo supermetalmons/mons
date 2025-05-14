@@ -615,7 +615,7 @@ const MainMenu: React.FC = () => {
 
   useEffect(() => {
     const handleTapOutside = (event: any) => {
-      if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node) && !event.target.closest('[data-shiny-card="true"]')) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsMenuOpen(false);
         setShowExperimental(false);
@@ -664,10 +664,13 @@ const MainMenu: React.FC = () => {
         )}
         <RockMenuWrapper
           isOpen={isMenuOpen}
-          onMouseLeave={() => {
+          onMouseLeave={(e) => {
             if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
-              setIsMenuOpen(false);
-              setShowExperimental(false);
+              const relatedTarget = e.relatedTarget as Element | null;
+              if (relatedTarget && relatedTarget.closest && !relatedTarget.closest('[data-shiny-card="true"]')) {
+                setIsMenuOpen(false);
+                setShowExperimental(false);
+              }
             }
           }}>
           <RockMenu isOpen={isMenuOpen} showLeaderboard={true}>
