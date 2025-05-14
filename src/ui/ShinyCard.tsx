@@ -135,7 +135,6 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   card.style.width = "100%";
   card.style.height = "100%";
   card.style.transformStyle = "preserve-3d";
-  card.style.transition = "transform 0.1s ease-out";
   dynamicallyRoundedElements.push({ element: card, radius: 0.05 });
   card.style.boxShadow = "0 10px 30px rgba(0, 0, 0, 0.3)";
   card.style.background = CARD_BACKGROUND_GRADIENT;
@@ -143,6 +142,8 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   card.style.willChange = "transform";
   card.style.userSelect = "none";
   card.style.overflow = "hidden";
+  card.style.backdropFilter = "blur(3px)";
+  card.setAttribute("style", card.getAttribute("style") + "-webkit-backdrop-filter: blur(3px);");
 
   const cardContentsLayer = document.createElement("div");
   cardContentsLayer.style.position = "relative";
