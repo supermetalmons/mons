@@ -949,6 +949,9 @@ function redirectToAddressOnExplorer(opponent: boolean) {
   const displayName = metadata.displayName;
   if (displayName !== undefined) {
     const profile = getStashedPlayerProfile(metadata.uid);
+    if (profile) {
+      profile.emoji = parseInt(metadata.emojiId, 10);
+    }
     showShinyCard(profile ?? null, displayName, true);
   }
 }
