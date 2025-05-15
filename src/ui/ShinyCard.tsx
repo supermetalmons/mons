@@ -97,9 +97,9 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   const cardContainer = document.createElement("div");
   cardContainer.style.position = "fixed";
   if (isOtherPlayer) {
-    cardContainer.style.top = "56px";
+    cardContainer.style.top = "42%";
     cardContainer.style.left = "50%";
-    cardContainer.style.transform = "translateX(-50%)";
+    cardContainer.style.transform = "translate(-50%, -50%)";
   } else {
     cardContainer.style.top = "56px";
     cardContainer.style.right = "12pt";
@@ -109,7 +109,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   cardContainer.style.aspectRatio = `${aspectRatio}`;
 
   const updateCardWidth = () => {
-    const calculatedWidth = Math.min(window.innerWidth * 0.8, 350);
+    const calculatedWidth = isOtherPlayer && isMobile ? window.innerWidth * 0.69 : Math.min(window.innerWidth * 0.8, 350);
     cardContainer.style.width = `${calculatedWidth}px`;
     const calculatedHeight = calculatedWidth / aspectRatio;
     const maxHeight = window.innerHeight * 0.42;
