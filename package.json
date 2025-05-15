@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "@ethereum-attestation-service/eas-sdk": "^2.6.1",
     "@rainbow-me/rainbowkit": "latest",
     "@solana/wallet-adapter-base": "^0.9.23",
     "@tanstack/react-query": "^5.56.2",
