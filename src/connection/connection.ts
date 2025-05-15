@@ -188,10 +188,6 @@ export async function updateRatings(): Promise<any> {
   return firebaseConnection.updateRatings();
 }
 
-export async function prepareOnchainVictoryTx(): Promise<any> {
-  return firebaseConnection.prepareOnchainVictoryTx();
-}
-
 export function connectToGame(inviteId: string, autojoin: boolean) {
   signIn().then((uid) => {
     if (uid) {

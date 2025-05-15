@@ -4,8 +4,8 @@ import * as Board from "./board";
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
-import { isAutomatch, sendResignStatus, prepareOnchainVictoryTx, sendMove, isCreateNewInviteFlow, sendEmojiUpdate, setupConnection, startTimer, claimVictoryByTimer, sendRematchProposal, sendAutomatchRequest, connectToAutomatch, sendEndMatchIndicator, rematchSeriesEndIsIndicated, connectToGame, updateRatings, seeIfFreshlySignedInProfileIsOneOfThePlayers, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded } from "../connection/connection";
-import { setAttestVictoryVisible, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAttestVictoryEnabled, showButtonForTx, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, setInstructionsToggleButtonVisible, closeNavigationPopupIfAny } from "../ui/BottomControls";
+import { isAutomatch, sendResignStatus, sendMove, isCreateNewInviteFlow, sendEmojiUpdate, setupConnection, startTimer, claimVictoryByTimer, sendRematchProposal, sendAutomatchRequest, connectToAutomatch, sendEndMatchIndicator, rematchSeriesEndIsIndicated, connectToGame, updateRatings, seeIfFreshlySignedInProfileIsOneOfThePlayers, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded } from "../connection/connection";
+import { setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, setInstructionsToggleButtonVisible, closeNavigationPopupIfAny } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem } from "../content/problems";
@@ -36,7 +36,6 @@ let didSetBlackProcessedMovesCount = false;
 let currentGameModelMatchId: string | null = null;
 let whiteFlatMovesString: string | null = null;
 let blackFlatMovesString: string | null = null;
-let victoryTx: any;
 
 let game: MonsWeb.MonsGameModel;
 let botPlayerColor: MonsWeb.Color;
@@ -136,7 +135,6 @@ export function didJustCreateRematchProposalSuccessfully(inviteId: string) {
   currentGameModelMatchId = null;
   whiteFlatMovesString = null;
   blackFlatMovesString = null;
-  victoryTx = null;
   playerSideColor = MonsWeb.Color.White;
   game = MonsWeb.MonsGameModel.new();
 
@@ -294,9 +292,7 @@ function didConfirmRematchProposal() {
     return;
   }
 
-  setAttestVictoryVisible(false);
   setEndMatchVisible(false);
-  showButtonForTx("");
   Board.runMonsBoardAsDisplayWaitingAnimation();
   sendRematchProposal();
   Board.hideBoardPlayersInfo();
@@ -815,28 +811,6 @@ function verifyMovesIfNeeded(matchId: string, flatMovesString: string, color: st
   }
 }
 
-export function didClickAttestVictoryButton() {
-  const matchId = currentGameModelMatchId ?? "";
-
-  if (victoryTx) {
-    saveOnchainRating(victoryTx, matchId);
-    return;
-  }
-
-  prepareOnchainVictoryTx()
-    .then((res) => {
-      if (res && res.schema) {
-        victoryTx = res;
-      }
-      console.log("Will attest with tx:", victoryTx);
-      saveOnchainRating(res, matchId);
-    })
-    .catch((error) => {
-      setAttestVictoryEnabled(true);
-      console.error("Failed to prepare victory tx:", error);
-    });
-}
-
 function updateRatingsAndSuggestSavingOnchainRating() {
   if (!isAutomatch()) {
     return;
@@ -844,12 +818,6 @@ function updateRatingsAndSuggestSavingOnchainRating() {
 
   updateRatings();
   updateRatingsLocally(true);
-
-  const onchainRatingsAreDisabledTmp = true;
-  if (!onchainRatingsAreDisabledTmp) {
-    setAttestVictoryVisible(true);
-    setAttestVictoryEnabled(true);
-  }
 }
 
 function updateRatingsLocally(isWin: boolean) {
@@ -866,26 +834,6 @@ function updateRatingsLocally(isWin: boolean) {
   if (victoryUid && defeatUid) {
     recalculateRatingsLocallyForUids(victoryUid, defeatUid);
     Board.recalculateDisplayNames();
-  }
-}
-
-async function saveOnchainRating(txData: any, matchId: string) {
-  const { sendEasTx } = await import("../connection/eas");
-  try {
-    const txHash = await sendEasTx(txData);
-    if (txHash) {
-      setAttestVictoryVisible(false);
-      setAttestVictoryEnabled(true);
-      if (matchId === currentGameModelMatchId) {
-        showButtonForTx(txHash);
-      }
-    } else {
-      setAttestVictoryEnabled(true);
-      console.error("no tx hash");
-    }
-  } catch (error) {
-    setAttestVictoryEnabled(true);
-    console.error("Error saving onchain rating:", error);
   }
 }
 

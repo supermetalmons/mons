@@ -432,19 +432,6 @@ class FirebaseConnection {
     }
   }
 
-  public async prepareOnchainVictoryTx(): Promise<any> {
-    try {
-      await this.ensureAuthenticated();
-      const attestVictoryFunction = httpsCallable(this.functions, "attestMatchVictory");
-      const opponentId = this.getOpponentId();
-      const response = await attestVictoryFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
-      return response.data;
-    } catch (error) {
-      console.error("Error preparing onchain victory tx:", error);
-      throw error;
-    }
-  }
-
   public updateEmoji(newId: number, matchOnly: boolean): void {
     if (!matchOnly) {
       this.updateFirestoreEmoji(newId);
