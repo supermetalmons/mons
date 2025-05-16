@@ -24,7 +24,7 @@ const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radia
 const totalCardBgsCount = 37;
 const bubblePlaceholderColor = "white";
 
-let defaultCardBgIndex = 23;
+let defaultCardBgIndex = 30;
 let defaultSubtitleIndex = 0;
 let cardIndex = defaultCardBgIndex;
 let asciimojiIndex = defaultSubtitleIndex;
@@ -37,7 +37,6 @@ let mysticIndex = 0;
 
 let undoQueue: Array<[string, any]> = [];
 
-const showStickers = false;
 export let showsShinyCardSomewhere = false;
 
 let ownEmojiImg: HTMLImageElement | null;
@@ -463,9 +462,6 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
 
   observer.observe(document.body, { childList: true });
   showMons(cardContentsLayer, handlePointerLeave, isOtherPlayer, profile);
-  if (showStickers) {
-    showRandomStickers(cardContentsLayer);
-  }
 
   updateUndoButton();
 };
@@ -481,13 +477,23 @@ export const updateShinyCardDisplayName = (displayName: string) => {
 };
 
 async function showRandomStickers(cardContentsLayer: HTMLElement) {
-  const stickerOptions = ["zemred", "super-mana-piece-3", "speklmic", "omom-4", "omom-3", "omom-2", "omom", "omen-statue", "melmut", "lord-idgecreist", "king-snowbie", "hatchat", "gummy-deino", "gerp", "estalibur", "crystal-owg", "crystal-gummy-deino", "crystal-cloud-gabber", "armored-gummoskullj", "applecreme"];
+  const stickerPaths = {
+    "type-logo": ["spirit", "mystic", "drainer", "demon", "angel"],
+    "mini-logo": ["super-mana", "potion", "mana", "bomb"],
+    "middle-right": ["swag-coin", "metal-mana-pog", "glitter-rock"],
+    "middle-left": ["super-mana-piece-2", "super-mana-piece"],
+    mana: ["metal-mana", "blue-mana"],
+    "bottom-right": ["star", "cursor"],
+    "bottom-left": ["rock", "heart"],
+    "big-mon-top-right": ["zemred", "super-mana-piece-3", "speklmic", "omom-4", "omom-3", "omom-2", "omom", "omen-statue", "melmut", "lord-idgecreist", "king-snowbie", "hatchat", "gummy-deino", "gerp", "estalibur", "crystal-owg", "crystal-gummy-deino", "crystal-cloud-gabber", "armored-gummoskullj", "applecreme"],
+  };
 
-  const randomSticker = stickerOptions[Math.floor(Math.random() * stickerOptions.length)];
-  const stickerUrl = `https://assets.mons.link/cards/stickers/big-mon-top-right/${randomSticker}.webp`;
-
-  const stickers = createOverlayImage(stickerUrl);
-  cardContentsLayer.appendChild(stickers);
+  for (const [path, options] of Object.entries(stickerPaths)) {
+    const randomSticker = options[Math.floor(Math.random() * options.length)];
+    const stickerUrl = `https://assets.mons.link/cards/stickers/${path}/${randomSticker}.webp`;
+    const stickers = createOverlayImage(stickerUrl);
+    cardContentsLayer.appendChild(stickers);
+  }
 }
 
 const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number, monType: string = "", handlePointerLeave: any, isOtherPlayer: boolean): HTMLElement => {
