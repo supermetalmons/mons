@@ -108,7 +108,7 @@ export function sendProfileMonsUpdate(mons: string) {
   firebaseConnection.updateFirestoreProfileMons(mons);
 }
 
-export function sendCardStickersUpdate(stickers: any) {
+export function sendCardStickersUpdate(stickers: string) {
   firebaseConnection.updateFirestoreCardStickers(stickers);
 }
 

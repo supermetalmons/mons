@@ -142,11 +142,11 @@ export const storage = {
     setItem(STORAGE_KEYS.CARD_SUBTITLE_ID, value);
   },
 
-  getCardStickers: (defaultValue: any): any => {
-    return getItem(STORAGE_KEYS.CARD_STICKERS, defaultValue);
+  getCardStickers: (defaultValue: string): string => {
+    return JSON.stringify(getItem(STORAGE_KEYS.CARD_STICKERS, defaultValue));
   },
 
-  setCardStickers: (value: any): void => {
+  setCardStickers: (value: string): void => {
     setItem(STORAGE_KEYS.CARD_STICKERS, value);
   },
 

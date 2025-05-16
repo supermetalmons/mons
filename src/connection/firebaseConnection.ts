@@ -464,7 +464,7 @@ class FirebaseConnection {
     this.updateFirestoreCustomField("profileMons", mons);
   }
 
-  public updateFirestoreCardStickers(stickers: any): void {
+  public updateFirestoreCardStickers(stickers: string): void {
     this.updateFirestoreCustomField("cardStickers", stickers);
   }
 

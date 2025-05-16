@@ -1,4 +1,4 @@
-import { sendCardBackgroundUpdate, sendCardSubtitleIdUpdate, sendProfileMonsUpdate } from "../connection/connection";
+import { sendCardBackgroundUpdate, sendCardStickersUpdate, sendCardSubtitleIdUpdate, sendProfileMonsUpdate } from "../connection/connection";
 import { emojipackSize, emojis, getIncrementedEmojiId } from "../content/emojis";
 import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile, getStableRandomIdForProfileId } from "../utils/misc";
@@ -466,8 +466,8 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   observer.observe(document.body, { childList: true });
   showMons(cardContentsLayer, handlePointerLeave, isOtherPlayer, profile);
 
-  // TODO: show actual stickers, not random
-  // showRandomStickers(cardContentsLayer);
+  const stickersJson = isOtherPlayer ? profile?.cardStickers ?? "" : storage.getCardStickers("");
+  displayStickers(cardContentsLayer, stickersJson);
   updateUndoButton();
 };
 
@@ -510,19 +510,27 @@ function getRandomStickers(): string {
 }
 
 function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
-  const selectedStickers = JSON.parse(stickersJson);
+  let selectedStickers: Record<string, string>;
+  try {
+    selectedStickers = JSON.parse(stickersJson);
+  } catch {
+    return;
+  }
+
+  if (!selectedStickers || typeof selectedStickers !== "object") {
+    return;
+  }
 
   for (const [path, sticker] of Object.entries(selectedStickers)) {
+    if (typeof path !== "string" || typeof sticker !== "string") {
+      continue;
+    }
+
     const stickerUrl = `https://assets.mons.link/cards/stickers/${path}/${sticker}.webp`;
     const stickers = createOverlayStickersImage(stickerUrl);
     cardContentsLayer.appendChild(stickers);
     stickerElements.push(stickers);
   }
-}
-
-async function showRandomStickers(cardContentsLayer: HTMLElement) {
-  const stickersJson = getRandomStickers();
-  displayStickers(cardContentsLayer, stickersJson);
 }
 
 const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number, monType: string = "", handlePointerLeave: any, isOtherPlayer: boolean): HTMLElement => {
@@ -748,6 +756,11 @@ async function didClickMonImage(monType: string) {
 
 async function updateContent(contentType: string, newId: any, oldId: any | null) {
   switch (contentType) {
+    case "stickers":
+      storage.setCardStickers(newId);
+      sendCardStickersUpdate(newId);
+      // TODO: update displayed stickers
+      break;
     case "emoji":
       const newSmallEmojiUrl = emojis.getEmojiUrl(newId);
       didClickAndChangePlayerEmoji(newId, newSmallEmojiUrl);
