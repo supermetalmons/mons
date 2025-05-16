@@ -4,6 +4,8 @@ import { ButtonsContainer, SaveButton } from "./NameEditModal";
 import { storage } from "../utils/storage";
 import { getNfts } from "../connection/connection";
 
+const doNotFetchNftsForNow = true;
+
 const InventoryOverlay = styled.div`
   position: fixed;
   top: 0;
@@ -170,7 +172,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
         }
       };
 
-      fetchTokens();
+      if (!doNotFetchNftsForNow) {
+        fetchTokens();
+      }
     }
   }, []);
 
