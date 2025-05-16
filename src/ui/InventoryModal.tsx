@@ -160,9 +160,13 @@ const StickerButton = styled.button`
   cursor: pointer;
   transition: all 0.2s;
   flex: 1;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
 
-  &:hover {
-    background: #f0f0f0;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: #f0f0f0;
+    }
   }
 
   @media (prefers-color-scheme: dark) {
@@ -170,8 +174,10 @@ const StickerButton = styled.button`
     border-color: #444;
     color: #ddd;
 
-    &:hover {
-      background: #3a3a3a;
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background: #3a3a3a;
+      }
     }
   }
 `;
