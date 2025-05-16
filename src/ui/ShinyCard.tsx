@@ -51,6 +51,7 @@ let ownMysticImg: HTMLImageElement | null;
 
 let cardResizeObserver: ResizeObserver | null = null;
 let textElements: Array<{ element: HTMLElement; card: HTMLElement }> = [];
+let stickerElements: Array<HTMLElement> = [];
 let dynamicallyRoundedElements: Array<{ element: HTMLElement; radius: number }> = [];
 let resizeListener: (() => void) | null = null;
 
@@ -167,11 +168,13 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   img.style.pointerEvents = "none";
   img.draggable = false;
   img.src = `https://assets.mons.link/cards/bg/${isOtherPlayer ? getBgIdForProfile(profile) : cardIndex}.webp`;
+  img.style.visibility = "hidden";
   img.onerror = () => {
     img.style.visibility = "hidden";
   };
   img.onload = () => {
     img.style.visibility = "visible";
+    showHiddenWaitingStickers();
   };
 
   const emojiContainer = document.createElement("div");
@@ -465,7 +468,6 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
 
   // TODO: show actual stickers, not random
   // showRandomStickers(cardContentsLayer);
-
   updateUndoButton();
 };
 
@@ -490,6 +492,12 @@ const STICKER_PATHS = {
   "big-mon-top-right": ["zemred", "super-mana-piece-3", "speklmic", "omom-4", "omom-3", "omom-2", "omom", "omen-statue", "melmut", "lord-idgecreist", "king-snowbie", "hatchat", "gummy-deino", "gerp", "estalibur", "crystal-owg", "crystal-gummy-deino", "crystal-cloud-gabber", "armored-gummoskullj", "applecreme"],
 };
 
+function showHiddenWaitingStickers() {
+  stickerElements.forEach((sticker) => {
+    sticker.style.visibility = "visible";
+  });
+}
+
 function getRandomStickers(): string {
   const selectedStickers: Record<string, string> = {};
 
@@ -506,8 +514,9 @@ function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
 
   for (const [path, sticker] of Object.entries(selectedStickers)) {
     const stickerUrl = `https://assets.mons.link/cards/stickers/${path}/${sticker}.webp`;
-    const stickers = createOverlayImage(stickerUrl);
+    const stickers = createOverlayStickersImage(stickerUrl);
     cardContentsLayer.appendChild(stickers);
+    stickerElements.push(stickers);
   }
 }
 
@@ -645,7 +654,7 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
   return textElement;
 };
 
-const createOverlayImage = (url: string): HTMLImageElement => {
+const createOverlayStickersImage = (url: string): HTMLImageElement => {
   const overlayImg = document.createElement("img");
   overlayImg.style.width = "100%";
   overlayImg.style.height = "100%";
@@ -660,11 +669,12 @@ const createOverlayImage = (url: string): HTMLImageElement => {
   overlayImg.style.pointerEvents = "none";
   overlayImg.draggable = false;
   overlayImg.src = url;
+  overlayImg.style.visibility = "hidden";
   overlayImg.onerror = () => {
     overlayImg.style.visibility = "hidden";
   };
   overlayImg.onload = () => {
-    overlayImg.style.visibility = "visible";
+    overlayImg.style.visibility = ownBgImg?.style.visibility ?? "hidden";
   };
   return overlayImg;
 };
@@ -684,6 +694,7 @@ export const hideShinyCard = () => {
   if (cardResizeObserver) {
     cardResizeObserver.disconnect();
     textElements = [];
+    stickerElements = [];
     dynamicallyRoundedElements = [];
   }
 };
