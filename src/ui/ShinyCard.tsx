@@ -48,6 +48,7 @@ let ownDrainerImg: HTMLImageElement | null;
 let ownAngelImg: HTMLImageElement | null;
 let ownSpiritImg: HTMLImageElement | null;
 let ownMysticImg: HTMLImageElement | null;
+let ownCardContentsLayer: HTMLDivElement | null;
 
 let cardResizeObserver: ResizeObserver | null = null;
 let textElements: Array<{ element: HTMLElement; card: HTMLElement }> = [];
@@ -412,6 +413,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   cardContentsLayer.appendChild(emojiContainer);
   cardContentsLayer.appendChild(shinyOverlay);
   card.appendChild(cardContentsLayer);
+  ownCardContentsLayer = cardContentsLayer;
 
   if (cardResizeObserver) {
     cardResizeObserver.observe(cardContentsLayer);
@@ -498,6 +500,18 @@ function showHiddenWaitingStickers() {
   });
 }
 
+export function didClickRerollStickers() {
+  const newStickers = getRandomStickers();
+  const oldStickers = storage.getCardStickers("");
+  updateContent("stickers", newStickers, oldStickers);
+}
+
+export function didClickCleanUpStickers() {
+  const newStickers = "";
+  const oldStickers = storage.getCardStickers("");
+  updateContent("stickers", newStickers, oldStickers);
+}
+
 function getRandomStickers(): string {
   const selectedStickers: Record<string, string> = {};
 
@@ -507,6 +521,13 @@ function getRandomStickers(): string {
   }
 
   return JSON.stringify(selectedStickers);
+}
+
+function removeAllStickers() {
+  stickerElements.forEach((sticker) => {
+    sticker.remove();
+  });
+  stickerElements.length = 0;
 }
 
 function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
@@ -757,9 +778,12 @@ async function didClickMonImage(monType: string) {
 async function updateContent(contentType: string, newId: any, oldId: any | null) {
   switch (contentType) {
     case "stickers":
+      if (ownCardContentsLayer) {
+        removeAllStickers();
+        displayStickers(ownCardContentsLayer, newId);
+      }
       storage.setCardStickers(newId);
       sendCardStickersUpdate(newId);
-      // TODO: update displayed stickers
       break;
     case "emoji":
       const newSmallEmojiUrl = emojis.getEmojiUrl(newId);

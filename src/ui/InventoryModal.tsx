@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { ButtonsContainer, SaveButton } from "./NameEditModal";
 import { storage } from "../utils/storage";
 import { getNfts } from "../connection/connection";
+import { didClickCleanUpStickers, didClickRerollStickers } from "./ShinyCard";
 
 const doNotFetchNftsForNow = true;
 
@@ -238,11 +239,11 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   };
 
   const handleReroll = () => {
-    // TODO: implement
+    didClickRerollStickers();
   };
 
   const handleCleanup = () => {
-    // TODO: implement
+    didClickCleanUpStickers();
   };
 
   return (
