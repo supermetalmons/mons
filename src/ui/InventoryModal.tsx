@@ -26,49 +26,61 @@ const InventoryOverlay = styled.div`
 
 const InventoryPopup = styled.div`
   background-color: #fffffffa;
-  padding: 20px;
+  padding: 24px;
   border-radius: 16px;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
   width: 85%;
   max-width: 320px;
-  max-height: 42vh;
+  max-height: 70vh;
   display: flex;
   flex-direction: column;
   user-select: none;
   outline: none;
   overflow: hidden;
+  position: relative;
 
   @media (prefers-color-scheme: dark) {
     background-color: #1a1a1afa;
   }
 `;
 
-const Title = styled.h3`
+const SectionTitle = styled.h3`
   margin-top: 0;
-  margin-bottom: 16px;
-  font-size: 1.1rem;
+  margin-bottom: 20px;
+  font-size: 1.25rem;
+  font-weight: 600;
   color: #333;
   user-select: none;
   cursor: default;
+  text-align: left;
+  padding-bottom: 2px;
 
   @media (prefers-color-scheme: dark) {
     color: #f0f0f0;
   }
 `;
 
+const SectionContainer = styled.div`
+  margin-bottom: 32px;
+
+  &:last-of-type {
+    margin-bottom: 20px;
+  }
+`;
+
 const Content = styled.div`
   color: #555;
-  font-size: 0.9rem;
-  margin-bottom: 16px;
+  font-size: 0.95rem;
   user-select: none;
   cursor: default;
   word-break: break-word;
   overflow-wrap: break-word;
   max-width: 100%;
-  flex: 1;
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  text-align: left;
+  padding-left: 4px;
 
   @media (prefers-color-scheme: dark) {
     color: #d0d0d0;
@@ -79,7 +91,7 @@ const NFTGridContainer = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   margin-top: 16px;
-  flex: 1;
+  max-height: 140px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -128,6 +140,39 @@ const NFTName = styled.span`
   -webkit-box-orient: vertical;
   overflow: hidden;
   max-height: 100%;
+`;
+
+const StickerButtonsContainer = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 8px;
+  margin-bottom: 4px;
+`;
+
+const StickerButton = styled.button`
+  padding: 6px 16px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+  background: #f8f8f8;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex: 1;
+
+  &:hover {
+    background: #f0f0f0;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: #333;
+    border-color: #444;
+    color: #ddd;
+
+    &:hover {
+      background: #3a3a3a;
+    }
+  }
 `;
 
 interface NFT {
@@ -192,24 +237,45 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     window.open(direct, "_blank");
   };
 
+  const handleReroll = () => {
+    // TODO: implement
+  };
+
+  const handleCleanup = () => {
+    // TODO: implement
+  };
+
   return (
     <InventoryOverlay onClick={onCancel}>
       <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus>
-        <Title>swag pack</Title>
-        <Content>
-          soon
-          {nfts.length > 0 && (
-            <NFTGridContainer>
-              <NFTGrid>
-                {nfts.map((nft) => (
-                  <NFTNameContainer key={nft.id} onClick={() => openNftOnWeb(nft.direct_link)}>
-                    <NFTName>{nft.content.metadata?.name || "Unnamed"}</NFTName>
-                  </NFTNameContainer>
-                ))}
-              </NFTGrid>
-            </NFTGridContainer>
-          )}
-        </Content>
+        <SectionContainer>
+          <SectionTitle>Stickers</SectionTitle>
+          <Content>
+            <StickerButtonsContainer>
+              <StickerButton onClick={handleReroll}>reroll</StickerButton>
+              <StickerButton onClick={handleCleanup}>clean up</StickerButton>
+            </StickerButtonsContainer>
+          </Content>
+        </SectionContainer>
+
+        <SectionContainer>
+          <SectionTitle>Swag Pack</SectionTitle>
+          <Content>
+            <span style={{ fontStyle: "italic", opacity: 0.8 }}>coming soon</span>
+            {nfts.length > 0 && (
+              <NFTGridContainer>
+                <NFTGrid>
+                  {nfts.map((nft) => (
+                    <NFTNameContainer key={nft.id} onClick={() => openNftOnWeb(nft.direct_link)}>
+                      <NFTName>{nft.content.metadata?.name || "Unnamed"}</NFTName>
+                    </NFTNameContainer>
+                  ))}
+                </NFTGrid>
+              </NFTGridContainer>
+            )}
+          </Content>
+        </SectionContainer>
+
         <ButtonsContainer>
           <SaveButton onClick={onCancel} disabled={false}>
             OK
