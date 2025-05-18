@@ -490,12 +490,14 @@ function showHiddenWaitingStickers() {
   });
 }
 
+// TODO: deprecate
 export function didClickRerollStickers() {
   const newStickers = getRandomStickers();
   const oldStickers = storage.getCardStickers("");
   updateContent("stickers", newStickers, oldStickers);
 }
 
+// TODO: deprecate
 export function didClickCleanUpStickers() {
   const newStickers = "";
   const oldStickers = storage.getCardStickers("");

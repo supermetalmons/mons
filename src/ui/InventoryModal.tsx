@@ -3,8 +3,9 @@ import styled from "styled-components";
 import { ButtonsContainer, SaveButton } from "./NameEditModal";
 import { storage } from "../utils/storage";
 import { getNfts } from "../connection/connection";
-import { didClickCleanUpStickers, didClickRerollStickers } from "./ShinyCard";
+import { STICKER_PATHS } from "../utils/stickers";
 
+type StickerType = keyof typeof STICKER_PATHS;
 const doNotFetchNftsForNow = true;
 
 const InventoryOverlay = styled.div`
@@ -145,13 +146,21 @@ const NFTName = styled.span`
 
 const StickerButtonsContainer = styled.div`
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 8px;
   margin-top: 8px;
   margin-bottom: 4px;
 `;
 
+const ButtonRow = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  width: 100%;
+`;
+
 const StickerButton = styled.button`
-  padding: 6px 16px;
+  padding: 8px;
   border-radius: 8px;
   border: 1px solid #ddd;
   background: #f8f8f8;
@@ -162,6 +171,11 @@ const StickerButton = styled.button`
   flex: 1;
   -webkit-tap-highlight-color: transparent;
   outline: none;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: 48px;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -180,6 +194,23 @@ const StickerButton = styled.button`
       }
     }
   }
+`;
+
+const StickerTypeLabel = styled.span`
+  font-size: 0.7rem;
+  opacity: 0.8;
+  margin-bottom: 2px;
+  text-align: left;
+`;
+
+const StickerName = styled.span`
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
 `;
 
 interface NFT {
@@ -244,12 +275,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     window.open(direct, "_blank");
   };
 
-  const handleReroll = () => {
-    didClickRerollStickers();
-  };
-
-  const handleCleanup = () => {
-    didClickCleanUpStickers();
+  const handleStickerClick = (stickerType: StickerType) => {
+    // TODO: implement
+    console.log(`Selected sticker type: ${stickerType}`);
   };
 
   return (
@@ -259,8 +287,18 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
           <SectionTitle>Stickers</SectionTitle>
           <Content>
             <StickerButtonsContainer>
-              <StickerButton onClick={handleReroll}>reroll</StickerButton>
-              <StickerButton onClick={handleCleanup}>clean up</StickerButton>
+              {Array.from({ length: 4 }).map((_, rowIndex) => (
+                <ButtonRow key={rowIndex}>
+                  {Object.keys(STICKER_PATHS)
+                    .slice(rowIndex * 2, (rowIndex + 1) * 2)
+                    .map((stickerType) => (
+                      <StickerButton key={stickerType} onClick={() => handleStickerClick(stickerType as StickerType)}>
+                        <StickerTypeLabel>{stickerType.replace(/-/g, " ")}</StickerTypeLabel>
+                        <StickerName>{STICKER_PATHS[stickerType as StickerType][0].replace(/-/g, " ")}</StickerName>
+                      </StickerButton>
+                    ))}
+                </ButtonRow>
+              ))}
             </StickerButtonsContainer>
           </Content>
         </SectionContainer>
