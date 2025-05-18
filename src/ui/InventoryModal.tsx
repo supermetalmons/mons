@@ -2,8 +2,9 @@ import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { ButtonsContainer, SaveButton } from "./NameEditModal";
 import { storage } from "../utils/storage";
-import { getNfts } from "../connection/connection";
+import { getNfts, sendCardStickersUpdate } from "../connection/connection";
 import { STICKER_PATHS } from "../utils/stickers";
+import { didUpdateSticker } from "./ShinyCard";
 
 type StickerType = keyof typeof STICKER_PATHS;
 const doNotFetchNftsForNow = true;
@@ -197,14 +198,14 @@ const StickerButton = styled.button`
 `;
 
 const StickerTypeLabel = styled.span`
-  font-size: 0.7rem;
+  font-size: 0.65rem;
   opacity: 0.8;
   margin-bottom: 2px;
   text-align: left;
 `;
 
 const StickerName = styled.span`
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 600;
   text-align: left;
   white-space: nowrap;
@@ -239,6 +240,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   const popupRef = useRef<HTMLDivElement>(null);
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [selectedStickers, setSelectedStickers] = useState<Record<string, string>>({});
+  const [initialStickers, setInitialStickers] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (popupRef.current) {
@@ -251,6 +253,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
       const parsed = JSON.parse(stickersJson);
       if (parsed && typeof parsed === "object") {
         setSelectedStickers(parsed);
+        setInitialStickers(parsed);
       }
     } catch {}
 
@@ -271,13 +274,25 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     }
   }, []);
 
+  const saveStickersAndClose = () => {
+    const initialJson = JSON.stringify(initialStickers);
+    const currentJson = JSON.stringify(selectedStickers);
+
+    if (initialJson !== currentJson) {
+      storage.setCardStickers(currentJson);
+      sendCardStickersUpdate(currentJson);
+    }
+
+    onCancel();
+  };
+
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.stopPropagation();
-      onCancel();
+      saveStickersAndClose();
     } else if (e.key === "Escape") {
       e.stopPropagation();
-      onCancel();
+      saveStickersAndClose();
     }
   };
 
@@ -286,12 +301,36 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   };
 
   const handleStickerClick = (stickerType: StickerType) => {
-    // TODO: implement
-    console.log(`Selected sticker type: ${stickerType}`);
+    const stickersForType = STICKER_PATHS[stickerType];
+    const currentSticker = selectedStickers[stickerType];
+
+    let nextSticker: string | undefined;
+
+    if (!currentSticker) {
+      nextSticker = stickersForType[0];
+    } else {
+      const currentIndex = stickersForType.indexOf(currentSticker);
+      if (currentIndex === stickersForType.length - 1 || currentIndex === -1) {
+        nextSticker = undefined;
+      } else {
+        nextSticker = stickersForType[currentIndex + 1];
+      }
+    }
+
+    const updatedStickers = { ...selectedStickers };
+
+    if (nextSticker) {
+      updatedStickers[stickerType] = nextSticker;
+    } else {
+      delete updatedStickers[stickerType];
+    }
+
+    setSelectedStickers(updatedStickers);
+    didUpdateSticker(stickerType, nextSticker);
   };
 
   return (
-    <InventoryOverlay onClick={onCancel}>
+    <InventoryOverlay onClick={saveStickersAndClose}>
       <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus>
         <SectionContainer>
           <SectionTitle>Stickers</SectionTitle>
@@ -339,7 +378,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
         </SectionContainer>
 
         <ButtonsContainer>
-          <SaveButton onClick={onCancel} disabled={false}>
+          <SaveButton onClick={saveStickersAndClose} disabled={false}>
             OK
           </SaveButton>
         </ButtonsContainer>

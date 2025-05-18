@@ -497,6 +497,11 @@ export function didClickRerollStickers() {
   updateContent("stickers", newStickers, oldStickers);
 }
 
+export function didUpdateSticker(stickerType: string, nextSticker: string | undefined) {
+  console.log(stickerType, nextSticker);
+  // TODO: implement
+}
+
 // TODO: deprecate
 export function didClickCleanUpStickers() {
   const newStickers = "";
