@@ -48,10 +48,11 @@ let ownDrainerImg: HTMLImageElement | null;
 let ownAngelImg: HTMLImageElement | null;
 let ownSpiritImg: HTMLImageElement | null;
 let ownMysticImg: HTMLImageElement | null;
+let ownCardContentsLayer: HTMLDivElement | null;
 
 let cardResizeObserver: ResizeObserver | null = null;
 let textElements: Array<{ element: HTMLElement; card: HTMLElement }> = [];
-let stickerElements: Record<string, HTMLElement> = {};
+let stickerElements: Record<string, HTMLImageElement> = {};
 let dynamicallyRoundedElements: Array<{ element: HTMLElement; radius: number }> = [];
 let resizeListener: (() => void) | null = null;
 
@@ -412,6 +413,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   cardContentsLayer.appendChild(emojiContainer);
   cardContentsLayer.appendChild(shinyOverlay);
   card.appendChild(cardContentsLayer);
+  ownCardContentsLayer = cardContentsLayer;
 
   if (cardResizeObserver) {
     cardResizeObserver.observe(cardContentsLayer);
@@ -489,9 +491,19 @@ function showHiddenWaitingStickers() {
 
 export function didUpdateSticker(stickerType: string, nextSticker: string | undefined) {
   if (nextSticker) {
-    // TODO: update image
+    const element = stickerElements[stickerType];
+    if (element) {
+      const stickerUrl = `https://assets.mons.link/cards/stickers/${stickerType}/${nextSticker}.webp`;
+      element.src = stickerUrl;
+    } else if (ownCardContentsLayer) {
+      appendStickerLayer(ownCardContentsLayer, stickerType, nextSticker);
+    }
   } else {
-    // TODO: remove
+    const element = stickerElements[stickerType];
+    if (element) {
+      element.remove();
+      delete stickerElements[stickerType];
+    }
   }
 }
 
@@ -511,12 +523,15 @@ function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
     if (typeof path !== "string" || typeof sticker !== "string") {
       continue;
     }
-
-    const stickerUrl = `https://assets.mons.link/cards/stickers/${path}/${sticker}.webp`;
-    const stickers = createOverlayStickersImage(stickerUrl);
-    cardContentsLayer.appendChild(stickers);
-    stickerElements[path] = stickers;
+    appendStickerLayer(cardContentsLayer, path, sticker);
   }
+}
+
+function appendStickerLayer(to: HTMLElement, type: string, sticker: string) {
+  const stickerUrl = `https://assets.mons.link/cards/stickers/${type}/${sticker}.webp`;
+  const stickers = createOverlayStickersImage(stickerUrl);
+  to.appendChild(stickers);
+  stickerElements[type] = stickers;
 }
 
 const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number, monType: string = "", handlePointerLeave: any, isOtherPlayer: boolean): HTMLElement => {
