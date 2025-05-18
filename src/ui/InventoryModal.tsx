@@ -238,11 +238,21 @@ export interface InventoryModalProps {
 export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   const popupRef = useRef<HTMLDivElement>(null);
   const [nfts, setNfts] = useState<NFT[]>([]);
+  const [selectedStickers, setSelectedStickers] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (popupRef.current) {
       popupRef.current.focus();
     }
+
+    const stickersJson = storage.getCardStickers("");
+
+    try {
+      const parsed = JSON.parse(stickersJson);
+      if (parsed && typeof parsed === "object") {
+        setSelectedStickers(parsed);
+      }
+    } catch {}
 
     const storedSolAddress = storage.getSolAddress("");
     const storedEthAddress = storage.getEthAddress("");
@@ -291,12 +301,19 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
                 <ButtonRow key={rowIndex}>
                   {Object.keys(STICKER_PATHS)
                     .slice(rowIndex * 2, (rowIndex + 1) * 2)
-                    .map((stickerType) => (
-                      <StickerButton key={stickerType} onClick={() => handleStickerClick(stickerType as StickerType)}>
-                        <StickerTypeLabel>{stickerType.replace(/-/g, " ")}</StickerTypeLabel>
-                        <StickerName>{STICKER_PATHS[stickerType as StickerType][0].replace(/-/g, " ")}</StickerName>
-                      </StickerButton>
-                    ))}
+                    .map((stickerType) => {
+                      const selectedSticker = selectedStickers[stickerType];
+                      let displayName = "–";
+                      if (selectedSticker && STICKER_PATHS[stickerType as StickerType].includes(selectedSticker)) {
+                        displayName = selectedSticker.replace(/-/g, " ");
+                      }
+                      return (
+                        <StickerButton key={stickerType} onClick={() => handleStickerClick(stickerType as StickerType)}>
+                          <StickerTypeLabel>{stickerType.replace(/-/g, " ")}</StickerTypeLabel>
+                          <StickerName>{displayName}</StickerName>
+                        </StickerButton>
+                      );
+                    })}
                 </ButtonRow>
               ))}
             </StickerButtonsContainer>
