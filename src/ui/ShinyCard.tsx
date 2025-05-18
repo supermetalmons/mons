@@ -1,7 +1,6 @@
-import { sendCardBackgroundUpdate, sendCardStickersUpdate, sendCardSubtitleIdUpdate, sendProfileMonsUpdate } from "../connection/connection";
+import { sendCardBackgroundUpdate, sendCardSubtitleIdUpdate, sendProfileMonsUpdate } from "../connection/connection";
 import { emojipackSize, emojis, getIncrementedEmojiId } from "../content/emojis";
 import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
-import { getRandomStickers } from "../utils/stickers";
 import { isMobile, getStableRandomIdForProfileId } from "../utils/misc";
 import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
@@ -49,11 +48,10 @@ let ownDrainerImg: HTMLImageElement | null;
 let ownAngelImg: HTMLImageElement | null;
 let ownSpiritImg: HTMLImageElement | null;
 let ownMysticImg: HTMLImageElement | null;
-let ownCardContentsLayer: HTMLDivElement | null;
 
 let cardResizeObserver: ResizeObserver | null = null;
 let textElements: Array<{ element: HTMLElement; card: HTMLElement }> = [];
-let stickerElements: Array<HTMLElement> = [];
+let stickerElements: Record<string, HTMLElement> = {};
 let dynamicallyRoundedElements: Array<{ element: HTMLElement; radius: number }> = [];
 let resizeListener: (() => void) | null = null;
 
@@ -414,7 +412,6 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   cardContentsLayer.appendChild(emojiContainer);
   cardContentsLayer.appendChild(shinyOverlay);
   card.appendChild(cardContentsLayer);
-  ownCardContentsLayer = cardContentsLayer;
 
   if (cardResizeObserver) {
     cardResizeObserver.observe(cardContentsLayer);
@@ -485,35 +482,17 @@ export const updateShinyCardDisplayName = (displayName: string) => {
 };
 
 function showHiddenWaitingStickers() {
-  stickerElements.forEach((sticker) => {
+  Object.values(stickerElements).forEach((sticker) => {
     sticker.style.visibility = "visible";
   });
 }
 
-// TODO: deprecate
-export function didClickRerollStickers() {
-  const newStickers = getRandomStickers();
-  const oldStickers = storage.getCardStickers("");
-  updateContent("stickers", newStickers, oldStickers);
-}
-
 export function didUpdateSticker(stickerType: string, nextSticker: string | undefined) {
-  console.log(stickerType, nextSticker);
-  // TODO: implement
-}
-
-// TODO: deprecate
-export function didClickCleanUpStickers() {
-  const newStickers = "";
-  const oldStickers = storage.getCardStickers("");
-  updateContent("stickers", newStickers, oldStickers);
-}
-
-function removeAllStickers() {
-  stickerElements.forEach((sticker) => {
-    sticker.remove();
-  });
-  stickerElements.length = 0;
+  if (nextSticker) {
+    // TODO: update image
+  } else {
+    // TODO: remove
+  }
 }
 
 function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
@@ -536,7 +515,7 @@ function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
     const stickerUrl = `https://assets.mons.link/cards/stickers/${path}/${sticker}.webp`;
     const stickers = createOverlayStickersImage(stickerUrl);
     cardContentsLayer.appendChild(stickers);
-    stickerElements.push(stickers);
+    stickerElements[path] = stickers;
   }
 }
 
@@ -709,7 +688,7 @@ export const hideShinyCard = () => {
   if (cardResizeObserver) {
     cardResizeObserver.disconnect();
     textElements = [];
-    stickerElements = [];
+    stickerElements = {};
     dynamicallyRoundedElements = [];
   }
 };
@@ -763,14 +742,6 @@ async function didClickMonImage(monType: string) {
 
 async function updateContent(contentType: string, newId: any, oldId: any | null) {
   switch (contentType) {
-    case "stickers":
-      if (ownCardContentsLayer) {
-        removeAllStickers();
-        displayStickers(ownCardContentsLayer, newId);
-      }
-      storage.setCardStickers(newId);
-      sendCardStickersUpdate(newId);
-      break;
     case "emoji":
       const newSmallEmojiUrl = emojis.getEmojiUrl(newId);
       didClickAndChangePlayerEmoji(newId, newSmallEmojiUrl);
