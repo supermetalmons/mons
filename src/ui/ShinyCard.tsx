@@ -197,14 +197,14 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   emojiContainer.style.setProperty("-webkit-touch-callout", "none");
   emojiContainer.style.transition = "transform 0.13s ease-out";
 
-  const updateEmojiScale = (event: MouseEvent) => {
-    if (!isMobile) {
+  if (!isMobile) {
+    const updateEmojiScale = (event: MouseEvent) => {
       emojiContainer.style.transform = `scale(${event.type === "mouseleave" || !isEditingMode ? 1 : 1.023})`;
-    }
-  };
-  emojiContainer.addEventListener("mouseenter", updateEmojiScale);
-  emojiContainer.addEventListener("mouseleave", updateEmojiScale);
-  emojiContainer.addEventListener("mousemove", updateEmojiScale);
+    };
+    emojiContainer.addEventListener("mouseenter", updateEmojiScale);
+    emojiContainer.addEventListener("mouseleave", updateEmojiScale);
+    emojiContainer.addEventListener("mousemove", updateEmojiScale);
+  }
 
   const emojiImg = document.createElement("img");
   emojiImg.style.position = "absolute";
@@ -239,9 +239,9 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     }
 
     if (isMobile) {
-      emojiImg.style.transform = "scale(0.95)";
+      emojiContainer.style.transform = "scale(0.95)";
       setTimeout(() => {
-        emojiImg.style.transform = "scale(1)";
+        emojiContainer.style.transform = "scale(1)";
       }, 130);
     } else {
       emojiContainer.style.transform = "scale(0.95)";
