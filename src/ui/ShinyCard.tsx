@@ -301,6 +301,12 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     const startTime = Date.now();
     const animationDuration = 500;
 
+    if (cardContainer) {
+      cardContainer.style.transition = "transform 0.3s ease-out";
+      cardContainer.style.transformOrigin = "top right";
+      cardContainer.style.transform = "scale(1.03)";
+    }
+
     const animateDisperse = () => {
       const elapsed = Date.now() - startTime;
       const progress = Math.min(elapsed / animationDuration, 1);
