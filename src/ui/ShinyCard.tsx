@@ -38,6 +38,7 @@ let mysticIndex = 0;
 let undoQueue: Array<[string, any]> = [];
 
 export let showsShinyCardSomewhere = false;
+let isEditingMode = false;
 
 let ownEmojiImg: HTMLImageElement | null;
 let ownBgImg: HTMLImageElement | null;
@@ -55,6 +56,7 @@ let textElements: Array<{ element: HTMLElement; card: HTMLElement }> = [];
 let stickerElements: Record<string, HTMLImageElement> = {};
 let dynamicallyRoundedElements: Array<{ element: HTMLElement; radius: number }> = [];
 let resizeListener: (() => void) | null = null;
+let enterEditingMode: (() => void) | null = null;
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -76,6 +78,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   cardIndex = storage.getCardBackgroundId(defaultCardBgIndex);
   asciimojiIndex = storage.getCardSubtitleId(defaultSubtitleIndex);
   showsShinyCardSomewhere = true;
+  isEditingMode = false;
 
   if (!cardResizeObserver) {
     cardResizeObserver = new ResizeObserver((entries) => {
@@ -219,6 +222,12 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     if (isOtherPlayer) {
       return;
     }
+
+    if (!isEditingMode && enterEditingMode) {
+      enterEditingMode();
+      return;
+    }
+
     const oldEmojiId = storage.getPlayerEmojiId("1");
     const playerEmojiId = getIncrementedEmojiId(oldEmojiId);
     updateContent("emoji", playerEmojiId, oldEmojiId);
@@ -271,13 +280,43 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   let lastShineY = 50;
   let transitioningFromMouse = false;
   let transitionProgress = 0;
-  const transitionDuration = 180;
+  const standardTransitionDuration = 180;
 
   let currentRotateX = 0;
   let currentRotateY = 0;
   let targetRotateX = 0;
   let targetRotateY = 0;
   const easeAmount = 0.15;
+
+  enterEditingMode = () => {
+    if (isEditingMode || isOtherPlayer) return;
+
+    handlePointerLeave();
+
+    isEditingMode = true;
+    isMouseOver = false;
+
+    const startX = lastShineX;
+    const startY = lastShineY;
+    const startTime = Date.now();
+    const animationDuration = 500;
+
+    const animateDisperse = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / animationDuration, 1);
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      const dispersedX = 50 + (startX - 50) * (1 - easedProgress);
+      const dispersedY = 50 + (startY - 50) * (1 - easedProgress);
+      const opacity = 1 - easedProgress;
+      shinyOverlay.style.background = TRANSITION_SHINE_GRADIENT(dispersedX, dispersedY, opacity * 0.8, opacity * 0.3);
+      if (progress < 1) {
+        requestAnimationFrame(animateDisperse);
+      } else {
+        shinyOverlay.style.background = "none";
+      }
+    };
+    animateDisperse();
+  };
 
   const animateCard = () => {
     const now = Date.now();
@@ -304,6 +343,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
       const naturalRotateY = Math.cos(time * 0.8) * 3 * animationIntensity;
 
       if (transitioningFromMouse) {
+        const transitionDuration = isEditingMode ? 50 : standardTransitionDuration;
         transitionProgress = Math.min(transitionProgress + 1, transitionDuration);
         const t = transitionProgress / transitionDuration;
 
@@ -319,12 +359,16 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
           const radialOpacity = (1 - easedT) * 0.8;
           const linearOpacity = easedT * 0.3;
 
-          shinyOverlay.style.background = TRANSITION_SHINE_GRADIENT(lastShineX, lastShineY, radialOpacity, linearOpacity);
+          if (!isEditingMode) {
+            shinyOverlay.style.background = TRANSITION_SHINE_GRADIENT(lastShineX, lastShineY, radialOpacity, linearOpacity);
+          }
         } else {
-          shinyOverlay.style.background = IDLE_SHINE_GRADIENT;
+          if (!isEditingMode) {
+            shinyOverlay.style.background = IDLE_SHINE_GRADIENT;
+          }
           transitioningFromMouse = false;
         }
-      } else {
+      } else if (!isEditingMode) {
         currentRotateX += (naturalRotateX - currentRotateX) * 0.05;
         currentRotateY += (naturalRotateY - currentRotateY) * 0.05;
 
@@ -346,6 +390,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   const moveThreshold = 5;
 
   const handlePointerMove = (e: MouseEvent | TouchEvent) => {
+    if (isEditingMode) return;
     const now = Date.now();
     if (now - lastMoveTime < moveThreshold) return;
     lastMoveTime = now;
@@ -382,6 +427,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   };
 
   const handlePointerLeave = () => {
+    if (isEditingMode) return;
     isMouseOver = false;
     transitioningFromMouse = true;
     transitionProgress = 0;
@@ -402,6 +448,10 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
       handlePointerLeave();
     }
     if (isOtherPlayer) {
+      return;
+    }
+    if (!isEditingMode && enterEditingMode) {
+      enterEditingMode();
       return;
     }
     updateContent("bg", (cardIndex + 1) % totalCardBgsCount, cardIndex);
@@ -574,11 +624,17 @@ const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, to
       imageContainer.addEventListener("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
-        if (!isOtherPlayer) {
-          didClickMonImage(monType);
-        }
+
         if (isMobile) {
           handlePointerLeave();
+        }
+
+        if (!isOtherPlayer) {
+          if (!isEditingMode && enterEditingMode) {
+            enterEditingMode();
+            return;
+          }
+          didClickMonImage(monType);
         }
       });
 
@@ -652,6 +708,11 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
 
     if (isMobile) {
       handlePointerLeave();
+    }
+
+    if (!isEditingMode && enterEditingMode) {
+      enterEditingMode();
+      return;
     }
 
     if (onClick) {
