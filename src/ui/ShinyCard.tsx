@@ -195,6 +195,16 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   emojiContainer.style.outline = "none";
   emojiContainer.style.setProperty("-webkit-tap-highlight-color", "transparent");
   emojiContainer.style.setProperty("-webkit-touch-callout", "none");
+  emojiContainer.style.transition = "transform 0.13s ease-out";
+
+  const updateEmojiScale = (event: MouseEvent) => {
+    if (!isMobile) {
+      emojiContainer.style.transform = `scale(${event.type === "mouseleave" || !isEditingMode ? 1 : 1.023})`;
+    }
+  };
+  emojiContainer.addEventListener("mouseenter", updateEmojiScale);
+  emojiContainer.addEventListener("mouseleave", updateEmojiScale);
+  emojiContainer.addEventListener("mousemove", updateEmojiScale);
 
   const emojiImg = document.createElement("img");
   emojiImg.style.position = "absolute";
@@ -647,6 +657,17 @@ const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, to
         }
       });
 
+      imageContainer.style.transition = "transform 0.13s ease-out";
+
+      const updateMonScale = (event: MouseEvent) => {
+        if (!isMobile) {
+          imageContainer.style.transform = `scale(${event.type === "mouseleave" || !isEditingMode ? 1 : 1.05})`;
+        }
+      };
+      imageContainer.addEventListener("mouseenter", updateMonScale);
+      imageContainer.addEventListener("mouseleave", updateMonScale);
+      imageContainer.addEventListener("mousemove", updateMonScale);
+
       switch (monType) {
         case "demon":
           ownDemonImg = img;
@@ -692,6 +713,18 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
   container.style.pointerEvents = "auto";
   container.style.boxShadow = "0 0 1px 1px rgba(0, 0, 0, 0.1)";
   container.setAttribute("style", container.getAttribute("style") + "-webkit-tap-highlight-color: transparent; outline: none; -webkit-touch-callout: none;");
+
+  if (onClick) {
+    container.style.transition = "transform 0.13s ease-out";
+    const updateTextContainerScale = (event: MouseEvent) => {
+      if (!isMobile) {
+        container.style.transform = `scale(${event.type === "mouseleave" || !isEditingMode ? 1 : 1.035})`;
+      }
+    };
+    container.addEventListener("mouseenter", updateTextContainerScale);
+    container.addEventListener("mouseleave", updateTextContainerScale);
+    container.addEventListener("mousemove", updateTextContainerScale);
+  }
 
   const textElement = document.createElement("span");
   textElement.textContent = text;
