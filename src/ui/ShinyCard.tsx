@@ -238,6 +238,18 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
       return;
     }
 
+    if (isMobile) {
+      emojiImg.style.transform = "scale(0.95)";
+      setTimeout(() => {
+        emojiImg.style.transform = "scale(1)";
+      }, 130);
+    } else {
+      emojiContainer.style.transform = "scale(0.95)";
+      setTimeout(() => {
+        emojiContainer.style.transform = "scale(1.023)";
+      }, 130);
+    }
+
     const oldEmojiId = storage.getPlayerEmojiId("1");
     const playerEmojiId = getIncrementedEmojiId(oldEmojiId);
     updateContent("emoji", playerEmojiId, oldEmojiId);
@@ -653,6 +665,19 @@ const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, to
             enterEditingMode();
             return;
           }
+
+          if (isMobile) {
+            imageContainer.style.transform = "scale(0.95)";
+            setTimeout(() => {
+              imageContainer.style.transform = "scale(1)";
+            }, 130);
+          } else {
+            imageContainer.style.transform = "scale(0.95)";
+            setTimeout(() => {
+              imageContainer.style.transform = "scale(1.023)";
+            }, 130);
+          }
+
           didClickMonImage(monType);
         }
       });
@@ -758,6 +783,18 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
     }
 
     if (onClick) {
+      if (isMobile) {
+        container.style.transform = "scale(0.95)";
+        setTimeout(() => {
+          container.style.transform = "scale(1)";
+        }, 130);
+      } else {
+        container.style.transform = "scale(0.95)";
+        setTimeout(() => {
+          container.style.transform = "scale(1.023)";
+        }, 130);
+      }
+
       onClick();
     }
   });

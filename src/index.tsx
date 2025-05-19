@@ -122,11 +122,13 @@ const App = () => {
 
   const handleUndoEditButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
+    event.preventDefault();
     didClickIdCardEditUndoButton();
   };
 
   const handleGemButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
+    event.preventDefault();
     showInventory();
   };
 
