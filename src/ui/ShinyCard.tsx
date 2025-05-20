@@ -58,6 +58,7 @@ let ownCardContentsLayer: HTMLDivElement | null;
 let cardResizeObserver: ResizeObserver | null = null;
 let textElements: Array<{ element: HTMLElement; card: HTMLElement }> = [];
 let stickerElements: Record<string, HTMLImageElement> = {};
+let stickerHitAreas: Record<string, HTMLDivElement> = {};
 let dynamicallyRoundedElements: Array<{ element: HTMLElement; radius: number }> = [];
 let resizeListener: (() => void) | null = null;
 let enterEditingMode: (() => void) | null = null;
@@ -582,7 +583,10 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
     if (element) {
       const stickerUrl = `https://assets.mons.link/cards/stickers/${stickerType}/${nextSticker}.webp`;
       element.src = stickerUrl;
-      // TODO: hit rect should be updated as well
+      const hitArea = stickerHitAreas[stickerType];
+      if (hitArea) {
+        applyStickerFrame(hitArea, stickerType, nextSticker);
+      }
     } else if (ownCardContentsLayer) {
       appendStickerLayer(ownCardContentsLayer, stickerType, nextSticker);
     }
@@ -591,6 +595,11 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
     if (element) {
       element.remove();
       delete stickerElements[stickerType];
+      const hitArea = stickerHitAreas[stickerType];
+      if (hitArea) {
+        hitArea.remove();
+        delete stickerHitAreas[stickerType];
+      }
     }
   }
 }
@@ -615,10 +624,31 @@ function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
   }
 }
 
-function appendStickerLayer(to: HTMLElement, type: string, sticker: string) {
-  const stickers = createOverlayStickersImage(type, sticker);
+function appendStickerLayer(to: HTMLElement, type: string, name: string) {
+  const stickers = createOverlayStickersImage(type, name);
   to.appendChild(stickers);
+
+  if (devTmpPreviewStickersHitArea) {
+    const rect = document.createElement("div");
+    rect.style.position = "absolute";
+    rect.style.backgroundColor = "rgba(0, 255, 0, 1)";
+    rect.style.pointerEvents = "none";
+    applyStickerFrame(rect, type, name);
+    to.appendChild(rect);
+    stickerHitAreas[type] = rect;
+  }
+
   stickerElements[type] = stickers;
+}
+
+function applyStickerFrame(rect: HTMLElement, type: string, name: string) {
+  const stickerPath = STICKER_PATHS[type]?.find((sticker) => sticker.name === name);
+  if (!stickerPath) return;
+  const { x, y, w, h } = stickerPath;
+  rect.style.left = `${x * 100}%`;
+  rect.style.top = `${y * 100}%`;
+  rect.style.width = `${w * 100}%`;
+  rect.style.height = `${h * 100}%`;
 }
 
 const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number, monType: string = "", handlePointerLeave: any, isOtherPlayer: boolean): HTMLElement => {
@@ -832,21 +862,6 @@ const createOverlayStickersImage = (type: string, name: string): HTMLImageElemen
   };
   overlayImg.onload = () => {
     overlayImg.style.visibility = ownBgImg?.style.visibility ?? "hidden";
-    if (devTmpPreviewStickersHitArea) {
-      const stickerPath = STICKER_PATHS[type]?.find((sticker) => sticker.name === name);
-      if (stickerPath) {
-        const { x, y, w, h } = stickerPath;
-        const rect = document.createElement("div");
-        rect.style.position = "absolute";
-        rect.style.left = `${x * 100}%`;
-        rect.style.top = `${y * 100}%`;
-        rect.style.width = `${w * 100}%`;
-        rect.style.height = `${h * 100}%`;
-        rect.style.backgroundColor = "rgba(0, 255, 0, 1)";
-        rect.style.pointerEvents = "none";
-        overlayImg?.parentElement?.appendChild(rect);
-      }
-    }
   };
   return overlayImg;
 };

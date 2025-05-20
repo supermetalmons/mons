@@ -11,7 +11,7 @@ export const STICKER_PATHS: Record<string, Sticker[]> = {
     { name: "applecreme", x: 0.653497, y: 0.250265, w: 0.258024, h: 0.290031 },
     { name: "armored-gummoskullj", x: 0.678189, y: 0.19141, w: 0.224691, h: 0.341463 },
     { name: "crystal-cloud-gabber", x: 0.681069, y: 0.205726, w: 0.195884, h: 0.33404 },
-    { name: "crystal-gummy-deino", x: 0.73786, y: 0.209968, w: 0.211522, h: 0.330858 },
+    { name: "crystal-gummy-deino", x: 0.73786, y: 0.209968, w: 0.13, h: 0.330858 },
     { name: "crystal-owg", x: 0.672016, y: 0.21633, w: 0.183127, h: 0.304878 },
     { name: "estalibur", x: 0.691358, y: 0.203075, w: 0.217283, h: 0.330858 },
     { name: "gerp", x: 0.71358, y: 0.177094, w: 0.174897, h: 0.362672 },
