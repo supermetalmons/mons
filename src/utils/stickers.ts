@@ -54,7 +54,7 @@ export const STICKER_PATHS: Record<string, Sticker[]> = {
     { name: "king-snowbie", x: 0, y: 0, w: 0, h: 0 },
     { name: "hatchat", x: 0, y: 0, w: 0, h: 0 },
     { name: "gummy-deino", x: 0, y: 0, w: 0, h: 0 },
-    { name: "gerp", x: 0, y: 0, w: 0, h: 0 },
+    { name: "gerp", x: 0.715, y: 0.175, w: 0.17, h: 0.35 },
     { name: "estalibur", x: 0, y: 0, w: 0, h: 0 },
     { name: "crystal-owg", x: 0, y: 0, w: 0, h: 0 },
     { name: "crystal-gummy-deino", x: 0, y: 0, w: 0, h: 0 },

@@ -6,6 +6,7 @@ import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
 import { didClickAndChangePlayerEmoji, didUpdateIdCardMons } from "../game/board";
 import { enableCardEditorUndo } from "../index";
+import { STICKER_PATHS } from "../utils/stickers";
 import { PlayerProfile } from "../connection/connectionModels";
 import { MonType, getMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes, getMonsIndexes } from "../utils/namedMons";
 
@@ -20,6 +21,8 @@ const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radia
     rgba(255,255,255,0) 0%, 
     rgba(255,255,255,${linearOpacity}) 50%, 
     rgba(255,255,255,0) 100%)`;
+
+const devTmpPreviewStickersHitArea = false; // TODO: clean up, do not commit true
 
 const totalCardBgsCount = 37;
 const bubblePlaceholderColor = "white";
@@ -281,7 +284,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   shinyOverlay.style.background = IDLE_SHINE_GRADIENT;
   shinyOverlay.style.opacity = "0.63";
   shinyOverlay.style.pointerEvents = "none";
-  shinyOverlay.style.zIndex = "1";
+  shinyOverlay.style.zIndex = "100";
   shinyOverlay.style.transition = "none";
   shinyOverlay.style.willChange = "background";
   shinyOverlay.style.userSelect = "none";
@@ -579,6 +582,7 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
     if (element) {
       const stickerUrl = `https://assets.mons.link/cards/stickers/${stickerType}/${nextSticker}.webp`;
       element.src = stickerUrl;
+      // TODO: hit rect should be updated as well
     } else if (ownCardContentsLayer) {
       appendStickerLayer(ownCardContentsLayer, stickerType, nextSticker);
     }
@@ -612,8 +616,7 @@ function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
 }
 
 function appendStickerLayer(to: HTMLElement, type: string, sticker: string) {
-  const stickerUrl = `https://assets.mons.link/cards/stickers/${type}/${sticker}.webp`;
-  const stickers = createOverlayStickersImage(stickerUrl);
+  const stickers = createOverlayStickersImage(type, sticker);
   to.appendChild(stickers);
   stickerElements[type] = stickers;
 }
@@ -806,13 +809,15 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
   return textElement;
 };
 
-const createOverlayStickersImage = (url: string): HTMLImageElement => {
+const createOverlayStickersImage = (type: string, name: string): HTMLImageElement => {
+  const url = `https://assets.mons.link/cards/stickers/${type}/${name}.webp`;
   const overlayImg = document.createElement("img");
   overlayImg.style.width = "100%";
   overlayImg.style.height = "100%";
   overlayImg.style.objectFit = "contain";
   overlayImg.style.position = "absolute";
   overlayImg.style.top = "0";
+  overlayImg.style.zIndex = "10";
   overlayImg.style.left = "0";
   overlayImg.style.right = "0";
   overlayImg.style.bottom = "0";
@@ -827,6 +832,21 @@ const createOverlayStickersImage = (url: string): HTMLImageElement => {
   };
   overlayImg.onload = () => {
     overlayImg.style.visibility = ownBgImg?.style.visibility ?? "hidden";
+    if (devTmpPreviewStickersHitArea) {
+      const stickerPath = STICKER_PATHS[type]?.find((sticker) => sticker.name === name);
+      if (stickerPath) {
+        const { x, y, w, h } = stickerPath;
+        const rect = document.createElement("div");
+        rect.style.position = "absolute";
+        rect.style.left = `${x * 100}%`;
+        rect.style.top = `${y * 100}%`;
+        rect.style.width = `${w * 100}%`;
+        rect.style.height = `${h * 100}%`;
+        rect.style.backgroundColor = "rgba(0, 255, 0, 1)";
+        rect.style.pointerEvents = "none";
+        overlayImg?.parentElement?.appendChild(rect);
+      }
+    }
   };
   return overlayImg;
 };
