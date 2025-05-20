@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ButtonsContainer, SaveButton } from "./NameEditModal";
 import { storage } from "../utils/storage";
 import { getNfts, sendCardStickersUpdate } from "../connection/connection";
-import { STICKER_PATHS } from "../utils/stickers";
+import { STICKER_PATHS, Sticker } from "../utils/stickers";
 import { didUpdateSticker } from "./ShinyCard";
 
 type StickerType = keyof typeof STICKER_PATHS;
@@ -307,13 +307,13 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     let nextSticker: string | undefined;
 
     if (!currentSticker) {
-      nextSticker = stickersForType[0];
+      nextSticker = stickersForType[0]?.name;
     } else {
-      const currentIndex = stickersForType.indexOf(currentSticker);
+      const currentIndex = stickersForType.findIndex((s) => s.name === currentSticker);
       if (currentIndex === stickersForType.length - 1 || currentIndex === -1) {
         nextSticker = undefined;
       } else {
-        nextSticker = stickersForType[currentIndex + 1];
+        nextSticker = stickersForType[currentIndex + 1]?.name;
       }
     }
 
@@ -343,7 +343,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
                     .map((stickerType) => {
                       const selectedSticker = selectedStickers[stickerType];
                       let displayName = "–";
-                      if (selectedSticker && STICKER_PATHS[stickerType as StickerType].includes(selectedSticker)) {
+                      if (selectedSticker && STICKER_PATHS[stickerType as StickerType].some((s: Sticker) => s.name === selectedSticker)) {
                         displayName = selectedSticker.replace(/-/g, " ");
                       }
                       return (
