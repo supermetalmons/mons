@@ -22,8 +22,6 @@ const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radia
     rgba(255,255,255,${linearOpacity}) 50%, 
     rgba(255,255,255,0) 100%)`;
 
-const devTmpPreviewStickersHitArea = false; // TODO: clean up, do not commit true
-
 const totalCardBgsCount = 37;
 const bubblePlaceholderColor = "white";
 
@@ -62,6 +60,7 @@ let stickerHitAreas: Record<string, HTMLDivElement> = {};
 let dynamicallyRoundedElements: Array<{ element: HTMLElement; radius: number }> = [];
 let resizeListener: (() => void) | null = null;
 let enterEditingMode: (() => void) | null = null;
+let handlePointerLeave: (() => void) | null = null;
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -232,7 +231,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   emojiContainer.addEventListener("click", (e) => {
     e.preventDefault();
     e.stopPropagation();
-    if (isMobile) {
+    if (isMobile && handlePointerLeave) {
       handlePointerLeave();
     }
     if (isOtherPlayer) {
@@ -319,7 +318,9 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   enterEditingMode = () => {
     if (isEditingMode || isOtherPlayer) return;
 
-    handlePointerLeave();
+    if (handlePointerLeave) {
+      handlePointerLeave();
+    }
 
     isEditingMode = true;
     isMouseOver = false;
@@ -463,7 +464,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     shinyOverlay.style.background = HOVER_SHINE_GRADIENT(percentX, percentY);
   };
 
-  const handlePointerLeave = () => {
+  handlePointerLeave = () => {
     if (isEditingMode) return;
     isMouseOver = false;
     transitioningFromMouse = true;
@@ -481,7 +482,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   }
 
   card.addEventListener("click", () => {
-    if (isMobile) {
+    if (isMobile && handlePointerLeave) {
       handlePointerLeave();
     }
     if (isOtherPlayer) {
@@ -624,20 +625,35 @@ function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
   }
 }
 
+function handleStickerClick(type: string) {
+  // TODO: implement
+}
+
 function appendStickerLayer(to: HTMLElement, type: string, name: string) {
   const stickers = createOverlayStickersImage(type, name);
   to.appendChild(stickers);
-
-  if (devTmpPreviewStickersHitArea) {
-    const rect = document.createElement("div");
-    rect.style.position = "absolute";
-    rect.style.backgroundColor = "rgba(0, 255, 0, 1)";
-    rect.style.pointerEvents = "none";
-    applyStickerFrame(rect, type, name);
-    to.appendChild(rect);
-    stickerHitAreas[type] = rect;
-  }
-
+  const rect = document.createElement("div");
+  rect.style.position = "absolute";
+  rect.style.userSelect = "none";
+  rect.style.outline = "none";
+  rect.style.setProperty("-webkit-tap-highlight-color", "transparent");
+  rect.style.setProperty("-webkit-touch-callout", "none");
+  rect.style.pointerEvents = "auto";
+  rect.onclick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (isMobile && handlePointerLeave) {
+      handlePointerLeave();
+    }
+    if (!isEditingMode && enterEditingMode) {
+      enterEditingMode();
+      return;
+    }
+    handleStickerClick(type);
+  };
+  applyStickerFrame(rect, type, name);
+  to.appendChild(rect);
+  stickerHitAreas[type] = rect;
   stickerElements[type] = stickers;
 }
 
