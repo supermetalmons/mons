@@ -42,6 +42,7 @@ let isEditingMode = false;
 
 let ownEmojiImg: HTMLImageElement | null;
 let ownBgImg: HTMLImageElement | null;
+let ownBgPlaceholder: HTMLElement | null;
 let ownSubtitleElement: HTMLElement | null;
 let nameElement: HTMLElement | null;
 let ownDemonImg: HTMLImageElement | null;
@@ -171,7 +172,8 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   img.style.userSelect = "none";
   img.style.pointerEvents = "none";
   img.draggable = false;
-  img.src = `https://assets.mons.link/cards/bg/${isOtherPlayer ? getBgIdForProfile(profile) : cardIndex}.webp`;
+  const bgId = isOtherPlayer ? getBgIdForProfile(profile) : cardIndex;
+  img.src = `https://assets.mons.link/cards/bg/${bgId}.webp`;
   img.style.visibility = "hidden";
   img.onerror = () => {
     img.style.visibility = "hidden";
@@ -260,7 +262,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   placeholder.style.position = "absolute";
   placeholder.style.width = "90.5%";
   placeholder.style.height = "83%";
-  placeholder.style.backgroundColor = "var(--card-color)";
+  placeholder.style.backgroundColor = getPlaceholderColorForBgId(bgId);
 
   dynamicallyRoundedElements.push({ element: placeholder, radius: 0.035 });
   placeholder.style.top = "50.7%";
@@ -488,6 +490,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     updateContent("bg", (cardIndex + 1) % totalCardBgsCount, cardIndex);
   });
   ownBgImg = img;
+  ownBgPlaceholder = placeholder;
 
   cardContentsLayer.appendChild(placeholder);
   cardContentsLayer.appendChild(img);
@@ -907,6 +910,8 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       storage.setCardBackgroundId(newId);
       cardIndex = newId;
       sendCardBackgroundUpdate(newId);
+      ownBgPlaceholder!.style.backgroundColor = getPlaceholderColorForBgId(newId);
+      ownBgImg!.style.visibility = "hidden";
       ownBgImg!.src = `https://assets.mons.link/cards/bg/${newCardName}`;
       break;
     case "subtitle":
@@ -973,4 +978,47 @@ export async function didClickIdCardEditUndoButton() {
     const [contentType, oldId] = undoQueue.pop()!;
     updateContent(contentType, oldId, null);
   }
+}
+
+function getPlaceholderColorForBgId(id: number): string {
+  const placeholderColors: Record<number, string> = {
+    0: "#FBFCF8",
+    1: "#FF811A",
+    2: "#CECDCD",
+    3: "#D5DBE4",
+    4: "#F4F4F2",
+    5: "#FAFAFA",
+    6: "#BAC4E6",
+    7: "#FFF8FE",
+    8: "#FFE89A",
+    9: "#F9FAE4",
+    10: "#FCFBFC",
+    11: "#F1F0FD",
+    12: "#F9E9FA",
+    13: "#FFE7FE",
+    14: "#E7FDFD",
+    15: "#F8EDDE",
+    16: "#EAEAF9",
+    17: "#F9EDED",
+    18: "#DDE1F1",
+    19: "#F8E4EF",
+    20: "#F9F7DF",
+    21: "#D9EBF8",
+    22: "#A2A1A1",
+    23: "#C1C7F9",
+    24: "#A475A4",
+    25: "#DBDAEF",
+    26: "#FAFACE",
+    27: "#E2E8F5",
+    28: "#F1F8F8",
+    29: "#F7F7F7",
+    30: "#F8FAFA",
+    31: "#E2F6F1",
+    32: "#C7D8F4",
+    33: "#F8F9FA",
+    34: "#CBC2CB",
+    35: "#FAF8F1",
+    36: "#E5E3F3",
+  };
+  return placeholderColors[id] ?? "var(--card-color)";
 }
