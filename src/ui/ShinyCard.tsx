@@ -612,7 +612,9 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
 function cleanUpVisibleHitAreaWhenStickerIsSet(hitArea: HTMLElement) {
   hitArea.style.background = "none";
   hitArea.style.borderRadius = "0%";
-  // TODO: implement
+  while (hitArea.firstChild) {
+    hitArea.removeChild(hitArea.firstChild);
+  }
 }
 
 function showHitAreasForStickersThatAreNotSet() {
@@ -653,7 +655,6 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTML
 
   if (visible && stickersWipChangeOnClick) {
     hitArea.style.background = "var(--link-color-dark)";
-    // TODO: style it properly
     const frame = STICKER_ADD_PROMPTS_FRAMES[stickerType];
     if (frame) {
       const width = frame.w * 100;
@@ -663,6 +664,22 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTML
       hitArea.style.borderRadius = "50%";
       hitArea.style.left = `${frame.x * 100 - width * 0.5}%`;
       hitArea.style.top = `${frame.y * 100 - height * 0.5}%`;
+
+      const plusSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      plusSvg.setAttribute("viewBox", "0 0 24 24");
+      plusSvg.style.position = "absolute";
+      plusSvg.style.left = "50%";
+      plusSvg.style.top = "50%";
+      plusSvg.style.transform = "translate(-50%, -50%)";
+      plusSvg.style.width = "50%";
+      plusSvg.style.height = "50%";
+      plusSvg.style.fill = "white";
+      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      path.setAttribute("d", "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z");
+      path.style.strokeWidth = "3";
+      path.style.stroke = "white";
+      plusSvg.appendChild(path);
+      hitArea.appendChild(plusSvg);
     }
   }
 
