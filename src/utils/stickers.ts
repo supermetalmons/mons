@@ -66,14 +66,14 @@ export const STICKER_PATHS: Record<string, Sticker[]> = {
 };
 
 export const STICKER_ADD_PROMPTS_FRAMES: Record<string, { x: number; y: number; w: number }> = {
-  "big-mon-top-right": { x: 0.69, y: 0.21, w: 0.1 },
-  "bottom-left": { x: 0.104, y: 0.773, w: 0.07 },
-  "bottom-right": { x: 0.759, y: 0.568, w: 0.07 },
-  mana: { x: 0.514, y: 0.4, w: 0.07 },
-  "middle-left": { x: 0.205, y: 0.637, w: 0.07 },
-  "middle-right": { x: 0.624, y: 0.563, w: 0.07 },
-  "mini-logo": { x: 0.385, y: 0.596, w: 0.07 },
-  "type-logo": { x: 0.51, y: 0.6, w: 0.07 },
+  "big-mon-top-right": { x: 0.73, y: 0.25, w: 0.1 }, // TODO: fine-tune
+  "bottom-left": { x: 0.144, y: 0.813, w: 0.07 }, // TODO: fine-tune
+  "bottom-right": { x: 0.799, y: 0.608, w: 0.07 }, // TODO: fine-tune
+  mana: { x: 0.554, y: 0.44, w: 0.07 }, // TODO: fine-tune
+  "middle-left": { x: 0.245, y: 0.677, w: 0.07 }, // TODO: fine-tune
+  "middle-right": { x: 0.664, y: 0.603, w: 0.07 }, // TODO: fine-tune
+  "mini-logo": { x: 0.425, y: 0.636, w: 0.07 }, // TODO: fine-tune
+  "type-logo": { x: 0.55, y: 0.64, w: 0.07 }, // TODO: fine-tune
 };
 
 export function getRandomStickers(): string {

@@ -611,6 +611,7 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
 
 function cleanUpVisibleHitAreaWhenStickerIsSet(hitArea: HTMLElement) {
   hitArea.style.background = "none";
+  hitArea.style.borderRadius = "0%";
   // TODO: implement
 }
 
@@ -651,7 +652,7 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTML
   }
 
   if (visible && stickersWipChangeOnClick) {
-    hitArea.style.background = "green";
+    hitArea.style.background = "var(--link-color-dark)";
     // TODO: style it properly
     const frame = STICKER_ADD_PROMPTS_FRAMES[stickerType];
     if (frame) {
@@ -659,6 +660,7 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTML
       const height = width * cardContentsAspectRatio;
       hitArea.style.width = `${width}%`;
       hitArea.style.height = `${height}%`;
+      hitArea.style.borderRadius = "50%";
       hitArea.style.left = `${frame.x * 100 - width * 0.5}%`;
       hitArea.style.top = `${frame.y * 100 - height * 0.5}%`;
     }
