@@ -204,10 +204,11 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   emojiContainer.style.setProperty("-webkit-touch-callout", "none");
   emojiContainer.style.transition = "transform 0.13s ease-out";
 
+  const updateEmojiScale = (event: MouseEvent) => {
+    emojiContainer.style.transform = `scale(${event.type === "mouseleave" || !isEditingMode ? 1 : 1.023})`;
+  };
+
   if (!isMobile) {
-    const updateEmojiScale = (event: MouseEvent) => {
-      emojiContainer.style.transform = `scale(${event.type === "mouseleave" || !isEditingMode ? 1 : 1.023})`;
-    };
     emojiContainer.addEventListener("mouseenter", updateEmojiScale);
     emojiContainer.addEventListener("mouseleave", updateEmojiScale);
     emojiContainer.addEventListener("mousemove", updateEmojiScale);
@@ -242,6 +243,9 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
 
     if (!isEditingMode && enterEditingMode) {
       enterEditingMode();
+      if (!isMobile) {
+        updateEmojiScale(e);
+      }
       return;
     }
 
@@ -632,23 +636,7 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTML
     hitArea.style.setProperty("-webkit-tap-highlight-color", "transparent");
     hitArea.style.setProperty("-webkit-touch-callout", "none");
     hitArea.style.pointerEvents = "auto";
-    hitArea.onclick = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (isMobile && handlePointerLeave) {
-        handlePointerLeave();
-      }
-      if (!isEditingMode && enterEditingMode) {
-        enterEditingMode();
-        return;
-      }
-      handleStickerClick(stickerType);
-    };
-    if (ownCardContentsLayer) {
-      ownCardContentsLayer.appendChild(hitArea);
-    }
 
-    hitArea.style.transition = "transform 0.13s ease-out";
     const updateStickerScale = (event: MouseEvent) => {
       if (!isMobile) {
         hitArea.style.transform = `scale(${event.type === "mouseleave" || !isEditingMode ? 1 : 1.095})`;
@@ -658,6 +646,27 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTML
         }
       }
     };
+
+    hitArea.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (isMobile && handlePointerLeave) {
+        handlePointerLeave();
+      }
+      if (!isEditingMode && enterEditingMode) {
+        enterEditingMode();
+        if (!isMobile) {
+          updateStickerScale(e);
+        }
+        return;
+      }
+      handleStickerClick(stickerType);
+    };
+    if (ownCardContentsLayer) {
+      ownCardContentsLayer.appendChild(hitArea);
+    }
+
+    hitArea.style.transition = "transform 0.13s ease-out";
     hitArea.addEventListener("mouseenter", updateStickerScale);
     hitArea.addEventListener("mouseleave", updateStickerScale);
     hitArea.addEventListener("mousemove", updateStickerScale);
@@ -808,6 +817,12 @@ const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, to
     };
 
     if (monType) {
+      const updateMonScale = (event: MouseEvent) => {
+        if (!isMobile) {
+          imageContainer.style.transform = `scale(${event.type === "mouseleave" || !isEditingMode ? 1 : 1.05})`;
+        }
+      };
+
       imageContainer.addEventListener("click", async (event) => {
         event.preventDefault();
         event.stopPropagation();
@@ -819,6 +834,9 @@ const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, to
         if (!isOtherPlayer) {
           if (!isEditingMode && enterEditingMode) {
             enterEditingMode();
+            if (!isMobile) {
+              updateMonScale(event);
+            }
             return;
           }
 
@@ -840,11 +858,6 @@ const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, to
 
       imageContainer.style.transition = "transform 0.13s ease-out";
 
-      const updateMonScale = (event: MouseEvent) => {
-        if (!isMobile) {
-          imageContainer.style.transform = `scale(${event.type === "mouseleave" || !isEditingMode ? 1 : 1.05})`;
-        }
-      };
       imageContainer.addEventListener("mouseenter", updateMonScale);
       imageContainer.addEventListener("mouseleave", updateMonScale);
       imageContainer.addEventListener("mousemove", updateMonScale);
@@ -895,13 +908,14 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
   container.style.boxShadow = "0 0 1px 1px rgba(0, 0, 0, 0.1)";
   container.setAttribute("style", container.getAttribute("style") + "-webkit-tap-highlight-color: transparent; outline: none; -webkit-touch-callout: none;");
 
+  const updateTextContainerScale = (event: MouseEvent) => {
+    if (!isMobile) {
+      container.style.transform = `scale(${event.type === "mouseleave" || !isEditingMode ? 1 : 1.035})`;
+    }
+  };
+
   if (onClick) {
     container.style.transition = "transform 0.13s ease-out";
-    const updateTextContainerScale = (event: MouseEvent) => {
-      if (!isMobile) {
-        container.style.transform = `scale(${event.type === "mouseleave" || !isEditingMode ? 1 : 1.035})`;
-      }
-    };
     container.addEventListener("mouseenter", updateTextContainerScale);
     container.addEventListener("mouseleave", updateTextContainerScale);
     container.addEventListener("mousemove", updateTextContainerScale);
@@ -935,6 +949,9 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
 
     if (!isEditingMode && enterEditingMode) {
       enterEditingMode();
+      if (!isMobile) {
+        updateTextContainerScale(event);
+      }
       return;
     }
 
