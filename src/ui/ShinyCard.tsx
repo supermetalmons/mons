@@ -684,6 +684,17 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean, anima
             }
           }, 130);
         }, 130);
+      } else {
+        hitArea.style.transform = "scale(0.95)";
+        if (element) {
+          element.style.transform = "scale(0.95)";
+        }
+        setTimeout(() => {
+          hitArea.style.transform = "scale(1)";
+          if (element) {
+            element.style.transform = "scale(1)";
+          }
+        }, 130);
       }
     };
     if (ownCardContentsLayer) {
@@ -809,7 +820,6 @@ function applyStickerFrame(hitArea: HTMLElement, type: string, name: string, sti
   const centerX = x + w / 2;
   const centerY = y + h / 2;
   stickerElement.style.transformOrigin = `${centerX * 100}% ${centerY * 100}%`;
-  // TODO: might need to make sure image was updated before changing transform origin
 }
 
 const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number, monType: string = "", handlePointerLeave: any, isOtherPlayer: boolean): HTMLElement => {
