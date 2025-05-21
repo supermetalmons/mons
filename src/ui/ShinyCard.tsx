@@ -972,10 +972,16 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
       } else {
         container.style.transform = "scale(0.95)";
         setTimeout(() => {
-          container.style.transform = "scale(1.023)";
+          container.style.transform = "scale(1.035)";
+          setTimeout(() => {
+            const rect = container.getBoundingClientRect();
+            const isPointerInside = event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+            if (!isPointerInside) {
+              container.style.transform = "scale(1)";
+            }
+          }, 130);
         }, 130);
       }
-
       onClick();
     }
   });
