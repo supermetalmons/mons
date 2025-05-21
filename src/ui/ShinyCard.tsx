@@ -608,6 +608,7 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
 function cleanUpVisibleHitAreaWhenStickerIsSet(hitArea: HTMLElement) {
   hitArea.style.background = "none";
   hitArea.style.borderRadius = "0%";
+  hitArea.style.boxShadow = "none";
   while (hitArea.firstChild) {
     hitArea.removeChild(hitArea.firstChild);
   }
@@ -664,7 +665,8 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTML
   }
 
   if (visible) {
-    hitArea.style.background = "var(--link-color-dark)";
+    const blue = "var(--link-color-dark)";
+    hitArea.style.background = "white";
     const frame = STICKER_ADD_PROMPTS_FRAMES[stickerType];
     if (frame) {
       const width = frame.w * 100;
@@ -674,6 +676,7 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTML
       hitArea.style.borderRadius = "50%";
       hitArea.style.left = `${frame.x * 100 - width * 0.5}%`;
       hitArea.style.top = `${frame.y * 100 - height * 0.5}%`;
+      hitArea.style.boxShadow = "0 0 1px 1px rgba(0, 0, 0, 0.1)";
 
       const plusSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
       plusSvg.setAttribute("viewBox", "0 0 24 24");
@@ -683,11 +686,11 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTML
       plusSvg.style.transform = "translate(-50%, -50%)";
       plusSvg.style.width = "50%";
       plusSvg.style.height = "50%";
-      plusSvg.style.fill = "white";
+      plusSvg.style.fill = blue;
       const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
       path.setAttribute("d", "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z");
       path.style.strokeWidth = "3";
-      path.style.stroke = "white";
+      path.style.stroke = blue;
       plusSvg.appendChild(path);
       hitArea.appendChild(plusSvg);
     }
