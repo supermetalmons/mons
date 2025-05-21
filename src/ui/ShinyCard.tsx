@@ -605,7 +605,7 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
       delete stickerElements[stickerType];
     }
 
-    setupHitAreaForStickerType(stickerType, true);
+    setupHitAreaForStickerType(stickerType, true, false);
   }
 }
 
@@ -621,12 +621,12 @@ function cleanUpVisibleHitAreaWhenStickerIsSet(hitArea: HTMLElement) {
 function showHitAreasForStickersThatAreNotSet() {
   Object.keys(STICKER_ADD_PROMPTS_FRAMES).forEach((stickerType) => {
     if (!currentlySelectedStickers[stickerType]) {
-      setupHitAreaForStickerType(stickerType, true);
+      setupHitAreaForStickerType(stickerType, true, true);
     }
   });
 }
 
-function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTMLDivElement {
+function setupHitAreaForStickerType(stickerType: string, visible: boolean, animated: boolean): HTMLDivElement {
   let hitArea = stickerHitAreas[stickerType];
   if (!hitArea) {
     hitArea = document.createElement("div");
@@ -663,10 +663,18 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTML
       handleStickerClick(stickerType);
     };
     if (ownCardContentsLayer) {
-      ownCardContentsLayer.appendChild(hitArea);
+      hitArea.style.transition = "opacity 0.2s ease-out, transform 0.13s ease-out";
+      if (visible && animated) {
+        hitArea.style.opacity = "0";
+        ownCardContentsLayer.appendChild(hitArea);
+        requestAnimationFrame(() => {
+          hitArea.style.opacity = "1";
+        });
+      } else {
+        ownCardContentsLayer.appendChild(hitArea);
+      }
     }
 
-    hitArea.style.transition = "transform 0.13s ease-out";
     hitArea.addEventListener("mouseenter", updateStickerScale);
     hitArea.addEventListener("mouseleave", updateStickerScale);
     hitArea.addEventListener("mousemove", updateStickerScale);
@@ -758,7 +766,7 @@ function appendStickerLayer(to: HTMLElement, type: string, name: string) {
     applyStickerFrame(hitArea, type, name, stickers);
     cleanUpVisibleHitAreaWhenStickerIsSet(hitArea);
   } else {
-    const rect = setupHitAreaForStickerType(type, false);
+    const rect = setupHitAreaForStickerType(type, false, false);
     applyStickerFrame(rect, type, name, stickers);
   }
 
