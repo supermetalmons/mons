@@ -358,8 +358,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
       }
     };
     animateDisperse();
-
-    // TODO: show hit areas for sticker types that are not set
+    showHitAreasForStickersThatAreNotSet();
   };
 
   const animateCard = () => {
@@ -582,7 +581,6 @@ function showHiddenWaitingStickers() {
   Object.values(stickerElements).forEach((sticker) => {
     sticker.style.visibility = "visible";
   });
-  // TODO: might need to show empty hit areas as well. make sure card is in editing state
 }
 
 export function didUpdateSticker(stickerType: string, nextSticker: string | undefined) {
@@ -605,12 +603,29 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
       delete stickerElements[stickerType];
     }
 
-    const hitArea = stickerHitAreas[stickerType];
-    if (hitArea) {
-      if (stickersWipChangeOnClick) {
-        hitArea.style.background = "green";
-        // TODO: style it properly for no sticker state
-      }
+    showHitAreaForStickerType(stickerType);
+  }
+}
+
+function cleanUpVisibleHitAreaWhenStickerIsSet(hitArea: HTMLElement) {
+  hitArea.style.background = "none";
+  // TODO: implement
+}
+
+function showHitAreasForStickersThatAreNotSet() {
+  // TODO: implement
+}
+
+function showHitAreaForStickerType(stickerType: string) {
+  // TODO: setup appropriate size
+
+  // TODO: create hit area when it's not in stickerHitAreas yet
+
+  const hitArea = stickerHitAreas[stickerType];
+  if (hitArea) {
+    if (stickersWipChangeOnClick) {
+      hitArea.style.background = "green";
+      // TODO: style it properly for no sticker state
     }
   }
 }
@@ -682,8 +697,7 @@ function appendStickerLayer(to: HTMLElement, type: string, name: string) {
   const hitArea = stickerHitAreas[type];
   if (hitArea) {
     applyStickerFrame(hitArea, type, name);
-    hitArea.style.background = "none";
-    // TODO: disable active hit area state
+    cleanUpVisibleHitAreaWhenStickerIsSet(hitArea);
   } else {
     const rect = document.createElement("div");
     rect.style.position = "absolute";
