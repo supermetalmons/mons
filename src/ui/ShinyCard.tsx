@@ -6,7 +6,7 @@ import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
 import { didClickAndChangePlayerEmoji, didUpdateIdCardMons } from "../game/board";
 import { enableCardEditorUndo } from "../index";
-import { STICKER_PATHS } from "../utils/stickers";
+import { STICKER_ADD_PROMPTS_FRAMES, STICKER_PATHS } from "../utils/stickers";
 import { PlayerProfile } from "../connection/connectionModels";
 import { MonType, getMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes, getMonsIndexes } from "../utils/namedMons";
 
@@ -27,6 +27,9 @@ const bubblePlaceholderColor = "white";
 
 const stickersWipChangeOnClick = false; // TODO: dev tmp do not commit true
 const stickersWipSendUpdates = false; // TODO: dev tmp do not commit true. prefer false for dev as well
+
+const borderedCardAspectRatio = 2217 / 1625;
+const cardContentsAspectRatio = 2430 / 1886;
 
 let defaultCardBgIndex = 30;
 let defaultSubtitleIndex = 0;
@@ -117,16 +120,15 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     cardContainer.style.right = "12pt";
   }
 
-  const aspectRatio = 2217 / 1625;
-  cardContainer.style.aspectRatio = `${aspectRatio}`;
+  cardContainer.style.aspectRatio = `${borderedCardAspectRatio}`;
 
   const updateCardWidth = () => {
     const calculatedWidth = isOtherPlayer && isMobile ? window.innerWidth * 0.69 : Math.min(window.innerWidth * 0.8, 350);
     cardContainer.style.width = `${calculatedWidth}px`;
-    const calculatedHeight = calculatedWidth / aspectRatio;
+    const calculatedHeight = calculatedWidth / borderedCardAspectRatio;
     const maxHeight = window.innerHeight * 0.42;
     if (calculatedHeight > maxHeight) {
-      cardContainer.style.width = `${maxHeight * aspectRatio}px`;
+      cardContainer.style.width = `${maxHeight * borderedCardAspectRatio}px`;
     }
   };
   updateCardWidth();
@@ -160,7 +162,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   const cardContentsLayer = document.createElement("div");
   cardContentsLayer.style.position = "relative";
   cardContentsLayer.style.width = "100%";
-  cardContentsLayer.style.aspectRatio = `${2430 / 1886}`;
+  cardContentsLayer.style.aspectRatio = `${cardContentsAspectRatio}`;
   dynamicallyRoundedElements.push({ element: cardContentsLayer, radius: 0.05 });
   cardContentsLayer.style.overflow = "hidden";
   cardContentsLayer.style.transform = "translateY(-2.77%) scale(1.03)";
@@ -613,20 +615,16 @@ function cleanUpVisibleHitAreaWhenStickerIsSet(hitArea: HTMLElement) {
 }
 
 function showHitAreasForStickersThatAreNotSet() {
-  // TODO: implement
+  Object.keys(STICKER_ADD_PROMPTS_FRAMES).forEach((stickerType) => {
+    if (!currentlySelectedStickers[stickerType]) {
+      setupHitAreaForStickerType(stickerType, true);
+    }
+  });
 }
 
 function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTMLDivElement {
-  // TODO: setup appropriate size
-  // TODO: use visible
-
   let hitArea = stickerHitAreas[stickerType];
-  if (hitArea) {
-    if (stickersWipChangeOnClick) {
-      hitArea.style.background = "green";
-      // TODO: style it properly for no sticker state
-    }
-  } else {
+  if (!hitArea) {
     hitArea = document.createElement("div");
     hitArea.style.position = "absolute";
     hitArea.style.userSelect = "none";
@@ -650,6 +648,20 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTML
       ownCardContentsLayer.appendChild(hitArea);
     }
     stickerHitAreas[stickerType] = hitArea;
+  }
+
+  if (visible && stickersWipChangeOnClick) {
+    hitArea.style.background = "green";
+    // TODO: style it properly
+    const frame = STICKER_ADD_PROMPTS_FRAMES[stickerType];
+    if (frame) {
+      const width = frame.w * 100;
+      const height = width * cardContentsAspectRatio;
+      hitArea.style.width = `${width}%`;
+      hitArea.style.height = `${height}%`;
+      hitArea.style.left = `${frame.x * 100 - width * 0.5}%`;
+      hitArea.style.top = `${frame.y * 100 - height * 0.5}%`;
+    }
   }
 
   return hitArea;

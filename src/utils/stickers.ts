@@ -65,6 +65,17 @@ export const STICKER_PATHS: Record<string, Sticker[]> = {
   ],
 };
 
+export const STICKER_ADD_PROMPTS_FRAMES: Record<string, { x: number; y: number; w: number }> = {
+  "big-mon-top-right": { x: 0.69, y: 0.21, w: 0.1 },
+  "bottom-left": { x: 0.104, y: 0.773, w: 0.07 },
+  "bottom-right": { x: 0.759, y: 0.568, w: 0.07 },
+  mana: { x: 0.514, y: 0.4, w: 0.07 },
+  "middle-left": { x: 0.205, y: 0.637, w: 0.07 },
+  "middle-right": { x: 0.624, y: 0.563, w: 0.07 },
+  "mini-logo": { x: 0.385, y: 0.596, w: 0.07 },
+  "type-logo": { x: 0.51, y: 0.6, w: 0.07 },
+};
+
 export function getRandomStickers(): string {
   const selectedStickers: Record<string, string> = {};
 
