@@ -358,6 +358,8 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
       }
     };
     animateDisperse();
+
+    // TODO: show hit areas for sticker types that are not set
   };
 
   const animateCard = () => {
@@ -580,6 +582,7 @@ function showHiddenWaitingStickers() {
   Object.values(stickerElements).forEach((sticker) => {
     sticker.style.visibility = "visible";
   });
+  // TODO: might need to show empty hit areas as well. make sure card is in editing state
 }
 
 export function didUpdateSticker(stickerType: string, nextSticker: string | undefined) {
@@ -600,10 +603,13 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
     if (element) {
       element.remove();
       delete stickerElements[stickerType];
-      const hitArea = stickerHitAreas[stickerType];
-      if (hitArea) {
-        hitArea.remove();
-        delete stickerHitAreas[stickerType];
+    }
+
+    const hitArea = stickerHitAreas[stickerType];
+    if (hitArea) {
+      if (stickersWipChangeOnClick) {
+        hitArea.style.background = "green";
+        // TODO: style it properly for no sticker state
       }
     }
   }
@@ -672,28 +678,37 @@ function handleStickerClick(type: string) {
 function appendStickerLayer(to: HTMLElement, type: string, name: string) {
   const stickers = createOverlayStickersImage(type, name);
   to.appendChild(stickers);
-  const rect = document.createElement("div");
-  rect.style.position = "absolute";
-  rect.style.userSelect = "none";
-  rect.style.outline = "none";
-  rect.style.setProperty("-webkit-tap-highlight-color", "transparent");
-  rect.style.setProperty("-webkit-touch-callout", "none");
-  rect.style.pointerEvents = "auto";
-  rect.onclick = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (isMobile && handlePointerLeave) {
-      handlePointerLeave();
-    }
-    if (!isEditingMode && enterEditingMode) {
-      enterEditingMode();
-      return;
-    }
-    handleStickerClick(type);
-  };
-  applyStickerFrame(rect, type, name);
-  to.appendChild(rect);
-  stickerHitAreas[type] = rect;
+
+  const hitArea = stickerHitAreas[type];
+  if (hitArea) {
+    applyStickerFrame(hitArea, type, name);
+    hitArea.style.background = "none";
+    // TODO: disable active hit area state
+  } else {
+    const rect = document.createElement("div");
+    rect.style.position = "absolute";
+    rect.style.userSelect = "none";
+    rect.style.outline = "none";
+    rect.style.setProperty("-webkit-tap-highlight-color", "transparent");
+    rect.style.setProperty("-webkit-touch-callout", "none");
+    rect.style.pointerEvents = "auto";
+    rect.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (isMobile && handlePointerLeave) {
+        handlePointerLeave();
+      }
+      if (!isEditingMode && enterEditingMode) {
+        enterEditingMode();
+        return;
+      }
+      handleStickerClick(type);
+    };
+    applyStickerFrame(rect, type, name);
+    to.appendChild(rect);
+    stickerHitAreas[type] = rect;
+  }
+
   stickerElements[type] = stickers;
 }
 
@@ -938,6 +953,7 @@ export const hideShinyCard = () => {
     cardResizeObserver.disconnect();
     textElements = [];
     stickerElements = {};
+    stickerHitAreas = {};
     dynamicallyRoundedElements = [];
   }
 };
