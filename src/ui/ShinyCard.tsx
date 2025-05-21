@@ -737,20 +737,7 @@ function handleStickerClick(type: string) {
     }
   }
 
-  const updatedStickers = { ...currentlySelectedStickers };
-
-  if (nextSticker) {
-    updatedStickers[type] = nextSticker;
-  } else {
-    delete updatedStickers[type];
-  }
-
-  currentlySelectedStickers = updatedStickers;
-  didUpdateSticker(type, nextSticker);
-
-  const currentJson = JSON.stringify(currentlySelectedStickers);
-  storage.setCardStickers(currentJson);
-  sendCardStickersUpdate(currentJson);
+  updateContent(type, nextSticker, currentSticker);
 }
 
 function appendStickerLayer(to: HTMLElement, type: string, name: string) {
@@ -1129,6 +1116,32 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       const monsIndexesString = `${demonIndex},${angelIndex},${drainerIndex},${spiritIndex},${mysticIndex}`;
       storage.setProfileMons(monsIndexesString);
       sendProfileMonsUpdate(monsIndexesString);
+      break;
+    case "big-mon-top-right":
+    case "bottom-left":
+    case "bottom-right":
+    case "mana":
+    case "middle-left":
+    case "middle-right":
+    case "mini-logo":
+    case "type-logo":
+      const nextSticker = newId;
+      const type = contentType;
+
+      const updatedStickers = { ...currentlySelectedStickers };
+
+      if (nextSticker) {
+        updatedStickers[type] = nextSticker;
+      } else {
+        delete updatedStickers[type];
+      }
+
+      currentlySelectedStickers = updatedStickers;
+      didUpdateSticker(type, nextSticker);
+
+      const currentJson = JSON.stringify(currentlySelectedStickers);
+      storage.setCardStickers(currentJson);
+      sendCardStickersUpdate(currentJson);
       break;
   }
 
