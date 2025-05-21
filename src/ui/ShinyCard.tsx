@@ -589,7 +589,7 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
       element.src = stickerUrl;
       const hitArea = stickerHitAreas[stickerType];
       if (hitArea) {
-        applyStickerFrame(hitArea, stickerType, nextSticker);
+        applyStickerFrame(hitArea, stickerType, nextSticker, element);
       }
     } else if (ownCardContentsLayer) {
       appendStickerLayer(ownCardContentsLayer, stickerType, nextSticker);
@@ -646,6 +646,20 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTML
     if (ownCardContentsLayer) {
       ownCardContentsLayer.appendChild(hitArea);
     }
+
+    hitArea.style.transition = "transform 0.13s ease-out";
+    const updateStickerScale = (event: MouseEvent) => {
+      if (!isMobile) {
+        hitArea.style.transform = `scale(${event.type === "mouseleave" || !isEditingMode ? 1 : 1.095})`;
+        const element = stickerElements[stickerType];
+        if (element) {
+          element.style.transform = `scale(${event.type === "mouseleave" || !isEditingMode ? 1 : 1.095})`;
+        }
+      }
+    };
+    hitArea.addEventListener("mouseenter", updateStickerScale);
+    hitArea.addEventListener("mouseleave", updateStickerScale);
+    hitArea.addEventListener("mousemove", updateStickerScale);
     stickerHitAreas[stickerType] = hitArea;
   }
 
@@ -742,24 +756,29 @@ function appendStickerLayer(to: HTMLElement, type: string, name: string) {
 
   const hitArea = stickerHitAreas[type];
   if (hitArea) {
-    applyStickerFrame(hitArea, type, name);
+    applyStickerFrame(hitArea, type, name, stickers);
     cleanUpVisibleHitAreaWhenStickerIsSet(hitArea);
   } else {
     const rect = setupHitAreaForStickerType(type, false);
-    applyStickerFrame(rect, type, name);
+    applyStickerFrame(rect, type, name, stickers);
   }
 
   stickerElements[type] = stickers;
 }
 
-function applyStickerFrame(rect: HTMLElement, type: string, name: string) {
+function applyStickerFrame(hitArea: HTMLElement, type: string, name: string, stickerElement: HTMLElement) {
   const stickerPath = STICKER_PATHS[type]?.find((sticker) => sticker.name === name);
   if (!stickerPath) return;
   const { x, y, w, h } = stickerPath;
-  rect.style.left = `${x * 100}%`;
-  rect.style.top = `${y * 100}%`;
-  rect.style.width = `${w * 100}%`;
-  rect.style.height = `${h * 100}%`;
+  hitArea.style.left = `${x * 100}%`;
+  hitArea.style.top = `${y * 100}%`;
+  hitArea.style.width = `${w * 100}%`;
+  hitArea.style.height = `${h * 100}%`;
+
+  const centerX = x + w / 2;
+  const centerY = y + h / 2;
+  stickerElement.style.transformOrigin = `${centerX * 100}% ${centerY * 100}%`;
+  // TODO: might need to make sure image was updated before changing transform origin
 }
 
 const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number, monType: string = "", handlePointerLeave: any, isOtherPlayer: boolean): HTMLElement => {
@@ -955,6 +974,7 @@ const createOverlayStickersImage = (type: string, name: string): HTMLImageElemen
   const overlayImg = document.createElement("img");
   overlayImg.style.width = "100%";
   overlayImg.style.height = "100%";
+  overlayImg.style.transition = "transform 0.13s ease-out";
   overlayImg.style.objectFit = "contain";
   overlayImg.style.position = "absolute";
   overlayImg.style.top = "0";
