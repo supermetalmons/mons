@@ -661,6 +661,30 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean, anima
         return;
       }
       handleStickerClick(stickerType);
+
+      const element = stickerElements[stickerType];
+      if (!isMobile) {
+        hitArea.style.transform = "scale(0.95)";
+        if (element) {
+          element.style.transform = "scale(0.95)";
+        }
+        setTimeout(() => {
+          hitArea.style.transform = "scale(1.095)";
+          if (element) {
+            element.style.transform = "scale(1.095)";
+          }
+          setTimeout(() => {
+            const rect = hitArea.getBoundingClientRect();
+            const isPointerInside = e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
+            if (!isPointerInside) {
+              hitArea.style.transform = "scale(1)";
+              if (element) {
+                element.style.transform = "scale(1)";
+              }
+            }
+          }, 130);
+        }, 130);
+      }
     };
     if (ownCardContentsLayer) {
       hitArea.style.transition = "opacity 0.2s ease-out, transform 0.13s ease-out";
