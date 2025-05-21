@@ -300,6 +300,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     window.open(direct, "_blank");
   };
 
+  // TODO: deprecate
   const handleStickerClick = (stickerType: StickerType) => {
     const stickersForType = STICKER_PATHS[stickerType];
     const currentSticker = selectedStickers[stickerType];

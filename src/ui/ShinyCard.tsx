@@ -1,4 +1,4 @@
-import { sendCardBackgroundUpdate, sendCardSubtitleIdUpdate, sendProfileMonsUpdate } from "../connection/connection";
+import { sendCardBackgroundUpdate, sendCardStickersUpdate, sendCardSubtitleIdUpdate, sendProfileMonsUpdate } from "../connection/connection";
 import { emojipackSize, emojis, getIncrementedEmojiId } from "../content/emojis";
 import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile, getStableRandomIdForProfileId } from "../utils/misc";
@@ -25,6 +25,9 @@ const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radia
 const totalCardBgsCount = 37;
 const bubblePlaceholderColor = "white";
 
+const stickersWipChangeOnClick = false; // TODO: dev tmp do not commit true
+const stickersWipSendUpdates = false; // TODO: dev tmp do not commit true. prefer false for dev as well
+
 let defaultCardBgIndex = 30;
 let defaultSubtitleIndex = 0;
 let cardIndex = defaultCardBgIndex;
@@ -35,6 +38,7 @@ let angelIndex = 0;
 let drainerIndex = 0;
 let spiritIndex = 0;
 let mysticIndex = 0;
+let currentlySelectedStickers: Record<string, string>;
 
 let undoQueue: Array<[string, any]> = [];
 
@@ -607,6 +611,7 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
 
 function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
   let selectedStickers: Record<string, string>;
+  currentlySelectedStickers = {};
   try {
     selectedStickers = JSON.parse(stickersJson);
   } catch {
@@ -616,7 +621,7 @@ function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
   if (!selectedStickers || typeof selectedStickers !== "object") {
     return;
   }
-
+  currentlySelectedStickers = selectedStickers;
   for (const [path, sticker] of Object.entries(selectedStickers)) {
     if (typeof path !== "string" || typeof sticker !== "string") {
       continue;
@@ -626,7 +631,42 @@ function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
 }
 
 function handleStickerClick(type: string) {
-  // TODO: implement
+  if (!stickersWipChangeOnClick) {
+    return;
+  }
+
+  const stickersForType = STICKER_PATHS[type];
+  const currentSticker = currentlySelectedStickers[type];
+
+  let nextSticker: string | undefined;
+
+  if (!currentSticker) {
+    nextSticker = stickersForType[0]?.name;
+  } else {
+    const currentIndex = stickersForType.findIndex((s) => s.name === currentSticker);
+    if (currentIndex === stickersForType.length - 1 || currentIndex === -1) {
+      nextSticker = undefined;
+    } else {
+      nextSticker = stickersForType[currentIndex + 1]?.name;
+    }
+  }
+
+  const updatedStickers = { ...currentlySelectedStickers };
+
+  if (nextSticker) {
+    updatedStickers[type] = nextSticker;
+  } else {
+    delete updatedStickers[type];
+  }
+
+  currentlySelectedStickers = updatedStickers;
+  didUpdateSticker(type, nextSticker);
+
+  if (stickersWipSendUpdates) {
+    const currentJson = JSON.stringify(currentlySelectedStickers);
+    storage.setCardStickers(currentJson);
+    sendCardStickersUpdate(currentJson);
+  }
 }
 
 function appendStickerLayer(to: HTMLElement, type: string, name: string) {
