@@ -603,7 +603,7 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
       delete stickerElements[stickerType];
     }
 
-    showHitAreaForStickerType(stickerType);
+    setupHitAreaForStickerType(stickerType, true);
   }
 }
 
@@ -616,18 +616,43 @@ function showHitAreasForStickersThatAreNotSet() {
   // TODO: implement
 }
 
-function showHitAreaForStickerType(stickerType: string) {
+function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTMLDivElement {
   // TODO: setup appropriate size
+  // TODO: use visible
 
-  // TODO: create hit area when it's not in stickerHitAreas yet
-
-  const hitArea = stickerHitAreas[stickerType];
+  let hitArea = stickerHitAreas[stickerType];
   if (hitArea) {
     if (stickersWipChangeOnClick) {
       hitArea.style.background = "green";
       // TODO: style it properly for no sticker state
     }
+  } else {
+    hitArea = document.createElement("div");
+    hitArea.style.position = "absolute";
+    hitArea.style.userSelect = "none";
+    hitArea.style.outline = "none";
+    hitArea.style.setProperty("-webkit-tap-highlight-color", "transparent");
+    hitArea.style.setProperty("-webkit-touch-callout", "none");
+    hitArea.style.pointerEvents = "auto";
+    hitArea.onclick = (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (isMobile && handlePointerLeave) {
+        handlePointerLeave();
+      }
+      if (!isEditingMode && enterEditingMode) {
+        enterEditingMode();
+        return;
+      }
+      handleStickerClick(stickerType);
+    };
+    if (ownCardContentsLayer) {
+      ownCardContentsLayer.appendChild(hitArea);
+    }
+    stickerHitAreas[stickerType] = hitArea;
   }
+
+  return hitArea;
 }
 
 function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
@@ -699,28 +724,8 @@ function appendStickerLayer(to: HTMLElement, type: string, name: string) {
     applyStickerFrame(hitArea, type, name);
     cleanUpVisibleHitAreaWhenStickerIsSet(hitArea);
   } else {
-    const rect = document.createElement("div");
-    rect.style.position = "absolute";
-    rect.style.userSelect = "none";
-    rect.style.outline = "none";
-    rect.style.setProperty("-webkit-tap-highlight-color", "transparent");
-    rect.style.setProperty("-webkit-touch-callout", "none");
-    rect.style.pointerEvents = "auto";
-    rect.onclick = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      if (isMobile && handlePointerLeave) {
-        handlePointerLeave();
-      }
-      if (!isEditingMode && enterEditingMode) {
-        enterEditingMode();
-        return;
-      }
-      handleStickerClick(type);
-    };
+    const rect = setupHitAreaForStickerType(type, false);
     applyStickerFrame(rect, type, name);
-    to.appendChild(rect);
-    stickerHitAreas[type] = rect;
   }
 
   stickerElements[type] = stickers;
