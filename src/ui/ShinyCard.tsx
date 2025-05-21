@@ -24,10 +24,6 @@ const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radia
 
 const totalCardBgsCount = 37;
 const bubblePlaceholderColor = "white";
-
-const stickersWipChangeOnClick = false; // TODO: dev tmp do not commit true
-const stickersWipSendUpdates = false; // TODO: dev tmp do not commit true. prefer false for dev as well
-
 const borderedCardAspectRatio = 2217 / 1625;
 const cardContentsAspectRatio = 2430 / 1886;
 
@@ -653,7 +649,7 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean): HTML
     stickerHitAreas[stickerType] = hitArea;
   }
 
-  if (visible && stickersWipChangeOnClick) {
+  if (visible) {
     hitArea.style.background = "var(--link-color-dark)";
     const frame = STICKER_ADD_PROMPTS_FRAMES[stickerType];
     if (frame) {
@@ -708,10 +704,6 @@ function displayStickers(cardContentsLayer: HTMLElement, stickersJson: string) {
 }
 
 function handleStickerClick(type: string) {
-  if (!stickersWipChangeOnClick) {
-    return;
-  }
-
   const stickersForType = STICKER_PATHS[type];
   const currentSticker = currentlySelectedStickers[type];
 
@@ -739,11 +731,9 @@ function handleStickerClick(type: string) {
   currentlySelectedStickers = updatedStickers;
   didUpdateSticker(type, nextSticker);
 
-  if (stickersWipSendUpdates) {
-    const currentJson = JSON.stringify(currentlySelectedStickers);
-    storage.setCardStickers(currentJson);
-    sendCardStickersUpdate(currentJson);
-  }
+  const currentJson = JSON.stringify(currentlySelectedStickers);
+  storage.setCardStickers(currentJson);
+  sendCardStickersUpdate(currentJson);
 }
 
 function appendStickerLayer(to: HTMLElement, type: string, name: string) {

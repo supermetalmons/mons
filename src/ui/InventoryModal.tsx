@@ -2,11 +2,8 @@ import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { ButtonsContainer, SaveButton } from "./NameEditModal";
 import { storage } from "../utils/storage";
-import { getNfts, sendCardStickersUpdate } from "../connection/connection";
-import { STICKER_PATHS, Sticker } from "../utils/stickers";
-import { didUpdateSticker } from "./ShinyCard";
+import { getNfts } from "../connection/connection";
 
-type StickerType = keyof typeof STICKER_PATHS;
 const doNotFetchNftsForNow = true;
 
 const InventoryOverlay = styled.div`
@@ -145,75 +142,6 @@ const NFTName = styled.span`
   max-height: 100%;
 `;
 
-const StickerButtonsContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-top: 8px;
-  margin-bottom: 4px;
-`;
-
-const ButtonRow = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-  width: 100%;
-`;
-
-const StickerButton = styled.button`
-  padding: 8px;
-  border-radius: 8px;
-  border: 1px solid #ddd;
-  background: #f8f8f8;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.2s;
-  flex: 1;
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  justify-content: center;
-  min-height: 48px;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background: #f0f0f0;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: #333;
-    border-color: #444;
-    color: #ddd;
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        background: #3a3a3a;
-      }
-    }
-  }
-`;
-
-const StickerTypeLabel = styled.span`
-  font-size: 0.65rem;
-  opacity: 0.8;
-  margin-bottom: 2px;
-  text-align: left;
-`;
-
-const StickerName = styled.span`
-  font-size: 0.75rem;
-  font-weight: 600;
-  text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-`;
-
 interface NFT {
   id: string;
   direct_link: string;
@@ -239,23 +167,11 @@ export interface InventoryModalProps {
 export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   const popupRef = useRef<HTMLDivElement>(null);
   const [nfts, setNfts] = useState<NFT[]>([]);
-  const [selectedStickers, setSelectedStickers] = useState<Record<string, string>>({});
-  const [initialStickers, setInitialStickers] = useState<Record<string, string>>({});
 
   useEffect(() => {
     if (popupRef.current) {
       popupRef.current.focus();
     }
-
-    const stickersJson = storage.getCardStickers("");
-
-    try {
-      const parsed = JSON.parse(stickersJson);
-      if (parsed && typeof parsed === "object") {
-        setSelectedStickers(parsed);
-        setInitialStickers(parsed);
-      }
-    } catch {}
 
     const storedSolAddress = storage.getSolAddress("");
     const storedEthAddress = storage.getEthAddress("");
@@ -274,25 +190,17 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     }
   }, []);
 
-  const saveStickersAndClose = () => {
-    const initialJson = JSON.stringify(initialStickers);
-    const currentJson = JSON.stringify(selectedStickers);
-
-    if (initialJson !== currentJson) {
-      storage.setCardStickers(currentJson);
-      sendCardStickersUpdate(currentJson);
-    }
-
+  const cleanUpAndClose = () => {
     onCancel();
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.stopPropagation();
-      saveStickersAndClose();
+      cleanUpAndClose();
     } else if (e.key === "Escape") {
       e.stopPropagation();
-      saveStickersAndClose();
+      cleanUpAndClose();
     }
   };
 
@@ -300,66 +208,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     window.open(direct, "_blank");
   };
 
-  // TODO: deprecate
-  const handleStickerClick = (stickerType: StickerType) => {
-    const stickersForType = STICKER_PATHS[stickerType];
-    const currentSticker = selectedStickers[stickerType];
-
-    let nextSticker: string | undefined;
-
-    if (!currentSticker) {
-      nextSticker = stickersForType[0]?.name;
-    } else {
-      const currentIndex = stickersForType.findIndex((s) => s.name === currentSticker);
-      if (currentIndex === stickersForType.length - 1 || currentIndex === -1) {
-        nextSticker = undefined;
-      } else {
-        nextSticker = stickersForType[currentIndex + 1]?.name;
-      }
-    }
-
-    const updatedStickers = { ...selectedStickers };
-
-    if (nextSticker) {
-      updatedStickers[stickerType] = nextSticker;
-    } else {
-      delete updatedStickers[stickerType];
-    }
-
-    setSelectedStickers(updatedStickers);
-    didUpdateSticker(stickerType, nextSticker);
-  };
-
   return (
-    <InventoryOverlay onClick={saveStickersAndClose}>
+    <InventoryOverlay onClick={cleanUpAndClose}>
       <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus>
-        <SectionContainer>
-          <SectionTitle>Stickers</SectionTitle>
-          <Content>
-            <StickerButtonsContainer>
-              {Array.from({ length: 4 }).map((_, rowIndex) => (
-                <ButtonRow key={rowIndex}>
-                  {Object.keys(STICKER_PATHS)
-                    .slice(rowIndex * 2, (rowIndex + 1) * 2)
-                    .map((stickerType) => {
-                      const selectedSticker = selectedStickers[stickerType];
-                      let displayName = "–";
-                      if (selectedSticker && STICKER_PATHS[stickerType as StickerType].some((s: Sticker) => s.name === selectedSticker)) {
-                        displayName = selectedSticker.replace(/-/g, " ");
-                      }
-                      return (
-                        <StickerButton key={stickerType} onClick={() => handleStickerClick(stickerType as StickerType)}>
-                          <StickerTypeLabel>{stickerType.replace(/-/g, " ")}</StickerTypeLabel>
-                          <StickerName>{displayName}</StickerName>
-                        </StickerButton>
-                      );
-                    })}
-                </ButtonRow>
-              ))}
-            </StickerButtonsContainer>
-          </Content>
-        </SectionContainer>
-
         <SectionContainer>
           <SectionTitle>Swag Pack</SectionTitle>
           <Content>
@@ -379,7 +230,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
         </SectionContainer>
 
         <ButtonsContainer>
-          <SaveButton onClick={saveStickersAndClose} disabled={false}>
+          <SaveButton onClick={cleanUpAndClose} disabled={false}>
             OK
           </SaveButton>
         </ButtonsContainer>
