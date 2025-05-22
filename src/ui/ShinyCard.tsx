@@ -226,6 +226,19 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     emojiContainer.addEventListener("mousemove", updateEmojiScale);
   }
 
+  const emojiPlaceholder = document.createElement("div");
+  emojiPlaceholder.style.position = "absolute";
+  emojiPlaceholder.style.width = "65%";
+  emojiPlaceholder.style.height = "65%";
+  emojiPlaceholder.style.top = "50%";
+  emojiPlaceholder.style.left = "50%";
+  emojiPlaceholder.style.transform = "translate(-50%, -50%)";
+  emojiPlaceholder.style.borderRadius = "50%";
+  emojiPlaceholder.style.backgroundColor = "gray";
+  emojiPlaceholder.style.opacity = "0.1";
+  emojiPlaceholder.style.pointerEvents = "none";
+  emojiContainer.appendChild(emojiPlaceholder);
+
   const emojiImg = document.createElement("img");
   emojiImg.style.position = "absolute";
   emojiImg.style.width = "100%";
@@ -241,6 +254,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   };
   emojiImg.onload = () => {
     emojiImg.style.visibility = "visible";
+    emojiPlaceholder.style.visibility = "hidden";
   };
   emojiContainer.appendChild(emojiImg);
   emojiContainer.addEventListener("click", (e) => {
