@@ -65,6 +65,8 @@ let resizeListener: (() => void) | null = null;
 let enterEditingMode: (() => void) | null = null;
 let handlePointerLeave: (() => void) | null = null;
 
+let displayedOtherPlayerProfile: PlayerProfile | null;
+
 const cardStyles = `
 @media screen and (max-width: 420px){
   [data-shiny-card="true"]{ right:9px !important; }
@@ -74,12 +76,23 @@ const cardStyles = `
 }`;
 
 export const showShinyCard = async (profile: PlayerProfile | null, displayName: string, isOtherPlayer: boolean) => {
+  const alreadyShowsSameOtherPlayerProfile = isOtherPlayer && profile !== null && displayedOtherPlayerProfile === profile;
+  
+  if (alreadyShowsSameOtherPlayerProfile) {
+    hideShinyCard();
+    return;
+  }
+
   if (showsShinyCardSomewhere) {
     hideShinyCard();
   }
 
   if (isOtherPlayer && !profile) {
     return;
+  }
+
+  if (isOtherPlayer) {
+    displayedOtherPlayerProfile = profile;
   }
 
   cardIndex = storage.getCardBackgroundId(defaultCardBgIndex);
@@ -1054,6 +1067,7 @@ const createOverlayStickersImage = (type: string, name: string): HTMLImageElemen
 
 export const hideShinyCard = () => {
   showsShinyCardSomewhere = false;
+  displayedOtherPlayerProfile = null;
   const shinyCard = document.querySelector('[data-shiny-card="true"]');
   if (shinyCard && shinyCard.parentNode) {
     shinyCard.parentNode.removeChild(shinyCard);
