@@ -46,7 +46,6 @@ let isEditingMode = false;
 
 let ownEmojiImg: HTMLImageElement | null;
 let ownBgImg: HTMLImageElement | null;
-let ownBgPlaceholder: HTMLElement | null;
 let ownSubtitleElement: HTMLElement | null;
 let nameElement: HTMLElement | null;
 let ownDemonImg: HTMLImageElement | null;
@@ -284,7 +283,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   placeholder.style.position = "absolute";
   placeholder.style.width = "90.5%";
   placeholder.style.height = "83%";
-  placeholder.style.backgroundColor = getPlaceholderColorForBgId(bgId);
+  placeholder.style.backgroundColor = "var(--card-color)";
 
   placeholder.style.outline = "1px solid #B4B4B455";
 
@@ -517,7 +516,6 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     updateContent("bg", (cardIndex + 1) % totalCardBgsCount, cardIndex);
   });
   ownBgImg = img;
-  ownBgPlaceholder = placeholder;
 
   cardContentsLayer.appendChild(placeholder);
   cardContentsLayer.appendChild(img);
@@ -1148,7 +1146,6 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       storage.setCardBackgroundId(newId);
       cardIndex = newId;
       sendCardBackgroundUpdate(newId);
-      ownBgPlaceholder!.style.backgroundColor = getPlaceholderColorForBgId(newId);
       ownBgImg!.style.visibility = "hidden";
       ownBgImg!.src = `https://assets.mons.link/cards/bg/${newCardName}`;
       break;
@@ -1242,47 +1239,4 @@ export async function didClickIdCardEditUndoButton() {
     const [contentType, oldId] = undoQueue.pop()!;
     updateContent(contentType, oldId, null);
   }
-}
-
-function getPlaceholderColorForBgId(id: number): string {
-  const placeholderColors: Record<number, string> = {
-    0: "#F9F9F0",
-    1: "#F9F5EF",
-    2: "#EAEBF5",
-    3: "#F5F6F7",
-    4: "#FBFBFC",
-    5: "#FAFAFA",
-    6: "#FBFBF2",
-    7: "#FBFBFB",
-    8: "#E8E8E8",
-    9: "#FBFBFB",
-    10: "#FAFAF3",
-    11: "#FBFBFA",
-    12: "#F9F9F9",
-    13: "#FBFBFB",
-    14: "#F6F6F2",
-    15: "#F8F8F8",
-    16: "#F8F6F9",
-    17: "#FBFBFC",
-    18: "#FAFAFA",
-    19: "#FAFAF9",
-    20: "#F6F6F6",
-    21: "#FBFAF4",
-    22: "#F1F1F1",
-    23: "#FBFBFB",
-    24: "#EAEAF1",
-    25: "#F8F7F8",
-    26: "#F8F7E8",
-    27: "#F9FAF7",
-    28: "#F2F6F5",
-    29: "#F2F3F5",
-    30: "#F7F8F8",
-    31: "#F7F9F8",
-    32: "#F5F5F5",
-    33: "#F8F9F6",
-    34: "#F3F2F4",
-    35: "#FAF9F8",
-    36: "#F7F3F8",
-  };
-  return placeholderColors[id] ?? "var(--card-color)";
 }
