@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { logoBase64 } from "../content/uiAssets";
-import { didDismissSomethingWithOutsideTapJustNow, closeNavigationPopupIfAny } from "./BottomControls";
+import { didDismissSomethingWithOutsideTapJustNow, didNotDismissAnythingWithOutsideTapJustNow, closeNavigationPopupIfAny } from "./BottomControls";
 import styled from "styled-components";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { Leaderboard } from "./Leaderboard";
@@ -8,6 +8,7 @@ import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
 import { getCurrentGameFen } from "../game/gameController";
 import { FaTelegramPlane, FaUniversity } from "react-icons/fa";
+import { showsShinyCardSomewhere } from "./ShinyCard";
 
 const RockButtonContainer = styled.div`
   position: absolute;
@@ -615,7 +616,8 @@ const MainMenu: React.FC = () => {
 
   useEffect(() => {
     const handleTapOutside = (event: any) => {
-      if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node) && !event.target.closest('[data-shiny-card="true"]')) {
+      const shouldKeepVisibleWhenShinyCardIsBeingDismissed = isMobile ? showsShinyCardSomewhere || !didNotDismissAnythingWithOutsideTapJustNow() : false;
+      if (!shouldKeepVisibleWhenShinyCardIsBeingDismissed && isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node) && !event.target.closest('[data-shiny-card="true"]')) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsMenuOpen(false);
         setShowExperimental(false);

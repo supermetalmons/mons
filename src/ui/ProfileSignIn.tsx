@@ -192,6 +192,9 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         setIsOpen(false);
         hideShinyCard();
         enterProfileEditingMode(false);
+        if (!isMobile) {
+          closeMenuAndInfoIfAny();
+        }
       }
     };
 

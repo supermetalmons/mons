@@ -14,6 +14,7 @@ import NavigationPicker from "./NavigationPicker";
 import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
 import { toggleBoardStyle } from "../content/boardStyles";
 import { ControlsContainer, BrushButton, NavigationListButton, ControlButton, BottomPillButton, ReactionButton, ReactionPicker, ResignButton, ResignConfirmation } from "./BottomControlsStyles";
+import { closeMenuAndInfoIfAny } from "./MainMenu";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 
@@ -342,6 +343,7 @@ const BottomControls: React.FC = () => {
       if (isVoiceReactionDisabled) {
         return;
       }
+      closeMenuAndInfoIfAny();
       setIsResignConfirmVisible(false);
     }
     setIsReactionPickerVisible((prev) => !prev);
@@ -364,6 +366,9 @@ const BottomControls: React.FC = () => {
 
   const handleResignClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
+    if (!isResignConfirmVisible) {
+      closeMenuAndInfoIfAny();
+    }
     setIsResignConfirmVisible(!isResignConfirmVisible);
   };
 
@@ -466,6 +471,9 @@ const BottomControls: React.FC = () => {
   };
 
   const handleNavigationButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    if (!isNavigationPopupVisible) {
+      closeMenuAndInfoIfAny();
+    }
     setIsNavigationPopupVisible(!isNavigationPopupVisible);
   };
 
