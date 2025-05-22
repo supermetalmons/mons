@@ -74,26 +74,6 @@ const cardStyles = `
   [data-shiny-card="true"]{ right:7px !important; }
 }`;
 
-function updateExistingCardForAnotherProfile(profile: PlayerProfile | null, displayName: string, isOtherPlayer: boolean) {
-  displayedOtherPlayerProfile = profile;
-
-  // TODO: implement
-
-  // bg img
-  // emoji
-  // emoji placeholder
-  // stickers
-  // mons
-  // name
-  // elo
-  // subtitle
-  // gp
-
-  // TODO: remove dev tmp fallback
-  hideShinyCard();
-  showShinyCard(profile, displayName, isOtherPlayer);
-}
-
 export const showShinyCard = async (profile: PlayerProfile | null, displayName: string, isOtherPlayer: boolean) => {
   const alreadyShowsSameOtherPlayerProfile = isOtherPlayer && profile !== null && displayedOtherPlayerProfile === profile;
 
@@ -1267,6 +1247,11 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
   }
 
   updateUndoButton();
+}
+
+function updateExistingCardForAnotherProfile(profile: PlayerProfile | null, displayName: string, isOtherPlayer: boolean) {
+  hideShinyCard();
+  showShinyCard(profile, displayName, isOtherPlayer);
 }
 
 async function updateUndoButton() {
