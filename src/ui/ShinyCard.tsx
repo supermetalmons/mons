@@ -77,7 +77,7 @@ const cardStyles = `
 
 export const showShinyCard = async (profile: PlayerProfile | null, displayName: string, isOtherPlayer: boolean) => {
   const alreadyShowsSameOtherPlayerProfile = isOtherPlayer && profile !== null && displayedOtherPlayerProfile === profile;
-  
+
   if (alreadyShowsSameOtherPlayerProfile) {
     hideShinyCard();
     return;
@@ -209,7 +209,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   emojiContainer.style.top = "13.3%";
   emojiContainer.style.left = "7.65%";
   emojiContainer.style.borderRadius = "7%";
-  emojiContainer.style.boxShadow = "0 0 2px 2px rgba(0, 0, 0, 0.1)";
+  emojiContainer.style.boxShadow = "0 0 1px 1px rgba(0, 0, 0, 0.1)";
   emojiContainer.style.userSelect = "none";
   emojiContainer.style.cursor = "pointer";
   emojiContainer.style.outline = "none";
@@ -285,6 +285,8 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   placeholder.style.width = "90.5%";
   placeholder.style.height = "83%";
   placeholder.style.backgroundColor = getPlaceholderColorForBgId(bgId);
+
+  placeholder.style.outline = "1px solid #B4B4B455";
 
   dynamicallyRoundedElements.push({ element: placeholder, radius: 0.035 });
   placeholder.style.top = "50.7%";
