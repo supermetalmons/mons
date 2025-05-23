@@ -18,7 +18,7 @@ export const updateBoardComponentForBoardStyleChange = () => {
   listeners.forEach((listener) => listener());
 };
 
-export let setTopBoardOverlayVisible: (visible: boolean) => void;
+export let setTopBoardOverlayVisible: (svgElement: SVGElement | null) => void;
 
 const BoardComponent: React.FC = () => {
   const initializationRef = useRef(false);
@@ -26,9 +26,9 @@ const BoardComponent: React.FC = () => {
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
   const [isGridVisible, setIsGridVisible] = useState(!isCustomPictureBoardEnabled());
   const [shouldIncludePangchiuImage, setShouldIncludePangchiuImage] = useState(isCustomPictureBoardEnabled());
-  const [isOverlayVisible, setIsOverlayVisible] = useState(false);
+  const [overlaySvgElement, setOverlaySvgElement] = useState<SVGElement | null>(null);
 
-  setTopBoardOverlayVisible = setIsOverlayVisible;
+  setTopBoardOverlayVisible = setOverlaySvgElement;
 
   useEffect(() => {
     if (!initializationRef.current) {
@@ -130,11 +130,10 @@ const BoardComponent: React.FC = () => {
         <g id="itemsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
         <g id="controlsLayer"></g>
       </svg>
-      {isOverlayVisible && (
+      {overlaySvgElement && (
         <div
           className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}
           style={{
-            pointerEvents: "none",
             aspectRatio: "110 / 141",
           }}>
           <div
@@ -142,11 +141,28 @@ const BoardComponent: React.FC = () => {
               position: "absolute",
               left: "50%",
               transform: "translateX(-50%)",
-              top: isGridVisible ? "7.01%" : "7.05%",
-              height: isGridVisible ? "78.3%" : "82.6%",
+              top: isGridVisible ? "7.02%" : "7.05%",
+              height: isGridVisible ? "78.2%" : "82.6%",
               aspectRatio: isGridVisible ? "1" : "1524/1612",
-              backdropFilter: "blur(5px)",
+              backdropFilter: "blur(3px)",
               WebkitBackdropFilter: "blur(5px)",
+              overflow: "hidden",
+              border: "none",
+            }}
+            ref={(div) => {
+              if (div && overlaySvgElement) {
+                div.innerHTML = "";
+                const wrapperSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                wrapperSvg.style.position = "absolute";
+                wrapperSvg.style.top = "0";
+                wrapperSvg.style.left = "0";
+                wrapperSvg.style.width = "100%";
+                wrapperSvg.style.height = "100%";
+                wrapperSvg.setAttribute("viewBox", "0 0 1100 1100");
+                wrapperSvg.setAttribute("preserveAspectRatio", "xMidYMid meet");
+                wrapperSvg.appendChild(overlaySvgElement);
+                div.appendChild(wrapperSvg);
+              }
             }}
           />
         </div>

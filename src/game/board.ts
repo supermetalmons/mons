@@ -61,8 +61,7 @@ const wavesFrames: { [key: string]: SVGElement } = {};
 const opponentMoveStatusItems: SVGElement[] = [];
 const playerMoveStatusItems: SVGElement[] = [];
 const minHorizontalOffset = 0.21;
-
-let itemSelectionOverlay: SVGElement | undefined;
+let showsItemSelectionOverlay = false;
 let dimmingOverlay: SVGElement | undefined;
 let opponentNameText: SVGElement | undefined;
 let playerNameText: SVGElement | undefined;
@@ -241,7 +240,7 @@ export function setBoardDimmed(dimmed: boolean, color: string = "#00000023") {
 
   itemsLayer?.appendChild(overlay);
 
-  if (itemSelectionOverlay) {
+  if (showsItemSelectionOverlay) {
     hideItemSelection();
     cleanupCurrentInputs();
   }
@@ -257,9 +256,7 @@ function createFullBoardBackgroundElement(): SVGElement {
     SVG.setOrigin(background, 0, 0);
     SVG.setSizeStr(background, "100%", "1100");
   }
-
-  SVG.setFill(background, colors.itemSelectionBackground);
-  background.style.backdropFilter = "blur(3px)";
+  SVG.setFill(background, "transparent");
   return background;
 }
 
@@ -1149,20 +1146,14 @@ export function updateScore(white: number, black: number, winnerColor?: MonsWeb.
 }
 
 export function hideItemSelection() {
-  if (itemSelectionOverlay) {
-    itemSelectionOverlay.remove();
-    itemSelectionOverlay = undefined;
+  if (showsItemSelectionOverlay) {
+    showsItemSelectionOverlay = false;
+    setTopBoardOverlayVisible(null);
   }
 }
 
 export function showItemSelection(): void {
-  // TODO: reimplement using top board blur
-  // setTopBoardOverlayVisible(true);
-  // return;
-
   const overlay = document.createElementNS(SVG.ns, "g");
-  itemSelectionOverlay = overlay;
-
   const background = createFullBoardBackgroundElement();
   overlay.appendChild(background);
 
@@ -1201,7 +1192,7 @@ export function showItemSelection(): void {
       preventTouchstartIfNeeded(event);
       event.stopPropagation();
       didSelectInputModifier(modifier);
-      overlay.remove();
+      setTopBoardOverlayVisible(null);
     });
     overlay.appendChild(touchTarget);
   }
@@ -1214,10 +1205,11 @@ export function showItemSelection(): void {
     preventTouchstartIfNeeded(event);
     event.stopPropagation();
     didSelectInputModifier(InputModifier.Cancel);
-    overlay.remove();
+    setTopBoardOverlayVisible(null);
   });
 
-  itemsLayer?.appendChild(overlay);
+  showsItemSelectionOverlay = true;
+  setTopBoardOverlayVisible(overlay);
 }
 
 export function addElementToItemsLayer(element: SVGElement, depth: number) {
