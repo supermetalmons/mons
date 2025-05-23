@@ -8,7 +8,7 @@ import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playReaction } from "../content/sounds";
 import { newReactionOfKind } from "../content/sounds";
-import { setBoardDimmed, showVoiceReactionText } from "../game/board";
+import { showVoiceReactionText } from "../game/board";
 import { hasFullScreenAlertVisible, hideFullScreenAlert } from "..";
 import NavigationPicker from "./NavigationPicker";
 import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
@@ -358,7 +358,6 @@ const BottomControls: React.FC = () => {
     event.stopPropagation();
     if (hasFullScreenAlertVisible()) {
       hideFullScreenAlert();
-      setBoardDimmed(false);
     } else {
       showPuzzleInstructions();
     }

@@ -113,16 +113,18 @@ export async function showTalkingDude(show: boolean) {
     removeItemAndCleanUpAnimation(talkingDude);
     talkingDude = null;
     talkingDudeIsTalking = true;
+    setTopBoardOverlayVisible(null);
     return;
   } else if (show) {
     const sprite = (await import(`../assets/talkingDude`)).instructor;
-    const location = new Location(7.67, -1);
+    const location = new Location(6.69, -1);
     const img = loadImage(sprite, "talkingDude", true);
     setCenterTranformOrigin(img, location);
     SVG.setOrigin(img, location.j, location.i);
     controlsLayer?.appendChild(img);
     startAnimation(img, false);
     talkingDude = img;
+    setTopBoardOverlayVisible(talkingDude);
   }
 }
 
@@ -222,7 +224,7 @@ export function flashPuzzleFailure() {
   }, 333);
 }
 
-export function setBoardDimmed(dimmed: boolean, color: string = "#00000023") {
+function setBoardDimmed(dimmed: boolean, color: string = "#00000023") {
   if (dimmingOverlay && !dimmed) {
     dimmingOverlay.remove();
     dimmingOverlay = undefined;
@@ -355,10 +357,6 @@ export async function didToggleItemsStyleSet(isProfileMonsChange: boolean = fals
   allPixelOnlyElements.forEach((element) => {
     SVG.setHidden(element as SVGElement, currentAssetsSet !== AssetsSet.Pixel);
   });
-
-  if (dimmingOverlay) {
-    setBoardDimmed(true);
-  }
 }
 
 function loadImage(data: string, assetType: string, isSpriteSheet: boolean = false): SVGElement {

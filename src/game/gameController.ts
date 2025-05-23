@@ -1,5 +1,5 @@
 import initMonsWeb, * as MonsWeb from "mons-web";
-import { playerSideMetadata, opponentSideMetadata, showVoiceReactionText, setupPlayerId, hideAllMoveStatuses, hideTimerCountdownDigits, showTimer, showPuzzleTitle, setBoardDimmed } from "./board";
+import { playerSideMetadata, opponentSideMetadata, showVoiceReactionText, setupPlayerId, hideAllMoveStatuses, hideTimerCountdownDigits, showTimer, showPuzzleTitle } from "./board";
 import * as Board from "./board";
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
@@ -264,7 +264,6 @@ export function didReceiveRematchesSeriesEndIndicator() {
 function automove() {
   if (puzzleMode && hasFullScreenAlertVisible()) {
     hideFullScreenAlert();
-    setBoardDimmed(false);
     setAutomoveActionEnabled(true);
     return;
   }
@@ -401,7 +400,6 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
 export function didClickSquare(location: Location) {
   if (puzzleMode && hasFullScreenAlertVisible()) {
     hideFullScreenAlert();
-    setBoardDimmed(false);
     return;
   }
 
@@ -1139,7 +1137,6 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
 
 export function showPuzzleInstructions() {
   const text = selectedProblem!.description;
-  setBoardDimmed(true);
   setTimeout(() => {
     showFullScreenAlert(text, "");
   }, 1);

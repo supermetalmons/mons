@@ -21,7 +21,7 @@ import { startPlayingMusic, stopPlayingMusic } from "./content/music";
 import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory } from "./ui/ProfileSignIn";
 import FullScreenAlert from "./ui/FullScreenAlert";
-import { setBoardDimmed, showTalkingDude } from "./game/board";
+import { showTalkingDude } from "./game/board";
 import { didClickIdCardEditUndoButton } from "./ui/ShinyCard";
 
 let globalIsMuted: boolean = (() => {
@@ -136,7 +136,6 @@ const App = () => {
     event.stopPropagation();
     if (alertState !== null) {
       hideFullScreenAlert();
-      setBoardDimmed(false);
     }
     toggleInfoVisibility();
   };
