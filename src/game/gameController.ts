@@ -271,6 +271,7 @@ function automove() {
 
   let output = game.smart_automove();
   applyOutput(output, false, true, AssistedInputKind.None);
+  Board.hideItemSelection();
   if (!isGameWithBot || isPlayerSideTurn()) {
     setAutomoveActionEnabled(true);
   } else {
