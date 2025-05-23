@@ -9,7 +9,7 @@ import { hasNavigationPopupVisible, didNotDismissAnythingWithOutsideTapJustNow, 
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername, getStashedPlayerProfile } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
-import { updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
+import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
 import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
@@ -248,26 +248,19 @@ export function setBoardDimmed(dimmed: boolean, color: string = "#00000023") {
 }
 
 function createFullBoardBackgroundElement(): SVGElement {
-  const foreignObject = document.createElementNS(SVG.ns, "foreignObject");
-
+  const background = document.createElementNS(SVG.ns, "rect");
   if (isPangchiuBoard()) {
-    SVG.setOrigin(foreignObject, -0.83, -0.84);
-    foreignObject.style.transform = `scale(${1 / 0.85892388})`;
-    SVG.setSizeStr(foreignObject, "100%", "1163.5");
+    SVG.setOrigin(background, -0.83, -0.84);
+    background.style.transform = `scale(${1 / 0.85892388})`;
+    SVG.setSizeStr(background, "100%", "1163.5");
   } else {
-    SVG.setOrigin(foreignObject, 0, 0);
-    SVG.setSizeStr(foreignObject, "100%", "1100");
+    SVG.setOrigin(background, 0, 0);
+    SVG.setSizeStr(background, "100%", "1100");
   }
 
-  foreignObject.style.backdropFilter = "blur(5px)";
-  foreignObject.style.backgroundColor = colors.itemSelectionBackground;
-
-  const div = document.createElement("div");
-  div.style.width = "100%";
-  div.style.height = "100%";
-  foreignObject.appendChild(div);
-
-  return foreignObject;
+  SVG.setFill(background, colors.itemSelectionBackground);
+  background.style.backdropFilter = "blur(3px)";
+  return background;
 }
 
 export function showPuzzleTitle(title: string) {
@@ -1165,6 +1158,7 @@ export function hideItemSelection() {
 export function showItemSelection(): void {
   // TODO: reimplement using top board blur
   // setTopBoardOverlayVisible(true);
+  // return;
 
   const overlay = document.createElementNS(SVG.ns, "g");
   itemSelectionOverlay = overlay;

@@ -98,6 +98,14 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
   cursor: pointer;
   text-align: center;
   min-width: fit-content;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
   width: 100%;
   margin-top: ${(props) => (props.$withTopBorder ? "8px" : "0")};
 

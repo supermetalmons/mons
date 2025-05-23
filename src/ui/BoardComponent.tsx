@@ -143,7 +143,7 @@ const BoardComponent: React.FC = () => {
               left: "50%",
               transform: "translateX(-50%)",
               top: isGridVisible ? "7.01%" : "7.05%",
-              height: isGridVisible ? "78.1%" : "82.6%",
+              height: isGridVisible ? "78.3%" : "82.6%",
               aspectRatio: isGridVisible ? "1" : "1524/1612",
               backdropFilter: "blur(5px)",
               WebkitBackdropFilter: "blur(5px)",
