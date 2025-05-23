@@ -4,7 +4,7 @@ import styled from "styled-components";
 import { storage } from "../utils/storage";
 import { forceTokenRefresh, signOut, verifySolanaAddress } from "../connection/connection";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
-import { closeMenuAndInfoIfAny } from "./MainMenu";
+import { closeMenuAndInfoIfAllowedForEvent, closeMenuAndInfoIfAny } from "./MainMenu";
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { setAuthStatusGlobally } from "../connection/authentication";
 import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
@@ -193,7 +193,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         hideShinyCard();
         enterProfileEditingMode(false);
         if (!isMobile) {
-          closeMenuAndInfoIfAny();
+          closeMenuAndInfoIfAllowedForEvent(event);
         }
       }
     };

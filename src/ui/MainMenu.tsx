@@ -466,6 +466,7 @@ let getIsMenuOpen: () => boolean;
 let getIsInfoOpen: () => boolean;
 export let toggleInfoVisibility: () => void;
 export let closeMenuAndInfoIfAny: () => void;
+export let closeMenuAndInfoIfAllowedForEvent: (event: TouchEvent | MouseEvent) => void;
 
 export function hasMainMenuPopupsVisible(): boolean {
   return getIsMenuOpen() || getIsInfoOpen();
@@ -604,6 +605,7 @@ const MainMenu: React.FC = () => {
     if (!isInfoOpen) {
       closeProfilePopupIfAny();
       closeNavigationPopupIfAny();
+      setIsMenuOpen(false);
     }
     setIsInfoOpen(!isInfoOpen);
   };
@@ -612,6 +614,12 @@ const MainMenu: React.FC = () => {
     setIsInfoOpen(false);
     setIsMenuOpen(false);
     setIsNftSubmenuExpanded(false);
+  };
+
+  closeMenuAndInfoIfAllowedForEvent = (event: TouchEvent | MouseEvent) => {
+    if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      closeMenuAndInfoIfAny();
+    }
   };
 
   useEffect(() => {
