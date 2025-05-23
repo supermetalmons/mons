@@ -262,6 +262,11 @@ function createFullBoardBackgroundElement(): SVGElement {
   foreignObject.style.backdropFilter = "blur(5px)";
   foreignObject.style.backgroundColor = colors.itemSelectionBackground;
 
+  const div = document.createElement("div");
+  div.style.width = "100%";
+  div.style.height = "100%";
+  foreignObject.appendChild(div);
+
   return foreignObject;
 }
 
