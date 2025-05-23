@@ -248,19 +248,21 @@ export function setBoardDimmed(dimmed: boolean, color: string = "#00000023") {
 }
 
 function createFullBoardBackgroundElement(): SVGElement {
-  const background = document.createElementNS(SVG.ns, "rect");
+  const foreignObject = document.createElementNS(SVG.ns, "foreignObject");
+
   if (isPangchiuBoard()) {
-    SVG.setOrigin(background, -0.83, -0.84);
-    background.style.transform = `scale(${1 / 0.85892388})`;
-    SVG.setSizeStr(background, "100%", "1163.5");
+    SVG.setOrigin(foreignObject, -0.83, -0.84);
+    foreignObject.style.transform = `scale(${1 / 0.85892388})`;
+    SVG.setSizeStr(foreignObject, "100%", "1163.5");
   } else {
-    SVG.setOrigin(background, 0, 0);
-    SVG.setSizeStr(background, "100%", "1100");
+    SVG.setOrigin(foreignObject, 0, 0);
+    SVG.setSizeStr(foreignObject, "100%", "1100");
   }
 
-  SVG.setFill(background, colors.itemSelectionBackground);
-  background.style.backdropFilter = "blur(3px)";
-  return background;
+  foreignObject.style.backdropFilter = "blur(5px)";
+  foreignObject.style.backgroundColor = colors.itemSelectionBackground;
+
+  return foreignObject;
 }
 
 export function showPuzzleTitle(title: string) {
