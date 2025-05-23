@@ -1163,6 +1163,9 @@ export function hideItemSelection() {
 }
 
 export function showItemSelection(): void {
+  // TODO: reimplement using top board blur
+  // setTopBoardOverlayVisible(true);
+
   const overlay = document.createElementNS(SVG.ns, "g");
   itemSelectionOverlay = overlay;
 
