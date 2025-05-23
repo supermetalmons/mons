@@ -21,10 +21,7 @@ const NavigationPickerContainer = styled.div`
   cursor: pointer;
   background-color: rgba(249, 249, 249, 0.9);
   border-radius: 7pt;
-  padding-top: 5px;
-  padding-left: 0;
-  padding-right: 0pt;
-  padding-bottom: 0px;
+  padding: 8px;
   gap: 0px;
   z-index: 5;
   -webkit-overflow-scrolling: touch;
@@ -47,7 +44,6 @@ const SectionTitle = styled.div`
   color: #767787;
   text-align: left;
   padding-top: 1px;
-  padding-left: 8px;
   padding-bottom: 2pt;
   cursor: pointer;
 
@@ -60,8 +56,7 @@ const NavigationPickerButton = styled.button`
   background: none;
   font-size: 13px;
   border: none;
-  padding: 6px 8px;
-  padding-right: 15px;
+  padding: 6px 0px;
   cursor: pointer;
   text-align: left;
   color: #333;
@@ -94,42 +89,39 @@ const NavigationPickerButton = styled.button`
 `;
 
 const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
-  background: none;
-  font-size: 16px;
+  background-color: #007aff;
+  color: white;
+  border-radius: 50px;
+  padding: 8px 16px;
   font-weight: bold;
   border: none;
-  padding: 12px 8px;
-  padding-right: 15px;
   cursor: pointer;
   text-align: center;
-  color: #333;
+  min-width: fit-content;
   width: 100%;
-  border-top: ${(props) => (props.$withTopBorder ? "1px solid rgba(200, 200, 200, 0.3)" : "none")};
   margin-top: ${(props) => (props.$withTopBorder ? "8px" : "0")};
-  padding-top: 12px;
+
+  &:active {
+    background-color: #0056b3;
+  }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: rgba(232, 232, 232, 0.5);
+      background-color: #0069d9;
     }
-  }
-
-  &:active {
-    background-color: rgba(224, 224, 224, 0.6);
   }
 
   @media (prefers-color-scheme: dark) {
-    color: #f0f0f0;
-    border-top-color: ${(props) => (props.$withTopBorder ? "rgba(80, 80, 80, 0.3)" : "transparent")};
+    background-color: #0b84ff;
+
+    &:active {
+      background-color: #299fff;
+    }
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: rgba(70, 70, 70, 0.4);
+        background-color: #1a91ff;
       }
-    }
-
-    &:active {
-      background-color: rgba(80, 80, 80, 0.5);
     }
   }
 `;
@@ -168,7 +160,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
       )}
       {showsHomeNavigation && (
         <HomeBoardButton onClick={handleHomeClick} $withTopBorder={showsPuzzles}>
-          Home Board
+          Home Board →
         </HomeBoardButton>
       )}
     </NavigationPickerContainer>
