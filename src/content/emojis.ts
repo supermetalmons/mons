@@ -15,6 +15,10 @@ export const emojis = {
     return getRandomEmojiUrl();
   },
 
+  getTutorialEmojiUrl: function () {
+    return this.getEmojiUrl("27");
+  },
+
   getRandomEmojiUrlOtherThan: function (id: string) {
     return getRandomEmojiUrlOtherThan(id);
   },
@@ -63,7 +67,7 @@ export function getIncrementedEmojiId(currentId: string): string {
   if (isNaN(currentIndex)) {
     return getRandomEmojiId();
   }
-  
-  const nextIndex = currentIndex % emojipackSize + 1;
+
+  const nextIndex = (currentIndex % emojipackSize) + 1;
   return nextIndex.toString();
 }

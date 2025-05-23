@@ -1154,7 +1154,7 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
   setPlaySamePuzzleAgainButtonVisible(false);
   isGameOver = false;
   currentInputs = [];
-  Board.showOpponentAsBotPlayer();
+  Board.showOpponentAsTutorialPlayer();
   showPuzzleTitle(problem.label);
 
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(problem.fen);

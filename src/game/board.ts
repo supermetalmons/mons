@@ -264,7 +264,8 @@ function createFullBoardBackgroundElement(): SVGElement {
 }
 
 export function showPuzzleTitle(title: string) {
-  if (titleTextElement) {
+  const puzzleTitlesDisabled = true; // TODO: clean up
+  if (titleTextElement && !puzzleTitlesDisabled) {
     titleTextElement.textContent = `«${title}»`;
   }
 }
@@ -581,6 +582,11 @@ export function updateEmojiIfNeeded(newEmojiId: string, isOpponentSide: boolean)
     playerSideMetadata.emojiId = newEmojiId;
     SVG.setEmojiImageUrl(playerAvatar, newEmojiUrl);
   }
+}
+
+export function showOpponentAsTutorialPlayer() {
+  if (!opponentAvatar) return;
+  SVG.setEmojiImageUrl(opponentAvatar, emojis.getTutorialEmojiUrl());
 }
 
 export function showOpponentAsBotPlayer() {
