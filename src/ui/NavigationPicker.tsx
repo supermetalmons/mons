@@ -3,6 +3,12 @@ import styled from "styled-components";
 import { problems } from "../content/problems";
 import { didSelectPuzzle } from "../game/gameController";
 
+interface NavigationPickerProps {
+  showsPuzzles: boolean;
+  showsHomeNavigation: boolean;
+  navigateHome?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+}
+
 const NavigationPickerContainer = styled.div`
   position: fixed;
   bottom: auto;
@@ -28,7 +34,6 @@ const NavigationPickerContainer = styled.div`
   @media (prefers-color-scheme: dark) {
     background-color: rgba(36, 36, 36, 0.9);
   }
-
 
   @media screen and (max-height: 453px) {
     bottom: 44px;
@@ -88,7 +93,48 @@ const NavigationPickerButton = styled.button`
   }
 `;
 
-const NavigationPicker: React.FC = () => {
+const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
+  background: none;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  padding: 12px 8px;
+  padding-right: 15px;
+  cursor: pointer;
+  text-align: center;
+  color: #333;
+  width: 100%;
+  border-top: ${(props) => (props.$withTopBorder ? "1px solid rgba(200, 200, 200, 0.3)" : "none")};
+  margin-top: ${(props) => (props.$withTopBorder ? "8px" : "0")};
+  padding-top: 12px;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: rgba(232, 232, 232, 0.5);
+    }
+  }
+
+  &:active {
+    background-color: rgba(224, 224, 224, 0.6);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: #f0f0f0;
+    border-top-color: ${(props) => (props.$withTopBorder ? "rgba(80, 80, 80, 0.3)" : "transparent")};
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: rgba(70, 70, 70, 0.4);
+      }
+    }
+
+    &:active {
+      background-color: rgba(80, 80, 80, 0.5);
+    }
+  }
+`;
+
+const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, showsHomeNavigation, navigateHome }) => {
   const navigationPickerRef = useRef<HTMLDivElement>(null);
 
   const handleNavigationSelect = (id: string) => {
@@ -102,14 +148,29 @@ const NavigationPicker: React.FC = () => {
     e.preventDefault();
   };
 
+  const handleHomeClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    if (navigateHome) {
+      navigateHome(event);
+    }
+  };
+
   return (
     <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
-      <SectionTitle>BASICS</SectionTitle>
-      {problems.map((item) => (
-        <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
-          {item.label}
-        </NavigationPickerButton>
-      ))}
+      {showsPuzzles && (
+        <>
+          <SectionTitle>BASICS</SectionTitle>
+          {problems.map((item) => (
+            <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
+              {item.label}
+            </NavigationPickerButton>
+          ))}
+        </>
+      )}
+      {showsHomeNavigation && (
+        <HomeBoardButton onClick={handleHomeClick} $withTopBorder={showsPuzzles}>
+          Home Board
+        </HomeBoardButton>
+      )}
     </NavigationPickerContainer>
   );
 };

@@ -268,8 +268,8 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   touch-action: none;
 
   svg {
-    width: ${(props) => (props.dimmed ? "13px" : "13px")};
-    height: ${(props) => (props.dimmed ? "13px" : "13px")};
+    width: ${(props) => (props.dimmed ? "16px" : "13px")};
+    height: ${(props) => (props.dimmed ? "16px" : "13px")};
     color: ${(props) => (props.dimmed ? "#333" : "#007aff")};
   }
 
@@ -277,8 +277,8 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
     width: ${(props) => (props.dimmed ? "32px" : "27px")};
 
     svg {
-      width: ${(props) => (props.dimmed ? "10px" : "10px")};
-      height: ${(props) => (props.dimmed ? "10px" : "10px")};
+      width: ${(props) => (props.dimmed ? "16px" : "10px")};
+      height: ${(props) => (props.dimmed ? "16px" : "10px")};
     }
   }
 

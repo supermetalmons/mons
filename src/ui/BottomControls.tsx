@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaList, FaPaintBrush, FaQuestionCircle } from "react-icons/fa";
+import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaPaintBrush, FaQuestionCircle } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
 import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, showPuzzleInstructions } from "../game/gameController";
@@ -88,7 +88,7 @@ const BottomControls: React.FC = () => {
   const [isAutomatchButtonVisible, setIsAutomatchButtonVisible] = useState(false);
   const [isAutomatchButtonEnabled, setIsAutomatchButtonEnabled] = useState(true);
   const [isWatchOnlyIndicatorVisible, setIsWatchOnlyIndicatorVisible] = useState(false);
-  const [isHomeButtonVisible, setIsHomeButtonVisible] = useState(false);
+  const [isDeepHomeButtonVisible, setIsDeepHomeButtonVisible] = useState(false);
   const [isInviteLoading, setIsInviteLoading] = useState(false);
   const [didCreateInvite, setDidCreateInvite] = useState(false);
   const [automatchButtonTmpState, setAutomatchButtonTmpState] = useState(false);
@@ -297,7 +297,7 @@ const BottomControls: React.FC = () => {
   };
 
   setHomeVisible = (visible: boolean) => {
-    setIsHomeButtonVisible(visible);
+    setIsDeepHomeButtonVisible(visible);
   };
 
   setAutomoveActionEnabled = (enabled: boolean) => {
@@ -493,7 +493,7 @@ const BottomControls: React.FC = () => {
       </BrushButton>
       {isNavigationPopupVisible && (
         <div ref={navigationPopupRef}>
-          <NavigationPicker />
+          <NavigationPicker showsPuzzles={isNavigationListButtonVisible} showsHomeNavigation={isDeepHomeButtonVisible} navigateHome={handleHomeClick} />
         </div>
       )}
       <ControlsContainer>
@@ -601,16 +601,9 @@ const BottomControls: React.FC = () => {
             <FaQuestionCircle />
           </ControlButton>
         )}
-        {isHomeButtonVisible && (
-          <ControlButton onClick={handleHomeClick} aria-label="Home">
-            <FaHome />
-          </ControlButton>
-        )}
-        {isNavigationListButtonVisible && (
-          <NavigationListButton ref={navigationButtonRef} dimmed={isNavigationButtonDimmed} onClick={!isMobile ? handleNavigationButtonClick : undefined} onTouchStart={isMobile ? handleNavigationButtonClick : undefined} aria-label="Navigation">
-            <FaList />
-          </NavigationListButton>
-        )}
+        <NavigationListButton ref={navigationButtonRef} dimmed={isNavigationButtonDimmed} onClick={!isMobile ? handleNavigationButtonClick : undefined} onTouchStart={isMobile ? handleNavigationButtonClick : undefined} aria-label="Navigation">
+          <FaHome />
+        </NavigationListButton>
         {isReactionPickerVisible && (
           <ReactionPicker ref={pickerRef} offsetToTheRight={!isResignButtonVisible}>
             <ReactionButton onClick={() => handleReactionSelect("yo")}>yo</ReactionButton>
