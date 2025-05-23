@@ -314,6 +314,7 @@ export const ControlButton = styled.button<{ disabled?: boolean }>`
   cursor: ${(props) => (props.disabled ? "default" : "pointer")};
   transition: background-color 0.3s ease;
   -webkit-tap-highlight-color: transparent;
+  overflow: visible;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -329,6 +330,7 @@ export const ControlButton = styled.button<{ disabled?: boolean }>`
     width: 16px;
     height: 16px;
     color: ${(props) => (props.disabled ? "#aaa" : "#333")};
+    overflow: visible;
   }
 
   @media (prefers-color-scheme: dark) {
