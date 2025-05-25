@@ -182,7 +182,7 @@ img {
   background-color: #f9f9f9de;
 
   @media (max-width: 320px) {
-    margin-right: 4px;
+    margin-right: 5px;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -248,7 +248,7 @@ img {
   margin-right: 6pt;
 
   @media (max-width: 380px) {
-    margin-right: 1pt;
+    margin-right: 5pt;
   }
 }
 
@@ -256,6 +256,6 @@ img {
   margin-left: 6pt;
 
   @media (max-width: 380px) {
-    margin-left: 1pt;
+    margin-left: 5pt;
   }
 }
