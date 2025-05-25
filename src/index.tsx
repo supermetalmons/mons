@@ -74,8 +74,9 @@ const App = () => {
 
   useEffect(() => {
     showAlertGlobal = (title: string, subtitle: string) => {
-      setAlertState({ title, subtitle });
-      showTalkingDude(true);
+      showTalkingDude(true).then(() => {
+        setAlertState({ title, subtitle });
+      });
     };
     hideAlertGlobal = () => {
       setAlertState(null);

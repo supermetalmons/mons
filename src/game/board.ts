@@ -116,6 +116,8 @@ export async function showTalkingDude(show: boolean) {
     setTopBoardOverlayVisible(null);
     return;
   } else if (show) {
+    const placeholder = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    setTopBoardOverlayVisible(placeholder);
     const sprite = (await import(`../assets/talkingDude`)).instructor;
     const location = new Location(6.69, -1);
     const img = loadImage(sprite, "talkingDude", true);
