@@ -7,7 +7,7 @@ import { PlayerProfile } from "../connection/connectionModels";
 
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
   opacity: 1;
-  height: calc(69dvh - 10px);
+  height: calc(min(69dvh - 10px - env(safe-area-inset-bottom) * 0.63, 100dvh - 110pt - env(safe-area-inset-bottom) * 0.63));
   margin-top: -2px;
   overflow: hidden;
   display: flex;

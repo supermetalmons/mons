@@ -13,7 +13,7 @@ const NavigationPickerContainer = styled.div`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
-  max-height: calc(100dvh - 110px - env(safe-area-inset-bottom));
+  max-height: calc(100dvh - 113px - env(safe-area-inset-bottom));
   max-width: 100pt;
   display: flex;
   flex-direction: column;

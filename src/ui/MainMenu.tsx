@@ -59,6 +59,7 @@ const CrackContainer = styled.div`
   left: -30px;
   pointer-events: none;
   z-index: 9999;
+  overflow: hidden;
 `;
 
 const RockButton = styled.button`
@@ -129,9 +130,7 @@ const RockMenu = styled.div<{ isOpen: boolean; showLeaderboard: boolean }>`
   flex-direction: column;
   gap: 6px;
   box-shadow: ${(props) => (props.isOpen ? "0 6px 20px rgba(0, 0, 0, 0.12)" : "none")};
-
   width: ${(props) => (props.showLeaderboard ? "min(300px, 83dvw)" : "230px")};
-  min-height: ${(props) => (props.showLeaderboard ? "69dvh" : "auto")};
 
   transform-origin: top left;
   opacity: ${(props) => (props.isOpen ? 1 : 0)};
