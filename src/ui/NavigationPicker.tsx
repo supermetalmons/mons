@@ -14,7 +14,7 @@ const NavigationPickerContainer = styled.div`
   bottom: auto;
   right: 8px;
   bottom: 50px;
-  max-height: calc(100vh - 110px);
+  max-height: calc(100dvh - 110px);
   max-width: 100pt;
   overflow-y: auto;
   opacity: 1;
@@ -26,7 +26,7 @@ const NavigationPickerContainer = styled.div`
   z-index: 5;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
-  touch-action: none;
+  touch-action: pan-y;
 
   @media (prefers-color-scheme: dark) {
     background-color: rgba(36, 36, 36, 0.9);
@@ -34,7 +34,7 @@ const NavigationPickerContainer = styled.div`
 
   @media screen and (max-height: 453px) {
     bottom: 44px;
-    max-height: calc(100vh - 100px);
+    max-height: calc(100dvh - 107px);
   }
 `;
 
