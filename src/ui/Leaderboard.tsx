@@ -22,6 +22,14 @@ const LeaderboardTable = styled.table`
   table-layout: fixed;
   font-size: 0.85rem;
 
+  @media (max-width: 360px) {
+    font-size: 0.8rem;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 0.75rem;
+  }
+
   @media (prefers-color-scheme: dark) {
     color: #f5f5f5;
   }
@@ -50,6 +58,10 @@ const LeaderboardTable = styled.table`
 
   td {
     padding: 6px 0 6px 0px;
+
+    @media (max-width: 360px) {
+      padding: 4px 0 4px 0px;
+    }
   }
 
   th,
@@ -69,20 +81,42 @@ const LeaderboardTable = styled.table`
       font-size: 0.75rem;
       color: #999;
       padding-left: 5px;
+
+      @media (max-width: 320px) {
+        width: 10%;
+        padding-left: 3px;
+      }
     }
     &:nth-child(2) {
       width: 11.5%;
       font-size: 0;
       text-align: left;
+
+      @media (max-width: 320px) {
+        width: 13%;
+      }
     }
     &:nth-child(3) {
       width: 62%;
       text-align: left;
+
+      @media (max-width: 320px) {
+        width: 57%;
+      }
     }
     &:nth-child(4) {
       width: 18.5%;
       text-align: right;
       padding-right: 15px;
+
+      @media (max-width: 360px) {
+        padding-right: 10px;
+      }
+
+      @media (max-width: 320px) {
+        width: 20%;
+        padding-right: 5px;
+      }
     }
   }
 
@@ -143,6 +177,17 @@ const EmojiImage = styled.img`
   height: 26px;
   vertical-align: middle;
   margin-left: 2px;
+
+  @media (max-width: 360px) {
+    width: 24px;
+    height: 24px;
+  }
+
+  @media (max-width: 320px) {
+    width: 22px;
+    height: 22px;
+    margin-left: 1px;
+  }
 `;
 
 const EmojiPlaceholder = styled.div`
@@ -152,6 +197,17 @@ const EmojiPlaceholder = styled.div`
   display: inline-block;
   vertical-align: middle;
   margin-left: 2px;
+
+  @media (max-width: 360px) {
+    width: 24px;
+    height: 24px;
+  }
+
+  @media (max-width: 320px) {
+    width: 22px;
+    height: 22px;
+    margin-left: 1px;
+  }
 
   &:after {
     content: "";
@@ -163,6 +219,16 @@ const EmojiPlaceholder = styled.div`
     height: 18px;
     border-radius: 50%;
     background-color: #e0e0e0;
+
+    @media (max-width: 360px) {
+      width: 16px;
+      height: 16px;
+    }
+
+    @media (max-width: 320px) {
+      width: 14px;
+      height: 14px;
+    }
   }
 
   @media (prefers-color-scheme: dark) {
