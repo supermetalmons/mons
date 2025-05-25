@@ -58,6 +58,7 @@ export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean 
   outline: none;
   -webkit-touch-callout: none;
   touch-action: none;
+  overflow: visible;
 
   @media screen and (max-height: 453px) {
     bottom: 6px;
@@ -76,6 +77,7 @@ export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean 
     width: 12px;
     height: 12px;
     color: #76778788;
+    overflow: visible;
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -266,11 +268,13 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   outline: none;
   -webkit-touch-callout: none;
   touch-action: none;
+  overflow: visible;
 
   svg {
     width: ${(props) => (props.dimmed ? "16px" : "13px")};
     height: ${(props) => (props.dimmed ? "16px" : "13px")};
     color: ${(props) => (props.dimmed ? "#333" : "#007aff")};
+    overflow: visible;
   }
 
   @media screen and (max-width: 387px) {
