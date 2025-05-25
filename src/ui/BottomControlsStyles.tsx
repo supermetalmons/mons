@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const ControlsContainer = styled.div`
   position: fixed;
-  bottom: 10px;
+  bottom: max(10px, env(safe-area-inset-bottom));
   right: 10px;
   left: 46px;
   display: flex;
@@ -10,7 +10,7 @@ export const ControlsContainer = styled.div`
   justify-content: flex-end;
 
   @media screen and (max-height: 453px) {
-    bottom: 6px;
+    bottom: max(6px, env(safe-area-inset-bottom));
   }
 
   @media screen and (orientation: portrait) {
@@ -38,7 +38,7 @@ export const ControlsContainer = styled.div`
 
 export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
   position: fixed;
-  bottom: 10px;
+  bottom: max(10px, env(safe-area-inset-bottom));
   left: 9px;
   width: 32px;
   height: 32px;
@@ -61,7 +61,7 @@ export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean 
   overflow: visible;
 
   @media screen and (max-height: 453px) {
-    bottom: 6px;
+    bottom: max(6px, env(safe-area-inset-bottom));
   }
 
   @media screen and (orientation: portrait) {

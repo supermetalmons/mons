@@ -145,7 +145,7 @@ const BoardComponent: React.FC = () => {
               height: isGridVisible ? "78.2%" : "82.6%",
               aspectRatio: isGridVisible ? "1" : "1524/1612",
               backdropFilter: "blur(3px)",
-              WebkitBackdropFilter: "blur(5px)",
+              WebkitBackdropFilter: "blur(3px)",
               overflow: "hidden",
               border: "none",
             }}
