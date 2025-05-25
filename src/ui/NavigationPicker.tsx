@@ -18,6 +18,7 @@ const NavigationPickerContainer = styled.div`
   display: flex;
   flex-direction: column;
   background-color: rgba(249, 249, 249, 0.9);
+  backdrop-filter: blur(3px);
   border-radius: 7pt;
   padding: 8px;
   gap: 0;
