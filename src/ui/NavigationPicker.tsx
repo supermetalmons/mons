@@ -11,22 +11,17 @@ interface NavigationPickerProps {
 
 const NavigationPickerContainer = styled.div`
   position: fixed;
-  bottom: auto;
-  right: 8px;
   bottom: 50px;
+  right: 8px;
   max-height: calc(100dvh - 110px);
   max-width: 100pt;
-  overflow-y: auto;
-  opacity: 1;
-  cursor: pointer;
+  display: flex;
+  flex-direction: column;
   background-color: rgba(249, 249, 249, 0.9);
   border-radius: 7pt;
   padding: 8px;
-  gap: 0px;
+  gap: 0;
   z-index: 5;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
 
   @media (prefers-color-scheme: dark) {
     background-color: rgba(36, 36, 36, 0.9);
@@ -38,13 +33,18 @@ const NavigationPickerContainer = styled.div`
   }
 `;
 
+const ScrollableList = styled.div`
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex-grow: 1;
+`;
+
 const SectionTitle = styled.div`
   font-size: 0.5rem;
   font-weight: bold;
   color: #767787;
   text-align: left;
-  padding-top: 1px;
-  padding-bottom: 2pt;
+  padding: 1px 0 2pt;
   cursor: pointer;
 
   @media (prefers-color-scheme: dark) {
@@ -56,12 +56,11 @@ const NavigationPickerButton = styled.button`
   background: none;
   font-size: 13px;
   border: none;
-  padding: 6px 0px;
+  padding: 6px 0;
   cursor: pointer;
   text-align: left;
   color: #333;
   width: 100%;
-  text-align: left;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -89,6 +88,8 @@ const NavigationPickerButton = styled.button`
 `;
 
 const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
+  position: sticky;
+  bottom: 0;
   background-color: #007aff;
   color: white;
   border-radius: 50px;
@@ -97,17 +98,13 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
   border: none;
   cursor: pointer;
   text-align: center;
-  min-width: fit-content;
+  width: 100%;
+  margin-top: ${(props) => (props.$withTopBorder ? "8px" : "0")};
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   outline: none;
-  -webkit-touch-callout: none;
-  touch-action: none;
-  width: 100%;
-  margin-top: ${(props) => (props.$withTopBorder ? "8px" : "0")};
+  z-index: 2;
 
   &:active {
     background-color: #0056b3;
@@ -148,23 +145,21 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
     e.preventDefault();
   };
 
-  const handleHomeClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    if (navigateHome) {
-      navigateHome(event);
-    }
+  const handleHomeClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    navigateHome?.(e);
   };
 
   return (
     <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
       {showsPuzzles && (
-        <>
+        <ScrollableList>
           <SectionTitle>BASICS</SectionTitle>
           {problems.map((item) => (
             <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
               {item.label}
             </NavigationPickerButton>
           ))}
-        </>
+        </ScrollableList>
       )}
       {showsHomeNavigation && (
         <HomeBoardButton onClick={handleHomeClick} $withTopBorder={showsPuzzles}>
