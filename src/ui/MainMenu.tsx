@@ -148,6 +148,7 @@ const InfoPopover = styled.div<{ isOpen: boolean }>`
   right: 9pt;
   font-size: 12px;
   background-color: rgba(250, 250, 250, 0.95);
+  max-height: calc(100dvh - 113px - env(safe-area-inset-bottom));
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 7pt;
@@ -164,6 +165,9 @@ const InfoPopover = styled.div<{ isOpen: boolean }>`
   text-align: left;
   cursor: default;
   line-height: 2.1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  flex-grow: 1;
 
   @media (prefers-color-scheme: dark) {
     background-color: rgba(35, 35, 35, 0.95);
