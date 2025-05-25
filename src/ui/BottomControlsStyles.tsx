@@ -360,7 +360,9 @@ export const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   position: absolute;
   bottom: 40px;
   right: ${(props) => (props.offsetToTheRight ? "22px" : "64px")};
-  background-color: #f0f0f0;
+  background-color: rgba(249, 249, 249, 0.9);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
   border-radius: 8px;
   padding: 8px;
   display: flex;
@@ -372,7 +374,7 @@ export const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: #333;
+    background-color: rgba(36, 36, 36, 0.9);
   }
 `;
 
@@ -386,12 +388,12 @@ export const ReactionButton = styled.button`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: #e8e8e8;
+      background-color: rgba(232, 232, 232, 0.5);
     }
   }
 
   &:active {
-    background-color: #e0e0e0;
+    background-color: rgba(224, 224, 224, 0.6);
   }
 
   @media (prefers-color-scheme: dark) {
@@ -399,12 +401,12 @@ export const ReactionButton = styled.button`
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: #3a3a3a;
+        background-color: rgba(70, 70, 70, 0.4);
       }
     }
 
     &:active {
-      background-color: #484848;
+      background-color: rgba(80, 80, 80, 0.5);
     }
   }
 `;
