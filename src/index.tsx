@@ -179,7 +179,6 @@ const App = () => {
                           </button>
                           <button className="sound-button" onClick={handleLogOutButtonClick} aria-label={"Log Out"}>
                             <FaPowerOff />
-                            {/* <FaEllipsisH /> */}
                           </button>
                         </>
                       )}
