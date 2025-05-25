@@ -149,6 +149,7 @@ const InfoPopover = styled.div<{ isOpen: boolean }>`
   right: 9pt;
   font-size: 12px;
   background-color: rgba(250, 250, 250, 0.95);
+  backdrop-filter: blur(3px);
   border-radius: 7pt;
   padding-top: 8px;
   padding-right: 12px;
