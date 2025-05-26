@@ -93,7 +93,6 @@ const App = () => {
   useEffect(() => {
     storage.setIsMuted(isMuted);
     globalIsMuted = isMuted;
-    soundPlayer.didBecomeMuted(isMuted);
   }, [isMuted]);
 
   const handleMuteToggle = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {

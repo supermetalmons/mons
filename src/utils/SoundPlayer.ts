@@ -1,61 +1,34 @@
-import { showMonsAlbumArtwork } from "../content/music";
 import { getIsMuted } from "../index";
-import { isMobileOrVision, createSilentAudioDataUrl } from "./misc";
 
 export class SoundPlayer {
   private audioContext!: AudioContext;
-  private audioBufferCache: Map<string, AudioBuffer>;
-  private isInitialized: boolean;
-  private silentAudio: HTMLAudioElement | null;
+  private audioBufferCache = new Map<string, AudioBuffer>();
+  private isInitialized = false;
 
-  constructor() {
-    this.audioBufferCache = new Map();
-    this.isInitialized = false;
-    this.silentAudio = null;
-  }
-
-  public initialize(force: boolean): void {
+  public async initialize(force: boolean) {
     if (this.isInitialized) return;
     if (force || !getIsMuted()) {
-      if (isMobileOrVision) {
-        const silentAudioUrl = createSilentAudioDataUrl(3);
-        this.silentAudio = new Audio(silentAudioUrl);
-        this.silentAudio.loop = true;
-        this.silentAudio.volume = 0.01;
-      }
-
-      this.startSilentAudioIfNeeded();
-      this.audioContext = new AudioContext();
+      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+      await this.unlockOnce();
       this.isInitialized = true;
     }
   }
 
-  private startSilentAudioIfNeeded() {
-    if (!getIsMuted() && isMobileOrVision) {
-      this.silentAudio?.play().catch((_) => {});
-      showMonsAlbumArtwork();
+  private unlockOnce = async () => {
+    if (this.audioContext.state === "suspended") {
+      await this.audioContext.resume();
     }
-  }
-
-  private pauseSilentAudioIfNeeded() {
-    if (isMobileOrVision) {
-      this.silentAudio?.pause();
-    }
-  }
-
-  public didBecomeMuted(muted: boolean) {
-    if (muted) {
-      this.pauseSilentAudioIfNeeded();
-    } else {
-      this.startSilentAudioIfNeeded();
-    }
-  }
+    const buffer = this.audioContext.createBuffer(1, 1, this.audioContext.sampleRate);
+    const source = this.audioContext.createBufferSource();
+    source.buffer = buffer;
+    source.connect(this.audioContext.destination);
+    source.start(0);
+  };
 
   private async loadAudioBuffer(url: string): Promise<AudioBuffer> {
     if (this.audioBufferCache.has(url)) {
       return this.audioBufferCache.get(url)!;
     }
-
     const response = await fetch(url);
     const arrayBuffer = await response.arrayBuffer();
     const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
@@ -64,14 +37,10 @@ export class SoundPlayer {
   }
 
   public async playSound(url: string): Promise<void> {
-    if (!this.isInitialized) {
-      return;
-    }
-
+    if (!this.isInitialized) return;
     if (this.audioContext.state === "suspended") {
       await this.audioContext.resume();
     }
-
     const audioBuffer = await this.loadAudioBuffer(url);
     const source = this.audioContext.createBufferSource();
     source.buffer = audioBuffer;
@@ -89,7 +58,6 @@ document.addEventListener(
   },
   { once: true }
 );
-
 document.addEventListener(
   "click",
   async () => {
