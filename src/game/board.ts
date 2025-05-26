@@ -15,6 +15,7 @@ import { PlayerProfile } from "../connection/connectionModels";
 import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
 import { showShinyCard, showsShinyCardSomewhere } from "../ui/ShinyCard";
 import { getMonId, getMonsIndexes, MonType } from "../utils/namedMons";
+import { instructor } from "../assets/talkingDude";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 
@@ -118,7 +119,7 @@ export async function showTalkingDude(show: boolean) {
   } else if (show) {
     const placeholder = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     setTopBoardOverlayVisible(placeholder);
-    const sprite = (await import(`../assets/talkingDude`)).instructor;
+    const sprite = instructor;
     const location = new Location(6.69, -1);
     const img = loadImage(sprite, "talkingDude", true);
     setCenterTranformOrigin(img, location);
