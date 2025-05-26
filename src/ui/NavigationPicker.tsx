@@ -93,8 +93,9 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
   bottom: 0;
   background-color: #007aff;
   color: white;
-  border-radius: 50px;
+  border-radius: 13px;
   padding: 8px 16px;
+  height: 42px;
   font-weight: bold;
   border: none;
   cursor: pointer;
