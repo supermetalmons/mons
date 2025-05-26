@@ -47,12 +47,13 @@ export function hideFullScreenAlert() {
     hideAlertGlobal();
   }
 }
-
 export function showFullScreenAlert(title: string, subtitle: string) {
   if (showAlertGlobal) {
     showAlertGlobal(title, subtitle);
   }
 }
+
+export let setIsMusicPlayingGlobal: (playing: boolean) => void;
 
 const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
@@ -62,6 +63,8 @@ const App = () => {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [alertState, setAlertState] = useState<{ title: string; subtitle: string } | null>(null);
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
+
+  setIsMusicPlayingGlobal = setIsMusicPlaying;
 
   enterProfileEditingMode = (enter: boolean) => {
     setIsProfileEditingMode(enter);

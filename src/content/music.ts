@@ -1,4 +1,5 @@
 import { logoBase64 } from "../content/uiAssets";
+import { setIsMusicPlayingGlobal } from "../index";
 
 const tracks = ["arploop", "band", "bell-dance", "bell-glide", "bounce", "bubble-jam", "buzz", "change", "chimes-photography_going-home", "clock-tower", "cloud-propeller-2", "cloud-propeller", "crumbs", "driver", "drreams", "ewejam", "gilded", "gustofwind", "honkshoooo-memememeee-zzzZZZ", "jelly-jam", "mana-pool", "melodine", "object", "organwhawha", "ping", "runner", "spirit-track", "super", "whale2"];
 
@@ -19,10 +20,15 @@ export function showMonsAlbumArtwork(title: string) {
   }
 }
 
+const onPause = () => setIsMusicPlayingGlobal(false);
+const onPlay = () => setIsMusicPlayingGlobal(true);
+
 export function startPlayingMusic(): void {
   if (!audioElement) {
     audioElement = new Audio(getRandomTrackUrl());
     audioElement.addEventListener("ended", playNextTrack);
+    audioElement.addEventListener("pause", onPause);
+    audioElement.addEventListener("play", onPlay);
   }
   audioElement.play().catch((error) => {
     console.error("Error playing audio:", error);
@@ -35,6 +41,8 @@ export function stopPlayingMusic(): void {
     audioElement.pause();
     audioElement.currentTime = 0;
     audioElement.removeEventListener("ended", playNextTrack);
+    audioElement.removeEventListener("pause", onPause);
+    audioElement.removeEventListener("play", onPlay);
     audioElement = null;
   }
 }
