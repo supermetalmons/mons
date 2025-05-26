@@ -29,6 +29,15 @@ export function startPlayingMusic(): void {
     audioElement.addEventListener("ended", playNextTrack);
     audioElement.addEventListener("pause", onPause);
     audioElement.addEventListener("play", onPlay);
+
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.setActionHandler("nexttrack", () => {
+        playNextTrack();
+      });
+      navigator.mediaSession.setActionHandler("previoustrack", () => {
+        playNextTrack();
+      });
+    }
   }
   audioElement.play().catch((error) => {
     console.error("Error playing audio:", error);
@@ -43,6 +52,12 @@ export function stopPlayingMusic(): void {
     audioElement.removeEventListener("ended", playNextTrack);
     audioElement.removeEventListener("pause", onPause);
     audioElement.removeEventListener("play", onPlay);
+
+    if ("mediaSession" in navigator) {
+      navigator.mediaSession.setActionHandler("nexttrack", null);
+      navigator.mediaSession.setActionHandler("previoustrack", null);
+    }
+
     audioElement = null;
   }
 }
