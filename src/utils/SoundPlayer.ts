@@ -1,17 +1,34 @@
-import { getIsMuted } from "../index";
-
 export class SoundPlayer {
   private audioContext!: AudioContext;
   private audioBufferCache = new Map<string, AudioBuffer>();
   private isInitialized = false;
 
-  public async initialize(force: boolean) {
+  constructor() {
+    document.addEventListener("touchend", () => this.initializeOnUserInteraction(), { once: true });
+    document.addEventListener("click", () => this.initializeOnUserInteraction(), { once: true });
+    this.attachVisibilityHandlers();
+  }
+
+  public async initializeOnUserInteraction() {
     if (this.isInitialized) return;
-    if (force || !getIsMuted()) {
-      this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-      await this.unlockOnce();
-      this.isInitialized = true;
-    }
+    this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    await this.unlockOnce();
+    this.isInitialized = true;
+  }
+
+  private attachVisibilityHandlers() {
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "hidden") {
+        this.cleanup();
+      } else if (document.visibilityState === "visible") {
+        this.setupRestartListeners();
+      }
+    });
+  }
+
+  private cleanup() {
+    if (!this.isInitialized) return;
+    this.audioContext.suspend();
   }
 
   private unlockOnce = async () => {
@@ -36,9 +53,20 @@ export class SoundPlayer {
     return audioBuffer;
   }
 
+  private setupRestartListeners(): void {
+    const handler = async () => {
+      await this.unlockOnce();
+      document.removeEventListener("touchend", handler);
+      document.removeEventListener("click", handler);
+    };
+    document.addEventListener("touchend", handler, { once: true });
+    document.addEventListener("click", handler, { once: true });
+  }
+
   public async playSound(url: string): Promise<void> {
     if (!this.isInitialized) return;
     if (this.audioContext.state === "suspended") {
+      this.setupRestartListeners();
       await this.audioContext.resume();
     }
     const audioBuffer = await this.loadAudioBuffer(url);
@@ -50,18 +78,3 @@ export class SoundPlayer {
 }
 
 export const soundPlayer = new SoundPlayer();
-
-document.addEventListener(
-  "touchend",
-  async () => {
-    soundPlayer.initialize(false);
-  },
-  { once: true }
-);
-document.addEventListener(
-  "click",
-  async () => {
-    soundPlayer.initialize(false);
-  },
-  { once: true }
-);

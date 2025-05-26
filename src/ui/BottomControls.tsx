@@ -160,7 +160,7 @@ const BottomControls: React.FC = () => {
   };
 
   const handleInviteClick = () => {
-    soundPlayer.initialize(false);
+    soundPlayer.initializeOnUserInteraction();
     if (!didCreateInvite) {
       didClickInviteActionButtonBeforeThereIsInviteReady();
     }
@@ -439,20 +439,20 @@ const BottomControls: React.FC = () => {
 
   const handlePrimaryActionClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    soundPlayer.initialize(false);
+    soundPlayer.initializeOnUserInteraction();
     didClickPrimaryActionButton(primaryAction);
     setPrimaryAction(PrimaryActionType.None);
   };
 
   const handleBotGameClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    soundPlayer.initialize(false);
+    soundPlayer.initializeOnUserInteraction();
     didClickStartBotGameButton();
   };
 
   const handleAutomatchClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    soundPlayer.initialize(false);
+    soundPlayer.initializeOnUserInteraction();
     didClickAutomatchButton();
     setAutomatchEnabled(false);
     setAutomatchButtonTmpState(true);

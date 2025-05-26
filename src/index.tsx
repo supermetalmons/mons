@@ -97,7 +97,7 @@ const App = () => {
   const handleMuteToggle = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     setIsMuted((prev) => !prev);
-    soundPlayer.initialize(true);
+    soundPlayer.initializeOnUserInteraction();
   }, []);
 
   const handleMusicToggle = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
