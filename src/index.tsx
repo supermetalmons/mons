@@ -15,7 +15,6 @@ import { signIn } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
 import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaUndo, FaRegGem, FaPowerOff } from "react-icons/fa";
-import { isMobileOrVision } from "./utils/misc";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { startPlayingMusic, stopPlayingMusic } from "./content/music";
 import { storage } from "./utils/storage";
@@ -25,7 +24,7 @@ import { showTalkingDude } from "./game/board";
 import { didClickIdCardEditUndoButton } from "./ui/ShinyCard";
 
 let globalIsMuted: boolean = (() => {
-  return storage.getIsMuted(isMobileOrVision);
+  return storage.getIsMuted(false);
 })();
 
 export const getIsMuted = (): boolean => globalIsMuted;
