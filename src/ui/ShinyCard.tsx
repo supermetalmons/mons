@@ -10,6 +10,8 @@ import { STICKER_ADD_PROMPTS_FRAMES, STICKER_PATHS } from "../utils/stickers";
 import { PlayerProfile } from "../connection/connectionModels";
 import { MonType, getMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes, getMonsIndexes } from "../utils/namedMons";
 
+const editingPanelFeatureEnabled = false; // TODO: dev tmp
+
 const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
 const IDLE_SHINE_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
 const HOVER_SHINE_GRADIENT = (percentX: number, percentY: number) => `radial-gradient(circle at ${percentX}% ${percentY}%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%)`;
@@ -54,6 +56,8 @@ let ownAngelImg: HTMLImageElement | null;
 let ownSpiritImg: HTMLImageElement | null;
 let ownMysticImg: HTMLImageElement | null;
 let ownCardContentsLayer: HTMLDivElement | null;
+let editingPanel: HTMLDivElement | null = null;
+let editingPanelKeyboardHandler: ((e: KeyboardEvent) => void) | null = null;
 
 let cardResizeObserver: ResizeObserver | null = null;
 let textElements: Array<{ element: HTMLElement; card: HTMLElement }> = [];
@@ -394,6 +398,123 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     };
     animateDisperse();
     showHitAreasForStickersThatAreNotSet();
+    if (editingPanelFeatureEnabled) {
+      showEditingPanel();
+    }
+  };
+
+  const exitEditingMode = () => {
+    if (!isEditingMode || isOtherPlayer) return;
+
+    isEditingMode = false;
+
+    if (cardContainer) {
+      cardContainer.style.transition = "transform 0.3s ease-out";
+      cardContainer.style.transform = "scale(1)";
+    }
+
+    cardContentsLayer.style.transition = "transform 0.3s ease-out";
+    cardContentsLayer.style.transform = "translateY(-2.77%) scale(1.03)";
+
+    Object.keys(STICKER_ADD_PROMPTS_FRAMES).forEach((stickerType) => {
+      if (!currentlySelectedStickers[stickerType]) {
+        const hitArea = stickerHitAreas[stickerType];
+        if (hitArea) {
+          hitArea.style.opacity = "0";
+          setTimeout(() => {
+            if (hitArea.parentNode) {
+              hitArea.parentNode.removeChild(hitArea);
+            }
+            delete stickerHitAreas[stickerType];
+          }, 200);
+        }
+      }
+    });
+
+    shinyOverlay.style.background = IDLE_SHINE_GRADIENT;
+    hideEditingPanel();
+  };
+
+  const showEditingPanel = () => {
+    if (editingPanel || isOtherPlayer) return;
+
+    editingPanel = document.createElement("div");
+    editingPanel.style.position = "absolute";
+    editingPanel.style.right = "0";
+    editingPanel.style.top = "100%";
+    editingPanel.style.marginTop = "12px";
+    editingPanel.style.backgroundColor = "rgba(255, 255, 255, 0.95)";
+    editingPanel.style.backdropFilter = "blur(10px)";
+    editingPanel.style.border = "1px solid rgba(0, 0, 0, 0.1)";
+    editingPanel.style.borderRadius = "12px";
+    editingPanel.style.padding = "12px 20px";
+    editingPanel.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.15)";
+    editingPanel.style.zIndex = "1001";
+    editingPanel.style.userSelect = "none";
+    editingPanel.style.opacity = "0";
+    editingPanel.style.transition = "opacity 0.3s ease-out";
+    const doneButton = document.createElement("button");
+    doneButton.textContent = "Done";
+    doneButton.style.backgroundColor = "var(--link-color-dark, #007AFF)";
+    doneButton.style.color = "white";
+    doneButton.style.border = "none";
+    doneButton.style.borderRadius = "8px";
+    doneButton.style.padding = "8px 16px";
+    doneButton.style.fontSize = "14px";
+    doneButton.style.fontWeight = "600";
+    doneButton.style.cursor = "pointer";
+    doneButton.style.transition = "background-color 0.2s ease-out";
+    doneButton.style.outline = "none";
+
+    const handleDoneAction = (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+      exitEditingMode();
+    };
+
+    doneButton.addEventListener("mouseenter", () => {
+      doneButton.style.backgroundColor = "var(--link-color-dark-hover, #0056CC)";
+    });
+
+    doneButton.addEventListener("mouseleave", () => {
+      doneButton.style.backgroundColor = "var(--link-color-dark, #007AFF)";
+    });
+
+    doneButton.addEventListener("click", handleDoneAction);
+
+    editingPanelKeyboardHandler = (e: KeyboardEvent) => {
+      if (e.key === "Enter" || e.key === "Escape") {
+        handleDoneAction(e);
+      }
+    };
+
+    doneButton.tabIndex = 0;
+
+    editingPanel.appendChild(doneButton);
+    cardContainer.appendChild(editingPanel);
+    document.addEventListener("keydown", editingPanelKeyboardHandler);
+
+    requestAnimationFrame(() => {
+      editingPanel!.style.opacity = "1";
+      doneButton.focus();
+    });
+  };
+
+  const hideEditingPanel = () => {
+    if (!editingPanel) return;
+
+    if (editingPanelKeyboardHandler) {
+      document.removeEventListener("keydown", editingPanelKeyboardHandler);
+      editingPanelKeyboardHandler = null;
+    }
+
+    editingPanel.style.opacity = "0";
+    setTimeout(() => {
+      if (editingPanel && editingPanel.parentNode) {
+        editingPanel.parentNode.removeChild(editingPanel);
+      }
+      editingPanel = null;
+    }, 300);
   };
 
   const animateCard = () => {
@@ -1087,6 +1208,17 @@ const createOverlayStickersImage = (type: string, name: string): HTMLImageElemen
 export const hideShinyCard = () => {
   showsShinyCardSomewhere = false;
   displayedOtherPlayerProfile = null;
+
+  if (editingPanel && editingPanel.parentNode) {
+    editingPanel.parentNode.removeChild(editingPanel);
+    editingPanel = null;
+  }
+  if (editingPanelKeyboardHandler) {
+    document.removeEventListener("keydown", editingPanelKeyboardHandler);
+    editingPanelKeyboardHandler = null;
+  }
+  isEditingMode = false;
+
   const shinyCard = document.querySelector('[data-shiny-card="true"]');
   if (shinyCard && shinyCard.parentNode) {
     shinyCard.parentNode.removeChild(shinyCard);
