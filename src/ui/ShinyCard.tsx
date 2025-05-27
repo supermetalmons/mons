@@ -10,8 +10,6 @@ import { STICKER_ADD_PROMPTS_FRAMES, STICKER_PATHS } from "../utils/stickers";
 import { PlayerProfile } from "../connection/connectionModels";
 import { MonType, getMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes, getMonsIndexes } from "../utils/namedMons";
 
-const editingPanelFeatureEnabled = false; // TODO: dev tmp
-
 const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
 const IDLE_SHINE_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
 const HOVER_SHINE_GRADIENT = (percentX: number, percentY: number) => `radial-gradient(circle at ${percentX}% ${percentY}%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%)`;
@@ -398,9 +396,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     };
     animateDisperse();
     showHitAreasForStickersThatAreNotSet();
-    if (editingPanelFeatureEnabled) {
-      showEditingPanel();
-    }
+    showEditingPanel();
   };
 
   const exitEditingMode = () => {
@@ -439,46 +435,16 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     if (editingPanel || isOtherPlayer) return;
 
     editingPanel = document.createElement("div");
-    editingPanel.style.position = "absolute";
-    editingPanel.style.right = "0";
-    editingPanel.style.top = "100%";
-    editingPanel.style.marginTop = "12px";
-    editingPanel.style.backgroundColor = "rgba(255, 255, 255, 0.95)";
-    editingPanel.style.backdropFilter = "blur(10px)";
-    editingPanel.style.border = "1px solid rgba(0, 0, 0, 0.1)";
-    editingPanel.style.borderRadius = "12px";
-    editingPanel.style.padding = "12px 20px";
-    editingPanel.style.boxShadow = "0 4px 20px rgba(0, 0, 0, 0.15)";
-    editingPanel.style.zIndex = "1001";
-    editingPanel.style.userSelect = "none";
-    editingPanel.style.opacity = "0";
-    editingPanel.style.transition = "opacity 0.3s ease-out";
+    editingPanel.className = "shiny-card-editing-panel";
     const doneButton = document.createElement("button");
     doneButton.textContent = "Done";
-    doneButton.style.backgroundColor = "var(--link-color-dark, #007AFF)";
-    doneButton.style.color = "white";
-    doneButton.style.border = "none";
-    doneButton.style.borderRadius = "8px";
-    doneButton.style.padding = "8px 16px";
-    doneButton.style.fontSize = "14px";
-    doneButton.style.fontWeight = "600";
-    doneButton.style.cursor = "pointer";
-    doneButton.style.transition = "background-color 0.2s ease-out";
-    doneButton.style.outline = "none";
+    doneButton.className = "shiny-card-done-button";
 
     const handleDoneAction = (e: Event) => {
       e.preventDefault();
       e.stopPropagation();
       exitEditingMode();
     };
-
-    doneButton.addEventListener("mouseenter", () => {
-      doneButton.style.backgroundColor = "var(--link-color-dark-hover, #0056CC)";
-    });
-
-    doneButton.addEventListener("mouseleave", () => {
-      doneButton.style.backgroundColor = "var(--link-color-dark, #007AFF)";
-    });
 
     doneButton.addEventListener("click", handleDoneAction);
 
