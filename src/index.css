@@ -210,6 +210,7 @@ img {
   outline: none;
   -webkit-touch-callout: none;
   touch-action: none;
+  overflow: visible;
 
   &:disabled {
     opacity: 0.5;
@@ -275,12 +276,66 @@ img {
   user-select: none;
   opacity: 0;
   transition: opacity 0.3s ease-out;
+  display: flex;
+  gap: 10px;
+  align-items: center;
 }
 
 @media (prefers-color-scheme: dark) {
   .shiny-card-editing-panel {
     background-color: rgba(36, 36, 36, 0.9);
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+}
+
+.shiny-card-undo-button {
+  height: 32px;
+  font-weight: 888;
+  font-size: 0.88rem;
+  border-radius: 10px;
+  padding: 0px 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f0f0f0;
+  color: #696969;
+  border: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  outline: none;
+  -webkit-touch-callout: none;
+}
+
+.shiny-card-undo-button:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+.shiny-card-undo-button:active:not(:disabled) {
+  background-color: #d0d0d0;
+}
+
+.shiny-card-undo-button:disabled {
+  opacity: 0.5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .shiny-card-undo-button {
+    background-color: #333;
+    color: #999999;
+  }
+
+  .shiny-card-undo-button:hover:not(:disabled) {
+    background-color: #444;
+  }
+
+  .shiny-card-undo-button:active:not(:disabled) {
+    background-color: #555;
   }
 }
 

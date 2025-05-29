@@ -5,7 +5,6 @@ import { isMobile, getStableRandomIdForProfileId } from "../utils/misc";
 import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
 import { didClickAndChangePlayerEmoji, didUpdateIdCardMons } from "../game/board";
-import { enableCardEditorUndo } from "../index";
 import { STICKER_ADD_PROMPTS_FRAMES, STICKER_PATHS } from "../utils/stickers";
 import { PlayerProfile } from "../connection/connectionModels";
 import { MonType, getMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes, getMonsIndexes } from "../utils/namedMons";
@@ -40,6 +39,7 @@ let mysticIndex = 0;
 let currentlySelectedStickers: Record<string, string>;
 
 let undoQueue: Array<[string, any]> = [];
+let panelUndoButton: HTMLButtonElement | null = null;
 
 export let showsShinyCardSomewhere = false;
 let isEditingMode = false;
@@ -436,9 +436,32 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
 
     editingPanel = document.createElement("div");
     editingPanel.className = "shiny-card-editing-panel";
+
+    const undoBtn = document.createElement("button");
+    undoBtn.className = "shiny-card-undo-button";
+    undoBtn.disabled = undoQueue.length === 0;
+
+    const undoSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    undoSvg.setAttribute("viewBox", "0 0 512 512");
+    undoSvg.style.width = "14px";
+    undoSvg.style.height = "14px";
+    undoSvg.style.fill = "currentColor";
+
+    const undoPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+    undoPath.setAttribute("d", "M125.7 160H176c17.7 0 32 14.3 32 32s-14.3 32-32 32H48c-17.7 0-32-14.3-32-32V64c0-17.7 14.3-32 32-32s32 14.3 32 32v51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z");
+
+    undoSvg.appendChild(undoPath);
+    undoBtn.appendChild(undoSvg);
+
     const doneButton = document.createElement("button");
     doneButton.textContent = "Done";
     doneButton.className = "shiny-card-done-button";
+
+    const handleUndoAction = (e: Event) => {
+      e.preventDefault();
+      e.stopPropagation();
+      didClickIdCardEditUndoButton();
+    };
 
     const handleDoneAction = (e: Event) => {
       e.preventDefault();
@@ -446,19 +469,28 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
       exitEditingMode();
     };
 
+    undoBtn.addEventListener("click", handleUndoAction);
     doneButton.addEventListener("click", handleDoneAction);
 
     editingPanelKeyboardHandler = (e: KeyboardEvent) => {
       if (e.key === "Enter" || e.key === "Escape") {
         handleDoneAction(e);
+      } else if ((e.ctrlKey || e.metaKey) && e.key === "z") {
+        e.preventDefault();
+        if (undoQueue.length > 0) {
+          handleUndoAction(e);
+        }
       }
     };
 
+    undoBtn.tabIndex = 0;
     doneButton.tabIndex = 0;
 
+    editingPanel.appendChild(undoBtn);
     editingPanel.appendChild(doneButton);
     cardContainer.appendChild(editingPanel);
     document.addEventListener("keydown", editingPanelKeyboardHandler);
+    panelUndoButton = undoBtn;
 
     requestAnimationFrame(() => {
       editingPanel!.style.opacity = "1";
@@ -474,6 +506,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
       editingPanelKeyboardHandler = null;
     }
 
+    panelUndoButton = null;
     editingPanel.style.opacity = "0";
     setTimeout(() => {
       if (editingPanel && editingPanel.parentNode) {
@@ -1353,10 +1386,12 @@ function updateExistingCardForAnotherProfile(profile: PlayerProfile | null, disp
 }
 
 async function updateUndoButton() {
-  enableCardEditorUndo(undoQueue && undoQueue.length > 0);
+  if (panelUndoButton) {
+    panelUndoButton.disabled = undoQueue.length === 0;
+  }
 }
 
-export async function didClickIdCardEditUndoButton() {
+async function didClickIdCardEditUndoButton() {
   if (undoQueue.length > 0) {
     const [contentType, oldId] = undoQueue.pop()!;
     updateContent(contentType, oldId, null);

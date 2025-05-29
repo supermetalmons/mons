@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { logoBase64 } from "../content/uiAssets";
 import { didDismissSomethingWithOutsideTapJustNow, didNotDismissAnythingWithOutsideTapJustNow, closeNavigationPopupIfAny } from "./BottomControls";
 import styled from "styled-components";
-import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
+import { defaultEarlyInputEventName, isMobile, getBuildInfo } from "../utils/misc";
 import { Leaderboard } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
@@ -771,17 +771,7 @@ const MainMenu: React.FC = () => {
                 </ExperimentButton>
                 <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
                 <BuildInfo>
-                  {process.env.REACT_APP_BUILD_DATETIME
-                    ? (() => {
-                        const date = new Date(Number(process.env.REACT_APP_BUILD_DATETIME) * 1000);
-                        const year = date.getUTCFullYear().toString().slice(-2);
-                        const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
-                        const day = date.getUTCDate().toString().padStart(2, "0");
-                        const hours = date.getUTCHours().toString().padStart(2, "0");
-                        const minutes = date.getUTCMinutes().toString().padStart(2, "0");
-                        return `build ${year}.${month}.${day} (${hours}.${minutes})`;
-                      })()
-                    : "local dev"}
+                  {getBuildInfo()}
                 </BuildInfo>
               </ExperimentalMenu>
             )}

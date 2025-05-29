@@ -1,71 +1,41 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
-import { ButtonsContainer, SaveButton } from "./NameEditModal";
+import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton, Subtitle } from "./SharedModalComponents";
 import { storage } from "../utils/storage";
 import { getNfts } from "../connection/connection";
 
 const doNotFetchNftsForNow = true;
 
-const InventoryOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1023;
+const InventoryOverlay = styled(ModalOverlay)`
   user-select: none;
-
-  @media (prefers-color-scheme: dark) {
-    background-color: rgba(0, 0, 0, 0.5);
-  }
 `;
 
-const InventoryPopup = styled.div`
+const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
   background-color: #fffffffa;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-  width: 85%;
-  max-width: 320px;
-  max-height: 70vh;
-  display: flex;
-  flex-direction: column;
+  padding: 20px;
   user-select: none;
   outline: none;
-  overflow: hidden;
-  position: relative;
+  ${(props) =>
+    props.hasNfts &&
+    `
+    max-height: 70vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    position: relative;
+  `}
 
   @media (prefers-color-scheme: dark) {
     background-color: #1a1a1afa;
   }
 `;
 
-const SectionTitle = styled.h3`
-  margin-top: 0;
-  margin-bottom: 20px;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #333;
-  user-select: none;
-  cursor: default;
-  text-align: left;
-  padding-bottom: 2px;
-
-  @media (prefers-color-scheme: dark) {
-    color: #f0f0f0;
-  }
+const InventoryTitle = styled(ModalTitle)`
+  margin-bottom: 24px;
 `;
 
-const SectionContainer = styled.div`
-  margin-bottom: 32px;
-
-  &:last-of-type {
-    margin-bottom: 20px;
-  }
+const NFTSection = styled.div`
+  margin-bottom: 24px;
 `;
 
 const Content = styled.div`
@@ -210,12 +180,12 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
 
   return (
     <InventoryOverlay onClick={cleanUpAndClose}>
-      <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus>
-        <SectionContainer>
-          <SectionTitle>Swag Pack</SectionTitle>
-          <Content>
-            <span style={{ fontStyle: "italic", opacity: 0.8 }}>coming soon</span>
-            {nfts.length > 0 && (
+      <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus hasNfts={nfts.length > 0}>
+        <InventoryTitle>Swag Pack</InventoryTitle>
+        <Subtitle>coming soon</Subtitle>
+        {nfts.length > 0 && (
+          <NFTSection>
+            <Content>
               <NFTGridContainer>
                 <NFTGrid>
                   {nfts.map((nft) => (
@@ -225,9 +195,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
                   ))}
                 </NFTGrid>
               </NFTGridContainer>
-            )}
-          </Content>
-        </SectionContainer>
+            </Content>
+          </NFTSection>
+        )}
 
         <ButtonsContainer>
           <SaveButton onClick={cleanUpAndClose} disabled={false}>
