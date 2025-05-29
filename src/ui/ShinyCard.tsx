@@ -5,7 +5,6 @@ import { isMobile, getStableRandomIdForProfileId } from "../utils/misc";
 import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
 import { didClickAndChangePlayerEmoji, didUpdateIdCardMons } from "../game/board";
-import { enableCardEditorUndo } from "../index";
 import { STICKER_ADD_PROMPTS_FRAMES, STICKER_PATHS } from "../utils/stickers";
 import { PlayerProfile } from "../connection/connectionModels";
 import { MonType, getMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes, getMonsIndexes } from "../utils/namedMons";
@@ -441,7 +440,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     const undoBtn = document.createElement("button");
     undoBtn.className = "shiny-card-undo-button";
     undoBtn.disabled = undoQueue.length === 0;
-    
+
     const undoSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     undoSvg.setAttribute("viewBox", "0 0 512 512");
     undoSvg.style.width = "14px";
@@ -1387,13 +1386,12 @@ function updateExistingCardForAnotherProfile(profile: PlayerProfile | null, disp
 }
 
 async function updateUndoButton() {
-  enableCardEditorUndo(undoQueue && undoQueue.length > 0);
   if (panelUndoButton) {
     panelUndoButton.disabled = undoQueue.length === 0;
   }
 }
 
-export async function didClickIdCardEditUndoButton() {
+async function didClickIdCardEditUndoButton() {
   if (undoQueue.length > 0) {
     const [contentType, oldId] = undoQueue.pop()!;
     updateContent(contentType, oldId, null);

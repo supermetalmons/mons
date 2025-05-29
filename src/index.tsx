@@ -14,14 +14,13 @@ import { useAuthStatus, createEthereumAuthAdapter } from "./connection/authentic
 import { signIn } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
-import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaUndo, FaRegGem, FaPowerOff } from "react-icons/fa";
+import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaCog, FaRegGem, FaPowerOff } from "react-icons/fa";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { startPlayingMusic, stopPlayingMusic } from "./content/music";
 import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory } from "./ui/ProfileSignIn";
 import FullScreenAlert from "./ui/FullScreenAlert";
 import { showTalkingDude } from "./game/board";
-import { didClickIdCardEditUndoButton } from "./ui/ShinyCard";
 
 let globalIsMuted: boolean = (() => {
   return storage.getIsMuted(false);
@@ -66,7 +65,6 @@ export function hasFullScreenAlertVisible(): boolean {
 let showAlertGlobal: (title: string, subtitle: string) => void;
 let hideAlertGlobal: () => void;
 export let enterProfileEditingMode: (enter: boolean) => void;
-export let enableCardEditorUndo: (enable: boolean) => void;
 
 export function hideFullScreenAlert() {
   if (hideAlertGlobal) {
@@ -85,7 +83,6 @@ const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
   const [isProfileEditingMode, setIsProfileEditingMode] = useState(false);
   const [isMuted, setIsMuted] = useState(globalIsMuted);
-  const [isUndoEnabled, setIsUndoEnabled] = useState(false);
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [alertState, setAlertState] = useState<{ title: string; subtitle: string } | null>(null);
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
@@ -94,10 +91,6 @@ const App = () => {
 
   enterProfileEditingMode = (enter: boolean) => {
     setIsProfileEditingMode(enter);
-  };
-
-  enableCardEditorUndo = (enable: boolean) => {
-    setIsUndoEnabled(enable);
   };
 
   useEffect(() => {
@@ -148,10 +141,10 @@ const App = () => {
     handleLogout();
   };
 
-  const handleUndoEditButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+  const handleSettingsButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     event.preventDefault();
-    didClickIdCardEditUndoButton();
+    // TODO: implement settings
   };
 
   const handleGemButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -198,8 +191,8 @@ const App = () => {
                         </>
                       ) : (
                         <>
-                          <button className="info-button" onClick={!isMobile ? handleUndoEditButtonClick : undefined} onTouchStart={isMobile ? handleUndoEditButtonClick : undefined} aria-label="Undo" disabled={!isUndoEnabled}>
-                            <FaUndo />
+                          <button className="info-button" onClick={!isMobile ? handleSettingsButtonClick : undefined} onTouchStart={isMobile ? handleSettingsButtonClick : undefined} aria-label="Settings">
+                            <FaCog />
                           </button>
                           <button className="music-button" onClick={!isMobile ? handleGemButtonClick : undefined} onTouchStart={isMobile ? handleGemButtonClick : undefined} aria-label="NFTs">
                             <FaRegGem />

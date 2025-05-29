@@ -210,6 +210,7 @@ img {
   outline: none;
   -webkit-touch-callout: none;
   touch-action: none;
+  overflow: visible;
 
   &:disabled {
     opacity: 0.5;
