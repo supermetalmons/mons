@@ -29,6 +29,32 @@ let globalIsMuted: boolean = (() => {
 
 export const getIsMuted = (): boolean => globalIsMuted;
 
+/*
+
+// TODO
+
+- [ ] undo on editing mode panel
+
+
+- [ ] settings
+
+
+- [ ] confirm logout
+
+
+- [ ] appearance
+
+
+- [ ] music
+
+
+- [ ] confirm early end of turn
+
+
+- [ ] notification banner
+
+*/
+
 const queryClient = new QueryClient();
 
 let getIsFullScreenAlertOpen: () => boolean = () => false;
