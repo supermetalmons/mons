@@ -33,6 +33,7 @@ export const ModalPopup = styled.div`
 export const ModalTitle = styled.h3`
   margin-top: 0;
   margin-bottom: 16px;
+  cursor: default;
   font-size: 1.1rem;
   color: #333;
 
@@ -163,5 +164,19 @@ export const DangerButton = styled(Button)<{ disabled?: boolean }>`
     &:active {
       background-color: ${(props) => (props.disabled ? "var(--color-dark-disabled)" : "var(--color-dark-default-active)")};
     }
+  }
+`;
+
+export const Subtitle = styled.p`
+  margin: 0 0 24px 0;
+  color: #696969;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  cursor: default;
+  font-style: italic;
+  opacity: 0.8;
+
+  @media (prefers-color-scheme: dark) {
+    color: #b0b0b0;
   }
 `;

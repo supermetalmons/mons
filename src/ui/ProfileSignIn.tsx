@@ -11,6 +11,7 @@ import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game
 import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
 import { LogoutConfirmModal } from "./LogoutConfirmModal";
+import { SettingsModal } from "./SettingsModal";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { hideShinyCard, showShinyCard, showsShinyCardSomewhere, updateShinyCardDisplayName } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
@@ -123,13 +124,15 @@ let getIsProfilePopupOpen: () => boolean = () => false;
 let getIsEditingPopupOpen: () => boolean = () => false;
 let getIsInventoryPopupOpen: () => boolean = () => false;
 let getIsLogoutConfirmPopupOpen: () => boolean = () => false;
+let getIsSettingsPopupOpen: () => boolean = () => false;
 export let closeProfilePopupIfAny: () => void = () => {};
 export let handleEditDisplayName: () => void;
 export let showInventory: () => void;
 export let handleLogout: () => void;
+export let showSettings: () => void;
 
 export function hasProfilePopupVisible(): boolean {
-  return getIsProfilePopupOpen() || getIsEditingPopupOpen() || getIsInventoryPopupOpen() || getIsLogoutConfirmPopupOpen();
+  return getIsProfilePopupOpen() || getIsEditingPopupOpen() || getIsInventoryPopupOpen() || getIsLogoutConfirmPopupOpen() || getIsSettingsPopupOpen();
 }
 
 let setProfileDisplayNameGlobal: ((name: string) => void) | null = null;
@@ -171,12 +174,14 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const [isEditingName, setIsEditingName] = useState(false);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
   getIsInventoryPopupOpen = () => isInventoryOpen;
   getIsEditingPopupOpen = () => isEditingName;
   getIsProfilePopupOpen = () => isOpen;
   getIsLogoutConfirmPopupOpen = () => isLogoutConfirmOpen;
+  getIsSettingsPopupOpen = () => isSettingsOpen;
   setProfileDisplayNameGlobal = setProfileDisplayName;
 
   useEffect(() => {
@@ -215,6 +220,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
   handleLogout = () => {
     setIsLogoutConfirmOpen(true);
+  };
+
+  showSettings = () => {
+    setIsSettingsOpen(true);
   };
 
   closeProfilePopupIfAny = () => {
@@ -274,6 +283,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const handleCancelLogout = () => {
     didDismissSomethingWithOutsideTapJustNow();
     setIsLogoutConfirmOpen(false);
+  };
+
+  const handleCloseSettings = () => {
+    didDismissSomethingWithOutsideTapJustNow();
+    setIsSettingsOpen(false);
   };
 
   const handleSolanaClick = async () => {
@@ -385,6 +399,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       {isEditingName && <NameEditModal initialName={storage.getUsername("")} onSave={handleSaveDisplayName} onCancel={handleCancelEditName} />}
       {isInventoryOpen && <InventoryModal onCancel={handleDismissInventory} />}
       {isLogoutConfirmOpen && <LogoutConfirmModal onConfirm={handleConfirmLogout} onCancel={handleCancelLogout} />}
+      {isSettingsOpen && <SettingsModal onClose={handleCloseSettings} />}
     </Container>
   );
 };

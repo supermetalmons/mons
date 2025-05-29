@@ -18,7 +18,7 @@ import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaCog, FaRegGe
 import { soundPlayer } from "./utils/SoundPlayer";
 import { startPlayingMusic, stopPlayingMusic } from "./content/music";
 import { storage } from "./utils/storage";
-import ProfileSignIn, { handleLogout, showInventory } from "./ui/ProfileSignIn";
+import ProfileSignIn, { handleLogout, showInventory, showSettings } from "./ui/ProfileSignIn";
 import FullScreenAlert from "./ui/FullScreenAlert";
 import { showTalkingDude } from "./game/board";
 
@@ -144,7 +144,7 @@ const App = () => {
   const handleSettingsButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     event.preventDefault();
-    // TODO: implement settings
+    showSettings();
   };
 
   const handleGemButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
