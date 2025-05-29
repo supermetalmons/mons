@@ -1166,23 +1166,30 @@ export function showEndTurnConfirmationOverlay(ok: () => void, cancel: () => voi
     cancel();
   });
 
+  const buttonWidth = 230;
+  const buttonHeight = 230;
+  const buttonY = 420;
+  const boardWidth = 1100;
+  const buttonX = boardWidth / 2 - buttonWidth / 2;
+
   const okButton = document.createElementNS(SVG.ns, "rect");
-  okButton.setAttribute("x", "400");
-  okButton.setAttribute("y", "600");
-  okButton.setAttribute("width", "300");
-  okButton.setAttribute("height", "120");
-  okButton.setAttribute("rx", "30");
-  SVG.setFill(okButton, "#4CAF50");
+  okButton.setAttribute("x", buttonX.toString());
+  okButton.setAttribute("y", buttonY.toString());
+  okButton.setAttribute("width", buttonWidth.toString());
+  okButton.setAttribute("height", buttonHeight.toString());
+  okButton.setAttribute("rx", "115");
+  SVG.setFill(okButton, "#009500");
   okButton.style.cursor = "pointer";
   overlay.appendChild(okButton);
 
   const okText = document.createElementNS(SVG.ns, "text");
-  okText.setAttribute("x", "550");
-  okText.setAttribute("y", "680");
+  okText.setAttribute("x", (buttonX + buttonWidth / 2).toString());
+  okText.setAttribute("y", (buttonY + buttonHeight / 2).toString());
   okText.setAttribute("text-anchor", "middle");
   okText.setAttribute("alignment-baseline", "middle");
   okText.setAttribute("font-size", "60");
   okText.setAttribute("fill", "#fff");
+  okText.style.pointerEvents = "none";
   okText.textContent = "Yes.";
   overlay.appendChild(okText);
 
