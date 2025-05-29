@@ -38,9 +38,6 @@ export const getIsMuted = (): boolean => globalIsMuted;
 - [ ] music
 
 
-- [ ] confirm early end of turn
-
-
 - [ ] notification banner
 
 */
