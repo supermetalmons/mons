@@ -30,6 +30,17 @@ export const ModalPopup = styled.div`
   }
 `;
 
+export const ModalTitle = styled.h3`
+  margin-top: 0;
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+  color: #333;
+
+  @media (prefers-color-scheme: dark) {
+    color: #f0f0f0;
+  }
+`;
+
 export const ButtonsContainer = styled.div`
   display: flex;
   justify-content: flex-end;
@@ -82,6 +93,47 @@ export const SaveButton = styled(Button)<{ disabled: boolean }>`
   --color-dark-default: #0b84ff;
   --color-dark-default-hover: #1a91ff;
   --color-dark-default-active: #299fff;
+  --color-dark-disabled: #555555;
+
+  background-color: ${(props) => (props.disabled ? "var(--color-disabled)" : "var(--color-default)")};
+  color: white;
+  min-width: 80px;
+  opacity: ${(props) => (props.disabled ? 0.7 : 1)};
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: ${(props) => (props.disabled ? "var(--color-disabled)" : "var(--color-default-hover)")};
+    }
+  }
+
+  &:active {
+    background-color: ${(props) => (props.disabled ? "var(--color-disabled)" : "var(--color-default-active)")};
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: ${(props) => (props.disabled ? "var(--color-dark-disabled)" : "var(--color-dark-default)")};
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: ${(props) => (props.disabled ? "var(--color-dark-disabled)" : "var(--color-dark-default-hover)")};
+      }
+    }
+
+    &:active {
+      background-color: ${(props) => (props.disabled ? "var(--color-dark-disabled)" : "var(--color-dark-default-active)")};
+    }
+  }
+`;
+
+export const DangerButton = styled(Button)<{ disabled?: boolean }>`
+  --color-default: #ff3b30;
+  --color-default-hover: #ff2d1b;
+  --color-default-active: #e5281d;
+  --color-disabled: #a0a0a0;
+
+  --color-dark-default: #ff453a;
+  --color-dark-default-hover: #ff6159;
+  --color-dark-default-active: #ff7a72;
   --color-dark-disabled: #555555;
 
   background-color: ${(props) => (props.disabled ? "var(--color-disabled)" : "var(--color-default)")};

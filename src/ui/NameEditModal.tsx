@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { isMobile } from "../utils/misc";
-import { ModalOverlay, ModalPopup, ButtonsContainer, CancelButton, SaveButton } from "./SharedModalComponents";
+import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, CancelButton, SaveButton } from "./SharedModalComponents";
 import { editUsername } from "../connection/connection";
 
 const NameEditOverlay = styled(ModalOverlay)`
@@ -11,17 +11,6 @@ const NameEditOverlay = styled(ModalOverlay)`
 
 const NameEditPopup = styled(ModalPopup)`
   padding: 20px;
-`;
-
-const Title = styled.h3`
-  margin-top: 0;
-  margin-bottom: 16px;
-  font-size: 1.1rem;
-  color: #333;
-
-  @media (prefers-color-scheme: dark) {
-    color: #f0f0f0;
-  }
 `;
 
 const NameInput = styled.input<{ isValid: boolean }>`
@@ -152,7 +141,7 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
   return (
     <NameEditOverlay onClick={onCancel}>
       <NameEditPopup onClick={(e) => e.stopPropagation()}>
-        <Title>{initialName ? "Edit Name" : "Set Name"}</Title>
+        <ModalTitle>{initialName ? "Edit Name" : "Set Name"}</ModalTitle>
         <NameInput ref={inputRef} type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus onKeyDown={handleKeyDown} spellCheck="false" autoCorrect="off" autoCapitalize="off" autoComplete="off" data-form-type="other" data-lpignore="true" inputMode="text" enterKeyHint="done" aria-autocomplete="none" aria-haspopup="false" aria-expanded="false" isValid={isValid} disabled={isSubmitting} />
         <ErrorMessage>{errorMessage}</ErrorMessage>
         <ButtonsContainer>

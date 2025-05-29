@@ -10,6 +10,7 @@ import { setAuthStatusGlobally } from "../connection/authentication";
 import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
 import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
+import { LogoutConfirmModal } from "./LogoutConfirmModal";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { hideShinyCard, showShinyCard, showsShinyCardSomewhere, updateShinyCardDisplayName } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
@@ -121,13 +122,14 @@ const CustomConnectButton = styled(BaseButton)`
 let getIsProfilePopupOpen: () => boolean = () => false;
 let getIsEditingPopupOpen: () => boolean = () => false;
 let getIsInventoryPopupOpen: () => boolean = () => false;
+let getIsLogoutConfirmPopupOpen: () => boolean = () => false;
 export let closeProfilePopupIfAny: () => void = () => {};
 export let handleEditDisplayName: () => void;
 export let showInventory: () => void;
 export let handleLogout: () => void;
 
 export function hasProfilePopupVisible(): boolean {
-  return getIsProfilePopupOpen() || getIsEditingPopupOpen() || getIsInventoryPopupOpen();
+  return getIsProfilePopupOpen() || getIsEditingPopupOpen() || getIsInventoryPopupOpen() || getIsLogoutConfirmPopupOpen();
 }
 
 let setProfileDisplayNameGlobal: ((name: string) => void) | null = null;
@@ -168,11 +170,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const [profileDisplayName, setProfileDisplayName] = useState(() => formatDisplayName(pendingUsername, pendingEthAddress, pendingSolAddress));
   const [isEditingName, setIsEditingName] = useState(false);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
+  const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
   getIsInventoryPopupOpen = () => isInventoryOpen;
   getIsEditingPopupOpen = () => isEditingName;
   getIsProfilePopupOpen = () => isOpen;
+  getIsLogoutConfirmPopupOpen = () => isLogoutConfirmOpen;
   setProfileDisplayNameGlobal = setProfileDisplayName;
 
   useEffect(() => {
@@ -202,11 +206,15 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     return () => document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
   });
 
-  handleLogout = () => {
+  const performLogout = () => {
     storage.signOut();
     signOut()
       .then(() => window.location.reload())
       .catch(() => window.location.reload());
+  };
+
+  handleLogout = () => {
+    setIsLogoutConfirmOpen(true);
   };
 
   closeProfilePopupIfAny = () => {
@@ -256,6 +264,16 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const handleCancelEditName = () => {
     didDismissSomethingWithOutsideTapJustNow();
     setIsEditingName(false);
+  };
+
+  const handleConfirmLogout = () => {
+    setIsLogoutConfirmOpen(false);
+    performLogout();
+  };
+
+  const handleCancelLogout = () => {
+    didDismissSomethingWithOutsideTapJustNow();
+    setIsLogoutConfirmOpen(false);
   };
 
   const handleSolanaClick = async () => {
@@ -366,6 +384,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       )}
       {isEditingName && <NameEditModal initialName={storage.getUsername("")} onSave={handleSaveDisplayName} onCancel={handleCancelEditName} />}
       {isInventoryOpen && <InventoryModal onCancel={handleDismissInventory} />}
+      {isLogoutConfirmOpen && <LogoutConfirmModal onConfirm={handleConfirmLogout} onCancel={handleCancelLogout} />}
     </Container>
   );
 };
