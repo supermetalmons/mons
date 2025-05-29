@@ -32,15 +32,6 @@ export const getIsMuted = (): boolean => globalIsMuted;
 
 // TODO
 
-- [ ] undo on editing mode panel
-
-
-- [ ] settings
-
-
-- [ ] confirm logout
-
-
 - [ ] appearance
 
 
