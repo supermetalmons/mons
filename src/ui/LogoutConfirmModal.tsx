@@ -8,7 +8,7 @@ const LogoutPopup = styled(ModalPopup)`
 `;
 
 const LogoutTitle = styled(ModalTitle)`
-  margin-bottom: 32px;
+  margin-bottom: 26px;
 `;
 
 export interface LogoutConfirmModalProps {
@@ -40,16 +40,12 @@ export const LogoutConfirmModal: React.FC<LogoutConfirmModalProps> = ({ onConfir
       <LogoutPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0}>
         <LogoutTitle>Log Out?</LogoutTitle>
         <ButtonsContainer>
-          <CancelButton onClick={onCancel}>
-            Cancel
-          </CancelButton>
-          <DangerButton onClick={onConfirm}>
-            Log Out
-          </DangerButton>
+          <CancelButton onClick={onCancel}>Cancel</CancelButton>
+          <DangerButton onClick={onConfirm}>Log Out</DangerButton>
         </ButtonsContainer>
       </LogoutPopup>
     </ModalOverlay>
   );
 };
 
-export default LogoutConfirmModal; 
+export default LogoutConfirmModal;
