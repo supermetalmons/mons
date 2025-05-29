@@ -1,36 +1,17 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
-import { ButtonsContainer, SaveButton } from "./NameEditModal";
+import { ModalOverlay, ModalPopup, ButtonsContainer, SaveButton } from "./SharedModalComponents";
 import { storage } from "../utils/storage";
 import { getNfts } from "../connection/connection";
 
 const doNotFetchNftsForNow = true;
 
-const InventoryOverlay = styled.div`
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.3);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 1023;
+const InventoryOverlay = styled(ModalOverlay)`
   user-select: none;
-
-  @media (prefers-color-scheme: dark) {
-    background-color: rgba(0, 0, 0, 0.5);
-  }
 `;
 
-const InventoryPopup = styled.div`
+const InventoryPopup = styled(ModalPopup)`
   background-color: #fffffffa;
-  padding: 24px;
-  border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
-  width: 85%;
-  max-width: 320px;
   max-height: 70vh;
   display: flex;
   flex-direction: column;
