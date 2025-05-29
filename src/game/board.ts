@@ -62,7 +62,7 @@ const wavesFrames: { [key: string]: SVGElement } = {};
 const opponentMoveStatusItems: SVGElement[] = [];
 const playerMoveStatusItems: SVGElement[] = [];
 const minHorizontalOffset = 0.21;
-let showsItemSelectionOverlay = false;
+let showsItemSelectionOrConfirmationOverlay = false;
 let dimmingOverlay: SVGElement | undefined;
 let opponentNameText: SVGElement | undefined;
 let playerNameText: SVGElement | undefined;
@@ -245,8 +245,8 @@ function setBoardDimmed(dimmed: boolean, color: string = "#00000023") {
 
   itemsLayer?.appendChild(overlay);
 
-  if (showsItemSelectionOverlay) {
-    hideItemSelection();
+  if (showsItemSelectionOrConfirmationOverlay) {
+    hideItemSelectionOrConfirmationOverlay();
     cleanupCurrentInputs();
   }
 }
@@ -350,7 +350,7 @@ export async function didToggleItemsStyleSet(isProfileMonsChange: boolean = fals
 
   removeHighlights();
   cleanAllPixels();
-  hideItemSelection();
+  hideItemSelectionOrConfirmationOverlay();
 
   if (!monsBoardDisplayAnimationTimeout) {
     showItemsAfterChangingAssetsStyle();
@@ -1146,11 +1146,55 @@ export function updateScore(white: number, black: number, winnerColor?: MonsWeb.
   renderPlayersNamesLabels();
 }
 
-export function hideItemSelection() {
-  if (showsItemSelectionOverlay) {
-    showsItemSelectionOverlay = false;
+export function hideItemSelectionOrConfirmationOverlay() {
+  if (showsItemSelectionOrConfirmationOverlay) {
+    showsItemSelectionOrConfirmationOverlay = false;
     setTopBoardOverlayVisible(null);
+    removeHighlights();
   }
+}
+
+export function showEndTurnConfirmationOverlay(ok: () => void, cancel: () => void): void {
+  const overlay = document.createElementNS(SVG.ns, "g");
+  const background = createFullBoardBackgroundElement();
+  overlay.appendChild(background);
+
+  background.addEventListener(defaultInputEventName, (event) => {
+    preventTouchstartIfNeeded(event);
+    event.stopPropagation();
+    setTopBoardOverlayVisible(null);
+    cancel();
+  });
+
+  const okButton = document.createElementNS(SVG.ns, "rect");
+  okButton.setAttribute("x", "400");
+  okButton.setAttribute("y", "600");
+  okButton.setAttribute("width", "300");
+  okButton.setAttribute("height", "120");
+  okButton.setAttribute("rx", "30");
+  SVG.setFill(okButton, "#4CAF50");
+  okButton.style.cursor = "pointer";
+  overlay.appendChild(okButton);
+
+  const okText = document.createElementNS(SVG.ns, "text");
+  okText.setAttribute("x", "550");
+  okText.setAttribute("y", "680");
+  okText.setAttribute("text-anchor", "middle");
+  okText.setAttribute("alignment-baseline", "middle");
+  okText.setAttribute("font-size", "60");
+  okText.setAttribute("fill", "#fff");
+  okText.textContent = "Yes.";
+  overlay.appendChild(okText);
+
+  okButton.addEventListener(defaultInputEventName, (event) => {
+    preventTouchstartIfNeeded(event);
+    event.stopPropagation();
+    setTopBoardOverlayVisible(null);
+    ok();
+  });
+
+  showsItemSelectionOrConfirmationOverlay = true;
+  setTopBoardOverlayVisible(overlay);
 }
 
 export function showItemSelection(): void {
@@ -1209,7 +1253,7 @@ export function showItemSelection(): void {
     setTopBoardOverlayVisible(null);
   });
 
-  showsItemSelectionOverlay = true;
+  showsItemSelectionOrConfirmationOverlay = true;
   setTopBoardOverlayVisible(overlay);
 }
 
@@ -1675,7 +1719,7 @@ export function setupBoard() {
       event.preventDefault();
       event.stopPropagation();
     } else if (!target.closest("a, button, select")) {
-      hideItemSelection();
+      hideItemSelectionOrConfirmationOverlay();
       didClickSquare(new Location(-1, -1));
       event.preventDefault();
       event.stopPropagation();

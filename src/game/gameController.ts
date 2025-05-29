@@ -269,8 +269,8 @@ function automove() {
   }
 
   let output = game.smart_automove();
-  applyOutput(output, false, true, AssistedInputKind.None);
-  Board.hideItemSelection();
+  applyOutput("", output, false, true, AssistedInputKind.None);
+  Board.hideItemSelectionOrConfirmationOverlay();
   if (!isGameWithBot || isPlayerSideTurn()) {
     setAutomoveActionEnabled(true);
   } else {
@@ -367,7 +367,7 @@ export function canHandleUndo(): boolean {
 export function didClickUndoButton() {
   if (canHandleUndo()) {
     const output = game.takeback();
-    applyOutput(output, false, false, AssistedInputKind.None);
+    applyOutput("", output, false, false, AssistedInputKind.None);
   }
 }
 
@@ -409,7 +409,22 @@ export function didClickSquare(location: Location) {
   processInput(AssistedInputKind.None, InputModifier.None, location);
 }
 
-function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotInput: boolean, assistedInputKind: AssistedInputKind, inputLocation?: Location) {
+function turnShouldBeConfirmedForOutputEvents(events: MonsWeb.EventModel[], fenBeforeMove: string): boolean {
+  const wasFirstTurn = game.turn_number() === 2;
+  const hasNextTurn = events.some((e) => e.kind === MonsWeb.EventModelKind.NextTurn);
+  const hasGameOver = events.some((e) => e.kind === MonsWeb.EventModelKind.GameOver);
+
+  if (wasFirstTurn || hasGameOver || !hasNextTurn) {
+    return false;
+  }
+
+  const gameBeforeMove = MonsWeb.MonsGameModel.from_fen(fenBeforeMove)!;
+  const moveKinds = gameBeforeMove.available_move_kinds();
+  const monMoves = moveKinds[0];
+  return monMoves > 0;
+}
+
+function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotInput: boolean, assistedInputKind: AssistedInputKind, inputLocation?: Location) {
   switch (output.kind) {
     case MonsWeb.OutputModelKind.InvalidInput:
       const shouldTryToReselect = assistedInputKind === AssistedInputKind.None && currentInputs.length > 1 && inputLocation && !currentInputs[0].equals(inputLocation);
@@ -510,6 +525,23 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
       const moveFen = output.input_fen();
       const gameFen = game.fen();
 
+      const events = output.events();
+
+      if (!isRemoteInput && fenBeforeMove !== "" && turnShouldBeConfirmedForOutputEvents(events, fenBeforeMove)) {
+        game = MonsWeb.MonsGameModel.from_fen(fenBeforeMove)!;
+        Board.showEndTurnConfirmationOverlay(
+          () => {
+            game = MonsWeb.MonsGameModel.from_fen(gameFen)!;
+            applyOutput("", output, isRemoteInput, isBotInput, assistedInputKind, inputLocation);
+          },
+          () => {
+            currentInputs = [];
+            Board.removeHighlights();
+          }
+        );
+        return;
+      }
+
       if (isOnlineGame && !isRemoteInput) {
         sendMove(moveFen, gameFen);
       }
@@ -529,7 +561,7 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
       }
 
       currentInputs = [];
-      const events = output.events();
+
       let locationsToUpdate: Location[] = [];
       let mightKeepHighlightOnLocation: Location | undefined;
       let mustReleaseHighlight = isRemoteInput || isBotInput;
@@ -671,7 +703,7 @@ function applyOutput(output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotI
             setNewBoard();
             playSounds([Sound.Undo]);
             Board.removeHighlights();
-            Board.hideItemSelection();
+            Board.hideItemSelectionOrConfirmationOverlay();
             updateUndoButtonBasedOnGameState();
             return;
           case MonsWeb.EventModelKind.GameOver:
@@ -769,7 +801,7 @@ export function resetToTheStartOfThePuzzle() {
   setNewBoard();
   playSounds([Sound.Undo]);
   Board.removeHighlights();
-  Board.hideItemSelection();
+  Board.hideItemSelectionOrConfirmationOverlay();
   updateUndoButtonBasedOnGameState();
 }
 
@@ -848,6 +880,7 @@ function processInput(assistedInputKind: AssistedInputKind, inputModifier: Input
   }
 
   const gameInput = currentInputs.map((input) => new MonsWeb.Location(input.i, input.j));
+  const fenBeforeMove = game.fen();
   let output: MonsWeb.OutputModel;
   if (inputModifier !== InputModifier.None) {
     let modifier: MonsWeb.Modifier;
@@ -866,7 +899,7 @@ function processInput(assistedInputKind: AssistedInputKind, inputModifier: Input
   } else {
     output = game.process_input(gameInput);
   }
-  applyOutput(output, false, false, assistedInputKind, inputLocation);
+  applyOutput(fenBeforeMove, output, false, false, assistedInputKind, inputLocation);
 }
 
 function updateLocation(location: Location) {
@@ -1065,7 +1098,7 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
   hideAllMoveStatuses();
 
   Board.removeHighlights();
-  Board.hideItemSelection();
+  Board.hideItemSelectionOrConfirmationOverlay();
 
   winnerByTimerColor = winnerColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
@@ -1112,7 +1145,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
   hideAllMoveStatuses();
 
   Board.removeHighlights();
-  Board.hideItemSelection();
+  Board.hideItemSelectionOrConfirmationOverlay();
 
   if (!onConnect || (didSetWhiteProcessedMovesCount && didSetBlackProcessedMovesCount)) {
     Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
@@ -1177,7 +1210,7 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
     showPuzzleInstructions();
   }
   Board.removeHighlights();
-  Board.hideItemSelection();
+  Board.hideItemSelectionOrConfirmationOverlay();
   updateUndoButtonBasedOnGameState();
 }
 
@@ -1251,7 +1284,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
     for (let i = processedMovesCount; i < movesCount; i++) {
       const moveFen = movesFens[i];
       const output = game.process_input_fen(moveFen);
-      applyOutput(output, true, false, AssistedInputKind.None);
+      applyOutput("", output, true, false, AssistedInputKind.None);
     }
 
     setProcessedMovesCountForColor(match.color, movesCount);
