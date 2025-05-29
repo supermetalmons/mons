@@ -14,7 +14,7 @@ import { useAuthStatus, createEthereumAuthAdapter } from "./connection/authentic
 import { signIn } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
-import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaCog, FaRegGem, FaPowerOff } from "react-icons/fa";
+import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaRegGem, FaPowerOff, FaEllipsisH } from "react-icons/fa";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { startPlayingMusic, stopPlayingMusic } from "./content/music";
 import { storage } from "./utils/storage";
@@ -192,7 +192,7 @@ const App = () => {
                       ) : (
                         <>
                           <button className="info-button" onClick={!isMobile ? handleSettingsButtonClick : undefined} onTouchStart={isMobile ? handleSettingsButtonClick : undefined} aria-label="Settings">
-                            <FaCog />
+                            <FaEllipsisH />
                           </button>
                           <button className="music-button" onClick={!isMobile ? handleGemButtonClick : undefined} onTouchStart={isMobile ? handleGemButtonClick : undefined} aria-label="NFTs">
                             <FaRegGem />
