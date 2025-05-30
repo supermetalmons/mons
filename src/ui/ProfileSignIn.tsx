@@ -16,6 +16,8 @@ import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { hideShinyCard, showShinyCard, showsShinyCardSomewhere, updateShinyCardDisplayName } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
 
+const isTmpBannerDisabled = true;
+
 const Container = styled.div`
   position: relative;
 `;
@@ -175,6 +177,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [NotificationComponent, setNotificationComponent] = useState<React.ComponentType<any> | null>(null);
+  const [isNotificationVisible, setIsNotificationVisible] = useState(false);
   const popoverRef = useRef<HTMLDivElement>(null);
 
   getIsInventoryPopupOpen = () => isInventoryOpen;
@@ -210,6 +214,26 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     document.addEventListener(defaultEarlyInputEventName, handleClickOutside);
     return () => document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
   });
+
+  const showNotificationBanner = async () => {
+    try {
+      const { NotificationBannerComponent } = await import("./NotificationBanner");
+      setNotificationComponent(() => NotificationBannerComponent);
+      setIsNotificationVisible(true);
+    } catch (error) {
+      console.error("Failed to load notification component:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (!isTmpBannerDisabled) {
+      const timer = setTimeout(() => {
+        showNotificationBanner();
+      }, 1000);
+
+      return () => clearTimeout(timer);
+    }
+  }, []);
 
   const performLogout = () => {
     storage.signOut();
@@ -381,6 +405,14 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     }
   };
 
+  const handleNotificationClick = () => {
+    setIsNotificationVisible(false);
+  };
+
+  const handleNotificationClose = () => {
+    setIsNotificationVisible(false);
+  };
+
   return (
     <Container ref={popoverRef}>
       <SignInButton onClick={!isMobile ? handleSignInClick : undefined} onTouchStart={isMobile ? handleSignInClick : undefined} isConnected={authStatus === "authenticated"}>
@@ -396,6 +428,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
           </ConnectButtonWrapper>
         </ConnectButtonPopover>
       )}
+      {NotificationComponent && isNotificationVisible && <NotificationComponent isVisible={isNotificationVisible} onClose={handleNotificationClose} onClick={handleNotificationClick} />}
       {isEditingName && <NameEditModal initialName={storage.getUsername("")} onSave={handleSaveDisplayName} onCancel={handleCancelEditName} />}
       {isInventoryOpen && <InventoryModal onCancel={handleDismissInventory} />}
       {isLogoutConfirmOpen && <LogoutConfirmModal onConfirm={handleConfirmLogout} onCancel={handleCancelLogout} />}

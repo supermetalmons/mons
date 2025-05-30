@@ -12,8 +12,8 @@ import { showVoiceReactionText } from "../game/board";
 import { hasFullScreenAlertVisible, hideFullScreenAlert } from "..";
 import NavigationPicker from "./NavigationPicker";
 import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
-import { toggleBoardStyle } from "../content/boardStyles";
-import { ControlsContainer, BrushButton, NavigationListButton, ControlButton, BottomPillButton, ReactionButton, ReactionPicker, ResignButton, ResignConfirmation } from "./BottomControlsStyles";
+import { setBoardColorSet, getCurrentColorSetKey, ColorSetKey } from "../content/boardStyles";
+import { ControlsContainer, BrushButton, NavigationListButton, ControlButton, BottomPillButton, ReactionButton, ReactionPicker, ResignButton, ResignConfirmation, BoardStylePicker, ColorSquare } from "./BottomControlsStyles";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
@@ -30,7 +30,7 @@ export function didDismissSomethingWithOutsideTapJustNow() {
   latestModalOutsideTapDismissDate = Date.now();
 }
 
-export let closeNavigationPopupIfAny: () => void = () => {};
+export let closeNavigationAndAppearancePopupIfAny: () => void = () => {};
 export let setNavigationListButtonVisible: (visible: boolean) => void;
 
 export function resetOutsideTapDismissTimeout() {
@@ -98,6 +98,8 @@ const BottomControls: React.FC = () => {
   const [isBrushButtonDimmed, setIsBrushButtonDimmed] = useState(false);
   const [isNavigationListButtonVisible, setIsNavigationListButtonVisible] = useState(false);
   const [isNavigationPopupVisible, setIsNavigationPopupVisible] = useState(false);
+  const [isBoardStylePickerVisible, setIsBoardStylePickerVisible] = useState(false);
+  const [currentColorSetKey, setCurrentColorSetKey] = useState<ColorSetKey>(getCurrentColorSetKey());
 
   const [isUndoDisabled, setIsUndoDisabled] = useState(true);
   const [waitingStateText, setWaitingStateText] = useState("");
@@ -125,6 +127,8 @@ const BottomControls: React.FC = () => {
   const hourglassEnableTimeoutRef = useRef<NodeJS.Timeout>();
   const navigationPopupRef = useRef<HTMLDivElement>(null);
   const navigationButtonRef = useRef<HTMLButtonElement>(null);
+  const boardStylePickerRef = useRef<HTMLDivElement>(null);
+  const brushButtonRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: TouchEvent | MouseEvent) => {
@@ -138,6 +142,11 @@ const BottomControls: React.FC = () => {
       if (navigationPopupRef.current && !navigationPopupRef.current.contains(event.target as Node) && !navigationButtonRef.current?.contains(event.target as Node)) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsNavigationPopupVisible(false);
+      }
+
+      if (boardStylePickerRef.current && !boardStylePickerRef.current.contains(event.target as Node) && !brushButtonRef.current?.contains(event.target as Node)) {
+        didDismissSomethingWithOutsideTapJustNow();
+        setIsBoardStylePickerVisible(false);
       }
     };
 
@@ -155,8 +164,9 @@ const BottomControls: React.FC = () => {
     };
   }, []);
 
-  closeNavigationPopupIfAny = () => {
+  closeNavigationAndAppearancePopupIfAny = () => {
     setIsNavigationPopupVisible(false);
+    setIsBoardStylePickerVisible(false);
   };
 
   const handleInviteClick = () => {
@@ -244,7 +254,7 @@ const BottomControls: React.FC = () => {
   };
 
   hasBottomPopupsVisible = () => {
-    return isReactionPickerVisible || isResignConfirmVisible;
+    return isReactionPickerVisible || isResignConfirmVisible || isBoardStylePickerVisible;
   };
 
   enableTimerVictoryClaim = () => {
@@ -350,8 +360,13 @@ const BottomControls: React.FC = () => {
   };
 
   const handleBrushClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
-    toggleBoardStyle();
-    updateBoardComponentForBoardStyleChange();
+    if (!isBoardStylePickerVisible) {
+      closeMenuAndInfoIfAny();
+      setIsResignConfirmVisible(false);
+      setIsReactionPickerVisible(false);
+      setIsNavigationPopupVisible(false);
+    }
+    setIsBoardStylePickerVisible(!isBoardStylePickerVisible);
   };
 
   const handleInstructionsClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -485,11 +500,23 @@ const BottomControls: React.FC = () => {
     } catch (_) {}
   };
 
+  const handleColorSetChange = (colorSetKey: ColorSetKey) => {
+    setBoardColorSet(colorSetKey);
+    updateBoardComponentForBoardStyleChange();
+    setCurrentColorSetKey(colorSetKey);
+  };
+
   return (
     <>
-      <BrushButton dimmed={isBrushButtonDimmed} onClick={!isMobile ? handleBrushClick : undefined} onTouchStart={isMobile ? handleBrushClick : undefined} aria-label="Appearance">
+      <BrushButton ref={brushButtonRef} dimmed={isBrushButtonDimmed} onClick={!isMobile ? handleBrushClick : undefined} onTouchStart={isMobile ? handleBrushClick : undefined} aria-label="Appearance">
         <FaPaintBrush />
       </BrushButton>
+      {isBoardStylePickerVisible && (
+        <BoardStylePicker ref={boardStylePickerRef}>
+          <ColorSquare colorSet="light" isSelected={currentColorSetKey === "default"} onClick={!isMobile ? () => handleColorSetChange("default") : undefined} onTouchStart={isMobile ? () => handleColorSetChange("default") : undefined} aria-label="Light board theme" />
+          <ColorSquare colorSet="dark" isSelected={currentColorSetKey === "darkAndYellow"} onClick={!isMobile ? () => handleColorSetChange("darkAndYellow") : undefined} onTouchStart={isMobile ? () => handleColorSetChange("darkAndYellow") : undefined} aria-label="Dark board theme" />
+        </BoardStylePicker>
+      )}
       {isNavigationPopupVisible && (
         <div ref={navigationPopupRef}>
           <NavigationPicker showsPuzzles={isNavigationListButtonVisible} showsHomeNavigation={isDeepHomeButtonVisible} navigateHome={handleHomeClick} />

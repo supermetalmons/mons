@@ -1,4 +1,4 @@
-import { setIsMusicPlayingGlobal } from "../index";
+import { setIsMusicPlayingGlobal } from "../ui/MainMenu";
 
 const tracks = ["arploop", "band", "bell-dance", "bell-glide", "bounce", "bubble-jam", "buzz", "change", "chimes-photography_going-home", "clock-tower", "cloud-propeller-2", "cloud-propeller", "crumbs", "driver", "drreams", "ewejam", "gilded", "gustofwind", "honkshoooo-memememeee-zzzZZZ", "jelly-jam", "mana-pool", "melodine", "object", "organwhawha", "ping", "runner", "spirit-track", "super", "whale2"];
 
@@ -67,13 +67,15 @@ export function stopPlayingMusic(): void {
   }
 }
 
-function playNextTrack(): void {
+export function playNextTrack(): void {
   if (audioElement) {
     audioElement.src = getRandomTrackUrl();
     audioElement.play().catch((error) => {
       console.error("Error playing next track:", error);
     });
     showMonsAlbumArtwork(currentTrack);
+  } else {
+    startPlayingMusic();
   }
 }
 
