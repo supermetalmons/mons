@@ -27,17 +27,6 @@ let globalIsMuted: boolean = (() => {
 
 export const getIsMuted = (): boolean => globalIsMuted;
 
-/*
-
-// TODO
-
-- [ ] appearance
-
-
-- [ ] notification banner
-
-*/
-
 const queryClient = new QueryClient();
 
 let getIsFullScreenAlertOpen: () => boolean = () => false;
