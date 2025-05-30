@@ -16,10 +16,11 @@ import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
 import { showShinyCard, showsShinyCardSomewhere } from "../ui/ShinyCard";
 import { getMonId, getMonsIndexes, MonType } from "../utils/namedMons";
 import { instructor } from "../assets/talkingDude";
+import { isBotsLoopMode } from "../connection/connection";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 
-export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, pangchiu: boolean) {
+export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, pangchiu: boolean, doNotStore: boolean) {
   if (defaultMode) {
     setCurrentAssetsSet(AssetsSet.Pixel);
     isExperimentingWithSprites = false;
@@ -30,7 +31,10 @@ export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, 
     setCurrentAssetsSet(AssetsSet.Pangchiu);
     isExperimentingWithSprites = false;
   }
-  storage.setIsExperimentingWithSprites(isExperimentingWithSprites);
+
+  if (!doNotStore) {
+    storage.setIsExperimentingWithSprites(isExperimentingWithSprites);
+  }
 
   updateBoardComponentForBoardStyleChange();
   didToggleItemsStyleSet();
@@ -288,7 +292,7 @@ async function initializeAssets(onStart: boolean, isProfileMonsChange: boolean) 
 
     // TODO: set correct mons for both sides
 
-    if (storage.getProfileId("")) {
+    if (storage.getProfileId("") && !isBotsLoopMode) {
       const [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] = getMonsIndexes(false, null);
       drainer = loadImage(getSpriteByKey(getMonId(MonType.DRAINER, drainerIndex)), "drainer", true);
       angel = loadImage(getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), "angel", true);
@@ -587,6 +591,12 @@ export function showOpponentAsTutorialPlayer() {
   SVG.setEmojiImageUrl(opponentAvatar, emojis.getTutorialEmojiUrl());
 }
 
+export function showRandomEmojisForLoopMode() {
+  if (!opponentAvatar || !playerAvatar) return;
+  SVG.setEmojiImageUrl(playerAvatar, emojis.getRandomEmojiUrl()[1]);
+  SVG.setEmojiImageUrl(opponentAvatar, emojis.getRandomEmojiUrl()[1]);
+}
+
 export function showOpponentAsBotPlayer() {
   if (!opponentAvatar) return;
   SVG.setImage(opponentAvatar, emojis.pc);
@@ -594,6 +604,10 @@ export function showOpponentAsBotPlayer() {
 
 export function getPlayersEmojiId(): number {
   return parseInt(playerSideMetadata.emojiId !== "" ? playerSideMetadata.emojiId : "1");
+}
+
+export function toggleBoardFlipped() {
+  isFlipped = !isFlipped;
 }
 
 export function setBoardFlipped(flipped: boolean) {

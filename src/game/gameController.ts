@@ -4,7 +4,7 @@ import * as Board from "./board";
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
-import { isAutomatch, sendResignStatus, sendMove, isCreateNewInviteFlow, sendEmojiUpdate, setupConnection, startTimer, claimVictoryByTimer, sendRematchProposal, sendAutomatchRequest, connectToAutomatch, sendEndMatchIndicator, rematchSeriesEndIsIndicated, connectToGame, updateRatings, seeIfFreshlySignedInProfileIsOneOfThePlayers, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded } from "../connection/connection";
+import { isAutomatch, sendResignStatus, sendMove, isCreateNewInviteFlow, sendEmojiUpdate, setupConnection, startTimer, claimVictoryByTimer, sendRematchProposal, sendAutomatchRequest, connectToAutomatch, sendEndMatchIndicator, rematchSeriesEndIsIndicated, connectToGame, updateRatings, seeIfFreshlySignedInProfileIsOneOfThePlayers, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded, isBotsLoopMode } from "../connection/connection";
 import { setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, setInstructionsToggleButtonVisible, closeNavigationPopupIfAny } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
@@ -73,7 +73,25 @@ export async function go() {
     return;
   }
 
-  if (isBoardSnapshotFlow) {
+  if (isBotsLoopMode) {
+    Board.toggleExperimentalMode(false, true, false, true);
+
+    game.locations_with_content().forEach((loc) => {
+      const location = new Location(loc.i, loc.j);
+      updateLocation(location);
+    });
+
+    didStartLocalGame = true;
+    setHomeVisible(true);
+    setBrushAndNavigationButtonDimmed(true);
+    setInviteLinkActionVisible(false);
+    setAutomatchVisible(false);
+    setBotGameOptionVisible(false);
+    setNavigationListButtonVisible(false);
+
+    isWatchOnly = true;
+    automove();
+  } else if (isBoardSnapshotFlow) {
     const snapshot = decodeURIComponent(getSnapshotIdAndClearPathIfNeeded() || "");
     const gameFromFen = MonsWeb.MonsGameModel.from_fen(snapshot);
     if (!gameFromFen) return;
@@ -107,16 +125,32 @@ export async function go() {
     setNavigationListButtonVisible(false);
   }
 
-  Board.setupGameInfoElements(!isCreateNewInviteFlow && !isBoardSnapshotFlow);
-  if (isBoardSnapshotFlow) {
+  Board.setupGameInfoElements(!isCreateNewInviteFlow && !isBoardSnapshotFlow && !isBotsLoopMode);
+  if (isBoardSnapshotFlow || isBotsLoopMode) {
     updateBoardMoveStatuses();
     Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
+  }
+
+  if (isBotsLoopMode) {
+    Board.showRandomEmojisForLoopMode();
   }
 }
 
 export function failedToCreateRematchProposal() {
   setEndMatchVisible(true);
   showPrimaryAction(PrimaryActionType.Rematch);
+}
+
+function rematchInLoopMode() {
+  isGameOver = false;
+  game = MonsWeb.MonsGameModel.new();
+  Board.toggleBoardFlipped();
+  playerSideColor = playerSideColor === MonsWeb.Color.White ? MonsWeb.Color.Black : MonsWeb.Color.White;
+  Board.resetForNewGame();
+  Board.didToggleItemsStyleSet(false);
+  Board.showRandomEmojisForLoopMode();
+  setNewBoard();
+  automove();
 }
 
 export function didJustCreateRematchProposalSuccessfully(inviteId: string) {
@@ -271,6 +305,11 @@ function automove() {
   let output = game.smart_automove();
   applyOutput("", output, false, true, AssistedInputKind.None);
   Board.hideItemSelectionOrConfirmationOverlay();
+
+  if (isBotsLoopMode) {
+    return;
+  }
+
   if (!isGameWithBot || isPlayerSideTurn()) {
     setAutomoveActionEnabled(true);
   } else {
@@ -372,7 +411,7 @@ export function didClickUndoButton() {
 }
 
 export function canChangeEmoji(opponents: boolean): boolean {
-  if (storage.getLoginId("")) {
+  if (storage.getLoginId("") || isBotsLoopMode) {
     return false;
   }
   if (isOnlineGame || isGameWithBot) {
@@ -774,12 +813,16 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
         processInput(AssistedInputKind.KeepSelectionAfterMove, InputModifier.None, mightKeepHighlightOnLocation);
       }
 
-      if (isGameWithBot && game.active_color() === botPlayerColor && !isGameOver) {
-        setTimeout(() => automove(), 777);
+      if (((isGameWithBot && game.active_color() === botPlayerColor) || isBotsLoopMode) && !isGameOver) {
+        setTimeout(() => automove(), isBotsLoopMode ? 230 : 777);
       }
 
       if (isGameWithBot && !isPlayerSideTurn()) {
         setAutomoveActionEnabled(false);
+      }
+
+      if (isBotsLoopMode && isGameOver) {
+        setTimeout(() => rematchInLoopMode(), 1150);
       }
 
       updateUndoButtonBasedOnGameState();
@@ -869,6 +912,10 @@ function updateRatingsLocally(isWin: boolean) {
 }
 
 function processInput(assistedInputKind: AssistedInputKind, inputModifier: InputModifier, inputLocation?: Location) {
+  if (isBotsLoopMode) {
+    return;
+  }
+
   if (isOnlineGame || isGameWithBot) {
     if (game.active_color() !== playerSideColor) {
       return;

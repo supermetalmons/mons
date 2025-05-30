@@ -753,26 +753,24 @@ const MainMenu: React.FC = () => {
               <ExperimentalMenu>
                 <ExperimentButton
                   onClick={() => {
-                    toggleExperimentalMode(true, false, false);
+                    toggleExperimentalMode(true, false, false, false);
                   }}>
                   default
                 </ExperimentButton>
                 <ExperimentButton
                   onClick={() => {
-                    toggleExperimentalMode(false, true, false);
+                    toggleExperimentalMode(false, true, false, false);
                   }}>
                   animated mons
                 </ExperimentButton>
                 <ExperimentButton
                   onClick={() => {
-                    toggleExperimentalMode(false, false, true);
+                    toggleExperimentalMode(false, false, true, false);
                   }}>
                   pangchiu
                 </ExperimentButton>
                 <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
-                <BuildInfo>
-                  {getBuildInfo()}
-                </BuildInfo>
+                <BuildInfo>{getBuildInfo()}</BuildInfo>
               </ExperimentalMenu>
             )}
           </RockMenu>

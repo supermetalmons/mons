@@ -5,6 +5,7 @@ const initialPath = window.location.pathname.replace(/^\/|\/$/g, "");
 
 export const isCreateNewInviteFlow = initialPath === "";
 export const isBoardSnapshotFlow = initialPath.startsWith("snapshot/");
+export const isBotsLoopMode = initialPath === "watch";
 
 export function getSnapshotIdAndClearPathIfNeeded(): string | null {
   if (isBoardSnapshotFlow) {
