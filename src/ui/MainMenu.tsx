@@ -7,8 +7,9 @@ import { Leaderboard } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
 import { getCurrentGameFen } from "../game/gameController";
-import { FaTelegramPlane, FaUniversity } from "react-icons/fa";
+import { FaTelegramPlane, FaUniversity, FaPlay, FaStop } from "react-icons/fa";
 import { showsShinyCardSomewhere } from "./ShinyCard";
+import { startPlayingMusic, stopPlayingMusic } from "../content/music";
 
 const RockButtonContainer = styled.div`
   position: absolute;
@@ -467,19 +468,104 @@ const CopyBoardButton = styled.button`
   }
 `;
 
+const MusicPopover = styled.div<{ isOpen: boolean }>`
+  position: fixed;
+  top: 56px;
+  right: 9pt;
+  font-size: 12px;
+  background-color: rgba(250, 250, 250, 0.95);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border-radius: 7pt;
+  padding: 12px;
+  width: min(200px, 60dvw);
+  box-shadow: none;
+  z-index: 5;
+  opacity: ${(props) => (props.isOpen ? 1 : 0)};
+  pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
+  text-align: center;
+  cursor: default;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: rgba(35, 35, 35, 0.95);
+    color: #f5f5f5;
+  }
+
+  @media screen and (max-height: 500px) {
+    top: 53px;
+  }
+
+  @media screen and (max-height: 453px) {
+    top: 50px;
+  }
+
+  @media screen and (max-width: 420px) {
+    right: 8px;
+  }
+
+  @media screen and (max-width: 387px) {
+    right: 6px;
+  }
+`;
+
+const MusicControlButton = styled.button`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+  border: none;
+  border-radius: 6px;
+  background: none;
+  color: #0066cc;
+  cursor: pointer;
+  font-size: 18px;
+  width: 100%;
+  -webkit-touch-callout: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      color: #0052a3;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: #66b3ff;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        color: #80c4ff;
+      }
+    }
+  }
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+`;
+
 let getIsMenuOpen: () => boolean;
 let getIsInfoOpen: () => boolean;
+let getIsMusicOpen: () => boolean;
 export let toggleInfoVisibility: () => void;
+export let toggleMusicVisibility: () => void;
 export let closeMenuAndInfoIfAny: () => void;
 export let closeMenuAndInfoIfAllowedForEvent: (event: TouchEvent | MouseEvent) => void;
+export let setIsMusicPlayingGlobal: (playing: boolean) => void;
 
 export function hasMainMenuPopupsVisible(): boolean {
-  return getIsMenuOpen() || getIsInfoOpen();
+  return getIsMenuOpen() || getIsInfoOpen() || getIsMusicOpen();
 }
 
 const MainMenu: React.FC = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isInfoOpen, setIsInfoOpen] = useState(false);
+  const [isMusicOpen, setIsMusicOpen] = useState(false);
+  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [clickCount, setClickCount] = useState(0);
   const [showExperimental, setShowExperimental] = useState(false);
   const [copyButtonText, setCopyButtonText] = useState("copy board snapshot");
@@ -489,6 +575,8 @@ const MainMenu: React.FC = () => {
   const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
   const animationFrameRef = useRef<number>();
   const activeIndicesRef = useRef<number[]>([]);
+
+  setIsMusicPlayingGlobal = setIsMusicPlaying;
 
   useEffect(() => {
     const timeoutRefs: NodeJS.Timeout[] = [];
@@ -548,9 +636,11 @@ const MainMenu: React.FC = () => {
 
   getIsMenuOpen = () => isMenuOpen;
   getIsInfoOpen = () => isInfoOpen;
+  getIsMusicOpen = () => isMusicOpen;
 
   const menuRef = useRef<HTMLDivElement>(null);
   const infoRef = useRef<HTMLDivElement>(null);
+  const musicRef = useRef<HTMLDivElement>(null);
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
@@ -560,6 +650,7 @@ const MainMenu: React.FC = () => {
       }
       setIsNftSubmenuExpanded(false);
       setShowExperimental(false);
+      setIsMusicOpen(false);
     }
   };
 
@@ -606,18 +697,40 @@ const MainMenu: React.FC = () => {
     });
   };
 
+  const handleMusicPlaybackToggle = () => {
+    if (isMusicPlaying) {
+      stopPlayingMusic();
+      setIsMusicPlaying(false);
+    } else {
+      startPlayingMusic();
+      setIsMusicPlaying(true);
+    }
+  };
+
   toggleInfoVisibility = () => {
     if (!isInfoOpen) {
       closeProfilePopupIfAny();
       closeNavigationPopupIfAny();
       setIsMenuOpen(false);
+      setIsMusicOpen(false);
     }
     setIsInfoOpen(!isInfoOpen);
+  };
+
+  toggleMusicVisibility = () => {
+    if (!isMusicOpen) {
+      closeProfilePopupIfAny();
+      closeNavigationPopupIfAny();
+      setIsMenuOpen(false);
+      setIsInfoOpen(false);
+    }
+    setIsMusicOpen(!isMusicOpen);
   };
 
   closeMenuAndInfoIfAny = () => {
     setIsInfoOpen(false);
     setIsMenuOpen(false);
+    setIsMusicOpen(false);
     setIsNftSubmenuExpanded(false);
   };
 
@@ -658,6 +771,22 @@ const MainMenu: React.FC = () => {
       document.removeEventListener(defaultEarlyInputEventName, handleTapOutside);
     };
   }, [isInfoOpen]);
+
+  useEffect(() => {
+    const handleTapOutside = (event: any) => {
+      event.stopPropagation();
+      const isMusicButton = event.target.closest(".music-button");
+      if (isMusicOpen && musicRef.current && !musicRef.current.contains(event.target as Node) && !isMusicButton) {
+        didDismissSomethingWithOutsideTapJustNow();
+        setIsMusicOpen(false);
+      }
+    };
+
+    document.addEventListener(defaultEarlyInputEventName, handleTapOutside);
+    return () => {
+      document.removeEventListener(defaultEarlyInputEventName, handleTapOutside);
+    };
+  }, [isMusicOpen]);
 
   return (
     <>
@@ -785,6 +914,7 @@ const MainMenu: React.FC = () => {
                   }
                   toggleMenu();
                   setIsInfoOpen(false);
+                  setIsMusicOpen(false);
                 },
               }
             : {
@@ -804,6 +934,7 @@ const MainMenu: React.FC = () => {
                   }
                   setIsMenuOpen(true);
                   setIsInfoOpen(false);
+                  setIsMusicOpen(false);
                 },
               })}>
           <img src={logoBase64} alt="Rock" />
@@ -825,6 +956,10 @@ const MainMenu: React.FC = () => {
         <br />
         💧 Use your one mana move to end your turn.
       </InfoPopover>
+
+      <MusicPopover ref={musicRef} isOpen={isMusicOpen}>
+        <MusicControlButton onClick={handleMusicPlaybackToggle}>{isMusicPlaying ? <FaStop /> : <FaPlay />}</MusicControlButton>
+      </MusicPopover>
     </>
   );
 };

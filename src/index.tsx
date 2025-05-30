@@ -8,15 +8,14 @@ import { WagmiProvider } from "wagmi";
 import { RainbowKitAuthenticationProvider, RainbowKitProvider, lightTheme, darkTheme } from "@rainbow-me/rainbowkit";
 
 import BoardComponent from "./ui/BoardComponent";
-import MainMenu, { toggleInfoVisibility } from "./ui/MainMenu";
+import MainMenu, { toggleInfoVisibility, toggleMusicVisibility } from "./ui/MainMenu";
 import { config } from "./utils/wagmi";
 import { useAuthStatus, createEthereumAuthAdapter } from "./connection/authentication";
 import { signIn } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
-import { FaVolumeUp, FaMusic, FaVolumeMute, FaStop, FaInfoCircle, FaRegGem, FaPowerOff, FaEllipsisH } from "react-icons/fa";
+import { FaVolumeUp, FaMusic, FaVolumeMute, FaInfoCircle, FaRegGem, FaPowerOff, FaEllipsisH } from "react-icons/fa";
 import { soundPlayer } from "./utils/SoundPlayer";
-import { startPlayingMusic, stopPlayingMusic } from "./content/music";
 import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory, showSettings } from "./ui/ProfileSignIn";
 import FullScreenAlert from "./ui/FullScreenAlert";
@@ -33,9 +32,6 @@ export const getIsMuted = (): boolean => globalIsMuted;
 // TODO
 
 - [ ] appearance
-
-
-- [ ] music
 
 
 - [ ] notification banner
@@ -65,17 +61,12 @@ export function showFullScreenAlert(title: string, subtitle: string) {
   }
 }
 
-export let setIsMusicPlayingGlobal: (playing: boolean) => void;
-
 const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
   const [isProfileEditingMode, setIsProfileEditingMode] = useState(false);
   const [isMuted, setIsMuted] = useState(globalIsMuted);
-  const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [alertState, setAlertState] = useState<{ title: string; subtitle: string } | null>(null);
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
-
-  setIsMusicPlayingGlobal = setIsMusicPlaying;
 
   enterProfileEditingMode = (enter: boolean) => {
     setIsProfileEditingMode(enter);
@@ -110,17 +101,9 @@ const App = () => {
     soundPlayer.initializeOnUserInteraction();
   }, []);
 
-  const handleMusicToggle = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleMusicButtonClick = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    setIsMusicPlaying((prev) => {
-      if (prev) {
-        stopPlayingMusic();
-        return false;
-      } else {
-        startPlayingMusic();
-        return true;
-      }
-    });
+    toggleMusicVisibility();
   }, []);
 
   const handleLogOutButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -170,8 +153,8 @@ const App = () => {
                           <button className="info-button" onClick={!isMobile ? handleInfoButtonClick : undefined} onTouchStart={isMobile ? handleInfoButtonClick : undefined} aria-label="Info">
                             <FaInfoCircle />
                           </button>
-                          <button className="music-button" onClick={handleMusicToggle} aria-label={isMusicPlaying ? "Stop Music" : "Play Music"}>
-                            {isMusicPlaying ? <FaStop /> : <FaMusic />}
+                          <button className="music-button" onClick={handleMusicButtonClick} aria-label="Music">
+                            <FaMusic />
                           </button>
                           <button className="sound-button" onClick={handleMuteToggle} aria-label={isMuted ? "Unmute" : "Mute"}>
                             {isMuted ? <FaVolumeMute /> : <FaVolumeUp />}
