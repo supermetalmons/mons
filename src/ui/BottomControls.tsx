@@ -513,8 +513,8 @@ const BottomControls: React.FC = () => {
       </BrushButton>
       {isBoardStylePickerVisible && (
         <BoardStylePicker ref={boardStylePickerRef}>
-          <ColorSquare colorSet="light" isSelected={currentColorSetKey === "default"} onClick={() => handleColorSetChange("default")} aria-label="Light board theme" />
-          <ColorSquare colorSet="dark" isSelected={currentColorSetKey === "darkAndYellow"} onClick={() => handleColorSetChange("darkAndYellow")} aria-label="Dark board theme" />
+          <ColorSquare colorSet="light" isSelected={currentColorSetKey === "default"} onClick={!isMobile ? () => handleColorSetChange("default") : undefined} onTouchStart={isMobile ? () => handleColorSetChange("default") : undefined} aria-label="Light board theme" />
+          <ColorSquare colorSet="dark" isSelected={currentColorSetKey === "darkAndYellow"} onClick={!isMobile ? () => handleColorSetChange("darkAndYellow") : undefined} onTouchStart={isMobile ? () => handleColorSetChange("darkAndYellow") : undefined} aria-label="Dark board theme" />
         </BoardStylePicker>
       )}
       {isNavigationPopupVisible && (
