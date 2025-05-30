@@ -67,13 +67,15 @@ export function stopPlayingMusic(): void {
   }
 }
 
-function playNextTrack(): void {
+export function playNextTrack(): void {
   if (audioElement) {
     audioElement.src = getRandomTrackUrl();
     audioElement.play().catch((error) => {
       console.error("Error playing next track:", error);
     });
     showMonsAlbumArtwork(currentTrack);
+  } else {
+    startPlayingMusic();
   }
 }
 

@@ -7,9 +7,9 @@ import { Leaderboard } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
 import { getCurrentGameFen } from "../game/gameController";
-import { FaTelegramPlane, FaUniversity, FaPlay, FaStop } from "react-icons/fa";
+import { FaTelegramPlane, FaUniversity, FaPlay, FaStop, FaBackward, FaForward } from "react-icons/fa";
 import { showsShinyCardSomewhere } from "./ShinyCard";
-import { startPlayingMusic, stopPlayingMusic } from "../content/music";
+import { startPlayingMusic, stopPlayingMusic, playNextTrack } from "../content/music";
 
 const RockButtonContainer = styled.div`
   position: absolute;
@@ -508,6 +508,13 @@ const MusicPopover = styled.div<{ isOpen: boolean }>`
   }
 `;
 
+const MusicControlsContainer = styled.div`
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+`;
+
 const MusicControlButton = styled.button`
   display: flex;
   align-items: center;
@@ -519,7 +526,7 @@ const MusicControlButton = styled.button`
   color: #0066cc;
   cursor: pointer;
   font-size: 18px;
-  width: 100%;
+  flex: 1;
   -webkit-touch-callout: none;
   touch-action: none;
   user-select: none;
@@ -958,7 +965,15 @@ const MainMenu: React.FC = () => {
       </InfoPopover>
 
       <MusicPopover ref={musicRef} isOpen={isMusicOpen}>
-        <MusicControlButton onClick={handleMusicPlaybackToggle}>{isMusicPlaying ? <FaStop /> : <FaPlay />}</MusicControlButton>
+        <MusicControlsContainer>
+          <MusicControlButton onClick={() => playNextTrack()}>
+            <FaBackward />
+          </MusicControlButton>
+          <MusicControlButton onClick={handleMusicPlaybackToggle}>{isMusicPlaying ? <FaStop /> : <FaPlay />}</MusicControlButton>
+          <MusicControlButton onClick={() => playNextTrack()}>
+            <FaForward />
+          </MusicControlButton>
+        </MusicControlsContainer>
       </MusicPopover>
     </>
   );
