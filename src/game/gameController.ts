@@ -814,7 +814,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
       }
 
       if (((isGameWithBot && game.active_color() === botPlayerColor) || isBotsLoopMode) && !isGameOver) {
-        setTimeout(() => automove(), isBotsLoopMode ? 230 : 777);
+        setTimeout(() => automove(), isBotsLoopMode ? 142 : 777);
       }
 
       if (isGameWithBot && !isPlayerSideTurn()) {
