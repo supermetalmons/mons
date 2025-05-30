@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { logoBase64 } from "../content/uiAssets";
-import { didDismissSomethingWithOutsideTapJustNow, didNotDismissAnythingWithOutsideTapJustNow, closeNavigationPopupIfAny } from "./BottomControls";
+import { didDismissSomethingWithOutsideTapJustNow, didNotDismissAnythingWithOutsideTapJustNow, closeNavigationAndAppearancePopupIfAny } from "./BottomControls";
 import styled from "styled-components";
 import { defaultEarlyInputEventName, isMobile, getBuildInfo } from "../utils/misc";
 import { Leaderboard } from "./Leaderboard";
@@ -717,7 +717,7 @@ const MainMenu: React.FC = () => {
   toggleInfoVisibility = () => {
     if (!isInfoOpen) {
       closeProfilePopupIfAny();
-      closeNavigationPopupIfAny();
+      closeNavigationAndAppearancePopupIfAny();
       setIsMenuOpen(false);
       setIsMusicOpen(false);
     }
@@ -727,7 +727,7 @@ const MainMenu: React.FC = () => {
   toggleMusicVisibility = () => {
     if (!isMusicOpen) {
       closeProfilePopupIfAny();
-      closeNavigationPopupIfAny();
+      closeNavigationAndAppearancePopupIfAny();
       setIsMenuOpen(false);
       setIsInfoOpen(false);
     }
@@ -917,7 +917,7 @@ const MainMenu: React.FC = () => {
                 onTouchStart: (e) => {
                   if (!isMenuOpen) {
                     closeProfilePopupIfAny();
-                    closeNavigationPopupIfAny();
+                    closeNavigationAndAppearancePopupIfAny();
                   }
                   toggleMenu();
                   setIsInfoOpen(false);
@@ -933,7 +933,7 @@ const MainMenu: React.FC = () => {
                 onMouseEnter: () => {
                   if (!isMenuOpen) {
                     closeProfilePopupIfAny();
-                    closeNavigationPopupIfAny();
+                    closeNavigationAndAppearancePopupIfAny();
                     setIsNftSubmenuExpanded(false);
                     if (buttonRowRef.current) {
                       buttonRowRef.current.scrollLeft = 0;

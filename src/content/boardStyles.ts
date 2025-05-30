@@ -108,12 +108,12 @@ let currentColorSetKey: ColorSetKey = (() => {
   return stored in colorSets ? (stored as ColorSetKey) : "default";
 })();
 
-export const toggleBoardStyle = () => {
-  const keys = Object.keys(colorSets) as ColorSetKey[];
-  const currentIndex = keys.indexOf(currentColorSetKey);
-  currentColorSetKey = keys[(currentIndex + 1) % keys.length];
+export const getCurrentColorSet = () => colorSets[currentColorSetKey];
+
+export const getCurrentColorSetKey = () => currentColorSetKey;
+
+export const setBoardColorSet = (colorSetKey: ColorSetKey) => {
+  currentColorSetKey = colorSetKey;
   storage.setBoardColorSet(currentColorSetKey);
   Board.didToggleBoardColors();
 };
-
-export const getCurrentColorSet = () => colorSets[currentColorSetKey];
