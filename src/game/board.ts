@@ -1193,6 +1193,8 @@ export function showEndTurnConfirmationOverlay(ok: () => void, cancel: () => voi
   okButton.setAttribute("height", buttonHeight.toString());
   okButton.setAttribute("rx", "115");
   SVG.setFill(okButton, "#009500");
+  okButton.setAttribute("stroke", "#00F900");
+  okButton.setAttribute("stroke-width", "15");
   okButton.style.cursor = "pointer";
   overlay.appendChild(okButton);
 
@@ -1201,8 +1203,9 @@ export function showEndTurnConfirmationOverlay(ok: () => void, cancel: () => voi
   okText.setAttribute("y", (buttonY + buttonHeight / 2).toString());
   okText.setAttribute("text-anchor", "middle");
   okText.setAttribute("alignment-baseline", "middle");
-  okText.setAttribute("font-size", "60");
+  okText.setAttribute("font-size", "69");
   okText.setAttribute("fill", "#fff");
+  okText.setAttribute("font-weight", "888");
   okText.style.pointerEvents = "none";
   okText.textContent = "Yes.";
   overlay.appendChild(okText);
