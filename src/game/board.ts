@@ -1807,33 +1807,53 @@ export function popOpponentsEmoji() {
 
 export function indicatePotionUsage(at: Location) {
   return;
-
   const location = inBoardCoordinates(at);
-  const size = 0.23;
-  const centerOffset = (1 - size) * 0.5;
-  const x = location.j + centerOffset;
-  const y = location.i + centerOffset;
-  const particle = document.createElementNS(SVG.ns, "foreignObject");
-  particle.style.pointerEvents = "none";
-  SVG.setFrame(particle, x, y, size, size);
-  particle.style.overflow = "visible";
-  const div = document.createElementNS("http://www.w3.org/1999/xhtml", "div") as HTMLDivElement;
-  div.style.width = "100%";
-  div.style.height = "100%";
-  div.style.display = "block";
-  div.style.margin = "0";
-  div.style.padding = "0";
-  div.style.backgroundImage = `url(data:image/webp;base64,${assets.potion})`;
-  div.style.backgroundSize = "contain";
-  div.style.backgroundPosition = "center";
-  div.style.backgroundRepeat = "no-repeat";
-  if (currentAssetsSet === AssetsSet.Pixel) {
-    div.style.imageRendering = "pixelated";
-  }
-  particle.appendChild(div);
-  effectsLayer?.appendChild(particle);
+  const size = 0.5;
 
-  // TODO: through a potion
+  const numParticles = 10;
+  const duration = 600;
+  const maxDistance = 3;
+
+  const group = document.createElementNS(SVG.ns, "g");
+  group.style.pointerEvents = "none";
+  effectsLayer?.appendChild(group);
+
+  const centerX = location.j + 0.5;
+  const centerY = location.i + 0.5;
+  let finishedParticles = 0;
+
+  for (let i = 0; i < numParticles; i++) {
+    const angle = (2 * Math.PI * i) / numParticles + (Math.random() - 0.5) * (Math.PI / numParticles);
+    const distance = maxDistance * (0.7 + 0.3 * Math.random());
+    const pSize = size * (0.5 + 0.5 * Math.random());
+    const particle = document.createElementNS(SVG.ns, "image");
+    SVG.setImage(particle, emojis.statusPotion);
+    SVG.setFrame(particle, centerX - pSize / 2, centerY - pSize / 2, pSize, pSize);
+    particle.style.pointerEvents = "none";
+    particle.style.overflow = "visible";
+    group.appendChild(particle);
+    const start = performance.now();
+    function animate(now: number) {
+      const elapsed = now - start;
+      const t = Math.min(elapsed / duration, 1);
+      const ease = t < 0.7 ? 1 - Math.pow(1 - t / 0.7, 2) : 1;
+      const fade = t < 0.7 ? 1 : 1 - (t - 0.7) / 0.3;
+      const dx = Math.cos(angle) * distance * ease;
+      const dy = Math.sin(angle) * distance * ease;
+      SVG.setFrame(particle, centerX + dx - pSize / 2, centerY + dy - pSize / 2, pSize, pSize);
+      particle.style.opacity = fade.toString();
+      if (t < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        if (particle.parentNode) particle.parentNode.removeChild(particle);
+        finishedParticles++;
+        if (finishedParticles === numParticles && group.parentNode) {
+          group.parentNode.removeChild(group);
+        }
+      }
+    }
+    requestAnimationFrame(animate);
+  }
 }
 
 export function drawTrace(trace: Trace) {
