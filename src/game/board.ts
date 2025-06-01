@@ -1806,7 +1806,6 @@ export function popOpponentsEmoji() {
 }
 
 export function indicatePotionUsage(at: Location) {
-  return;
   const location = inBoardCoordinates(at);
   const size = 0.5;
 
@@ -1820,7 +1819,15 @@ export function indicatePotionUsage(at: Location) {
 
   const centerX = location.j + 0.5;
   const centerY = location.i + 0.5;
-  let finishedParticles = 0;
+
+  const particles: Array<{
+    element: SVGElement;
+    angle: number;
+    distance: number;
+    size: number;
+    startTime: number;
+    finished: boolean;
+  }> = [];
 
   for (let i = 0; i < numParticles; i++) {
     const angle = (2 * Math.PI * i) / numParticles + (Math.random() - 0.5) * (Math.PI / numParticles);
@@ -1832,28 +1839,53 @@ export function indicatePotionUsage(at: Location) {
     particle.style.pointerEvents = "none";
     particle.style.overflow = "visible";
     group.appendChild(particle);
-    const start = performance.now();
-    function animate(now: number) {
-      const elapsed = now - start;
+
+    particles.push({
+      element: particle,
+      angle,
+      distance,
+      size: pSize,
+      startTime: performance.now(),
+      finished: false,
+    });
+  }
+
+  function animateAllParticles(now: number) {
+    let activeParticles = 0;
+
+    for (const particle of particles) {
+      if (particle.finished) continue;
+
+      const elapsed = now - particle.startTime;
       const t = Math.min(elapsed / duration, 1);
-      const ease = t < 0.7 ? 1 - Math.pow(1 - t / 0.7, 2) : 1;
-      const fade = t < 0.7 ? 1 : 1 - (t - 0.7) / 0.3;
-      const dx = Math.cos(angle) * distance * ease;
-      const dy = Math.sin(angle) * distance * ease;
-      SVG.setFrame(particle, centerX + dx - pSize / 2, centerY + dy - pSize / 2, pSize, pSize);
-      particle.style.opacity = fade.toString();
-      if (t < 1) {
-        requestAnimationFrame(animate);
-      } else {
-        if (particle.parentNode) particle.parentNode.removeChild(particle);
-        finishedParticles++;
-        if (finishedParticles === numParticles && group.parentNode) {
-          group.parentNode.removeChild(group);
+
+      if (t >= 1) {
+        if (particle.element.parentNode) {
+          particle.element.parentNode.removeChild(particle.element);
         }
+        particle.finished = true;
+      } else {
+        const ease = t < 0.7 ? 1 - Math.pow(1 - t / 0.7, 2) : 1;
+        const fade = t < 0.7 ? 1 : 1 - (t - 0.7) / 0.3;
+        const dx = Math.cos(particle.angle) * particle.distance * ease;
+        const dy = Math.sin(particle.angle) * particle.distance * ease;
+
+        SVG.setFrame(particle.element, centerX + dx - particle.size / 2, centerY + dy - particle.size / 2, particle.size, particle.size);
+        particle.element.style.opacity = fade.toString();
+        activeParticles++;
       }
     }
-    requestAnimationFrame(animate);
+
+    if (activeParticles > 0) {
+      requestAnimationFrame(animateAllParticles);
+    } else {
+      if (group.parentNode) {
+        group.parentNode.removeChild(group);
+      }
+    }
   }
+
+  requestAnimationFrame(animateAllParticles);
 }
 
 export function drawTrace(trace: Trace) {
