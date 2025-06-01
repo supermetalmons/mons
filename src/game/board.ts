@@ -57,6 +57,7 @@ let monsBoardDisplayAnimationTimeout: NodeJS.Timeout | null = null;
 let board: HTMLElement | null;
 let highlightsLayer: HTMLElement | null;
 let itemsLayer: HTMLElement | null;
+let effectsLayer: HTMLElement | null;
 let controlsLayer: HTMLElement | null;
 let boardBackgroundLayer: HTMLElement | null;
 
@@ -513,6 +514,7 @@ function initializeBoardElements() {
   board = document.getElementById("monsboard");
   highlightsLayer = document.getElementById("highlightsLayer");
   itemsLayer = document.getElementById("itemsLayer");
+  effectsLayer = document.getElementById("effectsLayer");
   controlsLayer = document.getElementById("controlsLayer");
   boardBackgroundLayer = document.getElementById("boardBackgroundLayer");
 }
@@ -1804,9 +1806,13 @@ export function popOpponentsEmoji() {
 }
 
 export function indicatePotionUsage(at: Location) {
+  return;
   const location = inBoardCoordinates(at);
-  console.log("used potion at", location);
-  // TODO: add visual effect
+  let highlight = SVG.circle(location.j + 0.5, location.i + 0.5, 0.33);
+  highlight.style.pointerEvents = "none";
+  SVG.setFill(highlight, "purple");
+  effectsLayer?.append(highlight);
+  // TODO: through a potion
 }
 
 export function drawTrace(trace: Trace) {

@@ -129,6 +129,7 @@ const BoardComponent: React.FC = () => {
         <g id="highlightsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
         <g id="itemsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
         <g id="controlsLayer"></g>
+        <g id="effectsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
       </svg>
       {overlaySvgElement && (
         <div
