@@ -1807,11 +1807,10 @@ export function popOpponentsEmoji() {
 
 export function indicatePotionUsage(at: Location) {
   const location = inBoardCoordinates(at);
-  const size = 0.5;
 
   const numParticles = 10;
-  const duration = 600;
-  const maxDistance = 3;
+  const duration = 300;
+  const maxDistance = 1.5;
 
   const group = document.createElementNS(SVG.ns, "g");
   group.style.pointerEvents = "none";
@@ -1823,19 +1822,19 @@ export function indicatePotionUsage(at: Location) {
   const particles: Array<{
     element: SVGElement;
     angle: number;
-    distance: number;
+    maxDistance: number;
     size: number;
     startTime: number;
     finished: boolean;
   }> = [];
 
   for (let i = 0; i < numParticles; i++) {
-    const angle = (2 * Math.PI * i) / numParticles + (Math.random() - 0.5) * (Math.PI / numParticles);
-    const distance = maxDistance * (0.7 + 0.3 * Math.random());
-    const pSize = size * (0.5 + 0.5 * Math.random());
+    const angle = (2 * Math.PI * i) / numParticles;
+    const distance = maxDistance * (0.8 + Math.random() * 0.4);
+    const size = 0.2 + Math.random() * 0.3;
     const particle = document.createElementNS(SVG.ns, "image");
     SVG.setImage(particle, emojis.statusPotion);
-    SVG.setFrame(particle, centerX - pSize / 2, centerY - pSize / 2, pSize, pSize);
+    SVG.setFrame(particle, centerX - size / 2, centerY - size / 2, size, size);
     particle.style.pointerEvents = "none";
     particle.style.overflow = "visible";
     group.appendChild(particle);
@@ -1843,8 +1842,8 @@ export function indicatePotionUsage(at: Location) {
     particles.push({
       element: particle,
       angle,
-      distance,
-      size: pSize,
+      maxDistance: distance,
+      size,
       startTime: performance.now(),
       finished: false,
     });
@@ -1855,23 +1854,24 @@ export function indicatePotionUsage(at: Location) {
 
     for (const particle of particles) {
       if (particle.finished) continue;
-
       const elapsed = now - particle.startTime;
       const t = Math.min(elapsed / duration, 1);
-
       if (t >= 1) {
         if (particle.element.parentNode) {
           particle.element.parentNode.removeChild(particle.element);
         }
         particle.finished = true;
       } else {
-        const ease = t < 0.7 ? 1 - Math.pow(1 - t / 0.7, 2) : 1;
-        const fade = t < 0.7 ? 1 : 1 - (t - 0.7) / 0.3;
-        const dx = Math.cos(particle.angle) * particle.distance * ease;
-        const dy = Math.sin(particle.angle) * particle.distance * ease;
-
-        SVG.setFrame(particle.element, centerX + dx - particle.size / 2, centerY + dy - particle.size / 2, particle.size, particle.size);
-        particle.element.style.opacity = fade.toString();
+        const easeOut = 1 - Math.pow(1 - t, 4);
+        const currentDistance = particle.maxDistance * easeOut;
+        const x = centerX + Math.cos(particle.angle) * currentDistance;
+        const y = centerY + Math.sin(particle.angle) * currentDistance;
+        const fadeEase = Math.pow(t, 2);
+        const opacity = 1 - fadeEase;
+        const sizeGrowth = t < 0.2 ? t * 5 : 1;
+        const currentSize = particle.size * sizeGrowth;
+        SVG.setFrame(particle.element, x - currentSize / 2, y - currentSize / 2, currentSize, currentSize);
+        particle.element.style.opacity = opacity.toString();
         activeParticles++;
       }
     }
