@@ -1807,11 +1807,32 @@ export function popOpponentsEmoji() {
 
 export function indicatePotionUsage(at: Location) {
   return;
+
   const location = inBoardCoordinates(at);
-  let highlight = SVG.circle(location.j + 0.5, location.i + 0.5, 0.33);
-  highlight.style.pointerEvents = "none";
-  SVG.setFill(highlight, "purple");
-  effectsLayer?.append(highlight);
+  const size = 0.23;
+  const centerOffset = (1 - size) * 0.5;
+  const x = location.j + centerOffset;
+  const y = location.i + centerOffset;
+  const particle = document.createElementNS(SVG.ns, "foreignObject");
+  particle.style.pointerEvents = "none";
+  SVG.setFrame(particle, x, y, size, size);
+  particle.style.overflow = "visible";
+  const div = document.createElementNS("http://www.w3.org/1999/xhtml", "div") as HTMLDivElement;
+  div.style.width = "100%";
+  div.style.height = "100%";
+  div.style.display = "block";
+  div.style.margin = "0";
+  div.style.padding = "0";
+  div.style.backgroundImage = `url(data:image/webp;base64,${assets.potion})`;
+  div.style.backgroundSize = "contain";
+  div.style.backgroundPosition = "center";
+  div.style.backgroundRepeat = "no-repeat";
+  if (currentAssetsSet === AssetsSet.Pixel) {
+    div.style.imageRendering = "pixelated";
+  }
+  particle.appendChild(div);
+  effectsLayer?.appendChild(particle);
+
   // TODO: through a potion
 }
 
