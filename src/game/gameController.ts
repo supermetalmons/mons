@@ -671,8 +671,9 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             mustReleaseHighlight = true;
             break;
           case MonsWeb.EventModelKind.UsePotion:
-            console.log("yo did use potion");
-            // TODO: handle use potion event
+            if (from) {
+              Board.indicatePotionUsage(from);
+            }
             break;
           case MonsWeb.EventModelKind.PickupPotion:
             if (!from) break;

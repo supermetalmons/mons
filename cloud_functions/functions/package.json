@@ -20,7 +20,7 @@
     "firebase-admin": "^12.1.0",
     "firebase-functions": "^6.1.2",
     "glicko2": "^1.2.1",
-    "mons-rust": "^0.1.53",
+    "mons-rust": "^0.1.54",
     "siwe": "^2.3.2",
     "tweetnacl": "^1.0.3"
   },

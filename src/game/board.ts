@@ -1803,6 +1803,12 @@ export function popOpponentsEmoji() {
   }, 300);
 }
 
+export function indicatePotionUsage(at: Location) {
+  const location = inBoardCoordinates(at);
+  console.log("used potion at", location);
+  // TODO: add visual effect
+}
+
 export function drawTrace(trace: Trace) {
   const from = inBoardCoordinates(trace.from);
   const to = inBoardCoordinates(trace.to);
