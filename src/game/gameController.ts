@@ -670,6 +670,10 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             locationsToUpdate.push(from);
             mustReleaseHighlight = true;
             break;
+          case MonsWeb.EventModelKind.UsePotion:
+            console.log("yo did use potion");
+            // TODO: handle use potion event
+            break;
           case MonsWeb.EventModelKind.PickupPotion:
             if (!from) break;
             sounds.push(Sound.PickupPotion);
