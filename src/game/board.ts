@@ -1806,11 +1806,23 @@ export function popOpponentsEmoji() {
 }
 
 export function indicatePotionUsage(at: Location) {
-  const location = inBoardCoordinates(at);
-
   const numParticles = 10;
   const duration = 300;
   const maxDistance = 1.5;
+  const minParticleSize = 0.2;
+  const maxParticleSize = 0.5;
+  const particleStrokeWidth = 10;
+  const particleStrokeOpacity = 0.8;
+  const glareSizeRatio = 0.3;
+  const glareOffsetXRatio = 0.15;
+  const glareOffsetYRatio = -0.1;
+  const glareOpacity = 0.95;
+  const fadeOutStrength = 0.7;
+  const sizeGrowthThreshold = 0.2;
+  const sizeGrowthMultiplier = 5;
+  const glareOpacityBoost = 1.1;
+
+  const location = inBoardCoordinates(at);
 
   const group = document.createElementNS(SVG.ns, "g");
   group.style.pointerEvents = "none";
@@ -1819,8 +1831,21 @@ export function indicatePotionUsage(at: Location) {
   const centerX = location.j + 0.5;
   const centerY = location.i + 0.5;
 
+  const bubbleStops = [
+    { offset: "0%", color: "#FFF0FA", opacity: "1.0" },
+    { offset: "30%", color: "#F7B6E6", opacity: "0.98" },
+    { offset: "70%", color: "#E6A3D7", opacity: "0.92" },
+    { offset: "100%", color: "#D47FC2", opacity: "0.85" },
+  ];
+  const strokeColor = "#D47FC2";
+  const glareColor = "#FFF0FA";
+
+  const defs = document.createElementNS(SVG.ns, "defs");
+  group.appendChild(defs);
+
   const particles: Array<{
     element: SVGElement;
+    glareElement: SVGElement;
     angle: number;
     maxDistance: number;
     size: number;
@@ -1831,16 +1856,51 @@ export function indicatePotionUsage(at: Location) {
   for (let i = 0; i < numParticles; i++) {
     const angle = (2 * Math.PI * i) / numParticles;
     const distance = maxDistance * (0.8 + Math.random() * 0.4);
-    const size = 0.2 + Math.random() * 0.3;
-    const particle = document.createElementNS(SVG.ns, "image");
-    SVG.setImage(particle, emojis.statusPotion);
-    SVG.setFrame(particle, centerX - size / 2, centerY - size / 2, size, size);
+    const size = minParticleSize + Math.random() * (maxParticleSize - minParticleSize);
+    const particleId = `bubble-${i}-${Date.now()}`;
+
+    const gradient = document.createElementNS(SVG.ns, "radialGradient");
+    gradient.setAttribute("id", `gradient-${particleId}`);
+    gradient.setAttribute("cx", "30%");
+    gradient.setAttribute("cy", "25%");
+    gradient.setAttribute("r", "70%");
+
+    for (const stopDef of bubbleStops) {
+      const stop = document.createElementNS(SVG.ns, "stop");
+      stop.setAttribute("offset", stopDef.offset);
+      stop.setAttribute("stop-color", stopDef.color);
+      stop.setAttribute("stop-opacity", stopDef.opacity);
+      gradient.appendChild(stop);
+    }
+    defs.appendChild(gradient);
+
+    const particle = document.createElementNS(SVG.ns, "circle");
+    particle.setAttribute("r", ((size / 2) * 100).toString());
+    particle.setAttribute("cx", (centerX * 100).toString());
+    particle.setAttribute("cy", (centerY * 100).toString());
+    particle.setAttribute("fill", `url(#gradient-${particleId})`);
+    particle.setAttribute("stroke", strokeColor);
+    particle.setAttribute("stroke-width", particleStrokeWidth.toString());
+    particle.setAttribute("stroke-opacity", particleStrokeOpacity.toString());
     particle.style.pointerEvents = "none";
     particle.style.overflow = "visible";
     group.appendChild(particle);
 
+    const glare = document.createElementNS(SVG.ns, "ellipse");
+    const glareSize = size * glareSizeRatio;
+    glare.setAttribute("rx", ((glareSize / 2) * 100).toString());
+    glare.setAttribute("ry", ((glareSize / 3) * 100).toString());
+    glare.setAttribute("cx", ((centerX + size * glareOffsetXRatio) * 100).toString());
+    glare.setAttribute("cy", ((centerY + size * glareOffsetYRatio) * 100).toString());
+    SVG.setFill(glare, glareColor);
+    glare.setAttribute("opacity", glareOpacity.toString());
+    glare.style.pointerEvents = "none";
+    glare.style.overflow = "visible";
+    group.appendChild(glare);
+
     particles.push({
       element: particle,
+      glareElement: glare,
       angle,
       maxDistance: distance,
       size,
@@ -1860,6 +1920,9 @@ export function indicatePotionUsage(at: Location) {
         if (particle.element.parentNode) {
           particle.element.parentNode.removeChild(particle.element);
         }
+        if (particle.glareElement.parentNode) {
+          particle.glareElement.parentNode.removeChild(particle.glareElement);
+        }
         particle.finished = true;
       } else {
         const easeOut = 1 - Math.pow(1 - t, 4);
@@ -1867,11 +1930,20 @@ export function indicatePotionUsage(at: Location) {
         const x = centerX + Math.cos(particle.angle) * currentDistance;
         const y = centerY + Math.sin(particle.angle) * currentDistance;
         const fadeEase = Math.pow(t, 2);
-        const opacity = 1 - fadeEase;
-        const sizeGrowth = t < 0.2 ? t * 5 : 1;
+        const opacity = 1 - fadeEase * fadeOutStrength;
+        const sizeGrowth = t < sizeGrowthThreshold ? t * sizeGrowthMultiplier : 1;
         const currentSize = particle.size * sizeGrowth;
-        SVG.setFrame(particle.element, x - currentSize / 2, y - currentSize / 2, currentSize, currentSize);
+        particle.element.setAttribute("cx", (x * 100).toString());
+        particle.element.setAttribute("cy", (y * 100).toString());
+        particle.element.setAttribute("r", ((currentSize / 2) * 100).toString());
         particle.element.style.opacity = opacity.toString();
+        const glareSize = currentSize * glareSizeRatio;
+        const glareOpacityCurrent = Math.min(1, opacity * glareOpacityBoost);
+        particle.glareElement.setAttribute("cx", ((x + currentSize * glareOffsetXRatio) * 100).toString());
+        particle.glareElement.setAttribute("cy", ((y + currentSize * glareOffsetYRatio) * 100).toString());
+        particle.glareElement.setAttribute("rx", ((glareSize / 2) * 100).toString());
+        particle.glareElement.setAttribute("ry", ((glareSize / 3) * 100).toString());
+        particle.glareElement.style.opacity = glareOpacityCurrent.toString();
         activeParticles++;
       }
     }
