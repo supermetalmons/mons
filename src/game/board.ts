@@ -1808,9 +1808,9 @@ export function popOpponentsEmoji() {
 export function indicatePotionUsage(at: Location) {
   const numParticles = 10;
   const duration = 300;
-  const maxDistance = 1;
+  const maxDistance = 1.5;
   const minParticleSize = 0.15;
-  const maxParticleSize = 0.35;
+  const maxParticleSize = 0.42;
   const particleStrokeWidth = 1;
   const particleStrokeOpacity = 0.8;
   const glareSizeRatio = 0.3;
