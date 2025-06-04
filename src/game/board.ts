@@ -1806,12 +1806,12 @@ export function popOpponentsEmoji() {
 }
 
 export function indicatePotionUsage(at: Location) {
-  const numParticles = 10;
+  const numParticles = 12;
   const duration = 300;
-  const maxDistance = 1.5;
-  const minParticleSize = 0.2;
-  const maxParticleSize = 0.5;
-  const particleStrokeWidth = 10;
+  const maxDistance = 1;
+  const minParticleSize = 0.15;
+  const maxParticleSize = 0.35;
+  const particleStrokeWidth = 1;
   const particleStrokeOpacity = 0.8;
   const glareSizeRatio = 0.3;
   const glareOffsetXRatio = 0.15;
