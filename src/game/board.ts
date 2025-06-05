@@ -1170,7 +1170,7 @@ export function hideItemSelectionOrConfirmationOverlay() {
   }
 }
 
-export function showEndTurnConfirmationOverlay(ok: () => void, cancel: () => void): void {
+export function showEndTurnConfirmationOverlay(isBlack: boolean, ok: () => void, cancel: () => void): void {
   const overlay = document.createElementNS(SVG.ns, "g");
   const background = createFullBoardBackgroundElement();
   overlay.appendChild(background);
@@ -1182,48 +1182,12 @@ export function showEndTurnConfirmationOverlay(ok: () => void, cancel: () => voi
     cancel();
   });
 
-  const buttonWidth = 230;
-  const buttonHeight = 230;
-  const buttonY = 420;
-  const boardWidth = 1100;
-  const buttonX = boardWidth / 2 - buttonWidth / 2;
-
-  const okButton = document.createElementNS(SVG.ns, "rect");
-  okButton.setAttribute("x", buttonX.toString());
-  okButton.setAttribute("y", buttonY.toString());
-  okButton.setAttribute("width", buttonWidth.toString());
-  okButton.setAttribute("height", buttonHeight.toString());
-  okButton.setAttribute("rx", "115");
-  SVG.setFill(okButton, "#009500");
-  okButton.setAttribute("stroke", "#00F900");
-  okButton.setAttribute("stroke-width", "15");
-  okButton.style.cursor = "pointer";
-  overlay.appendChild(okButton);
-
-  const okText = document.createElementNS(SVG.ns, "text");
-  okText.setAttribute("x", (buttonX + buttonWidth / 2).toString());
-  okText.setAttribute("y", (buttonY + buttonHeight / 2).toString());
-  okText.setAttribute("text-anchor", "middle");
-  okText.setAttribute("alignment-baseline", "middle");
-  okText.setAttribute("font-size", "69");
-  okText.setAttribute("fill", "#fff");
-  okText.setAttribute("font-weight", "888");
-  okText.style.pointerEvents = "none";
-  okText.textContent = "Yes.";
-  overlay.appendChild(okText);
-
-  okButton.addEventListener(defaultInputEventName, (event) => {
-    preventTouchstartIfNeeded(event);
-    event.stopPropagation();
-    setTopBoardOverlayVisible(null);
-    ok();
-  });
-
+  createItemButton(overlay, 392.5, 365, isBlack ? assets.manaB : assets.mana, () => ok());
   showsItemSelectionOrConfirmationOverlay = true;
   setTopBoardOverlayVisible(overlay);
 }
 
-function createItemButton(overlay: SVGElement, x: number, y: number, asset: string, modifier: InputModifier): void {
+function createItemButton(overlay: SVGElement, x: number, y: number, asset: string, completion: () => void): void {
   const button = document.createElementNS(SVG.ns, "foreignObject");
   button.setAttribute("x", x.toString());
   button.setAttribute("y", y.toString());
@@ -1257,7 +1221,7 @@ function createItemButton(overlay: SVGElement, x: number, y: number, asset: stri
   touchTarget.addEventListener(defaultInputEventName, (event) => {
     preventTouchstartIfNeeded(event);
     event.stopPropagation();
-    didSelectInputModifier(modifier);
+    completion();
     setTopBoardOverlayVisible(null);
   });
   overlay.appendChild(touchTarget);
@@ -1268,9 +1232,8 @@ export function showItemSelection(): void {
   const background = createFullBoardBackgroundElement();
   overlay.appendChild(background);
 
-  createItemButton(overlay, 220, 365, assets.bomb, InputModifier.Bomb);
-
-  createItemButton(overlay, 565, 365, assets.potion, InputModifier.Potion);
+  createItemButton(overlay, 220, 365, assets.bomb, () => didSelectInputModifier(InputModifier.Bomb));
+  createItemButton(overlay, 565, 365, assets.potion, () => didSelectInputModifier(InputModifier.Potion));
 
   background.addEventListener(defaultInputEventName, (event) => {
     preventTouchstartIfNeeded(event);

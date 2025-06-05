@@ -569,6 +569,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
       if (!isRemoteInput && fenBeforeMove !== "" && turnShouldBeConfirmedForOutputEvents(events, fenBeforeMove)) {
         game = MonsWeb.MonsGameModel.from_fen(fenBeforeMove)!;
         Board.showEndTurnConfirmationOverlay(
+          game.active_color() === MonsWeb.Color.Black,
           () => {
             game = MonsWeb.MonsGameModel.from_fen(gameFen)!;
             applyOutput("", output, isRemoteInput, isBotInput, assistedInputKind, inputLocation);
