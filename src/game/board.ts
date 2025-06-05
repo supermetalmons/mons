@@ -1223,54 +1223,54 @@ export function showEndTurnConfirmationOverlay(ok: () => void, cancel: () => voi
   setTopBoardOverlayVisible(overlay);
 }
 
+function createItemButton(overlay: SVGElement, x: number, y: number, asset: string, modifier: InputModifier): void {
+  const button = document.createElementNS(SVG.ns, "foreignObject");
+  button.setAttribute("x", x.toString());
+  button.setAttribute("y", y.toString());
+  button.setAttribute("width", "315");
+  button.setAttribute("height", "315");
+  button.setAttribute("class", "item");
+  button.style.overflow = "visible";
+
+  const div = document.createElementNS("http://www.w3.org/1999/xhtml", "div") as HTMLDivElement;
+  div.style.width = "100%";
+  div.style.height = "100%";
+  div.style.display = "block";
+  div.style.margin = "0";
+  div.style.padding = "0";
+  div.style.backgroundImage = `url(data:image/webp;base64,${asset})`;
+  div.style.backgroundSize = "contain";
+  div.style.backgroundPosition = "center";
+  div.style.backgroundRepeat = "no-repeat";
+  if (currentAssetsSet === AssetsSet.Pixel) {
+    div.style.imageRendering = "pixelated";
+  }
+  button.appendChild(div);
+  overlay.appendChild(button);
+
+  const touchTarget = document.createElementNS(SVG.ns, "rect");
+  touchTarget.setAttribute("x", x.toString());
+  touchTarget.setAttribute("y", y.toString());
+  touchTarget.setAttribute("width", "315");
+  touchTarget.setAttribute("height", "315");
+  SVG.setFill(touchTarget, "transparent");
+  touchTarget.addEventListener(defaultInputEventName, (event) => {
+    preventTouchstartIfNeeded(event);
+    event.stopPropagation();
+    didSelectInputModifier(modifier);
+    setTopBoardOverlayVisible(null);
+  });
+  overlay.appendChild(touchTarget);
+}
+
 export function showItemSelection(): void {
   const overlay = document.createElementNS(SVG.ns, "g");
   const background = createFullBoardBackgroundElement();
   overlay.appendChild(background);
 
-  function createItemButton(x: number, y: number, asset: string, modifier: InputModifier): void {
-    const button = document.createElementNS(SVG.ns, "foreignObject");
-    button.setAttribute("x", x.toString());
-    button.setAttribute("y", y.toString());
-    button.setAttribute("width", "315");
-    button.setAttribute("height", "315");
-    button.setAttribute("class", "item");
-    button.style.overflow = "visible";
+  createItemButton(overlay, 220, 365, assets.bomb, InputModifier.Bomb);
 
-    const div = document.createElementNS("http://www.w3.org/1999/xhtml", "div") as HTMLDivElement;
-    div.style.width = "100%";
-    div.style.height = "100%";
-    div.style.display = "block";
-    div.style.margin = "0";
-    div.style.padding = "0";
-    div.style.backgroundImage = `url(data:image/webp;base64,${asset})`;
-    div.style.backgroundSize = "contain";
-    div.style.backgroundPosition = "center";
-    div.style.backgroundRepeat = "no-repeat";
-    if (currentAssetsSet === AssetsSet.Pixel) {
-      div.style.imageRendering = "pixelated";
-    }
-    button.appendChild(div);
-    overlay.appendChild(button);
-
-    const touchTarget = document.createElementNS(SVG.ns, "rect");
-    touchTarget.setAttribute("x", x.toString());
-    touchTarget.setAttribute("y", y.toString());
-    touchTarget.setAttribute("width", "315");
-    touchTarget.setAttribute("height", "315");
-    SVG.setFill(touchTarget, "transparent");
-    touchTarget.addEventListener(defaultInputEventName, (event) => {
-      preventTouchstartIfNeeded(event);
-      event.stopPropagation();
-      didSelectInputModifier(modifier);
-      setTopBoardOverlayVisible(null);
-    });
-    overlay.appendChild(touchTarget);
-  }
-
-  createItemButton(220, 365, assets.bomb, InputModifier.Bomb);
-
-  createItemButton(565, 365, assets.potion, InputModifier.Potion);
+  createItemButton(overlay, 565, 365, assets.potion, InputModifier.Potion);
 
   background.addEventListener(defaultInputEventName, (event) => {
     preventTouchstartIfNeeded(event);
