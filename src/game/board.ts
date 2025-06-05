@@ -1182,12 +1182,12 @@ export function showEndTurnConfirmationOverlay(isBlack: boolean, ok: () => void,
     cancel();
   });
 
-  createItemButton(overlay, 392.5, 365, isBlack ? assets.manaB : assets.mana, () => ok());
+  createItemButton(overlay, 392.5, 365, true, isBlack ? assets.manaB : assets.mana, () => ok());
   showsItemSelectionOrConfirmationOverlay = true;
   setTopBoardOverlayVisible(overlay);
 }
 
-function createItemButton(overlay: SVGElement, x: number, y: number, asset: string, completion: () => void): void {
+function createItemButton(overlay: SVGElement, x: number, y: number, wiggle: boolean, asset: string, completion: () => void): void {
   const button = document.createElementNS(SVG.ns, "foreignObject");
   button.setAttribute("x", x.toString());
   button.setAttribute("y", y.toString());
@@ -1195,6 +1195,36 @@ function createItemButton(overlay: SVGElement, x: number, y: number, asset: stri
   button.setAttribute("height", "315");
   button.setAttribute("class", "item");
   button.style.overflow = "visible";
+
+  let animationId: number | null = null;
+
+  if (wiggle) {
+    let startTime: number | null = null;
+    const duration = 3000;
+    const originalX = parseFloat(button.getAttribute("x") || "0");
+
+    function animateWiggle(timestamp: number) {
+      if (!startTime) startTime = timestamp;
+      const elapsed = timestamp - startTime;
+      const progress = (elapsed % duration) / duration;
+      const oscillations = 4;
+      const angle = progress * oscillations * 2 * Math.PI;
+      const offsetX = Math.sin(angle) * 8;
+      button.setAttribute("x", (originalX + offsetX).toString());
+
+      if (button.parentNode && animationId !== null) {
+        animationId = requestAnimationFrame(animateWiggle);
+      }
+    }
+
+    animationId = requestAnimationFrame(animateWiggle);
+    (button as any).__stopWiggle = () => {
+      if (animationId !== null) {
+        cancelAnimationFrame(animationId);
+        animationId = null;
+      }
+    };
+  }
 
   const div = document.createElementNS("http://www.w3.org/1999/xhtml", "div") as HTMLDivElement;
   div.style.width = "100%";
@@ -1209,6 +1239,7 @@ function createItemButton(overlay: SVGElement, x: number, y: number, asset: stri
   if (currentAssetsSet === AssetsSet.Pixel) {
     div.style.imageRendering = "pixelated";
   }
+
   button.appendChild(div);
   overlay.appendChild(button);
 
@@ -1221,6 +1252,10 @@ function createItemButton(overlay: SVGElement, x: number, y: number, asset: stri
   touchTarget.addEventListener(defaultInputEventName, (event) => {
     preventTouchstartIfNeeded(event);
     event.stopPropagation();
+    if ((button as any).__stopWiggle) {
+      (button as any).__stopWiggle();
+    }
+
     completion();
     setTopBoardOverlayVisible(null);
   });
@@ -1232,8 +1267,8 @@ export function showItemSelection(): void {
   const background = createFullBoardBackgroundElement();
   overlay.appendChild(background);
 
-  createItemButton(overlay, 220, 365, assets.bomb, () => didSelectInputModifier(InputModifier.Bomb));
-  createItemButton(overlay, 565, 365, assets.potion, () => didSelectInputModifier(InputModifier.Potion));
+  createItemButton(overlay, 220, 365, false, assets.bomb, () => didSelectInputModifier(InputModifier.Bomb));
+  createItemButton(overlay, 565, 365, false, assets.potion, () => didSelectInputModifier(InputModifier.Potion));
 
   background.addEventListener(defaultInputEventName, (event) => {
     preventTouchstartIfNeeded(event);
