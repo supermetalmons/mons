@@ -14,7 +14,7 @@ const NavigationPickerContainer = styled.div`
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
   max-height: calc(100dvh - 113px - env(safe-area-inset-bottom));
-  max-width: 100pt;
+  max-width: 115pt;
   display: flex;
   flex-direction: column;
   background-color: rgba(249, 249, 249, 0.9);
@@ -57,11 +57,14 @@ const NavigationPickerButton = styled.button`
   background: none;
   font-size: 13px;
   border: none;
-  padding: 6px 0;
+  padding: 6px 15px 6px 0;
   cursor: pointer;
   text-align: left;
   color: #333;
   width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -86,6 +89,12 @@ const NavigationPickerButton = styled.button`
       background-color: rgba(80, 80, 80, 0.5);
     }
   }
+`;
+
+const PlaceholderImage = styled.img`
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
 `;
 
 const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
@@ -136,6 +145,8 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
 const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, showsHomeNavigation, navigateHome }) => {
   const navigationPickerRef = useRef<HTMLDivElement>(null);
 
+  const placeholderSvgBase64 = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB4PSIyIiB5PSIyIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHJ4PSIzIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CiAgPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIi8+Cjwvc3ZnPgo=";
+
   const handleNavigationSelect = (id: string) => {
     const selectedItem = problems.find((item) => item.id === id);
     if (selectedItem) {
@@ -158,6 +169,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
           <SectionTitle>BASICS</SectionTitle>
           {problems.map((item) => (
             <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
+              <PlaceholderImage src={placeholderSvgBase64} alt="Puzzle icon" />
               {item.label}
             </NavigationPickerButton>
           ))}
