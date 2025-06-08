@@ -1255,7 +1255,6 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
   setAutomatchVisible(false);
   setBotGameOptionVisible(false);
   closeNavigationAndAppearancePopupIfAny();
-  setAutomoveActionVisible(true);
 
   setNewBoard();
 
