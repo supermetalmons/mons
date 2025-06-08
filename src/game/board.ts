@@ -1170,7 +1170,8 @@ export function hideItemSelectionOrConfirmationOverlay() {
   }
 }
 
-export function showEndTurnConfirmationOverlay(isBlack: boolean, ok: () => void, cancel: () => void): void {
+export function showEndTurnConfirmationOverlay(isBlack: boolean, finishLocation: Location, ok: () => void, cancel: () => void): void {
+  highlightSelectedItem(finishLocation, "white", true);
   const overlay = document.createElementNS(SVG.ns, "g");
   const background = createFullBoardBackgroundElement();
   overlay.appendChild(background);
@@ -1775,7 +1776,7 @@ export function applyHighlights(highlights: Highlight[]) {
   highlights.forEach((highlight) => {
     switch (highlight.kind) {
       case HighlightKind.Selected:
-        highlightSelectedItem(highlight.location, highlight.color);
+        highlightSelectedItem(highlight.location, highlight.color, false);
         break;
       case HighlightKind.EmptySquare:
         highlightEmptyDestination(highlight.location, highlight.color);
@@ -2318,7 +2319,11 @@ function highlightEmptyDestination(location: Location, color: string) {
   highlightsLayer?.append(highlight);
 }
 
-function highlightSelectedItem(location: Location, color: string) {
+function highlightSelectedItem(location: Location, color: string, markEndOfTurn: boolean) {
+  if (markEndOfTurn) {
+    return;
+  } // TODO: implement mark end of turn
+
   location = inBoardCoordinates(location);
 
   if (isPangchiuBoard()) {
