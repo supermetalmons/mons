@@ -452,8 +452,9 @@ function turnShouldBeConfirmedForOutputEvents(events: MonsWeb.EventModel[], fenB
   const wasFirstTurn = game.turn_number() === 2;
   const hasNextTurn = events.some((e) => e.kind === MonsWeb.EventModelKind.NextTurn);
   const hasGameOver = events.some((e) => e.kind === MonsWeb.EventModelKind.GameOver);
+  const hasManaMove = events.some((e) => e.kind === MonsWeb.EventModelKind.ManaMove);
 
-  if (wasFirstTurn || hasGameOver || !hasNextTurn) {
+  if (wasFirstTurn || hasGameOver || !hasNextTurn || !hasManaMove) {
     return false;
   }
 
