@@ -1171,7 +1171,7 @@ export function hideItemSelectionOrConfirmationOverlay() {
 }
 
 export function showEndTurnConfirmationOverlay(isBlack: boolean, finishLocation: Location, ok: () => void, cancel: () => void): void {
-  highlightSelectedItem(finishLocation, "white", true);
+  showEndOfTurnHighlight(finishLocation);
   const overlay = document.createElementNS(SVG.ns, "g");
   const background = createFullBoardBackgroundElement();
   overlay.appendChild(background);
@@ -1776,7 +1776,7 @@ export function applyHighlights(highlights: Highlight[]) {
   highlights.forEach((highlight) => {
     switch (highlight.kind) {
       case HighlightKind.Selected:
-        highlightSelectedItem(highlight.location, highlight.color, false);
+        highlightSelectedItem(highlight.location, highlight.color);
         break;
       case HighlightKind.EmptySquare:
         highlightEmptyDestination(highlight.location, highlight.color);
@@ -2319,13 +2319,32 @@ function highlightEmptyDestination(location: Location, color: string) {
   highlightsLayer?.append(highlight);
 }
 
-function highlightSelectedItem(location: Location, color: string, markEndOfTurn: boolean) {
-  if (markEndOfTurn) {
-    return;
-  } // TODO: implement mark end of turn
-
+function showEndOfTurnHighlight(location: Location) {
   location = inBoardCoordinates(location);
+  const highlight = document.createElementNS(SVG.ns, "g");
+  highlight.style.pointerEvents = "none";
+  const rect = document.createElementNS(SVG.ns, "rect");
+  SVG.setFrame(rect, location.j, location.i, 1, 1);
+  rect.setAttribute("fill", "#fff");
+  highlight.appendChild(rect);
+  const cellSize = 0.25;
+  for (let row = 0; row < 4; ++row) {
+    for (let col = 0; col < 4; ++col) {
+      if ((row + col) % 2 === 1) {
+        const square = document.createElementNS(SVG.ns, "rect");
+        const x = location.j + col * cellSize;
+        const y = location.i + row * cellSize;
+        SVG.setFrame(square, x, y, cellSize, cellSize);
+        square.setAttribute("fill", "#222");
+        highlight.appendChild(square);
+      }
+    }
+  }
+  highlightsLayer?.append(highlight);
+}
 
+function highlightSelectedItem(location: Location, color: string) {
+  location = inBoardCoordinates(location);
   if (isPangchiuBoard()) {
     const highlight = document.createElementNS(SVG.ns, "rect");
     highlight.style.pointerEvents = "none";
