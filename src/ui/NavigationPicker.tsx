@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { problems } from "../content/problems";
 import { didSelectPuzzle } from "../game/gameController";
@@ -144,8 +144,18 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
 
 const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, showsHomeNavigation, navigateHome }) => {
   const navigationPickerRef = useRef<HTMLDivElement>(null);
+  const [assets, setAssets] = useState<any>(null);
 
-  const placeholderSvgBase64 = "data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjQiIGhlaWdodD0iMjQiIHZpZXdCb3g9IjAgMCAyNCAyNCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KICA8cmVjdCB4PSIyIiB5PSIyIiB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHJ4PSIzIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBmaWxsPSJub25lIi8+CiAgPGNpcmNsZSBjeD0iMTIiIGN5PSIxMiIgcj0iMyIgZmlsbD0iY3VycmVudENvbG9yIi8+Cjwvc3ZnPgo=";
+  useEffect(() => {
+    const loadAssets = async () => {
+      try {
+        const gameAssets = (await import(`../assets/gameAssetsPixel`)).gameAssets;
+        setAssets(gameAssets);
+      } catch {}
+    };
+
+    loadAssets();
+  }, []);
 
   const handleNavigationSelect = (id: string) => {
     const selectedItem = problems.find((item) => item.id === id);
@@ -162,6 +172,13 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
     navigateHome?.(e);
   };
 
+  const getIconImage = (iconName: string) => {
+    if (!assets || !assets[iconName]) {
+      return "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
+    }
+    return `data:image/png;base64,${assets[iconName]}`;
+  };
+
   return (
     <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
       {showsPuzzles && (
@@ -169,7 +186,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
           <SectionTitle>BASICS</SectionTitle>
           {problems.map((item) => (
             <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
-              <PlaceholderImage src={placeholderSvgBase64} alt="Puzzle icon" />
+              <PlaceholderImage src={getIconImage(item.icon)} alt="Puzzle icon" />
               {item.label}
             </NavigationPickerButton>
           ))}
