@@ -13,8 +13,8 @@ const NavigationPickerContainer = styled.div`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
-  max-height: calc(100dvh - 113px - env(safe-area-inset-bottom));
-  max-width: 115pt;
+  max-height: calc(100dvh - 120px - env(safe-area-inset-bottom));
+  max-width: 130pt;
   display: flex;
   flex-direction: column;
   background-color: rgba(249, 249, 249, 0.9);
@@ -41,7 +41,7 @@ const ScrollableList = styled.div`
 `;
 
 const SectionTitle = styled.div`
-  font-size: 0.5rem;
+  font-size: 0.55rem;
   font-weight: bold;
   color: #767787;
   text-align: left;
@@ -55,7 +55,7 @@ const SectionTitle = styled.div`
 
 const NavigationPickerButton = styled.button`
   background: none;
-  font-size: 13px;
+  font-size: 15px;
   border: none;
   padding: 6px 15px 6px 0;
   cursor: pointer;
@@ -92,8 +92,8 @@ const NavigationPickerButton = styled.button`
 `;
 
 const PlaceholderImage = styled.img`
-  width: 20px;
-  height: 20px;
+  width: 23px;
+  height: 23px;
   flex-shrink: 0;
 `;
 
@@ -105,6 +105,7 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
   border-radius: 13px;
   padding: 8px 16px;
   height: 42px;
+  font-size: 0.777rem;
   font-weight: bold;
   border: none;
   cursor: pointer;
@@ -183,7 +184,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
     <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
       {showsPuzzles && (
         <ScrollableList>
-          <SectionTitle>BASICS</SectionTitle>
+          <SectionTitle>LEARN</SectionTitle>
           {problems.map((item) => (
             <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
               <PlaceholderImage src={getIconImage(item.icon)} alt="Puzzle icon" />
