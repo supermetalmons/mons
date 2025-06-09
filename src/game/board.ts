@@ -119,11 +119,11 @@ export async function showTalkingDude(show: boolean) {
     removeItemAndCleanUpAnimation(talkingDude);
     talkingDude = null;
     talkingDudeIsTalking = true;
-    setTopBoardOverlayVisible(null);
+    setTopBoardOverlayVisible(false, null);
     return;
   } else if (show) {
     const placeholder = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    setTopBoardOverlayVisible(placeholder);
+    setTopBoardOverlayVisible(false, placeholder);
     const sprite = instructor;
     const location = new Location(6.69, -1);
     const img = loadImage(sprite, "talkingDude", true);
@@ -132,7 +132,7 @@ export async function showTalkingDude(show: boolean) {
     controlsLayer?.appendChild(img);
     startAnimation(img, false);
     talkingDude = img;
-    setTopBoardOverlayVisible(talkingDude);
+    setTopBoardOverlayVisible(false, talkingDude);
   }
 }
 
@@ -1165,7 +1165,7 @@ export function updateScore(white: number, black: number, winnerColor?: MonsWeb.
 export function hideItemSelectionOrConfirmationOverlay() {
   if (showsItemSelectionOrConfirmationOverlay) {
     showsItemSelectionOrConfirmationOverlay = false;
-    setTopBoardOverlayVisible(null);
+    setTopBoardOverlayVisible(false, null);
     removeHighlights();
   }
 }
@@ -1179,13 +1179,13 @@ export function showEndTurnConfirmationOverlay(isBlack: boolean, finishLocation:
   background.addEventListener(defaultInputEventName, (event) => {
     preventTouchstartIfNeeded(event);
     event.stopPropagation();
-    setTopBoardOverlayVisible(null);
+    setTopBoardOverlayVisible(false, null);
     cancel();
   });
 
   createItemButton(overlay, 392.5, 365, true, isBlack ? assets.manaB : assets.mana, () => ok());
   showsItemSelectionOrConfirmationOverlay = true;
-  setTopBoardOverlayVisible(overlay);
+  setTopBoardOverlayVisible(true, overlay);
 }
 
 function createItemButton(overlay: SVGElement, x: number, y: number, wiggle: boolean, asset: string, completion: () => void): void {
@@ -1258,7 +1258,7 @@ function createItemButton(overlay: SVGElement, x: number, y: number, wiggle: boo
     }
 
     completion();
-    setTopBoardOverlayVisible(null);
+    setTopBoardOverlayVisible(false, null);
   });
   overlay.appendChild(touchTarget);
 }
@@ -1275,11 +1275,11 @@ export function showItemSelection(): void {
     preventTouchstartIfNeeded(event);
     event.stopPropagation();
     didSelectInputModifier(InputModifier.Cancel);
-    setTopBoardOverlayVisible(null);
+    setTopBoardOverlayVisible(false, null);
   });
 
   showsItemSelectionOrConfirmationOverlay = true;
-  setTopBoardOverlayVisible(overlay);
+  setTopBoardOverlayVisible(true, overlay);
 }
 
 export function addElementToItemsLayer(element: SVGElement, depth: number) {

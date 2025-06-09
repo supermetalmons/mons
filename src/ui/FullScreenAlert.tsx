@@ -33,6 +33,8 @@ const ContentBase = styled.div`
   justify-content: flex-start;
   cursor: default;
   pointer-events: none;
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
 
   @media (prefers-color-scheme: dark) {
     background-color: rgba(35, 35, 35, 0.95);

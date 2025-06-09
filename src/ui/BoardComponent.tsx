@@ -18,7 +18,7 @@ export const updateBoardComponentForBoardStyleChange = () => {
   listeners.forEach((listener) => listener());
 };
 
-export let setTopBoardOverlayVisible: (svgElement: SVGElement | null) => void;
+export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null) => void;
 
 const BoardComponent: React.FC = () => {
   const initializationRef = useRef(false);
@@ -26,9 +26,11 @@ const BoardComponent: React.FC = () => {
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
   const [isGridVisible, setIsGridVisible] = useState(!isCustomPictureBoardEnabled());
   const [shouldIncludePangchiuImage, setShouldIncludePangchiuImage] = useState(isCustomPictureBoardEnabled());
-  const [overlaySvgElement, setOverlaySvgElement] = useState<SVGElement | null>(null);
+  const [overlayState, setOverlayState] = useState<{ blurry: boolean; svgElement: SVGElement | null }>({ blurry: true, svgElement: null });
 
-  setTopBoardOverlayVisible = setOverlaySvgElement;
+  setTopBoardOverlayVisible = (blurry: boolean, svgElement: SVGElement | null) => {
+    setOverlayState({ blurry, svgElement });
+  };
 
   useEffect(() => {
     if (!initializationRef.current) {
@@ -131,7 +133,7 @@ const BoardComponent: React.FC = () => {
         <g id="controlsLayer"></g>
         <g id="effectsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
       </svg>
-      {overlaySvgElement && (
+      {overlayState.svgElement && (
         <div
           className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}
           style={{
@@ -145,13 +147,17 @@ const BoardComponent: React.FC = () => {
               top: isGridVisible ? "7.02%" : "7.05%",
               height: isGridVisible ? "78.2%" : "82.6%",
               aspectRatio: isGridVisible ? "1" : "1524/1612",
-              backdropFilter: "blur(3px)",
-              WebkitBackdropFilter: "blur(3px)",
+              ...(overlayState.blurry
+                ? {
+                    backdropFilter: "blur(3px)",
+                    WebkitBackdropFilter: "blur(3px)",
+                  }
+                : {}),
               overflow: "hidden",
               border: "none",
             }}
             ref={(div) => {
-              if (div && overlaySvgElement) {
+              if (div && overlayState.svgElement) {
                 div.innerHTML = "";
                 const wrapperSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
                 wrapperSvg.style.position = "absolute";
@@ -161,7 +167,7 @@ const BoardComponent: React.FC = () => {
                 wrapperSvg.style.height = "100%";
                 wrapperSvg.setAttribute("viewBox", "0 0 1100 1100");
                 wrapperSvg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-                wrapperSvg.appendChild(overlaySvgElement);
+                wrapperSvg.appendChild(overlayState.svgElement);
                 div.appendChild(wrapperSvg);
               }
             }}
