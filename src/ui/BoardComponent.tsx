@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
+import { FaTimes, FaCheck } from "react-icons/fa";
 import { go } from "../game/gameController";
 import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../content/boardStyles";
 import { isMobile } from "../utils/misc";
@@ -13,16 +14,19 @@ const CircularButton = styled.button`
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 0;
   outline: none;
   border: none;
   min-width: 0;
   min-height: 0;
   box-sizing: border-box;
+  overflow: visible;
 
-  &::before {
-    content: attr(data-symbol);
-    font-size: 2.5vw;
+  svg {
+    width: 55.5%;
+    height: 55.5%;
+    min-width: 5px;
+    min-height: 5px;
+    overflow: visible;
   }
 `;
 
@@ -219,11 +223,15 @@ const BoardComponent: React.FC = () => {
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "5%",
-                width: "25%",
+                height: "10%",
                 aspectRatio: "2.5/1",
               }}>
-              <CircularButton data-symbol="✕" onClick={!isMobile ? handleCancelClick : undefined} onTouchStart={isMobile ? handleCancelClick : undefined}></CircularButton>
-              <CircularButton data-symbol="✓" onClick={!isMobile ? handleConfirmClick : undefined} onTouchStart={isMobile ? handleConfirmClick : undefined}></CircularButton>
+              <CircularButton onClick={!isMobile ? handleCancelClick : undefined} onTouchStart={isMobile ? handleCancelClick : undefined}>
+                <FaTimes />
+              </CircularButton>
+              <CircularButton onClick={!isMobile ? handleConfirmClick : undefined} onTouchStart={isMobile ? handleConfirmClick : undefined}>
+                <FaCheck />
+              </CircularButton>
             </div>
           )}
         </div>
