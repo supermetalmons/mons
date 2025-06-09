@@ -5,17 +5,25 @@ import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../co
 import { isMobile } from "../utils/misc";
 
 const CircularButton = styled.button`
-  width: 50px;
-  height: 50px;
+  width: 40%;
+  aspect-ratio: 1;
   border-radius: 50%;
   background: white;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 0;
   outline: none;
   border: none;
+  min-width: 0;
+  min-height: 0;
+  box-sizing: border-box;
+
+  &::before {
+    content: attr(data-symbol);
+    font-size: 2.5vw;
+  }
 `;
 
 const listeners: Array<() => void> = [];
@@ -201,13 +209,21 @@ const BoardComponent: React.FC = () => {
             }}
           />
           {overlayState.withConfirmAndCancelButtons && (
-            <div style={{ position: "absolute", bottom: "20%", left: "50%", transform: "translateX(-50%)", display: "flex", gap: "20px" }}>
-              <CircularButton onClick={!isMobile ? handleCancelClick : undefined} onTouchStart={isMobile ? handleCancelClick : undefined}>
-                ✕
-              </CircularButton>
-              <CircularButton onClick={!isMobile ? handleConfirmClick : undefined} onTouchStart={isMobile ? handleConfirmClick : undefined}>
-                ✓
-              </CircularButton>
+            <div
+              style={{
+                position: "absolute",
+                bottom: "20%",
+                left: "50%",
+                transform: "translateX(-50%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "5%",
+                width: "25%",
+                aspectRatio: "2.5/1",
+              }}>
+              <CircularButton data-symbol="✕" onClick={!isMobile ? handleCancelClick : undefined} onTouchStart={isMobile ? handleCancelClick : undefined}></CircularButton>
+              <CircularButton data-symbol="✓" onClick={!isMobile ? handleConfirmClick : undefined} onTouchStart={isMobile ? handleConfirmClick : undefined}></CircularButton>
             </div>
           )}
         </div>
