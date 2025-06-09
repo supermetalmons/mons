@@ -284,7 +284,7 @@ export async function didUpdateIdCardMons() {
 }
 
 async function initializeAssets(onStart: boolean, isProfileMonsChange: boolean) {
-  assets = (await import(`../assets/gameAssetsPixel`)).gameAssets;
+  assets = (await import(`../assets/gameAssets${currentAssetsSet}`)).gameAssets;
 
   if (isExperimentingWithSprites) {
     const monsSprites = await import(`../assets/monsSprites`);
