@@ -1,6 +1,22 @@
 import React, { useEffect, useRef, useState } from "react";
+import styled from "styled-components";
 import { go } from "../game/gameController";
 import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../content/boardStyles";
+import { isMobile } from "../utils/misc";
+
+const CircularButton = styled.button`
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 24px;
+  outline: none;
+  border: none;
+`;
 
 const listeners: Array<() => void> = [];
 
@@ -18,7 +34,7 @@ export const updateBoardComponentForBoardStyleChange = () => {
   listeners.forEach((listener) => listener());
 };
 
-export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null) => void;
+export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void;
 
 const BoardComponent: React.FC = () => {
   const initializationRef = useRef(false);
@@ -26,10 +42,22 @@ const BoardComponent: React.FC = () => {
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
   const [isGridVisible, setIsGridVisible] = useState(!isCustomPictureBoardEnabled());
   const [shouldIncludePangchiuImage, setShouldIncludePangchiuImage] = useState(isCustomPictureBoardEnabled());
-  const [overlayState, setOverlayState] = useState<{ blurry: boolean; svgElement: SVGElement | null }>({ blurry: true, svgElement: null });
+  const [overlayState, setOverlayState] = useState<{ blurry: boolean; svgElement: SVGElement | null; withConfirmAndCancelButtons: boolean; ok?: () => void; cancel?: () => void }>({ blurry: true, svgElement: null, withConfirmAndCancelButtons: false });
 
-  setTopBoardOverlayVisible = (blurry: boolean, svgElement: SVGElement | null) => {
-    setOverlayState({ blurry, svgElement });
+  const handleConfirmClick = () => {
+    if (overlayState.ok) {
+      overlayState.ok();
+    }
+  };
+
+  const handleCancelClick = () => {
+    if (overlayState.cancel) {
+      overlayState.cancel();
+    }
+  };
+
+  setTopBoardOverlayVisible = (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => {
+    setOverlayState({ blurry, svgElement, withConfirmAndCancelButtons, ok, cancel });
   };
 
   useEffect(() => {
@@ -172,6 +200,16 @@ const BoardComponent: React.FC = () => {
               }
             }}
           />
+          {overlayState.withConfirmAndCancelButtons && (
+            <div style={{ position: "absolute", bottom: "20%", left: "50%", transform: "translateX(-50%)", display: "flex", gap: "20px" }}>
+              <CircularButton onClick={!isMobile ? handleCancelClick : undefined} onTouchStart={isMobile ? handleCancelClick : undefined}>
+                ✕
+              </CircularButton>
+              <CircularButton onClick={!isMobile ? handleConfirmClick : undefined} onTouchStart={isMobile ? handleConfirmClick : undefined}>
+                ✓
+              </CircularButton>
+            </div>
+          )}
         </div>
       )}
     </>
