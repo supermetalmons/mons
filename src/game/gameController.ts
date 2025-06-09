@@ -465,8 +465,20 @@ function turnShouldBeConfirmedForOutputEvents(events: MonsWeb.EventModel[], fenB
   const hasMoves = monMovesCount > 0;
   let actuallyHasPossibleAction = false;
   if (!hasMoves && actionsCount > 0) {
-    // TODO: check if actuallyHasPossibleAction by looking through suggested inputs
-    // actuallyHasPossibleAction = true;
+    const output = gameBeforeMove.process_input([]);
+    if (output.kind === MonsWeb.OutputModelKind.LocationsToStartFrom) {
+      const startLocations = output.locations();
+      for (const loc of startLocations) {
+        const nextOutput = gameBeforeMove.process_input([loc]);
+        if (nextOutput.kind === MonsWeb.OutputModelKind.NextInputOptions) {
+          const nextInputs = nextOutput.next_inputs();
+          if (nextInputs.some((input) => input.kind === MonsWeb.NextInputKind.MysticAction || input.kind === MonsWeb.NextInputKind.DemonAction || input.kind === MonsWeb.NextInputKind.SpiritTargetCapture)) {
+            actuallyHasPossibleAction = true;
+            break;
+          }
+        }
+      }
+    }
   }
   return hasMoves || actuallyHasPossibleAction;
 }
