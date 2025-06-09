@@ -9,7 +9,8 @@ const CircularButton = styled.button`
   width: 40%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background: white;
+  background-color: rgba(240, 240, 240, 0.8);
+  color: #007aff;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -20,6 +21,31 @@ const CircularButton = styled.button`
   min-height: 0;
   box-sizing: border-box;
   overflow: visible;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: rgba(250, 250, 250, 0.85);
+    }
+  }
+
+  &:active {
+    background-color: rgba(230, 230, 230, 0.9);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: rgba(80, 80, 80, 0.8);
+    color: #0b84ff;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: rgba(90, 90, 90, 0.85);
+      }
+    }
+
+    &:active {
+      background-color: rgba(70, 70, 70, 0.9);
+    }
+  }
 
   svg {
     width: 55.5%;
