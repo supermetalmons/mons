@@ -2320,26 +2320,14 @@ function highlightEmptyDestination(location: Location, color: string) {
 }
 
 function showEndOfTurnHighlight(location: Location) {
+  // TODO: do smth or deprecate
   location = inBoardCoordinates(location);
   const highlight = document.createElementNS(SVG.ns, "g");
   highlight.style.pointerEvents = "none";
   const rect = document.createElementNS(SVG.ns, "rect");
   SVG.setFrame(rect, location.j, location.i, 1, 1);
-  rect.setAttribute("fill", "#fff");
+  rect.setAttribute("fill", "none");
   highlight.appendChild(rect);
-  const cellSize = 0.25;
-  for (let row = 0; row < 4; ++row) {
-    for (let col = 0; col < 4; ++col) {
-      if ((row + col) % 2 === 1) {
-        const square = document.createElementNS(SVG.ns, "rect");
-        const x = location.j + col * cellSize;
-        const y = location.i + row * cellSize;
-        SVG.setFrame(square, x, y, cellSize, cellSize);
-        square.setAttribute("fill", "#222");
-        highlight.appendChild(square);
-      }
-    }
-  }
   highlightsLayer?.append(highlight);
 }
 
