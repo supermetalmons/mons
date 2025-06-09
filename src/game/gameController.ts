@@ -460,8 +460,15 @@ function turnShouldBeConfirmedForOutputEvents(events: MonsWeb.EventModel[], fenB
 
   const gameBeforeMove = MonsWeb.MonsGameModel.from_fen(fenBeforeMove)!;
   const moveKinds = gameBeforeMove.available_move_kinds();
-  const monMoves = moveKinds[0];
-  return monMoves > 0;
+  const monMovesCount = moveKinds[0];
+  const actionsCount = moveKinds[2];
+  const hasMoves = monMovesCount > 0;
+  let actuallyHasPossibleAction = false;
+  if (!hasMoves && actionsCount > 0) {
+    // TODO: check if actuallyHasPossibleAction by looking through suggested inputs
+    // actuallyHasPossibleAction = true;
+  }
+  return hasMoves || actuallyHasPossibleAction;
 }
 
 function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotInput: boolean, assistedInputKind: AssistedInputKind, inputLocation?: Location) {
