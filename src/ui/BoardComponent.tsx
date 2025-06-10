@@ -6,7 +6,7 @@ import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../co
 import { isMobile } from "../utils/misc";
 
 const CircularButton = styled.button`
-  width: 40%;
+  width: 50%;
   aspect-ratio: 1;
   border-radius: 50%;
   background-color: rgba(240, 240, 240, 0.8);
@@ -242,15 +242,15 @@ const BoardComponent: React.FC = () => {
             <div
               style={{
                 position: "absolute",
-                bottom: "20%",
+                bottom: "30.5%",
                 left: "50%",
                 transform: "translateX(-50%)",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
-                gap: "5%",
-                height: "10%",
-                aspectRatio: "2.5/1",
+                gap: "27%",
+                height: "10.8%",
+                aspectRatio: "3.75",
               }}>
               <CircularButton onClick={!isMobile ? handleCancelClick : undefined} onTouchStart={isMobile ? handleCancelClick : undefined}>
                 <FaTimes />
