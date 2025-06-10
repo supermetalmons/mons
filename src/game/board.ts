@@ -1210,18 +1210,36 @@ function createItemButton(overlay: SVGElement, x: number, y: number, wiggle: boo
   let animationId: number | null = null;
 
   if (wiggle) {
-    let startTime: number | null = null;
-    const duration = 3000;
+    const wigglePause = 1500;
+    const wiggleDuration = 600;
+    const wiggleOscillations = 2;
+    const wiggleAmplitude = 8;
+
     const originalX = parseFloat(button.getAttribute("x") || "0");
+    let lastPhase = "wiggle";
+    let phaseStartTime: number | null = null;
 
     function animateWiggle(timestamp: number) {
-      if (!startTime) startTime = timestamp;
-      const elapsed = timestamp - startTime;
-      const progress = (elapsed % duration) / duration;
-      const oscillations = 4;
-      const angle = progress * oscillations * 2 * Math.PI;
-      const offsetX = Math.sin(angle) * 8;
-      button.setAttribute("x", (originalX + offsetX).toString());
+      if (phaseStartTime === null) phaseStartTime = timestamp;
+      const phaseElapsed = timestamp - phaseStartTime;
+
+      if (lastPhase === "pause") {
+        button.setAttribute("x", originalX.toString());
+        if (phaseElapsed >= wigglePause) {
+          lastPhase = "wiggle";
+          phaseStartTime = timestamp;
+        }
+      } else if (lastPhase === "wiggle") {
+        const progress = Math.min(phaseElapsed / wiggleDuration, 1);
+        const angle = progress * wiggleOscillations * 2 * Math.PI;
+        const offsetX = Math.sin(angle) * wiggleAmplitude * (1 - progress * 0.3);
+        button.setAttribute("x", (originalX + offsetX).toString());
+        if (phaseElapsed >= wiggleDuration) {
+          lastPhase = "pause";
+          phaseStartTime = timestamp;
+          button.setAttribute("x", originalX.toString());
+        }
+      }
 
       if (button.parentNode && animationId !== null) {
         animationId = requestAnimationFrame(animateWiggle);
@@ -1234,6 +1252,7 @@ function createItemButton(overlay: SVGElement, x: number, y: number, wiggle: boo
         cancelAnimationFrame(animationId);
         animationId = null;
       }
+      button.setAttribute("x", originalX.toString());
     };
   }
 
