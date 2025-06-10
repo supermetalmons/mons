@@ -1811,7 +1811,7 @@ export function applyHighlights(highlights: Highlight[]) {
         highlightEmptyDestination(highlight.location, highlight.color, false);
         break;
       case HighlightKind.TargetSuggestion:
-        highlightDestinationItem(highlight.location, highlight.color);
+        highlightDestinationItem(highlight.location, highlight.color, false);
         break;
       case HighlightKind.StartFromSuggestion:
         highlightStartFromSuggestion(highlight.location, highlight.color);
@@ -2327,6 +2327,34 @@ function setBase(item: SVGElement, location: Location) {
   }
 }
 
+function startBlinking(element: SVGElement) {
+  const fadeDuration = 450;
+  const delayBetween = 450;
+  element.style.opacity = "0";
+  element.style.transition = `opacity ${fadeDuration}ms`;
+
+  function blinkCycle() {
+    if (!element.parentNode) return;
+    requestAnimationFrame(() => {
+      element.style.opacity = "1";
+    });
+
+    setTimeout(() => {
+      if (!element.parentNode) return;
+      element.style.transition = "";
+      element.style.opacity = "0";
+      element.style.transition = `opacity ${fadeDuration}ms`;
+      setTimeout(() => {
+        if (!element.parentNode) return;
+        blinkCycle();
+      }, delayBetween);
+    }, fadeDuration);
+  }
+  setTimeout(() => {
+    blinkCycle();
+  }, 0);
+}
+
 function highlightEmptyDestination(location: Location, color: string, blinking: boolean) {
   location = inBoardCoordinates(location);
   let highlight: SVGElement;
@@ -2350,36 +2378,18 @@ function highlightEmptyDestination(location: Location, color: string, blinking: 
   highlightsLayer?.append(highlight);
 
   if (blinking) {
-    const fadeDuration = 450;
-    const delayBetween = 450;
-    highlight.style.opacity = "0";
-    highlight.style.transition = `opacity ${fadeDuration}ms`;
-
-    function blinkCycle() {
-      if (!highlight.parentNode) return;
-      requestAnimationFrame(() => {
-        highlight.style.opacity = "1";
-      });
-
-      setTimeout(() => {
-        if (!highlight.parentNode) return;
-        highlight.style.transition = "";
-        highlight.style.opacity = "0";
-        highlight.style.transition = `opacity ${fadeDuration}ms`;
-        setTimeout(() => {
-          if (!highlight.parentNode) return;
-          blinkCycle();
-        }, delayBetween);
-      }, fadeDuration);
-    }
-    setTimeout(() => {
-      blinkCycle();
-    }, 0);
+    startBlinking(highlight);
   }
 }
 
 function showEndOfTurnHighlight(location: Location) {
-  highlightEmptyDestination(location, "red", true);
+  const key = location.toString();
+  const blinkingColor = "red";
+  if (items[key]) {
+    highlightDestinationItem(location, blinkingColor, true);
+  } else {
+    highlightEmptyDestination(location, blinkingColor, true);
+  }
 }
 
 function highlightSelectedItem(location: Location, color: string) {
@@ -2468,7 +2478,7 @@ function highlightStartFromSuggestion(location: Location, color: string) {
   }, 100);
 }
 
-function highlightDestinationItem(location: Location, color: string) {
+function highlightDestinationItem(location: Location, color: string, blinking: boolean) {
   location = inBoardCoordinates(location);
 
   if (isPangchiuBoard()) {
@@ -2484,7 +2494,9 @@ function highlightDestinationItem(location: Location, color: string) {
     rect.setAttribute("ry", "10");
     rect.setAttribute("stroke", color);
     rect.setAttribute("stroke-width", strokeWidth);
-    setHighlightBlendMode(rect);
+    if (!blinking) {
+      setHighlightBlendMode(rect);
+    }
     SVG.setFill(rect, "transparent");
 
     const mask = document.createElementNS(SVG.ns, "mask");
@@ -2521,6 +2533,10 @@ function highlightDestinationItem(location: Location, color: string) {
     highlight.appendChild(rect);
     rect.setAttribute("mask", `url(#highlight-mask-${location.toString()})`);
 
+    if (blinking) {
+      startBlinking(highlight);
+    }
+
     highlightsLayer?.append(highlight);
   } else {
     const highlight = document.createElementNS(SVG.ns, "g");
@@ -2546,6 +2562,10 @@ function highlightDestinationItem(location: Location, color: string) {
     highlight.appendChild(rect);
 
     rect.setAttribute("mask", `url(#highlight-mask-${location.toString()})`);
+
+    if (blinking) {
+      startBlinking(highlight);
+    }
 
     highlightsLayer?.append(highlight);
   }
