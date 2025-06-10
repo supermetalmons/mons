@@ -8,6 +8,23 @@ interface FullScreenAlertProps {
   subtitle: string;
 }
 
+let currentAnimationState: {
+  isAnimating: boolean;
+  fastForwardCallback: (() => void) | null;
+} = {
+  isAnimating: false,
+  fastForwardCallback: null,
+};
+
+export function fastForwardInstructions(): boolean {
+  if (!currentAnimationState.isAnimating || !currentAnimationState.fastForwardCallback) {
+    return false;
+  }
+
+  currentAnimationState.fastForwardCallback();
+  return true;
+}
+
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
@@ -114,6 +131,11 @@ const FullScreenAlert: React.FC<FullScreenAlertProps> = ({ title, subtitle }) =>
   const [fixedHeight, setFixedHeight] = useState<number>();
   const measureRef = useRef<HTMLDivElement>(null);
 
+  const animationRef = useRef<{
+    timer: NodeJS.Timeout | null;
+    isFastForwarding: boolean;
+  }>({ timer: null, isFastForwarding: false });
+
   useLayoutEffect(() => {
     const node = measureRef.current;
     if (!node) return;
@@ -136,24 +158,53 @@ const FullScreenAlert: React.FC<FullScreenAlertProps> = ({ title, subtitle }) =>
     let timer: NodeJS.Timeout;
     const total = Array.from(title).length;
 
+    const animationState = animationRef.current;
+
+    currentAnimationState.isAnimating = true;
+    animationState.isFastForwarding = false;
+
     const step = () => {
       setTitleChars(idx);
       if (idx < total) {
-        const delay = title[idx] === " " ? 4 : 44;
+        const delay = animationState.isFastForwarding ? 1 : title[idx] === " " ? 4 : 44;
         idx += 1;
         timer = setTimeout(step, delay);
+        animationState.timer = timer;
       } else {
+        currentAnimationState.isAnimating = false;
+        currentAnimationState.fastForwardCallback = null;
+        animationState.timer = null;
+        toggleFromTalkingToIdle();
+      }
+    };
+
+    currentAnimationState.fastForwardCallback = () => {
+      if (animationState.timer) {
+        clearTimeout(animationState.timer);
+        animationState.timer = null;
+        animationState.isFastForwarding = true;
+        setTitleChars(total);
+        currentAnimationState.isAnimating = false;
+        currentAnimationState.fastForwardCallback = null;
         toggleFromTalkingToIdle();
       }
     };
 
     step();
-    return () => clearTimeout(timer);
+
+    return () => {
+      clearTimeout(timer);
+      currentAnimationState.isAnimating = false;
+      currentAnimationState.fastForwardCallback = null;
+      if (animationState.timer) {
+        clearTimeout(animationState.timer);
+      }
+    };
   }, [title]);
 
   const handleClose = (e: React.MouseEvent) => {
     e.stopPropagation();
-    hideFullScreenAlert();
+    hideFullScreenAlert(false);
   };
 
   return (

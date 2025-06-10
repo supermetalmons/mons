@@ -297,7 +297,7 @@ export function didReceiveRematchesSeriesEndIndicator() {
 
 function automove() {
   if (puzzleMode && hasFullScreenAlertVisible()) {
-    hideFullScreenAlert();
+    hideFullScreenAlert(true);
     setAutomoveActionEnabled(true);
     return;
   }
@@ -438,7 +438,7 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
 
 export function didClickSquare(location: Location) {
   if (puzzleMode && hasFullScreenAlertVisible()) {
-    hideFullScreenAlert();
+    hideFullScreenAlert(false);
     return;
   }
 

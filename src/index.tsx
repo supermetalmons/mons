@@ -18,7 +18,7 @@ import { FaVolumeUp, FaMusic, FaVolumeMute, FaInfoCircle, FaRegGem, FaPowerOff, 
 import { soundPlayer } from "./utils/SoundPlayer";
 import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory, showSettings } from "./ui/ProfileSignIn";
-import FullScreenAlert from "./ui/FullScreenAlert";
+import FullScreenAlert, { fastForwardInstructions } from "./ui/FullScreenAlert";
 import { showTalkingDude } from "./game/board";
 
 let globalIsMuted: boolean = (() => {
@@ -36,12 +36,12 @@ export function hasFullScreenAlertVisible(): boolean {
 }
 
 let showAlertGlobal: (title: string, subtitle: string) => void;
-let hideAlertGlobal: () => void;
+let hideAlertGlobal: (force: boolean) => void;
 export let enterProfileEditingMode: (enter: boolean) => void;
 
-export function hideFullScreenAlert() {
+export function hideFullScreenAlert(force: boolean) {
   if (hideAlertGlobal) {
-    hideAlertGlobal();
+    hideAlertGlobal(force);
   }
 }
 export function showFullScreenAlert(title: string, subtitle: string) {
@@ -67,10 +67,15 @@ const App = () => {
         setAlertState({ title, subtitle });
       });
     };
-    hideAlertGlobal = () => {
-      setAlertState(null);
-      showTalkingDude(false);
+
+    hideAlertGlobal = (force: boolean) => {
+      const didFastForward = force ? false : fastForwardInstructions();
+      if (!didFastForward) {
+        setAlertState(null);
+        showTalkingDude(false);
+      }
     };
+
     return () => {
       showAlertGlobal = () => {};
       hideAlertGlobal = () => {};
@@ -116,7 +121,7 @@ const App = () => {
   const handleInfoButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     if (alertState !== null) {
-      hideFullScreenAlert();
+      hideFullScreenAlert(true);
     }
     toggleInfoVisibility();
   };

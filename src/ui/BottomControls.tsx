@@ -372,7 +372,7 @@ const BottomControls: React.FC = () => {
   const handleInstructionsClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     if (hasFullScreenAlertVisible()) {
-      hideFullScreenAlert();
+      hideFullScreenAlert(false);
     } else {
       showPuzzleInstructions();
     }
