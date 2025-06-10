@@ -1808,7 +1808,7 @@ export function applyHighlights(highlights: Highlight[]) {
         highlightSelectedItem(highlight.location, highlight.color);
         break;
       case HighlightKind.EmptySquare:
-        highlightEmptyDestination(highlight.location, highlight.color);
+        highlightEmptyDestination(highlight.location, highlight.color, false);
         break;
       case HighlightKind.TargetSuggestion:
         highlightDestinationItem(highlight.location, highlight.color);
@@ -2327,7 +2327,7 @@ function setBase(item: SVGElement, location: Location) {
   }
 }
 
-function highlightEmptyDestination(location: Location, color: string) {
+function highlightEmptyDestination(location: Location, color: string, blinking: boolean) {
   location = inBoardCoordinates(location);
   let highlight: SVGElement;
 
@@ -2338,7 +2338,9 @@ function highlightEmptyDestination(location: Location, color: string) {
     SVG.setFrame(highlight, location.j + originOffset, location.i + originOffset, side, side);
     highlight.setAttribute("rx", "7");
     highlight.setAttribute("ry", "7");
-    setHighlightBlendMode(highlight);
+    if (!blinking) {
+      setHighlightBlendMode(highlight);
+    }
   } else {
     highlight = SVG.circle(location.j + 0.5, location.i + 0.5, 0.15);
   }
@@ -2346,18 +2348,38 @@ function highlightEmptyDestination(location: Location, color: string) {
   highlight.style.pointerEvents = "none";
   SVG.setFill(highlight, color);
   highlightsLayer?.append(highlight);
+
+  if (blinking) {
+    const fadeDuration = 450;
+    const delayBetween = 450;
+    highlight.style.opacity = "0";
+    highlight.style.transition = `opacity ${fadeDuration}ms`;
+
+    function blinkCycle() {
+      if (!highlight.parentNode) return;
+      requestAnimationFrame(() => {
+        highlight.style.opacity = "1";
+      });
+
+      setTimeout(() => {
+        if (!highlight.parentNode) return;
+        highlight.style.transition = "";
+        highlight.style.opacity = "0";
+        highlight.style.transition = `opacity ${fadeDuration}ms`;
+        setTimeout(() => {
+          if (!highlight.parentNode) return;
+          blinkCycle();
+        }, delayBetween);
+      }, fadeDuration);
+    }
+    setTimeout(() => {
+      blinkCycle();
+    }, 0);
+  }
 }
 
 function showEndOfTurnHighlight(location: Location) {
-  // TODO: do smth or deprecate
-  location = inBoardCoordinates(location);
-  const highlight = document.createElementNS(SVG.ns, "g");
-  highlight.style.pointerEvents = "none";
-  const rect = document.createElementNS(SVG.ns, "rect");
-  SVG.setFrame(rect, location.j, location.i, 1, 1);
-  rect.setAttribute("fill", "none");
-  highlight.appendChild(rect);
-  highlightsLayer?.append(highlight);
+  highlightEmptyDestination(location, "red", true);
 }
 
 function highlightSelectedItem(location: Location, color: string) {
