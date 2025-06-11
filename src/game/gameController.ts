@@ -665,6 +665,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.MysticAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
+            Board.indicateElectricHit(to);
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.DemonAction:

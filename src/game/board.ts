@@ -2872,3 +2872,50 @@ const sparkle = (() => {
 
   return svg;
 })();
+
+export function indicateElectricHit(at: Location) {
+  spawnParticlesAt(at, {
+    numParticles: 8,
+    duration: 350,
+    maxDistance: 1.5,
+    minParticleSize: 1.0,
+    maxParticleSize: 1.5,
+    fadeOutStrength: 0.8,
+    createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+      const electricColors = ["#FFFF00", "#FFD700", "#FFA500", "#FFCC00", "#FFFF99", "#4169E1", "#87CEEB", "#FFFFFF"];
+      const color = electricColors[i % electricColors.length];
+      const boltLength = 80 + Math.random() * 40;
+      const segments = 3 + Math.floor(Math.random() * 2);
+      const zigzagAmplitude = 15 + Math.random() * 10;
+
+      let pathData = `M 0 0`;
+      for (let j = 1; j <= segments; j++) {
+        const progress = j / segments;
+        const x = progress * boltLength;
+        const y = (Math.random() - 0.5) * zigzagAmplitude;
+        pathData += ` L ${x} ${y}`;
+      }
+
+      const bolt = document.createElementNS(SVG.ns, "path");
+      bolt.setAttribute("d", pathData);
+      bolt.setAttribute("stroke", color);
+      bolt.setAttribute("stroke-width", (3 + Math.random() * 3).toString());
+      bolt.setAttribute("stroke-linecap", "round");
+      bolt.setAttribute("fill", "none");
+      bolt.style.pointerEvents = "none";
+      bolt.style.overflow = "visible";
+      bolt.setAttribute("transform", `translate(${centerX * 100}, ${centerY * 100}) rotate(${(angle * 180) / Math.PI})`);
+
+      return {
+        main: bolt,
+        update: (x, y, currentSize, opacity, t) => {
+          const flicker = 1 + Math.sin(t * 50 + i * 3) * 0.4;
+          const electricOpacity = opacity * flicker;
+
+          bolt.setAttribute("transform", `translate(${x * 100}, ${y * 100}) rotate(${(angle * 180) / Math.PI})`);
+          bolt.style.opacity = Math.max(0, Math.min(1, electricOpacity)).toString();
+        },
+      };
+    },
+  });
+}
