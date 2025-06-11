@@ -2714,6 +2714,53 @@ function spawnParticlesAt(at: Location, config: ParticleConfig) {
   requestAnimationFrame(animateAllParticles);
 }
 
+export function indicateElectricHit(at: Location) {
+  spawnParticlesAt(at, {
+    numParticles: 8,
+    duration: 350,
+    maxDistance: 1.5,
+    minParticleSize: 1.0,
+    maxParticleSize: 1.5,
+    fadeOutStrength: 0.8,
+    createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+      const electricColors = ["#FFFF00", "#FFD700", "#FFA500", "#FFCC00", "#FFFF99", "#4169E1", "#87CEEB", "#FFFFFF"];
+      const color = electricColors[i % electricColors.length];
+      const boltLength = 80 + Math.random() * 40;
+      const segments = 3 + Math.floor(Math.random() * 2);
+      const zigzagAmplitude = 15 + Math.random() * 10;
+
+      let pathData = `M 0 0`;
+      for (let j = 1; j <= segments; j++) {
+        const progress = j / segments;
+        const x = progress * boltLength;
+        const y = (Math.random() - 0.5) * zigzagAmplitude;
+        pathData += ` L ${x} ${y}`;
+      }
+
+      const bolt = document.createElementNS(SVG.ns, "path");
+      bolt.setAttribute("d", pathData);
+      bolt.setAttribute("stroke", color);
+      bolt.setAttribute("stroke-width", (3 + Math.random() * 3).toString());
+      bolt.setAttribute("stroke-linecap", "round");
+      bolt.setAttribute("fill", "none");
+      bolt.style.pointerEvents = "none";
+      bolt.style.overflow = "visible";
+      bolt.setAttribute("transform", `translate(${centerX * 100}, ${centerY * 100}) rotate(${(angle * 180) / Math.PI})`);
+
+      return {
+        main: bolt,
+        update: (x, y, currentSize, opacity, t) => {
+          const flicker = 1 + Math.sin(t * 50 + i * 3) * 0.4;
+          const electricOpacity = opacity * flicker;
+
+          bolt.setAttribute("transform", `translate(${x * 100}, ${y * 100}) rotate(${(angle * 180) / Math.PI})`);
+          bolt.style.opacity = Math.max(0, Math.min(1, electricOpacity)).toString();
+        },
+      };
+    },
+  });
+}
+
 export function indicatePotionUsage(at: Location) {
   spawnParticlesAt(at, {
     numParticles: 10,
@@ -2873,53 +2920,6 @@ export function indicateBombExplosion(at: Location) {
   });
 }
 
-export function indicateElectricHit(at: Location) {
-  spawnParticlesAt(at, {
-    numParticles: 8,
-    duration: 350,
-    maxDistance: 1.5,
-    minParticleSize: 1.0,
-    maxParticleSize: 1.5,
-    fadeOutStrength: 0.8,
-    createParticle: (centerX, centerY, size, angle, defs, i, now) => {
-      const electricColors = ["#FFFF00", "#FFD700", "#FFA500", "#FFCC00", "#FFFF99", "#4169E1", "#87CEEB", "#FFFFFF"];
-      const color = electricColors[i % electricColors.length];
-      const boltLength = 80 + Math.random() * 40;
-      const segments = 3 + Math.floor(Math.random() * 2);
-      const zigzagAmplitude = 15 + Math.random() * 10;
-
-      let pathData = `M 0 0`;
-      for (let j = 1; j <= segments; j++) {
-        const progress = j / segments;
-        const x = progress * boltLength;
-        const y = (Math.random() - 0.5) * zigzagAmplitude;
-        pathData += ` L ${x} ${y}`;
-      }
-
-      const bolt = document.createElementNS(SVG.ns, "path");
-      bolt.setAttribute("d", pathData);
-      bolt.setAttribute("stroke", color);
-      bolt.setAttribute("stroke-width", (3 + Math.random() * 3).toString());
-      bolt.setAttribute("stroke-linecap", "round");
-      bolt.setAttribute("fill", "none");
-      bolt.style.pointerEvents = "none";
-      bolt.style.overflow = "visible";
-      bolt.setAttribute("transform", `translate(${centerX * 100}, ${centerY * 100}) rotate(${(angle * 180) / Math.PI})`);
-
-      return {
-        main: bolt,
-        update: (x, y, currentSize, opacity, t) => {
-          const flicker = 1 + Math.sin(t * 50 + i * 3) * 0.4;
-          const electricOpacity = opacity * flicker;
-
-          bolt.setAttribute("transform", `translate(${x * 100}, ${y * 100}) rotate(${(angle * 180) / Math.PI})`);
-          bolt.style.opacity = Math.max(0, Math.min(1, electricOpacity)).toString();
-        },
-      };
-    },
-  });
-}
-
 export function indicateFlameGround(at: Location) {
   spawnParticlesAt(at, {
     numParticles: 15,
@@ -3045,6 +3045,84 @@ export function indicateFlameGround(at: Location) {
           flame.setAttribute("d", pathData);
           const flickerOpacity = opacity * (0.7 + 0.3 * flicker);
           flame.style.opacity = Math.max(0, Math.min(1, flickerOpacity)).toString();
+        },
+      };
+    },
+  });
+}
+
+export function indicateHypnosis(at: Location) {
+  spawnParticlesAt(at, {
+    numParticles: 6,
+    duration: 300,
+    maxDistance: 1.0,
+    minParticleSize: 0.2,
+    maxParticleSize: 0.35,
+    fadeOutStrength: 0.8,
+    ease: (t: number) => {
+      return Math.pow(t, 0.6) + Math.sin(t * 8) * 0.03 * (1 - t);
+    },
+    createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+      const windyColors = ["#87CEEB", "#B0E0E6", "#F0F8FF", "#E6F3FF", "#D6EAF8", "#FFFFFF"];
+      const spiralColor = windyColors[Math.floor(Math.random() * windyColors.length)];
+      const spiral = document.createElementNS(SVG.ns, "path");
+      const spiralTurns = 1.5;
+      const spiralRadius = size * 0.5;
+      const spiralSteps = 16;
+      const spiralDirection = Math.random() > 0.5 ? 1 : -1;
+
+      let pathData = "";
+      for (let step = 0; step <= spiralSteps; step++) {
+        const progress = step / spiralSteps;
+        const currentAngle = progress * spiralTurns * 2 * Math.PI * spiralDirection;
+        const currentRadius = spiralRadius * progress;
+        const x = centerX + Math.cos(currentAngle) * currentRadius;
+        const y = centerY + Math.sin(currentAngle) * currentRadius;
+
+        if (step === 0) {
+          pathData = `M ${x * 100} ${y * 100}`;
+        } else {
+          pathData += ` L ${x * 100} ${y * 100}`;
+        }
+      }
+
+      spiral.setAttribute("d", pathData);
+      spiral.setAttribute("stroke", spiralColor);
+      spiral.setAttribute("stroke-width", (4 + Math.random() * 2).toString());
+      spiral.setAttribute("stroke-linecap", "round");
+      spiral.setAttribute("fill", "none");
+      spiral.setAttribute("opacity", "0.7");
+      spiral.style.pointerEvents = "none";
+      spiral.style.overflow = "visible";
+
+      const rotationSpeed = 3 + Math.random() * 2;
+      const pulseFrequency = 4 + Math.random() * 2;
+      const initialRotationOffset = Math.random() * Math.PI * 2;
+
+      return {
+        main: spiral,
+        update: (x, y, currentSize, opacity, t) => {
+          const pulsePhase = Math.sin(t * pulseFrequency) * 0.2 + 1;
+          const pulsedSize = currentSize * pulsePhase;
+          const internalRotation = initialRotationOffset + t * rotationSpeed * Math.PI * 2;
+          const spiralRadius = pulsedSize * 0.5;
+          let newPathData = "";
+          for (let step = 0; step <= spiralSteps; step++) {
+            const progress = step / spiralSteps;
+            const currentAngle = progress * spiralTurns * 2 * Math.PI * spiralDirection + internalRotation;
+            const currentRadius = spiralRadius * progress;
+            const spiralX = x + Math.cos(currentAngle) * currentRadius;
+            const spiralY = y + Math.sin(currentAngle) * currentRadius;
+
+            if (step === 0) {
+              newPathData = `M ${spiralX * 100} ${spiralY * 100}`;
+            } else {
+              newPathData += ` L ${spiralX * 100} ${spiralY * 100}`;
+            }
+          }
+          spiral.setAttribute("d", newPathData);
+          spiral.setAttribute("stroke-width", ((4 + Math.random() * 2) * pulsePhase).toString());
+          spiral.style.opacity = (opacity * 0.7).toString();
         },
       };
     },
