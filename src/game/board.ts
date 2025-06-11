@@ -1833,283 +1833,6 @@ export function popOpponentsEmoji() {
   }, 300);
 }
 
-type ParticleConfig = {
-  numParticles: number;
-  duration: number;
-  maxDistance: number;
-  minParticleSize: number;
-  maxParticleSize: number;
-  createParticle: (
-    centerX: number,
-    centerY: number,
-    size: number,
-    angle: number,
-    defs: SVGDefsElement,
-    i: number,
-    now: number
-  ) => {
-    main: SVGElement;
-    extra?: SVGElement;
-    update: (x: number, y: number, size: number, opacity: number, t: number) => void;
-    cleanup?: () => void;
-  };
-  fadeOutStrength?: number;
-  sizeGrowthThreshold?: number;
-  sizeGrowthMultiplier?: number;
-  extraOpacityBoost?: number;
-  ease?: (t: number) => number;
-};
-
-function spawnParticlesAt(at: Location, config: ParticleConfig) {
-  const location = inBoardCoordinates(at);
-
-  const group = document.createElementNS(SVG.ns, "g");
-  group.style.pointerEvents = "none";
-  effectsLayer?.appendChild(group);
-
-  const centerX = location.j + 0.5;
-  const centerY = location.i + 0.5;
-
-  const defs = document.createElementNS(SVG.ns, "defs");
-  group.appendChild(defs);
-
-  const particles: Array<{
-    main: SVGElement;
-    extra?: SVGElement;
-    angle: number;
-    maxDistance: number;
-    size: number;
-    startTime: number;
-    finished: boolean;
-    update: (x: number, y: number, size: number, opacity: number, t: number) => void;
-    cleanup?: () => void;
-  }> = [];
-
-  const now = performance.now();
-
-  for (let i = 0; i < config.numParticles; i++) {
-    const angle = (2 * Math.PI * i) / config.numParticles + Math.random() * (Math.PI / config.numParticles);
-    const distance = config.maxDistance * (0.8 + Math.random() * 0.4);
-    const size = config.minParticleSize + Math.random() * (config.maxParticleSize - config.minParticleSize);
-
-    const { main, extra, update, cleanup } = config.createParticle(centerX, centerY, size, angle, defs, i, now);
-
-    group.appendChild(main);
-    if (extra) group.appendChild(extra);
-
-    particles.push({
-      main,
-      extra,
-      angle,
-      maxDistance: distance,
-      size,
-      startTime: now,
-      finished: false,
-      update,
-      cleanup,
-    });
-  }
-
-  function animateAllParticles(now: number) {
-    let activeParticles = 0;
-    for (const particle of particles) {
-      if (particle.finished) continue;
-      const elapsed = now - particle.startTime;
-      const t = Math.min(elapsed / config.duration, 1);
-      if (t >= 1) {
-        if (particle.main.parentNode) {
-          particle.main.parentNode.removeChild(particle.main);
-        }
-        if (particle.extra && particle.extra.parentNode) {
-          particle.extra.parentNode.removeChild(particle.extra);
-        }
-        if (particle.cleanup) particle.cleanup();
-        particle.finished = true;
-      } else {
-        const ease = config.ease || ((t: number) => 1 - Math.pow(1 - t, 4));
-        const currentDistance = particle.maxDistance * ease(t);
-        const x = centerX + Math.cos(particle.angle) * currentDistance;
-        const y = centerY + Math.sin(particle.angle) * currentDistance;
-        const fadeEase = Math.pow(t, 2);
-        const opacity = 1 - fadeEase * (config.fadeOutStrength ?? 0.7);
-        const sizeGrowth = config.sizeGrowthThreshold && config.sizeGrowthMultiplier && t < config.sizeGrowthThreshold ? t * config.sizeGrowthMultiplier : 1;
-        const currentSize = particle.size * sizeGrowth;
-        particle.update(x, y, currentSize, opacity, t);
-        activeParticles++;
-      }
-    }
-
-    if (activeParticles > 0) {
-      requestAnimationFrame(animateAllParticles);
-    } else {
-      if (group.parentNode) {
-        group.parentNode.removeChild(group);
-      }
-    }
-  }
-
-  requestAnimationFrame(animateAllParticles);
-}
-
-export function indicatePotionUsage(at: Location) {
-  spawnParticlesAt(at, {
-    numParticles: 10,
-    duration: 300,
-    maxDistance: 1.5,
-    minParticleSize: 0.15,
-    maxParticleSize: 0.42,
-    fadeOutStrength: 0.7,
-    sizeGrowthThreshold: 0.2,
-    sizeGrowthMultiplier: 5,
-    extraOpacityBoost: 1.1,
-    createParticle: (centerX, centerY, size, angle, defs, i, now) => {
-      const bubbleStops = [
-        { offset: "0%", color: "#FFF0FA", opacity: "1.0" },
-        { offset: "30%", color: "#F7B6E6", opacity: "0.98" },
-        { offset: "70%", color: "#E6A3D7", opacity: "0.92" },
-        { offset: "100%", color: "#D47FC2", opacity: "0.85" },
-      ];
-      const strokeColor = "#D47FC2";
-      const glareColor = "#FFF0FA";
-      const particleStrokeWidth = 1;
-      const particleStrokeOpacity = 0.8;
-      const glareSizeRatio = 0.3;
-      const glareOffsetXRatio = 0.15;
-      const glareOffsetYRatio = -0.1;
-      const glareOpacity = 0.95;
-      const glareOpacityBoost = 1.1;
-
-      const particleId = `bubble-${i}-${now}`;
-
-      const gradient = document.createElementNS(SVG.ns, "radialGradient");
-      gradient.setAttribute("id", `gradient-${particleId}`);
-      gradient.setAttribute("cx", "30%");
-      gradient.setAttribute("cy", "25%");
-      gradient.setAttribute("r", "70%");
-
-      for (const stopDef of bubbleStops) {
-        const stop = document.createElementNS(SVG.ns, "stop");
-        stop.setAttribute("offset", stopDef.offset);
-        stop.setAttribute("stop-color", stopDef.color);
-        stop.setAttribute("stop-opacity", stopDef.opacity);
-        gradient.appendChild(stop);
-      }
-      defs.appendChild(gradient);
-
-      const particle = document.createElementNS(SVG.ns, "circle");
-      particle.setAttribute("r", ((size / 2) * 100).toString());
-      particle.setAttribute("cx", (centerX * 100).toString());
-      particle.setAttribute("cy", (centerY * 100).toString());
-      particle.setAttribute("fill", `url(#gradient-${particleId})`);
-      particle.setAttribute("stroke", strokeColor);
-      particle.setAttribute("stroke-width", particleStrokeWidth.toString());
-      particle.setAttribute("stroke-opacity", particleStrokeOpacity.toString());
-      particle.style.pointerEvents = "none";
-      particle.style.overflow = "visible";
-
-      const glare = document.createElementNS(SVG.ns, "ellipse");
-      const glareSize = size * glareSizeRatio;
-      glare.setAttribute("rx", ((glareSize / 2) * 100).toString());
-      glare.setAttribute("ry", ((glareSize / 3) * 100).toString());
-      glare.setAttribute("cx", ((centerX + size * glareOffsetXRatio) * 100).toString());
-      glare.setAttribute("cy", ((centerY + size * glareOffsetYRatio) * 100).toString());
-      SVG.setFill(glare, glareColor);
-      glare.setAttribute("opacity", glareOpacity.toString());
-      glare.style.pointerEvents = "none";
-      glare.style.overflow = "visible";
-
-      return {
-        main: particle,
-        extra: glare,
-        update: (x, y, currentSize, opacity, t) => {
-          particle.setAttribute("cx", (x * 100).toString());
-          particle.setAttribute("cy", (y * 100).toString());
-          particle.setAttribute("r", ((currentSize / 2) * 100).toString());
-          particle.style.opacity = opacity.toString();
-          const glareSize = currentSize * glareSizeRatio;
-          const glareOpacityCurrent = Math.min(1, opacity * glareOpacityBoost);
-          glare.setAttribute("cx", ((x + currentSize * glareOffsetXRatio) * 100).toString());
-          glare.setAttribute("cy", ((y + currentSize * glareOffsetYRatio) * 100).toString());
-          glare.setAttribute("rx", ((glareSize / 2) * 100).toString());
-          glare.setAttribute("ry", ((glareSize / 3) * 100).toString());
-          glare.style.opacity = glareOpacityCurrent.toString();
-        },
-      };
-    },
-  });
-}
-
-export function indicateBombExplosion(at: Location) {
-  spawnParticlesAt(at, {
-    numParticles: 18,
-    duration: 340,
-    maxDistance: 2.1,
-    minParticleSize: 0.18,
-    maxParticleSize: 0.38,
-    fadeOutStrength: 0.85,
-    sizeGrowthThreshold: 0.12,
-    sizeGrowthMultiplier: 7,
-    ease: (t: number) => {
-      return 1 - Math.pow(1 - t, 2.5);
-    },
-    createParticle: (centerX, centerY, size, angle, defs, i, now) => {
-      const sparkColors = ["#FFF7B2", "#FFD966", "#FFB347", "#FF6F3C", "#FF3C3C", "#FFFFFF"];
-      const color = sparkColors[i % sparkColors.length];
-      const strokeColor = "#FFB347";
-      const strokeWidth = 0.07 + Math.random() * 0.09;
-      const initialLength = 0.18 + Math.random() * 0.22;
-      const finalLength = 0.45 + Math.random() * 0.35;
-      const initialWidth = 0.09 + Math.random() * 0.08;
-
-      const spark = document.createElementNS(SVG.ns, "rect");
-      spark.setAttribute("x", ((centerX - initialWidth / 2) * 100).toString());
-      spark.setAttribute("y", ((centerY - initialLength / 2) * 100).toString());
-      spark.setAttribute("width", (initialWidth * 100).toString());
-      spark.setAttribute("height", (initialLength * 100).toString());
-      spark.setAttribute("rx", (initialWidth * 40).toString());
-      spark.setAttribute("fill", color);
-      spark.setAttribute("stroke", strokeColor);
-      spark.setAttribute("stroke-width", (strokeWidth * 100).toString());
-      spark.setAttribute("stroke-opacity", "0.7");
-      spark.style.pointerEvents = "none";
-      spark.style.overflow = "visible";
-      spark.setAttribute("transform", `rotate(${(angle * 180) / Math.PI},${centerX * 100},${centerY * 100})`);
-
-      const flash = document.createElementNS(SVG.ns, "circle");
-      flash.setAttribute("r", ((size / 2) * 100).toString());
-      flash.setAttribute("cx", (centerX * 100).toString());
-      flash.setAttribute("cy", (centerY * 100).toString());
-      flash.setAttribute("fill", "#FFF7B2");
-      flash.setAttribute("opacity", "0.85");
-      flash.style.pointerEvents = "none";
-      flash.style.overflow = "visible";
-
-      return {
-        main: spark,
-        extra: flash,
-        update: (x, y, currentSize, opacity, t) => {
-          const length = initialLength + (finalLength - initialLength) * t;
-          const width = initialWidth * (1 - t * 0.5);
-          spark.setAttribute("x", ((x - width / 2) * 100).toString());
-          spark.setAttribute("y", ((y - length / 2) * 100).toString());
-          spark.setAttribute("width", (width * 100).toString());
-          spark.setAttribute("height", (length * 100).toString());
-          spark.setAttribute("rx", (width * 40).toString());
-          spark.setAttribute("transform", `rotate(${(angle * 180) / Math.PI},${x * 100},${y * 100})`);
-          spark.style.opacity = (opacity * 0.95 + 0.05).toString();
-
-          const tipX = x + Math.cos(angle) * (length / 2);
-          const tipY = y + Math.sin(angle) * (length / 2);
-          flash.setAttribute("cx", (tipX * 100).toString());
-          flash.setAttribute("cy", (tipY * 100).toString());
-          flash.setAttribute("r", ((currentSize / 2 + 0.07 * (1 - t)) * 100).toString());
-          flash.setAttribute("opacity", (opacity * 0.85).toString());
-        },
-      };
-    },
-  });
-}
-
 export function drawTrace(trace: Trace) {
   const from = inBoardCoordinates(trace.from);
   const to = inBoardCoordinates(trace.to);
@@ -2872,6 +2595,283 @@ const sparkle = (() => {
 
   return svg;
 })();
+
+type ParticleConfig = {
+  numParticles: number;
+  duration: number;
+  maxDistance: number;
+  minParticleSize: number;
+  maxParticleSize: number;
+  createParticle: (
+    centerX: number,
+    centerY: number,
+    size: number,
+    angle: number,
+    defs: SVGDefsElement,
+    i: number,
+    now: number
+  ) => {
+    main: SVGElement;
+    extra?: SVGElement;
+    update: (x: number, y: number, size: number, opacity: number, t: number) => void;
+    cleanup?: () => void;
+  };
+  fadeOutStrength?: number;
+  sizeGrowthThreshold?: number;
+  sizeGrowthMultiplier?: number;
+  extraOpacityBoost?: number;
+  ease?: (t: number) => number;
+};
+
+function spawnParticlesAt(at: Location, config: ParticleConfig) {
+  const location = inBoardCoordinates(at);
+
+  const group = document.createElementNS(SVG.ns, "g");
+  group.style.pointerEvents = "none";
+  effectsLayer?.appendChild(group);
+
+  const centerX = location.j + 0.5;
+  const centerY = location.i + 0.5;
+
+  const defs = document.createElementNS(SVG.ns, "defs");
+  group.appendChild(defs);
+
+  const particles: Array<{
+    main: SVGElement;
+    extra?: SVGElement;
+    angle: number;
+    maxDistance: number;
+    size: number;
+    startTime: number;
+    finished: boolean;
+    update: (x: number, y: number, size: number, opacity: number, t: number) => void;
+    cleanup?: () => void;
+  }> = [];
+
+  const now = performance.now();
+
+  for (let i = 0; i < config.numParticles; i++) {
+    const angle = (2 * Math.PI * i) / config.numParticles + Math.random() * (Math.PI / config.numParticles);
+    const distance = config.maxDistance * (0.8 + Math.random() * 0.4);
+    const size = config.minParticleSize + Math.random() * (config.maxParticleSize - config.minParticleSize);
+
+    const { main, extra, update, cleanup } = config.createParticle(centerX, centerY, size, angle, defs, i, now);
+
+    group.appendChild(main);
+    if (extra) group.appendChild(extra);
+
+    particles.push({
+      main,
+      extra,
+      angle,
+      maxDistance: distance,
+      size,
+      startTime: now,
+      finished: false,
+      update,
+      cleanup,
+    });
+  }
+
+  function animateAllParticles(now: number) {
+    let activeParticles = 0;
+    for (const particle of particles) {
+      if (particle.finished) continue;
+      const elapsed = now - particle.startTime;
+      const t = Math.min(elapsed / config.duration, 1);
+      if (t >= 1) {
+        if (particle.main.parentNode) {
+          particle.main.parentNode.removeChild(particle.main);
+        }
+        if (particle.extra && particle.extra.parentNode) {
+          particle.extra.parentNode.removeChild(particle.extra);
+        }
+        if (particle.cleanup) particle.cleanup();
+        particle.finished = true;
+      } else {
+        const ease = config.ease || ((t: number) => 1 - Math.pow(1 - t, 4));
+        const currentDistance = particle.maxDistance * ease(t);
+        const x = centerX + Math.cos(particle.angle) * currentDistance;
+        const y = centerY + Math.sin(particle.angle) * currentDistance;
+        const fadeEase = Math.pow(t, 2);
+        const opacity = 1 - fadeEase * (config.fadeOutStrength ?? 0.7);
+        const sizeGrowth = config.sizeGrowthThreshold && config.sizeGrowthMultiplier && t < config.sizeGrowthThreshold ? t * config.sizeGrowthMultiplier : 1;
+        const currentSize = particle.size * sizeGrowth;
+        particle.update(x, y, currentSize, opacity, t);
+        activeParticles++;
+      }
+    }
+
+    if (activeParticles > 0) {
+      requestAnimationFrame(animateAllParticles);
+    } else {
+      if (group.parentNode) {
+        group.parentNode.removeChild(group);
+      }
+    }
+  }
+
+  requestAnimationFrame(animateAllParticles);
+}
+
+export function indicatePotionUsage(at: Location) {
+  spawnParticlesAt(at, {
+    numParticles: 10,
+    duration: 300,
+    maxDistance: 1.5,
+    minParticleSize: 0.15,
+    maxParticleSize: 0.42,
+    fadeOutStrength: 0.7,
+    sizeGrowthThreshold: 0.2,
+    sizeGrowthMultiplier: 5,
+    extraOpacityBoost: 1.1,
+    createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+      const bubbleStops = [
+        { offset: "0%", color: "#FFF0FA", opacity: "1.0" },
+        { offset: "30%", color: "#F7B6E6", opacity: "0.98" },
+        { offset: "70%", color: "#E6A3D7", opacity: "0.92" },
+        { offset: "100%", color: "#D47FC2", opacity: "0.85" },
+      ];
+      const strokeColor = "#D47FC2";
+      const glareColor = "#FFF0FA";
+      const particleStrokeWidth = 1;
+      const particleStrokeOpacity = 0.8;
+      const glareSizeRatio = 0.3;
+      const glareOffsetXRatio = 0.15;
+      const glareOffsetYRatio = -0.1;
+      const glareOpacity = 0.95;
+      const glareOpacityBoost = 1.1;
+
+      const particleId = `bubble-${i}-${now}`;
+
+      const gradient = document.createElementNS(SVG.ns, "radialGradient");
+      gradient.setAttribute("id", `gradient-${particleId}`);
+      gradient.setAttribute("cx", "30%");
+      gradient.setAttribute("cy", "25%");
+      gradient.setAttribute("r", "70%");
+
+      for (const stopDef of bubbleStops) {
+        const stop = document.createElementNS(SVG.ns, "stop");
+        stop.setAttribute("offset", stopDef.offset);
+        stop.setAttribute("stop-color", stopDef.color);
+        stop.setAttribute("stop-opacity", stopDef.opacity);
+        gradient.appendChild(stop);
+      }
+      defs.appendChild(gradient);
+
+      const particle = document.createElementNS(SVG.ns, "circle");
+      particle.setAttribute("r", ((size / 2) * 100).toString());
+      particle.setAttribute("cx", (centerX * 100).toString());
+      particle.setAttribute("cy", (centerY * 100).toString());
+      particle.setAttribute("fill", `url(#gradient-${particleId})`);
+      particle.setAttribute("stroke", strokeColor);
+      particle.setAttribute("stroke-width", particleStrokeWidth.toString());
+      particle.setAttribute("stroke-opacity", particleStrokeOpacity.toString());
+      particle.style.pointerEvents = "none";
+      particle.style.overflow = "visible";
+
+      const glare = document.createElementNS(SVG.ns, "ellipse");
+      const glareSize = size * glareSizeRatio;
+      glare.setAttribute("rx", ((glareSize / 2) * 100).toString());
+      glare.setAttribute("ry", ((glareSize / 3) * 100).toString());
+      glare.setAttribute("cx", ((centerX + size * glareOffsetXRatio) * 100).toString());
+      glare.setAttribute("cy", ((centerY + size * glareOffsetYRatio) * 100).toString());
+      SVG.setFill(glare, glareColor);
+      glare.setAttribute("opacity", glareOpacity.toString());
+      glare.style.pointerEvents = "none";
+      glare.style.overflow = "visible";
+
+      return {
+        main: particle,
+        extra: glare,
+        update: (x, y, currentSize, opacity, t) => {
+          particle.setAttribute("cx", (x * 100).toString());
+          particle.setAttribute("cy", (y * 100).toString());
+          particle.setAttribute("r", ((currentSize / 2) * 100).toString());
+          particle.style.opacity = opacity.toString();
+          const glareSize = currentSize * glareSizeRatio;
+          const glareOpacityCurrent = Math.min(1, opacity * glareOpacityBoost);
+          glare.setAttribute("cx", ((x + currentSize * glareOffsetXRatio) * 100).toString());
+          glare.setAttribute("cy", ((y + currentSize * glareOffsetYRatio) * 100).toString());
+          glare.setAttribute("rx", ((glareSize / 2) * 100).toString());
+          glare.setAttribute("ry", ((glareSize / 3) * 100).toString());
+          glare.style.opacity = glareOpacityCurrent.toString();
+        },
+      };
+    },
+  });
+}
+
+export function indicateBombExplosion(at: Location) {
+  spawnParticlesAt(at, {
+    numParticles: 18,
+    duration: 340,
+    maxDistance: 2.1,
+    minParticleSize: 0.18,
+    maxParticleSize: 0.38,
+    fadeOutStrength: 0.85,
+    sizeGrowthThreshold: 0.12,
+    sizeGrowthMultiplier: 7,
+    ease: (t: number) => {
+      return 1 - Math.pow(1 - t, 2.5);
+    },
+    createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+      const sparkColors = ["#FFF7B2", "#FFD966", "#FFB347", "#FF6F3C", "#FF3C3C", "#FFFFFF"];
+      const color = sparkColors[i % sparkColors.length];
+      const strokeColor = "#FFB347";
+      const strokeWidth = 0.07 + Math.random() * 0.09;
+      const initialLength = 0.18 + Math.random() * 0.22;
+      const finalLength = 0.45 + Math.random() * 0.35;
+      const initialWidth = 0.09 + Math.random() * 0.08;
+
+      const spark = document.createElementNS(SVG.ns, "rect");
+      spark.setAttribute("x", ((centerX - initialWidth / 2) * 100).toString());
+      spark.setAttribute("y", ((centerY - initialLength / 2) * 100).toString());
+      spark.setAttribute("width", (initialWidth * 100).toString());
+      spark.setAttribute("height", (initialLength * 100).toString());
+      spark.setAttribute("rx", (initialWidth * 40).toString());
+      spark.setAttribute("fill", color);
+      spark.setAttribute("stroke", strokeColor);
+      spark.setAttribute("stroke-width", (strokeWidth * 100).toString());
+      spark.setAttribute("stroke-opacity", "0.7");
+      spark.style.pointerEvents = "none";
+      spark.style.overflow = "visible";
+      spark.setAttribute("transform", `rotate(${(angle * 180) / Math.PI},${centerX * 100},${centerY * 100})`);
+
+      const flash = document.createElementNS(SVG.ns, "circle");
+      flash.setAttribute("r", ((size / 2) * 100).toString());
+      flash.setAttribute("cx", (centerX * 100).toString());
+      flash.setAttribute("cy", (centerY * 100).toString());
+      flash.setAttribute("fill", "#FFF7B2");
+      flash.setAttribute("opacity", "0.85");
+      flash.style.pointerEvents = "none";
+      flash.style.overflow = "visible";
+
+      return {
+        main: spark,
+        extra: flash,
+        update: (x, y, currentSize, opacity, t) => {
+          const length = initialLength + (finalLength - initialLength) * t;
+          const width = initialWidth * (1 - t * 0.5);
+          spark.setAttribute("x", ((x - width / 2) * 100).toString());
+          spark.setAttribute("y", ((y - length / 2) * 100).toString());
+          spark.setAttribute("width", (width * 100).toString());
+          spark.setAttribute("height", (length * 100).toString());
+          spark.setAttribute("rx", (width * 40).toString());
+          spark.setAttribute("transform", `rotate(${(angle * 180) / Math.PI},${x * 100},${y * 100})`);
+          spark.style.opacity = (opacity * 0.95 + 0.05).toString();
+
+          const tipX = x + Math.cos(angle) * (length / 2);
+          const tipY = y + Math.sin(angle) * (length / 2);
+          flash.setAttribute("cx", (tipX * 100).toString());
+          flash.setAttribute("cy", (tipY * 100).toString());
+          flash.setAttribute("r", ((currentSize / 2 + 0.07 * (1 - t)) * 100).toString());
+          flash.setAttribute("opacity", (opacity * 0.85).toString());
+        },
+      };
+    },
+  });
+}
 
 export function indicateElectricHit(at: Location) {
   spawnParticlesAt(at, {
