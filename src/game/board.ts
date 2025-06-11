@@ -2716,45 +2716,147 @@ function spawnParticlesAt(at: Location, config: ParticleConfig) {
 
 export function indicateElectricHit(at: Location) {
   spawnParticlesAt(at, {
-    numParticles: 8,
-    duration: 350,
-    maxDistance: 1.5,
-    minParticleSize: 1.0,
-    maxParticleSize: 1.5,
-    fadeOutStrength: 0.8,
+    numParticles: 12,
+    duration: 250,
+    maxDistance: 1.0,
+    minParticleSize: 0.3,
+    maxParticleSize: 0.7,
+    fadeOutStrength: 0.9,
+    ease: (t: number) => {
+      const outward = Math.pow(t, 0.4);
+      const crackling = Math.sin(t * 25) * 0.05 * (1 - t);
+      return outward + crackling;
+    },
     createParticle: (centerX, centerY, size, angle, defs, i, now) => {
-      const electricColors = ["#FFFF00", "#FFD700", "#FFA500", "#FFCC00", "#FFFF99", "#4169E1", "#87CEEB", "#FFFFFF"];
-      const color = electricColors[i % electricColors.length];
-      const boltLength = 80 + Math.random() * 40;
-      const segments = 3 + Math.floor(Math.random() * 2);
-      const zigzagAmplitude = 15 + Math.random() * 10;
+      const electricGradientId = `electric-gradient-${i}-${now}`;
+      const gradient = document.createElementNS(SVG.ns, "linearGradient");
+      gradient.setAttribute("id", electricGradientId);
+      gradient.setAttribute("x1", "0%");
+      gradient.setAttribute("y1", "0%");
+      gradient.setAttribute("x2", "100%");
+      gradient.setAttribute("y2", "0%");
 
-      let pathData = `M 0 0`;
+      const coreStop = document.createElementNS(SVG.ns, "stop");
+      coreStop.setAttribute("offset", "0%");
+      coreStop.setAttribute("stop-color", "#FFFFFF");
+      coreStop.setAttribute("stop-opacity", "1.0");
+      gradient.appendChild(coreStop);
+
+      const midStop = document.createElementNS(SVG.ns, "stop");
+      midStop.setAttribute("offset", "30%");
+      midStop.setAttribute("stop-color", "#FFFF99");
+      midStop.setAttribute("stop-opacity", "0.95");
+      gradient.appendChild(midStop);
+
+      const electricStop = document.createElementNS(SVG.ns, "stop");
+      electricStop.setAttribute("offset", "70%");
+      electricStop.setAttribute("stop-color", "#FFD700");
+      electricStop.setAttribute("stop-opacity", "0.85");
+      gradient.appendChild(electricStop);
+
+      const tipStop = document.createElementNS(SVG.ns, "stop");
+      tipStop.setAttribute("offset", "100%");
+      tipStop.setAttribute("stop-color", "#FFA500");
+      tipStop.setAttribute("stop-opacity", "0.7");
+      gradient.appendChild(tipStop);
+
+      defs.appendChild(gradient);
+
+      const container = document.createElementNS(SVG.ns, "g");
+      container.style.pointerEvents = "none";
+      container.style.overflow = "visible";
+
+      const boltLength = 50 + Math.random() * 30;
+      const segments = 6 + Math.floor(Math.random() * 4);
+      const zigzagAmplitude = 12 + Math.random() * 10;
+      const branchProbability = 0.4;
+      const maxBranches = 2 + Math.floor(Math.random() * 3);
+
+      let mainPath = `M 0 0`;
+      const mainPoints: Array<{ x: number; y: number }> = [{ x: 0, y: 0 }];
+
       for (let j = 1; j <= segments; j++) {
         const progress = j / segments;
         const x = progress * boltLength;
-        const y = (Math.random() - 0.5) * zigzagAmplitude;
-        pathData += ` L ${x} ${y}`;
+        const deviation = (Math.random() - 0.5) * 2;
+        const y = Math.sin(progress * Math.PI * 3 + deviation) * zigzagAmplitude * (1 - progress * 0.3);
+        mainPoints.push({ x, y });
+
+        if (j === 1) {
+          mainPath += ` L ${x} ${y}`;
+        } else {
+          const prevPoint = mainPoints[j - 1];
+          const controlX = prevPoint.x + (x - prevPoint.x) * 0.6 + (Math.random() - 0.5) * 15;
+          const controlY = prevPoint.y + (y - prevPoint.y) * 0.6 + (Math.random() - 0.5) * 15;
+          mainPath += ` Q ${controlX} ${controlY} ${x} ${y}`;
+        }
       }
 
-      const bolt = document.createElementNS(SVG.ns, "path");
-      bolt.setAttribute("d", pathData);
-      bolt.setAttribute("stroke", color);
-      bolt.setAttribute("stroke-width", (3 + Math.random() * 3).toString());
-      bolt.setAttribute("stroke-linecap", "round");
-      bolt.setAttribute("fill", "none");
-      bolt.style.pointerEvents = "none";
-      bolt.style.overflow = "visible";
-      bolt.setAttribute("transform", `translate(${centerX * 100}, ${centerY * 100}) rotate(${(angle * 180) / Math.PI})`);
+      const mainBolt = document.createElementNS(SVG.ns, "path");
+      mainBolt.setAttribute("d", mainPath);
+      mainBolt.setAttribute("stroke", `url(#${electricGradientId})`);
+      mainBolt.setAttribute("stroke-width", (2 + Math.random() * 2).toString());
+      mainBolt.setAttribute("stroke-linecap", "round");
+      mainBolt.setAttribute("fill", "none");
+      container.appendChild(mainBolt);
+
+      let branchCount = 0;
+      for (let j = 2; j < segments - 2 && branchCount < maxBranches; j++) {
+        if (Math.random() < branchProbability) {
+          const branchPoint = mainPoints[j];
+          const branchLength = (30 + Math.random() * 40) * (1 - j / segments);
+          const branchAngle = (Math.random() - 0.5) * Math.PI * 0.8;
+          const branchSegments = 3 + Math.floor(Math.random() * 3);
+
+          let branchPath = `M ${branchPoint.x} ${branchPoint.y}`;
+          for (let k = 1; k <= branchSegments; k++) {
+            const branchProgress = k / branchSegments;
+            const branchX = branchPoint.x + Math.cos(branchAngle) * branchLength * branchProgress;
+            const branchY = branchPoint.y + Math.sin(branchAngle) * branchLength * branchProgress + (Math.random() - 0.5) * 10 * branchProgress;
+            branchPath += ` L ${branchX} ${branchY}`;
+          }
+
+          const branch = document.createElementNS(SVG.ns, "path");
+          branch.setAttribute("d", branchPath);
+          branch.setAttribute("stroke", `url(#${electricGradientId})`);
+          branch.setAttribute("stroke-width", (1 + Math.random()).toString());
+          branch.setAttribute("stroke-linecap", "round");
+          branch.setAttribute("fill", "none");
+          branch.setAttribute("opacity", "0.8");
+          container.appendChild(branch);
+          branchCount++;
+        }
+      }
+
+      const glow = document.createElementNS(SVG.ns, "path");
+      glow.setAttribute("d", mainPath);
+      glow.setAttribute("stroke", "#FFFF99");
+      glow.setAttribute("stroke-width", (3 + Math.random() * 2).toString());
+      glow.setAttribute("stroke-linecap", "round");
+      glow.setAttribute("fill", "none");
+      glow.setAttribute("opacity", "0.3");
+      glow.style.filter = "blur(1px)";
+      container.insertBefore(glow, mainBolt);
+
+      container.setAttribute("transform", `translate(${centerX * 100}, ${centerY * 100}) rotate(${(angle * 180) / Math.PI})`);
+
+      const crackleFrequency = 50 + Math.random() * 20;
+      const intensityVariation = 0.6 + Math.random() * 0.4;
+      const flickerOffset = Math.random() * Math.PI * 2;
 
       return {
-        main: bolt,
+        main: container,
         update: (x, y, currentSize, opacity, t) => {
-          const flicker = 1 + Math.sin(t * 50 + i * 3) * 0.4;
-          const electricOpacity = opacity * flicker;
-
-          bolt.setAttribute("transform", `translate(${x * 100}, ${y * 100}) rotate(${(angle * 180) / Math.PI})`);
-          bolt.style.opacity = Math.max(0, Math.min(1, electricOpacity)).toString();
+          const crackle = 1 + Math.sin(t * crackleFrequency + flickerOffset) * intensityVariation;
+          const secondary = 1 + Math.sin(t * (crackleFrequency * 1.7) + flickerOffset + Math.PI) * 0.3;
+          const flicker = crackle * secondary;
+          const spike = Math.random() < 0.1 ? 1.5 + Math.random() * 0.5 : 1;
+          const electricOpacity = opacity * flicker * spike;
+          const jitterX = (Math.random() - 0.5) * 3 * (1 - t);
+          const jitterY = (Math.random() - 0.5) * 3 * (1 - t);
+          container.setAttribute("transform", `translate(${x * 100 + jitterX}, ${y * 100 + jitterY}) rotate(${(angle * 180) / Math.PI})`);
+          container.style.opacity = Math.max(0, Math.min(1, electricOpacity)).toString();
+          glow.setAttribute("opacity", (0.3 * flicker * opacity).toString());
         },
       };
     },
