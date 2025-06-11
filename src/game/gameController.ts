@@ -728,6 +728,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.Bomb);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
+            Board.indicateBombExplosion(to);
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.MonAwake:
@@ -738,6 +739,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
           case MonsWeb.EventModelKind.BombExplosion:
             sounds.push(Sound.Bomb);
             if (from) {
+              Board.indicateBombExplosion(from);
               locationsToUpdate.push(from);
             }
             break;
