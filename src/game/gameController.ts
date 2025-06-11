@@ -658,6 +658,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
               sounds.push(Sound.ScoreMana);
             }
             locationsToUpdate.push(from);
+            Board.indicateWaterSplash(from);
             mustReleaseHighlight = true;
             Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
             break;

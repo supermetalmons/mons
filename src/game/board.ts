@@ -3128,3 +3128,106 @@ export function indicateHypnosis(at: Location) {
     },
   });
 }
+
+export function indicateWaterSplash(at: Location) {
+  spawnParticlesAt(at, {
+    numParticles: 8,
+    duration: 300,
+    maxDistance: 0.8,
+    minParticleSize: 0.06,
+    maxParticleSize: 0.16,
+    fadeOutStrength: 0.5,
+    sizeGrowthThreshold: 0.2,
+    sizeGrowthMultiplier: 1.8,
+    ease: (t: number) => {
+      const outward = Math.pow(t, 0.6);
+      const gentleFloat = Math.sin(t * Math.PI) * 0.15;
+      return outward + gentleFloat;
+    },
+    createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+      const cuteWaterColors = ["#A8E6F0", "#C2F0FC", "#E1F7FF", "#B8E0D2", "#D4EDDA", "#F0F8FF"];
+      const dropletColor = cuteWaterColors[i % cuteWaterColors.length];
+      const isSpecialDroplet = size > 0.08;
+      const gradientId = `cute-water-gradient-${i}-${now}`;
+      const gradient = document.createElementNS(SVG.ns, "radialGradient");
+      gradient.setAttribute("id", gradientId);
+      gradient.setAttribute("cx", "35%");
+      gradient.setAttribute("cy", "25%");
+      gradient.setAttribute("r", "65%");
+
+      const highlightStop = document.createElementNS(SVG.ns, "stop");
+      highlightStop.setAttribute("offset", "0%");
+      highlightStop.setAttribute("stop-color", "#FFFFFF");
+      highlightStop.setAttribute("stop-opacity", "0.95");
+      gradient.appendChild(highlightStop);
+
+      const midStop = document.createElementNS(SVG.ns, "stop");
+      midStop.setAttribute("offset", "50%");
+      midStop.setAttribute("stop-color", dropletColor);
+      midStop.setAttribute("stop-opacity", "0.9");
+      gradient.appendChild(midStop);
+
+      const edgeStop = document.createElementNS(SVG.ns, "stop");
+      edgeStop.setAttribute("offset", "100%");
+      edgeStop.setAttribute("stop-color", dropletColor);
+      edgeStop.setAttribute("stop-opacity", "0.6");
+      gradient.appendChild(edgeStop);
+
+      defs.appendChild(gradient);
+      const droplet = document.createElementNS(SVG.ns, "circle");
+      const dropletRadius = size * (0.9 + Math.random() * 0.2);
+
+      droplet.setAttribute("r", ((dropletRadius / 2) * 100).toString());
+      droplet.setAttribute("cx", (centerX * 100).toString());
+      droplet.setAttribute("cy", (centerY * 100).toString());
+      droplet.setAttribute("fill", `url(#${gradientId})`);
+      droplet.setAttribute("opacity", "0.85");
+      droplet.style.pointerEvents = "none";
+      droplet.style.overflow = "visible";
+
+      let sparkle: SVGElement | undefined;
+      if (isSpecialDroplet) {
+        sparkle = document.createElementNS(SVG.ns, "circle");
+        sparkle.setAttribute("r", (size * 0.15 * 100).toString());
+        sparkle.setAttribute("cx", (centerX * 100).toString());
+        sparkle.setAttribute("cy", (centerY * 100).toString());
+        sparkle.setAttribute("fill", "#FFFFFF");
+        sparkle.setAttribute("opacity", "0.8");
+        sparkle.style.pointerEvents = "none";
+        sparkle.style.overflow = "visible";
+      }
+
+      const gentleVelocityX = (Math.random() - 0.5) * 0.15;
+      const gentleVelocityY = -Math.random() * 0.08;
+      const floatiness = 0.3 + Math.random() * 0.3;
+      const bobSpeed = 4 + Math.random() * 3;
+
+      return {
+        main: droplet,
+        extra: sparkle,
+        update: (x, y, currentSize, opacity, t) => {
+          const gentleBob = Math.sin(t * bobSpeed) * floatiness * (1 - t * 0.6);
+          const currentX = x + gentleVelocityX * t;
+          const currentY = y + gentleVelocityY * t + gentleBob * 0.1;
+          const currentRadius = (currentSize / 2) * (1 + Math.sin(t * 8) * 0.1);
+          const pulse = 1 + Math.sin(t * 12) * 0.08;
+          const finalRadius = currentRadius * pulse;
+
+          droplet.setAttribute("cx", (currentX * 100).toString());
+          droplet.setAttribute("cy", (currentY * 100).toString());
+          droplet.setAttribute("r", (finalRadius * 100).toString());
+          droplet.style.opacity = (opacity * 0.85).toString();
+
+          if (sparkle) {
+            const twinkle = 0.5 + Math.sin(t * 15) * 0.3;
+            const sparkleSize = currentSize * 0.15 * (1 + Math.sin(t * 10) * 0.2);
+            sparkle.setAttribute("cx", ((currentX + Math.sin(t * 8) * 0.02) * 100).toString());
+            sparkle.setAttribute("cy", ((currentY + Math.cos(t * 8) * 0.02) * 100).toString());
+            sparkle.setAttribute("r", (sparkleSize * 100).toString());
+            sparkle.style.opacity = Math.max(0, opacity * twinkle).toString();
+          }
+        },
+      };
+    },
+  });
+}
