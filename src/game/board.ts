@@ -2919,3 +2919,134 @@ export function indicateElectricHit(at: Location) {
     },
   });
 }
+
+export function indicateFlameGround(at: Location) {
+  spawnParticlesAt(at, {
+    numParticles: 15,
+    duration: 380,
+    maxDistance: 1.8,
+    minParticleSize: 0.22,
+    maxParticleSize: 0.42,
+    fadeOutStrength: 0.9,
+    sizeGrowthThreshold: 0.3,
+    sizeGrowthMultiplier: 2.5,
+    ease: (t: number) => {
+      const outward = Math.pow(t, 0.5);
+      const wiggle = Math.sin(t * 8) * 0.1 * (1 - t);
+      return outward + wiggle;
+    },
+    createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+      const flameColors = ["#FF4500", "#FF6347", "#FF8C00", "#FFD700", "#FFA500", "#DC143C", "#FF2500", "#FF4000", "#FF6600"];
+      const coreColor = flameColors[i % flameColors.length];
+      const outerColor = i % 3 === 0 ? "#FF4500" : "#FF8C00";
+
+      const flameGradientId = `flame-gradient-${i}-${now}`;
+      const gradient = document.createElementNS(SVG.ns, "radialGradient");
+      gradient.setAttribute("id", flameGradientId);
+      gradient.setAttribute("cx", "50%");
+      gradient.setAttribute("cy", "70%");
+      gradient.setAttribute("r", "80%");
+
+      const coreStop = document.createElementNS(SVG.ns, "stop");
+      coreStop.setAttribute("offset", "0%");
+      coreStop.setAttribute("stop-color", "#FFFF00");
+      coreStop.setAttribute("stop-opacity", "0.9");
+      gradient.appendChild(coreStop);
+
+      const midStop = document.createElementNS(SVG.ns, "stop");
+      midStop.setAttribute("offset", "40%");
+      midStop.setAttribute("stop-color", coreColor);
+      midStop.setAttribute("stop-opacity", "0.8");
+      gradient.appendChild(midStop);
+
+      const outerStop = document.createElementNS(SVG.ns, "stop");
+      outerStop.setAttribute("offset", "100%");
+      outerStop.setAttribute("stop-color", outerColor);
+      outerStop.setAttribute("stop-opacity", "0.3");
+      gradient.appendChild(outerStop);
+
+      defs.appendChild(gradient);
+      const flame = document.createElementNS(SVG.ns, "path");
+      const flameWidth = size * 1.2;
+      const flameHeight = size * 1.6;
+      const asymmetryFactor = (Math.random() - 0.5) * 0.4;
+      const tipVariation = (Math.random() - 0.5) * 0.3;
+      const baseVariation = (Math.random() - 0.5) * 0.2;
+      const leftCurve = 0.5 + (Math.random() - 0.5) * 0.6;
+      const rightCurve = 0.5 + (Math.random() - 0.5) * 0.6;
+      const midBulge = 0.8 + (Math.random() - 0.5) * 0.4;
+      const leftCtrl1 = 0.2 + (Math.random() - 0.5) * 0.15;
+      const leftCtrl2 = 0.6 + (Math.random() - 0.5) * 0.2;
+      const leftCtrl3 = 0.9 + (Math.random() - 0.5) * 0.15;
+      const rightCtrl1 = 0.2 + (Math.random() - 0.5) * 0.15;
+      const rightCtrl2 = 0.6 + (Math.random() - 0.5) * 0.2;
+      const rightCtrl3 = 0.9 + (Math.random() - 0.5) * 0.15;
+      const halfWidth = flameWidth / 2;
+      const tipX = centerX + tipVariation * halfWidth;
+      const tipY = centerY - flameHeight / 2.2;
+
+      const pathData = `M ${tipX * 100} ${tipY * 100} 
+                        C ${(centerX - halfWidth * leftCtrl1 + asymmetryFactor * halfWidth) * 100} ${(centerY - flameHeight / (2.5 + Math.random() * 0.5)) * 100}, 
+                          ${(centerX - halfWidth * leftCtrl2 * leftCurve + asymmetryFactor * halfWidth) * 100} ${(centerY - flameHeight / (4 + Math.random() * 0.5)) * 100}, 
+                          ${(centerX - halfWidth * leftCtrl3 * midBulge + asymmetryFactor * halfWidth) * 100} ${(centerY - flameHeight / (8 + Math.random() * 0.3)) * 100}
+                        C ${(centerX - halfWidth * (1.1 + Math.random() * 0.2) * midBulge + asymmetryFactor * halfWidth) * 100} ${(centerY + flameHeight / (8 + Math.random() * 0.3)) * 100},
+                          ${(centerX - halfWidth * (0.8 + Math.random() * 0.2) + asymmetryFactor * halfWidth) * 100} ${(centerY + flameHeight / (3 + Math.random() * 0.4)) * 100},
+                          ${(centerX - halfWidth * (0.5 + baseVariation) + asymmetryFactor * halfWidth) * 100} ${(centerY + flameHeight / (2.2 + Math.random() * 0.3)) * 100}
+                        C ${(centerX - halfWidth * (0.1 + Math.random() * 0.1) + asymmetryFactor * halfWidth) * 100} ${(centerY + flameHeight / (2 + Math.random() * 0.2)) * 100},
+                          ${(centerX + halfWidth * (0.1 + Math.random() * 0.1) + asymmetryFactor * halfWidth) * 100} ${(centerY + flameHeight / (2 + Math.random() * 0.2)) * 100},
+                          ${(centerX + halfWidth * (0.5 + baseVariation) + asymmetryFactor * halfWidth) * 100} ${(centerY + flameHeight / (2.2 + Math.random() * 0.3)) * 100}
+                        C ${(centerX + halfWidth * (0.8 + Math.random() * 0.2) + asymmetryFactor * halfWidth) * 100} ${(centerY + flameHeight / (3 + Math.random() * 0.4)) * 100},
+                          ${(centerX + halfWidth * (1.1 + Math.random() * 0.2) * midBulge + asymmetryFactor * halfWidth) * 100} ${(centerY + flameHeight / (8 + Math.random() * 0.3)) * 100},
+                          ${(centerX + halfWidth * rightCtrl3 * midBulge + asymmetryFactor * halfWidth) * 100} ${(centerY - flameHeight / (8 + Math.random() * 0.3)) * 100}
+                        C ${(centerX + halfWidth * rightCtrl2 * rightCurve + asymmetryFactor * halfWidth) * 100} ${(centerY - flameHeight / (4 + Math.random() * 0.5)) * 100}, 
+                          ${(centerX + halfWidth * rightCtrl1 + asymmetryFactor * halfWidth) * 100} ${(centerY - flameHeight / (2.5 + Math.random() * 0.5)) * 100}, 
+                          ${tipX * 100} ${tipY * 100} Z`;
+
+      flame.setAttribute("d", pathData);
+      flame.setAttribute("fill", `url(#${flameGradientId})`);
+      flame.style.pointerEvents = "none";
+      flame.style.overflow = "visible";
+      const flickerOffset = Math.random() * Math.PI * 2;
+      const flickerSpeed = 12 + Math.random() * 8;
+      const lateralDrift = (Math.random() - 0.5) * 0.3;
+
+      return {
+        main: flame,
+        update: (x, y, currentSize, opacity, t) => {
+          const flicker = 1 + Math.sin(t * flickerSpeed + flickerOffset) * 0.15;
+          const lateralOffset = Math.sin(t * 12 + flickerOffset) * lateralDrift * (1 - t * 0.5);
+          const flameX = x + lateralOffset * 0.3;
+          const flameY = y;
+
+          const flickerSize = currentSize * flicker;
+          const flameWidth = flickerSize * 1.2;
+          const flameHeight = flickerSize * 1.6 * (1 + t * 0.3);
+          const halfWidth = flameWidth / 2;
+          const animTipX = flameX + tipVariation * halfWidth;
+          const animTipY = flameY - flameHeight / 2.2;
+          const windEffect = Math.sin(t * 6 + flickerOffset) * 0.1 * (1 - t * 0.7);
+
+          const pathData = `M ${animTipX * 100} ${animTipY * 100} 
+                            C ${(flameX - halfWidth * leftCtrl1 + asymmetryFactor * halfWidth + windEffect) * 100} ${(flameY - flameHeight / 2.5) * 100}, 
+                              ${(flameX - halfWidth * leftCtrl2 * leftCurve + asymmetryFactor * halfWidth + windEffect * 0.7) * 100} ${(flameY - flameHeight / 4) * 100}, 
+                              ${(flameX - halfWidth * leftCtrl3 * midBulge + asymmetryFactor * halfWidth + windEffect * 0.5) * 100} ${(flameY - flameHeight / 8) * 100}
+                            C ${(flameX - halfWidth * 1.1 * midBulge + asymmetryFactor * halfWidth + windEffect * 0.3) * 100} ${(flameY + flameHeight / 8) * 100},
+                              ${(flameX - halfWidth * 0.8 + asymmetryFactor * halfWidth + windEffect * 0.2) * 100} ${(flameY + flameHeight / 3) * 100},
+                              ${(flameX - halfWidth * (0.5 + baseVariation) + asymmetryFactor * halfWidth) * 100} ${(flameY + flameHeight / 2.2) * 100}
+                            C ${(flameX - halfWidth * 0.1 + asymmetryFactor * halfWidth) * 100} ${(flameY + flameHeight / 2) * 100},
+                              ${(flameX + halfWidth * 0.1 + asymmetryFactor * halfWidth) * 100} ${(flameY + flameHeight / 2) * 100},
+                              ${(flameX + halfWidth * (0.5 + baseVariation) + asymmetryFactor * halfWidth) * 100} ${(flameY + flameHeight / 2.2) * 100}
+                            C ${(flameX + halfWidth * 0.8 + asymmetryFactor * halfWidth + windEffect * 0.2) * 100} ${(flameY + flameHeight / 3) * 100},
+                              ${(flameX + halfWidth * 1.1 * midBulge + asymmetryFactor * halfWidth + windEffect * 0.3) * 100} ${(flameY + flameHeight / 8) * 100},
+                              ${(flameX + halfWidth * rightCtrl3 * midBulge + asymmetryFactor * halfWidth + windEffect * 0.5) * 100} ${(flameY - flameHeight / 8) * 100}
+                            C ${(flameX + halfWidth * rightCtrl2 * rightCurve + asymmetryFactor * halfWidth + windEffect * 0.7) * 100} ${(flameY - flameHeight / 4) * 100}, 
+                              ${(flameX + halfWidth * rightCtrl1 + asymmetryFactor * halfWidth + windEffect) * 100} ${(flameY - flameHeight / 2.5) * 100}, 
+                              ${animTipX * 100} ${animTipY * 100} Z`;
+          flame.setAttribute("d", pathData);
+          const flickerOpacity = opacity * (0.7 + 0.3 * flicker);
+          flame.style.opacity = Math.max(0, Math.min(1, flickerOpacity)).toString();
+        },
+      };
+    },
+  });
+}

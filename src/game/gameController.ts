@@ -673,6 +673,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.DemonAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
+            Board.indicateFlameGround(to);
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.DemonAdditionalStep:
