@@ -1,7 +1,8 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useRef } from "react";
 import styled from "styled-components";
 import { problems } from "../content/problems";
 import { didSelectPuzzle } from "../game/gameController";
+import { useGameAssets } from "../hooks/useGameAssets";
 
 interface NavigationPickerProps {
   showsPuzzles: boolean;
@@ -145,18 +146,7 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
 
 const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, showsHomeNavigation, navigateHome }) => {
   const navigationPickerRef = useRef<HTMLDivElement>(null);
-  const [assets, setAssets] = useState<any>(null);
-
-  useEffect(() => {
-    const loadAssets = async () => {
-      try {
-        const gameAssets = (await import(`../assets/gameAssetsPixel`)).gameAssets;
-        setAssets(gameAssets);
-      } catch {}
-    };
-
-    loadAssets();
-  }, []);
+  const { assets } = useGameAssets();
 
   const handleNavigationSelect = (id: string) => {
     const selectedItem = problems.find((item) => item.id === id);

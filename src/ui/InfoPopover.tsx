@@ -1,5 +1,6 @@
 import { forwardRef } from "react";
 import styled from "styled-components";
+import { useGameAssets } from "../hooks/useGameAssets";
 
 const StyledInfoPopover = styled.div<{ isOpen: boolean }>`
   position: fixed;
@@ -55,6 +56,15 @@ interface InfoPopoverProps {
 }
 
 export const InfoPopover = forwardRef<HTMLDivElement, InfoPopoverProps>(({ isOpen }, ref) => {
+  const { assets } = useGameAssets();
+
+  const getIconImage = (iconName: string) => {
+    if (!assets || !assets[iconName]) {
+      return "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
+    }
+    return `data:image/png;base64,${assets[iconName]}`;
+  };
+
   return (
     <StyledInfoPopover ref={ref} isOpen={isOpen}>
       🐻 Carry mana with the drainer (central mon).
