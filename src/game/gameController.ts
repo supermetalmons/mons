@@ -630,7 +630,6 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
       let sounds: Sound[] = [];
       let traces: Trace[] = [];
       let popOpponentsEmoji = false;
-      const hasUsePotionEvent = events.some((e) => e.kind === MonsWeb.EventModelKind.UsePotion);
 
       for (const event of events) {
         const from = event.loc1 ? location(event.loc1) : undefined;
@@ -667,9 +666,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.MysticAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            if (!hasUsePotionEvent) {
-              Board.indicateElectricHit(to);
-            }
+            Board.indicateElectricHit(to);
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.DemonAction:
@@ -677,9 +674,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.DemonAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            if (!hasUsePotionEvent) {
-              Board.indicateFlameGround(to);
-            }
+            Board.indicateFlameGround(to);
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.DemonAdditionalStep:
@@ -693,9 +688,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.SpiritAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            if (!hasUsePotionEvent) {
-              Board.indicateHypnosis(to);
-            }
+            Board.indicateHypnosis(to);
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.PickupBomb:
