@@ -650,8 +650,8 @@ export function indicateWaterSplash(at: Location) {
     numParticles: 8,
     duration: 350,
     maxDistance: 1.2,
-    minParticleSize: 0.15,
-    maxParticleSize: 0.28,
+    minParticleSize: 0.14,
+    maxParticleSize: 0.25,
     fadeOutStrength: 0.6,
     sizeGrowthThreshold: 0.2,
     sizeGrowthMultiplier: 1.8,
@@ -661,7 +661,7 @@ export function indicateWaterSplash(at: Location) {
       return outward + gentleFloat;
     },
     createParticle: (centerX, centerY, size, angle, defs, i, now) => {
-      const vibrantWaterColors = ["#4FC3F7", "#29B6F6", "#03A9F4", "#0288D1", "#0277BD", "#81D4FA"];
+      const vibrantWaterColors = ["#35D2F8", "#B2F9FD", "#6EEBFA", "#A0F3F9", "#35D2F8", "#B2F9FD"];
       const dropletColor = vibrantWaterColors[i % vibrantWaterColors.length];
       const isSpecialDroplet = size > 0.2;
       const gradientId = `water-droplet-gradient-${i}-${now}`;
@@ -679,13 +679,13 @@ export function indicateWaterSplash(at: Location) {
 
       const midStop = document.createElementNS(SVG.ns, "stop");
       midStop.setAttribute("offset", "40%");
-      midStop.setAttribute("stop-color", "#E3F2FD");
+      midStop.setAttribute("stop-color", "#B2F9FD");
       midStop.setAttribute("stop-opacity", "0.95");
       gradient.appendChild(midStop);
 
       const colorStop = document.createElementNS(SVG.ns, "stop");
       colorStop.setAttribute("offset", "70%");
-      colorStop.setAttribute("stop-color", dropletColor);
+      colorStop.setAttribute("stop-color", "#35D2F8");
       colorStop.setAttribute("stop-opacity", "0.9");
       gradient.appendChild(colorStop);
 
@@ -718,8 +718,8 @@ export function indicateWaterSplash(at: Location) {
       droplet.setAttribute("fill", `url(#${gradientId})`);
       droplet.setAttribute("stroke", dropletColor);
       droplet.setAttribute("stroke-width", "1");
-      droplet.setAttribute("stroke-opacity", "0.3");
-      droplet.setAttribute("opacity", "0.95");
+      droplet.setAttribute("stroke-opacity", "0.23");
+      droplet.setAttribute("opacity", "0.78");
       droplet.style.pointerEvents = "none";
       droplet.style.overflow = "visible";
 
@@ -731,7 +731,7 @@ export function indicateWaterSplash(at: Location) {
         sparkle.setAttribute("cx", (centerX * 100).toString());
         sparkle.setAttribute("cy", (centerY * 100).toString());
         sparkle.setAttribute("fill", "#FFFFFF");
-        sparkle.setAttribute("opacity", "0.9");
+        sparkle.setAttribute("opacity", "0.6");
         sparkle.style.pointerEvents = "none";
         sparkle.style.overflow = "visible";
       }
@@ -771,7 +771,7 @@ export function indicateWaterSplash(at: Location) {
 
           droplet.setAttribute("d", pathData);
           droplet.setAttribute("transform", `rotate(${rotationDegrees} ${currentX * 100} ${currentY * 100})`);
-          droplet.style.opacity = (opacity * 0.95).toString();
+          droplet.style.opacity = (opacity * 0.78).toString();
 
           if (sparkle) {
             const globalTime = (now + t * 350) / 1000;
@@ -790,7 +790,7 @@ export function indicateWaterSplash(at: Location) {
             sparkle.setAttribute("cx", (sparkleX * 100).toString());
             sparkle.setAttribute("cy", (sparkleY * 100).toString());
             sparkle.setAttribute("transform", `rotate(${rotationDegrees} ${sparkleX * 100} ${sparkleY * 100})`);
-            sparkle.style.opacity = Math.max(0, opacity * twinkle * 0.9).toString();
+            sparkle.style.opacity = Math.max(0, opacity * twinkle * 0.75).toString();
           }
         },
       };
