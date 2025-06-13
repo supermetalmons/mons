@@ -688,7 +688,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.SpiritAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            Board.indicateHypnosis(to);
+            Board.indicateSpiritAction(to);
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.PickupBomb:

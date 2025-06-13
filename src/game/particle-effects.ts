@@ -587,7 +587,7 @@ export function indicateFlameGround(at: Location) {
   );
 }
 
-export function indicateHypnosis(at: Location) {
+export function indicateSpiritAction(at: Location) {
   // TODO: implement
 }
 

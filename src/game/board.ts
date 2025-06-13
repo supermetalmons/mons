@@ -2644,9 +2644,9 @@ export async function indicateFlameGround(at: Location) {
   effects.indicateFlameGround(at);
 }
 
-export async function indicateHypnosis(at: Location) {
+export async function indicateSpiritAction(at: Location) {
   const effects = await ensureParticleEffectsLoaded();
-  effects.indicateHypnosis(at);
+  effects.indicateSpiritAction(at);
 }
 
 export async function indicateWaterSplash(at: Location) {
