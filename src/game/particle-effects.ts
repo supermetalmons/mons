@@ -588,7 +588,132 @@ export function indicateFlameGround(at: Location) {
 }
 
 export function indicateSpiritAction(at: Location) {
-  // TODO: implement
+  spawnParticlesAt(
+    at,
+    {
+      numParticles: 11,
+      duration: 280,
+      maxDistance: 1.5,
+      minParticleSize: 0.28,
+      maxParticleSize: 0.45,
+      fadeOutStrength: 0.85,
+      sizeGrowthThreshold: 0.25,
+      sizeGrowthMultiplier: 2.2,
+      ease: (t: number) => {
+        const outward = Math.pow(t, 0.6);
+        const swirl = Math.sin(t * 6) * 0.08 * (1 - t);
+        return outward + swirl;
+      },
+      createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+        const cloud = document.createElementNS(SVG.ns, "path");
+        const cloudWidth = size * (1.8 + Math.random() * 0.9);
+        const puffCount = 4 + Math.floor(Math.random() * 2);
+        const puffSize = cloudWidth / (puffCount * 1.2);
+        const gradientId = `cloud-gradient-${i}-${now}`;
+
+        let pathData = "";
+        const baseX = 0;
+        const baseY = 0;
+
+        const centerRadius = puffSize * (1.1 + Math.random() * 0.5);
+        const centerOffsetX = puffSize * (Math.random() * 0.4 - 0.2);
+        const centerOffsetY = puffSize * (Math.random() * 0.3 - 0.15);
+
+        pathData += `M ${(baseX - centerRadius + centerOffsetX) * 100} ${(baseY + centerOffsetY) * 100}
+                    C ${(baseX - centerRadius + centerOffsetX) * 100} ${(baseY - centerRadius * 0.7 + centerOffsetY) * 100},
+                      ${(baseX - centerRadius * 0.7 + centerOffsetX) * 100} ${(baseY - centerRadius + centerOffsetY) * 100},
+                      ${(baseX + centerOffsetX) * 100} ${(baseY - centerRadius + centerOffsetY) * 100}
+                    C ${(baseX + centerRadius * 0.7 + centerOffsetX) * 100} ${(baseY - centerRadius + centerOffsetY) * 100},
+                      ${(baseX + centerRadius + centerOffsetX) * 100} ${(baseY - centerRadius * 0.7 + centerOffsetY) * 100},
+                      ${(baseX + centerRadius + centerOffsetX) * 100} ${(baseY + centerOffsetY) * 100}
+                    C ${(baseX + centerRadius + centerOffsetX) * 100} ${(baseY + centerRadius * 0.7 + centerOffsetY) * 100},
+                      ${(baseX + centerRadius * 0.7 + centerOffsetX) * 100} ${(baseY + centerRadius + centerOffsetY) * 100},
+                      ${(baseX + centerOffsetX) * 100} ${(baseY + centerRadius + centerOffsetY) * 100}
+                    C ${(baseX - centerRadius * 0.7 + centerOffsetX) * 100} ${(baseY + centerRadius + centerOffsetY) * 100},
+                      ${(baseX - centerRadius + centerOffsetX) * 100} ${(baseY + centerRadius * 0.7 + centerOffsetY) * 100},
+                      ${(baseX - centerRadius + centerOffsetX) * 100} ${(baseY + centerOffsetY) * 100} Z `;
+
+        for (let i = 0; i < puffCount; i++) {
+          const angle = (i / puffCount) * Math.PI * 2;
+          const distance = puffSize * (0.8 + Math.random() * 0.6);
+          const x = baseX + Math.cos(angle) * distance;
+          const y = baseY + Math.sin(angle) * distance;
+          const radius = puffSize * (0.8 + Math.random() * 0.6);
+          const offsetX = puffSize * (Math.random() * 0.4 - 0.2);
+          const offsetY = puffSize * (Math.random() * 0.3 - 0.15);
+
+          pathData += `M ${(x - radius + offsetX) * 100} ${(y + offsetY) * 100}
+                        C ${(x - radius + offsetX) * 100} ${(y - radius * 0.7 + offsetY) * 100},
+                          ${(x - radius * 0.7 + offsetX) * 100} ${(y - radius + offsetY) * 100},
+                          ${(x + offsetX) * 100} ${(y - radius + offsetY) * 100}
+                        C ${(x + radius * 0.7 + offsetX) * 100} ${(y - radius + offsetY) * 100},
+                          ${(x + radius + offsetX) * 100} ${(y - radius * 0.7 + offsetY) * 100},
+                          ${(x + radius + offsetX) * 100} ${(y + offsetY) * 100}
+                        C ${(x + radius + offsetX) * 100} ${(y + radius * 0.7 + offsetY) * 100},
+                          ${(x + radius * 0.7 + offsetX) * 100} ${(y + radius + offsetY) * 100},
+                          ${(x + offsetX) * 100} ${(y + radius + offsetY) * 100}
+                        C ${(x - radius * 0.7 + offsetX) * 100} ${(y + radius + offsetY) * 100},
+                          ${(x - radius + offsetX) * 100} ${(y + radius * 0.7 + offsetY) * 100},
+                          ${(x - radius + offsetX) * 100} ${(y + offsetY) * 100} Z `;
+        }
+
+        cloud.setAttribute("d", pathData);
+        cloud.setAttribute("fill", `url(#${gradientId})`);
+        cloud.setAttribute("stroke", "#FFFFFF");
+        cloud.setAttribute("stroke-width", "0.4");
+        cloud.setAttribute("stroke-opacity", "0.08");
+        cloud.style.pointerEvents = "none";
+        cloud.style.overflow = "visible";
+
+        const gradient = document.createElementNS(SVG.ns, "radialGradient");
+        gradient.setAttribute("id", gradientId);
+        gradient.setAttribute("gradientUnits", "userSpaceOnUse");
+        gradient.setAttribute("cx", "50%");
+        gradient.setAttribute("cy", "45%");
+        gradient.setAttribute("r", "85%");
+
+        const stop1 = document.createElementNS(SVG.ns, "stop");
+        stop1.setAttribute("offset", "0%");
+        stop1.setAttribute("stop-color", "#FFFFFF");
+        stop1.setAttribute("stop-opacity", "0.98");
+
+        const stop2 = document.createElementNS(SVG.ns, "stop");
+        stop2.setAttribute("offset", "40%");
+        stop2.setAttribute("stop-color", "#F8FBFF");
+        stop2.setAttribute("stop-opacity", "0.95");
+
+        const stop3 = document.createElementNS(SVG.ns, "stop");
+        stop3.setAttribute("offset", "100%");
+        stop3.setAttribute("stop-color", "#E8F4F8");
+        stop3.setAttribute("stop-opacity", "0.75");
+
+        gradient.appendChild(stop1);
+        gradient.appendChild(stop2);
+        gradient.appendChild(stop3);
+        defs.appendChild(gradient);
+
+        const windStrength = 0.25 + Math.random() * 0.35;
+        const windFrequency = 6 + Math.random() * 3;
+        const windPhase = Math.random() * Math.PI * 2;
+        const floatFrequency = 3 + Math.random() * 2;
+        const floatAmplitude = 0.12 + Math.random() * 0.08;
+
+        return {
+          main: cloud,
+          update: (x, y, currentSize, opacity, t) => {
+            const windEffect = Math.sin(t * windFrequency * Math.PI * 2 + windPhase) * windStrength;
+            const floatEffect = Math.sin(t * floatFrequency * Math.PI * 2) * floatAmplitude;
+            const rotation = windEffect * 12;
+            const scale = 0.85 + floatEffect * 0.15;
+
+            cloud.setAttribute("transform", `translate(${x * 100}, ${y * 100}) rotate(${rotation}) scale(${scale})`);
+            cloud.style.opacity = (opacity * (0.85 + floatEffect * 0.15)).toString();
+          },
+        };
+      },
+    },
+    false
+  );
 }
 
 export function indicateWaterSplash(at: Location) {
