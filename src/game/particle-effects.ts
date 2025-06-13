@@ -595,14 +595,14 @@ export function indicateWaterSplash(at: Location) {
   spawnParticlesAt(
     at,
     {
-      numParticles: 8,
-      duration: 350,
-      maxDistance: 1.2,
-      minParticleSize: 0.14,
-      maxParticleSize: 0.25,
+      numParticles: 10,
+      duration: 230,
+      maxDistance: 0.95,
+      minParticleSize: 0.1,
+      maxParticleSize: 0.15,
       fadeOutStrength: 0.6,
-      sizeGrowthThreshold: 0.2,
-      sizeGrowthMultiplier: 1.8,
+      sizeGrowthThreshold: 0.1,
+      sizeGrowthMultiplier: 1.5,
       ease: (t: number) => {
         const outward = Math.pow(t, 0.7);
         const gentleFloat = Math.sin(t * Math.PI) * 0.2;
@@ -686,8 +686,8 @@ export function indicateWaterSplash(at: Location) {
 
         const velocityX = Math.cos(angle) * (0.3 + Math.random() * 0.2);
         const velocityY = Math.sin(angle) * (0.3 + Math.random() * 0.2);
-        const gravity = 0.15;
-        const airResistance = 0.02;
+        const gravity = 0.0098;
+        const airResistance = 0;
 
         return {
           main: droplet,
