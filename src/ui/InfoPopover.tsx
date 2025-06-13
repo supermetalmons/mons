@@ -91,7 +91,7 @@ export const InfoPopover = forwardRef<HTMLDivElement, InfoPopoverProps>(({ isOpe
 
   return (
     <StyledInfoPopover ref={ref} isOpen={isOpen}>
-      <img className="icon-image" src={getIconImage("drainer")} alt="drainer" /> Carry mana with the drainer (central mon).
+      <img className="icon-image" src={getIconImage("drainer")} alt="drainer" /> Carry mana with the drainer.
       <br />
       <img className="icon-image" src={getIconImage("manaB")} alt="manaB" /> Bring mana to the corners to score.
       <br />
