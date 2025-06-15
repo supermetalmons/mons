@@ -11,10 +11,9 @@ import { newReactionOfKind } from "../content/sounds";
 import { showVoiceReactionText } from "../game/board";
 import { hasFullScreenAlertVisible, hideFullScreenAlert } from "..";
 import NavigationPicker from "./NavigationPicker";
-import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
-import { setBoardColorSet, getCurrentColorSetKey, ColorSetKey } from "../content/boardStyles";
-import { ControlsContainer, BrushButton, NavigationListButton, ControlButton, BottomPillButton, ReactionButton, ReactionPicker, ResignButton, ResignConfirmation, BoardStylePicker, ColorSquare } from "./BottomControlsStyles";
+import { ControlsContainer, BrushButton, NavigationListButton, ControlButton, BottomPillButton, ReactionButton, ReactionPicker, ResignButton, ResignConfirmation } from "./BottomControlsStyles";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
+import BoardStylePickerComponent from "./BoardStylePicker";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 
@@ -99,7 +98,6 @@ const BottomControls: React.FC = () => {
   const [isNavigationListButtonVisible, setIsNavigationListButtonVisible] = useState(false);
   const [isNavigationPopupVisible, setIsNavigationPopupVisible] = useState(false);
   const [isBoardStylePickerVisible, setIsBoardStylePickerVisible] = useState(false);
-  const [currentColorSetKey, setCurrentColorSetKey] = useState<ColorSetKey>(getCurrentColorSetKey());
 
   const [isUndoDisabled, setIsUndoDisabled] = useState(true);
   const [waitingStateText, setWaitingStateText] = useState("");
@@ -500,22 +498,15 @@ const BottomControls: React.FC = () => {
     } catch (_) {}
   };
 
-  const handleColorSetChange = (colorSetKey: ColorSetKey) => {
-    setBoardColorSet(colorSetKey);
-    updateBoardComponentForBoardStyleChange();
-    setCurrentColorSetKey(colorSetKey);
-  };
-
   return (
     <>
       <BrushButton ref={brushButtonRef} dimmed={isBrushButtonDimmed} onClick={!isMobile ? handleBrushClick : undefined} onTouchStart={isMobile ? handleBrushClick : undefined} aria-label="Appearance">
         <FaPaintBrush />
       </BrushButton>
       {isBoardStylePickerVisible && (
-        <BoardStylePicker ref={boardStylePickerRef}>
-          <ColorSquare colorSet="light" isSelected={currentColorSetKey === "default"} onClick={!isMobile ? () => handleColorSetChange("default") : undefined} onTouchStart={isMobile ? () => handleColorSetChange("default") : undefined} aria-label="Light board theme" />
-          <ColorSquare colorSet="dark" isSelected={currentColorSetKey === "darkAndYellow"} onClick={!isMobile ? () => handleColorSetChange("darkAndYellow") : undefined} onTouchStart={isMobile ? () => handleColorSetChange("darkAndYellow") : undefined} aria-label="Dark board theme" />
-        </BoardStylePicker>
+        <div ref={boardStylePickerRef}>
+          <BoardStylePickerComponent />
+        </div>
       )}
       {isNavigationPopupVisible && (
         <div ref={navigationPopupRef}>
