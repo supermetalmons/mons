@@ -107,11 +107,22 @@ let supermanaSimple: SVGElement;
 
 const emojis = (await import("../content/emojis")).emojis;
 
-export async function toggleFromTalkingToIdle() {
+export function fastForwardInstructionsIfNeeded() {
+  // TODO: implement
+  // TODO: fastforward if needed 
+}
+
+export function showInstructionsText(text: string) {
+  // TODO: implement
+}
+
+// TODO: deprecate legacy
+async function toggleFromTalkingToIdle() {
   talkingDudeIsTalking = false;
 }
 
-export async function showTalkingDude(show: boolean) {
+// TODO: deprecate legacy
+async function showTalkingDude(show: boolean) {
   if (show && talkingDude) {
     talkingDudeIsTalking = true;
     return;
@@ -586,11 +597,6 @@ export function updateEmojiIfNeeded(newEmojiId: string, isOpponentSide: boolean)
     playerSideMetadata.emojiId = newEmojiId;
     SVG.setEmojiImageUrl(playerAvatar, newEmojiUrl);
   }
-}
-
-export function showOpponentAsTutorialPlayer() {
-  if (!opponentAvatar) return;
-  SVG.setEmojiImageUrl(opponentAvatar, emojis.getTutorialEmojiUrl());
 }
 
 export function showRandomEmojisForLoopMode() {

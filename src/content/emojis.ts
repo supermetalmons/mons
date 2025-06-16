@@ -15,10 +15,6 @@ export const emojis = {
     return getRandomEmojiUrl();
   },
 
-  getTutorialEmojiUrl: function () {
-    return this.getEmojiUrl("27");
-  },
-
   getRandomEmojiUrlOtherThan: function (id: string) {
     return getRandomEmojiUrlOtherThan(id);
   },

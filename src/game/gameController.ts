@@ -430,8 +430,9 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
 }
 
 export function didClickSquare(location: Location) {
-  // TODO: might need to fast forward talking dude instructions in puzzle mode
-
+  if (puzzleMode) {
+    Board.fastForwardInstructionsIfNeeded();
+  }
   if ((isOnlineGame && !didConnect) || isWatchOnly || isGameOver || isWaitingForInviteToGetAccepted) {
     return;
   }
@@ -1241,7 +1242,7 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
 
 export function showPuzzleInstructions() {
   const text = selectedProblem!.description;
-  // TODO: implement a new way to show instructions within the board
+  Board.showInstructionsText(text);
 }
 
 export function cleanupCurrentInputs() {
@@ -1253,7 +1254,6 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
   setPlaySamePuzzleAgainButtonVisible(false);
   isGameOver = false;
   currentInputs = [];
-  Board.showOpponentAsTutorialPlayer();
   showPuzzleTitle(problem.label);
 
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(problem.fen);
