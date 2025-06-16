@@ -109,11 +109,18 @@ const emojis = (await import("../content/emojis")).emojis;
 
 export function fastForwardInstructionsIfNeeded() {
   // TODO: implement
-  // TODO: fastforward if needed 
+  // TODO: fast forward if needed
 }
 
 export function showInstructionsText(text: string) {
-  // TODO: implement
+  // TODO: show text
+  // TODO: show talking dude
+  if (opponentAvatar && opponentAvatarPlaceholder && opponentScoreText && opponentNameText) {
+    SVG.setHidden(opponentAvatar, true);
+    SVG.setHidden(opponentAvatarPlaceholder, true);
+    SVG.setHidden(opponentScoreText, true);
+    SVG.setHidden(opponentNameText, true);
+  }
 }
 
 // TODO: deprecate legacy
