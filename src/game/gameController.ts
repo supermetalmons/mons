@@ -5,11 +5,10 @@ import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModi
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
 import { isAutomatch, sendResignStatus, sendMove, isCreateNewInviteFlow, sendEmojiUpdate, setupConnection, startTimer, claimVictoryByTimer, sendRematchProposal, sendAutomatchRequest, connectToAutomatch, sendEndMatchIndicator, rematchSeriesEndIsIndicated, connectToGame, updateRatings, seeIfFreshlySignedInProfileIsOneOfThePlayers, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded, isBotsLoopMode } from "../connection/connection";
-import { setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, setInstructionsToggleButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
+import { setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem } from "../content/problems";
-import { hasFullScreenAlertVisible, hideFullScreenAlert, showFullScreenAlert } from "..";
 import { storage } from "../utils/storage";
 
 const experimentalDrawingDevMode = false;
@@ -296,12 +295,6 @@ export function didReceiveRematchesSeriesEndIndicator() {
 }
 
 function automove() {
-  if (puzzleMode && hasFullScreenAlertVisible()) {
-    hideFullScreenAlert(true);
-    setAutomoveActionEnabled(true);
-    return;
-  }
-
   let output = game.smart_automove();
   applyOutput("", output, false, true, AssistedInputKind.None);
   Board.hideItemSelectionOrConfirmationOverlay();
@@ -437,10 +430,7 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
 }
 
 export function didClickSquare(location: Location) {
-  if (puzzleMode && hasFullScreenAlertVisible()) {
-    hideFullScreenAlert(false);
-    return;
-  }
+  // TODO: might need to fast forward talking dude instructions in puzzle mode
 
   if ((isOnlineGame && !didConnect) || isWatchOnly || isGameOver || isWaitingForInviteToGetAccepted) {
     return;
@@ -1251,9 +1241,7 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
 
 export function showPuzzleInstructions() {
   const text = selectedProblem!.description;
-  setTimeout(() => {
-    showFullScreenAlert(text, "");
-  }, 1);
+  // TODO: implement a new way to show instructions within the board
 }
 
 export function cleanupCurrentInputs() {
@@ -1261,7 +1249,6 @@ export function cleanupCurrentInputs() {
 }
 
 export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = false) {
-  setInstructionsToggleButtonVisible(true);
   showPrimaryAction(PrimaryActionType.None);
   setPlaySamePuzzleAgainButtonVisible(false);
   isGameOver = false;

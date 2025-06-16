@@ -18,8 +18,6 @@ import { FaVolumeUp, FaMusic, FaVolumeMute, FaInfoCircle, FaRegGem, FaPowerOff, 
 import { soundPlayer } from "./utils/SoundPlayer";
 import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory, showSettings } from "./ui/ProfileSignIn";
-import FullScreenAlert, { fastForwardInstructions } from "./ui/FullScreenAlert";
-import { showTalkingDude } from "./game/board";
 
 let globalIsMuted: boolean = (() => {
   return storage.getIsMuted(false);
@@ -35,54 +33,17 @@ export function hasFullScreenAlertVisible(): boolean {
   return getIsFullScreenAlertOpen();
 }
 
-let showAlertGlobal: (title: string, subtitle: string) => void;
-let hideAlertGlobal: (force: boolean) => void;
 export let enterProfileEditingMode: (enter: boolean) => void;
-
-export function hideFullScreenAlert(force: boolean) {
-  if (hideAlertGlobal) {
-    hideAlertGlobal(force);
-  }
-}
-export function showFullScreenAlert(title: string, subtitle: string) {
-  if (showAlertGlobal) {
-    showAlertGlobal(title, subtitle);
-  }
-}
 
 const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
   const [isProfileEditingMode, setIsProfileEditingMode] = useState(false);
   const [isMuted, setIsMuted] = useState(globalIsMuted);
-  const [alertState, setAlertState] = useState<{ title: string; subtitle: string } | null>(null);
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
 
   enterProfileEditingMode = (enter: boolean) => {
     setIsProfileEditingMode(enter);
   };
-
-  useEffect(() => {
-    showAlertGlobal = (title: string, subtitle: string) => {
-      showTalkingDude(true).then(() => {
-        setAlertState({ title, subtitle });
-      });
-    };
-
-    hideAlertGlobal = (force: boolean) => {
-      const didFastForward = force ? false : fastForwardInstructions();
-      if (!didFastForward) {
-        setAlertState(null);
-        showTalkingDude(false);
-      }
-    };
-
-    return () => {
-      showAlertGlobal = () => {};
-      hideAlertGlobal = () => {};
-    };
-  }, []);
-
-  getIsFullScreenAlertOpen = () => alertState !== null;
 
   useEffect(() => {
     storage.setIsMuted(isMuted);
@@ -120,9 +81,6 @@ const App = () => {
 
   const handleInfoButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    if (alertState !== null) {
-      hideFullScreenAlert(true);
-    }
     toggleInfoVisibility();
   };
 
@@ -175,7 +133,6 @@ const App = () => {
               <BoardComponent />
               <MainMenu />
               <BottomControls />
-              {alertState && <FullScreenAlert title={alertState.title} subtitle={alertState.subtitle} />}
             </div>
           </RainbowKitProvider>
         </RainbowKitAuthenticationProvider>

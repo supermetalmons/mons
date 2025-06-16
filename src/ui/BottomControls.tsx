@@ -1,15 +1,14 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaPaintBrush, FaQuestionCircle } from "react-icons/fa";
+import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaPaintBrush } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
-import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, showPuzzleInstructions } from "../game/gameController";
+import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain } from "../game/gameController";
 import { didClickInviteButton, sendVoiceReaction } from "../connection/connection";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playReaction } from "../content/sounds";
 import { newReactionOfKind } from "../content/sounds";
 import { showVoiceReactionText } from "../game/board";
-import { hasFullScreenAlertVisible, hideFullScreenAlert } from "..";
 import NavigationPicker from "./NavigationPicker";
 import { ControlsContainer, BrushButton, NavigationListButton, ControlButton, BottomPillButton, ReactionButton, ReactionPicker, ResignButton, ResignConfirmation } from "./BottomControlsStyles";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
@@ -58,7 +57,6 @@ let setAutomatchVisible: (visible: boolean) => void;
 let setBotGameOptionVisible: (visible: boolean) => void;
 let setPlaySamePuzzleAgainButtonVisible: (visible: boolean) => void;
 let setAutomatchWaitingState: (waiting: boolean) => void;
-let setInstructionsToggleButtonVisible: (visible: boolean) => void;
 let setBrushAndNavigationButtonDimmed: (dimmed: boolean) => void;
 
 let showWaitingStateText: (text: string) => void;
@@ -106,7 +104,6 @@ const BottomControls: React.FC = () => {
   const [isUndoButtonVisible, setIsUndoButtonVisible] = useState(false);
   const [isAutomoveButtonEnabled, setIsAutomoveButtonEnabled] = useState(true);
   const [isAutomoveButtonVisible, setIsAutomoveButtonVisible] = useState(false);
-  const [isInstructionsButtonVisible, setIsInstructionsButtonVisible] = useState(false);
   const [isResignButtonVisible, setIsResignButtonVisible] = useState(false);
   const [isVoiceReactionButtonVisible, setIsVoiceReactionButtonVisible] = useState(false);
   const [isReactionPickerVisible, setIsReactionPickerVisible] = useState(false);
@@ -267,10 +264,6 @@ const BottomControls: React.FC = () => {
     setIsSamePuzzleAgainVisible(visible);
   };
 
-  setInstructionsToggleButtonVisible = (visible: boolean) => {
-    setIsInstructionsButtonVisible(visible);
-  };
-
   setEndMatchVisible = (visible: boolean) => {
     setIsEndMatchButtonVisible(visible);
   };
@@ -365,15 +358,6 @@ const BottomControls: React.FC = () => {
       setIsNavigationPopupVisible(false);
     }
     setIsBoardStylePickerVisible(!isBoardStylePickerVisible);
-  };
-
-  const handleInstructionsClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
-    if (hasFullScreenAlertVisible()) {
-      hideFullScreenAlert(false);
-    } else {
-      showPuzzleInstructions();
-    }
   };
 
   const handleResignClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -613,11 +597,6 @@ const BottomControls: React.FC = () => {
             <FaFlag />
           </ControlButton>
         )}
-        {isInstructionsButtonVisible && (
-          <ControlButton onClick={handleInstructionsClick} aria-label="Help" disabled={false}>
-            <FaQuestionCircle />
-          </ControlButton>
-        )}
         <NavigationListButton ref={navigationButtonRef} dimmed={isNavigationButtonDimmed} onClick={!isMobile ? handleNavigationButtonClick : undefined} onTouchStart={isMobile ? handleNavigationButtonClick : undefined} aria-label="Navigation">
           <FaHome />
         </NavigationListButton>
@@ -640,4 +619,4 @@ const BottomControls: React.FC = () => {
   );
 };
 
-export { BottomControls as default, setInstructionsToggleButtonVisible, setBrushAndNavigationButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, setAutomatchEnabled, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };
+export { BottomControls as default, setBrushAndNavigationButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, setAutomatchEnabled, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };
