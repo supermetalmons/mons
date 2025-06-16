@@ -592,7 +592,7 @@ export function indicateSpiritAction(at: Location) {
     at,
     {
       numParticles: 11,
-      duration: 280,
+      duration: 250,
       maxDistance: 1.5,
       minParticleSize: 0.28,
       maxParticleSize: 0.45,
@@ -675,17 +675,17 @@ export function indicateSpiritAction(at: Location) {
         const stop1 = document.createElementNS(SVG.ns, "stop");
         stop1.setAttribute("offset", "0%");
         stop1.setAttribute("stop-color", "#FFFFFF");
-        stop1.setAttribute("stop-opacity", "0.98");
+        stop1.setAttribute("stop-opacity", "0.6");
 
         const stop2 = document.createElementNS(SVG.ns, "stop");
         stop2.setAttribute("offset", "40%");
         stop2.setAttribute("stop-color", "#F8FBFF");
-        stop2.setAttribute("stop-opacity", "0.95");
+        stop2.setAttribute("stop-opacity", "0.55");
 
         const stop3 = document.createElementNS(SVG.ns, "stop");
         stop3.setAttribute("offset", "100%");
         stop3.setAttribute("stop-color", "#E8F4F8");
-        stop3.setAttribute("stop-opacity", "0.75");
+        stop3.setAttribute("stop-opacity", "0.42");
 
         gradient.appendChild(stop1);
         gradient.appendChild(stop2);
