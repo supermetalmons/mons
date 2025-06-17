@@ -47,7 +47,7 @@ exports.editUsername = onCall(async (request) => {
     };
   }
 
-  const takenNameError = "That name has been taken. Please choose another.";
+  const takenNameError = "That name has been taken. Choose another.";
 
   const usernameQuery = await firestore.collection("users").where("username", "==", newUsername).limit(1).get();
   if (!usernameQuery.empty) {
