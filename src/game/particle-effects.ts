@@ -592,11 +592,11 @@ export function indicateSpiritAction(at: Location) {
     at,
     {
       numParticles: 11,
-      duration: 250,
+      duration: 300,
       maxDistance: 1.5,
-      minParticleSize: 0.28,
-      maxParticleSize: 0.45,
-      fadeOutStrength: 0.85,
+      minParticleSize: 0.275,
+      maxParticleSize: 0.445,
+      fadeOutStrength: 0.95,
       sizeGrowthThreshold: 0.25,
       sizeGrowthMultiplier: 2.2,
       ease: (t: number) => {
