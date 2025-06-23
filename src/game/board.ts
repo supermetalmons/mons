@@ -430,7 +430,7 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false): void {
         const now = Date.now();
         if (now - lastUpdateTime >= frameDuration) {
           const x = initialX - currentFrame * frameWidth * 100;
-          const y = isTalkingDude && talkingDudeIsTalking ? initialY - 500 : initialY;
+          const y = isTalkingDude && talkingDudeIsTalking ? initialY - 140 : initialY;
           image.setAttribute("x", x.toString());
           image.setAttribute("y", y.toString());
           currentFrame = (currentFrame + 1) % totalFrames;
