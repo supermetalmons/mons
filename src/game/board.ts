@@ -86,6 +86,7 @@ let doNotShowPlayerAvatarPlaceholderAgain = false;
 let doNotShowOpponentAvatarPlaceholderAgain = false;
 let activeTimer: SVGElement | null = null;
 let talkingDude: SVGElement | null = null;
+let talkingDudeTextContainer: SVGElement | null = null;
 let talkingDudeIsTalking = true;
 
 let assets: any;
@@ -119,6 +120,14 @@ export function showInstructionsText(text: string) {
 
   showTalkingDude(true);
   toggleFromTalkingToIdle(); // TODO: dev tmp, do not toggle immediatelly
+
+  if (!talkingDudeTextContainer) {
+    const textContainer = document.createElementNS(SVG.ns, "rect");
+    SVG.setFrame(textContainer, 1.1, 0, 9.8, 0.85);
+    SVG.setFill(textContainer, "transparent");
+    controlsLayer?.appendChild(textContainer);
+    talkingDudeTextContainer = textContainer;
+  }
 
   if (opponentAvatar && opponentAvatarPlaceholder && opponentScoreText && opponentNameText) {
     SVG.setHidden(opponentAvatar, true);
