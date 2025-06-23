@@ -109,14 +109,27 @@ let supermanaSimple: SVGElement;
 
 const emojis = (await import("../content/emojis")).emojis;
 
+let currentTextAnimation: {
+  isAnimating: boolean;
+  fastForwardCallback: (() => void) | null;
+  timer: NodeJS.Timeout | null;
+} = {
+  isAnimating: false,
+  fastForwardCallback: null,
+  timer: null,
+};
+
 export function fastForwardInstructionsIfNeeded() {
-  // TODO: implement
-  // TODO: fast forward if needed
+  if (!currentTextAnimation.isAnimating || !currentTextAnimation.fastForwardCallback) {
+    return false;
+  }
+
+  currentTextAnimation.fastForwardCallback();
+  return true;
 }
 
 export function showInstructionsText(text: string) {
   showTalkingDude(true);
-  toggleFromTalkingToIdle(); // TODO: dev tmp, do not toggle immediatelly
 
   if (!talkingDudeTextDiv) {
     const containerGroup = document.createElementNS(SVG.ns, "g");
@@ -148,9 +161,7 @@ export function showInstructionsText(text: string) {
     talkingDudeTextDiv = textDiv;
   }
 
-  if (talkingDudeTextDiv) {
-    talkingDudeTextDiv.textContent = text;
-  }
+  startTextAnimation(text);
 
   if (opponentAvatar && opponentAvatarPlaceholder && opponentScoreText && opponentNameText) {
     SVG.setHidden(opponentAvatar, true);
@@ -160,7 +171,56 @@ export function showInstructionsText(text: string) {
   }
 }
 
-// TODO: deprecate legacy
+function startTextAnimation(text: string) {
+  if (!talkingDudeTextDiv) return;
+
+  if (currentTextAnimation.timer) {
+    clearTimeout(currentTextAnimation.timer);
+  }
+
+  const chars = Array.from(text);
+  let currentIndex = 0;
+  let isFastForwarding = false;
+  talkingDudeTextDiv.textContent = "";
+  currentTextAnimation.isAnimating = true;
+  currentTextAnimation.fastForwardCallback = () => {
+    if (currentTextAnimation.timer) {
+      clearTimeout(currentTextAnimation.timer);
+      currentTextAnimation.timer = null;
+    }
+    isFastForwarding = true;
+    if (talkingDudeTextDiv) {
+      talkingDudeTextDiv.textContent = text;
+    }
+    currentTextAnimation.isAnimating = false;
+    currentTextAnimation.fastForwardCallback = null;
+    toggleFromTalkingToIdle();
+  };
+
+  const animateStep = () => {
+    if (isFastForwarding) return;
+    const visibleText = chars.slice(0, currentIndex).join("");
+    if (talkingDudeTextDiv) {
+      talkingDudeTextDiv.textContent = visibleText;
+    }
+
+    if (currentIndex < chars.length) {
+      const currentChar = chars[currentIndex];
+      const delay = currentChar === " " ? 4 : 44;
+      currentIndex += 1;
+
+      currentTextAnimation.timer = setTimeout(animateStep, delay);
+    } else {
+      currentTextAnimation.isAnimating = false;
+      currentTextAnimation.fastForwardCallback = null;
+      currentTextAnimation.timer = null;
+      toggleFromTalkingToIdle();
+    }
+  };
+
+  animateStep();
+}
+
 async function toggleFromTalkingToIdle() {
   talkingDudeIsTalking = false;
 }
