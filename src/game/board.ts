@@ -116,6 +116,10 @@ export function fastForwardInstructionsIfNeeded() {
 export function showInstructionsText(text: string) {
   // TODO: show text
   // TODO: show talking dude
+
+  showTalkingDude(true);
+  toggleFromTalkingToIdle(); // TODO: dev tmp, do not toggle immediatelly
+
   if (opponentAvatar && opponentAvatarPlaceholder && opponentScoreText && opponentNameText) {
     SVG.setHidden(opponentAvatar, true);
     SVG.setHidden(opponentAvatarPlaceholder, true);
@@ -129,7 +133,6 @@ async function toggleFromTalkingToIdle() {
   talkingDudeIsTalking = false;
 }
 
-// TODO: deprecate legacy
 async function showTalkingDude(show: boolean) {
   if (show && talkingDude) {
     talkingDudeIsTalking = true;
@@ -138,20 +141,16 @@ async function showTalkingDude(show: boolean) {
     removeItemAndCleanUpAnimation(talkingDude);
     talkingDude = null;
     talkingDudeIsTalking = true;
-    setTopBoardOverlayVisible(false, null, false);
     return;
   } else if (show) {
-    const placeholder = document.createElementNS("http://www.w3.org/2000/svg", "svg");
-    setTopBoardOverlayVisible(false, placeholder, false);
     const sprite = instructor;
-    const location = new Location(6.69, -1);
+    const location = new Location(-0.3, -0.23);
     const img = loadImage(sprite, "talkingDude", true);
     setCenterTranformOrigin(img, location);
     SVG.setOrigin(img, location.j, location.i);
     controlsLayer?.appendChild(img);
     startAnimation(img, false);
     talkingDude = img;
-    setTopBoardOverlayVisible(false, talkingDude, false);
   }
 }
 
@@ -337,8 +336,8 @@ function loadBoardAssetImage(data: string, assetType: string, isSpriteSheet: boo
     foreignObject.setAttribute("data-is-sprite-sheet", "true");
     foreignObject.setAttribute("data-total-frames", isTalkingDude ? "5" : "4");
     foreignObject.setAttribute("data-frame-duration", "169");
-    foreignObject.setAttribute("data-frame-width", isTalkingDude ? "5" : "1");
-    foreignObject.setAttribute("data-frame-height", isTalkingDude ? "10" : "1");
+    foreignObject.setAttribute("data-frame-width", isTalkingDude ? "1.4" : "1");
+    foreignObject.setAttribute("data-frame-height", isTalkingDude ? "2.8" : "1");
     const totalFrames = parseInt(foreignObject.getAttribute("data-total-frames") || "1", 10);
     const frameWidth = parseFloat(foreignObject.getAttribute("data-frame-width") || "1");
     const frameHeight = parseFloat(foreignObject.getAttribute("data-frame-height") || "1");
