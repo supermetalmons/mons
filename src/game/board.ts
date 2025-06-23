@@ -86,7 +86,7 @@ let doNotShowPlayerAvatarPlaceholderAgain = false;
 let doNotShowOpponentAvatarPlaceholderAgain = false;
 let activeTimer: SVGElement | null = null;
 let talkingDude: SVGElement | null = null;
-let talkingDudeTextContainer: SVGElement | null = null;
+let talkingDudeTextDiv: HTMLElement | null;
 let talkingDudeIsTalking = true;
 
 let assets: any;
@@ -115,18 +115,41 @@ export function fastForwardInstructionsIfNeeded() {
 }
 
 export function showInstructionsText(text: string) {
-  // TODO: show text
-  // TODO: show talking dude
-
   showTalkingDude(true);
   toggleFromTalkingToIdle(); // TODO: dev tmp, do not toggle immediatelly
 
-  if (!talkingDudeTextContainer) {
-    const textContainer = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(textContainer, 1.1, 0, 9.8, 0.85);
-    SVG.setFill(textContainer, "transparent");
-    controlsLayer?.appendChild(textContainer);
-    talkingDudeTextContainer = textContainer;
+  if (!talkingDudeTextDiv) {
+    const containerGroup = document.createElementNS(SVG.ns, "g");
+
+    const foreignObject = document.createElementNS(SVG.ns, "foreignObject");
+    SVG.setFrame(foreignObject, 1.1, 0, 9.8, 0.85);
+    foreignObject.setAttribute("overflow", "visible");
+
+    const textDiv = document.createElement("div");
+    textDiv.style.width = "100%";
+    textDiv.style.height = "100%";
+    textDiv.style.display = "flex";
+    textDiv.style.alignItems = "left";
+    textDiv.style.justifyContent = "left";
+    textDiv.style.padding = "0.05em";
+    textDiv.style.boxSizing = "border-box";
+    textDiv.style.color = "gray";
+    textDiv.style.fontFamily = "system-ui, -apple-system, sans-serif";
+    textDiv.style.fontSize = "1.55em";
+    textDiv.style.fontWeight = "500";
+    textDiv.style.textAlign = "left";
+    textDiv.style.lineHeight = "1.2";
+    textDiv.style.overflow = "visible";
+
+    foreignObject.appendChild(textDiv);
+    containerGroup.appendChild(foreignObject);
+
+    controlsLayer?.appendChild(containerGroup);
+    talkingDudeTextDiv = textDiv;
+  }
+
+  if (talkingDudeTextDiv) {
+    talkingDudeTextDiv.textContent = text;
   }
 
   if (opponentAvatar && opponentAvatarPlaceholder && opponentScoreText && opponentNameText) {
