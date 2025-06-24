@@ -431,7 +431,10 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
 
 export function didClickSquare(location: Location) {
   if (puzzleMode) {
-    Board.fastForwardInstructionsIfNeeded();
+    const didFastForward = Board.fastForwardInstructionsIfNeeded();
+    if (didFastForward) {
+      return;
+    }
   }
   if ((isOnlineGame && !didConnect) || isWatchOnly || isGameOver || isWaitingForInviteToGetAccepted) {
     return;
