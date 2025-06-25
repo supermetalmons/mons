@@ -42,7 +42,7 @@ export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean 
   left: 9px;
   width: 32px;
   height: 32px;
-  border-radius: 10px;
+  border-radius: 16px;
   opacity: ${(props) => (props.dimmed ? 0.77 : 1)};
   background-color: #f9f9f9;
   border: none;
@@ -104,7 +104,7 @@ export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boole
   height: 32px;
   font-weight: 888;
   font-size: 0.88rem;
-  border-radius: 10px;
+  border-radius: 16px;
   padding: 0px 16px;
 
   svg {
@@ -253,7 +253,7 @@ export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boole
 export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
   width: 32px;
   height: 32px;
-  border-radius: ${(props) => (props.dimmed ? "16px" : "10px")};
+  border-radius: ${(props) => (props.dimmed ? "16px" : "16px")};
   background-color: #f0f0f0;
   border: none;
   display: flex;
