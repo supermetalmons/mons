@@ -178,7 +178,7 @@ img {
 .small-top-control-buttons {
   display: flex;
   margin-right: 8px;
-  border-radius: 14px;
+  border-radius: 16px;
   background-color: #f9f9f9de;
 
   @media (max-width: 320px) {

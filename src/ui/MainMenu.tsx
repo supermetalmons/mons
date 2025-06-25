@@ -68,7 +68,7 @@ const RockButton = styled.button`
   display: block;
   background-color: #f9f9f9;
   border: none;
-  border-radius: 10px;
+  border-radius: 20px;
   padding: 3px 6px;
   cursor: pointer;
   position: relative;
@@ -262,35 +262,6 @@ const CollectionButton = styled(IconLinkButton)`
     }
     to {
       opacity: 1;
-    }
-  }
-`;
-
-const EasLink = styled.a`
-  font-size: 12px;
-  font-weight: 700;
-  background: #e6f3ff;
-  color: #0066cc;
-  padding: 2px 8px;
-  border-radius: 12px;
-  text-decoration: none;
-  margin-left: 6px;
-  margin-top: 3px;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background: #d9edff;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: #1a3d5c;
-    color: #66b3ff;
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        background: #234b6e;
-      }
     }
   }
 `;
@@ -779,11 +750,6 @@ const MainMenu: React.FC = () => {
           <RockMenu isOpen={isMenuOpen} showLeaderboard={true}>
             <MenuTitle onClick={!isMobile ? handleTitleClick : undefined} onTouchStart={isMobile ? handleTitleClick : undefined}>
               <MenuTitleText>MONS.LINK</MenuTitleText>
-              {false && (
-                <EasLink href="https://base.easscan.org/schema/view/0x5c6e798cbb817442fa075e01b65d5d65d3ac35c2b05c1306e8771a1c8a3adb32" target="_blank" rel="noopener noreferrer">
-                  ✓ EAS
-                </EasLink>
-              )}
             </MenuTitle>
             <ButtonRow ref={buttonRowRef}>
               <IconLinkButton href="https://www.supermetalmons.com/collections/all" target="_blank" rel="noopener noreferrer">

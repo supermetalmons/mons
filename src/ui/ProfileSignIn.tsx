@@ -49,7 +49,7 @@ const SignInButton = styled(BaseButton)<{ isConnected?: boolean }>`
   font-weight: ${(props) => (props.isConnected ? "750" : "888")};
   font-size: ${(props) => (props.isConnected ? "0.9rem" : "0.95rem")};
   color: ${(props) => (props.isConnected ? "#767787c9" : "white")};
-  border-radius: ${(props) => (props.isConnected ? "12px" : "8px")};
+  border-radius: ${(props) => (props.isConnected ? "16px" : "16px")};
   border: none;
   cursor: pointer;
 
