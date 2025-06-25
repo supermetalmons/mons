@@ -1,3 +1,5 @@
+import { getIsMuted } from "../index";
+
 export class SoundPlayer {
   private audioContext!: AudioContext;
   private audioBufferCache = new Map<string, AudioBuffer>();
@@ -9,10 +11,11 @@ export class SoundPlayer {
     this.attachVisibilityHandlers();
   }
 
-  public async initializeOnUserInteraction() {
-    if (this.isInitialized) return;
+  public async initializeOnUserInteraction(force: boolean = false) {
+    const isMuted = getIsMuted();
+    if (this.isInitialized || (isMuted && !force)) return;
     this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
-    await this.unlockOnce();
+    await this.unlockOnce(force);
     this.isInitialized = true;
   }
 
@@ -31,7 +34,10 @@ export class SoundPlayer {
     this.audioContext.suspend();
   }
 
-  private unlockOnce = async () => {
+  private unlockOnce = async (force: boolean = false) => {
+    if (getIsMuted() && !force) {
+      return;
+    }
     if (this.audioContext.state === "suspended") {
       await this.audioContext.resume();
     }
