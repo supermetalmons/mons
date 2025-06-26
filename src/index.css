@@ -292,7 +292,7 @@ img {
   height: 32px;
   font-weight: 888;
   font-size: 0.88rem;
-  border-radius: 10px;
+  border-radius: 16px;
   padding: 0px 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
@@ -343,7 +343,7 @@ img {
   height: 32px;
   font-weight: 888;
   font-size: 0.88rem;
-  border-radius: 10px;
+  border-radius: 16px;
   padding: 0px 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;

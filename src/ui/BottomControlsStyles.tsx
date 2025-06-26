@@ -419,7 +419,7 @@ export const ResignConfirmation = styled(ReactionPicker)`
 export const ResignButton = styled(ReactionButton)`
   background-color: #ff4136;
   color: white;
-  border-radius: 4px;
+  border-radius: 16px;
   padding: 8px 16px;
   font-weight: bold;
 

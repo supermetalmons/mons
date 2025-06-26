@@ -52,7 +52,7 @@ export const ButtonsContainer = styled.div`
 export const Button = styled.button`
   padding: 10px 16px;
   border: none;
-  border-radius: 8px;
+  border-radius: 20px;
   font-weight: bold;
   font-size: 0.9rem;
   cursor: pointer;
