@@ -135,7 +135,7 @@ export function showInstructionsText(text: string) {
     const containerGroup = document.createElementNS(SVG.ns, "g");
 
     const foreignObject = document.createElementNS(SVG.ns, "foreignObject");
-    SVG.setFrame(foreignObject, 1.1, 0, 9.8, 0.85);
+    SVG.setFrame(foreignObject, 1.1, 0, 9.8, 0.85); // TODO: update if needed
     foreignObject.setAttribute("overflow", "visible");
 
     const textDiv = document.createElement("div");
@@ -238,8 +238,8 @@ async function showTalkingDude(show: boolean) {
     const sprite = instructor;
     const location = new Location(-0.3, -0.23);
     const img = loadImage(sprite, "talkingDude", true);
-    setCenterTranformOrigin(img, location);
-    SVG.setOrigin(img, location.j, location.i);
+    setCenterTranformOrigin(img, location); // TODO: update if needed
+    SVG.setOrigin(img, location.j, location.i); // TODO: update if needed
     controlsLayer?.appendChild(img);
     startAnimation(img, false);
     talkingDude = img;
@@ -284,11 +284,11 @@ function setBoardDimmed(dimmed: boolean, color: string = "#00000023") {
 function createFullBoardBackgroundElement(): SVGElement {
   const background = document.createElementNS(SVG.ns, "rect");
   if (isPangchiuBoard()) {
-    SVG.setOrigin(background, -0.83, -0.84);
-    background.style.transform = `scale(${1 / 0.85892388})`;
+    SVG.setOrigin(background, -0.83, -0.84); // TODO: update if needed
+    background.style.transform = `scale(${1 / 0.85892388})`; // TODO: update if needed
     SVG.setSizeStr(background, "100%", "1163.5");
   } else {
-    SVG.setOrigin(background, 0, 0);
+    SVG.setOrigin(background, 0, 0); // TODO: update if needed
     SVG.setSizeStr(background, "100%", "1100");
   }
   SVG.setFill(background, "transparent");
@@ -433,7 +433,7 @@ function loadBoardAssetImage(data: string, assetType: string, isSpriteSheet: boo
     const totalFrames = parseInt(foreignObject.getAttribute("data-total-frames") || "1", 10);
     const frameWidth = parseFloat(foreignObject.getAttribute("data-frame-width") || "1");
     const frameHeight = parseFloat(foreignObject.getAttribute("data-frame-height") || "1");
-    SVG.setSize(foreignObject, frameWidth * totalFrames, frameHeight);
+    SVG.setSize(foreignObject, frameWidth * totalFrames, frameHeight); // TODO: update if needed
   }
 
   return foreignObject;
@@ -458,7 +458,7 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false): void {
     rect.setAttribute("x", initialX.toString());
     rect.setAttribute("y", initialY.toString());
     rect.setAttribute("width", (frameWidth * 100).toString());
-    rect.setAttribute("height", (frameHeight * (isTalkingDude ? 50 : 100)).toString());
+    rect.setAttribute("height", (frameHeight * (isTalkingDude ? 50 : 100)).toString()); // TODO: update if needed
     clipPath.appendChild(rect);
 
     const svgRoot = image.ownerSVGElement;
@@ -1492,9 +1492,9 @@ const updateLayout = () => {
 
     const y = isOpponent ? 1 - avatarSize * 1.203 : isPangchiuBoard() ? 12.75 : 12.16;
 
-    SVG.setOrigin(numberText, offsetX + avatarSize * 1.21, y + avatarSize * 0.73);
-    SVG.setOrigin(timerText, offsetX + avatarSize * 1.85, y + avatarSize * 0.73);
-    SVG.setOrigin(nameText, 0, y + avatarSize * 0.65);
+    SVG.setOrigin(numberText, offsetX + avatarSize * 1.21, y + avatarSize * 0.73); // TODO: update if needed
+    SVG.setOrigin(timerText, offsetX + avatarSize * 1.85, y + avatarSize * 0.73); // TODO: update if needed
+    SVG.setOrigin(nameText, 0, y + avatarSize * 0.65); // TODO: update if needed
 
     numberText.setAttribute("font-size", (50 * multiplicator).toString());
     timerText.setAttribute("font-size", (50 * multiplicator).toString());
@@ -1506,18 +1506,18 @@ const updateLayout = () => {
 
     for (let x = 0; x < 9; x++) {
       const img = isOpponent ? opponentMoveStatusItems[x] : playerMoveStatusItems[x];
-      SVG.setFrame(img, 11 - (1.15 * x + 1) * statusItemSize - statusItemsOffsetX, statusItemsY, statusItemSize, statusItemSize);
+      SVG.setFrame(img, 11 - (1.15 * x + 1) * statusItemSize - statusItemsOffsetX, statusItemsY, statusItemSize, statusItemSize); // TODO: update if needed
     }
 
     const avatar = isOpponent ? opponentAvatar! : playerAvatar!;
-    SVG.setFrame(avatar, offsetX, y, avatarSize, avatarSize);
+    SVG.setFrame(avatar, offsetX, y, avatarSize, avatarSize); // TODO: update if needed
 
     const placeholder = isOpponent ? opponentAvatarPlaceholder! : playerAvatarPlaceholder!;
     SVG.updateCircle(placeholder, offsetX + avatarSize / 2, y + avatarSize / 2, avatarSize / 3);
 
     if (isOpponent) {
       titleTextElement!.setAttribute("font-size", (32 * multiplicator).toString());
-      SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.65);
+      SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.65); // TODO: update if needed
     }
   }
 
@@ -1701,6 +1701,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
           const newSizeString = (getAvatarSize() * 100 * scale).toString();
 
           avatar.animate(
+            // TODO: update if needed
             [
               {
                 width: sizeString,
@@ -1711,7 +1712,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
               {
                 width: newSizeString,
                 height: newSizeString,
-                transform: `translate(0px, -${getAvatarSize() * 100}pt)`,
+                transform: `translate(0px, -${getAvatarSize() * 100}pt)`, // TODO: update if needed
                 easing: "ease-in-out",
               },
               {
@@ -1727,11 +1728,11 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
             }
           );
         } else {
-          avatar.style.transformOrigin = `0px ${isPangchiuBoard() ? 1369 : 1300}px`;
-          avatar.style.transform = "scale(1.8)";
-          avatar.style.transition = "transform 0.3s";
+          avatar.style.transformOrigin = `0px ${isPangchiuBoard() ? 1369 : 1300}px`; // TODO: update if needed
+          avatar.style.transform = "scale(1.8)"; // TODO: update if needed
+          avatar.style.transition = "transform 0.3s"; // TODO: update if needed
           setTimeout(() => {
-            avatar.style.transform = "scale(1)";
+            avatar.style.transform = "scale(1)"; // TODO: update if needed
           }, 300);
         }
       }
@@ -1803,7 +1804,7 @@ export function setupBoard() {
   for (let y = 0; y < 11; y++) {
     for (let x = 0; x < 11; x++) {
       const rect = document.createElementNS(SVG.ns, "rect");
-      SVG.setFrame(rect, x, y, 1, 1);
+      SVG.setFrame(rect, x, y, 1, 1); // TODO: update if needed
       SVG.setFill(rect, "transparent");
       rect.classList.add("board-rect");
       itemsLayer?.appendChild(rect);
@@ -1850,7 +1851,7 @@ export function popOpponentsEmoji() {
   }
 
   opponentAvatar.style.transition = "transform 0.3s";
-  opponentAvatar.style.transform = "scale(1.8)";
+  opponentAvatar.style.transform = "scale(1.8)"; // TODO: update if needed
   setTimeout(() => {
     if (!opponentAvatar) return;
     opponentAvatar.style.transform = "scale(1)";
@@ -1883,9 +1884,9 @@ export function drawTrace(trace: Trace) {
   const dy = toCenter.y - fromCenter.y;
   const length = Math.sqrt(dx * dx + dy * dy);
   const angle = (Math.atan2(dy, dx) * 180) / Math.PI;
-  const transform = `translate(${fromCenter.x * 100},${fromCenter.y * 100}) rotate(${angle})`;
+  const transform = `translate(${fromCenter.x * 100},${fromCenter.y * 100}) rotate(${angle})`; // TODO: update if needed
 
-  SVG.setFrame(rect, 0, -0.1, length, isPangchiuBoard() ? 0.23 : 0.2);
+  SVG.setFrame(rect, 0, -0.1, length, isPangchiuBoard() ? 0.23 : 0.2); // TODO: update if needed
   rect.setAttribute("transform", transform);
 
   SVG.setFill(rect, `url(#trace-gradient-${from.toString()}-${to.toString()})`);
@@ -1911,10 +1912,10 @@ export function hasBasePlaceholder(location: Location): boolean {
 function placeMonWithBomb(item: SVGElement, location: Location, baseItemKind: ItemKind) {
   location = inBoardCoordinates(location);
   const img = item.cloneNode(true) as SVGElement;
-  SVG.setOrigin(img, location.j, location.i);
+  SVG.setOrigin(img, location.j, location.i); // TODO: update if needed
 
   const carriedBomb = bomb.cloneNode(true) as SVGElement;
-  SVG.setFrame(carriedBomb, location.j + 0.54, location.i + 0.52, 0.5, 0.5);
+  SVG.setFrame(carriedBomb, location.j + 0.54, location.i + 0.52, 0.5, 0.5); // TODO: update if needed
 
   const container = document.createElementNS(SVG.ns, "g");
   container.appendChild(img);
@@ -1925,23 +1926,23 @@ function placeMonWithBomb(item: SVGElement, location: Location, baseItemKind: It
   startAnimation(img);
 
   if (isPangchiuBoard()) {
-    setCenterTranformOrigin(img, location);
-    applyDefaultPangchiuBoardTransform(img);
-    applySpecificItemKindPangchiuBoardTransform(img, location, baseItemKind);
-    SVG.setFrame(carriedBomb, location.j + 0.54, location.i + 0.52, 0.75, 0.75);
+    setCenterTranformOrigin(img, location); // TODO: update if needed
+    applyDefaultPangchiuBoardTransform(img); // TODO: update if needed
+    applySpecificItemKindPangchiuBoardTransform(img, location, baseItemKind); // TODO: update if needed
+    SVG.setFrame(carriedBomb, location.j + 0.54, location.i + 0.52, 0.75, 0.75); // TODO: update if needed
   }
 }
 
 function placeMonWithSupermana(item: SVGElement, location: Location, baseItemKind: ItemKind) {
   location = inBoardCoordinates(location);
   const img = item.cloneNode(true) as SVGElement;
-  SVG.setOrigin(img, location.j, location.i);
+  SVG.setOrigin(img, location.j, location.i); // TODO: update if needed
 
   const carriedMana = supermanaSimple.cloneNode(true) as SVGElement;
   if (item.getAttribute("data-is-sprite-sheet") === "true") {
-    SVG.setFrame(carriedMana, location.j + 0.13, location.i - 0.11, 0.74, 0.74);
+    SVG.setFrame(carriedMana, location.j + 0.13, location.i - 0.11, 0.74, 0.74); // TODO: update if needed
   } else {
-    SVG.setFrame(carriedMana, location.j + 0.14, location.i - 0.11, 0.72, 0.72);
+    SVG.setFrame(carriedMana, location.j + 0.14, location.i - 0.11, 0.72, 0.72); // TODO: update if needed
   }
 
   const container = document.createElementNS(SVG.ns, "g");
@@ -1953,22 +1954,22 @@ function placeMonWithSupermana(item: SVGElement, location: Location, baseItemKin
   startAnimation(img);
 
   if (isPangchiuBoard()) {
-    setCenterTranformOrigin(img, location);
-    applyDefaultPangchiuBoardTransform(img);
-    applySpecificItemKindPangchiuBoardTransform(img, location, baseItemKind);
+    setCenterTranformOrigin(img, location); // TODO: update if needed
+    applyDefaultPangchiuBoardTransform(img); // TODO: update if needed
+    applySpecificItemKindPangchiuBoardTransform(img, location, baseItemKind); // TODO: update if needed
     const xDelta = baseItemKind === ItemKind.Drainer ? 0.03 : -0.03;
     const yDelta = baseItemKind === ItemKind.Drainer ? 0.55 : 0.63;
-    SVG.setFrame(carriedMana, location.j - xDelta, location.i - yDelta, 1, 1);
+    SVG.setFrame(carriedMana, location.j - xDelta, location.i - yDelta, 1, 1); // TODO: update if needed
   }
 }
 
 function placeMonWithMana(item: SVGElement, mana: SVGElement, location: Location, baseItemKind: ItemKind) {
   location = inBoardCoordinates(location);
   const img = item.cloneNode(true) as SVGElement;
-  SVG.setOrigin(img, location.j, location.i);
+  SVG.setOrigin(img, location.j, location.i); // TODO: update if needed
 
   const carriedMana = mana.cloneNode(true) as SVGElement;
-  SVG.setFrame(carriedMana, location.j + 0.35, location.i + 0.27, 0.93, 0.93);
+  SVG.setFrame(carriedMana, location.j + 0.35, location.i + 0.27, 0.93, 0.93); // TODO: update if needed
 
   const container = document.createElementNS(SVG.ns, "g");
   container.appendChild(img);
@@ -1979,24 +1980,25 @@ function placeMonWithMana(item: SVGElement, mana: SVGElement, location: Location
   startAnimation(img);
 
   if (isPangchiuBoard()) {
-    setCenterTranformOrigin(img, location);
-    applyDefaultPangchiuBoardTransform(img);
-    applySpecificItemKindPangchiuBoardTransform(img, location, baseItemKind);
-    SVG.setFrame(carriedMana, location.j + 0.23, location.i + 0.15, 1.34, 1.34);
+    setCenterTranformOrigin(img, location); // TODO: update if needed
+    applyDefaultPangchiuBoardTransform(img); // TODO: update if needed
+    applySpecificItemKindPangchiuBoardTransform(img, location, baseItemKind); // TODO: update if needed
+    SVG.setFrame(carriedMana, location.j + 0.23, location.i + 0.15, 1.34, 1.34); // TODO: update if needed
   }
 }
 
 function setCenterTranformOrigin(item: SVGElement, location: Location) {
   const centerX = location.j * 100 + 50;
   const centerY = location.i * 100 + 50;
-  item.style.transformOrigin = `${centerX}px ${centerY}px`;
+  item.style.transformOrigin = `${centerX}px ${centerY}px`; // TODO: update if needed
 }
 
 function applyDefaultPangchiuBoardTransform(item: SVGElement) {
-  item.style.transform = "scale(1.39)";
+  item.style.transform = "scale(1.39)"; // TODO: update if needed
 }
 
 function applySpecificItemKindPangchiuBoardTransform(item: SVGElement, location: Location, kind: ItemKind) {
+  // TODO: all transforms in this function probably need an update
   switch (kind) {
     case ItemKind.Mana:
     case ItemKind.ManaBlack:
@@ -2057,27 +2059,27 @@ function placeItem(item: SVGElement, location: Location, kind: ItemKind, fainted
     SVG.setHidden(basesPlaceholders[key], true);
   }
   const img = item.cloneNode(true) as SVGElement;
-  setCenterTranformOrigin(img, location);
+  setCenterTranformOrigin(img, location); // TODO: update if needed
 
   if (isPangchiuBoard()) {
-    applyDefaultPangchiuBoardTransform(img);
-    applySpecificItemKindPangchiuBoardTransform(img, location, kind);
+    applyDefaultPangchiuBoardTransform(img); // TODO: update if needed
+    applySpecificItemKindPangchiuBoardTransform(img, location, kind); // TODO: update if needed
   }
   if (fainted) {
-    SVG.setOrigin(img, location.j, location.i);
-    img.style.transform = "rotate(90deg)";
+    SVG.setOrigin(img, location.j, location.i); // TODO: update if needed
+    img.style.transform = "rotate(90deg)"; // TODO: update if needed
     addElementToItemsLayer(img, location.i);
     items[key] = img;
   } else if (sparkles) {
     const container = document.createElementNS(SVG.ns, "g");
     const sparkles = createSparklingContainer(location);
-    SVG.setOrigin(img, location.j, location.i);
+    SVG.setOrigin(img, location.j, location.i); // TODO: update if needed
     container.appendChild(sparkles);
     container.appendChild(img);
     addElementToItemsLayer(container, location.i);
     items[key] = container;
   } else {
-    SVG.setOrigin(img, location.j, location.i);
+    SVG.setOrigin(img, location.j, location.i); // TODO: update if needed
     addElementToItemsLayer(img, location.i);
     items[key] = img;
   }
@@ -2094,7 +2096,7 @@ function createSparklingContainer(location: Location): SVGElement {
   mask.setAttribute("id", `mask-square-${location.toString()}`);
 
   const rect = document.createElementNS(SVG.ns, "rect");
-  SVG.setFrame(rect, location.j, location.i, 1, 1);
+  SVG.setFrame(rect, location.j, location.i, 1, 1); // TODO: update if needed
   SVG.setFill(rect);
 
   mask.appendChild(rect);
@@ -2117,7 +2119,7 @@ function createSparkleParticle(location: Location, container: SVGElement, animat
   const y = location.i + Math.random();
   const size = Math.random() * 0.05 + 0.075;
   const opacity = 0.3 + 0.42 * Math.random();
-  SVG.setFrame(particle, location.j + Math.random(), y, size, size);
+  SVG.setFrame(particle, location.j + Math.random(), y, size, size); // TODO: update if needed
   SVG.setOpacity(particle, opacity);
   container.appendChild(particle);
 
@@ -2182,9 +2184,9 @@ function setBase(item: SVGElement, location: Location) {
     if (isSpriteSheet) {
       img.setAttribute("data-frame-width", "0.6");
       img.setAttribute("data-frame-height", "0.6");
-      SVG.setFrame(img, location.j + 0.2, location.i + 0.2, 0.6 * 4, 0.6);
+      SVG.setFrame(img, location.j + 0.2, location.i + 0.2, 0.6 * 4, 0.6); // TODO: update if needed
     } else {
-      SVG.setFrame(img, location.j + 0.2, location.i + 0.2, 0.6, 0.6);
+      SVG.setFrame(img, location.j + 0.2, location.i + 0.2, 0.6, 0.6); // TODO: update if needed
     }
 
     board?.appendChild(img);
@@ -2232,7 +2234,7 @@ function highlightEmptyDestination(location: Location, color: string, blinking: 
     highlight = document.createElementNS(SVG.ns, "rect");
     const side = 0.27;
     const originOffset = (1 - side) * 0.5;
-    SVG.setFrame(highlight, location.j + originOffset, location.i + originOffset, side, side);
+    SVG.setFrame(highlight, location.j + originOffset, location.i + originOffset, side, side); // TODO: update if needed
     highlight.setAttribute("rx", "7");
     highlight.setAttribute("ry", "7");
     if (!blinking) {
@@ -2267,7 +2269,7 @@ function highlightSelectedItem(location: Location, color: string) {
     const highlight = document.createElementNS(SVG.ns, "rect");
     highlight.style.pointerEvents = "none";
     SVG.setFill(highlight, color);
-    SVG.setFrame(highlight, location.j, location.i, 1, 1);
+    SVG.setFrame(highlight, location.j, location.i, 1, 1); // TODO: update if needed
     highlight.setAttribute("rx", "10");
     highlight.setAttribute("ry", "10");
     setHighlightBlendMode(highlight);
@@ -2282,7 +2284,7 @@ function highlightSelectedItem(location: Location, color: string) {
     const mask = document.createElementNS(SVG.ns, "mask");
     mask.setAttribute("id", `highlight-mask-${location.toString()}`);
     const maskRect = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(maskRect, location.j, location.i, 1, 1);
+    SVG.setFrame(maskRect, location.j, location.i, 1, 1); // TODO: update if needed
     SVG.setFill(maskRect);
     mask.appendChild(maskRect);
     highlight.appendChild(mask);
@@ -2311,7 +2313,7 @@ function highlightStartFromSuggestion(location: Location, color: string) {
     highlight = document.createElementNS(SVG.ns, "rect");
     highlight.style.pointerEvents = "none";
     SVG.setFill(highlight, color);
-    SVG.setFrame(highlight, location.j, location.i, 1, 1);
+    SVG.setFrame(highlight, location.j, location.i, 1, 1); // TODO: update if needed
     highlight.setAttribute("rx", "10");
     highlight.setAttribute("ry", "10");
     highlight.setAttribute("stroke", color);
@@ -2330,7 +2332,7 @@ function highlightStartFromSuggestion(location: Location, color: string) {
     const mask = document.createElementNS(SVG.ns, "mask");
     mask.setAttribute("id", `highlight-mask-${location.toString()}`);
     const maskRect = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(maskRect, location.j, location.i, 1, 1);
+    SVG.setFrame(maskRect, location.j, location.i, 1, 1); // TODO: update if needed
     SVG.setFill(maskRect);
     mask.appendChild(maskRect);
     highlight.appendChild(mask);
@@ -2354,11 +2356,11 @@ function highlightDestinationItem(location: Location, color: string, blinking: b
     const highlight = document.createElementNS(SVG.ns, "g");
     highlight.style.pointerEvents = "none";
     const strokeWidth = "17";
-    setCenterTranformOrigin(highlight, location);
-    highlight.style.transform = "scale(0.88)";
+    setCenterTranformOrigin(highlight, location); // TODO: update if needed
+    highlight.style.transform = "scale(0.88)"; // TODO: update if needed
 
     const rect = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(rect, location.j, location.i, 1, 1);
+    SVG.setFrame(rect, location.j, location.i, 1, 1); // TODO: update if needed
     rect.setAttribute("rx", "10");
     rect.setAttribute("ry", "10");
     rect.setAttribute("stroke", color);
@@ -2372,29 +2374,29 @@ function highlightDestinationItem(location: Location, color: string, blinking: b
     mask.setAttribute("id", `highlight-mask-${location.toString()}`);
 
     const maskBg = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(maskBg, location.j, location.i, 1, 1);
+    SVG.setFrame(maskBg, location.j, location.i, 1, 1); // TODO: update if needed
     SVG.setFill(maskBg, "white");
     maskBg.setAttribute("stroke", "white");
     maskBg.setAttribute("stroke-width", strokeWidth);
     mask.appendChild(maskBg);
 
     const cutTop = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(cutTop, location.j + 0.3, location.i - 0.1, 0.4, 0.2);
+    SVG.setFrame(cutTop, location.j + 0.3, location.i - 0.1, 0.4, 0.2); // TODO: update if needed
     SVG.setFill(cutTop, "black");
     mask.appendChild(cutTop);
 
     const cutRight = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(cutRight, location.j + 0.9, location.i + 0.3, 0.2, 0.4);
+    SVG.setFrame(cutRight, location.j + 0.9, location.i + 0.3, 0.2, 0.4); // TODO: update if needed
     SVG.setFill(cutRight, "black");
     mask.appendChild(cutRight);
 
     const cutBottom = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(cutBottom, location.j + 0.3, location.i + 0.9, 0.4, 0.2);
+    SVG.setFrame(cutBottom, location.j + 0.3, location.i + 0.9, 0.4, 0.2); // TODO: update if needed
     SVG.setFill(cutBottom, "black");
     mask.appendChild(cutBottom);
 
     const cutLeft = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(cutLeft, location.j - 0.1, location.i + 0.3, 0.2, 0.4);
+    SVG.setFrame(cutLeft, location.j - 0.1, location.i + 0.3, 0.2, 0.4); // TODO: update if needed
     SVG.setFill(cutLeft, "black");
     mask.appendChild(cutLeft);
 
@@ -2412,14 +2414,14 @@ function highlightDestinationItem(location: Location, color: string, blinking: b
     highlight.style.pointerEvents = "none";
 
     const rect = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(rect, location.j, location.i, 1, 1);
+    SVG.setFrame(rect, location.j, location.i, 1, 1); // TODO: update if needed
     SVG.setFill(rect, color);
 
     const mask = document.createElementNS(SVG.ns, "mask");
     mask.setAttribute("id", `highlight-mask-${location.toString()}`);
 
     const maskRect = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(maskRect, location.j, location.i, 1, 1);
+    SVG.setFrame(maskRect, location.j, location.i, 1, 1); // TODO: update if needed
     SVG.setFill(maskRect);
     mask.appendChild(maskRect);
 
@@ -2460,7 +2462,7 @@ function addWaves(location: Location) {
   const wavesSquareElement = document.createElementNS(SVG.ns, "g");
   wavesSquareElement.setAttribute("data-assets-pixel-only", "true");
   SVG.setHidden(wavesSquareElement, currentAssetsSet !== AssetsSet.Pixel);
-  wavesSquareElement.setAttribute("transform", `translate(${location.j * 100}, ${location.i * 100})`);
+  wavesSquareElement.setAttribute("transform", `translate(${location.j * 100}, ${location.i * 100})`); // TODO: update if needed
   SVG.setOpacity(wavesSquareElement, 0.5);
   board?.appendChild(wavesSquareElement);
 
@@ -2486,17 +2488,17 @@ function getWavesFrame(location: Location, frameIndex: number) {
         const baseColor = i % 2 === 0 ? colors.wave1 : colors.wave2;
 
         const baseBottomRect = document.createElementNS(SVG.ns, "rect");
-        SVG.setFrame(baseBottomRect, x, y, width, pixel);
+        SVG.setFrame(baseBottomRect, x, y, width, pixel); // TODO: update if needed
         SVG.setFill(baseBottomRect, baseColor);
         baseBottomRect.setAttribute("class", `wave-bottom ${i % 2 === 0 ? "wave1" : "wave2"}`);
 
         const slidingBottomRect = document.createElementNS(SVG.ns, "rect");
-        SVG.setFrame(slidingBottomRect, x + width, y, 0, pixel);
+        SVG.setFrame(slidingBottomRect, x + width, y, 0, pixel); // TODO: update if needed
         SVG.setFill(slidingBottomRect, colors.manaPool);
         slidingBottomRect.setAttribute("class", "wave-bottom poolBackground");
 
         const slidingTopRect = document.createElementNS(SVG.ns, "rect");
-        SVG.setFrame(slidingTopRect, x + width, y - pixel, 0, pixel);
+        SVG.setFrame(slidingTopRect, x + width, y - pixel, 0, pixel); // TODO: update if needed
         SVG.setFill(slidingTopRect, baseColor);
         slidingTopRect.setAttribute("class", `wave-top ${i % 2 === 0 ? "wave1" : "wave2"}`);
 
