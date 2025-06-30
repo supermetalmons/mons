@@ -1982,7 +1982,7 @@ function placeMonWithMana(item: SVGElement, mana: SVGElement, location: Location
 function setCenterTranformOrigin(item: SVGElement, location: Location) {
   const centerX = location.j * 100 + 50;
   const centerY = location.i * 100 + 50;
-  item.style.transformOrigin = `${centerX}px ${centerY}px`; // TODO: update if needed
+  item.style.transformOrigin = `${centerX}px ${centerY}px`;
 }
 
 function applyDefaultPangchiuBoardTransform(item: SVGElement) {
@@ -2058,8 +2058,9 @@ function placeItem(item: SVGElement, location: Location, kind: ItemKind, fainted
     applySpecificItemKindPangchiuBoardTransform(img, location, kind); // TODO: update if needed
   }
   if (fainted) {
-    SVG.setOrigin(img, location.j, location.i); // TODO: update if needed
-    img.style.transform = "rotate(90deg)"; // TODO: update if needed
+    SVG.setOrigin(img, 0, 0);
+    img.style.transformOrigin = "0 0";
+    img.style.transform = `translate(${location.j * 100 + 100}px, ${location.i * 100}px) rotate(90deg)`;
     addElementToItemsLayer(img, location.i);
     items[key] = img;
   } else if (sparkles) {
