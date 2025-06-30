@@ -1,5 +1,5 @@
 import initMonsWeb, * as MonsWeb from "mons-web";
-import { playerSideMetadata, opponentSideMetadata, showVoiceReactionText, setupPlayerId, hideAllMoveStatuses, hideTimerCountdownDigits, showTimer, showPuzzleTitle } from "./board";
+import { playerSideMetadata, opponentSideMetadata, showVoiceReactionText, setupPlayerId, hideAllMoveStatuses, hideTimerCountdownDigits, showTimer } from "./board";
 import * as Board from "./board";
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
@@ -1257,7 +1257,6 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
   setPlaySamePuzzleAgainButtonVisible(false);
   isGameOver = false;
   currentInputs = [];
-  showPuzzleTitle(problem.label);
 
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(problem.fen);
   if (!gameFromFen) return;
