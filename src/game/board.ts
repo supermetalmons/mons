@@ -1919,7 +1919,6 @@ function placeMonWithBomb(item: SVGElement, location: Location, baseItemKind: It
 
   if (isPangchiuBoard()) {
     setCenterTranformOrigin(img, location); // TODO: update if needed
-    applyDefaultPangchiuBoardTransform(img); // TODO: update if needed
     applySpecificItemKindPangchiuBoardTransform(img, location, baseItemKind); // TODO: update if needed
     SVG.setFrame(carriedBomb, location.j + 0.54, location.i + 0.52, 0.75, 0.75); // TODO: update if needed
   }
@@ -1947,7 +1946,6 @@ function placeMonWithSupermana(item: SVGElement, location: Location, baseItemKin
 
   if (isPangchiuBoard()) {
     setCenterTranformOrigin(img, location); // TODO: update if needed
-    applyDefaultPangchiuBoardTransform(img); // TODO: update if needed
     applySpecificItemKindPangchiuBoardTransform(img, location, baseItemKind); // TODO: update if needed
     const xDelta = baseItemKind === ItemKind.Drainer ? 0.03 : -0.03;
     const yDelta = baseItemKind === ItemKind.Drainer ? 0.55 : 0.63;
@@ -1973,7 +1971,6 @@ function placeMonWithMana(item: SVGElement, mana: SVGElement, location: Location
 
   if (isPangchiuBoard()) {
     setCenterTranformOrigin(img, location); // TODO: update if needed
-    applyDefaultPangchiuBoardTransform(img); // TODO: update if needed
     applySpecificItemKindPangchiuBoardTransform(img, location, baseItemKind); // TODO: update if needed
     SVG.setFrame(carriedMana, location.j + 0.23, location.i + 0.15, 1.34, 1.34); // TODO: update if needed
   }
@@ -1984,11 +1981,6 @@ function setCenterTranformOrigin(item: SVGElement, location: Location) {
   const centerY = location.i * 100 + 50;
   item.style.transformOrigin = `${centerX}px ${centerY}px`;
 }
-
-function applyDefaultPangchiuBoardTransform(item: SVGElement) {
-  item.style.transform = "scale(1.39)";
-}
-
 function applySpecificItemKindPangchiuBoardTransform(item: SVGElement, location: Location, kind: ItemKind) {
   // TODO: all transforms in this function probably need an update
   switch (kind) {
@@ -2051,12 +2043,14 @@ function placeItem(item: SVGElement, location: Location, kind: ItemKind, fainted
     SVG.setHidden(basesPlaceholders[key], true);
   }
   const img = item.cloneNode(true) as SVGElement;
-  setCenterTranformOrigin(img, location); // TODO: update if needed
+  setCenterTranformOrigin(img, location);
 
-  if (isPangchiuBoard()) {
-    applyDefaultPangchiuBoardTransform(img); // TODO: update if needed
+  const pangchiuBoard = isPangchiuBoard();
+  if (pangchiuBoard) {
+    // TODO: remake it here
     applySpecificItemKindPangchiuBoardTransform(img, location, kind); // TODO: update if needed
   }
+
   if (fainted) {
     SVG.setOrigin(img, 0, 0);
     img.style.transformOrigin = "0 0";
@@ -2072,7 +2066,9 @@ function placeItem(item: SVGElement, location: Location, kind: ItemKind, fainted
     addElementToItemsLayer(container, location.i);
     items[key] = container;
   } else {
-    SVG.setOrigin(img, location.j, location.i); // TODO: update if needed
+    // TODO: fix for p board in desktop beta safari
+
+    SVG.setOrigin(img, location.j, location.i);
     addElementToItemsLayer(img, location.i);
     items[key] = img;
   }
