@@ -119,7 +119,7 @@ const BottomControls: React.FC = () => {
   const voiceReactionButtonRef = useRef<HTMLButtonElement>(null);
   const resignButtonRef = useRef<HTMLButtonElement>(null);
   const resignConfirmRef = useRef<HTMLDivElement>(null);
-  const hourglassEnableTimeoutRef = useRef<NodeJS.Timeout>();
+  const hourglassEnableTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const navigationPopupRef = useRef<HTMLDivElement>(null);
   const navigationButtonRef = useRef<HTMLButtonElement>(null);
   const boardStylePickerRef = useRef<HTMLDivElement>(null);
@@ -219,7 +219,7 @@ const BottomControls: React.FC = () => {
   hideTimerButtons = () => {
     if (hourglassEnableTimeoutRef.current) {
       clearTimeout(hourglassEnableTimeoutRef.current);
-      hourglassEnableTimeoutRef.current = undefined;
+      hourglassEnableTimeoutRef.current = null;
     }
     setIsTimerButtonDisabled(true);
     setIsStartTimerVisible(false);
@@ -229,7 +229,7 @@ const BottomControls: React.FC = () => {
   showTimerButtonProgressing = (currentProgress: number, target: number, enableWhenTargetReached: boolean) => {
     if (hourglassEnableTimeoutRef.current) {
       clearTimeout(hourglassEnableTimeoutRef.current);
-      hourglassEnableTimeoutRef.current = undefined;
+      hourglassEnableTimeoutRef.current = null;
     }
 
     setIsTimerButtonDisabled(true);
@@ -243,7 +243,7 @@ const BottomControls: React.FC = () => {
       const timeUntilTarget = (target - currentProgress) * 1000;
       hourglassEnableTimeoutRef.current = setTimeout(() => {
         setIsTimerButtonDisabled(false);
-        hourglassEnableTimeoutRef.current = undefined;
+        hourglassEnableTimeoutRef.current = null;
       }, timeUntilTarget);
     }
   };

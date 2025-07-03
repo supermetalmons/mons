@@ -503,7 +503,7 @@ const MainMenu: React.FC = () => {
   const buttonRowRef = useRef<HTMLDivElement>(null);
   const lastClickTime = useRef(0);
   const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
-  const animationFrameRef = useRef<number>();
+  const animationFrameRef = useRef<number | null>(null);
   const activeIndicesRef = useRef<number[]>([]);
 
   setIsMusicPlayingGlobal = setIsMusicPlaying;
