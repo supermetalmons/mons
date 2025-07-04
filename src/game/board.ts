@@ -1904,10 +1904,10 @@ export function hasBasePlaceholder(location: Location): boolean {
 function placeMonWithBomb(item: SVGElement, location: Location, baseItemKind: ItemKind) {
   location = inBoardCoordinates(location);
   const img = item.cloneNode(true) as SVGElement;
-  SVG.setOrigin(img, location.j, location.i); // TODO: update if needed
+  SVG.setOrigin(img, location.j, location.i);
 
   const carriedBomb = bomb.cloneNode(true) as SVGElement;
-  SVG.setFrame(carriedBomb, location.j + 0.54, location.i + 0.52, 0.5, 0.5); // TODO: update if needed
+  SVG.setFrame(carriedBomb, location.j + 0.54, location.i + 0.52, 0.5, 0.5);
 
   const container = document.createElementNS(SVG.ns, "g");
   container.appendChild(img);
@@ -1918,22 +1918,20 @@ function placeMonWithBomb(item: SVGElement, location: Location, baseItemKind: It
   startAnimation(img);
 
   if (isPangchiuBoard()) {
-    setCenterTranformOrigin(img, location); // TODO: update if needed
-    applySpecificItemKindPangchiuBoardTransform(img, location, baseItemKind); // TODO: update if needed
-    SVG.setFrame(carriedBomb, location.j + 0.54, location.i + 0.52, 0.75, 0.75); // TODO: update if needed
+    SVG.setFrame(carriedBomb, location.j + 0.54, location.i + 0.52, 0.75, 0.75); // TODO: update placement for p board
   }
 }
 
 function placeMonWithSupermana(item: SVGElement, location: Location, baseItemKind: ItemKind) {
   location = inBoardCoordinates(location);
   const img = item.cloneNode(true) as SVGElement;
-  SVG.setOrigin(img, location.j, location.i); // TODO: update if needed
+  SVG.setOrigin(img, location.j, location.i);
 
   const carriedMana = supermanaSimple.cloneNode(true) as SVGElement;
   if (item.getAttribute("data-is-sprite-sheet") === "true") {
-    SVG.setFrame(carriedMana, location.j + 0.13, location.i - 0.11, 0.74, 0.74); // TODO: update if needed
+    SVG.setFrame(carriedMana, location.j + 0.13, location.i - 0.11, 0.74, 0.74);
   } else {
-    SVG.setFrame(carriedMana, location.j + 0.14, location.i - 0.11, 0.72, 0.72); // TODO: update if needed
+    SVG.setFrame(carriedMana, location.j + 0.14, location.i - 0.11, 0.72, 0.72);
   }
 
   const container = document.createElementNS(SVG.ns, "g");
@@ -1945,21 +1943,19 @@ function placeMonWithSupermana(item: SVGElement, location: Location, baseItemKin
   startAnimation(img);
 
   if (isPangchiuBoard()) {
-    setCenterTranformOrigin(img, location); // TODO: update if needed
-    applySpecificItemKindPangchiuBoardTransform(img, location, baseItemKind); // TODO: update if needed
     const xDelta = baseItemKind === ItemKind.Drainer ? 0.03 : -0.03;
     const yDelta = baseItemKind === ItemKind.Drainer ? 0.55 : 0.63;
-    SVG.setFrame(carriedMana, location.j - xDelta, location.i - yDelta, 1, 1); // TODO: update if needed
+    SVG.setFrame(carriedMana, location.j - xDelta, location.i - yDelta, 1, 1); // TODO: update placement for p board
   }
 }
 
 function placeMonWithMana(item: SVGElement, mana: SVGElement, location: Location, baseItemKind: ItemKind) {
   location = inBoardCoordinates(location);
   const img = item.cloneNode(true) as SVGElement;
-  SVG.setOrigin(img, location.j, location.i); // TODO: update if needed
+  SVG.setOrigin(img, location.j, location.i);
 
   const carriedMana = mana.cloneNode(true) as SVGElement;
-  SVG.setFrame(carriedMana, location.j + 0.35, location.i + 0.27, 0.93, 0.93); // TODO: update if needed
+  SVG.setFrame(carriedMana, location.j + 0.35, location.i + 0.27, 0.93, 0.93);
 
   const container = document.createElementNS(SVG.ns, "g");
   container.appendChild(img);
@@ -1970,9 +1966,7 @@ function placeMonWithMana(item: SVGElement, mana: SVGElement, location: Location
   startAnimation(img);
 
   if (isPangchiuBoard()) {
-    setCenterTranformOrigin(img, location); // TODO: update if needed
-    applySpecificItemKindPangchiuBoardTransform(img, location, baseItemKind); // TODO: update if needed
-    SVG.setFrame(carriedMana, location.j + 0.23, location.i + 0.15, 1.34, 1.34); // TODO: update if needed
+    SVG.setFrame(carriedMana, location.j + 0.23, location.i + 0.15, 1.34, 1.34); // TODO: update placement for p board
   }
 }
 
@@ -1980,12 +1974,6 @@ function setCenterTranformOrigin(item: SVGElement, location: Location) {
   const centerX = location.j * 100 + 50;
   const centerY = location.i * 100 + 50;
   item.style.transformOrigin = `${centerX}px ${centerY}px`;
-}
-function applySpecificItemKindPangchiuBoardTransform(item: SVGElement, location: Location, kind: ItemKind) {
-  // TODO: apply transform to precisely match mid-board tiles, or deprecate
-  // if (location.i === 7 && location.j === 4) {
-  //   item.style.transform += ` translate(-3px, -3px)`;
-  // }
 }
 
 function placeItem(item: SVGElement, location: Location, kind: ItemKind, fainted = false, sparkles = false) {
@@ -1998,12 +1986,6 @@ function placeItem(item: SVGElement, location: Location, kind: ItemKind, fainted
   const img = item.cloneNode(true) as SVGElement;
   setCenterTranformOrigin(img, location);
 
-  const pangchiuBoard = isPangchiuBoard();
-  if (pangchiuBoard) {
-    // TODO: remake it here
-    applySpecificItemKindPangchiuBoardTransform(img, location, kind); // TODO: update if needed
-  }
-
   if (fainted) {
     SVG.setOrigin(img, 0, 0);
     img.style.transformOrigin = "0 0";
@@ -2013,14 +1995,12 @@ function placeItem(item: SVGElement, location: Location, kind: ItemKind, fainted
   } else if (sparkles) {
     const container = document.createElementNS(SVG.ns, "g");
     const sparkles = createSparklingContainer(location);
-    SVG.setOrigin(img, location.j, location.i); // TODO: update if needed
+    SVG.setOrigin(img, location.j, location.i);
     container.appendChild(sparkles);
     container.appendChild(img);
     addElementToItemsLayer(container, location.i);
     items[key] = container;
   } else {
-    // TODO: fix for p board in desktop beta safari
-
     SVG.setOrigin(img, location.j, location.i);
     addElementToItemsLayer(img, location.i);
     items[key] = img;
@@ -2298,11 +2278,11 @@ function highlightDestinationItem(location: Location, color: string, blinking: b
     const highlight = document.createElementNS(SVG.ns, "g");
     highlight.style.pointerEvents = "none";
     const strokeWidth = "17";
-    setCenterTranformOrigin(highlight, location); // TODO: update if needed — yeah it seems misplaced on p board
-    highlight.style.transform = "scale(0.88)"; // TODO: update if needed
+    setCenterTranformOrigin(highlight, location);
+    highlight.style.transform = "scale(0.88)"; // TODO: seems misplaced on p board in safari — fix it
 
     const rect = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(rect, location.j, location.i, 1, 1); // TODO: update if needed
+    SVG.setFrame(rect, location.j, location.i, 1, 1);
     rect.setAttribute("rx", "10");
     rect.setAttribute("ry", "10");
     rect.setAttribute("stroke", color);
@@ -2316,29 +2296,29 @@ function highlightDestinationItem(location: Location, color: string, blinking: b
     mask.setAttribute("id", `highlight-mask-${location.toString()}`);
 
     const maskBg = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(maskBg, location.j, location.i, 1, 1); // TODO: update if needed
+    SVG.setFrame(maskBg, location.j, location.i, 1, 1);
     SVG.setFill(maskBg, "white");
     maskBg.setAttribute("stroke", "white");
     maskBg.setAttribute("stroke-width", strokeWidth);
     mask.appendChild(maskBg);
 
     const cutTop = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(cutTop, location.j + 0.3, location.i - 0.1, 0.4, 0.2); // TODO: update if needed
+    SVG.setFrame(cutTop, location.j + 0.3, location.i - 0.1, 0.4, 0.2);
     SVG.setFill(cutTop, "black");
     mask.appendChild(cutTop);
 
     const cutRight = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(cutRight, location.j + 0.9, location.i + 0.3, 0.2, 0.4); // TODO: update if needed
+    SVG.setFrame(cutRight, location.j + 0.9, location.i + 0.3, 0.2, 0.4);
     SVG.setFill(cutRight, "black");
     mask.appendChild(cutRight);
 
     const cutBottom = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(cutBottom, location.j + 0.3, location.i + 0.9, 0.4, 0.2); // TODO: update if needed
+    SVG.setFrame(cutBottom, location.j + 0.3, location.i + 0.9, 0.4, 0.2);
     SVG.setFill(cutBottom, "black");
     mask.appendChild(cutBottom);
 
     const cutLeft = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(cutLeft, location.j - 0.1, location.i + 0.3, 0.2, 0.4); // TODO: update if needed
+    SVG.setFrame(cutLeft, location.j - 0.1, location.i + 0.3, 0.2, 0.4);
     SVG.setFill(cutLeft, "black");
     mask.appendChild(cutLeft);
 
@@ -2356,14 +2336,14 @@ function highlightDestinationItem(location: Location, color: string, blinking: b
     highlight.style.pointerEvents = "none";
 
     const rect = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(rect, location.j, location.i, 1, 1); // TODO: update if needed
+    SVG.setFrame(rect, location.j, location.i, 1, 1);
     SVG.setFill(rect, color);
 
     const mask = document.createElementNS(SVG.ns, "mask");
     mask.setAttribute("id", `highlight-mask-${location.toString()}`);
 
     const maskRect = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(maskRect, location.j, location.i, 1, 1); // TODO: update if needed
+    SVG.setFrame(maskRect, location.j, location.i, 1, 1);
     SVG.setFill(maskRect);
     mask.appendChild(maskRect);
 
