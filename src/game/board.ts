@@ -1982,57 +1982,10 @@ function setCenterTranformOrigin(item: SVGElement, location: Location) {
   item.style.transformOrigin = `${centerX}px ${centerY}px`;
 }
 function applySpecificItemKindPangchiuBoardTransform(item: SVGElement, location: Location, kind: ItemKind) {
-  // TODO: all transforms in this function probably need an update
-  switch (kind) {
-    case ItemKind.Mana:
-    case ItemKind.ManaBlack:
-      if (location.i === 0) {
-        break;
-      } else if (location.i === 7 && location.j === 4) {
-        item.style.transform += ` translate(-3px, -3px)`;
-      } else if (location.i < 5) {
-        item.style.transform += ` translate(0px, -10px)`;
-      } else {
-        item.style.transform += ` translate(2px, -5px)`;
-      }
-      break;
-    case ItemKind.Supermana:
-      item.style.transform += ` translate(0px, -8px)`;
-      break;
-    case ItemKind.Demon:
-      item.style.transform += ` translate(0px, -6px)`;
-      break;
-    case ItemKind.DemonBlack:
-      item.style.transform += ` translate(7px, -13px)`;
-      break;
-    case ItemKind.Drainer:
-      item.style.transform += ` translate(0px, -6px)`;
-      break;
-    case ItemKind.DrainerBlack:
-      item.style.transform += ` translate(2px, -10px)`;
-      break;
-    case ItemKind.Angel:
-      item.style.transform += ` translate(0px, 0px)`;
-      break;
-    case ItemKind.AngelBlack:
-      item.style.transform += ` translate(2px, -5px)`;
-      break;
-    case ItemKind.Spirit:
-      item.style.transform += ` translate(0px, -7px)`;
-      break;
-    case ItemKind.SpiritBlack:
-      item.style.transform += ` translate(-4px, -11px)`;
-      break;
-    case ItemKind.Mystic:
-      item.style.transform += ` translate(-6px, -11px)`;
-      break;
-    case ItemKind.MysticBlack:
-      item.style.transform += ` translate(-6px, -17px)`;
-      break;
-    case ItemKind.Consumable:
-      item.style.transform += ` translate(${location.j < 5 ? -14 : 12}px, -8px)`;
-      break;
-  }
+  // TODO: apply transform to precisely match mid-board tiles, or deprecate
+  // if (location.i === 7 && location.j === 4) {
+  //   item.style.transform += ` translate(-3px, -3px)`;
+  // }
 }
 
 function placeItem(item: SVGElement, location: Location, kind: ItemKind, fainted = false, sparkles = false) {
