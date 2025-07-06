@@ -2271,48 +2271,65 @@ function highlightDestinationItem(location: Location, color: string, blinking: b
   if (isPangchiuBoard()) {
     const highlight = document.createElementNS(SVG.ns, "g");
     highlight.style.pointerEvents = "none";
-    const strokeWidth = "17";
-    setCenterTranformOrigin(highlight, location);
-    highlight.style.transform = "scale(0.88)"; // TODO: seems misplaced on p board in safari — fix it
+
+    const scale = 0.88;
+    const strokeWidth = 17 * scale;
+    const centerX = location.j + 0.5;
+    const centerY = location.i + 0.5;
+
+    function scaledFrame(x: any, y: any, w: any, h: any) {
+      return {
+        x: centerX + (x - centerX) * scale,
+        y: centerY + (y - centerY) * scale,
+        w: w * scale,
+        h: h * scale,
+      };
+    }
 
     const rect = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(rect, location.j, location.i, 1, 1);
-    rect.setAttribute("rx", "10");
-    rect.setAttribute("ry", "10");
+    let { x, y, w, h } = scaledFrame(location.j, location.i, 1, 1);
+    SVG.setFrame(rect, x, y, w, h);
+    rect.setAttribute("rx", (10 * scale).toString());
+    rect.setAttribute("ry", (10 * scale).toString());
     rect.setAttribute("stroke", color);
-    rect.setAttribute("stroke-width", strokeWidth);
-    if (!blinking) {
-      setHighlightBlendMode(rect);
-    }
+    rect.setAttribute("stroke-width", strokeWidth.toString());
+    if (!blinking) setHighlightBlendMode(rect);
     SVG.setFill(rect, "transparent");
 
     const mask = document.createElementNS(SVG.ns, "mask");
     mask.setAttribute("id", `highlight-mask-${location.toString()}`);
 
     const maskBg = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(maskBg, location.j, location.i, 1, 1);
+    ({ x, y, w, h } = scaledFrame(location.j, location.i, 1, 1));
+    SVG.setFrame(maskBg, x, y, w, h);
     SVG.setFill(maskBg, "white");
     maskBg.setAttribute("stroke", "white");
-    maskBg.setAttribute("stroke-width", strokeWidth);
+    maskBg.setAttribute("stroke-width", strokeWidth.toString());
     mask.appendChild(maskBg);
 
+    let params;
+
+    params = scaledFrame(location.j + 0.3, location.i - 0.1, 0.4, 0.2);
     const cutTop = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(cutTop, location.j + 0.3, location.i - 0.1, 0.4, 0.2);
+    SVG.setFrame(cutTop, params.x, params.y, params.w, params.h);
     SVG.setFill(cutTop, "black");
     mask.appendChild(cutTop);
 
+    params = scaledFrame(location.j + 0.9, location.i + 0.3, 0.2, 0.4);
     const cutRight = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(cutRight, location.j + 0.9, location.i + 0.3, 0.2, 0.4);
+    SVG.setFrame(cutRight, params.x, params.y, params.w, params.h);
     SVG.setFill(cutRight, "black");
     mask.appendChild(cutRight);
 
+    params = scaledFrame(location.j + 0.3, location.i + 0.9, 0.4, 0.2);
     const cutBottom = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(cutBottom, location.j + 0.3, location.i + 0.9, 0.4, 0.2);
+    SVG.setFrame(cutBottom, params.x, params.y, params.w, params.h);
     SVG.setFill(cutBottom, "black");
     mask.appendChild(cutBottom);
 
+    params = scaledFrame(location.j - 0.1, location.i + 0.3, 0.2, 0.4);
     const cutLeft = document.createElementNS(SVG.ns, "rect");
-    SVG.setFrame(cutLeft, location.j - 0.1, location.i + 0.3, 0.2, 0.4);
+    SVG.setFrame(cutLeft, params.x, params.y, params.w, params.h);
     SVG.setFill(cutLeft, "black");
     mask.appendChild(cutLeft);
 
