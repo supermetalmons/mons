@@ -1916,10 +1916,6 @@ function placeMonWithBomb(item: SVGElement, location: Location, baseItemKind: It
   addElementToItemsLayer(container, location.i);
   items[location.toString()] = container;
   startAnimation(img);
-
-  if (isPangchiuBoard()) {
-    SVG.setFrame(carriedBomb, location.j + 0.54, location.i + 0.52, 0.75, 0.75); // TODO: update placement for p board
-  }
 }
 
 function placeMonWithSupermana(item: SVGElement, location: Location, baseItemKind: ItemKind) {
@@ -1943,9 +1939,7 @@ function placeMonWithSupermana(item: SVGElement, location: Location, baseItemKin
   startAnimation(img);
 
   if (isPangchiuBoard()) {
-    const xDelta = baseItemKind === ItemKind.Drainer ? 0.03 : -0.03;
-    const yDelta = baseItemKind === ItemKind.Drainer ? 0.55 : 0.63;
-    SVG.setFrame(carriedMana, location.j - xDelta, location.i - yDelta, 1, 1); // TODO: update placement for p board
+    SVG.setFrame(carriedMana, location.j + 0.06, location.i - 0.33, 0.88, 0.88);
   }
 }
 
@@ -1966,7 +1960,7 @@ function placeMonWithMana(item: SVGElement, mana: SVGElement, location: Location
   startAnimation(img);
 
   if (isPangchiuBoard()) {
-    SVG.setFrame(carriedMana, location.j + 0.23, location.i + 0.15, 1.34, 1.34); // TODO: update placement for p board
+    SVG.setFrame(carriedMana, location.j + 0.35, location.i + 0.27, 1, 1);
   }
 }
 
