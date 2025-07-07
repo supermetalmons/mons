@@ -127,7 +127,7 @@ function createSvgText(
   const text = document.createElementNS(SVG.ns, "text");
 
   if (options.fill) SVG.setFill(text, options.fill);
-  if (options.opacity) SVG.setOpacity(text, options.opacity);
+  if (options.opacity !== undefined) SVG.setOpacity(text, options.opacity);
   if (options.fontWeight) text.setAttribute("font-weight", options.fontWeight);
   if (options.fontSize) text.setAttribute("font-size", options.fontSize);
   if (options.fontStyle) text.setAttribute("font-style", options.fontStyle);
