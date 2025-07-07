@@ -46,6 +46,111 @@ export let playerSideMetadata = newEmptyPlayerMetadata();
 export let opponentSideMetadata = newEmptyPlayerMetadata();
 
 export let isFlipped = false;
+
+enum Side {
+  Player = 0,
+  Opponent = 1,
+}
+
+enum ElementType {
+  Avatar,
+  AvatarPlaceholder,
+  ScoreText,
+  NameText,
+  Timer,
+  MoveStatusItems,
+  Metadata,
+}
+
+function getElement(side: Side, type: ElementType): any {
+  const isOpponent = side === Side.Opponent;
+
+  switch (type) {
+    case ElementType.Avatar:
+      return isOpponent ? opponentAvatar : playerAvatar;
+    case ElementType.AvatarPlaceholder:
+      return isOpponent ? opponentAvatarPlaceholder : playerAvatarPlaceholder;
+    case ElementType.ScoreText:
+      return isOpponent ? opponentScoreText : playerScoreText;
+    case ElementType.NameText:
+      return isOpponent ? opponentNameText : playerNameText;
+    case ElementType.Timer:
+      return isOpponent ? opponentTimer : playerTimer;
+    case ElementType.MoveStatusItems:
+      return isOpponent ? opponentMoveStatusItems : playerMoveStatusItems;
+    case ElementType.Metadata:
+      return isOpponent ? opponentSideMetadata : playerSideMetadata;
+    default:
+      return null;
+  }
+}
+
+function createPangchiuHighlight(location: Location, color: string, blinking: boolean, strokeWidth?: number) {
+  const highlight = document.createElementNS(SVG.ns, "rect");
+  highlight.style.pointerEvents = "none";
+  SVG.setFill(highlight, color);
+  SVG.setFrame(highlight, location.j, location.i, 1, 1);
+  highlight.setAttribute("rx", "10");
+  highlight.setAttribute("ry", "10");
+
+  if (strokeWidth) {
+    highlight.setAttribute("stroke", color);
+    highlight.setAttribute("stroke-width", strokeWidth.toString());
+  }
+
+  if (!blinking) {
+    setHighlightBlendMode(highlight);
+  }
+
+  return highlight;
+}
+
+function createCircleHighlight(location: Location, color: string, radius: number) {
+  const highlight = SVG.circle(location.j + 0.5, location.i + 0.5, radius);
+  SVG.setFill(highlight, color);
+  highlight.style.pointerEvents = "none";
+  return highlight;
+}
+
+function createSvgText(
+  content: string,
+  options: {
+    fill?: string;
+    opacity?: number;
+    fontWeight?: string;
+    fontSize?: string;
+    fontStyle?: string;
+    textAnchor?: string;
+    cursor?: string;
+  }
+) {
+  const text = document.createElementNS(SVG.ns, "text");
+
+  if (options.fill) SVG.setFill(text, options.fill);
+  if (options.opacity) SVG.setOpacity(text, options.opacity);
+  if (options.fontWeight) text.setAttribute("font-weight", options.fontWeight);
+  if (options.fontSize) text.setAttribute("font-size", options.fontSize);
+  if (options.fontStyle) text.setAttribute("font-style", options.fontStyle);
+  if (options.textAnchor) text.setAttribute("text-anchor", options.textAnchor);
+  if (options.cursor) text.style.cursor = options.cursor;
+
+  text.setAttribute("overflow", "visible");
+  text.textContent = content;
+  return text;
+}
+
+function isPlayerSideColorString(color: string): boolean {
+  return isFlipped ? color === "white" : color === "black";
+}
+
+function inBoardCoordinates(location: Location): Location {
+  if (isFlipped) {
+    return new Location(10 - location.i, 10 - location.j);
+  } else {
+    return new Location(location.i, location.j);
+  }
+}
+
 let traceIndex = 0;
 let showsPlayerTimer = false;
 let showsOpponentTimer = false;
@@ -586,24 +691,22 @@ export function resetForNewGame() {
 }
 
 export function updateEmojiIfNeeded(newEmojiId: string, isOpponentSide: boolean) {
-  const currentId = isOpponentSide ? opponentSideMetadata.emojiId : playerSideMetadata.emojiId;
+  const side = isOpponentSide ? Side.Opponent : Side.Player;
+  const avatar = getElement(side, ElementType.Avatar);
+  const metadata = getElement(side, ElementType.Metadata);
+  const currentId = metadata.emojiId;
+
   if (currentId === newEmojiId) {
     return;
   }
+
   const newEmojiUrl = emojis.getEmojiUrl(newEmojiId);
-  if (!newEmojiUrl) {
+  if (!newEmojiUrl || !avatar) {
     return;
   }
 
-  if (isOpponentSide) {
-    if (!opponentAvatar) return;
-    opponentSideMetadata.emojiId = newEmojiId;
-    SVG.setEmojiImageUrl(opponentAvatar, newEmojiUrl);
-  } else {
-    if (!playerAvatar) return;
-    playerSideMetadata.emojiId = newEmojiId;
-    SVG.setEmojiImageUrl(playerAvatar, newEmojiUrl);
-  }
+  metadata.emojiId = newEmojiId;
+  SVG.setEmojiImageUrl(avatar, newEmojiUrl);
 }
 
 export function showRandomEmojisForLoopMode() {
@@ -946,15 +1049,12 @@ export function recalculateDisplayNames() {
 }
 
 export function showVoiceReactionText(reactionText: string, opponents: boolean) {
+  const side = opponents ? Side.Opponent : Side.Player;
+  const metadata = getElement(side, ElementType.Metadata);
   const currentTime = Date.now();
 
-  if (opponents) {
-    opponentSideMetadata.voiceReactionText = reactionText;
-    opponentSideMetadata.voiceReactionDate = currentTime;
-  } else {
-    playerSideMetadata.voiceReactionText = reactionText;
-    playerSideMetadata.voiceReactionDate = currentTime;
-  }
+  metadata.voiceReactionText = reactionText;
+  metadata.voiceReactionDate = currentTime;
 
   renderPlayersNamesLabels();
   setTimeout(() => {
@@ -963,22 +1063,21 @@ export function showVoiceReactionText(reactionText: string, opponents: boolean) 
 }
 
 export function setupPlayerId(uid: string, opponent: boolean) {
-  if (opponent) {
-    opponentSideMetadata.uid = uid;
-  } else {
-    playerSideMetadata.uid = uid;
-  }
+  const side = opponent ? Side.Opponent : Side.Player;
+  const metadata = getElement(side, ElementType.Metadata);
+  metadata.uid = uid;
   recalculateDisplayNames();
 }
 
 function canRedirectToExplorer(opponent: boolean) {
-  let ethAddress = opponent ? opponentSideMetadata.ethAddress : playerSideMetadata.ethAddress;
-  let solAddress = opponent ? opponentSideMetadata.solAddress : playerSideMetadata.solAddress;
-  return ethAddress !== undefined || solAddress !== undefined;
+  const side = opponent ? Side.Opponent : Side.Player;
+  const metadata = getElement(side, ElementType.Metadata);
+  return metadata.ethAddress !== undefined || metadata.solAddress !== undefined;
 }
 
 function redirectToAddressOnExplorer(opponent: boolean) {
-  const metadata = opponent ? opponentSideMetadata : playerSideMetadata;
+  const side = opponent ? Side.Opponent : Side.Player;
+  const metadata = getElement(side, ElementType.Metadata);
   const displayName = metadata.displayName;
   if (displayName !== undefined) {
     const profile = getStashedPlayerProfile(metadata.uid);
@@ -1016,10 +1115,13 @@ export function hideAllMoveStatuses() {
 
 export function updateMoveStatuses(color: MonsWeb.Color, moveKinds: Int32Array, otherPlayerStatuses: Int32Array) {
   const playerSideActive = isFlipped ? color === MonsWeb.Color.White : color === MonsWeb.Color.Black;
-  const otherItemsToSetup = playerSideActive ? playerMoveStatusItems : opponentMoveStatusItems;
-  const itemsToSetup = playerSideActive ? opponentMoveStatusItems : playerMoveStatusItems;
-  updateStatusElements(itemsToSetup, moveKinds);
-  updateStatusElements(otherItemsToSetup, otherPlayerStatuses);
+  const activeSide = playerSideActive ? Side.Opponent : Side.Player;
+  const otherSide = playerSideActive ? Side.Player : Side.Opponent;
+  const activeMoveStatusItems = getElement(activeSide, ElementType.MoveStatusItems);
+  const otherMoveStatusItems = getElement(otherSide, ElementType.MoveStatusItems);
+
+  updateStatusElements(activeMoveStatusItems, moveKinds);
+  updateStatusElements(otherMoveStatusItems, otherPlayerStatuses);
 }
 
 function updateStatusElements(itemsToSetup: SVGElement[], moveKinds: Int32Array) {
@@ -1060,8 +1162,9 @@ export function removeItem(location: Location) {
 }
 
 export function showTimer(color: string, remainingSeconds: number) {
-  const playerSideTimer = isFlipped ? color === "white" : color === "black";
-  const timerElement = playerSideTimer ? playerTimer : opponentTimer;
+  const playerSideTimer = isPlayerSideColorString(color);
+  const side = !playerSideTimer ? Side.Opponent : Side.Player;
+  const timerElement = getElement(side, ElementType.Timer);
   if (!timerElement) return;
 
   if (countdownInterval) {
@@ -1541,21 +1644,20 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
   playerSideMetadata.emojiId = playerEmojiId;
   opponentSideMetadata.emojiId = opponentEmojiId;
 
-  titleTextElement = document.createElementNS(SVG.ns, "text");
-  SVG.setFill(titleTextElement, colors.scoreText);
-  SVG.setOpacity(titleTextElement, 0.69);
-  titleTextElement.setAttribute("font-weight", "270");
-  titleTextElement.textContent = "";
-  titleTextElement.setAttribute("text-anchor", "middle");
+  titleTextElement = createSvgText("", {
+    fill: colors.scoreText,
+    opacity: 0.69,
+    fontWeight: "270",
+    textAnchor: "middle",
+  });
   controlsLayer?.append(titleTextElement);
 
   for (const isOpponent of [true, false]) {
-    const numberText = document.createElementNS(SVG.ns, "text");
-    SVG.setFill(numberText, colors.scoreText);
-    SVG.setOpacity(numberText, 0.69);
-    numberText.setAttribute("font-weight", "600");
-    numberText.setAttribute("overflow", "visible");
-    numberText.textContent = allHiddenInitially ? "" : "0";
+    const numberText = createSvgText(allHiddenInitially ? "" : "0", {
+      fill: colors.scoreText,
+      opacity: 0.69,
+      fontWeight: "600",
+    });
     controlsLayer?.append(numberText);
     if (isOpponent) {
       opponentScoreText = numberText;
@@ -1563,12 +1665,11 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
       playerScoreText = numberText;
     }
 
-    const timerText = document.createElementNS(SVG.ns, "text");
-    SVG.setFill(timerText, "green");
-    SVG.setOpacity(timerText, 0.69);
-    timerText.setAttribute("font-weight", "600");
-    timerText.textContent = "";
-    timerText.setAttribute("overflow", "visible");
+    const timerText = createSvgText("", {
+      fill: "green",
+      opacity: 0.69,
+      fontWeight: "600",
+    });
     controlsLayer?.append(timerText);
     if (isOpponent) {
       opponentTimer = timerText;
@@ -1576,13 +1677,13 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
       playerTimer = timerText;
     }
 
-    const nameText = document.createElementNS(SVG.ns, "text");
-    SVG.setFill(nameText, colors.scoreText);
-    SVG.setOpacity(nameText, 0.69);
-    nameText.setAttribute("font-weight", "270");
-    nameText.setAttribute("font-style", "italic");
-    nameText.style.cursor = "pointer";
-    nameText.setAttribute("overflow", "visible");
+    const nameText = createSvgText("", {
+      fill: colors.scoreText,
+      opacity: 0.69,
+      fontWeight: "270",
+      fontStyle: "italic",
+      cursor: "pointer",
+    });
     controlsLayer?.append(nameText);
 
     nameText.addEventListener("click", (event) => {
@@ -2147,21 +2248,23 @@ function highlightEmptyDestination(location: Location, color: string, blinking: 
   let highlight: SVGElement;
 
   if (isPangchiuBoard()) {
-    highlight = document.createElementNS(SVG.ns, "rect");
     const side = 0.27;
     const originOffset = (1 - side) * 0.5;
-    SVG.setFrame(highlight, location.j + originOffset, location.i + originOffset, side, side);
+    const adjustedLocation = new Location(location.i + originOffset, location.j + originOffset);
+    highlight = document.createElementNS(SVG.ns, "rect");
+    SVG.setFrame(highlight, adjustedLocation.j, adjustedLocation.i, side, side);
     highlight.setAttribute("rx", "7");
     highlight.setAttribute("ry", "7");
+    highlight.style.pointerEvents = "none";
+    SVG.setFill(highlight, color);
+
     if (!blinking) {
       setHighlightBlendMode(highlight);
     }
   } else {
-    highlight = SVG.circle(location.j + 0.5, location.i + 0.5, 0.15);
+    highlight = createCircleHighlight(location, color, 0.15);
   }
 
-  highlight.style.pointerEvents = "none";
-  SVG.setFill(highlight, color);
   highlightsLayer?.append(highlight);
 
   if (blinking) {
@@ -2181,34 +2284,31 @@ function showEndOfTurnHighlight(location: Location) {
 
 function highlightSelectedItem(location: Location, color: string) {
   location = inBoardCoordinates(location);
-  if (isPangchiuBoard()) {
-    const highlight = document.createElementNS(SVG.ns, "rect");
-    highlight.style.pointerEvents = "none";
-    SVG.setFill(highlight, color);
-    SVG.setFrame(highlight, location.j, location.i, 1, 1);
-    highlight.setAttribute("rx", "10");
-    highlight.setAttribute("ry", "10");
-    setHighlightBlendMode(highlight);
-    highlightsLayer?.append(highlight);
-  } else {
-    const highlight = document.createElementNS(SVG.ns, "g");
-    highlight.style.pointerEvents = "none";
 
-    const circle = SVG.circle(location.j + 0.5, location.i + 0.5, 0.56);
-    SVG.setFill(circle, color);
+  let highlight: SVGElement;
+
+  if (isPangchiuBoard()) {
+    highlight = createPangchiuHighlight(location, color, false);
+  } else {
+    highlight = document.createElementNS(SVG.ns, "g");
+    highlight.style.pointerEvents = "none";
 
     const mask = document.createElementNS(SVG.ns, "mask");
-    mask.setAttribute("id", `highlight-mask-${location.toString()}`);
+    const maskId = `highlight-mask-${location.toString()}`;
+    mask.setAttribute("id", maskId);
+
     const maskRect = document.createElementNS(SVG.ns, "rect");
     SVG.setFrame(maskRect, location.j, location.i, 1, 1);
-    SVG.setFill(maskRect);
+    SVG.setFill(maskRect, "white");
     mask.appendChild(maskRect);
     highlight.appendChild(mask);
 
-    circle.setAttribute("mask", `url(#highlight-mask-${location.toString()})`);
+    const circle = createCircleHighlight(location, color, 0.56);
+    circle.setAttribute("mask", `url(#${maskId})`);
     highlight.appendChild(circle);
-    highlightsLayer?.append(highlight);
   }
+
+  highlightsLayer?.append(highlight);
 }
 
 const isFirefox = navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
@@ -2226,34 +2326,26 @@ function highlightStartFromSuggestion(location: Location, color: string) {
   let highlight: SVGElement;
 
   if (isPangchiuBoard()) {
-    highlight = document.createElementNS(SVG.ns, "rect");
-    highlight.style.pointerEvents = "none";
-    SVG.setFill(highlight, color);
-    SVG.setFrame(highlight, location.j, location.i, 1, 1);
-    highlight.setAttribute("rx", "10");
-    highlight.setAttribute("ry", "10");
-    highlight.setAttribute("stroke", color);
-    highlight.setAttribute("stroke-width", "20");
-    setHighlightBlendMode(highlight);
+    highlight = createPangchiuHighlight(location, color, false, 20);
   } else {
     highlight = document.createElementNS(SVG.ns, "g");
     highlight.style.pointerEvents = "none";
 
-    const circle = SVG.circle(location.j + 0.5, location.i + 0.5, 0.56);
-    SVG.setFill(circle, color);
-
-    circle.setAttribute("stroke", colors.startFromStroke);
-    circle.setAttribute("stroke-width", "0.023");
-
     const mask = document.createElementNS(SVG.ns, "mask");
-    mask.setAttribute("id", `highlight-mask-${location.toString()}`);
+    const maskId = `highlight-mask-${location.toString()}`;
+    mask.setAttribute("id", maskId);
+
     const maskRect = document.createElementNS(SVG.ns, "rect");
     SVG.setFrame(maskRect, location.j, location.i, 1, 1);
-    SVG.setFill(maskRect);
+    SVG.setFill(maskRect, "white");
     mask.appendChild(maskRect);
     highlight.appendChild(mask);
 
-    circle.setAttribute("mask", `url(#highlight-mask-${location.toString()})`);
+    const circle = createCircleHighlight(location, color, 0.56);
+    circle.setAttribute("stroke", colors.startFromStroke);
+    circle.setAttribute("stroke-width", "0.023");
+    circle.setAttribute("mask", `url(#${maskId})`);
+
     SVG.setOpacity(highlight, 0.69);
     highlight.appendChild(circle);
   }
@@ -2520,14 +2612,6 @@ export function didToggleBoardColors() {
       const firstChild = element.children[0] as HTMLElement;
       firstChild.style.backgroundColor = squareColor;
     });
-  }
-}
-
-function inBoardCoordinates(location: Location): Location {
-  if (isFlipped) {
-    return new Location(10 - location.i, 10 - location.j);
-  } else {
-    return new Location(location.i, location.j);
   }
 }
 
