@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { isMobile } from "../utils/misc";
 import { ColorSetKey, setBoardColorSet, getCurrentColorSetKey, colorSets } from "../content/boardStyles";
 import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
+import { generateBoardPattern } from "../utils/boardPatternGenerator";
 
 export const BoardStylePicker = styled.div`
   position: fixed;
@@ -36,9 +37,6 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
   outline: none;
   padding: 0;
   overflow: hidden;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  grid-template-rows: repeat(2, 1fr);
   background: #e0e0e0;
 
   @media (prefers-color-scheme: dark) {
@@ -56,12 +54,12 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
   &:active {
     transform: scale(0.95);
   }
-`;
 
-const ColorSquareInner = styled.div<{ color: string }>`
-  width: 100%;
-  height: 100%;
-  background-color: ${(props) => props.color};
+  svg {
+    width: 100%;
+    height: 100%;
+    border-radius: 4px;
+  }
 `;
 
 const BoardStylePickerComponent: React.FC = () => {
@@ -75,15 +73,18 @@ const BoardStylePickerComponent: React.FC = () => {
 
   const renderColorSquares = (colorSet: "light" | "dark") => {
     const colors = colorSet === "light" ? colorSets.default : colorSets.darkAndYellow;
-    const { darkSquare, lightSquare, manaPool, pickupItemSquare } = colors;
+    const cellSize = 40 / 11;
 
     return (
-      <>
-        <ColorSquareInner color={darkSquare} />
-        <ColorSquareInner color={lightSquare} />
-        <ColorSquareInner color={manaPool} />
-        <ColorSquareInner color={pickupItemSquare} />
-      </>
+      <svg viewBox="0 0 40 40" width="40" height="40">
+        {generateBoardPattern({
+          colorSet: colors,
+          size: 40,
+          cellSize: cellSize,
+          offsetY: 0,
+          keyPrefix: `preview-${colorSet}`,
+        })}
+      </svg>
     );
   };
 

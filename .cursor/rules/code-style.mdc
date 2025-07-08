@@ -1,0 +1,8 @@
+---
+alwaysApply: true
+---
+
+# Code Style
+
+- Keep code comment-free except for TODO comments which are allowed
+- Code should be self-documenting through clear naming and structure

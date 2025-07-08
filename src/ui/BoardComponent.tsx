@@ -4,6 +4,7 @@ import { FaTimes, FaCheck } from "react-icons/fa";
 import { go } from "../game/gameController";
 import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../content/boardStyles";
 import { isMobile } from "../utils/misc";
+import { generateBoardPattern } from "../utils/boardPatternGenerator";
 
 const CircularButton = styled.button`
   width: 50%;
@@ -121,12 +122,6 @@ const BoardComponent: React.FC = () => {
     };
   }, []);
 
-  const colorDarkSquare = currentColorSet.darkSquare;
-  const colorLightSquare = currentColorSet.lightSquare;
-  const colorManaPool = currentColorSet.manaPool;
-  const colorPickupItemSquare = currentColorSet.pickupItemSquare;
-  const colorSimpleManaSquare = currentColorSet.simpleManaSquare;
-
   const standardBoardTransform = "translate(0,100)";
   const pangchiuBoardTransform = "translate(83,184) scale(0.85892388)";
 
@@ -135,46 +130,13 @@ const BoardComponent: React.FC = () => {
       <svg xmlns="http://www.w3.org/2000/svg" className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`} viewBox="0 0 1100 1410" shapeRendering="crispEdges" overflow="visible">
         {isGridVisible ? (
           <g id="boardBackgroundLayer">
-            <rect y="100" width="1100" height="1100" fill={colorLightSquare} />
-            {Array.from({ length: 11 }, (_, row) =>
-              Array.from({ length: 11 }, (_, col) => {
-                const x = col * 100;
-                const y = (row + 1) * 100;
-                return (row + col) % 2 === 1 ? <rect key={`square-${row}-${col}`} x={x} y={y} width="100" height="100" fill={colorDarkSquare} /> : null;
-              })
-            )}
-
-            {[
-              [500, 600],
-              [0, 100],
-              [1000, 1100],
-              [1000, 100],
-              [0, 1100],
-            ].map(([x, y], i) => (
-              <rect key={`mana-pool-${i}`} x={x} y={y} width="100" height="100" fill={colorManaPool} />
-            ))}
-
-            {[
-              [0, 600],
-              [1000, 600],
-            ].map(([x, y], i) => (
-              <rect key={`pickup-${i}`} x={x} y={y} width="100" height="100" fill={colorPickupItemSquare} />
-            ))}
-
-            {[
-              [400, 400],
-              [600, 400],
-              [400, 800],
-              [600, 800],
-              [300, 500],
-              [500, 500],
-              [700, 500],
-              [300, 700],
-              [500, 700],
-              [700, 700],
-            ].map(([x, y], i) => (
-              <rect key={`simple-mana-${i}`} x={x} y={y} width="100" height="100" fill={colorSimpleManaSquare} />
-            ))}
+            {generateBoardPattern({
+              colorSet: currentColorSet,
+              size: 1100,
+              cellSize: 100,
+              offsetY: 100,
+              keyPrefix: "board",
+            })}
           </g>
         ) : (
           <g id="boardBackgroundLayer">
