@@ -8,7 +8,7 @@ const StyledInfoPopover = styled.div<{ isOpen: boolean }>`
   top: 56px;
   right: 9pt;
   font-size: 12px;
-  background-color: var(--infoPopoverBackground);
+  background-color: var(--overlay-light-95);
   max-height: calc(100dvh - 113px - env(safe-area-inset-bottom));
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
@@ -31,8 +31,8 @@ const StyledInfoPopover = styled.div<{ isOpen: boolean }>`
   flex-grow: 1;
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--infoPopoverBackgroundDark);
-    color: var(--lightTextColor);
+    background-color: var(--overlay-dark-95);
+    color: var(--color-gray-f5);
   }
 
   @media screen and (max-height: 500px) {

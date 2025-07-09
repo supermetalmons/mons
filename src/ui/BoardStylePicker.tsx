@@ -9,7 +9,7 @@ export const BoardStylePicker = styled.div`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   left: 8px;
-  background-color: var(--boardStylePickerBackground);
+  background-color: var(--panel-light-90);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 8px;
@@ -25,7 +25,7 @@ export const BoardStylePicker = styled.div`
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--boardStylePickerBackgroundDark);
+    background-color: var(--panel-dark-90);
   }
 `;
 
@@ -49,7 +49,7 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
   ${(props) =>
     props.isSelected &&
     `
-    border-color: var(--bottomButtonBackground);
+    border-color: var(--color-blue-primary);
     box-shadow: 0 0 0 3px var(--selectedBorderShadowColor);
   `}
 
@@ -57,7 +57,7 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
     ${(props) =>
       props.isSelected &&
       `
-      border-color: var(--bottomButtonBackgroundDark);
+      border-color: var(--color-blue-primary-dark);
       box-shadow: 0 0 0 3px var(--selectedBorderShadowColorDark);
     `}
   }

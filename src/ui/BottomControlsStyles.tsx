@@ -44,7 +44,7 @@ export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean 
   height: 32px;
   border-radius: 16px;
   opacity: ${(props) => (props.dimmed ? 0.77 : 1)};
-  background-color: var(--primaryContainerBackground);
+  background-color: var(--color-gray-f9);
   border: none;
   display: flex;
   justify-content: center;
@@ -181,33 +181,33 @@ export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boole
   align-items: center;
   justify-content: center;
 
-  background-color: ${(props) => (props.isViewOnly ? "var(--cancelButtonBackground)" : props.isBlue ? "var(--cancelButtonBackground)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabled)" : props.isPink ? "var(--pinkButtonBackground)" : "var(--bottomButtonBackground)")};
-  color: ${(props) => (props.isPink && props.disabled ? "var(--color-white)" : props.isViewOnly ? "var(--viewOnlyButtonTextColor)" : props.isBlue ? "var(--bottomButtonBackground)" : "var(--color-white)")};
+  background-color: ${(props) => (props.isViewOnly ? "var(--color-gray-f0)" : props.isBlue ? "var(--color-gray-f0)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabled)" : props.isPink ? "var(--color-pink-light)" : "var(--color-blue-primary)")};
+  color: ${(props) => (props.isPink && props.disabled ? "var(--color-white)" : props.isViewOnly ? "var(--viewOnlyButtonTextColor)" : props.isBlue ? "var(--color-blue-primary)" : "var(--color-white)")};
   border: none;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.isViewOnly ? "var(--cancelButtonBackground)" : props.isBlue ? "var(--cancelButtonBackgroundHover)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabled)" : props.isPink ? "var(--pinkButtonBackgroundHover)" : "var(--bottomButtonBackgroundHover)")};
+      background-color: ${(props) => (props.isViewOnly ? "var(--color-gray-f0)" : props.isBlue ? "var(--color-gray-e0)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabled)" : props.isPink ? "var(--color-pink-mid)" : "var(--bottomButtonBackgroundHover)")};
     }
   }
 
   &:active {
-    background-color: ${(props) => (props.isViewOnly ? "var(--cancelButtonBackground)" : props.isBlue ? "var(--cancelButtonBackgroundActive)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabled)" : props.isPink ? "var(--pinkButtonBackgroundActive)" : "var(--bottomButtonBackgroundActive)")};
+    background-color: ${(props) => (props.isViewOnly ? "var(--color-gray-f0)" : props.isBlue ? "var(--color-gray-d0)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabled)" : props.isPink ? "var(--pinkButtonBackgroundActive)" : "var(--bottomButtonBackgroundActive)")};
   }
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.isPink && props.disabled ? "var(--color-text-on-pink-disabled)" : props.isViewOnly ? "var(--viewOnlyButtonTextColorDark)" : props.isBlue ? "var(--bottomButtonBackgroundDark)" : "var(--color-white)")};
+    color: ${(props) => (props.isPink && props.disabled ? "var(--color-text-on-pink-disabled)" : props.isViewOnly ? "var(--color-gray-77)" : props.isBlue ? "var(--color-blue-primary-dark)" : "var(--color-white)")};
 
-    background-color: ${(props) => (props.isViewOnly ? "var(--cancelButtonBackgroundDark)" : props.isBlue ? "var(--cancelButtonBackgroundDark)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabledDark)" : props.isPink ? "var(--pinkButtonBackgroundDark)" : "var(--bottomButtonBackgroundDark)")};
+    background-color: ${(props) => (props.isViewOnly ? "var(--color-gray-33)" : props.isBlue ? "var(--color-gray-33)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabledDark)" : props.isPink ? "var(--color-pink-mid)" : "var(--color-blue-primary-dark)")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.isViewOnly ? "var(--cancelButtonBackgroundDark)" : props.isBlue ? "var(--cancelButtonBackgroundHoverDark)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabledDark)" : props.isPink ? "var(--pinkButtonBackgroundHoverDark)" : "var(--bottomButtonBackgroundHoverDark)")};
+        background-color: ${(props) => (props.isViewOnly ? "var(--color-gray-33)" : props.isBlue ? "var(--color-gray-44)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabledDark)" : props.isPink ? "var(--color-pink-light)" : "var(--bottomButtonBackgroundHoverDark)")};
       }
     }
 
     &:active {
-      background-color: ${(props) => (props.isViewOnly ? "var(--cancelButtonBackgroundDark)" : props.isBlue ? "var(--cancelButtonBackgroundActiveDark)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabledDark)" : props.isPink ? "var(--pinkButtonBackgroundActiveDark)" : "var(--bottomButtonBackgroundActiveDark)")};
+      background-color: ${(props) => (props.isViewOnly ? "var(--color-gray-33)" : props.isBlue ? "var(--color-gray-55)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabledDark)" : props.isPink ? "var(--pinkButtonBackgroundActiveDark)" : "var(--bottomButtonBackgroundActiveDark)")};
     }
   }
 `;
@@ -216,7 +216,7 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   width: 32px;
   height: 32px;
   border-radius: ${(props) => (props.dimmed ? "16px" : "16px")};
-  background-color: var(--cancelButtonBackground);
+  background-color: var(--color-gray-f0);
   border: none;
   display: flex;
   justify-content: center;
@@ -235,7 +235,7 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   svg {
     width: ${(props) => (props.dimmed ? "16px" : "13px")};
     height: ${(props) => (props.dimmed ? "16px" : "13px")};
-    color: ${(props) => (props.dimmed ? "var(--primaryTextColor)" : "var(--bottomButtonBackground)")};
+    color: ${(props) => (props.dimmed ? "var(--color-gray-33)" : "var(--color-blue-primary)")};
     overflow: visible;
   }
 
@@ -250,19 +250,19 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: var(--cancelButtonBackgroundHover);
+      background-color: var(--color-gray-e0);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--cancelButtonBackgroundDark);
+    background-color: var(--color-gray-33);
     svg {
-      color: ${(props) => (props.dimmed ? "var(--primaryTextColorDark)" : "var(--bottomButtonBackgroundDark)")};
+      color: ${(props) => (props.dimmed ? "var(--color-gray-f0)" : "var(--color-blue-primary-dark)")};
     }
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: var(--cancelButtonBackgroundHoverDark);
+        background-color: var(--color-gray-44);
       }
     }
   }
@@ -272,7 +272,7 @@ export const ControlButton = styled.button<{ disabled?: boolean }>`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: var(--cancelButtonBackground);
+  background-color: var(--color-gray-f0);
   border: none;
   display: flex;
   justify-content: center;
@@ -284,36 +284,36 @@ export const ControlButton = styled.button<{ disabled?: boolean }>`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.disabled ? "var(--cancelButtonBackground)" : "var(--cancelButtonBackgroundHover)")};
+      background-color: ${(props) => (props.disabled ? "var(--color-gray-f0)" : "var(--color-gray-e0)")};
     }
   }
 
   &:active {
-    background-color: ${(props) => (props.disabled ? "var(--cancelButtonBackground)" : "var(--cancelButtonBackgroundActive)")};
+    background-color: ${(props) => (props.disabled ? "var(--color-gray-f0)" : "var(--color-gray-d0)")};
   }
 
   svg {
     width: 16px;
     height: 16px;
-    color: ${(props) => (props.disabled ? "var(--lightDisabledTextColor2)" : "var(--primaryTextColor)")};
+    color: ${(props) => (props.disabled ? "var(--lightDisabledTextColor2)" : "var(--color-gray-33)")};
     overflow: visible;
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--cancelButtonBackgroundDark);
+    background-color: var(--color-gray-33);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.disabled ? "var(--cancelButtonBackgroundDark)" : "var(--cancelButtonBackgroundHoverDark)")};
+        background-color: ${(props) => (props.disabled ? "var(--color-gray-33)" : "var(--color-gray-44)")};
       }
     }
 
     &:active {
-      background-color: ${(props) => (props.disabled ? "var(--cancelButtonBackgroundDark)" : "var(--cancelButtonBackgroundActiveDark)")};
+      background-color: ${(props) => (props.disabled ? "var(--color-gray-33)" : "var(--color-gray-55)")};
     }
 
     svg {
-      color: ${(props) => (props.disabled ? "var(--darkDisabledTextColor)" : "var(--primaryTextColorDark)")};
+      color: ${(props) => (props.disabled ? "var(--color-gray-77)" : "var(--color-gray-f0)")};
     }
   }
 `;
@@ -322,7 +322,7 @@ export const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   position: absolute;
   bottom: 40px;
   right: ${(props) => (props.offsetToTheRight ? "22px" : "64px")};
-  background-color: var(--boardStylePickerBackground);
+  background-color: var(--panel-light-90);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 8px;
@@ -336,7 +336,7 @@ export const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--boardStylePickerBackgroundDark);
+    background-color: var(--panel-dark-90);
   }
 `;
 
@@ -346,7 +346,7 @@ export const ReactionButton = styled.button`
   padding: 4px 8px;
   cursor: pointer;
   text-align: left;
-  color: var(--primaryTextColor);
+  color: var(--color-gray-33);
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -359,7 +359,7 @@ export const ReactionButton = styled.button`
   }
 
   @media (prefers-color-scheme: dark) {
-    color: var(--primaryTextColorDark);
+    color: var(--color-gray-f0);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
