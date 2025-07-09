@@ -11,7 +11,7 @@ const InventoryOverlay = styled(ModalOverlay)`
 `;
 
 const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
-  background-color: #fffffffa;
+  background-color: var(--inventoryModalBackground);
   padding: 20px;
   user-select: none;
   outline: none;
@@ -26,7 +26,7 @@ const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
   `}
 
   @media (prefers-color-scheme: dark) {
-    background-color: #1a1a1afa;
+    background-color: var(--inventoryModalBackgroundDark);
   }
 `;
 
@@ -39,7 +39,7 @@ const NFTSection = styled.div`
 `;
 
 const Content = styled.div`
-  color: #555;
+  color: var(--tertiaryTextColor);
   font-size: 0.95rem;
   user-select: none;
   cursor: default;
@@ -53,7 +53,7 @@ const Content = styled.div`
   padding-left: 4px;
 
   @media (prefers-color-scheme: dark) {
-    color: #d0d0d0;
+    color: var(--tertiaryTextColorDark);
   }
 `;
 
@@ -86,7 +86,7 @@ const NFTNameContainer = styled.div`
   width: 100%;
   aspect-ratio: 1/1;
   border-radius: 4px;
-  background: #f5f5f5;
+  background: var(--inventoryItemBackground);
   overflow: hidden;
   cursor: pointer;
   display: flex;
@@ -97,7 +97,7 @@ const NFTNameContainer = styled.div`
   box-sizing: border-box;
 
   @media (prefers-color-scheme: dark) {
-    background: #2a2a2a;
+    background: var(--inventoryItemBackgroundDark);
   }
 `;
 

@@ -10,8 +10,8 @@ const CircularButton = styled.button`
   width: 50%;
   aspect-ratio: 1;
   border-radius: 50%;
-  background-color: rgba(240, 240, 240, 0.8);
-  color: #007aff;
+  background-color: var(--boardCircularButtonBackground);
+  color: var(--boardCircularButtonText);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -25,26 +25,26 @@ const CircularButton = styled.button`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: rgba(250, 250, 250, 0.85);
+      background-color: var(--boardCircularButtonBackgroundHover);
     }
   }
 
   &:active {
-    background-color: rgba(230, 230, 230, 0.9);
+    background-color: var(--boardCircularButtonBackgroundActive);
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba(80, 80, 80, 0.8);
-    color: #0b84ff;
+    background-color: var(--boardCircularButtonBackgroundDark);
+    color: var(--boardCircularButtonTextDark);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: rgba(90, 90, 90, 0.85);
+        background-color: var(--boardCircularButtonBackgroundHoverDark);
       }
     }
 
     &:active {
-      background-color: rgba(70, 70, 70, 0.9);
+      background-color: var(--boardCircularButtonBackgroundActiveDark);
     }
   }
 
@@ -140,7 +140,7 @@ const BoardComponent: React.FC = () => {
           </g>
         ) : (
           <g id="boardBackgroundLayer">
-            <rect x="1" y="101" height="1161" width="1098" fill={prefersDarkMode ? "#232323" : "#FEFCF6"} />
+            <rect x="1" y="101" height="1161" width="1098" fill={prefersDarkMode ? "var(--boardBackgroundDark)" : "var(--boardBackgroundLight)"} />
             {shouldIncludePangchiuImage && (
               <image
                 href="/assets/bg/Pangchiu.jpg"
@@ -148,7 +148,7 @@ const BoardComponent: React.FC = () => {
                 y="100"
                 width="1100"
                 style={{
-                  backgroundColor: prefersDarkMode ? "#232323" : "#FEFCF6",
+                  backgroundColor: prefersDarkMode ? "var(--boardBackgroundDark)" : "var(--boardBackgroundLight)",
                   display: isGridVisible ? "none" : "block",
                 }}
               />

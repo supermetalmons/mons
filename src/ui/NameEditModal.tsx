@@ -17,29 +17,29 @@ const NameInput = styled.input<{ isValid: boolean }>`
   width: 100%;
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid ${(props) => (props.isValid ? "#ddd" : "#ff3b30")};
+  border: 1px solid ${(props) => (props.isValid ? "var(--inputBorderColor)" : "var(--dangerButtonBackground)")};
   font-size: 1rem;
   margin-bottom: 4px;
   box-sizing: border-box;
 
   &:focus {
-    border-color: ${(props) => (props.isValid ? "#007aff" : "#ff3b30")};
+    border-color: ${(props) => (props.isValid ? "var(--bottomButtonBackground)" : "var(--dangerButtonBackground)")};
     outline: none;
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: #333;
-    color: #f5f5f5;
-    border-color: ${(props) => (props.isValid ? "#444" : "#ff453a")};
+    background-color: var(--cancelButtonBackgroundDark);
+    color: var(--lightTextColor);
+    border-color: ${(props) => (props.isValid ? "var(--cancelButtonBackgroundHoverDark)" : "var(--dangerButtonBackgroundDark)")};
 
     &:focus {
-      border-color: ${(props) => (props.isValid ? "#0b84ff" : "#ff453a")};
+      border-color: ${(props) => (props.isValid ? "var(--bottomButtonBackgroundDark)" : "var(--dangerButtonBackgroundDark)")};
     }
   }
 `;
 
 const ErrorMessage = styled.div`
-  color: #ff3b30;
+  color: var(--dangerButtonBackground);
   font-size: 0.8rem;
   margin-bottom: ${(props) => (props.children ? "16px" : "12px")};
   height: ${(props) => (props.children ? "1rem" : "0")};
@@ -47,7 +47,7 @@ const ErrorMessage = styled.div`
   align-items: center;
 
   @media (prefers-color-scheme: dark) {
-    color: #ff453a;
+    color: var(--dangerButtonBackgroundDark);
   }
 `;
 

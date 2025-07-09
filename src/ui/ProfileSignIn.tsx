@@ -34,21 +34,21 @@ const BaseButton = styled.button`
 `;
 
 const SignInButton = styled(BaseButton)<{ isConnected?: boolean }>`
-  --color-tint: #0e76fd;
-  --color-dark-tint: #3898ff;
+  --color-tint: var(--profileSigninTint);
+  --color-dark-tint: var(--profileSigninTintDark);
 
-  --color-default: ${(props) => (props.isConnected ? "#f9f9f9de" : "#0e76fd")};
-  --color-default-hover: ${(props) => (props.isConnected ? "#f5f5f5" : "#0069d9")};
+  --color-default: ${(props) => (props.isConnected ? "var(--profileConnectedBackground)" : "var(--profileSigninTint)")};
+  --color-default-hover: ${(props) => (props.isConnected ? "var(--profileConnectedBackgroundHover)" : "var(--bottomButtonBackgroundHover)")};
 
-  --color-dark-default: ${(props) => (props.isConnected ? "#252525d5" : "#3898ff")};
-  --color-dark-default-hover: ${(props) => (props.isConnected ? "#272727" : "#1a91ff")};
+  --color-dark-default: ${(props) => (props.isConnected ? "var(--profileConnectedBackgroundDark)" : "var(--profileSigninTintDark)")};
+  --color-dark-default-hover: ${(props) => (props.isConnected ? "var(--profileConnectedBackgroundHoverDark)" : "var(--bottomButtonBackgroundHoverDark)")};
 
   background-color: var(--color-default);
 
   padding: 8px 16px;
   font-weight: ${(props) => (props.isConnected ? "750" : "888")};
   font-size: ${(props) => (props.isConnected ? "0.9rem" : "0.95rem")};
-  color: ${(props) => (props.isConnected ? "#767787c9" : "white")};
+  color: ${(props) => (props.isConnected ? "var(--profileConnectedText)" : "white")};
   border-radius: ${(props) => (props.isConnected ? "16px" : "16px")};
   border: none;
   cursor: pointer;
@@ -80,21 +80,21 @@ const ConnectButtonPopover = styled.div`
 
 const ConnectButtonWrapper = styled.div`
   padding: 8px;
-  background-color: white;
+  background-color: var(--profilePopoverBackground);
   border-radius: 12px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 6px 20px var(--notificationBannerShadow);
   display: flex;
   flex-direction: column;
   gap: 8px;
 
   @media (prefers-color-scheme: dark) {
-    background-color: #131313;
+    background-color: var(--profilePopoverBackgroundDark);
   }
 `;
 
 const CustomConnectButton = styled(BaseButton)`
   min-width: 130px;
-  color: #000;
+  color: var(--blackTextColor);
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
@@ -102,21 +102,21 @@ const CustomConnectButton = styled(BaseButton)`
   font-size: 0.81rem;
   cursor: pointer;
 
-  background-color: #f9f9f9;
+  background-color: var(--navigationBackground);
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: #f5f5f5;
+      background-color: var(--navigationBackgroundHover);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: #252525;
-    color: #f5f5f5;
+    background-color: var(--navigationBackgroundDark);
+    color: var(--lightTextColor);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: #272727;
+        background-color: var(--navigationBackgroundHoverDark);
       }
     }
   }
