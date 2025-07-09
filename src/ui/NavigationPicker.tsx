@@ -1,9 +1,8 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-import { problems } from "../content/problems";
+import { problems, getCompletedProblemIds } from "../content/problems";
 import { didSelectPuzzle } from "../game/gameController";
 import { useGameAssets } from "../hooks/useGameAssets";
-import { isProblemCompleted } from "../content/problems";
 import { FaCheck } from "react-icons/fa";
 
 interface NavigationPickerProps {
@@ -178,6 +177,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
     return `data:image/png;base64,${assets[iconName]}`;
   };
 
+  const completedProblemsSet = getCompletedProblemIds();
+
   return (
     <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
       {showsPuzzles && (
@@ -187,7 +188,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
             <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
               <PlaceholderImage src={getIconImage(item.icon)} alt="Puzzle icon" />
               {item.label}
-              {isProblemCompleted(item.id) && <CompletedIcon />}
+              {completedProblemsSet.has(item.id) && <CompletedIcon />}
             </NavigationPickerButton>
           ))}
         </ScrollableList>
