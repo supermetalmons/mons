@@ -196,5 +196,6 @@ export const storage = {
     localStorage.removeItem(STORAGE_KEYS.CARD_STICKERS);
     localStorage.removeItem(STORAGE_KEYS.PROFILE_MONS);
     localStorage.removeItem(STORAGE_KEYS.PLAYER_NONCE);
+    localStorage.removeItem(STORAGE_KEYS.COMPLETED_PROBLEMS);
   },
 };
