@@ -24,7 +24,7 @@ export function getSnapshotIdAndClearPathIfNeeded(): string | null {
   return null;
 }
 
-class FirebaseConnection {
+class Connection {
   private app: FirebaseApp;
   private auth: Auth;
   private db: Database;
@@ -521,7 +521,7 @@ class FirebaseConnection {
 
   public updateEmoji(newId: number, matchOnly: boolean): void {
     if (!matchOnly) {
-      this.updateFirestoreEmoji(newId);
+      this.updateStoredEmoji(newId);
     }
     if (!this.myMatch) return;
     this.myMatch.emojiId = newId;
@@ -535,27 +535,27 @@ class FirebaseConnection {
     return id === "" ? null : id;
   }
 
-  public updateFirestoreEmoji(newId: number): void {
-    this.updateFirestoreCustomField("emoji", newId);
+  public updateStoredEmoji(newId: number): void {
+    this.updateCustomField("emoji", newId);
   }
 
-  public updateFirestoreCardBackgroundId(newId: number): void {
-    this.updateFirestoreCustomField("cardBackgroundId", newId);
+  public updateCardBackgroundId(newId: number): void {
+    this.updateCustomField("cardBackgroundId", newId);
   }
 
-  public updateFirestoreCardSubtitleId(newId: number): void {
-    this.updateFirestoreCustomField("cardSubtitleId", newId);
+  public updateCardSubtitleId(newId: number): void {
+    this.updateCustomField("cardSubtitleId", newId);
   }
 
-  public updateFirestoreProfileMons(mons: string): void {
-    this.updateFirestoreCustomField("profileMons", mons);
+  public updateProfileMons(mons: string): void {
+    this.updateCustomField("profileMons", mons);
   }
 
-  public updateFirestoreCardStickers(stickers: string): void {
-    this.updateFirestoreCustomField("cardStickers", stickers);
+  public updateCardStickers(stickers: string): void {
+    this.updateCustomField("cardStickers", stickers);
   }
 
-  private updateFirestoreCustomField(fieldName: string, newValue: any): void {
+  private updateCustomField(fieldName: string, newValue: any): void {
     const id = this.getLocalProfileId();
     if (id === null) {
       return;
@@ -1047,6 +1047,6 @@ class FirebaseConnection {
   }
 }
 
-export const firebaseConnection = new FirebaseConnection();
+export const connection = new Connection();
 
 const emojis = (await import("../content/emojis")).emojis;

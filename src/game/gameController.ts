@@ -4,7 +4,7 @@ import * as Board from "./board";
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
-import { firebaseConnection, isCreateNewInviteFlow, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded, isBotsLoopMode } from "../connection/firebaseConnection";
+import { connection, isCreateNewInviteFlow, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded, isBotsLoopMode } from "../connection/connection";
 import { setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
@@ -56,7 +56,7 @@ export function getCurrentGameFen(): string {
 }
 
 export async function go() {
-  firebaseConnection.setupConnection(false);
+  connection.setupConnection(false);
 
   Board.setupBoard();
 
@@ -179,7 +179,7 @@ export function didJustCreateRematchProposalSuccessfully(inviteId: string) {
   blackTimerStash = null;
   whiteTimerStash = null;
 
-      firebaseConnection.signInIfNeededAndConnectToGame(inviteId, true);
+  connection.signInIfNeededAndConnectToGame(inviteId, true);
 }
 
 export function didDiscoverExistingRematchProposalWaitingForResponse() {
@@ -223,7 +223,7 @@ export function didClickStartBotGameButton() {
 
 export function handleFreshlySignedInProfileInGameIfNeeded(profileId: string) {
   if (isWatchOnly) {
-    firebaseConnection.seeIfFreshlySignedInProfileIsOneOfThePlayers(profileId);
+    connection.seeIfFreshlySignedInProfileIsOneOfThePlayers(profileId);
   }
 }
 
@@ -245,11 +245,12 @@ export function didClickAutomatchButton() {
   isWaitingForInviteToGetAccepted = true;
   Board.runMonsBoardAsDisplayWaitingAnimation();
 
-          firebaseConnection.automatch()
+  connection
+    .automatch()
     .then((response) => {
       const automatchInviteId = response.inviteId;
       if (automatchInviteId) {
-        firebaseConnection.connectToAutomatch(automatchInviteId);
+        connection.connectToAutomatch(automatchInviteId);
       }
     })
     .catch(() => {
@@ -261,7 +262,7 @@ function showRematchInterface() {
   if (isWatchOnly) {
     return;
   }
-  if (firebaseConnection.rematchSeriesEndIsIndicated()) {
+  if (connection.rematchSeriesEndIsIndicated()) {
     didReceiveRematchesSeriesEndIndicator();
   } else {
     showPrimaryAction(PrimaryActionType.Rematch);
@@ -326,7 +327,7 @@ function didConfirmRematchProposal() {
 
   setEndMatchVisible(false);
   Board.runMonsBoardAsDisplayWaitingAnimation();
-  firebaseConnection.sendRematchProposal();
+  connection.sendRematchProposal();
   Board.hideBoardPlayersInfo();
   showVoiceReactionButton(false);
 }
@@ -335,7 +336,7 @@ export function didClickEndMatchButton() {
   showPrimaryAction(PrimaryActionType.None);
   setEndMatchConfirmed(true);
   showVoiceReactionButton(false);
-  firebaseConnection.sendEndMatchIndicator();
+  connection.sendEndMatchIndicator();
   showWaitingStateText("");
   Board.stopMonsBoardAsDisplayAnimations();
 }
@@ -343,7 +344,7 @@ export function didClickEndMatchButton() {
 export function didClickPrimaryActionButton(action: PrimaryActionType) {
   switch (action) {
     case PrimaryActionType.JoinGame:
-      firebaseConnection.setupConnection(true);
+      connection.setupConnection(true);
       break;
     case PrimaryActionType.Rematch:
       didConfirmRematchProposal();
@@ -355,7 +356,8 @@ export function didClickPrimaryActionButton(action: PrimaryActionType) {
 
 export function didClickClaimVictoryByTimerButton() {
   if (isOnlineGame && !isWatchOnly) {
-    firebaseConnection.claimVictoryByTimer()
+    connection
+      .claimVictoryByTimer()
       .then((res) => {
         if (res.ok) {
           handleVictoryByTimer(false, playerSideColor === MonsWeb.Color.White ? "white" : "black", true);
@@ -371,7 +373,8 @@ export function didClickHomeButton() {
 
 export function didClickStartTimerButton() {
   if (isOnlineGame && !isWatchOnly && !isPlayerSideTurn()) {
-    firebaseConnection.startTimer()
+    connection
+      .startTimer()
       .then((res) => {
         if (res.ok) {
           showTimerCountdown(false, res.timer, playerSideColor === MonsWeb.Color.White ? "white" : "black", res.duration);
@@ -382,7 +385,7 @@ export function didClickStartTimerButton() {
 }
 
 export function didClickConfirmResignButton() {
-        firebaseConnection.surrender();
+  connection.surrender();
   handleResignStatus(false, "");
 }
 
@@ -415,7 +418,7 @@ export function canChangeEmoji(opponents: boolean): boolean {
 }
 
 export function sendPlayerEmojiUpdate(newId: number) {
-  firebaseConnection.updateEmoji(newId, false);
+  connection.updateEmoji(newId, false);
 }
 
 export function isPlayerSideTurn(): boolean {
@@ -599,7 +602,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
       }
 
       if (isOnlineGame && !isRemoteInput) {
-        firebaseConnection.sendMove(moveFen, gameFen);
+        connection.sendMove(moveFen, gameFen);
       }
 
       if (!isOnlineGame && !didStartLocalGame) {
@@ -914,15 +917,15 @@ function verifyMovesIfNeeded(matchId: string, flatMovesString: string, color: st
 }
 
 function updateRatingsAndSuggestSavingOnchainRating() {
-  if (!firebaseConnection.isAutomatch()) {
+  if (!connection.isAutomatch()) {
     return;
   }
-  firebaseConnection.updateRatings();
+  connection.updateRatings();
   updateRatingsLocally(true);
 }
 
 function updateRatingsLocally(isWin: boolean) {
-  if (!firebaseConnection.isAutomatch()) {
+  if (!connection.isAutomatch()) {
     return;
   }
 

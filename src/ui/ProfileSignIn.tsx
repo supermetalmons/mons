@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import styled from "styled-components";
 import { storage } from "../utils/storage";
-import { firebaseConnection } from "../connection/firebaseConnection";
+import { connection } from "../connection/connection";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeMenuAndInfoIfAllowedForEvent, closeMenuAndInfoIfAny } from "./MainMenu";
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
@@ -237,7 +237,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
   const performLogout = () => {
     storage.signOut();
-    firebaseConnection.signOut()
+    connection
+      .signOut()
       .then(() => window.location.reload())
       .catch(() => window.location.reload());
   };
@@ -324,7 +325,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       const { connectToSolana } = await import("../connection/solanaConnection");
       const { publicKey, signature } = await connectToSolana();
       setSolanaText("Verifying...");
-      const res = await firebaseConnection.verifySolanaAddress(publicKey, signature);
+      const res = await connection.verifySolanaAddress(publicKey, signature);
       if (res && res.ok === true) {
         const emoji = res.emoji;
         const profileId = res.profileId;
@@ -378,7 +379,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         storage.setPlayerEmojiId(emoji.toString());
         storage.setProfileId(profileId);
 
-        firebaseConnection.forceTokenRefresh();
+        connection.forceTokenRefresh();
         storage.setLoginId(res.uid);
         updateProfileDisplayName(res.username, null, res.address);
         if (!isWatchOnly) {
