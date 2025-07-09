@@ -181,9 +181,6 @@ export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boole
   align-items: center;
   justify-content: center;
 
-  --color-white: white;
-  --color-text-on-pink-disabled: rgba(204, 204, 204, 0.77);
-
   background-color: ${(props) => (props.isViewOnly ? "var(--cancelButtonBackground)" : props.isBlue ? "var(--cancelButtonBackground)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabled)" : props.isPink ? "var(--pinkButtonBackground)" : "var(--bottomButtonBackground)")};
   color: ${(props) => (props.isPink && props.disabled ? "var(--color-white)" : props.isViewOnly ? "var(--viewOnlyButtonTextColor)" : props.isBlue ? "var(--bottomButtonBackground)" : "var(--color-white)")};
   border: none;
@@ -383,7 +380,7 @@ export const ResignConfirmation = styled(ReactionPicker)`
 
 export const ResignButton = styled(ReactionButton)`
   background-color: var(--resignButtonBackground);
-  color: white;
+  color: var(--color-white);
   border-radius: 16px;
   padding: 8px 16px;
   font-weight: bold;

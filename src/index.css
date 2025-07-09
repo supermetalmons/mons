@@ -169,6 +169,10 @@
   --pinkButtonBackgroundHoverDark: #ff69b4;
   --pinkButtonBackgroundActiveDark: #ff85c0;
   --pinkButtonBackgroundDisabledDark: #664d57;
+  --color-text-on-pink-disabled: rgba(204, 204, 204, 0.77);
+  --color-white: white;
+  --shinyCardEditingPanelBackground: rgba(255, 255, 255, 0.9);
+  --shinyCardEditingPanelBackgroundDark: rgba(36, 36, 36, 0.9);
   --viewOnlyButtonTextColor: #aaa;
   --viewOnlyButtonTextColorDark: #777;
   --shinyCardOutlineColor: rgba(180, 180, 180, 0.33);
@@ -444,7 +448,7 @@ img {
   right: 0;
   top: 100%;
   margin-top: 12px;
-  background-color: rgba(255, 255, 255, 0.9);
+  background-color: var(--shinyCardEditingPanelBackground);
   backdrop-filter: blur(5px);
   -webkit-backdrop-filter: blur(5px);
   border-radius: 12px;
@@ -461,7 +465,7 @@ img {
 
 @media (prefers-color-scheme: dark) {
   .shiny-card-editing-panel {
-    background-color: rgba(36, 36, 36, 0.9);
+    background-color: var(--shinyCardEditingPanelBackgroundDark);
     box-shadow: 0 4px 20px var(--cardBoxShadow);
   }
 }
