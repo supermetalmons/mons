@@ -12,7 +12,7 @@ export const BoardStylePicker = styled.div`
   background-color: var(--panel-light-90);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
-  border-radius: 8px;
+  border-radius: 10px;
   padding: 16px;
   display: flex;
   gap: 18px;
@@ -34,13 +34,13 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
   height: 44px;
   min-width: 44px;
   min-height: 44px;
-  border-radius: 8px;
-  border: 2px solid transparent;
+  border-radius: 10px;
+  border: 4px solid transparent;
   outline: none;
   cursor: pointer;
   position: relative;
   -webkit-tap-highlight-color: transparent;
-  padding: 3px;
+  padding: 0;
   overflow: hidden;
   background: transparent;
   transition: all 0.15s ease;
@@ -100,9 +100,13 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
   }
 
   svg {
-    width: 100%;
-    height: 100%;
-    border-radius: 4px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 102%;
+    height: 102%;
+    transform: translate(-1%, -1%);
+    border-radius: 6px;
     pointer-events: none;
   }
 `;
