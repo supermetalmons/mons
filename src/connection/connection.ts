@@ -325,9 +325,10 @@ class Connection {
 
   public subscribeToAuthChanges(callback: (uid: string | null) => void): void {
     onAuthStateChanged(this.auth, (user) => {
-      if (user?.uid !== this.currentUid) {
-        this.currentUid = user?.uid ?? null;
-        callback(user ? user.uid : null);
+      const newUid = user?.uid ?? null;
+      if (newUid !== this.currentUid) {
+        this.currentUid = newUid;
+        callback(newUid);
       }
     });
   }
