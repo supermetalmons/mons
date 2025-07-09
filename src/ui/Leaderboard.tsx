@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { resolveENS } from "../utils/ensResolver";
-import { getLeaderboard } from "../connection/connection";
+import { connection } from "../connection/connection";
 import { showShinyCard } from "./ShinyCard";
 import { PlayerProfile } from "../connection/connectionModels";
 
@@ -270,7 +270,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
         }, 5);
       }
 
-      getLeaderboard()
+      connection
+        .getLeaderboard()
         .then((profiles) => {
           const leaderboardData = profiles.map((entry) => ({
             username: entry.username,

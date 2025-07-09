@@ -1,4 +1,4 @@
-import { sendCardBackgroundUpdate, sendCardStickersUpdate, sendCardSubtitleIdUpdate, sendProfileMonsUpdate } from "../connection/connection";
+import { connection } from "../connection/connection";
 import { emojipackSize, emojis, getIncrementedEmojiId } from "../content/emojis";
 import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile, getStableRandomIdForProfileId } from "../utils/misc";
@@ -1295,7 +1295,7 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       const newCardName = `${newId}.webp`;
       storage.setCardBackgroundId(newId);
       cardIndex = newId;
-      sendCardBackgroundUpdate(newId);
+      connection.updateCardBackgroundId(newId);
       ownBgImg!.style.visibility = "hidden";
       ownBgImg!.src = `https://assets.mons.link/cards/bg/${newCardName}`;
       break;
@@ -1303,7 +1303,7 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       asciimojiIndex = newId;
       ownSubtitleElement!.textContent = getAsciimojiAtIndex(newId);
       storage.setCardSubtitleId(newId);
-      sendCardSubtitleIdUpdate(newId);
+      connection.updateCardSubtitleId(newId);
       break;
     case "demon":
     case "angel":
@@ -1343,7 +1343,7 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       img!.src = `data:image/webp;base64,${newImageData}`;
       const monsIndexesString = `${demonIndex},${angelIndex},${drainerIndex},${spiritIndex},${mysticIndex}`;
       storage.setProfileMons(monsIndexesString);
-      sendProfileMonsUpdate(monsIndexesString);
+      connection.updateProfileMons(monsIndexesString);
       break;
     case "big-mon-top-right":
     case "bottom-left":
@@ -1369,7 +1369,7 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
 
       const currentJson = JSON.stringify(currentlySelectedStickers);
       storage.setCardStickers(currentJson);
-      sendCardStickersUpdate(currentJson);
+      connection.updateCardStickers(currentJson);
       break;
   }
 

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { isMobile } from "../utils/misc";
 import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, CancelButton, SaveButton } from "./SharedModalComponents";
-import { editUsername } from "../connection/connection";
+import { connection } from "../connection/connection";
 
 const NameEditOverlay = styled(ModalOverlay)`
   align-items: ${isMobile ? "flex-start" : "center"};
@@ -97,7 +97,8 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
     if (isValid && !isSubmitting) {
       setIsSubmitting(true);
 
-      editUsername(trimmed)
+      connection
+        .editUsername(trimmed)
         .then((response) => {
           if (response.ok) {
             onSave(trimmed);

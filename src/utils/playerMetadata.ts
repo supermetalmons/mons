@@ -1,4 +1,4 @@
-import { getProfileByLoginId, sendEmojiUpdate } from "../connection/connection";
+import { connection } from "../connection/connection";
 import { PlayerProfile } from "../connection/connectionModels";
 import glicko2 from "glicko2";
 import { storage } from "./storage";
@@ -121,7 +121,8 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
     allProfilesDict[loginId] = profile;
     onSuccess();
   } else {
-    getProfileByLoginId(loginId)
+    connection
+      .getProfileByLoginId(loginId)
       .then((profile) => {
         allProfilesDict[loginId] = profile;
         if (profile.emoji !== undefined && own) {
@@ -150,7 +151,7 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
           if (!isWatchOnly) {
             updateEmojiIfNeeded(profile.emoji.toString(), false);
           }
-          sendEmojiUpdate(profile.emoji, true);
+          connection.updateEmoji(profile.emoji, true);
         }
         onSuccess();
       })
