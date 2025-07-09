@@ -3,6 +3,8 @@ import styled from "styled-components";
 import { problems } from "../content/problems";
 import { didSelectPuzzle } from "../game/gameController";
 import { useGameAssets } from "../hooks/useGameAssets";
+import { isProblemCompleted } from "../content/problems";
+import { FaCheck } from "react-icons/fa";
 
 interface NavigationPickerProps {
   showsPuzzles: boolean;
@@ -92,6 +94,12 @@ const NavigationPickerButton = styled.button`
   }
 `;
 
+const CompletedIcon = styled(FaCheck)`
+  color: var(--completedPuzzleIconColor);
+  font-size: 0.8rem;
+  margin-left: auto;
+`;
+
 const PlaceholderImage = styled.img`
   width: 23px;
   height: 23px;
@@ -179,6 +187,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
             <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
               <PlaceholderImage src={getIconImage(item.icon)} alt="Puzzle icon" />
               {item.label}
+              {isProblemCompleted(item.id) && <CompletedIcon />}
             </NavigationPickerButton>
           ))}
         </ScrollableList>

@@ -19,6 +19,7 @@ const STORAGE_KEYS = {
   CARD_STICKERS: "cardStickers",
   PROFILE_MONS: "profileMons",
   PLAYER_NONCE: "playerNonce",
+  COMPLETED_PROBLEMS: "completedProblems",
 } as const;
 
 type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
@@ -164,6 +165,22 @@ export const storage = {
 
   setPlayerNonce: (value: number): void => {
     setItem(STORAGE_KEYS.PLAYER_NONCE, value);
+  },
+
+  getCompletedProblemIds: (defaultValue: string[]): string[] => {
+    return getItem(STORAGE_KEYS.COMPLETED_PROBLEMS, defaultValue);
+  },
+
+  setCompletedProblemIds: (value: string[]): void => {
+    setItem(STORAGE_KEYS.COMPLETED_PROBLEMS, value);
+  },
+
+  addCompletedProblemId: (id: string): void => {
+    const current = getItem<string[]>(STORAGE_KEYS.COMPLETED_PROBLEMS, []);
+    if (!current.includes(id)) {
+      current.push(id);
+      setItem(STORAGE_KEYS.COMPLETED_PROBLEMS, current);
+    }
   },
 
   signOut: (): void => {

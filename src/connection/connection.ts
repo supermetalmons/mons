@@ -556,6 +556,10 @@ class Connection {
     this.updateCustomField("cardStickers", stickers);
   }
 
+  public updateCompletedProblems(ids: string[]): void {
+    this.updateCustomField("completedProblems", ids);
+  }
+
   private updateCustomField(fieldName: string, newValue: any): void {
     const id = this.getLocalProfileId();
     if (id === null) {

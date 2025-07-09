@@ -1,3 +1,6 @@
+import { storage } from "../utils/storage";
+import { connection } from "../connection/connection";
+
 export type Problem = {
   id: string;
   icon: string;
@@ -28,4 +31,18 @@ export function getNextProblem(id: string): Problem | null {
     return null;
   }
   return problems[currentIndex + 1];
+}
+
+export function getCompletedProblemIds(): string[] {
+  return storage.getCompletedProblemIds([]);
+}
+
+export function isProblemCompleted(id: string): boolean {
+  return getCompletedProblemIds().includes(id);
+}
+
+export function markProblemCompleted(id: string): void {
+  storage.addCompletedProblemId(id);
+  const allCompleted = getCompletedProblemIds();
+  connection.updateCompletedProblems(allCompleted);
 }
