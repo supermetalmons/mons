@@ -2,7 +2,7 @@ import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton, Subtitle } from "./SharedModalComponents";
 import { storage } from "../utils/storage";
-import { getNfts } from "../connection/connection";
+import { firebaseConnection } from "../connection/firebaseConnection";
 
 const doNotFetchNftsForNow = true;
 
@@ -148,7 +148,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
 
     if (storedSolAddress || storedEthAddress) {
       const fetchTokens = async () => {
-        const data = await getNfts(storedSolAddress, storedEthAddress);
+        const data = await firebaseConnection.getNfts(storedSolAddress, storedEthAddress);
         if (data?.nfts) {
           setNfts(data.nfts);
         }

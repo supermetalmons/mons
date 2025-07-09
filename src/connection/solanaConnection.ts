@@ -1,5 +1,5 @@
 import { BaseMessageSignerWalletAdapter } from "@solana/wallet-adapter-base";
-import { signIn } from "./connection";
+import { firebaseConnection } from "./firebaseConnection";
 
 declare global {
   interface Window {
@@ -28,7 +28,7 @@ export async function connectToSolana(): Promise<{ publicKey: string; signature:
       throw new Error("not connected");
     }
 
-    const nonce = await signIn();
+    const nonce = await firebaseConnection.signIn();
     if (!nonce) throw new Error("Failed to get nonce");
 
     const message = `Sign in mons.link with Solana nonce ${nonce}`;

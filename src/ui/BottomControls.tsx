@@ -3,7 +3,7 @@ import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnve
 import { IoSparklesSharp } from "react-icons/io5";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
 import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain } from "../game/gameController";
-import { didClickInviteButton, sendVoiceReaction } from "../connection/connection";
+import { firebaseConnection } from "../connection/firebaseConnection";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playReaction } from "../content/sounds";
@@ -170,7 +170,7 @@ const BottomControls: React.FC = () => {
       didClickInviteActionButtonBeforeThereIsInviteReady();
     }
     setIsInviteLoading(true);
-    didClickInviteButton((result: boolean) => {
+    firebaseConnection.didClickInviteButton((result: boolean) => {
       if (result) {
         if (didCreateInvite) {
           setInviteCopiedTmpState(true);
@@ -402,7 +402,7 @@ const BottomControls: React.FC = () => {
     playReaction(reactionObj);
     showVoiceReactionText(reaction, false);
     if (!isGameWithBot) {
-      sendVoiceReaction(reactionObj);
+      firebaseConnection.sendVoiceReaction(reactionObj);
       setIsVoiceReactionDisabled(true);
       setTimeout(() => {
         setIsVoiceReactionDisabled(false);

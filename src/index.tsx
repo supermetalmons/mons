@@ -11,7 +11,7 @@ import BoardComponent from "./ui/BoardComponent";
 import MainMenu, { toggleInfoVisibility, toggleMusicVisibility } from "./ui/MainMenu";
 import { config } from "./utils/wagmi";
 import { useAuthStatus, createEthereumAuthAdapter } from "./connection/authentication";
-import { signIn } from "./connection/connection";
+import { firebaseConnection } from "./connection/firebaseConnection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
 import { FaVolumeUp, FaMusic, FaVolumeMute, FaInfoCircle, FaRegGem, FaPowerOff, FaEllipsisH } from "react-icons/fa";
@@ -184,7 +184,7 @@ document.addEventListener(
   false
 );
 
-signIn();
+firebaseConnection.signIn();
 
 (function suppressThirdPartyErrorOverlay() {
   if (typeof window === "undefined") return;

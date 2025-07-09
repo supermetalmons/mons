@@ -16,7 +16,7 @@ import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
 import { showShinyCard, showsShinyCardSomewhere } from "../ui/ShinyCard";
 import { getMonId, getMonsIndexes, MonType } from "../utils/namedMons";
 import { instructor } from "../assets/talkingDude";
-import { isBotsLoopMode } from "../connection/connection";
+import { isBotsLoopMode } from "../connection/firebaseConnection";
 import { launchConfetti } from "./confetti";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);

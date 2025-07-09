@@ -7,8 +7,22 @@ import { getPlayersEmojiId, didGetPlayerProfile } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
 import { Match, Invite, Reaction, PlayerProfile } from "./connectionModels";
 import { storage } from "../utils/storage";
+import { generateNewInviteId } from "../utils/misc";
 
 const controllerVersion = 2;
+
+const initialPath = window.location.pathname.replace(/^\/|\/$/g, "");
+export const isCreateNewInviteFlow = initialPath === "";
+export const isBoardSnapshotFlow = initialPath.startsWith("snapshot/");
+export const isBotsLoopMode = initialPath === "watch";
+
+export function getSnapshotIdAndClearPathIfNeeded(): string | null {
+  if (isBoardSnapshotFlow) {
+    const snapshotId = initialPath.substring("snapshot/".length);
+    return snapshotId;
+  }
+  return null;
+}
 
 class FirebaseConnection {
   private app: FirebaseApp;
@@ -30,6 +44,10 @@ class FirebaseConnection {
   private inviteId: string | null = null;
   private matchId: string | null = null;
 
+  private newInviteId = "";
+  private didCreateNewGameInvite = false;
+  private currentUid: string | null = "";
+
   constructor() {
     const firebaseConfig = {
       apiKey: process.env.REACT_APP_MONS_FIREBASE_API_KEY || "AIzaSyC8Ihr4kDd34z-RXe8XTBCFtFbXebifo5Y",
@@ -45,6 +63,72 @@ class FirebaseConnection {
     this.db = getDatabase(this.app);
     this.firestore = getFirestore(this.app);
     this.functions = getFunctions(this.app);
+  }
+
+  public setupConnection(autojoin: boolean): void {
+    if (!isCreateNewInviteFlow) {
+      const shouldAutojoin = autojoin || initialPath.startsWith("auto_");
+      this.signIn().then((uid) => {
+        if (uid) {
+          this.connectToGame(uid, initialPath, shouldAutojoin);
+        } else {
+          console.log("failed to get game info");
+        }
+      });
+    }
+  }
+
+  public connectToAutomatch(inviteId: string): void {
+    this.newInviteId = inviteId;
+    this.updatePath(this.newInviteId);
+    this.signIn().then((uid) => {
+      if (uid) {
+        this.connectToGame(uid, inviteId, true);
+      } else {
+        console.log("failed to get game info");
+      }
+    });
+  }
+
+  public didClickInviteButton(completion: (success: boolean) => void): void {
+    if (this.didCreateNewGameInvite) {
+      this.writeInviteLinkToClipboard();
+      completion(true);
+    } else {
+      if (isCreateNewInviteFlow) {
+        this.newInviteId = generateNewInviteId();
+        this.writeInviteLinkToClipboard();
+        this.createNewMatchInvite(completion);
+      } else {
+        this.newInviteId = initialPath;
+        this.writeInviteLinkToClipboard();
+        completion(true);
+      }
+    }
+  }
+
+  private writeInviteLinkToClipboard(): void {
+    const link = window.location.origin + "/" + this.newInviteId;
+    navigator.clipboard.writeText(link);
+  }
+
+  private updatePath(newInviteId: string): void {
+    const newPath = `/${newInviteId}`;
+    window.history.pushState({ path: newPath }, "", newPath);
+  }
+
+  private createNewMatchInvite(completion: (success: boolean) => void): void {
+    this.signIn().then((uid) => {
+      if (uid) {
+        this.createInvite(uid, this.newInviteId);
+        this.didCreateNewGameInvite = true;
+        this.updatePath(this.newInviteId);
+        completion(true);
+      } else {
+        console.log("failed to sign in");
+        completion(false);
+      }
+    });
   }
 
   public async refreshTokenIfNeeded(): Promise<void> {
@@ -241,7 +325,10 @@ class FirebaseConnection {
 
   public subscribeToAuthChanges(callback: (uid: string | null) => void): void {
     onAuthStateChanged(this.auth, (user) => {
-      callback(user ? user.uid : null);
+      if (user?.uid !== this.currentUid) {
+        this.currentUid = user?.uid ?? null;
+        callback(user ? user.uid : null);
+      }
     });
   }
 
@@ -498,6 +585,46 @@ class FirebaseConnection {
     this.myMatch.fen = newBoardFen;
     this.myMatch.flatMovesString = this.myMatch.flatMovesString ? `${this.myMatch.flatMovesString}-${moveFen}` : moveFen;
     this.sendMatchUpdate();
+  }
+
+  // Wrapper methods for old API compatibility
+
+  public sendResignStatus(): void {
+    this.surrender();
+  }
+
+  public sendEmojiUpdate(newId: number, matchOnly: boolean): void {
+    this.updateEmoji(newId, matchOnly);
+  }
+
+  public sendCardBackgroundUpdate(newId: number): void {
+    this.updateFirestoreCardBackgroundId(newId);
+  }
+
+  public sendCardSubtitleIdUpdate(newId: number): void {
+    this.updateFirestoreCardSubtitleId(newId);
+  }
+
+  public sendProfileMonsUpdate(mons: string): void {
+    this.updateFirestoreProfileMons(mons);
+  }
+
+  public sendCardStickersUpdate(stickers: string): void {
+    this.updateFirestoreCardStickers(stickers);
+  }
+
+  public async sendAutomatchRequest(): Promise<any> {
+    return this.automatch();
+  }
+
+  public connectToGameWrapper(inviteId: string, autojoin: boolean): void {
+    this.signIn().then((uid) => {
+      if (uid) {
+        this.connectToGame(uid, inviteId, autojoin);
+      } else {
+        console.log("failed to get game info");
+      }
+    });
   }
 
   private sendMatchUpdate(): void {

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
-import { subscribeToAuthChanges, signIn, verifyEthAddress, forceTokenRefresh, refreshTokenIfNeeded } from "./connection";
+import { firebaseConnection } from "./firebaseConnection";
 import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { storage } from "../utils/storage";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
@@ -28,7 +28,7 @@ export function useAuthStatus() {
 
   useEffect(() => {
     let didPerformInitialSetup = false;
-    subscribeToAuthChanges((uid) => {
+    firebaseConnection.subscribeToAuthChanges((uid) => {
       if (didPerformInitialSetup) {
         return;
       }
@@ -41,7 +41,7 @@ export function useAuthStatus() {
         const profileId = storage.getProfileId("");
         if (profileId !== "" && storedLoginId === uid && (storedEthAddress !== "" || storedSolAddress !== "")) {
           setAuthStatus("authenticated");
-          refreshTokenIfNeeded();
+          firebaseConnection.refreshTokenIfNeeded();
           const emojiString = storage.getPlayerEmojiId("1");
           const emoji = parseInt(emojiString);
           const profile = {
@@ -75,7 +75,7 @@ export function useAuthStatus() {
 export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) =>
   createAuthenticationAdapter({
     getNonce: async () => {
-      const nonce = await signIn();
+              const nonce = await firebaseConnection.signIn();
       if (!nonce) throw new Error("Failed to get nonce");
       return nonce;
     },
@@ -93,7 +93,7 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
     },
 
     verify: async ({ message, signature }) => {
-      const res = await verifyEthAddress(message, signature);
+              const res = await firebaseConnection.verifyEthAddress(message, signature);
       if (res && res.ok === true) {
         const emoji = res.emoji;
         const profileId = res.profileId;
@@ -149,7 +149,7 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
         storage.setPlayerEmojiId(emoji.toString());
         storage.setProfileId(profileId);
 
-        forceTokenRefresh();
+                  firebaseConnection.forceTokenRefresh();
         storage.setLoginId(res.uid);
         updateProfileDisplayName(username, res.address, null);
         if (!isWatchOnly) {
