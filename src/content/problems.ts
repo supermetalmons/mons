@@ -26,23 +26,28 @@ export const problems: Problem[] = [
 ];
 
 export function getNextProblem(id: string): Problem | null {
-  const currentIndex = problems.findIndex((problem) => problem.id === id);
-  if (currentIndex === -1 || currentIndex === problems.length - 1) {
-    return null;
+  const completedSet = getCompletedProblemIds();
+  const currentIndex = problems.findIndex((p) => p.id === id);
+  if (currentIndex === -1) return null;
+  for (let i = currentIndex + 1; i < problems.length; i++) {
+    const candidate = problems[i];
+    if (!completedSet.has(candidate.id)) {
+      return candidate;
+    }
   }
-  return problems[currentIndex + 1];
+  return null;
 }
 
-export function getCompletedProblemIds(): string[] {
-  return storage.getCompletedProblemIds([]);
-}
-
-export function isProblemCompleted(id: string): boolean {
-  return getCompletedProblemIds().includes(id);
+export function getCompletedProblemIds(): Set<string> {
+  return new Set(storage.getCompletedProblemIds([]));
 }
 
 export function markProblemCompleted(id: string): void {
-  storage.addCompletedProblemId(id);
-  const allCompleted = getCompletedProblemIds();
-  connection.updateCompletedProblems(allCompleted);
+  const completed = getCompletedProblemIds();
+  if (!completed.has(id)) {
+    completed.add(id);
+    const allCompleted = Array.from(completed);
+    storage.setCompletedProblemIds(allCompleted);
+    connection.updateCompletedProblems(allCompleted);
+  }
 }

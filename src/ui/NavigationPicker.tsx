@@ -1,9 +1,8 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-import { problems } from "../content/problems";
+import { problems, getCompletedProblemIds } from "../content/problems";
 import { didSelectPuzzle } from "../game/gameController";
 import { useGameAssets } from "../hooks/useGameAssets";
-import { isProblemCompleted } from "../content/problems";
 import { FaCheck } from "react-icons/fa";
 
 interface NavigationPickerProps {
@@ -17,7 +16,7 @@ const NavigationPickerContainer = styled.div`
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
   max-height: calc(100dvh - 120px - env(safe-area-inset-bottom));
-  max-width: 130pt;
+  max-width: 150pt;
   display: flex;
   flex-direction: column;
   background-color: var(--panel-light-90);
@@ -96,8 +95,10 @@ const NavigationPickerButton = styled.button`
 
 const CompletedIcon = styled(FaCheck)`
   color: var(--completedPuzzleIconColor);
-  font-size: 0.8rem;
+  font-size: 0.5rem;
   margin-left: auto;
+  flex-shrink: 0;
+  padding-left: 4pt;
 `;
 
 const PlaceholderImage = styled.img`
@@ -178,6 +179,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
     return `data:image/png;base64,${assets[iconName]}`;
   };
 
+  const completedProblemsSet = getCompletedProblemIds();
+
   return (
     <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
       {showsPuzzles && (
@@ -187,7 +190,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
             <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
               <PlaceholderImage src={getIconImage(item.icon)} alt="Puzzle icon" />
               {item.label}
-              {isProblemCompleted(item.id) && <CompletedIcon />}
+              {completedProblemsSet.has(item.id) && <CompletedIcon />}
             </NavigationPickerButton>
           ))}
         </ScrollableList>
