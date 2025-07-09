@@ -181,71 +181,33 @@ export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boole
   align-items: center;
   justify-content: center;
 
-  --color-white: white;
-  --color-text-on-pink-disabled: rgba(204, 204, 204, 0.77);
-
-  --color-tint: var(--bottomButtonBackground);
-  --color-dark-tint: var(--bottomButtonBackgroundDark);
-
-  --color-default: var(--bottomButtonBackground);
-  --color-default-hover: var(--bottomButtonBackgroundHover);
-  --color-default-active: var(--bottomButtonBackgroundActive);
-
-  --color-blue: var(--cancelButtonBackground);
-  --color-blue-hover: var(--cancelButtonBackgroundHover);
-  --color-blue-active: var(--cancelButtonBackgroundActive);
-
-  --color-pink: var(--pinkButtonBackground);
-  --color-pink-hover: var(--pinkButtonBackgroundHover);
-  --color-pink-active: var(--pinkButtonBackgroundActive);
-  --color-pink-disabled: var(--pinkButtonBackgroundDisabled);
-
-  --color-view-only: var(--cancelButtonBackground);
-  --color-view-only-text: var(--viewOnlyButtonTextColor);
-
-  --color-dark-default: var(--bottomButtonBackgroundDark);
-  --color-dark-default-hover: var(--bottomButtonBackgroundHoverDark);
-  --color-dark-default-active: var(--bottomButtonBackgroundActiveDark);
-
-  --color-dark-blue: var(--cancelButtonBackgroundDark);
-  --color-dark-blue-hover: var(--cancelButtonBackgroundHoverDark);
-  --color-dark-blue-active: var(--cancelButtonBackgroundActiveDark);
-
-  --color-dark-pink: var(--pinkButtonBackgroundDark);
-  --color-dark-pink-hover: var(--pinkButtonBackgroundHoverDark);
-  --color-dark-pink-active: var(--pinkButtonBackgroundActiveDark);
-  --color-dark-pink-disabled: var(--pinkButtonBackgroundDisabledDark);
-
-  --color-dark-view-only: var(--cancelButtonBackgroundDark);
-  --color-dark-view-only-text: var(--viewOnlyButtonTextColorDark);
-
-  background-color: ${(props) => (props.isViewOnly ? "var(--color-view-only)" : props.isBlue ? "var(--color-blue)" : props.isPink && props.disabled ? "var(--color-pink-disabled)" : props.isPink ? "var(--color-pink)" : "var(--color-default)")};
-  color: ${(props) => (props.isPink && props.disabled ? "var(--color-white)" : props.isViewOnly ? "var(--color-view-only-text)" : props.isBlue ? "var(--color-tint)" : "var(--color-white)")};
+  background-color: ${(props) => (props.isViewOnly ? "var(--cancelButtonBackground)" : props.isBlue ? "var(--cancelButtonBackground)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabled)" : props.isPink ? "var(--pinkButtonBackground)" : "var(--bottomButtonBackground)")};
+  color: ${(props) => (props.isPink && props.disabled ? "var(--color-white)" : props.isViewOnly ? "var(--viewOnlyButtonTextColor)" : props.isBlue ? "var(--bottomButtonBackground)" : "var(--color-white)")};
   border: none;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.isViewOnly ? "var(--color-view-only)" : props.isBlue ? "var(--color-blue-hover)" : props.isPink && props.disabled ? "var(--color-pink-disabled)" : props.isPink ? "var(--color-pink-hover)" : "var(--color-default-hover)")};
+      background-color: ${(props) => (props.isViewOnly ? "var(--cancelButtonBackground)" : props.isBlue ? "var(--cancelButtonBackgroundHover)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabled)" : props.isPink ? "var(--pinkButtonBackgroundHover)" : "var(--bottomButtonBackgroundHover)")};
     }
   }
 
   &:active {
-    background-color: ${(props) => (props.isViewOnly ? "var(--color-view-only)" : props.isBlue ? "var(--color-blue-active)" : props.isPink && props.disabled ? "var(--color-pink-disabled)" : props.isPink ? "var(--color-pink-active)" : "var(--color-default-active)")};
+    background-color: ${(props) => (props.isViewOnly ? "var(--cancelButtonBackground)" : props.isBlue ? "var(--cancelButtonBackgroundActive)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabled)" : props.isPink ? "var(--pinkButtonBackgroundActive)" : "var(--bottomButtonBackgroundActive)")};
   }
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.isPink && props.disabled ? "var(--color-text-on-pink-disabled)" : props.isViewOnly ? "var(--color-dark-view-only-text)" : props.isBlue ? "var(--color-dark-tint)" : "var(--color-white)")};
+    color: ${(props) => (props.isPink && props.disabled ? "var(--color-text-on-pink-disabled)" : props.isViewOnly ? "var(--viewOnlyButtonTextColorDark)" : props.isBlue ? "var(--bottomButtonBackgroundDark)" : "var(--color-white)")};
 
-    background-color: ${(props) => (props.isViewOnly ? "var(--color-dark-view-only)" : props.isBlue ? "var(--color-dark-blue)" : props.isPink && props.disabled ? "var(--color-dark-pink-disabled)" : props.isPink ? "var(--color-dark-pink)" : "var(--color-dark-default)")};
+    background-color: ${(props) => (props.isViewOnly ? "var(--cancelButtonBackgroundDark)" : props.isBlue ? "var(--cancelButtonBackgroundDark)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabledDark)" : props.isPink ? "var(--pinkButtonBackgroundDark)" : "var(--bottomButtonBackgroundDark)")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.isViewOnly ? "var(--color-dark-view-only)" : props.isBlue ? "var(--color-dark-blue-hover)" : props.isPink && props.disabled ? "var(--color-dark-pink-disabled)" : props.isPink ? "var(--color-dark-pink-hover)" : "var(--color-dark-default-hover)")};
+        background-color: ${(props) => (props.isViewOnly ? "var(--cancelButtonBackgroundDark)" : props.isBlue ? "var(--cancelButtonBackgroundHoverDark)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabledDark)" : props.isPink ? "var(--pinkButtonBackgroundHoverDark)" : "var(--bottomButtonBackgroundHoverDark)")};
       }
     }
 
     &:active {
-      background-color: ${(props) => (props.isViewOnly ? "var(--color-dark-view-only)" : props.isBlue ? "var(--color-dark-blue-active)" : props.isPink && props.disabled ? "var(--color-dark-pink-disabled)" : props.isPink ? "var(--color-dark-pink-active)" : "var(--color-dark-default-active)")};
+      background-color: ${(props) => (props.isViewOnly ? "var(--cancelButtonBackgroundDark)" : props.isBlue ? "var(--cancelButtonBackgroundActiveDark)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabledDark)" : props.isPink ? "var(--pinkButtonBackgroundActiveDark)" : "var(--bottomButtonBackgroundActiveDark)")};
     }
   }
 `;
@@ -418,7 +380,7 @@ export const ResignConfirmation = styled(ReactionPicker)`
 
 export const ResignButton = styled(ReactionButton)`
   background-color: var(--resignButtonBackground);
-  color: white;
+  color: var(--color-white);
   border-radius: 16px;
   padding: 8px 16px;
   font-weight: bold;
