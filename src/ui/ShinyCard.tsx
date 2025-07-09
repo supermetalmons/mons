@@ -306,7 +306,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   placeholder.style.height = "83%";
   placeholder.style.backgroundColor = "var(--card-color)";
 
-  placeholder.style.outline = "1px solid #B4B4B455";
+  placeholder.style.outline = "1px solid var(--shinyCardOutlineColor)";
 
   dynamicallyRoundedElements.push({ element: placeholder, radius: 0.035 });
   placeholder.style.top = "50.7%";
@@ -693,7 +693,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     updateContent("subtitle", (asciimojiIndex + 1) % asciimojisCount, asciimojiIndex);
   });
 
-  const gpText = "gp: " + ((isOtherPlayer ? profile?.nonce ?? -1 : storage.getPlayerNonce(-1)) + 1).toString();
+  const gpText = "gp: " + ((isOtherPlayer ? (profile?.nonce ?? -1) : storage.getPlayerNonce(-1)) + 1).toString();
   addTextBubble(cardContentsLayer, gpText, "7.4%", "58.7%", textBubbleHeight, handlePointerLeave);
 
   cardContainer.appendChild(card);
@@ -716,7 +716,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   observer.observe(document.body, { childList: true });
   showMons(cardContentsLayer, handlePointerLeave, isOtherPlayer, profile);
 
-  const stickersJson = isOtherPlayer ? profile?.cardStickers ?? "" : storage.getCardStickers("");
+  const stickersJson = isOtherPlayer ? (profile?.cardStickers ?? "") : storage.getCardStickers("");
   displayStickers(cardContentsLayer, stickersJson);
   updateUndoButton();
 };
@@ -1118,7 +1118,7 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
   const textElement = document.createElement("span");
   textElement.textContent = text;
   textElement.style.whiteSpace = "nowrap";
-  textElement.style.color = "#C1C1C1";
+  textElement.style.color = "var(--shinyCardTextColor)";
   textElement.style.fontFamily = "Arial, sans-serif";
   textElement.style.fontSize = "0.75em";
   textElement.style.fontWeight = "630";

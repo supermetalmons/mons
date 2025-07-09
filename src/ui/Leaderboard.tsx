@@ -18,7 +18,7 @@ export const LeaderboardContainer = styled.div<{ show: boolean }>`
 const LeaderboardTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  color: #333;
+  color: var(--leaderboardTableTextColor);
   table-layout: fixed;
   font-size: 0.85rem;
 
@@ -31,28 +31,28 @@ const LeaderboardTable = styled.table`
   }
 
   @media (prefers-color-scheme: dark) {
-    color: #f5f5f5;
+    color: var(--leaderboardTableTextColorDark);
   }
 
   thead {
     position: sticky;
     top: 0;
-    background-color: #fff;
+    background-color: var(--leaderboardTableBackground);
     z-index: 1;
     font-size: 0.93rem;
 
     @media (prefers-color-scheme: dark) {
-      background-color: #131313;
+      background-color: var(--leaderboardTableBackgroundDark);
     }
   }
 
   th {
     padding: 0px 0 5px 0px;
-    color: #999;
+    color: var(--leaderboardTableMutedTextColor);
     font-size: 0.777rem;
 
     @media (prefers-color-scheme: dark) {
-      color: #999;
+      color: var(--leaderboardTableMutedTextColor);
     }
   }
 
@@ -66,20 +66,20 @@ const LeaderboardTable = styled.table`
 
   th,
   td {
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--leaderboardTableBorderColor);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 
     @media (prefers-color-scheme: dark) {
-      border-bottom: 1px solid #333;
+      border-bottom: 1px solid var(--leaderboardTableBorderColorDark);
     }
 
     &:nth-child(1) {
       width: 8%;
       text-align: left;
       font-size: 0.75rem;
-      color: #999;
+      color: var(--leaderboardTableMutedTextColor);
       padding-left: 5px;
 
       @media (max-width: 320px) {
@@ -125,10 +125,10 @@ const LeaderboardTable = styled.table`
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: rgba(0, 0, 0, 0.04);
+        background-color: var(--leaderboardRowHoverBackground);
 
         @media (prefers-color-scheme: dark) {
-          background-color: rgba(255, 255, 255, 0.04);
+          background-color: var(--leaderboardRowHoverBackgroundDark);
         }
       }
     }
@@ -152,23 +152,23 @@ const TableWrapper = styled.div`
 const LoadingText = styled.div`
   text-align: center;
   font-size: 0.8rem;
-  color: #777;
+  color: var(--leaderboardLoadingTextColor);
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
 
   @media (prefers-color-scheme: dark) {
-    color: #afafaf;
+    color: var(--leaderboardLoadingTextColorDark);
   }
 `;
 
 const RatingCell = styled.td<{ win: boolean }>`
-  color: ${(props) => (props.win ? "#43a047" : "#e53935")};
+  color: ${(props) => (props.win ? "var(--leaderboardRatingWinColor)" : "var(--leaderboardRatingLossColor)")};
   font-weight: 500;
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.win ? "#69f0ae" : "#ff5252")};
+    color: ${(props) => (props.win ? "var(--leaderboardRatingWinColorDark)" : "var(--leaderboardRatingLossColorDark)")};
   }
 `;
 
@@ -218,7 +218,7 @@ const EmojiPlaceholder = styled.div`
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background-color: #e0e0e0;
+    background-color: var(--leaderboardEmojiPlaceholderBackground);
 
     @media (max-width: 360px) {
       width: 16px;
@@ -233,7 +233,7 @@ const EmojiPlaceholder = styled.div`
 
   @media (prefers-color-scheme: dark) {
     &:after {
-      background-color: #444;
+      background-color: var(--leaderboardEmojiPlaceholderBackgroundDark);
     }
   }
 `;

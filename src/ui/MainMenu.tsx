@@ -66,7 +66,7 @@ const CrackContainer = styled.div`
 
 const RockButton = styled.button`
   display: block;
-  background-color: #f9f9f9;
+  background-color: var(--menuContainerBackground);
   border: none;
   border-radius: 20px;
   padding: 3px 6px;
@@ -83,16 +83,16 @@ const RockButton = styled.button`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: #f8f8f8;
+      background-color: var(--panelBackground);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: #252525;
+    background-color: var(--menuContainerBackgroundDark);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: #262626;
+        background-color: var(--panelBackgroundDark);
       }
     }
   }
@@ -125,13 +125,13 @@ const RockMenuWrapper = styled.div<{ isOpen: boolean }>`
 
 const RockMenu = styled.div<{ isOpen: boolean; showLeaderboard: boolean }>`
   position: relative;
-  background-color: #fff;
+  background-color: var(--modalBackground);
   border-radius: 10px;
   padding: 6px;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  box-shadow: ${(props) => (props.isOpen ? "0 6px 20px rgba(0, 0, 0, 0.12)" : "none")};
+  box-shadow: ${(props) => (props.isOpen ? "0 6px 20px var(--notificationBannerShadow)" : "none")};
   width: ${(props) => (props.showLeaderboard ? "min(300px, 83dvw)" : "230px")};
 
   transform-origin: top left;
@@ -140,7 +140,7 @@ const RockMenu = styled.div<{ isOpen: boolean; showLeaderboard: boolean }>`
   z-index: 1;
 
   @media (prefers-color-scheme: dark) {
-    background-color: #131313;
+    background-color: var(--modalBackgroundDark);
   }
 `;
 
@@ -149,11 +149,11 @@ const MenuTitleText = styled.i`
   margin-left: -1px;
   font-weight: 995;
   font-size: 25px;
-  color: #333;
+  color: var(--primaryTextColor);
   cursor: default;
 
   @media (prefers-color-scheme: dark) {
-    color: #f5f5f5;
+    color: var(--lightTextColor);
   }
 `;
 
@@ -175,8 +175,8 @@ const IconLinkButton = styled.a`
   height: 32px;
   padding: 0 9px;
   border-radius: 6px;
-  background-color: #f9f9f9;
-  color: #8f8f9f;
+  background-color: var(--menuContainerBackground);
+  color: var(--iconLinkButtonText);
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
@@ -190,19 +190,19 @@ const IconLinkButton = styled.a`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: #f5f5f5;
-      color: #808090;
+      background-color: var(--secondaryContainerBackground);
+      color: var(--iconLinkButtonTextHover);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: #252525;
-    color: #8a8a9a;
+    background-color: var(--menuContainerBackgroundDark);
+    color: var(--iconLinkButtonTextDark);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: #272727;
-        color: #9a9aaa;
+        background-color: var(--menuContainerHoverBackgroundDark);
+        color: var(--iconLinkButtonTextHoverDark);
       }
     }
   }
@@ -270,9 +270,9 @@ const CloseButton = styled.button`
   display: none;
   align-items: center;
   justify-content: center;
-  background: #fbfbfb;
+  background: var(--closeButtonBackground);
   border: none;
-  color: #cecece;
+  color: var(--lightDisabledTextColor);
   cursor: pointer;
   font-size: 18px;
   font-weight: 230;
@@ -296,8 +296,8 @@ const CloseButton = styled.button`
   }
 
   @media (prefers-color-scheme: dark) {
-    color: #424242;
-    background: #232323;
+    color: var(--darkTertiaryTextColor);
+    background: var(--closeButtonBackgroundDark);
   }
 `;
 
@@ -307,13 +307,13 @@ const MenuOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background: rgba(255, 255, 255, 0.93);
+  background: var(--menuOverlayBackground);
   backdrop-filter: blur(3px);
   border-radius: 0 0 10px 10px;
   z-index: 2;
 
   @media (prefers-color-scheme: dark) {
-    background: #131313;
+    background: var(--menuOverlayBackgroundDark);
   }
 
   @media screen and (max-height: 453px) {
@@ -336,7 +336,7 @@ const ExperimentalMenu = styled.div`
 
 const BuildInfo = styled.div`
   font-size: 13px;
-  color: #9999a8cc;
+  color: var(--buildInfoTextColor);
   text-align: center;
   margin-top: auto;
   padding-bottom: 12px;
@@ -344,7 +344,7 @@ const BuildInfo = styled.div`
   cursor: default;
 
   @media (prefers-color-scheme: dark) {
-    color: #9999a8af;
+    color: var(--buildInfoTextColorDark);
   }
 `;
 
@@ -352,25 +352,25 @@ const ExperimentButton = styled.button`
   padding: 10px 20px;
   border: none;
   border-radius: 8px;
-  background: #f9f9f9;
-  color: #333;
+  background: var(--menuContainerBackground);
+  color: var(--primaryTextColor);
   cursor: pointer;
   font-size: 14px;
   font-weight: 600;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: #f5f5f5;
+      background: var(--secondaryContainerBackground);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background: #252525;
-    color: #f5f5f5;
+    background: var(--menuContainerBackgroundDark);
+    color: var(--lightTextColor);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background: #272727;
+        background: var(--menuContainerHoverBackgroundDark);
       }
     }
   }
@@ -379,7 +379,7 @@ const ExperimentButton = styled.button`
 const CopyBoardButton = styled.button`
   background: none;
   border: none;
-  color: #888888;
+  color: var(--copyBoardButtonColor);
   cursor: pointer;
   font-size: 13px;
   text-decoration-line: underline;
@@ -387,7 +387,7 @@ const CopyBoardButton = styled.button`
   padding: 5px;
 
   @media (prefers-color-scheme: dark) {
-    color: #999999;
+    color: var(--copyBoardButtonColorDark);
   }
 `;
 
@@ -396,7 +396,7 @@ const MusicPopover = styled.div<{ isOpen: boolean }>`
   top: 56px;
   right: 9pt;
   font-size: 12px;
-  background-color: rgba(250, 250, 250, 0.95);
+  background-color: var(--infoPopoverBackground);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 7pt;
@@ -410,8 +410,8 @@ const MusicPopover = styled.div<{ isOpen: boolean }>`
   cursor: default;
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba(35, 35, 35, 0.95);
-    color: #f5f5f5;
+    background-color: var(--infoPopoverBackgroundDark);
+    color: var(--lightTextColor);
   }
 
   @media screen and (max-height: 500px) {
@@ -446,7 +446,7 @@ const MusicControlButton = styled.button`
   border: none;
   border-radius: 6px;
   background: none;
-  color: #0066cc;
+  color: var(--musicControlButtonColor);
   cursor: pointer;
   font-size: 18px;
   flex: 1;
@@ -458,16 +458,16 @@ const MusicControlButton = styled.button`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      color: #0052a3;
+      color: var(--musicControlButtonColorHover);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    color: #66b3ff;
+    color: var(--musicControlButtonColorDark);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        color: #80c4ff;
+        color: var(--musicControlButtonColorHoverDark);
       }
     }
   }
@@ -512,7 +512,7 @@ const MainMenu: React.FC = () => {
     const timeoutRefs: NodeJS.Timeout[] = [];
 
     if (isMenuOpen) {
-      const colors = ["#FFD93D"];
+      const colors = ["var(--crackAnimationColor)"];
       const randomColor = colors[Math.floor(Math.random() * colors.length)];
       const newCracks = Array.from({ length: 6 }, () => ({
         angle: Math.random() * 140 + 180,
