@@ -16,7 +16,7 @@ const NavigationPickerContainer = styled.div`
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
   max-height: calc(100dvh - 120px - env(safe-area-inset-bottom));
-  max-width: 130pt;
+  max-width: 150pt;
   display: flex;
   flex-direction: column;
   background-color: var(--panel-light-90);
@@ -95,8 +95,10 @@ const NavigationPickerButton = styled.button`
 
 const CompletedIcon = styled(FaCheck)`
   color: var(--completedPuzzleIconColor);
-  font-size: 0.8rem;
+  font-size: 0.5rem;
   margin-left: auto;
+  flex-shrink: 0;
+  padding-left: 4pt;
 `;
 
 const PlaceholderImage = styled.img`
