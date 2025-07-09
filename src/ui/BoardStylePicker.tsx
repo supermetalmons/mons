@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { ColorSetKey, setBoardColorSet, getCurrentColorSetKey, colorSets } from "../content/boardStyles";
 import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
+import { isMobile } from "../utils/misc";
 
 export const BoardStylePicker = styled.div`
   position: fixed;
@@ -109,7 +110,8 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
 const BoardStylePickerComponent: React.FC = () => {
   const [currentColorSetKey, setCurrentColorSetKey] = useState<ColorSetKey>(getCurrentColorSetKey());
 
-  const handleColorSetChange = (colorSetKey: ColorSetKey) => {
+  const handleColorSetChange = (colorSetKey: ColorSetKey) => (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
     setBoardColorSet(colorSetKey);
     updateBoardComponentForBoardStyleChange();
     setCurrentColorSetKey(colorSetKey);
@@ -135,10 +137,10 @@ const BoardStylePickerComponent: React.FC = () => {
 
   return (
     <BoardStylePicker>
-      <ColorSquare colorSet="light" isSelected={currentColorSetKey === "default"} onClick={() => handleColorSetChange("default")} aria-label="Light board theme">
+      <ColorSquare colorSet="light" isSelected={currentColorSetKey === "default"} onClick={!isMobile ? handleColorSetChange("default") : undefined} onTouchStart={isMobile ? handleColorSetChange("default") : undefined} aria-label="Light board theme">
         {renderColorSquares("light")}
       </ColorSquare>
-      <ColorSquare colorSet="dark" isSelected={currentColorSetKey === "darkAndYellow"} onClick={() => handleColorSetChange("darkAndYellow")} aria-label="Dark board theme">
+      <ColorSquare colorSet="dark" isSelected={currentColorSetKey === "darkAndYellow"} onClick={!isMobile ? handleColorSetChange("darkAndYellow") : undefined} onTouchStart={isMobile ? handleColorSetChange("darkAndYellow") : undefined} aria-label="Dark board theme">
         {renderColorSquares("dark")}
       </ColorSquare>
     </BoardStylePicker>
