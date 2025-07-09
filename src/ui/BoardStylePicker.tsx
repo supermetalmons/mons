@@ -9,7 +9,7 @@ export const BoardStylePicker = styled.div`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   left: 8px;
-  background-color: rgba(249, 249, 249, 0.9);
+  background-color: var(--boardStylePickerBackground);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 8px;
@@ -25,7 +25,7 @@ export const BoardStylePicker = styled.div`
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba(36, 36, 36, 0.9);
+    background-color: var(--boardStylePickerBackgroundDark);
   }
 `;
 
@@ -49,16 +49,16 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
   ${(props) =>
     props.isSelected &&
     `
-    border-color: #007aff;
-    box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.3);
+    border-color: var(--bottomButtonBackground);
+    box-shadow: 0 0 0 3px var(--selectedBorderShadowColor);
   `}
 
   @media (prefers-color-scheme: dark) {
     ${(props) =>
       props.isSelected &&
       `
-      border-color: #0b84ff;
-      box-shadow: 0 0 0 3px rgba(11, 132, 255, 0.3);
+      border-color: var(--bottomButtonBackgroundDark);
+      box-shadow: 0 0 0 3px var(--selectedBorderShadowColorDark);
     `}
   }
 
@@ -67,12 +67,12 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
       ${(props) =>
         !props.isSelected &&
         `
-        border-color: rgba(0, 122, 255, 0.6);
-        box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.15);
+        border-color: var(--focusBorderColor);
+        box-shadow: 0 0 0 2px var(--focusShadowColor);
         
         @media (prefers-color-scheme: dark) {
-          border-color: rgba(11, 132, 255, 0.6);
-          box-shadow: 0 0 0 2px rgba(11, 132, 255, 0.15);
+          border-color: var(--focusBorderColorDark);
+          box-shadow: 0 0 0 2px var(--focusShadowColorDark);
         }
       `}
     }
@@ -88,12 +88,12 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
       ${(props) =>
         !props.isSelected &&
         `
-        border-color: rgba(0, 122, 255, 0.6);
-        box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.15);
+        border-color: var(--focusBorderColor);
+        box-shadow: 0 0 0 2px var(--focusShadowColor);
         
         @media (prefers-color-scheme: dark) {
-          border-color: rgba(11, 132, 255, 0.6);
-          box-shadow: 0 0 0 2px rgba(11, 132, 255, 0.15);
+          border-color: var(--focusBorderColorDark);
+          box-shadow: 0 0 0 2px var(--focusShadowColorDark);
         }
       `}
     }

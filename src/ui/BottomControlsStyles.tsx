@@ -44,7 +44,7 @@ export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean 
   height: 32px;
   border-radius: 16px;
   opacity: ${(props) => (props.dimmed ? 0.77 : 1)};
-  background-color: #f9f9f9;
+  background-color: var(--primaryContainerBackground);
   border: none;
   display: flex;
   justify-content: center;
@@ -76,25 +76,25 @@ export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean 
   svg {
     width: 12px;
     height: 12px;
-    color: #76778788;
+    color: var(--mutedTextColor);
     overflow: visible;
   }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover svg {
-      color: #767787af;
+      color: var(--mutedTextColorHover);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: #242424;
+    background-color: var(--primaryContainerBackgroundDark);
     svg {
-      color: #767787a9;
+      color: var(--mutedTextColorDark);
     }
 
     @media (hover: hover) and (pointer: fine) {
       &:hover svg {
-        color: #767787f0;
+        color: var(--mutedTextColorHoverDark);
       }
     }
   }
@@ -184,40 +184,40 @@ export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boole
   --color-white: white;
   --color-text-on-pink-disabled: rgba(204, 204, 204, 0.77);
 
-  --color-tint: #007aff;
-  --color-dark-tint: #0b84ff;
+  --color-tint: var(--bottomButtonBackground);
+  --color-dark-tint: var(--bottomButtonBackgroundDark);
 
-  --color-default: #007aff;
-  --color-default-hover: #0069d9;
-  --color-default-active: #0056b3;
+  --color-default: var(--bottomButtonBackground);
+  --color-default-hover: var(--bottomButtonBackgroundHover);
+  --color-default-active: var(--bottomButtonBackgroundActive);
 
-  --color-blue: #f0f0f0;
-  --color-blue-hover: #e0e0e0;
-  --color-blue-active: #d0d0d0;
+  --color-blue: var(--cancelButtonBackground);
+  --color-blue-hover: var(--cancelButtonBackgroundHover);
+  --color-blue-active: var(--cancelButtonBackgroundActive);
 
-  --color-pink: #ff69b4;
-  --color-pink-hover: #ff4da6;
-  --color-pink-active: #d1477b;
-  --color-pink-disabled: #ffd1dc;
+  --color-pink: var(--pinkButtonBackground);
+  --color-pink-hover: var(--pinkButtonBackgroundHover);
+  --color-pink-active: var(--pinkButtonBackgroundActive);
+  --color-pink-disabled: var(--pinkButtonBackgroundDisabled);
 
-  --color-view-only: #f0f0f0;
-  --color-view-only-text: #aaa;
+  --color-view-only: var(--cancelButtonBackground);
+  --color-view-only-text: var(--viewOnlyButtonTextColor);
 
-  --color-dark-default: #0b84ff;
-  --color-dark-default-hover: #1a91ff;
-  --color-dark-default-active: #299fff;
+  --color-dark-default: var(--bottomButtonBackgroundDark);
+  --color-dark-default-hover: var(--bottomButtonBackgroundHoverDark);
+  --color-dark-default-active: var(--bottomButtonBackgroundActiveDark);
 
-  --color-dark-blue: #333;
-  --color-dark-blue-hover: #444;
-  --color-dark-blue-active: #555;
+  --color-dark-blue: var(--cancelButtonBackgroundDark);
+  --color-dark-blue-hover: var(--cancelButtonBackgroundHoverDark);
+  --color-dark-blue-active: var(--cancelButtonBackgroundActiveDark);
 
-  --color-dark-pink: #ff4da6;
-  --color-dark-pink-hover: #ff69b4;
-  --color-dark-pink-active: #ff85c0;
-  --color-dark-pink-disabled: #664d57;
+  --color-dark-pink: var(--pinkButtonBackgroundDark);
+  --color-dark-pink-hover: var(--pinkButtonBackgroundHoverDark);
+  --color-dark-pink-active: var(--pinkButtonBackgroundActiveDark);
+  --color-dark-pink-disabled: var(--pinkButtonBackgroundDisabledDark);
 
-  --color-dark-view-only: #333;
-  --color-dark-view-only-text: #777;
+  --color-dark-view-only: var(--cancelButtonBackgroundDark);
+  --color-dark-view-only-text: var(--viewOnlyButtonTextColorDark);
 
   background-color: ${(props) => (props.isViewOnly ? "var(--color-view-only)" : props.isBlue ? "var(--color-blue)" : props.isPink && props.disabled ? "var(--color-pink-disabled)" : props.isPink ? "var(--color-pink)" : "var(--color-default)")};
   color: ${(props) => (props.isPink && props.disabled ? "var(--color-white)" : props.isViewOnly ? "var(--color-view-only-text)" : props.isBlue ? "var(--color-tint)" : "var(--color-white)")};
@@ -254,7 +254,7 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   width: 32px;
   height: 32px;
   border-radius: ${(props) => (props.dimmed ? "16px" : "16px")};
-  background-color: #f0f0f0;
+  background-color: var(--cancelButtonBackground);
   border: none;
   display: flex;
   justify-content: center;
@@ -273,7 +273,7 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   svg {
     width: ${(props) => (props.dimmed ? "16px" : "13px")};
     height: ${(props) => (props.dimmed ? "16px" : "13px")};
-    color: ${(props) => (props.dimmed ? "#333" : "#007aff")};
+    color: ${(props) => (props.dimmed ? "var(--primaryTextColor)" : "var(--bottomButtonBackground)")};
     overflow: visible;
   }
 
@@ -288,19 +288,19 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: #e0e0e0;
+      background-color: var(--cancelButtonBackgroundHover);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: #333;
+    background-color: var(--cancelButtonBackgroundDark);
     svg {
-      color: ${(props) => (props.dimmed ? "#f0f0f0" : "#0b84ff")};
+      color: ${(props) => (props.dimmed ? "var(--primaryTextColorDark)" : "var(--bottomButtonBackgroundDark)")};
     }
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: #444;
+        background-color: var(--cancelButtonBackgroundHoverDark);
       }
     }
   }
@@ -310,7 +310,7 @@ export const ControlButton = styled.button<{ disabled?: boolean }>`
   width: 32px;
   height: 32px;
   border-radius: 50%;
-  background-color: #f0f0f0;
+  background-color: var(--cancelButtonBackground);
   border: none;
   display: flex;
   justify-content: center;
@@ -322,36 +322,36 @@ export const ControlButton = styled.button<{ disabled?: boolean }>`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.disabled ? "#f0f0f0" : "#e0e0e0")};
+      background-color: ${(props) => (props.disabled ? "var(--cancelButtonBackground)" : "var(--cancelButtonBackgroundHover)")};
     }
   }
 
   &:active {
-    background-color: ${(props) => (props.disabled ? "#f0f0f0" : "#d0d0d0")};
+    background-color: ${(props) => (props.disabled ? "var(--cancelButtonBackground)" : "var(--cancelButtonBackgroundActive)")};
   }
 
   svg {
     width: 16px;
     height: 16px;
-    color: ${(props) => (props.disabled ? "#aaa" : "#333")};
+    color: ${(props) => (props.disabled ? "var(--lightDisabledTextColor2)" : "var(--primaryTextColor)")};
     overflow: visible;
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: #333;
+    background-color: var(--cancelButtonBackgroundDark);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.disabled ? "#333" : "#444")};
+        background-color: ${(props) => (props.disabled ? "var(--cancelButtonBackgroundDark)" : "var(--cancelButtonBackgroundHoverDark)")};
       }
     }
 
     &:active {
-      background-color: ${(props) => (props.disabled ? "#333" : "#555")};
+      background-color: ${(props) => (props.disabled ? "var(--cancelButtonBackgroundDark)" : "var(--cancelButtonBackgroundActiveDark)")};
     }
 
     svg {
-      color: ${(props) => (props.disabled ? "#777" : "#f0f0f0")};
+      color: ${(props) => (props.disabled ? "var(--darkDisabledTextColor)" : "var(--primaryTextColorDark)")};
     }
   }
 `;
@@ -360,7 +360,7 @@ export const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   position: absolute;
   bottom: 40px;
   right: ${(props) => (props.offsetToTheRight ? "22px" : "64px")};
-  background-color: rgba(249, 249, 249, 0.9);
+  background-color: var(--boardStylePickerBackground);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 8px;
@@ -374,7 +374,7 @@ export const ReactionPicker = styled.div<{ offsetToTheRight?: boolean }>`
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba(36, 36, 36, 0.9);
+    background-color: var(--boardStylePickerBackgroundDark);
   }
 `;
 
@@ -384,29 +384,29 @@ export const ReactionButton = styled.button`
   padding: 4px 8px;
   cursor: pointer;
   text-align: left;
-  color: #333;
+  color: var(--primaryTextColor);
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: rgba(232, 232, 232, 0.5);
+      background-color: var(--interactiveHoverBackgroundLight);
     }
   }
 
   &:active {
-    background-color: rgba(224, 224, 224, 0.6);
+    background-color: var(--interactiveActiveBackgroundLight);
   }
 
   @media (prefers-color-scheme: dark) {
-    color: #f0f0f0;
+    color: var(--primaryTextColorDark);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: rgba(70, 70, 70, 0.4);
+        background-color: var(--interactiveHoverBackgroundDark);
       }
     }
 
     &:active {
-      background-color: rgba(80, 80, 80, 0.5);
+      background-color: var(--interactiveActiveBackgroundDark);
     }
   }
 `;
@@ -417,32 +417,32 @@ export const ResignConfirmation = styled(ReactionPicker)`
 `;
 
 export const ResignButton = styled(ReactionButton)`
-  background-color: #ff4136;
+  background-color: var(--resignButtonBackground);
   color: white;
   border-radius: 16px;
   padding: 8px 16px;
   font-weight: bold;
 
   &:active {
-    background-color: #d30000;
+    background-color: var(--resignButtonBackgroundActive);
   }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: #e60000;
+      background-color: var(--resignButtonBackgroundHover);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: #cc0000;
+    background-color: var(--resignButtonBackgroundDark);
 
     &:active {
-      background-color: #990000;
+      background-color: var(--resignButtonBackgroundActiveDark);
     }
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: #b30000;
+        background-color: var(--resignButtonBackgroundHoverDark);
       }
     }
   }

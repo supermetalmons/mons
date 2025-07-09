@@ -6,27 +6,27 @@ export const ModalOverlay = styled.div`
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.3);
+  background-color: var(--modalOverlayBackground);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1023;
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: var(--modalOverlayBackgroundDark);
   }
 `;
 
 export const ModalPopup = styled.div`
-  background-color: white;
+  background-color: var(--modalBackground);
   padding: 24px;
   border-radius: 16px;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 6px 20px var(--standardBoxShadow);
   width: 85%;
   max-width: 320px;
 
   @media (prefers-color-scheme: dark) {
-    background-color: #1a1a1a;
+    background-color: var(--modalBackgroundDark);
   }
 `;
 
@@ -35,10 +35,10 @@ export const ModalTitle = styled.h3`
   margin-bottom: 16px;
   cursor: default;
   font-size: 1.1rem;
-  color: #333;
+  color: var(--primaryTextColor);
 
   @media (prefers-color-scheme: dark) {
-    color: #f0f0f0;
+    color: var(--primaryTextColorDark);
   }
 `;
 
@@ -64,37 +64,37 @@ export const Button = styled.button`
 `;
 
 export const CancelButton = styled(Button)`
-  background-color: #f0f0f0;
-  color: #000;
+  background-color: var(--cancelButtonBackground);
+  color: var(--blackTextColor);
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: #e0e0e0;
+      background-color: var(--cancelButtonBackgroundHover);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: #333;
-    color: #f5f5f5;
+    background-color: var(--cancelButtonBackgroundDark);
+    color: var(--lightTextColor);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: #444;
+        background-color: var(--cancelButtonBackgroundHoverDark);
       }
     }
   }
 `;
 
 export const SaveButton = styled(Button)<{ disabled: boolean }>`
-  --color-default: #007aff;
-  --color-default-hover: #0069d9;
-  --color-default-active: #0056b3;
-  --color-disabled: #a0a0a0;
+  --color-default: var(--bottomButtonBackground);
+  --color-default-hover: var(--bottomButtonBackgroundHover);
+  --color-default-active: var(--bottomButtonBackgroundActive);
+  --color-disabled: var(--buttonBackgroundDisabled);
 
-  --color-dark-default: #0b84ff;
-  --color-dark-default-hover: #1a91ff;
-  --color-dark-default-active: #299fff;
-  --color-dark-disabled: #555555;
+  --color-dark-default: var(--bottomButtonBackgroundDark);
+  --color-dark-default-hover: var(--bottomButtonBackgroundHoverDark);
+  --color-dark-default-active: var(--bottomButtonBackgroundActiveDark);
+  --color-dark-disabled: var(--buttonBackgroundDisabledDark);
 
   background-color: ${(props) => (props.disabled ? "var(--color-disabled)" : "var(--color-default)")};
   color: white;
@@ -127,15 +127,15 @@ export const SaveButton = styled(Button)<{ disabled: boolean }>`
 `;
 
 export const DangerButton = styled(Button)<{ disabled?: boolean }>`
-  --color-default: #ff3b30;
-  --color-default-hover: #ff2d1b;
-  --color-default-active: #e5281d;
-  --color-disabled: #a0a0a0;
+  --color-default: var(--dangerButtonBackground);
+  --color-default-hover: var(--dangerButtonBackgroundHover);
+  --color-default-active: var(--dangerButtonBackgroundActive);
+  --color-disabled: var(--buttonBackgroundDisabled);
 
-  --color-dark-default: #ff453a;
-  --color-dark-default-hover: #ff6159;
-  --color-dark-default-active: #ff7a72;
-  --color-dark-disabled: #555555;
+  --color-dark-default: var(--dangerButtonBackgroundDark);
+  --color-dark-default-hover: var(--dangerButtonBackgroundHoverDark);
+  --color-dark-default-active: var(--dangerButtonBackgroundActiveDark);
+  --color-dark-disabled: var(--buttonBackgroundDisabledDark);
 
   background-color: ${(props) => (props.disabled ? "var(--color-disabled)" : "var(--color-default)")};
   color: white;
@@ -169,7 +169,7 @@ export const DangerButton = styled(Button)<{ disabled?: boolean }>`
 
 export const Subtitle = styled.p`
   margin: 0 0 24px 0;
-  color: #696969;
+  color: var(--secondaryTextColor);
   font-size: 0.95rem;
   line-height: 1.4;
   cursor: default;
@@ -177,6 +177,6 @@ export const Subtitle = styled.p`
   opacity: 0.8;
 
   @media (prefers-color-scheme: dark) {
-    color: #b0b0b0;
+    color: var(--secondaryTextColorDark);
   }
 `;

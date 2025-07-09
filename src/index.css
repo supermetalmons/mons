@@ -3,9 +3,177 @@
   --text-color-light: black;
   --background-color-dark: #131313;
   --text-color-dark: #e0e0e0;
-  --link-color-light: #0071F9;
-  --link-color-dark: #009AFF;
-  --card-color: #FAFAFA;
+  --link-color-light: #0071f9;
+  --link-color-dark: #009aff;
+  --card-color: #fafafa;
+  --bottomButtonBackground: #007aff;
+  --bottomButtonBackgroundHover: #0069d9;
+  --bottomButtonBackgroundActive: #0056b3;
+  --bottomButtonBackgroundDark: #0b84ff;
+  --bottomButtonBackgroundHoverDark: #1a91ff;
+  --bottomButtonBackgroundActiveDark: #299fff;
+  --dangerButtonBackground: #ff3b30;
+  --dangerButtonBackgroundHover: #ff2d1b;
+  --dangerButtonBackgroundActive: #e5281d;
+  --dangerButtonBackgroundDark: #ff453a;
+  --dangerButtonBackgroundHoverDark: #ff6159;
+  --dangerButtonBackgroundActiveDark: #ff7a72;
+  --resignButtonBackground: #ff4136;
+  --resignButtonBackgroundHover: #e60000;
+  --resignButtonBackgroundActive: #d30000;
+  --resignButtonBackgroundDark: #cc0000;
+  --resignButtonBackgroundHoverDark: #b30000;
+  --resignButtonBackgroundActiveDark: #990000;
+  --cancelButtonBackground: #f0f0f0;
+  --cancelButtonBackgroundHover: #e0e0e0;
+  --cancelButtonBackgroundActive: #d0d0d0;
+  --cancelButtonBackgroundDark: #333;
+  --cancelButtonBackgroundHoverDark: #444;
+  --cancelButtonBackgroundActiveDark: #555;
+  --buttonBackgroundDisabled: #a0a0a0;
+  --buttonBackgroundDisabledDark: #555555;
+  --modalOverlayBackground: rgba(0, 0, 0, 0.3);
+  --modalOverlayBackgroundDark: rgba(0, 0, 0, 0.5);
+  --modalBackground: white;
+  --modalBackgroundDark: #131313;
+  --primaryContainerBackground: #f9f9f9;
+  --primaryContainerBackgroundDark: #242424;
+  --secondaryContainerBackground: #f5f5f5;
+  --secondaryContainerBackgroundDark: #272727;
+  --menuContainerBackground: #f9f9f9;
+  --menuContainerBackgroundDark: #252525;
+  --menuContainerHoverBackgroundDark: #272727;
+  --closeButtonBackground: #fbfbfb;
+  --closeButtonBackgroundDark: #232323;
+  --menuOverlayBackground: rgba(255, 255, 255, 0.93);
+  --menuOverlayBackgroundDark: #131313;
+  --panelBackground: #f8f8f8;
+  --panelBackgroundDark: #262626;
+  --inventoryModalBackground: #fffffffa;
+  --inventoryModalBackgroundDark: #1a1a1afa;
+  --inventoryItemBackground: #f5f5f5;
+  --inventoryItemBackgroundDark: #2a2a2a;
+  --primaryTextColor: #333;
+  --primaryTextColorDark: #f0f0f0;
+  --secondaryTextColor: #696969;
+  --secondaryTextColorDark: #b0b0b0;
+  --mutedTextColor: #76778788;
+  --mutedTextColorHover: #767787af;
+  --mutedTextColorDark: #767787a9;
+  --mutedTextColorHoverDark: #767787f0;
+  --lightTextColor: #f5f5f5;
+  --blackTextColor: #000;
+  --tertiaryTextColor: #555;
+  --tertiaryTextColorDark: #d0d0d0;
+  --darkTertiaryTextColor: #424242;
+  --disabledTextColor: #999999;
+  --lightDisabledTextColor2: #aaa;
+  --darkDisabledTextColor: #777;
+  --lightDisabledTextColor: #cecece;
+  --inputBorderColor: #ddd;
+  --buildInfoTextColor: #9999a8cc;
+  --buildInfoTextColorDark: #9999a8af;
+  --boardStylePickerBackground: rgba(249, 249, 249, 0.9);
+  --boardStylePickerBackgroundDark: rgba(36, 36, 36, 0.9);
+  --boardCircularButtonBackground: rgba(240, 240, 240, 0.8);
+  --boardCircularButtonBackgroundHover: rgba(250, 250, 250, 0.85);
+  --boardCircularButtonBackgroundActive: rgba(230, 230, 230, 0.9);
+  --boardCircularButtonBackgroundDark: rgba(80, 80, 80, 0.8);
+  --boardCircularButtonBackgroundHoverDark: rgba(90, 90, 90, 0.85);
+  --boardCircularButtonBackgroundActiveDark: rgba(70, 70, 70, 0.9);
+  --boardCircularButtonText: #007aff;
+  --boardCircularButtonTextDark: #0b84ff;
+  --profileSigninTint: #0e76fd;
+  --profileSigninTintDark: #3898ff;
+  --profileConnectedBackground: #f9f9f9de;
+  --profileConnectedBackgroundHover: #f5f5f5;
+  --profileConnectedBackgroundDark: #252525d5;
+  --profileConnectedBackgroundHoverDark: #272727;
+  --profileConnectedText: #767787c9;
+  --profilePopoverBackground: white;
+  --profilePopoverBackgroundDark: #131313;
+  --navigationTextMuted: #767787;
+  --navigationTextMutedDark: #a0a0a0;
+  --iconLinkButtonText: #8f8f9f;
+  --iconLinkButtonTextHover: #808090;
+  --iconLinkButtonTextDark: #8a8a9a;
+  --iconLinkButtonTextHoverDark: #9a9aaa;
+  --navigationBackground: #f9f9f9;
+  --navigationBackgroundHover: #f5f5f5;
+  --navigationBackgroundDark: #252525;
+  --navigationBackgroundHoverDark: #272727;
+  --controlButtonBackground: #f9f9f9de;
+  --controlButtonBackgroundDark: #252525d5;
+  --topControlButtonsBackground: #f9f9f9de;
+  --topControlButtonsBackgroundDark: #252525d5;
+  --notificationBannerBackground: rgba(250, 250, 250, 0.95);
+  --notificationBannerBackgroundDark: rgba(35, 35, 35, 0.95);
+  --notificationBannerShadow: rgba(0, 0, 0, 0.12);
+  --notificationTitleColor: #0066cc;
+  --notificationTitleColorDark: #66b3ff;
+  --notificationSubtitleColor: #696969;
+  --notificationSubtitleColorDark: #999;
+  --notificationCloseButtonBackground: #fbfbfb;
+  --notificationCloseButtonBackgroundDark: #232323;
+  --notificationCloseButtonColor: #cecece;
+  --notificationCloseButtonColorDark: #424242;
+  --notificationCloseButtonBackgroundHover: #f0f0f0;
+  --notificationCloseButtonBackgroundHoverDark: #2a2a2a;
+  --notificationCloseButtonColorHover: #999;
+  --notificationCloseButtonColorHoverDark: #696969;
+  --infoPopoverBackground: rgba(250, 250, 250, 0.95);
+  --infoPopoverBackgroundDark: rgba(35, 35, 35, 0.95);
+  --musicControlButtonColor: #0066cc;
+  --musicControlButtonColorHover: #0052a3;
+  --musicControlButtonColorDark: #66b3ff;
+  --musicControlButtonColorHoverDark: #80c4ff;
+  --copyBoardButtonColor: #888888;
+  --copyBoardButtonColorDark: #999999;
+  --boardBackgroundLight: #fefcf6;
+  --boardBackgroundDark: #232323;
+  --leaderboardRowHoverBackground: rgba(0, 0, 0, 0.04);
+  --leaderboardRowHoverBackgroundDark: rgba(255, 255, 255, 0.04);
+  --leaderboardLoadingTextColor: #777;
+  --leaderboardLoadingTextColorDark: #afafaf;
+  --leaderboardRatingWinColor: #43a047;
+  --leaderboardRatingLossColor: #e53935;
+  --leaderboardRatingWinColorDark: #69f0ae;
+  --leaderboardRatingLossColorDark: #ff5252;
+  --leaderboardEmojiPlaceholderBackground: #e0e0e0;
+  --leaderboardEmojiPlaceholderBackgroundDark: #444;
+  --leaderboardTableTextColor: #333;
+  --leaderboardTableTextColorDark: #f5f5f5;
+  --leaderboardTableBackground: #fff;
+  --leaderboardTableBackgroundDark: #131313;
+  --leaderboardTableBorderColor: #ddd;
+  --leaderboardTableBorderColorDark: #333;
+  --leaderboardTableMutedTextColor: #999;
+  --interactiveHoverBackgroundLight: rgba(232, 232, 232, 0.5);
+  --interactiveActiveBackgroundLight: rgba(224, 224, 224, 0.6);
+  --interactiveHoverBackgroundDark: rgba(70, 70, 70, 0.4);
+  --interactiveActiveBackgroundDark: rgba(80, 80, 80, 0.5);
+  --focusBorderColor: rgba(0, 122, 255, 0.6);
+  --focusShadowColor: rgba(0, 122, 255, 0.15);
+  --focusBorderColorDark: rgba(11, 132, 255, 0.6);
+  --focusShadowColorDark: rgba(11, 132, 255, 0.15);
+  --selectedBorderShadowColor: rgba(0, 122, 255, 0.3);
+  --selectedBorderShadowColorDark: rgba(11, 132, 255, 0.3);
+  --standardBoxShadow: rgba(0, 0, 0, 0.2);
+  --cardBoxShadow: rgba(0, 0, 0, 0.3);
+  --lightBoxShadow: rgba(0, 0, 0, 0.15);
+  --pinkButtonBackground: #ff69b4;
+  --pinkButtonBackgroundHover: #ff4da6;
+  --pinkButtonBackgroundActive: #d1477b;
+  --pinkButtonBackgroundDisabled: #ffd1dc;
+  --pinkButtonBackgroundDark: #ff4da6;
+  --pinkButtonBackgroundHoverDark: #ff69b4;
+  --pinkButtonBackgroundActiveDark: #ff85c0;
+  --pinkButtonBackgroundDisabledDark: #664d57;
+  --viewOnlyButtonTextColor: #aaa;
+  --viewOnlyButtonTextColorDark: #777;
+  --shinyCardOutlineColor: rgba(180, 180, 180, 0.33);
+  --shinyCardTextColor: #c1c1c1;
+  --crackAnimationColor: #ffd93d;
   -webkit-touch-callout: none;
   touch-action: none;
   user-select: none;
@@ -16,7 +184,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --card-color: #EEEEEE;
+    --card-color: #eeeeee;
   }
 }
 
@@ -42,8 +210,18 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+  font-family:
+    "SF Pro Display",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Roboto",
+    "Oxygen",
+    "Ubuntu",
+    "Cantarell",
+    "Fira Sans",
+    "Droid Sans",
+    "Helvetica Neue",
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -179,14 +357,14 @@ img {
   display: flex;
   margin-right: 8px;
   border-radius: 16px;
-  background-color: #f9f9f9de;
+  background-color: var(--topControlButtonsBackground);
 
   @media (max-width: 320px) {
     margin-right: 5px;
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: #252525d5;
+    background-color: var(--topControlButtonsBackgroundDark);
   }
 }
 
@@ -201,7 +379,7 @@ img {
   align-items: center;
   justify-content: center;
   background-color: transparent;
-  color: #767787c9;
+  color: var(--profileConnectedText);
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
@@ -218,16 +396,16 @@ img {
 
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) {
-      color: #767787ef;
+      color: var(--mutedTextColorHover);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    color: #767787a9;
+    color: var(--mutedTextColorDark);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover:not(:disabled) {
-        color: #767787f0;
+        color: var(--mutedTextColorHoverDark);
       }
     }
   }
@@ -271,7 +449,7 @@ img {
   -webkit-backdrop-filter: blur(5px);
   border-radius: 12px;
   padding: 12px 20px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  box-shadow: 0 4px 20px var(--lightBoxShadow);
   z-index: 1001;
   user-select: none;
   opacity: 0;
@@ -284,7 +462,7 @@ img {
 @media (prefers-color-scheme: dark) {
   .shiny-card-editing-panel {
     background-color: rgba(36, 36, 36, 0.9);
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px var(--cardBoxShadow);
   }
 }
 
@@ -300,8 +478,8 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f0f0f0;
-  color: #696969;
+  background-color: var(--cancelButtonBackground);
+  color: var(--secondaryTextColor);
   border: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -313,11 +491,11 @@ img {
 }
 
 .shiny-card-undo-button:hover:not(:disabled) {
-  background-color: #e0e0e0;
+  background-color: var(--cancelButtonBackgroundHover);
 }
 
 .shiny-card-undo-button:active:not(:disabled) {
-  background-color: #d0d0d0;
+  background-color: var(--cancelButtonBackgroundActive);
 }
 
 .shiny-card-undo-button:disabled {
@@ -326,16 +504,16 @@ img {
 
 @media (prefers-color-scheme: dark) {
   .shiny-card-undo-button {
-    background-color: #333;
-    color: #999999;
+    background-color: var(--cancelButtonBackgroundDark);
+    color: var(--disabledTextColor);
   }
 
   .shiny-card-undo-button:hover:not(:disabled) {
-    background-color: #444;
+    background-color: var(--cancelButtonBackgroundHoverDark);
   }
 
   .shiny-card-undo-button:active:not(:disabled) {
-    background-color: #555;
+    background-color: var(--cancelButtonBackgroundActiveDark);
   }
 }
 
@@ -351,8 +529,8 @@ img {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f0f0f0;
-  color: #007aff;
+  background-color: var(--cancelButtonBackground);
+  color: var(--bottomButtonBackground);
   border: none;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -364,24 +542,24 @@ img {
 }
 
 .shiny-card-done-button:hover {
-  background-color: #e0e0e0;
+  background-color: var(--cancelButtonBackgroundHover);
 }
 
 .shiny-card-done-button:active {
-  background-color: #d0d0d0;
+  background-color: var(--cancelButtonBackgroundActive);
 }
 
 @media (prefers-color-scheme: dark) {
   .shiny-card-done-button {
-    background-color: #333;
-    color: #0b84ff;
+    background-color: var(--cancelButtonBackgroundDark);
+    color: var(--bottomButtonBackgroundDark);
   }
 
   .shiny-card-done-button:hover {
-    background-color: #444;
+    background-color: var(--cancelButtonBackgroundHoverDark);
   }
 
   .shiny-card-done-button:active {
-    background-color: #555;
+    background-color: var(--cancelButtonBackgroundActiveDark);
   }
 }

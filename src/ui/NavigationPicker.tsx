@@ -18,7 +18,7 @@ const NavigationPickerContainer = styled.div`
   max-width: 130pt;
   display: flex;
   flex-direction: column;
-  background-color: rgba(249, 249, 249, 0.9);
+  background-color: var(--boardStylePickerBackground);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 7pt;
@@ -27,7 +27,7 @@ const NavigationPickerContainer = styled.div`
   z-index: 5;
 
   @media (prefers-color-scheme: dark) {
-    background-color: rgba(36, 36, 36, 0.9);
+    background-color: var(--boardStylePickerBackgroundDark);
   }
 
   @media screen and (max-height: 453px) {
@@ -44,13 +44,13 @@ const ScrollableList = styled.div`
 const SectionTitle = styled.div`
   font-size: 0.55rem;
   font-weight: bold;
-  color: #767787;
+  color: var(--navigationTextMuted);
   text-align: left;
   padding: 1px 0 2pt;
   cursor: pointer;
 
   @media (prefers-color-scheme: dark) {
-    color: #a0a0a0;
+    color: var(--navigationTextMutedDark);
   }
 `;
 
@@ -61,7 +61,7 @@ const NavigationPickerButton = styled.button`
   padding: 6px 15px 6px 0;
   cursor: pointer;
   text-align: left;
-  color: #333;
+  color: var(--primaryTextColor);
   width: 100%;
   display: flex;
   align-items: center;
@@ -69,25 +69,25 @@ const NavigationPickerButton = styled.button`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: rgba(232, 232, 232, 0.5);
+      background-color: var(--interactiveHoverBackgroundLight);
     }
   }
 
   &:active {
-    background-color: rgba(224, 224, 224, 0.6);
+    background-color: var(--interactiveActiveBackgroundLight);
   }
 
   @media (prefers-color-scheme: dark) {
-    color: #f0f0f0;
+    color: var(--primaryTextColorDark);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: rgba(70, 70, 70, 0.4);
+        background-color: var(--interactiveHoverBackgroundDark);
       }
     }
 
     &:active {
-      background-color: rgba(80, 80, 80, 0.5);
+      background-color: var(--interactiveActiveBackgroundDark);
     }
   }
 `;
@@ -101,7 +101,7 @@ const PlaceholderImage = styled.img`
 const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
   position: sticky;
   bottom: 0;
-  background-color: #007aff;
+  background-color: var(--bottomButtonBackground);
   color: white;
   border-radius: 21px;
   padding: 8px 16px;
@@ -120,25 +120,25 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
   z-index: 2;
 
   &:active {
-    background-color: #0056b3;
+    background-color: var(--bottomButtonBackgroundActive);
   }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: #0069d9;
+      background-color: var(--bottomButtonBackgroundHover);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: #0b84ff;
+    background-color: var(--bottomButtonBackgroundDark);
 
     &:active {
-      background-color: #299fff;
+      background-color: var(--bottomButtonBackgroundActiveDark);
     }
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: #1a91ff;
+        background-color: var(--bottomButtonBackgroundHoverDark);
       }
     }
   }
