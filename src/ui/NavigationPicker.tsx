@@ -18,7 +18,7 @@ const NavigationPickerContainer = styled.div`
   max-width: 130pt;
   display: flex;
   flex-direction: column;
-  background-color: var(--boardStylePickerBackground);
+  background-color: var(--panel-light-90);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 7pt;
@@ -27,7 +27,7 @@ const NavigationPickerContainer = styled.div`
   z-index: 5;
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--boardStylePickerBackgroundDark);
+    background-color: var(--panel-dark-90);
   }
 
   @media screen and (max-height: 453px) {
@@ -50,7 +50,7 @@ const SectionTitle = styled.div`
   cursor: pointer;
 
   @media (prefers-color-scheme: dark) {
-    color: var(--navigationTextMutedDark);
+    color: var(--color-gray-a0);
   }
 `;
 
@@ -61,7 +61,7 @@ const NavigationPickerButton = styled.button`
   padding: 6px 15px 6px 0;
   cursor: pointer;
   text-align: left;
-  color: var(--primaryTextColor);
+  color: var(--color-gray-33);
   width: 100%;
   display: flex;
   align-items: center;
@@ -78,7 +78,7 @@ const NavigationPickerButton = styled.button`
   }
 
   @media (prefers-color-scheme: dark) {
-    color: var(--primaryTextColorDark);
+    color: var(--color-gray-f0);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
@@ -101,7 +101,7 @@ const PlaceholderImage = styled.img`
 const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
   position: sticky;
   bottom: 0;
-  background-color: var(--bottomButtonBackground);
+  background-color: var(--color-blue-primary);
   color: white;
   border-radius: 21px;
   padding: 8px 16px;
@@ -130,7 +130,7 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--bottomButtonBackgroundDark);
+    background-color: var(--color-blue-primary-dark);
 
     &:active {
       background-color: var(--bottomButtonBackgroundActiveDark);

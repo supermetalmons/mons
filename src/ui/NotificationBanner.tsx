@@ -5,7 +5,7 @@ const NotificationBanner = styled.div<{ isVisible: boolean }>`
   position: fixed;
   top: 56px;
   right: 9pt;
-  background-color: var(--notificationBannerBackground);
+  background-color: var(--overlay-light-95);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 7pt;
@@ -28,8 +28,8 @@ const NotificationBanner = styled.div<{ isVisible: boolean }>`
   transition: opacity 0.3s ease;
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--notificationBannerBackgroundDark);
-    color: var(--lightTextColor);
+    background-color: var(--overlay-dark-95);
+    color: var(--color-gray-f5);
   }
 
   @media screen and (max-height: 500px) {
@@ -71,25 +71,25 @@ const NotificationContent = styled.div`
 const NotificationTitle = styled.div`
   font-size: 18px;
   font-weight: 800;
-  color: var(--notificationTitleColor);
+  color: var(--color-blue-0066cc);
   margin-bottom: 2px;
   line-height: 1.2;
   text-align: left;
 
   @media (prefers-color-scheme: dark) {
-    color: var(--notificationTitleColorDark);
+    color: var(--color-blue-66b3ff);
   }
 `;
 
 const NotificationSubtitle = styled.div`
   font-size: 13px;
   font-weight: 500;
-  color: var(--notificationSubtitleColor);
+  color: var(--color-gray-69);
   line-height: 1.3;
   text-align: left;
 
   @media (prefers-color-scheme: dark) {
-    color: var(--notificationSubtitleColorDark);
+    color: var(--color-gray-99);
   }
 `;
 
@@ -97,7 +97,7 @@ const CloseButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--notificationCloseButtonBackground);
+  background: var(--color-gray-fb);
   border: none;
   color: var(--notificationCloseButtonColor);
   cursor: pointer;
@@ -120,19 +120,19 @@ const CloseButton = styled.button`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: var(--notificationCloseButtonBackgroundHover);
-      color: var(--notificationCloseButtonColorHover);
+      background: var(--color-gray-f0);
+      color: var(--color-gray-99);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    color: var(--notificationCloseButtonColorDark);
-    background: var(--notificationCloseButtonBackgroundDark);
+    color: var(--color-gray-42);
+    background: var(--color-gray-23);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
         background: var(--notificationCloseButtonBackgroundHoverDark);
-        color: var(--notificationCloseButtonColorHoverDark);
+        color: var(--color-gray-69);
       }
     }
   }

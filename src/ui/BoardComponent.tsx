@@ -11,7 +11,7 @@ const CircularButton = styled.button`
   aspect-ratio: 1;
   border-radius: 50%;
   background-color: var(--boardCircularButtonBackground);
-  color: var(--boardCircularButtonText);
+  color: var(--color-blue-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,7 +35,7 @@ const CircularButton = styled.button`
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--boardCircularButtonBackgroundDark);
-    color: var(--boardCircularButtonTextDark);
+    color: var(--color-blue-primary-dark);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
@@ -140,7 +140,7 @@ const BoardComponent: React.FC = () => {
           </g>
         ) : (
           <g id="boardBackgroundLayer">
-            <rect x="1" y="101" height="1161" width="1098" fill={prefersDarkMode ? "var(--boardBackgroundDark)" : "var(--boardBackgroundLight)"} />
+            <rect x="1" y="101" height="1161" width="1098" fill={prefersDarkMode ? "var(--color-gray-23)" : "var(--boardBackgroundLight)"} />
             {shouldIncludePangchiuImage && (
               <image
                 href="/assets/bg/Pangchiu.jpg"
@@ -148,7 +148,7 @@ const BoardComponent: React.FC = () => {
                 y="100"
                 width="1100"
                 style={{
-                  backgroundColor: prefersDarkMode ? "var(--boardBackgroundDark)" : "var(--boardBackgroundLight)",
+                  backgroundColor: prefersDarkMode ? "var(--color-gray-23)" : "var(--boardBackgroundLight)",
                   display: isGridVisible ? "none" : "block",
                 }}
               />

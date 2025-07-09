@@ -18,7 +18,7 @@ export const ModalOverlay = styled.div`
 `;
 
 export const ModalPopup = styled.div`
-  background-color: var(--modalBackground);
+  background-color: var(--color-white);
   padding: 24px;
   border-radius: 16px;
   box-shadow: 0 6px 20px var(--standardBoxShadow);
@@ -26,7 +26,7 @@ export const ModalPopup = styled.div`
   max-width: 320px;
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--modalBackgroundDark);
+    background-color: var(--color-deep-gray);
   }
 `;
 
@@ -35,10 +35,10 @@ export const ModalTitle = styled.h3`
   margin-bottom: 16px;
   cursor: default;
   font-size: 1.1rem;
-  color: var(--primaryTextColor);
+  color: var(--color-gray-33);
 
   @media (prefers-color-scheme: dark) {
-    color: var(--primaryTextColorDark);
+    color: var(--color-gray-f0);
   }
 `;
 
@@ -64,92 +64,92 @@ export const Button = styled.button`
 `;
 
 export const CancelButton = styled(Button)`
-  background-color: var(--cancelButtonBackground);
-  color: var(--blackTextColor);
+  background-color: var(--color-gray-f0);
+  color: var(--color-black);
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: var(--cancelButtonBackgroundHover);
+      background-color: var(--color-gray-e0);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--cancelButtonBackgroundDark);
-    color: var(--lightTextColor);
+    background-color: var(--color-gray-33);
+    color: var(--color-gray-f5);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: var(--cancelButtonBackgroundHoverDark);
+        background-color: var(--color-gray-44);
       }
     }
   }
 `;
 
 export const SaveButton = styled(Button)<{ disabled: boolean }>`
-  background-color: ${(props) => (props.disabled ? "var(--buttonBackgroundDisabled)" : "var(--bottomButtonBackground)")};
+  background-color: ${(props) => (props.disabled ? "var(--color-gray-a0)" : "var(--color-blue-primary)")};
   color: white;
   min-width: 80px;
   opacity: ${(props) => (props.disabled ? 0.7 : 1)};
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.disabled ? "var(--buttonBackgroundDisabled)" : "var(--bottomButtonBackgroundHover)")};
+      background-color: ${(props) => (props.disabled ? "var(--color-gray-a0)" : "var(--bottomButtonBackgroundHover)")};
     }
   }
 
   &:active {
-    background-color: ${(props) => (props.disabled ? "var(--buttonBackgroundDisabled)" : "var(--bottomButtonBackgroundActive)")};
+    background-color: ${(props) => (props.disabled ? "var(--color-gray-a0)" : "var(--bottomButtonBackgroundActive)")};
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: ${(props) => (props.disabled ? "var(--buttonBackgroundDisabledDark)" : "var(--bottomButtonBackgroundDark)")};
+    background-color: ${(props) => (props.disabled ? "var(--color-gray-55)" : "var(--color-blue-primary-dark)")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.disabled ? "var(--buttonBackgroundDisabledDark)" : "var(--bottomButtonBackgroundHoverDark)")};
+        background-color: ${(props) => (props.disabled ? "var(--color-gray-55)" : "var(--bottomButtonBackgroundHoverDark)")};
       }
     }
 
     &:active {
-      background-color: ${(props) => (props.disabled ? "var(--buttonBackgroundDisabledDark)" : "var(--bottomButtonBackgroundActiveDark)")};
+      background-color: ${(props) => (props.disabled ? "var(--color-gray-55)" : "var(--bottomButtonBackgroundActiveDark)")};
     }
   }
 `;
 
 export const DangerButton = styled(Button)<{ disabled?: boolean }>`
-  background-color: ${(props) => (props.disabled ? "var(--buttonBackgroundDisabled)" : "var(--dangerButtonBackground)")};
+  background-color: ${(props) => (props.disabled ? "var(--color-gray-a0)" : "var(--dangerButtonBackground)")};
   color: white;
   min-width: 80px;
   opacity: ${(props) => (props.disabled ? 0.7 : 1)};
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.disabled ? "var(--buttonBackgroundDisabled)" : "var(--dangerButtonBackgroundHover)")};
+      background-color: ${(props) => (props.disabled ? "var(--color-gray-a0)" : "var(--dangerButtonBackgroundHover)")};
     }
   }
 
   &:active {
-    background-color: ${(props) => (props.disabled ? "var(--buttonBackgroundDisabled)" : "var(--dangerButtonBackgroundActive)")};
+    background-color: ${(props) => (props.disabled ? "var(--color-gray-a0)" : "var(--dangerButtonBackgroundActive)")};
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: ${(props) => (props.disabled ? "var(--buttonBackgroundDisabledDark)" : "var(--dangerButtonBackgroundDark)")};
+    background-color: ${(props) => (props.disabled ? "var(--color-gray-55)" : "var(--dangerButtonBackgroundDark)")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.disabled ? "var(--buttonBackgroundDisabledDark)" : "var(--dangerButtonBackgroundHoverDark)")};
+        background-color: ${(props) => (props.disabled ? "var(--color-gray-55)" : "var(--dangerButtonBackgroundHoverDark)")};
       }
     }
 
     &:active {
-      background-color: ${(props) => (props.disabled ? "var(--buttonBackgroundDisabledDark)" : "var(--dangerButtonBackgroundActiveDark)")};
+      background-color: ${(props) => (props.disabled ? "var(--color-gray-55)" : "var(--dangerButtonBackgroundActiveDark)")};
     }
   }
 `;
 
 export const Subtitle = styled.p`
   margin: 0 0 24px 0;
-  color: var(--secondaryTextColor);
+  color: var(--color-gray-69);
   font-size: 0.95rem;
   line-height: 1.4;
   cursor: default;
