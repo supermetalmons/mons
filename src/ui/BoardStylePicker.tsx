@@ -13,9 +13,9 @@ export const BoardStylePicker = styled.div`
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 8px;
-  padding: 12px;
+  padding: 16px;
   display: flex;
-  gap: 12px;
+  gap: 18px;
 
   @media screen and (max-height: 453px) {
     bottom: max(44px, calc(env(safe-area-inset-bottom) + 38px));
@@ -27,32 +27,33 @@ export const BoardStylePicker = styled.div`
 `;
 
 export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "light" | "dark" }>`
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 6px;
-  border: ${(props) => (props.isSelected ? "3px solid #007aff" : "1px solid #e0e0e0")};
+  border: none;
+  outline: ${(props) => (props.isSelected ? "3px solid #007aff" : "none")};
+  outline-offset: 0;
   cursor: pointer;
   position: relative;
   -webkit-tap-highlight-color: transparent;
-  outline: none;
   padding: 0;
   overflow: hidden;
-  background: #e0e0e0;
+  background: ${(props) => (props.isSelected ? "#007aff" : "transparent")};
+  transition: transform 0.1s ease;
 
   @media (prefers-color-scheme: dark) {
-    border-color: ${(props) => (props.isSelected ? "#0b84ff" : "#555")};
-    background: #555;
+    outline-color: ${(props) => (props.isSelected ? "#0b84ff" : "transparent")};
+    background: ${(props) => (props.isSelected ? "#0b84ff" : "transparent")};
   }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      border-color: ${(props) => (props.isSelected ? "#0056b3" : "#007aff")};
-      border-width: ${(props) => (props.isSelected ? "3px" : "2px")};
+      transform: scale(1.05);
     }
   }
 
   &:active {
-    transform: scale(0.95);
+    transform: scale(0.98);
   }
 
   svg {
@@ -73,13 +74,13 @@ const BoardStylePickerComponent: React.FC = () => {
 
   const renderColorSquares = (colorSet: "light" | "dark") => {
     const colors = colorSet === "light" ? colorSets.default : colorSets.darkAndYellow;
-    const cellSize = 40 / 11;
+    const cellSize = 42 / 11;
 
     return (
-      <svg viewBox="0 0 40 40" width="40" height="40">
+      <svg viewBox="0 0 42 42" width="42" height="42">
         {generateBoardPattern({
           colorSet: colors,
-          size: 40,
+          size: 42,
           cellSize: cellSize,
           offsetY: 0,
           keyPrefix: `preview-${colorSet}`,
