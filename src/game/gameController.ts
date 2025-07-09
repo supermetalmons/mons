@@ -179,7 +179,7 @@ export function didJustCreateRematchProposalSuccessfully(inviteId: string) {
   blackTimerStash = null;
   whiteTimerStash = null;
 
-      firebaseConnection.connectToGameWrapper(inviteId, true);
+      firebaseConnection.signInIfNeededAndConnectToGame(inviteId, true);
 }
 
 export function didDiscoverExistingRematchProposalWaitingForResponse() {
@@ -245,7 +245,7 @@ export function didClickAutomatchButton() {
   isWaitingForInviteToGetAccepted = true;
   Board.runMonsBoardAsDisplayWaitingAnimation();
 
-  firebaseConnection.sendAutomatchRequest()
+          firebaseConnection.automatch()
     .then((response) => {
       const automatchInviteId = response.inviteId;
       if (automatchInviteId) {
@@ -382,7 +382,7 @@ export function didClickStartTimerButton() {
 }
 
 export function didClickConfirmResignButton() {
-  firebaseConnection.sendResignStatus();
+        firebaseConnection.surrender();
   handleResignStatus(false, "");
 }
 
@@ -415,7 +415,7 @@ export function canChangeEmoji(opponents: boolean): boolean {
 }
 
 export function sendPlayerEmojiUpdate(newId: number) {
-  firebaseConnection.sendEmojiUpdate(newId, false);
+  firebaseConnection.updateEmoji(newId, false);
 }
 
 export function isPlayerSideTurn(): boolean {

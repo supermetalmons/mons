@@ -1295,7 +1295,7 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       const newCardName = `${newId}.webp`;
       storage.setCardBackgroundId(newId);
       cardIndex = newId;
-      firebaseConnection.sendCardBackgroundUpdate(newId);
+      firebaseConnection.updateFirestoreCardBackgroundId(newId);
       ownBgImg!.style.visibility = "hidden";
       ownBgImg!.src = `https://assets.mons.link/cards/bg/${newCardName}`;
       break;
@@ -1303,7 +1303,7 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       asciimojiIndex = newId;
       ownSubtitleElement!.textContent = getAsciimojiAtIndex(newId);
       storage.setCardSubtitleId(newId);
-      firebaseConnection.sendCardSubtitleIdUpdate(newId);
+      firebaseConnection.updateFirestoreCardSubtitleId(newId);
       break;
     case "demon":
     case "angel":
@@ -1343,7 +1343,7 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       img!.src = `data:image/webp;base64,${newImageData}`;
       const monsIndexesString = `${demonIndex},${angelIndex},${drainerIndex},${spiritIndex},${mysticIndex}`;
       storage.setProfileMons(monsIndexesString);
-              firebaseConnection.sendProfileMonsUpdate(monsIndexesString);
+              firebaseConnection.updateFirestoreProfileMons(monsIndexesString);
       break;
     case "big-mon-top-right":
     case "bottom-left":
@@ -1369,7 +1369,7 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
 
       const currentJson = JSON.stringify(currentlySelectedStickers);
       storage.setCardStickers(currentJson);
-      firebaseConnection.sendCardStickersUpdate(currentJson);
+              firebaseConnection.updateFirestoreCardStickers(currentJson);
       break;
   }
 

@@ -587,37 +587,7 @@ class FirebaseConnection {
     this.sendMatchUpdate();
   }
 
-  // Wrapper methods for old API compatibility
-
-  public sendResignStatus(): void {
-    this.surrender();
-  }
-
-  public sendEmojiUpdate(newId: number, matchOnly: boolean): void {
-    this.updateEmoji(newId, matchOnly);
-  }
-
-  public sendCardBackgroundUpdate(newId: number): void {
-    this.updateFirestoreCardBackgroundId(newId);
-  }
-
-  public sendCardSubtitleIdUpdate(newId: number): void {
-    this.updateFirestoreCardSubtitleId(newId);
-  }
-
-  public sendProfileMonsUpdate(mons: string): void {
-    this.updateFirestoreProfileMons(mons);
-  }
-
-  public sendCardStickersUpdate(stickers: string): void {
-    this.updateFirestoreCardStickers(stickers);
-  }
-
-  public async sendAutomatchRequest(): Promise<any> {
-    return this.automatch();
-  }
-
-  public connectToGameWrapper(inviteId: string, autojoin: boolean): void {
+  public signInIfNeededAndConnectToGame(inviteId: string, autojoin: boolean): void {
     this.signIn().then((uid) => {
       if (uid) {
         this.connectToGame(uid, inviteId, autojoin);
