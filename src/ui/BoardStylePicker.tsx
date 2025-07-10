@@ -122,10 +122,10 @@ export const LockedStyleItem = styled.div`
   margin-bottom: 3px;
   position: relative;
   overflow: hidden;
-  background-color: var(--boardBackgroundLight);
+  background-color: var(--color-gray-d0);
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--color-gray-23);
+    background-color: var(--color-gray-a0);
   }
 `;
 
@@ -153,12 +153,17 @@ export const LockIconOverlay = styled.div`
 
 const BoardStylePickerComponent: React.FC = () => {
   const [currentColorSetKey, setCurrentColorSetKey] = useState<ColorSetKey>(getCurrentColorSetKey());
+  const [imageLoadFailed, setImageLoadFailed] = useState(false);
 
   const handleColorSetChange = (colorSetKey: ColorSetKey) => (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     setBoardColorSet(colorSetKey);
     updateBoardComponentForBoardStyleChange();
     setCurrentColorSetKey(colorSetKey);
+  };
+
+  const handleImageError = () => {
+    setImageLoadFailed(true);
   };
 
   const renderColorSquares = (colorSet: "light" | "dark") => {
@@ -188,7 +193,7 @@ const BoardStylePickerComponent: React.FC = () => {
         {renderColorSquares("dark")}
       </ColorSquare>
       <LockedStyleItem aria-label="Locked board theme">
-        <PlaceholderImage src="/assets/bg/thumb/Pangchiu.jpg" alt="Locked theme preview" loading="lazy" />
+        {!imageLoadFailed && <PlaceholderImage src="/assets/bg/thumb/Pangchiu.jpg" alt="Locked theme preview" loading="lazy" onError={handleImageError} />}
         <LockIconOverlay>
           <FaLock />
         </LockIconOverlay>
