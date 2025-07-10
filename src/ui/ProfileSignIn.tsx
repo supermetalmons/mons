@@ -5,9 +5,8 @@ import { storage } from "../utils/storage";
 import { connection } from "../connection/connection";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeMenuAndInfoIfAllowedForEvent, closeMenuAndInfoIfAny } from "./MainMenu";
-import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { setAuthStatusGlobally } from "../connection/authentication";
-import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
+import { handleLoginSuccess } from "../connection/loginSuccess";
 import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
 import { LogoutConfirmModal } from "./LogoutConfirmModal";
@@ -307,88 +306,28 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   const handleSolanaClick = async () => {
-    if (isSolanaConnecting) {
-      return;
-    }
+    if (isSolanaConnecting) return;
 
     setIsSolanaConnecting(true);
     try {
       const { connectToSolana } = await import("../connection/solanaConnection");
       const { publicKey, signature } = await connectToSolana();
       setSolanaText("Verifying...");
+
       const res = await connection.verifySolanaAddress(publicKey, signature);
       if (res && res.ok === true) {
-        const emoji = res.emoji;
-        const profileId = res.profileId;
-        const profile = {
-          id: profileId,
-          username: res.username,
-          sol: res.address,
-          rating: undefined,
-          nonce: undefined,
-          win: undefined,
-          cardBackgroundId: undefined,
-          cardSubtitleId: undefined,
-          profileMons: undefined,
-          cardStickers: undefined,
-          emoji: emoji,
-        };
-
-        if (res.rating) {
-          profile.rating = res.rating;
-          storage.setPlayerRating(res.rating);
-        }
-
-        if (res.nonce) {
-          profile.nonce = res.nonce;
-          storage.setPlayerNonce(res.nonce);
-        }
-
-        if (res.cardBackgroundId) {
-          profile.cardBackgroundId = res.cardBackgroundId;
-          storage.setCardBackgroundId(res.cardBackgroundId);
-        }
-
-        if (res.cardStickers) {
-          profile.cardStickers = res.cardStickers;
-          storage.setCardStickers(res.cardStickers);
-        }
-
-        if (res.cardSubtitleId) {
-          profile.cardSubtitleId = res.cardSubtitleId;
-          storage.setCardSubtitleId(res.cardSubtitleId);
-        }
-
-        if (res.profileMons) {
-          profile.profileMons = res.profileMons;
-          storage.setProfileMons(res.profileMons);
-        }
-
-        setupLoggedInPlayerProfile(profile, res.uid);
-        storage.setSolAddress(res.address);
-        storage.setUsername(res.username);
-        storage.setPlayerEmojiId(emoji.toString());
-        storage.setProfileId(profileId);
-
-        connection.forceTokenRefresh();
-        storage.setLoginId(res.uid);
-        updateProfileDisplayName(res.username, null, res.address);
-        if (!isWatchOnly) {
-          updateEmojiIfNeeded(emoji, false);
-        }
+        handleLoginSuccess(res, "sol");
         setAuthStatusGlobally("authenticated");
         setIsOpen(false);
         hideShinyCard();
         enterProfileEditingMode(false);
-        handleFreshlySignedInProfileInGameIfNeeded(profileId);
       }
+
       setSolanaText("Solana");
     } catch (error) {
       if ((error as Error).message === "not found") {
         setSolanaText("Not Found");
-        setTimeout(() => {
-          setSolanaText("Solana");
-        }, 500);
+        setTimeout(() => setSolanaText("Solana"), 500);
       } else {
         setSolanaText("Solana");
       }

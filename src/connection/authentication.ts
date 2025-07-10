@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
 import { connection } from "./connection";
-import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
+import { handleLoginSuccess } from "./loginSuccess";
 import { storage } from "../utils/storage";
+import { setupLoggedInPlayerProfile } from "../game/board";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
-import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
 let globalSetAuthStatus: ((status: AuthStatus) => void) | null = null;
@@ -95,69 +95,8 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
     verify: async ({ message, signature }) => {
       const res = await connection.verifyEthAddress(message, signature);
       if (res && res.ok === true) {
-        const emoji = res.emoji;
-        const profileId = res.profileId;
-        const username = res.username;
-        const profile = {
-          id: profileId,
-          username: username,
-          eth: res.address,
-          rating: undefined,
-          nonce: undefined,
-          win: undefined,
-          cardBackgroundId: undefined,
-          cardSubtitleId: undefined,
-          profileMons: undefined,
-          cardStickers: undefined,
-          emoji: emoji,
-        };
-
-        if (res.rating) {
-          profile.rating = res.rating;
-          storage.setPlayerRating(res.rating);
-        }
-
-        if (res.nonce) {
-          profile.nonce = res.nonce;
-          storage.setPlayerNonce(res.nonce);
-        }
-
-        if (res.cardBackgroundId) {
-          profile.cardBackgroundId = res.cardBackgroundId;
-          storage.setCardBackgroundId(res.cardBackgroundId);
-        }
-
-        if (res.cardStickers) {
-          profile.cardStickers = res.cardStickers;
-          storage.setCardStickers(res.cardStickers);
-        }
-
-        if (res.cardSubtitleId) {
-          profile.cardSubtitleId = res.cardSubtitleId;
-          storage.setCardSubtitleId(res.cardSubtitleId);
-        }
-
-        if (res.profileMons) {
-          profile.profileMons = res.profileMons;
-          storage.setProfileMons(res.profileMons);
-        }
-
-        setupLoggedInPlayerProfile(profile, res.uid);
-
-        storage.setUsername(username);
-        storage.setEthAddress(res.address);
-        storage.setPlayerEmojiId(emoji.toString());
-        storage.setProfileId(profileId);
-
-        connection.forceTokenRefresh();
-        storage.setLoginId(res.uid);
-        updateProfileDisplayName(username, res.address, null);
-        if (!isWatchOnly) {
-          updateEmojiIfNeeded(emoji, false);
-        }
-
+        handleLoginSuccess(res, "eth");
         setAuthStatus("authenticated");
-        handleFreshlySignedInProfileInGameIfNeeded(profileId);
         return true;
       } else {
         setAuthStatus("unauthenticated");
