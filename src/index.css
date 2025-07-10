@@ -122,6 +122,8 @@
   --standardBoxShadow: rgba(0, 0, 0, 0.2);
   --cardBoxShadow: rgba(0, 0, 0, 0.3);
   --lightBoxShadow: rgba(0, 0, 0, 0.15);
+  --textShadowLight: rgba(0, 0, 0, 0.5);
+  --textShadowDark: rgba(255, 255, 255, 0.3);
   --pinkButtonBackgroundActive: #d1477b;
   --pinkButtonBackgroundDisabled: #ffd1dc;
   --pinkButtonBackgroundActiveDark: #ff85c0;
