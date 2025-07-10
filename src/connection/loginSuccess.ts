@@ -16,8 +16,8 @@ interface VerifyResponse {
   rating?: number;
   nonce?: number;
   win?: number;
-  cardBackgroundId?: string;
-  cardSubtitleId?: string;
+  cardBackgroundId?: number;
+  cardSubtitleId?: number;
   profileMons?: any;
   cardStickers?: any;
 }
@@ -68,9 +68,9 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
 
   if (res.rating !== undefined) storage.setPlayerRating(res.rating);
   if (res.nonce !== undefined) storage.setPlayerNonce(res.nonce);
-  if (res.cardBackgroundId !== undefined) storage.setCardBackgroundId(res.cardBackgroundId as unknown as number);
+  if (res.cardBackgroundId !== undefined) storage.setCardBackgroundId(res.cardBackgroundId);
   if (res.cardStickers !== undefined) storage.setCardStickers(res.cardStickers);
-  if (res.cardSubtitleId !== undefined) storage.setCardSubtitleId(res.cardSubtitleId as unknown as number);
+  if (res.cardSubtitleId !== undefined) storage.setCardSubtitleId(res.cardSubtitleId);
   if (res.profileMons !== undefined) storage.setProfileMons(res.profileMons);
 
   connection.forceTokenRefresh();
@@ -80,4 +80,4 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   }
 
   handleFreshlySignedInProfileInGameIfNeeded(profileId);
-} 
+}
