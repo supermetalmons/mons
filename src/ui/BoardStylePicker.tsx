@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import { FaLock } from "react-icons/fa";
 import { ColorSetKey, setBoardColorSet, getCurrentColorSetKey, colorSets } from "../content/boardStyles";
 import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
@@ -111,6 +112,45 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
   }
 `;
 
+export const LockedStyleItem = styled.div`
+  width: 36px;
+  height: 38px;
+  min-width: 36px;
+  min-height: 38px;
+  border-radius: 6px;
+  margin-top: 3px;
+  margin-bottom: 3px;
+  position: relative;
+  overflow: hidden;
+  background-color: var(--boardBackgroundLight);
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-gray-23);
+  }
+`;
+
+export const PlaceholderImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: blur(1px);
+`;
+
+export const LockIconOverlay = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: var(--color-white);
+  font-size: 15px;
+  z-index: 2;
+  text-shadow: 0 1px 3px var(--textShadowLight);
+
+  @media (prefers-color-scheme: dark) {
+    text-shadow: 0 1px 3px var(--textShadowDark);
+  }
+`;
+
 const BoardStylePickerComponent: React.FC = () => {
   const [currentColorSetKey, setCurrentColorSetKey] = useState<ColorSetKey>(getCurrentColorSetKey());
 
@@ -147,6 +187,12 @@ const BoardStylePickerComponent: React.FC = () => {
       <ColorSquare colorSet="dark" isSelected={currentColorSetKey === "darkAndYellow"} onClick={!isMobile ? handleColorSetChange("darkAndYellow") : undefined} onTouchStart={isMobile ? handleColorSetChange("darkAndYellow") : undefined} aria-label="Dark board theme">
         {renderColorSquares("dark")}
       </ColorSquare>
+      <LockedStyleItem aria-label="Locked board theme">
+        <PlaceholderImage src="/assets/bg/thumb/Pangchiu.jpg" alt="Locked theme preview" loading="lazy" />
+        <LockIconOverlay>
+          <FaLock />
+        </LockIconOverlay>
+      </LockedStyleItem>
     </BoardStylePicker>
   );
 };
