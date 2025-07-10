@@ -560,6 +560,10 @@ class Connection {
     this.updateCustomField("completedProblems", ids);
   }
 
+  public updateTutorialCompleted(completed: boolean): void {
+    this.updateCustomField("tutorialCompleted", completed);
+  }
+
   private updateCustomField(fieldName: string, newValue: any): void {
     const id = this.getLocalProfileId();
     if (id === null) {
