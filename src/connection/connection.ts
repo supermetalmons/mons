@@ -1,7 +1,7 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, Auth, signInAnonymously, onAuthStateChanged, signOut } from "firebase/auth";
 import { getDatabase, Database, ref, set, onValue, off, get, update } from "firebase/database";
-import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc, getDoc } from "firebase/firestore";
+import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
 import { getPlayersEmojiId, didGetPlayerProfile } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
@@ -193,31 +193,8 @@ class Connection {
     }
   }
 
-  public async getProfileByProfileId(profileId: string): Promise<PlayerProfile> {
-    await this.ensureAuthenticated();
-    const docRef = doc(this.firestore, "users", profileId);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      return {
-        id: docSnap.id,
-        username: data.username || null,
-        eth: data.eth || null,
-        sol: data.sol || null,
-        rating: data.rating || 1500,
-        nonce: data.nonce === undefined ? -1 : data.nonce,
-        win: data.win ?? true,
-        emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(docSnap.id),
-        cardBackgroundId: data.custom?.cardBackgroundId,
-        cardSubtitleId: data.custom?.cardSubtitleId,
-        profileMons: data.custom?.profileMons,
-        cardStickers: data.custom?.cardStickers,
-      };
-    }
-    throw new Error("Profile not found");
-  }
-
   public async getProfileByLoginId(loginId: string): Promise<PlayerProfile> {
+    // TODO: get and pass the data if p board is unlocked and completed tutorials
     await this.ensureAuthenticated();
     const usersRef = collection(this.firestore, "users");
     const q = query(usersRef, where("logins", "array-contains", loginId), limit(1));

@@ -39,6 +39,7 @@ export function useAuthStatus() {
         const storedSolAddress = storage.getSolAddress("");
         const storedUsername = storage.getUsername("");
         const profileId = storage.getProfileId("");
+        // TODO: handle new stuff
         if (profileId !== "" && storedLoginId === uid && (storedEthAddress !== "" || storedSolAddress !== "")) {
           setAuthStatus("authenticated");
           connection.refreshTokenIfNeeded();
