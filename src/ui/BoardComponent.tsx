@@ -77,7 +77,7 @@ export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement |
 
 const BoardComponent: React.FC = () => {
   const showTestVideo = false;
-  
+
   const initializationRef = useRef(false);
   const [currentColorSet, setCurrentColorSet] = useState<ColorSet>(getCurrentColorSet());
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -178,6 +178,9 @@ const BoardComponent: React.FC = () => {
           muted
           playsInline>
           <source src="/assets/misc/test.mov" type='video/quicktime; codecs="hvc1"' />
+          <source src="/assets/misc/test.webm" type="video/webm" />
+          {/* avconvert -s input.mov -o test.mov -p PresetHEVCHighestQualityWithAlpha --replace --progress */}
+          {/* ffmpeg -y -i input.mov -c:v libvpx-vp9 -pix_fmt yuva420p -crf 32 -b:v 0 -auto-alt-ref 0 -an test.webm */}
         </video>
       )}
       {overlayState.svgElement && (
