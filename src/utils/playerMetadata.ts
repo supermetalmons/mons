@@ -126,6 +126,7 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
       .then((profile) => {
         allProfilesDict[loginId] = profile;
         if (profile.emoji !== undefined && own) {
+          // TODO: update new stuff — this is a profile received on page reload.
           storage.setPlayerEmojiId(profile.emoji.toString());
           storage.setUsername(profile.username ?? "");
           storage.setPlayerRating(profile.rating ?? 1500);

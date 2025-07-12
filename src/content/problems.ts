@@ -42,6 +42,10 @@ export function getCompletedProblemIds(): Set<string> {
   return new Set(storage.getCompletedProblemIds([]));
 }
 
+export function getTutorialCompleted(): boolean {
+  return storage.getTutorialCompleted(false);
+}
+
 export function markProblemCompleted(id: string): void {
   const completed = getCompletedProblemIds();
   if (!completed.has(id)) {
@@ -49,5 +53,10 @@ export function markProblemCompleted(id: string): void {
     const allCompleted = Array.from(completed);
     storage.setCompletedProblemIds(allCompleted);
     connection.updateCompletedProblems(allCompleted);
+
+    if (allCompleted.length === problems.length && !getTutorialCompleted()) {
+      storage.setTutorialCompleted(true);
+      connection.updateTutorialCompleted(true);
+    }
   }
 }

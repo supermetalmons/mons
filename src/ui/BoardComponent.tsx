@@ -76,6 +76,8 @@ export const updateBoardComponentForBoardStyleChange = () => {
 export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void;
 
 const BoardComponent: React.FC = () => {
+  const showTestVideo = false;
+
   const initializationRef = useRef(false);
   const [currentColorSet, setCurrentColorSet] = useState<ColorSet>(getCurrentColorSet());
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -161,6 +163,28 @@ const BoardComponent: React.FC = () => {
         <g id="controlsLayer"></g>
         <g id="effectsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
       </svg>
+      {showTestVideo && (
+        <video
+          style={{
+            position: "absolute",
+            top: "50px",
+            left: "50px",
+            width: "150px",
+            height: "150px",
+            zIndex: 1,
+          }}
+          autoPlay
+          loop
+          muted
+          playsInline>
+          <source src="/assets/misc/test.mov" type='video/quicktime; codecs="hvc1"' />
+          <source src="/assets/misc/test.webm" type="video/webm" />
+          {/* avconvert -s input.mov -o test.mov -p PresetHEVCHighestQualityWithAlpha --replace --progress */}
+          {/* ffmpeg -y -i input.mov -c:v libvpx-vp9 -pix_fmt yuva420p -crf 32 -b:v 0 -auto-alt-ref 0 -an test.webm */}
+          {/* or for higher quality */}
+          {/* ffmpeg -y -i test.mov -c:v libvpx-vp9 -pix_fmt yuva420p -crf 18 -b:v 0 -quality good -speed 1 -auto-alt-ref 0 -an output-alpha.webm */}
+        </video>
+      )}
       {overlayState.svgElement && (
         <div
           className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}
