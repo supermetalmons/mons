@@ -181,6 +181,8 @@ const BoardComponent: React.FC = () => {
           <source src="/assets/misc/test.webm" type="video/webm" />
           {/* avconvert -s input.mov -o test.mov -p PresetHEVCHighestQualityWithAlpha --replace --progress */}
           {/* ffmpeg -y -i input.mov -c:v libvpx-vp9 -pix_fmt yuva420p -crf 32 -b:v 0 -auto-alt-ref 0 -an test.webm */}
+          {/* or for higher quality */}
+          {/* ffmpeg -y -i test.mov -c:v libvpx-vp9 -pix_fmt yuva420p -crf 18 -b:v 0 -quality good -speed 1 -auto-alt-ref 0 -an output-alpha.webm */}
         </video>
       )}
       {overlayState.svgElement && (
