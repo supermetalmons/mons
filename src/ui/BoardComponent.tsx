@@ -76,6 +76,8 @@ export const updateBoardComponentForBoardStyleChange = () => {
 export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void;
 
 const BoardComponent: React.FC = () => {
+  const showTestVideo = false;
+  
   const initializationRef = useRef(false);
   const [currentColorSet, setCurrentColorSet] = useState<ColorSet>(getCurrentColorSet());
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -161,6 +163,23 @@ const BoardComponent: React.FC = () => {
         <g id="controlsLayer"></g>
         <g id="effectsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
       </svg>
+      {showTestVideo && (
+        <video
+          style={{
+            position: "absolute",
+            top: "50px",
+            left: "50px",
+            width: "150px",
+            height: "150px",
+            zIndex: 1,
+          }}
+          autoPlay
+          loop
+          muted
+          playsInline>
+          <source src="/assets/misc/test.mov" type='video/quicktime; codecs="hvc1"' />
+        </video>
+      )}
       {overlayState.svgElement && (
         <div
           className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}
