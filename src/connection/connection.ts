@@ -194,7 +194,6 @@ class Connection {
   }
 
   public async getProfileByLoginId(loginId: string): Promise<PlayerProfile> {
-    // TODO: get and pass the data if p board is unlocked and completed tutorials
     await this.ensureAuthenticated();
     const usersRef = collection(this.firestore, "users");
     const q = query(usersRef, where("logins", "array-contains", loginId), limit(1));
@@ -215,6 +214,8 @@ class Connection {
         cardSubtitleId: data.custom?.cardSubtitleId,
         profileMons: data.custom?.profileMons,
         cardStickers: data.custom?.cardStickers,
+        completedProblemIds: data.custom?.completedProblems,
+        isTutorialCompleted: data.custom?.tutorialCompleted,
       };
     }
     throw new Error("Profile not found");
@@ -242,6 +243,8 @@ class Connection {
         cardSubtitleId: data.custom?.cardSubtitleId,
         profileMons: data.custom?.profileMons,
         cardStickers: data.custom?.cardStickers,
+        completedProblemIds: undefined,
+        isTutorialCompleted: undefined,
       });
     });
 

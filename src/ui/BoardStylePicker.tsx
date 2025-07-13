@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { FaLock } from "react-icons/fa";
-import { ColorSetKey, setBoardColorSet, getCurrentColorSetKey, colorSets } from "../content/boardStyles";
-import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
+import { ColorSetKey, setBoardColorSet, getCurrentColorSetKey, colorSets, isPangchiuBoard } from "../content/boardStyles";
+import { getTutorialCompleted } from "../content/problems";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
 import { isMobile } from "../utils/misc";
+import { toggleExperimentalMode } from "../game/board";
 
 export const BoardStylePicker = styled.div`
   position: fixed;
@@ -129,11 +130,12 @@ export const LockedStyleItem = styled.div`
   }
 `;
 
-export const PlaceholderImage = styled.img`
+export const PlaceholderImage = styled.img<{ blurred?: boolean }>`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: blur(1px);
+  filter: ${(props) => (props.blurred ? "blur(1px)" : "none")};
+  transform: scale(1.01);
 `;
 
 export const LockIconOverlay = styled.div`
@@ -153,13 +155,23 @@ export const LockIconOverlay = styled.div`
 
 const BoardStylePickerComponent: React.FC = () => {
   const [currentColorSetKey, setCurrentColorSetKey] = useState<ColorSetKey>(getCurrentColorSetKey());
+  const [isPangchiuBoardSelected, setIsPangchiuBoardSelected] = useState<boolean>(isPangchiuBoard());
+
   const [imageLoadFailed, setImageLoadFailed] = useState(false);
+  const isTutorialCompleted = getTutorialCompleted();
 
   const handleColorSetChange = (colorSetKey: ColorSetKey) => (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     setBoardColorSet(colorSetKey);
-    updateBoardComponentForBoardStyleChange();
+    toggleExperimentalMode(true, false, false, false);
     setCurrentColorSetKey(colorSetKey);
+    setIsPangchiuBoardSelected(false);
+  };
+
+  const handlePangchiuBoardSelected = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    toggleExperimentalMode(false, false, true, false);
+    setIsPangchiuBoardSelected(true);
   };
 
   const handleImageError = () => {
@@ -186,18 +198,24 @@ const BoardStylePickerComponent: React.FC = () => {
 
   return (
     <BoardStylePicker>
-      <ColorSquare colorSet="light" isSelected={currentColorSetKey === "default"} onClick={!isMobile ? handleColorSetChange("default") : undefined} onTouchStart={isMobile ? handleColorSetChange("default") : undefined} aria-label="Light board theme">
+      <ColorSquare colorSet="light" isSelected={!isPangchiuBoardSelected && currentColorSetKey === "default"} onClick={!isMobile ? handleColorSetChange("default") : undefined} onTouchStart={isMobile ? handleColorSetChange("default") : undefined} aria-label="Light board theme">
         {renderColorSquares("light")}
       </ColorSquare>
-      <ColorSquare colorSet="dark" isSelected={currentColorSetKey === "darkAndYellow"} onClick={!isMobile ? handleColorSetChange("darkAndYellow") : undefined} onTouchStart={isMobile ? handleColorSetChange("darkAndYellow") : undefined} aria-label="Dark board theme">
+      <ColorSquare colorSet="dark" isSelected={!isPangchiuBoardSelected && currentColorSetKey === "darkAndYellow"} onClick={!isMobile ? handleColorSetChange("darkAndYellow") : undefined} onTouchStart={isMobile ? handleColorSetChange("darkAndYellow") : undefined} aria-label="Dark board theme">
         {renderColorSquares("dark")}
       </ColorSquare>
-      <LockedStyleItem aria-label="Locked board theme">
-        {!imageLoadFailed && <PlaceholderImage src="/assets/bg/thumb/Pangchiu.jpg" alt="Locked theme preview" loading="lazy" onError={handleImageError} />}
-        <LockIconOverlay>
-          <FaLock />
-        </LockIconOverlay>
-      </LockedStyleItem>
+      {isTutorialCompleted ? (
+        <ColorSquare colorSet="light" isSelected={isPangchiuBoardSelected} onClick={!isMobile ? handlePangchiuBoardSelected : undefined} onTouchStart={isMobile ? handlePangchiuBoardSelected : undefined} aria-label="Pangchiu board theme">
+          {!imageLoadFailed && <PlaceholderImage src="/assets/bg/thumb/Pangchiu.jpg" alt="Pangchiu theme preview" loading="lazy" onError={handleImageError} blurred={false} />}
+        </ColorSquare>
+      ) : (
+        <LockedStyleItem aria-label="Locked board theme">
+          {!imageLoadFailed && <PlaceholderImage src="/assets/bg/thumb/Pangchiu.jpg" alt="Locked theme preview" loading="lazy" onError={handleImageError} blurred={true} />}
+          <LockIconOverlay>
+            <FaLock />
+          </LockIconOverlay>
+        </LockedStyleItem>
+      )}
     </BoardStylePicker>
   );
 };

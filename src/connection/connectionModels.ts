@@ -37,4 +37,6 @@ export interface PlayerProfile {
   username: string | null;
   eth?: string | null;
   sol?: string | null;
+  completedProblemIds: string[] | undefined;
+  isTutorialCompleted: boolean | undefined;
 }
