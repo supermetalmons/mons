@@ -127,9 +127,7 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
       .then((profile) => {
         allProfilesDict[loginId] = profile;
         if (profile.emoji !== undefined && own) {
-          if (profile.isTutorialCompleted !== undefined && profile.completedProblemIds !== undefined) {
-            syncTutorialProgress(profile.completedProblemIds, profile.isTutorialCompleted);
-          }
+          syncTutorialProgress(profile.completedProblemIds ?? [], profile.isTutorialCompleted ?? false);
           storage.setPlayerEmojiId(profile.emoji.toString());
           storage.setUsername(profile.username ?? "");
           storage.setPlayerRating(profile.rating ?? 1500);
