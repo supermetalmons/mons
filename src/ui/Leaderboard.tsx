@@ -18,7 +18,7 @@ export const LeaderboardContainer = styled.div<{ show: boolean }>`
 const LeaderboardTable = styled.table`
   width: 100%;
   border-collapse: collapse;
-  color: var(--leaderboardTableTextColor);
+  color: var(--color-gray-33);
   table-layout: fixed;
   font-size: 0.85rem;
 
@@ -31,28 +31,28 @@ const LeaderboardTable = styled.table`
   }
 
   @media (prefers-color-scheme: dark) {
-    color: var(--leaderboardTableTextColorDark);
+    color: var(--color-gray-f5);
   }
 
   thead {
     position: sticky;
     top: 0;
-    background-color: var(--leaderboardTableBackground);
+    background-color: var(--color-white);
     z-index: 1;
     font-size: 0.93rem;
 
     @media (prefers-color-scheme: dark) {
-      background-color: var(--leaderboardTableBackgroundDark);
+      background-color: var(--color-deep-gray);
     }
   }
 
   th {
     padding: 0px 0 5px 0px;
-    color: var(--leaderboardTableMutedTextColor);
+    color: var(--color-gray-99);
     font-size: 0.777rem;
 
     @media (prefers-color-scheme: dark) {
-      color: var(--leaderboardTableMutedTextColor);
+      color: var(--color-gray-99);
     }
   }
 
@@ -66,20 +66,20 @@ const LeaderboardTable = styled.table`
 
   th,
   td {
-    border-bottom: 1px solid var(--leaderboardTableBorderColor);
+    border-bottom: 1px solid var(--color-gray-dd);
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
 
     @media (prefers-color-scheme: dark) {
-      border-bottom: 1px solid var(--leaderboardTableBorderColorDark);
+      border-bottom: 1px solid var(--color-gray-33);
     }
 
     &:nth-child(1) {
       width: 8%;
       text-align: left;
       font-size: 0.75rem;
-      color: var(--leaderboardTableMutedTextColor);
+      color: var(--color-gray-99);
       padding-left: 5px;
 
       @media (max-width: 320px) {
@@ -152,7 +152,7 @@ const TableWrapper = styled.div`
 const LoadingText = styled.div`
   text-align: center;
   font-size: 0.8rem;
-  color: var(--leaderboardLoadingTextColor);
+  color: var(--color-gray-77);
   flex: 1;
   display: flex;
   align-items: center;
@@ -218,7 +218,7 @@ const EmojiPlaceholder = styled.div`
     width: 18px;
     height: 18px;
     border-radius: 50%;
-    background-color: var(--leaderboardEmojiPlaceholderBackground);
+    background-color: var(--color-gray-e0);
 
     @media (max-width: 360px) {
       width: 16px;
@@ -233,7 +233,7 @@ const EmojiPlaceholder = styled.div`
 
   @media (prefers-color-scheme: dark) {
     &:after {
-      background-color: var(--leaderboardEmojiPlaceholderBackgroundDark);
+      background-color: var(--color-gray-44);
     }
   }
 `;

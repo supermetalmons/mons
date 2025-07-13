@@ -1,3 +1,6 @@
+import { storage } from "../utils/storage";
+import { connection } from "../connection/connection";
+
 export type Problem = {
   id: string;
   icon: string;
@@ -23,9 +26,61 @@ export const problems: Problem[] = [
 ];
 
 export function getNextProblem(id: string): Problem | null {
-  const currentIndex = problems.findIndex((problem) => problem.id === id);
-  if (currentIndex === -1 || currentIndex === problems.length - 1) {
-    return null;
+  const completedSet = getCompletedProblemIds();
+  const currentIndex = problems.findIndex((p) => p.id === id);
+  if (currentIndex === -1) return null;
+  for (let i = currentIndex + 1; i < problems.length; i++) {
+    const candidate = problems[i];
+    if (!completedSet.has(candidate.id)) {
+      return candidate;
+    }
   }
-  return problems[currentIndex + 1];
+  return null;
+}
+
+export function getCompletedProblemIds(): Set<string> {
+  return new Set(storage.getCompletedProblemIds([]));
+}
+
+export function getTutorialCompleted(): boolean {
+  return storage.getTutorialCompleted(false);
+}
+
+export function markProblemCompleted(id: string): void {
+  const completed = getCompletedProblemIds();
+  if (!completed.has(id)) {
+    completed.add(id);
+    const allCompleted = Array.from(completed);
+    storage.setCompletedProblemIds(allCompleted);
+    connection.updateCompletedProblems(allCompleted);
+
+    if (allCompleted.length === problems.length && !getTutorialCompleted()) {
+      storage.setTutorialCompleted(true);
+      connection.updateTutorialCompleted(true);
+    }
+  }
+}
+
+export function syncTutorialProgress(remoteCompletedProblemIds: string[], remoteTutorialCompleted: boolean) {
+  const localTutorialCompleted = getTutorialCompleted();
+  const localCompleted = getCompletedProblemIds();
+
+  if (localTutorialCompleted && remoteTutorialCompleted && localCompleted.size === problems.length && remoteCompletedProblemIds.length === problems.length) {
+    return;
+  }
+
+  const merged = new Set([...localCompleted, ...remoteCompletedProblemIds]);
+
+  const mergedArray = Array.from(merged);
+  const newTutorialCompleted = localTutorialCompleted || remoteTutorialCompleted || merged.size === problems.length;
+
+  storage.setCompletedProblemIds(mergedArray);
+  storage.setTutorialCompleted(newTutorialCompleted);
+
+  if (merged.size !== remoteCompletedProblemIds.length) {
+    connection.updateCompletedProblems(mergedArray);
+  }
+  if (newTutorialCompleted !== remoteTutorialCompleted) {
+    connection.updateTutorialCompleted(newTutorialCompleted);
+  }
 }

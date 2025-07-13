@@ -1,7 +1,7 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, Auth, signInAnonymously, onAuthStateChanged, signOut } from "firebase/auth";
 import { getDatabase, Database, ref, set, onValue, off, get, update } from "firebase/database";
-import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc, getDoc } from "firebase/firestore";
+import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
 import { getPlayersEmojiId, didGetPlayerProfile } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
@@ -193,30 +193,6 @@ class Connection {
     }
   }
 
-  public async getProfileByProfileId(profileId: string): Promise<PlayerProfile> {
-    await this.ensureAuthenticated();
-    const docRef = doc(this.firestore, "users", profileId);
-    const docSnap = await getDoc(docRef);
-    if (docSnap.exists()) {
-      const data = docSnap.data();
-      return {
-        id: docSnap.id,
-        username: data.username || null,
-        eth: data.eth || null,
-        sol: data.sol || null,
-        rating: data.rating || 1500,
-        nonce: data.nonce === undefined ? -1 : data.nonce,
-        win: data.win ?? true,
-        emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(docSnap.id),
-        cardBackgroundId: data.custom?.cardBackgroundId,
-        cardSubtitleId: data.custom?.cardSubtitleId,
-        profileMons: data.custom?.profileMons,
-        cardStickers: data.custom?.cardStickers,
-      };
-    }
-    throw new Error("Profile not found");
-  }
-
   public async getProfileByLoginId(loginId: string): Promise<PlayerProfile> {
     await this.ensureAuthenticated();
     const usersRef = collection(this.firestore, "users");
@@ -238,6 +214,8 @@ class Connection {
         cardSubtitleId: data.custom?.cardSubtitleId,
         profileMons: data.custom?.profileMons,
         cardStickers: data.custom?.cardStickers,
+        completedProblemIds: data.custom?.completedProblems,
+        isTutorialCompleted: data.custom?.tutorialCompleted,
       };
     }
     throw new Error("Profile not found");
@@ -265,6 +243,8 @@ class Connection {
         cardSubtitleId: data.custom?.cardSubtitleId,
         profileMons: data.custom?.profileMons,
         cardStickers: data.custom?.cardStickers,
+        completedProblemIds: undefined,
+        isTutorialCompleted: undefined,
       });
     });
 
@@ -554,6 +534,14 @@ class Connection {
 
   public updateCardStickers(stickers: string): void {
     this.updateCustomField("cardStickers", stickers);
+  }
+
+  public updateCompletedProblems(ids: string[]): void {
+    this.updateCustomField("completedProblems", ids);
+  }
+
+  public updateTutorialCompleted(completed: boolean): void {
+    this.updateCustomField("tutorialCompleted", completed);
   }
 
   private updateCustomField(fieldName: string, newValue: any): void {

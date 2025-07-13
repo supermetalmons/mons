@@ -1,8 +1,9 @@
 import React, { useRef } from "react";
 import styled from "styled-components";
-import { problems } from "../content/problems";
+import { problems, getCompletedProblemIds } from "../content/problems";
 import { didSelectPuzzle } from "../game/gameController";
 import { useGameAssets } from "../hooks/useGameAssets";
+import { FaCheck } from "react-icons/fa";
 
 interface NavigationPickerProps {
   showsPuzzles: boolean;
@@ -15,10 +16,10 @@ const NavigationPickerContainer = styled.div`
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
   max-height: calc(100dvh - 120px - env(safe-area-inset-bottom));
-  max-width: 130pt;
+  max-width: 150pt;
   display: flex;
   flex-direction: column;
-  background-color: var(--boardStylePickerBackground);
+  background-color: var(--panel-light-90);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 7pt;
@@ -27,7 +28,7 @@ const NavigationPickerContainer = styled.div`
   z-index: 5;
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--boardStylePickerBackgroundDark);
+    background-color: var(--panel-dark-90);
   }
 
   @media screen and (max-height: 453px) {
@@ -50,7 +51,7 @@ const SectionTitle = styled.div`
   cursor: pointer;
 
   @media (prefers-color-scheme: dark) {
-    color: var(--navigationTextMutedDark);
+    color: var(--color-gray-a0);
   }
 `;
 
@@ -61,7 +62,7 @@ const NavigationPickerButton = styled.button`
   padding: 6px 15px 6px 0;
   cursor: pointer;
   text-align: left;
-  color: var(--primaryTextColor);
+  color: var(--color-gray-33);
   width: 100%;
   display: flex;
   align-items: center;
@@ -78,7 +79,7 @@ const NavigationPickerButton = styled.button`
   }
 
   @media (prefers-color-scheme: dark) {
-    color: var(--primaryTextColorDark);
+    color: var(--color-gray-f0);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
@@ -92,6 +93,14 @@ const NavigationPickerButton = styled.button`
   }
 `;
 
+const CompletedIcon = styled(FaCheck)`
+  color: var(--completedPuzzleIconColor);
+  font-size: 0.5rem;
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-left: 4pt;
+`;
+
 const PlaceholderImage = styled.img`
   width: 23px;
   height: 23px;
@@ -101,7 +110,7 @@ const PlaceholderImage = styled.img`
 const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
   position: sticky;
   bottom: 0;
-  background-color: var(--bottomButtonBackground);
+  background-color: var(--color-blue-primary);
   color: white;
   border-radius: 21px;
   padding: 8px 16px;
@@ -130,7 +139,7 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--bottomButtonBackgroundDark);
+    background-color: var(--color-blue-primary-dark);
 
     &:active {
       background-color: var(--bottomButtonBackgroundActiveDark);
@@ -170,6 +179,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
     return `data:image/png;base64,${assets[iconName]}`;
   };
 
+  const completedProblemsSet = getCompletedProblemIds();
+
   return (
     <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
       {showsPuzzles && (
@@ -179,6 +190,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
             <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
               <PlaceholderImage src={getIconImage(item.icon)} alt="Puzzle icon" />
               {item.label}
+              {completedProblemsSet.has(item.id) && <CompletedIcon />}
             </NavigationPickerButton>
           ))}
         </ScrollableList>

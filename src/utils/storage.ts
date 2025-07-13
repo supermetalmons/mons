@@ -19,6 +19,8 @@ const STORAGE_KEYS = {
   CARD_STICKERS: "cardStickers",
   PROFILE_MONS: "profileMons",
   PLAYER_NONCE: "playerNonce",
+  COMPLETED_PROBLEMS: "completedProblems",
+  TUTORIAL_COMPLETED: "tutorialCompleted",
 } as const;
 
 type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
@@ -166,6 +168,30 @@ export const storage = {
     setItem(STORAGE_KEYS.PLAYER_NONCE, value);
   },
 
+  getCompletedProblemIds: (defaultValue: string[]): string[] => {
+    return getItem(STORAGE_KEYS.COMPLETED_PROBLEMS, defaultValue);
+  },
+
+  setCompletedProblemIds: (value: string[]): void => {
+    setItem(STORAGE_KEYS.COMPLETED_PROBLEMS, value);
+  },
+
+  addCompletedProblemId: (id: string): void => {
+    const current = getItem<string[]>(STORAGE_KEYS.COMPLETED_PROBLEMS, []);
+    if (!current.includes(id)) {
+      current.push(id);
+      setItem(STORAGE_KEYS.COMPLETED_PROBLEMS, current);
+    }
+  },
+
+  getTutorialCompleted: (defaultValue: boolean): boolean => {
+    return getItem(STORAGE_KEYS.TUTORIAL_COMPLETED, defaultValue);
+  },
+
+  setTutorialCompleted: (value: boolean): void => {
+    setItem(STORAGE_KEYS.TUTORIAL_COMPLETED, value);
+  },
+
   signOut: (): void => {
     localStorage.removeItem(STORAGE_KEYS.PLAYER_EMOJI_ID);
     localStorage.removeItem(STORAGE_KEYS.LOGIN_ID);
@@ -179,5 +205,7 @@ export const storage = {
     localStorage.removeItem(STORAGE_KEYS.CARD_STICKERS);
     localStorage.removeItem(STORAGE_KEYS.PROFILE_MONS);
     localStorage.removeItem(STORAGE_KEYS.PLAYER_NONCE);
+    localStorage.removeItem(STORAGE_KEYS.COMPLETED_PROBLEMS);
+    localStorage.removeItem(STORAGE_KEYS.TUTORIAL_COMPLETED);
   },
 };

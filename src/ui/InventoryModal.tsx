@@ -39,7 +39,7 @@ const NFTSection = styled.div`
 `;
 
 const Content = styled.div`
-  color: var(--tertiaryTextColor);
+  color: var(--color-gray-55);
   font-size: 0.95rem;
   user-select: none;
   cursor: default;
@@ -53,7 +53,7 @@ const Content = styled.div`
   padding-left: 4px;
 
   @media (prefers-color-scheme: dark) {
-    color: var(--tertiaryTextColorDark);
+    color: var(--color-gray-d0);
   }
 `;
 
@@ -86,7 +86,7 @@ const NFTNameContainer = styled.div`
   width: 100%;
   aspect-ratio: 1/1;
   border-radius: 4px;
-  background: var(--inventoryItemBackground);
+  background: var(--color-gray-f5);
   overflow: hidden;
   cursor: pointer;
   display: flex;

@@ -5,9 +5,8 @@ import { storage } from "../utils/storage";
 import { connection } from "../connection/connection";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeMenuAndInfoIfAllowedForEvent, closeMenuAndInfoIfAny } from "./MainMenu";
-import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { setAuthStatusGlobally } from "../connection/authentication";
-import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
+import { handleLoginSuccess } from "../connection/loginSuccess";
 import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
 import { LogoutConfirmModal } from "./LogoutConfirmModal";
@@ -34,7 +33,7 @@ const BaseButton = styled.button`
 `;
 
 const SignInButton = styled(BaseButton)<{ isConnected?: boolean }>`
-  background-color: ${(props) => (props.isConnected ? "var(--profileConnectedBackground)" : "var(--profileSigninTint)")};
+  background-color: ${(props) => (props.isConnected ? "var(--color-gray-f9de)" : "var(--profileSigninTint)")};
 
   padding: 8px 16px;
   font-weight: ${(props) => (props.isConnected ? "750" : "888")};
@@ -46,16 +45,16 @@ const SignInButton = styled(BaseButton)<{ isConnected?: boolean }>`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.isConnected ? "var(--profileConnectedBackgroundHover)" : "var(--bottomButtonBackgroundHover)")};
+      background-color: ${(props) => (props.isConnected ? "var(--color-gray-f5)" : "var(--bottomButtonBackgroundHover)")};
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: ${(props) => (props.isConnected ? "var(--profileConnectedBackgroundDark)" : "var(--profileSigninTintDark)")};
+    background-color: ${(props) => (props.isConnected ? "var(--color-gray-25d5)" : "var(--profileSigninTintDark)")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.isConnected ? "var(--profileConnectedBackgroundHoverDark)" : "var(--bottomButtonBackgroundHoverDark)")};
+        background-color: ${(props) => (props.isConnected ? "var(--color-gray-27)" : "var(--bottomButtonBackgroundHoverDark)")};
       }
     }
   }
@@ -71,7 +70,7 @@ const ConnectButtonPopover = styled.div`
 
 const ConnectButtonWrapper = styled.div`
   padding: 8px;
-  background-color: var(--profilePopoverBackground);
+  background-color: var(--color-white);
   border-radius: 12px;
   box-shadow: 0 6px 20px var(--notificationBannerShadow);
   display: flex;
@@ -79,13 +78,13 @@ const ConnectButtonWrapper = styled.div`
   gap: 8px;
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--profilePopoverBackgroundDark);
+    background-color: var(--color-deep-gray);
   }
 `;
 
 const CustomConnectButton = styled(BaseButton)`
   min-width: 130px;
-  color: var(--blackTextColor);
+  color: var(--color-black);
   padding: 12px 24px;
   border: none;
   border-radius: 8px;
@@ -93,21 +92,21 @@ const CustomConnectButton = styled(BaseButton)`
   font-size: 0.81rem;
   cursor: pointer;
 
-  background-color: var(--navigationBackground);
+  background-color: var(--color-gray-f9);
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: var(--navigationBackgroundHover);
+      background-color: var(--color-gray-f5);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--navigationBackgroundDark);
-    color: var(--lightTextColor);
+    background-color: var(--color-gray-25);
+    color: var(--color-gray-f5);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: var(--navigationBackgroundHoverDark);
+        background-color: var(--color-gray-27);
       }
     }
   }
@@ -307,88 +306,28 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   const handleSolanaClick = async () => {
-    if (isSolanaConnecting) {
-      return;
-    }
+    if (isSolanaConnecting) return;
 
     setIsSolanaConnecting(true);
     try {
       const { connectToSolana } = await import("../connection/solanaConnection");
       const { publicKey, signature } = await connectToSolana();
       setSolanaText("Verifying...");
+
       const res = await connection.verifySolanaAddress(publicKey, signature);
       if (res && res.ok === true) {
-        const emoji = res.emoji;
-        const profileId = res.profileId;
-        const profile = {
-          id: profileId,
-          username: res.username,
-          sol: res.address,
-          rating: undefined,
-          nonce: undefined,
-          win: undefined,
-          cardBackgroundId: undefined,
-          cardSubtitleId: undefined,
-          profileMons: undefined,
-          cardStickers: undefined,
-          emoji: emoji,
-        };
-
-        if (res.rating) {
-          profile.rating = res.rating;
-          storage.setPlayerRating(res.rating);
-        }
-
-        if (res.nonce) {
-          profile.nonce = res.nonce;
-          storage.setPlayerNonce(res.nonce);
-        }
-
-        if (res.cardBackgroundId) {
-          profile.cardBackgroundId = res.cardBackgroundId;
-          storage.setCardBackgroundId(res.cardBackgroundId);
-        }
-
-        if (res.cardStickers) {
-          profile.cardStickers = res.cardStickers;
-          storage.setCardStickers(res.cardStickers);
-        }
-
-        if (res.cardSubtitleId) {
-          profile.cardSubtitleId = res.cardSubtitleId;
-          storage.setCardSubtitleId(res.cardSubtitleId);
-        }
-
-        if (res.profileMons) {
-          profile.profileMons = res.profileMons;
-          storage.setProfileMons(res.profileMons);
-        }
-
-        setupLoggedInPlayerProfile(profile, res.uid);
-        storage.setSolAddress(res.address);
-        storage.setUsername(res.username);
-        storage.setPlayerEmojiId(emoji.toString());
-        storage.setProfileId(profileId);
-
-        connection.forceTokenRefresh();
-        storage.setLoginId(res.uid);
-        updateProfileDisplayName(res.username, null, res.address);
-        if (!isWatchOnly) {
-          updateEmojiIfNeeded(emoji, false);
-        }
+        handleLoginSuccess(res, "sol");
         setAuthStatusGlobally("authenticated");
         setIsOpen(false);
         hideShinyCard();
         enterProfileEditingMode(false);
-        handleFreshlySignedInProfileInGameIfNeeded(profileId);
       }
+
       setSolanaText("Solana");
     } catch (error) {
       if ((error as Error).message === "not found") {
         setSolanaText("Not Found");
-        setTimeout(() => {
-          setSolanaText("Solana");
-        }, 500);
+        setTimeout(() => setSolanaText("Solana"), 500);
       } else {
         setSolanaText("Solana");
       }

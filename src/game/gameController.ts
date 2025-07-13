@@ -8,7 +8,7 @@ import { connection, isCreateNewInviteFlow, isBoardSnapshotFlow, getSnapshotIdAn
 import { setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
-import { getNextProblem, Problem } from "../content/problems";
+import { getNextProblem, Problem, markProblemCompleted } from "../content/problems";
 import { storage } from "../utils/storage";
 
 const experimentalDrawingDevMode = false;
@@ -801,6 +801,10 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             if (puzzleMode) {
               Board.flashPuzzleSuccess();
               setPlaySamePuzzleAgainButtonVisible(true);
+
+              if (selectedProblem) {
+                markProblemCompleted(selectedProblem.id);
+              }
             }
 
             if (didStartLocalGame) {

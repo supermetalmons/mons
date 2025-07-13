@@ -11,7 +11,7 @@ const CircularButton = styled.button`
   aspect-ratio: 1;
   border-radius: 50%;
   background-color: var(--boardCircularButtonBackground);
-  color: var(--boardCircularButtonText);
+  color: var(--color-blue-primary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -35,7 +35,7 @@ const CircularButton = styled.button`
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--boardCircularButtonBackgroundDark);
-    color: var(--boardCircularButtonTextDark);
+    color: var(--color-blue-primary-dark);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
@@ -76,6 +76,8 @@ export const updateBoardComponentForBoardStyleChange = () => {
 export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void;
 
 const BoardComponent: React.FC = () => {
+  const showTestVideo = false;
+
   const initializationRef = useRef(false);
   const [currentColorSet, setCurrentColorSet] = useState<ColorSet>(getCurrentColorSet());
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -140,7 +142,7 @@ const BoardComponent: React.FC = () => {
           </g>
         ) : (
           <g id="boardBackgroundLayer">
-            <rect x="1" y="101" height="1161" width="1098" fill={prefersDarkMode ? "var(--boardBackgroundDark)" : "var(--boardBackgroundLight)"} />
+            <rect x="1" y="101" height="1161" width="1098" fill={prefersDarkMode ? "var(--color-gray-23)" : "var(--boardBackgroundLight)"} />
             {shouldIncludePangchiuImage && (
               <image
                 href="/assets/bg/Pangchiu.jpg"
@@ -148,7 +150,7 @@ const BoardComponent: React.FC = () => {
                 y="100"
                 width="1100"
                 style={{
-                  backgroundColor: prefersDarkMode ? "var(--boardBackgroundDark)" : "var(--boardBackgroundLight)",
+                  backgroundColor: prefersDarkMode ? "var(--color-gray-23)" : "var(--boardBackgroundLight)",
                   display: isGridVisible ? "none" : "block",
                 }}
               />
@@ -161,6 +163,28 @@ const BoardComponent: React.FC = () => {
         <g id="controlsLayer"></g>
         <g id="effectsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
       </svg>
+      {showTestVideo && (
+        <video
+          style={{
+            position: "absolute",
+            top: "50px",
+            left: "50px",
+            width: "150px",
+            height: "150px",
+            zIndex: 1,
+          }}
+          autoPlay
+          loop
+          muted
+          playsInline>
+          <source src="/assets/misc/test.mov" type='video/quicktime; codecs="hvc1"' />
+          <source src="/assets/misc/test.webm" type="video/webm" />
+          {/* avconvert -s input.mov -o test.mov -p PresetHEVCHighestQualityWithAlpha --replace --progress */}
+          {/* ffmpeg -y -i input.mov -c:v libvpx-vp9 -pix_fmt yuva420p -crf 32 -b:v 0 -auto-alt-ref 0 -an test.webm */}
+          {/* or for higher quality */}
+          {/* ffmpeg -y -i test.mov -c:v libvpx-vp9 -pix_fmt yuva420p -crf 18 -b:v 0 -quality good -speed 1 -auto-alt-ref 0 -an output-alpha.webm */}
+        </video>
+      )}
       {overlayState.svgElement && (
         <div
           className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}

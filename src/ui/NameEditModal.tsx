@@ -17,23 +17,23 @@ const NameInput = styled.input<{ isValid: boolean }>`
   width: 100%;
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid ${(props) => (props.isValid ? "var(--inputBorderColor)" : "var(--dangerButtonBackground)")};
+  border: 1px solid ${(props) => (props.isValid ? "var(--color-gray-dd)" : "var(--dangerButtonBackground)")};
   font-size: 1rem;
   margin-bottom: 4px;
   box-sizing: border-box;
 
   &:focus {
-    border-color: ${(props) => (props.isValid ? "var(--bottomButtonBackground)" : "var(--dangerButtonBackground)")};
+    border-color: ${(props) => (props.isValid ? "var(--color-blue-primary)" : "var(--dangerButtonBackground)")};
     outline: none;
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--cancelButtonBackgroundDark);
-    color: var(--lightTextColor);
-    border-color: ${(props) => (props.isValid ? "var(--cancelButtonBackgroundHoverDark)" : "var(--dangerButtonBackgroundDark)")};
+    background-color: var(--color-gray-33);
+    color: var(--color-gray-f5);
+    border-color: ${(props) => (props.isValid ? "var(--color-gray-44)" : "var(--dangerButtonBackgroundDark)")};
 
     &:focus {
-      border-color: ${(props) => (props.isValid ? "var(--bottomButtonBackgroundDark)" : "var(--dangerButtonBackgroundDark)")};
+      border-color: ${(props) => (props.isValid ? "var(--color-blue-primary-dark)" : "var(--dangerButtonBackgroundDark)")};
     }
   }
 `;
