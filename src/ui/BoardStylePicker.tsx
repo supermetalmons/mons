@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { FaLock } from "react-icons/fa";
-import { ColorSetKey, setBoardColorSet, getCurrentColorSetKey, colorSets } from "../content/boardStyles";
-import { updateBoardComponentForBoardStyleChange } from "./BoardComponent";
+import { ColorSetKey, setBoardColorSet, getCurrentColorSetKey, colorSets, isPangchiuBoard } from "../content/boardStyles";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
 import { isMobile } from "../utils/misc";
+import { toggleExperimentalMode } from "../game/board";
 
 export const BoardStylePicker = styled.div`
   position: fixed;
@@ -153,13 +153,21 @@ export const LockIconOverlay = styled.div`
 
 const BoardStylePickerComponent: React.FC = () => {
   const [currentColorSetKey, setCurrentColorSetKey] = useState<ColorSetKey>(getCurrentColorSetKey());
+  const [isPangchiuBoardSelected, setIsPangchiuBoardSelected] = useState<boolean>(isPangchiuBoard());
+
   const [imageLoadFailed, setImageLoadFailed] = useState(false);
 
   const handleColorSetChange = (colorSetKey: ColorSetKey) => (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     setBoardColorSet(colorSetKey);
-    updateBoardComponentForBoardStyleChange();
+    toggleExperimentalMode(true, false, false, false);
     setCurrentColorSetKey(colorSetKey);
+    setIsPangchiuBoardSelected(false);
+  };
+
+  const handlePangchiuBoardSelected = () => {
+    toggleExperimentalMode(false, false, true, false);
+    setIsPangchiuBoardSelected(true);
   };
 
   const handleImageError = () => {
