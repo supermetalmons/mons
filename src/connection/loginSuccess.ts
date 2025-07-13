@@ -4,6 +4,7 @@ import { connection } from "./connection";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
 import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
 import { PlayerProfile } from "../connection/connectionModels";
+import { syncTutorialProgress } from "../content/problems";
 
 export type AddressKind = "eth" | "sol";
 
@@ -39,8 +40,8 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
     profileMons: undefined,
     cardStickers: undefined,
     emoji,
-    completedProblemIds: undefined, // TODO: setup based on the response
-    isTutorialCompleted: undefined, // TODO: setup based on the response
+    completedProblemIds: undefined,
+    isTutorialCompleted: undefined,
   };
 
   if (addressKind === "eth") {
@@ -56,11 +57,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   if (res.cardSubtitleId !== undefined) profile.cardSubtitleId = res.cardSubtitleId;
   if (res.profileMons !== undefined) profile.profileMons = res.profileMons;
 
-  // completedProblemIds // TODO: setup based on the response
-  // isTutorialCompleted // TODO: setup based on the response
-  // TODO: use import { syncTutorialProgress } from "../content/problems";
-  // TODO: handle tutorial data
-
+  syncTutorialProgress(res.completedProblems ?? [], res.tutorialCompleted ?? false);
   setupLoggedInPlayerProfile(profile, res.uid);
 
   storage.setUsername(res.username);
