@@ -27,6 +27,8 @@ exports.verifyEthAddress = onCall(async (request) => {
     let cardStickers = null;
     let cardSubtitleId = null;
     let profileMons = null;
+    let completedProblems = null;
+    let tutorialCompleted = null;
 
     const firestore = admin.firestore();
     const userQuery = await firestore.collection("users").where("logins", "array-contains", uid).limit(1).get();
@@ -64,6 +66,8 @@ exports.verifyEthAddress = onCall(async (request) => {
         cardStickers = userData.custom?.cardStickers || null;
         cardSubtitleId = userData.custom?.cardSubtitleId || null;
         profileMons = userData.custom?.profileMons || null;
+        completedProblems = userData.custom?.completedProblems || null;
+        tutorialCompleted = userData.custom?.tutorialCompleted || null;
         username = userData.username || null;
       }
     } else {
@@ -78,6 +82,8 @@ exports.verifyEthAddress = onCall(async (request) => {
       cardStickers = userData.custom?.cardStickers || null;
       cardSubtitleId = userData.custom?.cardSubtitleId || null;
       profileMons = userData.custom?.profileMons || null;
+      completedProblems = userData.custom?.completedProblems || null;
+      tutorialCompleted = userData.custom?.tutorialCompleted || null;
       username = userData.username || null;
     }
 
@@ -98,6 +104,8 @@ exports.verifyEthAddress = onCall(async (request) => {
       cardStickers: cardStickers,
       cardSubtitleId: cardSubtitleId,
       profileMons: profileMons,
+      completedProblems: completedProblems,
+      tutorialCompleted: tutorialCompleted,
     };
   } else {
     return {

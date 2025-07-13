@@ -21,6 +21,8 @@ interface VerifyResponse {
   cardSubtitleId?: number;
   profileMons?: any;
   cardStickers?: any;
+  completedProblems?: any;
+  tutorialCompleted?: any;
 }
 
 export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind): void {
@@ -57,6 +59,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   // completedProblemIds // TODO: setup based on the response
   // isTutorialCompleted // TODO: setup based on the response
   // TODO: use import { syncTutorialProgress } from "../content/problems";
+  // TODO: handle tutorial data
 
   setupLoggedInPlayerProfile(profile, res.uid);
 
