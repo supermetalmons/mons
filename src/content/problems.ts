@@ -60,3 +60,27 @@ export function markProblemCompleted(id: string): void {
     }
   }
 }
+
+export function syncTutorialProgress(remoteCompletedProblemIds: string[], remoteTutorialCompleted: boolean) {
+  const localTutorialCompleted = getTutorialCompleted();
+  const localCompleted = getCompletedProblemIds();
+
+  if (localTutorialCompleted && remoteTutorialCompleted && localCompleted.size === problems.length && remoteCompletedProblemIds.length === problems.length) {
+    return;
+  }
+
+  const merged = new Set([...localCompleted, ...remoteCompletedProblemIds]);
+
+  const mergedArray = Array.from(merged);
+  const newTutorialCompleted = localTutorialCompleted || remoteTutorialCompleted || merged.size === problems.length;
+
+  storage.setCompletedProblemIds(mergedArray);
+  storage.setTutorialCompleted(newTutorialCompleted);
+
+  if (merged.size !== remoteCompletedProblemIds.length) {
+    connection.updateCompletedProblems(mergedArray);
+  }
+  if (newTutorialCompleted !== remoteTutorialCompleted) {
+    connection.updateTutorialCompleted(newTutorialCompleted);
+  }
+}
