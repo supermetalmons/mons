@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { FaLock } from "react-icons/fa";
 import { ColorSetKey, setBoardColorSet, getCurrentColorSetKey, colorSets, isPangchiuBoard } from "../content/boardStyles";
@@ -28,6 +28,34 @@ export const BoardStylePicker = styled.div`
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--panel-dark-90);
+  }
+`;
+
+export const TooltipMessage = styled.div<{ isVisible: boolean }>`
+  position: fixed;
+  bottom: max(132px, calc(env(safe-area-inset-bottom) + 126px));
+  left: 8px;
+  background-color: var(--panel-light-90);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-size: 13px;
+  color: var(--color-text-primary);
+  white-space: nowrap;
+  opacity: ${(props) => (props.isVisible ? "1" : "0")};
+  transform: translateY(${(props) => (props.isVisible ? "0" : "4px")});
+  transition: opacity 0.3s ease, transform 0.3s ease;
+  pointer-events: none;
+  z-index: 1000;
+
+  @media screen and (max-height: 453px) {
+    bottom: max(126px, calc(env(safe-area-inset-bottom) + 120px));
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--panel-dark-90);
+    color: var(--color-text-primary-dark);
   }
 `;
 
@@ -124,9 +152,17 @@ export const LockedStyleItem = styled.div`
   position: relative;
   overflow: hidden;
   background-color: var(--color-gray-d0);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--color-gray-a0);
+  }
+
+  &:active {
+    transform: scale(0.94);
+    transition: transform 0.08s ease;
   }
 `;
 
@@ -156,6 +192,8 @@ export const LockIconOverlay = styled.div`
 const BoardStylePickerComponent: React.FC = () => {
   const [currentColorSetKey, setCurrentColorSetKey] = useState<ColorSetKey>(getCurrentColorSetKey());
   const [isPangchiuBoardSelected, setIsPangchiuBoardSelected] = useState<boolean>(isPangchiuBoard());
+  const [showTooltip, setShowTooltip] = useState(false);
+  const tooltipTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [imageLoadFailed, setImageLoadFailed] = useState(false);
   const isTutorialCompleted = getTutorialCompleted();
@@ -172,6 +210,20 @@ const BoardStylePickerComponent: React.FC = () => {
     event.stopPropagation();
     toggleExperimentalMode(false, false, true, false);
     setIsPangchiuBoardSelected(true);
+  };
+
+  const handleLockedStyleClick = (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    event.stopPropagation();
+
+    if (tooltipTimerRef.current) {
+      clearTimeout(tooltipTimerRef.current);
+    }
+
+    setShowTooltip(true);
+    tooltipTimerRef.current = setTimeout(() => {
+      setShowTooltip(false);
+      tooltipTimerRef.current = null;
+    }, 2300);
   };
 
   const handleImageError = () => {
@@ -197,26 +249,29 @@ const BoardStylePickerComponent: React.FC = () => {
   };
 
   return (
-    <BoardStylePicker>
-      <ColorSquare colorSet="light" isSelected={!isPangchiuBoardSelected && currentColorSetKey === "default"} onClick={!isMobile ? handleColorSetChange("default") : undefined} onTouchStart={isMobile ? handleColorSetChange("default") : undefined} aria-label="Light board theme">
-        {renderColorSquares("light")}
-      </ColorSquare>
-      <ColorSquare colorSet="dark" isSelected={!isPangchiuBoardSelected && currentColorSetKey === "darkAndYellow"} onClick={!isMobile ? handleColorSetChange("darkAndYellow") : undefined} onTouchStart={isMobile ? handleColorSetChange("darkAndYellow") : undefined} aria-label="Dark board theme">
-        {renderColorSquares("dark")}
-      </ColorSquare>
-      {isTutorialCompleted ? (
-        <ColorSquare colorSet="light" isSelected={isPangchiuBoardSelected} onClick={!isMobile ? handlePangchiuBoardSelected : undefined} onTouchStart={isMobile ? handlePangchiuBoardSelected : undefined} aria-label="Pangchiu board theme">
-          {!imageLoadFailed && <PlaceholderImage src="/assets/bg/thumb/Pangchiu.jpg" alt="Pangchiu theme preview" loading="lazy" onError={handleImageError} blurred={false} />}
+    <>
+      <TooltipMessage isVisible={showTooltip}>Complete all lessons in 🏡 menu</TooltipMessage>
+      <BoardStylePicker>
+        <ColorSquare colorSet="light" isSelected={!isPangchiuBoardSelected && currentColorSetKey === "default"} onClick={!isMobile ? handleColorSetChange("default") : undefined} onTouchStart={isMobile ? handleColorSetChange("default") : undefined} aria-label="Light board theme">
+          {renderColorSquares("light")}
         </ColorSquare>
-      ) : (
-        <LockedStyleItem aria-label="Locked board theme">
-          {!imageLoadFailed && <PlaceholderImage src="/assets/bg/thumb/Pangchiu.jpg" alt="Locked theme preview" loading="lazy" onError={handleImageError} blurred={true} />}
-          <LockIconOverlay>
-            <FaLock />
-          </LockIconOverlay>
-        </LockedStyleItem>
-      )}
-    </BoardStylePicker>
+        <ColorSquare colorSet="dark" isSelected={!isPangchiuBoardSelected && currentColorSetKey === "darkAndYellow"} onClick={!isMobile ? handleColorSetChange("darkAndYellow") : undefined} onTouchStart={isMobile ? handleColorSetChange("darkAndYellow") : undefined} aria-label="Dark board theme">
+          {renderColorSquares("dark")}
+        </ColorSquare>
+        {isTutorialCompleted ? (
+          <ColorSquare colorSet="light" isSelected={isPangchiuBoardSelected} onClick={!isMobile ? handlePangchiuBoardSelected : undefined} onTouchStart={isMobile ? handlePangchiuBoardSelected : undefined} aria-label="Pangchiu board theme">
+            {!imageLoadFailed && <PlaceholderImage src="/assets/bg/thumb/Pangchiu.jpg" alt="Pangchiu theme preview" loading="lazy" onError={handleImageError} blurred={false} />}
+          </ColorSquare>
+        ) : (
+          <LockedStyleItem aria-label="Locked board theme" onClick={!isMobile ? handleLockedStyleClick : undefined} onTouchStart={isMobile ? handleLockedStyleClick : undefined}>
+            {!imageLoadFailed && <PlaceholderImage src="/assets/bg/thumb/Pangchiu.jpg" alt="Locked theme preview" loading="lazy" onError={handleImageError} blurred={true} />}
+            <LockIconOverlay>
+              <FaLock />
+            </LockIconOverlay>
+          </LockedStyleItem>
+        )}
+      </BoardStylePicker>
+    </>
   );
 };
 
