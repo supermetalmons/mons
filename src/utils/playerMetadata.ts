@@ -5,6 +5,7 @@ import { storage } from "./storage";
 import { updateEmojiIfNeeded } from "../game/board";
 import { isWatchOnly } from "../game/gameController";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
+import { syncTutorialProgress } from "../content/problems";
 
 export type PlayerMetadata = {
   uid: string;
@@ -126,7 +127,9 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
       .then((profile) => {
         allProfilesDict[loginId] = profile;
         if (profile.emoji !== undefined && own) {
-          // TODO: update new stuff — this is a profile received on page reload.
+          if (profile.isTutorialCompleted !== undefined && profile.completedProblemIds !== undefined) {
+            syncTutorialProgress(profile.completedProblemIds, profile.isTutorialCompleted);
+          }
           storage.setPlayerEmojiId(profile.emoji.toString());
           storage.setUsername(profile.username ?? "");
           storage.setPlayerRating(profile.rating ?? 1500);

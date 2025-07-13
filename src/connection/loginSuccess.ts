@@ -3,6 +3,7 @@ import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
 import { connection } from "./connection";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
 import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
+import { PlayerProfile } from "../connection/connectionModels";
 
 export type AddressKind = "eth" | "sol";
 
@@ -25,7 +26,7 @@ interface VerifyResponse {
 export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind): void {
   const { emoji, profileId } = res;
 
-  const profile: any = {
+  const profile: PlayerProfile = {
     id: profileId,
     username: res.username,
     rating: undefined,
@@ -36,6 +37,8 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
     profileMons: undefined,
     cardStickers: undefined,
     emoji,
+    completedProblemIds: undefined, // TODO: setup based on the response
+    isTutorialCompleted: undefined, // TODO: setup based on the response
   };
 
   if (addressKind === "eth") {
@@ -50,6 +53,10 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   if (res.cardStickers !== undefined) profile.cardStickers = res.cardStickers;
   if (res.cardSubtitleId !== undefined) profile.cardSubtitleId = res.cardSubtitleId;
   if (res.profileMons !== undefined) profile.profileMons = res.profileMons;
+
+  // completedProblemIds // TODO: setup based on the response
+  // isTutorialCompleted // TODO: setup based on the response
+  // TODO: use import { syncTutorialProgress } from "../content/problems";
 
   setupLoggedInPlayerProfile(profile, res.uid);
 
