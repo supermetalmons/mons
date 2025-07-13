@@ -50,7 +50,7 @@ export const TooltipMessage = styled.div<{ isVisible: boolean }>`
   z-index: 1000;
 
   @media screen and (max-height: 453px) {
-    bottom: max(128px, calc(env(safe-area-inset-bottom) + 122px));
+    bottom: max(126px, calc(env(safe-area-inset-bottom) + 120px));
   }
 
   @media (prefers-color-scheme: dark) {
