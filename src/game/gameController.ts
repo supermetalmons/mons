@@ -10,6 +10,7 @@ import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem, markProblemCompleted } from "../content/problems";
 import { storage } from "../utils/storage";
+import { toggleNotificationBanner } from "../ui/ProfileSignIn";
 
 const experimentalDrawingDevMode = false;
 
@@ -60,6 +61,9 @@ export async function go() {
 
   // TODO: toggle badge when appropriate
   // setBadgeVisible(true);
+
+  // TODO: toggle banner when appropriate, only after ProfileSignIn component is added, otherwise it won't work
+  // setTimeout(() => toggleNotificationBanner(), 1000);
 
   Board.setupBoard();
 

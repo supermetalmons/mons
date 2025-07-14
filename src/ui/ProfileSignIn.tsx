@@ -15,8 +15,6 @@ import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { hideShinyCard, showShinyCard, showsShinyCardSomewhere, updateShinyCardDisplayName } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
 
-const isTmpBannerDisabled = true;
-
 const Container = styled.div`
   position: relative;
 `;
@@ -122,6 +120,7 @@ export let handleEditDisplayName: () => void;
 export let showInventory: () => void;
 export let handleLogout: () => void;
 export let showSettings: () => void;
+export let toggleNotificationBanner: () => void = () => {};
 
 export function hasProfilePopupVisible(): boolean {
   return getIsProfilePopupOpen() || getIsEditingPopupOpen() || getIsInventoryPopupOpen() || getIsLogoutConfirmPopupOpen() || getIsSettingsPopupOpen();
@@ -215,15 +214,17 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     }
   };
 
-  useEffect(() => {
-    if (!isTmpBannerDisabled) {
-      const timer = setTimeout(() => {
-        showNotificationBanner();
-      }, 1000);
+  const hideNotificationBanner = () => {
+    setIsNotificationVisible(false);
+  };
 
-      return () => clearTimeout(timer);
+  toggleNotificationBanner = () => {
+    if (isNotificationVisible) {
+      hideNotificationBanner();
+    } else {
+      showNotificationBanner();
     }
-  }, []);
+  };
 
   const performLogout = () => {
     storage.signOut();

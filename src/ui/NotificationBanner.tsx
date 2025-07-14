@@ -14,6 +14,7 @@ const NotificationBanner = styled.div<{ isVisible: boolean }>`
   box-shadow: 0 6px 20px var(--notificationBannerShadow);
   z-index: 6;
   opacity: ${(props) => (props.isVisible ? 1 : 0)};
+  transform: ${(props) => (props.isVisible ? "translateY(0)" : "translateY(-20px)")};
   pointer-events: ${(props) => (props.isVisible ? "auto" : "none")};
   cursor: pointer;
   overflow: hidden;
@@ -25,7 +26,7 @@ const NotificationBanner = styled.div<{ isVisible: boolean }>`
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.3s ease;
+  transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--overlay-dark-95);
