@@ -63,7 +63,8 @@ export async function go() {
   // setBadgeVisible(true);
 
   // TODO: show banner when appropriate, only after ProfileSignIn component is added, otherwise it won't work
-  // setTimeout(() => showNotificationBanner("Play Now", "New puzzles available", "104", () => {}), 1000);
+  // TODO: pass a specific number of lessons
+  // setTimeout(() => showNotificationBanner("Play Mons 101", "0 / 13 lessons completed", "104", () => {}), 1000);
 
   Board.setupBoard();
 
