@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { isMobile } from "../utils/misc";
 
 const NotificationBanner = styled.div<{ isVisible: boolean; dismissType?: "click" | "close" | null }>`
   position: fixed;
@@ -157,26 +158,28 @@ interface NotificationBannerComponentProps {
 }
 
 export const NotificationBannerComponent: React.FC<NotificationBannerComponentProps> = ({ isVisible, onClose, onClick, title, subtitle, emojiId, dismissType }) => {
-  const handleNotificationClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleNotificationClick = (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
     onClick();
   };
 
-  const handleCloseClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleCloseClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
     onClose();
   };
 
   return (
-    <NotificationBanner isVisible={isVisible} dismissType={dismissType} onClick={handleNotificationClick}>
+    <NotificationBanner isVisible={isVisible} dismissType={dismissType} onClick={!isMobile ? handleNotificationClick : undefined} onTouchStart={isMobile ? handleNotificationClick : undefined}>
       <NotificationImage src={`https://assets.mons.link/emojipack/${emojiId}.webp`} alt="Notification" />
       <NotificationContent>
         <NotificationTitle>{title}</NotificationTitle>
         <NotificationSubtitle>{subtitle}</NotificationSubtitle>
       </NotificationContent>
-      <CloseButton onClick={handleCloseClick}>×</CloseButton>
+      <CloseButton onClick={!isMobile ? handleCloseClick : undefined} onTouchStart={isMobile ? handleCloseClick : undefined}>
+        ×
+      </CloseButton>
     </NotificationBanner>
   );
 };
