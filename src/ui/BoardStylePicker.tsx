@@ -18,9 +18,10 @@ export const BoardStylePicker = styled.div`
   padding: 16px;
   display: flex;
   gap: 18px;
-  touch-action: manipulation;
+  touch-action: none;
   user-select: none;
   -webkit-user-select: none;
+  -webkit-touch-callout: none;
 
   @media screen and (max-height: 453px) {
     bottom: max(44px, calc(env(safe-area-inset-bottom) + 38px));
@@ -74,7 +75,10 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
   overflow: hidden;
   background: transparent;
   transition: all 0.15s ease;
-  touch-action: manipulation;
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
 
   ${(props) =>
     props.isSelected &&
@@ -154,7 +158,10 @@ export const LockedStyleItem = styled.div`
   background-color: var(--color-gray-d0);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  touch-action: manipulation;
+  touch-action: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--color-gray-a0);
@@ -172,6 +179,11 @@ export const PlaceholderImage = styled.img<{ blurred?: boolean }>`
   object-fit: cover;
   filter: ${(props) => (props.blurred ? "blur(1px)" : "none")};
   transform: scale(1.01);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  touch-action: none;
 `;
 
 export const ImagePlaceholderBg = styled.div`
@@ -182,6 +194,11 @@ export const ImagePlaceholderBg = styled.div`
   height: 100%;
   background-color: var(--color-gray-d0);
   border-radius: 6px;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  pointer-events: none;
+  touch-action: none;
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--color-gray-a0);
@@ -197,6 +214,11 @@ export const LockIconOverlay = styled.div`
   font-size: 15px;
   z-index: 2;
   text-shadow: 0 1px 3px var(--textShadowLight);
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+  pointer-events: none;
+  touch-action: none;
 
   @media (prefers-color-scheme: dark) {
     text-shadow: 0 1px 3px var(--textShadowDark);
@@ -214,7 +236,7 @@ const BoardStylePickerComponent: React.FC = () => {
   const isTutorialCompleted = getTutorialCompleted();
 
   const handleColorSetChange = (colorSetKey: ColorSetKey) => (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
+    event.preventDefault();
     setBoardColorSet(colorSetKey);
     toggleExperimentalMode(true, false, false, false);
     setCurrentColorSetKey(colorSetKey);
@@ -222,13 +244,13 @@ const BoardStylePickerComponent: React.FC = () => {
   };
 
   const handlePangchiuBoardSelected = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
+    event.preventDefault();
     toggleExperimentalMode(false, false, true, false);
     setIsPangchiuBoardSelected(true);
   };
 
   const handleLockedStyleClick = (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-    event.stopPropagation();
+    event.preventDefault();
 
     if (tooltipTimerRef.current) {
       clearTimeout(tooltipTimerRef.current);
