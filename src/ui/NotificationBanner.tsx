@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-const NotificationBanner = styled.div<{ isVisible: boolean }>`
+const NotificationBanner = styled.div<{ isVisible: boolean; dismissType?: "click" | "close" | null }>`
   position: fixed;
   top: 56px;
   right: 9pt;
@@ -14,7 +14,11 @@ const NotificationBanner = styled.div<{ isVisible: boolean }>`
   box-shadow: 0 6px 20px var(--notificationBannerShadow);
   z-index: 6;
   opacity: ${(props) => (props.isVisible ? 1 : 0)};
-  transform: ${(props) => (props.isVisible ? "translateY(0)" : "translateY(-20px)")};
+  transform: ${(props) => {
+    if (props.isVisible) return "translateX(0) scale(1)";
+    if (props.dismissType === "click") return "translateX(0) scale(0.95)";
+    return "translateX(100%) scale(1)";
+  }};
   pointer-events: ${(props) => (props.isVisible ? "auto" : "none")};
   cursor: pointer;
   overflow: hidden;
@@ -26,7 +30,10 @@ const NotificationBanner = styled.div<{ isVisible: boolean }>`
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94), transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: ${(props) => {
+    if (props.dismissType === "click") return "all 0.2s ease-out";
+    return "all 0.45s cubic-bezier(0.25, 0.8, 0.25, 1)";
+  }};
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--overlay-dark-95);
@@ -146,9 +153,10 @@ interface NotificationBannerComponentProps {
   title: string;
   subtitle: string;
   emojiId: string;
+  dismissType?: "click" | "close" | null;
 }
 
-export const NotificationBannerComponent: React.FC<NotificationBannerComponentProps> = ({ isVisible, onClose, onClick, title, subtitle, emojiId }) => {
+export const NotificationBannerComponent: React.FC<NotificationBannerComponentProps> = ({ isVisible, onClose, onClick, title, subtitle, emojiId, dismissType }) => {
   const handleNotificationClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -162,7 +170,7 @@ export const NotificationBannerComponent: React.FC<NotificationBannerComponentPr
   };
 
   return (
-    <NotificationBanner isVisible={isVisible} onClick={handleNotificationClick}>
+    <NotificationBanner isVisible={isVisible} dismissType={dismissType} onClick={handleNotificationClick}>
       <NotificationImage src={`https://assets.mons.link/emojipack/${emojiId}.webp`} alt="Notification" />
       <NotificationContent>
         <NotificationTitle>{title}</NotificationTitle>

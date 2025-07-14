@@ -177,7 +177,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const [NotificationComponent, setNotificationComponent] = useState<React.ComponentType<any> | null>(null);
   const [isNotificationVisible, setIsNotificationVisible] = useState(false);
   const [notificationState, setNotificationState] = useState<NotificationState | null>(null);
+  const [isNotificationMounted, setIsNotificationMounted] = useState(false);
+  const [notificationDismissType, setNotificationDismissType] = useState<"click" | "close" | null>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
+  const notificationTimeoutRef = useRef<number | null>(null);
 
   getIsInventoryPopupOpen = () => isInventoryOpen;
   getIsEditingPopupOpen = () => isEditingName;
@@ -213,20 +216,49 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     return () => document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
   });
 
+  useEffect(() => {
+    return () => {
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const showNotificationBannerInternal = async (title: string, subtitle: string, emojiId: string, successHandler: () => void) => {
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current);
+      notificationTimeoutRef.current = null;
+    }
+
     try {
       const { NotificationBannerComponent } = await import("./NotificationBanner");
       setNotificationComponent(() => NotificationBannerComponent);
       setNotificationState({ title, subtitle, emojiId, successHandler });
-      setIsNotificationVisible(true);
+      setNotificationDismissType(null);
+      setIsNotificationMounted(true);
+
+      requestAnimationFrame(() => {
+        setIsNotificationVisible(true);
+      });
     } catch (error) {
       console.error("Failed to load notification component:", error);
     }
   };
 
   const hideNotificationBannerInternal = () => {
+    if (notificationTimeoutRef.current) {
+      clearTimeout(notificationTimeoutRef.current);
+      notificationTimeoutRef.current = null;
+    }
+
     setIsNotificationVisible(false);
-    setNotificationState(null);
+
+    notificationTimeoutRef.current = window.setTimeout(() => {
+      setIsNotificationMounted(false);
+      setNotificationState(null);
+      setNotificationDismissType(null);
+      notificationTimeoutRef.current = null;
+    }, 400);
   };
 
   hideNotificationBanner = hideNotificationBannerInternal;
@@ -347,10 +379,12 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     if (notificationState?.successHandler) {
       notificationState.successHandler();
     }
+    setNotificationDismissType("click");
     setIsNotificationVisible(false);
   };
 
   const handleNotificationClose = () => {
+    setNotificationDismissType("close");
     setIsNotificationVisible(false);
   };
 
@@ -369,7 +403,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
           </ConnectButtonWrapper>
         </ConnectButtonPopover>
       )}
-      {NotificationComponent && isNotificationVisible && notificationState && <NotificationComponent isVisible={isNotificationVisible} onClose={handleNotificationClose} onClick={handleNotificationClick} title={notificationState.title} subtitle={notificationState.subtitle} emojiId={notificationState.emojiId} />}
+      {NotificationComponent && isNotificationMounted && notificationState && <NotificationComponent isVisible={isNotificationVisible} onClose={handleNotificationClose} onClick={handleNotificationClick} title={notificationState.title} subtitle={notificationState.subtitle} emojiId={notificationState.emojiId} dismissType={notificationDismissType} />}
       {isEditingName && <NameEditModal initialName={storage.getUsername("")} onSave={handleSaveDisplayName} onCancel={handleCancelEditName} />}
       {isInventoryOpen && <InventoryModal onCancel={handleDismissInventory} />}
       {isLogoutConfirmOpen && <LogoutConfirmModal onConfirm={handleConfirmLogout} onCancel={handleCancelLogout} />}
