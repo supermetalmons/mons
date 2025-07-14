@@ -174,6 +174,20 @@ export const PlaceholderImage = styled.img<{ blurred?: boolean }>`
   transform: scale(1.01);
 `;
 
+export const ImagePlaceholderBg = styled.div`
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: var(--color-gray-d0);
+  border-radius: 6px;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-gray-a0);
+  }
+`;
+
 export const LockIconOverlay = styled.div`
   position: absolute;
   top: 50%;
@@ -196,6 +210,7 @@ const BoardStylePickerComponent: React.FC = () => {
   const tooltipTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   const [imageLoadFailed, setImageLoadFailed] = useState(false);
+  const [imageLoaded, setImageLoaded] = useState(false);
   const isTutorialCompleted = getTutorialCompleted();
 
   const handleColorSetChange = (colorSetKey: ColorSetKey) => (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -230,6 +245,10 @@ const BoardStylePickerComponent: React.FC = () => {
     setImageLoadFailed(true);
   };
 
+  const handleImageLoad = () => {
+    setImageLoaded(true);
+  };
+
   const renderColorSquares = (colorSet: "light" | "dark") => {
     const colors = colorSet === "light" ? colorSets.default : colorSets.darkAndYellow;
     const boardSize = 11;
@@ -260,7 +279,8 @@ const BoardStylePickerComponent: React.FC = () => {
         </ColorSquare>
         {isTutorialCompleted ? (
           <ColorSquare colorSet="light" isSelected={isPangchiuBoardSelected} onClick={!isMobile ? handlePangchiuBoardSelected : undefined} onTouchStart={isMobile ? handlePangchiuBoardSelected : undefined} aria-label="Pangchiu board theme">
-            {!imageLoadFailed && <PlaceholderImage src="/assets/bg/thumb/Pangchiu.jpg" alt="Pangchiu theme preview" loading="lazy" onError={handleImageError} blurred={false} />}
+            {!imageLoaded && <ImagePlaceholderBg />}
+            {!imageLoadFailed && <PlaceholderImage src="/assets/bg/thumb/Pangchiu.jpg" alt="Pangchiu theme preview" loading="lazy" onError={handleImageError} onLoad={handleImageLoad} blurred={false} />}
           </ColorSquare>
         ) : (
           <LockedStyleItem aria-label="Locked board theme" onClick={!isMobile ? handleLockedStyleClick : undefined} onTouchStart={isMobile ? handleLockedStyleClick : undefined}>
