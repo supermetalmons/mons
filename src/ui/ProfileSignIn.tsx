@@ -120,7 +120,8 @@ export let handleEditDisplayName: () => void;
 export let showInventory: () => void;
 export let handleLogout: () => void;
 export let showSettings: () => void;
-export let toggleNotificationBanner: () => void = () => {};
+export let hideNotificationBanner: () => void = () => {};
+export let showNotificationBanner: (title: string, subtitle: string, emojiId: string, successHandler: () => void) => void = () => {};
 
 export function hasProfilePopupVisible(): boolean {
   return getIsProfilePopupOpen() || getIsEditingPopupOpen() || getIsInventoryPopupOpen() || getIsLogoutConfirmPopupOpen() || getIsSettingsPopupOpen();
@@ -157,6 +158,13 @@ export const updateProfileDisplayName = (username: string | null, ethAddress: st
   updateShinyCardDisplayName(newDisplayName);
 };
 
+interface NotificationState {
+  title: string;
+  subtitle: string;
+  emojiId: string;
+  successHandler: () => void;
+}
+
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [solanaText, setSolanaText] = useState("Solana");
@@ -168,6 +176,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [NotificationComponent, setNotificationComponent] = useState<React.ComponentType<any> | null>(null);
   const [isNotificationVisible, setIsNotificationVisible] = useState(false);
+  const [notificationState, setNotificationState] = useState<NotificationState | null>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
 
   getIsInventoryPopupOpen = () => isInventoryOpen;
@@ -204,27 +213,24 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     return () => document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
   });
 
-  const showNotificationBanner = async () => {
+  const showNotificationBannerInternal = async (title: string, subtitle: string, emojiId: string, successHandler: () => void) => {
     try {
       const { NotificationBannerComponent } = await import("./NotificationBanner");
       setNotificationComponent(() => NotificationBannerComponent);
+      setNotificationState({ title, subtitle, emojiId, successHandler });
       setIsNotificationVisible(true);
     } catch (error) {
       console.error("Failed to load notification component:", error);
     }
   };
 
-  const hideNotificationBanner = () => {
+  const hideNotificationBannerInternal = () => {
     setIsNotificationVisible(false);
+    setNotificationState(null);
   };
 
-  toggleNotificationBanner = () => {
-    if (isNotificationVisible) {
-      hideNotificationBanner();
-    } else {
-      showNotificationBanner();
-    }
-  };
+  hideNotificationBanner = hideNotificationBannerInternal;
+  showNotificationBanner = showNotificationBannerInternal;
 
   const performLogout = () => {
     storage.signOut();
@@ -338,6 +344,9 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   const handleNotificationClick = () => {
+    if (notificationState?.successHandler) {
+      notificationState.successHandler();
+    }
     setIsNotificationVisible(false);
   };
 
@@ -360,7 +369,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
           </ConnectButtonWrapper>
         </ConnectButtonPopover>
       )}
-      {NotificationComponent && isNotificationVisible && <NotificationComponent isVisible={isNotificationVisible} onClose={handleNotificationClose} onClick={handleNotificationClick} />}
+      {NotificationComponent && isNotificationVisible && notificationState && <NotificationComponent isVisible={isNotificationVisible} onClose={handleNotificationClose} onClick={handleNotificationClick} title={notificationState.title} subtitle={notificationState.subtitle} emojiId={notificationState.emojiId} />}
       {isEditingName && <NameEditModal initialName={storage.getUsername("")} onSave={handleSaveDisplayName} onCancel={handleCancelEditName} />}
       {isInventoryOpen && <InventoryModal onCancel={handleDismissInventory} />}
       {isLogoutConfirmOpen && <LogoutConfirmModal onConfirm={handleConfirmLogout} onCancel={handleCancelLogout} />}

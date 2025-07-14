@@ -143,9 +143,12 @@ interface NotificationBannerComponentProps {
   isVisible: boolean;
   onClose: () => void;
   onClick: () => void;
+  title: string;
+  subtitle: string;
+  emojiId: string;
 }
 
-export const NotificationBannerComponent: React.FC<NotificationBannerComponentProps> = ({ isVisible, onClose, onClick }) => {
+export const NotificationBannerComponent: React.FC<NotificationBannerComponentProps> = ({ isVisible, onClose, onClick, title, subtitle, emojiId }) => {
   const handleNotificationClick = (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -160,10 +163,10 @@ export const NotificationBannerComponent: React.FC<NotificationBannerComponentPr
 
   return (
     <NotificationBanner isVisible={isVisible} onClick={handleNotificationClick}>
-      <NotificationImage src="https://assets.mons.link/emojipack/104.webp" alt="Notification" />
+      <NotificationImage src={`https://assets.mons.link/emojipack/${emojiId}.webp`} alt="Notification" />
       <NotificationContent>
-        <NotificationTitle>Play Now</NotificationTitle>
-        <NotificationSubtitle>New puzzles available</NotificationSubtitle>
+        <NotificationTitle>{title}</NotificationTitle>
+        <NotificationSubtitle>{subtitle}</NotificationSubtitle>
       </NotificationContent>
       <CloseButton onClick={handleCloseClick}>×</CloseButton>
     </NotificationBanner>
