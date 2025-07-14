@@ -8,7 +8,7 @@ const NotificationBanner = styled.div<{ isVisible: boolean }>`
   background-color: var(--overlay-light-95);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
-  border-radius: 7pt;
+  border-radius: 23px;
   padding: 0;
   width: min(280px, 85dvw);
   box-shadow: 0 6px 20px var(--notificationBannerShadow);
@@ -20,7 +20,7 @@ const NotificationBanner = styled.div<{ isVisible: boolean }>`
   overflow: hidden;
   display: flex;
   align-items: center;
-  height: 80px;
+  height: 69px;
   -webkit-touch-callout: none;
   touch-action: none;
   user-select: none;
@@ -56,7 +56,7 @@ const NotificationImage = styled.img`
   object-fit: cover;
   border-radius: 6px;
   flex-shrink: 0;
-  margin-left: 12px;
+  margin-left: 16px;
   align-self: center;
 `;
 
