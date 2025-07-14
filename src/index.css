@@ -109,6 +109,7 @@
   --leaderboardRatingWinColorDark: #69f0ae;
   --leaderboardRatingLossColorDark: #ff5252;
   --completedPuzzleIconColor: #4caf50;
+  --badgeBackgroundColor: #e74c3c;
   --interactiveHoverBackgroundLight: rgba(232, 232, 232, 0.5);
   --interactiveActiveBackgroundLight: rgba(224, 224, 224, 0.6);
   --interactiveHoverBackgroundDark: rgba(70, 70, 70, 0.4);

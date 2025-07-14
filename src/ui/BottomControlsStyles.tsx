@@ -213,6 +213,7 @@ export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boole
 `;
 
 export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
+  position: relative;
   width: 32px;
   height: 32px;
   border-radius: ${(props) => (props.dimmed ? "16px" : "16px")};
@@ -266,6 +267,17 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
       }
     }
   }
+`;
+
+export const NavigationBadge = styled.div`
+  position: absolute;
+  top: -3px;
+  right: 1px;
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  background-color: var(--badgeBackgroundColor);
+  pointer-events: none;
 `;
 
 export const ControlButton = styled.button<{ disabled?: boolean }>`
