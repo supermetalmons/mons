@@ -36,6 +36,13 @@ const NotificationBanner = styled.div<{ isVisible: boolean; dismissType?: "click
     return "all 0.45s cubic-bezier(0.25, 0.8, 0.25, 1)";
   }};
 
+  &:active {
+    transform: ${(props) => {
+      if (!props.isVisible) return props.dismissType === "click" ? "translateX(0) scale(0.95)" : "translateX(100%) scale(1)";
+      return "translateX(0) scale(0.98)";
+    }};
+  }
+
   @media (prefers-color-scheme: dark) {
     background-color: var(--overlay-dark-95);
     color: var(--color-gray-f5);
