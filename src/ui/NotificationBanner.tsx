@@ -73,6 +73,11 @@ const NotificationImage = styled.img`
   flex-shrink: 0;
   margin-left: 16px;
   align-self: center;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 const NotificationContent = styled.div`
@@ -82,6 +87,11 @@ const NotificationContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 const NotificationTitle = styled.div`
@@ -91,6 +101,7 @@ const NotificationTitle = styled.div`
   margin-bottom: 2px;
   line-height: 1.2;
   text-align: left;
+  touch-action: none;
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-blue-66b3ff);
@@ -102,6 +113,7 @@ const NotificationSubtitle = styled.div`
   font-weight: 500;
   color: var(--color-gray-69);
   line-height: 1.3;
+  touch-action: none;
   text-align: left;
 
   @media (prefers-color-scheme: dark) {
@@ -178,7 +190,7 @@ export const NotificationBannerComponent: React.FC<NotificationBannerComponentPr
   };
 
   return (
-    <NotificationBanner isVisible={isVisible} dismissType={dismissType} onClick={!isMobile ? handleNotificationClick : undefined} onTouchStart={isMobile ? handleNotificationClick : undefined}>
+    <NotificationBanner isVisible={isVisible} dismissType={dismissType} onClick={handleNotificationClick}>
       <NotificationImage src={`https://assets.mons.link/emojipack/${emojiId}.webp`} alt="Notification" />
       <NotificationContent>
         <NotificationTitle>{title}</NotificationTitle>
