@@ -56,18 +56,16 @@ export function getCurrentGameFen(): string {
   return game.fen();
 }
 
+export function didAttemptAuthentication() {
+  // setBadgeVisible(true);
+  // showNotificationBanner("Play Mons 101", "0 / 13 lessons completed", "104", () => {});
+  // TODO: check actual tutorial progress values
+  // TODO: handle tutorial values change if smth new is received from remote
+}
+
 export async function go() {
   connection.setupConnection(false);
-
-  // TODO: toggle badge when appropriate
-  // setBadgeVisible(true);
-
-  // TODO: show banner when appropriate, only after ProfileSignIn component is added, otherwise it won't work
-  // TODO: pass a specific number of lessons
-  // setTimeout(() => showNotificationBanner("Play Mons 101", "0 / 13 lessons completed", "104", () => {}), 1500);
-
   Board.setupBoard();
-
   await initMonsWeb();
 
   playerSideColor = MonsWeb.Color.White;
