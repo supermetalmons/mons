@@ -8,7 +8,7 @@ import { connection, isCreateNewInviteFlow, isBoardSnapshotFlow, getSnapshotIdAn
 import { setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
-import { getNextProblem, Problem, markProblemCompleted } from "../content/problems";
+import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress } from "../content/problems";
 import { storage } from "../utils/storage";
 import { showNotificationBanner } from "../ui/ProfileSignIn";
 
@@ -57,9 +57,11 @@ export function getCurrentGameFen(): string {
 }
 
 export function didAttemptAuthentication() {
-  // setBadgeVisible(true);
-  // showNotificationBanner("Play Mons 101", "0 / 13 lessons completed", "104", () => {});
-  // TODO: check actual tutorial progress values
+  if (!getTutorialCompleted()) {
+    setBadgeVisible(true);
+    const [completed, total] = getTutorialProgress();
+    showNotificationBanner("Play Mons 101", `${completed} / ${total} lessons completed`, "104", () => {});
+  }
   // TODO: handle tutorial values change if smth new is received from remote
 }
 

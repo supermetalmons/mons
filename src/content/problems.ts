@@ -90,3 +90,8 @@ export function syncTutorialProgress(remoteCompletedProblemIds: string[], remote
     connection.updateTutorialCompleted(newTutorialCompleted);
   }
 }
+
+export function getTutorialProgress(): [number, number] {
+  const completed = getCompletedProblemIds();
+  return [completed.size, problems.length];
+}
