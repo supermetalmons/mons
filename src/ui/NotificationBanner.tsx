@@ -1,31 +1,47 @@
 import React from "react";
 import styled from "styled-components";
+import { isMobile } from "../utils/misc";
 
-const NotificationBanner = styled.div<{ isVisible: boolean }>`
+const NotificationBanner = styled.div<{ isVisible: boolean; dismissType?: "click" | "close" | null }>`
   position: fixed;
   top: 56px;
   right: 9pt;
   background-color: var(--overlay-light-95);
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
-  border-radius: 7pt;
+  border-radius: 23px;
   padding: 0;
   width: min(280px, 85dvw);
   box-shadow: 0 6px 20px var(--notificationBannerShadow);
   z-index: 6;
   opacity: ${(props) => (props.isVisible ? 1 : 0)};
+  transform: ${(props) => {
+    if (props.isVisible) return "translateX(0) scale(1)";
+    if (props.dismissType === "click") return "translateX(0) scale(0.95)";
+    return "translateX(100%) scale(1)";
+  }};
   pointer-events: ${(props) => (props.isVisible ? "auto" : "none")};
   cursor: pointer;
   overflow: hidden;
   display: flex;
   align-items: center;
-  height: 80px;
+  height: 69px;
   -webkit-touch-callout: none;
   touch-action: none;
   user-select: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.3s ease;
+  transition: ${(props) => {
+    if (props.dismissType === "click") return "all 0.2s ease-out";
+    return "all 0.45s cubic-bezier(0.25, 0.8, 0.25, 1)";
+  }};
+
+  &:active {
+    transform: ${(props) => {
+      if (!props.isVisible) return props.dismissType === "click" ? "translateX(0) scale(0.95)" : "translateX(100%) scale(1)";
+      return "translateX(0) scale(0.98)";
+    }};
+  }
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--overlay-dark-95);
@@ -55,8 +71,13 @@ const NotificationImage = styled.img`
   object-fit: cover;
   border-radius: 6px;
   flex-shrink: 0;
-  margin-left: 12px;
+  margin-left: 16px;
   align-self: center;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 const NotificationContent = styled.div`
@@ -66,6 +87,11 @@ const NotificationContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: center;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-tap-highlight-color: transparent;
 `;
 
 const NotificationTitle = styled.div`
@@ -75,6 +101,7 @@ const NotificationTitle = styled.div`
   margin-bottom: 2px;
   line-height: 1.2;
   text-align: left;
+  touch-action: none;
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-blue-66b3ff);
@@ -86,6 +113,7 @@ const NotificationSubtitle = styled.div`
   font-weight: 500;
   color: var(--color-gray-69);
   line-height: 1.3;
+  touch-action: none;
   text-align: left;
 
   @media (prefers-color-scheme: dark) {
@@ -142,29 +170,35 @@ interface NotificationBannerComponentProps {
   isVisible: boolean;
   onClose: () => void;
   onClick: () => void;
+  title: string;
+  subtitle: string;
+  emojiId: string;
+  dismissType?: "click" | "close" | null;
 }
 
-export const NotificationBannerComponent: React.FC<NotificationBannerComponentProps> = ({ isVisible, onClose, onClick }) => {
-  const handleNotificationClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+export const NotificationBannerComponent: React.FC<NotificationBannerComponentProps> = ({ isVisible, onClose, onClick, title, subtitle, emojiId, dismissType }) => {
+  const handleNotificationClick = (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
     onClick();
   };
 
-  const handleCloseClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleCloseClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
     onClose();
   };
 
   return (
-    <NotificationBanner isVisible={isVisible} onClick={handleNotificationClick}>
-      <NotificationImage src="https://assets.mons.link/emojipack/104.webp" alt="Notification" />
+    <NotificationBanner isVisible={isVisible} dismissType={dismissType} onClick={handleNotificationClick}>
+      <NotificationImage src={`https://assets.mons.link/emojipack/${emojiId}.webp`} alt="Notification" />
       <NotificationContent>
-        <NotificationTitle>Play Now</NotificationTitle>
-        <NotificationSubtitle>New puzzles available</NotificationSubtitle>
+        <NotificationTitle>{title}</NotificationTitle>
+        <NotificationSubtitle>{subtitle}</NotificationSubtitle>
       </NotificationContent>
-      <CloseButton onClick={handleCloseClick}>×</CloseButton>
+      <CloseButton onClick={!isMobile ? handleCloseClick : undefined} onTouchStart={isMobile ? handleCloseClick : undefined}>
+        ×
+      </CloseButton>
     </NotificationBanner>
   );
 };

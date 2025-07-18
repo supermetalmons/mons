@@ -5,6 +5,7 @@ import { connection } from "./connection";
 import { handleLoginSuccess } from "./loginSuccess";
 import { storage } from "../utils/storage";
 import { setupLoggedInPlayerProfile } from "../game/board";
+import { didAttemptAuthentication } from "../game/gameController";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
@@ -62,11 +63,14 @@ export function useAuthStatus() {
           };
           updateProfileDisplayName(storedUsername, storedEthAddress, storedSolAddress);
           setupLoggedInPlayerProfile(profile, uid);
+          setTimeout(() => didAttemptAuthentication(), 23);
         } else {
           setAuthStatus("unauthenticated");
+          setTimeout(() => didAttemptAuthentication(), 23);
         }
       } else {
         setAuthStatus("unauthenticated");
+        setTimeout(() => didAttemptAuthentication(), 23);
       }
     });
   }, []);

@@ -10,7 +10,7 @@ import { playReaction } from "../content/sounds";
 import { newReactionOfKind } from "../content/sounds";
 import { showVoiceReactionText } from "../game/board";
 import NavigationPicker from "./NavigationPicker";
-import { ControlsContainer, BrushButton, NavigationListButton, ControlButton, BottomPillButton, ReactionButton, ReactionPicker, ResignButton, ResignConfirmation } from "./BottomControlsStyles";
+import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, ControlButton, BottomPillButton, ReactionButton, ReactionPicker, ResignButton, ResignConfirmation } from "./BottomControlsStyles";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 import BoardStylePickerComponent from "./BoardStylePicker";
 
@@ -58,6 +58,7 @@ let setBotGameOptionVisible: (visible: boolean) => void;
 let setPlaySamePuzzleAgainButtonVisible: (visible: boolean) => void;
 let setAutomatchWaitingState: (waiting: boolean) => void;
 let setBrushAndNavigationButtonDimmed: (dimmed: boolean) => void;
+let setBadgeVisible: (visible: boolean) => void;
 
 let showWaitingStateText: (text: string) => void;
 let setHomeVisible: (visible: boolean) => void;
@@ -96,6 +97,7 @@ const BottomControls: React.FC = () => {
   const [isNavigationListButtonVisible, setIsNavigationListButtonVisible] = useState(false);
   const [isNavigationPopupVisible, setIsNavigationPopupVisible] = useState(false);
   const [isBoardStylePickerVisible, setIsBoardStylePickerVisible] = useState(false);
+  const [isBadgeVisible, setIsBadgeVisible] = useState(false);
 
   const [isUndoDisabled, setIsUndoDisabled] = useState(true);
   const [waitingStateText, setWaitingStateText] = useState("");
@@ -193,6 +195,10 @@ const BottomControls: React.FC = () => {
     if (!visible) {
       setIsNavigationPopupVisible(false);
     }
+  };
+
+  setBadgeVisible = (visible: boolean) => {
+    setIsBadgeVisible(visible);
   };
 
   setBrushAndNavigationButtonDimmed = (dimmed: boolean) => {
@@ -598,6 +604,7 @@ const BottomControls: React.FC = () => {
           </ControlButton>
         )}
         <NavigationListButton ref={navigationButtonRef} dimmed={isNavigationButtonDimmed} onClick={!isMobile ? handleNavigationButtonClick : undefined} onTouchStart={isMobile ? handleNavigationButtonClick : undefined} aria-label="Navigation">
+          {isBadgeVisible && <NavigationBadge />}
           <FaHome />
         </NavigationListButton>
         {isReactionPickerVisible && (
@@ -619,4 +626,4 @@ const BottomControls: React.FC = () => {
   );
 };
 
-export { BottomControls as default, setBrushAndNavigationButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, setAutomatchEnabled, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction };
+export { BottomControls as default, setBrushAndNavigationButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, setAutomatchEnabled, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction, setBadgeVisible };
