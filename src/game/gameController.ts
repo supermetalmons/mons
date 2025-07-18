@@ -10,7 +10,7 @@ import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress } from "../content/problems";
 import { storage } from "../utils/storage";
-import { showNotificationBanner } from "../ui/ProfileSignIn";
+import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSignIn";
 
 const experimentalDrawingDevMode = false;
 
@@ -62,8 +62,13 @@ export function didSyncTutorialProgress() {
   // if not completed, and banner still visible, update it with new progress value
 }
 
+function dismissBadgeAndNotificationBannerIfNeeded() {
+  setBadgeVisible(false);
+  hideNotificationBanner();
+}
+
 export function didAttemptAuthentication() {
-  if (!getTutorialCompleted()) {
+  if (!isOnlineGame && !didStartLocalGame && !getTutorialCompleted()) {
     setBadgeVisible(true);
     const [completed, total] = getTutorialProgress();
     showNotificationBanner("Play Mons 101", `${completed} / ${total} lessons completed`, "104", () => {});
@@ -213,6 +218,7 @@ export function didFindYourOwnInviteThatNobodyJoined(isAutomatch: boolean) {
 }
 
 export function didClickStartBotGameButton() {
+  dismissBadgeAndNotificationBannerIfNeeded();
   didStartLocalGame = true;
   setHomeVisible(true);
   setUndoVisible(true);
@@ -251,6 +257,7 @@ export function didClickAutomatchButton() {
   setAutomoveActionVisible(false);
   setInviteLinkActionVisible(false);
   setBotGameOptionVisible(false);
+  dismissBadgeAndNotificationBannerIfNeeded();
   setNavigationListButtonVisible(false);
   Board.hideBoardPlayersInfo();
   Board.removeHighlights();
@@ -619,6 +626,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
       }
 
       if (!isOnlineGame && !didStartLocalGame) {
+        dismissBadgeAndNotificationBannerIfNeeded();
         didStartLocalGame = true;
         setHomeVisible(true);
         setBrushAndNavigationButtonDimmed(true);
@@ -1253,6 +1261,7 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
   setBrushAndNavigationButtonDimmed(true);
   setAutomatchVisible(false);
   setBotGameOptionVisible(false);
+  dismissBadgeAndNotificationBannerIfNeeded();
   setNavigationListButtonVisible(false);
   setAutomoveActionVisible(false);
   Board.hideBoardPlayersInfo();
@@ -1272,6 +1281,7 @@ export function cleanupCurrentInputs() {
 }
 
 export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = false) {
+  dismissBadgeAndNotificationBannerIfNeeded();
   showPrimaryAction(PrimaryActionType.None);
   setPlaySamePuzzleAgainButtonVisible(false);
   isGameOver = false;
