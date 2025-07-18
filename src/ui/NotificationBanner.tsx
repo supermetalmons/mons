@@ -191,7 +191,7 @@ export const NotificationBannerComponent: React.FC<NotificationBannerComponentPr
 
   return (
     <NotificationBanner isVisible={isVisible} dismissType={dismissType} onClick={handleNotificationClick}>
-      <NotificationImage src={`https://assets.mons.link/emojipack/${emojiId}.webp`} alt="Notification" />
+      <NotificationImage src={`https://assets.mons.link/emojipack_hq/${emojiId}.webp`} alt="Notification" />
       <NotificationContent>
         <NotificationTitle>{title}</NotificationTitle>
         <NotificationSubtitle>{subtitle}</NotificationSubtitle>
