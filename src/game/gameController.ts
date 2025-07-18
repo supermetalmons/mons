@@ -57,9 +57,10 @@ export function getCurrentGameFen(): string {
 }
 
 export function didSyncTutorialProgress() {
-  // TODO: if banner or badge visible
-  // if became completed, hide both banner and badge
-  // if not completed, and banner still visible, update it with new progress value
+  if (getTutorialCompleted()) {
+    dismissBadgeAndNotificationBannerIfNeeded();
+  }
+  // TODO: update banner numbers if needed
 }
 
 function dismissBadgeAndNotificationBannerIfNeeded() {
