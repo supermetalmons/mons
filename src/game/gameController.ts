@@ -56,13 +56,18 @@ export function getCurrentGameFen(): string {
   return game.fen();
 }
 
+export function didSyncTutorialProgress() {
+  // TODO: if banner or badge visible
+  // if became completed, hide both banner and badge
+  // if not completed, and banner still visible, update it with new progress value
+}
+
 export function didAttemptAuthentication() {
   if (!getTutorialCompleted()) {
     setBadgeVisible(true);
     const [completed, total] = getTutorialProgress();
     showNotificationBanner("Play Mons 101", `${completed} / ${total} lessons completed`, "104", () => {});
   }
-  // TODO: handle tutorial values change if smth new is received from remote
 }
 
 export async function go() {

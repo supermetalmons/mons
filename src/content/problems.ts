@@ -1,5 +1,6 @@
 import { storage } from "../utils/storage";
 import { connection } from "../connection/connection";
+import { didSyncTutorialProgress } from "../game/gameController";
 
 export type Problem = {
   id: string;
@@ -89,6 +90,7 @@ export function syncTutorialProgress(remoteCompletedProblemIds: string[], remote
   if (newTutorialCompleted !== remoteTutorialCompleted) {
     connection.updateTutorialCompleted(newTutorialCompleted);
   }
+  didSyncTutorialProgress();
 }
 
 export function getTutorialProgress(): [number, number] {
