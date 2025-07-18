@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { isMobile } from "../utils/misc";
+import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 
 const NotificationBanner = styled.div<{ isVisible: boolean; dismissType?: "click" | "close" | null }>`
   position: fixed;
@@ -180,17 +181,19 @@ export const NotificationBannerComponent: React.FC<NotificationBannerComponentPr
   const handleNotificationClick = (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    didDismissSomethingWithOutsideTapJustNow();
     onClick();
   };
 
   const handleCloseClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
+    didDismissSomethingWithOutsideTapJustNow();
     onClose();
   };
 
   return (
-    <NotificationBanner isVisible={isVisible} dismissType={dismissType} onClick={handleNotificationClick}>
+    <NotificationBanner data-notification-banner="true" isVisible={isVisible} dismissType={dismissType} onClick={handleNotificationClick}>
       <NotificationImage src={`https://assets.mons.link/emojipack_hq/${emojiId}.webp`} alt="Notification" />
       <NotificationContent>
         <NotificationTitle>{title}</NotificationTitle>

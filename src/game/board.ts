@@ -1785,7 +1785,7 @@ export function setupBoard() {
       didClickSquare(new Location(y, x));
       event.preventDefault();
       event.stopPropagation();
-    } else if (!target.closest("a, button, select")) {
+    } else if (!target.closest("a, button, select, [data-notification-banner='true']")) {
       hideItemSelectionOrConfirmationOverlay();
       didClickSquare(new Location(-1, -1));
       event.preventDefault();
