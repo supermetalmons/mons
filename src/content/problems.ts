@@ -45,6 +45,19 @@ export function getNextProblem(id: string): Problem | null {
   return null;
 }
 
+export function getInitialProblem(): Problem {
+  const completedSet = getCompletedProblemIds();
+  if (completedSet.size === problems.length) {
+    return problems[0];
+  }
+  for (let i = 0; i < problems.length; i++) {
+    if (!completedSet.has(problems[i].id)) {
+      return problems[i];
+    }
+  }
+  return problems[0];
+}
+
 export function getCompletedProblemIds(): Set<string> {
   return new Set(storage.getCompletedProblemIds([]));
 }

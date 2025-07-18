@@ -8,7 +8,7 @@ import { connection, isCreateNewInviteFlow, isBoardSnapshotFlow, getSnapshotIdAn
 import { setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
-import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress } from "../content/problems";
+import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress, getInitialProblem } from "../content/problems";
 import { storage } from "../utils/storage";
 import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSignIn";
 
@@ -72,7 +72,7 @@ export function didAttemptAuthentication() {
   if (!isOnlineGame && !didStartLocalGame && !getTutorialCompleted()) {
     setBadgeVisible(true);
     const [completed, total] = getTutorialProgress();
-    showNotificationBanner("Play Mons 101", `${completed} / ${total} lessons completed`, "104", () => {});
+    showNotificationBanner("Play Mons 101", `${completed} / ${total} lessons completed`, "104", resumeTutorialFromBanner);
   }
 }
 
@@ -1279,6 +1279,10 @@ export function showPuzzleInstructions() {
 
 export function cleanupCurrentInputs() {
   currentInputs = [];
+}
+
+export function resumeTutorialFromBanner() {
+  didSelectPuzzle(getInitialProblem());
 }
 
 export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = false) {
