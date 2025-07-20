@@ -403,7 +403,7 @@ const MusicPopover = styled.div<{ isOpen: boolean }>`
   padding: 12px;
   width: min(200px, 60dvw);
   box-shadow: none;
-  z-index: 5;
+  z-index: 8;
   opacity: ${(props) => (props.isOpen ? 1 : 0)};
   pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
   text-align: center;

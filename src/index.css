@@ -46,6 +46,7 @@
   --link-color-light: #0071f9;
   --link-color-dark: #009aff;
   --card-color: #fafafa;
+  --instruction-text-color: #000;
   --bottomButtonBackgroundHover: #0069d9;
   --bottomButtonBackgroundActive: #0056b3;
   --bottomButtonBackgroundHoverDark: #1a91ff;
@@ -135,6 +136,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --card-color: #eeeeee;
+    --instruction-text-color: #fff;
   }
 }
 

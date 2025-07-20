@@ -25,7 +25,7 @@ const NavigationPickerContainer = styled.div`
   border-radius: 7pt;
   padding: 8px;
   gap: 0;
-  z-index: 5;
+  z-index: 7;
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--panel-dark-90);

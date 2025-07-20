@@ -19,7 +19,7 @@ const StyledInfoPopover = styled.div<{ isOpen: boolean }>`
   padding-left: 12px;
   width: min(277px, 85dvw);
   box-shadow: none;
-  z-index: 5;
+  z-index: 7;
   opacity: ${(props) => (props.isOpen ? 1 : 0)};
   pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
   white-space: pre-wrap;
