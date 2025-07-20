@@ -22,13 +22,13 @@ const descriptionMana = "💧 Once each turn (except for white's first turn), yo
 const descriptionSpirit = "It is also possible to move mana by using your spirit's active ability ⭐️, which can target a mana from exactly two tiles away & push it one tile in any direction.";
 // const descriptionSpirit = "It is also possible to move mana using your spirit's active ability, which has a target range of exactly 2 tiles away.";
 
-const descriptionSpirit2 = "The spirit's active ability can in fact move any piece on the board -- mana, items, or other mons. This may give you just the extra boost or reach you need.";
+const descriptionSpirit2 = "The spirit's active ability can in fact move any piece on the board — mana, items, or other mons. This may give you just the extra boost or reach you need.";
 // const descriptionSpirit2 = "The spirit can move any piece on the board — mana, items, or other mons. You can use this to get a little extra boost.";
 
-const descriptionDemon = "Opposing mons looking to upset your plans can be fainted using your demon's active ability which targets exactly two tiles away but only up, down, left, or right";
+const descriptionDemon = "Opposing mons looking to upset your plans can be fainted using your demon's active ability which targets exactly two tiles away but only up, down, left, or right.";
 // const descriptionDemon = "Faint any opposing mons in your way with a demon attack, which has a target range of exactly 2 tiles away up, down, left, or right.";
 
-const descriptionMystic = "The mystic's active ability also faints opposing mons, but targets exactly two tiles away diagonally, &- unlike the demon's rush attack- it can shoot over other pieces.";
+const descriptionMystic = "The mystic's active ability also faints opposing mons, but targets exactly two tiles away diagonally, &— unlike the demon's rush attack — it can shoot over other pieces.";
 // const descriptionMystic = "The mystic attack also faints opposing mons, but has a target range of exactly 2 tiles away diagonally. Unlike the demon, it can also shoot over other pieces.";
 
 const descriptionAngel = "Angels will protect any adjacent friendly mons from demon or mystic attacks, but are not immune to attack themselves.";
@@ -39,7 +39,7 @@ const descriptionAngel = "Angels will protect any adjacent friendly mons from de
 const descriptionManaB = "If you manage to score one of your opponent's mana yourself, that is worth 2 points. The pools are all the same; whoever dunks the mana there gets the points.";
 // const descriptionManaB = "If you manage to score one of your opponent's color mana for yourself, it is worth 2 points. Whoever moves the mana into the pool gets the points.";
 
-const descriptionItems = "Mons can move onto an item pickup to acquire either a bomb or a potion. There are only two of these each game so choose wisely- though this one below's just in the way!";
+const descriptionItems = "Mons can move onto an item pickup to acquire either a bomb or a potion. There are only two of these each game so choose wisely — though this one below's just in the way!";
 // const descriptionItems = "Pick up a bomb or a potion to free up the pool. Move mana into the pool.";
 
 const descriptionBomb = "When your attackers can't reach a threat (or also if it's protected by an angel), any mon can pick up a bomb to faint an opposing mon from up to three tiles away.";
@@ -48,7 +48,7 @@ const descriptionBomb = "When your attackers can't reach a threat (or also if it
 const descriptionPotion = "Across all your mons, you can normally only use one active ability per turn. If you're holding a potion however, you can use it at any point to get one more. Very powerful.";
 // const descriptionPotion = "Between the spirit, mystic, and demon you can normally only use one active ability per turn. But by using a potion, you get one more. This gives you some extra distance or firepower in a pinch.";
 
-const descriptionSuperMana = "The super mana- like a stolen mana- is worth 2 points. Grabbing it can be risky though as, if a drainer is fainted while holding it, it will automatically return to the central tile.";
+const descriptionSuperMana = "The super mana — like a stolen mana — is worth 2 points. Grabbing it can be risky though as, if a drainer is fainted while holding it, it will automatically return to the central tile.";
 // const descriptionSuperMana = "The super mana is worth 2 points all the time — a lucrative prize indeed!";
 
 const descriptionSuperMana2 = "Sometimes an opposing angel must be moved or removed in order to get at the real trouble. This would take two turns, but if you have a potion you can do it in one.";
