@@ -146,7 +146,7 @@ export function showInstructionsText(text: string) {
     textDiv.style.justifyContent = "left";
     textDiv.style.padding = "0.05em";
     textDiv.style.boxSizing = "border-box";
-    textDiv.style.color = "gray";
+    textDiv.style.color = "var(--instruction-text-color)";
     textDiv.style.fontFamily = "system-ui, -apple-system, sans-serif";
     textDiv.style.fontSize = "1.55em";
     textDiv.style.fontWeight = "500";
