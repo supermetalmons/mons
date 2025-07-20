@@ -10,6 +10,49 @@ export type Problem = {
   description: string;
 };
 
+/*
+-Drainers & Scoring
+A game of Mons is won by scoring 5 points by bringing mana to any of the four corners of the board, called mana pools. This is also how you'll complete each lesson.
+
+Your drainer is the fastest way to move mana. Drainers can move onto the same tile as a mana to pick it up & carry it to a mana pool to score.
+
+-Mana Moves
+💧 Once each turn (except for white's first turn), you must select one of your own mana & move it once in any direction. This ends your turn so save it until you're ready!
+
+-Spirits
+It is also possible to move mana by using your spirit's active ability ⭐️, which can target a mana from exactly two tiles away & push it one tile in any direction.
+
+-Spirits II
+The spirit's active ability can in fact move any piece on the board -- mana, items, or other mons. This may give you just the extra boost or reach you need.
+
+-Demons
+Opposing mons looking to upset your plans can be fainted using your demon's active ability which targets exactly two tiles away but only up, down, left, or right
+
+-Mystics
+The mystic's active ability also faints opposing mons, but targets exactly two tiles away diagonally, &- unlike the demon's rush attack- it can shoot over other pieces.
+
+-Angels
+Angels automatically protect any adjacent friendly mons from demon or mystic attacks, but are not themselves immune to attack. Your drainer below is safe because of this.
+
+-Stealing Mana
+If you manage to score one of your opponent's mana yourself, that is worth 2 points. The pools are all the same; whoever dunks the mana there gets the points.
+
+-Items
+Mons can move onto an item pickup to acquire either a bomb or a potion. There are only two of these each game so choose wisely- though this one below's just in the way!
+
+-Bombs
+When your attackers can't reach a threat (or also if it's protected by an angel), any mon can pick up a bomb to faint an opposing mon from up to three tiles away.
+
+-Potions
+Across all your mons, you can normally only use one active ability per turn. If you're holding a potion however, you can use it at any point to get one more. Very powerful.
+
+-Angels II
+Sometimes an opposing angel must be moved or removed in order to get at the real trouble. This would take two turns, but if you have a potion you can do it in one.
+
+-Super Mana
+The super mana- like a stolen mana- is worth 2 points. Grabbing it can be risky though as, if a drainer is fainted while holding it, it will automatically return to the central tile.
+*/
+
 export const problems: Problem[] = [
   { id: "drainer", icon: "drainer", label: "Moving & Scoring", description: "Move your drainer onto the same tile as a mana to pick it up, then carry it to a mana pool in any corner to score.", fen: "4 0 w 0 0 0 0 0 15 n11/n11/n11/n11/n11/n11/n11/n02xxMn02D0xn05/n04xxMn02xxMn03/n11/n11" },
   { id: "mana", icon: "mana", label: "Mana Moves", description: "You can move one mana once per turn (except for white's very first turn) entirely on its own, but this immediately ends your turn so save it until you're ready! ", fen: "4 0 w 0 0 0 0 0 21 n11/n11/n11/n11/n11/n11/n03xxMn07/n04xxMn06/n11/n01xxMn09/n10D0x" },
