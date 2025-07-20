@@ -206,7 +206,7 @@ function startTextAnimation(text: string) {
 
     if (currentIndex < chars.length) {
       const currentChar = chars[currentIndex];
-      const delay = currentChar === " " ? 4 : 44;
+      const delay = currentChar === " " ? 55 : 23;
       currentIndex += 1;
 
       currentTextAnimation.timer = setTimeout(animateStep, delay);
