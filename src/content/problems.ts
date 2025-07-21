@@ -32,6 +32,7 @@ const descriptionMystic = "The mystic's active ability also faints opposing mons
 // const descriptionMystic = "The mystic attack also faints opposing mons, but has a target range of exactly 2 tiles away diagonally. Unlike the demon, it can also shoot over other pieces.";
 
 const descriptionAngel = "Angels will protect any adjacent friendly mons from demon or mystic attacks, but are not immune to attack themselves.";
+// meinong angels 2: "Sometimes an opposing angel must be moved or removed in order to get at the real trouble. This would take two turns, but if you have a potion you can do it in one.";
 // TODO: not using meinong one for now while the angel puzzle is not updated
 // meinong: "Angels automatically protect any adjacent friendly mons from demon or mystic attacks, but are not themselves immune to attack. Your drainer below is safe because of this.";
 // const descriptionAngel = "Angels will protect any adjacent friendly mons from demon or mystic attacks, but are not immune to attack themselves.";
@@ -39,7 +40,8 @@ const descriptionAngel = "Angels will protect any adjacent friendly mons from de
 const descriptionManaB = "If you manage to score one of your opponent's mana yourself, that is worth 2 points. The pools are all the same; whoever dunks the mana there gets the points.";
 // const descriptionManaB = "If you manage to score one of your opponent's color mana for yourself, it is worth 2 points. Whoever moves the mana into the pool gets the points.";
 
-const descriptionItems = "Mons can move onto an item pickup to acquire either a bomb or a potion. There are only two of these each game so choose wisely — though this one below's just in the way!";
+const descriptionItems = "Mons can move onto an item pickup to acquire either a bomb or a potion. This one below is just in the way!";
+// meinong original (modified one is shortened to fit 2 lines): "Mons can move onto an item pickup to acquire either a bomb or a potion. There are only two of these each game so choose wisely — though this one below's just in the way!";
 // const descriptionItems = "Pick up a bomb or a potion to free up the pool. Move mana into the pool.";
 
 const descriptionBomb = "When your attackers can't reach a threat (or also if it's protected by an angel), any mon can pick up a bomb to faint an opposing mon from up to three tiles away.";
@@ -48,11 +50,10 @@ const descriptionBomb = "When your attackers can't reach a threat (or also if it
 const descriptionPotion = "Across all your mons, you can normally only use one active ability per turn. If you're holding a potion however, you can use it at any point to get one more. Very powerful.";
 // const descriptionPotion = "Between the spirit, mystic, and demon you can normally only use one active ability per turn. But by using a potion, you get one more. This gives you some extra distance or firepower in a pinch.";
 
-const descriptionSuperMana = "The super mana — like a stolen mana — is worth 2 points. Grabbing it can be risky though as, if a drainer is fainted while holding it, it will automatically return to the central tile.";
-// const descriptionSuperMana = "The super mana is worth 2 points all the time — a lucrative prize indeed!";
+const descriptionSuperMana = "The super mana is worth 2 points all the time — a lucrative prize indeed!";
 
-const descriptionSuperMana2 = "Sometimes an opposing angel must be moved or removed in order to get at the real trouble. This would take two turns, but if you have a potion you can do it in one.";
-// const descriptionSuperMana2 = "It can be risky grabbing the super mana though, as if a drainer is fainted while holding it, it will automatically return to the central tile.";
+const descriptionSuperMana2 = "It can be risky grabbing the super mana though, as if a drainer is fainted while holding it, it will automatically return to the central tile.";
+// "The super mana — like a stolen mana — is worth 2 points. Grabbing it can be risky though as, if a drainer is fainted while holding it, it will automatically return to the central tile.";
 
 export const problems: Problem[] = [
   { id: "drainer", icon: "drainer", label: "Moving & Scoring", description: descriptionDrainer, fen: "4 0 w 0 0 0 0 0 15 n11/n11/n11/n11/n11/n11/n11/n02xxMn02D0xn05/n04xxMn02xxMn03/n11/n11" },
