@@ -460,6 +460,7 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false): void {
     rect.setAttribute("y", initialY.toString());
     rect.setAttribute("width", (frameWidth * 100).toString());
     rect.setAttribute("height", (frameHeight * (isTalkingDude ? 50 : 100)).toString());
+    // TODO: might need to update that clip path if offsets are updated in updateLayout for window size change
     clipPath.appendChild(rect);
 
     const svgRoot = image.ownerSVGElement;
@@ -492,6 +493,7 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false): void {
         if (now - lastUpdateTime >= frameDuration) {
           const x = initialX - currentFrame * frameWidth * 100;
           const y = isTalkingDude && talkingDudeIsTalking ? initialY - 140 : initialY;
+          // TODO: will need to use a different values here when talking dude offsets will be updated based in window width
           image.setAttribute("x", x.toString());
           image.setAttribute("y", y.toString());
           currentFrame = (currentFrame + 1) % totalFrames;
