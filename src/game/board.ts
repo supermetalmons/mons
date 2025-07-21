@@ -144,7 +144,7 @@ export function showInstructionsText(text: string) {
     textDiv.style.display = "flex";
     textDiv.style.alignItems = "left";
     textDiv.style.justifyContent = "left";
-    textDiv.style.padding = "0.05em";
+    textDiv.style.padding = "0.4em 0.8em";
     textDiv.style.boxSizing = "border-box";
     textDiv.style.color = "var(--instruction-text-color)";
     textDiv.style.fontFamily = "system-ui, -apple-system, sans-serif";
@@ -153,6 +153,10 @@ export function showInstructionsText(text: string) {
     textDiv.style.textAlign = "left";
     textDiv.style.lineHeight = "1.2";
     textDiv.style.overflow = "visible";
+    textDiv.style.border = "2px solid var(--instruction-text-color)";
+    textDiv.style.borderRadius = "0.5em";
+    textDiv.style.pointerEvents = "none";
+    textDiv.style.touchAction = "none";
 
     foreignObject.appendChild(textDiv);
     containerGroup.appendChild(foreignObject);
