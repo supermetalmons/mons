@@ -155,6 +155,8 @@ export function showInstructionsText(text: string) {
     textDiv.style.overflow = "visible";
     textDiv.style.border = "2px solid var(--instruction-text-color)";
     textDiv.style.borderRadius = "0.5em";
+    textDiv.style.pointerEvents = "none";
+    textDiv.style.touchAction = "none";
 
     foreignObject.appendChild(textDiv);
     containerGroup.appendChild(foreignObject);
