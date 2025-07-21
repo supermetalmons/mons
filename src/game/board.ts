@@ -87,6 +87,7 @@ let doNotShowOpponentAvatarPlaceholderAgain = false;
 let activeTimer: SVGElement | null = null;
 let talkingDude: SVGElement | null = null;
 let talkingDudeTextDiv: HTMLElement | null;
+let instructionsContainerElement: SVGElement | undefined;
 let talkingDudeIsTalking = true;
 
 let assets: any;
@@ -135,7 +136,7 @@ export function showInstructionsText(text: string) {
     const containerGroup = document.createElementNS(SVG.ns, "g");
 
     const foreignObject = document.createElementNS(SVG.ns, "foreignObject");
-    SVG.setFrame(foreignObject, 1.1, 0, 9.8, 0.85);
+    instructionsContainerElement = foreignObject;
     foreignObject.setAttribute("overflow", "visible");
 
     const textDiv = document.createElement("div");
@@ -162,6 +163,7 @@ export function showInstructionsText(text: string) {
 
     controlsLayer?.appendChild(containerGroup);
     talkingDudeTextDiv = textDiv;
+    updateLayout();
   }
 
   startTextAnimation(text);
@@ -239,10 +241,13 @@ async function showTalkingDude(show: boolean) {
     return;
   } else if (show) {
     const sprite = instructor;
-    const location = new Location(-0.3, -0.23);
     const img = loadImage(sprite, "talkingDude", true);
+
+    // TODO: move layout into update layout
+    const location = new Location(-0.3, -0.23);
     setCenterTranformOrigin(img, location);
     SVG.setOrigin(img, location.j, location.i);
+
     controlsLayer?.appendChild(img);
     startAnimation(img, false);
     talkingDude = img;
@@ -1515,6 +1520,13 @@ const updateLayout = () => {
       titleTextElement!.setAttribute("font-size", (32 * multiplicator).toString());
       SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.65);
     }
+  }
+
+  if (instructionsContainerElement && talkingDude) {
+    // TODO: adjust based on screen width and if offset from borders is needed
+    SVG.setFrame(instructionsContainerElement, 1.1, 0, 9.8, 0.85);
+
+    // TODO: make instructor layour work from here
   }
 
   updateNamesX();
