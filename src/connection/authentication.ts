@@ -18,7 +18,18 @@ export function setAuthStatusGlobally(status: AuthStatus) {
 }
 
 export function useAuthStatus() {
-  const [authStatus, setAuthStatus] = useState<AuthStatus>("loading");
+  const [authStatus, setAuthStatus] = useState<AuthStatus>(() => {
+    const profileId = storage.getProfileId("");
+    const storedLoginId = storage.getLoginId("");
+    const storedEthAddress = storage.getEthAddress("");
+    const storedSolAddress = storage.getSolAddress("");
+    const storedUsername = storage.getUsername("");
+    if (profileId !== "" && storedLoginId !== "" && storedUsername !== "" && (storedEthAddress !== "" || storedSolAddress !== "")) {
+      updateProfileDisplayName(storedUsername, storedEthAddress, storedSolAddress);
+      return "authenticated";
+    }
+    return "unauthenticated";
+  });
 
   useEffect(() => {
     globalSetAuthStatus = setAuthStatus;
@@ -41,7 +52,6 @@ export function useAuthStatus() {
         const storedUsername = storage.getUsername("");
         const profileId = storage.getProfileId("");
         if (profileId !== "" && storedLoginId === uid && (storedEthAddress !== "" || storedSolAddress !== "")) {
-          setAuthStatus("authenticated");
           connection.refreshTokenIfNeeded();
           const emojiString = storage.getPlayerEmojiId("1");
           const emoji = parseInt(emojiString);
