@@ -456,7 +456,7 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
 export function didClickSquare(location: Location) {
   if (puzzleMode) {
     const didFastForward = Board.fastForwardInstructionsIfNeeded();
-    if (didFastForward) {
+    if (didFastForward && location.i === -1 && location.j === -1) {
       return;
     }
   }
