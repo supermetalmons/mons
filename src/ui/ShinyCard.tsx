@@ -255,7 +255,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   emojiImg.style.userSelect = "none";
   emojiImg.style.visibility = "hidden";
   emojiImg.draggable = false;
-  emojiImg.src = `https://assets.mons.link/emojipack_hq/${isOtherPlayer ? getEmojiIdForProfile(profile) : storage.getPlayerEmojiId("1")}.webp`;
+  emojiImg.src = `/assets/misc/swp/1.png`;
   emojiImg.onerror = () => {
     emojiImg.style.visibility = "hidden";
   };
@@ -719,6 +719,8 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   const stickersJson = isOtherPlayer ? (profile?.cardStickers ?? "") : storage.getCardStickers("");
   displayStickers(cardContentsLayer, stickersJson);
   updateUndoButton();
+
+  setInterval(tickContentUpdate, 1000);
 };
 
 export const updateShinyCardDisplayName = (displayName: string) => {
@@ -1284,12 +1286,20 @@ async function didClickMonImage(monType: string) {
   didUpdateIdCardMons();
 }
 
+let currentTick = 0;
+
+function tickContentUpdate() {
+  currentTick++;
+  ownEmojiImg!.src = `/assets/misc/swp/${currentTick + 1}.png`;
+  updateContent("bg", (cardIndex + 1) % totalCardBgsCount, cardIndex);
+}
+
 async function updateContent(contentType: string, newId: any, oldId: any | null) {
   switch (contentType) {
     case "emoji":
       const newSmallEmojiUrl = emojis.getEmojiUrl(newId);
       didClickAndChangePlayerEmoji(newId, newSmallEmojiUrl);
-      ownEmojiImg!.src = `https://assets.mons.link/emojipack_hq/${newId}.webp`;
+      // ownEmojiImg!.src = `https://assets.mons.link/emojipack_hq/${newId}.webp`;
       break;
     case "bg":
       const newCardName = `${newId}.webp`;
