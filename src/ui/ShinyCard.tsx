@@ -138,7 +138,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   cardContainer.style.aspectRatio = `${borderedCardAspectRatio}`;
 
   const updateCardWidth = () => {
-    const calculatedWidth = isOtherPlayer && isMobile ? window.innerWidth * 0.69 : Math.min(window.innerWidth * 0.8, 350);
+    const calculatedWidth = 555;
     cardContainer.style.width = `${calculatedWidth}px`;
     const calculatedHeight = calculatedWidth / borderedCardAspectRatio;
     const maxHeight = window.innerHeight * 0.42;
@@ -197,7 +197,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   img.style.pointerEvents = "none";
   img.draggable = false;
   const bgId = isOtherPlayer ? getBgIdForProfile(profile) : cardIndex;
-  img.src = `https://assets.mons.link/cards/bg/${bgId}.webp`;
+  img.src = `/assets/misc/cards/bg/${bgId}.webp`;
   img.style.visibility = "hidden";
   img.onerror = () => {
     img.style.visibility = "hidden";
@@ -693,7 +693,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     updateContent("subtitle", (asciimojiIndex + 1) % asciimojisCount, asciimojiIndex);
   });
 
-  const gpText = "gp: " + ((isOtherPlayer ? (profile?.nonce ?? -1) : storage.getPlayerNonce(-1)) + 1).toString();
+  const gpText = "gp: " + ((isOtherPlayer ? profile?.nonce ?? -1 : storage.getPlayerNonce(-1)) + 1).toString();
   addTextBubble(cardContentsLayer, gpText, "7.4%", "58.7%", textBubbleHeight, handlePointerLeave);
 
   cardContainer.appendChild(card);
@@ -716,11 +716,13 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   observer.observe(document.body, { childList: true });
   showMons(cardContentsLayer, handlePointerLeave, isOtherPlayer, profile);
 
-  const stickersJson = isOtherPlayer ? (profile?.cardStickers ?? "") : storage.getCardStickers("");
+  const stickersJson = isOtherPlayer ? profile?.cardStickers ?? "" : storage.getCardStickers("");
   displayStickers(cardContentsLayer, stickersJson);
   updateUndoButton();
 
-  setInterval(tickContentUpdate, 1000);
+  if (currentTick === 0) {
+    setInterval(tickContentUpdate, 420);
+  }
 };
 
 export const updateShinyCardDisplayName = (displayName: string) => {
@@ -743,7 +745,7 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
   if (nextSticker) {
     const element = stickerElements[stickerType];
     if (element) {
-      const stickerUrl = `https://assets.mons.link/cards/stickers/${stickerType}/${nextSticker}.webp`;
+      const stickerUrl = `/assets/misc/cards/stickers/${stickerType}/${nextSticker}.webp`;
       element.src = stickerUrl;
       const hitArea = stickerHitAreas[stickerType];
       if (hitArea) {
@@ -759,7 +761,7 @@ export function didUpdateSticker(stickerType: string, nextSticker: string | unde
       delete stickerElements[stickerType];
     }
 
-    setupHitAreaForStickerType(stickerType, true, false);
+    // setupHitAreaForStickerType(stickerType, true, false);
   }
 }
 
@@ -1179,7 +1181,7 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
 };
 
 const createOverlayStickersImage = (type: string, name: string): HTMLImageElement => {
-  const url = `https://assets.mons.link/cards/stickers/${type}/${name}.webp`;
+  const url = `/assets/misc/cards/stickers/${type}/${name}.webp`;
   const overlayImg = document.createElement("img");
   overlayImg.style.width = "100%";
   overlayImg.style.height = "100%";
@@ -1283,15 +1285,37 @@ async function didClickMonImage(monType: string) {
       updateContent(monType, (mysticIndex + 1) % mysticTypes.length, mysticIndex);
       break;
   }
-  didUpdateIdCardMons();
+  // didUpdateIdCardMons();
+}
+
+async function updateAllMons() {
+  const monTypes = ["demon", "angel", "drainer", "spirit", "mystic"];
+  for (const monType of monTypes) {
+    await didClickMonImage(monType);
+  }
 }
 
 let currentTick = 0;
 
 function tickContentUpdate() {
+  // TODO: update all content
+
   currentTick++;
   ownEmojiImg!.src = `/assets/misc/swp/${currentTick + 1}.png`;
   updateContent("bg", (cardIndex + 1) % totalCardBgsCount, cardIndex);
+
+  updateContent("subtitle", (asciimojiIndex + 1) % asciimojisCount, asciimojiIndex);
+
+  updateAllMons();
+
+  handleStickerClick("big-mon-top-right");
+  handleStickerClick("bottom-left");
+  handleStickerClick("bottom-right");
+  handleStickerClick("mana");
+  handleStickerClick("middle-left");
+  handleStickerClick("middle-right");
+  handleStickerClick("mini-logo");
+  handleStickerClick("type-logo");
 }
 
 async function updateContent(contentType: string, newId: any, oldId: any | null) {
@@ -1303,17 +1327,17 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       break;
     case "bg":
       const newCardName = `${newId}.webp`;
-      storage.setCardBackgroundId(newId);
+      // storage.setCardBackgroundId(newId);
       cardIndex = newId;
-      connection.updateCardBackgroundId(newId);
-      ownBgImg!.style.visibility = "hidden";
-      ownBgImg!.src = `https://assets.mons.link/cards/bg/${newCardName}`;
+      // connection.updateCardBackgroundId(newId);
+      // ownBgImg!.style.visibility = "hidden";
+      ownBgImg!.src = `/assets/misc/cards/bg/${newCardName}`;
       break;
     case "subtitle":
       asciimojiIndex = newId;
       ownSubtitleElement!.textContent = getAsciimojiAtIndex(newId);
-      storage.setCardSubtitleId(newId);
-      connection.updateCardSubtitleId(newId);
+      // storage.setCardSubtitleId(newId);
+      // connection.updateCardSubtitleId(newId);
       break;
     case "demon":
     case "angel":
@@ -1352,8 +1376,8 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       }
       img!.src = `data:image/webp;base64,${newImageData}`;
       const monsIndexesString = `${demonIndex},${angelIndex},${drainerIndex},${spiritIndex},${mysticIndex}`;
-      storage.setProfileMons(monsIndexesString);
-      connection.updateProfileMons(monsIndexesString);
+      // storage.setProfileMons(monsIndexesString);
+      // connection.updateProfileMons(monsIndexesString);
       break;
     case "big-mon-top-right":
     case "bottom-left":
@@ -1378,8 +1402,8 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       didUpdateSticker(type, nextSticker);
 
       const currentJson = JSON.stringify(currentlySelectedStickers);
-      storage.setCardStickers(currentJson);
-      connection.updateCardStickers(currentJson);
+      // storage.setCardStickers(currentJson);
+      // connection.updateCardStickers(currentJson);
       break;
   }
 
