@@ -74,10 +74,12 @@ export const updateBoardComponentForBoardStyleChange = () => {
 };
 
 export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void;
+export let showVideoReaction: (opponent: boolean) => void;
 
 const BoardComponent: React.FC = () => {
-  const showTestVideo = false;
-
+  const [showTestVideo, setShowTestVideo] = useState(false);
+  const [videoFading, setVideoFading] = useState(false);
+  const [videoAppearing, setVideoAppearing] = useState(false);
   const initializationRef = useRef(false);
   const [currentColorSet, setCurrentColorSet] = useState<ColorSet>(getCurrentColorSet());
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -95,6 +97,13 @@ const BoardComponent: React.FC = () => {
     if (overlayState.cancel) {
       overlayState.cancel();
     }
+  };
+
+  showVideoReaction = (opponent: boolean) => {
+    setShowTestVideo(true);
+    setVideoFading(false);
+    setVideoAppearing(true);
+    setTimeout(() => setVideoAppearing(false), 400);
   };
 
   setTopBoardOverlayVisible = (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => {
@@ -167,19 +176,24 @@ const BoardComponent: React.FC = () => {
         <video
           style={{
             position: "absolute",
-            top: "50px",
-            left: "50px",
-            width: "150px",
-            height: "150px",
+            top: "45px",
+            left: "142px",
+            width: "100px",
+            height: "100px",
             zIndex: 1,
+            opacity: videoAppearing ? 0 : videoFading ? 0 : 1,
+            transform: videoAppearing ? "scale(0.3) rotate(-10deg)" : videoFading ? "scale(0.8) rotate(5deg)" : "scale(1) rotate(0deg)",
+            transition: videoAppearing ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)" : videoFading ? "opacity 0.2s ease-in, transform 0.2s ease-in" : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
           }}
           autoPlay
-          loop
           muted
-          playsInline>
+          playsInline
+          onEnded={() => {
+            setVideoFading(true);
+            setTimeout(() => setShowTestVideo(false), 200);
+          }}>
           <source src="/assets/misc/test.mov" type='video/quicktime; codecs="hvc1"' />
           <source src="/assets/misc/test.webm" type="video/webm" />
-          
         </video>
       )}
       {overlayState.svgElement && (
