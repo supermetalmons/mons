@@ -10,6 +10,3 @@ frontend:
       - 'cards/**'
       - 'board/**'
       - 'swagpack/**'
-      - 'sounds/**'
-      - 'reactions/**'
-      - 'misc/**'
