@@ -12,7 +12,7 @@ export function showMonsAlbumArtwork(title: string) {
       artist: "mons.link",
       artwork: [
         {
-          src: "/assets/misc/cover.jpg",
+          src: "/music-cover.jpg",
           sizes: "512x512",
         },
       ],

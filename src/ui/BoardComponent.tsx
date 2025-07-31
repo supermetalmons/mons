@@ -156,7 +156,7 @@ const BoardComponent: React.FC = () => {
             <rect x="1" y="101" height="1161" width="1098" fill={prefersDarkMode ? "var(--color-gray-23)" : "var(--boardBackgroundLight)"} />
             {shouldIncludePangchiuImage && (
               <image
-                href="/assets/bg/Pangchiu.jpg"
+                href="https://assets.mons.link/board/bg/Pangchiu.jpg"
                 x="0"
                 y="100"
                 width="1100"
@@ -194,8 +194,8 @@ const BoardComponent: React.FC = () => {
             setVideoFading(true);
             setTimeout(() => setShowTestVideo(false), 200);
           }}>
-          <source src="/assets/misc/test.mov" type='video/quicktime; codecs="hvc1"' />
-          <source src="/assets/misc/test.webm" type="video/webm" />
+          <source src="https://assets.mons.link/swagpack/video/test.mov" type='video/quicktime; codecs="hvc1"' />
+          <source src="https://assets.mons.link/swagpack/video/test.webm" type="video/webm" />
         </video>
       )}
       {overlayState.svgElement && (
