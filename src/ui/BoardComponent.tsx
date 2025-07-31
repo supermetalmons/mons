@@ -77,6 +77,7 @@ export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement |
 export let showVideoReaction: (opponent: boolean) => void;
 
 const BoardComponent: React.FC = () => {
+  const [opponentSideVideo, setOpponentSideVideo] = useState(false);
   const [showTestVideo, setShowTestVideo] = useState(false);
   const [videoFading, setVideoFading] = useState(false);
   const [videoAppearing, setVideoAppearing] = useState(false);
@@ -100,6 +101,7 @@ const BoardComponent: React.FC = () => {
   };
 
   showVideoReaction = (opponent: boolean) => {
+    setOpponentSideVideo(opponent);
     setShowTestVideo(true);
     setVideoFading(false);
     setVideoAppearing(true);
@@ -176,7 +178,7 @@ const BoardComponent: React.FC = () => {
         <video
           style={{
             position: "absolute",
-            top: "45px",
+            top: opponentSideVideo ? "512px" : "45px",
             left: "142px",
             width: "100px",
             height: "100px",
