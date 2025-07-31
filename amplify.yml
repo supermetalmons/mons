@@ -8,3 +8,8 @@ frontend:
       - 'emojipack/**/*'
       - 'emojipack_hq/**/*'
       - 'cards/**'
+      - 'board/**'
+      - 'swagpack/**'
+      - 'sounds/**'
+      - 'reactions/**'
+      - 'misc/**'
