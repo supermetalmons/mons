@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { problems, getCompletedProblemIds } from "../content/problems";
 import { didSelectPuzzle } from "../game/gameController";
 import { useGameAssets } from "../hooks/useGameAssets";
-import { FaCheck } from "react-icons/fa";
+import { FaCheck, FaCircle } from "react-icons/fa";
 
 interface NavigationPickerProps {
   showsPuzzles: boolean;
@@ -101,6 +101,15 @@ const CompletedIcon = styled(FaCheck)`
   padding-left: 4pt;
 `;
 
+const UncompletedIcon = styled(FaCircle)`
+  color: var(--color-blue-primary);
+  font-size: 0.4rem;
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-left: 7pt;
+  overflow: visible;
+`;
+
 const PlaceholderImage = styled.img`
   width: 23px;
   height: 23px;
@@ -181,16 +190,19 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
 
   const completedProblemsSet = getCompletedProblemIds();
 
+  const firstUncompletedIndex = problems.findIndex((problem) => !completedProblemsSet.has(problem.id));
+
   return (
     <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
       {showsPuzzles && (
         <ScrollableList>
           <SectionTitle>LEARN</SectionTitle>
-          {problems.map((item) => (
+          {problems.map((item, index) => (
             <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
               <PlaceholderImage src={getIconImage(item.icon)} alt="Puzzle icon" />
               {item.label}
               {completedProblemsSet.has(item.id) && <CompletedIcon />}
+              {!completedProblemsSet.has(item.id) && index === firstUncompletedIndex && <UncompletedIcon />}
             </NavigationPickerButton>
           ))}
         </ScrollableList>
