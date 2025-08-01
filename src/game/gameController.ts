@@ -71,8 +71,12 @@ function dismissBadgeAndNotificationBannerIfNeeded() {
 export function didAttemptAuthentication() {
   if (!isOnlineGame && !didStartLocalGame && !getTutorialCompleted()) {
     setBadgeVisible(true);
-    const [completed, total] = getTutorialProgress();
-    showNotificationBanner("Play Mons 101", `${completed} / ${total} lessons completed`, "104", resumeTutorialFromBanner);
+    if (storage.isFirstLaunch()) {
+      storage.trackFirstLaunch();
+    } else {
+      const [completed, total] = getTutorialProgress();
+      showNotificationBanner("Play Mons 101", `${completed} / ${total} lessons completed`, "104", resumeTutorialFromBanner);
+    }
   }
 }
 
