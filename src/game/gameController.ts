@@ -69,7 +69,7 @@ function dismissBadgeAndNotificationBannerIfNeeded() {
 }
 
 export function didAttemptAuthentication() {
-  if (!isOnlineGame && !didStartLocalGame && !getTutorialCompleted()) {
+  if (!isOnlineGame && !didStartLocalGame && !getTutorialCompleted() && isCreateNewInviteFlow) {
     setBadgeVisible(true);
     if (storage.isFirstLaunch()) {
       storage.trackFirstLaunch();
