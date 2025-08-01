@@ -4,7 +4,7 @@ import { Reaction } from "../connection/connectionModels";
 import { soundPlayer } from "../utils/SoundPlayer";
 
 function playSound(path: string) {
-  soundPlayer.playSound(path);
+  soundPlayer.playSound("/" + path);
 }
 
 export async function playReaction(reaction: Reaction) {
