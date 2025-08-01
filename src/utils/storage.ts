@@ -21,6 +21,7 @@ const STORAGE_KEYS = {
   PLAYER_NONCE: "playerNonce",
   COMPLETED_PROBLEMS: "completedProblems",
   TUTORIAL_COMPLETED: "tutorialCompleted",
+  IS_FIRST_LAUNCH: "isFirstLaunch",
 } as const;
 
 type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
@@ -192,6 +193,14 @@ export const storage = {
     setItem(STORAGE_KEYS.TUTORIAL_COMPLETED, value);
   },
 
+  isFirstLaunch: (): boolean => {
+    return getItem(STORAGE_KEYS.IS_FIRST_LAUNCH, true);
+  },
+
+  trackFirstLaunch: (): void => {
+    setItem(STORAGE_KEYS.IS_FIRST_LAUNCH, false);
+  },
+
   signOut: (): void => {
     localStorage.removeItem(STORAGE_KEYS.PLAYER_EMOJI_ID);
     localStorage.removeItem(STORAGE_KEYS.LOGIN_ID);
@@ -207,5 +216,6 @@ export const storage = {
     localStorage.removeItem(STORAGE_KEYS.PLAYER_NONCE);
     localStorage.removeItem(STORAGE_KEYS.COMPLETED_PROBLEMS);
     localStorage.removeItem(STORAGE_KEYS.TUTORIAL_COMPLETED);
+    localStorage.removeItem(STORAGE_KEYS.IS_FIRST_LAUNCH);
   },
 };
