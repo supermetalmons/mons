@@ -347,7 +347,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
                     <td>{index + 1}</td>
                     <td>
                       {!isEmojiLoaded && <EmojiPlaceholder />}
-                      <EmojiImage src={emojiUrl} alt="Player emoji" style={{ display: isEmojiLoaded ? "inline-block" : "none" }} onLoad={() => handleEmojiLoad(emojiKey)} />
+                      <EmojiImage src={emojiUrl} alt="" style={{ display: isEmojiLoaded ? "inline-block" : "none" }} onLoad={() => handleEmojiLoad(emojiKey)} />
                     </td>
                     <td>{getDisplayName(row)}</td>
                     <RatingCell win={row.win}>{row.rating}</RatingCell>

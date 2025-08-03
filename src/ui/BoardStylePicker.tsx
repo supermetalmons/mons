@@ -302,11 +302,11 @@ const BoardStylePickerComponent: React.FC = () => {
         {isTutorialCompleted ? (
           <ColorSquare colorSet="light" isSelected={isPangchiuBoardSelected} onClick={!isMobile ? handlePangchiuBoardSelected : undefined} onTouchStart={isMobile ? handlePangchiuBoardSelected : undefined} aria-label="Pangchiu board theme">
             {!imageLoaded && <ImagePlaceholderBg />}
-            {!imageLoadFailed && <PlaceholderImage src="https://assets.mons.link/board/bg/thumb/Pangchiu.jpg" alt="Pangchiu theme preview" loading="lazy" onError={handleImageError} onLoad={handleImageLoad} blurred={false} />}
+            {!imageLoadFailed && <PlaceholderImage src="https://assets.mons.link/board/bg/thumb/Pangchiu.jpg" alt="" loading="lazy" onError={handleImageError} onLoad={handleImageLoad} blurred={false} />}
           </ColorSquare>
         ) : (
           <LockedStyleItem aria-label="Locked board theme" onClick={!isMobile ? handleLockedStyleClick : undefined} onTouchStart={isMobile ? handleLockedStyleClick : undefined}>
-            {!imageLoadFailed && <PlaceholderImage src="https://assets.mons.link/board/bg/thumb/Pangchiu.jpg" alt="Locked theme preview" loading="lazy" onError={handleImageError} blurred={true} />}
+            {!imageLoadFailed && <PlaceholderImage src="https://assets.mons.link/board/bg/thumb/Pangchiu.jpg" alt="" loading="lazy" onError={handleImageError} blurred={true} />}
             <LockIconOverlay>
               <FaLock />
             </LockIconOverlay>

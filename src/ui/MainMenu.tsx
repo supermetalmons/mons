@@ -862,7 +862,7 @@ const MainMenu: React.FC = () => {
                   setIsMusicOpen(false);
                 },
               })}>
-          <img src={logoBase64} alt="Rock" />
+          <img src={logoBase64} alt="" />
         </RockButton>
       </RockButtonContainer>
 
