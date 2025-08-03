@@ -68,12 +68,14 @@ function dismissBadgeAndNotificationBannerIfNeeded() {
   hideNotificationBanner();
 }
 
+const notificationBannerIsDisabledUntilItsMadeLessAnnoying = true;
+
 export function didAttemptAuthentication() {
-  if (!isOnlineGame && !didStartLocalGame && !getTutorialCompleted()) {
+  if (!isOnlineGame && !didStartLocalGame && !getTutorialCompleted() && isCreateNewInviteFlow) {
     setBadgeVisible(true);
     if (storage.isFirstLaunch()) {
       storage.trackFirstLaunch();
-    } else {
+    } else if (!notificationBannerIsDisabledUntilItsMadeLessAnnoying) {
       const [completed, total] = getTutorialProgress();
       showNotificationBanner("Play Mons 101", `${completed} / ${total} lessons completed`, "104", resumeTutorialFromBanner);
     }
