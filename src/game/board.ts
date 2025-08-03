@@ -1998,9 +1998,23 @@ function placeItem(item: SVGElement, location: Location, kind: ItemKind, fainted
   setCenterTranformOrigin(img, location);
 
   if (fainted) {
-    SVG.setOrigin(img, 0, 0);
-    img.style.transformOrigin = "0 0";
-    img.style.transform = `translate(${location.j * 100 + 100}px, ${location.i * 100}px) rotate(90deg)`;
+    SVG.setOrigin(img, location.j, location.i);
+    const div = img.firstChild as HTMLDivElement;
+    const bgUrl = div.style.backgroundImage.slice(4, -1).replace(/"/g, "");
+    div.style.backgroundImage = "none";
+    const imgElem = new Image();
+    imgElem.src = bgUrl;
+    imgElem.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = imgElem.height;
+      canvas.height = imgElem.width;
+      const ctx = canvas.getContext("2d");
+      ctx!.translate(canvas.width / 2, canvas.height / 2);
+      ctx!.rotate((90 * Math.PI) / 180);
+      ctx!.drawImage(imgElem, -imgElem.width / 2, -imgElem.height / 2);
+      const rotatedData = canvas.toDataURL("image/webp");
+      div.style.backgroundImage = `url(${rotatedData})`;
+    };
     addElementToItemsLayer(img, location.i);
     items[key] = img;
   } else if (sparkles) {
