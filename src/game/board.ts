@@ -440,12 +440,16 @@ function loadBoardAssetImage(data: string, assetType: string, isSpriteSheet: boo
   return foreignObject;
 }
 
-function startAnimation(image: SVGElement, keepStatic: boolean = false): void {
+function startAnimation(image: SVGElement, keepStatic: boolean = false, isFainted: boolean = false): void {
   if (image.getAttribute("data-is-sprite-sheet") === "true") {
     const totalFrames = parseInt(image.getAttribute("data-total-frames") || "1", 10);
     const frameDuration = parseInt(image.getAttribute("data-frame-duration") || "169", 10);
     const frameWidth = parseFloat(image.getAttribute("data-frame-width") || "1");
     const frameHeight = parseFloat(image.getAttribute("data-frame-height") || "1");
+
+    if (isFainted) {
+      SVG.setSize(image, frameWidth, frameHeight * totalFrames);
+    }
 
     const isTalkingDude = totalFrames === 5;
 
@@ -2030,7 +2034,7 @@ function placeItem(item: SVGElement, location: Location, kind: ItemKind, fainted
     addElementToItemsLayer(img, location.i);
     items[key] = img;
   }
-  startAnimation(img, fainted);
+  startAnimation(img, fainted, fainted);
 }
 
 function createSparklingContainer(location: Location): SVGElement {
