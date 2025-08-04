@@ -199,7 +199,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
           <SectionTitle>LEARN</SectionTitle>
           {problems.map((item, index) => (
             <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
-              <PlaceholderImage src={getIconImage(item.icon)} alt="Puzzle icon" />
+              <PlaceholderImage src={getIconImage(item.icon)} alt="" />
               {item.label}
               {completedProblemsSet.has(item.id) && <CompletedIcon />}
               {!completedProblemsSet.has(item.id) && index === firstUncompletedIndex && <UncompletedIcon />}

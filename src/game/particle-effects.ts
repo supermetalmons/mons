@@ -148,6 +148,36 @@ export function indicateElectricHit(at: Location) {
         return outward + crackling;
       },
       createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+        const rotatePoint = (px: number, py: number, cosr: number, sinr: number) => {
+          return [px * cosr - py * sinr, px * sinr + py * cosr];
+        };
+
+        const transformCommands = (commands: any[], cosr: number, sinr: number) => {
+          return commands.map((cmd) => {
+            if (cmd.type === "M" || cmd.type === "L") {
+              const [nx, ny] = rotatePoint(cmd.x, cmd.y, cosr, sinr);
+              return { type: cmd.type, x: nx, y: ny };
+            }
+            if (cmd.type === "Q") {
+              const [ncx, ncy] = rotatePoint(cmd.cx, cmd.cy, cosr, sinr);
+              const [nx, ny] = rotatePoint(cmd.x, cmd.y, cosr, sinr);
+              return { type: "Q", cx: ncx, cy: ncy, x: nx, y: ny };
+            }
+            return cmd;
+          });
+        };
+
+        const buildD = (rotatedCommands: any[], tx: number, ty: number) => {
+          return rotatedCommands
+            .map((cmd) => {
+              if (cmd.type === "M") return `M ${(cmd.x + tx).toString()} ${(cmd.y + ty).toString()}`;
+              if (cmd.type === "L") return `L ${(cmd.x + tx).toString()} ${(cmd.y + ty).toString()}`;
+              if (cmd.type === "Q") return `Q ${(cmd.cx + tx).toString()} ${(cmd.cy + ty).toString()} ${(cmd.x + tx).toString()} ${(cmd.y + ty).toString()}`;
+              return cmd;
+            })
+            .join(" ");
+        };
+
         const electricGradientId = `electric-gradient-${i}-${now}`;
         const gradient = document.createElementNS(SVG.ns, "linearGradient");
         gradient.setAttribute("id", electricGradientId);
@@ -192,8 +222,9 @@ export function indicateElectricHit(at: Location) {
         const branchProbability = 0.4;
         const maxBranches = 2 + Math.floor(Math.random() * 3);
 
-        let mainPath = `M 0 0`;
+        const mainCommands: any[] = [];
         const mainPoints: Array<{ x: number; y: number }> = [{ x: 0, y: 0 }];
+        mainCommands.push({ type: "M", x: 0, y: 0 });
 
         for (let j = 1; j <= segments; j++) {
           const progress = j / segments;
@@ -203,23 +234,28 @@ export function indicateElectricHit(at: Location) {
           mainPoints.push({ x, y });
 
           if (j === 1) {
-            mainPath += ` L ${x} ${y}`;
+            mainCommands.push({ type: "L", x, y });
           } else {
             const prevPoint = mainPoints[j - 1];
             const controlX = prevPoint.x + (x - prevPoint.x) * 0.6 + (Math.random() - 0.5) * 15;
             const controlY = prevPoint.y + (y - prevPoint.y) * 0.6 + (Math.random() - 0.5) * 15;
-            mainPath += ` Q ${controlX} ${controlY} ${x} ${y}`;
+            mainCommands.push({ type: "Q", cx: controlX, cy: controlY, x, y });
           }
         }
 
+        const rad = angle;
+        const cosr = Math.cos(rad);
+        const sinr = Math.sin(rad);
+        const rotatedMain = transformCommands(mainCommands, cosr, sinr);
+
         const mainBolt = document.createElementNS(SVG.ns, "path");
-        mainBolt.setAttribute("d", mainPath);
         mainBolt.setAttribute("stroke", `url(#${electricGradientId})`);
         mainBolt.setAttribute("stroke-width", (2 + Math.random() * 2).toString());
         mainBolt.setAttribute("stroke-linecap", "round");
         mainBolt.setAttribute("fill", "none");
         container.appendChild(mainBolt);
 
+        const branches: { element: any; rotatedCommands: any[] }[] = [];
         let branchCount = 0;
         for (let j = 2; j < segments - 2 && branchCount < maxBranches; j++) {
           if (Math.random() < branchProbability) {
@@ -228,28 +264,30 @@ export function indicateElectricHit(at: Location) {
             const branchAngle = (Math.random() - 0.5) * Math.PI * 0.8;
             const branchSegments = 3 + Math.floor(Math.random() * 3);
 
-            let branchPath = `M ${branchPoint.x} ${branchPoint.y}`;
+            const branchCommands: any[] = [];
+            branchCommands.push({ type: "M", x: branchPoint.x, y: branchPoint.y });
             for (let k = 1; k <= branchSegments; k++) {
               const branchProgress = k / branchSegments;
               const branchX = branchPoint.x + Math.cos(branchAngle) * branchLength * branchProgress;
               const branchY = branchPoint.y + Math.sin(branchAngle) * branchLength * branchProgress + (Math.random() - 0.5) * 10 * branchProgress;
-              branchPath += ` L ${branchX} ${branchY}`;
+              branchCommands.push({ type: "L", x: branchX, y: branchY });
             }
 
+            const rotatedBranch = transformCommands(branchCommands, cosr, sinr);
+
             const branch = document.createElementNS(SVG.ns, "path");
-            branch.setAttribute("d", branchPath);
             branch.setAttribute("stroke", `url(#${electricGradientId})`);
             branch.setAttribute("stroke-width", (1 + Math.random()).toString());
             branch.setAttribute("stroke-linecap", "round");
             branch.setAttribute("fill", "none");
             branch.setAttribute("opacity", "0.8");
             container.appendChild(branch);
+            branches.push({ element: branch, rotatedCommands: rotatedBranch });
             branchCount++;
           }
         }
 
         const glow = document.createElementNS(SVG.ns, "path");
-        glow.setAttribute("d", mainPath);
         glow.setAttribute("stroke", "#FFFF99");
         glow.setAttribute("stroke-width", (3 + Math.random() * 2).toString());
         glow.setAttribute("stroke-linecap", "round");
@@ -258,7 +296,13 @@ export function indicateElectricHit(at: Location) {
         glow.style.filter = "blur(1px)";
         container.insertBefore(glow, mainBolt);
 
-        container.setAttribute("transform", `translate(${centerX * 100}, ${centerY * 100}) rotate(${(angle * 180) / Math.PI})`);
+        const initialTx = centerX * 100;
+        const initialTy = centerY * 100;
+        mainBolt.setAttribute("d", buildD(rotatedMain, initialTx, initialTy));
+        glow.setAttribute("d", buildD(rotatedMain, initialTx, initialTy));
+        for (const b of branches) {
+          b.element.setAttribute("d", buildD(b.rotatedCommands, initialTx, initialTy));
+        }
 
         const crackleFrequency = 50 + Math.random() * 20;
         const intensityVariation = 0.6 + Math.random() * 0.4;
@@ -274,7 +318,13 @@ export function indicateElectricHit(at: Location) {
             const electricOpacity = opacity * flicker * spike;
             const jitterX = (Math.random() - 0.5) * 3 * (1 - t);
             const jitterY = (Math.random() - 0.5) * 3 * (1 - t);
-            container.setAttribute("transform", `translate(${x * 100 + jitterX}, ${y * 100 + jitterY}) rotate(${(angle * 180) / Math.PI})`);
+            const tx = x * 100 + jitterX;
+            const ty = y * 100 + jitterY;
+            mainBolt.setAttribute("d", buildD(rotatedMain, tx, ty));
+            glow.setAttribute("d", buildD(rotatedMain, tx, ty));
+            for (const b of branches) {
+              b.element.setAttribute("d", buildD(b.rotatedCommands, tx, ty));
+            }
             container.style.opacity = Math.max(0, Math.min(1, electricOpacity)).toString();
             glow.setAttribute("opacity", (0.3 * flicker * opacity).toString());
           },
@@ -605,33 +655,98 @@ export function indicateSpiritAction(at: Location) {
         return outward + swirl;
       },
       createParticle: (centerX, centerY, size, angle, defs, i, now) => {
-        const cloud = document.createElementNS(SVG.ns, "path");
+        const transformPoint = (px: number, py: number, s: number, cosr: number, sinr: number, tx: number, ty: number) => {
+          px *= s;
+          py *= s;
+          const px2 = px * cosr - py * sinr;
+          const py2 = px * sinr + py * cosr;
+          return [px2 + tx, py2 + ty];
+        };
+
+        const transformCommands = (commands: any[], scale: number, rotation: number, tx: number, ty: number) => {
+          const rad = (rotation * Math.PI) / 180;
+          const cosr = Math.cos(rad);
+          const sinr = Math.sin(rad);
+          return commands.map((cmd) => {
+            if (cmd.type === "Z") return { type: "Z" };
+            if (cmd.type === "M") {
+              const [nx, ny] = transformPoint(cmd.x, cmd.y, scale, cosr, sinr, tx, ty);
+              return { type: "M", x: nx, y: ny };
+            }
+            if (cmd.type === "C") {
+              const [nx1, ny1] = transformPoint(cmd.x1, cmd.y1, scale, cosr, sinr, tx, ty);
+              const [nx2, ny2] = transformPoint(cmd.x2, cmd.y2, scale, cosr, sinr, tx, ty);
+              const [nx3, ny3] = transformPoint(cmd.x3, cmd.y3, scale, cosr, sinr, tx, ty);
+              return { type: "C", x1: nx1, y1: ny1, x2: nx2, y2: ny2, x3: nx3, y3: ny3 };
+            }
+            return cmd;
+          });
+        };
+
+        const commandsToD = (commands: any[]) => {
+          return commands
+            .map((cmd) => {
+              if (cmd.type === "Z") return "Z";
+              if (cmd.type === "M") return `M ${(cmd.x * 100).toString()} ${(cmd.y * 100).toString()}`;
+              if (cmd.type === "C") return `C ${(cmd.x1 * 100).toString()} ${(cmd.y1 * 100).toString()} ${(cmd.x2 * 100).toString()} ${(cmd.y2 * 100).toString()} ${(cmd.x3 * 100).toString()} ${(cmd.y3 * 100).toString()}`;
+              return cmd;
+            })
+            .join(" ");
+        };
+
+        const addBlob = (commands: any[], bx: number, by: number, radius: number, ox: number, oy: number) => {
+          commands.push({ type: "M", x: bx - radius + ox, y: by + oy });
+          commands.push({
+            type: "C",
+            x1: bx - radius + ox,
+            y1: by - radius * 0.7 + oy,
+            x2: bx - radius * 0.7 + ox,
+            y2: by - radius + oy,
+            x3: bx + ox,
+            y3: by - radius + oy,
+          });
+          commands.push({
+            type: "C",
+            x1: bx + radius * 0.7 + ox,
+            y1: by - radius + oy,
+            x2: bx + radius + ox,
+            y2: by - radius * 0.7 + oy,
+            x3: bx + radius + ox,
+            y3: by + oy,
+          });
+          commands.push({
+            type: "C",
+            x1: bx + radius + ox,
+            y1: by + radius * 0.7 + oy,
+            x2: bx + radius * 0.7 + ox,
+            y2: by + radius + oy,
+            x3: bx + ox,
+            y3: by + radius + oy,
+          });
+          commands.push({
+            type: "C",
+            x1: bx - radius * 0.7 + ox,
+            y1: by + radius + oy,
+            x2: bx - radius + ox,
+            y2: by + radius * 0.7 + oy,
+            x3: bx - radius + ox,
+            y3: by + oy,
+          });
+          commands.push({ type: "Z" });
+        };
+
+        const commands: any[] = [];
         const cloudWidth = size * (1.8 + Math.random() * 0.9);
         const puffCount = 4 + Math.floor(Math.random() * 2);
         const puffSize = cloudWidth / (puffCount * 1.2);
         const gradientId = `cloud-gradient-${i}-${now}`;
-
-        let pathData = "";
         const baseX = 0;
         const baseY = 0;
 
         const centerRadius = puffSize * (1.1 + Math.random() * 0.5);
         const centerOffsetX = puffSize * (Math.random() * 0.4 - 0.2);
         const centerOffsetY = puffSize * (Math.random() * 0.3 - 0.15);
-
-        pathData += `M ${(baseX - centerRadius + centerOffsetX) * 100} ${(baseY + centerOffsetY) * 100}
-                    C ${(baseX - centerRadius + centerOffsetX) * 100} ${(baseY - centerRadius * 0.7 + centerOffsetY) * 100},
-                      ${(baseX - centerRadius * 0.7 + centerOffsetX) * 100} ${(baseY - centerRadius + centerOffsetY) * 100},
-                      ${(baseX + centerOffsetX) * 100} ${(baseY - centerRadius + centerOffsetY) * 100}
-                    C ${(baseX + centerRadius * 0.7 + centerOffsetX) * 100} ${(baseY - centerRadius + centerOffsetY) * 100},
-                      ${(baseX + centerRadius + centerOffsetX) * 100} ${(baseY - centerRadius * 0.7 + centerOffsetY) * 100},
-                      ${(baseX + centerRadius + centerOffsetX) * 100} ${(baseY + centerOffsetY) * 100}
-                    C ${(baseX + centerRadius + centerOffsetX) * 100} ${(baseY + centerRadius * 0.7 + centerOffsetY) * 100},
-                      ${(baseX + centerRadius * 0.7 + centerOffsetX) * 100} ${(baseY + centerRadius + centerOffsetY) * 100},
-                      ${(baseX + centerOffsetX) * 100} ${(baseY + centerRadius + centerOffsetY) * 100}
-                    C ${(baseX - centerRadius * 0.7 + centerOffsetX) * 100} ${(baseY + centerRadius + centerOffsetY) * 100},
-                      ${(baseX - centerRadius + centerOffsetX) * 100} ${(baseY + centerRadius * 0.7 + centerOffsetY) * 100},
-                      ${(baseX - centerRadius + centerOffsetX) * 100} ${(baseY + centerOffsetY) * 100} Z `;
+        addBlob(commands, baseX, baseY, centerRadius, centerOffsetX, centerOffsetY);
 
         for (let i = 0; i < puffCount; i++) {
           const angle = (i / puffCount) * Math.PI * 2;
@@ -641,23 +756,10 @@ export function indicateSpiritAction(at: Location) {
           const radius = puffSize * (0.8 + Math.random() * 0.6);
           const offsetX = puffSize * (Math.random() * 0.4 - 0.2);
           const offsetY = puffSize * (Math.random() * 0.3 - 0.15);
-
-          pathData += `M ${(x - radius + offsetX) * 100} ${(y + offsetY) * 100}
-                        C ${(x - radius + offsetX) * 100} ${(y - radius * 0.7 + offsetY) * 100},
-                          ${(x - radius * 0.7 + offsetX) * 100} ${(y - radius + offsetY) * 100},
-                          ${(x + offsetX) * 100} ${(y - radius + offsetY) * 100}
-                        C ${(x + radius * 0.7 + offsetX) * 100} ${(y - radius + offsetY) * 100},
-                          ${(x + radius + offsetX) * 100} ${(y - radius * 0.7 + offsetY) * 100},
-                          ${(x + radius + offsetX) * 100} ${(y + offsetY) * 100}
-                        C ${(x + radius + offsetX) * 100} ${(y + radius * 0.7 + offsetY) * 100},
-                          ${(x + radius * 0.7 + offsetX) * 100} ${(y + radius + offsetY) * 100},
-                          ${(x + offsetX) * 100} ${(y + radius + offsetY) * 100}
-                        C ${(x - radius * 0.7 + offsetX) * 100} ${(y + radius + offsetY) * 100},
-                          ${(x - radius + offsetX) * 100} ${(y + radius * 0.7 + offsetY) * 100},
-                          ${(x - radius + offsetX) * 100} ${(y + offsetY) * 100} Z `;
+          addBlob(commands, x, y, radius, offsetX, offsetY);
         }
 
-        cloud.setAttribute("d", pathData);
+        const cloud = document.createElementNS(SVG.ns, "path");
         cloud.setAttribute("fill", `url(#${gradientId})`);
         cloud.setAttribute("stroke", "#FFFFFF");
         cloud.setAttribute("stroke-width", "0.4");
@@ -671,22 +773,18 @@ export function indicateSpiritAction(at: Location) {
         gradient.setAttribute("cx", "50%");
         gradient.setAttribute("cy", "45%");
         gradient.setAttribute("r", "85%");
-
         const stop1 = document.createElementNS(SVG.ns, "stop");
         stop1.setAttribute("offset", "0%");
         stop1.setAttribute("stop-color", "#FFFFFF");
         stop1.setAttribute("stop-opacity", "0.6");
-
         const stop2 = document.createElementNS(SVG.ns, "stop");
         stop2.setAttribute("offset", "40%");
         stop2.setAttribute("stop-color", "#F8FBFF");
         stop2.setAttribute("stop-opacity", "0.55");
-
         const stop3 = document.createElementNS(SVG.ns, "stop");
         stop3.setAttribute("offset", "100%");
         stop3.setAttribute("stop-color", "#E8F4F8");
         stop3.setAttribute("stop-opacity", "0.42");
-
         gradient.appendChild(stop1);
         gradient.appendChild(stop2);
         gradient.appendChild(stop3);
@@ -698,16 +796,28 @@ export function indicateSpiritAction(at: Location) {
         const floatFrequency = 3 + Math.random() * 2;
         const floatAmplitude = 0.12 + Math.random() * 0.08;
 
+        const computeEffects = (t: number) => {
+          const windEffect = Math.sin(t * windFrequency * Math.PI * 2 + windPhase) * windStrength;
+          const floatEffect = Math.sin(t * floatFrequency * Math.PI * 2) * floatAmplitude;
+          const rotation = windEffect * 12;
+          const scale = 0.85 + floatEffect * 0.15;
+          return { rotation, scale };
+        };
+
+        const setTransform = (x: number, y: number, rotation: number, scale: number) => {
+          const transformed = transformCommands(commands, scale, rotation, x, y);
+          cloud.setAttribute("d", commandsToD(transformed));
+        };
+
+        const { rotation: initialRotation, scale: initialScale } = computeEffects(0);
+        setTransform(centerX, centerY, initialRotation, initialScale);
+
         return {
           main: cloud,
           update: (x, y, currentSize, opacity, t) => {
-            const windEffect = Math.sin(t * windFrequency * Math.PI * 2 + windPhase) * windStrength;
-            const floatEffect = Math.sin(t * floatFrequency * Math.PI * 2) * floatAmplitude;
-            const rotation = windEffect * 12;
-            const scale = 0.85 + floatEffect * 0.15;
-
-            cloud.setAttribute("transform", `translate(${x * 100}, ${y * 100}) rotate(${rotation}) scale(${scale})`);
-            cloud.style.opacity = (opacity * (0.85 + floatEffect * 0.15)).toString();
+            const { rotation, scale } = computeEffects(t);
+            setTransform(x, y, rotation, scale);
+            cloud.style.opacity = (opacity * scale).toString();
           },
         };
       },
