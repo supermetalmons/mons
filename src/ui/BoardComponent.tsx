@@ -212,7 +212,7 @@ const BoardComponent: React.FC = () => {
             top: isGridVisible ? "calc(7.02% - 100px)" : "calc(7.05% - 100px)",
             width: "100px",
             height: "100px",
-            backgroundColor: "#3b82f6",
+            backgroundColor: "blue",
             zIndex: 10,
             pointerEvents: "none",
           }}
@@ -225,7 +225,7 @@ const BoardComponent: React.FC = () => {
             top: isGridVisible ? "calc(7.02% + 78.2%)" : "calc(7.05% + 82.6%)",
             width: "100px",
             height: "100px",
-            backgroundColor: "#10b981",
+            backgroundColor: "green",
             zIndex: 10,
             pointerEvents: "none",
           }}
