@@ -629,6 +629,7 @@ export function indicateSpiritAction(at: Location) {
               const [nx3, ny3] = transformPoint(cmd.x3, cmd.y3, scale, cosr, sinr, tx, ty);
               return { type: "C", x1: nx1, y1: ny1, x2: nx2, y2: ny2, x3: nx3, y3: ny3 };
             }
+            return cmd;
           });
         };
 
@@ -638,6 +639,7 @@ export function indicateSpiritAction(at: Location) {
               if (cmd.type === "Z") return "Z";
               if (cmd.type === "M") return `M ${(cmd.x * 100).toString()} ${(cmd.y * 100).toString()}`;
               if (cmd.type === "C") return `C ${(cmd.x1 * 100).toString()} ${(cmd.y1 * 100).toString()} ${(cmd.x2 * 100).toString()} ${(cmd.y2 * 100).toString()} ${(cmd.x3 * 100).toString()} ${(cmd.y3 * 100).toString()}`;
+              return cmd;
             })
             .join(" ");
         };
