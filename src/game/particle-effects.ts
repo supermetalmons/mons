@@ -148,6 +148,36 @@ export function indicateElectricHit(at: Location) {
         return outward + crackling;
       },
       createParticle: (centerX, centerY, size, angle, defs, i, now) => {
+        const rotatePoint = (px: number, py: number, cosr: number, sinr: number) => {
+          return [px * cosr - py * sinr, px * sinr + py * cosr];
+        };
+
+        const transformCommands = (commands: any[], cosr: number, sinr: number) => {
+          return commands.map((cmd) => {
+            if (cmd.type === "M" || cmd.type === "L") {
+              const [nx, ny] = rotatePoint(cmd.x, cmd.y, cosr, sinr);
+              return { type: cmd.type, x: nx, y: ny };
+            }
+            if (cmd.type === "Q") {
+              const [ncx, ncy] = rotatePoint(cmd.cx, cmd.cy, cosr, sinr);
+              const [nx, ny] = rotatePoint(cmd.x, cmd.y, cosr, sinr);
+              return { type: "Q", cx: ncx, cy: ncy, x: nx, y: ny };
+            }
+            return cmd;
+          });
+        };
+
+        const buildD = (rotatedCommands: any[], tx: number, ty: number) => {
+          return rotatedCommands
+            .map((cmd) => {
+              if (cmd.type === "M") return `M ${(cmd.x + tx).toString()} ${(cmd.y + ty).toString()}`;
+              if (cmd.type === "L") return `L ${(cmd.x + tx).toString()} ${(cmd.y + ty).toString()}`;
+              if (cmd.type === "Q") return `Q ${(cmd.cx + tx).toString()} ${(cmd.cy + ty).toString()} ${(cmd.x + tx).toString()} ${(cmd.y + ty).toString()}`;
+              return cmd;
+            })
+            .join(" ");
+        };
+
         const electricGradientId = `electric-gradient-${i}-${now}`;
         const gradient = document.createElementNS(SVG.ns, "linearGradient");
         gradient.setAttribute("id", electricGradientId);
@@ -192,8 +222,9 @@ export function indicateElectricHit(at: Location) {
         const branchProbability = 0.4;
         const maxBranches = 2 + Math.floor(Math.random() * 3);
 
-        let mainPath = `M 0 0`;
+        const mainCommands: any[] = [];
         const mainPoints: Array<{ x: number; y: number }> = [{ x: 0, y: 0 }];
+        mainCommands.push({ type: "M", x: 0, y: 0 });
 
         for (let j = 1; j <= segments; j++) {
           const progress = j / segments;
@@ -203,23 +234,28 @@ export function indicateElectricHit(at: Location) {
           mainPoints.push({ x, y });
 
           if (j === 1) {
-            mainPath += ` L ${x} ${y}`;
+            mainCommands.push({ type: "L", x, y });
           } else {
             const prevPoint = mainPoints[j - 1];
             const controlX = prevPoint.x + (x - prevPoint.x) * 0.6 + (Math.random() - 0.5) * 15;
             const controlY = prevPoint.y + (y - prevPoint.y) * 0.6 + (Math.random() - 0.5) * 15;
-            mainPath += ` Q ${controlX} ${controlY} ${x} ${y}`;
+            mainCommands.push({ type: "Q", cx: controlX, cy: controlY, x, y });
           }
         }
 
+        const rad = angle;
+        const cosr = Math.cos(rad);
+        const sinr = Math.sin(rad);
+        const rotatedMain = transformCommands(mainCommands, cosr, sinr);
+
         const mainBolt = document.createElementNS(SVG.ns, "path");
-        mainBolt.setAttribute("d", mainPath);
         mainBolt.setAttribute("stroke", `url(#${electricGradientId})`);
         mainBolt.setAttribute("stroke-width", (2 + Math.random() * 2).toString());
         mainBolt.setAttribute("stroke-linecap", "round");
         mainBolt.setAttribute("fill", "none");
         container.appendChild(mainBolt);
 
+        const branches: { element: any; rotatedCommands: any[] }[] = [];
         let branchCount = 0;
         for (let j = 2; j < segments - 2 && branchCount < maxBranches; j++) {
           if (Math.random() < branchProbability) {
@@ -228,28 +264,30 @@ export function indicateElectricHit(at: Location) {
             const branchAngle = (Math.random() - 0.5) * Math.PI * 0.8;
             const branchSegments = 3 + Math.floor(Math.random() * 3);
 
-            let branchPath = `M ${branchPoint.x} ${branchPoint.y}`;
+            const branchCommands: any[] = [];
+            branchCommands.push({ type: "M", x: branchPoint.x, y: branchPoint.y });
             for (let k = 1; k <= branchSegments; k++) {
               const branchProgress = k / branchSegments;
               const branchX = branchPoint.x + Math.cos(branchAngle) * branchLength * branchProgress;
               const branchY = branchPoint.y + Math.sin(branchAngle) * branchLength * branchProgress + (Math.random() - 0.5) * 10 * branchProgress;
-              branchPath += ` L ${branchX} ${branchY}`;
+              branchCommands.push({ type: "L", x: branchX, y: branchY });
             }
 
+            const rotatedBranch = transformCommands(branchCommands, cosr, sinr);
+
             const branch = document.createElementNS(SVG.ns, "path");
-            branch.setAttribute("d", branchPath);
             branch.setAttribute("stroke", `url(#${electricGradientId})`);
             branch.setAttribute("stroke-width", (1 + Math.random()).toString());
             branch.setAttribute("stroke-linecap", "round");
             branch.setAttribute("fill", "none");
             branch.setAttribute("opacity", "0.8");
             container.appendChild(branch);
+            branches.push({ element: branch, rotatedCommands: rotatedBranch });
             branchCount++;
           }
         }
 
         const glow = document.createElementNS(SVG.ns, "path");
-        glow.setAttribute("d", mainPath);
         glow.setAttribute("stroke", "#FFFF99");
         glow.setAttribute("stroke-width", (3 + Math.random() * 2).toString());
         glow.setAttribute("stroke-linecap", "round");
@@ -258,7 +296,13 @@ export function indicateElectricHit(at: Location) {
         glow.style.filter = "blur(1px)";
         container.insertBefore(glow, mainBolt);
 
-        container.setAttribute("transform", `translate(${centerX * 100}, ${centerY * 100}) rotate(${(angle * 180) / Math.PI})`);
+        const initialTx = centerX * 100;
+        const initialTy = centerY * 100;
+        mainBolt.setAttribute("d", buildD(rotatedMain, initialTx, initialTy));
+        glow.setAttribute("d", buildD(rotatedMain, initialTx, initialTy));
+        for (const b of branches) {
+          b.element.setAttribute("d", buildD(b.rotatedCommands, initialTx, initialTy));
+        }
 
         const crackleFrequency = 50 + Math.random() * 20;
         const intensityVariation = 0.6 + Math.random() * 0.4;
@@ -274,7 +318,13 @@ export function indicateElectricHit(at: Location) {
             const electricOpacity = opacity * flicker * spike;
             const jitterX = (Math.random() - 0.5) * 3 * (1 - t);
             const jitterY = (Math.random() - 0.5) * 3 * (1 - t);
-            container.setAttribute("transform", `translate(${x * 100 + jitterX}, ${y * 100 + jitterY}) rotate(${(angle * 180) / Math.PI})`);
+            const tx = x * 100 + jitterX;
+            const ty = y * 100 + jitterY;
+            mainBolt.setAttribute("d", buildD(rotatedMain, tx, ty));
+            glow.setAttribute("d", buildD(rotatedMain, tx, ty));
+            for (const b of branches) {
+              b.element.setAttribute("d", buildD(b.rotatedCommands, tx, ty));
+            }
             container.style.opacity = Math.max(0, Math.min(1, electricOpacity)).toString();
             glow.setAttribute("opacity", (0.3 * flicker * opacity).toString());
           },
