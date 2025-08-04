@@ -192,23 +192,32 @@ export function indicateElectricHit(at: Location) {
         const branchProbability = 0.4;
         const maxBranches = 2 + Math.floor(Math.random() * 3);
 
-        let mainPath = `M 0 0`;
+        const cosA = Math.cos(angle);
+        const sinA = Math.sin(angle);
+        const toGlobal = (px: number, py: number) => ({
+          x: centerX * 100 + px * cosA - py * sinA,
+          y: centerY * 100 + px * sinA + py * cosA,
+        });
+
+        let mainPath = `M ${centerX * 100} ${centerY * 100}`;
         const mainPoints: Array<{ x: number; y: number }> = [{ x: 0, y: 0 }];
 
         for (let j = 1; j <= segments; j++) {
           const progress = j / segments;
-          const x = progress * boltLength;
+          const localX = progress * boltLength;
           const deviation = (Math.random() - 0.5) * 2;
-          const y = Math.sin(progress * Math.PI * 3 + deviation) * zigzagAmplitude * (1 - progress * 0.3);
-          mainPoints.push({ x, y });
+          const localY = Math.sin(progress * Math.PI * 3 + deviation) * zigzagAmplitude * (1 - progress * 0.3);
+          mainPoints.push({ x: localX, y: localY });
 
+          const { x: gx, y: gy } = toGlobal(localX, localY);
           if (j === 1) {
-            mainPath += ` L ${x} ${y}`;
+            mainPath += ` L ${gx} ${gy}`;
           } else {
             const prevPoint = mainPoints[j - 1];
-            const controlX = prevPoint.x + (x - prevPoint.x) * 0.6 + (Math.random() - 0.5) * 15;
-            const controlY = prevPoint.y + (y - prevPoint.y) * 0.6 + (Math.random() - 0.5) * 15;
-            mainPath += ` Q ${controlX} ${controlY} ${x} ${y}`;
+            const controlX = prevPoint.x + (localX - prevPoint.x) * 0.6 + (Math.random() - 0.5) * 15;
+            const controlY = prevPoint.y + (localY - prevPoint.y) * 0.6 + (Math.random() - 0.5) * 15;
+            const { x: cx, y: cy } = toGlobal(controlX, controlY);
+            mainPath += ` Q ${cx} ${cy} ${gx} ${gy}`;
           }
         }
 
@@ -228,12 +237,16 @@ export function indicateElectricHit(at: Location) {
             const branchAngle = (Math.random() - 0.5) * Math.PI * 0.8;
             const branchSegments = 3 + Math.floor(Math.random() * 3);
 
-            let branchPath = `M ${branchPoint.x} ${branchPoint.y}`;
+            const start = toGlobal(branchPoint.x, branchPoint.y);
+            let branchPath = `M ${start.x} ${start.y}`;
             for (let k = 1; k <= branchSegments; k++) {
               const branchProgress = k / branchSegments;
-              const branchX = branchPoint.x + Math.cos(branchAngle) * branchLength * branchProgress;
-              const branchY = branchPoint.y + Math.sin(branchAngle) * branchLength * branchProgress + (Math.random() - 0.5) * 10 * branchProgress;
-              branchPath += ` L ${branchX} ${branchY}`;
+              const localBX = branchPoint.x + Math.cos(branchAngle) * branchLength * branchProgress;
+              const localBY = branchPoint.y +
+                Math.sin(branchAngle) * branchLength * branchProgress +
+                (Math.random() - 0.5) * 10 * branchProgress;
+              const { x: bx, y: by } = toGlobal(localBX, localBY);
+              branchPath += ` L ${bx} ${by}`;
             }
 
             const branch = document.createElementNS(SVG.ns, "path");
@@ -258,8 +271,6 @@ export function indicateElectricHit(at: Location) {
         glow.style.filter = "blur(1px)";
         container.insertBefore(glow, mainBolt);
 
-        container.setAttribute("transform", `translate(${centerX * 100}, ${centerY * 100}) rotate(${(angle * 180) / Math.PI})`);
-
         const crackleFrequency = 50 + Math.random() * 20;
         const intensityVariation = 0.6 + Math.random() * 0.4;
         const flickerOffset = Math.random() * Math.PI * 2;
@@ -274,7 +285,9 @@ export function indicateElectricHit(at: Location) {
             const electricOpacity = opacity * flicker * spike;
             const jitterX = (Math.random() - 0.5) * 3 * (1 - t);
             const jitterY = (Math.random() - 0.5) * 3 * (1 - t);
-            container.setAttribute("transform", `translate(${x * 100 + jitterX}, ${y * 100 + jitterY}) rotate(${(angle * 180) / Math.PI})`);
+            const dx = (x - centerX) * 100 + jitterX;
+            const dy = (y - centerY) * 100 + jitterY;
+            container.setAttribute("transform", `translate(${dx}, ${dy})`);
             container.style.opacity = Math.max(0, Math.min(1, electricOpacity)).toString();
             glow.setAttribute("opacity", (0.3 * flicker * opacity).toString());
           },
@@ -612,8 +625,8 @@ export function indicateSpiritAction(at: Location) {
         const gradientId = `cloud-gradient-${i}-${now}`;
 
         let pathData = "";
-        const baseX = 0;
-        const baseY = 0;
+        const baseX = centerX;
+        const baseY = centerY;
 
         const centerRadius = puffSize * (1.1 + Math.random() * 0.5);
         const centerOffsetX = puffSize * (Math.random() * 0.4 - 0.2);
@@ -705,8 +718,10 @@ export function indicateSpiritAction(at: Location) {
             const floatEffect = Math.sin(t * floatFrequency * Math.PI * 2) * floatAmplitude;
             const rotation = windEffect * 12;
             const scale = 0.85 + floatEffect * 0.15;
+            const dx = (x - centerX) * 100;
+            const dy = (y - centerY) * 100;
 
-            cloud.setAttribute("transform", `translate(${x * 100}, ${y * 100}) rotate(${rotation}) scale(${scale})`);
+            cloud.setAttribute("transform", `translate(${dx}, ${dy}) rotate(${rotation}) scale(${scale})`);
             cloud.style.opacity = (opacity * (0.85 + floatEffect * 0.15)).toString();
           },
         };
