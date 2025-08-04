@@ -198,18 +198,46 @@ const BoardComponent: React.FC = () => {
           <source src="https://assets.mons.link/swagpack/video/test.webm" type="video/webm" />
         </video>
       )}
-      {overlayState.svgElement && (
+      <div
+        className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}
+        style={{
+          aspectRatio: "110 / 141",
+          pointerEvents: "none",
+        }}>
         <div
-          className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}
           style={{
-            aspectRatio: "110 / 141",
-          }}>
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+            top: isGridVisible ? "calc(7.02% - 100px)" : "calc(7.05% - 100px)",
+            width: "100px",
+            height: "100px",
+            backgroundColor: "#3b82f6",
+            zIndex: 10,
+            pointerEvents: "none",
+          }}
+        />
+        <div
+          style={{
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+            top: isGridVisible ? "calc(7.02% + 78.2%)" : "calc(7.05% + 82.6%)",
+            width: "100px",
+            height: "100px",
+            backgroundColor: "#10b981",
+            zIndex: 10,
+            pointerEvents: "none",
+          }}
+        />
+        {overlayState.svgElement && (
           <div
             style={{
               position: "absolute",
               left: "50%",
               transform: "translateX(-50%)",
               top: isGridVisible ? "7.02%" : "7.05%",
+              pointerEvents: "all",
               height: isGridVisible ? "78.2%" : "82.6%",
               aspectRatio: isGridVisible ? "1" : "1524/1612",
               ...(overlayState.blurry
@@ -237,30 +265,31 @@ const BoardComponent: React.FC = () => {
               }
             }}
           />
-          {overlayState.withConfirmAndCancelButtons && (
-            <div
-              style={{
-                position: "absolute",
-                bottom: "30.5%",
-                left: "50%",
-                transform: "translateX(-50%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "27%",
-                height: "10.8%",
-                aspectRatio: "3.75",
-              }}>
-              <CircularButton onClick={!isMobile ? handleCancelClick : undefined} onTouchStart={isMobile ? handleCancelClick : undefined}>
-                <FaTimes />
-              </CircularButton>
-              <CircularButton onClick={!isMobile ? handleConfirmClick : undefined} onTouchStart={isMobile ? handleConfirmClick : undefined}>
-                <FaCheck />
-              </CircularButton>
-            </div>
-          )}
-        </div>
-      )}
+        )}
+        {overlayState.withConfirmAndCancelButtons && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "30.5%",
+              left: "50%",
+              transform: "translateX(-50%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "27%",
+              height: "10.8%",
+              aspectRatio: "3.75",
+              pointerEvents: "all",
+            }}>
+            <CircularButton onClick={!isMobile ? handleCancelClick : undefined} onTouchStart={isMobile ? handleCancelClick : undefined}>
+              <FaTimes />
+            </CircularButton>
+            <CircularButton onClick={!isMobile ? handleConfirmClick : undefined} onTouchStart={isMobile ? handleConfirmClick : undefined}>
+              <FaCheck />
+            </CircularButton>
+          </div>
+        )}
+      </div>
     </>
   );
 };
