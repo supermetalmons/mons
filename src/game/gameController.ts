@@ -461,9 +461,9 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
 }
 
 export function didClickSquare(location: Location) {
-  // TODO: remove dev tmp
-  showVideoReaction(location.i === -1);
-  return;
+  // TODO: dev tmp
+  // showVideoReaction(location.i === -1);
+  // return;
 
   if (puzzleMode) {
     const didFastForward = Board.fastForwardInstructionsIfNeeded();
