@@ -10,7 +10,6 @@ import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress, getInitialProblem } from "../content/problems";
 import { storage } from "../utils/storage";
-import { showVideoReaction } from "../ui/BoardComponent";
 import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSignIn";
 
 const experimentalDrawingDevMode = false;
