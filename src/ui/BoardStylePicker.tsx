@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { FaLock } from "react-icons/fa";
 import { ColorSetKey, setBoardColorSet, getCurrentColorSetKey, colorSets, isPangchiuBoard } from "../content/boardStyles";
@@ -6,6 +6,21 @@ import { getTutorialCompleted } from "../content/problems";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
 import { isMobile } from "../utils/misc";
 import { toggleExperimentalMode } from "../game/board";
+
+let pangchiuImagePromise: Promise<string | null> | null = null;
+
+const getPangchiuImageUrl = () => {
+  if (!pangchiuImagePromise) {
+    pangchiuImagePromise = fetch("https://assets.mons.link/board/bg/thumb/Pangchiu.jpg")
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch image");
+        return res.blob();
+      })
+      .then((blob) => URL.createObjectURL(blob))
+      .catch(() => null);
+  }
+  return pangchiuImagePromise;
+};
 
 export const BoardStylePicker = styled.div`
   position: fixed;
@@ -103,7 +118,7 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
         `
         border-color: var(--focusBorderColor);
         box-shadow: 0 0 0 2px var(--focusShadowColor);
-        
+
         @media (prefers-color-scheme: dark) {
           border-color: var(--focusBorderColorDark);
           box-shadow: 0 0 0 2px var(--focusShadowColorDark);
@@ -124,7 +139,6 @@ export const ColorSquare = styled.button<{ isSelected?: boolean; colorSet: "ligh
         `
         border-color: var(--focusBorderColor);
         box-shadow: 0 0 0 2px var(--focusShadowColor);
-        
         @media (prefers-color-scheme: dark) {
           border-color: var(--focusBorderColorDark);
           box-shadow: 0 0 0 2px var(--focusShadowColorDark);
@@ -233,7 +247,19 @@ const BoardStylePickerComponent: React.FC = () => {
 
   const [imageLoadFailed, setImageLoadFailed] = useState(false);
   const [imageLoaded, setImageLoaded] = useState(false);
+  const [pangchiuSrc, setPangchiuSrc] = useState<string | null>(null);
   const isTutorialCompleted = getTutorialCompleted();
+
+  useEffect(() => {
+    getPangchiuImageUrl().then((url) => {
+      if (url) {
+        setPangchiuSrc(url);
+        setImageLoaded(true);
+      } else {
+        setImageLoadFailed(true);
+      }
+    });
+  }, []);
 
   const handleColorSetChange = (colorSetKey: ColorSetKey) => (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -251,11 +277,9 @@ const BoardStylePickerComponent: React.FC = () => {
 
   const handleLockedStyleClick = (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
     event.preventDefault();
-
     if (tooltipTimerRef.current) {
       clearTimeout(tooltipTimerRef.current);
     }
-
     setShowTooltip(true);
     tooltipTimerRef.current = setTimeout(() => {
       setShowTooltip(false);
@@ -263,19 +287,10 @@ const BoardStylePickerComponent: React.FC = () => {
     }, 2300);
   };
 
-  const handleImageError = () => {
-    setImageLoadFailed(true);
-  };
-
-  const handleImageLoad = () => {
-    setImageLoaded(true);
-  };
-
   const renderColorSquares = (colorSet: "light" | "dark") => {
     const colors = colorSet === "light" ? colorSets.default : colorSets.darkAndYellow;
     const boardSize = 11;
     const cellSize = 38 / boardSize;
-
     return (
       <svg viewBox="0 0 38 38" width="38" height="38">
         {generateBoardPattern({
@@ -302,11 +317,11 @@ const BoardStylePickerComponent: React.FC = () => {
         {isTutorialCompleted ? (
           <ColorSquare colorSet="light" isSelected={isPangchiuBoardSelected} onClick={!isMobile ? handlePangchiuBoardSelected : undefined} onTouchStart={isMobile ? handlePangchiuBoardSelected : undefined} aria-label="Pangchiu board theme">
             {!imageLoaded && <ImagePlaceholderBg />}
-            {!imageLoadFailed && <PlaceholderImage src="https://assets.mons.link/board/bg/thumb/Pangchiu.jpg" alt="" loading="lazy" onError={handleImageError} onLoad={handleImageLoad} blurred={false} />}
+            {!imageLoadFailed && pangchiuSrc && <PlaceholderImage src={pangchiuSrc} alt="" blurred={false} />}
           </ColorSquare>
         ) : (
           <LockedStyleItem aria-label="Locked board theme" onClick={!isMobile ? handleLockedStyleClick : undefined} onTouchStart={isMobile ? handleLockedStyleClick : undefined}>
-            {!imageLoadFailed && <PlaceholderImage src="https://assets.mons.link/board/bg/thumb/Pangchiu.jpg" alt="" loading="lazy" onError={handleImageError} blurred={true} />}
+            {!imageLoadFailed && pangchiuSrc && <PlaceholderImage src={pangchiuSrc} alt="" blurred={true} />}
             <LockIconOverlay>
               <FaLock />
             </LockIconOverlay>

@@ -174,42 +174,93 @@ const BoardComponent: React.FC = () => {
         <g id="controlsLayer"></g>
         <g id="effectsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
       </svg>
-      {showTestVideo && (
-        <video
+
+      <div
+        className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}
+        style={{
+          aspectRatio: "110 / 141",
+          pointerEvents: "none",
+        }}>
+        <div
           style={{
             position: "absolute",
-            top: opponentSideVideo ? "512px" : "45px",
-            left: "142px",
-            width: "100px",
-            height: "100px",
-            zIndex: 1,
-            opacity: videoAppearing ? 0 : videoFading ? 0 : 1,
-            transform: videoAppearing ? "scale(0.3) rotate(-10deg)" : videoFading ? "scale(0.8) rotate(5deg)" : "scale(1) rotate(0deg)",
-            transition: videoAppearing ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)" : videoFading ? "opacity 0.2s ease-in, transform 0.2s ease-in" : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
-          }}
-          autoPlay
-          muted
-          playsInline
-          onEnded={() => {
-            setVideoFading(true);
-            setTimeout(() => setShowTestVideo(false), 200);
+            left: "50%",
+            transform: "translate(-50%, -100%)",
+            top: isGridVisible ? "7.02%" : "7.05%",
+            height: "9%",
+            // backgroundColor: "blue",
+            aspectRatio: "1",
+            zIndex: 10,
+            pointerEvents: "none",
           }}>
-          <source src="https://assets.mons.link/swagpack/video/test.mov" type='video/quicktime; codecs="hvc1"' />
-          <source src="https://assets.mons.link/swagpack/video/test.webm" type="video/webm" />
-        </video>
-      )}
-      {overlayState.svgElement && (
+          {showTestVideo && !opponentSideVideo && (
+            <video
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: videoAppearing ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)" : videoFading ? "translate(-50%, -50%) scale(0.8) rotate(5deg)" : "translate(-50%, -50%) scale(1) rotate(0deg)",
+                width: "100%",
+                height: "100%",
+                opacity: videoAppearing ? 0 : videoFading ? 0 : 1,
+                transition: videoAppearing ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)" : videoFading ? "opacity 0.2s ease-in, transform 0.2s ease-in" : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+              }}
+              autoPlay
+              muted
+              playsInline
+              onEnded={() => {
+                setVideoFading(true);
+                setTimeout(() => setShowTestVideo(false), 200);
+              }}>
+              <source src="https://assets.mons.link/swagpack/video/test.mov" type='video/quicktime; codecs="hvc1"' />
+              <source src="https://assets.mons.link/swagpack/video/test.webm" type="video/webm" />
+            </video>
+          )}
+        </div>
         <div
-          className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}
           style={{
-            aspectRatio: "110 / 141",
+            position: "absolute",
+            left: "50%",
+            transform: "translateX(-50%)",
+            top: isGridVisible ? "85.22%" : "89.65%",
+            height: "9%",
+            // backgroundColor: "green",
+            aspectRatio: "1",
+            zIndex: 10,
+            pointerEvents: "none",
           }}>
+          {showTestVideo && opponentSideVideo && (
+            <video
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: videoAppearing ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)" : videoFading ? "translate(-50%, -50%) scale(0.8) rotate(5deg)" : "translate(-50%, -50%) scale(1) rotate(0deg)",
+                width: "100%",
+                height: "100%",
+                opacity: videoAppearing ? 0 : videoFading ? 0 : 1,
+                transition: videoAppearing ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)" : videoFading ? "opacity 0.2s ease-in, transform 0.2s ease-in" : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+              }}
+              autoPlay
+              muted
+              playsInline
+              onEnded={() => {
+                setVideoFading(true);
+                setTimeout(() => setShowTestVideo(false), 200);
+              }}>
+              <source src="https://assets.mons.link/swagpack/video/test.mov" type='video/quicktime; codecs="hvc1"' />
+              <source src="https://assets.mons.link/swagpack/video/test.webm" type="video/webm" />
+            </video>
+          )}
+        </div>
+        {overlayState.svgElement && (
           <div
             style={{
               position: "absolute",
               left: "50%",
               transform: "translateX(-50%)",
               top: isGridVisible ? "7.02%" : "7.05%",
+              pointerEvents: "all",
               height: isGridVisible ? "78.2%" : "82.6%",
               aspectRatio: isGridVisible ? "1" : "1524/1612",
               ...(overlayState.blurry
@@ -237,30 +288,31 @@ const BoardComponent: React.FC = () => {
               }
             }}
           />
-          {overlayState.withConfirmAndCancelButtons && (
-            <div
-              style={{
-                position: "absolute",
-                bottom: "30.5%",
-                left: "50%",
-                transform: "translateX(-50%)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "27%",
-                height: "10.8%",
-                aspectRatio: "3.75",
-              }}>
-              <CircularButton onClick={!isMobile ? handleCancelClick : undefined} onTouchStart={isMobile ? handleCancelClick : undefined}>
-                <FaTimes />
-              </CircularButton>
-              <CircularButton onClick={!isMobile ? handleConfirmClick : undefined} onTouchStart={isMobile ? handleConfirmClick : undefined}>
-                <FaCheck />
-              </CircularButton>
-            </div>
-          )}
-        </div>
-      )}
+        )}
+        {overlayState.withConfirmAndCancelButtons && (
+          <div
+            style={{
+              position: "absolute",
+              bottom: "30.5%",
+              left: "50%",
+              transform: "translateX(-50%)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "27%",
+              height: "10.8%",
+              aspectRatio: "3.75",
+              pointerEvents: "all",
+            }}>
+            <CircularButton onClick={!isMobile ? handleCancelClick : undefined} onTouchStart={isMobile ? handleCancelClick : undefined}>
+              <FaTimes />
+            </CircularButton>
+            <CircularButton onClick={!isMobile ? handleConfirmClick : undefined} onTouchStart={isMobile ? handleConfirmClick : undefined}>
+              <FaCheck />
+            </CircularButton>
+          </div>
+        )}
+      </div>
     </>
   );
 };
