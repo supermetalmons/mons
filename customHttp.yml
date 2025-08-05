@@ -1,0 +1,6 @@
+version: 1
+customHeaders:
+  - pattern: '**/*'
+    headers:
+      - key: Access-Control-Allow-Origin
+        value: '*'
