@@ -188,10 +188,10 @@ const BoardComponent: React.FC = () => {
             transform: "translate(-50%, -100%)",
             top: isGridVisible ? "7.02%" : "7.05%",
             height: "9%",
-            // backgroundColor: "blue",
             aspectRatio: "1",
             zIndex: 10,
             pointerEvents: "none",
+            touchAction: "none",
           }}>
           {showTestVideo && !opponentSideVideo && (
             <video
@@ -224,10 +224,10 @@ const BoardComponent: React.FC = () => {
             transform: "translateX(-50%)",
             top: isGridVisible ? "85.22%" : "89.65%",
             height: "9%",
-            // backgroundColor: "green",
             aspectRatio: "1",
             zIndex: 10,
             pointerEvents: "none",
+            touchAction: "none",
           }}>
           {showTestVideo && opponentSideVideo && (
             <video
