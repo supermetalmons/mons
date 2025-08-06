@@ -198,6 +198,7 @@ export const PlaceholderImage = styled.img<{ blurred?: boolean }>`
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   touch-action: none;
+  pointer-events: none;
 `;
 
 export const ImagePlaceholderBg = styled.div`

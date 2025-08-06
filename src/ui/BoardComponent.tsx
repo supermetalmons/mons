@@ -191,6 +191,7 @@ const BoardComponent: React.FC = () => {
             aspectRatio: "1",
             zIndex: 10,
             pointerEvents: "none",
+            touchAction: "none",
           }}>
           {showTestVideo && !opponentSideVideo && (
             <video
@@ -226,6 +227,7 @@ const BoardComponent: React.FC = () => {
             aspectRatio: "1",
             zIndex: 10,
             pointerEvents: "none",
+            touchAction: "none",
           }}>
           {showTestVideo && opponentSideVideo && (
             <video
