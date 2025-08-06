@@ -10,7 +10,6 @@ import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress, getInitialProblem } from "../content/problems";
 import { storage } from "../utils/storage";
-import { showVideoReaction } from "../ui/BoardComponent";
 import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSignIn";
 
 const experimentalDrawingDevMode = false;
@@ -461,10 +460,6 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
 }
 
 export function didClickSquare(location: Location) {
-  // TODO: dev tmp
-  // showVideoReaction(location.i === -1);
-  // return;
-
   if (puzzleMode) {
     const didFastForward = Board.fastForwardInstructionsIfNeeded();
     if (didFastForward && location.i === -1 && location.j === -1) {
