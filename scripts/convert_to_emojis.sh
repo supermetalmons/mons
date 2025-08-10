@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-target_size=262144
+target_size=65536
 tolerance=1024
-sample_seconds=1.0
 min_crf=10
 max_crf=63
+crop_filter="crop=iw-6:ih-6:3:3"
+scale_filter="scale=100:100:flags=lanczos"
 
 for f in *.mov; do
   [ -f "$f" ] || continue
@@ -13,6 +14,13 @@ for f in *.mov; do
 
   dur=$(ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "$f" || echo "")
   [ -z "$dur" ] && { echo "Could not get duration for $f, skipping"; continue; }
+
+  sample_seconds=$(awk -v d="$dur" 'BEGIN{
+    s = (d < 2.0 ? d*0.90 : 1.50);
+    if (s > 1.75) s = 1.75;
+    if (s < 0.25) s = 0.25;
+    printf "%.2f", s
+  }')
 
   factor=$(awk -v d="$dur" 'BEGIN{printf "%.6f", 3/d}')
   outdur=3
@@ -24,13 +32,13 @@ for f in *.mov; do
   temp="__temp_${stem}.webm"
 
   sample_target=$(awk -v t="$target_size" -v s="$sample_seconds" -v o="$outdur" 'BEGIN{printf "%d", t*(s/o)}')
-  echo "Target size: $target_size bytes, sample target: $sample_target bytes"
+  echo "Target size: $target_size bytes, sample target: $sample_target bytes, sample_seconds: $sample_seconds"
 
   probe_encode() {
     local crf="$1"
     echo "  [Sample] CRF=$crf (pass 1)" >&2
     ffmpeg -v error -y -i "$f" \
-      -vf "scale=512:512:flags=lanczos,setpts=${factor}*PTS" -an -t "$sample_seconds" \
+      -vf "${crop_filter},${scale_filter},setpts=${factor}*PTS" -an -t "$sample_seconds" \
       -c:v libvpx-vp9 -pix_fmt yuva420p -crf "$crf" -b:v 0 \
       -quality good -speed 8 \
       -tile-columns 2 -frame-parallel 1 -row-mt 1 -threads 8 \
@@ -38,7 +46,7 @@ for f in *.mov; do
 
     echo "  [Sample] CRF=$crf (pass 2)" >&2
     ffmpeg -v error -y -i "$f" \
-      -vf "scale=512:512:flags=lanczos,setpts=${factor}*PTS" -an -t "$sample_seconds" \
+      -vf "${crop_filter},${scale_filter},setpts=${factor}*PTS" -an -t "$sample_seconds" \
       -c:v libvpx-vp9 -pix_fmt yuva420p -crf "$crf" -b:v 0 \
       -quality good -speed 8 \
       -tile-columns 2 -frame-parallel 1 -row-mt 1 -threads 8 \
@@ -55,7 +63,7 @@ for f in *.mov; do
     local crf="$1"
     echo "  [Full] CRF=$crf (pass 1)" >&2
     ffmpeg -v error -y -i "$f" \
-      -vf "scale=512:512:flags=lanczos,setpts=${factor}*PTS" -an \
+      -vf "${crop_filter},${scale_filter},setpts=${factor}*PTS" -an \
       -c:v libvpx-vp9 -pix_fmt yuva420p -crf "$crf" -b:v 0 \
       -quality best -speed 0 \
       -tile-columns 2 -frame-parallel 1 -row-mt 1 -threads 8 \
@@ -63,7 +71,7 @@ for f in *.mov; do
 
     echo "  [Full] CRF=$crf (pass 2)" >&2
     ffmpeg -v error -y -i "$f" \
-      -vf "scale=512:512:flags=lanczos,setpts=${factor}*PTS" -an \
+      -vf "${crop_filter},${scale_filter},setpts=${factor}*PTS" -an \
       -c:v libvpx-vp9 -pix_fmt yuva420p -crf "$crf" -b:v 0 \
       -quality best -speed 0 \
       -tile-columns 2 -frame-parallel 1 -row-mt 1 -threads 8 \
