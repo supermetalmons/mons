@@ -80,6 +80,7 @@ let enableTimerVictoryClaim: () => void;
 let showPrimaryAction: (action: PrimaryActionType) => void;
 
 const STICKER_ID_WHITELIST: number[] = [9, 17, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466];
+const FIXED_STICKER_IDS: number[] = [316, 101, 232, 246, 313, 325, 374, 393, 444, 63, 109, 228, 245, 267, 347, 382, 429, 50, 389, 225];
 
 const BottomControls: React.FC = () => {
   const [isEndMatchButtonVisible, setIsEndMatchButtonVisible] = useState(false);
@@ -159,13 +160,7 @@ const BottomControls: React.FC = () => {
 
   useEffect(() => {
     if (isReactionPickerVisible) {
-      const count = 20;
-      const ids = new Set<number>();
-      while (ids.size < count && ids.size < STICKER_ID_WHITELIST.length) {
-        const id = STICKER_ID_WHITELIST[Math.floor(Math.random() * STICKER_ID_WHITELIST.length)];
-        ids.add(id);
-      }
-      setStickerIds(Array.from(ids));
+      setStickerIds(FIXED_STICKER_IDS);
     }
   }, [isReactionPickerVisible]);
 
