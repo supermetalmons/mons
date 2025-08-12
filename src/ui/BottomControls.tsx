@@ -426,7 +426,7 @@ const BottomControls: React.FC = () => {
       const responseStickerId = STICKER_ID_WHITELIST[Math.floor(Math.random() * STICKER_ID_WHITELIST.length)];
       setTimeout(() => {
         showVideoReaction(true, responseStickerId);
-      }, 2000);
+      }, 5000);
     }
   }, []);
 
