@@ -440,6 +440,17 @@ export const ReactionPillsContainer = styled.div`
   -webkit-overflow-scrolling: touch;
   z-index: 7;
 
+  & > * {
+    flex: 1 0 auto;
+  }
+
+  &::after {
+    content: "";
+    flex: 999 1 0;
+    height: 0;
+    pointer-events: none;
+  }
+
   @media screen and (max-height: 453px) {
     bottom: max(44px, calc(env(safe-area-inset-bottom) + 38px));
   }
@@ -497,4 +508,20 @@ export const StickerPill = styled(ReactionPill)`
     height: 24px;
     display: block;
   }
+`;
+
+export const StickerRow = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  width: 100%;
+  ${StickerPill} {
+    width: 100%;
+  }
+`;
+
+export const StickerRowLast = styled.div`
+  display: flex;
+  gap: 6px;
+  width: 100%;
 `;
