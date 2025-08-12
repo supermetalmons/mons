@@ -11,6 +11,7 @@ import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress, getInitialProblem } from "../content/problems";
 import { storage } from "../utils/storage";
 import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSignIn";
+import { showVideoReaction } from "../ui/BoardComponent";
 
 const experimentalDrawingDevMode = false;
 
@@ -1358,8 +1359,12 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
     processedVoiceReactions.add(match.reaction.uuid);
     const currentTime = Date.now();
     if (currentTime - lastReactionTime > 5000) {
-      showVoiceReactionText(match.reaction.kind, true);
-      playReaction(match.reaction);
+      if (match.reaction.kind === "sticker") {
+        showVideoReaction(true, match.reaction.variation);
+      } else {
+        showVoiceReactionText(match.reaction.kind, true);
+        playReaction(match.reaction);
+      }
       lastReactionTime = currentTime;
     }
   }

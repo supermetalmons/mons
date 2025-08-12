@@ -7,7 +7,7 @@ import { connection } from "../connection/connection";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playReaction } from "../content/sounds";
-import { newReactionOfKind } from "../content/sounds";
+import { newReactionOfKind, newStickerReaction } from "../content/sounds";
 import { showVoiceReactionText } from "../game/board";
 import NavigationPicker from "./NavigationPicker";
 import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, ControlButton, BottomPillButton, ResignButton, ResignConfirmation, ReactionPillsContainer, ReactionPill, StickerPill } from "./BottomControlsStyles";
@@ -416,12 +416,17 @@ const BottomControls: React.FC = () => {
   const handleStickerSelect = useCallback((stickerId: number) => {
     hideReactionPicker();
     showVideoReaction(false, stickerId);
-    // TODO: send into connection
     if (isGameWithBot) {
       const responseStickerId = STICKER_ID_WHITELIST[Math.floor(Math.random() * STICKER_ID_WHITELIST.length)];
       setTimeout(() => {
         showVideoReaction(true, responseStickerId);
       }, 5000);
+    } else {
+      connection.sendVoiceReaction(newStickerReaction(stickerId));
+      setIsVoiceReactionDisabled(true);
+      setTimeout(() => {
+        setIsVoiceReactionDisabled(false);
+      }, 9999);
     }
   }, []);
 
