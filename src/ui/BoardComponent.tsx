@@ -212,8 +212,8 @@ const BoardComponent: React.FC = () => {
                 setVideoFading(true);
                 setTimeout(() => setShowTestVideo(false), 200);
               }}>
-              <source src="https://assets.mons.link/swagpack/video/test.mov" type='video/quicktime; codecs="hvc1"' />
-              <source src="https://assets.mons.link/swagpack/video/test.webm" type="video/webm" />
+              <source src="https://assets.mons.link/swagpack/video/258.mov" type='video/quicktime; codecs="hvc1"' />
+              <source src="https://assets.mons.link/swagpack/video/258.webm" type="video/webm" />
             </video>
           )}
         </div>
@@ -248,8 +248,8 @@ const BoardComponent: React.FC = () => {
                 setVideoFading(true);
                 setTimeout(() => setShowTestVideo(false), 200);
               }}>
-              <source src="https://assets.mons.link/swagpack/video/test.mov" type='video/quicktime; codecs="hvc1"' />
-              <source src="https://assets.mons.link/swagpack/video/test.webm" type="video/webm" />
+              <source src="https://assets.mons.link/swagpack/video/303.mov" type='video/quicktime; codecs="hvc1"' />
+              <source src="https://assets.mons.link/swagpack/video/303.webm" type="video/webm" />
             </video>
           )}
         </div>
