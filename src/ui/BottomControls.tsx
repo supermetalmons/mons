@@ -159,7 +159,7 @@ const BottomControls: React.FC = () => {
 
   useEffect(() => {
     if (isReactionPickerVisible) {
-      const count = 18;
+      const count = 20;
       const ids = new Set<number>();
       while (ids.size < count && ids.size < STICKER_ID_WHITELIST.length) {
         const id = STICKER_ID_WHITELIST[Math.floor(Math.random() * STICKER_ID_WHITELIST.length)];

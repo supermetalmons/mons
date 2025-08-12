@@ -434,7 +434,7 @@ export const ReactionPillsContainer = styled.div`
   display: flex;
   flex-wrap: wrap;
   gap: 6px;
-  width: min(60vw, 240px);
+  width: min(90vw, 204px);
   max-height: calc(100dvh - 120px - env(safe-area-inset-bottom));
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
