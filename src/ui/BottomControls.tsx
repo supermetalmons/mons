@@ -12,6 +12,7 @@ import { showVoiceReactionText } from "../game/board";
 import NavigationPicker from "./NavigationPicker";
 import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, ControlButton, BottomPillButton, ResignButton, ResignConfirmation, ReactionPillsContainer, ReactionPill, StickerPill } from "./BottomControlsStyles";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
+import { showVideoReaction } from "./BoardComponent";
 import BoardStylePickerComponent from "./BoardStylePicker";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
@@ -78,9 +79,7 @@ let toggleReactionPicker: () => void;
 let enableTimerVictoryClaim: () => void;
 let showPrimaryAction: (action: PrimaryActionType) => void;
 
-const STICKER_ID_WHITELIST: number[] = [
-  9, 17, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466,
-];
+const STICKER_ID_WHITELIST: number[] = [9, 17, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466];
 
 const BottomControls: React.FC = () => {
   const [isEndMatchButtonVisible, setIsEndMatchButtonVisible] = useState(false);
@@ -419,6 +418,18 @@ const BottomControls: React.FC = () => {
     didClickEndMatchButton();
   };
 
+  const handleStickerSelect = useCallback((stickerId: number) => {
+    hideReactionPicker();
+    showVideoReaction(false, stickerId);
+    // TODO: send into connection
+    if (isGameWithBot) {
+      const responseStickerId = STICKER_ID_WHITELIST[Math.floor(Math.random() * STICKER_ID_WHITELIST.length)];
+      setTimeout(() => {
+        showVideoReaction(true, responseStickerId);
+      }, 2000);
+    }
+  }, []);
+
   const handleReactionSelect = useCallback((reaction: string) => {
     hideReactionPicker();
     const reactionObj = newReactionOfKind(reaction);
@@ -445,11 +456,6 @@ const BottomControls: React.FC = () => {
     didClickUndoButton();
     setIsUndoDisabled(!canHandleUndo());
   };
-
-  const handleStickerSelect = useCallback((stickerId: number) => {
-    hideReactionPicker();
-    // TODO: send sticker reaction event to opponent and display locally
-  }, []);
 
   const handleConfirmResign = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();

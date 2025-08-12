@@ -74,13 +74,14 @@ export const updateBoardComponentForBoardStyleChange = () => {
 };
 
 export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void;
-export let showVideoReaction: (opponent: boolean) => void;
+export let showVideoReaction: (opponent: boolean, stickerId: number) => void;
 
 const BoardComponent: React.FC = () => {
   const [opponentSideVideo, setOpponentSideVideo] = useState(false);
   const [showTestVideo, setShowTestVideo] = useState(false);
   const [videoFading, setVideoFading] = useState(false);
   const [videoAppearing, setVideoAppearing] = useState(false);
+  const [reactionVideoId, setReactionVideoId] = useState<number | null>(null);
   const initializationRef = useRef(false);
   const [currentColorSet, setCurrentColorSet] = useState<ColorSet>(getCurrentColorSet());
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -100,7 +101,8 @@ const BoardComponent: React.FC = () => {
     }
   };
 
-  showVideoReaction = (opponent: boolean) => {
+  showVideoReaction = (opponent: boolean, stickerId: number) => {
+    setReactionVideoId(stickerId);
     setOpponentSideVideo(opponent);
     setShowTestVideo(true);
     setVideoFading(false);
@@ -193,7 +195,7 @@ const BoardComponent: React.FC = () => {
             pointerEvents: "none",
             touchAction: "none",
           }}>
-          {showTestVideo && !opponentSideVideo && (
+          {showTestVideo && opponentSideVideo && reactionVideoId !== null && (
             <video
               style={{
                 position: "absolute",
@@ -212,8 +214,8 @@ const BoardComponent: React.FC = () => {
                 setVideoFading(true);
                 setTimeout(() => setShowTestVideo(false), 200);
               }}>
-              <source src="https://assets.mons.link/swagpack/video/258.mov" type='video/quicktime; codecs="hvc1"' />
-              <source src="https://assets.mons.link/swagpack/video/258.webm" type="video/webm" />
+              <source src={`https://assets.mons.link/swagpack/video/${reactionVideoId}.mov`} type='video/quicktime; codecs="hvc1"' />
+              <source src={`https://assets.mons.link/swagpack/video/${reactionVideoId}.webm`} type="video/webm" />
             </video>
           )}
         </div>
@@ -229,7 +231,7 @@ const BoardComponent: React.FC = () => {
             pointerEvents: "none",
             touchAction: "none",
           }}>
-          {showTestVideo && opponentSideVideo && (
+          {showTestVideo && !opponentSideVideo && reactionVideoId !== null && (
             <video
               style={{
                 position: "absolute",
@@ -248,8 +250,8 @@ const BoardComponent: React.FC = () => {
                 setVideoFading(true);
                 setTimeout(() => setShowTestVideo(false), 200);
               }}>
-              <source src="https://assets.mons.link/swagpack/video/303.mov" type='video/quicktime; codecs="hvc1"' />
-              <source src="https://assets.mons.link/swagpack/video/303.webm" type="video/webm" />
+              <source src={`https://assets.mons.link/swagpack/video/${reactionVideoId}.mov`} type='video/quicktime; codecs="hvc1"' />
+              <source src={`https://assets.mons.link/swagpack/video/${reactionVideoId}.webm`} type="video/webm" />
             </video>
           )}
         </div>
