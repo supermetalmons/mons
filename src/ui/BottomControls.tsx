@@ -10,7 +10,7 @@ import { playReaction } from "../content/sounds";
 import { newReactionOfKind } from "../content/sounds";
 import { showVoiceReactionText } from "../game/board";
 import NavigationPicker from "./NavigationPicker";
-import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, ControlButton, BottomPillButton, ReactionButton, ReactionPicker, ResignButton, ResignConfirmation } from "./BottomControlsStyles";
+import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, ControlButton, BottomPillButton, ResignButton, ResignConfirmation, ReactionPillsContainer, ReactionPill, StickerPill } from "./BottomControlsStyles";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 import BoardStylePickerComponent from "./BoardStylePicker";
 
@@ -78,6 +78,10 @@ let toggleReactionPicker: () => void;
 let enableTimerVictoryClaim: () => void;
 let showPrimaryAction: (action: PrimaryActionType) => void;
 
+const STICKER_ID_WHITELIST: number[] = [
+  9, 17, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466,
+];
+
 const BottomControls: React.FC = () => {
   const [isEndMatchButtonVisible, setIsEndMatchButtonVisible] = useState(false);
   const [isEndMatchConfirmed, setIsEndMatchConfirmed] = useState(false);
@@ -116,6 +120,7 @@ const BottomControls: React.FC = () => {
 
   const [isClaimVictoryButtonDisabled, setIsClaimVictoryButtonDisabled] = useState(false);
   const [timerConfig, setTimerConfig] = useState({ duration: 90, progress: 0, requestDate: Date.now() });
+  const [stickerIds, setStickerIds] = useState<number[]>([]);
 
   const pickerRef = useRef<HTMLDivElement>(null);
   const voiceReactionButtonRef = useRef<HTMLButtonElement>(null);
@@ -152,6 +157,18 @@ const BottomControls: React.FC = () => {
       document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
     };
   }, []);
+
+  useEffect(() => {
+    if (isReactionPickerVisible) {
+      const count = 18;
+      const ids = new Set<number>();
+      while (ids.size < count && ids.size < STICKER_ID_WHITELIST.length) {
+        const id = STICKER_ID_WHITELIST[Math.floor(Math.random() * STICKER_ID_WHITELIST.length)];
+        ids.add(id);
+      }
+      setStickerIds(Array.from(ids));
+    }
+  }, [isReactionPickerVisible]);
 
   useEffect(() => {
     return () => {
@@ -429,6 +446,11 @@ const BottomControls: React.FC = () => {
     setIsUndoDisabled(!canHandleUndo());
   };
 
+  const handleStickerSelect = useCallback((stickerId: number) => {
+    hideReactionPicker();
+    // TODO: send sticker reaction event to opponent and display locally
+  }, []);
+
   const handleConfirmResign = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     setIsResignConfirmVisible(false);
@@ -608,13 +630,18 @@ const BottomControls: React.FC = () => {
           <FaHome />
         </NavigationListButton>
         {isReactionPickerVisible && (
-          <ReactionPicker ref={pickerRef} offsetToTheRight={!isResignButtonVisible}>
-            <ReactionButton onClick={() => handleReactionSelect("yo")}>yo</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("wahoo")}>wahoo</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("drop")}>drop</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("slurp")}>slurp</ReactionButton>
-            <ReactionButton onClick={() => handleReactionSelect("gg")}>gg</ReactionButton>
-          </ReactionPicker>
+          <ReactionPillsContainer ref={pickerRef}>
+            <ReactionPill onClick={() => handleReactionSelect("yo")}>yo</ReactionPill>
+            <ReactionPill onClick={() => handleReactionSelect("wahoo")}>wahoo</ReactionPill>
+            <ReactionPill onClick={() => handleReactionSelect("drop")}>drop</ReactionPill>
+            <ReactionPill onClick={() => handleReactionSelect("slurp")}>slurp</ReactionPill>
+            <ReactionPill onClick={() => handleReactionSelect("gg")}>gg</ReactionPill>
+            {stickerIds.map((id) => (
+              <StickerPill key={id} onClick={() => handleStickerSelect(id)} aria-label={`Sticker ${id}`}>
+                <img src={`https://assets.mons.link/swagpack/64/${id}.webp`} alt="" loading="lazy" />
+              </StickerPill>
+            ))}
+          </ReactionPillsContainer>
         )}
         {isResignConfirmVisible && (
           <ResignConfirmation ref={resignConfirmRef}>
