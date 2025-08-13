@@ -13,6 +13,11 @@ const NameEditPopup = styled(ModalPopup)`
   padding: 20px;
 `;
 
+const NameEditTitle = styled(ModalTitle)`
+  margin-bottom: 24px;
+  text-align: left;
+`;
+
 const NameInput = styled.input<{ isValid: boolean }>`
   width: 100%;
   padding: 12px;
@@ -142,7 +147,7 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
   return (
     <NameEditOverlay onClick={onCancel}>
       <NameEditPopup onClick={(e) => e.stopPropagation()}>
-        <ModalTitle>{initialName ? "Edit Name" : "Set Name"}</ModalTitle>
+        <NameEditTitle>{initialName ? "Edit Name" : "Set Name"}</NameEditTitle>
         <NameInput ref={inputRef} type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus onKeyDown={handleKeyDown} spellCheck="false" autoCorrect="off" autoCapitalize="off" autoComplete="off" data-form-type="other" data-lpignore="true" inputMode="text" enterKeyHint="done" aria-autocomplete="none" aria-haspopup="false" aria-expanded="false" isValid={isValid} disabled={isSubmitting} />
         <ErrorMessage>{errorMessage}</ErrorMessage>
         <ButtonsContainer>

@@ -693,7 +693,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     updateContent("subtitle", (asciimojiIndex + 1) % asciimojisCount, asciimojiIndex);
   });
 
-  const gpText = "gp: " + ((isOtherPlayer ? (profile?.nonce ?? -1) : storage.getPlayerNonce(-1)) + 1).toString();
+  const gpText = "gp: " + ((isOtherPlayer ? profile?.nonce ?? -1 : storage.getPlayerNonce(-1)) + 1).toString();
   addTextBubble(cardContentsLayer, gpText, "7.4%", "58.7%", textBubbleHeight, handlePointerLeave);
 
   cardContainer.appendChild(card);
@@ -716,7 +716,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   observer.observe(document.body, { childList: true });
   showMons(cardContentsLayer, handlePointerLeave, isOtherPlayer, profile);
 
-  const stickersJson = isOtherPlayer ? (profile?.cardStickers ?? "") : storage.getCardStickers("");
+  const stickersJson = isOtherPlayer ? profile?.cardStickers ?? "" : storage.getCardStickers("");
   displayStickers(cardContentsLayer, stickersJson);
   updateUndoButton();
 };
@@ -1289,7 +1289,9 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
     case "emoji":
       const newSmallEmojiUrl = emojis.getEmojiUrl(newId);
       didClickAndChangePlayerEmoji(newId, newSmallEmojiUrl);
-      ownEmojiImg!.src = `https://assets.mons.link/emojipack_hq/${newId}.webp`;
+      if (ownEmojiImg) {
+        ownEmojiImg.src = `https://assets.mons.link/emojipack_hq/${newId}.webp`;
+      }
       break;
     case "bg":
       const newCardName = `${newId}.webp`;
@@ -1389,6 +1391,11 @@ async function updateUndoButton() {
   if (panelUndoButton) {
     panelUndoButton.disabled = undoQueue.length === 0;
   }
+}
+
+export function setOwnershipVerifiedIdCardEmoji(id: number) {
+  const oldEmojiId = storage.getPlayerEmojiId("1");
+  updateContent("emoji", id, oldEmojiId);
 }
 
 async function didClickIdCardEditUndoButton() {
