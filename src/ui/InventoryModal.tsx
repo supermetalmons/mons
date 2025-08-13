@@ -1,10 +1,7 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton, Subtitle } from "./SharedModalComponents";
-import { storage } from "../utils/storage";
-import { connection } from "../connection/connection";
-
-const doNotFetchNftsForNow = true;
+import { fetchNftsForStoredAddresses } from "../services/nftService";
 
 const InventoryOverlay = styled(ModalOverlay)`
   user-select: none;
@@ -143,21 +140,13 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
       popupRef.current.focus();
     }
 
-    const storedSolAddress = storage.getSolAddress("");
-    const storedEthAddress = storage.getEthAddress("");
-
-    if (storedSolAddress || storedEthAddress) {
-      const fetchTokens = async () => {
-        const data = await connection.getNfts(storedSolAddress, storedEthAddress);
-        if (data?.nfts) {
-          setNfts(data.nfts);
-        }
-      };
-
-      if (!doNotFetchNftsForNow) {
-        fetchTokens();
+    const fetchTokens = async () => {
+      const data = await fetchNftsForStoredAddresses();
+      if (data?.nfts) {
+        setNfts(data.nfts);
       }
-    }
+    };
+    fetchTokens();
   }, []);
 
   const cleanUpAndClose = () => {
