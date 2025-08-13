@@ -269,7 +269,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
         <TopOverlay>
           <TopBar>
             <InventoryTitle>Swag Pack</InventoryTitle>
-            <VvvLink href="https://vvv.so" target="_blank" rel="noopener noreferrer" aria-label="Open vvv.so">
+            <VvvLink href="https://vvv.so/swag-pack" target="_blank" rel="noopener noreferrer" aria-label="Open vvv.so">
               <VvvLogo src={`data:image/webp;base64,${vvvLogoBase64}`} alt="VVV" />
             </VvvLink>
           </TopBar>
