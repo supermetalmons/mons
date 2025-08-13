@@ -842,15 +842,12 @@ export function didGetPlayerProfile(profile: PlayerProfile, loginId: string, own
 
 function renderPlayersNamesLabels() {
   if (!playerNameText || !opponentNameText || isWaitingForRematchResponse || playerScoreText?.textContent === "") return;
+  let playerNameString = "";
+  let opponentNameString = "";
 
   if ((!isOnlineGame || opponentSideMetadata.uid === "") && !isGameWithBot) {
-    playerNameText.textContent = "";
-    opponentNameText.textContent = "";
   } else {
     const placeholderName = "anon";
-
-    let playerNameString = "";
-    let opponentNameString = "";
 
     if (!isGameWithBot) {
       playerNameString = playerSideMetadata.displayName === undefined ? placeholderName : playerSideMetadata.displayName;
@@ -864,22 +861,22 @@ function renderPlayersNamesLabels() {
         opponentNameString += ratingPrefix + `${opponentSideMetadata.rating}`;
       }
     }
-
-    const currentTime = Date.now();
-    const thresholdDelta = 2500;
-    const prefix = " ~ ";
-
-    if (playerSideMetadata.voiceReactionDate !== undefined && currentTime - playerSideMetadata.voiceReactionDate < thresholdDelta) {
-      playerNameString += prefix + playerSideMetadata.voiceReactionText;
-    }
-
-    if (opponentSideMetadata.voiceReactionDate !== undefined && currentTime - opponentSideMetadata.voiceReactionDate < thresholdDelta) {
-      opponentNameString += prefix + opponentSideMetadata.voiceReactionText;
-    }
-
-    playerNameText.textContent = playerNameString;
-    opponentNameText.textContent = opponentNameString;
   }
+
+  const currentTime = Date.now();
+  const thresholdDelta = 2500;
+  const prefix = " ~ ";
+
+  if (playerSideMetadata.voiceReactionDate !== undefined && currentTime - playerSideMetadata.voiceReactionDate < thresholdDelta) {
+    playerNameString += prefix + playerSideMetadata.voiceReactionText;
+  }
+
+  if (opponentSideMetadata.voiceReactionDate !== undefined && currentTime - opponentSideMetadata.voiceReactionDate < thresholdDelta) {
+    opponentNameString += prefix + opponentSideMetadata.voiceReactionText;
+  }
+
+  playerNameText.textContent = playerNameString;
+  opponentNameText.textContent = opponentNameString;
 }
 
 export function setupLoggedInPlayerProfile(profile: PlayerProfile, loginId: string) {
