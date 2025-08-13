@@ -169,7 +169,7 @@ const NFTGridContainer = styled.div`
   -ms-overflow-style: none;
   width: 100%;
   -webkit-overflow-scrolling: touch;
-  overscroll-behavior: contain;
+  overscroll-behavior: auto;
   touch-action: pan-y;
   -ms-touch-action: pan-y;
   padding: 48px 0 56px 0;
@@ -222,6 +222,8 @@ const AvatarTile = styled(NFTNameContainer)`
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   user-select: none;
+  touch-action: pan-y;
+  -ms-touch-action: pan-y;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
