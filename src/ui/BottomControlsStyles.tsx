@@ -422,7 +422,7 @@ export const ResignButton = styled(ReactionButton)`
   }
 `;
 
-export const ReactionPillsContainer = styled.div`
+export const ReactionPillsContainer = styled.div<{ animatedMaxHeight?: number }>`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
@@ -435,7 +435,8 @@ export const ReactionPillsContainer = styled.div`
   flex-wrap: wrap;
   gap: 6px;
   width: min(90vw, 204px);
-  max-height: calc(100dvh - 120px - env(safe-area-inset-bottom));
+  max-height: ${(props) => (props.animatedMaxHeight ? `min(calc(100dvh - 120px - env(safe-area-inset-bottom)), ${props.animatedMaxHeight}px)` : "calc(100dvh - 120px - env(safe-area-inset-bottom))")};
+  transition: max-height 0.16s ease-out;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   z-index: 7;

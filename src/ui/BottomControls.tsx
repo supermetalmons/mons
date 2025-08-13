@@ -11,6 +11,7 @@ import { newReactionOfKind, newStickerReaction } from "../content/sounds";
 import { showVoiceReactionText } from "../game/board";
 import NavigationPicker from "./NavigationPicker";
 import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, ControlButton, BottomPillButton, ResignButton, ResignConfirmation, ReactionPillsContainer, ReactionPill, StickerPill } from "./BottomControlsStyles";
+import { fetchNftsForStoredAddresses } from "../services/nftService";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { showVideoReaction } from "./BoardComponent";
 import BoardStylePickerComponent from "./BoardStylePicker";
@@ -121,6 +122,7 @@ const BottomControls: React.FC = () => {
   const [isClaimVictoryButtonDisabled, setIsClaimVictoryButtonDisabled] = useState(false);
   const [timerConfig, setTimerConfig] = useState({ duration: 90, progress: 0, requestDate: Date.now() });
   const [stickerIds, setStickerIds] = useState<number[]>([]);
+  const [pickerMaxHeight, setPickerMaxHeight] = useState<number | undefined>(undefined);
 
   const pickerRef = useRef<HTMLDivElement>(null);
   const voiceReactionButtonRef = useRef<HTMLButtonElement>(null);
@@ -162,6 +164,58 @@ const BottomControls: React.FC = () => {
     if (isReactionPickerVisible) {
       setStickerIds(FIXED_STICKER_IDS);
     }
+  }, [isReactionPickerVisible]);
+
+  useEffect(() => {
+    if (!isReactionPickerVisible) {
+      setPickerMaxHeight(undefined);
+      return;
+    }
+    if (pickerRef.current) {
+      const el = pickerRef.current;
+      requestAnimationFrame(() => {
+        setPickerMaxHeight(el.scrollHeight);
+      });
+    }
+  }, [isReactionPickerVisible]);
+
+  useEffect(() => {
+    if (!isReactionPickerVisible) return;
+    if (!pickerRef.current) return;
+    const el = pickerRef.current;
+    requestAnimationFrame(() => {
+      setPickerMaxHeight(el.scrollHeight);
+    });
+  }, [stickerIds, isReactionPickerVisible]);
+
+  useEffect(() => {
+    if (!isReactionPickerVisible) return;
+    let isCancelled = false;
+    const fetchReactions = async () => {
+      try {
+        const data = await fetchNftsForStoredAddresses();
+        const extra = Array.isArray(data?.swagpack_reactions) ? data.swagpack_reactions : [];
+        const extraIds: number[] = extra.map((x: { id: number; count?: number }) => x.id).filter((id: unknown) => typeof id === "number");
+        if (!extraIds.length) return;
+        if (isCancelled) return;
+        setStickerIds((prev) => {
+          const base = prev.length ? prev : FIXED_STICKER_IDS;
+          const seen = new Set<number>(base);
+          const merged = base.slice();
+          for (const id of extraIds) {
+            if (!seen.has(id)) {
+              seen.add(id);
+              merged.push(id);
+            }
+          }
+          return merged;
+        });
+      } catch (_) {}
+    };
+    fetchReactions();
+    return () => {
+      isCancelled = true;
+    };
   }, [isReactionPickerVisible]);
 
   useEffect(() => {
@@ -637,7 +691,7 @@ const BottomControls: React.FC = () => {
           <FaHome />
         </NavigationListButton>
         {isReactionPickerVisible && (
-          <ReactionPillsContainer ref={pickerRef}>
+          <ReactionPillsContainer ref={pickerRef} animatedMaxHeight={pickerMaxHeight}>
             <ReactionPill onClick={() => handleReactionSelect("yo")}>yo</ReactionPill>
             <ReactionPill onClick={() => handleReactionSelect("wahoo")}>wahoo</ReactionPill>
             <ReactionPill onClick={() => handleReactionSelect("drop")}>drop</ReactionPill>
