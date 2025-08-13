@@ -1,7 +1,7 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const fetch = require("node-fetch");
 
-const useStub = true;
+const useStub = false;
 
 exports.getNfts = onCall(async (request) => {
   if (!request.auth) {
