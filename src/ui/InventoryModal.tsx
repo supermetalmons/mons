@@ -1,7 +1,8 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
-import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton, Subtitle } from "./SharedModalComponents";
+import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton } from "./SharedModalComponents";
 import { fetchNftsForStoredAddresses } from "../services/nftService";
+import { vvvLogoBase64 } from "../content/uiAssets";
 
 const InventoryOverlay = styled(ModalOverlay)`
   user-select: none;
@@ -28,7 +29,32 @@ const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
 `;
 
 const InventoryTitle = styled(ModalTitle)`
+  margin-bottom: 0;
+`;
+
+const TopBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   margin-bottom: 24px;
+`;
+
+const VvvLink = styled.a`
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+`;
+
+const VvvLogo = styled.img`
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 4px;
 `;
 
 const NFTSection = styled.div`
@@ -98,33 +124,22 @@ const NFTNameContainer = styled.div`
   }
 `;
 
-const NFTName = styled.span`
-  font-size: 0.7rem;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  max-height: 100%;
+const AvatarImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 2px;
 `;
 
-interface NFT {
-  id: string;
-  direct_link: string;
-  content: {
-    json_uri: string;
-    links?: {
-      image: string;
-    };
-    metadata: {
-      name: string;
-      image?: string;
-    };
-  };
-  ownership: {
-    owner: string;
-  };
+const AvatarTile = styled(NFTNameContainer)`
+  position: relative;
+  padding: 0;
+`;
+
+interface SwagAvatarItem {
+  id: number;
+  count: number;
 }
 
 export interface InventoryModalProps {
@@ -133,7 +148,7 @@ export interface InventoryModalProps {
 
 export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   const popupRef = useRef<HTMLDivElement>(null);
-  const [nfts, setNfts] = useState<NFT[]>([]);
+  const [avatars, setAvatars] = useState<SwagAvatarItem[]>([]);
 
   useEffect(() => {
     if (popupRef.current) {
@@ -142,8 +157,10 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
 
     const fetchTokens = async () => {
       const data = await fetchNftsForStoredAddresses();
-      if (data?.nfts) {
-        setNfts(data.nfts);
+      if (data?.swagpack_avatars) {
+        setAvatars(data.swagpack_avatars);
+      } else {
+        setAvatars([]);
       }
     };
     fetchTokens();
@@ -163,24 +180,24 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     }
   };
 
-  const openNftOnWeb = (direct: string) => {
-    window.open(direct, "_blank");
-  };
-
   return (
     <InventoryOverlay onClick={cleanUpAndClose}>
-      <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus hasNfts={nfts.length > 0}>
-        <InventoryTitle>Swag Pack</InventoryTitle>
-        <Subtitle>items will be here soon</Subtitle>
-        {nfts.length > 0 && (
+      <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus hasNfts={avatars.length > 0}>
+        <TopBar>
+          <InventoryTitle>Swag Pack</InventoryTitle>
+          <VvvLink href="https://vvv.so" target="_blank" rel="noopener noreferrer" aria-label="Open vvv.so">
+            <VvvLogo src={`data:image/webp;base64,${vvvLogoBase64}`} alt="VVV" />
+          </VvvLink>
+        </TopBar>
+        {avatars.length > 0 && (
           <NFTSection>
             <Content>
               <NFTGridContainer>
                 <NFTGrid>
-                  {nfts.map((nft) => (
-                    <NFTNameContainer key={nft.id} onClick={() => openNftOnWeb(nft.direct_link)}>
-                      <NFTName>{nft.content.metadata?.name || "Unnamed"}</NFTName>
-                    </NFTNameContainer>
+                  {avatars.map((item) => (
+                    <AvatarTile key={item.id} onClick={() => {}}>
+                      <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt={`Avatar ${item.id}`} loading="lazy" />
+                    </AvatarTile>
                   ))}
                 </NFTGrid>
               </NFTGridContainer>
