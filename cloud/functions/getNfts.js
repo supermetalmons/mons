@@ -33,7 +33,7 @@ exports.getNfts = onCall(async (request) => {
     const availableAvatarOnlyIds = shuffled(validAvatarIds.filter((id) => !usedIds.has(id))).slice(0, extraAvatarCount);
     const swagpack_avatars = [...swagpack_reactions.map((x) => ({ id: x.id, count: x.count })), ...availableAvatarOnlyIds.map((id) => ({ id, count: randomInt(1, 10) }))];
 
-    return { swagpack_avatars, swagpack_reactions };
+    return { ok: true, swagpack_avatars, swagpack_reactions };
   }
 
   const sol = request.data.sol;
