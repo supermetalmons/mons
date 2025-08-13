@@ -3,6 +3,7 @@ import styled from "styled-components";
 import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton } from "./SharedModalComponents";
 import { fetchNftsForStoredAddresses } from "../services/nftService";
 import { vvvLogoBase64 } from "../content/uiAssets";
+import { setOwnershipVerifiedIdCardEmoji } from "./ShinyCard";
 
 const InventoryOverlay = styled(ModalOverlay)`
   user-select: none;
@@ -195,7 +196,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
               <NFTGridContainer>
                 <NFTGrid>
                   {avatars.map((item) => (
-                    <AvatarTile key={item.id} onClick={() => {}}>
+                    <AvatarTile key={item.id} onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000)}>
                       <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt={`Avatar ${item.id}`} loading="lazy" />
                     </AvatarTile>
                   ))}
