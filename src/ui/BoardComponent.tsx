@@ -74,13 +74,18 @@ export const updateBoardComponentForBoardStyleChange = () => {
 };
 
 export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void;
-export let showVideoReaction: (opponent: boolean) => void;
+export let showVideoReaction: (opponent: boolean, stickerId: number) => void;
 
 const BoardComponent: React.FC = () => {
-  const [opponentSideVideo, setOpponentSideVideo] = useState(false);
-  const [showTestVideo, setShowTestVideo] = useState(false);
-  const [videoFading, setVideoFading] = useState(false);
-  const [videoAppearing, setVideoAppearing] = useState(false);
+  const [opponentVideoId, setOpponentVideoId] = useState<number | null>(null);
+  const [opponentVideoVisible, setOpponentVideoVisible] = useState(false);
+  const [opponentVideoFading, setOpponentVideoFading] = useState(false);
+  const [opponentVideoAppearing, setOpponentVideoAppearing] = useState(false);
+
+  const [playerVideoId, setPlayerVideoId] = useState<number | null>(null);
+  const [playerVideoVisible, setPlayerVideoVisible] = useState(false);
+  const [playerVideoFading, setPlayerVideoFading] = useState(false);
+  const [playerVideoAppearing, setPlayerVideoAppearing] = useState(false);
   const initializationRef = useRef(false);
   const [currentColorSet, setCurrentColorSet] = useState<ColorSet>(getCurrentColorSet());
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -100,12 +105,20 @@ const BoardComponent: React.FC = () => {
     }
   };
 
-  showVideoReaction = (opponent: boolean) => {
-    setOpponentSideVideo(opponent);
-    setShowTestVideo(true);
-    setVideoFading(false);
-    setVideoAppearing(true);
-    setTimeout(() => setVideoAppearing(false), 400);
+  showVideoReaction = (opponent: boolean, stickerId: number) => {
+    if (opponent) {
+      setOpponentVideoId(stickerId);
+      setOpponentVideoVisible(true);
+      setOpponentVideoFading(false);
+      setOpponentVideoAppearing(true);
+      setTimeout(() => setOpponentVideoAppearing(false), 400);
+    } else {
+      setPlayerVideoId(stickerId);
+      setPlayerVideoVisible(true);
+      setPlayerVideoFading(false);
+      setPlayerVideoAppearing(true);
+      setTimeout(() => setPlayerVideoAppearing(false), 400);
+    }
   };
 
   setTopBoardOverlayVisible = (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => {
@@ -193,27 +206,28 @@ const BoardComponent: React.FC = () => {
             pointerEvents: "none",
             touchAction: "none",
           }}>
-          {showTestVideo && !opponentSideVideo && (
+          {opponentVideoVisible && opponentVideoId !== null && (
             <video
+              key={opponentVideoId}
               style={{
                 position: "absolute",
                 left: "50%",
                 top: "50%",
-                transform: videoAppearing ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)" : videoFading ? "translate(-50%, -50%) scale(0.8) rotate(5deg)" : "translate(-50%, -50%) scale(1) rotate(0deg)",
+                transform: opponentVideoAppearing ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)" : opponentVideoFading ? "translate(-50%, -50%) scale(0.8) rotate(5deg)" : "translate(-50%, -50%) scale(1) rotate(0deg)",
                 width: "100%",
                 height: "100%",
-                opacity: videoAppearing ? 0 : videoFading ? 0 : 1,
-                transition: videoAppearing ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)" : videoFading ? "opacity 0.2s ease-in, transform 0.2s ease-in" : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+                opacity: opponentVideoAppearing ? 0 : opponentVideoFading ? 0 : 1,
+                transition: opponentVideoAppearing ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)" : opponentVideoFading ? "opacity 0.2s ease-in, transform 0.2s ease-in" : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
               }}
               autoPlay
               muted
               playsInline
               onEnded={() => {
-                setVideoFading(true);
-                setTimeout(() => setShowTestVideo(false), 200);
+                setOpponentVideoFading(true);
+                setTimeout(() => setOpponentVideoVisible(false), 200);
               }}>
-              <source src="https://assets.mons.link/swagpack/video/test.mov" type='video/quicktime; codecs="hvc1"' />
-              <source src="https://assets.mons.link/swagpack/video/test.webm" type="video/webm" />
+              <source src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.mov`} type='video/quicktime; codecs="hvc1"' />
+              <source src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.webm`} type="video/webm" />
             </video>
           )}
         </div>
@@ -229,27 +243,28 @@ const BoardComponent: React.FC = () => {
             pointerEvents: "none",
             touchAction: "none",
           }}>
-          {showTestVideo && opponentSideVideo && (
+          {playerVideoVisible && playerVideoId !== null && (
             <video
+              key={playerVideoId}
               style={{
                 position: "absolute",
                 left: "50%",
                 top: "50%",
-                transform: videoAppearing ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)" : videoFading ? "translate(-50%, -50%) scale(0.8) rotate(5deg)" : "translate(-50%, -50%) scale(1) rotate(0deg)",
+                transform: playerVideoAppearing ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)" : playerVideoFading ? "translate(-50%, -50%) scale(0.8) rotate(5deg)" : "translate(-50%, -50%) scale(1) rotate(0deg)",
                 width: "100%",
                 height: "100%",
-                opacity: videoAppearing ? 0 : videoFading ? 0 : 1,
-                transition: videoAppearing ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)" : videoFading ? "opacity 0.2s ease-in, transform 0.2s ease-in" : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+                opacity: playerVideoAppearing ? 0 : playerVideoFading ? 0 : 1,
+                transition: playerVideoAppearing ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)" : playerVideoFading ? "opacity 0.2s ease-in, transform 0.2s ease-in" : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
               }}
               autoPlay
               muted
               playsInline
               onEnded={() => {
-                setVideoFading(true);
-                setTimeout(() => setShowTestVideo(false), 200);
+                setPlayerVideoFading(true);
+                setTimeout(() => setPlayerVideoVisible(false), 200);
               }}>
-              <source src="https://assets.mons.link/swagpack/video/test.mov" type='video/quicktime; codecs="hvc1"' />
-              <source src="https://assets.mons.link/swagpack/video/test.webm" type="video/webm" />
+              <source src={`https://assets.mons.link/swagpack/video/${playerVideoId}.mov`} type='video/quicktime; codecs="hvc1"' />
+              <source src={`https://assets.mons.link/swagpack/video/${playerVideoId}.webm`} type="video/webm" />
             </video>
           )}
         </div>
