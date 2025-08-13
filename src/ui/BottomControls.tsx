@@ -15,6 +15,8 @@ import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { showVideoReaction } from "./BoardComponent";
 import BoardStylePickerComponent from "./BoardStylePicker";
 
+const devTmpDefaultStickersDisabled = true;
+
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 
 export enum PrimaryActionType {
@@ -160,7 +162,9 @@ const BottomControls: React.FC = () => {
 
   useEffect(() => {
     if (isReactionPickerVisible) {
-      setStickerIds(FIXED_STICKER_IDS);
+      if (!devTmpDefaultStickersDisabled) {
+        setStickerIds(FIXED_STICKER_IDS);
+      }
     }
   }, [isReactionPickerVisible]);
 
