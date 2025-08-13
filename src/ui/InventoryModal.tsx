@@ -182,7 +182,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     <InventoryOverlay onClick={cleanUpAndClose}>
       <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus hasNfts={nfts.length > 0}>
         <InventoryTitle>Swag Pack</InventoryTitle>
-        <Subtitle>coming soon</Subtitle>
+        <Subtitle>items will be here soon</Subtitle>
         {nfts.length > 0 && (
           <NFTSection>
             <Content>

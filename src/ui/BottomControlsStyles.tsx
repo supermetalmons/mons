@@ -421,3 +421,107 @@ export const ResignButton = styled(ReactionButton)`
     }
   }
 `;
+
+export const ReactionPillsContainer = styled.div`
+  position: fixed;
+  bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
+  right: 8px;
+  background-color: var(--panel-light-90);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  border-radius: 12px;
+  padding: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: min(90vw, 204px);
+  max-height: calc(100dvh - 120px - env(safe-area-inset-bottom));
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  z-index: 7;
+
+  & > * {
+    flex: 1 0 auto;
+  }
+
+  &::after {
+    content: "";
+    flex: 999 1 0;
+    height: 0;
+    pointer-events: none;
+  }
+
+  @media screen and (max-height: 453px) {
+    bottom: max(44px, calc(env(safe-area-inset-bottom) + 38px));
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--panel-dark-90);
+  }
+`;
+
+export const ReactionPill = styled.button`
+  height: 30px;
+  border-radius: 16px;
+  padding: 0 10px;
+  border: none;
+  background-color: var(--color-gray-f0);
+  color: var(--color-gray-33);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.84rem;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: var(--color-gray-e0);
+    }
+  }
+
+  &:active {
+    background-color: var(--color-gray-d0);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-gray-33);
+    color: var(--color-gray-f0);
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: var(--color-gray-44);
+      }
+    }
+
+    &:active {
+      background-color: var(--color-gray-55);
+    }
+  }
+`;
+
+export const StickerPill = styled(ReactionPill)`
+  padding: 0 6px;
+  img {
+    width: 24px;
+    height: 24px;
+    display: block;
+  }
+`;
+
+export const StickerRow = styled.div`
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  width: 100%;
+  ${StickerPill} {
+    width: 100%;
+  }
+`;
+
+export const StickerRowLast = styled.div`
+  display: flex;
+  gap: 6px;
+  width: 100%;
+`;
