@@ -14,15 +14,12 @@ const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
   padding: 20px;
   user-select: none;
   outline: none;
-  ${(props) =>
-    props.hasNfts &&
-    `
-    max-height: 70vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-  `}
+  max-height: 70vh;
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--inventoryModalBackgroundDark);
@@ -60,6 +57,10 @@ const VvvLogo = styled.img`
 
 const NFTSection = styled.div`
   margin-bottom: 24px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Content = styled.div`
@@ -75,6 +76,8 @@ const Content = styled.div`
   overflow: hidden;
   text-align: left;
   padding-left: 4px;
+  flex: 1;
+  min-height: 0;
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-gray-d0);
@@ -85,7 +88,8 @@ const NFTGridContainer = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   margin-top: 16px;
-  max-height: 140px;
+  flex: 1 1 auto;
+  min-height: 140px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -190,21 +194,19 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
             <VvvLogo src={`data:image/webp;base64,${vvvLogoBase64}`} alt="VVV" />
           </VvvLink>
         </TopBar>
-        {avatars.length > 0 && (
-          <NFTSection>
-            <Content>
-              <NFTGridContainer>
-                <NFTGrid>
-                  {avatars.map((item) => (
-                    <AvatarTile key={item.id} onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000)}>
-                      <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt={`Avatar ${item.id}`} loading="lazy" />
-                    </AvatarTile>
-                  ))}
-                </NFTGrid>
-              </NFTGridContainer>
-            </Content>
-          </NFTSection>
-        )}
+        <NFTSection>
+          <Content>
+            <NFTGridContainer>
+              <NFTGrid>
+                {avatars.map((item) => (
+                  <AvatarTile key={item.id} onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000)}>
+                    <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt={`Avatar ${item.id}`} loading="lazy" />
+                  </AvatarTile>
+                ))}
+              </NFTGrid>
+            </NFTGridContainer>
+          </Content>
+        </NFTSection>
 
         <ButtonsContainer>
           <SaveButton onClick={cleanUpAndClose} disabled={false}>
