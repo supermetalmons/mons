@@ -112,6 +112,12 @@ export async function playSounds(sounds: Sound[]) {
       case Sound.Undo:
         name = "undo";
         break;
+      case Sound.EmoteSent:
+        name = "emoteSent";
+        break;
+      case Sound.EmoteReceived:
+        name = "emoteReceived";
+        break;
     }
 
     const path = `sounds/${name}.wav`;
@@ -125,6 +131,8 @@ const getSoundPriority = (sound: Sound) => {
     case Sound.EndTurn:
     case Sound.Move:
     case Sound.DidConnect:
+    case Sound.EmoteSent:
+    case Sound.EmoteReceived:
       return 0;
     case Sound.ManaPickUp:
     case Sound.ChoosePickup:

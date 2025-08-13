@@ -6,7 +6,7 @@ import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickCl
 import { connection } from "../connection/connection";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
-import { playReaction } from "../content/sounds";
+import { playReaction, playSounds } from "../content/sounds";
 import { newReactionOfKind, newStickerReaction } from "../content/sounds";
 import { showVoiceReactionText } from "../game/board";
 import NavigationPicker from "./NavigationPicker";
@@ -15,6 +15,7 @@ import { fetchNftsForStoredAddresses } from "../services/nftService";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { showVideoReaction } from "./BoardComponent";
 import BoardStylePickerComponent from "./BoardStylePicker";
+import { Sound } from "../utils/gameModels";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 
@@ -470,10 +471,12 @@ const BottomControls: React.FC = () => {
   const handleStickerSelect = useCallback((stickerId: number) => {
     hideReactionPicker();
     showVideoReaction(false, stickerId);
+    playSounds([Sound.EmoteSent]);
     if (isGameWithBot) {
       const responseStickerId = STICKER_ID_WHITELIST[Math.floor(Math.random() * STICKER_ID_WHITELIST.length)];
       setTimeout(() => {
         showVideoReaction(true, responseStickerId);
+        playSounds([Sound.EmoteReceived]);
       }, 5000);
     } else if (!puzzleMode) {
       connection.sendVoiceReaction(newStickerReaction(stickerId));

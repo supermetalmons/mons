@@ -1361,6 +1361,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
     const currentTime = Date.now();
     if (currentTime - lastReactionTime > 5000) {
       if (match.reaction.kind === "sticker") {
+        playSounds([Sound.EmoteReceived]);
         showVideoReaction(true, match.reaction.variation);
       } else {
         showVoiceReactionText(match.reaction.kind, true);
