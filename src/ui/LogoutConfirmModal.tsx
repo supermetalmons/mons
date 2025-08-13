@@ -9,6 +9,7 @@ const LogoutPopup = styled(ModalPopup)`
 
 const LogoutTitle = styled(ModalTitle)`
   margin-bottom: 26px;
+  text-align: left;
 `;
 
 export interface LogoutConfirmModalProps {
