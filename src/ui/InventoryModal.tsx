@@ -1,10 +1,9 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
-import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton, Subtitle } from "./SharedModalComponents";
-import { storage } from "../utils/storage";
-import { connection } from "../connection/connection";
-
-const doNotFetchNftsForNow = true;
+import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton } from "./SharedModalComponents";
+import { fetchNftsForStoredAddresses } from "../services/nftService";
+import { vvvLogoBase64 } from "../content/uiAssets";
+import { setOwnershipVerifiedIdCardEmoji } from "./ShinyCard";
 
 const InventoryOverlay = styled(ModalOverlay)`
   user-select: none;
@@ -12,18 +11,14 @@ const InventoryOverlay = styled(ModalOverlay)`
 
 const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
   background-color: var(--inventoryModalBackground);
-  padding: 20px;
+  padding: 24px;
   user-select: none;
   outline: none;
-  ${(props) =>
-    props.hasNfts &&
-    `
-    max-height: 70vh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-    position: relative;
-  `}
+  aspect-ratio: 1 / 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--inventoryModalBackgroundDark);
@@ -31,11 +26,102 @@ const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
 `;
 
 const InventoryTitle = styled(ModalTitle)`
-  margin-bottom: 24px;
+  margin: 0;
+`;
+
+const OverlayPanel = styled.div`
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  background: transparent;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+
+  @media (prefers-color-scheme: dark) {
+    background: transparent;
+  }
+`;
+
+const TopOverlay = styled(OverlayPanel)`
+  top: 24px;
+  justify-content: space-between;
+  background-color: var(--inventoryModalBackground);
+  position: absolute;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -16px;
+    height: 16px;
+    background: linear-gradient(to bottom, var(--inventoryModalBackground), transparent);
+    pointer-events: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--inventoryModalBackgroundDark);
+    &::after {
+      background: linear-gradient(to bottom, var(--inventoryModalBackgroundDark), transparent);
+    }
+  }
+`;
+
+const BottomOverlay = styled(OverlayPanel)`
+  bottom: 24px;
+  justify-content: flex-end;
+  background-color: var(--inventoryModalBackground);
+  position: absolute;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -16px;
+    height: 16px;
+    background: linear-gradient(to top, var(--inventoryModalBackground), transparent);
+    pointer-events: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--inventoryModalBackgroundDark);
+    &::before {
+      background: linear-gradient(to top, var(--inventoryModalBackgroundDark), transparent);
+    }
+  }
+`;
+
+const TopBar = styled.div`
+  display: contents;
+`;
+
+const VvvLink = styled.a`
+  display: inline-flex;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  cursor: pointer;
+`;
+
+const VvvLogo = styled.img`
+  width: 100%;
+  height: 100%;
+  display: block;
+  border-radius: 4px;
 `;
 
 const NFTSection = styled.div`
-  margin-bottom: 24px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Content = styled.div`
@@ -50,24 +136,43 @@ const Content = styled.div`
   flex-direction: column;
   overflow: hidden;
   text-align: left;
-  padding-left: 4px;
+  flex: 1;
+  min-height: 0;
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-gray-d0);
   }
 `;
 
+const LoadingText = styled.div`
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--color-gray-77);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--leaderboardLoadingTextColorDark);
+  }
+`;
+
 const NFTGridContainer = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
-  margin-top: 16px;
-  max-height: 140px;
+  margin-top: 0;
+  flex: 1 1 auto;
+  min-height: 140px;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
   -ms-overflow-style: none;
   width: 100%;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  touch-action: pan-y;
+  -ms-touch-action: pan-y;
+  padding: 48px 0 56px 0;
 
   &::-webkit-scrollbar {
     display: none;
@@ -76,23 +181,23 @@ const NFTGridContainer = styled.div`
 
 const NFTGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
   width: 100%;
-  padding-right: 4px;
+  padding-right: 0;
 `;
 
 const NFTNameContainer = styled.div`
   width: 100%;
   aspect-ratio: 1/1;
-  border-radius: 4px;
+  border-radius: 6px;
   background: var(--color-gray-f5);
   overflow: hidden;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 4px;
+  padding: 2px;
   text-align: center;
   box-sizing: border-box;
 
@@ -101,33 +206,37 @@ const NFTNameContainer = styled.div`
   }
 `;
 
-const NFTName = styled.span`
-  font-size: 0.7rem;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  display: -webkit-box;
-  -webkit-line-clamp: 4;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-  max-height: 100%;
+const AvatarImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 2px;
 `;
 
-interface NFT {
-  id: string;
-  direct_link: string;
-  content: {
-    json_uri: string;
-    links?: {
-      image: string;
-    };
-    metadata: {
-      name: string;
-      image?: string;
-    };
-  };
-  ownership: {
-    owner: string;
-  };
+const AvatarTile = styled(NFTNameContainer)`
+  position: relative;
+  padding: 0;
+  transition: transform 0.13s ease-out;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: scale(1.023);
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+
+interface SwagAvatarItem {
+  id: number;
+  count: number;
 }
 
 export interface InventoryModalProps {
@@ -136,28 +245,34 @@ export interface InventoryModalProps {
 
 export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   const popupRef = useRef<HTMLDivElement>(null);
-  const [nfts, setNfts] = useState<NFT[]>([]);
+  const [avatars, setAvatars] = useState<SwagAvatarItem[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [dataOk, setDataOk] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (popupRef.current) {
       popupRef.current.focus();
     }
 
-    const storedSolAddress = storage.getSolAddress("");
-    const storedEthAddress = storage.getEthAddress("");
-
-    if (storedSolAddress || storedEthAddress) {
-      const fetchTokens = async () => {
-        const data = await connection.getNfts(storedSolAddress, storedEthAddress);
-        if (data?.nfts) {
-          setNfts(data.nfts);
+    const fetchTokens = async () => {
+      setIsLoading(true);
+      try {
+        const data = await fetchNftsForStoredAddresses();
+        const ok = data?.ok === true;
+        setDataOk(ok);
+        if (data?.swagpack_avatars && Array.isArray(data.swagpack_avatars) && data.swagpack_avatars.length > 0) {
+          setAvatars(data.swagpack_avatars);
+        } else {
+          setAvatars([]);
         }
-      };
-
-      if (!doNotFetchNftsForNow) {
-        fetchTokens();
+      } catch {
+        setAvatars([]);
+        setDataOk(false);
+      } finally {
+        setIsLoading(false);
       }
-    }
+    };
+    fetchTokens();
   }, []);
 
   const cleanUpAndClose = () => {
@@ -174,36 +289,67 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     }
   };
 
-  const openNftOnWeb = (direct: string) => {
-    window.open(direct, "_blank");
-  };
-
   return (
     <InventoryOverlay onClick={cleanUpAndClose}>
-      <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus hasNfts={nfts.length > 0}>
-        <InventoryTitle>Swag Pack</InventoryTitle>
-        <Subtitle>items will be here soon</Subtitle>
-        {nfts.length > 0 && (
-          <NFTSection>
-            <Content>
+      <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus hasNfts={avatars.length > 0}>
+        <TopOverlay>
+          <TopBar>
+            <InventoryTitle>Swag Pack</InventoryTitle>
+            <VvvLink href="https://vvv.so/swag-pack" target="_blank" rel="noopener noreferrer" aria-label="Open vvv.so">
+              <VvvLogo src={`data:image/webp;base64,${vvvLogoBase64}`} alt="VVV" />
+            </VvvLink>
+          </TopBar>
+        </TopOverlay>
+
+        <NFTSection>
+          <Content>
+            {isLoading ? (
+              <LoadingText>LOADING...</LoadingText>
+            ) : avatars.length === 0 ? (
+              <LoadingText>{dataOk ? "Mint on VVV" : "Failed to load."}</LoadingText>
+            ) : (
               <NFTGridContainer>
                 <NFTGrid>
-                  {nfts.map((nft) => (
-                    <NFTNameContainer key={nft.id} onClick={() => openNftOnWeb(nft.direct_link)}>
-                      <NFTName>{nft.content.metadata?.name || "Unnamed"}</NFTName>
-                    </NFTNameContainer>
+                  {avatars.map((item) => (
+                    <AvatarTile
+                      key={item.id}
+                      onPointerDown={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.transition = "transform 0.08s ease-out";
+                        el.style.transform = "scale(0.94)";
+                      }}
+                      onPointerUp={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.transition = "transform 0.13s ease-out";
+                        el.style.transform = "";
+                      }}
+                      onPointerCancel={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.transition = "transform 0.13s ease-out";
+                        el.style.transform = "";
+                      }}
+                      onPointerLeave={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.transition = "transform 0.13s ease-out";
+                        el.style.transform = "";
+                      }}
+                      onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000)}>
+                      <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt={`Avatar ${item.id}`} loading="lazy" />
+                    </AvatarTile>
                   ))}
                 </NFTGrid>
               </NFTGridContainer>
-            </Content>
-          </NFTSection>
-        )}
+            )}
+          </Content>
+        </NFTSection>
 
-        <ButtonsContainer>
-          <SaveButton onClick={cleanUpAndClose} disabled={false}>
-            OK
-          </SaveButton>
-        </ButtonsContainer>
+        <BottomOverlay>
+          <ButtonsContainer style={{ margin: 0 }}>
+            <SaveButton onClick={cleanUpAndClose} disabled={false}>
+              OK
+            </SaveButton>
+          </ButtonsContainer>
+        </BottomOverlay>
       </InventoryPopup>
     </InventoryOverlay>
   );

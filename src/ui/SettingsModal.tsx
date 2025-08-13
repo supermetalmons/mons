@@ -10,6 +10,7 @@ const SettingsPopup = styled(ModalPopup)`
 
 const SettingsTitle = styled(ModalTitle)`
   margin-bottom: 24px;
+  text-align: left;
 `;
 
 const NonItalicSubtitle = styled(Subtitle)`

@@ -60,6 +60,8 @@ export enum Sound {
   Defeat,
   DidConnect,
   Undo,
+  EmoteReceived,
+  EmoteSent,
 }
 
 export enum InputModifier {
@@ -79,13 +81,13 @@ export class Trace {
   }
 }
 
-export enum ItemKind {  
+export enum ItemKind {
   Mana,
   ManaBlack,
   Supermana,
   Demon,
   DemonBlack,
-  Drainer, 
+  Drainer,
   DrainerBlack,
   Angel,
   AngelBlack,
@@ -93,5 +95,5 @@ export enum ItemKind {
   SpiritBlack,
   Mystic,
   MysticBlack,
-  Consumable
+  Consumable,
 }

@@ -6,16 +6,16 @@ import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickCl
 import { connection } from "../connection/connection";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
-import { playReaction } from "../content/sounds";
+import { playReaction, playSounds } from "../content/sounds";
 import { newReactionOfKind, newStickerReaction } from "../content/sounds";
 import { showVoiceReactionText } from "../game/board";
 import NavigationPicker from "./NavigationPicker";
 import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, ControlButton, BottomPillButton, ResignButton, ResignConfirmation, ReactionPillsContainer, ReactionPill, StickerPill } from "./BottomControlsStyles";
+import { fetchNftsForStoredAddresses } from "../services/nftService";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { showVideoReaction } from "./BoardComponent";
 import BoardStylePickerComponent from "./BoardStylePicker";
-
-const devTmpDefaultStickersDisabled = true;
+import { Sound } from "../utils/gameModels";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 
@@ -81,8 +81,8 @@ let toggleReactionPicker: () => void;
 let enableTimerVictoryClaim: () => void;
 let showPrimaryAction: (action: PrimaryActionType) => void;
 
-const STICKER_ID_WHITELIST: number[] = [9, 17, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466];
-const FIXED_STICKER_IDS: number[] = [316, 101, 232, 246, 313, 325, 374, 393, 444, 63, 109, 228, 245, 267, 347, 382, 429, 50, 389, 225];
+const STICKER_ID_WHITELIST: number[] = [9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466, 900316, 900101, 900393, 90063, 900109, 900228, 900245, 900267, 900374, 900347, 900382, 900429, 900225, 900999, 900189];
+const FIXED_STICKER_IDS: number[] = [900316, 900101, 900393, 90063, 900109, 900228, 900245, 900189, 900267, 900374, 900347, 900382, 900429, 900225, 900999];
 
 const BottomControls: React.FC = () => {
   const [isEndMatchButtonVisible, setIsEndMatchButtonVisible] = useState(false);
@@ -123,6 +123,7 @@ const BottomControls: React.FC = () => {
   const [isClaimVictoryButtonDisabled, setIsClaimVictoryButtonDisabled] = useState(false);
   const [timerConfig, setTimerConfig] = useState({ duration: 90, progress: 0, requestDate: Date.now() });
   const [stickerIds, setStickerIds] = useState<number[]>([]);
+  const [pickerMaxHeight, setPickerMaxHeight] = useState<number | undefined>(undefined);
 
   const pickerRef = useRef<HTMLDivElement>(null);
   const voiceReactionButtonRef = useRef<HTMLButtonElement>(null);
@@ -162,10 +163,60 @@ const BottomControls: React.FC = () => {
 
   useEffect(() => {
     if (isReactionPickerVisible) {
-      if (!devTmpDefaultStickersDisabled) {
-        setStickerIds(FIXED_STICKER_IDS);
-      }
+      setStickerIds(FIXED_STICKER_IDS);
     }
+  }, [isReactionPickerVisible]);
+
+  useEffect(() => {
+    if (!isReactionPickerVisible) {
+      setPickerMaxHeight(undefined);
+      return;
+    }
+    if (pickerRef.current) {
+      const el = pickerRef.current;
+      requestAnimationFrame(() => {
+        setPickerMaxHeight(el.scrollHeight);
+      });
+    }
+  }, [isReactionPickerVisible]);
+
+  useEffect(() => {
+    if (!isReactionPickerVisible) return;
+    if (!pickerRef.current) return;
+    const el = pickerRef.current;
+    requestAnimationFrame(() => {
+      setPickerMaxHeight(el.scrollHeight);
+    });
+  }, [stickerIds, isReactionPickerVisible]);
+
+  useEffect(() => {
+    if (!isReactionPickerVisible) return;
+    let isCancelled = false;
+    const fetchReactions = async () => {
+      try {
+        const data = await fetchNftsForStoredAddresses();
+        const extra = Array.isArray(data?.swagpack_reactions) ? data.swagpack_reactions : [];
+        const extraIds: number[] = extra.map((x: { id: number; count?: number }) => x.id).filter((id: unknown) => typeof id === "number");
+        if (!extraIds.length) return;
+        if (isCancelled) return;
+        setStickerIds((prev) => {
+          const base = prev.length ? prev : FIXED_STICKER_IDS;
+          const seen = new Set<number>(base);
+          const merged = base.slice();
+          for (const id of extraIds) {
+            if (!seen.has(id)) {
+              seen.add(id);
+              merged.push(id);
+            }
+          }
+          return merged;
+        });
+      } catch (_) {}
+    };
+    fetchReactions();
+    return () => {
+      isCancelled = true;
+    };
   }, [isReactionPickerVisible]);
 
   useEffect(() => {
@@ -420,12 +471,14 @@ const BottomControls: React.FC = () => {
   const handleStickerSelect = useCallback((stickerId: number) => {
     hideReactionPicker();
     showVideoReaction(false, stickerId);
+    playSounds([Sound.EmoteSent]);
     if (isGameWithBot) {
       const responseStickerId = STICKER_ID_WHITELIST[Math.floor(Math.random() * STICKER_ID_WHITELIST.length)];
       setTimeout(() => {
         showVideoReaction(true, responseStickerId);
+        playSounds([Sound.EmoteReceived]);
       }, 5000);
-    } else {
+    } else if (!puzzleMode) {
       connection.sendVoiceReaction(newStickerReaction(stickerId));
       setIsVoiceReactionDisabled(true);
       setTimeout(() => {
@@ -439,19 +492,20 @@ const BottomControls: React.FC = () => {
     const reactionObj = newReactionOfKind(reaction);
     playReaction(reactionObj);
     showVoiceReactionText(reaction, false);
-    if (!isGameWithBot) {
-      connection.sendVoiceReaction(reactionObj);
-      setIsVoiceReactionDisabled(true);
-      setTimeout(() => {
-        setIsVoiceReactionDisabled(false);
-      }, 9999);
-    } else {
+
+    if (isGameWithBot) {
       const responseReaction = reaction;
       const responseReactionObj = newReactionOfKind(responseReaction);
       setTimeout(() => {
         playReaction(responseReactionObj);
         showVoiceReactionText(reaction, true);
       }, 2000);
+    } else if (!puzzleMode) {
+      connection.sendVoiceReaction(reactionObj);
+      setIsVoiceReactionDisabled(true);
+      setTimeout(() => {
+        setIsVoiceReactionDisabled(false);
+      }, 9999);
     }
   }, []);
 
@@ -640,7 +694,7 @@ const BottomControls: React.FC = () => {
           <FaHome />
         </NavigationListButton>
         {isReactionPickerVisible && (
-          <ReactionPillsContainer ref={pickerRef}>
+          <ReactionPillsContainer ref={pickerRef} animatedMaxHeight={pickerMaxHeight}>
             <ReactionPill onClick={() => handleReactionSelect("yo")}>yo</ReactionPill>
             <ReactionPill onClick={() => handleReactionSelect("wahoo")}>wahoo</ReactionPill>
             <ReactionPill onClick={() => handleReactionSelect("drop")}>drop</ReactionPill>
