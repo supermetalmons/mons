@@ -421,7 +421,7 @@ const BottomControls: React.FC = () => {
       setTimeout(() => {
         showVideoReaction(true, responseStickerId);
       }, 5000);
-    } else {
+    } else if (!puzzleMode) {
       connection.sendVoiceReaction(newStickerReaction(stickerId));
       setIsVoiceReactionDisabled(true);
       setTimeout(() => {
@@ -435,19 +435,20 @@ const BottomControls: React.FC = () => {
     const reactionObj = newReactionOfKind(reaction);
     playReaction(reactionObj);
     showVoiceReactionText(reaction, false);
-    if (!isGameWithBot) {
-      connection.sendVoiceReaction(reactionObj);
-      setIsVoiceReactionDisabled(true);
-      setTimeout(() => {
-        setIsVoiceReactionDisabled(false);
-      }, 9999);
-    } else {
+
+    if (isGameWithBot) {
       const responseReaction = reaction;
       const responseReactionObj = newReactionOfKind(responseReaction);
       setTimeout(() => {
         playReaction(responseReactionObj);
         showVoiceReactionText(reaction, true);
       }, 2000);
+    } else if (!puzzleMode) {
+      connection.sendVoiceReaction(reactionObj);
+      setIsVoiceReactionDisabled(true);
+      setTimeout(() => {
+        setIsVoiceReactionDisabled(false);
+      }, 9999);
     }
   }, []);
 

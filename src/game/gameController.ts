@@ -1309,6 +1309,7 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
   setInviteLinkActionVisible(false);
   setAutomatchVisible(false);
   setBotGameOptionVisible(false);
+  showVoiceReactionButton(true);
   closeNavigationAndAppearancePopupIfAny();
 
   setNewBoard();
