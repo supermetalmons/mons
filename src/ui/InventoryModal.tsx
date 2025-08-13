@@ -144,6 +144,20 @@ const Content = styled.div`
   }
 `;
 
+const LoadingText = styled.div`
+  text-align: center;
+  font-size: 0.8rem;
+  color: var(--color-gray-77);
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--leaderboardLoadingTextColorDark);
+  }
+`;
+
 const NFTGridContainer = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
@@ -232,6 +246,8 @@ export interface InventoryModalProps {
 export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   const popupRef = useRef<HTMLDivElement>(null);
   const [avatars, setAvatars] = useState<SwagAvatarItem[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [dataOk, setDataOk] = useState<boolean | null>(null);
 
   useEffect(() => {
     if (popupRef.current) {
@@ -239,11 +255,21 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
     }
 
     const fetchTokens = async () => {
-      const data = await fetchNftsForStoredAddresses();
-      if (data?.swagpack_avatars) {
-        setAvatars(data.swagpack_avatars);
-      } else {
+      setIsLoading(true);
+      try {
+        const data = await fetchNftsForStoredAddresses();
+        const ok = data?.ok === true;
+        setDataOk(ok);
+        if (data?.swagpack_avatars && Array.isArray(data.swagpack_avatars) && data.swagpack_avatars.length > 0) {
+          setAvatars(data.swagpack_avatars);
+        } else {
+          setAvatars([]);
+        }
+      } catch {
         setAvatars([]);
+        setDataOk(false);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchTokens();
@@ -277,37 +303,43 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
 
         <NFTSection>
           <Content>
-            <NFTGridContainer>
-              <NFTGrid>
-                {avatars.map((item) => (
-                  <AvatarTile
-                    key={item.id}
-                    onPointerDown={(e) => {
-                      const el = e.currentTarget as HTMLElement;
-                      el.style.transition = "transform 0.08s ease-out";
-                      el.style.transform = "scale(0.94)";
-                    }}
-                    onPointerUp={(e) => {
-                      const el = e.currentTarget as HTMLElement;
-                      el.style.transition = "transform 0.13s ease-out";
-                      el.style.transform = "";
-                    }}
-                    onPointerCancel={(e) => {
-                      const el = e.currentTarget as HTMLElement;
-                      el.style.transition = "transform 0.13s ease-out";
-                      el.style.transform = "";
-                    }}
-                    onPointerLeave={(e) => {
-                      const el = e.currentTarget as HTMLElement;
-                      el.style.transition = "transform 0.13s ease-out";
-                      el.style.transform = "";
-                    }}
-                    onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000)}>
-                    <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt={`Avatar ${item.id}`} loading="lazy" />
-                  </AvatarTile>
-                ))}
-              </NFTGrid>
-            </NFTGridContainer>
+            {isLoading ? (
+              <LoadingText>LOADING...</LoadingText>
+            ) : avatars.length === 0 ? (
+              <LoadingText>{dataOk ? "Mint on VVV" : "Failed to load."}</LoadingText>
+            ) : (
+              <NFTGridContainer>
+                <NFTGrid>
+                  {avatars.map((item) => (
+                    <AvatarTile
+                      key={item.id}
+                      onPointerDown={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.transition = "transform 0.08s ease-out";
+                        el.style.transform = "scale(0.94)";
+                      }}
+                      onPointerUp={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.transition = "transform 0.13s ease-out";
+                        el.style.transform = "";
+                      }}
+                      onPointerCancel={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.transition = "transform 0.13s ease-out";
+                        el.style.transform = "";
+                      }}
+                      onPointerLeave={(e) => {
+                        const el = e.currentTarget as HTMLElement;
+                        el.style.transition = "transform 0.13s ease-out";
+                        el.style.transform = "";
+                      }}
+                      onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000)}>
+                      <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt={`Avatar ${item.id}`} loading="lazy" />
+                    </AvatarTile>
+                  ))}
+                </NFTGrid>
+              </NFTGridContainer>
+            )}
           </Content>
         </NFTSection>
 
