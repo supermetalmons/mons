@@ -26,7 +26,7 @@ exports.getNfts = onCall(async (request) => {
       while (fetched < total) {
         const params = {
           ownerAddress: sol,
-          grouping: ["collection", "C22gZA6neKZLRvTEwX3j4Mm4LHezNFZvcrQpEWhLvLDT"],
+          grouping: ["collection", "C22esis7kQMbX9JGWsMaKvsh1X5GeBmHPju28jiKDyAP"],
           limit,
         };
         if (cursor) {
