@@ -96,6 +96,8 @@ const NFTGridContainer = styled.div`
   width: 100%;
   -webkit-overflow-scrolling: touch;
   overscroll-behavior: contain;
+  touch-action: pan-y;
+  -ms-touch-action: pan-y;
 
   &::-webkit-scrollbar {
     display: none;
@@ -140,6 +142,21 @@ const AvatarImage = styled.img`
 const AvatarTile = styled(NFTNameContainer)`
   position: relative;
   padding: 0;
+  transition: transform 0.13s ease-out;
+  will-change: transform;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: scale(1.023);
+    }
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
 `;
 
 interface SwagAvatarItem {
@@ -199,7 +216,29 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
             <NFTGridContainer>
               <NFTGrid>
                 {avatars.map((item) => (
-                  <AvatarTile key={item.id} onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000)}>
+                  <AvatarTile
+                    key={item.id}
+                    onPointerDown={(e) => {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.transition = "transform 0.08s ease-out";
+                      el.style.transform = "scale(0.94)";
+                    }}
+                    onPointerUp={(e) => {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.transition = "transform 0.13s ease-out";
+                      el.style.transform = "";
+                    }}
+                    onPointerCancel={(e) => {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.transition = "transform 0.13s ease-out";
+                      el.style.transform = "";
+                    }}
+                    onPointerLeave={(e) => {
+                      const el = e.currentTarget as HTMLElement;
+                      el.style.transition = "transform 0.13s ease-out";
+                      el.style.transform = "";
+                    }}
+                    onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000)}>
                     <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt={`Avatar ${item.id}`} loading="lazy" />
                   </AvatarTile>
                 ))}
