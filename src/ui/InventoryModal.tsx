@@ -11,10 +11,9 @@ const InventoryOverlay = styled(ModalOverlay)`
 
 const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
   background-color: var(--inventoryModalBackground);
-  padding: 20px;
+  padding: 24px;
   user-select: none;
   outline: none;
-  max-height: 70vh;
   aspect-ratio: 1 / 1;
   display: flex;
   flex-direction: column;
@@ -27,14 +26,77 @@ const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
 `;
 
 const InventoryTitle = styled(ModalTitle)`
-  margin-bottom: 0;
+  margin: 0;
+`;
+
+const OverlayPanel = styled.div`
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  background: transparent;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0;
+
+  @media (prefers-color-scheme: dark) {
+    background: transparent;
+  }
+`;
+
+const TopOverlay = styled(OverlayPanel)`
+  top: 24px;
+  justify-content: space-between;
+  background-color: var(--inventoryModalBackground);
+  position: absolute;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -16px;
+    height: 16px;
+    background: linear-gradient(to bottom, var(--inventoryModalBackground), transparent);
+    pointer-events: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--inventoryModalBackgroundDark);
+    &::after {
+      background: linear-gradient(to bottom, var(--inventoryModalBackgroundDark), transparent);
+    }
+  }
+`;
+
+const BottomOverlay = styled(OverlayPanel)`
+  bottom: 24px;
+  justify-content: flex-end;
+  background-color: var(--inventoryModalBackground);
+  position: absolute;
+
+  &::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: -16px;
+    height: 16px;
+    background: linear-gradient(to top, var(--inventoryModalBackground), transparent);
+    pointer-events: none;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--inventoryModalBackgroundDark);
+    &::before {
+      background: linear-gradient(to top, var(--inventoryModalBackgroundDark), transparent);
+    }
+  }
 `;
 
 const TopBar = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 24px;
+  display: contents;
 `;
 
 const VvvLink = styled.a`
@@ -56,7 +118,6 @@ const VvvLogo = styled.img`
 `;
 
 const NFTSection = styled.div`
-  margin-bottom: 24px;
   flex: 1;
   min-height: 0;
   display: flex;
@@ -75,7 +136,6 @@ const Content = styled.div`
   flex-direction: column;
   overflow: hidden;
   text-align: left;
-  padding-left: 4px;
   flex: 1;
   min-height: 0;
 
@@ -87,7 +147,7 @@ const Content = styled.div`
 const NFTGridContainer = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
-  margin-top: 16px;
+  margin-top: 0;
   flex: 1 1 auto;
   min-height: 140px;
   -webkit-overflow-scrolling: touch;
@@ -98,6 +158,7 @@ const NFTGridContainer = styled.div`
   overscroll-behavior: contain;
   touch-action: pan-y;
   -ms-touch-action: pan-y;
+  padding: 48px 0 56px 0;
 
   &::-webkit-scrollbar {
     display: none;
@@ -106,23 +167,23 @@ const NFTGridContainer = styled.div`
 
 const NFTGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(48px, 1fr));
-  gap: 8px;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
   width: 100%;
-  padding-right: 4px;
+  padding-right: 0;
 `;
 
 const NFTNameContainer = styled.div`
   width: 100%;
   aspect-ratio: 1/1;
-  border-radius: 4px;
+  border-radius: 6px;
   background: var(--color-gray-f5);
   overflow: hidden;
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 4px;
+  padding: 2px;
   text-align: center;
   box-sizing: border-box;
 
@@ -205,12 +266,15 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   return (
     <InventoryOverlay onClick={cleanUpAndClose}>
       <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus hasNfts={avatars.length > 0}>
-        <TopBar>
-          <InventoryTitle>Swag Pack</InventoryTitle>
-          <VvvLink href="https://vvv.so" target="_blank" rel="noopener noreferrer" aria-label="Open vvv.so">
-            <VvvLogo src={`data:image/webp;base64,${vvvLogoBase64}`} alt="VVV" />
-          </VvvLink>
-        </TopBar>
+        <TopOverlay>
+          <TopBar>
+            <InventoryTitle>Swag Pack</InventoryTitle>
+            <VvvLink href="https://vvv.so" target="_blank" rel="noopener noreferrer" aria-label="Open vvv.so">
+              <VvvLogo src={`data:image/webp;base64,${vvvLogoBase64}`} alt="VVV" />
+            </VvvLink>
+          </TopBar>
+        </TopOverlay>
+
         <NFTSection>
           <Content>
             <NFTGridContainer>
@@ -247,11 +311,13 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
           </Content>
         </NFTSection>
 
-        <ButtonsContainer>
-          <SaveButton onClick={cleanUpAndClose} disabled={false}>
-            OK
-          </SaveButton>
-        </ButtonsContainer>
+        <BottomOverlay>
+          <ButtonsContainer style={{ margin: 0 }}>
+            <SaveButton onClick={cleanUpAndClose} disabled={false}>
+              OK
+            </SaveButton>
+          </ButtonsContainer>
+        </BottomOverlay>
       </InventoryPopup>
     </InventoryOverlay>
   );
