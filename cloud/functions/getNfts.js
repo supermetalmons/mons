@@ -1,39 +1,9 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const fetch = require("node-fetch");
 
-const useStub = false;
-
 exports.getNfts = onCall(async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
-  }
-
-  if (useStub) {
-    const validReactionIds = [9, 17, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466];
-    const validAvatarIds = Array.from({ length: 467 }, (_, i) => i);
-    const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-    const shuffled = (arr) => {
-      const a = arr.slice();
-      for (let i = a.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i + 1));
-        const t = a[i];
-        a[i] = a[j];
-        a[j] = t;
-      }
-      return a;
-    };
-
-    const reactionCount = randomInt(1, Math.min(50, validReactionIds.length));
-    const selectedReactionIds = shuffled(validReactionIds).slice(0, reactionCount);
-    const swagpack_reactions = selectedReactionIds.map((id) => ({ id, count: randomInt(1, 10) }));
-
-    const usedIds = new Set(selectedReactionIds);
-    const maxExtraAvatars = 50 - swagpack_reactions.length;
-    const extraAvatarCount = maxExtraAvatars > 0 ? randomInt(0, maxExtraAvatars) : 0;
-    const availableAvatarOnlyIds = shuffled(validAvatarIds.filter((id) => !usedIds.has(id))).slice(0, extraAvatarCount);
-    const swagpack_avatars = [...swagpack_reactions.map((x) => ({ id: x.id, count: x.count })), ...availableAvatarOnlyIds.map((id) => ({ id, count: randomInt(1, 10) }))];
-
-    return { ok: true, swagpack_avatars, swagpack_reactions };
   }
 
   const sol = request.data.sol;
@@ -44,105 +14,79 @@ exports.getNfts = onCall(async (request) => {
   }
 
   try {
-    let solNfts = [];
-    let ethNfts = [];
-    let solTotal = 0;
-    let ethTotal = 0;
+    const validReactionIds = [9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466];
+
+    const idCounts = new Map();
 
     if (sol) {
-      const solResponse = await fetch("https://mainnet.helius-rpc.com/?api-key=" + process.env.HELIUS_API_KEY, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          jsonrpc: "2.0",
-          id: "my-id",
-          method: "searchAssets",
-          params: {
-            ownerAddress: sol,
-            grouping: ["collection", "CjL5WpAmf4cMEEGwZGTfTDKWok9a92ykq9aLZrEK2D5H"],
-            page: 1,
-            limit: 50,
+      let cursor = undefined;
+      const limit = 1000;
+      let fetched = 0;
+      let total = Infinity;
+      while (fetched < total) {
+        const params = {
+          ownerAddress: sol,
+          grouping: ["collection", "C22esis7kQMbX9JGWsMaKvsh1X5GeBmHPju28jiKDyAP"],
+          limit,
+        };
+        if (cursor) {
+          params.cursor = cursor;
+        }
+
+        const solResponse = await fetch("https://mainnet.helius-rpc.com/?api-key=" + process.env.HELIUS_API_KEY, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
           },
-        }),
-      });
+          body: JSON.stringify({
+            jsonrpc: "2.0",
+            id: "mons-get-nfts",
+            method: "searchAssets",
+            params,
+          }),
+        });
 
-      const solData = await solResponse.json();
+        const solData = await solResponse.json();
 
-      if (!solResponse.ok) {
-        throw new HttpsError("internal", "Failed to fetch NFTs from Helius API", solData);
+        if (!solResponse.ok) {
+          return { ok: false };
+        }
+
+        const resultNode = solData?.result || {};
+        const items = resultNode?.items || [];
+        total = typeof resultNode?.total === "number" ? resultNode.total : total;
+
+        for (const item of items) {
+          const jsonUri = item?.content?.json_uri || "";
+          if (typeof jsonUri !== "string" || jsonUri.length === 0) continue;
+          try {
+            const lastSlash = jsonUri.lastIndexOf("/");
+            let tail = lastSlash >= 0 ? jsonUri.slice(lastSlash + 1) : jsonUri;
+            const q = tail.indexOf("?");
+            if (q >= 0) tail = tail.slice(0, q);
+            const h = tail.indexOf("#");
+            if (h >= 0) tail = tail.slice(0, h);
+            const idNum = parseInt(tail, 10);
+            if (!Number.isFinite(idNum)) continue;
+            if (!idCounts.has(idNum)) idCounts.set(idNum, 0);
+            idCounts.set(idNum, idCounts.get(idNum) + 1);
+          } catch (_) {}
+        }
+
+        fetched += items.length;
+        if (!items.length || fetched >= total || items.length < limit) break;
+        cursor = resultNode?.cursor;
+        if (!cursor) break;
       }
-
-      solNfts =
-        solData?.result?.items?.map((item) => ({
-          direct_link: `https://www.tensor.trade/item/${item.id}`,
-          id: item.id,
-          content: {
-            json_uri: item.content?.json_uri || "",
-            links: item.content?.links,
-            metadata: {
-              name: item.content?.metadata?.name || "",
-              image: item.content?.metadata?.image,
-            },
-          },
-          ownership: {
-            owner: item.ownership?.owner || "",
-          },
-          chain: "solana",
-        })) || [];
-
-      solTotal = solData?.result?.total || 0;
     }
 
-    if (eth) {
-      const ethResponse = await fetch(`https://api.opensea.io/api/v2/chain/ethereum/account/${eth}/nfts?collection=super-metal-mons-gen-2`, {
-        method: "GET",
-        headers: {
-          accept: "application/json",
-          "x-api-key": process.env.OPENSEA_API_KEY,
-        },
-      });
+    const swagpack_avatars = Array.from(idCounts.entries()).map(([id, count]) => ({ id, count }));
+    const reactionSet = new Set(validReactionIds);
+    const swagpack_reactions = swagpack_avatars.filter((x) => reactionSet.has(x.id));
 
-      const ethData = await ethResponse.json();
-
-      if (!ethResponse.ok) {
-        throw new HttpsError("internal", "Failed to fetch NFTs from OpenSea API", ethData);
-      }
-
-      ethNfts =
-        ethData?.nfts?.map((item) => ({
-          id: item.identifier,
-          direct_link: item.opensea_url || "",
-          content: {
-            json_uri: item.metadata_url || "",
-            links: {
-              image: item.display_image_url,
-            },
-            metadata: {
-              name: item.name || "",
-              image: item.display_image_url,
-            },
-          },
-          ownership: {
-            owner: eth,
-          },
-          chain: "ethereum",
-        })) || [];
-
-      ethTotal = ethData?.nfts?.length || 0;
-    }
-
-    const combinedNfts = [...solNfts, ...ethNfts];
-    const totalNfts = solTotal + ethTotal;
-
-    return {
-      ok: true,
-      nfts: combinedNfts,
-      total: totalNfts,
-    };
+    return { ok: true, swagpack_avatars, swagpack_reactions };
   } catch (error) {
     console.error("Error fetching NFTs:", error);
-    throw new HttpsError("internal", "Failed to fetch NFTs", error);
+    return { ok: false };
   }
 });
