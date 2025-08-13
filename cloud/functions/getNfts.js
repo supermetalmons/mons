@@ -61,7 +61,7 @@ exports.getNfts = onCall(async (request) => {
           method: "searchAssets",
           params: {
             ownerAddress: sol,
-            grouping: ["collection", "CjL5WpAmf4cMEEGwZGTfTDKWok9a92ykq9aLZrEK2D5H"],
+            grouping: ["collection", "C22gZA6neKZLRvTEwX3j4Mm4LHezNFZvcrQpEWhLvLDT"],
             page: 1,
             limit: 50,
           },
