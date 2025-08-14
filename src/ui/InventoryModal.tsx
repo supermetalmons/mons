@@ -168,8 +168,7 @@ const NFTGridContainer = styled.div`
   scrollbar-width: none;
   -ms-overflow-style: none;
   width: 100%;
-  -webkit-overflow-scrolling: touch;
-  overscroll-behavior: auto;
+  overscroll-behavior: contain;
   touch-action: pan-y;
   -ms-touch-action: pan-y;
   padding: 48px 0 56px 0;
@@ -212,12 +211,15 @@ const AvatarImage = styled.img`
   object-fit: cover;
   display: block;
   border-radius: 2px;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-drag: none;
 `;
 
 const AvatarTile = styled(NFTNameContainer)`
   position: relative;
   padding: 0;
-  transition: transform 0.13s ease-out;
+  transition: transform 0.13s ease-out, box-shadow 0.13s ease-out;
   will-change: transform;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
@@ -225,14 +227,33 @@ const AvatarTile = styled(NFTNameContainer)`
   touch-action: pan-y;
   -ms-touch-action: pan-y;
 
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--interactiveActiveBackgroundLight);
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.12s ease-out;
+  }
+
   @media (hover: hover) and (pointer: fine) {
     &:hover {
       transform: scale(1.023);
     }
+    &:active {
+      transform: scale(0.95);
+    }
   }
 
-  &:active {
-    transform: scale(0.95);
+  @media (hover: none) and (pointer: coarse) {
+    &:active {
+      transform: scale(0.96);
+    }
+    &:active::after {
+      opacity: 0.12;
+    }
   }
 `;
 
@@ -298,7 +319,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
           <TopBar>
             <InventoryTitle>Swag Pack</InventoryTitle>
             <VvvLink href="https://vvv.so/swag-pack" target="_blank" rel="noopener noreferrer" aria-label="Open vvv.so">
-              <VvvLogo src={`data:image/webp;base64,${vvvLogoBase64}`} alt="VVV" />
+              <VvvLogo src={`data:image/webp;base64,${vvvLogoBase64}`} alt="" />
             </VvvLink>
           </TopBar>
         </TopOverlay>
@@ -313,30 +334,8 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
               <NFTGridContainer>
                 <NFTGrid>
                   {avatars.map((item) => (
-                    <AvatarTile
-                      key={item.id}
-                      onPointerDown={(e) => {
-                        const el = e.currentTarget as HTMLElement;
-                        el.style.transition = "transform 0.08s ease-out";
-                        el.style.transform = "scale(0.94)";
-                      }}
-                      onPointerUp={(e) => {
-                        const el = e.currentTarget as HTMLElement;
-                        el.style.transition = "transform 0.13s ease-out";
-                        el.style.transform = "";
-                      }}
-                      onPointerCancel={(e) => {
-                        const el = e.currentTarget as HTMLElement;
-                        el.style.transition = "transform 0.13s ease-out";
-                        el.style.transform = "";
-                      }}
-                      onPointerLeave={(e) => {
-                        const el = e.currentTarget as HTMLElement;
-                        el.style.transition = "transform 0.13s ease-out";
-                        el.style.transform = "";
-                      }}
-                      onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000)}>
-                      <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt={`Avatar ${item.id}`} loading="lazy" />
+                    <AvatarTile key={item.id} onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000)}>
+                      <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt="" loading="lazy" />
                     </AvatarTile>
                   ))}
                 </NFTGrid>
