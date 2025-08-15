@@ -1362,7 +1362,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
 
     const showReactionAtOpponentSide = isWatchOnly ? isOpponentSide : true;
 
-    if (currentTime - lastReactionTime > 5000) {
+    if (isWatchOnly || currentTime - lastReactionTime > 5000) {
       if (match.reaction.kind === "sticker") {
         playSounds([Sound.EmoteReceived]);
         showVideoReaction(showReactionAtOpponentSide, match.reaction.variation);
