@@ -1356,15 +1356,18 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
   Board.updateEmojiIfNeeded(match.emojiId.toString(), isOpponentSide);
   setupPlayerId(matchPlayerUid, isOpponentSide);
 
-  if (!isWatchOnly && match.reaction && match.reaction.uuid && !processedVoiceReactions.has(match.reaction.uuid)) {
+  if (match.reaction && match.reaction.uuid && !processedVoiceReactions.has(match.reaction.uuid)) {
     processedVoiceReactions.add(match.reaction.uuid);
     const currentTime = Date.now();
+
+    const showReactionAtOpponentSide = isWatchOnly ? isOpponentSide : true;
+
     if (currentTime - lastReactionTime > 5000) {
       if (match.reaction.kind === "sticker") {
         playSounds([Sound.EmoteReceived]);
-        showVideoReaction(true, match.reaction.variation);
+        showVideoReaction(showReactionAtOpponentSide, match.reaction.variation);
       } else {
-        showVoiceReactionText(match.reaction.kind, true);
+        showVoiceReactionText(match.reaction.kind, showReactionAtOpponentSide);
         playReaction(match.reaction);
       }
       lastReactionTime = currentTime;
