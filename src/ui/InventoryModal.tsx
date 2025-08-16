@@ -11,7 +11,7 @@ const InventoryOverlay = styled(ModalOverlay)`
 
 const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
   background-color: var(--inventoryModalBackground);
-  padding: 24px;
+  padding: 24px 0;
   user-select: none;
   outline: none;
   aspect-ratio: 1 / 1;
@@ -171,7 +171,8 @@ const NFTGridContainer = styled.div`
   overscroll-behavior: contain;
   touch-action: pan-y;
   -ms-touch-action: pan-y;
-  padding: 48px 0 56px 0;
+  padding: 48px 24px 56px 24px;
+  box-sizing: border-box;
 
   &::-webkit-scrollbar {
     display: none;
