@@ -73,7 +73,6 @@ let dimmingOverlay: SVGElement | undefined;
 let opponentNameText: SVGElement | undefined;
 let playerNameText: SVGElement | undefined;
 let opponentScoreText: SVGElement | undefined;
-let titleTextElement: SVGElement | undefined;
 
 let playerScoreText: SVGElement | undefined;
 let opponentTimer: SVGElement | undefined;
@@ -1518,11 +1517,6 @@ const updateLayout = () => {
 
     const placeholder = isOpponent ? opponentAvatarPlaceholder! : playerAvatarPlaceholder!;
     SVG.updateCircle(placeholder, offsetX + avatarSize / 2, y + avatarSize / 2, avatarSize / 3);
-
-    if (isOpponent) {
-      titleTextElement!.setAttribute("font-size", (32 * multiplicator).toString());
-      SVG.setOrigin(titleTextElement!, 5.5, y + avatarSize * 0.65);
-    }
   }
 
   if (instructionsContainerElement && talkingDude) {
@@ -1558,14 +1552,6 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
 
   playerSideMetadata.emojiId = playerEmojiId;
   opponentSideMetadata.emojiId = opponentEmojiId;
-
-  titleTextElement = document.createElementNS(SVG.ns, "text");
-  SVG.setFill(titleTextElement, colors.scoreText);
-  SVG.setOpacity(titleTextElement, 0.69);
-  titleTextElement.setAttribute("font-weight", "270");
-  titleTextElement.textContent = "";
-  titleTextElement.setAttribute("text-anchor", "middle");
-  controlsLayer?.append(titleTextElement);
 
   for (const isOpponent of [true, false]) {
     const numberText = document.createElementNS(SVG.ns, "text");
