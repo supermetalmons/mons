@@ -8,6 +8,7 @@
   --color-gray-23: #232323;
   --color-gray-33: #333333;
   --color-gray-44: #444444;
+  --color-gray-44-70: rgba(68, 68, 68, 0.7);
   --color-gray-42: #424242;
   --color-gray-69: #696969;
   --color-gray-55: #555555;
@@ -17,6 +18,7 @@
   --color-gray-fb: #fbfbfb;
   --color-gray-f0: #f0f0f0;
   --color-gray-e0: #e0e0e0;
+  --color-gray-e0-70: rgba(224, 224, 224, 0.7);
   --color-gray-d0: #d0d0d0;
   --color-gray-dd: #dddddd;
   --color-gray-f9de: #f9f9f9de;
