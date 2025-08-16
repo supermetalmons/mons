@@ -1360,9 +1360,11 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
     processedVoiceReactions.add(match.reaction.uuid);
     const currentTime = Date.now();
 
-    const showReactionAtOpponentSide = isWatchOnly ? isOpponentSide : true;
+    const watchOnlyAllowed = isWatchOnly ? didSetWhiteProcessedMovesCount && didSetBlackProcessedMovesCount : false;
+    const regularAllowed = isWatchOnly ? false : currentTime - lastReactionTime > 5000;
 
-    if (isWatchOnly || currentTime - lastReactionTime > 5000) {
+    if (watchOnlyAllowed || regularAllowed) {
+      const showReactionAtOpponentSide = isWatchOnly ? isOpponentSide : true;
       if (match.reaction.kind === "sticker") {
         playSounds([Sound.EmoteReceived]);
         showVideoReaction(showReactionAtOpponentSide, match.reaction.variation);
