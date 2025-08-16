@@ -160,7 +160,7 @@ const LoadingText = styled.div`
 
 const NFTGridContainer = styled.div`
   overflow-y: auto;
-  overflow-x: hidden;
+  overflow-x: visible;
   margin-top: 0;
   flex: 1 1 auto;
   min-height: 140px;
@@ -185,6 +185,7 @@ const NFTGrid = styled.div`
   gap: 10px;
   width: 100%;
   padding-right: 0;
+  overflow: visible;
 `;
 
 const NFTNameContainer = styled.div`
@@ -220,6 +221,7 @@ const AvatarImage = styled.img`
 const AvatarTile = styled(NFTNameContainer)`
   position: relative;
   padding: 0;
+  overflow: visible;
   transition: transform 0.13s ease-out, box-shadow 0.13s ease-out;
   will-change: transform;
   -webkit-tap-highlight-color: transparent;
@@ -255,6 +257,30 @@ const AvatarTile = styled(NFTNameContainer)`
     &:active::after {
       opacity: 0.12;
     }
+  }
+`;
+
+const CountIndicator = styled.div<{ count: number }>`
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  background: var(--color-gray-e0-70);
+  color: var(--color-black);
+  font-size: 0.63rem;
+  font-weight: 500;
+  padding: 2px 4px;
+  border-radius: 6px;
+  min-width: 12px;
+  height: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  backdrop-filter: blur(2px);
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--color-gray-44-70);
+    color: var(--color-white);
   }
 `;
 
@@ -337,6 +363,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
                   {avatars.map((item) => (
                     <AvatarTile key={item.id} onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000)}>
                       <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt="" loading="lazy" />
+                      {item.count > 1 && <CountIndicator count={item.count}>{item.count}</CountIndicator>}
                     </AvatarTile>
                   ))}
                 </NFTGrid>
