@@ -47,9 +47,12 @@ const OverlayPanel = styled.div`
 
 const TopOverlay = styled(OverlayPanel)`
   top: 24px;
+  left: 0;
+  right: 0;
   justify-content: space-between;
   background-color: var(--inventoryModalBackground);
   position: absolute;
+  padding: 0 24px;
 
   &::after {
     content: "";
@@ -72,9 +75,12 @@ const TopOverlay = styled(OverlayPanel)`
 
 const BottomOverlay = styled(OverlayPanel)`
   bottom: 24px;
+  left: 0;
+  right: 0;
   justify-content: flex-end;
   background-color: var(--inventoryModalBackground);
   position: absolute;
+  padding: 0 24px;
 
   &::before {
     content: "";
