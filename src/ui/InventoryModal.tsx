@@ -367,7 +367,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
               <NFTGridContainer>
                 <NFTGrid>
                   {avatars.map((item) => (
-                    <AvatarTile key={item.id} onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000)}>
+                    <AvatarTile key={item.id} onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000, item.count >= 3 ? "rainbow" : "")}>
                       <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt="" loading="lazy" />
                       {item.count > 1 && <CountIndicator count={item.count}>{item.count}</CountIndicator>}
                     </AvatarTile>

@@ -1393,8 +1393,9 @@ async function updateUndoButton() {
   }
 }
 
-export function setOwnershipVerifiedIdCardEmoji(id: number) {
+export function setOwnershipVerifiedIdCardEmoji(id: number, aura: string) {
   const oldEmojiId = storage.getPlayerEmojiId("1");
+  // TODO: use aura argument and pass it further
   updateContent("emoji", id, oldEmojiId);
 }
 
