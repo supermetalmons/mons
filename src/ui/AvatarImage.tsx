@@ -31,7 +31,7 @@ const RainbowBackground = styled.div<{ hasRainbowAura: boolean }>`
   ${({ hasRainbowAura }) =>
     hasRainbowAura &&
     css`
-      background: conic-gradient(${r[1]} 0deg, ${r[2]} 51.428deg, ${r[3]} 102.857deg, ${r[4]} 154.286deg, ${r[5]} 205.714deg, ${r[6]} 257.143deg, ${r[7]} 308.571deg, ${r[1]} 360deg);
+      background: conic-gradient(${r[1]} 0deg, ${r[2]} 45deg, ${r[3]} 90deg, ${r[4]} 135deg, ${r[5]} 180deg, ${r[6]} 225deg, #0066FF 270deg, ${r[7]} 315deg, ${r[1]} 360deg);
       animation: ${rainbowRotation} 20s linear infinite;
       filter: blur(2px);
       opacity: 0.8;
