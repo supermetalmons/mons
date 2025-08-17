@@ -1,25 +1,28 @@
 import React from "react";
 import styled, { keyframes, css } from "styled-components";
+import { colors } from "../content/boardStyles";
+
+const r = colors.rainbow;
 
 const rainbowAura = keyframes`
   0% { 
-    background: radial-gradient(circle at center, #ff0000 0%, #ff8000 20%, #ffff00 40%, #80ff00 60%, #00ff00 80%, #00ff80 100%);
+    background: radial-gradient(circle at center, ${r[1]} 0%, ${r[2]} 20%, ${r[3]} 40%, ${r[4]} 60%, ${r[5]} 80%, ${r[6]} 100%);
     transform: rotate(0deg);
   }
   25% { 
-    background: radial-gradient(circle at center, #ff8000 0%, #ffff00 20%, #80ff00 40%, #00ff00 60%, #00ff80 80%, #0080ff 100%);
+    background: radial-gradient(circle at center, ${r[2]} 0%, ${r[3]} 20%, ${r[4]} 40%, ${r[5]} 60%, ${r[6]} 80%, ${r[7]} 100%);
     transform: rotate(90deg);
   }
   50% { 
-    background: radial-gradient(circle at center, #ffff00 0%, #80ff00 20%, #00ff00 40%, #00ff80 60%, #0080ff 80%, #8000ff 100%);
+    background: radial-gradient(circle at center, ${r[3]} 0%, ${r[4]} 20%, ${r[5]} 40%, ${r[6]} 60%, ${r[7]} 80%, ${r[1]} 100%);
     transform: rotate(180deg);
   }
   75% { 
-    background: radial-gradient(circle at center, #80ff00 0%, #00ff00 20%, #00ff80 40%, #0080ff 60%, #8000ff 80%, #ff0080 100%);
+    background: radial-gradient(circle at center, ${r[4]} 0%, ${r[5]} 20%, ${r[6]} 40%, ${r[7]} 60%, ${r[1]} 80%, ${r[2]} 100%);
     transform: rotate(270deg);
   }
   100% { 
-    background: radial-gradient(circle at center, #00ff00 0%, #00ff80 20%, #0080ff 40%, #8000ff 60%, #ff0080 80%, #ff0000 100%);
+    background: radial-gradient(circle at center, ${r[5]} 0%, ${r[6]} 20%, ${r[7]} 40%, ${r[1]} 60%, ${r[2]} 80%, ${r[3]} 100%);
     transform: rotate(360deg);
   }
 `;
@@ -72,7 +75,6 @@ interface AvatarImageProps {
 }
 
 export const AvatarImage: React.FC<AvatarImageProps> = ({ src, alt, rainbowAura = false, loading = "lazy" }) => {
-
   return (
     <AvatarContainer hasRainbowAura={rainbowAura}>
       {rainbowAura && <RainbowBackground hasRainbowAura={rainbowAura} />}
