@@ -4,6 +4,7 @@ import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton } fr
 import { fetchNftsForStoredAddresses } from "../services/nftService";
 import { vvvLogoBase64 } from "../content/uiAssets";
 import { setOwnershipVerifiedIdCardEmoji } from "./ShinyCard";
+import { AvatarImage } from "./AvatarImage";
 
 const InventoryOverlay = styled(ModalOverlay)`
   user-select: none;
@@ -213,17 +214,6 @@ const NFTNameContainer = styled.div`
   }
 `;
 
-const AvatarImage = styled.img`
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  border-radius: 2px;
-  pointer-events: none;
-  -webkit-user-drag: none;
-  user-drag: none;
-`;
-
 const AvatarTile = styled(NFTNameContainer)`
   position: relative;
   padding: 0;
@@ -367,8 +357,8 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
               <NFTGridContainer>
                 <NFTGrid>
                   {avatars.map((item) => (
-                    <AvatarTile key={item.id} onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000)}>
-                      <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt="" loading="lazy" />
+                    <AvatarTile key={item.id} onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000, item.count >= 3 ? "rainbow" : "")}>
+                      <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt="" rainbowAura={item.count >= 3} loading="lazy" />
                       {item.count > 1 && <CountIndicator count={item.count}>{item.count}</CountIndicator>}
                     </AvatarTile>
                   ))}
