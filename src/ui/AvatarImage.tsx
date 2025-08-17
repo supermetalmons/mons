@@ -32,18 +32,16 @@ const AvatarContainer = styled.div<{ hasRainbowAura: boolean }>`
   width: 100%;
   height: 100%;
   border-radius: 2px;
-  overflow: hidden;
 `;
 
 const RainbowBackground = styled.div<{ hasRainbowAura: boolean }>`
   position: absolute;
-  inset: 0;
   border-radius: 50%;
   z-index: 1;
-  width: 80%;
-  height: 80%;
-  top: 10%;
-  left: 10%;
+  width: 110%;
+  height: 110%;
+  top: -5%;
+  left: -5%;
 
   ${({ hasRainbowAura }) =>
     hasRainbowAura &&
