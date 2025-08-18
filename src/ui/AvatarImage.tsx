@@ -4,7 +4,7 @@ import { colors } from "../content/boardStyles";
 
 const r = colors.rainbow;
 
-const GlobalProps = createGlobalStyle`
+const RainbowAuraStyles = createGlobalStyle`
   @property --a {
     syntax: "<angle>";
     inherits: false;
@@ -77,7 +77,7 @@ interface AvatarImageProps {
 export const AvatarImage: React.FC<AvatarImageProps> = ({ src, alt, rainbowAura = false, loading = "lazy" }) => {
   return (
     <AvatarContainer hasRainbowAura={rainbowAura}>
-      <GlobalProps />
+      <RainbowAuraStyles />
       {rainbowAura && <Aura $src={src} $active={rainbowAura} />}
       <StyledAvatarImage src={src} alt={alt} loading={loading} />
     </AvatarContainer>
