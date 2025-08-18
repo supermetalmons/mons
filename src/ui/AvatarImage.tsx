@@ -1,16 +1,19 @@
 import React from "react";
-import styled, { keyframes, css } from "styled-components";
+import styled, { keyframes, css, createGlobalStyle } from "styled-components";
 import { colors } from "../content/boardStyles";
 
 const r = colors.rainbow;
 
-const rainbowRotation = keyframes`
-  0% {
-    transform: rotate(0deg);
+const GlobalProps = createGlobalStyle`
+  @property --a {
+    syntax: "<angle>";
+    inherits: false;
+    initial-value: 0deg;
   }
-  100% {
-    transform: rotate(360deg);
-  }
+`;
+
+const hueSpin = keyframes`
+  to { --a: 360deg; }
 `;
 
 const AvatarContainer = styled.div<{ hasRainbowAura: boolean }>`
@@ -18,31 +21,44 @@ const AvatarContainer = styled.div<{ hasRainbowAura: boolean }>`
   width: 100%;
   height: 100%;
   border-radius: 2px;
+  overflow: visible;
 `;
 
-const RainbowBackground = styled.div<{ hasRainbowAura: boolean }>`
+const Aura = styled.div<{ $src: string; $active: boolean }>`
   position: absolute;
-  border-radius: 50%;
+  inset: -10%;
   z-index: 1;
-  width: 110%;
-  height: 110%;
-  top: -5%;
-  left: -5%;
-  ${({ hasRainbowAura }) =>
-    hasRainbowAura &&
+  pointer-events: none;
+  transform: scale(1.11);
+
+  ${({ $active }) =>
+    $active &&
     css`
-      background: conic-gradient(${r[1]} 0deg, ${r[2]} 45deg, ${r[3]} 90deg, ${r[4]} 135deg, ${r[5]} 180deg, ${r[6]} 225deg, #0066ff 270deg, ${r[7]} 315deg, ${r[1]} 360deg);
-      animation: ${rainbowRotation} 20s linear infinite;
-      filter: blur(2px);
-      opacity: 0.8;
+      --a: 0deg;
+      background: conic-gradient(from var(--a), ${r[1]} 0deg, ${r[2]} 45deg, ${r[3]} 90deg, ${r[4]} 135deg, ${r[5]} 180deg, ${r[6]} 225deg, #0066ff 270deg, ${r[7]} 315deg, ${r[1]} 360deg);
+      -webkit-mask-image: var(--mask-url);
+      -webkit-mask-repeat: no-repeat;
+      -webkit-mask-position: center;
+      -webkit-mask-size: contain;
+      mask-image: var(--mask-url);
+      mask-repeat: no-repeat;
+      mask-position: center;
+      mask-size: contain;
+      filter: blur(12px);
+      opacity: 1;
+      animation: ${hueSpin} 10s linear infinite;
     `}
+
+  ${({ $src }) => css`
+    --mask-url: url(${$src});
+  `}
 `;
 
 const StyledAvatarImage = styled.img`
   position: relative;
   width: 100%;
   height: 100%;
-  object-fit: cover;
+  object-fit: contain;
   display: block;
   border-radius: 2px;
   pointer-events: none;
@@ -61,7 +77,8 @@ interface AvatarImageProps {
 export const AvatarImage: React.FC<AvatarImageProps> = ({ src, alt, rainbowAura = false, loading = "lazy" }) => {
   return (
     <AvatarContainer hasRainbowAura={rainbowAura}>
-      {rainbowAura && <RainbowBackground hasRainbowAura={rainbowAura} />}
+      <GlobalProps />
+      {rainbowAura && <Aura $src={src} $active={rainbowAura} />}
       <StyledAvatarImage src={src} alt={alt} loading={loading} />
     </AvatarContainer>
   );
