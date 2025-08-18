@@ -51,9 +51,10 @@ interface AvatarImageProps {
   alt: string;
   rainbowAura?: boolean;
   loading?: "lazy" | "eager";
+  onLoad?: () => void;
 }
 
-export const AvatarImage: React.FC<AvatarImageProps> = ({ src, alt, rainbowAura = false, loading = "lazy" }) => {
+export const AvatarImage: React.FC<AvatarImageProps> = ({ src, alt, rainbowAura = false, loading = "lazy", onLoad }) => {
   return (
     <AvatarContainer>
       {rainbowAura && (
@@ -61,7 +62,7 @@ export const AvatarImage: React.FC<AvatarImageProps> = ({ src, alt, rainbowAura 
           <RainbowInner src={src} />
         </RainbowBackground>
       )}
-      <StyledAvatarImage src={src} alt={alt} loading={loading} />
+      <StyledAvatarImage src={src} alt={alt} loading={loading} onLoad={onLoad} />
     </AvatarContainer>
   );
 };
