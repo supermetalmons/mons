@@ -23,12 +23,12 @@ const AvatarContainer = styled.div`
 const RainbowBackground = styled.div`
   position: absolute;
   z-index: 1;
-  width: 130%;
-  height: 130%;
-  top: -15%;
-  left: -15%;
+  width: 163%;
+  height: 163%;
+  top: -17%;
+  left: -17%;
   filter: blur(2px);
-  opacity: 0.8;
+  opacity: 0.99;
 `;
 
 const RainbowInner = styled.div<{ src: string }>`
