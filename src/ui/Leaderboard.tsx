@@ -92,6 +92,7 @@ const LeaderboardTable = styled.table`
       width: 11.5%;
       font-size: 0;
       text-align: left;
+      overflow: visible;
 
       @media (max-width: 320px) {
         width: 13%;
