@@ -25,7 +25,7 @@ const RainbowBackground = styled.div`
 const RainbowInner = styled.div<{ src: string }>`
   position: absolute;
   inset: 0;
-  background: conic-gradient(${r[1]} 0deg, ${r[2]} 45deg, ${r[3]} 90deg, ${r[4]} 135deg, ${r[5]} 180deg, ${r[6]} 225deg, #0066ff 270deg, ${r[7]} 315deg, ${r[1]} 360deg);
+  background: conic-gradient(${r[7]} 0deg, #0066ff 45deg, ${r[6]} 90deg, ${r[5]} 135deg, ${r[4]} 180deg, ${r[3]} 225deg, ${r[2]} 270deg, ${r[1]} 315deg, ${r[7]} 360deg);
   -webkit-mask-image: url(${({ src }) => src});
   mask-image: url(${({ src }) => src});
   mask-size: 76.923% 76.923%;
