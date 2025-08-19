@@ -14,10 +14,10 @@ const AvatarContainer = styled.div`
 const RainbowBackground = styled.div`
   position: absolute;
   z-index: 1;
-  width: 163%;
-  height: 163%;
-  top: -17%;
-  left: -17%;
+  width: 127%;
+  height: 127%;
+  top: -13.5%;
+  left: -13.5%;
   filter: blur(2px);
   opacity: 0.99;
 `;
@@ -28,8 +28,8 @@ const RainbowInner = styled.div<{ src: string }>`
   background: conic-gradient(${r[7]} 0deg, #0066ff 45deg, ${r[6]} 90deg, ${r[5]} 135deg, ${r[4]} 180deg, ${r[3]} 225deg, ${r[2]} 270deg, ${r[1]} 315deg, ${r[7]} 360deg);
   -webkit-mask-image: url(${({ src }) => src});
   mask-image: url(${({ src }) => src});
-  mask-size: 76.923% 76.923%;
-  mask-position: 11.538% 11.538%;
+  mask-size: 100% 100%;
+  mask-position: 50% 50%;
   mask-repeat: no-repeat;
 `;
 
