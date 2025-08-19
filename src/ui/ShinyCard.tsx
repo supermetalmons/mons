@@ -8,6 +8,7 @@ import { didClickAndChangePlayerEmoji, didUpdateIdCardMons } from "../game/board
 import { STICKER_ADD_PROMPTS_FRAMES, STICKER_PATHS } from "../utils/stickers";
 import { PlayerProfile } from "../connection/connectionModels";
 import { MonType, getMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes, getMonsIndexes } from "../utils/namedMons";
+import { attachRainbowAura, setRainbowAuraMask, showRainbowAura, hideRainbowAura } from "./rainbowAura";
 
 const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
 const IDLE_SHINE_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
@@ -45,6 +46,8 @@ export let showsShinyCardSomewhere = false;
 let isEditingMode = false;
 
 let ownEmojiImg: HTMLImageElement | null;
+let ownEmojiAuraInner: HTMLDivElement | null;
+let ownEmojiAuraBackground: HTMLDivElement | null;
 let ownBgImg: HTMLImageElement | null;
 let ownSubtitleElement: HTMLElement | null;
 let nameElement: HTMLElement | null;
@@ -67,6 +70,8 @@ let enterEditingMode: (() => void) | null = null;
 let handlePointerLeave: (() => void) | null = null;
 
 let displayedOtherPlayerProfile: PlayerProfile | null;
+
+const ENABLE_EMOJI_RAINBOW_AURA = false;
 
 const cardStyles = `
 @media screen and (max-width: 420px){
@@ -244,7 +249,18 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   emojiPlaceholder.style.backgroundColor = "gray";
   emojiPlaceholder.style.opacity = "0.1";
   emojiPlaceholder.style.pointerEvents = "none";
+  emojiPlaceholder.style.zIndex = "0";
+
+  let rainbowAuraBackground: HTMLDivElement | null = null;
+  let rainbowAuraInner: HTMLDivElement | null = null;
+  if (ENABLE_EMOJI_RAINBOW_AURA) {
+    const attached = attachRainbowAura(emojiContainer);
+    rainbowAuraBackground = attached.background;
+    rainbowAuraInner = attached.inner;
+  }
   emojiContainer.appendChild(emojiPlaceholder);
+  ownEmojiAuraInner = rainbowAuraInner;
+  ownEmojiAuraBackground = rainbowAuraBackground;
 
   const emojiImg = document.createElement("img");
   emojiImg.style.position = "absolute";
@@ -254,14 +270,18 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   emojiImg.style.left = "0";
   emojiImg.style.userSelect = "none";
   emojiImg.style.visibility = "hidden";
+  emojiImg.style.zIndex = "2";
   emojiImg.draggable = false;
   emojiImg.src = `https://assets.mons.link/emojipack_hq/${isOtherPlayer ? getEmojiIdForProfile(profile) : storage.getPlayerEmojiId("1")}.webp`;
   emojiImg.onerror = () => {
     emojiImg.style.visibility = "hidden";
+    if (rainbowAuraBackground) hideRainbowAura(rainbowAuraBackground);
   };
   emojiImg.onload = () => {
     emojiImg.style.visibility = "visible";
     emojiPlaceholder.style.visibility = "hidden";
+    if (rainbowAuraInner) setRainbowAuraMask(rainbowAuraInner, emojiImg.src);
+    if (rainbowAuraBackground) showRainbowAura(rainbowAuraBackground);
   };
   emojiContainer.appendChild(emojiImg);
   emojiContainer.addEventListener("click", (e) => {
@@ -1291,6 +1311,12 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       didClickAndChangePlayerEmoji(newId, newSmallEmojiUrl);
       if (ownEmojiImg) {
         ownEmojiImg.src = `https://assets.mons.link/emojipack_hq/${newId}.webp`;
+      }
+      if (ownEmojiAuraInner) {
+        setRainbowAuraMask(ownEmojiAuraInner, `https://assets.mons.link/emojipack_hq/${newId}.webp`);
+      }
+      if (ownEmojiAuraBackground) {
+        showRainbowAura(ownEmojiAuraBackground);
       }
       break;
     case "bg":

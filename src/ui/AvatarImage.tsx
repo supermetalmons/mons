@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { colors } from "../content/boardStyles";
-
-const r = colors.rainbow;
+import { getRainbowAuraGradient, RAINBOW_AURA_SCALE, RAINBOW_AURA_OFFSET_PERCENT, RAINBOW_AURA_BLUR_PX, RAINBOW_AURA_OPACITY, RAINBOW_MASK_CSS_BASE } from "./rainbowAura";
 
 const AvatarContainer = styled.div`
   position: relative;
@@ -14,23 +12,21 @@ const AvatarContainer = styled.div`
 const RainbowBackground = styled.div`
   position: absolute;
   z-index: 1;
-  width: 127%;
-  height: 127%;
-  top: -13.5%;
-  left: -13.5%;
-  filter: blur(2px);
-  opacity: 0.99;
+  width: ${RAINBOW_AURA_SCALE * 100}%;
+  height: ${RAINBOW_AURA_SCALE * 100}%;
+  top: ${RAINBOW_AURA_OFFSET_PERCENT}%;
+  left: ${RAINBOW_AURA_OFFSET_PERCENT}%;
+  filter: blur(${RAINBOW_AURA_BLUR_PX}px);
+  opacity: ${RAINBOW_AURA_OPACITY};
 `;
 
 const RainbowInner = styled.div<{ src: string }>`
   position: absolute;
   inset: 0;
-  background: conic-gradient(${r[7]} 0deg, #0066ff 45deg, ${r[6]} 90deg, ${r[5]} 135deg, ${r[4]} 180deg, ${r[3]} 225deg, ${r[2]} 270deg, ${r[1]} 315deg, ${r[7]} 360deg);
+  background: ${getRainbowAuraGradient()};
+  ${RAINBOW_MASK_CSS_BASE}
   -webkit-mask-image: url(${({ src }) => src});
   mask-image: url(${({ src }) => src});
-  mask-size: 100% 100%;
-  mask-position: 50% 50%;
-  mask-repeat: no-repeat;
 `;
 
 const StyledAvatarImage = styled.img`
