@@ -77,6 +77,7 @@ export const updateBoardComponentForBoardStyleChange = () => {
 export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void;
 export let showVideoReaction: (opponent: boolean, stickerId: number) => void;
 export let showRaibowAura: (visible: boolean, url: string, opponent: boolean) => void;
+export let updateAuraForAvatarElement: (opponent: boolean, avatarElement: SVGElement) => void;
 
 const BoardComponent: React.FC = () => {
   const [opponentVideoId, setOpponentVideoId] = useState<number | null>(null);
@@ -98,6 +99,29 @@ const BoardComponent: React.FC = () => {
   const playerAuraContainerRef = useRef<HTMLDivElement | null>(null);
   const opponentAuraRefs = useRef<{ background: HTMLDivElement; inner: HTMLDivElement } | null>(null);
   const playerAuraRefs = useRef<{ background: HTMLDivElement; inner: HTMLDivElement } | null>(null);
+  const auraLayerRef = useRef<HTMLDivElement | null>(null);
+  const opponentWrapperRef = useRef<HTMLDivElement | null>(null);
+  const playerWrapperRef = useRef<HTMLDivElement | null>(null);
+
+  updateAuraForAvatarElement = (opponent: boolean, avatarElement: SVGElement) => {
+    const rect = avatarElement.getBoundingClientRect();
+    const wrapper = opponent ? opponentWrapperRef.current : playerWrapperRef.current;
+    const targets = opponent ? opponentAuraRefs : playerAuraRefs;
+    const container = opponent ? opponentAuraContainerRef.current : playerAuraContainerRef.current;
+    if (wrapper) {
+      wrapper.style.position = "absolute";
+      wrapper.style.left = `${rect.left}px`;
+      wrapper.style.top = `${rect.top}px`;
+      wrapper.style.width = `${rect.width}px`;
+      wrapper.style.height = `${rect.height}px`;
+      wrapper.style.pointerEvents = "none";
+      wrapper.style.touchAction = "none";
+      wrapper.style.zIndex = "10";
+    }
+    if (!targets.current && container) {
+      targets.current = attachRainbowAura(container);
+    }
+  };
 
   const handleConfirmClick = () => {
     if (overlayState.ok) {
@@ -211,6 +235,30 @@ const BoardComponent: React.FC = () => {
         <g id="effectsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
       </svg>
 
+      <div ref={auraLayerRef} style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 5 }}>
+        <div ref={opponentWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10 }}>
+          <div
+            style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+            ref={(div) => {
+              opponentAuraContainerRef.current = div;
+              if (div && !opponentAuraRefs.current) {
+                opponentAuraRefs.current = attachRainbowAura(div);
+              }
+            }}
+          />
+        </div>
+        <div ref={playerWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10 }}>
+          <div
+            style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+            ref={(div) => {
+              playerAuraContainerRef.current = div;
+              if (div && !playerAuraRefs.current) {
+                playerAuraRefs.current = attachRainbowAura(div);
+              }
+            }}
+          />
+        </div>
+      </div>
       <div
         className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}
         style={{
@@ -238,12 +286,6 @@ const BoardComponent: React.FC = () => {
               width: "100%",
               height: "100%",
               pointerEvents: "none",
-            }}
-            ref={(div) => {
-              opponentAuraContainerRef.current = div;
-              if (div && !opponentAuraRefs.current) {
-                opponentAuraRefs.current = attachRainbowAura(div);
-              }
             }}
           />
           {opponentVideoVisible && opponentVideoId !== null && (
@@ -292,12 +334,6 @@ const BoardComponent: React.FC = () => {
               width: "100%",
               height: "100%",
               pointerEvents: "none",
-            }}
-            ref={(div) => {
-              playerAuraContainerRef.current = div;
-              if (div && !playerAuraRefs.current) {
-                playerAuraRefs.current = attachRainbowAura(div);
-              }
             }}
           />
           {playerVideoVisible && playerVideoId !== null && (

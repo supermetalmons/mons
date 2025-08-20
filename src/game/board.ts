@@ -9,7 +9,7 @@ import { hasNavigationPopupVisible, didNotDismissAnythingWithOutsideTapJustNow, 
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername, getStashedPlayerProfile } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
-import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange, showRaibowAura } from "../ui/BoardComponent";
+import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange, showRaibowAura, updateAuraForAvatarElement } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
 import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
@@ -1520,6 +1520,9 @@ const updateLayout = () => {
 
     const avatar = isOpponent ? opponentAvatar! : playerAvatar!;
     SVG.setFrame(avatar, offsetX, y, avatarSize, avatarSize);
+    try {
+      updateAuraForAvatarElement(isOpponent, avatar);
+    } catch {}
 
     const placeholder = isOpponent ? opponentAvatarPlaceholder! : playerAvatarPlaceholder!;
     SVG.updateCircle(placeholder, offsetX + avatarSize / 2, y + avatarSize / 2, avatarSize / 3);
