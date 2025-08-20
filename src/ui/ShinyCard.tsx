@@ -71,7 +71,7 @@ let handlePointerLeave: (() => void) | null = null;
 
 let displayedOtherPlayerProfile: PlayerProfile | null;
 
-const ENABLE_EMOJI_RAINBOW_AURA = false;
+const ENABLE_EMOJI_RAINBOW_AURA = true;
 
 const cardStyles = `
 @media screen and (max-width: 420px){

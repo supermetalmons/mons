@@ -356,7 +356,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
                     <td>
                       {!isEmojiLoaded && <EmojiPlaceholder />}
                       <EmojiImage style={{ display: isEmojiLoaded ? "flex" : "none" }}>
-                        <AvatarImage src={emojiUrl} alt="" rainbowAura={false} loading="eager" onLoad={() => handleEmojiLoad(emojiKey)} />
+                        <AvatarImage src={emojiUrl} alt="" rainbowAura={true} loading="eager" onLoad={() => handleEmojiLoad(emojiKey)} />
                         {/* TODO: pass aura value */}
                       </EmojiImage>
                     </td>

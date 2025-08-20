@@ -5,6 +5,7 @@ import { go } from "../game/gameController";
 import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../content/boardStyles";
 import { isMobile } from "../utils/misc";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
+import { attachRainbowAura, hideRainbowAura as hideAuraDom, setRainbowAuraMask, showRainbowAura as showAuraDom } from "./rainbowAura";
 
 const CircularButton = styled.button`
   width: 50%;
@@ -75,6 +76,7 @@ export const updateBoardComponentForBoardStyleChange = () => {
 
 export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void;
 export let showVideoReaction: (opponent: boolean, stickerId: number) => void;
+export let showRaibowAura: (visible: boolean, url: string, opponent: boolean) => void;
 
 const BoardComponent: React.FC = () => {
   const [opponentVideoId, setOpponentVideoId] = useState<number | null>(null);
@@ -92,6 +94,10 @@ const BoardComponent: React.FC = () => {
   const [isGridVisible, setIsGridVisible] = useState(!isCustomPictureBoardEnabled());
   const [shouldIncludePangchiuImage, setShouldIncludePangchiuImage] = useState(isCustomPictureBoardEnabled());
   const [overlayState, setOverlayState] = useState<{ blurry: boolean; svgElement: SVGElement | null; withConfirmAndCancelButtons: boolean; ok?: () => void; cancel?: () => void }>({ blurry: true, svgElement: null, withConfirmAndCancelButtons: false });
+  const opponentAuraContainerRef = useRef<HTMLDivElement | null>(null);
+  const playerAuraContainerRef = useRef<HTMLDivElement | null>(null);
+  const opponentAuraRefs = useRef<{ background: HTMLDivElement; inner: HTMLDivElement } | null>(null);
+  const playerAuraRefs = useRef<{ background: HTMLDivElement; inner: HTMLDivElement } | null>(null);
 
   const handleConfirmClick = () => {
     if (overlayState.ok) {
@@ -123,6 +129,23 @@ const BoardComponent: React.FC = () => {
 
   setTopBoardOverlayVisible = (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => {
     setOverlayState({ blurry, svgElement, withConfirmAndCancelButtons, ok, cancel });
+  };
+
+  showRaibowAura = (visible: boolean, url: string, opponent: boolean) => {
+    const targets = opponent ? opponentAuraRefs : playerAuraRefs;
+    const container = opponent ? opponentAuraContainerRef.current : playerAuraContainerRef.current;
+    if (!targets.current && container) {
+      targets.current = attachRainbowAura(container);
+    }
+    if (!targets.current) return;
+    const isShown = targets.current.background.style.visibility !== "hidden";
+    if (isShown) {
+      hideAuraDom(targets.current.background);
+    }
+    setRainbowAuraMask(targets.current.inner, url);
+    if (visible) {
+      showAuraDom(targets.current.background);
+    }
   };
 
   useEffect(() => {
@@ -206,6 +229,23 @@ const BoardComponent: React.FC = () => {
             pointerEvents: "none",
             touchAction: "none",
           }}>
+          <div
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+            }}
+            ref={(div) => {
+              opponentAuraContainerRef.current = div;
+              if (div && !opponentAuraRefs.current) {
+                opponentAuraRefs.current = attachRainbowAura(div);
+              }
+            }}
+          />
           {opponentVideoVisible && opponentVideoId !== null && (
             <video
               key={opponentVideoId}
@@ -243,6 +283,23 @@ const BoardComponent: React.FC = () => {
             pointerEvents: "none",
             touchAction: "none",
           }}>
+          <div
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+            }}
+            ref={(div) => {
+              playerAuraContainerRef.current = div;
+              if (div && !playerAuraRefs.current) {
+                playerAuraRefs.current = attachRainbowAura(div);
+              }
+            }}
+          />
           {playerVideoVisible && playerVideoId !== null && (
             <video
               key={playerVideoId}

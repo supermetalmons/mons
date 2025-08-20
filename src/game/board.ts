@@ -9,7 +9,7 @@ import { hasNavigationPopupVisible, didNotDismissAnythingWithOutsideTapJustNow, 
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername, getStashedPlayerProfile } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
-import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
+import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange, showRaibowAura } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
 import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
@@ -612,17 +612,23 @@ export function updateEmojiIfNeeded(newEmojiId: string, isOpponentSide: boolean)
     if (!opponentAvatar) return;
     opponentSideMetadata.emojiId = newEmojiId;
     SVG.setEmojiImageUrl(opponentAvatar, newEmojiUrl);
+    showRaibowAura(true, newEmojiUrl, true);
   } else {
     if (!playerAvatar) return;
     playerSideMetadata.emojiId = newEmojiId;
     SVG.setEmojiImageUrl(playerAvatar, newEmojiUrl);
+    showRaibowAura(true, newEmojiUrl, false);
   }
 }
 
 export function showRandomEmojisForLoopMode() {
   if (!opponentAvatar || !playerAvatar) return;
-  SVG.setEmojiImageUrl(playerAvatar, emojis.getRandomEmojiUrl()[1]);
-  SVG.setEmojiImageUrl(opponentAvatar, emojis.getRandomEmojiUrl()[1]);
+  const [, playerUrl] = emojis.getRandomEmojiUrl();
+  const [, opponentUrl] = emojis.getRandomEmojiUrl();
+  SVG.setEmojiImageUrl(playerAvatar, playerUrl);
+  SVG.setEmojiImageUrl(opponentAvatar, opponentUrl);
+  showRaibowAura(true, playerUrl, false);
+  showRaibowAura(true, opponentUrl, true);
 }
 
 export function showOpponentAsBotPlayer() {
@@ -1653,6 +1659,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     SVG.setOpacity(placeholder, 0.23);
     const emojiUrl = isOpponent ? opponentEmojiUrl : playerEmojiUrl;
     SVG.setEmojiImageUrl(avatar, emojiUrl);
+    showRaibowAura(true, emojiUrl, isOpponent);
     avatar.onload = () => {
       SVG.setHidden(placeholder, true);
       doNotShowAvatarPlaceholderAgain(isOpponent);
@@ -1747,6 +1754,7 @@ function pickAndDisplayDifferentEmoji(avatar: SVGElement, isOpponent: boolean) {
     const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(opponentSideMetadata.emojiId);
     opponentSideMetadata.emojiId = newId;
     SVG.setEmojiImageUrl(avatar, newEmojiUrl);
+    showRaibowAura(true, newEmojiUrl, true);
   } else {
     const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(playerSideMetadata.emojiId);
     didClickAndChangePlayerEmoji(newId, newEmojiUrl);
@@ -1761,6 +1769,7 @@ export function didClickAndChangePlayerEmoji(newId: string, newEmojiUrl: string)
     playerSideMetadata.emojiId = newId;
     if (playerAvatar) {
       SVG.setEmojiImageUrl(playerAvatar, newEmojiUrl);
+      showRaibowAura(true, newEmojiUrl, false);
     }
   }
 }
