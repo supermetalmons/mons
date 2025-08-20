@@ -200,6 +200,31 @@ const BoardComponent: React.FC = () => {
 
   return (
     <>
+      <div ref={auraLayerRef} style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }}>
+        <div ref={opponentWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10 }}>
+          <div
+            style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+            ref={(div) => {
+              opponentAuraContainerRef.current = div;
+              if (div && !opponentAuraRefs.current) {
+                opponentAuraRefs.current = attachRainbowAura(div);
+              }
+            }}
+          />
+        </div>
+        <div ref={playerWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10 }}>
+          <div
+            style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+            ref={(div) => {
+              playerAuraContainerRef.current = div;
+              if (div && !playerAuraRefs.current) {
+                playerAuraRefs.current = attachRainbowAura(div);
+              }
+            }}
+          />
+        </div>
+      </div>
+
       <svg xmlns="http://www.w3.org/2000/svg" className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`} viewBox="0 0 1100 1410" shapeRendering="crispEdges" overflow="visible">
         {isGridVisible ? (
           <g id="boardBackgroundLayer">
@@ -235,30 +260,6 @@ const BoardComponent: React.FC = () => {
         <g id="effectsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
       </svg>
 
-      <div ref={auraLayerRef} style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 5 }}>
-        <div ref={opponentWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10 }}>
-          <div
-            style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
-            ref={(div) => {
-              opponentAuraContainerRef.current = div;
-              if (div && !opponentAuraRefs.current) {
-                opponentAuraRefs.current = attachRainbowAura(div);
-              }
-            }}
-          />
-        </div>
-        <div ref={playerWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10 }}>
-          <div
-            style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
-            ref={(div) => {
-              playerAuraContainerRef.current = div;
-              if (div && !playerAuraRefs.current) {
-                playerAuraRefs.current = attachRainbowAura(div);
-              }
-            }}
-          />
-        </div>
-      </div>
       <div
         className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}
         style={{
