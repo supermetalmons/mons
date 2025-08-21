@@ -10,6 +10,7 @@ exports.verifyEthAddress = onCall(async (request) => {
   const message = request.data.message;
   const signature = request.data.signature;
   let requestEmoji = request.data.emoji ?? 1;
+  let requestAura = request.data.aura ?? null;
 
   const siweMessage = new SiweMessage(message);
   const fields = await siweMessage.verify({ signature });
@@ -20,6 +21,7 @@ exports.verifyEthAddress = onCall(async (request) => {
     let responseAddress = address;
     let profileId = null;
     let emoji = null;
+    let aura = null;
     let username = null;
     let rating = null;
     let nonce = null;
@@ -44,6 +46,7 @@ exports.verifyEthAddress = onCall(async (request) => {
           logins: [uid],
           custom: {
             emoji: requestEmoji,
+            aura: requestAura,
           },
         });
         await profileIdRef.set(docRef.id);
@@ -60,7 +63,7 @@ exports.verifyEthAddress = onCall(async (request) => {
         }
         profileId = userDoc.id;
         emoji = userData.custom?.emoji ?? requestEmoji;
-        // TODO: add aura
+        aura = userData.custom?.aura || null;
         rating = userData.rating || null;
         nonce = userData.nonce || null;
         cardBackgroundId = userData.custom?.cardBackgroundId || null;
@@ -77,7 +80,7 @@ exports.verifyEthAddress = onCall(async (request) => {
       responseAddress = userData.eth;
       profileId = userDoc.id;
       emoji = userData.custom?.emoji ?? requestEmoji;
-      // TODO: add aura
+      aura = userData.custom?.aura || null;
       rating = userData.rating || null;
       nonce = userData.nonce || null;
       cardBackgroundId = userData.custom?.cardBackgroundId || null;
@@ -99,7 +102,7 @@ exports.verifyEthAddress = onCall(async (request) => {
       address: responseAddress,
       profileId: profileId,
       emoji: emoji,
-      // TODO: add aura
+      aura: aura,
       username: username,
       rating: rating,
       nonce: nonce,

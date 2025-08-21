@@ -2,7 +2,7 @@ export interface Match {
   version: number;
   color: string;
   emojiId: number;
-  // TODO: add aura
+  aura?: string;
   fen: string;
   status: string;
   flatMovesString: string;
@@ -31,7 +31,7 @@ export interface PlayerProfile {
   rating: number | undefined;
   win: boolean | undefined;
   emoji: number;
-  // TODO: add aura
+  aura?: string;
   cardBackgroundId: number | undefined;
   cardSubtitleId: number | undefined;
   profileMons: string | undefined;

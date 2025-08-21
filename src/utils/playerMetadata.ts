@@ -15,7 +15,7 @@ export type PlayerMetadata = {
   solAddress: string | undefined;
   ens: string | undefined;
   emojiId: string;
-  // TODO: add aura
+  aura?: string;
   voiceReactionText: string;
   voiceReactionDate: number | undefined;
   rating: number | undefined;
@@ -30,7 +30,7 @@ export const newEmptyPlayerMetadata = (): PlayerMetadata => ({
   solAddress: undefined,
   ens: undefined,
   emojiId: "",
-  // TODO: add aura
+  aura: "",
   voiceReactionText: "",
   voiceReactionDate: undefined,
   rating: undefined,
@@ -131,7 +131,7 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
         if (profile.emoji !== undefined && own) {
           syncTutorialProgress(profile.completedProblemIds ?? [], profile.isTutorialCompleted ?? false);
           storage.setPlayerEmojiId(profile.emoji.toString());
-          // TODO: add aura
+          storage.setPlayerEmojiAura(profile.aura ?? "");
           storage.setUsername(profile.username ?? "");
           storage.setPlayerRating(profile.rating ?? 1500);
           storage.setPlayerNonce(profile.nonce ?? -1);
@@ -154,10 +154,8 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
 
           updateProfileDisplayName(profile.username ?? "", storage.getEthAddress(""), storage.getSolAddress(""));
           if (!isWatchOnly) {
-            // TODO: add aura
             updateEmojiIfNeeded(profile.emoji.toString(), false);
           }
-          // TODO: add aura
           connection.updateEmoji(profile.emoji, true);
         }
         onSuccess();
