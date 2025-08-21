@@ -60,6 +60,7 @@ exports.verifyEthAddress = onCall(async (request) => {
         }
         profileId = userDoc.id;
         emoji = userData.custom?.emoji ?? requestEmoji;
+        // TODO: add aura
         rating = userData.rating || null;
         nonce = userData.nonce || null;
         cardBackgroundId = userData.custom?.cardBackgroundId || null;
@@ -76,6 +77,7 @@ exports.verifyEthAddress = onCall(async (request) => {
       responseAddress = userData.eth;
       profileId = userDoc.id;
       emoji = userData.custom?.emoji ?? requestEmoji;
+      // TODO: add aura
       rating = userData.rating || null;
       nonce = userData.nonce || null;
       cardBackgroundId = userData.custom?.cardBackgroundId || null;
@@ -97,6 +99,7 @@ exports.verifyEthAddress = onCall(async (request) => {
       address: responseAddress,
       profileId: profileId,
       emoji: emoji,
+      // TODO: add aura
       username: username,
       rating: rating,
       nonce: nonce,

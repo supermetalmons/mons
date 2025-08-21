@@ -16,7 +16,9 @@ exports.automatch = onCall(async (request) => {
   const rating = profile.rating ?? "";
   const name = getDisplayNameFromAddress(username, ethAddress, solAddress, rating);
   const emojiId = request.data.emojiId;
+  // TODO: add aura
 
+  // TODO: add aura
   const automatchAttemptResult = await attemptAutomatch(uid, rating, username, ethAddress, solAddress, profileId, name, emojiId, 0);
   return automatchAttemptResult;
 });
@@ -48,6 +50,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
         version: controllerVersion,
         color: existingAutomatchData.hostColor === "white" ? "black" : "white",
         emojiId: emojiId,
+        // TODO: add aura
         fen: initialFen,
         status: "",
         flatMovesString: "",
@@ -60,9 +63,11 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
           const matchMessage = `${existingPlayerName} vs. ${name} https://mons.link/${firstAutomatchId}`;
           sendBotMessage(matchMessage).catch(console.error);
         } else {
+          // TODO: add aura
           return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, retryCount + 1);
         }
       } catch (error) {
+        // TODO: add aura
         return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, retryCount + 1);
       }
     }
@@ -85,6 +90,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
     const match = {
       version: controllerVersion,
       color: hostColor,
+      // TODO: add aura
       emojiId: emojiId,
       fen: initialFen,
       status: "",

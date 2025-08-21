@@ -210,6 +210,7 @@ class Connection {
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
         emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(doc.id),
+        // TODO: add aura
         cardBackgroundId: data.custom?.cardBackgroundId,
         cardSubtitleId: data.custom?.cardSubtitleId,
         profileMons: data.custom?.profileMons,
@@ -239,6 +240,7 @@ class Connection {
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
         emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(doc.id),
+        // TODO: add aura
         cardBackgroundId: data.custom?.cardBackgroundId,
         cardSubtitleId: data.custom?.cardSubtitleId,
         profileMons: data.custom?.profileMons,
@@ -359,6 +361,7 @@ class Connection {
       version: controllerVersion,
       color: newColor,
       emojiId,
+      // TODO: add aura
       fen: initialFen,
       status: "",
       flatMovesString: "",
@@ -478,6 +481,7 @@ class Connection {
     try {
       await this.ensureAuthenticated();
       const emojiId = getPlayersEmojiId();
+      // TODO: add aura
       const automatch = httpsCallable(this.functions, "automatch");
       const response = await automatch({ emojiId });
       return response.data;
@@ -506,6 +510,7 @@ class Connection {
     }
     if (!this.myMatch) return;
     this.myMatch.emojiId = newId;
+    // TODO: add aura
     set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${this.matchId}/emojiId`), newId).catch((error) => {
       console.error("Error updating emoji:", error);
     });
@@ -518,6 +523,7 @@ class Connection {
 
   public updateStoredEmoji(newId: number): void {
     this.updateCustomField("emoji", newId);
+    // TODO: add aura
   }
 
   public updateCardBackgroundId(newId: number): void {
@@ -784,6 +790,7 @@ class Connection {
 
         const color = opponentsMatchData.color === "black" ? "white" : "black";
         const emojiId = getPlayersEmojiId();
+        // TODO: add aura
         const match: Match = {
           version: controllerVersion,
           color,
@@ -824,6 +831,7 @@ class Connection {
       version: controllerVersion,
       color: hostColor,
       emojiId,
+      // TODO: add aura
       fen: initialFen,
       status: "",
       flatMovesString: "",

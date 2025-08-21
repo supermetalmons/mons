@@ -73,6 +73,8 @@ export const storage = {
     setItem(STORAGE_KEYS.IS_EXPERIMENTING_WITH_SPRITES, value);
   },
 
+  // TODO: add aura
+
   getPlayerEmojiId: (defaultValue: string): string => {
     return getItem(STORAGE_KEYS.PLAYER_EMOJI_ID, defaultValue);
   },

@@ -15,6 +15,7 @@ interface VerifyResponse {
   username: string;
   address: string;
   emoji: number;
+  // TODO: add aura
   rating?: number;
   nonce?: number;
   win?: number;
@@ -40,6 +41,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
     profileMons: undefined,
     cardStickers: undefined,
     emoji,
+    // TODO: add aura
     completedProblemIds: undefined,
     isTutorialCompleted: undefined,
   };
@@ -63,6 +65,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   storage.setUsername(res.username);
   storage.setProfileId(profileId);
   storage.setPlayerEmojiId(emoji.toString());
+  // TODO: add aura
   storage.setLoginId(res.uid);
 
   if (addressKind === "eth") {
