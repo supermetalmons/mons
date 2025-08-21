@@ -71,8 +71,6 @@ let handlePointerLeave: (() => void) | null = null;
 
 let displayedOtherPlayerProfile: PlayerProfile | null;
 
-const ENABLE_EMOJI_RAINBOW_AURA = true;
-
 const cardStyles = `
 @media screen and (max-width: 420px){
   [data-shiny-card="true"]{ right:9px !important; }
@@ -253,7 +251,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
 
   let rainbowAuraBackground: HTMLDivElement | null = null;
   let rainbowAuraInner: HTMLDivElement | null = null;
-  if (ENABLE_EMOJI_RAINBOW_AURA) {
+  {
     const attached = attachRainbowAura(emojiContainer);
     rainbowAuraBackground = attached.background;
     rainbowAuraInner = attached.inner;
@@ -281,7 +279,14 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     emojiImg.style.visibility = "visible";
     emojiPlaceholder.style.visibility = "hidden";
     if (rainbowAuraInner) setRainbowAuraMask(rainbowAuraInner, emojiImg.src);
-    if (rainbowAuraBackground) showRainbowAura(rainbowAuraBackground);
+    if (rainbowAuraBackground) {
+      const currentAura = isOtherPlayer ? profile?.aura ?? "" : storage.getPlayerEmojiAura("");
+      if (currentAura === "rainbow") {
+        showRainbowAura(rainbowAuraBackground);
+      } else {
+        hideRainbowAura(rainbowAuraBackground);
+      }
+    }
   };
   emojiContainer.appendChild(emojiImg);
   emojiContainer.addEventListener("click", (e) => {
@@ -315,8 +320,9 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     }
 
     const oldEmojiId = storage.getPlayerEmojiId("1");
+    const oldAura = storage.getPlayerEmojiAura("");
     const playerEmojiId = getIncrementedEmojiId(oldEmojiId);
-    updateContent("emoji", playerEmojiId, oldEmojiId);
+    updateContent("emojiAndAura", { emojiId: playerEmojiId, aura: "" }, { emojiId: oldEmojiId, aura: oldAura });
   });
   ownEmojiImg = emojiImg;
 
@@ -1306,17 +1312,24 @@ async function didClickMonImage(monType: string) {
 
 async function updateContent(contentType: string, newId: any, oldId: any | null) {
   switch (contentType) {
-    case "emoji":
-      const newSmallEmojiUrl = emojis.getEmojiUrl(newId);
-      didClickAndChangePlayerEmoji(newId, newSmallEmojiUrl);
+    case "emojiAndAura":
+      const nextEmojiId = newId?.emojiId;
+      const nextAura = newId?.aura ?? "";
+      const nextSmallEmojiUrl = emojis.getEmojiUrl(nextEmojiId);
+      storage.setPlayerEmojiAura(nextAura);
+      didClickAndChangePlayerEmoji(nextEmojiId, nextSmallEmojiUrl);
       if (ownEmojiImg) {
-        ownEmojiImg.src = `https://assets.mons.link/emojipack_hq/${newId}.webp`;
+        ownEmojiImg.src = `https://assets.mons.link/emojipack_hq/${nextEmojiId}.webp`;
       }
       if (ownEmojiAuraInner) {
-        setRainbowAuraMask(ownEmojiAuraInner, `https://assets.mons.link/emojipack_hq/${newId}.webp`);
+        setRainbowAuraMask(ownEmojiAuraInner, `https://assets.mons.link/emojipack_hq/${nextEmojiId}.webp`);
       }
       if (ownEmojiAuraBackground) {
-        showRainbowAura(ownEmojiAuraBackground);
+        if (nextAura === "rainbow") {
+          showRainbowAura(ownEmojiAuraBackground);
+        } else {
+          hideRainbowAura(ownEmojiAuraBackground);
+        }
       }
       break;
     case "bg":
@@ -1421,8 +1434,8 @@ async function updateUndoButton() {
 
 export function setOwnershipVerifiedIdCardEmoji(id: number, aura: string) {
   const oldEmojiId = storage.getPlayerEmojiId("1");
-  // TODO: use aura argument and pass it further
-  updateContent("emoji", id, oldEmojiId);
+  const oldAura = storage.getPlayerEmojiAura("");
+  updateContent("emojiAndAura", { emojiId: id, aura }, { emojiId: oldEmojiId, aura: oldAura });
 }
 
 async function didClickIdCardEditUndoButton() {
