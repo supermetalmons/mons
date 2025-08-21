@@ -121,6 +121,12 @@ const BoardComponent: React.FC = () => {
     if (!targets.current && container) {
       targets.current = attachRainbowAura(container);
     }
+    if (targets.current) {
+      const isHidden = avatarElement.style.display === "none" || avatarElement.style.visibility === "hidden";
+      if (isHidden) {
+        hideAuraDom(targets.current.background);
+      }
+    }
   };
 
   const handleConfirmClick = () => {
@@ -162,13 +168,11 @@ const BoardComponent: React.FC = () => {
       targets.current = attachRainbowAura(container);
     }
     if (!targets.current) return;
-    const isShown = targets.current.background.style.visibility !== "hidden";
-    if (isShown) {
-      hideAuraDom(targets.current.background);
-    }
     setRainbowAuraMask(targets.current.inner, url);
     if (visible) {
       showAuraDom(targets.current.background);
+    } else {
+      hideAuraDom(targets.current.background);
     }
   };
 

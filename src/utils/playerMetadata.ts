@@ -2,7 +2,7 @@ import { connection } from "../connection/connection";
 import { PlayerProfile } from "../connection/connectionModels";
 import glicko2 from "glicko2";
 import { storage } from "./storage";
-import { updateEmojiIfNeeded } from "../game/board";
+import { updateEmojiAndAuraIfNeeded } from "../game/board";
 import { isWatchOnly } from "../game/gameController";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
 import { syncTutorialProgress } from "../content/problems";
@@ -154,7 +154,7 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
 
           updateProfileDisplayName(profile.username ?? "", storage.getEthAddress(""), storage.getSolAddress(""));
           if (!isWatchOnly) {
-            updateEmojiIfNeeded(profile.emoji.toString(), false);
+            updateEmojiAndAuraIfNeeded(profile.emoji.toString(), profile.aura, false);
           }
           connection.updateEmoji(profile.emoji, true, profile.aura ?? "");
         }

@@ -1,5 +1,5 @@
 import { storage } from "../utils/storage";
-import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
+import { setupLoggedInPlayerProfile, updateEmojiAndAuraIfNeeded } from "../game/board";
 import { connection } from "./connection";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
 import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
@@ -86,7 +86,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   connection.forceTokenRefresh();
 
   if (!isWatchOnly) {
-    updateEmojiIfNeeded(emoji.toString(), false);
+    updateEmojiAndAuraIfNeeded(emoji.toString(), res.aura ?? undefined, false);
   }
 
   handleFreshlySignedInProfileInGameIfNeeded(profileId);

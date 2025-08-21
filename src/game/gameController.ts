@@ -1048,8 +1048,6 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     showVoiceReactionButton(true);
   }
 
-  Board.updateEmojiIfNeeded(match.emojiId.toString(), isWatchOnly ? match.color === "black" : true);
-
   if (isWatchOnly) {
     playerSideColor = MonsWeb.Color.White;
     setupPlayerId(matchPlayerUid, match.color === "black");
@@ -1061,6 +1059,8 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   if (!isWatchOnly) {
     Board.setBoardFlipped(match.color === "white");
   }
+
+  Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, isWatchOnly ? match.color === "black" : true);
 
   if (!isReconnect || (isReconnect && !game.is_later_than(match.fen)) || isWatchOnly) {
     const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
@@ -1353,9 +1353,9 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
     return;
   }
 
-  const isOpponentSide = !isWatchOnly || match.color === "black";
-  Board.updateEmojiIfNeeded(match.emojiId.toString(), isOpponentSide);
+  const isOpponentSide = isWatchOnly ? match.color === "black" : true;
   setupPlayerId(matchPlayerUid, isOpponentSide);
+  Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, isOpponentSide);
 
   if (match.reaction && match.reaction.uuid && !processedVoiceReactions.has(match.reaction.uuid)) {
     processedVoiceReactions.add(match.reaction.uuid);
@@ -1438,7 +1438,7 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   verifyMovesIfNeeded(matchId, match.flatMovesString, match.color);
   const movesCount = movesCountOfMatch(match);
   setProcessedMovesCountForColor(match.color, movesCount);
-  Board.updateEmojiIfNeeded(match.emojiId.toString(), false);
+  Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, false);
 
   if (match.status === "surrendered") {
     handleResignStatus(true, match.color);
