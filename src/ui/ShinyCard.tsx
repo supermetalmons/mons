@@ -1317,7 +1317,7 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       const nextAura = newId?.aura ?? "";
       const nextSmallEmojiUrl = emojis.getEmojiUrl(nextEmojiId);
       storage.setPlayerEmojiAura(nextAura);
-      didClickAndChangePlayerEmoji(nextEmojiId, nextSmallEmojiUrl);
+      didClickAndChangePlayerEmoji(nextEmojiId, nextSmallEmojiUrl, nextAura);
       if (ownEmojiImg) {
         ownEmojiImg.src = `https://assets.mons.link/emojipack_hq/${nextEmojiId}.webp`;
       }
