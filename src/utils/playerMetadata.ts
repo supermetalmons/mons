@@ -156,7 +156,7 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
           if (!isWatchOnly) {
             updateEmojiIfNeeded(profile.emoji.toString(), false);
           }
-          connection.updateEmoji(profile.emoji, true);
+          connection.updateEmoji(profile.emoji, true, profile.aura ?? "");
         }
         onSuccess();
       })

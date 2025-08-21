@@ -445,8 +445,9 @@ export function canChangeEmoji(opponents: boolean): boolean {
   }
 }
 
-export function sendPlayerEmojiUpdate(newId: number) {
-  connection.updateEmoji(newId, false);
+export function sendPlayerEmojiUpdate(newId: number, aura?: string) {
+  const auraToSend = aura ?? storage.getPlayerEmojiAura("");
+  connection.updateEmoji(newId, false, auraToSend);
 }
 
 export function isPlayerSideTurn(): boolean {

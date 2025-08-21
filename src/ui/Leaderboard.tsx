@@ -258,6 +258,7 @@ interface LeaderboardEntry {
   win: boolean;
   id: string;
   emoji: number;
+  aura?: string;
   ensName?: string | null;
   username?: string | null;
   profile: PlayerProfile;
@@ -290,6 +291,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
             win: entry.win ?? true,
             id: entry.id,
             emoji: entry.emoji,
+            aura: entry.aura,
             ensName: null,
             profile: entry,
           }));
@@ -356,8 +358,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
                     <td>
                       {!isEmojiLoaded && <EmojiPlaceholder />}
                       <EmojiImage style={{ display: isEmojiLoaded ? "flex" : "none" }}>
-                        <AvatarImage src={emojiUrl} alt="" rainbowAura={true} loading="eager" onLoad={() => handleEmojiLoad(emojiKey)} />
-                        {/* TODO: pass aura value */}
+                        <AvatarImage src={emojiUrl} alt="" rainbowAura={!!row.aura} loading="eager" onLoad={() => handleEmojiLoad(emojiKey)} />
                       </EmojiImage>
                     </td>
                     <td>{getDisplayName(row)}</td>

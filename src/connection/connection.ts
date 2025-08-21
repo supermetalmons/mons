@@ -210,7 +210,7 @@ class Connection {
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
         emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(doc.id),
-        // TODO: add aura
+        aura: data.custom?.aura,
         cardBackgroundId: data.custom?.cardBackgroundId,
         cardSubtitleId: data.custom?.cardSubtitleId,
         profileMons: data.custom?.profileMons,
@@ -240,7 +240,7 @@ class Connection {
         nonce: data.nonce === undefined ? -1 : data.nonce,
         win: data.win ?? true,
         emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(doc.id),
-        // TODO: add aura
+        aura: data.custom?.aura,
         cardBackgroundId: data.custom?.cardBackgroundId,
         cardSubtitleId: data.custom?.cardSubtitleId,
         profileMons: data.custom?.profileMons,
@@ -271,7 +271,8 @@ class Connection {
       const verifySolanaAddressFunction = httpsCallable(this.functions, "verifySolanaAddress");
       const emojiString = storage.getPlayerEmojiId("1");
       const emoji = parseInt(emojiString);
-      const response = await verifySolanaAddressFunction({ address, signature, emoji });
+      const aura = storage.getPlayerEmojiAura("");
+      const response = await verifySolanaAddressFunction({ address, signature, emoji, aura });
       return response.data;
     } catch (error) {
       console.error("Error verifying Solana address:", error);
@@ -297,7 +298,8 @@ class Connection {
       const verifyEthAddressFunction = httpsCallable(this.functions, "verifyEthAddress");
       const emojiString = storage.getPlayerEmojiId("1");
       const emoji = parseInt(emojiString);
-      const response = await verifyEthAddressFunction({ message, signature, emoji });
+      const aura = storage.getPlayerEmojiAura("");
+      const response = await verifyEthAddressFunction({ message, signature, emoji, aura });
       return response.data;
     } catch (error) {
       console.error("Error verifying Ethereum address:", error);
@@ -361,7 +363,7 @@ class Connection {
       version: controllerVersion,
       color: newColor,
       emojiId,
-      // TODO: add aura
+      aura: storage.getPlayerEmojiAura(""),
       fen: initialFen,
       status: "",
       flatMovesString: "",
@@ -481,9 +483,9 @@ class Connection {
     try {
       await this.ensureAuthenticated();
       const emojiId = getPlayersEmojiId();
-      // TODO: add aura
+      const aura = storage.getPlayerEmojiAura("");
       const automatch = httpsCallable(this.functions, "automatch");
-      const response = await automatch({ emojiId });
+      const response = await automatch({ emojiId, aura });
       return response.data;
     } catch (error) {
       console.error("Error calling automatch:", error);
@@ -504,16 +506,17 @@ class Connection {
     }
   }
 
-  public updateEmoji(newId: number, matchOnly: boolean): void {
+  public updateEmoji(newId: number, matchOnly: boolean, aura: string | null | undefined): void {
     if (!matchOnly) {
-      this.updateStoredEmoji(newId);
+      this.updateStoredEmoji(newId, aura);
     }
     if (!this.myMatch) return;
     this.myMatch.emojiId = newId;
-    // TODO: add aura
+    this.myMatch.aura = aura ?? undefined;
     set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${this.matchId}/emojiId`), newId).catch((error) => {
       console.error("Error updating emoji:", error);
     });
+    if (this.myMatch.aura !== undefined) set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${this.matchId}/aura`), this.myMatch.aura).catch(() => {});
   }
 
   private getLocalProfileId(): string | null {
@@ -521,9 +524,9 @@ class Connection {
     return id === "" ? null : id;
   }
 
-  public updateStoredEmoji(newId: number): void {
+  public updateStoredEmoji(newId: number, aura: string | null | undefined): void {
     this.updateCustomField("emoji", newId);
-    // TODO: add aura
+    if (aura !== undefined && aura !== null) this.updateCustomField("aura", aura);
   }
 
   public updateCardBackgroundId(newId: number): void {
@@ -790,11 +793,12 @@ class Connection {
 
         const color = opponentsMatchData.color === "black" ? "white" : "black";
         const emojiId = getPlayersEmojiId();
-        // TODO: add aura
+        const aura = storage.getPlayerEmojiAura("");
         const match: Match = {
           version: controllerVersion,
           color,
           emojiId,
+          aura,
           fen: initialFen,
           status: "",
           flatMovesString: "",
@@ -831,7 +835,7 @@ class Connection {
       version: controllerVersion,
       color: hostColor,
       emojiId,
-      // TODO: add aura
+      aura: storage.getPlayerEmojiAura(""),
       fen: initialFen,
       status: "",
       flatMovesString: "",
