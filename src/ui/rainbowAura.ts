@@ -18,10 +18,10 @@ export function buildRainbowMaskImageCss(url: string): string {
 
 export function createRainbowAuraElements(): { background: HTMLDivElement; inner: HTMLDivElement } {
   const background = document.createElement("div");
-  background.style.cssText = `position:absolute;z-index:1;width:${RAINBOW_AURA_SCALE * 100}%;height:${RAINBOW_AURA_SCALE * 100}%;top:${RAINBOW_AURA_OFFSET_PERCENT}%;left:${RAINBOW_AURA_OFFSET_PERCENT}%;filter:blur(${RAINBOW_AURA_BLUR_PX}px);opacity:${RAINBOW_AURA_OPACITY};pointer-events:none;visibility:hidden;`;
+  background.style.cssText = `position:absolute;z-index:1;width:${RAINBOW_AURA_SCALE * 100}%;height:${RAINBOW_AURA_SCALE * 100}%;top:${RAINBOW_AURA_OFFSET_PERCENT}%;left:${RAINBOW_AURA_OFFSET_PERCENT}%;filter:blur(${RAINBOW_AURA_BLUR_PX}px);opacity:${RAINBOW_AURA_OPACITY};pointer-events:none;visibility:hidden;overflow:visible;`;
 
   const inner = document.createElement("div");
-  inner.style.cssText = `position:absolute;inset:0;background:${getRainbowAuraGradient()};${RAINBOW_MASK_CSS_BASE}pointer-events:none;`;
+  inner.style.cssText = `position:absolute;inset:0;background:${getRainbowAuraGradient()};${RAINBOW_MASK_CSS_BASE}pointer-events:none;overflow:visible;`;
 
   background.appendChild(inner);
   return { background, inner };

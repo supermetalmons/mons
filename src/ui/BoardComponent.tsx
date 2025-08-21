@@ -200,8 +200,8 @@ const BoardComponent: React.FC = () => {
 
   return (
     <>
-      <div ref={auraLayerRef} style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0 }}>
-        <div ref={opponentWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10 }}>
+      <div ref={auraLayerRef} style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "visible" }}>
+        <div ref={opponentWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10, overflow: "visible" }}>
           <div
             style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
             ref={(div) => {
@@ -212,7 +212,7 @@ const BoardComponent: React.FC = () => {
             }}
           />
         </div>
-        <div ref={playerWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10 }}>
+        <div ref={playerWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10, overflow: "visible" }}>
           <div
             style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
             ref={(div) => {
