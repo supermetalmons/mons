@@ -2,6 +2,7 @@ export interface Match {
   version: number;
   color: string;
   emojiId: number;
+  aura?: string;
   fen: string;
   status: string;
   flatMovesString: string;
@@ -30,6 +31,7 @@ export interface PlayerProfile {
   rating: number | undefined;
   win: boolean | undefined;
   emoji: number;
+  aura?: string;
   cardBackgroundId: number | undefined;
   cardSubtitleId: number | undefined;
   profileMons: string | undefined;

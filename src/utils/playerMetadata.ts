@@ -2,7 +2,7 @@ import { connection } from "../connection/connection";
 import { PlayerProfile } from "../connection/connectionModels";
 import glicko2 from "glicko2";
 import { storage } from "./storage";
-import { updateEmojiIfNeeded } from "../game/board";
+import { updateEmojiAndAuraIfNeeded } from "../game/board";
 import { isWatchOnly } from "../game/gameController";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
 import { syncTutorialProgress } from "../content/problems";
@@ -15,6 +15,7 @@ export type PlayerMetadata = {
   solAddress: string | undefined;
   ens: string | undefined;
   emojiId: string;
+  aura?: string;
   voiceReactionText: string;
   voiceReactionDate: number | undefined;
   rating: number | undefined;
@@ -29,6 +30,7 @@ export const newEmptyPlayerMetadata = (): PlayerMetadata => ({
   solAddress: undefined,
   ens: undefined,
   emojiId: "",
+  aura: "",
   voiceReactionText: "",
   voiceReactionDate: undefined,
   rating: undefined,
@@ -129,6 +131,7 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
         if (profile.emoji !== undefined && own) {
           syncTutorialProgress(profile.completedProblemIds ?? [], profile.isTutorialCompleted ?? false);
           storage.setPlayerEmojiId(profile.emoji.toString());
+          storage.setPlayerEmojiAura(profile.aura ?? "");
           storage.setUsername(profile.username ?? "");
           storage.setPlayerRating(profile.rating ?? 1500);
           storage.setPlayerNonce(profile.nonce ?? -1);
@@ -151,9 +154,9 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
 
           updateProfileDisplayName(profile.username ?? "", storage.getEthAddress(""), storage.getSolAddress(""));
           if (!isWatchOnly) {
-            updateEmojiIfNeeded(profile.emoji.toString(), false);
+            updateEmojiAndAuraIfNeeded(profile.emoji.toString(), profile.aura, false);
           }
-          connection.updateEmoji(profile.emoji, true);
+          connection.updateEmoji(profile.emoji, true, profile.aura ?? "");
         }
         onSuccess();
       })

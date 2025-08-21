@@ -1,5 +1,5 @@
 import { storage } from "../utils/storage";
-import { setupLoggedInPlayerProfile, updateEmojiIfNeeded } from "../game/board";
+import { setupLoggedInPlayerProfile, updateEmojiAndAuraIfNeeded } from "../game/board";
 import { connection } from "./connection";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
 import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
@@ -15,6 +15,7 @@ interface VerifyResponse {
   username: string;
   address: string;
   emoji: number;
+  aura?: string | null;
   rating?: number;
   nonce?: number;
   win?: number;
@@ -40,6 +41,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
     profileMons: undefined,
     cardStickers: undefined,
     emoji,
+    aura: res.aura ?? undefined,
     completedProblemIds: undefined,
     isTutorialCompleted: undefined,
   };
@@ -63,6 +65,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   storage.setUsername(res.username);
   storage.setProfileId(profileId);
   storage.setPlayerEmojiId(emoji.toString());
+  storage.setPlayerEmojiAura(res.aura ?? "");
   storage.setLoginId(res.uid);
 
   if (addressKind === "eth") {
@@ -83,7 +86,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   connection.forceTokenRefresh();
 
   if (!isWatchOnly) {
-    updateEmojiIfNeeded(emoji.toString(), false);
+    updateEmojiAndAuraIfNeeded(emoji.toString(), res.aura ?? undefined, false);
   }
 
   handleFreshlySignedInProfileInGameIfNeeded(profileId);

@@ -1,8 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { colors } from "../content/boardStyles";
-
-const r = colors.rainbow;
+import { getRainbowAuraGradient, RAINBOW_AURA_SCALE, RAINBOW_AURA_OFFSET_PERCENT, RAINBOW_AURA_BLUR_PX, RAINBOW_AURA_OPACITY, RAINBOW_MASK_CSS_BASE } from "./rainbowAura";
 
 const AvatarContainer = styled.div`
   position: relative;
@@ -14,23 +12,21 @@ const AvatarContainer = styled.div`
 const RainbowBackground = styled.div`
   position: absolute;
   z-index: 1;
-  width: 163%;
-  height: 163%;
-  top: -17%;
-  left: -17%;
-  filter: blur(2px);
-  opacity: 0.99;
+  width: ${RAINBOW_AURA_SCALE * 100}%;
+  height: ${RAINBOW_AURA_SCALE * 100}%;
+  top: ${RAINBOW_AURA_OFFSET_PERCENT}%;
+  left: ${RAINBOW_AURA_OFFSET_PERCENT}%;
+  filter: blur(${RAINBOW_AURA_BLUR_PX}px);
+  opacity: ${RAINBOW_AURA_OPACITY};
 `;
 
 const RainbowInner = styled.div<{ src: string }>`
   position: absolute;
   inset: 0;
-  background: conic-gradient(${r[7]} 0deg, #0066ff 45deg, ${r[6]} 90deg, ${r[5]} 135deg, ${r[4]} 180deg, ${r[3]} 225deg, ${r[2]} 270deg, ${r[1]} 315deg, ${r[7]} 360deg);
+  background: ${getRainbowAuraGradient()};
+  ${RAINBOW_MASK_CSS_BASE}
   -webkit-mask-image: url(${({ src }) => src});
   mask-image: url(${({ src }) => src});
-  mask-size: 76.923% 76.923%;
-  mask-position: 11.538% 11.538%;
-  mask-repeat: no-repeat;
 `;
 
 const StyledAvatarImage = styled.img`
@@ -51,9 +47,10 @@ interface AvatarImageProps {
   alt: string;
   rainbowAura?: boolean;
   loading?: "lazy" | "eager";
+  onLoad?: () => void;
 }
 
-export const AvatarImage: React.FC<AvatarImageProps> = ({ src, alt, rainbowAura = false, loading = "lazy" }) => {
+export const AvatarImage: React.FC<AvatarImageProps> = ({ src, alt, rainbowAura = false, loading = "lazy", onLoad }) => {
   return (
     <AvatarContainer>
       {rainbowAura && (
@@ -61,7 +58,7 @@ export const AvatarImage: React.FC<AvatarImageProps> = ({ src, alt, rainbowAura 
           <RainbowInner src={src} />
         </RainbowBackground>
       )}
-      <StyledAvatarImage src={src} alt={alt} loading={loading} />
+      <StyledAvatarImage src={src} alt={alt} loading={loading} onLoad={onLoad} />
     </AvatarContainer>
   );
 };

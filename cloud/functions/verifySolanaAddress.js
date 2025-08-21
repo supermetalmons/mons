@@ -11,6 +11,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
   const address = request.data.address;
   const signatureStr = request.data.signature;
   let requestEmoji = request.data.emoji ?? 1;
+  let requestAura = request.data.aura ?? null;
   const uid = request.auth.uid;
   const targetMessage = `Sign in mons.link with Solana nonce ${uid}`;
 
@@ -23,6 +24,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
     let responseAddress = address;
     let profileId = null;
     let emoji = null;
+    let aura = null;
     let username = null;
     let rating = null;
     let nonce = null;
@@ -47,6 +49,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
           logins: [uid],
           custom: {
             emoji: requestEmoji,
+            aura: requestAura,
           },
         });
         await profileIdRef.set(docRef.id);
@@ -63,6 +66,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
         }
         profileId = userDoc.id;
         emoji = userData.custom?.emoji ?? requestEmoji;
+        aura = userData.custom?.aura || null;
         rating = userData.rating || null;
         nonce = userData.nonce || null;
         cardBackgroundId = userData.custom?.cardBackgroundId || null;
@@ -79,6 +83,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
       responseAddress = userData.sol;
       profileId = userDoc.id;
       emoji = userData.custom?.emoji ?? requestEmoji;
+      aura = userData.custom?.aura || null;
       rating = userData.rating || null;
       nonce = userData.nonce || null;
       cardBackgroundId = userData.custom?.cardBackgroundId || null;
@@ -100,6 +105,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
       address: responseAddress,
       profileId: profileId,
       emoji: emoji,
+      aura: aura,
       username: username,
       rating: rating,
       nonce: nonce,

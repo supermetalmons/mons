@@ -4,6 +4,7 @@ import { resolveENS } from "../utils/ensResolver";
 import { connection } from "../connection/connection";
 import { showShinyCard } from "./ShinyCard";
 import { PlayerProfile } from "../connection/connectionModels";
+import { AvatarImage } from "./AvatarImage";
 
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
   opacity: 1;
@@ -91,6 +92,7 @@ const LeaderboardTable = styled.table`
       width: 11.5%;
       font-size: 0;
       text-align: left;
+      overflow: visible;
 
       @media (max-width: 320px) {
         width: 13%;
@@ -172,11 +174,15 @@ const RatingCell = styled.td<{ win: boolean }>`
   }
 `;
 
-const EmojiImage = styled.img`
+const EmojiImage = styled.div`
   width: 26px;
   height: 26px;
   vertical-align: middle;
   margin-left: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: visible;
 
   @media (max-width: 360px) {
     width: 24px;
@@ -194,7 +200,9 @@ const EmojiPlaceholder = styled.div`
   width: 26px;
   height: 26px;
   position: relative;
-  display: inline-block;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   vertical-align: middle;
   margin-left: 2px;
 
@@ -250,6 +258,7 @@ interface LeaderboardEntry {
   win: boolean;
   id: string;
   emoji: number;
+  aura?: string;
   ensName?: string | null;
   username?: string | null;
   profile: PlayerProfile;
@@ -282,6 +291,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
             win: entry.win ?? true,
             id: entry.id,
             emoji: entry.emoji,
+            aura: entry.aura,
             ensName: null,
             profile: entry,
           }));
@@ -347,7 +357,9 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
                     <td>{index + 1}</td>
                     <td>
                       {!isEmojiLoaded && <EmojiPlaceholder />}
-                      <EmojiImage src={emojiUrl} alt="" style={{ display: isEmojiLoaded ? "inline-block" : "none" }} onLoad={() => handleEmojiLoad(emojiKey)} />
+                      <EmojiImage style={{ display: isEmojiLoaded ? "flex" : "none" }}>
+                        <AvatarImage src={emojiUrl} alt="" rainbowAura={!!row.aura} loading="eager" onLoad={() => handleEmojiLoad(emojiKey)} />
+                      </EmojiImage>
                     </td>
                     <td>{getDisplayName(row)}</td>
                     <RatingCell win={row.win}>{row.rating}</RatingCell>

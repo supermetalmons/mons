@@ -1,7 +1,7 @@
 import { connection } from "../connection/connection";
 import { storage } from "../utils/storage";
 
-const USE_STUB_RESPONSE = false; // TODO: dev tmp
+const USE_STUB_RESPONSE = false;
 
 const inFlightRequests: Map<string, Promise<any>> = new Map();
 const responseCache: Map<string, any> = new Map();

@@ -64,6 +64,7 @@ export function useAuthStatus() {
             nonce: undefined,
             win: undefined,
             emoji: emoji,
+            aura: storage.getPlayerEmojiAura(""),
             cardBackgroundId: undefined,
             cardSubtitleId: undefined,
             profileMons: undefined,

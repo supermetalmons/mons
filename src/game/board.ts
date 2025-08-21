@@ -9,7 +9,7 @@ import { hasNavigationPopupVisible, didNotDismissAnythingWithOutsideTapJustNow, 
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername, getStashedPlayerProfile } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
-import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange } from "../ui/BoardComponent";
+import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange, showRaibowAura, updateAuraForAvatarElement } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
 import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
@@ -554,6 +554,12 @@ export function hideBoardPlayersInfo() {
   if (opponentAvatar && playerAvatar) {
     SVG.setHidden(opponentAvatar, true);
     SVG.setHidden(playerAvatar, true);
+    try {
+      const opponentUrl = emojis.getEmojiUrl(opponentSideMetadata.emojiId) || "";
+      const playerUrl = emojis.getEmojiUrl(playerSideMetadata.emojiId) || "";
+      if (opponentUrl) showRaibowAura(false, opponentUrl, true);
+      if (playerUrl) showRaibowAura(false, playerUrl, false);
+    } catch {}
   }
 
   if (playerAvatarPlaceholder && opponentAvatarPlaceholder) {
@@ -582,6 +588,16 @@ export function resetForNewGame() {
   if (opponentAvatar && playerAvatar) {
     SVG.setHidden(opponentAvatar, false);
     SVG.setHidden(playerAvatar, false);
+    try {
+      const playerUrl = emojis.getEmojiUrl(playerSideMetadata.emojiId) || "";
+      const opponentUrl = emojis.getEmojiUrl(opponentSideMetadata.emojiId) || "";
+      const playerAuraVisible = (playerSideMetadata.aura ?? storage.getPlayerEmojiAura("")) === "rainbow";
+      const opponentAuraVisible = (opponentSideMetadata.aura ?? "") === "rainbow";
+      if (playerUrl) showRaibowAura(playerAuraVisible, playerUrl, false);
+      if (opponentUrl) showRaibowAura(opponentAuraVisible, opponentUrl, true);
+      updateAuraForAvatarElement(false, playerAvatar);
+      updateAuraForAvatarElement(true, opponentAvatar);
+    } catch {}
   }
 
   if (playerAvatarPlaceholder && opponentAvatarPlaceholder) {
@@ -598,9 +614,12 @@ export function resetForNewGame() {
   cleanAllPixels();
 }
 
-export function updateEmojiIfNeeded(newEmojiId: string, isOpponentSide: boolean) {
-  const currentId = isOpponentSide ? opponentSideMetadata.emojiId : playerSideMetadata.emojiId;
-  if (currentId === newEmojiId) {
+export function updateEmojiAndAuraIfNeeded(newEmojiId: string, aura: string | undefined, isOpponentSide: boolean) {
+  const targetMetadata = isOpponentSide ? opponentSideMetadata : playerSideMetadata;
+  const currentId = targetMetadata.emojiId;
+  const newAura = isOpponentSide ? aura ?? "" : aura ?? storage.getPlayerEmojiAura("");
+  const currentAura = targetMetadata.aura ?? "";
+  if (currentId === newEmojiId && currentAura === newAura) {
     return;
   }
   const newEmojiUrl = emojis.getEmojiUrl(newEmojiId);
@@ -608,26 +627,42 @@ export function updateEmojiIfNeeded(newEmojiId: string, isOpponentSide: boolean)
     return;
   }
 
+  targetMetadata.emojiId = newEmojiId;
+  targetMetadata.aura = newAura;
+
   if (isOpponentSide) {
     if (!opponentAvatar) return;
-    opponentSideMetadata.emojiId = newEmojiId;
     SVG.setEmojiImageUrl(opponentAvatar, newEmojiUrl);
+    const visible = newAura === "rainbow";
+    showRaibowAura(visible, newEmojiUrl, true);
+    try {
+      updateAuraForAvatarElement(true, opponentAvatar);
+    } catch {}
   } else {
     if (!playerAvatar) return;
-    playerSideMetadata.emojiId = newEmojiId;
     SVG.setEmojiImageUrl(playerAvatar, newEmojiUrl);
+    const visible = newAura === "rainbow";
+    showRaibowAura(visible, newEmojiUrl, false);
+    try {
+      updateAuraForAvatarElement(false, playerAvatar);
+    } catch {}
   }
 }
 
 export function showRandomEmojisForLoopMode() {
   if (!opponentAvatar || !playerAvatar) return;
-  SVG.setEmojiImageUrl(playerAvatar, emojis.getRandomEmojiUrl()[1]);
-  SVG.setEmojiImageUrl(opponentAvatar, emojis.getRandomEmojiUrl()[1]);
+  const [, playerUrl] = emojis.getRandomEmojiUrl();
+  const [, opponentUrl] = emojis.getRandomEmojiUrl();
+  SVG.setEmojiImageUrl(playerAvatar, playerUrl);
+  SVG.setEmojiImageUrl(opponentAvatar, opponentUrl);
+  showRaibowAura((playerSideMetadata.aura ?? "") === "rainbow", playerUrl, false);
+  showRaibowAura((opponentSideMetadata.aura ?? "") === "rainbow", opponentUrl, true);
 }
 
 export function showOpponentAsBotPlayer() {
   if (!opponentAvatar) return;
   SVG.setImage(opponentAvatar, emojis.pc);
+  showRaibowAura(false, emojis.pc, true);
 }
 
 export function getPlayersEmojiId(): number {
@@ -837,6 +872,20 @@ export function didGetPlayerProfile(profile: PlayerProfile, loginId: string, own
     recalculateDisplayNames();
   });
   recalculateDisplayNames();
+
+  try {
+    const emojiId = profile.emoji?.toString();
+    const aura = profile.aura;
+    if (emojiId) {
+      const isOpponent = loginId === opponentSideMetadata.uid;
+      const isPlayer = loginId === playerSideMetadata.uid || (playerSideMetadata.uid === "" && own);
+      if (isOpponent) {
+        updateEmojiAndAuraIfNeeded(emojiId, aura, true);
+      } else if (isPlayer) {
+        updateEmojiAndAuraIfNeeded(emojiId, aura, false);
+      }
+    }
+  } catch {}
 }
 
 function renderPlayersNamesLabels() {
@@ -1514,6 +1563,9 @@ const updateLayout = () => {
 
     const avatar = isOpponent ? opponentAvatar! : playerAvatar!;
     SVG.setFrame(avatar, offsetX, y, avatarSize, avatarSize);
+    try {
+      updateAuraForAvatarElement(isOpponent, avatar);
+    } catch {}
 
     const placeholder = isOpponent ? opponentAvatarPlaceholder! : playerAvatarPlaceholder!;
     SVG.updateCircle(placeholder, offsetX + avatarSize / 2, y + avatarSize / 2, avatarSize / 3);
@@ -1653,6 +1705,16 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     SVG.setOpacity(placeholder, 0.23);
     const emojiUrl = isOpponent ? opponentEmojiUrl : playerEmojiUrl;
     SVG.setEmojiImageUrl(avatar, emojiUrl);
+    if (isOpponent) {
+      opponentSideMetadata.aura = opponentSideMetadata.aura ?? "";
+    } else {
+      playerSideMetadata.aura = storage.getPlayerEmojiAura("") ?? "";
+    }
+    const shouldShowAura = (isOpponent ? opponentSideMetadata.aura : playerSideMetadata.aura) === "rainbow";
+    showRaibowAura(shouldShowAura, emojiUrl, isOpponent);
+    try {
+      updateAuraForAvatarElement(isOpponent, avatar);
+    } catch {}
     avatar.onload = () => {
       SVG.setHidden(placeholder, true);
       doNotShowAvatarPlaceholderAgain(isOpponent);
@@ -1747,20 +1809,33 @@ function pickAndDisplayDifferentEmoji(avatar: SVGElement, isOpponent: boolean) {
     const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(opponentSideMetadata.emojiId);
     opponentSideMetadata.emojiId = newId;
     SVG.setEmojiImageUrl(avatar, newEmojiUrl);
+    const visible = (opponentSideMetadata.aura ?? "") === "rainbow";
+    showRaibowAura(visible, newEmojiUrl, true);
   } else {
     const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(playerSideMetadata.emojiId);
     didClickAndChangePlayerEmoji(newId, newEmojiUrl);
   }
 }
 
-export function didClickAndChangePlayerEmoji(newId: string, newEmojiUrl: string) {
+export function didClickAndChangePlayerEmoji(newId: string, newEmojiUrl: string, aura?: string) {
   storage.setPlayerEmojiId(newId);
-  sendPlayerEmojiUpdate(parseInt(newId));
+  if (aura !== undefined) {
+    storage.setPlayerEmojiAura(aura);
+  }
+  sendPlayerEmojiUpdate(parseInt(newId), aura);
 
   if (!isWatchOnly) {
     playerSideMetadata.emojiId = newId;
+    if (aura !== undefined) {
+      playerSideMetadata.aura = aura;
+    }
     if (playerAvatar) {
       SVG.setEmojiImageUrl(playerAvatar, newEmojiUrl);
+      const visible = (aura ?? storage.getPlayerEmojiAura("") ?? "") === "rainbow";
+      showRaibowAura(visible, newEmojiUrl, false);
+      try {
+        updateAuraForAvatarElement(false, playerAvatar);
+      } catch {}
     }
   }
 }

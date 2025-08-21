@@ -5,6 +5,7 @@ import { go } from "../game/gameController";
 import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../content/boardStyles";
 import { isMobile } from "../utils/misc";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
+import { attachRainbowAura, hideRainbowAura as hideAuraDom, setRainbowAuraMask, showRainbowAura as showAuraDom } from "./rainbowAura";
 
 const CircularButton = styled.button`
   width: 50%;
@@ -75,6 +76,8 @@ export const updateBoardComponentForBoardStyleChange = () => {
 
 export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void;
 export let showVideoReaction: (opponent: boolean, stickerId: number) => void;
+export let showRaibowAura: (visible: boolean, url: string, opponent: boolean) => void;
+export let updateAuraForAvatarElement: (opponent: boolean, avatarElement: SVGElement) => void;
 
 const BoardComponent: React.FC = () => {
   const [opponentVideoId, setOpponentVideoId] = useState<number | null>(null);
@@ -92,6 +95,39 @@ const BoardComponent: React.FC = () => {
   const [isGridVisible, setIsGridVisible] = useState(!isCustomPictureBoardEnabled());
   const [shouldIncludePangchiuImage, setShouldIncludePangchiuImage] = useState(isCustomPictureBoardEnabled());
   const [overlayState, setOverlayState] = useState<{ blurry: boolean; svgElement: SVGElement | null; withConfirmAndCancelButtons: boolean; ok?: () => void; cancel?: () => void }>({ blurry: true, svgElement: null, withConfirmAndCancelButtons: false });
+  const opponentAuraContainerRef = useRef<HTMLDivElement | null>(null);
+  const playerAuraContainerRef = useRef<HTMLDivElement | null>(null);
+  const opponentAuraRefs = useRef<{ background: HTMLDivElement; inner: HTMLDivElement } | null>(null);
+  const playerAuraRefs = useRef<{ background: HTMLDivElement; inner: HTMLDivElement } | null>(null);
+  const auraLayerRef = useRef<HTMLDivElement | null>(null);
+  const opponentWrapperRef = useRef<HTMLDivElement | null>(null);
+  const playerWrapperRef = useRef<HTMLDivElement | null>(null);
+
+  updateAuraForAvatarElement = (opponent: boolean, avatarElement: SVGElement) => {
+    const rect = avatarElement.getBoundingClientRect();
+    const wrapper = opponent ? opponentWrapperRef.current : playerWrapperRef.current;
+    const targets = opponent ? opponentAuraRefs : playerAuraRefs;
+    const container = opponent ? opponentAuraContainerRef.current : playerAuraContainerRef.current;
+    if (wrapper) {
+      wrapper.style.position = "absolute";
+      wrapper.style.left = `${rect.left}px`;
+      wrapper.style.top = `${rect.top}px`;
+      wrapper.style.width = `${rect.width}px`;
+      wrapper.style.height = `${rect.height}px`;
+      wrapper.style.pointerEvents = "none";
+      wrapper.style.touchAction = "none";
+      wrapper.style.zIndex = "10";
+    }
+    if (!targets.current && container) {
+      targets.current = attachRainbowAura(container);
+    }
+    if (targets.current) {
+      const isHidden = avatarElement.style.display === "none" || avatarElement.style.visibility === "hidden";
+      if (isHidden) {
+        hideAuraDom(targets.current.background);
+      }
+    }
+  };
 
   const handleConfirmClick = () => {
     if (overlayState.ok) {
@@ -125,6 +161,21 @@ const BoardComponent: React.FC = () => {
     setOverlayState({ blurry, svgElement, withConfirmAndCancelButtons, ok, cancel });
   };
 
+  showRaibowAura = (visible: boolean, url: string, opponent: boolean) => {
+    const targets = opponent ? opponentAuraRefs : playerAuraRefs;
+    const container = opponent ? opponentAuraContainerRef.current : playerAuraContainerRef.current;
+    if (!targets.current && container) {
+      targets.current = attachRainbowAura(container);
+    }
+    if (!targets.current) return;
+    setRainbowAuraMask(targets.current.inner, url);
+    if (visible) {
+      showAuraDom(targets.current.background);
+    } else {
+      hideAuraDom(targets.current.background);
+    }
+  };
+
   useEffect(() => {
     if (!initializationRef.current) {
       go();
@@ -153,6 +204,31 @@ const BoardComponent: React.FC = () => {
 
   return (
     <>
+      <div ref={auraLayerRef} style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "visible" }}>
+        <div ref={opponentWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10, overflow: "visible" }}>
+          <div
+            style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+            ref={(div) => {
+              opponentAuraContainerRef.current = div;
+              if (div && !opponentAuraRefs.current) {
+                opponentAuraRefs.current = attachRainbowAura(div);
+              }
+            }}
+          />
+        </div>
+        <div ref={playerWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10, overflow: "visible" }}>
+          <div
+            style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
+            ref={(div) => {
+              playerAuraContainerRef.current = div;
+              if (div && !playerAuraRefs.current) {
+                playerAuraRefs.current = attachRainbowAura(div);
+              }
+            }}
+          />
+        </div>
+      </div>
+
       <svg xmlns="http://www.w3.org/2000/svg" className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`} viewBox="0 0 1100 1410" shapeRendering="crispEdges" overflow="visible">
         {isGridVisible ? (
           <g id="boardBackgroundLayer">
@@ -206,6 +282,17 @@ const BoardComponent: React.FC = () => {
             pointerEvents: "none",
             touchAction: "none",
           }}>
+          <div
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+            }}
+          />
           {opponentVideoVisible && opponentVideoId !== null && (
             <video
               key={opponentVideoId}
@@ -243,6 +330,17 @@ const BoardComponent: React.FC = () => {
             pointerEvents: "none",
             touchAction: "none",
           }}>
+          <div
+            style={{
+              position: "absolute",
+              left: "50%",
+              top: "50%",
+              transform: "translate(-50%, -50%)",
+              width: "100%",
+              height: "100%",
+              pointerEvents: "none",
+            }}
+          />
           {playerVideoVisible && playerVideoId !== null && (
             <video
               key={playerVideoId}
