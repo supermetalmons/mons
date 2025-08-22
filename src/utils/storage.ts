@@ -29,7 +29,7 @@ type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
 
 function getItem<T>(key: StorageKey | string, defaultValue: T): T {
   const item = localStorage.getItem(key);
-  if (item === null) return defaultValue;
+  if (item === null || item === "null") return defaultValue;
   try {
     return JSON.parse(item) as T;
   } catch {
@@ -38,6 +38,10 @@ function getItem<T>(key: StorageKey | string, defaultValue: T): T {
 }
 
 function setItem<T>(key: StorageKey | string, value: T): void {
+  if (value === null) {
+    localStorage.removeItem(key);
+    return;
+  }
   localStorage.setItem(key, typeof value === "string" ? value : JSON.stringify(value));
 }
 
