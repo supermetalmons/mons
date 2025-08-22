@@ -1,6 +1,10 @@
 import React from "react";
-import styled from "styled-components";
-import { getRainbowAuraGradient, RAINBOW_AURA_SCALE, RAINBOW_AURA_OFFSET_PERCENT, RAINBOW_AURA_BLUR_PX, RAINBOW_AURA_OPACITY, RAINBOW_MASK_CSS_BASE } from "./rainbowAura";
+import styled, { keyframes } from "styled-components";
+import { getRainbowAuraGradient, RAINBOW_AURA_SCALE, RAINBOW_AURA_OFFSET_PERCENT, RAINBOW_AURA_BLUR_PX, RAINBOW_AURA_OPACITY, RAINBOW_MASK_CSS_BASE, RAINBOW_AURA_ROTATION_S, RAINBOW_AURA_ROTATOR_SIZE_PERCENT } from "./rainbowAura";
+
+const rotate = keyframes`
+  to { transform: rotate(360deg); }
+`;
 
 const AvatarContainer = styled.div`
   position: relative;
@@ -23,10 +27,32 @@ const RainbowBackground = styled.div`
 const RainbowInner = styled.div<{ src: string }>`
   position: absolute;
   inset: 0;
-  background: ${getRainbowAuraGradient()};
   ${RAINBOW_MASK_CSS_BASE}
   -webkit-mask-image: url(${({ src }) => src});
   mask-image: url(${({ src }) => src});
+`;
+
+const RainbowRotatorWrap = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: ${RAINBOW_AURA_ROTATOR_SIZE_PERCENT}%;
+  height: ${RAINBOW_AURA_ROTATOR_SIZE_PERCENT}%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  overflow: visible;
+`;
+
+const RainbowRotator = styled.div`
+  position: absolute;
+  inset: 0;
+  background: ${getRainbowAuraGradient()};
+  will-change: transform;
+  transform-origin: 50% 50%;
+  animation: ${rotate} ${RAINBOW_AURA_ROTATION_S}s linear infinite;
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+  }
 `;
 
 const StyledAvatarImage = styled.img`
@@ -55,7 +81,11 @@ export const AvatarImage: React.FC<AvatarImageProps> = ({ src, alt, rainbowAura 
     <AvatarContainer>
       {rainbowAura && (
         <RainbowBackground>
-          <RainbowInner src={src} />
+          <RainbowInner src={src}>
+            <RainbowRotatorWrap>
+              <RainbowRotator />
+            </RainbowRotatorWrap>
+          </RainbowInner>
         </RainbowBackground>
       )}
       <StyledAvatarImage src={src} alt={alt} loading={loading} onLoad={onLoad} />
