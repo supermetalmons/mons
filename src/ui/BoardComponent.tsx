@@ -79,6 +79,12 @@ export let showVideoReaction: (opponent: boolean, stickerId: number) => void;
 export let showRaibowAura: (visible: boolean, url: string, opponent: boolean) => void;
 export let updateAuraForAvatarElement: (opponent: boolean, avatarElement: SVGElement) => void;
 
+const VIDEO_CONTAINER_HEIGHT_GRID = "12.5%";
+const VIDEO_CONTAINER_HEIGHT_IMAGE = "13.5%";
+const VIDEO_CONTAINER_MAX_HEIGHT = "min(20vh, 180px)";
+const VIDEO_CONTAINER_ASPECT_RATIO = "1";
+const VIDEO_CONTAINER_Z_INDEX = 10000;
+
 const BoardComponent: React.FC = () => {
   const [opponentVideoId, setOpponentVideoId] = useState<number | null>(null);
   const [opponentVideoVisible, setOpponentVideoVisible] = useState(false);
@@ -276,9 +282,10 @@ const BoardComponent: React.FC = () => {
             left: "50%",
             transform: "translate(-50%, -100%)",
             top: isGridVisible ? "7.02%" : "7.05%",
-            height: "9%",
-            aspectRatio: "1",
-            zIndex: 10,
+            height: isGridVisible ? VIDEO_CONTAINER_HEIGHT_GRID : VIDEO_CONTAINER_HEIGHT_IMAGE,
+            maxHeight: VIDEO_CONTAINER_MAX_HEIGHT,
+            aspectRatio: VIDEO_CONTAINER_ASPECT_RATIO,
+            zIndex: VIDEO_CONTAINER_Z_INDEX,
             pointerEvents: "none",
             touchAction: "none",
           }}>
@@ -324,9 +331,10 @@ const BoardComponent: React.FC = () => {
             left: "50%",
             transform: "translateX(-50%)",
             top: isGridVisible ? "85.22%" : "89.65%",
-            height: "9%",
-            aspectRatio: "1",
-            zIndex: 10,
+            height: isGridVisible ? VIDEO_CONTAINER_HEIGHT_GRID : VIDEO_CONTAINER_HEIGHT_IMAGE,
+            maxHeight: VIDEO_CONTAINER_MAX_HEIGHT,
+            aspectRatio: VIDEO_CONTAINER_ASPECT_RATIO,
+            zIndex: VIDEO_CONTAINER_Z_INDEX,
             pointerEvents: "none",
             touchAction: "none",
           }}>
