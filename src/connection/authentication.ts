@@ -24,7 +24,7 @@ export function useAuthStatus() {
     const storedEthAddress = storage.getEthAddress("");
     const storedSolAddress = storage.getSolAddress("");
     const storedUsername = storage.getUsername("");
-    if (profileId !== "" && storedLoginId !== "" && storedUsername !== "" && (storedEthAddress !== "" || storedSolAddress !== "")) {
+    if (profileId !== "" && storedLoginId !== "" && (storedEthAddress !== "" || storedSolAddress !== "")) {
       updateProfileDisplayName(storedUsername, storedEthAddress, storedSolAddress);
       return "authenticated";
     }
