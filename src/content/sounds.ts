@@ -113,10 +113,10 @@ export async function playSounds(sounds: Sound[]) {
         name = "undo";
         break;
       case Sound.EmoteSent:
-        name = "emotePop5";
+        name = "emotePop8";
         break;
       case Sound.EmoteReceived:
-        name = "emotePop3";
+        name = "emotePop5";
         break;
     }
 
