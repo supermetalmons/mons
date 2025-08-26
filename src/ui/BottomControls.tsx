@@ -78,9 +78,7 @@ let disableAndHideUndoResignAndTimerControls: () => void;
 let setIsReadyToCopyExistingInviteLink: () => void;
 let hideTimerButtons: () => void;
 let showTimerButtonProgressing: (currentProgress: number, target: number, enableWhenTargetReached: boolean) => void;
-let hideReactionPicker: () => void;
 let toggleReactionPicker: () => void;
-let hideMoveHistoryPopup: () => void;
 let enableTimerVictoryClaim: () => void;
 let showPrimaryAction: (action: PrimaryActionType) => void;
 
@@ -423,10 +421,6 @@ const BottomControls: React.FC = () => {
     setIsResignConfirmVisible(false);
   };
 
-  hideReactionPicker = () => {
-    setIsReactionPickerVisible(false);
-  };
-
   toggleReactionPicker = () => {
     if (!isReactionPickerVisible) {
       if (isVoiceReactionDisabled) {
@@ -437,10 +431,6 @@ const BottomControls: React.FC = () => {
       setIsMoveHistoryPopupVisible(false);
     }
     setIsReactionPickerVisible((prev) => !prev);
-  };
-
-  hideMoveHistoryPopup = () => {
-    setIsMoveHistoryPopupVisible(false);
   };
 
   const toggleMoveHistoryPopup = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -500,7 +490,7 @@ const BottomControls: React.FC = () => {
   };
 
   const handleStickerSelect = useCallback((stickerId: number) => {
-    hideReactionPicker();
+    setIsReactionPickerVisible(false);
     showVideoReaction(false, stickerId);
     playSounds([Sound.EmoteSent]);
     if (isGameWithBot) {
@@ -519,7 +509,7 @@ const BottomControls: React.FC = () => {
   }, []);
 
   const handleReactionSelect = useCallback((reaction: string) => {
-    hideReactionPicker();
+    setIsReactionPickerVisible(false);
     const reactionObj = newReactionOfKind(reaction);
     playReaction(reactionObj);
     showVoiceReactionText(reaction, false);
@@ -758,4 +748,4 @@ const BottomControls: React.FC = () => {
   );
 };
 
-export { BottomControls as default, setBrushAndNavigationButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, setAutomatchEnabled, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, showMoveHistoryButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, hideMoveHistoryPopup, enableTimerVictoryClaim, showPrimaryAction, setBadgeVisible };
+export { BottomControls as default, setBrushAndNavigationButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, setAutomatchEnabled, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, showMoveHistoryButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, enableTimerVictoryClaim, showPrimaryAction, setBadgeVisible };
