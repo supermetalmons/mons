@@ -20,6 +20,8 @@ import MoveHistoryPopup from "./MoveHistoryPopup";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 
+const movesHistoryDisabled = true; // TODO: dev tmp
+
 export enum PrimaryActionType {
   None = "none",
   JoinGame = "joinGame",
@@ -287,6 +289,9 @@ const BottomControls: React.FC = () => {
   };
 
   showMoveHistoryButton = (show: boolean) => {
+    if (movesHistoryDisabled) {
+      return;
+    }
     setIsMoveHistoryButtonVisible(show);
   };
 
