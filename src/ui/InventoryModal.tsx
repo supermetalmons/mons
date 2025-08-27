@@ -183,6 +183,41 @@ const LoadingText = styled.div`
   }
 `;
 
+const ShinyPurpleLink = styled.a`
+  display: inline-block;
+  position: relative;
+  background: linear-gradient(90deg, #a855f7, #c084fc, #a855f7);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  text-decoration: none;
+  animation: shine 2.8s linear infinite;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    background: linear-gradient(90deg, #a855f7, #c084fc, #a855f7);
+    background-size: 200% 100%;
+    border-radius: 2px;
+    animation: shine 2.8s linear infinite;
+  }
+
+  @keyframes shine {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 200% 50%;
+    }
+  }
+`;
+
 const NFTGridContainer = styled.div`
   overflow: visible;
   margin-top: 0;
@@ -359,7 +394,15 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
             {isLoading ? (
               <LoadingText>LOADING...</LoadingText>
             ) : avatars.length === 0 ? (
-              <LoadingText>{dataOk ? "Mint Swag Pack on VVV" : "Failed to load."}</LoadingText>
+              <LoadingText>
+                {dataOk ? (
+                  <ShinyPurpleLink href="https://vvv.so/swag-pack" target="_blank" rel="noopener noreferrer">
+                    Mint Swag Pack on VVV
+                  </ShinyPurpleLink>
+                ) : (
+                  "Failed to load."
+                )}
+              </LoadingText>
             ) : (
               <NFTGridContainer>
                 <NFTGrid>
