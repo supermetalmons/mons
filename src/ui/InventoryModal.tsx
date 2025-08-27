@@ -11,7 +11,6 @@ const InventoryOverlay = styled(ModalOverlay)`
 `;
 
 const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
-  background-color: var(--inventoryModalBackground);
   padding: 24px 0;
   user-select: none;
   outline: none;
@@ -20,10 +19,6 @@ const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
   flex-direction: column;
   overflow: hidden;
   position: relative;
-
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--inventoryModalBackgroundDark);
-  }
 `;
 
 const InventoryTitle = styled(ModalTitle)`
@@ -51,7 +46,7 @@ const TopOverlay = styled(OverlayPanel)`
   left: 0;
   right: 0;
   justify-content: space-between;
-  background-color: var(--inventoryModalBackground);
+  background-color: var(--color-white);
   position: absolute;
   padding: 0 24px;
 
@@ -62,14 +57,14 @@ const TopOverlay = styled(OverlayPanel)`
     right: 0;
     bottom: -16px;
     height: 16px;
-    background: linear-gradient(to bottom, var(--inventoryModalBackground), transparent);
+    background: linear-gradient(to bottom, var(--color-white), transparent);
     pointer-events: none;
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--inventoryModalBackgroundDark);
+    background-color: var(--color-deep-gray);
     &::after {
-      background: linear-gradient(to bottom, var(--inventoryModalBackgroundDark), transparent);
+      background: linear-gradient(to bottom, var(--color-deep-gray), transparent);
     }
   }
 `;
@@ -79,7 +74,7 @@ const BottomOverlay = styled(OverlayPanel)`
   left: 0;
   right: 0;
   justify-content: flex-end;
-  background-color: var(--inventoryModalBackground);
+  background-color: var(--color-white);
   position: absolute;
   padding: 0 24px;
 
@@ -90,14 +85,14 @@ const BottomOverlay = styled(OverlayPanel)`
     right: 0;
     top: -16px;
     height: 16px;
-    background: linear-gradient(to top, var(--inventoryModalBackground), transparent);
+    background: linear-gradient(to top, var(--color-white), transparent);
     pointer-events: none;
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--inventoryModalBackgroundDark);
+    background-color: var(--color-deep-gray);
     &::before {
-      background: linear-gradient(to top, var(--inventoryModalBackgroundDark), transparent);
+      background: linear-gradient(to top, var(--color-deep-gray), transparent);
     }
   }
 `;
