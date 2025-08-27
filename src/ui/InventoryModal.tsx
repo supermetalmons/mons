@@ -347,7 +347,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
       <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus hasNfts={avatars.length > 0}>
         <TopOverlay>
           <TopBar>
-            <InventoryTitle>Swag Pack</InventoryTitle>
+            <InventoryTitle>Inventory</InventoryTitle>
             <VvvLink href="https://vvv.so/swag-pack" target="_blank" rel="noopener noreferrer" aria-label="Open vvv.so">
               <VvvLogo src={`data:image/webp;base64,${vvvLogoBase64}`} alt="" />
             </VvvLink>
