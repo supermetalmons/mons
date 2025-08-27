@@ -149,8 +149,8 @@ const Content = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
   text-align: left;
-  padding-top: 88px;
-  padding-bottom: 96px;
+  padding-top: 65px;
+  padding-bottom: 72px;
   padding-left: 20px;
   padding-right: 20px;
   -webkit-overflow-scrolling: touch;
