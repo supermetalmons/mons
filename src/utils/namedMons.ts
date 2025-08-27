@@ -12,7 +12,7 @@ export enum MonType {
 
 export const demonTypes = ["borgalo", "notchur"];
 export const angelTypes = ["applecreme", "gerp", "goxfold", "mowch", "mummyfly"];
-export const drainerTypes = ["deino", "greenseech", "omom", "supermetaldrop", "zwubbi"];
+export const drainerTypes = ["deino", "greenseech", "omom", "supermetaldrop", "zwubbi", "royal_aguapwoshi"];
 export const spiritTypes = ["melmut", "omenstatue", "owg"];
 export const mysticTypes = ["chamgot", "dart", "estalibur"];
 

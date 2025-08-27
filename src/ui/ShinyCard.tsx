@@ -1298,7 +1298,7 @@ async function didClickMonImage(monType: string) {
       updateContent(monType, (angelIndex + 1) % angelTypes.length, angelIndex);
       break;
     case "drainer":
-      updateContent(monType, (drainerIndex + 1) % drainerTypes.length, drainerIndex);
+      updateContent(monType, (drainerIndex + 1) % (drainerTypes.length - 1), drainerIndex);
       break;
     case "spirit":
       updateContent(monType, (spiritIndex + 1) % spiritTypes.length, spiritIndex);
