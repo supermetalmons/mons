@@ -11,7 +11,7 @@ const InventoryOverlay = styled(ModalOverlay)`
 `;
 
 const InventoryPopup = styled(ModalPopup)<{ hasNfts: boolean }>`
-  padding: 24px 0;
+  padding: 20px;
   user-select: none;
   outline: none;
   aspect-ratio: 1 / 1;
@@ -30,7 +30,7 @@ const OverlayPanel = styled.div`
   left: 24px;
   right: 24px;
   background: transparent;
-  z-index: 2;
+  z-index: 1000;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -42,13 +42,16 @@ const OverlayPanel = styled.div`
 `;
 
 const TopOverlay = styled(OverlayPanel)`
-  top: 24px;
+  top: 0;
   left: 0;
   right: 0;
   justify-content: space-between;
   background-color: var(--color-white);
   position: absolute;
-  padding: 0 24px;
+  padding: 24px 20px 0 20px;
+  pointer-events: auto;
+  touch-action: pan-y;
+  -ms-touch-action: pan-y;
 
   &::after {
     content: "";
@@ -70,13 +73,16 @@ const TopOverlay = styled(OverlayPanel)`
 `;
 
 const BottomOverlay = styled(OverlayPanel)`
-  bottom: 24px;
+  bottom: 0;
   left: 0;
   right: 0;
   justify-content: flex-end;
   background-color: var(--color-white);
   position: absolute;
-  padding: 0 24px;
+  padding: 0 20px 24px 20px;
+  pointer-events: auto;
+  touch-action: pan-y;
+  -ms-touch-action: pan-y;
 
   &::before {
     content: "";
@@ -134,12 +140,25 @@ const Content = styled.div`
   word-break: break-word;
   overflow-wrap: break-word;
   max-width: 100%;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
+  display: block;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
   text-align: left;
-  flex: 1;
-  min-height: 0;
+  padding-top: 88px;
+  padding-bottom: 96px;
+  padding-left: 20px;
+  padding-right: 20px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-gray-d0);
@@ -161,24 +180,13 @@ const LoadingText = styled.div`
 `;
 
 const NFTGridContainer = styled.div`
-  overflow-y: auto;
-  overflow-x: visible;
+  overflow: visible;
   margin-top: 0;
   flex: 1 1 auto;
   min-height: 140px;
-  -webkit-overflow-scrolling: touch;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
   width: 100%;
-  overscroll-behavior: contain;
-  touch-action: pan-y;
-  -ms-touch-action: pan-y;
-  padding: 48px 24px 56px 24px;
   box-sizing: border-box;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  padding-bottom: 8px;
 `;
 
 const NFTGrid = styled.div`
