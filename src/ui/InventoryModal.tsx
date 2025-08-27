@@ -298,6 +298,18 @@ const AvatarTile = styled(NFTNameContainer)`
   }
 `;
 
+const SpecialImage = styled.img`
+  width: 92%;
+  height: 92%;
+  object-fit: cover;
+  display: block;
+  border-radius: 6px;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+  z-index: 2;
+`;
+
 const CountIndicator = styled.div<{ count: number }>`
   position: absolute;
   bottom: -4px;
@@ -415,7 +427,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
                 <NFTGrid>
                   {specials.map((item) => (
                     <AvatarTile key={`special-${item.id}`} onClick={() => setOwnershipVerifiedSpecialItem(item.id)}>
-                      <AvatarImage src={`https://assets.mons.link/drops/bd4/${item.id}.webp`} alt="" loading="lazy" />
+                      <SpecialImage src={`https://assets.mons.link/drops/bd4/${item.id}.webp`} alt="" loading="lazy" />
                       {item.count > 1 && <CountIndicator count={item.count}>{item.count}</CountIndicator>}
                     </AvatarTile>
                   ))}
