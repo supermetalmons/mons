@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton } from "./SharedModalComponents";
 import { fetchNftsForStoredAddresses } from "../services/nftService";
 import { vvvLogoBase64 } from "../content/uiAssets";
-import { setOwnershipVerifiedIdCardEmoji } from "./ShinyCard";
+import { setOwnershipVerifiedIdCardEmoji, setOwnershipVerifiedSpecialItem } from "./ShinyCard";
 import { AvatarImage } from "./AvatarImage";
 
 const InventoryOverlay = styled(ModalOverlay)`
@@ -169,13 +169,52 @@ const LoadingText = styled.div`
   text-align: center;
   font-size: 0.8rem;
   color: var(--color-gray-77);
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
 
   @media (prefers-color-scheme: dark) {
     color: var(--leaderboardLoadingTextColorDark);
+  }
+`;
+
+const ShinyPurpleLink = styled.a`
+  display: inline-block;
+  position: relative;
+  background: linear-gradient(90deg, #a855f7, #c084fc, #a855f7);
+  background-size: 200% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  font-weight: 700;
+  text-decoration: none;
+  animation: shine 2.8s linear infinite;
+
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: -2px;
+    height: 2px;
+    background: linear-gradient(90deg, #a855f7, #c084fc, #a855f7);
+    background-size: 200% 100%;
+    border-radius: 2px;
+    animation: shine 2.8s linear infinite;
+  }
+
+  @keyframes shine {
+    0% {
+      background-position: 0% 50%;
+    }
+    100% {
+      background-position: 200% 50%;
+    }
   }
 `;
 
@@ -259,6 +298,18 @@ const AvatarTile = styled(NFTNameContainer)`
   }
 `;
 
+const SpecialImage = styled.img`
+  width: 92%;
+  height: 92%;
+  object-fit: cover;
+  display: block;
+  border-radius: 6px;
+  pointer-events: none;
+  -webkit-user-drag: none;
+  user-drag: none;
+  z-index: 2;
+`;
+
 const CountIndicator = styled.div<{ count: number }>`
   position: absolute;
   bottom: -4px;
@@ -295,6 +346,7 @@ export interface InventoryModalProps {
 export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   const popupRef = useRef<HTMLDivElement>(null);
   const [avatars, setAvatars] = useState<SwagAvatarItem[]>([]);
+  const [specials, setSpecials] = useState<SwagAvatarItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [dataOk, setDataOk] = useState<boolean | null>(null);
 
@@ -314,8 +366,14 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
         } else {
           setAvatars([]);
         }
+        if (data?.specials && Array.isArray(data.specials) && data.specials.length > 0) {
+          setSpecials(data.specials);
+        } else {
+          setSpecials([]);
+        }
       } catch {
         setAvatars([]);
+        setSpecials([]);
         setDataOk(false);
       } finally {
         setIsLoading(false);
@@ -340,10 +398,10 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
 
   return (
     <InventoryOverlay onClick={cleanUpAndClose}>
-      <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus hasNfts={avatars.length > 0}>
+      <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus hasNfts={avatars.length > 0 || specials.length > 0}>
         <TopOverlay>
           <TopBar>
-            <InventoryTitle>Swag Pack</InventoryTitle>
+            <InventoryTitle>Collectibles</InventoryTitle>
             <VvvLink href="https://vvv.so/swag-pack" target="_blank" rel="noopener noreferrer" aria-label="Open vvv.so">
               <VvvLogo src={`data:image/webp;base64,${vvvLogoBase64}`} alt="" />
             </VvvLink>
@@ -354,11 +412,25 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
           <Content>
             {isLoading ? (
               <LoadingText>LOADING...</LoadingText>
-            ) : avatars.length === 0 ? (
-              <LoadingText>{dataOk ? "Mint on VVV" : "Failed to load."}</LoadingText>
+            ) : avatars.length === 0 && specials.length === 0 ? (
+              <LoadingText>
+                {dataOk ? (
+                  <ShinyPurpleLink href="https://vvv.so/swag-pack" target="_blank" rel="noopener noreferrer">
+                    Mint Swag Pack on VVV
+                  </ShinyPurpleLink>
+                ) : (
+                  "Failed to load."
+                )}
+              </LoadingText>
             ) : (
               <NFTGridContainer>
                 <NFTGrid>
+                  {specials.map((item) => (
+                    <AvatarTile key={`special-${item.id}`} onClick={() => setOwnershipVerifiedSpecialItem(item.id)}>
+                      <SpecialImage src={`https://assets.mons.link/drops/bd4/${item.id}.webp`} alt="" loading="lazy" />
+                      {item.count > 1 && <CountIndicator count={item.count}>{item.count}</CountIndicator>}
+                    </AvatarTile>
+                  ))}
                   {avatars.map((item) => (
                     <AvatarTile key={item.id} onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000, item.count >= 3 ? "rainbow" : "")}>
                       <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt="" rainbowAura={item.count >= 3} loading="lazy" />

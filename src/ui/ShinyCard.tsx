@@ -964,6 +964,9 @@ function handleStickerClick(type: string) {
       nextSticker = undefined;
     } else {
       nextSticker = stickersForType[currentIndex + 1]?.name;
+      if (nextSticker === "gate") {
+        nextSticker = stickersForType[currentIndex + 2]?.name;
+      }
     }
   }
 
@@ -1298,7 +1301,7 @@ async function didClickMonImage(monType: string) {
       updateContent(monType, (angelIndex + 1) % angelTypes.length, angelIndex);
       break;
     case "drainer":
-      updateContent(monType, (drainerIndex + 1) % drainerTypes.length, drainerIndex);
+      updateContent(monType, (drainerIndex + 1) % (drainerTypes.length - 1), drainerIndex);
       break;
     case "spirit":
       updateContent(monType, (spiritIndex + 1) % spiritTypes.length, spiritIndex);
@@ -1429,6 +1432,23 @@ function updateExistingCardForAnotherProfile(profile: PlayerProfile | null, disp
 async function updateUndoButton() {
   if (panelUndoButton) {
     panelUndoButton.disabled = undoQueue.length === 0;
+  }
+}
+
+export function setOwnershipVerifiedSpecialItem(id: number) {
+  switch (id) {
+    case 0:
+      updateContent("drainer", 5, drainerIndex);
+      didUpdateIdCardMons();
+      break;
+    case 1:
+      updateContent("bg", 100, cardIndex);
+      break;
+    case 2:
+      const type = "big-mon-top-right";
+      const currentSticker = currentlySelectedStickers[type];
+      updateContent(type, "gate", currentSticker);
+      break;
   }
 }
 

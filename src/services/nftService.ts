@@ -36,8 +36,9 @@ function generateStubResponse() {
   const extraAvatarCount = maxExtraAvatars > 0 ? randomInt(0, maxExtraAvatars) : 0;
   const availableAvatarOnlyIds = shuffled(validAvatarIds.filter((id) => !usedIds.has(id))).slice(0, extraAvatarCount);
   const swagpack_avatars = [...swagpack_reactions.map((x) => ({ id: x.id, count: x.count })), ...availableAvatarOnlyIds.map((id) => ({ id, count: randomInt(1, 10) }))];
+  const specials = [{id: 0, count: 1}, {id: 1, count: 2}, {id: 2, count: 3}]
 
-  return { ok: true, swagpack_avatars, swagpack_reactions };
+  return { ok: true, specials, swagpack_avatars, swagpack_reactions };
 }
 
 export async function fetchNftsByAddresses(sol: string, eth: string): Promise<any> {
