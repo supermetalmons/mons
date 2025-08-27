@@ -169,10 +169,14 @@ const LoadingText = styled.div`
   text-align: center;
   font-size: 0.8rem;
   color: var(--color-gray-77);
-  flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  transform: translateY(-50%);
 
   @media (prefers-color-scheme: dark) {
     color: var(--leaderboardLoadingTextColorDark);
