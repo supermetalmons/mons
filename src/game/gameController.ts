@@ -5,7 +5,7 @@ import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModi
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
 import { connection, isCreateNewInviteFlow, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded, isBotsLoopMode } from "../connection/connection";
-import { setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
+import { showMoveHistoryButton, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress, getInitialProblem } from "../content/problems";
@@ -134,6 +134,7 @@ export async function go() {
     setBotGameOptionVisible(false);
     setNavigationListButtonVisible(false);
     setAutomoveActionVisible(true);
+    showMoveHistoryButton(true);
   } else if (isCreateNewInviteFlow) {
     game.locations_with_content().forEach((loc) => {
       const location = new Location(loc.i, loc.j);
@@ -236,6 +237,7 @@ export function didClickStartBotGameButton() {
   setBotGameOptionVisible(false);
   setNavigationListButtonVisible(false);
   setAutomoveActionVisible(true);
+  showMoveHistoryButton(true);
   showResignButton();
   Board.setBoardFlipped(true);
   Board.showOpponentAsBotPlayer();
@@ -263,6 +265,7 @@ export function didClickAutomatchButton() {
   setHomeVisible(true);
   setBrushAndNavigationButtonDimmed(true);
   setAutomoveActionVisible(false);
+  showMoveHistoryButton(false);
   setInviteLinkActionVisible(false);
   setBotGameOptionVisible(false);
   dismissBadgeAndNotificationBannerIfNeeded();
@@ -647,6 +650,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
           setNavigationListButtonVisible(false);
         }
         setAutomoveActionVisible(true);
+        showMoveHistoryButton(true);
       }
 
       currentInputs = [];
@@ -792,6 +796,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
                   hideTimerButtons();
                   setUndoVisible(true);
                   setAutomoveActionVisible(true);
+                  showMoveHistoryButton(true);
                 } else {
                   showTimerButtonProgressing(0, 90, true);
                 }
@@ -1095,6 +1100,7 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
       hideTimerButtons();
       setUndoVisible(true);
       setAutomoveActionVisible(true);
+      showMoveHistoryButton(true);
     } else {
       showTimerButtonProgressing(0, 90, true);
     }
@@ -1273,6 +1279,7 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
   dismissBadgeAndNotificationBannerIfNeeded();
   setNavigationListButtonVisible(false);
   setAutomoveActionVisible(false);
+  showMoveHistoryButton(false);
   Board.hideBoardPlayersInfo();
   Board.removeHighlights();
   hideAllMoveStatuses();
@@ -1337,6 +1344,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
     setEndMatchVisible(false);
     isWaitingForInviteToGetAccepted = false;
     setAutomoveActionVisible(false);
+    showMoveHistoryButton(false);
     setInviteLinkActionVisible(false);
     setAutomatchVisible(false);
     setBotGameOptionVisible(false);

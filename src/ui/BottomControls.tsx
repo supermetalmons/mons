@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaPaintBrush } from "react-icons/fa";
+import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaPaintBrush, FaScroll } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
 import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain } from "../game/gameController";
@@ -16,8 +16,11 @@ import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { showVideoReaction } from "./BoardComponent";
 import BoardStylePickerComponent from "./BoardStylePicker";
 import { Sound } from "../utils/gameModels";
+import MoveHistoryPopup from "./MoveHistoryPopup";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
+
+const movesHistoryDisabled = true; // TODO: dev tmp
 
 export enum PrimaryActionType {
   None = "none",
@@ -53,6 +56,7 @@ let getIsNavigationPopupOpen: () => boolean = () => false;
 
 let hasBottomPopupsVisible: () => boolean;
 let showVoiceReactionButton: (show: boolean) => void;
+let showMoveHistoryButton: (show: boolean) => void;
 let showResignButton: () => void;
 let setInviteLinkActionVisible: (visible: boolean) => void;
 let setAutomatchEnabled: (enabled: boolean) => void;
@@ -76,7 +80,6 @@ let disableAndHideUndoResignAndTimerControls: () => void;
 let setIsReadyToCopyExistingInviteLink: () => void;
 let hideTimerButtons: () => void;
 let showTimerButtonProgressing: (currentProgress: number, target: number, enableWhenTargetReached: boolean) => void;
-let hideReactionPicker: () => void;
 let toggleReactionPicker: () => void;
 let enableTimerVictoryClaim: () => void;
 let showPrimaryAction: (action: PrimaryActionType) => void;
@@ -115,6 +118,8 @@ const BottomControls: React.FC = () => {
   const [isResignButtonVisible, setIsResignButtonVisible] = useState(false);
   const [isVoiceReactionButtonVisible, setIsVoiceReactionButtonVisible] = useState(false);
   const [isReactionPickerVisible, setIsReactionPickerVisible] = useState(false);
+  const [isMoveHistoryButtonVisible, setIsMoveHistoryButtonVisible] = useState(false);
+  const [isMoveHistoryPopupVisible, setIsMoveHistoryPopupVisible] = useState(false);
   const [isResignConfirmVisible, setIsResignConfirmVisible] = useState(false);
   const [isTimerButtonDisabled, setIsTimerButtonDisabled] = useState(true);
   const [isClaimVictoryVisible, setIsClaimVictoryVisible] = useState(false);
@@ -127,6 +132,7 @@ const BottomControls: React.FC = () => {
 
   const pickerRef = useRef<HTMLDivElement>(null);
   const voiceReactionButtonRef = useRef<HTMLButtonElement>(null);
+  const moveHistoryButtonRef = useRef<HTMLButtonElement>(null);
   const resignButtonRef = useRef<HTMLButtonElement>(null);
   const resignConfirmRef = useRef<HTMLDivElement>(null);
   const hourglassEnableTimeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -134,6 +140,7 @@ const BottomControls: React.FC = () => {
   const navigationButtonRef = useRef<HTMLButtonElement>(null);
   const boardStylePickerRef = useRef<HTMLDivElement>(null);
   const brushButtonRef = useRef<HTMLButtonElement>(null);
+  const moveHistoryPopupRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: TouchEvent | MouseEvent) => {
@@ -142,6 +149,11 @@ const BottomControls: React.FC = () => {
         didDismissSomethingWithOutsideTapJustNow();
         setIsReactionPickerVisible(false);
         setIsResignConfirmVisible(false);
+      }
+
+      if (moveHistoryPopupRef.current && !moveHistoryPopupRef.current.contains(event.target as Node) && !moveHistoryButtonRef.current?.contains(event.target as Node)) {
+        didDismissSomethingWithOutsideTapJustNow();
+        setIsMoveHistoryPopupVisible(false);
       }
 
       if (navigationPopupRef.current && !navigationPopupRef.current.contains(event.target as Node) && !navigationButtonRef.current?.contains(event.target as Node)) {
@@ -276,6 +288,13 @@ const BottomControls: React.FC = () => {
     setIsVoiceReactionButtonVisible(show);
   };
 
+  showMoveHistoryButton = (show: boolean) => {
+    if (movesHistoryDisabled) {
+      return;
+    }
+    setIsMoveHistoryButtonVisible(show);
+  };
+
   showResignButton = () => {
     setIsResignButtonVisible(true);
   };
@@ -321,7 +340,7 @@ const BottomControls: React.FC = () => {
   };
 
   hasBottomPopupsVisible = () => {
-    return isReactionPickerVisible || isResignConfirmVisible || isBoardStylePickerVisible;
+    return isReactionPickerVisible || isMoveHistoryPopupVisible || isResignConfirmVisible || isBoardStylePickerVisible;
   };
 
   enableTimerVictoryClaim = () => {
@@ -407,10 +426,6 @@ const BottomControls: React.FC = () => {
     setIsResignConfirmVisible(false);
   };
 
-  hideReactionPicker = () => {
-    setIsReactionPickerVisible(false);
-  };
-
   toggleReactionPicker = () => {
     if (!isReactionPickerVisible) {
       if (isVoiceReactionDisabled) {
@@ -418,8 +433,19 @@ const BottomControls: React.FC = () => {
       }
       closeMenuAndInfoIfAny();
       setIsResignConfirmVisible(false);
+      setIsMoveHistoryPopupVisible(false);
     }
     setIsReactionPickerVisible((prev) => !prev);
+  };
+
+  const toggleMoveHistoryPopup = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    if (!isMoveHistoryPopupVisible) {
+      closeMenuAndInfoIfAny();
+      setIsResignConfirmVisible(false);
+      setIsReactionPickerVisible(false);
+      setIsNavigationPopupVisible(false);
+    }
+    setIsMoveHistoryPopupVisible((prev) => !prev);
   };
 
   const handleBrushClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -469,7 +495,7 @@ const BottomControls: React.FC = () => {
   };
 
   const handleStickerSelect = useCallback((stickerId: number) => {
-    hideReactionPicker();
+    setIsReactionPickerVisible(false);
     showVideoReaction(false, stickerId);
     playSounds([Sound.EmoteSent]);
     if (isGameWithBot) {
@@ -488,7 +514,7 @@ const BottomControls: React.FC = () => {
   }, []);
 
   const handleReactionSelect = useCallback((reaction: string) => {
-    hideReactionPicker();
+    setIsReactionPickerVisible(false);
     const reactionObj = newReactionOfKind(reaction);
     playReaction(reactionObj);
     showVoiceReactionText(reaction, false);
@@ -689,6 +715,11 @@ const BottomControls: React.FC = () => {
             <FaFlag />
           </ControlButton>
         )}
+        {isMoveHistoryButtonVisible && (
+          <ControlButton onClick={!isMobile ? toggleMoveHistoryPopup : undefined} onTouchStart={isMobile ? toggleMoveHistoryPopup : undefined} aria-label="Move History" ref={moveHistoryButtonRef}>
+            <FaScroll />
+          </ControlButton>
+        )}
         <NavigationListButton ref={navigationButtonRef} dimmed={isNavigationButtonDimmed} onClick={!isMobile ? handleNavigationButtonClick : undefined} onTouchStart={isMobile ? handleNavigationButtonClick : undefined} aria-label="Navigation">
           {isBadgeVisible && <NavigationBadge />}
           <FaHome />
@@ -707,6 +738,11 @@ const BottomControls: React.FC = () => {
             ))}
           </ReactionPillsContainer>
         )}
+        {isMoveHistoryPopupVisible && (
+          <div ref={moveHistoryPopupRef}>
+            <MoveHistoryPopup />
+          </div>
+        )}
         {isResignConfirmVisible && (
           <ResignConfirmation ref={resignConfirmRef}>
             <ResignButton onClick={handleConfirmResign}>Resign</ResignButton>
@@ -717,4 +753,4 @@ const BottomControls: React.FC = () => {
   );
 };
 
-export { BottomControls as default, setBrushAndNavigationButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, setAutomatchEnabled, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, hideReactionPicker, enableTimerVictoryClaim, showPrimaryAction, setBadgeVisible };
+export { BottomControls as default, setBrushAndNavigationButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, setAutomatchEnabled, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, showMoveHistoryButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, enableTimerVictoryClaim, showPrimaryAction, setBadgeVisible };
