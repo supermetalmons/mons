@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton } from "./SharedModalComponents";
 import { fetchNftsForStoredAddresses } from "../services/nftService";
 import { vvvLogoBase64 } from "../content/uiAssets";
-import { setOwnershipVerifiedIdCardEmoji } from "./ShinyCard";
+import { setOwnershipVerifiedIdCardEmoji, setOwnershipVerifiedSpecialItem } from "./ShinyCard";
 import { AvatarImage } from "./AvatarImage";
 
 const InventoryOverlay = styled(ModalOverlay)`
@@ -334,6 +334,7 @@ export interface InventoryModalProps {
 export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   const popupRef = useRef<HTMLDivElement>(null);
   const [avatars, setAvatars] = useState<SwagAvatarItem[]>([]);
+  const [specials, setSpecials] = useState<SwagAvatarItem[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [dataOk, setDataOk] = useState<boolean | null>(null);
 
@@ -353,8 +354,14 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
         } else {
           setAvatars([]);
         }
+        if (data?.specials && Array.isArray(data.specials) && data.specials.length > 0) {
+          setSpecials(data.specials);
+        } else {
+          setSpecials([]);
+        }
       } catch {
         setAvatars([]);
+        setSpecials([]);
         setDataOk(false);
       } finally {
         setIsLoading(false);
@@ -379,7 +386,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
 
   return (
     <InventoryOverlay onClick={cleanUpAndClose}>
-      <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus hasNfts={avatars.length > 0}>
+      <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus hasNfts={avatars.length > 0 || specials.length > 0}>
         <TopOverlay>
           <TopBar>
             <InventoryTitle>Collectibles</InventoryTitle>
@@ -393,7 +400,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
           <Content>
             {isLoading ? (
               <LoadingText>LOADING...</LoadingText>
-            ) : avatars.length === 0 ? (
+            ) : avatars.length === 0 && specials.length === 0 ? (
               <LoadingText>
                 {dataOk ? (
                   <ShinyPurpleLink href="https://vvv.so/swag-pack" target="_blank" rel="noopener noreferrer">
@@ -406,6 +413,12 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
             ) : (
               <NFTGridContainer>
                 <NFTGrid>
+                  {specials.map((item) => (
+                    <AvatarTile key={`special-${item.id}`} onClick={() => setOwnershipVerifiedSpecialItem(item.id)}>
+                      <AvatarImage src={`https://assets.mons.link/drops/bd4/${item.id}.webp`} alt="" loading="lazy" />
+                      {item.count > 1 && <CountIndicator count={item.count}>{item.count}</CountIndicator>}
+                    </AvatarTile>
+                  ))}
                   {avatars.map((item) => (
                     <AvatarTile key={item.id} onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000, item.count >= 3 ? "rainbow" : "")}>
                       <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt="" rainbowAura={item.count >= 3} loading="lazy" />
