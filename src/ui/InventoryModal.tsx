@@ -359,7 +359,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
             {isLoading ? (
               <LoadingText>LOADING...</LoadingText>
             ) : avatars.length === 0 ? (
-              <LoadingText>{dataOk ? "Mint on VVV" : "Failed to load."}</LoadingText>
+              <LoadingText>{dataOk ? "Mint Swag Pack on VVV" : "Failed to load."}</LoadingText>
             ) : (
               <NFTGridContainer>
                 <NFTGrid>
