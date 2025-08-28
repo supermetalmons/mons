@@ -31,6 +31,12 @@ const ScrollableList = styled.div`
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
   flex-grow: 1;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
 `;
 
 const ItemButton = styled.button`
@@ -82,11 +88,36 @@ const PlaceholderImage = styled.img`
 const placeholderIcon = "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='3' fill='%23cccccc' fill-opacity='0.6'/%3E%3C/svg%3E";
 
 const placeholderMoves = [
-  { id: "m1", label: "Move 1: e4", completed: true },
-  { id: "m2", label: "Move 2: e5", completed: true },
-  { id: "m3", label: "Move 3: Nf3", completed: true },
-  { id: "m4", label: "Move 4: Nc6", completed: false },
-  { id: "m5", label: "Move 5: Bb5", completed: false },
+  { id: "m1", label: "Move 1: e4" },
+  { id: "m2", label: "Move 2: e5" },
+  { id: "m3", label: "Move 3: Nf3" },
+  { id: "m4", label: "Move 4: Nc6" },
+  { id: "m5", label: "Move 5: Bb5" },
+  { id: "m6", label: "Move 6: a6" },
+  { id: "m7", label: "Move 7: Ba4" },
+  { id: "m8", label: "Move 8: Nf6" },
+  { id: "m9", label: "Move 9: O-O" },
+  { id: "m10", label: "Move 10: Be7" },
+  { id: "m11", label: "Move 11: Re1" },
+  { id: "m12", label: "Move 12: b5" },
+  { id: "m13", label: "Move 13: Bb3" },
+  { id: "m14", label: "Move 14: d6" },
+  { id: "m15", label: "Move 15: c3" },
+  { id: "m16", label: "Move 16: O-O" },
+  { id: "m17", label: "Move 17: h3" },
+  { id: "m18", label: "Move 18: Nb8" },
+  { id: "m19", label: "Move 19: d4" },
+  { id: "m20", label: "Move 20: Nbd7" },
+  { id: "m21", label: "Move 21: c4" },
+  { id: "m22", label: "Move 22: c6" },
+  { id: "m23", label: "Move 23: Nc3" },
+  { id: "m24", label: "Move 24: Qc7" },
+  { id: "m25", label: "Move 25: Be3" },
+  { id: "m26", label: "Move 26: Bb7" },
+  { id: "m27", label: "Move 27: Rc1" },
+  { id: "m28", label: "Move 28: Rfe8" },
+  { id: "m29", label: "Move 29: a3" },
+  { id: "m30", label: "Move 30: Bf8" },
 ];
 
 const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
