@@ -610,6 +610,7 @@ const BottomControls: React.FC = () => {
           <NavigationPicker showsPuzzles={isNavigationListButtonVisible} showsHomeNavigation={isDeepHomeButtonVisible} navigateHome={handleHomeClick} />
         </div>
       )}
+      {isMoveHistoryPopupVisible && <MoveHistoryPopup ref={moveHistoryPopupRef} />}
       <ControlsContainer>
         {isEndMatchButtonVisible && (
           <BottomPillButton onClick={handleEndMatchClick} isBlue={!isEndMatchConfirmed} disabled={isEndMatchConfirmed} isViewOnly={isEndMatchConfirmed}>
@@ -732,11 +733,6 @@ const BottomControls: React.FC = () => {
               </StickerPill>
             ))}
           </ReactionPillsContainer>
-        )}
-        {isMoveHistoryPopupVisible && (
-          <div ref={moveHistoryPopupRef}>
-            <MoveHistoryPopup />
-          </div>
         )}
         {isResignConfirmVisible && (
           <ResignConfirmation ref={resignConfirmRef}>
