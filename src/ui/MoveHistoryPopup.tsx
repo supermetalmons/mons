@@ -79,14 +79,6 @@ const ItemButton = styled.button`
   }
 `;
 
-const PlaceholderImage = styled.img`
-  width: 16px;
-  height: 16px;
-  flex-shrink: 0;
-`;
-
-const placeholderIcon = "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='2' y='2' width='16' height='16' rx='3' fill='%23cccccc' fill-opacity='0.6'/%3E%3C/svg%3E";
-
 const placeholderMoves = [
   { id: "m1", label: "Move 1: e4" },
   { id: "m2", label: "Move 2: e5" },
@@ -130,7 +122,6 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       <ScrollableList>
         {placeholderMoves.map((item, index) => (
           <ItemButton key={item.id} onClick={() => {}}>
-            <PlaceholderImage src={placeholderIcon} alt="" />
             {item.label}
           </ItemButton>
         ))}
