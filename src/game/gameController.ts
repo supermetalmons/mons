@@ -89,7 +89,7 @@ export async function go() {
   await initMonsWeb();
 
   playerSideColor = MonsWeb.Color.White;
-  game = MonsWeb.MonsGameModel.new();
+  game = MonsWeb.MonsGameModel.new(); // TODO: enable verbose tracking?
   initialFen = game.fen();
 
   if (experimentalDrawingDevMode) {
@@ -120,7 +120,7 @@ export async function go() {
     const snapshot = decodeURIComponent(getSnapshotIdAndClearPathIfNeeded() || "");
     const gameFromFen = MonsWeb.MonsGameModel.from_fen(snapshot);
     if (!gameFromFen) return;
-    game = gameFromFen;
+    game = gameFromFen; // TODO: enable verbose tracking?
     game.locations_with_content().forEach((loc) => {
       const location = new Location(loc.i, loc.j);
       updateLocation(location);
@@ -169,7 +169,7 @@ export function failedToCreateRematchProposal() {
 
 function rematchInLoopMode() {
   isGameOver = false;
-  game = MonsWeb.MonsGameModel.new();
+  game = MonsWeb.MonsGameModel.new(); // TODO: enable verbose tracking?
   Board.toggleBoardFlipped();
   playerSideColor = playerSideColor === MonsWeb.Color.White ? MonsWeb.Color.Black : MonsWeb.Color.White;
   Board.resetForNewGame();
@@ -196,7 +196,7 @@ export function didJustCreateRematchProposalSuccessfully(inviteId: string) {
   whiteFlatMovesString = null;
   blackFlatMovesString = null;
   playerSideColor = MonsWeb.Color.White;
-  game = MonsWeb.MonsGameModel.new();
+  game = MonsWeb.MonsGameModel.new(); // TODO: enable verbose tracking
 
   resignedColor = undefined;
   winnerByTimerColor = undefined;
@@ -616,13 +616,13 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
       const events = output.events();
 
       if (!isRemoteInput && fenBeforeMove !== "" && turnShouldBeConfirmedForOutputEvents(events, fenBeforeMove)) {
-        game = MonsWeb.MonsGameModel.from_fen(fenBeforeMove)!;
+        game = MonsWeb.MonsGameModel.from_fen(fenBeforeMove)!; // TODO: enable verbose tracking?
         const latestLocation = currentInputs[currentInputs.length - 1];
         Board.showEndTurnConfirmationOverlay(
           game.active_color() === MonsWeb.Color.Black,
           latestLocation,
           () => {
-            game = MonsWeb.MonsGameModel.from_fen(gameFen)!;
+            game = MonsWeb.MonsGameModel.from_fen(gameFen)!; // TODO: enable verbose tracking?
             applyOutput("", output, isRemoteInput, isBotInput, assistedInputKind, inputLocation);
           },
           () => {
@@ -910,7 +910,7 @@ export function playSameCompletedPuzzleAgain() {
 export function resetToTheStartOfThePuzzle() {
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(selectedProblem!.fen);
   if (!gameFromFen) return;
-  game = gameFromFen;
+  game = gameFromFen; // TODO: enable verbose tracking?
   setNewBoard();
   playSounds([Sound.Undo]);
   Board.removeHighlights();
@@ -947,6 +947,7 @@ function verifyMovesIfNeeded(matchId: string, flatMovesString: string, color: st
   }
 
   if (whiteFlatMovesString !== null && blackFlatMovesString !== null) {
+     // TODO: enable verbose tracking?
     let result = game.verify_moves(whiteFlatMovesString, blackFlatMovesString);
     if (result) {
       whiteFlatMovesString = null;
@@ -1070,7 +1071,7 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   if (!isReconnect || (isReconnect && !game.is_later_than(match.fen)) || isWatchOnly) {
     const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
     if (!gameFromFen) return;
-    game = gameFromFen;
+    game = gameFromFen; // TODO: enable verbose tracking?
     if (game.winner_color() !== undefined) {
       disableAndHideUndoResignAndTimerControls();
       hideTimerCountdownDigits();
@@ -1309,7 +1310,7 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
 
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(problem.fen);
   if (!gameFromFen) return;
-  game = gameFromFen;
+  game = gameFromFen; // TODO: enable verbose tracking?
   didStartLocalGame = true;
   setHomeVisible(true);
   setBrushAndNavigationButtonDimmed(true);
@@ -1396,7 +1397,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
     if (!game.is_later_than(match.fen)) {
       const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
       if (!gameFromFen) return;
-      game = gameFromFen;
+      game = gameFromFen; // TODO: enable verbose tracking?
       if (game.winner_color() !== undefined) {
         disableAndHideUndoResignAndTimerControls();
         hideTimerCountdownDigits();
@@ -1438,7 +1439,7 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   playerSideColor = match.color === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
   if (!gameFromFen) return;
-  game = gameFromFen;
+  game = gameFromFen; // TODO: enable verbose tracking?
   if (game.winner_color() !== undefined) {
     disableAndHideUndoResignAndTimerControls();
     hideTimerCountdownDigits();
