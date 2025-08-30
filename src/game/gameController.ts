@@ -66,7 +66,10 @@ export function didSyncTutorialProgress() {
 
 export function getVerboseTrackingEntities(): string[] {
   const entities = game.verbose_tracking_entities();
-  return entities.map((e) => String(e.events_fen()));
+  return entities.map((e) => {
+    const eventsFen = String(e.events_fen());
+    return eventsFen === "" ? "—" : eventsFen;
+  });
 }
 
 function dismissBadgeAndNotificationBannerIfNeeded() {
