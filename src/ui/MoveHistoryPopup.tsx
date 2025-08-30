@@ -6,7 +6,7 @@ const MoveHistoryPopupContainer = styled.div`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
-  min-height: 100px;
+  min-height: 23px;
   max-height: calc(100dvh - 120px - env(safe-area-inset-bottom));
   max-width: 150pt;
   display: flex;
