@@ -622,7 +622,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
 
       if (!isRemoteInput && fenBeforeMove !== "" && turnShouldBeConfirmedForOutputEvents(events, fenBeforeMove)) {
         const targetGameToConfirm = game;
-        game = MonsWeb.MonsGameModel.from_fen(fenBeforeMove)!; // TODO: use a different designated initializer that would keep moves history
+        game = game.without_last_turn()!;
         const latestLocation = currentInputs[currentInputs.length - 1];
         Board.showEndTurnConfirmationOverlay(
           game.active_color() === MonsWeb.Color.Black,
