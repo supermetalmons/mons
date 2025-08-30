@@ -89,9 +89,16 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
     items = getVerboseTrackingEntities();
   } catch {}
 
+  const listRef = React.useRef<HTMLDivElement>(null);
+  React.useEffect(() => {
+    const el = listRef.current;
+    if (!el) return;
+    el.scrollTop = el.scrollHeight;
+  }, []);
+
   return (
     <MoveHistoryPopupContainer ref={ref} onTouchMove={preventScroll}>
-      <ScrollableList>
+      <ScrollableList ref={listRef}>
         {items.map((text, index) => (
           <ItemButton key={index} onClick={() => {}}>
             {text}
