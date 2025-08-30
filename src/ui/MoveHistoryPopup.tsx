@@ -53,7 +53,6 @@ const ItemButton = styled.button`
   align-items: center;
   gap: 4px;
   line-height: 1.15;
-  text-transform: lowercase;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
