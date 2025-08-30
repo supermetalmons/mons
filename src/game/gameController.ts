@@ -64,6 +64,11 @@ export function didSyncTutorialProgress() {
   // TODO: update banner numbers if needed
 }
 
+export function getVerboseTrackingEntities(): string[] {
+  const entities = game.verbose_tracking_entities();
+  return entities.map((e) => String(e.events().length));
+}
+
 function dismissBadgeAndNotificationBannerIfNeeded() {
   setBadgeVisible(false);
   hideNotificationBanner();
