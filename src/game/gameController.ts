@@ -6,6 +6,7 @@ import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
 import { connection, isCreateNewInviteFlow, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded, isBotsLoopMode } from "../connection/connection";
 import { showMoveHistoryButton, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
+import { triggerMoveHistoryPopupReload } from "../ui/MoveHistoryPopup";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress, getInitialProblem } from "../content/problems";
@@ -822,6 +823,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             Board.removeHighlights();
             Board.hideItemSelectionOrConfirmationOverlay();
             updateUndoButtonBasedOnGameState();
+            triggerMoveHistoryPopupReload();
             return;
           case MonsWeb.EventModelKind.GameOver:
             const isVictory = !isOnlineGame || event.color === playerSideColor;
@@ -908,6 +910,8 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
       }
 
       updateUndoButtonBasedOnGameState();
+
+      triggerMoveHistoryPopupReload();
 
       break;
   }

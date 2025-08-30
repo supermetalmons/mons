@@ -2,6 +2,11 @@ import React from "react";
 import styled from "styled-components";
 import { getVerboseTrackingEntities } from "../game/gameController";
 
+let moveHistoryReloadCallback: (() => void) | null = null;
+export function triggerMoveHistoryPopupReload() {
+  if (moveHistoryReloadCallback) moveHistoryReloadCallback();
+}
+
 const MoveHistoryPopupContainer = styled.div`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
@@ -89,11 +94,19 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
     items = getVerboseTrackingEntities();
   } catch {}
 
+  const [version, setVersion] = React.useState(0);
   const listRef = React.useRef<HTMLDivElement>(null);
   React.useEffect(() => {
     const el = listRef.current;
     if (!el) return;
     el.scrollTop = el.scrollHeight;
+  }, [version, items.length]);
+
+  React.useEffect(() => {
+    moveHistoryReloadCallback = () => setVersion((v) => v + 1);
+    return () => {
+      moveHistoryReloadCallback = null;
+    };
   }, []);
 
   return (
