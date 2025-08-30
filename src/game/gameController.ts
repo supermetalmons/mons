@@ -960,6 +960,7 @@ function verifyMovesIfNeeded(matchId: string, flatMovesString: string, color: st
     if (result) {
       whiteFlatMovesString = null;
       blackFlatMovesString = null;
+      showMoveHistoryButton(true);
     }
   }
 }
@@ -1105,11 +1106,11 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     handleResignStatus(true, match.color);
   } else if (!isWatchOnly && !isGameOver && !thereIsWinner) {
     showResignButton();
+    showMoveHistoryButton(true);
     if (isPlayerSideTurn()) {
       hideTimerButtons();
       setUndoVisible(true);
       setAutomoveActionVisible(true);
-      showMoveHistoryButton(true);
     } else {
       showTimerButtonProgressing(0, 90, true);
     }
