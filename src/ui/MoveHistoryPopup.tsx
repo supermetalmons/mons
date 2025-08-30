@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { getVerboseTrackingEntities } from "../game/gameController";
+import { getVerboseTrackingEntities, didSelectVerboseTrackingEntity, didDismissMoveHistoryPopup } from "../game/gameController";
 
 let moveHistoryReloadCallback: (() => void) | null = null;
 export function triggerMoveHistoryPopupReload() {
@@ -106,6 +106,9 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
     moveHistoryReloadCallback = () => setVersion((v) => v + 1);
     return () => {
       moveHistoryReloadCallback = null;
+      try {
+        didDismissMoveHistoryPopup();
+      } catch {}
     };
   }, []);
 
@@ -113,7 +116,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
     <MoveHistoryPopupContainer ref={ref} onTouchMove={preventScroll}>
       <ScrollableList ref={listRef}>
         {items.map((text, index) => (
-          <ItemButton key={index} onClick={() => {}}>
+          <ItemButton key={index} onClick={() => didSelectVerboseTrackingEntity(index)}>
             {text}
           </ItemButton>
         ))}
