@@ -20,8 +20,6 @@ import MoveHistoryPopup from "./MoveHistoryPopup";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 
-const movesHistoryDisabled = true; // TODO: dev tmp
-
 export enum PrimaryActionType {
   None = "none",
   JoinGame = "joinGame",
@@ -289,9 +287,6 @@ const BottomControls: React.FC = () => {
   };
 
   showMoveHistoryButton = (show: boolean) => {
-    if (movesHistoryDisabled) {
-      return;
-    }
     setIsMoveHistoryButtonVisible(show);
   };
 
@@ -615,6 +610,7 @@ const BottomControls: React.FC = () => {
           <NavigationPicker showsPuzzles={isNavigationListButtonVisible} showsHomeNavigation={isDeepHomeButtonVisible} navigateHome={handleHomeClick} />
         </div>
       )}
+      {isMoveHistoryPopupVisible && <MoveHistoryPopup ref={moveHistoryPopupRef} />}
       <ControlsContainer>
         {isEndMatchButtonVisible && (
           <BottomPillButton onClick={handleEndMatchClick} isBlue={!isEndMatchConfirmed} disabled={isEndMatchConfirmed} isViewOnly={isEndMatchConfirmed}>
@@ -705,6 +701,11 @@ const BottomControls: React.FC = () => {
             <IoSparklesSharp />
           </ControlButton>
         )}
+        {isMoveHistoryButtonVisible && (
+          <ControlButton onClick={!isMobile ? toggleMoveHistoryPopup : undefined} onTouchStart={isMobile ? toggleMoveHistoryPopup : undefined} aria-label="Move History" ref={moveHistoryButtonRef}>
+            <FaScroll />
+          </ControlButton>
+        )}
         {isVoiceReactionButtonVisible && (
           <ControlButton onClick={!isMobile ? toggleReactionPicker : undefined} onTouchStart={isMobile ? toggleReactionPicker : undefined} aria-label="Voice Reaction" ref={voiceReactionButtonRef} disabled={isVoiceReactionDisabled}>
             <FaCommentAlt />
@@ -713,11 +714,6 @@ const BottomControls: React.FC = () => {
         {isResignButtonVisible && (
           <ControlButton onClick={handleResignClick} aria-label="Resign" ref={resignButtonRef} disabled={false}>
             <FaFlag />
-          </ControlButton>
-        )}
-        {isMoveHistoryButtonVisible && (
-          <ControlButton onClick={!isMobile ? toggleMoveHistoryPopup : undefined} onTouchStart={isMobile ? toggleMoveHistoryPopup : undefined} aria-label="Move History" ref={moveHistoryButtonRef}>
-            <FaScroll />
           </ControlButton>
         )}
         <NavigationListButton ref={navigationButtonRef} dimmed={isNavigationButtonDimmed} onClick={!isMobile ? handleNavigationButtonClick : undefined} onTouchStart={isMobile ? handleNavigationButtonClick : undefined} aria-label="Navigation">
@@ -737,11 +733,6 @@ const BottomControls: React.FC = () => {
               </StickerPill>
             ))}
           </ReactionPillsContainer>
-        )}
-        {isMoveHistoryPopupVisible && (
-          <div ref={moveHistoryPopupRef}>
-            <MoveHistoryPopup />
-          </div>
         )}
         {isResignConfirmVisible && (
           <ResignConfirmation ref={resignConfirmRef}>

@@ -1,11 +1,11 @@
 import initMonsWeb, * as MonsWeb from "mons-web";
-import { playerSideMetadata, opponentSideMetadata, showVoiceReactionText, setupPlayerId, hideAllMoveStatuses, hideTimerCountdownDigits, showTimer } from "./board";
 import * as Board from "./board";
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
 import { connection, isCreateNewInviteFlow, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded, isBotsLoopMode } from "../connection/connection";
 import { showMoveHistoryButton, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
+import { triggerMoveHistoryPopupReload } from "../ui/MoveHistoryPopup";
 import { Match } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress, getInitialProblem } from "../content/problems";
@@ -39,6 +39,8 @@ let whiteFlatMovesString: string | null = null;
 let blackFlatMovesString: string | null = null;
 
 let game: MonsWeb.MonsGameModel;
+let flashbackMode = false;
+let flashbackStateGame: MonsWeb.MonsGameModel;
 let botPlayerColor: MonsWeb.Color;
 let playerSideColor: MonsWeb.Color;
 let resignedColor: MonsWeb.Color | undefined;
@@ -62,6 +64,42 @@ export function didSyncTutorialProgress() {
     dismissBadgeAndNotificationBannerIfNeeded();
   }
   // TODO: update banner numbers if needed
+}
+
+export function getVerboseTrackingEntities(): string[] {
+  const entities = game.verbose_tracking_entities();
+  if (entities.length === 0) {
+    return ["—"];
+  }
+  return entities.map((e) => {
+    const eventsFen = String(e.events_fen());
+    return eventsFen === "" ? "—" : eventsFen;
+  });
+}
+
+export function didSelectVerboseTrackingEntity(index: number) {
+  const entities = game.verbose_tracking_entities();
+  if (index < 0 || index >= entities.length) {
+    return;
+  }
+  const entity = entities[index];
+  const eventsFen = String(entity.events_fen());
+  console.log(eventsFen);
+
+  flashbackMode = true;
+  const gameFen = entity.fen();
+  flashbackStateGame = MonsWeb.MonsGameModel.from_fen(gameFen)!;
+  currentInputs = [];
+  Board.removeHighlights();
+  Board.hideItemSelectionOrConfirmationOverlay();
+  setNewBoard(true);
+}
+
+export function didDismissMoveHistoryPopup() {
+  if (flashbackMode) {
+    flashbackMode = false;
+    setNewBoard(false);
+  }
 }
 
 function dismissBadgeAndNotificationBannerIfNeeded() {
@@ -175,7 +213,7 @@ function rematchInLoopMode() {
   Board.resetForNewGame();
   Board.didToggleItemsStyleSet(false);
   Board.showRandomEmojisForLoopMode();
-  setNewBoard();
+  setNewBoard(false);
   automove();
 }
 
@@ -242,7 +280,7 @@ export function didClickStartBotGameButton() {
   Board.setBoardFlipped(true);
   Board.showOpponentAsBotPlayer();
   Board.resetForNewGame();
-  setNewBoard();
+  setNewBoard(false);
   botPlayerColor = MonsWeb.Color.White;
   playerSideColor = MonsWeb.Color.Black;
   isGameWithBot = true;
@@ -272,7 +310,7 @@ export function didClickAutomatchButton() {
   setNavigationListButtonVisible(false);
   Board.hideBoardPlayersInfo();
   Board.removeHighlights();
-  hideAllMoveStatuses();
+  Board.hideAllMoveStatuses();
   isWaitingForInviteToGetAccepted = true;
   Board.runMonsBoardAsDisplayWaitingAnimation();
 
@@ -306,7 +344,7 @@ function showRematchInterface() {
 export function showItemsAfterChangingAssetsStyle() {
   game.locations_with_content().forEach((loc) => {
     const location = new Location(loc.i, loc.j);
-    updateLocation(location);
+    updateLocation(location, flashbackMode);
   });
 
   const inputsToReapply = currentInputs;
@@ -616,13 +654,14 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
       const events = output.events();
 
       if (!isRemoteInput && fenBeforeMove !== "" && turnShouldBeConfirmedForOutputEvents(events, fenBeforeMove)) {
-        game = MonsWeb.MonsGameModel.from_fen(fenBeforeMove)!;
+        const targetGameToConfirm = game;
+        game = game.without_last_turn()!;
         const latestLocation = currentInputs[currentInputs.length - 1];
         Board.showEndTurnConfirmationOverlay(
           game.active_color() === MonsWeb.Color.Black,
           latestLocation,
           () => {
-            game = MonsWeb.MonsGameModel.from_fen(gameFen)!;
+            game = targetGameToConfirm;
             applyOutput("", output, isRemoteInput, isBotInput, assistedInputKind, inputLocation);
           },
           () => {
@@ -688,16 +727,20 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
               sounds.push(Sound.ScoreMana);
             }
             locationsToUpdate.push(from);
-            Board.indicateWaterSplash(from);
+            if (!flashbackMode) {
+              Board.indicateWaterSplash(from);
+              Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
+            }
             mustReleaseHighlight = true;
-            Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
             break;
           case MonsWeb.EventModelKind.MysticAction:
             if (!from || !to) break;
             sounds.push(Sound.MysticAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            Board.indicateElectricHit(to);
+            if (!flashbackMode) {
+              Board.indicateElectricHit(to);
+            }
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.DemonAction:
@@ -705,7 +748,9 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.DemonAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            Board.indicateFlameGround(to);
+            if (!flashbackMode) {
+              Board.indicateFlameGround(to);
+            }
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.DemonAdditionalStep:
@@ -719,7 +764,9 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.SpiritAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            Board.indicateSpiritAction(to);
+            if (!flashbackMode) {
+              Board.indicateSpiritAction(to);
+            }
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.PickupBomb:
@@ -729,7 +776,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             mustReleaseHighlight = true;
             break;
           case MonsWeb.EventModelKind.UsePotion:
-            if (from) {
+            if (from && !flashbackMode) {
               Board.indicatePotionUsage(from);
             }
             break;
@@ -763,7 +810,9 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.Bomb);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            Board.indicateBombExplosion(to);
+            if (!flashbackMode) {
+              Board.indicateBombExplosion(to);
+            }
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.MonAwake:
@@ -773,7 +822,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             break;
           case MonsWeb.EventModelKind.BombExplosion:
             sounds.push(Sound.Bomb);
-            if (from) {
+            if (from && !flashbackMode) {
               Board.indicateBombExplosion(from);
               locationsToUpdate.push(from);
             }
@@ -802,14 +851,15 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
                 }
               }
             }
-            hideTimerCountdownDigits();
+            Board.hideTimerCountdownDigits();
             break;
           case MonsWeb.EventModelKind.Takeback:
-            setNewBoard();
+            setNewBoard(false);
             playSounds([Sound.Undo]);
             Board.removeHighlights();
             Board.hideItemSelectionOrConfirmationOverlay();
             updateUndoButtonBasedOnGameState();
+            triggerMoveHistoryPopupReload();
             return;
           case MonsWeb.EventModelKind.GameOver:
             const isVictory = !isOnlineGame || event.color === playerSideColor;
@@ -830,7 +880,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
 
             isGameOver = true;
             disableAndHideUndoResignAndTimerControls();
-            hideTimerCountdownDigits();
+            Board.hideTimerCountdownDigits();
             showRematchInterface();
 
             if (puzzleMode) {
@@ -861,13 +911,15 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
         }
       }
 
-      if (game.winner_color() !== undefined || resignedColor !== undefined) {
-        hideAllMoveStatuses();
-      } else {
-        updateBoardMoveStatuses();
+      if (!flashbackMode) {
+        if (game.winner_color() !== undefined || resignedColor !== undefined) {
+          Board.hideAllMoveStatuses();
+        } else {
+          updateBoardMoveStatuses();
+        }
       }
 
-      if (isRemoteInput || isBotInput) {
+      if (!flashbackMode && (isRemoteInput || isBotInput)) {
         for (const trace of traces) {
           Board.drawTrace(trace);
         }
@@ -875,7 +927,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
 
       playSounds(sounds);
 
-      if (popOpponentsEmoji) {
+      if (!flashbackMode && popOpponentsEmoji) {
         Board.popOpponentsEmoji();
       }
 
@@ -897,6 +949,8 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
 
       updateUndoButtonBasedOnGameState();
 
+      triggerMoveHistoryPopupReload();
+
       break;
   }
 }
@@ -911,7 +965,7 @@ export function resetToTheStartOfThePuzzle() {
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(selectedProblem!.fen);
   if (!gameFromFen) return;
   game = gameFromFen;
-  setNewBoard();
+  setNewBoard(false);
   playSounds([Sound.Undo]);
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
@@ -924,8 +978,8 @@ export function didClickAutomoveButton() {
 }
 
 function hasBothEthOrSolAddresses(): boolean {
-  const playerSide = playerSideMetadata.ethAddress ?? playerSideMetadata.solAddress;
-  const opponentSide = opponentSideMetadata.ethAddress ?? opponentSideMetadata.solAddress;
+  const playerSide = Board.playerSideMetadata.ethAddress ?? Board.playerSideMetadata.solAddress;
+  const opponentSide = Board.opponentSideMetadata.ethAddress ?? Board.opponentSideMetadata.solAddress;
   return playerSide !== undefined && opponentSide !== undefined && playerSide !== opponentSide;
 }
 
@@ -951,6 +1005,7 @@ function verifyMovesIfNeeded(matchId: string, flatMovesString: string, color: st
     if (result) {
       whiteFlatMovesString = null;
       blackFlatMovesString = null;
+      showMoveHistoryButton(true);
     }
   }
 }
@@ -968,8 +1023,8 @@ function updateRatingsLocally(isWin: boolean) {
     return;
   }
 
-  const playerSide = playerSideMetadata.uid;
-  const opponentSide = opponentSideMetadata.uid;
+  const playerSide = Board.playerSideMetadata.uid;
+  const opponentSide = Board.opponentSideMetadata.uid;
 
   const victoryUid = isWin ? playerSide : opponentSide;
   const defeatUid = isWin ? opponentSide : playerSide;
@@ -1018,13 +1073,19 @@ function processInput(assistedInputKind: AssistedInputKind, inputModifier: Input
   applyOutput(fenBeforeMove, output, false, false, assistedInputKind, inputLocation);
 }
 
-function updateLocation(location: Location) {
+function updateLocation(location: Location, inFlashbackMode: boolean = false) {
+  if (flashbackMode && !inFlashbackMode) {
+    return;
+  }
+
+  const displayGame = flashbackMode ? flashbackStateGame : game;
+
   Board.removeItem(location);
-  const item = game.item(new MonsWeb.Location(location.i, location.j));
+  const item = displayGame.item(new MonsWeb.Location(location.i, location.j));
   if (item !== undefined) {
     Board.putItem(item, location);
   } else {
-    const square = game.square(new MonsWeb.Location(location.i, location.j));
+    const square = displayGame.square(new MonsWeb.Location(location.i, location.j));
     if (square !== undefined) {
       Board.setupSquare(square, location);
     }
@@ -1055,10 +1116,10 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
 
   if (isWatchOnly) {
     playerSideColor = MonsWeb.Color.White;
-    setupPlayerId(matchPlayerUid, match.color === "black");
+    Board.setupPlayerId(matchPlayerUid, match.color === "black");
   } else {
     playerSideColor = match.color === "white" ? MonsWeb.Color.Black : MonsWeb.Color.White;
-    setupPlayerId(matchPlayerUid, true);
+    Board.setupPlayerId(matchPlayerUid, true);
   }
 
   if (!isWatchOnly) {
@@ -1073,7 +1134,7 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     game = gameFromFen;
     if (game.winner_color() !== undefined) {
       disableAndHideUndoResignAndTimerControls();
-      hideTimerCountdownDigits();
+      Board.hideTimerCountdownDigits();
     }
   }
 
@@ -1088,7 +1149,7 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     processedVoiceReactions.add(match.reaction.uuid);
   }
 
-  setNewBoard();
+  setNewBoard(false);
   updateUndoButtonBasedOnGameState();
   const thereIsWinner = game.winner_color() !== undefined;
 
@@ -1096,11 +1157,11 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     handleResignStatus(true, match.color);
   } else if (!isWatchOnly && !isGameOver && !thereIsWinner) {
     showResignButton();
+    showMoveHistoryButton(true);
     if (isPlayerSideTurn()) {
       hideTimerButtons();
       setUndoVisible(true);
       setAutomoveActionVisible(true);
-      showMoveHistoryButton(true);
     } else {
       showTimerButtonProgressing(0, 90, true);
     }
@@ -1149,7 +1210,7 @@ function showTimerCountdown(onConnect: boolean, timer: any, timerColor: string, 
         if (duration !== undefined && duration !== null) {
           delta = Math.min(Math.floor(duration / 1000), delta);
         }
-        showTimer(timerColor, delta);
+        Board.showTimer(timerColor, delta);
         if (!isWatchOnly && !isPlayerSideTurn()) {
           const target = 90;
           showTimerButtonProgressing(target - delta, target, false);
@@ -1172,20 +1233,25 @@ function updateBoardMoveStatuses() {
   Board.updateMoveStatuses(game.active_color(), game.available_move_kinds(), game.inactive_player_items_counters());
 }
 
-function setNewBoard() {
-  Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
-  if (game.winner_color() !== undefined || resignedColor !== undefined) {
-    hideAllMoveStatuses();
+function setNewBoard(inFlashbackMode: boolean) {
+  if (flashbackMode && !inFlashbackMode) {
+    return;
+  }
+
+  const displayGame = flashbackMode ? flashbackStateGame : game;
+  Board.updateScore(displayGame.white_score(), displayGame.black_score(), displayGame.winner_color(), resignedColor, winnerByTimerColor);
+  if (!flashbackMode && (displayGame.winner_color() !== undefined || resignedColor !== undefined)) {
+    Board.hideAllMoveStatuses();
     disableAndHideUndoResignAndTimerControls();
     showRematchInterface();
   } else {
     updateBoardMoveStatuses();
   }
-  const locationsWithContent = game.locations_with_content().map((loc) => new Location(loc.i, loc.j));
+  const locationsWithContent = displayGame.locations_with_content().map((loc) => new Location(loc.i, loc.j));
   Board.removeItemsNotPresentIn(locationsWithContent);
   locationsWithContent.forEach((loc) => {
     const location = new Location(loc.i, loc.j);
-    updateLocation(location);
+    updateLocation(location, inFlashbackMode);
   });
 }
 
@@ -1210,9 +1276,9 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
 
   isGameOver = true;
 
-  hideTimerCountdownDigits();
+  Board.hideTimerCountdownDigits();
   disableAndHideUndoResignAndTimerControls();
-  hideAllMoveStatuses();
+  Board.hideAllMoveStatuses();
 
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
@@ -1257,9 +1323,9 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
     }
   }
 
-  hideTimerCountdownDigits();
+  Board.hideTimerCountdownDigits();
   disableAndHideUndoResignAndTimerControls();
-  hideAllMoveStatuses();
+  Board.hideAllMoveStatuses();
 
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
@@ -1282,7 +1348,7 @@ export function didClickInviteActionButtonBeforeThereIsInviteReady() {
   showMoveHistoryButton(false);
   Board.hideBoardPlayersInfo();
   Board.removeHighlights();
-  hideAllMoveStatuses();
+  Board.hideAllMoveStatuses();
   isWaitingForInviteToGetAccepted = true;
   Board.runMonsBoardAsDisplayWaitingAnimation();
 }
@@ -1320,7 +1386,7 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
   showVoiceReactionButton(true);
   closeNavigationAndAppearancePopupIfAny();
 
-  setNewBoard();
+  setNewBoard(false);
 
   puzzleMode = true;
   selectedProblem = problem;
@@ -1362,7 +1428,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
   }
 
   const isOpponentSide = isWatchOnly ? match.color === "black" : true;
-  setupPlayerId(matchPlayerUid, isOpponentSide);
+  Board.setupPlayerId(matchPlayerUid, isOpponentSide);
   Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, isOpponentSide);
 
   if (match.reaction && match.reaction.uuid && !processedVoiceReactions.has(match.reaction.uuid)) {
@@ -1378,7 +1444,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
         playSounds([Sound.EmoteReceived]);
         showVideoReaction(showReactionAtOpponentSide, match.reaction.variation);
       } else {
-        showVoiceReactionText(match.reaction.kind, showReactionAtOpponentSide);
+        Board.showVoiceReactionText(match.reaction.kind, showReactionAtOpponentSide);
         playReaction(match.reaction);
       }
       lastReactionTime = currentTime;
@@ -1399,9 +1465,9 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
       game = gameFromFen;
       if (game.winner_color() !== undefined) {
         disableAndHideUndoResignAndTimerControls();
-        hideTimerCountdownDigits();
+        Board.hideTimerCountdownDigits();
       }
-      setNewBoard();
+      setNewBoard(false);
     }
 
     verifyMovesIfNeeded(matchId, match.flatMovesString, match.color);
@@ -1441,7 +1507,7 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   game = gameFromFen;
   if (game.winner_color() !== undefined) {
     disableAndHideUndoResignAndTimerControls();
-    hideTimerCountdownDigits();
+    Board.hideTimerCountdownDigits();
   }
   verifyMovesIfNeeded(matchId, match.flatMovesString, match.color);
   const movesCount = movesCountOfMatch(match);
