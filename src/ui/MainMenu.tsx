@@ -3,6 +3,7 @@ import { logoBase64 } from "../content/uiAssets";
 import { didDismissSomethingWithOutsideTapJustNow, didNotDismissAnythingWithOutsideTapJustNow, closeNavigationAndAppearancePopupIfAny } from "./BottomControls";
 import styled from "styled-components";
 import { defaultEarlyInputEventName, isMobile, getBuildInfo } from "../utils/misc";
+import { storage } from "../utils/storage";
 import { Leaderboard } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
@@ -383,6 +384,19 @@ const ExperimentButton = styled.button`
   }
 `;
 
+const ToggleRow = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: center;
+  font-size: 14px;
+  color: var(--color-gray-33);
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-gray-f5);
+  }
+`;
+
 const CopyBoardButton = styled.button`
   background: none;
   border: none;
@@ -507,6 +521,7 @@ const MainMenu: React.FC = () => {
   const [showExperimental, setShowExperimental] = useState(false);
   const [copyButtonText, setCopyButtonText] = useState("copy board snapshot");
   const [isNftSubmenuExpanded, setIsNftSubmenuExpanded] = useState(false);
+  const [isDebugViewEnabled, setIsDebugViewEnabled] = useState<boolean>(storage.getDebugViewEnabled(false));
   const buttonRowRef = useRef<HTMLDivElement>(null);
   const lastClickTime = useRef(0);
   const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
@@ -642,6 +657,12 @@ const MainMenu: React.FC = () => {
       startPlayingMusic();
       setIsMusicPlaying(true);
     }
+  };
+
+  const handleDebugViewToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
+    setIsDebugViewEnabled(checked);
+    storage.setDebugViewEnabled(checked);
   };
 
   toggleInfoVisibility = () => {
@@ -831,6 +852,10 @@ const MainMenu: React.FC = () => {
                   pangchiu
                 </ExperimentButton>
                 <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
+                <ToggleRow>
+                  <input type="checkbox" checked={isDebugViewEnabled} onChange={handleDebugViewToggle} />
+                  show inspector
+                </ToggleRow>
                 <BuildInfo>{getBuildInfo()}</BuildInfo>
               </ExperimentalMenu>
             )}

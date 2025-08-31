@@ -6,6 +6,7 @@ const STORAGE_KEYS = {
   PREFERRED_ASSETS_SET: "preferredAssetsSet",
   BOARD_COLOR_SET: "boardColorSet",
   IS_EXPERIMENTING_WITH_SPRITES: "isExperimentingWithSprites",
+  DEBUG_VIEW_ENABLED: "debugViewEnabled",
 
   PLAYER_EMOJI_ID: "playerEmojiId",
   PLAYER_EMOJI_AURA: "playerEmojiAura",
@@ -76,6 +77,14 @@ export const storage = {
 
   setIsExperimentingWithSprites: (value: boolean): void => {
     setItem(STORAGE_KEYS.IS_EXPERIMENTING_WITH_SPRITES, value);
+  },
+
+  getDebugViewEnabled: (defaultValue: boolean): boolean => {
+    return getItem(STORAGE_KEYS.DEBUG_VIEW_ENABLED, defaultValue);
+  },
+
+  setDebugViewEnabled: (value: boolean): void => {
+    setItem(STORAGE_KEYS.DEBUG_VIEW_ENABLED, value);
   },
 
   getPlayerEmojiId: (defaultValue: string): string => {
