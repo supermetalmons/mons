@@ -727,16 +727,16 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
               sounds.push(Sound.ScoreMana);
             }
             locationsToUpdate.push(from);
-            Board.indicateWaterSplash(from);
+            Board.indicateWaterSplash(from); // TODO: not in a flashbackMode
             mustReleaseHighlight = true;
-            Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
+            Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor); // TODO: not in a flashbackMode
             break;
           case MonsWeb.EventModelKind.MysticAction:
             if (!from || !to) break;
             sounds.push(Sound.MysticAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            Board.indicateElectricHit(to);
+            Board.indicateElectricHit(to); // TODO: not in a flashbackMode
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.DemonAction:
@@ -744,7 +744,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.DemonAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            Board.indicateFlameGround(to);
+            Board.indicateFlameGround(to); // TODO: not in a flashbackMode
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.DemonAdditionalStep:
@@ -758,7 +758,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.SpiritAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            Board.indicateSpiritAction(to);
+            Board.indicateSpiritAction(to); // TODO: not in a flashbackMode
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.PickupBomb:
@@ -769,7 +769,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             break;
           case MonsWeb.EventModelKind.UsePotion:
             if (from) {
-              Board.indicatePotionUsage(from);
+              Board.indicatePotionUsage(from); // TODO: not in a flashbackMode
             }
             break;
           case MonsWeb.EventModelKind.PickupPotion:
@@ -802,7 +802,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.Bomb);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            Board.indicateBombExplosion(to);
+            Board.indicateBombExplosion(to); // TODO: not in a flashbackMode
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.MonAwake:
@@ -813,7 +813,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
           case MonsWeb.EventModelKind.BombExplosion:
             sounds.push(Sound.Bomb);
             if (from) {
-              Board.indicateBombExplosion(from);
+              Board.indicateBombExplosion(from); // TODO: not in a flashbackMode
               locationsToUpdate.push(from);
             }
             break;
@@ -901,13 +901,14 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
         }
       }
 
+       // TODO: not in a flashbackMode
       if (game.winner_color() !== undefined || resignedColor !== undefined) {
         Board.hideAllMoveStatuses();
       } else {
         updateBoardMoveStatuses();
       }
 
-      if (isRemoteInput || isBotInput) {
+      if (!flashbackMode && (isRemoteInput || isBotInput)) {
         for (const trace of traces) {
           Board.drawTrace(trace);
         }
@@ -916,7 +917,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
       playSounds(sounds);
 
       if (popOpponentsEmoji) {
-        Board.popOpponentsEmoji();
+        Board.popOpponentsEmoji(); // TODO: not in a flashbackMode
       }
 
       if (mightKeepHighlightOnLocation !== undefined && !mustReleaseHighlight) {
