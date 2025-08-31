@@ -499,6 +499,22 @@ const MusicControlButton = styled.button`
   }
 `;
 
+const DebugView = styled.div`
+  position: fixed;
+  bottom: 50px;
+  right: 9pt;
+  width: 220px;
+  height: 220px;
+  background: #000;
+  border: 3px solid #00ff00;
+  border-radius: 16px;
+  color: #00ff00;
+  padding: 10px;
+  overflow: auto;
+  white-space: pre-wrap;
+  z-index: 50000;
+`;
+
 let getIsMenuOpen: () => boolean;
 let getIsInfoOpen: () => boolean;
 let getIsMusicOpen: () => boolean;
@@ -911,6 +927,7 @@ const MainMenu: React.FC = () => {
           </MusicControlButton>
         </MusicControlsContainer>
       </MusicPopover>
+      {isDebugViewEnabled && <DebugView>{Array.from({ length: 100 }, () => new Date().toString()).join("\n")}</DebugView>}
     </>
   );
 };
