@@ -39,6 +39,8 @@ let whiteFlatMovesString: string | null = null;
 let blackFlatMovesString: string | null = null;
 
 let game: MonsWeb.MonsGameModel;
+let flashbackMode = false;
+let flashbackStateGame: MonsWeb.MonsGameModel;
 let botPlayerColor: MonsWeb.Color;
 let playerSideColor: MonsWeb.Color;
 let resignedColor: MonsWeb.Color | undefined;
@@ -84,12 +86,20 @@ export function didSelectVerboseTrackingEntity(index: number) {
   const eventsFen = String(entity.events_fen());
   console.log(eventsFen);
 
+  flashbackMode = true;
   const gameFen = entity.fen();
-  // TODO: display selected board state, enter history mode
+  flashbackStateGame = MonsWeb.MonsGameModel.from_fen(gameFen)!;
+  currentInputs = [];
+  Board.removeHighlights();
+  Board.hideItemSelectionOrConfirmationOverlay();
+  setNewBoard(true);
 }
 
 export function didDismissMoveHistoryPopup() {
-  // TODO: if in navigation mode, switch to normal mode, display latest board state
+  if (flashbackMode) {
+    flashbackMode = false;
+    setNewBoard(false);
+  }
 }
 
 function dismissBadgeAndNotificationBannerIfNeeded() {
@@ -203,7 +213,7 @@ function rematchInLoopMode() {
   Board.resetForNewGame();
   Board.didToggleItemsStyleSet(false);
   Board.showRandomEmojisForLoopMode();
-  setNewBoard();
+  setNewBoard(false);
   automove();
 }
 
@@ -270,7 +280,7 @@ export function didClickStartBotGameButton() {
   Board.setBoardFlipped(true);
   Board.showOpponentAsBotPlayer();
   Board.resetForNewGame();
-  setNewBoard();
+  setNewBoard(false);
   botPlayerColor = MonsWeb.Color.White;
   playerSideColor = MonsWeb.Color.Black;
   isGameWithBot = true;
@@ -334,7 +344,7 @@ function showRematchInterface() {
 export function showItemsAfterChangingAssetsStyle() {
   game.locations_with_content().forEach((loc) => {
     const location = new Location(loc.i, loc.j);
-    updateLocation(location);
+    updateLocation(location, flashbackMode);
   });
 
   const inputsToReapply = currentInputs;
@@ -834,7 +844,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             Board.hideTimerCountdownDigits();
             break;
           case MonsWeb.EventModelKind.Takeback:
-            setNewBoard();
+            setNewBoard(false);
             playSounds([Sound.Undo]);
             Board.removeHighlights();
             Board.hideItemSelectionOrConfirmationOverlay();
@@ -943,7 +953,7 @@ export function resetToTheStartOfThePuzzle() {
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(selectedProblem!.fen);
   if (!gameFromFen) return;
   game = gameFromFen;
-  setNewBoard();
+  setNewBoard(false);
   playSounds([Sound.Undo]);
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
@@ -1051,13 +1061,19 @@ function processInput(assistedInputKind: AssistedInputKind, inputModifier: Input
   applyOutput(fenBeforeMove, output, false, false, assistedInputKind, inputLocation);
 }
 
-function updateLocation(location: Location) {
+function updateLocation(location: Location, inFlashbackMode: boolean = false) {
+  if (flashbackMode && !inFlashbackMode) {
+    return;
+  }
+
+  const displayGame = flashbackMode ? flashbackStateGame : game;
+
   Board.removeItem(location);
-  const item = game.item(new MonsWeb.Location(location.i, location.j));
+  const item = displayGame.item(new MonsWeb.Location(location.i, location.j));
   if (item !== undefined) {
     Board.putItem(item, location);
   } else {
-    const square = game.square(new MonsWeb.Location(location.i, location.j));
+    const square = displayGame.square(new MonsWeb.Location(location.i, location.j));
     if (square !== undefined) {
       Board.setupSquare(square, location);
     }
@@ -1121,7 +1137,7 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     processedVoiceReactions.add(match.reaction.uuid);
   }
 
-  setNewBoard();
+  setNewBoard(false);
   updateUndoButtonBasedOnGameState();
   const thereIsWinner = game.winner_color() !== undefined;
 
@@ -1205,20 +1221,25 @@ function updateBoardMoveStatuses() {
   Board.updateMoveStatuses(game.active_color(), game.available_move_kinds(), game.inactive_player_items_counters());
 }
 
-function setNewBoard() {
-  Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
-  if (game.winner_color() !== undefined || resignedColor !== undefined) {
+function setNewBoard(inFlashbackMode: boolean) {
+  if (flashbackMode && !inFlashbackMode) {
+    return;
+  }
+
+  const displayGame = flashbackMode ? flashbackStateGame : game;
+  Board.updateScore(displayGame.white_score(), displayGame.black_score(), displayGame.winner_color(), resignedColor, winnerByTimerColor);
+  if (!flashbackMode && (displayGame.winner_color() !== undefined || resignedColor !== undefined)) {
     Board.hideAllMoveStatuses();
     disableAndHideUndoResignAndTimerControls();
     showRematchInterface();
   } else {
     updateBoardMoveStatuses();
   }
-  const locationsWithContent = game.locations_with_content().map((loc) => new Location(loc.i, loc.j));
+  const locationsWithContent = displayGame.locations_with_content().map((loc) => new Location(loc.i, loc.j));
   Board.removeItemsNotPresentIn(locationsWithContent);
   locationsWithContent.forEach((loc) => {
     const location = new Location(loc.i, loc.j);
-    updateLocation(location);
+    updateLocation(location, inFlashbackMode);
   });
 }
 
@@ -1353,7 +1374,7 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
   showVoiceReactionButton(true);
   closeNavigationAndAppearancePopupIfAny();
 
-  setNewBoard();
+  setNewBoard(false);
 
   puzzleMode = true;
   selectedProblem = problem;
@@ -1434,7 +1455,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
         disableAndHideUndoResignAndTimerControls();
         Board.hideTimerCountdownDigits();
       }
-      setNewBoard();
+      setNewBoard(false);
     }
 
     verifyMovesIfNeeded(matchId, match.flatMovesString, match.color);
