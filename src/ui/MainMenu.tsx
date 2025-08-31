@@ -501,18 +501,21 @@ const MusicControlButton = styled.button`
 
 const DebugView = styled.div`
   position: fixed;
-  bottom: 50px;
-  right: 9pt;
-  width: 220px;
-  height: 220px;
+  top: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 32px;
   background: #000;
   border: 3px solid #00ff00;
   border-radius: 16px;
   color: #00ff00;
+  text-align: left;
+  font-weight: bold;
   padding: 10px;
   overflow: auto;
   white-space: pre-wrap;
-  z-index: 50000;
+  z-index: 1;
 `;
 
 let getIsMenuOpen: () => boolean;
@@ -523,6 +526,7 @@ export let toggleMusicVisibility: () => void;
 export let closeMenuAndInfoIfAny: () => void;
 export let closeMenuAndInfoIfAllowedForEvent: (event: TouchEvent | MouseEvent) => void;
 export let setIsMusicPlayingGlobal: (playing: boolean) => void;
+export let setDebugViewText: (text: string) => void;
 
 export function hasMainMenuPopupsVisible(): boolean {
   return getIsMenuOpen() || getIsInfoOpen() || getIsMusicOpen();
@@ -538,6 +542,7 @@ const MainMenu: React.FC = () => {
   const [copyButtonText, setCopyButtonText] = useState("copy board snapshot");
   const [isNftSubmenuExpanded, setIsNftSubmenuExpanded] = useState(false);
   const [isDebugViewEnabled, setIsDebugViewEnabled] = useState<boolean>(storage.getDebugViewEnabled(false));
+  const [debugViewText, setDebugViewTextState] = useState<string>("");
   const buttonRowRef = useRef<HTMLDivElement>(null);
   const lastClickTime = useRef(0);
   const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
@@ -699,6 +704,10 @@ const MainMenu: React.FC = () => {
       setIsInfoOpen(false);
     }
     setIsMusicOpen(!isMusicOpen);
+  };
+
+  setDebugViewText = (text: string) => {
+    setDebugViewTextState(text);
   };
 
   closeMenuAndInfoIfAny = () => {
@@ -927,7 +936,7 @@ const MainMenu: React.FC = () => {
           </MusicControlButton>
         </MusicControlsContainer>
       </MusicPopover>
-      {isDebugViewEnabled && <DebugView>{Array.from({ length: 100 }, () => new Date().toString()).join("\n")}</DebugView>}
+      {isDebugViewEnabled && <DebugView>{debugViewText || "~"}</DebugView>}
     </>
   );
 };
