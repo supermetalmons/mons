@@ -72,9 +72,57 @@ export function getVerboseTrackingEntities(): string[] {
     return ["—"];
   }
   return entities.map((e) => {
-    const eventsFen = String(e.events_fen());
-    return eventsFen === "" ? "—" : eventsFen;
+    const events = e.events();
+    const result = events.map(eventToEmoji).join(" ");
+    return result === "" ? "—" : result;
   });
+}
+
+function eventToEmoji(event: MonsWeb.EventModel): string {
+  switch (event.kind) {
+    case MonsWeb.EventModelKind.MonMove:
+      return "➡️";
+    case MonsWeb.EventModelKind.ManaMove:
+      return "💧➡️";
+    case MonsWeb.EventModelKind.ManaScored:
+      return event.mana && event.mana.kind === MonsWeb.ManaKind.Supermana ? "💠🏁" : "💧🏁";
+    case MonsWeb.EventModelKind.MysticAction:
+      return "⚡️";
+    case MonsWeb.EventModelKind.DemonAction:
+      return "🔥";
+    case MonsWeb.EventModelKind.DemonAdditionalStep:
+      return "🔥➕";
+    case MonsWeb.EventModelKind.SpiritTargetMove:
+      return "👻➡️";
+    case MonsWeb.EventModelKind.PickupBomb:
+      return "💣";
+    case MonsWeb.EventModelKind.PickupPotion:
+      return "🧪";
+    case MonsWeb.EventModelKind.PickupMana:
+      return "💧";
+    case MonsWeb.EventModelKind.MonFainted:
+      return "💤";
+    case MonsWeb.EventModelKind.ManaDropped:
+      return "💧⬇️";
+    case MonsWeb.EventModelKind.SupermanaBackToBase:
+      return "💠🏠";
+    case MonsWeb.EventModelKind.BombAttack:
+      return "💣🎯";
+    case MonsWeb.EventModelKind.MonAwake:
+      return "✨";
+    case MonsWeb.EventModelKind.BombExplosion:
+      return "💥";
+    case MonsWeb.EventModelKind.NextTurn:
+      return "⏭️";
+    case MonsWeb.EventModelKind.GameOver:
+      return "🏆";
+    case MonsWeb.EventModelKind.Takeback:
+      return "↩️";
+    case MonsWeb.EventModelKind.UsePotion:
+      return "🧪✨";
+    default:
+      return "?";
+  }
 }
 
 export function didSelectVerboseTrackingEntity(index: number) {
