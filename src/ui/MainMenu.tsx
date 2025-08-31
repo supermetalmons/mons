@@ -331,7 +331,14 @@ const ExperimentalMenu = styled.div`
   flex-direction: column;
   gap: 12px;
   padding: 20px;
-  z-index: 3;
+  background: var(--menuOverlayBackground);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 30000;
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--color-deep-gray);
+  }
 `;
 
 const BuildInfo = styled.div`
