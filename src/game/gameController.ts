@@ -78,15 +78,18 @@ export function getVerboseTrackingEntities(): string[] {
 export function didSelectVerboseTrackingEntity(index: number) {
   const entities = game.verbose_tracking_entities();
   if (index < 0 || index >= entities.length) {
-    console.log("didSelectVerboseTrackingEntity", { index, error: "out_of_bounds", count: entities.length });
     return;
   }
-  const eventsFen = String(entities[index].events_fen());
-  console.log("didSelectVerboseTrackingEntity", eventsFen);
+  const entity = entities[index];
+  const eventsFen = String(entity.events_fen());
+  console.log(eventsFen);
+
+  const gameFen = entity.fen();
+  // TODO: display selected board state, enter history mode
 }
 
 export function didDismissMoveHistoryPopup() {
-  console.log("didDismissMoveHistoryPopup");
+  // TODO: if in navigation mode, switch to normal mode, display latest board state
 }
 
 function dismissBadgeAndNotificationBannerIfNeeded() {
