@@ -117,7 +117,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       <ScrollableList ref={listRef}>
         {items.map((text, index) => (
           <ItemButton key={index} onClick={() => didSelectVerboseTrackingEntity(index)}>
-            {text}
+            {index}. {text}
           </ItemButton>
         ))}
       </ScrollableList>
