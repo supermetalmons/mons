@@ -727,16 +727,20 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
               sounds.push(Sound.ScoreMana);
             }
             locationsToUpdate.push(from);
-            Board.indicateWaterSplash(from); // TODO: not in a flashbackMode
+            if (!flashbackMode) {
+              Board.indicateWaterSplash(from);
+              Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
+            }
             mustReleaseHighlight = true;
-            Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor); // TODO: not in a flashbackMode
             break;
           case MonsWeb.EventModelKind.MysticAction:
             if (!from || !to) break;
             sounds.push(Sound.MysticAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            Board.indicateElectricHit(to); // TODO: not in a flashbackMode
+            if (!flashbackMode) {
+              Board.indicateElectricHit(to);
+            }
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.DemonAction:
@@ -744,7 +748,9 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.DemonAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            Board.indicateFlameGround(to); // TODO: not in a flashbackMode
+            if (!flashbackMode) {
+              Board.indicateFlameGround(to);
+            }
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.DemonAdditionalStep:
@@ -758,7 +764,9 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.SpiritAbility);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            Board.indicateSpiritAction(to); // TODO: not in a flashbackMode
+            if (!flashbackMode) {
+              Board.indicateSpiritAction(to);
+            }
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.PickupBomb:
@@ -768,8 +776,8 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             mustReleaseHighlight = true;
             break;
           case MonsWeb.EventModelKind.UsePotion:
-            if (from) {
-              Board.indicatePotionUsage(from); // TODO: not in a flashbackMode
+            if (from && !flashbackMode) {
+              Board.indicatePotionUsage(from);
             }
             break;
           case MonsWeb.EventModelKind.PickupPotion:
@@ -802,7 +810,9 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             sounds.push(Sound.Bomb);
             locationsToUpdate.push(from);
             locationsToUpdate.push(to);
-            Board.indicateBombExplosion(to); // TODO: not in a flashbackMode
+            if (!flashbackMode) {
+              Board.indicateBombExplosion(to);
+            }
             traces.push(new Trace(from, to));
             break;
           case MonsWeb.EventModelKind.MonAwake:
@@ -812,8 +822,8 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             break;
           case MonsWeb.EventModelKind.BombExplosion:
             sounds.push(Sound.Bomb);
-            if (from) {
-              Board.indicateBombExplosion(from); // TODO: not in a flashbackMode
+            if (from && !flashbackMode) {
+              Board.indicateBombExplosion(from);
               locationsToUpdate.push(from);
             }
             break;
@@ -901,11 +911,12 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
         }
       }
 
-       // TODO: not in a flashbackMode
-      if (game.winner_color() !== undefined || resignedColor !== undefined) {
-        Board.hideAllMoveStatuses();
-      } else {
-        updateBoardMoveStatuses();
+      if (!flashbackMode) {
+        if (game.winner_color() !== undefined || resignedColor !== undefined) {
+          Board.hideAllMoveStatuses();
+        } else {
+          updateBoardMoveStatuses();
+        }
       }
 
       if (!flashbackMode && (isRemoteInput || isBotInput)) {
@@ -916,8 +927,8 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
 
       playSounds(sounds);
 
-      if (popOpponentsEmoji) {
-        Board.popOpponentsEmoji(); // TODO: not in a flashbackMode
+      if (!flashbackMode && popOpponentsEmoji) {
+        Board.popOpponentsEmoji();
       }
 
       if (mightKeepHighlightOnLocation !== undefined && !mustReleaseHighlight) {
