@@ -8,6 +8,7 @@ import { getFunctions, Functions, httpsCallable } from "firebase/functions";
 import { Match, Invite, Reaction, PlayerProfile } from "./connectionModels";
 import { storage } from "../utils/storage";
 import { generateNewInviteId } from "../utils/misc";
+import { setDebugViewText } from "../ui/MainMenu";
 
 const controllerVersion = 2;
 
@@ -635,6 +636,8 @@ class Connection {
     if (isNaN(lastNumber)) {
       return null;
     }
+
+    setDebugViewText("+" + lastNumber.toString());
 
     return lastNumber;
   }

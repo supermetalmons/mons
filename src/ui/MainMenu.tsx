@@ -3,6 +3,7 @@ import { logoBase64 } from "../content/uiAssets";
 import { didDismissSomethingWithOutsideTapJustNow, didNotDismissAnythingWithOutsideTapJustNow, closeNavigationAndAppearancePopupIfAny } from "./BottomControls";
 import styled from "styled-components";
 import { defaultEarlyInputEventName, isMobile, getBuildInfo } from "../utils/misc";
+import { storage } from "../utils/storage";
 import { Leaderboard } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
@@ -331,7 +332,14 @@ const ExperimentalMenu = styled.div`
   flex-direction: column;
   gap: 12px;
   padding: 20px;
-  z-index: 3;
+  background: var(--menuOverlayBackground);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 30000;
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--color-deep-gray);
+  }
 `;
 
 const BuildInfo = styled.div`
@@ -373,6 +381,19 @@ const ExperimentButton = styled.button`
         background: var(--color-gray-27);
       }
     }
+  }
+`;
+
+const ToggleRow = styled.label`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  align-self: center;
+  font-size: 14px;
+  color: var(--color-gray-33);
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-gray-f5);
   }
 `;
 
@@ -478,6 +499,25 @@ const MusicControlButton = styled.button`
   }
 `;
 
+const DebugView = styled.div`
+  position: fixed;
+  top: 9px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 32px;
+  height: 32px;
+  background: #000;
+  border: 3px solid #00ff00;
+  border-radius: 16px;
+  color: #00ff00;
+  text-align: left;
+  font-weight: bold;
+  padding: 10px;
+  overflow: auto;
+  white-space: pre-wrap;
+  z-index: 1;
+`;
+
 let getIsMenuOpen: () => boolean;
 let getIsInfoOpen: () => boolean;
 let getIsMusicOpen: () => boolean;
@@ -486,6 +526,7 @@ export let toggleMusicVisibility: () => void;
 export let closeMenuAndInfoIfAny: () => void;
 export let closeMenuAndInfoIfAllowedForEvent: (event: TouchEvent | MouseEvent) => void;
 export let setIsMusicPlayingGlobal: (playing: boolean) => void;
+export let setDebugViewText: (text: string) => void;
 
 export function hasMainMenuPopupsVisible(): boolean {
   return getIsMenuOpen() || getIsInfoOpen() || getIsMusicOpen();
@@ -500,6 +541,8 @@ const MainMenu: React.FC = () => {
   const [showExperimental, setShowExperimental] = useState(false);
   const [copyButtonText, setCopyButtonText] = useState("copy board snapshot");
   const [isNftSubmenuExpanded, setIsNftSubmenuExpanded] = useState(false);
+  const [isDebugViewEnabled, setIsDebugViewEnabled] = useState<boolean>(storage.getDebugViewEnabled(false));
+  const [debugViewText, setDebugViewTextState] = useState<string>("");
   const buttonRowRef = useRef<HTMLDivElement>(null);
   const lastClickTime = useRef(0);
   const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
@@ -637,6 +680,12 @@ const MainMenu: React.FC = () => {
     }
   };
 
+  const handleDebugViewToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
+    setIsDebugViewEnabled(checked);
+    storage.setDebugViewEnabled(checked);
+  };
+
   toggleInfoVisibility = () => {
     if (!isInfoOpen) {
       closeProfilePopupIfAny();
@@ -655,6 +704,10 @@ const MainMenu: React.FC = () => {
       setIsInfoOpen(false);
     }
     setIsMusicOpen(!isMusicOpen);
+  };
+
+  setDebugViewText = (text: string) => {
+    setDebugViewTextState(text);
   };
 
   closeMenuAndInfoIfAny = () => {
@@ -824,6 +877,10 @@ const MainMenu: React.FC = () => {
                   pangchiu
                 </ExperimentButton>
                 <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
+                <ToggleRow>
+                  <input type="checkbox" checked={isDebugViewEnabled} onChange={handleDebugViewToggle} />
+                  show inspector
+                </ToggleRow>
                 <BuildInfo>{getBuildInfo()}</BuildInfo>
               </ExperimentalMenu>
             )}
@@ -879,6 +936,7 @@ const MainMenu: React.FC = () => {
           </MusicControlButton>
         </MusicControlsContainer>
       </MusicPopover>
+      {isDebugViewEnabled && <DebugView>{debugViewText || "~"}</DebugView>}
     </>
   );
 };
