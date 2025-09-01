@@ -79,11 +79,31 @@ export function getVerboseTrackingEntities(): string[] {
 }
 
 function eventToEmoji(event: MonsWeb.EventModel): string {
+  function arrowForEvent(e: MonsWeb.EventModel): string {
+    const from = e.loc1;
+    const to = e.loc2;
+    if (!from || !to) return "➡️";
+    let di = to.i - from.i;
+    let dj = to.j - from.j;
+    if (Board.isFlipped) {
+      di = -di;
+      dj = -dj;
+    }
+    if (di === 0 && dj > 0) return "➡️";
+    if (di === 0 && dj < 0) return "⬅️";
+    if (dj === 0 && di > 0) return "⬇️";
+    if (dj === 0 && di < 0) return "⬆️";
+    if (di < 0 && dj > 0) return "↗️";
+    if (di > 0 && dj > 0) return "↘️";
+    if (di > 0 && dj < 0) return "↙️";
+    if (di < 0 && dj < 0) return "↖️";
+    return "➡️";
+  }
   switch (event.kind) {
     case MonsWeb.EventModelKind.MonMove:
-      return "➡️";
+      return arrowForEvent(event);
     case MonsWeb.EventModelKind.ManaMove:
-      return "💧➡️";
+      return "💧" + arrowForEvent(event);
     case MonsWeb.EventModelKind.ManaScored:
       return event.mana && event.mana.kind === MonsWeb.ManaKind.Supermana ? "💠🏁" : "💧🏁";
     case MonsWeb.EventModelKind.MysticAction:
@@ -93,7 +113,7 @@ function eventToEmoji(event: MonsWeb.EventModel): string {
     case MonsWeb.EventModelKind.DemonAdditionalStep:
       return "🔥➕";
     case MonsWeb.EventModelKind.SpiritTargetMove:
-      return "👻➡️";
+      return "👻" + arrowForEvent(event);
     case MonsWeb.EventModelKind.PickupBomb:
       return "💣";
     case MonsWeb.EventModelKind.PickupPotion:
