@@ -2677,7 +2677,12 @@ export async function indicateElectricHit(at: Location) {
   effects.indicateElectricHit(at);
 }
 
-export async function indicatePotionUsage(at: Location) {
+async function throwPotionBottle(to: Location, fromOpponent: boolean) {
+  // TODO: implement
+}
+
+export async function indicatePotionUsage(at: Location, byOpponent: boolean) {
+  throwPotionBottle(at, byOpponent);
   const effects = await ensureParticleEffectsLoaded();
   effects.indicatePotionUsage(at);
 }
