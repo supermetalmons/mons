@@ -2695,7 +2695,7 @@ async function throwPotionBottle(to: Location, fromOpponent: boolean) {
 
   const boardLocation = inBoardCoordinates(to);
   const endCenterX = 100 * (boardLocation.j + 0.5);
-  const endCenterY = 100 * (boardLocation.i + 0.5);
+  const endCenterY = 100 * (boardLocation.i + 1.5);
 
   const duration = 420;
   let startTime: number | null = null;
