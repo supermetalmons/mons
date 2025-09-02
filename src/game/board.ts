@@ -2677,9 +2677,70 @@ export async function indicateElectricHit(at: Location) {
   effects.indicateElectricHit(at);
 }
 
-export async function indicatePotionUsage(at: Location) {
-  const effects = await ensureParticleEffectsLoaded();
-  effects.indicatePotionUsage(at);
+async function throwPotionBottle(to: Location, fromOpponent: boolean) {
+  const img = fromOpponent ? opponentMoveStatusItems[1] : playerMoveStatusItems[1];
+
+  if (!img || !controlsLayer) return;
+
+  const bottle = img.cloneNode(true) as SVGElement;
+  controlsLayer.appendChild(bottle);
+  bottle.removeAttribute("transform");
+
+  const startXAttr = parseFloat(bottle.getAttribute("x") || img.getAttribute("x") || "0");
+  const startYAttr = parseFloat(bottle.getAttribute("y") || img.getAttribute("y") || "0");
+  const width = parseFloat(bottle.getAttribute("width") || img.getAttribute("width") || "0");
+  const height = parseFloat(bottle.getAttribute("height") || img.getAttribute("height") || "0");
+
+  const startCenterX = startXAttr + width / 2;
+  const startCenterY = startYAttr + height / 2;
+
+  const boardLocation = inBoardCoordinates(to);
+  const endCenterX = 100 * (boardLocation.j + 0.5);
+  const endCenterY = 100 * (boardLocation.i + 1.5);
+
+  const dx = endCenterX - startCenterX;
+  const dy = endCenterY - startCenterY;
+  const distance = Math.hypot(dx, dy);
+  const arcHeight = Math.max(20, Math.min(90, distance * 0.25));
+
+  const duration = 380;
+  let startTime: number | null = null;
+
+  function easeOutCubic(x: number) {
+    return 1 - Math.pow(1 - x, 3);
+  }
+
+  function step(timestamp: number) {
+    if (startTime === null) startTime = timestamp;
+    const elapsed = timestamp - startTime;
+    const t = Math.min(1, elapsed / duration);
+    const s = easeOutCubic(t);
+
+    const currentCenterX = startCenterX + dx * s;
+    const linearY = startCenterY + dy * s;
+    const arcOffsetY = -4 * arcHeight * s * (1 - s);
+    const currentCenterY = linearY + arcOffsetY;
+
+    const fadeStart = 0.8;
+    const fadeProgress = s < fadeStart ? 0 : (s - fadeStart) / (1 - fadeStart);
+    const opacity = Math.max(0, 1 - fadeProgress);
+
+    bottle.setAttribute("x", (currentCenterX - width / 2).toString());
+    bottle.setAttribute("y", (currentCenterY - height / 2).toString());
+    bottle.setAttribute("opacity", opacity.toString());
+
+    if (t < 1) {
+      requestAnimationFrame(step);
+    } else {
+      bottle.remove();
+    }
+  }
+
+  requestAnimationFrame(step);
+}
+
+export async function indicatePotionUsage(at: Location, byOpponent: boolean) {
+  throwPotionBottle(at, byOpponent);
 }
 
 export async function indicateBombExplosion(at: Location) {

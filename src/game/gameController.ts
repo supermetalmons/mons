@@ -845,7 +845,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             break;
           case MonsWeb.EventModelKind.UsePotion:
             if (from && !flashbackMode) {
-              Board.indicatePotionUsage(from);
+              Board.indicatePotionUsage(from, !isPlayerSideTurn());
             }
             break;
           case MonsWeb.EventModelKind.PickupPotion:

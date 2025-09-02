@@ -335,7 +335,7 @@ export function indicateElectricHit(at: Location) {
   );
 }
 
-export function indicatePotionUsage(at: Location) {
+export function showPurpleBubbles(at: Location) {
   spawnParticlesAt(
     at,
     {
