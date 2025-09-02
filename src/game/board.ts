@@ -2678,7 +2678,47 @@ export async function indicateElectricHit(at: Location) {
 }
 
 async function throwPotionBottle(to: Location, fromOpponent: boolean) {
-  // TODO: implement
+  const img = fromOpponent ? opponentMoveStatusItems[1] : playerMoveStatusItems[1];
+
+  if (!img || !controlsLayer) return;
+
+  const bottle = img.cloneNode(true) as SVGElement;
+  controlsLayer.appendChild(bottle);
+
+  const startXAttr = parseFloat(bottle.getAttribute("x") || img.getAttribute("x") || "0");
+  const startYAttr = parseFloat(bottle.getAttribute("y") || img.getAttribute("y") || "0");
+  const width = parseFloat(bottle.getAttribute("width") || img.getAttribute("width") || "0");
+  const height = parseFloat(bottle.getAttribute("height") || img.getAttribute("height") || "0");
+
+  const startCenterX = startXAttr + width / 2;
+  const startCenterY = startYAttr + height / 2;
+
+  const boardLocation = inBoardCoordinates(to);
+  const endCenterX = 100 * (boardLocation.j + 0.5);
+  const endCenterY = 100 * (boardLocation.i + 0.5);
+
+  const duration = 420;
+  let startTime: number | null = null;
+
+  function step(timestamp: number) {
+    if (startTime === null) startTime = timestamp;
+    const elapsed = timestamp - startTime;
+    const t = Math.min(1, elapsed / duration);
+
+    const currentCenterX = startCenterX + (endCenterX - startCenterX) * t;
+    const currentCenterY = startCenterY + (endCenterY - startCenterY) * t;
+
+    bottle.setAttribute("x", (currentCenterX - width / 2).toString());
+    bottle.setAttribute("y", (currentCenterY - height / 2).toString());
+
+    if (t < 1) {
+      requestAnimationFrame(step);
+    } else {
+      bottle.remove();
+    }
+  }
+
+  requestAnimationFrame(step);
 }
 
 export async function indicatePotionUsage(at: Location, byOpponent: boolean) {
