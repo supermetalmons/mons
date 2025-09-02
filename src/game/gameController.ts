@@ -845,8 +845,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             break;
           case MonsWeb.EventModelKind.UsePotion:
             if (from && !flashbackMode) {
-              const byOpponent = true; // TODO: pass in correct potion user side or color
-              Board.indicatePotionUsage(from, byOpponent);
+              Board.indicatePotionUsage(from, !isPlayerSideTurn());
             }
             break;
           case MonsWeb.EventModelKind.PickupPotion:
