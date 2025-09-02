@@ -2741,8 +2741,6 @@ async function throwPotionBottle(to: Location, fromOpponent: boolean) {
 
 export async function indicatePotionUsage(at: Location, byOpponent: boolean) {
   throwPotionBottle(at, byOpponent);
-  const effects = await ensureParticleEffectsLoaded();
-  effects.indicatePotionUsage(at);
 }
 
 export async function indicateBombExplosion(at: Location) {
