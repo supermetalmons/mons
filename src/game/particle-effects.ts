@@ -431,69 +431,115 @@ export function indicateBombExplosion(at: Location) {
   spawnParticlesAt(
     at,
     {
-      numParticles: 18,
-      duration: 340,
-      maxDistance: 2.1,
-      minParticleSize: 0.18,
-      maxParticleSize: 0.38,
-      fadeOutStrength: 0.85,
-      sizeGrowthThreshold: 0.12,
-      sizeGrowthMultiplier: 7,
+      numParticles: 22,
+      duration: 280,
+      maxDistance: 2.6,
+      minParticleSize: 0.19,
+      maxParticleSize: 0.42,
+      fadeOutStrength: 0.95,
+      sizeGrowthThreshold: 0.1,
+      sizeGrowthMultiplier: 8,
       ease: (t: number) => {
-        return 1 - Math.pow(1 - t, 2.5);
+        return 1 - Math.pow(1 - t, 3.2);
       },
       createParticle: (centerX, centerY, size, angle, defs, i, now) => {
-        const sparkColors = ["#FFF7B2", "#FFD966", "#FFB347", "#FF6F3C", "#FF3C3C", "#FFFFFF"];
-        const color = sparkColors[i % sparkColors.length];
-        const strokeColor = "#FFB347";
-        const strokeWidth = 0.07 + Math.random() * 0.09;
-        const initialLength = 0.18 + Math.random() * 0.22;
-        const finalLength = 0.45 + Math.random() * 0.35;
-        const initialWidth = 0.09 + Math.random() * 0.08;
+        const gradientId = `burst-gradient-${i}-${now}`;
+        const gradient = document.createElementNS(SVG.ns, "radialGradient");
+        gradient.setAttribute("id", gradientId);
+        gradient.setAttribute("cx", "50%");
+        gradient.setAttribute("cy", "50%");
+        gradient.setAttribute("r", "60%");
+        const stop1 = document.createElementNS(SVG.ns, "stop");
+        stop1.setAttribute("offset", "0%");
+        stop1.setAttribute("stop-color", "#FFFFFF");
+        stop1.setAttribute("stop-opacity", "1.0");
+        const stop2 = document.createElementNS(SVG.ns, "stop");
+        stop2.setAttribute("offset", "28%");
+        stop2.setAttribute("stop-color", "#FFEFA3");
+        stop2.setAttribute("stop-opacity", "0.98");
+        const stop3 = document.createElementNS(SVG.ns, "stop");
+        stop3.setAttribute("offset", "55%");
+        stop3.setAttribute("stop-color", "#FFC940");
+        stop3.setAttribute("stop-opacity", "0.98");
+        const stop4 = document.createElementNS(SVG.ns, "stop");
+        stop4.setAttribute("offset", "78%");
+        stop4.setAttribute("stop-color", "#FF6A1E");
+        stop4.setAttribute("stop-opacity", "0.97");
+        const stop5 = document.createElementNS(SVG.ns, "stop");
+        stop5.setAttribute("offset", "100%");
+        stop5.setAttribute("stop-color", "#FF2E00");
+        stop5.setAttribute("stop-opacity", "0.96");
+        gradient.appendChild(stop1);
+        gradient.appendChild(stop2);
+        gradient.appendChild(stop3);
+        gradient.appendChild(stop4);
+        gradient.appendChild(stop5);
+        defs.appendChild(gradient);
 
-        const spark = document.createElementNS(SVG.ns, "rect");
-        spark.setAttribute("x", ((centerX - initialWidth / 2) * 100).toString());
-        spark.setAttribute("y", ((centerY - initialLength / 2) * 100).toString());
-        spark.setAttribute("width", (initialWidth * 100).toString());
-        spark.setAttribute("height", (initialLength * 100).toString());
-        spark.setAttribute("rx", (initialWidth * 40).toString());
-        spark.setAttribute("fill", color);
-        spark.setAttribute("stroke", strokeColor);
-        spark.setAttribute("stroke-width", (strokeWidth * 100).toString());
-        spark.setAttribute("stroke-opacity", "0.7");
-        spark.style.pointerEvents = "none";
-        spark.style.overflow = "visible";
-        spark.setAttribute("transform", `rotate(${(angle * 180) / Math.PI},${centerX * 100},${centerY * 100})`);
+        const container = document.createElementNS(SVG.ns, "g");
+        container.style.pointerEvents = "none";
+        container.style.overflow = "visible";
 
-        const flash = document.createElementNS(SVG.ns, "circle");
-        flash.setAttribute("r", ((size / 2) * 100).toString());
-        flash.setAttribute("cx", (centerX * 100).toString());
-        flash.setAttribute("cy", (centerY * 100).toString());
-        flash.setAttribute("fill", "#FFF7B2");
-        flash.setAttribute("opacity", "0.85");
-        flash.style.pointerEvents = "none";
-        flash.style.overflow = "visible";
+        const star = document.createElementNS(SVG.ns, "polygon");
+        star.setAttribute("fill", `url(#${gradientId})`);
+        star.setAttribute("stroke", "#FF6A1E");
+        star.setAttribute("stroke-width", "3");
+        star.setAttribute("stroke-linejoin", "round");
+
+        const core = document.createElementNS(SVG.ns, "circle");
+        core.setAttribute("cx", "0");
+        core.setAttribute("cy", "0");
+        core.setAttribute("r", (size * 0.26 * 100).toString());
+        core.setAttribute("fill", "#FFFFFF");
+        core.setAttribute("opacity", "0.9");
+
+        container.appendChild(star);
+        container.appendChild(core);
+
+        const spikes = 8 + Math.floor(Math.random() * 3);
+        const longR = size * (0.62 + Math.random() * 0.22);
+        const shortR = size * (0.34 + Math.random() * 0.12);
+        const step = (2 * Math.PI) / spikes;
+        const angleOffset = Math.random() * Math.PI * 2;
+        const offsetX = (Math.random() - 0.5) * size * 0.05 * 100;
+        const offsetY = (Math.random() - 0.5) * size * 0.05 * 100;
+
+        const buildPoints = () => {
+          const pts: string[] = [];
+          for (let s = 0; s < spikes; s++) {
+            const baseA = angleOffset + s * step;
+            const aLong = baseA + (Math.random() - 0.5) * step * 0.12;
+            const aShort = baseA + step / 2 + (Math.random() - 0.5) * step * 0.1;
+            const rLongVar = longR * (0.92 + Math.random() * 0.22);
+            const rShortVar = shortR * (0.9 + Math.random() * 0.18);
+            const xL = Math.cos(aLong) * rLongVar * 100 + offsetX;
+            const yL = Math.sin(aLong) * rLongVar * 100 + offsetY;
+            const xS = Math.cos(aShort) * rShortVar * 100 + offsetX;
+            const yS = Math.sin(aShort) * rShortVar * 100 + offsetY;
+            pts.push(`${xL.toString()},${yL.toString()}`);
+            pts.push(`${xS.toString()},${yS.toString()}`);
+          }
+          return pts.join(" ");
+        };
+
+        star.setAttribute("points", buildPoints());
+
+        const baseRotation = (angle * 180) / Math.PI + (Math.random() * 160 - 80);
+        const spin = (Math.random() - 0.5) * 70;
+        container.setAttribute("transform", `translate(${(centerX * 100).toString()} ${(centerY * 100).toString()}) rotate(${baseRotation.toString()}) scale(1)`);
 
         return {
-          main: spark,
-          extra: flash,
+          main: container,
           update: (x, y, currentSize, opacity, t) => {
-            const length = initialLength + (finalLength - initialLength) * t;
-            const width = initialWidth * (1 - t * 0.5);
-            spark.setAttribute("x", ((x - width / 2) * 100).toString());
-            spark.setAttribute("y", ((y - length / 2) * 100).toString());
-            spark.setAttribute("width", (width * 100).toString());
-            spark.setAttribute("height", (length * 100).toString());
-            spark.setAttribute("rx", (width * 40).toString());
-            spark.setAttribute("transform", `rotate(${(angle * 180) / Math.PI},${x * 100},${y * 100})`);
-            spark.style.opacity = (opacity * 0.95 + 0.05).toString();
-
-            const tipX = x + Math.cos(angle) * (length / 2);
-            const tipY = y + Math.sin(angle) * (length / 2);
-            flash.setAttribute("cx", (tipX * 100).toString());
-            flash.setAttribute("cy", (tipY * 100).toString());
-            flash.setAttribute("r", ((currentSize / 2 + 0.07 * (1 - t)) * 100).toString());
-            flash.setAttribute("opacity", (opacity * 0.85).toString());
+            const tx = x * 100;
+            const ty = y * 100;
+            const scale = currentSize / size;
+            const rot = baseRotation + spin * t;
+            container.setAttribute("transform", `translate(${tx.toString()} ${ty.toString()}) rotate(${rot.toString()}) scale(${scale.toString()})`);
+            container.style.opacity = Math.max(0, Math.min(1, opacity * 1.1)).toString();
+            const coreR = currentSize * (0.28 - 0.16 * t) * 100;
+            core.setAttribute("r", Math.max(0, coreR).toString());
+            core.setAttribute("opacity", (opacity * 0.85).toString());
           },
         };
       },
