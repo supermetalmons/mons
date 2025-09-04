@@ -73,8 +73,14 @@ export function getVerboseTrackingEntities(): string[] {
   }
   return entities.map((e) => {
     const events = e.events();
-    const result = events.map(eventToEmoji).join(" ");
-    return result === "" ? "—" : result;
+    let out = "";
+    for (const ev of events) {
+      const s = eventToEmoji(ev);
+      if (s === "") continue;
+      if (out !== "") out += " ";
+      out += s;
+    }
+    return out === "" ? "—" : out;
   });
 }
 
@@ -99,19 +105,20 @@ function eventToEmoji(event: MonsWeb.EventModel): string {
     if (di < 0 && dj < 0) return "↖️";
     return "➡️";
   }
+
   switch (event.kind) {
     case MonsWeb.EventModelKind.MonMove:
       return arrowForEvent(event);
     case MonsWeb.EventModelKind.ManaMove:
       return "💧" + arrowForEvent(event);
     case MonsWeb.EventModelKind.ManaScored:
-      return event.mana && event.mana.kind === MonsWeb.ManaKind.Supermana ? "💠🏁" : "💧🏁";
+      return event.mana && event.mana.kind === MonsWeb.ManaKind.Supermana ? "👑✅" : "💧✅";
     case MonsWeb.EventModelKind.MysticAction:
       return "⚡️";
     case MonsWeb.EventModelKind.DemonAction:
       return "🔥";
     case MonsWeb.EventModelKind.DemonAdditionalStep:
-      return "🔥➕";
+      return "🔥➕"; // TODO: show that extra destination arrow
     case MonsWeb.EventModelKind.SpiritTargetMove:
       return "👻" + arrowForEvent(event);
     case MonsWeb.EventModelKind.PickupBomb:
@@ -121,15 +128,15 @@ function eventToEmoji(event: MonsWeb.EventModel): string {
     case MonsWeb.EventModelKind.PickupMana:
       return "💧";
     case MonsWeb.EventModelKind.MonFainted:
-      return "💤";
+      return "";
     case MonsWeb.EventModelKind.ManaDropped:
-      return "💧⬇️";
+      return "";
     case MonsWeb.EventModelKind.SupermanaBackToBase:
-      return "💠🏠";
+      return "👑🔄";
     case MonsWeb.EventModelKind.BombAttack:
-      return "💣🎯";
+      return "💣";
     case MonsWeb.EventModelKind.MonAwake:
-      return "✨";
+      return "";
     case MonsWeb.EventModelKind.BombExplosion:
       return "💥";
     case MonsWeb.EventModelKind.NextTurn:
@@ -137,11 +144,11 @@ function eventToEmoji(event: MonsWeb.EventModel): string {
     case MonsWeb.EventModelKind.GameOver:
       return "🏆";
     case MonsWeb.EventModelKind.Takeback:
-      return "↩️";
+      return "";
     case MonsWeb.EventModelKind.UsePotion:
       return "🧪✨";
     default:
-      return "?";
+      return "";
   }
 }
 
