@@ -146,7 +146,7 @@ function eventToEmoji(event: MonsWeb.EventModel): string {
     case MonsWeb.EventModelKind.Takeback:
       return "";
     case MonsWeb.EventModelKind.UsePotion:
-      return "🧪✨";
+      return "🧪"; // TODO: insert before arrow
     default:
       return "";
   }
