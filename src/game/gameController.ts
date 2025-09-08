@@ -118,7 +118,7 @@ function eventToEmoji(event: MonsWeb.EventModel): string {
     case MonsWeb.EventModelKind.DemonAction:
       return "🔥";
     case MonsWeb.EventModelKind.DemonAdditionalStep:
-      return "🔥➕"; // TODO: show that extra destination arrow
+      return arrowForEvent(event);
     case MonsWeb.EventModelKind.SpiritTargetMove:
       return "👻" + arrowForEvent(event);
     case MonsWeb.EventModelKind.PickupBomb:
