@@ -2700,10 +2700,8 @@ async function throwPotionBottle(to: Location, fromOpponent: boolean) {
 
   const dx = endCenterX - startCenterX;
   const dy = endCenterY - startCenterY;
-  const distance = Math.hypot(dx, dy);
-  const arcHeight = Math.max(20, Math.min(90, distance * 0.25));
 
-  const duration = 380;
+  const duration = 230;
   let startTime: number | null = null;
 
   function easeOutCubic(x: number) {
@@ -2717,9 +2715,7 @@ async function throwPotionBottle(to: Location, fromOpponent: boolean) {
     const s = easeOutCubic(t);
 
     const currentCenterX = startCenterX + dx * s;
-    const linearY = startCenterY + dy * s;
-    const arcOffsetY = -4 * arcHeight * s * (1 - s);
-    const currentCenterY = linearY + arcOffsetY;
+    const currentCenterY = startCenterY + dy * s;
 
     const fadeStart = 0.8;
     const fadeProgress = s < fadeStart ? 0 : (s - fadeStart) / (1 - fadeStart);
