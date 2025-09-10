@@ -1,9 +1,11 @@
 import { getIsMuted } from "../index";
+import { isMobile } from "./misc";
 
 export class SoundPlayer {
   private audioContext!: AudioContext;
   private audioBufferCache = new Map<string, AudioBuffer>();
   private isInitialized = false;
+  private isResuming = false;
 
   constructor() {
     document.addEventListener("touchend", () => this.initializeOnUserInteraction(), { once: true });
@@ -14,38 +16,60 @@ export class SoundPlayer {
   public async initializeOnUserInteraction(force: boolean = false) {
     const isMuted = getIsMuted();
     if (this.isInitialized || (isMuted && !force)) return;
+    if (document.visibilityState !== "visible" && !force) return;
     this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    this.attachStateChangeHandler();
     await this.unlockOnce(force);
     this.isInitialized = true;
   }
 
   private attachVisibilityHandlers() {
-    document.addEventListener("visibilitychange", () => {
-      if (document.visibilityState === "hidden") {
+    if (isMobile) {
+      document.addEventListener("visibilitychange", () => {
+        if (document.visibilityState === "hidden") {
+          this.cleanup();
+        } else if (document.visibilityState === "visible") {
+          this.setupRestartListeners();
+        }
+      });
+      window.addEventListener("pagehide", () => {
         this.cleanup();
-      } else if (document.visibilityState === "visible") {
+      });
+      window.addEventListener("pageshow", () => {
         this.setupRestartListeners();
-      }
-    });
+      });
+    }
   }
 
   private cleanup() {
     if (!this.isInitialized) return;
-    this.audioContext.suspend();
+    try {
+      if (this.audioContext && this.audioContext.state !== "closed") {
+        this.audioContext.suspend();
+      }
+    } catch (_) {}
   }
 
   private unlockOnce = async (force: boolean = false) => {
-    if (getIsMuted() && !force) {
-      return;
+    if ((getIsMuted() && !force) || document.visibilityState !== "visible") return;
+    if (!this.audioContext) return;
+    if (this.audioContext.state === "closed") return;
+    try {
+      if (this.audioContext.state !== "running") {
+        if (this.isResuming) return;
+        this.isResuming = true;
+        await this.audioContext.resume();
+        this.isResuming = false;
+      }
+      const buffer = this.audioContext.createBuffer(1, 1, this.audioContext.sampleRate);
+      const source = this.audioContext.createBufferSource();
+      source.buffer = buffer;
+      source.connect(this.audioContext.destination);
+      source.start(0);
+    } catch (_) {
+      this.isResuming = false;
+      this.setupRestartListeners();
     }
-    if (this.audioContext.state === "suspended") {
-      await this.audioContext.resume();
-    }
-    const buffer = this.audioContext.createBuffer(1, 1, this.audioContext.sampleRate);
-    const source = this.audioContext.createBufferSource();
-    source.buffer = buffer;
-    source.connect(this.audioContext.destination);
-    source.start(0);
   };
 
   private async loadAudioBuffer(url: string): Promise<AudioBuffer> {
@@ -69,17 +93,58 @@ export class SoundPlayer {
     document.addEventListener("click", handler, { once: true });
   }
 
+  private attachStateChangeHandler(): void {
+    if (!this.audioContext) return;
+    const ctx: any = this.audioContext as any;
+    const handle = () => {
+      if (!this.audioContext) return;
+      if (this.audioContext.state !== "running") {
+        this.setupRestartListeners();
+      }
+    };
+    if (typeof this.audioContext.addEventListener === "function") {
+      this.audioContext.addEventListener("statechange", handle as EventListener);
+    } else {
+      (this.audioContext as any).onstatechange = handle;
+    }
+    if (ctx && typeof ctx.addEventListener === "function") {
+      try {
+        ctx.addEventListener("interruptionend", () => this.setupRestartListeners());
+      } catch (_) {}
+    }
+  }
+
   public async playSound(url: string): Promise<void> {
     if (!this.isInitialized) return;
-    if (this.audioContext.state === "suspended") {
+    if (document.visibilityState !== "visible" && isMobile) return;
+    if (!this.audioContext) return;
+    if (this.audioContext.state === "closed") {
+      this.isInitialized = false;
       this.setupRestartListeners();
-      await this.audioContext.resume();
+      return;
     }
-    const audioBuffer = await this.loadAudioBuffer(url);
-    const source = this.audioContext.createBufferSource();
-    source.buffer = audioBuffer;
-    source.connect(this.audioContext.destination);
-    source.start(0);
+    try {
+      if (this.audioContext.state !== "running") {
+        try {
+          if (!this.isResuming) {
+            this.isResuming = true;
+            await this.audioContext.resume();
+            this.isResuming = false;
+          }
+        } catch (_) {
+          this.isResuming = false;
+          this.setupRestartListeners();
+          return;
+        }
+      }
+      const audioBuffer = await this.loadAudioBuffer(url);
+      const source = this.audioContext.createBufferSource();
+      source.buffer = audioBuffer;
+      source.connect(this.audioContext.destination);
+      source.start(0);
+    } catch (_) {
+      this.setupRestartListeners();
+    }
   }
 }
 
