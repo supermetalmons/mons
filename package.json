@@ -15,7 +15,7 @@
     "ethers": "^6.15.0",
     "firebase": "^11.10.0",
     "glicko2": "^1.2.1",
-    "mons-web": "^0.1.59",
+    "mons-web": "^0.1.60",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
