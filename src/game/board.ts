@@ -1591,8 +1591,8 @@ const updateLayout = () => {
 
   if (instructionsContainerElement && talkingDude) {
     const dudeBaseI = -0.3;
-    const dudeBaseJ = -0.27;
-    const narrowShiftFactor = 0.3;
+    const dudeBaseJ = -0.23;
+    const narrowShiftFactor = 0.13;
     const narrowRightShift = shouldOffsetFromBorders ? narrowShiftFactor * minHorizontalOffset : 0;
     const location = new Location(dudeBaseI, dudeBaseJ + narrowRightShift);
     setCenterTranformOrigin(talkingDude, location);
@@ -1600,8 +1600,8 @@ const updateLayout = () => {
     talkingDude.setAttribute("data-base-x", (location.j * 100).toString());
     talkingDude.setAttribute("data-base-y", (location.i * 100).toString());
 
-    const instructionsRightOffset = shouldOffsetFromBorders ? 0.12 * multiplicator : 0;
-    const instructionsWidth = 9.8;
+    const instructionsRightOffset = shouldOffsetFromBorders ? 0.07 * multiplicator : 0;
+    const instructionsWidth = 10;
     SVG.setFrame(instructionsContainerElement, 11 - instructionsWidth - instructionsRightOffset, 0, instructionsWidth, 0.85);
 
     updateSpriteSheetClipRect(talkingDude);
