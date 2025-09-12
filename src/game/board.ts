@@ -242,14 +242,10 @@ async function showTalkingDude(show: boolean) {
     const sprite = instructor;
     const img = loadImage(sprite, "talkingDude", true);
 
-    // TODO: move layout into update layout
-    const location = new Location(-0.3, -0.23);
-    setCenterTranformOrigin(img, location);
-    SVG.setOrigin(img, location.j, location.i);
-
     controlsLayer?.appendChild(img);
-    startAnimation(img, false);
     talkingDude = img;
+    updateLayout();
+    startAnimation(img, false);
   }
 }
 
@@ -439,6 +435,30 @@ function loadBoardAssetImage(data: string, assetType: string, isSpriteSheet: boo
   return foreignObject;
 }
 
+function setSpriteSheetClipRect(rect: SVGElement, image: SVGElement, frameWidth: number, frameHeight: number, isTalkingDude: boolean) {
+  const baseX = parseFloat(image.getAttribute("data-base-x") || image.getAttribute("x") || "0");
+  const baseY = parseFloat(image.getAttribute("data-base-y") || image.getAttribute("y") || "0");
+  rect.setAttribute("x", baseX.toString());
+  rect.setAttribute("y", baseY.toString());
+  rect.setAttribute("width", (frameWidth * 100).toString());
+  rect.setAttribute("height", (frameHeight * (isTalkingDude ? 50 : 100)).toString());
+}
+
+function updateSpriteSheetClipRect(image: SVGElement) {
+  const clipPathId = image.getAttribute("data-clip-path-id");
+  if (!clipPathId) return;
+  const svgRoot = image.ownerSVGElement;
+  if (!svgRoot) return;
+  const clipPath = svgRoot.querySelector(`#${clipPathId}`) as SVGElement | null;
+  const rect = clipPath?.querySelector("rect") as SVGElement | null;
+  if (!rect) return;
+  const frameWidth = parseFloat(image.getAttribute("data-frame-width") || "1");
+  const frameHeight = parseFloat(image.getAttribute("data-frame-height") || "1");
+  const totalFrames = parseInt(image.getAttribute("data-total-frames") || "1", 10);
+  const isTalkingDude = totalFrames === 5;
+  setSpriteSheetClipRect(rect, image, frameWidth, frameHeight, isTalkingDude);
+}
+
 function startAnimation(image: SVGElement, keepStatic: boolean = false, isFainted: boolean = false): void {
   if (image.getAttribute("data-is-sprite-sheet") === "true") {
     const totalFrames = parseInt(image.getAttribute("data-total-frames") || "1", 10);
@@ -452,18 +472,14 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false, isFainte
 
     const isTalkingDude = totalFrames === 5;
 
-    const initialX = parseFloat(image.getAttribute("x") || "0");
-    const initialY = parseFloat(image.getAttribute("y") || "0");
+    const initialX = parseFloat(image.getAttribute("data-base-x") || image.getAttribute("x") || "0");
+    const initialY = parseFloat(image.getAttribute("data-base-y") || image.getAttribute("y") || "0");
     const clipPathId = `clip-path-${Math.random().toString(36).slice(2, 11)}`;
     const clipPath = document.createElementNS(SVG.ns, "clipPath");
     clipPath.setAttribute("id", clipPathId);
 
     const rect = document.createElementNS(SVG.ns, "rect");
-    rect.setAttribute("x", initialX.toString());
-    rect.setAttribute("y", initialY.toString());
-    rect.setAttribute("width", (frameWidth * 100).toString());
-    rect.setAttribute("height", (frameHeight * (isTalkingDude ? 50 : 100)).toString());
-    // TODO: might need to update that clip path if offsets are updated in updateLayout for window size change
+    setSpriteSheetClipRect(rect, image, frameWidth, frameHeight, isTalkingDude);
     clipPath.appendChild(rect);
 
     const svgRoot = image.ownerSVGElement;
@@ -494,11 +510,13 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false, isFainte
 
         const now = Date.now();
         if (now - lastUpdateTime >= frameDuration) {
-          const x = initialX - currentFrame * frameWidth * 100;
-          const y = isTalkingDude && talkingDudeIsTalking ? initialY - 140 : initialY;
-          // TODO: will need to use a different values here when talking dude offsets will be updated based in window width
+          const baseX = parseFloat(image.getAttribute("data-base-x") || initialX.toString());
+          const baseY = parseFloat(image.getAttribute("data-base-y") || initialY.toString());
+          const x = baseX - currentFrame * frameWidth * 100;
+          const y = isTalkingDude && talkingDudeIsTalking ? baseY - 140 : baseY;
           image.setAttribute("x", x.toString());
           image.setAttribute("y", y.toString());
+
           currentFrame = (currentFrame + 1) % totalFrames;
           lastUpdateTime = now;
         }
@@ -1572,10 +1590,21 @@ const updateLayout = () => {
   }
 
   if (instructionsContainerElement && talkingDude) {
-    // TODO: adjust based on screen width and if offset from borders is needed
-    SVG.setFrame(instructionsContainerElement, 1.1, 0, 9.8, 0.85);
+    const dudeBaseI = -0.3;
+    const dudeBaseJ = -0.27;
+    const narrowShiftFactor = 0.3;
+    const narrowRightShift = shouldOffsetFromBorders ? narrowShiftFactor * minHorizontalOffset : 0;
+    const location = new Location(dudeBaseI, dudeBaseJ + narrowRightShift);
+    setCenterTranformOrigin(talkingDude, location);
+    SVG.setOrigin(talkingDude, location.j, location.i);
+    talkingDude.setAttribute("data-base-x", (location.j * 100).toString());
+    talkingDude.setAttribute("data-base-y", (location.i * 100).toString());
 
-    // TODO: make instructor layour work from here
+    const instructionsRightOffset = shouldOffsetFromBorders ? 0.12 * multiplicator : 0;
+    const instructionsWidth = 9.8;
+    SVG.setFrame(instructionsContainerElement, 11 - instructionsWidth - instructionsRightOffset, 0, instructionsWidth, 0.85);
+
+    updateSpriteSheetClipRect(talkingDude);
   }
 
   updateNamesX();
