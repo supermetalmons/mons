@@ -127,26 +127,23 @@ function eventToEmoji(event: MonsWeb.EventModel): string {
       return "🧪";
     case MonsWeb.EventModelKind.PickupMana:
       return "💧";
-    case MonsWeb.EventModelKind.MonFainted:
-      return "";
-    case MonsWeb.EventModelKind.ManaDropped:
-      return "";
     case MonsWeb.EventModelKind.SupermanaBackToBase:
       return "👑🔄";
     case MonsWeb.EventModelKind.BombAttack:
       return "💣" + arrowForEvent(event);
-    case MonsWeb.EventModelKind.MonAwake:
-      return "";
     case MonsWeb.EventModelKind.BombExplosion:
       return "💥";
     case MonsWeb.EventModelKind.NextTurn:
       return "⏭️";
     case MonsWeb.EventModelKind.GameOver:
       return "🏆";
-    case MonsWeb.EventModelKind.Takeback:
-      return "";
     case MonsWeb.EventModelKind.UsePotion:
       return "🧪"; // TODO: insert before arrow
+    case MonsWeb.EventModelKind.MonFainted:
+    case MonsWeb.EventModelKind.ManaDropped:
+    case MonsWeb.EventModelKind.MonAwake:
+    case MonsWeb.EventModelKind.Takeback:
+      return "";
     default:
       return "";
   }
