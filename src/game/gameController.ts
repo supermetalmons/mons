@@ -134,7 +134,7 @@ function eventToEmoji(event: MonsWeb.EventModel): string {
     case MonsWeb.EventModelKind.SupermanaBackToBase:
       return "👑🔄";
     case MonsWeb.EventModelKind.BombAttack:
-      return "💣";
+      return "💣" + arrowForEvent(event);
     case MonsWeb.EventModelKind.MonAwake:
       return "";
     case MonsWeb.EventModelKind.BombExplosion:
