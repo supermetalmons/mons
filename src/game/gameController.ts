@@ -114,9 +114,9 @@ function eventToEmoji(event: MonsWeb.EventModel): string {
     case MonsWeb.EventModelKind.ManaScored:
       return event.mana && event.mana.kind === MonsWeb.ManaKind.Supermana ? "👑✅" : "💧✅";
     case MonsWeb.EventModelKind.MysticAction:
-      return "⚡️";
+      return "🧙⚡️";
     case MonsWeb.EventModelKind.DemonAction:
-      return "🔥";
+      return "😈🔥";
     case MonsWeb.EventModelKind.DemonAdditionalStep:
       return arrowForEvent(event);
     case MonsWeb.EventModelKind.SpiritTargetMove:
