@@ -7,6 +7,7 @@ sample_seconds=1.0
 min_crf=10
 max_crf=63
 crop_filter="crop=iw-6:ih-6:3:3"
+scale_filter="format=yuva444p,unpremultiply=inplace=1,scale=512:512:flags=bilinear,premultiply=inplace=1,lut=a='if(gt(val,4),val,0)',format=yuva420p"
 
 for f in *.mov; do
   [ -f "$f" ] || continue
@@ -31,7 +32,7 @@ for f in *.mov; do
     local crf="$1"
     echo "  [Sample] CRF=$crf (pass 1)" >&2
     ffmpeg -v error -y -i "$f" \
-      -vf "${crop_filter},scale=512:512:flags=lanczos,setpts=${factor}*PTS" -an -t "$sample_seconds" \
+      -vf "${crop_filter},${scale_filter},setpts=${factor}*PTS" -an -t "$sample_seconds" \
       -c:v libvpx-vp9 -pix_fmt yuva420p -crf "$crf" -b:v 0 \
       -quality good -speed 8 \
       -tile-columns 2 -frame-parallel 1 -row-mt 1 -threads 8 \
@@ -39,7 +40,7 @@ for f in *.mov; do
 
     echo "  [Sample] CRF=$crf (pass 2)" >&2
     ffmpeg -v error -y -i "$f" \
-      -vf "${crop_filter},scale=512:512:flags=lanczos,setpts=${factor}*PTS" -an -t "$sample_seconds" \
+      -vf "${crop_filter},${scale_filter},setpts=${factor}*PTS" -an -t "$sample_seconds" \
       -c:v libvpx-vp9 -pix_fmt yuva420p -crf "$crf" -b:v 0 \
       -quality good -speed 8 \
       -tile-columns 2 -frame-parallel 1 -row-mt 1 -threads 8 \
@@ -56,7 +57,7 @@ for f in *.mov; do
     local crf="$1"
     echo "  [Full] CRF=$crf (pass 1)" >&2
     ffmpeg -v error -y -i "$f" \
-      -vf "${crop_filter},scale=512:512:flags=lanczos,setpts=${factor}*PTS" -an \
+      -vf "${crop_filter},${scale_filter},setpts=${factor}*PTS" -an \
       -c:v libvpx-vp9 -pix_fmt yuva420p -crf "$crf" -b:v 0 \
       -quality best -speed 0 \
       -tile-columns 2 -frame-parallel 1 -row-mt 1 -threads 8 \
@@ -64,7 +65,7 @@ for f in *.mov; do
 
     echo "  [Full] CRF=$crf (pass 2)" >&2
     ffmpeg -v error -y -i "$f" \
-      -vf "${crop_filter},scale=512:512:flags=lanczos,setpts=${factor}*PTS" -an \
+      -vf "${crop_filter},${scale_filter},setpts=${factor}*PTS" -an \
       -c:v libvpx-vp9 -pix_fmt yuva420p -crf "$crf" -b:v 0 \
       -quality best -speed 0 \
       -tile-columns 2 -frame-parallel 1 -row-mt 1 -threads 8 \

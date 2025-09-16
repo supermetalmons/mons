@@ -6,7 +6,7 @@ tolerance=1024
 min_crf=10
 max_crf=63
 crop_filter="crop=iw-6:ih-6:3:3"
-scale_filter="scale=100:100:flags=lanczos"
+scale_filter="format=yuva444p,unpremultiply=inplace=1,scale=100:100:flags=bilinear,premultiply=inplace=1,lut=a='if(gt(val,4),val,0)',format=yuva420p"
 
 for f in *.mov; do
   [ -f "$f" ] || continue
