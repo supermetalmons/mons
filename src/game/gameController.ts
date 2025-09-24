@@ -74,6 +74,7 @@ export function getVerboseTrackingEntities(): string[] {
   return entities.map((e) => {
     const events = e.events();
     let out = "";
+    // TODO: build event string around actor, reorder depending on direction, making sure primary direction points from the actor
     for (const ev of events) {
       const s = eventToEmoji(ev);
       if (s === "") continue;
@@ -134,7 +135,7 @@ function eventToEmoji(event: MonsWeb.EventModel): string {
     case MonsWeb.EventModelKind.GameOver:
       return "🏆";
     case MonsWeb.EventModelKind.UsePotion:
-      return "🧪"; // TODO: insert before arrow
+      return "🧪🫧";
     case MonsWeb.EventModelKind.MonFainted:
     case MonsWeb.EventModelKind.ManaDropped:
     case MonsWeb.EventModelKind.MonAwake:
