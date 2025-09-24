@@ -74,6 +74,7 @@ export function getVerboseTrackingEntities(): string[] {
   return entities.map((e) => {
     const events = e.events();
     let out = "";
+    // TODO: build event string around actor, reorder depending on direction, making sure primary direction points from the actor
     for (const ev of events) {
       const s = eventToEmoji(ev);
       if (s === "") continue;
@@ -114,11 +115,9 @@ function eventToEmoji(event: MonsWeb.EventModel): string {
     case MonsWeb.EventModelKind.ManaScored:
       return event.mana && event.mana.kind === MonsWeb.ManaKind.Supermana ? "👑✅" : "💧✅";
     case MonsWeb.EventModelKind.MysticAction:
-      return "⚡️";
+      return "🧙⚡️";
     case MonsWeb.EventModelKind.DemonAction:
-      return "🔥";
-    case MonsWeb.EventModelKind.DemonAdditionalStep:
-      return arrowForEvent(event);
+      return "😈🔥";
     case MonsWeb.EventModelKind.SpiritTargetMove:
       return "👻" + arrowForEvent(event);
     case MonsWeb.EventModelKind.PickupBomb:
@@ -127,26 +126,23 @@ function eventToEmoji(event: MonsWeb.EventModel): string {
       return "🧪";
     case MonsWeb.EventModelKind.PickupMana:
       return "💧";
-    case MonsWeb.EventModelKind.MonFainted:
-      return "";
-    case MonsWeb.EventModelKind.ManaDropped:
-      return "";
-    case MonsWeb.EventModelKind.SupermanaBackToBase:
-      return "👑🔄";
     case MonsWeb.EventModelKind.BombAttack:
-      return "💣";
-    case MonsWeb.EventModelKind.MonAwake:
-      return "";
+      return "💣" + arrowForEvent(event);
     case MonsWeb.EventModelKind.BombExplosion:
       return "💥";
     case MonsWeb.EventModelKind.NextTurn:
       return "⏭️";
     case MonsWeb.EventModelKind.GameOver:
       return "🏆";
-    case MonsWeb.EventModelKind.Takeback:
-      return "";
     case MonsWeb.EventModelKind.UsePotion:
-      return "🧪"; // TODO: insert before arrow
+      return "🧪🫧";
+    case MonsWeb.EventModelKind.MonFainted:
+    case MonsWeb.EventModelKind.ManaDropped:
+    case MonsWeb.EventModelKind.MonAwake:
+    case MonsWeb.EventModelKind.Takeback:
+    case MonsWeb.EventModelKind.SupermanaBackToBase:
+    case MonsWeb.EventModelKind.DemonAdditionalStep:
+      return "";
     default:
       return "";
   }
