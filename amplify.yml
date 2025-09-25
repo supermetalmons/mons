@@ -13,3 +13,4 @@ frontend:
       - 'sounds/**'
       - 'reactions/**'
       - 'drops/**'
+      - 'shop/**'
