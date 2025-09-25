@@ -9,6 +9,9 @@ p.add_argument("--out_dir", required=True)
 p.add_argument("--seconds", type=float, default=5.0)
 p.add_argument("--fps", type=int, default=30)
 p.add_argument("--size", type=int, default=350)
+p.add_argument("--exposure", type=float, default=-0.5)
+p.add_argument("--world_strength", type=float, default=0.5)
+p.add_argument("--light_energy", type=float, default=600.0)
 args = p.parse_args(argv)
 
 os.makedirs(args.out_dir, exist_ok=True)
@@ -31,6 +34,12 @@ scene.render.image_settings.color_mode = "RGBA"
 scene.render.image_settings.color_depth = "8"
 scene.render.fps = args.fps
 
+scene.display_settings.display_device = 'sRGB'
+if hasattr(scene, 'view_settings'):
+    scene.view_settings.view_transform = 'Filmic'
+    scene.view_settings.look = 'None'
+    scene.view_settings.exposure = args.exposure
+
 ee = getattr(scene, 'eevee', None)
 if ee and engine.startswith('BLENDER_EEVEE'):
     if hasattr(ee, 'taa_render_samples'): ee.taa_render_samples = 64
@@ -52,7 +61,7 @@ scene.collection.objects.link(cam)
 scene.camera = cam
 
 light_data = bpy.data.lights.new("Key", type="AREA")
-light_data.energy = 2000
+light_data.energy = args.light_energy
 light = bpy.data.objects.new("Key", light_data)
 scene.collection.objects.link(light)
 
@@ -62,7 +71,7 @@ world.use_nodes = True
 wn = world.node_tree.nodes
 for n in list(wn): wn.remove(n)
 bg = wn.new("ShaderNodeBackground")
-bg.inputs[1].default_value = 1.0
+bg.inputs[1].default_value = args.world_strength
 bg.inputs[0].default_value = (1,1,1,1)
 out = wn.new("ShaderNodeOutputWorld")
 world.node_tree.links.new(bg.outputs["Background"], out.inputs["Surface"])
@@ -78,22 +87,31 @@ def bounds(obj):
         max_c = Vector((max(max_c.x, xc.x), max(max_c.y, xc.y), max(max_c.z, xc.z)))
     return min_c, max_c
 
-def fit_camera(target, margin=1.15):
+def fit_camera(target, margin=1.30):
     min_c, max_c = bounds(target)
     size_vec = max_c - min_c
-    size = max(size_vec.x, size_vec.y, size_vec.z)
     center = (min_c + max_c) * 0.5
     for o in [target] + list(target.children_recursive):
         o.location -= center
+
     cam.data.type = "PERSP"
     cam.data.lens = 50
     fov = cam.data.angle
-    dist = (size * margin) / (2 * math.tan(fov/2)) + size * 0.1
+    diag_xz = math.sqrt(float(size_vec.x) ** 2 + float(size_vec.z) ** 2)
+    radius_xz = 0.5 * diag_xz
+    depth_y = float(size_vec.y)
+    dist = (radius_xz * margin) / math.tan(fov / 2.0) + (depth_y * 0.25)
+
     cam.location = (0.0, -dist, 0.0)
     cam.rotation_euler = (math.radians(90), 0.0, 0.0)
-    light.location = (dist*0.5, -dist*0.5, dist*0.8)
+    cam.data.clip_start = 0.01
+    cam.data.clip_end = max(dist * 4.0, 1000.0)
+    cam.data.shift_x = 0.0
+    cam.data.shift_y = 0.0
+
+    light.location = (dist * 0.5, -dist * 0.5, dist * 0.8)
     light.rotation_euler = (math.radians(60), 0, math.radians(30))
-    if size == 0:
+    if radius_xz == 0.0 and depth_y == 0.0:
         cam.location = (0.0, -3.0, 0.0)
 
 def animate_rotation(obj):
