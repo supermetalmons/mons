@@ -9,9 +9,9 @@ p.add_argument("--out_dir", required=True)
 p.add_argument("--seconds", type=float, default=5.0)
 p.add_argument("--fps", type=int, default=30)
 p.add_argument("--size", type=int, default=350)
-p.add_argument("--exposure", type=float, default=-0.5)
-p.add_argument("--world_strength", type=float, default=0.5)
-p.add_argument("--light_energy", type=float, default=600.0)
+p.add_argument("--exposure", type=float, default=-0.55)
+p.add_argument("--world_strength", type=float, default=0.42)
+p.add_argument("--light_energy", type=float, default=599.0)
 args = p.parse_args(argv)
 
 os.makedirs(args.out_dir, exist_ok=True)
@@ -87,7 +87,7 @@ def bounds(obj):
         max_c = Vector((max(max_c.x, xc.x), max(max_c.y, xc.y), max(max_c.z, xc.z)))
     return min_c, max_c
 
-def fit_camera(target, margin=1.30):
+def fit_camera(target, margin=1.03):
     min_c, max_c = bounds(target)
     size_vec = max_c - min_c
     center = (min_c + max_c) * 0.5
@@ -137,9 +137,10 @@ def encode_webm(tmp_dir, out_path):
         "ffmpeg","-y",
         "-framerate", str(args.fps),
         "-i", seq,
-        "-vf", f"scale={args.size}:{args.size}:flags=lanczos",
+        "-vf", f"format=rgba,scale={args.size}:{args.size}:flags=lanczos",
         "-c:v","libvpx-vp9",
         "-pix_fmt","yuva420p",
+        "-colorspace","bt709","-color_primaries","bt709","-color_trc","bt709","-color_range","pc",
         "-crf","32",
         "-b:v","0",
         "-row-mt","1",
@@ -154,10 +155,11 @@ def encode_mov(tmp_dir, out_path):
         "ffmpeg","-y",
         "-framerate", str(args.fps),
         "-i", seq,
-        "-vf", f"scale={args.size}:{args.size}:flags=lanczos",
+        "-vf", f"format=rgba,scale={args.size}:{args.size}:flags=lanczos",
         "-c:v","prores_ks",
         "-profile:v","4",
         "-pix_fmt","yuva444p10le",
+        "-colorspace","bt709","-color_primaries","bt709","-color_trc","bt709","-color_range","pc",
         "-an",
         out_path
     ]
