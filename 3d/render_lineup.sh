@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
+
+BLEND_PY="$SCRIPT_DIR/lineup_render.py"
+
+IN_DIR="${1:-$SCRIPT_DIR/shop_preview_models}"
+OUT_DIR="${2:-$SCRIPT_DIR/../shop}"
+
+SECONDS_LEN="${SECONDS_LEN:-15}"
+FPS="${FPS:-30}"
+SIZE="${SIZE:-350}"
+EXPOSURE="${EXPOSURE:--0.55}"
+WORLD_STRENGTH="${WORLD_STRENGTH:-0.42}"
+LIGHT_ENERGY="${LIGHT_ENERGY:-599}"
+GAP_MULTIPLIER="${GAP_MULTIPLIER:-1.25}"
+
+mkdir -p "$OUT_DIR"
+
+# Runs headless Blender to render lineup video
+/Applications/Blender.app/Contents/MacOS/Blender -b -P "$BLEND_PY" -- \
+  --in_dir "$IN_DIR" \
+  --out_dir "$OUT_DIR" \
+  --seconds "$SECONDS_LEN" \
+  --fps "$FPS" \
+  --size "$SIZE" \
+  --exposure "$EXPOSURE" \
+  --world_strength "$WORLD_STRENGTH" \
+  --light_energy "$LIGHT_ENERGY" \
+  --gap_multiplier "$GAP_MULTIPLIER"
+
+echo "Lineup render complete: $OUT_DIR/lineup.(webm|mov)"
+
+
