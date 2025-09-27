@@ -1,4 +1,4 @@
-import bpy, sys, os, argparse, math, subprocess, shutil
+import bpy, sys, os, argparse, math, subprocess, shutil, random
 from mathutils import Vector
 
 
@@ -14,7 +14,7 @@ p.add_argument("--size", type=int, default=350)
 p.add_argument("--exposure", type=float, default=-0.55)
 p.add_argument("--world_strength", type=float, default=0.42)
 p.add_argument("--light_energy", type=float, default=599.0)
-p.add_argument("--gap_multiplier", type=float, default=1.25, help="spacing multiplier based on max model depth")
+p.add_argument("--gap_multiplier", type=float, default=1.5, help="spacing multiplier based on max model depth")
 args = p.parse_args(argv)
 
 os.makedirs(args.out_dir, exist_ok=True)
@@ -117,7 +117,8 @@ def center_object_at_origin(target):
 
 
 def fit_camera_for_single(max_size_vec):
-    # Compute a camera distance that nicely frames a single object of given size
+    # Compute a camera distance that nicely frames a single object of given size,
+    # but place the camera slightly above and to the right, pointing at a target.
     cam.data.type = "PERSP"
     cam.data.lens = 50
     fov = cam.data.angle
@@ -126,15 +127,28 @@ def fit_camera_for_single(max_size_vec):
     depth_y = float(max_size_vec.y)
     dist = (radius_xz * 1.03) / math.tan(fov / 2.0) + (depth_y * 0.25)
 
-    cam.location = (0.0, -dist, 0.0)
-    cam.rotation_euler = (math.radians(90), 0.0, 0.0)
+    # Tracking target a bit above the lineup plane, so content sits toward top of frame
+    target = bpy.data.objects.new("CamTarget", None)
+    target.location = (0.0, 0.0, max(0.0, max_size_vec.z * 0.1))
+    scene.collection.objects.link(target)
+
+    # Camera positioned up-right-back, producing a diagonal screen-space motion when lineup moves along X
+    cam.location = (dist * 0.85, -dist * 0.55, dist * 0.65)
+    cam.rotation_euler = (0.0, 0.0, 0.0)
     cam.data.clip_start = 0.01
     cam.data.clip_end = max(dist * 4.0, 1000.0)
-    cam.data.shift_x = 0.0
-    cam.data.shift_y = 0.0
+    cam.data.shift_x = -0.05
+    cam.data.shift_y = 0.12
 
-    light.location = (dist * 0.5, -dist * 0.5, dist * 0.8)
-    light.rotation_euler = (math.radians(60), 0, math.radians(30))
+    # Make camera look at target
+    tt = cam.constraints.new(type='TRACK_TO')
+    tt.target = target
+    tt.track_axis = 'TRACK_NEGATIVE_Z'
+    tt.up_axis = 'UP_Y'
+
+    # Keep a static area light above; do not parent it to anything animated
+    light.location = (0.0, -dist * 0.25, dist * 1.2)
+    light.rotation_euler = (math.radians(70), 0, math.radians(15))
 
 
 def import_glb(path):
@@ -194,6 +208,8 @@ def encode_mov(tmp_dir, out_path):
 # Import all GLBs
 glb_files = [f for f in os.listdir(args.in_dir) if f.lower().endswith(".glb")]
 glb_files.sort()
+# Randomize order so the lineup changes each render
+random.shuffle(glb_files)
 
 if not glb_files:
     raise SystemExit("No .glb files found in --in_dir")
@@ -204,6 +220,11 @@ for fname in glb_files:
     path = os.path.join(args.in_dir, fname)
     root = import_glb(path)
     center_object_at_origin(root)
+    # Rotate so models "look" along +X (direction of travel), as if following each other's back
+    try:
+        root.rotation_euler = (0.0, 0.0, root.rotation_euler.z + math.radians(90.0))
+    except Exception:
+        pass
     min_c, max_c = bounds(root)
     size_vec = max_c - min_c
     max_size_vec.x = max(max_size_vec.x, size_vec.x)
@@ -216,12 +237,12 @@ for fname in glb_files:
 fit_camera_for_single(max_size_vec)
 
 
-# Arrange objects in a single row along +Y (behind the first)
-depth_unit = max_size_vec.y if max_size_vec.y > 0 else 1.0
-spacing = depth_unit * args.gap_multiplier
+# Arrange objects in a single row, first in front at X=0, others behind along -X
+width_unit = max_size_vec.x if max_size_vec.x > 0 else 1.0
+spacing = width_unit * args.gap_multiplier
 
 for idx, obj in enumerate(objects):
-    obj.location = Vector((0.0, idx * spacing, 0.0))
+    obj.location = Vector((-idx * spacing, 0.0, 0.0))
 
 
 # Create a master lineup empty and parent all objects for a single translation animation
@@ -231,17 +252,21 @@ for obj in objects:
     obj.parent = lineup
 
 
-# Animate the lineup moving forward (toward camera) over the timeline
+# Animate the lineup moving left across frame over the full duration
 scene.frame_set(scene.frame_start)
-lineup.location = Vector((0.0, 0.0, 0.0))
+# Start at top-left (negative X, higher Z) with first visible and some behind
+start_x = -spacing * 0.5
+start_z = spacing * 0.5
+lineup.location = Vector((start_x, 0.0, start_z))
 lineup.keyframe_insert(data_path="location", frame=scene.frame_start)
 
 total_length = (len(objects) - 1) * spacing
-exit_margin = spacing  # ensure the last item fully passes the frame
-final_offset = -(total_length + exit_margin)
+exit_margin = spacing  # ensure the last item fully exits to the right by end
+final_offset = (total_length + exit_margin)
 
 scene.frame_set(scene.frame_end)
-lineup.location = Vector((0.0, final_offset, 0.0))
+# End bottom-right for a top-left -> bottom-right diagonal
+lineup.location = Vector((final_offset, 0.0, -start_z))
 lineup.keyframe_insert(data_path="location", frame=scene.frame_end)
 
 # Make animation linear
