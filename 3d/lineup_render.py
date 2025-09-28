@@ -36,7 +36,7 @@ scene.render.resolution_x = args.size
 scene.render.resolution_y = args.size
 scene.render.resolution_percentage = 100
 scene.frame_start = 1
-scene.frame_end = int(args.seconds * args.fps)
+scene.frame_end = max(1, int(args.seconds * args.fps) - 1)
 scene.render.image_settings.file_format = "PNG"
 scene.render.image_settings.color_mode = "RGBA"
 scene.render.image_settings.color_depth = "8"
@@ -142,15 +142,17 @@ def fit_camera_for_single(max_size_vec):
 
     # Camera positioned up-right-back, producing a diagonal screen-space motion when lineup moves along X
     side_sign = 1.0 if args.camera_side == "left" else -1.0
-    cam.location = (dist * 0.85, side_sign * 0.55 * dist, dist * 0.65)
+    # Slightly closer horizontally, a bit lower vertically for better face visibility
+    cam.location = (dist * 0.72, side_sign * 0.45 * dist, dist * 0.023)
     cam.rotation_euler = (0.0, 0.0, 0.0)
     cam.data.clip_start = 0.01
     cam.data.clip_end = max(dist * 4.0, 1000.0)
     cam.data.shift_x = -0.05
-    cam.data.shift_y = 0.12
+    cam.data.shift_y = 0.0
 
     # Compute rotation so camera looks at a fixed point above origin.
-    look_at = Vector((0.0, 0.0, max(0.0, max_size_vec.z * 0.1)))
+    # Aim very close to camera height for near-horizontal framing
+    look_at = Vector((0.0, 0.0, max(0.0, cam.location.z * 0.98)))
     direction = look_at - cam.location
     quat = direction.to_track_quat('-Z', 'Y')
     cam.rotation_euler = quat.to_euler()
@@ -307,16 +309,13 @@ start_z = 0.0
 lineup.location = Vector((start_x, 0.0, start_z))
 lineup.keyframe_insert(data_path="location", frame=scene.frame_start)
 
-total_length = (len(objects) - 1) * spacing
-exit_margin = spacing  # ensure the last item fully exits to the right by end
-desired_motion = (total_length + exit_margin) - start_x
-# Quantize total motion to the nearest whole number of spacings so
-# the last frame is identical to the first (perfect loop).
-cycles = max(1, int(round(desired_motion / spacing)))
-final_offset = start_x + cycles * spacing
+# Move by exactly the number of originals in spacings so every original passes
+# under the camera once; duplicates at both ends maintain periodicity.
+final_offset = start_x + (n_obj * spacing)
 
 scene.frame_set(scene.frame_end)
-# End far right; keep same Z to preserve consistent framing throughout
+# End at the final position within the render range; with frame_end reduced by 1,
+# the last rendered frame will match the start without capturing an extra step.
 lineup.location = Vector((final_offset, 0.0, start_z))
 lineup.keyframe_insert(data_path="location", frame=scene.frame_end)
 
