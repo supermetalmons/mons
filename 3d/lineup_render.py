@@ -163,6 +163,22 @@ def import_glb(path):
     return root
 
 
+def duplicate_hierarchy(root):
+    # Create a linked duplicate of an object hierarchy so we can place copies
+    # before and after the main lineup without duplicating mesh data.
+    def _dup(obj):
+        obj_copy = obj.copy()
+        if obj.data:
+            obj_copy.data = obj.data  # link to same data to save memory
+        scene.collection.objects.link(obj_copy)
+        for child in obj.children:
+            child_copy = _dup(child)
+            child_copy.parent = obj_copy
+        return obj_copy
+
+    return _dup(root)
+
+
 def render_png_sequence(tmp_dir):
     os.makedirs(tmp_dir, exist_ok=True)
     scene.render.filepath = os.path.join(tmp_dir, "frame_")
@@ -233,22 +249,44 @@ for fname in glb_files:
     objects.append(root)
 
 
+# Build an extended list by adding a few items (5) to the front and end
+# to create a periodic order suitable for looping.
+loop_pad = 5
+n_obj = len(objects)
+objects_extended = []
+if n_obj > 0:
+    # Prefix: last `loop_pad` items in original order
+    prefix_indices = [((n_obj - loop_pad) + i) % n_obj for i in range(loop_pad)]
+    for idx in prefix_indices:
+        objects_extended.append(duplicate_hierarchy(objects[idx]))
+
+    # Originals in the middle
+    objects_extended.extend(objects)
+
+    # Suffix: first `loop_pad` items
+    suffix_indices = [i % n_obj for i in range(loop_pad)]
+    for idx in suffix_indices:
+        objects_extended.append(duplicate_hierarchy(objects[idx]))
+
 # Fit camera to nicely frame a single object (front item), not the entire line length
 fit_camera_for_single(max_size_vec)
 
 
-# Arrange objects in a single row, first in front at X=0, others behind along -X
+# Arrange objects in a single row using the extended list.
+# Keep the original first item at X=0 and place the prefixed copies in front (+X)
+# and suffixed copies behind (-X), preserving periodic order.
 width_unit = max_size_vec.x if max_size_vec.x > 0 else 1.0
 spacing = width_unit * args.gap_multiplier
 
-for idx, obj in enumerate(objects):
-    obj.location = Vector((-idx * spacing, 0.0, 0.0))
+ref_index = loop_pad if n_obj > 0 else 0
+for idx, obj in enumerate(objects_extended):
+    obj.location = Vector(((ref_index - idx) * spacing, 0.0, 0.0))
 
 
 # Create a master lineup empty and parent all objects for a single translation animation
 lineup = bpy.data.objects.new("LINEUP", None)
 scene.collection.objects.link(lineup)
-for obj in objects:
+for obj in objects_extended:
     obj.parent = lineup
 
 

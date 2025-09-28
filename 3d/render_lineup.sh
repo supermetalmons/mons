@@ -9,7 +9,7 @@ BLEND_PY="$SCRIPT_DIR/lineup_render.py"
 IN_DIR="${1:-$SCRIPT_DIR/shop_preview_models}"
 OUT_DIR="${2:-$SCRIPT_DIR/../shop}"
 
-SECONDS_LEN="${SECONDS_LEN:-10}"
+SECONDS_LEN="${SECONDS_LEN:-7}"
 FPS="${FPS:-30}"
 SIZE="${SIZE:-1024}"
 EXPOSURE="${EXPOSURE:--0.55}"
