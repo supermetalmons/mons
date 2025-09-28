@@ -307,7 +307,11 @@ lineup.keyframe_insert(data_path="location", frame=scene.frame_start)
 
 total_length = (len(objects) - 1) * spacing
 exit_margin = spacing  # ensure the last item fully exits to the right by end
-final_offset = (total_length + exit_margin)
+desired_motion = (total_length + exit_margin) - start_x
+# Quantize total motion to the nearest whole number of spacings so
+# the last frame is identical to the first (perfect loop).
+cycles = max(1, int(round(desired_motion / spacing)))
+final_offset = start_x + cycles * spacing
 
 scene.frame_set(scene.frame_end)
 # End far right; keep same Z to preserve consistent framing throughout
