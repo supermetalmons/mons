@@ -7,7 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 BLEND_PY="$SCRIPT_DIR/lineup_render.py"
 
 IN_DIR="${1:-$SCRIPT_DIR/shop_preview_models}"
-OUT_DIR="${2:-$SCRIPT_DIR/../shop}"
+OUT_DIR="${2:-$SCRIPT_DIR}"
 
 SECONDS_LEN="${SECONDS_LEN:-7}"
 FPS="${FPS:-30}"
@@ -32,5 +32,10 @@ mkdir -p "$OUT_DIR"
   --gap_multiplier "$GAP_MULTIPLIER"
 
 echo "Lineup render complete: $OUT_DIR/lineup.(webm|mov)"
+
+# Produce Safari-compatible .mov in a sibling "output" folder inside OUT_DIR
+pushd "$OUT_DIR" >/dev/null
+"$SCRIPT_DIR/process_movs_for_safari.sh"
+popd >/dev/null
 
 
