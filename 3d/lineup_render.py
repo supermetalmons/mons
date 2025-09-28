@@ -97,6 +97,9 @@ out = wn.new("ShaderNodeOutputWorld")
 world.node_tree.links.new(bg.outputs["Background"], out.inputs["Surface"])
 
 
+cam_target = None
+
+
 def bounds(obj):
     local = [Vector(v[:]) for v in obj.bound_box] if obj.type != 'EMPTY' else [Vector((0, 0, 0))] * 8
     coords = [obj.matrix_world @ v for v in local]
@@ -127,10 +130,14 @@ def fit_camera_for_single(max_size_vec):
     depth_y = float(max_size_vec.y)
     dist = (radius_xz * 1.03) / math.tan(fov / 2.0) + (depth_y * 0.25)
 
-    # Tracking target a bit above the lineup plane, so content sits toward top of frame
-    target = bpy.data.objects.new("CamTarget", None)
-    target.location = (0.0, 0.0, max(0.0, max_size_vec.z * 0.1))
-    scene.collection.objects.link(target)
+    # Orient camera once toward a fixed world-space point; no constraints so
+    # camera remains completely static while the lineup moves through frame.
+    # Clear any existing constraints (defensive if script re-runs in same session).
+    try:
+        while cam.constraints:
+            cam.constraints.remove(cam.constraints[0])
+    except Exception:
+        pass
 
     # Camera positioned up-right-back, producing a diagonal screen-space motion when lineup moves along X
     cam.location = (dist * 0.85, -dist * 0.55, dist * 0.65)
@@ -140,11 +147,11 @@ def fit_camera_for_single(max_size_vec):
     cam.data.shift_x = -0.05
     cam.data.shift_y = 0.12
 
-    # Make camera look at target
-    tt = cam.constraints.new(type='TRACK_TO')
-    tt.target = target
-    tt.track_axis = 'TRACK_NEGATIVE_Z'
-    tt.up_axis = 'UP_Y'
+    # Compute rotation so camera looks at a fixed point above origin.
+    look_at = Vector((0.0, 0.0, max(0.0, max_size_vec.z * 0.1)))
+    direction = look_at - cam.location
+    quat = direction.to_track_quat('-Z', 'Y')
+    cam.rotation_euler = quat.to_euler()
 
     # Keep a static area light above; do not parent it to anything animated
     light.location = (0.0, -dist * 0.25, dist * 1.2)
@@ -290,11 +297,11 @@ for obj in objects_extended:
     obj.parent = lineup
 
 
-# Animate the lineup moving left across frame over the full duration
+# Animate the lineup moving left-to-right across frame (X only) over the full duration
 scene.frame_set(scene.frame_start)
-# Start at top-left (negative X, higher Z) with first visible and some behind
+# Start slightly left so some items are already in front of the first
 start_x = -spacing * 0.5
-start_z = spacing * 0.5
+start_z = 0.0
 lineup.location = Vector((start_x, 0.0, start_z))
 lineup.keyframe_insert(data_path="location", frame=scene.frame_start)
 
@@ -303,9 +310,11 @@ exit_margin = spacing  # ensure the last item fully exits to the right by end
 final_offset = (total_length + exit_margin)
 
 scene.frame_set(scene.frame_end)
-# End bottom-right for a top-left -> bottom-right diagonal
-lineup.location = Vector((final_offset, 0.0, -start_z))
+# End far right; keep same Z to preserve consistent framing throughout
+lineup.location = Vector((final_offset, 0.0, start_z))
 lineup.keyframe_insert(data_path="location", frame=scene.frame_end)
+
+# Keep camera target unparented so camera orientation is static in world space
 
 # Make animation linear
 if lineup.animation_data and lineup.animation_data.action:
