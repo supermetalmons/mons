@@ -8,6 +8,7 @@ BLEND_PY="$SCRIPT_DIR/lineup_render.py"
 
 IN_DIR="${1:-$SCRIPT_DIR/shop_preview_models}"
 OUT_DIR="${2:-$SCRIPT_DIR}"
+CAMERA_SIDE="${3:-right}"
 
 SECONDS_LEN="${SECONDS_LEN:-7}"
 FPS="${FPS:-30}"
@@ -29,7 +30,8 @@ mkdir -p "$OUT_DIR"
   --exposure "$EXPOSURE" \
   --world_strength "$WORLD_STRENGTH" \
   --light_energy "$LIGHT_ENERGY" \
-  --gap_multiplier "$GAP_MULTIPLIER"
+  --gap_multiplier "$GAP_MULTIPLIER" \
+  --camera_side "$CAMERA_SIDE"
 
 echo "Lineup render complete: $OUT_DIR/lineup.(webm|mov)"
 

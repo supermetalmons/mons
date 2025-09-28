@@ -15,6 +15,7 @@ p.add_argument("--exposure", type=float, default=-0.55)
 p.add_argument("--world_strength", type=float, default=0.42)
 p.add_argument("--light_energy", type=float, default=599.0)
 p.add_argument("--gap_multiplier", type=float, default=1.5, help="spacing multiplier based on max model depth")
+p.add_argument("--camera_side", choices=["left", "right"], default="right")
 args = p.parse_args(argv)
 
 os.makedirs(args.out_dir, exist_ok=True)
@@ -140,7 +141,8 @@ def fit_camera_for_single(max_size_vec):
         pass
 
     # Camera positioned up-right-back, producing a diagonal screen-space motion when lineup moves along X
-    cam.location = (dist * 0.85, -dist * 0.55, dist * 0.65)
+    side_sign = 1.0 if args.camera_side == "left" else -1.0
+    cam.location = (dist * 0.85, side_sign * 0.55 * dist, dist * 0.65)
     cam.rotation_euler = (0.0, 0.0, 0.0)
     cam.data.clip_start = 0.01
     cam.data.clip_end = max(dist * 4.0, 1000.0)
