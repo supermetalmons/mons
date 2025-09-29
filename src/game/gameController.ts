@@ -73,79 +73,94 @@ export function getVerboseTrackingEntities(): string[] {
   }
   return entities.map((e) => {
     const events = e.events();
-    let out = "";
-    // TODO: build event string around actor, reorder depending on direction, making sure primary direction points from the actor
-    for (const ev of events) {
-      const s = eventToEmoji(ev);
-      if (s === "") continue;
-      if (out !== "") out += " ";
-      out += s;
-    }
-    return out === "" ? "—" : out;
+    return stringForSingleMoveEvents(events);
   });
 }
 
-function eventToEmoji(event: MonsWeb.EventModel): string {
-  function arrowForEvent(e: MonsWeb.EventModel): string {
-    const from = e.loc1;
-    const to = e.loc2;
-    if (!from || !to) return "➡️";
-    let di = to.i - from.i;
-    let dj = to.j - from.j;
-    if (Board.isFlipped) {
-      di = -di;
-      dj = -dj;
-    }
-    if (di === 0 && dj > 0) return "➡️";
-    if (di === 0 && dj < 0) return "⬅️";
-    if (dj === 0 && di > 0) return "⬇️";
-    if (dj === 0 && di < 0) return "⬆️";
-    if (di < 0 && dj > 0) return "↗️";
-    if (di > 0 && dj > 0) return "↘️";
-    if (di > 0 && dj < 0) return "↙️";
-    if (di < 0 && dj < 0) return "↖️";
-    return "➡️";
+function arrowForEvent(e: MonsWeb.EventModel): string {
+  const from = e.loc1;
+  const to = e.loc2;
+  if (!from || !to) return "➡️";
+  let di = to.i - from.i;
+  let dj = to.j - from.j;
+  if (Board.isFlipped) {
+    di = -di;
+    dj = -dj;
   }
+  if (di === 0 && dj > 0) return "➡️";
+  if (di === 0 && dj < 0) return "⬅️";
+  if (dj === 0 && di > 0) return "⬇️";
+  if (dj === 0 && di < 0) return "⬆️";
+  if (di < 0 && dj > 0) return "↗️";
+  if (di > 0 && dj > 0) return "↘️";
+  if (di > 0 && dj < 0) return "↙️";
+  if (di < 0 && dj < 0) return "↖️";
+  return "➡️";
+}
 
-  switch (event.kind) {
-    case MonsWeb.EventModelKind.MonMove:
-      return arrowForEvent(event);
-    case MonsWeb.EventModelKind.ManaMove:
-      return "💧" + arrowForEvent(event);
-    case MonsWeb.EventModelKind.ManaScored:
-      return event.mana && event.mana.kind === MonsWeb.ManaKind.Supermana ? "👑✅" : "💧✅";
-    case MonsWeb.EventModelKind.MysticAction:
-      return "🧙⚡️";
-    case MonsWeb.EventModelKind.DemonAction:
-      return "😈🔥";
-    case MonsWeb.EventModelKind.SpiritTargetMove:
-      return "👻" + arrowForEvent(event);
-    case MonsWeb.EventModelKind.PickupBomb:
-      return "💣";
-    case MonsWeb.EventModelKind.PickupPotion:
-      return "🧪";
-    case MonsWeb.EventModelKind.PickupMana:
-      return "💧";
-    case MonsWeb.EventModelKind.BombAttack:
-      return "💣" + arrowForEvent(event);
-    case MonsWeb.EventModelKind.BombExplosion:
-      return "💥";
-    case MonsWeb.EventModelKind.NextTurn:
-      return "⏭️";
-    case MonsWeb.EventModelKind.GameOver:
-      return "🏆";
-    case MonsWeb.EventModelKind.UsePotion:
-      return "🧪🫧";
-    case MonsWeb.EventModelKind.MonFainted:
-    case MonsWeb.EventModelKind.ManaDropped:
-    case MonsWeb.EventModelKind.MonAwake:
-    case MonsWeb.EventModelKind.Takeback:
-    case MonsWeb.EventModelKind.SupermanaBackToBase:
-    case MonsWeb.EventModelKind.DemonAdditionalStep:
-      return "";
-    default:
-      return "";
+function stringForSingleMoveEvents(events: MonsWeb.EventModel[]): string {
+  let out = "";
+  for (const ev of events) {
+    let s = "";
+    switch (ev.kind) {
+      case MonsWeb.EventModelKind.MonMove:
+        s = arrowForEvent(ev);
+        break;
+      case MonsWeb.EventModelKind.ManaMove:
+        s = "💧" + arrowForEvent(ev);
+        break;
+      case MonsWeb.EventModelKind.ManaScored:
+        s = ev.mana && ev.mana.kind === MonsWeb.ManaKind.Supermana ? "👑✅" : "💧✅";
+        break;
+      case MonsWeb.EventModelKind.MysticAction:
+        s = "🧙⚡️";
+        break;
+      case MonsWeb.EventModelKind.DemonAction:
+        s = "😈🔥";
+        break;
+      case MonsWeb.EventModelKind.SpiritTargetMove:
+        s = "👻" + arrowForEvent(ev);
+        break;
+      case MonsWeb.EventModelKind.PickupBomb:
+        s = "💣";
+        break;
+      case MonsWeb.EventModelKind.PickupPotion:
+        s = "🧪";
+        break;
+      case MonsWeb.EventModelKind.PickupMana:
+        s = "💧";
+        break;
+      case MonsWeb.EventModelKind.BombAttack:
+        s = "💣" + arrowForEvent(ev);
+        break;
+      case MonsWeb.EventModelKind.BombExplosion:
+        s = "💥";
+        break;
+      case MonsWeb.EventModelKind.NextTurn:
+        s = "⏭️";
+        break;
+      case MonsWeb.EventModelKind.GameOver:
+        s = "🏆";
+        break;
+      case MonsWeb.EventModelKind.UsePotion:
+        s = "🧪🫧";
+        break;
+      case MonsWeb.EventModelKind.MonFainted:
+      case MonsWeb.EventModelKind.ManaDropped:
+      case MonsWeb.EventModelKind.MonAwake:
+      case MonsWeb.EventModelKind.Takeback:
+      case MonsWeb.EventModelKind.SupermanaBackToBase:
+      case MonsWeb.EventModelKind.DemonAdditionalStep:
+        s = "";
+        break;
+      default:
+        s = "";
+    }
+    if (s === "") continue;
+    if (out !== "") out += " ";
+    out += s;
   }
+  return out === "" ? "—" : out;
 }
 
 export function didSelectVerboseTrackingEntity(index: number) {
