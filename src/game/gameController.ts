@@ -77,37 +77,42 @@ export function getVerboseTrackingEntities(): string[] {
   });
 }
 
-function arrowForEvent(e: MonsWeb.EventModel): string {
+function arrowForEvent(e: MonsWeb.EventModel): { arrow: string; isRight: boolean } {
   const from = e.loc1;
   const to = e.loc2;
-  if (!from || !to) return "➡️";
+  if (!from || !to) return { arrow: "➡️", isRight: true };
   let di = to.i - from.i;
   let dj = to.j - from.j;
   if (Board.isFlipped) {
     di = -di;
     dj = -dj;
   }
-  if (di === 0 && dj > 0) return "➡️";
-  if (di === 0 && dj < 0) return "⬅️";
-  if (dj === 0 && di > 0) return "⬇️";
-  if (dj === 0 && di < 0) return "⬆️";
-  if (di < 0 && dj > 0) return "↗️";
-  if (di > 0 && dj > 0) return "↘️";
-  if (di > 0 && dj < 0) return "↙️";
-  if (di < 0 && dj < 0) return "↖️";
-  return "➡️";
+  if (di === 0 && dj > 0) return { arrow: "➡️", isRight: true };
+  if (di === 0 && dj < 0) return { arrow: "⬅️", isRight: false };
+  if (dj === 0 && di > 0) return { arrow: "⬇️", isRight: true };
+  if (dj === 0 && di < 0) return { arrow: "⬆️", isRight: true };
+  if (di < 0 && dj > 0) return { arrow: "↗️", isRight: true };
+  if (di > 0 && dj > 0) return { arrow: "↘️", isRight: true };
+  if (di > 0 && dj < 0) return { arrow: "↙️", isRight: false };
+  if (di < 0 && dj < 0) return { arrow: "↖️", isRight: false };
+  return { arrow: "➡️", isRight: true };
 }
 
 function stringForSingleMoveEvents(events: MonsWeb.EventModel[]): string {
   let out = "";
+  let moveDirection = null;
   for (const ev of events) {
     let s = "";
     switch (ev.kind) {
       case MonsWeb.EventModelKind.MonMove:
-        s = arrowForEvent(ev);
+        const monMoveArrow = arrowForEvent(ev);
+        s = monMoveArrow.arrow;
+        moveDirection = monMoveArrow.isRight;
         break;
       case MonsWeb.EventModelKind.ManaMove:
-        s = "💧" + arrowForEvent(ev);
+        const manaMoveArrow = arrowForEvent(ev);
+        s = "💧" + manaMoveArrow.arrow;
+        moveDirection = manaMoveArrow.isRight;
         break;
       case MonsWeb.EventModelKind.ManaScored:
         s = ev.mana && ev.mana.kind === MonsWeb.ManaKind.Supermana ? "👑✅" : "💧✅";
@@ -119,7 +124,9 @@ function stringForSingleMoveEvents(events: MonsWeb.EventModel[]): string {
         s = "😈🔥";
         break;
       case MonsWeb.EventModelKind.SpiritTargetMove:
-        s = "👻" + arrowForEvent(ev);
+        const spiritMoveArrow = arrowForEvent(ev);
+        s = "👻" + spiritMoveArrow.arrow;
+        moveDirection = spiritMoveArrow.isRight;
         break;
       case MonsWeb.EventModelKind.PickupBomb:
         s = "💣";
@@ -131,7 +138,9 @@ function stringForSingleMoveEvents(events: MonsWeb.EventModel[]): string {
         s = "💧";
         break;
       case MonsWeb.EventModelKind.BombAttack:
-        s = "💣" + arrowForEvent(ev);
+        const bombAttackArrow = arrowForEvent(ev);
+        s = "💣" + bombAttackArrow.arrow;
+        moveDirection = bombAttackArrow.isRight;
         break;
       case MonsWeb.EventModelKind.BombExplosion:
         s = "💥";
@@ -160,6 +169,13 @@ function stringForSingleMoveEvents(events: MonsWeb.EventModel[]): string {
     if (out !== "") out += " ";
     out += s;
   }
+
+  if (moveDirection !== null) {
+    console.log("Move direction:", moveDirection);
+  } else {
+    console.log("No move direction found");
+  }
+
   return out === "" ? "—" : out;
 }
 
