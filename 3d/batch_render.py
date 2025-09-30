@@ -12,7 +12,7 @@ p.add_argument("--size", type=int, default=1024)
 p.add_argument("--exposure", type=float, default=-0.55)
 p.add_argument("--world_strength", type=float, default=0.42)
 p.add_argument("--light_energy", type=float, default=599.0)
-p.add_argument("--environment", choices=["clean","black-room","white-room","night-sky","snowy-field","sky","meadow","country-club","desert","snowy-forest"], default="black-room")
+p.add_argument("--environment", choices=["clean","black-room","white-room","night-sky","snowy-field","sky","meadow","country-club","desert","snowy-forest","desert-sky"], default="black-room")
 p.add_argument("--orbit_camera", type=lambda v: str(v).lower() in {"1","true","t","yes","y"}, default=True)
 args = p.parse_args(argv)
 
@@ -140,7 +140,7 @@ if args.environment == "night-sky":
     links.new(star_emm.outputs["Emission"], add.inputs[1])
     links.new(add.outputs[0], out.inputs["Surface"])
 else:
-    if args.environment in {"snowy-field","sky","meadow","country-club","desert","snowy-forest"}:
+    if args.environment in {"snowy-field","sky","meadow","country-club","desert","snowy-forest","desert-sky"}:
         scene.render.film_transparent = False
         # Environment Texture setup
         tex = wn.new("ShaderNodeTexEnvironment")
@@ -152,6 +152,7 @@ else:
                 "country-club": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/country_club_4k.hdr",
                 "desert": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/qwantani_moon_noon_4k.hdr",
                 "snowy-forest": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/snowy_forest_4k.hdr",
+                "desert-sky": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/qwantani_moon_noon_puresky_4k.hdr",
             }
             hdri_path = ensure_hdri_local(url_map.get(args.environment))
             tex.image = bpy.data.images.load(hdri_path)
