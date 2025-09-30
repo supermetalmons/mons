@@ -3,6 +3,7 @@ const glicko2 = require("glicko2");
 const admin = require("firebase-admin");
 const { batchReadWithRetry, getProfileByLoginId, updateUserRatingAndNonce, sendBotMessage, getDisplayNameFromAddress } = require("./utils");
 
+// TODO: make it work with both players reporting a result
 exports.updateRatings = onCall(async (request) => {
   const uid = request.auth.uid;
   const playerId = request.data.playerId;
