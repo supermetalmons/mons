@@ -979,11 +979,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             }
 
             if (!isWatchOnly && hasBothEthOrSolAddresses()) {
-              if (isVictory) {
-                updateRatingsAndSuggestSavingOnchainRating();
-              } else {
-                updateRatingsLocally(false);
-              }
+              updateRatings(isVictory);
             }
 
             isGameOver = true;
@@ -1118,22 +1114,14 @@ function verifyMovesIfNeeded(matchId: string, flatMovesString: string, color: st
   }
 }
 
-function updateRatingsAndSuggestSavingOnchainRating() {
+function updateRatings(isWin: boolean) {
   if (!connection.isAutomatch()) {
     return;
   }
+
   connection.updateRatings();
-  updateRatingsLocally(true);
-}
-
-function updateRatingsLocally(isWin: boolean) {
-  if (!connection.isAutomatch()) {
-    return;
-  }
-
   const playerSide = Board.playerSideMetadata.uid;
   const opponentSide = Board.opponentSideMetadata.uid;
-
   const victoryUid = isWin ? playerSide : opponentSide;
   const defeatUid = isWin ? opponentSide : playerSide;
 
@@ -1398,12 +1386,12 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
   if (justClaimedByYourself) {
     playSounds([Sound.Victory]);
     if (hasBothEthOrSolAddresses()) {
-      updateRatingsAndSuggestSavingOnchainRating();
+      updateRatings(true);
     }
   } else if (!onConnect) {
     if (!isWatchOnly) {
       playSounds([Sound.Defeat]);
-      updateRatingsLocally(false);
+      updateRatings(false);
     }
   }
 }
@@ -1419,7 +1407,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
   if (justConfirmedResignYourself) {
     resignedColor = playerSideColor;
     playSounds([Sound.Defeat]);
-    updateRatingsLocally(false);
+    updateRatings(false);
   } else {
     resignedColor = resignSenderColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   }
@@ -1427,7 +1415,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
   if (!onConnect && !justConfirmedResignYourself) {
     playSounds([Sound.Victory]);
     if (!isWatchOnly && hasBothEthOrSolAddresses()) {
-      updateRatingsAndSuggestSavingOnchainRating();
+      updateRatings(true);
     }
   }
 
