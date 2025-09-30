@@ -12,7 +12,7 @@ p.add_argument("--size", type=int, default=1024)
 p.add_argument("--exposure", type=float, default=-0.55)
 p.add_argument("--world_strength", type=float, default=0.42)
 p.add_argument("--light_energy", type=float, default=599.0)
-p.add_argument("--environment", choices=["clean","black-room","white-room","night-sky","snowy-field"], default="black-room")
+p.add_argument("--environment", choices=["clean","black-room","white-room","night-sky","snowy-field","sky","meadow"], default="black-room")
 args = p.parse_args(argv)
 
 os.makedirs(args.out_dir, exist_ok=True)
@@ -92,7 +92,7 @@ def ensure_hdri_local(path_or_url):
         # CC0 snowy HDRI from Poly Haven
         path_or_url = "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/snowy_field_4k.hdr"
     if path_or_url.startswith("http://") or path_or_url.startswith("https://"):
-        cache_dir = os.path.join(os.path.dirname(__file__), "_hdri_cache")
+        cache_dir = os.path.join(os.path.dirname(__file__), "scenes")
         os.makedirs(cache_dir, exist_ok=True)
         fname = os.path.basename(path_or_url.split("?")[0]) or "env.hdr"
         local_path = os.path.join(cache_dir, fname)
@@ -139,12 +139,17 @@ if args.environment == "night-sky":
     links.new(star_emm.outputs["Emission"], add.inputs[1])
     links.new(add.outputs[0], out.inputs["Surface"])
 else:
-    if args.environment in {"snowy-field"}:
+    if args.environment in {"snowy-field","sky","meadow"}:
         scene.render.film_transparent = False
         # Environment Texture setup
         tex = wn.new("ShaderNodeTexEnvironment")
         try:
-            hdri_path = ensure_hdri_local(None)
+            url_map = {
+                "snowy-field": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/snowy_field_4k.hdr",
+                "sky": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/citrus_orchard_puresky_4k.hdr",
+                "meadow": "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/meadow_2_4k.hdr",
+            }
+            hdri_path = ensure_hdri_local(url_map.get(args.environment))
             tex.image = bpy.data.images.load(hdri_path)
         except Exception:
             # Fallback to simple dark background if HDRI fails
