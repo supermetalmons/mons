@@ -16,6 +16,7 @@ const STORAGE_KEYS = {
   SOL_ADDRESS: "solAddress",
   USERNAME: "username",
   PLAYER_RATING: "playerRating",
+  PLAYER_TOTAL_MANA_POINTS: "playerTotalManaPoints",
   CARD_BACKGROUND_ID: "cardBackgroundId",
   CARD_SUBTITLE_ID: "cardSubtitleId",
   CARD_STICKERS: "cardStickers",
@@ -151,6 +152,14 @@ export const storage = {
     setItem(STORAGE_KEYS.PLAYER_RATING, value);
   },
 
+  getPlayerTotalManaPoints: (defaultValue: number): number => {
+    return getItem(STORAGE_KEYS.PLAYER_TOTAL_MANA_POINTS, defaultValue);
+  },
+
+  setPlayerTotalManaPoints: (value: number): void => {
+    setItem(STORAGE_KEYS.PLAYER_TOTAL_MANA_POINTS, value);
+  },
+
   getCardBackgroundId: (defaultValue: number): number => {
     return getItem(STORAGE_KEYS.CARD_BACKGROUND_ID, defaultValue);
   },
@@ -232,6 +241,7 @@ export const storage = {
     localStorage.removeItem(STORAGE_KEYS.SOL_ADDRESS);
     localStorage.removeItem(STORAGE_KEYS.USERNAME);
     localStorage.removeItem(STORAGE_KEYS.PLAYER_RATING);
+    localStorage.removeItem(STORAGE_KEYS.PLAYER_TOTAL_MANA_POINTS);
     localStorage.removeItem(STORAGE_KEYS.CARD_BACKGROUND_ID);
     localStorage.removeItem(STORAGE_KEYS.CARD_SUBTITLE_ID);
     localStorage.removeItem(STORAGE_KEYS.CARD_STICKERS);

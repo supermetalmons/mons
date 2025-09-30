@@ -720,6 +720,10 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   });
 
   const gpText = "gp: " + ((isOtherPlayer ? profile?.nonce ?? -1 : storage.getPlayerNonce(-1)) + 1).toString();
+
+  // TODO: display mp instead when needed
+  console.log("mp: ", profile?.totalManaPoints);
+
   addTextBubble(cardContentsLayer, gpText, "7.4%", "58.7%", textBubbleHeight, handlePointerLeave);
 
   cardContainer.appendChild(card);

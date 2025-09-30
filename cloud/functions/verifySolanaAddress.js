@@ -28,6 +28,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
     let username = null;
     let rating = null;
     let nonce = null;
+    let totalManaPoints = null;
     let cardBackgroundId = null;
     let cardStickers = null;
     let cardSubtitleId = null;
@@ -69,6 +70,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
         aura = userData.custom?.aura || null;
         rating = userData.rating || null;
         nonce = userData.nonce || null;
+        totalManaPoints = userData.totalManaPoints || null;
         cardBackgroundId = userData.custom?.cardBackgroundId || null;
         cardStickers = userData.custom?.cardStickers || null;
         cardSubtitleId = userData.custom?.cardSubtitleId || null;
@@ -86,6 +88,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
       aura = userData.custom?.aura || null;
       rating = userData.rating || null;
       nonce = userData.nonce || null;
+      totalManaPoints = userData.totalManaPoints || null;
       cardBackgroundId = userData.custom?.cardBackgroundId || null;
       cardStickers = userData.custom?.cardStickers || null;
       cardSubtitleId = userData.custom?.cardSubtitleId || null;
@@ -109,6 +112,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
       username: username,
       rating: rating,
       nonce: nonce,
+      totalManaPoints: totalManaPoints,
       cardBackgroundId: cardBackgroundId,
       cardStickers: cardStickers,
       cardSubtitleId: cardSubtitleId,
