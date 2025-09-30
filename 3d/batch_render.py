@@ -13,6 +13,7 @@ p.add_argument("--exposure", type=float, default=-0.55)
 p.add_argument("--world_strength", type=float, default=0.42)
 p.add_argument("--light_energy", type=float, default=599.0)
 p.add_argument("--environment", choices=["clean","black-room","white-room","night-sky","snowy-field","sky","meadow"], default="black-room")
+p.add_argument("--orbit_camera", type=lambda v: str(v).lower() in {"1","true","t","yes","y"}, default=True)
 args = p.parse_args(argv)
 
 os.makedirs(args.out_dir, exist_ok=True)
@@ -246,6 +247,36 @@ def fit_camera(target, margin=1.03):
     light.rotation_euler = (math.radians(60), 0, math.radians(30))
     if radius_xz == 0.0 and depth_y == 0.0:
         cam.location = (0.0, -3.0, 0.0)
+    return dist
+
+def animate_camera_orbit(distance):
+    target = bpy.data.objects.new("Target", None)
+    scene.collection.objects.link(target)
+    target.location = (0.0, 0.0, 0.0)
+
+    rig = bpy.data.objects.new("CamRig", None)
+    scene.collection.objects.link(rig)
+    cam.parent = rig
+    cam.location = (0.0, -distance, 0.0)
+
+    try:
+        c = cam.constraints.new(type='TRACK_TO')
+        c.target = target
+        c.track_axis = 'TRACK_NEGATIVE_Z'
+        c.up_axis = 'UP_Y'
+    except Exception:
+        pass
+
+    scene.frame_set(scene.frame_start)
+    rig.rotation_euler = (0.0, 0.0, 0.0)
+    rig.keyframe_insert(data_path="rotation_euler", frame=scene.frame_start)
+    scene.frame_set(scene.frame_end + 1)
+    rig.rotation_euler = (0.0, 0.0, math.radians(360))
+    rig.keyframe_insert(data_path="rotation_euler", frame=scene.frame_end + 1)
+    if rig.animation_data and rig.animation_data.action:
+        for fc in rig.animation_data.action.fcurves:
+            for kp in fc.keyframe_points:
+                kp.interpolation = 'LINEAR'
 
 def animate_rotation(obj):
     scene.frame_set(scene.frame_start)
@@ -319,8 +350,11 @@ for fname in glbs:
         except: pass
     path = os.path.join(args.in_dir, fname)
     root = import_glb(path)
-    fit_camera(root)
-    animate_rotation(root)
+    dist = fit_camera(root)
+    if args.orbit_camera:
+        animate_camera_orbit(dist)
+    else:
+        animate_rotation(root)
     base = os.path.splitext(fname)[0]
     tmp = os.path.join(args.out_dir, f"{base}_frames")
     render_png_sequence(tmp)
