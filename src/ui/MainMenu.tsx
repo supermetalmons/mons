@@ -805,7 +805,7 @@ const MainMenu: React.FC = () => {
               <MenuTitleText>MONS.LINK</MenuTitleText>
             </MenuTitle>
             <ButtonRow ref={buttonRowRef}>
-              <IconLinkButton href="https://www.supermetalmons.com/collections/all" target="_blank" rel="noopener noreferrer">
+              <IconLinkButton href="https://mons.shop" target="_blank" rel="noopener noreferrer">
                 Shop
               </IconLinkButton>
               <IconLinkButton href="https://mons.academy" target="_blank" rel="noopener noreferrer">

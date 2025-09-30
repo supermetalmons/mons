@@ -81,28 +81,59 @@ exports.updateRatings = onCall(async (request) => {
     }
   }
 
-  if (result !== "win") {
+  if (result !== "win" && result !== "gg") {
     throw new HttpsError("internal", "Could not confirm victory.");
   }
 
-  const nonceRef = admin.database().ref(`players/${playerId}/nonces/${matchId}`);
-  const nonceSnapshot = await nonceRef.once("value");
-  if (!nonceSnapshot.exists()) {
-    await nonceRef.set(playerProfile.nonce);
-  } else {
-    throw new HttpsError("internal", "Can not update rating with this game anymore");
+  const ratingUpdateFlagRef = admin.database().ref(`invites/${inviteId}/matchesRatingUpdates/${matchId}`);
+  const txnResult = await ratingUpdateFlagRef.transaction((current) => {
+    if (current === true) {
+      return;
+    }
+    return true;
+  });
+  if (!txnResult.committed) {
+    return {
+      ok: true,
+    };
   }
 
   const newNonce1 = playerProfile.nonce + 1;
   const newNonce2 = opponentProfile.nonce + 1;
-  const [newRating1, newRating2] = updateRating(playerProfile.rating, newNonce1, opponentProfile.rating, newNonce2);
-  updateUserRatingAndNonce(playerProfile.profileId, newRating1, newNonce1, true);
-  updateUserRatingAndNonce(opponentProfile.profileId, newRating2, newNonce2, false);
-  
+
+  let newRatingPlayer = 0;
+  let newRatingOpponent = 0;
+  let winnerDisplayName = "";
+  let winnerNewRating = 0;
+  let loserDisplayName = "";
+  let loserNewRating = 0;
+
   const playerProfileDisplayName = getDisplayNameFromAddress(playerProfile.username, playerProfile.eth, playerProfile.sol, 0);
   const opponentProfileDisplayName = getDisplayNameFromAddress(opponentProfile.username, opponentProfile.eth, opponentProfile.sol, 0);
 
-  const updateRatingMessage = `${playerProfileDisplayName} ${newRating1}↑ ${opponentProfileDisplayName} ${newRating2}↓`;
+  if (result === "win") {
+    const [newWinnerRating, newLoserRating] = updateRating(playerProfile.rating, newNonce1, opponentProfile.rating, newNonce2);
+    newRatingPlayer = newWinnerRating;
+    newRatingOpponent = newLoserRating;
+    winnerDisplayName = playerProfileDisplayName;
+    winnerNewRating = newWinnerRating;
+    loserDisplayName = opponentProfileDisplayName;
+    loserNewRating = newLoserRating;
+    updateUserRatingAndNonce(playerProfile.profileId, newRatingPlayer, newNonce1, true);
+    updateUserRatingAndNonce(opponentProfile.profileId, newRatingOpponent, newNonce2, false);
+  } else {
+    const [newWinnerRating, newLoserRating] = updateRating(opponentProfile.rating, newNonce2, playerProfile.rating, newNonce1);
+    newRatingPlayer = newLoserRating;
+    newRatingOpponent = newWinnerRating;
+    winnerDisplayName = opponentProfileDisplayName;
+    winnerNewRating = newWinnerRating;
+    loserDisplayName = playerProfileDisplayName;
+    loserNewRating = newLoserRating;
+    updateUserRatingAndNonce(playerProfile.profileId, newRatingPlayer, newNonce1, false);
+    updateUserRatingAndNonce(opponentProfile.profileId, newRatingOpponent, newNonce2, true);
+  }
+
+  const updateRatingMessage = `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓`;
   sendBotMessage(updateRatingMessage, true);
 
   return {

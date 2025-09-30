@@ -34,6 +34,12 @@
         "hostRematches": {
           ".write": "auth.uid === data.parent().child('hostId').val() || (auth.token.profileId != null && root.child('players').child(data.parent().child('hostId').val()).child('profile').val() === auth.token.profileId)",
           ".validate": "newData.isString() && (!data.exists() || newData.val().contains(data.val()))"
+        },
+        "matchesRatingUpdates": {
+          "$matchId": {
+            ".write": "auth != null && auth.token.admin === true",
+            ".validate": "!data.exists() && newData.isBoolean()"
+          }
         }
       }
     },
@@ -54,12 +60,6 @@
               ".validate": "newData.isString() && (newData.val() === '' || newData.val() === data.val() || (auth != null && auth.token.admin === true))"
             },
             ".validate": "(newData.exists() && newData.child('fen').exists()) && (!data.exists() || ((!data.child('flatMovesString').exists() || (data.child('flatMovesString').exists() && (data.child('fen').val() === newData.child('fen').val() || (data.child('fen').val() != newData.child('fen').val() && data.child('flatMovesString').val() != newData.child('flatMovesString').val())))) && (data.child('flatMovesString').exists() || data.child('fen').exists() && !data.child('flatMovesString').exists() && !newData.child('flatMovesString').exists())))"
-          }
-        },
-        "nonces": {
-          "$matchId": {
-            ".write": "auth != null && auth.token.admin === true",
-            ".validate": "!data.exists() && newData.isString() && newData.val().length > 0"
           }
         },
         "profile": {

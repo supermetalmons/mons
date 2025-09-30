@@ -73,79 +73,116 @@ export function getVerboseTrackingEntities(): string[] {
   }
   return entities.map((e) => {
     const events = e.events();
-    let out = "";
-    // TODO: build event string around actor, reorder depending on direction, making sure primary direction points from the actor
-    for (const ev of events) {
-      const s = eventToEmoji(ev);
-      if (s === "") continue;
-      if (out !== "") out += " ";
-      out += s;
-    }
-    return out === "" ? "—" : out;
+    return stringForSingleMoveEvents(events);
   });
 }
 
-function eventToEmoji(event: MonsWeb.EventModel): string {
-  function arrowForEvent(e: MonsWeb.EventModel): string {
-    const from = e.loc1;
-    const to = e.loc2;
-    if (!from || !to) return "➡️";
-    let di = to.i - from.i;
-    let dj = to.j - from.j;
-    if (Board.isFlipped) {
-      di = -di;
-      dj = -dj;
+function arrowForEvent(e: MonsWeb.EventModel): { arrow: string; isRight: boolean } {
+  const from = e.loc1;
+  const to = e.loc2;
+  if (!from || !to) return { arrow: "➡️", isRight: true };
+  let di = to.i - from.i;
+  let dj = to.j - from.j;
+  if (Board.isFlipped) {
+    di = -di;
+    dj = -dj;
+  }
+  if (di === 0 && dj > 0) return { arrow: "➡️", isRight: true };
+  if (di === 0 && dj < 0) return { arrow: "⬅️", isRight: false };
+  if (dj === 0 && di > 0) return { arrow: "⬇️", isRight: true };
+  if (dj === 0 && di < 0) return { arrow: "⬆️", isRight: true };
+  if (di < 0 && dj > 0) return { arrow: "↗️", isRight: true };
+  if (di > 0 && dj > 0) return { arrow: "↘️", isRight: true };
+  if (di > 0 && dj < 0) return { arrow: "↙️", isRight: false };
+  if (di < 0 && dj < 0) return { arrow: "↖️", isRight: false };
+  return { arrow: "➡️", isRight: true };
+}
+
+function stringForSingleMoveEvents(events: MonsWeb.EventModel[]): string {
+  let out = "";
+
+  let actor = "";
+  let action = "";
+  let arrow = "";
+  let target = "";
+
+  let moveDirection = null;
+  for (const ev of events) {
+    let s = "";
+    switch (ev.kind) {
+      case MonsWeb.EventModelKind.MonMove:
+        const monMoveArrow = arrowForEvent(ev);
+        s = monMoveArrow.arrow;
+        moveDirection = monMoveArrow.isRight;
+        break;
+      case MonsWeb.EventModelKind.ManaMove:
+        const manaMoveArrow = arrowForEvent(ev);
+        s = "💧" + manaMoveArrow.arrow;
+        moveDirection = manaMoveArrow.isRight;
+        break;
+      case MonsWeb.EventModelKind.ManaScored:
+        s = ev.mana && ev.mana.kind === MonsWeb.ManaKind.Supermana ? "👑✅" : "💧✅";
+        break;
+      case MonsWeb.EventModelKind.MysticAction:
+        s = "🧙⚡️";
+        break;
+      case MonsWeb.EventModelKind.DemonAction:
+        s = "😈🔥";
+        break;
+      case MonsWeb.EventModelKind.SpiritTargetMove:
+        const spiritMoveArrow = arrowForEvent(ev);
+        s = "👻" + spiritMoveArrow.arrow;
+        moveDirection = spiritMoveArrow.isRight;
+        break;
+      case MonsWeb.EventModelKind.PickupBomb:
+        s = "💣";
+        break;
+      case MonsWeb.EventModelKind.PickupPotion:
+        s = "🧪";
+        break;
+      case MonsWeb.EventModelKind.PickupMana:
+        s = "💧";
+        break;
+      case MonsWeb.EventModelKind.BombAttack:
+        const bombAttackArrow = arrowForEvent(ev);
+        s = "💣" + bombAttackArrow.arrow;
+        moveDirection = bombAttackArrow.isRight;
+        break;
+      case MonsWeb.EventModelKind.BombExplosion:
+        s = "💥";
+        break;
+      case MonsWeb.EventModelKind.NextTurn:
+        s = "⏭️";
+        break;
+      case MonsWeb.EventModelKind.GameOver:
+        s = "🏆";
+        break;
+      case MonsWeb.EventModelKind.UsePotion:
+        s = "🧪🫧";
+        break;
+      case MonsWeb.EventModelKind.MonFainted:
+      case MonsWeb.EventModelKind.ManaDropped:
+      case MonsWeb.EventModelKind.MonAwake:
+      case MonsWeb.EventModelKind.Takeback:
+      case MonsWeb.EventModelKind.SupermanaBackToBase:
+      case MonsWeb.EventModelKind.DemonAdditionalStep:
+        s = "";
+        break;
+      default:
+        s = "";
     }
-    if (di === 0 && dj > 0) return "➡️";
-    if (di === 0 && dj < 0) return "⬅️";
-    if (dj === 0 && di > 0) return "⬇️";
-    if (dj === 0 && di < 0) return "⬆️";
-    if (di < 0 && dj > 0) return "↗️";
-    if (di > 0 && dj > 0) return "↘️";
-    if (di > 0 && dj < 0) return "↙️";
-    if (di < 0 && dj < 0) return "↖️";
-    return "➡️";
+    if (s === "") continue;
+    if (out !== "") out += " ";
+    out += s;
   }
 
-  switch (event.kind) {
-    case MonsWeb.EventModelKind.MonMove:
-      return arrowForEvent(event);
-    case MonsWeb.EventModelKind.ManaMove:
-      return "💧" + arrowForEvent(event);
-    case MonsWeb.EventModelKind.ManaScored:
-      return event.mana && event.mana.kind === MonsWeb.ManaKind.Supermana ? "👑✅" : "💧✅";
-    case MonsWeb.EventModelKind.MysticAction:
-      return "🧙⚡️";
-    case MonsWeb.EventModelKind.DemonAction:
-      return "😈🔥";
-    case MonsWeb.EventModelKind.SpiritTargetMove:
-      return "👻" + arrowForEvent(event);
-    case MonsWeb.EventModelKind.PickupBomb:
-      return "💣";
-    case MonsWeb.EventModelKind.PickupPotion:
-      return "🧪";
-    case MonsWeb.EventModelKind.PickupMana:
-      return "💧";
-    case MonsWeb.EventModelKind.BombAttack:
-      return "💣" + arrowForEvent(event);
-    case MonsWeb.EventModelKind.BombExplosion:
-      return "💥";
-    case MonsWeb.EventModelKind.NextTurn:
-      return "⏭️";
-    case MonsWeb.EventModelKind.GameOver:
-      return "🏆";
-    case MonsWeb.EventModelKind.UsePotion:
-      return "🧪🫧";
-    case MonsWeb.EventModelKind.MonFainted:
-    case MonsWeb.EventModelKind.ManaDropped:
-    case MonsWeb.EventModelKind.MonAwake:
-    case MonsWeb.EventModelKind.Takeback:
-    case MonsWeb.EventModelKind.SupermanaBackToBase:
-    case MonsWeb.EventModelKind.DemonAdditionalStep:
-      return "";
-    default:
-      return "";
+  if (moveDirection !== null) {
+    console.log("Move direction:", moveDirection);
+  } else {
+    console.log("No move direction found");
   }
+
+  return out === "" ? "—" : out;
 }
 
 export function didSelectVerboseTrackingEntity(index: number) {
@@ -942,11 +979,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
             }
 
             if (!isWatchOnly && hasBothEthOrSolAddresses()) {
-              if (isVictory) {
-                updateRatingsAndSuggestSavingOnchainRating();
-              } else {
-                updateRatingsLocally(false);
-              }
+              updateRatings(isVictory);
             }
 
             isGameOver = true;
@@ -1081,22 +1114,14 @@ function verifyMovesIfNeeded(matchId: string, flatMovesString: string, color: st
   }
 }
 
-function updateRatingsAndSuggestSavingOnchainRating() {
+function updateRatings(isWin: boolean) {
   if (!connection.isAutomatch()) {
     return;
   }
+
   connection.updateRatings();
-  updateRatingsLocally(true);
-}
-
-function updateRatingsLocally(isWin: boolean) {
-  if (!connection.isAutomatch()) {
-    return;
-  }
-
   const playerSide = Board.playerSideMetadata.uid;
   const opponentSide = Board.opponentSideMetadata.uid;
-
   const victoryUid = isWin ? playerSide : opponentSide;
   const defeatUid = isWin ? opponentSide : playerSide;
 
@@ -1361,12 +1386,12 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
   if (justClaimedByYourself) {
     playSounds([Sound.Victory]);
     if (hasBothEthOrSolAddresses()) {
-      updateRatingsAndSuggestSavingOnchainRating();
+      updateRatings(true);
     }
   } else if (!onConnect) {
     if (!isWatchOnly) {
       playSounds([Sound.Defeat]);
-      updateRatingsLocally(false);
+      updateRatings(false);
     }
   }
 }
@@ -1382,7 +1407,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
   if (justConfirmedResignYourself) {
     resignedColor = playerSideColor;
     playSounds([Sound.Defeat]);
-    updateRatingsLocally(false);
+    updateRatings(false);
   } else {
     resignedColor = resignSenderColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   }
@@ -1390,7 +1415,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
   if (!onConnect && !justConfirmedResignYourself) {
     playSounds([Sound.Victory]);
     if (!isWatchOnly && hasBothEthOrSolAddresses()) {
-      updateRatingsAndSuggestSavingOnchainRating();
+      updateRatings(true);
     }
   }
 
