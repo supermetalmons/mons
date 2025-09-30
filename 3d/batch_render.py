@@ -1,4 +1,4 @@
-import bpy, sys, os, argparse, math, subprocess, shutil
+import bpy, sys, os, argparse, math, subprocess, shutil, urllib.request
 from mathutils import Vector
 
 argv = sys.argv
@@ -12,7 +12,7 @@ p.add_argument("--size", type=int, default=1024)
 p.add_argument("--exposure", type=float, default=-0.55)
 p.add_argument("--world_strength", type=float, default=0.42)
 p.add_argument("--light_energy", type=float, default=599.0)
-p.add_argument("--environment", choices=["clean","black-room","white-room","night-sky"], default="black-room")
+p.add_argument("--environment", choices=["clean","black-room","white-room","night-sky","snowy-field"], default="black-room")
 args = p.parse_args(argv)
 
 os.makedirs(args.out_dir, exist_ok=True)
@@ -87,6 +87,24 @@ for n in list(wn): wn.remove(n)
 links = world.node_tree.links
 out = wn.new("ShaderNodeOutputWorld")
 
+def ensure_hdri_local(path_or_url):
+    if not path_or_url:
+        # CC0 snowy HDRI from Poly Haven
+        path_or_url = "https://dl.polyhaven.org/file/ph-assets/HDRIs/hdr/4k/snowy_field_4k.hdr"
+    if path_or_url.startswith("http://") or path_or_url.startswith("https://"):
+        cache_dir = os.path.join(os.path.dirname(__file__), "_hdri_cache")
+        os.makedirs(cache_dir, exist_ok=True)
+        fname = os.path.basename(path_or_url.split("?")[0]) or "env.hdr"
+        local_path = os.path.join(cache_dir, fname)
+        if not os.path.exists(local_path):
+            try:
+                urllib.request.urlretrieve(path_or_url, local_path)
+            except Exception as e:
+                print(f"Failed to download HDRI: {e}")
+                raise
+        return local_path
+    return path_or_url
+
 if args.environment == "night-sky":
     base_bg = wn.new("ShaderNodeBackground")
     base_bg.inputs[0].default_value = (0.01, 0.015, 0.03, 1.0)
@@ -121,10 +139,38 @@ if args.environment == "night-sky":
     links.new(star_emm.outputs["Emission"], add.inputs[1])
     links.new(add.outputs[0], out.inputs["Surface"])
 else:
-    bg = wn.new("ShaderNodeBackground")
-    bg.inputs[1].default_value = 1.0 if args.environment == "white-room" else args.world_strength
-    bg.inputs[0].default_value = (0,0,0,1) if args.environment == "black-room" else ((1,1,1,1) if args.environment == "white-room" else (1,1,1,1))
-    links.new(bg.outputs["Background"], out.inputs["Surface"])
+    if args.environment in {"snowy-field"}:
+        scene.render.film_transparent = False
+        # Environment Texture setup
+        tex = wn.new("ShaderNodeTexEnvironment")
+        try:
+            hdri_path = ensure_hdri_local(None)
+            tex.image = bpy.data.images.load(hdri_path)
+        except Exception:
+            # Fallback to simple dark background if HDRI fails
+            bg = wn.new("ShaderNodeBackground")
+            bg.inputs[0].default_value = (0.02,0.02,0.03,1)
+            bg.inputs[1].default_value = max(0.6, args.world_strength)
+            links.new(bg.outputs["Background"], out.inputs["Surface"])
+        else:
+            texco = wn.new("ShaderNodeTexCoord")
+            mapn = wn.new("ShaderNodeMapping")
+            # Rotate around Z
+            if hasattr(mapn.inputs[2], 'default_value'):
+                rot = list(mapn.inputs[2].default_value)
+                rot[2] = 0.0
+                mapn.inputs[2].default_value = rot
+            bg = wn.new("ShaderNodeBackground")
+            bg.inputs[1].default_value = 1.0
+            links.new(texco.outputs.get("Generated") or texco.outputs[0], mapn.inputs[0])
+            links.new(mapn.outputs[0], tex.inputs[0])
+            links.new(tex.outputs[0], bg.inputs[0])
+            links.new(bg.outputs[0], out.inputs["Surface"])
+    else:
+        bg = wn.new("ShaderNodeBackground")
+        bg.inputs[1].default_value = 1.0 if args.environment == "white-room" else args.world_strength
+        bg.inputs[0].default_value = (0,0,0,1) if args.environment == "black-room" else ((1,1,1,1) if args.environment == "white-room" else (1,1,1,1))
+        links.new(bg.outputs["Background"], out.inputs["Surface"])
 
 # Build an infinite room environment when requested
 if args.environment in {"black-room", "white-room"}:
