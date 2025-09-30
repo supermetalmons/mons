@@ -12,6 +12,7 @@ p.add_argument("--size", type=int, default=1024)
 p.add_argument("--exposure", type=float, default=-0.55)
 p.add_argument("--world_strength", type=float, default=0.42)
 p.add_argument("--light_energy", type=float, default=599.0)
+p.add_argument("--environment", choices=["clean","black-room","white-room"], default="black-room")
 args = p.parse_args(argv)
 
 os.makedirs(args.out_dir, exist_ok=True)
@@ -23,14 +24,14 @@ eng_items = {i.identifier for i in bpy.types.RenderSettings.bl_rna.properties['e
 engine = 'BLENDER_EEVEE_NEXT' if 'BLENDER_EEVEE_NEXT' in eng_items else ('BLENDER_EEVEE' if 'BLENDER_EEVEE' in eng_items else 'CYCLES')
 scene.render.engine = engine
 
-scene.render.film_transparent = True
+scene.render.film_transparent = (args.environment == "clean")
 scene.render.resolution_x = args.size
 scene.render.resolution_y = args.size
 scene.render.resolution_percentage = 100
 scene.frame_start = 1
 scene.frame_end = int(args.seconds * args.fps)
 scene.render.image_settings.file_format = "PNG"
-scene.render.image_settings.color_mode = "RGBA"
+scene.render.image_settings.color_mode = "RGBA" if args.environment == "clean" else "RGB"
 scene.render.image_settings.color_depth = "8"
 scene.render.fps = args.fps
 
@@ -72,9 +73,41 @@ wn = world.node_tree.nodes
 for n in list(wn): wn.remove(n)
 bg = wn.new("ShaderNodeBackground")
 bg.inputs[1].default_value = args.world_strength
-bg.inputs[0].default_value = (1,1,1,1)
+bg.inputs[0].default_value = (0,0,0,1) if args.environment == "black-room" else ((1,1,1,1) if args.environment == "white-room" else (1,1,1,1))
 out = wn.new("ShaderNodeOutputWorld")
 world.node_tree.links.new(bg.outputs["Background"], out.inputs["Surface"])
+
+# Build an infinite room environment when requested
+if args.environment in {"black-room", "white-room"}:
+    # Ensure non-transparent output when using room
+    scene.render.film_transparent = False
+    # Large inverted sphere to create an infinite room
+    bpy.ops.mesh.primitive_uv_sphere_add(segments=64, ring_count=32, radius=1.0, location=(0.0, 0.0, 0.0))
+    room = bpy.context.object
+    room.name = "Room"
+    # Invert normals by applying a negative scale on one axis; scale up to envelop the scene
+    room.scale = (100.0, -100.0, 100.0)
+    # Smooth shading without relying on operators
+    for poly in room.data.polygons:
+        poly.use_smooth = True
+    # Emissive material so the room appears uniformly colored (not just a flat layer)
+    room_mat = bpy.data.materials.new("RoomMat")
+    room_mat.use_nodes = True
+    nodes = room_mat.node_tree.nodes
+    for n in list(nodes): nodes.remove(n)
+    emm = nodes.new("ShaderNodeEmission")
+    emm.inputs["Color"].default_value = (0,0,0,1) if args.environment == "black-room" else (1,1,1,1)
+    emm.inputs["Strength"].default_value = 1.0
+    mout = nodes.new("ShaderNodeOutputMaterial")
+    room_mat.node_tree.links.new(emm.outputs["Emission"], mout.inputs["Surface"])
+    room.data.materials.clear()
+    room.data.materials.append(room_mat)
+    # Avoid the room casting shadows onto the model (Cycles)
+    if hasattr(room, "cycles_visibility"):
+        try:
+            room.cycles_visibility.shadow = False
+        except Exception:
+            pass
 
 def bounds(obj):
     local = [Vector(v[:]) for v in obj.bound_box] if obj.type != 'EMPTY' else [Vector((0,0,0))]*8
@@ -178,7 +211,7 @@ def import_glb(path):
 
 glbs = [f for f in os.listdir(args.in_dir) if f.lower().endswith(".glb")]
 for fname in glbs:
-    for o in [o for o in list(bpy.data.objects) if o.name not in {"Cam","Key"}]:
+    for o in [o for o in list(bpy.data.objects) if o.name not in {"Cam","Key","Room"}]:
         try: bpy.data.objects.remove(o, do_unlink=True)
         except: pass
     path = os.path.join(args.in_dir, fname)
