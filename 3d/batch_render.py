@@ -37,20 +37,29 @@ scene.render.fps = args.fps
 
 scene.display_settings.display_device = 'sRGB'
 if hasattr(scene, 'view_settings'):
-    scene.view_settings.view_transform = 'Filmic'
-    scene.view_settings.look = 'None'
-    scene.view_settings.exposure = args.exposure
+    vs = scene.view_settings
+    if args.environment == 'white-room':
+        try:
+            vs.view_transform = 'Standard'
+        except Exception:
+            vs.view_transform = 'Filmic'
+        vs.look = 'None'
+        vs.exposure = 0.0
+    else:
+        vs.view_transform = 'Filmic'
+        vs.look = 'None'
+        vs.exposure = args.exposure
 
 ee = getattr(scene, 'eevee', None)
 if ee and engine.startswith('BLENDER_EEVEE'):
     if hasattr(ee, 'taa_render_samples'): ee.taa_render_samples = 64
-    if hasattr(ee, 'use_gtao'): ee.use_gtao = True
+    if hasattr(ee, 'use_gtao'): ee.use_gtao = (args.environment != 'white-room')
 cy = getattr(scene, 'cycles', None)
 if cy and engine == 'CYCLES':
     cy.samples = 64
     cy.use_adaptive_sampling = True
     cy.max_bounces = 4
-    cy.use_transparent_background = True
+    cy.use_transparent_background = (args.environment == 'clean')
     cy.device = 'CPU'
 
 for obj in list(bpy.data.objects):
@@ -72,7 +81,7 @@ world.use_nodes = True
 wn = world.node_tree.nodes
 for n in list(wn): wn.remove(n)
 bg = wn.new("ShaderNodeBackground")
-bg.inputs[1].default_value = args.world_strength
+bg.inputs[1].default_value = 1.0 if args.environment == "white-room" else args.world_strength
 bg.inputs[0].default_value = (0,0,0,1) if args.environment == "black-room" else ((1,1,1,1) if args.environment == "white-room" else (1,1,1,1))
 out = wn.new("ShaderNodeOutputWorld")
 world.node_tree.links.new(bg.outputs["Background"], out.inputs["Surface"])
