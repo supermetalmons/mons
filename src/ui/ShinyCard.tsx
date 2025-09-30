@@ -57,6 +57,7 @@ let ownAngelImg: HTMLImageElement | null;
 let ownSpiritImg: HTMLImageElement | null;
 let ownMysticImg: HTMLImageElement | null;
 let ownCardContentsLayer: HTMLDivElement | null;
+let ownCounterElement: HTMLElement | null;
 let editingPanel: HTMLDivElement | null = null;
 let editingPanelKeyboardHandler: ((e: KeyboardEvent) => void) | null = null;
 
@@ -719,12 +720,20 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     updateContent("subtitle", (asciimojiIndex + 1) % asciimojisCount, asciimojiIndex);
   });
 
-  const gpText = "gp: " + ((isOtherPlayer ? profile?.nonce ?? -1 : storage.getPlayerNonce(-1)) + 1).toString();
+  const gpValue = (isOtherPlayer ? profile?.nonce ?? -1 : storage.getPlayerNonce(-1)) + 1;
+  const mpValue = isOtherPlayer ? profile?.totalManaPoints ?? 0 : storage.getPlayerTotalManaPoints(0);
 
-  // TODO: display mp instead when needed
-  console.log("mp: ", profile?.totalManaPoints);
+  const profileCounter = isOtherPlayer ? profile?.profileCounter ?? "gp" : storage.getProfileCounter("gp");
+  const counterText = profileCounter === "mp" ? `mp: ${mpValue}` : `gp: ${gpValue}`;
 
-  addTextBubble(cardContentsLayer, gpText, "7.4%", "58.7%", textBubbleHeight, handlePointerLeave);
+  ownCounterElement = addTextBubble(cardContentsLayer, counterText, "7.4%", "58.7%", textBubbleHeight, handlePointerLeave, () => {
+    if (isOtherPlayer) {
+      return;
+    }
+    const currentCounter = storage.getProfileCounter("gp");
+    const newCounter = currentCounter === "gp" ? "mp" : "gp";
+    updateContent("profileCounter", newCounter, currentCounter);
+  });
 
   cardContainer.appendChild(card);
   document.body.appendChild(cardContainer);
@@ -1319,6 +1328,17 @@ async function didClickMonImage(monType: string) {
 
 async function updateContent(contentType: string, newId: any, oldId: any | null) {
   switch (contentType) {
+    case "profileCounter":
+      const newCounter = newId;
+      storage.setProfileCounter(newCounter);
+      connection.updateProfileCounter(newCounter);
+      const gpValue = storage.getPlayerNonce(-1) + 1;
+      const mpValue = storage.getPlayerTotalManaPoints(0);
+      const newCounterText = newCounter === "mp" ? `mp: ${mpValue}` : `gp: ${gpValue}`;
+      if (ownCounterElement) {
+        ownCounterElement.textContent = newCounterText;
+      }
+      break;
     case "emojiAndAura":
       const nextEmojiId = newId?.emojiId;
       const nextAura = newId?.aura ?? "";

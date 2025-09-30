@@ -22,6 +22,7 @@ interface VerifyResponse {
   win?: number;
   cardBackgroundId?: number;
   cardSubtitleId?: number;
+  profileCounter?: string;
   profileMons?: any;
   cardStickers?: any;
   completedProblems?: any;
@@ -39,6 +40,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
     win: undefined,
     cardBackgroundId: undefined,
     cardSubtitleId: undefined,
+    profileCounter: undefined,
     profileMons: undefined,
     cardStickers: undefined,
     emoji,
@@ -59,6 +61,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   if (res.cardBackgroundId !== undefined) profile.cardBackgroundId = res.cardBackgroundId;
   if (res.cardStickers !== undefined) profile.cardStickers = res.cardStickers;
   if (res.cardSubtitleId !== undefined) profile.cardSubtitleId = res.cardSubtitleId;
+  if (res.profileCounter !== undefined) profile.profileCounter = res.profileCounter;
   if (res.profileMons !== undefined) profile.profileMons = res.profileMons;
 
   syncTutorialProgress(res.completedProblems ?? [], res.tutorialCompleted ?? false);
@@ -84,6 +87,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   if (res.cardBackgroundId !== undefined) storage.setCardBackgroundId(res.cardBackgroundId);
   if (res.cardStickers !== undefined) storage.setCardStickers(res.cardStickers);
   if (res.cardSubtitleId !== undefined) storage.setCardSubtitleId(res.cardSubtitleId);
+  if (res.profileCounter !== undefined) storage.setProfileCounter(res.profileCounter);
   if (res.profileMons !== undefined) storage.setProfileMons(res.profileMons);
 
   connection.forceTokenRefresh();

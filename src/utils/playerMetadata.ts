@@ -151,6 +151,10 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
             storage.setCardSubtitleId(profile.cardSubtitleId);
           }
 
+          if (profile.profileCounter) {
+            storage.setProfileCounter(profile.profileCounter);
+          }
+
           if (profile.profileMons) {
             storage.setProfileMons(profile.profileMons);
           }

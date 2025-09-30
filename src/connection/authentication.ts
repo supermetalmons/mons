@@ -67,6 +67,7 @@ export function useAuthStatus() {
             aura: storage.getPlayerEmojiAura(""),
             cardBackgroundId: undefined,
             cardSubtitleId: undefined,
+            profileCounter: undefined,
             profileMons: undefined,
             cardStickers: undefined,
             completedProblemIds: undefined,

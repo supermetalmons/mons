@@ -21,6 +21,7 @@ const STORAGE_KEYS = {
   CARD_SUBTITLE_ID: "cardSubtitleId",
   CARD_STICKERS: "cardStickers",
   PROFILE_MONS: "profileMons",
+  PROFILE_COUNTER: "profileCounter",
   PLAYER_NONCE: "playerNonce",
   COMPLETED_PROBLEMS: "completedProblems",
   TUTORIAL_COMPLETED: "tutorialCompleted",
@@ -174,6 +175,14 @@ export const storage = {
 
   setCardSubtitleId: (value: number): void => {
     setItem(STORAGE_KEYS.CARD_SUBTITLE_ID, value);
+  },
+
+  getProfileCounter: (defaultValue: string): string => {
+    return getItem(STORAGE_KEYS.PROFILE_COUNTER, defaultValue);
+  },
+
+  setProfileCounter: (value: string): void => {
+    setItem(STORAGE_KEYS.PROFILE_COUNTER, value);
   },
 
   getCardStickers: (defaultValue: string): string => {
