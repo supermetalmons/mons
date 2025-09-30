@@ -100,6 +100,12 @@ function arrowForEvent(e: MonsWeb.EventModel): { arrow: string; isRight: boolean
 
 function stringForSingleMoveEvents(events: MonsWeb.EventModel[]): string {
   let out = "";
+
+  let actor = "";
+  let action = "";
+  let arrow = "";
+  let target = "";
+
   let moveDirection = null;
   for (const ev of events) {
     let s = "";
