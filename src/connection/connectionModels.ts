@@ -29,6 +29,7 @@ export interface PlayerProfile {
   id: string;
   nonce: number | undefined;
   rating: number | undefined;
+  totalManaPoints?: number | undefined;
   win: boolean | undefined;
   emoji: number;
   aura?: string;

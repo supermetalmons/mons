@@ -18,6 +18,7 @@ interface VerifyResponse {
   aura?: string | null;
   rating?: number;
   nonce?: number;
+  totalManaPoints?: number;
   win?: number;
   cardBackgroundId?: number;
   cardSubtitleId?: number;
@@ -54,6 +55,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
 
   if (res.rating !== undefined) profile.rating = res.rating;
   if (res.nonce !== undefined) profile.nonce = res.nonce;
+  if (res.totalManaPoints !== undefined) (profile as any).totalManaPoints = res.totalManaPoints;
   if (res.cardBackgroundId !== undefined) profile.cardBackgroundId = res.cardBackgroundId;
   if (res.cardStickers !== undefined) profile.cardStickers = res.cardStickers;
   if (res.cardSubtitleId !== undefined) profile.cardSubtitleId = res.cardSubtitleId;
@@ -78,6 +80,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
 
   if (res.rating !== undefined) storage.setPlayerRating(res.rating);
   if (res.nonce !== undefined) storage.setPlayerNonce(res.nonce);
+  if (res.totalManaPoints !== undefined) storage.setPlayerTotalManaPoints(res.totalManaPoints);
   if (res.cardBackgroundId !== undefined) storage.setCardBackgroundId(res.cardBackgroundId);
   if (res.cardStickers !== undefined) storage.setCardStickers(res.cardStickers);
   if (res.cardSubtitleId !== undefined) storage.setCardSubtitleId(res.cardSubtitleId);

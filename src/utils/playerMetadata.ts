@@ -135,6 +135,9 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
           storage.setUsername(profile.username ?? "");
           storage.setPlayerRating(profile.rating ?? 1500);
           storage.setPlayerNonce(profile.nonce ?? -1);
+          if ((profile as any).totalManaPoints !== undefined) {
+            storage.setPlayerTotalManaPoints((profile as any).totalManaPoints ?? 0);
+          }
 
           if (profile.cardBackgroundId) {
             storage.setCardBackgroundId(profile.cardBackgroundId);
