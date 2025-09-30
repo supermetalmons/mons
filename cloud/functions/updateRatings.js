@@ -82,10 +82,12 @@ exports.updateRatings = onCall(async (request) => {
     }
   }
 
+  // TODO: should proceed with a different update for gg
   if (result !== "win") {
     throw new HttpsError("internal", "Could not confirm victory.");
   }
 
+  // TODO: store a flag within an invite instead for corresponding match rating update
   const nonceRef = admin.database().ref(`players/${playerId}/nonces/${matchId}`);
   const nonceSnapshot = await nonceRef.once("value");
   if (!nonceSnapshot.exists()) {
