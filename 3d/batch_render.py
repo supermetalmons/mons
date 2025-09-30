@@ -12,7 +12,7 @@ p.add_argument("--size", type=int, default=1024)
 p.add_argument("--exposure", type=float, default=-0.55)
 p.add_argument("--world_strength", type=float, default=0.42)
 p.add_argument("--light_energy", type=float, default=599.0)
-p.add_argument("--environment", choices=["clean","black-room","white-room"], default="black-room")
+p.add_argument("--environment", choices=["clean","black-room","white-room","night-sky"], default="black-room")
 args = p.parse_args(argv)
 
 os.makedirs(args.out_dir, exist_ok=True)
@@ -43,6 +43,10 @@ if hasattr(scene, 'view_settings'):
             vs.view_transform = 'Standard'
         except Exception:
             vs.view_transform = 'Filmic'
+        vs.look = 'None'
+        vs.exposure = 0.0
+    elif args.environment == 'night-sky':
+        vs.view_transform = 'Filmic'
         vs.look = 'None'
         vs.exposure = 0.0
     else:
@@ -80,11 +84,47 @@ scene.world = world
 world.use_nodes = True
 wn = world.node_tree.nodes
 for n in list(wn): wn.remove(n)
-bg = wn.new("ShaderNodeBackground")
-bg.inputs[1].default_value = 1.0 if args.environment == "white-room" else args.world_strength
-bg.inputs[0].default_value = (0,0,0,1) if args.environment == "black-room" else ((1,1,1,1) if args.environment == "white-room" else (1,1,1,1))
+links = world.node_tree.links
 out = wn.new("ShaderNodeOutputWorld")
-world.node_tree.links.new(bg.outputs["Background"], out.inputs["Surface"])
+
+if args.environment == "night-sky":
+    base_bg = wn.new("ShaderNodeBackground")
+    base_bg.inputs[0].default_value = (0.01, 0.015, 0.03, 1.0)
+    base_bg.inputs[1].default_value = 0.8
+
+    texcoord = wn.new("ShaderNodeTexCoord")
+    vor = wn.new("ShaderNodeTexVoronoi")
+    try:
+        vor.feature = 'F1'
+        vor.distance = 'EUCLIDEAN'
+    except Exception:
+        pass
+    vor.inputs["Scale"].default_value = 80.0
+    less = wn.new("ShaderNodeMath")
+    less.operation = 'LESS_THAN'
+    less.inputs[1].default_value = 0.05
+    links.new(texcoord.outputs.get("Generated") or texcoord.outputs[0], vor.inputs["Vector"])
+    dist_out = vor.outputs.get("Distance") or vor.outputs[0]
+    links.new(dist_out, less.inputs[0])
+
+    star_emm = wn.new("ShaderNodeEmission")
+    star_emm.inputs["Color"].default_value = (1.0, 1.0, 1.0, 1.0)
+    # Strength will be driven by mask * constant
+    mul = wn.new("ShaderNodeMath")
+    mul.operation = 'MULTIPLY'
+    mul.inputs[1].default_value = 60.0
+    links.new(less.outputs[0], mul.inputs[0])
+    links.new(mul.outputs[0], star_emm.inputs["Strength"])
+
+    add = wn.new("ShaderNodeAddShader")
+    links.new(base_bg.outputs["Background"], add.inputs[0])
+    links.new(star_emm.outputs["Emission"], add.inputs[1])
+    links.new(add.outputs[0], out.inputs["Surface"])
+else:
+    bg = wn.new("ShaderNodeBackground")
+    bg.inputs[1].default_value = 1.0 if args.environment == "white-room" else args.world_strength
+    bg.inputs[0].default_value = (0,0,0,1) if args.environment == "black-room" else ((1,1,1,1) if args.environment == "white-room" else (1,1,1,1))
+    links.new(bg.outputs["Background"], out.inputs["Surface"])
 
 # Build an infinite room environment when requested
 if args.environment in {"black-room", "white-room"}:
@@ -220,7 +260,10 @@ def import_glb(path):
 
 glbs = [f for f in os.listdir(args.in_dir) if f.lower().endswith(".glb")]
 for fname in glbs:
-    for o in [o for o in list(bpy.data.objects) if o.name not in {"Cam","Key","Room"}]:
+    allowed_names = {"Cam","Key"}
+    if args.environment in {"black-room","white-room"}:
+        allowed_names.add("Room")
+    for o in [o for o in list(bpy.data.objects) if o.name not in allowed_names]:
         try: bpy.data.objects.remove(o, do_unlink=True)
         except: pass
     path = os.path.join(args.in_dir, fname)
