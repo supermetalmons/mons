@@ -1,7 +1,7 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const glicko2 = require("glicko2");
 const admin = require("firebase-admin");
-const { batchReadWithRetry, getProfileByLoginId, updateUserRatingAndNonce, sendBotMessage, getDisplayNameFromAddress } = require("./utils");
+const { batchReadWithRetry, getProfileByLoginId, updateUserRatingNonceAndManaPoints, sendBotMessage, getDisplayNameFromAddress } = require("./utils");
 
 exports.updateRatings = onCall(async (request) => {
   const uid = request.auth.uid;
@@ -23,6 +23,7 @@ exports.updateRatings = onCall(async (request) => {
   const matchData = matchSnapshot.val();
   const inviteData = inviteSnapshot.val();
   const opponentMatchData = opponentMatchSnapshot.val();
+  let mons;
 
   const playerProfile = await getProfileByLoginId(playerId);
   const opponentProfile = await getProfileByLoginId(opponentId);
@@ -54,7 +55,7 @@ exports.updateRatings = onCall(async (request) => {
   } else {
     const color = matchData.color;
     const opponentColor = opponentMatchData.color;
-    const mons = await import("mons-rust");
+    mons = await import("mons-rust");
     var winnerColorFen = "";
     if (color === "white") {
       winnerColorFen = mons.winner(matchData.fen, opponentMatchData.fen, matchData.flatMovesString, opponentMatchData.flatMovesString);
@@ -98,6 +99,18 @@ exports.updateRatings = onCall(async (request) => {
     };
   }
 
+  if (!mons) {
+    mons = await import("mons-rust");
+  }
+  let gameForScore = mons.MonsGameModel.from_fen(matchData.fen);
+  if (!gameForScore.is_later_than(opponentMatchData.fen)) {
+    gameForScore = mons.MonsGameModel.from_fen(opponentMatchData.fen);
+  }
+  const playerManaPoints = matchData.color === "white" ? gameForScore.white_score() : gameForScore.black_score();
+  const opponentManaPoints = opponentMatchData.color === "white" ? gameForScore.white_score() : gameForScore.black_score();
+  const newPlayerManaTotal = (playerProfile.totalManaPoints ?? 0) + playerManaPoints;
+  const newOpponentManaTotal = (opponentProfile.totalManaPoints ?? 0) + opponentManaPoints;
+
   const newNonce1 = playerProfile.nonce + 1;
   const newNonce2 = opponentProfile.nonce + 1;
 
@@ -119,8 +132,8 @@ exports.updateRatings = onCall(async (request) => {
     winnerNewRating = newWinnerRating;
     loserDisplayName = opponentProfileDisplayName;
     loserNewRating = newLoserRating;
-    updateUserRatingAndNonce(playerProfile.profileId, newRatingPlayer, newNonce1, true);
-    updateUserRatingAndNonce(opponentProfile.profileId, newRatingOpponent, newNonce2, false);
+    updateUserRatingNonceAndManaPoints(playerProfile.profileId, newRatingPlayer, newNonce1, true, newPlayerManaTotal);
+    updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newRatingOpponent, newNonce2, false, newOpponentManaTotal);
   } else {
     const [newWinnerRating, newLoserRating] = updateRating(opponentProfile.rating, newNonce2, playerProfile.rating, newNonce1);
     newRatingPlayer = newLoserRating;
@@ -129,8 +142,8 @@ exports.updateRatings = onCall(async (request) => {
     winnerNewRating = newWinnerRating;
     loserDisplayName = playerProfileDisplayName;
     loserNewRating = newLoserRating;
-    updateUserRatingAndNonce(playerProfile.profileId, newRatingPlayer, newNonce1, false);
-    updateUserRatingAndNonce(opponentProfile.profileId, newRatingOpponent, newNonce2, true);
+    updateUserRatingNonceAndManaPoints(playerProfile.profileId, newRatingPlayer, newNonce1, false, newPlayerManaTotal);
+    updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newRatingOpponent, newNonce2, true, newOpponentManaTotal);
   }
 
   const updateRatingMessage = `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓`;

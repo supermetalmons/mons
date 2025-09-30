@@ -92,15 +92,15 @@ async function getProfileByLoginId(uid) {
     if (!userQuery.empty) {
       const userDoc = userQuery.docs[0];
       const userData = userDoc.data();
-      return { nonce: userData.nonce === undefined ? -1 : userData.nonce, rating: userData.rating ?? 1500, eth: userData.eth ?? "", sol: userData.sol ?? "", username: userData.username ?? "", profileId: userDoc.id };
+      return { nonce: userData.nonce === undefined ? -1 : userData.nonce, rating: userData.rating ?? 1500, eth: userData.eth ?? "", sol: userData.sol ?? "", username: userData.username ?? "", totalManaPoints: userData.totalManaPoints ?? 0, profileId: userDoc.id };
     }
   } catch (error) {
     console.error("Error getting player profile:", error);
   }
-  return { eth: "", sol: "", profileId: "", nonce: 0, rating: 0, username: "" };
+  return { eth: "", sol: "", profileId: "", nonce: 0, rating: 0, username: "", totalManaPoints: 0 };
 }
 
-async function updateUserRatingAndNonce(profileId, newRating, newNonce, isWin) {
+async function updateUserRatingNonceAndManaPoints(profileId, newRating, newNonce, isWin, newManaPoints) {
   try {
     const firestore = admin.firestore();
     const userRef = firestore.collection("users").doc(profileId);
@@ -108,6 +108,7 @@ async function updateUserRatingAndNonce(profileId, newRating, newNonce, isWin) {
       rating: newRating,
       nonce: newNonce,
       win: isWin,
+      totalManaPoints: newManaPoints,
     });
     return true;
   } catch (error) {
@@ -125,7 +126,7 @@ module.exports = {
   batchReadWithRetry,
   getPlayerEthAddress,
   getProfileByLoginId,
-  updateUserRatingAndNonce,
+  updateUserRatingNonceAndManaPoints,
   sendBotMessage,
   getDisplayNameFromAddress,
 };
