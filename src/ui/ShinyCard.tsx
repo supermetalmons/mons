@@ -726,14 +726,30 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   const profileCounter = isOtherPlayer ? profile?.profileCounter ?? "gp" : storage.getProfileCounter("gp");
   const counterText = profileCounter === "mp" ? `mp: ${mpValue}` : `gp: ${gpValue}`;
 
-  ownCounterElement = addTextBubble(cardContentsLayer, counterText, "7.4%", "58.7%", textBubbleHeight, handlePointerLeave, () => {
-    if (isOtherPlayer) {
-      return;
-    }
-    const currentCounter = storage.getProfileCounter("gp");
-    const newCounter = currentCounter === "gp" ? "mp" : "gp";
-    updateContent("profileCounter", newCounter, currentCounter);
-  });
+  let currentViewCounter = profileCounter;
+
+  ownCounterElement = addTextBubble(
+    cardContentsLayer,
+    counterText,
+    "7.4%",
+    "58.7%",
+    textBubbleHeight,
+    handlePointerLeave,
+    () => {
+      if (isOtherPlayer) {
+        currentViewCounter = currentViewCounter === "gp" ? "mp" : "gp";
+        const newCounterText = currentViewCounter === "mp" ? `mp: ${mpValue}` : `gp: ${gpValue}`;
+        if (ownCounterElement) {
+          ownCounterElement.textContent = newCounterText;
+        }
+        return;
+      }
+      const currentCounter = storage.getProfileCounter("gp");
+      const newCounter = currentCounter === "gp" ? "mp" : "gp";
+      updateContent("profileCounter", newCounter, currentCounter);
+    },
+    isOtherPlayer
+  );
 
   cardContainer.appendChild(card);
   document.body.appendChild(cardContainer);
@@ -1124,7 +1140,7 @@ const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, to
   return imageContainer;
 };
 
-const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: string, top: string, height: string, handlePointerLeave: any, onClick?: () => void): HTMLElement => {
+const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: string, top: string, height: string, handlePointerLeave: any, onClick?: () => void, skipEditingModeCheck?: boolean): HTMLElement => {
   const container = document.createElement("div");
   container.style.position = "absolute";
   container.style.left = left;
@@ -1183,7 +1199,7 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
       handlePointerLeave();
     }
 
-    if (!isEditingMode && enterEditingMode) {
+    if (!skipEditingModeCheck && !isEditingMode && enterEditingMode) {
       enterEditingMode();
       if (!isMobile) {
         updateTextContainerScale(event);
