@@ -215,6 +215,7 @@ class Connection {
         aura: data.custom?.aura,
         cardBackgroundId: data.custom?.cardBackgroundId,
         cardSubtitleId: data.custom?.cardSubtitleId,
+        profileCounter: data.custom?.profileCounter,
         profileMons: data.custom?.profileMons,
         cardStickers: data.custom?.cardStickers,
         completedProblemIds: data.custom?.completedProblems,
@@ -246,6 +247,7 @@ class Connection {
         aura: data.custom?.aura,
         cardBackgroundId: data.custom?.cardBackgroundId,
         cardSubtitleId: data.custom?.cardSubtitleId,
+        profileCounter: data.custom?.profileCounter,
         profileMons: data.custom?.profileMons,
         cardStickers: data.custom?.cardStickers,
         completedProblemIds: undefined,
@@ -538,6 +540,10 @@ class Connection {
 
   public updateCardSubtitleId(newId: number): void {
     this.updateCustomField("cardSubtitleId", newId);
+  }
+
+  public updateProfileCounter(counter: string): void {
+    this.updateCustomField("profileCounter", counter);
   }
 
   public updateProfileMons(mons: string): void {

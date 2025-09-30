@@ -32,6 +32,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
     let cardBackgroundId = null;
     let cardStickers = null;
     let cardSubtitleId = null;
+    let profileCounter = null;
     let profileMons = null;
     let completedProblems = null;
     let tutorialCompleted = null;
@@ -74,6 +75,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
         cardBackgroundId = userData.custom?.cardBackgroundId || null;
         cardStickers = userData.custom?.cardStickers || null;
         cardSubtitleId = userData.custom?.cardSubtitleId || null;
+        profileCounter = userData.custom?.profileCounter || null;
         profileMons = userData.custom?.profileMons || null;
         completedProblems = userData.custom?.completedProblems || null;
         tutorialCompleted = userData.custom?.tutorialCompleted || null;
@@ -92,6 +94,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
       cardBackgroundId = userData.custom?.cardBackgroundId || null;
       cardStickers = userData.custom?.cardStickers || null;
       cardSubtitleId = userData.custom?.cardSubtitleId || null;
+      profileCounter = userData.custom?.profileCounter || null;
       profileMons = userData.custom?.profileMons || null;
       completedProblems = userData.custom?.completedProblems || null;
       tutorialCompleted = userData.custom?.tutorialCompleted || null;
@@ -116,6 +119,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
       cardBackgroundId: cardBackgroundId,
       cardStickers: cardStickers,
       cardSubtitleId: cardSubtitleId,
+      profileCounter: profileCounter,
       profileMons: profileMons,
       completedProblems: completedProblems,
       tutorialCompleted: tutorialCompleted,

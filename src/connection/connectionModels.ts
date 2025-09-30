@@ -35,6 +35,7 @@ export interface PlayerProfile {
   aura?: string;
   cardBackgroundId: number | undefined;
   cardSubtitleId: number | undefined;
+  profileCounter: string | undefined;
   profileMons: string | undefined;
   cardStickers: string | undefined;
   username: string | null;
