@@ -3,7 +3,6 @@ const glicko2 = require("glicko2");
 const admin = require("firebase-admin");
 const { batchReadWithRetry, getProfileByLoginId, updateUserRatingAndNonce, sendBotMessage, getDisplayNameFromAddress } = require("./utils");
 
-// TODO: make it work with both players reporting a result
 exports.updateRatings = onCall(async (request) => {
   const uid = request.auth.uid;
   const playerId = request.data.playerId;
@@ -87,21 +86,26 @@ exports.updateRatings = onCall(async (request) => {
     throw new HttpsError("internal", "Could not confirm victory.");
   }
 
-  // TODO: store a flag within an invite instead for corresponding match rating update
-  const nonceRef = admin.database().ref(`players/${playerId}/nonces/${matchId}`);
-  const nonceSnapshot = await nonceRef.once("value");
-  if (!nonceSnapshot.exists()) {
-    await nonceRef.set(playerProfile.nonce);
-  } else {
-    throw new HttpsError("internal", "Can not update rating with this game anymore");
+  const ratingUpdateFlagRef = admin.database().ref(`invites/${inviteId}/matchesRatingUpdates/${matchId}`);
+  const txnResult = await ratingUpdateFlagRef.transaction((current) => {
+    if (current === true) {
+      return;
+    }
+    return true;
+  });
+  if (!txnResult.committed) {
+    return {
+      ok: true,
+    };
   }
 
   const newNonce1 = playerProfile.nonce + 1;
   const newNonce2 = opponentProfile.nonce + 1;
   const [newRating1, newRating2] = updateRating(playerProfile.rating, newNonce1, opponentProfile.rating, newNonce2);
+
   updateUserRatingAndNonce(playerProfile.profileId, newRating1, newNonce1, true);
   updateUserRatingAndNonce(opponentProfile.profileId, newRating2, newNonce2, false);
-  
+
   const playerProfileDisplayName = getDisplayNameFromAddress(playerProfile.username, playerProfile.eth, playerProfile.sol, 0);
   const opponentProfileDisplayName = getDisplayNameFromAddress(opponentProfile.username, opponentProfile.eth, opponentProfile.sol, 0);
 
