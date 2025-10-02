@@ -23,53 +23,47 @@ const batchReadWithRetry = async (refs) => {
 };
 
 async function sendBotMessage(message, silent = false) {
-  sendTelegramMessage(message, silent);
-  sendDiscordMessage(message);
+  try {
+    await Promise.all([sendTelegramMessage(message, silent), sendDiscordMessage(message)]);
+  } catch (e) {}
 }
 
-async function sendTelegramMessage(message, silent = false) {
+function sendTelegramMessage(message, silent = false) {
   const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
   const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
-
-  try {
-    fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        chat_id: telegramExtraChatId,
-        text: message,
-        disable_web_page_preview: true,
-        disable_notification: silent,
-      }),
-    });
-  } catch (error) {
+  return fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      chat_id: telegramExtraChatId,
+      text: message,
+      disable_web_page_preview: true,
+      disable_notification: silent,
+    }),
+  }).catch((error) => {
     console.error("Error sending Telegram message:", error);
-  }
+  });
 }
 
-async function sendDiscordMessage(message) {
+function sendDiscordMessage(message) {
   const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
-
   if (!discordWebhookUrl) {
     console.log("Discord webhook URL not configured, skipping message");
-    return;
+    return Promise.resolve();
   }
-
-  try {
-    fetch(discordWebhookUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content: message,
-      }),
-    });
-  } catch (error) {
+  return fetch(discordWebhookUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      content: message,
+    }),
+  }).catch((error) => {
     console.error("Error sending Discord message:", error);
-  }
+  });
 }
 
 async function sendTelegramMessageAndReturnId(message, silent = false) {
@@ -101,11 +95,17 @@ async function sendAutomatchBotMessage(inviteId, message, silent = false) {
     sendDiscordMessage(message);
   } catch (e) {}
   try {
-    sendTelegramMessageAndReturnId(message, silent).then((messageId) => {
-      if (messageId) {
-        admin.database().ref(`automatchMessages/${inviteId}`).set({ telegramMessageId: messageId }).catch(() => {});
-      }
-    }).catch(() => {});
+    sendTelegramMessageAndReturnId(message, silent)
+      .then((messageId) => {
+        if (messageId) {
+          admin
+            .database()
+            .ref(`automatchMessages/${inviteId}`)
+            .set({ telegramMessageId: messageId })
+            .catch(() => {});
+        }
+      })
+      .catch(() => {});
   } catch (e) {}
 }
 

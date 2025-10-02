@@ -60,8 +60,23 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
         const success = await acceptInvite(firstAutomatchId, invite, match, uid);
         if (success) {
           const matchMessage = `${existingPlayerName} vs. ${name} https://mons.link/${firstAutomatchId}`;
-          sendBotMessage(matchMessage).catch(console.error);
-          try { deleteAutomatchBotMessage(firstAutomatchId); } catch (e) {}
+          try {
+            sendBotMessage(matchMessage)
+              .then(() => {
+                try {
+                  deleteAutomatchBotMessage(firstAutomatchId);
+                } catch (e) {}
+              })
+              .catch(() => {
+                try {
+                  deleteAutomatchBotMessage(firstAutomatchId);
+                } catch (e) {}
+              });
+          } catch (e) {
+            try {
+              deleteAutomatchBotMessage(firstAutomatchId);
+            } catch (e2) {}
+          }
         } else {
           return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, aura, retryCount + 1);
         }
@@ -103,7 +118,9 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
     await admin.database().ref().update(updates);
 
     const message = `🔔 ${name} is looking for a match https://mons.link`;
-    try { sendAutomatchBotMessage(inviteId, message); } catch (e) {}
+    try {
+      sendAutomatchBotMessage(inviteId, message);
+    } catch (e) {}
 
     return {
       ok: true,
