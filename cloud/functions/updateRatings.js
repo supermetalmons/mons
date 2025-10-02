@@ -146,7 +146,15 @@ exports.updateRatings = onCall(async (request) => {
     updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newRatingOpponent, newNonce2, true, newOpponentManaTotal);
   }
 
-  const updateRatingMessage = `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓`;
+  const winnerScore = result === "win" ? playerManaPoints : opponentManaPoints;
+  const loserScore = result === "win" ? opponentManaPoints : playerManaPoints;
+  let suffix = ` (${winnerScore} - ${loserScore})`;
+  if (matchData.status === "surrendered" || opponentMatchData.status === "surrendered") {
+    suffix += " 🏳️";
+  } else if (matchData.timer === "gg" || opponentMatchData.timer === "gg") {
+    suffix += " ⏲️";
+  }
+  const updateRatingMessage = `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓${suffix}`;
   sendBotMessage(updateRatingMessage, true);
 
   return {

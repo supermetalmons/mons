@@ -498,6 +498,18 @@ class Connection {
     }
   }
 
+  public async cancelAutomatch(): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const cancelAutomatchFn = httpsCallable(this.functions, "cancelAutomatch");
+      const response = await cancelAutomatchFn({});
+      return response.data;
+    } catch (error) {
+      console.error("Error canceling automatch:", error);
+      throw error;
+    }
+  }
+
   public async updateRatings(): Promise<any> {
     try {
       await this.ensureAuthenticated();

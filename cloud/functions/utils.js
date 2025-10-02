@@ -23,16 +23,54 @@ const batchReadWithRetry = async (refs) => {
 };
 
 async function sendBotMessage(message, silent = false) {
-  sendTelegramMessage(message, silent);
-  sendDiscordMessage(message);
+  try {
+    await Promise.all([sendTelegramMessage(message, silent), sendDiscordMessage(message)]);
+  } catch (e) {}
 }
 
-async function sendTelegramMessage(message, silent = false) {
+function sendTelegramMessage(message, silent = false) {
   const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
   const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
+  return fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      chat_id: telegramExtraChatId,
+      text: message,
+      disable_web_page_preview: true,
+      disable_notification: silent,
+    }),
+  }).catch((error) => {
+    console.error("Error sending Telegram message:", error);
+  });
+}
 
+function sendDiscordMessage(message) {
+  const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
+  if (!discordWebhookUrl) {
+    console.log("Discord webhook URL not configured, skipping message");
+    return Promise.resolve();
+  }
+  return fetch(discordWebhookUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      content: message,
+    }),
+  }).catch((error) => {
+    console.error("Error sending Discord message:", error);
+  });
+}
+
+async function sendTelegramMessageAndReturnId(message, silent = false) {
+  const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
+  const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
   try {
-    fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+    const res = await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -44,32 +82,59 @@ async function sendTelegramMessage(message, silent = false) {
         disable_notification: silent,
       }),
     });
-  } catch (error) {
-    console.error("Error sending Telegram message:", error);
-  }
+    const data = await res.json();
+    if (data && data.result && data.result.message_id) {
+      return data.result.message_id;
+    }
+  } catch (error) {}
+  return null;
 }
 
-async function sendDiscordMessage(message) {
-  const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
-
-  if (!discordWebhookUrl) {
-    console.log("Discord webhook URL not configured, skipping message");
-    return;
-  }
-
+async function sendAutomatchBotMessage(inviteId, message, silent = false) {
   try {
-    fetch(discordWebhookUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        content: message,
-      }),
-    });
-  } catch (error) {
-    console.error("Error sending Discord message:", error);
-  }
+    sendDiscordMessage(message);
+  } catch (e) {}
+  try {
+    sendTelegramMessageAndReturnId(message, silent)
+      .then((messageId) => {
+        if (messageId) {
+          admin
+            .database()
+            .ref(`automatchMessages/${inviteId}`)
+            .set({ telegramMessageId: messageId })
+            .catch(() => {});
+        }
+      })
+      .catch(() => {});
+  } catch (e) {}
+}
+
+async function deleteAutomatchBotMessage(inviteId) {
+  const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
+  const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
+  try {
+    const snap = await admin.database().ref(`automatchMessages/${inviteId}`).once("value");
+    const val = snap.val();
+    const messageId = val && val.telegramMessageId ? val.telegramMessageId : null;
+    if (!messageId) {
+      return;
+    }
+    try {
+      await fetch(`https://api.telegram.org/bot${telegramBotToken}/deleteMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chat_id: telegramExtraChatId,
+          message_id: messageId,
+        }),
+      });
+    } catch (e) {}
+    try {
+      await admin.database().ref(`automatchMessages/${inviteId}`).remove();
+    } catch (e) {}
+  } catch (e) {}
 }
 
 function getDisplayNameFromAddress(username, ethAddress, solAddress, rating) {
@@ -129,4 +194,6 @@ module.exports = {
   updateUserRatingNonceAndManaPoints,
   sendBotMessage,
   getDisplayNameFromAddress,
+  sendAutomatchBotMessage,
+  deleteAutomatchBotMessage,
 };
