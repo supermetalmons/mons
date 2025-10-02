@@ -17,6 +17,7 @@ exports.cancelAutomatch = onCall(async (request) => {
   }
 
   const inviteId = Object.keys(automatchSnapshot.val())[0];
+
   const guestIdRef = admin.database().ref(`invites/${inviteId}/guestId`);
   const guestIdSnapshot = await guestIdRef.once("value");
   const guestId = guestIdSnapshot.val();
@@ -24,18 +25,11 @@ exports.cancelAutomatch = onCall(async (request) => {
     return { ok: false };
   }
 
-  const automatchItemRef = admin.database().ref(`automatch/${inviteId}`);
-  const txnResult = await automatchItemRef.transaction((current) => {
-    if (current === null) {
-      return;
-    }
-    if (!current.uid || current.uid !== uid) {
-      return;
-    }
-    return null;
-  });
-
-  if (!txnResult.committed) {
+  try {
+    const updates = {};
+    updates[`automatch/${inviteId}`] = null;
+    await admin.database().ref().update(updates);
+  } catch (e) {
     return { ok: false };
   }
 
@@ -45,10 +39,9 @@ exports.cancelAutomatch = onCall(async (request) => {
     return { ok: false };
   }
 
-  try { deleteAutomatchBotMessage(inviteId); } catch (e) {}
+  try {
+    await deleteAutomatchBotMessage(inviteId);
+  } catch (e) {}
 
   return { ok: true };
 });
-
-
-
