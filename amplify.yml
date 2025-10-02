@@ -14,3 +14,4 @@ frontend:
       - 'reactions/**'
       - 'drops/**'
       - 'shop/**'
+      - 'misc/**'
