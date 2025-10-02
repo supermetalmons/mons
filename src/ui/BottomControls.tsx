@@ -123,6 +123,9 @@ const BottomControls: React.FC = () => {
   const [isClaimVictoryVisible, setIsClaimVictoryVisible] = useState(false);
   const [isSamePuzzleAgainVisible, setIsSamePuzzleAgainVisible] = useState(false);
 
+  const [isCancelAutomatchVisible, setIsCancelAutomatchVisible] = useState(false);
+  const [isCancelAutomatchDisabled, setIsCancelAutomatchDisabled] = useState(false);
+
   const [isClaimVictoryButtonDisabled, setIsClaimVictoryButtonDisabled] = useState(false);
   const [timerConfig, setTimerConfig] = useState({ duration: 90, progress: 0, requestDate: Date.now() });
   const [stickerIds, setStickerIds] = useState<number[]>([]);
@@ -134,6 +137,7 @@ const BottomControls: React.FC = () => {
   const resignButtonRef = useRef<HTMLButtonElement>(null);
   const resignConfirmRef = useRef<HTMLDivElement>(null);
   const hourglassEnableTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const cancelAutomatchRevealTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const navigationPopupRef = useRef<HTMLDivElement>(null);
   const navigationButtonRef = useRef<HTMLButtonElement>(null);
   const boardStylePickerRef = useRef<HTMLDivElement>(null);
@@ -234,8 +238,34 @@ const BottomControls: React.FC = () => {
       if (hourglassEnableTimeoutRef.current) {
         clearTimeout(hourglassEnableTimeoutRef.current);
       }
+      if (cancelAutomatchRevealTimeoutRef.current) {
+        clearTimeout(cancelAutomatchRevealTimeoutRef.current);
+      }
     };
   }, []);
+
+  useEffect(() => {
+    if (cancelAutomatchRevealTimeoutRef.current) {
+      clearTimeout(cancelAutomatchRevealTimeoutRef.current);
+      cancelAutomatchRevealTimeoutRef.current = null;
+    }
+    if (automatchButtonTmpState && isAutomatchButtonVisible) {
+      setIsCancelAutomatchVisible(false);
+      setIsCancelAutomatchDisabled(false);
+      cancelAutomatchRevealTimeoutRef.current = setTimeout(() => {
+        setIsCancelAutomatchVisible(true);
+      }, 15000);
+    } else {
+      setIsCancelAutomatchVisible(false);
+      setIsCancelAutomatchDisabled(false);
+    }
+    return () => {
+      if (cancelAutomatchRevealTimeoutRef.current) {
+        clearTimeout(cancelAutomatchRevealTimeoutRef.current);
+        cancelAutomatchRevealTimeoutRef.current = null;
+      }
+    };
+  }, [automatchButtonTmpState, isAutomatchButtonVisible]);
 
   closeNavigationAndAppearancePopupIfAny = () => {
     setIsNavigationPopupVisible(false);
@@ -568,6 +598,22 @@ const BottomControls: React.FC = () => {
     setAutomatchButtonTmpState(true);
   };
 
+  const handleCancelAutomatchClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    if (isCancelAutomatchDisabled) return;
+    setIsCancelAutomatchDisabled(true);
+    try {
+      const result = await connection.cancelAutomatch();
+      if (result && result.ok) {
+        window.location.href = "/";
+      } else {
+        setIsCancelAutomatchDisabled(false);
+      }
+    } catch (_) {
+      setIsCancelAutomatchDisabled(false);
+    }
+  };
+
   const getPrimaryActionButtonText = () => {
     switch (primaryAction) {
       case PrimaryActionType.JoinGame:
@@ -644,6 +690,11 @@ const BottomControls: React.FC = () => {
                 {"Automatch"}
               </>
             )}
+          </BottomPillButton>
+        )}
+        {isCancelAutomatchVisible && (
+          <BottomPillButton onClick={handleCancelAutomatchClick} isBlue={true} disabled={isCancelAutomatchDisabled} isViewOnly={isCancelAutomatchDisabled}>
+            {isCancelAutomatchDisabled ? "Canceling..." : "Cancel"}
           </BottomPillButton>
         )}
         {isBotGameButtonVisible && (
