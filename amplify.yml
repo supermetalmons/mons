@@ -14,4 +14,4 @@ frontend:
       - 'reactions/**'
       - 'drops/**'
       - 'shop/**'
-      - 'misc/**'
+      - 'docs/**'
