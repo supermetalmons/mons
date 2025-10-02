@@ -1,5 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
+const { deleteAutomatchBotMessage } = require("./utils");
 
 exports.cancelAutomatch = onCall(async (request) => {
   if (!request.auth) {
@@ -43,6 +44,8 @@ exports.cancelAutomatch = onCall(async (request) => {
   if (guestIdAfter) {
     return { ok: false };
   }
+
+  try { deleteAutomatchBotMessage(inviteId); } catch (e) {}
 
   return { ok: true };
 });

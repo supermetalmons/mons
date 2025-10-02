@@ -72,6 +72,71 @@ async function sendDiscordMessage(message) {
   }
 }
 
+async function sendTelegramMessageAndReturnId(message, silent = false) {
+  const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
+  const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        chat_id: telegramExtraChatId,
+        text: message,
+        disable_web_page_preview: true,
+        disable_notification: silent,
+      }),
+    });
+    const data = await res.json();
+    if (data && data.result && data.result.message_id) {
+      return data.result.message_id;
+    }
+  } catch (error) {}
+  return null;
+}
+
+async function sendAutomatchBotMessage(inviteId, message, silent = false) {
+  try {
+    sendDiscordMessage(message);
+  } catch (e) {}
+  try {
+    sendTelegramMessageAndReturnId(message, silent).then((messageId) => {
+      if (messageId) {
+        admin.database().ref(`automatchMessages/${inviteId}`).set({ telegramMessageId: messageId }).catch(() => {});
+      }
+    }).catch(() => {});
+  } catch (e) {}
+}
+
+async function deleteAutomatchBotMessage(inviteId) {
+  const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
+  const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
+  try {
+    const snap = await admin.database().ref(`automatchMessages/${inviteId}`).once("value");
+    const val = snap.val();
+    const messageId = val && val.telegramMessageId ? val.telegramMessageId : null;
+    if (!messageId) {
+      return;
+    }
+    try {
+      await fetch(`https://api.telegram.org/bot${telegramBotToken}/deleteMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chat_id: telegramExtraChatId,
+          message_id: messageId,
+        }),
+      });
+    } catch (e) {}
+    try {
+      await admin.database().ref(`automatchMessages/${inviteId}`).remove();
+    } catch (e) {}
+  } catch (e) {}
+}
+
 function getDisplayNameFromAddress(username, ethAddress, solAddress, rating) {
   const ratingSuffix = rating === 0 ? "" : ` (${rating})`;
   if (username && username !== "") {
@@ -129,4 +194,6 @@ module.exports = {
   updateUserRatingNonceAndManaPoints,
   sendBotMessage,
   getDisplayNameFromAddress,
+  sendAutomatchBotMessage,
+  deleteAutomatchBotMessage,
 };
