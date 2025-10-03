@@ -135,7 +135,7 @@ export function showMonsRock(chosen: Location) {
   const rockIndex = Math.floor(Math.random() * 27) + 1;
   const rockUrl = `https://assets.mons.link/rocks/gan/${rockIndex}.webp`;
 
-  const img = loadImage("", "avatar"); // TODO: avatar passed in does not look good
+  const img = loadImage("", "nonGame");
   SVG.setHidden(img, true);
 
   const boardLoc = inBoardCoordinates(chosen);
@@ -152,7 +152,7 @@ export function showMonsRock(chosen: Location) {
     if (img.parentNode) img.parentNode.removeChild(img);
   };
 
-  SVG.setEmojiImageUrl(img, rockUrl); // TODO: why emoji in function name
+  SVG.setImageUrl(img, rockUrl);
 }
 
 export function showInstructionsText(text: string) {
@@ -416,7 +416,7 @@ export async function didToggleItemsStyleSet(isProfileMonsChange: boolean = fals
 }
 
 function loadImage(data: string, assetType: string, isSpriteSheet: boolean = false): SVGElement {
-  if (assetType !== "avatar" && assetType !== "statusMoveEmoji") {
+  if (assetType !== "nonGame" && assetType !== "statusMoveEmoji") {
     return loadBoardAssetImage(data, assetType, isSpriteSheet);
   }
   const image = document.createElementNS(SVG.ns, "image");
@@ -677,7 +677,7 @@ export function updateEmojiAndAuraIfNeeded(newEmojiId: string, aura: string | un
 
   if (isOpponentSide) {
     if (!opponentAvatar) return;
-    SVG.setEmojiImageUrl(opponentAvatar, newEmojiUrl);
+    SVG.setImageUrl(opponentAvatar, newEmojiUrl);
     const visible = newAura === "rainbow";
     showRaibowAura(visible, newEmojiUrl, true);
     try {
@@ -685,7 +685,7 @@ export function updateEmojiAndAuraIfNeeded(newEmojiId: string, aura: string | un
     } catch {}
   } else {
     if (!playerAvatar) return;
-    SVG.setEmojiImageUrl(playerAvatar, newEmojiUrl);
+    SVG.setImageUrl(playerAvatar, newEmojiUrl);
     const visible = newAura === "rainbow";
     showRaibowAura(visible, newEmojiUrl, false);
     try {
@@ -698,8 +698,8 @@ export function showRandomEmojisForLoopMode() {
   if (!opponentAvatar || !playerAvatar) return;
   const [, playerUrl] = emojis.getRandomEmojiUrl();
   const [, opponentUrl] = emojis.getRandomEmojiUrl();
-  SVG.setEmojiImageUrl(playerAvatar, playerUrl);
-  SVG.setEmojiImageUrl(opponentAvatar, opponentUrl);
+  SVG.setImageUrl(playerAvatar, playerUrl);
+  SVG.setImageUrl(opponentAvatar, opponentUrl);
   showRaibowAura((playerSideMetadata.aura ?? "") === "rainbow", playerUrl, false);
   showRaibowAura((opponentSideMetadata.aura ?? "") === "rainbow", opponentUrl, true);
 }
@@ -1755,12 +1755,12 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
       }
     }
 
-    const avatar = loadImage("", "avatar");
+    const avatar = loadImage("", "nonGame");
     const placeholder = SVG.circle(0, 0, 1);
     SVG.setFill(placeholder, colors.scoreText);
     SVG.setOpacity(placeholder, 0.23);
     const emojiUrl = isOpponent ? opponentEmojiUrl : playerEmojiUrl;
-    SVG.setEmojiImageUrl(avatar, emojiUrl);
+    SVG.setImageUrl(avatar, emojiUrl);
     if (isOpponent) {
       opponentSideMetadata.aura = opponentSideMetadata.aura ?? "";
     } else {
@@ -1864,7 +1864,7 @@ function pickAndDisplayDifferentEmoji(avatar: SVGElement, isOpponent: boolean) {
   if (isOpponent) {
     const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(opponentSideMetadata.emojiId);
     opponentSideMetadata.emojiId = newId;
-    SVG.setEmojiImageUrl(avatar, newEmojiUrl);
+    SVG.setImageUrl(avatar, newEmojiUrl);
     const visible = (opponentSideMetadata.aura ?? "") === "rainbow";
     showRaibowAura(visible, newEmojiUrl, true);
   } else {
@@ -1886,7 +1886,7 @@ export function didClickAndChangePlayerEmoji(newId: string, newEmojiUrl: string,
       playerSideMetadata.aura = aura;
     }
     if (playerAvatar) {
-      SVG.setEmojiImageUrl(playerAvatar, newEmojiUrl);
+      SVG.setImageUrl(playerAvatar, newEmojiUrl);
       const visible = (aura ?? storage.getPlayerEmojiAura("") ?? "") === "rainbow";
       showRaibowAura(visible, newEmojiUrl, false);
       try {
