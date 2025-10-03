@@ -46,6 +46,7 @@ export let playerSideMetadata = newEmptyPlayerMetadata();
 export let opponentSideMetadata = newEmptyPlayerMetadata();
 export let showsMonsRockOnBoard = false;
 export let monsRockLocation: Location | null = null;
+let monsRockElement: SVGElement | null = null;
 
 export let isFlipped = false;
 let traceIndex = 0;
@@ -141,6 +142,7 @@ export function showMonsRock(chosen: Location) {
   const boardLoc = inBoardCoordinates(chosen);
   SVG.setOrigin(img, boardLoc.j, boardLoc.i);
   addElementToItemsLayer(img, boardLoc.i);
+  monsRockElement = img;
 
   (img as any).onload = () => {
     SVG.setHidden(img, false);
@@ -153,6 +155,28 @@ export function showMonsRock(chosen: Location) {
   };
 
   SVG.setImageUrl(img, rockUrl);
+}
+
+export function removeMonsRockIfAny() {
+  if (!monsRockElement) return;
+  const el = monsRockElement;
+  monsRockElement = null;
+  let startOpacity = parseFloat(el.getAttribute("opacity") || "1");
+  const start = performance.now();
+  const duration = 100;
+  function step(now: number) {
+    const t = Math.min(1, (now - start) / duration);
+    const value = (1 - t) * startOpacity;
+    SVG.setOpacity(el, value);
+    if (t < 1) {
+      requestAnimationFrame(step);
+    } else {
+      if (el.parentNode) el.parentNode.removeChild(el);
+      showsMonsRockOnBoard = false;
+      monsRockLocation = null;
+    }
+  }
+  requestAnimationFrame(step);
 }
 
 export function showInstructionsText(text: string) {

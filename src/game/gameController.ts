@@ -293,6 +293,7 @@ export async function go() {
 
     didStartLocalGame = true;
     setHomeVisible(true);
+    Board.removeMonsRockIfAny();
     setBrushAndNavigationButtonDimmed(true);
     setInviteLinkActionVisible(false);
     setAutomatchVisible(false);
@@ -312,6 +313,7 @@ export async function go() {
     });
     didStartLocalGame = true;
     setHomeVisible(true);
+    Board.removeMonsRockIfAny();
     setBrushAndNavigationButtonDimmed(true);
     setUndoVisible(true);
     setInviteLinkActionVisible(false);
@@ -332,6 +334,7 @@ export async function go() {
   } else {
     isOnlineGame = true;
     setHomeVisible(true);
+    Board.removeMonsRockIfAny();
     setBrushAndNavigationButtonDimmed(true);
     setNavigationListButtonVisible(false);
   }
@@ -415,6 +418,7 @@ export function didClickStartBotGameButton() {
   dismissBadgeAndNotificationBannerIfNeeded();
   didStartLocalGame = true;
   setHomeVisible(true);
+  Board.removeMonsRockIfAny();
   setUndoVisible(true);
   setBrushAndNavigationButtonDimmed(true);
   setInviteLinkActionVisible(false);
@@ -448,6 +452,7 @@ export function didFindInviteThatCanBeJoined() {
 
 export function didClickAutomatchButton() {
   setHomeVisible(true);
+  Board.removeMonsRockIfAny();
   setBrushAndNavigationButtonDimmed(true);
   setAutomoveActionVisible(false);
   showMoveHistoryButton(false);
@@ -827,6 +832,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
         dismissBadgeAndNotificationBannerIfNeeded();
         didStartLocalGame = true;
         setHomeVisible(true);
+        Board.removeMonsRockIfAny();
         setBrushAndNavigationButtonDimmed(true);
         setUndoVisible(true);
         setInviteLinkActionVisible(false);
@@ -1474,6 +1480,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
 export function didClickInviteActionButtonBeforeThereIsInviteReady() {
   if (!isCreateNewInviteFlow) return;
   setHomeVisible(true);
+  Board.removeMonsRockIfAny();
   setBrushAndNavigationButtonDimmed(true);
   setAutomatchVisible(false);
   setBotGameOptionVisible(false);
@@ -1513,6 +1520,7 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
   game = gameFromFen;
   didStartLocalGame = true;
   setHomeVisible(true);
+  Board.removeMonsRockIfAny();
   setBrushAndNavigationButtonDimmed(true);
   setUndoVisible(true);
   setInviteLinkActionVisible(false);
