@@ -12,6 +12,7 @@ import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, ge
 import { storage } from "../utils/storage";
 import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSignIn";
 import { showVideoReaction } from "../ui/BoardComponent";
+import { soundPlayer } from "../utils/SoundPlayer";
 
 const experimentalDrawingDevMode = false;
 
@@ -656,7 +657,10 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
 
 let rockHits = 0;
 
-function handleRockClick(location: Location) {
+async function handleRockClick(location: Location) {
+  if (rockHits === 0) {
+    await soundPlayer.initializeOnUserInteraction();
+  }
   // TODO: implement hit-hit-hit to break logic
   rockHits += 1;
   if (rockHits < 5) {
