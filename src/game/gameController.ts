@@ -218,14 +218,16 @@ function dismissBadgeAndNotificationBannerIfNeeded() {
 const notificationBannerIsDisabledUntilItsMadeLessAnnoying = true;
 
 export function didAttemptAuthentication() {
-  if (!isOnlineGame && !didStartLocalGame && !getTutorialCompleted() && isCreateNewInviteFlow && !isWaitingForInviteToGetAccepted) {
-    setBadgeVisible(true);
+  if (!isOnlineGame && !didStartLocalGame && isCreateNewInviteFlow && !isWaitingForInviteToGetAccepted) {
     showMonsRockIfNeeded();
-    if (storage.isFirstLaunch()) {
-      storage.trackFirstLaunch();
-    } else if (!notificationBannerIsDisabledUntilItsMadeLessAnnoying) {
-      const [completed, total] = getTutorialProgress();
-      showNotificationBanner("Play Mons 101", `${completed} / ${total} lessons completed`, "104", resumeTutorialFromBanner);
+    if (!getTutorialCompleted()) {
+      setBadgeVisible(true);
+      if (storage.isFirstLaunch()) {
+        storage.trackFirstLaunch();
+      } else if (!notificationBannerIsDisabledUntilItsMadeLessAnnoying) {
+        const [completed, total] = getTutorialProgress();
+        showNotificationBanner("Play Mons 101", `${completed} / ${total} lessons completed`, "104", resumeTutorialFromBanner);
+      }
     }
   }
 }

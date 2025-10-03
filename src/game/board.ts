@@ -44,6 +44,8 @@ export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, 
 
 export let playerSideMetadata = newEmptyPlayerMetadata();
 export let opponentSideMetadata = newEmptyPlayerMetadata();
+export let showsMonsRockOnBoard = false;
+export let monsRockLocation: Location | null = null;
 
 export let isFlipped = false;
 let traceIndex = 0;
@@ -129,7 +131,45 @@ export function fastForwardInstructionsIfNeeded() {
 }
 
 export function showMonsRock() {
-  // TODO: implement
+  if (!itemsLayer) return;
+
+  // TODO: make it efficient, do not go through all of them, see non empty ones with game controller help
+  const emptyLocations: Location[] = [];
+  for (let i = 0; i <= 10; i++) {
+    for (let j = 0; j <= 10; j++) {
+      const logical = new Location(i, j);
+      const boardLoc = inBoardCoordinates(logical);
+      const key = boardLoc.toString();
+      if (!items[key] && !hasBasePlaceholder(logical)) {
+        emptyLocations.push(logical);
+      }
+    }
+  }
+
+  if (emptyLocations.length === 0) return;
+
+  const chosen = emptyLocations[Math.floor(Math.random() * emptyLocations.length)];
+  const rockIndex = Math.floor(Math.random() * 27) + 1;
+  const rockUrl = `https://assets.mons.link/rocks/gan/${rockIndex}.webp`;
+
+  const img = loadImage("", "avatar"); // TODO: avatar passed in does not look good
+  SVG.setHidden(img, true);
+
+  const boardLoc = inBoardCoordinates(chosen);
+  SVG.setOrigin(img, boardLoc.j, boardLoc.i);
+  addElementToItemsLayer(img, boardLoc.i);
+
+  (img as any).onload = () => {
+    SVG.setHidden(img, false);
+    showsMonsRockOnBoard = true;
+    monsRockLocation = chosen;
+  };
+
+  (img as any).onerror = () => {
+    if (img.parentNode) img.parentNode.removeChild(img);
+  };
+
+  SVG.setEmojiImageUrl(img, rockUrl); // TODO: why emoji in function name
 }
 
 export function showInstructionsText(text: string) {
