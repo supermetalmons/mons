@@ -1028,3 +1028,9 @@ export function indicateWaterSplash(at: Location) {
     false
   );
 }
+
+export function indicateRockHit(at: Location) {}
+
+export function indicateRockMiss(at: Location) {}
+
+export function indicateRockCrash(at: Location) {}

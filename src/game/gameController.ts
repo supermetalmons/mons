@@ -654,7 +654,32 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
   processInput(AssistedInputKind.None, inputModifier);
 }
 
+let rockHits = 0;
+
+function handleRockClick(location: Location) {
+  // TODO: implement hit-hit-hit to break logic
+  rockHits += 1;
+  if (rockHits < 5) {
+    if (rockHits === 3) {
+      playSounds([Sound.PickaxeMiss]);
+      Board.indicateRockMiss(location);
+    } else {
+      playSounds([Sound.PickaxeHit]);
+      Board.indicateRockHit(location);
+    }
+  } else {
+    playSounds([Sound.RockOpen]);
+    Board.removeMonsRockIfAny(true);
+    Board.indicateRockCrash(location);
+  }
+}
+
 export function didClickSquare(location: Location) {
+  if (Board.monsRockLocation?.i === location.i && Board.monsRockLocation?.j === location.j) {
+    handleRockClick(location);
+    return;
+  }
+
   if (puzzleMode) {
     const didFastForward = Board.fastForwardInstructionsIfNeeded();
     if (didFastForward && location.i === -1 && location.j === -1) {

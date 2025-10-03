@@ -157,10 +157,16 @@ export function showMonsRock(chosen: Location) {
   SVG.setImageUrl(img, rockUrl);
 }
 
-export function removeMonsRockIfAny() {
+export function removeMonsRockIfAny(onHit: boolean = false) {
   if (!monsRockElement) return;
   const el = monsRockElement;
   monsRockElement = null;
+  if (onHit) {
+    if (el.parentNode) el.parentNode.removeChild(el);
+    showsMonsRockOnBoard = false;
+    monsRockLocation = null;
+    return;
+  }
   let startOpacity = parseFloat(el.getAttribute("opacity") || "1");
   const start = performance.now();
   const duration = 100;
@@ -2750,6 +2756,21 @@ function preloadParticleEffects() {
 async function ensureParticleEffectsLoaded() {
   if (particleEffects) return particleEffects;
   return await preloadParticleEffects();
+}
+
+export async function indicateRockHit(at: Location) {
+  const effects = await ensureParticleEffectsLoaded();
+  effects.indicateRockHit(at);
+}
+
+export async function indicateRockMiss(at: Location) {
+  const effects = await ensureParticleEffectsLoaded();
+  effects.indicateRockMiss(at);
+}
+
+export async function indicateRockCrash(at: Location) {
+  const effects = await ensureParticleEffectsLoaded();
+  effects.indicateRockCrash(at);
 }
 
 export async function indicateElectricHit(at: Location) {
