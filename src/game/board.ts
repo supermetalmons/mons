@@ -130,25 +130,8 @@ export function fastForwardInstructionsIfNeeded() {
   return true;
 }
 
-export function showMonsRock() {
+export function showMonsRock(chosen: Location) {
   if (!itemsLayer) return;
-
-  // TODO: make it efficient, do not go through all of them, see non empty ones with game controller help
-  const emptyLocations: Location[] = [];
-  for (let i = 0; i <= 10; i++) {
-    for (let j = 0; j <= 10; j++) {
-      const logical = new Location(i, j);
-      const boardLoc = inBoardCoordinates(logical);
-      const key = boardLoc.toString();
-      if (!items[key] && !hasBasePlaceholder(logical)) {
-        emptyLocations.push(logical);
-      }
-    }
-  }
-
-  if (emptyLocations.length === 0) return;
-
-  const chosen = emptyLocations[Math.floor(Math.random() * emptyLocations.length)];
   const rockIndex = Math.floor(Math.random() * 27) + 1;
   const rockUrl = `https://assets.mons.link/rocks/gan/${rockIndex}.webp`;
 
