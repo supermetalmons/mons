@@ -48,6 +48,7 @@ let resignedColor: MonsWeb.Color | undefined;
 let winnerByTimerColor: MonsWeb.Color | undefined;
 
 let lastReactionTime = 0;
+let lastRockOpenTime: number | null = null;
 
 const processedVoiceReactions = new Set<string>();
 
@@ -675,10 +676,19 @@ async function handleRockClick(location: Location) {
     playSounds([Sound.RockOpen]);
     Board.removeMonsRockIfAny(true);
     Board.indicateRockCrash(location);
+    lastRockOpenTime = Date.now();
   }
 }
 
 export function didClickSquare(location: Location) {
+  if (lastRockOpenTime !== null) {
+    const sinceOpen = Date.now() - lastRockOpenTime;
+    if (sinceOpen <= 500) {
+      return;
+    }
+    lastRockOpenTime = null;
+  }
+
   if (Board.monsRockLocation?.i === location.i && Board.monsRockLocation?.j === location.j) {
     handleRockClick(location);
     return;
