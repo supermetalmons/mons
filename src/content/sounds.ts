@@ -104,7 +104,7 @@ export async function playSounds(sounds: Sound[]) {
         name = "victory";
         break;
       case Sound.Defeat:
-        name = "defeat";
+        name = ["defeat", "defeat1", "defeat2"][Math.floor(Math.random() * 3)];
         break;
       case Sound.DidConnect:
         name = "didConnect";
@@ -117,6 +117,15 @@ export async function playSounds(sounds: Sound[]) {
         break;
       case Sound.EmoteReceived:
         name = "emotePop5";
+        break;
+      case Sound.PickaxeHit:
+        name = "pickaxeHit";
+        break;
+      case Sound.PickaxeMiss:
+        name = "pickaxeMiss";
+        break;
+      case Sound.RockOpen:
+        name = "rockOpen";
         break;
     }
 
@@ -133,6 +142,9 @@ const getSoundPriority = (sound: Sound) => {
     case Sound.DidConnect:
     case Sound.EmoteSent:
     case Sound.EmoteReceived:
+    case Sound.PickaxeHit:
+    case Sound.PickaxeMiss:
+    case Sound.RockOpen:
       return 0;
     case Sound.ManaPickUp:
     case Sound.ChoosePickup:

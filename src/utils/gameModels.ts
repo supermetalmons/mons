@@ -62,6 +62,9 @@ export enum Sound {
   Undo,
   EmoteReceived,
   EmoteSent,
+  PickaxeHit,
+  PickaxeMiss,
+  RockOpen,
 }
 
 export enum InputModifier {
