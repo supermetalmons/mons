@@ -40,7 +40,7 @@ exports.cancelAutomatch = onCall(async (request) => {
   }
 
   try {
-    markCompletedAutomatchBotMessage(inviteId);
+    markCompletedAutomatchBotMessage(inviteId, true);
   } catch (e) {}
 
   return { ok: true };

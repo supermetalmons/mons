@@ -93,7 +93,7 @@ async function sendAutomatchBotMessage(inviteId, message, silent = false, isHtml
   } catch (e) {}
 }
 
-async function markCompletedAutomatchBotMessage(inviteId) {
+async function markCompletedAutomatchBotMessage(inviteId, isCancel = false) {
   const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
   const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
   try {
@@ -105,7 +105,9 @@ async function markCompletedAutomatchBotMessage(inviteId) {
       return;
     }
     try {
-      const editedText = name ? `<i>${name} was looking for a match</i>` : `<i>[invite canceled]</i>`;
+      let editedTextBase = name ? `<i>${name} was looking for a match` : `<i>there was an invite`;
+      if (isCancel) editedTextBase += " [canceled]";
+      const editedText = `${editedTextBase}</i>`;
       await fetch(`https://api.telegram.org/bot${telegramBotToken}/editMessageText`, {
         method: "POST",
         headers: {

@@ -62,7 +62,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
           const matchMessage = `${existingPlayerName} vs. ${name} https://mons.link/${firstAutomatchId}`;
           try {
             sendBotMessage(matchMessage);
-            markCompletedAutomatchBotMessage(firstAutomatchId);
+            markCompletedAutomatchBotMessage(firstAutomatchId, false);
           } catch (e) {}
         } else {
           return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, aura, retryCount + 1);
