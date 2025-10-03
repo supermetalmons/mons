@@ -15,3 +15,4 @@ frontend:
       - 'drops/**'
       - 'shop/**'
       - 'docs/**'
+      - 'rocks/**'
