@@ -235,7 +235,7 @@ export function didAttemptAuthentication() {
 }
 
 function showMonsRockIfNeeded() {
-  const shouldShowRock = true; // TODO: daily conditions
+  const shouldShowRock = false; // TODO: daily conditions
   if (shouldShowRock) {
     const occupied = new Set(game.locations_with_content().map((loc) => `${loc.i}-${loc.j}`));
     const boardSize = 11;
