@@ -22,65 +22,50 @@ const batchReadWithRetry = async (refs) => {
   return finalSnapshots;
 };
 
-async function sendBotMessage(message, silent = false) {
+async function sendBotMessage(message, silent = false, isHtml = false) {
   try {
-    await Promise.all([sendTelegramMessage(message, silent), sendDiscordMessage(message)]);
+    await sendTelegramMessage(message, silent, isHtml);
   } catch (e) {}
 }
 
-function sendTelegramMessage(message, silent = false) {
+function sendTelegramMessage(message, silent = false, isHtml = false) {
   const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
   const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
+  const body = {
+    chat_id: telegramExtraChatId,
+    text: message,
+    disable_web_page_preview: true,
+    disable_notification: silent,
+  };
+  if (isHtml) body.parse_mode = "HTML";
   return fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({
-      chat_id: telegramExtraChatId,
-      text: message,
-      disable_web_page_preview: true,
-      disable_notification: silent,
-    }),
+    body: JSON.stringify(body),
   }).catch((error) => {
     console.error("Error sending Telegram message:", error);
   });
 }
 
-function sendDiscordMessage(message) {
-  const discordWebhookUrl = process.env.DISCORD_WEBHOOK_URL;
-  if (!discordWebhookUrl) {
-    console.log("Discord webhook URL not configured, skipping message");
-    return Promise.resolve();
-  }
-  return fetch(discordWebhookUrl, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      content: message,
-    }),
-  }).catch((error) => {
-    console.error("Error sending Discord message:", error);
-  });
-}
-
-async function sendTelegramMessageAndReturnId(message, silent = false) {
+async function sendTelegramMessageAndReturnId(message, silent = false, isHtml = false) {
   const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
   const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
   try {
+    const body = {
+      chat_id: telegramExtraChatId,
+      text: message,
+      disable_web_page_preview: true,
+      disable_notification: silent,
+    };
+    if (isHtml) body.parse_mode = "HTML";
     const res = await fetch(`https://api.telegram.org/bot${telegramBotToken}/sendMessage`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        chat_id: telegramExtraChatId,
-        text: message,
-        disable_web_page_preview: true,
-        disable_notification: silent,
-      }),
+      body: JSON.stringify(body),
     });
     const data = await res.json();
     if (data && data.result && data.result.message_id) {
@@ -90,18 +75,17 @@ async function sendTelegramMessageAndReturnId(message, silent = false) {
   return null;
 }
 
-async function sendAutomatchBotMessage(inviteId, message, silent = false) {
+async function sendAutomatchBotMessage(inviteId, message, silent = false, isHtml = false, name = null) {
   try {
-    sendDiscordMessage(message);
   } catch (e) {}
   try {
-    sendTelegramMessageAndReturnId(message, silent)
+    sendTelegramMessageAndReturnId(message, silent, isHtml)
       .then((messageId) => {
         if (messageId) {
           admin
             .database()
             .ref(`automatchMessages/${inviteId}`)
-            .set({ telegramMessageId: messageId })
+            .set({ telegramMessageId: messageId, name: name || null })
             .catch(() => {});
         }
       })
@@ -109,18 +93,22 @@ async function sendAutomatchBotMessage(inviteId, message, silent = false) {
   } catch (e) {}
 }
 
-async function deleteAutomatchBotMessage(inviteId) {
+async function markCompletedAutomatchBotMessage(inviteId, isCancel = false) {
   const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
   const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
   try {
     const snap = await admin.database().ref(`automatchMessages/${inviteId}`).once("value");
     const val = snap.val();
     const messageId = val && val.telegramMessageId ? val.telegramMessageId : null;
+    const name = val && val.name ? val.name : null;
     if (!messageId) {
       return;
     }
     try {
-      await fetch(`https://api.telegram.org/bot${telegramBotToken}/deleteMessage`, {
+      let editedTextBase = name ? `<i>${name} was looking for a match` : `<i>there was an invite`;
+      if (isCancel) editedTextBase += " [canceled]";
+      const editedText = `${editedTextBase}</i>`;
+      await fetch(`https://api.telegram.org/bot${telegramBotToken}/editMessageText`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -128,6 +116,9 @@ async function deleteAutomatchBotMessage(inviteId) {
         body: JSON.stringify({
           chat_id: telegramExtraChatId,
           message_id: messageId,
+          text: editedText,
+          parse_mode: "HTML",
+          disable_web_page_preview: true,
         }),
       });
     } catch (e) {}
@@ -195,5 +186,5 @@ module.exports = {
   sendBotMessage,
   getDisplayNameFromAddress,
   sendAutomatchBotMessage,
-  deleteAutomatchBotMessage,
+  markCompletedAutomatchBotMessage,
 };

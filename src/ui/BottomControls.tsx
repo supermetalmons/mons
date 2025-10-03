@@ -254,7 +254,7 @@ const BottomControls: React.FC = () => {
       setIsCancelAutomatchDisabled(false);
       cancelAutomatchRevealTimeoutRef.current = setTimeout(() => {
         setIsCancelAutomatchVisible(true);
-      }, 15000);
+      }, 10000);
     } else {
       setIsCancelAutomatchVisible(false);
       setIsCancelAutomatchDisabled(false);
