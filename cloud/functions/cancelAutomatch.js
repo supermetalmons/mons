@@ -1,6 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { deleteAutomatchBotMessage } = require("./utils");
+const { markCompletedAutomatchBotMessage } = require("./utils");
 
 exports.cancelAutomatch = onCall(async (request) => {
   if (!request.auth) {
@@ -40,7 +40,7 @@ exports.cancelAutomatch = onCall(async (request) => {
   }
 
   try {
-    await deleteAutomatchBotMessage(inviteId);
+    markCompletedAutomatchBotMessage(inviteId);
   } catch (e) {}
 
   return { ok: true };

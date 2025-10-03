@@ -49,8 +49,6 @@ function sendTelegramMessage(message, silent = false, isHtml = false) {
   });
 }
 
- 
-
 async function sendTelegramMessageAndReturnId(message, silent = false, isHtml = false) {
   const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
   const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
@@ -77,9 +75,8 @@ async function sendTelegramMessageAndReturnId(message, silent = false, isHtml = 
   return null;
 }
 
-async function sendAutomatchBotMessage(inviteId, message, silent = false, isHtml = false) {
+async function sendAutomatchBotMessage(inviteId, message, silent = false, isHtml = false, name = null) {
   try {
-    
   } catch (e) {}
   try {
     sendTelegramMessageAndReturnId(message, silent, isHtml)
@@ -88,7 +85,7 @@ async function sendAutomatchBotMessage(inviteId, message, silent = false, isHtml
           admin
             .database()
             .ref(`automatchMessages/${inviteId}`)
-            .set({ telegramMessageId: messageId })
+            .set({ telegramMessageId: messageId, name: name || null })
             .catch(() => {});
         }
       })
@@ -96,18 +93,20 @@ async function sendAutomatchBotMessage(inviteId, message, silent = false, isHtml
   } catch (e) {}
 }
 
-async function deleteAutomatchBotMessage(inviteId) {
+async function markCompletedAutomatchBotMessage(inviteId) {
   const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
   const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
   try {
     const snap = await admin.database().ref(`automatchMessages/${inviteId}`).once("value");
     const val = snap.val();
     const messageId = val && val.telegramMessageId ? val.telegramMessageId : null;
+    const name = val && val.name ? val.name : null;
     if (!messageId) {
       return;
     }
     try {
-      await fetch(`https://api.telegram.org/bot${telegramBotToken}/deleteMessage`, {
+      const editedText = name ? `<i>${name} was looking for a match</i>` : `<i>[invite canceled]</i>`;
+      await fetch(`https://api.telegram.org/bot${telegramBotToken}/editMessageText`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,6 +114,9 @@ async function deleteAutomatchBotMessage(inviteId) {
         body: JSON.stringify({
           chat_id: telegramExtraChatId,
           message_id: messageId,
+          text: editedText,
+          parse_mode: "HTML",
+          disable_web_page_preview: true,
         }),
       });
     } catch (e) {}
@@ -182,5 +184,5 @@ module.exports = {
   sendBotMessage,
   getDisplayNameFromAddress,
   sendAutomatchBotMessage,
-  deleteAutomatchBotMessage,
+  markCompletedAutomatchBotMessage,
 };

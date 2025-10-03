@@ -1,6 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { getProfileByLoginId, sendBotMessage, getDisplayNameFromAddress, sendAutomatchBotMessage, deleteAutomatchBotMessage } = require("./utils");
+const { getProfileByLoginId, sendBotMessage, getDisplayNameFromAddress, sendAutomatchBotMessage, markCompletedAutomatchBotMessage } = require("./utils");
 
 exports.automatch = onCall(async (request) => {
   if (!request.auth) {
@@ -61,22 +61,9 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
         if (success) {
           const matchMessage = `${existingPlayerName} vs. ${name} https://mons.link/${firstAutomatchId}`;
           try {
-            sendBotMessage(matchMessage)
-              .then(() => {
-                try {
-                  deleteAutomatchBotMessage(firstAutomatchId);
-                } catch (e) {}
-              })
-              .catch(() => {
-                try {
-                  deleteAutomatchBotMessage(firstAutomatchId);
-                } catch (e) {}
-              });
-          } catch (e) {
-            try {
-              deleteAutomatchBotMessage(firstAutomatchId);
-            } catch (e2) {}
-          }
+            sendBotMessage(matchMessage);
+            markCompletedAutomatchBotMessage(firstAutomatchId);
+          } catch (e) {}
         } else {
           return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, aura, retryCount + 1);
         }
@@ -119,7 +106,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
 
     const message = `🔔 ${name} is looking for a match https://mons.link`;
     try {
-      sendAutomatchBotMessage(inviteId, message);
+      sendAutomatchBotMessage(inviteId, message, false, false, name);
     } catch (e) {}
 
     return {
