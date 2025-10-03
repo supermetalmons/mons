@@ -657,26 +657,51 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
 }
 
 let rockHits = 0;
+let lastRockClickTime: number | null = null;
+const ROCK_BREAK_THRESHOLD = 7;
+const ROCK_QUICK_WINDOW_MS = 320;
+const ROCK_HEAL_GRACE_MS = 600;
+const ROCK_HEAL_STEP_MS = 220;
+const ROCK_MISS_BASE = 0.06;
+const ROCK_MISS_SLOW_EXTRA = 0.1;
 
 async function handleRockClick(location: Location) {
-  if (rockHits === 0) {
+  const now = Date.now();
+  if (rockHits === 0 && lastRockClickTime === null) {
     await soundPlayer.initializeOnUserInteraction();
   }
-  // TODO: implement hit-hit-hit to break logic
-  rockHits += 1;
-  if (rockHits < 5) {
-    if (rockHits === 3) {
-      playSounds([Sound.PickaxeMiss]);
-      Board.indicateRockMiss(location);
-    } else {
-      playSounds([Sound.PickaxeHit]);
-      Board.indicateRockHit(location);
+  if (lastRockClickTime !== null) {
+    const since = now - lastRockClickTime;
+    if (since > ROCK_HEAL_GRACE_MS) {
+      const healAmount = Math.floor((since - ROCK_HEAL_GRACE_MS) / ROCK_HEAL_STEP_MS) + 1;
+      rockHits = Math.max(0, rockHits - healAmount);
+    }
+  }
+  const sinceLast = lastRockClickTime === null ? 0 : now - lastRockClickTime;
+  const isQuick = lastRockClickTime === null || sinceLast <= ROCK_QUICK_WINDOW_MS;
+  const missChance = ROCK_MISS_BASE + (isQuick ? 0 : ROCK_MISS_SLOW_EXTRA);
+  const isMiss = Math.random() < missChance;
+  if (isMiss) {
+    playSounds([Sound.PickaxeMiss]);
+    Board.indicateRockMiss(location);
+    if (rockHits > 0) {
+      rockHits = Math.max(0, rockHits - 1);
     }
   } else {
+    playSounds([Sound.PickaxeHit]);
+    Board.indicateRockHit(location);
+    if (isQuick) {
+      rockHits += 1;
+    }
+  }
+  lastRockClickTime = now;
+  if (rockHits >= ROCK_BREAK_THRESHOLD) {
     playSounds([Sound.RockOpen]);
     Board.removeMonsRockIfAny(true);
     Board.indicateRockCrash(location);
     lastRockOpenTime = Date.now();
+    rockHits = 0;
+    lastRockClickTime = null;
   }
 }
 
