@@ -218,7 +218,7 @@ function dismissBadgeAndNotificationBannerIfNeeded() {
 const notificationBannerIsDisabledUntilItsMadeLessAnnoying = true;
 
 export function didAttemptAuthentication() {
-  if (!isOnlineGame && !didStartLocalGame && !getTutorialCompleted() && isCreateNewInviteFlow) {
+  if (!isOnlineGame && !didStartLocalGame && !getTutorialCompleted() && isCreateNewInviteFlow && !isWaitingForInviteToGetAccepted) {
     setBadgeVisible(true);
     if (storage.isFirstLaunch()) {
       storage.trackFirstLaunch();
