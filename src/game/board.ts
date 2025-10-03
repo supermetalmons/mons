@@ -128,6 +128,10 @@ export function fastForwardInstructionsIfNeeded() {
   return true;
 }
 
+export function showMonsRock() {
+  // TODO: implement
+}
+
 export function showInstructionsText(text: string) {
   showTalkingDude(true);
 
