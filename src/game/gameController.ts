@@ -220,7 +220,7 @@ function dismissBadgeAndNotificationBannerIfNeeded() {
 const notificationBannerIsDisabledUntilItsMadeLessAnnoying = true;
 
 export function didAttemptAuthentication() {
-  if (!isOnlineGame && !didStartLocalGame && isCreateNewInviteFlow && !isWaitingForInviteToGetAccepted) {
+  if (!isOnlineGame && !didStartLocalGame && isCreateNewInviteFlow && !isWaitingForInviteToGetAccepted && !didConnect) {
     showMonsRockIfNeeded();
     if (!getTutorialCompleted()) {
       setBadgeVisible(true);
