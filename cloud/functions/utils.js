@@ -186,8 +186,8 @@ async function markCanceledAutomatchBotMessage(inviteId) {
     const snap = await admin.database().ref(`automatchMessages/${inviteId}`).once("value");
     const val = snap.val();
     const name = val && val.name ? val.name : null;
-    let editedTextBase = name ? `<i>${name} was looking for a match` : `<i>there was an invite`;
-    const suffix = " [canceled]";
+    let editedTextBase = name ? `<i>${name} canceled an automatch` : `<i>there was an invite`;
+    const suffix = "";
     const editedText = `${editedTextBase}</i>${suffix}`;
     console.log("auto:cancelMark:computed", { inviteId, length: editedText.length });
     await replaceAutomatchBotMessageText(inviteId, editedText, true);
