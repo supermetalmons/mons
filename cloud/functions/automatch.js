@@ -104,7 +104,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
     updates[`invites/${inviteId}`] = invite;
     await admin.database().ref().update(updates);
 
-    const message = `🔔 ${name} is looking for a match https://mons.link`;
+    const message = `🔔 ${name} is looking for a match https://mons.link 👈`;
     try {
       sendAutomatchBotMessage(inviteId, message, false, false, name);
     } catch (e) {}

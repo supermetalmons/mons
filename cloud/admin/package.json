@@ -9,7 +9,8 @@
     "firebase-admin": "^12.1.0"
   },
   "scripts": {
-    "start": "node listEthAddresses.js"
+    "start": "node listEthAddresses.js",
+    "shooting:alert": "node shootingStarAlert.js"
   }
 }
 

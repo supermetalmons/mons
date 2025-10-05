@@ -106,8 +106,8 @@ async function markCompletedAutomatchBotMessage(inviteId, isCancel = false) {
     }
     try {
       let editedTextBase = name ? `<i>${name} was looking for a match` : `<i>there was an invite`;
-      if (isCancel) editedTextBase += " [canceled]";
-      const editedText = `${editedTextBase}</i>`;
+      const suffix = isCancel ? " [canceled]" : "";
+      const editedText = `${editedTextBase}</i>${suffix}`;
       await fetch(`https://api.telegram.org/bot${telegramBotToken}/editMessageText`, {
         method: "POST",
         headers: {

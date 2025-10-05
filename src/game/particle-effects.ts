@@ -1028,3 +1028,192 @@ export function indicateWaterSplash(at: Location) {
     false
   );
 }
+
+export function indicateRockHit(at: Location) {
+  spawnParticlesAt(
+    at,
+    {
+      numParticles: 14,
+      duration: 190,
+      maxDistance: 1.0,
+      minParticleSize: 0.08,
+      maxParticleSize: 0.14,
+      fadeOutStrength: 0.95,
+      ease: (t: number) => Math.pow(t, 0.33),
+      createParticle: (centerX, centerY, size, angle) => {
+        const container = document.createElementNS(SVG.ns, "g");
+        container.style.pointerEvents = "none";
+        container.style.overflow = "visible";
+
+        const streak = document.createElementNS(SVG.ns, "line");
+        streak.setAttribute("x1", "0");
+        streak.setAttribute("y1", "0");
+        streak.setAttribute("x2", "0");
+        streak.setAttribute("y2", "0");
+        streak.setAttribute("stroke", Math.random() < 0.5 ? "#FFF59D" : "#FFE082");
+        streak.setAttribute("stroke-linecap", "round");
+        container.appendChild(streak);
+
+        const glow = document.createElementNS(SVG.ns, "circle");
+        glow.setAttribute("cx", "0");
+        glow.setAttribute("cy", "0");
+        glow.setAttribute("r", (size * 35).toString());
+        glow.setAttribute("fill", "#FFF59D");
+        glow.setAttribute("opacity", "0.7");
+        container.appendChild(glow);
+
+        const spark = document.createElementNS(SVG.ns, "polygon");
+        spark.setAttribute("fill", "#FFE066");
+        spark.setAttribute("stroke", "#FFC400");
+        spark.setAttribute("stroke-width", "1.2");
+        container.appendChild(spark);
+
+        const baseWidth = 0.9 + Math.random() * 0.9;
+        const angleDeg = (angle * 180) / Math.PI;
+
+        return {
+          main: container,
+          update: (x, y, currentSize, opacity, t) => {
+            const tx = x * 100;
+            const ty = y * 100;
+            container.setAttribute("transform", `translate(${tx.toString()} ${ty.toString()}) rotate(${angleDeg.toString()})`);
+
+            const len = currentSize * 100 * 1.2;
+            streak.setAttribute("x1", "0");
+            streak.setAttribute("y1", "0");
+            streak.setAttribute("x2", len.toString());
+            streak.setAttribute("y2", "0");
+            streak.setAttribute("stroke-width", (baseWidth + currentSize * 5).toString());
+            streak.setAttribute("opacity", (opacity * 0.95).toString());
+
+            const d = currentSize * 55;
+            const halfW = d * 0.5;
+            const halfH = d * 0.3;
+            const points = `${(-halfW).toString()},0 0,${halfH.toString()} ${halfW.toString()},0 0,${(-halfH).toString()}`;
+            spark.setAttribute("points", points);
+            spark.setAttribute("transform", `translate(${len.toString()} 0)`);
+            spark.setAttribute("opacity", Math.min(1, opacity * (1.0 + (1 - t) * 0.4)).toString());
+
+            glow.setAttribute("cx", len.toString());
+            glow.setAttribute("cy", "0");
+            glow.setAttribute("r", (currentSize * 45).toString());
+            glow.setAttribute("opacity", Math.max(0, Math.min(1, opacity * 0.75)).toString());
+          },
+        };
+      },
+    },
+    true
+  );
+}
+
+export function indicateRockMiss(at: Location) {
+  spawnParticlesAt(
+    at,
+    {
+      numParticles: 10,
+      duration: 220,
+      maxDistance: 0.8,
+      minParticleSize: 0.06,
+      maxParticleSize: 0.11,
+      fadeOutStrength: 0.85,
+      ease: (t: number) => Math.pow(t, 0.45),
+      createParticle: (centerX, centerY, size, angle) => {
+        const rect = document.createElementNS(SVG.ns, "rect");
+        rect.setAttribute("x", (centerX * 100).toString());
+        rect.setAttribute("y", (centerY * 100).toString());
+        rect.setAttribute("width", (size * 100).toString());
+        rect.setAttribute("height", (size * 100).toString());
+        rect.setAttribute("fill", Math.random() < 0.5 ? "#A0A4AB" : "#8E949B");
+        rect.setAttribute("stroke", "#6E737A");
+        rect.setAttribute("stroke-width", "0.6");
+        rect.style.pointerEvents = "none";
+        rect.style.overflow = "visible";
+
+        const baseRotation = (angle * 180) / Math.PI + (Math.random() * 60 - 30);
+        const spin = (Math.random() - 0.5) * 240;
+
+        return {
+          main: rect,
+          update: (x, y, currentSize, opacity, t) => {
+            const w = currentSize * 100;
+            const h = currentSize * 100;
+            const cx = x * 100;
+            const cy = y * 100;
+            rect.setAttribute("x", (cx - w / 2).toString());
+            rect.setAttribute("y", (cy - h / 2).toString());
+            rect.setAttribute("width", w.toString());
+            rect.setAttribute("height", h.toString());
+            const rot = baseRotation + spin * t;
+            rect.setAttribute("transform", `rotate(${rot.toString()} ${cx.toString()} ${cy.toString()})`);
+            rect.setAttribute("opacity", opacity.toString());
+          },
+        };
+      },
+    },
+    true
+  );
+}
+
+export function indicateRockCrash(at: Location) {
+  spawnParticlesAt(
+    at,
+    {
+      numParticles: 8,
+      duration: 320,
+      maxDistance: 1.6,
+      minParticleSize: 0.32,
+      maxParticleSize: 0.55,
+      fadeOutStrength: 0.92,
+      sizeGrowthThreshold: 0.15,
+      sizeGrowthMultiplier: 3,
+      ease: (t: number) => 1 - Math.pow(1 - t, 2.8),
+      createParticle: (centerX, centerY, size, angle) => {
+        const container = document.createElementNS(SVG.ns, "g");
+        container.style.pointerEvents = "none";
+        container.style.overflow = "visible";
+
+        const star = document.createElementNS(SVG.ns, "polygon");
+        star.setAttribute("fill", "#FFD54F");
+        star.setAttribute("stroke", "#FFB300");
+        star.setAttribute("stroke-width", "2");
+        star.setAttribute("stroke-linejoin", "round");
+        container.appendChild(star);
+
+        const spikes = 6;
+        const longR = size * 0.95 * 100;
+        const shortR = size * 0.45 * 100;
+        const step = Math.PI / spikes;
+        const baseRotation = (angle * 180) / Math.PI + (Math.random() * 120 - 60);
+        const spin = (Math.random() - 0.5) * 120;
+
+        const buildPoints = (rLong: number, rShort: number) => {
+          const pts: string[] = [];
+          for (let s = 0; s < spikes * 2; s++) {
+            const r = s % 2 === 0 ? rLong : rShort;
+            const a = s * step;
+            const x = Math.cos(a) * r;
+            const y = Math.sin(a) * r;
+            pts.push(`${x.toString()},${y.toString()}`);
+          }
+          return pts.join(" ");
+        };
+
+        star.setAttribute("points", buildPoints(longR, shortR));
+        container.setAttribute("transform", `translate(${(centerX * 100).toString()} ${(centerY * 100).toString()}) rotate(${baseRotation.toString()}) scale(1)`);
+
+        return {
+          main: container,
+          update: (x, y, currentSize, opacity, t) => {
+            const tx = x * 100;
+            const ty = y * 100;
+            const scale = currentSize / size;
+            const rot = baseRotation + spin * t;
+            container.setAttribute("transform", `translate(${tx.toString()} ${ty.toString()}) rotate(${rot.toString()}) scale(${scale.toString()})`);
+            container.setAttribute("opacity", Math.min(1, opacity * 1.05).toString());
+          },
+        };
+      },
+    },
+    false
+  );
+}
