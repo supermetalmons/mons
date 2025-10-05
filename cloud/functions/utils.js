@@ -85,7 +85,7 @@ async function sendAutomatchBotMessage(inviteId, message, silent = false, isHtml
           const payload = { telegramMessageId: messageId, name: name ? name : null, text: message };
           admin
             .database()
-            .ref(`invites/${inviteId}/automatchMessage`)
+            .ref(`automatchMessages/${inviteId}`)
             .set(payload)
             .catch(() => {});
         }
@@ -98,7 +98,7 @@ async function replaceAutomatchBotMessageText(inviteId, newText, isHtml = false)
   const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
   const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
   try {
-    const snap = await admin.database().ref(`invites/${inviteId}/automatchMessage`).once("value");
+    const snap = await admin.database().ref(`automatchMessages/${inviteId}`).once("value");
     const val = snap.val();
     const messageId = val && val.telegramMessageId ? val.telegramMessageId : null;
     if (!messageId) {
@@ -120,7 +120,7 @@ async function replaceAutomatchBotMessageText(inviteId, newText, isHtml = false)
         body: JSON.stringify(body),
       });
       try {
-        await admin.database().ref(`invites/${inviteId}/automatchMessage/text`).set(newText);
+        await admin.database().ref(`automatchMessages/${inviteId}/text`).set(newText);
       } catch (e) {}
     } catch (e) {}
   } catch (e) {}
@@ -128,7 +128,7 @@ async function replaceAutomatchBotMessageText(inviteId, newText, isHtml = false)
 
 async function appendAutomatchBotMessageText(inviteId, appendText, isHtml = false) {
   try {
-    const snap = await admin.database().ref(`invites/${inviteId}/automatchMessage`).once("value");
+    const snap = await admin.database().ref(`automatchMessages/${inviteId}`).once("value");
     const val = snap.val();
     const currentText = val && val.text ? val.text : "";
     const combinedText = currentText ? `${currentText}\n\n${appendText}` : appendText;
@@ -138,7 +138,7 @@ async function appendAutomatchBotMessageText(inviteId, appendText, isHtml = fals
 
 async function markCanceledAutomatchBotMessage(inviteId) {
   try {
-    const snap = await admin.database().ref(`invites/${inviteId}/automatchMessage`).once("value");
+    const snap = await admin.database().ref(`automatchMessages/${inviteId}`).once("value");
     const val = snap.val();
     const name = val && val.name ? val.name : null;
     let editedTextBase = name ? `<i>${name} was looking for a match` : `<i>there was an invite`;
