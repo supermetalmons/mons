@@ -1,6 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { getProfileByLoginId, sendBotMessage, getDisplayNameFromAddress, sendAutomatchBotMessage, markCompletedAutomatchBotMessage } = require("./utils");
+const { getProfileByLoginId, replaceAutomatchBotMessageText, getDisplayNameFromAddress, sendAutomatchBotMessage } = require("./utils");
 
 exports.automatch = onCall(async (request) => {
   if (!request.auth) {
@@ -8,6 +8,7 @@ exports.automatch = onCall(async (request) => {
   }
 
   const uid = request.auth.uid;
+  console.log("auto:fn:start", { uid });
   const profile = await getProfileByLoginId(uid);
   const ethAddress = profile.eth ?? "";
   const solAddress = profile.sol ?? "";
@@ -18,7 +19,9 @@ exports.automatch = onCall(async (request) => {
   const emojiId = request.data.emojiId;
   const aura = request.data.aura || null;
 
+  console.log("auto:fn:params", { rating, profileId, name, emojiId, aura: aura ? true : false });
   const automatchAttemptResult = await attemptAutomatch(uid, rating, username, ethAddress, solAddress, profileId, name, emojiId, aura, 0);
+  console.log("auto:fn:result", automatchAttemptResult);
   return automatchAttemptResult;
 });
 
@@ -30,11 +33,13 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
 
   const automatchRef = admin.database().ref("automatch").limitToFirst(1);
   const snapshot = await automatchRef.once("value");
+  console.log("auto:attempt:snapshot", { exists: snapshot.exists() });
 
   if (snapshot.exists()) {
     const firstAutomatchId = Object.keys(snapshot.val())[0];
     const existingAutomatchData = snapshot.val()[firstAutomatchId];
     if (existingAutomatchData.uid !== uid && (profileId === "" || profileId !== existingAutomatchData.profileId)) {
+      console.log("auto:attempt:foundExisting", { inviteId: firstAutomatchId, existingUid: existingAutomatchData.uid, hostColor: existingAutomatchData.hostColor });
       const existingPlayerName = getDisplayNameFromAddress(existingAutomatchData.username, existingAutomatchData.ethAddress, existingAutomatchData.solAddress, existingAutomatchData.rating);
 
       const invite = {
@@ -58,16 +63,20 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
 
       try {
         const success = await acceptInvite(firstAutomatchId, invite, match, uid);
+        console.log("auto:accept:done", { inviteId: firstAutomatchId, success });
         if (success) {
           const matchMessage = `${existingPlayerName} vs. ${name} https://mons.link/${firstAutomatchId}`;
           try {
-            sendBotMessage(matchMessage);
-            markCompletedAutomatchBotMessage(firstAutomatchId, false);
-          } catch (e) {}
+            console.log("auto:edit:trigger", { inviteId: firstAutomatchId });
+            replaceAutomatchBotMessageText(firstAutomatchId, matchMessage, false);
+          } catch (e) {
+            console.error("auto:edit:trigger:error", { inviteId: firstAutomatchId, error: e && e.message ? e.message : e });
+          }
         } else {
           return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, aura, retryCount + 1);
         }
       } catch (error) {
+        console.error("auto:accept:error", { inviteId: firstAutomatchId, error: error && error.message ? error.message : error });
         return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, aura, retryCount + 1);
       }
     }
@@ -76,6 +85,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
       inviteId: firstAutomatchId,
     };
   } else {
+    console.log("auto:attempt:createInvite");
     const inviteId = generateInviteId();
     const password = generateRandomString(15);
 
@@ -103,11 +113,15 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
     updates[`automatch/${inviteId}`] = { uid: uid, rating: rating, timestamp: admin.database.ServerValue.TIMESTAMP, username: username, ethAddress: ethAddress, solAddress: solAddress, profileId: profileId, hostColor: hostColor, password: password };
     updates[`invites/${inviteId}`] = invite;
     await admin.database().ref().update(updates);
+    console.log("auto:create:db:ok", { inviteId });
 
     const message = `🔔 ${name} is looking for a match https://mons.link 👈`;
     try {
+      console.log("auto:send:trigger", { inviteId });
       sendAutomatchBotMessage(inviteId, message, false, false, name);
-    } catch (e) {}
+    } catch (e) {
+      console.error("auto:send:trigger:error", { inviteId, error: e && e.message ? e.message : e });
+    }
 
     return {
       ok: true,
