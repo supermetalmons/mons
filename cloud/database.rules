@@ -40,6 +40,10 @@
             ".write": "auth != null && auth.token.admin === true",
             ".validate": "!data.exists() && newData.isBoolean()"
           }
+        },
+        "automatchMessage": {
+          ".read": "auth != null && auth.token.admin === true",
+          ".write": "auth != null && auth.token.admin === true"
         }
       }
     },

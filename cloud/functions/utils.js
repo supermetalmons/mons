@@ -82,10 +82,11 @@ async function sendAutomatchBotMessage(inviteId, message, silent = false, isHtml
     sendTelegramMessageAndReturnId(message, silent, isHtml)
       .then((messageId) => {
         if (messageId) {
+          const payload = { telegramMessageId: messageId, name: name ? name : null, text: message };
           admin
             .database()
-            .ref(`automatchMessages/${inviteId}`)
-            .set({ telegramMessageId: messageId, name: name || null })
+            .ref(`invites/${inviteId}/automatchMessage`)
+            .set(payload)
             .catch(() => {});
         }
       })
@@ -93,38 +94,57 @@ async function sendAutomatchBotMessage(inviteId, message, silent = false, isHtml
   } catch (e) {}
 }
 
-async function markCompletedAutomatchBotMessage(inviteId, isCancel = false) {
+async function replaceAutomatchBotMessageText(inviteId, newText, isHtml = false) {
   const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
   const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
   try {
-    const snap = await admin.database().ref(`automatchMessages/${inviteId}`).once("value");
+    const snap = await admin.database().ref(`invites/${inviteId}/automatchMessage`).once("value");
     const val = snap.val();
     const messageId = val && val.telegramMessageId ? val.telegramMessageId : null;
-    const name = val && val.name ? val.name : null;
     if (!messageId) {
       return;
     }
     try {
-      let editedTextBase = name ? `<i>${name} was looking for a match` : `<i>there was an invite`;
-      const suffix = isCancel ? " [canceled]" : "";
-      const editedText = `${editedTextBase}</i>${suffix}`;
+      const body = {
+        chat_id: telegramExtraChatId,
+        message_id: messageId,
+        text: newText,
+        disable_web_page_preview: true,
+      };
+      if (isHtml) body.parse_mode = "HTML";
       await fetch(`https://api.telegram.org/bot${telegramBotToken}/editMessageText`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          chat_id: telegramExtraChatId,
-          message_id: messageId,
-          text: editedText,
-          parse_mode: "HTML",
-          disable_web_page_preview: true,
-        }),
+        body: JSON.stringify(body),
       });
+      try {
+        await admin.database().ref(`invites/${inviteId}/automatchMessage/text`).set(newText);
+      } catch (e) {}
     } catch (e) {}
-    try {
-      await admin.database().ref(`automatchMessages/${inviteId}`).remove();
-    } catch (e) {}
+  } catch (e) {}
+}
+
+async function appendAutomatchBotMessageText(inviteId, appendText, isHtml = false) {
+  try {
+    const snap = await admin.database().ref(`invites/${inviteId}/automatchMessage`).once("value");
+    const val = snap.val();
+    const currentText = val && val.text ? val.text : "";
+    const combinedText = currentText ? `${currentText}\n\n${appendText}` : appendText;
+    await replaceAutomatchBotMessageText(inviteId, combinedText, isHtml);
+  } catch (e) {}
+}
+
+async function markCanceledAutomatchBotMessage(inviteId) {
+  try {
+    const snap = await admin.database().ref(`invites/${inviteId}/automatchMessage`).once("value");
+    const val = snap.val();
+    const name = val && val.name ? val.name : null;
+    let editedTextBase = name ? `<i>${name} was looking for a match` : `<i>there was an invite`;
+    const suffix = " [canceled]";
+    const editedText = `${editedTextBase}</i>${suffix}`;
+    await replaceAutomatchBotMessageText(inviteId, editedText, true);
   } catch (e) {}
 }
 
@@ -186,5 +206,7 @@ module.exports = {
   sendBotMessage,
   getDisplayNameFromAddress,
   sendAutomatchBotMessage,
-  markCompletedAutomatchBotMessage,
+  appendAutomatchBotMessageText,
+  replaceAutomatchBotMessageText,
+  markCanceledAutomatchBotMessage,
 };

@@ -1,7 +1,7 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const glicko2 = require("glicko2");
 const admin = require("firebase-admin");
-const { batchReadWithRetry, getProfileByLoginId, updateUserRatingNonceAndManaPoints, sendBotMessage, getDisplayNameFromAddress } = require("./utils");
+const { batchReadWithRetry, getProfileByLoginId, updateUserRatingNonceAndManaPoints, appendAutomatchBotMessageText, getDisplayNameFromAddress } = require("./utils");
 
 exports.updateRatings = onCall(async (request) => {
   const uid = request.auth.uid;
@@ -155,8 +155,7 @@ exports.updateRatings = onCall(async (request) => {
     suffix += " ⏲️";
   }
   const updateRatingMessage = `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓${suffix}`;
-  sendBotMessage(updateRatingMessage, true);
-
+  appendAutomatchBotMessageText(inviteId, updateRatingMessage, false);
   return {
     ok: true,
   };

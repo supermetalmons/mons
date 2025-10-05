@@ -1,6 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { getProfileByLoginId, sendBotMessage, getDisplayNameFromAddress, sendAutomatchBotMessage, markCompletedAutomatchBotMessage } = require("./utils");
+const { getProfileByLoginId, replaceAutomatchBotMessageText, getDisplayNameFromAddress, sendAutomatchBotMessage } = require("./utils");
 
 exports.automatch = onCall(async (request) => {
   if (!request.auth) {
@@ -61,8 +61,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
         if (success) {
           const matchMessage = `${existingPlayerName} vs. ${name} https://mons.link/${firstAutomatchId}`;
           try {
-            sendBotMessage(matchMessage);
-            markCompletedAutomatchBotMessage(firstAutomatchId, false);
+            replaceAutomatchBotMessageText(firstAutomatchId, matchMessage, false);
           } catch (e) {}
         } else {
           return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, aura, retryCount + 1);
