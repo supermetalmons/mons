@@ -1087,7 +1087,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
               sounds.push(Sound.Defeat);
             }
 
-            if (!isWatchOnly && hasBothEthOrSolAddresses()) {
+            if (!isWatchOnly) {
               updateRatings(isVictory);
             }
 
@@ -1229,6 +1229,11 @@ function updateRatings(isWin: boolean) {
   }
 
   connection.updateRatings();
+
+  if (!hasBothEthOrSolAddresses()) {
+    return;
+  }
+
   const playerSide = Board.playerSideMetadata.uid;
   const opponentSide = Board.opponentSideMetadata.uid;
   const victoryUid = isWin ? playerSide : opponentSide;
@@ -1494,9 +1499,7 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
 
   if (justClaimedByYourself) {
     playSounds([Sound.Victory]);
-    if (hasBothEthOrSolAddresses()) {
-      updateRatings(true);
-    }
+    updateRatings(true);
   } else if (!onConnect) {
     if (!isWatchOnly) {
       playSounds([Sound.Defeat]);
@@ -1523,7 +1526,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
 
   if (!onConnect && !justConfirmedResignYourself) {
     playSounds([Sound.Victory]);
-    if (!isWatchOnly && hasBothEthOrSolAddresses()) {
+    if (!isWatchOnly) {
       updateRatings(true);
     }
   }
