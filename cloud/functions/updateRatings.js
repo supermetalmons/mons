@@ -32,19 +32,11 @@ exports.updateRatings = onCall(async (request) => {
     throw new HttpsError("permission-denied", "Players don't match invite data");
   }
 
-  if (playerProfile.profileId === "") {
-    throw new HttpsError("failed-precondition", "Player's profile id not found.");
-  }
-
   if (uid !== playerId) {
     const customClaims = request.auth.token || {};
-    if (!customClaims.profileId || customClaims.profileId !== playerProfile.profileId) {
+    if (playerProfile.profileId && (!customClaims.profileId || customClaims.profileId !== playerProfile.profileId)) {
       throw new HttpsError("permission-denied", "You don't have permission to perform this action for this player.");
     }
-  }
-
-  if (opponentProfile.profileId === "") {
-    throw new HttpsError("failed-precondition", "Opponent's profile id not found.");
   }
 
   var result = "none";
@@ -108,42 +100,38 @@ exports.updateRatings = onCall(async (request) => {
   }
   const playerManaPoints = matchData.color === "white" ? gameForScore.white_score() : gameForScore.black_score();
   const opponentManaPoints = opponentMatchData.color === "white" ? gameForScore.white_score() : gameForScore.black_score();
-  const newPlayerManaTotal = (playerProfile.totalManaPoints ?? 0) + playerManaPoints;
-  const newOpponentManaTotal = (opponentProfile.totalManaPoints ?? 0) + opponentManaPoints;
-
-  const newNonce1 = playerProfile.nonce + 1;
-  const newNonce2 = opponentProfile.nonce + 1;
-
-  let newRatingPlayer = 0;
-  let newRatingOpponent = 0;
-  let winnerDisplayName = "";
-  let winnerNewRating = 0;
-  let loserDisplayName = "";
-  let loserNewRating = 0;
+  const playerHasProfile = playerProfile.profileId !== "";
+  const opponentHasProfile = opponentProfile.profileId !== "";
+  const canUpdateRatings = playerHasProfile && opponentHasProfile;
 
   const playerProfileDisplayName = getDisplayNameFromAddress(playerProfile.username, playerProfile.eth, playerProfile.sol, 0);
   const opponentProfileDisplayName = getDisplayNameFromAddress(opponentProfile.username, opponentProfile.eth, opponentProfile.sol, 0);
 
-  if (result === "win") {
-    const [newWinnerRating, newLoserRating] = updateRating(playerProfile.rating, newNonce1, opponentProfile.rating, newNonce2);
-    newRatingPlayer = newWinnerRating;
-    newRatingOpponent = newLoserRating;
-    winnerDisplayName = playerProfileDisplayName;
-    winnerNewRating = newWinnerRating;
-    loserDisplayName = opponentProfileDisplayName;
-    loserNewRating = newLoserRating;
-    updateUserRatingNonceAndManaPoints(playerProfile.profileId, newRatingPlayer, newNonce1, true, newPlayerManaTotal);
-    updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newRatingOpponent, newNonce2, false, newOpponentManaTotal);
-  } else {
-    const [newWinnerRating, newLoserRating] = updateRating(opponentProfile.rating, newNonce2, playerProfile.rating, newNonce1);
-    newRatingPlayer = newLoserRating;
-    newRatingOpponent = newWinnerRating;
-    winnerDisplayName = opponentProfileDisplayName;
-    winnerNewRating = newWinnerRating;
-    loserDisplayName = playerProfileDisplayName;
-    loserNewRating = newLoserRating;
-    updateUserRatingNonceAndManaPoints(playerProfile.profileId, newRatingPlayer, newNonce1, false, newPlayerManaTotal);
-    updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newRatingOpponent, newNonce2, true, newOpponentManaTotal);
+  let winnerDisplayName = result === "win" ? playerProfileDisplayName : opponentProfileDisplayName;
+  let loserDisplayName = result === "win" ? opponentProfileDisplayName : playerProfileDisplayName;
+
+  let winnerNewRating = 0;
+  let loserNewRating = 0;
+
+  if (canUpdateRatings) {
+    const newPlayerManaTotal = (playerProfile.totalManaPoints ?? 0) + playerManaPoints;
+    const newOpponentManaTotal = (opponentProfile.totalManaPoints ?? 0) + opponentManaPoints;
+    const newNonce1 = playerProfile.nonce + 1;
+    const newNonce2 = opponentProfile.nonce + 1;
+
+    if (result === "win") {
+      const [newWinnerRating, newLoserRating] = updateRating(playerProfile.rating, newNonce1, opponentProfile.rating, newNonce2);
+      winnerNewRating = newWinnerRating;
+      loserNewRating = newLoserRating;
+      updateUserRatingNonceAndManaPoints(playerProfile.profileId, newWinnerRating, newNonce1, true, newPlayerManaTotal);
+      updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newLoserRating, newNonce2, false, newOpponentManaTotal);
+    } else {
+      const [newWinnerRating, newLoserRating] = updateRating(opponentProfile.rating, newNonce2, playerProfile.rating, newNonce1);
+      winnerNewRating = newWinnerRating;
+      loserNewRating = newLoserRating;
+      updateUserRatingNonceAndManaPoints(playerProfile.profileId, newLoserRating, newNonce1, false, newPlayerManaTotal);
+      updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newWinnerRating, newNonce2, true, newOpponentManaTotal);
+    }
   }
 
   const winnerScore = result === "win" ? playerManaPoints : opponentManaPoints;
@@ -154,7 +142,7 @@ exports.updateRatings = onCall(async (request) => {
   } else if (matchData.timer === "gg" || opponentMatchData.timer === "gg") {
     suffix += " ⏲️";
   }
-  const updateRatingMessage = `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓${suffix}`;
+  const updateRatingMessage = canUpdateRatings ? `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓${suffix}` : `${winnerDisplayName} ↑ ${loserDisplayName}${suffix}`;
   await appendAutomatchBotMessageText(inviteId, updateRatingMessage, false);
   return {
     ok: true,
