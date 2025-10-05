@@ -166,6 +166,62 @@ async function replaceAutomatchBotMessageText(inviteId, newText, isHtml = false)
   }
 }
 
+async function replaceAutomatchBotMessageByDeletingOriginal(inviteId, newText, isHtml = false) {
+  const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
+  const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
+  try {
+    console.log("auto:replaceDelete:start", { inviteId, isHtml, length: newText ? newText.length : 0 });
+    const snap = await admin.database().ref(`automatchMessages/${inviteId}`).once("value");
+    const val = snap.val();
+    const oldMessageId = val && val.telegramMessageId ? val.telegramMessageId : null;
+    const name = val && val.name ? val.name : null;
+    if (oldMessageId) {
+      const body = {
+        chat_id: telegramExtraChatId,
+        message_id: oldMessageId,
+      };
+      console.log("auto:replaceDelete:request", { inviteId, body });
+      fetch(`https://api.telegram.org/bot${telegramBotToken}/deleteMessage`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      })
+        .then(async (res) => {
+          let data = null;
+          try {
+            data = await res.json();
+          } catch (_) {}
+          console.log("auto:replaceDelete:response", { inviteId, status: res.status, ok: data && data.ok, description: data && data.description });
+        })
+        .catch((err) => console.error("auto:replaceDelete:error", { inviteId, error: err && err.message ? err.message : err }));
+    } else {
+      console.warn("auto:replaceDelete:noMessageId", { inviteId });
+    }
+
+    sendTelegramMessageAndReturnId(newText, false, isHtml)
+      .then((newMessageId) => {
+        console.log("auto:replaceSend:sent", { inviteId, messageId: newMessageId });
+        if (newMessageId) {
+          const payload = { telegramMessageId: newMessageId, name: name ? name : null, text: newText };
+          console.log("auto:replaceSend:db:set", { path: `automatchMessages/${inviteId}`, payload });
+          admin
+            .database()
+            .ref(`automatchMessages/${inviteId}`)
+            .set(payload)
+            .then(() => console.log("auto:replaceSend:db:ok", { inviteId }))
+            .catch((err) => console.error("auto:replaceSend:db:error", { inviteId, error: err && err.message ? err.message : err }));
+        } else {
+          console.warn("auto:replaceSend:noMessageId", { inviteId });
+        }
+      })
+      .catch((err) => console.error("auto:replaceSend:sendError", { inviteId, error: err && err.message ? err.message : err }));
+  } catch (e) {
+    console.error("auto:replaceDelete:outerError", { inviteId, error: e && e.message ? e.message : e });
+  }
+}
+
 async function appendAutomatchBotMessageText(inviteId, appendText, isHtml = false) {
   try {
     console.log("auto:append:start", { inviteId, isHtml, length: appendText ? appendText.length : 0 });
@@ -256,5 +312,6 @@ module.exports = {
   sendAutomatchBotMessage,
   appendAutomatchBotMessageText,
   replaceAutomatchBotMessageText,
+  replaceAutomatchBotMessageByDeletingOriginal,
   markCanceledAutomatchBotMessage,
 };
