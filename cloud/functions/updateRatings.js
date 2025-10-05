@@ -155,7 +155,7 @@ exports.updateRatings = onCall(async (request) => {
     suffix += " ⏲️";
   }
   const updateRatingMessage = `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓${suffix}`;
-  appendAutomatchBotMessageText(inviteId, updateRatingMessage, false);
+  await appendAutomatchBotMessageText(inviteId, updateRatingMessage, false);
   return {
     ok: true,
   };
