@@ -49,8 +49,10 @@ export function stringForSingleMoveEvents(events: MonsWeb.EventModel[]): string 
         break;
       case MonsWeb.EventModelKind.MysticAction:
         s = "🧙⚡️";
+        // TODO: move direction
         break;
       case MonsWeb.EventModelKind.DemonAction:
+        // TODO: move direction
         s = "😈🔥";
         break;
       case MonsWeb.EventModelKind.SpiritTargetMove:
@@ -101,10 +103,14 @@ export function stringForSingleMoveEvents(events: MonsWeb.EventModel[]): string 
   }
 
   if (moveDirection !== null) {
-    console.log("Move direction:", moveDirection);
-  } else {
-    console.log("No move direction found");
+    if (moveDirection) {
+      // TODO: actor before arrow
+    } else {
+      // TODO: actor after arrow
+    }
   }
+
+  // TODO: build output with actor / arrow / action / target
 
   return out === "" ? "—" : out;
 }
