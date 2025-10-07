@@ -553,7 +553,7 @@ export function indicateFlameGround(at: Location) {
     at,
     {
       numParticles: 15,
-      duration: 380,
+      duration: 300,
       maxDistance: 1.8,
       minParticleSize: 0.22,
       maxParticleSize: 0.42,

@@ -65,6 +65,7 @@ export enum Sound {
   PickaxeHit,
   PickaxeMiss,
   RockOpen,
+  UsePotion,
 }
 
 export enum InputModifier {
