@@ -35,8 +35,27 @@ export function stringForSingleMoveEvents(events: MonsWeb.EventModel[]): string 
     let s = "";
     switch (ev.kind) {
       case MonsWeb.EventModelKind.MonMove:
+        let tmpMonRender = ""; // TODO: can be mon carrying smth
+        switch (ev.item?.mon?.kind) {
+          case MonsWeb.MonKind.Demon:
+            tmpMonRender = "😈";
+            break;
+          case MonsWeb.MonKind.Drainer:
+            tmpMonRender = "🐻";
+            break;
+          case MonsWeb.MonKind.Angel:
+            tmpMonRender = "😇";
+            break;
+          case MonsWeb.MonKind.Spirit:
+            tmpMonRender = "👻";
+            break;
+          case MonsWeb.MonKind.Mystic:
+            tmpMonRender = "🧙";
+            break;
+        }
+
         const monMoveArrow = arrowForEvent(ev);
-        s = monMoveArrow.arrow;
+        s = tmpMonRender + monMoveArrow.arrow;
         moveDirection = monMoveArrow.isRight;
         break;
       case MonsWeb.EventModelKind.ManaMove:
