@@ -127,6 +127,9 @@ export async function playSounds(sounds: Sound[]) {
       case Sound.RockOpen:
         name = "rockOpen";
         break;
+      case Sound.UsePotion:
+        name = "popSharp";
+        break;
     }
 
     const path = `sounds/${name}.wav`;
@@ -154,6 +157,7 @@ const getSoundPriority = (sound: Sound) => {
     case Sound.Bomb:
     case Sound.PickupBomb:
     case Sound.PickupPotion:
+    case Sound.UsePotion:
       return 1;
     case Sound.ScoreMana:
     case Sound.ScoreSupermana:

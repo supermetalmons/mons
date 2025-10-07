@@ -2810,7 +2810,7 @@ async function throwPotionBottle(to: Location, fromOpponent: boolean) {
   const dx = endCenterX - startCenterX;
   const dy = endCenterY - startCenterY;
 
-  const duration = 230;
+  const duration = 300;
   let startTime: number | null = null;
 
   function easeOutCubic(x: number) {
@@ -2845,7 +2845,13 @@ async function throwPotionBottle(to: Location, fromOpponent: boolean) {
 }
 
 export async function indicatePotionUsage(at: Location, byOpponent: boolean) {
-  throwPotionBottle(at, byOpponent);
+  // TODO: pop and fade potion around it's original position or just skip that
+  // throwPotionBottle(at, byOpponent);
+  const effects = await ensureParticleEffectsLoaded();
+  setTimeout(() => {
+    playSounds([Sound.UsePotion]);
+    effects.showPurpleBubbles(at);
+  }, 300);
 }
 
 export async function indicateBombExplosion(at: Location) {
