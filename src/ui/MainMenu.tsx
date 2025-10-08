@@ -12,6 +12,7 @@ import { FaTelegramPlane, FaUniversity, FaPlay, FaStop, FaBackward, FaForward } 
 import { showsShinyCardSomewhere } from "./ShinyCard";
 import { startPlayingMusic, stopPlayingMusic, playNextTrack } from "../content/music";
 import { InfoPopover } from "./InfoPopover";
+import { getIslandPreviewEnabled, setIslandPreviewEnabled } from "../utils/islandPreview";
 
 const RockButtonContainer = styled.div`
   position: absolute;
@@ -356,34 +357,6 @@ const BuildInfo = styled.div`
   }
 `;
 
-const ExperimentButton = styled.button`
-  padding: 10px 20px;
-  border: none;
-  border-radius: 8px;
-  background: var(--color-gray-f9);
-  color: var(--color-gray-33);
-  cursor: pointer;
-  font-size: 14px;
-  font-weight: 600;
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background: var(--color-gray-f5);
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: var(--color-gray-25);
-    color: var(--color-gray-f5);
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        background: var(--color-gray-27);
-      }
-    }
-  }
-`;
-
 const ToggleRow = styled.label`
   display: flex;
   align-items: center;
@@ -542,7 +515,9 @@ const MainMenu: React.FC = () => {
   const [copyButtonText, setCopyButtonText] = useState("copy board snapshot");
   const [isNftSubmenuExpanded, setIsNftSubmenuExpanded] = useState(false);
   const [isDebugViewEnabled, setIsDebugViewEnabled] = useState<boolean>(storage.getDebugViewEnabled(false));
+  const [islandPreviewEnabled, setIslandPreviewEnabledState] = useState<boolean>(getIslandPreviewEnabled());
   const [debugViewText, setDebugViewTextState] = useState<string>("");
+  const [areAnimatedMonsEnabled, setAreAnimatedMonsEnabled] = useState<boolean>(storage.getIsExperimentingWithSprites(false));
   const buttonRowRef = useRef<HTMLDivElement>(null);
   const lastClickTime = useRef(0);
   const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
@@ -684,6 +659,22 @@ const MainMenu: React.FC = () => {
     const checked = event.target.checked;
     setIsDebugViewEnabled(checked);
     storage.setDebugViewEnabled(checked);
+  };
+
+  const handleIslandPreviewToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
+    setIslandPreviewEnabled(checked);
+    setIslandPreviewEnabledState(checked);
+  };
+
+  const handleAnimatedMonsToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const checked = event.target.checked;
+    setAreAnimatedMonsEnabled(checked);
+    if (checked) {
+      toggleExperimentalMode(false, true, false, false);
+    } else {
+      toggleExperimentalMode(true, false, false, false);
+    }
   };
 
   toggleInfoVisibility = () => {
@@ -858,29 +849,19 @@ const MainMenu: React.FC = () => {
             <Leaderboard show={isMenuOpen} />
             {showExperimental && (
               <ExperimentalMenu>
-                <ExperimentButton
-                  onClick={() => {
-                    toggleExperimentalMode(true, false, false, false);
-                  }}>
-                  default
-                </ExperimentButton>
-                <ExperimentButton
-                  onClick={() => {
-                    toggleExperimentalMode(false, true, false, false);
-                  }}>
+                <ToggleRow>
+                  <input type="checkbox" checked={areAnimatedMonsEnabled} onChange={handleAnimatedMonsToggle} />
                   animated mons
-                </ExperimentButton>
-                <ExperimentButton
-                  onClick={() => {
-                    toggleExperimentalMode(false, false, true, false);
-                  }}>
-                  pangchiu
-                </ExperimentButton>
-                <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
+                </ToggleRow>
                 <ToggleRow>
                   <input type="checkbox" checked={isDebugViewEnabled} onChange={handleDebugViewToggle} />
                   show inspector
                 </ToggleRow>
+                <ToggleRow>
+                  <input type="checkbox" checked={islandPreviewEnabled} onChange={handleIslandPreviewToggle} />
+                  preview island
+                </ToggleRow>
+                <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
                 <BuildInfo>{getBuildInfo()}</BuildInfo>
               </ExperimentalMenu>
             )}
