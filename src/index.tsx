@@ -15,9 +15,12 @@ import { connection } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
 import { FaVolumeUp, FaMusic, FaVolumeMute, FaInfoCircle, FaRegGem, FaPowerOff, FaEllipsisH } from "react-icons/fa";
+import IslandButton from "./ui/IslandButton";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory, showSettings } from "./ui/ProfileSignIn";
+
+const isIslandButtonSupported = false;
 
 let globalIsMuted: boolean = (() => {
   return storage.getIsMuted(false);
@@ -99,6 +102,7 @@ const App = () => {
               <div className="top-buttons-container">
                 {authStatus !== "loading" && (
                   <>
+                    {isIslandButtonSupported && <IslandButton />}
                     <div className="small-top-control-buttons">
                       {!isProfileEditingMode ? (
                         <>
