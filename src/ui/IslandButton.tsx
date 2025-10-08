@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "../utils/misc";
 import styled from "styled-components";
+import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 
 const ButtonEl = styled.button<{ $hidden: boolean }>`
   border: none;
@@ -140,6 +141,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   );
 
   const handleIslandClose = useCallback(() => {
+    didDismissSomethingWithOutsideTapJustNow();
     const el = islandButtonImgRef.current;
     if (!el || !islandNatural) {
       setIslandActive(false);
