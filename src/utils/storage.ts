@@ -7,6 +7,7 @@ const STORAGE_KEYS = {
   BOARD_COLOR_SET: "boardColorSet",
   IS_EXPERIMENTING_WITH_SPRITES: "isExperimentingWithSprites",
   DEBUG_VIEW_ENABLED: "debugViewEnabled",
+  ISLAND_PREVIEW_ENABLED: "islandPreviewEnabled",
 
   PLAYER_EMOJI_ID: "playerEmojiId",
   PLAYER_EMOJI_AURA: "playerEmojiAura",
@@ -87,6 +88,14 @@ export const storage = {
 
   setDebugViewEnabled: (value: boolean): void => {
     setItem(STORAGE_KEYS.DEBUG_VIEW_ENABLED, value);
+  },
+
+  getIslandPreviewEnabled: (defaultValue: boolean): boolean => {
+    return getItem(STORAGE_KEYS.ISLAND_PREVIEW_ENABLED, defaultValue);
+  },
+
+  setIslandPreviewEnabled: (value: boolean): void => {
+    setItem(STORAGE_KEYS.ISLAND_PREVIEW_ENABLED, value);
   },
 
   getPlayerEmojiId: (defaultValue: string): string => {

@@ -17,12 +17,14 @@ const ButtonEl = styled.button<{ $hidden: boolean }>`
   outline: none;
   -webkit-touch-callout: none;
   touch-action: none;
+  overflow: hidden;
   visibility: ${(p) => (p.$hidden ? "hidden" : "visible")};
   & > img {
     height: 100%;
     width: 100%;
     object-fit: contain;
     display: block;
+    transform: translateY(1px) scale(1.3);
   }
 `;
 

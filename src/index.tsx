@@ -19,8 +19,9 @@ import IslandButton from "./ui/IslandButton";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory, showSettings } from "./ui/ProfileSignIn";
+import { getIslandPreviewEnabled, subscribeIslandPreview } from "./utils/islandPreview";
 
-const isIslandButtonSupported = false;
+let isIslandButtonSupportedInitial = getIslandPreviewEnabled();
 
 let globalIsMuted: boolean = (() => {
   return storage.getIsMuted(false);
@@ -42,6 +43,7 @@ const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
   const [isProfileEditingMode, setIsProfileEditingMode] = useState(false);
   const [isMuted, setIsMuted] = useState(globalIsMuted);
+  const [isIslandButtonSupported, setIsIslandButtonSupported] = useState(isIslandButtonSupportedInitial);
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
 
   enterProfileEditingMode = (enter: boolean) => {
@@ -52,6 +54,11 @@ const App = () => {
     storage.setIsMuted(isMuted);
     globalIsMuted = isMuted;
   }, [isMuted]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeIslandPreview(setIsIslandButtonSupported);
+    return unsubscribe;
+  }, []);
 
   const handleMuteToggle = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
