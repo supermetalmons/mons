@@ -34,6 +34,7 @@ const ButtonEl = styled.button<{ $hidden: boolean }>`
 const Overlay = styled.div<{ $visible: boolean; $opening: boolean; $closing: boolean }>`
   position: fixed;
   inset: 0;
+  cursor: pointer;
   background: rgba(0, 0, 0, 0.1);
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   transition: ${(p) => (p.$opening ? "opacity 380ms cubic-bezier(0.16, 1, 0.3, 1) 100ms" : p.$closing ? "opacity 320ms ease-out 50ms" : "opacity 320ms ease-in")};
