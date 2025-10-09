@@ -239,7 +239,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
       )}
       {(islandOverlayShown || islandAnimating) && (
         <>
-          <Overlay $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={handleIslandClose} onTouchEnd={handleIslandClose} onTransitionEnd={handleOverlayTransitionEnd} />
+          <Overlay $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleIslandClose : undefined} onTouchStart={isMobile ? handleIslandClose : undefined} onTransitionEnd={handleOverlayTransitionEnd} />
           <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing}>
             <Animator $tx={islandTranslate.x} $ty={islandTranslate.y}>
               <Hero src={imageUrl} alt="" draggable={false} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd} />
