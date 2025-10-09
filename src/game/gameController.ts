@@ -13,7 +13,6 @@ import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, ge
 import { storage } from "../utils/storage";
 import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSignIn";
 import { showVideoReaction } from "../ui/BoardComponent";
-import { soundPlayer } from "../utils/SoundPlayer";
 
 const experimentalDrawingDevMode = false;
 
@@ -49,7 +48,6 @@ let resignedColor: MonsWeb.Color | undefined;
 let winnerByTimerColor: MonsWeb.Color | undefined;
 
 let lastReactionTime = 0;
-let lastRockOpenTime: number | null = null;
 
 const processedVoiceReactions = new Set<string>();
 
@@ -114,7 +112,6 @@ const notificationBannerIsDisabledUntilItsMadeLessAnnoying = true;
 
 export function didAttemptAuthentication() {
   if (!isOnlineGame && !didStartLocalGame && isCreateNewInviteFlow && !isWaitingForInviteToGetAccepted && !didConnect) {
-    showMonsRockIfNeeded();
     if (!getTutorialCompleted()) {
       setBadgeVisible(true);
       if (storage.isFirstLaunch()) {
@@ -124,39 +121,6 @@ export function didAttemptAuthentication() {
         showNotificationBanner("Play Mons 101", `${completed} / ${total} lessons completed`, "104", resumeTutorialFromBanner);
       }
     }
-  }
-}
-
-function showMonsRockIfNeeded() {
-  const occupied = new Set(game.locations_with_content().map((loc) => `${loc.i}-${loc.j}`));
-  const boardSize = 11;
-  let chosenLocation: Location | undefined;
-  if (occupied.size < boardSize * boardSize) {
-    for (let attempts = 0; attempts < 200; attempts++) {
-      const i = Math.floor(Math.random() * boardSize);
-      const j = Math.floor(Math.random() * boardSize);
-      const key = `${i}-${j}`;
-      const isCorner = (i === 0 || i === boardSize - 1) && (j === 0 || j === boardSize - 1);
-      if (!isCorner && !occupied.has(key)) {
-        chosenLocation = new Location(i, j);
-        break;
-      }
-    }
-    if (!chosenLocation) {
-      outer: for (let i = 0; i < boardSize; i++) {
-        for (let j = 0; j < boardSize; j++) {
-          const key = `${i}-${j}`;
-          const isCorner = (i === 0 || i === boardSize - 1) && (j === 0 || j === boardSize - 1);
-          if (!isCorner && !occupied.has(key)) {
-            chosenLocation = new Location(i, j);
-            break outer;
-          }
-        }
-      }
-    }
-  }
-  if (chosenLocation) {
-    Board.showMonsRock(chosenLocation);
   }
 }
 
@@ -185,7 +149,7 @@ export async function go() {
 
     didStartLocalGame = true;
     setHomeVisible(true);
-    Board.removeMonsRockIfAny();
+
     setBrushAndNavigationButtonDimmed(true);
     setInviteLinkActionVisible(false);
     setAutomatchVisible(false);
@@ -205,7 +169,7 @@ export async function go() {
     });
     didStartLocalGame = true;
     setHomeVisible(true);
-    Board.removeMonsRockIfAny();
+
     setBrushAndNavigationButtonDimmed(true);
     setUndoVisible(true);
     setInviteLinkActionVisible(false);
@@ -226,7 +190,7 @@ export async function go() {
   } else {
     isOnlineGame = true;
     setHomeVisible(true);
-    Board.removeMonsRockIfAny();
+
     setBrushAndNavigationButtonDimmed(true);
     setNavigationListButtonVisible(false);
   }
@@ -310,7 +274,7 @@ export function didClickStartBotGameButton() {
   dismissBadgeAndNotificationBannerIfNeeded();
   didStartLocalGame = true;
   setHomeVisible(true);
-  Board.removeMonsRockIfAny();
+
   setUndoVisible(true);
   setBrushAndNavigationButtonDimmed(true);
   setInviteLinkActionVisible(false);
@@ -344,7 +308,7 @@ export function didFindInviteThatCanBeJoined() {
 
 export function didClickAutomatchButton() {
   setHomeVisible(true);
-  Board.removeMonsRockIfAny();
+
   setBrushAndNavigationButtonDimmed(true);
   setAutomoveActionVisible(false);
   showMoveHistoryButton(false);
@@ -546,69 +510,7 @@ export function didSelectInputModifier(inputModifier: InputModifier) {
   processInput(AssistedInputKind.None, inputModifier);
 }
 
-let rockHits = 0;
-let lastRockClickTime: number | null = null;
-const ROCK_BREAK_THRESHOLD = 7;
-const ROCK_QUICK_WINDOW_MS = 320;
-const ROCK_HEAL_GRACE_MS = 600;
-const ROCK_HEAL_STEP_MS = 220;
-const ROCK_MISS_BASE = 0.06;
-const ROCK_MISS_SLOW_EXTRA = 0.1;
-
-async function handleRockClick(location: Location) {
-  const now = Date.now();
-  if (rockHits === 0 && lastRockClickTime === null) {
-    await soundPlayer.initializeOnUserInteraction();
-  }
-  if (lastRockClickTime !== null) {
-    const since = now - lastRockClickTime;
-    if (since > ROCK_HEAL_GRACE_MS) {
-      const healAmount = Math.floor((since - ROCK_HEAL_GRACE_MS) / ROCK_HEAL_STEP_MS) + 1;
-      rockHits = Math.max(0, rockHits - healAmount);
-    }
-  }
-  const sinceLast = lastRockClickTime === null ? 0 : now - lastRockClickTime;
-  const isQuick = lastRockClickTime === null || sinceLast <= ROCK_QUICK_WINDOW_MS;
-  const missChance = ROCK_MISS_BASE + (isQuick ? 0 : ROCK_MISS_SLOW_EXTRA);
-  const isMiss = Math.random() < missChance;
-  if (isMiss) {
-    playSounds([Sound.PickaxeMiss]);
-    Board.indicateRockMiss(location);
-    if (rockHits > 0) {
-      rockHits = Math.max(0, rockHits - 1);
-    }
-  } else {
-    playSounds([Sound.PickaxeHit]);
-    Board.indicateRockHit(location);
-    if (isQuick) {
-      rockHits += 1;
-    }
-  }
-  lastRockClickTime = now;
-  if (rockHits >= ROCK_BREAK_THRESHOLD) {
-    playSounds([Sound.RockOpen]);
-    Board.removeMonsRockIfAny(true);
-    Board.indicateRockCrash(location);
-    lastRockOpenTime = Date.now();
-    rockHits = 0;
-    lastRockClickTime = null;
-  }
-}
-
 export function didClickSquare(location: Location) {
-  if (lastRockOpenTime !== null) {
-    const sinceOpen = Date.now() - lastRockOpenTime;
-    if (sinceOpen <= 500) {
-      return;
-    }
-    lastRockOpenTime = null;
-  }
-
-  if (Board.monsRockLocation?.i === location.i && Board.monsRockLocation?.j === location.j) {
-    handleRockClick(location);
-    return;
-  }
-
   if (puzzleMode) {
     const didFastForward = Board.fastForwardInstructionsIfNeeded();
     if (didFastForward && location.i === -1 && location.j === -1) {
@@ -786,7 +688,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
         dismissBadgeAndNotificationBannerIfNeeded();
         didStartLocalGame = true;
         setHomeVisible(true);
-        Board.removeMonsRockIfAny();
+
         setBrushAndNavigationButtonDimmed(true);
         setUndoVisible(true);
         setInviteLinkActionVisible(false);
@@ -1437,7 +1339,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
 export function didClickInviteActionButtonBeforeThereIsInviteReady() {
   if (!isCreateNewInviteFlow) return;
   setHomeVisible(true);
-  Board.removeMonsRockIfAny();
+
   setBrushAndNavigationButtonDimmed(true);
   setAutomatchVisible(false);
   setBotGameOptionVisible(false);
@@ -1477,7 +1379,7 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
   game = gameFromFen;
   didStartLocalGame = true;
   setHomeVisible(true);
-  Board.removeMonsRockIfAny();
+
   setBrushAndNavigationButtonDimmed(true);
   setUndoVisible(true);
   setInviteLinkActionVisible(false);

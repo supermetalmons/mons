@@ -44,9 +44,6 @@ export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, 
 
 export let playerSideMetadata = newEmptyPlayerMetadata();
 export let opponentSideMetadata = newEmptyPlayerMetadata();
-export let showsMonsRockOnBoard = false;
-export let monsRockLocation: Location | null = null;
-let monsRockElement: SVGElement | null = null;
 
 export let isFlipped = false;
 let traceIndex = 0;
@@ -130,60 +127,6 @@ export function fastForwardInstructionsIfNeeded() {
 
   currentTextAnimation.fastForwardCallback();
   return true;
-}
-
-export function showMonsRock(chosen: Location) {
-  if (!itemsLayer) return;
-  const rockIndex = Math.floor(Math.random() * 27) + 1;
-  const rockUrl = `https://assets.mons.link/rocks/gan/${rockIndex}.webp`;
-
-  const img = loadImage("", "nonGame");
-  SVG.setHidden(img, true);
-
-  const boardLoc = inBoardCoordinates(chosen);
-  SVG.setOrigin(img, boardLoc.j, boardLoc.i);
-  addElementToItemsLayer(img, boardLoc.i);
-  monsRockElement = img;
-
-  (img as any).onload = () => {
-    SVG.setHidden(img, false);
-    showsMonsRockOnBoard = true;
-    monsRockLocation = chosen;
-  };
-
-  (img as any).onerror = () => {
-    if (img.parentNode) img.parentNode.removeChild(img);
-  };
-
-  SVG.setImageUrl(img, rockUrl);
-}
-
-export function removeMonsRockIfAny(onHit: boolean = false) {
-  if (!monsRockElement) return;
-  const el = monsRockElement;
-  monsRockElement = null;
-  if (onHit) {
-    if (el.parentNode) el.parentNode.removeChild(el);
-    showsMonsRockOnBoard = false;
-    monsRockLocation = null;
-    return;
-  }
-  let startOpacity = parseFloat(el.getAttribute("opacity") || "1");
-  const start = performance.now();
-  const duration = 100;
-  function step(now: number) {
-    const t = Math.min(1, (now - start) / duration);
-    const value = (1 - t) * startOpacity;
-    SVG.setOpacity(el, value);
-    if (t < 1) {
-      requestAnimationFrame(step);
-    } else {
-      if (el.parentNode) el.parentNode.removeChild(el);
-      showsMonsRockOnBoard = false;
-      monsRockLocation = null;
-    }
-  }
-  requestAnimationFrame(step);
 }
 
 export function showInstructionsText(text: string) {
@@ -2764,21 +2707,6 @@ function preloadParticleEffects() {
 async function ensureParticleEffectsLoaded() {
   if (particleEffects) return particleEffects;
   return await preloadParticleEffects();
-}
-
-export async function indicateRockHit(at: Location) {
-  const effects = await ensureParticleEffectsLoaded();
-  effects.indicateRockHit(at);
-}
-
-export async function indicateRockMiss(at: Location) {
-  const effects = await ensureParticleEffectsLoaded();
-  effects.indicateRockMiss(at);
-}
-
-export async function indicateRockCrash(at: Location) {
-  const effects = await ensureParticleEffectsLoaded();
-  effects.indicateRockCrash(at);
 }
 
 export async function indicateElectricHit(at: Location) {

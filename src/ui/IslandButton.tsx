@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "../utils/misc";
 import styled from "styled-components";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
+import IslandRock from "./IslandRock";
 
 const ButtonEl = styled.button<{ $hidden: boolean }>`
   border: none;
@@ -294,6 +295,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
           <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleLayerTap : undefined} onTouchStart={isMobile ? handleLayerTap : undefined}>
             <Animator $tx={islandTranslate.x} $ty={islandTranslate.y}>
               <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd} />
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  pointerEvents: "none",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "center",
+                }}>
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    justifyContent: "center",
+                    marginTop: "6%",
+                    pointerEvents: "auto",
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                  onTouchStart={(e) => e.stopPropagation()}>
+                  <IslandRock heightPct={15} />
+                </div>
+              </div>
             </Animator>
           </Layer>
         </>
