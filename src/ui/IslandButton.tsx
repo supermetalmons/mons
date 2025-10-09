@@ -22,9 +22,10 @@ const ButtonEl = styled.button<{ $hidden: boolean }>`
   z-index: 1;
   visibility: ${(p) => (p.$hidden ? "hidden" : "visible")};
   & > img {
-    height: 100%;
-    width: 100%;
-    object-fit: contain;
+    max-height: 100%;
+    max-width: 100%;
+    height: auto;
+    width: auto;
     display: block;
     transform: translateY(1px) scale(1.3);
   }
@@ -62,10 +63,10 @@ const Animator = styled.div<{ $tx: number; $ty: number }>`
 `;
 
 const Hero = styled.img<{ $sx: number; $sy: number }>`
-  max-height: 50vh;
-  height: 50vh;
-  width: auto;
+  max-height: 50dvh;
   max-width: 92dvw;
+  width: auto;
+  height: auto;
   display: block;
   transition: transform 300ms ease;
   transform: scale(${(p) => p.$sx}, ${(p) => p.$sy});
@@ -81,6 +82,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   const [islandImgLoaded, setIslandImgLoaded] = useState(false);
   const [islandNatural, setIslandNatural] = useState<{ w: number; h: number } | null>(null);
   const islandButtonImgRef = useRef<HTMLImageElement | null>(null);
+  const islandButtonRef = useRef<HTMLButtonElement | null>(null);
   const [islandOverlayShown, setIslandOverlayShown] = useState(false);
   const [islandOverlayVisible, setIslandOverlayVisible] = useState(false);
   const [islandActive, setIslandActive] = useState(false);
@@ -122,24 +124,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
       event.stopPropagation();
       event.preventDefault();
       if (!islandImgLoaded || !islandNatural) return;
-      const el = islandButtonImgRef.current;
-      if (!el) return;
-      const rect = el.getBoundingClientRect();
+      const imgEl = islandButtonImgRef.current;
+      if (!imgEl) return;
+      const rect = imgEl.getBoundingClientRect();
       const vh = window.innerHeight;
       const vw = window.innerWidth;
-      const targetH = vh * 0.5;
       const ratio = islandNatural.w / islandNatural.h;
+      const restH = Math.min(vh * 0.5, (vw * 0.92) / ratio);
       const cx = vw / 2;
       const cy = vh / 2;
       const bx = rect.left + rect.width / 2;
       const by = rect.top + rect.height / 2;
       const deltaX = bx - cx;
       const deltaY = by - cy;
-      const containerW = rect.width;
-      const containerH = rect.height;
-      const fitsByHeight = containerW / containerH > ratio;
-      const displayedH = fitsByHeight ? containerH : containerW / ratio;
-      const uniformScale = displayedH / targetH;
+      const displayedH = rect.height;
+      const uniformScale = displayedH / restH;
       overlayJustOpenedAtRef.current = Date.now();
       setIslandOverlayShown(true);
       setIslandOverlayVisible(false);
@@ -169,8 +168,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
         return;
       }
       didDismissSomethingWithOutsideTapJustNow();
-      const el = islandButtonImgRef.current;
-      if (!el || !islandNatural) {
+      const imgEl = islandButtonImgRef.current;
+      if (!imgEl || !islandNatural) {
         setIslandActive(false);
         setIslandOverlayVisible(false);
         setIslandOverlayShown(false);
@@ -180,22 +179,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
         setIslandScale({ x: 1, y: 1 });
         return;
       }
-      const rect = el.getBoundingClientRect();
+      const rect = imgEl.getBoundingClientRect();
       const vh = window.innerHeight;
       const vw = window.innerWidth;
-      const targetH = vh * 0.5;
       const ratio = islandNatural.w / islandNatural.h;
+      const restH = Math.min(vh * 0.5, (vw * 0.92) / ratio);
       const cx = vw / 2;
       const cy = vh / 2;
       const bx = rect.left + rect.width / 2;
       const by = rect.top + rect.height / 2;
       const deltaX = bx - cx;
       const deltaY = by - cy;
-      const containerW = rect.width;
-      const containerH = rect.height;
-      const fitsByHeight = containerW / containerH > ratio;
-      const displayedH = fitsByHeight ? containerH : containerW / ratio;
-      const uniformScale = displayedH / targetH;
+      const displayedH = rect.height;
+      const uniformScale = displayedH / restH;
       setIslandActive(false);
       setIslandAnimating(true);
       setIslandClosing(true);
@@ -237,7 +233,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   return (
     <>
       {islandImgLoaded && (
-        <ButtonEl $hidden={islandOverlayShown} onClick={!isMobile ? handleIslandOpen : undefined} onTouchStart={isMobile ? handleIslandOpen : undefined} aria-label="Island">
+        <ButtonEl ref={islandButtonRef} $hidden={islandOverlayShown} onClick={!isMobile ? handleIslandOpen : undefined} onTouchStart={isMobile ? handleIslandOpen : undefined} aria-label="Island">
           <img ref={islandButtonImgRef} src={imageUrl} alt="" draggable={false} />
         </ButtonEl>
       )}
