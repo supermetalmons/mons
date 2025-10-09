@@ -54,11 +54,12 @@ const Layer = styled.div<{ $visible: boolean; $opening: boolean; $closing: boole
   align-items: center;
   justify-content: center;
   z-index: ${(p) => (p.$visible || p.$opening || p.$closing ? 90001 : 0)};
-  pointer-events: none;
+  pointer-events: ${(p) => (p.$visible || p.$opening || p.$closing ? "auto" : "none")};
+  cursor: pointer;
 `;
 
 const Animator = styled.div<{ $tx: number; $ty: number }>`
-  pointer-events: none;
+  pointer-events: auto;
   transition: transform 300ms ease;
   transform: translate(${(p) => p.$tx}px, ${(p) => p.$ty}px);
 `;
@@ -71,6 +72,7 @@ const Hero = styled.img<{ $sx: number; $sy: number }>`
   display: block;
   transition: transform 300ms ease;
   transform: scale(${(p) => p.$sx}, ${(p) => p.$sy});
+  cursor: default;
 `;
 
 type Props = {
@@ -99,6 +101,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   const [islandNatural, setIslandNatural] = useState<{ w: number; h: number } | null>(null);
   const islandButtonImgRef = useRef<HTMLImageElement | null>(null);
   const islandButtonRef = useRef<HTMLButtonElement | null>(null);
+  const islandHeroImgRef = useRef<HTMLImageElement | null>(null);
   const [islandOverlayShown, setIslandOverlayShown] = useState(false);
   const [islandOverlayVisible, setIslandOverlayVisible] = useState(false);
   const [islandActive, setIslandActive] = useState(false);
@@ -263,6 +266,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
     [islandOverlayVisible]
   );
 
+  const handleLayerTap = useCallback(
+    (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+      const heroEl = islandHeroImgRef.current;
+      if (!heroEl) return;
+      const target = event.target as Node;
+      if (heroEl.contains(target)) {
+        event.stopPropagation();
+        event.preventDefault();
+        return;
+      }
+      handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
+    },
+    [handleIslandClose]
+  );
+
   return (
     <>
       {islandImgLoaded && (
@@ -273,9 +291,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
       {(islandOverlayShown || islandAnimating) && (
         <>
           <Overlay $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleIslandClose : undefined} onTouchStart={isMobile ? handleIslandClose : undefined} onTransitionEnd={handleOverlayTransitionEnd} />
-          <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing}>
+          <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleLayerTap : undefined} onTouchStart={isMobile ? handleLayerTap : undefined}>
             <Animator $tx={islandTranslate.x} $ty={islandTranslate.y}>
-              <Hero src={resolvedUrl} alt="" draggable={false} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd} />
+              <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd} />
             </Animator>
           </Layer>
         </>
