@@ -18,7 +18,6 @@ const RockButtonContainer = styled.div`
   position: absolute;
   top: 9pt;
   left: 9pt;
-  z-index: 10;
 
   @media screen and (max-height: 500px) {
     top: 7pt;
@@ -42,7 +41,7 @@ const Crack = styled.div`
   height: 2px;
   transform-origin: left center;
   animation: grow 0.1s ease-out forwards;
-  z-index: 9999;
+  z-index: 80025;
   transition: transform 5s linear;
 
   @keyframes grow {
@@ -62,7 +61,7 @@ const CrackContainer = styled.div`
   top: -30px;
   left: -30px;
   pointer-events: none;
-  z-index: 9999;
+  z-index: 80025;
   overflow: hidden;
 `;
 
@@ -74,7 +73,7 @@ const RockButton = styled.button`
   padding: 3px 6px;
   cursor: pointer;
   position: relative;
-  z-index: 2;
+  z-index: 80020;
   -webkit-touch-callout: none;
   touch-action: none;
   user-select: none;
@@ -119,6 +118,7 @@ const RockMenuWrapper = styled.div<{ isOpen: boolean }>`
   left: -26px;
   padding: 20px;
   pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
+  z-index: ${(props) => (props.isOpen ? 80010 : 0)};
 
   @media screen and (max-width: 420px) {
     left: -23px;
@@ -397,7 +397,7 @@ const MusicPopover = styled.div<{ isOpen: boolean }>`
   padding: 12px;
   width: min(200px, 60dvw);
   box-shadow: none;
-  z-index: 8;
+  z-index: 60010;
   opacity: ${(props) => (props.isOpen ? 1 : 0)};
   pointer-events: ${(props) => (props.isOpen ? "auto" : "none")};
   text-align: center;
