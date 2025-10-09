@@ -23,6 +23,8 @@ const ButtonEl = styled.button<{ $hidden: boolean }>`
   position: relative;
   z-index: 1;
   visibility: ${(p) => (p.$hidden ? "hidden" : "visible")};
+  user-select: none;
+  -webkit-user-select: none;
   & > img {
     max-height: 100%;
     max-width: 100%;
@@ -30,6 +32,10 @@ const ButtonEl = styled.button<{ $hidden: boolean }>`
     width: auto;
     display: block;
     transform: translateY(1px) scale(1.3);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
   }
 `;
 
@@ -58,12 +64,20 @@ const Layer = styled.div<{ $visible: boolean; $opening: boolean; $closing: boole
   z-index: ${(p) => (p.$visible || p.$opening || p.$closing ? 90001 : 0)};
   pointer-events: ${(p) => (p.$visible || p.$opening || p.$closing ? "auto" : "none")};
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
 `;
 
 const Animator = styled.div<{ $tx: number; $ty: number; $sx: number; $sy: number }>`
   pointer-events: auto;
   transition: transform 300ms ease;
   transform: translate(${(p) => p.$tx}px, ${(p) => p.$ty}px) scale(${(p) => p.$sx}, ${(p) => p.$sy});
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
 `;
 
 const Hero = styled.img`
@@ -73,6 +87,10 @@ const Hero = styled.img`
   height: auto;
   display: block;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
 `;
 
 const Rock = styled(IslandRock)`
@@ -88,6 +106,10 @@ const RockLayer = styled.div<{ $visible: boolean }>`
   pointer-events: auto;
   transition: opacity 300ms ease;
   opacity: ${(p) => (p.$visible ? 1 : 0)};
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
 `;
 
 type Props = {

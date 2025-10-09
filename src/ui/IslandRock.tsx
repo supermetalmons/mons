@@ -2,6 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { playSounds } from "../content/sounds";
 import { Sound } from "../utils/gameModels";
+import { isMobile } from "../utils/misc";
 
 const Container = styled.div<{ $visible: boolean }>`
   position: relative;
@@ -9,6 +10,10 @@ const Container = styled.div<{ $visible: boolean }>`
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   transition: opacity 260ms ease;
   pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
 `;
 
 const RockImg = styled.img<{ $heightPct?: number }>`
@@ -17,6 +22,9 @@ const RockImg = styled.img<{ $heightPct?: number }>`
   height: ${(p) => (p.$heightPct ? `${p.$heightPct}%` : "auto")};
   user-select: none;
   -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
 `;
 
 type Props = {
@@ -301,14 +309,22 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
       className={className}
       $visible={visible}
       onMouseDown={(e) => e.preventDefault()}
-      onClick={(e) => {
-        e.stopPropagation();
-        onTap();
-      }}
-      onTouchStart={(e) => {
-        e.stopPropagation();
-        onTap();
-      }}>
+      onClick={
+        !isMobile
+          ? (e) => {
+              e.stopPropagation();
+              onTap();
+            }
+          : undefined
+      }
+      onTouchStart={
+        isMobile
+          ? (e) => {
+              e.stopPropagation();
+              onTap();
+            }
+          : undefined
+      }>
       {rockUrl && <RockImg ref={imgElRef} src={rockUrl} alt="" draggable={false} $heightPct={heightPct} />}
       <svg ref={svgRef} viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none", overflow: "visible" }} />
     </Container>
