@@ -128,38 +128,35 @@ export function didAttemptAuthentication() {
 }
 
 function showMonsRockIfNeeded() {
-  const shouldShowRock = false; // TODO: daily conditions
-  if (shouldShowRock) {
-    const occupied = new Set(game.locations_with_content().map((loc) => `${loc.i}-${loc.j}`));
-    const boardSize = 11;
-    let chosenLocation: Location | undefined;
-    if (occupied.size < boardSize * boardSize) {
-      for (let attempts = 0; attempts < 200; attempts++) {
-        const i = Math.floor(Math.random() * boardSize);
-        const j = Math.floor(Math.random() * boardSize);
-        const key = `${i}-${j}`;
-        const isCorner = (i === 0 || i === boardSize - 1) && (j === 0 || j === boardSize - 1);
-        if (!isCorner && !occupied.has(key)) {
-          chosenLocation = new Location(i, j);
-          break;
-        }
+  const occupied = new Set(game.locations_with_content().map((loc) => `${loc.i}-${loc.j}`));
+  const boardSize = 11;
+  let chosenLocation: Location | undefined;
+  if (occupied.size < boardSize * boardSize) {
+    for (let attempts = 0; attempts < 200; attempts++) {
+      const i = Math.floor(Math.random() * boardSize);
+      const j = Math.floor(Math.random() * boardSize);
+      const key = `${i}-${j}`;
+      const isCorner = (i === 0 || i === boardSize - 1) && (j === 0 || j === boardSize - 1);
+      if (!isCorner && !occupied.has(key)) {
+        chosenLocation = new Location(i, j);
+        break;
       }
-      if (!chosenLocation) {
-        outer: for (let i = 0; i < boardSize; i++) {
-          for (let j = 0; j < boardSize; j++) {
-            const key = `${i}-${j}`;
-            const isCorner = (i === 0 || i === boardSize - 1) && (j === 0 || j === boardSize - 1);
-            if (!isCorner && !occupied.has(key)) {
-              chosenLocation = new Location(i, j);
-              break outer;
-            }
+    }
+    if (!chosenLocation) {
+      outer: for (let i = 0; i < boardSize; i++) {
+        for (let j = 0; j < boardSize; j++) {
+          const key = `${i}-${j}`;
+          const isCorner = (i === 0 || i === boardSize - 1) && (j === 0 || j === boardSize - 1);
+          if (!isCorner && !occupied.has(key)) {
+            chosenLocation = new Location(i, j);
+            break outer;
           }
         }
       }
     }
-    if (chosenLocation) {
-      Board.showMonsRock(chosenLocation);
-    }
+  }
+  if (chosenLocation) {
+    Board.showMonsRock(chosenLocation);
   }
 }
 
