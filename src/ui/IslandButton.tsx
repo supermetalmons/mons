@@ -2,6 +2,8 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "../utils/misc";
 import styled from "styled-components";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
+import IslandRock from "./IslandRock";
+import { soundPlayer } from "../utils/SoundPlayer";
 
 const ButtonEl = styled.button<{ $hidden: boolean }>`
   border: none;
@@ -21,6 +23,8 @@ const ButtonEl = styled.button<{ $hidden: boolean }>`
   position: relative;
   z-index: 1;
   visibility: ${(p) => (p.$hidden ? "hidden" : "visible")};
+  user-select: none;
+  -webkit-user-select: none;
   & > img {
     max-height: 100%;
     max-width: 100%;
@@ -28,12 +32,17 @@ const ButtonEl = styled.button<{ $hidden: boolean }>`
     width: auto;
     display: block;
     transform: translateY(1px) scale(1.3);
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    -webkit-user-select: none;
   }
 `;
 
 const Overlay = styled.div<{ $visible: boolean; $opening: boolean; $closing: boolean }>`
   position: fixed;
   inset: 0;
+  cursor: pointer;
   background: rgba(0, 0, 0, 0.1);
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   transition: ${(p) => (p.$opening ? "opacity 380ms cubic-bezier(0.16, 1, 0.3, 1) 100ms" : p.$closing ? "opacity 320ms ease-out 50ms" : "opacity 320ms ease-in")};
@@ -53,23 +62,54 @@ const Layer = styled.div<{ $visible: boolean; $opening: boolean; $closing: boole
   align-items: center;
   justify-content: center;
   z-index: ${(p) => (p.$visible || p.$opening || p.$closing ? 90001 : 0)};
-  pointer-events: none;
+  pointer-events: ${(p) => (p.$visible || p.$opening || p.$closing ? "auto" : "none")};
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
 `;
 
-const Animator = styled.div<{ $tx: number; $ty: number }>`
-  pointer-events: none;
+const Animator = styled.div<{ $tx: number; $ty: number; $sx: number; $sy: number }>`
+  pointer-events: auto;
   transition: transform 300ms ease;
-  transform: translate(${(p) => p.$tx}px, ${(p) => p.$ty}px);
+  transform: translate(${(p) => p.$tx}px, ${(p) => p.$ty}px) scale(${(p) => p.$sx}, ${(p) => p.$sy});
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
 `;
 
-const Hero = styled.img<{ $sx: number; $sy: number }>`
+const Hero = styled.img`
   max-height: 50dvh;
   max-width: 92dvw;
   width: auto;
   height: auto;
   display: block;
-  transition: transform 300ms ease;
-  transform: scale(${(p) => p.$sx}, ${(p) => p.$sy});
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+`;
+
+const Rock = styled(IslandRock)`
+  height: 100%;
+`;
+
+const RockLayer = styled.div<{ $visible: boolean }>`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 6%;
+  height: 20%;
+  pointer-events: auto;
+  transition: opacity 300ms ease;
+  opacity: ${(p) => (p.$visible ? 1 : 0)};
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
 `;
 
 type Props = {
@@ -98,6 +138,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   const [islandNatural, setIslandNatural] = useState<{ w: number; h: number } | null>(null);
   const islandButtonImgRef = useRef<HTMLImageElement | null>(null);
   const islandButtonRef = useRef<HTMLButtonElement | null>(null);
+  const islandHeroImgRef = useRef<HTMLImageElement | null>(null);
   const [islandOverlayShown, setIslandOverlayShown] = useState(false);
   const [islandOverlayVisible, setIslandOverlayVisible] = useState(false);
   const [islandActive, setIslandActive] = useState(false);
@@ -153,6 +194,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
 
   const handleIslandOpen = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+      soundPlayer.initializeOnUserInteraction(true);
       event.stopPropagation();
       event.preventDefault();
       if (!islandImgLoaded || !islandNatural) return;
@@ -262,6 +304,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
     [islandOverlayVisible]
   );
 
+  const handleLayerTap = useCallback(
+    (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+      const heroEl = islandHeroImgRef.current;
+      if (!heroEl) return;
+      const target = event.target as Node;
+      if (heroEl.contains(target)) {
+        event.stopPropagation();
+        event.preventDefault();
+        return;
+      }
+      handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
+    },
+    [handleIslandClose]
+  );
+
   return (
     <>
       {islandImgLoaded && (
@@ -272,9 +329,22 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
       {(islandOverlayShown || islandAnimating) && (
         <>
           <Overlay $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleIslandClose : undefined} onTouchStart={isMobile ? handleIslandClose : undefined} onTransitionEnd={handleOverlayTransitionEnd} />
-          <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing}>
-            <Animator $tx={islandTranslate.x} $ty={islandTranslate.y}>
-              <Hero src={resolvedUrl} alt="" draggable={false} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd} />
+          <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleLayerTap : undefined} onTouchStart={isMobile ? handleLayerTap : undefined}>
+            <Animator $tx={islandTranslate.x} $ty={islandTranslate.y} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd}>
+              <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} />
+              <div
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  pointerEvents: "none",
+                  display: "flex",
+                  alignItems: "flex-start",
+                  justifyContent: "center",
+                }}>
+                <RockLayer $visible={!islandClosing} onClick={(e) => e.stopPropagation()} onTouchStart={(e) => e.stopPropagation()}>
+                  <Rock heightPct={100} />
+                </RockLayer>
+              </div>
             </Animator>
           </Layer>
         </>
