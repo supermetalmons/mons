@@ -59,21 +59,34 @@ const Layer = styled.div<{ $visible: boolean; $opening: boolean; $closing: boole
   cursor: pointer;
 `;
 
-const Animator = styled.div<{ $tx: number; $ty: number }>`
+const Animator = styled.div<{ $tx: number; $ty: number; $sx: number; $sy: number }>`
   pointer-events: auto;
   transition: transform 300ms ease;
-  transform: translate(${(p) => p.$tx}px, ${(p) => p.$ty}px);
+  transform: translate(${(p) => p.$tx}px, ${(p) => p.$ty}px) scale(${(p) => p.$sx}, ${(p) => p.$sy});
 `;
 
-const Hero = styled.img<{ $sx: number; $sy: number }>`
+const Hero = styled.img`
   max-height: 50dvh;
   max-width: 92dvw;
   width: auto;
   height: auto;
   display: block;
-  transition: transform 300ms ease;
-  transform: scale(${(p) => p.$sx}, ${(p) => p.$sy});
   cursor: default;
+`;
+
+const Rock = styled(IslandRock)`
+  height: 100%;
+`;
+
+const RockLayer = styled.div<{ $visible: boolean }>`
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 6%;
+  height: 20%;
+  pointer-events: auto;
+  transition: opacity 300ms ease;
+  opacity: ${(p) => (p.$visible ? 1 : 0)};
 `;
 
 type Props = {
@@ -293,8 +306,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
         <>
           <Overlay $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleIslandClose : undefined} onTouchStart={isMobile ? handleIslandClose : undefined} onTransitionEnd={handleOverlayTransitionEnd} />
           <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleLayerTap : undefined} onTouchStart={isMobile ? handleLayerTap : undefined}>
-            <Animator $tx={islandTranslate.x} $ty={islandTranslate.y}>
-              <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd} />
+            <Animator $tx={islandTranslate.x} $ty={islandTranslate.y} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd}>
+              <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} />
               <div
                 style={{
                   position: "absolute",
@@ -304,18 +317,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
                   alignItems: "flex-start",
                   justifyContent: "center",
                 }}>
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    justifyContent: "center",
-                    marginTop: "6%",
-                    pointerEvents: "auto",
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                  onTouchStart={(e) => e.stopPropagation()}>
-                  <IslandRock heightPct={15} />
-                </div>
+                <RockLayer $visible={!islandClosing} onClick={(e) => e.stopPropagation()} onTouchStart={(e) => e.stopPropagation()}>
+                  <Rock heightPct={100} />
+                </RockLayer>
               </div>
             </Animator>
           </Layer>
