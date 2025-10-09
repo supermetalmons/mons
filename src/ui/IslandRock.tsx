@@ -8,6 +8,7 @@ const Container = styled.div<{ $visible: boolean }>`
   display: inline-block;
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   transition: opacity 260ms ease;
+  pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
 `;
 
 const RockImg = styled.img<{ $heightPct?: number }>`
@@ -37,6 +38,7 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
   const [rockUrl, setRockUrl] = useState<string>("");
   const hitsRef = useRef(0);
   const lastClickRef = useRef<number | null>(null);
+  const brokenRef = useRef(false);
   const svgRef = useRef<SVGSVGElement | null>(null);
   const containerRef = useRef<HTMLDivElement | null>(null);
   const imgElRef = useRef<HTMLImageElement | null>(null);
@@ -85,6 +87,7 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
   }, []);
 
   function onTap() {
+    if (!visible || brokenRef.current) return;
     const now = Date.now();
     const last = lastClickRef.current;
     if (last !== null) {
@@ -109,6 +112,7 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
     }
     lastClickRef.current = now;
     if (hitsRef.current >= ROCK_BREAK_THRESHOLD) {
+      brokenRef.current = true;
       playSounds([Sound.RockOpen]);
       setVisible(false);
       setTimeout(() => {

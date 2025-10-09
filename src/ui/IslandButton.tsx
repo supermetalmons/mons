@@ -71,7 +71,7 @@ const Hero = styled.img`
   width: auto;
   height: auto;
   display: block;
-  cursor: default;
+  cursor: pointer;
 `;
 
 const Rock = styled(IslandRock)`
