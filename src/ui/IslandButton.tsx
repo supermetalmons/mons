@@ -78,6 +78,21 @@ type Props = {
 
 const DEFAULT_URL = "https://assets.mons.link/rocks/island.webp";
 
+let islandImagePromise: Promise<string | null> | null = null;
+
+const getIslandImageUrl = () => {
+  if (!islandImagePromise) {
+    islandImagePromise = fetch(DEFAULT_URL)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch image");
+        return res.blob();
+      })
+      .then((blob) => URL.createObjectURL(blob))
+      .catch(() => null);
+  }
+  return islandImagePromise;
+};
+
 export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   const [islandImgLoaded, setIslandImgLoaded] = useState(false);
   const [islandNatural, setIslandNatural] = useState<{ w: number; h: number } | null>(null);
@@ -92,6 +107,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   const [islandTranslate, setIslandTranslate] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
   const [islandScale, setIslandScale] = useState<{ x: number; y: number }>({ x: 1, y: 1 });
   const overlayJustOpenedAtRef = useRef<number>(0);
+  const [resolvedUrl, setResolvedUrl] = useState<string>(imageUrl);
 
   useEffect(() => {
     const shouldBeMarkedOpen = islandOverlayShown || islandOpening || islandClosing;
@@ -106,8 +122,24 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   }, [islandOverlayShown, islandOpening, islandClosing]);
 
   useEffect(() => {
+    let mounted = true;
+    if (imageUrl === DEFAULT_URL) {
+      getIslandImageUrl().then((url) => {
+        if (!mounted) return;
+        setResolvedUrl(url || imageUrl);
+      });
+    } else {
+      setResolvedUrl(imageUrl);
+    }
+    return () => {
+      mounted = false;
+    };
+  }, [imageUrl]);
+
+  useEffect(() => {
+    if (!resolvedUrl) return;
     const img = new Image();
-    img.src = imageUrl;
+    img.src = resolvedUrl;
     if (img.complete) {
       setIslandNatural({ w: img.naturalWidth, h: img.naturalHeight });
       setIslandImgLoaded(true);
@@ -117,7 +149,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
         setIslandImgLoaded(true);
       };
     }
-  }, [imageUrl]);
+  }, [resolvedUrl]);
 
   const handleIslandOpen = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -234,7 +266,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
     <>
       {islandImgLoaded && (
         <ButtonEl ref={islandButtonRef} $hidden={islandOverlayShown} onClick={!isMobile ? handleIslandOpen : undefined} onTouchStart={isMobile ? handleIslandOpen : undefined} aria-label="Island">
-          <img ref={islandButtonImgRef} src={imageUrl} alt="" draggable={false} />
+          <img ref={islandButtonImgRef} src={resolvedUrl} alt="" draggable={false} />
         </ButtonEl>
       )}
       {(islandOverlayShown || islandAnimating) && (
@@ -242,7 +274,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
           <Overlay $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleIslandClose : undefined} onTouchStart={isMobile ? handleIslandClose : undefined} onTransitionEnd={handleOverlayTransitionEnd} />
           <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing}>
             <Animator $tx={islandTranslate.x} $ty={islandTranslate.y}>
-              <Hero src={imageUrl} alt="" draggable={false} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd} />
+              <Hero src={resolvedUrl} alt="" draggable={false} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd} />
             </Animator>
           </Layer>
         </>
