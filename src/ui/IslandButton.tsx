@@ -40,6 +40,60 @@ const ButtonEl = styled.button<{ $hidden: boolean }>`
   }
 `;
 
+const MaterialsBar = styled.div<{ $visible: boolean }>`
+  position: fixed;
+  bottom: 14px;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  padding: 0 12px;
+  box-sizing: border-box;
+  opacity: ${(p) => (p.$visible ? 1 : 0)};
+  transition: opacity 220ms ease;
+  pointer-events: none;
+  z-index: 90002;
+  @media (min-width: 480px) {
+    gap: 14px;
+  }
+  @media (min-width: 768px) {
+    gap: 18px;
+  }
+`;
+
+const MaterialItem = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  background: var(--interactiveHoverBackgroundLight);
+  border-radius: 999px;
+  padding: 0 8px 0 4px;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+  @media (prefers-color-scheme: dark) {
+    background: var(--panel-dark-90);
+  }
+`;
+
+const MaterialIcon = styled.img`
+  width: 33px;
+  height: 33px;
+  display: block;
+`;
+
+const MaterialAmount = styled.span`
+  font-size: 12px;
+  line-height: 1;
+  color: var(--instruction-text-color);
+  font-weight: 600;
+  letter-spacing: 0.2px;
+`;
+
 const Overlay = styled.div<{ $visible: boolean; $opening: boolean; $closing: boolean }>`
   position: fixed;
   inset: 0;
@@ -134,6 +188,27 @@ const getIslandImageUrl = () => {
   return islandImagePromise;
 };
 
+const MATERIALS = ["dust", "slime", "gum", "metal", "ice"] as const;
+type MaterialName = (typeof MATERIALS)[number];
+const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
+
+const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
+
+const getMaterialImageUrl = (name: MaterialName) => {
+  if (!materialImagePromises.has(name)) {
+    const url = `${MATERIAL_BASE_URL}/${name}.webp`;
+    const p = fetch(url)
+      .then((res) => {
+        if (!res.ok) throw new Error("Failed to fetch image");
+        return res.blob();
+      })
+      .then((blob) => URL.createObjectURL(blob))
+      .catch(() => null);
+    materialImagePromises.set(name, p);
+  }
+  return materialImagePromises.get(name)!;
+};
+
 export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   const [islandImgLoaded, setIslandImgLoaded] = useState(false);
   const [islandNatural, setIslandNatural] = useState<{ w: number; h: number } | null>(null);
@@ -150,6 +225,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   const [islandScale, setIslandScale] = useState<{ x: number; y: number }>({ x: 1, y: 1 });
   const overlayJustOpenedAtRef = useRef<number>(0);
   const [resolvedUrl, setResolvedUrl] = useState<string>(imageUrl);
+  const [materialAmounts] = useState<Record<MaterialName, number>>(() => {
+    const entries = MATERIALS.map((n) => [n, 0] as const);
+    return Object.fromEntries(entries) as Record<MaterialName, number>;
+  });
+  const [materialUrls, setMaterialUrls] = useState<Record<MaterialName, string | null>>(() => {
+    const initial: Partial<Record<MaterialName, string | null>> = {};
+    MATERIALS.forEach((n) => (initial[n] = null));
+    return initial as Record<MaterialName, string | null>;
+  });
 
   useEffect(() => {
     const shouldBeMarkedOpen = islandOverlayShown || islandOpening || islandClosing;
@@ -192,6 +276,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
       };
     }
   }, [resolvedUrl]);
+
+  useEffect(() => {
+    let mounted = true;
+    MATERIALS.forEach((name) => {
+      getMaterialImageUrl(name).then((url) => {
+        if (!mounted) return;
+        setMaterialUrls((prev) => ({ ...prev, [name]: url }));
+      });
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   const handleIslandOpen = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -332,6 +429,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
         <>
           <Overlay $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleIslandClose : undefined} onTouchStart={isMobile ? handleIslandClose : undefined} onTransitionEnd={handleOverlayTransitionEnd} />
           <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleLayerTap : undefined} onTouchStart={isMobile ? handleLayerTap : undefined}>
+            <MaterialsBar $visible={islandOverlayVisible && !islandClosing}>
+              {MATERIALS.map((name) => (
+                <MaterialItem key={name}>
+                  {materialUrls[name] && <MaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
+                  <MaterialAmount>{materialAmounts[name]}</MaterialAmount>
+                </MaterialItem>
+              ))}
+            </MaterialsBar>
             <Animator $tx={islandTranslate.x} $ty={islandTranslate.y} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd}>
               <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} />
               <div
