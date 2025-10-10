@@ -25,6 +25,8 @@ const RockImg = styled.img<{ $heightPct?: number }>`
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
+  filter: drop-shadow(0 6px 2px rgba(0, 0, 0, 0.18));
+  -webkit-filter: drop-shadow(0 6px 2px rgba(0, 0, 0, 0.18));
 `;
 
 type Props = {

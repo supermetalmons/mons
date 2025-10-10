@@ -102,7 +102,7 @@ const RockLayer = styled.div<{ $visible: boolean }>`
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  top: 6%;
+  top: 10%;
   height: 20%;
   pointer-events: auto;
   transition: opacity 300ms ease;
@@ -344,7 +344,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
                   justifyContent: "center",
                 }}>
                 <RockLayer $visible={!islandClosing} onClick={(e) => e.stopPropagation()} onTouchStart={(e) => e.stopPropagation()}>
-                  <Rock heightPct={100} />
+                  <Rock heightPct={75} />
                 </RockLayer>
               </div>
             </Animator>
