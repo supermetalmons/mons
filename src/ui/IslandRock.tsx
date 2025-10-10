@@ -181,32 +181,39 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
         g.appendChild(glow);
         const size = 0.1 + Math.random() * (0.18 - 0.1);
         g.setAttribute("data-s", size.toString());
+        const tail = 1.1 + Math.random() * 0.8;
+        g.setAttribute("data-tail", tail.toString());
+        const angle = randAng(i, 14);
+        g.setAttribute("data-a", angle.toString());
         return g;
       },
       (g, t, i) => {
         const ease = Math.pow(t, 0.33);
-        const angle = randAng(i, 14);
+        const angle = parseFloat(g.getAttribute("data-a") || "0");
         const unit = unitRef.current;
         const { x: ox, y: oy } = originRef.current;
         const maxDist = 1.0 * unit;
-        const dist = ease * maxDist;
+        const size = parseFloat(g.getAttribute("data-s") || "0.1");
+        const r = size * 0.52 * unit;
+        const baseOffset = r * 0.6;
+        const dist = baseOffset + ease * maxDist;
         const x = ox + Math.cos(angle) * dist * aspectRef.current;
         const y = oy + Math.sin(angle) * dist;
         g.setAttribute("transform", `translate(${x} ${y}) rotate(${(angle * 180) / Math.PI})`);
         const line = g.firstChild as SVGLineElement;
-        const size = parseFloat(g.getAttribute("data-s") || "0.1");
-        const len = size * unit * 1.2;
-        line.setAttribute("x1", "0");
+        const tailFactor = parseFloat(g.getAttribute("data-tail") || "1");
+        const len = r * tailFactor * 1.15;
+        line.setAttribute("x1", (-len).toString());
         line.setAttribute("y1", "0");
-        line.setAttribute("x2", len.toString());
+        line.setAttribute("x2", "0");
         line.setAttribute("y2", "0");
-        line.setAttribute("stroke-width", Math.max(0.6, (0.02 * unit + size * unit * 0.05) * (1 - t * 0.3)).toString());
-        line.setAttribute("opacity", (0.95 * (1 - t)).toString());
+        line.setAttribute("stroke-width", Math.max(0.75, (0.022 * unit + size * unit * 0.05) * (1 - t * 0.35)).toString());
+        line.setAttribute("opacity", Math.max(0, 0.96 * (1 - t * 0.8)).toString());
         const glow = g.lastChild as SVGCircleElement;
-        glow.setAttribute("cx", len.toString());
+        glow.setAttribute("cx", "0");
         glow.setAttribute("cy", "0");
-        glow.setAttribute("r", (size * 0.45 * unit).toString());
-        glow.setAttribute("opacity", Math.max(0, 0.75 * (1 - t)).toString());
+        glow.setAttribute("r", r.toString());
+        glow.setAttribute("opacity", Math.max(0, 0.85 * (1 - t * 0.7)).toString());
       }
     );
   }
