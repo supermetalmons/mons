@@ -497,6 +497,7 @@ let getIsMusicOpen: () => boolean;
 export let toggleInfoVisibility: () => void;
 export let toggleMusicVisibility: () => void;
 export let closeMenuAndInfoIfAny: () => void;
+export let closeAllKindsOfPopups: () => void;
 export let closeMenuAndInfoIfAllowedForEvent: (event: TouchEvent | MouseEvent) => void;
 export let setIsMusicPlayingGlobal: (playing: boolean) => void;
 export let setDebugViewText: (text: string) => void;
@@ -702,6 +703,15 @@ const MainMenu: React.FC = () => {
   };
 
   closeMenuAndInfoIfAny = () => {
+    setIsInfoOpen(false);
+    setIsMenuOpen(false);
+    setIsMusicOpen(false);
+    setIsNftSubmenuExpanded(false);
+  };
+
+  closeAllKindsOfPopups = () => {
+    closeProfilePopupIfAny();
+    closeNavigationAndAppearancePopupIfAny();
     setIsInfoOpen(false);
     setIsMenuOpen(false);
     setIsMusicOpen(false);
