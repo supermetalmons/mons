@@ -54,7 +54,7 @@ const MaterialsBar = styled.div<{ $visible: boolean }>`
   box-sizing: border-box;
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   transition: opacity 220ms ease;
-  pointer-events: none;
+  pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
   z-index: 90002;
   @media (min-width: 480px) {
     gap: 14px;
@@ -403,6 +403,71 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
     [islandOverlayVisible]
   );
 
+  const spawnIconParticles = useCallback((sourceEl: HTMLElement, src: string) => {
+    const numParticles = 10;
+    const durationMs = 420;
+    const start = performance.now();
+    const rect = sourceEl.getBoundingClientRect();
+    const startX = rect.left + rect.width / 2;
+    const startY = rect.top + rect.height / 2 - 12;
+    const baseSize = Math.max(14, Math.min(28, rect.width * 0.7));
+    const els: HTMLImageElement[] = [];
+    for (let i = 0; i < numParticles; i++) {
+      const el = document.createElement("img");
+      el.src = src;
+      el.draggable = false;
+      el.style.position = "fixed";
+      el.style.left = "0";
+      el.style.top = "0";
+      el.style.width = `${baseSize}px`;
+      el.style.height = `${baseSize}px`;
+      el.style.pointerEvents = "none";
+      el.style.zIndex = "90003";
+      el.style.willChange = "transform, opacity";
+      el.style.transform = `translate3d(${startX - baseSize / 2}px, ${startY - baseSize / 2}px, 0) scale(1)`;
+      el.style.opacity = "1";
+      document.body.appendChild(el);
+      els.push(el);
+    }
+    const angles = els.map((_, i) => (i / numParticles) * Math.PI * 2 + Math.random() * (Math.PI / numParticles) - Math.PI / 2);
+    const distances = els.map(() => 60 + Math.random() * 80);
+    const rotations = els.map(() => (Math.random() - 0.5) * 0.4);
+    function easeOutCubic(t: number) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+    function step(now: number) {
+      const t = Math.min(1, (now - start) / durationMs);
+      const e = easeOutCubic(t);
+      for (let i = 0; i < els.length; i++) {
+        const dx = Math.cos(angles[i]) * distances[i] * e;
+        const dy = Math.sin(angles[i]) * distances[i] * e + 0.35 * distances[i] * e * e;
+        const s = 1 - 0.35 * e;
+        const r = rotations[i] * 90 * e;
+        els[i].style.transform = `translate3d(${startX - baseSize / 2 + dx}px, ${startY - baseSize / 2 + dy}px, 0) scale(${s}) rotate(${r}deg)`;
+        els[i].style.opacity = `${1 - e}`;
+      }
+      if (t < 1) {
+        requestAnimationFrame(step);
+      } else {
+        for (const el of els) el.remove();
+      }
+    }
+    requestAnimationFrame(step);
+  }, []);
+
+  const handleMaterialItemTap = useCallback(
+    (name: MaterialName, url: string | null) => (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+      event.stopPropagation();
+      event.preventDefault();
+      if (!url) return;
+      const currentTarget = event.currentTarget as HTMLDivElement;
+      const img = currentTarget.querySelector("img");
+      if (!img) return;
+      spawnIconParticles(img as HTMLImageElement, url);
+    },
+    [spawnIconParticles]
+  );
+
   const handleLayerTap = useCallback(
     (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
       const heroEl = islandHeroImgRef.current;
@@ -431,7 +496,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
           <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleLayerTap : undefined} onTouchStart={isMobile ? handleLayerTap : undefined}>
             <MaterialsBar $visible={islandOverlayVisible && !islandClosing}>
               {MATERIALS.map((name) => (
-                <MaterialItem key={name}>
+                <MaterialItem key={name} onClick={!isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined} onTouchStart={isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}>
                   {materialUrls[name] && <MaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
                   <MaterialAmount>{materialAmounts[name]}</MaterialAmount>
                 </MaterialItem>
