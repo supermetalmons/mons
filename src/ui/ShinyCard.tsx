@@ -155,7 +155,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   window.addEventListener("resize", updateCardWidth);
 
   cardContainer.style.perspective = "1000px";
-  cardContainer.style.zIndex = "1000";
+  cardContainer.style.zIndex = "100000";
   cardContainer.setAttribute("data-shiny-card", "true");
   cardContainer.style.userSelect = "none";
   cardContainer.style.touchAction = "none";
