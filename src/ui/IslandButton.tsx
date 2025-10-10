@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useRef, useState } from "react";
 import { isMobile } from "../utils/misc";
 import styled from "styled-components";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
+import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
 
@@ -195,6 +196,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   const handleIslandOpen = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
       soundPlayer.initializeOnUserInteraction(true);
+      closeAllKindsOfPopups();
       event.stopPropagation();
       event.preventDefault();
       if (!islandImgLoaded || !islandNatural) return;
