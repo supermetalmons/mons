@@ -4,22 +4,23 @@ import { playSounds } from "../content/sounds";
 import { Sound } from "../utils/gameModels";
 import { isMobile } from "../utils/misc";
 
-const Container = styled.div<{ $visible: boolean }>`
+const Container = styled.div<{ $visible: boolean; $instant?: boolean; $disabled?: boolean }>`
   position: relative;
   display: inline-block;
   opacity: ${(p) => (p.$visible ? 1 : 0)};
-  transition: opacity 260ms ease;
-  pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
+  transition: ${(p) => (p.$instant ? "none" : "opacity 260ms ease")};
+  pointer-events: ${(p) => (p.$visible && !p.$disabled ? "auto" : "none")};
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   user-select: none;
   -webkit-user-select: none;
 `;
 
-const RockImg = styled.img<{ $heightPct?: number }>`
+const RockImg = styled.img<{ $heightPct?: number; $hidden?: boolean }>`
   display: block;
   width: auto;
   height: ${(p) => (p.$heightPct ? `${p.$heightPct}%` : "auto")};
+  visibility: ${(p) => (p.$hidden ? "hidden" : "visible")};
   user-select: none;
   -webkit-user-drag: none;
   -webkit-user-select: none;
@@ -46,6 +47,9 @@ const ROCK_MISS_SLOW_EXTRA = 0.1;
 export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) {
   const [visible, setVisible] = useState(false);
   const [rockUrl, setRockUrl] = useState<string>("");
+  const [instantHide, setInstantHide] = useState(false);
+  const [hideRock, setHideRock] = useState(false);
+  const [disabled, setDisabled] = useState(false);
   const hitsRef = useRef(0);
   const lastClickRef = useRef<number | null>(null);
   const brokenRef = useRef(false);
@@ -54,6 +58,7 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
   const imgElRef = useRef<HTMLImageElement | null>(null);
   const originRef = useRef<{ x: number; y: number }>({ x: 50, y: 50 });
   const unitRef = useRef<number>(15);
+  const aspectRef = useRef<number>(1);
 
   const src = useMemo(() => {
     const index = Math.floor(Math.random() * 27) + 1;
@@ -73,15 +78,12 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
   useEffect(() => {
     function updateMetrics() {
       const container = containerRef.current;
-      const img = imgElRef.current;
-      if (!container || !img) return;
+      if (!container) return;
       const cr = container.getBoundingClientRect();
-      const ir = img.getBoundingClientRect();
       if (cr.width === 0 || cr.height === 0) return;
-      const cx = ((ir.left - cr.left + ir.width / 2) / cr.width) * 100;
-      const cy = ((ir.top - cr.top + ir.height / 2) / cr.height) * 100;
-      originRef.current = { x: cx, y: cy };
-      unitRef.current = (ir.height / cr.height) * 100;
+      originRef.current = { x: 50, y: 50 };
+      unitRef.current = 100;
+      aspectRef.current = cr.height / cr.width;
     }
     updateMetrics();
     const ro = new ResizeObserver(() => updateMetrics());
@@ -124,10 +126,12 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
     if (hitsRef.current >= ROCK_BREAK_THRESHOLD) {
       brokenRef.current = true;
       playSounds([Sound.RockOpen]);
-      setVisible(false);
+      setInstantHide(true);
+      setHideRock(true);
+      setDisabled(true);
       setTimeout(() => {
         onBroken?.();
-      }, 200);
+      }, 360);
       showCrashParticles();
       hitsRef.current = 0;
       lastClickRef.current = null;
@@ -175,34 +179,41 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
         const glow = document.createElementNS("http://www.w3.org/2000/svg", "circle");
         glow.setAttribute("fill", "#FFF59D");
         g.appendChild(glow);
-        const size = 0.08 + Math.random() * (0.14 - 0.08);
+        const size = 0.1 + Math.random() * (0.18 - 0.1);
         g.setAttribute("data-s", size.toString());
+        const tail = 1.1 + Math.random() * 0.8;
+        g.setAttribute("data-tail", tail.toString());
+        const angle = randAng(i, 14);
+        g.setAttribute("data-a", angle.toString());
         return g;
       },
       (g, t, i) => {
         const ease = Math.pow(t, 0.33);
-        const angle = randAng(i, 14);
+        const angle = parseFloat(g.getAttribute("data-a") || "0");
         const unit = unitRef.current;
         const { x: ox, y: oy } = originRef.current;
         const maxDist = 1.0 * unit;
-        const dist = ease * maxDist;
-        const x = ox + Math.cos(angle) * dist;
+        const size = parseFloat(g.getAttribute("data-s") || "0.1");
+        const r = size * 0.52 * unit;
+        const baseOffset = r * 0.6;
+        const dist = baseOffset + ease * maxDist;
+        const x = ox + Math.cos(angle) * dist * aspectRef.current;
         const y = oy + Math.sin(angle) * dist;
         g.setAttribute("transform", `translate(${x} ${y}) rotate(${(angle * 180) / Math.PI})`);
         const line = g.firstChild as SVGLineElement;
-        const size = parseFloat(g.getAttribute("data-s") || "0.1");
-        const len = size * unit * 1.2;
-        line.setAttribute("x1", "0");
+        const tailFactor = parseFloat(g.getAttribute("data-tail") || "1");
+        const len = r * tailFactor * 1.15;
+        line.setAttribute("x1", (-len).toString());
         line.setAttribute("y1", "0");
-        line.setAttribute("x2", len.toString());
+        line.setAttribute("x2", "0");
         line.setAttribute("y2", "0");
-        line.setAttribute("stroke-width", Math.max(0.6, (0.02 * unit + size * unit * 0.05) * (1 - t * 0.3)).toString());
-        line.setAttribute("opacity", (0.95 * (1 - t)).toString());
+        line.setAttribute("stroke-width", Math.max(0.75, (0.022 * unit + size * unit * 0.05) * (1 - t * 0.35)).toString());
+        line.setAttribute("opacity", Math.max(0, 0.96 * (1 - t * 0.8)).toString());
         const glow = g.lastChild as SVGCircleElement;
-        glow.setAttribute("cx", len.toString());
+        glow.setAttribute("cx", "0");
         glow.setAttribute("cy", "0");
-        glow.setAttribute("r", (size * 0.45 * unit).toString());
-        glow.setAttribute("opacity", Math.max(0, 0.75 * (1 - t)).toString());
+        glow.setAttribute("r", r.toString());
+        glow.setAttribute("opacity", Math.max(0, 0.85 * (1 - t * 0.7)).toString());
       }
     );
   }
@@ -216,7 +227,7 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
         rect.setAttribute("fill", Math.random() < 0.5 ? "#A0A4AB" : "#8E949B");
         rect.setAttribute("stroke", "#6E737A");
         rect.setAttribute("stroke-width", "0.6");
-        const size = 0.06 + Math.random() * (0.11 - 0.06);
+        const size = 0.12 + Math.random() * (0.2 - 0.12);
         rect.setAttribute("data-s", size.toString());
         return rect;
       },
@@ -229,7 +240,7 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
         const dist = ease * maxDist;
         const size = parseFloat(rect.getAttribute("data-s") || "0.08");
         const w = size * unit * (1 - t * 0.6);
-        const cx = ox + Math.cos(angle) * dist;
+        const cx = ox + Math.cos(angle) * dist * aspectRef.current;
         const cy = oy + Math.sin(angle) * dist;
         rect.setAttribute("x", (cx - w / 2).toString());
         rect.setAttribute("y", (cy - w / 2).toString());
@@ -244,19 +255,37 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
 
   function showCrashParticles() {
     animateParticles(
-      8,
-      320,
+      20,
+      460,
       () => {
         const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        const defs = document.createElementNS("http://www.w3.org/2000/svg", "defs");
+        g.appendChild(defs);
         const star = document.createElementNS("http://www.w3.org/2000/svg", "polygon");
-        star.setAttribute("fill", "#FFD54F");
-        star.setAttribute("stroke", "#FFB300");
-        star.setAttribute("stroke-width", "2");
+        const gid = `crash-grad-${Date.now()}-${Math.floor(Math.random() * 1e6)}`;
+        const gradient = document.createElementNS("http://www.w3.org/2000/svg", "radialGradient");
+        gradient.setAttribute("id", gid);
+        const stop0 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        stop0.setAttribute("offset", "0%");
+        stop0.setAttribute("stop-color", "#FFFFFF");
+        const stop1 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        stop1.setAttribute("offset", "35%");
+        stop1.setAttribute("stop-color", "#FFE082");
+        const palettes = ["#FFF59D", "#FFE082", "#FFD54F"];
+        const stop2 = document.createElementNS("http://www.w3.org/2000/svg", "stop");
+        stop2.setAttribute("offset", "100%");
+        stop2.setAttribute("stop-color", palettes[Math.floor(Math.random() * palettes.length)]);
+        gradient.appendChild(stop0);
+        gradient.appendChild(stop1);
+        gradient.appendChild(stop2);
+        defs.appendChild(gradient);
+        star.setAttribute("fill", `url(#${gid})`);
+        star.setAttribute("stroke", "none");
         star.setAttribute("stroke-linejoin", "round");
         g.appendChild(star);
 
         const angle = Math.random() * Math.PI * 2;
-        const size = 0.32 + Math.random() * (0.55 - 0.32);
+        const size = 0.58 + Math.random() * (0.95 - 0.58);
         const longR = size * 0.95 * 50;
         const shortR = size * 0.45 * 50;
         const spikes = 6;
@@ -275,7 +304,7 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
         (g as any).__size = size;
         (g as any).__baseRot = (angle * 180) / Math.PI + (Math.random() * 120 - 60);
         (g as any).__spin = (Math.random() - 0.5) * 120;
-        (g as any).__spread = (2.3 + Math.random() * 0.5) * unitRef.current;
+        (g as any).__spread = (1.7 + Math.random() * 0.6) * unitRef.current;
         return g;
       },
       (g, t) => {
@@ -287,7 +316,7 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
 
         const spread = (g as any).__spread as number;
         const progress = 1 - Math.pow(1 - t, 2.8);
-        const tx = ox + Math.cos(angle) * (progress * spread);
+        const tx = ox + Math.cos(angle) * (progress * spread) * aspectRef.current;
         const ty = oy + Math.sin(angle) * (progress * spread);
         const rot = baseRot + spin * t;
 
@@ -296,11 +325,12 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
         const currentSize = size * (t < growthThreshold ? 1 + t * growthMultiplier : 1);
         const scale = currentSize / size;
 
-        const fadeOutStrength = 0.92;
-        const opacity = 1 - Math.pow(t, 2) * fadeOutStrength;
-
+        const fadeStart = 0.45;
+        const localT = Math.max(0, (t - fadeStart) / (1 - fadeStart));
+        const smooth = localT * localT * (3 - 2 * localT);
+        const opacity = 1 - smooth;
         g.setAttribute("transform", `translate(${tx} ${ty}) rotate(${rot}) scale(${scale})`);
-        g.setAttribute("opacity", Math.min(1, opacity * 1.05).toString());
+        g.setAttribute("opacity", Math.max(0, Math.min(1, opacity)).toString());
       }
     );
   }
@@ -310,6 +340,8 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
       ref={containerRef}
       className={className}
       $visible={visible}
+      $instant={instantHide}
+      $disabled={disabled}
       onMouseDown={(e) => e.preventDefault()}
       onClick={
         !isMobile
@@ -327,7 +359,7 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
             }
           : undefined
       }>
-      {rockUrl && <RockImg ref={imgElRef} src={rockUrl} alt="" draggable={false} $heightPct={heightPct} />}
+      {rockUrl && <RockImg ref={imgElRef} src={rockUrl} alt="" draggable={false} $heightPct={heightPct} $hidden={hideRock} />}
       <svg ref={svgRef} viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none", overflow: "visible" }} />
     </Container>
   );
