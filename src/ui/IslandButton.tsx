@@ -6,7 +6,7 @@ import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
 
-const ButtonEl = styled.button<{ $hidden: boolean }>`
+const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
   border: none;
   cursor: pointer;
   height: 32px;
@@ -32,7 +32,9 @@ const ButtonEl = styled.button<{ $hidden: boolean }>`
     height: auto;
     width: auto;
     display: block;
-    transform: translateY(1px) scale(1.3);
+    transform: translateY(1px) scale(${(p) => (p.$dimmed ? 1 : 1.3)});
+    filter: ${(p) => (p.$dimmed ? "grayscale(1) brightness(0.96)" : "none")};
+    opacity: ${(p) => (p.$dimmed ? 0.78 : 1)};
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     user-select: none;
@@ -169,6 +171,7 @@ const RockLayer = styled.div<{ $visible: boolean }>`
 
 type Props = {
   imageUrl?: string;
+  dimmed?: boolean;
 };
 
 const DEFAULT_URL = "https://assets.mons.link/rocks/island.webp";
@@ -209,7 +212,7 @@ const getMaterialImageUrl = (name: MaterialName) => {
   return materialImagePromises.get(name)!;
 };
 
-export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
+export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) {
   const [islandImgLoaded, setIslandImgLoaded] = useState(false);
   const [islandNatural, setIslandNatural] = useState<{ w: number; h: number } | null>(null);
   const islandButtonImgRef = useRef<HTMLImageElement | null>(null);
@@ -748,7 +751,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   return (
     <>
       {islandImgLoaded && (
-        <ButtonEl ref={islandButtonRef} $hidden={islandOverlayShown} onClick={!isMobile ? handleIslandOpen : undefined} onTouchStart={isMobile ? handleIslandOpen : undefined} aria-label="Island">
+        <ButtonEl ref={islandButtonRef} $hidden={islandOverlayShown} $dimmed={dimmed} onClick={!isMobile ? handleIslandOpen : undefined} onTouchStart={isMobile ? handleIslandOpen : undefined} aria-label="Island">
           <img ref={islandButtonImgRef} src={resolvedUrl} alt="" draggable={false} />
         </ButtonEl>
       )}
