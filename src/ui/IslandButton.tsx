@@ -507,7 +507,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
       el.style.position = "absolute";
       el.style.left = "0";
       el.style.top = "0";
-      el.style.width = `${Math.max(26, Math.min(40, rect.width * 0.24))}px`;
+      const targetRef = materialItemRefs.current[name];
+      const targetIcon = targetRef?.querySelector("img") as HTMLImageElement | null;
+      const targetIconBox = targetIcon?.getBoundingClientRect();
+      const targetW = targetIconBox ? Math.max(1, Math.round(targetIconBox.width)) : 33;
+      el.style.width = `${targetW}px`;
       el.style.height = "auto";
       el.style.pointerEvents = "none";
       el.style.zIndex = "1";
@@ -517,7 +521,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
       const spreadLocal = common?.spread ?? 24 + Math.random() * 48;
       const liftLocal = common?.lift ?? 12 + Math.random() * 18;
       const fallLocal = common?.fall ?? 12 + Math.random() * 14 + rect.height * 0.15;
-      const rot = (Math.random() - 0.5) * 45;
+
       const duration1 = common?.duration1 ?? 600 + Math.random() * 140;
       const start = (common?.start ?? performance.now()) + delay;
       const fxContainer = getFxContainer();
@@ -544,8 +548,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
           const u = 1 - (2 * t - 1) * (2 * t - 1);
           const dy = -liftLocal * u + fallLocal * t * t;
           const s = 0.95 + 0.05 * e;
-          const r = rot * e;
-          el.style.transform = `translate3d(${baseX + dx}px, ${baseY + dy}px, 0) scale(${s}) rotate(${r}deg)`;
+          el.style.transform = `translate3d(${baseX + dx}px, ${baseY + dy}px, 0) scale(${s})`;
           if (t < 1) {
             requestAnimationFrame(step1);
           } else {
@@ -579,8 +582,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
               const e2 = easeOutCubic(tt);
               const cx = fromX + (endXLocal - fromX) * e2;
               const cy = fromY + (endYLocal - fromY) * e2;
-              const sc = 0.95 + 0.15 * (1 - Math.abs(0.5 - tt) * 2);
-              el.style.transform = `translate3d(${cx}px, ${cy}px, 0) scale(${sc}) rotate(${rot}deg)`;
+              const sc = 1;
+              el.style.transform = `translate3d(${cx}px, ${cy}px, 0) scale(${sc})`;
               el.style.opacity = `${1 - tt * 0.1}`;
               if (tt < 1) {
                 requestAnimationFrame(step2);
