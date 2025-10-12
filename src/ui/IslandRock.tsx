@@ -81,7 +81,7 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
       if (!container) return;
       const cr = container.getBoundingClientRect();
       if (cr.width === 0 || cr.height === 0) return;
-      originRef.current = { x: 50, y: 50 };
+      originRef.current = { x: 50, y: 39.5 };
       unitRef.current = 100;
       aspectRef.current = cr.height / cr.width;
     }
