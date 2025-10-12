@@ -225,6 +225,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   const [islandScale, setIslandScale] = useState<{ x: number; y: number }>({ x: 1, y: 1 });
   const overlayJustOpenedAtRef = useRef<number>(0);
   const [resolvedUrl, setResolvedUrl] = useState<string>(imageUrl);
+  const heroHitCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [materialAmounts] = useState<Record<MaterialName, number>>(() => {
     const entries = MATERIALS.map((n) => [n, 0] as const);
     return Object.fromEntries(entries) as Record<MaterialName, number>;
@@ -288,6 +289,56 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
     return () => {
       mounted = false;
     };
+  }, []);
+
+  useEffect(() => {
+    if (!islandOverlayVisible || islandClosing) return;
+    const hero = islandHeroImgRef.current;
+    if (!hero) return;
+    const rect = hero.getBoundingClientRect();
+    let canvas = heroHitCanvasRef.current;
+    if (!canvas) {
+      canvas = document.createElement("canvas");
+      heroHitCanvasRef.current = canvas;
+    }
+    const w = Math.max(1, Math.round(rect.width));
+    const h = Math.max(1, Math.round(rect.height));
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D | null;
+    if (!ctx) return;
+    ctx.clearRect(0, 0, w, h);
+    try {
+      ctx.drawImage(hero, 0, 0, w, h);
+    } catch {}
+  }, [islandOverlayVisible, islandClosing, resolvedUrl]);
+
+  const drawHeroIntoHitCanvas = useCallback(() => {
+    const hero = islandHeroImgRef.current;
+    if (!hero) return false;
+    const rect = hero.getBoundingClientRect();
+    let canvas = heroHitCanvasRef.current;
+    if (!canvas) {
+      canvas = document.createElement("canvas");
+      heroHitCanvasRef.current = canvas;
+    }
+    const w = Math.max(1, Math.round(rect.width));
+    const h = Math.max(1, Math.round(rect.height));
+    if (canvas.width !== w || canvas.height !== h) {
+      canvas.width = w;
+      canvas.height = h;
+    }
+    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D | null;
+    if (!ctx) return false;
+    ctx.clearRect(0, 0, w, h);
+    try {
+      ctx.drawImage(hero, 0, 0, w, h);
+      return true;
+    } catch {
+      return false;
+    }
   }, []);
 
   const handleIslandOpen = useCallback(
@@ -472,15 +523,55 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
     (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
       const heroEl = islandHeroImgRef.current;
       if (!heroEl) return;
-      const target = event.target as Node;
-      if (heroEl.contains(target)) {
+      const rect = heroEl.getBoundingClientRect();
+      let clientX = 0;
+      let clientY = 0;
+      const anyEvent = event as any;
+      if (anyEvent.touches && anyEvent.touches[0]) {
+        clientX = anyEvent.touches[0].clientX;
+        clientY = anyEvent.touches[0].clientY;
+      } else {
+        clientX = (event as React.MouseEvent).clientX;
+        clientY = (event as React.MouseEvent).clientY;
+      }
+      const inside = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+      if (!inside) {
+        handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
+        return;
+      }
+      const rx = Math.floor(clientX - rect.left);
+      const ry = Math.floor(clientY - rect.top);
+      const drew = drawHeroIntoHitCanvas();
+      if (!drew) {
         event.stopPropagation();
         event.preventDefault();
         return;
       }
-      handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
+      const canvas = heroHitCanvasRef.current;
+      if (!canvas) {
+        event.stopPropagation();
+        event.preventDefault();
+        return;
+      }
+      const ctx = canvas.getContext("2d") as CanvasRenderingContext2D | null;
+      if (!ctx) {
+        event.stopPropagation();
+        event.preventDefault();
+        return;
+      }
+      let alpha = 255;
+      try {
+        const data = ctx.getImageData(rx, ry, 1, 1).data;
+        alpha = data[3];
+      } catch {}
+      if (alpha < 16) {
+        handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
+        return;
+      }
+      event.stopPropagation();
+      event.preventDefault();
     },
-    [handleIslandClose]
+    [handleIslandClose, drawHeroIntoHitCanvas]
   );
 
   return (
