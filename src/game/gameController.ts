@@ -13,6 +13,7 @@ import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, ge
 import { storage } from "../utils/storage";
 import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSignIn";
 import { showVideoReaction } from "../ui/BoardComponent";
+import { setIslandButtonDimmed } from "../index";
 
 const experimentalDrawingDevMode = false;
 
@@ -149,6 +150,7 @@ export async function go() {
 
     didStartLocalGame = true;
     setHomeVisible(true);
+    setIslandButtonDimmed(true);
 
     setBrushAndNavigationButtonDimmed(true);
     setInviteLinkActionVisible(false);
@@ -169,6 +171,7 @@ export async function go() {
     });
     didStartLocalGame = true;
     setHomeVisible(true);
+    setIslandButtonDimmed(true);
 
     setBrushAndNavigationButtonDimmed(true);
     setUndoVisible(true);
@@ -190,6 +193,7 @@ export async function go() {
   } else {
     isOnlineGame = true;
     setHomeVisible(true);
+    setIslandButtonDimmed(true);
 
     setBrushAndNavigationButtonDimmed(true);
     setNavigationListButtonVisible(false);
@@ -274,6 +278,7 @@ export function didClickStartBotGameButton() {
   dismissBadgeAndNotificationBannerIfNeeded();
   didStartLocalGame = true;
   setHomeVisible(true);
+  setIslandButtonDimmed(true);
 
   setUndoVisible(true);
   setBrushAndNavigationButtonDimmed(true);
@@ -308,6 +313,7 @@ export function didFindInviteThatCanBeJoined() {
 
 export function didClickAutomatchButton() {
   setHomeVisible(true);
+  setIslandButtonDimmed(true);
 
   setBrushAndNavigationButtonDimmed(true);
   setAutomoveActionVisible(false);
@@ -688,6 +694,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
         dismissBadgeAndNotificationBannerIfNeeded();
         didStartLocalGame = true;
         setHomeVisible(true);
+        setIslandButtonDimmed(true);
 
         setBrushAndNavigationButtonDimmed(true);
         setUndoVisible(true);
@@ -1339,6 +1346,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
 export function didClickInviteActionButtonBeforeThereIsInviteReady() {
   if (!isCreateNewInviteFlow) return;
   setHomeVisible(true);
+  setIslandButtonDimmed(true);
 
   setBrushAndNavigationButtonDimmed(true);
   setAutomatchVisible(false);
@@ -1379,6 +1387,7 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
   game = gameFromFen;
   didStartLocalGame = true;
   setHomeVisible(true);
+  setIslandButtonDimmed(true);
 
   setBrushAndNavigationButtonDimmed(true);
   setUndoVisible(true);

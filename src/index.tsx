@@ -38,16 +38,22 @@ export function hasFullScreenAlertVisible(): boolean {
 }
 
 export let enterProfileEditingMode: (enter: boolean) => void;
+export let setIslandButtonDimmed: (dimmed: boolean) => void;
 
 const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
   const [isProfileEditingMode, setIsProfileEditingMode] = useState(false);
   const [isMuted, setIsMuted] = useState(globalIsMuted);
   const [isIslandButtonSupported, setIsIslandButtonSupported] = useState(isIslandButtonSupportedInitial);
+  const [isIslandButtonDim, setIsIslandButtonDim] = useState(false);
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
 
   enterProfileEditingMode = (enter: boolean) => {
     setIsProfileEditingMode(enter);
+  };
+
+  setIslandButtonDimmed = (dimmed: boolean) => {
+    setIsIslandButtonDim(dimmed);
   };
 
   useEffect(() => {
@@ -109,7 +115,7 @@ const App = () => {
               <div className="top-buttons-container">
                 {authStatus !== "loading" && (
                   <>
-                    {isIslandButtonSupported && <IslandButton />}
+                    {isIslandButtonSupported && <IslandButton dimmed={isIslandButtonDim} />}
                     <div className="small-top-control-buttons">
                       {!isProfileEditingMode ? (
                         <>
