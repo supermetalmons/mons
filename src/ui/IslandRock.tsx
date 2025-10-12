@@ -129,9 +129,7 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
       setInstantHide(true);
       setHideRock(true);
       setDisabled(true);
-      setTimeout(() => {
-        onBroken?.();
-      }, 360);
+      onBroken?.();
       showCrashParticles();
       hitsRef.current = 0;
       lastClickRef.current = null;

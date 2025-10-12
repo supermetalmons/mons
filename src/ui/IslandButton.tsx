@@ -226,7 +226,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
   const overlayJustOpenedAtRef = useRef<number>(0);
   const [resolvedUrl, setResolvedUrl] = useState<string>(imageUrl);
   const heroHitCanvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [materialAmounts] = useState<Record<MaterialName, number>>(() => {
+  const [materialAmounts, setMaterialAmounts] = useState<Record<MaterialName, number>>(() => {
     const entries = MATERIALS.map((n) => [n, 0] as const);
     return Object.fromEntries(entries) as Record<MaterialName, number>;
   });
@@ -235,6 +235,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
     MATERIALS.forEach((n) => (initial[n] = null));
     return initial as Record<MaterialName, string | null>;
   });
+  const materialItemRefs = useRef<Record<MaterialName, HTMLDivElement | null>>({ dust: null, slime: null, gum: null, metal: null, ice: null });
+  const rockLayerRef = useRef<HTMLDivElement | null>(null);
+  const fxContainerRef = useRef<HTMLDivElement | null>(null);
+  const lastRockRectRef = useRef<DOMRect | null>(null);
 
   useEffect(() => {
     const shouldBeMarkedOpen = islandOverlayShown || islandOpening || islandClosing;
@@ -454,6 +458,173 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
     [islandOverlayVisible]
   );
 
+  const getFxContainer = useCallback(() => {
+    let container = fxContainerRef.current;
+    if (!container) {
+      container = document.createElement("div");
+      container.style.position = "fixed";
+      container.style.left = "0";
+      container.style.top = "0";
+      container.style.right = "0";
+      container.style.bottom = "0";
+      container.style.pointerEvents = "none";
+      container.style.zIndex = "90005";
+      container.style.contain = "paint";
+      container.style.isolation = "isolate";
+      fxContainerRef.current = container;
+      document.body.appendChild(container);
+    }
+    return container;
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      const container = fxContainerRef.current;
+      if (container && container.parentNode) {
+        try {
+          container.parentNode.removeChild(container);
+        } catch {}
+      }
+      fxContainerRef.current = null;
+    };
+  }, []);
+
+  const spawnMaterialDrop = useCallback(
+    async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number }): Promise<MaterialName> => {
+      const url = await getMaterialImageUrl(name);
+      if (!url) return name;
+      const rockLayer = rockLayerRef.current;
+      if (!rockLayer) return name;
+      const rect = rockLayer.getBoundingClientRect();
+      lastRockRectRef.current = rect;
+      const startX = rect.left + rect.width / 2;
+      const startY = rect.top + rect.height * 0.5;
+      const originOffsetX = (Math.random() - 0.5) * rect.width * 0.2;
+      const originOffsetY = -rect.height * 0.12 + Math.random() * rect.height * 0.16;
+      const el = document.createElement("img");
+      el.src = url;
+      el.draggable = false;
+      el.style.position = "absolute";
+      el.style.left = "0";
+      el.style.top = "0";
+      const targetRef = materialItemRefs.current[name];
+      const targetIcon = targetRef?.querySelector("img") as HTMLImageElement | null;
+      const targetIconBox = targetIcon?.getBoundingClientRect();
+      const targetW = targetIconBox ? Math.max(1, Math.round(targetIconBox.width)) : 33;
+      el.style.width = `${targetW}px`;
+      el.style.height = "auto";
+      el.style.pointerEvents = "none";
+      el.style.zIndex = "1";
+      el.style.willChange = "transform, opacity";
+      el.style.backfaceVisibility = "hidden";
+      const angle = (Math.random() - 0.5) * Math.PI * 0.5;
+      const spreadLocal = common?.spread ?? 24 + Math.random() * 48;
+      const liftLocal = common?.lift ?? 12 + Math.random() * 18;
+      const fallLocal = common?.fall ?? 12 + Math.random() * 14 + rect.height * 0.15;
+
+      const duration1 = common?.duration1 ?? 600 + Math.random() * 140;
+      const start = (common?.start ?? performance.now()) + delay;
+      const fxContainer = getFxContainer();
+      fxContainer.appendChild(el);
+      const containerBox = fxContainer.getBoundingClientRect();
+      const imgBox = el.getBoundingClientRect();
+      const halfW = imgBox.width / 2;
+      const halfH = imgBox.height / 2;
+      const baseX = startX + originOffsetX - containerBox.left - halfW;
+      const baseY = startY + originOffsetY - containerBox.top - halfH;
+      el.style.transform = `translate3d(${baseX}px, ${baseY}px, 0) scale(0.95)`;
+      function easeOutQuart(t: number) {
+        return 1 - Math.pow(1 - t, 4);
+      }
+      return new Promise<MaterialName>((resolve) => {
+        function step1(now: number) {
+          if (now < start) {
+            requestAnimationFrame(step1);
+            return;
+          }
+          const t = Math.min(1, (now - start) / duration1);
+          const e = easeOutQuart(t);
+          const dx = Math.sin(angle) * spreadLocal * e;
+          const u = 1 - (2 * t - 1) * (2 * t - 1);
+          const dy = -liftLocal * u + fallLocal * t * t;
+          const s = 0.95 + 0.05 * e;
+          el.style.transform = `translate3d(${baseX + dx}px, ${baseY + dy}px, 0) scale(${s})`;
+          if (t < 1) {
+            requestAnimationFrame(step1);
+          } else {
+            const targetEl = materialItemRefs.current[name];
+            if (!targetEl) {
+              el.remove();
+              resolve(name);
+              return;
+            }
+            const iconEl = targetEl.querySelector("img") as HTMLImageElement | null;
+            const tr = (iconEl || targetEl).getBoundingClientRect();
+            const endX = tr.left + tr.width / 2;
+            const endY = tr.top + tr.height / 2;
+            const from = el.getBoundingClientRect();
+            const parentBox = (el.parentElement as HTMLElement).getBoundingClientRect();
+            const fromX = from.left - parentBox.left;
+            const fromY = from.top - parentBox.top;
+            const endXLocal = endX - parentBox.left - halfW;
+            const endYLocal = endY - parentBox.top - halfH;
+            const duration2 = 460 + Math.random() * 140;
+            const start2 = performance.now() + 420 + Math.random() * 380;
+            function easeOutCubic(t: number) {
+              return 1 - Math.pow(1 - t, 3);
+            }
+            function step2(now2: number) {
+              if (now2 < start2) {
+                requestAnimationFrame(step2);
+                return;
+              }
+              const tt = Math.min(1, (now2 - start2) / duration2);
+              const e2 = easeOutCubic(tt);
+              const cx = fromX + (endXLocal - fromX) * e2;
+              const cy = fromY + (endYLocal - fromY) * e2;
+              const sc = 1;
+              el.style.transform = `translate3d(${cx}px, ${cy}px, 0) scale(${sc})`;
+              el.style.opacity = `${1 - tt * 0.1}`;
+              if (tt < 1) {
+                requestAnimationFrame(step2);
+              } else {
+                el.remove();
+                resolve(name);
+              }
+            }
+            requestAnimationFrame(step2);
+          }
+        }
+        requestAnimationFrame(step1);
+      });
+    },
+    [getFxContainer]
+  );
+
+  const handleRockBroken = useCallback(() => {
+    const count = 2 + Math.floor(Math.random() * 4);
+    const picks: MaterialName[] = [];
+    for (let i = 0; i < count; i++) picks.push(MATERIALS[Math.floor(Math.random() * MATERIALS.length)]);
+    const now = performance.now();
+    const rect = lastRockRectRef.current;
+    const fallBase = rect ? rect.height * 0.15 : 24;
+    const common = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 };
+    const promises = picks.map((name) => spawnMaterialDrop(name, 0, common));
+    Promise.all(promises).then((results) => {
+      const delta: Partial<Record<MaterialName, number>> = {};
+      results.forEach((n) => {
+        delta[n] = (delta[n] || 0) + 1;
+      });
+      setMaterialAmounts((prev) => {
+        const next = { ...prev };
+        (Object.keys(delta) as MaterialName[]).forEach((k) => {
+          next[k] = prev[k] + (delta[k] || 0);
+        });
+        return next;
+      });
+    });
+  }, [spawnMaterialDrop, setMaterialAmounts]);
+
   const spawnIconParticles = useCallback((sourceEl: HTMLElement, src: string) => {
     const numParticles = 10;
     const durationMs = 420;
@@ -587,7 +758,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
           <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleLayerTap : undefined} onTouchStart={isMobile ? handleLayerTap : undefined}>
             <MaterialsBar $visible={islandOverlayVisible && !islandClosing}>
               {MATERIALS.map((name) => (
-                <MaterialItem key={name} onClick={!isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined} onTouchStart={isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}>
+                <MaterialItem
+                  ref={(el) => {
+                    materialItemRefs.current[name] = el;
+                  }}
+                  key={name}
+                  onClick={!isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}
+                  onTouchStart={isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}>
                   {materialUrls[name] && <MaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
                   <MaterialAmount>{materialAmounts[name]}</MaterialAmount>
                 </MaterialItem>
@@ -604,8 +781,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL }: Props) {
                   alignItems: "flex-start",
                   justifyContent: "center",
                 }}>
-                <RockLayer $visible={!islandClosing} onClick={(e) => e.stopPropagation()} onTouchStart={(e) => e.stopPropagation()}>
-                  <Rock heightPct={75} />
+                <RockLayer ref={rockLayerRef} $visible={!islandClosing} onClick={(e) => e.stopPropagation()} onTouchStart={(e) => e.stopPropagation()}>
+                  <Rock heightPct={75} onBroken={handleRockBroken} />
                 </RockLayer>
               </div>
             </Animator>
