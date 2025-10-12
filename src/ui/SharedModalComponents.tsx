@@ -10,7 +10,7 @@ export const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1023;
+  z-index: 102300;
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--modalOverlayBackgroundDark);
