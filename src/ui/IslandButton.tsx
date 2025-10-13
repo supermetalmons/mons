@@ -199,7 +199,7 @@ const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 
 const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
 
-export let hasIslandOverlayVisible: () => boolean;
+export let hasIslandOverlayVisible: () => boolean = () => false;
 
 const getMaterialImageUrl = (name: MaterialName) => {
   if (!materialImagePromises.has(name)) {
