@@ -167,6 +167,7 @@ const RockLayer = styled.div<{ $visible: boolean }>`
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   user-select: none;
+  touch-action: none;
   -webkit-user-select: none;
 `;
 
@@ -197,6 +198,8 @@ type MaterialName = (typeof MATERIALS)[number];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 
 const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
+
+export let hasIslandOverlayVisible: () => boolean;
 
 const getMaterialImageUrl = (name: MaterialName) => {
   if (!materialImagePromises.has(name)) {
@@ -244,6 +247,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const rockLayerRef = useRef<HTMLDivElement | null>(null);
   const fxContainerRef = useRef<HTMLDivElement | null>(null);
   const lastRockRectRef = useRef<DOMRect | null>(null);
+
+  hasIslandOverlayVisible = () => {
+    return islandOverlayVisible || islandClosing || islandOpening;
+  };
 
   useEffect(() => {
     const shouldBeMarkedOpen = islandOverlayShown || islandOpening || islandClosing;
@@ -358,8 +365,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
       soundPlayer.initializeOnUserInteraction(true);
       closeAllKindsOfPopups();
-      event.stopPropagation();
-      event.preventDefault();
       if (!islandImgLoaded || !islandNatural) return;
       const imgEl = islandButtonImgRef.current;
       if (!imgEl) return;
@@ -397,10 +402,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleIslandClose = useCallback(
     (event?: React.MouseEvent | React.TouchEvent) => {
-      if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-      }
       if (isMobile && Date.now() - overlayJustOpenedAtRef.current < 250) {
         return;
       }
@@ -447,6 +448,22 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     },
     [islandNatural]
   );
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        e.preventDefault();
+        handleIslandClose();
+      }
+    };
+    if (islandOverlayVisible || islandOpening || islandClosing) {
+      document.addEventListener("keydown", handleKeyDown, true);
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown, true);
+      };
+    }
+  }, [islandOverlayVisible, islandOpening, islandClosing, handleIslandClose]);
 
   const handleIslandTransitionEnd = useCallback(
     (e: React.TransitionEvent) => {
@@ -729,8 +746,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleMaterialItemTap = useCallback(
     (name: MaterialName, url: string | null) => (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-      event.stopPropagation();
-      event.preventDefault();
       if (!url) return;
       const currentTarget = event.currentTarget as HTMLDivElement;
       const img = currentTarget.querySelector("img");
@@ -742,6 +757,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleLayerTap = useCallback(
     (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+      const shouldSkipCloseForMaterialTarget = () => {
+        const targetNode = (event.target as Node) || null;
+        if (!targetNode) return false;
+        const refs = materialItemRefs.current;
+        for (const key in refs) {
+          const el = refs[key as MaterialName];
+          if (el && (el === targetNode || el.contains(targetNode))) {
+            return true;
+          }
+        }
+        return false;
+      };
       const heroEl = islandHeroImgRef.current;
       if (!heroEl) return;
       const rect = heroEl.getBoundingClientRect();
@@ -757,6 +784,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       const inside = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
       if (!inside) {
+        if (shouldSkipCloseForMaterialTarget()) return;
         handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
         return;
       }
@@ -764,20 +792,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const ry = Math.floor(clientY - rect.top);
       const drew = drawHeroIntoHitCanvas();
       if (!drew) {
-        event.stopPropagation();
-        event.preventDefault();
         return;
       }
       const canvas = heroHitCanvasRef.current;
       if (!canvas) {
-        event.stopPropagation();
-        event.preventDefault();
         return;
       }
       const ctx = canvas.getContext("2d") as CanvasRenderingContext2D | null;
       if (!ctx) {
-        event.stopPropagation();
-        event.preventDefault();
         return;
       }
       let alpha = 255;
@@ -786,11 +808,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         alpha = data[3];
       } catch {}
       if (alpha < 16) {
+        if (shouldSkipCloseForMaterialTarget()) return;
         handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
         return;
       }
-      event.stopPropagation();
-      event.preventDefault();
     },
     [handleIslandClose, drawHeroIntoHitCanvas]
   );
@@ -831,7 +852,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                   alignItems: "flex-start",
                   justifyContent: "center",
                 }}>
-                <RockLayer ref={rockLayerRef} $visible={!islandClosing} onClick={(e) => e.stopPropagation()} onTouchStart={(e) => e.stopPropagation()}>
+                <RockLayer ref={rockLayerRef} $visible={!islandClosing}>
                   <Rock heightPct={75} onBroken={handleRockBroken} />
                 </RockLayer>
               </div>

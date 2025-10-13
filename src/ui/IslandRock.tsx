@@ -13,6 +13,7 @@ const Container = styled.div<{ $visible: boolean; $instant?: boolean; $disabled?
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   user-select: none;
+  touch-action: none;
   -webkit-user-select: none;
 `;
 
@@ -25,6 +26,7 @@ const RockImg = styled.img<{ $heightPct?: number; $hidden?: boolean }>`
   -webkit-user-drag: none;
   -webkit-user-select: none;
   -webkit-tap-highlight-color: transparent;
+  touch-action: none;
   -webkit-touch-callout: none;
   filter: drop-shadow(0 6px 2px rgba(0, 0, 0, 0.18));
   -webkit-filter: drop-shadow(0 6px 2px rgba(0, 0, 0, 0.18));
@@ -340,11 +342,9 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
       $visible={visible}
       $instant={instantHide}
       $disabled={disabled}
-      onMouseDown={(e) => e.preventDefault()}
       onClick={
         !isMobile
           ? (e) => {
-              e.stopPropagation();
               onTap();
             }
           : undefined
@@ -352,7 +352,6 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
       onTouchStart={
         isMobile
           ? (e) => {
-              e.stopPropagation();
               onTap();
             }
           : undefined
