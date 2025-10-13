@@ -18,6 +18,7 @@ import { getMonId, getMonsIndexes, MonType } from "../utils/namedMons";
 import { instructor } from "../assets/talkingDude";
 import { isBotsLoopMode } from "../connection/connection";
 import { launchConfetti } from "./confetti";
+import { soundPlayer } from "../utils/SoundPlayer";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 
@@ -671,8 +672,8 @@ export function updateEmojiAndAuraIfNeeded(newEmojiId: string, aura: string | un
 
 export function showRandomEmojisForLoopMode() {
   if (!opponentAvatar || !playerAvatar) return;
-  const [, playerUrl] = emojis.getRandomEmojiUrl();
-  const [, opponentUrl] = emojis.getRandomEmojiUrl();
+  const [, playerUrl] = emojis.getRandomEmojiUrl(); // TODO: allow swagpack
+  const [, opponentUrl] = emojis.getRandomEmojiUrl(); // TODO: allow swagpack
   SVG.setImageUrl(playerAvatar, playerUrl);
   SVG.setImageUrl(opponentAvatar, opponentUrl);
   showRaibowAura((playerSideMetadata.aura ?? "") === "rainbow", playerUrl, false);
@@ -1631,7 +1632,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
   }
 
   const playerEmojiUrl = emojis.getEmojiUrl(playerEmojiId);
-  const [opponentEmojiId, opponentEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(playerEmojiId);
+  const [opponentEmojiId, opponentEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(playerEmojiId);  // TODO: allow swagpack
 
   playerSideMetadata.emojiId = playerEmojiId;
   opponentSideMetadata.emojiId = opponentEmojiId;
@@ -1767,6 +1768,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     }
 
     avatar.addEventListener(defaultInputEventName, (event) => {
+      soundPlayer.initializeOnUserInteraction();
       event.stopPropagation();
       preventTouchstartIfNeeded(event);
 
@@ -1837,7 +1839,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
 
 function pickAndDisplayDifferentEmoji(avatar: SVGElement, isOpponent: boolean) {
   if (isOpponent) {
-    const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(opponentSideMetadata.emojiId);
+    const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(opponentSideMetadata.emojiId);  // TODO: allow swagpack
     opponentSideMetadata.emojiId = newId;
     SVG.setImageUrl(avatar, newEmojiUrl);
     const visible = (opponentSideMetadata.aura ?? "") === "rainbow";
