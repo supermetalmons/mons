@@ -8,15 +8,15 @@ export const emojis = {
   pc: "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",
 
   getRandomEmojiId: function () {
-    return getRandomEmojiId();
+    return getRandomEmojiId(false);
   },
 
-  getRandomEmojiUrl: function (includingSwagPack: boolean) { // TODO: implement includingSwagPack
-    return getRandomEmojiUrl();
+  getRandomEmojiUrl: function (includingSwagPack: boolean) {
+    return getRandomEmojiUrl(includingSwagPack);
   },
 
-  getRandomEmojiUrlOtherThan: function (id: string, includingSwagPack: boolean) { // TODO: implement includingSwagPack
-    return getRandomEmojiUrlOtherThan(id);
+  getRandomEmojiUrlOtherThan: function (id: string, includingSwagPack: boolean) {
+    return getRandomEmojiUrlOtherThan(id, includingSwagPack);
   },
 
   getEmojiIdFromString: function (str: string) {
@@ -37,22 +37,23 @@ function getEmojiIdFromString(str: string): string {
   return (index + 1).toString();
 }
 
-function getRandomEmojiUrlOtherThan(id: string): [string, string] {
+function getRandomEmojiUrlOtherThan(id: string, includingSwagPack: boolean): [string, string] {
   let newId;
   do {
-    newId = getRandomEmojiId();
+    newId = getRandomEmojiId(includingSwagPack);
   } while (newId === id);
 
   const emoji = emojis.getEmojiUrl(newId);
   return [newId, emoji];
 }
 
-function getRandomEmojiUrl(): [string, string] {
-  const id = getRandomEmojiId();
+function getRandomEmojiUrl(includingSwagPack: boolean): [string, string] {
+  const id = getRandomEmojiId(includingSwagPack);
   return [id, emojis.getEmojiUrl(id)];
 }
 
-function getRandomEmojiId(): string {
+function getRandomEmojiId(includingSwagPack: boolean): string {
+  // TODO: implement including swagpack
   const index = Math.floor(Math.random() * emojipackSize) + 1;
   const id = index.toString();
   return id;
@@ -61,7 +62,7 @@ function getRandomEmojiId(): string {
 export function getIncrementedEmojiId(currentId: string): string {
   const currentIndex = parseInt(currentId);
   if (isNaN(currentIndex)) {
-    return getRandomEmojiId();
+    return getRandomEmojiId(false);
   }
 
   const nextIndex = (currentIndex % emojipackSize) + 1;
