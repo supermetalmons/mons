@@ -167,6 +167,7 @@ const RockLayer = styled.div<{ $visible: boolean }>`
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   user-select: none;
+  touch-action: none;
   -webkit-user-select: none;
 `;
 
@@ -358,8 +359,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
       soundPlayer.initializeOnUserInteraction(true);
       closeAllKindsOfPopups();
-      event.stopPropagation();
-      event.preventDefault();
       if (!islandImgLoaded || !islandNatural) return;
       const imgEl = islandButtonImgRef.current;
       if (!imgEl) return;
@@ -397,10 +396,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleIslandClose = useCallback(
     (event?: React.MouseEvent | React.TouchEvent) => {
-      if (event) {
-        event.stopPropagation();
-        event.preventDefault();
-      }
       if (isMobile && Date.now() - overlayJustOpenedAtRef.current < 250) {
         return;
       }
@@ -745,8 +740,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleMaterialItemTap = useCallback(
     (name: MaterialName, url: string | null) => (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-      event.stopPropagation();
-      event.preventDefault();
       if (!url) return;
       const currentTarget = event.currentTarget as HTMLDivElement;
       const img = currentTarget.querySelector("img");
@@ -780,20 +773,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const ry = Math.floor(clientY - rect.top);
       const drew = drawHeroIntoHitCanvas();
       if (!drew) {
-        event.stopPropagation();
-        event.preventDefault();
         return;
       }
       const canvas = heroHitCanvasRef.current;
       if (!canvas) {
-        event.stopPropagation();
-        event.preventDefault();
         return;
       }
       const ctx = canvas.getContext("2d") as CanvasRenderingContext2D | null;
       if (!ctx) {
-        event.stopPropagation();
-        event.preventDefault();
         return;
       }
       let alpha = 255;
@@ -805,8 +792,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
         return;
       }
-      event.stopPropagation();
-      event.preventDefault();
     },
     [handleIslandClose, drawHeroIntoHitCanvas]
   );
@@ -847,7 +832,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                   alignItems: "flex-start",
                   justifyContent: "center",
                 }}>
-                <RockLayer ref={rockLayerRef} $visible={!islandClosing} onClick={(e) => e.stopPropagation()} onTouchStart={(e) => e.stopPropagation()}>
+                <RockLayer ref={rockLayerRef} $visible={!islandClosing}>
                   <Rock heightPct={75} onBroken={handleRockBroken} />
                 </RockLayer>
               </div>
