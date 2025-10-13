@@ -490,13 +490,13 @@ export function didClickUndoButton() {
 }
 
 export function canChangeEmoji(opponents: boolean): boolean {
-  if (storage.getLoginId("") || isBotsLoopMode) {
+  if ((storage.getLoginId("") && !opponents) || isBotsLoopMode) {
     return false;
   }
   if (isOnlineGame || isGameWithBot) {
     return opponents ? false : !isWatchOnly;
   } else {
-    return isPlayerSideTurn() ? !opponents : opponents;
+    return true;
   }
 }
 

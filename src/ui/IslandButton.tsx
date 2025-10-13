@@ -93,6 +93,7 @@ const MaterialAmount = styled.span`
   line-height: 1;
   color: var(--instruction-text-color);
   font-weight: 600;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
   letter-spacing: 0.2px;
 `;
 
