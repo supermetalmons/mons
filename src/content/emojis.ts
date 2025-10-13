@@ -11,11 +11,11 @@ export const emojis = {
     return getRandomEmojiId();
   },
 
-  getRandomEmojiUrl: function () {
+  getRandomEmojiUrl: function (includingSwagPack: boolean) { // TODO: implement includingSwagPack
     return getRandomEmojiUrl();
   },
 
-  getRandomEmojiUrlOtherThan: function (id: string) {
+  getRandomEmojiUrlOtherThan: function (id: string, includingSwagPack: boolean) { // TODO: implement includingSwagPack
     return getRandomEmojiUrlOtherThan(id);
   },
 
