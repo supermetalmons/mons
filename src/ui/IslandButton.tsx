@@ -757,6 +757,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleLayerTap = useCallback(
     (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+      const shouldSkipCloseForMaterialTarget = () => {
+        const targetNode = (event.target as Node) || null;
+        if (!targetNode) return false;
+        const refs = materialItemRefs.current;
+        for (const key in refs) {
+          const el = refs[key as MaterialName];
+          if (el && (el === targetNode || el.contains(targetNode))) {
+            return true;
+          }
+        }
+        return false;
+      };
       const heroEl = islandHeroImgRef.current;
       if (!heroEl) return;
       const rect = heroEl.getBoundingClientRect();
@@ -772,6 +784,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       const inside = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
       if (!inside) {
+        if (shouldSkipCloseForMaterialTarget()) return;
         handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
         return;
       }
@@ -795,6 +808,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         alpha = data[3];
       } catch {}
       if (alpha < 16) {
+        if (shouldSkipCloseForMaterialTarget()) return;
         handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
         return;
       }
