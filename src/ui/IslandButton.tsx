@@ -230,6 +230,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const overlayJustOpenedAtRef = useRef<number>(0);
   const [resolvedUrl, setResolvedUrl] = useState<string>(imageUrl);
   const heroHitCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const overlayActiveRef = useRef<boolean>(false);
   const [materialAmounts, setMaterialAmounts] = useState<Record<MaterialName, number>>(() => {
     const entries = MATERIALS.map((n) => [n, 0] as const);
     return Object.fromEntries(entries) as Record<MaterialName, number>;
@@ -255,6 +256,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       document.body.classList.remove("island-overlay-open");
     };
   }, [islandOverlayShown, islandOpening, islandClosing]);
+
+  useEffect(() => {
+    overlayActiveRef.current = islandOverlayVisible || islandOpening || islandClosing;
+  }, [islandOverlayVisible, islandOpening, islandClosing]);
 
   useEffect(() => {
     let mounted = true;
@@ -400,6 +405,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
       didDismissSomethingWithOutsideTapJustNow();
+      try {
+        const container = fxContainerRef.current;
+        if (container && container.parentNode) {
+          container.parentNode.removeChild(container);
+        }
+      } catch {}
+      fxContainerRef.current = null;
       const imgEl = islandButtonImgRef.current;
       if (!imgEl || !islandNatural) {
         setIslandActive(false);
@@ -453,6 +465,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     (e: React.TransitionEvent<HTMLDivElement>) => {
       if (e.propertyName !== "opacity") return;
       if (!islandOverlayVisible) {
+        const container = fxContainerRef.current;
+        if (container && container.parentNode) {
+          try {
+            container.parentNode.removeChild(container);
+          } catch {}
+        }
+        fxContainerRef.current = null;
         setIslandOverlayShown(false);
         setIslandClosing(false);
         setIslandTranslate({ x: 0, y: 0 });
@@ -511,6 +530,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       el.style.position = "absolute";
       el.style.left = "0";
       el.style.top = "0";
+      el.setAttribute("data-fx", "material-drop");
       const targetRef = materialItemRefs.current[name];
       const targetIcon = targetRef?.querySelector("img") as HTMLImageElement | null;
       const targetIconBox = targetIcon?.getBoundingClientRect();
@@ -542,6 +562,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       return new Promise<MaterialName>((resolve) => {
         function step1(now: number) {
+          if (!overlayActiveRef.current) {
+            el.remove();
+            resolve(name);
+            return;
+          }
           if (now < start) {
             requestAnimationFrame(step1);
             return;
@@ -578,6 +603,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               return 1 - Math.pow(1 - t, 3);
             }
             function step2(now2: number) {
+              if (!overlayActiveRef.current) {
+                el.remove();
+                resolve(name);
+                return;
+              }
               if (now2 < start2) {
                 requestAnimationFrame(step2);
                 return;
@@ -638,11 +668,26 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const startY = rect.top + rect.height / 2 - 12;
     const baseSize = Math.max(14, Math.min(28, rect.width * 0.7));
     const els: HTMLImageElement[] = [];
+    let fxContainer = fxContainerRef.current as HTMLDivElement | null;
+    if (!fxContainer) {
+      fxContainer = document.createElement("div");
+      fxContainer.style.position = "fixed";
+      fxContainer.style.left = "0";
+      fxContainer.style.top = "0";
+      fxContainer.style.right = "0";
+      fxContainer.style.bottom = "0";
+      fxContainer.style.pointerEvents = "none";
+      fxContainer.style.zIndex = "90005";
+      fxContainer.style.contain = "paint";
+      fxContainer.style.isolation = "isolate";
+      fxContainerRef.current = fxContainer;
+      document.body.appendChild(fxContainer);
+    }
     for (let i = 0; i < numParticles; i++) {
       const el = document.createElement("img");
       el.src = src;
       el.draggable = false;
-      el.style.position = "fixed";
+      el.style.position = "absolute";
       el.style.left = "0";
       el.style.top = "0";
       el.style.width = `${baseSize}px`;
@@ -652,7 +697,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       el.style.willChange = "transform, opacity";
       el.style.transform = `translate3d(${startX - baseSize / 2}px, ${startY - baseSize / 2}px, 0) scale(1)`;
       el.style.opacity = "1";
-      document.body.appendChild(el);
+      el.setAttribute("data-fx", "icon-particle");
+      fxContainer.appendChild(el);
       els.push(el);
     }
     const angles = els.map((_, i) => (i / numParticles) * Math.PI * 2 + Math.random() * (Math.PI / numParticles) - Math.PI / 2);
