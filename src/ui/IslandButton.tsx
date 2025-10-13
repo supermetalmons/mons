@@ -448,6 +448,22 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     [islandNatural]
   );
 
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.stopPropagation();
+        e.preventDefault();
+        handleIslandClose();
+      }
+    };
+    if (islandOverlayVisible || islandOpening || islandClosing) {
+      document.addEventListener("keydown", handleKeyDown, true);
+      return () => {
+        document.removeEventListener("keydown", handleKeyDown, true);
+      };
+    }
+  }, [islandOverlayVisible, islandOpening, islandClosing, handleIslandClose]);
+
   const handleIslandTransitionEnd = useCallback(
     (e: React.TransitionEvent) => {
       if (e.propertyName !== "transform") return;
