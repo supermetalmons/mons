@@ -199,6 +199,8 @@ const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 
 const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
 
+export let hasIslandOverlayVisible: () => boolean;
+
 const getMaterialImageUrl = (name: MaterialName) => {
   if (!materialImagePromises.has(name)) {
     const url = `${MATERIAL_BASE_URL}/${name}.webp`;
@@ -245,6 +247,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const rockLayerRef = useRef<HTMLDivElement | null>(null);
   const fxContainerRef = useRef<HTMLDivElement | null>(null);
   const lastRockRectRef = useRef<DOMRect | null>(null);
+
+  hasIslandOverlayVisible = () => {
+    return islandOverlayVisible || islandClosing || islandOpening;
+  };
 
   useEffect(() => {
     const shouldBeMarkedOpen = islandOverlayShown || islandOpening || islandClosing;

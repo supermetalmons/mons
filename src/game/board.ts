@@ -7,6 +7,7 @@ import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
 import { playSounds } from "../content/sounds";
 import { hasNavigationPopupVisible, didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible, resetOutsideTapDismissTimeout } from "../ui/BottomControls";
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
+import { hasIslandOverlayVisible } from "../ui/IslandButton";
 import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername, getStashedPlayerProfile } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
 import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange, showRaibowAura, updateAuraForAvatarElement } from "../ui/BoardComponent";
@@ -1877,7 +1878,7 @@ export function setupBoard() {
   initializeBoardElements();
 
   document.addEventListener(defaultInputEventName, function (event) {
-    const hasVisiblePopups = hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible() || showsShinyCardSomewhere;
+    const hasVisiblePopups = hasIslandOverlayVisible() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible() || showsShinyCardSomewhere;
     const didDismissSmth = !didNotDismissAnythingWithOutsideTapJustNow();
     if (didDismissSmth || hasVisiblePopups) {
       if (!hasVisiblePopups && didDismissSmth) {
