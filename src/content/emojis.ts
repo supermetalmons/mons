@@ -1,4 +1,7 @@
 export const emojipackSize = 155;
+const swagpackStart = 1000;
+const swagpackEnd = 1466;
+const swagpackSize = swagpackEnd - swagpackStart + 1;
 
 export const emojis = {
   statusMove: "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",
@@ -53,10 +56,18 @@ function getRandomEmojiUrl(includingSwagPack: boolean): [string, string] {
 }
 
 function getRandomEmojiId(includingSwagPack: boolean): string {
-  // TODO: implement including swagpack
-  const index = Math.floor(Math.random() * emojipackSize) + 1;
-  const id = index.toString();
-  return id;
+  if (!includingSwagPack) {
+    const index = Math.floor(Math.random() * emojipackSize) + 1;
+    return index.toString();
+  }
+  const totalSize = emojipackSize + swagpackSize;
+  const randomIndex = Math.floor(Math.random() * totalSize) + 1;
+  if (randomIndex <= emojipackSize) {
+    return randomIndex.toString();
+  }
+  const swagIndexOffset = randomIndex - emojipackSize - 1;
+  const swagId = swagpackStart + swagIndexOffset;
+  return swagId.toString();
 }
 
 export function getIncrementedEmojiId(currentId: string): string {
