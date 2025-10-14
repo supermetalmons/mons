@@ -36,7 +36,16 @@
     "extends": [
       "react-app",
       "react-app/jest"
-    ]
+    ],
+    "rules": {
+      "no-mixed-operators": [
+        "error",
+        {
+          "groups": [["&&", "||"]],
+          "allowSamePrecedence": true
+        }
+      ]
+    }
   },
   "browserslist": {
     "production": [
