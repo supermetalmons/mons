@@ -204,6 +204,32 @@ const DudeImg = styled.img`
   image-rendering: crisp-edges;
 `;
 
+const HeroWrap = styled.div`
+  position: relative;
+  display: inline-block;
+`;
+
+const WalkOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+`;
+
+const DUDE_ANCHOR_FRAC = 0.77;
+const INITIAL_DUDE_Y_SHIFT = -0.175;
+const INITIAL_DUDE_X_SHIFT = 0.075;
+const DudeSprite = styled.img`
+  position: absolute;
+  width: auto;
+  height: 45%;
+  transform: translate(-50%, -${DUDE_ANCHOR_FRAC * 100}%);
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 4px 1px rgba(0, 0, 0, 0.14));
+  -webkit-filter: drop-shadow(0 4px 1px rgba(0, 0, 0, 0.14));
+  pointer-events: none;
+`;
+
 type Props = {
   imageUrl?: string;
   dimmed?: boolean;
@@ -234,6 +260,22 @@ const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map
 
 export let hasIslandOverlayVisible: () => boolean = () => false;
 
+const WALK_POLYGON: Array<{ x: number; y: number }> = [
+  { x: 0.546, y: 0.0182 },
+  { x: 0.8374, y: 0.0908 },
+  { x: 0.9861, y: 0.1955 },
+  { x: 0.7162, y: 0.3836 },
+  { x: 0.6673, y: 0.3643 },
+  { x: 0.5186, y: 0.4519 },
+  { x: 0.3953, y: 0.39 },
+  { x: 0.3386, y: 0.4156 },
+  { x: 0.008, y: 0.219 },
+  { x: 0.1234, y: 0.1036 },
+  { x: 0.2877, y: 0.0267 },
+  { x: 0.3621, y: 0.0353 },
+  { x: 0.4619, y: 0.0502 },
+];
+
 const getMaterialImageUrl = (name: MaterialName) => {
   if (!materialImagePromises.has(name)) {
     const url = `${MATERIAL_BASE_URL}/${name}.webp`;
@@ -257,6 +299,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const islandHeroImgRef = useRef<HTMLImageElement | null>(null);
   const [islandOverlayShown, setIslandOverlayShown] = useState(false);
   const [islandOverlayVisible, setIslandOverlayVisible] = useState(false);
+  const [walkReady, setWalkReady] = useState(false);
   const [islandActive, setIslandActive] = useState(false);
   const [islandAnimating, setIslandAnimating] = useState(false);
   const [islandClosing, setIslandClosing] = useState(false);
@@ -280,6 +323,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const rockLayerRef = useRef<HTMLDivElement | null>(null);
   const fxContainerRef = useRef<HTMLDivElement | null>(null);
   const lastRockRectRef = useRef<DOMRect | null>(null);
+  const [rockIsBroken, setRockIsBroken] = useState(false);
+  const walkSuppressedUntilRef = useRef<number>(0);
+
+  const walkPoints = WALK_POLYGON;
+
+  const [heroSize, setHeroSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
+
+  const [dudePos, setDudePos] = useState<{ x: number; y: number }>({ x: 0.4, y: 0.78 });
+
+  const origDudeImgRef = useRef<HTMLImageElement | null>(null);
+  const hasSyncedDudeRef = useRef<boolean>(false);
+
+  const moveAnimRef = useRef<{ start: number; from: { x: number; y: number }; to: { x: number; y: number }; duration: number } | null>(null);
+  const rafRef = useRef<number | null>(null);
 
   hasIslandOverlayVisible = () => {
     return islandOverlayVisible || islandClosing || islandOpening;
@@ -349,6 +406,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const hero = islandHeroImgRef.current;
     if (!hero) return;
     const rect = hero.getBoundingClientRect();
+    setHeroSize({ w: Math.max(1, Math.round(rect.width)), h: Math.max(1, Math.round(rect.height)) });
     let canvas = heroHitCanvasRef.current;
     if (!canvas) {
       canvas = document.createElement("canvas");
@@ -367,6 +425,54 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       ctx.drawImage(hero, 0, 0, w, h);
     } catch {}
   }, [islandOverlayVisible, islandClosing, resolvedUrl]);
+
+  useEffect(() => {
+    const onResize = () => {
+      const hero = islandHeroImgRef.current;
+      if (!hero) return;
+      const rect = hero.getBoundingClientRect();
+      setHeroSize({ w: Math.max(1, Math.round(rect.width)), h: Math.max(1, Math.round(rect.height)) });
+    };
+    if (islandOverlayVisible) {
+      window.addEventListener("resize", onResize);
+      onResize();
+    }
+    return () => {
+      window.removeEventListener("resize", onResize);
+    };
+  }, [islandOverlayVisible]);
+
+  const syncDudePosFromOriginal = useCallback(() => {
+    if (hasSyncedDudeRef.current) return;
+    const hero = islandHeroImgRef.current;
+    const origDude = origDudeImgRef.current;
+    if (!hero || !origDude) return;
+    const hbox = hero.getBoundingClientRect();
+    const db = origDude.getBoundingClientRect();
+    const cxCenter = (db.left + db.width / 2 - hbox.left) / hbox.width;
+    const cx = cxCenter + INITIAL_DUDE_X_SHIFT;
+    const cyBottom = (db.bottom - hbox.top) / hbox.height;
+    const cy = cyBottom + INITIAL_DUDE_Y_SHIFT;
+    if (isFinite(cx) && isFinite(cy)) {
+      setDudePos({ x: Math.max(0, Math.min(1, cx)), y: Math.max(0, Math.min(1, cy)) });
+      hasSyncedDudeRef.current = true;
+    }
+  }, []);
+
+  useEffect(() => {
+    if (islandOverlayVisible) {
+      syncDudePosFromOriginal();
+    }
+  }, [islandOverlayVisible, syncDudePosFromOriginal]);
+
+  const initializeWalkPolygonIfNeeded = useCallback(() => {}, []);
+
+  useEffect(() => {
+    if (!islandOverlayVisible || islandOpening || islandClosing) return;
+    if (!heroSize.w || !heroSize.h) return;
+    if (walkReady) return;
+    initializeWalkPolygonIfNeeded();
+  }, [islandOverlayVisible, islandOpening, islandClosing, heroSize.w, heroSize.h, walkReady, initializeWalkPolygonIfNeeded]);
 
   const drawHeroIntoHitCanvas = useCallback(() => {
     const hero = islandHeroImgRef.current;
@@ -392,6 +498,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     } catch {
       return false;
     }
+  }, []);
+
+  const measureHeroSize = useCallback(() => {
+    const hero = islandHeroImgRef.current;
+    if (!hero) return;
+    const rect = hero.getBoundingClientRect();
+    const w = Math.max(1, Math.round(rect.width));
+    const h = Math.max(1, Math.round(rect.height));
+    setHeroSize({ w, h });
   }, []);
 
   const handleIslandOpen = useCallback(
@@ -421,6 +536,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       setIslandClosing(false);
       setIslandOpening(true);
       setIslandActive(false);
+      setRockIsBroken(false);
       setIslandTranslate({ x: deltaX, y: deltaY });
       setIslandScale({ x: uniformScale, y: uniformScale });
       requestAnimationFrame(() => {
@@ -428,6 +544,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         setIslandTranslate({ x: 0, y: 0 });
         setIslandScale({ x: 1, y: 1 });
         setIslandOverlayVisible(true);
+        setWalkReady(false);
       });
     },
     [islandImgLoaded, islandNatural]
@@ -504,11 +621,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (islandActive) {
         setIslandAnimating(false);
         setIslandOpening(false);
+        try {
+          requestAnimationFrame(() => {
+            measureHeroSize();
+            requestAnimationFrame(() => {
+              initializeWalkPolygonIfNeeded();
+              setWalkReady(true);
+            });
+          });
+        } catch {}
         return;
       }
       setIslandAnimating(false);
     },
-    [islandActive]
+    [islandActive, initializeWalkPolygonIfNeeded, measureHeroSize]
   );
 
   const handleOverlayTransitionEnd = useCallback(
@@ -529,6 +655,58 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
     },
     [islandOverlayVisible]
+  );
+
+  const pointInPolygon = useCallback((x: number, y: number, poly: Array<{ x: number; y: number }>) => {
+    let inside = false;
+    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+      const xi = poly[i].x;
+      const yi = poly[i].y;
+      const xj = poly[j].x;
+      const yj = poly[j].y;
+      const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+      if (intersect) inside = !inside;
+    }
+    return inside;
+  }, []);
+
+  const stopMoveAnim = useCallback(() => {
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    rafRef.current = null;
+    moveAnimRef.current = null;
+  }, []);
+
+  const startMoveTo = useCallback(
+    (tx: number, ty: number) => {
+      stopMoveAnim();
+      syncDudePosFromOriginal();
+      const from = { ...dudePos };
+      const to = { x: tx, y: ty };
+      const w = heroSize.w;
+      const h = heroSize.h;
+      const dx = (to.x - from.x) * w;
+      const dy = (to.y - from.y) * h;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const speed = Math.max(60, Math.min(220, h * 0.45));
+      const duration = (dist / speed) * 1000;
+      moveAnimRef.current = { start: performance.now(), from, to, duration: Math.max(200, duration) };
+      const step = () => {
+        if (!moveAnimRef.current) return;
+        const now = performance.now();
+        const t = Math.min(1, (now - moveAnimRef.current.start) / moveAnimRef.current.duration);
+        const ease = 1 - Math.pow(1 - t, 3);
+        const nx = moveAnimRef.current.from.x + (moveAnimRef.current.to.x - moveAnimRef.current.from.x) * ease;
+        const ny = moveAnimRef.current.from.y + (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * ease;
+        setDudePos({ x: nx, y: ny });
+        if (t < 1) {
+          rafRef.current = requestAnimationFrame(step);
+        } else {
+          stopMoveAnim();
+        }
+      };
+      rafRef.current = requestAnimationFrame(step);
+    },
+    [dudePos, heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal]
   );
 
   const getFxContainer = useCallback(() => {
@@ -564,6 +742,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const spawnMaterialDrop = useCallback(
     async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number }): Promise<MaterialName> => {
+      walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
       const url = await getMaterialImageUrl(name);
       if (!url) return name;
       const rockLayer = rockLayerRef.current;
@@ -686,6 +865,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   );
 
   const handleRockBroken = useCallback(() => {
+    setRockIsBroken(true);
     const count = 2 + Math.floor(Math.random() * 4);
     const picks: MaterialName[] = [];
     for (let i = 0; i < count; i++) picks.push(MATERIALS[Math.floor(Math.random() * MATERIALS.length)]);
@@ -802,6 +982,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }
         return false;
       };
+      const isRockTarget = () => {
+        const targetNode = (event.target as Node) || null;
+        const rockEl = rockLayerRef.current;
+        if (rockIsBroken) return false;
+        return !!(targetNode && rockEl && (rockEl === targetNode || rockEl.contains(targetNode)));
+      };
       const heroEl = islandHeroImgRef.current;
       if (!heroEl) return;
       const rect = heroEl.getBoundingClientRect();
@@ -823,6 +1009,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       const rx = Math.floor(clientX - rect.left);
       const ry = Math.floor(clientY - rect.top);
+      const nx = rx / Math.max(1, rect.width);
+      const ny = ry / Math.max(1, rect.height);
+      if (isRockTarget()) {
+        return;
+      }
+      if (pointInPolygon(nx, ny, walkPoints)) {
+        if (performance.now() < walkSuppressedUntilRef.current) {
+          return;
+        }
+        startMoveTo(nx, ny);
+        return;
+      }
       const drew = drawHeroIntoHitCanvas();
       if (!drew) {
         return;
@@ -846,7 +1044,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, drawHeroIntoHitCanvas]
+    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, rockIsBroken]
   );
 
   return (
@@ -875,23 +1073,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               ))}
             </MaterialsBar>
             <Animator $tx={islandTranslate.x} $ty={islandTranslate.y} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd}>
-              <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} />
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  pointerEvents: "none",
-                  display: "flex",
-                  alignItems: "flex-start",
-                  justifyContent: "center",
-                }}>
-                <DudeLayer $visible={!islandClosing}>
-                  <DudeImg src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} />
-                </DudeLayer>
+              <HeroWrap>
+                <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} />
+                <WalkOverlay />
+                {!islandClosing && (
+                  <DudeLayer $visible={!islandClosing} style={{ visibility: "hidden", opacity: 0 }}>
+                    <DudeImg ref={origDudeImgRef} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} />
+                  </DudeLayer>
+                )}
+                {!islandClosing && <DudeSprite src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} style={{ left: `${dudePos.x * 100}%`, top: `${dudePos.y * 100}%` }} />}
                 <RockLayer ref={rockLayerRef} $visible={!islandClosing}>
                   <Rock heightPct={75} onBroken={handleRockBroken} />
                 </RockLayer>
-              </div>
+              </HeroWrap>
             </Animator>
           </Layer>
         </>
