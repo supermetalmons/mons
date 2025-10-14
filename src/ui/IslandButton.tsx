@@ -5,6 +5,7 @@ import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
+import { idle as islandMonsIdle } from "../assets/islandMons";
 
 const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
   border: none;
@@ -169,6 +170,38 @@ const RockLayer = styled.div<{ $visible: boolean }>`
   user-select: none;
   touch-action: none;
   -webkit-user-select: none;
+`;
+
+const DudeLayer = styled.div<{ $visible: boolean }>`
+  position: absolute;
+  left: 40%;
+  transform: translateX(-50%);
+  top: 11%;
+  height: 20%;
+  pointer-events: none;
+  transition: opacity 300ms ease;
+  opacity: ${(p) => (p.$visible ? 1 : 0)};
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  touch-action: none;
+  -webkit-user-select: none;
+`;
+
+const DudeImg = styled.img`
+  position: absolute;
+  bottom: 0;
+  right: calc(100% + 4%);
+  height: 85%;
+  width: auto;
+  display: block;
+  pointer-events: none;
+  filter: drop-shadow(0 4px 1px rgba(0, 0, 0, 0.14));
+  -webkit-filter: drop-shadow(0 4px 1px rgba(0, 0, 0, 0.14));
+  transform: scale(2.25);
+  transform-origin: bottom right;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 `;
 
 type Props = {
@@ -852,6 +885,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                   alignItems: "flex-start",
                   justifyContent: "center",
                 }}>
+                <DudeLayer $visible={!islandClosing}>
+                  <DudeImg src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} />
+                </DudeLayer>
                 <RockLayer ref={rockLayerRef} $visible={!islandClosing}>
                   <Rock heightPct={75} onBroken={handleRockBroken} />
                 </RockLayer>
