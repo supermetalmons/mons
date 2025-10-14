@@ -262,6 +262,14 @@ const getIslandImageUrl = () => {
 const MATERIALS = ["dust", "slime", "gum", "metal", "ice"] as const;
 type MaterialName = (typeof MATERIALS)[number];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
+const pickWeightedMaterial = (): MaterialName => {
+  const r = Math.random() * 100;
+  if (r < 30) return "dust";
+  if (r < 55) return "slime";
+  if (r < 75) return "gum";
+  if (r < 90) return "metal";
+  return "ice";
+};
 
 const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
 
@@ -890,7 +898,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     setRockIsBroken(true);
     const count = 2 + Math.floor(Math.random() * 4);
     const picks: MaterialName[] = [];
-    for (let i = 0; i < count; i++) picks.push(MATERIALS[Math.floor(Math.random() * MATERIALS.length)]);
+    for (let i = 0; i < count; i++) picks.push(pickWeightedMaterial());
     const now = performance.now();
     const rect = lastRockRectRef.current;
     const fallBase = rect ? rect.height * 0.15 : 24;
