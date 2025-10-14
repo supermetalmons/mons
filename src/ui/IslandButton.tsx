@@ -218,11 +218,18 @@ const WalkOverlay = styled.div`
 const DUDE_ANCHOR_FRAC = 0.77;
 const INITIAL_DUDE_Y_SHIFT = -0.175;
 const INITIAL_DUDE_X_SHIFT = 0.075;
-const DudeSprite = styled.img`
+const DudeSpriteWrap = styled.div`
   position: absolute;
   width: auto;
   height: 45%;
   transform: translate(-50%, -${DUDE_ANCHOR_FRAC * 100}%);
+  pointer-events: none;
+`;
+
+const DudeSpriteImg = styled.img<{ $facingLeft: boolean }>`
+  width: auto;
+  height: 100%;
+  transform: scaleX(${(p) => (p.$facingLeft ? -1 : 1)});
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   filter: drop-shadow(0 4px 1px rgba(0, 0, 0, 0.14));
@@ -332,6 +339,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [heroSize, setHeroSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
 
   const [dudePos, setDudePos] = useState<{ x: number; y: number }>({ x: 0.4, y: 0.78 });
+  const [dudeFacingLeft, setDudeFacingLeft] = useState<boolean>(false);
 
   const origDudeImgRef = useRef<HTMLImageElement | null>(null);
   const hasSyncedDudeRef = useRef<boolean>(false);
@@ -695,6 +703,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       syncDudePosFromOriginal();
       const from = { ...dudePos };
       const to = { x: tx, y: ty };
+      setDudeFacingLeft((prev) => (to.x < from.x ? true : to.x > from.x ? false : prev));
       const w = heroSize.w;
       const h = heroSize.h;
       const dx = (to.x - from.x) * w;
@@ -1094,7 +1103,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                     <DudeImg ref={origDudeImgRef} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} />
                   </DudeLayer>
                 )}
-                {decorVisible && <DudeSprite src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} style={{ left: `${dudePos.x * 100}%`, top: `${dudePos.y * 100}%` }} />}
+                {decorVisible && (
+                  <DudeSpriteWrap style={{ left: `${dudePos.x * 100}%`, top: `${dudePos.y * 100}%` }}>
+                    <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} />
+                  </DudeSpriteWrap>
+                )}
                 <RockLayer ref={rockLayerRef} $visible={decorVisible}>
                   <Rock heightPct={75} onBroken={handleRockBroken} />
                 </RockLayer>
