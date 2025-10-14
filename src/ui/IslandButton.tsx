@@ -163,7 +163,7 @@ const RockLayer = styled.div<{ $visible: boolean }>`
   top: 10%;
   height: 20%;
   pointer-events: auto;
-  transition: opacity 300ms ease;
+  transition: opacity 260ms ease;
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
@@ -179,7 +179,7 @@ const DudeLayer = styled.div<{ $visible: boolean }>`
   top: 11%;
   height: 20%;
   pointer-events: none;
-  transition: opacity 300ms ease;
+  transition: opacity 260ms ease;
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
@@ -267,6 +267,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [resolvedUrl, setResolvedUrl] = useState<string>(imageUrl);
   const heroHitCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayActiveRef = useRef<boolean>(false);
+  const [decorVisible, setDecorVisible] = useState(false);
   const [materialAmounts, setMaterialAmounts] = useState<Record<MaterialName, number>>(() => {
     const entries = MATERIALS.map((n) => [n, 0] as const);
     return Object.fromEntries(entries) as Record<MaterialName, number>;
@@ -300,6 +301,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   useEffect(() => {
     overlayActiveRef.current = islandOverlayVisible || islandOpening || islandClosing;
   }, [islandOverlayVisible, islandOpening, islandClosing]);
+
+  useEffect(() => {
+    let timer: number | null = null;
+    if (islandOverlayVisible && !islandClosing) {
+      timer = window.setTimeout(() => setDecorVisible(true), 120);
+    } else {
+      setDecorVisible(false);
+    }
+    return () => {
+      if (timer !== null) window.clearTimeout(timer);
+    };
+  }, [islandOverlayVisible, islandClosing]);
 
   useEffect(() => {
     let mounted = true;
@@ -885,10 +898,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                   alignItems: "flex-start",
                   justifyContent: "center",
                 }}>
-                <DudeLayer $visible={!islandClosing}>
+                <DudeLayer $visible={decorVisible}>
                   <DudeImg src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} />
                 </DudeLayer>
-                <RockLayer ref={rockLayerRef} $visible={!islandClosing}>
+                <RockLayer ref={rockLayerRef} $visible={decorVisible}>
                   <Rock heightPct={75} onBroken={handleRockBroken} />
                 </RockLayer>
               </div>
