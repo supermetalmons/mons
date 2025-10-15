@@ -705,11 +705,25 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     moveAnimRef.current = null;
   }, []);
 
+  const latestDudePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  useEffect(() => {
+    latestDudePosRef.current = dudePos;
+  }, [dudePos]);
+
   const startMoveTo = useCallback(
     (tx: number, ty: number) => {
-      stopMoveAnim();
       syncDudePosFromOriginal();
-      const from = { ...dudePos };
+      const now = performance.now();
+      let currentX = latestDudePosRef.current.x;
+      let currentY = latestDudePosRef.current.y;
+      const anim = moveAnimRef.current;
+      if (anim) {
+        const t = Math.min(1, (now - anim.start) / anim.duration);
+        const ease = 1 - Math.pow(1 - t, 3);
+        currentX = anim.from.x + (anim.to.x - anim.from.x) * ease;
+        currentY = anim.from.y + (anim.to.y - anim.from.y) * ease;
+      }
+      const from = { x: currentX, y: currentY };
       const to = { x: tx, y: ty };
       setDudeFacingLeft((prev) => (to.x < from.x ? true : to.x > from.x ? false : prev));
       const w = heroSize.w;
@@ -719,24 +733,70 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const dist = Math.sqrt(dx * dx + dy * dy);
       const speed = Math.max(60, Math.min(220, h * 0.45));
       const duration = (dist / speed) * 1000;
-      moveAnimRef.current = { start: performance.now(), from, to, duration: Math.max(200, duration) };
-      const step = () => {
-        if (!moveAnimRef.current) return;
-        const now = performance.now();
-        const t = Math.min(1, (now - moveAnimRef.current.start) / moveAnimRef.current.duration);
-        const ease = 1 - Math.pow(1 - t, 3);
-        const nx = moveAnimRef.current.from.x + (moveAnimRef.current.to.x - moveAnimRef.current.from.x) * ease;
-        const ny = moveAnimRef.current.from.y + (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * ease;
-        setDudePos({ x: nx, y: ny });
-        if (t < 1) {
-          rafRef.current = requestAnimationFrame(step);
-        } else {
-          stopMoveAnim();
-        }
-      };
-      rafRef.current = requestAnimationFrame(step);
+      moveAnimRef.current = { start: now, from, to, duration: Math.max(200, duration) };
+      if (!rafRef.current) {
+        const step = () => {
+          if (!moveAnimRef.current) return;
+          const n = performance.now();
+          const t2 = Math.min(1, (n - moveAnimRef.current.start) / moveAnimRef.current.duration);
+          const e2 = 1 - Math.pow(1 - t2, 3);
+          const nx = moveAnimRef.current.from.x + (moveAnimRef.current.to.x - moveAnimRef.current.from.x) * e2;
+          const ny = moveAnimRef.current.from.y + (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * e2;
+          setDudePos({ x: nx, y: ny });
+          if (t2 < 1) {
+            rafRef.current = requestAnimationFrame(step);
+          } else {
+            stopMoveAnim();
+          }
+        };
+        rafRef.current = requestAnimationFrame(step);
+      }
     },
-    [dudePos, heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal]
+    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal]
+  );
+
+  const updateMoveTarget = useCallback(
+    (tx: number, ty: number) => {
+      const now = performance.now();
+      const anim = moveAnimRef.current;
+      let currentX = latestDudePosRef.current.x;
+      let currentY = latestDudePosRef.current.y;
+      if (anim) {
+        const t = Math.min(1, (now - anim.start) / anim.duration);
+        const ease = 1 - Math.pow(1 - t, 3);
+        currentX = anim.from.x + (anim.to.x - anim.from.x) * ease;
+        currentY = anim.from.y + (anim.to.y - anim.from.y) * ease;
+      }
+      const from = { x: currentX, y: currentY };
+      const to = { x: tx, y: ty };
+      setDudeFacingLeft((prev) => (to.x < from.x ? true : to.x > from.x ? false : prev));
+      const w = heroSize.w;
+      const h = heroSize.h;
+      const dx = (to.x - from.x) * w;
+      const dy = (to.y - from.y) * h;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      const speed = Math.max(60, Math.min(220, h * 0.45));
+      const duration = (dist / speed) * 1000;
+      moveAnimRef.current = { start: now, from, to, duration: Math.max(200, duration) };
+      if (!rafRef.current) {
+        const step = () => {
+          if (!moveAnimRef.current) return;
+          const n = performance.now();
+          const tt = Math.min(1, (n - moveAnimRef.current.start) / moveAnimRef.current.duration);
+          const e = 1 - Math.pow(1 - tt, 3);
+          const nx = moveAnimRef.current.from.x + (moveAnimRef.current.to.x - moveAnimRef.current.from.x) * e;
+          const ny = moveAnimRef.current.from.y + (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * e;
+          setDudePos({ x: nx, y: ny });
+          if (tt < 1) {
+            rafRef.current = requestAnimationFrame(step);
+          } else {
+            stopMoveAnim();
+          }
+        };
+        rafRef.current = requestAnimationFrame(step);
+      }
+    },
+    [heroSize.h, heroSize.w, stopMoveAnim]
   );
 
   const getFxContainer = useCallback(() => {
@@ -998,7 +1058,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     [spawnIconParticles]
   );
 
-  const handleLayerTap = useCallback(
+  const isDraggingRef = useRef(false);
+
+  const handlePointerStart = useCallback(
     (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
       const shouldSkipCloseForMaterialTarget = () => {
         const targetNode = (event.target as Node) || null;
@@ -1049,6 +1111,51 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           return;
         }
         startMoveTo(nx, ny);
+        isDraggingRef.current = true;
+
+        const handleMove = (e: MouseEvent | TouchEvent) => {
+          if (!isDraggingRef.current) return;
+          let cx = 0;
+          let cy = 0;
+          if ("touches" in e && e.touches[0]) {
+            cx = e.touches[0].clientX;
+            cy = e.touches[0].clientY;
+          } else if ("clientX" in e) {
+            cx = (e as MouseEvent).clientX;
+            cy = (e as MouseEvent).clientY;
+          }
+          const insideMove = cx >= rect.left && cx <= rect.right && cy >= rect.top && cy <= rect.bottom;
+          if (!insideMove) return;
+          const rxx = Math.floor(cx - rect.left);
+          const ryy = Math.floor(cy - rect.top);
+          const nxx = rxx / Math.max(1, rect.width);
+          const nyy = ryy / Math.max(1, rect.height);
+          if (pointInPolygon(nxx, nyy, walkPoints)) {
+            updateMoveTarget(nxx, nyy);
+          }
+          if ("preventDefault" in e) {
+            e.preventDefault();
+          }
+        };
+
+        const handleEnd = () => {
+          isDraggingRef.current = false;
+          window.removeEventListener("mousemove", handleMove as any);
+          window.removeEventListener("mouseup", handleEnd as any);
+          window.removeEventListener("touchmove", handleMove as any);
+          window.removeEventListener("touchend", handleEnd as any);
+          window.removeEventListener("touchcancel", handleEnd as any);
+        };
+
+        window.addEventListener("mousemove", handleMove as any, { passive: false });
+        window.addEventListener("mouseup", handleEnd as any);
+        window.addEventListener("touchmove", handleMove as any, { passive: false });
+        window.addEventListener("touchend", handleEnd as any);
+        window.addEventListener("touchcancel", handleEnd as any);
+
+        if ("preventDefault" in event) {
+          event.preventDefault();
+        }
         return;
       }
       const drew = drawHeroIntoHitCanvas();
@@ -1074,7 +1181,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, rockIsBroken]
+    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken]
   );
 
   return (
@@ -1087,7 +1194,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       {(islandOverlayShown || islandAnimating) && (
         <>
           <Overlay $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleIslandClose : undefined} onTouchStart={isMobile ? handleIslandClose : undefined} onTransitionEnd={handleOverlayTransitionEnd} />
-          <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleLayerTap : undefined} onTouchStart={isMobile ? handleLayerTap : undefined}>
+          <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onMouseDown={!isMobile ? handlePointerStart : undefined} onTouchStart={isMobile ? handlePointerStart : undefined}>
             <MaterialsBar $visible={islandOverlayVisible && !islandClosing}>
               {MATERIALS.map((name) => (
                 <MaterialItem
