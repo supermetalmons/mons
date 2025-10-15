@@ -176,7 +176,7 @@ const IconLinkButton = styled.a`
   justify-content: center;
   height: 32px;
   padding: 0 9px;
-  border-radius: 6px;
+  border-radius: 16px;
   background-color: var(--color-gray-f9);
   color: var(--iconLinkButtonText);
   text-decoration: none;
