@@ -218,6 +218,7 @@ const WalkOverlay = styled.div`
 const DUDE_ANCHOR_FRAC = 0.77;
 const INITIAL_DUDE_Y_SHIFT = -0.175;
 const INITIAL_DUDE_X_SHIFT = 0.075;
+const DUDE_RADIUS_FRAC = 0.03;
 const DudeSpriteWrap = styled.div`
   position: absolute;
   width: auto;
@@ -341,6 +342,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const lastRockRectRef = useRef<DOMRect | null>(null);
   const [rockIsBroken, setRockIsBroken] = useState(false);
   const walkSuppressedUntilRef = useRef<number>(0);
+  const rockBoxRef = useRef<{ left: number; top: number; right: number; bottom: number } | null>(null);
+  const [rockBottomY, setRockBottomY] = useState<number>(1);
 
   const walkPoints = WALK_POLYGON;
 
@@ -538,6 +541,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     setHeroSize({ w, h });
   }, []);
 
+  const updateRockBox = useCallback(() => {
+    const hero = islandHeroImgRef.current;
+    const rockEl = rockLayerRef.current;
+    if (!hero || !rockEl) return;
+    const h = hero.getBoundingClientRect();
+    const r = rockEl.getBoundingClientRect();
+    if (h.width <= 0 || h.height <= 0) return;
+    const left = (r.left - h.left) / h.width;
+    const top = (r.top - h.top) / h.height;
+    const right = (r.right - h.left) / h.width;
+    const bottom = (r.bottom - h.top) / h.height;
+    rockBoxRef.current = { left, top, right, bottom };
+    setRockBottomY(bottom);
+  }, []);
+
   const handleIslandOpen = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
       soundPlayer.initializeOnUserInteraction(true);
@@ -574,9 +592,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         setIslandScale({ x: 1, y: 1 });
         setIslandOverlayVisible(true);
         setWalkReady(false);
+        try {
+          updateRockBox();
+        } catch {}
       });
     },
-    [islandImgLoaded, islandNatural]
+    [islandImgLoaded, islandNatural, updateRockBox]
   );
 
   const handleIslandClose = useCallback(
@@ -682,8 +703,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         setIslandTranslate({ x: 0, y: 0 });
         setIslandScale({ x: 1, y: 1 });
       }
+      try {
+        updateRockBox();
+      } catch {}
     },
-    [islandOverlayVisible]
+    [islandOverlayVisible, updateRockBox]
   );
 
   const pointInPolygon = useCallback((x: number, y: number, poly: Array<{ x: number; y: number }>) => {
@@ -709,6 +733,33 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   useEffect(() => {
     latestDudePosRef.current = dudePos;
   }, [dudePos]);
+
+  const constrainWithRock = useCallback(
+    (prevX: number, prevY: number, nextX: number, nextY: number) => {
+      if (rockIsBroken) return { x: nextX, y: nextY, blocked: false };
+      const box = rockBoxRef.current;
+      if (!box) return { x: nextX, y: nextY, blocked: false };
+      const r = DUDE_RADIUS_FRAC;
+      const left = box.left - r;
+      const right = box.right + r;
+      const top = box.top - r;
+      const bottom = box.bottom + r;
+      if (nextX < left || nextX > right || nextY < top || nextY > bottom) {
+        return { x: nextX, y: nextY, blocked: false };
+      }
+      const dl = Math.abs(nextX - left);
+      const dr = Math.abs(right - nextX);
+      const dt = Math.abs(nextY - top);
+      const db = Math.abs(bottom - nextY);
+      const m = Math.min(dl, dr, dt, db);
+      if (m === dl) nextX = left;
+      else if (m === dr) nextX = right;
+      else if (m === dt) nextY = top;
+      else nextY = bottom;
+      return { x: nextX, y: nextY, blocked: true };
+    },
+    [rockIsBroken]
+  );
 
   const startMoveTo = useCallback(
     (tx: number, ty: number) => {
@@ -742,7 +793,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const e2 = 1 - Math.pow(1 - t2, 3);
           const nx = moveAnimRef.current.from.x + (moveAnimRef.current.to.x - moveAnimRef.current.from.x) * e2;
           const ny = moveAnimRef.current.from.y + (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * e2;
-          setDudePos({ x: nx, y: ny });
+          let nextX = nx;
+          let nextY = ny;
+          try {
+            const prev = latestDudePosRef.current;
+            const c = constrainWithRock(prev.x, prev.y, nx, ny);
+            nextX = c.x;
+            nextY = c.y;
+            if (c.blocked) {
+              setDudePos({ x: nextX, y: nextY });
+              stopMoveAnim();
+              return;
+            }
+          } catch {}
+          setDudePos({ x: nextX, y: nextY });
           if (t2 < 1) {
             rafRef.current = requestAnimationFrame(step);
           } else {
@@ -752,7 +816,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal]
+    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal, constrainWithRock]
   );
 
   const updateMoveTarget = useCallback(
@@ -786,7 +850,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const e = 1 - Math.pow(1 - tt, 3);
           const nx = moveAnimRef.current.from.x + (moveAnimRef.current.to.x - moveAnimRef.current.from.x) * e;
           const ny = moveAnimRef.current.from.y + (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * e;
-          setDudePos({ x: nx, y: ny });
+          let nextX = nx;
+          let nextY = ny;
+          try {
+            const prev = latestDudePosRef.current;
+            const c = constrainWithRock(prev.x, prev.y, nx, ny);
+            nextX = c.x;
+            nextY = c.y;
+            if (c.blocked) {
+              setDudePos({ x: nextX, y: nextY });
+              stopMoveAnim();
+              return;
+            }
+          } catch {}
+          setDudePos({ x: nextX, y: nextY });
           if (tt < 1) {
             rafRef.current = requestAnimationFrame(step);
           } else {
@@ -796,7 +873,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.h, heroSize.w, stopMoveAnim]
+    [heroSize.h, heroSize.w, stopMoveAnim, constrainWithRock]
   );
 
   const getFxContainer = useCallback(() => {
@@ -1219,13 +1296,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                   </DudeLayer>
                 )}
                 {decorVisible && (
-                  <DudeSpriteWrap style={{ left: `${dudePos.x * 100}%`, top: `${dudePos.y * 100}%` }}>
-                    <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} />
-                  </DudeSpriteWrap>
+                  <>
+                    <DudeSpriteWrap
+                      style={{
+                        left: `${dudePos.x * 100}%`,
+                        top: `${dudePos.y * 100}%`,
+                        zIndex: dudePos.y < rockBottomY ? 0 : 2,
+                      }}>
+                      <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} />
+                    </DudeSpriteWrap>
+                    <RockLayer ref={rockLayerRef} $visible={decorVisible} style={{ zIndex: 1 }}>
+                      <Rock heightPct={75} onBroken={handleRockBroken} />
+                    </RockLayer>
+                  </>
                 )}
-                <RockLayer ref={rockLayerRef} $visible={decorVisible}>
-                  <Rock heightPct={75} onBroken={handleRockBroken} />
-                </RockLayer>
               </HeroWrap>
             </Animator>
           </Layer>
