@@ -218,14 +218,11 @@ const WalkOverlay = styled.div`
 const DUDE_ANCHOR_FRAC = 0.77;
 const INITIAL_DUDE_Y_SHIFT = -0.175;
 const INITIAL_DUDE_X_SHIFT = 0.075;
-const DUDE_BOX_WIDTH_FRAC = 0.11;
-const DUDE_BOX_HEIGHT_FRAC = 0.015;
-const DUDE_BOX_OFFSET_Y_FRAC = -0.015;
 const ROCK_BOX_INSET_LEFT_FRAC = 0.0;
 const ROCK_BOX_INSET_RIGHT_FRAC = 0.0;
 const ROCK_BOX_INSET_TOP_FRAC = 0.02;
 const ROCK_BOX_INSET_BOTTOM_FRAC = 0.24;
-const SHOW_ISLAND_DEBUG_BOUNDS = true;
+const SHOW_ISLAND_DEBUG_BOUNDS = false;
 const DudeSpriteWrap = styled.div`
   position: absolute;
   width: auto;
@@ -362,6 +359,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const origDudeImgRef = useRef<HTMLImageElement | null>(null);
   const hasSyncedDudeRef = useRef<boolean>(false);
+  const dudeWrapRef = useRef<HTMLDivElement | null>(null);
+  const [dudeWidthFrac, setDudeWidthFrac] = useState<number>(0.06);
 
   const moveAnimRef = useRef<{ start: number; from: { x: number; y: number }; to: { x: number; y: number }; duration: number } | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -385,6 +384,26 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   useEffect(() => {
     overlayActiveRef.current = islandOverlayVisible || islandOpening || islandClosing;
   }, [islandOverlayVisible, islandOpening, islandClosing]);
+
+  useEffect(() => {
+    const measure = () => {
+      const hero = islandHeroImgRef.current;
+      const wrap = dudeWrapRef.current;
+      if (!hero || !wrap) return;
+      const h = hero.getBoundingClientRect();
+      const w = wrap.getBoundingClientRect();
+      if (h.width > 0 && w.width > 0) {
+        setDudeWidthFrac(Math.max(0.001, Math.min(1, w.width / h.width)));
+      }
+    };
+    if (decorVisible && islandOverlayVisible) {
+      requestAnimationFrame(measure);
+      window.addEventListener("resize", measure);
+      return () => {
+        window.removeEventListener("resize", measure);
+      };
+    }
+  }, [decorVisible, islandOverlayVisible]);
 
   useEffect(() => {
     let timer: number | null = null;
@@ -573,6 +592,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     bottom = Math.max(0, Math.min(1, bottom));
     if (right < left) right = left;
     if (bottom < top) bottom = top;
+
     rockBoxRef.current = { left, top, right, bottom };
     setRockBottomY(bottom);
   }, [rockReady]);
@@ -793,36 +813,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     latestDudePosRef.current = dudePos;
   }, [dudePos]);
 
-  const constrainWithRock = useCallback(
-    (prevX: number, prevY: number, nextX: number, nextY: number) => {
-      if (rockIsBroken) return { x: nextX, y: nextY, blocked: false };
-      const box = rockBoxRef.current;
-      if (!box) return { x: nextX, y: nextY, blocked: false };
-      const halfW = DUDE_BOX_WIDTH_FRAC * 0.5;
-      const halfH = DUDE_BOX_HEIGHT_FRAC * 0.5;
-      let cx = nextX;
-      let cy = nextY + DUDE_BOX_OFFSET_Y_FRAC;
-      const left = box.left - halfW;
-      const right = box.right + halfW;
-      const top = box.top - halfH;
-      const bottom = box.bottom + halfH;
-      if (cx < left || cx > right || cy < top || cy > bottom) {
-        return { x: nextX, y: nextY, blocked: false };
-      }
-      const dl = Math.abs(cx - left);
-      const dr = Math.abs(right - cx);
-      const dt = Math.abs(cy - top);
-      const db = Math.abs(bottom - cy);
-      const m = Math.min(dl, dr, dt, db);
-      if (m === dl) cx = left;
-      else if (m === dr) cx = right;
-      else if (m === dt) cy = top;
-      else cy = bottom;
-      return { x: cx, y: cy - DUDE_BOX_OFFSET_Y_FRAC, blocked: true };
-    },
-    [rockIsBroken]
-  );
-
   const startMoveTo = useCallback(
     (tx: number, ty: number) => {
       syncDudePosFromOriginal();
@@ -857,17 +847,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const ny = moveAnimRef.current.from.y + (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * e2;
           let nextX = nx;
           let nextY = ny;
-          try {
-            const prev = latestDudePosRef.current;
-            const c = constrainWithRock(prev.x, prev.y, nx, ny);
-            nextX = c.x;
-            nextY = c.y;
-            if (c.blocked) {
-              setDudePos({ x: nextX, y: nextY });
-              stopMoveAnim();
-              return;
-            }
-          } catch {}
           setDudePos({ x: nextX, y: nextY });
           if (t2 < 1) {
             rafRef.current = requestAnimationFrame(step);
@@ -878,7 +857,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal, constrainWithRock]
+    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal]
   );
 
   const updateMoveTarget = useCallback(
@@ -914,17 +893,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const ny = moveAnimRef.current.from.y + (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * e;
           let nextX = nx;
           let nextY = ny;
-          try {
-            const prev = latestDudePosRef.current;
-            const c = constrainWithRock(prev.x, prev.y, nx, ny);
-            nextX = c.x;
-            nextY = c.y;
-            if (c.blocked) {
-              setDudePos({ x: nextX, y: nextY });
-              stopMoveAnim();
-              return;
-            }
-          } catch {}
           setDudePos({ x: nextX, y: nextY });
           if (tt < 1) {
             rafRef.current = requestAnimationFrame(step);
@@ -935,7 +903,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.h, heroSize.w, stopMoveAnim, constrainWithRock]
+    [heroSize.h, heroSize.w, stopMoveAnim]
   );
 
   const getFxContainer = useCallback(() => {
@@ -1361,48 +1329,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       pointerEvents: "none",
                       zIndex: 10,
                     }}>
-                    <>
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: `${Math.max(0, Math.min(1, rockBoxRef.current.left)) * 100}%`,
-                          top: `${Math.max(0, Math.min(1, rockBoxRef.current.top)) * 100}%`,
-                          width: `${Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left)) * 100}%`,
-                          height: `${Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top)) * 100}%`,
-                          outline: "2px solid rgba(255,0,0,0.8)",
-                        }}
-                      />
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: `${Math.max(0, Math.min(1, rockBoxRef.current.left - DUDE_BOX_WIDTH_FRAC * 0.5)) * 100}%`,
-                          top: `${Math.max(0, Math.min(1, rockBoxRef.current.top - DUDE_BOX_HEIGHT_FRAC * 0.5)) * 100}%`,
-                          width: `${Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left + DUDE_BOX_WIDTH_FRAC)) * 100}%`,
-                          height: `${Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top + DUDE_BOX_HEIGHT_FRAC)) * 100}%`,
-                          outline: "1px dashed rgba(255,0,0,0.6)",
-                        }}
-                      />
-                      <div
-                        style={{
-                          position: "absolute",
-                          left: 0,
-                          right: 0,
-                          top: `${Math.max(0, Math.min(1, rockBottomY)) * 100}%`,
-                          borderTop: "1px dashed rgba(255,0,0,0.6)",
-                        }}
-                      />
-                    </>
-                    <div
-                      style={{
-                        position: "absolute",
-                        left: `${Math.max(0, Math.min(1, dudePos.x - DUDE_BOX_WIDTH_FRAC * 0.5)) * 100}%`,
-                        top: `${Math.max(0, Math.min(1, dudePos.y + DUDE_BOX_OFFSET_Y_FRAC - DUDE_BOX_HEIGHT_FRAC * 0.5)) * 100}%`,
-                        width: `${Math.max(0, Math.min(1, DUDE_BOX_WIDTH_FRAC)) * 100}%`,
-                        height: `${Math.max(0, Math.min(1, DUDE_BOX_HEIGHT_FRAC)) * 100}%`,
-                        outline: "2px solid rgba(0,200,0,0.9)",
-                      }}
-                    />
                     <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+                      <rect x={Math.max(0, Math.min(1, rockBoxRef.current.left)) * 100} y={Math.max(0, Math.min(1, rockBoxRef.current.top)) * 100} width={Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left)) * 100} height={Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top)) * 100} fill="none" stroke="rgba(255,0,0,0.8)" strokeWidth={1.6} />
+                      <line x1={0} x2={100} y1={Math.max(0, Math.min(1, rockBottomY)) * 100} y2={Math.max(0, Math.min(1, rockBottomY)) * 100} stroke="rgba(255,0,0,0.6)" strokeDasharray="4 3" strokeWidth={1} />
+                      {(() => {
+                        const half = (dudeWidthFrac * 0.5 * 100) / 4;
+                        const cx = Math.max(0, Math.min(100, dudePos.x * 100));
+                        const y = Math.max(0, Math.min(100, dudePos.y * 100));
+                        return <line x1={cx - half} x2={cx + half} y1={y} y2={y} stroke="rgba(0,128,255,0.9)" strokeDasharray="3 3" strokeWidth={1.4} />;
+                      })()}
                       <polygon points={WALK_POLYGON.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(0,128,255,0.08)" stroke="rgba(0,128,255,0.8)" strokeWidth={0.8} />
                     </svg>
                   </div>
@@ -1415,6 +1350,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 {decorVisible && (
                   <>
                     <DudeSpriteWrap
+                      ref={dudeWrapRef}
                       style={{
                         left: `${dudePos.x * 100}%`,
                         top: `${dudePos.y * 100}%`,
