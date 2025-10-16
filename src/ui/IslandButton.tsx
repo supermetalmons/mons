@@ -218,8 +218,10 @@ const WalkOverlay = styled.div`
 const DUDE_ANCHOR_FRAC = 0.77;
 const INITIAL_DUDE_Y_SHIFT = -0.175;
 const INITIAL_DUDE_X_SHIFT = 0.075;
-const DUDE_RADIUS_FRAC = 0.03;
-const SHOW_ISLAND_DEBUG_BOUNDS = false;
+const DUDE_BOX_WIDTH_FRAC = 0.11;
+const DUDE_BOX_HEIGHT_FRAC = 0.015;
+const DUDE_BOX_OFFSET_Y_FRAC = -0.015;
+const SHOW_ISLAND_DEBUG_BOUNDS = true;
 const DudeSpriteWrap = styled.div`
   position: absolute;
   width: auto;
@@ -740,24 +742,27 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (rockIsBroken) return { x: nextX, y: nextY, blocked: false };
       const box = rockBoxRef.current;
       if (!box) return { x: nextX, y: nextY, blocked: false };
-      const r = DUDE_RADIUS_FRAC;
-      const left = box.left - r;
-      const right = box.right + r;
-      const top = box.top - r;
-      const bottom = box.bottom + r;
-      if (nextX < left || nextX > right || nextY < top || nextY > bottom) {
+      const halfW = DUDE_BOX_WIDTH_FRAC * 0.5;
+      const halfH = DUDE_BOX_HEIGHT_FRAC * 0.5;
+      let cx = nextX;
+      let cy = nextY + DUDE_BOX_OFFSET_Y_FRAC;
+      const left = box.left - halfW;
+      const right = box.right + halfW;
+      const top = box.top - halfH;
+      const bottom = box.bottom + halfH;
+      if (cx < left || cx > right || cy < top || cy > bottom) {
         return { x: nextX, y: nextY, blocked: false };
       }
-      const dl = Math.abs(nextX - left);
-      const dr = Math.abs(right - nextX);
-      const dt = Math.abs(nextY - top);
-      const db = Math.abs(bottom - nextY);
+      const dl = Math.abs(cx - left);
+      const dr = Math.abs(right - cx);
+      const dt = Math.abs(cy - top);
+      const db = Math.abs(bottom - cy);
       const m = Math.min(dl, dr, dt, db);
-      if (m === dl) nextX = left;
-      else if (m === dr) nextX = right;
-      else if (m === dt) nextY = top;
-      else nextY = bottom;
-      return { x: nextX, y: nextY, blocked: true };
+      if (m === dl) cx = left;
+      else if (m === dr) cx = right;
+      else if (m === dt) cy = top;
+      else cy = bottom;
+      return { x: cx, y: cy - DUDE_BOX_OFFSET_Y_FRAC, blocked: true };
     },
     [rockIsBroken]
   );
@@ -1314,10 +1319,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                         <div
                           style={{
                             position: "absolute",
-                            left: `${Math.max(0, Math.min(1, rockBoxRef.current.left - DUDE_RADIUS_FRAC)) * 100}%`,
-                            top: `${Math.max(0, Math.min(1, rockBoxRef.current.top - DUDE_RADIUS_FRAC)) * 100}%`,
-                            width: `${Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left + DUDE_RADIUS_FRAC * 2)) * 100}%`,
-                            height: `${Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top + DUDE_RADIUS_FRAC * 2)) * 100}%`,
+                            left: `${Math.max(0, Math.min(1, rockBoxRef.current.left - DUDE_BOX_WIDTH_FRAC * 0.5)) * 100}%`,
+                            top: `${Math.max(0, Math.min(1, rockBoxRef.current.top - DUDE_BOX_HEIGHT_FRAC * 0.5)) * 100}%`,
+                            width: `${Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left + DUDE_BOX_WIDTH_FRAC)) * 100}%`,
+                            height: `${Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top + DUDE_BOX_HEIGHT_FRAC)) * 100}%`,
                             outline: "1px dashed rgba(255,0,0,0.6)",
                           }}
                         />
@@ -1335,10 +1340,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                     <div
                       style={{
                         position: "absolute",
-                        left: `${Math.max(0, Math.min(1, dudePos.x - DUDE_RADIUS_FRAC)) * 100}%`,
-                        top: `${Math.max(0, Math.min(1, dudePos.y - DUDE_RADIUS_FRAC)) * 100}%`,
-                        width: `${Math.max(0, Math.min(1, DUDE_RADIUS_FRAC * 2)) * 100}%`,
-                        height: `${Math.max(0, Math.min(1, DUDE_RADIUS_FRAC * 2)) * 100}%`,
+                        left: `${Math.max(0, Math.min(1, dudePos.x - DUDE_BOX_WIDTH_FRAC * 0.5)) * 100}%`,
+                        top: `${Math.max(0, Math.min(1, dudePos.y + DUDE_BOX_OFFSET_Y_FRAC - DUDE_BOX_HEIGHT_FRAC * 0.5)) * 100}%`,
+                        width: `${Math.max(0, Math.min(1, DUDE_BOX_WIDTH_FRAC)) * 100}%`,
+                        height: `${Math.max(0, Math.min(1, DUDE_BOX_HEIGHT_FRAC)) * 100}%`,
                         outline: "2px solid rgba(0,200,0,0.9)",
                       }}
                     />
