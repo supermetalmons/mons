@@ -35,6 +35,7 @@ const RockImg = styled.img<{ $heightPct?: number; $hidden?: boolean }>`
 type Props = {
   className?: string;
   onOpened?: () => void;
+  onHit?: () => void;
   onBroken?: () => void;
   heightPct?: number;
 };
@@ -46,7 +47,7 @@ const ROCK_HEAL_STEP_MS = 220;
 const ROCK_MISS_BASE = 0.06;
 const ROCK_MISS_SLOW_EXTRA = 0.1;
 
-export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) {
+export function IslandRock({ className, onOpened, onHit, onBroken, heightPct }: Props) {
   const [visible, setVisible] = useState(false);
   const [rockUrl, setRockUrl] = useState<string>("");
   const [instantHide, setInstantHide] = useState(false);
@@ -115,6 +116,11 @@ export function IslandRock({ className, onOpened, onBroken, heightPct }: Props) 
     const isQuick = last === null || sinceLast <= ROCK_QUICK_WINDOW_MS;
     const missChance = ROCK_MISS_BASE + (isQuick ? 0 : ROCK_MISS_SLOW_EXTRA);
     const isMiss = Math.random() < missChance;
+
+    try {
+      onHit?.();
+    } catch {}
+
     if (isMiss) {
       playSounds([Sound.PickaxeMiss]);
       showMissParticles();

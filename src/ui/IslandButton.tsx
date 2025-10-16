@@ -5,7 +5,7 @@ import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
-import { idle as islandMonsIdle } from "../assets/islandMons";
+import { idle as islandMonsIdle, mining as islandMonsMining } from "../assets/islandMons";
 
 const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
   border: none;
@@ -242,12 +242,26 @@ const DudeSpriteImg = styled.img<{ $facingLeft: boolean }>`
   pointer-events: none;
 `;
 
+const DudeSpriteCanvas = styled.canvas<{ $facingLeft: boolean }>`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: auto;
+  height: 100%;
+  transform: scaleX(${(p) => (p.$facingLeft ? -1 : 1)});
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+`;
+
 type Props = {
   imageUrl?: string;
   dimmed?: boolean;
 };
 
 const DEFAULT_URL = "https://assets.mons.link/rocks/island.webp";
+
+const MINING_FRAME_MS = 200;
 
 let islandImagePromise: Promise<string | null> | null = null;
 
@@ -365,9 +379,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const moveAnimRef = useRef<{ start: number; from: { x: number; y: number }; to: { x: number; y: number }; duration: number } | null>(null);
   const rafRef = useRef<number | null>(null);
 
+  const [miningPlaying, setMiningPlaying] = useState(false);
+  const miningCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const miningImageRef = useRef<HTMLImageElement | null>(null);
+  const miningAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
+
   hasIslandOverlayVisible = () => {
     return islandOverlayVisible || islandClosing || islandOpening;
   };
+
+  useEffect(() => {
+    const img = new Image();
+    img.src = `data:image/png;base64,${islandMonsMining}`;
+    miningImageRef.current = img;
+  }, []);
 
   useEffect(() => {
     const shouldBeMarkedOpen = islandOverlayShown || islandOpening || islandClosing;
@@ -692,6 +717,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }
       } catch {}
       fxContainerRef.current = null;
+      const anim = miningAnimRef.current;
+      if (anim && anim.raf) cancelAnimationFrame(anim.raf);
+      miningAnimRef.current = null;
+      setMiningPlaying(false);
       const imgEl = islandButtonImgRef.current;
       if (!imgEl || !islandNatural) {
         setIslandActive(false);
@@ -905,6 +934,62 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     },
     [heroSize.h, heroSize.w, stopMoveAnim]
   );
+
+  const startMiningAnimation = useCallback(() => {
+    if (!dudeWrapRef.current) return;
+    if (!miningImageRef.current) return;
+    if (miningPlaying) return;
+    setMiningPlaying(true);
+    requestAnimationFrame(() => {
+      const img = miningImageRef.current;
+      const wrap = dudeWrapRef.current;
+      const canvas = miningCanvasRef.current;
+      if (!img || !wrap || !canvas) {
+        setMiningPlaying(false);
+        return;
+      }
+      const wrapBox = wrap.getBoundingClientRect();
+      const frameCount = 4;
+      const frameWidth = Math.floor(img.naturalWidth / frameCount) || 1;
+      const frameHeight = img.naturalHeight || 1;
+      const targetHeight = Math.max(1, Math.round(wrapBox.height));
+      const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / frameHeight));
+      if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
+        canvas.width = targetWidth;
+        canvas.height = targetHeight;
+      }
+      canvas.style.width = `${targetWidth}px`;
+      canvas.style.height = `${targetHeight}px`;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) {
+        setMiningPlaying(false);
+        return;
+      }
+      (ctx as any).imageSmoothingEnabled = false;
+      miningAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
+      const step = () => {
+        const anim = miningAnimRef.current;
+        if (!anim) return;
+        const elapsed = performance.now() - anim.start;
+        const frame = Math.min(frameCount - 1, Math.floor(elapsed / MINING_FRAME_MS));
+        if (frame !== anim.lastFrame) {
+          ctx.clearRect(0, 0, targetWidth, targetHeight);
+          const sx = frame * frameWidth;
+          try {
+            ctx.drawImage(img, sx, 0, frameWidth, frameHeight, 0, 0, targetWidth, targetHeight);
+          } catch {}
+          anim.lastFrame = frame;
+        }
+        if (elapsed < frameCount * MINING_FRAME_MS) {
+          anim.raf = requestAnimationFrame(step);
+        } else {
+          setMiningPlaying(false);
+          miningAnimRef.current = null;
+        }
+      };
+      miningAnimRef.current.raf = requestAnimationFrame(step);
+    });
+  }, [miningPlaying]);
 
   const getFxContainer = useCallback(() => {
     let container = fxContainerRef.current;
@@ -1356,7 +1441,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                         top: `${dudePos.y * 100}%`,
                         zIndex: rockReady ? (dudePos.y < rockBottomY ? 0 : 2) : 2,
                       }}>
-                      <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} />
+                      <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} style={{ visibility: miningPlaying ? "hidden" : "visible" }} />
+                      {miningPlaying && <DudeSpriteCanvas $facingLeft={dudeFacingLeft} ref={miningCanvasRef as any} />}
                     </DudeSpriteWrap>
                     <RockLayer ref={rockLayerRef} $visible={decorVisible} style={{ zIndex: 1 }}>
                       <Rock
@@ -1365,6 +1451,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           setRockReady(true);
                           updateRockBox();
                         }}
+                        onHit={startMiningAnimation}
                         onBroken={handleRockBroken}
                       />
                     </RockLayer>
