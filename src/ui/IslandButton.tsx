@@ -274,7 +274,7 @@ type Props = {
 
 const DEFAULT_URL = "https://assets.mons.link/rocks/island.webp";
 
-const MINING_FRAME_MS = 200;
+const MINING_FRAME_MS = 175;
 
 let islandImagePromise: Promise<string | null> | null = null;
 
