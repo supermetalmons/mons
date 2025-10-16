@@ -221,6 +221,10 @@ const INITIAL_DUDE_X_SHIFT = 0.075;
 const DUDE_BOX_WIDTH_FRAC = 0.11;
 const DUDE_BOX_HEIGHT_FRAC = 0.015;
 const DUDE_BOX_OFFSET_Y_FRAC = -0.015;
+const ROCK_BOX_INSET_LEFT_FRAC = 0.0;
+const ROCK_BOX_INSET_RIGHT_FRAC = 0.0;
+const ROCK_BOX_INSET_TOP_FRAC = 0.02;
+const ROCK_BOX_INSET_BOTTOM_FRAC = 0.24;
 const SHOW_ISLAND_DEBUG_BOUNDS = true;
 const DudeSpriteWrap = styled.div`
   position: absolute;
@@ -345,6 +349,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const lastRockRectRef = useRef<DOMRect | null>(null);
   const [rockIsBroken, setRockIsBroken] = useState(false);
   const walkSuppressedUntilRef = useRef<number>(0);
+  const [rockReady, setRockReady] = useState(false);
   const rockBoxRef = useRef<{ left: number; top: number; right: number; bottom: number } | null>(null);
   const [rockBottomY, setRockBottomY] = useState<number>(1);
 
@@ -545,19 +550,65 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, []);
 
   const updateRockBox = useCallback(() => {
+    if (!rockReady) return;
     const hero = islandHeroImgRef.current;
     const rockEl = rockLayerRef.current;
     if (!hero || !rockEl) return;
     const h = hero.getBoundingClientRect();
     const r = rockEl.getBoundingClientRect();
     if (h.width <= 0 || h.height <= 0) return;
-    const left = (r.left - h.left) / h.width;
-    const top = (r.top - h.top) / h.height;
-    const right = (r.right - h.left) / h.width;
-    const bottom = (r.bottom - h.top) / h.height;
+    const rawLeft = (r.left - h.left) / h.width;
+    const rawTop = (r.top - h.top) / h.height;
+    const rawRight = (r.right - h.left) / h.width;
+    const rawBottom = (r.bottom - h.top) / h.height;
+    const w = Math.max(0, rawRight - rawLeft);
+    const hh = Math.max(0, rawBottom - rawTop);
+    let left = rawLeft + ROCK_BOX_INSET_LEFT_FRAC * w;
+    let right = rawRight - ROCK_BOX_INSET_RIGHT_FRAC * w;
+    let top = rawTop + ROCK_BOX_INSET_TOP_FRAC * hh;
+    let bottom = rawBottom - ROCK_BOX_INSET_BOTTOM_FRAC * hh;
+    left = Math.max(0, Math.min(1, left));
+    right = Math.max(0, Math.min(1, right));
+    top = Math.max(0, Math.min(1, top));
+    bottom = Math.max(0, Math.min(1, bottom));
+    if (right < left) right = left;
+    if (bottom < top) bottom = top;
     rockBoxRef.current = { left, top, right, bottom };
     setRockBottomY(bottom);
-  }, []);
+  }, [rockReady]);
+
+  useEffect(() => {
+    if (!islandOverlayVisible) return;
+    updateRockBox();
+    const onResize = () => updateRockBox();
+    window.addEventListener("resize", onResize);
+    let ro: ResizeObserver | null = null;
+    const node = rockLayerRef.current;
+    try {
+      if (node && typeof ResizeObserver !== "undefined") {
+        ro = new ResizeObserver(() => updateRockBox());
+        ro.observe(node);
+      }
+    } catch {}
+    return () => {
+      window.removeEventListener("resize", onResize);
+      try {
+        if (ro && node) ro.unobserve(node);
+      } catch {}
+    };
+  }, [islandOverlayVisible, updateRockBox]);
+
+  useEffect(() => {
+    if (!islandOverlayVisible || !decorVisible) return;
+    updateRockBox();
+  }, [decorVisible, islandOverlayVisible, updateRockBox]);
+
+  useEffect(() => {
+    if (!islandOverlayVisible) return;
+    try {
+      requestAnimationFrame(() => updateRockBox());
+    } catch {}
+  }, [resolvedUrl, islandOverlayVisible, updateRockBox]);
 
   const handleIslandOpen = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -587,6 +638,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       setIslandOpening(true);
       setIslandActive(false);
       setRockIsBroken(false);
+      setRockReady(false);
+      try {
+        rockBoxRef.current = null;
+        setRockBottomY(1);
+      } catch {}
       setIslandTranslate({ x: deltaX, y: deltaY });
       setIslandScale({ x: uniformScale, y: uniformScale });
       requestAnimationFrame(() => {
@@ -1039,6 +1095,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleRockBroken = useCallback(() => {
     setRockIsBroken(true);
+    setRockReady(false);
     const count = 2 + Math.floor(Math.random() * 4);
     const picks: MaterialName[] = [];
     for (let i = 0; i < count; i++) picks.push(pickWeightedMaterial());
@@ -1296,7 +1353,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               <HeroWrap>
                 <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} />
                 <WalkOverlay />
-                {SHOW_ISLAND_DEBUG_BOUNDS && (
+                {SHOW_ISLAND_DEBUG_BOUNDS && rockReady && rockBoxRef.current && (
                   <div
                     style={{
                       position: "absolute",
@@ -1304,39 +1361,37 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       pointerEvents: "none",
                       zIndex: 10,
                     }}>
-                    {rockBoxRef.current && (
-                      <>
-                        <div
-                          style={{
-                            position: "absolute",
-                            left: `${Math.max(0, Math.min(1, rockBoxRef.current.left)) * 100}%`,
-                            top: `${Math.max(0, Math.min(1, rockBoxRef.current.top)) * 100}%`,
-                            width: `${Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left)) * 100}%`,
-                            height: `${Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top)) * 100}%`,
-                            outline: "2px solid rgba(255,0,0,0.8)",
-                          }}
-                        />
-                        <div
-                          style={{
-                            position: "absolute",
-                            left: `${Math.max(0, Math.min(1, rockBoxRef.current.left - DUDE_BOX_WIDTH_FRAC * 0.5)) * 100}%`,
-                            top: `${Math.max(0, Math.min(1, rockBoxRef.current.top - DUDE_BOX_HEIGHT_FRAC * 0.5)) * 100}%`,
-                            width: `${Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left + DUDE_BOX_WIDTH_FRAC)) * 100}%`,
-                            height: `${Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top + DUDE_BOX_HEIGHT_FRAC)) * 100}%`,
-                            outline: "1px dashed rgba(255,0,0,0.6)",
-                          }}
-                        />
-                        <div
-                          style={{
-                            position: "absolute",
-                            left: 0,
-                            right: 0,
-                            top: `${Math.max(0, Math.min(1, rockBottomY)) * 100}%`,
-                            borderTop: "1px dashed rgba(255,0,0,0.6)",
-                          }}
-                        />
-                      </>
-                    )}
+                    <>
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: `${Math.max(0, Math.min(1, rockBoxRef.current.left)) * 100}%`,
+                          top: `${Math.max(0, Math.min(1, rockBoxRef.current.top)) * 100}%`,
+                          width: `${Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left)) * 100}%`,
+                          height: `${Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top)) * 100}%`,
+                          outline: "2px solid rgba(255,0,0,0.8)",
+                        }}
+                      />
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: `${Math.max(0, Math.min(1, rockBoxRef.current.left - DUDE_BOX_WIDTH_FRAC * 0.5)) * 100}%`,
+                          top: `${Math.max(0, Math.min(1, rockBoxRef.current.top - DUDE_BOX_HEIGHT_FRAC * 0.5)) * 100}%`,
+                          width: `${Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left + DUDE_BOX_WIDTH_FRAC)) * 100}%`,
+                          height: `${Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top + DUDE_BOX_HEIGHT_FRAC)) * 100}%`,
+                          outline: "1px dashed rgba(255,0,0,0.6)",
+                        }}
+                      />
+                      <div
+                        style={{
+                          position: "absolute",
+                          left: 0,
+                          right: 0,
+                          top: `${Math.max(0, Math.min(1, rockBottomY)) * 100}%`,
+                          borderTop: "1px dashed rgba(255,0,0,0.6)",
+                        }}
+                      />
+                    </>
                     <div
                       style={{
                         position: "absolute",
@@ -1363,12 +1418,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       style={{
                         left: `${dudePos.x * 100}%`,
                         top: `${dudePos.y * 100}%`,
-                        zIndex: dudePos.y < rockBottomY ? 0 : 2,
+                        zIndex: rockReady ? (dudePos.y < rockBottomY ? 0 : 2) : 2,
                       }}>
                       <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} />
                     </DudeSpriteWrap>
                     <RockLayer ref={rockLayerRef} $visible={decorVisible} style={{ zIndex: 1 }}>
-                      <Rock heightPct={75} onBroken={handleRockBroken} />
+                      <Rock
+                        heightPct={75}
+                        onOpened={() => {
+                          setRockReady(true);
+                          updateRockBox();
+                        }}
+                        onBroken={handleRockBroken}
+                      />
                     </RockLayer>
                   </>
                 )}
