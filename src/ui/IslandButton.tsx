@@ -242,13 +242,26 @@ const DudeSpriteImg = styled.img<{ $facingLeft: boolean }>`
   pointer-events: none;
 `;
 
-const DudeSpriteCanvas = styled.canvas<{ $facingLeft: boolean }>`
+const DudeSpriteFrame = styled.div<{ $facingLeft: boolean }>`
   position: absolute;
   left: 0;
   top: 0;
   width: auto;
   height: 100%;
+  overflow: hidden;
   transform: scaleX(${(p) => (p.$facingLeft ? -1 : 1)});
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+`;
+
+const DudeSpriteStrip = styled.img`
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: auto;
+  will-change: transform;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   pointer-events: none;
@@ -380,7 +393,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const rafRef = useRef<number | null>(null);
 
   const [miningPlaying, setMiningPlaying] = useState(false);
-  const miningCanvasRef = useRef<HTMLCanvasElement | null>(null);
+  const miningFrameWrapRef = useRef<HTMLDivElement | null>(null);
+  const miningStripImgRef = useRef<HTMLImageElement | null>(null);
   const miningImageRef = useRef<HTMLImageElement | null>(null);
   const miningAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
 
@@ -941,43 +955,38 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     if (miningPlaying) return;
     setMiningPlaying(true);
     requestAnimationFrame(() => {
-      const img = miningImageRef.current;
+      const sheetImg = miningImageRef.current;
       const wrap = dudeWrapRef.current;
-      const canvas = miningCanvasRef.current;
-      if (!img || !wrap || !canvas) {
+      const frameWrap = miningFrameWrapRef.current;
+      const stripImg = miningStripImgRef.current;
+      if (!sheetImg || !wrap || !frameWrap || !stripImg) {
         setMiningPlaying(false);
         return;
       }
       const wrapBox = wrap.getBoundingClientRect();
       const frameCount = 4;
-      const frameWidth = Math.floor(img.naturalWidth / frameCount) || 1;
-      const frameHeight = img.naturalHeight || 1;
+      const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
+      const frameHeight = sheetImg.naturalHeight || 1;
       const targetHeight = Math.max(1, Math.round(wrapBox.height));
       const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / frameHeight));
-      if (canvas.width !== targetWidth || canvas.height !== targetHeight) {
-        canvas.width = targetWidth;
-        canvas.height = targetHeight;
-      }
-      canvas.style.width = `${targetWidth}px`;
-      canvas.style.height = `${targetHeight}px`;
-      const ctx = canvas.getContext("2d");
-      if (!ctx) {
-        setMiningPlaying(false);
-        return;
-      }
-      (ctx as any).imageSmoothingEnabled = false;
+
+      frameWrap.style.width = `${targetWidth}px`;
+      frameWrap.style.height = `${targetHeight}px`;
+      stripImg.style.height = `${targetHeight}px`;
+      stripImg.style.width = `${targetWidth * frameCount}px`;
+      stripImg.style.transform = `translateX(0px)`;
+
       miningAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
       const step = () => {
         const anim = miningAnimRef.current;
         if (!anim) return;
         const elapsed = performance.now() - anim.start;
-        const frame = Math.min(frameCount - 1, Math.floor(elapsed / MINING_FRAME_MS));
+        const rawFrame = Math.floor(elapsed / MINING_FRAME_MS);
+        const frame = Math.min(frameCount - 1, Math.max(0, rawFrame));
         if (frame !== anim.lastFrame) {
-          ctx.clearRect(0, 0, targetWidth, targetHeight);
-          const sx = frame * frameWidth;
-          try {
-            ctx.drawImage(img, sx, 0, frameWidth, frameHeight, 0, 0, targetWidth, targetHeight);
-          } catch {}
+          const offset = frame * targetWidth;
+          const tx = -offset;
+          stripImg.style.transform = `translateX(${tx}px)`;
           anim.lastFrame = frame;
         }
         if (elapsed < frameCount * MINING_FRAME_MS) {
@@ -1442,7 +1451,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                         zIndex: rockReady ? (dudePos.y < rockBottomY ? 0 : 2) : 2,
                       }}>
                       <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} style={{ visibility: miningPlaying ? "hidden" : "visible" }} />
-                      {miningPlaying && <DudeSpriteCanvas $facingLeft={dudeFacingLeft} ref={miningCanvasRef as any} />}
+                      {miningPlaying && (
+                        <DudeSpriteFrame $facingLeft={dudeFacingLeft} ref={miningFrameWrapRef as any}>
+                          <DudeSpriteStrip ref={miningStripImgRef as any} src={`data:image/png;base64,${islandMonsMining}`} alt="" draggable={false} />
+                        </DudeSpriteFrame>
+                      )}
                     </DudeSpriteWrap>
                     <RockLayer ref={rockLayerRef} $visible={decorVisible} style={{ zIndex: 1 }}>
                       <Rock
