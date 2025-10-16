@@ -219,6 +219,7 @@ const DUDE_ANCHOR_FRAC = 0.77;
 const INITIAL_DUDE_Y_SHIFT = -0.175;
 const INITIAL_DUDE_X_SHIFT = 0.075;
 const DUDE_RADIUS_FRAC = 0.03;
+const SHOW_ISLAND_DEBUG_BOUNDS = false;
 const DudeSpriteWrap = styled.div`
   position: absolute;
   width: auto;
@@ -1290,6 +1291,62 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               <HeroWrap>
                 <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} />
                 <WalkOverlay />
+                {SHOW_ISLAND_DEBUG_BOUNDS && (
+                  <div
+                    style={{
+                      position: "absolute",
+                      inset: 0,
+                      pointerEvents: "none",
+                      zIndex: 10,
+                    }}>
+                    {rockBoxRef.current && (
+                      <>
+                        <div
+                          style={{
+                            position: "absolute",
+                            left: `${Math.max(0, Math.min(1, rockBoxRef.current.left)) * 100}%`,
+                            top: `${Math.max(0, Math.min(1, rockBoxRef.current.top)) * 100}%`,
+                            width: `${Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left)) * 100}%`,
+                            height: `${Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top)) * 100}%`,
+                            outline: "2px solid rgba(255,0,0,0.8)",
+                          }}
+                        />
+                        <div
+                          style={{
+                            position: "absolute",
+                            left: `${Math.max(0, Math.min(1, rockBoxRef.current.left - DUDE_RADIUS_FRAC)) * 100}%`,
+                            top: `${Math.max(0, Math.min(1, rockBoxRef.current.top - DUDE_RADIUS_FRAC)) * 100}%`,
+                            width: `${Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left + DUDE_RADIUS_FRAC * 2)) * 100}%`,
+                            height: `${Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top + DUDE_RADIUS_FRAC * 2)) * 100}%`,
+                            outline: "1px dashed rgba(255,0,0,0.6)",
+                          }}
+                        />
+                        <div
+                          style={{
+                            position: "absolute",
+                            left: 0,
+                            right: 0,
+                            top: `${Math.max(0, Math.min(1, rockBottomY)) * 100}%`,
+                            borderTop: "1px dashed rgba(255,0,0,0.6)",
+                          }}
+                        />
+                      </>
+                    )}
+                    <div
+                      style={{
+                        position: "absolute",
+                        left: `${Math.max(0, Math.min(1, dudePos.x - DUDE_RADIUS_FRAC)) * 100}%`,
+                        top: `${Math.max(0, Math.min(1, dudePos.y - DUDE_RADIUS_FRAC)) * 100}%`,
+                        width: `${Math.max(0, Math.min(1, DUDE_RADIUS_FRAC * 2)) * 100}%`,
+                        height: `${Math.max(0, Math.min(1, DUDE_RADIUS_FRAC * 2)) * 100}%`,
+                        outline: "2px solid rgba(0,200,0,0.9)",
+                      }}
+                    />
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+                      <polygon points={WALK_POLYGON.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(0,128,255,0.08)" stroke="rgba(0,128,255,0.8)" strokeWidth={0.8} />
+                    </svg>
+                  </div>
+                )}
                 {!islandClosing && (
                   <DudeLayer $visible={!islandClosing} style={{ visibility: "hidden", opacity: 0 }}>
                     <DudeImg ref={origDudeImgRef} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} />
