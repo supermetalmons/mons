@@ -82,3 +82,9 @@ export function getMonsIndexes(isOtherPlayer: boolean, profile: PlayerProfile | 
 
   return [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex];
 }
+
+export function getOwnDrainerId(): string {
+  const indexes = getMonsIndexes(false, null);
+  const drainerIndex = indexes[2];
+  return getMonId(MonType.DRAINER, drainerIndex);
+}
