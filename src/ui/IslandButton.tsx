@@ -6,6 +6,7 @@ import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock, { IslandRockHandle } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { idle as islandMonsIdle, mining as islandMonsMining } from "../assets/islandMons";
+import { getOwnDrainerId } from "../utils/namedMons";
 
 const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
   border: none;
@@ -267,6 +268,53 @@ const DudeSpriteStrip = styled.img`
   pointer-events: none;
 `;
 
+const MON_REL_X = 0.635;
+const MON_REL_Y = 0.285;
+const MON_HEIGHT_FRAC = 0.15;
+
+const MonLayer = styled.div<{ $visible: boolean }>`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  transition: opacity 260ms ease;
+  opacity: ${(p) => (p.$visible ? 1 : 0)};
+`;
+
+const MonSpriteWrap = styled.div`
+  position: absolute;
+  width: auto;
+  height: ${MON_HEIGHT_FRAC * 100}%;
+  transform: translate(-50%, -${DUDE_ANCHOR_FRAC * 100}%);
+  pointer-events: none;
+`;
+
+const MonSpriteFrame = styled.div<{ $facingLeft: boolean }>`
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: auto;
+  height: 100%;
+  overflow: hidden;
+  transform: scaleX(${(p) => (p.$facingLeft ? -1 : 1)});
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  pointer-events: none;
+`;
+
+const MonSpriteStrip = styled.img`
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: auto;
+  will-change: transform;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  filter: drop-shadow(0 4px 1px rgba(0, 0, 0, 0.14));
+  -webkit-filter: drop-shadow(0 4px 1px rgba(0, 0, 0, 0.14));
+  pointer-events: none;
+`;
+
 type Props = {
   imageUrl?: string;
   dimmed?: boolean;
@@ -398,6 +446,39 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const miningStripImgRef = useRef<HTMLImageElement | null>(null);
   const miningImageRef = useRef<HTMLImageElement | null>(null);
   const miningAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
+
+  const [monPos, setMonPos] = useState<{ x: number; y: number } | null>(null);
+  const [monFacingLeft, setMonFacingLeft] = useState<boolean>(false);
+  const [monSpriteData, setMonSpriteData] = useState<string>("");
+  const monWrapRef = useRef<HTMLDivElement | null>(null);
+  const monFrameWrapRef = useRef<HTMLDivElement | null>(null);
+  const monStripImgRef = useRef<HTMLImageElement | null>(null);
+  const monAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
+  const monNaturalSizeRef = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
+  const monResizeObserverRef = useRef<ResizeObserver | null>(null);
+  const monFrameWidthRef = useRef<number>(0);
+
+  const updateMonStripSizing = useCallback(() => {
+    const wrap = monWrapRef.current as HTMLDivElement | null;
+    const frameWrap = monFrameWrapRef.current as HTMLDivElement | null;
+    const stripImg = monStripImgRef.current as HTMLImageElement | null;
+    const nat = monNaturalSizeRef.current;
+    if (!wrap || !frameWrap || !stripImg || !nat.w || !nat.h) return;
+    const frameCount = 4;
+    if (!heroSize.h) return;
+    const frameWidth = Math.floor(nat.w / frameCount) || 1;
+    const targetHeight = Math.max(1, Math.round(heroSize.h * MON_HEIGHT_FRAC));
+    const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / nat.h));
+    frameWrap.style.width = `${targetWidth}px`;
+    frameWrap.style.height = `${targetHeight}px`;
+    stripImg.style.height = `${targetHeight}px`;
+    stripImg.style.width = `${targetWidth * frameCount}px`;
+    monFrameWidthRef.current = targetWidth;
+    const currentFrameIndex = Math.max(0, monAnimRef.current?.lastFrame ?? 0);
+    const offset = currentFrameIndex * targetWidth;
+    stripImg.style.transform = `translateX(${-offset}px)`;
+    stripImg.style.visibility = "visible";
+  }, [heroSize.h]);
 
   hasIslandOverlayVisible = () => {
     return islandOverlayVisible || islandClosing || islandOpening;
@@ -572,6 +653,87 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     if (walkReady) return;
     initializeWalkPolygonIfNeeded();
   }, [islandOverlayVisible, islandOpening, islandClosing, heroSize.w, heroSize.h, walkReady, initializeWalkPolygonIfNeeded]);
+
+  const pickRandomPointInWalkArea = useCallback(() => ({ x: MON_REL_X, y: MON_REL_Y }), []);
+
+  useEffect(() => {
+    let mounted = true;
+    if (!islandOverlayVisible) return;
+    const pt = pickRandomPointInWalkArea();
+    setMonPos(pt);
+    setMonFacingLeft(pt.x < 0.5);
+    (async () => {
+      const { getSpriteByKey } = await import("../assets/monsSprites");
+      const key = getOwnDrainerId();
+      const data = getSpriteByKey(key);
+      if (!mounted) return;
+      setMonSpriteData(data);
+    })();
+    return () => {
+      mounted = false;
+    };
+  }, [islandOverlayVisible, pickRandomPointInWalkArea]);
+
+  useEffect(() => {
+    if (!decorVisible || islandClosing) return;
+    if (!monSpriteData || !monPos) return;
+    requestAnimationFrame(() => {
+      const wrap = monWrapRef.current;
+      const frameWrap = monFrameWrapRef.current;
+      const stripImg = monStripImgRef.current;
+      if (!wrap || !frameWrap || !stripImg) return;
+      const img = new Image();
+      img.src = `data:image/webp;base64,${monSpriteData}`;
+      const startAnim = () => {
+        const frameCount = 4;
+        monNaturalSizeRef.current = { w: img.naturalWidth || 1, h: img.naturalHeight || 1 };
+        stripImg.style.visibility = "hidden";
+        updateMonStripSizing();
+        stripImg.style.transform = `translateX(0px)`;
+        monAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
+        const MON_FRAME_MS = 220;
+        const step = () => {
+          const anim = monAnimRef.current;
+          if (!anim) return;
+          if (!overlayActiveRef.current) {
+            monAnimRef.current = null;
+            return;
+          }
+          const elapsed = performance.now() - anim.start;
+          const rawFrame = Math.floor(elapsed / MON_FRAME_MS);
+          const frame = ((rawFrame % frameCount) + frameCount) % frameCount;
+          if (frame !== anim.lastFrame) anim.lastFrame = frame;
+          const currentWidth = Math.max(1, Math.round(monFrameWidthRef.current || 0));
+          const offset = frame * currentWidth;
+          stripImg.style.transform = `translateX(${-offset}px)`;
+          if (stripImg.style.visibility !== "visible") stripImg.style.visibility = "visible";
+          anim.raf = requestAnimationFrame(step);
+        };
+        monAnimRef.current.raf = requestAnimationFrame(step);
+
+        try {
+          if (typeof ResizeObserver !== "undefined" && wrap) {
+            const ro = new ResizeObserver(() => updateMonStripSizing());
+            monResizeObserverRef.current = ro;
+            ro.observe(wrap);
+          }
+        } catch {}
+      };
+      if (img.complete) startAnim();
+      else img.onload = () => startAnim();
+    });
+    const cleanupWrap = monWrapRef.current;
+    return () => {
+      const anim = monAnimRef.current;
+      if (anim && anim.raf) cancelAnimationFrame(anim.raf);
+      monAnimRef.current = null;
+      try {
+        const ro = monResizeObserverRef.current;
+        if (ro && cleanupWrap) ro.unobserve(cleanupWrap);
+      } catch {}
+      monResizeObserverRef.current = null;
+    };
+  }, [decorVisible, islandClosing, monSpriteData, monPos, updateMonStripSizing]);
 
   const drawHeroIntoHitCanvas = useCallback(() => {
     const hero = islandHeroImgRef.current;
@@ -825,6 +987,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         setIslandClosing(false);
         setIslandTranslate({ x: 0, y: 0 });
         setIslandScale({ x: 1, y: 1 });
+        const anim = monAnimRef.current;
+        if (anim && anim.raf) cancelAnimationFrame(anim.raf);
+        monAnimRef.current = null;
+        setMonSpriteData("");
+        setMonPos(null);
       }
       try {
         updateRockBox();
@@ -1448,6 +1615,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 )}
                 {decorVisible && (
                   <>
+                    {monPos && monSpriteData && (
+                      <MonLayer $visible={decorVisible && !islandClosing}>
+                        <MonSpriteWrap
+                          ref={monWrapRef}
+                          style={{
+                            left: `${(monPos?.x ?? MON_REL_X) * 100}%`,
+                            top: `${(monPos?.y ?? MON_REL_Y) * 100}%`,
+                            zIndex: rockReady ? (monPos.y < rockBottomY ? 0 : 2) : 2,
+                          }}>
+                          <MonSpriteFrame $facingLeft={monFacingLeft} ref={monFrameWrapRef as any}>
+                            <MonSpriteStrip ref={monStripImgRef as any} src={`data:image/webp;base64,${monSpriteData}`} alt="" draggable={false} />
+                          </MonSpriteFrame>
+                        </MonSpriteWrap>
+                      </MonLayer>
+                    )}
                     <DudeSpriteWrap
                       ref={dudeWrapRef}
                       style={{
