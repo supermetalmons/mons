@@ -1,8 +1,7 @@
-import React, { useEffect, useMemo, useRef, useState } from "react";
+import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { playSounds } from "../content/sounds";
 import { Sound } from "../utils/gameModels";
-import { isMobile } from "../utils/misc";
 
 const Container = styled.div<{ $visible: boolean; $instant?: boolean; $disabled?: boolean }>`
   position: relative;
@@ -40,6 +39,10 @@ type Props = {
   heightPct?: number;
 };
 
+export type IslandRockHandle = {
+  tap: () => void;
+};
+
 const ROCK_BREAK_THRESHOLD = 7;
 const ROCK_QUICK_WINDOW_MS = 320;
 const ROCK_HEAL_GRACE_MS = 600;
@@ -47,7 +50,7 @@ const ROCK_HEAL_STEP_MS = 220;
 const ROCK_MISS_BASE = 0.06;
 const ROCK_MISS_SLOW_EXTRA = 0.1;
 
-export function IslandRock({ className, onOpened, onHit, onBroken, heightPct }: Props) {
+export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRock({ className, onOpened, onHit, onBroken, heightPct }, ref) {
   const [visible, setVisible] = useState(false);
   const [rockUrl, setRockUrl] = useState<string>("");
   const [instantHide, setInstantHide] = useState(false);
@@ -101,48 +104,50 @@ export function IslandRock({ className, onOpened, onHit, onBroken, heightPct }: 
     };
   }, []);
 
-  function onTap() {
-    if (!visible || brokenRef.current) return;
-    const now = Date.now();
-    const last = lastClickRef.current;
-    if (last !== null) {
-      const since = now - last;
-      if (since > ROCK_HEAL_GRACE_MS) {
-        const healAmount = Math.floor((since - ROCK_HEAL_GRACE_MS) / ROCK_HEAL_STEP_MS) + 1;
-        hitsRef.current = Math.max(0, hitsRef.current - healAmount);
+  useImperativeHandle(ref, () => ({
+    tap: () => {
+      if (!visible || brokenRef.current) return;
+      const now = Date.now();
+      const last = lastClickRef.current;
+      if (last !== null) {
+        const since = now - last;
+        if (since > ROCK_HEAL_GRACE_MS) {
+          const healAmount = Math.floor((since - ROCK_HEAL_GRACE_MS) / ROCK_HEAL_STEP_MS) + 1;
+          hitsRef.current = Math.max(0, hitsRef.current - healAmount);
+        }
       }
-    }
-    const sinceLast = last === null ? 0 : now - last;
-    const isQuick = last === null || sinceLast <= ROCK_QUICK_WINDOW_MS;
-    const missChance = ROCK_MISS_BASE + (isQuick ? 0 : ROCK_MISS_SLOW_EXTRA);
-    const isMiss = Math.random() < missChance;
+      const sinceLast = last === null ? 0 : now - last;
+      const isQuick = last === null || sinceLast <= ROCK_QUICK_WINDOW_MS;
+      const missChance = ROCK_MISS_BASE + (isQuick ? 0 : ROCK_MISS_SLOW_EXTRA);
+      const isMiss = Math.random() < missChance;
 
-    try {
-      onHit?.();
-    } catch {}
+      try {
+        onHit?.();
+      } catch {}
 
-    if (isMiss) {
-      playSounds([Sound.PickaxeMiss]);
-      showMissParticles();
-      if (hitsRef.current > 0) hitsRef.current = Math.max(0, hitsRef.current - 1);
-    } else {
-      playSounds([Sound.PickaxeHit]);
-      showHitParticles();
-      if (isQuick) hitsRef.current += 1;
-    }
-    lastClickRef.current = now;
-    if (hitsRef.current >= ROCK_BREAK_THRESHOLD) {
-      brokenRef.current = true;
-      playSounds([Sound.RockOpen]);
-      setInstantHide(true);
-      setHideRock(true);
-      setDisabled(true);
-      onBroken?.();
-      showCrashParticles();
-      hitsRef.current = 0;
-      lastClickRef.current = null;
-    }
-  }
+      if (isMiss) {
+        playSounds([Sound.PickaxeMiss]);
+        showMissParticles();
+        if (hitsRef.current > 0) hitsRef.current = Math.max(0, hitsRef.current - 1);
+      } else {
+        playSounds([Sound.PickaxeHit]);
+        showHitParticles();
+        if (isQuick) hitsRef.current += 1;
+      }
+      lastClickRef.current = now;
+      if (hitsRef.current >= ROCK_BREAK_THRESHOLD) {
+        brokenRef.current = true;
+        playSounds([Sound.RockOpen]);
+        setInstantHide(true);
+        setHideRock(true);
+        setDisabled(true);
+        onBroken?.();
+        showCrashParticles();
+        hitsRef.current = 0;
+        lastClickRef.current = null;
+      }
+    },
+  }));
 
   function animateParticles(num: number, duration: number, make: (idx: number) => SVGElement, update: (el: SVGElement, t: number, idx: number) => void) {
     const svg = svgRef.current;
@@ -342,30 +347,11 @@ export function IslandRock({ className, onOpened, onHit, onBroken, heightPct }: 
   }
 
   return (
-    <Container
-      ref={containerRef}
-      className={className}
-      $visible={visible}
-      $instant={instantHide}
-      $disabled={disabled}
-      onClick={
-        !isMobile
-          ? (e) => {
-              onTap();
-            }
-          : undefined
-      }
-      onTouchStart={
-        isMobile
-          ? (e) => {
-              onTap();
-            }
-          : undefined
-      }>
+    <Container ref={containerRef} className={className} $visible={visible} $instant={instantHide} $disabled={disabled}>
       {rockUrl && <RockImg ref={imgElRef} src={rockUrl} alt="" draggable={false} $heightPct={heightPct} $hidden={hideRock} />}
       <svg ref={svgRef} viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none", overflow: "visible" }} />
     </Container>
   );
-}
+});
 
 export default IslandRock;

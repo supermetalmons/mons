@@ -3,7 +3,7 @@ import { isMobile } from "../utils/misc";
 import styled from "styled-components";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeAllKindsOfPopups } from "./MainMenu";
-import IslandRock from "./IslandRock";
+import IslandRock, { IslandRockHandle } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { idle as islandMonsIdle, mining as islandMonsMining } from "../assets/islandMons";
 
@@ -369,6 +369,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   });
   const materialItemRefs = useRef<Record<MaterialName, HTMLDivElement | null>>({ dust: null, slime: null, gum: null, metal: null, ice: null });
   const rockLayerRef = useRef<HTMLDivElement | null>(null);
+  const rockRef = useRef<IslandRockHandle | null>(null);
   const fxContainerRef = useRef<HTMLDivElement | null>(null);
   const lastRockRectRef = useRef<DOMRect | null>(null);
   const [rockIsBroken, setRockIsBroken] = useState(false);
@@ -1276,11 +1277,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }
         return false;
       };
-      const isRockTarget = () => {
-        const targetNode = (event.target as Node) || null;
-        const rockEl = rockLayerRef.current;
+      const isInsideRockBox = (nx: number, ny: number) => {
         if (rockIsBroken) return false;
-        return !!(targetNode && rockEl && (rockEl === targetNode || rockEl.contains(targetNode)));
+        const box = rockBoxRef.current;
+        if (!rockReady || !box) return false;
+        return nx >= box.left && nx <= box.right && ny >= box.top && ny <= box.bottom;
       };
       const heroEl = islandHeroImgRef.current;
       if (!heroEl) return;
@@ -1305,7 +1306,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const ry = Math.floor(clientY - rect.top);
       const nx = rx / Math.max(1, rect.width);
       const ny = ry / Math.max(1, rect.height);
-      if (isRockTarget()) {
+      if (isInsideRockBox(nx, ny)) {
+        try {
+          rockRef.current?.tap();
+        } catch {}
+        if ((event as any).preventDefault) (event as any).preventDefault();
         return;
       }
       if (pointInPolygon(nx, ny, walkPoints)) {
@@ -1383,7 +1388,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken]
+    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady]
   );
 
   return (
@@ -1459,6 +1464,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                     </DudeSpriteWrap>
                     <RockLayer ref={rockLayerRef} $visible={decorVisible} style={{ zIndex: 1 }}>
                       <Rock
+                        ref={rockRef as any}
                         heightPct={75}
                         onOpened={() => {
                           setRockReady(true);
