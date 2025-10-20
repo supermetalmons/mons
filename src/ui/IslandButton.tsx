@@ -457,6 +457,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const monNaturalSizeRef = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
   const monResizeObserverRef = useRef<ResizeObserver | null>(null);
   const monFrameWidthRef = useRef<number>(0);
+  const monFlipTimerRef = useRef<number | null>(null);
 
   const updateMonStripSizing = useCallback(() => {
     const wrap = monWrapRef.current as HTMLDivElement | null;
@@ -641,7 +642,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     if (!islandOverlayVisible) return;
     const pt = pickRandomPointInWalkArea();
     setMonPos(pt);
-    setMonFacingLeft(pt.x < 0.5);
+    setMonFacingLeft(Math.random() < 0.5);
     (async () => {
       const { getSpriteByKey } = await import("../assets/monsSprites");
       const key = getOwnDrainerId();
@@ -653,6 +654,22 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       mounted = false;
     };
   }, [islandOverlayVisible, pickRandomPointInWalkArea]);
+
+  useEffect(() => {
+    if (!decorVisible || islandClosing || !islandOverlayVisible) return;
+    if (!monSpriteData || !monPos) return;
+    const tick = () => {
+      if (!overlayActiveRef.current) return;
+      if (Math.random() < 0.5) setMonFacingLeft((prev) => !prev);
+    };
+    monFlipTimerRef.current = window.setInterval(tick, 10000);
+    return () => {
+      if (monFlipTimerRef.current !== null) {
+        clearInterval(monFlipTimerRef.current);
+        monFlipTimerRef.current = null;
+      }
+    };
+  }, [decorVisible, islandClosing, islandOverlayVisible, monSpriteData, monPos]);
 
   useEffect(() => {
     if (!decorVisible || islandClosing) return;
