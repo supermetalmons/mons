@@ -662,7 +662,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!overlayActiveRef.current) return;
       if (Math.random() < 0.5) setMonFacingLeft((prev) => !prev);
     };
-    monFlipTimerRef.current = window.setInterval(tick, 10000);
+    monFlipTimerRef.current = window.setInterval(tick, 15000);
     return () => {
       if (monFlipTimerRef.current !== null) {
         clearInterval(monFlipTimerRef.current);
