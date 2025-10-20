@@ -1433,122 +1433,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     requestAnimationFrame(step);
   }, []);
 
-  const spawnRockTargetIndicator = useCallback(() => {
-    const fxContainer = getFxContainer();
-    try {
-      const existing = fxContainer.querySelectorAll('[data-fx="rock-target"]');
-      existing.forEach((node) => node.parentElement?.removeChild(node));
-    } catch {}
-    const containerBox = fxContainer.getBoundingClientRect();
-    const rockLayer = rockLayerRef.current;
-    const heroEl = islandHeroImgRef.current;
-    let cx = 0;
-    let cy = 0;
-    let localSizeBasis = 0;
-    const rockBox = rockBoxRef.current;
-    if (heroEl && rockBox) {
-      const hr = heroEl.getBoundingClientRect();
-      const centerX = ((rockBox.left + rockBox.right) / 2) * hr.width + hr.left;
-      const centerY = ((rockBox.top + rockBox.bottom) / 2) * hr.height + hr.top;
-      cx = centerX;
-      cy = centerY;
-      const rw = Math.max(1, (rockBox.right - rockBox.left) * hr.width);
-      const rh = Math.max(1, (rockBox.bottom - rockBox.top) * hr.height);
-      localSizeBasis = Math.min(rw, rh);
-    } else if (rockLayer) {
-      const rr = rockLayer.getBoundingClientRect();
-      cx = rr.left + rr.width / 2;
-      cy = rr.top + rr.height * 0.5;
-      localSizeBasis = Math.min(rr.width, rr.height);
-    } else {
-      return;
-    }
-    const baseSize = Math.max(18, Math.min(64, localSizeBasis * 0.32));
-    const el = document.createElement("div");
-    el.style.position = "absolute";
-    el.style.left = "0";
-    el.style.top = "0";
-    el.style.width = `${Math.round(baseSize)}px`;
-    el.style.height = `${Math.round(baseSize)}px`;
-    el.style.pointerEvents = "none";
-    el.style.zIndex = "90006";
-    el.style.willChange = "transform, opacity";
-    el.setAttribute("data-fx", "rock-target");
-    const tx = cx - containerBox.left - baseSize / 2;
-    const ty = cy - containerBox.top - baseSize / 2;
-    el.style.transform = `translate3d(${Math.round(tx)}px, ${Math.round(ty)}px, 0)`;
-    el.style.opacity = "0";
-
-    const ring = document.createElement("div");
-    ring.style.position = "absolute";
-    ring.style.left = "0";
-    ring.style.top = "0";
-    ring.style.width = "100%";
-    ring.style.height = "100%";
-    ring.style.border = "3px solid rgba(255,0,0,0.82)";
-    ring.style.borderRadius = "999px";
-    ring.style.boxSizing = "border-box";
-    ring.style.transform = "scale(0.6)";
-    ring.style.willChange = "transform";
-    el.appendChild(ring);
-
-    const inner = document.createElement("div");
-    inner.style.position = "absolute";
-    inner.style.left = "50%";
-    inner.style.top = "50%";
-    inner.style.transform = "translate(-50%, -50%)";
-    inner.style.width = `${Math.round(baseSize * 0.45)}px`;
-    inner.style.height = `${Math.round(baseSize * 0.45)}px`;
-    inner.style.background = "rgba(255,0,0,0.72)";
-    inner.style.borderRadius = "999px";
-    el.appendChild(inner);
-
-    fxContainer.appendChild(el);
-
-    const appearMs = 80;
-    const holdMs = 50;
-    const disappearMs = 150;
-    const start = performance.now();
-    function clamp01(v: number) {
-      return v < 0 ? 0 : v > 1 ? 1 : v;
-    }
-    function step(now: number) {
-      if (!overlayActiveRef.current) {
-        el.remove();
-        return;
-      }
-      const elapsed = now - start;
-      if (elapsed <= appearMs) {
-        const p = clamp01(elapsed / appearMs);
-        const sRing = 0.6 + (1.0 - 0.6) * p;
-        const sInner = 0.5 + (0.85 - 0.5) * p;
-        ring.style.transform = `scale(${sRing})`;
-        el.style.transform = `translate3d(${Math.round(tx)}px, ${Math.round(ty)}px, 0)`;
-        inner.style.transform = `translate(-50%, -50%) scale(${sInner})`;
-        el.style.opacity = `${0.75 * p}`;
-      } else if (elapsed <= appearMs + holdMs) {
-        ring.style.transform = `scale(1)`;
-        el.style.transform = `translate3d(${Math.round(tx)}px, ${Math.round(ty)}px, 0)`;
-        inner.style.transform = `translate(-50%, -50%) scale(0.85)`;
-        el.style.opacity = `0.75`;
-      } else if (elapsed <= appearMs + holdMs + disappearMs) {
-        const t = (elapsed - appearMs - holdMs) / disappearMs;
-        const p = clamp01(t);
-        const sRing = 1 + (1.45 - 1) * p;
-        const sInner = 0.85 + (1.0 - 0.85) * p;
-        ring.style.transform = `scale(${sRing})`;
-        el.style.transform = `translate3d(${Math.round(tx)}px, ${Math.round(ty)}px, 0)`;
-        inner.style.transform = `translate(-50%, -50%) scale(${sInner})`;
-        el.style.opacity = `${0.75 * (1 - p)}`;
-      } else {
-        el.remove();
-        return;
-      }
-      requestAnimationFrame(step);
-    }
-    requestAnimationFrame(step);
-  }, [getFxContainer]);
-
   const handleMaterialItemTap = useCallback(
     (name: MaterialName, url: string | null) => (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
       if (!url) return;
@@ -1615,7 +1499,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const isAlternate = targetPos === alternate;
         const atTarget = Math.hypot(dudePos.x - targetPos.x, dudePos.y - targetPos.y) < 0.015;
         if (!atTarget) {
-          spawnRockTargetIndicator();
           startMiningAnimation();
           moveTargetMetaRef.current = { x: targetPos.x, y: targetPos.y, facingLeft: isAlternate ? !INITIAL_DUDE_FACING_LEFT : INITIAL_DUDE_FACING_LEFT };
           startMoveTo(targetPos.x, targetPos.y);
@@ -1703,7 +1586,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, spawnRockTargetIndicator]
+    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal]
   );
 
   return (
