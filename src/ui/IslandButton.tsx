@@ -226,6 +226,17 @@ const ROCK_BOX_INSET_RIGHT_FRAC = 0.0;
 const ROCK_BOX_INSET_TOP_FRAC = 0.02;
 const ROCK_BOX_INSET_BOTTOM_FRAC = 0.24;
 const SHOW_ISLAND_DEBUG_BOUNDS = false;
+const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X = 0.0;
+const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y = 0.02;
+const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X = 0.63;
+const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y = 0.42;
+const SAFE_POINT_EDGE_INSET = 0.003;
+const SAFE_POINT_SLIDE_MIN_DIST = 0.012;
+const SAFE_POINT_EDGE_SWITCH_HYST2 = 0.00002;
+const SAFE_POINT_VERTEX_T_EPS = 0.01;
+const SAFE_POINTER_MOVE_EPS = 0.0009;
+const FACING_DX_EPS = 0.006;
+const FACING_FLIP_HYST_MS = 160;
 const DudeSpriteWrap = styled.div`
   position: absolute;
   width: auto;
@@ -1024,9 +1035,29 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const latestDudePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const moveTargetMetaRef = useRef<{ x: number; y: number; facingLeft: boolean } | null>(null);
+  const dragModeRef = useRef<"none" | "polygon" | "ellipse">("none");
+  const safeSlideEdgeRef = useRef<{ edgeIndex: number | null } | null>({ edgeIndex: null });
+  const lastFacingFlipAtRef = useRef<number>(0);
+  const lastFacingDirRef = useRef<boolean>(false);
+  const lastEllipsePointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 });
   useEffect(() => {
     latestDudePosRef.current = dudePos;
   }, [dudePos]);
+  const decideFacingWithHysteresis = useCallback((from: { x: number; y: number }, to: { x: number; y: number }) => {
+    const dx = to.x - from.x;
+    if (Math.abs(dx) < FACING_DX_EPS) {
+      return lastFacingDirRef.current;
+    }
+    const desiredLeft = dx < 0;
+    if (desiredLeft !== lastFacingDirRef.current) {
+      const now = performance.now();
+      if (now - lastFacingFlipAtRef.current >= FACING_FLIP_HYST_MS) {
+        lastFacingFlipAtRef.current = now;
+        lastFacingDirRef.current = desiredLeft;
+      }
+    }
+    return lastFacingDirRef.current;
+  }, []);
 
   const startMiningAnimation = useCallback(() => {
     if (!dudeWrapRef.current) return;
@@ -1094,7 +1125,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       const from = { x: currentX, y: currentY };
       const to = { x: tx, y: ty };
-      setDudeFacingLeft((prev) => (to.x < from.x ? true : to.x > from.x ? false : prev));
+      setDudeFacingLeft(decideFacingWithHysteresis(from, to));
       const w = heroSize.w;
       const h = heroSize.h;
       const dx = (to.x - from.x) * w;
@@ -1135,7 +1166,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal]
+    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal, decideFacingWithHysteresis]
   );
 
   const updateMoveTarget = useCallback(
@@ -1152,7 +1183,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       const from = { x: currentX, y: currentY };
       const to = { x: tx, y: ty };
-      setDudeFacingLeft((prev) => (to.x < from.x ? true : to.x > from.x ? false : prev));
+      setDudeFacingLeft(decideFacingWithHysteresis(from, to));
       const w = heroSize.w;
       const h = heroSize.h;
       const dx = (to.x - from.x) * w;
@@ -1181,7 +1212,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.h, heroSize.w, stopMoveAnim]
+    [heroSize.h, heroSize.w, stopMoveAnim, decideFacingWithHysteresis]
   );
 
   const getFxContainer = useCallback(() => {
@@ -1479,8 +1510,26 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         clientX = (event as React.MouseEvent).clientX;
         clientY = (event as React.MouseEvent).clientY;
       }
+      const getEllipseParamsEarly = () => {
+        const box = rockBoxRef.current;
+        if (!box) return null;
+        const cx = (box.left + box.right) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X;
+        const cy = (box.top + box.bottom) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y;
+        const rx = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X;
+        const ry = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y;
+        return { cx, cy, rx, ry };
+      };
+      const nxxEarly = (clientX - rect.left) / Math.max(1, rect.width);
+      const nyyEarly = (clientY - rect.top) / Math.max(1, rect.height);
+      const isInsideEllipseEarly = (() => {
+        const p = getEllipseParamsEarly();
+        if (!p) return false;
+        const dx = (nxxEarly - p.cx) / p.rx;
+        const dy = (nyyEarly - p.cy) / p.ry;
+        return dx * dx + dy * dy <= 1;
+      })();
       const inside = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
-      if (!inside) {
+      if (!inside && !isInsideEllipseEarly) {
         if (shouldSkipCloseForMaterialTarget()) return;
         handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
         return;
@@ -1510,12 +1559,133 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if ((event as any).preventDefault) (event as any).preventDefault();
         return;
       }
-      if (pointInPolygon(nx, ny, walkPoints)) {
+      const getEllipseParams = () => {
+        const box = rockBoxRef.current;
+        if (!box) return null;
+        const cx = (box.left + box.right) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X;
+        const cy = (box.top + box.bottom) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y;
+        const rx = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X;
+        const ry = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y;
+        return { cx, cy, rx, ry };
+      };
+      const isInsideEllipse = (x: number, y: number) => {
+        const p = getEllipseParams();
+        if (!p) return false;
+        const dx = (x - p.cx) / p.rx;
+        const dy = (y - p.cy) / p.ry;
+        return dx * dx + dy * dy <= 1;
+      };
+      const cross = (ax: number, ay: number, bx: number, by: number) => ax * by + 0 - ay * bx;
+      const segmentIntersectionT = (p0: { x: number; y: number }, p1: { x: number; y: number }, q0: { x: number; y: number }, q1: { x: number; y: number }) => {
+        const r = { x: p1.x - p0.x, y: p1.y - p0.y };
+        const s = { x: q1.x - q0.x, y: q1.y - q0.y };
+        const denom = cross(r.x, r.y, s.x, s.y);
+        if (Math.abs(denom) < 1e-9) return null;
+        const qp = { x: q0.x - p0.x, y: q0.y - p0.y };
+        const t = cross(qp.x, qp.y, s.x, s.y) / denom;
+        const u = cross(qp.x, qp.y, r.x, r.y) / denom;
+        if (t >= 0 && t <= 1 && u >= 0 && u <= 1) return t;
+        return null;
+      };
+      const computeBoundaryStopPoint = (from: { x: number; y: number }, to: { x: number; y: number }, poly: Array<{ x: number; y: number }>) => {
+        if (pointInPolygon(to.x, to.y, poly)) return to;
+        let bestT: number | null = null;
+        let bestEdge: { a: { x: number; y: number }; b: { x: number; y: number } } | null = null;
+        let bestI: number | null = null;
+        let bestJ: number | null = null;
+        const n = poly.length;
+        for (let i = 0, j = n - 1; i < n; j = i++) {
+          const a = poly[j];
+          const b = poly[i];
+          const t = segmentIntersectionT(from, to, a, b);
+          if (t === null) continue;
+          if (t >= SAFE_POINT_VERTEX_T_EPS && t <= 1 - SAFE_POINT_VERTEX_T_EPS && (bestT === null || t + SAFE_POINT_EDGE_SWITCH_HYST2 < bestT)) {
+            bestT = t;
+            bestEdge = { a, b };
+            bestI = i;
+            bestJ = j;
+          }
+        }
+        if (bestT === null) {
+          for (let i = 0, j = n - 1; i < n; j = i++) {
+            const a = poly[j];
+            const b = poly[i];
+            const t = segmentIntersectionT(from, to, a, b);
+            if (t === null) continue;
+            if (t >= 0 && t <= 1 && (bestT === null || t + SAFE_POINT_EDGE_SWITCH_HYST2 < bestT)) {
+              bestT = t;
+              bestEdge = { a, b };
+              bestI = i;
+              bestJ = j;
+            }
+          }
+        }
+        const eps = SAFE_POINT_EDGE_INSET;
+        if (bestT !== null && bestEdge) {
+          const tInside = Math.max(0, bestT - eps);
+          const stop = { x: from.x + (to.x - from.x) * tInside, y: from.y + (to.y - from.y) * tInside };
+          const closeToFrom = Math.hypot(stop.x - from.x, stop.y - from.y) < SAFE_POINT_SLIDE_MIN_DIST;
+          if (!closeToFrom) return stop;
+          let bestProj: { x: number; y: number; d2: number } | null = null;
+          if (bestI !== null && bestJ !== null) {
+            const idxs = [
+              [bestJ, bestI],
+              [bestI, (bestI + 1) % n],
+              [(bestJ - 1 + n) % n, bestJ],
+            ];
+            for (let k = 0; k < idxs.length; k++) {
+              const a = poly[idxs[k][0]];
+              const b = poly[idxs[k][1]];
+              const ex = b.x - a.x;
+              const ey = b.y - a.y;
+              const elen2 = ex * ex + ey * ey || 1;
+              let tProj = ((to.x - a.x) * ex + (to.y - a.y) * ey) / elen2;
+              if (tProj < 0) tProj = 0;
+              else if (tProj > 1) tProj = 1;
+              const sx = a.x + ex * tProj;
+              const sy = a.y + ey * tProj;
+              const dx = to.x - sx;
+              const dy = to.y - sy;
+              const d2 = dx * dx + dy * dy;
+              if (!bestProj || d2 < bestProj.d2) bestProj = { x: sx, y: sy, d2 };
+            }
+          }
+          if (!bestProj) return stop;
+          const ddx = to.x - from.x;
+          const ddy = to.y - from.y;
+          const dFrom2 = ddx * ddx + ddy * ddy;
+          if (!(bestProj.d2 + 1e-8 < dFrom2)) return stop;
+          let sx = bestProj.x;
+          let sy = bestProj.y;
+          let cx = 0;
+          let cy = 0;
+          for (let k = 0; k < poly.length; k++) {
+            cx += poly[k].x;
+            cy += poly[k].y;
+          }
+          cx /= Math.max(1, poly.length);
+          cy /= Math.max(1, poly.length);
+          const nx = cx - sx;
+          const ny = cy - sy;
+          const nlen = Math.hypot(nx, ny) || 1;
+          sx += (nx / nlen) * eps;
+          sy += (ny / nlen) * eps;
+          if (!pointInPolygon(sx, sy, poly)) return stop;
+          return { x: sx, y: sy };
+        }
+
+        return from;
+      };
+
+      if (pointInPolygon(nx, ny, walkPoints) || isInsideEllipse(nx, ny)) {
         if (performance.now() < walkSuppressedUntilRef.current) {
           return;
         }
+        const insidePoly = pointInPolygon(nx, ny, walkPoints);
+        dragModeRef.current = isInsideEllipse(nx, ny) && !insidePoly ? "ellipse" : "polygon";
+        const target = insidePoly ? { x: nx, y: ny } : computeBoundaryStopPoint(latestDudePosRef.current, { x: nx, y: ny }, walkPoints);
         moveTargetMetaRef.current = null;
-        startMoveTo(nx, ny);
+        startMoveTo(target.x, target.y);
         isDraggingRef.current = true;
 
         const handleMove = (e: MouseEvent | TouchEvent) => {
@@ -1535,8 +1705,23 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const ryy = Math.floor(cy - rect.top);
           const nxx = rxx / Math.max(1, rect.width);
           const nyy = ryy / Math.max(1, rect.height);
-          if (pointInPolygon(nxx, nyy, walkPoints)) {
+          if (dragModeRef.current === "ellipse") {
+            const lp = lastEllipsePointerRef.current;
+            const dxp = nxx - lp.x;
+            const dyp = nyy - lp.y;
+            if (dxp * dxp + dyp * dyp < SAFE_POINTER_MOVE_EPS * SAFE_POINTER_MOVE_EPS) {
+              if ("preventDefault" in e) e.preventDefault();
+              return;
+            }
+            lastEllipsePointerRef.current = { x: nxx, y: nyy };
+          }
+          const insidePolyMove = pointInPolygon(nxx, nyy, walkPoints);
+          if (insidePolyMove) {
             updateMoveTarget(nxx, nyy);
+          } else if (isInsideEllipse(nxx, nyy)) {
+            const stop = computeBoundaryStopPoint(latestDudePosRef.current, { x: nxx, y: nyy }, walkPoints);
+            updateMoveTarget(stop.x, stop.y);
+            dragModeRef.current = "ellipse";
           }
           if ("preventDefault" in e) {
             e.preventDefault();
@@ -1545,6 +1730,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
         const handleEnd = () => {
           isDraggingRef.current = false;
+          dragModeRef.current = "none";
+          if (safeSlideEdgeRef.current) safeSlideEdgeRef.current.edgeIndex = null;
+          lastEllipsePointerRef.current = { x: -1, y: -1 };
           window.removeEventListener("mousemove", handleMove as any);
           window.removeEventListener("mouseup", handleEnd as any);
           window.removeEventListener("touchmove", handleMove as any);
@@ -1626,7 +1814,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       pointerEvents: "none",
                       zIndex: 10,
                     }}>
-                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%" }}>
+                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}>
+                      {(() => {
+                        const box = rockBoxRef.current!;
+                        const cx = ((box.left + box.right) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X) * 100;
+                        const cy = ((box.top + box.bottom) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y) * 100;
+                        const rw = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X * 100;
+                        const rh = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y * 100;
+                        return <ellipse cx={cx} cy={cy} rx={rw} ry={rh} fill="rgba(0,200,0,0.12)" stroke="rgba(0,180,0,0.85)" strokeWidth={0.9} />;
+                      })()}
                       <rect x={Math.max(0, Math.min(1, rockBoxRef.current.left)) * 100} y={Math.max(0, Math.min(1, rockBoxRef.current.top)) * 100} width={Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left)) * 100} height={Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top)) * 100} fill="none" stroke="rgba(255,0,0,0.8)" strokeWidth={1.6} />
                       <line x1={0} x2={100} y1={Math.max(0, Math.min(1, rockBottomY)) * 100} y2={Math.max(0, Math.min(1, rockBottomY)) * 100} stroke="rgba(255,0,0,0.6)" strokeDasharray="4 3" strokeWidth={1} />
                       {(() => {
