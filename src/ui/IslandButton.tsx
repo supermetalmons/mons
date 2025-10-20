@@ -227,9 +227,9 @@ const ROCK_BOX_INSET_TOP_FRAC = 0.02;
 const ROCK_BOX_INSET_BOTTOM_FRAC = 0.24;
 const SHOW_ISLAND_DEBUG_BOUNDS = false;
 const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X = 0.0;
-const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y = 0.02;
+const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y = 0.042;
 const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X = 0.63;
-const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y = 0.42;
+const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y = 0.36;
 const SAFE_POINT_EDGE_INSET = 0.003;
 const SAFE_POINT_SLIDE_MIN_DIST = 0.012;
 const SAFE_POINT_EDGE_SWITCH_HYST2 = 0.00002;
@@ -370,19 +370,19 @@ const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map
 export let hasIslandOverlayVisible: () => boolean = () => false;
 
 const WALK_POLYGON: Array<{ x: number; y: number }> = [
-  { x: 0.546, y: 0.0182 },
-  { x: 0.8374, y: 0.0908 },
-  { x: 0.9861, y: 0.1955 },
+  { x: 0.5641, y: 0.0597 },
+  { x: 0.8349, y: 0.1064 },
+  { x: 0.9702, y: 0.2049 },
   { x: 0.7162, y: 0.3836 },
   { x: 0.6673, y: 0.3643 },
   { x: 0.5186, y: 0.4519 },
   { x: 0.3953, y: 0.39 },
   { x: 0.3386, y: 0.4156 },
-  { x: 0.008, y: 0.219 },
-  { x: 0.1234, y: 0.1036 },
-  { x: 0.2877, y: 0.0267 },
-  { x: 0.3621, y: 0.0353 },
-  { x: 0.4619, y: 0.0502 },
+  { x: 0.0345, y: 0.2075 },
+  { x: 0.1272, y: 0.1323 },
+  { x: 0.3005, y: 0.0597 },
+  { x: 0.3908, y: 0.0649 },
+  { x: 0.4691, y: 0.0726 },
 ];
 
 const getMaterialImageUrl = (name: MaterialName) => {
