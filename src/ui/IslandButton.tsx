@@ -219,6 +219,7 @@ const WalkOverlay = styled.div`
 const DUDE_ANCHOR_FRAC = 0.77;
 const INITIAL_DUDE_Y_SHIFT = -0.175;
 const INITIAL_DUDE_X_SHIFT = 0.075;
+const INITIAL_DUDE_FACING_LEFT = false;
 const ROCK_BOX_INSET_LEFT_FRAC = 0.0;
 const ROCK_BOX_INSET_RIGHT_FRAC = 0.0;
 const ROCK_BOX_INSET_TOP_FRAC = 0.02;
@@ -436,6 +437,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const origDudeImgRef = useRef<HTMLImageElement | null>(null);
   const hasSyncedDudeRef = useRef<boolean>(false);
+  const initialDudePosRef = useRef<{ x: number; y: number } | null>(null);
   const dudeWrapRef = useRef<HTMLDivElement | null>(null);
 
   const moveAnimRef = useRef<{ start: number; from: { x: number; y: number }; to: { x: number; y: number }; duration: number } | null>(null);
@@ -615,7 +617,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const cyBottom = (db.bottom - hbox.top) / hbox.height;
     const cy = cyBottom + INITIAL_DUDE_Y_SHIFT;
     if (isFinite(cx) && isFinite(cy)) {
-      setDudePos({ x: Math.max(0, Math.min(1, cx)), y: Math.max(0, Math.min(1, cy)) });
+      const clampedX = Math.max(0, Math.min(1, cx));
+      const clampedY = Math.max(0, Math.min(1, cy));
+      setDudePos({ x: clampedX, y: clampedY });
+      initialDudePosRef.current = { x: clampedX, y: clampedY };
       hasSyncedDudeRef.current = true;
     }
   }, []);
@@ -1021,6 +1026,57 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     latestDudePosRef.current = dudePos;
   }, [dudePos]);
 
+  const startMiningAnimation = useCallback(() => {
+    if (!dudeWrapRef.current) return;
+    if (!miningImageRef.current) return;
+    if (miningPlaying) return;
+    setMiningPlaying(true);
+    requestAnimationFrame(() => {
+      const sheetImg = miningImageRef.current;
+      const wrap = dudeWrapRef.current;
+      const frameWrap = miningFrameWrapRef.current;
+      const stripImg = miningStripImgRef.current;
+      if (!sheetImg || !wrap || !frameWrap || !stripImg) {
+        setMiningPlaying(false);
+        return;
+      }
+      const wrapBox = wrap.getBoundingClientRect();
+      const frameCount = 4;
+      const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
+      const frameHeight = sheetImg.naturalHeight || 1;
+      const targetHeight = Math.max(1, Math.round(wrapBox.height));
+      const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / frameHeight));
+
+      frameWrap.style.width = `${targetWidth}px`;
+      frameWrap.style.height = `${targetHeight}px`;
+      stripImg.style.height = `${targetHeight}px`;
+      stripImg.style.width = `${targetWidth * frameCount}px`;
+      stripImg.style.transform = `translateX(0px)`;
+
+      miningAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
+      const step = () => {
+        const anim = miningAnimRef.current;
+        if (!anim) return;
+        const elapsed = performance.now() - anim.start;
+        const rawFrame = Math.floor(elapsed / MINING_FRAME_MS);
+        const frame = Math.min(frameCount - 1, Math.max(0, rawFrame));
+        if (frame !== anim.lastFrame) {
+          const offset = frame * targetWidth;
+          const tx = -offset;
+          stripImg.style.transform = `translateX(${tx}px)`;
+          anim.lastFrame = frame;
+        }
+        if (elapsed < frameCount * MINING_FRAME_MS) {
+          anim.raf = requestAnimationFrame(step);
+        } else {
+          setMiningPlaying(false);
+          miningAnimRef.current = null;
+        }
+      };
+      miningAnimRef.current.raf = requestAnimationFrame(step);
+    });
+  }, [miningPlaying]);
+
   const startMoveTo = useCallback(
     (tx: number, ty: number) => {
       syncDudePosFromOriginal();
@@ -1059,6 +1115,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           if (t2 < 1) {
             rafRef.current = requestAnimationFrame(step);
           } else {
+            const initial = initialDudePosRef.current;
+            if (initial) {
+              const closeEnough = Math.hypot(nextX - initial.x, nextY - initial.y) < 0.012;
+              if (closeEnough) setDudeFacingLeft(INITIAL_DUDE_FACING_LEFT);
+            }
             stopMoveAnim();
           }
         };
@@ -1113,57 +1174,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     },
     [heroSize.h, heroSize.w, stopMoveAnim]
   );
-
-  const startMiningAnimation = useCallback(() => {
-    if (!dudeWrapRef.current) return;
-    if (!miningImageRef.current) return;
-    if (miningPlaying) return;
-    setMiningPlaying(true);
-    requestAnimationFrame(() => {
-      const sheetImg = miningImageRef.current;
-      const wrap = dudeWrapRef.current;
-      const frameWrap = miningFrameWrapRef.current;
-      const stripImg = miningStripImgRef.current;
-      if (!sheetImg || !wrap || !frameWrap || !stripImg) {
-        setMiningPlaying(false);
-        return;
-      }
-      const wrapBox = wrap.getBoundingClientRect();
-      const frameCount = 4;
-      const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
-      const frameHeight = sheetImg.naturalHeight || 1;
-      const targetHeight = Math.max(1, Math.round(wrapBox.height));
-      const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / frameHeight));
-
-      frameWrap.style.width = `${targetWidth}px`;
-      frameWrap.style.height = `${targetHeight}px`;
-      stripImg.style.height = `${targetHeight}px`;
-      stripImg.style.width = `${targetWidth * frameCount}px`;
-      stripImg.style.transform = `translateX(0px)`;
-
-      miningAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
-      const step = () => {
-        const anim = miningAnimRef.current;
-        if (!anim) return;
-        const elapsed = performance.now() - anim.start;
-        const rawFrame = Math.floor(elapsed / MINING_FRAME_MS);
-        const frame = Math.min(frameCount - 1, Math.max(0, rawFrame));
-        if (frame !== anim.lastFrame) {
-          const offset = frame * targetWidth;
-          const tx = -offset;
-          stripImg.style.transform = `translateX(${tx}px)`;
-          anim.lastFrame = frame;
-        }
-        if (elapsed < frameCount * MINING_FRAME_MS) {
-          anim.raf = requestAnimationFrame(step);
-        } else {
-          setMiningPlaying(false);
-          miningAnimRef.current = null;
-        }
-      };
-      miningAnimRef.current.raf = requestAnimationFrame(step);
-    });
-  }, [miningPlaying]);
 
   const getFxContainer = useCallback(() => {
     let container = fxContainerRef.current;
@@ -1414,6 +1424,122 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     requestAnimationFrame(step);
   }, []);
 
+  const spawnRockTargetIndicator = useCallback(() => {
+    const fxContainer = getFxContainer();
+    try {
+      const existing = fxContainer.querySelectorAll('[data-fx="rock-target"]');
+      existing.forEach((node) => node.parentElement?.removeChild(node));
+    } catch {}
+    const containerBox = fxContainer.getBoundingClientRect();
+    const rockLayer = rockLayerRef.current;
+    const heroEl = islandHeroImgRef.current;
+    let cx = 0;
+    let cy = 0;
+    let localSizeBasis = 0;
+    const rockBox = rockBoxRef.current;
+    if (heroEl && rockBox) {
+      const hr = heroEl.getBoundingClientRect();
+      const centerX = ((rockBox.left + rockBox.right) / 2) * hr.width + hr.left;
+      const centerY = ((rockBox.top + rockBox.bottom) / 2) * hr.height + hr.top;
+      cx = centerX;
+      cy = centerY;
+      const rw = Math.max(1, (rockBox.right - rockBox.left) * hr.width);
+      const rh = Math.max(1, (rockBox.bottom - rockBox.top) * hr.height);
+      localSizeBasis = Math.min(rw, rh);
+    } else if (rockLayer) {
+      const rr = rockLayer.getBoundingClientRect();
+      cx = rr.left + rr.width / 2;
+      cy = rr.top + rr.height * 0.5;
+      localSizeBasis = Math.min(rr.width, rr.height);
+    } else {
+      return;
+    }
+    const baseSize = Math.max(18, Math.min(64, localSizeBasis * 0.32));
+    const el = document.createElement("div");
+    el.style.position = "absolute";
+    el.style.left = "0";
+    el.style.top = "0";
+    el.style.width = `${Math.round(baseSize)}px`;
+    el.style.height = `${Math.round(baseSize)}px`;
+    el.style.pointerEvents = "none";
+    el.style.zIndex = "90006";
+    el.style.willChange = "transform, opacity";
+    el.setAttribute("data-fx", "rock-target");
+    const tx = cx - containerBox.left - baseSize / 2;
+    const ty = cy - containerBox.top - baseSize / 2;
+    el.style.transform = `translate3d(${Math.round(tx)}px, ${Math.round(ty)}px, 0)`;
+    el.style.opacity = "0";
+
+    const ring = document.createElement("div");
+    ring.style.position = "absolute";
+    ring.style.left = "0";
+    ring.style.top = "0";
+    ring.style.width = "100%";
+    ring.style.height = "100%";
+    ring.style.border = "3px solid rgba(255,0,0,0.82)";
+    ring.style.borderRadius = "999px";
+    ring.style.boxSizing = "border-box";
+    ring.style.transform = "scale(0.6)";
+    ring.style.willChange = "transform";
+    el.appendChild(ring);
+
+    const inner = document.createElement("div");
+    inner.style.position = "absolute";
+    inner.style.left = "50%";
+    inner.style.top = "50%";
+    inner.style.transform = "translate(-50%, -50%)";
+    inner.style.width = `${Math.round(baseSize * 0.45)}px`;
+    inner.style.height = `${Math.round(baseSize * 0.45)}px`;
+    inner.style.background = "rgba(255,0,0,0.72)";
+    inner.style.borderRadius = "999px";
+    el.appendChild(inner);
+
+    fxContainer.appendChild(el);
+
+    const appearMs = 80;
+    const holdMs = 50;
+    const disappearMs = 150;
+    const start = performance.now();
+    function clamp01(v: number) {
+      return v < 0 ? 0 : v > 1 ? 1 : v;
+    }
+    function step(now: number) {
+      if (!overlayActiveRef.current) {
+        el.remove();
+        return;
+      }
+      const elapsed = now - start;
+      if (elapsed <= appearMs) {
+        const p = clamp01(elapsed / appearMs);
+        const sRing = 0.6 + (1.0 - 0.6) * p;
+        const sInner = 0.5 + (0.85 - 0.5) * p;
+        ring.style.transform = `scale(${sRing})`;
+        el.style.transform = `translate3d(${Math.round(tx)}px, ${Math.round(ty)}px, 0)`;
+        inner.style.transform = `translate(-50%, -50%) scale(${sInner})`;
+        el.style.opacity = `${0.75 * p}`;
+      } else if (elapsed <= appearMs + holdMs) {
+        ring.style.transform = `scale(1)`;
+        el.style.transform = `translate3d(${Math.round(tx)}px, ${Math.round(ty)}px, 0)`;
+        inner.style.transform = `translate(-50%, -50%) scale(0.85)`;
+        el.style.opacity = `0.75`;
+      } else if (elapsed <= appearMs + holdMs + disappearMs) {
+        const t = (elapsed - appearMs - holdMs) / disappearMs;
+        const p = clamp01(t);
+        const sRing = 1 + (1.45 - 1) * p;
+        const sInner = 0.85 + (1.0 - 0.85) * p;
+        ring.style.transform = `scale(${sRing})`;
+        el.style.transform = `translate3d(${Math.round(tx)}px, ${Math.round(ty)}px, 0)`;
+        inner.style.transform = `translate(-50%, -50%) scale(${sInner})`;
+        el.style.opacity = `${0.75 * (1 - p)}`;
+      } else {
+        el.remove();
+        return;
+      }
+      requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }, [getFxContainer]);
+
   const handleMaterialItemTap = useCallback(
     (name: MaterialName, url: string | null) => (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
       if (!url) return;
@@ -1471,9 +1597,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const nx = rx / Math.max(1, rect.width);
       const ny = ry / Math.max(1, rect.height);
       if (isInsideRockBox(nx, ny)) {
-        try {
-          rockRef.current?.tap();
-        } catch {}
+        syncDudePosFromOriginal();
+        const initial = initialDudePosRef.current || latestDudePosRef.current;
+        const dx = dudePos.x - initial.x;
+        const dy = dudePos.y - initial.y;
+        const atInitial = Math.hypot(dx, dy) < 0.015;
+        if (!atInitial) {
+          spawnRockTargetIndicator();
+          startMiningAnimation();
+          startMoveTo(initial.x, initial.y);
+        } else {
+          try {
+            rockRef.current?.tap();
+          } catch {}
+        }
         if ((event as any).preventDefault) (event as any).preventDefault();
         return;
       }
@@ -1552,7 +1689,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady]
+    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, spawnRockTargetIndicator]
   );
 
   return (
