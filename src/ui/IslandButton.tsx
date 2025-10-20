@@ -228,6 +228,8 @@ const ROCK_BOX_INSET_BOTTOM_FRAC = 0.24;
 const SHOW_ISLAND_DEBUG_BOUNDS = false;
 const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X = 0.0;
 const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y = 0.042;
+const DUDE_DEBUG_RECT_WIDTH_FRAC = 0.12;
+const DUDE_DEBUG_RECT_HEIGHT_FRAC = 0.22;
 const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X = 0.63;
 const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y = 0.36;
 const SAFE_POINT_EDGE_INSET = 0.003;
@@ -1826,19 +1828,24 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       <rect x={Math.max(0, Math.min(1, rockBoxRef.current.left)) * 100} y={Math.max(0, Math.min(1, rockBoxRef.current.top)) * 100} width={Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left)) * 100} height={Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top)) * 100} fill="none" stroke="rgba(255,0,0,0.8)" strokeWidth={1.6} />
                       <line x1={0} x2={100} y1={Math.max(0, Math.min(1, rockBottomY)) * 100} y2={Math.max(0, Math.min(1, rockBottomY)) * 100} stroke="rgba(255,0,0,0.6)" strokeDasharray="4 3" strokeWidth={1} />
                       {(() => {
-                        const hero = islandHeroImgRef.current;
-                        const wrap = dudeWrapRef.current;
-                        if (!hero || !wrap) return null;
-                        const h = hero.getBoundingClientRect();
-                        const w = wrap.getBoundingClientRect();
-                        if (!(h.width > 0 && h.height > 0 && w.width > 0 && w.height > 0)) return null;
-                        const widthFrac = Math.max(0.001, Math.min(1, w.width / h.width));
-                        const cx = (w.left + w.width / 2 - h.left) / h.width;
-                        const ay = (w.top + w.height * DUDE_ANCHOR_FRAC - h.top) / h.height;
-                        const cxPct = Math.max(0, Math.min(100, cx * 100));
-                        const yPct = Math.max(0, Math.min(100, ay * 100));
+                        const widthFrac = Math.max(0.001, Math.min(1, DUDE_DEBUG_RECT_WIDTH_FRAC));
+                        const heightFrac = Math.max(0.001, Math.min(1, DUDE_DEBUG_RECT_HEIGHT_FRAC));
+                        const cx = dudePos.x;
+                        const bottomY = dudePos.y;
+                        const cxPct = cx * 100;
+                        const yPct = bottomY * 100;
                         const half = widthFrac * 0.5 * 100;
-                        return <line x1={cxPct - half} x2={cxPct + half} y1={yPct} y2={yPct} stroke="rgba(0,128,255,0.9)" strokeDasharray="3 3" strokeWidth={1.4} />;
+                        const leftX = cx - widthFrac * 0.5;
+                        const ww = widthFrac * 100;
+                        const hh = heightFrac * 100;
+                        const x = leftX * 100;
+                        const y = (bottomY - heightFrac) * 100;
+                        return (
+                          <>
+                            <line x1={cxPct - half} x2={cxPct + half} y1={yPct} y2={yPct} stroke="rgba(0,128,255,0.9)" strokeDasharray="3 3" strokeWidth={1.4} />
+                            <rect x={x} y={y} width={ww} height={hh} fill="rgba(0,128,255,0.08)" stroke="rgba(0,128,255,0.9)" strokeWidth={0.9} />
+                          </>
+                        );
                       })()}
                       {monPos &&
                         (() => {
@@ -1857,6 +1864,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           const yPct = Math.max(0, Math.min(100, (ay + MON_BASELINE_Y_OFFSET) * 100));
                           const half = widthFrac * 0.5 * 100;
                           return <line x1={cxPct - half} x2={cxPct + half} y1={yPct} y2={yPct} stroke="#000" strokeDasharray="3 3" strokeWidth={1.4} />;
+                        })()}
+                      {monPos &&
+                        (() => {
+                          const hero = islandHeroImgRef.current;
+                          const wrap = monWrapRef.current;
+                          const frame = monFrameWrapRef.current;
+                          if (!hero || !wrap || !frame) return null;
+                          const h = hero.getBoundingClientRect();
+                          const fr = frame.getBoundingClientRect();
+                          const wr = wrap.getBoundingClientRect();
+                          if (!(h.width > 0 && h.height > 0 && fr.width > 0 && wr.height > 0)) return null;
+                          const widthFrac = Math.max(0.001, Math.min(1, fr.width / h.width));
+                          const heightFrac = Math.max(0.001, Math.min(1, wr.height / h.height));
+                          const cx = (fr.left + fr.width / 2 - h.left) / h.width;
+                          const bottomY = (wr.top + wr.height * DUDE_ANCHOR_FRAC - h.top) / h.height + MON_BASELINE_Y_OFFSET;
+                          const leftX = cx - widthFrac * 0.5;
+                          const topY = bottomY - heightFrac;
+                          const x = Math.max(0, Math.min(100, leftX * 100));
+                          const y = Math.max(0, Math.min(100, topY * 100));
+                          const ww = Math.max(0.001, Math.min(100, widthFrac * 100));
+                          const hh = Math.max(0.001, Math.min(100, heightFrac * 100));
+                          return <rect x={x} y={y} width={ww} height={hh} fill="rgba(0,0,0,0.06)" stroke="#000" strokeWidth={0.9} />;
                         })()}
                       <polygon points={WALK_POLYGON.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(0,128,255,0.08)" stroke="rgba(0,128,255,0.8)" strokeWidth={0.8} />
                     </svg>
