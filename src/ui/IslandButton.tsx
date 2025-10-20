@@ -220,6 +220,7 @@ const DUDE_ANCHOR_FRAC = 0.77;
 const INITIAL_DUDE_Y_SHIFT = -0.175;
 const INITIAL_DUDE_X_SHIFT = 0.075;
 const INITIAL_DUDE_FACING_LEFT = false;
+const ALTERNATE_DUDE_X_SHIFT = 0.46;
 const ROCK_BOX_INSET_LEFT_FRAC = 0.0;
 const ROCK_BOX_INSET_RIGHT_FRAC = 0.0;
 const ROCK_BOX_INSET_TOP_FRAC = 0.02;
@@ -1022,6 +1023,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, []);
 
   const latestDudePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
+  const moveTargetMetaRef = useRef<{ x: number; y: number; facingLeft: boolean } | null>(null);
   useEffect(() => {
     latestDudePosRef.current = dudePos;
   }, [dudePos]);
@@ -1115,10 +1117,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           if (t2 < 1) {
             rafRef.current = requestAnimationFrame(step);
           } else {
-            const initial = initialDudePosRef.current;
-            if (initial) {
-              const closeEnough = Math.hypot(nextX - initial.x, nextY - initial.y) < 0.012;
-              if (closeEnough) setDudeFacingLeft(INITIAL_DUDE_FACING_LEFT);
+            const targetMeta = moveTargetMetaRef.current;
+            if (targetMeta) {
+              const closeEnough = Math.hypot(nextX - targetMeta.x, nextY - targetMeta.y) < 0.012;
+              if (closeEnough) setDudeFacingLeft(targetMeta.facingLeft);
+              moveTargetMetaRef.current = null;
+            } else {
+              const initial = initialDudePosRef.current;
+              if (initial) {
+                const closeEnough = Math.hypot(nextX - initial.x, nextY - initial.y) < 0.012;
+                if (closeEnough) setDudeFacingLeft(INITIAL_DUDE_FACING_LEFT);
+              }
             }
             stopMoveAnim();
           }
@@ -1599,13 +1608,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (isInsideRockBox(nx, ny)) {
         syncDudePosFromOriginal();
         const initial = initialDudePosRef.current || latestDudePosRef.current;
-        const dx = dudePos.x - initial.x;
-        const dy = dudePos.y - initial.y;
-        const atInitial = Math.hypot(dx, dy) < 0.015;
-        if (!atInitial) {
+        const alternate = { x: initial.x + ALTERNATE_DUDE_X_SHIFT - INITIAL_DUDE_X_SHIFT, y: initial.y };
+        const distToInitial = Math.hypot(dudePos.x - initial.x, dudePos.y - initial.y);
+        const distToAlternate = Math.hypot(dudePos.x - alternate.x, dudePos.y - alternate.y);
+        const targetPos = distToAlternate < distToInitial ? alternate : initial;
+        const isAlternate = targetPos === alternate;
+        const atTarget = Math.hypot(dudePos.x - targetPos.x, dudePos.y - targetPos.y) < 0.015;
+        if (!atTarget) {
           spawnRockTargetIndicator();
           startMiningAnimation();
-          startMoveTo(initial.x, initial.y);
+          moveTargetMetaRef.current = { x: targetPos.x, y: targetPos.y, facingLeft: isAlternate ? !INITIAL_DUDE_FACING_LEFT : INITIAL_DUDE_FACING_LEFT };
+          startMoveTo(targetPos.x, targetPos.y);
         } else {
           try {
             rockRef.current?.tap();
@@ -1618,6 +1631,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if (performance.now() < walkSuppressedUntilRef.current) {
           return;
         }
+        moveTargetMetaRef.current = null;
         startMoveTo(nx, ny);
         isDraggingRef.current = true;
 
