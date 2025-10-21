@@ -671,6 +671,9 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
         const targetGameToConfirm = game;
         game = game.without_last_turn()!;
         const latestLocation = currentInputs[currentInputs.length - 1];
+
+        playSounds([Sound.ConfirmEarlyEndTurn]);
+
         Board.showEndTurnConfirmationOverlay(
           game.active_color() === MonsWeb.Color.Black,
           latestLocation,

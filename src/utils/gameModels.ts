@@ -66,6 +66,12 @@ export enum Sound {
   PickaxeMiss,
   RockOpen,
   UsePotion,
+  ConfirmEarlyEndTurn,
+  IslandShowUp,
+  WalkToRock,
+  CollectingMaterials,
+  Timer,
+  IslandClosing,
 }
 
 export enum InputModifier {

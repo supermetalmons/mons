@@ -5,8 +5,10 @@ import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock, { IslandRockHandle } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
+import { playSounds } from "../content/sounds";
 import { idle as islandMonsIdle, mining as islandMonsMining } from "../assets/islandMons";
 import { getOwnDrainerId } from "../utils/namedMons";
+import { Sound } from "../utils/gameModels";
 
 const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
   border: none;
@@ -850,7 +852,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleIslandOpen = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
-      soundPlayer.initializeOnUserInteraction(true);
+      soundPlayer.initializeOnUserInteraction(true).then(() => {
+        playSounds([Sound.IslandShowUp]);
+      });
       closeAllKindsOfPopups();
       if (!islandImgLoaded || !islandNatural) return;
       const imgEl = islandButtonImgRef.current;
@@ -1553,6 +1557,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           startMiningAnimation();
           moveTargetMetaRef.current = { x: targetPos.x, y: targetPos.y, facingLeft: isAlternate ? !INITIAL_DUDE_FACING_LEFT : INITIAL_DUDE_FACING_LEFT };
           startMoveTo(targetPos.x, targetPos.y);
+          playSounds([Sound.WalkToRock]);
         } else {
           try {
             rockRef.current?.tap();

@@ -130,6 +130,24 @@ export async function playSounds(sounds: Sound[]) {
       case Sound.UsePotion:
         name = "popSharp";
         break;
+      case Sound.ConfirmEarlyEndTurn:
+        name = "thud";
+        break;
+      case Sound.IslandShowUp:
+        name = "open";
+        break;
+      case Sound.WalkToRock:
+        name = "thud";
+        break;
+      case Sound.CollectingMaterials:
+        name = "gather";
+        break;
+      case Sound.Timer:
+        name = "timer";
+        break;
+      case Sound.IslandClosing:
+        name = "swirl click";
+        break;
     }
 
     const path = `sounds/${name}.wav`;
@@ -148,6 +166,12 @@ const getSoundPriority = (sound: Sound) => {
     case Sound.PickaxeHit:
     case Sound.PickaxeMiss:
     case Sound.RockOpen:
+    case Sound.ConfirmEarlyEndTurn:
+    case Sound.IslandShowUp:
+    case Sound.IslandClosing:
+    case Sound.WalkToRock:
+    case Sound.CollectingMaterials:
+    case Sound.Timer:
       return 0;
     case Sound.ManaPickUp:
     case Sound.ChoosePickup:
