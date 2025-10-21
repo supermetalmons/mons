@@ -913,6 +913,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           container.parentNode.removeChild(container);
         }
       } catch {}
+      playSounds([Sound.IslandClosing]);
       fxContainerRef.current = null;
       const anim = miningAnimRef.current;
       if (anim && anim.raf) cancelAnimationFrame(anim.raf);

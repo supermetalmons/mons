@@ -134,7 +134,7 @@ export async function playSounds(sounds: Sound[]) {
         name = "thud";
         break;
       case Sound.IslandShowUp:
-        name = "open";
+        name = "ec rocket launch";
         break;
       case Sound.WalkToRock:
         name = "thud";
@@ -146,7 +146,7 @@ export async function playSounds(sounds: Sound[]) {
         name = "timer";
         break;
       case Sound.IslandClosing:
-        name = "swirl click";
+        name = "ec seat to rocket";
         break;
     }
 
