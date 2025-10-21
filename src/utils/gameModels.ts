@@ -72,6 +72,7 @@ export enum Sound {
   CollectingMaterials,
   Timer,
   IslandClosing,
+  MaterialButtonClick,
 }
 
 export enum InputModifier {

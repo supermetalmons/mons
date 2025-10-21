@@ -148,6 +148,9 @@ export async function playSounds(sounds: Sound[]) {
       case Sound.IslandClosing:
         name = "ec seat to rocket";
         break;
+      case Sound.MaterialButtonClick:
+        name = "ec score update";
+        break;
     }
 
     const path = `sounds/${name}.wav`;
@@ -172,6 +175,7 @@ const getSoundPriority = (sound: Sound) => {
     case Sound.WalkToRock:
     case Sound.CollectingMaterials:
     case Sound.Timer:
+    case Sound.MaterialButtonClick:
       return 0;
     case Sound.ManaPickUp:
     case Sound.ChoosePickup:
