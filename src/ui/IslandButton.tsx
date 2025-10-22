@@ -301,6 +301,12 @@ const MON_BASELINE_Y_OFFSET = 0.03;
 const MON_BOUNDS_WIDTH_FRAC = 0.115;
 const MON_BOUNDS_X_SHIFT = 0.0675;
 
+const MON_BOUNDS_WIDTH_FRAC_OVERRIDES: Record<string, number> = { royal_aguapwoshi_drainer: 0.09 };
+const getMonBoundsWidthFrac = (monIdOrKey: string | null) => {
+  if (!monIdOrKey) return MON_BOUNDS_WIDTH_FRAC;
+  return MON_BOUNDS_WIDTH_FRAC_OVERRIDES[monIdOrKey] ?? MON_BOUNDS_WIDTH_FRAC;
+};
+
 const MonLayer = styled.div<{ $visible: boolean }>`
   position: absolute;
   inset: 0;
@@ -480,6 +486,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [monPos, setMonPos] = useState<{ x: number; y: number } | null>(null);
   const [monFacingLeft, setMonFacingLeft] = useState<boolean>(false);
   const [monSpriteData, setMonSpriteData] = useState<string>("");
+  const [monKey, setMonKey] = useState<string | null>(null);
 
   const monWrapRef = useRef<HTMLDivElement | null>(null);
   const monFrameWrapRef = useRef<HTMLDivElement | null>(null);
@@ -693,6 +700,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const data = getSpriteByKey(key);
       if (!mounted) return;
       setMonSpriteData(data);
+      setMonKey(key);
     })();
     return () => {
       mounted = false;
@@ -1046,6 +1054,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         monAnimRef.current = null;
         setMonSpriteData("");
         setMonPos(null);
+        setMonKey(null);
       }
       try {
         updateRockBox();
@@ -1893,7 +1902,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       })()}
                       {monPos &&
                         (() => {
-                          const widthFrac = Math.max(0.001, Math.min(1, MON_BOUNDS_WIDTH_FRAC));
+                          const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(monKey)));
                           const cx = (monPos.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT;
                           const bottomY = (monPos.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
                           const cxPct = Math.max(0, Math.min(100, cx * 100));
@@ -1903,7 +1912,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                         })()}
                       {monPos &&
                         (() => {
-                          const widthFrac = Math.max(0.001, Math.min(1, MON_BOUNDS_WIDTH_FRAC));
+                          const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(monKey)));
                           const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
                           const cx = (monPos.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT;
                           const bottomY = (monPos.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
@@ -1958,7 +1967,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                     {monPos && monSpriteData && (
                       <MonLayer $visible={decorVisible && !islandClosing}>
                         {(() => {
-                          const widthPct = MON_BOUNDS_WIDTH_FRAC * 1.3 * 100;
+                          const widthPct = getMonBoundsWidthFrac(monKey) * 1.3 * 100;
                           const cx = ((monPos?.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT) * 100;
                           const bottomY = (monPos?.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
                           const topOffsetFrac = 0.0075;
