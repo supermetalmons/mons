@@ -134,7 +134,7 @@ export async function playSounds(sounds: Sound[]) {
         name = "thud";
         break;
       case Sound.IslandShowUp:
-        name = "open";
+        name = "";
         break;
       case Sound.WalkToRock:
         name = "thud";
