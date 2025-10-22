@@ -301,7 +301,12 @@ const MON_BASELINE_Y_OFFSET = 0.03;
 const MON_BOUNDS_WIDTH_FRAC = 0.115;
 const MON_BOUNDS_X_SHIFT = 0.0675;
 
-const MON_BOUNDS_WIDTH_FRAC_OVERRIDES: Record<string, number> = { royal_aguapwoshi_drainer: 0.09 };
+const MON_BOUNDS_WIDTH_FRAC_OVERRIDES: Record<string, number> = {
+  royal_aguapwoshi_drainer: 0.09,
+  omom_drainer: 0.1,
+  supermetaldrop_drainer: 0.1,
+  deino_drainer: 0.09,
+};
 const getMonBoundsWidthFrac = (monIdOrKey: string | null) => {
   if (!monIdOrKey) return MON_BOUNDS_WIDTH_FRAC;
   return MON_BOUNDS_WIDTH_FRAC_OVERRIDES[monIdOrKey] ?? MON_BOUNDS_WIDTH_FRAC;
