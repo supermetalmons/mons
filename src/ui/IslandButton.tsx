@@ -1180,7 +1180,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, []);
 
   const latestDudePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-  const moveTargetMetaRef = useRef<{ x: number; y: number; facingLeft: boolean } | null>(null);
+  const moveTargetMetaRef = useRef<{ x: number; y: number; facingLeft: boolean; onArrive?: () => void } | null>(null);
   const dragModeRef = useRef<"none" | "polygon" | "ellipse">("none");
   const safeSlideEdgeRef = useRef<{ edgeIndex: number | null } | null>({ edgeIndex: null });
   const lastFacingFlipAtRef = useRef<number>(0);
@@ -1297,8 +1297,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             const targetMeta = moveTargetMetaRef.current;
             if (targetMeta) {
               const closeEnough = Math.hypot(nextX - targetMeta.x, nextY - targetMeta.y) < 0.012;
-              if (closeEnough) setDudeFacingLeft(targetMeta.facingLeft);
-              moveTargetMetaRef.current = null;
+              if (closeEnough) {
+                setDudeFacingLeft(targetMeta.facingLeft);
+                try {
+                  if (targetMeta.onArrive) targetMeta.onArrive();
+                } catch {}
+                moveTargetMetaRef.current = null;
+              }
             } else {
               const initial = initialDudePosRef.current;
               if (initial) {
@@ -1697,11 +1702,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const ry = Math.floor(clientY - rect.top);
       const nx = rx / Math.max(1, rect.width);
       const ny = ry / Math.max(1, rect.height);
-      if (isInsideMonBox(nx, ny)) {
-        petMon();
-        if ((event as any).preventDefault) (event as any).preventDefault();
-        return;
-      }
+
       if (isInsideRockBox(nx, ny)) {
         syncDudePosFromOriginal();
         const initial = initialDudePosRef.current || latestDudePosRef.current;
@@ -1841,6 +1842,48 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
         return from;
       };
+
+      if (isInsideMonBox(nx, ny)) {
+        if (!monPos) return;
+        const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(monKey)));
+        const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
+        const cx = (monPos.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT;
+        const bottomY = (monPos.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+        const topY = bottomY - heightFrac;
+        const expandedW = Math.max(0.001, Math.min(1, widthFrac + DUDE_BOUNDS_WIDTH_FRAC * 1.4));
+        const expandedH = Math.max(0.001, Math.min(1, heightFrac + DUDE_BOUNDS_HEIGHT_FRAC));
+        const leftX = cx - expandedW * 0.5;
+        const rightX = cx + expandedW * 0.5;
+        const top = topY;
+        const bottom = top + expandedH;
+        const clampedY = Math.max(top, Math.min(bottom, dudePos.y));
+        const candidates = [
+          { x: leftX, y: clampedY },
+          { x: rightX, y: clampedY },
+        ];
+        let best = candidates[0];
+        let bestDist = Math.hypot(dudePos.x - best.x, dudePos.y - best.y);
+        for (let i = 1; i < candidates.length; i++) {
+          const d = Math.hypot(dudePos.x - candidates[i].x, dudePos.y - candidates[i].y);
+          if (d < bestDist) {
+            best = candidates[i];
+            bestDist = d;
+          }
+        }
+        const insidePoly = pointInPolygon(best.x, best.y, walkPoints);
+        const target = insidePoly ? best : computeBoundaryStopPoint(latestDudePosRef.current, best, walkPoints);
+        const onLeftSide = Math.abs(best.x - leftX) <= Math.abs(best.x - rightX);
+        const facingLeft = onLeftSide ? false : true;
+        const atTarget = Math.hypot(dudePos.x - target.x, dudePos.y - target.y) < 0.015;
+        if (!atTarget) {
+          moveTargetMetaRef.current = { x: target.x, y: target.y, facingLeft };
+          startMoveTo(target.x, target.y);
+        } else {
+          petMon();
+        }
+        if ((event as any).preventDefault) (event as any).preventDefault();
+        return;
+      }
 
       if (pointInPolygon(nx, ny, walkPoints) || isInsideEllipse(nx, ny)) {
         if (performance.now() < walkSuppressedUntilRef.current) {
@@ -2036,7 +2079,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           const y = Math.max(0, Math.min(100, topY * 100));
                           const ww = Math.max(0.001, Math.min(100, widthFrac * 100));
                           const hh = Math.max(0.001, Math.min(100, heightFrac * 100));
-                          return <rect x={x} y={y} width={ww} height={hh} fill="rgba(0,0,0,0.06)" stroke="#000" strokeWidth={0.9} />;
+                          const expandedWFrac = Math.max(0.001, Math.min(1, widthFrac + DUDE_BOUNDS_WIDTH_FRAC * 1.4));
+                          const expandedHFrac = Math.max(0.001, Math.min(1, heightFrac + DUDE_BOUNDS_HEIGHT_FRAC));
+                          const leftX2 = cx - expandedWFrac * 0.5;
+                          const topY2 = topY;
+                          const x2 = Math.max(0, Math.min(100, leftX2 * 100));
+                          const y2 = Math.max(0, Math.min(100, topY2 * 100));
+                          const ww2 = Math.max(0.001, Math.min(100, expandedWFrac * 100));
+                          const hh2 = Math.max(0.001, Math.min(100, expandedHFrac * 100));
+                          return (
+                            <>
+                              <rect x={x} y={y} width={ww} height={hh} fill="rgba(0,0,0,0.06)" stroke="#000" strokeWidth={0.9} />
+                              <rect x={x2} y={y2} width={ww2} height={hh2} fill="none" stroke="rgba(0,0,0,0.7)" strokeDasharray="4 3" strokeWidth={0.9} />
+                            </>
+                          );
                         })()}
                       <polygon points={WALK_POLYGON.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(0,128,255,0.08)" stroke="rgba(0,128,255,0.8)" strokeWidth={0.8} />
                     </svg>
