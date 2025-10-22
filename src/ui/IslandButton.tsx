@@ -315,6 +315,7 @@ const MonSpriteWrap = styled.div`
   height: ${MON_HEIGHT_FRAC * 100}%;
   transform: translate(-50%, -${DUDE_ANCHOR_FRAC * 100}%);
   pointer-events: none;
+  transition: opacity 260ms ease;
 `;
 
 const MonSpriteFrame = styled.div<{ $facingLeft: boolean }>`
@@ -443,6 +444,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return initial as Record<MaterialName, string | null>;
   });
   const [dudeVisible, setDudeVisible] = useState(false);
+  const [monVisible, setMonVisible] = useState(false);
   const materialItemRefs = useRef<Record<MaterialName, HTMLDivElement | null>>({ dust: null, slime: null, gum: null, metal: null, ice: null });
   const rockLayerRef = useRef<HTMLDivElement | null>(null);
   const rockRef = useRef<IslandRockHandle | null>(null);
@@ -507,7 +509,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const currentFrameIndex = Math.max(0, monAnimRef.current?.lastFrame ?? 0);
     const offset = currentFrameIndex * targetWidth;
     stripImg.style.transform = `translateX(${-offset}px)`;
-    stripImg.style.visibility = "visible";
   }, [heroSize.h]);
 
   hasIslandOverlayVisible = () => {
@@ -546,6 +547,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     } else {
       setDecorVisible(false);
       setDudeVisible(false);
+      setMonVisible(false);
     }
     return () => {
       if (timer !== null) window.clearTimeout(timer);
@@ -732,25 +734,32 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         stripImg.style.transform = `translateX(0px)`;
         monAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
         const MON_FRAME_MS = 220;
-        const step = () => {
-          const anim = monAnimRef.current;
-          if (!anim) return;
-          if (!overlayActiveRef.current) {
-            monAnimRef.current = null;
-            return;
-          }
-          const elapsed = performance.now() - anim.start;
-          const rawFrame = Math.floor(elapsed / MON_FRAME_MS);
-          const frame = ((rawFrame % frameCount) + frameCount) % frameCount;
-          if (frame !== anim.lastFrame) anim.lastFrame = frame;
-          const currentWidth = Math.max(0, Math.round(monFrameWidthRef.current || 0));
-          const offset = frame * currentWidth;
-          stripImg.style.transform = `translateX(${-offset}px)`;
-          if (stripImg.style.visibility !== "visible") stripImg.style.visibility = "visible";
+        setTimeout(() => {
+          if (!monAnimRef.current) return;
+          const step = () => {
+            const anim = monAnimRef.current;
+            if (!anim) return;
+            if (!overlayActiveRef.current) {
+              monAnimRef.current = null;
+              setMonVisible(false);
+              return;
+            }
+            const elapsed = performance.now() - anim.start;
+            const rawFrame = Math.floor(elapsed / MON_FRAME_MS);
+            const frame = ((rawFrame % frameCount) + frameCount) % frameCount;
+            if (frame !== anim.lastFrame) anim.lastFrame = frame;
+            const currentWidth = Math.max(0, Math.round(monFrameWidthRef.current || 0));
+            const offset = frame * currentWidth;
+            stripImg.style.transform = `translateX(${-offset}px)`;
+            if (stripImg.style.visibility !== "visible") {
+              stripImg.style.visibility = "visible";
+              setMonVisible(true);
+            }
 
-          anim.raf = requestAnimationFrame(step);
-        };
-        monAnimRef.current.raf = requestAnimationFrame(step);
+            anim.raf = requestAnimationFrame(step);
+          };
+          monAnimRef.current.raf = requestAnimationFrame(step);
+        }, 260);
 
         try {
           if (typeof ResizeObserver !== "undefined" && wrap) {
@@ -773,6 +782,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if (ro && cleanupWrap) ro.unobserve(cleanupWrap);
       } catch {}
       monResizeObserverRef.current = null;
+      setMonVisible(false);
     };
   }, [decorVisible, islandClosing, monSpriteData, monPos, updateMonStripSizing]);
 
@@ -1953,13 +1963,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           const bottomY = (monPos?.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
                           const topOffsetFrac = 0.0075;
                           const topFrac = Math.max(0, Math.min(1, bottomY - topOffsetFrac));
-                          return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${cx}%`, top: `${topFrac * 100}%`, width: `${widthPct}%`, height: "auto", opacity: dudeVisible ? 0.23 : 0 }} />;
+                          return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${cx}%`, top: `${topFrac * 100}%`, width: `${widthPct}%`, height: "auto", opacity: monVisible ? 0.23 : 0 }} />;
                         })()}
                         <MonSpriteWrap
                           ref={monWrapRef}
                           style={{
                             left: `${(monPos?.x ?? MON_REL_X) * 100}%`,
                             top: `${(monPos?.y ?? MON_REL_Y) * 100}%`,
+                            opacity: monVisible ? 1 : 0,
                             zIndex: rockReady
                               ? (() => {
                                   const monBehind = monPos.y + MON_BASELINE_Y_OFFSET < rockBottomY;
