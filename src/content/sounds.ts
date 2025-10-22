@@ -151,6 +151,18 @@ export async function playSounds(sounds: Sound[]) {
       case Sound.MaterialButtonClick:
         name = "cute click";
         break;
+      case Sound.Chip:
+        name = "chip";
+        break;
+      case Sound.HappyMon:
+        name = "happy";
+        break;
+      case Sound.SadMon:
+        name = "sad";
+        break;
+      case Sound.DownChip:
+        name = "down chip";
+        break;
     }
 
     const path = `sounds/${name}.wav`;
@@ -176,6 +188,10 @@ const getSoundPriority = (sound: Sound) => {
     case Sound.CollectingMaterials:
     case Sound.Timer:
     case Sound.MaterialButtonClick:
+    case Sound.Chip:
+    case Sound.HappyMon:
+    case Sound.SadMon:
+    case Sound.DownChip:
       return 0;
     case Sound.ManaPickUp:
     case Sound.ChoosePickup:
