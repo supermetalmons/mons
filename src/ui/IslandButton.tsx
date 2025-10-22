@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { isMobile } from "../utils/misc";
 import styled from "styled-components";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
@@ -225,18 +225,19 @@ const ShadowImg = styled.img`
   transform: translate(-50%, -50%);
   pointer-events: none;
   opacity: 0.23;
+  transition: opacity 260ms ease;
 `;
 
 const DUDE_ANCHOR_FRAC = 0.77;
-const INITIAL_DUDE_Y_SHIFT = -0.175;
-const INITIAL_DUDE_X_SHIFT = 0.075;
+const INITIAL_DUDE_Y_SHIFT = -0.645;
+const INITIAL_DUDE_X_SHIFT = -0.1;
 const INITIAL_DUDE_FACING_LEFT = false;
-const ALTERNATE_DUDE_X_SHIFT = 0.46;
+const ALTERNATE_DUDE_X_SHIFT = 0.3;
 const ROCK_BOX_INSET_LEFT_FRAC = 0.0;
 const ROCK_BOX_INSET_RIGHT_FRAC = 0.0;
 const ROCK_BOX_INSET_TOP_FRAC = 0.02;
 const ROCK_BOX_INSET_BOTTOM_FRAC = 0.24;
-const SHOW_ISLAND_BOUNDS = false;
+const SHOW_DEBUG_ISLAND_BOUNDS = false;
 const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X = 0.0;
 const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y = 0.042;
 const DUDE_BOUNDS_WIDTH_FRAC = 0.12;
@@ -259,6 +260,7 @@ const DudeSpriteWrap = styled.div`
   height: 45%;
   transform: translate(-50%, -${DUDE_ANCHOR_FRAC * 100}%);
   pointer-events: none;
+  transition: opacity 260ms ease;
 `;
 
 const DudeSpriteImg = styled.img<{ $facingLeft: boolean }>`
@@ -441,6 +443,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     MATERIALS.forEach((n) => (initial[n] = null));
     return initial as Record<MaterialName, string | null>;
   });
+  const [dudeVisible, setDudeVisible] = useState(false);
   const materialItemRefs = useRef<Record<MaterialName, HTMLDivElement | null>>({ dust: null, slime: null, gum: null, metal: null, ice: null });
   const rockLayerRef = useRef<HTMLDivElement | null>(null);
   const rockRef = useRef<IslandRockHandle | null>(null);
@@ -456,12 +459,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const [heroSize, setHeroSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
 
-  const [dudePos, setDudePos] = useState<{ x: number; y: number }>({ x: 0.4, y: 0.78 });
+  const [dudePos, setDudePos] = useState<{ x: number; y: number }>({ x: 0.4 + INITIAL_DUDE_X_SHIFT, y: 0.78 + INITIAL_DUDE_Y_SHIFT });
   const [dudeFacingLeft, setDudeFacingLeft] = useState<boolean>(false);
 
   const origDudeImgRef = useRef<HTMLImageElement | null>(null);
   const hasSyncedDudeRef = useRef<boolean>(false);
-  const initialDudePosRef = useRef<{ x: number; y: number } | null>(null);
+  const initialDudePosRef = useRef<{ x: number; y: number } | null>({ x: 0.4 + INITIAL_DUDE_X_SHIFT, y: 0.78 + INITIAL_DUDE_Y_SHIFT });
   const dudeWrapRef = useRef<HTMLDivElement | null>(null);
 
   const moveAnimRef = useRef<{ start: number; from: { x: number; y: number }; to: { x: number; y: number }; duration: number } | null>(null);
@@ -537,9 +540,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   useEffect(() => {
     let timer: number | null = null;
     if (islandOverlayVisible && !islandClosing) {
-      timer = window.setTimeout(() => setDecorVisible(true), 120);
+      timer = window.setTimeout(() => {
+        setDecorVisible(true);
+        requestAnimationFrame(() => setDudeVisible(true));
+      }, 120);
     } else {
       setDecorVisible(false);
+      setDudeVisible(false);
     }
     return () => {
       if (timer !== null) window.clearTimeout(timer);
@@ -650,11 +657,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     }
   }, []);
 
-  useEffect(() => {
-    if (islandOverlayVisible) {
-      syncDudePosFromOriginal();
-    }
-  }, [islandOverlayVisible, syncDudePosFromOriginal]);
+  useLayoutEffect(() => {
+    if (!islandOverlayVisible) return;
+    if (hasSyncedDudeRef.current) return;
+    const cx = 0.4 + INITIAL_DUDE_X_SHIFT;
+    const cy = 0.78 + INITIAL_DUDE_Y_SHIFT;
+    const clampedX = Math.max(0, Math.min(1, cx));
+    const clampedY = Math.max(0, Math.min(1, cy));
+    setDudePos({ x: clampedX, y: clampedY });
+    initialDudePosRef.current = { x: clampedX, y: clampedY };
+    hasSyncedDudeRef.current = true;
+  }, [islandOverlayVisible]);
 
   const initializeWalkPolygonIfNeeded = useCallback(() => {}, []);
 
@@ -1830,7 +1843,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               <HeroWrap>
                 <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} />
                 <WalkOverlay />
-                {SHOW_ISLAND_BOUNDS && rockReady && rockBoxRef.current && monImgLoaded && (
+                {SHOW_DEBUG_ISLAND_BOUNDS && (
                   <div
                     style={{
                       position: "absolute",
@@ -1839,16 +1852,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       zIndex: 10,
                     }}>
                     <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}>
-                      {(() => {
-                        const box = rockBoxRef.current!;
-                        const cx = ((box.left + box.right) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X) * 100;
-                        const cy = ((box.top + box.bottom) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y) * 100;
-                        const rw = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X * 100;
-                        const rh = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y * 100;
-                        return <ellipse cx={cx} cy={cy} rx={rw} ry={rh} fill="rgba(0,200,0,0.12)" stroke="rgba(0,180,0,0.85)" strokeWidth={0.9} />;
-                      })()}
-                      <rect x={Math.max(0, Math.min(1, rockBoxRef.current.left)) * 100} y={Math.max(0, Math.min(1, rockBoxRef.current.top)) * 100} width={Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left)) * 100} height={Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top)) * 100} fill="none" stroke="rgba(255,0,0,0.8)" strokeWidth={1.6} />
-                      <line x1={0} x2={100} y1={Math.max(0, Math.min(1, rockBottomY)) * 100} y2={Math.max(0, Math.min(1, rockBottomY)) * 100} stroke="rgba(255,0,0,0.6)" strokeDasharray="4 3" strokeWidth={1} />
+                      {rockReady && rockBoxRef.current && (
+                        <>
+                          {(() => {
+                            const box = rockBoxRef.current!;
+                            const cx = ((box.left + box.right) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X) * 100;
+                            const cy = ((box.top + box.bottom) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y) * 100;
+                            const rw = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X * 100;
+                            const rh = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y * 100;
+                            return <ellipse cx={cx} cy={cy} rx={rw} ry={rh} fill="rgba(0,200,0,0.12)" stroke="rgba(0,180,0,0.85)" strokeWidth={0.9} />;
+                          })()}
+                          <rect x={Math.max(0, Math.min(1, rockBoxRef.current.left)) * 100} y={Math.max(0, Math.min(1, rockBoxRef.current.top)) * 100} width={Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left)) * 100} height={Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top)) * 100} fill="none" stroke="rgba(255,0,0,0.8)" strokeWidth={1.6} />
+                          <line x1={0} x2={100} y1={Math.max(0, Math.min(1, rockBottomY)) * 100} y2={Math.max(0, Math.min(1, rockBottomY)) * 100} stroke="rgba(255,0,0,0.6)" strokeDasharray="4 3" strokeWidth={1} />
+                        </>
+                      )}
                       {(() => {
                         const widthFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_WIDTH_FRAC));
                         const heightFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_HEIGHT_FRAC));
@@ -1928,6 +1945,35 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                     <DudeImg ref={origDudeImgRef} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} />
                   </DudeLayer>
                 )}
+                {(() => {
+                  const widthPct = DUDE_BOUNDS_WIDTH_FRAC * 1.3 * 100;
+                  const topOffsetFrac = 0.0135;
+                  const topFrac = Math.max(0, Math.min(1, dudePos.y - topOffsetFrac));
+                  return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${dudePos.x * 100}%`, top: `${topFrac * 100}%`, width: `${widthPct}%`, height: "auto", opacity: dudeVisible ? 0.23 : 0 }} />;
+                })()}
+                <DudeSpriteWrap
+                  ref={dudeWrapRef}
+                  style={{
+                    left: `${dudePos.x * 100}%`,
+                    top: `${dudePos.y * 100}%`,
+                    opacity: dudeVisible ? 1 : 0,
+                    zIndex: rockReady
+                      ? (() => {
+                          const dudeBehind = dudePos.y < rockBottomY;
+                          const monBehind = monPos ? monPos.y + MON_BASELINE_Y_OFFSET < rockBottomY : dudeBehind;
+                          if (monPos && dudeBehind && monBehind) return 0;
+                          if (monPos && !dudeBehind && !monBehind) return dudePos.y > (monPos?.y || 0) + MON_BASELINE_Y_OFFSET ? 3 : 2;
+                          return dudeBehind ? 0 : 2;
+                        })()
+                      : 2,
+                  }}>
+                  <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} style={{ visibility: miningPlaying ? "hidden" : "visible" }} />
+                  {miningPlaying && (
+                    <DudeSpriteFrame $facingLeft={dudeFacingLeft} ref={miningFrameWrapRef as any}>
+                      <DudeSpriteStrip ref={miningStripImgRef as any} src={`data:image/png;base64,${islandMonsMining}`} alt="" draggable={false} />
+                    </DudeSpriteFrame>
+                  )}
+                </DudeSpriteWrap>
                 {decorVisible && (
                   <>
                     {monPos && monSpriteData && (
@@ -1947,7 +1993,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           const topOffsetFrac = 0.0075;
                           const topFrac = Math.max(0, Math.min(1, bottomY - topOffsetFrac));
                           const widthPx = Math.max(1, Math.round(fr.width));
-                          return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${cx * 100}%`, top: `${topFrac * 100}%`, width: `${widthPx}px`, height: "auto" }} />;
+                          return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${cx * 100}%`, top: `${topFrac * 100}%`, width: `${widthPx}px`, height: "auto", opacity: dudeVisible ? 0.23 : 0 }} />;
                         })()}
                         <MonSpriteWrap
                           ref={monWrapRef}
@@ -1970,37 +2016,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                         </MonSpriteWrap>
                       </MonLayer>
                     )}
-                    {(() => {
-                      const heroW = heroSize.w;
-                      const heroH = heroSize.h;
-                      if (!heroW || !heroH) return null;
-                      const widthPx = Math.max(1, Math.round(heroW * DUDE_BOUNDS_WIDTH_FRAC * 1.3));
-                      const topOffsetFrac = 0.0135;
-                      const topFrac = Math.max(0, Math.min(1, dudePos.y - topOffsetFrac));
-                      return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${dudePos.x * 100}%`, top: `${topFrac * 100}%`, width: `${widthPx}px`, height: "auto" }} />;
-                    })()}
-                    <DudeSpriteWrap
-                      ref={dudeWrapRef}
-                      style={{
-                        left: `${dudePos.x * 100}%`,
-                        top: `${dudePos.y * 100}%`,
-                        zIndex: rockReady
-                          ? (() => {
-                              const dudeBehind = dudePos.y < rockBottomY;
-                              const monBehind = monPos ? monPos.y + MON_BASELINE_Y_OFFSET < rockBottomY : dudeBehind;
-                              if (monPos && dudeBehind && monBehind) return 0;
-                              if (monPos && !dudeBehind && !monBehind) return dudePos.y > (monPos?.y || 0) + MON_BASELINE_Y_OFFSET ? 3 : 2;
-                              return dudeBehind ? 0 : 2;
-                            })()
-                          : 2,
-                      }}>
-                      <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} style={{ visibility: miningPlaying ? "hidden" : "visible" }} />
-                      {miningPlaying && (
-                        <DudeSpriteFrame $facingLeft={dudeFacingLeft} ref={miningFrameWrapRef as any}>
-                          <DudeSpriteStrip ref={miningStripImgRef as any} src={`data:image/png;base64,${islandMonsMining}`} alt="" draggable={false} />
-                        </DudeSpriteFrame>
-                      )}
-                    </DudeSpriteWrap>
                     <RockLayer ref={rockLayerRef} $visible={decorVisible} style={{ zIndex: 1 }}>
                       <Rock
                         ref={rockRef as any}
