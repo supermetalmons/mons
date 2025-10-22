@@ -1718,6 +1718,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           startMoveTo(targetPos.x, targetPos.y);
           playSounds([Sound.WalkToRock]);
         } else {
+          setDudeFacingLeft(isAlternate ? !INITIAL_DUDE_FACING_LEFT : INITIAL_DUDE_FACING_LEFT);
           try {
             rockRef.current?.tap();
           } catch {}
@@ -1879,6 +1880,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           moveTargetMetaRef.current = { x: target.x, y: target.y, facingLeft };
           startMoveTo(target.x, target.y);
         } else {
+          setDudeFacingLeft(facingLeft);
           petMon();
         }
         if ((event as any).preventDefault) (event as any).preventDefault();
