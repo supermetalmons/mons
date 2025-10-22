@@ -6,7 +6,7 @@ import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock, { IslandRockHandle } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playSounds } from "../content/sounds";
-import { idle as islandMonsIdle, mining as islandMonsMining } from "../assets/islandMons";
+import { idle as islandMonsIdle, mining as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
 import { getOwnDrainerId } from "../utils/namedMons";
 import { Sound } from "../utils/gameModels";
 
@@ -199,8 +199,6 @@ const DudeImg = styled.img`
   width: auto;
   display: block;
   pointer-events: none;
-  filter: drop-shadow(0 4px 1px rgba(0, 0, 0, 0.14));
-  -webkit-filter: drop-shadow(0 4px 1px rgba(0, 0, 0, 0.14));
   transform: scale(2.25);
   transform-origin: bottom right;
   image-rendering: pixelated;
@@ -218,6 +216,17 @@ const WalkOverlay = styled.div`
   pointer-events: none;
 `;
 
+const ShadowImg = styled.img`
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: auto;
+  height: auto;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  opacity: 0.23;
+`;
+
 const DUDE_ANCHOR_FRAC = 0.77;
 const INITIAL_DUDE_Y_SHIFT = -0.175;
 const INITIAL_DUDE_X_SHIFT = 0.075;
@@ -227,11 +236,11 @@ const ROCK_BOX_INSET_LEFT_FRAC = 0.0;
 const ROCK_BOX_INSET_RIGHT_FRAC = 0.0;
 const ROCK_BOX_INSET_TOP_FRAC = 0.02;
 const ROCK_BOX_INSET_BOTTOM_FRAC = 0.24;
-const SHOW_ISLAND_DEBUG_BOUNDS = false;
+const SHOW_ISLAND_BOUNDS = false;
 const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X = 0.0;
 const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y = 0.042;
-const DUDE_DEBUG_RECT_WIDTH_FRAC = 0.12;
-const DUDE_DEBUG_RECT_HEIGHT_FRAC = 0.22;
+const DUDE_BOUNDS_WIDTH_FRAC = 0.12;
+const DUDE_BOUNDS_HEIGHT_FRAC = 0.22;
 const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X = 0.63;
 const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y = 0.36;
 const SAFE_POINT_EDGE_INSET = 0.003;
@@ -241,9 +250,9 @@ const SAFE_POINT_VERTEX_T_EPS = 0.01;
 const SAFE_POINTER_MOVE_EPS = 0.0009;
 const FACING_DX_EPS = 0.006;
 const FACING_FLIP_HYST_MS = 160;
-const MIN_MON_DEBUG_PX = 8;
-const MIN_MON_DEBUG_WIDTH_FRAC = 0.02;
-const MIN_MON_DEBUG_HEIGHT_FRAC = 0.03;
+const MIN_MON_PX = 8;
+const MIN_MON_WIDTH_FRAC = 0.02;
+const MIN_MON_HEIGHT_FRAC = 0.03;
 const DudeSpriteWrap = styled.div`
   position: absolute;
   width: auto;
@@ -258,8 +267,6 @@ const DudeSpriteImg = styled.img<{ $facingLeft: boolean }>`
   transform: scaleX(${(p) => (p.$facingLeft ? -1 : 1)});
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  filter: drop-shadow(0 4px 1px rgba(0, 0, 0, 0.14));
-  -webkit-filter: drop-shadow(0 4px 1px rgba(0, 0, 0, 0.14));
   pointer-events: none;
 `;
 
@@ -331,8 +338,6 @@ const MonSpriteStrip = styled.img`
   will-change: transform;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
-  filter: drop-shadow(0 4px 1px rgba(0, 0, 0, 0.14));
-  -webkit-filter: drop-shadow(0 4px 1px rgba(0, 0, 0, 0.14));
   pointer-events: none;
 `;
 
@@ -732,8 +737,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           if (stripImg.style.visibility !== "visible") stripImg.style.visibility = "visible";
           const hero = islandHeroImgRef.current;
           const heroW = hero ? hero.getBoundingClientRect().width : 0;
-          const meetsFrac = heroW ? currentWidth / heroW >= MIN_MON_DEBUG_WIDTH_FRAC : false;
-          if (currentWidth >= MIN_MON_DEBUG_PX && meetsFrac) setMonImgLoaded(true);
+          const meetsFrac = heroW ? currentWidth / heroW >= MIN_MON_WIDTH_FRAC : false;
+          if (currentWidth >= MIN_MON_PX && meetsFrac) setMonImgLoaded(true);
           anim.raf = requestAnimationFrame(step);
         };
         monAnimRef.current.raf = requestAnimationFrame(step);
@@ -1825,7 +1830,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               <HeroWrap>
                 <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} />
                 <WalkOverlay />
-                {SHOW_ISLAND_DEBUG_BOUNDS && rockReady && rockBoxRef.current && monImgLoaded && (
+                {SHOW_ISLAND_BOUNDS && rockReady && rockBoxRef.current && monImgLoaded && (
                   <div
                     style={{
                       position: "absolute",
@@ -1845,8 +1850,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       <rect x={Math.max(0, Math.min(1, rockBoxRef.current.left)) * 100} y={Math.max(0, Math.min(1, rockBoxRef.current.top)) * 100} width={Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left)) * 100} height={Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top)) * 100} fill="none" stroke="rgba(255,0,0,0.8)" strokeWidth={1.6} />
                       <line x1={0} x2={100} y1={Math.max(0, Math.min(1, rockBottomY)) * 100} y2={Math.max(0, Math.min(1, rockBottomY)) * 100} stroke="rgba(255,0,0,0.6)" strokeDasharray="4 3" strokeWidth={1} />
                       {(() => {
-                        const widthFrac = Math.max(0.001, Math.min(1, DUDE_DEBUG_RECT_WIDTH_FRAC));
-                        const heightFrac = Math.max(0.001, Math.min(1, DUDE_DEBUG_RECT_HEIGHT_FRAC));
+                        const widthFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_WIDTH_FRAC));
+                        const heightFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_HEIGHT_FRAC));
                         const cx = dudePos.x;
                         const bottomY = dudePos.y;
                         const cxPct = cx * 100;
@@ -1877,8 +1882,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           const widthFrac = fr.width / h.width;
                           const heightFrac = wr.height / h.height;
                           if (!(h.width > 0 && h.height > 0)) return null;
-                          if (!(fr.width >= MIN_MON_DEBUG_PX && wr.height >= MIN_MON_DEBUG_PX)) return null;
-                          if (!(widthFrac >= MIN_MON_DEBUG_WIDTH_FRAC && heightFrac >= MIN_MON_DEBUG_HEIGHT_FRAC)) return null;
+                          if (!(fr.width >= MIN_MON_PX && wr.height >= MIN_MON_PX)) return null;
+                          if (!(widthFrac >= MIN_MON_WIDTH_FRAC && heightFrac >= MIN_MON_HEIGHT_FRAC)) return null;
                           const widthFracClamped = Math.max(0.001, Math.min(1, widthFrac));
                           const cx = (fr.left + fr.width / 2 - h.left) / h.width;
                           const ay = (wr.top + wr.height * DUDE_ANCHOR_FRAC - h.top) / h.height;
@@ -1900,8 +1905,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           const widthFrac = fr.width / h.width;
                           const heightFrac = wr.height / h.height;
                           if (!(h.width > 0 && h.height > 0)) return null;
-                          if (!(fr.width >= MIN_MON_DEBUG_PX && wr.height >= MIN_MON_DEBUG_PX)) return null;
-                          if (!(widthFrac >= MIN_MON_DEBUG_WIDTH_FRAC && heightFrac >= MIN_MON_DEBUG_HEIGHT_FRAC)) return null;
+                          if (!(fr.width >= MIN_MON_PX && wr.height >= MIN_MON_PX)) return null;
+                          if (!(widthFrac >= MIN_MON_WIDTH_FRAC && heightFrac >= MIN_MON_HEIGHT_FRAC)) return null;
                           const widthFracClamped = Math.max(0.001, Math.min(1, widthFrac));
                           const heightFracClamped = Math.max(0.001, Math.min(1, heightFrac));
                           const cx = (fr.left + fr.width / 2 - h.left) / h.width;
@@ -1927,6 +1932,23 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                   <>
                     {monPos && monSpriteData && (
                       <MonLayer $visible={decorVisible && !islandClosing}>
+                        {(() => {
+                          const hero = islandHeroImgRef.current;
+                          const wrap = monWrapRef.current;
+                          const frame = monFrameWrapRef.current;
+                          if (!hero || !wrap || !frame) return null;
+                          const h = hero.getBoundingClientRect();
+                          const fr = frame.getBoundingClientRect();
+                          const wr = wrap.getBoundingClientRect();
+                          if (!(h.width > 0 && h.height > 0)) return null;
+                          if (!(fr.width >= MIN_MON_PX && wr.height >= MIN_MON_PX)) return null;
+                          const cx = (fr.left + fr.width / 2 - h.left) / h.width;
+                          const bottomY = (wr.top + wr.height * DUDE_ANCHOR_FRAC - h.top) / h.height + MON_BASELINE_Y_OFFSET;
+                          const topOffsetFrac = 0.0075;
+                          const topFrac = Math.max(0, Math.min(1, bottomY - topOffsetFrac));
+                          const widthPx = Math.max(1, Math.round(fr.width));
+                          return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${cx * 100}%`, top: `${topFrac * 100}%`, width: `${widthPx}px`, height: "auto" }} />;
+                        })()}
                         <MonSpriteWrap
                           ref={monWrapRef}
                           style={{
@@ -1948,6 +1970,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                         </MonSpriteWrap>
                       </MonLayer>
                     )}
+                    {(() => {
+                      const heroW = heroSize.w;
+                      const heroH = heroSize.h;
+                      if (!heroW || !heroH) return null;
+                      const widthPx = Math.max(1, Math.round(heroW * DUDE_BOUNDS_WIDTH_FRAC * 1.3));
+                      const topOffsetFrac = 0.0135;
+                      const topFrac = Math.max(0, Math.min(1, dudePos.y - topOffsetFrac));
+                      return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${dudePos.x * 100}%`, top: `${topFrac * 100}%`, width: `${widthPx}px`, height: "auto" }} />;
+                    })()}
                     <DudeSpriteWrap
                       ref={dudeWrapRef}
                       style={{
