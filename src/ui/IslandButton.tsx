@@ -226,6 +226,8 @@ const ShadowImg = styled.img`
   pointer-events: none;
   opacity: 0.23;
   transition: opacity 260ms ease;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
 `;
 
 const DUDE_ANCHOR_FRAC = 0.77;
@@ -501,6 +503,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const monResizeObserverRef = useRef<ResizeObserver | null>(null);
   const monFrameWidthRef = useRef<number>(0);
   const monFlipTimerRef = useRef<number | null>(null);
+  const initialMonPosRef = useRef<{ x: number; y: number } | null>(null);
 
   const updateMonStripSizing = useCallback(() => {
     const wrap = monWrapRef.current as HTMLDivElement | null;
@@ -691,7 +694,53 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     initializeWalkPolygonIfNeeded();
   }, [islandOverlayVisible, islandOpening, islandClosing, heroSize.w, heroSize.h, walkReady, initializeWalkPolygonIfNeeded]);
 
-  const pickRandomPointInWalkArea = useCallback(() => ({ x: MON_REL_X, y: MON_REL_Y }), []);
+  const pickRandomPointInWalkArea = useCallback(() => {
+    if (initialMonPosRef.current) return initialMonPosRef.current;
+    const poly = walkPoints;
+    let minX = 1;
+    let maxX = 0;
+    let minY = 1;
+    let maxY = 0;
+    for (let i = 0; i < poly.length; i++) {
+      const p = poly[i];
+      if (p.x < minX) minX = p.x;
+      if (p.x > maxX) maxX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
+    }
+    const isInside = (x: number, y: number) => {
+      let inside = false;
+      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+        const xi = poly[i].x;
+        const yi = poly[i].y;
+        const xj = poly[j].x;
+        const yj = poly[j].y;
+        const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+        if (intersect) inside = !inside;
+      }
+      return inside;
+    };
+    for (let k = 0; k < 500; k++) {
+      const x = minX + Math.random() * (maxX - minX);
+      const y = minY + Math.random() * (maxY - minY);
+      if (isInside(x, y)) {
+        const pt = { x, y };
+        initialMonPosRef.current = pt;
+        return pt;
+      }
+    }
+    let cx = 0;
+    let cy = 0;
+    for (let i = 0; i < poly.length; i++) {
+      cx += poly[i].x;
+      cy += poly[i].y;
+    }
+    cx /= Math.max(1, poly.length);
+    cy /= Math.max(1, poly.length);
+    const fallback = isInside(cx, cy) ? { x: cx, y: cy } : { x: MON_REL_X, y: MON_REL_Y };
+    initialMonPosRef.current = fallback;
+    return fallback;
+  }, [walkPoints]);
 
   useEffect(() => {
     let mounted = true;
@@ -1950,15 +1999,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                     left: `${dudePos.x * 100}%`,
                     top: `${dudePos.y * 100}%`,
                     opacity: dudeVisible ? 1 : 0,
-                    zIndex: rockReady
-                      ? (() => {
-                          const dudeBehind = dudePos.y < rockBottomY;
-                          const monBehind = monPos ? monPos.y + MON_BASELINE_Y_OFFSET < rockBottomY : dudeBehind;
-                          if (monPos && dudeBehind && monBehind) return 0;
-                          if (monPos && !dudeBehind && !monBehind) return dudePos.y > (monPos?.y || 0) + MON_BASELINE_Y_OFFSET ? 3 : 2;
-                          return dudeBehind ? 0 : 2;
-                        })()
-                      : 2,
+                    zIndex: (() => {
+                      const dudeBaselineY = dudePos.y;
+                      const base = Math.round(dudeBaselineY * 100);
+                      if (!rockReady) return 600 + base;
+                      const inFrontOfRock = dudeBaselineY >= rockBottomY;
+                      return inFrontOfRock ? 700 + base : 300 + base;
+                    })(),
                   }}>
                   <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} style={{ visibility: miningPlaying ? "hidden" : "visible" }} />
                   {miningPlaying && (
@@ -1970,7 +2017,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 {decorVisible && (
                   <>
                     {monPos && monSpriteData && (
-                      <MonLayer $visible={decorVisible && !islandClosing}>
+                      <MonLayer
+                        $visible={decorVisible && !islandClosing}
+                        style={{
+                          zIndex: (() => {
+                            const monBaselineY = (monPos ? monPos.y : MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+                            const base = Math.round(monBaselineY * 100);
+                            if (!rockReady) return 600 + base;
+                            const inFrontOfRock = monBaselineY >= rockBottomY;
+                            return inFrontOfRock ? 700 + base : 300 + base;
+                          })(),
+                        }}>
                         {(() => {
                           const widthPct = getMonBoundsWidthFrac(monKey) * 1.3 * 100;
                           const cx = ((monPos?.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT) * 100;
@@ -1985,15 +2042,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                             left: `${(monPos?.x ?? MON_REL_X) * 100}%`,
                             top: `${(monPos?.y ?? MON_REL_Y) * 100}%`,
                             opacity: monVisible ? 1 : 0,
-                            zIndex: rockReady
-                              ? (() => {
-                                  const monBehind = monPos.y + MON_BASELINE_Y_OFFSET < rockBottomY;
-                                  const dudeBehind = dudePos.y < rockBottomY;
-                                  if (monBehind && dudeBehind) return 0;
-                                  if (!monBehind && !dudeBehind) return monPos.y + MON_BASELINE_Y_OFFSET > dudePos.y ? 3 : 2;
-                                  return monBehind ? 0 : 2;
-                                })()
-                              : 2,
+                            zIndex: (() => {
+                              const monBaselineY = (monPos ? monPos.y : MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+                              const base = Math.round(monBaselineY * 100);
+                              if (!rockReady) return 600 + base;
+                              const inFrontOfRock = monBaselineY >= rockBottomY;
+                              return inFrontOfRock ? 700 + base : 300 + base;
+                            })(),
                           }}>
                           <MonSpriteFrame $facingLeft={monFacingLeft} ref={monFrameWrapRef as any}>
                             <MonSpriteStrip ref={monStripImgRef as any} src={`data:image/webp;base64,${monSpriteData}`} alt="" draggable={false} />
@@ -2001,7 +2056,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                         </MonSpriteWrap>
                       </MonLayer>
                     )}
-                    <RockLayer ref={rockLayerRef} $visible={decorVisible} style={{ zIndex: 1 }}>
+                    <RockLayer ref={rockLayerRef} $visible={decorVisible} style={{ zIndex: 500 }}>
                       <Rock
                         ref={rockRef as any}
                         heightPct={75}
