@@ -383,6 +383,7 @@ const getIslandImageUrl = () => {
 const MATERIALS = ["dust", "slime", "gum", "metal", "ice"] as const;
 type MaterialName = (typeof MATERIALS)[number];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
+let persistentMonPosRef: { x: number; y: number } | null = null;
 const pickWeightedMaterial = (): MaterialName => {
   const r = Math.random() * 100;
   if (r < 30) return "dust";
@@ -458,6 +459,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   });
   const [dudeVisible, setDudeVisible] = useState(false);
   const [monVisible, setMonVisible] = useState(false);
+  const [monTeleporting, setMonTeleporting] = useState(false);
   const materialItemRefs = useRef<Record<MaterialName, HTMLDivElement | null>>({ dust: null, slime: null, gum: null, metal: null, ice: null });
   const rockLayerRef = useRef<HTMLDivElement | null>(null);
   const rockRef = useRef<IslandRockHandle | null>(null);
@@ -505,6 +507,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const monFlipTimerRef = useRef<number | null>(null);
   const monPetTimerRef = useRef<number | null>(null);
   const initialMonPosRef = useRef<{ x: number; y: number } | null>(null);
+  const latestMonPosRef = useRef<{ x: number; y: number } | null>(null);
+  const latestMonKeyRef = useRef<string | null>(null);
 
   const updateMonStripSizing = useCallback(() => {
     const wrap = monWrapRef.current as HTMLDivElement | null;
@@ -746,8 +750,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   useEffect(() => {
     let mounted = true;
     if (!islandOverlayVisible) return;
-    const pt = pickRandomPointInWalkArea();
+    const pt = persistentMonPosRef || pickRandomPointInWalkArea();
     setMonPos(pt);
+    latestMonPosRef.current = pt;
     setMonFacingLeft(Math.random() < 0.5);
     (async () => {
       const { getSpriteByKey } = await import("../assets/monsSprites");
@@ -756,6 +761,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!mounted) return;
       setMonSpriteData(data);
       setMonKey(key);
+      latestMonKeyRef.current = key;
     })();
     return () => {
       mounted = false;
@@ -1173,11 +1179,114 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return inside;
   }, []);
 
+  const computeOverlapArea = useCallback((a: { left: number; top: number; right: number; bottom: number }, b: { left: number; top: number; right: number; bottom: number }) => {
+    const ix = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
+    const iy = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
+    return ix * iy;
+  }, []);
+
+  const getDudeBounds = useCallback(() => {
+    const widthFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_WIDTH_FRAC));
+    const heightFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_HEIGHT_FRAC));
+    const cx = latestDudePosRef.current.x;
+    const bottomY = latestDudePosRef.current.y;
+    const left = cx - widthFrac * 0.5;
+    const right = cx + widthFrac * 0.5;
+    const top = bottomY - heightFrac;
+    const bottom = bottomY;
+    return { left, top, right, bottom, area: Math.max(0, right - left) * Math.max(0, bottom - top) };
+  }, []);
+
+  const getMonBounds = useCallback(() => {
+    const pos = latestMonPosRef.current || monPos;
+    const key = latestMonKeyRef.current ?? monKey;
+    if (!pos) return null;
+    const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(key)));
+    const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
+    const cx = (pos.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT;
+    const bottomY = (pos.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+    const left = cx - widthFrac * 0.5;
+    const right = cx + widthFrac * 0.5;
+    const top = bottomY - heightFrac;
+    const bottom = bottomY;
+    return { left, top, right, bottom, area: Math.max(0, right - left) * Math.max(0, bottom - top) };
+  }, [monKey, monPos]);
+
+  const teleportMonToRandomNonOverlappingSpot = useCallback(() => {
+    if (!monPos) return;
+    setMonTeleporting(true);
+    setTimeout(() => {
+      const dudeB = getDudeBounds();
+      const poly = walkPoints;
+      let attempts = 0;
+      let chosen: { x: number; y: number } | null = null;
+      let minX = 1;
+      let maxX = 0;
+      let minY = 1;
+      let maxY = 0;
+      for (let i = 0; i < poly.length; i++) {
+        const p = poly[i];
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
+      }
+      const inside = (x: number, y: number) => pointInPolygon(x, y, poly);
+      const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(latestMonKeyRef.current ?? monKey)));
+      const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
+      while (attempts < 600 && !chosen) {
+        attempts++;
+        const x = minX + Math.random() * (maxX - minX);
+        const y = minY + Math.random() * (maxY - minY);
+        if (!inside(x, y)) continue;
+        const cx = x + MON_BOUNDS_X_SHIFT;
+        const bottomY = y + MON_BASELINE_Y_OFFSET;
+        const left = cx - widthFrac * 0.5;
+        const right = cx + widthFrac * 0.5;
+        const top = bottomY - heightFrac;
+        const bottom = bottomY;
+        const monB = { left, top, right, bottom, area: widthFrac * heightFrac };
+        const overlap = computeOverlapArea(dudeB, monB);
+        const overlapFracOfMon = monB.area > 0 ? overlap / monB.area : 0;
+        if (overlapFracOfMon <= 0.42) {
+          chosen = { x, y };
+          break;
+        }
+      }
+      if (!chosen) {
+        const x = Math.max(minX, Math.min(maxX, latestDudePosRef.current.x + 0.2));
+        const y = Math.max(minY, Math.min(maxY, latestDudePosRef.current.y));
+        if (inside(x, y)) chosen = { x, y };
+      }
+      if (chosen) {
+        setMonFacingLeft(Math.random() < 0.5);
+        setMonPos(chosen);
+        latestMonPosRef.current = chosen;
+        persistentMonPosRef = chosen;
+      }
+      setTimeout(() => {
+        setMonTeleporting(false);
+      }, 80);
+    }, 180);
+  }, [getDudeBounds, pointInPolygon, walkPoints, monKey, monPos, computeOverlapArea]);
+
+  const checkAndTeleportMonIfOverlapped = useCallback(() => {
+    const monB = getMonBounds();
+    if (!monB) return;
+    const dudeB = getDudeBounds();
+    const overlap = computeOverlapArea(dudeB, monB);
+    const overlapFracOfMon = monB.area > 0 ? overlap / monB.area : 0;
+    if (overlapFracOfMon > 0.55) {
+      teleportMonToRandomNonOverlappingSpot();
+    }
+  }, [getMonBounds, getDudeBounds, computeOverlapArea, teleportMonToRandomNonOverlappingSpot]);
+
   const stopMoveAnim = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = null;
     moveAnimRef.current = null;
-  }, []);
+    checkAndTeleportMonIfOverlapped();
+  }, [checkAndTeleportMonIfOverlapped]);
 
   const latestDudePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const moveTargetMetaRef = useRef<{ x: number; y: number; facingLeft: boolean; onArrive?: () => void } | null>(null);
@@ -1186,6 +1295,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const lastFacingFlipAtRef = useRef<number>(0);
   const lastFacingDirRef = useRef<boolean>(false);
   const lastEllipsePointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 });
+  const lastPointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 });
   useEffect(() => {
     latestDudePosRef.current = dudePos;
   }, [dudePos]);
@@ -1311,6 +1421,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 if (closeEnough) setDudeFacingLeft(INITIAL_DUDE_FACING_LEFT);
               }
             }
+            latestDudePosRef.current = { x: nextX, y: nextY };
             stopMoveAnim();
           }
         };
@@ -1357,6 +1468,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           if (tt < 1) {
             rafRef.current = requestAnimationFrame(step);
           } else {
+            latestDudePosRef.current = { x: nextX, y: nextY };
             stopMoveAnim();
           }
         };
@@ -1882,6 +1994,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         } else {
           setDudeFacingLeft(facingLeft);
           petMon();
+          checkAndTeleportMonIfOverlapped();
         }
         if ((event as any).preventDefault) (event as any).preventDefault();
         return;
@@ -1897,6 +2010,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         moveTargetMetaRef.current = null;
         startMoveTo(target.x, target.y);
         isDraggingRef.current = true;
+        lastPointerRef.current = { x: nx, y: ny };
 
         const handleMove = (e: MouseEvent | TouchEvent) => {
           if (!isDraggingRef.current) return;
@@ -1926,6 +2040,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             lastEllipsePointerRef.current = { x: nxx, y: nyy };
           }
           const insidePolyMove = pointInPolygon(nxx, nyy, walkPoints);
+          if (dragModeRef.current === "polygon") {
+            const lp = lastPointerRef.current;
+            const dxp = nxx - lp.x;
+            const dyp = nyy - lp.y;
+            if (dxp * dxp + dyp * dyp < SAFE_POINTER_MOVE_EPS * SAFE_POINTER_MOVE_EPS) {
+              if ("preventDefault" in e) e.preventDefault();
+              return;
+            }
+          }
           if (insidePolyMove) {
             updateMoveTarget(nxx, nyy);
           } else if (isInsideEllipse(nxx, nyy)) {
@@ -1933,6 +2056,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             updateMoveTarget(stop.x, stop.y);
             dragModeRef.current = "ellipse";
           }
+          if (dragModeRef.current === "polygon") {
+            lastPointerRef.current = { x: nxx, y: nyy };
+          }
+          latestDudePosRef.current = moveAnimRef.current
+            ? {
+                x: moveAnimRef.current.from.x + (moveAnimRef.current.to.x - moveAnimRef.current.from.x) * Math.min(1, (performance.now() - moveAnimRef.current.start) / moveAnimRef.current.duration),
+                y: moveAnimRef.current.from.y + (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * Math.min(1, (performance.now() - moveAnimRef.current.start) / moveAnimRef.current.duration),
+              }
+            : latestDudePosRef.current;
           if ("preventDefault" in e) {
             e.preventDefault();
           }
@@ -1948,6 +2080,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           window.removeEventListener("touchmove", handleMove as any);
           window.removeEventListener("touchend", handleEnd as any);
           window.removeEventListener("touchcancel", handleEnd as any);
+          if (!moveAnimRef.current) {
+            checkAndTeleportMonIfOverlapped();
+          }
         };
 
         window.addEventListener("mousemove", handleMove as any, { passive: false });
@@ -1984,7 +2119,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon]
+    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped]
   );
 
   return (
@@ -2146,20 +2281,23 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                             return inFrontOfRock ? 700 + base : 300 + base;
                           })(),
                         }}>
-                        {(() => {
-                          const widthPct = getMonBoundsWidthFrac(monKey) * 1.3 * 100;
-                          const cx = ((monPos?.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT) * 100;
-                          const bottomY = (monPos?.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
-                          const topOffsetFrac = 0.0075;
-                          const topFrac = Math.max(0, Math.min(1, bottomY - topOffsetFrac));
-                          return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${cx}%`, top: `${topFrac * 100}%`, width: `${widthPct}%`, height: "auto", opacity: monVisible ? 0.23 : 0 }} />;
-                        })()}
+                        {monVisible &&
+                          !monTeleporting &&
+                          (() => {
+                            const widthPct = getMonBoundsWidthFrac(monKey) * 1.3 * 100;
+                            const cx = ((monPos?.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT) * 100;
+                            const bottomY = (monPos?.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+                            const topOffsetFrac = 0.0075;
+                            const topFrac = Math.max(0, Math.min(1, bottomY - topOffsetFrac));
+                            return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${cx}%`, top: `${topFrac * 100}%`, width: `${widthPct}%`, height: "auto", opacity: 0.23 }} />;
+                          })()}
                         <MonSpriteWrap
                           ref={monWrapRef}
                           style={{
                             left: `${(monPos?.x ?? MON_REL_X) * 100}%`,
                             top: `${(monPos?.y ?? MON_REL_Y) * 100}%`,
-                            opacity: monVisible ? 1 : 0,
+                            opacity: monVisible && !monTeleporting ? 1 : 0,
+                            transition: "opacity 180ms ease-out",
                             zIndex: (() => {
                               const monBaselineY = (monPos ? monPos.y : MON_REL_Y) + MON_BASELINE_Y_OFFSET;
                               const base = Math.round(monBaselineY * 100);
