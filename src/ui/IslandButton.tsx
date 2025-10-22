@@ -503,6 +503,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const monResizeObserverRef = useRef<ResizeObserver | null>(null);
   const monFrameWidthRef = useRef<number>(0);
   const monFlipTimerRef = useRef<number | null>(null);
+  const monPetTimerRef = useRef<number | null>(null);
   const initialMonPosRef = useRef<{ x: number; y: number } | null>(null);
 
   const updateMonStripSizing = useCallback(() => {
@@ -776,6 +777,48 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
     };
   }, [decorVisible, islandClosing, islandOverlayVisible, monSpriteData, monPos]);
+
+  const petMon = useCallback(() => {
+    const frame = monFrameWrapRef.current;
+    if (!frame) return;
+    const baseX = monFacingLeft ? -1 : 1;
+    try {
+      frame.style.transformOrigin = "50% 100%";
+      frame.style.transition = "transform 80ms ease-out";
+      frame.style.transform = `scale(${baseX * 1.06}, 0.86)`;
+    } catch {}
+    if (monPetTimerRef.current !== null) {
+      clearTimeout(monPetTimerRef.current);
+      monPetTimerRef.current = null;
+    }
+    monPetTimerRef.current = window.setTimeout(() => {
+      try {
+        frame.style.transition = "transform 220ms cubic-bezier(0.22, 1, 0.36, 1)";
+        frame.style.transform = `scale(${baseX}, 1)`;
+      } catch {}
+      if (monPetTimerRef.current !== null) {
+        clearTimeout(monPetTimerRef.current);
+        monPetTimerRef.current = null;
+      }
+      monPetTimerRef.current = window.setTimeout(() => {
+        try {
+          frame.style.removeProperty("transform");
+          frame.style.removeProperty("transition");
+          frame.style.removeProperty("transform-origin");
+        } catch {}
+        monPetTimerRef.current = null;
+      }, 230);
+    }, 100);
+  }, [monFacingLeft]);
+
+  useEffect(() => {
+    return () => {
+      if (monPetTimerRef.current !== null) {
+        clearTimeout(monPetTimerRef.current);
+        monPetTimerRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!decorVisible || islandClosing) return;
@@ -1601,6 +1644,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if (!rockReady || !box) return false;
         return nx >= box.left && nx <= box.right && ny >= box.top && ny <= box.bottom;
       };
+      const isInsideMonBox = (nx: number, ny: number) => {
+        if (!monPos) return false;
+        const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(monKey)));
+        const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
+        const cx = (monPos.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT;
+        const bottomY = (monPos.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+        const left = cx - widthFrac * 0.5;
+        const right = cx + widthFrac * 0.5;
+        const top = bottomY - heightFrac;
+        const bottom = bottomY;
+        return nx >= left && nx <= right && ny >= top && ny <= bottom;
+      };
       const heroEl = islandHeroImgRef.current;
       if (!heroEl) return;
       const rect = heroEl.getBoundingClientRect();
@@ -1642,6 +1697,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const ry = Math.floor(clientY - rect.top);
       const nx = rx / Math.max(1, rect.width);
       const ny = ry / Math.max(1, rect.height);
+      if (isInsideMonBox(nx, ny)) {
+        petMon();
+        if ((event as any).preventDefault) (event as any).preventDefault();
+        return;
+      }
       if (isInsideRockBox(nx, ny)) {
         syncDudePosFromOriginal();
         const initial = initialDudePosRef.current || latestDudePosRef.current;
@@ -1879,7 +1939,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal]
+    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon]
   );
 
   return (
