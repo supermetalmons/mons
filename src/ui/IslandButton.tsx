@@ -384,19 +384,19 @@ const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map
 export let hasIslandOverlayVisible: () => boolean = () => false;
 
 const WALK_POLYGON: Array<{ x: number; y: number }> = [
-  { x: 0.5641, y: 0.0597 },
-  { x: 0.8349, y: 0.1064 },
-  { x: 0.9702, y: 0.2049 },
+  { x: 0.6124, y: 0.0808 },
+  { x: 0.7692, y: 0.1099 },
+  { x: 0.8934, y: 0.2132 },
   { x: 0.7162, y: 0.3836 },
-  { x: 0.6673, y: 0.3643 },
+  { x: 0.6509, y: 0.3586 },
   { x: 0.5186, y: 0.4519 },
-  { x: 0.3953, y: 0.39 },
-  { x: 0.3386, y: 0.4156 },
-  { x: 0.0345, y: 0.2075 },
-  { x: 0.1272, y: 0.1323 },
-  { x: 0.3005, y: 0.0597 },
-  { x: 0.3908, y: 0.0649 },
-  { x: 0.4691, y: 0.0726 },
+  { x: 0.4201, y: 0.3845 },
+  { x: 0.3077, y: 0.3942 },
+  { x: 0.1007, y: 0.2229 },
+  { x: 0.1805, y: 0.1389 },
+  { x: 0.3018, y: 0.084 },
+  { x: 0.4113, y: 0.0743 },
+  { x: 0.4882, y: 0.0775 },
 ];
 
 const getMaterialImageUrl = (name: MaterialName) => {
