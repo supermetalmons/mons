@@ -10,6 +10,9 @@ import { idle as islandMonsIdle, miningWalkingAndPets as islandMonsMining, shado
 import { getOwnDrainerId } from "../utils/namedMons";
 import { Sound } from "../utils/gameModels";
 
+const MATERIAL_AUTO_PULL_ENABLED = true;
+const SHOW_DEBUG_ISLAND_BOUNDS = false;
+
 const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
   border: none;
   cursor: pointer;
@@ -239,7 +242,6 @@ const ROCK_BOX_INSET_LEFT_FRAC = 0.0;
 const ROCK_BOX_INSET_RIGHT_FRAC = 0.0;
 const ROCK_BOX_INSET_TOP_FRAC = 0.02;
 const ROCK_BOX_INSET_BOTTOM_FRAC = 0.24;
-const SHOW_DEBUG_ISLAND_BOUNDS = false;
 const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X = 0.0;
 const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y = 0.042;
 const DUDE_BOUNDS_WIDTH_FRAC = 0.12;
@@ -734,7 +736,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     for (let k = 0; k < 500; k++) {
       const x = minX + Math.random() * (maxX - minX);
       const y = minY + Math.random() * (maxY - minY);
-      if (isInside(x, y)) {
+      const cx = x + MON_BOUNDS_X_SHIFT;
+      const bottomY = y + MON_BASELINE_Y_OFFSET;
+      if (isInside(cx, bottomY)) {
         const pt = { x, y };
         initialMonPosRef.current = pt;
         return pt;
@@ -748,7 +752,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     }
     cx /= Math.max(1, poly.length);
     cy /= Math.max(1, poly.length);
-    const fallback = isInside(cx, cy) ? { x: cx, y: cy } : { x: MON_REL_X, y: MON_REL_Y };
+    const centroidCandidate = { x: cx - MON_BOUNDS_X_SHIFT, y: cy - MON_BASELINE_Y_OFFSET };
+    const centroidInside = isInside(cx, cy);
+    const defaultCandidate = { x: MON_REL_X, y: MON_REL_Y };
+    const defaultCx = defaultCandidate.x + MON_BOUNDS_X_SHIFT;
+    const defaultBottomY = defaultCandidate.y + MON_BASELINE_Y_OFFSET;
+    const defaultInside = isInside(defaultCx, defaultBottomY);
+    const fallback = centroidInside ? centroidCandidate : defaultInside ? defaultCandidate : { x: cx, y: cy };
     initialMonPosRef.current = fallback;
     return fallback;
   }, [walkPoints]);
@@ -756,7 +766,24 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   useEffect(() => {
     let mounted = true;
     if (!islandOverlayVisible) return;
-    const pt = persistentMonPosRef || pickRandomPointInWalkArea();
+    const candidate = persistentMonPosRef || pickRandomPointInWalkArea();
+    const baseCx = candidate.x + MON_BOUNDS_X_SHIFT;
+    const baseBottomY = candidate.y + MON_BASELINE_Y_OFFSET;
+    const isInside = (x: number, y: number) => {
+      const poly = walkPoints;
+      let inside = false;
+      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+        const xi = poly[i].x;
+        const yi = poly[i].y;
+        const xj = poly[j].x;
+        const yj = poly[j].y;
+        const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+        if (intersect) inside = !inside;
+      }
+      return inside;
+    };
+    const valid = isInside(baseCx, baseBottomY);
+    const pt = valid ? candidate : pickRandomPointInWalkArea();
     setMonPos(pt);
     latestMonPosRef.current = pt;
     setMonFacingLeft(Math.random() < 0.5);
@@ -772,7 +799,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return () => {
       mounted = false;
     };
-  }, [islandOverlayVisible, pickRandomPointInWalkArea]);
+  }, [islandOverlayVisible, pickRandomPointInWalkArea, walkPoints]);
 
   useEffect(() => {
     if (!decorVisible || islandClosing || !islandOverlayVisible) return;
@@ -1206,6 +1233,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if (t < 1) {
           requestAnimationFrame(step1);
         } else {
+          if (!MATERIAL_AUTO_PULL_ENABLED) {
+            resolve(name);
+            return;
+          }
           const targetEl = materialItemRefs.current[name];
           if (!targetEl) {
             el.remove();
@@ -2594,6 +2625,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           const common = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 } as const;
                           const promises = picks.map((n: MaterialName) => spawnMaterialDrop(n, 0, common as any));
                           Promise.all(promises).then((results) => {
+                            if (!MATERIAL_AUTO_PULL_ENABLED) return;
                             const delta: Partial<Record<MaterialName, number>> = {};
                             results.forEach((n: MaterialName) => {
                               delta[n] = (delta[n] || 0)! + 1;
