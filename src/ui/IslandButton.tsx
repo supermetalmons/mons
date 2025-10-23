@@ -1045,6 +1045,210 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     [islandImgLoaded, islandNatural, updateRockBox]
   );
 
+  const spawnIconParticles = useCallback((sourceEl: HTMLElement, src: string) => {
+    const numParticles = 10;
+    const durationMs = 420;
+    const start = performance.now();
+    const rect = sourceEl.getBoundingClientRect();
+    const startX = rect.left + rect.width / 2;
+    const startY = rect.top + rect.height / 2 - 12;
+    const baseSize = Math.max(14, Math.min(28, rect.width * 0.7));
+    const els: HTMLImageElement[] = [];
+    let fxContainer = fxContainerRef.current as HTMLDivElement | null;
+    if (!fxContainer) {
+      fxContainer = document.createElement("div");
+      fxContainer.style.position = "fixed";
+      fxContainer.style.left = "0";
+      fxContainer.style.top = "0";
+      fxContainer.style.right = "0";
+      fxContainer.style.bottom = "0";
+      fxContainer.style.pointerEvents = "none";
+      fxContainer.style.zIndex = "90005";
+      fxContainer.style.contain = "paint";
+      fxContainer.style.isolation = "isolate";
+      fxContainerRef.current = fxContainer;
+      document.body.appendChild(fxContainer);
+    }
+    for (let i = 0; i < numParticles; i++) {
+      const el = document.createElement("img");
+      el.src = src;
+      el.draggable = false;
+      el.style.position = "absolute";
+      el.style.left = "0";
+      el.style.top = "0";
+      el.style.width = `${baseSize}px`;
+      el.style.height = `${baseSize}px`;
+      el.style.pointerEvents = "none";
+      el.style.zIndex = "90003";
+      el.style.willChange = "transform, opacity";
+      el.style.transform = `translate3d(${startX - baseSize / 2}px, ${startY - baseSize / 2}px, 0) scale(1)`;
+      el.style.opacity = "1";
+      el.setAttribute("data-fx", "icon-particle");
+      fxContainer.appendChild(el);
+      els.push(el);
+    }
+    const angles = els.map((_, i) => (i / numParticles) * Math.PI * 2 + Math.random() * (Math.PI / numParticles) - Math.PI / 2);
+    const distances = els.map(() => 60 + Math.random() * 80);
+    const rotations = els.map(() => (Math.random() - 0.5) * 0.4);
+    function easeOutCubic(t: number) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+    function step(now: number) {
+      const t = Math.min(1, (now - start) / durationMs);
+      const e = easeOutCubic(t);
+      for (let i = 0; i < els.length; i++) {
+        const dx = Math.cos(angles[i]) * distances[i] * e;
+        const dy = Math.sin(angles[i]) * distances[i] * e + 0.35 * distances[i] * e * e;
+        const s = 1 - 0.35 * e;
+        const r = rotations[i] * 90 * e;
+        els[i].style.transform = `translate3d(${startX - baseSize / 2 + dx}px, ${startY - baseSize / 2 + dy}px, 0) scale(${s}) rotate(${r}deg)`;
+        els[i].style.opacity = `${1 - e}`;
+      }
+      if (t < 1) {
+        requestAnimationFrame(step);
+      } else {
+        for (const el of els) el.remove();
+      }
+    }
+    requestAnimationFrame(step);
+  }, []);
+
+  const spawnMaterialDrop = useCallback(async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number }): Promise<MaterialName> => {
+    walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
+    const url = await getMaterialImageUrl(name);
+    if (!url) return name;
+    const rockLayer = rockLayerRef.current;
+    if (!rockLayer) return name;
+    const rect = rockLayer.getBoundingClientRect();
+    lastRockRectRef.current = rect;
+    const startX = rect.left + rect.width / 2;
+    const startY = rect.top + rect.height * 0.5;
+    const originOffsetX = (Math.random() - 0.5) * rect.width * 0.2;
+    const originOffsetY = -rect.height * 0.12 + Math.random() * rect.height * 0.16;
+    const el = document.createElement("img");
+    el.src = url;
+    el.draggable = false;
+    el.style.position = "absolute";
+    el.style.left = "0";
+    el.style.top = "0";
+    el.setAttribute("data-fx", "material-drop");
+    const targetRef = materialItemRefs.current[name];
+    const targetIcon = targetRef?.querySelector("img") as HTMLImageElement | null;
+    const targetIconBox = targetIcon?.getBoundingClientRect();
+    const targetW = targetIconBox ? Math.max(1, Math.round(targetIconBox.width)) : 33;
+    el.style.width = `${targetW}px`;
+    el.style.height = "auto";
+    el.style.pointerEvents = "none";
+    el.style.zIndex = "1";
+    el.style.willChange = "transform, opacity";
+    el.style.backfaceVisibility = "hidden";
+    const angle = (Math.random() - 0.5) * Math.PI * 0.5;
+    const spreadLocal = common?.spread ?? 24 + Math.random() * 48;
+    const liftLocal = common?.lift ?? 12 + Math.random() * 18;
+    const fallLocal = common?.fall ?? 12 + Math.random() * 14 + rect.height * 0.15;
+
+    const duration1 = common?.duration1 ?? 600 + Math.random() * 140;
+    const start = (common?.start ?? performance.now()) + delay;
+
+    let fxContainer = fxContainerRef.current as HTMLDivElement | null;
+    if (!fxContainer) {
+      fxContainer = document.createElement("div");
+      fxContainer.style.position = "fixed";
+      fxContainer.style.left = "0";
+      fxContainer.style.top = "0";
+      fxContainer.style.right = "0";
+      fxContainer.style.bottom = "0";
+      fxContainer.style.pointerEvents = "none";
+      fxContainer.style.zIndex = "90005";
+      fxContainer.style.contain = "paint";
+      fxContainer.style.isolation = "isolate";
+      fxContainerRef.current = fxContainer;
+      document.body.appendChild(fxContainer);
+    }
+    fxContainer.appendChild(el);
+    const containerBox = fxContainer.getBoundingClientRect();
+    const imgBox = el.getBoundingClientRect();
+    const halfW = imgBox.width / 2;
+    const halfH = imgBox.height / 2;
+    const baseX = startX + originOffsetX - containerBox.left - halfW;
+    const baseY = startY + originOffsetY - containerBox.top - halfH;
+    el.style.transform = `translate3d(${baseX}px, ${baseY}px, 0) scale(0.95)`;
+    function easeOutQuart(t: number) {
+      return 1 - Math.pow(1 - t, 4);
+    }
+    return new Promise<MaterialName>((resolve) => {
+      function step1(now: number) {
+        if (!overlayActiveRef.current) {
+          el.remove();
+          resolve(name);
+          return;
+        }
+        if (now < start) {
+          requestAnimationFrame(step1);
+          return;
+        }
+        const t = Math.min(1, (now - start) / duration1);
+        const e = easeOutQuart(t);
+        const dx = Math.sin(angle) * spreadLocal * e;
+        const u = 1 - (2 * t - 1) * (2 * t - 1);
+        const dy = -liftLocal * u + fallLocal * t * t;
+        const s = 0.95 + 0.05 * e;
+        el.style.transform = `translate3d(${baseX + dx}px, ${baseY + dy}px, 0) scale(${s})`;
+        if (t < 1) {
+          requestAnimationFrame(step1);
+        } else {
+          const targetEl = materialItemRefs.current[name];
+          if (!targetEl) {
+            el.remove();
+            resolve(name);
+            return;
+          }
+          const iconEl = targetEl.querySelector("img") as HTMLImageElement | null;
+          const tr = (iconEl || targetEl).getBoundingClientRect();
+          const endX = tr.left + tr.width / 2;
+          const endY = tr.top + tr.height / 2;
+          const from = el.getBoundingClientRect();
+          const parentBox = (el.parentElement as HTMLElement).getBoundingClientRect();
+          const fromX = from.left - parentBox.left;
+          const fromY = from.top - parentBox.top;
+          const endXLocal = endX - parentBox.left - halfW;
+          const endYLocal = endY - parentBox.top - halfH;
+          const duration2 = 460 + Math.random() * 140;
+          const start2 = performance.now() + 420 + Math.random() * 380;
+          function easeOutCubic(t: number) {
+            return 1 - Math.pow(1 - t, 3);
+          }
+          function step2(now2: number) {
+            if (!overlayActiveRef.current) {
+              el.remove();
+              resolve(name);
+              return;
+            }
+            if (now2 < start2) {
+              requestAnimationFrame(step2);
+              return;
+            }
+            const tt = Math.min(1, (now2 - start2) / duration2);
+            const e2 = easeOutCubic(tt);
+            const cx = fromX + (endXLocal - fromX) * e2;
+            const cy = fromY + (endYLocal - fromY) * e2;
+            const sc = 1;
+            el.style.transform = `translate3d(${cx}px, ${cy}px, 0) scale(${sc})`;
+            el.style.opacity = `${1 - tt * 0.1}`;
+            if (tt < 1) {
+              requestAnimationFrame(step2);
+            } else {
+              el.remove();
+              resolve(name);
+            }
+          }
+          requestAnimationFrame(step2);
+        }
+      }
+      requestAnimationFrame(step1);
+    });
+  }, []);
+
   const handleIslandClose = useCallback(
     (event?: React.MouseEvent | React.TouchEvent) => {
       if (isMobile && Date.now() - overlayJustOpenedAtRef.current < 250) {
@@ -1212,8 +1416,140 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return { left, top, right, bottom, area: Math.max(0, right - left) * Math.max(0, bottom - top) };
   }, [monKey, monPos]);
 
+  const teleportFXStart = useCallback(() => {
+    const frame = monFrameWrapRef.current;
+    const strip = monStripImgRef.current;
+    if (!frame || !strip) return;
+    const baseX = monFacingLeft ? -1 : 1;
+    try {
+      frame.style.transformOrigin = "50% 100%";
+      frame.style.transition = "transform 160ms ease-in";
+      frame.style.transform = `scale(${baseX * 0.06}, 1.08)`;
+    } catch {}
+  }, [monFacingLeft]);
+
+  const prepareTeleportAppear = useCallback(() => {
+    const frame = monFrameWrapRef.current;
+    const strip = monStripImgRef.current;
+    if (!frame || !strip) return;
+    const baseX = monFacingLeft ? -1 : 1;
+    try {
+      frame.style.transformOrigin = "50% 100%";
+      frame.style.transition = "none";
+      frame.style.transform = `scale(${baseX * 0.06}, 1.08)`;
+    } catch {}
+  }, [monFacingLeft]);
+
+  const animateTeleportAppear = useCallback(() => {
+    const frame = monFrameWrapRef.current;
+    const strip = monStripImgRef.current;
+    if (!frame || !strip) return;
+    const baseX = monFacingLeft ? -1 : 1;
+    try {
+      requestAnimationFrame(() => {
+        frame.style.transition = "transform 160ms cubic-bezier(0.22, 1, 0.36, 1)";
+        frame.style.transform = `scale(${baseX}, 1)`;
+        setTimeout(() => {
+          try {
+            frame.style.removeProperty("transition");
+            frame.style.removeProperty("transform-origin");
+            frame.style.removeProperty("transform");
+          } catch {}
+        }, 260);
+      });
+    } catch {}
+  }, [monFacingLeft]);
+
+  const spawnTeleportSparkles = useCallback(() => {
+    const frame = monFrameWrapRef.current;
+    const heroImg = islandHeroImgRef.current;
+    if (!frame || !heroImg || !overlayActiveRef.current) return;
+    const heroWrap = heroImg.parentElement as HTMLElement | null;
+    if (!heroWrap) return;
+    const frameBox = frame.getBoundingClientRect();
+    const wrapBox = heroWrap.getBoundingClientRect();
+    const cxPct = ((frameBox.left - wrapBox.left + frameBox.width / 2) / Math.max(1, wrapBox.width)) * 100;
+    const cyPct = ((frameBox.top - wrapBox.top + frameBox.height / 2) / Math.max(1, wrapBox.height)) * 100;
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 100 100");
+    svg.setAttribute("preserveAspectRatio", "none");
+    svg.style.position = "absolute";
+    svg.style.left = "0";
+    svg.style.top = "0";
+    svg.style.width = "100%";
+    svg.style.height = "100%";
+    svg.style.overflow = "visible";
+    svg.style.pointerEvents = "none";
+    const monBaselineY = (monPos ? monPos.y : MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+    const base = Math.round(monBaselineY * 100);
+    let z = 600 + base;
+    if (rockReady) {
+      const inFrontOfRock = monBaselineY >= rockBottomY;
+      z = inFrontOfRock ? 700 + base : 300 + base;
+    }
+    svg.style.zIndex = `${z}`;
+    heroWrap.appendChild(svg);
+    const num = 13;
+    let remaining = num;
+    const runParticle = (group: SVGGElement, c1: SVGCircleElement, c2: SVGCircleElement, start: number, duration: number, dx: number, dy: number) => {
+      function step(now: number) {
+        if (now < start) {
+          requestAnimationFrame(step);
+          return;
+        }
+        const t = Math.min(1, (now - start) / duration);
+        const e = 1 - Math.pow(1 - t, 3);
+        const x = cxPct + dx * e;
+        const y = cyPct + dy * e;
+        group.setAttribute("transform", `translate(${x} ${y}) scale(${0.8 + 0.3 * e})`);
+        const fade = 1 - Math.pow(t, 1.6);
+        c1.setAttribute("opacity", (0.9 * fade).toString());
+        c2.setAttribute("opacity", (0.85 * fade).toString());
+        if (t < 1) {
+          requestAnimationFrame(step);
+        } else {
+          try {
+            if (group.parentNode) group.parentNode.removeChild(group);
+          } catch {}
+          remaining--;
+          if (remaining <= 0) {
+            try {
+              if (svg.parentNode) svg.parentNode.removeChild(svg);
+            } catch {}
+          }
+        }
+      }
+      requestAnimationFrame(step);
+    };
+    for (let i = 0; i < num; i++) {
+      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      const c1 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      const c2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      const r = 0.6 + Math.random() * 0.9;
+      c1.setAttribute("r", r.toString());
+      c1.setAttribute("fill", "#c6dcff");
+      c1.setAttribute("opacity", "0");
+      c2.setAttribute("r", (r * 0.55).toString());
+      c2.setAttribute("fill", "#b8d4ff");
+      c2.setAttribute("opacity", "0");
+      g.appendChild(c1);
+      g.appendChild(c2);
+      g.setAttribute("transform", `translate(${cxPct} ${cyPct}) scale(0.8)`);
+      svg.appendChild(g);
+      const angle = Math.random() * Math.PI * 2;
+      const dist = 6 + Math.random() * 10;
+      const swirl = (Math.random() - 0.5) * 0.5;
+      const dx = Math.cos(angle + swirl) * dist;
+      const dy = Math.sin(angle + swirl) * dist;
+      const start = performance.now() + Math.random() * 30;
+      const duration = 360 + Math.random() * 140;
+      runParticle(g as SVGGElement, c1 as SVGCircleElement, c2 as SVGCircleElement, start, duration, dx, dy);
+    }
+  }, [monPos, rockReady, rockBottomY]);
+
   const teleportMonToRandomNonOverlappingSpot = useCallback(() => {
     if (!monPos) return;
+    teleportFXStart();
     setMonTeleporting(true);
     setTimeout(() => {
       const dudeB = getDudeBounds();
@@ -1265,10 +1601,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         persistentMonPosRef = chosen;
       }
       setTimeout(() => {
+        prepareTeleportAppear();
         setMonTeleporting(false);
-      }, 80);
+        spawnTeleportSparkles();
+        animateTeleportAppear();
+      }, 30);
     }, 180);
-  }, [getDudeBounds, pointInPolygon, walkPoints, monKey, monPos, computeOverlapArea]);
+  }, [getDudeBounds, pointInPolygon, walkPoints, monKey, monPos, computeOverlapArea, teleportFXStart, spawnTeleportSparkles, prepareTeleportAppear, animateTeleportAppear]);
 
   const checkAndTeleportMonIfOverlapped = useCallback(() => {
     const monB = getMonBounds();
@@ -1477,255 +1816,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     },
     [heroSize.h, heroSize.w, stopMoveAnim, decideFacingWithHysteresis]
   );
-
-  const getFxContainer = useCallback(() => {
-    let container = fxContainerRef.current;
-    if (!container) {
-      container = document.createElement("div");
-      container.style.position = "fixed";
-      container.style.left = "0";
-      container.style.top = "0";
-      container.style.right = "0";
-      container.style.bottom = "0";
-      container.style.pointerEvents = "none";
-      container.style.zIndex = "90005";
-      container.style.contain = "paint";
-      container.style.isolation = "isolate";
-      fxContainerRef.current = container;
-      document.body.appendChild(container);
-    }
-    return container;
-  }, []);
-
-  useEffect(() => {
-    return () => {
-      const container = fxContainerRef.current;
-      if (container && container.parentNode) {
-        try {
-          container.parentNode.removeChild(container);
-        } catch {}
-      }
-      fxContainerRef.current = null;
-    };
-  }, []);
-
-  const spawnMaterialDrop = useCallback(
-    async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number }): Promise<MaterialName> => {
-      walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
-      const url = await getMaterialImageUrl(name);
-      if (!url) return name;
-      const rockLayer = rockLayerRef.current;
-      if (!rockLayer) return name;
-      const rect = rockLayer.getBoundingClientRect();
-      lastRockRectRef.current = rect;
-      const startX = rect.left + rect.width / 2;
-      const startY = rect.top + rect.height * 0.5;
-      const originOffsetX = (Math.random() - 0.5) * rect.width * 0.2;
-      const originOffsetY = -rect.height * 0.12 + Math.random() * rect.height * 0.16;
-      const el = document.createElement("img");
-      el.src = url;
-      el.draggable = false;
-      el.style.position = "absolute";
-      el.style.left = "0";
-      el.style.top = "0";
-      el.setAttribute("data-fx", "material-drop");
-      const targetRef = materialItemRefs.current[name];
-      const targetIcon = targetRef?.querySelector("img") as HTMLImageElement | null;
-      const targetIconBox = targetIcon?.getBoundingClientRect();
-      const targetW = targetIconBox ? Math.max(1, Math.round(targetIconBox.width)) : 33;
-      el.style.width = `${targetW}px`;
-      el.style.height = "auto";
-      el.style.pointerEvents = "none";
-      el.style.zIndex = "1";
-      el.style.willChange = "transform, opacity";
-      el.style.backfaceVisibility = "hidden";
-      const angle = (Math.random() - 0.5) * Math.PI * 0.5;
-      const spreadLocal = common?.spread ?? 24 + Math.random() * 48;
-      const liftLocal = common?.lift ?? 12 + Math.random() * 18;
-      const fallLocal = common?.fall ?? 12 + Math.random() * 14 + rect.height * 0.15;
-
-      const duration1 = common?.duration1 ?? 600 + Math.random() * 140;
-      const start = (common?.start ?? performance.now()) + delay;
-      const fxContainer = getFxContainer();
-      fxContainer.appendChild(el);
-      const containerBox = fxContainer.getBoundingClientRect();
-      const imgBox = el.getBoundingClientRect();
-      const halfW = imgBox.width / 2;
-      const halfH = imgBox.height / 2;
-      const baseX = startX + originOffsetX - containerBox.left - halfW;
-      const baseY = startY + originOffsetY - containerBox.top - halfH;
-      el.style.transform = `translate3d(${baseX}px, ${baseY}px, 0) scale(0.95)`;
-      function easeOutQuart(t: number) {
-        return 1 - Math.pow(1 - t, 4);
-      }
-      return new Promise<MaterialName>((resolve) => {
-        function step1(now: number) {
-          if (!overlayActiveRef.current) {
-            el.remove();
-            resolve(name);
-            return;
-          }
-          if (now < start) {
-            requestAnimationFrame(step1);
-            return;
-          }
-          const t = Math.min(1, (now - start) / duration1);
-          const e = easeOutQuart(t);
-          const dx = Math.sin(angle) * spreadLocal * e;
-          const u = 1 - (2 * t - 1) * (2 * t - 1);
-          const dy = -liftLocal * u + fallLocal * t * t;
-          const s = 0.95 + 0.05 * e;
-          el.style.transform = `translate3d(${baseX + dx}px, ${baseY + dy}px, 0) scale(${s})`;
-          if (t < 1) {
-            requestAnimationFrame(step1);
-          } else {
-            const targetEl = materialItemRefs.current[name];
-            if (!targetEl) {
-              el.remove();
-              resolve(name);
-              return;
-            }
-            const iconEl = targetEl.querySelector("img") as HTMLImageElement | null;
-            const tr = (iconEl || targetEl).getBoundingClientRect();
-            const endX = tr.left + tr.width / 2;
-            const endY = tr.top + tr.height / 2;
-            const from = el.getBoundingClientRect();
-            const parentBox = (el.parentElement as HTMLElement).getBoundingClientRect();
-            const fromX = from.left - parentBox.left;
-            const fromY = from.top - parentBox.top;
-            const endXLocal = endX - parentBox.left - halfW;
-            const endYLocal = endY - parentBox.top - halfH;
-            const duration2 = 460 + Math.random() * 140;
-            const start2 = performance.now() + 420 + Math.random() * 380;
-            function easeOutCubic(t: number) {
-              return 1 - Math.pow(1 - t, 3);
-            }
-            function step2(now2: number) {
-              if (!overlayActiveRef.current) {
-                el.remove();
-                resolve(name);
-                return;
-              }
-              if (now2 < start2) {
-                requestAnimationFrame(step2);
-                return;
-              }
-              const tt = Math.min(1, (now2 - start2) / duration2);
-              const e2 = easeOutCubic(tt);
-              const cx = fromX + (endXLocal - fromX) * e2;
-              const cy = fromY + (endYLocal - fromY) * e2;
-              const sc = 1;
-              el.style.transform = `translate3d(${cx}px, ${cy}px, 0) scale(${sc})`;
-              el.style.opacity = `${1 - tt * 0.1}`;
-              if (tt < 1) {
-                requestAnimationFrame(step2);
-              } else {
-                el.remove();
-                resolve(name);
-              }
-            }
-            requestAnimationFrame(step2);
-          }
-        }
-        requestAnimationFrame(step1);
-      });
-    },
-    [getFxContainer]
-  );
-
-  const handleRockBroken = useCallback(() => {
-    setRockIsBroken(true);
-    setRockReady(false);
-    const count = 2 + Math.floor(Math.random() * 4);
-    const picks: MaterialName[] = [];
-    for (let i = 0; i < count; i++) picks.push(pickWeightedMaterial());
-    const now = performance.now();
-    const rect = lastRockRectRef.current;
-    const fallBase = rect ? rect.height * 0.15 : 24;
-    const common = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 };
-    const promises = picks.map((name) => spawnMaterialDrop(name, 0, common));
-    Promise.all(promises).then((results) => {
-      const delta: Partial<Record<MaterialName, number>> = {};
-      results.forEach((n) => {
-        delta[n] = (delta[n] || 0) + 1;
-      });
-      setMaterialAmounts((prev) => {
-        const next = { ...prev };
-        (Object.keys(delta) as MaterialName[]).forEach((k) => {
-          next[k] = prev[k] + (delta[k] || 0);
-        });
-        return next;
-      });
-    });
-  }, [spawnMaterialDrop, setMaterialAmounts]);
-
-  const spawnIconParticles = useCallback((sourceEl: HTMLElement, src: string) => {
-    const numParticles = 10;
-    const durationMs = 420;
-    const start = performance.now();
-    const rect = sourceEl.getBoundingClientRect();
-    const startX = rect.left + rect.width / 2;
-    const startY = rect.top + rect.height / 2 - 12;
-    const baseSize = Math.max(14, Math.min(28, rect.width * 0.7));
-    const els: HTMLImageElement[] = [];
-    let fxContainer = fxContainerRef.current as HTMLDivElement | null;
-    if (!fxContainer) {
-      fxContainer = document.createElement("div");
-      fxContainer.style.position = "fixed";
-      fxContainer.style.left = "0";
-      fxContainer.style.top = "0";
-      fxContainer.style.right = "0";
-      fxContainer.style.bottom = "0";
-      fxContainer.style.pointerEvents = "none";
-      fxContainer.style.zIndex = "90005";
-      fxContainer.style.contain = "paint";
-      fxContainer.style.isolation = "isolate";
-      fxContainerRef.current = fxContainer;
-      document.body.appendChild(fxContainer);
-    }
-    for (let i = 0; i < numParticles; i++) {
-      const el = document.createElement("img");
-      el.src = src;
-      el.draggable = false;
-      el.style.position = "absolute";
-      el.style.left = "0";
-      el.style.top = "0";
-      el.style.width = `${baseSize}px`;
-      el.style.height = `${baseSize}px`;
-      el.style.pointerEvents = "none";
-      el.style.zIndex = "90003";
-      el.style.willChange = "transform, opacity";
-      el.style.transform = `translate3d(${startX - baseSize / 2}px, ${startY - baseSize / 2}px, 0) scale(1)`;
-      el.style.opacity = "1";
-      el.setAttribute("data-fx", "icon-particle");
-      fxContainer.appendChild(el);
-      els.push(el);
-    }
-    const angles = els.map((_, i) => (i / numParticles) * Math.PI * 2 + Math.random() * (Math.PI / numParticles) - Math.PI / 2);
-    const distances = els.map(() => 60 + Math.random() * 80);
-    const rotations = els.map(() => (Math.random() - 0.5) * 0.4);
-    function easeOutCubic(t: number) {
-      return 1 - Math.pow(1 - t, 3);
-    }
-    function step(now: number) {
-      const t = Math.min(1, (now - start) / durationMs);
-      const e = easeOutCubic(t);
-      for (let i = 0; i < els.length; i++) {
-        const dx = Math.cos(angles[i]) * distances[i] * e;
-        const dy = Math.sin(angles[i]) * distances[i] * e + 0.35 * distances[i] * e * e;
-        const s = 1 - 0.35 * e;
-        const r = rotations[i] * 90 * e;
-        els[i].style.transform = `translate3d(${startX - baseSize / 2 + dx}px, ${startY - baseSize / 2 + dy}px, 0) scale(${s}) rotate(${r}deg)`;
-        els[i].style.opacity = `${1 - e}`;
-      }
-      if (t < 1) {
-        requestAnimationFrame(step);
-      } else {
-        for (const el of els) el.remove();
-      }
-    }
-    requestAnimationFrame(step);
-  }, []);
 
   const handleMaterialItemTap = useCallback(
     (name: MaterialName, url: string | null) => (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
@@ -2321,7 +2411,31 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           updateRockBox();
                         }}
                         onHit={startMiningAnimation}
-                        onBroken={handleRockBroken}
+                        onBroken={() => {
+                          setRockIsBroken(true);
+                          setRockReady(false);
+                          const count = 2 + Math.floor(Math.random() * 4);
+                          const picks: MaterialName[] = [];
+                          for (let i = 0; i < count; i++) picks.push(pickWeightedMaterial());
+                          const now = performance.now();
+                          const rect = lastRockRectRef.current;
+                          const fallBase = rect ? rect.height * 0.15 : 24;
+                          const common = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 } as const;
+                          const promises = picks.map((n: MaterialName) => spawnMaterialDrop(n, 0, common as any));
+                          Promise.all(promises).then((results) => {
+                            const delta: Partial<Record<MaterialName, number>> = {};
+                            results.forEach((n: MaterialName) => {
+                              delta[n] = (delta[n] || 0)! + 1;
+                            });
+                            setMaterialAmounts((prev) => {
+                              const next = { ...prev };
+                              (Object.keys(delta) as MaterialName[]).forEach((k) => {
+                                next[k] = prev[k] + (delta[k] || 0);
+                              });
+                              return next;
+                            });
+                          });
+                        }}
                       />
                     </RockLayer>
                   </>
