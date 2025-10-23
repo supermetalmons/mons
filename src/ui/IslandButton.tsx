@@ -1279,8 +1279,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (wAnim && wAnim.raf) cancelAnimationFrame(wAnim.raf);
       walkingAnimRef.current = null;
       setWalkingPlaying(false);
-      const pAnim = pettingAnimRef.current;
-      if (pAnim && pAnim.raf) cancelAnimationFrame(pAnim.raf);
+      const pAnim2 = pettingAnimRef.current;
+      if (pAnim2 && pAnim2.raf) cancelAnimationFrame(pAnim2.raf);
       pettingAnimRef.current = null;
       setPettingPlaying(false);
       const imgEl = islandButtonImgRef.current;
@@ -1642,6 +1642,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     moveAnimRef.current = null;
     checkAndTeleportMonIfOverlapped();
     const wAnim = walkingAnimRef.current;
+    if (dragModeRef.current !== "none") {
+      return;
+    }
     if (wAnim && wAnim.raf) cancelAnimationFrame(wAnim.raf);
     walkingAnimRef.current = null;
     setWalkingPlaying(false);
@@ -1740,7 +1743,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const startWalkingAnimation = useCallback(() => {
     if (!dudeWrapRef.current) return;
     if (!miningImageRef.current) return;
-    if (walkingPlaying || miningPlaying || pettingPlaying) return;
+    if (pettingPlaying) {
+      const p = pettingAnimRef.current;
+      if (p && p.raf) cancelAnimationFrame(p.raf);
+      pettingAnimRef.current = null;
+      setPettingPlaying(false);
+    }
+    const m = miningAnimRef.current;
+    if (m && m.raf) cancelAnimationFrame(m.raf);
+    miningAnimRef.current = null;
+    setMiningPlaying(false);
+    if (walkingAnimRef.current) return;
     setWalkingPlaying(true);
     requestAnimationFrame(() => {
       const sheetImg = miningImageRef.current;
@@ -1770,7 +1783,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const step = () => {
         const anim = walkingAnimRef.current;
         if (!anim) return;
-        if (!walkingPlaying) return;
         const elapsed = performance.now() - anim.start;
         const rawFrame = Math.floor(elapsed / MINING_FRAME_MS);
         const frame = ((rawFrame % frameCount) + frameCount) % frameCount;
@@ -1783,7 +1795,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       };
       walkingAnimRef.current.raf = requestAnimationFrame(step);
     });
-  }, [walkingPlaying, miningPlaying, pettingPlaying]);
+  }, [pettingPlaying]);
 
   const startPettingAnimation = useCallback(() => {
     if (!dudeWrapRef.current) return;
@@ -1869,7 +1881,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const speed = Math.max(60, Math.min(220, h * 0.45));
       const duration = (dist / speed) * 1000;
       moveAnimRef.current = { start: now, from, to, duration: Math.max(200, duration) };
-      if (!miningPlaying && !walkingPlaying) startWalkingAnimation();
+      if (!walkingAnimRef.current) startWalkingAnimation();
       if (!rafRef.current) {
         const step = () => {
           if (!moveAnimRef.current) return;
@@ -1908,7 +1920,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal, decideFacingWithHysteresis, walkingPlaying, miningPlaying, startWalkingAnimation]
+    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal, decideFacingWithHysteresis, startWalkingAnimation]
   );
 
   const updateMoveTarget = useCallback(
@@ -1934,7 +1946,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const speed = Math.max(60, Math.min(220, h * 0.45));
       const duration = (dist / speed) * 1000;
       moveAnimRef.current = { start: now, from, to, duration: Math.max(200, duration) };
-      if (!miningPlaying && !walkingPlaying) startWalkingAnimation();
+      if (!walkingAnimRef.current) startWalkingAnimation();
       if (!rafRef.current) {
         const step = () => {
           if (!moveAnimRef.current) return;
@@ -1956,7 +1968,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.h, heroSize.w, stopMoveAnim, decideFacingWithHysteresis, walkingPlaying, miningPlaying, startWalkingAnimation]
+    [heroSize.h, heroSize.w, stopMoveAnim, decideFacingWithHysteresis, startWalkingAnimation]
   );
 
   const handleMaterialItemTap = useCallback(
@@ -2312,8 +2324,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           window.removeEventListener("touchmove", handleMove as any);
           window.removeEventListener("touchend", handleEnd as any);
           window.removeEventListener("touchcancel", handleEnd as any);
+          window.removeEventListener("blur", handleEnd as any);
+          document.removeEventListener("visibilitychange", handleVisibilityChange as any);
           if (!moveAnimRef.current) {
+            const wAnim = walkingAnimRef.current;
+            if (wAnim && wAnim.raf) cancelAnimationFrame(wAnim.raf);
+            walkingAnimRef.current = null;
+            setWalkingPlaying(false);
             checkAndTeleportMonIfOverlapped();
+          }
+        };
+
+        const handleVisibilityChange = () => {
+          if (document.visibilityState !== "visible") {
+            handleEnd();
           }
         };
 
@@ -2322,6 +2346,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         window.addEventListener("touchmove", handleMove as any, { passive: false });
         window.addEventListener("touchend", handleEnd as any);
         window.addEventListener("touchcancel", handleEnd as any);
+        window.addEventListener("blur", handleEnd as any);
+        document.addEventListener("visibilitychange", handleVisibilityChange as any);
 
         if ("preventDefault" in event) {
           event.preventDefault();
