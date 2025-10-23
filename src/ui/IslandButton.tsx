@@ -364,6 +364,7 @@ type Props = {
 const DEFAULT_URL = "https://assets.mons.link/rocks/island.webp";
 
 const MINING_FRAME_MS = 175;
+const WALKING_FRAME_MS = 120;
 
 let islandImagePromise: Promise<string | null> | null = null;
 
@@ -1784,7 +1785,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const anim = walkingAnimRef.current;
         if (!anim) return;
         const elapsed = performance.now() - anim.start;
-        const rawFrame = Math.floor(elapsed / MINING_FRAME_MS);
+        const rawFrame = Math.floor(elapsed / WALKING_FRAME_MS);
         const frame = ((rawFrame % frameCount) + frameCount) % frameCount;
         if (frame !== anim.lastFrame) anim.lastFrame = frame;
         const offset = frame * targetWidth;
