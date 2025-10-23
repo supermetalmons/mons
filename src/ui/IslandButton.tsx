@@ -1591,9 +1591,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         attempts++;
         const x = minX + Math.random() * (maxX - minX);
         const y = minY + Math.random() * (maxY - minY);
-        if (!inside(x, y)) continue;
         const cx = x + MON_BOUNDS_X_SHIFT;
         const bottomY = y + MON_BASELINE_Y_OFFSET;
+        if (!inside(cx, bottomY)) continue;
         const left = cx - widthFrac * 0.5;
         const right = cx + widthFrac * 0.5;
         const top = bottomY - heightFrac;
@@ -1609,7 +1609,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!chosen) {
         const x = Math.max(minX, Math.min(maxX, latestDudePosRef.current.x + 0.2));
         const y = Math.max(minY, Math.min(maxY, latestDudePosRef.current.y));
-        if (inside(x, y)) chosen = { x, y };
+        const cx = x + MON_BOUNDS_X_SHIFT;
+        const bottomY = y + MON_BASELINE_Y_OFFSET;
+        if (inside(cx, bottomY)) chosen = { x, y };
       }
       if (chosen) {
         setMonFacingLeft(Math.random() < 0.5);
