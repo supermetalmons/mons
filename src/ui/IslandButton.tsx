@@ -6,7 +6,7 @@ import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock, { IslandRockHandle } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playSounds } from "../content/sounds";
-import { idle as islandMonsIdle, mining as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
+import { idle as islandMonsIdle, miningWalkingAndPets as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
 import { getOwnDrainerId } from "../utils/namedMons";
 import { Sound } from "../utils/gameModels";
 
@@ -491,6 +491,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const miningStripImgRef = useRef<HTMLImageElement | null>(null);
   const miningImageRef = useRef<HTMLImageElement | null>(null);
   const miningAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
+  const [walkingPlaying, setWalkingPlaying] = useState(false);
+  const [pettingPlaying, setPettingPlaying] = useState(false);
+  const walkingAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
+  const pettingAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
 
   const [monPos, setMonPos] = useState<{ x: number; y: number } | null>(null);
   const [monFacingLeft, setMonFacingLeft] = useState<boolean>(false);
@@ -506,6 +510,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const monFrameWidthRef = useRef<number>(0);
   const monFlipTimerRef = useRef<number | null>(null);
   const monPetTimerRef = useRef<number | null>(null);
+  const startPettingAnimationRef = useRef<() => void>(() => {});
   const initialMonPosRef = useRef<{ x: number; y: number } | null>(null);
   const latestMonPosRef = useRef<{ x: number; y: number } | null>(null);
   const latestMonKeyRef = useRef<string | null>(null);
@@ -792,6 +797,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       frame.style.transformOrigin = "50% 100%";
       frame.style.transition = "transform 80ms ease-out";
       frame.style.transform = `scale(${baseX * 1.06}, 0.86)`;
+    } catch {}
+    try {
+      startPettingAnimationRef.current();
     } catch {}
     if (monPetTimerRef.current !== null) {
       clearTimeout(monPetTimerRef.current);
@@ -1267,6 +1275,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (anim && anim.raf) cancelAnimationFrame(anim.raf);
       miningAnimRef.current = null;
       setMiningPlaying(false);
+      const wAnim = walkingAnimRef.current;
+      if (wAnim && wAnim.raf) cancelAnimationFrame(wAnim.raf);
+      walkingAnimRef.current = null;
+      setWalkingPlaying(false);
+      const pAnim = pettingAnimRef.current;
+      if (pAnim && pAnim.raf) cancelAnimationFrame(pAnim.raf);
+      pettingAnimRef.current = null;
+      setPettingPlaying(false);
       const imgEl = islandButtonImgRef.current;
       if (!imgEl || !islandNatural) {
         setIslandActive(false);
@@ -1625,6 +1641,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     rafRef.current = null;
     moveAnimRef.current = null;
     checkAndTeleportMonIfOverlapped();
+    const wAnim = walkingAnimRef.current;
+    if (wAnim && wAnim.raf) cancelAnimationFrame(wAnim.raf);
+    walkingAnimRef.current = null;
+    setWalkingPlaying(false);
   }, [checkAndTeleportMonIfOverlapped]);
 
   const latestDudePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
@@ -1658,6 +1678,16 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     if (!dudeWrapRef.current) return;
     if (!miningImageRef.current) return;
     if (miningPlaying) return;
+    try {
+      const w = walkingAnimRef.current;
+      if (w && w.raf) cancelAnimationFrame(w.raf);
+      walkingAnimRef.current = null;
+      setWalkingPlaying(false);
+      const p = pettingAnimRef.current;
+      if (p && p.raf) cancelAnimationFrame(p.raf);
+      pettingAnimRef.current = null;
+      setPettingPlaying(false);
+    } catch {}
     setMiningPlaying(true);
     requestAnimationFrame(() => {
       const sheetImg = miningImageRef.current;
@@ -1670,16 +1700,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       const wrapBox = wrap.getBoundingClientRect();
       const frameCount = 4;
+      const rows = 3;
       const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
-      const frameHeight = sheetImg.naturalHeight || 1;
+      const singleRowHeight = Math.floor((sheetImg.naturalHeight || 1) / rows) || 1;
       const targetHeight = Math.max(1, Math.round(wrapBox.height));
-      const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / frameHeight));
+      const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / singleRowHeight));
 
       frameWrap.style.width = `${targetWidth}px`;
       frameWrap.style.height = `${targetHeight}px`;
-      stripImg.style.height = `${targetHeight}px`;
+      stripImg.style.height = `${targetHeight * rows}px`;
       stripImg.style.width = `${targetWidth * frameCount}px`;
-      stripImg.style.transform = `translateX(0px)`;
+      stripImg.style.transform = `translate(0px, 0px)`;
 
       miningAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
       const step = () => {
@@ -1691,7 +1722,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if (frame !== anim.lastFrame) {
           const offset = frame * targetWidth;
           const tx = -offset;
-          stripImg.style.transform = `translateX(${tx}px)`;
+          const ty = 0;
+          stripImg.style.transform = `translate(${tx}px, ${ty}px)`;
           anim.lastFrame = frame;
         }
         if (elapsed < frameCount * MINING_FRAME_MS) {
@@ -1704,6 +1736,114 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       miningAnimRef.current.raf = requestAnimationFrame(step);
     });
   }, [miningPlaying]);
+
+  const startWalkingAnimation = useCallback(() => {
+    if (!dudeWrapRef.current) return;
+    if (!miningImageRef.current) return;
+    if (walkingPlaying || miningPlaying || pettingPlaying) return;
+    setWalkingPlaying(true);
+    requestAnimationFrame(() => {
+      const sheetImg = miningImageRef.current;
+      const wrap = dudeWrapRef.current;
+      const frameWrap = miningFrameWrapRef.current;
+      const stripImg = miningStripImgRef.current;
+      if (!sheetImg || !wrap || !frameWrap || !stripImg) {
+        setWalkingPlaying(false);
+        return;
+      }
+      const wrapBox = wrap.getBoundingClientRect();
+      const frameCount = 4;
+      const rows = 3;
+      const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
+      const singleRowHeight = Math.floor((sheetImg.naturalHeight || 1) / rows) || 1;
+      const targetHeight = Math.max(1, Math.round(wrapBox.height));
+      const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / singleRowHeight));
+
+      frameWrap.style.width = `${targetWidth}px`;
+      frameWrap.style.height = `${targetHeight}px`;
+      stripImg.style.height = `${targetHeight * rows}px`;
+      stripImg.style.width = `${targetWidth * frameCount}px`;
+      const rowIndex = 1;
+      stripImg.style.transform = `translate(0px, ${-rowIndex * targetHeight}px)`;
+
+      walkingAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
+      const step = () => {
+        const anim = walkingAnimRef.current;
+        if (!anim) return;
+        if (!walkingPlaying) return;
+        const elapsed = performance.now() - anim.start;
+        const rawFrame = Math.floor(elapsed / MINING_FRAME_MS);
+        const frame = ((rawFrame % frameCount) + frameCount) % frameCount;
+        if (frame !== anim.lastFrame) anim.lastFrame = frame;
+        const offset = frame * targetWidth;
+        const tx = -offset;
+        const ty = -rowIndex * targetHeight;
+        stripImg.style.transform = `translate(${tx}px, ${ty}px)`;
+        anim.raf = requestAnimationFrame(step);
+      };
+      walkingAnimRef.current.raf = requestAnimationFrame(step);
+    });
+  }, [walkingPlaying, miningPlaying, pettingPlaying]);
+
+  const startPettingAnimation = useCallback(() => {
+    if (!dudeWrapRef.current) return;
+    if (!miningImageRef.current) return;
+    if (pettingPlaying) return;
+    setPettingPlaying(true);
+    setWalkingPlaying(false);
+    const wAnim = walkingAnimRef.current;
+    if (wAnim && wAnim.raf) cancelAnimationFrame(wAnim.raf);
+    walkingAnimRef.current = null;
+    requestAnimationFrame(() => {
+      const sheetImg = miningImageRef.current;
+      const wrap = dudeWrapRef.current;
+      const frameWrap = miningFrameWrapRef.current;
+      const stripImg = miningStripImgRef.current;
+      if (!sheetImg || !wrap || !frameWrap || !stripImg) {
+        setPettingPlaying(false);
+        return;
+      }
+      const wrapBox = wrap.getBoundingClientRect();
+      const frameCount = 4;
+      const rows = 3;
+      const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
+      const singleRowHeight = Math.floor((sheetImg.naturalHeight || 1) / rows) || 1;
+      const targetHeight = Math.max(1, Math.round(wrapBox.height));
+      const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / singleRowHeight));
+
+      frameWrap.style.width = `${targetWidth}px`;
+      frameWrap.style.height = `${targetHeight}px`;
+      stripImg.style.height = `${targetHeight * rows}px`;
+      stripImg.style.width = `${targetWidth * frameCount}px`;
+      const rowIndex = 2;
+      stripImg.style.transform = `translate(0px, ${-rowIndex * targetHeight}px)`;
+
+      pettingAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
+      const step = () => {
+        const anim = pettingAnimRef.current;
+        if (!anim) return;
+        const elapsed = performance.now() - anim.start;
+        const rawFrame = Math.floor(elapsed / MINING_FRAME_MS);
+        const frame = Math.min(frameCount - 1, Math.max(0, rawFrame));
+        if (frame !== anim.lastFrame) anim.lastFrame = frame;
+        const offset = frame * targetWidth;
+        const tx = -offset;
+        const ty = -rowIndex * targetHeight;
+        stripImg.style.transform = `translate(${tx}px, ${ty}px)`;
+        if (elapsed < frameCount * MINING_FRAME_MS) {
+          anim.raf = requestAnimationFrame(step);
+        } else {
+          setPettingPlaying(false);
+          pettingAnimRef.current = null;
+        }
+      };
+      pettingAnimRef.current.raf = requestAnimationFrame(step);
+    });
+  }, [pettingPlaying]);
+
+  useEffect(() => {
+    startPettingAnimationRef.current = startPettingAnimation;
+  }, [startPettingAnimation]);
 
   const startMoveTo = useCallback(
     (tx: number, ty: number) => {
@@ -1729,6 +1869,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const speed = Math.max(60, Math.min(220, h * 0.45));
       const duration = (dist / speed) * 1000;
       moveAnimRef.current = { start: now, from, to, duration: Math.max(200, duration) };
+      if (!miningPlaying && !walkingPlaying) startWalkingAnimation();
       if (!rafRef.current) {
         const step = () => {
           if (!moveAnimRef.current) return;
@@ -1767,7 +1908,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal, decideFacingWithHysteresis]
+    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal, decideFacingWithHysteresis, walkingPlaying, miningPlaying, startWalkingAnimation]
   );
 
   const updateMoveTarget = useCallback(
@@ -1793,6 +1934,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const speed = Math.max(60, Math.min(220, h * 0.45));
       const duration = (dist / speed) * 1000;
       moveAnimRef.current = { start: now, from, to, duration: Math.max(200, duration) };
+      if (!miningPlaying && !walkingPlaying) startWalkingAnimation();
       if (!rafRef.current) {
         const step = () => {
           if (!moveAnimRef.current) return;
@@ -1814,7 +1956,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.h, heroSize.w, stopMoveAnim, decideFacingWithHysteresis]
+    [heroSize.h, heroSize.w, stopMoveAnim, decideFacingWithHysteresis, walkingPlaying, miningPlaying, startWalkingAnimation]
   );
 
   const handleMaterialItemTap = useCallback(
@@ -2350,8 +2492,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       return inFrontOfRock ? 700 + base : 300 + base;
                     })(),
                   }}>
-                  <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} style={{ visibility: miningPlaying ? "hidden" : "visible" }} />
-                  {miningPlaying && (
+                  <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} style={{ visibility: miningPlaying || walkingPlaying || pettingPlaying ? "hidden" : "visible" }} />
+                  {(miningPlaying || walkingPlaying || pettingPlaying) && (
                     <DudeSpriteFrame $facingLeft={dudeFacingLeft} ref={miningFrameWrapRef as any}>
                       <DudeSpriteStrip ref={miningStripImgRef as any} src={`data:image/png;base64,${islandMonsMining}`} alt="" draggable={false} />
                     </DudeSpriteFrame>
