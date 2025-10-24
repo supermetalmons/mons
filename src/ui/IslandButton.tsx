@@ -1732,12 +1732,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       setPettingPlaying(false);
     } catch {}
     setMiningPlaying(true);
-    requestAnimationFrame(() => {
+    let initAttempts = 0;
+    const initMining = () => {
       const sheetImg = miningImageRef.current;
       const wrap = dudeWrapRef.current;
       const frameWrap = miningFrameWrapRef.current;
       const stripImg = miningStripImgRef.current;
       if (!sheetImg || !wrap || !frameWrap || !stripImg) {
+        initAttempts += 1;
+        if (initAttempts <= 5) {
+          requestAnimationFrame(initMining);
+          return;
+        }
         setMiningPlaying(false);
         return;
       }
@@ -1765,8 +1771,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if (frame !== anim.lastFrame) {
           const offset = frame * targetWidth;
           const tx = -offset;
-          const ty = 0;
-          stripImg.style.transform = `translate(${tx}px, ${ty}px)`;
+          stripImg.style.transform = `translate(${tx}px, 0px)`;
           anim.lastFrame = frame;
         }
         if (elapsed < frameCount * MINING_FRAME_MS) {
@@ -1777,7 +1782,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }
       };
       miningAnimRef.current.raf = requestAnimationFrame(step);
-    });
+    };
+    requestAnimationFrame(initMining);
   }, [miningPlaying]);
 
   const startWalkingAnimation = useCallback(() => {
@@ -2132,8 +2138,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const isAlternate = targetPos === alternate;
         const atTarget = Math.hypot(dudePos.x - targetPos.x, dudePos.y - targetPos.y) < 0.015;
         if (!atTarget) {
-          startMiningAnimation();
-          moveTargetMetaRef.current = { x: targetPos.x, y: targetPos.y, facingLeft: isAlternate ? !INITIAL_DUDE_FACING_LEFT : INITIAL_DUDE_FACING_LEFT };
+          moveTargetMetaRef.current = {
+            x: targetPos.x,
+            y: targetPos.y,
+            facingLeft: isAlternate ? !INITIAL_DUDE_FACING_LEFT : INITIAL_DUDE_FACING_LEFT,
+            onArrive: () => {
+              startMiningAnimation();
+            },
+          };
           startMoveTo(targetPos.x, targetPos.y);
           playSounds([Sound.WalkToRock]);
         } else {
