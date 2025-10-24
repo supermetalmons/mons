@@ -1099,6 +1099,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const startYPct = ((startY - wrapBox.top) / Math.max(1, wrapBox.height)) * 100;
       const heightPct = 12;
       const els: HTMLImageElement[] = [];
+      const ranks: number[] = [];
       const debugLines: HTMLDivElement[] = [];
       for (let i = 0; i < numParticles; i++) {
         const el = document.createElement("img");
@@ -1110,12 +1111,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         el.style.width = "auto";
         el.style.height = `${heightPct}%`;
         el.style.pointerEvents = "none";
-        el.style.willChange = "left, top, transform, opacity, z-index";
+        el.style.willChange = "left, top, transform, opacity";
+        el.style.backfaceVisibility = "hidden";
         el.style.transform = `translate(-50%, -50%) scale(1)`;
         el.style.opacity = "1";
         el.setAttribute("data-fx", "icon-particle");
         heroWrap.appendChild(el);
         els.push(el);
+        ranks.push(i);
         if (SHOW_DEBUG_ISLAND_BOUNDS) {
           const line = document.createElement("div");
           line.style.position = "absolute";
@@ -1134,6 +1137,35 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const angles = els.map((_, i) => (i / numParticles) * Math.PI * 2 + Math.random() * (Math.PI / numParticles) - Math.PI / 2);
       const distancesPx = els.map(() => 60 + Math.random() * 80);
       const rotations = els.map(() => (Math.random() - 0.5) * 0.4);
+      const initialGroupBaselineFrac = Math.max(0, Math.min(1, startYPct / 100));
+      const initialBaseInt = Math.round(initialGroupBaselineFrac * 100) * 10;
+      let groupZBaseLock = 600 + initialBaseInt;
+      if (rockReady) {
+        const inFrontOfRockInitial = initialGroupBaselineFrac >= rockBottomY;
+        groupZBaseLock = (inFrontOfRockInitial ? 700 : 300) + initialBaseInt;
+      }
+      const baseRank = Math.floor(Math.random() * 1000);
+      for (let i = 0; i < ranks.length; i++) ranks[i] = baseRank + i;
+      const groupContainer = document.createElement("div");
+      groupContainer.style.position = "absolute";
+      groupContainer.style.left = "0";
+      groupContainer.style.top = "0";
+      groupContainer.style.width = "100%";
+      groupContainer.style.height = "100%";
+      groupContainer.style.pointerEvents = "none";
+      groupContainer.style.zIndex = `${groupZBaseLock}`;
+      groupContainer.style.contain = "paint";
+      groupContainer.style.isolation = "isolate";
+      heroWrap.appendChild(groupContainer);
+      for (let i = 0; i < els.length; i++) {
+        groupContainer.appendChild(els[i]);
+      }
+      for (let i = 0; i < debugLines.length; i++) {
+        groupContainer.appendChild(debugLines[i]);
+      }
+      for (let i = 0; i < els.length; i++) {
+        els[i].style.zIndex = `${i + 1}`;
+      }
       function easeOutCubic(t: number) {
         return 1 - Math.pow(1 - t, 3);
       }
@@ -1167,20 +1199,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             debugLines[i].style.width = `${clampedWidthPct}%`;
           }
           els[i].style.transform = `translate(-50%, -50%) scale(${s}) rotate(${r}deg)`;
-          const baselineYFrac = Math.max(0, Math.min(1, baselinePct / 100));
-          const base = Math.round(baselineYFrac * 100);
-          let z = 600 + base;
-          if (rockReady) {
-            const inFrontOfRock = baselineYFrac >= rockBottomY;
-            z = inFrontOfRock ? 700 + base : 300 + base;
-          }
-          els[i].style.zIndex = `${z}`;
+        }
+        for (let i = 0; i < els.length; i++) {
           els[i].style.opacity = `${1 - e}`;
         }
         if (t < 1) {
           requestAnimationFrame(step);
         } else {
           for (const el of els) el.remove();
+          try {
+            groupContainer.remove();
+          } catch {}
         }
       }
       requestAnimationFrame(step);
@@ -1232,7 +1261,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       shadowEl.style.pointerEvents = "none";
       shadowEl.style.willChange = "left, top, width, height, filter, opacity, z-index";
       shadowEl.style.transform = "translate(-50%, -50%)";
+      shadowEl.style.display = "none";
       heroWrap.appendChild(shadowEl);
+      {
+        const elBoxInit = el.getBoundingClientRect();
+        const baselineInitFrac = Math.max(0, Math.min(1, (elBoxInit.top - wrapBox.top + elBoxInit.height * 0.8) / Math.max(1, wrapBox.height)));
+        const baseInt = Math.round(baselineInitFrac * 100);
+        let zBase = 600 + baseInt;
+        if (rockReady) {
+          const inFront = baselineInitFrac >= rockBottomY;
+          zBase = (inFront ? 700 : 300) + baseInt;
+        }
+        el.style.zIndex = `${zBase}`;
+        shadowEl.style.zIndex = `${Math.max(0, zBase - 1)}`;
+      }
       const debugLine = SHOW_DEBUG_ISLAND_BOUNDS ? document.createElement("div") : null;
       if (debugLine) {
         debugLine.style.position = "absolute";
@@ -1291,25 +1333,41 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const cy = baseYPct + dyPct;
           el.style.left = `${cx}%`;
           el.style.top = `${cy}%`;
-          {
+          if (t < 1) {
             const elBox = el.getBoundingClientRect();
             const widthPctItem = (elBox.width / Math.max(1, currentWrapBox.width)) * 100;
-            const leftPct = Math.max(0, Math.min(100, cx - widthPctItem * 0.5));
-            const proximity = Math.max(0, Math.min(1, e));
-            const widthScale = 0.62 + 0.08 * proximity;
-            const clampedWidthPct = Math.max(0, Math.min(100 - leftPct, widthPctItem * widthScale));
+            const widthScale = 0.62 + 0.08 * e;
+            const clampedWidthPct = Math.max(0, Math.min(100, widthPctItem * widthScale));
             const baselinePct = ((elBox.top - currentWrapBox.top + elBox.height * 0.8) / Math.max(1, currentWrapBox.height)) * 100;
             const maxBlurPx = Math.max(0.5, currentWrapBox.height * 0.014);
             const minBlurPx = Math.max(0.2, currentWrapBox.height * 0.004);
-            const blurPx = minBlurPx + (maxBlurPx - minBlurPx) * (1 - proximity);
-            const shadowOpacity = 0.12 + 0.16 * proximity;
-            const shadowHeightPct = 3.6 - 0.8 * proximity;
+            const blurPx = minBlurPx + (maxBlurPx - minBlurPx) * (1 - e);
+            const shadowOpacity = 0.12 + 0.16 * e;
+            const shadowHeightPct = Math.max(1.0, 3.6 - 0.8 * e);
+            shadowEl.style.display = "block";
             shadowEl.style.top = `${Math.max(0, Math.min(100, baselinePct + 0.04))}%`;
             shadowEl.style.left = `${cx}%`;
             shadowEl.style.width = `${clampedWidthPct}%`;
-            shadowEl.style.height = `${Math.max(1.0, shadowHeightPct)}%`;
+            shadowEl.style.height = `${shadowHeightPct}%`;
             shadowEl.style.filter = `blur(${blurPx}px)`;
             shadowEl.style.background = `rgba(0,0,0,${shadowOpacity.toFixed(3)})`;
+          } else {
+            const elBox = el.getBoundingClientRect();
+            const widthPctItem = (elBox.width / Math.max(1, currentWrapBox.width)) * 100;
+            const finalWidthScale = 0.62 + 0.08 * 1;
+            const finalWidthPct = Math.max(0, Math.min(100, widthPctItem * finalWidthScale));
+            const baselinePct = ((elBox.top - currentWrapBox.top + elBox.height * 0.8) / Math.max(1, currentWrapBox.height)) * 100;
+            const minBlurPx = Math.max(0.2, currentWrapBox.height * 0.004);
+            const finalBlurPx = minBlurPx;
+            const finalOpacity = 0.12 + 0.16 * 1;
+            const finalHeightPct = Math.max(1.0, 3.6 - 0.8 * 1);
+            shadowEl.style.display = "block";
+            shadowEl.style.top = `${Math.max(0, Math.min(100, baselinePct + 0.04))}%`;
+            shadowEl.style.left = `${cx}%`;
+            shadowEl.style.width = `${finalWidthPct}%`;
+            shadowEl.style.height = `${finalHeightPct}%`;
+            shadowEl.style.filter = `blur(${finalBlurPx}px)`;
+            shadowEl.style.background = `rgba(0,0,0,${finalOpacity.toFixed(3)})`;
           }
           if (debugLine) {
             const elBox = el.getBoundingClientRect();
@@ -1322,18 +1380,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             debugLine.style.width = `${clampedWidthPct}%`;
           }
           el.style.transform = `translate(-50%, -50%) scale(${s})`;
-          const baselineYFrac = Math.max(0, Math.min(1, (el.getBoundingClientRect().top - currentWrapBox.top + el.getBoundingClientRect().height * 0.8) / Math.max(1, currentWrapBox.height)));
-          const base = Math.round(baselineYFrac * 100);
-          let z = 600 + base;
-          if (rockReady) {
-            const inFrontOfRock = baselineYFrac >= rockBottomY;
-            z = inFrontOfRock ? 700 + base : 300 + base;
-          }
-          el.style.zIndex = `${z}`;
-          shadowEl.style.zIndex = `${Math.max(0, z - 1)}`;
           if (t < 1) {
             requestAnimationFrame(step1);
           } else {
+            const elBoxFinal = el.getBoundingClientRect();
+            const baselineFinalFrac = Math.max(0, Math.min(1, (elBoxFinal.top - currentWrapBox.top + elBoxFinal.height * 0.8) / Math.max(1, currentWrapBox.height)));
+            const baseIntFinal = Math.round(baselineFinalFrac * 100);
+            let zBaseFinal = 600 + baseIntFinal;
+            if (rockReady) {
+              const inFrontFinal = baselineFinalFrac >= rockBottomY;
+              zBaseFinal = (inFrontFinal ? 700 : 300) + baseIntFinal;
+            }
+            el.style.zIndex = `${zBaseFinal}`;
+            shadowEl.style.zIndex = `${Math.max(0, zBaseFinal - 1)}`;
             resolve(name);
           }
         }
