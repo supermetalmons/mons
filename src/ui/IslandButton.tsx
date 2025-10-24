@@ -10,7 +10,7 @@ import { idle as islandMonsIdle, miningWalkingAndPets as islandMonsMining, shado
 import { getOwnDrainerId } from "../utils/namedMons";
 import { Sound } from "../utils/gameModels";
 
-const MATERIAL_AUTO_PULL_ENABLED = true;
+const MATERIAL_AUTO_PULL_ENABLED = false;
 const SHOW_DEBUG_ISLAND_BOUNDS = false;
 
 const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
@@ -1082,213 +1082,266 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     [islandImgLoaded, islandNatural, updateRockBox]
   );
 
-  const spawnIconParticles = useCallback((sourceEl: HTMLElement, src: string) => {
-    const numParticles = 10;
-    const durationMs = 420;
-    const start = performance.now();
-    const rect = sourceEl.getBoundingClientRect();
-    const startX = rect.left + rect.width / 2;
-    const startY = rect.top + rect.height / 2 - 12;
-    const baseSize = Math.max(14, Math.min(28, rect.width * 0.7));
-    const els: HTMLImageElement[] = [];
-    let fxContainer = fxContainerRef.current as HTMLDivElement | null;
-    if (!fxContainer) {
-      fxContainer = document.createElement("div");
-      fxContainer.style.position = "fixed";
-      fxContainer.style.left = "0";
-      fxContainer.style.top = "0";
-      fxContainer.style.right = "0";
-      fxContainer.style.bottom = "0";
-      fxContainer.style.pointerEvents = "none";
-      fxContainer.style.zIndex = "90005";
-      fxContainer.style.contain = "paint";
-      fxContainer.style.isolation = "isolate";
-      fxContainerRef.current = fxContainer;
-      document.body.appendChild(fxContainer);
-    }
-    for (let i = 0; i < numParticles; i++) {
+  const spawnIconParticles = useCallback(
+    (sourceEl: HTMLElement, src: string) => {
+      const heroImg = islandHeroImgRef.current;
+      if (!heroImg) return;
+      const heroWrap = heroImg.parentElement as HTMLElement | null;
+      if (!heroWrap) return;
+      const numParticles = 10;
+      const durationMs = 420;
+      const start = performance.now();
+      const sourceBox = sourceEl.getBoundingClientRect();
+      const wrapBox = heroWrap.getBoundingClientRect();
+      const startX = sourceBox.left + sourceBox.width / 2;
+      const startY = sourceBox.top + sourceBox.height / 2 - 12;
+      const startXPct = ((startX - wrapBox.left) / Math.max(1, wrapBox.width)) * 100;
+      const startYPct = ((startY - wrapBox.top) / Math.max(1, wrapBox.height)) * 100;
+      const heightPct = 12;
+      const els: HTMLImageElement[] = [];
+      const debugLines: HTMLDivElement[] = [];
+      for (let i = 0; i < numParticles; i++) {
+        const el = document.createElement("img");
+        el.src = src;
+        el.draggable = false;
+        el.style.position = "absolute";
+        el.style.left = `${startXPct}%`;
+        el.style.top = `${startYPct}%`;
+        el.style.width = "auto";
+        el.style.height = `${heightPct}%`;
+        el.style.pointerEvents = "none";
+        el.style.willChange = "left, top, transform, opacity, z-index";
+        el.style.transform = `translate(-50%, -50%) scale(1)`;
+        el.style.opacity = "1";
+        el.setAttribute("data-fx", "icon-particle");
+        heroWrap.appendChild(el);
+        els.push(el);
+        if (SHOW_DEBUG_ISLAND_BOUNDS) {
+          const line = document.createElement("div");
+          line.style.position = "absolute";
+          line.style.left = `${startXPct}%`;
+          line.style.width = "0%";
+          line.style.top = `${startYPct}%`;
+          line.style.height = "0";
+          line.style.borderTop = "2px dashed rgba(255,0,255,0.95)";
+          line.style.pointerEvents = "none";
+          line.style.zIndex = "100000";
+          line.setAttribute("data-debug", "particle-baseline");
+          heroWrap.appendChild(line);
+          debugLines.push(line);
+        }
+      }
+      const angles = els.map((_, i) => (i / numParticles) * Math.PI * 2 + Math.random() * (Math.PI / numParticles) - Math.PI / 2);
+      const distancesPx = els.map(() => 60 + Math.random() * 80);
+      const rotations = els.map(() => (Math.random() - 0.5) * 0.4);
+      function easeOutCubic(t: number) {
+        return 1 - Math.pow(1 - t, 3);
+      }
+      function step(now: number) {
+        const t = Math.min(1, (now - start) / durationMs);
+        const e = easeOutCubic(t);
+        const wrapEl = islandHeroImgRef.current ? (islandHeroImgRef.current.parentElement as HTMLElement | null) : null;
+        if (!wrapEl) {
+          for (const el of els) el.remove();
+          return;
+        }
+        const currentWrapBox = wrapEl.getBoundingClientRect();
+        for (let i = 0; i < els.length; i++) {
+          const dxPct = Math.cos(angles[i]) * (distancesPx[i] / Math.max(1, currentWrapBox.width)) * 100 * e;
+          const dyBasePct = (distancesPx[i] / Math.max(1, currentWrapBox.height)) * 100;
+          const dyPct = Math.sin(angles[i]) * dyBasePct * e + 0.35 * dyBasePct * e * e;
+          const s = 1 - 0.35 * e;
+          const r = rotations[i] * 90 * e;
+          const cx = startXPct + dxPct;
+          const cy = startYPct + dyPct;
+          els[i].style.left = `${cx}%`;
+          els[i].style.top = `${cy}%`;
+          const elBox = els[i].getBoundingClientRect();
+          const baselinePct = ((elBox.top - currentWrapBox.top + elBox.height * 0.83) / Math.max(1, currentWrapBox.height)) * 100;
+          if (SHOW_DEBUG_ISLAND_BOUNDS && debugLines[i]) {
+            const widthPct = (elBox.width / Math.max(1, currentWrapBox.width)) * 100;
+            const leftPct = Math.max(0, Math.min(100, cx - widthPct * 0.5));
+            const clampedWidthPct = Math.max(0, Math.min(100 - leftPct, widthPct));
+            debugLines[i].style.top = `${Math.max(0, Math.min(100, baselinePct))}%`;
+            debugLines[i].style.left = `${leftPct}%`;
+            debugLines[i].style.width = `${clampedWidthPct}%`;
+          }
+          els[i].style.transform = `translate(-50%, -50%) scale(${s}) rotate(${r}deg)`;
+          const baselineYFrac = Math.max(0, Math.min(1, baselinePct / 100));
+          const base = Math.round(baselineYFrac * 100);
+          let z = 600 + base;
+          if (rockReady) {
+            const inFrontOfRock = baselineYFrac >= rockBottomY;
+            z = inFrontOfRock ? 700 + base : 300 + base;
+          }
+          els[i].style.zIndex = `${z}`;
+          els[i].style.opacity = `${1 - e}`;
+        }
+        if (t < 1) {
+          requestAnimationFrame(step);
+        } else {
+          for (const el of els) el.remove();
+        }
+      }
+      requestAnimationFrame(step);
+    },
+    [rockReady, rockBottomY]
+  );
+
+  const spawnMaterialDrop = useCallback(
+    async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number }): Promise<MaterialName> => {
+      walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
+      const url = await getMaterialImageUrl(name);
+      if (!url) return name;
+      const rockLayer = rockLayerRef.current;
+      const heroImg = islandHeroImgRef.current;
+      if (!rockLayer || !heroImg) return name;
+      const heroWrap = heroImg.parentElement as HTMLElement | null;
+      if (!heroWrap) return name;
+      const rect = rockLayer.getBoundingClientRect();
+      lastRockRectRef.current = rect;
+      const startX = rect.left + rect.width / 2;
+      const startY = rect.top + rect.height * 0.5;
+      const originOffsetX = (Math.random() - 0.5) * rect.width * 0.2;
+      const originOffsetY = -rect.height * 0.12 + Math.random() * rect.height * 0.16;
+      const wrapBox = heroWrap.getBoundingClientRect();
+      const baseXPct = ((startX + originOffsetX - wrapBox.left) / Math.max(1, wrapBox.width)) * 100;
+      const baseYPct = ((startY + originOffsetY - wrapBox.top) / Math.max(1, wrapBox.height)) * 100;
       const el = document.createElement("img");
-      el.src = src;
+      el.src = url;
       el.draggable = false;
       el.style.position = "absolute";
-      el.style.left = "0";
-      el.style.top = "0";
-      el.style.width = `${baseSize}px`;
-      el.style.height = `${baseSize}px`;
+      el.style.left = `${baseXPct}%`;
+      el.style.top = `${baseYPct}%`;
+      el.style.width = "auto";
+      el.style.height = "14%";
       el.style.pointerEvents = "none";
-      el.style.zIndex = "90003";
-      el.style.willChange = "transform, opacity";
-      el.style.transform = `translate3d(${startX - baseSize / 2}px, ${startY - baseSize / 2}px, 0) scale(1)`;
-      el.style.opacity = "1";
-      el.setAttribute("data-fx", "icon-particle");
-      fxContainer.appendChild(el);
-      els.push(el);
-    }
-    const angles = els.map((_, i) => (i / numParticles) * Math.PI * 2 + Math.random() * (Math.PI / numParticles) - Math.PI / 2);
-    const distances = els.map(() => 60 + Math.random() * 80);
-    const rotations = els.map(() => (Math.random() - 0.5) * 0.4);
-    function easeOutCubic(t: number) {
-      return 1 - Math.pow(1 - t, 3);
-    }
-    function step(now: number) {
-      const t = Math.min(1, (now - start) / durationMs);
-      const e = easeOutCubic(t);
-      for (let i = 0; i < els.length; i++) {
-        const dx = Math.cos(angles[i]) * distances[i] * e;
-        const dy = Math.sin(angles[i]) * distances[i] * e + 0.35 * distances[i] * e * e;
-        const s = 1 - 0.35 * e;
-        const r = rotations[i] * 90 * e;
-        els[i].style.transform = `translate3d(${startX - baseSize / 2 + dx}px, ${startY - baseSize / 2 + dy}px, 0) scale(${s}) rotate(${r}deg)`;
-        els[i].style.opacity = `${1 - e}`;
+      el.style.willChange = "left, top, transform, opacity, z-index";
+      el.style.backfaceVisibility = "hidden";
+      el.style.transform = "translate(-50%, -50%) scale(0.95)";
+      el.setAttribute("data-fx", "material-drop");
+      heroWrap.appendChild(el);
+      const shadowEl = document.createElement("div");
+      shadowEl.style.position = "absolute";
+      shadowEl.style.left = `${baseXPct}%`;
+      shadowEl.style.top = `${baseYPct}%`;
+      shadowEl.style.width = "0%";
+      shadowEl.style.height = "2%";
+      shadowEl.style.borderRadius = "50%";
+      shadowEl.style.background = "rgba(0,0,0,0.28)";
+      shadowEl.style.pointerEvents = "none";
+      shadowEl.style.willChange = "left, top, width, height, filter, opacity, z-index";
+      shadowEl.style.transform = "translate(-50%, -50%)";
+      heroWrap.appendChild(shadowEl);
+      const debugLine = SHOW_DEBUG_ISLAND_BOUNDS ? document.createElement("div") : null;
+      if (debugLine) {
+        debugLine.style.position = "absolute";
+        debugLine.style.left = `${baseXPct}%`;
+        debugLine.style.width = "0%";
+        debugLine.style.top = `${baseYPct}%`;
+        debugLine.style.height = "0";
+        debugLine.style.borderTop = "2px dashed rgba(255,0,255,0.95)";
+        debugLine.style.pointerEvents = "none";
+        debugLine.style.zIndex = "100000";
+        debugLine.setAttribute("data-debug", "material-baseline");
+        heroWrap.appendChild(debugLine);
       }
-      if (t < 1) {
-        requestAnimationFrame(step);
-      } else {
-        for (const el of els) el.remove();
+      const angle = (Math.random() - 0.5) * Math.PI * 0.5;
+      const spreadLocal = common?.spread ?? 24 + Math.random() * 48;
+      const liftLocal = common?.lift ?? 12 + Math.random() * 18;
+      const fallLocal = common?.fall ?? 12 + Math.random() * 14 + rect.height * 0.15;
+      const duration1 = common?.duration1 ?? 600 + Math.random() * 140;
+      const start = (common?.start ?? performance.now()) + delay;
+      function easeOutQuart(t: number) {
+        return 1 - Math.pow(1 - t, 4);
       }
-    }
-    requestAnimationFrame(step);
-  }, []);
-
-  const spawnMaterialDrop = useCallback(async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number }): Promise<MaterialName> => {
-    walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
-    const url = await getMaterialImageUrl(name);
-    if (!url) return name;
-    const rockLayer = rockLayerRef.current;
-    if (!rockLayer) return name;
-    const rect = rockLayer.getBoundingClientRect();
-    lastRockRectRef.current = rect;
-    const startX = rect.left + rect.width / 2;
-    const startY = rect.top + rect.height * 0.5;
-    const originOffsetX = (Math.random() - 0.5) * rect.width * 0.2;
-    const originOffsetY = -rect.height * 0.12 + Math.random() * rect.height * 0.16;
-    const el = document.createElement("img");
-    el.src = url;
-    el.draggable = false;
-    el.style.position = "absolute";
-    el.style.left = "0";
-    el.style.top = "0";
-    el.setAttribute("data-fx", "material-drop");
-    const targetRef = materialItemRefs.current[name];
-    const targetIcon = targetRef?.querySelector("img") as HTMLImageElement | null;
-    const targetIconBox = targetIcon?.getBoundingClientRect();
-    const targetW = targetIconBox ? Math.max(1, Math.round(targetIconBox.width)) : 33;
-    el.style.width = `${targetW}px`;
-    el.style.height = "auto";
-    el.style.pointerEvents = "none";
-    el.style.zIndex = "1";
-    el.style.willChange = "transform, opacity";
-    el.style.backfaceVisibility = "hidden";
-    const angle = (Math.random() - 0.5) * Math.PI * 0.5;
-    const spreadLocal = common?.spread ?? 24 + Math.random() * 48;
-    const liftLocal = common?.lift ?? 12 + Math.random() * 18;
-    const fallLocal = common?.fall ?? 12 + Math.random() * 14 + rect.height * 0.15;
-
-    const duration1 = common?.duration1 ?? 600 + Math.random() * 140;
-    const start = (common?.start ?? performance.now()) + delay;
-
-    let fxContainer = fxContainerRef.current as HTMLDivElement | null;
-    if (!fxContainer) {
-      fxContainer = document.createElement("div");
-      fxContainer.style.position = "fixed";
-      fxContainer.style.left = "0";
-      fxContainer.style.top = "0";
-      fxContainer.style.right = "0";
-      fxContainer.style.bottom = "0";
-      fxContainer.style.pointerEvents = "none";
-      fxContainer.style.zIndex = "90005";
-      fxContainer.style.contain = "paint";
-      fxContainer.style.isolation = "isolate";
-      fxContainerRef.current = fxContainer;
-      document.body.appendChild(fxContainer);
-    }
-    fxContainer.appendChild(el);
-    const containerBox = fxContainer.getBoundingClientRect();
-    const imgBox = el.getBoundingClientRect();
-    const halfW = imgBox.width / 2;
-    const halfH = imgBox.height / 2;
-    const baseX = startX + originOffsetX - containerBox.left - halfW;
-    const baseY = startY + originOffsetY - containerBox.top - halfH;
-    el.style.transform = `translate3d(${baseX}px, ${baseY}px, 0) scale(0.95)`;
-    function easeOutQuart(t: number) {
-      return 1 - Math.pow(1 - t, 4);
-    }
-    return new Promise<MaterialName>((resolve) => {
-      function step1(now: number) {
-        if (!overlayActiveRef.current) {
-          el.remove();
-          resolve(name);
-          return;
-        }
-        if (now < start) {
-          requestAnimationFrame(step1);
-          return;
-        }
-        const t = Math.min(1, (now - start) / duration1);
-        const e = easeOutQuart(t);
-        const dx = Math.sin(angle) * spreadLocal * e;
-        const u = 1 - (2 * t - 1) * (2 * t - 1);
-        const dy = -liftLocal * u + fallLocal * t * t;
-        const s = 0.95 + 0.05 * e;
-        el.style.transform = `translate3d(${baseX + dx}px, ${baseY + dy}px, 0) scale(${s})`;
-        if (t < 1) {
-          requestAnimationFrame(step1);
-        } else {
-          if (!MATERIAL_AUTO_PULL_ENABLED) {
-            resolve(name);
-            return;
-          }
-          const targetEl = materialItemRefs.current[name];
-          if (!targetEl) {
+      return new Promise<MaterialName>((resolve) => {
+        function step1(now: number) {
+          if (!overlayActiveRef.current) {
             el.remove();
+            try {
+              shadowEl.remove();
+            } catch {}
             resolve(name);
             return;
           }
-          const iconEl = targetEl.querySelector("img") as HTMLImageElement | null;
-          const tr = (iconEl || targetEl).getBoundingClientRect();
-          const endX = tr.left + tr.width / 2;
-          const endY = tr.top + tr.height / 2;
-          const from = el.getBoundingClientRect();
-          const parentBox = (el.parentElement as HTMLElement).getBoundingClientRect();
-          const fromX = from.left - parentBox.left;
-          const fromY = from.top - parentBox.top;
-          const endXLocal = endX - parentBox.left - halfW;
-          const endYLocal = endY - parentBox.top - halfH;
-          const duration2 = 460 + Math.random() * 140;
-          const start2 = performance.now() + 420 + Math.random() * 380;
-          function easeOutCubic(t: number) {
-            return 1 - Math.pow(1 - t, 3);
+          if (now < start) {
+            requestAnimationFrame(step1);
+            return;
           }
-          function step2(now2: number) {
-            if (!overlayActiveRef.current) {
-              el.remove();
-              resolve(name);
-              return;
-            }
-            if (now2 < start2) {
-              requestAnimationFrame(step2);
-              return;
-            }
-            const tt = Math.min(1, (now2 - start2) / duration2);
-            const e2 = easeOutCubic(tt);
-            const cx = fromX + (endXLocal - fromX) * e2;
-            const cy = fromY + (endYLocal - fromY) * e2;
-            const sc = 1;
-            el.style.transform = `translate3d(${cx}px, ${cy}px, 0) scale(${sc})`;
-            el.style.opacity = `${1 - tt * 0.1}`;
-            if (tt < 1) {
-              requestAnimationFrame(step2);
-            } else {
-              el.remove();
-              resolve(name);
-            }
+          const t = Math.min(1, (now - start) / duration1);
+          const e = easeOutQuart(t);
+          const wrapEl = islandHeroImgRef.current ? (islandHeroImgRef.current.parentElement as HTMLElement | null) : null;
+          if (!wrapEl) {
+            el.remove();
+            try {
+              shadowEl.remove();
+            } catch {}
+            resolve(name);
+            return;
           }
-          requestAnimationFrame(step2);
+          const currentWrapBox = wrapEl.getBoundingClientRect();
+          const dxPct = Math.sin(angle) * (spreadLocal / Math.max(1, currentWrapBox.width)) * 100 * e;
+          const u = 1 - (2 * t - 1) * (2 * t - 1);
+          const liftPct = (liftLocal / Math.max(1, currentWrapBox.height)) * 100;
+          const fallPct = (fallLocal / Math.max(1, currentWrapBox.height)) * 100;
+          const dyPct = -liftPct * u + fallPct * t * t;
+          const s = 0.95 + 0.05 * e;
+          const cx = baseXPct + dxPct;
+          const cy = baseYPct + dyPct;
+          el.style.left = `${cx}%`;
+          el.style.top = `${cy}%`;
+          {
+            const elBox = el.getBoundingClientRect();
+            const widthPctItem = (elBox.width / Math.max(1, currentWrapBox.width)) * 100;
+            const leftPct = Math.max(0, Math.min(100, cx - widthPctItem * 0.5));
+            const proximity = Math.max(0, Math.min(1, e));
+            const widthScale = 0.62 + 0.08 * proximity;
+            const clampedWidthPct = Math.max(0, Math.min(100 - leftPct, widthPctItem * widthScale));
+            const baselinePct = ((elBox.top - currentWrapBox.top + elBox.height * 0.8) / Math.max(1, currentWrapBox.height)) * 100;
+            const maxBlurPx = Math.max(0.5, currentWrapBox.height * 0.014);
+            const minBlurPx = Math.max(0.2, currentWrapBox.height * 0.004);
+            const blurPx = minBlurPx + (maxBlurPx - minBlurPx) * (1 - proximity);
+            const shadowOpacity = 0.12 + 0.16 * proximity;
+            const shadowHeightPct = 3.6 - 0.8 * proximity;
+            shadowEl.style.top = `${Math.max(0, Math.min(100, baselinePct + 0.04))}%`;
+            shadowEl.style.left = `${cx}%`;
+            shadowEl.style.width = `${clampedWidthPct}%`;
+            shadowEl.style.height = `${Math.max(1.0, shadowHeightPct)}%`;
+            shadowEl.style.filter = `blur(${blurPx}px)`;
+            shadowEl.style.background = `rgba(0,0,0,${shadowOpacity.toFixed(3)})`;
+          }
+          if (debugLine) {
+            const elBox = el.getBoundingClientRect();
+            const baselinePct = ((elBox.top - currentWrapBox.top + elBox.height * 0.8) / Math.max(1, currentWrapBox.height)) * 100;
+            const widthPct = (elBox.width / Math.max(1, currentWrapBox.width)) * 100;
+            const leftPct = Math.max(0, Math.min(100, cx - widthPct * 0.5));
+            const clampedWidthPct = Math.max(0, Math.min(100 - leftPct, widthPct));
+            debugLine.style.top = `${Math.max(0, Math.min(100, baselinePct))}%`;
+            debugLine.style.left = `${leftPct}%`;
+            debugLine.style.width = `${clampedWidthPct}%`;
+          }
+          el.style.transform = `translate(-50%, -50%) scale(${s})`;
+          const baselineYFrac = Math.max(0, Math.min(1, (el.getBoundingClientRect().top - currentWrapBox.top + el.getBoundingClientRect().height * 0.8) / Math.max(1, currentWrapBox.height)));
+          const base = Math.round(baselineYFrac * 100);
+          let z = 600 + base;
+          if (rockReady) {
+            const inFrontOfRock = baselineYFrac >= rockBottomY;
+            z = inFrontOfRock ? 700 + base : 300 + base;
+          }
+          el.style.zIndex = `${z}`;
+          shadowEl.style.zIndex = `${Math.max(0, z - 1)}`;
+          if (t < 1) {
+            requestAnimationFrame(step1);
+          } else {
+            resolve(name);
+          }
         }
-      }
-      requestAnimationFrame(step1);
-    });
-  }, []);
+        requestAnimationFrame(step1);
+      });
+    },
+    [rockReady, rockBottomY]
+  );
 
   const handleIslandClose = useCallback(
     (event?: React.MouseEvent | React.TouchEvent) => {
