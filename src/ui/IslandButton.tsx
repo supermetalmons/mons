@@ -1082,140 +1082,72 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     [islandImgLoaded, islandNatural, updateRockBox]
   );
 
-  const spawnIconParticles = useCallback(
-    (sourceEl: HTMLElement, src: string) => {
-      const heroImg = islandHeroImgRef.current;
-      if (!heroImg) return;
-      const heroWrap = heroImg.parentElement as HTMLElement | null;
-      if (!heroWrap) return;
-      const numParticles = 10;
-      const durationMs = 420;
-      const start = performance.now();
-      const sourceBox = sourceEl.getBoundingClientRect();
-      const wrapBox = heroWrap.getBoundingClientRect();
-      const startX = sourceBox.left + sourceBox.width / 2;
-      const startY = sourceBox.top + sourceBox.height / 2 - 12;
-      const startXPct = ((startX - wrapBox.left) / Math.max(1, wrapBox.width)) * 100;
-      const startYPct = ((startY - wrapBox.top) / Math.max(1, wrapBox.height)) * 100;
-      const heightPct = 12;
-      const els: HTMLImageElement[] = [];
-      const ranks: number[] = [];
-      const debugLines: HTMLDivElement[] = [];
-      for (let i = 0; i < numParticles; i++) {
-        const el = document.createElement("img");
-        el.src = src;
-        el.draggable = false;
-        el.style.position = "absolute";
-        el.style.left = `${startXPct}%`;
-        el.style.top = `${startYPct}%`;
-        el.style.width = "auto";
-        el.style.height = `${heightPct}%`;
-        el.style.pointerEvents = "none";
-        el.style.willChange = "left, top, transform, opacity";
-        el.style.backfaceVisibility = "hidden";
-        el.style.transform = `translate(-50%, -50%) scale(1)`;
-        el.style.opacity = "1";
-        el.setAttribute("data-fx", "icon-particle");
-        heroWrap.appendChild(el);
-        els.push(el);
-        ranks.push(i);
-        if (SHOW_DEBUG_ISLAND_BOUNDS) {
-          const line = document.createElement("div");
-          line.style.position = "absolute";
-          line.style.left = `${startXPct}%`;
-          line.style.width = "0%";
-          line.style.top = `${startYPct}%`;
-          line.style.height = "0";
-          line.style.borderTop = "2px dashed rgba(255,0,255,0.95)";
-          line.style.pointerEvents = "none";
-          line.style.zIndex = "100000";
-          line.setAttribute("data-debug", "particle-baseline");
-          heroWrap.appendChild(line);
-          debugLines.push(line);
-        }
-      }
-      const angles = els.map((_, i) => (i / numParticles) * Math.PI * 2 + Math.random() * (Math.PI / numParticles) - Math.PI / 2);
-      const distancesPx = els.map(() => 60 + Math.random() * 80);
-      const rotations = els.map(() => (Math.random() - 0.5) * 0.4);
-      const initialGroupBaselineFrac = Math.max(0, Math.min(1, startYPct / 100));
-      const initialBaseInt = Math.round(initialGroupBaselineFrac * 100) * 10;
-      let groupZBaseLock = 600 + initialBaseInt;
-      if (rockReady) {
-        const inFrontOfRockInitial = initialGroupBaselineFrac >= rockBottomY;
-        groupZBaseLock = (inFrontOfRockInitial ? 700 : 300) + initialBaseInt;
-      }
-      const baseRank = Math.floor(Math.random() * 1000);
-      for (let i = 0; i < ranks.length; i++) ranks[i] = baseRank + i;
-      const groupContainer = document.createElement("div");
-      groupContainer.style.position = "absolute";
-      groupContainer.style.left = "0";
-      groupContainer.style.top = "0";
-      groupContainer.style.width = "100%";
-      groupContainer.style.height = "100%";
-      groupContainer.style.pointerEvents = "none";
-      groupContainer.style.zIndex = `${groupZBaseLock}`;
-      groupContainer.style.contain = "paint";
-      groupContainer.style.isolation = "isolate";
-      heroWrap.appendChild(groupContainer);
+  const spawnIconParticles = useCallback((sourceEl: HTMLElement, src: string) => {
+    const numParticles = 10;
+    const durationMs = 420;
+    const start = performance.now();
+    const rect = sourceEl.getBoundingClientRect();
+    const startX = rect.left + rect.width / 2;
+    const startY = rect.top + rect.height / 2 - 12;
+    const baseSize = Math.max(14, Math.min(28, rect.width * 0.7));
+    const els: HTMLImageElement[] = [];
+    let fxContainer = fxContainerRef.current as HTMLDivElement | null;
+    if (!fxContainer) {
+      fxContainer = document.createElement("div");
+      fxContainer.style.position = "fixed";
+      fxContainer.style.left = "0";
+      fxContainer.style.top = "0";
+      fxContainer.style.right = "0";
+      fxContainer.style.bottom = "0";
+      fxContainer.style.pointerEvents = "none";
+      fxContainer.style.zIndex = "90005";
+
+      fxContainerRef.current = fxContainer;
+      document.body.appendChild(fxContainer);
+    }
+    for (let i = 0; i < numParticles; i++) {
+      const el = document.createElement("img");
+      el.src = src;
+      el.draggable = false;
+      el.style.position = "absolute";
+      el.style.left = "0";
+      el.style.top = "0";
+      el.style.width = `${baseSize}px`;
+      el.style.height = `${baseSize}px`;
+      el.style.pointerEvents = "none";
+      el.style.zIndex = "90003";
+      el.style.backfaceVisibility = "hidden";
+      el.style.transform = `translate(${startX - baseSize / 2}px, ${startY - baseSize / 2}px) scale(1)`;
+      el.style.opacity = "1";
+      el.setAttribute("data-fx", "icon-particle");
+      fxContainer.appendChild(el);
+      els.push(el);
+    }
+    const angles = els.map((_, i) => (i / numParticles) * Math.PI * 2 + Math.random() * (Math.PI / numParticles) - Math.PI / 2);
+    const distances = els.map(() => 60 + Math.random() * 80);
+    const rotations = els.map(() => (Math.random() - 0.5) * 0.4);
+    function easeOutCubic(t: number) {
+      return 1 - Math.pow(1 - t, 3);
+    }
+    function step(now: number) {
+      const t = Math.min(1, (now - start) / durationMs);
+      const e = easeOutCubic(t);
       for (let i = 0; i < els.length; i++) {
-        groupContainer.appendChild(els[i]);
+        const dx = Math.cos(angles[i]) * distances[i] * e;
+        const dy = Math.sin(angles[i]) * distances[i] * e + 0.35 * distances[i] * e * e;
+        const s = 1 - 0.35 * e;
+        const r = rotations[i] * 90 * e;
+        els[i].style.transform = `translate(${startX - baseSize / 2 + dx}px, ${startY - baseSize / 2 + dy}px) scale(${s}) rotate(${r}deg)`;
+        els[i].style.opacity = `${1 - e}`;
       }
-      for (let i = 0; i < debugLines.length; i++) {
-        groupContainer.appendChild(debugLines[i]);
+      if (t < 1) {
+        requestAnimationFrame(step);
+      } else {
+        for (const el of els) el.remove();
       }
-      for (let i = 0; i < els.length; i++) {
-        els[i].style.zIndex = `${i + 1}`;
-      }
-      function easeOutCubic(t: number) {
-        return 1 - Math.pow(1 - t, 3);
-      }
-      function step(now: number) {
-        const t = Math.min(1, (now - start) / durationMs);
-        const e = easeOutCubic(t);
-        const wrapEl = islandHeroImgRef.current ? (islandHeroImgRef.current.parentElement as HTMLElement | null) : null;
-        if (!wrapEl) {
-          for (const el of els) el.remove();
-          return;
-        }
-        const currentWrapBox = wrapEl.getBoundingClientRect();
-        for (let i = 0; i < els.length; i++) {
-          const dxPct = Math.cos(angles[i]) * (distancesPx[i] / Math.max(1, currentWrapBox.width)) * 100 * e;
-          const dyBasePct = (distancesPx[i] / Math.max(1, currentWrapBox.height)) * 100;
-          const dyPct = Math.sin(angles[i]) * dyBasePct * e + 0.35 * dyBasePct * e * e;
-          const s = 1 - 0.35 * e;
-          const r = rotations[i] * 90 * e;
-          const cx = startXPct + dxPct;
-          const cy = startYPct + dyPct;
-          els[i].style.left = `${cx}%`;
-          els[i].style.top = `${cy}%`;
-          const elBox = els[i].getBoundingClientRect();
-          const baselinePct = ((elBox.top - currentWrapBox.top + elBox.height * 0.83) / Math.max(1, currentWrapBox.height)) * 100;
-          if (SHOW_DEBUG_ISLAND_BOUNDS && debugLines[i]) {
-            const widthPct = (elBox.width / Math.max(1, currentWrapBox.width)) * 100;
-            const leftPct = Math.max(0, Math.min(100, cx - widthPct * 0.5));
-            const clampedWidthPct = Math.max(0, Math.min(100 - leftPct, widthPct));
-            debugLines[i].style.top = `${Math.max(0, Math.min(100, baselinePct))}%`;
-            debugLines[i].style.left = `${leftPct}%`;
-            debugLines[i].style.width = `${clampedWidthPct}%`;
-          }
-          els[i].style.transform = `translate(-50%, -50%) scale(${s}) rotate(${r}deg)`;
-        }
-        for (let i = 0; i < els.length; i++) {
-          els[i].style.opacity = `${1 - e}`;
-        }
-        if (t < 1) {
-          requestAnimationFrame(step);
-        } else {
-          for (const el of els) el.remove();
-          try {
-            groupContainer.remove();
-          } catch {}
-        }
-      }
-      requestAnimationFrame(step);
-    },
-    [rockReady, rockBottomY]
-  );
+    }
+    requestAnimationFrame(step);
+  }, []);
 
   const spawnMaterialDrop = useCallback(
     async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number }): Promise<MaterialName> => {
