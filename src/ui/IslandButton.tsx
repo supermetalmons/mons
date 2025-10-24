@@ -1262,6 +1262,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       shadowEl.style.willChange = "left, top, width, height, filter, opacity, z-index";
       shadowEl.style.transform = "translate(-50%, -50%)";
       shadowEl.style.display = "none";
+      shadowEl.setAttribute("data-fx", "material-drop-shadow");
       heroWrap.appendChild(shadowEl);
       {
         const elBoxInit = el.getBoundingClientRect();
@@ -1408,6 +1409,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
       didDismissSomethingWithOutsideTapJustNow();
+      try {
+        const heroImg = islandHeroImgRef.current;
+        const heroWrap = heroImg ? (heroImg.parentElement as HTMLElement | null) : null;
+        if (heroWrap) {
+          const nodes = heroWrap.querySelectorAll('[data-fx="material-drop"], [data-fx="material-drop-shadow"]');
+          nodes.forEach((n) => {
+            try {
+              n.parentElement?.removeChild(n);
+            } catch {}
+          });
+        }
+      } catch {}
       try {
         const container = fxContainerRef.current;
         if (container && container.parentNode) {
