@@ -2308,7 +2308,16 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const facingLeft = onLeftSide ? false : true;
         const atTarget = Math.hypot(dudePos.x - target.x, dudePos.y - target.y) < 0.015;
         if (!atTarget) {
-          moveTargetMetaRef.current = { x: target.x, y: target.y, facingLeft };
+          moveTargetMetaRef.current = {
+            x: target.x,
+            y: target.y,
+            facingLeft,
+            onArrive: () => {
+              try {
+                startPettingAnimationRef.current();
+              } catch {}
+            },
+          };
           startMoveTo(target.x, target.y);
         } else {
           setDudeFacingLeft(facingLeft);
