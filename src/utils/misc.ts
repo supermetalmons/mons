@@ -7,8 +7,10 @@ export const isDesktopSafari = (() => {
   return isSafari && !isIos;
 })();
 
-export const isMobile = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(navigator.userAgent);
-export const isMobileOrVision = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini|visionOS/i.test(navigator.userAgent);
+const userAgent = navigator.userAgent;
+const isSurface = /Surface/i.test(userAgent) || (/Windows/i.test(userAgent) && (navigator as any).maxTouchPoints > 0);
+export const isMobile = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(userAgent) || isSurface;
+export const isMobileOrVision = isMobile || /visionOS/i.test(userAgent);
 export const defaultInputEventName = isMobile ? "touchstart" : "click";
 export const defaultEarlyInputEventName = isMobile ? "touchstart" : "mousedown";
 
