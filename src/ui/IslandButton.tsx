@@ -1149,6 +1149,82 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     requestAnimationFrame(step);
   }, []);
 
+  const pullMaterialToBar = useCallback(
+    (name: MaterialName, fromRect: DOMRect) => {
+      const url = materialUrls[name];
+      if (!url) return;
+      const host = materialItemRefs.current[name];
+      if (!host) return;
+      const targetImg = (host.querySelector("img") as HTMLImageElement | null) || null;
+      const toRect = (targetImg || host).getBoundingClientRect();
+
+      let fxContainer = fxContainerRef.current as HTMLDivElement | null;
+      if (!fxContainer) {
+        fxContainer = document.createElement("div");
+        fxContainer.style.position = "fixed";
+        fxContainer.style.left = "0";
+        fxContainer.style.top = "0";
+        fxContainer.style.right = "0";
+        fxContainer.style.bottom = "0";
+        fxContainer.style.pointerEvents = "none";
+        fxContainer.style.zIndex = "90005";
+        fxContainerRef.current = fxContainer;
+        document.body.appendChild(fxContainer);
+      }
+
+      const startX = fromRect.left + fromRect.width / 2;
+      const startY = fromRect.top + fromRect.height / 2;
+      const endX = toRect.left + toRect.width / 2;
+      const endY = toRect.top + toRect.height / 2;
+      const startW = Math.max(1, fromRect.width);
+      const startH = Math.max(1, fromRect.height);
+      const endW = Math.max(1, toRect.width);
+      const endH = Math.max(1, toRect.height);
+
+      const img = document.createElement("img");
+      img.src = url;
+      img.draggable = false;
+      img.style.position = "absolute";
+      img.style.left = "0";
+      img.style.top = "0";
+      img.style.width = `${startW}px`;
+      img.style.height = `${startH}px`;
+      img.style.pointerEvents = "none";
+      img.style.zIndex = "90006";
+      img.style.backfaceVisibility = "hidden";
+      img.style.transform = `translate(${startX - startW / 2}px, ${startY - startH / 2}px) scale(1)`;
+      img.style.opacity = "1";
+      img.setAttribute("data-fx", "material-pull");
+      fxContainer.appendChild(img);
+
+      const durationMs = 500;
+      const start = performance.now();
+
+      const ease = (t: number) => 1 - Math.pow(1 - t, 3);
+
+      function step(now: number) {
+        const t = Math.min(1, (now - start) / durationMs);
+        const e = ease(t);
+        const bx = startX + (endX - startX) * e;
+        const by = startY + (endY - startY) * e;
+        const o = 1 - 0.1 * e;
+        const w = startW + (endW - startW) * e;
+        const h = startH + (endH - startH) * e;
+        img.style.width = `${w}px`;
+        img.style.height = `${h}px`;
+        img.style.transform = `translate(${bx - w / 2}px, ${by - h / 2}px) scale(1)`;
+        img.style.opacity = `${o}`;
+        if (t < 1) {
+          requestAnimationFrame(step);
+        } else {
+          img.remove();
+        }
+      }
+      requestAnimationFrame(step);
+    },
+    [materialItemRefs, materialUrls]
+  );
+
   const spawnMaterialDrop = useCallback(
     async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number }): Promise<MaterialName> => {
       walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
@@ -1940,6 +2016,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 const frac = area > 0 ? overlap / area : 0;
                 if (frac > 0.55) {
                   try {
+                    pullMaterialToBar(m.name, eb);
+                  } catch {}
+                  try {
                     m.el.remove();
                   } catch {}
                   try {
@@ -1977,7 +2056,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       walkingAnimRef.current.raf = requestAnimationFrame(step);
     };
     requestAnimationFrame(initWalk);
-  }, [pettingPlaying, computeOverlapArea, getDudeBounds]);
+  }, [pettingPlaying, computeOverlapArea, getDudeBounds, pullMaterialToBar]);
 
   const startPettingAnimation = useCallback(() => {
     if (!dudeWrapRef.current) return;
