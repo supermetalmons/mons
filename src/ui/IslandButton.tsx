@@ -235,27 +235,23 @@ const fadePulse = keyframes`
 const HotspotCircle = styled.div<{ $visible: boolean }>`
   position: absolute;
   border-radius: 50%;
-  border: 2px dashed rgba(0, 150, 255, 0.9);
-  background: rgba(0, 150, 255, 0.15);
   box-sizing: border-box;
   touch-action: none;
   pointer-events: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: radial-gradient(circle at 50% 50%, rgba(0, 200, 255, 0.9) 0%, rgba(0, 200, 255, 0.45) 40%, rgba(0, 200, 255, 0.2) 60%, rgba(0, 0, 0, 0) 70%);
+  box-shadow: 0 0 14px rgba(0, 200, 255, 0.7), 0 0 28px rgba(0, 200, 255, 0.35), inset 0 0 22px rgba(0, 200, 255, 0.5);
   opacity: ${(p) => (p.$visible ? 0 : 0)};
   animation: ${(p) => (p.$visible ? fadePulse : "none")} 520ms ease-out;
-`;
-
-const HotspotLabel = styled.div`
-  color: #0a6cff;
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 1;
-  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
-  user-select: none;
-  -webkit-user-select: none;
-  pointer-events: none;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: 16%;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(0, 200, 255, 0) 70%);
+    filter: blur(6px);
+    opacity: 0.8;
+    pointer-events: none;
+  }
 `;
 
 type IslandHotspot = { cxPct: number; cyPct: number; dPct: number };
@@ -2895,13 +2891,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       const left = (c.cxPct - c.dPct / 2) * 100;
                       const top = (c.cyPct - c.dPct / 2) * 100;
                       const size = c.dPct * 100;
-                      const originalLabel = HOTSPOT_LABELS[i] ?? i + 1;
-                      const label = 12 - originalLabel;
-                      return (
-                        <HotspotCircle key={i} $visible={hotspotVisible[i]} style={{ left: `${left}%`, top: `${top}%`, width: `${size}%`, height: `${size}%` }}>
-                          <HotspotLabel>{hotspotVisible[i] ? label : ""}</HotspotLabel>
-                        </HotspotCircle>
-                      );
+                      return <HotspotCircle key={i} $visible={hotspotVisible[i]} style={{ left: `${left}%`, top: `${top}%`, width: `${size}%`, height: `${size}%` }} />;
                     })}
                   </HotspotOverlay>
                 )}
