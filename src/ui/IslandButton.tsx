@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import { isMobile } from "../utils/misc";
-import styled from "styled-components";
+import styled, { keyframes } from "styled-components";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock, { IslandRockHandle } from "./IslandRock";
@@ -217,6 +217,64 @@ const WalkOverlay = styled.div`
   inset: 0;
   pointer-events: none;
 `;
+
+const HotspotOverlay = styled.div`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 100000;
+`;
+
+const fadePulse = keyframes`
+  0% { opacity: 0; transform: scale(0.8); }
+  10% { opacity: 1; transform: scale(1); }
+  70% { opacity: 1; }
+  100% { opacity: 0; transform: scale(1.05); }
+`;
+
+const HotspotCircle = styled.div<{ $visible: boolean }>`
+  position: absolute;
+  border-radius: 50%;
+  border: 2px dashed rgba(0, 150, 255, 0.9);
+  background: rgba(0, 150, 255, 0.15);
+  box-sizing: border-box;
+  touch-action: none;
+  pointer-events: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: ${(p) => (p.$visible ? 0 : 0)};
+  animation: ${(p) => (p.$visible ? fadePulse : "none")} 520ms ease-out;
+`;
+
+const HotspotLabel = styled.div`
+  color: #0a6cff;
+  font-weight: 700;
+  font-size: 14px;
+  line-height: 1;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.9);
+  user-select: none;
+  -webkit-user-select: none;
+  pointer-events: none;
+`;
+
+type IslandHotspot = { cxPct: number; cyPct: number; dPct: number };
+
+const ISLAND_HOTSPOTS: IslandHotspot[] = [
+  { cxPct: 0.2261515227787566, cyPct: 0.4472140762463343, dPct: 0.08 },
+  { cxPct: 0.13486869703834214, cyPct: 0.4002932551319648, dPct: 0.08 },
+  { cxPct: 0.2180971558016611, cyPct: 0.532258064516129, dPct: 0.08 },
+  { cxPct: 0.13755348603070727, cyPct: 0.48240469208211145, dPct: 0.08 },
+  { cxPct: 0.23689067874821712, cyPct: 0.6231671554252199, dPct: 0.06742292487979099 },
+  { cxPct: 0.336227871465727, cyPct: 0.6906158357771262, dPct: 0.09416723194367455 },
+  { cxPct: 0.38455407332829933, cyPct: 0.81524926686217, dPct: 0.13898207327613887 },
+  { cxPct: 0.25836899068713814, cyPct: 0.7140762463343108, dPct: 0.10575325775475168 },
+  { cxPct: 0.32280392650390133, cyPct: 0.4941348973607038, dPct: 0.09650067574898895 },
+  { cxPct: 0.14829264200016778, cyPct: 0.5733137829912024, dPct: 0.07145010836833869 },
+  { cxPct: 0.32548871549626646, cyPct: 0.5967741935483871, dPct: 0.10463832728197837 },
+];
+
+const HOTSPOT_LABELS: number[] = [2, 1, 5, 4, 8, 9, 11, 10, 3, 7, 6];
 
 const ShadowImg = styled.img`
   position: absolute;
@@ -477,6 +535,124 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const walkPoints = WALK_POLYGON;
 
   const [heroSize, setHeroSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
+
+  const editorOverlayRef = useRef<HTMLDivElement | null>(null);
+  const isPointerDownRef = useRef<boolean>(false);
+  const lastInsideRef = useRef<Set<number>>(new Set());
+  const circlesGestureActiveRef = useRef<boolean>(false);
+  const [hotspotVisible, setHotspotVisible] = useState<boolean[]>(() => new Array(ISLAND_HOTSPOTS.length).fill(false));
+  const hotspotTimersRef = useRef<number[]>(new Array(ISLAND_HOTSPOTS.length).fill(0));
+
+  useEffect(() => {
+    const getInsideSet = (clientX: number, clientY: number) => {
+      const overlay = editorOverlayRef.current;
+      const set = new Set<number>();
+      if (!overlay) return set;
+      const rect = overlay.getBoundingClientRect();
+      const x = clientX - rect.left;
+      const y = clientY - rect.top;
+      const w = Math.max(1, rect.width);
+      const h = Math.max(1, rect.height);
+      for (let i = 0; i < ISLAND_HOTSPOTS.length; i++) {
+        const c = ISLAND_HOTSPOTS[i];
+        const cx = c.cxPct * w;
+        const cy = c.cyPct * h;
+        const r = (c.dPct * Math.min(w, h)) / 2;
+        const dx = x - cx;
+        const dy = y - cy;
+        if (dx * dx + dy * dy <= r * r) set.add(i);
+      }
+      return set;
+    };
+    const flashEntries = (indices: Set<number>) => {
+      if (indices.size === 0) return;
+      setHotspotVisible((prev) => {
+        const next = [...prev];
+        indices.forEach((i) => {
+          next[i] = false;
+        });
+        return next;
+      });
+      requestAnimationFrame(() => {
+        setHotspotVisible((prev) => {
+          const next = [...prev];
+          indices.forEach((i) => {
+            next[i] = true;
+            if (hotspotTimersRef.current[i]) window.clearTimeout(hotspotTimersRef.current[i]);
+            hotspotTimersRef.current[i] = window.setTimeout(() => {
+              setHotspotVisible((cur) => {
+                const n2 = [...cur];
+                n2[i] = false;
+                return n2;
+              });
+            }, 520);
+          });
+          return next;
+        });
+      });
+    };
+    const onDown = (ev: MouseEvent | TouchEvent) => {
+      isPointerDownRef.current = true;
+      let clientX = 0;
+      let clientY = 0;
+      if ((ev as TouchEvent).touches && (ev as TouchEvent).touches.length) {
+        clientX = (ev as TouchEvent).touches[0].clientX;
+        clientY = (ev as TouchEvent).touches[0].clientY;
+      } else {
+        clientX = (ev as MouseEvent).clientX;
+        clientY = (ev as MouseEvent).clientY;
+      }
+      const inside = getInsideSet(clientX, clientY);
+      lastInsideRef.current = inside;
+      circlesGestureActiveRef.current = inside.size > 0;
+      if (inside.size) flashEntries(inside);
+    };
+    const onUp = () => {
+      isPointerDownRef.current = false;
+      lastInsideRef.current = new Set();
+      circlesGestureActiveRef.current = false;
+    };
+    const onMoveMouse = (ev: MouseEvent) => {
+      if (!isPointerDownRef.current) return;
+      const inside = getInsideSet(ev.clientX, ev.clientY);
+      const prev = lastInsideRef.current;
+      const entrants = new Set<number>();
+      inside.forEach((i) => {
+        if (!prev.has(i)) entrants.add(i);
+      });
+      if (entrants.size) flashEntries(entrants);
+      lastInsideRef.current = inside;
+    };
+    const onMoveTouch = (ev: TouchEvent) => {
+      if (!isPointerDownRef.current) return;
+      const t = ev.touches && ev.touches[0];
+      if (!t) return;
+      const inside = getInsideSet(t.clientX, t.clientY);
+      const prev = lastInsideRef.current;
+      const entrants = new Set<number>();
+      inside.forEach((i) => {
+        if (!prev.has(i)) entrants.add(i);
+      });
+      if (entrants.size) flashEntries(entrants);
+      lastInsideRef.current = inside;
+    };
+    window.addEventListener("mousedown", onDown as any, { capture: true });
+    window.addEventListener("mouseup", onUp, { capture: true });
+    window.addEventListener("touchstart", onDown as any, { passive: true, capture: true });
+    window.addEventListener("touchend", onUp, { capture: true });
+    window.addEventListener("touchcancel", onUp, { capture: true });
+    window.addEventListener("mousemove", onMoveMouse, { capture: true });
+    window.addEventListener("touchmove", onMoveTouch as any, { passive: true, capture: true });
+    return () => {
+      window.removeEventListener("mousedown", onDown as any, { capture: true } as any);
+      window.removeEventListener("mouseup", onUp, { capture: true } as any);
+      window.removeEventListener("touchstart", onDown as any, { capture: true } as any);
+      window.removeEventListener("touchend", onUp, { capture: true } as any);
+      window.removeEventListener("touchcancel", onUp, { capture: true } as any);
+      window.removeEventListener("mousemove", onMoveMouse, { capture: true } as any);
+      window.removeEventListener("touchmove", onMoveTouch as any, { capture: true } as any);
+    };
+  }, []);
 
   const [dudePos, setDudePos] = useState<{ x: number; y: number }>({ x: 0.4 + INITIAL_DUDE_X_SHIFT, y: 0.78 + INITIAL_DUDE_Y_SHIFT });
   const [dudeFacingLeft, setDudeFacingLeft] = useState<boolean>(false);
@@ -2250,6 +2426,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handlePointerStart = useCallback(
     (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+      if (circlesGestureActiveRef.current) {
+        return;
+      }
       const shouldSkipCloseForMaterialTarget = () => {
         const targetNode = (event.target as Node) || null;
         if (!targetNode) return false;
@@ -2688,6 +2867,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               <HeroWrap>
                 <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} />
                 <WalkOverlay />
+                {islandOverlayVisible && !islandClosing && (
+                  <HotspotOverlay ref={editorOverlayRef}>
+                    {ISLAND_HOTSPOTS.map((c, i) => {
+                      const left = (c.cxPct - c.dPct / 2) * 100;
+                      const top = (c.cyPct - c.dPct / 2) * 100;
+                      const size = c.dPct * 100;
+                      const label = HOTSPOT_LABELS[i] ?? i + 1;
+                      return (
+                        <HotspotCircle key={i} $visible={hotspotVisible[i]} style={{ left: `${left}%`, top: `${top}%`, width: `${size}%`, height: `${size}%` }}>
+                          <HotspotLabel>{hotspotVisible[i] ? label : ""}</HotspotLabel>
+                        </HotspotCircle>
+                      );
+                    })}
+                  </HotspotOverlay>
+                )}
                 {SHOW_DEBUG_ISLAND_BOUNDS && (
                   <div
                     style={{
