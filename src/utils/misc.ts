@@ -8,8 +8,9 @@ export const isDesktopSafari = (() => {
 })();
 
 const userAgent = navigator.userAgent;
-const isSurface = /Surface/i.test(userAgent) || (/Windows/i.test(userAgent) && (navigator as any).maxTouchPoints > 0);
-export const isMobile = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(userAgent) || isSurface;
+// const isSurface = /Surface/i.test(userAgent) || (/Windows/i.test(userAgent) && (navigator as any).maxTouchPoints > 0);
+// TODO: make inputs work properly on devices with both touch and mouse inputs like surface
+export const isMobile = /iPhone|iPad|iPod|Android|Windows Phone|IEMobile|Mobile|Opera Mini/i.test(userAgent);
 export const isMobileOrVision = isMobile || /visionOS/i.test(userAgent);
 export const defaultInputEventName = isMobile ? "touchstart" : "click";
 export const defaultEarlyInputEventName = isMobile ? "touchstart" : "mousedown";
