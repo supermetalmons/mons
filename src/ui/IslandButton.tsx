@@ -542,6 +542,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const circlesGestureActiveRef = useRef<boolean>(false);
   const [hotspotVisible, setHotspotVisible] = useState<boolean[]>(() => new Array(ISLAND_HOTSPOTS.length).fill(false));
   const hotspotTimersRef = useRef<number[]>(new Array(ISLAND_HOTSPOTS.length).fill(0));
+  const lastTouchAtRef = useRef<number>(0);
 
   useEffect(() => {
     const getInsideSet = (clientX: number, clientY: number) => {
@@ -566,6 +567,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     };
     const flashEntries = (indices: Set<number>) => {
       if (indices.size === 0) return;
+      indices.forEach((i) => {
+        const label = HOTSPOT_LABELS[i] ?? i + 1;
+        console.log("island circle", label);
+      });
       setHotspotVisible((prev) => {
         const next = [...prev];
         indices.forEach((i) => {
@@ -592,13 +597,16 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       });
     };
     const onDown = (ev: MouseEvent | TouchEvent) => {
+      const now = performance.now();
       isPointerDownRef.current = true;
       let clientX = 0;
       let clientY = 0;
       if ((ev as TouchEvent).touches && (ev as TouchEvent).touches.length) {
         clientX = (ev as TouchEvent).touches[0].clientX;
         clientY = (ev as TouchEvent).touches[0].clientY;
+        lastTouchAtRef.current = now;
       } else {
+        if (now - lastTouchAtRef.current < 600) return;
         clientX = (ev as MouseEvent).clientX;
         clientY = (ev as MouseEvent).clientY;
       }
@@ -613,6 +621,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       circlesGestureActiveRef.current = false;
     };
     const onMoveMouse = (ev: MouseEvent) => {
+      const now = performance.now();
+      if (now - lastTouchAtRef.current < 600) return;
       if (!isPointerDownRef.current) return;
       const inside = getInsideSet(ev.clientX, ev.clientY);
       const prev = lastInsideRef.current;
