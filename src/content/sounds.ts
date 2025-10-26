@@ -170,6 +170,44 @@ export async function playSounds(sounds: Sound[]) {
   }
 }
 
+export enum RockSound {
+  P1 = "p1",
+  P2 = "p2",
+  P3 = "p3",
+  P4 = "p4",
+  P5 = "p5",
+  P6 = "p6",
+  P7 = "p7",
+  S1A = "s1a",
+  S1B = "s1b",
+  S2A = "s2a",
+  S2B = "s2b",
+  S3 = "s3",
+  S4A = "s4a",
+  S4B = "s4b",
+  S4C = "s4c",
+  S5A = "s5a",
+  S5B = "s5b",
+  S5C = "s5c",
+  S6A = "s6a",
+  S6B = "s6b",
+  S6C = "s6c",
+  S7A = "s7a",
+  S7B = "s7b",
+  S7C = "s7c",
+  S8A = "s8a",
+  S8B = "s8b",
+  S8C = "s8c",
+}
+
+export function playRockSound(name: RockSound) {
+  if (getIsMuted()) {
+    return;
+  }
+  const path = `sounds/rocks/${name}.mp3`;
+  playSound(path);
+}
+
 const getSoundPriority = (sound: Sound) => {
   switch (sound) {
     case Sound.Click:

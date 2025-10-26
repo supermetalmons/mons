@@ -5,7 +5,7 @@ import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock, { IslandRockHandle } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
-import { playSounds } from "../content/sounds";
+import { playSounds, playRockSound, RockSound } from "../content/sounds";
 import { idle as islandMonsIdle, miningWalkingAndPets as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
 import { getOwnDrainerId } from "../utils/namedMons";
 import { Sound } from "../utils/gameModels";
@@ -568,8 +568,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const flashEntries = (indices: Set<number>) => {
       if (indices.size === 0) return;
       indices.forEach((i) => {
-        const label = HOTSPOT_LABELS[i] ?? i + 1;
-        console.log("island circle", label);
+        const originalLabel = HOTSPOT_LABELS[i] ?? i + 1;
+        let sound: RockSound | null = null;
+        if (originalLabel === 11) sound = RockSound.S1A;
+        else if (originalLabel === 10) sound = RockSound.S1B;
+        else if (originalLabel === 9) sound = RockSound.S2A;
+        else if (originalLabel === 8) sound = RockSound.S2B;
+        else if (originalLabel === 7) sound = RockSound.S3;
+        else if (originalLabel === 6) sound = RockSound.S4A;
+        else if (originalLabel === 5) sound = RockSound.S4B;
+        else if (originalLabel === 4) sound = RockSound.S5A;
+        else if (originalLabel === 3) sound = RockSound.S6A;
+        else if (originalLabel === 2) sound = RockSound.S7A;
+        else if (originalLabel === 1) sound = RockSound.S8A;
+        if (sound) playRockSound(sound);
       });
       setHotspotVisible((prev) => {
         const next = [...prev];
@@ -2883,7 +2895,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       const left = (c.cxPct - c.dPct / 2) * 100;
                       const top = (c.cyPct - c.dPct / 2) * 100;
                       const size = c.dPct * 100;
-                      const label = HOTSPOT_LABELS[i] ?? i + 1;
+                      const originalLabel = HOTSPOT_LABELS[i] ?? i + 1;
+                      const label = 12 - originalLabel;
                       return (
                         <HotspotCircle key={i} $visible={hotspotVisible[i]} style={{ left: `${left}%`, top: `${top}%`, width: `${size}%`, height: `${size}%` }}>
                           <HotspotLabel>{hotspotVisible[i] ? label : ""}</HotspotLabel>
