@@ -536,6 +536,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const isPointerDownRef = useRef<boolean>(false);
   const lastInsideRef = useRef<Set<number>>(new Set());
   const circlesGestureActiveRef = useRef<boolean>(false);
+  const walkingDragActiveRef = useRef<boolean>(false);
   const [hotspotVisible, setHotspotVisible] = useState<boolean[]>(() => new Array(ISLAND_HOTSPOTS.length).fill(false));
   const hotspotTimersRef = useRef<number[]>(new Array(ISLAND_HOTSPOTS.length).fill(0));
   const lastTouchAtRef = useRef<number>(0);
@@ -563,6 +564,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       return set;
     };
     const flashEntries = (indices: Set<number>) => {
+      if (walkingDragActiveRef.current) return;
       if (indices.size === 0) return;
       indices.forEach((i) => {
         const originalLabel = HOTSPOT_LABELS[i] ?? i + 1;
@@ -634,6 +636,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const onDown = (ev: MouseEvent | TouchEvent) => {
       const now = performance.now();
       isPointerDownRef.current = true;
+      if (walkingDragActiveRef.current) return;
       let clientX = 0;
       let clientY = 0;
       if ((ev as TouchEvent).touches && (ev as TouchEvent).touches.length) {
@@ -659,6 +662,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const now = performance.now();
       if (now - lastTouchAtRef.current < 600) return;
       if (!isPointerDownRef.current) return;
+      if (walkingDragActiveRef.current) return;
       const inside = getInsideSet(ev.clientX, ev.clientY);
       const prev = lastInsideRef.current;
       const entrants = new Set<number>();
@@ -670,6 +674,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     };
     const onMoveTouch = (ev: TouchEvent) => {
       if (!isPointerDownRef.current) return;
+      if (walkingDragActiveRef.current) return;
       const t = ev.touches && ev.touches[0];
       if (!t) return;
       const inside = getInsideSet(t.clientX, t.clientY);
@@ -2571,7 +2576,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const nx = rx / Math.max(1, rect.width);
       const ny = ry / Math.max(1, rect.height);
 
-      if (isInsideRockBox(nx, ny)) {
+      if (!walkingDragActiveRef.current && isInsideRockBox(nx, ny)) {
         syncDudePosFromOriginal();
         const initial = initialDudePosRef.current || latestDudePosRef.current;
         const alternate = { x: initial.x + ALTERNATE_DUDE_X_SHIFT - INITIAL_DUDE_X_SHIFT, y: initial.y };
@@ -2782,6 +2787,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         startMoveTo(target.x, target.y);
         isDraggingRef.current = true;
         lastPointerRef.current = { x: nx, y: ny };
+        walkingDragActiveRef.current = true;
 
         const handleMove = (e: MouseEvent | TouchEvent) => {
           if (!isDraggingRef.current) return;
@@ -2843,6 +2849,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
         const handleEnd = () => {
           isDraggingRef.current = false;
+          walkingDragActiveRef.current = false;
           dragModeRef.current = "none";
           if (safeSlideEdgeRef.current) safeSlideEdgeRef.current.edgeIndex = null;
           lastEllipsePointerRef.current = { x: -1, y: -1 };
