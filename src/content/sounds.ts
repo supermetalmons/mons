@@ -148,9 +148,6 @@ export async function playSounds(sounds: Sound[]) {
       case Sound.IslandClosing:
         name = "";
         break;
-      case Sound.MaterialButtonClick:
-        name = "cute click";
-        break;
       case Sound.Chip:
         name = "chip";
         break;
@@ -225,7 +222,6 @@ const getSoundPriority = (sound: Sound) => {
     case Sound.WalkToRock:
     case Sound.CollectingMaterials:
     case Sound.Timer:
-    case Sound.MaterialButtonClick:
     case Sound.Chip:
     case Sound.HappyMon:
     case Sound.SadMon:

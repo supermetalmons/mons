@@ -72,11 +72,10 @@ export enum Sound {
   CollectingMaterials,
   Timer,
   IslandClosing,
-  MaterialButtonClick,
   Chip,
   HappyMon,
   SadMon,
-  DownChip
+  DownChip,
 }
 
 export enum InputModifier {

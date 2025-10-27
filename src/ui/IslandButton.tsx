@@ -2430,7 +2430,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleMaterialItemTap = useCallback(
     (name: MaterialName, url: string | null) => (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-      playSounds([Sound.MaterialButtonClick]);
+      if (name === "dust") playRockSound(RockSound.P4);
+      else if (name === "gum") playRockSound(RockSound.P7);
+      else if (name === "slime") playRockSound(RockSound.P3);
+      else if (name === "metal") playRockSound(RockSound.P6);
+      else if (name === "ice") playRockSound(RockSound.P5);
       if (!url) return;
       const currentTarget = event.currentTarget as HTMLDivElement;
       const img = currentTarget.querySelector("img");
