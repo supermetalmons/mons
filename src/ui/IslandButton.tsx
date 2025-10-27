@@ -539,6 +539,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [hotspotVisible, setHotspotVisible] = useState<boolean[]>(() => new Array(ISLAND_HOTSPOTS.length).fill(false));
   const hotspotTimersRef = useRef<number[]>(new Array(ISLAND_HOTSPOTS.length).fill(0));
   const lastTouchAtRef = useRef<number>(0);
+  const flashEntriesRef = useRef<((indices: Set<number>) => void) | null>(null);
 
   useEffect(() => {
     const getInsideSet = (clientX: number, clientY: number) => {
@@ -566,17 +567,42 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       indices.forEach((i) => {
         const originalLabel = HOTSPOT_LABELS[i] ?? i + 1;
         let sound: RockSound | null = null;
-        if (originalLabel === 11) sound = RockSound.S1A;
-        else if (originalLabel === 10) sound = RockSound.S1B;
-        else if (originalLabel === 9) sound = RockSound.S2A;
-        else if (originalLabel === 8) sound = RockSound.S2B;
-        else if (originalLabel === 7) sound = RockSound.S3;
-        else if (originalLabel === 6) sound = RockSound.S4A;
-        else if (originalLabel === 5) sound = RockSound.S4B;
-        else if (originalLabel === 4) sound = RockSound.S5A;
-        else if (originalLabel === 3) sound = RockSound.S6A;
-        else if (originalLabel === 2) sound = RockSound.S7A;
-        else if (originalLabel === 1) sound = RockSound.S8A;
+        const pick = (arr: RockSound[]) => arr[Math.floor(Math.random() * arr.length)];
+        switch (originalLabel) {
+          case 11:
+            sound = pick([RockSound.S1A, RockSound.S1B]);
+            break;
+          case 10:
+            sound = pick([RockSound.S2A, RockSound.S2B]);
+            break;
+          case 9:
+            sound = RockSound.S3;
+            break;
+          case 8:
+            sound = pick([RockSound.S4A, RockSound.S4B, RockSound.S4C]);
+            break;
+          case 7:
+            sound = pick([RockSound.S5A, RockSound.S5B, RockSound.S5C]);
+            break;
+          case 6:
+            sound = pick([RockSound.S6A, RockSound.S6B, RockSound.S6C]);
+            break;
+          case 5:
+            sound = pick([RockSound.S7A, RockSound.S7B, RockSound.S7C]);
+            break;
+          case 4:
+            sound = pick([RockSound.S8A, RockSound.S8B, RockSound.S8C]);
+            break;
+          case 3:
+            sound = RockSound.S8A;
+            break;
+          case 2:
+            sound = RockSound.S8B;
+            break;
+          case 1:
+            sound = RockSound.S8C;
+            break;
+        }
         if (sound) playRockSound(sound);
       });
       setHotspotVisible((prev) => {
@@ -604,6 +630,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         });
       });
     };
+    flashEntriesRef.current = flashEntries;
     const onDown = (ev: MouseEvent | TouchEvent) => {
       const now = performance.now();
       isPointerDownRef.current = true;
@@ -671,6 +698,27 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       window.removeEventListener("touchmove", onMoveTouch as any, { capture: true } as any);
     };
   }, []);
+
+  useEffect(() => {
+    const onKeyDown = (ev: KeyboardEvent) => {
+      if (!islandOverlayVisible || islandClosing) return;
+      const k = ev.key;
+      let label: number | null = null;
+      if (k >= "1" && k <= "9") label = 12 - parseInt(k, 10);
+      else if (k === "0") label = 2;
+      else if (k === "-") label = 1;
+      if (!label) return;
+      const idx = HOTSPOT_LABELS.indexOf(label);
+      if (idx < 0) return;
+      ev.preventDefault();
+      const fn = flashEntriesRef.current;
+      if (fn) fn(new Set([idx]));
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+    };
+  }, [islandOverlayVisible, islandClosing]);
 
   const [dudePos, setDudePos] = useState<{ x: number; y: number }>({ x: 0.4 + INITIAL_DUDE_X_SHIFT, y: 0.78 + INITIAL_DUDE_Y_SHIFT });
   const [dudeFacingLeft, setDudeFacingLeft] = useState<boolean>(false);
