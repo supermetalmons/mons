@@ -1473,7 +1473,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   );
 
   const spawnMaterialDrop = useCallback(
-    async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number }): Promise<MaterialName> => {
+    async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number; angle?: number }): Promise<MaterialName> => {
       walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
       const url = await getMaterialImageUrl(name);
       if (!url) return name;
@@ -1545,7 +1545,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         debugLine.setAttribute("data-debug", "material-baseline");
         heroWrap.appendChild(debugLine);
       }
-      const angle = (Math.random() - 0.5) * Math.PI * 0.5;
+      const angle = common?.angle ?? (Math.random() - 0.5) * Math.PI * 0.5;
       const spreadLocal = common?.spread ?? 24 + Math.random() * 48;
       const liftLocal = common?.lift ?? 12 + Math.random() * 18;
       const fallLocal = common?.fall ?? 12 + Math.random() * 14 + rect.height * 0.15;
@@ -3133,8 +3133,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           const now = performance.now();
                           const rect = lastRockRectRef.current;
                           const fallBase = rect ? rect.height * 0.15 : 24;
-                          const common = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 } as const;
-                          const promises = picks.map((n: MaterialName) => spawnMaterialDrop(n, 0, common as any));
+                          const baseCommon = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 } as const;
+                          const angleSpan = Math.PI * 0.5;
+                          const promises = picks.map((n: MaterialName, i: number) => {
+                            const t = count > 1 ? i / (count - 1) : 0.5;
+                            const baseAngle = -angleSpan / 2 + t * angleSpan;
+                            const jitter = (Math.random() - 0.5) * (Math.PI * 0.06);
+                            const angle = baseAngle + jitter;
+                            return spawnMaterialDrop(n, 0, { ...baseCommon, angle } as any);
+                          });
                           Promise.all(promises).then(() => {});
                         }}
                       />
