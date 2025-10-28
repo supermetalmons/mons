@@ -13,6 +13,7 @@ import { Sound } from "../utils/gameModels";
 const SHOW_DEBUG_ISLAND_BOUNDS = false;
 const FEATURE_GLOWS_ON_HOTSPOT = true;
 const FEATURE_FULL_OVERLAY_ON_HOTSPOT = true;
+const STARS_URL = "https://assets.mons.link/rocks/underground/stars.webp";
 
 const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
   border: none;
@@ -276,6 +277,53 @@ const HotspotFullImage = styled.img<{ $visible: boolean }>`
   animation: ${(p) => (p.$visible ? overlayFlash : "none")} 520ms ease-out;
 `;
 
+const StarsOverlayImage = styled.img<{ $visible: boolean }>`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 3;
+  filter: brightness(1.7) saturate(1.25) contrast(1.2) drop-shadow(0 0 10px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 18px rgba(255, 255, 255, 0.25));
+  opacity: ${(p) => (p.$visible ? 0 : 0)};
+  animation: ${(p) => (p.$visible ? overlayFlash : "none")} 520ms ease-out;
+`;
+
+const ShineOverlay = styled.div<{ $visible: boolean; $bg: string }>`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  background-image: url(${(p) => p.$bg});
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: contain;
+  mix-blend-mode: screen;
+  filter: brightness(2.25) contrast(1.25) saturate(1.25) blur(0.8px);
+  opacity: ${(p) => (p.$visible ? 0 : 0)};
+  animation: ${(p) => (p.$visible ? overlayFlash : "none")} 520ms ease-out;
+  -webkit-mask-image: url(${STARS_URL});
+  mask-image: url(${STARS_URL});
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+  -webkit-mask-size: contain;
+  mask-size: contain;
+  -webkit-mask-position: center;
+  mask-position: center;
+`;
+
+const MaskedArea = styled.div<{ $cx: number; $cy: number; $visible: boolean }>`
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 2;
+  -webkit-mask-image: radial-gradient(circle at ${(p) => p.$cx}% ${(p) => p.$cy}%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 7%, rgba(0, 0, 0, 0) 12%);
+  mask-image: radial-gradient(circle at ${(p) => p.$cx}% ${(p) => p.$cy}%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 7%, rgba(0, 0, 0, 0) 12%);
+  -webkit-mask-repeat: no-repeat;
+  mask-repeat: no-repeat;
+`;
+
 type IslandHotspot = { cxPct: number; cyPct: number; dPct: number };
 
 const ISLAND_HOTSPOTS: IslandHotspot[] = [
@@ -526,6 +574,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const heroHitCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayActiveRef = useRef<boolean>(false);
   const [decorVisible, setDecorVisible] = useState(false);
+  const [starsVisible, setStarsVisible] = useState(false);
+  const [starsMaskCenter, setStarsMaskCenter] = useState<{ xPct: number; yPct: number }>({ xPct: 50, yPct: 50 });
+  const starsTimerRef = useRef<number>(0);
+  const starsImgRef = useRef<HTMLImageElement | null>(null);
   const [materialAmounts, setMaterialAmounts] = useState<Record<MaterialName, number>>(() => {
     const entries = MATERIALS.map((n) => [n, 0] as const);
     return Object.fromEntries(entries) as Record<MaterialName, number>;
@@ -969,6 +1021,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, [islandOverlayVisible]);
 
   const initializeWalkPolygonIfNeeded = useCallback(() => {}, []);
+
+  const triggerStarsOverlay = useCallback((centerXPct?: number, centerYPct?: number) => {
+    if (typeof centerXPct === "number" && typeof centerYPct === "number") {
+      setStarsMaskCenter({ xPct: Math.max(0, Math.min(100, centerXPct)), yPct: Math.max(0, Math.min(100, centerYPct)) });
+    }
+    setStarsVisible(false);
+    if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
+    requestAnimationFrame(() => {
+      setStarsVisible(true);
+      starsTimerRef.current = window.setTimeout(() => {
+        setStarsVisible(false);
+      }, 520);
+    });
+  }, []);
 
   useEffect(() => {
     if (!islandOverlayVisible || islandOpening || islandClosing) return;
@@ -2589,7 +2655,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       })();
       const inside = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
       if (!inside && !isInsideEllipseEarly) {
-        if (shouldSkipCloseForMaterialTarget()) return;
+        if (shouldSkipCloseForMaterialTarget()) {
+          return;
+        }
         handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
         return;
       }
@@ -2929,12 +2997,31 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         alpha = data[3];
       } catch {}
       if (alpha < 16) {
-        if (shouldSkipCloseForMaterialTarget()) return;
+        if (shouldSkipCloseForMaterialTarget()) {
+          return;
+        }
         handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
         return;
       }
+      const isInAnyHotspot = (() => {
+        for (let i = 0; i < ISLAND_HOTSPOTS.length; i++) {
+          const c = ISLAND_HOTSPOTS[i];
+          const dx = nx - c.cxPct;
+          const dy = ny - c.cyPct;
+          const r = c.dPct * 0.5;
+          if (dx * dx + dy * dy <= r * r) return true;
+        }
+        return false;
+      })();
+      if (!isInAnyHotspot) {
+        if (shouldSkipCloseForMaterialTarget()) {
+          return;
+        }
+        triggerStarsOverlay(nx * 100, ny * 100);
+        return;
+      }
     },
-    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped]
+    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, triggerStarsOverlay]
   );
 
   return (
@@ -2968,6 +3055,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 <WalkOverlay />
                 {islandOverlayVisible && !islandClosing && (
                   <HotspotOverlay ref={editorOverlayRef}>
+                    <MaskedArea $cx={starsMaskCenter.xPct} $cy={starsMaskCenter.yPct} $visible={starsVisible}>
+                      <ShineOverlay $bg={resolvedUrl} $visible={starsVisible} />
+                      <StarsOverlayImage ref={starsImgRef} src={STARS_URL} alt="" draggable={false} $visible={starsVisible} />
+                    </MaskedArea>
                     {FEATURE_FULL_OVERLAY_ON_HOTSPOT &&
                       ISLAND_HOTSPOTS.map((_, i) => {
                         const label = HOTSPOT_LABELS[i] ?? i + 1;
