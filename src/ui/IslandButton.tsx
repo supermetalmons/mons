@@ -11,6 +11,8 @@ import { getOwnDrainerId } from "../utils/namedMons";
 import { Sound } from "../utils/gameModels";
 
 const SHOW_DEBUG_ISLAND_BOUNDS = false;
+const FEATURE_GLOWS_ON_HOTSPOT = true;
+const FEATURE_FULL_OVERLAY_ON_HOTSPOT = true;
 
 const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
   border: none;
@@ -252,6 +254,26 @@ const HotspotCircle = styled.div<{ $visible: boolean }>`
     opacity: 0.8;
     pointer-events: none;
   }
+`;
+
+const overlayFlash = keyframes`
+  0% { opacity: 0; }
+  10% { opacity: 1; }
+  70% { opacity: 1; }
+  100% { opacity: 0; }
+`;
+
+const HotspotFullImage = styled.img<{ $visible: boolean }>`
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+  z-index: 1;
+  filter: brightness(1.35) saturate(1.15) contrast(1.08) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+  opacity: ${(p) => (p.$visible ? 0 : 0)};
+  animation: ${(p) => (p.$visible ? overlayFlash : "none")} 520ms ease-out;
 `;
 
 type IslandHotspot = { cxPct: number; cyPct: number; dPct: number };
@@ -2946,12 +2968,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 <WalkOverlay />
                 {islandOverlayVisible && !islandClosing && (
                   <HotspotOverlay ref={editorOverlayRef}>
-                    {ISLAND_HOTSPOTS.map((c, i) => {
-                      const left = (c.cxPct - c.dPct / 2) * 100;
-                      const top = (c.cyPct - c.dPct / 2) * 100;
-                      const size = c.dPct * 100;
-                      return <HotspotCircle key={i} $visible={hotspotVisible[i]} style={{ left: `${left}%`, top: `${top}%`, width: `${size}%`, height: `${size}%` }} />;
-                    })}
+                    {FEATURE_FULL_OVERLAY_ON_HOTSPOT &&
+                      ISLAND_HOTSPOTS.map((_, i) => {
+                        const label = HOTSPOT_LABELS[i] ?? i + 1;
+                        const src = `https://assets.mons.link/rocks/underground/${label}.webp`;
+                        return <HotspotFullImage key={`img-${i}`} src={src} alt="" draggable={false} $visible={hotspotVisible[i]} />;
+                      })}
+                    {FEATURE_GLOWS_ON_HOTSPOT &&
+                      ISLAND_HOTSPOTS.map((c, i) => {
+                        const left = (c.cxPct - c.dPct / 2) * 100;
+                        const top = (c.cyPct - c.dPct / 2) * 100;
+                        const size = c.dPct * 100;
+                        return <HotspotCircle key={`glow-${i}`} $visible={hotspotVisible[i]} style={{ left: `${left}%`, top: `${top}%`, width: `${size}%`, height: `${size}%` }} />;
+                      })}
                   </HotspotOverlay>
                 )}
                 {SHOW_DEBUG_ISLAND_BOUNDS && (
