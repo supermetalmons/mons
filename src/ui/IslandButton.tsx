@@ -3035,6 +3035,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           );
                         })()}
                       <polygon points={WALK_POLYGON.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(0,128,255,0.08)" stroke="rgba(0,128,255,0.8)" strokeWidth={0.8} />
+                      {ISLAND_HOTSPOTS.map((c, i) => {
+                        const cx = Math.max(0, Math.min(100, c.cxPct * 100));
+                        const cy = Math.max(0, Math.min(100, c.cyPct * 100));
+                        const r = Math.max(0.001, Math.min(100, (c.dPct * 100) / 2));
+                        return <circle key={i} cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,0,255,0.85)" strokeWidth={0.8} />;
+                      })}
                     </svg>
                   </div>
                 )}
