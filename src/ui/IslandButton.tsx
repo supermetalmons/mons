@@ -1498,7 +1498,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       el.style.left = `${baseXPct}%`;
       el.style.top = `${baseYPct}%`;
       el.style.width = "auto";
-      el.style.height = "13%";
+      el.style.height = "11.5%";
       el.style.pointerEvents = "none";
       el.style.willChange = "left, top, transform, opacity, z-index";
       el.style.backfaceVisibility = "hidden";
