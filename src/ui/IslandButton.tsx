@@ -1357,7 +1357,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const start = performance.now();
     const rect = sourceEl.getBoundingClientRect();
     const startX = rect.left + rect.width / 2;
-    const startY = rect.top + rect.height / 2 - 12;
+    const startY = rect.top + rect.height / 2;
     const baseSize = Math.max(14, Math.min(28, rect.width * 0.7));
     const els: HTMLImageElement[] = [];
     let fxContainer = fxContainerRef.current as HTMLDivElement | null;
