@@ -611,10 +611,45 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const lastInsideRef = useRef<Set<number>>(new Set());
   const circlesGestureActiveRef = useRef<boolean>(false);
   const walkingDragActiveRef = useRef<boolean>(false);
+  const lastMaterialsInsideRef = useRef<Set<MaterialName>>(new Set());
   const [hotspotVisible, setHotspotVisible] = useState<boolean[]>(() => new Array(ISLAND_HOTSPOTS.length).fill(false));
   const hotspotTimersRef = useRef<number[]>(new Array(ISLAND_HOTSPOTS.length).fill(0));
   const lastTouchAtRef = useRef<number>(0);
   const flashEntriesRef = useRef<((indices: Set<number>) => void) | null>(null);
+  const spawnIconParticlesFnRef = useRef<((el: HTMLElement, src: string) => void) | null>(null);
+
+  const getMaterialTapSound = useCallback((name: MaterialName): RockSound | null => {
+    switch (name) {
+      case "dust":
+        return RockSound.P4;
+      case "gum":
+        return RockSound.P7;
+      case "slime":
+        return RockSound.P3;
+      case "metal":
+        return RockSound.P6;
+      case "ice":
+        return RockSound.P5;
+      default:
+        return null;
+    }
+  }, []);
+
+  const activateMaterial = useCallback(
+    (name: MaterialName) => {
+      const url = materialUrls[name];
+      if (!url) return;
+      const host = materialItemRefs.current[name];
+      if (!host) return;
+      const snd = getMaterialTapSound(name);
+      if (snd) playRockSound(snd);
+      const img = host.querySelector("img");
+      if (!img) return;
+      const f = spawnIconParticlesFnRef.current;
+      if (f) f(img as HTMLImageElement, url);
+    },
+    [getMaterialTapSound, materialUrls]
+  );
 
   useEffect(() => {
     const getInsideSet = (clientX: number, clientY: number) => {
@@ -637,6 +672,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       return set;
     };
+    const getMaterialsInsideSet = (clientX: number, clientY: number) => {
+      const set = new Set<MaterialName>();
+      const refs = materialItemRefs.current;
+      const names = MATERIALS as readonly MaterialName[];
+      for (let i = 0; i < names.length; i++) {
+        const n = names[i];
+        const el = refs[n];
+        if (!el) continue;
+        const r = el.getBoundingClientRect();
+        if (clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom) set.add(n);
+      }
+      return set;
+    };
+    const tapMaterialByName = (name: MaterialName) => activateMaterial(name);
     const flashEntries = (indices: Set<number>) => {
       if (walkingDragActiveRef.current) return;
       if (indices.size === 0) return;
@@ -726,11 +775,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       lastInsideRef.current = inside;
       circlesGestureActiveRef.current = inside.size > 0;
       if (inside.size) flashEntries(inside);
+      const mats = getMaterialsInsideSet(clientX, clientY);
+      lastMaterialsInsideRef.current = mats;
+      if (mats.size) mats.forEach((n) => tapMaterialByName(n));
     };
     const onUp = () => {
       isPointerDownRef.current = false;
       lastInsideRef.current = new Set();
       circlesGestureActiveRef.current = false;
+      lastMaterialsInsideRef.current = new Set();
     };
     const onMoveMouse = (ev: MouseEvent) => {
       const now = performance.now();
@@ -745,6 +798,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       });
       if (entrants.size) flashEntries(entrants);
       lastInsideRef.current = inside;
+      const mats = getMaterialsInsideSet(ev.clientX, ev.clientY);
+      const prevMats = lastMaterialsInsideRef.current;
+      const matEntrants: MaterialName[] = [];
+      mats.forEach((n) => {
+        if (!prevMats.has(n)) matEntrants.push(n);
+      });
+      if (matEntrants.length) matEntrants.forEach((n) => tapMaterialByName(n));
+      lastMaterialsInsideRef.current = mats;
     };
     const onMoveTouch = (ev: TouchEvent) => {
       if (!isPointerDownRef.current) return;
@@ -759,6 +820,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       });
       if (entrants.size) flashEntries(entrants);
       lastInsideRef.current = inside;
+      const mats = getMaterialsInsideSet(t.clientX, t.clientY);
+      const prevMats = lastMaterialsInsideRef.current;
+      const matEntrants: MaterialName[] = [];
+      mats.forEach((n) => {
+        if (!prevMats.has(n)) matEntrants.push(n);
+      });
+      if (matEntrants.length) matEntrants.forEach((n) => tapMaterialByName(n));
+      lastMaterialsInsideRef.current = mats;
     };
     window.addEventListener("mousedown", onDown as any, { capture: true });
     window.addEventListener("mouseup", onUp, { capture: true });
@@ -776,7 +845,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       window.removeEventListener("mousemove", onMoveMouse, { capture: true } as any);
       window.removeEventListener("touchmove", onMoveTouch as any, { capture: true } as any);
     };
-  }, []);
+  }, [activateMaterial]);
 
   useEffect(() => {
     const onKeyDown = (ev: KeyboardEvent) => {
@@ -1483,6 +1552,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     }
     requestAnimationFrame(step);
   }, []);
+
+  useEffect(() => {
+    spawnIconParticlesFnRef.current = spawnIconParticles;
+  }, [spawnIconParticles]);
 
   const pullMaterialToBar = useCallback(
     (name: MaterialName, fromRect: DOMRect) => {
@@ -2570,19 +2643,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   );
 
   const handleMaterialItemTap = useCallback(
-    (name: MaterialName, url: string | null) => (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-      if (name === "dust") playRockSound(RockSound.P4);
-      else if (name === "gum") playRockSound(RockSound.P7);
-      else if (name === "slime") playRockSound(RockSound.P3);
-      else if (name === "metal") playRockSound(RockSound.P6);
-      else if (name === "ice") playRockSound(RockSound.P5);
-      if (!url) return;
-      const currentTarget = event.currentTarget as HTMLDivElement;
-      const img = currentTarget.querySelector("img");
-      if (!img) return;
-      spawnIconParticles(img as HTMLImageElement, url);
+    (name: MaterialName, _url: string | null) => (_event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+      activateMaterial(name);
     },
-    [spawnIconParticles]
+    [activateMaterial]
   );
 
   const isDraggingRef = useRef(false);
@@ -3042,7 +3106,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                     materialItemRefs.current[name] = el;
                   }}
                   key={name}
-                  onClick={!isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}
+                  onMouseDown={!isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}
                   onTouchStart={isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}>
                   {materialUrls[name] && <MaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
                   <MaterialAmount>{materialAmounts[name]}</MaterialAmount>
