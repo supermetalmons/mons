@@ -2757,9 +2757,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handlePointerStart = useCallback(
     (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-      if (circlesGestureActiveRef.current) {
-        return;
-      }
       const shouldSkipCloseForMaterialTarget = () => {
         const targetNode = (event.target as Node) || null;
         if (!targetNode) return false;
@@ -2793,6 +2790,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const heroEl = islandHeroImgRef.current;
       if (!heroEl) return;
       const rect = heroEl.getBoundingClientRect();
+      const skipDueToCircleGesture = circlesGestureActiveRef.current;
       let clientX = 0;
       let clientY = 0;
       const anyEvent = event as any;
@@ -2835,7 +2833,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const nx = rx / Math.max(1, rect.width);
       const ny = ry / Math.max(1, rect.height);
 
-      if (!walkingDragActiveRef.current && isInsideRockBox(nx, ny)) {
+      if (!skipDueToCircleGesture && !walkingDragActiveRef.current && isInsideRockBox(nx, ny)) {
         syncDudePosFromOriginal();
         const initial = initialDudePosRef.current || latestDudePosRef.current;
         const alternate = { x: initial.x + ALTERNATE_DUDE_X_SHIFT - INITIAL_DUDE_X_SHIFT, y: initial.y };
@@ -2982,7 +2980,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return from;
       };
 
-      if (isInsideMonBox(nx, ny)) {
+      if (!skipDueToCircleGesture && isInsideMonBox(nx, ny)) {
         if (!monPos) return;
         const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(monKey)));
         const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
@@ -3035,7 +3033,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
 
-      if (pointInPolygon(nx, ny, walkPoints) || (isInsideEllipse(nx, ny) && !pointInPolygon(nx, ny, NO_WALK_TETRAGON))) {
+      if (!skipDueToCircleGesture && (pointInPolygon(nx, ny, walkPoints) || (isInsideEllipse(nx, ny) && !pointInPolygon(nx, ny, NO_WALK_TETRAGON)))) {
         if (performance.now() < walkSuppressedUntilRef.current) {
           return;
         }
@@ -3149,7 +3147,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
       const inDismissTriangle = pointInTriangle(nx, ny, DISMISS_ALLOWED_TRIANGLE_A) || pointInTriangle(nx, ny, DISMISS_ALLOWED_TRIANGLE_B);
-      if (inDismissTriangle) {
+      if (!skipDueToCircleGesture && inDismissTriangle) {
         if (shouldSkipCloseForMaterialTarget()) {
           return;
         }
@@ -3166,7 +3164,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }
         return false;
       })();
-      if (!isInAnyHotspot) {
+      const allowStarDrag = !isInAnyHotspot || skipDueToCircleGesture;
+      if (allowStarDrag) {
         if (shouldSkipCloseForMaterialTarget()) {
           return;
         }
