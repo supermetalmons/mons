@@ -657,6 +657,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [monVisible, setMonVisible] = useState(false);
   const [monTeleporting, setMonTeleporting] = useState(false);
   const materialItemRefs = useRef<Record<MaterialName, HTMLDivElement | null>>({ dust: null, slime: null, gum: null, metal: null, ice: null });
+  const isMaterialTarget = useCallback(
+    (node: Node | null) => {
+      if (!node) return false;
+      const refs = materialItemRefs.current;
+      for (const key in refs) {
+        const el = refs[key as MaterialName];
+        if (el && (el === node || el.contains(node))) {
+          return true;
+        }
+      }
+      return false;
+    },
+    [materialItemRefs]
+  );
   const materialsBarRef = useRef<HTMLDivElement | null>(null);
   const rockLayerRef = useRef<HTMLDivElement | null>(null);
   const rockRef = useRef<IslandRockHandle | null>(null);
@@ -2757,18 +2771,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handlePointerStart = useCallback(
     (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-      const shouldSkipCloseForMaterialTarget = () => {
-        const targetNode = (event.target as Node) || null;
-        if (!targetNode) return false;
-        const refs = materialItemRefs.current;
-        for (const key in refs) {
-          const el = refs[key as MaterialName];
-          if (el && (el === targetNode || el.contains(targetNode))) {
-            return true;
-          }
-        }
-        return false;
-      };
+      const skipForMaterialTarget = isMaterialTarget((event.target as Node) || null);
       const isInsideRockBox = (nx: number, ny: number) => {
         if (rockIsBroken) return false;
         const box = rockBoxRef.current;
@@ -2822,18 +2825,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       })();
       const inside = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
       if (!inside && !isInsideEllipseEarly) {
-        if (shouldSkipCloseForMaterialTarget()) {
+        if (!skipForMaterialTarget) {
+          handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
           return;
         }
-        handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
-        return;
       }
       const rx = Math.floor(clientX - rect.left);
       const ry = Math.floor(clientY - rect.top);
       const nx = rx / Math.max(1, rect.width);
       const ny = ry / Math.max(1, rect.height);
 
-      if (!skipDueToCircleGesture && !walkingDragActiveRef.current && isInsideRockBox(nx, ny)) {
+      if (!skipForMaterialTarget && !skipDueToCircleGesture && !walkingDragActiveRef.current && isInsideRockBox(nx, ny)) {
         syncDudePosFromOriginal();
         const initial = initialDudePosRef.current || latestDudePosRef.current;
         const alternate = { x: initial.x + ALTERNATE_DUDE_X_SHIFT - INITIAL_DUDE_X_SHIFT, y: initial.y };
@@ -2980,7 +2982,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return from;
       };
 
-      if (!skipDueToCircleGesture && isInsideMonBox(nx, ny)) {
+      if (!skipForMaterialTarget && !skipDueToCircleGesture && isInsideMonBox(nx, ny)) {
         if (!monPos) return;
         const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(monKey)));
         const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
@@ -3033,7 +3035,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
 
-      if (!skipDueToCircleGesture && (pointInPolygon(nx, ny, walkPoints) || (isInsideEllipse(nx, ny) && !pointInPolygon(nx, ny, NO_WALK_TETRAGON)))) {
+      if (!skipForMaterialTarget && !skipDueToCircleGesture && (pointInPolygon(nx, ny, walkPoints) || (isInsideEllipse(nx, ny) && !pointInPolygon(nx, ny, NO_WALK_TETRAGON)))) {
         if (performance.now() < walkSuppressedUntilRef.current) {
           return;
         }
@@ -3147,10 +3149,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
       const inDismissTriangle = pointInTriangle(nx, ny, DISMISS_ALLOWED_TRIANGLE_A) || pointInTriangle(nx, ny, DISMISS_ALLOWED_TRIANGLE_B);
-      if (!skipDueToCircleGesture && inDismissTriangle) {
-        if (shouldSkipCloseForMaterialTarget()) {
-          return;
-        }
+      if (!skipForMaterialTarget && !skipDueToCircleGesture && inDismissTriangle) {
         handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
         return;
       }
@@ -3164,11 +3163,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }
         return false;
       })();
-      const allowStarDrag = !isInAnyHotspot || skipDueToCircleGesture;
+      const allowStarDrag = skipForMaterialTarget || !isInAnyHotspot || skipDueToCircleGesture;
       if (allowStarDrag) {
-        if (shouldSkipCloseForMaterialTarget()) {
-          return;
-        }
         const handleMove = (e: MouseEvent | TouchEvent) => {
           let cx2 = 0;
           let cy2 = 0;
@@ -3288,12 +3284,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, NO_WALK_TETRAGON, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate]
+    [handleIslandClose, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, NO_WALK_TETRAGON, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget]
   );
 
-  const handleSafeHitboxPointerDown = useCallback((event: React.MouseEvent | React.TouchEvent) => {
-    event.stopPropagation();
-  }, []);
+  const handleSafeHitboxPointerDown = useCallback(
+    (event: React.MouseEvent | React.TouchEvent) => {
+      event.stopPropagation();
+      if (!isMaterialTarget((event.target as Node) || null)) {
+        return;
+      }
+      handlePointerStart(event as React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>);
+    },
+    [handlePointerStart, isMaterialTarget]
+  );
 
   return (
     <>
