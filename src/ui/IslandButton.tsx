@@ -293,7 +293,7 @@ const HotspotFullImage = styled.img<{ $visible: boolean }>`
   animation: ${(p) => (p.$visible ? overlayFlash : "none")} 520ms ease-out;
 `;
 
-const StarsOverlayImage = styled.img<{ $visible: boolean }>`
+const StarsOverlayImage = styled.img<{ $visible: boolean; $hold: boolean }>`
   position: absolute;
   inset: 0;
   width: 100%;
@@ -302,11 +302,11 @@ const StarsOverlayImage = styled.img<{ $visible: boolean }>`
   pointer-events: none;
   z-index: 3;
   filter: brightness(1.7) saturate(1.25) contrast(1.2) drop-shadow(0 0 10px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 18px rgba(255, 255, 255, 0.25));
-  opacity: ${(p) => (p.$visible ? 0 : 0)};
-  animation: ${(p) => (p.$visible ? overlayFlash : "none")} 520ms ease-out;
+  opacity: ${(p) => (p.$hold ? 1 : 0)};
+  animation: ${(p) => (p.$hold ? "none" : p.$visible ? overlayFlash : "none")} 520ms ease-out;
 `;
 
-const ShineOverlay = styled.div<{ $visible: boolean; $bg: string }>`
+const ShineOverlay = styled.div<{ $visible: boolean; $bg: string; $hold: boolean }>`
   position: absolute;
   inset: 0;
   pointer-events: none;
@@ -317,8 +317,8 @@ const ShineOverlay = styled.div<{ $visible: boolean; $bg: string }>`
   background-size: contain;
   mix-blend-mode: screen;
   filter: brightness(2.25) contrast(1.25) saturate(1.25) blur(0.8px);
-  opacity: ${(p) => (p.$visible ? 0 : 0)};
-  animation: ${(p) => (p.$visible ? overlayFlash : "none")} 520ms ease-out;
+  opacity: ${(p) => (p.$hold ? 1 : 0)};
+  animation: ${(p) => (p.$hold ? "none" : p.$visible ? overlayFlash : "none")} 520ms ease-out;
   -webkit-mask-image: url(${STARS_URL});
   mask-image: url(${STARS_URL});
   -webkit-mask-repeat: no-repeat;
@@ -593,6 +593,55 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [starsVisible, setStarsVisible] = useState(false);
   const [starsMaskCenter, setStarsMaskCenter] = useState<{ xPct: number; yPct: number }>({ xPct: 50, yPct: 50 });
   const starsTimerRef = useRef<number>(0);
+  const [starsHold, setStarsHold] = useState(false);
+  const starsAnimActiveRef = useRef<boolean>(false);
+  const wasStarsInsideRef = useRef<boolean>(false);
+  const starsHoldRef = useRef<boolean>(false);
+  useEffect(() => {
+    starsHoldRef.current = starsHold;
+  }, [starsHold]);
+  const starsDismissedRef = useRef<boolean>(false);
+  const starsCenterTargetRef = useRef<{ xPct: number; yPct: number } | null>(null);
+  const starsCenterRafRef = useRef<number | null>(null);
+  const lastStarsCenterRef = useRef<{ xPct: number; yPct: number }>(starsMaskCenter);
+  const setStarsCenterImmediate = useCallback((xPct: number, yPct: number) => {
+    const cx = Math.max(0, Math.min(100, xPct));
+    const cy = Math.max(0, Math.min(100, yPct));
+    if (starsCenterRafRef.current !== null) {
+      cancelAnimationFrame(starsCenterRafRef.current);
+      starsCenterRafRef.current = null;
+    }
+    starsCenterTargetRef.current = null;
+    const next = { xPct: cx, yPct: cy };
+    lastStarsCenterRef.current = next;
+    setStarsMaskCenter(next);
+  }, []);
+  const queueStarsCenterUpdate = useCallback((xPct: number, yPct: number) => {
+    const cx = Math.max(0, Math.min(100, xPct));
+    const cy = Math.max(0, Math.min(100, yPct));
+    const last = lastStarsCenterRef.current;
+    const dx = cx - last.xPct;
+    const dy = cy - last.yPct;
+    if (dx * dx + dy * dy < 0.16) return;
+    starsCenterTargetRef.current = { xPct: cx, yPct: cy };
+    if (starsCenterRafRef.current === null) {
+      starsCenterRafRef.current = requestAnimationFrame(() => {
+        starsCenterRafRef.current = null;
+        const t = starsCenterTargetRef.current;
+        if (!t) return;
+        starsCenterTargetRef.current = null;
+        lastStarsCenterRef.current = t;
+        setStarsMaskCenter(t);
+      });
+    }
+  }, []);
+  const cancelQueuedStarsCenterUpdate = useCallback(() => {
+    if (starsCenterRafRef.current !== null) {
+      cancelAnimationFrame(starsCenterRafRef.current);
+      starsCenterRafRef.current = null;
+    }
+    starsCenterTargetRef.current = null;
+  }, []);
   const starsImgRef = useRef<HTMLImageElement | null>(null);
   const heroWrapRef = useRef<HTMLDivElement | null>(null);
   const [materialAmounts, setMaterialAmounts] = useState<Record<MaterialName, number>>(() => {
@@ -674,13 +723,31 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     []
   );
 
-  const STAR_SHINE_PENTAGON: Array<{ x: number; y: number }> = [
-    { x: 0.465, y: 0.9558 },
-    { x: 0.6805, y: 0.4044 },
-    { x: 0.9532, y: 0.2415 },
-    { x: 0.8997, y: 0.497 },
-    { x: 0.6474, y: 0.9014 },
-  ];
+  const STAR_SHINE_PENTAGON = useMemo<Array<{ x: number; y: number }>>(
+    () => [
+      { x: 0.465, y: 0.9558 },
+      { x: 0.6805, y: 0.4044 },
+      { x: 0.9532, y: 0.2415 },
+      { x: 0.8997, y: 0.497 },
+      { x: 0.6474, y: 0.9014 },
+    ],
+    []
+  );
+
+  const STAR_SHINE_PENTAGON_BOUNDS = useMemo(() => {
+    let minX = 1;
+    let maxX = 0;
+    let minY = 1;
+    let maxY = 0;
+    for (let i = 0; i < STAR_SHINE_PENTAGON.length; i++) {
+      const p = STAR_SHINE_PENTAGON[i];
+      if (p.x < minX) minX = p.x;
+      if (p.x > maxX) maxX = p.x;
+      if (p.y < minY) minY = p.y;
+      if (p.y > maxY) maxY = p.y;
+    }
+    return { minX, maxX, minY, maxY };
+  }, [STAR_SHINE_PENTAGON]);
 
   const SMOOTH_CYCLING_ELLIPSE: { cx: number; cy: number; rx: number; ryTop: number; ryBottom: number } = {
     cx: 0.4982,
@@ -1167,20 +1234,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, [islandOverlayVisible]);
 
   const initializeWalkPolygonIfNeeded = useCallback(() => {}, []);
-
-  const triggerStarsOverlay = useCallback((centerXPct?: number, centerYPct?: number) => {
-    if (typeof centerXPct === "number" && typeof centerYPct === "number") {
-      setStarsMaskCenter({ xPct: Math.max(0, Math.min(100, centerXPct)), yPct: Math.max(0, Math.min(100, centerYPct)) });
-    }
-    setStarsVisible(false);
-    if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
-    requestAnimationFrame(() => {
-      setStarsVisible(true);
-      starsTimerRef.current = window.setTimeout(() => {
-        setStarsVisible(false);
-      }, 520);
-    });
-  }, []);
 
   useEffect(() => {
     if (!islandOverlayVisible || islandOpening || islandClosing) return;
@@ -3117,11 +3170,126 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if (shouldSkipCloseForMaterialTarget()) {
           return;
         }
-        triggerStarsOverlay(nx * 100, ny * 100);
+        const handleMove = (e: MouseEvent | TouchEvent) => {
+          let cx2 = 0;
+          let cy2 = 0;
+          if ("touches" in e && e.touches[0]) {
+            cx2 = e.touches[0].clientX;
+            cy2 = e.touches[0].clientY;
+          } else if ("clientX" in e) {
+            cx2 = (e as MouseEvent).clientX;
+            cy2 = (e as MouseEvent).clientY;
+          }
+          const rxx2 = Math.floor(cx2 - rect.left);
+          const ryy2 = Math.floor(cy2 - rect.top);
+          const nxx2 = rxx2 / Math.max(1, rect.width);
+          const nyy2 = ryy2 / Math.max(1, rect.height);
+          const withinBounds = nxx2 >= STAR_SHINE_PENTAGON_BOUNDS.minX && nxx2 <= STAR_SHINE_PENTAGON_BOUNDS.maxX && nyy2 >= STAR_SHINE_PENTAGON_BOUNDS.minY && nyy2 <= STAR_SHINE_PENTAGON_BOUNDS.maxY && pointInPolygon(nxx2, nyy2, STAR_SHINE_PENTAGON);
+          if (withinBounds) {
+            if (!starsHoldRef.current) {
+              setStarsCenterImmediate(nxx2 * 100, nyy2 * 100);
+              setStarsHold(true);
+            } else {
+              queueStarsCenterUpdate(nxx2 * 100, nyy2 * 100);
+            }
+            if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
+            if (starsAnimActiveRef.current) {
+              setStarsVisible(false);
+              starsAnimActiveRef.current = false;
+            }
+            wasStarsInsideRef.current = true;
+            starsDismissedRef.current = false;
+          } else {
+            if (starsHoldRef.current) setStarsHold(false);
+            if (!starsAnimActiveRef.current && !starsDismissedRef.current) {
+              cancelQueuedStarsCenterUpdate();
+              if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
+              setStarsVisible(false);
+              starsAnimActiveRef.current = true;
+              starsDismissedRef.current = true;
+              requestAnimationFrame(() => {
+                setStarsVisible(true);
+                starsTimerRef.current = window.setTimeout(() => {
+                  setStarsVisible(false);
+                  starsAnimActiveRef.current = false;
+                }, 520);
+              });
+            } else if (starsDismissedRef.current || starsAnimActiveRef.current) {
+              if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
+              setStarsVisible(false);
+            }
+            wasStarsInsideRef.current = false;
+          }
+          if ("preventDefault" in e) (e as any).preventDefault();
+        };
+        const handleEnd = () => {
+          isDraggingRef.current = false;
+          if (starsHoldRef.current) setStarsHold(false);
+          if (wasStarsInsideRef.current && !starsAnimActiveRef.current) {
+            if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
+            cancelQueuedStarsCenterUpdate();
+            starsAnimActiveRef.current = true;
+            setStarsVisible(true);
+            if (starsHoldRef.current) setStarsHold(false);
+            starsTimerRef.current = window.setTimeout(() => {
+              setStarsVisible(false);
+              starsAnimActiveRef.current = false;
+              starsDismissedRef.current = false;
+            }, 520);
+          } else {
+            setStarsVisible(false);
+            starsDismissedRef.current = false;
+          }
+          window.removeEventListener("mousemove", handleMove as any);
+          window.removeEventListener("mouseup", handleEnd as any);
+          window.removeEventListener("touchmove", handleMove as any);
+          window.removeEventListener("touchend", handleEnd as any);
+          window.removeEventListener("touchcancel", handleEnd as any);
+          window.removeEventListener("blur", handleEnd as any);
+          document.removeEventListener("visibilitychange", handleVisibilityChange as any);
+        };
+        const handleVisibilityChange = () => {
+          if (document.visibilityState !== "visible") {
+            handleEnd();
+          }
+        };
+        window.addEventListener("mousemove", handleMove as any, { passive: false });
+        window.addEventListener("mouseup", handleEnd as any);
+        window.addEventListener("touchmove", handleMove as any, { passive: false });
+        window.addEventListener("touchend", handleEnd as any);
+        window.addEventListener("touchcancel", handleEnd as any);
+        window.addEventListener("blur", handleEnd as any);
+        document.addEventListener("visibilitychange", handleVisibilityChange as any);
+        isDraggingRef.current = true;
+        if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
+        cancelQueuedStarsCenterUpdate();
+        starsAnimActiveRef.current = false;
+        starsDismissedRef.current = false;
+        wasStarsInsideRef.current = false;
+        setStarsVisible(false);
+        if (starsHoldRef.current) setStarsHold(false);
+        const withinStart = nx >= STAR_SHINE_PENTAGON_BOUNDS.minX && nx <= STAR_SHINE_PENTAGON_BOUNDS.maxX && ny >= STAR_SHINE_PENTAGON_BOUNDS.minY && ny <= STAR_SHINE_PENTAGON_BOUNDS.maxY && pointInPolygon(nx, ny, STAR_SHINE_PENTAGON);
+        if (withinStart) {
+          if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
+          setStarsVisible(false);
+          if (starsAnimActiveRef.current) {
+            starsAnimActiveRef.current = false;
+          }
+          setStarsCenterImmediate(nx * 100, ny * 100);
+          setStarsHold(true);
+          wasStarsInsideRef.current = true;
+          starsDismissedRef.current = false;
+        } else {
+          setStarsHold(false);
+          setStarsVisible(false);
+          wasStarsInsideRef.current = false;
+          starsDismissedRef.current = true;
+        }
+        if ("preventDefault" in event) (event as any).preventDefault();
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, triggerStarsOverlay, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, NO_WALK_TETRAGON]
+    [handleIslandClose, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, NO_WALK_TETRAGON, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate]
   );
 
   const handleSafeHitboxPointerDown = useCallback((event: React.MouseEvent | React.TouchEvent) => {
@@ -3163,9 +3331,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 <WalkOverlay />
                 {islandOverlayVisible && !islandClosing && (
                   <HotspotOverlay ref={editorOverlayRef}>
-                    <MaskedArea $cx={starsMaskCenter.xPct} $cy={starsMaskCenter.yPct} $visible={starsVisible}>
-                      <ShineOverlay $bg={resolvedUrl} $visible={starsVisible} />
-                      <StarsOverlayImage ref={starsImgRef} src={STARS_URL} alt="" draggable={false} $visible={starsVisible} />
+                    <MaskedArea $cx={starsMaskCenter.xPct} $cy={starsMaskCenter.yPct} $visible={starsHold || starsVisible}>
+                      <ShineOverlay $bg={resolvedUrl} $visible={starsVisible} $hold={starsHold} />
+                      <StarsOverlayImage ref={starsImgRef} src={STARS_URL} alt="" draggable={false} $visible={starsVisible} $hold={starsHold} />
                     </MaskedArea>
                     {FEATURE_FULL_OVERLAY_ON_HOTSPOT &&
                       ISLAND_HOTSPOTS.map((_, i) => {
