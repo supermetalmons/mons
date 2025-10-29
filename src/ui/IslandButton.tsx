@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { isMobile } from "../utils/misc";
 import styled, { keyframes } from "styled-components";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
@@ -636,16 +636,33 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const flashEntriesRef = useRef<((indices: Set<number>) => void) | null>(null);
   const spawnIconParticlesFnRef = useRef<((el: HTMLElement, src: string) => void) | null>(null);
 
-  const DISMISS_ALLOWED_TRIANGLE_A: Array<{ x: number; y: number }> = [
-    { x: 0.0, y: 0.7287 },
-    { x: 0.2087, y: 1.0 },
-    { x: 0.0, y: 1.0 },
-  ];
-  const DISMISS_ALLOWED_TRIANGLE_B: Array<{ x: number; y: number }> = [
-    { x: 1.0, y: 0.5753 },
-    { x: 1.0, y: 1.0 },
-    { x: 0.6977, y: 1.0 },
-  ];
+  const DISMISS_ALLOWED_TRIANGLE_A: Array<{ x: number; y: number }> = useMemo(
+    () => [
+      { x: 0.0, y: 0.7287 },
+      { x: 0.2087, y: 1.0 },
+      { x: 0.0, y: 1.0 },
+    ],
+    []
+  );
+  const DISMISS_ALLOWED_TRIANGLE_B: Array<{ x: number; y: number }> = useMemo(
+    () => [
+      { x: 1.0, y: 0.5753 },
+      { x: 1.0, y: 1.0 },
+      { x: 0.6977, y: 1.0 },
+    ],
+    []
+  );
+  const pointInTriangle = useCallback((px: number, py: number, tri: Array<{ x: number; y: number }>) => {
+    const a = tri[0];
+    const b = tri[1];
+    const c = tri[2];
+    const s1 = (px - c.x) * (b.y - c.y) - (b.x - c.x) * (py - c.y);
+    const s2 = (px - a.x) * (c.y - a.y) - (c.x - a.x) * (py - a.y);
+    const s3 = (px - b.x) * (a.y - b.y) - (a.x - b.x) * (py - b.y);
+    const hasNeg = s1 < 0 || s2 < 0 || s3 < 0;
+    const hasPos = s1 > 0 || s2 > 0 || s3 > 0;
+    return !(hasNeg && hasPos);
+  }, []);
 
   const NO_WALK_TETRAGON: Array<{ x: number; y: number }> = [
     { x: 0.0745, y: 0.2636 },
@@ -1394,32 +1411,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       setMonVisible(false);
     };
   }, [decorVisible, islandClosing, monSpriteData, monPos, updateMonStripSizing]);
-
-  const drawHeroIntoHitCanvas = useCallback(() => {
-    const hero = islandHeroImgRef.current;
-    if (!hero) return false;
-    const rect = hero.getBoundingClientRect();
-    let canvas = heroHitCanvasRef.current;
-    if (!canvas) {
-      canvas = document.createElement("canvas");
-      heroHitCanvasRef.current = canvas;
-    }
-    const w = Math.max(1, Math.round(rect.width));
-    const h = Math.max(1, Math.round(rect.height));
-    if (canvas.width !== w || canvas.height !== h) {
-      canvas.width = w;
-      canvas.height = h;
-    }
-    const ctx = canvas.getContext("2d") as CanvasRenderingContext2D | null;
-    if (!ctx) return false;
-    ctx.clearRect(0, 0, w, h);
-    try {
-      ctx.drawImage(hero, 0, 0, w, h);
-      return true;
-    } catch {
-      return false;
-    }
-  }, []);
 
   const measureHeroSize = useCallback(() => {
     const hero = islandHeroImgRef.current;
@@ -3101,24 +3092,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }
         return;
       }
-      const drew = drawHeroIntoHitCanvas();
-      if (!drew) {
-        return;
-      }
-      const canvas = heroHitCanvasRef.current;
-      if (!canvas) {
-        return;
-      }
-      const ctx = canvas.getContext("2d") as CanvasRenderingContext2D | null;
-      if (!ctx) {
-        return;
-      }
-      let alpha = 255;
-      try {
-        const data = ctx.getImageData(rx, ry, 1, 1).data;
-        alpha = data[3];
-      } catch {}
-      if (alpha < 16) {
+      const inDismissTriangle = pointInTriangle(nx, ny, DISMISS_ALLOWED_TRIANGLE_A) || pointInTriangle(nx, ny, DISMISS_ALLOWED_TRIANGLE_B);
+      if (inDismissTriangle) {
         if (shouldSkipCloseForMaterialTarget()) {
           return;
         }
@@ -3143,7 +3118,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, triggerStarsOverlay]
+    [handleIslandClose, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, triggerStarsOverlay, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B]
   );
 
   const handleSafeHitboxPointerDown = useCallback((event: React.MouseEvent | React.TouchEvent) => {
