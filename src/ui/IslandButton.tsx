@@ -316,7 +316,7 @@ const ShineOverlay = styled.div<{ $visible: boolean; $bg: string; $hold: boolean
   background-repeat: no-repeat;
   background-size: contain;
   mix-blend-mode: screen;
-  filter: brightness(2.25) contrast(1.25) saturate(1.25) blur(0.8px);
+  filter: brightness(3.1) contrast(1.4) saturate(1.35);
   opacity: ${(p) => (p.$hold ? 1 : 0)};
   animation: ${(p) => (p.$hold ? "none" : p.$visible ? overlayFlash : "none")} 520ms ease-out;
   -webkit-mask-image: url(${STARS_URL});
