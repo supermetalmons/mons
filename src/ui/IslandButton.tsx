@@ -664,12 +664,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return !(hasNeg && hasPos);
   }, []);
 
-  const NO_WALK_TETRAGON: Array<{ x: number; y: number }> = [
-    { x: 0.0745, y: 0.2636 },
-    { x: 0.4116, y: 0.4467 },
-    { x: 0.4079, y: 0.6358 },
-    { x: 0.0579, y: 0.5272 },
-  ];
+  const NO_WALK_TETRAGON: Array<{ x: number; y: number }> = useMemo(
+    () => [
+      { x: 0.0745, y: 0.2636 },
+      { x: 0.4116, y: 0.4467 },
+      { x: 0.4079, y: 0.6358 },
+      { x: 0.0579, y: 0.5272 },
+    ],
+    []
+  );
 
   const STAR_SHINE_PENTAGON: Array<{ x: number; y: number }> = [
     { x: 0.465, y: 0.9558 },
@@ -2979,7 +2982,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
 
-      if (pointInPolygon(nx, ny, walkPoints) || isInsideEllipse(nx, ny)) {
+      if (pointInPolygon(nx, ny, walkPoints) || (isInsideEllipse(nx, ny) && !pointInPolygon(nx, ny, NO_WALK_TETRAGON))) {
         if (performance.now() < walkSuppressedUntilRef.current) {
           return;
         }
@@ -3118,7 +3121,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, triggerStarsOverlay, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B]
+    [handleIslandClose, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, triggerStarsOverlay, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, NO_WALK_TETRAGON]
   );
 
   const handleSafeHitboxPointerDown = useCallback((event: React.MouseEvent | React.TouchEvent) => {
