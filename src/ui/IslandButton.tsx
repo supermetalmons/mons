@@ -578,6 +578,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [starsMaskCenter, setStarsMaskCenter] = useState<{ xPct: number; yPct: number }>({ xPct: 50, yPct: 50 });
   const starsTimerRef = useRef<number>(0);
   const starsImgRef = useRef<HTMLImageElement | null>(null);
+  const heroWrapRef = useRef<HTMLDivElement | null>(null);
   const [materialAmounts, setMaterialAmounts] = useState<Record<MaterialName, number>>(() => {
     const entries = MATERIALS.map((n) => [n, 0] as const);
     return Object.fromEntries(entries) as Record<MaterialName, number>;
@@ -617,6 +618,45 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const lastTouchAtRef = useRef<number>(0);
   const flashEntriesRef = useRef<((indices: Set<number>) => void) | null>(null);
   const spawnIconParticlesFnRef = useRef<((el: HTMLElement, src: string) => void) | null>(null);
+
+  const DISMISS_ALLOWED_TRIANGLE_A: Array<{ x: number; y: number }> = [
+    { x: 0.0, y: 0.7287 },
+    { x: 0.2087, y: 1.0 },
+    { x: 0.0, y: 1.0 },
+  ];
+  const DISMISS_ALLOWED_TRIANGLE_B: Array<{ x: number; y: number }> = [
+    { x: 1.0, y: 0.5753 },
+    { x: 1.0, y: 1.0 },
+    { x: 0.6977, y: 1.0 },
+  ];
+
+  const NO_WALK_TETRAGON: Array<{ x: number; y: number }> = [
+    { x: 0.0745, y: 0.2636 },
+    { x: 0.4116, y: 0.4467 },
+    { x: 0.4079, y: 0.6358 },
+    { x: 0.0579, y: 0.5272 },
+  ];
+
+  const STAR_SHINE_PENTAGON: Array<{ x: number; y: number }> = [
+    { x: 0.465, y: 0.9558 },
+    { x: 0.6805, y: 0.4044 },
+    { x: 0.9532, y: 0.2415 },
+    { x: 0.8997, y: 0.497 },
+    { x: 0.6474, y: 0.9014 },
+  ];
+
+  const SMOOTH_CYCLING_ELLIPSE: { cx: number; cy: number; rx: number; ryTop: number; ryBottom: number } = {
+    cx: 0.4982,
+    cy: 0.1928,
+    rx: 0.3495,
+    ryTop: 0.1143,
+    ryBottom: 0.1492,
+  };
+  const THEORETICAL_ROCK_CIRCLE: { cx: number; cy: number; r: number } = {
+    cx: 0.5018,
+    cy: 0.1773,
+    r: 0.071,
+  };
 
   const getMaterialTapSound = useCallback((name: MaterialName): RockSound | null => {
     switch (name) {
@@ -3114,7 +3154,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               ))}
             </MaterialsBar>
             <Animator $tx={islandTranslate.x} $ty={islandTranslate.y} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd}>
-              <HeroWrap>
+              <HeroWrap ref={heroWrapRef}>
                 <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} />
                 <WalkOverlay />
                 {islandOverlayVisible && !islandClosing && (
@@ -3227,6 +3267,41 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       })}
                     </svg>
                   </div>
+                )}
+                {SHOW_DEBUG_ISLAND_BOUNDS && (
+                  <>
+                    <div
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        pointerEvents: "none",
+                        zIndex: 100010,
+                      }}>
+                      <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible", pointerEvents: "none" }}>
+                        <polygon points={DISMISS_ALLOWED_TRIANGLE_A.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(0,200,0,0.12)" stroke="rgba(0,180,0,0.85)" strokeWidth={0.9} />
+                        <polygon points={DISMISS_ALLOWED_TRIANGLE_B.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(0,200,0,0.12)" stroke="rgba(0,180,0,0.85)" strokeWidth={0.9} />
+                        <polygon points={NO_WALK_TETRAGON.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(255,165,0,0.12)" stroke="rgba(255,140,0,0.9)" strokeWidth={0.9} />
+                        <polygon points={STAR_SHINE_PENTAGON.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(255,215,0,0.12)" stroke="rgba(218,165,32,0.95)" strokeWidth={0.9} />
+                        {(() => {
+                          const cx = Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cx)) * 100;
+                          const cy = Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cy)) * 100;
+                          const rx = Math.max(0.5, Math.min(100, SMOOTH_CYCLING_ELLIPSE.rx * 100));
+                          const ryTop = Math.max(0.3, Math.min(100, SMOOTH_CYCLING_ELLIPSE.ryTop * 100));
+                          const ryBottom = Math.max(0.3, Math.min(100, SMOOTH_CYCLING_ELLIPSE.ryBottom * 100));
+                          const leftX = Math.max(0, Math.min(100, cx - rx));
+                          const rightX = Math.max(0, Math.min(100, cx + rx));
+                          const d = `M ${leftX},${cy} A ${rx} ${ryBottom} 0 1 0 ${rightX},${cy} A ${rx} ${ryTop} 0 0 0 ${leftX},${cy} Z`;
+                          return <path d={d} fill="rgba(64,224,208,0.12)" stroke="rgba(64,224,208,0.95)" strokeWidth={0.9} />;
+                        })()}
+                        {(() => {
+                          const cx = Math.max(0, Math.min(1, THEORETICAL_ROCK_CIRCLE.cx)) * 100;
+                          const cy = Math.max(0, Math.min(1, THEORETICAL_ROCK_CIRCLE.cy)) * 100;
+                          const r = Math.max(0.3, Math.min(100, THEORETICAL_ROCK_CIRCLE.r * 100));
+                          return <circle cx={cx} cy={cy} r={r} fill="rgba(70,130,180,0.10)" stroke="rgba(70,130,180,0.95)" strokeWidth={0.9} />;
+                        })()}
+                      </svg>
+                    </div>
+                  </>
                 )}
                 {!islandClosing && (
                   <DudeLayer $visible={!islandClosing} style={{ visibility: "hidden", opacity: 0 }}>
