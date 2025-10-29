@@ -113,7 +113,7 @@ const Overlay = styled.div<{ $visible: boolean; $opening: boolean; $closing: boo
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   @media (prefers-color-scheme: dark) and (hover: none) and (pointer: coarse) {
-    background: rgba(15, 15, 15, 0.1);
+    background: rgba(15, 15, 15, 0.11);
   }
   @media (prefers-color-scheme: light) {
     background: rgba(0, 0, 0, 0.01);
