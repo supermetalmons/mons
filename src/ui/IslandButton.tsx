@@ -52,10 +52,6 @@ const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
 `;
 
 const MaterialsBar = styled.div<{ $visible: boolean }>`
-  position: fixed;
-  bottom: 14px;
-  left: 0;
-  right: 0;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -66,7 +62,6 @@ const MaterialsBar = styled.div<{ $visible: boolean }>`
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   transition: opacity 220ms ease;
   pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
-  z-index: 90002;
   @media (min-width: 480px) {
     gap: 14px;
   }
@@ -120,6 +115,27 @@ const Overlay = styled.div<{ $visible: boolean; $opening: boolean; $closing: boo
   @media (prefers-color-scheme: light) {
     background: rgba(0, 0, 0, 0.01);
   }
+`;
+
+const SafeBarRow = styled.div`
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  z-index: 90001;
+`;
+
+const SafeHitbox = styled.div<{ $debug: boolean; $active: boolean }>`
+  display: inline-flex;
+  pointer-events: ${(p) => (p.$active ? "auto" : "none")};
+  padding: 20px 25px;
+  margin: -20px 0;
+  background: ${(p) => (p.$debug ? "rgba(0,200,0,0.12)" : "transparent")};
+  outline: ${(p) => (p.$debug ? "1px solid rgba(0,180,0,0.85)" : "none")};
 `;
 
 const Layer = styled.div<{ $visible: boolean; $opening: boolean; $closing: boolean }>`
@@ -592,6 +608,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [monVisible, setMonVisible] = useState(false);
   const [monTeleporting, setMonTeleporting] = useState(false);
   const materialItemRefs = useRef<Record<MaterialName, HTMLDivElement | null>>({ dust: null, slime: null, gum: null, metal: null, ice: null });
+  const materialsBarRef = useRef<HTMLDivElement | null>(null);
   const rockLayerRef = useRef<HTMLDivElement | null>(null);
   const rockRef = useRef<IslandRockHandle | null>(null);
   const fxContainerRef = useRef<HTMLDivElement | null>(null);
@@ -2748,6 +2765,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const ry = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y;
         return { cx, cy, rx, ry };
       };
+
       const nxxEarly = (clientX - rect.left) / Math.max(1, rect.width);
       const nyyEarly = (clientY - rect.top) / Math.max(1, rect.height);
       const isInsideEllipseEarly = (() => {
@@ -3128,6 +3146,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     [handleIslandClose, drawHeroIntoHitCanvas, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, triggerStarsOverlay]
   );
 
+  const handleSafeHitboxPointerDown = useCallback((event: React.MouseEvent | React.TouchEvent) => {
+    event.stopPropagation();
+  }, []);
+
   return (
     <>
       {islandImgLoaded && (
@@ -3139,20 +3161,24 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         <>
           <Overlay $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleIslandClose : undefined} onTouchStart={isMobile ? handleIslandClose : undefined} onTransitionEnd={handleOverlayTransitionEnd} />
           <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onMouseDown={!isMobile ? handlePointerStart : undefined} onTouchStart={isMobile ? handlePointerStart : undefined}>
-            <MaterialsBar $visible={islandOverlayVisible && !islandClosing}>
-              {MATERIALS.map((name) => (
-                <MaterialItem
-                  ref={(el) => {
-                    materialItemRefs.current[name] = el;
-                  }}
-                  key={name}
-                  onMouseDown={!isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}
-                  onTouchStart={isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}>
-                  {materialUrls[name] && <MaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
-                  <MaterialAmount>{materialAmounts[name]}</MaterialAmount>
-                </MaterialItem>
-              ))}
-            </MaterialsBar>
+            <SafeBarRow>
+              <SafeHitbox $active={islandOverlayVisible && !islandClosing} $debug={SHOW_DEBUG_ISLAND_BOUNDS && islandOverlayVisible && !islandClosing} onMouseDown={!isMobile ? handleSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSafeHitboxPointerDown : undefined}>
+                <MaterialsBar ref={materialsBarRef} $visible={islandOverlayVisible && !islandClosing}>
+                  {MATERIALS.map((name) => (
+                    <MaterialItem
+                      ref={(el) => {
+                        materialItemRefs.current[name] = el;
+                      }}
+                      key={name}
+                      onMouseDown={!isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}
+                      onTouchStart={isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}>
+                      {materialUrls[name] && <MaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
+                      <MaterialAmount>{materialAmounts[name]}</MaterialAmount>
+                    </MaterialItem>
+                  ))}
+                </MaterialsBar>
+              </SafeHitbox>
+            </SafeBarRow>
             <Animator $tx={islandTranslate.x} $ty={islandTranslate.y} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd}>
               <HeroWrap ref={heroWrapRef}>
                 <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} />
