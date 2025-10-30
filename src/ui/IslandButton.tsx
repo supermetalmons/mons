@@ -1139,7 +1139,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         dudeFrameWidthRef.current = targetWidth;
         const rowIndex = kind === "mining" ? 0 : kind === "walking" ? 1 : kind === "petting" ? 2 : 3;
         const tyConstInit = -rowIndex * targetHeight;
-        stripImg.style.transform = `translate(0px, ${tyConstInit}px)`;
+        const initialTx = kind === "walking" ? -targetWidth : 0;
+        stripImg.style.transform = `translate(${initialTx}px, ${tyConstInit}px)`;
 
         const frameMs = kind === "walking" ? WALKING_FRAME_MS : kind === "standing" ? STANDING_FRAME_MS : MINING_FRAME_MS;
         const loop = kind === "walking" || kind === "standing";
@@ -1153,7 +1154,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const anim = animObj;
           const elapsed = performance.now() - anim.start;
           const rawFrame = Math.floor(elapsed / frameMs);
-          const frame = loop ? ((rawFrame % frameCount) + frameCount) % frameCount : Math.min(frameCount - 1, Math.max(0, rawFrame));
+          const baseFrame = loop ? ((rawFrame % frameCount) + frameCount) % frameCount : Math.min(frameCount - 1, Math.max(0, rawFrame));
+          const frame = kind === "walking" ? (baseFrame + 1) % frameCount : baseFrame;
           const didWrap = loop && anim.lastFrame !== -1 && frame < anim.lastFrame;
           if (kind === "walking" && walkStopAfterLoopRef.current && !moveAnimRef.current && didWrap) {
             setWalkingPlaying(false);
@@ -1222,7 +1224,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const kind = currentAnimKindRef.current;
       const rowIndex = kind === "mining" ? 0 : kind === "walking" ? 1 : kind === "petting" ? 2 : 3;
       const tyConst = -rowIndex * targetHeight;
-      const currentFrameIndex = Math.max(0, sheetAnimRef.current?.lastFrame ?? 0);
+      const lastFrame = sheetAnimRef.current?.lastFrame ?? -1;
+      const currentFrameIndex = lastFrame === -1 && kind === "walking" ? 1 : Math.max(0, lastFrame);
       const offset = currentFrameIndex * targetWidth;
       stripImg.style.transform = `translate(${-offset}px, ${tyConst}px)`;
     } catch {}
