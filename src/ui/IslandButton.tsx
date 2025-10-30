@@ -1026,7 +1026,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const dudeFrameWidthRef = useRef<number>(0);
   const [walkingPlaying, setWalkingPlaying] = useState(false);
   const [pettingPlaying, setPettingPlaying] = useState(false);
-  const walkStopAfterLoopRef = useRef<boolean>(false);
   const [standingPlaying, setStandingPlaying] = useState(false);
   const sheetAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
   const currentAnimKindRef = useRef<"none" | "mining" | "walking" | "petting" | "standing">("none");
@@ -1156,16 +1155,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const rawFrame = Math.floor(elapsed / frameMs);
           const baseFrame = loop ? ((rawFrame % frameCount) + frameCount) % frameCount : Math.min(frameCount - 1, Math.max(0, rawFrame));
           const frame = kind === "walking" ? (baseFrame + 1) % frameCount : baseFrame;
-          const didWrap = loop && anim.lastFrame !== -1 && frame < anim.lastFrame;
-          if (kind === "walking" && walkStopAfterLoopRef.current && !moveAnimRef.current && didWrap) {
-            setWalkingPlaying(false);
-            if (anim.raf) cancelAnimationFrame(anim.raf);
-            sheetAnimRef.current = null;
-            currentAnimKindRef.current = "none";
-            walkStopAfterLoopRef.current = false;
-            playSheetAnimation("standing");
-            return;
-          }
           if (frame !== anim.lastFrame) {
             anim.lastFrame = frame;
             const frameWrapEl = miningFrameWrapRef.current;
@@ -2522,16 +2511,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     checkAndTeleportMonIfOverlapped();
     const wAnim = currentAnimKindRef.current === "walking" ? sheetAnimRef.current : null;
     if (wAnim) {
-      const lf = wAnim.lastFrame;
-      if (dragModeRef.current !== "none" && (lf === 2 || lf === 3)) {
-        walkStopAfterLoopRef.current = true;
-        return;
-      }
       if (wAnim.raf) cancelAnimationFrame(wAnim.raf);
       sheetAnimRef.current = null;
       currentAnimKindRef.current = "none";
     }
-    walkStopAfterLoopRef.current = false;
     setWalkingPlaying(false);
   }, [checkAndTeleportMonIfOverlapped]);
 
@@ -2658,7 +2641,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const speed = Math.max(60, Math.min(220, h * 0.45));
       const duration = (dist / speed) * 1000;
       moveAnimRef.current = { start: now, from, to, duration: Math.max(200, duration) };
-      walkStopAfterLoopRef.current = false;
       if (currentAnimKindRef.current !== "walking") startWalkingAnimation();
       if (!rafRef.current) {
         const step = () => {
@@ -2729,7 +2711,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const speed = Math.max(60, Math.min(220, h * 0.45));
       const duration = (dist / speed) * 1000;
       moveAnimRef.current = { start: now, from, to, duration: Math.max(200, duration) };
-      walkStopAfterLoopRef.current = false;
       if (currentAnimKindRef.current !== "walking") startWalkingAnimation();
       if (!rafRef.current) {
         const step = () => {
@@ -3120,7 +3101,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             if (wAnim && wAnim.raf) cancelAnimationFrame(wAnim.raf);
             sheetAnimRef.current = null;
             currentAnimKindRef.current = "none";
-            walkStopAfterLoopRef.current = false;
             setWalkingPlaying(false);
             checkAndTeleportMonIfOverlapped();
             startStandingAnimation();
