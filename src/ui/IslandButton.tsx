@@ -509,6 +509,7 @@ const DEFAULT_URL = "https://assets.mons.link/rocks/island.webp";
 
 const MINING_FRAME_MS = 175;
 const WALKING_FRAME_MS = 120;
+const STANDING_FRAME_MS = 200;
 
 let islandImagePromise: Promise<string | null> | null = null;
 
@@ -1160,7 +1161,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const tyConst = -rowIndex * targetHeight;
         stripImg.style.transform = `translate(0px, ${tyConst}px)`;
 
-        const frameMs = kind === "walking" || kind === "standing" ? WALKING_FRAME_MS : MINING_FRAME_MS;
+        const frameMs = kind === "walking" ? WALKING_FRAME_MS : kind === "standing" ? STANDING_FRAME_MS : MINING_FRAME_MS;
         const loop = kind === "walking" || kind === "standing";
 
         const animObj = { start: performance.now(), raf: null as number | null, lastFrame: -1 };
