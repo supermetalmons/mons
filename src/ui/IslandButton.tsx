@@ -1261,6 +1261,27 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const startStandingAnimation = useCallback(() => playSheetAnimation("standing"), [playSheetAnimation]);
 
   useEffect(() => {
+    if (!islandOverlayVisible || islandClosing) return;
+    if (!dudeVisible) return;
+    let raf1 = 0;
+    let raf2 = 0;
+    let timer: number | null = null;
+    raf1 = requestAnimationFrame(() => {
+      raf2 = requestAnimationFrame(() => {
+        timer = window.setTimeout(() => {
+          if (miningPlaying || walkingPlaying || pettingPlaying || standingPlaying) return;
+          startStandingAnimation();
+        }, 180);
+      });
+    });
+    return () => {
+      if (raf1) cancelAnimationFrame(raf1);
+      if (raf2) cancelAnimationFrame(raf2);
+      if (timer !== null) window.clearTimeout(timer);
+    };
+  }, [islandOverlayVisible, islandClosing, dudeVisible, miningPlaying, walkingPlaying, pettingPlaying, standingPlaying, startStandingAnimation]);
+
+  useEffect(() => {
     const shouldBeMarkedOpen = islandOverlayShown || islandOpening || islandClosing;
     if (shouldBeMarkedOpen) {
       document.body.classList.add("island-overlay-open");
