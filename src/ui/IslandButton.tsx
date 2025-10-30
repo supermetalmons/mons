@@ -751,10 +751,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     ryTop: 0.1143,
     ryBottom: 0.1492,
   };
-  const THEORETICAL_ROCK_CIRCLE: { cx: number; cy: number; r: number } = {
+  const THEORETICAL_ROCK_SQUARE: { cx: number; cy: number; side: number } = {
     cx: 0.5018,
     cy: 0.1773,
-    r: 0.071,
+    side: 0.142,
   };
 
   const getMaterialTapSound = useCallback((name: MaterialName): RockSound | null => {
@@ -3445,10 +3445,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           return <path d={d} fill="rgba(64,224,208,0.12)" stroke="rgba(64,224,208,0.95)" strokeWidth={0.9} />;
                         })()}
                         {(() => {
-                          const cx = Math.max(0, Math.min(1, THEORETICAL_ROCK_CIRCLE.cx)) * 100;
-                          const cy = Math.max(0, Math.min(1, THEORETICAL_ROCK_CIRCLE.cy)) * 100;
-                          const r = Math.max(0.3, Math.min(100, THEORETICAL_ROCK_CIRCLE.r * 100));
-                          return <circle cx={cx} cy={cy} r={r} fill="rgba(70,130,180,0.10)" stroke="rgba(70,130,180,0.95)" strokeWidth={0.9} />;
+                          const cx = Math.max(0, Math.min(1, THEORETICAL_ROCK_SQUARE.cx)) * 100;
+                          const cy = Math.max(0, Math.min(1, THEORETICAL_ROCK_SQUARE.cy)) * 100;
+                          const side = Math.max(0.6, Math.min(100, THEORETICAL_ROCK_SQUARE.side * 100));
+                          const x = cx - side / 2;
+                          const y = cy - side / 2;
+                          return <rect x={x} y={y} width={side} height={side} fill="rgba(70,130,180,0.10)" stroke="rgba(70,130,180,0.95)" strokeWidth={0.9} />;
                         })()}
                       </svg>
                     </div>
