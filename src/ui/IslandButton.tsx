@@ -1044,12 +1044,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const miningFrameWrapRef = useRef<HTMLDivElement | null>(null);
   const miningStripImgRef = useRef<HTMLImageElement | null>(null);
   const miningImageRef = useRef<HTMLImageElement | null>(null);
-  const miningAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
   const [walkingPlaying, setWalkingPlaying] = useState(false);
   const [pettingPlaying, setPettingPlaying] = useState(false);
-  const walkingAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
-  const pettingAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
   const walkStopAfterLoopRef = useRef<boolean>(false);
+  const [standingPlaying, setStandingPlaying] = useState(false);
+  const sheetAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
+  const currentAnimKindRef = useRef<"none" | "mining" | "walking" | "petting" | "standing">("none");
 
   const [monPos, setMonPos] = useState<{ x: number; y: number } | null>(null);
   const [monFacingLeft, setMonFacingLeft] = useState<boolean>(false);
@@ -1100,6 +1100,119 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     img.src = `data:image/png;base64,${islandMonsMining}`;
     miningImageRef.current = img;
   }, []);
+
+  const playSheetAnimation = useCallback(
+    (kind: "mining" | "walking" | "petting" | "standing", opts?: { onStep?: () => void }) => {
+      if (!dudeWrapRef.current) return;
+      if (!miningImageRef.current) return;
+      if (kind === "mining" && miningPlaying) return;
+      if (kind === "walking" && currentAnimKindRef.current === "walking" && sheetAnimRef.current && sheetAnimRef.current.raf !== null) return;
+      if (kind === "petting" && pettingPlaying) return;
+      if (kind === "standing" && currentAnimKindRef.current === "standing" && sheetAnimRef.current && sheetAnimRef.current.raf !== null) return;
+
+      try {
+        if (sheetAnimRef.current && sheetAnimRef.current.raf) cancelAnimationFrame(sheetAnimRef.current.raf);
+        sheetAnimRef.current = null;
+        currentAnimKindRef.current = "none";
+        setMiningPlaying(false);
+        setWalkingPlaying(false);
+        setPettingPlaying(false);
+        setStandingPlaying(false);
+      } catch {}
+
+      if (kind === "mining") setMiningPlaying(true);
+      if (kind === "walking") setWalkingPlaying(true);
+      if (kind === "petting") setPettingPlaying(true);
+      if (kind === "standing") setStandingPlaying(true);
+
+      let initAttempts = 0;
+      const init = () => {
+        const sheetImg = miningImageRef.current;
+        const wrap = dudeWrapRef.current;
+        const frameWrap = miningFrameWrapRef.current;
+        const stripImg = miningStripImgRef.current;
+        if (!sheetImg || !wrap || !frameWrap || !stripImg) {
+          initAttempts += 1;
+          if (initAttempts <= 5) {
+            requestAnimationFrame(init);
+            return;
+          }
+          if (kind === "mining") setMiningPlaying(false);
+          if (kind === "walking") setWalkingPlaying(false);
+          if (kind === "petting") setPettingPlaying(false);
+          if (kind === "standing") setStandingPlaying(false);
+          return;
+        }
+
+        const wrapBox = wrap.getBoundingClientRect();
+        const frameCount = 4;
+        const rows = 5;
+        const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
+        const singleRowHeight = Math.floor((sheetImg.naturalHeight || 1) / rows) || 1;
+        const targetHeight = Math.max(1, Math.round(wrapBox.height));
+        const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / singleRowHeight));
+
+        frameWrap.style.width = `${targetWidth}px`;
+        frameWrap.style.height = `${targetHeight}px`;
+        stripImg.style.height = `${targetHeight * rows}px`;
+        stripImg.style.width = `${targetWidth * frameCount}px`;
+        const rowIndex = kind === "mining" ? 0 : kind === "walking" ? 1 : kind === "petting" ? 2 : 3;
+        const tyConst = -rowIndex * targetHeight;
+        stripImg.style.transform = `translate(0px, ${tyConst}px)`;
+
+        const frameMs = kind === "walking" || kind === "standing" ? WALKING_FRAME_MS : MINING_FRAME_MS;
+        const loop = kind === "walking" || kind === "standing";
+
+        const animObj = { start: performance.now(), raf: null as number | null, lastFrame: -1 };
+        sheetAnimRef.current = animObj;
+        currentAnimKindRef.current = kind;
+
+        const step = () => {
+          if (sheetAnimRef.current !== animObj) return;
+          const anim = animObj;
+          const elapsed = performance.now() - anim.start;
+          const rawFrame = Math.floor(elapsed / frameMs);
+          const frame = loop ? ((rawFrame % frameCount) + frameCount) % frameCount : Math.min(frameCount - 1, Math.max(0, rawFrame));
+          const didWrap = loop && anim.lastFrame !== -1 && frame < anim.lastFrame;
+          if (kind === "walking" && walkStopAfterLoopRef.current && !moveAnimRef.current && didWrap) {
+            setWalkingPlaying(false);
+            if (anim.raf) cancelAnimationFrame(anim.raf);
+            sheetAnimRef.current = null;
+            currentAnimKindRef.current = "none";
+            walkStopAfterLoopRef.current = false;
+            playSheetAnimation("standing");
+            return;
+          }
+          if (frame !== anim.lastFrame) {
+            anim.lastFrame = frame;
+            const offset = frame * targetWidth;
+            const tx = -offset;
+            stripImg.style.transform = `translate(${tx}px, ${tyConst}px)`;
+          }
+          if (opts && opts.onStep) opts.onStep();
+
+          if (loop) {
+            animObj.raf = requestAnimationFrame(step);
+          } else {
+            if (elapsed < frameCount * frameMs) {
+              animObj.raf = requestAnimationFrame(step);
+            } else {
+              if (kind === "mining") setMiningPlaying(false);
+              if (kind === "petting") setPettingPlaying(false);
+              sheetAnimRef.current = null;
+              currentAnimKindRef.current = "none";
+              playSheetAnimation("standing");
+            }
+          }
+        };
+        animObj.raf = requestAnimationFrame(step);
+      };
+      requestAnimationFrame(init);
+    },
+    [miningPlaying, pettingPlaying]
+  );
+
+  const startStandingAnimation = useCallback(() => playSheetAnimation("standing"), [playSheetAnimation]);
 
   useEffect(() => {
     const shouldBeMarkedOpen = islandOverlayShown || islandOpening || islandClosing;
@@ -1968,18 +2081,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       } catch {}
       playSounds([Sound.IslandClosing]);
       fxContainerRef.current = null;
-      const anim = miningAnimRef.current;
+      const anim = sheetAnimRef.current;
       if (anim && anim.raf) cancelAnimationFrame(anim.raf);
-      miningAnimRef.current = null;
+      sheetAnimRef.current = null;
       setMiningPlaying(false);
-      const wAnim = walkingAnimRef.current;
-      if (wAnim && wAnim.raf) cancelAnimationFrame(wAnim.raf);
-      walkingAnimRef.current = null;
+      currentAnimKindRef.current = "none";
       setWalkingPlaying(false);
-      const pAnim2 = pettingAnimRef.current;
-      if (pAnim2 && pAnim2.raf) cancelAnimationFrame(pAnim2.raf);
-      pettingAnimRef.current = null;
       setPettingPlaying(false);
+      setStandingPlaying(false);
       materialDropsRef.current = [];
       const imgEl = islandButtonImgRef.current;
       if (!imgEl || !islandNatural) {
@@ -2341,7 +2450,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     rafRef.current = null;
     moveAnimRef.current = null;
     checkAndTeleportMonIfOverlapped();
-    const wAnim = walkingAnimRef.current;
+    const wAnim = currentAnimKindRef.current === "walking" ? sheetAnimRef.current : null;
     if (wAnim) {
       const lf = wAnim.lastFrame;
       if (dragModeRef.current !== "none" && (lf === 2 || lf === 3)) {
@@ -2349,7 +2458,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
       if (wAnim.raf) cancelAnimationFrame(wAnim.raf);
-      walkingAnimRef.current = null;
+      sheetAnimRef.current = null;
+      currentAnimKindRef.current = "none";
     }
     walkStopAfterLoopRef.current = false;
     setWalkingPlaying(false);
@@ -2382,266 +2492,73 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return lastFacingDirRef.current;
   }, []);
 
-  const startMiningAnimation = useCallback(() => {
-    if (!dudeWrapRef.current) return;
-    if (!miningImageRef.current) return;
-    if (miningPlaying) return;
-    try {
-      const w = walkingAnimRef.current;
-      if (w && w.raf) cancelAnimationFrame(w.raf);
-      walkingAnimRef.current = null;
-      setWalkingPlaying(false);
-      const p = pettingAnimRef.current;
-      if (p && p.raf) cancelAnimationFrame(p.raf);
-      pettingAnimRef.current = null;
-      setPettingPlaying(false);
-    } catch {}
-    setMiningPlaying(true);
-    let initAttempts = 0;
-    const initMining = () => {
-      const sheetImg = miningImageRef.current;
-      const wrap = dudeWrapRef.current;
-      const frameWrap = miningFrameWrapRef.current;
-      const stripImg = miningStripImgRef.current;
-      if (!sheetImg || !wrap || !frameWrap || !stripImg) {
-        initAttempts += 1;
-        if (initAttempts <= 5) {
-          requestAnimationFrame(initMining);
-          return;
-        }
-        setMiningPlaying(false);
-        return;
-      }
-      const wrapBox = wrap.getBoundingClientRect();
-      const frameCount = 4;
-      const rows = 5;
-      const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
-      const singleRowHeight = Math.floor((sheetImg.naturalHeight || 1) / rows) || 1;
-      const targetHeight = Math.max(1, Math.round(wrapBox.height));
-      const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / singleRowHeight));
-
-      frameWrap.style.width = `${targetWidth}px`;
-      frameWrap.style.height = `${targetHeight}px`;
-      stripImg.style.height = `${targetHeight * rows}px`;
-      stripImg.style.width = `${targetWidth * frameCount}px`;
-      stripImg.style.transform = `translate(0px, 0px)`;
-
-      miningAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
-      const step = () => {
-        const anim = miningAnimRef.current;
-        if (!anim) return;
-        const elapsed = performance.now() - anim.start;
-        const rawFrame = Math.floor(elapsed / MINING_FRAME_MS);
-        const frame = Math.min(frameCount - 1, Math.max(0, rawFrame));
-        if (frame !== anim.lastFrame) {
-          const offset = frame * targetWidth;
-          const tx = -offset;
-          stripImg.style.transform = `translate(${tx}px, 0px)`;
-          anim.lastFrame = frame;
-        }
-        if (elapsed < frameCount * MINING_FRAME_MS) {
-          anim.raf = requestAnimationFrame(step);
-        } else {
-          setMiningPlaying(false);
-          miningAnimRef.current = null;
-        }
-      };
-      miningAnimRef.current.raf = requestAnimationFrame(step);
-    };
-    requestAnimationFrame(initMining);
-  }, [miningPlaying]);
+  const startMiningAnimation = useCallback(() => playSheetAnimation("mining"), [playSheetAnimation]);
 
   const startWalkingAnimation = useCallback(() => {
-    if (!dudeWrapRef.current) return;
-    if (!miningImageRef.current) return;
-    if (pettingPlaying) {
-      const p = pettingAnimRef.current;
-      if (p && p.raf) cancelAnimationFrame(p.raf);
-      pettingAnimRef.current = null;
-      setPettingPlaying(false);
-    }
-    const m = miningAnimRef.current;
-    if (m && m.raf) cancelAnimationFrame(m.raf);
-    miningAnimRef.current = null;
-    setMiningPlaying(false);
-    if (walkingAnimRef.current && walkingAnimRef.current.raf !== null) return;
-    if (walkingAnimRef.current && walkingAnimRef.current.raf === null) {
-      walkingAnimRef.current = null;
-    }
-    walkStopAfterLoopRef.current = false;
-    setWalkingPlaying(true);
-    let initAttempts = 0;
-    const initWalk = () => {
-      const sheetImg = miningImageRef.current;
-      const wrap = dudeWrapRef.current;
-      const frameWrap = miningFrameWrapRef.current;
-      const stripImg = miningStripImgRef.current;
-      if (!sheetImg || !wrap || !frameWrap || !stripImg) {
-        initAttempts += 1;
-        if (initAttempts <= 5) {
-          requestAnimationFrame(initWalk);
-          return;
-        }
-        setWalkingPlaying(false);
-        return;
-      }
-      const wrapBox = wrap.getBoundingClientRect();
-      const frameCount = 4;
-      const rows = 5;
-      const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
-      const singleRowHeight = Math.floor((sheetImg.naturalHeight || 1) / rows) || 1;
-      const targetHeight = Math.max(1, Math.round(wrapBox.height));
-      const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / singleRowHeight));
-
-      frameWrap.style.width = `${targetWidth}px`;
-      frameWrap.style.height = `${targetHeight}px`;
-      stripImg.style.height = `${targetHeight * rows}px`;
-      stripImg.style.width = `${targetWidth * frameCount}px`;
-      const rowIndex = 1;
-      const tyConst = -rowIndex * targetHeight;
-      stripImg.style.transform = `translate(0px, ${tyConst}px)`;
-
-      walkingAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
-      const step = () => {
-        const anim = walkingAnimRef.current;
-        if (!anim) return;
-        const elapsed = performance.now() - anim.start;
-        const rawFrame = Math.floor(elapsed / WALKING_FRAME_MS);
-        const frame = ((rawFrame % frameCount) + frameCount) % frameCount;
-        const didWrap = anim.lastFrame !== -1 && frame < anim.lastFrame;
-        if (walkStopAfterLoopRef.current && !moveAnimRef.current && didWrap) {
-          setWalkingPlaying(false);
-          if (anim.raf) cancelAnimationFrame(anim.raf);
-          walkingAnimRef.current = null;
-          walkStopAfterLoopRef.current = false;
-          return;
-        }
-        if (frame !== anim.lastFrame) {
-          anim.lastFrame = frame;
-          const offset = frame * targetWidth;
-          const tx = -offset;
-          stripImg.style.transform = `translate(${tx}px, ${tyConst}px)`;
-        }
-        if (materialDropsRef.current.length > 0) {
-          try {
-            const dudeB = getDudeBounds();
-            const hero = islandHeroImgRef.current;
-            const wrapBox = hero ? hero.getBoundingClientRect() : null;
-            if (wrapBox) {
-              const collected: Array<number> = [];
-              for (let i = 0; i < materialDropsRef.current.length; i++) {
-                const m = materialDropsRef.current[i];
-                if (!m.el.isConnected) {
-                  collected.push(i);
-                  continue;
-                }
-                const eb = m.el.getBoundingClientRect();
-                const left = (eb.left - wrapBox.left) / Math.max(1, wrapBox.width);
-                const right = (eb.right - wrapBox.left) / Math.max(1, wrapBox.width);
-                const top = (eb.top - wrapBox.top) / Math.max(1, wrapBox.height);
-                const bottom = (eb.bottom - wrapBox.top) / Math.max(1, wrapBox.height);
-                const area = Math.max(0, right - left) * Math.max(0, bottom - top);
-                const overlap = computeOverlapArea(dudeB, { left, top, right, bottom });
-                const frac = area > 0 ? overlap / area : 0;
-                if (frac > 0.55) {
-                  try {
-                    pullMaterialToBar(m.name, eb);
-                  } catch {}
-                  try {
-                    m.el.remove();
-                  } catch {}
-                  try {
-                    m.shadow.remove();
-                  } catch {}
-                  collected.push(i);
-                }
+    const onStep = () => {
+      if (materialDropsRef.current.length > 0) {
+        try {
+          const dudeB = getDudeBounds();
+          const hero = islandHeroImgRef.current;
+          const wrapBox = hero ? hero.getBoundingClientRect() : null;
+          if (wrapBox) {
+            const collected: Array<number> = [];
+            for (let i = 0; i < materialDropsRef.current.length; i++) {
+              const m = materialDropsRef.current[i];
+              if (!m.el.isConnected) {
+                collected.push(i);
+                continue;
               }
-              if (collected.length > 0) {
-                const delta: Partial<Record<MaterialName, number>> = {};
-                const nextArr: typeof materialDropsRef.current = [];
-                for (let i = 0; i < materialDropsRef.current.length; i++) {
-                  if (collected.indexOf(i) !== -1) {
-                    const name = materialDropsRef.current[i].name;
-                    delta[name] = (delta[name] || 0)! + 1;
-                  } else {
-                    nextArr.push(materialDropsRef.current[i]);
-                  }
-                }
-                materialDropsRef.current = nextArr;
-                setMaterialAmounts((prev) => {
-                  const next = { ...prev } as Record<MaterialName, number>;
-                  (Object.keys(delta) as MaterialName[]).forEach((k) => {
-                    next[k] = (next[k] || 0) + (delta[k] || 0);
-                  });
-                  return next;
-                });
-                playSounds([Sound.CollectingMaterials]);
+              const eb = m.el.getBoundingClientRect();
+              const left = (eb.left - wrapBox.left) / Math.max(1, wrapBox.width);
+              const right = (eb.right - wrapBox.left) / Math.max(1, wrapBox.width);
+              const top = (eb.top - wrapBox.top) / Math.max(1, wrapBox.height);
+              const bottom = (eb.bottom - wrapBox.top) / Math.max(1, wrapBox.height);
+              const area = Math.max(0, right - left) * Math.max(0, bottom - top);
+              const overlap = computeOverlapArea(dudeB, { left, top, right, bottom });
+              const frac = area > 0 ? overlap / area : 0;
+              if (frac > 0.55) {
+                try {
+                  pullMaterialToBar(m.name, eb);
+                } catch {}
+                try {
+                  m.el.remove();
+                } catch {}
+                try {
+                  m.shadow.remove();
+                } catch {}
+                collected.push(i);
               }
             }
-          } catch {}
-        }
-        anim.raf = requestAnimationFrame(step);
-      };
-      walkingAnimRef.current.raf = requestAnimationFrame(step);
-    };
-    requestAnimationFrame(initWalk);
-  }, [pettingPlaying, computeOverlapArea, getDudeBounds, pullMaterialToBar]);
-
-  const startPettingAnimation = useCallback(() => {
-    if (!dudeWrapRef.current) return;
-    if (!miningImageRef.current) return;
-    if (pettingPlaying) return;
-    setPettingPlaying(true);
-    setWalkingPlaying(false);
-    const wAnim = walkingAnimRef.current;
-    if (wAnim && wAnim.raf) cancelAnimationFrame(wAnim.raf);
-    walkingAnimRef.current = null;
-    requestAnimationFrame(() => {
-      const sheetImg = miningImageRef.current;
-      const wrap = dudeWrapRef.current;
-      const frameWrap = miningFrameWrapRef.current;
-      const stripImg = miningStripImgRef.current;
-      if (!sheetImg || !wrap || !frameWrap || !stripImg) {
-        setPettingPlaying(false);
-        return;
+            if (collected.length > 0) {
+              const delta: Partial<Record<MaterialName, number>> = {};
+              const nextArr: typeof materialDropsRef.current = [];
+              for (let i = 0; i < materialDropsRef.current.length; i++) {
+                if (collected.indexOf(i) !== -1) {
+                  const name = materialDropsRef.current[i].name;
+                  delta[name] = (delta[name] || 0)! + 1;
+                } else {
+                  nextArr.push(materialDropsRef.current[i]);
+                }
+              }
+              materialDropsRef.current = nextArr;
+              setMaterialAmounts((prev) => {
+                const next = { ...prev } as Record<MaterialName, number>;
+                (Object.keys(delta) as MaterialName[]).forEach((k) => {
+                  next[k] = (next[k] || 0) + (delta[k] || 0);
+                });
+                return next;
+              });
+              playSounds([Sound.CollectingMaterials]);
+            }
+          }
+        } catch {}
       }
-      const wrapBox = wrap.getBoundingClientRect();
-      const frameCount = 4;
-      const rows = 5;
-      const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
-      const singleRowHeight = Math.floor((sheetImg.naturalHeight || 1) / rows) || 1;
-      const targetHeight = Math.max(1, Math.round(wrapBox.height));
-      const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / singleRowHeight));
+    };
+    playSheetAnimation("walking", { onStep });
+  }, [playSheetAnimation, computeOverlapArea, getDudeBounds, pullMaterialToBar]);
 
-      frameWrap.style.width = `${targetWidth}px`;
-      frameWrap.style.height = `${targetHeight}px`;
-      stripImg.style.height = `${targetHeight * rows}px`;
-      stripImg.style.width = `${targetWidth * frameCount}px`;
-      const rowIndex = 2;
-      stripImg.style.transform = `translate(0px, ${-rowIndex * targetHeight}px)`;
-
-      pettingAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
-      const step = () => {
-        const anim = pettingAnimRef.current;
-        if (!anim) return;
-        const elapsed = performance.now() - anim.start;
-        const rawFrame = Math.floor(elapsed / MINING_FRAME_MS);
-        const frame = Math.min(frameCount - 1, Math.max(0, rawFrame));
-        if (frame !== anim.lastFrame) anim.lastFrame = frame;
-        const offset = frame * targetWidth;
-        const tx = -offset;
-        const ty = -rowIndex * targetHeight;
-        stripImg.style.transform = `translate(${tx}px, ${ty}px)`;
-        if (elapsed < frameCount * MINING_FRAME_MS) {
-          anim.raf = requestAnimationFrame(step);
-        } else {
-          setPettingPlaying(false);
-          pettingAnimRef.current = null;
-        }
-      };
-      pettingAnimRef.current.raf = requestAnimationFrame(step);
-    });
-  }, [pettingPlaying]);
+  const startPettingAnimation = useCallback(() => playSheetAnimation("petting"), [playSheetAnimation]);
 
   useEffect(() => {
     startPettingAnimationRef.current = startPettingAnimation;
@@ -2672,7 +2589,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const duration = (dist / speed) * 1000;
       moveAnimRef.current = { start: now, from, to, duration: Math.max(200, duration) };
       walkStopAfterLoopRef.current = false;
-      if (!walkingAnimRef.current) startWalkingAnimation();
+      if (currentAnimKindRef.current !== "walking") startWalkingAnimation();
       if (!rafRef.current) {
         const step = () => {
           if (!moveAnimRef.current) return;
@@ -2687,13 +2604,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           if (t2 < 1) {
             rafRef.current = requestAnimationFrame(step);
           } else {
+            let triggeredArrival = false;
             const targetMeta = moveTargetMetaRef.current;
             if (targetMeta) {
               const closeEnough = Math.hypot(nextX - targetMeta.x, nextY - targetMeta.y) < 0.012;
               if (closeEnough) {
                 setDudeFacingLeft(targetMeta.facingLeft);
                 try {
-                  if (targetMeta.onArrive) targetMeta.onArrive();
+                  if (targetMeta.onArrive) {
+                    triggeredArrival = true;
+                    targetMeta.onArrive();
+                  }
                 } catch {}
                 moveTargetMetaRef.current = null;
               }
@@ -2706,12 +2627,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             }
             latestDudePosRef.current = { x: nextX, y: nextY };
             stopMoveAnim();
+            if (!triggeredArrival) startStandingAnimation();
           }
         };
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal, decideFacingWithHysteresis, startWalkingAnimation]
+    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal, decideFacingWithHysteresis, startWalkingAnimation, startStandingAnimation]
   );
 
   const updateMoveTarget = useCallback(
@@ -2738,7 +2660,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const duration = (dist / speed) * 1000;
       moveAnimRef.current = { start: now, from, to, duration: Math.max(200, duration) };
       walkStopAfterLoopRef.current = false;
-      if (!walkingAnimRef.current) startWalkingAnimation();
+      if (currentAnimKindRef.current !== "walking") startWalkingAnimation();
       if (!rafRef.current) {
         const step = () => {
           if (!moveAnimRef.current) return;
@@ -2755,12 +2677,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           } else {
             latestDudePosRef.current = { x: nextX, y: nextY };
             stopMoveAnim();
+            startStandingAnimation();
           }
         };
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.h, heroSize.w, stopMoveAnim, decideFacingWithHysteresis, startWalkingAnimation]
+    [heroSize.h, heroSize.w, stopMoveAnim, decideFacingWithHysteresis, startWalkingAnimation, startStandingAnimation]
   );
 
   const handleMaterialItemTap = useCallback(
@@ -3123,9 +3046,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           window.removeEventListener("blur", handleEnd as any);
           document.removeEventListener("visibilitychange", handleVisibilityChange as any);
           if (!moveAnimRef.current) {
-            const wAnim = walkingAnimRef.current;
+            const wAnim = currentAnimKindRef.current === "walking" ? sheetAnimRef.current : null;
             if (wAnim && wAnim.raf) cancelAnimationFrame(wAnim.raf);
-            walkingAnimRef.current = null;
+            sheetAnimRef.current = null;
+            currentAnimKindRef.current = "none";
             walkStopAfterLoopRef.current = false;
             setWalkingPlaying(false);
             checkAndTeleportMonIfOverlapped();
@@ -3505,8 +3429,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       return inFrontOfRock ? 700 + base : 300 + base;
                     })(),
                   }}>
-                  <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} style={{ visibility: miningPlaying || walkingPlaying || pettingPlaying ? "hidden" : "visible" }} />
-                  {(miningPlaying || walkingPlaying || pettingPlaying) && (
+                  <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} style={{ visibility: miningPlaying || walkingPlaying || pettingPlaying || standingPlaying ? "hidden" : "visible" }} />
+                  {(miningPlaying || walkingPlaying || pettingPlaying || standingPlaying) && (
                     <DudeSpriteFrame $facingLeft={dudeFacingLeft} ref={miningFrameWrapRef as any}>
                       <DudeSpriteStrip ref={miningStripImgRef as any} src={`data:image/png;base64,${islandMonsMining}`} alt="" draggable={false} />
                     </DudeSpriteFrame>
