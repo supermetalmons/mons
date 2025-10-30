@@ -309,29 +309,6 @@ const StarsOverlayImage = styled.img<{ $visible: boolean; $hold: boolean }>`
   animation: ${(p) => (p.$hold ? "none" : p.$visible ? overlayFlash : "none")} 520ms ease-out;
 `;
 
-const ShineOverlay = styled.div<{ $visible: boolean; $bg: string; $hold: boolean }>`
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  z-index: 2;
-  background-image: url(${(p) => p.$bg});
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-size: contain;
-  mix-blend-mode: screen;
-  filter: brightness(3.1) contrast(1.4) saturate(1.35);
-  opacity: ${(p) => (p.$hold ? 1 : 0)};
-  animation: ${(p) => (p.$hold ? "none" : p.$visible ? overlayFlash : "none")} 520ms ease-out;
-  -webkit-mask-image: url(${STARS_URL});
-  mask-image: url(${STARS_URL});
-  -webkit-mask-repeat: no-repeat;
-  mask-repeat: no-repeat;
-  -webkit-mask-size: contain;
-  mask-size: contain;
-  -webkit-mask-position: center;
-  mask-position: center;
-`;
-
 const MaskedArea = styled.div<{ $cx: number; $cy: number; $visible: boolean }>`
   position: absolute;
   inset: 0;
@@ -3330,7 +3307,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 {islandOverlayVisible && !islandClosing && (
                   <HotspotOverlay ref={editorOverlayRef}>
                     <MaskedArea $cx={starsMaskCenter.xPct} $cy={starsMaskCenter.yPct} $visible={starsHold || starsVisible}>
-                      <ShineOverlay $bg={resolvedUrl} $visible={starsVisible} $hold={starsHold} />
                       <StarsOverlayImage ref={starsImgRef} src={STARS_URL} alt="" draggable={false} $visible={starsVisible} $hold={starsHold} />
                     </MaskedArea>
                     {FEATURE_FULL_OVERLAY_ON_HOTSPOT &&
