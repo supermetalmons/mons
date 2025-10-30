@@ -1431,83 +1431,108 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     initializeWalkPolygonIfNeeded();
   }, [islandOverlayVisible, islandOpening, islandClosing, heroSize.w, heroSize.h, walkReady, initializeWalkPolygonIfNeeded]);
 
-  const pickRandomPointInWalkArea = useCallback(() => {
-    if (initialMonPosRef.current) return initialMonPosRef.current;
-    const poly = walkPoints;
-    let minX = 1;
-    let maxX = 0;
-    let minY = 1;
-    let maxY = 0;
-    for (let i = 0; i < poly.length; i++) {
-      const p = poly[i];
-      if (p.x < minX) minX = p.x;
-      if (p.x > maxX) maxX = p.x;
-      if (p.y < minY) minY = p.y;
-      if (p.y > maxY) maxY = p.y;
-    }
-    const isInside = (x: number, y: number) => {
-      let inside = false;
-      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-        const xi = poly[i].x;
-        const yi = poly[i].y;
-        const xj = poly[j].x;
-        const yj = poly[j].y;
-        const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
-        if (intersect) inside = !inside;
+  const findValidMonLocation = useCallback(
+    (opts: { mode: "initial" | "teleport"; preferCandidate?: { x: number; y: number } | null; dudeBounds?: { left: number; top: number; right: number; bottom: number; area: number }; latestDudePos?: { x: number; y: number } }) => {
+      const poly = walkPoints;
+      let minX = 1;
+      let maxX = 0;
+      let minY = 1;
+      let maxY = 0;
+      for (let i = 0; i < poly.length; i++) {
+        const p = poly[i];
+        if (p.x < minX) minX = p.x;
+        if (p.x > maxX) maxX = p.x;
+        if (p.y < minY) minY = p.y;
+        if (p.y > maxY) maxY = p.y;
       }
-      return inside;
-    };
-    for (let k = 0; k < 500; k++) {
-      const x = minX + Math.random() * (maxX - minX);
-      const y = minY + Math.random() * (maxY - minY);
-      const cx = x + MON_BOUNDS_X_SHIFT;
-      const bottomY = y + MON_BASELINE_Y_OFFSET;
-      if (isInside(cx, bottomY)) {
-        const pt = { x, y };
-        initialMonPosRef.current = pt;
-        return pt;
+      const inside = (cx: number, bottomY: number) => {
+        let isIn = false;
+        for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+          const xi = poly[i].x;
+          const yi = poly[i].y;
+          const xj = poly[j].x;
+          const yj = poly[j].y;
+          const intersect = yi > bottomY !== yj > bottomY && cx < ((xj - xi) * (bottomY - yi)) / (yj - yi) + xi;
+          if (intersect) isIn = !isIn;
+        }
+        return isIn;
+      };
+      if (opts.preferCandidate) {
+        const c = opts.preferCandidate;
+        const ccx = c.x + MON_BOUNDS_X_SHIFT;
+        const cby = c.y + MON_BASELINE_Y_OFFSET;
+        if (inside(ccx, cby)) return c;
       }
-    }
-    let cx = 0;
-    let cy = 0;
-    for (let i = 0; i < poly.length; i++) {
-      cx += poly[i].x;
-      cy += poly[i].y;
-    }
-    cx /= Math.max(1, poly.length);
-    cy /= Math.max(1, poly.length);
-    const centroidCandidate = { x: cx - MON_BOUNDS_X_SHIFT, y: cy - MON_BASELINE_Y_OFFSET };
-    const centroidInside = isInside(cx, cy);
-    const defaultCandidate = { x: MON_REL_X, y: MON_REL_Y };
-    const defaultCx = defaultCandidate.x + MON_BOUNDS_X_SHIFT;
-    const defaultBottomY = defaultCandidate.y + MON_BASELINE_Y_OFFSET;
-    const defaultInside = isInside(defaultCx, defaultBottomY);
-    const fallback = centroidInside ? centroidCandidate : defaultInside ? defaultCandidate : { x: cx, y: cy };
-    initialMonPosRef.current = fallback;
-    return fallback;
-  }, [walkPoints]);
+      if (opts.mode === "initial") {
+        if (initialMonPosRef.current) return initialMonPosRef.current;
+        for (let k = 0; k < 500; k++) {
+          const x = minX + Math.random() * (maxX - minX);
+          const y = minY + Math.random() * (maxY - minY);
+          const cx = x + MON_BOUNDS_X_SHIFT;
+          const bottomY = y + MON_BASELINE_Y_OFFSET;
+          if (inside(cx, bottomY)) {
+            const pt = { x, y };
+            initialMonPosRef.current = pt;
+            return pt;
+          }
+        }
+        let cx = 0;
+        let cy = 0;
+        for (let i = 0; i < poly.length; i++) {
+          cx += poly[i].x;
+          cy += poly[i].y;
+        }
+        cx /= Math.max(1, poly.length);
+        cy /= Math.max(1, poly.length);
+        const centroidCandidate = { x: cx - MON_BOUNDS_X_SHIFT, y: cy - MON_BASELINE_Y_OFFSET };
+        const centroidInside = inside(cx, cy);
+        const defaultCandidate = { x: MON_REL_X, y: MON_REL_Y };
+        const defaultCx = defaultCandidate.x + MON_BOUNDS_X_SHIFT;
+        const defaultBottomY = defaultCandidate.y + MON_BASELINE_Y_OFFSET;
+        const defaultInside = inside(defaultCx, defaultBottomY);
+        const fallback = centroidInside ? centroidCandidate : defaultInside ? defaultCandidate : { x: cx, y: cy };
+        initialMonPosRef.current = fallback;
+        return fallback;
+      }
+      if (opts.mode === "teleport") {
+        const dudeB = opts.dudeBounds;
+        const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(latestMonKeyRef.current ?? monKey)));
+        const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
+        let attempts = 0;
+        while (attempts < 600) {
+          attempts++;
+          const x = minX + Math.random() * (maxX - minX);
+          const y = minY + Math.random() * (maxY - minY);
+          const cx = x + MON_BOUNDS_X_SHIFT;
+          const bottomY = y + MON_BASELINE_Y_OFFSET;
+          if (!inside(cx, bottomY)) continue;
+          const left = cx - widthFrac * 0.5;
+          const right = cx + widthFrac * 0.5;
+          const top = bottomY - heightFrac;
+          const bottom = bottomY;
+          const monB = { left, top, right, bottom, area: widthFrac * heightFrac } as { left: number; top: number; right: number; bottom: number; area: number };
+          const ix = Math.max(0, Math.min(dudeB ? dudeB.right : 0, monB.right) - Math.max(dudeB ? dudeB.left : 0, monB.left));
+          const iy = Math.max(0, Math.min(dudeB ? dudeB.bottom : 0, monB.bottom) - Math.max(dudeB ? dudeB.top : 0, monB.top));
+          const overlap = ix * iy;
+          const overlapFracOfMon = monB.area > 0 ? overlap / monB.area : 0;
+          if (overlapFracOfMon <= 0.42) return { x, y };
+        }
+        const x = Math.max(minX, Math.min(maxX, (opts.latestDudePos ? opts.latestDudePos.x : 0) + 0.2));
+        const y = Math.max(minY, Math.min(maxY, opts.latestDudePos ? opts.latestDudePos.y : 0));
+        const cx2 = x + MON_BOUNDS_X_SHIFT;
+        const by2 = y + MON_BASELINE_Y_OFFSET;
+        if (inside(cx2, by2)) return { x, y };
+        return null;
+      }
+      return null;
+    },
+    [walkPoints, monKey]
+  );
 
   useEffect(() => {
     let mounted = true;
     if (!islandOverlayVisible) return;
-    const candidate = persistentMonPosRef || pickRandomPointInWalkArea();
-    const baseCx = candidate.x + MON_BOUNDS_X_SHIFT;
-    const baseBottomY = candidate.y + MON_BASELINE_Y_OFFSET;
-    const isInside = (x: number, y: number) => {
-      const poly = walkPoints;
-      let inside = false;
-      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-        const xi = poly[i].x;
-        const yi = poly[i].y;
-        const xj = poly[j].x;
-        const yj = poly[j].y;
-        const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
-        if (intersect) inside = !inside;
-      }
-      return inside;
-    };
-    const valid = isInside(baseCx, baseBottomY);
-    const pt = valid ? candidate : pickRandomPointInWalkArea();
+    const pt = findValidMonLocation({ mode: "initial", preferCandidate: persistentMonPosRef });
     setMonPos(pt);
     latestMonPosRef.current = pt;
     setMonFacingLeft(Math.random() < 0.5);
@@ -1523,7 +1548,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return () => {
       mounted = false;
     };
-  }, [islandOverlayVisible, pickRandomPointInWalkArea, walkPoints]);
+  }, [islandOverlayVisible, findValidMonLocation]);
 
   useEffect(() => {
     if (!decorVisible || islandClosing || !islandOverlayVisible) return;
@@ -2434,50 +2459,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     teleportFXStart();
     setMonTeleporting(true);
     setTimeout(() => {
-      const dudeB = getDudeBounds();
-      const poly = walkPoints;
-      let attempts = 0;
-      let chosen: { x: number; y: number } | null = null;
-      let minX = 1;
-      let maxX = 0;
-      let minY = 1;
-      let maxY = 0;
-      for (let i = 0; i < poly.length; i++) {
-        const p = poly[i];
-        if (p.x < minX) minX = p.x;
-        if (p.x > maxX) maxX = p.x;
-        if (p.y < minY) minY = p.y;
-        if (p.y > maxY) maxY = p.y;
-      }
-      const inside = (x: number, y: number) => pointInPolygon(x, y, poly);
-      const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(latestMonKeyRef.current ?? monKey)));
-      const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
-      while (attempts < 600 && !chosen) {
-        attempts++;
-        const x = minX + Math.random() * (maxX - minX);
-        const y = minY + Math.random() * (maxY - minY);
-        const cx = x + MON_BOUNDS_X_SHIFT;
-        const bottomY = y + MON_BASELINE_Y_OFFSET;
-        if (!inside(cx, bottomY)) continue;
-        const left = cx - widthFrac * 0.5;
-        const right = cx + widthFrac * 0.5;
-        const top = bottomY - heightFrac;
-        const bottom = bottomY;
-        const monB = { left, top, right, bottom, area: widthFrac * heightFrac };
-        const overlap = computeOverlapArea(dudeB, monB);
-        const overlapFracOfMon = monB.area > 0 ? overlap / monB.area : 0;
-        if (overlapFracOfMon <= 0.42) {
-          chosen = { x, y };
-          break;
-        }
-      }
-      if (!chosen) {
-        const x = Math.max(minX, Math.min(maxX, latestDudePosRef.current.x + 0.2));
-        const y = Math.max(minY, Math.min(maxY, latestDudePosRef.current.y));
-        const cx = x + MON_BOUNDS_X_SHIFT;
-        const bottomY = y + MON_BASELINE_Y_OFFSET;
-        if (inside(cx, bottomY)) chosen = { x, y };
-      }
+      const chosen = findValidMonLocation({ mode: "teleport", dudeBounds: getDudeBounds(), latestDudePos: latestDudePosRef.current });
       if (chosen) {
         setMonFacingLeft(Math.random() < 0.5);
         setMonPos(chosen);
@@ -2491,7 +2473,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         animateTeleportAppear();
       }, 30);
     }, 180);
-  }, [getDudeBounds, pointInPolygon, walkPoints, monKey, monPos, computeOverlapArea, teleportFXStart, spawnTeleportSparkles, prepareTeleportAppear, animateTeleportAppear]);
+  }, [findValidMonLocation, getDudeBounds, monPos, teleportFXStart, spawnTeleportSparkles, prepareTeleportAppear, animateTeleportAppear]);
 
   const checkAndTeleportMonIfOverlapped = useCallback(() => {
     const monB = getMonBounds();
