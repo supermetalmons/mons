@@ -744,13 +744,16 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return { minX, maxX, minY, maxY };
   }, [STAR_SHINE_PENTAGON]);
 
-  const SMOOTH_CYCLING_ELLIPSE: { cx: number; cy: number; rx: number; ryTop: number; ryBottom: number } = {
-    cx: 0.4982,
-    cy: 0.1928,
-    rx: 0.3495,
-    ryTop: 0.1143,
-    ryBottom: 0.1492,
-  };
+  const SMOOTH_CYCLING_ELLIPSE = useMemo<{ cx: number; cy: number; rx: number; ryTop: number; ryBottom: number }>(
+    () => ({
+      cx: 0.4982,
+      cy: 0.1928,
+      rx: 0.3495,
+      ryTop: 0.1143,
+      ryBottom: 0.1492,
+    }),
+    []
+  );
   const THEORETICAL_ROCK_SQUARE: { cx: number; cy: number; side: number } = {
     cx: 0.5018,
     cy: 0.1773,
@@ -1433,35 +1436,23 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const findValidMonLocation = useCallback(
     (opts: { mode: "initial" | "teleport"; preferCandidate?: { x: number; y: number } | null; dudeBounds?: { left: number; top: number; right: number; bottom: number; area: number }; latestDudePos?: { x: number; y: number } }) => {
-      const poly = walkPoints;
-      let minX = 1;
-      let maxX = 0;
-      let minY = 1;
-      let maxY = 0;
-      for (let i = 0; i < poly.length; i++) {
-        const p = poly[i];
-        if (p.x < minX) minX = p.x;
-        if (p.x > maxX) maxX = p.x;
-        if (p.y < minY) minY = p.y;
-        if (p.y > maxY) maxY = p.y;
-      }
-      const inside = (cx: number, bottomY: number) => {
-        let isIn = false;
-        for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-          const xi = poly[i].x;
-          const yi = poly[i].y;
-          const xj = poly[j].x;
-          const yj = poly[j].y;
-          const intersect = yi > bottomY !== yj > bottomY && cx < ((xj - xi) * (bottomY - yi)) / (yj - yi) + xi;
-          if (intersect) isIn = !isIn;
-        }
-        return isIn;
+      const ellipse = SMOOTH_CYCLING_ELLIPSE;
+      const minX = ellipse.cx - ellipse.rx - MON_BOUNDS_X_SHIFT;
+      const maxX = ellipse.cx + ellipse.rx - MON_BOUNDS_X_SHIFT;
+      const minY = ellipse.cy - ellipse.ryTop - MON_BASELINE_Y_OFFSET;
+      const maxY = ellipse.cy + ellipse.ryBottom - MON_BASELINE_Y_OFFSET;
+      const insideEllipse = (cx: number, bottomY: number) => {
+        const dx = cx - ellipse.cx;
+        const dy = bottomY - ellipse.cy;
+        const ry = dy <= 0 ? ellipse.ryTop : ellipse.ryBottom;
+        if (ellipse.rx <= 0 || ry <= 0) return false;
+        return (dx * dx) / (ellipse.rx * ellipse.rx) + (dy * dy) / (ry * ry) <= 1;
       };
       if (opts.preferCandidate) {
         const c = opts.preferCandidate;
         const ccx = c.x + MON_BOUNDS_X_SHIFT;
         const cby = c.y + MON_BASELINE_Y_OFFSET;
-        if (inside(ccx, cby)) return c;
+        if (insideEllipse(ccx, cby)) return c;
       }
       if (opts.mode === "initial") {
         if (initialMonPosRef.current) return initialMonPosRef.current;
@@ -1470,27 +1461,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const y = minY + Math.random() * (maxY - minY);
           const cx = x + MON_BOUNDS_X_SHIFT;
           const bottomY = y + MON_BASELINE_Y_OFFSET;
-          if (inside(cx, bottomY)) {
+          if (insideEllipse(cx, bottomY)) {
             const pt = { x, y };
             initialMonPosRef.current = pt;
             return pt;
           }
         }
-        let cx = 0;
-        let cy = 0;
-        for (let i = 0; i < poly.length; i++) {
-          cx += poly[i].x;
-          cy += poly[i].y;
-        }
-        cx /= Math.max(1, poly.length);
-        cy /= Math.max(1, poly.length);
+        const cx = ellipse.cx;
+        const cy = ellipse.cy;
         const centroidCandidate = { x: cx - MON_BOUNDS_X_SHIFT, y: cy - MON_BASELINE_Y_OFFSET };
-        const centroidInside = inside(cx, cy);
+        const centroidInside = insideEllipse(cx, cy);
         const defaultCandidate = { x: MON_REL_X, y: MON_REL_Y };
         const defaultCx = defaultCandidate.x + MON_BOUNDS_X_SHIFT;
         const defaultBottomY = defaultCandidate.y + MON_BASELINE_Y_OFFSET;
-        const defaultInside = inside(defaultCx, defaultBottomY);
-        const fallback = centroidInside ? centroidCandidate : defaultInside ? defaultCandidate : { x: cx, y: cy };
+        const defaultInside = insideEllipse(defaultCx, defaultBottomY);
+        const fallback = centroidInside ? centroidCandidate : defaultInside ? defaultCandidate : centroidCandidate;
         initialMonPosRef.current = fallback;
         return fallback;
       }
@@ -1505,7 +1490,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const y = minY + Math.random() * (maxY - minY);
           const cx = x + MON_BOUNDS_X_SHIFT;
           const bottomY = y + MON_BASELINE_Y_OFFSET;
-          if (!inside(cx, bottomY)) continue;
+          if (!insideEllipse(cx, bottomY)) continue;
           const left = cx - widthFrac * 0.5;
           const right = cx + widthFrac * 0.5;
           const top = bottomY - heightFrac;
@@ -1521,12 +1506,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const y = Math.max(minY, Math.min(maxY, opts.latestDudePos ? opts.latestDudePos.y : 0));
         const cx2 = x + MON_BOUNDS_X_SHIFT;
         const by2 = y + MON_BASELINE_Y_OFFSET;
-        if (inside(cx2, by2)) return { x, y };
+        if (insideEllipse(cx2, by2)) return { x, y };
         return null;
       }
       return null;
     },
-    [walkPoints, monKey]
+    [SMOOTH_CYCLING_ELLIPSE, monKey]
   );
 
   useEffect(() => {
