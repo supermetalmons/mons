@@ -6,7 +6,7 @@ import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock, { IslandRockHandle } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playSounds, playRockSound, RockSound } from "../content/sounds";
-import { idle as islandMonsIdle, miningWalkingAndPets as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
+import { idle as islandMonsIdle, miningJumpingPetsIdleAndWalking as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
 import { getOwnDrainerId } from "../utils/namedMons";
 import { Sound } from "../utils/gameModels";
 
@@ -2414,7 +2414,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       const wrapBox = wrap.getBoundingClientRect();
       const frameCount = 4;
-      const rows = 3;
+      const rows = 5;
       const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
       const singleRowHeight = Math.floor((sheetImg.naturalHeight || 1) / rows) || 1;
       const targetHeight = Math.max(1, Math.round(wrapBox.height));
@@ -2487,7 +2487,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       const wrapBox = wrap.getBoundingClientRect();
       const frameCount = 4;
-      const rows = 3;
+      const rows = 5;
       const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
       const singleRowHeight = Math.floor((sheetImg.naturalHeight || 1) / rows) || 1;
       const targetHeight = Math.max(1, Math.round(wrapBox.height));
@@ -2607,7 +2607,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       const wrapBox = wrap.getBoundingClientRect();
       const frameCount = 4;
-      const rows = 3;
+      const rows = 5;
       const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
       const singleRowHeight = Math.floor((sheetImg.naturalHeight || 1) / rows) || 1;
       const targetHeight = Math.max(1, Math.round(wrapBox.height));
