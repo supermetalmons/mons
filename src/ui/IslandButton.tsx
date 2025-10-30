@@ -291,7 +291,7 @@ const HotspotFullImage = styled.img<{ $visible: boolean }>`
   object-fit: contain;
   pointer-events: none;
   z-index: 1;
-  filter: brightness(1.35) saturate(1.15) contrast(1.08) drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+  filter: brightness(1.35) saturate(1.15) contrast(1.08);
   opacity: ${(p) => (p.$visible ? 0 : 0)};
   animation: ${(p) => (p.$visible ? overlayFlash : "none")} 520ms ease-out;
 `;
@@ -304,7 +304,7 @@ const StarsOverlayImage = styled.img<{ $visible: boolean; $hold: boolean }>`
   object-fit: contain;
   pointer-events: none;
   z-index: 3;
-  filter: brightness(1.7) saturate(1.25) contrast(1.2) drop-shadow(0 0 10px rgba(255, 255, 255, 0.35)) drop-shadow(0 0 18px rgba(255, 255, 255, 0.25));
+  filter: brightness(1.7) saturate(1.25) contrast(1.2);
   opacity: ${(p) => (p.$hold ? 1 : 0)};
   animation: ${(p) => (p.$hold ? "none" : p.$visible ? overlayFlash : "none")} 520ms ease-out;
 `;
