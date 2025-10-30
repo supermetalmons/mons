@@ -3120,6 +3120,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             walkStopAfterLoopRef.current = false;
             setWalkingPlaying(false);
             checkAndTeleportMonIfOverlapped();
+            startStandingAnimation();
           }
         };
 
@@ -3278,7 +3279,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, NO_WALK_TETRAGON, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget]
+    [handleIslandClose, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, NO_WALK_TETRAGON, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget]
   );
 
   const handleSafeHitboxPointerDown = useCallback(
