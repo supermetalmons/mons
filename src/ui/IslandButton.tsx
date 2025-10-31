@@ -291,8 +291,8 @@ const HotspotFullImage = styled.img<{ $visible: boolean }>`
   height: 100%;
   object-fit: contain;
   pointer-events: none;
-  z-index: 1;
-  filter: brightness(1.35) saturate(1.15) contrast(1.08);
+  z-index: 0;
+  filter: brightness(1.5) saturate(1.25) contrast(1.3);
   opacity: ${(p) => (p.$visible ? 0 : 0)};
   animation: ${(p) => (p.$visible ? overlayFlash : "none")} 520ms ease-out;
 `;
