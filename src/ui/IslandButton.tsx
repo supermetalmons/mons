@@ -1460,21 +1460,30 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const maxX = ellipse.cx + ellipse.rx - MON_BOUNDS_X_SHIFT;
       const minY = ellipse.cy - ellipse.ryTop - MON_BASELINE_Y_OFFSET;
       const maxY = ellipse.cy + ellipse.ryBottom - MON_BASELINE_Y_OFFSET;
+      const rx = ellipse.rx;
+      const centerX = ellipse.cx;
+      const centerY = ellipse.cy;
+      const invRxSq = rx > 0 ? 1 / (rx * rx) : 0;
+      const invRyTopSq = ellipse.ryTop > 0 ? 1 / (ellipse.ryTop * ellipse.ryTop) : 0;
+      const invRyBottomSq = ellipse.ryBottom > 0 ? 1 / (ellipse.ryBottom * ellipse.ryBottom) : 0;
+      const rangeX = maxX - minX;
+      const rangeY = maxY - minY;
       const insideEllipse = (cx: number, bottomY: number) => {
-        const dx = cx - ellipse.cx;
-        const dy = bottomY - ellipse.cy;
-        const ry = dy <= 0 ? ellipse.ryTop : ellipse.ryBottom;
-        if (ellipse.rx <= 0 || ry <= 0) return false;
-        return (dx * dx) / (ellipse.rx * ellipse.rx) + (dy * dy) / (ry * ry) <= 1;
+        if (invRxSq === 0) return false;
+        const dx = cx - centerX;
+        const dy = bottomY - centerY;
+        const invRySq = dy <= 0 ? invRyTopSq : invRyBottomSq;
+        if (invRySq === 0) return false;
+        return dx * dx * invRxSq + dy * dy * invRySq <= 1;
       };
       const widthFrac = getMonBoundsWidthFrac(latestMonKeyRef.current ?? monKey);
       const heightFrac = MON_HEIGHT_FRAC;
-      const computeOverlapFracOfMon = (monB: { left: number; top: number; right: number; bottom: number; area: number }, obstacleB: { left: number; top: number; right: number; bottom: number }): number => {
-        const ix = Math.max(0, Math.min(obstacleB.right, monB.right) - Math.max(obstacleB.left, monB.left));
-        const iy = Math.max(0, Math.min(obstacleB.bottom, monB.bottom) - Math.max(obstacleB.top, monB.top));
-        const overlap = ix * iy;
-        return monB.area > 0 ? overlap / monB.area : 0;
-      };
+      const halfWidth = widthFrac * 0.5;
+      const monArea = widthFrac * heightFrac;
+      const DUDE_MAX_OVERLAP_FRAC = 0.055;
+      const ROCK_MAX_OVERLAP_FRAC = 0.5;
+      const dudeOverlapLimit = DUDE_MAX_OVERLAP_FRAC * monArea;
+      const rockOverlapLimit = ROCK_MAX_OVERLAP_FRAC * monArea;
       const rockHalf = THEORETICAL_ROCK_SQUARE.side * 0.5;
       const rockB = {
         left: THEORETICAL_ROCK_SQUARE.cx - rockHalf,
@@ -1486,21 +1495,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         let attempts = 0;
         while (attempts < 777) {
           attempts++;
-          const x = minX + Math.random() * (maxX - minX);
-          const y = minY + Math.random() * (maxY - minY);
+          const x = minX + Math.random() * rangeX;
+          const y = minY + Math.random() * rangeY;
           const cx = x + MON_BOUNDS_X_SHIFT;
           const bottomY = y + MON_BASELINE_Y_OFFSET;
           if (!insideEllipse(cx, bottomY)) continue;
-          const left = cx - widthFrac * 0.5;
-          const right = cx + widthFrac * 0.5;
+          const left = cx - halfWidth;
+          const right = cx + halfWidth;
           const top = bottomY - heightFrac;
           const bottom = bottomY;
-          const monB = { left, top, right, bottom, area: widthFrac * heightFrac } as { left: number; top: number; right: number; bottom: number; area: number };
-          const DUDE_MAX_OVERLAP_FRAC = 0.055;
-          const ROCK_MAX_OVERLAP_FRAC = 0.5;
-          const dudeOverlap = dudeB ? computeOverlapFracOfMon(monB, dudeB) : 0;
-          const rockOverlap = computeOverlapFracOfMon(monB, rockB);
-          if (dudeOverlap <= DUDE_MAX_OVERLAP_FRAC && rockOverlap <= ROCK_MAX_OVERLAP_FRAC) return { x, y };
+          let ix = Math.max(0, Math.min(rockB.right, right) - Math.max(rockB.left, left));
+          if (ix > 0) {
+            let iy = Math.max(0, Math.min(rockB.bottom, bottom) - Math.max(rockB.top, top));
+            if (ix * iy > rockOverlapLimit) continue;
+          }
+          if (dudeB) {
+            ix = Math.max(0, Math.min(dudeB.right, right) - Math.max(dudeB.left, left));
+            if (ix > 0) {
+              const iy = Math.max(0, Math.min(dudeB.bottom, bottom) - Math.max(dudeB.top, top));
+              if (ix * iy > dudeOverlapLimit) continue;
+            }
+          }
+          return { x, y };
         }
         return null;
       };
