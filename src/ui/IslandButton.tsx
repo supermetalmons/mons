@@ -1434,8 +1434,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     initializeWalkPolygonIfNeeded();
   }, [islandOverlayVisible, islandOpening, islandClosing, heroSize.w, heroSize.h, walkReady, initializeWalkPolygonIfNeeded]);
 
+  const getDudeBounds = useCallback((): { left: number; top: number; right: number; bottom: number; area: number } => {
+    const widthFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_WIDTH_FRAC));
+    const heightFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_HEIGHT_FRAC));
+    const cx = latestDudePosRef.current.x;
+    const bottomY = latestDudePosRef.current.y;
+    const left = cx - widthFrac * 0.5;
+    const right = cx + widthFrac * 0.5;
+    const top = bottomY - heightFrac;
+    const bottom = bottomY;
+    return { left, top, right, bottom, area: Math.max(0, right - left) * Math.max(0, bottom - top) };
+  }, []);
+
   const findValidMonLocation = useCallback(
-    (opts: { mode: "initial" | "teleport"; dudeBounds?: { left: number; top: number; right: number; bottom: number; area: number }; latestDudePos?: { x: number; y: number } }) => {
+    (opts: { mode: "initial" | "teleport" }) => {
       const ellipse = SMOOTH_CYCLING_ELLIPSE;
       const minX = ellipse.cx - ellipse.rx - MON_BOUNDS_X_SHIFT;
       const maxX = ellipse.cx + ellipse.rx - MON_BOUNDS_X_SHIFT;
@@ -1467,7 +1479,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return defaultCandidate;
       }
       if (opts.mode === "teleport") {
-        const dudeB = opts.dudeBounds;
+        const dudeB = getDudeBounds();
         const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(latestMonKeyRef.current ?? monKey)));
         const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
         let attempts = 0;
@@ -1489,8 +1501,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const overlapFracOfMon = monB.area > 0 ? overlap / monB.area : 0;
           if (overlapFracOfMon <= 0.42) return { x, y };
         }
-        const x = Math.max(minX, Math.min(maxX, (opts.latestDudePos ? opts.latestDudePos.x : 0) + 0.2));
-        const y = Math.max(minY, Math.min(maxY, opts.latestDudePos ? opts.latestDudePos.y : 0));
+        const x = Math.max(minX, Math.min(maxX, latestDudePosRef.current.x + 0.2));
+        const y = Math.max(minY, Math.min(maxY, latestDudePosRef.current.y));
         const cx2 = x + MON_BOUNDS_X_SHIFT;
         const by2 = y + MON_BASELINE_Y_OFFSET;
         if (insideEllipse(cx2, by2)) return { x, y };
@@ -1498,7 +1510,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       return null;
     },
-    [SMOOTH_CYCLING_ELLIPSE, monKey]
+    [SMOOTH_CYCLING_ELLIPSE, monKey, getDudeBounds]
   );
 
   useEffect(() => {
@@ -2268,18 +2280,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return ix * iy;
   }, []);
 
-  const getDudeBounds = useCallback(() => {
-    const widthFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_WIDTH_FRAC));
-    const heightFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_HEIGHT_FRAC));
-    const cx = latestDudePosRef.current.x;
-    const bottomY = latestDudePosRef.current.y;
-    const left = cx - widthFrac * 0.5;
-    const right = cx + widthFrac * 0.5;
-    const top = bottomY - heightFrac;
-    const bottom = bottomY;
-    return { left, top, right, bottom, area: Math.max(0, right - left) * Math.max(0, bottom - top) };
-  }, []);
-
   const getMonBounds = useCallback(() => {
     const pos = latestMonPosRef.current || monPos;
     const key = latestMonKeyRef.current ?? monKey;
@@ -2431,7 +2431,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     teleportFXStart();
     setMonTeleporting(true);
     setTimeout(() => {
-      const chosen = findValidMonLocation({ mode: "teleport", dudeBounds: getDudeBounds(), latestDudePos: latestDudePosRef.current });
+      const chosen = findValidMonLocation({ mode: "teleport" });
       if (chosen) {
         setMonFacingLeft(Math.random() < 0.5);
         setMonPos(chosen);
@@ -2445,7 +2445,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         animateTeleportAppear();
       }, 30);
     }, 180);
-  }, [findValidMonLocation, getDudeBounds, monPos, teleportFXStart, spawnTeleportSparkles, prepareTeleportAppear, animateTeleportAppear]);
+  }, [findValidMonLocation, monPos, teleportFXStart, spawnTeleportSparkles, prepareTeleportAppear, animateTeleportAppear]);
 
   const checkAndTeleportMonIfOverlapped = useCallback(() => {
     const monB = getMonBounds();
