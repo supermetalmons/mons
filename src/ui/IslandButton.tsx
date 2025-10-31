@@ -519,7 +519,6 @@ const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map
 
 export let hasIslandOverlayVisible: () => boolean = () => false;
 
-
 const getMaterialImageUrl = (name: MaterialName) => {
   if (!materialImagePromises.has(name)) {
     const url = `${MATERIAL_BASE_URL}/${name}.webp`;
@@ -2424,6 +2423,25 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     },
     [isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, projectOutsideHole, projectToSmoothEllipse]
   );
+  const getSafeAreaEllipse = useCallback((): { cx: number; cy: number; rx: number; ry: number } | null => {
+    const box = rockBoxRef.current;
+    if (!box) return null;
+    const cx = (box.left + box.right) * 0.5 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X;
+    const cy = (box.top + box.bottom) * 0.5 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y;
+    const rx = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X;
+    const ry = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y;
+    return { cx, cy, rx, ry };
+  }, []);
+  const isInsideSafeArea = useCallback(
+    (x: number, y: number) => {
+      const ellipse = getSafeAreaEllipse();
+      if (!ellipse) return false;
+      const dx = (x - ellipse.cx) / ellipse.rx;
+      const dy = (y - ellipse.cy) / ellipse.ry;
+      return dx * dx + dy * dy <= 1;
+    },
+    [getSafeAreaEllipse]
+  );
 
   const computeOverlapArea = useCallback((a: { left: number; top: number; right: number; bottom: number }, b: { left: number; top: number; right: number; bottom: number }) => {
     const ix = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
@@ -2632,6 +2650,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const lastPointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 });
   useEffect(() => {
     latestDudePosRef.current = dudePos;
+  }, [dudePos]);
+  const getReferencePos = useCallback(() => {
+    const ref = latestDudePosRef.current;
+    if (ref && Number.isFinite(ref.x) && Number.isFinite(ref.y) && !(ref.x === 0 && ref.y === 0)) return ref;
+    return dudePos;
   }, [dudePos]);
   const decideFacingWithHysteresis = useCallback((from: { x: number; y: number }, to: { x: number; y: number }) => {
     const dx = to.x - from.x;
@@ -2874,6 +2897,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const heroEl = islandHeroImgRef.current;
       if (!heroEl) return;
       const rect = heroEl.getBoundingClientRect();
+      const width = Math.max(1, rect.width);
+      const height = Math.max(1, rect.height);
       const skipDueToCircleGesture = circlesGestureActiveRef.current;
       let clientX = 0;
       let clientY = 0;
@@ -2885,25 +2910,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         clientX = (event as React.MouseEvent).clientX;
         clientY = (event as React.MouseEvent).clientY;
       }
-      const getSafeAreaEllipse = () => {
-        const box = rockBoxRef.current;
-        if (!box) return null;
-        const cx = (box.left + box.right) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X;
-        const cy = (box.top + box.bottom) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y;
-        const rx = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X;
-        const ry = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y;
-        return { cx, cy, rx, ry };
-      };
-      const isInsideSafeArea = (x: number, y: number) => {
-        const p = getSafeAreaEllipse();
-        if (!p) return false;
-        const dx = (x - p.cx) / p.rx;
-        const dy = (y - p.cy) / p.ry;
-        return dx * dx + dy * dy <= 1;
-      };
-
-      const nxxEarly = (clientX - rect.left) / Math.max(1, rect.width);
-      const nyyEarly = (clientY - rect.top) / Math.max(1, rect.height);
+      const nxxEarly = (clientX - rect.left) / width;
+      const nyyEarly = (clientY - rect.top) / height;
       const isInsideSafeAreaEarly = isInsideSafeArea(nxxEarly, nyyEarly);
       const inside = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
       if (!inside && !isInsideSafeAreaEarly) {
@@ -2914,13 +2922,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       const rx = Math.floor(clientX - rect.left);
       const ry = Math.floor(clientY - rect.top);
-      const nx = rx / Math.max(1, rect.width);
-      const ny = ry / Math.max(1, rect.height);
-      const getReferencePos = () => {
-        const ref = latestDudePosRef.current;
-        if (ref && Number.isFinite(ref.x) && Number.isFinite(ref.y) && !(ref.x === 0 && ref.y === 0)) return ref;
-        return dudePos;
-      };
+      const nx = rx / width;
+      const ny = ry / height;
 
       if (!skipForMaterialTarget && !skipDueToCircleGesture && !walkingDragActiveRef.current && isInsideRockBox(nx, ny)) {
         syncDudePosFromOriginal();
@@ -3048,8 +3051,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           }
           const rxx = Math.floor(cx - rect.left);
           const ryy = Math.floor(cy - rect.top);
-          const nxx = rxx / Math.max(1, rect.width);
-          const nyy = ryy / Math.max(1, rect.height);
+          const nxx = rxx / width;
+          const nyy = ryy / height;
           if (dragModeRef.current === "edge") {
             const lp = lastEllipsePointerRef.current;
             const dxp = nxx - lp.x;
@@ -3267,7 +3270,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, NO_WALK_TETRAGON, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget]
+    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos]
   );
 
   const handleSafeHitboxPointerDown = useCallback(
@@ -3346,12 +3349,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       {rockReady && rockBoxRef.current && (
                         <>
                           {(() => {
-                            const box = rockBoxRef.current!;
-                            const cx = ((box.left + box.right) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X) * 100;
-                            const cy = ((box.top + box.bottom) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y) * 100;
-                            const rw = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X * 100;
-                            const rh = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y * 100;
-                            return <ellipse cx={cx} cy={cy} rx={rw} ry={rh} fill="rgba(0,200,0,0.12)" stroke="rgba(0,180,0,0.85)" strokeWidth={0.9} />;
+                            const ellipse = getSafeAreaEllipse();
+                            if (!ellipse) return null;
+                            const cx = Math.max(0, Math.min(100, ellipse.cx * 100));
+                            const cy = Math.max(0, Math.min(100, ellipse.cy * 100));
+                            const rx = Math.max(0.001, Math.min(100, ellipse.rx * 100));
+                            const ry = Math.max(0.001, Math.min(100, ellipse.ry * 100));
+                            return <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="rgba(0,200,0,0.12)" stroke="rgba(0,180,0,0.85)" strokeWidth={0.9} />;
                           })()}
                           <rect x={Math.max(0, Math.min(1, rockBoxRef.current.left)) * 100} y={Math.max(0, Math.min(1, rockBoxRef.current.top)) * 100} width={Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left)) * 100} height={Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top)) * 100} fill="none" stroke="rgba(255,0,0,0.8)" strokeWidth={1.6} />
                           <line x1={0} x2={100} y1={Math.max(0, Math.min(1, rockBottomY)) * 100} y2={Math.max(0, Math.min(1, rockBottomY)) * 100} stroke="rgba(255,0,0,0.6)" strokeDasharray="4 3" strokeWidth={1} />
