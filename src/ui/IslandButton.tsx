@@ -7,7 +7,8 @@ import IslandRock, { IslandRockHandle } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playSounds, playRockSound, RockSound } from "../content/sounds";
 import { idle as islandMonsIdle, miningJumpingPetsIdleAndWalking as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
-import { getOwnDrainerId } from "../utils/namedMons";
+import { getOwnDrainerId, getOwnMonIdByType, MonType } from "../utils/namedMons";
+import { storage } from "../utils/storage";
 import { Sound } from "../utils/gameModels";
 
 const SHOW_DEBUG_ISLAND_BOUNDS = false;
@@ -517,6 +518,14 @@ const pickWeightedMaterial = (): MaterialName => {
 };
 
 const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
+
+let monSpritesModulePromise: Promise<{ getSpriteByKey: (key: string) => string }> | null = null;
+const getMonSpritesModule = () => {
+  if (!monSpritesModulePromise) {
+    monSpritesModulePromise = import("../assets/monsSprites");
+  }
+  return monSpritesModulePromise;
+};
 
 export let hasIslandOverlayVisible: () => boolean = () => false;
 
@@ -1134,6 +1143,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     stripImg.style.transform = `translateX(${-offset}px)`;
   }, [heroSize.h]);
 
+  const updateMonSprite = useCallback(async (monType: MonType) => {
+    const key = getOwnMonIdByType(monType);
+    const { getSpriteByKey } = await getMonSpritesModule();
+    const data = getSpriteByKey(key);
+    setMonSpriteData(data);
+    setMonKey(key);
+    latestMonKeyRef.current = key;
+  }, []);
+
   hasIslandOverlayVisible = () => {
     return islandOverlayVisible || islandClosing || islandOpening;
   };
@@ -1599,25 +1617,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   );
 
   useEffect(() => {
-    let mounted = true;
     if (!islandOverlayVisible) return;
     const pt = findValidMonLocation({ mode: "initial" });
     setMonPos(pt);
     latestMonPosRef.current = pt;
     setMonFacingLeft(Math.random() < 0.5);
-    (async () => {
-      const { getSpriteByKey } = await import("../assets/monsSprites");
-      const key = getOwnDrainerId();
-      const data = getSpriteByKey(key);
-      if (!mounted) return;
-      setMonSpriteData(data);
-      setMonKey(key);
-      latestMonKeyRef.current = key;
-    })();
-    return () => {
-      mounted = false;
-    };
-  }, [islandOverlayVisible, findValidMonLocation]);
+    const currentType = storage.getIslandMonType(MonType.DRAINER) as MonType;
+    updateMonSprite(currentType);
+  }, [islandOverlayVisible, findValidMonLocation, updateMonSprite]);
 
   useEffect(() => {
     if (!decorVisible || islandClosing || !islandOverlayVisible) return;
@@ -2668,10 +2675,34 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const onThreeCirclesComplete = useCallback(
     (direction: "cw" | "ccw") => {
-      // TODO: swap mon
-      teleportMonToRandomNonOverlappingSpot();
+      if (!monPos) return;
+      const typeOrder: MonType[] = [MonType.DEMON, MonType.ANGEL, MonType.DRAINER, MonType.SPIRIT, MonType.MYSTIC];
+      const currentType = storage.getIslandMonType(MonType.DRAINER) as MonType;
+      const currentIndex = typeOrder.indexOf(currentType);
+      const nextIndex = direction === "ccw" ? (currentIndex + 1) % typeOrder.length : (currentIndex - 1 + typeOrder.length) % typeOrder.length;
+      const nextType = typeOrder[nextIndex];
+      storage.setIslandMonType(nextType);
+      
+      teleportFXStart();
+      setMonTeleporting(true);
+      setTimeout(() => {
+        updateMonSprite(nextType);
+        const chosen = findValidMonLocation({ mode: "teleport" });
+        if (chosen) {
+          setMonFacingLeft(Math.random() < 0.5);
+          setMonPos(chosen);
+          latestMonPosRef.current = chosen;
+          persistentMonPosRef = chosen;
+        }
+        setTimeout(() => {
+          prepareTeleportAppear();
+          setMonTeleporting(false);
+          spawnTeleportSparkles();
+          animateTeleportAppear();
+        }, 30);
+      }, 180);
     },
-    [teleportMonToRandomNonOverlappingSpot]
+    [monPos, teleportFXStart, updateMonSprite, findValidMonLocation, prepareTeleportAppear, spawnTeleportSparkles, animateTeleportAppear]
   );
 
   const updateCircleTracking = useCallback(

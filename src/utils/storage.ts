@@ -27,6 +27,7 @@ const STORAGE_KEYS = {
   COMPLETED_PROBLEMS: "completedProblems",
   TUTORIAL_COMPLETED: "tutorialCompleted",
   IS_FIRST_LAUNCH: "isFirstLaunch",
+  ISLAND_MON_TYPE: "islandMonType",
 } as const;
 
 type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
@@ -250,6 +251,14 @@ export const storage = {
     setItem(STORAGE_KEYS.IS_FIRST_LAUNCH, false);
   },
 
+  getIslandMonType: (defaultValue: string): string => {
+    return getItem(STORAGE_KEYS.ISLAND_MON_TYPE, defaultValue);
+  },
+
+  setIslandMonType: (value: string): void => {
+    setItem(STORAGE_KEYS.ISLAND_MON_TYPE, value);
+  },
+
   signOut: (): void => {
     localStorage.removeItem(STORAGE_KEYS.PLAYER_EMOJI_ID);
     localStorage.removeItem(STORAGE_KEYS.PLAYER_EMOJI_AURA);
@@ -268,5 +277,6 @@ export const storage = {
     localStorage.removeItem(STORAGE_KEYS.COMPLETED_PROBLEMS);
     localStorage.removeItem(STORAGE_KEYS.TUTORIAL_COMPLETED);
     localStorage.removeItem(STORAGE_KEYS.IS_FIRST_LAUNCH);
+    localStorage.removeItem(STORAGE_KEYS.ISLAND_MON_TYPE);
   },
 };

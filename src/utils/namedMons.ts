@@ -88,3 +88,15 @@ export function getOwnDrainerId(): string {
   const drainerIndex = indexes[2];
   return getMonId(MonType.DRAINER, drainerIndex);
 }
+
+export function getOwnMonIdByType(type: MonType): string {
+  const indexes = getMonsIndexes(false, null);
+  const typeToIndexMap: Record<MonType, number> = {
+    [MonType.DEMON]: indexes[0],
+    [MonType.ANGEL]: indexes[1],
+    [MonType.DRAINER]: indexes[2],
+    [MonType.SPIRIT]: indexes[3],
+    [MonType.MYSTIC]: indexes[4],
+  };
+  return getMonId(type, typeToIndexMap[type]);
+}
