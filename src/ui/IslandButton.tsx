@@ -2493,15 +2493,16 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       widthFrac,
       heightFrac,
     };
-    const expandedWidthFrac = Math.max(0.001, Math.min(1, widthFrac + DUDE_BOUNDS_WIDTH_FRAC * 1.4));
-    const expandedHeightFrac = Math.max(0.001, Math.min(1, heightFrac + DUDE_BOUNDS_HEIGHT_FRAC));
+    const expandedWidthFrac = Math.max(0.001, Math.min(1, widthFrac + DUDE_BOUNDS_WIDTH_FRAC * 1.35));
+    const expandedHeightFrac = Math.max(0.001, Math.min(1, heightFrac * 1.4));
+    const expandedVerticalShift = heightFrac * 0.35;
     const expanded = {
       left: cx - expandedWidthFrac * 0.5,
-      top: topY,
+      top: topY + expandedVerticalShift,
       right: cx + expandedWidthFrac * 0.5,
       bottom: topY + expandedHeightFrac,
       widthFrac: expandedWidthFrac,
-      heightFrac: expandedHeightFrac,
+      heightFrac: expandedHeightFrac - expandedVerticalShift,
     };
     return { base, expanded, cx, bottomY, topY };
   }, [monKey, monPos]);
