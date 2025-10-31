@@ -656,6 +656,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const circlesGestureActiveRef = useRef<boolean>(false);
   const walkingDragActiveRef = useRef<boolean>(false);
   const lastMaterialsInsideRef = useRef<Set<MaterialName>>(new Set());
+
+  const circleTrackingRef = useRef<{
+    lastAngle: number | null;
+    totalRotation: number;
+    direction: "cw" | "ccw" | null;
+    center: { x: number; y: number } | null;
+  }>({ lastAngle: null, totalRotation: 0, direction: null, center: null });
   const [hotspotVisible, setHotspotVisible] = useState<boolean[]>(() => new Array(ISLAND_HOTSPOTS.length).fill(false));
   const hotspotTimersRef = useRef<number[]>(new Array(ISLAND_HOTSPOTS.length).fill(0));
   const lastTouchAtRef = useRef<number>(0);
@@ -2659,6 +2666,79 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     }, 180);
   }, [findValidMonLocation, monPos, teleportFXStart, spawnTeleportSparkles, prepareTeleportAppear, animateTeleportAppear]);
 
+  const onThreeCirclesComplete = useCallback(
+    (direction: "cw" | "ccw") => {
+      // TODO: swap mon
+      teleportMonToRandomNonOverlappingSpot();
+    },
+    [teleportMonToRandomNonOverlappingSpot]
+  );
+
+  const updateCircleTracking = useCallback(
+    (dudeX: number, dudeY: number) => {
+      const monPosition = latestMonPosRef.current || monPos;
+      if (!monPosition) return;
+
+      const monBaselineCenterX = monPosition.x;
+      const monBaselineCenterY = monPosition.y + MON_BASELINE_Y_OFFSET;
+      const dx = dudeX - monBaselineCenterX;
+      const dy = dudeY - monBaselineCenterY;
+      const currentAngle = Math.atan2(dy, dx);
+      const tracking = circleTrackingRef.current;
+
+      if (tracking.lastAngle === null) {
+        tracking.lastAngle = currentAngle;
+        tracking.center = { x: monBaselineCenterX, y: monBaselineCenterY };
+        return;
+      }
+
+      let angleDiff = currentAngle - tracking.lastAngle;
+      if (angleDiff > Math.PI) angleDiff -= 2 * Math.PI;
+      if (angleDiff < -Math.PI) angleDiff += 2 * Math.PI;
+
+      if (Math.abs(angleDiff) < 0.005) return;
+
+      const currentDirection: "cw" | "ccw" = angleDiff > 0 ? "ccw" : "cw";
+
+      if (tracking.direction === null) {
+        tracking.direction = currentDirection;
+        tracking.totalRotation += Math.abs(angleDiff);
+      } else if (tracking.direction !== currentDirection) {
+        const reversalAmount = Math.abs(angleDiff);
+        if (reversalAmount < 0.3 && tracking.totalRotation > reversalAmount) {
+          tracking.totalRotation -= reversalAmount;
+        } else {
+          tracking.totalRotation = 0;
+          tracking.direction = currentDirection;
+          tracking.lastAngle = currentAngle;
+          tracking.center = { x: monBaselineCenterX, y: monBaselineCenterY };
+          return;
+        }
+      } else {
+        tracking.totalRotation += Math.abs(angleDiff);
+      }
+
+      tracking.lastAngle = currentAngle;
+
+      const REQUIRED_CIRCLES = 3.5 * 2 * Math.PI;
+      if (tracking.totalRotation >= REQUIRED_CIRCLES) {
+        onThreeCirclesComplete(tracking.direction);
+        tracking.totalRotation = 0;
+        tracking.center = { x: monBaselineCenterX, y: monBaselineCenterY };
+      }
+    },
+    [monPos, onThreeCirclesComplete]
+  );
+
+  const resetCircleTracking = useCallback(() => {
+    circleTrackingRef.current = {
+      lastAngle: null,
+      totalRotation: 0,
+      direction: null,
+      center: null,
+    };
+  }, []);
+
   const checkAndTeleportMonIfOverlapped = useCallback(() => {
     const monB = getMonBounds();
     if (!monB) return;
@@ -3130,6 +3210,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 y: moveAnimRef.current.from.y + (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * Math.min(1, (performance.now() - moveAnimRef.current.start) / moveAnimRef.current.duration),
               }
             : latestDudePosRef.current;
+          updateCircleTracking(latestDudePosRef.current.x, latestDudePosRef.current.y);
           if ("preventDefault" in e) {
             e.preventDefault();
           }
@@ -3140,6 +3221,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           walkingDragActiveRef.current = false;
           dragModeRef.current = "none";
           lastEllipsePointerRef.current = { x: -1, y: -1 };
+          resetCircleTracking();
           window.removeEventListener("mousemove", handleMove as any);
           window.removeEventListener("mouseup", handleEnd as any);
           window.removeEventListener("touchmove", handleMove as any);
