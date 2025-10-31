@@ -14,6 +14,7 @@ const SHOW_DEBUG_ISLAND_BOUNDS = false;
 const FEATURE_GLOWS_ON_HOTSPOT = true;
 const FEATURE_FULL_OVERLAY_ON_HOTSPOT = true;
 const STARS_URL = "https://assets.mons.link/rocks/underground/stars.webp";
+const TOUCH_EDGE_DEADZONE_PX = 5;
 
 const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
   border: none;
@@ -2927,6 +2928,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const inside = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
       if (!inside && !isInsideSafeAreaEarly) {
         if (!skipForMaterialTarget) {
+          const vw = window.innerWidth;
+          const isTouchEvent = !!(anyEvent.touches && anyEvent.touches[0]);
+          const isAtScreenEdge = isTouchEvent && (clientX <= TOUCH_EDGE_DEADZONE_PX || clientX >= vw - TOUCH_EDGE_DEADZONE_PX);
+          if (isAtScreenEdge) {
+            return;
+          }
           handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
           return;
         }
