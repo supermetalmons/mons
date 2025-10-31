@@ -7,7 +7,7 @@ import IslandRock, { IslandRockHandle } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playSounds, playRockSound, RockSound } from "../content/sounds";
 import { idle as islandMonsIdle, miningJumpingPetsIdleAndWalking as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
-import { getOwnDrainerId, getOwnMonIdByType, MonType } from "../utils/namedMons";
+import { getOwnMonIdByType, MonType } from "../utils/namedMons";
 import { storage } from "../utils/storage";
 import { Sound } from "../utils/gameModels";
 
