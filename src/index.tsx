@@ -11,7 +11,7 @@ import BoardComponent from "./ui/BoardComponent";
 import MainMenu, { toggleInfoVisibility, toggleMusicVisibility } from "./ui/MainMenu";
 import { config } from "./utils/wagmi";
 import { useAuthStatus, createEthereumAuthAdapter } from "./connection/authentication";
-import { connection } from "./connection/connection";
+import { connection, isCreateNewInviteFlow } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
 import { FaVolumeUp, FaMusic, FaVolumeMute, FaInfoCircle, FaRegGem, FaPowerOff, FaEllipsisH } from "react-icons/fa";
@@ -45,7 +45,7 @@ const App = () => {
   const [isProfileEditingMode, setIsProfileEditingMode] = useState(false);
   const [isMuted, setIsMuted] = useState(globalIsMuted);
   const [isIslandButtonSupported, setIsIslandButtonSupported] = useState(isIslandButtonSupportedInitial);
-  const [isIslandButtonDim, setIsIslandButtonDim] = useState(false);
+  const [isIslandButtonDim, setIsIslandButtonDim] = useState(!isCreateNewInviteFlow);
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
 
   enterProfileEditingMode = (enter: boolean) => {
