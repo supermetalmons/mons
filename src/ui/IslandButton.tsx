@@ -1469,6 +1469,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       };
       const widthFrac = getMonBoundsWidthFrac(latestMonKeyRef.current ?? monKey);
       const heightFrac = MON_HEIGHT_FRAC;
+      const computeOverlapFracOfMon = (monB: { left: number; top: number; right: number; bottom: number; area: number }, obstacleB: { left: number; top: number; right: number; bottom: number }): number => {
+        const ix = Math.max(0, Math.min(obstacleB.right, monB.right) - Math.max(obstacleB.left, monB.left));
+        const iy = Math.max(0, Math.min(obstacleB.bottom, monB.bottom) - Math.max(obstacleB.top, monB.top));
+        const overlap = ix * iy;
+        return monB.area > 0 ? overlap / monB.area : 0;
+      };
+      const rockHalf = THEORETICAL_ROCK_SQUARE.side * 0.5;
+      const rockB = {
+        left: THEORETICAL_ROCK_SQUARE.cx - rockHalf,
+        right: THEORETICAL_ROCK_SQUARE.cx + rockHalf,
+        top: THEORETICAL_ROCK_SQUARE.cy - rockHalf,
+        bottom: THEORETICAL_ROCK_SQUARE.cy + rockHalf,
+      } as { left: number; top: number; right: number; bottom: number };
       const tryFindNonOverlappingPosition = (): { x: number; y: number } | null => {
         let attempts = 0;
         while (attempts < 777) {
@@ -1483,11 +1496,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const top = bottomY - heightFrac;
           const bottom = bottomY;
           const monB = { left, top, right, bottom, area: widthFrac * heightFrac } as { left: number; top: number; right: number; bottom: number; area: number };
-          const ix = Math.max(0, Math.min(dudeB ? dudeB.right : 0, monB.right) - Math.max(dudeB ? dudeB.left : 0, monB.left));
-          const iy = Math.max(0, Math.min(dudeB ? dudeB.bottom : 0, monB.bottom) - Math.max(dudeB ? dudeB.top : 0, monB.top));
-          const overlap = ix * iy;
-          const overlapFracOfMon = monB.area > 0 ? overlap / monB.area : 0;
-          if (overlapFracOfMon <= 0.05) return { x, y };
+          const DUDE_MAX_OVERLAP_FRAC = 0.055;
+          const ROCK_MAX_OVERLAP_FRAC = 0.5;
+          const dudeOverlap = dudeB ? computeOverlapFracOfMon(monB, dudeB) : 0;
+          const rockOverlap = computeOverlapFracOfMon(monB, rockB);
+          if (dudeOverlap <= DUDE_MAX_OVERLAP_FRAC && rockOverlap <= ROCK_MAX_OVERLAP_FRAC) return { x, y };
         }
         return null;
       };
@@ -1507,7 +1520,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       return defaultCandidate;
     },
-    [SMOOTH_CYCLING_ELLIPSE, monKey, getDudeBounds]
+    [SMOOTH_CYCLING_ELLIPSE, monKey, getDudeBounds, THEORETICAL_ROCK_SQUARE.cx, THEORETICAL_ROCK_SQUARE.cy, THEORETICAL_ROCK_SQUARE.side]
   );
 
   useEffect(() => {
