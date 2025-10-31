@@ -370,9 +370,6 @@ const DUDE_BOUNDS_HEIGHT_FRAC = 0.22;
 const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X = 0.63;
 const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y = 0.36;
 const SAFE_POINT_EDGE_INSET = 0.003;
-const SAFE_POINT_SLIDE_MIN_DIST = 0.012;
-const SAFE_POINT_EDGE_SWITCH_HYST2 = 0.00002;
-const SAFE_POINT_VERTEX_T_EPS = 0.01;
 const SAFE_POINTER_MOVE_EPS = 0.0009;
 const FACING_DX_EPS = 0.006;
 const FACING_FLIP_HYST_MS = 160;
@@ -522,21 +519,6 @@ const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map
 
 export let hasIslandOverlayVisible: () => boolean = () => false;
 
-const WALK_POLYGON: Array<{ x: number; y: number }> = [
-  { x: 0.6124, y: 0.0808 },
-  { x: 0.7692, y: 0.1099 },
-  { x: 0.8739, y: 0.2132 },
-  { x: 0.7206, y: 0.3196 },
-  { x: 0.6518, y: 0.3253 },
-  { x: 0.5113, y: 0.3988 },
-  { x: 0.4152, y: 0.3367 },
-  { x: 0.3393, y: 0.3623 },
-  { x: 0.1104, y: 0.2229 },
-  { x: 0.1805, y: 0.1389 },
-  { x: 0.3018, y: 0.084 },
-  { x: 0.4113, y: 0.0743 },
-  { x: 0.4882, y: 0.0775 },
-];
 
 const getMaterialImageUrl = (name: MaterialName) => {
   if (!materialImagePromises.has(name)) {
@@ -666,8 +648,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [rockBottomY, setRockBottomY] = useState<number>(1);
   const materialDropsRef = useRef<Array<{ el: HTMLImageElement; shadow: HTMLElement; name: MaterialName }>>([]);
 
-  const walkPoints = WALK_POLYGON;
-
   const [heroSize, setHeroSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
 
   const editorOverlayRef = useRef<HTMLDivElement | null>(null);
@@ -756,6 +736,67 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     }),
     []
   );
+  const smoothEllipseMetrics = useMemo(() => {
+    const rx = Math.max(1e-6, SMOOTH_CYCLING_ELLIPSE.rx);
+    const ryTop = Math.max(1e-6, SMOOTH_CYCLING_ELLIPSE.ryTop);
+    const ryBottom = Math.max(1e-6, SMOOTH_CYCLING_ELLIPSE.ryBottom);
+    const invRxSq = 1 / (rx * rx);
+    const invRyTopSq = 1 / (ryTop * ryTop);
+    const invRyBottomSq = 1 / (ryBottom * ryBottom);
+    const ryMid = Math.max(1e-6, (ryTop + ryBottom) * 0.5);
+    const invRyMidSq = 1 / (ryMid * ryMid);
+    return { invRxSq, invRyTopSq, invRyBottomSq, invRyMidSq };
+  }, [SMOOTH_CYCLING_ELLIPSE]);
+  const pickInvRySq = useCallback(
+    (dy: number) => {
+      if (dy > 1e-6) return smoothEllipseMetrics.invRyBottomSq;
+      if (dy < -1e-6) return smoothEllipseMetrics.invRyTopSq;
+      return smoothEllipseMetrics.invRyMidSq;
+    },
+    [smoothEllipseMetrics]
+  );
+  const isInsideSmoothEllipse = useCallback(
+    (x: number, y: number) => {
+      const dx = x - SMOOTH_CYCLING_ELLIPSE.cx;
+      const dy = y - SMOOTH_CYCLING_ELLIPSE.cy;
+      const invRySq = pickInvRySq(dy);
+      if (smoothEllipseMetrics.invRxSq === 0 || invRySq === 0) return false;
+      return dx * dx * smoothEllipseMetrics.invRxSq + dy * dy * invRySq <= 1;
+    },
+    [SMOOTH_CYCLING_ELLIPSE, pickInvRySq, smoothEllipseMetrics]
+  );
+  const projectToSmoothEllipse = useCallback(
+    (x: number, y: number) => {
+      const dx = x - SMOOTH_CYCLING_ELLIPSE.cx;
+      const dy = y - SMOOTH_CYCLING_ELLIPSE.cy;
+      const invRySq = pickInvRySq(dy);
+      if (smoothEllipseMetrics.invRxSq === 0 || invRySq === 0) {
+        return { x: Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cx)), y: Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cy)) };
+      }
+      const denom = Math.sqrt(dx * dx * smoothEllipseMetrics.invRxSq + dy * dy * invRySq) || 1;
+      const px = SMOOTH_CYCLING_ELLIPSE.cx + dx / denom;
+      const py = SMOOTH_CYCLING_ELLIPSE.cy + dy / denom;
+      const vx = px - SMOOTH_CYCLING_ELLIPSE.cx;
+      const vy = py - SMOOTH_CYCLING_ELLIPSE.cy;
+      const vlen = Math.hypot(vx, vy) || 1;
+      const inset = SAFE_POINT_EDGE_INSET;
+      const innerX = px - (vx / vlen) * inset;
+      const innerY = py - (vy / vlen) * inset;
+      return { x: Math.max(0, Math.min(1, innerX)), y: Math.max(0, Math.min(1, innerY)) };
+    },
+    [SMOOTH_CYCLING_ELLIPSE, pickInvRySq, smoothEllipseMetrics]
+  );
+  const smoothEllipseDebugPath = useMemo(() => {
+    const cx = Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cx)) * 100;
+    const cy = Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cy)) * 100;
+    const rx = Math.max(0.5, Math.min(100, SMOOTH_CYCLING_ELLIPSE.rx * 100));
+    const ryTop = Math.max(0.3, Math.min(100, SMOOTH_CYCLING_ELLIPSE.ryTop * 100));
+    const ryBottom = Math.max(0.3, Math.min(100, SMOOTH_CYCLING_ELLIPSE.ryBottom * 100));
+    const leftX = Math.max(0, Math.min(100, cx - rx));
+    const rightX = Math.max(0, Math.min(100, cx + rx));
+    const d = `M ${leftX},${cy} A ${rx} ${ryBottom} 0 1 0 ${rightX},${cy} A ${rx} ${ryTop} 0 0 0 ${leftX},${cy} Z`;
+    return { d, cx, cy, rx, ryTop, ryBottom };
+  }, [SMOOTH_CYCLING_ELLIPSE]);
   const THEORETICAL_ROCK_SQUARE: { cx: number; cy: number; side: number } = {
     cx: 0.5018,
     cy: 0.1773,
@@ -2299,6 +2340,90 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     }
     return inside;
   }, []);
+  const isInsideHole = useCallback((x: number, y: number) => pointInPolygon(x, y, NO_WALK_TETRAGON), [pointInPolygon, NO_WALK_TETRAGON]);
+  const holeCentroid = useMemo(() => {
+    if (NO_WALK_TETRAGON.length === 0) return { x: 0.5, y: 0.5 };
+    let sx = 0;
+    let sy = 0;
+    for (let i = 0; i < NO_WALK_TETRAGON.length; i++) {
+      sx += NO_WALK_TETRAGON[i].x;
+      sy += NO_WALK_TETRAGON[i].y;
+    }
+    const n = NO_WALK_TETRAGON.length;
+    return { x: sx / n, y: sy / n };
+  }, [NO_WALK_TETRAGON]);
+  const projectOutsideHole = useCallback(
+    (point: { x: number; y: number }) => {
+      if (NO_WALK_TETRAGON.length === 0) return null;
+      let best: { x: number; y: number; d2: number } | null = null;
+      for (let i = 0; i < NO_WALK_TETRAGON.length; i++) {
+        const a = NO_WALK_TETRAGON[i];
+        const b = NO_WALK_TETRAGON[(i + 1) % NO_WALK_TETRAGON.length];
+        const vx = b.x - a.x;
+        const vy = b.y - a.y;
+        const len2 = vx * vx + vy * vy || 1;
+        let t = ((point.x - a.x) * vx + (point.y - a.y) * vy) / len2;
+        if (t < 0) t = 0;
+        else if (t > 1) t = 1;
+        const cx = a.x + vx * t;
+        const cy = a.y + vy * t;
+        const dx = point.x - cx;
+        const dy = point.y - cy;
+        const d2 = dx * dx + dy * dy;
+        if (!best || d2 < best.d2) best = { x: cx, y: cy, d2 };
+      }
+      if (!best) return null;
+      const dirX = best.x - holeCentroid.x;
+      const dirY = best.y - holeCentroid.y;
+      const len = Math.hypot(dirX, dirY) || 1;
+      const step = SAFE_POINT_EDGE_INSET;
+      const candidate = {
+        x: Math.max(0, Math.min(1, best.x + (dirX / len) * step)),
+        y: Math.max(0, Math.min(1, best.y + (dirY / len) * step)),
+      };
+      if (pointInPolygon(candidate.x, candidate.y, NO_WALK_TETRAGON)) {
+        const candidate2 = {
+          x: Math.max(0, Math.min(1, best.x + (dirX / len) * step * 4)),
+          y: Math.max(0, Math.min(1, best.y + (dirY / len) * step * 4)),
+        };
+        if (!pointInPolygon(candidate2.x, candidate2.y, NO_WALK_TETRAGON) && isInsideSmoothEllipse(candidate2.x, candidate2.y)) {
+          return candidate2;
+        }
+        return null;
+      }
+      if (!isInsideSmoothEllipse(candidate.x, candidate.y)) return null;
+      return candidate;
+    },
+    [NO_WALK_TETRAGON, holeCentroid, isInsideSmoothEllipse, pointInPolygon]
+  );
+  const isInsideWalkArea = useCallback((x: number, y: number) => isInsideSmoothEllipse(x, y) && !isInsideHole(x, y), [isInsideHole, isInsideSmoothEllipse]);
+  const clampWalkTarget = useCallback(
+    (from: { x: number; y: number }, desired: { x: number; y: number }) => {
+      if (isInsideWalkArea(desired.x, desired.y)) return { x: desired.x, y: desired.y };
+      const insideEllipse = isInsideSmoothEllipse(desired.x, desired.y);
+      if (isInsideHole(desired.x, desired.y)) {
+        const projected = projectOutsideHole(desired);
+        if (projected && !isInsideHole(projected.x, projected.y)) return projected;
+        const ellipseFallback = projectToSmoothEllipse(desired.x, desired.y);
+        if (!isInsideHole(ellipseFallback.x, ellipseFallback.y)) return ellipseFallback;
+        return { x: from.x, y: from.y };
+      }
+      if (!insideEllipse) {
+        const edge = projectToSmoothEllipse(desired.x, desired.y);
+        if (!isInsideHole(edge.x, edge.y)) return edge;
+      }
+      if (insideEllipse) {
+        const outsideHole = projectOutsideHole(desired);
+        if (outsideHole && isInsideSmoothEllipse(outsideHole.x, outsideHole.y) && !isInsideHole(outsideHole.x, outsideHole.y)) {
+          return outsideHole;
+        }
+      }
+      const fallback = projectToSmoothEllipse(desired.x, desired.y);
+      if (!isInsideHole(fallback.x, fallback.y)) return fallback;
+      return { x: from.x, y: from.y };
+    },
+    [isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, projectOutsideHole, projectToSmoothEllipse]
+  );
 
   const computeOverlapArea = useCallback((a: { left: number; top: number; right: number; bottom: number }, b: { left: number; top: number; right: number; bottom: number }) => {
     const ix = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
@@ -2500,8 +2625,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const latestDudePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const moveTargetMetaRef = useRef<{ x: number; y: number; facingLeft: boolean; onArrive?: () => void } | null>(null);
-  const dragModeRef = useRef<"none" | "polygon" | "ellipse">("none");
-  const safeSlideEdgeRef = useRef<{ edgeIndex: number | null } | null>({ edgeIndex: null });
+  const dragModeRef = useRef<"none" | "free" | "edge">("none");
   const lastFacingFlipAtRef = useRef<number>(0);
   const lastFacingDirRef = useRef<boolean>(false);
   const lastEllipsePointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 });
@@ -2761,7 +2885,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         clientX = (event as React.MouseEvent).clientX;
         clientY = (event as React.MouseEvent).clientY;
       }
-      const getEllipseParamsEarly = () => {
+      const getSafeAreaEllipse = () => {
         const box = rockBoxRef.current;
         if (!box) return null;
         const cx = (box.left + box.right) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X;
@@ -2770,18 +2894,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const ry = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y;
         return { cx, cy, rx, ry };
       };
+      const isInsideSafeArea = (x: number, y: number) => {
+        const p = getSafeAreaEllipse();
+        if (!p) return false;
+        const dx = (x - p.cx) / p.rx;
+        const dy = (y - p.cy) / p.ry;
+        return dx * dx + dy * dy <= 1;
+      };
 
       const nxxEarly = (clientX - rect.left) / Math.max(1, rect.width);
       const nyyEarly = (clientY - rect.top) / Math.max(1, rect.height);
-      const isInsideEllipseEarly = (() => {
-        const p = getEllipseParamsEarly();
-        if (!p) return false;
-        const dx = (nxxEarly - p.cx) / p.rx;
-        const dy = (nyyEarly - p.cy) / p.ry;
-        return dx * dx + dy * dy <= 1;
-      })();
+      const isInsideSafeAreaEarly = isInsideSafeArea(nxxEarly, nyyEarly);
       const inside = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
-      if (!inside && !isInsideEllipseEarly) {
+      if (!inside && !isInsideSafeAreaEarly) {
         if (!skipForMaterialTarget) {
           handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
           return;
@@ -2791,6 +2916,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const ry = Math.floor(clientY - rect.top);
       const nx = rx / Math.max(1, rect.width);
       const ny = ry / Math.max(1, rect.height);
+      const getReferencePos = () => {
+        const ref = latestDudePosRef.current;
+        if (ref && Number.isFinite(ref.x) && Number.isFinite(ref.y) && !(ref.x === 0 && ref.y === 0)) return ref;
+        return dudePos;
+      };
 
       if (!skipForMaterialTarget && !skipDueToCircleGesture && !walkingDragActiveRef.current && isInsideRockBox(nx, ny)) {
         syncDudePosFromOriginal();
@@ -2821,124 +2951,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if ((event as any).preventDefault) (event as any).preventDefault();
         return;
       }
-      const getEllipseParams = () => {
-        const box = rockBoxRef.current;
-        if (!box) return null;
-        const cx = (box.left + box.right) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X;
-        const cy = (box.top + box.bottom) / 2 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y;
-        const rx = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X;
-        const ry = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y;
-        return { cx, cy, rx, ry };
-      };
-      const isInsideEllipse = (x: number, y: number) => {
-        const p = getEllipseParams();
-        if (!p) return false;
-        const dx = (x - p.cx) / p.rx;
-        const dy = (y - p.cy) / p.ry;
-        return dx * dx + dy * dy <= 1;
-      };
-      const cross = (ax: number, ay: number, bx: number, by: number) => ax * by + 0 - ay * bx;
-      const segmentIntersectionT = (p0: { x: number; y: number }, p1: { x: number; y: number }, q0: { x: number; y: number }, q1: { x: number; y: number }) => {
-        const r = { x: p1.x - p0.x, y: p1.y - p0.y };
-        const s = { x: q1.x - q0.x, y: q1.y - q0.y };
-        const denom = cross(r.x, r.y, s.x, s.y);
-        if (Math.abs(denom) < 1e-9) return null;
-        const qp = { x: q0.x - p0.x, y: q0.y - p0.y };
-        const t = cross(qp.x, qp.y, s.x, s.y) / denom;
-        const u = cross(qp.x, qp.y, r.x, r.y) / denom;
-        if (t >= 0 && t <= 1 && u >= 0 && u <= 1) return t;
-        return null;
-      };
-      const computeBoundaryStopPoint = (from: { x: number; y: number }, to: { x: number; y: number }, poly: Array<{ x: number; y: number }>) => {
-        if (pointInPolygon(to.x, to.y, poly)) return to;
-        let bestT: number | null = null;
-        let bestEdge: { a: { x: number; y: number }; b: { x: number; y: number } } | null = null;
-        let bestI: number | null = null;
-        let bestJ: number | null = null;
-        const n = poly.length;
-        for (let i = 0, j = n - 1; i < n; j = i++) {
-          const a = poly[j];
-          const b = poly[i];
-          const t = segmentIntersectionT(from, to, a, b);
-          if (t === null) continue;
-          if (t >= SAFE_POINT_VERTEX_T_EPS && t <= 1 - SAFE_POINT_VERTEX_T_EPS && (bestT === null || t + SAFE_POINT_EDGE_SWITCH_HYST2 < bestT)) {
-            bestT = t;
-            bestEdge = { a, b };
-            bestI = i;
-            bestJ = j;
-          }
-        }
-        if (bestT === null) {
-          for (let i = 0, j = n - 1; i < n; j = i++) {
-            const a = poly[j];
-            const b = poly[i];
-            const t = segmentIntersectionT(from, to, a, b);
-            if (t === null) continue;
-            if (t >= 0 && t <= 1 && (bestT === null || t + SAFE_POINT_EDGE_SWITCH_HYST2 < bestT)) {
-              bestT = t;
-              bestEdge = { a, b };
-              bestI = i;
-              bestJ = j;
-            }
-          }
-        }
-        const eps = SAFE_POINT_EDGE_INSET;
-        if (bestT !== null && bestEdge) {
-          const tInside = Math.max(0, bestT - eps);
-          const stop = { x: from.x + (to.x - from.x) * tInside, y: from.y + (to.y - from.y) * tInside };
-          const closeToFrom = Math.hypot(stop.x - from.x, stop.y - from.y) < SAFE_POINT_SLIDE_MIN_DIST;
-          if (!closeToFrom) return stop;
-          let bestProj: { x: number; y: number; d2: number } | null = null;
-          if (bestI !== null && bestJ !== null) {
-            const idxs = [
-              [bestJ, bestI],
-              [bestI, (bestI + 1) % n],
-              [(bestJ - 1 + n) % n, bestJ],
-            ];
-            for (let k = 0; k < idxs.length; k++) {
-              const a = poly[idxs[k][0]];
-              const b = poly[idxs[k][1]];
-              const ex = b.x - a.x;
-              const ey = b.y - a.y;
-              const elen2 = ex * ex + ey * ey || 1;
-              let tProj = ((to.x - a.x) * ex + (to.y - a.y) * ey) / elen2;
-              if (tProj < 0) tProj = 0;
-              else if (tProj > 1) tProj = 1;
-              const sx = a.x + ex * tProj;
-              const sy = a.y + ey * tProj;
-              const dx = to.x - sx;
-              const dy = to.y - sy;
-              const d2 = dx * dx + dy * dy;
-              if (!bestProj || d2 < bestProj.d2) bestProj = { x: sx, y: sy, d2 };
-            }
-          }
-          if (!bestProj) return stop;
-          const ddx = to.x - from.x;
-          const ddy = to.y - from.y;
-          const dFrom2 = ddx * ddx + ddy * ddy;
-          if (!(bestProj.d2 + 1e-8 < dFrom2)) return stop;
-          let sx = bestProj.x;
-          let sy = bestProj.y;
-          let cx = 0;
-          let cy = 0;
-          for (let k = 0; k < poly.length; k++) {
-            cx += poly[k].x;
-            cy += poly[k].y;
-          }
-          cx /= Math.max(1, poly.length);
-          cy /= Math.max(1, poly.length);
-          const nx = cx - sx;
-          const ny = cy - sy;
-          const nlen = Math.hypot(nx, ny) || 1;
-          sx += (nx / nlen) * eps;
-          sy += (ny / nlen) * eps;
-          if (!pointInPolygon(sx, sy, poly)) return stop;
-          return { x: sx, y: sy };
-        }
-
-        return from;
-      };
-
       if (!skipForMaterialTarget && !skipDueToCircleGesture && isInsideMonBox(nx, ny)) {
         if (!monPos) return;
         const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(monKey)));
@@ -2966,8 +2978,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             bestDist = d;
           }
         }
-        const insidePoly = pointInPolygon(best.x, best.y, walkPoints);
-        const target = insidePoly ? best : computeBoundaryStopPoint(latestDudePosRef.current, best, walkPoints);
+        const fromPoint = getReferencePos();
+        const insideWalk = isInsideWalkArea(best.x, best.y);
+        const target = insideWalk ? best : clampWalkTarget(fromPoint, best);
         const onLeftSide = Math.abs(best.x - leftX) <= Math.abs(best.x - rightX);
         const facingLeft = onLeftSide ? false : true;
         const atTarget = Math.hypot(dudePos.x - target.x, dudePos.y - target.y) < 0.015;
@@ -2992,17 +3005,34 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
 
-      if (!skipForMaterialTarget && !skipDueToCircleGesture && (pointInPolygon(nx, ny, walkPoints) || (isInsideEllipse(nx, ny) && !pointInPolygon(nx, ny, NO_WALK_TETRAGON)))) {
+      const insideSafeAreaStart = isInsideSafeArea(nx, ny);
+      const insideHoleStart = isInsideHole(nx, ny);
+      if (!skipForMaterialTarget && !skipDueToCircleGesture && insideHoleStart) {
+        if ("preventDefault" in event) {
+          event.preventDefault();
+        }
+        return;
+      }
+      if (!skipForMaterialTarget && !skipDueToCircleGesture && (isInsideSmoothEllipse(nx, ny) || insideSafeAreaStart)) {
         if (performance.now() < walkSuppressedUntilRef.current) {
           return;
         }
-        const insidePoly = pointInPolygon(nx, ny, walkPoints);
-        dragModeRef.current = isInsideEllipse(nx, ny) && !insidePoly ? "ellipse" : "polygon";
-        const target = insidePoly ? { x: nx, y: ny } : computeBoundaryStopPoint(latestDudePosRef.current, { x: nx, y: ny }, walkPoints);
+        const fromPointStart = getReferencePos();
+        const desiredStart = { x: nx, y: ny };
+        const target = clampWalkTarget(fromPointStart, desiredStart);
+        if (isInsideHole(target.x, target.y)) {
+          if ("preventDefault" in event) {
+            event.preventDefault();
+          }
+          return;
+        }
         moveTargetMetaRef.current = null;
         startMoveTo(target.x, target.y);
         isDraggingRef.current = true;
+        const insideWalkStart = isInsideWalkArea(nx, ny);
+        dragModeRef.current = insideWalkStart ? "free" : "edge";
         lastPointerRef.current = { x: nx, y: ny };
+        lastEllipsePointerRef.current = { x: nx, y: ny };
         walkingDragActiveRef.current = true;
 
         const handleMove = (e: MouseEvent | TouchEvent) => {
@@ -3016,13 +3046,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             cx = (e as MouseEvent).clientX;
             cy = (e as MouseEvent).clientY;
           }
-          const insideMove = cx >= rect.left && cx <= rect.right && cy >= rect.top && cy <= rect.bottom;
-          if (!insideMove) return;
           const rxx = Math.floor(cx - rect.left);
           const ryy = Math.floor(cy - rect.top);
           const nxx = rxx / Math.max(1, rect.width);
           const nyy = ryy / Math.max(1, rect.height);
-          if (dragModeRef.current === "ellipse") {
+          if (dragModeRef.current === "edge") {
             const lp = lastEllipsePointerRef.current;
             const dxp = nxx - lp.x;
             const dyp = nyy - lp.y;
@@ -3030,10 +3058,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               if ("preventDefault" in e) e.preventDefault();
               return;
             }
-            lastEllipsePointerRef.current = { x: nxx, y: nyy };
-          }
-          const insidePolyMove = pointInPolygon(nxx, nyy, walkPoints);
-          if (dragModeRef.current === "polygon") {
+          } else {
             const lp = lastPointerRef.current;
             const dxp = nxx - lp.x;
             const dyp = nyy - lp.y;
@@ -3042,16 +3067,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               return;
             }
           }
-          if (insidePolyMove) {
-            updateMoveTarget(nxx, nyy);
-          } else if (isInsideEllipse(nxx, nyy)) {
-            const stop = computeBoundaryStopPoint(latestDudePosRef.current, { x: nxx, y: nyy }, walkPoints);
-            updateMoveTarget(stop.x, stop.y);
-            dragModeRef.current = "ellipse";
-          }
-          if (dragModeRef.current === "polygon") {
+          const desiredPoint = { x: nxx, y: nyy };
+          const nextTarget = clampWalkTarget(getReferencePos(), desiredPoint);
+          if (isInsideWalkArea(nxx, nyy)) {
+            dragModeRef.current = "free";
             lastPointerRef.current = { x: nxx, y: nyy };
+            lastEllipsePointerRef.current = { x: nxx, y: nyy };
+          } else {
+            dragModeRef.current = "edge";
+            lastEllipsePointerRef.current = { x: nxx, y: nyy };
           }
+          updateMoveTarget(nextTarget.x, nextTarget.y);
           latestDudePosRef.current = moveAnimRef.current
             ? {
                 x: moveAnimRef.current.from.x + (moveAnimRef.current.to.x - moveAnimRef.current.from.x) * Math.min(1, (performance.now() - moveAnimRef.current.start) / moveAnimRef.current.duration),
@@ -3067,7 +3093,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           isDraggingRef.current = false;
           walkingDragActiveRef.current = false;
           dragModeRef.current = "none";
-          if (safeSlideEdgeRef.current) safeSlideEdgeRef.current.edgeIndex = null;
           lastEllipsePointerRef.current = { x: -1, y: -1 };
           window.removeEventListener("mousemove", handleMove as any);
           window.removeEventListener("mouseup", handleEnd as any);
@@ -3242,7 +3267,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, walkPoints, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, NO_WALK_TETRAGON, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget]
+    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, NO_WALK_TETRAGON, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget]
   );
 
   const handleSafeHitboxPointerDown = useCallback(
@@ -3389,7 +3414,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                             </>
                           );
                         })()}
-                      <polygon points={WALK_POLYGON.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(0,128,255,0.08)" stroke="rgba(0,128,255,0.8)" strokeWidth={0.8} />
+                      <path d={smoothEllipseDebugPath.d} fill="rgba(0,128,255,0.08)" stroke="rgba(0,128,255,0.8)" strokeWidth={0.8} />
                       {ISLAND_HOTSPOTS.map((c, i) => {
                         const cx = Math.max(0, Math.min(100, c.cxPct * 100));
                         const cy = Math.max(0, Math.min(100, c.cyPct * 100));
@@ -3413,17 +3438,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                         <polygon points={DISMISS_ALLOWED_TRIANGLE_B.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(0,200,0,0.12)" stroke="rgba(0,180,0,0.85)" strokeWidth={0.9} />
                         <polygon points={NO_WALK_TETRAGON.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(255,165,0,0.12)" stroke="rgba(255,140,0,0.9)" strokeWidth={0.9} />
                         <polygon points={STAR_SHINE_PENTAGON.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(255,215,0,0.12)" stroke="rgba(218,165,32,0.95)" strokeWidth={0.9} />
-                        {(() => {
-                          const cx = Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cx)) * 100;
-                          const cy = Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cy)) * 100;
-                          const rx = Math.max(0.5, Math.min(100, SMOOTH_CYCLING_ELLIPSE.rx * 100));
-                          const ryTop = Math.max(0.3, Math.min(100, SMOOTH_CYCLING_ELLIPSE.ryTop * 100));
-                          const ryBottom = Math.max(0.3, Math.min(100, SMOOTH_CYCLING_ELLIPSE.ryBottom * 100));
-                          const leftX = Math.max(0, Math.min(100, cx - rx));
-                          const rightX = Math.max(0, Math.min(100, cx + rx));
-                          const d = `M ${leftX},${cy} A ${rx} ${ryBottom} 0 1 0 ${rightX},${cy} A ${rx} ${ryTop} 0 0 0 ${leftX},${cy} Z`;
-                          return <path d={d} fill="rgba(64,224,208,0.12)" stroke="rgba(64,224,208,0.95)" strokeWidth={0.9} />;
-                        })()}
+                        <path d={smoothEllipseDebugPath.d} fill="rgba(64,224,208,0.12)" stroke="rgba(64,224,208,0.95)" strokeWidth={0.9} />
                         {(() => {
                           const cx = Math.max(0, Math.min(1, THEORETICAL_ROCK_SQUARE.cx)) * 100;
                           const cy = Math.max(0, Math.min(1, THEORETICAL_ROCK_SQUARE.cy)) * 100;
