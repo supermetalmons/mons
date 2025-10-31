@@ -1448,6 +1448,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const findValidMonLocation = useCallback(
     (opts: { mode: "initial" | "teleport" }) => {
+      const defaultCandidate = { x: MON_REL_X, y: MON_REL_Y };
       const ellipse = SMOOTH_CYCLING_ELLIPSE;
       const minX = ellipse.cx - ellipse.rx - MON_BOUNDS_X_SHIFT;
       const maxX = ellipse.cx + ellipse.rx - MON_BOUNDS_X_SHIFT;
@@ -1474,9 +1475,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             return pt;
           }
         }
-        const defaultCandidate = { x: MON_REL_X, y: MON_REL_Y };
         initialMonPosRef.current = defaultCandidate;
-        return defaultCandidate;
       }
       if (opts.mode === "teleport") {
         const dudeB = getDudeBounds();
@@ -1501,14 +1500,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const overlapFracOfMon = monB.area > 0 ? overlap / monB.area : 0;
           if (overlapFracOfMon <= 0.42) return { x, y };
         }
-        const x = Math.max(minX, Math.min(maxX, latestDudePosRef.current.x + 0.2));
-        const y = Math.max(minY, Math.min(maxY, latestDudePosRef.current.y));
-        const cx2 = x + MON_BOUNDS_X_SHIFT;
-        const by2 = y + MON_BASELINE_Y_OFFSET;
-        if (insideEllipse(cx2, by2)) return { x, y };
-        return null;
       }
-      return null;
+      return defaultCandidate;
     },
     [SMOOTH_CYCLING_ELLIPSE, monKey, getDudeBounds]
   );
