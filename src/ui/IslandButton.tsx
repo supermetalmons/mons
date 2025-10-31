@@ -355,6 +355,8 @@ const ShadowImg = styled.img`
 const DUDE_ANCHOR_FRAC = 0.77;
 const INITIAL_DUDE_Y_SHIFT = -0.6;
 const INITIAL_DUDE_X_SHIFT = -0.07;
+const DEFAULT_DUDE_CENTER_X = 0.4;
+const DEFAULT_DUDE_BOTTOM_Y = 0.78;
 const INITIAL_DUDE_FACING_LEFT = false;
 const ALTERNATE_DUDE_X_SHIFT = 0.27;
 const ROCK_BOX_INSET_LEFT_FRAC = 0.0;
@@ -1010,12 +1012,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     };
   }, [islandOverlayVisible, islandClosing]);
 
-  const [dudePos, setDudePos] = useState<{ x: number; y: number }>({ x: 0.4 + INITIAL_DUDE_X_SHIFT, y: 0.78 + INITIAL_DUDE_Y_SHIFT });
+  const [dudePos, setDudePos] = useState<{ x: number; y: number }>({ x: DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT, y: DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT });
   const [dudeFacingLeft, setDudeFacingLeft] = useState<boolean>(false);
 
   const origDudeImgRef = useRef<HTMLImageElement | null>(null);
   const hasSyncedDudeRef = useRef<boolean>(false);
-  const initialDudePosRef = useRef<{ x: number; y: number } | null>({ x: 0.4 + INITIAL_DUDE_X_SHIFT, y: 0.78 + INITIAL_DUDE_Y_SHIFT });
+  const initialDudePosRef = useRef<{ x: number; y: number } | null>({ x: DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT, y: DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT });
   const dudeWrapRef = useRef<HTMLDivElement | null>(null);
 
   const moveAnimRef = useRef<{ start: number; from: { x: number; y: number }; to: { x: number; y: number }; duration: number } | null>(null);
@@ -1416,8 +1418,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   useLayoutEffect(() => {
     if (!islandOverlayVisible) return;
     if (hasSyncedDudeRef.current) return;
-    const cx = 0.4 + INITIAL_DUDE_X_SHIFT;
-    const cy = 0.78 + INITIAL_DUDE_Y_SHIFT;
+    const cx = DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT;
+    const cy = DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT;
     const clampedX = Math.max(0, Math.min(1, cx));
     const clampedY = Math.max(0, Math.min(1, cy));
     setDudePos({ x: clampedX, y: clampedY });
@@ -1437,8 +1439,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const getDudeBounds = useCallback((): { left: number; top: number; right: number; bottom: number; area: number } => {
     const widthFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_WIDTH_FRAC));
     const heightFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_HEIGHT_FRAC));
-    const cx = latestDudePosRef.current.x;
-    const bottomY = latestDudePosRef.current.y;
+    const refPos = latestDudePosRef.current;
+    const hasValidRefPos = refPos && isFinite(refPos.x) && isFinite(refPos.y) && !(refPos.x === 0 && refPos.y === 0);
+    const fallback = initialDudePosRef.current ?? { x: DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT, y: DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT };
+    const cx = hasValidRefPos ? refPos.x : fallback.x;
+    const bottomY = hasValidRefPos ? refPos.y : fallback.y;
     const left = cx - widthFrac * 0.5;
     const right = cx + widthFrac * 0.5;
     const top = bottomY - heightFrac;
@@ -1449,6 +1454,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const findValidMonLocation = useCallback(
     (opts: { mode: "initial" | "teleport" }) => {
       const defaultCandidate = { x: MON_REL_X, y: MON_REL_Y };
+      const dudeB = getDudeBounds();
       const ellipse = SMOOTH_CYCLING_ELLIPSE;
       const minX = ellipse.cx - ellipse.rx - MON_BOUNDS_X_SHIFT;
       const maxX = ellipse.cx + ellipse.rx - MON_BOUNDS_X_SHIFT;
@@ -1478,7 +1484,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         initialMonPosRef.current = defaultCandidate;
       }
       if (opts.mode === "teleport") {
-        const dudeB = getDudeBounds();
         const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(latestMonKeyRef.current ?? monKey)));
         const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
         let attempts = 0;

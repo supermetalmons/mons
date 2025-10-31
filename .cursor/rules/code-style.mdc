@@ -3,3 +3,4 @@ alwaysApply: true
 ---
 
 - never include comments in code, only todo comments are allowed.
+- avoid code duplication, write clean and reusable functions.
