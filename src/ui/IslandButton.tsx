@@ -2476,6 +2476,36 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return { left, top, right, bottom, area: Math.max(0, right - left) * Math.max(0, bottom - top) };
   }, [monKey, monPos]);
 
+  const getMonBoundsWithExpansion = useCallback(() => {
+    const pos = latestMonPosRef.current || monPos;
+    const key = latestMonKeyRef.current ?? monKey;
+    if (!pos) return null;
+    const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(key)));
+    const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
+    const cx = (pos.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT;
+    const bottomY = (pos.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+    const topY = bottomY - heightFrac;
+    const base = {
+      left: cx - widthFrac * 0.5,
+      top: topY,
+      right: cx + widthFrac * 0.5,
+      bottom: bottomY,
+      widthFrac,
+      heightFrac,
+    };
+    const expandedWidthFrac = Math.max(0.001, Math.min(1, widthFrac + DUDE_BOUNDS_WIDTH_FRAC * 1.4));
+    const expandedHeightFrac = Math.max(0.001, Math.min(1, heightFrac + DUDE_BOUNDS_HEIGHT_FRAC));
+    const expanded = {
+      left: cx - expandedWidthFrac * 0.5,
+      top: topY,
+      right: cx + expandedWidthFrac * 0.5,
+      bottom: topY + expandedHeightFrac,
+      widthFrac: expandedWidthFrac,
+      heightFrac: expandedHeightFrac,
+    };
+    return { base, expanded, cx, bottomY, topY };
+  }, [monKey, monPos]);
+
   const teleportFXStart = useCallback(() => {
     const frame = monFrameWrapRef.current;
     const strip = monStripImgRef.current;
@@ -2973,18 +3003,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
       if (!skipForMaterialTarget && !skipDueToCircleGesture && isInsideMonBox(nx, ny)) {
-        if (!monPos) return;
-        const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(monKey)));
-        const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
-        const cx = (monPos.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT;
-        const bottomY = (monPos.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
-        const topY = bottomY - heightFrac;
-        const expandedW = Math.max(0.001, Math.min(1, widthFrac + DUDE_BOUNDS_WIDTH_FRAC * 1.4));
-        const expandedH = Math.max(0.001, Math.min(1, heightFrac + DUDE_BOUNDS_HEIGHT_FRAC));
-        const leftX = cx - expandedW * 0.5;
-        const rightX = cx + expandedW * 0.5;
-        const top = topY;
-        const bottom = top + expandedH;
+        const detailed = getMonBoundsWithExpansion();
+        if (!detailed) return;
+        const leftX = detailed.expanded.left;
+        const rightX = detailed.expanded.right;
+        const top = detailed.expanded.top;
+        const bottom = detailed.expanded.bottom;
         const clampedY = Math.max(top, Math.min(bottom, dudePos.y));
         const candidates = [
           { x: leftX, y: clampedY },
@@ -3288,7 +3312,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos]
+    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion]
   );
 
   const handleSafeHitboxPointerDown = useCallback(
@@ -3411,24 +3435,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                         })()}
                       {monPos &&
                         (() => {
-                          const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(monKey)));
-                          const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
-                          const cx = (monPos.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT;
-                          const bottomY = (monPos.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
-                          const leftX = cx - widthFrac * 0.5;
-                          const topY = bottomY - heightFrac;
-                          const x = Math.max(0, Math.min(100, leftX * 100));
-                          const y = Math.max(0, Math.min(100, topY * 100));
-                          const ww = Math.max(0.001, Math.min(100, widthFrac * 100));
-                          const hh = Math.max(0.001, Math.min(100, heightFrac * 100));
-                          const expandedWFrac = Math.max(0.001, Math.min(1, widthFrac + DUDE_BOUNDS_WIDTH_FRAC * 1.4));
-                          const expandedHFrac = Math.max(0.001, Math.min(1, heightFrac + DUDE_BOUNDS_HEIGHT_FRAC));
-                          const leftX2 = cx - expandedWFrac * 0.5;
-                          const topY2 = topY;
-                          const x2 = Math.max(0, Math.min(100, leftX2 * 100));
-                          const y2 = Math.max(0, Math.min(100, topY2 * 100));
-                          const ww2 = Math.max(0.001, Math.min(100, expandedWFrac * 100));
-                          const hh2 = Math.max(0.001, Math.min(100, expandedHFrac * 100));
+                          const detailed = getMonBoundsWithExpansion();
+                          if (!detailed) return null;
+                          const base = detailed.base;
+                          const exp = detailed.expanded;
+                          const x = Math.max(0, Math.min(100, base.left * 100));
+                          const y = Math.max(0, Math.min(100, base.top * 100));
+                          const ww = Math.max(0.001, Math.min(100, base.widthFrac * 100));
+                          const hh = Math.max(0.001, Math.min(100, base.heightFrac * 100));
+                          const x2 = Math.max(0, Math.min(100, exp.left * 100));
+                          const y2 = Math.max(0, Math.min(100, exp.top * 100));
+                          const ww2 = Math.max(0.001, Math.min(100, exp.widthFrac * 100));
+                          const hh2 = Math.max(0.001, Math.min(100, exp.heightFrac * 100));
                           return (
                             <>
                               <rect x={x} y={y} width={ww} height={hh} fill="rgba(0,0,0,0.06)" stroke="#000" strokeWidth={0.9} />
