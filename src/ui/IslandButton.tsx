@@ -1435,7 +1435,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, [islandOverlayVisible, islandOpening, islandClosing, heroSize.w, heroSize.h, walkReady, initializeWalkPolygonIfNeeded]);
 
   const findValidMonLocation = useCallback(
-    (opts: { mode: "initial" | "teleport"; preferCandidate?: { x: number; y: number } | null; dudeBounds?: { left: number; top: number; right: number; bottom: number; area: number }; latestDudePos?: { x: number; y: number } }) => {
+    (opts: { mode: "initial" | "teleport"; dudeBounds?: { left: number; top: number; right: number; bottom: number; area: number }; latestDudePos?: { x: number; y: number } }) => {
       const ellipse = SMOOTH_CYCLING_ELLIPSE;
       const minX = ellipse.cx - ellipse.rx - MON_BOUNDS_X_SHIFT;
       const maxX = ellipse.cx + ellipse.rx - MON_BOUNDS_X_SHIFT;
@@ -1448,11 +1448,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if (ellipse.rx <= 0 || ry <= 0) return false;
         return (dx * dx) / (ellipse.rx * ellipse.rx) + (dy * dy) / (ry * ry) <= 1;
       };
-      if (opts.preferCandidate) {
-        const c = opts.preferCandidate;
-        return c;
-      }
       if (opts.mode === "initial") {
+        if (persistentMonPosRef) return persistentMonPosRef;
         if (initialMonPosRef.current) return initialMonPosRef.current;
         for (let k = 0; k < 500; k++) {
           const x = minX + Math.random() * (maxX - minX);
@@ -1507,7 +1504,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   useEffect(() => {
     let mounted = true;
     if (!islandOverlayVisible) return;
-    const pt = findValidMonLocation({ mode: "initial", preferCandidate: persistentMonPosRef });
+    const pt = findValidMonLocation({ mode: "initial" });
     setMonPos(pt);
     latestMonPosRef.current = pt;
     setMonFacingLeft(Math.random() < 0.5);
