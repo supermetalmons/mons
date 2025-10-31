@@ -1467,27 +1467,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if (ellipse.rx <= 0 || ry <= 0) return false;
         return (dx * dx) / (ellipse.rx * ellipse.rx) + (dy * dy) / (ry * ry) <= 1;
       };
-      if (opts.mode === "initial") {
-        if (persistentMonPosRef) return persistentMonPosRef;
-        if (initialMonPosRef.current) return initialMonPosRef.current;
-        for (let k = 0; k < 500; k++) {
-          const x = minX + Math.random() * (maxX - minX);
-          const y = minY + Math.random() * (maxY - minY);
-          const cx = x + MON_BOUNDS_X_SHIFT;
-          const bottomY = y + MON_BASELINE_Y_OFFSET;
-          if (insideEllipse(cx, bottomY)) {
-            const pt = { x, y };
-            initialMonPosRef.current = pt;
-            return pt;
-          }
-        }
-        initialMonPosRef.current = defaultCandidate;
-      }
-      if (opts.mode === "teleport") {
-        const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(latestMonKeyRef.current ?? monKey)));
-        const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
+      const widthFrac = getMonBoundsWidthFrac(latestMonKeyRef.current ?? monKey);
+      const heightFrac = MON_HEIGHT_FRAC;
+      const tryFindNonOverlappingPosition = (): { x: number; y: number } | null => {
         let attempts = 0;
-        while (attempts < 600) {
+        while (attempts < 777) {
           attempts++;
           const x = minX + Math.random() * (maxX - minX);
           const y = minY + Math.random() * (maxY - minY);
@@ -1503,8 +1487,23 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const iy = Math.max(0, Math.min(dudeB ? dudeB.bottom : 0, monB.bottom) - Math.max(dudeB ? dudeB.top : 0, monB.top));
           const overlap = ix * iy;
           const overlapFracOfMon = monB.area > 0 ? overlap / monB.area : 0;
-          if (overlapFracOfMon <= 0.42) return { x, y };
+          if (overlapFracOfMon <= 0.05) return { x, y };
         }
+        return null;
+      };
+      if (opts.mode === "initial") {
+        if (persistentMonPosRef) return persistentMonPosRef;
+        if (initialMonPosRef.current) return initialMonPosRef.current;
+        const pt = tryFindNonOverlappingPosition();
+        if (pt) {
+          initialMonPosRef.current = pt;
+          return pt;
+        }
+        initialMonPosRef.current = defaultCandidate;
+      }
+      if (opts.mode === "teleport") {
+        const tp = tryFindNonOverlappingPosition();
+        if (tp) return tp;
       }
       return defaultCandidate;
     },
