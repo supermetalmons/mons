@@ -725,13 +725,24 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return { minX, maxX, minY, maxY };
   }, [STAR_SHINE_PENTAGON]);
 
-  const SMOOTH_CYCLING_ELLIPSE = useMemo<{ cx: number; cy: number; rx: number; ryTop: number; ryBottom: number }>(
+  const SMALLER_SMOOTH_CYCLING_ELLIPSE = useMemo<{ cx: number; cy: number; rx: number; ryTop: number; ryBottom: number }>(
     () => ({
       cx: 0.4982,
       cy: 0.1928,
       rx: 0.3495,
       ryTop: 0.1143,
       ryBottom: 0.1492,
+    }),
+    []
+  );
+
+  const SMOOTH_CYCLING_ELLIPSE = useMemo<{ cx: number; cy: number; rx: number; ryTop: number; ryBottom: number }>(
+    () => ({
+      cx: 0.4982,
+      cy: 0.1928,
+      rx: 0.36,
+      ryTop: 0.1143,
+      ryBottom: 0.175,
     }),
     []
   );
@@ -1495,7 +1506,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     (opts: { mode: "initial" | "teleport" }) => {
       const defaultCandidate = { x: MON_REL_X, y: MON_REL_Y };
       const dudeB = getDudeBounds();
-      const ellipse = SMOOTH_CYCLING_ELLIPSE;
+      const ellipse = SMALLER_SMOOTH_CYCLING_ELLIPSE;
       const minX = ellipse.cx - ellipse.rx - MON_BOUNDS_X_SHIFT;
       const maxX = ellipse.cx + ellipse.rx - MON_BOUNDS_X_SHIFT;
       const minY = ellipse.cy - ellipse.ryTop - MON_BASELINE_Y_OFFSET;
@@ -1576,7 +1587,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       return defaultCandidate;
     },
-    [SMOOTH_CYCLING_ELLIPSE, monKey, getDudeBounds, THEORETICAL_ROCK_SQUARE.cx, THEORETICAL_ROCK_SQUARE.cy, THEORETICAL_ROCK_SQUARE.side]
+    [SMALLER_SMOOTH_CYCLING_ELLIPSE, monKey, getDudeBounds, THEORETICAL_ROCK_SQUARE.cx, THEORETICAL_ROCK_SQUARE.cy, THEORETICAL_ROCK_SQUARE.side]
   );
 
   useEffect(() => {
