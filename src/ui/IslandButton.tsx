@@ -1450,9 +1450,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       };
       if (opts.preferCandidate) {
         const c = opts.preferCandidate;
-        const ccx = c.x + MON_BOUNDS_X_SHIFT;
-        const cby = c.y + MON_BASELINE_Y_OFFSET;
-        if (insideEllipse(ccx, cby)) return c;
+        return c;
       }
       if (opts.mode === "initial") {
         if (initialMonPosRef.current) return initialMonPosRef.current;
@@ -1467,17 +1465,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             return pt;
           }
         }
-        const cx = ellipse.cx;
-        const cy = ellipse.cy;
-        const centroidCandidate = { x: cx - MON_BOUNDS_X_SHIFT, y: cy - MON_BASELINE_Y_OFFSET };
-        const centroidInside = insideEllipse(cx, cy);
         const defaultCandidate = { x: MON_REL_X, y: MON_REL_Y };
-        const defaultCx = defaultCandidate.x + MON_BOUNDS_X_SHIFT;
-        const defaultBottomY = defaultCandidate.y + MON_BASELINE_Y_OFFSET;
-        const defaultInside = insideEllipse(defaultCx, defaultBottomY);
-        const fallback = centroidInside ? centroidCandidate : defaultInside ? defaultCandidate : centroidCandidate;
-        initialMonPosRef.current = fallback;
-        return fallback;
+        initialMonPosRef.current = defaultCandidate;
+        return defaultCandidate;
       }
       if (opts.mode === "teleport") {
         const dudeB = opts.dudeBounds;
