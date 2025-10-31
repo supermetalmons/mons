@@ -305,7 +305,7 @@ const StarsOverlayImage = styled.img<{ $visible: boolean; $hold: boolean }>`
   object-fit: contain;
   pointer-events: none;
   z-index: 3;
-  filter: brightness(1.7) saturate(1.25) contrast(1.2);
+  filter: brightness(3) saturate(3) contrast(3) blur(0.5px);
   opacity: ${(p) => (p.$hold ? 1 : 0)};
   animation: ${(p) => (p.$hold ? "none" : p.$visible ? overlayFlash : "none")} 520ms ease-out;
 `;
@@ -315,8 +315,8 @@ const MaskedArea = styled.div<{ $cx: number; $cy: number; $visible: boolean }>`
   inset: 0;
   pointer-events: none;
   z-index: 2;
-  -webkit-mask-image: radial-gradient(circle at ${(p) => p.$cx}% ${(p) => p.$cy}%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 7%, rgba(0, 0, 0, 0) 12%);
-  mask-image: radial-gradient(circle at ${(p) => p.$cx}% ${(p) => p.$cy}%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 7%, rgba(0, 0, 0, 0) 12%);
+  -webkit-mask-image: radial-gradient(circle at ${(p) => p.$cx}% ${(p) => p.$cy}%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 9%, rgba(0, 0, 0, 0) 14%);
+  mask-image: radial-gradient(circle at ${(p) => p.$cx}% ${(p) => p.$cy}%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 9%, rgba(0, 0, 0, 0) 14%);
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
 `;
