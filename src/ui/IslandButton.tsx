@@ -3,7 +3,7 @@ import { isMobile } from "../utils/misc";
 import styled, { keyframes } from "styled-components";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeAllKindsOfPopups } from "./MainMenu";
-import IslandRock, { IslandRockHandle } from "./IslandRock";
+import IslandRock, { IslandRockHandle, getRandomRockImageUrl } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playSounds, preloadSounds, playRockSound, RockSound } from "../content/sounds";
 import { idle as islandMonsIdle, miningJumpingPetsIdleAndWalking as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
@@ -655,12 +655,39 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const lastRockRectRef = useRef<DOMRect | null>(null);
   const [rockIsBroken, setRockIsBroken] = useState(false);
   const walkSuppressedUntilRef = useRef<number>(0);
-  const [rockReady, setRockReady] = useState(false);
+  const [rockReady, setRockReadyState] = useState(false);
+  const [rockImageUrl, setRockImageUrl] = useState(() => getRandomRockImageUrl());
+  const rockReadyRef = useRef(rockReady);
+  const setRockReady = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
+    setRockReadyState((prev) => {
+      const next = typeof value === "function" ? value(prev) : value;
+      rockReadyRef.current = next;
+      return next;
+    });
+  }, [setRockReadyState]);
   const rockBoxRef = useRef<{ left: number; top: number; right: number; bottom: number } | null>(null);
-  const [rockBottomY, setRockBottomY] = useState<number>(1);
-const rockReadyRef = useRef(rockReady);
-const rockBottomYRef = useRef(rockBottomY);
-type MaterialDropEntry = {
+  const [rockBottomY, setRockBottomYState] = useState<number>(1);
+  const rockBottomYRef = useRef(rockBottomY);
+  const setRockBottomY = useCallback((value: number | ((prev: number) => number)) => {
+    setRockBottomYState((prev) => {
+      const next = typeof value === "function" ? value(prev) : value;
+      rockBottomYRef.current = next;
+      return next;
+    });
+  }, [setRockBottomYState]);
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const img = new Image();
+    img.src = rockImageUrl;
+    if (typeof img.decode === "function") {
+      img.decode().catch(() => {});
+    }
+  }, [rockImageUrl]);
+  useEffect(() => {
+    if (islandOverlayVisible) return;
+    setRockImageUrl(getRandomRockImageUrl());
+  }, [islandOverlayVisible]);
+  type MaterialDropEntry = {
   id: number;
   el: HTMLImageElement;
   shadow: HTMLElement;
@@ -671,18 +698,10 @@ type MaterialDropEntry = {
   lastZ: number;
 };
 
-const materialDropsRef = useRef<MaterialDropEntry[]>([]);
-const materialDropCounterRef = useRef(0);
+  const materialDropsRef = useRef<MaterialDropEntry[]>([]);
+  const materialDropCounterRef = useRef(0);
   const materialPullQueueRef = useRef<Array<{ name: MaterialName; rect: MaterialPullRect }>>([]);
   const materialPullFlushRef = useRef<number | null>(null);
-
-useEffect(() => {
-  rockReadyRef.current = rockReady;
-}, [rockReady]);
-
-useEffect(() => {
-  rockBottomYRef.current = rockBottomY;
-}, [rockBottomY]);
 
   const [heroSize, setHeroSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
 
@@ -1848,7 +1867,7 @@ useEffect(() => {
   }, []);
 
   const updateRockBox = useCallback(() => {
-    if (!rockReady) return;
+    if (!rockReadyRef.current) return;
     const hero = islandHeroImgRef.current;
     const rockEl = rockLayerRef.current;
     if (!hero || !rockEl) return;
@@ -1874,7 +1893,7 @@ useEffect(() => {
 
     rockBoxRef.current = { left, top, right, bottom };
     setRockBottomY(bottom);
-  }, [rockReady]);
+  }, [setRockBottomY]);
 
   useEffect(() => {
     if (!islandOverlayVisible) return;
@@ -1958,7 +1977,7 @@ useEffect(() => {
         } catch {}
       });
     },
-    [islandImgLoaded, islandNatural, updateRockBox]
+    [islandImgLoaded, islandNatural, setRockBottomY, setRockReady, updateRockBox]
   );
 
   const spawnIconParticles = useCallback((sourceEl: HTMLElement, src: string) => {
@@ -3884,6 +3903,7 @@ useEffect(() => {
                       <Rock
                         ref={rockRef as any}
                         heightPct={75}
+                        src={rockImageUrl}
                         onOpened={() => {
                           setRockReady(true);
                           updateRockBox();

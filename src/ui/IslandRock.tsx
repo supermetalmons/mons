@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState } from "react";
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import styled from "styled-components";
 import { playSounds } from "../content/sounds";
 import { Sound } from "../utils/gameModels";
@@ -31,12 +31,18 @@ const RockImg = styled.img<{ $heightPct?: number; $hidden?: boolean }>`
   -webkit-filter: drop-shadow(0 5px 3px rgba(0, 0, 0, 0.28));
 `;
 
+export function getRandomRockImageUrl() {
+  const index = Math.floor(Math.random() * 27) + 1;
+  return `https://assets.mons.link/rocks/gan/${index}.webp`;
+}
+
 type Props = {
   className?: string;
   onOpened?: () => void;
   onHit?: () => void;
   onBroken?: () => void;
   heightPct?: number;
+  src?: string;
 };
 
 export type IslandRockHandle = {
@@ -69,7 +75,7 @@ type CrashParticleElement = SVGGElement & { __meta: CrashParticleMeta };
 
 const CRASH_COLOR_PALETTE = ["#FFF59D", "#FFE082", "#FFD54F"];
 
-export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRock({ className, onOpened, onHit, onBroken, heightPct }, ref) {
+export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRock({ className, onOpened, onHit, onBroken, heightPct, src }, ref) {
   const [visible, setVisible] = useState(false);
   const [instantHide, setInstantHide] = useState(false);
   const [hideRock, setHideRock] = useState(false);
@@ -86,10 +92,11 @@ export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRoc
   const crashPoolRef = useRef<CrashParticleElement[]>([]);
   const crashPoolInitRef = useRef(false);
 
-  const src = useMemo(() => {
-    const index = Math.floor(Math.random() * 27) + 1;
-    return `https://assets.mons.link/rocks/gan/${index}.webp`;
-  }, []);
+  const fallbackSrcRef = useRef<string | null>(null);
+  if (fallbackSrcRef.current === null) {
+    fallbackSrcRef.current = getRandomRockImageUrl();
+  }
+  const resolvedSrc = src ?? fallbackSrcRef.current;
 
   useEffect(() => {
     function updateMetrics() {
@@ -408,7 +415,7 @@ export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRoc
     <Container ref={containerRef} className={className} $visible={visible} $instant={instantHide} $disabled={disabled}>
       <RockImg
         ref={imgElRef}
-        src={src}
+        src={resolvedSrc}
         alt=""
         draggable={false}
         $heightPct={heightPct}
