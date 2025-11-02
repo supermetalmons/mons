@@ -6,7 +6,7 @@ import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock, { IslandRockHandle, getRandomRockImageUrl } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playSounds, preloadSounds, playRockSound, RockSound } from "../content/sounds";
-import { idle as islandMonsIdle, miningJumpingPetsIdleAndWalking as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
+import { miningJumpingPetsIdleAndWalking as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
 import { getOwnMonIdByType, MonType } from "../utils/namedMons";
 import { storage } from "../utils/storage";
 import { Sound } from "../utils/gameModels";
@@ -201,36 +201,6 @@ const RockLayer = styled.div<{ $visible: boolean }>`
   -webkit-user-select: none;
 `;
 
-const DudeLayer = styled.div<{ $visible: boolean }>`
-  position: absolute;
-  left: 40%;
-  transform: translateX(-50%);
-  top: 11%;
-  height: 20%;
-  pointer-events: none;
-  transition: opacity 260ms ease;
-  opacity: ${(p) => (p.$visible ? 1 : 0)};
-  -webkit-tap-highlight-color: transparent;
-  -webkit-touch-callout: none;
-  user-select: none;
-  touch-action: none;
-  -webkit-user-select: none;
-`;
-
-const DudeImg = styled.img`
-  position: absolute;
-  bottom: 0;
-  right: calc(100% + 4%);
-  height: 85%;
-  width: auto;
-  display: block;
-  pointer-events: none;
-  transform: scale(2.25);
-  transform-origin: bottom right;
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-`;
-
 const HeroWrap = styled.div`
   position: relative;
   display: inline-block;
@@ -352,6 +322,7 @@ const ROCK_BOX_INSET_LEFT_FRAC = 0.0;
 const ROCK_BOX_INSET_RIGHT_FRAC = 0.0;
 const ROCK_BOX_INSET_TOP_FRAC = 0.02;
 const ROCK_BOX_INSET_BOTTOM_FRAC = 0.24;
+const DUDE_SPRITE_HEIGHT_FRAC = 0.45;
 const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X = 0.0;
 const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y = 0.042;
 const DUDE_BOUNDS_WIDTH_FRAC = 0.12;
@@ -365,7 +336,7 @@ const FACING_FLIP_HYST_MS = 160;
 const DudeSpriteWrap = styled.div`
   position: absolute;
   width: auto;
-  height: 45%;
+  height: ${DUDE_SPRITE_HEIGHT_FRAC * 100}%;
   transform: translate(-50%, -${DUDE_ANCHOR_FRAC * 100}%);
   pointer-events: none;
   transition: opacity 260ms ease;
@@ -1115,7 +1086,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [dudePos, setDudePos] = useState<{ x: number; y: number }>({ x: DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT, y: DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT });
   const [dudeFacingLeft, setDudeFacingLeft] = useState<boolean>(false);
 
-  const origDudeImgRef = useRef<HTMLImageElement | null>(null);
   const hasSyncedDudeRef = useRef<boolean>(false);
   const initialDudePosRef = useRef<{ x: number; y: number } | null>({ x: DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT, y: DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT });
   const dudeWrapRef = useRef<HTMLDivElement | null>(null);
@@ -1127,13 +1097,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const miningFrameWrapRef = useRef<HTMLDivElement | null>(null);
   const miningStripImgRef = useRef<HTMLImageElement | null>(null);
   const miningImageRef = useRef<HTMLImageElement | null>(null);
-  const dudeResizeObserverRef = useRef<ResizeObserver | null>(null);
   const dudeFrameWidthRef = useRef<number>(0);
   const [walkingPlaying, setWalkingPlaying] = useState(false);
   const [pettingPlaying, setPettingPlaying] = useState(false);
   const [standingPlaying, setStandingPlaying] = useState(false);
   const sheetAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
   const currentAnimKindRef = useRef<"none" | "mining" | "walking" | "petting" | "standing">("none");
+  const pendingDudeSizingFrameRef = useRef<number | null>(null);
+  const dudeVisibilityGuardRef = useRef<{ lastWidth: number; stableFrames: number }>({ lastWidth: 0, stableFrames: 0 });
 
   const [monPos, setMonPos] = useState<{ x: number; y: number } | null>(null);
   const [monFacingLeft, setMonFacingLeft] = useState<boolean>(false);
@@ -1249,6 +1220,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const targetHeight = Math.max(1, Math.round(wrapBox.height));
         const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / singleRowHeight));
 
+        wrap.style.width = `${targetWidth}px`;
         frameWrap.style.width = `${targetWidth}px`;
         frameWrap.style.height = `${targetHeight}px`;
         stripImg.style.height = `${targetHeight * rows}px`;
@@ -1314,19 +1286,50 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const frameWrap = miningFrameWrapRef.current;
     const stripImg = miningStripImgRef.current;
     if (!sheetImg || !wrap || !frameWrap || !stripImg) return;
+    const { naturalWidth, naturalHeight } = sheetImg;
+    if (!naturalWidth || !naturalHeight) return;
+    const pendingId = pendingDudeSizingFrameRef.current;
+    if (pendingId !== null) {
+      cancelAnimationFrame(pendingId);
+      pendingDudeSizingFrameRef.current = null;
+    }
     const wrapBox = wrap.getBoundingClientRect();
+    const heroEl = islandHeroImgRef.current;
+    const heroRect = heroEl ? heroEl.getBoundingClientRect() : null;
+    const heroWrap = heroWrapRef.current;
+    const heroWrapRect = heroWrap ? heroWrap.getBoundingClientRect() : null;
+    const fallbackHeightFromHero = heroRect && heroRect.height ? heroRect.height * DUDE_SPRITE_HEIGHT_FRAC : 0;
+    const fallbackHeightFromWrap = heroWrapRect && heroWrapRect.height ? heroWrapRect.height * DUDE_SPRITE_HEIGHT_FRAC : 0;
+    const fallbackHeightFromState = heroSize.h ? heroSize.h * DUDE_SPRITE_HEIGHT_FRAC : 0;
+    const measuredHeight = wrapBox.height || fallbackHeightFromHero || fallbackHeightFromWrap || fallbackHeightFromState;
+    if (!measuredHeight) {
+      if (pendingDudeSizingFrameRef.current === null) {
+        pendingDudeSizingFrameRef.current = requestAnimationFrame(() => {
+          pendingDudeSizingFrameRef.current = null;
+          updateDudeStripSizing();
+        });
+      }
+      return;
+    }
     const frameCount = 4;
     const rows = 5;
-    const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
-    const singleRowHeight = Math.floor((sheetImg.naturalHeight || 1) / rows) || 1;
-    const targetHeight = Math.max(1, Math.round(wrapBox.height));
+    const frameWidth = Math.floor(naturalWidth / frameCount) || 1;
+    const singleRowHeight = Math.floor(naturalHeight / rows) || 1;
+    if (!frameWidth || !singleRowHeight) return;
+    const targetHeight = Math.max(1, Math.round(measuredHeight));
     const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / singleRowHeight));
 
     try {
-      frameWrap.style.width = `${targetWidth}px`;
-      frameWrap.style.height = `${targetHeight}px`;
-      stripImg.style.height = `${targetHeight * rows}px`;
-      stripImg.style.width = `${targetWidth * frameCount}px`;
+      const wrapWidthValue = `${targetWidth}px`;
+      if (wrap.style.width !== wrapWidthValue) wrap.style.width = wrapWidthValue;
+      const frameWidthValue = `${targetWidth}px`;
+      if (frameWrap.style.width !== frameWidthValue) frameWrap.style.width = frameWidthValue;
+      const frameHeightValue = `${targetHeight}px`;
+      if (frameWrap.style.height !== frameHeightValue) frameWrap.style.height = frameHeightValue;
+      const stripHeightValue = `${targetHeight * rows}px`;
+      if (stripImg.style.height !== stripHeightValue) stripImg.style.height = stripHeightValue;
+      const stripWidthValue = `${targetWidth * frameCount}px`;
+      if (stripImg.style.width !== stripWidthValue) stripImg.style.width = stripWidthValue;
       dudeFrameWidthRef.current = targetWidth;
       const kind = currentAnimKindRef.current;
       const rowIndex = kind === "mining" ? 0 : kind === "walking" ? 1 : kind === "petting" ? 2 : 3;
@@ -1334,39 +1337,42 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const lastFrame = sheetAnimRef.current?.lastFrame ?? -1;
       const currentFrameIndex = lastFrame === -1 && kind === "walking" ? 1 : Math.max(0, lastFrame);
       const offset = currentFrameIndex * targetWidth;
-      stripImg.style.transform = `translate(${-offset}px, ${tyConst}px)`;
+      const transform = `translate(${-offset}px, ${tyConst}px)`;
+      if (stripImg.style.transform !== transform) stripImg.style.transform = transform;
     } catch {}
-  }, []);
+  }, [heroSize.h]);
 
   useEffect(() => {
-    if (!islandOverlayVisible) return;
-    if (!(miningPlaying || walkingPlaying || pettingPlaying || standingPlaying)) return;
+    if (!islandOverlayVisible || islandClosing) return;
     const handler = () => {
       updateDudeStripSizing();
     };
     window.addEventListener("resize", handler);
     document.addEventListener("fullscreenchange", handler);
-    const wrap = dudeWrapRef.current;
-    let ro: ResizeObserver | null = null;
-    try {
-      if (wrap && typeof ResizeObserver !== "undefined") {
-        ro = new ResizeObserver(() => updateDudeStripSizing());
-        dudeResizeObserverRef.current = ro;
-        ro.observe(wrap);
-      }
-    } catch {}
-    try {
-      requestAnimationFrame(handler);
-    } catch {}
+    handler();
     return () => {
       window.removeEventListener("resize", handler);
       document.removeEventListener("fullscreenchange", handler);
-      try {
-        if (ro && wrap) ro.unobserve(wrap);
-      } catch {}
-      dudeResizeObserverRef.current = null;
+      if (pendingDudeSizingFrameRef.current !== null) {
+        cancelAnimationFrame(pendingDudeSizingFrameRef.current);
+        pendingDudeSizingFrameRef.current = null;
+      }
     };
-  }, [islandOverlayVisible, miningPlaying, walkingPlaying, pettingPlaying, standingPlaying, updateDudeStripSizing]);
+  }, [islandOverlayVisible, islandClosing, updateDudeStripSizing]);
+
+  useEffect(() => {
+    return () => {
+      if (pendingDudeSizingFrameRef.current !== null) {
+        cancelAnimationFrame(pendingDudeSizingFrameRef.current);
+        pendingDudeSizingFrameRef.current = null;
+      }
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    if (!islandOverlayVisible || islandClosing) return;
+    updateDudeStripSizing();
+  }, [islandOverlayVisible, islandClosing, updateDudeStripSizing, heroSize.h, heroSize.w, dudeVisible]);
 
   const startStandingAnimation = useCallback(() => playSheetAnimation("standing"), [playSheetAnimation]);
 
@@ -1409,10 +1415,33 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   useEffect(() => {
     let timer: number | null = null;
+    let raf: number | null = null;
+    dudeVisibilityGuardRef.current = { lastWidth: 0, stableFrames: 0 };
+    const showWhenReady = () => {
+      raf = null;
+      updateDudeStripSizing();
+      const wrapEl = dudeWrapRef.current;
+      const width = wrapEl ? wrapEl.getBoundingClientRect().width : 0;
+      if (dudeFrameWidthRef.current > 0 && width > 0) {
+        const guard = dudeVisibilityGuardRef.current;
+        const diff = Math.abs(width - guard.lastWidth);
+        if (diff < 0.5) {
+          guard.stableFrames += 1;
+        } else {
+          guard.stableFrames = 0;
+        }
+        guard.lastWidth = width;
+        if (guard.stableFrames >= 1) {
+          setDudeVisible(true);
+          return;
+        }
+      }
+      raf = requestAnimationFrame(showWhenReady);
+    };
     if (islandOverlayVisible && !islandClosing) {
       timer = window.setTimeout(() => {
         setDecorVisible(true);
-        requestAnimationFrame(() => setDudeVisible(true));
+        raf = requestAnimationFrame(showWhenReady);
       }, 120);
     } else {
       setDecorVisible(false);
@@ -1421,8 +1450,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     }
     return () => {
       if (timer !== null) window.clearTimeout(timer);
+      if (raf !== null) cancelAnimationFrame(raf);
+      dudeVisibilityGuardRef.current = { lastWidth: 0, stableFrames: 0 };
     };
-  }, [islandOverlayVisible, islandClosing]);
+  }, [islandOverlayVisible, islandClosing, updateDudeStripSizing]);
 
   useEffect(() => {
     let mounted = true;
@@ -1559,22 +1590,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const syncDudePosFromOriginal = useCallback(() => {
     if (hasSyncedDudeRef.current) return;
-    const hero = islandHeroImgRef.current;
-    const origDude = origDudeImgRef.current;
-    if (!hero || !origDude) return;
-    const hbox = hero.getBoundingClientRect();
-    const db = origDude.getBoundingClientRect();
-    const cxCenter = (db.left + db.width / 2 - hbox.left) / hbox.width;
-    const cx = cxCenter + INITIAL_DUDE_X_SHIFT;
-    const cyBottom = (db.bottom - hbox.top) / hbox.height;
-    const cy = cyBottom + INITIAL_DUDE_Y_SHIFT;
-    if (isFinite(cx) && isFinite(cy)) {
-      const clampedX = Math.max(0, Math.min(1, cx));
-      const clampedY = Math.max(0, Math.min(1, cy));
-      setDudePos({ x: clampedX, y: clampedY });
-      initialDudePosRef.current = { x: clampedX, y: clampedY };
-      hasSyncedDudeRef.current = true;
-    }
+    const cx = DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT;
+    const cy = DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT;
+    const clampedX = Math.max(0, Math.min(1, cx));
+    const clampedY = Math.max(0, Math.min(1, cy));
+    setDudePos({ x: clampedX, y: clampedY });
+    initialDudePosRef.current = { x: clampedX, y: clampedY };
+    hasSyncedDudeRef.current = true;
   }, []);
 
   useLayoutEffect(() => {
@@ -3802,11 +3824,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                     </div>
                   </>
                 )}
-                {!islandClosing && (
-                  <DudeLayer $visible={!islandClosing} style={{ visibility: "hidden", opacity: 0 }}>
-                    <DudeImg ref={origDudeImgRef} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} />
-                  </DudeLayer>
-                )}
                 {(() => {
                   const widthPct = DUDE_BOUNDS_WIDTH_FRAC * 1.3 * 100;
                   const topOffsetFrac = 0.0135;
@@ -3827,12 +3844,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       return inFrontOfRock ? 700 + base : 300 + base;
                     })(),
                   }}>
-                  <DudeSpriteImg $facingLeft={dudeFacingLeft} src={`data:image/png;base64,${islandMonsIdle}`} alt="" draggable={false} style={{ visibility: miningPlaying || walkingPlaying || pettingPlaying || standingPlaying ? "hidden" : "visible" }} />
-                  {(miningPlaying || walkingPlaying || pettingPlaying || standingPlaying) && (
-                    <DudeSpriteFrame $facingLeft={dudeFacingLeft} ref={miningFrameWrapRef as any}>
-                      <DudeSpriteStrip ref={miningStripImgRef as any} src={`data:image/png;base64,${islandMonsMining}`} alt="" draggable={false} />
-                    </DudeSpriteFrame>
-                  )}
+                  <DudeSpriteFrame $facingLeft={dudeFacingLeft} ref={miningFrameWrapRef as any}>
+                    <DudeSpriteStrip ref={miningStripImgRef as any} src={`data:image/png;base64,${islandMonsMining}`} alt="" draggable={false} />
+                  </DudeSpriteFrame>
                 </DudeSpriteWrap>
                 {decorVisible && (
                   <>
