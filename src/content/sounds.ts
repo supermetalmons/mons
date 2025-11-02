@@ -7,6 +7,79 @@ function playSound(path: string) {
   soundPlayer.playSound("https://assets.mons.link/" + path);
 }
 
+function resolveSoundName(sound: Sound): string | null {
+  switch (sound) {
+    case Sound.Bomb:
+      return "bomb";
+    case Sound.Click:
+      return "click";
+    case Sound.DemonAbility:
+      return "demonAbility";
+    case Sound.ManaPickUp:
+      return "manaPickUp";
+    case Sound.Move:
+      return "move";
+    case Sound.EndTurn:
+      return "endTurn";
+    case Sound.MysticAbility:
+      return "mysticAbility";
+    case Sound.PickupPotion:
+      return "pickupPotion";
+    case Sound.PickupBomb:
+      return "pickupBomb";
+    case Sound.ChoosePickup:
+      return "choosePickup";
+    case Sound.ScoreMana:
+      return "scoreMana";
+    case Sound.ScoreSupermana:
+      return "scoreSuperMana";
+    case Sound.SpiritAbility:
+      return "spiritAbility";
+    case Sound.Victory:
+      return "victory";
+    case Sound.Defeat:
+      return ["defeat", "defeat1", "defeat2"][Math.floor(Math.random() * 3)];
+    case Sound.DidConnect:
+      return "didConnect";
+    case Sound.Undo:
+      return "undo";
+    case Sound.EmoteSent:
+      return "emotePop8";
+    case Sound.EmoteReceived:
+      return "emotePop5";
+    case Sound.PickaxeHit:
+      return "pickaxeHit";
+    case Sound.PickaxeMiss:
+      return "pickaxeMiss";
+    case Sound.RockOpen:
+      return "rockOpen";
+    case Sound.UsePotion:
+      return "popSharp";
+    case Sound.ConfirmEarlyEndTurn:
+      return "thud";
+    case Sound.IslandShowUp:
+      return "";
+    case Sound.WalkToRock:
+      return "thud";
+    case Sound.CollectingMaterials:
+      return "gather";
+    case Sound.Timer:
+      return "timer";
+    case Sound.IslandClosing:
+      return "";
+    case Sound.Chip:
+      return "chip";
+    case Sound.HappyMon:
+      return "happy";
+    case Sound.SadMon:
+      return "sad";
+    case Sound.DownChip:
+      return "down chip";
+    default:
+      return null;
+  }
+}
+
 export async function playReaction(reaction: Reaction) {
   if (getIsMuted()) {
     return;
@@ -59,112 +132,28 @@ export async function playSounds(sounds: Sound[]) {
   sounds = sounds.filter((sound) => getSoundPriority(sound) === maxSoundPriority || sound === Sound.EndTurn);
 
   for (const sound of sounds) {
-    let name: string;
-    switch (sound) {
-      case Sound.Bomb:
-        name = "bomb";
-        break;
-      case Sound.Click:
-        name = "click";
-        break;
-      case Sound.DemonAbility:
-        name = "demonAbility";
-        break;
-      case Sound.ManaPickUp:
-        name = "manaPickUp";
-        break;
-      case Sound.Move:
-        name = "move";
-        break;
-      case Sound.EndTurn:
-        name = "endTurn";
-        break;
-      case Sound.MysticAbility:
-        name = "mysticAbility";
-        break;
-      case Sound.PickupPotion:
-        name = "pickupPotion";
-        break;
-      case Sound.PickupBomb:
-        name = "pickupBomb";
-        break;
-      case Sound.ChoosePickup:
-        name = "choosePickup";
-        break;
-      case Sound.ScoreMana:
-        name = "scoreMana";
-        break;
-      case Sound.ScoreSupermana:
-        name = "scoreSuperMana";
-        break;
-      case Sound.SpiritAbility:
-        name = "spiritAbility";
-        break;
-      case Sound.Victory:
-        name = "victory";
-        break;
-      case Sound.Defeat:
-        name = ["defeat", "defeat1", "defeat2"][Math.floor(Math.random() * 3)];
-        break;
-      case Sound.DidConnect:
-        name = "didConnect";
-        break;
-      case Sound.Undo:
-        name = "undo";
-        break;
-      case Sound.EmoteSent:
-        name = "emotePop8";
-        break;
-      case Sound.EmoteReceived:
-        name = "emotePop5";
-        break;
-      case Sound.PickaxeHit:
-        name = "pickaxeHit";
-        break;
-      case Sound.PickaxeMiss:
-        name = "pickaxeMiss";
-        break;
-      case Sound.RockOpen:
-        name = "rockOpen";
-        break;
-      case Sound.UsePotion:
-        name = "popSharp";
-        break;
-      case Sound.ConfirmEarlyEndTurn:
-        name = "thud";
-        break;
-      case Sound.IslandShowUp:
-        name = "";
-        break;
-      case Sound.WalkToRock:
-        name = "thud";
-        break;
-      case Sound.CollectingMaterials:
-        name = "gather";
-        break;
-      case Sound.Timer:
-        name = "timer";
-        break;
-      case Sound.IslandClosing:
-        name = "";
-        break;
-      case Sound.Chip:
-        name = "chip";
-        break;
-      case Sound.HappyMon:
-        name = "happy";
-        break;
-      case Sound.SadMon:
-        name = "sad";
-        break;
-      case Sound.DownChip:
-        name = "down chip";
-        break;
-    }
-
+    const name = resolveSoundName(sound);
+    if (name === null) continue;
     const path = `sounds/${name}.wav`;
     playSound(path);
   }
+}
+
+export async function preloadSounds(sounds: Sound[]) {
+  if (getIsMuted()) {
+    return;
+  }
+  const uniqueUrls: string[] = [];
+  const seen = new Set<string>();
+  for (const sound of sounds) {
+    const name = resolveSoundName(sound);
+    if (!name) continue;
+    const url = `https://assets.mons.link/sounds/${name}.wav`;
+    if (seen.has(url)) continue;
+    seen.add(url);
+    uniqueUrls.push(url);
+  }
+  await Promise.all(uniqueUrls.map((url) => soundPlayer.preloadSound(url).catch(() => {})));
 }
 
 export enum RockSound {

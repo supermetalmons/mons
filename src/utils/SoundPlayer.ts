@@ -93,6 +93,30 @@ export class SoundPlayer {
     document.addEventListener("click", handler, { once: true });
   }
 
+  private async prepareContext(): Promise<AudioContext | null> {
+    if (!this.isInitialized) return null;
+    if (!this.audioContext) return null;
+    if (this.audioContext.state === "closed") {
+      this.isInitialized = false;
+      this.setupRestartListeners();
+      return null;
+    }
+    try {
+      if (this.audioContext.state !== "running") {
+        if (!this.isResuming) {
+          this.isResuming = true;
+          await this.audioContext.resume();
+          this.isResuming = false;
+        }
+      }
+      return this.audioContext;
+    } catch (_) {
+      this.isResuming = false;
+      this.setupRestartListeners();
+      return null;
+    }
+  }
+
   private attachStateChangeHandler(): void {
     if (!this.audioContext) return;
     const ctx: any = this.audioContext as any;
@@ -117,31 +141,26 @@ export class SoundPlayer {
   public async playSound(url: string): Promise<void> {
     if (!this.isInitialized) return;
     if (document.visibilityState !== "visible" && isMobile) return;
-    if (!this.audioContext) return;
-    if (this.audioContext.state === "closed") {
-      this.isInitialized = false;
-      this.setupRestartListeners();
-      return;
-    }
+    const ctx = await this.prepareContext();
+    if (!ctx) return;
     try {
-      if (this.audioContext.state !== "running") {
-        try {
-          if (!this.isResuming) {
-            this.isResuming = true;
-            await this.audioContext.resume();
-            this.isResuming = false;
-          }
-        } catch (_) {
-          this.isResuming = false;
-          this.setupRestartListeners();
-          return;
-        }
-      }
       const audioBuffer = await this.loadAudioBuffer(url);
-      const source = this.audioContext.createBufferSource();
+      const source = ctx.createBufferSource();
       source.buffer = audioBuffer;
-      source.connect(this.audioContext.destination);
+      source.connect(ctx.destination);
       source.start(0);
+    } catch (_) {
+      this.setupRestartListeners();
+    }
+  }
+
+  public async preloadSound(url: string): Promise<void> {
+    if (!this.isInitialized) return;
+    if (document.visibilityState !== "visible" && isMobile) return;
+    const ctx = await this.prepareContext();
+    if (!ctx) return;
+    try {
+      await this.loadAudioBuffer(url);
     } catch (_) {
       this.setupRestartListeners();
     }

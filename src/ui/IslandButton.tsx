@@ -5,7 +5,7 @@ import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock, { IslandRockHandle } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
-import { playSounds, playRockSound, RockSound } from "../content/sounds";
+import { playSounds, preloadSounds, playRockSound, RockSound } from "../content/sounds";
 import { idle as islandMonsIdle, miningJumpingPetsIdleAndWalking as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
 import { getOwnMonIdByType, MonType } from "../utils/namedMons";
 import { storage } from "../utils/storage";
@@ -1836,6 +1836,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const handleIslandOpen = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
       soundPlayer.initializeOnUserInteraction(true).then(() => {
+        preloadSounds([Sound.PickaxeHit, Sound.PickaxeMiss, Sound.RockOpen, Sound.CollectingMaterials]).catch(() => {});
         playSounds([Sound.IslandShowUp]);
       });
       closeAllKindsOfPopups();
