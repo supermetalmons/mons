@@ -3273,6 +3273,130 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const nx = rx / width;
       const ny = ry / height;
 
+      const isInAnyHotspot = (() => {
+        for (let i = 0; i < ISLAND_HOTSPOTS.length; i++) {
+          const c = ISLAND_HOTSPOTS[i];
+          const dx = nx - c.cxPct;
+          const dy = ny - c.cyPct;
+          const r = c.dPct * 0.5;
+          if (dx * dx + dy * dy <= r * r) return true;
+        }
+        return false;
+      })();
+
+      const allowStarsInteraction = skipForMaterialTarget || !isInAnyHotspot || skipDueToCircleGesture;
+
+      const starWithinBounds = (px: number, py: number) =>
+        px >= STAR_SHINE_PENTAGON_BOUNDS.minX &&
+        px <= STAR_SHINE_PENTAGON_BOUNDS.maxX &&
+        py >= STAR_SHINE_PENTAGON_BOUNDS.minY &&
+        py <= STAR_SHINE_PENTAGON_BOUNDS.maxY &&
+        pointInPolygon(px, py, STAR_SHINE_PENTAGON);
+
+      const resetStarInteractionState = () => {
+        if (starsTimerRef.current) {
+          window.clearTimeout(starsTimerRef.current);
+          starsTimerRef.current = 0;
+        }
+        cancelQueuedStarsCenterUpdate();
+        starsAnimActiveRef.current = false;
+        starsDismissedRef.current = false;
+        wasStarsInsideRef.current = false;
+        setStarsVisible(false);
+        if (starsHoldRef.current) setStarsHold(false);
+      };
+
+      const startStarInteractionAt = (px: number, py: number) => {
+        if (!starWithinBounds(px, py)) {
+          setStarsHold(false);
+          setStarsVisible(false);
+          wasStarsInsideRef.current = false;
+          starsDismissedRef.current = true;
+          return;
+        }
+        if (starsTimerRef.current) {
+          window.clearTimeout(starsTimerRef.current);
+          starsTimerRef.current = 0;
+        }
+        setStarsVisible(false);
+        if (starsAnimActiveRef.current) {
+          starsAnimActiveRef.current = false;
+        }
+        setStarsCenterImmediate(px * 100, py * 100);
+        setStarsHold(true);
+        wasStarsInsideRef.current = true;
+        starsDismissedRef.current = false;
+      };
+
+      const updateStarInteractionAt = (px: number, py: number) => {
+        if (starWithinBounds(px, py)) {
+          if (!starsHoldRef.current) {
+            setStarsCenterImmediate(px * 100, py * 100);
+            setStarsHold(true);
+          } else {
+            queueStarsCenterUpdate(px * 100, py * 100);
+          }
+          if (starsTimerRef.current) {
+            window.clearTimeout(starsTimerRef.current);
+            starsTimerRef.current = 0;
+          }
+          if (starsAnimActiveRef.current) {
+            setStarsVisible(false);
+            starsAnimActiveRef.current = false;
+          }
+          wasStarsInsideRef.current = true;
+          starsDismissedRef.current = false;
+          return;
+        }
+        if (starsHoldRef.current) setStarsHold(false);
+        if (!starsAnimActiveRef.current && !starsDismissedRef.current) {
+          cancelQueuedStarsCenterUpdate();
+          if (starsTimerRef.current) {
+            window.clearTimeout(starsTimerRef.current);
+            starsTimerRef.current = 0;
+          }
+          setStarsVisible(false);
+          starsAnimActiveRef.current = true;
+          starsDismissedRef.current = true;
+          requestAnimationFrame(() => {
+            setStarsVisible(true);
+            starsTimerRef.current = window.setTimeout(() => {
+              setStarsVisible(false);
+              starsAnimActiveRef.current = false;
+            }, 520);
+          });
+        } else if (starsDismissedRef.current || starsAnimActiveRef.current) {
+          if (starsTimerRef.current) {
+            window.clearTimeout(starsTimerRef.current);
+            starsTimerRef.current = 0;
+          }
+          setStarsVisible(false);
+        }
+        wasStarsInsideRef.current = false;
+      };
+
+      const finalizeStarInteraction = () => {
+        if (starsHoldRef.current) setStarsHold(false);
+        if (wasStarsInsideRef.current && !starsAnimActiveRef.current) {
+          if (starsTimerRef.current) {
+            window.clearTimeout(starsTimerRef.current);
+            starsTimerRef.current = 0;
+          }
+          cancelQueuedStarsCenterUpdate();
+          starsAnimActiveRef.current = true;
+          setStarsVisible(true);
+          if (starsHoldRef.current) setStarsHold(false);
+          starsTimerRef.current = window.setTimeout(() => {
+            setStarsVisible(false);
+            starsAnimActiveRef.current = false;
+            starsDismissedRef.current = false;
+          }, 520);
+        } else {
+          setStarsVisible(false);
+          starsDismissedRef.current = false;
+        }
+      };
+
       if (!skipForMaterialTarget && !skipDueToCircleGesture && !walkingDragActiveRef.current && isInsideRockBox(nx, ny)) {
         syncDudePosFromOriginal();
         const initial = initialDudePosRef.current || latestDudePosRef.current;
@@ -3379,6 +3503,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         lastPointerRef.current = { x: nx, y: ny };
         lastEllipsePointerRef.current = { x: nx, y: ny };
         walkingDragActiveRef.current = true;
+        const enableStars = allowStarsInteraction;
+        if (enableStars) {
+          resetStarInteractionState();
+          startStarInteractionAt(nx, ny);
+        }
 
         const handleMove = (e: MouseEvent | TouchEvent) => {
           if (!isDraggingRef.current) return;
@@ -3430,6 +3559,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               }
             : latestDudePosRef.current;
           updateCircleTracking(latestDudePosRef.current.x, latestDudePosRef.current.y);
+          if (enableStars) {
+            updateStarInteractionAt(nxx, nyy);
+          }
           if ("preventDefault" in e) {
             e.preventDefault();
           }
@@ -3437,6 +3569,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
         const handleEnd = () => {
           isDraggingRef.current = false;
+          if (enableStars) {
+            finalizeStarInteraction();
+          }
           walkingDragActiveRef.current = false;
           dragModeRef.current = "none";
           lastEllipsePointerRef.current = { x: -1, y: -1 };
@@ -3483,17 +3618,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
         return;
       }
-      const isInAnyHotspot = (() => {
-        for (let i = 0; i < ISLAND_HOTSPOTS.length; i++) {
-          const c = ISLAND_HOTSPOTS[i];
-          const dx = nx - c.cxPct;
-          const dy = ny - c.cyPct;
-          const r = c.dPct * 0.5;
-          if (dx * dx + dy * dy <= r * r) return true;
-        }
-        return false;
-      })();
-      const allowStarDrag = skipForMaterialTarget || !isInAnyHotspot || skipDueToCircleGesture;
+      const allowStarDrag = allowStarsInteraction;
       if (allowStarDrag) {
         const handleMove = (e: MouseEvent | TouchEvent) => {
           let cx2 = 0;
@@ -3509,62 +3634,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const ryy2 = Math.floor(cy2 - rect.top);
           const nxx2 = rxx2 / Math.max(1, rect.width);
           const nyy2 = ryy2 / Math.max(1, rect.height);
-          const withinBounds = nxx2 >= STAR_SHINE_PENTAGON_BOUNDS.minX && nxx2 <= STAR_SHINE_PENTAGON_BOUNDS.maxX && nyy2 >= STAR_SHINE_PENTAGON_BOUNDS.minY && nyy2 <= STAR_SHINE_PENTAGON_BOUNDS.maxY && pointInPolygon(nxx2, nyy2, STAR_SHINE_PENTAGON);
-          if (withinBounds) {
-            if (!starsHoldRef.current) {
-              setStarsCenterImmediate(nxx2 * 100, nyy2 * 100);
-              setStarsHold(true);
-            } else {
-              queueStarsCenterUpdate(nxx2 * 100, nyy2 * 100);
-            }
-            if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
-            if (starsAnimActiveRef.current) {
-              setStarsVisible(false);
-              starsAnimActiveRef.current = false;
-            }
-            wasStarsInsideRef.current = true;
-            starsDismissedRef.current = false;
-          } else {
-            if (starsHoldRef.current) setStarsHold(false);
-            if (!starsAnimActiveRef.current && !starsDismissedRef.current) {
-              cancelQueuedStarsCenterUpdate();
-              if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
-              setStarsVisible(false);
-              starsAnimActiveRef.current = true;
-              starsDismissedRef.current = true;
-              requestAnimationFrame(() => {
-                setStarsVisible(true);
-                starsTimerRef.current = window.setTimeout(() => {
-                  setStarsVisible(false);
-                  starsAnimActiveRef.current = false;
-                }, 520);
-              });
-            } else if (starsDismissedRef.current || starsAnimActiveRef.current) {
-              if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
-              setStarsVisible(false);
-            }
-            wasStarsInsideRef.current = false;
-          }
+          updateStarInteractionAt(nxx2, nyy2);
           if ("preventDefault" in e) (e as any).preventDefault();
         };
         const handleEnd = () => {
           isDraggingRef.current = false;
-          if (starsHoldRef.current) setStarsHold(false);
-          if (wasStarsInsideRef.current && !starsAnimActiveRef.current) {
-            if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
-            cancelQueuedStarsCenterUpdate();
-            starsAnimActiveRef.current = true;
-            setStarsVisible(true);
-            if (starsHoldRef.current) setStarsHold(false);
-            starsTimerRef.current = window.setTimeout(() => {
-              setStarsVisible(false);
-              starsAnimActiveRef.current = false;
-              starsDismissedRef.current = false;
-            }, 520);
-          } else {
-            setStarsVisible(false);
-            starsDismissedRef.current = false;
-          }
+          finalizeStarInteraction();
           window.removeEventListener("mousemove", handleMove as any);
           window.removeEventListener("mouseup", handleEnd as any);
           window.removeEventListener("touchmove", handleMove as any);
@@ -3586,30 +3661,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         window.addEventListener("blur", handleEnd as any);
         document.addEventListener("visibilitychange", handleVisibilityChange as any);
         isDraggingRef.current = true;
-        if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
-        cancelQueuedStarsCenterUpdate();
-        starsAnimActiveRef.current = false;
-        starsDismissedRef.current = false;
-        wasStarsInsideRef.current = false;
-        setStarsVisible(false);
-        if (starsHoldRef.current) setStarsHold(false);
-        const withinStart = nx >= STAR_SHINE_PENTAGON_BOUNDS.minX && nx <= STAR_SHINE_PENTAGON_BOUNDS.maxX && ny >= STAR_SHINE_PENTAGON_BOUNDS.minY && ny <= STAR_SHINE_PENTAGON_BOUNDS.maxY && pointInPolygon(nx, ny, STAR_SHINE_PENTAGON);
-        if (withinStart) {
-          if (starsTimerRef.current) window.clearTimeout(starsTimerRef.current);
-          setStarsVisible(false);
-          if (starsAnimActiveRef.current) {
-            starsAnimActiveRef.current = false;
-          }
-          setStarsCenterImmediate(nx * 100, ny * 100);
-          setStarsHold(true);
-          wasStarsInsideRef.current = true;
-          starsDismissedRef.current = false;
-        } else {
-          setStarsHold(false);
-          setStarsVisible(false);
-          wasStarsInsideRef.current = false;
-          starsDismissedRef.current = true;
-        }
+        resetStarInteractionState();
+        startStarInteractionAt(nx, ny);
         if ("preventDefault" in event) (event as any).preventDefault();
         return;
       }
