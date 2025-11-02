@@ -3504,9 +3504,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         lastEllipsePointerRef.current = { x: nx, y: ny };
         walkingDragActiveRef.current = true;
         const enableStars = allowStarsInteraction;
+        let starHandledImmediately = false;
         if (enableStars) {
           resetStarInteractionState();
           startStarInteractionAt(nx, ny);
+          finalizeStarInteraction();
+          setStarsHold(false);
+          starsHoldRef.current = false;
+          starHandledImmediately = true;
         }
 
         const handleMove = (e: MouseEvent | TouchEvent) => {
@@ -3559,9 +3564,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               }
             : latestDudePosRef.current;
           updateCircleTracking(latestDudePosRef.current.x, latestDudePosRef.current.y);
-          if (enableStars) {
-            updateStarInteractionAt(nxx, nyy);
-          }
           if ("preventDefault" in e) {
             e.preventDefault();
           }
@@ -3569,9 +3571,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
         const handleEnd = () => {
           isDraggingRef.current = false;
-          if (enableStars) {
-            finalizeStarInteraction();
-          }
+          if (enableStars && !starHandledImmediately) finalizeStarInteraction();
           walkingDragActiveRef.current = false;
           dragModeRef.current = "none";
           lastEllipsePointerRef.current = { x: -1, y: -1 };
