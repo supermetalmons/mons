@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, startTransition } from "react";
 import { isMobile } from "../utils/misc";
 import styled, { keyframes } from "styled-components";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
@@ -631,6 +631,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [monVisible, setMonVisible] = useState(false);
   const [monTeleporting, setMonTeleporting] = useState(false);
   const materialItemRefs = useRef<Record<MaterialName, HTMLDivElement | null>>({ dust: null, slime: null, gum: null, metal: null, ice: null });
+  const decodedMaterialsRef = useRef<Set<MaterialName>>(new Set());
   const isMaterialTarget = useCallback(
     (node: Node | null) => {
       if (!node) return false;
@@ -1432,6 +1433,55 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     });
     return () => {
       mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const win: any = typeof window !== "undefined" ? (window as any) : null;
+    const schedule = (fn: () => void) => {
+      if (!win) {
+        const t = setTimeout(() => {
+          if (!cancelled) fn();
+        }, 120);
+        return () => clearTimeout(t);
+      }
+      if (typeof win.requestIdleCallback === "function") {
+        const id = win.requestIdleCallback(() => {
+          if (!cancelled) fn();
+        });
+        return () => {
+          if (typeof win.cancelIdleCallback === "function") win.cancelIdleCallback(id);
+        };
+      }
+      const t = setTimeout(() => {
+        if (!cancelled) fn();
+      }, 120);
+      return () => clearTimeout(t);
+    };
+    const cleanups: Array<() => void> = [];
+    MATERIALS.forEach((name) => {
+      if (decodedMaterialsRef.current.has(name)) return;
+      const cleanup = schedule(() => {
+        getMaterialImageUrl(name).then((url) => {
+          if (!url || cancelled) return;
+          const img = new Image();
+          img.src = url;
+          const p: Promise<void> = typeof (img as any).decode === "function" ? (img as any).decode() : Promise.resolve();
+          p.then(() => {
+            if (!cancelled) decodedMaterialsRef.current.add(name);
+          }).catch(() => {});
+        });
+      });
+      if (cleanup) cleanups.push(cleanup);
+    });
+    return () => {
+      cancelled = true;
+      cleanups.forEach((fn) => {
+        try {
+          fn();
+        } catch {}
+      });
     };
   }, []);
 
@@ -3697,24 +3747,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                         }}
                         onHit={startMiningAnimation}
                         onBroken={() => {
-                          setRockIsBroken(true);
-                          setRockReady(false);
-                          const count = 2 + Math.floor(Math.random() * 4);
-                          const picks: MaterialName[] = [];
-                          for (let i = 0; i < count; i++) picks.push(pickWeightedMaterial());
-                          const now = performance.now();
-                          const rect = lastRockRectRef.current;
-                          const fallBase = rect ? rect.height * 0.15 : 24;
-                          const baseCommon = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 } as const;
-                          const angleSpan = Math.PI * 0.5;
-                          const promises = picks.map((n: MaterialName, i: number) => {
-                            const t = count > 1 ? i / (count - 1) : 0.5;
-                            const baseAngle = -angleSpan / 2 + t * angleSpan;
-                            const jitter = (Math.random() - 0.5) * (Math.PI * 0.06);
-                            const angle = baseAngle + jitter;
-                            return spawnMaterialDrop(n, 0, { ...baseCommon, angle } as any);
+                          startTransition(() => {
+                            setRockIsBroken(true);
+                            setRockReady(false);
                           });
-                          Promise.all(promises).then(() => {});
+                          requestAnimationFrame(() => {
+                            const count = 2 + Math.floor(Math.random() * 4);
+                            const picks: MaterialName[] = [];
+                            for (let i = 0; i < count; i++) picks.push(pickWeightedMaterial());
+                            const now = performance.now();
+                            const rect = lastRockRectRef.current;
+                            const fallBase = rect ? rect.height * 0.15 : 24;
+                            const baseCommon = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 } as const;
+                            const angleSpan = Math.PI * 0.5;
+                            const promises = picks.map((n: MaterialName, i: number) => {
+                              const t = count > 1 ? i / (count - 1) : 0.5;
+                              const baseAngle = -angleSpan / 2 + t * angleSpan;
+                              const jitter = (Math.random() - 0.5) * (Math.PI * 0.06);
+                              const angle = baseAngle + jitter;
+                              return spawnMaterialDrop(n, 0, { ...baseCommon, angle } as any);
+                            });
+                            Promise.all(promises).then(() => {});
+                          });
                         }}
                       />
                     </RockLayer>
