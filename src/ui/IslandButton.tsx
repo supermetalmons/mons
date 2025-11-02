@@ -16,6 +16,7 @@ const FEATURE_GLOWS_ON_HOTSPOT = true;
 const FEATURE_FULL_OVERLAY_ON_HOTSPOT = true;
 const STARS_URL = "https://assets.mons.link/rocks/underground/stars.webp";
 const TOUCH_EDGE_DEADZONE_PX = 5;
+const ROCK_LAYER_Z_INDEX = 500;
 
 const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
   border: none;
@@ -2171,6 +2172,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const inFront = baselineInitFrac >= rockBottomY;
           zBase = (inFront ? 700 : 300) + baseInt;
         }
+        zBase = Math.max(zBase, ROCK_LAYER_Z_INDEX + baseInt);
         el.style.zIndex = `${zBase}`;
         shadowEl.style.zIndex = `${Math.max(0, zBase - 1)}`;
       }
@@ -2290,6 +2292,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               const inFrontFinal = baselineFinalFrac >= rockBottomY;
               zBaseFinal = (inFrontFinal ? 700 : 300) + baseIntFinal;
             }
+            zBaseFinal = Math.max(zBaseFinal, ROCK_LAYER_Z_INDEX + baseIntFinal);
             el.style.zIndex = `${zBaseFinal}`;
             shadowEl.style.zIndex = `${Math.max(0, zBaseFinal - 1)}`;
             resolve(name);
@@ -3786,7 +3789,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                         </MonSpriteWrap>
                       </MonLayer>
                     )}
-                    <RockLayer ref={rockLayerRef} $visible={decorVisible} style={{ zIndex: 500 }}>
+                    <RockLayer ref={rockLayerRef} $visible={decorVisible} style={{ zIndex: ROCK_LAYER_Z_INDEX }}>
                       <Rock
                         ref={rockRef as any}
                         heightPct={75}
