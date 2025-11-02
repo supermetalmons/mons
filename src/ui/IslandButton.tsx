@@ -13,7 +13,6 @@ import { Sound } from "../utils/gameModels";
 
 const SHOW_DEBUG_ISLAND_BOUNDS = false;
 const FEATURE_GLOWS_ON_HOTSPOT = true;
-const FEATURE_FULL_OVERLAY_ON_HOTSPOT = true;
 const STARS_URL = "https://assets.mons.link/rocks/underground/stars.webp";
 const TOUCH_EDGE_DEADZONE_PX = 5;
 const ROCK_LAYER_Z_INDEX = 500;
@@ -284,19 +283,6 @@ const overlayFlash = keyframes`
   10% { opacity: 1; }
   70% { opacity: 1; }
   100% { opacity: 0; }
-`;
-
-const HotspotFullImage = styled.img<{ $visible: boolean }>`
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: contain;
-  pointer-events: none;
-  z-index: 0;
-  filter: brightness(1.5) saturate(1.25) contrast(1.3);
-  opacity: ${(p) => (p.$visible ? 0 : 0)};
-  animation: ${(p) => (p.$visible ? overlayFlash : "none")} 520ms ease-out;
 `;
 
 const StarsOverlayImage = styled.img<{ $visible: boolean; $hold: boolean }>`
@@ -3695,12 +3681,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                     <MaskedArea $cx={starsMaskCenter.xPct} $cy={starsMaskCenter.yPct} $visible={starsHold || starsVisible}>
                       <StarsOverlayImage ref={starsImgRef} src={STARS_URL} alt="" draggable={false} $visible={starsVisible} $hold={starsHold} />
                     </MaskedArea>
-                    {FEATURE_FULL_OVERLAY_ON_HOTSPOT &&
-                      ISLAND_HOTSPOTS.map((_, i) => {
-                        const label = HOTSPOT_LABELS[i] ?? i + 1;
-                        const src = `https://assets.mons.link/rocks/underground/${label}.webp`;
-                        return <HotspotFullImage key={`img-${i}`} src={src} alt="" draggable={false} $visible={hotspotVisible[i]} />;
-                      })}
                     {FEATURE_GLOWS_ON_HOTSPOT &&
                       ISLAND_HOTSPOTS.map((c, i) => {
                         const left = (c.cxPct - c.dPct / 2) * 100;
