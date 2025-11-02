@@ -506,6 +506,7 @@ const getIslandImageUrl = () => {
 
 const MATERIALS = ["dust", "slime", "gum", "metal", "ice"] as const;
 type MaterialName = (typeof MATERIALS)[number];
+type MaterialPullRect = { left: number; top: number; width: number; height: number };
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 let persistentMonPosRef: { x: number; y: number } | null = null;
 const pickWeightedMaterial = (): MaterialName => {
@@ -657,6 +658,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const rockBoxRef = useRef<{ left: number; top: number; right: number; bottom: number } | null>(null);
   const [rockBottomY, setRockBottomY] = useState<number>(1);
   const materialDropsRef = useRef<Array<{ el: HTMLImageElement; shadow: HTMLElement; name: MaterialName }>>([]);
+  const materialPullQueueRef = useRef<Array<{ name: MaterialName; rect: MaterialPullRect }>>([]);
+  const materialPullFlushRef = useRef<number | null>(null);
 
   const [heroSize, setHeroSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
 
@@ -2007,7 +2010,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, [spawnIconParticles]);
 
   const pullMaterialToBar = useCallback(
-    (name: MaterialName, fromRect: DOMRect) => {
+    (name: MaterialName, fromRect: MaterialPullRect) => {
       const url = materialUrls[name];
       if (!url) return;
       const host = materialItemRefs.current[name];
@@ -2081,6 +2084,35 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     },
     [materialItemRefs, materialUrls]
   );
+
+  const flushMaterialPullQueue = useCallback(() => {
+    materialPullFlushRef.current = null;
+    const queue = materialPullQueueRef.current;
+    if (!queue.length) return;
+    materialPullQueueRef.current = [];
+    for (let i = 0; i < queue.length; i++) {
+      pullMaterialToBar(queue[i].name, queue[i].rect);
+    }
+  }, [pullMaterialToBar]);
+
+  const queueMaterialPull = useCallback(
+    (name: MaterialName, rect: MaterialPullRect) => {
+      materialPullQueueRef.current.push({ name, rect });
+      if (materialPullFlushRef.current !== null) return;
+      materialPullFlushRef.current = requestAnimationFrame(() => flushMaterialPullQueue());
+    },
+    [flushMaterialPullQueue]
+  );
+
+  useEffect(() => {
+    return () => {
+      if (materialPullFlushRef.current !== null) {
+        cancelAnimationFrame(materialPullFlushRef.current);
+        materialPullFlushRef.current = null;
+      }
+      materialPullQueueRef.current = [];
+    };
+  }, []);
 
   const spawnMaterialDrop = useCallback(
     async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number; angle?: number }): Promise<MaterialName> => {
@@ -2891,7 +2923,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const hero = islandHeroImgRef.current;
           const wrapBox = hero ? hero.getBoundingClientRect() : null;
           if (wrapBox) {
+            const wrapWidth = Math.max(1, wrapBox.width);
+            const wrapHeight = Math.max(1, wrapBox.height);
             const collected: Array<number> = [];
+            const collectedPulls: Array<{ name: MaterialName; rect: MaterialPullRect }> = [];
             for (let i = 0; i < materialDropsRef.current.length; i++) {
               const m = materialDropsRef.current[i];
               if (!m.el.isConnected) {
@@ -2899,31 +2934,39 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 continue;
               }
               const eb = m.el.getBoundingClientRect();
-              const left = (eb.left - wrapBox.left) / Math.max(1, wrapBox.width);
-              const right = (eb.right - wrapBox.left) / Math.max(1, wrapBox.width);
-              const top = (eb.top - wrapBox.top) / Math.max(1, wrapBox.height);
-              const bottom = (eb.bottom - wrapBox.top) / Math.max(1, wrapBox.height);
+              const left = (eb.left - wrapBox.left) / wrapWidth;
+              const right = (eb.right - wrapBox.left) / wrapWidth;
+              const top = (eb.top - wrapBox.top) / wrapHeight;
+              const bottom = (eb.bottom - wrapBox.top) / wrapHeight;
               const area = Math.max(0, right - left) * Math.max(0, bottom - top);
               const overlap = computeOverlapArea(dudeB, { left, top, right, bottom });
               const frac = area > 0 ? overlap / area : 0;
               if (frac > 0.55) {
-                try {
-                  pullMaterialToBar(m.name, eb);
-                } catch {}
-                try {
-                  m.el.remove();
-                } catch {}
-                try {
-                  m.shadow.remove();
-                } catch {}
                 collected.push(i);
+                const absLeft = eb.left;
+                const absTop = eb.top;
+                const width = eb.width;
+                const height = eb.height;
+                collectedPulls.push({ name: m.name, rect: { left: absLeft, top: absTop, width, height } });
               }
             }
             if (collected.length > 0) {
+              for (let i = 0; i < collected.length; i++) {
+                const idx = collected[i];
+                const drop = materialDropsRef.current[idx];
+                if (!drop) continue;
+                try {
+                  drop.el.remove();
+                } catch {}
+                try {
+                  drop.shadow.remove();
+                } catch {}
+              }
               const delta: Partial<Record<MaterialName, number>> = {};
               const nextArr: typeof materialDropsRef.current = [];
+              const collectedSet = new Set<number>(collected);
               for (let i = 0; i < materialDropsRef.current.length; i++) {
-                if (collected.indexOf(i) !== -1) {
+                if (collectedSet.has(i)) {
                   const name = materialDropsRef.current[i].name;
                   delta[name] = (delta[name] || 0)! + 1;
                 } else {
@@ -2931,12 +2974,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 }
               }
               materialDropsRef.current = nextArr;
-              setMaterialAmounts((prev) => {
-                const next = { ...prev } as Record<MaterialName, number>;
-                (Object.keys(delta) as MaterialName[]).forEach((k) => {
-                  next[k] = (next[k] || 0) + (delta[k] || 0);
+              for (let i = 0; i < collectedPulls.length; i++) {
+                const item = collectedPulls[i];
+                queueMaterialPull(item.name, item.rect);
+              }
+              startTransition(() => {
+                setMaterialAmounts((prev) => {
+                  const next = { ...prev } as Record<MaterialName, number>;
+                  (Object.keys(delta) as MaterialName[]).forEach((k) => {
+                    next[k] = (next[k] || 0) + (delta[k] || 0);
+                  });
+                  return next;
                 });
-                return next;
               });
               playSounds([Sound.CollectingMaterials]);
             }
@@ -2945,7 +2994,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
     };
     playSheetAnimation("walking", { onStep });
-  }, [playSheetAnimation, computeOverlapArea, getDudeBounds, pullMaterialToBar]);
+  }, [playSheetAnimation, computeOverlapArea, getDudeBounds, queueMaterialPull]);
 
   const startPettingAnimation = useCallback(() => playSheetAnimation("petting"), [playSheetAnimation]);
 
