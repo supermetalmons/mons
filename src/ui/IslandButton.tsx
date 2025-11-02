@@ -902,7 +902,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const pick = (arr: RockSound[]) => arr[Math.floor(Math.random() * arr.length)];
         switch (originalLabel) {
           case 11:
-            sound = pick([RockSound.S1A, RockSound.S1B]);
+            sound = pick([RockSound.S1A, RockSound.S1B, RockSound.S1C]);
             break;
           case 10:
             sound = pick([RockSound.S2A, RockSound.S2B]);
@@ -926,13 +926,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             sound = pick([RockSound.S8A, RockSound.S8B, RockSound.S8C]);
             break;
           case 3:
-            sound = RockSound.S8A;
+            sound = pick([RockSound.S9A, RockSound.S9B, RockSound.S9C, RockSound.S9D]);
             break;
           case 2:
-            sound = RockSound.S8B;
+            sound = pick([RockSound.S10A, RockSound.S10B, RockSound.S10C, RockSound.S10D]);
             break;
           case 1:
-            sound = RockSound.S8C;
+            sound = pick([RockSound.S11A, RockSound.S11B, RockSound.S11C, RockSound.S11D]);
             break;
         }
         if (sound) playRockSound(sound);
@@ -1711,8 +1711,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if (tp) return tp;
       }
       return defaultCandidate;
-  },
-  [SMALLER_SMOOTH_CYCLING_ELLIPSE, monKey, getDudeBounds]
+    },
+    [SMALLER_SMOOTH_CYCLING_ELLIPSE, monKey, getDudeBounds]
   );
 
   useEffect(() => {
@@ -3286,12 +3286,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
       const allowStarsInteraction = skipForMaterialTarget || !isInAnyHotspot || skipDueToCircleGesture;
 
-      const starWithinBounds = (px: number, py: number) =>
-        px >= STAR_SHINE_PENTAGON_BOUNDS.minX &&
-        px <= STAR_SHINE_PENTAGON_BOUNDS.maxX &&
-        py >= STAR_SHINE_PENTAGON_BOUNDS.minY &&
-        py <= STAR_SHINE_PENTAGON_BOUNDS.maxY &&
-        pointInPolygon(px, py, STAR_SHINE_PENTAGON);
+      const starWithinBounds = (px: number, py: number) => px >= STAR_SHINE_PENTAGON_BOUNDS.minX && px <= STAR_SHINE_PENTAGON_BOUNDS.maxX && py >= STAR_SHINE_PENTAGON_BOUNDS.minY && py <= STAR_SHINE_PENTAGON_BOUNDS.maxY && pointInPolygon(px, py, STAR_SHINE_PENTAGON);
 
       const resetStarInteractionState = () => {
         if (starsTimerRef.current) {
@@ -3748,41 +3743,43 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 </DudeSpriteWrap>
                 {decorVisible && (
                   <>
-                    {monPos && monSpriteData && (() => {
-                      const monBaselineY = (monPos ? monPos.y : MON_REL_Y) + MON_BASELINE_Y_OFFSET;
-                      const monZIndex = computeEntityZIndex(monBaselineY);
-                      return (
-                        <MonLayer
-                          $visible={decorVisible && !islandClosing}
-                          style={{
-                            zIndex: monZIndex,
-                          }}>
-                          {monVisible &&
-                            !monTeleporting &&
-                            (() => {
-                              const widthPct = getMonBoundsWidthFrac(monKey) * 1.3 * 100;
-                              const cx = ((monPos?.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT) * 100;
-                              const bottomY = (monPos?.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
-                              const topOffsetFrac = 0.0075;
-                              const topFrac = Math.max(0, Math.min(1, bottomY - topOffsetFrac));
-                              return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${cx}%`, top: `${topFrac * 100}%`, width: `${widthPct}%`, height: "auto", opacity: 0.23 }} />;
-                            })()}
-                          <MonSpriteWrap
-                            ref={monWrapRef}
+                    {monPos &&
+                      monSpriteData &&
+                      (() => {
+                        const monBaselineY = (monPos ? monPos.y : MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+                        const monZIndex = computeEntityZIndex(monBaselineY);
+                        return (
+                          <MonLayer
+                            $visible={decorVisible && !islandClosing}
                             style={{
-                              left: `${(monPos?.x ?? MON_REL_X) * 100}%`,
-                              top: `${(monPos?.y ?? MON_REL_Y) * 100}%`,
-                              opacity: monVisible && !monTeleporting ? 1 : 0,
-                              transition: "opacity 180ms ease-out",
                               zIndex: monZIndex,
                             }}>
-                            <MonSpriteFrame $facingLeft={monFacingLeft} ref={monFrameWrapRef as any}>
-                              <MonSpriteStrip ref={monStripImgRef as any} src={`data:image/webp;base64,${monSpriteData}`} alt="" draggable={false} />
-                            </MonSpriteFrame>
-                          </MonSpriteWrap>
-                        </MonLayer>
-                      );
-                    })()}
+                            {monVisible &&
+                              !monTeleporting &&
+                              (() => {
+                                const widthPct = getMonBoundsWidthFrac(monKey) * 1.3 * 100;
+                                const cx = ((monPos?.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT) * 100;
+                                const bottomY = (monPos?.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+                                const topOffsetFrac = 0.0075;
+                                const topFrac = Math.max(0, Math.min(1, bottomY - topOffsetFrac));
+                                return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${cx}%`, top: `${topFrac * 100}%`, width: `${widthPct}%`, height: "auto", opacity: 0.23 }} />;
+                              })()}
+                            <MonSpriteWrap
+                              ref={monWrapRef}
+                              style={{
+                                left: `${(monPos?.x ?? MON_REL_X) * 100}%`,
+                                top: `${(monPos?.y ?? MON_REL_Y) * 100}%`,
+                                opacity: monVisible && !monTeleporting ? 1 : 0,
+                                transition: "opacity 180ms ease-out",
+                                zIndex: monZIndex,
+                              }}>
+                              <MonSpriteFrame $facingLeft={monFacingLeft} ref={monFrameWrapRef as any}>
+                                <MonSpriteStrip ref={monStripImgRef as any} src={`data:image/webp;base64,${monSpriteData}`} alt="" draggable={false} />
+                              </MonSpriteFrame>
+                            </MonSpriteWrap>
+                          </MonLayer>
+                        );
+                      })()}
                     <RockLayer ref={rockLayerRef} $visible={decorVisible} style={{ zIndex: ROCK_LAYER_Z_INDEX }}>
                       <Rock
                         ref={rockRef as any}

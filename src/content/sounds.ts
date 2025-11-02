@@ -166,6 +166,7 @@ export enum RockSound {
   P7 = "p7",
   S1A = "s1a",
   S1B = "s1b",
+  S1C = "s1c",
   S2A = "s2a",
   S2B = "s2b",
   S3 = "s3",
@@ -184,6 +185,18 @@ export enum RockSound {
   S8A = "s8a",
   S8B = "s8b",
   S8C = "s8c",
+  S9A = "s9a",
+  S9B = "s9b",
+  S9C = "s9c",
+  S9D = "s9d",
+  S10A = "s10a",
+  S10B = "s10b",
+  S10C = "s10c",
+  S10D = "s10d",
+  S11A = "s11a",
+  S11B = "s11b",
+  S11C = "s11c",
+  S11D = "s11d",
 }
 
 export function playRockSound(name: RockSound) {
