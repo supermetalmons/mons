@@ -11,7 +11,6 @@ import { getOwnMonIdByType, MonType } from "../utils/namedMons";
 import { storage } from "../utils/storage";
 import { Sound } from "../utils/gameModels";
 
-const SHOW_DEBUG_ISLAND_BOUNDS = false;
 const FEATURE_GLOWS_ON_HOTSPOT = true;
 const STARS_URL = "https://assets.mons.link/rocks/underground/stars.webp";
 const TOUCH_EDGE_DEADZONE_PX = 5;
@@ -134,13 +133,13 @@ const SafeBarRow = styled.div`
   z-index: 90001;
 `;
 
-const SafeHitbox = styled.div<{ $debug: boolean; $active: boolean }>`
+const SafeHitbox = styled.div<{ $active: boolean }>`
   display: inline-flex;
   pointer-events: ${(p) => (p.$active ? "auto" : "none")};
   padding: 20px 25px;
   margin: -20px 0;
-  background: ${(p) => (p.$debug ? "rgba(0,200,0,0.12)" : "transparent")};
-  outline: ${(p) => (p.$debug ? "1px solid rgba(0,180,0,0.85)" : "none")};
+  background: transparent;
+  outline: none;
 `;
 
 const Layer = styled.div<{ $visible: boolean; $opening: boolean; $closing: boolean }>`
@@ -813,17 +812,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     },
     [SMOOTH_CYCLING_ELLIPSE, pickInvRySq, smoothEllipseMetrics]
   );
-  const smoothEllipseDebugPath = useMemo(() => {
-    const cx = Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cx)) * 100;
-    const cy = Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cy)) * 100;
-    const rx = Math.max(0.5, Math.min(100, SMOOTH_CYCLING_ELLIPSE.rx * 100));
-    const ryTop = Math.max(0.3, Math.min(100, SMOOTH_CYCLING_ELLIPSE.ryTop * 100));
-    const ryBottom = Math.max(0.3, Math.min(100, SMOOTH_CYCLING_ELLIPSE.ryBottom * 100));
-    const leftX = Math.max(0, Math.min(100, cx - rx));
-    const rightX = Math.max(0, Math.min(100, cx + rx));
-    const d = `M ${leftX},${cy} A ${rx} ${ryBottom} 0 1 0 ${rightX},${cy} A ${rx} ${ryTop} 0 0 0 ${leftX},${cy} Z`;
-    return { d, cx, cy, rx, ryTop, ryBottom };
-  }, [SMOOTH_CYCLING_ELLIPSE]);
   const THEORETICAL_ROCK_SQUARE: { cx: number; cy: number; side: number } = {
     cx: 0.5018,
     cy: 0.1773,
@@ -2293,19 +2281,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       };
       setMaterialDropZ(dropEntry, initInfo);
       materialDropsRef.current = materialDropsRef.current.concat([dropEntry]);
-      const debugLine = SHOW_DEBUG_ISLAND_BOUNDS ? document.createElement("div") : null;
-      if (debugLine) {
-        debugLine.style.position = "absolute";
-        debugLine.style.left = `${baseXPct}%`;
-        debugLine.style.width = "0%";
-        debugLine.style.top = `${baseYPct}%`;
-        debugLine.style.height = "0";
-        debugLine.style.borderTop = "2px dashed rgba(255,0,255,0.95)";
-        debugLine.style.pointerEvents = "none";
-        debugLine.style.zIndex = "100000";
-        debugLine.setAttribute("data-debug", "material-baseline");
-        heroWrap.appendChild(debugLine);
-      }
       const angle = common?.angle ?? (Math.random() - 0.5) * Math.PI * 0.5;
       const spreadLocal = common?.spread ?? 24 + Math.random() * 48;
       const liftLocal = common?.lift ?? 12 + Math.random() * 18;
@@ -2392,16 +2367,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             shadowEl.style.background = `rgba(0,0,0,${finalOpacity.toFixed(3)})`;
             const baselineFracNow = Math.max(0, Math.min(1, baselinePct / 100));
             updateFlightZoneIfNeeded(dropEntry, baselineFracNow);
-          }
-          if (debugLine) {
-            const elBox = el.getBoundingClientRect();
-            const baselinePct = ((elBox.top - currentWrapBox.top + elBox.height * 0.8) / Math.max(1, currentWrapBox.height)) * 100;
-            const widthPct = (elBox.width / Math.max(1, currentWrapBox.width)) * 100;
-            const leftPct = Math.max(0, Math.min(100, cx - widthPct * 0.5));
-            const clampedWidthPct = Math.max(0, Math.min(100 - leftPct, widthPct));
-            debugLine.style.top = `${Math.max(0, Math.min(100, baselinePct))}%`;
-            debugLine.style.left = `${leftPct}%`;
-            debugLine.style.width = `${clampedWidthPct}%`;
           }
           el.style.transform = `translate(-50%, -50%) scale(${s})`;
           if (t < 1) {
@@ -3674,7 +3639,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           <Overlay $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleIslandClose : undefined} onTouchStart={isMobile ? handleIslandClose : undefined} onTransitionEnd={handleOverlayTransitionEnd} />
           <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onMouseDown={!isMobile ? handlePointerStart : undefined} onTouchStart={isMobile ? handlePointerStart : undefined}>
             <SafeBarRow>
-              <SafeHitbox $active={islandOverlayVisible && !islandClosing} $debug={SHOW_DEBUG_ISLAND_BOUNDS && islandOverlayVisible && !islandClosing} onMouseDown={!isMobile ? handleSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSafeHitboxPointerDown : undefined}>
+              <SafeHitbox $active={islandOverlayVisible && !islandClosing} onMouseDown={!isMobile ? handleSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSafeHitboxPointerDown : undefined}>
                 <MaterialsBar ref={materialsBarRef} $visible={islandOverlayVisible && !islandClosing}>
                   {MATERIALS.map((name) => (
                     <MaterialItem
@@ -3708,118 +3673,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                         return <HotspotCircle key={`glow-${i}`} $visible={hotspotVisible[i]} style={{ left: `${left}%`, top: `${top}%`, width: `${size}%`, height: `${size}%` }} />;
                       })}
                   </HotspotOverlay>
-                )}
-                {SHOW_DEBUG_ISLAND_BOUNDS && (
-                  <div
-                    style={{
-                      position: "absolute",
-                      inset: 0,
-                      pointerEvents: "none",
-                      zIndex: 10,
-                    }}>
-                    <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible" }}>
-                      {rockReady && rockBoxRef.current && (
-                        <>
-                          {(() => {
-                            const ellipse = getSafeAreaEllipse();
-                            if (!ellipse) return null;
-                            const cx = Math.max(0, Math.min(100, ellipse.cx * 100));
-                            const cy = Math.max(0, Math.min(100, ellipse.cy * 100));
-                            const rx = Math.max(0.001, Math.min(100, ellipse.rx * 100));
-                            const ry = Math.max(0.001, Math.min(100, ellipse.ry * 100));
-                            return <ellipse cx={cx} cy={cy} rx={rx} ry={ry} fill="rgba(0,200,0,0.12)" stroke="rgba(0,180,0,0.85)" strokeWidth={0.9} />;
-                          })()}
-                          <rect x={Math.max(0, Math.min(1, rockBoxRef.current.left)) * 100} y={Math.max(0, Math.min(1, rockBoxRef.current.top)) * 100} width={Math.max(0, Math.min(1, rockBoxRef.current.right - rockBoxRef.current.left)) * 100} height={Math.max(0, Math.min(1, rockBoxRef.current.bottom - rockBoxRef.current.top)) * 100} fill="none" stroke="rgba(255,0,0,0.8)" strokeWidth={1.6} />
-                          <line x1={0} x2={100} y1={Math.max(0, Math.min(1, rockBottomY)) * 100} y2={Math.max(0, Math.min(1, rockBottomY)) * 100} stroke="rgba(255,0,0,0.6)" strokeDasharray="4 3" strokeWidth={1} />
-                        </>
-                      )}
-                      {(() => {
-                        const widthFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_WIDTH_FRAC));
-                        const heightFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_HEIGHT_FRAC));
-                        const cx = dudePos.x;
-                        const bottomY = dudePos.y;
-                        const cxPct = cx * 100;
-                        const yPct = bottomY * 100;
-                        const half = widthFrac * 0.5 * 100;
-                        const leftX = cx - widthFrac * 0.5;
-                        const ww = widthFrac * 100;
-                        const hh = heightFrac * 100;
-                        const x = leftX * 100;
-                        const y = (bottomY - heightFrac) * 100;
-                        return (
-                          <>
-                            <line x1={cxPct - half} x2={cxPct + half} y1={yPct} y2={yPct} stroke="rgba(0,128,255,0.9)" strokeDasharray="3 3" strokeWidth={1.4} />
-                            <rect x={x} y={y} width={ww} height={hh} fill="rgba(0,128,255,0.08)" stroke="rgba(0,128,255,0.9)" strokeWidth={0.9} />
-                          </>
-                        );
-                      })()}
-                      {monPos &&
-                        (() => {
-                          const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(monKey)));
-                          const cx = (monPos.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT;
-                          const bottomY = (monPos.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
-                          const cxPct = Math.max(0, Math.min(100, cx * 100));
-                          const yPct = Math.max(0, Math.min(100, bottomY * 100));
-                          const half = widthFrac * 0.5 * 100;
-                          return <line x1={cxPct - half} x2={cxPct + half} y1={yPct} y2={yPct} stroke="#000" strokeDasharray="3 3" strokeWidth={1.4} />;
-                        })()}
-                      {monPos &&
-                        (() => {
-                          const detailed = getMonBoundsWithExpansion();
-                          if (!detailed) return null;
-                          const base = detailed.base;
-                          const exp = detailed.expanded;
-                          const x = Math.max(0, Math.min(100, base.left * 100));
-                          const y = Math.max(0, Math.min(100, base.top * 100));
-                          const ww = Math.max(0.001, Math.min(100, base.widthFrac * 100));
-                          const hh = Math.max(0.001, Math.min(100, base.heightFrac * 100));
-                          const x2 = Math.max(0, Math.min(100, exp.left * 100));
-                          const y2 = Math.max(0, Math.min(100, exp.top * 100));
-                          const ww2 = Math.max(0.001, Math.min(100, exp.widthFrac * 100));
-                          const hh2 = Math.max(0.001, Math.min(100, exp.heightFrac * 100));
-                          return (
-                            <>
-                              <rect x={x} y={y} width={ww} height={hh} fill="rgba(0,0,0,0.06)" stroke="#000" strokeWidth={0.9} />
-                              <rect x={x2} y={y2} width={ww2} height={hh2} fill="none" stroke="rgba(0,0,0,0.7)" strokeDasharray="4 3" strokeWidth={0.9} />
-                            </>
-                          );
-                        })()}
-                      <path d={smoothEllipseDebugPath.d} fill="rgba(0,128,255,0.08)" stroke="rgba(0,128,255,0.8)" strokeWidth={0.8} />
-                      {ISLAND_HOTSPOTS.map((c, i) => {
-                        const cx = Math.max(0, Math.min(100, c.cxPct * 100));
-                        const cy = Math.max(0, Math.min(100, c.cyPct * 100));
-                        const r = Math.max(0.001, Math.min(100, (c.dPct * 100) / 2));
-                        return <circle key={i} cx={cx} cy={cy} r={r} fill="none" stroke="rgba(255,0,255,0.85)" strokeWidth={0.8} />;
-                      })}
-                    </svg>
-                  </div>
-                )}
-                {SHOW_DEBUG_ISLAND_BOUNDS && (
-                  <>
-                    <div
-                      style={{
-                        position: "absolute",
-                        inset: 0,
-                        pointerEvents: "none",
-                        zIndex: 100010,
-                      }}>
-                      <svg viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", overflow: "visible", pointerEvents: "none" }}>
-                        <polygon points={DISMISS_ALLOWED_TRIANGLE_A.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(0,200,0,0.12)" stroke="rgba(0,180,0,0.85)" strokeWidth={0.9} />
-                        <polygon points={DISMISS_ALLOWED_TRIANGLE_B.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(0,200,0,0.12)" stroke="rgba(0,180,0,0.85)" strokeWidth={0.9} />
-                        <polygon points={NO_WALK_TETRAGON.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(255,165,0,0.12)" stroke="rgba(255,140,0,0.9)" strokeWidth={0.9} />
-                        <polygon points={STAR_SHINE_PENTAGON.map((p) => `${p.x * 100},${p.y * 100}`).join(" ")} fill="rgba(255,215,0,0.12)" stroke="rgba(218,165,32,0.95)" strokeWidth={0.9} />
-                        <path d={smoothEllipseDebugPath.d} fill="rgba(64,224,208,0.12)" stroke="rgba(64,224,208,0.95)" strokeWidth={0.9} />
-                        {(() => {
-                          const cx = Math.max(0, Math.min(1, THEORETICAL_ROCK_SQUARE.cx)) * 100;
-                          const cy = Math.max(0, Math.min(1, THEORETICAL_ROCK_SQUARE.cy)) * 100;
-                          const side = Math.max(0.6, Math.min(100, THEORETICAL_ROCK_SQUARE.side * 100));
-                          const x = cx - side / 2;
-                          const y = cy - side / 2;
-                          return <rect x={x} y={y} width={side} height={side} fill="rgba(70,130,180,0.10)" stroke="rgba(70,130,180,0.95)" strokeWidth={0.9} />;
-                        })()}
-                      </svg>
-                    </div>
-                  </>
                 )}
                 {(() => {
                   const widthPct = DUDE_BOUNDS_WIDTH_FRAC * 1.3 * 100;
