@@ -342,15 +342,6 @@ const DudeSpriteWrap = styled.div`
   transition: opacity 260ms ease;
 `;
 
-const DudeSpriteImg = styled.img<{ $facingLeft: boolean }>`
-  width: auto;
-  height: 100%;
-  transform: scaleX(${(p) => (p.$facingLeft ? -1 : 1)});
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
-  pointer-events: none;
-`;
-
 const DudeSpriteFrame = styled.div<{ $facingLeft: boolean }>`
   position: absolute;
   left: 0;
@@ -615,23 +606,29 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [rockReady, setRockReadyState] = useState(false);
   const [rockImageUrl, setRockImageUrl] = useState(() => getRandomRockImageUrl());
   const rockReadyRef = useRef(rockReady);
-  const setRockReady = useCallback((value: boolean | ((prev: boolean) => boolean)) => {
-    setRockReadyState((prev) => {
-      const next = typeof value === "function" ? value(prev) : value;
-      rockReadyRef.current = next;
-      return next;
-    });
-  }, [setRockReadyState]);
+  const setRockReady = useCallback(
+    (value: boolean | ((prev: boolean) => boolean)) => {
+      setRockReadyState((prev) => {
+        const next = typeof value === "function" ? value(prev) : value;
+        rockReadyRef.current = next;
+        return next;
+      });
+    },
+    [setRockReadyState]
+  );
   const rockBoxRef = useRef<{ left: number; top: number; right: number; bottom: number } | null>(null);
   const [rockBottomY, setRockBottomYState] = useState<number>(1);
   const rockBottomYRef = useRef(rockBottomY);
-  const setRockBottomY = useCallback((value: number | ((prev: number) => number)) => {
-    setRockBottomYState((prev) => {
-      const next = typeof value === "function" ? value(prev) : value;
-      rockBottomYRef.current = next;
-      return next;
-    });
-  }, [setRockBottomYState]);
+  const setRockBottomY = useCallback(
+    (value: number | ((prev: number) => number)) => {
+      setRockBottomYState((prev) => {
+        const next = typeof value === "function" ? value(prev) : value;
+        rockBottomYRef.current = next;
+        return next;
+      });
+    },
+    [setRockBottomYState]
+  );
   useEffect(() => {
     if (typeof window === "undefined") return;
     const img = new Image();
@@ -645,15 +642,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     setRockImageUrl(getRandomRockImageUrl());
   }, [islandOverlayVisible]);
   type MaterialDropEntry = {
-  id: number;
-  el: HTMLImageElement;
-  shadow: HTMLElement;
-  name: MaterialName;
-  phase: "flight" | "settled";
-  baseline: number;
-  zone: "neutral" | "front" | "behind";
-  lastZ: number;
-};
+    id: number;
+    el: HTMLImageElement;
+    shadow: HTMLElement;
+    name: MaterialName;
+    phase: "flight" | "settled";
+    baseline: number;
+    zone: "neutral" | "front" | "behind";
+    lastZ: number;
+  };
 
   const materialDropsRef = useRef<MaterialDropEntry[]>([]);
   const materialDropCounterRef = useRef(0);
