@@ -658,9 +658,31 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [rockReady, setRockReady] = useState(false);
   const rockBoxRef = useRef<{ left: number; top: number; right: number; bottom: number } | null>(null);
   const [rockBottomY, setRockBottomY] = useState<number>(1);
-  const materialDropsRef = useRef<Array<{ el: HTMLImageElement; shadow: HTMLElement; name: MaterialName }>>([]);
+const rockReadyRef = useRef(rockReady);
+const rockBottomYRef = useRef(rockBottomY);
+type MaterialDropEntry = {
+  id: number;
+  el: HTMLImageElement;
+  shadow: HTMLElement;
+  name: MaterialName;
+  phase: "flight" | "settled";
+  baseline: number;
+  zone: "neutral" | "front" | "behind";
+  lastZ: number;
+};
+
+const materialDropsRef = useRef<MaterialDropEntry[]>([]);
+const materialDropCounterRef = useRef(0);
   const materialPullQueueRef = useRef<Array<{ name: MaterialName; rect: MaterialPullRect }>>([]);
   const materialPullFlushRef = useRef<number | null>(null);
+
+useEffect(() => {
+  rockReadyRef.current = rockReady;
+}, [rockReady]);
+
+useEffect(() => {
+  rockBottomYRef.current = rockBottomY;
+}, [rockBottomY]);
 
   const [heroSize, setHeroSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
 
@@ -2115,6 +2137,76 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     };
   }, []);
 
+  const calculateMaterialZ = useCallback((baselineFrac: number) => {
+    const clamped = Math.max(0, Math.min(1, baselineFrac));
+    const depth = Math.round(clamped * 100);
+    const rockReadyNow = rockReadyRef.current;
+    const rockBottomNow = Math.max(0, Math.min(1, rockBottomYRef.current));
+    let zone: MaterialDropEntry["zone"] = "neutral";
+    let zoneBase = 600;
+    if (rockReadyNow) {
+      const inFront = clamped >= rockBottomNow;
+      zone = inFront ? "front" : "behind";
+      zoneBase = inFront ? 700 : 300;
+    }
+    const zBase = Math.max(zoneBase, ROCK_LAYER_Z_INDEX);
+    const zMain = zBase + depth;
+    const zShadow = Math.max(0, zMain - 1);
+    return { clamped, zone, zMain, zShadow };
+  }, []);
+
+  const setMaterialDropZ = useCallback((entry: MaterialDropEntry, info: { clamped: number; zone: MaterialDropEntry["zone"]; zMain: number; zShadow: number }) => {
+    entry.baseline = info.clamped;
+    entry.zone = info.zone;
+    entry.lastZ = info.zMain;
+    entry.el.style.zIndex = `${info.zMain}`;
+    entry.shadow.style.zIndex = `${info.zShadow}`;
+  }, []);
+
+  const updateFlightZoneIfNeeded = useCallback(
+    (entry: MaterialDropEntry, baselineFrac: number) => {
+      const info = calculateMaterialZ(baselineFrac);
+      if (info.zone !== entry.zone) {
+        setMaterialDropZ(entry, info);
+      } else {
+        entry.baseline = info.clamped;
+      }
+    },
+    [calculateMaterialZ, setMaterialDropZ]
+  );
+
+  const settleMaterialDrop = useCallback(
+    (entry: MaterialDropEntry, baselineFrac: number) => {
+      const info = calculateMaterialZ(baselineFrac);
+      entry.phase = "settled";
+      setMaterialDropZ(entry, info);
+    },
+    [calculateMaterialZ, setMaterialDropZ]
+  );
+
+  const refreshMaterialDropZ = useCallback(() => {
+    const heroImg = islandHeroImgRef.current;
+    const heroWrap = heroImg ? (heroImg.parentElement as HTMLElement | null) : null;
+    if (!heroWrap) return;
+    const wrapBox = heroWrap.getBoundingClientRect();
+    materialDropsRef.current = materialDropsRef.current.filter((drop) => {
+      const { el, shadow } = drop;
+      if (!el.isConnected || !shadow.isConnected) return false;
+      const elBox = el.getBoundingClientRect();
+      const baselineFrac = Math.max(0, Math.min(1, (elBox.top - wrapBox.top + elBox.height * 0.8) / Math.max(1, wrapBox.height)));
+      if (drop.phase === "flight") {
+        updateFlightZoneIfNeeded(drop, baselineFrac);
+      } else {
+        setMaterialDropZ(drop, calculateMaterialZ(baselineFrac));
+      }
+      return true;
+    });
+  }, [calculateMaterialZ, setMaterialDropZ, updateFlightZoneIfNeeded]);
+
+  useEffect(() => {
+    refreshMaterialDropZ();
+  }, [refreshMaterialDropZ, rockReady, rockBottomY]);
+
   const spawnMaterialDrop = useCallback(
     async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number; angle?: number }): Promise<MaterialName> => {
       walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
@@ -2162,20 +2254,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       shadowEl.style.display = "none";
       shadowEl.setAttribute("data-fx", "material-drop-shadow");
       heroWrap.appendChild(shadowEl);
-      materialDropsRef.current = materialDropsRef.current.concat([{ el, shadow: shadowEl, name }]);
-      {
-        const elBoxInit = el.getBoundingClientRect();
-        const baselineInitFrac = Math.max(0, Math.min(1, (elBoxInit.top - wrapBox.top + elBoxInit.height * 0.8) / Math.max(1, wrapBox.height)));
-        const baseInt = Math.round(baselineInitFrac * 100);
-        let zBase = 600 + baseInt;
-        if (rockReady) {
-          const inFront = baselineInitFrac >= rockBottomY;
-          zBase = (inFront ? 700 : 300) + baseInt;
-        }
-        zBase = Math.max(zBase, ROCK_LAYER_Z_INDEX + baseInt);
-        el.style.zIndex = `${zBase}`;
-        shadowEl.style.zIndex = `${Math.max(0, zBase - 1)}`;
-      }
+      const elBoxInit = el.getBoundingClientRect();
+      const baselineInitFrac = Math.max(0, Math.min(1, (elBoxInit.top - wrapBox.top + elBoxInit.height * 0.8) / Math.max(1, wrapBox.height)));
+      const initInfo = calculateMaterialZ(baselineInitFrac);
+      const dropEntry: MaterialDropEntry = {
+        id: materialDropCounterRef.current++,
+        el,
+        shadow: shadowEl,
+        name,
+        phase: "flight",
+        baseline: initInfo.clamped,
+        zone: initInfo.zone,
+        lastZ: initInfo.zMain,
+      };
+      setMaterialDropZ(dropEntry, initInfo);
+      materialDropsRef.current = materialDropsRef.current.concat([dropEntry]);
       const debugLine = SHOW_DEBUG_ISLAND_BOUNDS ? document.createElement("div") : null;
       if (debugLine) {
         debugLine.style.position = "absolute";
@@ -2205,6 +2298,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             try {
               shadowEl.remove();
             } catch {}
+            materialDropsRef.current = materialDropsRef.current.filter((drop) => drop.id !== dropEntry.id);
             resolve(name);
             return;
           }
@@ -2220,6 +2314,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             try {
               shadowEl.remove();
             } catch {}
+            materialDropsRef.current = materialDropsRef.current.filter((drop) => drop.id !== dropEntry.id);
             resolve(name);
             return;
           }
@@ -2252,6 +2347,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             shadowEl.style.height = `${shadowHeightPct}%`;
             shadowEl.style.filter = `blur(${blurPx}px)`;
             shadowEl.style.background = `rgba(0,0,0,${shadowOpacity.toFixed(3)})`;
+            const baselineFracNow = Math.max(0, Math.min(1, baselinePct / 100));
+            updateFlightZoneIfNeeded(dropEntry, baselineFracNow);
           } else {
             const elBox = el.getBoundingClientRect();
             const widthPctItem = (elBox.width / Math.max(1, currentWrapBox.width)) * 100;
@@ -2269,6 +2366,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             shadowEl.style.height = `${finalHeightPct}%`;
             shadowEl.style.filter = `blur(${finalBlurPx}px)`;
             shadowEl.style.background = `rgba(0,0,0,${finalOpacity.toFixed(3)})`;
+            const baselineFracNow = Math.max(0, Math.min(1, baselinePct / 100));
+            updateFlightZoneIfNeeded(dropEntry, baselineFracNow);
           }
           if (debugLine) {
             const elBox = el.getBoundingClientRect();
@@ -2286,22 +2385,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           } else {
             const elBoxFinal = el.getBoundingClientRect();
             const baselineFinalFrac = Math.max(0, Math.min(1, (elBoxFinal.top - currentWrapBox.top + elBoxFinal.height * 0.8) / Math.max(1, currentWrapBox.height)));
-            const baseIntFinal = Math.round(baselineFinalFrac * 100);
-            let zBaseFinal = 600 + baseIntFinal;
-            if (rockReady) {
-              const inFrontFinal = baselineFinalFrac >= rockBottomY;
-              zBaseFinal = (inFrontFinal ? 700 : 300) + baseIntFinal;
-            }
-            zBaseFinal = Math.max(zBaseFinal, ROCK_LAYER_Z_INDEX + baseIntFinal);
-            el.style.zIndex = `${zBaseFinal}`;
-            shadowEl.style.zIndex = `${Math.max(0, zBaseFinal - 1)}`;
+            settleMaterialDrop(dropEntry, baselineFinalFrac);
             resolve(name);
           }
         }
         requestAnimationFrame(step1);
       });
     },
-    [rockReady, rockBottomY]
+    [calculateMaterialZ, setMaterialDropZ, settleMaterialDrop, updateFlightZoneIfNeeded]
   );
 
   const handleIslandClose = useCallback(
