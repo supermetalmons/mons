@@ -52,7 +52,6 @@ const ROCK_MISS_SLOW_EXTRA = 0.1;
 
 export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRock({ className, onOpened, onHit, onBroken, heightPct }, ref) {
   const [visible, setVisible] = useState(false);
-  const [rockUrl, setRockUrl] = useState<string>("");
   const [instantHide, setInstantHide] = useState(false);
   const [hideRock, setHideRock] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -70,16 +69,6 @@ export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRoc
     const index = Math.floor(Math.random() * 27) + 1;
     return `https://assets.mons.link/rocks/gan/${index}.webp`;
   }, []);
-
-  useEffect(() => {
-    const image = new Image();
-    image.onload = () => {
-      setRockUrl(src);
-      setVisible(true);
-      onOpened?.();
-    };
-    image.src = src;
-  }, [src, onOpened]);
 
   useEffect(() => {
     function updateMetrics() {
@@ -348,7 +337,18 @@ export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRoc
 
   return (
     <Container ref={containerRef} className={className} $visible={visible} $instant={instantHide} $disabled={disabled}>
-      {rockUrl && <RockImg ref={imgElRef} src={rockUrl} alt="" draggable={false} $heightPct={heightPct} $hidden={hideRock} />}
+      <RockImg
+        ref={imgElRef}
+        src={src}
+        alt=""
+        draggable={false}
+        $heightPct={heightPct}
+        $hidden={hideRock}
+        onLoad={() => {
+          setVisible(true);
+          onOpened?.();
+        }}
+      />
       <svg ref={svgRef} viewBox="0 0 100 100" preserveAspectRatio="none" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", pointerEvents: "none", overflow: "visible" }} />
     </Container>
   );
