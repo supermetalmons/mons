@@ -1143,13 +1143,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     stripImg.style.transform = `translateX(${-offset}px)`;
   }, [heroSize.h]);
 
-  const updateMonSprite = useCallback(async (monType: MonType) => {
+  const updateMonSprite = useCallback((monType: MonType) => {
     const key = getOwnMonIdByType(monType);
-    const { getSpriteByKey } = await getMonSpritesModule();
-    const data = getSpriteByKey(key);
-    setMonSpriteData(data);
     setMonKey(key);
     latestMonKeyRef.current = key;
+    getMonSpritesModule()
+      .then(({ getSpriteByKey }) => {
+        if (latestMonKeyRef.current !== key) return;
+        const data = getSpriteByKey(key);
+        setMonSpriteData(data);
+      })
+      .catch(() => {});
   }, []);
 
   hasIslandOverlayVisible = () => {
@@ -2682,7 +2686,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const nextIndex = direction === "ccw" ? (currentIndex + 1) % typeOrder.length : (currentIndex - 1 + typeOrder.length) % typeOrder.length;
       const nextType = typeOrder[nextIndex];
       storage.setIslandMonType(nextType);
-      
+
       teleportFXStart();
       setMonTeleporting(true);
       setTimeout(() => {
