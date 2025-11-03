@@ -14,6 +14,7 @@ const Container = styled.div<{ $visible: boolean; $instant?: boolean; $disabled?
   user-select: none;
   touch-action: none;
   -webkit-user-select: none;
+  cursor: pointer;
 `;
 
 const RockImg = styled.img<{ $heightPct?: number; $hidden?: boolean }>`
@@ -28,6 +29,7 @@ const RockImg = styled.img<{ $heightPct?: number; $hidden?: boolean }>`
   touch-action: none;
   -webkit-touch-callout: none;
   filter: drop-shadow(0 5px 3px rgba(0, 0, 0, 0.28));
+  cursor: pointer;
   -webkit-filter: drop-shadow(0 5px 3px rgba(0, 0, 0, 0.28));
 `;
 

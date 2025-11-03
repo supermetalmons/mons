@@ -350,6 +350,8 @@ const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X = 0.63;
 const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y = 0.36;
 const SAFE_POINT_EDGE_INSET = 0.003;
 const SAFE_POINTER_MOVE_EPS = 0.0009;
+const WALK_SUPPRESSION_HIT_COUNT = 3;
+const WALK_SUPPRESSION_RADIUS = 0.03;
 const FACING_DX_EPS = 0.006;
 const FACING_FLIP_HYST_MS = 160;
 const DudeSpriteWrap = styled.div`
@@ -622,6 +624,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const lastRockRectRef = useRef<DOMRect | null>(null);
   const [rockIsBroken, setRockIsBroken] = useState(false);
   const walkSuppressedUntilRef = useRef<number>(0);
+  const walkSuppressionHitsRemainingRef = useRef<number>(0);
+  const walkSuppressionAnchorRef = useRef<{ x: number; y: number } | null>(null);
   const [rockReady, setRockReadyState] = useState(false);
   const [rockImageUrl, setRockImageUrl] = useState(() => getRandomRockImageUrl());
   const rockReadyRef = useRef(rockReady);
@@ -2247,6 +2251,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const spawnMaterialDrop = useCallback(
     async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number; angle?: number }): Promise<MaterialName> => {
       walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
+      walkSuppressionHitsRemainingRef.current = WALK_SUPPRESSION_HIT_COUNT;
       const url = await getMaterialImageUrl(name);
       if (!url) return name;
       const rockLayer = rockLayerRef.current;
@@ -3433,6 +3438,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         } else {
           setDudeFacingLeft(isAlternate ? !INITIAL_DUDE_FACING_LEFT : INITIAL_DUDE_FACING_LEFT);
           try {
+            walkSuppressionAnchorRef.current = { x: nx, y: ny };
             rockRef.current?.tap();
           } catch {}
         }
@@ -3496,8 +3502,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
       if (!skipForMaterialTarget && !skipDueToCircleGesture && (isInsideSmoothEllipse(nx, ny) || insideSafeAreaStart)) {
-        if (performance.now() < walkSuppressedUntilRef.current) {
-          return;
+        const now = performance.now();
+        if (now < walkSuppressedUntilRef.current) {
+          const anchor = walkSuppressionAnchorRef.current;
+          if (anchor) {
+            const dx = nx - anchor.x;
+            const dy = ny - anchor.y;
+            if (dx * dx + dy * dy <= WALK_SUPPRESSION_RADIUS * WALK_SUPPRESSION_RADIUS) {
+              if (walkSuppressionHitsRemainingRef.current > 0) {
+                walkSuppressionHitsRemainingRef.current -= 1;
+                return;
+              }
+            }
+          }
+        } else if (walkSuppressionHitsRemainingRef.current > 0) {
+          walkSuppressionHitsRemainingRef.current = 0;
         }
         const fromPointStart = getReferencePos();
         const desiredStart = { x: nx, y: ny };
