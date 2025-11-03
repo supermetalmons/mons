@@ -60,16 +60,26 @@ const MaterialsBar = styled.div<{ $visible: boolean }>`
   justify-content: center;
   gap: 10px;
   flex-wrap: wrap;
-  padding: 0 12px;
+  padding: 0 1px;
   box-sizing: border-box;
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   transition: opacity 220ms ease;
   pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
+
   @media (min-width: 480px) {
     gap: 14px;
   }
   @media (min-width: 768px) {
     gap: 18px;
+  }
+  @media (max-width: 366px) {
+    gap: 6px;
+  }
+  @media (max-width: 340px) {
+    gap: 3px;
+  }
+  @media (max-width: 317px) {
+    gap: 2px;
   }
 `;
 
@@ -86,6 +96,14 @@ const MaterialItem = styled.div`
   -webkit-user-select: none;
   @media (prefers-color-scheme: dark) {
     background: var(--panel-dark-90);
+  }
+  @media (max-width: 366px) {
+    gap: 1px;
+    padding: 0 8px 0 3px;
+  }
+  @media (max-width: 326px) {
+    gap: 1px;
+    padding: 0 8px 0 1px;
   }
 `;
 
