@@ -3309,6 +3309,26 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
       const allowStarsInteraction = skipForMaterialTarget || !isInAnyHotspot || skipDueToCircleGesture;
 
+      const shouldSuppressInputNearLastRock = (px: number, py: number) => {
+        const now = performance.now();
+        if (now < walkSuppressedUntilRef.current) {
+          const anchor = walkSuppressionAnchorRef.current;
+          if (anchor) {
+            const dx = px - anchor.x;
+            const dy = py - anchor.y;
+            if (dx * dx + dy * dy <= WALK_SUPPRESSION_RADIUS * WALK_SUPPRESSION_RADIUS) {
+              if (walkSuppressionHitsRemainingRef.current > 0) {
+                walkSuppressionHitsRemainingRef.current -= 1;
+                return true;
+              }
+            }
+          }
+        } else if (walkSuppressionHitsRemainingRef.current > 0) {
+          walkSuppressionHitsRemainingRef.current = 0;
+        }
+        return false;
+      };
+
       const starWithinBounds = (px: number, py: number) => px >= STAR_SHINE_PENTAGON_BOUNDS.minX && px <= STAR_SHINE_PENTAGON_BOUNDS.maxX && py >= STAR_SHINE_PENTAGON_BOUNDS.minY && py <= STAR_SHINE_PENTAGON_BOUNDS.maxY && pointInPolygon(px, py, STAR_SHINE_PENTAGON);
 
       const resetStarInteractionState = () => {
@@ -3446,6 +3466,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
       if (!skipForMaterialTarget && !skipDueToCircleGesture && isInsideMonBox(nx, ny)) {
+        if (shouldSuppressInputNearLastRock(nx, ny)) {
+          if ((event as any).preventDefault) (event as any).preventDefault();
+          return;
+        }
         const detailed = getMonBoundsWithExpansion();
         if (!detailed) return;
         const leftX = detailed.expanded.left;
@@ -3502,21 +3526,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
       if (!skipForMaterialTarget && !skipDueToCircleGesture && (isInsideSmoothEllipse(nx, ny) || insideSafeAreaStart)) {
-        const now = performance.now();
-        if (now < walkSuppressedUntilRef.current) {
-          const anchor = walkSuppressionAnchorRef.current;
-          if (anchor) {
-            const dx = nx - anchor.x;
-            const dy = ny - anchor.y;
-            if (dx * dx + dy * dy <= WALK_SUPPRESSION_RADIUS * WALK_SUPPRESSION_RADIUS) {
-              if (walkSuppressionHitsRemainingRef.current > 0) {
-                walkSuppressionHitsRemainingRef.current -= 1;
-                return;
-              }
-            }
-          }
-        } else if (walkSuppressionHitsRemainingRef.current > 0) {
-          walkSuppressionHitsRemainingRef.current = 0;
+        if (shouldSuppressInputNearLastRock(nx, ny)) {
+          return;
         }
         const fromPointStart = getReferencePos();
         const desiredStart = { x: nx, y: ny };
