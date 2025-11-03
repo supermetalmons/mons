@@ -205,6 +205,7 @@ const Rock = styled(IslandRock)`
 `;
 
 const RockLayer = styled.div<{ $visible: boolean }>`
+  cursor: pointer;
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
