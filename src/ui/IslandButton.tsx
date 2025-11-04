@@ -1799,8 +1799,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const rawFrame = Math.floor(elapsed / MON_FRAME_MS);
           const frame = ((rawFrame % frameCount) + frameCount) % frameCount;
           if (frame !== anim.lastFrame) anim.lastFrame = frame;
-            const frameShiftPct = frame * (100 / MON_FRAME_COUNT);
-            stripImg.style.transform = `translateX(${-frameShiftPct}%)`;
+          const frameShiftPct = frame * (100 / MON_FRAME_COUNT);
+          stripImg.style.transform = `translateX(${-frameShiftPct}%)`;
           if (stripImg.style.visibility !== "visible") {
             stripImg.style.visibility = "visible";
             setMonVisible(true);
@@ -3816,7 +3816,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                                 left: `${((monPos?.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT) * 100}%`,
                                 top: `${(monPos?.y ?? MON_REL_Y) * 100}%`,
                                 opacity: monVisible && !monTeleporting ? 1 : 0,
-                              transition: "opacity 260ms ease",
+                                transition: "opacity 260ms ease",
                                 zIndex: monZIndex,
                               }}>
                               <MonSpriteFrame $facingLeft={monFacingLeft} ref={monFrameWrapRef as any}>
