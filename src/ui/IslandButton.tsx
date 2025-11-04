@@ -719,6 +719,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const materialPullFlushRef = useRef<number | null>(null);
 
   const [heroSize, setHeroSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
+  const heroSizeRef = useRef(heroSize);
+  heroSizeRef.current = heroSize;
 
   const editorOverlayRef = useRef<HTMLDivElement | null>(null);
   const isPointerDownRef = useRef<boolean>(false);
@@ -1174,9 +1176,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const nat = monNaturalSizeRef.current;
     if (!wrap || !frameWrap || !stripImg || !nat.w || !nat.h) return;
     const frameCount = 4;
-    if (!heroSize.h) return;
+    const { h } = heroSizeRef.current;
+    if (!h) return;
     const frameWidth = Math.floor(nat.w / frameCount) || 1;
-    const targetHeight = Math.max(1, Math.round(heroSize.h * MON_HEIGHT_FRAC));
+    const targetHeight = Math.max(1, Math.round(h * MON_HEIGHT_FRAC));
     const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / nat.h));
     frameWrap.style.width = `${targetWidth}px`;
     frameWrap.style.height = `${targetHeight}px`;
@@ -1186,7 +1189,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const currentFrameIndex = Math.max(0, monAnimRef.current?.lastFrame ?? 0);
     const offset = currentFrameIndex * targetWidth;
     stripImg.style.transform = `translateX(${-offset}px)`;
-  }, [heroSize.h]);
+  }, []);
 
   const updateMonSprite = useCallback((monType: MonType) => {
     const key = getOwnMonIdByType(monType);
@@ -1902,6 +1905,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       setMonVisible(false);
     };
   }, [decorVisible, islandClosing, monSpriteData, monPos, updateMonStripSizing]);
+
+  useLayoutEffect(() => {
+    if (!decorVisible || islandClosing) return;
+    if (!monSpriteData || !monPos) return;
+    updateMonStripSizing();
+  }, [decorVisible, islandClosing, monSpriteData, monPos, heroSize.h, heroSize.w, updateMonStripSizing]);
 
   const measureHeroSize = useCallback(() => {
     const hero = islandHeroImgRef.current;
