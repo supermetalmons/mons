@@ -3722,6 +3722,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     [handlePointerStart, isMaterialTarget]
   );
 
+  const decorMounted = decorVisible || islandClosing;
+
   return (
     <>
       {islandImgLoaded && (
@@ -3787,7 +3789,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                     <DudeSpriteStrip ref={miningStripImgRef as any} src={`data:image/png;base64,${islandMonsMining}`} alt="" draggable={false} />
                   </DudeSpriteFrame>
                 </DudeSpriteWrap>
-                {decorVisible && (
+                {decorMounted && (
                   <>
                     {monPos &&
                       monSpriteData &&
