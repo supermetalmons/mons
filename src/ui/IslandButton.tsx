@@ -402,7 +402,25 @@ const MON_BOUNDS_WIDTH_FRAC_OVERRIDES: Record<string, number> = {
   omom_drainer: 0.1,
   supermetaldrop_drainer: 0.1,
   deino_drainer: 0.09,
+
+  applecreme_angel: 0.1,
+  gerp_angel: 0.1,
+  goxfold_angel: 0.1,
+  mowch_angel: 0.1,
+  mummyfly_angel: 0.1,
+
+  borgalo_demon: 0.1,
+  notchur_demon: 0.1,
+
+  chamgot_mystic: 0.1,
+  dart_mystic: 0.1,
+  estalibur_mystic: 0.1,
+
+  melmut_spirit: 0.1,
+  omenstatue_spirit: 0.1,
+  owg_spirit: 0.1,
 };
+
 const getMonBoundsWidthFrac = (monIdOrKey: string | null) => {
   if (!monIdOrKey) return MON_BOUNDS_WIDTH_FRAC;
   return MON_BOUNDS_WIDTH_FRAC_OVERRIDES[monIdOrKey] ?? MON_BOUNDS_WIDTH_FRAC;
