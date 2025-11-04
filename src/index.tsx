@@ -1,7 +1,7 @@
 import "@rainbow-me/rainbowkit/styles.css";
 import "./index.css";
 import ReactDOM from "react-dom/client";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { Suspense, lazy, useCallback, useEffect, useState } from "react";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
@@ -15,13 +15,15 @@ import { connection, isCreateNewInviteFlow } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
 import { FaVolumeUp, FaMusic, FaVolumeMute, FaInfoCircle, FaRegGem, FaPowerOff, FaEllipsisH } from "react-icons/fa";
-import IslandButton from "./ui/IslandButton";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory, showSettings } from "./ui/ProfileSignIn";
 import { getIslandPreviewEnabled, subscribeIslandPreview } from "./utils/islandPreview";
+import { isMainGameLoaded, onMainGameLoaded } from "./game/mainGameLoadState";
 
 let isIslandButtonSupportedInitial = getIslandPreviewEnabled();
+
+const LazyIslandButton = lazy(() => import("./ui/IslandButton"));
 
 let globalIsMuted: boolean = (() => {
   return storage.getIsMuted(false);
@@ -46,6 +48,7 @@ const App = () => {
   const [isMuted, setIsMuted] = useState(globalIsMuted);
   const [isIslandButtonSupported, setIsIslandButtonSupported] = useState(isIslandButtonSupportedInitial);
   const [isIslandButtonDim, setIsIslandButtonDim] = useState(!isCreateNewInviteFlow);
+  const [shouldLoadIslandButton, setShouldLoadIslandButton] = useState(isMainGameLoaded());
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
 
   enterProfileEditingMode = (enter: boolean) => {
@@ -65,6 +68,16 @@ const App = () => {
     const unsubscribe = subscribeIslandPreview(setIsIslandButtonSupported);
     return unsubscribe;
   }, []);
+
+  useEffect(() => {
+    if (shouldLoadIslandButton) {
+      return;
+    }
+    const unsubscribe = onMainGameLoaded(() => {
+      setShouldLoadIslandButton(true);
+    });
+    return unsubscribe;
+  }, [shouldLoadIslandButton]);
 
   const handleMuteToggle = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -115,7 +128,11 @@ const App = () => {
               <div className="top-buttons-container">
                 {authStatus !== "loading" && (
                   <>
-                    {isIslandButtonSupported && <IslandButton dimmed={isIslandButtonDim} />}
+                    {shouldLoadIslandButton && isIslandButtonSupported && (
+                      <Suspense fallback={null}>
+                        <LazyIslandButton dimmed={isIslandButtonDim} />
+                      </Suspense>
+                    )}
                     <div className="small-top-control-buttons">
                       {!isProfileEditingMode ? (
                         <>

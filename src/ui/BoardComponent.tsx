@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { FaTimes, FaCheck } from "react-icons/fa";
 import { go } from "../game/gameController";
+import { markMainGameLoaded } from "../game/mainGameLoadState";
 import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../content/boardStyles";
 import { isMobile } from "../utils/misc";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
@@ -184,8 +185,16 @@ const BoardComponent: React.FC = () => {
 
   useEffect(() => {
     if (!initializationRef.current) {
-      go();
       initializationRef.current = true;
+      const run = async () => {
+        try {
+          await go();
+        } catch {
+        } finally {
+          markMainGameLoaded();
+        }
+      };
+      run();
     }
   }, []);
 

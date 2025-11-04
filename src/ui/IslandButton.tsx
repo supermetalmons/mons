@@ -10,6 +10,7 @@ import { miningJumpingPetsIdleAndWalking as islandMonsMining, shadow as islandMo
 import { getOwnMonIdByType, MonType } from "../utils/namedMons";
 import { storage } from "../utils/storage";
 import { Sound } from "../utils/gameModels";
+import { setIslandOverlayState, resetIslandOverlayState } from "./islandOverlayState";
 
 const FEATURE_GLOWS_ON_HOTSPOT = true;
 const STARS_URL = "https://assets.mons.link/rocks/underground/stars.webp";
@@ -499,8 +500,6 @@ const getMonSpritesModule = () => {
   return monSpritesModulePromise;
 };
 
-export let hasIslandOverlayVisible: () => boolean = () => false;
-
 const getMaterialImageUrl = (name: MaterialName) => {
   if (!materialImagePromises.has(name)) {
     const url = `${MATERIAL_BASE_URL}/${name}.webp`;
@@ -547,6 +546,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     starsHoldRef.current = starsHold;
   }, [starsHold]);
   const starsDismissedRef = useRef<boolean>(false);
+  useEffect(() => {
+    setIslandOverlayState({
+      visible: islandOverlayVisible,
+      opening: islandOpening,
+      closing: islandClosing,
+    });
+  }, [islandOverlayVisible, islandOpening, islandClosing]);
+  useEffect(() => {
+    return () => {
+      resetIslandOverlayState();
+    };
+  }, []);
   const starsCenterTargetRef = useRef<{ xPct: number; yPct: number } | null>(null);
   const starsCenterRafRef = useRef<number | null>(null);
   const lastStarsCenterRef = useRef<{ xPct: number; yPct: number }>(starsMaskCenter);
@@ -1173,10 +1184,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       })
       .catch(() => {});
   }, []);
-
-  hasIslandOverlayVisible = () => {
-    return islandOverlayVisible || islandClosing || islandOpening;
-  };
 
   useEffect(() => {
     const img = new Image();
