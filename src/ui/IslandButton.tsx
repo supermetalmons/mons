@@ -2905,8 +2905,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const monPosition = latestMonPosRef.current || monPos;
       if (!monPosition) return;
 
-      const monBaselineCenterX = monPosition.x;
-      const monBaselineCenterY = monPosition.y + MON_BASELINE_Y_OFFSET;
+      const monBaselineCenterX = (monPosition.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT;
+      const monBaselineCenterY = (monPosition.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
       const dx = dudeX - monBaselineCenterX;
       const dy = dudeY - monBaselineCenterY;
       const currentAngle = Math.atan2(dy, dx);
