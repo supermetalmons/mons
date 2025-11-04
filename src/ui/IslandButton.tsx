@@ -3802,16 +3802,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                             style={{
                               zIndex: monZIndex,
                             }}>
-                            {monVisible &&
-                              !monTeleporting &&
-                              (() => {
-                                const widthPct = getMonBoundsWidthFrac(monKey) * 1.3 * 100;
-                                const cx = ((monPos?.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT) * 100;
-                                const bottomY = (monPos?.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
-                                const topOffsetFrac = 0.0075;
-                                const topFrac = Math.max(0, Math.min(1, bottomY - topOffsetFrac));
-                                return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${cx}%`, top: `${topFrac * 100}%`, width: `${widthPct}%`, height: "auto", opacity: 0.23 }} />;
-                              })()}
+                            {(() => {
+                              const widthPct = getMonBoundsWidthFrac(monKey) * 1.3 * 100;
+                              const cx = ((monPos?.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT) * 100;
+                              const bottomY = (monPos?.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+                              const topOffsetFrac = 0.0075;
+                              const topFrac = Math.max(0, Math.min(1, bottomY - topOffsetFrac));
+                              return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${cx}%`, top: `${topFrac * 100}%`, width: `${widthPct}%`, height: "auto", opacity: monVisible && !monTeleporting ? 0.23 : 0 }} />;
+                            })()}
                             <MonSpriteWrap
                               ref={monWrapRef}
                               style={{
