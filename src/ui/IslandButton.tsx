@@ -405,7 +405,7 @@ const MON_BOUNDS_WIDTH_FRAC_OVERRIDES: Record<string, number> = {
 
   applecreme_angel: 0.1,
   gerp_angel: 0.1,
-  goxfold_angel: 0.1,
+  goxfold_angel: 0.11,
   mowch_angel: 0.1,
   mummyfly_angel: 0.1,
 
