@@ -18,6 +18,7 @@ const TOUCH_EDGE_DEADZONE_PX = 5;
 const ROCK_LAYER_Z_INDEX = 500;
 const THEORETICAL_ROCK_SQUARE = { cx: 0.5018, cy: 0.1773, side: 0.142 };
 const THEORETICAL_ROCK_BOTTOM = Math.max(0, Math.min(1, THEORETICAL_ROCK_SQUARE.cy + THEORETICAL_ROCK_SQUARE.side * 0.5));
+const MIN_OVERLAY_CLOSE_DELAY_MS = 160;
 
 const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
   border: none;
@@ -558,6 +559,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [resolvedUrl, setResolvedUrl] = useState<string>(imageUrl);
   const heroHitCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayActiveRef = useRef<boolean>(false);
+  const heroTransformFrameRef = useRef<number | null>(null);
+  const overlayPhaseRef = useRef<"idle" | "opening" | "open" | "closing">("idle");
   const [decorVisible, setDecorVisible] = useState(false);
   const [starsVisible, setStarsVisible] = useState(false);
   const [starsMaskCenter, setStarsMaskCenter] = useState<{ xPct: number; yPct: number }>({ xPct: 50, yPct: 50 });
@@ -1412,6 +1415,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, [islandOverlayVisible, islandOpening, islandClosing]);
 
   useEffect(() => {
+    return () => {
+      if (heroTransformFrameRef.current !== null) {
+        cancelAnimationFrame(heroTransformFrameRef.current);
+        heroTransformFrameRef.current = null;
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     let timer: number | null = null;
     if (islandOverlayVisible && !islandClosing) {
       timer = window.setTimeout(() => {
@@ -1912,8 +1924,107 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     } catch {}
   }, [resolvedUrl, islandOverlayVisible, updateRockBox]);
 
+  const finalizeOverlayClose = useCallback(() => {
+    if (heroTransformFrameRef.current !== null) {
+      cancelAnimationFrame(heroTransformFrameRef.current);
+      heroTransformFrameRef.current = null;
+    }
+    overlayPhaseRef.current = "idle";
+    overlayActiveRef.current = false;
+    overlayJustOpenedAtRef.current = 0;
+    const container = fxContainerRef.current;
+    if (container && container.parentNode) {
+      try {
+        container.parentNode.removeChild(container);
+      } catch {}
+    }
+    fxContainerRef.current = null;
+    const heroImg = islandHeroImgRef.current;
+    if (heroImg) {
+      const heroWrap = heroImg.parentElement as HTMLElement | null;
+      if (heroWrap) {
+        const nodes = heroWrap.querySelectorAll('[data-fx="material-drop"], [data-fx="material-drop-shadow"]');
+        nodes.forEach((n) => {
+          try {
+            n.parentElement?.removeChild(n);
+          } catch {}
+        });
+      }
+    }
+    materialDropsRef.current = [];
+    moveAnimRef.current = null;
+    if (rafRef.current !== null) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = null;
+    }
+    const walkCleanup = walkingDragCleanupRef.current;
+    if (walkCleanup) walkCleanup();
+    walkingDragCleanupRef.current = null;
+    walkingDragActiveRef.current = false;
+    const sheetAnim = sheetAnimRef.current;
+    if (sheetAnim && sheetAnim.raf) cancelAnimationFrame(sheetAnim.raf);
+    sheetAnimRef.current = null;
+    currentAnimKindRef.current = "none";
+    const monAnim = monAnimRef.current;
+    if (monAnim && monAnim.raf) cancelAnimationFrame(monAnim.raf);
+    monAnimRef.current = null;
+    const monFlip = monFlipTimerRef.current;
+    if (monFlip !== null) {
+      window.clearTimeout(monFlip);
+      monFlipTimerRef.current = null;
+    }
+    const monPet = monPetTimerRef.current;
+    if (monPet !== null) {
+      window.clearTimeout(monPet);
+      monPetTimerRef.current = null;
+    }
+    latestMonKeyRef.current = null;
+    setMonSpriteData("");
+    setMonPos(null);
+    setMonKey(null);
+    setMonVisible(false);
+    setMonTeleporting(false);
+    setDecorVisible(false);
+    setDudeVisible(false);
+    setMiningPlaying(false);
+    setWalkingPlaying(false);
+    setPettingPlaying(false);
+    setStandingPlaying(false);
+    setStarsVisible(false);
+    setStarsHold(false);
+    starsHoldRef.current = false;
+    starsAnimActiveRef.current = false;
+    wasStarsInsideRef.current = false;
+    starsDismissedRef.current = false;
+    if (starsTimerRef.current) {
+      window.clearTimeout(starsTimerRef.current);
+      starsTimerRef.current = 0;
+    }
+    if (starsCenterRafRef.current !== null) {
+      cancelAnimationFrame(starsCenterRafRef.current);
+      starsCenterRafRef.current = null;
+    }
+    starsCenterTargetRef.current = null;
+    lastStarsCenterRef.current = { xPct: 50, yPct: 50 };
+    setStarsMaskCenter({ xPct: 50, yPct: 50 });
+    rockBoxRef.current = null;
+    lastRockRectRef.current = null;
+    setIslandActive(false);
+    setIslandAnimating(false);
+    setIslandOpening(false);
+    setIslandClosing(false);
+    setIslandOverlayVisible(false);
+    setIslandOverlayShown(false);
+    setIslandTranslate({ x: 0, y: 0 });
+    setIslandScale({ x: 1, y: 1 });
+    setWalkReady(false);
+  }, []);
+
   const handleIslandOpen = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+      if (overlayPhaseRef.current !== "idle") {
+        return;
+      }
       soundPlayer.initializeOnUserInteraction(true).then(() => {
         preloadSounds([Sound.PickaxeHit, Sound.PickaxeMiss, Sound.RockOpen, Sound.CollectingMaterials]).catch(() => {});
         playSounds([Sound.IslandShowUp]);
@@ -1922,6 +2033,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!islandImgLoaded || !islandNatural) return;
       const imgEl = islandButtonImgRef.current;
       if (!imgEl) return;
+      overlayPhaseRef.current = "opening";
       const rect = imgEl.getBoundingClientRect();
       const vh = window.innerHeight;
       const vw = window.innerWidth;
@@ -1950,7 +2062,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       } catch {}
       setIslandTranslate({ x: deltaX, y: deltaY });
       setIslandScale({ x: uniformScale, y: uniformScale });
-      requestAnimationFrame(() => {
+      if (heroTransformFrameRef.current !== null) {
+        cancelAnimationFrame(heroTransformFrameRef.current);
+        heroTransformFrameRef.current = null;
+      }
+      heroTransformFrameRef.current = requestAnimationFrame(() => {
+        heroTransformFrameRef.current = null;
+        overlayPhaseRef.current = "opening";
         setIslandActive(true);
         setIslandTranslate({ x: 0, y: 0 });
         setIslandScale({ x: 1, y: 1 });
@@ -2378,10 +2496,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleIslandClose = useCallback(
     (event?: React.MouseEvent | React.TouchEvent) => {
-      if (isMobile && Date.now() - overlayJustOpenedAtRef.current < 250) {
+      if (Date.now() - overlayJustOpenedAtRef.current < MIN_OVERLAY_CLOSE_DELAY_MS) {
         return;
       }
+      if (overlayPhaseRef.current === "opening" && !islandOverlayVisible) {
+        return;
+      }
+      const phase = overlayPhaseRef.current;
+      if (phase !== "open" && phase !== "opening") {
+        return;
+      }
+      const wasVisible = islandOverlayVisible;
+      overlayPhaseRef.current = wasVisible ? "closing" : "idle";
       didDismissSomethingWithOutsideTapJustNow();
+      setIslandOpening(false);
       if (rafRef.current !== null) {
         cancelAnimationFrame(rafRef.current);
         rafRef.current = null;
@@ -2404,14 +2532,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           materialDropsRef.current = [];
         }
       } catch {}
+      if (!wasVisible) {
+        finalizeOverlayClose();
+        return;
+      }
       try {
         const container = fxContainerRef.current;
         if (container && container.parentNode) {
           container.parentNode.removeChild(container);
         }
       } catch {}
-      playSounds([Sound.IslandClosing]);
       fxContainerRef.current = null;
+      playSounds([Sound.IslandClosing]);
       const anim = sheetAnimRef.current;
       if (anim && anim.raf) cancelAnimationFrame(anim.raf);
       sheetAnimRef.current = null;
@@ -2423,13 +2555,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       materialDropsRef.current = [];
       const imgEl = islandButtonImgRef.current;
       if (!imgEl || !islandNatural) {
-        setIslandActive(false);
-        setIslandOverlayVisible(false);
-        setIslandOverlayShown(false);
-        setIslandAnimating(false);
-        setIslandClosing(false);
-        setIslandTranslate({ x: 0, y: 0 });
-        setIslandScale({ x: 1, y: 1 });
+        finalizeOverlayClose();
         return;
       }
       const rect = imgEl.getBoundingClientRect();
@@ -2449,12 +2575,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       setIslandAnimating(true);
       setIslandClosing(true);
       setIslandOverlayVisible(false);
-      requestAnimationFrame(() => {
+      if (heroTransformFrameRef.current !== null) {
+        cancelAnimationFrame(heroTransformFrameRef.current);
+        heroTransformFrameRef.current = null;
+      }
+      heroTransformFrameRef.current = requestAnimationFrame(() => {
+        heroTransformFrameRef.current = null;
         setIslandTranslate({ x: deltaX, y: deltaY });
         setIslandScale({ x: uniformScale, y: uniformScale });
       });
     },
-    [islandNatural]
+    [finalizeOverlayClose, islandNatural, islandOverlayVisible]
   );
 
   useEffect(() => {
@@ -2479,6 +2610,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (islandActive) {
         setIslandAnimating(false);
         setIslandOpening(false);
+        overlayPhaseRef.current = "open";
         try {
           requestAnimationFrame(() => {
             measureHeroSize();
@@ -2499,29 +2631,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     (e: React.TransitionEvent<HTMLDivElement>) => {
       if (e.propertyName !== "opacity") return;
       if (!islandOverlayVisible) {
-        const container = fxContainerRef.current;
-        if (container && container.parentNode) {
-          try {
-            container.parentNode.removeChild(container);
-          } catch {}
-        }
-        fxContainerRef.current = null;
-        setIslandOverlayShown(false);
-        setIslandClosing(false);
-        setIslandTranslate({ x: 0, y: 0 });
-        setIslandScale({ x: 1, y: 1 });
-        const anim = monAnimRef.current;
-        if (anim && anim.raf) cancelAnimationFrame(anim.raf);
-        monAnimRef.current = null;
-        setMonSpriteData("");
-        setMonPos(null);
-        setMonKey(null);
+        finalizeOverlayClose();
       }
       try {
         updateRockBox();
       } catch {}
     },
-    [islandOverlayVisible, updateRockBox]
+    [finalizeOverlayClose, islandOverlayVisible, updateRockBox]
   );
 
   const pointInPolygon = useCallback((x: number, y: number, poly: Array<{ x: number; y: number }>) => {
@@ -3225,15 +3341,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleMaterialItemTap = useCallback(
     (name: MaterialName, _url: string | null) => (_event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+      if (!islandOverlayVisible || islandClosing || overlayPhaseRef.current !== "open") {
+        return;
+      }
       activateMaterial(name);
     },
-    [activateMaterial]
+    [activateMaterial, islandClosing, islandOverlayVisible]
   );
 
   const isDraggingRef = useRef(false);
 
   const handlePointerStart = useCallback(
     (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+      if (!islandOverlayVisible || islandClosing || overlayPhaseRef.current !== "open") {
+        return;
+      }
       walkingDragCleanupRef.current = null;
       const skipForMaterialTarget = isMaterialTarget((event.target as Node) || null);
       const isInsideRockBox = (nx: number, ny: number) => {
@@ -3708,7 +3830,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, scheduleTeleportOverlapCheck, updateCircleTracking, resetCircleTracking, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion]
+    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, scheduleTeleportOverlapCheck, updateCircleTracking, resetCircleTracking, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion, islandOverlayVisible, islandClosing]
   );
 
   const handleSafeHitboxPointerDown = useCallback(
