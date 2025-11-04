@@ -725,6 +725,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const lastInsideRef = useRef<Set<number>>(new Set());
   const circlesGestureActiveRef = useRef<boolean>(false);
   const walkingDragActiveRef = useRef<boolean>(false);
+  const walkingDragCleanupRef = useRef<(() => void) | null>(null);
   const lastMaterialsInsideRef = useRef<Set<MaterialName>>(new Set());
 
   const circleTrackingRef = useRef<{
@@ -2443,6 +2444,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
       didDismissSomethingWithOutsideTapJustNow();
+      if (rafRef.current !== null) {
+        cancelAnimationFrame(rafRef.current);
+        rafRef.current = null;
+      }
+      moveAnimRef.current = null;
+      const walkCleanup = walkingDragCleanupRef.current;
+      if (walkCleanup) walkCleanup();
+      walkingDragCleanupRef.current = null;
+      walkingDragActiveRef.current = false;
       try {
         const heroImg = islandHeroImgRef.current;
         const heroWrap = heroImg ? (heroImg.parentElement as HTMLElement | null) : null;
@@ -3286,6 +3296,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handlePointerStart = useCallback(
     (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+      walkingDragCleanupRef.current = null;
       const skipForMaterialTarget = isMaterialTarget((event.target as Node) || null);
       const isInsideRockBox = (nx: number, ny: number) => {
         if (rockIsBroken) return false;
@@ -3681,7 +3692,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             scheduleTeleportOverlapCheck();
             startStandingAnimation();
           }
+          walkingDragCleanupRef.current = null;
         };
+
+        walkingDragCleanupRef.current = handleEnd;
 
         const handleVisibilityChange = () => {
           if (document.visibilityState !== "visible") {
