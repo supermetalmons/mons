@@ -2965,6 +2965,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     };
   }, []);
 
+  const clearTeleportCheckTimeout = useCallback(() => {
+    if (teleportCheckTimeoutRef.current !== null) {
+      window.clearTimeout(teleportCheckTimeoutRef.current);
+      teleportCheckTimeoutRef.current = null;
+    }
+  }, []);
+
   const checkAndTeleportMonIfOverlapped = useCallback(() => {
     const monB = getMonBounds();
     if (!monB) return;
@@ -2972,15 +2979,24 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const overlap = computeOverlapArea(dudeB, monB);
     const overlapFracOfMon = monB.area > 0 ? overlap / monB.area : 0;
     if (overlapFracOfMon > 0.55) {
+      clearTeleportCheckTimeout();
       teleportMonToRandomNonOverlappingSpot();
     }
-  }, [getMonBounds, getDudeBounds, computeOverlapArea, teleportMonToRandomNonOverlappingSpot]);
+  }, [getMonBounds, getDudeBounds, computeOverlapArea, teleportMonToRandomNonOverlappingSpot, clearTeleportCheckTimeout]);
+
+  const scheduleTeleportOverlapCheck = useCallback(() => {
+    if (teleportCheckTimeoutRef.current !== null) return;
+    teleportCheckTimeoutRef.current = window.setTimeout(() => {
+      teleportCheckTimeoutRef.current = null;
+      checkAndTeleportMonIfOverlapped();
+    }, 300);
+  }, [checkAndTeleportMonIfOverlapped]);
 
   const stopMoveAnim = useCallback(() => {
     if (rafRef.current) cancelAnimationFrame(rafRef.current);
     rafRef.current = null;
     moveAnimRef.current = null;
-    checkAndTeleportMonIfOverlapped();
+    scheduleTeleportOverlapCheck();
     const wAnim = currentAnimKindRef.current === "walking" ? sheetAnimRef.current : null;
     if (wAnim) {
       if (wAnim.raf) cancelAnimationFrame(wAnim.raf);
@@ -2988,7 +3004,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       currentAnimKindRef.current = "none";
     }
     setWalkingPlaying(false);
-  }, [checkAndTeleportMonIfOverlapped]);
+  }, [scheduleTeleportOverlapCheck]);
 
   const latestDudePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
   const moveTargetMetaRef = useRef<{ x: number; y: number; facingLeft: boolean; onArrive?: () => void } | null>(null);
@@ -2997,9 +3013,16 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const lastFacingDirRef = useRef<boolean>(false);
   const lastEllipsePointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 });
   const lastPointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 });
+  const teleportCheckTimeoutRef = useRef<number | null>(null);
   useEffect(() => {
     latestDudePosRef.current = dudePos;
   }, [dudePos]);
+
+  useEffect(() => {
+    return () => {
+      clearTeleportCheckTimeout();
+    };
+  }, [clearTeleportCheckTimeout]);
   const getReferencePos = useCallback(() => {
     const ref = latestDudePosRef.current;
     if (ref && Number.isFinite(ref.x) && Number.isFinite(ref.y) && !(ref.x === 0 && ref.y === 0)) return ref;
@@ -3512,7 +3535,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         } else {
           setDudeFacingLeft(facingLeft);
           petMon();
-          checkAndTeleportMonIfOverlapped();
+          scheduleTeleportOverlapCheck();
         }
         if ((event as any).preventDefault) (event as any).preventDefault();
         return;
@@ -3633,7 +3656,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             sheetAnimRef.current = null;
             currentAnimKindRef.current = "none";
             setWalkingPlaying(false);
-            checkAndTeleportMonIfOverlapped();
+            scheduleTeleportOverlapCheck();
             startStandingAnimation();
           }
         };
@@ -3711,7 +3734,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, checkAndTeleportMonIfOverlapped, updateCircleTracking, resetCircleTracking, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion]
+    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, scheduleTeleportOverlapCheck, updateCircleTracking, resetCircleTracking, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion]
   );
 
   const handleSafeHitboxPointerDown = useCallback(
