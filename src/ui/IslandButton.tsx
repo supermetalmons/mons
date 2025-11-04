@@ -958,6 +958,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     };
     const tapMaterialByName = (name: MaterialName) => activateMaterial(name);
     const flashEntries = (indices: Set<number>) => {
+      if (!islandOverlayVisible || islandClosing || islandOpening) {
+        return;
+      }
       if (walkingDragActiveRef.current) return;
       if (indices.size === 0) return;
       indices.forEach((i) => {
@@ -1045,9 +1048,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const inside = getInsideSet(clientX, clientY);
       lastInsideRef.current = inside;
       circlesGestureActiveRef.current = inside.size > 0;
+      if (!islandOverlayVisible || islandClosing || islandOpening) {
+        return;
+      }
       if (inside.size) flashEntries(inside);
       const mats = getMaterialsInsideSet(clientX, clientY);
       lastMaterialsInsideRef.current = mats;
+      if (!islandOverlayVisible || islandClosing || islandOpening) {
+        return;
+      }
       if (mats.size) mats.forEach((n) => tapMaterialByName(n));
     };
     const onUp = () => {
@@ -1089,7 +1098,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       inside.forEach((i) => {
         if (!prev.has(i)) entrants.add(i);
       });
-      if (entrants.size) flashEntries(entrants);
+      if (!islandOverlayVisible || islandClosing || islandOpening) {
+        lastInsideRef.current = new Set();
+        return;
+      }
+      if (inside.size) flashEntries(inside);
       lastInsideRef.current = inside;
       const mats = getMaterialsInsideSet(t.clientX, t.clientY);
       const prevMats = lastMaterialsInsideRef.current;
@@ -1116,7 +1129,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       window.removeEventListener("mousemove", onMoveMouse, { capture: true } as any);
       window.removeEventListener("touchmove", onMoveTouch as any, { capture: true } as any);
     };
-  }, [activateMaterial]);
+  }, [activateMaterial, islandOverlayVisible, islandClosing, islandOpening]);
 
   useEffect(() => {
     const onKeyDown = (ev: KeyboardEvent) => {
@@ -3341,19 +3354,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleMaterialItemTap = useCallback(
     (name: MaterialName, _url: string | null) => (_event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-      if (!islandOverlayVisible || islandClosing || overlayPhaseRef.current !== "open") {
+      if (!islandOverlayVisible || islandClosing || islandOpening) {
         return;
       }
       activateMaterial(name);
     },
-    [activateMaterial, islandClosing, islandOverlayVisible]
+    [activateMaterial, islandClosing, islandOpening, islandOverlayVisible]
   );
 
   const isDraggingRef = useRef(false);
 
   const handlePointerStart = useCallback(
     (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-      if (!islandOverlayVisible || islandClosing || overlayPhaseRef.current !== "open") {
+      if (!islandOverlayVisible || islandClosing || islandOpening) {
         return;
       }
       walkingDragCleanupRef.current = null;
@@ -3830,7 +3843,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, scheduleTeleportOverlapCheck, updateCircleTracking, resetCircleTracking, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion, islandOverlayVisible, islandClosing]
+    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, scheduleTeleportOverlapCheck, updateCircleTracking, resetCircleTracking, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion, islandOverlayVisible, islandClosing, islandOpening]
   );
 
   const handleSafeHitboxPointerDown = useCallback(
