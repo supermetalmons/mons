@@ -409,15 +409,12 @@ const MON_BOUNDS_WIDTH_FRAC_OVERRIDES: Record<string, number> = {
   mowch_angel: 0.1,
   mummyfly_angel: 0.1,
 
-  borgalo_demon: 0.1,
-  notchur_demon: 0.1,
+  borgalo_demon: 0.095,
+  notchur_demon: 0.11,
 
-  chamgot_mystic: 0.1,
-  dart_mystic: 0.1,
+  chamgot_mystic: 0.11,
   estalibur_mystic: 0.1,
 
-  melmut_spirit: 0.1,
-  omenstatue_spirit: 0.1,
   owg_spirit: 0.1,
 };
 
