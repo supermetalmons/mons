@@ -348,6 +348,8 @@ const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X = 0.0;
 const SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y = 0.042;
 const DUDE_BOUNDS_WIDTH_FRAC = 0.12;
 const DUDE_BOUNDS_HEIGHT_FRAC = 0.22;
+const DUDE_FRAME_COUNT = 4;
+const DUDE_SHEET_ROWS = 5;
 const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X = 0.63;
 const SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y = 0.36;
 const SAFE_POINT_EDGE_INSET = 0.003;
@@ -358,9 +360,9 @@ const FACING_DX_EPS = 0.006;
 const FACING_FLIP_HYST_MS = 160;
 const DudeSpriteWrap = styled.div`
   position: absolute;
-  width: auto;
   height: ${DUDE_SPRITE_HEIGHT_FRAC * 100}%;
   transform: translate(-50%, -${DUDE_ANCHOR_FRAC * 100}%);
+  aspect-ratio: var(--dude-frame-aspect, 1);
   pointer-events: none;
   transition: opacity 260ms ease;
 `;
@@ -373,6 +375,7 @@ const DudeSpriteFrame = styled.div<{ $facingLeft: boolean }>`
   height: 100%;
   overflow: hidden;
   transform: scaleX(${(p) => (p.$facingLeft ? -1 : 1)});
+  aspect-ratio: var(--dude-frame-aspect, 1);
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   pointer-events: none;
@@ -382,8 +385,10 @@ const DudeSpriteStrip = styled.img`
   position: absolute;
   left: 0;
   top: 0;
-  height: 100%;
-  width: auto;
+  height: calc(100% * var(--dude-strip-rows, 1));
+  width: calc(100% * var(--dude-frame-count, 1));
+  max-width: none;
+  max-height: none;
   will-change: transform;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
@@ -396,6 +401,7 @@ const MON_HEIGHT_FRAC = 0.15;
 const MON_BASELINE_Y_OFFSET = 0.03;
 const MON_BOUNDS_WIDTH_FRAC = 0.115;
 const MON_BOUNDS_X_SHIFT = 0.0675;
+const MON_FRAME_COUNT = 4;
 
 const MON_BOUNDS_WIDTH_FRAC_OVERRIDES: Record<string, number> = {
   royal_aguapwoshi_drainer: 0.09,
@@ -433,9 +439,9 @@ const MonLayer = styled.div<{ $visible: boolean }>`
 
 const MonSpriteWrap = styled.div`
   position: absolute;
-  width: auto;
   height: ${MON_HEIGHT_FRAC * 100}%;
   transform: translate(-50%, -${DUDE_ANCHOR_FRAC * 100}%);
+  aspect-ratio: var(--mon-frame-aspect, 1);
   pointer-events: none;
   transition: opacity 260ms ease;
 `;
@@ -448,6 +454,7 @@ const MonSpriteFrame = styled.div<{ $facingLeft: boolean }>`
   height: 100%;
   overflow: hidden;
   transform: scaleX(${(p) => (p.$facingLeft ? -1 : 1)});
+  aspect-ratio: var(--mon-frame-aspect, 1);
   image-rendering: pixelated;
   image-rendering: crisp-edges;
   pointer-events: none;
@@ -458,7 +465,9 @@ const MonSpriteStrip = styled.img`
   left: 0;
   top: 0;
   height: 100%;
-  width: auto;
+  width: calc(100% * var(--mon-frame-count, 1));
+  max-width: none;
+  max-height: none;
   will-change: transform;
   image-rendering: pixelated;
   image-rendering: crisp-edges;
@@ -1141,14 +1150,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const miningFrameWrapRef = useRef<HTMLDivElement | null>(null);
   const miningStripImgRef = useRef<HTMLImageElement | null>(null);
   const miningImageRef = useRef<HTMLImageElement | null>(null);
-  const dudeFrameWidthRef = useRef<number>(0);
   const [walkingPlaying, setWalkingPlaying] = useState(false);
   const [pettingPlaying, setPettingPlaying] = useState(false);
   const [standingPlaying, setStandingPlaying] = useState(false);
   const sheetAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
   const currentAnimKindRef = useRef<"none" | "mining" | "walking" | "petting" | "standing">("none");
-  const pendingDudeSizingFrameRef = useRef<number | null>(null);
-  const dudeVisibilityGuardRef = useRef<{ lastWidth: number; stableFrames: number }>({ lastWidth: 0, stableFrames: 0 });
 
   const [monPos, setMonPos] = useState<{ x: number; y: number } | null>(null);
   const [monFacingLeft, setMonFacingLeft] = useState<boolean>(false);
@@ -1161,7 +1167,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const monAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
   const monNaturalSizeRef = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
   const monResizeObserverRef = useRef<ResizeObserver | null>(null);
-  const monFrameWidthRef = useRef<number>(0);
   const monFlipTimerRef = useRef<number | null>(null);
   const monPetTimerRef = useRef<number | null>(null);
   const startPettingAnimationRef = useRef<() => void>(() => {});
@@ -1175,20 +1180,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const stripImg = monStripImgRef.current as HTMLImageElement | null;
     const nat = monNaturalSizeRef.current;
     if (!wrap || !frameWrap || !stripImg || !nat.w || !nat.h) return;
-    const frameCount = 4;
-    const { h } = heroSizeRef.current;
-    if (!h) return;
-    const frameWidth = Math.floor(nat.w / frameCount) || 1;
-    const targetHeight = Math.max(1, Math.round(h * MON_HEIGHT_FRAC));
-    const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / nat.h));
-    frameWrap.style.width = `${targetWidth}px`;
-    frameWrap.style.height = `${targetHeight}px`;
-    stripImg.style.height = `${targetHeight}px`;
-    stripImg.style.width = `${targetWidth * frameCount}px`;
-    monFrameWidthRef.current = targetWidth;
+    const frameWidth = nat.w / MON_FRAME_COUNT;
+    const frameAspect = frameWidth / nat.h;
+    wrap.style.setProperty("--mon-frame-aspect", frameAspect.toString());
+    frameWrap.style.setProperty("--mon-frame-aspect", frameAspect.toString());
+    stripImg.style.setProperty("--mon-frame-count", MON_FRAME_COUNT.toString());
+    frameWrap.style.removeProperty("width");
+    frameWrap.style.removeProperty("height");
+    stripImg.style.removeProperty("width");
+    stripImg.style.removeProperty("height");
     const currentFrameIndex = Math.max(0, monAnimRef.current?.lastFrame ?? 0);
-    const offset = currentFrameIndex * targetWidth;
-    stripImg.style.transform = `translateX(${-offset}px)`;
+    const frameShiftPct = currentFrameIndex * (100 / MON_FRAME_COUNT);
+    stripImg.style.transform = `translateX(${-frameShiftPct}%)`;
   }, []);
 
   const updateMonSprite = useCallback((monType: MonType) => {
@@ -1213,7 +1216,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const playSheetAnimation = useCallback(
     (kind: "mining" | "walking" | "petting" | "standing", opts?: { onStep?: () => void }) => {
       if (!dudeWrapRef.current) return;
-      if (!miningImageRef.current) return;
+      const sheetImg = miningImageRef.current;
+      if (!sheetImg) return;
       if (kind === "mining" && miningPlaying) return;
       if (kind === "walking" && currentAnimKindRef.current === "walking" && sheetAnimRef.current && sheetAnimRef.current.raf !== null) return;
       if (kind === "petting" && pettingPlaying) return;
@@ -1236,11 +1240,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
       let initAttempts = 0;
       const init = () => {
-        const sheetImg = miningImageRef.current;
         const wrap = dudeWrapRef.current;
         const frameWrap = miningFrameWrapRef.current;
         const stripImg = miningStripImgRef.current;
-        if (!sheetImg || !wrap || !frameWrap || !stripImg) {
+        const sheet = miningImageRef.current;
+        if (!wrap || !frameWrap || !stripImg || !sheet) {
           initAttempts += 1;
           if (initAttempts <= 5) {
             requestAnimationFrame(init);
@@ -1253,24 +1257,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           return;
         }
 
-        const wrapBox = wrap.getBoundingClientRect();
-        const frameCount = 4;
-        const rows = 5;
-        const frameWidth = Math.floor(sheetImg.naturalWidth / frameCount) || 1;
-        const singleRowHeight = Math.floor((sheetImg.naturalHeight || 1) / rows) || 1;
-        const targetHeight = Math.max(1, Math.round(wrapBox.height));
-        const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / singleRowHeight));
+        const { naturalWidth, naturalHeight } = sheet;
+        if (!naturalWidth || !naturalHeight) return;
+        const frameWidth = naturalWidth / DUDE_FRAME_COUNT;
+        const singleRowHeight = naturalHeight / DUDE_SHEET_ROWS;
+        if (!frameWidth || !singleRowHeight) return;
 
-        wrap.style.width = `${targetWidth}px`;
-        frameWrap.style.width = `${targetWidth}px`;
-        frameWrap.style.height = `${targetHeight}px`;
-        stripImg.style.height = `${targetHeight * rows}px`;
-        stripImg.style.width = `${targetWidth * frameCount}px`;
-        dudeFrameWidthRef.current = targetWidth;
+        const frameAspect = frameWidth / singleRowHeight;
+        wrap.style.setProperty("--dude-frame-aspect", frameAspect.toString());
+        frameWrap.style.setProperty("--dude-frame-aspect", frameAspect.toString());
+        stripImg.style.setProperty("--dude-frame-count", DUDE_FRAME_COUNT.toString());
+        stripImg.style.setProperty("--dude-strip-rows", DUDE_SHEET_ROWS.toString());
+        wrap.style.removeProperty("width");
+        frameWrap.style.removeProperty("width");
+        frameWrap.style.removeProperty("height");
+        stripImg.style.removeProperty("width");
+        stripImg.style.removeProperty("height");
+
         const rowIndex = kind === "mining" ? 0 : kind === "walking" ? 1 : kind === "petting" ? 2 : 3;
-        const tyConstInit = -rowIndex * targetHeight;
-        const initialTx = kind === "walking" ? -targetWidth : 0;
-        stripImg.style.transform = `translate(${initialTx}px, ${tyConstInit}px)`;
+        const rowShiftPct = rowIndex * (100 / DUDE_SHEET_ROWS);
+        const initialFrameIndex = kind === "walking" ? 1 : 0;
+        const initialFrameShiftPct = initialFrameIndex * (100 / DUDE_FRAME_COUNT);
+        stripImg.style.transform = `translate(${-initialFrameShiftPct}%, ${-rowShiftPct}%)`;
 
         const frameMs = kind === "walking" ? WALKING_FRAME_MS : kind === "standing" ? STANDING_FRAME_MS : MINING_FRAME_MS;
         const loop = kind === "walking" || kind === "standing";
@@ -1284,26 +1292,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const anim = animObj;
           const elapsed = performance.now() - anim.start;
           const rawFrame = Math.floor(elapsed / frameMs);
-          const baseFrame = loop ? ((rawFrame % frameCount) + frameCount) % frameCount : Math.min(frameCount - 1, Math.max(0, rawFrame));
-          const frame = kind === "walking" ? (baseFrame + 1) % frameCount : baseFrame;
+          const baseFrame = loop ? ((rawFrame % DUDE_FRAME_COUNT) + DUDE_FRAME_COUNT) % DUDE_FRAME_COUNT : Math.min(DUDE_FRAME_COUNT - 1, Math.max(0, rawFrame));
+          const frame = kind === "walking" ? (baseFrame + 1) % DUDE_FRAME_COUNT : baseFrame;
           if (frame !== anim.lastFrame) {
             anim.lastFrame = frame;
-            const frameWrapEl = miningFrameWrapRef.current;
-            const wrapBoxNow = dudeWrapRef.current ? dudeWrapRef.current.getBoundingClientRect() : null;
-            const targetHeightNow = Math.max(1, Math.round(frameWrapEl?.clientHeight || wrapBoxNow?.height || 0));
-            const rowIndexNow = kind === "mining" ? 0 : kind === "walking" ? 1 : kind === "petting" ? 2 : 3;
-            const tyConstNow = -rowIndexNow * targetHeightNow;
-            const currentWidth = Math.max(1, Math.round(dudeFrameWidthRef.current || 0));
-            const offset = frame * currentWidth;
-            const tx = -offset;
-            stripImg.style.transform = `translate(${tx}px, ${tyConstNow}px)`;
+            const frameShiftPct = frame * (100 / DUDE_FRAME_COUNT);
+            stripImg.style.transform = `translate(${-frameShiftPct}%, ${-rowShiftPct}%)`;
           }
           if (opts && opts.onStep) opts.onStep();
 
           if (loop) {
             animObj.raf = requestAnimationFrame(step);
           } else {
-            if (elapsed < frameCount * frameMs) {
+            if (elapsed < DUDE_FRAME_COUNT * frameMs) {
               animObj.raf = requestAnimationFrame(step);
             } else {
               if (kind === "mining") setMiningPlaying(false);
@@ -1329,59 +1330,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     if (!sheetImg || !wrap || !frameWrap || !stripImg) return;
     const { naturalWidth, naturalHeight } = sheetImg;
     if (!naturalWidth || !naturalHeight) return;
-    const pendingId = pendingDudeSizingFrameRef.current;
-    if (pendingId !== null) {
-      cancelAnimationFrame(pendingId);
-      pendingDudeSizingFrameRef.current = null;
-    }
-    const wrapBox = wrap.getBoundingClientRect();
-    const heroEl = islandHeroImgRef.current;
-    const heroRect = heroEl ? heroEl.getBoundingClientRect() : null;
-    const heroWrap = heroWrapRef.current;
-    const heroWrapRect = heroWrap ? heroWrap.getBoundingClientRect() : null;
-    const fallbackHeightFromHero = heroRect && heroRect.height ? heroRect.height * DUDE_SPRITE_HEIGHT_FRAC : 0;
-    const fallbackHeightFromWrap = heroWrapRect && heroWrapRect.height ? heroWrapRect.height * DUDE_SPRITE_HEIGHT_FRAC : 0;
-    const fallbackHeightFromState = heroSize.h ? heroSize.h * DUDE_SPRITE_HEIGHT_FRAC : 0;
-    const measuredHeight = wrapBox.height || fallbackHeightFromHero || fallbackHeightFromWrap || fallbackHeightFromState;
-    if (!measuredHeight) {
-      if (pendingDudeSizingFrameRef.current === null) {
-        pendingDudeSizingFrameRef.current = requestAnimationFrame(() => {
-          pendingDudeSizingFrameRef.current = null;
-          updateDudeStripSizing();
-        });
-      }
-      return;
-    }
-    const frameCount = 4;
-    const rows = 5;
-    const frameWidth = Math.floor(naturalWidth / frameCount) || 1;
-    const singleRowHeight = Math.floor(naturalHeight / rows) || 1;
+    const frameWidth = naturalWidth / DUDE_FRAME_COUNT;
+    const singleRowHeight = naturalHeight / DUDE_SHEET_ROWS;
     if (!frameWidth || !singleRowHeight) return;
-    const targetHeight = Math.max(1, Math.round(measuredHeight));
-    const targetWidth = Math.max(1, Math.round((targetHeight * frameWidth) / singleRowHeight));
 
-    try {
-      const wrapWidthValue = `${targetWidth}px`;
-      if (wrap.style.width !== wrapWidthValue) wrap.style.width = wrapWidthValue;
-      const frameWidthValue = `${targetWidth}px`;
-      if (frameWrap.style.width !== frameWidthValue) frameWrap.style.width = frameWidthValue;
-      const frameHeightValue = `${targetHeight}px`;
-      if (frameWrap.style.height !== frameHeightValue) frameWrap.style.height = frameHeightValue;
-      const stripHeightValue = `${targetHeight * rows}px`;
-      if (stripImg.style.height !== stripHeightValue) stripImg.style.height = stripHeightValue;
-      const stripWidthValue = `${targetWidth * frameCount}px`;
-      if (stripImg.style.width !== stripWidthValue) stripImg.style.width = stripWidthValue;
-      dudeFrameWidthRef.current = targetWidth;
-      const kind = currentAnimKindRef.current;
-      const rowIndex = kind === "mining" ? 0 : kind === "walking" ? 1 : kind === "petting" ? 2 : 3;
-      const tyConst = -rowIndex * targetHeight;
-      const lastFrame = sheetAnimRef.current?.lastFrame ?? -1;
-      const currentFrameIndex = lastFrame === -1 && kind === "walking" ? 1 : Math.max(0, lastFrame);
-      const offset = currentFrameIndex * targetWidth;
-      const transform = `translate(${-offset}px, ${tyConst}px)`;
-      if (stripImg.style.transform !== transform) stripImg.style.transform = transform;
-    } catch {}
-  }, [heroSize.h]);
+    const frameAspect = frameWidth / singleRowHeight;
+    wrap.style.setProperty("--dude-frame-aspect", frameAspect.toString());
+    frameWrap.style.setProperty("--dude-frame-aspect", frameAspect.toString());
+    stripImg.style.setProperty("--dude-frame-count", DUDE_FRAME_COUNT.toString());
+    stripImg.style.setProperty("--dude-strip-rows", DUDE_SHEET_ROWS.toString());
+    frameWrap.style.removeProperty("width");
+    frameWrap.style.removeProperty("height");
+    stripImg.style.removeProperty("width");
+    stripImg.style.removeProperty("height");
+
+    const kind = currentAnimKindRef.current;
+    const rowIndex = kind === "mining" ? 0 : kind === "walking" ? 1 : kind === "petting" ? 2 : 3;
+    const rowShiftPct = rowIndex * (100 / DUDE_SHEET_ROWS);
+    const lastFrame = sheetAnimRef.current?.lastFrame ?? -1;
+    const frameIndex = lastFrame === -1 && kind === "walking" ? 1 : Math.max(0, lastFrame);
+    const frameShiftPct = frameIndex * (100 / DUDE_FRAME_COUNT);
+    stripImg.style.transform = `translate(${-frameShiftPct}%, ${-rowShiftPct}%)`;
+  }, []);
 
   useEffect(() => {
     if (!islandOverlayVisible || islandClosing) return;
@@ -1394,21 +1364,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return () => {
       window.removeEventListener("resize", handler);
       document.removeEventListener("fullscreenchange", handler);
-      if (pendingDudeSizingFrameRef.current !== null) {
-        cancelAnimationFrame(pendingDudeSizingFrameRef.current);
-        pendingDudeSizingFrameRef.current = null;
-      }
     };
   }, [islandOverlayVisible, islandClosing, updateDudeStripSizing]);
-
-  useEffect(() => {
-    return () => {
-      if (pendingDudeSizingFrameRef.current !== null) {
-        cancelAnimationFrame(pendingDudeSizingFrameRef.current);
-        pendingDudeSizingFrameRef.current = null;
-      }
-    };
-  }, []);
 
   useLayoutEffect(() => {
     if (!islandOverlayVisible || islandClosing) return;
@@ -1456,33 +1413,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   useEffect(() => {
     let timer: number | null = null;
-    let raf: number | null = null;
-    dudeVisibilityGuardRef.current = { lastWidth: 0, stableFrames: 0 };
-    const showWhenReady = () => {
-      raf = null;
-      updateDudeStripSizing();
-      const wrapEl = dudeWrapRef.current;
-      const width = wrapEl ? wrapEl.getBoundingClientRect().width : 0;
-      if (dudeFrameWidthRef.current > 0 && width > 0) {
-        const guard = dudeVisibilityGuardRef.current;
-        const diff = Math.abs(width - guard.lastWidth);
-        if (diff < 0.5) {
-          guard.stableFrames += 1;
-        } else {
-          guard.stableFrames = 0;
-        }
-        guard.lastWidth = width;
-        if (guard.stableFrames >= 1) {
-          setDudeVisible(true);
-          return;
-        }
-      }
-      raf = requestAnimationFrame(showWhenReady);
-    };
     if (islandOverlayVisible && !islandClosing) {
       timer = window.setTimeout(() => {
         setDecorVisible(true);
-        raf = requestAnimationFrame(showWhenReady);
+        setDudeVisible(true);
+        updateDudeStripSizing();
       }, 120);
     } else {
       setDecorVisible(false);
@@ -1491,8 +1426,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     }
     return () => {
       if (timer !== null) window.clearTimeout(timer);
-      if (raf !== null) cancelAnimationFrame(raf);
-      dudeVisibilityGuardRef.current = { lastWidth: 0, stableFrames: 0 };
     };
   }, [islandOverlayVisible, islandClosing, updateDudeStripSizing]);
 
@@ -1847,39 +1780,35 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const img = new Image();
       img.src = `data:image/webp;base64,${monSpriteData}`;
       const startAnim = () => {
-        const frameCount = 4;
+        const frameCount = MON_FRAME_COUNT;
         monNaturalSizeRef.current = { w: img.naturalWidth || 1, h: img.naturalHeight || 1 };
         stripImg.style.visibility = "hidden";
         updateMonStripSizing();
-        stripImg.style.transform = `translateX(0px)`;
+        stripImg.style.transform = `translateX(0%)`;
         monAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
         const MON_FRAME_MS = 220;
-        setTimeout(() => {
-          if (!monAnimRef.current) return;
-          const step = () => {
-            const anim = monAnimRef.current;
-            if (!anim) return;
-            if (!overlayActiveRef.current) {
-              monAnimRef.current = null;
-              setMonVisible(false);
-              return;
-            }
-            const elapsed = performance.now() - anim.start;
-            const rawFrame = Math.floor(elapsed / MON_FRAME_MS);
-            const frame = ((rawFrame % frameCount) + frameCount) % frameCount;
-            if (frame !== anim.lastFrame) anim.lastFrame = frame;
-            const currentWidth = Math.max(0, Math.round(monFrameWidthRef.current || 0));
-            const offset = frame * currentWidth;
-            stripImg.style.transform = `translateX(${-offset}px)`;
-            if (stripImg.style.visibility !== "visible") {
-              stripImg.style.visibility = "visible";
-              setMonVisible(true);
-            }
+        const step = () => {
+          const anim = monAnimRef.current;
+          if (!anim) return;
+          if (!overlayActiveRef.current) {
+            monAnimRef.current = null;
+            setMonVisible(false);
+            return;
+          }
+          const elapsed = performance.now() - anim.start;
+          const rawFrame = Math.floor(elapsed / MON_FRAME_MS);
+          const frame = ((rawFrame % frameCount) + frameCount) % frameCount;
+          if (frame !== anim.lastFrame) anim.lastFrame = frame;
+            const frameShiftPct = frame * (100 / MON_FRAME_COUNT);
+            stripImg.style.transform = `translateX(${-frameShiftPct}%)`;
+          if (stripImg.style.visibility !== "visible") {
+            stripImg.style.visibility = "visible";
+            setMonVisible(true);
+          }
 
-            anim.raf = requestAnimationFrame(step);
-          };
-          monAnimRef.current.raf = requestAnimationFrame(step);
-        }, 260);
+          anim.raf = requestAnimationFrame(step);
+        };
+        step();
 
         try {
           if (typeof ResizeObserver !== "undefined" && wrap) {
@@ -3884,10 +3813,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                             <MonSpriteWrap
                               ref={monWrapRef}
                               style={{
-                                left: `${(monPos?.x ?? MON_REL_X) * 100}%`,
+                                left: `${((monPos?.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT) * 100}%`,
                                 top: `${(monPos?.y ?? MON_REL_Y) * 100}%`,
                                 opacity: monVisible && !monTeleporting ? 1 : 0,
-                                transition: "opacity 180ms ease-out",
+                              transition: "opacity 260ms ease",
                                 zIndex: monZIndex,
                               }}>
                               <MonSpriteFrame $facingLeft={monFacingLeft} ref={monFrameWrapRef as any}>
