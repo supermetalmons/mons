@@ -2963,7 +2963,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       storage.setIslandMonType(nextType);
 
       teleportFXStart();
-      directlyPlaySoundNamed("bewo", 0.1);
+      directlyPlaySoundNamed("bewo", 0.085);
       setMonTeleporting(true);
       setTimeout(() => {
         updateMonSprite(nextType);

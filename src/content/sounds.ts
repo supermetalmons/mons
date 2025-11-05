@@ -109,7 +109,7 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       break;
     case Sound.CollectingMaterials:
       name = "rocks/p3";
-      volumeMultiplier = 0.23;
+      volumeMultiplier = 0.13;
       break;
     case Sound.Timer:
       name = "timer";
@@ -124,11 +124,11 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       break;
     case Sound.WalkToMon:
       name = "chip";
-      volumeMultiplier = 0.21;
+      volumeMultiplier = 0.1;
       break;
     case Sound.PetMon:
       name = "pet";
-      volumeMultiplier = 0.18;
+      volumeMultiplier = 0.077;
       break;
     case Sound.SadMon:
       name = "sad";
