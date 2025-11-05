@@ -138,7 +138,7 @@ export class SoundPlayer {
     }
   }
 
-  public async playSound(url: string): Promise<void> {
+  public async playSound(url: string, volumeMultiplier: number = 1): Promise<void> {
     if (!this.isInitialized) return;
     if (document.visibilityState !== "visible" && isMobile) return;
     const ctx = await this.prepareContext();
@@ -147,7 +147,10 @@ export class SoundPlayer {
       const audioBuffer = await this.loadAudioBuffer(url);
       const source = ctx.createBufferSource();
       source.buffer = audioBuffer;
-      source.connect(ctx.destination);
+      const gainNode = ctx.createGain();
+      gainNode.gain.value = Math.max(0, volumeMultiplier);
+      source.connect(gainNode);
+      gainNode.connect(ctx.destination);
       source.start(0);
     } catch (_) {
       this.setupRestartListeners();

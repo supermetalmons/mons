@@ -3,83 +3,94 @@ import { getIsMuted } from "../index";
 import { Reaction } from "../connection/connectionModels";
 import { soundPlayer } from "../utils/SoundPlayer";
 
-export function directlyPlaySoundNamed(name: string) {
+export function directlyPlaySoundNamed(name: string, volumeMultiplier: number = 1) {
   if (getIsMuted()) {
     return;
   }
-  soundPlayer.playSound("https://assets.mons.link/sounds/" + name + ".mp3");
+  soundPlayer.playSound("https://assets.mons.link/sounds/" + name + ".mp3", volumeMultiplier);
 }
 
-function playSound(path: string) {
-  soundPlayer.playSound("https://assets.mons.link/" + path);
+function playSound(path: string, volumeMultiplier: number = 1) {
+  soundPlayer.playSound("https://assets.mons.link/" + path, volumeMultiplier);
 }
 
-function resolveSoundName(sound: Sound): string | null {
+type ResolvedSound = {
+  name: string;
+  volumeMultiplier: number;
+};
+
+const soundVolumeMultipliers: Partial<Record<Sound, number>> = {
+  [Sound.Timer]: 0.6,
+  [Sound.Chip]: 0.8,
+};
+
+function resolveSoundName(sound: Sound): ResolvedSound | null {
+  const volumeMultiplier = soundVolumeMultipliers[sound] ?? 1;
   switch (sound) {
     case Sound.Bomb:
-      return "bomb";
+      return { name: "bomb", volumeMultiplier };
     case Sound.Click:
-      return "click";
+      return { name: "click", volumeMultiplier };
     case Sound.DemonAbility:
-      return "demonAbility";
+      return { name: "demonAbility", volumeMultiplier };
     case Sound.ManaPickUp:
-      return "manaPickUp";
+      return { name: "manaPickUp", volumeMultiplier };
     case Sound.Move:
-      return "move";
+      return { name: "move", volumeMultiplier };
     case Sound.EndTurn:
-      return "endTurn";
+      return { name: "endTurn", volumeMultiplier };
     case Sound.MysticAbility:
-      return "mysticAbility";
+      return { name: "mysticAbility", volumeMultiplier };
     case Sound.PickupPotion:
-      return "pickupPotion";
+      return { name: "pickupPotion", volumeMultiplier };
     case Sound.PickupBomb:
-      return "pickupBomb";
+      return { name: "pickupBomb", volumeMultiplier };
     case Sound.ChoosePickup:
-      return "choosePickup";
+      return { name: "choosePickup", volumeMultiplier };
     case Sound.ScoreMana:
-      return "scoreMana";
+      return { name: "scoreMana", volumeMultiplier };
     case Sound.ScoreSupermana:
-      return "scoreSuperMana";
+      return { name: "scoreSuperMana", volumeMultiplier };
     case Sound.SpiritAbility:
-      return "spiritAbility";
+      return { name: "spiritAbility", volumeMultiplier };
     case Sound.Victory:
-      return "victory";
+      return { name: "victory", volumeMultiplier };
     case Sound.Defeat:
-      return ["defeat", "defeat1", "defeat2"][Math.floor(Math.random() * 3)];
+      return { name: ["defeat", "defeat1", "defeat2"][Math.floor(Math.random() * 3)], volumeMultiplier };
     case Sound.DidConnect:
-      return "didConnect";
+      return { name: "didConnect", volumeMultiplier };
     case Sound.Undo:
-      return "undo";
+      return { name: "undo", volumeMultiplier };
     case Sound.EmoteSent:
-      return "emotePop8";
+      return { name: "emotePop8", volumeMultiplier };
     case Sound.EmoteReceived:
-      return "emotePop5";
+      return { name: "emotePop5", volumeMultiplier };
     case Sound.PickaxeHit:
-      return "pickaxeHit";
+      return { name: "pickaxeHit", volumeMultiplier };
     case Sound.PickaxeMiss:
-      return "pickaxeMiss";
+      return { name: "pickaxeMiss", volumeMultiplier };
     case Sound.RockOpen:
-      return "rockOpen";
+      return { name: "rockOpen", volumeMultiplier };
     case Sound.UsePotion:
-      return "popSharp";
+      return { name: "popSharp", volumeMultiplier };
     case Sound.ConfirmEarlyEndTurn:
-      return "thud";
+      return { name: "thud", volumeMultiplier };
     case Sound.IslandShowUp:
-      return "open";
+      return { name: "open", volumeMultiplier };
     case Sound.WalkToRock:
-      return "thud";
+      return { name: "thud", volumeMultiplier };
     case Sound.CollectingMaterials:
-      return "gather";
+      return { name: "gather", volumeMultiplier };
     case Sound.Timer:
-      return "timer";
+      return { name: "timer", volumeMultiplier };
     case Sound.Chip:
-      return "chip";
+      return { name: "chip", volumeMultiplier };
     case Sound.HappyMon:
-      return "happy";
+      return { name: "happy", volumeMultiplier };
     case Sound.SadMon:
-      return "sad";
+      return { name: "sad", volumeMultiplier };
     case Sound.DownChip:
-      return "down chip";
+      return { name: "down chip", volumeMultiplier };
     default:
       return null;
   }
@@ -137,10 +148,10 @@ export async function playSounds(sounds: Sound[]) {
   sounds = sounds.filter((sound) => getSoundPriority(sound) === maxSoundPriority || sound === Sound.EndTurn);
 
   for (const sound of sounds) {
-    const name = resolveSoundName(sound);
-    if (name === null) continue;
-    const path = `sounds/${name}.mp3`;
-    playSound(path);
+    const resolved = resolveSoundName(sound);
+    if (!resolved) continue;
+    const path = `sounds/${resolved.name}.mp3`;
+    playSound(path, resolved.volumeMultiplier);
   }
 }
 
@@ -151,9 +162,9 @@ export async function preloadSounds(sounds: Sound[]) {
   const uniqueUrls: string[] = [];
   const seen = new Set<string>();
   for (const sound of sounds) {
-    const name = resolveSoundName(sound);
-    if (!name) continue;
-    const url = `https://assets.mons.link/sounds/${name}.mp3`;
+    const resolved = resolveSoundName(sound);
+    if (!resolved) continue;
+    const url = `https://assets.mons.link/sounds/${resolved.name}.mp3`;
     if (seen.has(url)) continue;
     seen.add(url);
     uniqueUrls.push(url);
