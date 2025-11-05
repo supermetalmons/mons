@@ -85,7 +85,7 @@ export async function playReaction(reaction: Reaction) {
     return;
   }
 
-  const path = `reactions/${reaction.kind}${reaction.variation}.wav`;
+  const path = `reactions/${reaction.kind}${reaction.variation}.mp3`;
   playSound(path);
 }
 
@@ -134,7 +134,7 @@ export async function playSounds(sounds: Sound[]) {
   for (const sound of sounds) {
     const name = resolveSoundName(sound);
     if (name === null) continue;
-    const path = `sounds/${name}.wav`;
+    const path = `sounds/${name}.mp3`;
     playSound(path);
   }
 }
@@ -148,7 +148,7 @@ export async function preloadSounds(sounds: Sound[]) {
   for (const sound of sounds) {
     const name = resolveSoundName(sound);
     if (!name) continue;
-    const url = `https://assets.mons.link/sounds/${name}.wav`;
+    const url = `https://assets.mons.link/sounds/${name}.mp3`;
     if (seen.has(url)) continue;
     seen.add(url);
     uniqueUrls.push(url);
