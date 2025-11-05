@@ -100,8 +100,8 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       name = "thud";
       break;
     case Sound.IslandShowUp:
-      name = "ec rocket launch";
-      volumeMultiplier = 0.23;
+      // name = "rocks/s1a";
+      // volumeMultiplier = 0.23;
       break;
     case Sound.WalkToRock:
       name = "thud";
