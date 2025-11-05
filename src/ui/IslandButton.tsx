@@ -2506,7 +2506,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const wasVisible = islandOverlayVisible;
       overlayPhaseRef.current = wasVisible ? "closing" : "idle";
       didDismissSomethingWithOutsideTapJustNow();
-      directlyPlaySoundNamed("ec seat to rocket", 0.19);
+      // directlyPlaySoundNamed("ec seat to rocket", 0.19);
       setIslandOpening(false);
       if (rafRef.current !== null) {
         cancelAnimationFrame(rafRef.current);
