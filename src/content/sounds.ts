@@ -19,81 +19,116 @@ type ResolvedSound = {
   volumeMultiplier: number;
 };
 
-const soundVolumeMultipliers: Partial<Record<Sound, number>> = {
-  [Sound.Timer]: 0.6,
-  [Sound.Chip]: 0.8,
-};
-
 function resolveSoundName(sound: Sound): ResolvedSound | null {
-  const volumeMultiplier = soundVolumeMultipliers[sound] ?? 1;
+  let volumeMultiplier = 1;
+  let name: string | null = null;
+
   switch (sound) {
     case Sound.Bomb:
-      return { name: "bomb", volumeMultiplier };
+      name = "bomb";
+      break;
     case Sound.Click:
-      return { name: "click", volumeMultiplier };
+      name = "click";
+      break;
     case Sound.DemonAbility:
-      return { name: "demonAbility", volumeMultiplier };
+      name = "demonAbility";
+      break;
     case Sound.ManaPickUp:
-      return { name: "manaPickUp", volumeMultiplier };
+      name = "manaPickUp";
+      break;
     case Sound.Move:
-      return { name: "move", volumeMultiplier };
+      name = "move";
+      break;
     case Sound.EndTurn:
-      return { name: "endTurn", volumeMultiplier };
+      name = "endTurn";
+      break;
     case Sound.MysticAbility:
-      return { name: "mysticAbility", volumeMultiplier };
+      name = "mysticAbility";
+      break;
     case Sound.PickupPotion:
-      return { name: "pickupPotion", volumeMultiplier };
+      name = "pickupPotion";
+      break;
     case Sound.PickupBomb:
-      return { name: "pickupBomb", volumeMultiplier };
+      name = "pickupBomb";
+      break;
     case Sound.ChoosePickup:
-      return { name: "choosePickup", volumeMultiplier };
+      name = "choosePickup";
+      break;
     case Sound.ScoreMana:
-      return { name: "scoreMana", volumeMultiplier };
+      name = "scoreMana";
+      break;
     case Sound.ScoreSupermana:
-      return { name: "scoreSuperMana", volumeMultiplier };
+      name = "scoreSuperMana";
+      break;
     case Sound.SpiritAbility:
-      return { name: "spiritAbility", volumeMultiplier };
+      name = "spiritAbility";
+      break;
     case Sound.Victory:
-      return { name: "victory", volumeMultiplier };
+      name = "victory";
+      break;
     case Sound.Defeat:
-      return { name: ["defeat", "defeat1", "defeat2"][Math.floor(Math.random() * 3)], volumeMultiplier };
+      name = ["defeat", "defeat1", "defeat2"][Math.floor(Math.random() * 3)];
+      break;
     case Sound.DidConnect:
-      return { name: "didConnect", volumeMultiplier };
+      name = "didConnect";
+      break;
     case Sound.Undo:
-      return { name: "undo", volumeMultiplier };
+      name = "undo";
+      break;
     case Sound.EmoteSent:
-      return { name: "emotePop8", volumeMultiplier };
+      name = "emotePop8";
+      break;
     case Sound.EmoteReceived:
-      return { name: "emotePop5", volumeMultiplier };
+      name = "emotePop5";
+      break;
     case Sound.PickaxeHit:
-      return { name: "pickaxeHit", volumeMultiplier };
+      name = "pickaxeHit";
+      break;
     case Sound.PickaxeMiss:
-      return { name: "pickaxeMiss", volumeMultiplier };
+      name = "pickaxeMiss";
+      break;
     case Sound.RockOpen:
-      return { name: "rockOpen", volumeMultiplier };
+      name = "rockOpen";
+      break;
     case Sound.UsePotion:
-      return { name: "popSharp", volumeMultiplier };
+      name = "popSharp";
+      break;
     case Sound.ConfirmEarlyEndTurn:
-      return { name: "thud", volumeMultiplier };
+      name = "thud";
+      break;
     case Sound.IslandShowUp:
-      return { name: "open", volumeMultiplier };
+      name = "open";
+      break;
     case Sound.WalkToRock:
-      return { name: "thud", volumeMultiplier };
+      name = "thud";
+      break;
     case Sound.CollectingMaterials:
-      return { name: "gather", volumeMultiplier };
+      name = "gather";
+      break;
     case Sound.Timer:
-      return { name: "timer", volumeMultiplier };
+      name = "timer";
+      volumeMultiplier = 0.6;
+      break;
     case Sound.Chip:
-      return { name: "chip", volumeMultiplier };
+      name = "chip";
+      volumeMultiplier = 0.8;
+      break;
     case Sound.HappyMon:
-      return { name: "happy", volumeMultiplier };
+      name = "happy";
+      break;
     case Sound.SadMon:
-      return { name: "sad", volumeMultiplier };
+      name = "sad";
+      break;
     case Sound.DownChip:
-      return { name: "down chip", volumeMultiplier };
-    default:
-      return null;
+      name = "down chip";
+      break;
   }
+
+  if (!name) {
+    return null;
+  }
+
+  return { name, volumeMultiplier };
 }
 
 export async function playReaction(reaction: Reaction) {
