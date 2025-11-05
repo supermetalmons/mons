@@ -2931,6 +2931,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const teleportMonToRandomNonOverlappingSpot = useCallback(() => {
     if (!monPos) return;
     teleportFXStart();
+    directlyPlaySoundNamed("happy");
     setMonTeleporting(true);
     setTimeout(() => {
       const chosen = findValidMonLocation({ mode: "teleport" });
@@ -2960,6 +2961,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       storage.setIslandMonType(nextType);
 
       teleportFXStart();
+      directlyPlaySoundNamed("bewo");
       setMonTeleporting(true);
       setTimeout(() => {
         updateMonSprite(nextType);
