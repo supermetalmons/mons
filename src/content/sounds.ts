@@ -122,6 +122,14 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
     case Sound.HappyMon:
       name = "happy";
       break;
+    case Sound.WalkToMon:
+      name = "chip";
+      volumeMultiplier = 0.21;
+      break;
+    case Sound.PetMon:
+      name = "pet";
+      volumeMultiplier = 0.18;
+      break;
     case Sound.SadMon:
       name = "sad";
       break;
@@ -284,6 +292,8 @@ const getSoundPriority = (sound: Sound) => {
     case Sound.HappyMon:
     case Sound.SadMon:
     case Sound.DownChip:
+    case Sound.WalkToMon:
+    case Sound.PetMon:
       return 0;
     case Sound.ManaPickUp:
     case Sound.ChoosePickup:

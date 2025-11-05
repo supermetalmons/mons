@@ -74,6 +74,8 @@ export enum Sound {
   Chip,
   HappyMon,
   SadMon,
+  WalkToMon,
+  PetMon,
   DownChip,
 }
 

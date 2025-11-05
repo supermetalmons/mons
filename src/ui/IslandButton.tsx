@@ -1739,6 +1739,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       frame.style.transformOrigin = "50% 100%";
       frame.style.transition = "transform 80ms ease-out";
       frame.style.transform = `scale(${baseX * 1.06}, 0.86)`;
+      playSounds([Sound.PetMon]);
     } catch {}
     try {
       startPettingAnimationRef.current();
@@ -3623,6 +3624,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             },
           };
           startMoveTo(target.x, target.y);
+          playSounds([Sound.WalkToMon]);
         } else {
           setDudeFacingLeft(facingLeft);
           petMon();
