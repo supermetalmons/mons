@@ -58,15 +58,13 @@ function resolveSoundName(sound: Sound): string | null {
     case Sound.ConfirmEarlyEndTurn:
       return "thud";
     case Sound.IslandShowUp:
-      return "";
+      return "open";
     case Sound.WalkToRock:
       return "thud";
     case Sound.CollectingMaterials:
       return "gather";
     case Sound.Timer:
       return "timer";
-    case Sound.IslandClosing:
-      return "";
     case Sound.Chip:
       return "chip";
     case Sound.HappyMon:
@@ -220,7 +218,6 @@ const getSoundPriority = (sound: Sound) => {
     case Sound.RockOpen:
     case Sound.ConfirmEarlyEndTurn:
     case Sound.IslandShowUp:
-    case Sound.IslandClosing:
     case Sound.WalkToRock:
     case Sound.CollectingMaterials:
     case Sound.Timer:

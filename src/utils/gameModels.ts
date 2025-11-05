@@ -71,7 +71,6 @@ export enum Sound {
   WalkToRock,
   CollectingMaterials,
   Timer,
-  IslandClosing,
   Chip,
   HappyMon,
   SadMon,

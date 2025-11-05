@@ -2556,7 +2556,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }
       } catch {}
       fxContainerRef.current = null;
-      playSounds([Sound.IslandClosing]);
       const anim = sheetAnimRef.current;
       if (anim && anim.raf) cancelAnimationFrame(anim.raf);
       sheetAnimRef.current = null;
