@@ -3,6 +3,13 @@ import { getIsMuted } from "../index";
 import { Reaction } from "../connection/connectionModels";
 import { soundPlayer } from "../utils/SoundPlayer";
 
+export function directlyPlaySoundNamed(name: string) {
+  if (getIsMuted()) {
+    return;
+  }
+  soundPlayer.playSound("https://assets.mons.link/sounds/" + name + ".mp3");
+}
+
 function playSound(path: string) {
   soundPlayer.playSound("https://assets.mons.link/" + path);
 }

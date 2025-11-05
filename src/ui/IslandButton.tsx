@@ -5,7 +5,7 @@ import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock, { IslandRockHandle, getRandomRockImageUrl } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
-import { playSounds, preloadSounds, playRockSound, RockSound } from "../content/sounds";
+import { playSounds, preloadSounds, playRockSound, RockSound, directlyPlaySoundNamed } from "../content/sounds";
 import { miningJumpingPetsIdleAndWalking as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
 import { getOwnMonIdByType, MonType } from "../utils/namedMons";
 import { storage } from "../utils/storage";
@@ -889,22 +889,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     },
     [SMOOTH_CYCLING_ELLIPSE, pickInvRySq, smoothEllipseMetrics]
   );
-  const getMaterialTapSound = useCallback((name: MaterialName): RockSound | null => {
-    switch (name) {
-      case "dust":
-        return RockSound.P4;
-      case "gum":
-        return RockSound.P7;
-      case "slime":
-        return RockSound.P3;
-      case "metal":
-        return RockSound.P6;
-      case "ice":
-        return RockSound.P5;
-      default:
-        return null;
-    }
-  }, []);
 
   const activateMaterial = useCallback(
     (name: MaterialName) => {
@@ -912,14 +896,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!url) return;
       const host = materialItemRefs.current[name];
       if (!host) return;
-      const snd = getMaterialTapSound(name);
-      if (snd) playRockSound(snd);
+      directlyPlaySoundNamed(name);
       const img = host.querySelector("img");
       if (!img) return;
       const f = spawnIconParticlesFnRef.current;
       if (f) f(img as HTMLImageElement, url);
     },
-    [getMaterialTapSound, materialUrls]
+    [materialUrls]
   );
 
   useEffect(() => {
