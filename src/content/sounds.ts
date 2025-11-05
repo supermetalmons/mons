@@ -83,12 +83,15 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       break;
     case Sound.PickaxeHit:
       name = "pickaxeHit";
+      volumeMultiplier = 0.85;
       break;
     case Sound.PickaxeMiss:
       name = "pickaxeMiss";
+      volumeMultiplier = 0.85;
       break;
     case Sound.RockOpen:
       name = "rockOpen";
+      volumeMultiplier = 0.95;
       break;
     case Sound.UsePotion:
       name = "popSharp";
@@ -97,14 +100,16 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       name = "thud";
       break;
     case Sound.IslandShowUp:
-      name = "ec rocket launch";
-      volumeMultiplier = 0.1;
+      name = "open";
+      volumeMultiplier = 0.23;
       break;
     case Sound.WalkToRock:
       name = "thud";
+      volumeMultiplier = 0.1;
       break;
     case Sound.CollectingMaterials:
       name = "gather";
+      volumeMultiplier = 0.3;
       break;
     case Sound.Timer:
       name = "timer";
