@@ -3027,7 +3027,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
       tracking.lastAngle = currentAngle;
 
-      const REQUIRED_CIRCLES = 3.5 * 2 * Math.PI;
+      const REQUIRED_CIRCLES = 3 * 2 * Math.PI;
       if (tracking.totalRotation >= REQUIRED_CIRCLES) {
         onThreeCirclesComplete(tracking.direction);
         tracking.totalRotation = 0;
