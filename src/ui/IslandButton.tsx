@@ -896,7 +896,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!url) return;
       const host = materialItemRefs.current[name];
       if (!host) return;
-      directlyPlaySoundNamed(name);
+      directlyPlaySoundNamed(name, 0.1);
       const img = host.querySelector("img");
       if (!img) return;
       const f = spawnIconParticlesFnRef.current;
@@ -2931,7 +2931,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const teleportMonToRandomNonOverlappingSpot = useCallback(() => {
     if (!monPos) return;
     teleportFXStart();
-    directlyPlaySoundNamed("happy");
+    directlyPlaySoundNamed("happy", 0.1);
     setMonTeleporting(true);
     setTimeout(() => {
       const chosen = findValidMonLocation({ mode: "teleport" });
@@ -2961,7 +2961,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       storage.setIslandMonType(nextType);
 
       teleportFXStart();
-      directlyPlaySoundNamed("bewo");
+      directlyPlaySoundNamed("bewo", 0.1);
       setMonTeleporting(true);
       setTimeout(() => {
         updateMonSprite(nextType);

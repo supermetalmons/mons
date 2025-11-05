@@ -97,7 +97,8 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       name = "thud";
       break;
     case Sound.IslandShowUp:
-      name = "open";
+      name = "ec rocket launch";
+      volumeMultiplier = 0.1;
       break;
     case Sound.WalkToRock:
       name = "thud";
@@ -255,7 +256,7 @@ export function playRockSound(name: RockSound) {
     return;
   }
   const path = `sounds/rocks/${name}.mp3`;
-  playSound(path);
+  playSound(path, 0.23);
 }
 
 const getSoundPriority = (sound: Sound) => {
