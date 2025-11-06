@@ -3835,7 +3835,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleSafeHitboxPointerDown = useCallback(
     (event: React.MouseEvent | React.TouchEvent) => {
-      event.stopPropagation();
       if (!isMaterialTarget((event.target as Node) || null)) {
         return;
       }
