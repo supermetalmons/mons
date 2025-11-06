@@ -260,7 +260,7 @@ function resolveTelegramEmojiId(emoji) {
   return customTelegramEmojis[parsed] || "";
 }
 
-function getDisplayNameFromAddress(username, ethAddress, solAddress, rating, emoji) {
+function getDisplayNameFromAddress(username, ethAddress, solAddress, rating, emoji, includeEmoji = true) {
   const ratingNumber = Number(rating);
   const ratingSuffix = Number.isFinite(ratingNumber) && ratingNumber !== 0 ? ` (${ratingNumber})` : "";
   let baseName = "anon";
@@ -271,7 +271,7 @@ function getDisplayNameFromAddress(username, ethAddress, solAddress, rating, emo
   } else if (solAddress && solAddress !== "") {
     baseName = solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
   }
-  const emojiId = resolveTelegramEmojiId(emoji);
+  const emojiId = includeEmoji ? resolveTelegramEmojiId(emoji) : "";
   const emojiPrefix = emojiId ? `<tg-emoji emoji-id="${emojiId}">&#11088;</tg-emoji>  ` : "";
   return `${emojiPrefix}${baseName}${ratingSuffix}`;
 }
