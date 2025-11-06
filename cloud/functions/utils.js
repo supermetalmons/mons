@@ -302,7 +302,7 @@ async function getPlayerEthAddress(uid) {
   return profile.eth;
 }
 
-export const customTelegramEmojis = {
+const customTelegramEmojis = {
   1: "5273900723417929741",
   2: "5273897076990696847",
   3: "5274259447676427346",
