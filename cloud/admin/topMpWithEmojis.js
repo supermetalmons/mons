@@ -33,13 +33,13 @@ function getEmojiTag(data) {
   return `<tg-emoji emoji-id="${emojiId}">&#11088;</tg-emoji> `;
 }
 
-async function logTopMpWithEmojis(limit = 10) {
+async function logTopMpWithEmojis(limit = 15) {
   const initialized = initAdmin();
   if (initialized) {
     try {
       const firestore = admin.firestore();
       const snap = await firestore.collection("users").orderBy("totalManaPoints", "desc").limit(limit).get();
-      let output = "<b>top 10 mp</b>\n\n";
+      let output = "<b>top 15 mp</b>\n\n";
       let rank = 1;
       for (const doc of snap.docs) {
         const data = doc.data();
@@ -65,7 +65,7 @@ async function logTopMpWithEmojis(limit = 10) {
 }
 
 async function main() {
-  await logTopMpWithEmojis(10);
+  await logTopMpWithEmojis(15);
 }
 
 main().catch((err) => {
