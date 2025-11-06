@@ -657,6 +657,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     [materialItemRefs]
   );
   const materialsBarRef = useRef<HTMLDivElement | null>(null);
+  const safeHitboxRef = useRef<HTMLDivElement | null>(null);
   const rockLayerRef = useRef<HTMLDivElement | null>(null);
   const rockRef = useRef<IslandRockHandle | null>(null);
   const fxContainerRef = useRef<HTMLDivElement | null>(null);
@@ -2493,6 +2494,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const handleIslandClose = useCallback(
     (event?: React.MouseEvent | React.TouchEvent) => {
+      if (event) {
+        const safeHitbox = safeHitboxRef.current;
+        if (safeHitbox) {
+          const targetNode = (event.target as Node) || null;
+          if (targetNode && safeHitbox.contains(targetNode)) {
+            return;
+          }
+        }
+      }
       if (Date.now() - overlayJustOpenedAtRef.current < MIN_OVERLAY_CLOSE_DELAY_MS) {
         return;
       }
@@ -3857,7 +3867,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           <Overlay $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleIslandClose : undefined} onTouchStart={isMobile ? handleIslandClose : undefined} onTransitionEnd={handleOverlayTransitionEnd} />
           <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onMouseDown={!isMobile ? handlePointerStart : undefined} onTouchStart={isMobile ? handlePointerStart : undefined}>
             <SafeBarRow>
-              <SafeHitbox $active={islandOverlayVisible && !islandClosing} onMouseDown={!isMobile ? handleSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSafeHitboxPointerDown : undefined}>
+              <SafeHitbox ref={safeHitboxRef} $active={islandOverlayVisible && !islandClosing} onMouseDown={!isMobile ? handleSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSafeHitboxPointerDown : undefined}>
                 <MaterialsBar ref={materialsBarRef} $visible={islandOverlayVisible && !islandClosing}>
                   {MATERIALS.map((name) => (
                     <MaterialItem
