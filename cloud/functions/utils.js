@@ -272,7 +272,7 @@ function getDisplayNameFromAddress(username, ethAddress, solAddress, rating, emo
     baseName = solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
   }
   const emojiId = resolveTelegramEmojiId(emoji);
-  const emojiPrefix = emojiId ? `<tg-emoji emoji-id="${emojiId}">&#11088;</tg-emoji> ` : "";
+  const emojiPrefix = emojiId ? `<tg-emoji emoji-id="${emojiId}">&#11088;</tg-emoji>  ` : "";
   return `${emojiPrefix}${baseName}${ratingSuffix}`;
 }
 
