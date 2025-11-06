@@ -939,4 +939,5 @@ module.exports = {
   replaceAutomatchBotMessageText,
   replaceAutomatchBotMessageByDeletingOriginal,
   markCanceledAutomatchBotMessage,
+  customTelegramEmojis,
 };
