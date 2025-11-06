@@ -1,0 +1,6066 @@
+{
+  "__telegram_pack_names": [
+    "swagpack1_by_supermetalmons_bot",
+    "swagpack2_by_supermetalmons_bot",
+    "swagpack3_by_supermetalmons_bot"
+  ],
+  "__telegram_pack_titles": [
+    "Emoji Pack 1",
+    "Emoji Pack 2",
+    "Emoji Pack 3"
+  ],
+  "1000": {
+    "emojis": [
+      "😮",
+      "🎩",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280755224934382724",
+      "emoji": "😮"
+    }
+  },
+  "1001": {
+    "emojis": [
+      "👺",
+      "🎭",
+      "🧙‍♂️"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278585093923837510",
+      "emoji": "👺"
+    }
+  },
+  "1002": {
+    "emojis": [
+      "⭐",
+      "🌈",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278334207704204430",
+      "emoji": "⭐"
+    }
+  },
+  "1003": {
+    "emojis": [
+      "🍂",
+      "🍊",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278337991570389420",
+      "emoji": "🍂"
+    }
+  },
+  "1004": {
+    "emojis": [
+      "🐱",
+      "✨",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278252049274799339",
+      "emoji": "🐱"
+    }
+  },
+  "1005": {
+    "emojis": [
+      "🐻‍❄️",
+      "🐾",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278365913152781463",
+      "emoji": "🐻‍❄️"
+    }
+  },
+  "1006": {
+    "emojis": [
+      "⭐️",
+      "👶"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278635791717791221",
+      "emoji": "⭐️"
+    }
+  },
+  "1007": {
+    "emojis": [
+      "😮",
+      "🐱",
+      "🌸"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280976630498491319",
+      "emoji": "😮"
+    }
+  },
+  "1008": {
+    "emojis": [
+      "☁️",
+      "😊",
+      "🎀"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278501380716265559",
+      "emoji": "☁️"
+    }
+  },
+  "1009": {
+    "emojis": [
+      "👶",
+      "✨",
+      "💖"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280538522359462898",
+      "emoji": "👶"
+    }
+  },
+  "1010": {
+    "emojis": [
+      "😊",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280587222993631946",
+      "emoji": "😊"
+    }
+  },
+  "1011": {
+    "emojis": [
+      "👾",
+      "🤖",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278348948031962209",
+      "emoji": "👾"
+    }
+  },
+  "1012": {
+    "emojis": [
+      "🛡️",
+      "⚔️",
+      "😮"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278634309954075049",
+      "emoji": "🛡️"
+    }
+  },
+  "1013": {
+    "emojis": [
+      "🐙",
+      "🌸",
+      "🎀"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280798741543025475",
+      "emoji": "🐙"
+    }
+  },
+  "1014": {
+    "emojis": [
+      "😮",
+      "🐱",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278750484524465307",
+      "emoji": "😮"
+    }
+  },
+  "1015": {
+    "emojis": [
+      "👶",
+      "💖",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278699026521292095",
+      "emoji": "👶"
+    }
+  },
+  "1016": {
+    "emojis": [
+      "👾",
+      "🧙‍♂️",
+      "🌌"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278718766190982418",
+      "emoji": "👾"
+    }
+  },
+  "1017": {
+    "emojis": [
+      "😠",
+      "👀",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278390467480812285",
+      "emoji": "😠"
+    }
+  },
+  "1018": {
+    "emojis": [
+      "🟢",
+      "👾",
+      "🐸"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278603515038561217",
+      "emoji": "🟢"
+    }
+  },
+  "1019": {
+    "emojis": [
+      "👾",
+      "🎭",
+      "🦸‍♂️"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278306045603641535",
+      "emoji": "👾"
+    }
+  },
+  "1020": {
+    "emojis": [
+      "😱",
+      "👻",
+      "😨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278221786935231265",
+      "emoji": "😱"
+    }
+  },
+  "1021": {
+    "emojis": [
+      "👶",
+      "✨",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278541396926563058",
+      "emoji": "👶"
+    }
+  },
+  "1022": {
+    "emojis": [
+      "👻",
+      "🎈",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5281018918746488174",
+      "emoji": "👻"
+    }
+  },
+  "1023": {
+    "emojis": [
+      "👹",
+      "👀",
+      "🦇"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278592403958168697",
+      "emoji": "👹"
+    }
+  },
+  "1024": {
+    "emojis": [
+      "😠",
+      "🦠",
+      "🖤"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278354935216374525",
+      "emoji": "😠"
+    }
+  },
+  "1025": {
+    "emojis": [
+      "🐦",
+      "🎮",
+      "🐣"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280650754149874499",
+      "emoji": "🐦"
+    }
+  },
+  "1026": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280527054796783163",
+      "emoji": "⭐"
+    }
+  },
+  "1027": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278314476624442921",
+      "emoji": "⭐"
+    }
+  },
+  "1028": {
+    "emojis": [
+      "😜",
+      "👧",
+      "🐻"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278746936881480796",
+      "emoji": "😜"
+    }
+  },
+  "1029": {
+    "emojis": [
+      "👒",
+      "⚾",
+      "😕"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278671435651383367",
+      "emoji": "👒"
+    }
+  },
+  "1030": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278566780183282144",
+      "emoji": "⭐"
+    }
+  },
+  "1031": {
+    "emojis": [
+      "👶",
+      "🎉",
+      "💖"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278399955063569673",
+      "emoji": "👶"
+    }
+  },
+  "1032": {
+    "emojis": [
+      "👶",
+      "🍄",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278485343308380962",
+      "emoji": "👶"
+    }
+  },
+  "1033": {
+    "emojis": [
+      "🧚‍♀️",
+      "🎀",
+      "🐾"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280620843997628317",
+      "emoji": "🧚‍♀️"
+    }
+  },
+  "1034": {
+    "emojis": [
+      "👻",
+      "😮‍💨",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278630165310636577",
+      "emoji": "👻"
+    }
+  },
+  "1035": {
+    "emojis": [
+      "🤖",
+      "🐱",
+      "🛡️"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280958643175456961",
+      "emoji": "🤖"
+    }
+  },
+  "1036": {
+    "emojis": [
+      "👻",
+      "🐦",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278693550437987900",
+      "emoji": "👻"
+    }
+  },
+  "1037": {
+    "emojis": [
+      "👾",
+      "🖤",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278332558436761580",
+      "emoji": "👾"
+    }
+  },
+  "1038": {
+    "emojis": [
+      "👾",
+      "🎩",
+      "🐭"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278291528614180363",
+      "emoji": "👾"
+    }
+  },
+  "1039": {
+    "emojis": [
+      "🐧",
+      "⭐️",
+      "🐢"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278329994341283278",
+      "emoji": "🐧"
+    }
+  },
+  "1040": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278487787144772672",
+      "emoji": "⭐"
+    }
+  },
+  "1041": {
+    "emojis": [
+      "👶",
+      "✨",
+      "🔷"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278713470496308357",
+      "emoji": "👶"
+    }
+  },
+  "1042": {
+    "emojis": [
+      "👾",
+      "🎀",
+      "🐉"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278628735086524966",
+      "emoji": "👾"
+    }
+  },
+  "1043": {
+    "emojis": [
+      "😠",
+      "👦🏻",
+      "⚡️"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280924502480418619",
+      "emoji": "😠"
+    }
+  },
+  "1044": {
+    "emojis": [
+      "👑",
+      "🤖",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278678329073890350",
+      "emoji": "👑"
+    }
+  },
+  "1045": {
+    "emojis": [
+      "🐱",
+      "🍫",
+      "👀"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278585033794286676",
+      "emoji": "🐱"
+    }
+  },
+  "1046": {
+    "emojis": [
+      "👾",
+      "🟣",
+      "👁️"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280859785913204149",
+      "emoji": "👾"
+    }
+  },
+  "1047": {
+    "emojis": [
+      "🧘‍♂️",
+      "🕉️",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278480386916120608",
+      "emoji": "🧘‍♂️"
+    }
+  },
+  "1048": {
+    "emojis": [
+      "🐸",
+      "🟡",
+      "😄"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280902894499953160",
+      "emoji": "🐸"
+    }
+  },
+  "1049": {
+    "emojis": [
+      "🐰",
+      "🐇",
+      "🎀"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278244687700850920",
+      "emoji": "🐰"
+    }
+  },
+  "1050": {
+    "emojis": [
+      "🤖",
+      "🎉",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278504404373239413",
+      "emoji": "🤖"
+    }
+  },
+  "1051": {
+    "emojis": [
+      "😄",
+      "🎩",
+      "🧸"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280756234251696202",
+      "emoji": "😄"
+    }
+  },
+  "1052": {
+    "emojis": [
+      "🐢",
+      "🎨",
+      "🐉"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280601937551590655",
+      "emoji": "🐢"
+    }
+  },
+  "1053": {
+    "emojis": [
+      "☃️",
+      "❄️",
+      "⛄"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278495865978257660",
+      "emoji": "☃️"
+    }
+  },
+  "1054": {
+    "emojis": [
+      "😴",
+      "🧸",
+      "🍃"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278593585074174936",
+      "emoji": "😴"
+    }
+  },
+  "1055": {
+    "emojis": [
+      "🐟",
+      "🌟",
+      "🎀"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280615385094194007",
+      "emoji": "🐟"
+    }
+  },
+  "1056": {
+    "emojis": [
+      "🐉",
+      "🔴",
+      "😠"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278353749805398518",
+      "emoji": "🐉"
+    }
+  },
+  "1057": {
+    "emojis": [
+      "👧",
+      "🎩",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278239078473563618",
+      "emoji": "👧"
+    }
+  },
+  "1058": {
+    "emojis": [
+      "🍬",
+      "😊",
+      "🍭"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278316379294956351",
+      "emoji": "🍬"
+    }
+  },
+  "1059": {
+    "emojis": [
+      "💛",
+      "✨",
+      "👾"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278354806367351686",
+      "emoji": "💛"
+    }
+  },
+  "1060": {
+    "emojis": [
+      "🌟",
+      "😄",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278509073002690509",
+      "emoji": "🌟"
+    }
+  },
+  "1061": {
+    "emojis": [
+      "🗝️",
+      "🐥"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278777207810981368",
+      "emoji": "🗝️"
+    }
+  },
+  "1062": {
+    "emojis": [
+      "⭐",
+      "😊",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280628338715557547",
+      "emoji": "⭐"
+    }
+  },
+  "1063": {
+    "emojis": [
+      "😄",
+      "⚪️",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5281024837211420894",
+      "emoji": "😄"
+    }
+  },
+  "1064": {
+    "emojis": [
+      "🌟",
+      "😄",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280869471064457777",
+      "emoji": "🌟"
+    }
+  },
+  "1065": {
+    "emojis": [
+      "😠",
+      "👺",
+      "⚡"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278310701348191043",
+      "emoji": "😠"
+    }
+  },
+  "1066": {
+    "emojis": [
+      "🐻",
+      "💰",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278716146260933437",
+      "emoji": "🐻"
+    }
+  },
+  "1067": {
+    "emojis": [
+      "😈",
+      "👹",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278419699028228805",
+      "emoji": "😈"
+    }
+  },
+  "1068": {
+    "emojis": [
+      "😠",
+      "👦",
+      "⚪"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280916634100333590",
+      "emoji": "😠"
+    }
+  },
+  "1069": {
+    "emojis": [
+      "🪙",
+      "🤖",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280848799386861948",
+      "emoji": "🪙"
+    }
+  },
+  "1070": {
+    "emojis": [
+      "🐾",
+      "🎨",
+      "🐶"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280832371136953848",
+      "emoji": "🐾"
+    }
+  },
+  "1071": {
+    "emojis": [
+      "🧑‍🎤",
+      "🍭",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278485558056745883",
+      "emoji": "🧑‍🎤"
+    }
+  },
+  "1072": {
+    "emojis": [
+      "🐸",
+      "🎨",
+      "🖌️"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278360750602093212",
+      "emoji": "🐸"
+    }
+  },
+  "1073": {
+    "emojis": [
+      "👻",
+      "🤡",
+      "😈"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278460827635058302",
+      "emoji": "👻"
+    }
+  },
+  "1074": {
+    "emojis": [
+      "🤡",
+      "🚓",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278496780806290875",
+      "emoji": "🤡"
+    }
+  },
+  "1075": {
+    "emojis": [
+      "🎭",
+      "🤡",
+      "🍭"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278494684862252181",
+      "emoji": "🎭"
+    }
+  },
+  "1076": {
+    "emojis": [
+      "🎁",
+      "💊",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278358500039228788",
+      "emoji": "🎁"
+    }
+  },
+  "1077": {
+    "emojis": [
+      "😈",
+      "🎭",
+      "🧙‍♂️"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278626871070716982",
+      "emoji": "😈"
+    }
+  },
+  "1078": {
+    "emojis": [
+      "👦🏻",
+      "🎩",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280694292233353371",
+      "emoji": "👦🏻"
+    }
+  },
+  "1079": {
+    "emojis": [
+      "😀",
+      "🎉",
+      "🏅"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280861267676920890",
+      "emoji": "😀"
+    }
+  },
+  "1080": {
+    "emojis": [
+      "👑",
+      "💎",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280907421395484857",
+      "emoji": "👑"
+    }
+  },
+  "1081": {
+    "emojis": [
+      "🐾",
+      "🍰",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280546450869093176",
+      "emoji": "🐾"
+    }
+  },
+  "1082": {
+    "emojis": [
+      "🧙‍♂️",
+      "🤪",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280560933498812563",
+      "emoji": "🧙‍♂️"
+    }
+  },
+  "1083": {
+    "emojis": [
+      "⭐️",
+      "🌌",
+      "🐚"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278615120040196977",
+      "emoji": "⭐️"
+    }
+  },
+  "1084": {
+    "emojis": [
+      "👦",
+      "✨",
+      "🎩"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278746301226317650",
+      "emoji": "👦"
+    }
+  },
+  "1085": {
+    "emojis": [
+      "😱",
+      "👹",
+      "⚔️"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278475563667849057",
+      "emoji": "😱"
+    }
+  },
+  "1086": {
+    "emojis": [
+      "☀️",
+      "🛳️",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278512156789210065",
+      "emoji": "☀️"
+    }
+  },
+  "1087": {
+    "emojis": [
+      "😺",
+      "✨",
+      "👀"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280867770257407030",
+      "emoji": "😺"
+    }
+  },
+  "1088": {
+    "emojis": [
+      "🍄",
+      "😄"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280658124313755486",
+      "emoji": "🍄"
+    }
+  },
+  "1089": {
+    "emojis": [
+      "🎲",
+      "🎲"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278524418920841002",
+      "emoji": "🎲"
+    }
+  },
+  "1090": {
+    "emojis": [
+      "👨‍🚀",
+      "🛸",
+      "🌌"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278769816172265437",
+      "emoji": "👨‍🚀"
+    }
+  },
+  "1091": {
+    "emojis": [
+      "🐾",
+      "👀",
+      "🐱"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278373403575743419",
+      "emoji": "🐾"
+    }
+  },
+  "1092": {
+    "emojis": [
+      "🪖",
+      "😠",
+      "👀"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280829356069911261",
+      "emoji": "🪖"
+    }
+  },
+  "1093": {
+    "emojis": [
+      "🧊",
+      "🐉",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280495946348658137",
+      "emoji": "🧊"
+    }
+  },
+  "1094": {
+    "emojis": [
+      "🐉",
+      "😮",
+      "❄️"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278633253392118249",
+      "emoji": "🐉"
+    }
+  },
+  "1095": {
+    "emojis": [
+      "🐷",
+      "✈️"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278403884958646290",
+      "emoji": "🐷"
+    }
+  },
+  "1096": {
+    "emojis": [
+      "👾",
+      "🎨",
+      "🧑‍🎤"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278313205314122760",
+      "emoji": "👾"
+    }
+  },
+  "1097": {
+    "emojis": [
+      "🧚‍♀️",
+      "🌈",
+      "👧"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278306264646974134",
+      "emoji": "🧚‍♀️"
+    }
+  },
+  "1098": {
+    "emojis": [
+      "👻",
+      "🎃",
+      "🕯️"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278421945296124970",
+      "emoji": "👻"
+    }
+  },
+  "1099": {
+    "emojis": [
+      "🐉",
+      "👀",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278528254326638432",
+      "emoji": "🐉"
+    }
+  },
+  "1100": {
+    "emojis": [
+      "🐟",
+      "🐠",
+      "🎩"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280534369126086278",
+      "emoji": "🐟"
+    }
+  },
+  "1101": {
+    "emojis": [
+      "👦🏻",
+      "🎩",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280918386446992017",
+      "emoji": "👦🏻"
+    }
+  },
+  "1102": {
+    "emojis": [
+      "🐰",
+      "🌙",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280812373769223125",
+      "emoji": "🐰"
+    }
+  },
+  "1103": {
+    "emojis": [
+      "👻",
+      "🎩",
+      "🪄"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280517300926054497",
+      "emoji": "👻"
+    }
+  },
+  "1104": {
+    "emojis": [
+      "👾",
+      "🎭",
+      "🍬"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280539145129722071",
+      "emoji": "👾"
+    }
+  },
+  "1105": {
+    "emojis": [
+      "👾",
+      "🌈",
+      "🧚‍♀️"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278421928116258872",
+      "emoji": "👾"
+    }
+  },
+  "1106": {
+    "emojis": [
+      "👾",
+      "🎀",
+      "🐾"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280954038970516381",
+      "emoji": "👾"
+    }
+  },
+  "1107": {
+    "emojis": [
+      "👶",
+      "✨",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280621677221282878",
+      "emoji": "👶"
+    }
+  },
+  "1108": {
+    "emojis": [
+      "🧙‍♂️",
+      "🎩",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278613960399025021",
+      "emoji": "🧙‍♂️"
+    }
+  },
+  "1109": {
+    "emojis": [
+      "🐙",
+      "🦑",
+      "🍣"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278429753546667097",
+      "emoji": "🐙"
+    }
+  },
+  "1110": {
+    "emojis": [
+      "👑",
+      "🎮",
+      "😠"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280683645009429741",
+      "emoji": "👑"
+    }
+  },
+  "1111": {
+    "emojis": [
+      "🐶",
+      "🌪️",
+      "💧"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280871352260133328",
+      "emoji": "🐶"
+    }
+  },
+  "1112": {
+    "emojis": [
+      "👑",
+      "🎮",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278646675164919545",
+      "emoji": "👑"
+    }
+  },
+  "1113": {
+    "emojis": [
+      "👦",
+      "✨",
+      "🏺"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278394354426217040",
+      "emoji": "👦"
+    }
+  },
+  "1114": {
+    "emojis": [
+      "🐾",
+      "✨",
+      "🐰"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5281011058956336239",
+      "emoji": "🐾"
+    }
+  },
+  "1115": {
+    "emojis": [
+      "🐷",
+      "🐽",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280902529427733449",
+      "emoji": "🐷"
+    }
+  },
+  "1116": {
+    "emojis": [
+      "🐟",
+      "🎨",
+      "🐠"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278678359138662922",
+      "emoji": "🐟"
+    }
+  },
+  "1117": {
+    "emojis": [
+      "👶",
+      "🎩",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278560728574358367",
+      "emoji": "👶"
+    }
+  },
+  "1118": {
+    "emojis": [
+      "🌸",
+      "🎀",
+      "🌼"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280699244330647519",
+      "emoji": "🌸"
+    }
+  },
+  "1119": {
+    "emojis": [
+      "😮",
+      "🌟",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278631312066902788",
+      "emoji": "😮"
+    }
+  },
+  "1120": {
+    "emojis": [
+      "🌟",
+      "⭐️",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278332923508981760",
+      "emoji": "🌟"
+    }
+  },
+  "1121": {
+    "emojis": [
+      "🐸",
+      "😊",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278657812015118246",
+      "emoji": "🐸"
+    }
+  },
+  "1122": {
+    "emojis": [
+      "👾",
+      "🎉",
+      "🍏"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278618268251224807",
+      "emoji": "👾"
+    }
+  },
+  "1123": {
+    "emojis": [
+      "👾",
+      "🐾",
+      "🌌"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278622773671917356",
+      "emoji": "👾"
+    }
+  },
+  "1124": {
+    "emojis": [
+      "🤖",
+      "🎨",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278595376075537279",
+      "emoji": "🤖"
+    }
+  },
+  "1125": {
+    "emojis": [
+      "👮‍♂️",
+      "🔫",
+      "😎"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280489482422876671",
+      "emoji": "👮‍♂️"
+    }
+  },
+  "1126": {
+    "emojis": [
+      "👑",
+      "😮",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278469155576644093",
+      "emoji": "👑"
+    }
+  },
+  "1127": {
+    "emojis": [
+      "⭐️",
+      "🟡",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278312423630078057",
+      "emoji": "⭐️"
+    }
+  },
+  "1128": {
+    "emojis": [
+      "🎺",
+      "👻"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278677714893569265",
+      "emoji": "🎺"
+    }
+  },
+  "1129": {
+    "emojis": [
+      "😺",
+      "🎀",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278602570145758015",
+      "emoji": "😺"
+    }
+  },
+  "1130": {
+    "emojis": [
+      "😮",
+      "❄️",
+      "🥶"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280585290258346894",
+      "emoji": "😮"
+    }
+  },
+  "1131": {
+    "emojis": [
+      "🎺",
+      "🎶",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278663824969332446",
+      "emoji": "🎺"
+    }
+  },
+  "1132": {
+    "emojis": [
+      "👶",
+      "🎉",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280755108970265574",
+      "emoji": "👶"
+    }
+  },
+  "1133": {
+    "emojis": [
+      "🐢",
+      "🎮",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280910006965797414",
+      "emoji": "🐢"
+    }
+  },
+  "1134": {
+    "emojis": [
+      "👾",
+      "🌟",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280999054522743039",
+      "emoji": "👾"
+    }
+  },
+  "1135": {
+    "emojis": [
+      "🐻",
+      "✨",
+      "👶"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280813035194185137",
+      "emoji": "🐻"
+    }
+  },
+  "1136": {
+    "emojis": [
+      "🌈",
+      "🦄",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278330874809579153",
+      "emoji": "🌈"
+    }
+  },
+  "1137": {
+    "emojis": [
+      "🌟",
+      "🧸",
+      "💖"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278342269357815654",
+      "emoji": "🌟"
+    }
+  },
+  "1138": {
+    "emojis": [
+      "👶",
+      "✨",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5281003250705791060",
+      "emoji": "👶"
+    }
+  },
+  "1139": {
+    "emojis": [
+      "😼",
+      "🌟",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278703184049633832",
+      "emoji": "😼"
+    }
+  },
+  "1140": {
+    "emojis": [
+      "👼",
+      "✨",
+      "🐣"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278348832067843843",
+      "emoji": "👼"
+    }
+  },
+  "1141": {
+    "emojis": [
+      "👾",
+      "🌟",
+      "😄"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280480849538615170",
+      "emoji": "👾"
+    }
+  },
+  "1142": {
+    "emojis": [
+      "⭐",
+      "✨",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278709845543911758",
+      "emoji": "⭐"
+    }
+  },
+  "1143": {
+    "emojis": [
+      "🐷",
+      "🎮",
+      "👑"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280805845418935234",
+      "emoji": "🐷"
+    }
+  },
+  "1144": {
+    "emojis": [
+      "✨",
+      "🐉",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278667376907286216",
+      "emoji": "✨"
+    }
+  },
+  "1145": {
+    "emojis": [
+      "👦",
+      "✨",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278534086892225722",
+      "emoji": "👦"
+    }
+  },
+  "1146": {
+    "emojis": [
+      "👑",
+      "✨",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280544470889167610",
+      "emoji": "👑"
+    }
+  },
+  "1147": {
+    "emojis": [
+      "🐻",
+      "✨",
+      "💛"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278272974355462794",
+      "emoji": "🐻"
+    }
+  },
+  "1148": {
+    "emojis": [
+      "💖",
+      "🗝️",
+      "🎁"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280720328325102829",
+      "emoji": "💖"
+    }
+  },
+  "1149": {
+    "emojis": [
+      "😋",
+      "🍋",
+      "🥳"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278514123884234485",
+      "emoji": "😋"
+    }
+  },
+  "1150": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278670288895115632",
+      "emoji": "⭐"
+    }
+  },
+  "1151": {
+    "emojis": [
+      "😈",
+      "🤪",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278645184811268973",
+      "emoji": "😈"
+    }
+  },
+  "1152": {
+    "emojis": [
+      "🌟",
+      "😄",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280514496312408043",
+      "emoji": "🌟"
+    }
+  },
+  "1153": {
+    "emojis": [
+      "👻",
+      "😱",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280746304287307288",
+      "emoji": "👻"
+    }
+  },
+  "1154": {
+    "emojis": [
+      "😮",
+      "🎩"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278223350303324023",
+      "emoji": "😮"
+    }
+  },
+  "1155": {
+    "emojis": [
+      "👺",
+      "🎭",
+      "🖤"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280776480727530105",
+      "emoji": "👺"
+    }
+  },
+  "1156": {
+    "emojis": [
+      "😠",
+      "🎨",
+      "🧸"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278683392840334303",
+      "emoji": "😠"
+    }
+  },
+  "1157": {
+    "emojis": [
+      "🌑",
+      "👀",
+      "🐾"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278551966841077683",
+      "emoji": "🌑"
+    }
+  },
+  "1158": {
+    "emojis": [
+      "👹",
+      "😈",
+      "🐉"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5281023269548357909",
+      "emoji": "👹"
+    }
+  },
+  "1159": {
+    "emojis": [
+      "🐾",
+      "🐶",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280718198021323743",
+      "emoji": "🐾"
+    }
+  },
+  "1160": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278568072968436131",
+      "emoji": "⭐"
+    }
+  },
+  "1161": {
+    "emojis": [
+      "👓",
+      "⚪️",
+      "🧑‍🎤"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278317826698935476",
+      "emoji": "👓"
+    }
+  },
+  "1162": {
+    "emojis": [
+      "🎮",
+      "👾",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280647709018061256",
+      "emoji": "🎮"
+    }
+  },
+  "1163": {
+    "emojis": [
+      "🧸",
+      "🎉",
+      "🌈"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280847635450724865",
+      "emoji": "🧸"
+    }
+  },
+  "1164": {
+    "emojis": [
+      "👶",
+      "😊",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278630040756584057",
+      "emoji": "👶"
+    }
+  },
+  "1165": {
+    "emojis": [
+      "🧙‍♂️",
+      "🥷",
+      "🐉"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280973499467333587",
+      "emoji": "🧙‍♂️"
+    }
+  },
+  "1166": {
+    "emojis": [
+      "⚔️",
+      "🔵"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280810316479889993",
+      "emoji": "⚔️"
+    }
+  },
+  "1167": {
+    "emojis": [
+      "🐻",
+      "🍬",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280643800597823749",
+      "emoji": "🐻"
+    }
+  },
+  "1168": {
+    "emojis": [
+      "😊",
+      "❤️",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278762342929170926",
+      "emoji": "😊"
+    }
+  },
+  "1169": {
+    "emojis": [
+      "🌞",
+      "😊",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278465749667576539",
+      "emoji": "🌞"
+    }
+  },
+  "1170": {
+    "emojis": [
+      "🐰",
+      "🎀",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280588850786239053",
+      "emoji": "🐰"
+    }
+  },
+  "1171": {
+    "emojis": [
+      "👺",
+      "🥷",
+      "⚔️"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278443695010511731",
+      "emoji": "👺"
+    }
+  },
+  "1172": {
+    "emojis": [
+      "👾",
+      "🎮",
+      "🥳"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278485884474262516",
+      "emoji": "👾"
+    }
+  },
+  "1173": {
+    "emojis": [
+      "🏺",
+      "✨",
+      "💖"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278301905255169705",
+      "emoji": "🏺"
+    }
+  },
+  "1174": {
+    "emojis": [
+      "🖤",
+      "💚",
+      "🦇"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278690294852778128",
+      "emoji": "🖤"
+    }
+  },
+  "1175": {
+    "emojis": [
+      "👾",
+      "🎮",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278687915440897332",
+      "emoji": "👾"
+    }
+  },
+  "1176": {
+    "emojis": [
+      "🧙‍♀️",
+      "🌟",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278512062299929010",
+      "emoji": "🧙‍♀️"
+    }
+  },
+  "1177": {
+    "emojis": [
+      "👑",
+      "🖤",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278280155540783203",
+      "emoji": "👑"
+    }
+  },
+  "1178": {
+    "emojis": [
+      "🥚",
+      "😄",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280755066020594192",
+      "emoji": "🥚"
+    }
+  },
+  "1179": {
+    "emojis": [
+      "👾",
+      "🐾",
+      "😟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280701318799848798",
+      "emoji": "👾"
+    }
+  },
+  "1180": {
+    "emojis": [
+      "🎨",
+      "🤖",
+      "🐟"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280475102872370291",
+      "emoji": "🎨"
+    }
+  },
+  "1181": {
+    "emojis": [
+      "🧪",
+      "🌟",
+      "👦"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278248785099651385",
+      "emoji": "🧪"
+    }
+  },
+  "1182": {
+    "emojis": [
+      "🕶️",
+      "🐶",
+      "😎"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278245855931956037",
+      "emoji": "🕶️"
+    }
+  },
+  "1183": {
+    "emojis": [
+      "🧑‍🎤",
+      "🎨",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278375237526779122",
+      "emoji": "🧑‍🎤"
+    }
+  },
+  "1184": {
+    "emojis": [
+      "😠",
+      "🧢",
+      "👦"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280753579961908557",
+      "emoji": "😠"
+    }
+  },
+  "1185": {
+    "emojis": [
+      "🤓",
+      "⭐️",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278232962440134181",
+      "emoji": "🤓"
+    }
+  },
+  "1186": {
+    "emojis": [
+      "👶",
+      "✨",
+      "🌀"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278545107778303924",
+      "emoji": "👶"
+    }
+  },
+  "1187": {
+    "emojis": [
+      "👧",
+      "⚔️",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278286108365454541",
+      "emoji": "👧"
+    }
+  },
+  "1188": {
+    "emojis": [
+      "🐰",
+      "🌈",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278574919146304180",
+      "emoji": "🐰"
+    }
+  },
+  "1189": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278404739657137906",
+      "emoji": "⭐"
+    }
+  },
+  "1190": {
+    "emojis": [
+      "👹",
+      "🐺",
+      "⚡"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278632591967158719",
+      "emoji": "👹"
+    }
+  },
+  "1191": {
+    "emojis": [
+      "👹",
+      "😈",
+      "🖤"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278547508665023547",
+      "emoji": "👹"
+    }
+  },
+  "1192": {
+    "emojis": [
+      "😮",
+      "👦",
+      "🍂"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5280716574523685947",
+      "emoji": "😮"
+    }
+  },
+  "1193": {
+    "emojis": [
+      "👤",
+      "✨",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278519999399492683",
+      "emoji": "👤"
+    }
+  },
+  "1194": {
+    "emojis": [
+      "🌌",
+      "😊",
+      "⭐"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278593013843523461",
+      "emoji": "🌌"
+    }
+  },
+  "1195": {
+    "emojis": [
+      "👾",
+      "🎀",
+      "🐾"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5281004225663366592",
+      "emoji": "👾"
+    }
+  },
+  "1196": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278450674332369097",
+      "emoji": "⭐"
+    }
+  },
+  "1197": {
+    "emojis": [
+      "👶",
+      "💖",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278545507210263549",
+      "emoji": "👶"
+    }
+  },
+  "1198": {
+    "emojis": [
+      "👑",
+      "🤍",
+      "😏"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278556102894580398",
+      "emoji": "👑"
+    }
+  },
+  "1199": {
+    "emojis": [
+      "🎭",
+      "🤡",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 0,
+      "pack_name": "swagpack1_by_supermetalmons_bot",
+      "custom_emoji_id": "5278257602667510992",
+      "emoji": "🎭"
+    }
+  },
+  "1200": {
+    "emojis": [
+      "👧",
+      "✨",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278475043976804681",
+      "emoji": "👧"
+    }
+  },
+  "1201": {
+    "emojis": [
+      "🐼",
+      "👀",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280968345506576095",
+      "emoji": "🐼"
+    }
+  },
+  "1202": {
+    "emojis": [
+      "👑",
+      "😮",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278321524665776743",
+      "emoji": "👑"
+    }
+  },
+  "1203": {
+    "emojis": [
+      "👑",
+      "🍬",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280971961869039900",
+      "emoji": "👑"
+    }
+  },
+  "1204": {
+    "emojis": [
+      "👾",
+      "🎀",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278461489060016959",
+      "emoji": "👾"
+    }
+  },
+  "1205": {
+    "emojis": [
+      "👧",
+      "🎮",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278679883852051522",
+      "emoji": "👧"
+    }
+  },
+  "1206": {
+    "emojis": [
+      "👧",
+      "🎀",
+      "🧢"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280602556026876310",
+      "emoji": "👧"
+    }
+  },
+  "1207": {
+    "emojis": [
+      "🧢",
+      "👾",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278756244075609077",
+      "emoji": "🧢"
+    }
+  },
+  "1208": {
+    "emojis": [
+      "👨‍🚀",
+      "🌌",
+      "🪐"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280965493648293194",
+      "emoji": "👨‍🚀"
+    }
+  },
+  "1209": {
+    "emojis": [
+      "👾",
+      "🎭",
+      "🐉"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278418307458825539",
+      "emoji": "👾"
+    }
+  },
+  "1210": {
+    "emojis": [
+      "🐻‍❄️",
+      "🐙",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280619229089919194",
+      "emoji": "🐻‍❄️"
+    }
+  },
+  "1211": {
+    "emojis": [
+      "👶",
+      "🧢",
+      "💙"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280633269338012055",
+      "emoji": "👶"
+    }
+  },
+  "1212": {
+    "emojis": [
+      "😈",
+      "🎩",
+      "🧢"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5281025567355863881",
+      "emoji": "😈"
+    }
+  },
+  "1213": {
+    "emojis": [
+      "👹",
+      "🍪",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278611559512307382",
+      "emoji": "👹"
+    }
+  },
+  "1214": {
+    "emojis": [
+      "🐨",
+      "✨",
+      "🦄"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5281030682661911468",
+      "emoji": "🐨"
+    }
+  },
+  "1215": {
+    "emojis": [
+      "👾",
+      "🤖",
+      "🎩"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280557278481645199",
+      "emoji": "👾"
+    }
+  },
+  "1216": {
+    "emojis": [
+      "🐶",
+      "🐾"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278456347984178155",
+      "emoji": "🐶"
+    }
+  },
+  "1217": {
+    "emojis": [
+      "🐉",
+      "🌟",
+      "🐲"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278542930229886344",
+      "emoji": "🐉"
+    }
+  },
+  "1218": {
+    "emojis": [
+      "🐸",
+      "👶",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278401531316565733",
+      "emoji": "🐸"
+    }
+  },
+  "1219": {
+    "emojis": [
+      "🐸",
+      "🐸",
+      "🐸"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280829742616969564",
+      "emoji": "🐸"
+    }
+  },
+  "1220": {
+    "emojis": [
+      "🐻‍❄️",
+      "😊",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280551261232461871",
+      "emoji": "🐻‍❄️"
+    }
+  },
+  "1221": {
+    "emojis": [
+      "🐼",
+      "👦",
+      "🐻"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278336436792230718",
+      "emoji": "🐼"
+    }
+  },
+  "1222": {
+    "emojis": [
+      "🐸",
+      "🌌",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278369602529687665",
+      "emoji": "🐸"
+    }
+  },
+  "1223": {
+    "emojis": [
+      "👾",
+      "🐰",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280756479064832167",
+      "emoji": "👾"
+    }
+  },
+  "1224": {
+    "emojis": [
+      "👮‍♂️",
+      "🎩",
+      "😮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280741528283676098",
+      "emoji": "👮‍♂️"
+    }
+  },
+  "1225": {
+    "emojis": [
+      "🎭",
+      "😄",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278283385356187792",
+      "emoji": "🎭"
+    }
+  },
+  "1226": {
+    "emojis": [
+      "👶",
+      "👑",
+      "😴"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280895339652478260",
+      "emoji": "👶"
+    }
+  },
+  "1227": {
+    "emojis": [
+      "👑",
+      "😊",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278286082595650564",
+      "emoji": "👑"
+    }
+  },
+  "1228": {
+    "emojis": [
+      "👻",
+      "🎩",
+      "😠"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280560370858099899",
+      "emoji": "👻"
+    }
+  },
+  "1229": {
+    "emojis": [
+      "🤖",
+      "⚔️",
+      "🛡️"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280938276440538118",
+      "emoji": "🤖"
+    }
+  },
+  "1230": {
+    "emojis": [
+      "🧊",
+      "👽",
+      "🧑‍🎤"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278564121598523740",
+      "emoji": "🧊"
+    }
+  },
+  "1231": {
+    "emojis": [
+      "🍰",
+      "🍦",
+      "😄"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278620248231147054",
+      "emoji": "🍰"
+    }
+  },
+  "1232": {
+    "emojis": [
+      "🍰",
+      "🍒",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278637952086340794",
+      "emoji": "🍰"
+    }
+  },
+  "1233": {
+    "emojis": [
+      "🪖",
+      "🐱",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278620763627223361",
+      "emoji": "🪖"
+    }
+  },
+  "1234": {
+    "emojis": [
+      "👶",
+      "🧶",
+      "🎀"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278747027075794318",
+      "emoji": "👶"
+    }
+  },
+  "1235": {
+    "emojis": [
+      "🧸",
+      "👦",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278221795525166160",
+      "emoji": "🧸"
+    }
+  },
+  "1236": {
+    "emojis": [
+      "👶",
+      "🎃",
+      "🐾"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278606023299464715",
+      "emoji": "👶"
+    }
+  },
+  "1237": {
+    "emojis": [
+      "👻",
+      "🧸",
+      "🥳"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278261060116184452",
+      "emoji": "👻"
+    }
+  },
+  "1238": {
+    "emojis": [
+      "😺",
+      "🍎",
+      "🎩"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278642092434817388",
+      "emoji": "😺"
+    }
+  },
+  "1239": {
+    "emojis": [
+      "👻",
+      "🎭",
+      "😈"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278748994170814425",
+      "emoji": "👻"
+    }
+  },
+  "1240": {
+    "emojis": [
+      "👦",
+      "🐭",
+      "🎩"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278485420617792428",
+      "emoji": "👦"
+    }
+  },
+  "1241": {
+    "emojis": [
+      "🪖",
+      "🎨",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278768626466324637",
+      "emoji": "🪖"
+    }
+  },
+  "1242": {
+    "emojis": [
+      "🐑",
+      "🎨",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278713217093237111",
+      "emoji": "🐑"
+    }
+  },
+  "1243": {
+    "emojis": [
+      "🧢",
+      "👦",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278381289135701357",
+      "emoji": "🧢"
+    }
+  },
+  "1244": {
+    "emojis": [
+      "🐱",
+      "🎨",
+      "🖤"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278520325817006362",
+      "emoji": "🐱"
+    }
+  },
+  "1245": {
+    "emojis": [
+      "👶",
+      "🎩",
+      "⭐"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278613067045828440",
+      "emoji": "👶"
+    }
+  },
+  "1246": {
+    "emojis": [
+      "😈",
+      "👻",
+      "🖤"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278372475862808967",
+      "emoji": "😈"
+    }
+  },
+  "1247": {
+    "emojis": [
+      "🐱‍👤",
+      "🎭",
+      "🐾"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278362129286591277",
+      "emoji": "🐱‍👤"
+    }
+  },
+  "1248": {
+    "emojis": [
+      "👧🏻",
+      "🎩",
+      "😠"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280899175058274248",
+      "emoji": "👧🏻"
+    }
+  },
+  "1249": {
+    "emojis": [
+      "👶",
+      "🎖️",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278580579913201551",
+      "emoji": "👶"
+    }
+  },
+  "1250": {
+    "emojis": [
+      "😼",
+      "🦊",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278389964969638523",
+      "emoji": "😼"
+    }
+  },
+  "1251": {
+    "emojis": [
+      "🎧",
+      "😄",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278694714374126789",
+      "emoji": "🎧"
+    }
+  },
+  "1252": {
+    "emojis": [
+      "🧒🏿",
+      "🎒",
+      "🌳"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278745485182531704",
+      "emoji": "🧒🏿"
+    }
+  },
+  "1253": {
+    "emojis": [
+      "🐻",
+      "😊",
+      "👶"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278530118342443890",
+      "emoji": "🐻"
+    }
+  },
+  "1254": {
+    "emojis": [
+      "😠",
+      "🖤",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278428881668307313",
+      "emoji": "😠"
+    }
+  },
+  "1255": {
+    "emojis": [
+      "😈",
+      "🎭",
+      "🏴‍☠️"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278411328136969884",
+      "emoji": "😈"
+    }
+  },
+  "1256": {
+    "emojis": [
+      "🧙‍♀️",
+      "😠",
+      "🎃"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280586492849190567",
+      "emoji": "🧙‍♀️"
+    }
+  },
+  "1257": {
+    "emojis": [
+      "😈",
+      "🎭",
+      "🐢"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278362721992081606",
+      "emoji": "😈"
+    }
+  },
+  "1258": {
+    "emojis": [
+      "😶‍🌫️",
+      "🤖",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280873817571358655",
+      "emoji": "😶‍🌫️"
+    }
+  },
+  "1259": {
+    "emojis": [
+      "🐻",
+      "🐾",
+      "🧸"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278468992367886089",
+      "emoji": "🐻"
+    }
+  },
+  "1260": {
+    "emojis": [
+      "🍣",
+      "🎮",
+      "🦑"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280855460881137963",
+      "emoji": "🍣"
+    }
+  },
+  "1261": {
+    "emojis": [
+      "😈",
+      "🐰",
+      "😜"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278695852540458268",
+      "emoji": "😈"
+    }
+  },
+  "1262": {
+    "emojis": [
+      "👶",
+      "🌼",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280599575319576059",
+      "emoji": "👶"
+    }
+  },
+  "1263": {
+    "emojis": [
+      "👑",
+      "🤴",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278609841525391215",
+      "emoji": "👑"
+    }
+  },
+  "1264": {
+    "emojis": [
+      "👧",
+      "✨",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280507186278073821",
+      "emoji": "👧"
+    }
+  },
+  "1265": {
+    "emojis": [
+      "👧",
+      "✨",
+      "🔮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278777233580784806",
+      "emoji": "👧"
+    }
+  },
+  "1266": {
+    "emojis": [
+      "👾",
+      "🎮",
+      "🤖"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278419570179209524",
+      "emoji": "👾"
+    }
+  },
+  "1267": {
+    "emojis": [
+      "🧑‍🌾",
+      "🎩",
+      "🌱"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278544046921383951",
+      "emoji": "🧑‍🌾"
+    }
+  },
+  "1268": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280477263240921643",
+      "emoji": "⭐"
+    }
+  },
+  "1269": {
+    "emojis": [
+      "🎭",
+      "💚",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280994463202706828",
+      "emoji": "🎭"
+    }
+  },
+  "1270": {
+    "emojis": [
+      "🌟",
+      "✨",
+      "💫"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278647336589882638",
+      "emoji": "🌟"
+    }
+  },
+  "1271": {
+    "emojis": [
+      "💧",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278291318160784483",
+      "emoji": "💧"
+    }
+  },
+  "1272": {
+    "emojis": [
+      "🧪",
+      "⭐️",
+      "💧"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280487141665701308",
+      "emoji": "🧪"
+    }
+  },
+  "1273": {
+    "emojis": [
+      "🐻",
+      "✨",
+      "🤖"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280731366391053777",
+      "emoji": "🐻"
+    }
+  },
+  "1274": {
+    "emojis": [
+      "🐒",
+      "🎨",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280777356900858590",
+      "emoji": "🐒"
+    }
+  },
+  "1275": {
+    "emojis": [
+      "👻",
+      "🍬",
+      "🎃"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280559911296597554",
+      "emoji": "👻"
+    }
+  },
+  "1276": {
+    "emojis": [
+      "👾",
+      "🎮",
+      "🦸‍♂️"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278343046746899480",
+      "emoji": "👾"
+    }
+  },
+  "1277": {
+    "emojis": [
+      "🐻",
+      "✨",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278325261287326306",
+      "emoji": "🐻"
+    }
+  },
+  "1278": {
+    "emojis": [
+      "🍄",
+      "😊",
+      "🍬"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278624921155564246",
+      "emoji": "🍄"
+    }
+  },
+  "1279": {
+    "emojis": [
+      "👶",
+      "✨",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280556337883807187",
+      "emoji": "👶"
+    }
+  },
+  "1280": {
+    "emojis": [
+      "😮‍💨",
+      "🧢",
+      "💜"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278549909551741137",
+      "emoji": "😮‍💨"
+    }
+  },
+  "1281": {
+    "emojis": [
+      "👺",
+      "⚔️",
+      "🏴‍☠️"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280488563299876381",
+      "emoji": "👺"
+    }
+  },
+  "1282": {
+    "emojis": [
+      "👦🏻",
+      "✨",
+      "🤖"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280754516264778639",
+      "emoji": "👦🏻"
+    }
+  },
+  "1283": {
+    "emojis": [
+      "😄",
+      "💧",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280474574591391443",
+      "emoji": "😄"
+    }
+  },
+  "1284": {
+    "emojis": [
+      "🪖",
+      "👦",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278780970202330667",
+      "emoji": "🪖"
+    }
+  },
+  "1285": {
+    "emojis": [
+      "👤",
+      "🎭",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278284214284875396",
+      "emoji": "👤"
+    }
+  },
+  "1286": {
+    "emojis": [
+      "👦",
+      "🎩",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280783395624876127",
+      "emoji": "👦"
+    }
+  },
+  "1287": {
+    "emojis": [
+      "🍼",
+      "😠",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280647829277146148",
+      "emoji": "🍼"
+    }
+  },
+  "1288": {
+    "emojis": [
+      "💧",
+      "🎨",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280638723946478445",
+      "emoji": "💧"
+    }
+  },
+  "1289": {
+    "emojis": [
+      "😄",
+      "🎉",
+      "🖤"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278461935736617787",
+      "emoji": "😄"
+    }
+  },
+  "1290": {
+    "emojis": [
+      "🎮",
+      "🌟",
+      "🥚"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278759349336961990",
+      "emoji": "🎮"
+    }
+  },
+  "1291": {
+    "emojis": [
+      "🦠",
+      "🤖",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278528391765588878",
+      "emoji": "🦠"
+    }
+  },
+  "1292": {
+    "emojis": [
+      "😎",
+      "🎩",
+      "🐥"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278355128489901430",
+      "emoji": "😎"
+    }
+  },
+  "1293": {
+    "emojis": [
+      "👶",
+      "✨",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278668669692442025",
+      "emoji": "👶"
+    }
+  },
+  "1294": {
+    "emojis": [
+      "🐒",
+      "🎨",
+      "🧸"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278293774882078637",
+      "emoji": "🐒"
+    }
+  },
+  "1295": {
+    "emojis": [
+      "🐱",
+      "✨",
+      "🌙"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278560625495145118",
+      "emoji": "🐱"
+    }
+  },
+  "1296": {
+    "emojis": [
+      "👶",
+      "🎀",
+      "🐻"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280698299437841205",
+      "emoji": "👶"
+    }
+  },
+  "1297": {
+    "emojis": [
+      "🦇",
+      "👻",
+      "🌌"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278678311894022279",
+      "emoji": "🦇"
+    }
+  },
+  "1298": {
+    "emojis": [
+      "👹",
+      "👁️",
+      "😠"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280907116452808149",
+      "emoji": "👹"
+    }
+  },
+  "1299": {
+    "emojis": [
+      "🔺",
+      "👀",
+      "🤖"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280944134775928034",
+      "emoji": "🔺"
+    }
+  },
+  "1300": {
+    "emojis": [
+      "🟣",
+      "🌱",
+      "🐾"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278707745304902963",
+      "emoji": "🟣"
+    }
+  },
+  "1301": {
+    "emojis": [
+      "👩‍⚕️",
+      "💖",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278259604122271791",
+      "emoji": "👩‍⚕️"
+    }
+  },
+  "1302": {
+    "emojis": [
+      "🧒🏻",
+      "❄️",
+      "🐧"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278672883055357532",
+      "emoji": "🧒🏻"
+    }
+  },
+  "1303": {
+    "emojis": [
+      "🐾",
+      "🐻",
+      "❄️"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278487044115430834",
+      "emoji": "🐾"
+    }
+  },
+  "1304": {
+    "emojis": [
+      "🐻",
+      "✨",
+      "💙"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280720611792946974",
+      "emoji": "🐻"
+    }
+  },
+  "1305": {
+    "emojis": [
+      "⭐",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278351550782143377",
+      "emoji": "⭐"
+    }
+  },
+  "1306": {
+    "emojis": [
+      "⭐️",
+      "🔵",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280699575043129069",
+      "emoji": "⭐️"
+    }
+  },
+  "1307": {
+    "emojis": [
+      "😠",
+      "👦",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278298237353098178",
+      "emoji": "😠"
+    }
+  },
+  "1308": {
+    "emojis": [
+      "🐱",
+      "✨",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278636092365502296",
+      "emoji": "🐱"
+    }
+  },
+  "1309": {
+    "emojis": [
+      "👑",
+      "😊",
+      "🍬"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5281018871501847787",
+      "emoji": "👑"
+    }
+  },
+  "1310": {
+    "emojis": [
+      "👾",
+      "🎩",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280512215684773806",
+      "emoji": "👾"
+    }
+  },
+  "1311": {
+    "emojis": [
+      "👾",
+      "🎮",
+      "⚡"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280592218040597911",
+      "emoji": "👾"
+    }
+  },
+  "1312": {
+    "emojis": [
+      "🐶",
+      "🎀",
+      "🐾"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278384896908229662",
+      "emoji": "🐶"
+    }
+  },
+  "1313": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278284252939582739",
+      "emoji": "⭐"
+    }
+  },
+  "1314": {
+    "emojis": [
+      "🤡",
+      "😈",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280483203180689012",
+      "emoji": "🤡"
+    }
+  },
+  "1315": {
+    "emojis": [
+      "🍬",
+      "🎉",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278472252248062929",
+      "emoji": "🍬"
+    }
+  },
+  "1316": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278353509287230735",
+      "emoji": "⭐"
+    }
+  },
+  "1317": {
+    "emojis": [
+      "🐻",
+      "🎀",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280928329296280883",
+      "emoji": "🐻"
+    }
+  },
+  "1318": {
+    "emojis": [
+      "😼",
+      "🎩",
+      "🐱"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280922445191084749",
+      "emoji": "😼"
+    }
+  },
+  "1319": {
+    "emojis": [
+      "🌟",
+      "👶",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278679797952706618",
+      "emoji": "🌟"
+    }
+  },
+  "1320": {
+    "emojis": [
+      "😄",
+      "👦",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5281011690316530176",
+      "emoji": "😄"
+    }
+  },
+  "1321": {
+    "emojis": [
+      "🐰",
+      "✨",
+      "🔮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278250825209119461",
+      "emoji": "🐰"
+    }
+  },
+  "1322": {
+    "emojis": [
+      "🐼",
+      "🍬",
+      "🎀"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280784400647224802",
+      "emoji": "🐼"
+    }
+  },
+  "1323": {
+    "emojis": [
+      "😠",
+      "🐾",
+      "❄️"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278599396164927888",
+      "emoji": "😠"
+    }
+  },
+  "1324": {
+    "emojis": [
+      "😄",
+      "🏍️",
+      "🎖️"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280645514289772912",
+      "emoji": "😄"
+    }
+  },
+  "1325": {
+    "emojis": [
+      "🙏",
+      "✝️"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278484535854529138",
+      "emoji": "🙏"
+    }
+  },
+  "1326": {
+    "emojis": [
+      "👦",
+      "✨",
+      "😺"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278594577211618371",
+      "emoji": "👦"
+    }
+  },
+  "1327": {
+    "emojis": [
+      "👺",
+      "🤖",
+      "🪄"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278264796737731743",
+      "emoji": "👺"
+    }
+  },
+  "1328": {
+    "emojis": [
+      "👑",
+      "😄",
+      "💧"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280866803889764284",
+      "emoji": "👑"
+    }
+  },
+  "1329": {
+    "emojis": [
+      "👶",
+      "✨",
+      "😠"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278600169259039486",
+      "emoji": "👶"
+    }
+  },
+  "1330": {
+    "emojis": [
+      "😺",
+      "🌟",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278406457644053485",
+      "emoji": "😺"
+    }
+  },
+  "1331": {
+    "emojis": [
+      "👑",
+      "🎭",
+      "🧙‍♂️"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280855898967801875",
+      "emoji": "👑"
+    }
+  },
+  "1332": {
+    "emojis": [
+      "👮‍♂️",
+      "⚔️",
+      "🛡️"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278778449056527870",
+      "emoji": "👮‍♂️"
+    }
+  },
+  "1333": {
+    "emojis": [
+      "⚪",
+      "👀",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280653305360451477",
+      "emoji": "⚪"
+    }
+  },
+  "1334": {
+    "emojis": [
+      "😊",
+      "🎨",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280605145892159773",
+      "emoji": "😊"
+    }
+  },
+  "1335": {
+    "emojis": [
+      "👦",
+      "✨",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278639618533656177",
+      "emoji": "👦"
+    }
+  },
+  "1336": {
+    "emojis": [
+      "🌟",
+      "🎨",
+      "😮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280973495172364308",
+      "emoji": "🌟"
+    }
+  },
+  "1337": {
+    "emojis": [
+      "🦄",
+      "😠",
+      "🌈"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280558949223925392",
+      "emoji": "🦄"
+    }
+  },
+  "1338": {
+    "emojis": [
+      "🌈",
+      "⭐️",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280615909080201885",
+      "emoji": "🌈"
+    }
+  },
+  "1339": {
+    "emojis": [
+      "👦",
+      "🎩",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278489694110252152",
+      "emoji": "👦"
+    }
+  },
+  "1340": {
+    "emojis": [
+      "🍬",
+      "⭐️",
+      "💜"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278763571289819928",
+      "emoji": "🍬"
+    }
+  },
+  "1341": {
+    "emojis": [
+      "😺",
+      "🌟",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278768012286001899",
+      "emoji": "😺"
+    }
+  },
+  "1342": {
+    "emojis": [
+      "😄",
+      "🎮",
+      "🧢"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278325149618177449",
+      "emoji": "😄"
+    }
+  },
+  "1343": {
+    "emojis": [
+      "😠",
+      "🐺",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5281027229508206187",
+      "emoji": "😠"
+    }
+  },
+  "1344": {
+    "emojis": [
+      "👑",
+      "⚔️",
+      "😠"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278629091568810232",
+      "emoji": "👑"
+    }
+  },
+  "1345": {
+    "emojis": [
+      "👶",
+      "✨",
+      "❄️"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278364555943113372",
+      "emoji": "👶"
+    }
+  },
+  "1346": {
+    "emojis": [
+      "👾",
+      "🍬",
+      "🎀"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278518208398128325",
+      "emoji": "👾"
+    }
+  },
+  "1347": {
+    "emojis": [
+      "🦹‍♂️",
+      "🚔",
+      "🏴‍☠️"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278412526432844686",
+      "emoji": "🦹‍♂️"
+    }
+  },
+  "1348": {
+    "emojis": [
+      "🌟",
+      "🏆",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278479115605802352",
+      "emoji": "🌟"
+    }
+  },
+  "1349": {
+    "emojis": [
+      "👾",
+      "🤖",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280862612001687658",
+      "emoji": "👾"
+    }
+  },
+  "1350": {
+    "emojis": [
+      "😊",
+      "🎮",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278416121320471399",
+      "emoji": "😊"
+    }
+  },
+  "1351": {
+    "emojis": [
+      "👻",
+      "🎃",
+      "🖤"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278474790573733096",
+      "emoji": "👻"
+    }
+  },
+  "1352": {
+    "emojis": [
+      "📺",
+      "🍰",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278728210824068598",
+      "emoji": "📺"
+    }
+  },
+  "1353": {
+    "emojis": [
+      "👑",
+      "🐻",
+      "💙"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280734368573194469",
+      "emoji": "👑"
+    }
+  },
+  "1354": {
+    "emojis": [
+      "👑",
+      "❄️",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278550128595073604",
+      "emoji": "👑"
+    }
+  },
+  "1355": {
+    "emojis": [
+      "🧙‍♂️",
+      "🔮",
+      "🧙‍♀️"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280681471755975971",
+      "emoji": "🧙‍♂️"
+    }
+  },
+  "1356": {
+    "emojis": [
+      "👾",
+      "🖤",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278727291701066609",
+      "emoji": "👾"
+    }
+  },
+  "1357": {
+    "emojis": [
+      "🛡️",
+      "⚔️",
+      "🏰"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5281022496454245150",
+      "emoji": "🛡️"
+    }
+  },
+  "1358": {
+    "emojis": [
+      "👑",
+      "😊",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280585182884167447",
+      "emoji": "👑"
+    }
+  },
+  "1359": {
+    "emojis": [
+      "🌟",
+      "👶",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278777697437254376",
+      "emoji": "🌟"
+    }
+  },
+  "1360": {
+    "emojis": [
+      "😠",
+      "🌟",
+      "👦"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278419342545943689",
+      "emoji": "😠"
+    }
+  },
+  "1361": {
+    "emojis": [
+      "👑",
+      "👶",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278254974147526237",
+      "emoji": "👑"
+    }
+  },
+  "1362": {
+    "emojis": [
+      "👹",
+      "🎭",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280808546953363373",
+      "emoji": "👹"
+    }
+  },
+  "1363": {
+    "emojis": [
+      "😺",
+      "🌟",
+      "🎀"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278309472987548922",
+      "emoji": "😺"
+    }
+  },
+  "1364": {
+    "emojis": [
+      "🐾",
+      "😮",
+      "🐱"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280813718093986907",
+      "emoji": "🐾"
+    }
+  },
+  "1365": {
+    "emojis": [
+      "🦔",
+      "🎉",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278316082942212680",
+      "emoji": "🦔"
+    }
+  },
+  "1366": {
+    "emojis": [
+      "😈",
+      "🎩",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278483977508780750",
+      "emoji": "😈"
+    }
+  },
+  "1367": {
+    "emojis": [
+      "👑",
+      "🎨",
+      "🐾"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278489045570191450",
+      "emoji": "👑"
+    }
+  },
+  "1368": {
+    "emojis": [
+      "🧊",
+      "🍦",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5281002533446251013",
+      "emoji": "🧊"
+    }
+  },
+  "1369": {
+    "emojis": [
+      "👹",
+      "😈",
+      "🖤"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280470606041615079",
+      "emoji": "👹"
+    }
+  },
+  "1370": {
+    "emojis": [
+      "😠",
+      "😾",
+      "😼"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280829115551742996",
+      "emoji": "😠"
+    }
+  },
+  "1371": {
+    "emojis": [
+      "📜",
+      "🗺️",
+      "🧭"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278600074769758456",
+      "emoji": "📜"
+    }
+  },
+  "1372": {
+    "emojis": [
+      "👾",
+      "🍃",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280858244019946123",
+      "emoji": "👾"
+    }
+  },
+  "1373": {
+    "emojis": [
+      "⚫",
+      "⚪",
+      "🔮"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278327597749533824",
+      "emoji": "⚫"
+    }
+  },
+  "1374": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280565537703756226",
+      "emoji": "⭐"
+    }
+  },
+  "1375": {
+    "emojis": [
+      "👸",
+      "✨",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280679341452196859",
+      "emoji": "👸"
+    }
+  },
+  "1376": {
+    "emojis": [
+      "🎭",
+      "🤡",
+      "🛹"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278384029324835743",
+      "emoji": "🎭"
+    }
+  },
+  "1377": {
+    "emojis": [
+      "😮",
+      "🦔",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280797242599439380",
+      "emoji": "😮"
+    }
+  },
+  "1378": {
+    "emojis": [
+      "🐰",
+      "🧠",
+      "👓"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278485364783216042",
+      "emoji": "🐰"
+    }
+  },
+  "1379": {
+    "emojis": [
+      "🐻",
+      "✨",
+      "😼"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278633197557545542",
+      "emoji": "🐻"
+    }
+  },
+  "1380": {
+    "emojis": [
+      "🐼",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278238176530430310",
+      "emoji": "🐼"
+    }
+  },
+  "1381": {
+    "emojis": [
+      "🐱",
+      "✨",
+      "👀"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280791388559013294",
+      "emoji": "🐱"
+    }
+  },
+  "1382": {
+    "emojis": [
+      "😄",
+      "👻",
+      "🤖"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278471565053295764",
+      "emoji": "😄"
+    }
+  },
+  "1383": {
+    "emojis": [
+      "🐰",
+      "👻",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278483904494336573",
+      "emoji": "🐰"
+    }
+  },
+  "1384": {
+    "emojis": [
+      "👶",
+      "🎉",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280854387139313163",
+      "emoji": "👶"
+    }
+  },
+  "1385": {
+    "emojis": [
+      "🧚‍♂️",
+      "😄",
+      "🎩"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278327593454566979",
+      "emoji": "🧚‍♂️"
+    }
+  },
+  "1386": {
+    "emojis": [
+      "😈",
+      "👹",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278600757669558856",
+      "emoji": "😈"
+    }
+  },
+  "1387": {
+    "emojis": [
+      "🐾",
+      "🎭",
+      "🐱"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278338811909143787",
+      "emoji": "🐾"
+    }
+  },
+  "1388": {
+    "emojis": [
+      "👧",
+      "💖",
+      "🎀"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278601827116416626",
+      "emoji": "👧"
+    }
+  },
+  "1389": {
+    "emojis": [
+      "👩‍🎤",
+      "🎨",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278359316083013653",
+      "emoji": "👩‍🎤"
+    }
+  },
+  "1390": {
+    "emojis": [
+      "🌞",
+      "😄",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280494262721478059",
+      "emoji": "🌞"
+    }
+  },
+  "1391": {
+    "emojis": [
+      "🧙‍♂️",
+      "✨",
+      "🌙"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278238704811408648",
+      "emoji": "🧙‍♂️"
+    }
+  },
+  "1392": {
+    "emojis": [
+      "🧊",
+      "✨",
+      "😄"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280907928201625002",
+      "emoji": "🧊"
+    }
+  },
+  "1393": {
+    "emojis": [
+      "😱",
+      "👩‍🎤",
+      "💜"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280598535937492297",
+      "emoji": "😱"
+    }
+  },
+  "1394": {
+    "emojis": [
+      "👨‍🚀",
+      "🚀",
+      "🌌"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280649908041315532",
+      "emoji": "👨‍🚀"
+    }
+  },
+  "1395": {
+    "emojis": [
+      "👻",
+      "😄"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280685599219550161",
+      "emoji": "👻"
+    }
+  },
+  "1396": {
+    "emojis": [
+      "🍆",
+      "👑",
+      "🌈"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5281029939632569041",
+      "emoji": "🍆"
+    }
+  },
+  "1397": {
+    "emojis": [
+      "🪙",
+      "🏴‍☠️",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280591243083020268",
+      "emoji": "🪙"
+    }
+  },
+  "1398": {
+    "emojis": [
+      "🐙",
+      "👀",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5280706236537403481",
+      "emoji": "🐙"
+    }
+  },
+  "1399": {
+    "emojis": [
+      "👑",
+      "🐾",
+      "🐻"
+    ],
+    "telegram": {
+      "pack_index": 1,
+      "pack_name": "swagpack2_by_supermetalmons_bot",
+      "custom_emoji_id": "5278752747972229674",
+      "emoji": "👑"
+    }
+  },
+  "1400": {
+    "emojis": [
+      "🌟",
+      "👶",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280611519623625300",
+      "emoji": "🌟"
+    }
+  },
+  "1401": {
+    "emojis": [
+      "👨‍🚀",
+      "⭐️",
+      "😠"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278332459652512240",
+      "emoji": "👨‍🚀"
+    }
+  },
+  "1402": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278329801067756409",
+      "emoji": "⭐"
+    }
+  },
+  "1403": {
+    "emojis": [
+      "🌟",
+      "😄",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278292606650973415",
+      "emoji": "🌟"
+    }
+  },
+  "1404": {
+    "emojis": [
+      "👦",
+      "✨",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280822239309100869",
+      "emoji": "👦"
+    }
+  },
+  "1405": {
+    "emojis": [
+      "😼",
+      "👀",
+      "🐾"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280482481626184201",
+      "emoji": "😼"
+    }
+  },
+  "1406": {
+    "emojis": [
+      "👀",
+      "🍳",
+      "💧"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280963977524837064",
+      "emoji": "👀"
+    }
+  },
+  "1407": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278652426126128270",
+      "emoji": "⭐"
+    }
+  },
+  "1408": {
+    "emojis": [
+      "👦",
+      "🎩",
+      "⭐"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280581725435499617",
+      "emoji": "👦"
+    }
+  },
+  "1409": {
+    "emojis": [
+      "👧",
+      "✨",
+      "👑"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278514952812921957",
+      "emoji": "👧"
+    }
+  },
+  "1410": {
+    "emojis": [
+      "🐻",
+      "✨",
+      "🎀"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278382779489352539",
+      "emoji": "🐻"
+    }
+  },
+  "1411": {
+    "emojis": [
+      "👶",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278428323322558996",
+      "emoji": "👶"
+    }
+  },
+  "1412": {
+    "emojis": [
+      "👻",
+      "👀",
+      "😄"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278581121079080077",
+      "emoji": "👻"
+    }
+  },
+  "1413": {
+    "emojis": [
+      "🧑‍🚀",
+      "🥽",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278720445523195586",
+      "emoji": "🧑‍🚀"
+    }
+  },
+  "1414": {
+    "emojis": [
+      "🐱",
+      "✨",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278492765011869299",
+      "emoji": "🐱"
+    }
+  },
+  "1415": {
+    "emojis": [
+      "👻",
+      "🎭",
+      "😮"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278276620782699441",
+      "emoji": "👻"
+    }
+  },
+  "1416": {
+    "emojis": [
+      "👻",
+      "😄",
+      "🎃"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278776726774646942",
+      "emoji": "👻"
+    }
+  },
+  "1417": {
+    "emojis": [
+      "👻",
+      "🎩",
+      "🦉"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278716511333154655",
+      "emoji": "👻"
+    }
+  },
+  "1418": {
+    "emojis": [
+      "🤖",
+      "⚔️",
+      "🛡️"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278341470493898187",
+      "emoji": "🤖"
+    }
+  },
+  "1419": {
+    "emojis": [
+      "👧",
+      "✨",
+      "🎀"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278558619745417447",
+      "emoji": "👧"
+    }
+  },
+  "1420": {
+    "emojis": [
+      "🐸",
+      "🐸",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278414854305120305",
+      "emoji": "🐸"
+    }
+  },
+  "1421": {
+    "emojis": [
+      "🍬",
+      "👻",
+      "🍭"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280715470717090101",
+      "emoji": "🍬"
+    }
+  },
+  "1422": {
+    "emojis": [
+      "🎮",
+      "🕹️",
+      "💰"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278353608071476890",
+      "emoji": "🎮"
+    }
+  },
+  "1423": {
+    "emojis": [
+      "🐉",
+      "🦖",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278409850668219246",
+      "emoji": "🐉"
+    }
+  },
+  "1424": {
+    "emojis": [
+      "🧸",
+      "🎲",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278589814092888034",
+      "emoji": "🧸"
+    }
+  },
+  "1425": {
+    "emojis": [
+      "🐼",
+      "👦",
+      "👧"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280847850199088502",
+      "emoji": "🐼"
+    }
+  },
+  "1426": {
+    "emojis": [
+      "🌞",
+      "😊",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278438863172302582",
+      "emoji": "🌞"
+    }
+  },
+  "1427": {
+    "emojis": [
+      "👻",
+      "🎭",
+      "😱"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280487609817136695",
+      "emoji": "👻"
+    }
+  },
+  "1428": {
+    "emojis": [
+      "⭐",
+      "🌈",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278634090910744197",
+      "emoji": "⭐"
+    }
+  },
+  "1429": {
+    "emojis": [
+      "👾",
+      "👁️",
+      "🔵"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278271140404426119",
+      "emoji": "👾"
+    }
+  },
+  "1430": {
+    "emojis": [
+      "⭐️",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278741009826611364",
+      "emoji": "⭐️"
+    }
+  },
+  "1431": {
+    "emojis": [
+      "🤖",
+      "🕶️",
+      "⚙️"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278272802556771454",
+      "emoji": "🤖"
+    }
+  },
+  "1432": {
+    "emojis": [
+      "😍",
+      "😈",
+      "❤️"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280574269372265222",
+      "emoji": "😍"
+    }
+  },
+  "1433": {
+    "emojis": [
+      "🧙‍♂️",
+      "🕶️",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278603463498956419",
+      "emoji": "🧙‍♂️"
+    }
+  },
+  "1434": {
+    "emojis": [
+      "👹",
+      "⚔️",
+      "🔥"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280495323578400287",
+      "emoji": "👹"
+    }
+  },
+  "1435": {
+    "emojis": [
+      "👦",
+      "✨",
+      "🎩"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278428533775958132",
+      "emoji": "👦"
+    }
+  },
+  "1436": {
+    "emojis": [
+      "🧙‍♂️",
+      "👻",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278479128490704000",
+      "emoji": "🧙‍♂️"
+    }
+  },
+  "1437": {
+    "emojis": [
+      "⭐️",
+      "😠"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278466303718356973",
+      "emoji": "⭐️"
+    }
+  },
+  "1438": {
+    "emojis": [
+      "✨",
+      "😄"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278742899612221554",
+      "emoji": "✨"
+    }
+  },
+  "1439": {
+    "emojis": [
+      "👀",
+      "🧸",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278328628541687404",
+      "emoji": "👀"
+    }
+  },
+  "1440": {
+    "emojis": [
+      "👾",
+      "⚡️",
+      "🥷"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278265144630081400",
+      "emoji": "👾"
+    }
+  },
+  "1441": {
+    "emojis": [
+      "😺",
+      "🎩",
+      "🐾"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280772610961998201",
+      "emoji": "😺"
+    }
+  },
+  "1442": {
+    "emojis": [
+      "🐶",
+      "✨",
+      "👑"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278618556014034106",
+      "emoji": "🐶"
+    }
+  },
+  "1443": {
+    "emojis": [
+      "🐱",
+      "✨",
+      "👑"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278643058802460845",
+      "emoji": "🐱"
+    }
+  },
+  "1444": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278237674019256643",
+      "emoji": "⭐"
+    }
+  },
+  "1445": {
+    "emojis": [
+      "👩‍🎤",
+      "🎨",
+      "😊"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278252002030156410",
+      "emoji": "👩‍🎤"
+    }
+  },
+  "1446": {
+    "emojis": [
+      "😳",
+      "🥺",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278684269013662004",
+      "emoji": "😳"
+    }
+  },
+  "1447": {
+    "emojis": [
+      "😱",
+      "🎨",
+      "🤖"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280805712274946540",
+      "emoji": "😱"
+    }
+  },
+  "1448": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278425754932114293",
+      "emoji": "⭐"
+    }
+  },
+  "1449": {
+    "emojis": [
+      "📦",
+      "🎨",
+      "🗃️"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278641577038740826",
+      "emoji": "📦"
+    }
+  },
+  "1450": {
+    "emojis": [
+      "👶",
+      "🎩",
+      "😄"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280665984103907169",
+      "emoji": "👶"
+    }
+  },
+  "1451": {
+    "emojis": [
+      "🧙‍♂️",
+      "🌙",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5281013004576522534",
+      "emoji": "🧙‍♂️"
+    }
+  },
+  "1452": {
+    "emojis": [
+      "😮",
+      "🎩",
+      "👶"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278697798160647905",
+      "emoji": "😮"
+    }
+  },
+  "1453": {
+    "emojis": [
+      "👦",
+      "✨",
+      "🎩"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280980122306900578",
+      "emoji": "👦"
+    }
+  },
+  "1454": {
+    "emojis": [
+      "😮",
+      "👦",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280800966336084573",
+      "emoji": "😮"
+    }
+  },
+  "1455": {
+    "emojis": [
+      "😮",
+      "👑",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278524723863522476",
+      "emoji": "😮"
+    }
+  },
+  "1456": {
+    "emojis": [
+      "⭐",
+      "🌟",
+      "✨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5281030201625575696",
+      "emoji": "⭐"
+    }
+  },
+  "1457": {
+    "emojis": [
+      "🐶",
+      "🎩",
+      "🏴‍☠️"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280959283125584178",
+      "emoji": "🐶"
+    }
+  },
+  "1458": {
+    "emojis": [
+      "👶",
+      "✨",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278531441192367695",
+      "emoji": "👶"
+    }
+  },
+  "1459": {
+    "emojis": [
+      "👑",
+      "🎀",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280892492089163393",
+      "emoji": "👑"
+    }
+  },
+  "1460": {
+    "emojis": [
+      "😠",
+      "🎮",
+      "🌟"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278571929849070555",
+      "emoji": "😠"
+    }
+  },
+  "1461": {
+    "emojis": [
+      "🐼",
+      "😊",
+      "🎉"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278371226027326160",
+      "emoji": "🐼"
+    }
+  },
+  "1462": {
+    "emojis": [
+      "🌟",
+      "🐾",
+      "🎮"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5281030137201067858",
+      "emoji": "🌟"
+    }
+  },
+  "1463": {
+    "emojis": [
+      "🕷️",
+      "🕸️",
+      "⚡"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278380400077471315",
+      "emoji": "🕷️"
+    }
+  },
+  "1464": {
+    "emojis": [
+      "😮",
+      "🐾",
+      "🎨"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278701788185261540",
+      "emoji": "😮"
+    }
+  },
+  "1465": {
+    "emojis": [
+      "⭐",
+      "😱",
+      "🌈"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5280776304633868803",
+      "emoji": "⭐"
+    }
+  },
+  "1466": {
+    "emojis": [
+      "🕵️‍♂️",
+      "👁️",
+      "🎭"
+    ],
+    "telegram": {
+      "pack_index": 2,
+      "pack_name": "swagpack3_by_supermetalmons_bot",
+      "custom_emoji_id": "5278711026659915839",
+      "emoji": "🕵️‍♂️"
+    }
+  },
+  "__mapping_version": 2
+}
