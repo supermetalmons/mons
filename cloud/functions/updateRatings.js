@@ -104,8 +104,8 @@ exports.updateRatings = onCall(async (request) => {
   const opponentHasProfile = opponentProfile.profileId !== "";
   const canUpdateRatings = playerHasProfile && opponentHasProfile;
 
-  const playerProfileDisplayName = getDisplayNameFromAddress(playerProfile.username, playerProfile.eth, playerProfile.sol, 0);
-  const opponentProfileDisplayName = getDisplayNameFromAddress(opponentProfile.username, opponentProfile.eth, opponentProfile.sol, 0);
+  const playerProfileDisplayName = getDisplayNameFromAddress(playerProfile.username, playerProfile.eth, playerProfile.sol, 0, playerProfile.custom.emoji);
+  const opponentProfileDisplayName = getDisplayNameFromAddress(opponentProfile.username, opponentProfile.eth, opponentProfile.sol, 0, opponentProfile.custom.emoji);
 
   let winnerDisplayName = result === "win" ? playerProfileDisplayName : opponentProfileDisplayName;
   let loserDisplayName = result === "win" ? opponentProfileDisplayName : playerProfileDisplayName;
@@ -143,7 +143,7 @@ exports.updateRatings = onCall(async (request) => {
     suffix += " ⏲️";
   }
   const updateRatingMessage = canUpdateRatings ? `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓${suffix}` : `${winnerDisplayName} ↑ ${loserDisplayName}${suffix}`;
-  await appendAutomatchBotMessageText(inviteId, updateRatingMessage, false);
+  await appendAutomatchBotMessageText(inviteId, updateRatingMessage, true);
   return {
     ok: true,
   };

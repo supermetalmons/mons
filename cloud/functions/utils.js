@@ -252,17 +252,28 @@ async function markCanceledAutomatchBotMessage(inviteId) {
   }
 }
 
-function getDisplayNameFromAddress(username, ethAddress, solAddress, rating) {
-  const ratingSuffix = rating === 0 ? "" : ` (${rating})`;
-  if (username && username !== "") {
-    return username + ratingSuffix;
-  } else if (ethAddress && ethAddress !== "") {
-    return ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4) + ratingSuffix;
-  } else if (solAddress && solAddress !== "") {
-    return solAddress.slice(0, 4) + "..." + solAddress.slice(-4) + ratingSuffix;
-  } else {
-    return "anon";
+function resolveTelegramEmojiId(emoji) {
+  const parsed = typeof emoji === "string" ? Number(emoji) : emoji;
+  if (!Number.isInteger(parsed) || parsed <= 0) {
+    return "";
   }
+  return customTelegramEmojis[parsed] || "";
+}
+
+function getDisplayNameFromAddress(username, ethAddress, solAddress, rating, emoji) {
+  const ratingNumber = Number(rating);
+  const ratingSuffix = Number.isFinite(ratingNumber) && ratingNumber !== 0 ? ` (${ratingNumber})` : "";
+  let baseName = "anon";
+  if (username && username !== "") {
+    baseName = username;
+  } else if (ethAddress && ethAddress !== "") {
+    baseName = ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4);
+  } else if (solAddress && solAddress !== "") {
+    baseName = solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
+  }
+  const emojiId = resolveTelegramEmojiId(emoji);
+  const emojiPrefix = emojiId ? `<tg-emoji emoji-id="${emojiId}">&#11088;</tg-emoji> ` : "";
+  return `${emojiPrefix}${baseName}${ratingSuffix}`;
 }
 
 async function getProfileByLoginId(uid) {
@@ -272,12 +283,13 @@ async function getProfileByLoginId(uid) {
     if (!userQuery.empty) {
       const userDoc = userQuery.docs[0];
       const userData = userDoc.data();
-      return { nonce: userData.nonce === undefined ? -1 : userData.nonce, rating: userData.rating ?? 1500, eth: userData.eth ?? "", sol: userData.sol ?? "", username: userData.username ?? "", totalManaPoints: userData.totalManaPoints ?? 0, profileId: userDoc.id };
+      const emojiValue = userData.custom && userData.custom.emoji !== undefined ? userData.custom.emoji : userData.emoji ?? "";
+      return { nonce: userData.nonce === undefined ? -1 : userData.nonce, rating: userData.rating ?? 1500, eth: userData.eth ?? "", sol: userData.sol ?? "", username: userData.username ?? "", totalManaPoints: userData.totalManaPoints ?? 0, profileId: userDoc.id, emoji: emojiValue };
     }
   } catch (error) {
     console.error("Error getting player profile:", error);
   }
-  return { eth: "", sol: "", profileId: "", nonce: 0, rating: 0, username: "", totalManaPoints: 0 };
+  return { eth: "", sol: "", profileId: "", nonce: 0, rating: 0, username: "", totalManaPoints: 0, emoji: "" };
 }
 
 async function updateUserRatingNonceAndManaPoints(profileId, newRating, newNonce, isWin, newManaPoints) {

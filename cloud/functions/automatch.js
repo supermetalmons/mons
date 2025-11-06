@@ -14,9 +14,9 @@ exports.automatch = onCall(async (request) => {
   const solAddress = profile.sol ?? "";
   const profileId = profile.profileId;
   const username = profile.username ?? "";
-  const rating = profile.rating ?? "";
-  const name = getDisplayNameFromAddress(username, ethAddress, solAddress, rating);
+  const rating = profile.rating ?? 0;
   const emojiId = request.data.emojiId;
+  const name = getDisplayNameFromAddress(username, ethAddress, solAddress, rating, emojiId);
   const aura = request.data.aura || null;
 
   console.log("auto:fn:params", { rating, profileId, name, emojiId, aura: aura ? true : false });
@@ -40,7 +40,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
     const existingAutomatchData = snapshot.val()[firstAutomatchId];
     if (existingAutomatchData.uid !== uid && (profileId === "" || profileId !== existingAutomatchData.profileId)) {
       console.log("auto:attempt:foundExisting", { inviteId: firstAutomatchId, existingUid: existingAutomatchData.uid, hostColor: existingAutomatchData.hostColor });
-      const existingPlayerName = getDisplayNameFromAddress(existingAutomatchData.username, existingAutomatchData.ethAddress, existingAutomatchData.solAddress, existingAutomatchData.rating);
+      const existingPlayerName = getDisplayNameFromAddress(existingAutomatchData.username, existingAutomatchData.ethAddress, existingAutomatchData.solAddress, existingAutomatchData.rating, existingAutomatchData.emojiId);
 
       const invite = {
         version: controllerVersion,
@@ -68,7 +68,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
           const matchMessage = `${existingPlayerName} vs. ${name} https://mons.link/${firstAutomatchId}`;
           try {
             console.log("auto:edit:trigger", { inviteId: firstAutomatchId });
-            replaceAutomatchBotMessageByDeletingOriginal(firstAutomatchId, matchMessage, false);
+            replaceAutomatchBotMessageByDeletingOriginal(firstAutomatchId, matchMessage, true);
           } catch (e) {
             console.error("auto:edit:trigger:error", { inviteId: firstAutomatchId, error: e && e.message ? e.message : e });
           }
@@ -110,7 +110,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
 
     const updates = {};
     updates[`players/${uid}/matches/${inviteId}`] = match;
-    updates[`automatch/${inviteId}`] = { uid: uid, rating: rating, timestamp: admin.database.ServerValue.TIMESTAMP, username: username, ethAddress: ethAddress, solAddress: solAddress, profileId: profileId, hostColor: hostColor, password: password };
+    updates[`automatch/${inviteId}`] = { uid: uid, rating: rating, timestamp: admin.database.ServerValue.TIMESTAMP, username: username, ethAddress: ethAddress, solAddress: solAddress, profileId: profileId, hostColor: hostColor, password: password, emojiId: emojiId };
     updates[`invites/${inviteId}`] = invite;
     await admin.database().ref().update(updates);
     console.log("auto:create:db:ok", { inviteId });
@@ -118,7 +118,7 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
     const message = `🔔 ${name} is looking for a match https://mons.link 👈`;
     try {
       console.log("auto:send:trigger", { inviteId });
-      sendAutomatchBotMessage(inviteId, message, false, false, name);
+      sendAutomatchBotMessage(inviteId, message, false, true, name);
     } catch (e) {
       console.error("auto:send:trigger:error", { inviteId, error: e && e.message ? e.message : e });
     }
