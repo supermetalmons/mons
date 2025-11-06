@@ -38,7 +38,8 @@ async function logTopMp(limit = 10) {
         const eth = data.eth || "";
         const sol = data.sol || "";
         const mp = data.totalManaPoints || 0;
-        const name = getDisplayNameFromAddress(username, eth, sol, 0);
+        const emoji = data.custom && data.custom.emoji !== undefined ? data.custom.emoji : data.emoji ?? "";
+        const name = getDisplayNameFromAddress(username, eth, sol, 0, emoji);
         output += `${rank}. ${name} ${mp}\n`;
         rank += 1;
       }

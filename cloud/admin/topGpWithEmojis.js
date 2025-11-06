@@ -3,7 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const admin = require("firebase-admin");
 const { initAdmin } = require("./_admin");
-const { getDisplayNameFromAddress, sendBotMessage, customTelegramEmojis } = require("../functions/utils");
+const { getDisplayNameFromAddress, sendBotMessage } = require("../functions/utils");
 
 try {
   const envPath = path.resolve(__dirname, "../functions/.env");
@@ -24,15 +24,6 @@ try {
   }
 } catch {}
 
-function getEmojiTag(data) {
-  if (!data || typeof data.custom !== "object" || data.custom === null) return "";
-  const emojiNumber = Number(data.custom.emoji);
-  if (!Number.isInteger(emojiNumber)) return "";
-  const emojiId = customTelegramEmojis[emojiNumber];
-  if (!emojiId) return "";
-  return `<tg-emoji emoji-id="${emojiId}">&#11088;</tg-emoji> `;
-}
-
 async function logTopGpWithEmojis(limit = 15) {
   const initialized = initAdmin();
   if (initialized) {
@@ -47,9 +38,9 @@ async function logTopGpWithEmojis(limit = 15) {
         const eth = data.eth || "";
         const sol = data.sol || "";
         const gp = data.nonce + 1;
-        const name = getDisplayNameFromAddress(username, eth, sol, 0);
-        const emojiTag = getEmojiTag(data);
-        output += `${rank}. ${emojiTag} ${name} ${gp}\n\n`;
+        const emoji = data.custom && data.custom.emoji !== undefined ? data.custom.emoji : data.emoji ?? "";
+        const name = getDisplayNameFromAddress(username, eth, sol, 0, emoji);
+        output += `${rank}. ${name} ${gp}\n\n`;
         rank += 1;
       }
       console.log(output);
