@@ -1085,7 +1085,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         lastInsideRef.current = new Set();
         return;
       }
-      if (inside.size) flashEntries(inside);
+      if (entrants.size) flashEntries(entrants);
       lastInsideRef.current = inside;
       const mats = getMaterialsInsideSet(t.clientX, t.clientY);
       const prevMats = lastMaterialsInsideRef.current;
