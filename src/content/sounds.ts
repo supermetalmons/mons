@@ -104,8 +104,8 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       volumeMultiplier = 0.1;
       break;
     case Sound.WalkToRock:
-      name = "cute click 2";
-      volumeMultiplier = 0.05;
+      name = "wrong click_hit";
+      volumeMultiplier = 0.1;
       break;
     case Sound.CollectingMaterials:
       name = "rocks/p3";
