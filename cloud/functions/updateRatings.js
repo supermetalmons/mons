@@ -104,8 +104,10 @@ exports.updateRatings = onCall(async (request) => {
   const opponentHasProfile = opponentProfile.profileId !== "";
   const canUpdateRatings = playerHasProfile && opponentHasProfile;
 
-  const playerProfileDisplayName = getDisplayNameFromAddress(playerProfile.username, playerProfile.eth, playerProfile.sol, 0, playerProfile.emoji);
-  const opponentProfileDisplayName = getDisplayNameFromAddress(opponentProfile.username, opponentProfile.eth, opponentProfile.sol, 0, opponentProfile.emoji);
+  const playerEmoji = playerProfile.emoji === "" ? matchData.emojiId : playerProfile.emoji;
+  const opponentEmoji = opponentProfile.emoji === "" ? opponentMatchData.emojiId : opponentProfile.emoji;
+  const playerProfileDisplayName = getDisplayNameFromAddress(playerProfile.username, playerProfile.eth, playerProfile.sol, 0, playerEmoji);
+  const opponentProfileDisplayName = getDisplayNameFromAddress(opponentProfile.username, opponentProfile.eth, opponentProfile.sol, 0, opponentEmoji);
 
   let winnerDisplayName = result === "win" ? playerProfileDisplayName : opponentProfileDisplayName;
   let loserDisplayName = result === "win" ? opponentProfileDisplayName : playerProfileDisplayName;
