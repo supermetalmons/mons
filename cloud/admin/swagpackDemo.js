@@ -601,9 +601,16 @@ function createMatchMessage() {
 }
 
 async function main() {
-  const { message } = createMatchMessage();
-  console.log(message);
-  await sendBotMessage(message, false, true, 17258150);
+  for (let index = 0; index < 10; index += 1) {
+    const { message } = createMatchMessage();
+    console.log(message);
+    await sendBotMessage(message, false, true, 17258150);
+    if (index < 9) {
+      await new Promise((resolve) => {
+        setTimeout(resolve, 3000);
+      });
+    }
+  }
 }
 
 module.exports = swagpackNames;
