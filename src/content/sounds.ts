@@ -91,7 +91,7 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       break;
     case Sound.RockOpen:
       name = "rockOpen";
-      volumeMultiplier = 0.95;
+      volumeMultiplier = 1;
       break;
     case Sound.UsePotion:
       name = "popSharp";
