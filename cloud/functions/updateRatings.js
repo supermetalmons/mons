@@ -140,9 +140,9 @@ exports.updateRatings = onCall(async (request) => {
   const loserScore = result === "win" ? opponentManaPoints : playerManaPoints;
   let suffix = ` (${winnerScore} - ${loserScore})`;
   if (matchData.status === "surrendered" || opponentMatchData.status === "surrendered") {
-    suffix += " 🏳️";
+    suffix += " ⚐";
   } else if (matchData.timer === "gg" || opponentMatchData.timer === "gg") {
-    suffix += " ⏲️";
+    suffix += " ⏲";
   }
   const updateRatingMessage = canUpdateRatings ? `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓${suffix}` : `${winnerDisplayName} ↑ ${loserDisplayName}${suffix}`;
   await appendAutomatchBotMessageText(inviteId, updateRatingMessage, true);
