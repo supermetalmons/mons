@@ -1,3 +1,62 @@
+#!/usr/bin/env node
+const fs = require("fs");
+const path = require("path");
+const { getDisplayNameFromAddress, sendBotMessage } = require("../functions/utils");
+
+try {
+  const envPath = path.resolve(__dirname, "../functions/.env");
+  if (fs.existsSync(envPath)) {
+    const raw = fs.readFileSync(envPath, "utf8");
+    for (const line of raw.split(/\r?\n/)) {
+      const trimmed = line.trim();
+      if (!trimmed || trimmed.startsWith("#")) continue;
+      const idx = trimmed.indexOf("=");
+      if (idx === -1) continue;
+      const key = trimmed.slice(0, idx).trim();
+      let value = trimmed.slice(idx + 1).trim();
+      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+        value = value.slice(1, -1);
+      }
+      if (!process.env[key]) process.env[key] = value;
+    }
+  }
+} catch {}
+
+const defaultLink = "https://mons.link/";
+
+function buildEmojiSafeLink(message, href) {
+  const text = message || "";
+  const segments = [];
+  const regex = /<tg-emoji.*?<\/tg-emoji>/g;
+  let lastIndex = 0;
+  let match;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      segments.push({ type: "text", value: text.slice(lastIndex, match.index) });
+    }
+    segments.push({ type: "emoji", value: match[0] });
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    segments.push({ type: "text", value: text.slice(lastIndex) });
+  }
+  if (segments.length === 0) {
+    return `<a href="${href}">${text}</a>`;
+  }
+  let result = "";
+  for (const segment of segments) {
+    if (segment.type === "emoji") {
+      result += segment.value;
+    } else if (segment.value.length > 0) {
+      result += `<a href="${href}">${segment.value}</a>`;
+    }
+  }
+  if (result === "") {
+    return `<a href="${href}"></a>`;
+  }
+  return result;
+}
+
 const swagpackNames = {
   1000: "3D Chleb",
   1001: "A Small Creamie",
@@ -468,4 +527,90 @@ const swagpackNames = {
   1466: "Zorn",
 };
 
+const minRating = 1200;
+const maxRating = 1900;
+const maxRatingDifference = 50;
+const swagpackIds = Object.keys(swagpackNames).map((value) => Number(value));
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
+function clamp(value, min, max) {
+  if (value < min) return min;
+  if (value > max) return max;
+  return value;
+}
+
+function sanitizeName(name, id) {
+  const cleaned = String(name ?? "").replace(/[^a-z0-9]/gi, "");
+  if (cleaned.length > 0) {
+    return cleaned;
+  }
+  return `Swagpack${id}`;
+}
+
+function pickRandomSwagpack(excludedIds) {
+  const blocked = excludedIds ? new Set(excludedIds) : new Set();
+  const available = swagpackIds.filter((id) => !blocked.has(id));
+  if (available.length === 0) {
+    throw new Error("No available swagpacks to choose from.");
+  }
+  const randomIndex = randomInt(0, available.length - 1);
+  const id = available[randomIndex];
+  const name = swagpackNames[id];
+  const username = sanitizeName(name, id);
+  return { id, name, username, emoji: id };
+}
+
+function generateRatings() {
+  const primary = randomInt(minRating, maxRating);
+  let secondary = primary + randomInt(-maxRatingDifference, maxRatingDifference);
+  secondary = clamp(secondary, minRating, maxRating);
+  if (Math.abs(secondary - primary) > maxRatingDifference) {
+    secondary = clamp(primary + (secondary > primary ? maxRatingDifference : -maxRatingDifference), minRating, maxRating);
+  }
+  return [primary, secondary];
+}
+
+function createPlayers() {
+  const [ratingOne, ratingTwo] = generateRatings();
+  const first = pickRandomSwagpack();
+  const second = pickRandomSwagpack([first.id]);
+  const playerOne = {
+    ...first,
+    rating: ratingOne,
+    displayName: getDisplayNameFromAddress(first.username, "", "", ratingOne, first.emoji),
+  };
+  const playerTwo = {
+    ...second,
+    rating: ratingTwo,
+    displayName: getDisplayNameFromAddress(second.username, "", "", ratingTwo, second.emoji),
+  };
+  return [playerOne, playerTwo];
+}
+
+function buildMatchMessage(playerOne, playerTwo) {
+  const matchLine = buildEmojiSafeLink(`${playerOne.displayName} vs. ${playerTwo.displayName}`, defaultLink);
+  return `${matchLine}`;
+}
+
+function createMatchMessage() {
+  const [playerOne, playerTwo] = createPlayers();
+  return { message: buildMatchMessage(playerOne, playerTwo), playerOne, playerTwo };
+}
+
+async function main() {
+  const { message } = createMatchMessage();
+  console.log(message);
+  await sendBotMessage(message, false, true);
+}
+
 module.exports = swagpackNames;
+
+if (require.main === module) {
+  main().catch((err) => {
+    console.error(err);
+    process.exit(1);
+  });
+}
