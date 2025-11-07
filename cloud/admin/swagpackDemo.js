@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const fs = require("fs");
 const path = require("path");
-const { getDisplayNameFromAddress, sendBotMessage } = require("../functions/utils");
+const { getDisplayNameFromAddress, sendBotMessage, getTelegramEmojiTag } = require("../functions/utils");
 
 try {
   const envPath = path.resolve(__dirname, "../functions/.env");
@@ -601,16 +601,33 @@ function createMatchMessage() {
 }
 
 async function main() {
-  for (let index = 0; index < 10; index += 1) {
-    const { message } = createMatchMessage();
+  const emojiSuffix = getTelegramEmojiTag("5355002036817525409");
+  const sendWithLog = async (message) => {
     console.log(message);
     await sendBotMessage(message, false, true, 17258150);
+  };
+  const sleep = () =>
+    new Promise((resolve) => {
+      setTimeout(resolve, 3000);
+    });
+  const sendLookingMessage = async () => {
+    const swagpack = pickRandomSwagpack();
+    const [rating] = generateRatings();
+    const name = getDisplayNameFromAddress(swagpack.username, "", "", rating, swagpack.emoji);
+    const message = `${name} is looking for a match https://mons.link ${emojiSuffix}`;
+    await sendWithLog(message);
+  };
+  await sendLookingMessage();
+  await sleep();
+  for (let index = 0; index < 10; index += 1) {
+    const { message } = createMatchMessage();
+    await sendWithLog(message);
     if (index < 9) {
-      await new Promise((resolve) => {
-        setTimeout(resolve, 3000);
-      });
+      await sleep();
     }
   }
+  await sleep();
+  await sendLookingMessage();
 }
 
 module.exports = swagpackNames;
