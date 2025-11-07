@@ -3348,8 +3348,26 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     [heroSize.h, heroSize.w, stopMoveAnim, decideFacingWithHysteresis, startWalkingAnimation, startStandingAnimation]
   );
 
+  const lastTouchMaterialTapRef = useRef<{ name: MaterialName | null; eventType: string; time: number }>({ name: null, eventType: "", time: 0 });
+
   const handleMaterialItemTap = useCallback(
-    (name: MaterialName, _url: string | null) => (_event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    (name: MaterialName, _url: string | null) => (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+      if (!isMobile) {
+        const nativeEvent = (event as unknown as { nativeEvent?: any })?.nativeEvent;
+        const eventType = typeof nativeEvent?.type === "string" ? nativeEvent.type : "";
+        const pointerType = typeof nativeEvent?.pointerType === "string" ? nativeEvent.pointerType : "";
+        const hasTouches = !!nativeEvent && typeof nativeEvent.touches === "object";
+        const firesTouchEvents = !!nativeEvent?.sourceCapabilities && !!nativeEvent.sourceCapabilities.firesTouchEvents;
+        const isTouchLike = pointerType === "touch" || pointerType === "pen" || hasTouches || (eventType && eventType.startsWith("touch")) || firesTouchEvents;
+        if (isTouchLike) {
+          const now = typeof performance !== "undefined" && typeof performance.now === "function" ? performance.now() : Date.now();
+          const last = lastTouchMaterialTapRef.current;
+          if (last.name === name && last.eventType !== eventType && now - last.time < 100) {
+            return;
+          }
+          lastTouchMaterialTapRef.current = { name, eventType, time: now };
+        }
+      }
       if (!islandOverlayVisible || islandClosing || islandOpening) {
         return;
       }
