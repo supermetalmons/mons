@@ -116,10 +116,8 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
     await admin.database().ref().update(updates);
     console.log("auto:create:db:ok", { inviteId });
 
-    const linkHref = "https://mons.link";
     const emojiSuffix = getTelegramEmojiTag("5355002036817525409");
-    const baseLinkText = `${name || ""} is looking for a match`;
-    const message = `${buildEmojiSafeLink(baseLinkText, linkHref)} ${emojiSuffix}`;
+    const message = `${name} is looking for a match https://mons.link ${emojiSuffix}`;
     try {
       console.log("auto:send:trigger", { inviteId });
       sendAutomatchBotMessage(inviteId, message, false, true, name);
