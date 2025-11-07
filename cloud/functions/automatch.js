@@ -65,7 +65,8 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
         const success = await acceptInvite(firstAutomatchId, invite, match, uid);
         console.log("auto:accept:done", { inviteId: firstAutomatchId, success });
         if (success) {
-          const matchMessage = `${existingPlayerName} vs. ${name} https://mons.link/${firstAutomatchId}`;
+          const matchHref = `https://mons.link/${firstAutomatchId}`;
+          const matchMessage = buildEmojiSafeLink(`${existingPlayerName} vs. ${name}`, matchHref);
           try {
             console.log("auto:edit:trigger", { inviteId: firstAutomatchId });
             replaceAutomatchBotMessageByDeletingOriginal(firstAutomatchId, matchMessage, true);
@@ -116,18 +117,9 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
     console.log("auto:create:db:ok", { inviteId });
 
     const linkHref = "https://mons.link";
-    let linkName = name || "";
-    let emojiPrefix = "";
-    if (linkName.startsWith("<tg-emoji")) {
-      const closeIndex = linkName.indexOf("</tg-emoji>");
-      if (closeIndex !== -1) {
-        const emojiEndIndex = closeIndex + "</tg-emoji>".length;
-        emojiPrefix = linkName.slice(0, emojiEndIndex);
-        linkName = linkName.slice(emojiEndIndex);
-      }
-    }
     const emojiSuffix = getTelegramEmojiTag("5355002036817525409");
-    const message = `${emojiPrefix}<a href="${linkHref}">${linkName} is looking for a match</a> ${emojiSuffix}`;
+    const baseLinkText = `${name || ""} is looking for a match`;
+    const message = `${buildEmojiSafeLink(baseLinkText, linkHref)} ${emojiSuffix}`;
     try {
       console.log("auto:send:trigger", { inviteId });
       sendAutomatchBotMessage(inviteId, message, false, true, name);
@@ -152,6 +144,39 @@ async function acceptInvite(firstAutomatchId, invite, match, uid) {
   const guestIdSnapshot = await guestIdRef.once("value");
   const finalGuestId = guestIdSnapshot.val();
   return finalGuestId === uid;
+}
+
+function buildEmojiSafeLink(message, href) {
+  const text = message || "";
+  const segments = [];
+  const regex = /<tg-emoji.*?<\/tg-emoji>/g;
+  let lastIndex = 0;
+  let match;
+  while ((match = regex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      segments.push({ type: "text", value: text.slice(lastIndex, match.index) });
+    }
+    segments.push({ type: "emoji", value: match[0] });
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) {
+    segments.push({ type: "text", value: text.slice(lastIndex) });
+  }
+  if (segments.length === 0) {
+    return `<a href="${href}">${text}</a>`;
+  }
+  let result = "";
+  for (const segment of segments) {
+    if (segment.type === "emoji") {
+      result += segment.value;
+    } else if (segment.value.length > 0) {
+      result += `<a href="${href}">${segment.value}</a>`;
+    }
+  }
+  if (result === "") {
+    return `<a href="${href}"></a>`;
+  }
+  return result;
 }
 
 function generateRandomString(length) {
