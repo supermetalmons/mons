@@ -22,22 +22,23 @@ const batchReadWithRetry = async (refs) => {
   return finalSnapshots;
 };
 
-async function sendBotMessage(message, silent = false, isHtml = false) {
+async function sendBotMessage(message, silent = false, isHtml = false, chatId = null) {
   try {
-    console.log("tg:sendBotMessage:start", { silent, isHtml, length: message ? message.length : 0 });
-    await sendTelegramMessage(message, silent, isHtml);
+    console.log("tg:sendBotMessage:start", { silent, isHtml, length: message ? message.length : 0, hasCustomChat: !!chatId });
+    await sendTelegramMessage(message, silent, isHtml, chatId);
     console.log("tg:sendBotMessage:done");
   } catch (e) {
     console.error("tg:sendBotMessage:error", e && e.message ? e.message : e);
   }
 }
 
-function sendTelegramMessage(message, silent = false, isHtml = false) {
+function sendTelegramMessage(message, silent = false, isHtml = false, chatId = null) {
   const telegramBotToken = process.env.TELEGRAM_BOT_TOKEN;
   const telegramExtraChatId = process.env.TELEGRAM_EXTRA_CHAT_ID;
-  console.log("tg:send:start", { hasToken: !!telegramBotToken, chatId: telegramExtraChatId, silent, isHtml, length: message ? message.length : 0 });
+  const targetChatId = chatId || telegramExtraChatId;
+  console.log("tg:send:start", { hasToken: !!telegramBotToken, chatId: targetChatId, silent, isHtml, length: message ? message.length : 0 });
   const body = {
-    chat_id: telegramExtraChatId,
+    chat_id: targetChatId,
     text: message,
     disable_web_page_preview: true,
     disable_notification: silent,

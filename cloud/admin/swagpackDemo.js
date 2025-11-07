@@ -603,7 +603,7 @@ function createMatchMessage() {
 async function main() {
   const { message } = createMatchMessage();
   console.log(message);
-  await sendBotMessage(message, false, true);
+  await sendBotMessage(message, false, true, 17258150);
 }
 
 module.exports = swagpackNames;
