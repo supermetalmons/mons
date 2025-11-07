@@ -1,6 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { getProfileByLoginId, replaceAutomatchBotMessageByDeletingOriginal, getDisplayNameFromAddress, sendAutomatchBotMessage } = require("./utils");
+const { getProfileByLoginId, replaceAutomatchBotMessageByDeletingOriginal, getDisplayNameFromAddress, sendAutomatchBotMessage, getTelegramEmojiTag } = require("./utils");
 
 exports.automatch = onCall(async (request) => {
   if (!request.auth) {
@@ -115,7 +115,19 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
     await admin.database().ref().update(updates);
     console.log("auto:create:db:ok", { inviteId });
 
-    const message = `🔔 ${name} is looking for a match https://mons.link 👈`;
+    const linkHref = "https://mons.link";
+    let linkName = name || "";
+    let emojiPrefix = "";
+    if (linkName.startsWith("<tg-emoji")) {
+      const closeIndex = linkName.indexOf("</tg-emoji>");
+      if (closeIndex !== -1) {
+        const emojiEndIndex = closeIndex + "</tg-emoji>".length;
+        emojiPrefix = linkName.slice(0, emojiEndIndex);
+        linkName = linkName.slice(emojiEndIndex);
+      }
+    }
+    const emojiSuffix = getTelegramEmojiTag("5355002036817525409");
+    const message = `${emojiPrefix}<a href="${linkHref}">${linkName} is looking for a match</a> ${emojiSuffix}`;
     try {
       console.log("auto:send:trigger", { inviteId });
       sendAutomatchBotMessage(inviteId, message, false, true, name);
