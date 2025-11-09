@@ -158,8 +158,8 @@ const SafeBarRow = styled.div`
 const SafeHitbox = styled.div<{ $active: boolean }>`
   display: inline-flex;
   pointer-events: ${(p) => (p.$active ? "auto" : "none")};
-  padding: 20px 25px;
-  margin: -20px 0;
+  padding: 30px 30px;
+  margin: -30px 0;
   background: transparent;
   outline: none;
 `;
