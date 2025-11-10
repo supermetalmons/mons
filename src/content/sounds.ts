@@ -83,15 +83,15 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       break;
     case Sound.PickaxeHit:
       name = "pickaxeHit";
-      volumeMultiplier = 0.85;
+      volumeMultiplier = 0.85; // TODO: confirm volume
       break;
     case Sound.PickaxeMiss:
       name = "pickaxeMiss";
-      volumeMultiplier = 0.85;
+      volumeMultiplier = 0.85; // TODO: confirm volume
       break;
     case Sound.RockOpen:
       name = "rockOpen";
-      volumeMultiplier = 1;
+      volumeMultiplier = 1; // TODO: confirm volume
       break;
     case Sound.UsePotion:
       name = "popSharp";
@@ -101,15 +101,15 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       break;
     case Sound.IslandShowUp:
       name = "open1";
-      volumeMultiplier = 0.1;
+      volumeMultiplier = 0.1; // TODO: confirm volume
       break;
     case Sound.WalkToRock:
       name = "wrong click_hit";
-      volumeMultiplier = 0.1;
+      volumeMultiplier = 0.1; // TODO: confirm volume
       break;
     case Sound.CollectingMaterials:
       name = "rocks/p3";
-      volumeMultiplier = 0.13;
+      volumeMultiplier = 0.13; // TODO: confirm volume
       break;
     case Sound.Timer:
       name = "timer";
@@ -124,11 +124,11 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       break;
     case Sound.WalkToMon:
       name = "chip";
-      volumeMultiplier = 0.05;
+      volumeMultiplier = 0.05; // TODO: confirm volume
       break;
     case Sound.PetMon:
       name = "pet";
-      volumeMultiplier = 0.042;
+      volumeMultiplier = 0.042; // TODO: confirm volume
       break;
     case Sound.SadMon:
       name = "sad";
