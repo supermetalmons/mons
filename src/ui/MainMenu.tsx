@@ -12,7 +12,6 @@ import { FaTelegramPlane, FaUniversity, FaPlay, FaStop, FaBackward, FaForward } 
 import { showsShinyCardSomewhere } from "./ShinyCard";
 import { startPlayingMusic, stopPlayingMusic, playNextTrack } from "../content/music";
 import { InfoPopover } from "./InfoPopover";
-import { getIslandPreviewEnabled, setIslandPreviewEnabled } from "../utils/islandPreview";
 
 const RockButtonContainer = styled.div`
   position: absolute;
@@ -516,7 +515,6 @@ const MainMenu: React.FC = () => {
   const [copyButtonText, setCopyButtonText] = useState("copy board snapshot");
   const [isNftSubmenuExpanded, setIsNftSubmenuExpanded] = useState(false);
   const [isDebugViewEnabled, setIsDebugViewEnabled] = useState<boolean>(storage.getDebugViewEnabled(false));
-  const [islandPreviewEnabled, setIslandPreviewEnabledState] = useState<boolean>(getIslandPreviewEnabled());
   const [debugViewText, setDebugViewTextState] = useState<string>("");
   const [areAnimatedMonsEnabled, setAreAnimatedMonsEnabled] = useState<boolean>(storage.getIsExperimentingWithSprites(false));
   const buttonRowRef = useRef<HTMLDivElement>(null);
@@ -660,12 +658,6 @@ const MainMenu: React.FC = () => {
     const checked = event.target.checked;
     setIsDebugViewEnabled(checked);
     storage.setDebugViewEnabled(checked);
-  };
-
-  const handleIslandPreviewToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = event.target.checked;
-    setIslandPreviewEnabled(checked);
-    setIslandPreviewEnabledState(checked);
   };
 
   const handleAnimatedMonsToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -866,10 +858,6 @@ const MainMenu: React.FC = () => {
                 <ToggleRow>
                   <input type="checkbox" checked={isDebugViewEnabled} onChange={handleDebugViewToggle} />
                   show inspector
-                </ToggleRow>
-                <ToggleRow>
-                  <input type="checkbox" checked={islandPreviewEnabled} onChange={handleIslandPreviewToggle} />
-                  preview island
                 </ToggleRow>
                 <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
                 <BuildInfo>{getBuildInfo()}</BuildInfo>

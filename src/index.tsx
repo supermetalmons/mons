@@ -18,10 +18,7 @@ import { FaVolumeUp, FaMusic, FaVolumeMute, FaInfoCircle, FaRegGem, FaPowerOff, 
 import { soundPlayer } from "./utils/SoundPlayer";
 import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory, showSettings } from "./ui/ProfileSignIn";
-import { getIslandPreviewEnabled, subscribeIslandPreview } from "./utils/islandPreview";
 import { isMainGameLoaded, onMainGameLoaded } from "./game/mainGameLoadState";
-
-let isIslandButtonSupportedInitial = getIslandPreviewEnabled();
 
 const LazyIslandButton = lazy(() => import("./ui/IslandButton"));
 
@@ -46,7 +43,6 @@ const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
   const [isProfileEditingMode, setIsProfileEditingMode] = useState(false);
   const [isMuted, setIsMuted] = useState(globalIsMuted);
-  const [isIslandButtonSupported, setIsIslandButtonSupported] = useState(isIslandButtonSupportedInitial);
   const [isIslandButtonDim, setIsIslandButtonDim] = useState(!isCreateNewInviteFlow);
   const [shouldLoadIslandButton, setShouldLoadIslandButton] = useState(isMainGameLoaded());
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
@@ -63,11 +59,6 @@ const App = () => {
     storage.setIsMuted(isMuted);
     globalIsMuted = isMuted;
   }, [isMuted]);
-
-  useEffect(() => {
-    const unsubscribe = subscribeIslandPreview(setIsIslandButtonSupported);
-    return unsubscribe;
-  }, []);
 
   useEffect(() => {
     if (shouldLoadIslandButton) {
@@ -128,7 +119,7 @@ const App = () => {
               <div className="top-buttons-container">
                 {authStatus !== "loading" && (
                   <>
-                    {shouldLoadIslandButton && isIslandButtonSupported && (
+                    {shouldLoadIslandButton && (
                       <Suspense fallback={null}>
                         <LazyIslandButton dimmed={isIslandButtonDim} />
                       </Suspense>
