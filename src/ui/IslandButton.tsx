@@ -897,7 +897,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!url) return;
       const host = materialItemRefs.current[name];
       if (!host) return;
-      directlyPlaySoundNamed(name, 0.1); // TODO: confirm volume
+      directlyPlaySoundNamed(name, 0.1);
       const img = host.querySelector("img");
       if (!img) return;
       const f = spawnIconParticlesFnRef.current;
@@ -2516,7 +2516,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const wasVisible = islandOverlayVisible;
       overlayPhaseRef.current = wasVisible ? "closing" : "idle";
       didDismissSomethingWithOutsideTapJustNow();
-      directlyPlaySoundNamed("door hit", 0.0023); // TODO: confirm volume
+      directlyPlaySoundNamed("door hit", 0.01);
       setIslandOpening(false);
       if (rafRef.current !== null) {
         cancelAnimationFrame(rafRef.current);
@@ -2943,7 +2943,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const teleportMonToRandomNonOverlappingSpot = useCallback(() => {
     if (!monPos) return;
     teleportFXStart();
-    directlyPlaySoundNamed("happy", 0.1); // TODO: confirm volume
+    directlyPlaySoundNamed("happy", 0.1);
     setMonTeleporting(true);
     setTimeout(() => {
       const chosen = findValidMonLocation({ mode: "teleport" });
@@ -2973,7 +2973,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       storage.setIslandMonType(nextType);
 
       teleportFXStart();
-      directlyPlaySoundNamed("bewo", 0.085); // TODO: confirm volume
+      directlyPlaySoundNamed("bewo", 0.075);
       setMonTeleporting(true);
       setTimeout(() => {
         updateMonSprite(nextType);
