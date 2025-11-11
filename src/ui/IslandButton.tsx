@@ -11,7 +11,7 @@ import { getOwnMonIdByType, MonType } from "../utils/namedMons";
 import { storage } from "../utils/storage";
 import { Sound } from "../utils/gameModels";
 import { setIslandOverlayState, resetIslandOverlayState } from "./islandOverlayState";
-import { MATERIALS, MaterialName, MiningMaterials, rocksMiningService } from "../services/rocksMiningService";
+import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMiningService";
 
 const FEATURE_GLOWS_ON_HOTSPOT = true;
 const STARS_URL = "https://assets.mons.link/rocks/underground/stars.webp";
@@ -623,6 +623,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const snapshot = rocksMiningService.getSnapshot();
     return { ...snapshot.materials };
   });
+  const latestServiceMaterialsRef = useRef<Record<MaterialName, number>>({ ...materialAmounts });
+  const amountsDecoupledRef = useRef(false);
   const [materialUrls, setMaterialUrls] = useState<Record<MaterialName, string | null>>(() => {
     const initial: Partial<Record<MaterialName, string | null>> = {};
     MATERIALS.forEach((n) => (initial[n] = null));
@@ -635,7 +637,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const decodedMaterialsRef = useRef<Set<MaterialName>>(new Set());
   useEffect(() => {
     const unsubscribe = rocksMiningService.subscribe((snapshot) => {
-      setMaterialAmounts({ ...snapshot.materials });
+      const next = { ...snapshot.materials };
+      latestServiceMaterialsRef.current = next;
+      if (!amountsDecoupledRef.current) {
+        setMaterialAmounts(next);
+      }
     });
     return unsubscribe;
   }, []);
@@ -1927,6 +1933,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     overlayPhaseRef.current = "idle";
     overlayActiveRef.current = false;
     overlayJustOpenedAtRef.current = 0;
+    amountsDecoupledRef.current = false;
+    const resetMaterials = { ...latestServiceMaterialsRef.current };
+    latestServiceMaterialsRef.current = resetMaterials;
+    setMaterialAmounts(resetMaterials);
     const container = fxContainerRef.current;
     if (container && container.parentNode) {
       try {
@@ -2029,6 +2039,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const imgEl = islandButtonImgRef.current;
       if (!imgEl) return;
       overlayPhaseRef.current = "opening";
+      const snapshot = rocksMiningService.getSnapshot();
+      const nextMaterials = { ...snapshot.materials };
+      latestServiceMaterialsRef.current = nextMaterials;
+      amountsDecoupledRef.current = false;
+      setMaterialAmounts(nextMaterials);
       const rect = imgEl.getBoundingClientRect();
       const vh = window.innerHeight;
       const vw = window.innerWidth;
@@ -2220,8 +2235,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }
       }
       requestAnimationFrame(step);
+      if (amountsDecoupledRef.current) {
+        setMaterialAmounts((prev) => ({
+          ...prev,
+          [name]: prev[name] + 1,
+        }));
+      }
     },
-    [materialItemRefs, materialUrls]
+    [materialItemRefs, materialUrls, setMaterialAmounts]
   );
 
   const flushMaterialPullQueue = useCallback(() => {
@@ -3201,7 +3222,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 const item = collectedPulls[i];
                 queueMaterialPull(item.name, item.rect);
               }
-              rocksMiningService.applyLocalDelta(delta as Partial<MiningMaterials>);
               playSounds([Sound.CollectingMaterials]);
             }
           }
@@ -3960,6 +3980,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                             setRockIsBroken(true);
                             setRockReady(false);
                           });
+                          if (!amountsDecoupledRef.current) {
+                            amountsDecoupledRef.current = true;
+                          }
                           const { drops } = rocksMiningService.didBreakRock();
                           requestAnimationFrame(() => {
                             const count = drops.length;

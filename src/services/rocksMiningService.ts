@@ -43,14 +43,6 @@ const normalizeMaterials = (source?: Partial<PlayerMiningMaterials> | null): Pla
   return base;
 };
 
-const addMaterials = (current: PlayerMiningMaterials, delta: PlayerMiningMaterials): PlayerMiningMaterials => {
-  const result = createEmptyMaterials();
-  MATERIALS.forEach((name) => {
-    result[name] = current[name] + delta[name];
-  });
-  return result;
-};
-
 const normalizeSnapshot = (source?: PlayerMiningData | null): PlayerMiningData => {
   if (!source) {
     return {
@@ -133,7 +125,6 @@ export const rocksMiningService = {
   getSnapshot,
   subscribe,
   setFromServer,
-  applyLocalDelta,
   didBreakRock,
   formatMiningDate,
 };
@@ -159,15 +150,6 @@ function setFromServer(data?: PlayerMiningData | null, options?: { persist?: boo
   setSnapshot(normalized, options?.persist !== false, shouldNotify);
 }
 
-function applyLocalDelta(delta: Partial<PlayerMiningMaterials>): void {
-  const normalizedDelta = normalizeMaterials(delta);
-  snapshot = {
-    lastRockDate: snapshot.lastRockDate,
-    materials: addMaterials(snapshot.materials, normalizedDelta),
-  };
-  notify();
-}
-
 function didBreakRock(): DidBreakRockResult {
   const { drops, delta } = createDrops();
   const date = formatMiningDate(new Date());
@@ -185,4 +167,3 @@ function didBreakRock(): DidBreakRockResult {
     .catch(() => {});
   return { drops, delta, date };
 }
-
