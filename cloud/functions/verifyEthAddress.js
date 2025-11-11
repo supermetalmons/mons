@@ -1,6 +1,7 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { SiweMessage } = require("siwe");
 const admin = require("firebase-admin");
+const { normalizeMiningSnapshot } = require("./miningHelpers");
 
 exports.verifyEthAddress = onCall(async (request) => {
   if (!request.auth) {
@@ -33,6 +34,7 @@ exports.verifyEthAddress = onCall(async (request) => {
     let profileMons = null;
     let completedProblems = null;
     let tutorialCompleted = null;
+    let mining = normalizeMiningSnapshot();
 
     const firestore = admin.firestore();
     const userQuery = await firestore.collection("users").where("logins", "array-contains", uid).limit(1).get();
@@ -43,6 +45,7 @@ exports.verifyEthAddress = onCall(async (request) => {
 
       const userWithMatchingEthAddressQuery = await firestore.collection("users").where("eth", "==", address).get();
       if (userWithMatchingEthAddressQuery.empty) {
+        const newMining = normalizeMiningSnapshot();
         const docRef = await firestore.collection("users").add({
           eth: address,
           logins: [uid],
@@ -50,10 +53,13 @@ exports.verifyEthAddress = onCall(async (request) => {
             emoji: requestEmoji,
             aura: requestAura,
           },
+          mining: newMining,
         });
         await profileIdRef.set(docRef.id);
         profileId = docRef.id;
         emoji = requestEmoji;
+        aura = requestAura || null;
+        mining = newMining;
       } else {
         const userDoc = userWithMatchingEthAddressQuery.docs[0];
         const userData = userDoc.data();
@@ -77,6 +83,7 @@ exports.verifyEthAddress = onCall(async (request) => {
         completedProblems = userData.custom?.completedProblems || null;
         tutorialCompleted = userData.custom?.tutorialCompleted || null;
         username = userData.username || null;
+        mining = normalizeMiningSnapshot(userData.mining);
       }
     } else {
       const userDoc = userQuery.docs[0];
@@ -96,6 +103,7 @@ exports.verifyEthAddress = onCall(async (request) => {
       completedProblems = userData.custom?.completedProblems || null;
       tutorialCompleted = userData.custom?.tutorialCompleted || null;
       username = userData.username || null;
+      mining = normalizeMiningSnapshot(userData.mining);
     }
 
     await admin.auth().setCustomUserClaims(uid, {
@@ -120,6 +128,7 @@ exports.verifyEthAddress = onCall(async (request) => {
       profileMons: profileMons,
       completedProblems: completedProblems,
       tutorialCompleted: tutorialCompleted,
+      mining,
     };
   } else {
     return {

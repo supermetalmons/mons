@@ -25,6 +25,17 @@ export interface Reaction {
   kind: string;
 }
 
+export const MINING_MATERIAL_NAMES = ["dust", "slime", "gum", "metal", "ice"] as const;
+
+export type MiningMaterialName = (typeof MINING_MATERIAL_NAMES)[number];
+
+export type PlayerMiningMaterials = Record<MiningMaterialName, number>;
+
+export interface PlayerMiningData {
+  lastRockDate: string | null;
+  materials: PlayerMiningMaterials;
+}
+
 export interface PlayerProfile {
   id: string;
   nonce: number | undefined;
@@ -43,4 +54,5 @@ export interface PlayerProfile {
   sol?: string | null;
   completedProblemIds: string[] | undefined;
   isTutorialCompleted: boolean | undefined;
+  mining?: PlayerMiningData;
 }

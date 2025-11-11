@@ -11,6 +11,7 @@ import { getOwnMonIdByType, MonType } from "../utils/namedMons";
 import { storage } from "../utils/storage";
 import { Sound } from "../utils/gameModels";
 import { setIslandOverlayState, resetIslandOverlayState } from "./islandOverlayState";
+import { MATERIALS, MaterialName, MiningMaterials, rocksMiningService } from "../services/rocksMiningService";
 
 const FEATURE_GLOWS_ON_HOTSPOT = true;
 const STARS_URL = "https://assets.mons.link/rocks/underground/stars.webp";
@@ -501,19 +502,9 @@ const getIslandImageUrl = () => {
   return islandImagePromise;
 };
 
-const MATERIALS = ["dust", "slime", "gum", "metal", "ice"] as const;
-type MaterialName = (typeof MATERIALS)[number];
 type MaterialPullRect = { left: number; top: number; width: number; height: number };
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 let persistentMonPosRef: { x: number; y: number } | null = null;
-const pickWeightedMaterial = (): MaterialName => {
-  const r = Math.random() * 100;
-  if (r < 30) return "dust";
-  if (r < 55) return "slime";
-  if (r < 75) return "gum";
-  if (r < 90) return "metal";
-  return "ice";
-};
 
 const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
 
@@ -629,8 +620,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const starsImgRef = useRef<HTMLImageElement | null>(null);
   const heroWrapRef = useRef<HTMLDivElement | null>(null);
   const [materialAmounts, setMaterialAmounts] = useState<Record<MaterialName, number>>(() => {
-    const entries = MATERIALS.map((n) => [n, 0] as const);
-    return Object.fromEntries(entries) as Record<MaterialName, number>;
+    const snapshot = rocksMiningService.getSnapshot();
+    return { ...snapshot.materials };
   });
   const [materialUrls, setMaterialUrls] = useState<Record<MaterialName, string | null>>(() => {
     const initial: Partial<Record<MaterialName, string | null>> = {};
@@ -642,6 +633,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [monTeleporting, setMonTeleporting] = useState(false);
   const materialItemRefs = useRef<Record<MaterialName, HTMLDivElement | null>>({ dust: null, slime: null, gum: null, metal: null, ice: null });
   const decodedMaterialsRef = useRef<Set<MaterialName>>(new Set());
+  useEffect(() => {
+    const unsubscribe = rocksMiningService.subscribe((snapshot) => {
+      setMaterialAmounts({ ...snapshot.materials });
+    });
+    return unsubscribe;
+  }, []);
   const isMaterialTarget = useCallback(
     (node: Node | null) => {
       if (!node) return false;
@@ -3204,15 +3201,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 const item = collectedPulls[i];
                 queueMaterialPull(item.name, item.rect);
               }
-              startTransition(() => {
-                setMaterialAmounts((prev) => {
-                  const next = { ...prev } as Record<MaterialName, number>;
-                  (Object.keys(delta) as MaterialName[]).forEach((k) => {
-                    next[k] = (next[k] || 0) + (delta[k] || 0);
-                  });
-                  return next;
-                });
-              });
+              rocksMiningService.applyLocalDelta(delta as Partial<MiningMaterials>);
               playSounds([Sound.CollectingMaterials]);
             }
           }
@@ -3971,21 +3960,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                             setRockIsBroken(true);
                             setRockReady(false);
                           });
+                          const { drops } = rocksMiningService.didBreakRock();
                           requestAnimationFrame(() => {
-                            const count = 2 + Math.floor(Math.random() * 4);
-                            const picks: MaterialName[] = [];
-                            for (let i = 0; i < count; i++) picks.push(pickWeightedMaterial());
+                            const count = drops.length;
+                            if (count === 0) return;
                             const now = performance.now();
                             const rect = lastRockRectRef.current;
                             const fallBase = rect ? rect.height * 0.15 : 24;
                             const baseCommon = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 } as const;
                             const angleSpan = Math.PI * 0.5;
-                            const promises = picks.map((n: MaterialName, i: number) => {
+                            const promises = drops.map((name: MaterialName, i: number) => {
                               const t = count > 1 ? i / (count - 1) : 0.5;
                               const baseAngle = -angleSpan / 2 + t * angleSpan;
                               const jitter = (Math.random() - 0.5) * (Math.PI * 0.06);
                               const angle = baseAngle + jitter;
-                              return spawnMaterialDrop(n, 0, { ...baseCommon, angle } as any);
+                              return spawnMaterialDrop(name, 0, { ...baseCommon, angle } as any);
                             });
                             Promise.all(promises).then(() => {});
                           });

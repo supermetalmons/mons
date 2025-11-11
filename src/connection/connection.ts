@@ -5,10 +5,34 @@ import { getFirestore, Firestore, collection, query, where, limit, getDocs, orde
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
 import { getPlayersEmojiId, didGetPlayerProfile } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
-import { Match, Invite, Reaction, PlayerProfile } from "./connectionModels";
+import { Match, Invite, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES } from "./connectionModels";
 import { storage } from "../utils/storage";
 import { generateNewInviteId } from "../utils/misc";
 import { setDebugViewText } from "../ui/MainMenu";
+
+const createEmptyMiningMaterials = (): PlayerMiningMaterials => ({
+  dust: 0,
+  slime: 0,
+  gum: 0,
+  metal: 0,
+  ice: 0,
+});
+
+const normalizeMiningData = (source: any): PlayerMiningData => {
+  const materialsInput = source && typeof source === "object" ? (source.materials ?? source) : undefined;
+  const materials = createEmptyMiningMaterials();
+  MINING_MATERIAL_NAMES.forEach((name) => {
+    const raw = materialsInput ? (materialsInput as Record<string, unknown>)[name] : undefined;
+    const numeric = typeof raw === "number" ? raw : Number(raw);
+    const value = Number.isFinite(numeric) ? Math.max(0, Math.round(numeric as number)) : 0;
+    materials[name] = value;
+  });
+  const lastRockDate = source && typeof source.lastRockDate === "string" ? source.lastRockDate : null;
+  return {
+    lastRockDate,
+    materials,
+  };
+};
 
 const controllerVersion = 2;
 
@@ -202,6 +226,7 @@ class Connection {
     if (!querySnapshot.empty) {
       const doc = querySnapshot.docs[0];
       const data = doc.data();
+      const mining = normalizeMiningData(data.mining);
       return {
         id: doc.id,
         username: data.username || null,
@@ -220,6 +245,7 @@ class Connection {
         cardStickers: data.custom?.cardStickers,
         completedProblemIds: data.custom?.completedProblems,
         isTutorialCompleted: data.custom?.tutorialCompleted,
+        mining,
       };
     }
     throw new Error("Profile not found");
@@ -293,6 +319,18 @@ class Connection {
       return response.data;
     } catch (error) {
       console.error("Error getting nfts:", error);
+      throw error;
+    }
+  }
+
+  public async mineRock(date: string, materials: PlayerMiningMaterials): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const mineRockFunction = httpsCallable(this.functions, "mineRock");
+      const response = await mineRockFunction({ date, materials });
+      return response.data;
+    } catch (error) {
+      console.error("Error mining rock:", error);
       throw error;
     }
   }

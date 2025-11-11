@@ -17,6 +17,8 @@ const STORAGE_KEYS = {
   USERNAME: "username",
   PLAYER_RATING: "playerRating",
   PLAYER_TOTAL_MANA_POINTS: "playerTotalManaPoints",
+  PLAYER_MINING_LAST_ROCK_DATE: "playerMiningLastRockDate",
+  PLAYER_MINING_MATERIALS: "playerMiningMaterials",
   CARD_BACKGROUND_ID: "cardBackgroundId",
   CARD_SUBTITLE_ID: "cardSubtitleId",
   CARD_STICKERS: "cardStickers",
@@ -162,6 +164,22 @@ export const storage = {
     setItem(STORAGE_KEYS.PLAYER_TOTAL_MANA_POINTS, value);
   },
 
+  getMiningLastRockDate: (defaultValue: string | null): string | null => {
+    return getItem(STORAGE_KEYS.PLAYER_MINING_LAST_ROCK_DATE, defaultValue);
+  },
+
+  setMiningLastRockDate: (value: string | null): void => {
+    setItem(STORAGE_KEYS.PLAYER_MINING_LAST_ROCK_DATE, value);
+  },
+
+  getMiningMaterials: (defaultValue: Record<string, number>): Record<string, number> => {
+    return getItem(STORAGE_KEYS.PLAYER_MINING_MATERIALS, defaultValue);
+  },
+
+  setMiningMaterials: (value: Record<string, number>): void => {
+    setItem(STORAGE_KEYS.PLAYER_MINING_MATERIALS, value);
+  },
+
   getCardBackgroundId: (defaultValue: number): number => {
     return getItem(STORAGE_KEYS.CARD_BACKGROUND_ID, defaultValue);
   },
@@ -260,6 +278,8 @@ export const storage = {
     localStorage.removeItem(STORAGE_KEYS.USERNAME);
     localStorage.removeItem(STORAGE_KEYS.PLAYER_RATING);
     localStorage.removeItem(STORAGE_KEYS.PLAYER_TOTAL_MANA_POINTS);
+    localStorage.removeItem(STORAGE_KEYS.PLAYER_MINING_LAST_ROCK_DATE);
+    localStorage.removeItem(STORAGE_KEYS.PLAYER_MINING_MATERIALS);
     localStorage.removeItem(STORAGE_KEYS.CARD_BACKGROUND_ID);
     localStorage.removeItem(STORAGE_KEYS.CARD_SUBTITLE_ID);
     localStorage.removeItem(STORAGE_KEYS.CARD_STICKERS);

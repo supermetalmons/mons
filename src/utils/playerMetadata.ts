@@ -6,6 +6,7 @@ import { updateEmojiAndAuraIfNeeded } from "../game/board";
 import { isWatchOnly } from "../game/gameController";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
 import { syncTutorialProgress } from "../content/problems";
+import { rocksMiningService } from "../services/rocksMiningService";
 
 export type PlayerMetadata = {
   uid: string;
@@ -157,6 +158,12 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
 
           if (profile.profileMons) {
             storage.setProfileMons(profile.profileMons);
+          }
+
+          if (profile.mining) {
+            storage.setMiningLastRockDate(profile.mining.lastRockDate ?? null);
+            storage.setMiningMaterials(profile.mining.materials);
+            rocksMiningService.setFromServer(profile.mining, { persist: false });
           }
 
           updateProfileDisplayName(profile.username ?? "", storage.getEthAddress(""), storage.getSolAddress(""));

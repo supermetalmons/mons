@@ -2,6 +2,7 @@ const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 const nacl = require("tweetnacl");
 const bs58 = require("bs58");
+const { normalizeMiningSnapshot } = require("./miningHelpers");
 
 exports.verifySolanaAddress = onCall(async (request) => {
   if (!request.auth) {
@@ -36,6 +37,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
     let profileMons = null;
     let completedProblems = null;
     let tutorialCompleted = null;
+    let mining = normalizeMiningSnapshot();
 
     const firestore = admin.firestore();
     const userQuery = await firestore.collection("users").where("logins", "array-contains", uid).limit(1).get();
@@ -46,6 +48,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
 
       const userWithMatchingSolAddressQuery = await firestore.collection("users").where("sol", "==", address).get();
       if (userWithMatchingSolAddressQuery.empty) {
+        const newMining = normalizeMiningSnapshot();
         const docRef = await firestore.collection("users").add({
           sol: address,
           logins: [uid],
@@ -53,10 +56,13 @@ exports.verifySolanaAddress = onCall(async (request) => {
             emoji: requestEmoji,
             aura: requestAura,
           },
+          mining: newMining,
         });
         await profileIdRef.set(docRef.id);
         profileId = docRef.id;
         emoji = requestEmoji;
+        aura = requestAura || null;
+        mining = newMining;
       } else {
         const userDoc = userWithMatchingSolAddressQuery.docs[0];
         const userData = userDoc.data();
@@ -80,6 +86,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
         completedProblems = userData.custom?.completedProblems || null;
         tutorialCompleted = userData.custom?.tutorialCompleted || null;
         username = userData.username || null;
+        mining = normalizeMiningSnapshot(userData.mining);
       }
     } else {
       const userDoc = userQuery.docs[0];
@@ -99,6 +106,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
       completedProblems = userData.custom?.completedProblems || null;
       tutorialCompleted = userData.custom?.tutorialCompleted || null;
       username = userData.username || null;
+      mining = normalizeMiningSnapshot(userData.mining);
     }
 
     await admin.auth().setCustomUserClaims(uid, {
@@ -123,6 +131,7 @@ exports.verifySolanaAddress = onCall(async (request) => {
       profileMons: profileMons,
       completedProblems: completedProblems,
       tutorialCompleted: tutorialCompleted,
+      mining,
     };
   } else {
     return {

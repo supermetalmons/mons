@@ -3,8 +3,9 @@ import { setupLoggedInPlayerProfile, updateEmojiAndAuraIfNeeded } from "../game/
 import { connection } from "./connection";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
 import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
-import { PlayerProfile } from "../connection/connectionModels";
+import { PlayerMiningData, PlayerProfile } from "../connection/connectionModels";
 import { syncTutorialProgress } from "../content/problems";
+import { rocksMiningService } from "../services/rocksMiningService";
 
 export type AddressKind = "eth" | "sol";
 
@@ -27,6 +28,7 @@ interface VerifyResponse {
   cardStickers?: any;
   completedProblems?: any;
   tutorialCompleted?: any;
+  mining?: PlayerMiningData;
 }
 
 export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind): void {
@@ -89,6 +91,11 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   if (res.cardSubtitleId !== undefined) storage.setCardSubtitleId(res.cardSubtitleId);
   if (res.profileCounter !== undefined) storage.setProfileCounter(res.profileCounter);
   if (res.profileMons !== undefined) storage.setProfileMons(res.profileMons);
+  if (res.mining) {
+    storage.setMiningLastRockDate(res.mining.lastRockDate ?? null);
+    storage.setMiningMaterials(res.mining.materials);
+    rocksMiningService.setFromServer(res.mining, { persist: false });
+  }
 
   connection.forceTokenRefresh();
 

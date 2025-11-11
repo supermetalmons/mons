@@ -9,6 +9,7 @@ const { automatch } = require("./automatch");
 const { cancelAutomatch } = require("./cancelAutomatch");
 const { editUsername } = require("./editUsername");
 const { getNfts } = require("./getNfts");
+const { mineRock } = require("./mineRock");
 
 exports.verifySolanaAddress = verifySolanaAddress;
 exports.verifyEthAddress = verifyEthAddress;
@@ -19,3 +20,4 @@ exports.cancelAutomatch = cancelAutomatch;
 exports.updateRatings = updateRatings;
 exports.editUsername = editUsername;
 exports.getNfts = getNfts;
+exports.mineRock = mineRock;
