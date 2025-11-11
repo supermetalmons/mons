@@ -2369,8 +2369,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const spawnMaterialDrop = useCallback(
     async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number; angle?: number }): Promise<MaterialName> => {
-      walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
-      walkSuppressionHitsRemainingRef.current = WALK_SUPPRESSION_HIT_COUNT;
       const url = await getMaterialImageUrl(name);
       if (!url) return name;
       const rockLayer = rockLayerRef.current;
@@ -4010,6 +4008,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                             }
                             const { drops } = rocksMiningService.didBreakRock();
                             requestAnimationFrame(() => {
+                              walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
+                              walkSuppressionHitsRemainingRef.current = WALK_SUPPRESSION_HIT_COUNT;
                               const count = drops.length;
                               if (count === 0) return;
                               const now = performance.now();
