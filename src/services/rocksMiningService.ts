@@ -20,6 +20,18 @@ const computeHash32 = (value: string): number => {
   return hash;
 };
 
+const createSeededRandom = (profileId: string, date: string): (() => number) => {
+  const source = profileId ? `${profileId}:${date}` : date;
+  let state = computeHash32(source) || 1;
+  return () => {
+    state = (state + 0x6d2b79f5) >>> 0;
+    let t = state;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+};
+
 type MiningListener = (snapshot: PlayerMiningData) => void;
 
 export type DidBreakRockResult = {
@@ -124,8 +136,8 @@ const setSnapshot = (next: PlayerMiningData, persist: boolean, notifyListeners: 
   }
 };
 
-const pickWeightedMaterial = (): MiningMaterialName => {
-  const r = Math.random() * 100;
+const pickWeightedMaterial = (random: () => number): MiningMaterialName => {
+  const r = random() * 100;
   if (r < 30) return "dust";
   if (r < 55) return "slime";
   if (r < 75) return "gum";
@@ -133,12 +145,13 @@ const pickWeightedMaterial = (): MiningMaterialName => {
   return "ice";
 };
 
-const createDrops = (): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
-  const count = 2 + Math.floor(Math.random() * 4);
+const createDrops = (profileId: string, date: string): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
+  const random = createSeededRandom(profileId, date);
+  const count = 3 + Math.floor(random() * 4);
   const drops: MiningMaterialName[] = [];
   const delta = createEmptyMaterials();
   for (let i = 0; i < count; i += 1) {
-    const material = pickWeightedMaterial();
+    const material = pickWeightedMaterial(random);
     drops.push(material);
     delta[material] += 1;
   }
@@ -191,7 +204,7 @@ function didBreakRock(): DidBreakRockResult {
         drops: [] as MiningMaterialName[],
         delta: createEmptyMaterials(),
       }
-    : createDrops();
+    : createDrops(profileId, date);
   const { drops, delta } = dropsData;
   const baseMaterials = isAnon ? createEmptyMaterials() : cloneMaterials(snapshot.materials);
   const nextSnapshot: PlayerMiningData = {
