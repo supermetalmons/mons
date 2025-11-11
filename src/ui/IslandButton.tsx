@@ -3987,51 +3987,49 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                         );
                       })()}
                     <RockLayer ref={rockLayerRef} $visible={decorVisible && (rockAvailable || rockBreaking)} style={{ zIndex: ROCK_LAYER_Z_INDEX }}>
-                      {(rockAvailable || rockBreaking) && (
-                        <Rock
-                          key={rockRenderKey}
-                          ref={rockRef as any}
-                          heightPct={75}
-                          src={rockImageUrl}
-                          onOpened={() => {
-                            setRockReady(true);
-                            updateRockBox();
-                          }}
-                          onHit={startMiningAnimation}
-                          onBroken={() => {
-                            setRockBreaking(true);
-                            startTransition(() => {
-                              setRockReady(false);
+                      <Rock
+                        key={rockRenderKey}
+                        ref={rockRef as any}
+                        heightPct={75}
+                        src={rockImageUrl}
+                        onOpened={() => {
+                          setRockReady(true);
+                          updateRockBox();
+                        }}
+                        onHit={startMiningAnimation}
+                        onBroken={() => {
+                          setRockBreaking(true);
+                          startTransition(() => {
+                            setRockReady(false);
+                          });
+                          if (!amountsDecoupledRef.current) {
+                            amountsDecoupledRef.current = true;
+                          }
+                          const { drops } = rocksMiningService.didBreakRock();
+                          requestAnimationFrame(() => {
+                            walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
+                            walkSuppressionHitsRemainingRef.current = WALK_SUPPRESSION_HIT_COUNT;
+                            const count = drops.length;
+                            if (count === 0) return;
+                            const now = performance.now();
+                            const rect = lastRockRectRef.current;
+                            const fallBase = rect ? rect.height * 0.15 : 24;
+                            const baseCommon = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 } as const;
+                            const angleSpan = Math.PI * 0.5;
+                            const promises = drops.map((name: MaterialName, i: number) => {
+                              const t = count > 1 ? i / (count - 1) : 0.5;
+                              const baseAngle = -angleSpan / 2 + t * angleSpan;
+                              const jitter = (Math.random() - 0.5) * (Math.PI * 0.06);
+                              const angle = baseAngle + jitter;
+                              return spawnMaterialDrop(name, 0, { ...baseCommon, angle } as any);
                             });
-                            if (!amountsDecoupledRef.current) {
-                              amountsDecoupledRef.current = true;
-                            }
-                            const { drops } = rocksMiningService.didBreakRock();
-                            requestAnimationFrame(() => {
-                              walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
-                              walkSuppressionHitsRemainingRef.current = WALK_SUPPRESSION_HIT_COUNT;
-                              const count = drops.length;
-                              if (count === 0) return;
-                              const now = performance.now();
-                              const rect = lastRockRectRef.current;
-                              const fallBase = rect ? rect.height * 0.15 : 24;
-                              const baseCommon = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 } as const;
-                              const angleSpan = Math.PI * 0.5;
-                              const promises = drops.map((name: MaterialName, i: number) => {
-                                const t = count > 1 ? i / (count - 1) : 0.5;
-                                const baseAngle = -angleSpan / 2 + t * angleSpan;
-                                const jitter = (Math.random() - 0.5) * (Math.PI * 0.06);
-                                const angle = baseAngle + jitter;
-                                return spawnMaterialDrop(name, 0, { ...baseCommon, angle } as any);
-                              });
-                              Promise.all(promises).then(() => {});
-                            });
-                          }}
-                          onBreakAnimationComplete={() => {
-                            setRockBreaking(false);
-                          }}
-                        />
-                      )}
+                            Promise.all(promises).then(() => {});
+                          });
+                        }}
+                        onBreakAnimationComplete={() => {
+                          setRockBreaking(false);
+                        }}
+                      />
                     </RockLayer>
                   </>
                 )}
