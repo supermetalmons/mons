@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from "react";
 import styled from "styled-components";
 import { playSounds } from "../content/sounds";
+import { rocksMiningService } from "../services/rocksMiningService";
 import { Sound } from "../utils/gameModels";
 
 const Container = styled.div<{ $visible: boolean; $instant?: boolean; $disabled?: boolean }>`
@@ -33,9 +34,8 @@ const RockImg = styled.img<{ $heightPct?: number; $hidden?: boolean }>`
   -webkit-filter: drop-shadow(0 5px 3px rgba(0, 0, 0, 0.28));
 `;
 
-export function getRandomRockImageUrl() {
-  const index = Math.floor(Math.random() * 27) + 1;
-  return `https://assets.mons.link/rocks/gan/${index}.webp`;
+export function getRockImageUrl() {
+  return rocksMiningService.getRockImageUrl();
 }
 
 type Props = {
@@ -43,6 +43,7 @@ type Props = {
   onOpened?: () => void;
   onHit?: () => void;
   onBroken?: () => void;
+  onBreakAnimationComplete?: () => void;
   heightPct?: number;
   src?: string;
 };
@@ -77,7 +78,7 @@ type CrashParticleElement = SVGGElement & { __meta: CrashParticleMeta };
 
 const CRASH_COLOR_PALETTE = ["#FFF59D", "#FFE082", "#FFD54F"];
 
-export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRock({ className, onOpened, onHit, onBroken, heightPct, src }, ref) {
+export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRock({ className, onOpened, onHit, onBroken, onBreakAnimationComplete, heightPct, src }, ref) {
   const [visible, setVisible] = useState(false);
   const [instantHide, setInstantHide] = useState(false);
   const [hideRock, setHideRock] = useState(false);
@@ -96,7 +97,7 @@ export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRoc
 
   const fallbackSrcRef = useRef<string | null>(null);
   if (fallbackSrcRef.current === null) {
-    fallbackSrcRef.current = getRandomRockImageUrl();
+    fallbackSrcRef.current = getRockImageUrl();
   }
   const resolvedSrc = src ?? fallbackSrcRef.current;
 
@@ -201,7 +202,7 @@ export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRoc
     },
   }));
 
-  function animateParticles(num: number, duration: number, make: (idx: number) => ParticleFactoryResult, update: (el: SVGElement, t: number, idx: number) => void) {
+  function animateParticles(num: number, duration: number, make: (idx: number) => ParticleFactoryResult, update: (el: SVGElement, t: number, idx: number) => void, onComplete?: () => void) {
     const svg = svgRef.current;
     if (!svg) return;
     const parts: SVGElement[] = [];
@@ -226,6 +227,11 @@ export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRoc
           el.remove();
           const done = cleanups[i];
           if (done) done();
+        }
+        if (onComplete) {
+          try {
+            onComplete();
+          } catch {}
         }
       }
     }
@@ -409,6 +415,9 @@ export const IslandRock = forwardRef<IslandRockHandle, Props>(function IslandRoc
         const opacity = 1 - smooth;
         g.setAttribute("transform", `translate(${tx} ${ty}) rotate(${rot}) scale(${scale})`);
         g.setAttribute("opacity", Math.max(0, Math.min(1, opacity)).toString());
+      },
+      () => {
+        onBreakAnimationComplete?.();
       }
     );
   }

@@ -3,7 +3,7 @@ import { isMobile } from "../utils/misc";
 import styled, { keyframes } from "styled-components";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeAllKindsOfPopups } from "./MainMenu";
-import IslandRock, { IslandRockHandle, getRandomRockImageUrl } from "./IslandRock";
+import IslandRock, { IslandRockHandle, getRockImageUrl } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playSounds, preloadSounds, playRockSound, RockSound, directlyPlaySoundNamed } from "../content/sounds";
 import { miningJumpingPetsIdleAndWalking as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
@@ -642,6 +642,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!amountsDecoupledRef.current) {
         setMaterialAmounts(next);
       }
+      setRockAvailable(rocksMiningService.shouldShowRock());
     });
     return unsubscribe;
   }, []);
@@ -665,12 +666,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const rockRef = useRef<IslandRockHandle | null>(null);
   const fxContainerRef = useRef<HTMLDivElement | null>(null);
   const lastRockRectRef = useRef<DOMRect | null>(null);
-  const [rockIsBroken, setRockIsBroken] = useState(false);
+  const [rockAvailable, setRockAvailable] = useState(() => rocksMiningService.shouldShowRock());
   const walkSuppressedUntilRef = useRef<number>(0);
   const walkSuppressionHitsRemainingRef = useRef<number>(0);
   const walkSuppressionAnchorRef = useRef<{ x: number; y: number } | null>(null);
   const [rockReady, setRockReadyState] = useState(false);
-  const [rockImageUrl, setRockImageUrl] = useState(() => getRandomRockImageUrl());
+  const [rockImageUrl, setRockImageUrl] = useState(() => getRockImageUrl());
+  const [rockRenderKey, setRockRenderKey] = useState(0);
+  const [rockBreaking, setRockBreaking] = useState(false);
   const rockReadyRef = useRef(rockReady);
   const setRockReady = useCallback(
     (value: boolean | ((prev: boolean) => boolean)) => {
@@ -695,16 +698,24 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     },
     [setRockBottomYState]
   );
+  useEffect(() => {
+    if (!rockAvailable) return;
+    setRockBreaking(false);
+    setRockReady(false);
+    rockBoxRef.current = null;
+    setRockImageUrl(getRockImageUrl());
+    setRockRenderKey((prev) => prev + 1);
+  }, [rockAvailable, setRockReady]);
   const computeEntityZIndex = useCallback(
     (baselineY: number) => {
       const clampedBaseline = Math.max(0, Math.min(1, baselineY));
       const base = Math.round(clampedBaseline * 100);
-      if (rockIsBroken) return 600 + base;
+      if (!rockAvailable) return 600 + base;
       const measuredBottom = rockBottomY < 1 ? Math.max(0, Math.min(1, rockBottomY)) : null;
       const effectiveBottom = measuredBottom !== null ? measuredBottom : THEORETICAL_ROCK_BOTTOM;
       return clampedBaseline >= effectiveBottom ? 700 + base : 300 + base;
     },
-    [rockBottomY, rockIsBroken]
+    [rockBottomY, rockAvailable]
   );
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -715,8 +726,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     }
   }, [rockImageUrl]);
   useEffect(() => {
-    if (islandOverlayVisible) return;
-    setRockImageUrl(getRandomRockImageUrl());
+    setRockAvailable(rocksMiningService.shouldShowRock());
   }, [islandOverlayVisible]);
   type MaterialDropEntry = {
     id: number;
@@ -1918,6 +1928,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     updateRockBox();
   }, [decorVisible, islandOverlayVisible, updateRockBox]);
 
+  useLayoutEffect(() => {
+    if (!islandOverlayVisible || !rockAvailable) return;
+    const frame = requestAnimationFrame(() => updateRockBox());
+    return () => {
+      cancelAnimationFrame(frame);
+    };
+  }, [islandOverlayVisible, rockAvailable, updateRockBox]);
+
+  useLayoutEffect(() => {
+    if (!islandOverlayVisible || !rockReady) return;
+    updateRockBox();
+  }, [islandOverlayVisible, rockReady, updateRockBox]);
+
   useEffect(() => {
     if (!islandOverlayVisible) return;
     try {
@@ -2064,7 +2087,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       setIslandClosing(false);
       setIslandOpening(true);
       setIslandActive(false);
-      setRockIsBroken(false);
+      setRockBreaking(false);
       setRockReady(false);
       try {
         rockBoxRef.current = null;
@@ -3377,7 +3400,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       walkingDragCleanupRef.current = null;
       const skipForMaterialTarget = isMaterialTarget((event.target as Node) || null);
       const isInsideRockBox = (nx: number, ny: number) => {
-        if (rockIsBroken) return false;
+        if (!rockAvailable) return false;
         const box = rockBoxRef.current;
         if (!rockReady || !box) return false;
         return nx >= box.left && nx <= box.right && ny >= box.top && ny <= box.bottom;
@@ -3849,7 +3872,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockIsBroken, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, scheduleTeleportOverlapCheck, updateCircleTracking, resetCircleTracking, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion, islandOverlayVisible, islandClosing, islandOpening]
+    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockAvailable, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, scheduleTeleportOverlapCheck, updateCircleTracking, resetCircleTracking, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion, islandOverlayVisible, islandClosing, islandOpening]
   );
 
   const handleSafeHitboxPointerDown = useCallback(
@@ -3965,44 +3988,50 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           </MonLayer>
                         );
                       })()}
-                    <RockLayer ref={rockLayerRef} $visible={decorVisible} style={{ zIndex: ROCK_LAYER_Z_INDEX }}>
-                      <Rock
-                        ref={rockRef as any}
-                        heightPct={75}
-                        src={rockImageUrl}
-                        onOpened={() => {
-                          setRockReady(true);
-                          updateRockBox();
-                        }}
-                        onHit={startMiningAnimation}
-                        onBroken={() => {
-                          startTransition(() => {
-                            setRockIsBroken(true);
-                            setRockReady(false);
-                          });
-                          if (!amountsDecoupledRef.current) {
-                            amountsDecoupledRef.current = true;
-                          }
-                          const { drops } = rocksMiningService.didBreakRock();
-                          requestAnimationFrame(() => {
-                            const count = drops.length;
-                            if (count === 0) return;
-                            const now = performance.now();
-                            const rect = lastRockRectRef.current;
-                            const fallBase = rect ? rect.height * 0.15 : 24;
-                            const baseCommon = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 } as const;
-                            const angleSpan = Math.PI * 0.5;
-                            const promises = drops.map((name: MaterialName, i: number) => {
-                              const t = count > 1 ? i / (count - 1) : 0.5;
-                              const baseAngle = -angleSpan / 2 + t * angleSpan;
-                              const jitter = (Math.random() - 0.5) * (Math.PI * 0.06);
-                              const angle = baseAngle + jitter;
-                              return spawnMaterialDrop(name, 0, { ...baseCommon, angle } as any);
+                    <RockLayer ref={rockLayerRef} $visible={decorVisible && (rockAvailable || rockBreaking)} style={{ zIndex: ROCK_LAYER_Z_INDEX }}>
+                      {(rockAvailable || rockBreaking) && (
+                        <Rock
+                          key={rockRenderKey}
+                          ref={rockRef as any}
+                          heightPct={75}
+                          src={rockImageUrl}
+                          onOpened={() => {
+                            setRockReady(true);
+                            updateRockBox();
+                          }}
+                          onHit={startMiningAnimation}
+                          onBroken={() => {
+                            setRockBreaking(true);
+                            startTransition(() => {
+                              setRockReady(false);
                             });
-                            Promise.all(promises).then(() => {});
-                          });
-                        }}
-                      />
+                            if (!amountsDecoupledRef.current) {
+                              amountsDecoupledRef.current = true;
+                            }
+                            const { drops } = rocksMiningService.didBreakRock();
+                            requestAnimationFrame(() => {
+                              const count = drops.length;
+                              if (count === 0) return;
+                              const now = performance.now();
+                              const rect = lastRockRectRef.current;
+                              const fallBase = rect ? rect.height * 0.15 : 24;
+                              const baseCommon = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 } as const;
+                              const angleSpan = Math.PI * 0.5;
+                              const promises = drops.map((name: MaterialName, i: number) => {
+                                const t = count > 1 ? i / (count - 1) : 0.5;
+                                const baseAngle = -angleSpan / 2 + t * angleSpan;
+                                const jitter = (Math.random() - 0.5) * (Math.PI * 0.06);
+                                const angle = baseAngle + jitter;
+                                return spawnMaterialDrop(name, 0, { ...baseCommon, angle } as any);
+                              });
+                              Promise.all(promises).then(() => {});
+                            });
+                          }}
+                          onBreakAnimationComplete={() => {
+                            setRockBreaking(false);
+                          }}
+                        />
+                      )}
                     </RockLayer>
                   </>
                 )}
