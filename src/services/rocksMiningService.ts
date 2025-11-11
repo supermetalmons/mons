@@ -147,7 +147,7 @@ const pickWeightedMaterial = (random: () => number): MiningMaterialName => {
 
 const createDrops = (profileId: string, date: string): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
   const random = createSeededRandom(profileId, date);
-  const count = 3 + Math.floor(random() * 4);
+  const count = 2 + Math.floor(random() * 4);
   const drops: MiningMaterialName[] = [];
   const delta = createEmptyMaterials();
   for (let i = 0; i < count; i += 1) {
