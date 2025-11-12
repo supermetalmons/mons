@@ -2,7 +2,6 @@ import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
 import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton } from "./SharedModalComponents";
 import { fetchNftsForStoredAddresses } from "../services/nftService";
-import { vvvLogoBase64 } from "../content/uiAssets";
 import { setOwnershipVerifiedIdCardEmoji, setOwnershipVerifiedSpecialItem } from "./ShinyCard";
 import { AvatarImage } from "./AvatarImage";
 
@@ -105,24 +104,6 @@ const BottomOverlay = styled(OverlayPanel)`
 
 const TopBar = styled.div`
   display: contents;
-`;
-
-const VvvLink = styled.a`
-  display: inline-flex;
-  width: 24px;
-  height: 24px;
-  border-radius: 4px;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  cursor: pointer;
-`;
-
-const VvvLogo = styled.img`
-  width: 100%;
-  height: 100%;
-  display: block;
-  border-radius: 4px;
 `;
 
 const NFTSection = styled.div`
@@ -402,9 +383,6 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
         <TopOverlay>
           <TopBar>
             <InventoryTitle>Collectibles</InventoryTitle>
-            <VvvLink href="https://vvv.so/swag-pack" target="_blank" rel="noopener noreferrer" aria-label="Open vvv.so">
-              <VvvLogo src={`data:image/webp;base64,${vvvLogoBase64}`} alt="" />
-            </VvvLink>
           </TopBar>
         </TopOverlay>
 
