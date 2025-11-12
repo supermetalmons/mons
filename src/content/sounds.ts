@@ -209,9 +209,6 @@ export async function playSounds(sounds: Sound[]) {
 }
 
 export async function preloadSounds(sounds: Sound[]) {
-  if (getIsMuted()) {
-    return;
-  }
   const uniqueUrls: string[] = [];
   const seen = new Set<string>();
   for (const sound of sounds) {

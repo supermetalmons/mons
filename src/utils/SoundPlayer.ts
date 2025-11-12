@@ -4,6 +4,8 @@ import { isMobile } from "./misc";
 export class SoundPlayer {
   private audioContext!: AudioContext;
   private audioBufferCache = new Map<string, AudioBuffer>();
+  private arrayBufferCache = new Map<string, ArrayBuffer>();
+  private arrayBufferPromises = new Map<string, Promise<ArrayBuffer>>();
   private isInitialized = false;
   private isResuming = false;
 
@@ -72,12 +74,40 @@ export class SoundPlayer {
     }
   };
 
+  private async getOrFetchArrayBuffer(url: string): Promise<ArrayBuffer> {
+    if (this.arrayBufferCache.has(url)) {
+      return this.arrayBufferCache.get(url)!;
+    }
+    const pending = this.arrayBufferPromises.get(url);
+    if (pending) {
+      return pending;
+    }
+    const fetchPromise = (async () => {
+      const response = await fetch(url);
+      if (!response.ok) {
+        throw new Error("Failed to fetch sound");
+      }
+      const arrayBuffer = await response.arrayBuffer();
+      this.arrayBufferCache.set(url, arrayBuffer);
+      this.arrayBufferPromises.delete(url);
+      return arrayBuffer;
+    })();
+    this.arrayBufferPromises.set(url, fetchPromise);
+    try {
+      return await fetchPromise;
+    } catch (error) {
+      this.arrayBufferPromises.delete(url);
+      this.arrayBufferCache.delete(url);
+      throw error;
+    }
+  }
+
   private async loadAudioBuffer(url: string): Promise<AudioBuffer> {
     if (this.audioBufferCache.has(url)) {
       return this.audioBufferCache.get(url)!;
     }
-    const response = await fetch(url);
-    const arrayBuffer = await response.arrayBuffer();
+    const arrayBuffer = await this.getOrFetchArrayBuffer(url);
+    this.arrayBufferCache.delete(url);
     const audioBuffer = await this.audioContext.decodeAudioData(arrayBuffer);
     this.audioBufferCache.set(url, audioBuffer);
     return audioBuffer;
@@ -158,8 +188,12 @@ export class SoundPlayer {
   }
 
   public async preloadSound(url: string): Promise<void> {
-    if (!this.isInitialized) return;
     if (document.visibilityState !== "visible" && isMobile) return;
+    if (!this.isInitialized) {
+      if (this.audioBufferCache.has(url)) return;
+      await this.getOrFetchArrayBuffer(url);
+      return;
+    }
     const ctx = await this.prepareContext();
     if (!ctx) return;
     try {

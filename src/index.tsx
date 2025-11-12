@@ -15,10 +15,12 @@ import { connection, isCreateNewInviteFlow } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
 import { FaVolumeUp, FaMusic, FaVolumeMute, FaInfoCircle, FaRegGem, FaPowerOff, FaEllipsisH } from "react-icons/fa";
+import { preloadSounds } from "./content/sounds";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory, showSettings } from "./ui/ProfileSignIn";
 import { isMainGameLoaded, onMainGameLoaded } from "./game/mainGameLoadState";
+import { Sound } from "./utils/gameModels";
 
 const LazyIslandButton = lazy(() => import("./ui/IslandButton"));
 
@@ -66,6 +68,7 @@ const App = () => {
     }
     const unsubscribe = onMainGameLoaded(() => {
       setShouldLoadIslandButton(true);
+      preloadSounds([Sound.IslandShowUp]).catch(() => {});
     });
     return unsubscribe;
   }, [shouldLoadIslandButton]);
