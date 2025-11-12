@@ -2053,10 +2053,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (overlayPhaseRef.current !== "idle") {
         return;
       }
+
+      const playerSeemedInitialized = soundPlayer.isInitialized;
+
+      if (!playerSeemedInitialized) {
+        soundPlayer.scheduleIslandShowUpOnInitComplete();
+      }
+
       soundPlayer.initializeOnUserInteraction(true).then(() => {
+        if (playerSeemedInitialized) {
+          playSounds([Sound.IslandShowUp]);
+        }
         preloadSounds([Sound.PickaxeHit, Sound.PickaxeMiss, Sound.RockOpen, Sound.CollectingMaterials, Sound.IslandClose]).catch(() => {});
-        playSounds([Sound.IslandShowUp]);
       });
+
       closeAllKindsOfPopups();
       if (!islandImgLoaded || !islandNatural) return;
       const imgEl = islandButtonImgRef.current;

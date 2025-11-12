@@ -1,18 +1,25 @@
 import { getIsMuted } from "../index";
 import { isMobile } from "./misc";
+import { Sound } from "../utils/gameModels";
+import { playSounds } from "../content/sounds";
 
 export class SoundPlayer {
   private audioContext!: AudioContext;
   private audioBufferCache = new Map<string, AudioBuffer>();
   private arrayBufferCache = new Map<string, ArrayBuffer>();
   private arrayBufferPromises = new Map<string, Promise<ArrayBuffer>>();
-  private isInitialized = false;
+  public isInitialized = false;
+  private playIslandShowUpOnInitComplete = false;
   private isResuming = false;
 
   constructor() {
     document.addEventListener("touchend", () => this.initializeOnUserInteraction(false), { once: true });
     document.addEventListener("click", () => this.initializeOnUserInteraction(false), { once: true });
     this.attachVisibilityHandlers();
+  }
+
+  public scheduleIslandShowUpOnInitComplete() {
+    this.playIslandShowUpOnInitComplete = true;
   }
 
   public async initializeOnUserInteraction(force: boolean) {
@@ -23,6 +30,11 @@ export class SoundPlayer {
     this.attachStateChangeHandler();
     await this.unlockOnce(force);
     this.isInitialized = true;
+
+    if (this.playIslandShowUpOnInitComplete) {
+      this.playIslandShowUpOnInitComplete = false;
+      playSounds([Sound.IslandShowUp]);
+    }
   }
 
   private attachVisibilityHandlers() {
