@@ -2054,7 +2054,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
       soundPlayer.initializeOnUserInteraction(true).then(() => {
-        preloadSounds([Sound.PickaxeHit, Sound.PickaxeMiss, Sound.RockOpen, Sound.CollectingMaterials]).catch(() => {});
+        preloadSounds([Sound.PickaxeHit, Sound.PickaxeMiss, Sound.RockOpen, Sound.CollectingMaterials, Sound.IslandClose]).catch(() => {});
         playSounds([Sound.IslandShowUp]);
       });
       closeAllKindsOfPopups();
@@ -2555,7 +2555,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const wasVisible = islandOverlayVisible;
       overlayPhaseRef.current = wasVisible ? "closing" : "idle";
       didDismissSomethingWithOutsideTapJustNow();
-      directlyPlaySoundNamed("door hit", 0.0069);
+      playSounds([Sound.IslandClose]);
       setIslandOpening(false);
       if (rafRef.current !== null) {
         cancelAnimationFrame(rafRef.current);

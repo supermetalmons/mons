@@ -68,6 +68,7 @@ export enum Sound {
   UsePotion,
   ConfirmEarlyEndTurn,
   IslandShowUp,
+  IslandClose,
   WalkToRock,
   CollectingMaterials,
   Timer,

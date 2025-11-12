@@ -103,6 +103,10 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       name = "open1";
       volumeMultiplier = 0.042;
       break;
+    case Sound.IslandClose:
+      name = "door hit";
+      volumeMultiplier = 0.0069;
+      break;
     case Sound.WalkToRock:
       name = "wrong click_hit";
       volumeMultiplier = 0.065;
@@ -285,6 +289,7 @@ const getSoundPriority = (sound: Sound) => {
     case Sound.RockOpen:
     case Sound.ConfirmEarlyEndTurn:
     case Sound.IslandShowUp:
+    case Sound.IslandClose:
     case Sound.WalkToRock:
     case Sound.CollectingMaterials:
     case Sound.Timer:
