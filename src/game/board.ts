@@ -1769,7 +1769,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     }
 
     avatar.addEventListener(defaultInputEventName, (event) => {
-      soundPlayer.initializeOnUserInteraction();
+      soundPlayer.initializeOnUserInteraction(false);
       event.stopPropagation();
       preventTouchstartIfNeeded(event);
 

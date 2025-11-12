@@ -10,12 +10,12 @@ export class SoundPlayer {
   private isResuming = false;
 
   constructor() {
-    document.addEventListener("touchend", () => this.initializeOnUserInteraction(), { once: true });
-    document.addEventListener("click", () => this.initializeOnUserInteraction(), { once: true });
+    document.addEventListener("touchend", () => this.initializeOnUserInteraction(false), { once: true });
+    document.addEventListener("click", () => this.initializeOnUserInteraction(false), { once: true });
     this.attachVisibilityHandlers();
   }
 
-  public async initializeOnUserInteraction(force: boolean = false) {
+  public async initializeOnUserInteraction(force: boolean) {
     const isMuted = getIsMuted();
     if (this.isInitialized || (isMuted && !force)) return;
     if (document.visibilityState !== "visible" && !force) return;
