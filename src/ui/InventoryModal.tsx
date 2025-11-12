@@ -415,8 +415,8 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
             ) : avatars.length === 0 && specials.length === 0 ? (
               <LoadingText>
                 {dataOk ? (
-                  <ShinyPurpleLink href="https://vvv.so/swag-pack" target="_blank" rel="noopener noreferrer">
-                    Mint Swag Pack on VVV
+                  <ShinyPurpleLink href="https://magiceden.io/marketplace/swag_pack" target="_blank" rel="noopener noreferrer">
+                    get swag pack
                   </ShinyPurpleLink>
                 ) : (
                   "Failed to load."
