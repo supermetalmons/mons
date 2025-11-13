@@ -80,4 +80,3 @@ exports.mineRock = onCall(async (request) => {
     },
   };
 });
-
