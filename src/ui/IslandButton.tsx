@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, startTransition } from "react";
 import { isMobile } from "../utils/misc";
 import styled, { keyframes } from "styled-components";
+import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock, { IslandRockHandle, getRockImageUrl } from "./IslandRock";
@@ -12,6 +13,7 @@ import { storage } from "../utils/storage";
 import { Sound } from "../utils/gameModels";
 import { setIslandOverlayState, resetIslandOverlayState } from "./islandOverlayState";
 import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMiningService";
+import { useGameAssets } from "../hooks/useGameAssets";
 
 const FEATURE_GLOWS_ON_HOTSPOT = true;
 const STARS_URL = "https://assets.mons.link/rocks/underground/stars.webp";
@@ -20,6 +22,20 @@ const ROCK_LAYER_Z_INDEX = 500;
 const THEORETICAL_ROCK_SQUARE = { cx: 0.5018, cy: 0.1773, side: 0.142 };
 const THEORETICAL_ROCK_BOTTOM = Math.max(0, Math.min(1, THEORETICAL_ROCK_SQUARE.cy + THEORETICAL_ROCK_SQUARE.side * 0.5));
 const MIN_OVERLAY_CLOSE_DELAY_MS = 160;
+const MON_TYPE_ORDER: MonType[] = [MonType.DEMON, MonType.ANGEL, MonType.DRAINER, MonType.SPIRIT, MonType.MYSTIC];
+const DEFAULT_MON_TYPE = MonType.DRAINER;
+const MON_TYPE_ICON_KEYS: Record<MonType, string> = {
+  [MonType.DEMON]: "demon",
+  [MonType.ANGEL]: "angel",
+  [MonType.DRAINER]: "drainer",
+  [MonType.SPIRIT]: "spirit",
+  [MonType.MYSTIC]: "mystic",
+};
+const FALLBACK_MON_ICON = "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
+const ensureMonType = (value: string): MonType => {
+  const maybe = value as MonType;
+  return MON_TYPE_ORDER.includes(maybe) ? maybe : DEFAULT_MON_TYPE;
+};
 
 const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
   border: none;
@@ -125,6 +141,76 @@ const MaterialAmount = styled.span`
   letter-spacing: 0.2px;
 `;
 
+const MonTypeSelector = styled.div<{ $visible: boolean }>`
+  display: inline-flex;
+  align-items: center;
+  gap: 0;
+  padding: 2px 2px;
+  border-radius: 20px;
+  background: var(--interactiveHoverBackgroundLight);
+  opacity: ${(p) => (p.$visible ? 1 : 0)};
+  pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
+  transition: opacity 200ms ease;
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--panel-dark-90);
+  }
+`;
+
+const MonTypeArrowButton = styled.button`
+  width: 25px;
+  height: 28px;
+  border-radius: 14px;
+  border: none;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--instruction-text-color);
+  cursor: pointer;
+  line-height: 0;
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--instruction-text-color);
+  }
+`;
+
+const MonTypeIconBadge = styled.div`
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const MonTypeIconImg = styled.img`
+  width: 24px;
+  height: 24px;
+  display: block;
+`;
+
+const SelectorSafeZone = styled.div`
+  padding: 8px 18px 10px;
+  border-radius: 32px;
+  pointer-events: auto;
+`;
+
+const SafeBarStack = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+`;
+
+const SelectorSafeHitbox = styled.div<{ $active: boolean }>`
+  pointer-events: ${(p) => (p.$active ? "auto" : "none")};
+  padding: 8px 8px 2px;
+  margin: -4px 0 0;
+  background: transparent;
+  position: relative;
+  z-index: 2;
+`;
+
 const Overlay = styled.div<{ $visible: boolean; $opening: boolean; $closing: boolean }>`
   position: fixed;
   inset: 0;
@@ -163,6 +249,8 @@ const SafeHitbox = styled.div<{ $active: boolean }>`
   margin: -30px 0;
   background: transparent;
   outline: none;
+  position: relative;
+  z-index: 1;
 `;
 
 const Layer = styled.div<{ $visible: boolean; $opening: boolean; $closing: boolean }>`
@@ -1169,6 +1257,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const sheetAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
   const currentAnimKindRef = useRef<"none" | "mining" | "walking" | "petting" | "standing">("none");
 
+  const { assets } = useGameAssets();
+  const [currentMonType, setCurrentMonType] = useState<MonType>(() => ensureMonType(storage.getIslandMonType(MonType.DRAINER)));
   const [monPos, setMonPos] = useState<{ x: number; y: number } | null>(null);
   const [monFacingLeft, setMonFacingLeft] = useState<boolean>(false);
   const [monSpriteData, setMonSpriteData] = useState<string>("");
@@ -1186,6 +1276,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const initialMonPosRef = useRef<{ x: number; y: number } | null>(null);
   const latestMonPosRef = useRef<{ x: number; y: number } | null>(null);
   const latestMonKeyRef = useRef<string | null>(null);
+  const selectorSafeHitboxRef = useRef<HTMLDivElement | null>(null);
+  const isSelectorSafeAreaTarget = useCallback((node: Node | null) => {
+    const hitbox = selectorSafeHitboxRef.current;
+    if (!hitbox || !node) return false;
+    return hitbox === node || hitbox.contains(node);
+  }, []);
 
   const updateMonStripSizing = useCallback(() => {
     const wrap = monWrapRef.current as HTMLDivElement | null;
@@ -1725,9 +1821,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     setMonPos(pt);
     latestMonPosRef.current = pt;
     setMonFacingLeft(Math.random() < 0.5);
-    const currentType = storage.getIslandMonType(MonType.DRAINER) as MonType;
-    updateMonSprite(currentType);
-  }, [islandOverlayVisible, findValidMonLocation, updateMonSprite]);
+    const storedType = ensureMonType(storage.getIslandMonType(MonType.DRAINER));
+    setCurrentMonType(storedType);
+    updateMonSprite(storedType);
+  }, [islandOverlayVisible, findValidMonLocation, updateMonSprite, setCurrentMonType]);
 
   useEffect(() => {
     if (!decorVisible || islandClosing || !islandOverlayVisible) return;
@@ -3014,12 +3111,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const onThreeCirclesComplete = useCallback(
     (direction: "cw" | "ccw") => {
       if (!monPos) return;
-      const typeOrder: MonType[] = [MonType.DEMON, MonType.ANGEL, MonType.DRAINER, MonType.SPIRIT, MonType.MYSTIC];
-      const currentType = storage.getIslandMonType(MonType.DRAINER) as MonType;
-      const currentIndex = typeOrder.indexOf(currentType);
-      const nextIndex = direction === "ccw" ? (currentIndex + 1) % typeOrder.length : (currentIndex - 1 + typeOrder.length) % typeOrder.length;
-      const nextType = typeOrder[nextIndex];
+      const currentIndex = MON_TYPE_ORDER.indexOf(currentMonType);
+      const safeIndex = currentIndex === -1 ? MON_TYPE_ORDER.indexOf(DEFAULT_MON_TYPE) : currentIndex;
+      const nextIndex = direction === "ccw" ? (safeIndex + 1) % MON_TYPE_ORDER.length : (safeIndex - 1 + MON_TYPE_ORDER.length) % MON_TYPE_ORDER.length;
+      const nextType = MON_TYPE_ORDER[nextIndex];
       storage.setIslandMonType(nextType);
+      setCurrentMonType(nextType);
 
       teleportFXStart();
       directlyPlaySoundNamed("bewo", 0.075);
@@ -3041,7 +3138,16 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }, 30);
       }, 180);
     },
-    [monPos, teleportFXStart, updateMonSprite, findValidMonLocation, prepareTeleportAppear, spawnTeleportSparkles, animateTeleportAppear]
+    [monPos, currentMonType, teleportFXStart, updateMonSprite, findValidMonLocation, prepareTeleportAppear, spawnTeleportSparkles, animateTeleportAppear, setCurrentMonType]
+  );
+
+  const handleMonTypeArrowClick = useCallback(
+    (direction: "cw" | "ccw") => (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      event.preventDefault();
+      onThreeCirclesComplete(direction);
+    },
+    [onThreeCirclesComplete]
   );
 
   const updateCircleTracking = useCallback(
@@ -3406,7 +3512,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
       walkingDragCleanupRef.current = null;
-      const skipForMaterialTarget = isMaterialTarget((event.target as Node) || null);
+      const eventTarget = (event.target as Node) || null;
+      const skipForProtectedUi = isMaterialTarget(eventTarget) || isSelectorSafeAreaTarget(eventTarget);
       const isInsideRockBox = (nx: number, ny: number) => {
         if (!rockAvailable) return false;
         const box = rockBoxRef.current;
@@ -3446,7 +3553,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const isInsideSafeAreaEarly = isInsideSafeArea(nxxEarly, nyyEarly);
       const inside = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
       if (!inside && !isInsideSafeAreaEarly) {
-        if (!skipForMaterialTarget) {
+        if (!skipForProtectedUi) {
           const vw = window.innerWidth;
           const isTouchEvent = !!(anyEvent.touches && anyEvent.touches[0]);
           const isAtScreenEdge = isTouchEvent && (clientX <= TOUCH_EDGE_DEADZONE_PX || clientX >= vw - TOUCH_EDGE_DEADZONE_PX);
@@ -3473,7 +3580,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return false;
       })();
 
-      const allowStarsInteraction = skipForMaterialTarget || !isInAnyHotspot || skipDueToCircleGesture;
+      const allowStarsInteraction = skipForProtectedUi || !isInAnyHotspot || skipDueToCircleGesture;
 
       const shouldSuppressInputNearLastRock = (px: number, py: number) => {
         const now = performance.now();
@@ -3601,7 +3708,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }
       };
 
-      if (!skipForMaterialTarget && !skipDueToCircleGesture && !walkingDragActiveRef.current && isInsideRockBox(nx, ny)) {
+      if (!skipForProtectedUi && !skipDueToCircleGesture && !walkingDragActiveRef.current && isInsideRockBox(nx, ny)) {
         syncDudePosFromOriginal();
         const initial = initialDudePosRef.current || latestDudePosRef.current;
         const alternate = { x: initial.x + ALTERNATE_DUDE_X_SHIFT - INITIAL_DUDE_X_SHIFT, y: initial.y };
@@ -3631,7 +3738,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if ((event as any).preventDefault) (event as any).preventDefault();
         return;
       }
-      if (!skipForMaterialTarget && !skipDueToCircleGesture && isInsideMonBox(nx, ny)) {
+      if (!skipForProtectedUi && !skipDueToCircleGesture && isInsideMonBox(nx, ny)) {
         if (shouldSuppressInputNearLastRock(nx, ny)) {
           if ((event as any).preventDefault) (event as any).preventDefault();
           return;
@@ -3686,13 +3793,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
       const insideSafeAreaStart = isInsideSafeArea(nx, ny);
       const insideHoleStart = isInsideHole(nx, ny);
-      if (!skipForMaterialTarget && !skipDueToCircleGesture && insideHoleStart) {
+      if (!skipForProtectedUi && !skipDueToCircleGesture && insideHoleStart) {
         if ("preventDefault" in event) {
           event.preventDefault();
         }
         return;
       }
-      if (!skipForMaterialTarget && !skipDueToCircleGesture && (isInsideSmoothEllipse(nx, ny) || insideSafeAreaStart)) {
+      if (!skipForProtectedUi && !skipDueToCircleGesture && (isInsideSmoothEllipse(nx, ny) || insideSafeAreaStart)) {
         if (shouldSuppressInputNearLastRock(nx, ny)) {
           return;
         }
@@ -3827,7 +3934,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
       const inDismissTriangle = pointInTriangle(nx, ny, DISMISS_ALLOWED_TRIANGLE_A) || pointInTriangle(nx, ny, DISMISS_ALLOWED_TRIANGLE_B);
-      if (!skipForMaterialTarget && !skipDueToCircleGesture && inDismissTriangle) {
+      if (!skipForProtectedUi && !skipDueToCircleGesture && inDismissTriangle) {
         handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
         return;
       }
@@ -3880,7 +3987,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockAvailable, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, scheduleTeleportOverlapCheck, updateCircleTracking, resetCircleTracking, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion, islandOverlayVisible, islandClosing, islandOpening]
+    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockAvailable, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, scheduleTeleportOverlapCheck, updateCircleTracking, resetCircleTracking, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isSelectorSafeAreaTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion, islandOverlayVisible, islandClosing, islandOpening]
   );
 
   const handleSafeHitboxPointerDown = useCallback(
@@ -3892,6 +3999,24 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     },
     [handlePointerStart, isMaterialTarget]
   );
+
+  const handleSelectorSafeHitboxPointerDown = useCallback(
+    (event: React.MouseEvent | React.TouchEvent) => {
+      if (!isSelectorSafeAreaTarget((event.target as Node) || null)) {
+        return;
+      }
+      handlePointerStart(event as React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>);
+    },
+    [handlePointerStart, isSelectorSafeAreaTarget]
+  );
+
+  const monTypeIconSrc = useMemo(() => {
+    const key = MON_TYPE_ICON_KEYS[currentMonType];
+    if (!assets || !key || !assets[key]) {
+      return FALLBACK_MON_ICON;
+    }
+    return `data:image/png;base64,${assets[key]}`;
+  }, [assets, currentMonType]);
 
   const decorMounted = decorVisible || islandClosing;
 
@@ -3907,21 +4032,38 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           <Overlay $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleIslandClose : undefined} onTouchStart={isMobile ? handleIslandClose : undefined} onTransitionEnd={handleOverlayTransitionEnd} />
           <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onMouseDown={!isMobile ? handlePointerStart : undefined} onTouchStart={isMobile ? handlePointerStart : undefined}>
             <SafeBarRow>
-              <SafeHitbox ref={safeHitboxRef} $active={islandOverlayVisible && !islandClosing} onMouseDown={!isMobile ? handleSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSafeHitboxPointerDown : undefined}>
-                <MaterialsBar ref={materialsBarRef} $visible={islandOverlayVisible && !islandClosing}>
-                  {MATERIALS.map((name) => (
-                    <MaterialItem
-                      ref={(el) => {
-                        materialItemRefs.current[name] = el;
-                      }}
-                      key={name}
-                      onTouchStart={handleMaterialItemTap(name, materialUrls[name])}>
-                      {materialUrls[name] && <MaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
-                      <MaterialAmount>{materialAmounts[name]}</MaterialAmount>
-                    </MaterialItem>
-                  ))}
-                </MaterialsBar>
-              </SafeHitbox>
+              <SafeBarStack>
+                <SelectorSafeHitbox $active={islandOverlayVisible && !islandClosing} ref={selectorSafeHitboxRef} onMouseDown={!isMobile ? handleSelectorSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSelectorSafeHitboxPointerDown : undefined}>
+                  <SelectorSafeZone>
+                    <MonTypeSelector $visible={islandOverlayVisible && !islandClosing}>
+                      <MonTypeArrowButton type="button" aria-label="Previous mon type" onClick={handleMonTypeArrowClick("cw")}>
+                        <FiChevronLeft size={23} />
+                      </MonTypeArrowButton>
+                      <MonTypeIconBadge>
+                        <MonTypeIconImg src={monTypeIconSrc} alt={`${currentMonType} icon`} draggable={false} />
+                      </MonTypeIconBadge>
+                      <MonTypeArrowButton type="button" aria-label="Next mon type" onClick={handleMonTypeArrowClick("ccw")}>
+                        <FiChevronRight size={23} />
+                      </MonTypeArrowButton>
+                    </MonTypeSelector>
+                  </SelectorSafeZone>
+                </SelectorSafeHitbox>
+                <SafeHitbox ref={safeHitboxRef} $active={islandOverlayVisible && !islandClosing} onMouseDown={!isMobile ? handleSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSafeHitboxPointerDown : undefined}>
+                  <MaterialsBar ref={materialsBarRef} $visible={islandOverlayVisible && !islandClosing}>
+                    {MATERIALS.map((name) => (
+                      <MaterialItem
+                        ref={(el) => {
+                          materialItemRefs.current[name] = el;
+                        }}
+                        key={name}
+                        onTouchStart={handleMaterialItemTap(name, materialUrls[name])}>
+                        {materialUrls[name] && <MaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
+                        <MaterialAmount>{materialAmounts[name]}</MaterialAmount>
+                      </MaterialItem>
+                    ))}
+                  </MaterialsBar>
+                </SafeHitbox>
+              </SafeBarStack>
             </SafeBarRow>
             <Animator $tx={islandTranslate.x} $ty={islandTranslate.y} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd}>
               <HeroWrap ref={heroWrapRef}>
