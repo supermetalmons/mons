@@ -169,6 +169,13 @@ const MonTypeArrowButton = styled.button`
   color: var(--instruction-text-color);
   cursor: pointer;
   line-height: 0;
+  transition: color 160ms ease, opacity 160ms ease;
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: pointer;
+    pointer-events: none;
+  }
 
   @media (prefers-color-scheme: dark) {
     color: var(--instruction-text-color);
@@ -3141,13 +3148,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     [monPos, currentMonType, teleportFXStart, updateMonSprite, findValidMonLocation, prepareTeleportAppear, spawnTeleportSparkles, animateTeleportAppear, setCurrentMonType]
   );
 
+  const firstMonType = MON_TYPE_ORDER[0];
+  const lastMonType = MON_TYPE_ORDER[MON_TYPE_ORDER.length - 1];
+  const isAtFirstMonType = currentMonType === firstMonType;
+  const isAtLastMonType = currentMonType === lastMonType;
+
   const handleMonTypeArrowClick = useCallback(
     (direction: "cw" | "ccw") => (event: React.MouseEvent<HTMLButtonElement>) => {
       event.stopPropagation();
       event.preventDefault();
+      if ((direction === "cw" && isAtFirstMonType) || (direction === "ccw" && isAtLastMonType)) {
+        return;
+      }
       onThreeCirclesComplete(direction);
     },
-    [onThreeCirclesComplete]
+    [onThreeCirclesComplete, isAtFirstMonType, isAtLastMonType]
   );
 
   const updateCircleTracking = useCallback(
@@ -4019,6 +4034,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, [assets, currentMonType]);
 
   const decorMounted = decorVisible || islandClosing;
+  const disablePrevMonType = isAtFirstMonType;
+  const disableNextMonType = isAtLastMonType;
 
   return (
     <>
@@ -4036,13 +4053,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 <SelectorSafeHitbox $active={islandOverlayVisible && !islandClosing} ref={selectorSafeHitboxRef} onMouseDown={!isMobile ? handleSelectorSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSelectorSafeHitboxPointerDown : undefined}>
                   <SelectorSafeZone>
                     <MonTypeSelector $visible={islandOverlayVisible && !islandClosing}>
-                      <MonTypeArrowButton type="button" aria-label="Previous mon type" onClick={handleMonTypeArrowClick("cw")}>
+                      <MonTypeArrowButton type="button" aria-label="Previous mon type" onClick={handleMonTypeArrowClick("cw")} disabled={disablePrevMonType}>
                         <FiChevronLeft size={23} />
                       </MonTypeArrowButton>
                       <MonTypeIconBadge>
                         <MonTypeIconImg src={monTypeIconSrc} alt={`${currentMonType} icon`} draggable={false} />
                       </MonTypeIconBadge>
-                      <MonTypeArrowButton type="button" aria-label="Next mon type" onClick={handleMonTypeArrowClick("ccw")}>
+                      <MonTypeArrowButton type="button" aria-label="Next mon type" onClick={handleMonTypeArrowClick("ccw")} disabled={disableNextMonType}>
                         <FiChevronRight size={23} />
                       </MonTypeArrowButton>
                     </MonTypeSelector>
