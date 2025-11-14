@@ -1267,7 +1267,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const { assets } = useGameAssets();
   const [currentMonType, setCurrentMonType] = useState<MonType>(() => ensureMonType(storage.getIslandMonType(MonType.DRAINER)));
   const [monPos, setMonPos] = useState<{ x: number; y: number } | null>(null);
-  const [monFacingLeft, setMonFacingLeft] = useState<boolean>(false);
+  const [monFacingLeft, setMonFacingLeftState] = useState<boolean>(false);
+  const monFacingLeftRef = useRef(monFacingLeft);
+  const setMonFacingLeft = useCallback<React.Dispatch<React.SetStateAction<boolean>>>(
+    (value) => {
+      setMonFacingLeftState((prev) => {
+        const nextValue = typeof value === "function" ? (value as (prev: boolean) => boolean)(prev) : value;
+        monFacingLeftRef.current = nextValue;
+        return nextValue;
+      });
+    },
+    [setMonFacingLeftState]
+  );
   const [monSpriteData, setMonSpriteData] = useState<string>("");
   const [monKey, setMonKey] = useState<string | null>(null);
 
@@ -1831,7 +1842,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const storedType = ensureMonType(storage.getIslandMonType(MonType.DRAINER));
     setCurrentMonType(storedType);
     updateMonSprite(storedType);
-  }, [islandOverlayVisible, findValidMonLocation, updateMonSprite, setCurrentMonType]);
+  }, [islandOverlayVisible, setMonFacingLeft, findValidMonLocation, updateMonSprite, setCurrentMonType]);
 
   useEffect(() => {
     if (!decorVisible || islandClosing || !islandOverlayVisible) return;
@@ -1847,7 +1858,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         monFlipTimerRef.current = null;
       }
     };
-  }, [decorVisible, islandClosing, islandOverlayVisible, monSpriteData, monPos]);
+  }, [decorVisible, islandClosing, islandOverlayVisible, setMonFacingLeft, monSpriteData, monPos]);
 
   const petMon = useCallback(() => {
     const frame = monFrameWrapRef.current;
@@ -2972,31 +2983,31 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const frame = monFrameWrapRef.current;
     const strip = monStripImgRef.current;
     if (!frame || !strip) return;
-    const baseX = monFacingLeft ? -1 : 1;
+    const baseX = monFacingLeftRef.current ? -1 : 1;
     try {
       frame.style.transformOrigin = "50% 100%";
       frame.style.transition = "transform 160ms ease-in";
       frame.style.transform = `scale(${baseX * 0.06}, 1.08)`;
     } catch {}
-  }, [monFacingLeft]);
+  }, []);
 
   const prepareTeleportAppear = useCallback(() => {
     const frame = monFrameWrapRef.current;
     const strip = monStripImgRef.current;
     if (!frame || !strip) return;
-    const baseX = monFacingLeft ? -1 : 1;
+    const baseX = monFacingLeftRef.current ? -1 : 1;
     try {
       frame.style.transformOrigin = "50% 100%";
       frame.style.transition = "none";
       frame.style.transform = `scale(${baseX * 0.06}, 1.08)`;
     } catch {}
-  }, [monFacingLeft]);
+  }, []);
 
   const animateTeleportAppear = useCallback(() => {
     const frame = monFrameWrapRef.current;
     const strip = monStripImgRef.current;
     if (!frame || !strip) return;
-    const baseX = monFacingLeft ? -1 : 1;
+    const baseX = monFacingLeftRef.current ? -1 : 1;
     try {
       requestAnimationFrame(() => {
         frame.style.transition = "transform 160ms cubic-bezier(0.22, 1, 0.36, 1)";
@@ -3010,7 +3021,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }, 260);
       });
     } catch {}
-  }, [monFacingLeft]);
+  }, []);
 
   const spawnTeleportSparkles = useCallback(() => {
     const frame = monFrameWrapRef.current;
@@ -3113,7 +3124,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         animateTeleportAppear();
       }, 30);
     }, 180);
-  }, [findValidMonLocation, monPos, teleportFXStart, spawnTeleportSparkles, prepareTeleportAppear, animateTeleportAppear]);
+  }, [findValidMonLocation, monPos, setMonFacingLeft, teleportFXStart, spawnTeleportSparkles, prepareTeleportAppear, animateTeleportAppear]);
 
   const onThreeCirclesComplete = useCallback(
     (direction: "cw" | "ccw", source: "gesture" | "control" = "gesture") => {
@@ -3149,7 +3160,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }, 30);
       }, 180);
     },
-    [monPos, currentMonType, teleportFXStart, updateMonSprite, findValidMonLocation, prepareTeleportAppear, spawnTeleportSparkles, animateTeleportAppear, setCurrentMonType]
+    [monPos, currentMonType, teleportFXStart, updateMonSprite, setMonFacingLeft, findValidMonLocation, prepareTeleportAppear, spawnTeleportSparkles, animateTeleportAppear, setCurrentMonType]
   );
 
   const firstMonType = MON_TYPE_ORDER[0];
