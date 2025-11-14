@@ -3116,7 +3116,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, [findValidMonLocation, monPos, teleportFXStart, spawnTeleportSparkles, prepareTeleportAppear, animateTeleportAppear]);
 
   const onThreeCirclesComplete = useCallback(
-    (direction: "cw" | "ccw") => {
+    (direction: "cw" | "ccw", source: "gesture" | "control" = "gesture") => {
       if (!monPos) return;
       const currentIndex = MON_TYPE_ORDER.indexOf(currentMonType);
       const safeIndex = currentIndex === -1 ? MON_TYPE_ORDER.indexOf(DEFAULT_MON_TYPE) : currentIndex;
@@ -3126,7 +3126,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       setCurrentMonType(nextType);
 
       teleportFXStart();
-      directlyPlaySoundNamed("bewo", 0.075);
+      if (source === "control") {
+        directlyPlaySoundNamed("emotePop4", 0.75);
+      } else {
+        directlyPlaySoundNamed("bewo", 0.075);
+      }
       setMonTeleporting(true);
       setTimeout(() => {
         updateMonSprite(nextType);
@@ -3160,7 +3164,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if ((direction === "cw" && isAtFirstMonType) || (direction === "ccw" && isAtLastMonType)) {
         return;
       }
-      onThreeCirclesComplete(direction);
+      onThreeCirclesComplete(direction, "control");
     },
     [onThreeCirclesComplete, isAtFirstMonType, isAtLastMonType]
   );
@@ -3213,7 +3217,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
       const REQUIRED_CIRCLES = 3 * 2 * Math.PI;
       if (tracking.totalRotation >= REQUIRED_CIRCLES) {
-        onThreeCirclesComplete(tracking.direction);
+        onThreeCirclesComplete(tracking.direction, "gesture");
         tracking.totalRotation = 0;
         tracking.center = { x: monBaselineCenterX, y: monBaselineCenterY };
       }
