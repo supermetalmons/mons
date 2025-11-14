@@ -4,6 +4,8 @@ import { storage } from "../utils/storage";
 
 const ROCK_VARIANT_COUNT = 27;
 
+export const DROP_TESTING_MODE = false;
+
 const getActiveProfileId = (): string => {
   return storage.getProfileId("");
 };
@@ -130,7 +132,7 @@ const setSnapshot = (next: PlayerMiningData, persist: boolean, notifyListeners: 
   if (isAnon) {
     serverSnapshotLoaded = true;
   }
-  if (persist) {
+  if (!DROP_TESTING_MODE && persist) {
     storage.setMiningLastRockDate(snapshot.lastRockDate);
     storage.setMiningMaterials(materials);
   }
@@ -148,8 +150,7 @@ const pickWeightedMaterial = (random: () => number): MiningMaterialName => {
   return "ice";
 };
 
-const createDrops = (profileId: string, date: string): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
-  const random = createSeededRandom(profileId, date);
+const createDropsFromRandom = (random: () => number): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
   const count = 2 + Math.floor(random() * 4);
   const drops: MiningMaterialName[] = [];
   const delta = createEmptyMaterials();
@@ -159,6 +160,14 @@ const createDrops = (profileId: string, date: string): { drops: MiningMaterialNa
     delta[material] += 1;
   }
   return { drops, delta };
+};
+
+const createDrops = (profileId: string, date: string): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
+  return createDropsFromRandom(createSeededRandom(profileId, date));
+};
+
+const createTestingDrops = (): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
+  return createDropsFromRandom(Math.random);
 };
 
 export type MiningSubscription = () => void;
@@ -200,6 +209,10 @@ function setFromServer(data?: PlayerMiningData | null, options?: { persist?: boo
 
 function didBreakRock(): DidBreakRockResult {
   const date = formatMiningDate(new Date());
+  if (DROP_TESTING_MODE) {
+    const { drops, delta } = createTestingDrops();
+    return { drops, delta, date };
+  }
   const profileId = getActiveProfileId();
   const isAnon = isAnonymousProfile(profileId);
   const dropsData = isAnon
@@ -233,6 +246,9 @@ function didBreakRock(): DidBreakRockResult {
 }
 
 function shouldShowRock(dateOverride?: string): boolean {
+  if (DROP_TESTING_MODE) {
+    return true;
+  }
   const profileId = getActiveProfileId();
   if (!isAnonymousProfile(profileId) && !serverSnapshotLoaded) {
     return false;
