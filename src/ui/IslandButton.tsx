@@ -147,13 +147,13 @@ const MonTypeSelector = styled.div<{ $visible: boolean }>`
   gap: 0;
   padding: 2px 2px;
   border-radius: 20px;
-  background: var(--interactiveHoverBackgroundLight);
+  background: var(--monControlBackgroundLight);
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
   transition: opacity 200ms ease;
 
   @media (prefers-color-scheme: dark) {
-    background: var(--panel-dark-90);
+    background: var(--monControlBackgroundDark);
   }
 `;
 

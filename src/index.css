@@ -116,6 +116,8 @@
   --interactiveActiveBackgroundLight: rgba(224, 224, 224, 0.6);
   --interactiveHoverBackgroundDark: rgba(70, 70, 70, 0.4);
   --interactiveActiveBackgroundDark: rgba(80, 80, 80, 0.5);
+  --monControlBackgroundLight: rgba(235, 235, 235, 0.5);
+  --monControlBackgroundDark: rgba(28, 28, 28, 0.85);
   --focusBorderColor: rgba(0, 122, 255, 0.6);
   --focusShadowColor: rgba(0, 122, 255, 0.15);
   --focusBorderColorDark: rgba(11, 132, 255, 0.6);
