@@ -84,6 +84,7 @@ const MaterialsBar = styled.div<{ $visible: boolean }>`
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   transition: opacity 220ms ease;
   pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
+  cursor: pointer;
 
   @media (min-width: 480px) {
     gap: 14px;
@@ -150,6 +151,7 @@ const MonTypeSelector = styled.div<{ $visible: boolean }>`
   background: var(--monControlBackgroundLight);
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
+  cursor: pointer;
   transition: opacity 200ms ease;
 
   @media (prefers-color-scheme: dark) {
@@ -200,6 +202,7 @@ const SelectorSafeZone = styled.div`
   padding: 8px 18px 10px;
   border-radius: 32px;
   pointer-events: auto;
+  cursor: pointer;
 `;
 
 const SafeBarStack = styled.div`
@@ -211,6 +214,7 @@ const SafeBarStack = styled.div`
 
 const SelectorSafeHitbox = styled.div<{ $active: boolean }>`
   pointer-events: ${(p) => (p.$active ? "auto" : "none")};
+  cursor: pointer;
   padding: 8px 8px 2px;
   margin: -4px 0 0;
   background: transparent;
@@ -226,6 +230,7 @@ const Overlay = styled.div<{ $visible: boolean; $opening: boolean; $closing: boo
   opacity: ${(p) => (p.$visible ? 1 : 0)};
   transition: ${(p) => (p.$opening ? "opacity 380ms cubic-bezier(0.16, 1, 0.3, 1) 100ms" : p.$closing ? "opacity 320ms ease-out 50ms" : "opacity 320ms ease-in")};
   pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
+  cursor: pointer;
   z-index: ${(p) => (p.$visible || p.$opening || p.$closing ? 90000 : 0)};
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -246,12 +251,14 @@ const SafeBarRow = styled.div`
   align-items: center;
   justify-content: center;
   pointer-events: none;
+  cursor: pointer;
   z-index: 90001;
 `;
 
 const SafeHitbox = styled.div<{ $active: boolean }>`
   display: inline-flex;
   pointer-events: ${(p) => (p.$active ? "auto" : "none")};
+  cursor: pointer;
   padding: 30px 30px;
   margin: -30px 0;
   background: transparent;
@@ -277,6 +284,7 @@ const Layer = styled.div<{ $visible: boolean; $opening: boolean; $closing: boole
 
 const Animator = styled.div<{ $tx: number; $ty: number; $sx: number; $sy: number }>`
   pointer-events: auto;
+  cursor: pointer;
   transition: transform 300ms ease;
   transform: translate(${(p) => p.$tx}px, ${(p) => p.$ty}px) scale(${(p) => p.$sx}, ${(p) => p.$sy});
   -webkit-tap-highlight-color: transparent;
@@ -328,12 +336,14 @@ const WalkOverlay = styled.div`
   position: absolute;
   inset: 0;
   pointer-events: none;
+  cursor: pointer;
 `;
 
 const HotspotOverlay = styled.div`
   position: absolute;
   inset: 0;
   pointer-events: none;
+  cursor: pointer;
   z-index: 100000;
 `;
 
@@ -354,6 +364,7 @@ const HotspotCircle = styled.div<{ $visible: boolean }>`
   box-shadow: 0 0 14px rgba(0, 200, 255, 0.7), 0 0 28px rgba(0, 200, 255, 0.35), inset 0 0 22px rgba(0, 200, 255, 0.5);
   opacity: ${(p) => (p.$visible ? 0 : 0)};
   animation: ${(p) => (p.$visible ? fadePulse : "none")} 520ms ease-out;
+  cursor: pointer;
   &::before {
     content: "";
     position: absolute;
@@ -363,6 +374,7 @@ const HotspotCircle = styled.div<{ $visible: boolean }>`
     filter: blur(6px);
     opacity: 0.8;
     pointer-events: none;
+    cursor: pointer;
   }
 `;
 
@@ -380,6 +392,7 @@ const StarsOverlayImage = styled.img<{ $visible: boolean; $hold: boolean }>`
   height: 100%;
   object-fit: contain;
   pointer-events: none;
+  cursor: pointer;
   z-index: 3;
   filter: brightness(3) saturate(3) contrast(3) blur(0.5px);
   opacity: ${(p) => (p.$hold ? 1 : 0)};
@@ -390,6 +403,7 @@ const MaskedArea = styled.div<{ $cx: number; $cy: number; $visible: boolean }>`
   position: absolute;
   inset: 0;
   pointer-events: none;
+  cursor: pointer;
   z-index: 2;
   -webkit-mask-image: radial-gradient(circle at ${(p) => p.$cx}% ${(p) => p.$cy}%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 9%, rgba(0, 0, 0, 0) 14%);
   mask-image: radial-gradient(circle at ${(p) => p.$cx}% ${(p) => p.$cy}%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 9%, rgba(0, 0, 0, 0) 14%);
@@ -423,6 +437,7 @@ const ShadowImg = styled.img`
   height: auto;
   transform: translate(-50%, -50%);
   pointer-events: none;
+  cursor: pointer;
   opacity: 0.23;
   transition: opacity 260ms ease;
   image-rendering: pixelated;
@@ -461,6 +476,7 @@ const DudeSpriteWrap = styled.div`
   transform: translate(-50%, -${DUDE_ANCHOR_FRAC * 100}%);
   aspect-ratio: var(--dude-frame-aspect, 1);
   pointer-events: none;
+  cursor: pointer;
   transition: opacity 260ms ease;
 `;
 
