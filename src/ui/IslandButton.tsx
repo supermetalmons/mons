@@ -210,7 +210,7 @@ const SafeBarStack = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 0px;
 `;
 
 const SelectorSafeHitbox = styled.div<{ $active: boolean }>`
