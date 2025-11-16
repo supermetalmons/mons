@@ -16,6 +16,7 @@ import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMi
 import { useGameAssets } from "../hooks/useGameAssets";
 
 const FEATURE_GLOWS_ON_HOTSPOT = true;
+const FEATURE_MON_TYPE_SELECTOR = false;
 const STARS_URL = "https://assets.mons.link/rocks/underground/stars.webp";
 const TOUCH_EDGE_DEADZONE_PX = 5;
 const ROCK_LAYER_Z_INDEX = 500;
@@ -4081,21 +4082,23 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onMouseDown={!isMobile ? handlePointerStart : undefined} onTouchStart={isMobile ? handlePointerStart : undefined}>
             <SafeBarRow>
               <SafeBarStack>
-                <SelectorSafeHitbox $active={islandOverlayVisible && !islandClosing} ref={selectorSafeHitboxRef} onMouseDown={!isMobile ? handleSelectorSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSelectorSafeHitboxPointerDown : undefined}>
-                  <SelectorSafeZone>
-                    <MonTypeSelector $visible={islandOverlayVisible && !islandClosing}>
-                      <MonTypeArrowButton type="button" aria-label="Previous mon type" onClick={handleMonTypeArrowClick("cw")} disabled={disablePrevMonType}>
-                        <FiChevronLeft size={23} />
-                      </MonTypeArrowButton>
-                      <MonTypeIconBadge>
-                        <MonTypeIconImg src={monTypeIconSrc} alt={`${currentMonType} icon`} draggable={false} />
-                      </MonTypeIconBadge>
-                      <MonTypeArrowButton type="button" aria-label="Next mon type" onClick={handleMonTypeArrowClick("ccw")} disabled={disableNextMonType}>
-                        <FiChevronRight size={23} />
-                      </MonTypeArrowButton>
-                    </MonTypeSelector>
-                  </SelectorSafeZone>
-                </SelectorSafeHitbox>
+                {FEATURE_MON_TYPE_SELECTOR && (
+                  <SelectorSafeHitbox $active={islandOverlayVisible && !islandClosing} ref={selectorSafeHitboxRef} onMouseDown={!isMobile ? handleSelectorSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSelectorSafeHitboxPointerDown : undefined}>
+                    <SelectorSafeZone>
+                      <MonTypeSelector $visible={islandOverlayVisible && !islandClosing}>
+                        <MonTypeArrowButton type="button" aria-label="Previous mon type" onClick={handleMonTypeArrowClick("cw")} disabled={disablePrevMonType}>
+                          <FiChevronLeft size={23} />
+                        </MonTypeArrowButton>
+                        <MonTypeIconBadge>
+                          <MonTypeIconImg src={monTypeIconSrc} alt={`${currentMonType} icon`} draggable={false} />
+                        </MonTypeIconBadge>
+                        <MonTypeArrowButton type="button" aria-label="Next mon type" onClick={handleMonTypeArrowClick("ccw")} disabled={disableNextMonType}>
+                          <FiChevronRight size={23} />
+                        </MonTypeArrowButton>
+                      </MonTypeSelector>
+                    </SelectorSafeZone>
+                  </SelectorSafeHitbox>
+                )}
                 <SafeHitbox ref={safeHitboxRef} $active={islandOverlayVisible && !islandClosing} onMouseDown={!isMobile ? handleSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSafeHitboxPointerDown : undefined}>
                   <MaterialsBar ref={materialsBarRef} $visible={islandOverlayVisible && !islandClosing}>
                     {MATERIALS.map((name) => (
