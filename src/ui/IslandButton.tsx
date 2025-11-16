@@ -3146,10 +3146,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const onThreeCirclesComplete = useCallback(
     (direction: "cw" | "ccw", source: "gesture" | "control" = "gesture") => {
       if (!monPos) return;
-      const currentIndex = MON_TYPE_ORDER.indexOf(currentMonType);
-      const safeIndex = currentIndex === -1 ? MON_TYPE_ORDER.indexOf(DEFAULT_MON_TYPE) : currentIndex;
-      const nextIndex = direction === "ccw" ? (safeIndex + 1) % MON_TYPE_ORDER.length : (safeIndex - 1 + MON_TYPE_ORDER.length) % MON_TYPE_ORDER.length;
-      const nextType = MON_TYPE_ORDER[nextIndex];
+      const typeOrder: MonType[] = [MonType.DEMON, MonType.ANGEL, MonType.DRAINER, MonType.SPIRIT, MonType.MYSTIC];
+      const storedType = storage.getIslandMonType(MonType.DRAINER) as MonType;
+      const currentType = typeOrder.includes(storedType) ? storedType : MonType.DRAINER;
+      const currentIndex = typeOrder.indexOf(currentType);
+      const nextIndex = direction === "ccw" ? (currentIndex + 1) % typeOrder.length : (currentIndex - 1 + typeOrder.length) % typeOrder.length;
+      const nextType = typeOrder[nextIndex];
       storage.setIslandMonType(nextType);
       setCurrentMonType(nextType);
 
@@ -3177,7 +3179,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }, 30);
       }, 180);
     },
-    [monPos, currentMonType, teleportFXStart, updateMonSprite, setMonFacingLeft, findValidMonLocation, prepareTeleportAppear, spawnTeleportSparkles, animateTeleportAppear, setCurrentMonType]
+    [monPos, teleportFXStart, updateMonSprite, setMonFacingLeft, findValidMonLocation, prepareTeleportAppear, spawnTeleportSparkles, animateTeleportAppear, setCurrentMonType]
   );
 
   const firstMonType = MON_TYPE_ORDER[0];
