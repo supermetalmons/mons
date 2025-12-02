@@ -93,14 +93,23 @@ const MaterialsBar = styled.div<{ $visible: boolean }>`
   @media (min-width: 768px) {
     gap: 18px;
   }
-  @media (max-width: 366px) {
-    gap: 6px;
+  @media (max-width: 413px) {
+    gap: 8px;
+  }
+  @media (max-width: 396px) {
+    gap: 7px;
+  }
+  @media (max-width: 375px) {
+    gap: 4px;
   }
   @media (max-width: 340px) {
     gap: 3px;
   }
-  @media (max-width: 317px) {
+  @media (max-width: 327px) {
     gap: 2px;
+  }
+  @media (max-width: 324px) {
+    gap: 1px;
   }
 `;
 
@@ -118,11 +127,15 @@ const MaterialItem = styled.div`
   @media (prefers-color-scheme: dark) {
     background: var(--panel-dark-90);
   }
-  @media (max-width: 366px) {
+  @media (max-width: 413px) {
     gap: 1px;
     padding: 0 8px 0 3px;
   }
-  @media (max-width: 326px) {
+  @media (max-width: 375px) {
+    gap: 1px;
+    padding: 0 8px 0 2px;
+  }
+  @media (max-width: 333px) {
     gap: 1px;
     padding: 0 8px 0 1px;
   }
