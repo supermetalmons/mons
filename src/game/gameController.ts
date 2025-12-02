@@ -380,7 +380,7 @@ export function didReceiveRematchesSeriesEndIndicator() {
 
 function automove() {
   let output = game.smart_automove();
-  applyOutput("", output, false, true, AssistedInputKind.None);
+  applyOutput([], "", output, false, true, AssistedInputKind.None);
   Board.hideItemSelectionOrConfirmationOverlay();
 
   if (isBotsLoopMode) {
@@ -485,7 +485,7 @@ export function canHandleUndo(): boolean {
 export function didClickUndoButton() {
   if (canHandleUndo()) {
     const output = game.takeback();
-    applyOutput("", output, false, false, AssistedInputKind.None);
+    applyOutput([], "", output, false, false, AssistedInputKind.None);
   }
 }
 
@@ -564,7 +564,7 @@ function turnShouldBeConfirmedForOutputEvents(events: MonsWeb.EventModel[], fenB
   return hasMoves || actuallyHasPossibleAction;
 }
 
-function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotInput: boolean, assistedInputKind: AssistedInputKind, inputLocation?: Location) {
+function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotInput: boolean, assistedInputKind: AssistedInputKind, inputLocation?: Location) {
   switch (output.kind) {
     case MonsWeb.OutputModelKind.InvalidInput:
       const shouldTryToReselect = assistedInputKind === AssistedInputKind.None && currentInputs.length > 1 && inputLocation && !currentInputs[0].equals(inputLocation);
@@ -669,7 +669,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
 
       if (!isRemoteInput && fenBeforeMove !== "" && turnShouldBeConfirmedForOutputEvents(events, fenBeforeMove)) {
         const targetGameToConfirm = game;
-        game = game.without_last_turn()!;
+        game = game.without_last_turn(takebackFensBeforeMove)!;
         const latestLocation = currentInputs[currentInputs.length - 1];
 
         playSounds([Sound.ConfirmEarlyEndTurn]);
@@ -679,7 +679,7 @@ function applyOutput(fenBeforeMove: string, output: MonsWeb.OutputModel, isRemot
           latestLocation,
           () => {
             game = targetGameToConfirm;
-            applyOutput("", output, isRemoteInput, isBotInput, assistedInputKind, inputLocation);
+            applyOutput([], "", output, isRemoteInput, isBotInput, assistedInputKind, inputLocation);
           },
           () => {
             currentInputs = [];
@@ -1064,6 +1064,7 @@ function processInput(assistedInputKind: AssistedInputKind, inputModifier: Input
 
   const gameInput = currentInputs.map((input) => new MonsWeb.Location(input.i, input.j));
   const fenBeforeMove = game.fen();
+  const takebacksBeforeMove = game.takeback_fens();
   let output: MonsWeb.OutputModel;
   if (inputModifier !== InputModifier.None) {
     let modifier: MonsWeb.Modifier;
@@ -1082,7 +1083,7 @@ function processInput(assistedInputKind: AssistedInputKind, inputModifier: Input
   } else {
     output = game.process_input(gameInput);
   }
-  applyOutput(fenBeforeMove, output, false, false, assistedInputKind, inputLocation);
+  applyOutput(takebacksBeforeMove, fenBeforeMove, output, false, false, assistedInputKind, inputLocation);
 }
 
 function updateLocation(location: Location, inFlashbackMode: boolean = false) {
@@ -1494,7 +1495,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
     for (let i = processedMovesCount; i < movesCount; i++) {
       const moveFen = movesFens[i];
       const output = game.process_input_fen(moveFen);
-      applyOutput("", output, true, false, AssistedInputKind.None);
+      applyOutput([], "", output, true, false, AssistedInputKind.None);
     }
 
     setProcessedMovesCountForColor(match.color, movesCount);
