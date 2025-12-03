@@ -7,7 +7,7 @@ DIR="$(cd "$(dirname "$0")" && pwd)"
 # Environments: clean | black-room | white-room | night-sky | snowy-field | sky | meadow | country-club | desert | snowy-forest | desert-sky
 # Args: ENVIRONMENT (or first arg), ORBIT (or second arg) -> true/false
 # Default: ENVIRONMENT=snowy-forest, ORBIT=true
-ENVIRONMENT_ARG="${1:-${ENVIRONMENT:-clean}}"
+ENVIRONMENT_ARG="${1:-${ENVIRONMENT:-white-room}}"
 ORBIT_ARG_RAW="${2:-${ORBIT:-false}}"
 # Normalize to lowercase without Bash 4+ syntax
 ORBIT_ARG_NORM=$(printf '%s' "$ORBIT_ARG_RAW" | tr '[:upper:]' '[:lower:]')
