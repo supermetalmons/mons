@@ -233,8 +233,12 @@ def fit_camera(target, margin=1.03):
     min_c, max_c = bounds(target)
     size_vec = max_c - min_c
     center = (min_c + max_c) * 0.5
-    for o in [target] + list(target.children_recursive):
-        o.location -= center
+    # Move geometry so its center sits at the origin without shifting the pivot twice.
+    if target.type != 'EMPTY':
+        target.location -= center
+    else:
+        for o in target.children_recursive:
+            o.location -= center
 
     cam.data.type = "PERSP"
     cam.data.lens = 50
