@@ -14,7 +14,11 @@ p.add_argument("--world_strength", type=float, default=0.42)
 p.add_argument("--light_energy", type=float, default=599.0)
 p.add_argument("--environment", choices=["clean","black-room","white-room","night-sky","snowy-field","sky","meadow","country-club","desert","snowy-forest","desert-sky"], default="black-room")
 p.add_argument("--orbit_camera", type=lambda v: str(v).lower() in {"1","true","t","yes","y"}, default=True)
+p.add_argument("--safari_script", default=None, help="Optional path to process_movs_for_safari.sh for per-file conversion")
 args = p.parse_args(argv)
+
+if args.safari_script:
+    args.safari_script = os.path.abspath(args.safari_script)
 
 os.makedirs(args.out_dir, exist_ok=True)
 
@@ -333,6 +337,15 @@ def encode_mov(tmp_dir, out_path):
     ]
     subprocess.check_call(cmd)
 
+def convert_mov_for_safari(mov_path):
+    if not args.safari_script:
+        return
+    try:
+        subprocess.check_call([args.safari_script, mov_path])
+    except subprocess.CalledProcessError as exc:
+        print(f"Safari conversion failed for {mov_path}: {exc}")
+        raise
+
 def import_glb(path):
     before = set(bpy.data.objects)
     bpy.ops.import_scene.gltf(filepath=path)
@@ -344,7 +357,7 @@ def import_glb(path):
         o.parent = root
     return root
 
-glbs = [f for f in os.listdir(args.in_dir) if f.lower().endswith(".glb")]
+glbs = sorted(f for f in os.listdir(args.in_dir) if f.lower().endswith(".glb"))
 for fname in glbs:
     allowed_names = {"Cam","Key"}
     if args.environment in {"black-room","white-room"}:
@@ -363,5 +376,7 @@ for fname in glbs:
     tmp = os.path.join(args.out_dir, f"{base}_frames")
     render_png_sequence(tmp)
     encode_webm(tmp, os.path.join(args.out_dir, f"{base}.webm"))
-    encode_mov(tmp, os.path.join(args.out_dir, f"{base}.mov"))
+    mov_path = os.path.join(args.out_dir, f"{base}.mov")
+    encode_mov(tmp, mov_path)
+    convert_mov_for_safari(mov_path)
     shutil.rmtree(tmp, ignore_errors=True)

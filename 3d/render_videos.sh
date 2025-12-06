@@ -3,6 +3,9 @@
 set -euo pipefail
 
 DIR="$(cd "$(dirname "$0")" && pwd)"
+MODELS_DIR="$DIR/models"
+VIDEOS_DIR="$DIR/videos"
+SAFARI_SCRIPT="$DIR/process_movs_for_safari.sh"
 
 # Environments: clean | black-room | white-room | night-sky | snowy-field | sky | meadow | country-club | desert | snowy-forest | desert-sky
 # Args: ENVIRONMENT (or first arg), ORBIT (or second arg) -> true/false
@@ -17,11 +20,11 @@ case "$ORBIT_ARG_NORM" in
   *) ORBIT_ARG=true ;;
 esac
 
-/Applications/Blender.app/Contents/MacOS/Blender -b -P "$DIR/batch_render.py" -- --in_dir "$DIR/models" --out_dir "$DIR/videos" --environment "$ENVIRONMENT_ARG" --orbit_camera "$ORBIT_ARG"
-
-# Run Safari-compatible processing inside the videos directory so the script finds *.mov
-pushd "$DIR/videos" >/dev/null
-"$DIR/process_movs_for_safari.sh"
-popd >/dev/null
+/Applications/Blender.app/Contents/MacOS/Blender -b -P "$DIR/batch_render.py" -- \
+  --in_dir "$MODELS_DIR" \
+  --out_dir "$VIDEOS_DIR" \
+  --environment "$ENVIRONMENT_ARG" \
+  --orbit_camera "$ORBIT_ARG" \
+  --safari_script "$SAFARI_SCRIPT"
 
 
