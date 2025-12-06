@@ -6,7 +6,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 
 BLEND_PY="$SCRIPT_DIR/lineup_render.py"
 
-IN_DIR="${1:-$SCRIPT_DIR/shop_preview_models}"
+IN_DIR="${1:-$SCRIPT_DIR/models}"
 OUT_DIR="${2:-$SCRIPT_DIR}"
 CAMERA_SIDE="${3:-right}"
 
