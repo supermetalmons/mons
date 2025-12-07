@@ -79,10 +79,21 @@ cam = bpy.data.objects.new("Cam", cam_data)
 scene.collection.objects.link(cam)
 scene.camera = cam
 
-light_data = bpy.data.lights.new("Key", type="AREA")
-light_data.energy = args.light_energy
-light = bpy.data.objects.new("Key", light_data)
-scene.collection.objects.link(light)
+def make_area_light(name, energy_multiplier, size=3.0):
+    ld = bpy.data.lights.new(name, type="AREA")
+    ld.energy = args.light_energy * energy_multiplier
+    ld.shape = 'RECTANGLE'
+    ld.size = size
+    if hasattr(ld, "size_y"):
+        ld.size_y = size * 0.65
+    lo = bpy.data.objects.new(name, ld)
+    scene.collection.objects.link(lo)
+    return lo
+
+key_light = make_area_light("Key", 1.0, size=3.0)
+fill_light = make_area_light("Fill", 0.38, size=4.0)
+rim_light = make_area_light("Rim", 0.55, size=2.0)
+top_light = make_area_light("Top", 0.32, size=5.0)
 
 world = bpy.data.worlds.new("World")
 scene.world = world
@@ -255,10 +266,35 @@ def fit_camera(target, margin=1.03):
     cam.data.shift_x = 0.0
     cam.data.shift_y = 0.0
 
-    light.location = (dist * 0.5, -dist * 0.5, dist * 0.8)
-    light.rotation_euler = (math.radians(60), 0, math.radians(30))
     if radius_xz == 0.0 and depth_y == 0.0:
         cam.location = (0.0, -3.0, 0.0)
+        dist = 3.0
+
+    def set_rect_size(light_obj, base):
+        ld = getattr(light_obj, "data", None)
+        if not ld:
+            return
+        ld.size = base
+        if hasattr(ld, "size_y"):
+            ld.size_y = base * 0.65
+
+    spread = max(1.2, dist * 0.35)
+    set_rect_size(key_light, spread * 0.5)
+    set_rect_size(fill_light, spread * 0.75)
+    set_rect_size(rim_light, spread * 0.4)
+    set_rect_size(top_light, spread * 0.9)
+
+    key_light.location = (dist * 0.55, -dist * 0.6, dist * 0.85)
+    key_light.rotation_euler = (math.radians(65), 0.0, math.radians(25))
+
+    fill_light.location = (-dist * 0.45, -dist * 0.35, dist * 0.45)
+    fill_light.rotation_euler = (math.radians(55), 0.0, math.radians(-30))
+
+    rim_light.location = (0.0, dist * 0.65, dist * 0.35)
+    rim_light.rotation_euler = (math.radians(115), 0.0, 0.0)
+
+    top_light.location = (0.0, -dist * 0.05, dist * 1.2)
+    top_light.rotation_euler = (0.0, 0.0, 0.0)
     return dist
 
 def animate_camera_orbit(distance):
@@ -363,7 +399,7 @@ def import_glb(path):
 
 glbs = sorted(f for f in os.listdir(args.in_dir) if f.lower().endswith(".glb"))
 for fname in glbs:
-    allowed_names = {"Cam","Key"}
+    allowed_names = {"Cam","Key","Fill","Rim","Top"}
     if args.environment in {"black-room","white-room"}:
         allowed_names.add("Room")
     for o in [o for o in list(bpy.data.objects) if o.name not in allowed_names]:
