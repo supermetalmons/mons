@@ -23,6 +23,7 @@ if args.safari_script:
 
 os.makedirs(args.out_dir, exist_ok=True)
 USE_CANVAS = args.use_canvas
+CANVAS_FG_SIZE = 420
 BACKGROUND_PATH = os.path.join(os.path.dirname(__file__), "receipt.png")
 if USE_CANVAS and not os.path.exists(BACKGROUND_PATH):
     raise FileNotFoundError(f"Background image not found: {BACKGROUND_PATH}")
@@ -356,7 +357,7 @@ def encode_webm(tmp_dir, out_path):
             "ffmpeg","-y",
             "-loop","1","-framerate", str(args.fps), "-i", BACKGROUND_PATH,
             "-framerate", str(args.fps), "-i", seq,
-            "-filter_complex", "[1:v]format=rgba[fg];[0:v][fg]overlay=(W-w)/2:(H-h)/2:format=rgb[out]",
+            "-filter_complex", f"[1:v]format=rgba,scale={CANVAS_FG_SIZE}:{CANVAS_FG_SIZE}:flags=lanczos[fg];[0:v][fg]overlay=(W-w)/2:(H-h)/2:format=rgb[out]",
             "-map","[out]",
             "-r", str(args.fps),
             "-shortest",
@@ -395,7 +396,7 @@ def encode_mov(tmp_dir, out_path):
             "ffmpeg","-y",
             "-loop","1","-framerate", str(args.fps), "-i", BACKGROUND_PATH,
             "-framerate", str(args.fps), "-i", seq,
-            "-filter_complex", "[1:v]format=rgba[fg];[0:v][fg]overlay=(W-w)/2:(H-h)/2:format=rgb[out]",
+            "-filter_complex", f"[1:v]format=rgba,scale={CANVAS_FG_SIZE}:{CANVAS_FG_SIZE}:flags=lanczos[fg];[0:v][fg]overlay=(W-w)/2:(H-h)/2:format=rgb[out]",
             "-map","[out]",
             "-r", str(args.fps),
             "-shortest",
