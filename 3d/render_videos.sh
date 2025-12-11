@@ -8,10 +8,11 @@ VIDEOS_DIR="$DIR/videos"
 SAFARI_SCRIPT="$DIR/process_movs_for_safari.sh"
 
 # Environments: clean | black-room | white-room | night-sky | snowy-field | sky | meadow | country-club | desert | snowy-forest | desert-sky
-# Args: ENVIRONMENT (or first arg), ORBIT (or second arg) -> true/false
-# Default: ENVIRONMENT=snowy-forest, ORBIT=true
+# Args: ENVIRONMENT (or first arg), ORBIT (or second arg) -> true/false, USE_CANVAS (or third arg) -> true/false
+# Default: ENVIRONMENT=snowy-forest, ORBIT=true, USE_CANVAS=true
 ENVIRONMENT_ARG="${1:-${ENVIRONMENT:-clean}}"
 ORBIT_ARG_RAW="${2:-${ORBIT:-false}}"
+CANVAS_ARG_RAW="${3:-${USE_CANVAS:-true}}"
 # Normalize to lowercase without Bash 4+ syntax
 ORBIT_ARG_NORM=$(printf '%s' "$ORBIT_ARG_RAW" | tr '[:upper:]' '[:lower:]')
 case "$ORBIT_ARG_NORM" in
@@ -19,12 +20,19 @@ case "$ORBIT_ARG_NORM" in
   0|false|f|no|n) ORBIT_ARG=false ;;
   *) ORBIT_ARG=true ;;
 esac
+CANVAS_ARG_NORM=$(printf '%s' "$CANVAS_ARG_RAW" | tr '[:upper:]' '[:lower:]')
+case "$CANVAS_ARG_NORM" in
+  1|true|t|yes|y) CANVAS_ARG=true ;;
+  0|false|f|no|n) CANVAS_ARG=false ;;
+  *) CANVAS_ARG=true ;;
+esac
 
 /Applications/Blender.app/Contents/MacOS/Blender -b -P "$DIR/batch_render.py" -- \
   --in_dir "$MODELS_DIR" \
   --out_dir "$VIDEOS_DIR" \
   --environment "$ENVIRONMENT_ARG" \
   --orbit_camera "$ORBIT_ARG" \
+  --use_canvas "$CANVAS_ARG" \
   --safari_script "$SAFARI_SCRIPT"
 
 

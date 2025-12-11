@@ -15,12 +15,17 @@ p.add_argument("--light_energy", type=float, default=599.0)
 p.add_argument("--environment", choices=["clean","black-room","white-room","night-sky","snowy-field","sky","meadow","country-club","desert","snowy-forest","desert-sky"], default="black-room")
 p.add_argument("--orbit_camera", type=lambda v: str(v).lower() in {"1","true","t","yes","y"}, default=True)
 p.add_argument("--safari_script", default=None, help="Optional path to process_movs_for_safari.sh for per-file conversion")
+p.add_argument("--use_canvas", type=lambda v: str(v).lower() in {"1","true","t","yes","y"}, default=True, help="Overlay renders onto receipt.png (1080x1080) background")
 args = p.parse_args(argv)
 
 if args.safari_script:
     args.safari_script = os.path.abspath(args.safari_script)
 
 os.makedirs(args.out_dir, exist_ok=True)
+USE_CANVAS = args.use_canvas
+BACKGROUND_PATH = os.path.join(os.path.dirname(__file__), "receipt.png")
+if USE_CANVAS and not os.path.exists(BACKGROUND_PATH):
+    raise FileNotFoundError(f"Background image not found: {BACKGROUND_PATH}")
 
 bpy.ops.wm.read_homefile(use_empty=True)
 scene = bpy.context.scene
@@ -39,6 +44,7 @@ scene.render.image_settings.file_format = "PNG"
 scene.render.image_settings.color_mode = "RGBA" if args.environment == "clean" else "RGB"
 scene.render.image_settings.color_depth = "8"
 scene.render.fps = args.fps
+TOTAL_FRAMES = scene.frame_end
 
 scene.display_settings.display_device = 'sRGB'
 if hasattr(scene, 'view_settings'):
@@ -345,36 +351,76 @@ def render_png_sequence(tmp_dir):
 
 def encode_webm(tmp_dir, out_path):
     seq = os.path.join(tmp_dir, "frame_%04d.png")
-    cmd = [
-        "ffmpeg","-y",
-        "-framerate", str(args.fps),
-        "-i", seq,
-        "-vf", f"format=rgba,scale={args.size}:{args.size}:flags=lanczos",
-        "-c:v","libvpx-vp9",
-        "-pix_fmt","yuva420p",
-        "-colorspace","bt709","-color_primaries","bt709","-color_trc","bt709","-color_range","pc",
-        "-crf","32",
-        "-b:v","0",
-        "-row-mt","1",
-        "-an",
-        out_path
-    ]
+    if USE_CANVAS:
+        cmd = [
+            "ffmpeg","-y",
+            "-loop","1","-framerate", str(args.fps), "-i", BACKGROUND_PATH,
+            "-framerate", str(args.fps), "-i", seq,
+            "-filter_complex", "[1:v]format=rgba[fg];[0:v][fg]overlay=(W-w)/2:(H-h)/2:format=rgb[out]",
+            "-map","[out]",
+            "-r", str(args.fps),
+            "-shortest",
+            "-c:v","libvpx-vp9",
+            "-pix_fmt","yuv420p",
+            "-colorspace","bt709","-color_primaries","bt709","-color_trc","bt709","-color_range","pc",
+            "-crf","32",
+            "-b:v","0",
+            "-row-mt","1",
+            "-frames:v", str(TOTAL_FRAMES),
+            "-an",
+            out_path
+        ]
+    else:
+        cmd = [
+            "ffmpeg","-y",
+            "-framerate", str(args.fps),
+            "-i", seq,
+            "-vf", f"format=rgba,scale={args.size}:{args.size}:flags=lanczos",
+            "-c:v","libvpx-vp9",
+            "-pix_fmt","yuva420p",
+            "-colorspace","bt709","-color_primaries","bt709","-color_trc","bt709","-color_range","pc",
+            "-crf","32",
+            "-b:v","0",
+            "-row-mt","1",
+            "-frames:v", str(TOTAL_FRAMES),
+            "-an",
+            out_path
+        ]
     subprocess.check_call(cmd)
 
 def encode_mov(tmp_dir, out_path):
     seq = os.path.join(tmp_dir, "frame_%04d.png")
-    cmd = [
-        "ffmpeg","-y",
-        "-framerate", str(args.fps),
-        "-i", seq,
-        "-vf", f"format=rgba,scale={args.size}:{args.size}:flags=lanczos",
-        "-c:v","prores_ks",
-        "-profile:v","4",
-        "-pix_fmt","yuva444p10le",
-        "-colorspace","bt709","-color_primaries","bt709","-color_trc","bt709","-color_range","pc",
-        "-an",
-        out_path
-    ]
+    if USE_CANVAS:
+        cmd = [
+            "ffmpeg","-y",
+            "-loop","1","-framerate", str(args.fps), "-i", BACKGROUND_PATH,
+            "-framerate", str(args.fps), "-i", seq,
+            "-filter_complex", "[1:v]format=rgba[fg];[0:v][fg]overlay=(W-w)/2:(H-h)/2:format=rgb[out]",
+            "-map","[out]",
+            "-r", str(args.fps),
+            "-shortest",
+            "-c:v","prores_ks",
+            "-profile:v","4",
+            "-pix_fmt","yuv444p10le",
+            "-colorspace","bt709","-color_primaries","bt709","-color_trc","bt709","-color_range","pc",
+            "-frames:v", str(TOTAL_FRAMES),
+            "-an",
+            out_path
+        ]
+    else:
+        cmd = [
+            "ffmpeg","-y",
+            "-framerate", str(args.fps),
+            "-i", seq,
+            "-vf", f"format=rgba,scale={args.size}:{args.size}:flags=lanczos",
+            "-c:v","prores_ks",
+            "-profile:v","4",
+            "-pix_fmt","yuva444p10le",
+            "-colorspace","bt709","-color_primaries","bt709","-color_trc","bt709","-color_range","pc",
+            "-frames:v", str(TOTAL_FRAMES),
+            "-an",
+            out_path
+        ]
     subprocess.check_call(cmd)
 
 def convert_mov_for_safari(mov_path):
