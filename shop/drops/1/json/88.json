@@ -1,0 +1,21 @@
+{
+  "name": "Dice Guy",
+  "description": "",
+  "image": "88.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "88.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

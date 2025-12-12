@@ -1,0 +1,26 @@
+{
+  "name": "Archie Pendant",
+  "description": "",
+  "image": "9.png",
+  "animation_url": "9.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "9.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "9.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

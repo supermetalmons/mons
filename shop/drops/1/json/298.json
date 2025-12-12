@@ -1,0 +1,21 @@
+{
+  "name": "Notchur",
+  "description": "",
+  "image": "298.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "298.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

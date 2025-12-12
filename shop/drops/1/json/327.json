@@ -1,0 +1,21 @@
+{
+  "name": "Priest of Talashor",
+  "description": "",
+  "image": "327.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "327.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

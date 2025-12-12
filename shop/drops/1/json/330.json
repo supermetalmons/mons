@@ -1,0 +1,21 @@
+{
+  "name": "Pro Racer",
+  "description": "",
+  "image": "330.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "330.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

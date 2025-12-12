@@ -1,0 +1,21 @@
+{
+  "name": "Golden Slime",
+  "description": "",
+  "image": "149.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "149.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

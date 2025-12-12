@@ -1,0 +1,21 @@
+{
+  "name": "Milk Bottle",
+  "description": "",
+  "image": "287.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "287.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

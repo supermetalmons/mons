@@ -1,0 +1,26 @@
+{
+  "name": "LSW Sonic",
+  "description": "",
+  "image": "250.png",
+  "animation_url": "250.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "250.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "250.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Pied",
+  "description": "",
+  "image": "314.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "314.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

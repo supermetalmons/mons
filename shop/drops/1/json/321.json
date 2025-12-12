@@ -1,0 +1,21 @@
+{
+  "name": "PolyViolet",
+  "description": "",
+  "image": "321.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "321.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Pastolor",
+  "description": "",
+  "image": "311.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "311.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

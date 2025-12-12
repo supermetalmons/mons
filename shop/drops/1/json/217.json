@@ -1,0 +1,26 @@
+{
+  "name": "LSW Dragon",
+  "description": "",
+  "image": "217.png",
+  "animation_url": "217.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "217.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "217.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Elf",
+  "description": "",
+  "image": "108.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "108.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

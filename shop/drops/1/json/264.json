@@ -1,0 +1,21 @@
+{
+  "name": "Luce",
+  "description": "",
+  "image": "264.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "264.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

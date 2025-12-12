@@ -1,0 +1,21 @@
+{
+  "name": "Pure Capsule",
+  "description": "",
+  "image": "333.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "333.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

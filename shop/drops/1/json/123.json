@@ -1,0 +1,21 @@
+{
+  "name": "Galaxy Practitioner",
+  "description": "",
+  "image": "123.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "123.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

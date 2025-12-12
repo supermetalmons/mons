@@ -1,0 +1,21 @@
+{
+  "name": "Chuck",
+  "description": "",
+  "image": "70.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "70.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

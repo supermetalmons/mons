@@ -1,0 +1,21 @@
+{
+  "name": "Golem",
+  "description": "",
+  "image": "151.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "151.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

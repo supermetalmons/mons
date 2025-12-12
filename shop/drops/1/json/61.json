@@ -1,0 +1,26 @@
+{
+  "name": "Chao Key",
+  "description": "",
+  "image": "61.png",
+  "animation_url": "61.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "61.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "61.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

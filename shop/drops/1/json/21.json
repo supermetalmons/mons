@@ -1,0 +1,21 @@
+{
+  "name": "Bashful Pup",
+  "description": "",
+  "image": "21.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "21.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

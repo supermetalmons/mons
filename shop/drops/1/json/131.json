@@ -1,0 +1,21 @@
+{
+  "name": "Genie",
+  "description": "",
+  "image": "131.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "131.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

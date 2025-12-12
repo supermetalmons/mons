@@ -1,0 +1,21 @@
+{
+  "name": "Power Driver",
+  "description": "",
+  "image": "324.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "324.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

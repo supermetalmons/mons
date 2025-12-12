@@ -1,0 +1,26 @@
+{
+  "name": "Mana Drop",
+  "description": "",
+  "image": "271.png",
+  "animation_url": "271.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "271.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "271.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

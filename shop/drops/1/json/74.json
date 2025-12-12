@@ -1,0 +1,26 @@
+{
+  "name": "Clown Rival",
+  "description": "",
+  "image": "74.png",
+  "animation_url": "74.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "74.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "74.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

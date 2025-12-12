@@ -1,0 +1,21 @@
+{
+  "name": "Fauxcat",
+  "description": "",
+  "image": "114.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "114.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "LSW Silver",
+  "description": "",
+  "image": "248.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "248.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

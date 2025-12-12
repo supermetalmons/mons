@@ -1,0 +1,21 @@
+{
+  "name": "Pinhead",
+  "description": "",
+  "image": "315.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "315.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

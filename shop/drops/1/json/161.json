@@ -1,0 +1,21 @@
+{
+  "name": "Guard of Purity and Anguish",
+  "description": "",
+  "image": "161.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "161.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "LSW Thief",
+  "description": "",
+  "image": "254.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "254.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

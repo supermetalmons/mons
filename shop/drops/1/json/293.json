@@ -1,0 +1,21 @@
+{
+  "name": "Mondrian",
+  "description": "",
+  "image": "293.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "293.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

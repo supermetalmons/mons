@@ -1,0 +1,21 @@
+{
+  "name": "Glitch Radiohead",
+  "description": "",
+  "image": "136.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "136.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

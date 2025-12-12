@@ -1,0 +1,26 @@
+{
+  "name": "George with Sleepy Mystic Pog Hat",
+  "description": "",
+  "image": "132.png",
+  "animation_url": "132.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "132.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "132.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

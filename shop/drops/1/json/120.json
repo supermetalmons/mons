@@ -1,0 +1,21 @@
+{
+  "name": "Fried Star",
+  "description": "",
+  "image": "120.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "120.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

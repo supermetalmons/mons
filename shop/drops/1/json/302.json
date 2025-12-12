@@ -1,0 +1,26 @@
+{
+  "name": "Oh... a Wizard",
+  "description": "",
+  "image": "302.png",
+  "animation_url": "302.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "302.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "302.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

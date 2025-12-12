@@ -1,0 +1,21 @@
+{
+  "name": "Inverted Paladin",
+  "description": "",
+  "image": "191.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "191.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Busta Pagumon 2",
+  "description": "",
+  "image": "51.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "51.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

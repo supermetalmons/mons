@@ -1,0 +1,21 @@
+{
+  "name": "LSW Soldier",
+  "description": "",
+  "image": "249.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "249.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

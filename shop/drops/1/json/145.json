@@ -1,0 +1,21 @@
+{
+  "name": "Gold Swoop",
+  "description": "",
+  "image": "145.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "145.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Ice Sorcerer",
+  "description": "",
+  "image": "187.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "187.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

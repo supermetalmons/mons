@@ -1,0 +1,26 @@
+{
+  "name": "Golden Heart Chest",
+  "description": "",
+  "image": "148.png",
+  "animation_url": "148.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "148.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "148.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

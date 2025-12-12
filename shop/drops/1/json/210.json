@@ -1,0 +1,26 @@
+{
+  "name": "LSW Blue Drifella Hood",
+  "description": "",
+  "image": "210.png",
+  "animation_url": "210.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "210.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "210.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

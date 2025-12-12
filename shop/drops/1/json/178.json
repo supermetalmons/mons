@@ -1,0 +1,21 @@
+{
+  "name": "Hippie",
+  "description": "",
+  "image": "178.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "178.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

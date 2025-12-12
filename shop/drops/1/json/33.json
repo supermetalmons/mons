@@ -1,0 +1,21 @@
+{
+  "name": "Bonic",
+  "description": "",
+  "image": "33.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "33.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

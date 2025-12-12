@@ -1,0 +1,21 @@
+{
+  "name": "Greymon",
+  "description": "",
+  "image": "159.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "159.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "LSW Nett",
+  "description": "",
+  "image": "241.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "241.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

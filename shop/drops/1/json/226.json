@@ -1,0 +1,21 @@
+{
+  "name": "LSW Golden Blue Shell",
+  "description": "",
+  "image": "226.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "226.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

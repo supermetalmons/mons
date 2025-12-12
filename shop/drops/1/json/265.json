@@ -1,0 +1,21 @@
+{
+  "name": "Lucky Worker Chain",
+  "description": "",
+  "image": "265.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "265.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

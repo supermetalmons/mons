@@ -1,0 +1,21 @@
+{
+  "name": "Lego",
+  "description": "",
+  "image": "262.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "262.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

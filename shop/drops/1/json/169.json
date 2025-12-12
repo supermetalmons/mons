@@ -1,0 +1,21 @@
+{
+  "name": "Happy Encapsulated Boy within a Star",
+  "description": "",
+  "image": "169.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "169.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

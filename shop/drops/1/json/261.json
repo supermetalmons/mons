@@ -1,0 +1,21 @@
+{
+  "name": "LeatherPumch",
+  "description": "",
+  "image": "261.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "261.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

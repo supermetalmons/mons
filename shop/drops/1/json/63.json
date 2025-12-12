@@ -1,0 +1,26 @@
+{
+  "name": "Cheivy",
+  "description": "",
+  "image": "63.png",
+  "animation_url": "63.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "63.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "63.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

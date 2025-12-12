@@ -1,0 +1,21 @@
+{
+  "name": "Glitterfly",
+  "description": "",
+  "image": "137.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "137.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

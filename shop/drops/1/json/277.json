@@ -1,0 +1,21 @@
+{
+  "name": "Melchron",
+  "description": "",
+  "image": "277.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "277.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

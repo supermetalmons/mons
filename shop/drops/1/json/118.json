@@ -1,0 +1,21 @@
+{
+  "name": "Flowerkid",
+  "description": "",
+  "image": "118.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "118.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

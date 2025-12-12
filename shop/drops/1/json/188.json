@@ -1,0 +1,21 @@
+{
+  "name": "Iced Out Oxfale",
+  "description": "",
+  "image": "188.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "188.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

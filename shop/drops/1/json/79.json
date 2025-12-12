@@ -1,0 +1,21 @@
+{
+  "name": "Cousin",
+  "description": "",
+  "image": "79.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "79.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Guyro",
+  "description": "",
+  "image": "165.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "165.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Busta Piplup",
+  "description": "",
+  "image": "53.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "53.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

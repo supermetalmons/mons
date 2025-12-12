@@ -1,0 +1,21 @@
+{
+  "name": "Heraldo",
+  "description": "",
+  "image": "176.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "176.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

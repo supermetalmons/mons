@@ -1,0 +1,21 @@
+{
+  "name": "Bomberhead",
+  "description": "",
+  "image": "32.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "32.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

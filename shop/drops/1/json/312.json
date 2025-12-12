@@ -1,0 +1,21 @@
+{
+  "name": "Pet Dog",
+  "description": "",
+  "image": "312.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "312.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Bashful Spike Drop",
+  "description": "",
+  "image": "22.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "22.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

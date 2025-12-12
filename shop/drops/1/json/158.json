@@ -1,0 +1,21 @@
+{
+  "name": "Grekplin",
+  "description": "",
+  "image": "158.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "158.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

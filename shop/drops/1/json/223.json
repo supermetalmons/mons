@@ -1,0 +1,21 @@
+{
+  "name": "LSW Galaxy",
+  "description": "",
+  "image": "223.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "223.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

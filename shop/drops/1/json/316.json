@@ -1,0 +1,26 @@
+{
+  "name": "Pink Gummy Star",
+  "description": "",
+  "image": "316.png",
+  "animation_url": "316.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "316.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "316.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

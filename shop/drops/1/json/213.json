@@ -1,0 +1,21 @@
+{
+  "name": "LSW Cookie",
+  "description": "",
+  "image": "213.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "213.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

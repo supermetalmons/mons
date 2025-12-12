@@ -1,0 +1,21 @@
+{
+  "name": "LSW Panda",
+  "description": "",
+  "image": "242.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "242.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

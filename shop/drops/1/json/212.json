@@ -1,0 +1,21 @@
+{
+  "name": "LSW Chrome Hat",
+  "description": "",
+  "image": "212.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "212.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

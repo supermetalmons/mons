@@ -1,0 +1,21 @@
+{
+  "name": "E. Honda",
+  "description": "",
+  "image": "104.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "104.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

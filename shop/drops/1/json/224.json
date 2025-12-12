@@ -1,0 +1,26 @@
+{
+  "name": "LSW General",
+  "description": "",
+  "image": "224.png",
+  "animation_url": "224.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "224.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "224.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

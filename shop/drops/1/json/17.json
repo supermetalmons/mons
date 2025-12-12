@@ -1,0 +1,26 @@
+{
+  "name": "Baby Vampi",
+  "description": "",
+  "image": "17.png",
+  "animation_url": "17.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "17.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "17.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Justin",
+  "description": "",
+  "image": "200.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "200.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

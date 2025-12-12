@@ -1,0 +1,26 @@
+{
+  "name": "Bunt",
+  "description": "",
+  "image": "50.png",
+  "animation_url": "50.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "50.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "50.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

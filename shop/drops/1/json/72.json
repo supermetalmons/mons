@@ -1,0 +1,21 @@
+{
+  "name": "Cigawrette Pack",
+  "description": "",
+  "image": "72.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "72.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

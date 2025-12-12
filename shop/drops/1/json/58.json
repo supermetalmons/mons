@@ -1,0 +1,21 @@
+{
+  "name": "Captain Chef",
+  "description": "",
+  "image": "58.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "58.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

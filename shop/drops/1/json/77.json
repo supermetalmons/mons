@@ -1,0 +1,21 @@
+{
+  "name": "Communicator",
+  "description": "",
+  "image": "77.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "77.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

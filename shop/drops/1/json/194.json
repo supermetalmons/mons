@@ -1,0 +1,21 @@
+{
+  "name": "Jack with Makeup",
+  "description": "",
+  "image": "194.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "194.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

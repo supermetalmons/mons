@@ -1,0 +1,21 @@
+{
+  "name": "Party Tyrogue",
+  "description": "",
+  "image": "310.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "310.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

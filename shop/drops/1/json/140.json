@@ -1,0 +1,21 @@
+{
+  "name": "Gold Gorilla",
+  "description": "",
+  "image": "140.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "140.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

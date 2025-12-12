@@ -1,0 +1,26 @@
+{
+  "name": "LSW Knit Mimikyu",
+  "description": "",
+  "image": "236.png",
+  "animation_url": "236.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "236.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "236.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

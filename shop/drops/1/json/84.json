@@ -1,0 +1,21 @@
+{
+  "name": "David",
+  "description": "",
+  "image": "84.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "84.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

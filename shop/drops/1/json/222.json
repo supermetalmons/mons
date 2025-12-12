@@ -1,0 +1,21 @@
+{
+  "name": "LSW Galaxy Frog",
+  "description": "",
+  "image": "222.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "222.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

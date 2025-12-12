@@ -1,0 +1,26 @@
+{
+  "name": "Mimelord",
+  "description": "",
+  "image": "289.png",
+  "animation_url": "289.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "289.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "289.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

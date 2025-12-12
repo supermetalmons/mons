@@ -1,0 +1,21 @@
+{
+  "name": "Clown Mewtwo",
+  "description": "",
+  "image": "73.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "73.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

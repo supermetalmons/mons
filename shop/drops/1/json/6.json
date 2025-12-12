@@ -1,0 +1,21 @@
+{
+  "name": "Anvil Stardust",
+  "description": "",
+  "image": "6.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "6.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

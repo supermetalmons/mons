@@ -1,0 +1,21 @@
+{
+  "name": "Boy Star Follower",
+  "description": "",
+  "image": "39.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "39.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

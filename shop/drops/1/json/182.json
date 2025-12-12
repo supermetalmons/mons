@@ -1,0 +1,21 @@
+{
+  "name": "Honey Badger",
+  "description": "",
+  "image": "182.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "182.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

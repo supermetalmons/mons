@@ -1,0 +1,21 @@
+{
+  "name": "Gum Ninja",
+  "description": "",
+  "image": "162.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "162.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "Chrome Anime Rival",
+  "description": "",
+  "image": "68.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "68.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

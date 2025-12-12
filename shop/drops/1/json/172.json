@@ -1,0 +1,21 @@
+{
+  "name": "Headset Figmata",
+  "description": "",
+  "image": "172.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "172.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

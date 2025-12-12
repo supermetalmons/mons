@@ -1,0 +1,21 @@
+{
+  "name": "Lewis Chess King",
+  "description": "",
+  "image": "263.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "263.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

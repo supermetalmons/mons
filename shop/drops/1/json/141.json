@@ -1,0 +1,21 @@
+{
+  "name": "Gold Melly Mil",
+  "description": "",
+  "image": "141.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "141.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

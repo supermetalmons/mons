@@ -1,0 +1,21 @@
+{
+  "name": "LSW Dog",
+  "description": "",
+  "image": "216.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "216.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

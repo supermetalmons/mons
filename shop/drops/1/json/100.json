@@ -1,0 +1,21 @@
+{
+  "name": "Drifella",
+  "description": "",
+  "image": "100.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "100.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "name": "Boggle Hands",
+  "description": "",
+  "image": "31.png",
+  "animation_url": "31.mp4",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "yes"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "31.png",
+        "type": "image/png"
+      },
+      {
+        "uri": "31.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
+}

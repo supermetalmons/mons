@@ -1,0 +1,21 @@
+{
+  "name": "Drif Triptych",
+  "description": "",
+  "image": "98.png",
+  "external_url": "https://mons.link",
+  "attributes": [
+    {
+      "trait_type": "animated",
+      "value": "no"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "98.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}
