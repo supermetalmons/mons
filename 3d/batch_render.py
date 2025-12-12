@@ -23,7 +23,7 @@ if args.safari_script:
 
 os.makedirs(args.out_dir, exist_ok=True)
 USE_CANVAS = args.use_canvas
-CANVAS_FG_SIZE = 420
+CANVAS_FG_SIZE = 475
 BACKGROUND_PATH = os.path.join(os.path.dirname(__file__), "receipt.png")
 if USE_CANVAS and not os.path.exists(BACKGROUND_PATH):
     raise FileNotFoundError(f"Background image not found: {BACKGROUND_PATH}")
