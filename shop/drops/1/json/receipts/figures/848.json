@@ -1,14 +1,14 @@
 {
-    "id": 1,
-    "name": "Ghost — Receipt",
+    "id": 848,
+    "name": "Hoodie 2 — Receipt",
     "description": "",
     "image": "",
-    "animation_url": "receipts/1.mp4",
+    "animation_url": "receipts/182.mp4",
     "external_url": "https://mons.shop",
     "attributes": [
         {
             "trait_type": "Name",
-            "value": "Ghost — Receipt"
+            "value": "Hoodie 2 — Receipt"
         },
         {
             "trait_type": "Color",
@@ -22,7 +22,7 @@
     "properties": {
         "files": [
             {
-                "uri": "1.mp4",
+                "uri": "182.mp4",
                 "type": "video/mp4"
             }
         ],

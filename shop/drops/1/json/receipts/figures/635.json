@@ -1,28 +1,28 @@
 {
-    "id": 1,
-    "name": "Ghost — Receipt",
+    "id": 635,
+    "name": "Hayabusa — Receipt",
     "description": "",
     "image": "",
-    "animation_url": "receipts/1.mp4",
+    "animation_url": "receipts/302.mp4",
     "external_url": "https://mons.shop",
     "attributes": [
         {
             "trait_type": "Name",
-            "value": "Ghost — Receipt"
+            "value": "Hayabusa — Receipt"
         },
         {
             "trait_type": "Color",
-            "value": "Gunmetal"
+            "value": "Icy Blue"
         },
         {
             "trait_type": "Extra Finish",
-            "value": "Paint Splatter"
+            "value": "None"
         }
     ],
     "properties": {
         "files": [
             {
-                "uri": "1.mp4",
+                "uri": "302.mp4",
                 "type": "video/mp4"
             }
         ],

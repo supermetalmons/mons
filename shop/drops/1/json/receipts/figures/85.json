@@ -1,28 +1,28 @@
 {
-    "id": 1,
-    "name": "Ghost — Receipt",
+    "id": 85,
+    "name": "Hikki Cloud Form — Receipt",
     "description": "",
     "image": "",
-    "animation_url": "receipts/1.mp4",
+    "animation_url": "receipts/85.mp4",
     "external_url": "https://mons.shop",
     "attributes": [
         {
             "trait_type": "Name",
-            "value": "Ghost — Receipt"
+            "value": "Hikki Cloud Form — Receipt"
         },
         {
             "trait_type": "Color",
-            "value": "Gunmetal"
+            "value": "Clear"
         },
         {
             "trait_type": "Extra Finish",
-            "value": "Paint Splatter"
+            "value": "None"
         }
     ],
     "properties": {
         "files": [
             {
-                "uri": "1.mp4",
+                "uri": "85.mp4",
                 "type": "video/mp4"
             }
         ],
