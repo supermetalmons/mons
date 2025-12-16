@@ -1,21 +1,24 @@
 {
-  "name": "3D Chleb",
-  "description": "",
-  "image": "0.png",
-  "external_url": "https://mons.link",
-  "attributes": [
-    {
-      "trait_type": "animated",
-      "value": "no"
-    }
-  ],
+  "name": "test boxes",
+  "symbol": "testboxes",
+  "description": "test boxes and certs collection",
+  "image": "https://assets.mons.link/shop/drops/1/box/default.webp",
+  "external_url": "https://mons.shop",
+  "seller_fee_basis_points": 0,
+  "attributes": [],
   "properties": {
     "files": [
       {
-        "uri": "0.png",
+        "uri": "https://assets.mons.link/shop/drops/1/box/default.webp",
         "type": "image/png"
       }
     ],
-    "category": "image"
+    "category": "image",
+    "creators": [
+      {
+        "address": "Aj42b5TrjeZyAVeZVxpjV8nxQ7CSExjmYV42NwuFcjqa",
+        "share": 100
+      }
+    ]
   }
 }
