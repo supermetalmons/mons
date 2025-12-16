@@ -1,0 +1,22 @@
+{
+    "id": 75,
+    "name": "Box 75",
+    "description": "",
+    "image": "box/default.webp",
+    "external_url": "https://mons.shop",
+    "attributes": [
+        {
+            "trait_type": "Name",
+            "value": "Box 75"
+        }
+    ],
+    "properties": {
+        "files": [
+            {
+                "uri": "box/default.webp",
+                "type": "image/webp"
+            }
+        ],
+        "category": "image"
+    }
+}
