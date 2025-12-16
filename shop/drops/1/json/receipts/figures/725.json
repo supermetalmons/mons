@@ -1,31 +1,31 @@
 {
-    "id": 725,
-    "name": "Drifella Hoodie — Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/59.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Drifella Hoodie — Receipt"
-        },
-        {
-            "trait_type": "Color",
-            "value": "Light Pink"
-        },
-        {
-            "trait_type": "Extra Finish",
-            "value": "Paint Splatter"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "59.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 725,
+  "name": "Drifella Hoodie \u2014 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/59.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Drifella Hoodie \u2014 Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/59.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }

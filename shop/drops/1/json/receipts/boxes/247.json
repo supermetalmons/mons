@@ -1,23 +1,23 @@
 {
-    "id": 247,
-    "name": "Box 247 Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/box.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Box 247 Receipt"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "receipts/box.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 247,
+  "name": "Box 247 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/box.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Box 247 Receipt"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/box.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }

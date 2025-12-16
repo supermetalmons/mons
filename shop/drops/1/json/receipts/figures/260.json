@@ -1,31 +1,31 @@
 {
-    "id": 260,
-    "name": "Birdy Mon — Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/260.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Birdy Mon — Receipt"
-        },
-        {
-            "trait_type": "Color",
-            "value": "Light Mint Green"
-        },
-        {
-            "trait_type": "Extra Finish",
-            "value": "None"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "260.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 260,
+  "name": "Birdy Mon \u2014 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/260.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Birdy Mon \u2014 Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/260.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }

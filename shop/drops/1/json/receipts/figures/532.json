@@ -1,31 +1,31 @@
 {
-    "id": 532,
-    "name": "Ghost Impmon — Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/199.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Ghost Impmon — Receipt"
-        },
-        {
-            "trait_type": "Color",
-            "value": "Purple"
-        },
-        {
-            "trait_type": "Extra Finish",
-            "value": "Paint Splatter"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "199.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 532,
+  "name": "Ghost Impmon \u2014 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/199.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Ghost Impmon \u2014 Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Purple"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/199.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }

@@ -1,31 +1,31 @@
 {
-    "id": 638,
-    "name": "General — Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/305.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "General — Receipt"
-        },
-        {
-            "trait_type": "Color",
-            "value": "Purple"
-        },
-        {
-            "trait_type": "Extra Finish",
-            "value": "None"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "305.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 638,
+  "name": "General \u2014 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/305.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "General \u2014 Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Purple"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/305.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }

@@ -1,31 +1,31 @@
 {
-    "id": 728,
-    "name": "Bazooka — Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/62.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Bazooka — Receipt"
-        },
-        {
-            "trait_type": "Color",
-            "value": "Gum Pink"
-        },
-        {
-            "trait_type": "Extra Finish",
-            "value": "Paint Splatter"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "62.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 728,
+  "name": "Bazooka \u2014 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/62.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Bazooka \u2014 Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gum Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/62.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }

@@ -1,31 +1,31 @@
 {
-    "id": 52,
-    "name": "Cod — Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/52.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Cod — Receipt"
-        },
-        {
-            "trait_type": "Color",
-            "value": "Blue"
-        },
-        {
-            "trait_type": "Extra Finish",
-            "value": "Paint Splatter"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "52.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 52,
+  "name": "Cod \u2014 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/52.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Cod \u2014 Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/52.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }

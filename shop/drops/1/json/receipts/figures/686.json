@@ -1,31 +1,31 @@
 {
-    "id": 686,
-    "name": "Toon Drifella Hoodie — Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/20.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Toon Drifella Hoodie — Receipt"
-        },
-        {
-            "trait_type": "Color",
-            "value": "Handpainted"
-        },
-        {
-            "trait_type": "Extra Finish",
-            "value": "None"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "20.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 686,
+  "name": "Toon Drifella Hoodie \u2014 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/20.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Toon Drifella Hoodie \u2014 Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Handpainted"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/20.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }

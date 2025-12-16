@@ -1,31 +1,31 @@
 {
-    "id": 741,
-    "name": "Hikki Cloud Form — Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/75.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Hikki Cloud Form — Receipt"
-        },
-        {
-            "trait_type": "Color",
-            "value": "Light Gray"
-        },
-        {
-            "trait_type": "Extra Finish",
-            "value": "None"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "75.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 741,
+  "name": "Hikki Cloud Form \u2014 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/75.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Hikki Cloud Form \u2014 Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/75.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }

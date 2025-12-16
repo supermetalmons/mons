@@ -1,31 +1,31 @@
 {
-    "id": 310,
-    "name": "Wing Helmet — Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/310.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Wing Helmet — Receipt"
-        },
-        {
-            "trait_type": "Color",
-            "value": "Transparent Gray"
-        },
-        {
-            "trait_type": "Extra Finish",
-            "value": "None"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "310.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 310,
+  "name": "Wing Helmet \u2014 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/310.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Wing Helmet \u2014 Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Transparent Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/310.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }

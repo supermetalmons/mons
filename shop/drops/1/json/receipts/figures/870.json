@@ -1,31 +1,31 @@
 {
-    "id": 870,
-    "name": "Blue Eyes — Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/204.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Blue Eyes — Receipt"
-        },
-        {
-            "trait_type": "Color",
-            "value": "Tarnished Gunmetal"
-        },
-        {
-            "trait_type": "Extra Finish",
-            "value": "None"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "204.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 870,
+  "name": "Blue Eyes \u2014 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/204.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Blue Eyes \u2014 Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Tarnished Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/204.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }

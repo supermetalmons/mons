@@ -1,24 +1,23 @@
 {
-    "id": 1,
-    "name": "Box 1 Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/box.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
+  "id": 1,
+  "name": "Box 1 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/box.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Box 1 Receipt"
+    }
+  ],
+  "properties": {
+    "files": [
       {
-        "trait_type": "Name",
-        "value": "Box 1 Receipt"
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/box.mp4",
+        "type": "video/mp4"
       }
     ],
-    "properties": {
-      "files": [
-        {
-          "uri": "receipts/box.mp4",
-          "type": "video/mp4"
-        }
-      ],
-      "category": "video"
-    }
+    "category": "video"
   }
-  
+}

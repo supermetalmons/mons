@@ -1,31 +1,31 @@
 {
-    "id": 335,
-    "name": "Robot Cat — Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/2.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Robot Cat — Receipt"
-        },
-        {
-            "trait_type": "Color",
-            "value": "Black"
-        },
-        {
-            "trait_type": "Extra Finish",
-            "value": "Glitter"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "2.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 335,
+  "name": "Robot Cat \u2014 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/2.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Robot Cat \u2014 Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Black"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Glitter"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/2.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }

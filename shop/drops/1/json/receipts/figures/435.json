@@ -1,31 +1,31 @@
 {
-    "id": 435,
-    "name": "Hayabusa — Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/102.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Hayabusa — Receipt"
-        },
-        {
-            "trait_type": "Color",
-            "value": "Mint Green"
-        },
-        {
-            "trait_type": "Extra Finish",
-            "value": "None"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "102.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 435,
+  "name": "Hayabusa \u2014 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/102.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Hayabusa \u2014 Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/102.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }

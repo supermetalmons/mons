@@ -1,31 +1,31 @@
 {
-    "id": 854,
-    "name": "Mimikyu — Receipt",
-    "description": "",
-    "image": "",
-    "animation_url": "receipts/188.mp4",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Mimikyu — Receipt"
-        },
-        {
-            "trait_type": "Color",
-            "value": "Grape Wine"
-        },
-        {
-            "trait_type": "Extra Finish",
-            "value": "Paint Splatter"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "188.mp4",
-                "type": "video/mp4"
-            }
-        ],
-        "category": "video"
+  "id": 854,
+  "name": "Mimikyu \u2014 Receipt",
+  "description": "",
+  "image": "",
+  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/188.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Mimikyu \u2014 Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Grape Wine"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/188.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  }
 }
