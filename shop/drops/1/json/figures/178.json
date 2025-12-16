@@ -2,7 +2,7 @@
   "id": 178,
   "name": "Birdy Mon",
   "description": "",
-  "image": "178.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/178.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "178.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/178.webp",
         "type": "image/webp"
       }
     ],

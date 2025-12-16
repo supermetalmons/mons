@@ -2,7 +2,7 @@
   "id": 398,
   "name": "Frazetta Helm",
   "description": "",
-  "image": "65.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/65.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "65.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/65.webp",
         "type": "image/webp"
       }
     ],

@@ -2,7 +2,7 @@
   "id": 492,
   "name": "Monster Energy",
   "description": "",
-  "image": "159.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/159.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "159.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/159.webp",
         "type": "image/webp"
       }
     ],

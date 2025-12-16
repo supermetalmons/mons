@@ -2,7 +2,7 @@
   "id": 204,
   "name": "Blue Eyes",
   "description": "",
-  "image": "204.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/204.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "204.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/204.webp",
         "type": "image/webp"
       }
     ],

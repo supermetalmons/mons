@@ -2,7 +2,7 @@
   "id": 470,
   "name": "Thief",
   "description": "",
-  "image": "137.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/137.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "137.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/137.webp",
         "type": "image/webp"
       }
     ],

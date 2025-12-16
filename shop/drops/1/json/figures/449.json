@@ -2,7 +2,7 @@
   "id": 449,
   "name": "Ghost",
   "description": "",
-  "image": "116.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/116.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "116.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/116.webp",
         "type": "image/webp"
       }
     ],

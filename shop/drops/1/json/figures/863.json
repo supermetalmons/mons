@@ -2,7 +2,7 @@
   "id": 863,
   "name": "Ventilator",
   "description": "",
-  "image": "197.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/197.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "197.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/197.webp",
         "type": "image/webp"
       }
     ],

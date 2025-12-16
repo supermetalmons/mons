@@ -2,7 +2,7 @@
   "id": 733,
   "name": "Impmon",
   "description": "",
-  "image": "67.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/67.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "67.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/67.webp",
         "type": "image/webp"
       }
     ],

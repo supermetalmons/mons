@@ -2,7 +2,7 @@
   "id": 603,
   "name": "Ghost Impmon",
   "description": "",
-  "image": "270.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/270.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "270.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/270.webp",
         "type": "image/webp"
       }
     ],

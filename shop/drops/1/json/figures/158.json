@@ -2,7 +2,7 @@
   "id": 158,
   "name": "Candy Burger Spider",
   "description": "",
-  "image": "158.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/158.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "158.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/158.webp",
         "type": "image/webp"
       }
     ],

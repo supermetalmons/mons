@@ -2,7 +2,7 @@
   "id": 476,
   "name": "Robot Cat",
   "description": "",
-  "image": "143.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/143.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "143.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/143.webp",
         "type": "image/webp"
       }
     ],

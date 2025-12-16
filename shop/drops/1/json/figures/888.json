@@ -2,7 +2,7 @@
   "id": 888,
   "name": "Russian Hat",
   "description": "",
-  "image": "222.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/222.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "222.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/222.webp",
         "type": "image/webp"
       }
     ],

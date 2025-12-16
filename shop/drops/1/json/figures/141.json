@@ -2,7 +2,7 @@
   "id": 141,
   "name": "Frog",
   "description": "",
-  "image": "141.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/141.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "141.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/141.webp",
         "type": "image/webp"
       }
     ],

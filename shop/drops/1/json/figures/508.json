@@ -2,7 +2,7 @@
   "id": 508,
   "name": "Reaper",
   "description": "",
-  "image": "175.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/175.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "175.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/175.webp",
         "type": "image/webp"
       }
     ],

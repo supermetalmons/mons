@@ -2,7 +2,7 @@
   "id": 406,
   "name": "Hayabusa",
   "description": "",
-  "image": "73.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/73.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "73.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/73.webp",
         "type": "image/webp"
       }
     ],

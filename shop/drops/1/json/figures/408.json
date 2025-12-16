@@ -2,7 +2,7 @@
   "id": 408,
   "name": "Hikki Cloud Form",
   "description": "",
-  "image": "75.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/75.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "75.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/75.webp",
         "type": "image/webp"
       }
     ],

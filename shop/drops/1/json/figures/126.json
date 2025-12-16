@@ -2,7 +2,7 @@
   "id": 126,
   "name": "Spiky",
   "description": "",
-  "image": "126.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/126.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "126.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/126.webp",
         "type": "image/webp"
       }
     ],

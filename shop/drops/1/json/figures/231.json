@@ -2,7 +2,7 @@
   "id": 231,
   "name": "General",
   "description": "",
-  "image": "231.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/231.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "231.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/231.webp",
         "type": "image/webp"
       }
     ],

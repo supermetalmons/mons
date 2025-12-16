@@ -2,7 +2,7 @@
   "id": 113,
   "name": "Hackmon",
   "description": "",
-  "image": "113.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/113.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "113.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/113.webp",
         "type": "image/webp"
       }
     ],

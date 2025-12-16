@@ -2,7 +2,7 @@
   "id": 319,
   "name": "Icy Cinnamon Roll",
   "description": "",
-  "image": "319.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/319.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "319.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/319.webp",
         "type": "image/webp"
       }
     ],

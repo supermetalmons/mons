@@ -2,7 +2,7 @@
   "id": 755,
   "name": "Wing Helmet",
   "description": "",
-  "image": "89.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/89.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "89.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/89.webp",
         "type": "image/webp"
       }
     ],

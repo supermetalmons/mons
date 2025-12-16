@@ -2,7 +2,7 @@
   "id": 526,
   "name": "Blue Shell",
   "description": "",
-  "image": "193.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/193.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "193.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/193.webp",
         "type": "image/webp"
       }
     ],

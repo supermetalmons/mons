@@ -2,7 +2,7 @@
   "id": 395,
   "name": "Bazooka",
   "description": "",
-  "image": "62.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/62.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "62.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/62.webp",
         "type": "image/webp"
       }
     ],

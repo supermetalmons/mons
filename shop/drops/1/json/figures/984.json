@@ -2,7 +2,7 @@
   "id": 984,
   "name": "Kenny",
   "description": "",
-  "image": "318.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/318.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "318.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/318.webp",
         "type": "image/webp"
       }
     ],

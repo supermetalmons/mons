@@ -2,7 +2,7 @@
   "id": 618,
   "name": "Ye Bear",
   "description": "",
-  "image": "285.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/285.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "285.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/285.webp",
         "type": "image/webp"
       }
     ],

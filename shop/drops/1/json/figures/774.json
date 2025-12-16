@@ -2,7 +2,7 @@
   "id": 774,
   "name": "Skull",
   "description": "",
-  "image": "108.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/108.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "108.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/108.webp",
         "type": "image/webp"
       }
     ],

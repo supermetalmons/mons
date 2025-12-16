@@ -2,7 +2,7 @@
   "id": 150,
   "name": "Cod",
   "description": "",
-  "image": "150.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/150.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "150.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/150.webp",
         "type": "image/webp"
       }
     ],

@@ -2,7 +2,7 @@
   "id": 9,
   "name": "Drifella Hoodie",
   "description": "",
-  "image": "9.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/9.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "9.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/9.webp",
         "type": "image/webp"
       }
     ],

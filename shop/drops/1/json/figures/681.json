@@ -2,7 +2,7 @@
   "id": 681,
   "name": "Jester",
   "description": "",
-  "image": "15.webp",
+  "image": "https://assets.mons.link/shop/drops/1/figures/15.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "15.webp",
+        "uri": "https://assets.mons.link/shop/drops/1/figures/15.webp",
         "type": "image/webp"
       }
     ],
