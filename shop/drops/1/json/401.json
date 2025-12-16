@@ -1,0 +1,29 @@
+{
+  "name": "Ghost 2",
+  "description": "",
+  "image": "68.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Ghost 2"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "68.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

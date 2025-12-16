@@ -1,0 +1,29 @@
+{
+  "name": "Ye Bear",
+  "description": "",
+  "image": "317.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Ye Bear"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Handpainted"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "317.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

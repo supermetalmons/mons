@@ -1,0 +1,29 @@
+{
+  "name": "Thief",
+  "description": "",
+  "image": "255.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Thief"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Purple"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "255.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

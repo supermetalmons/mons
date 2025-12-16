@@ -1,0 +1,29 @@
+{
+  "name": "Candy Burger Spider",
+  "description": "",
+  "image": "45.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Candy Burger Spider"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "45.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

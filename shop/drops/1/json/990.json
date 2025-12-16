@@ -1,0 +1,29 @@
+{
+  "name": "Hayabusa",
+  "description": "",
+  "image": "324.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Hayabusa"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Transparent Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "324.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Steelix",
+  "description": "",
+  "image": "168.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Steelix"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "168.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

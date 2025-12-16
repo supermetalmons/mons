@@ -1,0 +1,29 @@
+{
+  "name": "Spiky",
+  "description": "",
+  "image": "264.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Spiky"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "264.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

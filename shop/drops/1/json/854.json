@@ -1,0 +1,29 @@
+{
+  "name": "Mimikyu",
+  "description": "",
+  "image": "188.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Mimikyu"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Grape Wine"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "188.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

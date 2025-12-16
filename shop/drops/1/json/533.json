@@ -1,0 +1,29 @@
+{
+  "name": "Reaper",
+  "description": "",
+  "image": "200.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Reaper"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "200.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

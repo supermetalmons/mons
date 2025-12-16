@@ -1,0 +1,29 @@
+{
+  "name": "Robot Cat",
+  "description": "",
+  "image": "103.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Robot Cat"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "103.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

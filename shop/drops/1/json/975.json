@@ -1,0 +1,29 @@
+{
+  "name": "Ghost",
+  "description": "",
+  "image": "309.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Ghost"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "309.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

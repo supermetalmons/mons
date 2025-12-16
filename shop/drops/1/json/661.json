@@ -1,0 +1,29 @@
+{
+  "name": "Hoodie 2",
+  "description": "",
+  "image": "328.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Hoodie 2"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Handpainted"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "328.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

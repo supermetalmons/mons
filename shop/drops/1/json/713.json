@@ -1,0 +1,29 @@
+{
+  "name": "Monster Energy",
+  "description": "",
+  "image": "47.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Monster Energy"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Flesh"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "47.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

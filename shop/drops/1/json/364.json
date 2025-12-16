@@ -1,0 +1,29 @@
+{
+  "name": "Spiky",
+  "description": "",
+  "image": "31.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Spiky"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "31.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

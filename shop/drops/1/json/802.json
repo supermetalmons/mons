@@ -1,0 +1,29 @@
+{
+  "name": "Cod",
+  "description": "",
+  "image": "136.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Cod"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Purple"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "136.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

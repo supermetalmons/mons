@@ -1,0 +1,29 @@
+{
+  "name": "Ghost Impmon",
+  "description": "",
+  "image": "301.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Ghost Impmon"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "301.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

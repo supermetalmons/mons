@@ -1,0 +1,29 @@
+{
+  "name": "Hoodie 2",
+  "description": "",
+  "image": "182.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Hoodie 2"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "182.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

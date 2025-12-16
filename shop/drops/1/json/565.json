@@ -1,0 +1,29 @@
+{
+  "name": "Frazetta Helm",
+  "description": "",
+  "image": "232.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Frazetta Helm"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "232.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Wing Helmet",
+  "description": "",
+  "image": "32.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Wing Helmet"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gold"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "32.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Wing Helmet",
+  "description": "",
+  "image": "89.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Wing Helmet"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Transparent Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Glitter"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "89.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

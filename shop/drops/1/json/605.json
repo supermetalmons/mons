@@ -1,0 +1,29 @@
+{
+  "name": "Birdy Mon",
+  "description": "",
+  "image": "272.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Birdy Mon"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "272.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Dual Wield",
+  "description": "",
+  "image": "130.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Dual Wield"
+    },
+    {
+      "trait_type": "Color",
+      "value": "White"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "130.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

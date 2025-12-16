@@ -1,0 +1,29 @@
+{
+  "name": "Toon Drifella Hoodie",
+  "description": "",
+  "image": "181.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Toon Drifella Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Transparent Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "181.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

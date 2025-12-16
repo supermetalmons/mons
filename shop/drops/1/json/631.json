@@ -1,0 +1,29 @@
+{
+  "name": "Mimikyu",
+  "description": "",
+  "image": "298.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Mimikyu"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "298.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

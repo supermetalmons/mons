@@ -1,0 +1,29 @@
+{
+  "name": "Monster Energy",
+  "description": "",
+  "image": "259.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Monster Energy"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "259.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

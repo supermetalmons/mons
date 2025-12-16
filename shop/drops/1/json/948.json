@@ -1,0 +1,29 @@
+{
+  "name": "Drifella Hoodie",
+  "description": "",
+  "image": "282.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Drifella Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Purple"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "282.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

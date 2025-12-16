@@ -1,0 +1,29 @@
+{
+  "name": "Jester",
+  "description": "",
+  "image": "254.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Jester"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "254.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Hoodie",
+  "description": "",
+  "image": "49.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gum Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "49.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

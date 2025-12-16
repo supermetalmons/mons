@@ -1,0 +1,29 @@
+{
+  "name": "Impmon",
+  "description": "",
+  "image": "180.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Impmon"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Clear"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "180.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

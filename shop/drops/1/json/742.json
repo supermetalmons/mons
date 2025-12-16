@@ -1,0 +1,29 @@
+{
+  "name": "Hoodie 2",
+  "description": "",
+  "image": "76.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Hoodie 2"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Transparent Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Glitter"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "76.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

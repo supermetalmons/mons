@@ -1,0 +1,29 @@
+{
+  "name": "Hoodie",
+  "description": "",
+  "image": "13.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gold"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "13.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

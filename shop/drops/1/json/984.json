@@ -1,0 +1,29 @@
+{
+  "name": "Kenny",
+  "description": "",
+  "image": "318.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Kenny"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "318.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

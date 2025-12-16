@@ -1,0 +1,29 @@
+{
+  "name": "Ye Bear",
+  "description": "",
+  "image": "312.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Ye Bear"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gum Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "312.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

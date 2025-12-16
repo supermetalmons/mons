@@ -1,0 +1,29 @@
+{
+  "name": "Mimikyu",
+  "description": "",
+  "image": "55.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Mimikyu"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "55.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "name": "Blue Shell",
+  "description": "",
+  "image": "183.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Blue Shell"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Clear"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "183.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

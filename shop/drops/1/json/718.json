@@ -1,0 +1,29 @@
+{
+  "name": "Cod",
+  "description": "",
+  "image": "52.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Cod"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "52.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}
