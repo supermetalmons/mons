@@ -1,19 +1,27 @@
 {
-  "name": "Batch",
+  "name": "Bazooka",
   "description": "",
-  "image": "23.png",
-  "external_url": "https://mons.link",
+  "image": "23.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Bazooka"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gold"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "23.png",
-        "type": "image/png"
+        "uri": "23.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

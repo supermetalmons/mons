@@ -1,19 +1,27 @@
 {
-  "name": "Goth Star Seeker",
+  "name": "Icy Cinnamon Roll",
   "description": "",
-  "image": "155.png",
-  "external_url": "https://mons.link",
+  "image": "155.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Icy Cinnamon Roll"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "155.png",
-        "type": "image/png"
+        "uri": "155.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

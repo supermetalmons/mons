@@ -1,19 +1,27 @@
 {
-  "name": "Golden Star",
+  "name": "Cod",
   "description": "",
-  "image": "150.png",
-  "external_url": "https://mons.link",
+  "image": "150.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Cod"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "150.png",
-        "type": "image/png"
+        "uri": "150.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

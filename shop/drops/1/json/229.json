@@ -1,19 +1,27 @@
 {
-  "name": "LSW Hayabusa",
+  "name": "Wing Helmet",
   "description": "",
-  "image": "229.png",
-  "external_url": "https://mons.link",
+  "image": "229.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Wing Helmet"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gum Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "229.png",
-        "type": "image/png"
+        "uri": "229.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

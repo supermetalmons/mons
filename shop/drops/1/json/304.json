@@ -1,19 +1,27 @@
 {
-  "name": "Ona Blue",
+  "name": "Skull",
   "description": "",
-  "image": "304.png",
-  "external_url": "https://mons.link",
+  "image": "304.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Skull"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "304.png",
-        "type": "image/png"
+        "uri": "304.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

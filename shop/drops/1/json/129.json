@@ -1,19 +1,27 @@
 {
-  "name": "Gelagel",
+  "name": "Frog",
   "description": "",
-  "image": "129.png",
-  "external_url": "https://mons.link",
+  "image": "129.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Frog"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "129.png",
-        "type": "image/png"
+        "uri": "129.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

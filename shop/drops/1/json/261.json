@@ -1,19 +1,27 @@
 {
-  "name": "LeatherPumch",
+  "name": "Hikki Cloud Form",
   "description": "",
-  "image": "261.png",
-  "external_url": "https://mons.link",
+  "image": "261.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Hikki Cloud Form"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Purple"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "261.png",
-        "type": "image/png"
+        "uri": "261.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

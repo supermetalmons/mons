@@ -1,19 +1,27 @@
 {
-  "name": "Gold Blessed Follower",
+  "name": "Bazooka",
   "description": "",
-  "image": "139.png",
-  "external_url": "https://mons.link",
+  "image": "139.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Bazooka"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Transparent Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "139.png",
-        "type": "image/png"
+        "uri": "139.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

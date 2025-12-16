@@ -1,19 +1,27 @@
 {
-  "name": "Goth Fairchild",
+  "name": "Mimikyu",
   "description": "",
-  "image": "154.png",
-  "external_url": "https://mons.link",
+  "image": "154.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Mimikyu"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "154.png",
-        "type": "image/png"
+        "uri": "154.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

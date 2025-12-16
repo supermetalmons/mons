@@ -1,19 +1,27 @@
 {
-  "name": "King of Dirt",
+  "name": "Reaper",
   "description": "",
-  "image": "203.png",
-  "external_url": "https://mons.link",
+  "image": "203.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Reaper"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Tarnished Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "203.png",
-        "type": "image/png"
+        "uri": "203.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

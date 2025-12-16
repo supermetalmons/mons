@@ -1,19 +1,27 @@
 {
-  "name": "LSW Cookie",
+  "name": "General",
   "description": "",
-  "image": "213.png",
-  "external_url": "https://mons.link",
+  "image": "213.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "General"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Icy Grape Wine"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "213.png",
-        "type": "image/png"
+        "uri": "213.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

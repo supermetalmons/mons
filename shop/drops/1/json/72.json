@@ -1,19 +1,27 @@
 {
-  "name": "Cigawrette Pack",
+  "name": "Ghost 2",
   "description": "",
-  "image": "72.png",
-  "external_url": "https://mons.link",
+  "image": "72.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ghost 2"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "72.png",
-        "type": "image/png"
+        "uri": "72.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

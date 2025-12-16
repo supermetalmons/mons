@@ -1,26 +1,29 @@
 {
-  "name": "LSW Racoon Backwards Hat",
+  "name": "Hikki Cloud Form",
   "description": "",
-  "image": "243.png",
-  "animation_url": "243.mp4",
-  "external_url": "https://mons.link",
+  "image": "243.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Hikki Cloud Form"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "243.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "243.mp4",
-        "type": "video/mp4"
+        "uri": "243.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

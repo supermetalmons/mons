@@ -1,19 +1,27 @@
 {
-  "name": "A Small Creamie",
+  "name": "Ghost",
   "description": "",
-  "image": "1.png",
-  "external_url": "https://mons.link",
+  "image": "1.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ghost"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "1.png",
-        "type": "image/png"
+        "uri": "1.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

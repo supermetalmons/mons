@@ -1,19 +1,27 @@
 {
-  "name": "Bulby",
+  "name": "Toon Drifella Hoodie",
   "description": "",
-  "image": "48.png",
-  "external_url": "https://mons.link",
+  "image": "48.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Toon Drifella Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gum Red"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "48.png",
-        "type": "image/png"
+        "uri": "48.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

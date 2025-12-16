@@ -1,26 +1,29 @@
 {
-  "name": "Archie Pendant",
+  "name": "Drifella Hoodie",
   "description": "",
-  "image": "9.png",
-  "animation_url": "9.mp4",
-  "external_url": "https://mons.link",
+  "image": "9.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Drifella Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "9.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "9.mp4",
-        "type": "video/mp4"
+        "uri": "9.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

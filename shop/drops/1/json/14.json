@@ -1,19 +1,27 @@
 {
-  "name": "Baby Cyan",
+  "name": "Spiky",
   "description": "",
-  "image": "14.png",
-  "external_url": "https://mons.link",
+  "image": "14.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Spiky"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "14.png",
-        "type": "image/png"
+        "uri": "14.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

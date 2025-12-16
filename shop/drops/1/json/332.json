@@ -1,19 +1,27 @@
 {
-  "name": "Puppy Tank",
+  "name": "Hayabusa",
   "description": "",
-  "image": "332.png",
-  "external_url": "https://mons.link",
+  "image": "332.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Hayabusa"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Handpainted"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "332.png",
-        "type": "image/png"
+        "uri": "332.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

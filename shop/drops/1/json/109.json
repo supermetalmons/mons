@@ -1,26 +1,29 @@
 {
-  "name": "Embryo",
+  "name": "Blue Shell",
   "description": "",
-  "image": "109.png",
-  "animation_url": "109.mp4",
-  "external_url": "https://mons.link",
+  "image": "109.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Blue Shell"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Flesh"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "109.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "109.mp4",
-        "type": "video/mp4"
+        "uri": "109.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

@@ -1,19 +1,27 @@
 {
-  "name": "Expert Worker Pendant",
+  "name": "Hackmon",
   "description": "",
-  "image": "113.png",
-  "external_url": "https://mons.link",
+  "image": "113.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Hackmon"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "113.png",
-        "type": "image/png"
+        "uri": "113.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

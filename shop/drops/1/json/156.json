@@ -1,19 +1,27 @@
 {
-  "name": "GotuApeBoy",
+  "name": "Russian Hat",
   "description": "",
-  "image": "156.png",
-  "external_url": "https://mons.link",
+  "image": "156.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Russian Hat"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "156.png",
-        "type": "image/png"
+        "uri": "156.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

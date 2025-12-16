@@ -1,19 +1,27 @@
 {
-  "name": "Dog of Alien Origin",
+  "name": "General",
   "description": "",
-  "image": "91.png",
-  "external_url": "https://mons.link",
+  "image": "91.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "General"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "91.png",
-        "type": "image/png"
+        "uri": "91.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

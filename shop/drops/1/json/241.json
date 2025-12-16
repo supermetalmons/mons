@@ -1,19 +1,27 @@
 {
-  "name": "LSW Nett",
+  "name": "Kenny",
   "description": "",
-  "image": "241.png",
-  "external_url": "https://mons.link",
+  "image": "241.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Kenny"
+    },
+    {
+      "trait_type": "Color",
+      "value": "White"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "241.png",
-        "type": "image/png"
+        "uri": "241.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

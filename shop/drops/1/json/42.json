@@ -1,19 +1,27 @@
 {
-  "name": "Breffals",
+  "name": "Dual Wield",
   "description": "",
-  "image": "42.png",
-  "external_url": "https://mons.link",
+  "image": "42.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Dual Wield"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gold"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "42.png",
-        "type": "image/png"
+        "uri": "42.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

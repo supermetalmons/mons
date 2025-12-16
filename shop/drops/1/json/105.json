@@ -1,19 +1,27 @@
 {
-  "name": "Edible Bulma",
+  "name": "Ghost Impmon",
   "description": "",
-  "image": "105.png",
-  "external_url": "https://mons.link",
+  "image": "105.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ghost Impmon"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "105.png",
-        "type": "image/png"
+        "uri": "105.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

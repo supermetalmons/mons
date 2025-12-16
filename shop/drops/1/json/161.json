@@ -1,19 +1,27 @@
 {
-  "name": "Guard of Purity and Anguish",
+  "name": "Kenny",
   "description": "",
-  "image": "161.png",
-  "external_url": "https://mons.link",
+  "image": "161.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Kenny"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "161.png",
-        "type": "image/png"
+        "uri": "161.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

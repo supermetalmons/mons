@@ -1,19 +1,27 @@
 {
-  "name": "Gold Sprik",
+  "name": "Dual Wield",
   "description": "",
-  "image": "144.png",
-  "external_url": "https://mons.link",
+  "image": "144.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Dual Wield"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "144.png",
-        "type": "image/png"
+        "uri": "144.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

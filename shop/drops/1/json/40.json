@@ -1,26 +1,29 @@
 {
-  "name": "Boy Star",
+  "name": "Monster Energy",
   "description": "",
-  "image": "40.png",
-  "animation_url": "40.mp4",
-  "external_url": "https://mons.link",
+  "image": "40.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Monster Energy"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Clear"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "40.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "40.mp4",
-        "type": "video/mp4"
+        "uri": "40.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

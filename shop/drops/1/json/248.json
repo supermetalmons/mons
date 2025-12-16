@@ -1,19 +1,27 @@
 {
-  "name": "LSW Silver",
+  "name": "Drifella Hoodie",
   "description": "",
-  "image": "248.png",
-  "external_url": "https://mons.link",
+  "image": "248.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Drifella Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "White"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "248.png",
-        "type": "image/png"
+        "uri": "248.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

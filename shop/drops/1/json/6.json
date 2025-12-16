@@ -1,19 +1,27 @@
 {
-  "name": "Anvil Stardust",
+  "name": "Ghost Impmon",
   "description": "",
-  "image": "6.png",
-  "external_url": "https://mons.link",
+  "image": "6.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ghost Impmon"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "6.png",
-        "type": "image/png"
+        "uri": "6.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,19 +1,27 @@
 {
-  "name": "LSW Frog Hat",
+  "name": "Ghost 2",
   "description": "",
-  "image": "218.png",
-  "external_url": "https://mons.link",
+  "image": "218.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ghost 2"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gum Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "218.png",
-        "type": "image/png"
+        "uri": "218.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

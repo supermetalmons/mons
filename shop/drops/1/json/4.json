@@ -1,19 +1,27 @@
 {
-  "name": "Adorn",
+  "name": "Russian Hat",
   "description": "",
-  "image": "4.png",
-  "external_url": "https://mons.link",
+  "image": "4.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Russian Hat"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gold"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "4.png",
-        "type": "image/png"
+        "uri": "4.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

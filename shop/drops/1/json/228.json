@@ -1,26 +1,29 @@
 {
-  "name": "LSW Green Fizz",
+  "name": "Cod",
   "description": "",
-  "image": "228.png",
-  "animation_url": "228.mp4",
-  "external_url": "https://mons.link",
+  "image": "228.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Cod"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Flesh"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "228.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "228.mp4",
-        "type": "video/mp4"
+        "uri": "228.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

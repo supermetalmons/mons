@@ -1,19 +1,27 @@
 {
-  "name": "Botamon",
+  "name": "General",
   "description": "",
-  "image": "37.png",
-  "external_url": "https://mons.link",
+  "image": "37.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "General"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Clear"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "37.png",
-        "type": "image/png"
+        "uri": "37.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

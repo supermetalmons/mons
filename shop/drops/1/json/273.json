@@ -1,19 +1,27 @@
 {
-  "name": "Maquinamon",
+  "name": "Skull",
   "description": "",
-  "image": "273.png",
-  "external_url": "https://mons.link",
+  "image": "273.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Skull"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "273.png",
-        "type": "image/png"
+        "uri": "273.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

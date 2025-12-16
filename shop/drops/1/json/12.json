@@ -1,19 +1,27 @@
 {
-  "name": "Automaton",
+  "name": "Toon Drifella Hoodie",
   "description": "",
-  "image": "12.png",
-  "external_url": "https://mons.link",
+  "image": "12.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Toon Drifella Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Black"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Glitter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "12.png",
-        "type": "image/png"
+        "uri": "12.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

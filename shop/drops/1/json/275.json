@@ -1,19 +1,27 @@
 {
-  "name": "Mechdrool",
+  "name": "Mimikyu",
   "description": "",
-  "image": "275.png",
-  "external_url": "https://mons.link",
+  "image": "275.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Mimikyu"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Purple"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "275.png",
-        "type": "image/png"
+        "uri": "275.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

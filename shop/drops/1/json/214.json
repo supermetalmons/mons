@@ -1,19 +1,27 @@
 {
-  "name": "LSW Diamond Dog",
+  "name": "Hoodie 2",
   "description": "",
-  "image": "214.png",
-  "external_url": "https://mons.link",
+  "image": "214.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Hoodie 2"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gum Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "214.png",
-        "type": "image/png"
+        "uri": "214.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

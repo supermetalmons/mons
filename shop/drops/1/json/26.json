@@ -1,26 +1,29 @@
 {
-  "name": "Black Gold Star",
+  "name": "Kenny",
   "description": "",
-  "image": "26.png",
-  "animation_url": "26.mp4",
-  "external_url": "https://mons.link",
+  "image": "26.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Kenny"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Clear"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "26.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "26.mp4",
-        "type": "video/mp4"
+        "uri": "26.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

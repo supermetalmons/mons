@@ -1,19 +1,27 @@
 {
-  "name": "Pied",
+  "name": "Mimikyu",
   "description": "",
-  "image": "314.png",
-  "external_url": "https://mons.link",
+  "image": "314.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Mimikyu"
+    },
+    {
+      "trait_type": "Color",
+      "value": "White"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "314.png",
-        "type": "image/png"
+        "uri": "314.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

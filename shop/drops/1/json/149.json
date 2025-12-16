@@ -1,19 +1,27 @@
 {
-  "name": "Golden Slime",
+  "name": "Mimikyu",
   "description": "",
-  "image": "149.png",
-  "external_url": "https://mons.link",
+  "image": "149.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Mimikyu"
+    },
+    {
+      "trait_type": "Color",
+      "value": "White"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "149.png",
-        "type": "image/png"
+        "uri": "149.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,19 +1,27 @@
 {
-  "name": "LSW Knight",
+  "name": "Frog",
   "description": "",
-  "image": "233.png",
-  "external_url": "https://mons.link",
+  "image": "233.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Frog"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Purple"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "233.png",
-        "type": "image/png"
+        "uri": "233.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

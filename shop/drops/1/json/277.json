@@ -1,19 +1,27 @@
 {
-  "name": "Melchron",
+  "name": "Steelix",
   "description": "",
-  "image": "277.png",
-  "external_url": "https://mons.link",
+  "image": "277.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Steelix"
+    },
+    {
+      "trait_type": "Color",
+      "value": "White"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "277.png",
-        "type": "image/png"
+        "uri": "277.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

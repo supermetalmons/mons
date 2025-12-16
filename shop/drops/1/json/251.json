@@ -1,19 +1,27 @@
 {
-  "name": "LSW Spiky Worm",
+  "name": "Ventilator",
   "description": "",
-  "image": "251.png",
-  "external_url": "https://mons.link",
+  "image": "251.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ventilator"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "251.png",
-        "type": "image/png"
+        "uri": "251.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,19 +1,27 @@
 {
-  "name": "Pure Capsule",
+  "name": "Frog",
   "description": "",
-  "image": "333.png",
-  "external_url": "https://mons.link",
+  "image": "333.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Frog"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Handpainted"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "333.png",
-        "type": "image/png"
+        "uri": "333.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

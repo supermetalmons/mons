@@ -1,19 +1,27 @@
 {
-  "name": "Monkey Puppet",
+  "name": "Frazetta Helm",
   "description": "",
-  "image": "294.png",
-  "external_url": "https://mons.link",
+  "image": "294.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Frazetta Helm"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Purple"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "294.png",
-        "type": "image/png"
+        "uri": "294.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

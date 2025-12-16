@@ -1,19 +1,27 @@
 {
-  "name": "Majora_s Mask",
+  "name": "Frazetta Helm",
   "description": "",
-  "image": "269.png",
-  "external_url": "https://mons.link",
+  "image": "269.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Frazetta Helm"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "269.png",
-        "type": "image/png"
+        "uri": "269.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

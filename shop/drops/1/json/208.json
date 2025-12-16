@@ -1,19 +1,27 @@
 {
-  "name": "LSW Astronaut",
+  "name": "Cod",
   "description": "",
-  "image": "208.png",
-  "external_url": "https://mons.link",
+  "image": "208.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Cod"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Clear"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "208.png",
-        "type": "image/png"
+        "uri": "208.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

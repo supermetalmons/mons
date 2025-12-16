@@ -1,19 +1,27 @@
 {
-  "name": "Pugs",
+  "name": "Monster Energy",
   "description": "",
-  "image": "331.png",
-  "external_url": "https://mons.link",
+  "image": "331.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Monster Energy"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Handpainted"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "331.png",
-        "type": "image/png"
+        "uri": "331.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

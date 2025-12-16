@@ -1,19 +1,27 @@
 {
-  "name": "DMG",
+  "name": "Dual Wield",
   "description": "",
-  "image": "82.png",
-  "external_url": "https://mons.link",
+  "image": "82.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Dual Wield"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "82.png",
-        "type": "image/png"
+        "uri": "82.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

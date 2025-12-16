@@ -1,19 +1,27 @@
 {
-  "name": "Dope Skater",
+  "name": "Hayabusa",
   "description": "",
-  "image": "92.png",
-  "external_url": "https://mons.link",
+  "image": "92.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Hayabusa"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "92.png",
-        "type": "image/png"
+        "uri": "92.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

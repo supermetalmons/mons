@@ -1,19 +1,27 @@
 {
-  "name": "Ice Gummy",
+  "name": "Icy Cinnamon Roll",
   "description": "",
-  "image": "186.png",
-  "external_url": "https://mons.link",
+  "image": "186.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Icy Cinnamon Roll"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Glitter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "186.png",
-        "type": "image/png"
+        "uri": "186.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

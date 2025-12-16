@@ -1,26 +1,29 @@
 {
-  "name": "LSW Dragon",
+  "name": "Candy Burger Spider",
   "description": "",
-  "image": "217.png",
-  "animation_url": "217.mp4",
-  "external_url": "https://mons.link",
+  "image": "217.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Candy Burger Spider"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Flesh"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "217.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "217.mp4",
-        "type": "video/mp4"
+        "uri": "217.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

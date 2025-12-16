@@ -1,26 +1,29 @@
 {
-  "name": "LSW Wolf",
+  "name": "Skull",
   "description": "",
-  "image": "257.png",
-  "animation_url": "257.mp4",
-  "external_url": "https://mons.link",
+  "image": "257.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Skull"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Grape Wine"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "257.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "257.mp4",
-        "type": "video/mp4"
+        "uri": "257.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

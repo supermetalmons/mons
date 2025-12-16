@@ -1,19 +1,27 @@
 {
-  "name": "Kid with Coin",
+  "name": "Hikki Cloud Form",
   "description": "",
-  "image": "202.png",
-  "external_url": "https://mons.link",
+  "image": "202.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Hikki Cloud Form"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "202.png",
-        "type": "image/png"
+        "uri": "202.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

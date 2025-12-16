@@ -1,19 +1,27 @@
 {
-  "name": "Migo",
+  "name": "Ye Bear",
   "description": "",
-  "image": "285.png",
-  "external_url": "https://mons.link",
+  "image": "285.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ye Bear"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "285.png",
-        "type": "image/png"
+        "uri": "285.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

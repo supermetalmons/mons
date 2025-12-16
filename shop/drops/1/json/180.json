@@ -1,26 +1,29 @@
 {
-  "name": "Holo Hat Drifella",
+  "name": "Impmon",
   "description": "",
-  "image": "180.png",
-  "animation_url": "180.mp4",
-  "external_url": "https://mons.link",
+  "image": "180.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Impmon"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Clear"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "180.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "180.mp4",
-        "type": "video/mp4"
+        "uri": "180.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

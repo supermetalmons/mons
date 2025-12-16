@@ -1,26 +1,29 @@
 {
-  "name": "Mana Drop",
+  "name": "Kenny",
   "description": "",
-  "image": "271.png",
-  "animation_url": "271.mp4",
-  "external_url": "https://mons.link",
+  "image": "271.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Kenny"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Grape Wine"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "271.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "271.mp4",
-        "type": "video/mp4"
+        "uri": "271.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

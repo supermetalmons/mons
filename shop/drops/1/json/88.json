@@ -1,19 +1,27 @@
 {
-  "name": "Dice Guy",
+  "name": "Russian Hat",
   "description": "",
-  "image": "88.png",
-  "external_url": "https://mons.link",
+  "image": "88.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Russian Hat"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "88.png",
-        "type": "image/png"
+        "uri": "88.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,19 +1,27 @@
 {
-  "name": "Pretender",
+  "name": "Dual Wield",
   "description": "",
-  "image": "326.png",
-  "external_url": "https://mons.link",
+  "image": "326.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Dual Wield"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Transparent Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "326.png",
-        "type": "image/png"
+        "uri": "326.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

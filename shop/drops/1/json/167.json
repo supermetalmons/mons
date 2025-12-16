@@ -1,19 +1,27 @@
 {
-  "name": "Hannah",
+  "name": "Drifella Hoodie",
   "description": "",
-  "image": "167.png",
-  "external_url": "https://mons.link",
+  "image": "167.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Drifella Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "167.png",
-        "type": "image/png"
+        "uri": "167.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

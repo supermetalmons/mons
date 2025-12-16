@@ -1,19 +1,27 @@
 {
-  "name": "Astro Glow",
+  "name": "Ghost",
   "description": "",
-  "image": "11.png",
-  "external_url": "https://mons.link",
+  "image": "11.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ghost"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Handpainted"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "11.png",
-        "type": "image/png"
+        "uri": "11.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

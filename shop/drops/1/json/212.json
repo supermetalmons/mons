@@ -1,19 +1,27 @@
 {
-  "name": "LSW Chrome Hat",
+  "name": "Hayabusa",
   "description": "",
-  "image": "212.png",
-  "external_url": "https://mons.link",
+  "image": "212.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Hayabusa"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Tarnished Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "212.png",
-        "type": "image/png"
+        "uri": "212.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

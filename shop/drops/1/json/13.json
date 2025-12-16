@@ -1,19 +1,27 @@
 {
-  "name": "Axe-A-Lot",
+  "name": "Hoodie",
   "description": "",
-  "image": "13.png",
-  "external_url": "https://mons.link",
+  "image": "13.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gold"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "13.png",
-        "type": "image/png"
+        "uri": "13.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

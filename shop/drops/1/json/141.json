@@ -1,19 +1,27 @@
 {
-  "name": "Gold Melly Mil",
+  "name": "Frog",
   "description": "",
-  "image": "141.png",
-  "external_url": "https://mons.link",
+  "image": "141.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Frog"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "141.png",
-        "type": "image/png"
+        "uri": "141.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

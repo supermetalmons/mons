@@ -1,26 +1,29 @@
 {
-  "name": "LSW Knit Mimikyu",
+  "name": "Impmon",
   "description": "",
-  "image": "236.png",
-  "animation_url": "236.mp4",
-  "external_url": "https://mons.link",
+  "image": "236.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Impmon"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "236.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "236.mp4",
-        "type": "video/mp4"
+        "uri": "236.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

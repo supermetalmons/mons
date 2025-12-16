@@ -1,26 +1,29 @@
 {
-  "name": "Pirate",
+  "name": "Kenny",
   "description": "",
-  "image": "318.png",
-  "animation_url": "318.mp4",
-  "external_url": "https://mons.link",
+  "image": "318.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Kenny"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "318.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "318.mp4",
-        "type": "video/mp4"
+        "uri": "318.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

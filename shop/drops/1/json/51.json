@@ -1,19 +1,27 @@
 {
-  "name": "Busta Pagumon 2",
+  "name": "Spiky",
   "description": "",
-  "image": "51.png",
-  "external_url": "https://mons.link",
+  "image": "51.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Spiky"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "51.png",
-        "type": "image/png"
+        "uri": "51.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

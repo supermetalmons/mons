@@ -1,26 +1,29 @@
 {
-  "name": "LSW Wizard",
+  "name": "Hoodie 2",
   "description": "",
-  "image": "256.png",
-  "animation_url": "256.mp4",
-  "external_url": "https://mons.link",
+  "image": "256.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Hoodie 2"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "256.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "256.mp4",
-        "type": "video/mp4"
+        "uri": "256.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

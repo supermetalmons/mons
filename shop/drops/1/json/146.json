@@ -1,26 +1,29 @@
 {
-  "name": "Golden Angel",
+  "name": "Frog",
   "description": "",
-  "image": "146.png",
-  "animation_url": "146.mp4",
-  "external_url": "https://mons.link",
+  "image": "146.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Frog"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "146.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "146.mp4",
-        "type": "video/mp4"
+        "uri": "146.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

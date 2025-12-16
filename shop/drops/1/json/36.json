@@ -1,19 +1,27 @@
 {
-  "name": "Born of Ash",
+  "name": "Icy Cinnamon Roll",
   "description": "",
-  "image": "36.png",
-  "external_url": "https://mons.link",
+  "image": "36.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Icy Cinnamon Roll"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gold"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "36.png",
-        "type": "image/png"
+        "uri": "36.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

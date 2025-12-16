@@ -1,19 +1,27 @@
 {
-  "name": "Magenta Star",
+  "name": "Cod",
   "description": "",
-  "image": "268.png",
-  "external_url": "https://mons.link",
+  "image": "268.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Cod"
+    },
+    {
+      "trait_type": "Color",
+      "value": "White"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "268.png",
-        "type": "image/png"
+        "uri": "268.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

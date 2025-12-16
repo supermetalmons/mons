@@ -1,19 +1,27 @@
 {
-  "name": "Ice Sorcerer",
+  "name": "General",
   "description": "",
-  "image": "187.png",
-  "external_url": "https://mons.link",
+  "image": "187.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "General"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "187.png",
-        "type": "image/png"
+        "uri": "187.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

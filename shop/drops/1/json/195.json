@@ -1,19 +1,27 @@
 {
-  "name": "Jester Pigrider",
+  "name": "Drifella Hoodie",
   "description": "",
-  "image": "195.png",
-  "external_url": "https://mons.link",
+  "image": "195.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Drifella Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Icy Blue"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "195.png",
-        "type": "image/png"
+        "uri": "195.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

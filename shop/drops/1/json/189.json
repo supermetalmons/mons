@@ -1,26 +1,29 @@
 {
-  "name": "Icy Star",
+  "name": "Toon Drifella Hoodie",
   "description": "",
-  "image": "189.png",
-  "animation_url": "189.mp4",
-  "external_url": "https://mons.link",
+  "image": "189.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Toon Drifella Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Flesh Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "189.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "189.mp4",
-        "type": "video/mp4"
+        "uri": "189.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

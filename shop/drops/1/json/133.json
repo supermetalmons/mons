@@ -1,19 +1,27 @@
 {
-  "name": "Gerfugeber",
+  "name": "Monster Energy",
   "description": "",
-  "image": "133.png",
-  "external_url": "https://mons.link",
+  "image": "133.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Monster Energy"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Grape Wine"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "133.png",
-        "type": "image/png"
+        "uri": "133.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

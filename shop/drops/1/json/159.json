@@ -1,19 +1,27 @@
 {
-  "name": "Greymon",
+  "name": "Monster Energy",
   "description": "",
-  "image": "159.png",
-  "external_url": "https://mons.link",
+  "image": "159.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Monster Energy"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "159.png",
-        "type": "image/png"
+        "uri": "159.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

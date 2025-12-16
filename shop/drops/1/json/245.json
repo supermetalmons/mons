@@ -1,26 +1,29 @@
 {
-  "name": "LSW Russian",
+  "name": "Thief",
   "description": "",
-  "image": "245.png",
-  "animation_url": "245.mp4",
-  "external_url": "https://mons.link",
+  "image": "245.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Thief"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "245.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "245.mp4",
-        "type": "video/mp4"
+        "uri": "245.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

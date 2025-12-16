@@ -1,19 +1,27 @@
 {
-  "name": "Kirby Gladiator",
+  "name": "Blue Eyes",
   "description": "",
-  "image": "204.png",
-  "external_url": "https://mons.link",
+  "image": "204.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Blue Eyes"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Tarnished Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "204.png",
-        "type": "image/png"
+        "uri": "204.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

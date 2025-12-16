@@ -1,19 +1,27 @@
 {
-  "name": "Princess Fighter",
+  "name": "Dual Wield",
   "description": "",
-  "image": "329.png",
-  "external_url": "https://mons.link",
+  "image": "329.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Dual Wield"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Handpainted"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "329.png",
-        "type": "image/png"
+        "uri": "329.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

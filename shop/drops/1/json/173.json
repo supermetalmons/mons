@@ -1,26 +1,29 @@
 {
-  "name": "Health Potion",
+  "name": "Ventilator",
   "description": "",
-  "image": "173.png",
-  "animation_url": "173.mp4",
-  "external_url": "https://mons.link",
+  "image": "173.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Ventilator"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "173.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "173.mp4",
-        "type": "video/mp4"
+        "uri": "173.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

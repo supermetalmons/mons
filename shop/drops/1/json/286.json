@@ -1,19 +1,27 @@
 {
-  "name": "Milady Drainer",
+  "name": "Dual Wield",
   "description": "",
-  "image": "286.png",
-  "external_url": "https://mons.link",
+  "image": "286.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Dual Wield"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gum Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "286.png",
-        "type": "image/png"
+        "uri": "286.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

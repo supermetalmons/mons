@@ -1,19 +1,27 @@
 {
-  "name": "Jirachi",
+  "name": "Robot Cat",
   "description": "",
-  "image": "196.png",
-  "external_url": "https://mons.link",
+  "image": "196.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Robot Cat"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Clear"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "196.png",
-        "type": "image/png"
+        "uri": "196.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

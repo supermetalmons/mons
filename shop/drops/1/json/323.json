@@ -1,19 +1,27 @@
 {
-  "name": "Pouty",
+  "name": "Monster Energy",
   "description": "",
-  "image": "323.png",
-  "external_url": "https://mons.link",
+  "image": "323.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Monster Energy"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Transparent Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "323.png",
-        "type": "image/png"
+        "uri": "323.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

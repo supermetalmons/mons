@@ -1,19 +1,27 @@
 {
-  "name": "LSW Blue Knit",
+  "name": "Box",
   "description": "",
-  "image": "211.png",
-  "external_url": "https://mons.link",
+  "image": "211.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Box"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Clear"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "211.png",
-        "type": "image/png"
+        "uri": "211.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

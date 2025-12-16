@@ -1,19 +1,27 @@
 {
-  "name": "Juno",
+  "name": "Ghost Impmon",
   "description": "",
-  "image": "199.png",
-  "external_url": "https://mons.link",
+  "image": "199.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ghost Impmon"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Purple"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "199.png",
-        "type": "image/png"
+        "uri": "199.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

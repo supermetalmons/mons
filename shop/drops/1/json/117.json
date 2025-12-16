@@ -1,19 +1,27 @@
 {
-  "name": "Flelf",
+  "name": "Monster Energy",
   "description": "",
-  "image": "117.png",
-  "external_url": "https://mons.link",
+  "image": "117.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Monster Energy"
+    },
+    {
+      "trait_type": "Color",
+      "value": "White"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "117.png",
-        "type": "image/png"
+        "uri": "117.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

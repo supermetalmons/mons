@@ -1,19 +1,27 @@
 {
-  "name": "Lava Shroom",
+  "name": "Birdy Mon",
   "description": "",
-  "image": "260.png",
-  "external_url": "https://mons.link",
+  "image": "260.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Birdy Mon"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "260.png",
-        "type": "image/png"
+        "uri": "260.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

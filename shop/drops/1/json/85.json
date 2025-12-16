@@ -1,19 +1,27 @@
 {
-  "name": "Debil",
+  "name": "Hikki Cloud Form",
   "description": "",
-  "image": "85.png",
-  "external_url": "https://mons.link",
+  "image": "85.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Hikki Cloud Form"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Clear"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "85.png",
-        "type": "image/png"
+        "uri": "85.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,26 +1,29 @@
 {
-  "name": "LSW Ghost",
+  "name": "Monster Energy",
   "description": "",
-  "image": "225.png",
-  "animation_url": "225.mp4",
-  "external_url": "https://mons.link",
+  "image": "225.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Monster Energy"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Purple"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "225.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "225.mp4",
-        "type": "video/mp4"
+        "uri": "225.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

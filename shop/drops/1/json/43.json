@@ -1,19 +1,27 @@
 {
-  "name": "Brock",
+  "name": "Icy Cinnamon Roll",
   "description": "",
-  "image": "43.png",
-  "external_url": "https://mons.link",
+  "image": "43.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Icy Cinnamon Roll"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "43.png",
-        "type": "image/png"
+        "uri": "43.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

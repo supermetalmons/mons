@@ -1,19 +1,27 @@
 {
-  "name": "Edible Gundam",
+  "name": "General",
   "description": "",
-  "image": "106.png",
-  "external_url": "https://mons.link",
+  "image": "106.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "General"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "106.png",
-        "type": "image/png"
+        "uri": "106.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

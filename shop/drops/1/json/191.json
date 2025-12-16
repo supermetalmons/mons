@@ -1,19 +1,27 @@
 {
-  "name": "Inverted Paladin",
+  "name": "Hoodie",
   "description": "",
-  "image": "191.png",
-  "external_url": "https://mons.link",
+  "image": "191.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "191.png",
-        "type": "image/png"
+        "uri": "191.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

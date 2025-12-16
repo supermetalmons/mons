@@ -1,19 +1,27 @@
 {
-  "name": "Giddy",
+  "name": "Robot Cat",
   "description": "",
-  "image": "134.png",
-  "external_url": "https://mons.link",
+  "image": "134.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Robot Cat"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "134.png",
-        "type": "image/png"
+        "uri": "134.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

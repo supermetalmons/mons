@@ -1,19 +1,27 @@
 {
-  "name": "LSW Ash Hat",
+  "name": "Dual Wield",
   "description": "",
-  "image": "207.png",
-  "external_url": "https://mons.link",
+  "image": "207.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Dual Wield"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Icy Blue"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "207.png",
-        "type": "image/png"
+        "uri": "207.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

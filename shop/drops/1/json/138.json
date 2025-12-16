@@ -1,19 +1,27 @@
 {
-  "name": "Glue",
+  "name": "Candy Burger Spider",
   "description": "",
-  "image": "138.png",
-  "external_url": "https://mons.link",
+  "image": "138.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Candy Burger Spider"
+    },
+    {
+      "trait_type": "Color",
+      "value": "White"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "138.png",
-        "type": "image/png"
+        "uri": "138.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

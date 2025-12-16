@@ -1,19 +1,27 @@
 {
-  "name": "LSW Racoon",
+  "name": "Frazetta Helm",
   "description": "",
-  "image": "244.png",
-  "external_url": "https://mons.link",
+  "image": "244.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Frazetta Helm"
+    },
+    {
+      "trait_type": "Color",
+      "value": "White"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "244.png",
-        "type": "image/png"
+        "uri": "244.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,19 +1,27 @@
 {
-  "name": "Mifella",
+  "name": "Robot Cat",
   "description": "",
-  "image": "284.png",
-  "external_url": "https://mons.link",
+  "image": "284.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Robot Cat"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "284.png",
-        "type": "image/png"
+        "uri": "284.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

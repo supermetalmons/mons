@@ -1,26 +1,29 @@
 {
-  "name": "Blush Star",
+  "name": "Monster Energy",
   "description": "",
-  "image": "30.png",
-  "animation_url": "30.mp4",
-  "external_url": "https://mons.link",
+  "image": "30.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Monster Energy"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Black"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Glitter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "30.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "30.mp4",
-        "type": "video/mp4"
+        "uri": "30.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

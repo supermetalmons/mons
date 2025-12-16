@@ -1,19 +1,27 @@
 {
-  "name": "LSW Diamond Hood",
+  "name": "Candy Burger Spider",
   "description": "",
-  "image": "215.png",
-  "external_url": "https://mons.link",
+  "image": "215.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Candy Burger Spider"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "215.png",
-        "type": "image/png"
+        "uri": "215.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,19 +1,27 @@
 {
-  "name": "LSW Frosty",
+  "name": "Jester",
   "description": "",
-  "image": "220.png",
-  "external_url": "https://mons.link",
+  "image": "220.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Jester"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "220.png",
-        "type": "image/png"
+        "uri": "220.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

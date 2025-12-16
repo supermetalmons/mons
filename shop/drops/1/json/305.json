@@ -1,19 +1,27 @@
 {
-  "name": "Orange Cream Star",
+  "name": "General",
   "description": "",
-  "image": "305.png",
-  "external_url": "https://mons.link",
+  "image": "305.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "General"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Purple"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "305.png",
-        "type": "image/png"
+        "uri": "305.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

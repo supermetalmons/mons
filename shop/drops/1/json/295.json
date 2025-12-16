@@ -1,19 +1,27 @@
 {
-  "name": "Moon Angel",
+  "name": "Icy Cinnamon Roll",
   "description": "",
-  "image": "295.png",
-  "external_url": "https://mons.link",
+  "image": "295.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Icy Cinnamon Roll"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "295.png",
-        "type": "image/png"
+        "uri": "295.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

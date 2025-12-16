@@ -1,19 +1,27 @@
 {
-  "name": "Happyhappytchi",
+  "name": "Dog",
   "description": "",
-  "image": "170.png",
-  "external_url": "https://mons.link",
+  "image": "170.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Dog"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Transparent Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "170.png",
-        "type": "image/png"
+        "uri": "170.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

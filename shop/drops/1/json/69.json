@@ -1,19 +1,27 @@
 {
-  "name": "Chrome GF",
+  "name": "Kenny",
   "description": "",
-  "image": "69.png",
-  "external_url": "https://mons.link",
+  "image": "69.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Kenny"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "69.png",
-        "type": "image/png"
+        "uri": "69.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

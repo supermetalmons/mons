@@ -1,26 +1,29 @@
 {
-  "name": "Boggle Hands",
+  "name": "Spiky",
   "description": "",
-  "image": "31.png",
-  "animation_url": "31.mp4",
-  "external_url": "https://mons.link",
+  "image": "31.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Spiky"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "31.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "31.mp4",
-        "type": "video/mp4"
+        "uri": "31.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

@@ -1,19 +1,27 @@
 {
-  "name": "Izzy",
+  "name": "Thief",
   "description": "",
-  "image": "192.png",
-  "external_url": "https://mons.link",
+  "image": "192.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Thief"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "192.png",
-        "type": "image/png"
+        "uri": "192.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

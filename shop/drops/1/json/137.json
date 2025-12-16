@@ -1,19 +1,27 @@
 {
-  "name": "Glitterfly",
+  "name": "Thief",
   "description": "",
-  "image": "137.png",
-  "external_url": "https://mons.link",
+  "image": "137.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Thief"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gum Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "137.png",
-        "type": "image/png"
+        "uri": "137.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,19 +1,27 @@
 {
-  "name": "Dharma Wheel",
+  "name": "Frog",
   "description": "",
-  "image": "86.png",
-  "external_url": "https://mons.link",
+  "image": "86.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Frog"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "86.png",
-        "type": "image/png"
+        "uri": "86.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,19 +1,27 @@
 {
-  "name": "Bonic",
+  "name": "Skull",
   "description": "",
-  "image": "33.png",
-  "external_url": "https://mons.link",
+  "image": "33.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Skull"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "33.png",
-        "type": "image/png"
+        "uri": "33.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,19 +1,27 @@
 {
-  "name": "LSW Lava",
+  "name": "Ye Bear",
   "description": "",
-  "image": "238.png",
-  "external_url": "https://mons.link",
+  "image": "238.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ye Bear"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "238.png",
-        "type": "image/png"
+        "uri": "238.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,19 +1,27 @@
 {
-  "name": "Boo",
+  "name": "Ventilator",
   "description": "",
-  "image": "34.png",
-  "external_url": "https://mons.link",
+  "image": "34.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ventilator"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gold"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "34.png",
-        "type": "image/png"
+        "uri": "34.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,19 +1,27 @@
 {
-  "name": "Drifella",
+  "name": "Robot Cat",
   "description": "",
-  "image": "100.png",
-  "external_url": "https://mons.link",
+  "image": "100.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Robot Cat"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Grape Wine"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "100.png",
-        "type": "image/png"
+        "uri": "100.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

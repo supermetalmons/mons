@@ -1,19 +1,27 @@
 {
-  "name": "Flamedramon",
+  "name": "Ghost",
   "description": "",
-  "image": "116.png",
-  "external_url": "https://mons.link",
+  "image": "116.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ghost"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "116.png",
-        "type": "image/png"
+        "uri": "116.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

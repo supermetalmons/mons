@@ -1,26 +1,29 @@
 {
-  "name": "Mage",
+  "name": "Hoodie",
   "description": "",
-  "image": "267.png",
-  "animation_url": "267.mp4",
-  "external_url": "https://mons.link",
+  "image": "267.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "267.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "267.mp4",
-        "type": "video/mp4"
+        "uri": "267.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

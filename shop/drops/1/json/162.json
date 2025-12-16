@@ -1,19 +1,27 @@
 {
-  "name": "Gum Ninja",
+  "name": "Frazetta Helm",
   "description": "",
-  "image": "162.png",
-  "external_url": "https://mons.link",
+  "image": "162.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Frazetta Helm"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Clear"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "162.png",
-        "type": "image/png"
+        "uri": "162.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,26 +1,29 @@
 {
-  "name": "Busta Snorlax",
+  "name": "Toon Drifella Hoodie",
   "description": "",
-  "image": "54.png",
-  "animation_url": "54.mp4",
-  "external_url": "https://mons.link",
+  "image": "54.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Toon Drifella Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Tarnished Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "54.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "54.mp4",
-        "type": "video/mp4"
+        "uri": "54.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

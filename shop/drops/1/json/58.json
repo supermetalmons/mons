@@ -1,19 +1,27 @@
 {
-  "name": "Captain Chef",
+  "name": "Ghost Impmon",
   "description": "",
-  "image": "58.png",
-  "external_url": "https://mons.link",
+  "image": "58.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ghost Impmon"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Clear"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "58.png",
-        "type": "image/png"
+        "uri": "58.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

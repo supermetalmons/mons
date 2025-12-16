@@ -1,19 +1,27 @@
 {
-  "name": "Bashful Pup",
+  "name": "Dual Wield",
   "description": "",
-  "image": "21.png",
-  "external_url": "https://mons.link",
+  "image": "21.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Dual Wield"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "21.png",
-        "type": "image/png"
+        "uri": "21.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

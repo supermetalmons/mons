@@ -1,19 +1,27 @@
 {
-  "name": "LSW Panda",
+  "name": "Ghost Impmon",
   "description": "",
-  "image": "242.png",
-  "external_url": "https://mons.link",
+  "image": "242.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ghost Impmon"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Grape Wine"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "242.png",
-        "type": "image/png"
+        "uri": "242.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

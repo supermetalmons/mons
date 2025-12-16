@@ -1,26 +1,29 @@
 {
-  "name": "Bunt",
+  "name": "Drifella Hoodie",
   "description": "",
-  "image": "50.png",
-  "animation_url": "50.mp4",
-  "external_url": "https://mons.link",
+  "image": "50.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Drifella Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "50.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "50.mp4",
-        "type": "video/mp4"
+        "uri": "50.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

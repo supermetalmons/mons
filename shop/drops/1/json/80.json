@@ -1,19 +1,27 @@
 {
-  "name": "Cuban",
+  "name": "Ye Bear",
   "description": "",
-  "image": "80.png",
-  "external_url": "https://mons.link",
+  "image": "80.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ye Bear"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "80.png",
-        "type": "image/png"
+        "uri": "80.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

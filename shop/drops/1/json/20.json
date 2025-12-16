@@ -1,26 +1,29 @@
 {
-  "name": "Bandit",
+  "name": "Toon Drifella Hoodie",
   "description": "",
-  "image": "20.png",
-  "animation_url": "20.mp4",
-  "external_url": "https://mons.link",
+  "image": "20.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "yes"
+      "trait_type": "Name",
+      "value": "Toon Drifella Hoodie"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Handpainted"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "20.png",
-        "type": "image/png"
-      },
-      {
-        "uri": "20.mp4",
-        "type": "video/mp4"
+        "uri": "20.webp",
+        "type": "image/webp"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }

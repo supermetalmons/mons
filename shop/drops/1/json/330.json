@@ -1,19 +1,27 @@
 {
-  "name": "Pro Racer",
+  "name": "Reaper",
   "description": "",
-  "image": "330.png",
-  "external_url": "https://mons.link",
+  "image": "330.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Reaper"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Handpainted"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "330.png",
-        "type": "image/png"
+        "uri": "330.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

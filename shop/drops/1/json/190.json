@@ -1,19 +1,27 @@
 {
-  "name": "Inuyasha",
+  "name": "Monster Energy",
   "description": "",
-  "image": "190.png",
-  "external_url": "https://mons.link",
+  "image": "190.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Monster Energy"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gum Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "190.png",
-        "type": "image/png"
+        "uri": "190.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

@@ -1,19 +1,27 @@
 {
-  "name": "Boy with Gold Gem",
+  "name": "Impmon",
   "description": "",
-  "image": "41.png",
-  "external_url": "https://mons.link",
+  "image": "41.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Impmon"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "41.png",
-        "type": "image/png"
+        "uri": "41.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

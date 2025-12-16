@@ -1,19 +1,27 @@
 {
-  "name": "Dragon",
+  "name": "Jester",
   "description": "",
-  "image": "94.png",
-  "external_url": "https://mons.link",
+  "image": "94.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Jester"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Clear"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "94.png",
-        "type": "image/png"
+        "uri": "94.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

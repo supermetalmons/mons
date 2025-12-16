@@ -1,19 +1,27 @@
 {
-  "name": "Milky Drop",
+  "name": "Kenny",
   "description": "",
-  "image": "288.png",
-  "external_url": "https://mons.link",
+  "image": "288.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Kenny"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Mint Green"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "288.png",
-        "type": "image/png"
+        "uri": "288.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

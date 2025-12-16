@@ -1,19 +1,27 @@
 {
-  "name": "Gos-Tron",
+  "name": "Thief",
   "description": "",
-  "image": "153.png",
-  "external_url": "https://mons.link",
+  "image": "153.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Thief"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Light Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "153.png",
-        "type": "image/png"
+        "uri": "153.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

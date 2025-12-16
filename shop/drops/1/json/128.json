@@ -1,19 +1,27 @@
 {
-  "name": "Geeache Campo",
+  "name": "Hayabusa",
   "description": "",
-  "image": "128.png",
-  "external_url": "https://mons.link",
+  "image": "128.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Hayabusa"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Gum Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "128.png",
-        "type": "image/png"
+        "uri": "128.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

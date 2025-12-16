@@ -1,19 +1,27 @@
 {
-  "name": "PomPom",
+  "name": "Robot Cat",
   "description": "",
-  "image": "322.png",
-  "external_url": "https://mons.link",
+  "image": "322.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Robot Cat"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Pink"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "322.png",
-        "type": "image/png"
+        "uri": "322.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"

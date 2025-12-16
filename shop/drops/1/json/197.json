@@ -1,19 +1,27 @@
 {
-  "name": "Jolly",
+  "name": "Ventilator",
   "description": "",
-  "image": "197.png",
-  "external_url": "https://mons.link",
+  "image": "197.webp",
+  "external_url": "https://mons.shop",
   "attributes": [
     {
-      "trait_type": "animated",
-      "value": "no"
+      "trait_type": "Name",
+      "value": "Ventilator"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Flesh"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "197.png",
-        "type": "image/png"
+        "uri": "197.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"
