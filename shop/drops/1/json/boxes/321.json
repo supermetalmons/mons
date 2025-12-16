@@ -2,7 +2,7 @@
     "id": 321,
     "name": "Box 321",
     "description": "",
-    "image": "box/default.webp",
+    "image": "https://assets.mons.link/shop/drops/1/box/default.webp",
     "external_url": "https://mons.shop",
     "attributes": [
         {
@@ -13,7 +13,7 @@
     "properties": {
         "files": [
             {
-                "uri": "box/default.webp",
+                "uri": "https://assets.mons.link/shop/drops/1/box/default.webp",
                 "type": "image/webp"
             }
         ],
