@@ -1,0 +1,23 @@
+{
+    "id": 155,
+    "name": "Box 155 Receipt",
+    "description": "",
+    "image": "",
+    "animation_url": "receipts/box.mp4",
+    "external_url": "https://mons.shop",
+    "attributes": [
+        {
+            "trait_type": "Name",
+            "value": "Box 155 Receipt"
+        }
+    ],
+    "properties": {
+        "files": [
+            {
+                "uri": "receipts/box.mp4",
+                "type": "video/mp4"
+            }
+        ],
+        "category": "video"
+    }
+}

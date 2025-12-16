@@ -1,0 +1,23 @@
+{
+    "id": 3,
+    "name": "Box 3 Receipt",
+    "description": "",
+    "image": "",
+    "animation_url": "receipts/box.mp4",
+    "external_url": "https://mons.shop",
+    "attributes": [
+        {
+            "trait_type": "Name",
+            "value": "Box 3 Receipt"
+        }
+    ],
+    "properties": {
+        "files": [
+            {
+                "uri": "receipts/box.mp4",
+                "type": "video/mp4"
+            }
+        ],
+        "category": "video"
+    }
+}
