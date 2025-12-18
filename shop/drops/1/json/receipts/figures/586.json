@@ -1,14 +1,14 @@
 {
   "id": 586,
-  "name": "Impmon \u2014 Receipt",
+  "name": "Impmon — Receipt",
   "description": "",
-  "image": "",
+  "image": "https://assets.mons.link/shop/drops/1/receipts/253.webp",
   "animation_url": "https://assets.mons.link/shop/drops/1/receipts/253.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Impmon \u2014 Receipt"
+      "value": "Impmon — Receipt"
     },
     {
       "trait_type": "Color",
@@ -21,6 +21,10 @@
   ],
   "properties": {
     "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/253.webp",
+        "type": "image/webp"
+      },
       {
         "uri": "https://assets.mons.link/shop/drops/1/receipts/253.mp4",
         "type": "video/mp4"

@@ -2,7 +2,7 @@
   "id": 259,
   "name": "Box 259 Receipt",
   "description": "",
-  "image": "",
+  "image": "https://assets.mons.link/shop/drops/1/receipts/box.webp",
   "animation_url": "https://assets.mons.link/shop/drops/1/receipts/box.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
@@ -13,6 +13,10 @@
   ],
   "properties": {
     "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/box.webp",
+        "type": "image/webp"
+      },
       {
         "uri": "https://assets.mons.link/shop/drops/1/receipts/box.mp4",
         "type": "video/mp4"

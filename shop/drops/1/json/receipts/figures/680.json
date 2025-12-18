@@ -1,14 +1,14 @@
 {
   "id": 680,
-  "name": "Spiky \u2014 Receipt",
+  "name": "Spiky — Receipt",
   "description": "",
-  "image": "",
+  "image": "https://assets.mons.link/shop/drops/1/receipts/14.webp",
   "animation_url": "https://assets.mons.link/shop/drops/1/receipts/14.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Spiky \u2014 Receipt"
+      "value": "Spiky — Receipt"
     },
     {
       "trait_type": "Color",
@@ -21,6 +21,10 @@
   ],
   "properties": {
     "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/14.webp",
+        "type": "image/webp"
+      },
       {
         "uri": "https://assets.mons.link/shop/drops/1/receipts/14.mp4",
         "type": "video/mp4"

@@ -1,14 +1,14 @@
 {
   "id": 824,
-  "name": "Candy Burger Spider \u2014 Receipt",
+  "name": "Candy Burger Spider — Receipt",
   "description": "",
-  "image": "",
+  "image": "https://assets.mons.link/shop/drops/1/receipts/158.webp",
   "animation_url": "https://assets.mons.link/shop/drops/1/receipts/158.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Candy Burger Spider \u2014 Receipt"
+      "value": "Candy Burger Spider — Receipt"
     },
     {
       "trait_type": "Color",
@@ -21,6 +21,10 @@
   ],
   "properties": {
     "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/158.webp",
+        "type": "image/webp"
+      },
       {
         "uri": "https://assets.mons.link/shop/drops/1/receipts/158.mp4",
         "type": "video/mp4"

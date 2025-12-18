@@ -1,14 +1,14 @@
 {
   "id": 805,
-  "name": "Bazooka \u2014 Receipt",
+  "name": "Bazooka — Receipt",
   "description": "",
-  "image": "",
+  "image": "https://assets.mons.link/shop/drops/1/receipts/139.webp",
   "animation_url": "https://assets.mons.link/shop/drops/1/receipts/139.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Bazooka \u2014 Receipt"
+      "value": "Bazooka — Receipt"
     },
     {
       "trait_type": "Color",
@@ -21,6 +21,10 @@
   ],
   "properties": {
     "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/139.webp",
+        "type": "image/webp"
+      },
       {
         "uri": "https://assets.mons.link/shop/drops/1/receipts/139.mp4",
         "type": "video/mp4"

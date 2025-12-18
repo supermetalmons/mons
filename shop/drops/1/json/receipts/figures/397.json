@@ -1,14 +1,14 @@
 {
   "id": 397,
-  "name": "Dual Wield \u2014 Receipt",
+  "name": "Dual Wield — Receipt",
   "description": "",
-  "image": "",
+  "image": "https://assets.mons.link/shop/drops/1/receipts/64.webp",
   "animation_url": "https://assets.mons.link/shop/drops/1/receipts/64.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Dual Wield \u2014 Receipt"
+      "value": "Dual Wield — Receipt"
     },
     {
       "trait_type": "Color",
@@ -21,6 +21,10 @@
   ],
   "properties": {
     "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/64.webp",
+        "type": "image/webp"
+      },
       {
         "uri": "https://assets.mons.link/shop/drops/1/receipts/64.mp4",
         "type": "video/mp4"

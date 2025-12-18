@@ -1,14 +1,14 @@
 {
   "id": 186,
-  "name": "Icy Cinnamon Roll \u2014 Receipt",
+  "name": "Icy Cinnamon Roll — Receipt",
   "description": "",
-  "image": "",
+  "image": "https://assets.mons.link/shop/drops/1/receipts/186.webp",
   "animation_url": "https://assets.mons.link/shop/drops/1/receipts/186.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Icy Cinnamon Roll \u2014 Receipt"
+      "value": "Icy Cinnamon Roll — Receipt"
     },
     {
       "trait_type": "Color",
@@ -21,6 +21,10 @@
   ],
   "properties": {
     "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/186.webp",
+        "type": "image/webp"
+      },
       {
         "uri": "https://assets.mons.link/shop/drops/1/receipts/186.mp4",
         "type": "video/mp4"

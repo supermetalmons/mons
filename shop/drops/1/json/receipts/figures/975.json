@@ -1,14 +1,14 @@
 {
   "id": 975,
-  "name": "Ghost \u2014 Receipt",
+  "name": "Ghost — Receipt",
   "description": "",
-  "image": "",
+  "image": "https://assets.mons.link/shop/drops/1/receipts/309.webp",
   "animation_url": "https://assets.mons.link/shop/drops/1/receipts/309.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Ghost \u2014 Receipt"
+      "value": "Ghost — Receipt"
     },
     {
       "trait_type": "Color",
@@ -21,6 +21,10 @@
   ],
   "properties": {
     "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/309.webp",
+        "type": "image/webp"
+      },
       {
         "uri": "https://assets.mons.link/shop/drops/1/receipts/309.mp4",
         "type": "video/mp4"

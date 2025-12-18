@@ -1,14 +1,14 @@
 {
   "id": 91,
-  "name": "General \u2014 Receipt",
+  "name": "General — Receipt",
   "description": "",
-  "image": "",
+  "image": "https://assets.mons.link/shop/drops/1/receipts/91.webp",
   "animation_url": "https://assets.mons.link/shop/drops/1/receipts/91.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "General \u2014 Receipt"
+      "value": "General — Receipt"
     },
     {
       "trait_type": "Color",
@@ -21,6 +21,10 @@
   ],
   "properties": {
     "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/91.webp",
+        "type": "image/webp"
+      },
       {
         "uri": "https://assets.mons.link/shop/drops/1/receipts/91.mp4",
         "type": "video/mp4"

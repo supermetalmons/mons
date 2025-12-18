@@ -1,14 +1,14 @@
 {
   "id": 530,
-  "name": "Ventilator \u2014 Receipt",
+  "name": "Ventilator — Receipt",
   "description": "",
-  "image": "",
+  "image": "https://assets.mons.link/shop/drops/1/receipts/197.webp",
   "animation_url": "https://assets.mons.link/shop/drops/1/receipts/197.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Ventilator \u2014 Receipt"
+      "value": "Ventilator — Receipt"
     },
     {
       "trait_type": "Color",
@@ -21,6 +21,10 @@
   ],
   "properties": {
     "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/197.webp",
+        "type": "image/webp"
+      },
       {
         "uri": "https://assets.mons.link/shop/drops/1/receipts/197.mp4",
         "type": "video/mp4"

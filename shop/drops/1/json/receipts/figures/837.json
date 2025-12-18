@@ -1,14 +1,14 @@
 {
   "id": 837,
-  "name": "Frazetta Helm \u2014 Receipt",
+  "name": "Frazetta Helm — Receipt",
   "description": "",
-  "image": "",
+  "image": "https://assets.mons.link/shop/drops/1/receipts/171.webp",
   "animation_url": "https://assets.mons.link/shop/drops/1/receipts/171.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Frazetta Helm \u2014 Receipt"
+      "value": "Frazetta Helm — Receipt"
     },
     {
       "trait_type": "Color",
@@ -21,6 +21,10 @@
   ],
   "properties": {
     "files": [
+      {
+        "uri": "https://assets.mons.link/shop/drops/1/receipts/171.webp",
+        "type": "image/webp"
+      },
       {
         "uri": "https://assets.mons.link/shop/drops/1/receipts/171.mp4",
         "type": "video/mp4"
