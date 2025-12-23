@@ -2,7 +2,7 @@
   "id": 423,
   "name": "Toon Drifella Hoodie",
   "description": "",
-  "image": "https://assets.mons.link/shop/drops/1/figures/90.webp",
+  "image": "https://assets.mons.link/drops/lsb/figures/90.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/shop/drops/1/figures/90.webp",
+        "uri": "https://assets.mons.link/drops/lsb/figures/90.webp",
         "type": "image/webp"
       }
     ],

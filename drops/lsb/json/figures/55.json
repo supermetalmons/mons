@@ -2,7 +2,7 @@
   "id": 55,
   "name": "Mimikyu",
   "description": "",
-  "image": "https://assets.mons.link/shop/drops/1/figures/55.webp",
+  "image": "https://assets.mons.link/drops/lsb/figures/55.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/shop/drops/1/figures/55.webp",
+        "uri": "https://assets.mons.link/drops/lsb/figures/55.webp",
         "type": "image/webp"
       }
     ],

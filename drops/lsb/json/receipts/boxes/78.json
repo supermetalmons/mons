@@ -2,8 +2,8 @@
   "id": 78,
   "name": "Box 78 Receipt",
   "description": "",
-  "image": "https://assets.mons.link/shop/drops/1/receipts/box.webp",
-  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/box.mp4",
+  "image": "https://assets.mons.link/drops/lsb/receipts/box.webp",
+  "animation_url": "https://assets.mons.link/drops/lsb/receipts/box.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -14,11 +14,11 @@
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/shop/drops/1/receipts/box.webp",
+        "uri": "https://assets.mons.link/drops/lsb/receipts/box.webp",
         "type": "image/webp"
       },
       {
-        "uri": "https://assets.mons.link/shop/drops/1/receipts/box.mp4",
+        "uri": "https://assets.mons.link/drops/lsb/receipts/box.mp4",
         "type": "video/mp4"
       }
     ],

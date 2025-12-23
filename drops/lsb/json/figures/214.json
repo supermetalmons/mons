@@ -2,7 +2,7 @@
   "id": 214,
   "name": "Hoodie 2",
   "description": "",
-  "image": "https://assets.mons.link/shop/drops/1/figures/214.webp",
+  "image": "https://assets.mons.link/drops/lsb/figures/214.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/shop/drops/1/figures/214.webp",
+        "uri": "https://assets.mons.link/drops/lsb/figures/214.webp",
         "type": "image/webp"
       }
     ],

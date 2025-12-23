@@ -2,7 +2,7 @@
     "id": 84,
     "name": "Box 84",
     "description": "",
-    "image": "https://assets.mons.link/shop/drops/1/box/default.webp",
+    "image": "https://assets.mons.link/drops/lsb/box/default.webp",
     "external_url": "https://mons.shop",
     "attributes": [
         {
@@ -13,7 +13,7 @@
     "properties": {
         "files": [
             {
-                "uri": "https://assets.mons.link/shop/drops/1/box/default.webp",
+                "uri": "https://assets.mons.link/drops/lsb/box/default.webp",
                 "type": "image/webp"
             }
         ],

@@ -2,7 +2,7 @@
   "id": 397,
   "name": "Dual Wield",
   "description": "",
-  "image": "https://assets.mons.link/shop/drops/1/figures/64.webp",
+  "image": "https://assets.mons.link/drops/lsb/figures/64.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/shop/drops/1/figures/64.webp",
+        "uri": "https://assets.mons.link/drops/lsb/figures/64.webp",
         "type": "image/webp"
       }
     ],

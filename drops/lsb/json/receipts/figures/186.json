@@ -2,8 +2,8 @@
   "id": 186,
   "name": "Icy Cinnamon Roll — Receipt",
   "description": "",
-  "image": "https://assets.mons.link/shop/drops/1/receipts/186.webp",
-  "animation_url": "https://assets.mons.link/shop/drops/1/receipts/186.mp4",
+  "image": "https://assets.mons.link/drops/lsb/receipts/186.webp",
+  "animation_url": "https://assets.mons.link/drops/lsb/receipts/186.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -22,11 +22,11 @@
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/shop/drops/1/receipts/186.webp",
+        "uri": "https://assets.mons.link/drops/lsb/receipts/186.webp",
         "type": "image/webp"
       },
       {
-        "uri": "https://assets.mons.link/shop/drops/1/receipts/186.mp4",
+        "uri": "https://assets.mons.link/drops/lsb/receipts/186.mp4",
         "type": "video/mp4"
       }
     ],
