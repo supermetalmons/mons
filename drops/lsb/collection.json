@@ -1,15 +1,15 @@
 {
-  "name": "test boxes",
-  "symbol": "testboxes",
-  "description": "test boxes and certs collection",
-  "image": "https://assets.mons.link/shop/drops/1/box/default.webp",
+  "name": "Little Swag Boxes",
+  "symbol": "lsb",
+  "description": "",
+  "image": "https://assets.mons.link/drops/lsb/box/default.webp",
   "external_url": "https://mons.shop",
   "seller_fee_basis_points": 0,
   "attributes": [],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/shop/drops/1/box/default.webp",
+        "uri": "https://assets.mons.link/drops/lsb/box/default.webp",
         "type": "image/png"
       }
     ],
