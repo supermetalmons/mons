@@ -5,19 +5,22 @@
     "image": "https://assets.mons.link/drops/lsb/box/default.webp",
     "external_url": "https://mons.shop",
     "attributes": [
-      {
-        "trait_type": "Name",
-        "value": "Box 1"
-      }
+        {
+            "trait_type": "Name",
+            "value": "Box 1"
+        },
+        {
+            "trait_type": "Type",
+            "value": "Box"
+        }
     ],
     "properties": {
-      "files": [
-        {
-          "uri": "https://assets.mons.link/drops/lsb/box/default.webp",
-          "type": "image/webp"
-        }
-      ],
-      "category": "image"
+        "files": [
+            {
+                "uri": "https://assets.mons.link/drops/lsb/box/default.webp",
+                "type": "image/webp"
+            }
+        ],
+        "category": "image"
     }
-  }
-  
+}

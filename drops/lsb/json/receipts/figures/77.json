@@ -11,6 +11,10 @@
       "value": "Birdy Mon — Receipt"
     },
     {
+      "trait_type": "Type",
+      "value": "Figure Receipt"
+    },
+    {
       "trait_type": "Color",
       "value": "Black"
     },

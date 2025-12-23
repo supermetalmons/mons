@@ -10,6 +10,10 @@
       "value": "Hoodie 2"
     },
     {
+      "trait_type": "Type",
+      "value": "Figure"
+    },
+    {
       "trait_type": "Color",
       "value": "Handpainted"
     },

@@ -10,6 +10,10 @@
       "value": "Monster Energy"
     },
     {
+      "trait_type": "Type",
+      "value": "Figure"
+    },
+    {
       "trait_type": "Color",
       "value": "Flesh"
     },

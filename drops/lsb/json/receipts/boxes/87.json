@@ -9,6 +9,10 @@
     {
       "trait_type": "Name",
       "value": "Box 87 Receipt"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Box Receipt"
     }
   ],
   "properties": {

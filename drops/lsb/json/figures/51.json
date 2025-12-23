@@ -10,6 +10,10 @@
       "value": "Spiky"
     },
     {
+      "trait_type": "Type",
+      "value": "Figure"
+    },
+    {
       "trait_type": "Color",
       "value": "Light Pink"
     },

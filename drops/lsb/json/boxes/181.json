@@ -8,6 +8,10 @@
         {
             "trait_type": "Name",
             "value": "Box 181"
+        },
+        {
+            "trait_type": "Type",
+            "value": "Box"
         }
     ],
     "properties": {

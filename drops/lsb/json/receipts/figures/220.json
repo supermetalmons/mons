@@ -11,6 +11,10 @@
       "value": "Jester — Receipt"
     },
     {
+      "trait_type": "Type",
+      "value": "Figure Receipt"
+    },
+    {
       "trait_type": "Color",
       "value": "Mint Green"
     },

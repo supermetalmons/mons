@@ -10,6 +10,10 @@
       "value": "Mimikyu"
     },
     {
+      "trait_type": "Type",
+      "value": "Figure"
+    },
+    {
       "trait_type": "Color",
       "value": "Pink"
     },

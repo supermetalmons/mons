@@ -11,6 +11,10 @@
       "value": "Hoodie 2 — Receipt"
     },
     {
+      "trait_type": "Type",
+      "value": "Figure Receipt"
+    },
+    {
       "trait_type": "Color",
       "value": "Gunmetal"
     },
