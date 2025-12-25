@@ -3,7 +3,6 @@
   "name": "Box 253 Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/box.webp",
-  "animation_url": "https://assets.mons.link/drops/lsb/receipts/box.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -20,12 +19,8 @@
       {
         "uri": "https://assets.mons.link/drops/lsb/receipts/box.webp",
         "type": "image/webp"
-      },
-      {
-        "uri": "https://assets.mons.link/drops/lsb/receipts/box.mp4",
-        "type": "video/mp4"
       }
     ],
-    "category": "video"
+    "category": "image"
   }
 }
