@@ -12,7 +12,7 @@ SAFARI_SCRIPT="$DIR/process_movs_for_safari.sh"
 # Default: ENVIRONMENT=snowy-forest, ORBIT=true, USE_CANVAS=true
 ENVIRONMENT_ARG="${1:-${ENVIRONMENT:-clean}}"
 ORBIT_ARG_RAW="${2:-${ORBIT:-false}}"
-CANVAS_ARG_RAW="${3:-${USE_CANVAS:-true}}"
+CANVAS_ARG_RAW="${3:-${USE_CANVAS:-false}}"
 # Normalize to lowercase without Bash 4+ syntax
 ORBIT_ARG_NORM=$(printf '%s' "$ORBIT_ARG_RAW" | tr '[:upper:]' '[:lower:]')
 case "$ORBIT_ARG_NORM" in
