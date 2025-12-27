@@ -1,26 +1,30 @@
 {
-    "id": 204,
-    "name": "Box 204",
-    "description": "",
-    "image": "https://assets.mons.link/drops/lsb/box/default.webp",
-    "external_url": "https://mons.shop",
-    "attributes": [
-        {
-            "trait_type": "Name",
-            "value": "Box"
-        },
-        {
-            "trait_type": "Type",
-            "value": "Box"
-        }
-    ],
-    "properties": {
-        "files": [
-            {
-                "uri": "https://assets.mons.link/drops/lsb/box/default.webp",
-                "type": "image/webp"
-            }
-        ],
-        "category": "image"
+  "id": 204,
+  "name": "Box 204",
+  "description": "",
+  "image": "https://assets.mons.link/drops/lsb/box/default.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Box"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Box"
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": false
     }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/lsb/box/default.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
 }
