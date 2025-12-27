@@ -1,6 +1,6 @@
 {
   "id": 347,
-  "name": "Spiky — Receipt",
+  "name": "Spiky Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/14.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/14.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Spiky — Receipt"
+      "value": "Spiky Receipt"
     },
     {
       "trait_type": "Type",

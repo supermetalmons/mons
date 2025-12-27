@@ -1,6 +1,6 @@
 {
   "id": 35,
-  "name": "Blue Eyes — Receipt",
+  "name": "Blue Eyes Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/35.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/35.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Blue Eyes — Receipt"
+      "value": "Blue Eyes Receipt"
     },
     {
       "trait_type": "Type",

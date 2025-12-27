@@ -1,6 +1,6 @@
 {
   "id": 119,
-  "name": "Impmon — Receipt",
+  "name": "Impmon Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/119.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/119.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Impmon — Receipt"
+      "value": "Impmon Receipt"
     },
     {
       "trait_type": "Type",

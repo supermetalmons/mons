@@ -1,6 +1,6 @@
 {
   "id": 670,
-  "name": "Russian Hat — Receipt",
+  "name": "Russian Hat Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/4.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/4.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Russian Hat — Receipt"
+      "value": "Russian Hat Receipt"
     },
     {
       "trait_type": "Type",

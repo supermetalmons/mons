@@ -1,6 +1,6 @@
 {
   "id": 111,
-  "name": "Jester — Receipt",
+  "name": "Jester Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/111.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/111.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Jester — Receipt"
+      "value": "Jester Receipt"
     },
     {
       "trait_type": "Type",

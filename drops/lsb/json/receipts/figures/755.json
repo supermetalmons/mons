@@ -1,6 +1,6 @@
 {
   "id": 755,
-  "name": "Wing Helmet — Receipt",
+  "name": "Wing Helmet Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/89.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/89.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Wing Helmet — Receipt"
+      "value": "Wing Helmet Receipt"
     },
     {
       "trait_type": "Type",

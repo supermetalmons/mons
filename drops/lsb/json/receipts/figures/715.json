@@ -1,6 +1,6 @@
 {
   "id": 715,
-  "name": "Hoodie — Receipt",
+  "name": "Hoodie Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/49.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/49.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Hoodie — Receipt"
+      "value": "Hoodie Receipt"
     },
     {
       "trait_type": "Type",

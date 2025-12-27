@@ -1,6 +1,6 @@
 {
   "id": 672,
-  "name": "Ghost Impmon — Receipt",
+  "name": "Ghost Impmon Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/6.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/6.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Ghost Impmon — Receipt"
+      "value": "Ghost Impmon Receipt"
     },
     {
       "trait_type": "Type",

@@ -1,6 +1,6 @@
 {
   "id": 640,
-  "name": "Kenny — Receipt",
+  "name": "Kenny Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/307.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/307.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Kenny — Receipt"
+      "value": "Kenny Receipt"
     },
     {
       "trait_type": "Type",

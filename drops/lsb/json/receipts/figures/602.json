@@ -1,6 +1,6 @@
 {
   "id": 602,
-  "name": "Frazetta Helm — Receipt",
+  "name": "Frazetta Helm Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/269.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/269.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Frazetta Helm — Receipt"
+      "value": "Frazetta Helm Receipt"
     },
     {
       "trait_type": "Type",

@@ -1,6 +1,6 @@
 {
   "id": 928,
-  "name": "Ghost — Receipt",
+  "name": "Ghost Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/262.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/262.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Ghost — Receipt"
+      "value": "Ghost Receipt"
     },
     {
       "trait_type": "Type",

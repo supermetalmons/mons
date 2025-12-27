@@ -1,6 +1,6 @@
 {
   "id": 446,
-  "name": "Hackmon — Receipt",
+  "name": "Hackmon Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/113.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/113.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Hackmon — Receipt"
+      "value": "Hackmon Receipt"
     },
     {
       "trait_type": "Type",

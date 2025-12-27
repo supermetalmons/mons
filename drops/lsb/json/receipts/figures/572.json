@@ -1,6 +1,6 @@
 {
   "id": 572,
-  "name": "Reaper — Receipt",
+  "name": "Reaper Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/239.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/239.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Reaper — Receipt"
+      "value": "Reaper Receipt"
     },
     {
       "trait_type": "Type",

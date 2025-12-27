@@ -1,6 +1,6 @@
 {
   "id": 255,
-  "name": "Thief — Receipt",
+  "name": "Thief Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/255.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/255.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Thief — Receipt"
+      "value": "Thief Receipt"
     },
     {
       "trait_type": "Type",

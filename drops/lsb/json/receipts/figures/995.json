@@ -1,6 +1,6 @@
 {
   "id": 995,
-  "name": "Dual Wield — Receipt",
+  "name": "Dual Wield Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/21.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/21.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Dual Wield — Receipt"
+      "value": "Dual Wield Receipt"
     },
     {
       "trait_type": "Type",

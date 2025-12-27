@@ -1,6 +1,6 @@
 {
   "id": 247,
-  "name": "Candy Burger Spider — Receipt",
+  "name": "Candy Burger Spider Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/247.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/247.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Candy Burger Spider — Receipt"
+      "value": "Candy Burger Spider Receipt"
     },
     {
       "trait_type": "Type",

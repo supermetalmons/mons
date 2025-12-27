@@ -1,6 +1,6 @@
 {
   "id": 570,
-  "name": "Monster Energy — Receipt",
+  "name": "Monster Energy Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/237.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/237.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Monster Energy — Receipt"
+      "value": "Monster Energy Receipt"
     },
     {
       "trait_type": "Type",

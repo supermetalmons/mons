@@ -1,6 +1,6 @@
 {
   "id": 917,
-  "name": "Ventilator — Receipt",
+  "name": "Ventilator Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/251.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/251.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Ventilator — Receipt"
+      "value": "Ventilator Receipt"
     },
     {
       "trait_type": "Type",

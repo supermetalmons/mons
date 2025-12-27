@@ -1,6 +1,6 @@
 {
   "id": 877,
-  "name": "Box — Receipt",
+  "name": "Box Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/211.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/211.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Box — Receipt"
+      "value": "Box Receipt"
     },
     {
       "trait_type": "Type",

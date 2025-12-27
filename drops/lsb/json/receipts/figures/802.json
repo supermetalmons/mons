@@ -1,6 +1,6 @@
 {
   "id": 802,
-  "name": "Cod — Receipt",
+  "name": "Cod Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/136.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/136.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Cod — Receipt"
+      "value": "Cod Receipt"
     },
     {
       "trait_type": "Type",

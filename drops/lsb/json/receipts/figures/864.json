@@ -1,6 +1,6 @@
 {
   "id": 864,
-  "name": "Frog — Receipt",
+  "name": "Frog Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/198.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/198.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Frog — Receipt"
+      "value": "Frog Receipt"
     },
     {
       "trait_type": "Type",

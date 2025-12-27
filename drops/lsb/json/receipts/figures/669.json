@@ -1,6 +1,6 @@
 {
   "id": 669,
-  "name": "Mimikyu — Receipt",
+  "name": "Mimikyu Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/3.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/3.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Mimikyu — Receipt"
+      "value": "Mimikyu Receipt"
     },
     {
       "trait_type": "Type",

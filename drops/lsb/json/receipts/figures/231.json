@@ -1,6 +1,6 @@
 {
   "id": 231,
-  "name": "General — Receipt",
+  "name": "General Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/231.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/231.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "General — Receipt"
+      "value": "General Receipt"
     },
     {
       "trait_type": "Type",

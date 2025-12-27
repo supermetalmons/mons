@@ -1,6 +1,6 @@
 {
   "id": 594,
-  "name": "Hikki Cloud Form — Receipt",
+  "name": "Hikki Cloud Form Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/261.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/261.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Hikki Cloud Form — Receipt"
+      "value": "Hikki Cloud Form Receipt"
     },
     {
       "trait_type": "Type",

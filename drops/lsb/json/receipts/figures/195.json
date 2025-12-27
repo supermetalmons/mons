@@ -1,6 +1,6 @@
 {
   "id": 195,
-  "name": "Drifella Hoodie — Receipt",
+  "name": "Drifella Hoodie Receipt",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/receipts/195.webp",
   "animation_url": "https://assets.mons.link/drops/lsb/receipts/195.mp4",
@@ -8,7 +8,7 @@
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Drifella Hoodie — Receipt"
+      "value": "Drifella Hoodie Receipt"
     },
     {
       "trait_type": "Type",
