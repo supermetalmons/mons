@@ -3,6 +3,7 @@
   "name": "Impmon",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/figures/119.webp",
+  "animation_url": "https://assets.mons.link/drops/lsb/figures/119.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -31,6 +32,10 @@
       {
         "uri": "https://assets.mons.link/drops/lsb/figures/119.webp",
         "type": "image/webp"
+      },
+      {
+        "uri": "https://assets.mons.link/drops/lsb/figures/119.mp4",
+        "type": "video/mp4"
       }
     ],
     "category": "image"
