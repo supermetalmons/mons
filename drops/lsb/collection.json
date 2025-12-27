@@ -1,10 +1,10 @@
 {
   "name": "Little Swag Boxes",
   "symbol": "lsb",
-  "description": "",
+  "description": "swag",
   "image": "https://assets.mons.link/drops/lsb/box/default.webp",
   "external_url": "https://mons.shop",
-  "seller_fee_basis_points": 0,
+  "seller_fee_basis_points": 500,
   "attributes": [],
   "properties": {
     "files": [
