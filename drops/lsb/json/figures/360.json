@@ -2,7 +2,7 @@
   "id": 360,
   "name": "Mimikyu",
   "description": "",
-  "image": "https://assets.mons.link/drops/lsb/figures/27.webp",
+  "image": "https://assets.mons.link/drops/lsb/figures/3.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -15,7 +15,7 @@
     },
     {
       "trait_type": "Color",
-      "value": "Handpainted"
+      "value": "Gunmetal"
     },
     {
       "trait_type": "Extra Finish",
@@ -25,7 +25,7 @@
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/lsb/figures/27.webp",
+        "uri": "https://assets.mons.link/drops/lsb/figures/3.webp",
         "type": "image/webp"
       }
     ],

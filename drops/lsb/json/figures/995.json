@@ -2,7 +2,7 @@
   "id": 995,
   "name": "Dual Wield",
   "description": "",
-  "image": "https://assets.mons.link/drops/lsb/figures/329.webp",
+  "image": "https://assets.mons.link/drops/lsb/figures/21.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -15,17 +15,17 @@
     },
     {
       "trait_type": "Color",
-      "value": "Handpainted"
+      "value": "Gunmetal"
     },
     {
       "trait_type": "Extra Finish",
-      "value": "None"
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/lsb/figures/329.webp",
+        "uri": "https://assets.mons.link/drops/lsb/figures/21.webp",
         "type": "image/webp"
       }
     ],

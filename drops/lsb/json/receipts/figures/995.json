@@ -2,8 +2,8 @@
   "id": 995,
   "name": "Dual Wield — Receipt",
   "description": "",
-  "image": "https://assets.mons.link/drops/lsb/receipts/329.webp",
-  "animation_url": "https://assets.mons.link/drops/lsb/receipts/329.mp4",
+  "image": "https://assets.mons.link/drops/lsb/receipts/21.webp",
+  "animation_url": "https://assets.mons.link/drops/lsb/receipts/21.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -16,21 +16,21 @@
     },
     {
       "trait_type": "Color",
-      "value": "Handpainted"
+      "value": "Gunmetal"
     },
     {
       "trait_type": "Extra Finish",
-      "value": "None"
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/lsb/receipts/329.webp",
+        "uri": "https://assets.mons.link/drops/lsb/receipts/21.webp",
         "type": "image/webp"
       },
       {
-        "uri": "https://assets.mons.link/drops/lsb/receipts/329.mp4",
+        "uri": "https://assets.mons.link/drops/lsb/receipts/21.mp4",
         "type": "video/mp4"
       }
     ],

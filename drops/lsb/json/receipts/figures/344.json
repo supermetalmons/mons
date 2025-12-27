@@ -2,8 +2,8 @@
   "id": 344,
   "name": "Ghost — Receipt",
   "description": "",
-  "image": "https://assets.mons.link/drops/lsb/receipts/11.webp",
-  "animation_url": "https://assets.mons.link/drops/lsb/receipts/11.mp4",
+  "image": "https://assets.mons.link/drops/lsb/receipts/1.webp",
+  "animation_url": "https://assets.mons.link/drops/lsb/receipts/1.mp4",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -16,21 +16,21 @@
     },
     {
       "trait_type": "Color",
-      "value": "Handpainted"
+      "value": "Gunmetal"
     },
     {
       "trait_type": "Extra Finish",
-      "value": "None"
+      "value": "Paint Splatter"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/lsb/receipts/11.webp",
+        "uri": "https://assets.mons.link/drops/lsb/receipts/1.webp",
         "type": "image/webp"
       },
       {
-        "uri": "https://assets.mons.link/drops/lsb/receipts/11.mp4",
+        "uri": "https://assets.mons.link/drops/lsb/receipts/1.mp4",
         "type": "video/mp4"
       }
     ],

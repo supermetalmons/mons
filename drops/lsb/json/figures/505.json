@@ -2,7 +2,7 @@
   "id": 505,
   "name": "Cap",
   "description": "",
-  "image": "https://assets.mons.link/drops/lsb/figures/172.webp",
+  "image": "https://assets.mons.link/drops/lsb/figures/163.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -15,17 +15,17 @@
     },
     {
       "trait_type": "Color",
-      "value": "Handpainted"
+      "value": "Gunmetal"
     },
     {
       "trait_type": "Extra Finish",
-      "value": "Paint Splatter"
+      "value": "None"
     }
   ],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/lsb/figures/172.webp",
+        "uri": "https://assets.mons.link/drops/lsb/figures/163.webp",
         "type": "image/webp"
       }
     ],
