@@ -1,13 +1,13 @@
 {
   "id": 829,
-  "name": "Reaper",
+  "name": "Cap",
   "description": "",
   "image": "https://assets.mons.link/drops/lsb/figures/163.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
       "trait_type": "Name",
-      "value": "Reaper"
+      "value": "Cap"
     },
     {
       "trait_type": "Type",
