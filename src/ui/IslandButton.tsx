@@ -225,7 +225,7 @@ const WagerButtonHint = styled.span`
 const WagerMaterialBadge = styled.span`
   display: inline-flex;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   padding: 0;
 `;
 
