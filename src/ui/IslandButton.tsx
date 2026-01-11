@@ -14,6 +14,7 @@ import { Sound } from "../utils/gameModels";
 import { setIslandOverlayState, resetIslandOverlayState } from "./islandOverlayState";
 import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMiningService";
 import { useGameAssets } from "../hooks/useGameAssets";
+import { showDebugWagerPiles } from "../game/board";
 
 const FEATURE_GLOWS_ON_HOTSPOT = true;
 const FEATURE_MON_TYPE_SELECTOR = false;
@@ -2312,7 +2313,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     setIslandTranslate({ x: 0, y: 0 });
     setIslandScale({ x: 1, y: 1 });
     setWalkReady(false);
-  }, []);
+  }, [resetWagerSelection]);
 
   const handleIslandOpen = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -3700,8 +3701,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!wagerMaterial || wagerCount === 0) {
         return;
       }
+      handleIslandClose();
+      const material = wagerMaterial;
+      const count = wagerCount;
+      const materialUrl = materialUrls[material] ?? null;
+      requestAnimationFrame(() => {
+        showDebugWagerPiles(material, count, materialUrl);
+      });
     },
-    [wagerCount, wagerMaterial]
+    [handleIslandClose, materialUrls, wagerCount, wagerMaterial]
   );
 
   const handleMaterialItemTap = useCallback(
@@ -4276,7 +4284,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           </WagerMaterialBadge>
                         </>
                       ) : (
-                        <WagerButtonHint>select material to wager</WagerButtonHint>
+                        <WagerButtonHint>select a material to wager</WagerButtonHint>
                       )}
                     </WagerButton>
                   </WagerControls>

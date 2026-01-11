@@ -20,6 +20,7 @@ import { instructor } from "../assets/talkingDude";
 import { isBotsLoopMode } from "../connection/connection";
 import { launchConfetti } from "./confetti";
 import { soundPlayer } from "../utils/SoundPlayer";
+import type { MaterialName } from "../services/rocksMiningService";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 
@@ -109,6 +110,24 @@ let bombOrPotion: SVGElement;
 let bomb: SVGElement;
 let supermana: SVGElement;
 let supermanaSimple: SVGElement;
+
+const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
+const MAX_WAGER_PILE_ITEMS = 13;
+const WAGER_PILE_SCALE = 1.5;
+const WAGER_ICON_SIZE_MULTIPLIER = 1;
+
+type WagerPile = {
+  group: SVGElement;
+  rect: SVGElement;
+  icons: SVGElement[];
+  positions: Array<{ u: number; v: number }>;
+  material: MaterialName | null;
+  count: number;
+};
+
+let wagerLayer: SVGElement | null = null;
+let playerWagerPile: WagerPile | null = null;
+let opponentWagerPile: WagerPile | null = null;
 
 const emojis = (await import("../content/emojis")).emojis;
 
@@ -1532,6 +1551,162 @@ function getAvatarSize(): number {
   return 0.777 * getOuterElementsMultiplicator();
 }
 
+function getWagerMaterialUrl(name: MaterialName): string {
+  return `${MATERIAL_BASE_URL}/${name}.webp`;
+}
+
+function ensureWagerLayer(): SVGElement | null {
+  if (wagerLayer) {
+    return wagerLayer;
+  }
+  if (!controlsLayer) {
+    return null;
+  }
+  const layer = document.createElementNS(SVG.ns, "g");
+  layer.setAttribute("data-layer", "wager-piles");
+  layer.style.pointerEvents = "none";
+  controlsLayer.appendChild(layer);
+  wagerLayer = layer;
+  return layer;
+}
+
+function createWagerPile(isOpponent: boolean): WagerPile | null {
+  const layer = ensureWagerLayer();
+  if (!layer) return null;
+  const group = document.createElementNS(SVG.ns, "g");
+  group.setAttribute("data-wager-side", isOpponent ? "opponent" : "player");
+  group.style.pointerEvents = "none";
+
+  const rect = document.createElementNS(SVG.ns, "rect");
+  rect.setAttribute("fill", "transparent");
+  rect.setAttribute("stroke", "transparent");
+  rect.style.pointerEvents = "none";
+  group.appendChild(rect);
+
+  layer.appendChild(group);
+  return {
+    group,
+    rect,
+    icons: [],
+    positions: [],
+    material: null,
+    count: 0,
+  };
+}
+
+function ensureWagerPile(isOpponent: boolean): WagerPile | null {
+  if (isOpponent) {
+    if (!opponentWagerPile) {
+      opponentWagerPile = createWagerPile(true);
+    }
+    return opponentWagerPile;
+  }
+  if (!playerWagerPile) {
+    playerWagerPile = createWagerPile(false);
+  }
+  return playerWagerPile;
+}
+
+function generateWagerPositions(count: number): Array<{ u: number; v: number }> {
+  if (count <= 0) return [];
+  const grid = Math.max(1, Math.ceil(Math.sqrt(count)));
+  const cell = 1 / grid;
+  const positions: Array<{ u: number; v: number }> = [];
+  for (let row = 0; row < grid; row += 1) {
+    for (let col = 0; col < grid; col += 1) {
+      const jitterX = 0.2 + Math.random() * 0.6;
+      const jitterY = 0.2 + Math.random() * 0.6;
+      positions.push({ u: (col + jitterX) * cell, v: (row + jitterY) * cell });
+    }
+  }
+  for (let i = positions.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = positions[i];
+    positions[i] = positions[j];
+    positions[j] = temp;
+  }
+  return positions.slice(0, count);
+}
+
+function syncWagerPileIcons(pile: WagerPile, material: MaterialName, count: number, materialUrl?: string | null) {
+  const visibleCount = Math.max(0, Math.min(MAX_WAGER_PILE_ITEMS, count));
+  pile.material = material;
+  pile.count = visibleCount;
+  pile.positions = generateWagerPositions(visibleCount);
+
+  while (pile.icons.length > visibleCount) {
+    const icon = pile.icons.pop();
+    if (icon && icon.parentNode) {
+      icon.parentNode.removeChild(icon);
+    }
+  }
+
+  while (pile.icons.length < visibleCount) {
+    const icon = document.createElementNS(SVG.ns, "image");
+    icon.setAttribute("class", "item");
+    icon.setAttribute("data-asset-type", "wager-material");
+    icon.style.pointerEvents = "none";
+    pile.group.appendChild(icon);
+    pile.icons.push(icon);
+  }
+
+  const url = materialUrl || getWagerMaterialUrl(material);
+  pile.icons.forEach((icon) => {
+    SVG.setImageUrl(icon, url);
+  });
+
+  SVG.setHidden(pile.group, visibleCount === 0);
+}
+
+function getWagerPileRect(isOpponent: boolean): { x: number; y: number; w: number; h: number } {
+  const avatarSize = getAvatarSize();
+  const baseY = isOpponent ? 1 - avatarSize * 1.203 : isPangchiuBoard() ? 12.75 : 12.16;
+  const baseH = avatarSize;
+  const baseW = avatarSize * 2;
+  const h = baseH * WAGER_PILE_SCALE;
+  const w = baseW * WAGER_PILE_SCALE;
+  const x = 5.5 - w / 2;
+  const y = isOpponent ? baseY + baseH - h : baseY;
+  return { x, y, w, h };
+}
+
+function updateWagerPileLayout(pile: WagerPile, rect: { x: number; y: number; w: number; h: number }) {
+  SVG.setFrame(pile.rect, rect.x, rect.y, rect.w, rect.h);
+  const rawIconSize = getAvatarSize() * WAGER_ICON_SIZE_MULTIPLIER;
+  const paddingFrac = 0.15;
+  const visibleScale = Math.max(0.1, 1 - paddingFrac * 2);
+  const maxIconSize = Math.min(rect.w, rect.h) / visibleScale;
+  const iconSize = Math.min(rawIconSize, maxIconSize);
+  const padding = iconSize * paddingFrac;
+  const visibleSize = iconSize * visibleScale;
+  const maxX = Math.max(0, rect.w - visibleSize);
+  const maxY = Math.max(0, rect.h - visibleSize);
+  for (let i = 0; i < pile.icons.length; i += 1) {
+    const pos = pile.positions[i] ?? { u: 0.5, v: 0.5 };
+    const ix = rect.x - padding + pos.u * maxX;
+    const iy = rect.y - padding + pos.v * maxY;
+    SVG.setFrame(pile.icons[i], ix, iy, iconSize, iconSize);
+  }
+}
+
+function updateWagerLayout() {
+  if (!playerWagerPile && !opponentWagerPile) {
+    return;
+  }
+  if (!controlsLayer) {
+    return;
+  }
+  if (!boardBackgroundLayer) {
+    return;
+  }
+  if (playerWagerPile) {
+    updateWagerPileLayout(playerWagerPile, getWagerPileRect(false));
+  }
+  if (opponentWagerPile) {
+    updateWagerPileLayout(opponentWagerPile, getWagerPileRect(true));
+  }
+}
+
 function updateNamesX() {
   if (playerNameText === undefined || opponentNameText === undefined) {
     return;
@@ -1611,8 +1786,24 @@ const updateLayout = () => {
     updateSpriteSheetClipRect(talkingDude);
   }
 
+  updateWagerLayout();
   updateNamesX();
 };
+
+export function showDebugWagerPiles(material: MaterialName, count: number, materialUrl?: string | null) {
+  const layer = ensureWagerLayer();
+  if (!layer) {
+    return;
+  }
+  const playerPile = ensureWagerPile(false);
+  const opponentPile = ensureWagerPile(true);
+  if (!playerPile || !opponentPile) {
+    return;
+  }
+  syncWagerPileIcons(playerPile, material, count, materialUrl);
+  syncWagerPileIcons(opponentPile, material, count, materialUrl);
+  updateWagerLayout();
+}
 
 function doNotShowAvatarPlaceholderAgain(opponent: boolean) {
   if (opponent) {
