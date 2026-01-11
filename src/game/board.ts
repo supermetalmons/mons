@@ -113,8 +113,12 @@ let supermanaSimple: SVGElement;
 
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 const MAX_WAGER_PILE_ITEMS = 13;
+const MAX_WAGER_WIN_PILE_ITEMS = 32;
 const WAGER_PILE_SCALE = 1.5;
+const WAGER_WIN_PILE_SCALE = 2;
 const WAGER_ICON_SIZE_MULTIPLIER = 1;
+const WAGER_ICON_PADDING_FRAC = 0.15;
+const WAGER_WIN_ANIM_DURATION_MS = 800;
 
 type WagerPile = {
   group: SVGElement;
@@ -122,12 +126,28 @@ type WagerPile = {
   icons: SVGElement[];
   positions: Array<{ u: number; v: number }>;
   material: MaterialName | null;
+  materialUrl: string | null;
   count: number;
+  actualCount: number;
 };
 
 let wagerLayer: SVGElement | null = null;
 let playerWagerPile: WagerPile | null = null;
 let opponentWagerPile: WagerPile | null = null;
+let winnerWagerPile: WagerPile | null = null;
+let wagerWinAnimRaf: number | null = null;
+let wagerWinAnimActive = false;
+let wagerWinAnimState: {
+  startTime: number;
+  duration: number;
+  iconSize: number;
+  starts: Array<{ x: number; y: number }>;
+  targets: Array<{ x: number; y: number }>;
+  drifts: Array<{ x: number; y: number }>;
+  delays: number[];
+} | null = null;
+let nextWagerWinnerIsOpponent = false;
+let lastWagerWinnerIsOpponent = false;
 
 const emojis = (await import("../content/emojis")).emojis;
 
@@ -1555,6 +1575,22 @@ function getWagerMaterialUrl(name: MaterialName): string {
   return `${MATERIAL_BASE_URL}/${name}.webp`;
 }
 
+function getWagerVisibleScale(): number {
+  return Math.max(0.1, 1 - WAGER_ICON_PADDING_FRAC * 2);
+}
+
+function getWagerRectForScale(isOpponent: boolean, scale: number): { x: number; y: number; w: number; h: number } {
+  const avatarSize = getAvatarSize();
+  const baseY = isOpponent ? 1 - avatarSize * 1.203 : isPangchiuBoard() ? 12.75 : 12.16;
+  const baseH = avatarSize;
+  const baseW = avatarSize * 2;
+  const h = baseH * scale;
+  const w = baseW * scale;
+  const x = 5.5 - w / 2;
+  const y = isOpponent ? baseY + baseH - h : baseY;
+  return { x, y, w, h };
+}
+
 function ensureWagerLayer(): SVGElement | null {
   if (wagerLayer) {
     return wagerLayer;
@@ -1590,7 +1626,9 @@ function createWagerPile(isOpponent: boolean): WagerPile | null {
     icons: [],
     positions: [],
     material: null,
+    materialUrl: null,
     count: 0,
+    actualCount: 0,
   };
 }
 
@@ -1605,6 +1643,16 @@ function ensureWagerPile(isOpponent: boolean): WagerPile | null {
     playerWagerPile = createWagerPile(false);
   }
   return playerWagerPile;
+}
+
+function ensureWinnerWagerPile(): WagerPile | null {
+  if (!winnerWagerPile) {
+    winnerWagerPile = createWagerPile(false);
+    if (winnerWagerPile) {
+      winnerWagerPile.group.setAttribute("data-wager-kind", "winner");
+    }
+  }
+  return winnerWagerPile;
 }
 
 function generateWagerPositions(count: number): Array<{ u: number; v: number }> {
@@ -1628,10 +1676,12 @@ function generateWagerPositions(count: number): Array<{ u: number; v: number }> 
   return positions.slice(0, count);
 }
 
-function syncWagerPileIcons(pile: WagerPile, material: MaterialName, count: number, materialUrl?: string | null) {
-  const visibleCount = Math.max(0, Math.min(MAX_WAGER_PILE_ITEMS, count));
+function syncWagerPileIcons(pile: WagerPile, material: MaterialName, count: number, materialUrl?: string | null, maxItems = MAX_WAGER_PILE_ITEMS) {
+  const visibleCount = Math.max(0, Math.min(maxItems, count));
   pile.material = material;
+  pile.materialUrl = materialUrl || getWagerMaterialUrl(material);
   pile.count = visibleCount;
+  pile.actualCount = count;
   pile.positions = generateWagerPositions(visibleCount);
 
   while (pile.icons.length > visibleCount) {
@@ -1650,47 +1700,49 @@ function syncWagerPileIcons(pile: WagerPile, material: MaterialName, count: numb
     pile.icons.push(icon);
   }
 
-  const url = materialUrl || getWagerMaterialUrl(material);
   pile.icons.forEach((icon) => {
-    SVG.setImageUrl(icon, url);
+    SVG.setImageUrl(icon, pile.materialUrl || "");
   });
 
   SVG.setHidden(pile.group, visibleCount === 0);
 }
 
 function getWagerPileRect(isOpponent: boolean): { x: number; y: number; w: number; h: number } {
-  const avatarSize = getAvatarSize();
-  const baseY = isOpponent ? 1 - avatarSize * 1.203 : isPangchiuBoard() ? 12.75 : 12.16;
-  const baseH = avatarSize;
-  const baseW = avatarSize * 2;
-  const h = baseH * WAGER_PILE_SCALE;
-  const w = baseW * WAGER_PILE_SCALE;
-  const x = 5.5 - w / 2;
-  const y = isOpponent ? baseY + baseH - h : baseY;
-  return { x, y, w, h };
+  return getWagerRectForScale(isOpponent, WAGER_PILE_SCALE);
+}
+
+function getWagerWinnerRect(isOpponent: boolean): { x: number; y: number; w: number; h: number } {
+  return getWagerRectForScale(isOpponent, WAGER_WIN_PILE_SCALE);
+}
+
+function getWagerIconLayout(
+  rect: { x: number; y: number; w: number; h: number },
+  iconSizeOverride?: number
+): { iconSize: number; padding: number; maxX: number; maxY: number } {
+  const visibleScale = getWagerVisibleScale();
+  const rawIconSize = getAvatarSize() * WAGER_ICON_SIZE_MULTIPLIER;
+  const maxIconSize = Math.min(rect.w, rect.h) / visibleScale;
+  const iconSize = Math.min(iconSizeOverride ?? rawIconSize, maxIconSize);
+  const padding = iconSize * WAGER_ICON_PADDING_FRAC;
+  const visibleSize = iconSize * visibleScale;
+  const maxX = Math.max(0, rect.w - visibleSize);
+  const maxY = Math.max(0, rect.h - visibleSize);
+  return { iconSize, padding, maxX, maxY };
 }
 
 function updateWagerPileLayout(pile: WagerPile, rect: { x: number; y: number; w: number; h: number }) {
   SVG.setFrame(pile.rect, rect.x, rect.y, rect.w, rect.h);
-  const rawIconSize = getAvatarSize() * WAGER_ICON_SIZE_MULTIPLIER;
-  const paddingFrac = 0.15;
-  const visibleScale = Math.max(0.1, 1 - paddingFrac * 2);
-  const maxIconSize = Math.min(rect.w, rect.h) / visibleScale;
-  const iconSize = Math.min(rawIconSize, maxIconSize);
-  const padding = iconSize * paddingFrac;
-  const visibleSize = iconSize * visibleScale;
-  const maxX = Math.max(0, rect.w - visibleSize);
-  const maxY = Math.max(0, rect.h - visibleSize);
+  const layout = getWagerIconLayout(rect);
   for (let i = 0; i < pile.icons.length; i += 1) {
     const pos = pile.positions[i] ?? { u: 0.5, v: 0.5 };
-    const ix = rect.x - padding + pos.u * maxX;
-    const iy = rect.y - padding + pos.v * maxY;
-    SVG.setFrame(pile.icons[i], ix, iy, iconSize, iconSize);
+    const ix = rect.x - layout.padding + pos.u * layout.maxX;
+    const iy = rect.y - layout.padding + pos.v * layout.maxY;
+    SVG.setFrame(pile.icons[i], ix, iy, layout.iconSize, layout.iconSize);
   }
 }
 
 function updateWagerLayout() {
-  if (!playerWagerPile && !opponentWagerPile) {
+  if (!playerWagerPile && !opponentWagerPile && !winnerWagerPile) {
     return;
   }
   if (!controlsLayer) {
@@ -1704,6 +1756,202 @@ function updateWagerLayout() {
   }
   if (opponentWagerPile) {
     updateWagerPileLayout(opponentWagerPile, getWagerPileRect(true));
+  }
+  if (winnerWagerPile && !wagerWinAnimActive) {
+    updateWagerPileLayout(winnerWagerPile, getWagerWinnerRect(lastWagerWinnerIsOpponent));
+  }
+}
+
+function cancelWagerWinAnimation() {
+  if (wagerWinAnimRaf !== null) {
+    cancelAnimationFrame(wagerWinAnimRaf);
+    wagerWinAnimRaf = null;
+  }
+  wagerWinAnimActive = false;
+  wagerWinAnimState = null;
+}
+
+function getWagerIconFrame(
+  rect: { x: number; y: number; w: number; h: number },
+  layout: { iconSize: number; padding: number; maxX: number; maxY: number },
+  pos: { u: number; v: number }
+): { x: number; y: number } {
+  return {
+    x: rect.x - layout.padding + pos.u * layout.maxX,
+    y: rect.y - layout.padding + pos.v * layout.maxY,
+  };
+}
+
+function buildWagerFrames(
+  rect: { x: number; y: number; w: number; h: number },
+  layout: { iconSize: number; padding: number; maxX: number; maxY: number },
+  positions: Array<{ u: number; v: number }>,
+  count: number
+): Array<{ x: number; y: number }> {
+  const frames: Array<{ x: number; y: number }> = [];
+  const initialCount = Math.min(count, positions.length);
+  for (let i = 0; i < initialCount; i += 1) {
+    frames.push(getWagerIconFrame(rect, layout, positions[i]));
+  }
+  while (frames.length < count) {
+    frames.push(getWagerIconFrame(rect, layout, { u: Math.random(), v: Math.random() }));
+  }
+  return frames;
+}
+
+function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
+  if (!playerWagerPile || !opponentWagerPile) {
+    return false;
+  }
+  const winnerSource = winnerIsOpponent ? opponentWagerPile : playerWagerPile;
+  const loserSource = winnerIsOpponent ? playerWagerPile : opponentWagerPile;
+  const material = winnerSource.material || loserSource.material;
+  if (!material) {
+    return false;
+  }
+  const winnerCount = Math.max(0, winnerSource.actualCount || winnerSource.count);
+  const loserCount = Math.max(0, loserSource.actualCount || loserSource.count);
+  const totalCount = winnerCount + loserCount;
+  if (totalCount <= 0) {
+    return false;
+  }
+  const winnerPile = ensureWinnerWagerPile();
+  if (!winnerPile) {
+    return false;
+  }
+
+  cancelWagerWinAnimation();
+
+  const materialUrl = winnerSource.materialUrl || loserSource.materialUrl || null;
+  const displayWinnerCount = Math.min(winnerSource.count, MAX_WAGER_WIN_PILE_ITEMS);
+  const displayTotal = Math.min(MAX_WAGER_WIN_PILE_ITEMS, displayWinnerCount + loserCount);
+  syncWagerPileIcons(winnerPile, material, displayTotal, materialUrl, MAX_WAGER_WIN_PILE_ITEMS);
+  SVG.setHidden(winnerPile.group, false);
+
+  const visibleCount = winnerPile.icons.length;
+  if (visibleCount === 0) {
+    return false;
+  }
+
+  const winnerVisible = Math.min(visibleCount, displayWinnerCount);
+  const loserVisible = visibleCount - winnerVisible;
+
+  const winnerSourceRect = getWagerPileRect(winnerIsOpponent);
+  const loserRect = getWagerPileRect(!winnerIsOpponent);
+  const winnerRect = getWagerWinnerRect(winnerIsOpponent);
+  SVG.setFrame(winnerPile.rect, winnerRect.x, winnerRect.y, winnerRect.w, winnerRect.h);
+
+  const iconSize = getWagerIconLayout(winnerSourceRect).iconSize;
+  const winnerLayout = getWagerIconLayout(winnerRect, iconSize);
+  const winnerSourceLayout = getWagerIconLayout(winnerSourceRect, iconSize);
+  const loserLayout = getWagerIconLayout(loserRect, iconSize);
+
+  const winnerAnchoredCount = Math.min(winnerVisible, winnerSource.positions.length);
+  const winnerAnchoredStarts = buildWagerFrames(winnerSourceRect, winnerSourceLayout, winnerSource.positions, winnerAnchoredCount);
+  const winnerExtraCount = winnerVisible - winnerAnchoredCount;
+  const extraPositions = generateWagerPositions(winnerExtraCount + loserVisible);
+  const winnerExtraPositions = extraPositions.slice(0, winnerExtraCount);
+  const loserPositions = extraPositions.slice(winnerExtraCount, winnerExtraCount + loserVisible);
+
+  const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
+  const winnerAnchoredPositions = winnerAnchoredStarts.map((frame) => {
+    const u = winnerLayout.maxX > 0 ? (frame.x - winnerRect.x + winnerLayout.padding) / winnerLayout.maxX : 0.5;
+    const v = winnerLayout.maxY > 0 ? (frame.y - winnerRect.y + winnerLayout.padding) / winnerLayout.maxY : 0.5;
+    return { u: clamp01(u), v: clamp01(v) };
+  });
+
+  const winnerPositions = winnerAnchoredPositions.concat(winnerExtraPositions);
+  winnerPile.positions = winnerPositions.concat(loserPositions);
+
+  const targets = winnerPile.positions.map((pos) => getWagerIconFrame(winnerRect, winnerLayout, pos));
+  const winnerExtraStarts = winnerExtraPositions.map((pos) => getWagerIconFrame(winnerRect, winnerLayout, pos));
+  const loserStarts = buildWagerFrames(loserRect, loserLayout, loserSource.positions, loserVisible);
+  const starts = winnerAnchoredStarts.concat(winnerExtraStarts, loserStarts);
+
+  const drifts = starts.map((start, index) => {
+    if (index < winnerVisible) {
+      return { x: 0, y: 0 };
+    }
+    const target = targets[index] || start;
+    const dx = target.x - start.x;
+    const dy = target.y - start.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const nx = -dy / len;
+    const ny = dx / len;
+    const amp = 0.12 + Math.random() * 0.28;
+    const dir = Math.random() < 0.5 ? -1 : 1;
+    return { x: nx * amp * dir, y: ny * amp * dir };
+  });
+
+  const delays = starts.map((_, index) => (index < winnerVisible ? 0 : Math.random() * 0.1));
+
+  winnerPile.icons.forEach((icon, index) => {
+    const start = starts[index] || targets[index];
+    if (start) {
+      SVG.setFrame(icon, start.x, start.y, iconSize, iconSize);
+    }
+  });
+
+  SVG.setHidden(winnerSource.group, true);
+  SVG.setHidden(loserSource.group, true);
+
+  wagerWinAnimActive = true;
+  lastWagerWinnerIsOpponent = winnerIsOpponent;
+  const startTime = performance.now();
+  wagerWinAnimState = {
+    startTime,
+    duration: WAGER_WIN_ANIM_DURATION_MS,
+    iconSize,
+    starts,
+    targets,
+    drifts,
+    delays,
+  };
+
+  const animate = (time: number) => {
+    if (!wagerWinAnimState || !winnerWagerPile) {
+      wagerWinAnimActive = false;
+      wagerWinAnimRaf = null;
+      return;
+    }
+    const { startTime, duration, iconSize, starts, targets, drifts, delays } = wagerWinAnimState;
+    const progress = Math.max(0, Math.min(1, (time - startTime) / duration));
+    for (let i = 0; i < winnerWagerPile.icons.length; i += 1) {
+      const delay = delays[i] || 0;
+      const denom = 1 - delay;
+      const local = denom > 0 ? Math.max(0, Math.min(1, (progress - delay) / denom)) : progress;
+      const eased = 1 - Math.pow(1 - local, 3);
+      const driftScale = Math.sin(local * Math.PI);
+      const start = starts[i] || targets[i];
+      const target = targets[i] || start;
+      if (!start || !target) continue;
+      const drift = drifts[i] || { x: 0, y: 0 };
+      const x = start.x + (target.x - start.x) * eased + drift.x * driftScale;
+      const y = start.y + (target.y - start.y) * eased + drift.y * driftScale;
+      SVG.setFrame(winnerWagerPile.icons[i], x, y, iconSize, iconSize);
+    }
+
+    if (progress < 1) {
+      wagerWinAnimRaf = requestAnimationFrame(animate);
+    } else {
+      for (let i = 0; i < winnerWagerPile.icons.length; i += 1) {
+        const target = targets[i];
+        if (!target) continue;
+        SVG.setFrame(winnerWagerPile.icons[i], target.x, target.y, iconSize, iconSize);
+      }
+      wagerWinAnimActive = false;
+      wagerWinAnimState = null;
+      wagerWinAnimRaf = null;
+    }
+  };
+
+  wagerWinAnimRaf = requestAnimationFrame(animate);
+  return true;
+}
+
+function triggerDebugWagerWinAnimation(): void {
+  if (startWagerWinAnimation(nextWagerWinnerIsOpponent)) {
+    nextWagerWinnerIsOpponent = !nextWagerWinnerIsOpponent;
   }
 }
 
@@ -1795,10 +2043,14 @@ export function showDebugWagerPiles(material: MaterialName, count: number, mater
   if (!layer) {
     return;
   }
+  cancelWagerWinAnimation();
   const playerPile = ensureWagerPile(false);
   const opponentPile = ensureWagerPile(true);
   if (!playerPile || !opponentPile) {
     return;
+  }
+  if (winnerWagerPile) {
+    SVG.setHidden(winnerWagerPile.group, true);
   }
   syncWagerPileIcons(playerPile, material, count, materialUrl);
   syncWagerPileIcons(opponentPile, material, count, materialUrl);
@@ -2087,11 +2339,13 @@ export function setupBoard() {
       const y = isFlipped ? 10 - rawY : rawY;
 
       didClickSquare(new Location(y, x));
+      triggerDebugWagerWinAnimation();
       event.preventDefault();
       event.stopPropagation();
     } else if (!target.closest("a, button, select, [data-notification-banner='true']")) {
       hideItemSelectionOrConfirmationOverlay();
       didClickSquare(new Location(-1, -1));
+      triggerDebugWagerWinAnimation();
       event.preventDefault();
       event.stopPropagation();
     }
