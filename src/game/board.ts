@@ -114,9 +114,9 @@ let supermanaSimple: SVGElement;
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
-const WAGER_PILE_SCALE = 1.5;
-const WAGER_WIN_PILE_SCALE = 2;
-const WAGER_ICON_SIZE_MULTIPLIER = 1;
+const WAGER_PILE_SCALE = 1;
+const WAGER_WIN_PILE_SCALE = 1.3333;
+const WAGER_ICON_SIZE_MULTIPLIER = 0.669;
 const WAGER_ICON_PADDING_FRAC = 0.15;
 const WAGER_WIN_ANIM_DURATION_MS = 800;
 
