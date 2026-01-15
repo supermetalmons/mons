@@ -159,6 +159,7 @@ const downloadShinyCardPng = async (card, options) => {
     captureNode.style.transform = "none";
     captureNode.style.transformStyle = "flat";
     captureNode.style.boxShadow = "none";
+    captureNode.style.borderRadius = "0";
     captureNode.style.width = `${rect.width}px`;
     captureNode.style.height = `${rect.height}px`;
     captureWrapper.appendChild(captureNode);
