@@ -7,7 +7,7 @@ import { PlayerProfile } from "../connection/connectionModels";
 import { AvatarImage } from "./AvatarImage";
 import { isLocalHost } from "../utils/localDev";
 
-const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = true;
+const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;
 
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
   opacity: 1;
