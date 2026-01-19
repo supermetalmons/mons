@@ -100,6 +100,10 @@ const WAGER_PANEL_MIN_BUTTON_HEIGHT_PX = 34;
 const WAGER_PANEL_MIN_BUTTON_GAP_PX = 10;
 const WAGER_PANEL_MIN_OPPONENT_BUTTON_WIDTH_PX = 96;
 const WAGER_PANEL_MIN_PLAYER_BUTTON_WIDTH_PX = 170;
+const WAGER_PANEL_COUNT_GAP_FRAC = 0.06;
+const WAGER_PANEL_COUNT_MIN_GAP_PX = 4;
+const WAGER_PANEL_COUNT_MIN_WIDTH_PX = 32;
+const WAGER_PANEL_COUNT_Y_OFFSET_FRAC = 0.04;
 
 type WagerPileElements = {
   player: HTMLDivElement;
@@ -128,6 +132,7 @@ const getWagerPanelLayout = (
   buttonRow: number;
   buttonGapPct: number;
   singleButtonWidthPct: number;
+  countGap: number;
 } => {
   const pxPerUnitX = boardPixelSize ? boardPixelSize.width / BOARD_WIDTH_UNITS : null;
   const pxPerUnitY = boardPixelSize ? boardPixelSize.height / BOARD_HEIGHT_UNITS : null;
@@ -139,11 +144,15 @@ const getWagerPanelLayout = (
   const buttonHeight = Math.max(rect.h * WAGER_PANEL_BUTTON_HEIGHT_FRAC, minButtonHeight);
   const minButtonGap = pxPerUnitX ? WAGER_PANEL_MIN_BUTTON_GAP_PX / pxPerUnitX : 0;
   const buttonGap = Math.max(rect.w * WAGER_PANEL_BUTTON_GAP_FRAC, minButtonGap);
+  const minCountGap = pxPerUnitX ? WAGER_PANEL_COUNT_MIN_GAP_PX / pxPerUnitX : 0;
+  const countGap = Math.max(rect.w * WAGER_PANEL_COUNT_GAP_FRAC, minCountGap);
+  const minCountWidth = pxPerUnitX ? WAGER_PANEL_COUNT_MIN_WIDTH_PX / pxPerUnitX : 0;
   const pileGap = rect.h * WAGER_PANEL_PILE_GAP_FRAC;
   const minButtonRowWidth = pxPerUnitX
     ? (isOpponent ? WAGER_PANEL_MIN_OPPONENT_BUTTON_WIDTH_PX * 2 + WAGER_PANEL_MIN_BUTTON_GAP_PX : WAGER_PANEL_MIN_PLAYER_BUTTON_WIDTH_PX) / pxPerUnitX
     : 0;
-  const buttonRowWidth = Math.max(rect.w, minButtonRowWidth);
+  const minPanelContentWidth = rect.w + countGap + minCountWidth;
+  const buttonRowWidth = Math.max(rect.w, minButtonRowWidth, minPanelContentWidth);
   const panelWidth = buttonRowWidth + paddingX * 2;
   const panelHeight = rect.h + paddingY * 2 + pileGap + buttonHeight;
   const centerX = rect.x + rect.w / 2;
@@ -168,6 +177,7 @@ const getWagerPanelLayout = (
     buttonRow,
     buttonGapPct,
     singleButtonWidthPct,
+    countGap,
   };
 };
 
@@ -189,12 +199,14 @@ const BoardComponent: React.FC = () => {
   const [overlayState, setOverlayState] = useState<{ blurry: boolean; svgElement: SVGElement | null; withConfirmAndCancelButtons: boolean; ok?: () => void; cancel?: () => void }>({ blurry: true, svgElement: null, withConfirmAndCancelButtons: false });
   const [activeWagerPanelSide, setActiveWagerPanelSide] = useState<WagerPileSide | null>(null);
   const [activeWagerPanelRect, setActiveWagerPanelRect] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const [activeWagerPanelCount, setActiveWagerPanelCount] = useState<number | null>(null);
   const [boardPixelSize, setBoardPixelSize] = useState<{ width: number; height: number } | null>(null);
   const wagerPilesLayerRef = useRef<HTMLDivElement | null>(null);
   const wagerPileElementsRef = useRef<WagerPileElements | null>(null);
   const wagerRenderStateRef = useRef<WagerRenderState | null>(null);
   const activeWagerPanelSideRef = useRef<WagerPileSide | null>(null);
   const activeWagerPanelRectRef = useRef<{ x: number; y: number; w: number; h: number } | null>(null);
+  const activeWagerPanelCountRef = useRef<number | null>(null);
   const opponentAuraContainerRef = useRef<HTMLDivElement | null>(null);
   const playerAuraContainerRef = useRef<HTMLDivElement | null>(null);
   const opponentAuraRefs = useRef<{ background: HTMLDivElement; inner: HTMLDivElement } | null>(null);
@@ -315,6 +327,10 @@ const BoardComponent: React.FC = () => {
     activeWagerPanelRectRef.current = activeWagerPanelRect;
   }, [activeWagerPanelRect]);
 
+  useEffect(() => {
+    activeWagerPanelCountRef.current = activeWagerPanelCount;
+  }, [activeWagerPanelCount]);
+
   useLayoutEffect(() => {
     const updateSize = () => {
       const layer = wagerPilesLayerRef.current;
@@ -342,8 +358,10 @@ const BoardComponent: React.FC = () => {
   const clearWagerPanel = useCallback(() => {
     activeWagerPanelSideRef.current = null;
     activeWagerPanelRectRef.current = null;
+    activeWagerPanelCountRef.current = null;
     setActiveWagerPanelSide(null);
     setActiveWagerPanelRect(null);
+    setActiveWagerPanelCount(null);
   }, []);
 
   const handleWagerPanelAction = useCallback(
@@ -407,8 +425,10 @@ const BoardComponent: React.FC = () => {
           }
           activeWagerPanelSideRef.current = side;
           activeWagerPanelRectRef.current = pileState.rect;
+          activeWagerPanelCountRef.current = pileState.actualCount ?? pileState.count;
           setActiveWagerPanelSide(side);
           setActiveWagerPanelRect(pileState.rect);
+          setActiveWagerPanelCount(pileState.actualCount ?? pileState.count);
         });
       }
       return container;
@@ -521,6 +541,11 @@ const BoardComponent: React.FC = () => {
               activeWagerPanelRectRef.current = nextRect;
               setActiveWagerPanelRect(nextRect);
             }
+            const nextCount = pileState.actualCount ?? pileState.count;
+            if (activeWagerPanelCountRef.current !== nextCount) {
+              activeWagerPanelCountRef.current = nextCount;
+              setActiveWagerPanelCount(nextCount);
+            }
           }
         }
       }
@@ -561,6 +586,19 @@ const BoardComponent: React.FC = () => {
   const activeWagerPileRect = activeWagerPanelSide ? activeWagerPanelRect : null;
   const wagerPanelLayout =
     activeWagerPanelSide && activeWagerPileRect ? getWagerPanelLayout(activeWagerPileRect, activeWagerPanelSide === "opponent", boardPixelSize) : null;
+  const wagerCountLayout =
+    wagerPanelLayout && activeWagerPileRect && activeWagerPanelCount !== null
+      ? (() => {
+          const pxPerUnitX = boardPixelSize ? boardPixelSize.width / BOARD_WIDTH_UNITS : null;
+          const minGap = pxPerUnitX ? WAGER_PANEL_COUNT_MIN_GAP_PX / pxPerUnitX : 0;
+          const gap = Math.max(wagerPanelLayout.countGap, minGap);
+          const centerY = activeWagerPileRect.y + activeWagerPileRect.h / 2 - activeWagerPileRect.h * WAGER_PANEL_COUNT_Y_OFFSET_FRAC;
+          const left = activeWagerPileRect.x + activeWagerPileRect.w + gap;
+          const leftPct = ((left - wagerPanelLayout.x) / wagerPanelLayout.width) * 100;
+          const topPct = ((centerY - wagerPanelLayout.y) / wagerPanelLayout.height) * 100;
+          return { leftPct, topPct };
+        })()
+      : null;
   const wagerPanelTheme = prefersDarkMode
     ? {
         background: "rgba(28, 28, 28, 0.72)",
@@ -701,6 +739,25 @@ const BoardComponent: React.FC = () => {
                 userSelect: "none",
                 zIndex: 2,
               }}>
+              {wagerCountLayout && (
+                <div
+                  aria-hidden="true"
+                  style={{
+                    position: "absolute",
+                    left: `${wagerCountLayout.leftPct}%`,
+                    top: `${wagerCountLayout.topPct}%`,
+                    transform: "translate(0, -50%)",
+                    fontSize: "0.72em",
+                    fontWeight: 500,
+                    letterSpacing: "0.02em",
+                    color: prefersDarkMode ? "rgba(240, 240, 240, 0.6)" : "rgba(40, 40, 40, 0.52)",
+                    pointerEvents: "none",
+                    userSelect: "none",
+                    whiteSpace: "nowrap",
+                  }}>
+                  ({activeWagerPanelCount})
+                </div>
+              )}
               <div aria-hidden="true" style={{ gridRow: wagerPanelLayout.pileRow }} />
               <div
                 data-wager-panel="true"

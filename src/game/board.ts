@@ -140,6 +140,7 @@ export type WagerPileRenderState = {
   materialUrl: string;
   frames: Array<{ x: number; y: number }>;
   count: number;
+  actualCount: number;
 };
 export type WagerRenderState = {
   player: WagerPileRenderState | null;
@@ -1751,6 +1752,7 @@ function buildWagerRenderState(pile: WagerPile | null, side: WagerPileSide | "wi
     materialUrl,
     frames: pile.frames,
     count: pile.count,
+    actualCount: pile.actualCount,
   };
 }
 
