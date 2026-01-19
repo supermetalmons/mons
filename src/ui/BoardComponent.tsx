@@ -1,12 +1,14 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { FaTimes, FaCheck } from "react-icons/fa";
 import { go } from "../game/gameController";
 import { markMainGameLoaded } from "../game/mainGameLoadState";
 import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../content/boardStyles";
-import { isMobile } from "../utils/misc";
+import { defaultInputEventName, isMobile } from "../utils/misc";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
 import { attachRainbowAura, hideRainbowAura as hideAuraDom, setRainbowAuraMask, showRainbowAura as showAuraDom } from "./rainbowAura";
+import { setWagerRenderHandler, WagerPileSide, WagerRenderState } from "../game/board";
+import { setWagerPanelOutsideTapHandler, setWagerPanelVisibilityChecker } from "./BottomControls";
 
 const CircularButton = styled.button`
   width: 50%;
@@ -85,6 +87,89 @@ const VIDEO_CONTAINER_HEIGHT_IMAGE = "13.5%";
 const VIDEO_CONTAINER_MAX_HEIGHT = "min(20vh, 180px)";
 const VIDEO_CONTAINER_ASPECT_RATIO = "1";
 const VIDEO_CONTAINER_Z_INDEX = 10000;
+const BOARD_WIDTH_UNITS = 11;
+const BOARD_HEIGHT_UNITS = 14.1;
+const WAGER_PANEL_PADDING_X_FRAC = 0.2;
+const WAGER_PANEL_PADDING_Y_FRAC = 0.2;
+const WAGER_PANEL_BUTTON_HEIGHT_FRAC = 0.4;
+const WAGER_PANEL_BUTTON_GAP_FRAC = 0.14;
+const WAGER_PANEL_PILE_GAP_FRAC = 0.2;
+const WAGER_PANEL_BUTTON_WIDTH_FRAC = 1;
+const WAGER_PANEL_MIN_PADDING_PX = 12;
+const WAGER_PANEL_MIN_BUTTON_HEIGHT_PX = 34;
+const WAGER_PANEL_MIN_BUTTON_GAP_PX = 10;
+const WAGER_PANEL_MIN_OPPONENT_BUTTON_WIDTH_PX = 96;
+const WAGER_PANEL_MIN_PLAYER_BUTTON_WIDTH_PX = 170;
+
+type WagerPileElements = {
+  player: HTMLDivElement;
+  opponent: HTMLDivElement;
+  winner: HTMLDivElement;
+  playerIcons: HTMLImageElement[];
+  opponentIcons: HTMLImageElement[];
+  winnerIcons: HTMLImageElement[];
+};
+
+const toPercentX = (value: number) => (value / BOARD_WIDTH_UNITS) * 100;
+const toPercentY = (value: number) => (value / BOARD_HEIGHT_UNITS) * 100;
+
+const getWagerPanelLayout = (
+  rect: { x: number; y: number; w: number; h: number },
+  isOpponent: boolean,
+  boardPixelSize: { width: number; height: number } | null
+): {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  gridRows: string;
+  paddingXPct: number;
+  pileRow: number;
+  buttonRow: number;
+  buttonGapPct: number;
+  singleButtonWidthPct: number;
+} => {
+  const pxPerUnitX = boardPixelSize ? boardPixelSize.width / BOARD_WIDTH_UNITS : null;
+  const pxPerUnitY = boardPixelSize ? boardPixelSize.height / BOARD_HEIGHT_UNITS : null;
+  const minPaddingX = pxPerUnitX ? WAGER_PANEL_MIN_PADDING_PX / pxPerUnitX : 0;
+  const minPaddingY = pxPerUnitY ? WAGER_PANEL_MIN_PADDING_PX / pxPerUnitY : 0;
+  const paddingX = Math.max(rect.w * WAGER_PANEL_PADDING_X_FRAC, minPaddingX);
+  const paddingY = Math.max(rect.h * WAGER_PANEL_PADDING_Y_FRAC, minPaddingY);
+  const minButtonHeight = pxPerUnitY ? WAGER_PANEL_MIN_BUTTON_HEIGHT_PX / pxPerUnitY : 0;
+  const buttonHeight = Math.max(rect.h * WAGER_PANEL_BUTTON_HEIGHT_FRAC, minButtonHeight);
+  const minButtonGap = pxPerUnitX ? WAGER_PANEL_MIN_BUTTON_GAP_PX / pxPerUnitX : 0;
+  const buttonGap = Math.max(rect.w * WAGER_PANEL_BUTTON_GAP_FRAC, minButtonGap);
+  const pileGap = rect.h * WAGER_PANEL_PILE_GAP_FRAC;
+  const minButtonRowWidth = pxPerUnitX
+    ? (isOpponent ? WAGER_PANEL_MIN_OPPONENT_BUTTON_WIDTH_PX * 2 + WAGER_PANEL_MIN_BUTTON_GAP_PX : WAGER_PANEL_MIN_PLAYER_BUTTON_WIDTH_PX) / pxPerUnitX
+    : 0;
+  const buttonRowWidth = Math.max(rect.w, minButtonRowWidth);
+  const panelWidth = buttonRowWidth + paddingX * 2;
+  const panelHeight = rect.h + paddingY * 2 + pileGap + buttonHeight;
+  const centerX = rect.x + rect.w / 2;
+  const panelX = centerX - panelWidth / 2;
+  const panelY = isOpponent ? rect.y - paddingY : rect.y - (panelHeight - rect.h - paddingY);
+  const rowValues = isOpponent ? [paddingY, rect.h, pileGap, buttonHeight, paddingY] : [paddingY, buttonHeight, pileGap, rect.h, paddingY];
+  const gridRows = rowValues.map((value) => `${(value / panelHeight) * 100}%`).join(" ");
+  const paddingXPct = (paddingX / panelWidth) * 100;
+  const buttonGapPct = buttonRowWidth > 0 ? (buttonGap / buttonRowWidth) * 100 : 0;
+  const singleButtonWidthPct = WAGER_PANEL_BUTTON_WIDTH_FRAC * 100;
+  const pileRow = isOpponent ? 2 : 4;
+  const buttonRow = isOpponent ? 4 : 2;
+
+  return {
+    x: panelX,
+    y: panelY,
+    width: panelWidth,
+    height: panelHeight,
+    gridRows,
+    paddingXPct,
+    pileRow,
+    buttonRow,
+    buttonGapPct,
+    singleButtonWidthPct,
+  };
+};
 
 const BoardComponent: React.FC = () => {
   const [opponentVideoId, setOpponentVideoId] = useState<number | null>(null);
@@ -102,6 +187,14 @@ const BoardComponent: React.FC = () => {
   const [isGridVisible, setIsGridVisible] = useState(!isCustomPictureBoardEnabled());
   const [shouldIncludePangchiuImage, setShouldIncludePangchiuImage] = useState(isCustomPictureBoardEnabled());
   const [overlayState, setOverlayState] = useState<{ blurry: boolean; svgElement: SVGElement | null; withConfirmAndCancelButtons: boolean; ok?: () => void; cancel?: () => void }>({ blurry: true, svgElement: null, withConfirmAndCancelButtons: false });
+  const [activeWagerPanelSide, setActiveWagerPanelSide] = useState<WagerPileSide | null>(null);
+  const [activeWagerPanelRect, setActiveWagerPanelRect] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
+  const [boardPixelSize, setBoardPixelSize] = useState<{ width: number; height: number } | null>(null);
+  const wagerPilesLayerRef = useRef<HTMLDivElement | null>(null);
+  const wagerPileElementsRef = useRef<WagerPileElements | null>(null);
+  const wagerRenderStateRef = useRef<WagerRenderState | null>(null);
+  const activeWagerPanelSideRef = useRef<WagerPileSide | null>(null);
+  const activeWagerPanelRectRef = useRef<{ x: number; y: number; w: number; h: number } | null>(null);
   const opponentAuraContainerRef = useRef<HTMLDivElement | null>(null);
   const playerAuraContainerRef = useRef<HTMLDivElement | null>(null);
   const opponentAuraRefs = useRef<{ background: HTMLDivElement; inner: HTMLDivElement } | null>(null);
@@ -214,8 +307,282 @@ const BoardComponent: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    activeWagerPanelSideRef.current = activeWagerPanelSide;
+  }, [activeWagerPanelSide]);
+
+  useEffect(() => {
+    activeWagerPanelRectRef.current = activeWagerPanelRect;
+  }, [activeWagerPanelRect]);
+
+  useLayoutEffect(() => {
+    const updateSize = () => {
+      const layer = wagerPilesLayerRef.current;
+      if (!layer) {
+        return;
+      }
+      const rect = layer.getBoundingClientRect();
+      if (!rect.width || !rect.height) {
+        return;
+      }
+      setBoardPixelSize((prev) => {
+        if (prev && prev.width === rect.width && prev.height === rect.height) {
+          return prev;
+        }
+        return { width: rect.width, height: rect.height };
+      });
+    };
+    updateSize();
+    window.addEventListener("resize", updateSize);
+    return () => {
+      window.removeEventListener("resize", updateSize);
+    };
+  }, [isGridVisible]);
+
+  const clearWagerPanel = useCallback(() => {
+    activeWagerPanelSideRef.current = null;
+    activeWagerPanelRectRef.current = null;
+    setActiveWagerPanelSide(null);
+    setActiveWagerPanelRect(null);
+  }, []);
+
+  const ensureWagerPileElements = useCallback((): WagerPileElements | null => {
+    const layer = wagerPilesLayerRef.current;
+    if (!layer) {
+      return null;
+    }
+    const existing = wagerPileElementsRef.current;
+    if (existing && layer.contains(existing.player) && layer.contains(existing.opponent) && layer.contains(existing.winner)) {
+      return existing;
+    }
+    layer.innerHTML = "";
+
+    const createPileContainer = (side: WagerPileSide | "winner") => {
+      const container = document.createElement("div");
+      container.dataset.wagerPile = side;
+      container.style.position = "absolute";
+      container.style.left = "0";
+      container.style.top = "0";
+      container.style.width = "0";
+      container.style.height = "0";
+      container.style.display = "none";
+      container.style.pointerEvents = side === "winner" ? "none" : "auto";
+      container.style.touchAction = "none";
+      container.style.userSelect = "none";
+      container.style.zIndex = "3";
+      container.style.overflow = "visible";
+      if (side !== "winner") {
+        container.style.cursor = "pointer";
+        container.addEventListener(defaultInputEventName, (event) => {
+          event.stopPropagation();
+          if (event.cancelable) {
+            event.preventDefault();
+          }
+          const state = wagerRenderStateRef.current;
+          if (!state || state.winAnimationActive || state.winner) {
+            clearWagerPanel();
+            return;
+          }
+          const pileState = side === "opponent" ? state.opponent : state.player;
+          if (!pileState) {
+            clearWagerPanel();
+            return;
+          }
+          activeWagerPanelSideRef.current = side;
+          activeWagerPanelRectRef.current = pileState.rect;
+          setActiveWagerPanelSide(side);
+          setActiveWagerPanelRect(pileState.rect);
+        });
+      }
+      return container;
+    };
+
+    const player = createPileContainer("player");
+    const opponent = createPileContainer("opponent");
+    const winner = createPileContainer("winner");
+    layer.append(player, opponent, winner);
+    const elements: WagerPileElements = {
+      player,
+      opponent,
+      winner,
+      playerIcons: [],
+      opponentIcons: [],
+      winnerIcons: [],
+    };
+    wagerPileElementsRef.current = elements;
+    return elements;
+  }, [clearWagerPanel]);
+
+  const applyWagerRenderState = useCallback(
+    (state: WagerRenderState) => {
+      wagerRenderStateRef.current = state;
+      const elements = ensureWagerPileElements();
+      if (!elements) {
+        return;
+      }
+
+      const updatePile = (container: HTMLDivElement, icons: HTMLImageElement[], pileState: WagerRenderState["player"]) => {
+        if (!pileState || pileState.count <= 0 || pileState.frames.length === 0) {
+          container.style.display = "none";
+          return;
+        }
+        const rect = pileState.rect;
+        if (rect.w === 0 || rect.h === 0) {
+          container.style.display = "none";
+          return;
+        }
+        container.style.display = "block";
+        container.style.left = `${toPercentX(rect.x)}%`;
+        container.style.top = `${toPercentY(rect.y)}%`;
+        container.style.width = `${toPercentX(rect.w)}%`;
+        container.style.height = `${toPercentY(rect.h)}%`;
+
+        const materialUrl = pileState.materialUrl;
+        const iconSize = pileState.iconSize;
+        const sizePctW = (iconSize / rect.w) * 100;
+        const sizePctH = (iconSize / rect.h) * 100;
+        const visibleCount = Math.min(pileState.count, pileState.frames.length);
+
+        while (icons.length > visibleCount) {
+          const icon = icons.pop();
+          if (icon) {
+            icon.remove();
+          }
+        }
+        while (icons.length < visibleCount) {
+          const icon = document.createElement("img");
+          icon.alt = "";
+          icon.draggable = false;
+          icon.style.position = "absolute";
+          icon.style.left = "0";
+          icon.style.top = "0";
+          icon.style.width = "0";
+          icon.style.height = "0";
+          icon.style.pointerEvents = "none";
+          icon.style.userSelect = "none";
+          icon.style.objectFit = "contain";
+          container.appendChild(icon);
+          icons.push(icon);
+        }
+
+        for (let i = 0; i < visibleCount; i += 1) {
+          const frame = pileState.frames[i];
+          if (!frame) {
+            continue;
+          }
+          const icon = icons[i];
+          if (icon.dataset.src !== materialUrl) {
+            icon.dataset.src = materialUrl;
+            icon.src = materialUrl;
+          }
+          const leftPct = ((frame.x - rect.x) / rect.w) * 100;
+          const topPct = ((frame.y - rect.y) / rect.h) * 100;
+          icon.style.left = `${leftPct}%`;
+          icon.style.top = `${topPct}%`;
+          icon.style.width = `${sizePctW}%`;
+          icon.style.height = `${sizePctH}%`;
+        }
+      };
+
+      updatePile(elements.opponent, elements.opponentIcons, state.opponent);
+      updatePile(elements.player, elements.playerIcons, state.player);
+      updatePile(elements.winner, elements.winnerIcons, state.winner);
+
+      const activeSide = activeWagerPanelSideRef.current;
+      if (activeSide) {
+        if (state.winAnimationActive || state.winner) {
+          clearWagerPanel();
+        } else {
+          const pileState = activeSide === "opponent" ? state.opponent : state.player;
+          if (!pileState) {
+            clearWagerPanel();
+          } else {
+            const prevRect = activeWagerPanelRectRef.current;
+            const nextRect = pileState.rect;
+            const rectChanged = !prevRect || prevRect.x !== nextRect.x || prevRect.y !== nextRect.y || prevRect.w !== nextRect.w || prevRect.h !== nextRect.h;
+            if (rectChanged) {
+              activeWagerPanelRectRef.current = nextRect;
+              setActiveWagerPanelRect(nextRect);
+            }
+          }
+        }
+      }
+    },
+    [clearWagerPanel, ensureWagerPileElements]
+  );
+
+  useEffect(() => {
+    setWagerRenderHandler((state) => {
+      applyWagerRenderState(state);
+    });
+    return () => {
+      setWagerRenderHandler(null);
+    };
+  }, [applyWagerRenderState]);
+
+  useEffect(() => {
+    setWagerPanelVisibilityChecker(() => activeWagerPanelSideRef.current !== null);
+    setWagerPanelOutsideTapHandler((event) => {
+      if (!activeWagerPanelSideRef.current) {
+        return false;
+      }
+      const target = event.target;
+      if (target instanceof Element && target.closest('[data-wager-panel="true"], [data-wager-pile]')) {
+        return false;
+      }
+      clearWagerPanel();
+      return true;
+    });
+    return () => {
+      setWagerPanelOutsideTapHandler(null);
+      setWagerPanelVisibilityChecker(() => false);
+    };
+  }, [clearWagerPanel]);
+
   const standardBoardTransform = "translate(0,100)";
   const pangchiuBoardTransform = "translate(83,184) scale(0.85892388)";
+  const activeWagerPileRect = activeWagerPanelSide ? activeWagerPanelRect : null;
+  const wagerPanelLayout =
+    activeWagerPanelSide && activeWagerPileRect ? getWagerPanelLayout(activeWagerPileRect, activeWagerPanelSide === "opponent", boardPixelSize) : null;
+  const wagerPanelTheme = prefersDarkMode
+    ? {
+        background: "rgba(28, 28, 28, 0.72)",
+        border: "rgba(255, 255, 255, 0.12)",
+        shadow: "0 10px 22px rgba(0, 0, 0, 0.35)",
+        buttonBackground: "rgba(255, 255, 255, 0.1)",
+        buttonBorder: "rgba(255, 255, 255, 0.18)",
+        buttonText: "var(--color-gray-f0)",
+      }
+    : {
+        background: "rgba(250, 250, 250, 0.78)",
+        border: "rgba(0, 0, 0, 0.08)",
+        shadow: "0 10px 22px rgba(0, 0, 0, 0.18)",
+        buttonBackground: "rgba(0, 0, 0, 0.06)",
+        buttonBorder: "rgba(0, 0, 0, 0.08)",
+        buttonText: "var(--color-gray-33)",
+      };
+  const wagerPanelButtonStyle: React.CSSProperties = {
+    height: "100%",
+    alignSelf: "center",
+    justifySelf: "center",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    background: wagerPanelTheme.buttonBackground,
+    border: `1px solid ${wagerPanelTheme.buttonBorder}`,
+    color: wagerPanelTheme.buttonText,
+    borderRadius: "999px",
+    fontWeight: 600,
+    fontSize: "0.9em",
+    letterSpacing: "0.01em",
+    cursor: "pointer",
+    whiteSpace: "nowrap",
+    minWidth: 0,
+    padding: 0,
+    margin: 0,
+    outline: "none",
+    boxSizing: "border-box" as const,
+  };
 
   return (
     <>
@@ -285,6 +652,87 @@ const BoardComponent: React.FC = () => {
           aspectRatio: "110 / 141",
           pointerEvents: "none",
         }}>
+        <div
+          style={{
+            position: "absolute",
+            inset: 0,
+            pointerEvents: "none",
+            zIndex: 0,
+          }}>
+          {wagerPanelLayout && (
+            <div
+              data-wager-panel="true"
+              style={{
+                position: "absolute",
+                left: `${toPercentX(wagerPanelLayout.x)}%`,
+                top: `${toPercentY(wagerPanelLayout.y)}%`,
+                width: `${toPercentX(wagerPanelLayout.width)}%`,
+                height: `${toPercentY(wagerPanelLayout.height)}%`,
+                display: "grid",
+                gridTemplateRows: wagerPanelLayout.gridRows,
+                paddingLeft: `${wagerPanelLayout.paddingXPct}%`,
+                paddingRight: `${wagerPanelLayout.paddingXPct}%`,
+                boxSizing: "border-box",
+                background: wagerPanelTheme.background,
+                border: `1px solid ${wagerPanelTheme.border}`,
+                boxShadow: wagerPanelTheme.shadow,
+                borderRadius: "16px",
+                backdropFilter: "blur(6px)",
+                WebkitBackdropFilter: "blur(6px)",
+                overflow: "hidden",
+                pointerEvents: "auto",
+                userSelect: "none",
+                zIndex: 2,
+              }}>
+              <div aria-hidden="true" style={{ gridRow: wagerPanelLayout.pileRow }} />
+              <div
+                data-wager-panel="true"
+                style={{
+                  gridRow: wagerPanelLayout.buttonRow,
+                  width: "100%",
+                  justifySelf: "center",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: `${wagerPanelLayout.buttonGapPct}%`,
+                  height: "100%",
+                }}>
+                {activeWagerPanelSide === "opponent" ? (
+                  <>
+                    <button
+                      data-wager-panel="true"
+                      type="button"
+                      style={{ ...wagerPanelButtonStyle, flex: "1 1 0" }}>
+                      Decline
+                    </button>
+                    <button
+                      data-wager-panel="true"
+                      type="button"
+                      style={{ ...wagerPanelButtonStyle, flex: "1 1 0" }}>
+                      Accept
+                    </button>
+                  </>
+                ) : (
+                  <button
+                    data-wager-panel="true"
+                    type="button"
+                    style={{ ...wagerPanelButtonStyle, width: `${wagerPanelLayout.singleButtonWidthPct}%` }}>
+                    Cancel Proposal
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+          <div
+            ref={wagerPilesLayerRef}
+            style={{
+              position: "absolute",
+              inset: 0,
+              pointerEvents: "none",
+              zIndex: 3,
+            }}
+          />
+        </div>
         <div
           style={{
             position: "absolute",
