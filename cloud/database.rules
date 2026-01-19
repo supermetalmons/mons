@@ -40,6 +40,11 @@
             ".write": "auth != null && auth.token.admin === true",
             ".validate": "!data.exists() && newData.isBoolean()"
           }
+        },
+        "wagers": {
+          "$matchId": {
+            ".write": "auth != null && auth.token.admin === true"
+          }
         }
       }
     },
@@ -48,6 +53,13 @@
       "$userId": {
         ".write": "auth != null && (auth.uid === $userId || auth.token.admin === true || (data.child('profile').exists() && data.child('profile').val() === auth.token.profileId))",
         ".validate": "newData.exists() && newData.child('matches').exists()",
+        "mining": {
+          ".write": "auth != null && auth.token.admin === true",
+          "frozen": {
+            ".write": "auth != null && auth.token.admin === true",
+            ".validate": "newData.hasChildren(['dust','slime','gum','metal','ice'])"
+          }
+        },
         "matches": {
           "$matchId": {
             "fen": {

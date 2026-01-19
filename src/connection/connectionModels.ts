@@ -17,6 +17,7 @@ export interface Invite {
   guestId?: string | null;
   hostRematches?: string | null;
   guestRematches?: string | null;
+  wagers?: Record<string, MatchWagerState> | null;
 }
 
 export interface Reaction {
@@ -35,6 +36,35 @@ export interface PlayerMiningData {
   lastRockDate: string | null;
   materials: PlayerMiningMaterials;
 }
+
+export type WagerProposal = {
+  material: MiningMaterialName;
+  count: number;
+  createdAt?: number;
+};
+
+export type WagerAgreement = {
+  material: MiningMaterialName;
+  count: number;
+  proposerId: string;
+  accepterId: string;
+  acceptedAt?: number;
+};
+
+export type WagerResolution = {
+  winnerId: string;
+  loserId: string;
+  material: MiningMaterialName;
+  count: number;
+  resolvedAt?: number;
+};
+
+export type MatchWagerState = {
+  proposals?: Record<string, WagerProposal>;
+  proposedBy?: Record<string, boolean>;
+  agreed?: WagerAgreement;
+  resolved?: WagerResolution;
+};
 
 export interface PlayerProfile {
   id: string;

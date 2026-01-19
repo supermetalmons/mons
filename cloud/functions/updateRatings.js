@@ -2,6 +2,7 @@ const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const glicko2 = require("glicko2");
 const admin = require("firebase-admin");
 const { batchReadWithRetry, getProfileByLoginId, updateUserRatingNonceAndManaPoints, appendAutomatchBotMessageText, getDisplayNameFromAddress } = require("./utils");
+const { applyMaterialDeltas, updateFrozenMaterials, readUserMiningMaterials, updateUserMiningMaterials } = require("./wagerHelpers");
 
 exports.updateRatings = onCall(async (request) => {
   const uid = request.auth.uid;
@@ -10,9 +11,7 @@ exports.updateRatings = onCall(async (request) => {
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;
 
-  if (!inviteId.startsWith("auto_")) {
-    return { ok: false };
-  }
+  const isAutomatch = inviteId.startsWith("auto_");
 
   const matchRef = admin.database().ref(`players/${playerId}/matches/${matchId}`);
   const inviteRef = admin.database().ref(`invites/${inviteId}`);
@@ -86,8 +85,20 @@ exports.updateRatings = onCall(async (request) => {
     return true;
   });
   if (!txnResult.committed) {
+    let mining = null;
+    if (playerProfile.profileId) {
+      const userDoc = await admin.firestore().collection("users").doc(playerProfile.profileId).get();
+      if (userDoc.exists) {
+        const userData = userDoc.data() || {};
+        mining = {
+          lastRockDate: typeof (userData.mining && userData.mining.lastRockDate) === "string" ? userData.mining.lastRockDate : null,
+          materials: applyMaterialDeltas(userData.mining && userData.mining.materials, {}),
+        };
+      }
+    }
     return {
       ok: true,
+      mining,
     };
   }
 
@@ -98,56 +109,121 @@ exports.updateRatings = onCall(async (request) => {
   if (!gameForScore.is_later_than(opponentMatchData.fen)) {
     gameForScore = mons.MonsGameModel.from_fen(opponentMatchData.fen);
   }
-  const playerManaPoints = matchData.color === "white" ? gameForScore.white_score() : gameForScore.black_score();
-  const opponentManaPoints = opponentMatchData.color === "white" ? gameForScore.white_score() : gameForScore.black_score();
-  const playerHasProfile = playerProfile.profileId !== "";
-  const opponentHasProfile = opponentProfile.profileId !== "";
-  const canUpdateRatings = playerHasProfile && opponentHasProfile;
+  if (isAutomatch) {
+    const playerManaPoints = matchData.color === "white" ? gameForScore.white_score() : gameForScore.black_score();
+    const opponentManaPoints = opponentMatchData.color === "white" ? gameForScore.white_score() : gameForScore.black_score();
+    const playerHasProfile = playerProfile.profileId !== "";
+    const opponentHasProfile = opponentProfile.profileId !== "";
+    const canUpdateRatings = playerHasProfile && opponentHasProfile;
 
-  const playerEmoji = playerProfile.emoji === "" ? matchData.emojiId : playerProfile.emoji;
-  const opponentEmoji = opponentProfile.emoji === "" ? opponentMatchData.emojiId : opponentProfile.emoji;
-  const playerProfileDisplayName = getDisplayNameFromAddress(playerProfile.username, playerProfile.eth, playerProfile.sol, 0, playerEmoji, false);
-  const opponentProfileDisplayName = getDisplayNameFromAddress(opponentProfile.username, opponentProfile.eth, opponentProfile.sol, 0, opponentEmoji, false);
+    const playerEmoji = playerProfile.emoji === "" ? matchData.emojiId : playerProfile.emoji;
+    const opponentEmoji = opponentProfile.emoji === "" ? opponentMatchData.emojiId : opponentProfile.emoji;
+    const playerProfileDisplayName = getDisplayNameFromAddress(playerProfile.username, playerProfile.eth, playerProfile.sol, 0, playerEmoji, false);
+    const opponentProfileDisplayName = getDisplayNameFromAddress(opponentProfile.username, opponentProfile.eth, opponentProfile.sol, 0, opponentEmoji, false);
 
-  let winnerDisplayName = result === "win" ? playerProfileDisplayName : opponentProfileDisplayName;
-  let loserDisplayName = result === "win" ? opponentProfileDisplayName : playerProfileDisplayName;
+    let winnerDisplayName = result === "win" ? playerProfileDisplayName : opponentProfileDisplayName;
+    let loserDisplayName = result === "win" ? opponentProfileDisplayName : playerProfileDisplayName;
 
-  let winnerNewRating = 0;
-  let loserNewRating = 0;
+    let winnerNewRating = 0;
+    let loserNewRating = 0;
 
-  if (canUpdateRatings) {
-    const newPlayerManaTotal = (playerProfile.totalManaPoints ?? 0) + playerManaPoints;
-    const newOpponentManaTotal = (opponentProfile.totalManaPoints ?? 0) + opponentManaPoints;
-    const newNonce1 = playerProfile.nonce + 1;
-    const newNonce2 = opponentProfile.nonce + 1;
+    if (canUpdateRatings) {
+      const newPlayerManaTotal = (playerProfile.totalManaPoints ?? 0) + playerManaPoints;
+      const newOpponentManaTotal = (opponentProfile.totalManaPoints ?? 0) + opponentManaPoints;
+      const newNonce1 = playerProfile.nonce + 1;
+      const newNonce2 = opponentProfile.nonce + 1;
 
-    if (result === "win") {
-      const [newWinnerRating, newLoserRating] = updateRating(playerProfile.rating, newNonce1, opponentProfile.rating, newNonce2);
-      winnerNewRating = newWinnerRating;
-      loserNewRating = newLoserRating;
-      updateUserRatingNonceAndManaPoints(playerProfile.profileId, newWinnerRating, newNonce1, true, newPlayerManaTotal);
-      updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newLoserRating, newNonce2, false, newOpponentManaTotal);
-    } else {
-      const [newWinnerRating, newLoserRating] = updateRating(opponentProfile.rating, newNonce2, playerProfile.rating, newNonce1);
-      winnerNewRating = newWinnerRating;
-      loserNewRating = newLoserRating;
-      updateUserRatingNonceAndManaPoints(playerProfile.profileId, newLoserRating, newNonce1, false, newPlayerManaTotal);
-      updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newWinnerRating, newNonce2, true, newOpponentManaTotal);
+      if (result === "win") {
+        const [newWinnerRating, newLoserRating] = updateRating(playerProfile.rating, newNonce1, opponentProfile.rating, newNonce2);
+        winnerNewRating = newWinnerRating;
+        loserNewRating = newLoserRating;
+        updateUserRatingNonceAndManaPoints(playerProfile.profileId, newWinnerRating, newNonce1, true, newPlayerManaTotal);
+        updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newLoserRating, newNonce2, false, newOpponentManaTotal);
+      } else {
+        const [newWinnerRating, newLoserRating] = updateRating(opponentProfile.rating, newNonce2, playerProfile.rating, newNonce1);
+        winnerNewRating = newWinnerRating;
+        loserNewRating = newLoserRating;
+        updateUserRatingNonceAndManaPoints(playerProfile.profileId, newLoserRating, newNonce1, false, newPlayerManaTotal);
+        updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newWinnerRating, newNonce2, true, newOpponentManaTotal);
+      }
+    }
+
+    const winnerScore = result === "win" ? playerManaPoints : opponentManaPoints;
+    const loserScore = result === "win" ? opponentManaPoints : playerManaPoints;
+    let suffix = ` (${winnerScore} - ${loserScore})`;
+    if (matchData.status === "surrendered" || opponentMatchData.status === "surrendered") {
+      suffix += " ⚐";
+    } else if (matchData.timer === "gg" || opponentMatchData.timer === "gg") {
+      suffix += " ⏲";
+    }
+    const updateRatingMessage = canUpdateRatings ? `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓${suffix}` : `${winnerDisplayName} ↑ ${loserDisplayName}${suffix}`;
+    await appendAutomatchBotMessageText(inviteId, updateRatingMessage, true);
+  }
+
+  const wagerRef = admin.database().ref(`invites/${inviteId}/wagers/${matchId}`);
+  const wagerSnap = await wagerRef.once("value");
+  const wagerData = wagerSnap.val();
+  if (wagerData && !wagerData.resolved) {
+    if (wagerData.agreed && wagerData.agreed.material && wagerData.agreed.count) {
+      const material = wagerData.agreed.material;
+      const count = Math.max(0, Math.round(Number(wagerData.agreed.count)));
+      if (count > 0 && playerProfile.profileId && opponentProfile.profileId) {
+        const winnerId = result === "win" ? playerId : opponentId;
+        const loserId = result === "win" ? opponentId : playerId;
+        const winnerProfileId = winnerId === playerId ? playerProfile.profileId : opponentProfile.profileId;
+        const loserProfileId = loserId === playerId ? playerProfile.profileId : opponentProfile.profileId;
+
+        const winnerMaterials = await readUserMiningMaterials(winnerProfileId);
+        const loserMaterials = await readUserMiningMaterials(loserProfileId);
+        const updatedWinnerMaterials = applyMaterialDeltas(winnerMaterials, { [material]: count });
+        const updatedLoserMaterials = applyMaterialDeltas(loserMaterials, { [material]: -count });
+        await updateUserMiningMaterials(winnerProfileId, updatedWinnerMaterials);
+        await updateUserMiningMaterials(loserProfileId, updatedLoserMaterials);
+        await updateFrozenMaterials(winnerId, { [material]: -count });
+        await updateFrozenMaterials(loserId, { [material]: -count });
+        await wagerRef.update({
+          resolved: {
+            winnerId,
+            loserId,
+            material,
+            count,
+            resolvedAt: Date.now(),
+          },
+          proposals: null,
+        });
+      }
+    } else if (wagerData.proposals) {
+      const proposals = wagerData.proposals;
+      const updateTasks = [];
+      Object.keys(proposals).forEach((uid) => {
+        const proposal = proposals[uid];
+        if (proposal && proposal.material && proposal.count) {
+          updateTasks.push(updateFrozenMaterials(uid, { [proposal.material]: -proposal.count }));
+        }
+      });
+      if (updateTasks.length > 0) {
+        await Promise.all(updateTasks);
+      }
+      await wagerRef.update({
+        proposals: null,
+      });
     }
   }
 
-  const winnerScore = result === "win" ? playerManaPoints : opponentManaPoints;
-  const loserScore = result === "win" ? opponentManaPoints : playerManaPoints;
-  let suffix = ` (${winnerScore} - ${loserScore})`;
-  if (matchData.status === "surrendered" || opponentMatchData.status === "surrendered") {
-    suffix += " ⚐";
-  } else if (matchData.timer === "gg" || opponentMatchData.timer === "gg") {
-    suffix += " ⏲";
+  let mining = null;
+  if (playerProfile.profileId) {
+    const userDoc = await admin.firestore().collection("users").doc(playerProfile.profileId).get();
+    if (userDoc.exists) {
+      const userData = userDoc.data() || {};
+      mining = {
+        lastRockDate: typeof (userData.mining && userData.mining.lastRockDate) === "string" ? userData.mining.lastRockDate : null,
+        materials: applyMaterialDeltas(userData.mining && userData.mining.materials, {}),
+      };
+    }
   }
-  const updateRatingMessage = canUpdateRatings ? `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓${suffix}` : `${winnerDisplayName} ↑ ${loserDisplayName}${suffix}`;
-  await appendAutomatchBotMessageText(inviteId, updateRatingMessage, true);
   return {
     ok: true,
+    mining,
   };
 });
 

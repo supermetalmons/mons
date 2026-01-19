@@ -5,10 +5,13 @@ import { getFirestore, Firestore, collection, query, where, limit, getDocs, orde
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
 import { getPlayersEmojiId, didGetPlayerProfile } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
-import { Match, Invite, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES } from "./connectionModels";
+import { Match, Invite, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES, MiningMaterialName } from "./connectionModels";
 import { storage } from "../utils/storage";
 import { generateNewInviteId } from "../utils/misc";
 import { setDebugViewText } from "../ui/MainMenu";
+import { setWagerState } from "../game/wagerState";
+import { setFrozenMaterials } from "../services/wagerMaterialsService";
+import { rocksMiningService } from "../services/rocksMiningService";
 
 const createEmptyMiningMaterials = (): PlayerMiningMaterials => ({
   dust: 0,
@@ -58,6 +61,8 @@ class Connection {
 
   private hostRematchesRef: any = null;
   private guestRematchesRef: any = null;
+  private wagersRef: any = null;
+  private miningFrozenRef: any = null;
   private matchRefs: { [key: string]: any } = {};
   private profileRefs: { [key: string]: any } = {};
 
@@ -211,7 +216,8 @@ class Connection {
     try {
       await signOut(this.auth);
       this.loginUid = null;
-      this.sameProfilePlayerUid = null;
+      this.setSameProfilePlayerUid(null);
+      this.cleanupWagerObserver();
     } catch (error) {
       console.error("Failed to sign out:", error);
       throw error;
@@ -428,6 +434,7 @@ class Connection {
       .then(() => {
         this.myMatch = nextMatch;
         this.matchId = nextMatchId;
+        this.updateWagerStateForCurrentMatch();
         if (this.latestInvite) {
           if (proposingAsHost) {
             this.latestInvite.hostRematches = newRematchesProposalsString;
@@ -554,9 +561,73 @@ class Connection {
       const updateRatingsFunction = httpsCallable(this.functions, "updateRatings");
       const opponentId = this.getOpponentId();
       const response = await updateRatingsFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
-      return response.data;
+      const data = response.data as { mining?: PlayerMiningData } | null;
+      if (data && data.mining) {
+        rocksMiningService.setFromServer(data.mining, { persist: true });
+      }
+      return data;
     } catch (error) {
       console.error("Error updating ratings:", error);
+      throw error;
+    }
+  }
+
+  public async sendWagerProposal(material: MiningMaterialName, count: number): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      if (!this.inviteId || !this.matchId) {
+        return { ok: false };
+      }
+      const sendWagerProposalFunction = httpsCallable(this.functions, "sendWagerProposal");
+      const response = await sendWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId, material, count });
+      return response.data;
+    } catch (error) {
+      console.error("Error sending wager proposal:", error);
+      throw error;
+    }
+  }
+
+  public async cancelWagerProposal(): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      if (!this.inviteId || !this.matchId) {
+        return { ok: false };
+      }
+      const cancelWagerProposalFunction = httpsCallable(this.functions, "cancelWagerProposal");
+      const response = await cancelWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId });
+      return response.data;
+    } catch (error) {
+      console.error("Error canceling wager proposal:", error);
+      throw error;
+    }
+  }
+
+  public async declineWagerProposal(): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      if (!this.inviteId || !this.matchId) {
+        return { ok: false };
+      }
+      const declineWagerProposalFunction = httpsCallable(this.functions, "declineWagerProposal");
+      const response = await declineWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId });
+      return response.data;
+    } catch (error) {
+      console.error("Error declining wager proposal:", error);
+      throw error;
+    }
+  }
+
+  public async acceptWagerProposal(): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      if (!this.inviteId || !this.matchId) {
+        return { ok: false };
+      }
+      const acceptWagerProposalFunction = httpsCallable(this.functions, "acceptWagerProposal");
+      const response = await acceptWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId });
+      return response.data;
+    } catch (error) {
+      console.error("Error accepting wager proposal:", error);
       throw error;
     }
   }
@@ -577,6 +648,14 @@ class Connection {
   private getLocalProfileId(): string | null {
     const id = storage.getProfileId("");
     return id === "" ? null : id;
+  }
+
+  private setSameProfilePlayerUid(uid: string | null): void {
+    if (this.sameProfilePlayerUid === uid) {
+      return;
+    }
+    this.sameProfilePlayerUid = uid;
+    this.observeMiningFrozen(uid);
   }
 
   public updateStoredEmoji(newId: number, aura: string | null | undefined): void {
@@ -701,11 +780,15 @@ class Connection {
   }
 
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
+    const inviteChanged = this.inviteId && this.inviteId !== inviteId;
     if (this.sameProfilePlayerUid === null || this.loginUid !== uid) {
-      this.sameProfilePlayerUid = uid;
+      this.setSameProfilePlayerUid(uid);
     }
 
     this.loginUid = uid;
+    if (inviteChanged) {
+      this.cleanupWagerObserver();
+    }
     this.inviteId = inviteId;
     const inviteRef = ref(this.db, `invites/${inviteId}`);
     get(inviteRef)
@@ -718,9 +801,11 @@ class Connection {
 
         this.latestInvite = inviteData;
         this.observeRematchOrEndMatchIndicators();
+        this.observeWagers();
 
         const matchId = await this.getLatestBothSidesApprovedOrProposedByMeMatchId();
         this.matchId = matchId;
+        this.updateWagerStateForCurrentMatch();
 
         if (!inviteData.guestId && inviteData.hostId !== uid) {
           if (autojoin) {
@@ -758,11 +843,11 @@ class Connection {
                     if (matchingUid === null) {
                       this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
                     } else if (matchingUid === inviteData.hostId) {
-                      this.sameProfilePlayerUid = matchingUid;
+                      this.setSameProfilePlayerUid(matchingUid);
                       this.refreshTokenIfNeeded();
                       this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId);
                     } else {
-                      this.sameProfilePlayerUid = matchingUid;
+                      this.setSameProfilePlayerUid(matchingUid);
                       this.refreshTokenIfNeeded();
                       this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId ?? "");
                     }
@@ -905,12 +990,14 @@ class Connection {
 
     this.myMatch = match;
     this.loginUid = uid;
-    this.sameProfilePlayerUid = uid;
+    this.setSameProfilePlayerUid(uid);
     this.inviteId = inviteId;
     this.latestInvite = invite;
 
     const matchId = inviteId;
     this.matchId = matchId;
+    this.observeWagers();
+    this.updateWagerStateForCurrentMatch();
 
     const updates: { [key: string]: any } = {};
     updates[`players/${this.loginUid}/matches/${matchId}`] = match;
@@ -930,6 +1017,8 @@ class Connection {
         console.log(`Guest ${updatedInvite.guestId} joined the invite ${inviteId}`);
         this.latestInvite = updatedInvite;
         this.observeRematchOrEndMatchIndicators();
+        this.observeWagers();
+        this.updateWagerStateForCurrentMatch();
         this.observeMatch(updatedInvite.guestId, matchId);
         off(inviteRef);
       }
@@ -951,7 +1040,7 @@ class Connection {
           if (profileId !== null) {
             const matchingUid = await this.checkBothPlayerProfiles(this.latestInvite.hostId, this.latestInvite.guestId ?? "", profileId);
             if (matchingUid !== null) {
-              this.sameProfilePlayerUid = matchingUid;
+              this.setSameProfilePlayerUid(matchingUid);
             }
           }
         }
@@ -1003,6 +1092,30 @@ class Connection {
     });
   }
 
+  private updateWagerStateForCurrentMatch() {
+    if (!this.matchId) {
+      return;
+    }
+    const wagers = this.latestInvite?.wagers ?? null;
+    const matchWagerState = wagers && wagers[this.matchId] ? wagers[this.matchId] : null;
+    setWagerState(this.matchId, matchWagerState);
+  }
+
+  private observeWagers() {
+    if (this.wagersRef || !this.inviteId) {
+      return;
+    }
+    const wagersRef = ref(this.db, `invites/${this.inviteId}/wagers`);
+    this.wagersRef = wagersRef;
+    onValue(wagersRef, (snapshot) => {
+      const wagers = snapshot.val();
+      if (this.latestInvite) {
+        this.latestInvite.wagers = wagers;
+      }
+      this.updateWagerStateForCurrentMatch();
+    });
+  }
+
   private cleanupRematchObservers() {
     if (this.hostRematchesRef) {
       off(this.hostRematchesRef);
@@ -1012,6 +1125,29 @@ class Connection {
       off(this.guestRematchesRef);
       this.guestRematchesRef = null;
     }
+  }
+
+  private cleanupWagerObserver() {
+    if (this.wagersRef) {
+      off(this.wagersRef);
+      this.wagersRef = null;
+    }
+  }
+
+  private observeMiningFrozen(uid: string | null) {
+    if (this.miningFrozenRef) {
+      off(this.miningFrozenRef);
+      this.miningFrozenRef = null;
+    }
+    if (!uid) {
+      setFrozenMaterials(null);
+      return;
+    }
+    const miningRef = ref(this.db, `players/${uid}/mining/frozen`);
+    this.miningFrozenRef = miningRef;
+    onValue(miningRef, (snapshot) => {
+      setFrozenMaterials(snapshot.val());
+    });
   }
 
   private observeMatch(playerId: string, matchId: string): void {

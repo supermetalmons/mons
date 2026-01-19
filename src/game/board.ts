@@ -164,7 +164,6 @@ let wagerWinAnimState: {
   drifts: Array<{ x: number; y: number }>;
   delays: number[];
 } | null = null;
-let nextWagerWinnerIsOpponent = false;
 let lastWagerWinnerIsOpponent = false;
 let handleWagerRenderState: ((state: WagerRenderState) => void) | null = null;
 
@@ -696,6 +695,7 @@ export function resetForNewGame() {
 
   removeHighlights();
   cleanAllPixels();
+  clearWagerPiles();
 }
 
 export function updateEmojiAndAuraIfNeeded(newEmojiId: string, aura: string | undefined, isOpponentSide: boolean) {
@@ -1964,11 +1964,6 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
   return true;
 }
 
-function triggerDebugWagerWinAnimation(): void {
-  if (startWagerWinAnimation(nextWagerWinnerIsOpponent)) {
-    nextWagerWinnerIsOpponent = !nextWagerWinnerIsOpponent;
-  }
-}
 
 function updateNamesX() {
   if (playerNameText === undefined || opponentNameText === undefined) {
@@ -2069,6 +2064,77 @@ export function showDebugWagerPiles(material: MaterialName, count: number, mater
   }
   syncWagerPileIcons(playerPile, material, count, materialUrl);
   syncWagerPileIcons(opponentPile, material, count, materialUrl);
+  updateWagerLayout();
+}
+
+function resetWagerPile(pile: WagerPile | null) {
+  if (!pile) {
+    return;
+  }
+  pile.positions = [];
+  pile.frames = [];
+  pile.material = null;
+  pile.materialUrl = null;
+  pile.count = 0;
+  pile.actualCount = 0;
+  pile.rect = null;
+  pile.iconSize = 0;
+}
+
+export function clearWagerPiles() {
+  cancelWagerWinAnimation();
+  winnerPileActive = false;
+  resetWagerPile(playerWagerPile);
+  resetWagerPile(opponentWagerPile);
+  resetWagerPile(winnerWagerPile);
+  emitWagerRenderState();
+}
+
+export function setWagerPiles(state: { player?: { material: MaterialName; count: number } | null; opponent?: { material: MaterialName; count: number } | null }) {
+  cancelWagerWinAnimation();
+  winnerPileActive = false;
+  if (state.player) {
+    const playerPile = ensureWagerPile(false);
+    if (playerPile) {
+      syncWagerPileIcons(playerPile, state.player.material, state.player.count);
+    }
+  } else {
+    resetWagerPile(playerWagerPile);
+  }
+  if (state.opponent) {
+    const opponentPile = ensureWagerPile(true);
+    if (opponentPile) {
+      syncWagerPileIcons(opponentPile, state.opponent.material, state.opponent.count);
+    }
+  } else {
+    resetWagerPile(opponentWagerPile);
+  }
+  resetWagerPile(winnerWagerPile);
+  updateWagerLayout();
+}
+
+export function showResolvedWager(winnerIsOpponent: boolean, material: MaterialName, countPerSide: number, animate: boolean) {
+  const playerPile = ensureWagerPile(false);
+  const opponentPile = ensureWagerPile(true);
+  if (!playerPile || !opponentPile) {
+    return;
+  }
+  cancelWagerWinAnimation();
+  winnerPileActive = false;
+  syncWagerPileIcons(playerPile, material, countPerSide);
+  syncWagerPileIcons(opponentPile, material, countPerSide);
+  updateWagerLayout();
+  lastWagerWinnerIsOpponent = winnerIsOpponent;
+  if (animate && startWagerWinAnimation(winnerIsOpponent)) {
+    return;
+  }
+  const winnerPile = ensureWinnerWagerPile();
+  if (!winnerPile) {
+    return;
+  }
+  const total = Math.max(0, countPerSide * 2);
+  syncWagerPileIcons(winnerPile, material, total, null, MAX_WAGER_WIN_PILE_ITEMS);
+  winnerPileActive = true;
   updateWagerLayout();
 }
 
@@ -2354,13 +2420,11 @@ export function setupBoard() {
       const y = isFlipped ? 10 - rawY : rawY;
 
       didClickSquare(new Location(y, x));
-      triggerDebugWagerWinAnimation();
       event.preventDefault();
       event.stopPropagation();
     } else if (!target.closest("a, button, select, [data-notification-banner='true']")) {
       hideItemSelectionOrConfirmationOverlay();
       didClickSquare(new Location(-1, -1));
-      triggerDebugWagerWinAnimation();
       event.preventDefault();
       event.stopPropagation();
     }
