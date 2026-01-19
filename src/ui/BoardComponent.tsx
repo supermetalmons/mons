@@ -346,6 +346,19 @@ const BoardComponent: React.FC = () => {
     setActiveWagerPanelRect(null);
   }, []);
 
+  const handleWagerPanelAction = useCallback(
+    (event?: React.SyntheticEvent) => {
+      if (event) {
+        event.stopPropagation();
+        if (event.cancelable) {
+          event.preventDefault();
+        }
+      }
+      clearWagerPanel();
+    },
+    [clearWagerPanel]
+  );
+
   const ensureWagerPileElements = useCallback((): WagerPileElements | null => {
     const layer = wagerPilesLayerRef.current;
     if (!layer) {
@@ -385,6 +398,10 @@ const BoardComponent: React.FC = () => {
           }
           const pileState = side === "opponent" ? state.opponent : state.player;
           if (!pileState) {
+            clearWagerPanel();
+            return;
+          }
+          if (activeWagerPanelSideRef.current === side) {
             clearWagerPanel();
             return;
           }
@@ -702,12 +719,16 @@ const BoardComponent: React.FC = () => {
                     <button
                       data-wager-panel="true"
                       type="button"
+                      onClick={!isMobile ? handleWagerPanelAction : undefined}
+                      onTouchStart={isMobile ? handleWagerPanelAction : undefined}
                       style={{ ...wagerPanelButtonStyle, flex: "1 1 0" }}>
                       Decline
                     </button>
                     <button
                       data-wager-panel="true"
                       type="button"
+                      onClick={!isMobile ? handleWagerPanelAction : undefined}
+                      onTouchStart={isMobile ? handleWagerPanelAction : undefined}
                       style={{ ...wagerPanelButtonStyle, flex: "1 1 0" }}>
                       Accept
                     </button>
@@ -716,6 +737,8 @@ const BoardComponent: React.FC = () => {
                   <button
                     data-wager-panel="true"
                     type="button"
+                    onClick={!isMobile ? handleWagerPanelAction : undefined}
+                    onTouchStart={isMobile ? handleWagerPanelAction : undefined}
                     style={{ ...wagerPanelButtonStyle, width: `${wagerPanelLayout.singleButtonWidthPct}%` }}>
                     Cancel Proposal
                   </button>
