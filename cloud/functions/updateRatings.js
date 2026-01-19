@@ -187,6 +187,7 @@ exports.updateRatings = onCall(async (request) => {
             loserId,
             material,
             count,
+            total: count * 2,
             resolvedAt: Date.now(),
           },
           proposals: null,

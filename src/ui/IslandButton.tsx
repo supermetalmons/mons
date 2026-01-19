@@ -15,7 +15,7 @@ import { setIslandOverlayState, resetIslandOverlayState } from "./islandOverlayS
 import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMiningService";
 import { useGameAssets } from "../hooks/useGameAssets";
 import { opponentSideMetadata, playerSideMetadata } from "../game/board";
-import { isGameWithBot, isOnlineGame, isWatchOnly } from "../game/gameController";
+import { isGameWithBot, isMatchOver, isOnlineGame, isWatchOnly } from "../game/gameController";
 import { connection } from "../connection/connection";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 import { MatchWagerState } from "../connection/connectionModels";
@@ -4256,7 +4256,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const hasResolvedWager = !!wagerState?.resolved;
   const playerHasProposed = !!(playerUid && wagerState?.proposedBy && wagerState.proposedBy[playerUid]) || !!(playerUid && wagerState?.proposals && wagerState.proposals[playerUid]);
   const hasPlayers = !!playerUid && !!opponentUid;
-  const isEligibleForWager = isOnlineGame && !isWatchOnly && !isGameWithBot && !connection.isAutomatch() && playerHasProfile && opponentHasProfile && hasPlayers;
+  const isEligibleForWager = isOnlineGame && !isWatchOnly && !isGameWithBot && !isMatchOver() && !connection.isAutomatch() && playerHasProfile && opponentHasProfile && hasPlayers;
   const canSubmitWager = isEligibleForWager && !hasAgreedWager && !hasResolvedWager && !playerHasProposed;
   const wagerReady = canSubmitWager && !!wagerMaterial && wagerCount > 0;
 

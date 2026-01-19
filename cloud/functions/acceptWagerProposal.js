@@ -77,6 +77,7 @@ exports.acceptWagerProposal = onCall(async (request) => {
     data.agreed = {
       material,
       count: acceptedCount,
+      total: acceptedCount * 2,
       proposerId: opponentId,
       accepterId: uid,
       acceptedAt: now,

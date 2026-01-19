@@ -46,6 +46,7 @@ export type WagerProposal = {
 export type WagerAgreement = {
   material: MiningMaterialName;
   count: number;
+  total?: number;
   proposerId: string;
   accepterId: string;
   acceptedAt?: number;
@@ -56,6 +57,7 @@ export type WagerResolution = {
   loserId: string;
   material: MiningMaterialName;
   count: number;
+  total?: number;
   resolvedAt?: number;
 };
 

@@ -4,6 +4,7 @@ type WagerStateListener = (state: MatchWagerState | null) => void;
 
 let currentMatchId: string | null = null;
 let currentState: MatchWagerState | null = null;
+let currentStateMatchId: string | null = null;
 
 const listeners = new Set<WagerStateListener>();
 
@@ -15,7 +16,10 @@ const notify = () => {
 export const setCurrentWagerMatch = (matchId: string | null) => {
   if (currentMatchId === matchId) return;
   currentMatchId = matchId;
-  currentState = null;
+  if (matchId !== currentStateMatchId) {
+    currentState = null;
+    currentStateMatchId = null;
+  }
   notify();
 };
 
@@ -24,6 +28,7 @@ export const setWagerState = (matchId: string | null, state: MatchWagerState | n
     return;
   }
   currentState = state;
+  currentStateMatchId = matchId;
   notify();
 };
 

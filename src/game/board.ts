@@ -169,6 +169,9 @@ let handleWagerRenderState: ((state: WagerRenderState) => void) | null = null;
 
 export function setWagerRenderHandler(handler: ((state: WagerRenderState) => void) | null) {
   handleWagerRenderState = handler;
+  if (handler) {
+    emitWagerRenderState();
+  }
 }
 
 const emojis = (await import("../content/emojis")).emojis;

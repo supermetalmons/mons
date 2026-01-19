@@ -70,6 +70,10 @@ export function getCurrentGameFen(): string {
   return game.fen();
 }
 
+export const isMatchOver = () => {
+  return isGameOver;
+};
+
 const setWatchOnlyState = (value: boolean) => {
   if (isWatchOnly === value) {
     return;
@@ -1109,12 +1113,17 @@ function applyWagerState() {
     return;
   }
 
-  if (currentWagerState.agreed && currentWagerState.agreed.material && currentWagerState.agreed.count) {
-    Board.setWagerPiles({
-      player: { material: currentWagerState.agreed.material, count: currentWagerState.agreed.count },
-      opponent: { material: currentWagerState.agreed.material, count: currentWagerState.agreed.count },
-    });
-    return;
+  if (currentWagerState.agreed && currentWagerState.agreed.material) {
+    const stakeCount =
+      currentWagerState.agreed.count ??
+      (currentWagerState.agreed.total ? Math.max(0, Math.round(currentWagerState.agreed.total / 2)) : 0);
+    if (stakeCount > 0) {
+      Board.setWagerPiles({
+        player: { material: currentWagerState.agreed.material, count: stakeCount },
+        opponent: { material: currentWagerState.agreed.material, count: stakeCount },
+      });
+      return;
+    }
   }
 
   const proposals = currentWagerState.proposals || {};
@@ -1137,11 +1146,15 @@ function syncWagerOutcome() {
     return;
   }
   const resolved = currentWagerState.resolved;
-  if (!resolved.material || !resolved.count) {
+  if (!resolved.material) {
+    return;
+  }
+  const stakeCount = resolved.count ?? (resolved.total ? Math.max(0, Math.round(resolved.total / 2)) : 0);
+  if (!stakeCount) {
     return;
   }
   const winnerIsOpponent = resolved.winnerId === Board.opponentSideMetadata.uid;
-  Board.showResolvedWager(winnerIsOpponent, resolved.material, resolved.count, true);
+  Board.showResolvedWager(winnerIsOpponent, resolved.material, stakeCount, true);
   wagerOutcomeShown = true;
 }
 
