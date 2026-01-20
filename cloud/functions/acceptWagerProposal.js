@@ -1,14 +1,14 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { getProfileByLoginId } = require("./utils");
-const { normalizeCount, readUserMiningMaterials, reserveAcceptedMaterials, updateFrozenMaterials, updateFrozenMaterialsWithCap } = require("./wagerHelpers");
+const { normalizeCount, readUserMiningMaterials, reserveAcceptedMaterials, updateFrozenMaterials, updateFrozenMaterialsWithCap, resolveWagerParticipants } = require("./wagerHelpers");
 
 exports.acceptWagerProposal = onCall(async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
 
-  const uid = request.auth.uid;
+  const authUid = request.auth.uid;
+  const authProfileId = request.auth.token && request.auth.token.profileId ? request.auth.token.profileId : null;
   const inviteId = request.data && request.data.inviteId;
   const matchId = request.data && request.data.matchId;
 
@@ -24,21 +24,14 @@ exports.acceptWagerProposal = onCall(async (request) => {
   if (!inviteData) {
     return { ok: false, reason: "invite-not-found" };
   }
-  const hostId = inviteData.hostId;
-  const guestId = inviteData.guestId;
-  if (uid !== hostId && uid !== guestId) {
-    throw new HttpsError("permission-denied", "You don't have permission to accept this wager proposal.");
-  }
-  if (!guestId) {
+  if (!inviteData.guestId) {
     return { ok: false, reason: "missing-opponent" };
   }
-  const opponentId = uid === hostId ? guestId : hostId;
-
-  const playerProfile = await getProfileByLoginId(uid);
-  const opponentProfile = await getProfileByLoginId(opponentId);
-  if (!playerProfile.profileId || !opponentProfile.profileId) {
-    return { ok: false, reason: "profile-not-found" };
+  const resolved = await resolveWagerParticipants(inviteData, request.auth);
+  if (resolved.error) {
+    return { ok: false, reason: resolved.error };
   }
+  const { playerUid, opponentUid, playerProfile } = resolved;
 
   const wagerSnap = await admin.database().ref(`invites/${inviteId}/wagers/${matchId}`).once("value");
   const wagerData = wagerSnap.val();
@@ -46,16 +39,16 @@ exports.acceptWagerProposal = onCall(async (request) => {
     return { ok: false, reason: "proposal-missing" };
   }
   const proposals = wagerData.proposals || {};
-  const opponentProposal = proposals[opponentId];
+  const opponentProposal = proposals[opponentUid];
   if (!opponentProposal) {
-    return { ok: false, reason: "proposal-missing" };
+    return { ok: false, reason: "proposal-missing", debug: { authUid, authProfileId, hostId: inviteData.hostId || null, guestId: inviteData.guestId || null, playerUid, opponentUid, proposalKeys: Object.keys(proposals) } };
   }
-  const ownProposal = proposals[uid] || null;
+  const ownProposal = proposals[playerUid] || null;
   const material = opponentProposal.material;
   const proposedCount = Number(opponentProposal.count) || 0;
 
   const totalMaterials = await readUserMiningMaterials(playerProfile.profileId);
-  const acceptReserve = await reserveAcceptedMaterials(uid, material, proposedCount, ownProposal, totalMaterials);
+  const acceptReserve = await reserveAcceptedMaterials(playerUid, material, proposedCount, ownProposal, totalMaterials);
   const acceptedCount = acceptReserve.acceptedCount;
   const appliedDelta = acceptReserve.appliedDelta;
   if (acceptedCount <= 0 || !appliedDelta) {
@@ -70,7 +63,7 @@ exports.acceptWagerProposal = onCall(async (request) => {
       return;
     }
     const currentProposals = data.proposals || {};
-    const currentOpponentProposal = currentProposals[opponentId];
+    const currentOpponentProposal = currentProposals[opponentUid];
     if (!currentOpponentProposal || currentOpponentProposal.material !== material || Number(currentOpponentProposal.count) !== proposedCount) {
       return;
     }
@@ -78,8 +71,8 @@ exports.acceptWagerProposal = onCall(async (request) => {
       material,
       count: acceptedCount,
       total: acceptedCount * 2,
-      proposerId: opponentId,
-      accepterId: uid,
+      proposerId: opponentUid,
+      accepterId: playerUid,
       acceptedAt: now,
     };
     data.proposals = {};
@@ -92,14 +85,33 @@ exports.acceptWagerProposal = onCall(async (request) => {
       return acc;
     }, {});
     if (Object.keys(rollback).length > 0) {
-      await updateFrozenMaterialsWithCap(uid, rollback, totalMaterials);
+      await updateFrozenMaterialsWithCap(playerUid, rollback, totalMaterials);
     }
-    return { ok: false, reason: "proposal-unavailable" };
+    const latestSnap = await wagerRef.once("value");
+    const latestData = latestSnap.val() || {};
+    const latestProposals = latestData.proposals || {};
+    return {
+      ok: false,
+      reason: "proposal-unavailable",
+      debug: {
+        authUid,
+        authProfileId,
+        hostId: inviteData.hostId || null,
+        guestId: inviteData.guestId || null,
+        playerUid,
+        opponentUid,
+        proposalKeys: Object.keys(proposals),
+        latestProposalKeys: Object.keys(latestProposals),
+        latestAgreed: !!latestData.agreed,
+        latestResolved: !!latestData.resolved,
+        latestOpponentProposal: latestProposals[opponentUid] || null,
+      },
+    };
   }
 
   const proposerDelta = {};
   proposerDelta[material] = acceptedCount - normalizeCount(proposedCount);
-  await updateFrozenMaterials(opponentId, proposerDelta);
+  await updateFrozenMaterials(opponentUid, proposerDelta);
 
   return { ok: true, count: acceptedCount };
 });

@@ -1674,11 +1674,27 @@ function generateWagerPositions(count: number): Array<{ u: number; v: number }> 
 
 function syncWagerPileIcons(pile: WagerPile, material: MaterialName, count: number, materialUrl?: string | null, maxItems = MAX_WAGER_PILE_ITEMS) {
   const visibleCount = Math.max(0, Math.min(maxItems, count));
+  const nextUrl = materialUrl || getWagerMaterialUrl(material);
+  const sameMaterial = pile.material === material;
+  const sameVisibleCount = pile.count === visibleCount;
+  const reusePositions = sameMaterial && sameVisibleCount && pile.positions.length === visibleCount;
   pile.material = material;
-  pile.materialUrl = materialUrl || getWagerMaterialUrl(material);
+  pile.materialUrl = nextUrl;
   pile.count = visibleCount;
   pile.actualCount = count;
-  pile.positions = generateWagerPositions(visibleCount);
+  if (!reusePositions) {
+    if (visibleCount <= 0) {
+      pile.positions = [];
+    } else if (sameMaterial && pile.positions.length > 0) {
+      const nextPositions = pile.positions.slice(0, visibleCount);
+      if (nextPositions.length < visibleCount) {
+        nextPositions.push(...generateWagerPositions(visibleCount - nextPositions.length));
+      }
+      pile.positions = nextPositions;
+    } else {
+      pile.positions = generateWagerPositions(visibleCount);
+    }
+  }
   pile.frames = [];
 }
 

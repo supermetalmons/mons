@@ -523,21 +523,25 @@ const BoardComponent: React.FC = () => {
   useEffect(() => {
     if (wagerActionsLocked) {
       clearWagerPanel();
-      return;
-    }
-    if (activeWagerPanelSideRef.current === "player" && (!playerProposal || opponentProposal)) {
-      clearWagerPanel();
-      return;
-    }
-    if (activeWagerPanelSideRef.current === "opponent" && !opponentProposal) {
-      clearWagerPanel();
+      lastOpponentProposalKeyRef.current = null;
       return;
     }
     const proposalKey = opponentProposal ? `${opponentProposal.material}:${opponentProposal.count}` : null;
-    if (opponentProposal && activeWagerPanelSideRef.current !== "opponent") {
-      openWagerPanelForSide("opponent");
+    if (opponentProposal) {
+      if (activeWagerPanelSideRef.current !== "opponent" || lastOpponentProposalKeyRef.current !== proposalKey) {
+        openWagerPanelForSide("opponent");
+      }
+      lastOpponentProposalKeyRef.current = proposalKey;
+      return;
     }
-    lastOpponentProposalKeyRef.current = proposalKey;
+    lastOpponentProposalKeyRef.current = null;
+    if (activeWagerPanelSideRef.current === "opponent") {
+      clearWagerPanel();
+      return;
+    }
+    if (activeWagerPanelSideRef.current === "player" && !playerProposal) {
+      clearWagerPanel();
+    }
   }, [clearWagerPanel, openWagerPanelForSide, opponentProposal, playerProposal, wagerActionsLocked]);
 
   const ensureWagerPileElements = useCallback((): WagerPileElements | null => {
@@ -715,8 +719,11 @@ const BoardComponent: React.FC = () => {
           }
         }
       }
+      if (!wagerActionsLocked && opponentProposal && !state.winAnimationActive && !state.winner && state.opponent && activeWagerPanelSideRef.current !== "opponent") {
+        openWagerPanelForSide("opponent");
+      }
     },
-    [clearWagerPanel, ensureWagerPileElements]
+    [clearWagerPanel, ensureWagerPileElements, openWagerPanelForSide, opponentProposal, wagerActionsLocked]
   );
 
   useEffect(() => {

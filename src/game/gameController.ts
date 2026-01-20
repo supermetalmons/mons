@@ -1070,11 +1070,13 @@ function updateRatings(isWin: boolean) {
     return;
   }
 
-  connection.updateRatings();
+  connection.resolveWagerOutcome();
 
   if (!connection.isAutomatch()) {
     return;
   }
+
+  connection.updateRatings();
 
   if (!hasBothEthOrSolAddresses()) {
     return;

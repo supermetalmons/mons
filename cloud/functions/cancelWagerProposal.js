@@ -1,13 +1,12 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { updateFrozenMaterials } = require("./wagerHelpers");
+const { updateFrozenMaterials, resolveWagerParticipants } = require("./wagerHelpers");
 
 exports.cancelWagerProposal = onCall(async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
 
-  const uid = request.auth.uid;
   const inviteId = request.data && request.data.inviteId;
   const matchId = request.data && request.data.matchId;
 
@@ -23,11 +22,14 @@ exports.cancelWagerProposal = onCall(async (request) => {
   if (!inviteData) {
     return { ok: false, reason: "invite-not-found" };
   }
-  const hostId = inviteData.hostId;
-  const guestId = inviteData.guestId;
-  if (uid !== hostId && uid !== guestId) {
-    throw new HttpsError("permission-denied", "You don't have permission to cancel this wager proposal.");
+  if (!inviteData.guestId) {
+    return { ok: false, reason: "missing-opponent" };
   }
+  const resolved = await resolveWagerParticipants(inviteData, request.auth);
+  if (resolved.error) {
+    return { ok: false, reason: resolved.error };
+  }
+  const { playerUid } = resolved;
 
   let removedProposal = null;
   const wagerRef = admin.database().ref(`invites/${inviteId}/wagers/${matchId}`);
@@ -37,12 +39,12 @@ exports.cancelWagerProposal = onCall(async (request) => {
       return;
     }
     const proposals = data.proposals || {};
-    const proposal = proposals[uid];
+    const proposal = proposals[playerUid];
     if (!proposal) {
       return;
     }
     removedProposal = proposal;
-    delete proposals[uid];
+    delete proposals[playerUid];
     data.proposals = proposals;
     return data;
   });
@@ -51,6 +53,6 @@ exports.cancelWagerProposal = onCall(async (request) => {
     return { ok: false, reason: "proposal-missing" };
   }
 
-  await updateFrozenMaterials(uid, { [removedProposal.material]: -removedProposal.count });
+  await updateFrozenMaterials(playerUid, { [removedProposal.material]: -removedProposal.count });
   return { ok: true };
 });

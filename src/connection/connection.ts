@@ -572,17 +572,43 @@ class Connection {
     }
   }
 
+  public async resolveWagerOutcome(): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) {
+        return { ok: false };
+      }
+      const opponentId = this.getOpponentId();
+      if (!opponentId) {
+        return { ok: false };
+      }
+      const resolveWagerOutcomeFunction = httpsCallable(this.functions, "resolveWagerOutcome");
+      const response = await resolveWagerOutcomeFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId });
+      const data = response.data as { mining?: PlayerMiningData } | null;
+      if (data && data.mining) {
+        rocksMiningService.setFromServer(data.mining, { persist: true });
+      }
+      return data;
+    } catch (error) {
+      console.error("Error resolving wager outcome:", error);
+      throw error;
+    }
+  }
+
   public async sendWagerProposal(material: MiningMaterialName, count: number): Promise<any> {
     try {
       await this.ensureAuthenticated();
       if (!this.inviteId || !this.matchId) {
+        console.log("wager:send:skipped", { inviteId: this.inviteId, matchId: this.matchId });
         return { ok: false };
       }
+      console.log("wager:send:start", { inviteId: this.inviteId, matchId: this.matchId, material, count });
       const sendWagerProposalFunction = httpsCallable(this.functions, "sendWagerProposal");
       const response = await sendWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId, material, count });
+      console.log("wager:send:done", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error sending wager proposal:", error);
+      console.error("wager:send:error", error);
       throw error;
     }
   }
@@ -591,13 +617,16 @@ class Connection {
     try {
       await this.ensureAuthenticated();
       if (!this.inviteId || !this.matchId) {
+        console.log("wager:cancel:skipped", { inviteId: this.inviteId, matchId: this.matchId });
         return { ok: false };
       }
+      console.log("wager:cancel:start", { inviteId: this.inviteId, matchId: this.matchId });
       const cancelWagerProposalFunction = httpsCallable(this.functions, "cancelWagerProposal");
       const response = await cancelWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId });
+      console.log("wager:cancel:done", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error canceling wager proposal:", error);
+      console.error("wager:cancel:error", error);
       throw error;
     }
   }
@@ -606,13 +635,16 @@ class Connection {
     try {
       await this.ensureAuthenticated();
       if (!this.inviteId || !this.matchId) {
+        console.log("wager:decline:skipped", { inviteId: this.inviteId, matchId: this.matchId });
         return { ok: false };
       }
+      console.log("wager:decline:start", { inviteId: this.inviteId, matchId: this.matchId });
       const declineWagerProposalFunction = httpsCallable(this.functions, "declineWagerProposal");
       const response = await declineWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId });
+      console.log("wager:decline:done", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error declining wager proposal:", error);
+      console.error("wager:decline:error", error);
       throw error;
     }
   }
@@ -621,13 +653,16 @@ class Connection {
     try {
       await this.ensureAuthenticated();
       if (!this.inviteId || !this.matchId) {
+        console.log("wager:accept:skipped", { inviteId: this.inviteId, matchId: this.matchId });
         return { ok: false };
       }
+      console.log("wager:accept:start", { inviteId: this.inviteId, matchId: this.matchId });
       const acceptWagerProposalFunction = httpsCallable(this.functions, "acceptWagerProposal");
       const response = await acceptWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId });
+      console.log("wager:accept:done", response.data);
       return response.data;
     } catch (error) {
-      console.error("Error accepting wager proposal:", error);
+      console.error("wager:accept:error", error);
       throw error;
     }
   }
@@ -975,6 +1010,7 @@ class Connection {
       hostId: uid,
       hostColor,
       guestId: null,
+      wagers: {},
     };
 
     const match: Match = {

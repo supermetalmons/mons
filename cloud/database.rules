@@ -41,7 +41,14 @@
             ".validate": "!data.exists() && newData.isBoolean()"
           }
         },
+        "matchesWagerResolutions": {
+          "$matchId": {
+            ".write": "auth != null && auth.token.admin === true",
+            ".validate": "!data.exists() && newData.isBoolean()"
+          }
+        },
         "wagers": {
+          ".write": "auth != null && auth.token.admin === true",
           "$matchId": {
             ".write": "auth != null && auth.token.admin === true"
           }

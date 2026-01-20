@@ -1,14 +1,12 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { getProfileByLoginId } = require("./utils");
-const { isMaterialName, normalizeCount, reserveFrozenMaterials, updateFrozenMaterials, readUserMiningMaterials } = require("./wagerHelpers");
+const { isMaterialName, normalizeCount, reserveFrozenMaterials, updateFrozenMaterials, readUserMiningMaterials, resolveWagerParticipants } = require("./wagerHelpers");
 
 exports.sendWagerProposal = onCall(async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
 
-  const uid = request.auth.uid;
   const inviteId = request.data && request.data.inviteId;
   const matchId = request.data && request.data.matchId;
   const material = request.data && request.data.material;
@@ -26,24 +24,17 @@ exports.sendWagerProposal = onCall(async (request) => {
   if (!inviteData) {
     return { ok: false, reason: "invite-not-found" };
   }
-  const hostId = inviteData.hostId;
-  const guestId = inviteData.guestId;
-  if (uid !== hostId && uid !== guestId) {
-    throw new HttpsError("permission-denied", "You don't have permission to send this wager proposal.");
-  }
-  if (!guestId) {
+  if (!inviteData.guestId) {
     return { ok: false, reason: "missing-opponent" };
   }
-  const opponentId = uid === hostId ? guestId : hostId;
-
-  const playerProfile = await getProfileByLoginId(uid);
-  const opponentProfile = await getProfileByLoginId(opponentId);
-  if (!playerProfile.profileId || !opponentProfile.profileId) {
-    return { ok: false, reason: "profile-not-found" };
+  const resolved = await resolveWagerParticipants(inviteData, request.auth);
+  if (resolved.error) {
+    return { ok: false, reason: resolved.error };
   }
+  const { playerUid, playerProfile } = resolved;
 
   const totalMaterials = await readUserMiningMaterials(playerProfile.profileId);
-  const reservedCount = await reserveFrozenMaterials(uid, material, requestedCount, totalMaterials);
+  const reservedCount = await reserveFrozenMaterials(playerUid, material, requestedCount, totalMaterials);
   if (reservedCount <= 0) {
     return { ok: false, reason: "insufficient-materials" };
   }
@@ -57,18 +48,18 @@ exports.sendWagerProposal = onCall(async (request) => {
     }
     const proposals = data.proposals || {};
     const proposedBy = data.proposedBy || {};
-    if (proposals[uid] || proposedBy[uid]) {
+    if (proposals[playerUid] || proposedBy[playerUid]) {
       return;
     }
-    proposals[uid] = { material, count: reservedCount, createdAt: now };
-    proposedBy[uid] = true;
+    proposals[playerUid] = { material, count: reservedCount, createdAt: now };
+    proposedBy[playerUid] = true;
     data.proposals = proposals;
     data.proposedBy = proposedBy;
     return data;
   });
 
   if (!txn.committed) {
-    await updateFrozenMaterials(uid, { [material]: -reservedCount });
+    await updateFrozenMaterials(playerUid, { [material]: -reservedCount });
     return { ok: false, reason: "proposal-unavailable" };
   }
 

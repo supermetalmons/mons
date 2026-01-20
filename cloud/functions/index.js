@@ -14,6 +14,7 @@ const { sendWagerProposal } = require("./sendWagerProposal");
 const { cancelWagerProposal } = require("./cancelWagerProposal");
 const { declineWagerProposal } = require("./declineWagerProposal");
 const { acceptWagerProposal } = require("./acceptWagerProposal");
+const { resolveWagerOutcome } = require("./resolveWagerOutcome");
 
 exports.verifySolanaAddress = verifySolanaAddress;
 exports.verifyEthAddress = verifyEthAddress;
@@ -29,3 +30,4 @@ exports.sendWagerProposal = sendWagerProposal;
 exports.cancelWagerProposal = cancelWagerProposal;
 exports.declineWagerProposal = declineWagerProposal;
 exports.acceptWagerProposal = acceptWagerProposal;
+exports.resolveWagerOutcome = resolveWagerOutcome;
