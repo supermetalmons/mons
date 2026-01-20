@@ -36,6 +36,9 @@ const watchOnlyListeners = new Set<(value: boolean) => void>();
 
 let currentWagerState: MatchWagerState | null = null;
 let wagerOutcomeShown = false;
+let wagerOutcomeAnimating = false;
+let wagerOutcomeAnimTimer: number | null = null;
+let wagerOutcomeAnimationAllowed = false;
 let didSetupWagerSubscription = false;
 
 let whiteProcessedMovesCount = 0;
@@ -933,6 +936,7 @@ function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, ou
             }
 
             isGameOver = true;
+            wagerOutcomeAnimationAllowed = !isWatchOnly;
             disableAndHideUndoResignAndTimerControls();
             Board.hideTimerCountdownDigits();
             showRematchInterface();
@@ -1099,6 +1103,12 @@ function resetWagerStateForMatch(matchId: string | null) {
   }
   wagerMatchId = matchId;
   wagerOutcomeShown = false;
+  wagerOutcomeAnimating = false;
+  wagerOutcomeAnimationAllowed = false;
+  if (wagerOutcomeAnimTimer !== null) {
+    window.clearTimeout(wagerOutcomeAnimTimer);
+    wagerOutcomeAnimTimer = null;
+  }
   currentWagerState = null;
   setCurrentWagerMatch(matchId);
   Board.clearWagerPiles();
@@ -1110,7 +1120,7 @@ function applyWagerState() {
     return;
   }
 
-  if (currentWagerState.resolved && isGameOver) {
+  if (currentWagerState.resolved) {
     syncWagerOutcome();
     return;
   }
@@ -1144,7 +1154,7 @@ function applyWagerState() {
 }
 
 function syncWagerOutcome() {
-  if (wagerOutcomeShown || !currentWagerState || !currentWagerState.resolved || !isGameOver) {
+  if (!currentWagerState || !currentWagerState.resolved) {
     return;
   }
   const resolved = currentWagerState.resolved;
@@ -1156,8 +1166,27 @@ function syncWagerOutcome() {
     return;
   }
   const winnerIsOpponent = resolved.winnerId === Board.opponentSideMetadata.uid;
-  Board.showResolvedWager(winnerIsOpponent, resolved.material, stakeCount, true);
-  wagerOutcomeShown = true;
+  const shouldAnimate = isGameOver && wagerOutcomeAnimationAllowed && !isWatchOnly && !wagerOutcomeShown;
+  if (shouldAnimate) {
+    if (wagerOutcomeAnimating) {
+      return;
+    }
+    wagerOutcomeAnimating = true;
+    if (wagerOutcomeAnimTimer !== null) {
+      window.clearTimeout(wagerOutcomeAnimTimer);
+    }
+    Board.showResolvedWager(winnerIsOpponent, resolved.material, stakeCount, true);
+    wagerOutcomeShown = true;
+    wagerOutcomeAnimTimer = window.setTimeout(() => {
+      wagerOutcomeAnimating = false;
+      wagerOutcomeAnimTimer = null;
+    }, 900);
+    return;
+  }
+  if (wagerOutcomeAnimating) {
+    return;
+  }
+  Board.showResolvedWager(winnerIsOpponent, resolved.material, stakeCount, false);
 }
 
 function processInput(assistedInputKind: AssistedInputKind, inputModifier: InputModifier, inputLocation?: Location) {
@@ -1403,6 +1432,7 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
   }
 
   isGameOver = true;
+  wagerOutcomeAnimationAllowed = !onConnect;
 
   Board.hideTimerCountdownDigits();
   disableAndHideUndoResignAndTimerControls();
@@ -1434,6 +1464,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
 
   const justConfirmedResignYourself = resignSenderColor === "";
   isGameOver = true;
+  wagerOutcomeAnimationAllowed = !onConnect;
 
   if (justConfirmedResignYourself) {
     resignedColor = playerSideColor;

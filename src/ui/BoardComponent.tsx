@@ -126,7 +126,8 @@ const toPercentY = (value: number) => (value / BOARD_HEIGHT_UNITS) * 100;
 const getWagerPanelLayout = (
   rect: { x: number; y: number; w: number; h: number },
   isOpponent: boolean,
-  boardPixelSize: { width: number; height: number } | null
+  boardPixelSize: { width: number; height: number } | null,
+  hasActions: boolean
 ): {
   x: number;
   y: number;
@@ -147,30 +148,34 @@ const getWagerPanelLayout = (
   const paddingX = Math.max(rect.w * WAGER_PANEL_PADDING_X_FRAC, minPaddingX);
   const paddingY = Math.max(rect.h * WAGER_PANEL_PADDING_Y_FRAC, minPaddingY);
   const minButtonHeight = pxPerUnitY ? WAGER_PANEL_MIN_BUTTON_HEIGHT_PX / pxPerUnitY : 0;
-  const buttonHeight = Math.max(rect.h * WAGER_PANEL_BUTTON_HEIGHT_FRAC, minButtonHeight);
+  const buttonHeight = hasActions ? Math.max(rect.h * WAGER_PANEL_BUTTON_HEIGHT_FRAC, minButtonHeight) : 0;
   const minButtonGap = pxPerUnitX ? WAGER_PANEL_MIN_BUTTON_GAP_PX / pxPerUnitX : 0;
-  const buttonGap = Math.max(rect.w * WAGER_PANEL_BUTTON_GAP_FRAC, minButtonGap);
+  const buttonGap = hasActions ? Math.max(rect.w * WAGER_PANEL_BUTTON_GAP_FRAC, minButtonGap) : 0;
   const minCountGap = pxPerUnitX ? WAGER_PANEL_COUNT_MIN_GAP_PX / pxPerUnitX : 0;
   const countGap = Math.max(rect.w * WAGER_PANEL_COUNT_GAP_FRAC, minCountGap);
   const minCountWidth = pxPerUnitX ? WAGER_PANEL_COUNT_MIN_WIDTH_PX / pxPerUnitX : 0;
-  const pileGap = rect.h * WAGER_PANEL_PILE_GAP_FRAC;
+  const pileGap = hasActions ? rect.h * WAGER_PANEL_PILE_GAP_FRAC : 0;
   const minButtonRowWidth = pxPerUnitX
     ? (isOpponent ? WAGER_PANEL_MIN_OPPONENT_BUTTON_WIDTH_PX * 2 + WAGER_PANEL_MIN_BUTTON_GAP_PX : WAGER_PANEL_MIN_PLAYER_BUTTON_WIDTH_PX) / pxPerUnitX
     : 0;
   const minPanelContentWidth = rect.w + countGap + minCountWidth;
-  const buttonRowWidth = Math.max(rect.w, minButtonRowWidth, minPanelContentWidth);
+  const buttonRowWidth = hasActions ? Math.max(rect.w, minButtonRowWidth, minPanelContentWidth) : minPanelContentWidth;
   const panelWidth = buttonRowWidth + paddingX * 2;
   const panelHeight = rect.h + paddingY * 2 + pileGap + buttonHeight;
   const centerX = rect.x + rect.w / 2;
   const panelX = centerX - panelWidth / 2;
   const panelY = isOpponent ? rect.y - paddingY : rect.y - (panelHeight - rect.h - paddingY);
-  const rowValues = isOpponent ? [paddingY, rect.h, pileGap, buttonHeight, paddingY] : [paddingY, buttonHeight, pileGap, rect.h, paddingY];
+  const rowValues = hasActions
+    ? isOpponent
+      ? [paddingY, rect.h, pileGap, buttonHeight, paddingY]
+      : [paddingY, buttonHeight, pileGap, rect.h, paddingY]
+    : [paddingY, rect.h, paddingY];
   const gridRows = rowValues.map((value) => `${(value / panelHeight) * 100}%`).join(" ");
   const paddingXPct = (paddingX / panelWidth) * 100;
   const buttonGapPct = buttonRowWidth > 0 ? (buttonGap / buttonRowWidth) * 100 : 0;
   const singleButtonWidthPct = WAGER_PANEL_BUTTON_WIDTH_FRAC * 100;
-  const pileRow = isOpponent ? 2 : 4;
-  const buttonRow = isOpponent ? 4 : 2;
+  const pileRow = hasActions ? (isOpponent ? 2 : 4) : 2;
+  const buttonRow = hasActions ? (isOpponent ? 4 : 2) : 0;
 
   return {
     x: panelX,
@@ -209,14 +214,14 @@ const BoardComponent: React.FC = () => {
   const [watchOnlySnapshot, setWatchOnlySnapshot] = useState(isWatchOnly);
   const [playerUidSnapshot, setPlayerUidSnapshot] = useState(playerSideMetadata.uid);
   const [opponentUidSnapshot, setOpponentUidSnapshot] = useState(opponentSideMetadata.uid);
-  const [activeWagerPanelSide, setActiveWagerPanelSide] = useState<WagerPileSide | null>(null);
+  const [activeWagerPanelSide, setActiveWagerPanelSide] = useState<WagerPileSide | "winner" | null>(null);
   const [activeWagerPanelRect, setActiveWagerPanelRect] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   const [activeWagerPanelCount, setActiveWagerPanelCount] = useState<number | null>(null);
   const [boardPixelSize, setBoardPixelSize] = useState<{ width: number; height: number } | null>(null);
   const wagerPilesLayerRef = useRef<HTMLDivElement | null>(null);
   const wagerPileElementsRef = useRef<WagerPileElements | null>(null);
   const wagerRenderStateRef = useRef<WagerRenderState | null>(null);
-  const activeWagerPanelSideRef = useRef<WagerPileSide | null>(null);
+  const activeWagerPanelSideRef = useRef<WagerPileSide | "winner" | null>(null);
   const activeWagerPanelRectRef = useRef<{ x: number; y: number; w: number; h: number } | null>(null);
   const activeWagerPanelCountRef = useRef<number | null>(null);
   const wagerPanelStateRef = useRef<{ actionsLocked: boolean; playerHasProposal: boolean; opponentHasProposal: boolean; lockPlayerPanel: boolean }>({
@@ -226,6 +231,7 @@ const BoardComponent: React.FC = () => {
     lockPlayerPanel: false,
   });
   const lastOpponentProposalKeyRef = useRef<string | null>(null);
+  const suppressOpponentAutoOpenKeyRef = useRef<string | null>(null);
   const opponentAuraContainerRef = useRef<HTMLDivElement | null>(null);
   const playerAuraContainerRef = useRef<HTMLDivElement | null>(null);
   const opponentAuraRefs = useRef<{ background: HTMLDivElement; inner: HTMLDivElement } | null>(null);
@@ -320,6 +326,7 @@ const BoardComponent: React.FC = () => {
   const wagerAgreement = wagerState?.agreed ?? null;
   const wagerResolved = wagerState?.resolved ?? null;
   const wagerActionsLocked = watchOnlySnapshot || !!wagerAgreement || !!wagerResolved;
+  const opponentProposalKey = opponentProposal ? `${opponentProposal.material}:${opponentProposal.count}` : null;
   const availableMaterials = computeAvailableMaterials(miningMaterials, frozenMaterials);
   const opponentMaterial = opponentProposal?.material ?? null;
   const opponentCount = opponentProposal?.count ?? 0;
@@ -329,6 +336,7 @@ const BoardComponent: React.FC = () => {
   const canAccept = acceptCount > 0;
   const showOpponentActions = !wagerActionsLocked && activeWagerPanelSide === "opponent" && !!opponentProposal;
   const showPlayerActions = !wagerActionsLocked && activeWagerPanelSide === "player" && !!playerProposal;
+  const wagerPanelHasActions = showOpponentActions || showPlayerActions;
 
   useEffect(() => {
     if (!initializationRef.current) {
@@ -453,13 +461,13 @@ const BoardComponent: React.FC = () => {
   }, []);
 
   const openWagerPanelForSide = useCallback(
-    (side: WagerPileSide) => {
+    (side: WagerPileSide | "winner") => {
       const state = wagerRenderStateRef.current;
-      if (!state || state.winAnimationActive || state.winner) {
+      if (!state || state.winAnimationActive) {
         clearWagerPanel();
         return;
       }
-      const pileState = side === "opponent" ? state.opponent : state.player;
+      const pileState = side === "winner" ? state.winner : side === "opponent" ? state.opponent : state.player;
       if (!pileState) {
         clearWagerPanel();
         return;
@@ -504,10 +512,13 @@ const BoardComponent: React.FC = () => {
         clearWagerPanel();
         return;
       }
+      if (opponentProposalKey) {
+        suppressOpponentAutoOpenKeyRef.current = opponentProposalKey;
+      }
       clearWagerPanel();
       connection.declineWagerProposal().catch(() => {});
     },
-    [clearWagerPanel, opponentProposal, wagerActionsLocked]
+    [clearWagerPanel, opponentProposal, opponentProposalKey, wagerActionsLocked]
   );
 
   const handleWagerAccept = useCallback(
@@ -522,35 +533,44 @@ const BoardComponent: React.FC = () => {
         clearWagerPanel();
         return;
       }
+      if (opponentProposalKey) {
+        suppressOpponentAutoOpenKeyRef.current = opponentProposalKey;
+      }
       clearWagerPanel();
       connection.acceptWagerProposal().catch(() => {});
     },
-    [canAccept, clearWagerPanel, opponentProposal, wagerActionsLocked]
+    [canAccept, clearWagerPanel, opponentProposal, opponentProposalKey, wagerActionsLocked]
   );
 
   useEffect(() => {
-    if (wagerActionsLocked) {
-      clearWagerPanel();
-      lastOpponentProposalKeyRef.current = null;
-      return;
-    }
-    const proposalKey = opponentProposal ? `${opponentProposal.material}:${opponentProposal.count}` : null;
-    if (opponentProposal) {
-      if (activeWagerPanelSideRef.current !== "opponent" || lastOpponentProposalKeyRef.current !== proposalKey) {
-        openWagerPanelForSide("opponent");
+    if (!wagerActionsLocked) {
+      if (opponentProposal && opponentProposalKey) {
+        if (suppressOpponentAutoOpenKeyRef.current === opponentProposalKey) {
+          lastOpponentProposalKeyRef.current = opponentProposalKey;
+          return;
+        }
+        if (activeWagerPanelSideRef.current !== "opponent" || lastOpponentProposalKeyRef.current !== opponentProposalKey) {
+          openWagerPanelForSide("opponent");
+        }
+        lastOpponentProposalKeyRef.current = opponentProposalKey;
+        return;
       }
-      lastOpponentProposalKeyRef.current = proposalKey;
+      suppressOpponentAutoOpenKeyRef.current = null;
+      lastOpponentProposalKeyRef.current = null;
+      if (activeWagerPanelSideRef.current === "opponent") {
+        clearWagerPanel();
+        return;
+      }
+      if (activeWagerPanelSideRef.current === "player" && !playerProposal) {
+        clearWagerPanel();
+      }
       return;
     }
-    lastOpponentProposalKeyRef.current = null;
-    if (activeWagerPanelSideRef.current === "opponent") {
-      clearWagerPanel();
-      return;
+    lastOpponentProposalKeyRef.current = opponentProposalKey;
+    if (!opponentProposal) {
+      suppressOpponentAutoOpenKeyRef.current = null;
     }
-    if (activeWagerPanelSideRef.current === "player" && !playerProposal) {
-      clearWagerPanel();
-    }
-  }, [clearWagerPanel, openWagerPanelForSide, opponentProposal, playerProposal, wagerActionsLocked]);
+  }, [clearWagerPanel, openWagerPanelForSide, opponentProposal, opponentProposalKey, playerProposal, wagerActionsLocked]);
 
   const ensureWagerPileElements = useCallback((): WagerPileElements | null => {
     const layer = wagerPilesLayerRef.current;
@@ -574,23 +594,19 @@ const BoardComponent: React.FC = () => {
       container.style.display = "block";
       container.style.opacity = "0";
       container.style.transition = "opacity 160ms ease";
-      container.style.pointerEvents = side === "winner" ? "none" : "auto";
+      container.style.pointerEvents = "auto";
       container.style.touchAction = "none";
       container.style.userSelect = "none";
       container.style.zIndex = "3";
       container.style.overflow = "visible";
-      if (side !== "winner") {
-        container.style.cursor = "pointer";
-        container.addEventListener(defaultInputEventName, (event) => {
-          event.stopPropagation();
-          if (event.cancelable) {
-            event.preventDefault();
-          }
-          const config = wagerPanelStateRef.current;
-          if (config.actionsLocked) {
-            clearWagerPanel();
-            return;
-          }
+      container.style.cursor = "pointer";
+      container.addEventListener(defaultInputEventName, (event) => {
+        event.stopPropagation();
+        if (event.cancelable) {
+          event.preventDefault();
+        }
+        const config = wagerPanelStateRef.current;
+        if (!config.actionsLocked) {
           if (side === "player" && (config.lockPlayerPanel || !config.playerHasProposal)) {
             clearWagerPanel();
             return;
@@ -599,13 +615,13 @@ const BoardComponent: React.FC = () => {
             clearWagerPanel();
             return;
           }
-          if (activeWagerPanelSideRef.current === side) {
-            clearWagerPanel();
-            return;
-          }
-          openWagerPanelForSide(side);
-        });
-      }
+        }
+        if (activeWagerPanelSideRef.current === side) {
+          clearWagerPanel();
+          return;
+        }
+        openWagerPanelForSide(side);
+      });
       return container;
     };
 
@@ -646,7 +662,7 @@ const BoardComponent: React.FC = () => {
           return;
         }
         container.style.opacity = "1";
-        container.style.pointerEvents = container.dataset.wagerPile === "winner" ? "none" : "auto";
+        container.style.pointerEvents = "auto";
         container.style.left = `${toPercentX(rect.x)}%`;
         container.style.top = `${toPercentY(rect.y)}%`;
         container.style.width = `${toPercentX(rect.w)}%`;
@@ -705,10 +721,12 @@ const BoardComponent: React.FC = () => {
 
       const activeSide = activeWagerPanelSideRef.current;
       if (activeSide) {
-        if (state.winAnimationActive || state.winner) {
+        if (state.winAnimationActive) {
+          clearWagerPanel();
+        } else if (state.winner && activeSide !== "winner") {
           clearWagerPanel();
         } else {
-          const pileState = activeSide === "opponent" ? state.opponent : state.player;
+          const pileState = activeSide === "winner" ? state.winner : activeSide === "opponent" ? state.opponent : state.player;
           if (!pileState) {
             clearWagerPanel();
           } else {
@@ -727,11 +745,20 @@ const BoardComponent: React.FC = () => {
           }
         }
       }
-      if (!wagerActionsLocked && opponentProposal && !state.winAnimationActive && !state.winner && state.opponent && activeWagerPanelSideRef.current !== "opponent") {
+      if (
+        !wagerActionsLocked &&
+        opponentProposal &&
+        opponentProposalKey &&
+        suppressOpponentAutoOpenKeyRef.current !== opponentProposalKey &&
+        !state.winAnimationActive &&
+        !state.winner &&
+        state.opponent &&
+        activeWagerPanelSideRef.current !== "opponent"
+      ) {
         openWagerPanelForSide("opponent");
       }
     },
-    [clearWagerPanel, ensureWagerPileElements, openWagerPanelForSide, opponentProposal, wagerActionsLocked]
+    [clearWagerPanel, ensureWagerPileElements, openWagerPanelForSide, opponentProposal, opponentProposalKey, wagerActionsLocked]
   );
 
   useEffect(() => {
@@ -768,8 +795,16 @@ const BoardComponent: React.FC = () => {
   const standardBoardTransform = "translate(0,100)";
   const pangchiuBoardTransform = "translate(83,184) scale(0.85892388)";
   const activeWagerPileRect = activeWagerPanelSide ? activeWagerPanelRect : null;
+  const isOpponentPanel =
+    activeWagerPanelSide === "opponent"
+      ? true
+      : activeWagerPanelSide === "player"
+        ? false
+        : activeWagerPileRect
+          ? activeWagerPileRect.y < BOARD_HEIGHT_UNITS * 0.5
+          : false;
   const wagerPanelLayout =
-    activeWagerPanelSide && activeWagerPileRect ? getWagerPanelLayout(activeWagerPileRect, activeWagerPanelSide === "opponent", boardPixelSize) : null;
+    activeWagerPanelSide && activeWagerPileRect ? getWagerPanelLayout(activeWagerPileRect, isOpponentPanel, boardPixelSize, wagerPanelHasActions) : null;
   const wagerCountLayout =
     wagerPanelLayout && activeWagerPileRect && activeWagerPanelCount !== null
       ? (() => {
@@ -943,55 +978,57 @@ const BoardComponent: React.FC = () => {
                 </div>
               )}
               <div aria-hidden="true" style={{ gridRow: wagerPanelLayout.pileRow }} />
-              <div
-                data-wager-panel="true"
-                style={{
-                  gridRow: wagerPanelLayout.buttonRow,
-                  width: "100%",
-                  justifySelf: "center",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: `${wagerPanelLayout.buttonGapPct}%`,
-                  height: "100%",
-                }}>
-                {showOpponentActions && (
-                  <>
+              {wagerPanelHasActions && (
+                <div
+                  data-wager-panel="true"
+                  style={{
+                    gridRow: wagerPanelLayout.buttonRow,
+                    width: "100%",
+                    justifySelf: "center",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: `${wagerPanelLayout.buttonGapPct}%`,
+                    height: "100%",
+                  }}>
+                  {showOpponentActions && (
+                    <>
+                      <button
+                        data-wager-panel="true"
+                        type="button"
+                        onClick={!isMobile ? handleWagerDecline : undefined}
+                        onTouchStart={isMobile ? handleWagerDecline : undefined}
+                        style={{ ...wagerPanelButtonStyle, flex: "1 1 0" }}>
+                        Decline
+                      </button>
+                      <button
+                        data-wager-panel="true"
+                        type="button"
+                        disabled={!canAccept}
+                        onClick={!isMobile ? handleWagerAccept : undefined}
+                        onTouchStart={isMobile ? handleWagerAccept : undefined}
+                        style={{
+                          ...wagerPanelButtonStyle,
+                          flex: "1 1 0",
+                          opacity: canAccept ? 1 : 0.5,
+                          cursor: canAccept ? "pointer" : "not-allowed",
+                        }}>
+                        {acceptLabel}
+                      </button>
+                    </>
+                  )}
+                  {showPlayerActions && (
                     <button
                       data-wager-panel="true"
                       type="button"
-                      onClick={!isMobile ? handleWagerDecline : undefined}
-                      onTouchStart={isMobile ? handleWagerDecline : undefined}
-                      style={{ ...wagerPanelButtonStyle, flex: "1 1 0" }}>
-                      Decline
+                      onClick={!isMobile ? handleWagerCancel : undefined}
+                      onTouchStart={isMobile ? handleWagerCancel : undefined}
+                      style={{ ...wagerPanelButtonStyle, width: `${wagerPanelLayout.singleButtonWidthPct}%` }}>
+                      Cancel Proposal
                     </button>
-                    <button
-                      data-wager-panel="true"
-                      type="button"
-                      disabled={!canAccept}
-                      onClick={!isMobile ? handleWagerAccept : undefined}
-                      onTouchStart={isMobile ? handleWagerAccept : undefined}
-                      style={{
-                        ...wagerPanelButtonStyle,
-                        flex: "1 1 0",
-                        opacity: canAccept ? 1 : 0.5,
-                        cursor: canAccept ? "pointer" : "not-allowed",
-                      }}>
-                      {acceptLabel}
-                    </button>
-                  </>
-                )}
-                {showPlayerActions && (
-                  <button
-                    data-wager-panel="true"
-                    type="button"
-                    onClick={!isMobile ? handleWagerCancel : undefined}
-                    onTouchStart={isMobile ? handleWagerCancel : undefined}
-                    style={{ ...wagerPanelButtonStyle, width: `${wagerPanelLayout.singleButtonWidthPct}%` }}>
-                    Cancel Proposal
-                  </button>
-                )}
-              </div>
+                  )}
+                </div>
+              )}
             </div>
           )}
           <div
