@@ -86,6 +86,7 @@ export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement |
 export let showVideoReaction: (opponent: boolean, stickerId: number) => void;
 export let showRaibowAura: (visible: boolean, url: string, opponent: boolean) => void;
 export let updateAuraForAvatarElement: (opponent: boolean, avatarElement: SVGElement) => void;
+export let updateWagerPlayerUids: (playerUid: string, opponentUid: string) => void;
 
 const VIDEO_CONTAINER_HEIGHT_GRID = "12.5%";
 const VIDEO_CONTAINER_HEIGHT_IMAGE = "13.5%";
@@ -206,6 +207,8 @@ const BoardComponent: React.FC = () => {
   const [miningMaterials, setMiningMaterials] = useState(rocksMiningService.getSnapshot().materials);
   const [frozenMaterials, setFrozenMaterialsState] = useState(getFrozenMaterials());
   const [watchOnlySnapshot, setWatchOnlySnapshot] = useState(isWatchOnly);
+  const [playerUidSnapshot, setPlayerUidSnapshot] = useState(playerSideMetadata.uid);
+  const [opponentUidSnapshot, setOpponentUidSnapshot] = useState(opponentSideMetadata.uid);
   const [activeWagerPanelSide, setActiveWagerPanelSide] = useState<WagerPileSide | null>(null);
   const [activeWagerPanelRect, setActiveWagerPanelRect] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   const [activeWagerPanelCount, setActiveWagerPanelCount] = useState<number | null>(null);
@@ -230,6 +233,11 @@ const BoardComponent: React.FC = () => {
   const auraLayerRef = useRef<HTMLDivElement | null>(null);
   const opponentWrapperRef = useRef<HTMLDivElement | null>(null);
   const playerWrapperRef = useRef<HTMLDivElement | null>(null);
+
+  updateWagerPlayerUids = (nextPlayerUid: string, nextOpponentUid: string) => {
+    setPlayerUidSnapshot((prev) => (prev === nextPlayerUid ? prev : nextPlayerUid));
+    setOpponentUidSnapshot((prev) => (prev === nextOpponentUid ? prev : nextOpponentUid));
+  };
 
   updateAuraForAvatarElement = (opponent: boolean, avatarElement: SVGElement) => {
     const rect = avatarElement.getBoundingClientRect();
@@ -305,8 +313,8 @@ const BoardComponent: React.FC = () => {
   };
 
   const proposals = wagerState?.proposals || {};
-  const playerUid = playerSideMetadata.uid;
-  const opponentUid = opponentSideMetadata.uid;
+  const playerUid = playerUidSnapshot;
+  const opponentUid = opponentUidSnapshot;
   const playerProposal = playerUid && proposals[playerUid] ? proposals[playerUid] : null;
   const opponentProposal = opponentUid && proposals[opponentUid] ? proposals[opponentUid] : null;
   const wagerAgreement = wagerState?.agreed ?? null;

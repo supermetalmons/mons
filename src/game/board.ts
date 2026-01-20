@@ -10,7 +10,7 @@ import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { hasIslandOverlayVisible } from "../ui/islandOverlayState";
 import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername, getStashedPlayerProfile } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
-import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange, showRaibowAura, updateAuraForAvatarElement } from "../ui/BoardComponent";
+import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange, showRaibowAura, updateAuraForAvatarElement, updateWagerPlayerUids } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
 import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
@@ -1115,6 +1115,7 @@ export function setupPlayerId(uid: string, opponent: boolean) {
     playerSideMetadata.uid = uid;
   }
   recalculateDisplayNames();
+  updateWagerPlayerUids(playerSideMetadata.uid, opponentSideMetadata.uid);
 }
 
 function canRedirectToExplorer(opponent: boolean) {
