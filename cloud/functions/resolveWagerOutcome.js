@@ -10,11 +10,12 @@ exports.resolveWagerOutcome = onCall(async (request) => {
   }
 
   const uid = request.auth.uid;
+  const authProfileId = request.auth.token && request.auth.token.profileId ? request.auth.token.profileId : null;
   const playerId = request.data.playerId;
   const inviteId = request.data.inviteId;
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;
-  const baseDebug = { authUid: uid, playerId, opponentId, inviteId, matchId };
+  const baseDebug = { authUid: uid, authProfileId, playerId, opponentId, inviteId, matchId };
 
   if (typeof playerId !== "string" || typeof inviteId !== "string" || typeof matchId !== "string" || typeof opponentId !== "string") {
     return { ok: false, reason: "invalid-argument", debug: baseDebug };
@@ -61,6 +62,13 @@ exports.resolveWagerOutcome = onCall(async (request) => {
   if (!wagerData) {
     return { ok: true, reason: "no-wager", debug: { ...inviteDebug, result } };
   }
+  const wagerDebug = {
+    ...inviteDebug,
+    result,
+    hasResolved: !!wagerData.resolved,
+    hasAgreed: !!wagerData.agreed,
+    proposalKeys: Object.keys(wagerData.proposals || {}),
+  };
 
   const wagerResolutionFlagRef = admin.database().ref(`invites/${inviteId}/matchesWagerResolutions/${matchId}`);
   const txnResult = await wagerResolutionFlagRef.transaction((current) => {
@@ -70,7 +78,7 @@ exports.resolveWagerOutcome = onCall(async (request) => {
     return true;
   });
   if (!txnResult.committed) {
-    return { ok: true, reason: "already-resolved", debug: { ...inviteDebug, result } };
+    return { ok: true, reason: "already-resolved", debug: wagerDebug };
   }
 
   let resolutionMode = "none";
@@ -144,8 +152,7 @@ exports.resolveWagerOutcome = onCall(async (request) => {
     ok: true,
     mining,
     debug: {
-      ...inviteDebug,
-      result,
+      ...wagerDebug,
       resolutionMode,
       resolvedPayload,
       unfrozenProposalKeys,

@@ -8,9 +8,10 @@ exports.declineWagerProposal = onCall(async (request) => {
   }
 
   const authUid = request.auth.uid;
+  const authProfileId = request.auth.token && request.auth.token.profileId ? request.auth.token.profileId : null;
   const inviteId = request.data && request.data.inviteId;
   const matchId = request.data && request.data.matchId;
-  const baseDebug = { authUid, inviteId, matchId };
+  const baseDebug = { authUid, authProfileId, inviteId, matchId };
 
   if (typeof inviteId !== "string" || typeof matchId !== "string") {
     return { ok: false, reason: "invalid-argument", debug: baseDebug };
@@ -36,15 +37,21 @@ exports.declineWagerProposal = onCall(async (request) => {
   const resolvedDebug = { ...inviteDebug, opponentUid };
 
   let removedProposal = null;
+  let txnDebug = null;
   const wagerRef = admin.database().ref(`invites/${inviteId}/wagers/${matchId}`);
   const txn = await wagerRef.transaction((current) => {
     const data = current || {};
+    if (!current) {
+      txnDebug = { step: "missing-data" };
+    }
     if (data.resolved || data.agreed) {
+      txnDebug = { step: "already-resolved", resolved: !!data.resolved, agreed: !!data.agreed };
       return;
     }
     const proposals = data.proposals || {};
     const proposal = proposals[opponentUid];
     if (!proposal) {
+      txnDebug = { step: "proposal-missing", proposalKeys: Object.keys(proposals) };
       return;
     }
     removedProposal = proposal;
@@ -54,7 +61,20 @@ exports.declineWagerProposal = onCall(async (request) => {
   });
 
   if (!txn.committed || !removedProposal) {
-    return { ok: false, reason: "proposal-missing", debug: resolvedDebug };
+    const latestSnap = await wagerRef.once("value");
+    const latestData = latestSnap.val() || {};
+    const latestProposals = latestData.proposals || {};
+    return {
+      ok: false,
+      reason: "proposal-missing",
+      debug: {
+        ...resolvedDebug,
+        txnDebug,
+        latestProposalKeys: Object.keys(latestProposals),
+        latestAgreed: !!latestData.agreed,
+        latestResolved: !!latestData.resolved,
+      },
+    };
   }
 
   await updateFrozenMaterials(opponentUid, { [removedProposal.material]: -removedProposal.count });

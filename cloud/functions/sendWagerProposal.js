@@ -8,11 +8,12 @@ exports.sendWagerProposal = onCall(async (request) => {
   }
 
   const authUid = request.auth.uid;
+  const authProfileId = request.auth.token && request.auth.token.profileId ? request.auth.token.profileId : null;
   const inviteId = request.data && request.data.inviteId;
   const matchId = request.data && request.data.matchId;
   const material = request.data && request.data.material;
   const requestedCount = normalizeCount(request.data && request.data.count);
-  const baseDebug = { authUid, inviteId, matchId, material, requestedCount };
+  const baseDebug = { authUid, authProfileId, inviteId, matchId, material, requestedCount };
 
   if (typeof inviteId !== "string" || typeof matchId !== "string" || !isMaterialName(material) || requestedCount <= 0) {
     return { ok: false, reason: "invalid-argument", debug: baseDebug };
