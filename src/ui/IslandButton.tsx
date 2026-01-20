@@ -4330,7 +4330,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                               <WagerMaterialAmount>{wagerCount}</WagerMaterialAmount>
                             </WagerMaterialBadge>
                           </>
-                        ) : (
+                        ) : playerHasProposed ? null : (
                           <WagerButtonHint>select a material to wager</WagerButtonHint>
                         )}
                       </WagerButton>

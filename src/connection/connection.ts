@@ -5,12 +5,12 @@ import { getFirestore, Firestore, collection, query, where, limit, getDocs, orde
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
 import { getPlayersEmojiId, didGetPlayerProfile } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
-import { Match, Invite, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES, MiningMaterialName } from "./connectionModels";
+import { Match, Invite, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES, MiningMaterialName, MatchWagerState, WagerProposal, WagerAgreement } from "./connectionModels";
 import { storage } from "../utils/storage";
 import { generateNewInviteId } from "../utils/misc";
 import { setDebugViewText } from "../ui/MainMenu";
-import { setWagerState } from "../game/wagerState";
-import { setFrozenMaterials } from "../services/wagerMaterialsService";
+import { getWagerState, setWagerState } from "../game/wagerState";
+import { applyFrozenMaterialsDelta, computeAvailableMaterials, getFrozenMaterials, setFrozenMaterials } from "../services/wagerMaterialsService";
 import { rocksMiningService } from "../services/rocksMiningService";
 
 const createEmptyMiningMaterials = (): PlayerMiningMaterials => ({
@@ -93,6 +93,83 @@ class Connection {
     this.db = getDatabase(this.app);
     this.firestore = getFirestore(this.app);
     this.functions = getFunctions(this.app);
+  }
+
+  private cloneWagerState(state: MatchWagerState | null): MatchWagerState | null {
+    if (!state) {
+      return null;
+    }
+    const proposals = state.proposals
+      ? Object.keys(state.proposals).reduce((acc, key) => {
+          const proposal = state.proposals ? state.proposals[key] : null;
+          if (proposal) {
+            acc[key] = { material: proposal.material, count: proposal.count, createdAt: proposal.createdAt };
+          }
+          return acc;
+        }, {} as Record<string, WagerProposal>)
+      : undefined;
+    const proposedBy = state.proposedBy ? { ...state.proposedBy } : undefined;
+    const agreed = state.agreed ? { ...state.agreed } : undefined;
+    const resolved = state.resolved ? { ...state.resolved } : undefined;
+    return {
+      proposals,
+      proposedBy,
+      agreed,
+      resolved,
+    };
+  }
+
+  private setLocalWagerState(state: MatchWagerState | null): void {
+    if (!this.matchId) {
+      return;
+    }
+    if (this.latestInvite) {
+      if (!this.latestInvite.wagers) {
+        this.latestInvite.wagers = {};
+      }
+      if (state) {
+        this.latestInvite.wagers[this.matchId] = state;
+      } else if (this.latestInvite.wagers) {
+        delete this.latestInvite.wagers[this.matchId];
+      }
+    }
+    setWagerState(this.matchId, state);
+  }
+
+  private async delay(ms: number): Promise<void> {
+    await new Promise((resolve) => setTimeout(resolve, ms));
+  }
+
+  private shouldRetryWagerResult(result: any): boolean {
+    const reason = result && typeof result.reason === "string" ? result.reason : "";
+    return reason === "proposal-unavailable" || reason === "proposal-missing" || reason === "match-not-found";
+  }
+
+  private async callWagerFunctionWithRetry(label: string, call: () => Promise<any>, maxAttempts = 3): Promise<any> {
+    let attempt = 0;
+    while (attempt < maxAttempts) {
+      attempt += 1;
+      try {
+        if (attempt > 1) {
+          console.log(`${label}:retry`, { attempt });
+        }
+        const response = await call();
+        const data = response && typeof response === "object" && "data" in response ? (response as any).data : response;
+        if (data && data.ok === false && this.shouldRetryWagerResult(data) && attempt < maxAttempts) {
+          await this.delay(160 * attempt);
+          continue;
+        }
+        return data;
+      } catch (error) {
+        if (attempt < maxAttempts) {
+          console.log(`${label}:retry`, { attempt, error });
+          await this.delay(180 * attempt);
+          continue;
+        }
+        throw error;
+      }
+    }
+    return null;
   }
 
   public setupConnection(autojoin: boolean): void {
@@ -582,13 +659,17 @@ class Connection {
       if (!opponentId) {
         return { ok: false };
       }
+      console.log("wager:resolve:start", { inviteId: this.inviteId, matchId: this.matchId, opponentId });
       const resolveWagerOutcomeFunction = httpsCallable(this.functions, "resolveWagerOutcome");
-      const response = await resolveWagerOutcomeFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId });
-      const data = response.data as { mining?: PlayerMiningData } | null;
-      if (data && data.mining) {
-        rocksMiningService.setFromServer(data.mining, { persist: true });
+      const data = await this.callWagerFunctionWithRetry("wager:resolve", () =>
+        resolveWagerOutcomeFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId })
+      );
+      const responseData = data as { mining?: PlayerMiningData } | null;
+      console.log("wager:resolve:done", responseData);
+      if (responseData && responseData.mining) {
+        rocksMiningService.setFromServer(responseData.mining, { persist: true });
       }
-      return data;
+      return responseData;
     } catch (error) {
       console.error("Error resolving wager outcome:", error);
       throw error;
@@ -596,73 +677,326 @@ class Connection {
   }
 
   public async sendWagerProposal(material: MiningMaterialName, count: number): Promise<any> {
+    let prevState: MatchWagerState | null = null;
+    let prevFrozen: Record<MiningMaterialName, number> | null = null;
+    let optimisticCount = 0;
+    let optimisticApplied = false;
     try {
       await this.ensureAuthenticated();
-      if (!this.inviteId || !this.matchId) {
+      if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) {
         console.log("wager:send:skipped", { inviteId: this.inviteId, matchId: this.matchId });
         return { ok: false };
       }
+      const playerUid = this.sameProfilePlayerUid;
+      const currentState = getWagerState();
+      if (!currentState?.agreed && !currentState?.resolved) {
+        const totalMaterials = rocksMiningService.getSnapshot().materials;
+        const frozenMaterials = getFrozenMaterials();
+        const available = computeAvailableMaterials(totalMaterials, frozenMaterials);
+        const availableCount = available[material] ?? 0;
+        optimisticCount = Math.max(0, Math.min(Math.round(count), availableCount));
+        if (optimisticCount > 0) {
+          prevState = this.cloneWagerState(currentState);
+          prevFrozen = frozenMaterials;
+          const proposals = { ...(currentState?.proposals ?? {}) };
+          proposals[playerUid] = { material, count: optimisticCount, createdAt: Date.now() };
+          const proposedBy = { ...(currentState?.proposedBy ?? {}) };
+          proposedBy[playerUid] = true;
+          const nextState: MatchWagerState = {
+            ...(currentState ?? {}),
+            proposals,
+            proposedBy,
+          };
+          this.setLocalWagerState(nextState);
+          applyFrozenMaterialsDelta({ [material]: optimisticCount });
+          optimisticApplied = true;
+        }
+      }
       console.log("wager:send:start", { inviteId: this.inviteId, matchId: this.matchId, material, count });
       const sendWagerProposalFunction = httpsCallable(this.functions, "sendWagerProposal");
-      const response = await sendWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId, material, count });
-      console.log("wager:send:done", response.data);
-      return response.data;
+      const data = await this.callWagerFunctionWithRetry("wager:send", () => sendWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId, material, count }));
+      console.log("wager:send:done", data);
+      if (optimisticApplied) {
+        if (data && data.ok === false) {
+          const latestState = getWagerState();
+          const proposal = latestState?.proposals && playerUid ? latestState.proposals[playerUid] : null;
+          const shouldRollback = !!proposal && proposal.material === material && proposal.count === optimisticCount && !latestState?.agreed && !latestState?.resolved;
+          if (shouldRollback) {
+            this.setLocalWagerState(prevState);
+            if (prevFrozen) {
+              setFrozenMaterials(prevFrozen);
+            }
+          }
+        } else if (data && typeof data.count === "number") {
+          const serverCount = Math.max(0, Math.round(data.count));
+          if (serverCount !== optimisticCount) {
+            const latestState = getWagerState();
+            const proposal = latestState?.proposals && playerUid ? latestState.proposals[playerUid] : null;
+            if (proposal && proposal.material === material && proposal.count === optimisticCount && !latestState?.agreed && !latestState?.resolved) {
+              const proposals = { ...(latestState?.proposals ?? {}) };
+              proposals[playerUid] = { ...proposal, count: serverCount };
+              const nextState: MatchWagerState = { ...(latestState ?? {}), proposals };
+              this.setLocalWagerState(nextState);
+              const delta = serverCount - optimisticCount;
+              if (delta !== 0) {
+                applyFrozenMaterialsDelta({ [material]: delta });
+              }
+            }
+          }
+        }
+      }
+      return data;
     } catch (error) {
       console.error("wager:send:error", error);
+      if (optimisticApplied) {
+        const latestState = getWagerState();
+        const proposal = latestState?.proposals && this.sameProfilePlayerUid ? latestState.proposals[this.sameProfilePlayerUid] : null;
+        const shouldRollback =
+          !!proposal && proposal.material === material && proposal.count === optimisticCount && !latestState?.agreed && !latestState?.resolved;
+        if (shouldRollback) {
+          this.setLocalWagerState(prevState);
+          if (prevFrozen) {
+            setFrozenMaterials(prevFrozen);
+          }
+        }
+      }
       throw error;
     }
   }
 
   public async cancelWagerProposal(): Promise<any> {
+    let prevState: MatchWagerState | null = null;
+    let prevFrozen: Record<MiningMaterialName, number> | null = null;
+    let optimisticApplied = false;
+    let proposal: WagerProposal | null = null;
     try {
       await this.ensureAuthenticated();
-      if (!this.inviteId || !this.matchId) {
+      if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) {
         console.log("wager:cancel:skipped", { inviteId: this.inviteId, matchId: this.matchId });
         return { ok: false };
       }
+      const playerUid = this.sameProfilePlayerUid;
+      const currentState = getWagerState();
+      const existingProposal = currentState?.proposals && playerUid ? currentState.proposals[playerUid] : null;
+      if (existingProposal && !currentState?.agreed && !currentState?.resolved) {
+        prevState = this.cloneWagerState(currentState);
+        prevFrozen = getFrozenMaterials();
+        proposal = existingProposal;
+        const proposals = { ...(currentState?.proposals ?? {}) };
+        delete proposals[playerUid];
+        const nextState: MatchWagerState = {
+          ...(currentState ?? {}),
+          proposals: Object.keys(proposals).length > 0 ? proposals : undefined,
+          proposedBy: currentState?.proposedBy,
+        };
+        this.setLocalWagerState(nextState);
+        applyFrozenMaterialsDelta({ [proposal.material]: -proposal.count });
+        optimisticApplied = true;
+      }
       console.log("wager:cancel:start", { inviteId: this.inviteId, matchId: this.matchId });
       const cancelWagerProposalFunction = httpsCallable(this.functions, "cancelWagerProposal");
-      const response = await cancelWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId });
-      console.log("wager:cancel:done", response.data);
-      return response.data;
+      const data = await this.callWagerFunctionWithRetry("wager:cancel", () => cancelWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId }));
+      console.log("wager:cancel:done", data);
+      if (optimisticApplied && data && data.ok === false) {
+        const latestState = getWagerState();
+        const hasAgreedOrResolved = !!latestState?.agreed || !!latestState?.resolved;
+        const stillMissing = !latestState?.proposals || (playerUid && !latestState.proposals[playerUid]);
+        if (!hasAgreedOrResolved && stillMissing) {
+          this.setLocalWagerState(prevState);
+          if (prevFrozen) {
+            setFrozenMaterials(prevFrozen);
+          }
+        }
+      }
+      return data;
     } catch (error) {
       console.error("wager:cancel:error", error);
+      if (optimisticApplied) {
+        const latestState = getWagerState();
+        const hasAgreedOrResolved = !!latestState?.agreed || !!latestState?.resolved;
+        const stillMissing = !latestState?.proposals || (this.sameProfilePlayerUid && !latestState.proposals[this.sameProfilePlayerUid]);
+        if (!hasAgreedOrResolved && stillMissing) {
+          this.setLocalWagerState(prevState);
+          if (prevFrozen) {
+            setFrozenMaterials(prevFrozen);
+          }
+        }
+      }
       throw error;
     }
   }
 
   public async declineWagerProposal(): Promise<any> {
+    let prevState: MatchWagerState | null = null;
+    let optimisticApplied = false;
+    let opponentUid: string | null = null;
     try {
       await this.ensureAuthenticated();
-      if (!this.inviteId || !this.matchId) {
+      if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) {
         console.log("wager:decline:skipped", { inviteId: this.inviteId, matchId: this.matchId });
         return { ok: false };
       }
+      opponentUid = this.getOpponentId();
+      const currentState = getWagerState();
+      const existingProposal = opponentUid && currentState?.proposals ? currentState.proposals[opponentUid] : null;
+      if (existingProposal && !currentState?.agreed && !currentState?.resolved) {
+        prevState = this.cloneWagerState(currentState);
+        const proposals = { ...(currentState?.proposals ?? {}) };
+        delete proposals[opponentUid];
+        const nextState: MatchWagerState = {
+          ...(currentState ?? {}),
+          proposals: Object.keys(proposals).length > 0 ? proposals : undefined,
+          proposedBy: currentState?.proposedBy,
+        };
+        this.setLocalWagerState(nextState);
+        optimisticApplied = true;
+      }
       console.log("wager:decline:start", { inviteId: this.inviteId, matchId: this.matchId });
       const declineWagerProposalFunction = httpsCallable(this.functions, "declineWagerProposal");
-      const response = await declineWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId });
-      console.log("wager:decline:done", response.data);
-      return response.data;
+      const data = await this.callWagerFunctionWithRetry("wager:decline", () => declineWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId }));
+      console.log("wager:decline:done", data);
+      if (optimisticApplied && data && data.ok === false) {
+        const latestState = getWagerState();
+        const hasAgreedOrResolved = !!latestState?.agreed || !!latestState?.resolved;
+        const stillMissing = !latestState?.proposals || (opponentUid && !latestState.proposals[opponentUid]);
+        if (!hasAgreedOrResolved && stillMissing) {
+          this.setLocalWagerState(prevState);
+        }
+      }
+      return data;
     } catch (error) {
       console.error("wager:decline:error", error);
+      if (optimisticApplied) {
+        const latestState = getWagerState();
+        const hasAgreedOrResolved = !!latestState?.agreed || !!latestState?.resolved;
+        const stillMissing = !latestState?.proposals || (opponentUid && !latestState.proposals[opponentUid]);
+        if (!hasAgreedOrResolved && stillMissing) {
+          this.setLocalWagerState(prevState);
+        }
+      }
       throw error;
     }
   }
 
   public async acceptWagerProposal(): Promise<any> {
+    let prevState: MatchWagerState | null = null;
+    let prevFrozen: Record<MiningMaterialName, number> | null = null;
+    let optimisticApplied = false;
+    let optimisticAgreement: WagerAgreement | null = null;
+    let opponentUid: string | null = null;
     try {
       await this.ensureAuthenticated();
-      if (!this.inviteId || !this.matchId) {
+      if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) {
         console.log("wager:accept:skipped", { inviteId: this.inviteId, matchId: this.matchId });
         return { ok: false };
       }
+      const playerUid = this.sameProfilePlayerUid;
+      opponentUid = this.getOpponentId();
+      const currentState = getWagerState();
+      const proposals = currentState?.proposals ?? null;
+      const opponentProposal = opponentUid && proposals ? proposals[opponentUid] : null;
+      const ownProposal = playerUid && proposals ? proposals[playerUid] : null;
+      if (opponentProposal && !currentState?.agreed && !currentState?.resolved) {
+        const totalMaterials = rocksMiningService.getSnapshot().materials;
+        const frozenMaterials = getFrozenMaterials();
+        const available = computeAvailableMaterials(totalMaterials, frozenMaterials);
+        const opponentCount = Math.max(0, Math.round(opponentProposal.count));
+        const extraAvailable = ownProposal && ownProposal.material === opponentProposal.material ? Math.max(0, Math.round(ownProposal.count)) : 0;
+        const acceptedCount = Math.min(opponentCount, (available[opponentProposal.material] ?? 0) + extraAvailable);
+        if (acceptedCount > 0) {
+          prevState = this.cloneWagerState(currentState);
+          prevFrozen = frozenMaterials;
+          optimisticAgreement = {
+            material: opponentProposal.material,
+            count: acceptedCount,
+            total: acceptedCount * 2,
+            proposerId: opponentUid,
+            accepterId: playerUid,
+            acceptedAt: Date.now(),
+          };
+          const nextState: MatchWagerState = {
+            ...(currentState ?? {}),
+            proposals: undefined,
+            proposedBy: currentState?.proposedBy,
+            agreed: optimisticAgreement,
+          };
+          this.setLocalWagerState(nextState);
+          const deltas: Partial<Record<MiningMaterialName, number>> = {};
+          if (ownProposal) {
+            const ownCount = Math.max(0, Math.round(ownProposal.count));
+            if (ownCount > 0) {
+              deltas[ownProposal.material] = (deltas[ownProposal.material] ?? 0) - ownCount;
+            }
+          }
+          deltas[opponentProposal.material] = (deltas[opponentProposal.material] ?? 0) + acceptedCount;
+          applyFrozenMaterialsDelta(deltas);
+          optimisticApplied = true;
+        }
+      }
       console.log("wager:accept:start", { inviteId: this.inviteId, matchId: this.matchId });
       const acceptWagerProposalFunction = httpsCallable(this.functions, "acceptWagerProposal");
-      const response = await acceptWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId });
-      console.log("wager:accept:done", response.data);
-      return response.data;
+      const data = await this.callWagerFunctionWithRetry("wager:accept", () => acceptWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId }));
+      console.log("wager:accept:done", data);
+      if (optimisticApplied && optimisticAgreement) {
+        if (data && data.ok === false) {
+          const latestState = getWagerState();
+          const agreed = latestState?.agreed;
+          const shouldRollback =
+            !!agreed &&
+            !latestState?.resolved &&
+            agreed.material === optimisticAgreement.material &&
+            agreed.count === optimisticAgreement.count &&
+            agreed.proposerId === optimisticAgreement.proposerId &&
+            agreed.accepterId === optimisticAgreement.accepterId;
+          if (shouldRollback) {
+            this.setLocalWagerState(prevState);
+            if (prevFrozen) {
+              setFrozenMaterials(prevFrozen);
+            }
+          }
+        } else if (data && typeof data.count === "number") {
+          const serverCount = Math.max(0, Math.round(data.count));
+          if (serverCount !== optimisticAgreement.count) {
+            const latestState = getWagerState();
+            const agreed = latestState?.agreed;
+            if (
+              agreed &&
+              !latestState?.resolved &&
+              agreed.material === optimisticAgreement.material &&
+              agreed.proposerId === optimisticAgreement.proposerId &&
+              agreed.accepterId === optimisticAgreement.accepterId
+            ) {
+              const nextAgreed = { ...agreed, count: serverCount, total: serverCount * 2 };
+              const nextState: MatchWagerState = { ...(latestState ?? {}), agreed: nextAgreed };
+              this.setLocalWagerState(nextState);
+              const delta = serverCount - optimisticAgreement.count;
+              if (delta !== 0) {
+                applyFrozenMaterialsDelta({ [optimisticAgreement.material]: delta });
+              }
+            }
+          }
+        }
+      }
+      return data;
     } catch (error) {
       console.error("wager:accept:error", error);
+      if (optimisticApplied && optimisticAgreement) {
+        const latestState = getWagerState();
+        const agreed = latestState?.agreed;
+        const shouldRollback =
+          !!agreed &&
+          !latestState?.resolved &&
+          agreed.material === optimisticAgreement.material &&
+          agreed.count === optimisticAgreement.count &&
+          agreed.proposerId === optimisticAgreement.proposerId &&
+          agreed.accepterId === optimisticAgreement.accepterId;
+        if (shouldRollback) {
+          this.setLocalWagerState(prevState);
+          if (prevFrozen) {
+            setFrozenMaterials(prevFrozen);
+          }
+        }
+      }
       throw error;
     }
   }

@@ -48,6 +48,19 @@ export const subscribeToFrozenMaterials = (listener: FrozenListener) => {
   };
 };
 
+export const applyFrozenMaterialsDelta = (deltas?: Partial<Record<MaterialName, number>> | null): FrozenMaterials => {
+  const current = getFrozenMaterials();
+  const next = { ...current };
+  MATERIALS.forEach((name) => {
+    const raw = deltas ? (deltas as Record<string, unknown>)[name] : undefined;
+    const delta = typeof raw === "number" ? raw : Number(raw);
+    const value = (next[name] ?? 0) + (Number.isFinite(delta) ? delta : 0);
+    next[name] = Math.max(0, Math.round(value));
+  });
+  setFrozenMaterials(next);
+  return getFrozenMaterials();
+};
+
 export const computeAvailableMaterials = (total: FrozenMaterials, frozen: FrozenMaterials): FrozenMaterials => {
   const result = createEmptyMaterials();
   MATERIALS.forEach((name) => {
