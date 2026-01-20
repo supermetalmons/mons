@@ -32,6 +32,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build && node scripts/removeDevAssets.js",
     "deploy:functions": "npm --prefix cloud/functions install && cd cloud && firebase deploy --only functions",
+    "deploy:wagers": "npm --prefix cloud/functions install && cd cloud && firebase deploy --only functions:sendWagerProposal,functions:acceptWagerProposal,functions:cancelWagerProposal,functions:declineWagerProposal,functions:resolveWagerOutcome",
     "deploy": "npm run deploy:functions"
   },
   "eslintConfig": {
