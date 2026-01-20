@@ -1,6 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { updateFrozenMaterials, resolveWagerParticipants } = require("./wagerHelpers");
+const { updateFrozenMaterials, resolveWagerParticipants, removeWagerProposalWithRetry } = require("./wagerHelpers");
 
 exports.cancelWagerProposal = onCall(async (request) => {
   if (!request.auth) {
@@ -36,47 +36,13 @@ exports.cancelWagerProposal = onCall(async (request) => {
   const { playerUid } = resolved;
   const resolvedDebug = { ...inviteDebug, playerUid };
 
-  let removedProposal = null;
-  let txnDebug = null;
-  const wagerRef = admin.database().ref(`invites/${inviteId}/wagers/${matchId}`);
-  const txn = await wagerRef.transaction((current) => {
-    const data = current || {};
-    if (!current) {
-      txnDebug = { step: "missing-data" };
-    }
-    if (data.resolved || data.agreed) {
-      txnDebug = { step: "already-resolved", resolved: !!data.resolved, agreed: !!data.agreed };
-      return;
-    }
-    const proposals = data.proposals || {};
-    const proposal = proposals[playerUid];
-    if (!proposal) {
-      txnDebug = { step: "proposal-missing", proposalKeys: Object.keys(proposals) };
-      return;
-    }
-    removedProposal = proposal;
-    delete proposals[playerUid];
-    data.proposals = proposals;
-    return data;
-  });
-
-  if (!txn.committed || !removedProposal) {
-    const latestSnap = await wagerRef.once("value");
-    const latestData = latestSnap.val() || {};
-    const latestProposals = latestData.proposals || {};
-    return {
-      ok: false,
-      reason: "proposal-missing",
-      debug: {
-        ...resolvedDebug,
-        txnDebug,
-        latestProposalKeys: Object.keys(latestProposals),
-        latestAgreed: !!latestData.agreed,
-        latestResolved: !!latestData.resolved,
-      },
-    };
+  const removal = await removeWagerProposalWithRetry(inviteId, matchId, playerUid);
+  if (!removal.ok || !removal.removedProposal) {
+    return { ok: false, reason: "proposal-missing", debug: { ...resolvedDebug, removalDebug: removal.debug } };
   }
 
-  await updateFrozenMaterials(playerUid, { [removedProposal.material]: -removedProposal.count });
-  return { ok: true, debug: { ...resolvedDebug, removedProposal } };
+  if (removal.canUnfreeze) {
+    await updateFrozenMaterials(playerUid, { [removal.removedProposal.material]: -removal.removedProposal.count });
+  }
+  return { ok: true, debug: { ...resolvedDebug, removedProposal: removal.removedProposal, removalDebug: removal.debug, canUnfreeze: removal.canUnfreeze } };
 });

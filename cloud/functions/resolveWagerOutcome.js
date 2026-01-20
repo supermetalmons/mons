@@ -56,11 +56,27 @@ exports.resolveWagerOutcome = onCall(async (request) => {
     throw new HttpsError("internal", "Could not confirm victory.");
   }
 
+  const readMiningSnapshot = async () => {
+    if (!playerProfile.profileId) {
+      return null;
+    }
+    const userDoc = await admin.firestore().collection("users").doc(playerProfile.profileId).get();
+    if (!userDoc.exists) {
+      return null;
+    }
+    const userData = userDoc.data() || {};
+    return {
+      lastRockDate: typeof (userData.mining && userData.mining.lastRockDate) === "string" ? userData.mining.lastRockDate : null,
+      materials: applyMaterialDeltas(userData.mining && userData.mining.materials, {}),
+    };
+  };
+
   const wagerRef = admin.database().ref(`invites/${inviteId}/wagers/${matchId}`);
   const wagerSnap = await wagerRef.once("value");
   const wagerData = wagerSnap.val();
   if (!wagerData) {
-    return { ok: true, reason: "no-wager", debug: { ...inviteDebug, result } };
+    const mining = await readMiningSnapshot();
+    return { ok: true, reason: "no-wager", mining, debug: { ...inviteDebug, result } };
   }
   const wagerDebug = {
     ...inviteDebug,
@@ -78,7 +94,8 @@ exports.resolveWagerOutcome = onCall(async (request) => {
     return true;
   });
   if (!txnResult.committed) {
-    return { ok: true, reason: "already-resolved", debug: wagerDebug };
+    const mining = await readMiningSnapshot();
+    return { ok: true, reason: "already-resolved", mining, debug: wagerDebug };
   }
 
   let resolutionMode = "none";
@@ -136,17 +153,7 @@ exports.resolveWagerOutcome = onCall(async (request) => {
     }
   }
 
-  let mining = null;
-  if (playerProfile.profileId) {
-    const userDoc = await admin.firestore().collection("users").doc(playerProfile.profileId).get();
-    if (userDoc.exists) {
-      const userData = userDoc.data() || {};
-      mining = {
-        lastRockDate: typeof (userData.mining && userData.mining.lastRockDate) === "string" ? userData.mining.lastRockDate : null,
-        materials: applyMaterialDeltas(userData.mining && userData.mining.materials, {}),
-      };
-    }
-  }
+  const mining = await readMiningSnapshot();
 
   return {
     ok: true,

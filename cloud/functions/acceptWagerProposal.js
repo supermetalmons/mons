@@ -36,11 +36,13 @@ exports.acceptWagerProposal = onCall(async (request) => {
   const { playerUid, opponentUid, playerProfile } = resolved;
   const resolvedDebug = { ...inviteDebug, playerUid, opponentUid };
 
-  const wagerSnap = await admin.database().ref(`invites/${inviteId}/wagers/${matchId}`).once("value");
+  const wagerRef = admin.database().ref(`invites/${inviteId}/wagers/${matchId}`);
+  const wagerSnap = await wagerRef.once("value");
   const wagerData = wagerSnap.val();
   if (!wagerData || wagerData.resolved || wagerData.agreed) {
     return { ok: false, reason: "proposal-missing", debug: { ...resolvedDebug, hasWager: !!wagerData, resolved: !!(wagerData && wagerData.resolved), agreed: !!(wagerData && wagerData.agreed) } };
   }
+
   const proposals = wagerData.proposals || {};
   const opponentProposal = proposals[opponentUid];
   if (!opponentProposal) {
@@ -58,33 +60,13 @@ exports.acceptWagerProposal = onCall(async (request) => {
     return { ok: false, reason: "insufficient-materials", debug: { ...resolvedDebug, acceptedCount } };
   }
 
-  const wagerRef = admin.database().ref(`invites/${inviteId}/wagers/${matchId}`);
-  let txnDebug = null;
   const now = Date.now();
-  const txn = await wagerRef.transaction((current) => {
-    const data = current || {};
-    if (!current) {
-      txnDebug = { step: "missing-data" };
-    }
-    if (data.resolved || data.agreed) {
-      txnDebug = { step: "already-resolved", resolved: !!data.resolved, agreed: !!data.agreed };
+  const agreedRef = wagerRef.child("agreed");
+  const agreedTxn = await agreedRef.transaction((current) => {
+    if (current) {
       return;
     }
-    const currentProposals = data.proposals || {};
-    const currentOpponentProposal = currentProposals[opponentUid];
-    if (!currentOpponentProposal) {
-      txnDebug = { step: "opponent-missing", proposalKeys: Object.keys(currentProposals) };
-      return;
-    }
-    if (currentOpponentProposal.material !== material) {
-      txnDebug = { step: "material-mismatch", expected: material, actual: currentOpponentProposal.material };
-      return;
-    }
-    if (Number(currentOpponentProposal.count) !== proposedCount) {
-      txnDebug = { step: "count-mismatch", expected: proposedCount, actual: currentOpponentProposal.count };
-      return;
-    }
-    data.agreed = {
+    return {
       material,
       count: acceptedCount,
       total: acceptedCount * 2,
@@ -92,11 +74,9 @@ exports.acceptWagerProposal = onCall(async (request) => {
       accepterId: playerUid,
       acceptedAt: now,
     };
-    data.proposals = {};
-    return data;
   });
 
-  if (!txn.committed) {
+  if (!agreedTxn.committed) {
     const rollback = Object.keys(appliedDelta).reduce((acc, key) => {
       acc[key] = -appliedDelta[key];
       return acc;
@@ -117,11 +97,12 @@ exports.acceptWagerProposal = onCall(async (request) => {
         latestAgreed: !!latestData.agreed,
         latestResolved: !!latestData.resolved,
         latestOpponentProposal: latestProposals[opponentUid] || null,
-        txnDebug,
+        agreedSnapshot: agreedTxn.snapshot ? agreedTxn.snapshot.val() : null,
       },
     };
   }
 
+  await wagerRef.child("proposals").set(null);
   const proposerDelta = {};
   proposerDelta[material] = acceptedCount - normalizeCount(proposedCount);
   await updateFrozenMaterials(opponentUid, proposerDelta);
