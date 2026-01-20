@@ -14,9 +14,10 @@ exports.resolveWagerOutcome = onCall(async (request) => {
   const inviteId = request.data.inviteId;
   const matchId = request.data.matchId;
   const opponentId = request.data.opponentId;
+  const baseDebug = { authUid: uid, playerId, opponentId, inviteId, matchId };
 
   if (typeof playerId !== "string" || typeof inviteId !== "string" || typeof matchId !== "string" || typeof opponentId !== "string") {
-    return { ok: false, reason: "invalid-argument" };
+    return { ok: false, reason: "invalid-argument", debug: baseDebug };
   }
 
   const matchRef = admin.database().ref(`players/${playerId}/matches/${matchId}`);
@@ -29,8 +30,9 @@ exports.resolveWagerOutcome = onCall(async (request) => {
   const opponentMatchData = opponentMatchSnapshot.val();
 
   if (!matchData || !inviteData || !opponentMatchData) {
-    return { ok: false, reason: "match-not-found" };
+    return { ok: false, reason: "match-not-found", debug: baseDebug };
   }
+  const inviteDebug = { ...baseDebug, hostId: inviteData.hostId || null, guestId: inviteData.guestId || null };
 
   const playerProfile = await getProfileByLoginId(playerId);
   const opponentProfile = await getProfileByLoginId(opponentId);
@@ -57,7 +59,7 @@ exports.resolveWagerOutcome = onCall(async (request) => {
   const wagerSnap = await wagerRef.once("value");
   const wagerData = wagerSnap.val();
   if (!wagerData) {
-    return { ok: true, reason: "no-wager" };
+    return { ok: true, reason: "no-wager", debug: { ...inviteDebug, result } };
   }
 
   const wagerResolutionFlagRef = admin.database().ref(`invites/${inviteId}/matchesWagerResolutions/${matchId}`);
@@ -68,11 +70,15 @@ exports.resolveWagerOutcome = onCall(async (request) => {
     return true;
   });
   if (!txnResult.committed) {
-    return { ok: true, reason: "already-resolved" };
+    return { ok: true, reason: "already-resolved", debug: { ...inviteDebug, result } };
   }
 
+  let resolutionMode = "none";
+  let resolvedPayload = null;
+  let unfrozenProposalKeys = [];
   if (!wagerData.resolved) {
     if (wagerData.agreed && wagerData.agreed.material && wagerData.agreed.count) {
+      resolutionMode = "agreed";
       const material = wagerData.agreed.material;
       const count = Math.max(0, Math.round(Number(wagerData.agreed.count)));
       if (count > 0 && playerProfile.profileId && opponentProfile.profileId) {
@@ -89,6 +95,7 @@ exports.resolveWagerOutcome = onCall(async (request) => {
         await updateUserMiningMaterials(loserProfileId, updatedLoserMaterials);
         await updateFrozenMaterials(winnerId, { [material]: -count });
         await updateFrozenMaterials(loserId, { [material]: -count });
+        resolvedPayload = { winnerId, loserId, material, count, total: count * 2 };
         await wagerRef.update({
           resolved: {
             winnerId,
@@ -102,6 +109,7 @@ exports.resolveWagerOutcome = onCall(async (request) => {
         });
       }
     } else if (wagerData.proposals) {
+      resolutionMode = "proposals";
       const proposals = wagerData.proposals;
       const updateTasks = [];
       Object.keys(proposals).forEach((proposalUid) => {
@@ -110,6 +118,7 @@ exports.resolveWagerOutcome = onCall(async (request) => {
           updateTasks.push(updateFrozenMaterials(proposalUid, { [proposal.material]: -proposal.count }));
         }
       });
+      unfrozenProposalKeys = Object.keys(proposals);
       if (updateTasks.length > 0) {
         await Promise.all(updateTasks);
       }
@@ -134,5 +143,15 @@ exports.resolveWagerOutcome = onCall(async (request) => {
   return {
     ok: true,
     mining,
+    debug: {
+      ...inviteDebug,
+      result,
+      resolutionMode,
+      resolvedPayload,
+      unfrozenProposalKeys,
+      hadResolved: !!wagerData.resolved,
+      hadAgreed: !!wagerData.agreed,
+      hadProposals: !!wagerData.proposals,
+    },
   };
 });

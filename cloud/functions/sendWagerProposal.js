@@ -7,36 +7,40 @@ exports.sendWagerProposal = onCall(async (request) => {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
 
+  const authUid = request.auth.uid;
   const inviteId = request.data && request.data.inviteId;
   const matchId = request.data && request.data.matchId;
   const material = request.data && request.data.material;
   const requestedCount = normalizeCount(request.data && request.data.count);
+  const baseDebug = { authUid, inviteId, matchId, material, requestedCount };
 
   if (typeof inviteId !== "string" || typeof matchId !== "string" || !isMaterialName(material) || requestedCount <= 0) {
-    return { ok: false, reason: "invalid-argument" };
+    return { ok: false, reason: "invalid-argument", debug: baseDebug };
   }
   if (inviteId.startsWith("auto_")) {
-    return { ok: false, reason: "automatch-disabled" };
+    return { ok: false, reason: "automatch-disabled", debug: baseDebug };
   }
 
   const inviteSnap = await admin.database().ref(`invites/${inviteId}`).once("value");
   const inviteData = inviteSnap.val();
   if (!inviteData) {
-    return { ok: false, reason: "invite-not-found" };
+    return { ok: false, reason: "invite-not-found", debug: baseDebug };
   }
+  const inviteDebug = { ...baseDebug, hostId: inviteData.hostId || null, guestId: inviteData.guestId || null };
   if (!inviteData.guestId) {
-    return { ok: false, reason: "missing-opponent" };
+    return { ok: false, reason: "missing-opponent", debug: inviteDebug };
   }
   const resolved = await resolveWagerParticipants(inviteData, request.auth);
   if (resolved.error) {
-    return { ok: false, reason: resolved.error };
+    return { ok: false, reason: resolved.error, debug: inviteDebug };
   }
   const { playerUid, playerProfile } = resolved;
+  const playerDebug = { ...inviteDebug, playerUid };
 
   const totalMaterials = await readUserMiningMaterials(playerProfile.profileId);
   const reservedCount = await reserveFrozenMaterials(playerUid, material, requestedCount, totalMaterials);
   if (reservedCount <= 0) {
-    return { ok: false, reason: "insufficient-materials" };
+    return { ok: false, reason: "insufficient-materials", debug: { ...playerDebug, reservedCount } };
   }
 
   const wagerRef = admin.database().ref(`invites/${inviteId}/wagers/${matchId}`);
@@ -60,8 +64,21 @@ exports.sendWagerProposal = onCall(async (request) => {
 
   if (!txn.committed) {
     await updateFrozenMaterials(playerUid, { [material]: -reservedCount });
-    return { ok: false, reason: "proposal-unavailable" };
+    const latestSnap = await wagerRef.once("value");
+    const latestData = latestSnap.val() || {};
+    const latestProposals = latestData.proposals || {};
+    return {
+      ok: false,
+      reason: "proposal-unavailable",
+      debug: {
+        ...playerDebug,
+        reservedCount,
+        latestAgreed: !!latestData.agreed,
+        latestResolved: !!latestData.resolved,
+        latestProposalKeys: Object.keys(latestProposals),
+      },
+    };
   }
 
-  return { ok: true, count: reservedCount };
+  return { ok: true, count: reservedCount, debug: { ...playerDebug, reservedCount } };
 });
