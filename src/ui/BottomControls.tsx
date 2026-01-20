@@ -46,6 +46,17 @@ export function didNotDismissAnythingWithOutsideTapJustNow(): boolean {
   return delta >= deltaTimeOutsideTap;
 }
 
+let isWagerPanelVisible: () => boolean = () => false;
+let handleWagerPanelOutsideTap: ((event: TouchEvent | MouseEvent) => boolean) | null = null;
+
+export function setWagerPanelVisibilityChecker(checker: () => boolean) {
+  isWagerPanelVisible = checker;
+}
+
+export function setWagerPanelOutsideTapHandler(handler: ((event: TouchEvent | MouseEvent) => boolean) | null) {
+  handleWagerPanelOutsideTap = handler;
+}
+
 export function hasNavigationPopupVisible(): boolean {
   return getIsNavigationPopupOpen();
 }
@@ -166,6 +177,10 @@ const BottomControls: React.FC = () => {
       if (boardStylePickerRef.current && !boardStylePickerRef.current.contains(event.target as Node) && !brushButtonRef.current?.contains(event.target as Node)) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsBoardStylePickerVisible(false);
+      }
+
+      if (handleWagerPanelOutsideTap && handleWagerPanelOutsideTap(event)) {
+        didDismissSomethingWithOutsideTapJustNow();
       }
     };
 
@@ -365,7 +380,7 @@ const BottomControls: React.FC = () => {
   };
 
   hasBottomPopupsVisible = () => {
-    return isReactionPickerVisible || isMoveHistoryPopupVisible || isResignConfirmVisible || isBoardStylePickerVisible;
+    return isReactionPickerVisible || isMoveHistoryPopupVisible || isResignConfirmVisible || isBoardStylePickerVisible || isWagerPanelVisible();
   };
 
   enableTimerVictoryClaim = () => {

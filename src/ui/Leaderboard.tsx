@@ -5,6 +5,9 @@ import { connection } from "../connection/connection";
 import { showShinyCard } from "./ShinyCard";
 import { PlayerProfile } from "../connection/connectionModels";
 import { AvatarImage } from "./AvatarImage";
+import { isLocalHost } from "../utils/localDev";
+
+const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;
 
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
   opacity: 1;
@@ -264,6 +267,41 @@ interface LeaderboardEntry {
   profile: PlayerProfile;
 }
 
+const getLeaderboardDisplayName = (row: LeaderboardEntry): string => {
+  if (row.username) return row.username;
+  if (row.ensName) return row.ensName;
+  if (row.eth) return row.eth.slice(0, 4) + "..." + row.eth.slice(-4);
+  if (row.sol) return row.sol.slice(0, 4) + "..." + row.sol.slice(-4);
+  return "";
+};
+
+const useAutoDownloadLeaderboardCards = ({ show, data }: { show: boolean; data: LeaderboardEntry[] | null }) => {
+  const autoDownloadRunRef = useRef(0);
+  const autoDownloadHasRunRef = useRef(false);
+
+  useEffect(() => {
+    if (!show) {
+      autoDownloadRunRef.current += 1;
+      autoDownloadHasRunRef.current = false;
+      return;
+    }
+    if (!isLocalHost() || !RENDER_AND_DOWNLOAD_ALL_ID_CARDS || !data || data.length === 0 || autoDownloadHasRunRef.current) {
+      return;
+    }
+    autoDownloadHasRunRef.current = true;
+    const runId = ++autoDownloadRunRef.current;
+    const run = async () => {
+      for (const row of data) {
+        if (autoDownloadRunRef.current !== runId) {
+          return;
+        }
+        await showShinyCard(row.profile, getLeaderboardDisplayName(row), true, true);
+      }
+    };
+    void run();
+  }, [show, data]);
+};
+
 export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
   const [data, setData] = useState<LeaderboardEntry[] | null>(null);
   const [loadedEmojis, setLoadedEmojis] = useState<Set<string>>(new Set());
@@ -317,16 +355,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
     }
   }, [show]);
 
-  const getDisplayName = (row: LeaderboardEntry): string => {
-    if (row.username) return row.username;
-    if (row.ensName) return row.ensName;
-    if (row.eth) return row.eth.slice(0, 4) + "..." + row.eth.slice(-4);
-    if (row.sol) return row.sol.slice(0, 4) + "..." + row.sol.slice(-4);
-    return "";
-  };
+  useAutoDownloadLeaderboardCards({ show, data });
 
   const handleRowClick = (row: LeaderboardEntry) => {
-    showShinyCard(row.profile, getDisplayName(row), true);
+    showShinyCard(row.profile, getLeaderboardDisplayName(row), true);
   };
 
   const handleEmojiLoad = (emojiKey: string) => {
@@ -361,7 +393,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
                         <AvatarImage src={emojiUrl} alt="" rainbowAura={!!row.aura} loading="eager" onLoad={() => handleEmojiLoad(emojiKey)} />
                       </EmojiImage>
                     </td>
-                    <td>{getDisplayName(row)}</td>
+                    <td>{getLeaderboardDisplayName(row)}</td>
                     <RatingCell win={row.win}>{row.rating}</RatingCell>
                   </tr>
                 );

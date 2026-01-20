@@ -10,7 +10,7 @@ import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { hasIslandOverlayVisible } from "../ui/islandOverlayState";
 import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername, getStashedPlayerProfile } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
-import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange, showRaibowAura, updateAuraForAvatarElement } from "../ui/BoardComponent";
+import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange, showRaibowAura, updateAuraForAvatarElement, updateWagerPlayerUids } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
 import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
@@ -20,6 +20,7 @@ import { instructor } from "../assets/talkingDude";
 import { isBotsLoopMode } from "../connection/connection";
 import { launchConfetti } from "./confetti";
 import { soundPlayer } from "../utils/SoundPlayer";
+import type { MaterialName } from "../services/rocksMiningService";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 
@@ -109,6 +110,69 @@ let bombOrPotion: SVGElement;
 let bomb: SVGElement;
 let supermana: SVGElement;
 let supermanaSimple: SVGElement;
+
+const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
+const MAX_WAGER_PILE_ITEMS = 13;
+const MAX_WAGER_WIN_PILE_ITEMS = 32;
+const WAGER_PILE_SCALE = 1;
+const WAGER_WIN_PILE_SCALE = 1.3333;
+const WAGER_ICON_SIZE_MULTIPLIER = 0.669;
+const WAGER_ICON_PADDING_FRAC = 0.15;
+const WAGER_WIN_ANIM_DURATION_MS = 800;
+
+type WagerPile = {
+  positions: Array<{ u: number; v: number }>;
+  frames: Array<{ x: number; y: number }>;
+  material: MaterialName | null;
+  materialUrl: string | null;
+  count: number;
+  actualCount: number;
+  rect: { x: number; y: number; w: number; h: number } | null;
+  iconSize: number;
+};
+
+export type WagerPileSide = "player" | "opponent";
+type WagerPileRect = { x: number; y: number; w: number; h: number };
+export type WagerPileRenderState = {
+  side: WagerPileSide | "winner";
+  rect: WagerPileRect;
+  iconSize: number;
+  materialUrl: string;
+  frames: Array<{ x: number; y: number }>;
+  count: number;
+  actualCount: number;
+};
+export type WagerRenderState = {
+  player: WagerPileRenderState | null;
+  opponent: WagerPileRenderState | null;
+  winner: WagerPileRenderState | null;
+  winAnimationActive: boolean;
+};
+
+let playerWagerPile: WagerPile | null = null;
+let opponentWagerPile: WagerPile | null = null;
+let winnerWagerPile: WagerPile | null = null;
+let wagerWinAnimRaf: number | null = null;
+let wagerWinAnimActive = false;
+let winnerPileActive = false;
+let wagerWinAnimState: {
+  startTime: number;
+  duration: number;
+  iconSize: number;
+  starts: Array<{ x: number; y: number }>;
+  targets: Array<{ x: number; y: number }>;
+  drifts: Array<{ x: number; y: number }>;
+  delays: number[];
+} | null = null;
+let lastWagerWinnerIsOpponent = false;
+let handleWagerRenderState: ((state: WagerRenderState) => void) | null = null;
+
+export function setWagerRenderHandler(handler: ((state: WagerRenderState) => void) | null) {
+  handleWagerRenderState = handler;
+  if (handler) {
+    emitWagerRenderState();
+  }
+}
 
 const emojis = (await import("../content/emojis")).emojis;
 
@@ -634,6 +698,7 @@ export function resetForNewGame() {
 
   removeHighlights();
   cleanAllPixels();
+  clearWagerPiles();
 }
 
 export function updateEmojiAndAuraIfNeeded(newEmojiId: string, aura: string | undefined, isOpponentSide: boolean) {
@@ -1050,6 +1115,7 @@ export function setupPlayerId(uid: string, opponent: boolean) {
     playerSideMetadata.uid = uid;
   }
   recalculateDisplayNames();
+  updateWagerPlayerUids(playerSideMetadata.uid, opponentSideMetadata.uid);
 }
 
 function canRedirectToExplorer(opponent: boolean) {
@@ -1532,6 +1598,393 @@ function getAvatarSize(): number {
   return 0.777 * getOuterElementsMultiplicator();
 }
 
+function getWagerMaterialUrl(name: MaterialName): string {
+  return `${MATERIAL_BASE_URL}/${name}.webp`;
+}
+
+function getWagerVisibleScale(): number {
+  return Math.max(0.1, 1 - WAGER_ICON_PADDING_FRAC * 2);
+}
+
+function getWagerRectForScale(isOpponent: boolean, scale: number): { x: number; y: number; w: number; h: number } {
+  const avatarSize = getAvatarSize();
+  const baseY = isOpponent ? 1 - avatarSize * 1.203 : isPangchiuBoard() ? 12.75 : 12.16;
+  const baseH = avatarSize;
+  const baseW = avatarSize * 2;
+  const h = baseH * scale;
+  const w = baseW * scale;
+  const x = 5.5 - w / 2;
+  const y = isOpponent ? baseY + baseH - h : baseY;
+  return { x, y, w, h };
+}
+
+function createWagerPile(): WagerPile | null {
+  const pile: WagerPile = {
+    positions: [],
+    frames: [],
+    material: null,
+    materialUrl: null,
+    count: 0,
+    actualCount: 0,
+    rect: null,
+    iconSize: 0,
+  };
+  return pile;
+}
+
+function ensureWagerPile(isOpponent: boolean): WagerPile | null {
+  if (isOpponent) {
+    if (!opponentWagerPile) {
+      opponentWagerPile = createWagerPile();
+    }
+    return opponentWagerPile;
+  }
+  if (!playerWagerPile) {
+    playerWagerPile = createWagerPile();
+  }
+  return playerWagerPile;
+}
+
+function ensureWinnerWagerPile(): WagerPile | null {
+  if (!winnerWagerPile) {
+    winnerWagerPile = createWagerPile();
+  }
+  return winnerWagerPile;
+}
+
+function generateWagerPositions(count: number): Array<{ u: number; v: number }> {
+  if (count <= 0) return [];
+  const grid = Math.max(1, Math.ceil(Math.sqrt(count)));
+  const cell = 1 / grid;
+  const positions: Array<{ u: number; v: number }> = [];
+  for (let row = 0; row < grid; row += 1) {
+    for (let col = 0; col < grid; col += 1) {
+      const jitterX = 0.2 + Math.random() * 0.6;
+      const jitterY = 0.2 + Math.random() * 0.6;
+      positions.push({ u: (col + jitterX) * cell, v: (row + jitterY) * cell });
+    }
+  }
+  for (let i = positions.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = positions[i];
+    positions[i] = positions[j];
+    positions[j] = temp;
+  }
+  return positions.slice(0, count);
+}
+
+function syncWagerPileIcons(pile: WagerPile, material: MaterialName, count: number, materialUrl?: string | null, maxItems = MAX_WAGER_PILE_ITEMS) {
+  const visibleCount = Math.max(0, Math.min(maxItems, count));
+  const nextUrl = materialUrl || getWagerMaterialUrl(material);
+  const sameMaterial = pile.material === material;
+  const sameVisibleCount = pile.count === visibleCount;
+  const reusePositions = sameMaterial && sameVisibleCount && pile.positions.length === visibleCount;
+  pile.material = material;
+  pile.materialUrl = nextUrl;
+  pile.count = visibleCount;
+  pile.actualCount = count;
+  if (!reusePositions) {
+    if (visibleCount <= 0) {
+      pile.positions = [];
+    } else if (sameMaterial && pile.positions.length > 0) {
+      const nextPositions = pile.positions.slice(0, visibleCount);
+      if (nextPositions.length < visibleCount) {
+        nextPositions.push(...generateWagerPositions(visibleCount - nextPositions.length));
+      }
+      pile.positions = nextPositions;
+    } else {
+      pile.positions = generateWagerPositions(visibleCount);
+    }
+  }
+  pile.frames = [];
+}
+
+function getWagerPileRect(isOpponent: boolean): { x: number; y: number; w: number; h: number } {
+  return getWagerRectForScale(isOpponent, WAGER_PILE_SCALE);
+}
+
+function getWagerWinnerRect(isOpponent: boolean): { x: number; y: number; w: number; h: number } {
+  return getWagerRectForScale(isOpponent, WAGER_WIN_PILE_SCALE);
+}
+
+function getWagerIconLayout(
+  rect: { x: number; y: number; w: number; h: number },
+  iconSizeOverride?: number
+): { iconSize: number; padding: number; maxX: number; maxY: number } {
+  const visibleScale = getWagerVisibleScale();
+  const rawIconSize = getAvatarSize() * WAGER_ICON_SIZE_MULTIPLIER;
+  const maxIconSize = Math.min(rect.w, rect.h) / visibleScale;
+  const iconSize = Math.min(iconSizeOverride ?? rawIconSize, maxIconSize);
+  const padding = iconSize * WAGER_ICON_PADDING_FRAC;
+  const visibleSize = iconSize * visibleScale;
+  const maxX = Math.max(0, rect.w - visibleSize);
+  const maxY = Math.max(0, rect.h - visibleSize);
+  return { iconSize, padding, maxX, maxY };
+}
+
+function updateWagerPileLayout(pile: WagerPile, rect: { x: number; y: number; w: number; h: number }) {
+  const layout = getWagerIconLayout(rect);
+  pile.rect = rect;
+  pile.iconSize = layout.iconSize;
+  pile.frames = [];
+  for (let i = 0; i < pile.count; i += 1) {
+    const pos = pile.positions[i] ?? { u: 0.5, v: 0.5 };
+    const ix = rect.x - layout.padding + pos.u * layout.maxX;
+    const iy = rect.y - layout.padding + pos.v * layout.maxY;
+    pile.frames.push({ x: ix, y: iy });
+  }
+}
+
+function updateWagerLayout() {
+  if (!playerWagerPile && !opponentWagerPile && !winnerWagerPile) {
+    return;
+  }
+  if (!controlsLayer) {
+    return;
+  }
+  if (!boardBackgroundLayer) {
+    return;
+  }
+  if (playerWagerPile) {
+    updateWagerPileLayout(playerWagerPile, getWagerPileRect(false));
+  }
+  if (opponentWagerPile) {
+    updateWagerPileLayout(opponentWagerPile, getWagerPileRect(true));
+  }
+  if (winnerWagerPile && winnerPileActive && !wagerWinAnimActive) {
+    updateWagerPileLayout(winnerWagerPile, getWagerWinnerRect(lastWagerWinnerIsOpponent));
+  }
+  emitWagerRenderState();
+}
+
+function buildWagerRenderState(pile: WagerPile | null, side: WagerPileSide | "winner"): WagerPileRenderState | null {
+  if (!pile || pile.count === 0 || !pile.rect) {
+    return null;
+  }
+  const materialUrl = pile.materialUrl || (pile.material ? getWagerMaterialUrl(pile.material) : "");
+  if (!materialUrl) {
+    return null;
+  }
+  return {
+    side,
+    rect: pile.rect,
+    iconSize: pile.iconSize,
+    materialUrl,
+    frames: pile.frames,
+    count: pile.count,
+    actualCount: pile.actualCount,
+  };
+}
+
+function emitWagerRenderState() {
+  if (!handleWagerRenderState) {
+    return;
+  }
+  const showWinner = Boolean(winnerPileActive && winnerWagerPile && winnerWagerPile.count > 0 && winnerWagerPile.rect);
+  const state: WagerRenderState = {
+    player: showWinner ? null : buildWagerRenderState(playerWagerPile, "player"),
+    opponent: showWinner ? null : buildWagerRenderState(opponentWagerPile, "opponent"),
+    winner: showWinner ? buildWagerRenderState(winnerWagerPile, "winner") : null,
+    winAnimationActive: wagerWinAnimActive,
+  };
+  handleWagerRenderState(state);
+}
+
+function cancelWagerWinAnimation() {
+  if (wagerWinAnimRaf !== null) {
+    cancelAnimationFrame(wagerWinAnimRaf);
+    wagerWinAnimRaf = null;
+  }
+  wagerWinAnimActive = false;
+  wagerWinAnimState = null;
+}
+
+function getWagerIconFrame(
+  rect: { x: number; y: number; w: number; h: number },
+  layout: { iconSize: number; padding: number; maxX: number; maxY: number },
+  pos: { u: number; v: number }
+): { x: number; y: number } {
+  return {
+    x: rect.x - layout.padding + pos.u * layout.maxX,
+    y: rect.y - layout.padding + pos.v * layout.maxY,
+  };
+}
+
+function buildWagerFrames(
+  rect: { x: number; y: number; w: number; h: number },
+  layout: { iconSize: number; padding: number; maxX: number; maxY: number },
+  positions: Array<{ u: number; v: number }>,
+  count: number
+): Array<{ x: number; y: number }> {
+  const frames: Array<{ x: number; y: number }> = [];
+  const initialCount = Math.min(count, positions.length);
+  for (let i = 0; i < initialCount; i += 1) {
+    frames.push(getWagerIconFrame(rect, layout, positions[i]));
+  }
+  while (frames.length < count) {
+    frames.push(getWagerIconFrame(rect, layout, { u: Math.random(), v: Math.random() }));
+  }
+  return frames;
+}
+
+function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
+  if (!playerWagerPile || !opponentWagerPile) {
+    return false;
+  }
+  const winnerSource = winnerIsOpponent ? opponentWagerPile : playerWagerPile;
+  const loserSource = winnerIsOpponent ? playerWagerPile : opponentWagerPile;
+  const material = winnerSource.material || loserSource.material;
+  if (!material) {
+    return false;
+  }
+  const winnerCount = Math.max(0, winnerSource.actualCount || winnerSource.count);
+  const loserCount = Math.max(0, loserSource.actualCount || loserSource.count);
+  const totalCount = winnerCount + loserCount;
+  if (totalCount <= 0) {
+    return false;
+  }
+  const winnerPile = ensureWinnerWagerPile();
+  if (!winnerPile) {
+    return false;
+  }
+
+  cancelWagerWinAnimation();
+
+  const materialUrl = winnerSource.materialUrl || loserSource.materialUrl || null;
+  const displayWinnerCount = Math.min(winnerSource.count, MAX_WAGER_WIN_PILE_ITEMS);
+  const displayTotal = Math.min(MAX_WAGER_WIN_PILE_ITEMS, displayWinnerCount + loserCount);
+  syncWagerPileIcons(winnerPile, material, displayTotal, materialUrl, MAX_WAGER_WIN_PILE_ITEMS);
+
+  const visibleCount = winnerPile.count;
+  if (visibleCount === 0) {
+    return false;
+  }
+  winnerPileActive = true;
+
+  const winnerVisible = Math.min(visibleCount, displayWinnerCount);
+  const loserVisible = visibleCount - winnerVisible;
+
+  const winnerSourceRect = getWagerPileRect(winnerIsOpponent);
+  const loserRect = getWagerPileRect(!winnerIsOpponent);
+  const winnerRect = getWagerWinnerRect(winnerIsOpponent);
+
+  const iconSize = getWagerIconLayout(winnerSourceRect).iconSize;
+  const winnerLayout = getWagerIconLayout(winnerRect, iconSize);
+  const winnerSourceLayout = getWagerIconLayout(winnerSourceRect, iconSize);
+  const loserLayout = getWagerIconLayout(loserRect, iconSize);
+
+  const winnerAnchoredCount = Math.min(winnerVisible, winnerSource.positions.length);
+  const winnerAnchoredStarts = buildWagerFrames(winnerSourceRect, winnerSourceLayout, winnerSource.positions, winnerAnchoredCount);
+  const winnerExtraCount = winnerVisible - winnerAnchoredCount;
+  const extraPositions = generateWagerPositions(winnerExtraCount + loserVisible);
+  const winnerExtraPositions = extraPositions.slice(0, winnerExtraCount);
+  const loserPositions = extraPositions.slice(winnerExtraCount, winnerExtraCount + loserVisible);
+
+  const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
+  const winnerAnchoredPositions = winnerAnchoredStarts.map((frame) => {
+    const u = winnerLayout.maxX > 0 ? (frame.x - winnerRect.x + winnerLayout.padding) / winnerLayout.maxX : 0.5;
+    const v = winnerLayout.maxY > 0 ? (frame.y - winnerRect.y + winnerLayout.padding) / winnerLayout.maxY : 0.5;
+    return { u: clamp01(u), v: clamp01(v) };
+  });
+
+  const winnerPositions = winnerAnchoredPositions.concat(winnerExtraPositions);
+  winnerPile.positions = winnerPositions.concat(loserPositions);
+
+  const targets = winnerPile.positions.map((pos) => getWagerIconFrame(winnerRect, winnerLayout, pos));
+  const winnerExtraStarts = winnerExtraPositions.map((pos) => getWagerIconFrame(winnerRect, winnerLayout, pos));
+  const loserStarts = buildWagerFrames(loserRect, loserLayout, loserSource.positions, loserVisible);
+  const starts = winnerAnchoredStarts.concat(winnerExtraStarts, loserStarts);
+
+  winnerPile.rect = winnerRect;
+  winnerPile.iconSize = iconSize;
+  winnerPile.frames = starts.map((frame) => ({ x: frame.x, y: frame.y }));
+
+  const drifts = starts.map((start, index) => {
+    if (index < winnerVisible) {
+      return { x: 0, y: 0 };
+    }
+    const target = targets[index] || start;
+    const dx = target.x - start.x;
+    const dy = target.y - start.y;
+    const len = Math.hypot(dx, dy) || 1;
+    const nx = -dy / len;
+    const ny = dx / len;
+    const amp = 0.12 + Math.random() * 0.28;
+    const dir = Math.random() < 0.5 ? -1 : 1;
+    return { x: nx * amp * dir, y: ny * amp * dir };
+  });
+
+  const delays = starts.map((_, index) => (index < winnerVisible ? 0 : Math.random() * 0.1));
+
+  wagerWinAnimActive = true;
+  lastWagerWinnerIsOpponent = winnerIsOpponent;
+  emitWagerRenderState();
+  const startTime = performance.now();
+  wagerWinAnimState = {
+    startTime,
+    duration: WAGER_WIN_ANIM_DURATION_MS,
+    iconSize,
+    starts,
+    targets,
+    drifts,
+    delays,
+  };
+
+  const animate = (time: number) => {
+    if (!wagerWinAnimState || !winnerWagerPile) {
+      wagerWinAnimActive = false;
+      wagerWinAnimRaf = null;
+      return;
+    }
+    const { startTime, duration, iconSize, starts, targets, drifts, delays } = wagerWinAnimState;
+    const progress = Math.max(0, Math.min(1, (time - startTime) / duration));
+    for (let i = 0; i < winnerWagerPile.count; i += 1) {
+      const delay = delays[i] || 0;
+      const denom = 1 - delay;
+      const local = denom > 0 ? Math.max(0, Math.min(1, (progress - delay) / denom)) : progress;
+      const eased = 1 - Math.pow(1 - local, 3);
+      const driftScale = Math.sin(local * Math.PI);
+      const start = starts[i] || targets[i];
+      const target = targets[i] || start;
+      if (!start || !target) continue;
+      const drift = drifts[i] || { x: 0, y: 0 };
+      const x = start.x + (target.x - start.x) * eased + drift.x * driftScale;
+      const y = start.y + (target.y - start.y) * eased + drift.y * driftScale;
+      if (!winnerWagerPile.frames[i]) {
+        winnerWagerPile.frames[i] = { x, y };
+      } else {
+        winnerWagerPile.frames[i].x = x;
+        winnerWagerPile.frames[i].y = y;
+      }
+    }
+    winnerWagerPile.iconSize = iconSize;
+    emitWagerRenderState();
+
+    if (progress < 1) {
+      wagerWinAnimRaf = requestAnimationFrame(animate);
+    } else {
+      for (let i = 0; i < winnerWagerPile.count; i += 1) {
+        const target = targets[i];
+        if (!target) continue;
+        if (!winnerWagerPile.frames[i]) {
+          winnerWagerPile.frames[i] = { x: target.x, y: target.y };
+        } else {
+          winnerWagerPile.frames[i].x = target.x;
+          winnerWagerPile.frames[i].y = target.y;
+        }
+      }
+      wagerWinAnimActive = false;
+      wagerWinAnimState = null;
+      wagerWinAnimRaf = null;
+      emitWagerRenderState();
+    }
+  };
+
+  wagerWinAnimRaf = requestAnimationFrame(animate);
+  return true;
+}
+
+
 function updateNamesX() {
   if (playerNameText === undefined || opponentNameText === undefined) {
     return;
@@ -1611,8 +2064,99 @@ const updateLayout = () => {
     updateSpriteSheetClipRect(talkingDude);
   }
 
+  updateWagerLayout();
   updateNamesX();
 };
+
+export function showDebugWagerPiles(material: MaterialName, count: number, materialUrl?: string | null) {
+  cancelWagerWinAnimation();
+  winnerPileActive = false;
+  const playerPile = ensureWagerPile(false);
+  const opponentPile = ensureWagerPile(true);
+  if (!playerPile || !opponentPile) {
+    return;
+  }
+  if (winnerWagerPile) {
+    winnerWagerPile.count = 0;
+    winnerWagerPile.actualCount = 0;
+    winnerWagerPile.frames = [];
+    winnerWagerPile.rect = null;
+  }
+  syncWagerPileIcons(playerPile, material, count, materialUrl);
+  syncWagerPileIcons(opponentPile, material, count, materialUrl);
+  updateWagerLayout();
+}
+
+function resetWagerPile(pile: WagerPile | null) {
+  if (!pile) {
+    return;
+  }
+  pile.positions = [];
+  pile.frames = [];
+  pile.material = null;
+  pile.materialUrl = null;
+  pile.count = 0;
+  pile.actualCount = 0;
+  pile.rect = null;
+  pile.iconSize = 0;
+}
+
+export function clearWagerPiles() {
+  cancelWagerWinAnimation();
+  winnerPileActive = false;
+  resetWagerPile(playerWagerPile);
+  resetWagerPile(opponentWagerPile);
+  resetWagerPile(winnerWagerPile);
+  emitWagerRenderState();
+}
+
+export function setWagerPiles(state: { player?: { material: MaterialName; count: number } | null; opponent?: { material: MaterialName; count: number } | null }) {
+  cancelWagerWinAnimation();
+  winnerPileActive = false;
+  if (state.player) {
+    const playerPile = ensureWagerPile(false);
+    if (playerPile) {
+      syncWagerPileIcons(playerPile, state.player.material, state.player.count);
+    }
+  } else {
+    resetWagerPile(playerWagerPile);
+  }
+  if (state.opponent) {
+    const opponentPile = ensureWagerPile(true);
+    if (opponentPile) {
+      syncWagerPileIcons(opponentPile, state.opponent.material, state.opponent.count);
+    }
+  } else {
+    resetWagerPile(opponentWagerPile);
+  }
+  resetWagerPile(winnerWagerPile);
+  updateWagerLayout();
+}
+
+export function showResolvedWager(winnerIsOpponent: boolean, material: MaterialName, countPerSide: number, animate: boolean) {
+  const playerPile = ensureWagerPile(false);
+  const opponentPile = ensureWagerPile(true);
+  if (!playerPile || !opponentPile) {
+    return;
+  }
+  cancelWagerWinAnimation();
+  winnerPileActive = false;
+  syncWagerPileIcons(playerPile, material, countPerSide);
+  syncWagerPileIcons(opponentPile, material, countPerSide);
+  updateWagerLayout();
+  lastWagerWinnerIsOpponent = winnerIsOpponent;
+  if (animate && startWagerWinAnimation(winnerIsOpponent)) {
+    return;
+  }
+  const winnerPile = ensureWinnerWagerPile();
+  if (!winnerPile) {
+    return;
+  }
+  const total = Math.max(0, countPerSide * 2);
+  syncWagerPileIcons(winnerPile, material, total, null, MAX_WAGER_WIN_PILE_ITEMS);
+  winnerPileActive = true;
+  updateWagerLayout();
+}
 
 function doNotShowAvatarPlaceholderAgain(opponent: boolean) {
   if (opponent) {

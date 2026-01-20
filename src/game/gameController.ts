@@ -7,13 +7,16 @@ import { playSounds, playReaction } from "../content/sounds";
 import { connection, isCreateNewInviteFlow, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded, isBotsLoopMode } from "../connection/connection";
 import { showMoveHistoryButton, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
 import { triggerMoveHistoryPopupReload } from "../ui/MoveHistoryPopup";
-import { Match } from "../connection/connectionModels";
+import { Match, MatchWagerState } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress, getInitialProblem } from "../content/problems";
 import { storage } from "../utils/storage";
 import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSignIn";
 import { showVideoReaction } from "../ui/BoardComponent";
 import { setIslandButtonDimmed } from "../index";
+import { setCurrentWagerMatch, setWagerState, subscribeToWagerState } from "./wagerState";
+import { applyFrozenMaterialsDelta } from "../services/wagerMaterialsService";
+import { rocksMiningService } from "../services/rocksMiningService";
 
 const experimentalDrawingDevMode = false;
 
@@ -31,6 +34,15 @@ let isReconnect = false;
 let didConnect = false;
 let isWaitingForInviteToGetAccepted = false;
 
+const watchOnlyListeners = new Set<(value: boolean) => void>();
+
+let currentWagerState: MatchWagerState | null = null;
+let wagerOutcomeShown = false;
+let wagerOutcomeAnimating = false;
+let wagerOutcomeAnimTimer: number | null = null;
+let wagerOutcomeAnimationAllowed = false;
+let didSetupWagerSubscription = false;
+
 let whiteProcessedMovesCount = 0;
 let blackProcessedMovesCount = 0;
 let didSetWhiteProcessedMovesCount = false;
@@ -39,6 +51,8 @@ let didSetBlackProcessedMovesCount = false;
 let currentGameModelMatchId: string | null = null;
 let whiteFlatMovesString: string | null = null;
 let blackFlatMovesString: string | null = null;
+
+let wagerMatchId: string | null = null;
 
 let game: MonsWeb.MonsGameModel;
 let flashbackMode = false;
@@ -60,6 +74,26 @@ let whiteTimerStash: string | null = null;
 export function getCurrentGameFen(): string {
   return game.fen();
 }
+
+export const isMatchOver = () => {
+  return isGameOver;
+};
+
+const setWatchOnlyState = (value: boolean) => {
+  if (isWatchOnly === value) {
+    return;
+  }
+  isWatchOnly = value;
+  watchOnlyListeners.forEach((listener) => listener(value));
+};
+
+export const subscribeToWatchOnly = (listener: (value: boolean) => void) => {
+  watchOnlyListeners.add(listener);
+  listener(isWatchOnly);
+  return () => {
+    watchOnlyListeners.delete(listener);
+  };
+};
 
 export function didSyncTutorialProgress() {
   if (getTutorialCompleted()) {
@@ -126,6 +160,16 @@ export function didAttemptAuthentication() {
 }
 
 export async function go() {
+  if (!didSetupWagerSubscription) {
+    didSetupWagerSubscription = true;
+    subscribeToWagerState((state) => {
+      currentWagerState = state;
+      applyWagerState();
+      if (isGameOver) {
+        syncWagerOutcome();
+      }
+    });
+  }
   connection.setupConnection(false);
   Board.setupBoard();
   await initMonsWeb();
@@ -158,7 +202,7 @@ export async function go() {
     setBotGameOptionVisible(false);
     setNavigationListButtonVisible(false);
 
-    isWatchOnly = true;
+    setWatchOnlyState(true);
     automove();
   } else if (isBoardSnapshotFlow) {
     const snapshot = decodeURIComponent(getSnapshotIdAndClearPathIfNeeded() || "");
@@ -894,9 +938,11 @@ function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, ou
             }
 
             isGameOver = true;
+            wagerOutcomeAnimationAllowed = !isWatchOnly;
             disableAndHideUndoResignAndTimerControls();
             Board.hideTimerCountdownDigits();
             showRematchInterface();
+            syncWagerOutcome();
 
             if (puzzleMode) {
               Board.flashPuzzleSuccess();
@@ -1025,7 +1071,51 @@ function verifyMovesIfNeeded(matchId: string, flatMovesString: string, color: st
   }
 }
 
+function applyOptimisticWagerResolution(isWin: boolean) {
+  if (!currentWagerState || currentWagerState.resolved || !currentWagerState.agreed) {
+    return;
+  }
+  const agreed = currentWagerState.agreed;
+  if (!agreed.material) {
+    return;
+  }
+  const count = agreed.count ?? (agreed.total ? Math.max(0, Math.round(agreed.total / 2)) : 0);
+  if (!count) {
+    return;
+  }
+  const playerUid = Board.playerSideMetadata.uid;
+  const opponentUid = Board.opponentSideMetadata.uid;
+  if (!playerUid || !opponentUid || !wagerMatchId) {
+    return;
+  }
+  const winnerId = isWin ? playerUid : opponentUid;
+  const loserId = isWin ? opponentUid : playerUid;
+  const resolved = {
+    winnerId,
+    loserId,
+    material: agreed.material,
+    count,
+    total: count * 2,
+    resolvedAt: Date.now(),
+  };
+  const nextState: MatchWagerState = { ...(currentWagerState ?? {}), resolved, proposals: undefined };
+  setWagerState(wagerMatchId, nextState);
+  applyFrozenMaterialsDelta({ [agreed.material]: -count });
+  const snapshot = rocksMiningService.getSnapshot();
+  const currentMaterials = snapshot.materials;
+  const delta = isWin ? count : -count;
+  const nextMaterials = { ...currentMaterials, [agreed.material]: Math.max(0, (currentMaterials[agreed.material] ?? 0) + delta) };
+  rocksMiningService.setFromServer({ ...snapshot, materials: nextMaterials }, { persist: true });
+}
+
 function updateRatings(isWin: boolean) {
+  if (!isOnlineGame) {
+    return;
+  }
+
+  applyOptimisticWagerResolution(isWin);
+  connection.resolveWagerOutcome();
+
   if (!connection.isAutomatch()) {
     return;
   }
@@ -1045,6 +1135,100 @@ function updateRatings(isWin: boolean) {
     recalculateRatingsLocallyForUids(victoryUid, defeatUid);
     Board.recalculateDisplayNames();
   }
+}
+
+function resetWagerStateForMatch(matchId: string | null) {
+  if (wagerMatchId === matchId) {
+    return;
+  }
+  wagerMatchId = matchId;
+  wagerOutcomeShown = false;
+  wagerOutcomeAnimating = false;
+  wagerOutcomeAnimationAllowed = false;
+  if (wagerOutcomeAnimTimer !== null) {
+    window.clearTimeout(wagerOutcomeAnimTimer);
+    wagerOutcomeAnimTimer = null;
+  }
+  currentWagerState = null;
+  setCurrentWagerMatch(matchId);
+  Board.clearWagerPiles();
+}
+
+function applyWagerState() {
+  if (!currentWagerState) {
+    Board.clearWagerPiles();
+    return;
+  }
+
+  if (currentWagerState.resolved) {
+    if (isGameOver || isReconnect) {
+      syncWagerOutcome();
+    }
+    return;
+  }
+
+  if (currentWagerState.agreed && currentWagerState.agreed.material) {
+    const stakeCount =
+      currentWagerState.agreed.count ??
+      (currentWagerState.agreed.total ? Math.max(0, Math.round(currentWagerState.agreed.total / 2)) : 0);
+    if (stakeCount > 0) {
+      Board.setWagerPiles({
+        player: { material: currentWagerState.agreed.material, count: stakeCount },
+        opponent: { material: currentWagerState.agreed.material, count: stakeCount },
+      });
+      return;
+    }
+  }
+
+  const proposals = currentWagerState.proposals || {};
+  const playerUid = Board.playerSideMetadata.uid;
+  const opponentUid = Board.opponentSideMetadata.uid;
+  const playerProposal = playerUid && proposals[playerUid] ? proposals[playerUid] : null;
+  const opponentProposal = opponentUid && proposals[opponentUid] ? proposals[opponentUid] : null;
+  if (!playerProposal && !opponentProposal) {
+    Board.clearWagerPiles();
+    return;
+  }
+  Board.setWagerPiles({
+    player: playerProposal ? { material: playerProposal.material, count: playerProposal.count } : null,
+    opponent: opponentProposal ? { material: opponentProposal.material, count: opponentProposal.count } : null,
+  });
+}
+
+function syncWagerOutcome() {
+  if (!currentWagerState || !currentWagerState.resolved) {
+    return;
+  }
+  const resolved = currentWagerState.resolved;
+  if (!resolved.material) {
+    return;
+  }
+  const stakeCount = resolved.count ?? (resolved.total ? Math.max(0, Math.round(resolved.total / 2)) : 0);
+  if (!stakeCount) {
+    return;
+  }
+  const winnerIsOpponent = resolved.winnerId === Board.opponentSideMetadata.uid;
+  const shouldAnimate = isGameOver && wagerOutcomeAnimationAllowed && !isWatchOnly && !wagerOutcomeShown;
+  if (shouldAnimate) {
+    if (wagerOutcomeAnimating) {
+      return;
+    }
+    wagerOutcomeAnimating = true;
+    if (wagerOutcomeAnimTimer !== null) {
+      window.clearTimeout(wagerOutcomeAnimTimer);
+    }
+    Board.showResolvedWager(winnerIsOpponent, resolved.material, stakeCount, true);
+    wagerOutcomeShown = true;
+    wagerOutcomeAnimTimer = window.setTimeout(() => {
+      wagerOutcomeAnimating = false;
+      wagerOutcomeAnimTimer = null;
+    }, 900);
+    return;
+  }
+  if (wagerOutcomeAnimating) {
+    return;
+  }
+  Board.showResolvedWager(winnerIsOpponent, resolved.material, stakeCount, false);
 }
 
 function processInput(assistedInputKind: AssistedInputKind, inputModifier: InputModifier, inputLocation?: Location) {
@@ -1120,6 +1304,7 @@ function hasItemAt(location: Location): boolean {
 
 function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   Board.resetForNewGame();
+  resetWagerStateForMatch(matchId);
   isOnlineGame = true;
   currentInputs = [];
 
@@ -1140,6 +1325,7 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   }
 
   Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, isWatchOnly ? match.color === "black" : true);
+  applyWagerState();
 
   if (!isReconnect || (isReconnect && !game.is_later_than(match.fen)) || isWatchOnly) {
     const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
@@ -1288,6 +1474,7 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
   }
 
   isGameOver = true;
+  wagerOutcomeAnimationAllowed = !onConnect;
 
   Board.hideTimerCountdownDigits();
   disableAndHideUndoResignAndTimerControls();
@@ -1299,6 +1486,7 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
   winnerByTimerColor = winnerColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
   showRematchInterface();
+  syncWagerOutcome();
 
   if (justClaimedByYourself) {
     playSounds([Sound.Victory]);
@@ -1318,6 +1506,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
 
   const justConfirmedResignYourself = resignSenderColor === "";
   isGameOver = true;
+  wagerOutcomeAnimationAllowed = !onConnect;
 
   if (justConfirmedResignYourself) {
     resignedColor = playerSideColor;
@@ -1345,6 +1534,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
     Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
   }
   showRematchInterface();
+  syncWagerOutcome();
 }
 
 export function didClickInviteActionButtonBeforeThereIsInviteReady() {
@@ -1445,6 +1635,10 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
   const isOpponentSide = isWatchOnly ? match.color === "black" : true;
   Board.setupPlayerId(matchPlayerUid, isOpponentSide);
   Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, isOpponentSide);
+  applyWagerState();
+  if (isGameOver) {
+    syncWagerOutcome();
+  }
 
   if (match.reaction && match.reaction.uuid && !processedVoiceReactions.has(match.reaction.uuid)) {
     processedVoiceReactions.add(match.reaction.uuid);
@@ -1515,6 +1709,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
 
 export function didRecoverMyMatch(match: Match, matchId: string) {
   isReconnect = true;
+  resetWagerStateForMatch(matchId);
 
   playerSideColor = match.color === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
@@ -1528,6 +1723,7 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   const movesCount = movesCountOfMatch(match);
   setProcessedMovesCountForColor(match.color, movesCount);
   Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, false);
+  applyWagerState();
 
   if (match.status === "surrendered") {
     handleResignStatus(true, match.color);
@@ -1537,7 +1733,7 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
 }
 
 export function enterWatchOnlyMode() {
-  isWatchOnly = true;
+  setWatchOnlyState(true);
   setWatchOnlyVisible(true);
 }
 
