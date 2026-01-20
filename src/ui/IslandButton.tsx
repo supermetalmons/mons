@@ -861,6 +861,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [monTeleporting, setMonTeleporting] = useState(false);
   const materialItemRefs = useRef<Record<MaterialName, HTMLDivElement | null>>({ dust: null, slime: null, gum: null, metal: null, ice: null });
   const wagerControlsRef = useRef<HTMLDivElement | null>(null);
+  const canSubmitWagerRef = useRef(false);
   const decodedMaterialsRef = useRef<Set<MaterialName>>(new Set());
   const resetWagerSelection = useCallback(() => {
     setWagerSelection({ name: null, count: 0 });
@@ -3705,6 +3706,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const incrementWagerSelection = useCallback(
     (name: MaterialName) => {
+      if (!canSubmitWagerRef.current) return;
       const total = materialAmounts[name] ?? 0;
       if (total <= 0) return;
       setWagerSelection((prev) => {
@@ -4259,6 +4261,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const isEligibleForWager = isOnlineGame && !isWatchOnly && !isGameWithBot && !isMatchOver() && !connection.isAutomatch() && playerHasProfile && opponentHasProfile && hasPlayers;
   const canSubmitWager = isEligibleForWager && !hasAgreedWager && !hasResolvedWager && !playerHasProposed;
   const wagerReady = canSubmitWager && !!wagerMaterial && wagerCount > 0;
+
+  useEffect(() => {
+    canSubmitWagerRef.current = canSubmitWager;
+  }, [canSubmitWager]);
 
   const handleWagerSubmit = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
