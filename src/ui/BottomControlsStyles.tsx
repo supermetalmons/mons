@@ -527,47 +527,136 @@ export const StickerRowLast = styled.div`
   width: 100%;
 `;
 
-export const WagerBetButton = styled.button`
+export const WagerBetButton = styled.button<{ $ready?: boolean }>`
   width: 100%;
   height: 34px;
   border-radius: 17px;
   padding: 0 14px;
   border: none;
-  background-color: var(--wagerButtonBackground);
+  background-color: ${(p) => (p.$ready ? "var(--wagerButtonBackgroundReady)" : "var(--wagerButtonBackground)")};
   color: #fff;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 6px;
   font-weight: 700;
   font-size: 0.84rem;
   letter-spacing: 0.02em;
-  cursor: pointer;
+  cursor: ${(p) => (p.$ready ? "pointer" : "default")};
   -webkit-tap-highlight-color: transparent;
   flex-shrink: 0;
   margin-bottom: 2px;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: var(--wagerButtonBackgroundHover);
+      background-color: ${(p) => (p.$ready ? "var(--wagerButtonBackgroundReadyHover)" : "var(--wagerButtonBackground)")};
     }
   }
 
   &:active {
-    background-color: var(--wagerButtonBackgroundActive);
+    background-color: ${(p) => (p.$ready ? "var(--wagerButtonBackgroundReadyActive)" : "var(--wagerButtonBackground)")};
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--wagerButtonBackgroundDark);
+    background-color: ${(p) => (p.$ready ? "var(--wagerButtonBackgroundReadyDark)" : "var(--wagerButtonBackgroundDark)")};
     color: #fff;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: var(--wagerButtonBackgroundHoverDark);
+        background-color: ${(p) => (p.$ready ? "var(--wagerButtonBackgroundReadyHoverDark)" : "var(--wagerButtonBackgroundDark)")};
       }
     }
 
     &:active {
-      background-color: var(--wagerButtonBackgroundActiveDark);
+      background-color: ${(p) => (p.$ready ? "var(--wagerButtonBackgroundReadyActiveDark)" : "var(--wagerButtonBackgroundDark)")};
     }
   }
+`;
+
+export const WagerMaterialsGrid = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  width: 100%;
+  justify-content: center;
+`;
+
+export const WagerMaterialItem = styled.button`
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  background: var(--color-gray-f0);
+  border-radius: 999px;
+  padding: 4px 10px 4px 5px;
+  border: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: background 120ms ease;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: var(--color-gray-e0);
+    }
+  }
+
+  &:active {
+    background: var(--color-gray-d0);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--color-gray-33);
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background: var(--color-gray-44);
+      }
+    }
+
+    &:active {
+      background: var(--color-gray-55);
+    }
+  }
+`;
+
+export const WagerMaterialIcon = styled.img`
+  width: 28px;
+  height: 28px;
+  display: block;
+`;
+
+export const WagerMaterialAmount = styled.span`
+  font-size: 12px;
+  line-height: 1;
+  color: var(--color-gray-33);
+  font-weight: 600;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: 0.2px;
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-gray-f0);
+  }
+`;
+
+export const WagerButtonBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+`;
+
+export const WagerButtonIcon = styled.img`
+  width: 20px;
+  height: 20px;
+  display: block;
+`;
+
+export const WagerButtonAmount = styled.span`
+  font-size: 12px;
+  line-height: 1;
+  color: inherit;
+  font-weight: 700;
+  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  letter-spacing: 0.2px;
 `;

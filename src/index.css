@@ -140,6 +140,12 @@
   --wagerButtonBackgroundDark: #218f5e;
   --wagerButtonBackgroundHoverDark: #25a06a;
   --wagerButtonBackgroundActiveDark: #29b176;
+  --wagerButtonBackgroundReady: #1a6b47;
+  --wagerButtonBackgroundReadyHover: #155a3b;
+  --wagerButtonBackgroundReadyActive: #114a31;
+  --wagerButtonBackgroundReadyDark: #218f5e;
+  --wagerButtonBackgroundReadyHoverDark: #25a06a;
+  --wagerButtonBackgroundReadyActiveDark: #29b176;
 }
 
 @media (prefers-color-scheme: dark) {
