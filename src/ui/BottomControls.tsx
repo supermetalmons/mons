@@ -943,7 +943,11 @@ const BottomControls: React.FC = () => {
               </>
             ) : (
               <>
-                {canSubmitWager && <WagerBetButton onClick={handleWagerModeToggle}>Propose a Wager</WagerBetButton>}
+                {canSubmitWager && (
+                  <WagerBetButton $ready={true} onClick={handleWagerModeToggle}>
+                    Propose a Wager
+                  </WagerBetButton>
+                )}
                 <ReactionPill onClick={() => handleReactionSelect("yo")}>yo</ReactionPill>
                 <ReactionPill onClick={() => handleReactionSelect("wahoo")}>wahoo</ReactionPill>
                 <ReactionPill onClick={() => handleReactionSelect("drop")}>drop</ReactionPill>
