@@ -788,7 +788,7 @@ const BottomControls: React.FC = () => {
         </NavigationListButton>
         {isReactionPickerVisible && (
           <ReactionPillsContainer ref={pickerRef} animatedMaxHeight={pickerMaxHeight}>
-            <WagerBetButton onClick={() => setIsReactionPickerVisible(false)}>Wager a Bet</WagerBetButton>
+            <WagerBetButton onClick={() => setIsReactionPickerVisible(false)}>Propose a Wager</WagerBetButton>
             <ReactionPill onClick={() => handleReactionSelect("yo")}>yo</ReactionPill>
             <ReactionPill onClick={() => handleReactionSelect("wahoo")}>wahoo</ReactionPill>
             <ReactionPill onClick={() => handleReactionSelect("drop")}>drop</ReactionPill>
