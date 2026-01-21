@@ -15,8 +15,6 @@ import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSig
 import { showVideoReaction } from "../ui/BoardComponent";
 import { setIslandButtonDimmed } from "../index";
 import { setCurrentWagerMatch, setWagerState, subscribeToWagerState } from "./wagerState";
-import { applyFrozenMaterialsDelta } from "../services/wagerMaterialsService";
-import { rocksMiningService } from "../services/rocksMiningService";
 
 const experimentalDrawingDevMode = false;
 
@@ -1071,50 +1069,12 @@ function verifyMovesIfNeeded(matchId: string, flatMovesString: string, color: st
   }
 }
 
-function applyOptimisticWagerResolution(isWin: boolean) {
-  if (!currentWagerState || currentWagerState.resolved || !currentWagerState.agreed) {
-    return;
-  }
-  const agreed = currentWagerState.agreed;
-  if (!agreed.material) {
-    return;
-  }
-  const count = agreed.count ?? (agreed.total ? Math.max(0, Math.round(agreed.total / 2)) : 0);
-  if (!count) {
-    return;
-  }
-  const playerUid = Board.playerSideMetadata.uid;
-  const opponentUid = Board.opponentSideMetadata.uid;
-  if (!playerUid || !opponentUid || !wagerMatchId) {
-    return;
-  }
-  const winnerId = isWin ? playerUid : opponentUid;
-  const loserId = isWin ? opponentUid : playerUid;
-  const resolved = {
-    winnerId,
-    loserId,
-    material: agreed.material,
-    count,
-    total: count * 2,
-    resolvedAt: Date.now(),
-  };
-  const nextState: MatchWagerState = { ...(currentWagerState ?? {}), resolved, proposals: undefined };
-  setWagerState(wagerMatchId, nextState);
-  applyFrozenMaterialsDelta({ [agreed.material]: -count });
-  const snapshot = rocksMiningService.getSnapshot();
-  const currentMaterials = snapshot.materials;
-  const delta = isWin ? count : -count;
-  const nextMaterials = { ...currentMaterials, [agreed.material]: Math.max(0, (currentMaterials[agreed.material] ?? 0) + delta) };
-  rocksMiningService.setFromServer({ ...snapshot, materials: nextMaterials }, { persist: true });
-}
-
 function updateRatings(isWin: boolean) {
   if (!isOnlineGame) {
     return;
   }
 
-  applyOptimisticWagerResolution(isWin);
-  connection.resolveWagerOutcome();
+  connection.resolveWagerOutcome(isWin);
 
   if (!connection.isAutomatch()) {
     return;

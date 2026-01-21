@@ -67,7 +67,8 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   if (res.profileMons !== undefined) profile.profileMons = res.profileMons;
 
   syncTutorialProgress(res.completedProblems ?? [], res.tutorialCompleted ?? false);
-  setupLoggedInPlayerProfile(profile, res.uid);
+  const resolvedLoginUid = connection.getSameProfilePlayerUid() ?? res.uid;
+  setupLoggedInPlayerProfile(profile, resolvedLoginUid);
 
   storage.setUsername(res.username);
   storage.setProfileId(profileId);

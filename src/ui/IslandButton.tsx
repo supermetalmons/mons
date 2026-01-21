@@ -14,12 +14,6 @@ import { Sound } from "../utils/gameModels";
 import { setIslandOverlayState, resetIslandOverlayState } from "./islandOverlayState";
 import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMiningService";
 import { useGameAssets } from "../hooks/useGameAssets";
-import { opponentSideMetadata, playerSideMetadata } from "../game/board";
-import { isGameWithBot, isMatchOver, isOnlineGame, isWatchOnly } from "../game/gameController";
-import { connection } from "../connection/connection";
-import { getStashedPlayerProfile } from "../utils/playerMetadata";
-import { MatchWagerState } from "../connection/connectionModels";
-import { subscribeToWagerState } from "../game/wagerState";
 import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
 
 const FEATURE_GLOWS_ON_HOTSPOT = true;
@@ -162,95 +156,6 @@ const MaterialAmount = styled.span`
   font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
   letter-spacing: 0.2px;
 `;
-
-const WagerControls = styled.div`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-`;
-
-const WagerRow = styled.div<{ $visible: boolean }>`
-  position: relative;
-  z-index: 2;
-  display: flex;
-  justify-content: center;
-  margin-bottom: 12px;
-  opacity: ${(p) => (p.$visible ? 1 : 0)};
-  transition: opacity 220ms ease;
-  pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
-`;
-
-const WagerButton = styled.button<{ $ready: boolean }>`
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  border-radius: 999px;
-  border: none;
-  padding: 6px 10px;
-  background: ${(p) => (p.$ready ? "var(--focusShadowColor)" : "transparent")};
-  color: ${(p) => (p.$ready ? "var(--profileSigninTint)" : "var(--instruction-text-color)")};
-  font-size: 12px;
-  line-height: 1;
-  font-weight: 600;
-  cursor: pointer;
-  opacity: ${(p) => (p.$ready ? 1 : 0.6)};
-  white-space: nowrap;
-  -webkit-tap-highlight-color: transparent;
-  outline: none;
-  touch-action: none;
-  transition: background 160ms ease, opacity 160ms ease, transform 160ms ease;
-
-  &:active {
-    transform: ${(p) => (p.$ready ? "translateY(1px)" : "none")};
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: ${(p) => (p.$ready ? "var(--focusShadowColorDark)" : "transparent")};
-    color: ${(p) => (p.$ready ? "var(--profileSigninTintDark)" : "var(--instruction-text-color)")};
-  }
-`;
-
-const WagerButtonLabel = styled.span`
-  font-size: 12px;
-  line-height: 1;
-  font-weight: 700;
-  letter-spacing: 0.2px;
-`;
-
-const WagerButtonHint = styled.span`
-  font-size: 10px;
-  line-height: 1;
-  font-weight: 400;
-  letter-spacing: 0.2px;
-  color: var(--color-gray-77);
-
-  @media (prefers-color-scheme: dark) {
-    color: var(--secondaryTextColorDark);
-  }
-`;
-
-const WagerMaterialBadge = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 3px;
-  padding: 0;
-`;
-
-const WagerMaterialIcon = styled.img`
-  width: 22px;
-  height: 22px;
-  display: block;
-`;
-
-const WagerMaterialAmount = styled.span`
-  font-size: 12px;
-  line-height: 1;
-  color: inherit;
-  font-weight: 700;
-  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
-  letter-spacing: 0.2px;
-`;
-
 
 const MonTypeSelector = styled.div<{ $visible: boolean }>`
   display: inline-flex;
@@ -852,20 +757,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     MATERIALS.forEach((n) => (initial[n] = null));
     return initial as Record<MaterialName, string | null>;
   });
-  const [wagerSelection, setWagerSelection] = useState<{ name: MaterialName | null; count: number }>({ name: null, count: 0 });
-  const wagerMaterial = wagerSelection.name;
-  const wagerCount = wagerSelection.count;
-  const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
   const [dudeVisible, setDudeVisible] = useState(false);
   const [monVisible, setMonVisible] = useState(false);
   const [monTeleporting, setMonTeleporting] = useState(false);
   const materialItemRefs = useRef<Record<MaterialName, HTMLDivElement | null>>({ dust: null, slime: null, gum: null, metal: null, ice: null });
-  const wagerControlsRef = useRef<HTMLDivElement | null>(null);
-  const canSubmitWagerRef = useRef(false);
   const decodedMaterialsRef = useRef<Set<MaterialName>>(new Set());
-  const resetWagerSelection = useCallback(() => {
-    setWagerSelection({ name: null, count: 0 });
-  }, []);
   useEffect(() => {
     const unsubscribe = rocksMiningService.subscribe((snapshot) => {
       const next = { ...snapshot.materials };
@@ -879,12 +775,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return unsubscribe;
   }, []);
   useEffect(() => {
-    const unsubscribe = subscribeToWagerState((state) => {
-      setWagerState(state);
-    });
-    return unsubscribe;
-  }, []);
-  useEffect(() => {
     const unsubscribe = subscribeToFrozenMaterials((materials) => {
       frozenMaterialsRef.current = materials;
       if (!amountsDecoupledRef.current) {
@@ -894,22 +784,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     });
     return unsubscribe;
   }, []);
-  useEffect(() => {
-    if (!wagerMaterial) {
-      if (wagerCount !== 0) {
-        resetWagerSelection();
-      }
-      return;
-    }
-    const total = materialAmounts[wagerMaterial] ?? 0;
-    if (total <= 0) {
-      resetWagerSelection();
-      return;
-    }
-    if (wagerCount > total) {
-      setWagerSelection({ name: wagerMaterial, count: total });
-    }
-  }, [materialAmounts, wagerCount, wagerMaterial, resetWagerSelection]);
   const isMaterialTarget = useCallback(
     (node: Node | null) => {
       if (!node) return false;
@@ -923,14 +797,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       return false;
     },
     [materialItemRefs]
-  );
-  const isWagerTarget = useCallback(
-    (node: Node | null) => {
-      const el = wagerControlsRef.current;
-      if (!node || !el) return false;
-      return el === node || el.contains(node);
-    },
-    [wagerControlsRef]
   );
   const materialsBarRef = useRef<HTMLDivElement | null>(null);
   const safeHitboxRef = useRef<HTMLDivElement | null>(null);
@@ -2251,7 +2117,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     amountsDecoupledRef.current = false;
     const resetMaterials = computeAvailableMaterials(latestServiceMaterialsRef.current, frozenMaterialsRef.current);
     setMaterialAmounts(resetMaterials);
-    resetWagerSelection();
     const container = fxContainerRef.current;
     if (container && container.parentNode) {
       try {
@@ -2338,7 +2203,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     setIslandTranslate({ x: 0, y: 0 });
     setIslandScale({ x: 1, y: 1 });
     setWalkReady(false);
-  }, [resetWagerSelection]);
+  }, []);
 
   const handleIslandOpen = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -2840,7 +2705,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const targetNode = (event.target as Node) || null;
         if (targetNode) {
           const safeHitbox = safeHitboxRef.current;
-          if ((safeHitbox && safeHitbox.contains(targetNode)) || isWagerTarget(targetNode)) {
+          if (safeHitbox && safeHitbox.contains(targetNode)) {
             return;
           }
         }
@@ -2934,7 +2799,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         setIslandScale({ x: uniformScale, y: uniformScale });
       });
     },
-    [finalizeOverlayClose, islandNatural, islandOverlayVisible, isWagerTarget]
+    [finalizeOverlayClose, islandNatural, islandOverlayVisible]
   );
 
   useEffect(() => {
@@ -3704,32 +3569,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     [heroSize.h, heroSize.w, stopMoveAnim, decideFacingWithHysteresis, startWalkingAnimation, startStandingAnimation]
   );
 
-  const incrementWagerSelection = useCallback(
-    (name: MaterialName) => {
-      if (!canSubmitWagerRef.current) return;
-      const total = materialAmounts[name] ?? 0;
-      if (total <= 0) return;
-      setWagerSelection((prev) => {
-        if (prev.name === name) {
-          const nextCount = Math.min(total, prev.count + 1);
-          if (nextCount === prev.count) return prev;
-          return { name, count: nextCount };
-        }
-        return { name, count: 1 };
-      });
-    },
-    [materialAmounts]
-  );
-
   const handleMaterialItemTap = useCallback(
     (name: MaterialName, _url: string | null) => (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
       if (!islandOverlayVisible || islandClosing || islandOpening) {
         return;
       }
       activateMaterial(name);
-      incrementWagerSelection(name);
     },
-    [activateMaterial, incrementWagerSelection, islandClosing, islandOpening, islandOverlayVisible]
+    [activateMaterial, islandClosing, islandOpening, islandOverlayVisible]
   );
 
   const isDraggingRef = useRef(false);
@@ -3741,7 +3588,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       walkingDragCleanupRef.current = null;
       const eventTarget = (event.target as Node) || null;
-      const skipForProtectedUi = isMaterialTarget(eventTarget) || isSelectorSafeAreaTarget(eventTarget) || isWagerTarget(eventTarget);
+      const skipForProtectedUi = isMaterialTarget(eventTarget) || isSelectorSafeAreaTarget(eventTarget);
       const isInsideRockBox = (nx: number, ny: number) => {
         if (!rockAvailable) return false;
         const box = rockBoxRef.current;
@@ -4215,7 +4062,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockAvailable, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, scheduleTeleportOverlapCheck, updateCircleTracking, resetCircleTracking, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isSelectorSafeAreaTarget, isWagerTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion, islandOverlayVisible, islandClosing, islandOpening]
+    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockAvailable, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, scheduleTeleportOverlapCheck, updateCircleTracking, resetCircleTracking, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isSelectorSafeAreaTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion, islandOverlayVisible, islandClosing, islandOpening]
   );
 
   const handleSafeHitboxPointerDown = useCallback(
@@ -4249,38 +4096,6 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const decorMounted = decorVisible || islandClosing;
   const disablePrevMonType = isAtFirstMonType;
   const disableNextMonType = isAtLastMonType;
-  const playerUid = playerSideMetadata.uid;
-  const opponentUid = opponentSideMetadata.uid;
-  const opponentProfile = opponentUid ? getStashedPlayerProfile(opponentUid) : undefined;
-  const playerHasProfile = storage.getProfileId("") !== "";
-  const opponentHasProfile = !!(opponentProfile && opponentProfile.id);
-  const hasAgreedWager = !!wagerState?.agreed;
-  const hasResolvedWager = !!wagerState?.resolved;
-  const playerHasProposed = !!(playerUid && wagerState?.proposedBy && wagerState.proposedBy[playerUid]) || !!(playerUid && wagerState?.proposals && wagerState.proposals[playerUid]);
-  const hasPlayers = !!playerUid && !!opponentUid;
-  const isEligibleForWager = isOnlineGame && !isWatchOnly && !isGameWithBot && !isMatchOver() && !connection.isAutomatch() && playerHasProfile && opponentHasProfile && hasPlayers;
-  const canSubmitWager = isEligibleForWager && !hasAgreedWager && !hasResolvedWager && !playerHasProposed;
-  const wagerReady = canSubmitWager && !!wagerMaterial && wagerCount > 0;
-
-  useEffect(() => {
-    canSubmitWagerRef.current = canSubmitWager;
-  }, [canSubmitWager]);
-
-  const handleWagerSubmit = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
-      event.stopPropagation();
-      event.preventDefault();
-      if (!wagerMaterial || wagerCount === 0 || !canSubmitWager) {
-        return;
-      }
-      handleIslandClose();
-      const material = wagerMaterial;
-      const count = wagerCount;
-      resetWagerSelection();
-      connection.sendWagerProposal(material, count).catch(() => {});
-    },
-    [canSubmitWager, handleIslandClose, resetWagerSelection, wagerCount, wagerMaterial]
-  );
 
   return (
     <>
@@ -4312,49 +4127,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                     </SelectorSafeZone>
                   </SelectorSafeHitbox>
                 )}
-                {isEligibleForWager && (
-                  <WagerRow $visible={islandOverlayVisible && !islandClosing}>
-                    <WagerControls ref={wagerControlsRef}>
-                      <WagerButton
-                        type="button"
-                        $ready={wagerReady}
-                        aria-disabled={!wagerReady}
-                        disabled={!wagerReady}
-                        onClick={!isMobile ? handleWagerSubmit : undefined}
-                        onTouchStart={isMobile ? handleWagerSubmit : undefined}>
-                        {wagerMaterial && wagerCount > 0 ? (
-                          <>
-                            <WagerButtonLabel>wager a bet</WagerButtonLabel>
-                            <WagerMaterialBadge>
-                              {materialUrls[wagerMaterial] && <WagerMaterialIcon src={materialUrls[wagerMaterial] || ""} alt="" draggable={false} />}
-                              <WagerMaterialAmount>{wagerCount}</WagerMaterialAmount>
-                            </WagerMaterialBadge>
-                          </>
-                        ) : playerHasProposed ? null : (
-                          <WagerButtonHint>select a material to wager</WagerButtonHint>
-                        )}
-                      </WagerButton>
-                    </WagerControls>
-                  </WagerRow>
-                )}
                 <SafeHitbox ref={safeHitboxRef} $active={islandOverlayVisible && !islandClosing} onMouseDown={!isMobile ? handleSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSafeHitboxPointerDown : undefined}>
                   <MaterialsBar ref={materialsBarRef} $visible={islandOverlayVisible && !islandClosing}>
-                    {MATERIALS.map((name) => {
-                      const wageredCount = wagerMaterial === name ? wagerCount : 0;
-                      const displayAmount = Math.max(0, materialAmounts[name] - wageredCount);
-                      return (
-                        <MaterialItem
-                          ref={(el) => {
-                            materialItemRefs.current[name] = el;
-                          }}
-                          key={name}
-                          onMouseDown={!isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}
-                          onTouchStart={isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}>
-                          {materialUrls[name] && <MaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
-                          <MaterialAmount>{displayAmount}</MaterialAmount>
-                        </MaterialItem>
-                      );
-                    })}
+                    {MATERIALS.map((name) => (
+                      <MaterialItem
+                        ref={(el) => {
+                          materialItemRefs.current[name] = el;
+                        }}
+                        key={name}
+                        onMouseDown={!isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}
+                        onTouchStart={isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}>
+                        {materialUrls[name] && <MaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
+                        <MaterialAmount>{materialAmounts[name]}</MaterialAmount>
+                      </MaterialItem>
+                    ))}
                   </MaterialsBar>
                 </SafeHitbox>
               </SafeBarStack>

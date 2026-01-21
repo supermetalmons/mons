@@ -74,7 +74,8 @@ export function useAuthStatus() {
             isTutorialCompleted: undefined,
           };
           updateProfileDisplayName(storedUsername, storedEthAddress, storedSolAddress);
-          setupLoggedInPlayerProfile(profile, uid);
+          const resolvedLoginUid = connection.getSameProfilePlayerUid() ?? uid;
+          setupLoggedInPlayerProfile(profile, resolvedLoginUid);
           setTimeout(() => didAttemptAuthentication(), 23);
         } else {
           setAuthStatus("unauthenticated");

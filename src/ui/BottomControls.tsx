@@ -2,21 +2,27 @@ import React, { useRef, useEffect, useState, useCallback } from "react";
 import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaPaintBrush, FaScroll } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
-import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain } from "../game/gameController";
+import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, isOnlineGame, isWatchOnly, isMatchOver } from "../game/gameController";
 import { connection } from "../connection/connection";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playReaction, playSounds } from "../content/sounds";
 import { newReactionOfKind, newStickerReaction } from "../content/sounds";
-import { showVoiceReactionText } from "../game/board";
+import { showVoiceReactionText, opponentSideMetadata, playerSideMetadata } from "../game/board";
 import NavigationPicker from "./NavigationPicker";
-import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, ControlButton, BottomPillButton, ResignButton, ResignConfirmation, ReactionPillsContainer, ReactionPill, StickerPill } from "./BottomControlsStyles";
+import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, ControlButton, BottomPillButton, ResignButton, ResignConfirmation, ReactionPillsContainer, ReactionPill, StickerPill, WagerBetButton, WagerMaterialsGrid, WagerMaterialItem, WagerMaterialIcon, WagerMaterialAmount, WagerButtonBadge, WagerButtonIcon, WagerButtonAmount } from "./BottomControlsStyles";
 import { fetchNftsForStoredAddresses } from "../services/nftService";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { showVideoReaction } from "./BoardComponent";
 import BoardStylePickerComponent from "./BoardStylePicker";
 import { Sound } from "../utils/gameModels";
 import MoveHistoryPopup from "./MoveHistoryPopup";
+import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMiningService";
+import { MatchWagerState } from "../connection/connectionModels";
+import { subscribeToWagerState } from "../game/wagerState";
+import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
+import { getStashedPlayerProfile } from "../utils/playerMetadata";
+import { storage } from "../utils/storage";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 
@@ -142,6 +148,22 @@ const BottomControls: React.FC = () => {
   const [stickerIds, setStickerIds] = useState<number[]>([]);
   const [pickerMaxHeight, setPickerMaxHeight] = useState<number | undefined>(undefined);
 
+  const [isWagerMode, setIsWagerMode] = useState(false);
+  const [wagerSelection, setWagerSelection] = useState<{ name: MaterialName | null; count: number }>({ name: null, count: 0 });
+  const [materialUrls, setMaterialUrls] = useState<Record<MaterialName, string | null>>(() => {
+    const initial: Partial<Record<MaterialName, string | null>> = {};
+    MATERIALS.forEach((n) => (initial[n] = null));
+    return initial as Record<MaterialName, string | null>;
+  });
+  const [materialAmounts, setMaterialAmounts] = useState<Record<MaterialName, number>>(() => {
+    const initial: Partial<Record<MaterialName, number>> = {};
+    MATERIALS.forEach((n) => (initial[n] = 0));
+    return initial as Record<MaterialName, number>;
+  });
+  const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
+  const frozenMaterialsRef = useRef<Record<MaterialName, number>>(getFrozenMaterials());
+  const latestServiceMaterialsRef = useRef<Record<MaterialName, number>>({ dust: 0, slime: 0, gum: 0, metal: 0, ice: 0 });
+
   const pickerRef = useRef<HTMLDivElement>(null);
   const voiceReactionButtonRef = useRef<HTMLButtonElement>(null);
   const moveHistoryButtonRef = useRef<HTMLButtonElement>(null);
@@ -216,7 +238,7 @@ const BottomControls: React.FC = () => {
     requestAnimationFrame(() => {
       setPickerMaxHeight(el.scrollHeight);
     });
-  }, [stickerIds, isReactionPickerVisible]);
+  }, [stickerIds, isReactionPickerVisible, isWagerMode, wagerSelection]);
 
   useEffect(() => {
     if (!isReactionPickerVisible) return;
@@ -247,6 +269,67 @@ const BottomControls: React.FC = () => {
       isCancelled = true;
     };
   }, [isReactionPickerVisible]);
+
+  useEffect(() => {
+    if (!isReactionPickerVisible) {
+      setIsWagerMode(false);
+      setWagerSelection({ name: null, count: 0 });
+    }
+  }, [isReactionPickerVisible]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToWagerState((state) => {
+      setWagerState(state);
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = rocksMiningService.subscribe((snapshot) => {
+      const next = { ...snapshot.materials };
+      latestServiceMaterialsRef.current = next;
+      const available = computeAvailableMaterials(next, frozenMaterialsRef.current);
+      setMaterialAmounts(available);
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToFrozenMaterials((materials) => {
+      frozenMaterialsRef.current = materials;
+      const available = computeAvailableMaterials(latestServiceMaterialsRef.current, materials);
+      setMaterialAmounts(available);
+    });
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
+    const getMaterialImageUrl = (name: MaterialName) => {
+      if (!materialImagePromises.has(name)) {
+        const url = `https://assets.mons.link/rocks/materials/${name}.webp`;
+        const p = fetch(url)
+          .then((res) => {
+            if (!res.ok) throw new Error("Failed to fetch image");
+            return res.blob();
+          })
+          .then((blob) => URL.createObjectURL(blob))
+          .catch(() => null);
+        materialImagePromises.set(name, p);
+      }
+      return materialImagePromises.get(name)!;
+    };
+    MATERIALS.forEach((name) => {
+      getMaterialImageUrl(name).then((url) => {
+        if (!mounted) return;
+        setMaterialUrls((prev) => ({ ...prev, [name]: url }));
+      });
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     return () => {
@@ -575,6 +658,48 @@ const BottomControls: React.FC = () => {
     }
   }, []);
 
+  const playerUid = playerSideMetadata.uid;
+  const opponentUid = opponentSideMetadata.uid;
+  const opponentProfile = opponentUid ? getStashedPlayerProfile(opponentUid) : undefined;
+  const playerHasProfile = storage.getProfileId("") !== "";
+  const opponentHasProfile = !!(opponentProfile && opponentProfile.id);
+  const hasAgreedWager = !!wagerState?.agreed;
+  const hasResolvedWager = !!wagerState?.resolved;
+  const playerHasProposed = !!(playerUid && wagerState?.proposedBy && wagerState.proposedBy[playerUid]) || !!(playerUid && wagerState?.proposals && wagerState.proposals[playerUid]);
+  const hasPlayers = !!playerUid && !!opponentUid;
+  const isEligibleForWager = isOnlineGame && !isWatchOnly && !isGameWithBot && !isMatchOver() && !connection.isAutomatch() && playerHasProfile && opponentHasProfile && hasPlayers;
+  const canSubmitWager = isEligibleForWager && !hasAgreedWager && !hasResolvedWager && !playerHasProposed;
+  const wagerMaterial = wagerSelection.name;
+  const wagerCount = wagerSelection.count;
+  const wagerReady = canSubmitWager && !!wagerMaterial && wagerCount > 0;
+
+  const handleWagerModeToggle = useCallback(() => {
+    setIsWagerMode(true);
+  }, []);
+
+  const handleMaterialSelect = useCallback((name: MaterialName) => {
+    const total = materialAmounts[name] ?? 0;
+    if (total <= 0) return;
+    setWagerSelection((prev) => {
+      if (prev.name === name) {
+        const nextCount = Math.min(total, prev.count + 1);
+        if (nextCount === prev.count) return prev;
+        return { name, count: nextCount };
+      }
+      return { name, count: 1 };
+    });
+  }, [materialAmounts]);
+
+  const handleWagerSubmit = useCallback(() => {
+    if (!wagerMaterial || wagerCount === 0 || !canSubmitWager) {
+      return;
+    }
+    setIsReactionPickerVisible(false);
+    const material = wagerMaterial;
+    const count = wagerCount;
+    connection.sendWagerProposal(material, count).catch(() => {});
+  }, [canSubmitWager, wagerCount, wagerMaterial]);
+
   const handleUndo = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     if ((event.target as HTMLButtonElement).disabled) return;
     didClickUndoButton();
@@ -788,16 +913,53 @@ const BottomControls: React.FC = () => {
         </NavigationListButton>
         {isReactionPickerVisible && (
           <ReactionPillsContainer ref={pickerRef} animatedMaxHeight={pickerMaxHeight}>
-            <ReactionPill onClick={() => handleReactionSelect("yo")}>yo</ReactionPill>
-            <ReactionPill onClick={() => handleReactionSelect("wahoo")}>wahoo</ReactionPill>
-            <ReactionPill onClick={() => handleReactionSelect("drop")}>drop</ReactionPill>
-            <ReactionPill onClick={() => handleReactionSelect("slurp")}>slurp</ReactionPill>
-            <ReactionPill onClick={() => handleReactionSelect("gg")}>gg</ReactionPill>
-            {stickerIds.map((id) => (
-              <StickerPill key={id} onClick={() => handleStickerSelect(id)} aria-label={`Sticker ${id}`}>
-                <img src={`https://assets.mons.link/swagpack/64/${id}.webp`} alt="" loading="lazy" />
-              </StickerPill>
-            ))}
+            {isWagerMode ? (
+              <>
+                <WagerBetButton
+                  $ready={wagerReady}
+                  onClick={wagerReady ? handleWagerSubmit : undefined}
+                  disabled={!wagerReady}
+                  style={{ cursor: wagerReady ? "pointer" : "default", opacity: wagerReady ? 1 : 0.6 }}>
+                  {wagerMaterial && wagerCount > 0 ? (
+                    <>
+                      <span>Propose</span>
+                      <WagerButtonBadge>
+                        {materialUrls[wagerMaterial] && <WagerButtonIcon src={materialUrls[wagerMaterial] || ""} alt="" draggable={false} />}
+                        <WagerButtonAmount>{wagerCount}</WagerButtonAmount>
+                      </WagerButtonBadge>
+                    </>
+                  ) : (
+                    "Select a Material"
+                  )}
+                </WagerBetButton>
+                <WagerMaterialsGrid>
+                  {MATERIALS.map((name) => (
+                    <WagerMaterialItem key={name} onClick={() => handleMaterialSelect(name)} disabled={materialAmounts[name] <= 0} style={{ opacity: materialAmounts[name] > 0 ? 1 : 0.4 }}>
+                      {materialUrls[name] && <WagerMaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
+                      <WagerMaterialAmount>{materialAmounts[name]}</WagerMaterialAmount>
+                    </WagerMaterialItem>
+                  ))}
+                </WagerMaterialsGrid>
+              </>
+            ) : (
+              <>
+                {canSubmitWager && (
+                  <WagerBetButton $ready={true} onClick={handleWagerModeToggle}>
+                    Propose a Wager
+                  </WagerBetButton>
+                )}
+                <ReactionPill onClick={() => handleReactionSelect("yo")}>yo</ReactionPill>
+                <ReactionPill onClick={() => handleReactionSelect("wahoo")}>wahoo</ReactionPill>
+                <ReactionPill onClick={() => handleReactionSelect("drop")}>drop</ReactionPill>
+                <ReactionPill onClick={() => handleReactionSelect("slurp")}>slurp</ReactionPill>
+                <ReactionPill onClick={() => handleReactionSelect("gg")}>gg</ReactionPill>
+                {stickerIds.map((id) => (
+                  <StickerPill key={id} onClick={() => handleStickerSelect(id)} aria-label={`Sticker ${id}`}>
+                    <img src={`https://assets.mons.link/swagpack/64/${id}.webp`} alt="" loading="lazy" />
+                  </StickerPill>
+                ))}
+              </>
+            )}
           </ReactionPillsContainer>
         )}
         {isResignConfirmVisible && (

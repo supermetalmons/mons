@@ -3,7 +3,7 @@ import { getAuth, Auth, signInAnonymously, onAuthStateChanged, signOut } from "f
 import { getDatabase, Database, ref, set, onValue, off, get, update } from "firebase/database";
 import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
-import { getPlayersEmojiId, didGetPlayerProfile } from "../game/board";
+import { getPlayersEmojiId, didGetPlayerProfile, setupPlayerId } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
 import { Match, Invite, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES, MiningMaterialName, MatchWagerState, WagerProposal, WagerAgreement } from "./connectionModels";
 import { storage } from "../utils/storage";
@@ -68,6 +68,7 @@ class Connection {
 
   private loginUid: string | null = null;
   private sameProfilePlayerUid: string | null = null;
+  private optimisticResolvedMatchIds = new Set<string>();
 
   private latestInvite: Invite | null = null;
   private myMatch: Match | null = null;
@@ -443,6 +444,10 @@ class Connection {
     });
   }
 
+  public getSameProfilePlayerUid(): string | null {
+    return this.sameProfilePlayerUid;
+  }
+
   private async ensureAuthenticated(): Promise<void> {
     if (!this.auth.currentUser) {
       const uid = await this.signIn();
@@ -450,6 +455,82 @@ class Connection {
         throw new Error("Failed to authenticate user");
       }
     }
+  }
+
+  private applyOptimisticWagerResolution(isWin?: boolean): boolean {
+    if (!this.matchId || !this.sameProfilePlayerUid) {
+      return false;
+    }
+    const matchId = this.matchId;
+    if (this.optimisticResolvedMatchIds.has(matchId)) {
+      return false;
+    }
+    const state = getWagerState();
+    if (!state) {
+      return false;
+    }
+    const resolved = state.resolved ?? null;
+    const agreed = state.agreed ?? null;
+    let material: MiningMaterialName | null = null;
+    let count = 0;
+    let winnerId: string | null = null;
+    let loserId: string | null = null;
+    if (resolved && resolved.material) {
+      const resolvedCount = Number(resolved.count) || 0;
+      if (resolvedCount <= 0) {
+        return false;
+      }
+      material = resolved.material;
+      count = Math.max(0, Math.round(resolvedCount));
+      winnerId = resolved.winnerId || null;
+      loserId = resolved.loserId || null;
+    } else if (agreed && agreed.material) {
+      if (typeof isWin !== "boolean") {
+        return false;
+      }
+      const agreedCount = agreed.count ?? (agreed.total ? Math.max(0, Math.round(agreed.total / 2)) : 0);
+      if (!agreedCount) {
+        return false;
+      }
+      const opponentId = this.getOpponentId();
+      if (!opponentId) {
+        return false;
+      }
+      material = agreed.material;
+      count = Math.max(0, Math.round(agreedCount));
+      winnerId = isWin ? this.sameProfilePlayerUid : opponentId;
+      loserId = isWin ? opponentId : this.sameProfilePlayerUid;
+      const resolvedState: MatchWagerState = {
+        ...(state ?? {}),
+        proposals: undefined,
+        resolved: {
+          winnerId,
+          loserId,
+          material,
+          count,
+          total: count * 2,
+          resolvedAt: Date.now(),
+        },
+      };
+      this.setLocalWagerState(resolvedState);
+    }
+    if (!material || !count || !winnerId || !loserId) {
+      return false;
+    }
+    const myId = this.sameProfilePlayerUid;
+    if (myId !== winnerId && myId !== loserId) {
+      return false;
+    }
+    const delta = myId === winnerId ? count : -count;
+    applyFrozenMaterialsDelta({ [material]: -count });
+    if (delta !== 0) {
+      const snapshot = rocksMiningService.getSnapshot();
+      const currentMaterials = snapshot.materials;
+      const nextMaterials = { ...currentMaterials, [material]: Math.max(0, (currentMaterials[material] ?? 0) + delta) };
+      rocksMiningService.setFromServer({ ...snapshot, materials: nextMaterials }, { persist: true });
+    }
+    this.optimisticResolvedMatchIds.add(matchId);
+    return true;
   }
 
   public isAutomatch(): boolean {
@@ -649,7 +730,7 @@ class Connection {
     }
   }
 
-  public async resolveWagerOutcome(): Promise<any> {
+  public async resolveWagerOutcome(isWin?: boolean): Promise<any> {
     try {
       await this.ensureAuthenticated();
       if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) {
@@ -659,6 +740,7 @@ class Connection {
       if (!opponentId) {
         return { ok: false };
       }
+      this.applyOptimisticWagerResolution(isWin);
       console.log("wager:resolve:start", { inviteId: this.inviteId, matchId: this.matchId, opponentId });
       const resolveWagerOutcomeFunction = httpsCallable(this.functions, "resolveWagerOutcome");
       const data = await this.callWagerFunctionWithRetry("wager:resolve", () =>
@@ -1025,6 +1107,14 @@ class Connection {
     }
     this.sameProfilePlayerUid = uid;
     this.observeMiningFrozen(uid);
+    if (uid) {
+      setupPlayerId(uid, false);
+      this.getProfileByLoginId(uid)
+        .then((profile) => {
+          didGetPlayerProfile(profile, uid, true);
+        })
+        .catch(() => {});
+    }
   }
 
   public updateStoredEmoji(newId: number, aura: string | null | undefined): void {
