@@ -98,14 +98,14 @@ const BOARD_HEIGHT_UNITS = 14.1;
 const WAGER_PANEL_PADDING_X_FRAC = 0.2;
 const WAGER_PANEL_PADDING_Y_FRAC = 0.2;
 const WAGER_PANEL_BUTTON_HEIGHT_FRAC = 0.4;
-const WAGER_PANEL_BUTTON_GAP_FRAC = 0.14;
+const WAGER_PANEL_BUTTON_GAP_PX = 8;
 const WAGER_PANEL_PILE_GAP_FRAC = 0.2;
-const WAGER_PANEL_BUTTON_WIDTH_FRAC = 1;
 const WAGER_PANEL_MIN_PADDING_PX = 12;
 const WAGER_PANEL_MIN_BUTTON_HEIGHT_PX = 34;
-const WAGER_PANEL_MIN_BUTTON_GAP_PX = 10;
-const WAGER_PANEL_MIN_OPPONENT_BUTTON_WIDTH_PX = 96;
-const WAGER_PANEL_MIN_PLAYER_BUTTON_WIDTH_PX = 170;
+const WAGER_PANEL_MIN_DECLINE_BUTTON_WIDTH_PX = 80;
+const WAGER_PANEL_MIN_ACCEPT_BUTTON_WIDTH_PX = 110;
+const WAGER_PANEL_MIN_PLAYER_BUTTON_WIDTH_PX = 150;
+const WAGER_PANEL_BUTTON_PADDING_X_PX = 16;
 const WAGER_PANEL_COUNT_GAP_FRAC = 0.06;
 const WAGER_PANEL_COUNT_MIN_GAP_PX = 4;
 const WAGER_PANEL_COUNT_MIN_WIDTH_PX = 32;
@@ -134,11 +134,14 @@ const getWagerPanelLayout = (
   width: number;
   height: number;
   gridRows: string;
-  paddingXPct: number;
+  paddingXPx: number;
   pileRow: number;
   buttonRow: number;
-  buttonGapPct: number;
-  singleButtonWidthPct: number;
+  buttonGapPx: number;
+  declineButtonMinWidthPx: number;
+  acceptButtonMinWidthPx: number;
+  playerButtonMinWidthPx: number;
+  buttonPaddingXPx: number;
   countGap: number;
 } => {
   const pxPerUnitX = boardPixelSize ? boardPixelSize.width / BOARD_WIDTH_UNITS : null;
@@ -149,17 +152,17 @@ const getWagerPanelLayout = (
   const paddingY = Math.max(rect.h * WAGER_PANEL_PADDING_Y_FRAC, minPaddingY);
   const minButtonHeight = pxPerUnitY ? WAGER_PANEL_MIN_BUTTON_HEIGHT_PX / pxPerUnitY : 0;
   const buttonHeight = hasActions ? Math.max(rect.h * WAGER_PANEL_BUTTON_HEIGHT_FRAC, minButtonHeight) : 0;
-  const minButtonGap = pxPerUnitX ? WAGER_PANEL_MIN_BUTTON_GAP_PX / pxPerUnitX : 0;
-  const buttonGap = hasActions ? Math.max(rect.w * WAGER_PANEL_BUTTON_GAP_FRAC, minButtonGap) : 0;
   const minCountGap = pxPerUnitX ? WAGER_PANEL_COUNT_MIN_GAP_PX / pxPerUnitX : 0;
   const countGap = Math.max(rect.w * WAGER_PANEL_COUNT_GAP_FRAC, minCountGap);
   const minCountWidth = pxPerUnitX ? WAGER_PANEL_COUNT_MIN_WIDTH_PX / pxPerUnitX : 0;
   const pileGap = hasActions ? rect.h * WAGER_PANEL_PILE_GAP_FRAC : 0;
-  const minButtonRowWidth = pxPerUnitX
-    ? (isOpponent ? WAGER_PANEL_MIN_OPPONENT_BUTTON_WIDTH_PX * 2 + WAGER_PANEL_MIN_BUTTON_GAP_PX : WAGER_PANEL_MIN_PLAYER_BUTTON_WIDTH_PX) / pxPerUnitX
-    : 0;
+  const borderAndBufferPx = 4;
+  const opponentButtonsMinWidthPx = WAGER_PANEL_MIN_DECLINE_BUTTON_WIDTH_PX + WAGER_PANEL_MIN_ACCEPT_BUTTON_WIDTH_PX + WAGER_PANEL_BUTTON_GAP_PX + borderAndBufferPx;
+  const playerButtonMinWidthPx = WAGER_PANEL_MIN_PLAYER_BUTTON_WIDTH_PX + borderAndBufferPx;
+  const buttonRowMinWidthPx = isOpponent ? opponentButtonsMinWidthPx : playerButtonMinWidthPx;
+  const buttonRowMinWidthUnits = pxPerUnitX ? buttonRowMinWidthPx / pxPerUnitX : 0;
   const minPanelContentWidth = rect.w + countGap + minCountWidth;
-  const buttonRowWidth = hasActions ? Math.max(rect.w, minButtonRowWidth, minPanelContentWidth) : minPanelContentWidth;
+  const buttonRowWidth = hasActions ? Math.max(rect.w, buttonRowMinWidthUnits, minPanelContentWidth) : minPanelContentWidth;
   const panelWidth = buttonRowWidth + paddingX * 2;
   const panelHeight = rect.h + paddingY * 2 + pileGap + buttonHeight;
   const centerX = rect.x + rect.w / 2;
@@ -171,9 +174,7 @@ const getWagerPanelLayout = (
       : [paddingY, buttonHeight, pileGap, rect.h, paddingY]
     : [paddingY, rect.h, paddingY];
   const gridRows = rowValues.map((value) => `${(value / panelHeight) * 100}%`).join(" ");
-  const paddingXPct = (paddingX / panelWidth) * 100;
-  const buttonGapPct = buttonRowWidth > 0 ? (buttonGap / buttonRowWidth) * 100 : 0;
-  const singleButtonWidthPct = WAGER_PANEL_BUTTON_WIDTH_FRAC * 100;
+  const paddingXPx = pxPerUnitX ? paddingX * pxPerUnitX : WAGER_PANEL_MIN_PADDING_PX;
   const pileRow = hasActions ? (isOpponent ? 2 : 4) : 2;
   const buttonRow = hasActions ? (isOpponent ? 4 : 2) : 0;
 
@@ -183,11 +184,14 @@ const getWagerPanelLayout = (
     width: panelWidth,
     height: panelHeight,
     gridRows,
-    paddingXPct,
+    paddingXPx,
     pileRow,
     buttonRow,
-    buttonGapPct,
-    singleButtonWidthPct,
+    buttonGapPx: WAGER_PANEL_BUTTON_GAP_PX,
+    declineButtonMinWidthPx: WAGER_PANEL_MIN_DECLINE_BUTTON_WIDTH_PX,
+    acceptButtonMinWidthPx: WAGER_PANEL_MIN_ACCEPT_BUTTON_WIDTH_PX,
+    playerButtonMinWidthPx: WAGER_PANEL_MIN_PLAYER_BUTTON_WIDTH_PX,
+    buttonPaddingXPx: WAGER_PANEL_BUTTON_PADDING_X_PX,
     countGap,
   };
 };
@@ -944,8 +948,8 @@ const BoardComponent: React.FC = () => {
                 height: `${toPercentY(wagerPanelLayout.height)}%`,
                 display: "grid",
                 gridTemplateRows: wagerPanelLayout.gridRows,
-                paddingLeft: `${wagerPanelLayout.paddingXPct}%`,
-                paddingRight: `${wagerPanelLayout.paddingXPct}%`,
+                paddingLeft: `${wagerPanelLayout.paddingXPx}px`,
+                paddingRight: `${wagerPanelLayout.paddingXPx}px`,
                 boxSizing: "border-box",
                 background: wagerPanelTheme.background,
                 border: `1px solid ${wagerPanelTheme.border}`,
@@ -953,7 +957,7 @@ const BoardComponent: React.FC = () => {
                 borderRadius: "16px",
                 backdropFilter: "blur(6px)",
                 WebkitBackdropFilter: "blur(6px)",
-                overflow: "hidden",
+                overflow: "visible",
                 pointerEvents: "auto",
                 userSelect: "none",
                 zIndex: 2,
@@ -983,13 +987,13 @@ const BoardComponent: React.FC = () => {
                   data-wager-panel="true"
                   style={{
                     gridRow: wagerPanelLayout.buttonRow,
-                    width: "100%",
-                    justifySelf: "center",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    gap: `${wagerPanelLayout.buttonGapPct}%`,
+                    gap: `${wagerPanelLayout.buttonGapPx}px`,
                     height: "100%",
+                    width: "100%",
+                    overflow: "visible",
                   }}>
                   {showOpponentActions && (
                     <>
@@ -998,7 +1002,13 @@ const BoardComponent: React.FC = () => {
                         type="button"
                         onClick={!isMobile ? handleWagerDecline : undefined}
                         onTouchStart={isMobile ? handleWagerDecline : undefined}
-                        style={{ ...wagerPanelButtonStyle, flex: "1 1 0" }}>
+                        style={{
+                          ...wagerPanelButtonStyle,
+                          flex: "1 0 auto",
+                          minWidth: `${wagerPanelLayout.declineButtonMinWidthPx}px`,
+                          paddingLeft: `${wagerPanelLayout.buttonPaddingXPx}px`,
+                          paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
+                        }}>
                         Decline
                       </button>
                       <button
@@ -1009,7 +1019,10 @@ const BoardComponent: React.FC = () => {
                         onTouchStart={isMobile ? handleWagerAccept : undefined}
                         style={{
                           ...wagerPanelButtonStyle,
-                          flex: "1 1 0",
+                          flex: "1 0 auto",
+                          minWidth: `${wagerPanelLayout.acceptButtonMinWidthPx}px`,
+                          paddingLeft: `${wagerPanelLayout.buttonPaddingXPx}px`,
+                          paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
                           opacity: canAccept ? 1 : 0.5,
                           cursor: canAccept ? "pointer" : "not-allowed",
                         }}>
@@ -1023,7 +1036,13 @@ const BoardComponent: React.FC = () => {
                       type="button"
                       onClick={!isMobile ? handleWagerCancel : undefined}
                       onTouchStart={isMobile ? handleWagerCancel : undefined}
-                      style={{ ...wagerPanelButtonStyle, width: `${wagerPanelLayout.singleButtonWidthPct}%` }}>
+                      style={{
+                        ...wagerPanelButtonStyle,
+                        flexShrink: 0,
+                        minWidth: `${wagerPanelLayout.playerButtonMinWidthPx}px`,
+                        paddingLeft: `${wagerPanelLayout.buttonPaddingXPx}px`,
+                        paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
+                      }}>
                       Cancel Proposal
                     </button>
                   )}
