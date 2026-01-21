@@ -134,6 +134,12 @@
   --pinkButtonBackgroundActiveDark: #ff85c0;
   --pinkButtonBackgroundDisabledDark: #664d57;
   --color-text-on-pink-disabled: rgba(204, 204, 204, 0.77);
+  --wagerButtonBackground: #1a6b47;
+  --wagerButtonBackgroundHover: #155a3b;
+  --wagerButtonBackgroundActive: #114a31;
+  --wagerButtonBackgroundDark: #218f5e;
+  --wagerButtonBackgroundHoverDark: #25a06a;
+  --wagerButtonBackgroundActiveDark: #29b176;
 }
 
 @media (prefers-color-scheme: dark) {

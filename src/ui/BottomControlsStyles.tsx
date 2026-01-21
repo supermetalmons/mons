@@ -526,3 +526,48 @@ export const StickerRowLast = styled.div`
   gap: 6px;
   width: 100%;
 `;
+
+export const WagerBetButton = styled.button`
+  width: 100%;
+  height: 34px;
+  border-radius: 17px;
+  padding: 0 14px;
+  border: none;
+  background-color: var(--wagerButtonBackground);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.84rem;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  flex-shrink: 0;
+  margin-bottom: 2px;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: var(--wagerButtonBackgroundHover);
+    }
+  }
+
+  &:active {
+    background-color: var(--wagerButtonBackgroundActive);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--wagerButtonBackgroundDark);
+    color: #fff;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: var(--wagerButtonBackgroundHoverDark);
+      }
+    }
+
+    &:active {
+      background-color: var(--wagerButtonBackgroundActiveDark);
+    }
+  }
+`;

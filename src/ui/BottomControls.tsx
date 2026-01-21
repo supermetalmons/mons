@@ -10,7 +10,7 @@ import { playReaction, playSounds } from "../content/sounds";
 import { newReactionOfKind, newStickerReaction } from "../content/sounds";
 import { showVoiceReactionText } from "../game/board";
 import NavigationPicker from "./NavigationPicker";
-import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, ControlButton, BottomPillButton, ResignButton, ResignConfirmation, ReactionPillsContainer, ReactionPill, StickerPill } from "./BottomControlsStyles";
+import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, ControlButton, BottomPillButton, ResignButton, ResignConfirmation, ReactionPillsContainer, ReactionPill, StickerPill, WagerBetButton } from "./BottomControlsStyles";
 import { fetchNftsForStoredAddresses } from "../services/nftService";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { showVideoReaction } from "./BoardComponent";
@@ -788,6 +788,7 @@ const BottomControls: React.FC = () => {
         </NavigationListButton>
         {isReactionPickerVisible && (
           <ReactionPillsContainer ref={pickerRef} animatedMaxHeight={pickerMaxHeight}>
+            <WagerBetButton onClick={() => setIsReactionPickerVisible(false)}>Wager a Bet</WagerBetButton>
             <ReactionPill onClick={() => handleReactionSelect("yo")}>yo</ReactionPill>
             <ReactionPill onClick={() => handleReactionSelect("wahoo")}>wahoo</ReactionPill>
             <ReactionPill onClick={() => handleReactionSelect("drop")}>drop</ReactionPill>
