@@ -3,7 +3,7 @@ import { getAuth, Auth, signInAnonymously, onAuthStateChanged, signOut } from "f
 import { getDatabase, Database, ref, set, onValue, off, get, update } from "firebase/database";
 import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
-import { getPlayersEmojiId, didGetPlayerProfile } from "../game/board";
+import { getPlayersEmojiId, didGetPlayerProfile, setupPlayerId } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
 import { Match, Invite, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES, MiningMaterialName, MatchWagerState, WagerProposal, WagerAgreement } from "./connectionModels";
 import { storage } from "../utils/storage";
@@ -442,6 +442,10 @@ class Connection {
         callback(newUid);
       }
     });
+  }
+
+  public getSameProfilePlayerUid(): string | null {
+    return this.sameProfilePlayerUid;
   }
 
   private async ensureAuthenticated(): Promise<void> {
@@ -1103,6 +1107,14 @@ class Connection {
     }
     this.sameProfilePlayerUid = uid;
     this.observeMiningFrozen(uid);
+    if (uid) {
+      setupPlayerId(uid, false);
+      this.getProfileByLoginId(uid)
+        .then((profile) => {
+          didGetPlayerProfile(profile, uid, true);
+        })
+        .catch(() => {});
+    }
   }
 
   public updateStoredEmoji(newId: number, aura: string | null | undefined): void {
