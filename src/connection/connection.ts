@@ -809,6 +809,28 @@ class Connection {
               setFrozenMaterials(prevFrozen);
             }
           }
+        } else if (data && data.agreed) {
+          const agreed = data.agreed as WagerAgreement;
+          const rawCount = typeof agreed.count === "number" ? agreed.count : Number(agreed.count);
+          const agreedCount = Number.isFinite(rawCount)
+            ? Math.max(0, Math.round(rawCount))
+            : agreed.total
+            ? Math.max(0, Math.round(agreed.total / 2))
+            : 0;
+          const nextAgreed: WagerAgreement = { ...agreed, count: agreedCount, total: agreed.total ?? agreedCount * 2 };
+          const latestState = getWagerState();
+          if (!latestState?.resolved) {
+            const nextState: MatchWagerState = {
+              ...(latestState ?? {}),
+              proposals: undefined,
+              agreed: nextAgreed,
+            };
+            this.setLocalWagerState(nextState);
+            const delta = agreedCount - optimisticCount;
+            if (delta !== 0) {
+              applyFrozenMaterialsDelta({ [material]: delta });
+            }
+          }
         } else if (data && typeof data.count === "number") {
           const serverCount = Math.max(0, Math.round(data.count));
           if (serverCount !== optimisticCount) {
