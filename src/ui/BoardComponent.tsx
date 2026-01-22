@@ -980,7 +980,7 @@ const BoardComponent: React.FC = () => {
                           paddingLeft: `${wagerPanelLayout.buttonPaddingXPx}px`,
                           paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
                           opacity: canAccept ? 1 : 0.5,
-                          cursor: canAccept ? "pointer" : "not-allowed",
+                          cursor: "pointer",
                         }}>
                         {acceptLabel}
                       </button>
