@@ -14,7 +14,7 @@ import { storage } from "../utils/storage";
 import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSignIn";
 import { showVideoReaction } from "../ui/BoardComponent";
 import { setIslandButtonDimmed } from "../index";
-import { setCurrentWagerMatch, setWagerState, subscribeToWagerState } from "./wagerState";
+import { setCurrentWagerMatch, subscribeToWagerState } from "./wagerState";
 
 const experimentalDrawingDevMode = false;
 
