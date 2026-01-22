@@ -18,9 +18,6 @@ exports.sendWagerProposal = onCall(async (request) => {
   if (typeof inviteId !== "string" || typeof matchId !== "string" || !isMaterialName(material) || requestedCount <= 0) {
     return { ok: false, reason: "invalid-argument", debug: baseDebug };
   }
-  if (inviteId.startsWith("auto_")) {
-    return { ok: false, reason: "automatch-disabled", debug: baseDebug };
-  }
 
   const inviteSnap = await admin.database().ref(`invites/${inviteId}`).once("value");
   const inviteData = inviteSnap.val();

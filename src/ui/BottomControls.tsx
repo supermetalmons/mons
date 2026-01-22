@@ -667,7 +667,7 @@ const BottomControls: React.FC = () => {
   const hasResolvedWager = !!wagerState?.resolved;
   const playerHasProposed = !!(playerUid && wagerState?.proposedBy && wagerState.proposedBy[playerUid]) || !!(playerUid && wagerState?.proposals && wagerState.proposals[playerUid]);
   const hasPlayers = !!playerUid && !!opponentUid;
-  const isEligibleForWager = isOnlineGame && !isWatchOnly && !isGameWithBot && !isMatchOver() && !connection.isAutomatch() && playerHasProfile && opponentHasProfile && hasPlayers;
+  const isEligibleForWager = isOnlineGame && !isWatchOnly && !isGameWithBot && !isMatchOver() && playerHasProfile && opponentHasProfile && hasPlayers;
   const canSubmitWager = isEligibleForWager && !hasAgreedWager && !hasResolvedWager && !playerHasProposed;
   const wagerMaterial = wagerSelection.name;
   const wagerCount = wagerSelection.count;
