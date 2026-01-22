@@ -234,8 +234,6 @@ const BoardComponent: React.FC = () => {
     opponentHasProposal: false,
     lockPlayerPanel: false,
   });
-  const lastOpponentProposalKeyRef = useRef<string | null>(null);
-  const suppressOpponentAutoOpenKeyRef = useRef<string | null>(null);
   const opponentAuraContainerRef = useRef<HTMLDivElement | null>(null);
   const playerAuraContainerRef = useRef<HTMLDivElement | null>(null);
   const opponentAuraRefs = useRef<{ background: HTMLDivElement; inner: HTMLDivElement } | null>(null);
@@ -330,7 +328,6 @@ const BoardComponent: React.FC = () => {
   const wagerAgreement = wagerState?.agreed ?? null;
   const wagerResolved = wagerState?.resolved ?? null;
   const wagerActionsLocked = watchOnlySnapshot || !!wagerAgreement || !!wagerResolved;
-  const opponentProposalKey = opponentProposal ? `${opponentProposal.material}:${opponentProposal.count}` : null;
   const availableMaterials = computeAvailableMaterials(miningMaterials, frozenMaterials);
   const opponentMaterial = opponentProposal?.material ?? null;
   const opponentCount = opponentProposal?.count ?? 0;
@@ -516,13 +513,10 @@ const BoardComponent: React.FC = () => {
         clearWagerPanel();
         return;
       }
-      if (opponentProposalKey) {
-        suppressOpponentAutoOpenKeyRef.current = opponentProposalKey;
-      }
       clearWagerPanel();
       connection.declineWagerProposal().catch(() => {});
     },
-    [clearWagerPanel, opponentProposal, opponentProposalKey, wagerActionsLocked]
+    [clearWagerPanel, opponentProposal, wagerActionsLocked]
   );
 
   const handleWagerAccept = useCallback(
@@ -537,44 +531,21 @@ const BoardComponent: React.FC = () => {
         clearWagerPanel();
         return;
       }
-      if (opponentProposalKey) {
-        suppressOpponentAutoOpenKeyRef.current = opponentProposalKey;
-      }
       clearWagerPanel();
       connection.acceptWagerProposal().catch(() => {});
     },
-    [canAccept, clearWagerPanel, opponentProposal, opponentProposalKey, wagerActionsLocked]
+    [canAccept, clearWagerPanel, opponentProposal, wagerActionsLocked]
   );
 
   useEffect(() => {
-    if (!wagerActionsLocked) {
-      if (opponentProposal && opponentProposalKey) {
-        if (suppressOpponentAutoOpenKeyRef.current === opponentProposalKey) {
-          lastOpponentProposalKeyRef.current = opponentProposalKey;
-          return;
-        }
-        if (activeWagerPanelSideRef.current !== "opponent" || lastOpponentProposalKeyRef.current !== opponentProposalKey) {
-          openWagerPanelForSide("opponent");
-        }
-        lastOpponentProposalKeyRef.current = opponentProposalKey;
-        return;
-      }
-      suppressOpponentAutoOpenKeyRef.current = null;
-      lastOpponentProposalKeyRef.current = null;
-      if (activeWagerPanelSideRef.current === "opponent") {
-        clearWagerPanel();
-        return;
-      }
-      if (activeWagerPanelSideRef.current === "player" && !playerProposal) {
-        clearWagerPanel();
-      }
+    if (activeWagerPanelSideRef.current === "opponent" && !opponentProposal) {
+      clearWagerPanel();
       return;
     }
-    lastOpponentProposalKeyRef.current = opponentProposalKey;
-    if (!opponentProposal) {
-      suppressOpponentAutoOpenKeyRef.current = null;
+    if (activeWagerPanelSideRef.current === "player" && !playerProposal) {
+      clearWagerPanel();
     }
-  }, [clearWagerPanel, openWagerPanelForSide, opponentProposal, opponentProposalKey, playerProposal, wagerActionsLocked]);
+  }, [clearWagerPanel, opponentProposal, playerProposal]);
 
   const ensureWagerPileElements = useCallback((): WagerPileElements | null => {
     const layer = wagerPilesLayerRef.current;
@@ -749,20 +720,8 @@ const BoardComponent: React.FC = () => {
           }
         }
       }
-      if (
-        !wagerActionsLocked &&
-        opponentProposal &&
-        opponentProposalKey &&
-        suppressOpponentAutoOpenKeyRef.current !== opponentProposalKey &&
-        !state.winAnimationActive &&
-        !state.winner &&
-        state.opponent &&
-        activeWagerPanelSideRef.current !== "opponent"
-      ) {
-        openWagerPanelForSide("opponent");
-      }
     },
-    [clearWagerPanel, ensureWagerPileElements, openWagerPanelForSide, opponentProposal, opponentProposalKey, wagerActionsLocked]
+    [clearWagerPanel, ensureWagerPileElements]
   );
 
   useEffect(() => {
@@ -780,9 +739,6 @@ const BoardComponent: React.FC = () => {
       if (!activeWagerPanelSideRef.current) {
         return false;
       }
-      if (activeWagerPanelSideRef.current === "opponent" && opponentProposal && !wagerActionsLocked) {
-        return false;
-      }
       const target = event.target;
       if (target instanceof Element && target.closest('[data-wager-panel="true"], [data-wager-pile]')) {
         return false;
@@ -794,7 +750,7 @@ const BoardComponent: React.FC = () => {
       setWagerPanelOutsideTapHandler(null);
       setWagerPanelVisibilityChecker(() => false);
     };
-  }, [clearWagerPanel, opponentProposal, wagerActionsLocked]);
+  }, [clearWagerPanel]);
 
   const standardBoardTransform = "translate(0,100)";
   const pangchiuBoardTransform = "translate(83,184) scale(0.85892388)";
