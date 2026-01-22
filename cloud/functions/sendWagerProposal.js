@@ -18,9 +18,6 @@ exports.sendWagerProposal = onCall(async (request) => {
   if (typeof inviteId !== "string" || typeof matchId !== "string" || !isMaterialName(material) || requestedCount <= 0) {
     return { ok: false, reason: "invalid-argument", debug: baseDebug };
   }
-  if (inviteId.startsWith("auto_")) {
-    return { ok: false, reason: "automatch-disabled", debug: baseDebug };
-  }
 
   const inviteSnap = await admin.database().ref(`invites/${inviteId}`).once("value");
   const inviteData = inviteSnap.val();
@@ -35,8 +32,8 @@ exports.sendWagerProposal = onCall(async (request) => {
   if (resolved.error) {
     return { ok: false, reason: resolved.error, debug: inviteDebug };
   }
-  const { playerUid, playerProfile } = resolved;
-  const playerDebug = { ...inviteDebug, playerUid };
+  const { playerUid, opponentUid, playerProfile } = resolved;
+  const playerDebug = { ...inviteDebug, playerUid, opponentUid };
 
   const totalMaterials = await readUserMiningMaterials(playerProfile.profileId);
   const reservedCount = await reserveFrozenMaterials(playerUid, material, requestedCount, totalMaterials);
@@ -46,7 +43,11 @@ exports.sendWagerProposal = onCall(async (request) => {
 
   const wagerRef = admin.database().ref(`invites/${inviteId}/wagers/${matchId}`);
   const now = Date.now();
+  let autoAgreement = null;
+  let autoOpponentCount = 0;
   const txn = await wagerRef.transaction((current) => {
+    autoAgreement = null;
+    autoOpponentCount = 0;
     const data = current || {};
     if (data.resolved || data.agreed) {
       return;
@@ -55,6 +56,29 @@ exports.sendWagerProposal = onCall(async (request) => {
     const proposedBy = data.proposedBy || {};
     if (proposals[playerUid] || proposedBy[playerUid]) {
       return;
+    }
+    const opponentProposal = opponentUid && proposals ? proposals[opponentUid] : null;
+    const opponentCount = opponentProposal ? normalizeCount(opponentProposal.count) : 0;
+    if (opponentProposal && opponentProposal.material === material && opponentCount > 0) {
+      const acceptedCount = Math.min(reservedCount, opponentCount);
+      if (acceptedCount <= 0) {
+        return;
+      }
+      const agreed = {
+        material,
+        count: acceptedCount,
+        total: acceptedCount * 2,
+        proposerId: opponentUid,
+        accepterId: playerUid,
+        acceptedAt: now,
+      };
+      proposedBy[playerUid] = true;
+      data.agreed = agreed;
+      data.proposals = null;
+      data.proposedBy = proposedBy;
+      autoAgreement = agreed;
+      autoOpponentCount = opponentCount;
+      return data;
     }
     proposals[playerUid] = { material, count: reservedCount, createdAt: now };
     proposedBy[playerUid] = true;
@@ -79,6 +103,21 @@ exports.sendWagerProposal = onCall(async (request) => {
         latestProposalKeys: Object.keys(latestProposals),
       },
     };
+  }
+
+  if (autoAgreement) {
+    const agreedCount = normalizeCount(autoAgreement.count);
+    const selfDelta = agreedCount - reservedCount;
+    if (selfDelta !== 0) {
+      await updateFrozenMaterials(playerUid, { [material]: selfDelta });
+    }
+    if (opponentUid && autoOpponentCount) {
+      const opponentDelta = agreedCount - autoOpponentCount;
+      if (opponentDelta !== 0) {
+        await updateFrozenMaterials(opponentUid, { [material]: opponentDelta });
+      }
+    }
+    return { ok: true, count: agreedCount, agreed: autoAgreement, debug: { ...playerDebug, reservedCount, agreedCount, auto: true } };
   }
 
   return { ok: true, count: reservedCount, debug: { ...playerDebug, reservedCount } };

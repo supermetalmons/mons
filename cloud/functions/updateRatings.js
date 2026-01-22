@@ -1,7 +1,34 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const glicko2 = require("glicko2");
 const admin = require("firebase-admin");
-const { batchReadWithRetry, getProfileByLoginId, updateUserRatingNonceAndManaPoints, appendAutomatchBotMessageText, getDisplayNameFromAddress } = require("./utils");
+const { batchReadWithRetry, getProfileByLoginId, updateUserRatingNonceAndManaPoints, appendAutomatchBotMessageText, getDisplayNameFromAddress, getTelegramEmojiTag } = require("./utils");
+
+const materialTelegramEmojiIds = {
+  dust: "5235835141238063097",
+  slime: "5235497595463303384",
+  gum: "5233425978117621609",
+  metal: "5235794850149863190",
+  ice: "5233743994676086020",
+};
+
+const getWagerSuffix = (inviteData, matchId) => {
+  const wagerData = inviteData && inviteData.wagers && inviteData.wagers[matchId] ? inviteData.wagers[matchId] : null;
+  const agreed = wagerData && wagerData.agreed ? wagerData.agreed : null;
+  if (!agreed || !agreed.material || agreed.count === undefined || agreed.count === null) {
+    return "";
+  }
+  const material = typeof agreed.material === "string" ? agreed.material : "";
+  const emojiId = materialTelegramEmojiIds[material] || "";
+  const icon = getTelegramEmojiTag(emojiId);
+  if (!icon) {
+    return "";
+  }
+  const normalizedCount = Math.round(Number(agreed.count));
+  if (!Number.isFinite(normalizedCount) || normalizedCount <= 0) {
+    return "";
+  }
+  return `${icon} ${normalizedCount}`;
+};
 
 exports.updateRatings = onCall(async (request) => {
   const uid = request.auth.uid;
@@ -143,6 +170,10 @@ exports.updateRatings = onCall(async (request) => {
     suffix += " ⚐";
   } else if (matchData.timer === "gg" || opponentMatchData.timer === "gg") {
     suffix += " ⏲";
+  }
+  const wagerSuffix = getWagerSuffix(inviteData, matchId);
+  if (wagerSuffix) {
+    suffix += ` ${wagerSuffix}`;
   }
   const updateRatingMessage = canUpdateRatings ? `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓${suffix}` : `${winnerDisplayName} ↑ ${loserDisplayName}${suffix}`;
   await appendAutomatchBotMessageText(inviteId, updateRatingMessage, true);
