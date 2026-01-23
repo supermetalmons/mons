@@ -259,6 +259,8 @@ const BoardComponent: React.FC = () => {
   const disappearingAnimationStartedRef = useRef<{ player: boolean; opponent: boolean }>({ player: false, opponent: false });
   const pendingBlinkDelayTimersRef = useRef<{ player: number | null; opponent: number | null }>({ player: null, opponent: null });
   const pendingBlinkEnabledRef = useRef<{ player: boolean; opponent: boolean }>({ player: false, opponent: false });
+  const previousMaterialUrlRef = useRef<{ player: string | null; opponent: string | null }>({ player: null, opponent: null });
+  const materialChangeOldIconsRef = useRef<{ player: HTMLImageElement[]; opponent: HTMLImageElement[] }>({ player: [], opponent: [] });
   const wagerPanelStateRef = useRef<{ actionsLocked: boolean; playerHasProposal: boolean; opponentHasProposal: boolean }>({
     actionsLocked: true,
     playerHasProposal: false,
@@ -672,6 +674,8 @@ const BoardComponent: React.FC = () => {
 
       const PENDING_BLINK_DELAY_MS = 1300;
 
+      const MATERIAL_CHANGE_FADE_MS = 280;
+
       const updatePile = (
         container: HTMLDivElement,
         icons: HTMLImageElement[],
@@ -691,6 +695,9 @@ const BoardComponent: React.FC = () => {
               pendingBlinkDelayTimersRef.current[sideKey] = null;
             }
             pendingBlinkEnabledRef.current[sideKey] = false;
+            previousMaterialUrlRef.current[sideKey] = null;
+            materialChangeOldIconsRef.current[sideKey].forEach((icon) => icon.remove());
+            materialChangeOldIconsRef.current[sideKey] = [];
           }
           while (icons.length > 0) {
             const icon = icons.pop();
@@ -711,6 +718,9 @@ const BoardComponent: React.FC = () => {
               pendingBlinkDelayTimersRef.current[sideKey] = null;
             }
             pendingBlinkEnabledRef.current[sideKey] = false;
+            previousMaterialUrlRef.current[sideKey] = null;
+            materialChangeOldIconsRef.current[sideKey].forEach((icon) => icon.remove());
+            materialChangeOldIconsRef.current[sideKey] = [];
           }
           while (icons.length > 0) {
             const icon = icons.pop();
@@ -761,8 +771,32 @@ const BoardComponent: React.FC = () => {
         const sizePctW = (iconSize / rect.w) * 100;
         const sizePctH = (iconSize / rect.h) * 100;
         const visibleCount = Math.min(pileState.count, pileState.frames.length);
-        const shouldAnimate = pileState.animation === "appear";
         const animationOffsetY = isOpponentSide ? -APPEAR_ANIMATION_OFFSET_PCT : APPEAR_ANIMATION_OFFSET_PCT;
+
+        const prevMaterial = sideKey ? previousMaterialUrlRef.current[sideKey] : null;
+        const materialChanged = sideKey && prevMaterial !== null && prevMaterial !== materialUrl && icons.length > 0;
+        const shouldAnimate = pileState.animation === "appear" || materialChanged;
+
+        if (materialChanged && sideKey) {
+          const oldIcons = [...icons];
+          oldIcons.forEach((icon) => {
+            icon.style.transition = `opacity ${MATERIAL_CHANGE_FADE_MS}ms ease-out`;
+            icon.style.opacity = "0";
+          });
+          materialChangeOldIconsRef.current[sideKey].forEach((icon) => icon.remove());
+          materialChangeOldIconsRef.current[sideKey] = oldIcons;
+          setTimeout(() => {
+            oldIcons.forEach((icon) => icon.remove());
+            if (materialChangeOldIconsRef.current[sideKey] === oldIcons) {
+              materialChangeOldIconsRef.current[sideKey] = [];
+            }
+          }, MATERIAL_CHANGE_FADE_MS);
+          icons.length = 0;
+        }
+
+        if (sideKey) {
+          previousMaterialUrlRef.current[sideKey] = materialUrl;
+        }
 
         while (icons.length > visibleCount) {
           const icon = icons.pop();
