@@ -232,6 +232,7 @@ const BoardComponent: React.FC = () => {
   const activeWagerPanelSideRef = useRef<WagerPileSide | "winner" | null>(null);
   const activeWagerPanelRectRef = useRef<{ x: number; y: number; w: number; h: number } | null>(null);
   const activeWagerPanelCountRef = useRef<number | null>(null);
+  const disappearingAnimationStartedRef = useRef<{ player: boolean; opponent: boolean }>({ player: false, opponent: false });
   const wagerPanelStateRef = useRef<{ actionsLocked: boolean; playerHasProposal: boolean; opponentHasProposal: boolean }>({
     actionsLocked: true,
     playerHasProposal: false,
@@ -737,15 +738,17 @@ const BoardComponent: React.FC = () => {
         if (shouldAnimate && newIconsStartIndex < visibleCount) {
           const triggerAnimation = () => {
             requestAnimationFrame(() => {
-              for (let i = newIconsStartIndex; i < visibleCount; i += 1) {
-                const icon = icons[i];
-                if (icon) {
-                  const delay = (i - newIconsStartIndex) * 25;
-                  icon.style.transition = `opacity ${APPEAR_ANIMATION_DURATION_MS}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform ${APPEAR_ANIMATION_DURATION_MS}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`;
-                  icon.style.opacity = "1";
-                  icon.style.transform = "translateY(0)";
+              requestAnimationFrame(() => {
+                for (let i = newIconsStartIndex; i < visibleCount; i += 1) {
+                  const icon = icons[i];
+                  if (icon) {
+                    const delay = (i - newIconsStartIndex) * 25;
+                    icon.style.transition = `opacity ${APPEAR_ANIMATION_DURATION_MS}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform ${APPEAR_ANIMATION_DURATION_MS}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`;
+                    icon.style.opacity = "1";
+                    icon.style.transform = "translateY(0)";
+                  }
                 }
-              }
+              });
             });
           };
 
@@ -769,16 +772,22 @@ const BoardComponent: React.FC = () => {
       const updateDisappearingPile = (
         container: HTMLDivElement,
         icons: HTMLImageElement[],
-        disappearingState: WagerPileRenderState | null
+        disappearingState: WagerPileRenderState | null,
+        side: "player" | "opponent"
       ) => {
         if (!disappearingState || disappearingState.count <= 0 || disappearingState.frames.length === 0) {
           container.style.transition = "none";
           container.style.opacity = "0";
           container.style.pointerEvents = "none";
+          disappearingAnimationStartedRef.current[side] = false;
           while (icons.length > 0) {
             const icon = icons.pop();
             if (icon) icon.remove();
           }
+          return;
+        }
+
+        if (disappearingAnimationStartedRef.current[side]) {
           return;
         }
 
@@ -836,18 +845,39 @@ const BoardComponent: React.FC = () => {
           icon.style.height = `${sizePctH}%`;
         }
 
-        requestAnimationFrame(() => {
-          container.style.transition = `opacity ${DISAPPEAR_ANIMATION_DURATION_MS}ms ease-out`;
-          container.style.opacity = "0";
-        });
+        disappearingAnimationStartedRef.current[side] = true;
+
+        const triggerFade = () => {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              container.style.transition = `opacity ${DISAPPEAR_ANIMATION_DURATION_MS}ms ease-out`;
+              container.style.opacity = "0";
+            });
+          });
+        };
+
+        const firstIcon = icons[0];
+        if (firstIcon && firstIcon.complete && firstIcon.naturalWidth > 0) {
+          triggerFade();
+        } else if (firstIcon) {
+          const onLoad = () => {
+            firstIcon.removeEventListener("load", onLoad);
+            firstIcon.removeEventListener("error", onLoad);
+            triggerFade();
+          };
+          firstIcon.addEventListener("load", onLoad);
+          firstIcon.addEventListener("error", onLoad);
+        } else {
+          triggerFade();
+        }
       };
 
       updatePile(elements.opponent, elements.opponentIcons, state.opponent, true);
       updatePile(elements.player, elements.playerIcons, state.player, false);
       updatePile(elements.winner, elements.winnerIcons, state.winner, false);
 
-      updateDisappearingPile(elements.opponentDisappearing, elements.opponentDisappearingIcons, state.opponentDisappearing);
-      updateDisappearingPile(elements.playerDisappearing, elements.playerDisappearingIcons, state.playerDisappearing);
+      updateDisappearingPile(elements.opponentDisappearing, elements.opponentDisappearingIcons, state.opponentDisappearing, "opponent");
+      updateDisappearingPile(elements.playerDisappearing, elements.playerDisappearingIcons, state.playerDisappearing, "player");
 
       const activeSide = activeWagerPanelSideRef.current;
       if (activeSide) {
