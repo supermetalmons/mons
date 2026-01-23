@@ -254,6 +254,8 @@ const BoardComponent: React.FC = () => {
   const activeWagerPanelRectRef = useRef<{ x: number; y: number; w: number; h: number } | null>(null);
   const activeWagerPanelCountRef = useRef<number | null>(null);
   const disappearingAnimationStartedRef = useRef<{ player: boolean; opponent: boolean }>({ player: false, opponent: false });
+  const pendingBlinkDelayTimersRef = useRef<{ player: number | null; opponent: number | null }>({ player: null, opponent: null });
+  const pendingBlinkEnabledRef = useRef<{ player: boolean; opponent: boolean }>({ player: false, opponent: false });
   const wagerPanelStateRef = useRef<{ actionsLocked: boolean; playerHasProposal: boolean; opponentHasProposal: boolean }>({
     actionsLocked: true,
     playerHasProposal: false,
@@ -665,6 +667,8 @@ const BoardComponent: React.FC = () => {
       const APPEAR_ANIMATION_DURATION_MS = 320;
       const APPEAR_ANIMATION_OFFSET_PCT = 35;
 
+      const PENDING_BLINK_DELAY_MS = 1300;
+
       const updatePile = (
         container: HTMLDivElement,
         icons: HTMLImageElement[],
@@ -672,10 +676,19 @@ const BoardComponent: React.FC = () => {
         isOpponentSide: boolean,
         side: WagerPileSide | "winner"
       ) => {
+        const sideKey = side === "player" || side === "opponent" ? side : null;
+
         if (!pileState || pileState.count <= 0 || pileState.frames.length === 0) {
           container.style.opacity = "0";
           container.style.pointerEvents = "none";
           container.style.animation = "none";
+          if (sideKey) {
+            if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
+              window.clearTimeout(pendingBlinkDelayTimersRef.current[sideKey]!);
+              pendingBlinkDelayTimersRef.current[sideKey] = null;
+            }
+            pendingBlinkEnabledRef.current[sideKey] = false;
+          }
           while (icons.length > 0) {
             const icon = icons.pop();
             if (icon) {
@@ -689,6 +702,13 @@ const BoardComponent: React.FC = () => {
           container.style.opacity = "0";
           container.style.pointerEvents = "none";
           container.style.animation = "none";
+          if (sideKey) {
+            if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
+              window.clearTimeout(pendingBlinkDelayTimersRef.current[sideKey]!);
+              pendingBlinkDelayTimersRef.current[sideKey] = null;
+            }
+            pendingBlinkEnabledRef.current[sideKey] = false;
+          }
           while (icons.length > 0) {
             const icon = icons.pop();
             if (icon) {
@@ -700,7 +720,34 @@ const BoardComponent: React.FC = () => {
         container.style.opacity = "1";
         container.style.pointerEvents = "auto";
 
-        container.style.animation = pileState.isPending ? PENDING_PULSE_ANIMATION : "none";
+        if (sideKey && pileState.isPending) {
+          if (pileState.animation === "appear") {
+            pendingBlinkEnabledRef.current[sideKey] = false;
+            if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
+              window.clearTimeout(pendingBlinkDelayTimersRef.current[sideKey]!);
+            }
+            pendingBlinkDelayTimersRef.current[sideKey] = window.setTimeout(() => {
+              pendingBlinkDelayTimersRef.current[sideKey] = null;
+              pendingBlinkEnabledRef.current[sideKey] = true;
+              container.style.animation = PENDING_PULSE_ANIMATION;
+            }, PENDING_BLINK_DELAY_MS);
+            container.style.animation = "none";
+          } else {
+            if (!pendingBlinkEnabledRef.current[sideKey] && pendingBlinkDelayTimersRef.current[sideKey] === null) {
+              pendingBlinkEnabledRef.current[sideKey] = true;
+            }
+            container.style.animation = pendingBlinkEnabledRef.current[sideKey] ? PENDING_PULSE_ANIMATION : "none";
+          }
+        } else if (sideKey) {
+          if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
+            window.clearTimeout(pendingBlinkDelayTimersRef.current[sideKey]!);
+            pendingBlinkDelayTimersRef.current[sideKey] = null;
+          }
+          pendingBlinkEnabledRef.current[sideKey] = false;
+          container.style.animation = "none";
+        } else {
+          container.style.animation = "none";
+        }
         container.style.left = `${toPercentX(rect.x)}%`;
         container.style.top = `${toPercentY(rect.y)}%`;
         container.style.width = `${toPercentX(rect.w)}%`;
@@ -799,7 +846,8 @@ const BoardComponent: React.FC = () => {
         container: HTMLDivElement,
         icons: HTMLImageElement[],
         disappearingState: WagerPileRenderState | null,
-        side: "player" | "opponent"
+        side: "player" | "opponent",
+        startingOpacity: string
       ) => {
         if (!disappearingState || disappearingState.count <= 0 || disappearingState.frames.length === 0) {
           container.style.transition = "none";
@@ -831,7 +879,8 @@ const BoardComponent: React.FC = () => {
         container.style.height = `${toPercentY(rect.h)}%`;
         container.style.pointerEvents = "none";
         container.style.transition = "none";
-        container.style.opacity = "1";
+        container.style.animation = "none";
+        container.style.opacity = startingOpacity;
 
         const materialUrl = disappearingState.materialUrl;
         const iconSize = disappearingState.iconSize;
@@ -898,12 +947,15 @@ const BoardComponent: React.FC = () => {
         }
       };
 
+      const opponentCurrentOpacity = state.opponentDisappearing ? window.getComputedStyle(elements.opponent).opacity : "1";
+      const playerCurrentOpacity = state.playerDisappearing ? window.getComputedStyle(elements.player).opacity : "1";
+
       updatePile(elements.opponent, elements.opponentIcons, state.opponent, true, "opponent");
       updatePile(elements.player, elements.playerIcons, state.player, false, "player");
       updatePile(elements.winner, elements.winnerIcons, state.winner, false, "winner");
 
-      updateDisappearingPile(elements.opponentDisappearing, elements.opponentDisappearingIcons, state.opponentDisappearing, "opponent");
-      updateDisappearingPile(elements.playerDisappearing, elements.playerDisappearingIcons, state.playerDisappearing, "player");
+      updateDisappearingPile(elements.opponentDisappearing, elements.opponentDisappearingIcons, state.opponentDisappearing, "opponent", opponentCurrentOpacity);
+      updateDisappearingPile(elements.playerDisappearing, elements.playerDisappearingIcons, state.playerDisappearing, "player", playerCurrentOpacity);
 
       const activeSide = activeWagerPanelSideRef.current;
       if (activeSide) {
