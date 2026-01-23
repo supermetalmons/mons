@@ -1111,7 +1111,7 @@ function resetWagerStateForMatch(matchId: string | null) {
   }
   currentWagerState = null;
   setCurrentWagerMatch(matchId);
-  Board.clearWagerPiles();
+  Board.clearWagerPilesForNewMatch();
 }
 
 function applyWagerState() {
@@ -1286,6 +1286,7 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
 
   Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, isWatchOnly ? match.color === "black" : true);
   applyWagerState();
+  Board.markWagerInitialStateReceived();
 
   if (!isReconnect || (isReconnect && !game.is_later_than(match.fen)) || isWatchOnly) {
     const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
@@ -1684,6 +1685,7 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   setProcessedMovesCountForColor(match.color, movesCount);
   Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, false);
   applyWagerState();
+  Board.markWagerInitialStateReceived();
 
   if (match.status === "surrendered") {
     handleResignStatus(true, match.color);

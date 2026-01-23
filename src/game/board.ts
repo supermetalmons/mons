@@ -133,6 +133,7 @@ type WagerPile = {
 
 export type WagerPileSide = "player" | "opponent";
 type WagerPileRect = { x: number; y: number; w: number; h: number };
+export type WagerPileAnimation = "none" | "appear" | "disappear";
 export type WagerPileRenderState = {
   side: WagerPileSide | "winner";
   rect: WagerPileRect;
@@ -141,12 +142,15 @@ export type WagerPileRenderState = {
   frames: Array<{ x: number; y: number }>;
   count: number;
   actualCount: number;
+  animation: WagerPileAnimation;
 };
 export type WagerRenderState = {
   player: WagerPileRenderState | null;
   opponent: WagerPileRenderState | null;
   winner: WagerPileRenderState | null;
   winAnimationActive: boolean;
+  playerDisappearing: WagerPileRenderState | null;
+  opponentDisappearing: WagerPileRenderState | null;
 };
 
 let playerWagerPile: WagerPile | null = null;
@@ -166,6 +170,15 @@ let wagerWinAnimState: {
 } | null = null;
 let lastWagerWinnerIsOpponent = false;
 let handleWagerRenderState: ((state: WagerRenderState) => void) | null = null;
+let wagerAnimationsReady = false;
+let previousPlayerPileVisible = false;
+let previousOpponentPileVisible = false;
+let lastVisiblePlayerPileState: WagerPileRenderState | null = null;
+let lastVisibleOpponentPileState: WagerPileRenderState | null = null;
+let disappearingPlayerPile: WagerPileRenderState | null = null;
+let disappearingOpponentPile: WagerPileRenderState | null = null;
+let disappearingPileTimers: { player: number | null; opponent: number | null } = { player: null, opponent: null };
+const WAGER_DISAPPEAR_ANIMATION_MS = 280;
 
 export function setWagerRenderHandler(handler: ((state: WagerRenderState) => void) | null) {
   handleWagerRenderState = handler;
@@ -698,7 +711,7 @@ export function resetForNewGame() {
 
   removeHighlights();
   cleanAllPixels();
-  clearWagerPiles();
+  clearWagerPilesForNewMatch();
 }
 
 export function updateEmojiAndAuraIfNeeded(newEmojiId: string, aura: string | undefined, isOpponentSide: boolean) {
@@ -1757,7 +1770,7 @@ function updateWagerLayout() {
   emitWagerRenderState();
 }
 
-function buildWagerRenderState(pile: WagerPile | null, side: WagerPileSide | "winner"): WagerPileRenderState | null {
+function buildWagerRenderState(pile: WagerPile | null, side: WagerPileSide | "winner", animation: WagerPileAnimation): WagerPileRenderState | null {
   if (!pile || pile.count === 0 || !pile.rect) {
     return null;
   }
@@ -1767,25 +1780,96 @@ function buildWagerRenderState(pile: WagerPile | null, side: WagerPileSide | "wi
   }
   return {
     side,
-    rect: pile.rect,
+    rect: { ...pile.rect },
     iconSize: pile.iconSize,
     materialUrl,
-    frames: pile.frames,
+    frames: pile.frames.map((f) => ({ ...f })),
     count: pile.count,
     actualCount: pile.actualCount,
+    animation,
   };
+}
+
+function clearDisappearingPile(side: "player" | "opponent") {
+  if (side === "player") {
+    if (disappearingPileTimers.player !== null) {
+      window.clearTimeout(disappearingPileTimers.player);
+      disappearingPileTimers.player = null;
+    }
+    disappearingPlayerPile = null;
+  } else {
+    if (disappearingPileTimers.opponent !== null) {
+      window.clearTimeout(disappearingPileTimers.opponent);
+      disappearingPileTimers.opponent = null;
+    }
+    disappearingOpponentPile = null;
+  }
 }
 
 function emitWagerRenderState() {
   if (!handleWagerRenderState) {
     return;
   }
+
   const showWinner = Boolean(winnerPileActive && winnerWagerPile && winnerWagerPile.count > 0 && winnerWagerPile.rect);
+
+  const currentPlayerState = showWinner ? null : buildWagerRenderState(playerWagerPile, "player", "none");
+  const currentOpponentState = showWinner ? null : buildWagerRenderState(opponentWagerPile, "opponent", "none");
+  const currentPlayerVisible = !!currentPlayerState;
+  const currentOpponentVisible = !!currentOpponentState;
+
+  let playerAnimation: WagerPileAnimation = "none";
+  let opponentAnimation: WagerPileAnimation = "none";
+
+  if (wagerAnimationsReady) {
+    if (currentPlayerVisible && !previousPlayerPileVisible) {
+      playerAnimation = "appear";
+      clearDisappearingPile("player");
+    } else if (!currentPlayerVisible && previousPlayerPileVisible && lastVisiblePlayerPileState) {
+      clearDisappearingPile("player");
+      disappearingPlayerPile = { ...lastVisiblePlayerPileState, animation: "disappear" };
+      disappearingPileTimers.player = window.setTimeout(() => {
+        disappearingPlayerPile = null;
+        disappearingPileTimers.player = null;
+        emitWagerRenderState();
+      }, WAGER_DISAPPEAR_ANIMATION_MS);
+    }
+
+    if (currentOpponentVisible && !previousOpponentPileVisible) {
+      opponentAnimation = "appear";
+      clearDisappearingPile("opponent");
+    } else if (!currentOpponentVisible && previousOpponentPileVisible && lastVisibleOpponentPileState) {
+      clearDisappearingPile("opponent");
+      disappearingOpponentPile = { ...lastVisibleOpponentPileState, animation: "disappear" };
+      disappearingPileTimers.opponent = window.setTimeout(() => {
+        disappearingOpponentPile = null;
+        disappearingPileTimers.opponent = null;
+        emitWagerRenderState();
+      }, WAGER_DISAPPEAR_ANIMATION_MS);
+    }
+  }
+
+  previousPlayerPileVisible = currentPlayerVisible;
+  previousOpponentPileVisible = currentOpponentVisible;
+
+  if (currentPlayerState) {
+    lastVisiblePlayerPileState = currentPlayerState;
+  }
+  if (currentOpponentState) {
+    lastVisibleOpponentPileState = currentOpponentState;
+  }
+
+
+  const playerRenderState = currentPlayerState ? { ...currentPlayerState, animation: playerAnimation } : null;
+  const opponentRenderState = currentOpponentState ? { ...currentOpponentState, animation: opponentAnimation } : null;
+
   const state: WagerRenderState = {
-    player: showWinner ? null : buildWagerRenderState(playerWagerPile, "player"),
-    opponent: showWinner ? null : buildWagerRenderState(opponentWagerPile, "opponent"),
-    winner: showWinner ? buildWagerRenderState(winnerWagerPile, "winner") : null,
+    player: playerRenderState,
+    opponent: opponentRenderState,
+    winner: showWinner ? buildWagerRenderState(winnerWagerPile, "winner", "none") : null,
     winAnimationActive: wagerWinAnimActive,
+    playerDisappearing: disappearingPlayerPile,
+    opponentDisappearing: disappearingOpponentPile,
   };
   handleWagerRenderState(state);
 }
@@ -2101,6 +2185,20 @@ function resetWagerPile(pile: WagerPile | null) {
   pile.iconSize = 0;
 }
 
+export function resetWagerAnimationState() {
+  wagerAnimationsReady = false;
+  previousPlayerPileVisible = false;
+  previousOpponentPileVisible = false;
+  lastVisiblePlayerPileState = null;
+  lastVisibleOpponentPileState = null;
+  clearDisappearingPile("player");
+  clearDisappearingPile("opponent");
+}
+
+export function markWagerInitialStateReceived() {
+  wagerAnimationsReady = true;
+}
+
 export function clearWagerPiles() {
   cancelWagerWinAnimation();
   winnerPileActive = false;
@@ -2108,6 +2206,11 @@ export function clearWagerPiles() {
   resetWagerPile(opponentWagerPile);
   resetWagerPile(winnerWagerPile);
   emitWagerRenderState();
+}
+
+export function clearWagerPilesForNewMatch() {
+  resetWagerAnimationState();
+  clearWagerPiles();
 }
 
 export function setWagerPiles(state: { player?: { material: MaterialName; count: number } | null; opponent?: { material: MaterialName; count: number } | null }) {

@@ -7,7 +7,7 @@ import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../co
 import { defaultInputEventName, isMobile } from "../utils/misc";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
 import { attachRainbowAura, hideRainbowAura as hideAuraDom, setRainbowAuraMask, showRainbowAura as showAuraDom } from "./rainbowAura";
-import { playerSideMetadata, opponentSideMetadata, setWagerRenderHandler, WagerPileSide, WagerRenderState } from "../game/board";
+import { playerSideMetadata, opponentSideMetadata, setWagerRenderHandler, WagerPileSide, WagerRenderState, WagerPileRenderState } from "../game/board";
 import { setWagerPanelOutsideTapHandler, setWagerPanelVisibilityChecker } from "./BottomControls";
 import { connection } from "../connection/connection";
 import { MatchWagerState } from "../connection/connectionModels";
@@ -115,9 +115,13 @@ type WagerPileElements = {
   player: HTMLDivElement;
   opponent: HTMLDivElement;
   winner: HTMLDivElement;
+  playerDisappearing: HTMLDivElement;
+  opponentDisappearing: HTMLDivElement;
   playerIcons: HTMLImageElement[];
   opponentIcons: HTMLImageElement[];
   winnerIcons: HTMLImageElement[];
+  playerDisappearingIcons: HTMLImageElement[];
+  opponentDisappearingIcons: HTMLImageElement[];
 };
 
 const toPercentX = (value: number) => (value / BOARD_WIDTH_UNITS) * 100;
@@ -553,12 +557,19 @@ const BoardComponent: React.FC = () => {
       return null;
     }
     const existing = wagerPileElementsRef.current;
-    if (existing && layer.contains(existing.player) && layer.contains(existing.opponent) && layer.contains(existing.winner)) {
+    if (
+      existing &&
+      layer.contains(existing.player) &&
+      layer.contains(existing.opponent) &&
+      layer.contains(existing.winner) &&
+      layer.contains(existing.playerDisappearing) &&
+      layer.contains(existing.opponentDisappearing)
+    ) {
       return existing;
     }
     layer.innerHTML = "";
 
-    const createPileContainer = (side: WagerPileSide | "winner") => {
+    const createPileContainer = (side: WagerPileSide | "winner", isInteractive: boolean) => {
       const container = document.createElement("div");
       container.dataset.wagerPile = side;
       container.style.position = "absolute";
@@ -568,49 +579,56 @@ const BoardComponent: React.FC = () => {
       container.style.height = "0";
       container.style.display = "block";
       container.style.opacity = "0";
-      container.style.transition = "opacity 160ms ease";
-      container.style.pointerEvents = "auto";
+      container.style.pointerEvents = isInteractive ? "auto" : "none";
       container.style.touchAction = "none";
       container.style.userSelect = "none";
-      container.style.zIndex = "3";
+      container.style.zIndex = isInteractive ? "3" : "2";
       container.style.overflow = "visible";
-      container.style.cursor = "pointer";
-      container.addEventListener(defaultInputEventName, (event) => {
-        event.stopPropagation();
-        if (event.cancelable) {
-          event.preventDefault();
-        }
-        const config = wagerPanelStateRef.current;
-        if (!config.actionsLocked) {
-          if (side === "player" && (config.lockPlayerPanel || !config.playerHasProposal)) {
+      container.style.cursor = isInteractive ? "pointer" : "default";
+      if (isInteractive) {
+        container.addEventListener(defaultInputEventName, (event) => {
+          event.stopPropagation();
+          if (event.cancelable) {
+            event.preventDefault();
+          }
+          const config = wagerPanelStateRef.current;
+          if (!config.actionsLocked) {
+            if (side === "player" && (config.lockPlayerPanel || !config.playerHasProposal)) {
+              clearWagerPanel();
+              return;
+            }
+            if (side === "opponent" && !config.opponentHasProposal) {
+              clearWagerPanel();
+              return;
+            }
+          }
+          if (activeWagerPanelSideRef.current === side) {
             clearWagerPanel();
             return;
           }
-          if (side === "opponent" && !config.opponentHasProposal) {
-            clearWagerPanel();
-            return;
-          }
-        }
-        if (activeWagerPanelSideRef.current === side) {
-          clearWagerPanel();
-          return;
-        }
-        openWagerPanelForSide(side);
-      });
+          openWagerPanelForSide(side);
+        });
+      }
       return container;
     };
 
-    const player = createPileContainer("player");
-    const opponent = createPileContainer("opponent");
-    const winner = createPileContainer("winner");
-    layer.append(player, opponent, winner);
+    const playerDisappearing = createPileContainer("player", false);
+    const opponentDisappearing = createPileContainer("opponent", false);
+    const player = createPileContainer("player", true);
+    const opponent = createPileContainer("opponent", true);
+    const winner = createPileContainer("winner", true);
+    layer.append(playerDisappearing, opponentDisappearing, player, opponent, winner);
     const elements: WagerPileElements = {
       player,
       opponent,
       winner,
+      playerDisappearing,
+      opponentDisappearing,
       playerIcons: [],
       opponentIcons: [],
       winnerIcons: [],
+      playerDisappearingIcons: [],
+      opponentDisappearingIcons: [],
     };
     wagerPileElementsRef.current = elements;
     return elements;
@@ -624,16 +642,36 @@ const BoardComponent: React.FC = () => {
         return;
       }
 
-      const updatePile = (container: HTMLDivElement, icons: HTMLImageElement[], pileState: WagerRenderState["player"]) => {
+      const APPEAR_ANIMATION_DURATION_MS = 320;
+      const APPEAR_ANIMATION_OFFSET_PCT = 35;
+
+      const updatePile = (
+        container: HTMLDivElement,
+        icons: HTMLImageElement[],
+        pileState: WagerPileRenderState | null,
+        isOpponentSide: boolean
+      ) => {
         if (!pileState || pileState.count <= 0 || pileState.frames.length === 0) {
           container.style.opacity = "0";
           container.style.pointerEvents = "none";
+          while (icons.length > 0) {
+            const icon = icons.pop();
+            if (icon) {
+              icon.remove();
+            }
+          }
           return;
         }
         const rect = pileState.rect;
         if (rect.w === 0 || rect.h === 0) {
           container.style.opacity = "0";
           container.style.pointerEvents = "none";
+          while (icons.length > 0) {
+            const icon = icons.pop();
+            if (icon) {
+              icon.remove();
+            }
+          }
           return;
         }
         container.style.opacity = "1";
@@ -648,6 +686,8 @@ const BoardComponent: React.FC = () => {
         const sizePctW = (iconSize / rect.w) * 100;
         const sizePctH = (iconSize / rect.h) * 100;
         const visibleCount = Math.min(pileState.count, pileState.frames.length);
+        const shouldAnimate = pileState.animation === "appear";
+        const animationOffsetY = isOpponentSide ? -APPEAR_ANIMATION_OFFSET_PCT : APPEAR_ANIMATION_OFFSET_PCT;
 
         while (icons.length > visibleCount) {
           const icon = icons.pop();
@@ -655,6 +695,9 @@ const BoardComponent: React.FC = () => {
             icon.remove();
           }
         }
+
+        const newIconsStartIndex = icons.length;
+
         while (icons.length < visibleCount) {
           const icon = document.createElement("img");
           icon.alt = "";
@@ -667,6 +710,10 @@ const BoardComponent: React.FC = () => {
           icon.style.pointerEvents = "none";
           icon.style.userSelect = "none";
           icon.style.objectFit = "contain";
+          if (shouldAnimate) {
+            icon.style.opacity = "0";
+            icon.style.transform = `translateY(${animationOffsetY}%)`;
+          }
           container.appendChild(icon);
           icons.push(icon);
         }
@@ -688,11 +735,121 @@ const BoardComponent: React.FC = () => {
           icon.style.width = `${sizePctW}%`;
           icon.style.height = `${sizePctH}%`;
         }
+
+        if (shouldAnimate && newIconsStartIndex < visibleCount) {
+          const triggerAnimation = () => {
+            requestAnimationFrame(() => {
+              for (let i = newIconsStartIndex; i < visibleCount; i += 1) {
+                const icon = icons[i];
+                if (icon) {
+                  const delay = (i - newIconsStartIndex) * 25;
+                  icon.style.transition = `opacity ${APPEAR_ANIMATION_DURATION_MS}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms, transform ${APPEAR_ANIMATION_DURATION_MS}ms cubic-bezier(0.22, 1, 0.36, 1) ${delay}ms`;
+                  icon.style.opacity = "1";
+                  icon.style.transform = "translateY(0)";
+                }
+              }
+            });
+          };
+
+          const firstNewIcon = icons[newIconsStartIndex];
+          if (firstNewIcon && firstNewIcon.complete && firstNewIcon.naturalWidth > 0) {
+            triggerAnimation();
+          } else if (firstNewIcon) {
+            const onLoad = () => {
+              firstNewIcon.removeEventListener("load", onLoad);
+              firstNewIcon.removeEventListener("error", onLoad);
+              triggerAnimation();
+            };
+            firstNewIcon.addEventListener("load", onLoad);
+            firstNewIcon.addEventListener("error", onLoad);
+          }
+        }
       };
 
-      updatePile(elements.opponent, elements.opponentIcons, state.opponent);
-      updatePile(elements.player, elements.playerIcons, state.player);
-      updatePile(elements.winner, elements.winnerIcons, state.winner);
+      const DISAPPEAR_ANIMATION_DURATION_MS = 280;
+
+      const updateDisappearingPile = (
+        container: HTMLDivElement,
+        icons: HTMLImageElement[],
+        disappearingState: WagerPileRenderState | null
+      ) => {
+        if (!disappearingState || disappearingState.count <= 0 || disappearingState.frames.length === 0) {
+          container.style.transition = "none";
+          container.style.opacity = "0";
+          container.style.pointerEvents = "none";
+          while (icons.length > 0) {
+            const icon = icons.pop();
+            if (icon) icon.remove();
+          }
+          return;
+        }
+
+        const rect = disappearingState.rect;
+        if (rect.w === 0 || rect.h === 0) {
+          container.style.transition = "none";
+          container.style.opacity = "0";
+          container.style.pointerEvents = "none";
+          return;
+        }
+
+        container.style.left = `${toPercentX(rect.x)}%`;
+        container.style.top = `${toPercentY(rect.y)}%`;
+        container.style.width = `${toPercentX(rect.w)}%`;
+        container.style.height = `${toPercentY(rect.h)}%`;
+        container.style.pointerEvents = "none";
+        container.style.transition = "none";
+        container.style.opacity = "1";
+
+        const materialUrl = disappearingState.materialUrl;
+        const iconSize = disappearingState.iconSize;
+        const sizePctW = (iconSize / rect.w) * 100;
+        const sizePctH = (iconSize / rect.h) * 100;
+        const visibleCount = Math.min(disappearingState.count, disappearingState.frames.length);
+
+        while (icons.length > visibleCount) {
+          const icon = icons.pop();
+          if (icon) icon.remove();
+        }
+        while (icons.length < visibleCount) {
+          const icon = document.createElement("img");
+          icon.alt = "";
+          icon.draggable = false;
+          icon.style.position = "absolute";
+          icon.style.pointerEvents = "none";
+          icon.style.userSelect = "none";
+          icon.style.objectFit = "contain";
+          container.appendChild(icon);
+          icons.push(icon);
+        }
+
+        for (let i = 0; i < visibleCount; i += 1) {
+          const frame = disappearingState.frames[i];
+          if (!frame) continue;
+          const icon = icons[i];
+          if (icon.dataset.src !== materialUrl) {
+            icon.dataset.src = materialUrl;
+            icon.src = materialUrl;
+          }
+          const leftPct = ((frame.x - rect.x) / rect.w) * 100;
+          const topPct = ((frame.y - rect.y) / rect.h) * 100;
+          icon.style.left = `${leftPct}%`;
+          icon.style.top = `${topPct}%`;
+          icon.style.width = `${sizePctW}%`;
+          icon.style.height = `${sizePctH}%`;
+        }
+
+        requestAnimationFrame(() => {
+          container.style.transition = `opacity ${DISAPPEAR_ANIMATION_DURATION_MS}ms ease-out`;
+          container.style.opacity = "0";
+        });
+      };
+
+      updatePile(elements.opponent, elements.opponentIcons, state.opponent, true);
+      updatePile(elements.player, elements.playerIcons, state.player, false);
+      updatePile(elements.winner, elements.winnerIcons, state.winner, false);
+
+      updateDisappearingPile(elements.opponentDisappearing, elements.opponentDisappearingIcons, state.opponentDisappearing);
+      updateDisappearingPile(elements.playerDisappearing, elements.playerDisappearingIcons, state.playerDisappearing);
 
       const activeSide = activeWagerPanelSideRef.current;
       if (activeSide) {
@@ -980,7 +1137,7 @@ const BoardComponent: React.FC = () => {
                           paddingLeft: `${wagerPanelLayout.buttonPaddingXPx}px`,
                           paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
                           opacity: canAccept ? 1 : 0.5,
-                          cursor: canAccept ? "pointer" : "not-allowed",
+                          cursor: "pointer",
                         }}>
                         {acceptLabel}
                       </button>
