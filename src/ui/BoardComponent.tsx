@@ -111,6 +111,25 @@ const WAGER_PANEL_COUNT_MIN_GAP_PX = 4;
 const WAGER_PANEL_COUNT_MIN_WIDTH_PX = 32;
 const WAGER_PANEL_COUNT_Y_OFFSET_FRAC = 0.04;
 
+const PENDING_PULSE_KEYFRAMES_NAME = "wagerPilePendingPulse";
+const PENDING_PULSE_ANIMATION = `${PENDING_PULSE_KEYFRAMES_NAME} 2.5s ease-in-out infinite`;
+
+const injectPendingPulseKeyframes = (() => {
+  let injected = false;
+  return () => {
+    if (injected) return;
+    injected = true;
+    const style = document.createElement("style");
+    style.textContent = `
+      @keyframes ${PENDING_PULSE_KEYFRAMES_NAME} {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.35; }
+      }
+    `;
+    document.head.appendChild(style);
+  };
+})();
+
 type WagerPileElements = {
   player: HTMLDivElement;
   opponent: HTMLDivElement;
@@ -201,6 +220,8 @@ const getWagerPanelLayout = (
 };
 
 const BoardComponent: React.FC = () => {
+  injectPendingPulseKeyframes();
+
   const [opponentVideoId, setOpponentVideoId] = useState<number | null>(null);
   const [opponentVideoVisible, setOpponentVideoVisible] = useState(false);
   const [opponentVideoFading, setOpponentVideoFading] = useState(false);
@@ -648,11 +669,13 @@ const BoardComponent: React.FC = () => {
         container: HTMLDivElement,
         icons: HTMLImageElement[],
         pileState: WagerPileRenderState | null,
-        isOpponentSide: boolean
+        isOpponentSide: boolean,
+        side: WagerPileSide | "winner"
       ) => {
         if (!pileState || pileState.count <= 0 || pileState.frames.length === 0) {
           container.style.opacity = "0";
           container.style.pointerEvents = "none";
+          container.style.animation = "none";
           while (icons.length > 0) {
             const icon = icons.pop();
             if (icon) {
@@ -665,6 +688,7 @@ const BoardComponent: React.FC = () => {
         if (rect.w === 0 || rect.h === 0) {
           container.style.opacity = "0";
           container.style.pointerEvents = "none";
+          container.style.animation = "none";
           while (icons.length > 0) {
             const icon = icons.pop();
             if (icon) {
@@ -675,6 +699,8 @@ const BoardComponent: React.FC = () => {
         }
         container.style.opacity = "1";
         container.style.pointerEvents = "auto";
+
+        container.style.animation = pileState.isPending ? PENDING_PULSE_ANIMATION : "none";
         container.style.left = `${toPercentX(rect.x)}%`;
         container.style.top = `${toPercentY(rect.y)}%`;
         container.style.width = `${toPercentX(rect.w)}%`;
@@ -872,9 +898,9 @@ const BoardComponent: React.FC = () => {
         }
       };
 
-      updatePile(elements.opponent, elements.opponentIcons, state.opponent, true);
-      updatePile(elements.player, elements.playerIcons, state.player, false);
-      updatePile(elements.winner, elements.winnerIcons, state.winner, false);
+      updatePile(elements.opponent, elements.opponentIcons, state.opponent, true, "opponent");
+      updatePile(elements.player, elements.playerIcons, state.player, false, "player");
+      updatePile(elements.winner, elements.winnerIcons, state.winner, false, "winner");
 
       updateDisappearingPile(elements.opponentDisappearing, elements.opponentDisappearingIcons, state.opponentDisappearing, "opponent");
       updateDisappearingPile(elements.playerDisappearing, elements.playerDisappearingIcons, state.playerDisappearing, "player");
@@ -936,6 +962,7 @@ const BoardComponent: React.FC = () => {
       setWagerPanelVisibilityChecker(() => false);
     };
   }, [clearWagerPanel]);
+
 
   const standardBoardTransform = "translate(0,100)";
   const pangchiuBoardTransform = "translate(83,184) scale(0.85892388)";

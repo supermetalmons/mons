@@ -1133,8 +1133,8 @@ function applyWagerState() {
       (currentWagerState.agreed.total ? Math.max(0, Math.round(currentWagerState.agreed.total / 2)) : 0);
     if (stakeCount > 0) {
       Board.setWagerPiles({
-        player: { material: currentWagerState.agreed.material, count: stakeCount },
-        opponent: { material: currentWagerState.agreed.material, count: stakeCount },
+        player: { material: currentWagerState.agreed.material, count: stakeCount, pending: false },
+        opponent: { material: currentWagerState.agreed.material, count: stakeCount, pending: false },
       });
       return;
     }
@@ -1150,8 +1150,8 @@ function applyWagerState() {
     return;
   }
   Board.setWagerPiles({
-    player: playerProposal ? { material: playerProposal.material, count: playerProposal.count } : null,
-    opponent: opponentProposal ? { material: opponentProposal.material, count: opponentProposal.count } : null,
+    player: playerProposal ? { material: playerProposal.material, count: playerProposal.count, pending: true } : null,
+    opponent: opponentProposal ? { material: opponentProposal.material, count: opponentProposal.count, pending: true } : null,
   });
 }
 
