@@ -232,11 +232,10 @@ const BoardComponent: React.FC = () => {
   const activeWagerPanelSideRef = useRef<WagerPileSide | "winner" | null>(null);
   const activeWagerPanelRectRef = useRef<{ x: number; y: number; w: number; h: number } | null>(null);
   const activeWagerPanelCountRef = useRef<number | null>(null);
-  const wagerPanelStateRef = useRef<{ actionsLocked: boolean; playerHasProposal: boolean; opponentHasProposal: boolean; lockPlayerPanel: boolean }>({
+  const wagerPanelStateRef = useRef<{ actionsLocked: boolean; playerHasProposal: boolean; opponentHasProposal: boolean }>({
     actionsLocked: true,
     playerHasProposal: false,
     opponentHasProposal: false,
-    lockPlayerPanel: false,
   });
   const opponentAuraContainerRef = useRef<HTMLDivElement | null>(null);
   const playerAuraContainerRef = useRef<HTMLDivElement | null>(null);
@@ -428,7 +427,6 @@ const BoardComponent: React.FC = () => {
       actionsLocked: wagerActionsLocked,
       playerHasProposal: !!playerProposal,
       opponentHasProposal: !!opponentProposal,
-      lockPlayerPanel: !!opponentProposal && !wagerActionsLocked,
     };
   }, [opponentProposal, playerProposal, wagerActionsLocked]);
 
@@ -593,7 +591,7 @@ const BoardComponent: React.FC = () => {
           }
           const config = wagerPanelStateRef.current;
           if (!config.actionsLocked) {
-            if (side === "player" && (config.lockPlayerPanel || !config.playerHasProposal)) {
+            if (side === "player" && !config.playerHasProposal) {
               clearWagerPanel();
               return;
             }
