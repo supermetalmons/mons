@@ -1821,7 +1821,7 @@ function emitWagerRenderState() {
   let playerAnimation: WagerPileAnimation = "none";
   let opponentAnimation: WagerPileAnimation = "none";
 
-  if (wagerAnimationsReady) {
+  if (wagerAnimationsReady && !wagerWinAnimActive && !showWinner) {
     if (currentPlayerVisible && !previousPlayerPileVisible) {
       playerAnimation = "appear";
       clearDisappearingPile("player");
@@ -2000,6 +2000,8 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
 
   const delays = starts.map((_, index) => (index < winnerVisible ? 0 : Math.random() * 0.1));
 
+  clearDisappearingPile("player");
+  clearDisappearingPile("opponent");
   wagerWinAnimActive = true;
   lastWagerWinnerIsOpponent = winnerIsOpponent;
   emitWagerRenderState();
