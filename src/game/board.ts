@@ -143,6 +143,7 @@ export type WagerPileRenderState = {
   count: number;
   actualCount: number;
   animation: WagerPileAnimation;
+  isPending: boolean;
 };
 export type WagerRenderState = {
   player: WagerPileRenderState | null;
@@ -179,6 +180,8 @@ let disappearingPlayerPile: WagerPileRenderState | null = null;
 let disappearingOpponentPile: WagerPileRenderState | null = null;
 let disappearingPileTimers: { player: number | null; opponent: number | null } = { player: null, opponent: null };
 const WAGER_DISAPPEAR_ANIMATION_MS = 280;
+let playerPilePending = false;
+let opponentPilePending = false;
 
 export function setWagerRenderHandler(handler: ((state: WagerRenderState) => void) | null) {
   handleWagerRenderState = handler;
@@ -1770,7 +1773,7 @@ function updateWagerLayout() {
   emitWagerRenderState();
 }
 
-function buildWagerRenderState(pile: WagerPile | null, side: WagerPileSide | "winner", animation: WagerPileAnimation): WagerPileRenderState | null {
+function buildWagerRenderState(pile: WagerPile | null, side: WagerPileSide | "winner", animation: WagerPileAnimation, isPending: boolean): WagerPileRenderState | null {
   if (!pile || pile.count === 0 || !pile.rect) {
     return null;
   }
@@ -1787,6 +1790,7 @@ function buildWagerRenderState(pile: WagerPile | null, side: WagerPileSide | "wi
     count: pile.count,
     actualCount: pile.actualCount,
     animation,
+    isPending,
   };
 }
 
@@ -1809,8 +1813,8 @@ function clearDisappearingPile(side: "player" | "opponent") {
 function emitWagerRenderState() {
   const showWinner = Boolean(winnerPileActive && winnerWagerPile && winnerWagerPile.count > 0 && winnerWagerPile.rect);
 
-  const currentPlayerState = showWinner ? null : buildWagerRenderState(playerWagerPile, "player", "none");
-  const currentOpponentState = showWinner ? null : buildWagerRenderState(opponentWagerPile, "opponent", "none");
+  const currentPlayerState = showWinner ? null : buildWagerRenderState(playerWagerPile, "player", "none", playerPilePending);
+  const currentOpponentState = showWinner ? null : buildWagerRenderState(opponentWagerPile, "opponent", "none", opponentPilePending);
   const currentPlayerVisible = !!currentPlayerState;
   const currentOpponentVisible = !!currentOpponentState;
 
@@ -1823,7 +1827,7 @@ function emitWagerRenderState() {
       clearDisappearingPile("player");
     } else if (!currentPlayerVisible && previousPlayerPileVisible && lastVisiblePlayerPileState) {
       clearDisappearingPile("player");
-      disappearingPlayerPile = { ...lastVisiblePlayerPileState, animation: "disappear" };
+      disappearingPlayerPile = { ...lastVisiblePlayerPileState, animation: "disappear", isPending: false };
       disappearingPileTimers.player = window.setTimeout(() => {
         disappearingPlayerPile = null;
         disappearingPileTimers.player = null;
@@ -1836,7 +1840,7 @@ function emitWagerRenderState() {
       clearDisappearingPile("opponent");
     } else if (!currentOpponentVisible && previousOpponentPileVisible && lastVisibleOpponentPileState) {
       clearDisappearingPile("opponent");
-      disappearingOpponentPile = { ...lastVisibleOpponentPileState, animation: "disappear" };
+      disappearingOpponentPile = { ...lastVisibleOpponentPileState, animation: "disappear", isPending: false };
       disappearingPileTimers.opponent = window.setTimeout(() => {
         disappearingOpponentPile = null;
         disappearingPileTimers.opponent = null;
@@ -1865,7 +1869,7 @@ function emitWagerRenderState() {
   const state: WagerRenderState = {
     player: playerRenderState,
     opponent: opponentRenderState,
-    winner: showWinner ? buildWagerRenderState(winnerWagerPile, "winner", "none") : null,
+    winner: showWinner ? buildWagerRenderState(winnerWagerPile, "winner", "none", false) : null,
     winAnimationActive: wagerWinAnimActive,
     playerDisappearing: disappearingPlayerPile,
     opponentDisappearing: disappearingOpponentPile,
@@ -2203,6 +2207,8 @@ export function markWagerInitialStateReceived() {
 export function clearWagerPiles() {
   cancelWagerWinAnimation();
   winnerPileActive = false;
+  playerPilePending = false;
+  opponentPilePending = false;
   resetWagerPile(playerWagerPile);
   resetWagerPile(opponentWagerPile);
   resetWagerPile(winnerWagerPile);
@@ -2214,7 +2220,10 @@ export function clearWagerPilesForNewMatch() {
   clearWagerPiles();
 }
 
-export function setWagerPiles(state: { player?: { material: MaterialName; count: number } | null; opponent?: { material: MaterialName; count: number } | null }) {
+export function setWagerPiles(state: {
+  player?: { material: MaterialName; count: number; pending?: boolean } | null;
+  opponent?: { material: MaterialName; count: number; pending?: boolean } | null;
+}) {
   cancelWagerWinAnimation();
   winnerPileActive = false;
   if (state.player) {
@@ -2222,16 +2231,20 @@ export function setWagerPiles(state: { player?: { material: MaterialName; count:
     if (playerPile) {
       syncWagerPileIcons(playerPile, state.player.material, state.player.count);
     }
+    playerPilePending = state.player.pending ?? false;
   } else {
     resetWagerPile(playerWagerPile);
+    playerPilePending = false;
   }
   if (state.opponent) {
     const opponentPile = ensureWagerPile(true);
     if (opponentPile) {
       syncWagerPileIcons(opponentPile, state.opponent.material, state.opponent.count);
     }
+    opponentPilePending = state.opponent.pending ?? false;
   } else {
     resetWagerPile(opponentWagerPile);
+    opponentPilePending = false;
   }
   resetWagerPile(winnerWagerPile);
   updateWagerLayout();
