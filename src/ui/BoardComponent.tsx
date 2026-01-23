@@ -112,7 +112,7 @@ const WAGER_PANEL_COUNT_MIN_WIDTH_PX = 32;
 const WAGER_PANEL_COUNT_Y_OFFSET_FRAC = 0.04;
 
 const PENDING_PULSE_KEYFRAMES_NAME = "wagerPilePendingPulse";
-const PENDING_PULSE_ANIMATION = `${PENDING_PULSE_KEYFRAMES_NAME} 2.5s ease-in-out infinite`;
+const PENDING_PULSE_ANIMATION = `${PENDING_PULSE_KEYFRAMES_NAME} 1.4s ease-in-out infinite`;
 
 const injectPendingPulseKeyframes = (() => {
   let injected = false;
@@ -123,7 +123,10 @@ const injectPendingPulseKeyframes = (() => {
     style.textContent = `
       @keyframes ${PENDING_PULSE_KEYFRAMES_NAME} {
         0%, 100% { opacity: 1; }
-        50% { opacity: 0.35; }
+        15% { opacity: 1; }
+        40% { opacity: 0.2; }
+        60% { opacity: 0.2; }
+        85% { opacity: 1; }
       }
     `;
     document.head.appendChild(style);
