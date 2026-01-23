@@ -1807,10 +1807,6 @@ function clearDisappearingPile(side: "player" | "opponent") {
 }
 
 function emitWagerRenderState() {
-  if (!handleWagerRenderState) {
-    return;
-  }
-
   const showWinner = Boolean(winnerPileActive && winnerWagerPile && winnerWagerPile.count > 0 && winnerWagerPile.rect);
 
   const currentPlayerState = showWinner ? null : buildWagerRenderState(playerWagerPile, "player", "none");
@@ -1859,6 +1855,9 @@ function emitWagerRenderState() {
     lastVisibleOpponentPileState = currentOpponentState;
   }
 
+  if (!handleWagerRenderState) {
+    return;
+  }
 
   const playerRenderState = currentPlayerState ? { ...currentPlayerState, animation: playerAnimation } : null;
   const opponentRenderState = currentOpponentState ? { ...currentOpponentState, animation: opponentAnimation } : null;
