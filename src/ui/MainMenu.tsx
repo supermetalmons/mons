@@ -14,7 +14,7 @@ import { startPlayingMusic, stopPlayingMusic, playNextTrack } from "../content/m
 import { InfoPopover } from "./InfoPopover";
 import { MiningMaterialName } from "../connection/connectionModels";
 
-const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust"];
+const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust", "total"];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 
 const RockButtonContainer = styled.div`
@@ -264,6 +264,51 @@ const LeaderboardTypeMaterialIcon = styled.img`
   width: 22px;
   height: 22px;
   object-fit: contain;
+  margin: 0 -3px;
+`;
+
+const TotalMaterialsIconContainer = styled.div`
+  position: relative;
+  width: 22px;
+  height: 22px;
+
+  img {
+    position: absolute;
+    width: 14px;
+    height: 14px;
+    object-fit: contain;
+  }
+
+  img:nth-child(1) {
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+
+  img:nth-child(2) {
+    top: 3px;
+    right: -1px;
+    z-index: 2;
+  }
+
+  img:nth-child(3) {
+    bottom: -1px;
+    right: 1px;
+    z-index: 3;
+  }
+
+  img:nth-child(4) {
+    bottom: -1px;
+    left: 1px;
+    z-index: 3;
+  }
+
+  img:nth-child(5) {
+    top: 3px;
+    left: -1px;
+    z-index: 2;
+  }
 `;
 
 const IconLinkButton = styled.a`
@@ -949,6 +994,18 @@ const MainMenu: React.FC = () => {
                     onTouchStart={isMobile ? (e) => { e.stopPropagation(); } : undefined}>
                     {type === "rating" ? (
                       "Ratings"
+                    ) : type === "total" ? (
+                      Object.values(materialUrls).every(url => url) ? (
+                        <TotalMaterialsIconContainer>
+                          <img src={materialUrls.ice!} alt="ice" draggable={false} />
+                          <img src={materialUrls.metal!} alt="metal" draggable={false} />
+                          <img src={materialUrls.gum!} alt="gum" draggable={false} />
+                          <img src={materialUrls.slime!} alt="slime" draggable={false} />
+                          <img src={materialUrls.dust!} alt="dust" draggable={false} />
+                        </TotalMaterialsIconContainer>
+                      ) : (
+                        "Total"
+                      )
                     ) : materialUrls[type] ? (
                       <LeaderboardTypeMaterialIcon src={materialUrls[type]!} alt={type} draggable={false} />
                     ) : (
