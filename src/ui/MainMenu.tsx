@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { logoBase64 } from "../content/uiAssets";
 import { didDismissSomethingWithOutsideTapJustNow, didNotDismissAnythingWithOutsideTapJustNow, closeNavigationAndAppearancePopupIfAny } from "./BottomControls";
 import styled from "styled-components";
 import { defaultEarlyInputEventName, isMobile, getBuildInfo } from "../utils/misc";
 import { storage } from "../utils/storage";
-import { Leaderboard } from "./Leaderboard";
+import { Leaderboard, LeaderboardType } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
 import { getCurrentGameFen } from "../game/gameController";
@@ -12,6 +12,10 @@ import { FaTelegramPlane, FaUniversity, FaPlay, FaStop, FaBackward, FaForward } 
 import { showsShinyCardSomewhere } from "./ShinyCard";
 import { startPlayingMusic, stopPlayingMusic, playNextTrack } from "../content/music";
 import { InfoPopover } from "./InfoPopover";
+import { MiningMaterialName } from "../connection/connectionModels";
+
+const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust"];
+const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 
 const RockButtonContainer = styled.div`
   position: absolute;
@@ -129,9 +133,9 @@ const RockMenu = styled.div<{ isOpen: boolean; showLeaderboard: boolean }>`
   background-color: var(--color-white);
   border-radius: 10px;
   padding: 6px;
+  padding-bottom: 0;
   display: flex;
   flex-direction: column;
-  gap: 6px;
   box-shadow: ${(props) => (props.isOpen ? "0 6px 20px var(--notificationBannerShadow)" : "none")};
   width: ${(props) => (props.showLeaderboard ? "min(300px, 83dvw)" : "230px")};
 
@@ -142,6 +146,42 @@ const RockMenu = styled.div<{ isOpen: boolean; showLeaderboard: boolean }>`
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--color-deep-gray);
+  }
+`;
+
+const MenuContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  position: relative;
+`;
+
+const LinksFooter = styled.div`
+  position: relative;
+  padding: 0 0 6px 0;
+  flex-shrink: 0;
+`;
+
+const LinksGradient = styled.div`
+  position: absolute;
+  top: -24px;
+  left: 0;
+  right: 0;
+  height: 24px;
+  background: linear-gradient(
+    to bottom,
+    transparent 0%,
+    var(--color-white) 100%
+  );
+  pointer-events: none;
+
+  @media (prefers-color-scheme: dark) {
+    background: linear-gradient(
+      to bottom,
+      transparent 0%,
+      var(--color-deep-gray) 100%
+    );
   }
 `;
 
@@ -159,12 +199,71 @@ const MenuTitleText = styled.i`
 `;
 
 const MenuTitle = styled.div`
-  margin: 6px 16px 0 53px;
+  margin: 6px 16px 6px 53px;
   text-align: left;
   display: flex;
   align-items: flex-start;
   gap: 8px;
   min-height: 20px;
+`;
+
+const LeaderboardTypeSelector = styled.div`
+  display: flex;
+  gap: 6px;
+  padding: 4px 0 8px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const LeaderboardTypeButton = styled.button<{ isSelected: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  min-width: 28px;
+  padding: 0 8px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background-color: ${(props) => (props.isSelected ? "#ebebeb" : "var(--color-gray-f9)")};
+  color: #707070;
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: ${(props) => (props.isSelected ? "#ebebeb" : "var(--color-gray-f5)")};
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: ${(props) => (props.isSelected ? "var(--color-gray-44)" : "var(--color-gray-25)")};
+    color: ${(props) => (props.isSelected ? "var(--color-gray-f5)" : "var(--color-gray-99)")};
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: ${(props) => (props.isSelected ? "var(--color-gray-44)" : "var(--color-gray-27)")};
+      }
+    }
+  }
+`;
+
+const LeaderboardTypeMaterialIcon = styled.img`
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
 `;
 
 const IconLinkButton = styled.a`
@@ -229,16 +328,13 @@ const IconLinkButton = styled.a`
 const ButtonRow = styled.div`
   display: flex;
   gap: 8px;
-  margin-top: 8px;
-  margin-right: 0px;
-  margin-left: 0px;
-  margin-bottom: 0px;
+  margin: 0;
   align-items: center;
   overflow-x: auto;
   scrollbar-width: none;
   -ms-overflow-style: none;
   white-space: nowrap;
-  padding-bottom: 0px;
+  padding: 6px 0 2px 0;
   width: 100%;
   -webkit-overflow-scrolling: touch;
   scroll-behavior: smooth;
@@ -307,10 +403,10 @@ const MenuOverlay = styled.div`
   top: 45px;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 52px;
   background: var(--menuOverlayBackground);
   backdrop-filter: blur(3px);
-  border-radius: 0 0 10px 10px;
+  border-radius: 0;
   z-index: 2;
 
   @media (prefers-color-scheme: dark) {
@@ -327,7 +423,7 @@ const ExperimentalMenu = styled.div`
   top: 45px;
   left: 0;
   right: 0;
-  bottom: 0;
+  bottom: 52px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -517,6 +613,17 @@ const MainMenu: React.FC = () => {
   const [isDebugViewEnabled, setIsDebugViewEnabled] = useState<boolean>(storage.getDebugViewEnabled(false));
   const [debugViewText, setDebugViewTextState] = useState<string>("");
   const [areAnimatedMonsEnabled, setAreAnimatedMonsEnabled] = useState<boolean>(storage.getIsExperimentingWithSprites(false));
+  const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>(() => {
+    const stored = storage.getLeaderboardType("rating");
+    return LEADERBOARD_TYPES.includes(stored as LeaderboardType) ? (stored as LeaderboardType) : "rating";
+  });
+  const [materialUrls, setMaterialUrls] = useState<Record<MiningMaterialName, string | null>>({
+    dust: null,
+    slime: null,
+    gum: null,
+    metal: null,
+    ice: null,
+  });
   const buttonRowRef = useRef<HTMLDivElement>(null);
   const lastClickTime = useRef(0);
   const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
@@ -524,6 +631,33 @@ const MainMenu: React.FC = () => {
   const activeIndicesRef = useRef<number[]>([]);
 
   setIsMusicPlayingGlobal = setIsMusicPlaying;
+
+  useEffect(() => {
+    let mounted = true;
+    const materials: MiningMaterialName[] = ["ice", "metal", "gum", "slime", "dust"];
+    materials.forEach((name) => {
+      const url = `${MATERIAL_BASE_URL}/${name}.webp`;
+      fetch(url)
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch");
+          return res.blob();
+        })
+        .then((blob) => {
+          if (mounted) {
+            setMaterialUrls((prev) => ({ ...prev, [name]: URL.createObjectURL(blob) }));
+          }
+        })
+        .catch(() => {});
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const handleLeaderboardTypeChange = useCallback((type: LeaderboardType) => {
+    setLeaderboardType(type);
+    storage.setLeaderboardType(type);
+  }, []);
 
   useEffect(() => {
     const timeoutRefs: NodeJS.Timeout[] = [];
@@ -794,75 +928,97 @@ const MainMenu: React.FC = () => {
             }
           }}>
           <RockMenu isOpen={isMenuOpen} showLeaderboard={true}>
-            <MenuTitle onClick={!isMobile ? handleTitleClick : undefined} onTouchStart={isMobile ? handleTitleClick : undefined}>
-              <MenuTitleText>MONS.LINK</MenuTitleText>
-            </MenuTitle>
-            <ButtonRow ref={buttonRowRef}>
-              <IconLinkButton href="https://mons.shop" target="_blank" rel="noopener noreferrer">
-                Shop
-              </IconLinkButton>
-              <IconLinkButton href="https://mons.academy" target="_blank" rel="noopener noreferrer">
-                <FaUniversity />
-              </IconLinkButton>
-              <IconLinkButton href="https://x.com/supermetalx" target="_blank" rel="noopener noreferrer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" stroke="currentColor" stroke-width="0.2" />
-                </svg>
-              </IconLinkButton>
-              <IconLinkButton href="https://farcaster.xyz/~/channel/mons" target="_blank" rel="noopener noreferrer">
-                <svg width="1.2em" height="1.2em" viewBox="0 0 777 777" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="currentColor">
-                  <path id="path" d="M145.778 44.556 L630.222 44.556 630.222 733.445 559.111 733.445 559.111 417.889 558.414 417.889 C550.554 330.677 477.258 262.333 388 262.333 298.742 262.333 225.446 330.677 217.586 417.889 L216.889 417.889 216.889 733.445 145.778 733.445 145.778 44.556 Z" />
-                  <path id="path-1" d="M16.889 142.333 L45.778 240.111 70.222 240.111 70.222 635.667 C57.949 635.667 48 645.616 48 657.889 L48 684.556 43.556 684.556 C31.283 684.556 21.333 694.505 21.333 706.778 L21.333 733.445 270.222 733.445 270.222 706.778 C270.222 694.505 260.273 684.556 248 684.556 L243.556 684.556 243.556 657.889 C243.556 645.616 233.606 635.667 221.333 635.667 L194.667 635.667 194.667 142.333 16.889 142.333 Z" />
-                  <path id="path-2" d="M563.556 635.667 C551.283 635.667 541.333 645.616 541.333 657.889 L541.333 684.556 536.889 684.556 C524.616 684.556 514.667 694.505 514.667 706.778 L514.667 733.445 763.556 733.445 763.556 706.778 C763.556 694.505 753.606 684.556 741.333 684.556 L736.889 684.556 736.889 657.889 C736.889 645.616 726.94 635.667 714.667 635.667 L714.667 240.111 739.111 240.111 768 142.333 590.222 142.333 590.222 635.667 563.556 635.667 Z" />
-                </svg>
-              </IconLinkButton>
-              <IconLinkButton href="https://t.me/supermetalmons" target="_blank" rel="noopener noreferrer">
-                <FaTelegramPlane />
-              </IconLinkButton>
-              <IconLinkButton href="https://github.com/supermetalmons" target="_blank" rel="noopener noreferrer">
-                <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
-                  <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
-                </svg>
-              </IconLinkButton>
-              {!isNftSubmenuExpanded ? (
-                <IconLinkButton onClick={handleNftButtonClick}>NFTs</IconLinkButton>
-              ) : (
-                <>
-                  <CollectionButton href="https://opensea.io/collection/theemojipack" target="_blank" rel="noopener noreferrer">
-                    EMOJIPACK
-                  </CollectionButton>
-                  <CollectionButton href="https://opensea.io/collection/supermetalmons" target="_blank" rel="noopener noreferrer">
-                    Gen 1
-                  </CollectionButton>
-                  <CollectionButton href="https://opensea.io/collection/super-metal-mons-gen-2" target="_blank" rel="noopener noreferrer">
-                    Gen 2
-                  </CollectionButton>
-                </>
+            <MenuContent>
+              <MenuTitle onClick={!isMobile ? handleTitleClick : undefined} onTouchStart={isMobile ? handleTitleClick : undefined}>
+                <MenuTitleText>MONS.LINK</MenuTitleText>
+              </MenuTitle>
+              <CloseButton
+                onClick={() => {
+                  setIsMenuOpen(false);
+                  setShowExperimental(false);
+                }}>
+                ×
+              </CloseButton>
+              {showExperimental && <MenuOverlay />}
+              <LeaderboardTypeSelector>
+                {LEADERBOARD_TYPES.map((type) => (
+                  <LeaderboardTypeButton
+                    key={type}
+                    isSelected={leaderboardType === type}
+                    onClick={() => handleLeaderboardTypeChange(type)}
+                    onTouchStart={isMobile ? (e) => { e.stopPropagation(); } : undefined}>
+                    {type === "rating" ? (
+                      "Ratings"
+                    ) : materialUrls[type] ? (
+                      <LeaderboardTypeMaterialIcon src={materialUrls[type]!} alt={type} draggable={false} />
+                    ) : (
+                      type.charAt(0).toUpperCase() + type.slice(1)
+                    )}
+                  </LeaderboardTypeButton>
+                ))}
+              </LeaderboardTypeSelector>
+              <Leaderboard show={isMenuOpen} leaderboardType={leaderboardType} />
+              {showExperimental && (
+                <ExperimentalMenu>
+                  <ToggleRow>
+                    <input type="checkbox" checked={areAnimatedMonsEnabled} onChange={handleAnimatedMonsToggle} />
+                    animated mons
+                  </ToggleRow>
+                  <ToggleRow>
+                    <input type="checkbox" checked={isDebugViewEnabled} onChange={handleDebugViewToggle} />
+                    show inspector
+                  </ToggleRow>
+                  <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
+                  <BuildInfo>{getBuildInfo()}</BuildInfo>
+                </ExperimentalMenu>
               )}
-            </ButtonRow>
-            <CloseButton
-              onClick={() => {
-                setIsMenuOpen(false);
-                setShowExperimental(false);
-              }}>
-              ×
-            </CloseButton>
-            {showExperimental && <MenuOverlay />}
-            <Leaderboard show={isMenuOpen} />
-            {showExperimental && (
-              <ExperimentalMenu>
-                <ToggleRow>
-                  <input type="checkbox" checked={areAnimatedMonsEnabled} onChange={handleAnimatedMonsToggle} />
-                  animated mons
-                </ToggleRow>
-                <ToggleRow>
-                  <input type="checkbox" checked={isDebugViewEnabled} onChange={handleDebugViewToggle} />
-                  show inspector
-                </ToggleRow>
-                <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
-                <BuildInfo>{getBuildInfo()}</BuildInfo>
-              </ExperimentalMenu>
-            )}
+            </MenuContent>
+            <LinksFooter>
+              <LinksGradient />
+              <ButtonRow ref={buttonRowRef}>
+                <IconLinkButton href="https://mons.shop" target="_blank" rel="noopener noreferrer">
+                  Shop
+                </IconLinkButton>
+                <IconLinkButton href="https://mons.academy" target="_blank" rel="noopener noreferrer">
+                  <FaUniversity />
+                </IconLinkButton>
+                <IconLinkButton href="https://x.com/supermetalx" target="_blank" rel="noopener noreferrer">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" stroke="currentColor" stroke-width="0.2" />
+                  </svg>
+                </IconLinkButton>
+                <IconLinkButton href="https://farcaster.xyz/~/channel/mons" target="_blank" rel="noopener noreferrer">
+                  <svg width="1.2em" height="1.2em" viewBox="0 0 777 777" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="currentColor">
+                    <path id="path" d="M145.778 44.556 L630.222 44.556 630.222 733.445 559.111 733.445 559.111 417.889 558.414 417.889 C550.554 330.677 477.258 262.333 388 262.333 298.742 262.333 225.446 330.677 217.586 417.889 L216.889 417.889 216.889 733.445 145.778 733.445 145.778 44.556 Z" />
+                    <path id="path-1" d="M16.889 142.333 L45.778 240.111 70.222 240.111 70.222 635.667 C57.949 635.667 48 645.616 48 657.889 L48 684.556 43.556 684.556 C31.283 684.556 21.333 694.505 21.333 706.778 L21.333 733.445 270.222 733.445 270.222 706.778 C270.222 694.505 260.273 684.556 248 684.556 L243.556 684.556 243.556 657.889 C243.556 645.616 233.606 635.667 221.333 635.667 L194.667 635.667 194.667 142.333 16.889 142.333 Z" />
+                    <path id="path-2" d="M563.556 635.667 C551.283 635.667 541.333 645.616 541.333 657.889 L541.333 684.556 536.889 684.556 C524.616 684.556 514.667 694.505 514.667 706.778 L514.667 733.445 763.556 733.445 763.556 706.778 C763.556 694.505 753.606 684.556 741.333 684.556 L736.889 684.556 736.889 657.889 C736.889 645.616 726.94 635.667 714.667 635.667 L714.667 240.111 739.111 240.111 768 142.333 590.222 142.333 590.222 635.667 563.556 635.667 Z" />
+                  </svg>
+                </IconLinkButton>
+                <IconLinkButton href="https://t.me/supermetalmons" target="_blank" rel="noopener noreferrer">
+                  <FaTelegramPlane />
+                </IconLinkButton>
+                <IconLinkButton href="https://github.com/supermetalmons" target="_blank" rel="noopener noreferrer">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
+                  </svg>
+                </IconLinkButton>
+                {!isNftSubmenuExpanded ? (
+                  <IconLinkButton onClick={handleNftButtonClick}>NFTs</IconLinkButton>
+                ) : (
+                  <>
+                    <CollectionButton href="https://opensea.io/collection/theemojipack" target="_blank" rel="noopener noreferrer">
+                      EMOJIPACK
+                    </CollectionButton>
+                    <CollectionButton href="https://opensea.io/collection/supermetalmons" target="_blank" rel="noopener noreferrer">
+                      Gen 1
+                    </CollectionButton>
+                    <CollectionButton href="https://opensea.io/collection/super-metal-mons-gen-2" target="_blank" rel="noopener noreferrer">
+                      Gen 2
+                    </CollectionButton>
+                  </>
+                )}
+              </ButtonRow>
+            </LinksFooter>
           </RockMenu>
         </RockMenuWrapper>
         <RockButton

@@ -3,9 +3,11 @@ import styled from "styled-components";
 import { resolveENS } from "../utils/ensResolver";
 import { connection } from "../connection/connection";
 import { showShinyCard } from "./ShinyCard";
-import { PlayerProfile } from "../connection/connectionModels";
+import { PlayerProfile, MiningMaterialName } from "../connection/connectionModels";
 import { AvatarImage } from "./AvatarImage";
 import { isLocalHost } from "../utils/localDev";
+
+export type LeaderboardType = "rating" | MiningMaterialName;
 
 const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;
 
@@ -177,6 +179,15 @@ const RatingCell = styled.td<{ win: boolean }>`
   }
 `;
 
+const MaterialCell = styled.td`
+  color: var(--color-gray-77);
+  font-weight: 500;
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-gray-99);
+  }
+`;
+
 const EmojiImage = styled.div`
   width: 26px;
   height: 26px;
@@ -251,6 +262,7 @@ const EmojiPlaceholder = styled.div`
 
 interface LeaderboardProps {
   show: boolean;
+  leaderboardType: LeaderboardType;
 }
 
 interface LeaderboardEntry {
@@ -265,6 +277,7 @@ interface LeaderboardEntry {
   ensName?: string | null;
   username?: string | null;
   profile: PlayerProfile;
+  materials: Record<MiningMaterialName, number>;
 }
 
 const getLeaderboardDisplayName = (row: LeaderboardEntry): string => {
@@ -302,58 +315,90 @@ const useAutoDownloadLeaderboardCards = ({ show, data }: { show: boolean; data: 
   }, [show, data]);
 };
 
-export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
-  const [data, setData] = useState<LeaderboardEntry[] | null>(null);
+const createEmptyMaterials = (): Record<MiningMaterialName, number> => ({
+  dust: 0,
+  slime: 0,
+  gum: 0,
+  metal: 0,
+  ice: 0,
+});
+
+const leaderboardCache = new Map<LeaderboardType, LeaderboardEntry[]>();
+
+export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType }) => {
+  const [data, setData] = useState<LeaderboardEntry[] | null>(() => leaderboardCache.get(leaderboardType) ?? null);
   const [loadedEmojis, setLoadedEmojis] = useState<Set<string>>(new Set());
   const tableWrapperRef = useRef<HTMLDivElement>(null);
+  const prevLeaderboardTypeRef = useRef<LeaderboardType>(leaderboardType);
+  const currentFetchRef = useRef<number>(0);
 
   useEffect(() => {
     if (show) {
-      if (tableWrapperRef.current) {
-        setTimeout(() => {
-          if (tableWrapperRef.current) {
-            tableWrapperRef.current.scrollTop = 0;
-          }
-        }, 5);
+      if (tableWrapperRef.current && prevLeaderboardTypeRef.current !== leaderboardType) {
+        tableWrapperRef.current.scrollTop = 0;
       }
-
-      connection
-        .getLeaderboard()
-        .then((profiles) => {
-          const leaderboardData = profiles.map((entry) => ({
-            username: entry.username,
-            eth: entry.eth,
-            sol: entry.sol,
-            games: (entry.nonce ?? -1) + 1,
-            rating: Math.round(entry.rating ?? 1500),
-            win: entry.win ?? true,
-            id: entry.id,
-            emoji: entry.emoji,
-            aura: entry.aura,
-            ensName: null,
-            profile: entry,
-          }));
-          setData(leaderboardData);
-
-          leaderboardData.forEach(async (entry, index) => {
-            if (entry.eth && !entry.username) {
-              const ensName = await resolveENS(entry.eth);
-              if (ensName) {
-                setData((prevData) => {
-                  if (!prevData) return prevData;
-                  const newData = [...prevData];
-                  newData[index] = { ...newData[index], ensName };
-                  return newData;
-                });
-              }
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Failed to fetch leaderboard data:", error);
-        });
+      prevLeaderboardTypeRef.current = leaderboardType;
     }
-  }, [show]);
+  }, [show, leaderboardType]);
+
+  useEffect(() => {
+    setData(leaderboardCache.get(leaderboardType) ?? null);
+  }, [leaderboardType]);
+
+  useEffect(() => {
+    if (!show) return;
+
+    if (tableWrapperRef.current) {
+      setTimeout(() => {
+        if (tableWrapperRef.current) {
+          tableWrapperRef.current.scrollTop = 0;
+        }
+      }, 5);
+    }
+
+    const fetchId = ++currentFetchRef.current;
+
+    connection
+      .getLeaderboard(leaderboardType)
+      .then((profiles) => {
+        if (fetchId !== currentFetchRef.current) return;
+
+        const leaderboardData = profiles.map((entry) => ({
+          username: entry.username,
+          eth: entry.eth,
+          sol: entry.sol,
+          games: (entry.nonce ?? -1) + 1,
+          rating: Math.round(entry.rating ?? 1500),
+          win: entry.win ?? true,
+          id: entry.id,
+          emoji: entry.emoji,
+          aura: entry.aura,
+          ensName: null,
+          profile: entry,
+          materials: entry.mining?.materials ? { ...createEmptyMaterials(), ...entry.mining.materials } : createEmptyMaterials(),
+        }));
+        leaderboardCache.set(leaderboardType, leaderboardData);
+        setData(leaderboardData);
+
+        leaderboardData.forEach(async (entry, index) => {
+          if (entry.eth && !entry.username) {
+            const ensName = await resolveENS(entry.eth);
+            if (ensName) {
+              setData((prevData) => {
+                if (!prevData) return prevData;
+                const newData = [...prevData];
+                newData[index] = { ...newData[index], ensName };
+                leaderboardCache.set(leaderboardType, newData);
+                return newData;
+              });
+            }
+          }
+        });
+      })
+      .catch((error) => {
+        console.error("Failed to fetch leaderboard data:", error);
+      });
+  }, [show, leaderboardType]);
 
   useAutoDownloadLeaderboardCards({ show, data });
 
@@ -363,6 +408,13 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
 
   const handleEmojiLoad = (emojiKey: string) => {
     setLoadedEmojis((prev) => new Set(prev).add(emojiKey));
+  };
+
+  const getValueCell = (row: LeaderboardEntry) => {
+    if (leaderboardType === "rating") {
+      return <RatingCell win={row.win}>{row.rating}</RatingCell>;
+    }
+    return <MaterialCell>{row.materials[leaderboardType]}</MaterialCell>;
   };
 
   return (
@@ -385,7 +437,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
                 const isEmojiLoaded = loadedEmojis.has(emojiKey);
 
                 return (
-                  <tr key={index} onClick={() => handleRowClick(row)}>
+                  <tr key={row.id} onClick={() => handleRowClick(row)}>
                     <td>{index + 1}</td>
                     <td>
                       {!isEmojiLoaded && <EmojiPlaceholder />}
@@ -394,7 +446,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
                       </EmojiImage>
                     </td>
                     <td>{getLeaderboardDisplayName(row)}</td>
-                    <RatingCell win={row.win}>{row.rating}</RatingCell>
+                    {getValueCell(row)}
                   </tr>
                 );
               })}
