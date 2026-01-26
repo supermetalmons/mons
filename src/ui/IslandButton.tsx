@@ -122,6 +122,9 @@ const SparkleRing = styled.div`
   background: radial-gradient(circle at 50% 50%, rgba(255, 215, 100, 0.5) 0%, rgba(255, 180, 60, 0.3) 40%, transparent 70%);
   transform: translate(-50%, -50%);
   animation: ${sparklePulse} 2s ease-in-out infinite;
+  @media (prefers-color-scheme: light) {
+    background: radial-gradient(circle at 50% 50%, rgba(255, 240, 0, 0.5) 0%, rgba(255, 230, 0, 0.35) 40%, transparent 70%);
+  }
 `;
 
 const SparkleCore = styled.div`
@@ -135,6 +138,9 @@ const SparkleCore = styled.div`
   transform: translate(-50%, -50%);
   animation: ${sparklePulse} 1.5s ease-in-out infinite;
   animation-delay: 0.25s;
+  @media (prefers-color-scheme: light) {
+    background: radial-gradient(circle, rgba(255, 230, 0, 1) 0%, rgba(255, 210, 0, 0.85) 50%, transparent 100%);
+  }
 `;
 
 const SparkleRays = styled.div<{ $dimmed: boolean }>`
@@ -159,6 +165,11 @@ const SparkleRay = styled.div<{ $angle: number; $delay: number }>`
   transform: translate(-50%, -100%) rotate(${(p) => p.$angle}deg);
   animation: ${sparklePulse} 1.8s ease-in-out infinite;
   animation-delay: ${(p) => p.$delay}s;
+  @media (prefers-color-scheme: light) {
+    width: 3px;
+    height: 16px;
+    background: linear-gradient(to top, transparent 0%, rgba(255, 255, 0, 1) 25%, rgba(255, 255, 0, 1) 75%, transparent 100%);
+  }
 `;
 
 const SparkleParticle = styled.div<{ $x: number; $y: number; $delay: number; $duration: number; $dimmed: boolean }>`
@@ -189,6 +200,11 @@ const SparkleParticle = styled.div<{ $x: number; $y: number; $delay: number; $du
     width: 100%;
     height: 1px;
     transform: translateY(-50%);
+  }
+  @media (prefers-color-scheme: light) {
+    &::before, &::after {
+      background: rgba(255, 160, 50, 1);
+    }
   }
 `;
 
