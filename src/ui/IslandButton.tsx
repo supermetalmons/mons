@@ -103,9 +103,12 @@ const SparkleContainer = styled.div<{ $visible: boolean; $fading: boolean; $dimm
   width: 56px;
   height: 56px;
   transform: translate(-50%, -50%) scale(${(p) => (p.$dimmed ? 0.77 : 1)});
+  -webkit-transform: translate(-50%, -50%) scale(${(p) => (p.$dimmed ? 0.77 : 1)});
   pointer-events: none;
   z-index: 0;
   opacity: ${(p) => (p.$fading ? 0 : p.$visible ? 1 : 0)};
+  will-change: opacity, transform;
+  -webkit-transition: opacity ${(p) => (p.$fading ? "150ms" : "900ms")} ease-out, transform 150ms ease;
   transition: opacity ${(p) => (p.$fading ? "150ms" : "900ms")} ease-out, transform 150ms ease;
 `;
 
@@ -920,6 +923,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const lastRockRectRef = useRef<DOMRect | null>(null);
   const [rockAvailable, setRockAvailable] = useState(() => rocksMiningService.shouldShowRock());
   const [sparkleFading, setSparkleFading] = useState(false);
+  const [sparkleMounted, setSparkleMounted] = useState(false);
   const walkSuppressedUntilRef = useRef<number>(0);
   const walkSuppressionHitsRemainingRef = useRef<number>(0);
   const walkSuppressionAnchorRef = useRef<{ x: number; y: number } | null>(null);
@@ -1756,6 +1760,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       };
     }
   }, [resolvedUrl]);
+
+  useEffect(() => {
+    if (!islandImgLoaded) return;
+    const timer = setTimeout(() => {
+      setSparkleMounted(true);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [islandImgLoaded]);
 
   useEffect(() => {
     let mounted = true;
@@ -4218,7 +4230,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const disablePrevMonType = isAtFirstMonType;
   const disableNextMonType = isAtLastMonType;
 
-  const showSparkle = rockAvailable && !islandOverlayShown && !sparkleFading;
+  const showSparkle = rockAvailable && !islandOverlayShown && !sparkleFading && sparkleMounted;
 
   return (
     <>
