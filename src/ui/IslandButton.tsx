@@ -106,7 +106,7 @@ const SparkleContainer = styled.div<{ $visible: boolean; $fading: boolean }>`
   pointer-events: none;
   z-index: 0;
   opacity: ${(p) => (p.$fading ? 0 : p.$visible ? 1 : 0)};
-  transition: opacity ${(p) => (p.$fading ? "150ms" : "400ms")} ease;
+  transition: opacity ${(p) => (p.$fading ? "150ms" : "900ms")} ease-out;
 `;
 
 const SparkleRing = styled.div`
