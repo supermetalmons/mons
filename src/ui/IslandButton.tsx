@@ -4230,7 +4230,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const disablePrevMonType = isAtFirstMonType;
   const disableNextMonType = isAtLastMonType;
 
-  const showSparkle = rockAvailable && !islandOverlayShown && !sparkleFading && sparkleMounted;
+  const isSignedIn = storage.getProfileId("") !== "";
+  const showSparkle = isSignedIn && rockAvailable && !islandOverlayShown && !sparkleFading && sparkleMounted;
 
   return (
     <>
