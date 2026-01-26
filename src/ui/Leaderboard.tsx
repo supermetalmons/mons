@@ -323,8 +323,10 @@ const createEmptyMaterials = (): Record<MiningMaterialName, number> => ({
   ice: 0,
 });
 
+const leaderboardCache = new Map<LeaderboardType, LeaderboardEntry[]>();
+
 export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType }) => {
-  const [data, setData] = useState<LeaderboardEntry[] | null>(null);
+  const [data, setData] = useState<LeaderboardEntry[] | null>(() => leaderboardCache.get(leaderboardType) ?? null);
   const [loadedEmojis, setLoadedEmojis] = useState<Set<string>>(new Set());
   const tableWrapperRef = useRef<HTMLDivElement>(null);
   const prevLeaderboardTypeRef = useRef<LeaderboardType>(leaderboardType);
@@ -340,6 +342,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
   }, [show, leaderboardType]);
 
   useEffect(() => {
+    setData(leaderboardCache.get(leaderboardType) ?? null);
+  }, [leaderboardType]);
+
+  useEffect(() => {
     if (!show) return;
 
     if (tableWrapperRef.current) {
@@ -351,7 +357,6 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
     }
 
     const fetchId = ++currentFetchRef.current;
-    setData(null);
 
     connection
       .getLeaderboard(leaderboardType)
@@ -372,6 +377,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
           profile: entry,
           materials: entry.mining?.materials ? { ...createEmptyMaterials(), ...entry.mining.materials } : createEmptyMaterials(),
         }));
+        leaderboardCache.set(leaderboardType, leaderboardData);
         setData(leaderboardData);
 
         leaderboardData.forEach(async (entry, index) => {
@@ -382,6 +388,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                 if (!prevData) return prevData;
                 const newData = [...prevData];
                 newData[index] = { ...newData[index], ensName };
+                leaderboardCache.set(leaderboardType, newData);
                 return newData;
               });
             }
