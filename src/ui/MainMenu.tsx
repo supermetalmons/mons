@@ -264,6 +264,7 @@ const LeaderboardTypeMaterialIcon = styled.img`
   width: 22px;
   height: 22px;
   object-fit: contain;
+  margin: 0 -3px;
 `;
 
 const TotalMaterialsIconContainer = styled.div`
