@@ -267,29 +267,46 @@ const LeaderboardTypeMaterialIcon = styled.img`
 `;
 
 const TotalMaterialsIconContainer = styled.div`
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  grid-template-rows: repeat(2, 1fr);
-  width: 28px;
-  height: 20px;
-  gap: 0px;
+  position: relative;
+  width: 22px;
+  height: 22px;
 
   img {
-    width: 10px;
-    height: 10px;
+    position: absolute;
+    width: 14px;
+    height: 14px;
     object-fit: contain;
   }
 
+  img:nth-child(1) {
+    top: -1px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1;
+  }
+
+  img:nth-child(2) {
+    top: 3px;
+    right: -1px;
+    z-index: 2;
+  }
+
+  img:nth-child(3) {
+    bottom: -1px;
+    right: 1px;
+    z-index: 3;
+  }
+
   img:nth-child(4) {
-    grid-column: 1 / 2;
-    justify-self: end;
-    margin-right: -1px;
+    bottom: -1px;
+    left: 1px;
+    z-index: 3;
   }
 
   img:nth-child(5) {
-    grid-column: 2 / 4;
-    justify-self: start;
-    margin-left: -1px;
+    top: 3px;
+    left: -1px;
+    z-index: 2;
   }
 `;
 
