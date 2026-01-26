@@ -96,17 +96,17 @@ const twinkle = keyframes`
   50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 `;
 
-const SparkleContainer = styled.div<{ $visible: boolean; $fading: boolean }>`
+const SparkleContainer = styled.div<{ $visible: boolean; $fading: boolean; $dimmed: boolean }>`
   position: absolute;
   left: 16px;
   top: 16px;
   width: 56px;
   height: 56px;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%) scale(${(p) => (p.$dimmed ? 0.77 : 1)});
   pointer-events: none;
   z-index: 0;
   opacity: ${(p) => (p.$fading ? 0 : p.$visible ? 1 : 0)};
-  transition: opacity ${(p) => (p.$fading ? "150ms" : "900ms")} ease-out;
+  transition: opacity ${(p) => (p.$fading ? "150ms" : "900ms")} ease-out, transform 150ms ease;
 `;
 
 const SparkleRing = styled.div`
@@ -134,13 +134,15 @@ const SparkleCore = styled.div`
   animation-delay: 0.25s;
 `;
 
-const SparkleRays = styled.div`
+const SparkleRays = styled.div<{ $dimmed: boolean }>`
   position: absolute;
   left: 50%;
   top: 50%;
   width: 44px;
   height: 44px;
   animation: ${sparkleRotate} 8s linear infinite;
+  opacity: ${(p) => (p.$dimmed ? 0 : 1)};
+  transition: opacity 300ms ease;
 `;
 
 const SparkleRay = styled.div<{ $angle: number; $delay: number }>`
@@ -156,7 +158,7 @@ const SparkleRay = styled.div<{ $angle: number; $delay: number }>`
   animation-delay: ${(p) => p.$delay}s;
 `;
 
-const SparkleParticle = styled.div<{ $x: number; $y: number; $delay: number; $duration: number }>`
+const SparkleParticle = styled.div<{ $x: number; $y: number; $delay: number; $duration: number; $dimmed: boolean }>`
   position: absolute;
   left: ${(p) => p.$x}%;
   top: ${(p) => p.$y}%;
@@ -165,6 +167,7 @@ const SparkleParticle = styled.div<{ $x: number; $y: number; $delay: number; $du
   z-index: 2;
   animation: ${twinkle} ${(p) => p.$duration}s ease-in-out infinite;
   animation-delay: ${(p) => p.$delay}s;
+  visibility: ${(p) => (p.$dimmed ? "hidden" : "visible")};
   &::before, &::after {
     content: "";
     position: absolute;
@@ -4221,9 +4224,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     <>
       {islandImgLoaded && (
         <ButtonWrap $hidden={islandOverlayShown}>
-          <SparkleContainer $visible={showSparkle} $fading={sparkleFading}>
+          <SparkleContainer $visible={showSparkle} $fading={sparkleFading} $dimmed={dimmed}>
             <SparkleRing />
-            <SparkleRays>
+            <SparkleRays $dimmed={dimmed}>
               <SparkleRay $angle={0} $delay={0} />
               <SparkleRay $angle={60} $delay={0.3} />
               <SparkleRay $angle={120} $delay={0.6} />
@@ -4232,11 +4235,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               <SparkleRay $angle={300} $delay={0.75} />
             </SparkleRays>
             <SparkleCore />
-            <SparkleParticle $x={22} $y={18} $delay={0} $duration={1.6} />
-            <SparkleParticle $x={78} $y={25} $delay={0.5} $duration={1.8} />
-            <SparkleParticle $x={70} $y={72} $delay={1.1} $duration={1.5} />
-            <SparkleParticle $x={28} $y={80} $delay={0.3} $duration={1.9} />
-            <SparkleParticle $x={85} $y={50} $delay={0.8} $duration={1.7} />
+            <SparkleParticle $x={22} $y={18} $delay={0} $duration={1.6} $dimmed={dimmed} />
+            <SparkleParticle $x={78} $y={25} $delay={0.5} $duration={1.8} $dimmed={dimmed} />
+            <SparkleParticle $x={70} $y={72} $delay={1.1} $duration={1.5} $dimmed={dimmed} />
+            <SparkleParticle $x={28} $y={80} $delay={0.3} $duration={1.9} $dimmed={dimmed} />
+            <SparkleParticle $x={85} $y={50} $delay={0.8} $duration={1.7} $dimmed={dimmed} />
           </SparkleContainer>
           <ButtonEl ref={islandButtonRef} $hidden={islandOverlayShown} $dimmed={dimmed} onClick={!isMobile ? handleIslandOpen : undefined} onTouchStart={isMobile ? handleIslandOpen : undefined} aria-label="Island">
             <img ref={islandButtonImgRef} src={resolvedUrl} alt="" draggable={false} />
