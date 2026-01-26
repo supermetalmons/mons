@@ -323,15 +323,12 @@ const createEmptyMaterials = (): Record<MiningMaterialName, number> => ({
   ice: 0,
 });
 
-const sortByMaterial = (data: LeaderboardEntry[], material: MiningMaterialName): LeaderboardEntry[] => {
-  return [...data].sort((a, b) => b.materials[material] - a.materials[material]);
-};
-
 export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType }) => {
   const [data, setData] = useState<LeaderboardEntry[] | null>(null);
   const [loadedEmojis, setLoadedEmojis] = useState<Set<string>>(new Set());
   const tableWrapperRef = useRef<HTMLDivElement>(null);
   const prevLeaderboardTypeRef = useRef<LeaderboardType>(leaderboardType);
+  const currentFetchRef = useRef<number>(0);
 
   useEffect(() => {
     if (show) {
@@ -343,59 +340,58 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
   }, [show, leaderboardType]);
 
   useEffect(() => {
-    if (show) {
-      if (tableWrapperRef.current) {
-        setTimeout(() => {
-          if (tableWrapperRef.current) {
-            tableWrapperRef.current.scrollTop = 0;
-          }
-        }, 5);
-      }
+    if (!show) return;
 
-      connection
-        .getLeaderboard()
-        .then((profiles) => {
-          const leaderboardData = profiles.map((entry) => ({
-            username: entry.username,
-            eth: entry.eth,
-            sol: entry.sol,
-            games: (entry.nonce ?? -1) + 1,
-            rating: Math.round(entry.rating ?? 1500),
-            win: entry.win ?? true,
-            id: entry.id,
-            emoji: entry.emoji,
-            aura: entry.aura,
-            ensName: null,
-            profile: entry,
-            materials: entry.mining?.materials ? { ...createEmptyMaterials(), ...entry.mining.materials } : createEmptyMaterials(),
-          }));
-          setData(leaderboardData);
-
-          leaderboardData.forEach(async (entry, index) => {
-            if (entry.eth && !entry.username) {
-              const ensName = await resolveENS(entry.eth);
-              if (ensName) {
-                setData((prevData) => {
-                  if (!prevData) return prevData;
-                  const newData = [...prevData];
-                  newData[index] = { ...newData[index], ensName };
-                  return newData;
-                });
-              }
-            }
-          });
-        })
-        .catch((error) => {
-          console.error("Failed to fetch leaderboard data:", error);
-        });
+    if (tableWrapperRef.current) {
+      setTimeout(() => {
+        if (tableWrapperRef.current) {
+          tableWrapperRef.current.scrollTop = 0;
+        }
+      }, 5);
     }
-  }, [show]);
 
-  const sortedData = React.useMemo(() => {
-    if (!data) return null;
-    if (leaderboardType === "rating") return data;
-    return sortByMaterial(data, leaderboardType);
-  }, [data, leaderboardType]);
+    const fetchId = ++currentFetchRef.current;
+    setData(null);
+
+    connection
+      .getLeaderboard(leaderboardType)
+      .then((profiles) => {
+        if (fetchId !== currentFetchRef.current) return;
+
+        const leaderboardData = profiles.map((entry) => ({
+          username: entry.username,
+          eth: entry.eth,
+          sol: entry.sol,
+          games: (entry.nonce ?? -1) + 1,
+          rating: Math.round(entry.rating ?? 1500),
+          win: entry.win ?? true,
+          id: entry.id,
+          emoji: entry.emoji,
+          aura: entry.aura,
+          ensName: null,
+          profile: entry,
+          materials: entry.mining?.materials ? { ...createEmptyMaterials(), ...entry.mining.materials } : createEmptyMaterials(),
+        }));
+        setData(leaderboardData);
+
+        leaderboardData.forEach(async (entry, index) => {
+          if (entry.eth && !entry.username) {
+            const ensName = await resolveENS(entry.eth);
+            if (ensName) {
+              setData((prevData) => {
+                if (!prevData) return prevData;
+                const newData = [...prevData];
+                newData[index] = { ...newData[index], ensName };
+                return newData;
+              });
+            }
+          }
+        });
+      })
+      .catch((error) => {
+        console.error("Failed to fetch leaderboard data:", error);
+      });
+  }, [show, leaderboardType]);
 
   useAutoDownloadLeaderboardCards({ show, data });
 
@@ -416,7 +412,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
 
   return (
     <LeaderboardContainer show={show}>
-      {sortedData ? (
+      {data ? (
         <TableWrapper ref={tableWrapperRef}>
           <LeaderboardTable>
             <thead>
@@ -428,7 +424,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
               </tr>
             </thead>
             <tbody>
-              {sortedData.map((row: LeaderboardEntry, index: number) => {
+              {data.map((row: LeaderboardEntry, index: number) => {
                 const emojiUrl = emojis.getEmojiUrl(row.emoji.toString());
                 const emojiKey = `${row.id}-${row.emoji}`;
                 const isEmojiLoaded = loadedEmojis.has(emojiKey);

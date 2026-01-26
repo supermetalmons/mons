@@ -335,15 +335,17 @@ class Connection {
     throw new Error("Profile not found");
   }
 
-  public async getLeaderboard(): Promise<PlayerProfile[]> {
+  public async getLeaderboard(type: "rating" | MiningMaterialName = "rating"): Promise<PlayerProfile[]> {
     await this.ensureAuthenticated();
     const usersRef = collection(this.firestore, "users");
-    const q = query(usersRef, orderBy("rating", "desc"), limit(50));
+    const orderField = type === "rating" ? "rating" : `mining.materials.${type}`;
+    const q = query(usersRef, orderBy(orderField, "desc"), limit(50));
     const querySnapshot = await getDocs(q);
 
     const leaderboard: PlayerProfile[] = [];
     querySnapshot.forEach((doc) => {
       const data = doc.data();
+      const mining = normalizeMiningData(data.mining);
       leaderboard.push({
         id: doc.id,
         username: data.username || null,
@@ -362,6 +364,7 @@ class Connection {
         cardStickers: data.custom?.cardStickers,
         completedProblemIds: undefined,
         isTutorialCompleted: undefined,
+        mining,
       });
     });
 
