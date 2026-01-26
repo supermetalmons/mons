@@ -234,8 +234,8 @@ const LeaderboardTypeButton = styled.button<{ isSelected: boolean }>`
   flex-shrink: 0;
   font-size: 0.7rem;
   font-weight: 600;
-  background-color: ${(props) => (props.isSelected ? "var(--color-gray-33)" : "var(--color-gray-f9)")};
-  color: ${(props) => (props.isSelected ? "var(--color-white)" : "var(--color-gray-77)")};
+  background-color: ${(props) => (props.isSelected ? "#ebebeb" : "var(--color-gray-f9)")};
+  color: #707070;
   -webkit-touch-callout: none;
   touch-action: manipulation;
   user-select: none;
@@ -244,7 +244,7 @@ const LeaderboardTypeButton = styled.button<{ isSelected: boolean }>`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.isSelected ? "var(--color-gray-33)" : "var(--color-gray-f5)")};
+      background-color: ${(props) => (props.isSelected ? "#ebebeb" : "var(--color-gray-f5)")};
     }
   }
 
