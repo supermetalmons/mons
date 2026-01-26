@@ -14,7 +14,7 @@ import { startPlayingMusic, stopPlayingMusic, playNextTrack } from "../content/m
 import { InfoPopover } from "./InfoPopover";
 import { MiningMaterialName } from "../connection/connectionModels";
 
-const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust"];
+const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust", "total"];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 
 const RockButtonContainer = styled.div`
@@ -264,6 +264,33 @@ const LeaderboardTypeMaterialIcon = styled.img`
   width: 22px;
   height: 22px;
   object-fit: contain;
+`;
+
+const TotalMaterialsIconContainer = styled.div`
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  width: 28px;
+  height: 20px;
+  gap: 0px;
+
+  img {
+    width: 10px;
+    height: 10px;
+    object-fit: contain;
+  }
+
+  img:nth-child(4) {
+    grid-column: 1 / 2;
+    justify-self: end;
+    margin-right: -1px;
+  }
+
+  img:nth-child(5) {
+    grid-column: 2 / 4;
+    justify-self: start;
+    margin-left: -1px;
+  }
 `;
 
 const IconLinkButton = styled.a`
@@ -949,6 +976,18 @@ const MainMenu: React.FC = () => {
                     onTouchStart={isMobile ? (e) => { e.stopPropagation(); } : undefined}>
                     {type === "rating" ? (
                       "Ratings"
+                    ) : type === "total" ? (
+                      Object.values(materialUrls).every(url => url) ? (
+                        <TotalMaterialsIconContainer>
+                          <img src={materialUrls.ice!} alt="ice" draggable={false} />
+                          <img src={materialUrls.metal!} alt="metal" draggable={false} />
+                          <img src={materialUrls.gum!} alt="gum" draggable={false} />
+                          <img src={materialUrls.slime!} alt="slime" draggable={false} />
+                          <img src={materialUrls.dust!} alt="dust" draggable={false} />
+                        </TotalMaterialsIconContainer>
+                      ) : (
+                        "Total"
+                      )
                     ) : materialUrls[type] ? (
                       <LeaderboardTypeMaterialIcon src={materialUrls[type]!} alt={type} draggable={false} />
                     ) : (

@@ -335,37 +335,103 @@ class Connection {
     throw new Error("Profile not found");
   }
 
-  public async getLeaderboard(type: "rating" | MiningMaterialName = "rating"): Promise<PlayerProfile[]> {
+  private materialLeaderboardCache: Map<MiningMaterialName, PlayerProfile[]> = new Map();
+  private materialLeaderboardCacheTime: number = 0;
+  private static LEADERBOARD_CACHE_TTL = 60000;
+
+  private docToProfile(doc: any): PlayerProfile {
+    const data = doc.data();
+    const mining = normalizeMiningData(data.mining);
+    return {
+      id: doc.id,
+      username: data.username || null,
+      eth: data.eth || null,
+      sol: data.sol || null,
+      rating: data.rating || 1500,
+      nonce: data.nonce === undefined ? -1 : data.nonce,
+      totalManaPoints: data.totalManaPoints ?? 0,
+      win: data.win ?? true,
+      emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(doc.id),
+      aura: data.custom?.aura,
+      cardBackgroundId: data.custom?.cardBackgroundId,
+      cardSubtitleId: data.custom?.cardSubtitleId,
+      profileCounter: data.custom?.profileCounter,
+      profileMons: data.custom?.profileMons,
+      cardStickers: data.custom?.cardStickers,
+      completedProblemIds: undefined,
+      isTutorialCompleted: undefined,
+      mining,
+    };
+  }
+
+  private async fetchAllMaterialLeaderboards(): Promise<void> {
+    const usersRef = collection(this.firestore, "users");
+    const materialQueries = MINING_MATERIAL_NAMES.map((material) =>
+      getDocs(query(usersRef, orderBy(`mining.materials.${material}`, "desc"), limit(50)))
+    );
+    const snapshots = await Promise.all(materialQueries);
+    MINING_MATERIAL_NAMES.forEach((material, index) => {
+      const profiles: PlayerProfile[] = [];
+      snapshots[index].forEach((doc) => {
+        profiles.push(this.docToProfile(doc));
+      });
+      this.materialLeaderboardCache.set(material, profiles);
+    });
+    this.materialLeaderboardCacheTime = Date.now();
+  }
+
+  private isMaterialCacheValid(): boolean {
+    return this.materialLeaderboardCache.size === MINING_MATERIAL_NAMES.length &&
+      Date.now() - this.materialLeaderboardCacheTime < Connection.LEADERBOARD_CACHE_TTL;
+  }
+
+  public async getLeaderboard(type: "rating" | MiningMaterialName | "total" = "rating"): Promise<PlayerProfile[]> {
     await this.ensureAuthenticated();
     const usersRef = collection(this.firestore, "users");
-    const orderField = type === "rating" ? "rating" : `mining.materials.${type}`;
+
+    if (type === "total") {
+      if (!this.isMaterialCacheValid()) {
+        await this.fetchAllMaterialLeaderboards();
+      }
+      const profileMap = new Map<string, PlayerProfile>();
+      MINING_MATERIAL_NAMES.forEach((material) => {
+        const cached = this.materialLeaderboardCache.get(material);
+        if (cached) {
+          cached.forEach((profile) => {
+            if (!profileMap.has(profile.id)) {
+              profileMap.set(profile.id, profile);
+            }
+          });
+        }
+      });
+      const profiles = Array.from(profileMap.values());
+      profiles.sort((a, b) => {
+        const totalA = a.mining ? Object.values(a.mining.materials).reduce((sum, val) => sum + val, 0) : 0;
+        const totalB = b.mining ? Object.values(b.mining.materials).reduce((sum, val) => sum + val, 0) : 0;
+        return totalB - totalA;
+      });
+      return profiles.slice(0, 50);
+    }
+
+    if (MINING_MATERIAL_NAMES.includes(type as MiningMaterialName)) {
+      const materialType = type as MiningMaterialName;
+      if (this.isMaterialCacheValid()) {
+        const cached = this.materialLeaderboardCache.get(materialType);
+        if (cached) {
+          return cached;
+        }
+      }
+      await this.fetchAllMaterialLeaderboards();
+      return this.materialLeaderboardCache.get(materialType) ?? [];
+    }
+
+    const orderField = "rating";
     const q = query(usersRef, orderBy(orderField, "desc"), limit(50));
     const querySnapshot = await getDocs(q);
 
     const leaderboard: PlayerProfile[] = [];
     querySnapshot.forEach((doc) => {
-      const data = doc.data();
-      const mining = normalizeMiningData(data.mining);
-      leaderboard.push({
-        id: doc.id,
-        username: data.username || null,
-        eth: data.eth || null,
-        sol: data.sol || null,
-        rating: data.rating || 1500,
-        nonce: data.nonce === undefined ? -1 : data.nonce,
-        totalManaPoints: data.totalManaPoints ?? 0,
-        win: data.win ?? true,
-        emoji: data.custom?.emoji ?? emojis.getEmojiIdFromString(doc.id),
-        aura: data.custom?.aura,
-        cardBackgroundId: data.custom?.cardBackgroundId,
-        cardSubtitleId: data.custom?.cardSubtitleId,
-        profileCounter: data.custom?.profileCounter,
-        profileMons: data.custom?.profileMons,
-        cardStickers: data.custom?.cardStickers,
-        completedProblemIds: undefined,
-        isTutorialCompleted: undefined,
-        mining,
-      });
+      leaderboard.push(this.docToProfile(doc));
     });
 
     return leaderboard;

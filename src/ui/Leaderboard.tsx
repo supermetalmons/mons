@@ -3,11 +3,11 @@ import styled from "styled-components";
 import { resolveENS } from "../utils/ensResolver";
 import { connection } from "../connection/connection";
 import { showShinyCard } from "./ShinyCard";
-import { PlayerProfile, MiningMaterialName } from "../connection/connectionModels";
+import { PlayerProfile, MiningMaterialName, MINING_MATERIAL_NAMES } from "../connection/connectionModels";
 import { AvatarImage } from "./AvatarImage";
 import { isLocalHost } from "../utils/localDev";
 
-export type LeaderboardType = "rating" | MiningMaterialName;
+export type LeaderboardType = "rating" | MiningMaterialName | "total";
 
 const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;
 
@@ -363,22 +363,51 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
       .then((profiles) => {
         if (fetchId !== currentFetchRef.current) return;
 
-        const leaderboardData = profiles.map((entry) => ({
-          username: entry.username,
-          eth: entry.eth,
-          sol: entry.sol,
-          games: (entry.nonce ?? -1) + 1,
-          rating: Math.round(entry.rating ?? 1500),
-          win: entry.win ?? true,
-          id: entry.id,
-          emoji: entry.emoji,
-          aura: entry.aura,
-          ensName: null,
-          profile: entry,
-          materials: entry.mining?.materials ? { ...createEmptyMaterials(), ...entry.mining.materials } : createEmptyMaterials(),
-        }));
+        const profilesToEntries = (profs: typeof profiles): LeaderboardEntry[] =>
+          profs.map((entry) => ({
+            username: entry.username,
+            eth: entry.eth,
+            sol: entry.sol,
+            games: (entry.nonce ?? -1) + 1,
+            rating: Math.round(entry.rating ?? 1500),
+            win: entry.win ?? true,
+            id: entry.id,
+            emoji: entry.emoji,
+            aura: entry.aura,
+            ensName: null,
+            profile: entry,
+            materials: entry.mining?.materials ? { ...createEmptyMaterials(), ...entry.mining.materials } : createEmptyMaterials(),
+          }));
+
+        const leaderboardData = profilesToEntries(profiles);
         leaderboardCache.set(leaderboardType, leaderboardData);
         setData(leaderboardData);
+
+        if (leaderboardType === "total" || MINING_MATERIAL_NAMES.includes(leaderboardType as MiningMaterialName)) {
+          const allEntries = profilesToEntries(profiles);
+          const entryMap = new Map<string, LeaderboardEntry>();
+          allEntries.forEach((e) => entryMap.set(e.id, e));
+
+          MINING_MATERIAL_NAMES.forEach((material) => {
+            if (!leaderboardCache.has(material)) {
+              const sorted = [...entryMap.values()]
+                .sort((a, b) => b.materials[material] - a.materials[material])
+                .slice(0, 50);
+              leaderboardCache.set(material, sorted);
+            }
+          });
+
+          if (!leaderboardCache.has("total")) {
+            const sorted = [...entryMap.values()]
+              .sort((a, b) => {
+                const totalA = Object.values(a.materials).reduce((sum, val) => sum + val, 0);
+                const totalB = Object.values(b.materials).reduce((sum, val) => sum + val, 0);
+                return totalB - totalA;
+              })
+              .slice(0, 50);
+            leaderboardCache.set("total", sorted);
+          }
+        }
 
         leaderboardData.forEach(async (entry, index) => {
           if (entry.eth && !entry.username) {
@@ -413,6 +442,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
   const getValueCell = (row: LeaderboardEntry) => {
     if (leaderboardType === "rating") {
       return <RatingCell win={row.win}>{row.rating}</RatingCell>;
+    }
+    if (leaderboardType === "total") {
+      const total = Object.values(row.materials).reduce((sum, val) => sum + val, 0);
+      return <MaterialCell>{total}</MaterialCell>;
     }
     return <MaterialCell>{row.materials[leaderboardType]}</MaterialCell>;
   };
