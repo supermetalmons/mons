@@ -39,6 +39,12 @@ const ensureMonType = (value: string): MonType => {
   return MON_TYPE_ORDER.includes(maybe) ? maybe : DEFAULT_MON_TYPE;
 };
 
+const ButtonWrap = styled.div<{ $hidden: boolean }>`
+  position: relative;
+  display: inline-flex;
+  visibility: ${(p) => (p.$hidden ? "hidden" : "visible")};
+`;
+
 const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
   border: none;
   cursor: pointer;
@@ -72,6 +78,133 @@ const ButtonEl = styled.button<{ $hidden: boolean; $dimmed: boolean }>`
     -webkit-touch-callout: none;
     user-select: none;
     -webkit-user-select: none;
+  }
+`;
+
+const sparkleRotate = keyframes`
+  0% { transform: translate(-50%, -50%) rotate(0deg); }
+  100% { transform: translate(-50%, -50%) rotate(360deg); }
+`;
+
+const sparklePulse = keyframes`
+  0%, 100% { opacity: 0.65; filter: blur(1.5px); }
+  50% { opacity: 1; filter: blur(0.5px); }
+`;
+
+const twinkle = keyframes`
+  0%, 100% { opacity: 0; transform: translate(-50%, -50%) scale(0.5); }
+  50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+`;
+
+const SparkleContainer = styled.div<{ $visible: boolean; $fading: boolean; $dimmed: boolean }>`
+  position: absolute;
+  left: 16px;
+  top: 16px;
+  width: 56px;
+  height: 56px;
+  transform: translate(-50%, -50%) scale(${(p) => (p.$dimmed ? 0.77 : 1)});
+  -webkit-transform: translate(-50%, -50%) scale(${(p) => (p.$dimmed ? 0.77 : 1)});
+  pointer-events: none;
+  z-index: 0;
+  opacity: ${(p) => (p.$fading ? 0 : p.$visible ? 1 : 0)};
+  will-change: opacity, transform;
+  -webkit-transition: opacity ${(p) => (p.$fading ? "150ms" : "900ms")} ease-out, transform 150ms ease;
+  transition: opacity ${(p) => (p.$fading ? "150ms" : "900ms")} ease-out, transform 150ms ease;
+`;
+
+const SparkleRing = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 215, 100, 0.5) 0%, rgba(255, 180, 60, 0.3) 40%, transparent 70%);
+  transform: translate(-50%, -50%);
+  animation: ${sparklePulse} 2s ease-in-out infinite;
+  @media (prefers-color-scheme: light) {
+    background: radial-gradient(circle at 50% 50%, rgba(255, 240, 0, 0.5) 0%, rgba(255, 230, 0, 0.35) 40%, transparent 70%);
+  }
+`;
+
+const SparkleCore = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  background: radial-gradient(circle, rgba(255, 255, 220, 0.95) 0%, rgba(255, 230, 140, 0.7) 50%, transparent 100%);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: ${sparklePulse} 1.5s ease-in-out infinite;
+  animation-delay: 0.25s;
+  @media (prefers-color-scheme: light) {
+    background: radial-gradient(circle, rgba(255, 230, 0, 1) 0%, rgba(255, 210, 0, 0.85) 50%, transparent 100%);
+  }
+`;
+
+const SparkleRays = styled.div<{ $dimmed: boolean }>`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 44px;
+  height: 44px;
+  animation: ${sparkleRotate} 8s linear infinite;
+  opacity: ${(p) => (p.$dimmed ? 0 : 1)};
+  transition: opacity 300ms ease;
+`;
+
+const SparkleRay = styled.div<{ $angle: number; $delay: number }>`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 2px;
+  height: 14px;
+  background: linear-gradient(to top, transparent 0%, rgba(255, 240, 180, 0.9) 50%, transparent 100%);
+  transform-origin: center bottom;
+  transform: translate(-50%, -100%) rotate(${(p) => p.$angle}deg);
+  animation: ${sparklePulse} 1.8s ease-in-out infinite;
+  animation-delay: ${(p) => p.$delay}s;
+  @media (prefers-color-scheme: light) {
+    width: 3px;
+    height: 16px;
+    background: linear-gradient(to top, transparent 0%, rgba(255, 255, 0, 1) 25%, rgba(255, 255, 0, 1) 75%, transparent 100%);
+  }
+`;
+
+const SparkleParticle = styled.div<{ $x: number; $y: number; $delay: number; $duration: number; $dimmed: boolean }>`
+  position: absolute;
+  left: ${(p) => p.$x}%;
+  top: ${(p) => p.$y}%;
+  width: 4px;
+  height: 4px;
+  z-index: 2;
+  animation: ${twinkle} ${(p) => p.$duration}s ease-in-out infinite;
+  animation-delay: ${(p) => p.$delay}s;
+  visibility: ${(p) => (p.$dimmed ? "hidden" : "visible")};
+  &::before, &::after {
+    content: "";
+    position: absolute;
+    background: rgba(255, 245, 200, 0.75);
+  }
+  &::before {
+    left: 50%;
+    top: 0;
+    width: 1px;
+    height: 100%;
+    transform: translateX(-50%);
+  }
+  &::after {
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 1px;
+    transform: translateY(-50%);
+  }
+  @media (prefers-color-scheme: light) {
+    &::before, &::after {
+      background: rgba(255, 160, 50, 1);
+    }
   }
 `;
 
@@ -805,6 +938,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const fxContainerRef = useRef<HTMLDivElement | null>(null);
   const lastRockRectRef = useRef<DOMRect | null>(null);
   const [rockAvailable, setRockAvailable] = useState(() => rocksMiningService.shouldShowRock());
+  const [sparkleFading, setSparkleFading] = useState(false);
+  const [sparkleMounted, setSparkleMounted] = useState(false);
   const walkSuppressedUntilRef = useRef<number>(0);
   const walkSuppressionHitsRemainingRef = useRef<number>(0);
   const walkSuppressionAnchorRef = useRef<{ x: number; y: number } | null>(null);
@@ -864,7 +999,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     }
   }, [rockImageUrl]);
   useEffect(() => {
-    setRockAvailable(rocksMiningService.shouldShowRock());
+    const hasRock = rocksMiningService.shouldShowRock();
+    setRockAvailable(hasRock);
+    if (!islandOverlayVisible && hasRock) {
+      setSparkleFading(false);
+    }
   }, [islandOverlayVisible]);
   type MaterialDropEntry = {
     id: number;
@@ -1639,6 +1778,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, [resolvedUrl]);
 
   useEffect(() => {
+    if (!islandImgLoaded) return;
+    const timer = setTimeout(() => {
+      setSparkleMounted(true);
+    }, 50);
+    return () => clearTimeout(timer);
+  }, [islandImgLoaded]);
+
+  useEffect(() => {
     let mounted = true;
     MATERIALS.forEach((name) => {
       getMaterialImageUrl(name).then((url) => {
@@ -2210,6 +2357,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (overlayPhaseRef.current !== "idle") {
         return;
       }
+
+      setSparkleFading(true);
 
       const playerSeemedInitialized = soundPlayer.isInitialized;
 
@@ -4097,12 +4246,34 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const disablePrevMonType = isAtFirstMonType;
   const disableNextMonType = isAtLastMonType;
 
+  const isSignedIn = storage.getProfileId("") !== "";
+  const showSparkle = isSignedIn && rockAvailable && !islandOverlayShown && !sparkleFading && sparkleMounted;
+
   return (
     <>
       {islandImgLoaded && (
-        <ButtonEl ref={islandButtonRef} $hidden={islandOverlayShown} $dimmed={dimmed} onClick={!isMobile ? handleIslandOpen : undefined} onTouchStart={isMobile ? handleIslandOpen : undefined} aria-label="Island">
-          <img ref={islandButtonImgRef} src={resolvedUrl} alt="" draggable={false} />
-        </ButtonEl>
+        <ButtonWrap $hidden={islandOverlayShown}>
+          <SparkleContainer $visible={showSparkle} $fading={sparkleFading} $dimmed={dimmed}>
+            <SparkleRing />
+            <SparkleRays $dimmed={dimmed}>
+              <SparkleRay $angle={0} $delay={0} />
+              <SparkleRay $angle={60} $delay={0.3} />
+              <SparkleRay $angle={120} $delay={0.6} />
+              <SparkleRay $angle={180} $delay={0.15} />
+              <SparkleRay $angle={240} $delay={0.45} />
+              <SparkleRay $angle={300} $delay={0.75} />
+            </SparkleRays>
+            <SparkleCore />
+            <SparkleParticle $x={22} $y={18} $delay={0} $duration={1.6} $dimmed={dimmed} />
+            <SparkleParticle $x={78} $y={25} $delay={0.5} $duration={1.8} $dimmed={dimmed} />
+            <SparkleParticle $x={70} $y={72} $delay={1.1} $duration={1.5} $dimmed={dimmed} />
+            <SparkleParticle $x={28} $y={80} $delay={0.3} $duration={1.9} $dimmed={dimmed} />
+            <SparkleParticle $x={85} $y={50} $delay={0.8} $duration={1.7} $dimmed={dimmed} />
+          </SparkleContainer>
+          <ButtonEl ref={islandButtonRef} $hidden={islandOverlayShown} $dimmed={dimmed} onClick={!isMobile ? handleIslandOpen : undefined} onTouchStart={isMobile ? handleIslandOpen : undefined} aria-label="Island">
+            <img ref={islandButtonImgRef} src={resolvedUrl} alt="" draggable={false} />
+          </ButtonEl>
+        </ButtonWrap>
       )}
       {(islandOverlayShown || islandAnimating) && (
         <>
