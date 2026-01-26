@@ -3,9 +3,11 @@ import styled from "styled-components";
 import { resolveENS } from "../utils/ensResolver";
 import { connection } from "../connection/connection";
 import { showShinyCard } from "./ShinyCard";
-import { PlayerProfile } from "../connection/connectionModels";
+import { PlayerProfile, MiningMaterialName } from "../connection/connectionModels";
 import { AvatarImage } from "./AvatarImage";
 import { isLocalHost } from "../utils/localDev";
+
+export type LeaderboardType = "rating" | MiningMaterialName;
 
 const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;
 
@@ -177,6 +179,15 @@ const RatingCell = styled.td<{ win: boolean }>`
   }
 `;
 
+const MaterialCell = styled.td`
+  color: var(--color-gray-66);
+  font-weight: 500;
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-gray-99);
+  }
+`;
+
 const EmojiImage = styled.div`
   width: 26px;
   height: 26px;
@@ -251,6 +262,7 @@ const EmojiPlaceholder = styled.div`
 
 interface LeaderboardProps {
   show: boolean;
+  leaderboardType: LeaderboardType;
 }
 
 interface LeaderboardEntry {
@@ -265,6 +277,7 @@ interface LeaderboardEntry {
   ensName?: string | null;
   username?: string | null;
   profile: PlayerProfile;
+  materials: Record<MiningMaterialName, number>;
 }
 
 const getLeaderboardDisplayName = (row: LeaderboardEntry): string => {
@@ -302,10 +315,32 @@ const useAutoDownloadLeaderboardCards = ({ show, data }: { show: boolean; data: 
   }, [show, data]);
 };
 
-export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
+const createEmptyMaterials = (): Record<MiningMaterialName, number> => ({
+  dust: 0,
+  slime: 0,
+  gum: 0,
+  metal: 0,
+  ice: 0,
+});
+
+const sortByMaterial = (data: LeaderboardEntry[], material: MiningMaterialName): LeaderboardEntry[] => {
+  return [...data].sort((a, b) => b.materials[material] - a.materials[material]);
+};
+
+export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType }) => {
   const [data, setData] = useState<LeaderboardEntry[] | null>(null);
   const [loadedEmojis, setLoadedEmojis] = useState<Set<string>>(new Set());
   const tableWrapperRef = useRef<HTMLDivElement>(null);
+  const prevLeaderboardTypeRef = useRef<LeaderboardType>(leaderboardType);
+
+  useEffect(() => {
+    if (show) {
+      if (tableWrapperRef.current && prevLeaderboardTypeRef.current !== leaderboardType) {
+        tableWrapperRef.current.scrollTop = 0;
+      }
+      prevLeaderboardTypeRef.current = leaderboardType;
+    }
+  }, [show, leaderboardType]);
 
   useEffect(() => {
     if (show) {
@@ -332,6 +367,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
             aura: entry.aura,
             ensName: null,
             profile: entry,
+            materials: entry.mining?.materials ? { ...createEmptyMaterials(), ...entry.mining.materials } : createEmptyMaterials(),
           }));
           setData(leaderboardData);
 
@@ -355,6 +391,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
     }
   }, [show]);
 
+  const sortedData = React.useMemo(() => {
+    if (!data) return null;
+    if (leaderboardType === "rating") return data;
+    return sortByMaterial(data, leaderboardType);
+  }, [data, leaderboardType]);
+
   useAutoDownloadLeaderboardCards({ show, data });
 
   const handleRowClick = (row: LeaderboardEntry) => {
@@ -365,9 +407,16 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
     setLoadedEmojis((prev) => new Set(prev).add(emojiKey));
   };
 
+  const getValueCell = (row: LeaderboardEntry) => {
+    if (leaderboardType === "rating") {
+      return <RatingCell win={row.win}>{row.rating}</RatingCell>;
+    }
+    return <MaterialCell>{row.materials[leaderboardType]}</MaterialCell>;
+  };
+
   return (
     <LeaderboardContainer show={show}>
-      {data ? (
+      {sortedData ? (
         <TableWrapper ref={tableWrapperRef}>
           <LeaderboardTable>
             <thead>
@@ -379,13 +428,13 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
               </tr>
             </thead>
             <tbody>
-              {data.map((row: LeaderboardEntry, index: number) => {
+              {sortedData.map((row: LeaderboardEntry, index: number) => {
                 const emojiUrl = emojis.getEmojiUrl(row.emoji.toString());
                 const emojiKey = `${row.id}-${row.emoji}`;
                 const isEmojiLoaded = loadedEmojis.has(emojiKey);
 
                 return (
-                  <tr key={index} onClick={() => handleRowClick(row)}>
+                  <tr key={row.id} onClick={() => handleRowClick(row)}>
                     <td>{index + 1}</td>
                     <td>
                       {!isEmojiLoaded && <EmojiPlaceholder />}
@@ -394,7 +443,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show }) => {
                       </EmojiImage>
                     </td>
                     <td>{getLeaderboardDisplayName(row)}</td>
-                    <RatingCell win={row.win}>{row.rating}</RatingCell>
+                    {getValueCell(row)}
                   </tr>
                 );
               })}

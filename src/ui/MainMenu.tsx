@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { logoBase64 } from "../content/uiAssets";
 import { didDismissSomethingWithOutsideTapJustNow, didNotDismissAnythingWithOutsideTapJustNow, closeNavigationAndAppearancePopupIfAny } from "./BottomControls";
 import styled from "styled-components";
 import { defaultEarlyInputEventName, isMobile, getBuildInfo } from "../utils/misc";
 import { storage } from "../utils/storage";
-import { Leaderboard } from "./Leaderboard";
+import { Leaderboard, LeaderboardType } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
 import { getCurrentGameFen } from "../game/gameController";
@@ -12,6 +12,10 @@ import { FaTelegramPlane, FaUniversity, FaPlay, FaStop, FaBackward, FaForward } 
 import { showsShinyCardSomewhere } from "./ShinyCard";
 import { startPlayingMusic, stopPlayingMusic, playNextTrack } from "../content/music";
 import { InfoPopover } from "./InfoPopover";
+import { MiningMaterialName } from "../connection/connectionModels";
+
+const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust"];
+const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 
 const RockButtonContainer = styled.div`
   position: absolute;
@@ -201,6 +205,65 @@ const MenuTitle = styled.div`
   align-items: flex-start;
   gap: 8px;
   min-height: 20px;
+`;
+
+const LeaderboardTypeSelector = styled.div`
+  display: flex;
+  gap: 6px;
+  padding: 4px 0 8px 0;
+  overflow-x: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  -webkit-overflow-scrolling: touch;
+
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+const LeaderboardTypeButton = styled.button<{ isSelected: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  min-width: 28px;
+  padding: 0 8px;
+  border-radius: 14px;
+  border: none;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 0.7rem;
+  font-weight: 600;
+  background-color: ${(props) => (props.isSelected ? "var(--color-gray-33)" : "var(--color-gray-f9)")};
+  color: ${(props) => (props.isSelected ? "var(--color-white)" : "var(--color-gray-66)")};
+  -webkit-touch-callout: none;
+  touch-action: manipulation;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: ${(props) => (props.isSelected ? "var(--color-gray-33)" : "var(--color-gray-f5)")};
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background-color: ${(props) => (props.isSelected ? "var(--color-gray-f5)" : "var(--color-gray-25)")};
+    color: ${(props) => (props.isSelected ? "var(--color-gray-22)" : "var(--color-gray-99)")};
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: ${(props) => (props.isSelected ? "var(--color-gray-f5)" : "var(--color-gray-27)")};
+      }
+    }
+  }
+`;
+
+const LeaderboardTypeMaterialIcon = styled.img`
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
 `;
 
 const IconLinkButton = styled.a`
@@ -550,6 +613,17 @@ const MainMenu: React.FC = () => {
   const [isDebugViewEnabled, setIsDebugViewEnabled] = useState<boolean>(storage.getDebugViewEnabled(false));
   const [debugViewText, setDebugViewTextState] = useState<string>("");
   const [areAnimatedMonsEnabled, setAreAnimatedMonsEnabled] = useState<boolean>(storage.getIsExperimentingWithSprites(false));
+  const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>(() => {
+    const stored = storage.getLeaderboardType("rating");
+    return LEADERBOARD_TYPES.includes(stored as LeaderboardType) ? (stored as LeaderboardType) : "rating";
+  });
+  const [materialUrls, setMaterialUrls] = useState<Record<MiningMaterialName, string | null>>({
+    dust: null,
+    slime: null,
+    gum: null,
+    metal: null,
+    ice: null,
+  });
   const buttonRowRef = useRef<HTMLDivElement>(null);
   const lastClickTime = useRef(0);
   const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
@@ -557,6 +631,33 @@ const MainMenu: React.FC = () => {
   const activeIndicesRef = useRef<number[]>([]);
 
   setIsMusicPlayingGlobal = setIsMusicPlaying;
+
+  useEffect(() => {
+    let mounted = true;
+    const materials: MiningMaterialName[] = ["ice", "metal", "gum", "slime", "dust"];
+    materials.forEach((name) => {
+      const url = `${MATERIAL_BASE_URL}/${name}.webp`;
+      fetch(url)
+        .then((res) => {
+          if (!res.ok) throw new Error("Failed to fetch");
+          return res.blob();
+        })
+        .then((blob) => {
+          if (mounted) {
+            setMaterialUrls((prev) => ({ ...prev, [name]: URL.createObjectURL(blob) }));
+          }
+        })
+        .catch(() => {});
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const handleLeaderboardTypeChange = useCallback((type: LeaderboardType) => {
+    setLeaderboardType(type);
+    storage.setLeaderboardType(type);
+  }, []);
 
   useEffect(() => {
     const timeoutRefs: NodeJS.Timeout[] = [];
@@ -839,7 +940,24 @@ const MainMenu: React.FC = () => {
                 ×
               </CloseButton>
               {showExperimental && <MenuOverlay />}
-              <Leaderboard show={isMenuOpen} />
+              <LeaderboardTypeSelector>
+                {LEADERBOARD_TYPES.map((type) => (
+                  <LeaderboardTypeButton
+                    key={type}
+                    isSelected={leaderboardType === type}
+                    onClick={() => handleLeaderboardTypeChange(type)}
+                    onTouchStart={isMobile ? (e) => { e.stopPropagation(); } : undefined}>
+                    {type === "rating" ? (
+                      "Ratings"
+                    ) : materialUrls[type] ? (
+                      <LeaderboardTypeMaterialIcon src={materialUrls[type]!} alt={type} draggable={false} />
+                    ) : (
+                      type.charAt(0).toUpperCase() + type.slice(1)
+                    )}
+                  </LeaderboardTypeButton>
+                ))}
+              </LeaderboardTypeSelector>
+              <Leaderboard show={isMenuOpen} leaderboardType={leaderboardType} />
               {showExperimental && (
                 <ExperimentalMenu>
                   <ToggleRow>

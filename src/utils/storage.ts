@@ -29,6 +29,7 @@ const STORAGE_KEYS = {
   TUTORIAL_COMPLETED: "tutorialCompleted",
   IS_FIRST_LAUNCH: "isFirstLaunch",
   ISLAND_MON_TYPE: "islandMonType",
+  LEADERBOARD_TYPE: "leaderboardType",
 } as const;
 
 type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
@@ -266,6 +267,14 @@ export const storage = {
 
   setIslandMonType: (value: string): void => {
     setItem(STORAGE_KEYS.ISLAND_MON_TYPE, value);
+  },
+
+  getLeaderboardType: (defaultValue: string): string => {
+    return getItem(STORAGE_KEYS.LEADERBOARD_TYPE, defaultValue);
+  },
+
+  setLeaderboardType: (value: string): void => {
+    setItem(STORAGE_KEYS.LEADERBOARD_TYPE, value);
   },
 
   signOut: (): void => {
