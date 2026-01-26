@@ -235,7 +235,7 @@ const LeaderboardTypeButton = styled.button<{ isSelected: boolean }>`
   font-size: 0.7rem;
   font-weight: 600;
   background-color: ${(props) => (props.isSelected ? "var(--color-gray-33)" : "var(--color-gray-f9)")};
-  color: ${(props) => (props.isSelected ? "var(--color-white)" : "var(--color-gray-66)")};
+  color: ${(props) => (props.isSelected ? "var(--color-white)" : "var(--color-gray-77)")};
   -webkit-touch-callout: none;
   touch-action: manipulation;
   user-select: none;

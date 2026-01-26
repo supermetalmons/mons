@@ -180,7 +180,7 @@ const RatingCell = styled.td<{ win: boolean }>`
 `;
 
 const MaterialCell = styled.td`
-  color: var(--color-gray-66);
+  color: var(--color-gray-77);
   font-weight: 500;
 
   @media (prefers-color-scheme: dark) {
