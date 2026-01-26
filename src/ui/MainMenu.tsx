@@ -249,12 +249,12 @@ const LeaderboardTypeButton = styled.button<{ isSelected: boolean }>`
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: ${(props) => (props.isSelected ? "var(--color-gray-f5)" : "var(--color-gray-25)")};
-    color: ${(props) => (props.isSelected ? "var(--color-gray-22)" : "var(--color-gray-99)")};
+    background-color: ${(props) => (props.isSelected ? "var(--color-gray-44)" : "var(--color-gray-25)")};
+    color: ${(props) => (props.isSelected ? "var(--color-gray-f5)" : "var(--color-gray-99)")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.isSelected ? "var(--color-gray-f5)" : "var(--color-gray-27)")};
+        background-color: ${(props) => (props.isSelected ? "var(--color-gray-44)" : "var(--color-gray-27)")};
       }
     }
   }
