@@ -174,7 +174,7 @@ const SparkleParticle = styled.div<{ $x: number; $y: number; $delay: number; $du
   &::before, &::after {
     content: "";
     position: absolute;
-    background: rgba(255, 250, 220, 0.95);
+    background: rgba(255, 245, 200, 0.75);
   }
   &::before {
     left: 50%;
