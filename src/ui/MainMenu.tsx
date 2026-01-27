@@ -288,15 +288,15 @@ const TotalMaterialsIconContainer = styled.div`
 const IconLinkButton = styled.a`
   display: flex;
   align-items: center;
-  font-size: 0.85rem;
+  font-size: 0.75rem;
   font-weight: 600;
   justify-content: center;
-  height: 30px;
-  padding: 0 4px;
+  height: 26px;
+  padding: 0 3px;
   border: none;
   border-radius: 0;
   background-color: transparent;
-  color: var(--color-gray-77);
+  color: var(--color-gray-99);
   text-decoration: none;
   cursor: pointer;
   white-space: nowrap;
@@ -325,8 +325,8 @@ const IconLinkButton = styled.a`
   }
 
   svg {
-    width: 0.9rem;
-    height: 0.9rem;
+    width: 0.8rem;
+    height: 0.8rem;
   }
 `;
 
