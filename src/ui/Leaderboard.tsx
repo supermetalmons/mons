@@ -549,6 +549,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
   const [loadedEmojis, setLoadedEmojis] = useState<Set<string>>(new Set());
   const [currentRowPosition, setCurrentRowPosition] = useState<RowPosition>("visible");
   const [suppressPanelAnimation, setSuppressPanelAnimation] = useState(true);
+  const [bottomPanelHasAnimated, setBottomPanelHasAnimated] = useState(false);
   const tableWrapperRef = useRef<HTMLDivElement>(null);
   const currentRowRef = useRef<HTMLTableRowElement | null>(null);
   const prevLeaderboardTypeRef = useRef<LeaderboardType>(leaderboardType);
@@ -666,6 +667,15 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
 
     return () => clearTimeout(timer);
   }, [suppressPanelAnimation, show, data]);
+
+  useEffect(() => {
+    if (currentRowPosition === "below" && !bottomPanelHasAnimated) {
+      const timer = setTimeout(() => {
+        setBottomPanelHasAnimated(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentRowPosition, bottomPanelHasAnimated]);
 
   useEffect(() => {
     setData(leaderboardCache.get(leaderboardType) ?? null);
@@ -847,7 +857,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
               key={position}
               visible={currentRowPosition === (position === "top" ? "above" : "below")}
               position={position}
-              suppressAnimation={suppressPanelAnimation}
+              suppressAnimation={position === "top" ? suppressPanelAnimation : bottomPanelHasAnimated}
               onClick={scrollToCurrentRow}
             >
               <FloatingRowInner>
