@@ -12,6 +12,7 @@ import { getStashedPlayerProfile } from "../utils/playerMetadata";
 export type LeaderboardType = "rating" | MiningMaterialName | "total";
 
 const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;
+const LEADERBOARD_ENTRY_LIMIT = 99;
 
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
   position: relative;
@@ -690,7 +691,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
             if (!leaderboardCache.has(material)) {
               const sorted = [...entryMap.values()]
                 .sort((a, b) => b.materials[material] - a.materials[material])
-                .slice(0, 50);
+                .slice(0, LEADERBOARD_ENTRY_LIMIT);
               leaderboardCache.set(material, sorted);
             }
           });
@@ -702,7 +703,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                 const totalB = Object.values(b.materials).reduce((sum, val) => sum + val, 0);
                 return totalB - totalA;
               })
-              .slice(0, 50);
+              .slice(0, LEADERBOARD_ENTRY_LIMIT);
             leaderboardCache.set("total", sorted);
           }
         }
@@ -755,7 +756,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
 
   const currentPlayerData = data?.find((row) => isCurrentProfile(row));
   const currentPlayerIndex = data?.findIndex((row) => isCurrentProfile(row)) ?? -1;
-  const currentPlayerRankLabel = currentPlayerIndex >= 50 ? "∅" : currentPlayerIndex + 1;
+  const currentPlayerRankLabel = currentPlayerIndex >= LEADERBOARD_ENTRY_LIMIT ? "∅" : currentPlayerIndex + 1;
 
   const getFloatingValue = (row: LeaderboardEntry) => {
     if (leaderboardType === "rating") {
@@ -793,7 +794,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                 const emojiKey = `${row.id}-${row.emoji}`;
                 const isEmojiLoaded = loadedEmojis.has(emojiKey);
                 const isCurrentPlayer = isCurrentProfile(row);
-                const rankLabel = isCurrentPlayer && currentPlayerIndex >= 50 ? "∅" : index + 1;
+                const rankLabel = isCurrentPlayer && currentPlayerIndex >= LEADERBOARD_ENTRY_LIMIT ? "∅" : index + 1;
 
                 return (
                   <tr

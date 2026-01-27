@@ -38,6 +38,7 @@ const normalizeMiningData = (source: any): PlayerMiningData => {
 };
 
 const controllerVersion = 2;
+const LEADERBOARD_ENTRY_LIMIT = 99;
 
 const initialPath = window.location.pathname.replace(/^\/|\/$/g, "");
 export const isCreateNewInviteFlow = initialPath === "";
@@ -367,7 +368,7 @@ class Connection {
   private async fetchAllMaterialLeaderboards(): Promise<void> {
     const usersRef = collection(this.firestore, "users");
     const materialQueries = MINING_MATERIAL_NAMES.map((material) =>
-      getDocs(query(usersRef, orderBy(`mining.materials.${material}`, "desc"), limit(50)))
+      getDocs(query(usersRef, orderBy(`mining.materials.${material}`, "desc"), limit(LEADERBOARD_ENTRY_LIMIT)))
     );
     const snapshots = await Promise.all(materialQueries);
     MINING_MATERIAL_NAMES.forEach((material, index) => {
@@ -410,7 +411,7 @@ class Connection {
         const totalB = b.mining ? Object.values(b.mining.materials).reduce((sum, val) => sum + val, 0) : 0;
         return totalB - totalA;
       });
-      return profiles.slice(0, 50);
+      return profiles.slice(0, LEADERBOARD_ENTRY_LIMIT);
     }
 
     if (MINING_MATERIAL_NAMES.includes(type as MiningMaterialName)) {
@@ -426,7 +427,7 @@ class Connection {
     }
 
     const orderField = "rating";
-    const q = query(usersRef, orderBy(orderField, "desc"), limit(50));
+    const q = query(usersRef, orderBy(orderField, "desc"), limit(LEADERBOARD_ENTRY_LIMIT));
     const querySnapshot = await getDocs(q);
 
     const leaderboard: PlayerProfile[] = [];
