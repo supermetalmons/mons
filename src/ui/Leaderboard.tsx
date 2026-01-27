@@ -257,15 +257,10 @@ const FloatingRowRank = styled.div`
   font-size: 0.75rem;
   color: var(--color-gray-99);
   padding-left: 5px;
-  box-shadow: inset 3px 0 0 var(--color-blue-primary);
 
   @media (max-width: 320px) {
     width: 10%;
     padding-left: 3px;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    box-shadow: inset 3px 0 0 var(--color-blue-primary-dark);
   }
 `;
 
