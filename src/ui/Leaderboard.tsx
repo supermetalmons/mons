@@ -7,6 +7,7 @@ import { PlayerProfile, MiningMaterialName, MINING_MATERIAL_NAMES } from "../con
 import { AvatarImage } from "./AvatarImage";
 import { isLocalHost } from "../utils/localDev";
 import { storage } from "../utils/storage";
+import { getStashedPlayerProfile } from "../utils/playerMetadata";
 
 export type LeaderboardType = "rating" | MiningMaterialName | "total";
 
@@ -526,6 +527,23 @@ const createEmptyMaterials = (): Record<MiningMaterialName, number> => ({
   ice: 0,
 });
 
+const createLeaderboardEntry = (entry: PlayerProfile): LeaderboardEntry => ({
+  username: entry.username,
+  eth: entry.eth,
+  sol: entry.sol,
+  games: (entry.nonce ?? -1) + 1,
+  rating: Math.round(entry.rating ?? 1500),
+  win: entry.win ?? true,
+  id: entry.id,
+  emoji: entry.emoji,
+  aura: entry.aura,
+  ensName: null,
+  profile: entry,
+  materials: entry.mining?.materials ? { ...createEmptyMaterials(), ...entry.mining.materials } : createEmptyMaterials(),
+});
+
+const profilesToEntries = (profiles: PlayerProfile[]): LeaderboardEntry[] => profiles.map(createLeaderboardEntry);
+
 const leaderboardCache = new Map<LeaderboardType, LeaderboardEntry[]>();
 
 type RowPosition = "visible" | "above" | "below";
@@ -539,6 +557,43 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
   const prevLeaderboardTypeRef = useRef<LeaderboardType>(leaderboardType);
   const currentFetchRef = useRef<number>(0);
   const currentProfileId = storage.getProfileId("");
+  const currentLoginId = storage.getLoginId("");
+
+  const getCurrentPlayerEntry = (): LeaderboardEntry | null => {
+    if (!currentProfileId) return null;
+    const storedUsername = storage.getUsername("");
+    const storedEth = storage.getEthAddress("");
+    const storedSol = storage.getSolAddress("");
+    const storedEmoji = parseInt(storage.getPlayerEmojiId("1"), 10) || 1;
+    const storedAura = storage.getPlayerEmojiAura("") || undefined;
+    const storedMaterials = storage.getMiningMaterials(createEmptyMaterials()) as Record<MiningMaterialName, number>;
+    const storedMining = {
+      lastRockDate: storage.getMiningLastRockDate(null),
+      materials: { ...createEmptyMaterials(), ...storedMaterials },
+    };
+    const stashedProfile = currentLoginId ? getStashedPlayerProfile(currentLoginId) : undefined;
+    const profile = stashedProfile && stashedProfile.id === currentProfileId ? stashedProfile : undefined;
+    const mergedProfile: PlayerProfile = {
+      id: currentProfileId,
+      nonce: profile?.nonce ?? storage.getPlayerNonce(-1),
+      rating: profile?.rating ?? storage.getPlayerRating(1500),
+      win: profile?.win ?? true,
+      emoji: profile?.emoji ?? storedEmoji,
+      aura: profile?.aura ?? storedAura,
+      cardBackgroundId: profile?.cardBackgroundId ?? storage.getCardBackgroundId(0),
+      cardSubtitleId: profile?.cardSubtitleId ?? storage.getCardSubtitleId(0),
+      profileCounter: profile?.profileCounter ?? storage.getProfileCounter("gp"),
+      profileMons: profile?.profileMons ?? storage.getProfileMons(""),
+      cardStickers: profile?.cardStickers ?? storage.getCardStickers(""),
+      username: profile?.username ?? (storedUsername ? storedUsername : null),
+      eth: profile?.eth ?? (storedEth ? storedEth : null),
+      sol: profile?.sol ?? (storedSol ? storedSol : null),
+      completedProblemIds: profile?.completedProblemIds,
+      isTutorialCompleted: profile?.isTutorialCompleted,
+      mining: profile?.mining ?? storedMining,
+    };
+    return createLeaderboardEntry(mergedProfile);
+  };
 
   useEffect(() => {
     const currentRow = currentRowRef.current;
@@ -619,25 +674,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
       .then((profiles) => {
         if (fetchId !== currentFetchRef.current) return;
 
-        const profilesToEntries = (profs: typeof profiles): LeaderboardEntry[] =>
-          profs.map((entry) => ({
-            username: entry.username,
-            eth: entry.eth,
-            sol: entry.sol,
-            games: (entry.nonce ?? -1) + 1,
-            rating: Math.round(entry.rating ?? 1500),
-            win: entry.win ?? true,
-            id: entry.id,
-            emoji: entry.emoji,
-            aura: entry.aura,
-            ensName: null,
-            profile: entry,
-            materials: entry.mining?.materials ? { ...createEmptyMaterials(), ...entry.mining.materials } : createEmptyMaterials(),
-          }));
-
         const leaderboardData = profilesToEntries(profiles);
-        leaderboardCache.set(leaderboardType, leaderboardData);
-        setData(leaderboardData);
+        const currentEntry = getCurrentPlayerEntry();
+        const mergedLeaderboardData =
+          currentEntry && !leaderboardData.some((entry) => entry.id === currentEntry.id) ? [...leaderboardData, currentEntry] : leaderboardData;
+        leaderboardCache.set(leaderboardType, mergedLeaderboardData);
+        setData(mergedLeaderboardData);
 
         if (leaderboardType === "total" || MINING_MATERIAL_NAMES.includes(leaderboardType as MiningMaterialName)) {
           const allEntries = profilesToEntries(profiles);
@@ -665,7 +707,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
           }
         }
 
-        leaderboardData.forEach(async (entry, index) => {
+        mergedLeaderboardData.forEach(async (entry, index) => {
           if (entry.eth && !entry.username) {
             const ensName = await resolveENS(entry.eth);
             if (ensName) {
@@ -713,6 +755,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
 
   const currentPlayerData = data?.find((row) => isCurrentProfile(row));
   const currentPlayerIndex = data?.findIndex((row) => isCurrentProfile(row)) ?? -1;
+  const currentPlayerRankLabel = currentPlayerIndex >= 50 ? "50+" : currentPlayerIndex + 1;
 
   const getFloatingValue = (row: LeaderboardEntry) => {
     if (leaderboardType === "rating") {
@@ -750,6 +793,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                 const emojiKey = `${row.id}-${row.emoji}`;
                 const isEmojiLoaded = loadedEmojis.has(emojiKey);
                 const isCurrentPlayer = isCurrentProfile(row);
+                const rankLabel = isCurrentPlayer && currentPlayerIndex >= 50 ? "50+" : index + 1;
 
                 return (
                   <tr
@@ -758,7 +802,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                     data-current={isCurrentPlayer ? "true" : "false"}
                     onClick={() => handleRowClick(row)}
                   >
-                    <td>{index + 1}</td>
+                    <td>{rankLabel}</td>
                     <td>
                       {!isEmojiLoaded && <EmojiPlaceholder />}
                       <EmojiImage style={{ display: isEmojiLoaded ? "flex" : "none" }}>
@@ -791,7 +835,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
               onClick={scrollToCurrentRow}
             >
               <FloatingRowInner>
-                <FloatingRowRank>{currentPlayerIndex + 1}</FloatingRowRank>
+                <FloatingRowRank>{currentPlayerRankLabel}</FloatingRowRank>
                 <FloatingRowEmoji>
                   <EmojiImage>
                     <AvatarImage
