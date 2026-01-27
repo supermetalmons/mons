@@ -205,10 +205,8 @@ const LeaderboardTypeButton = styled.button<{ isSelected: boolean }>`
   flex-shrink: 0;
   font-size: 0.7rem;
   font-weight: 600;
-  background-color: var(--color-gray-f9);
-  color: #707070;
-  outline: ${(props) => (props.isSelected ? "2.5px solid var(--color-blue-primary)" : "none")};
-  outline-offset: -2.5px;
+  background-color: ${(props) => (props.isSelected ? "var(--color-blue-primary)" : "var(--color-gray-f9)")};
+  color: ${(props) => (props.isSelected ? "#fff" : "#707070")};
   -webkit-touch-callout: none;
   touch-action: manipulation;
   user-select: none;
@@ -217,18 +215,17 @@ const LeaderboardTypeButton = styled.button<{ isSelected: boolean }>`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: var(--color-gray-f5);
+      background-color: ${(props) => (props.isSelected ? "var(--color-blue-primary)" : "var(--color-gray-f5)")};
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: var(--color-gray-25);
-    color: var(--color-gray-99);
-    outline: ${(props) => (props.isSelected ? "2.5px solid var(--color-blue-primary-dark)" : "none")};
+    background-color: ${(props) => (props.isSelected ? "var(--color-blue-primary-dark)" : "var(--color-gray-25)")};
+    color: ${(props) => (props.isSelected ? "#fff" : "var(--color-gray-99)")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: var(--color-gray-27);
+        background-color: ${(props) => (props.isSelected ? "var(--color-blue-primary-dark)" : "var(--color-gray-27)")};
       }
     }
   }
