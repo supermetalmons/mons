@@ -6,12 +6,16 @@ import { showShinyCard } from "./ShinyCard";
 import { PlayerProfile, MiningMaterialName, MINING_MATERIAL_NAMES } from "../connection/connectionModels";
 import { AvatarImage } from "./AvatarImage";
 import { isLocalHost } from "../utils/localDev";
+import { storage } from "../utils/storage";
+import { getStashedPlayerProfile } from "../utils/playerMetadata";
 
 export type LeaderboardType = "rating" | MiningMaterialName | "total";
 
 const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;
+const LEADERBOARD_ENTRY_LIMIT = 99;
 
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
+  position: relative;
   opacity: 1;
   height: calc(min(69dvh - 10px - env(safe-area-inset-bottom) * 0.63, 100dvh - 110pt - env(safe-area-inset-bottom) * 0.63));
   margin-top: -2px;
@@ -140,6 +144,40 @@ const LeaderboardTable = styled.table`
       }
     }
   }
+
+  tbody tr[data-current="true"] {
+    background-color: rgba(0, 122, 255, 0.08);
+  }
+
+  tbody tr[data-current="true"] td:first-child {
+    box-shadow: inset 3px 0 0 var(--color-blue-primary);
+  }
+
+  tbody tr[data-current="true"] td:nth-child(3) {
+    font-weight: 600;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    tbody tr[data-current="true"] {
+      background-color: rgba(11, 132, 255, 0.16);
+    }
+
+    tbody tr[data-current="true"] td:first-child {
+      box-shadow: inset 3px 0 0 var(--color-blue-primary-dark);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    tbody tr[data-current="true"]:hover {
+      background-color: rgba(0, 122, 255, 0.12);
+    }
+  }
+
+  @media (prefers-color-scheme: dark) and (hover: hover) and (pointer: fine) {
+    tbody tr[data-current="true"]:hover {
+      background-color: rgba(11, 132, 255, 0.22);
+    }
+  }
 `;
 
 const TableWrapper = styled.div`
@@ -154,6 +192,131 @@ const TableWrapper = styled.div`
 
   overscroll-behavior: contain;
   touch-action: pan-y;
+`;
+
+const FloatingRowContainer = styled.div<{ visible: boolean; position: "top" | "bottom"; suppressAnimation: boolean }>`
+  position: absolute;
+  ${(props) => (props.position === "top" ? "top: 0;" : "bottom: 0;")}
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  ${(props) => (props.position === "top" ? "border-bottom: 1px solid var(--color-gray-dd);" : "border-top: 1px solid var(--color-gray-dd);")}
+  box-shadow: ${(props) => (props.position === "top" ? "0 4px 12px rgba(0, 0, 0, 0.08)" : "0 -4px 12px rgba(0, 0, 0, 0.08)")};
+  transform: translateY(${(props) => (props.visible ? "0" : props.position === "top" ? "-100%" : "100%")});
+  opacity: ${(props) => (props.visible ? 1 : 0)};
+  transition: ${(props) => (props.suppressAnimation ? "none" : "transform 0.25s ease-out, opacity 0.2s ease-out")};
+  z-index: 10;
+  pointer-events: ${(props) => (props.visible ? "auto" : "none")};
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--color-deep-gray);
+    ${(props) => (props.position === "top" ? "border-bottom: 1px solid var(--color-gray-33);" : "border-top: 1px solid var(--color-gray-33);")}
+    box-shadow: ${(props) => (props.position === "top" ? "0 4px 12px rgba(0, 0, 0, 0.25)" : "0 -4px 12px rgba(0, 0, 0, 0.25)")};
+  }
+`;
+
+const FloatingRowInner = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  font-size: 0.85rem;
+  color: var(--color-gray-33);
+  background-color: rgba(0, 122, 255, 0.08);
+  cursor: pointer;
+
+  @media (max-width: 360px) {
+    font-size: 0.8rem;
+    padding: 8px 0;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 0.75rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-gray-f5);
+    background-color: rgba(11, 132, 255, 0.16);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: rgba(0, 122, 255, 0.12);
+    }
+  }
+
+  @media (prefers-color-scheme: dark) and (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: rgba(11, 132, 255, 0.22);
+    }
+  }
+`;
+
+const FloatingRowRank = styled.div`
+  width: 8%;
+  text-align: left;
+  font-size: 0.75rem;
+  color: var(--color-gray-99);
+  padding-left: 5px;
+
+  @media (max-width: 320px) {
+    width: 10%;
+    padding-left: 3px;
+  }
+`;
+
+const FloatingRowEmoji = styled.div`
+  width: 11.5%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  @media (max-width: 320px) {
+    width: 13%;
+  }
+`;
+
+const FloatingRowName = styled.div`
+  width: 62%;
+  text-align: left;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (max-width: 320px) {
+    width: 57%;
+  }
+`;
+
+const FloatingRowValue = styled.div<{ isRating?: boolean; win?: boolean }>`
+  width: 18.5%;
+  text-align: right;
+  padding-right: 15px;
+  font-weight: 500;
+  color: ${(props) => {
+    if (props.isRating) {
+      return props.win ? "var(--leaderboardRatingWinColor)" : "var(--leaderboardRatingLossColor)";
+    }
+    return "var(--color-gray-77)";
+  }};
+
+  @media (max-width: 360px) {
+    padding-right: 10px;
+  }
+
+  @media (max-width: 320px) {
+    width: 20%;
+    padding-right: 5px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: ${(props) => {
+      if (props.isRating) {
+        return props.win ? "var(--leaderboardRatingWinColorDark)" : "var(--leaderboardRatingLossColorDark)";
+      }
+      return "var(--color-gray-99)";
+    }};
+  }
 `;
 
 const LoadingText = styled.div`
@@ -185,6 +348,43 @@ const MaterialCell = styled.td`
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-gray-99);
+  }
+`;
+
+const NameCellContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+`;
+
+const NameText = styled.span`
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const YouBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background-color: rgba(0, 122, 255, 0.16);
+  color: var(--color-blue-primary);
+  flex-shrink: 0;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: rgba(11, 132, 255, 0.28);
+    color: #fff;
   }
 `;
 
@@ -323,23 +523,159 @@ const createEmptyMaterials = (): Record<MiningMaterialName, number> => ({
   ice: 0,
 });
 
+const createLeaderboardEntry = (entry: PlayerProfile): LeaderboardEntry => ({
+  username: entry.username,
+  eth: entry.eth,
+  sol: entry.sol,
+  games: (entry.nonce ?? -1) + 1,
+  rating: Math.round(entry.rating ?? 1500),
+  win: entry.win ?? true,
+  id: entry.id,
+  emoji: entry.emoji,
+  aura: entry.aura,
+  ensName: null,
+  profile: entry,
+  materials: entry.mining?.materials ? { ...createEmptyMaterials(), ...entry.mining.materials } : createEmptyMaterials(),
+});
+
+const profilesToEntries = (profiles: PlayerProfile[]): LeaderboardEntry[] => profiles.map(createLeaderboardEntry);
+
 const leaderboardCache = new Map<LeaderboardType, LeaderboardEntry[]>();
+
+type RowPosition = "visible" | "above" | "below";
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType }) => {
   const [data, setData] = useState<LeaderboardEntry[] | null>(() => leaderboardCache.get(leaderboardType) ?? null);
   const [loadedEmojis, setLoadedEmojis] = useState<Set<string>>(new Set());
+  const [currentRowPosition, setCurrentRowPosition] = useState<RowPosition>("visible");
+  const [suppressPanelAnimation, setSuppressPanelAnimation] = useState(true);
+  const [bottomPanelHasAnimated, setBottomPanelHasAnimated] = useState(false);
   const tableWrapperRef = useRef<HTMLDivElement>(null);
+  const currentRowRef = useRef<HTMLTableRowElement | null>(null);
   const prevLeaderboardTypeRef = useRef<LeaderboardType>(leaderboardType);
+  const prevShowRef = useRef<boolean>(show);
   const currentFetchRef = useRef<number>(0);
+  const currentProfileId = storage.getProfileId("");
+  const currentLoginId = storage.getLoginId("");
+
+  const getCurrentPlayerEntry = (): LeaderboardEntry | null => {
+    if (!currentProfileId) return null;
+    const storedUsername = storage.getUsername("");
+    const storedEth = storage.getEthAddress("");
+    const storedSol = storage.getSolAddress("");
+    const storedEmoji = parseInt(storage.getPlayerEmojiId("1"), 10) || 1;
+    const storedAura = storage.getPlayerEmojiAura("") || undefined;
+    const storedMaterials = storage.getMiningMaterials(createEmptyMaterials()) as Record<MiningMaterialName, number>;
+    const storedMining = {
+      lastRockDate: storage.getMiningLastRockDate(null),
+      materials: { ...createEmptyMaterials(), ...storedMaterials },
+    };
+    const stashedProfile = currentLoginId ? getStashedPlayerProfile(currentLoginId) : undefined;
+    const profile = stashedProfile && stashedProfile.id === currentProfileId ? stashedProfile : undefined;
+    const mergedProfile: PlayerProfile = {
+      id: currentProfileId,
+      nonce: profile?.nonce ?? storage.getPlayerNonce(-1),
+      rating: profile?.rating ?? storage.getPlayerRating(1500),
+      win: profile?.win ?? true,
+      emoji: profile?.emoji ?? storedEmoji,
+      aura: profile?.aura ?? storedAura,
+      cardBackgroundId: profile?.cardBackgroundId ?? storage.getCardBackgroundId(0),
+      cardSubtitleId: profile?.cardSubtitleId ?? storage.getCardSubtitleId(0),
+      profileCounter: profile?.profileCounter ?? storage.getProfileCounter("gp"),
+      profileMons: profile?.profileMons ?? storage.getProfileMons(""),
+      cardStickers: profile?.cardStickers ?? storage.getCardStickers(""),
+      username: profile?.username ?? (storedUsername ? storedUsername : null),
+      eth: profile?.eth ?? (storedEth ? storedEth : null),
+      sol: profile?.sol ?? (storedSol ? storedSol : null),
+      completedProblemIds: profile?.completedProblemIds,
+      isTutorialCompleted: profile?.isTutorialCompleted,
+      mining: profile?.mining ?? storedMining,
+    };
+    return createLeaderboardEntry(mergedProfile);
+  };
 
   useEffect(() => {
-    if (show) {
-      if (tableWrapperRef.current && prevLeaderboardTypeRef.current !== leaderboardType) {
-        tableWrapperRef.current.scrollTop = 0;
+    const currentRow = currentRowRef.current;
+    const tableWrapper = tableWrapperRef.current;
+    if (!currentRow || !tableWrapper) {
+      setCurrentRowPosition("visible");
+      return;
+    }
+
+    const checkPosition = () => {
+      const rowRect = currentRow.getBoundingClientRect();
+      const wrapperRect = tableWrapper.getBoundingClientRect();
+
+      if (rowRect.bottom < wrapperRect.top) {
+        setCurrentRowPosition("above");
+      } else if (rowRect.top > wrapperRect.bottom) {
+        setCurrentRowPosition("below");
+      } else {
+        setCurrentRowPosition("visible");
       }
-      prevLeaderboardTypeRef.current = leaderboardType;
+    };
+
+    checkPosition();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setCurrentRowPosition("visible");
+          } else {
+            checkPosition();
+          }
+        });
+      },
+      {
+        root: tableWrapper,
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(currentRow);
+    tableWrapper.addEventListener("scroll", checkPosition, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      tableWrapper.removeEventListener("scroll", checkPosition);
+    };
+  }, [data, show]);
+
+  useEffect(() => {
+    const menuJustOpened = show && !prevShowRef.current;
+    const leaderboardTypeChanged = prevLeaderboardTypeRef.current !== leaderboardType;
+
+    if (menuJustOpened || leaderboardTypeChanged) {
+      setSuppressPanelAnimation(true);
+    }
+
+    prevShowRef.current = show;
+    prevLeaderboardTypeRef.current = leaderboardType;
+
+    if (show && tableWrapperRef.current && leaderboardTypeChanged) {
+      tableWrapperRef.current.scrollTop = 0;
     }
   }, [show, leaderboardType]);
+
+  useEffect(() => {
+    if (!suppressPanelAnimation || !show || !data) return;
+
+    const timer = setTimeout(() => {
+      setSuppressPanelAnimation(false);
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [suppressPanelAnimation, show, data]);
+
+  useEffect(() => {
+    if (currentRowPosition === "below" && !bottomPanelHasAnimated) {
+      const timer = setTimeout(() => {
+        setBottomPanelHasAnimated(true);
+      }, 300);
+      return () => clearTimeout(timer);
+    }
+  }, [currentRowPosition, bottomPanelHasAnimated]);
 
   useEffect(() => {
     setData(leaderboardCache.get(leaderboardType) ?? null);
@@ -363,25 +699,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
       .then((profiles) => {
         if (fetchId !== currentFetchRef.current) return;
 
-        const profilesToEntries = (profs: typeof profiles): LeaderboardEntry[] =>
-          profs.map((entry) => ({
-            username: entry.username,
-            eth: entry.eth,
-            sol: entry.sol,
-            games: (entry.nonce ?? -1) + 1,
-            rating: Math.round(entry.rating ?? 1500),
-            win: entry.win ?? true,
-            id: entry.id,
-            emoji: entry.emoji,
-            aura: entry.aura,
-            ensName: null,
-            profile: entry,
-            materials: entry.mining?.materials ? { ...createEmptyMaterials(), ...entry.mining.materials } : createEmptyMaterials(),
-          }));
-
         const leaderboardData = profilesToEntries(profiles);
-        leaderboardCache.set(leaderboardType, leaderboardData);
-        setData(leaderboardData);
+        const currentEntry = getCurrentPlayerEntry();
+        const mergedLeaderboardData =
+          currentEntry && !leaderboardData.some((entry) => entry.id === currentEntry.id) ? [...leaderboardData, currentEntry] : leaderboardData;
+        leaderboardCache.set(leaderboardType, mergedLeaderboardData);
+        setData(mergedLeaderboardData);
 
         if (leaderboardType === "total" || MINING_MATERIAL_NAMES.includes(leaderboardType as MiningMaterialName)) {
           const allEntries = profilesToEntries(profiles);
@@ -392,7 +715,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
             if (!leaderboardCache.has(material)) {
               const sorted = [...entryMap.values()]
                 .sort((a, b) => b.materials[material] - a.materials[material])
-                .slice(0, 50);
+                .slice(0, LEADERBOARD_ENTRY_LIMIT);
               leaderboardCache.set(material, sorted);
             }
           });
@@ -404,12 +727,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                 const totalB = Object.values(b.materials).reduce((sum, val) => sum + val, 0);
                 return totalB - totalA;
               })
-              .slice(0, 50);
+              .slice(0, LEADERBOARD_ENTRY_LIMIT);
             leaderboardCache.set("total", sorted);
           }
         }
 
-        leaderboardData.forEach(async (entry, index) => {
+        mergedLeaderboardData.forEach(async (entry, index) => {
           if (entry.eth && !entry.username) {
             const ensName = await resolveENS(entry.eth);
             if (ensName) {
@@ -450,6 +773,32 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
     return <MaterialCell>{row.materials[leaderboardType]}</MaterialCell>;
   };
 
+  const isCurrentProfile = (row: LeaderboardEntry): boolean => {
+    if (currentProfileId && row.id === currentProfileId) return true;
+    return false;
+  };
+
+  const currentPlayerData = data?.find((row) => isCurrentProfile(row));
+  const currentPlayerIndex = data?.findIndex((row) => isCurrentProfile(row)) ?? -1;
+  const currentPlayerRankLabel = currentPlayerIndex >= LEADERBOARD_ENTRY_LIMIT ? "∅" : currentPlayerIndex + 1;
+
+  const getFloatingValue = (row: LeaderboardEntry) => {
+    if (leaderboardType === "rating") {
+      return { value: row.rating, isRating: true, win: row.win };
+    }
+    if (leaderboardType === "total") {
+      const total = Object.values(row.materials).reduce((sum, val) => sum + val, 0);
+      return { value: total, isRating: false, win: false };
+    }
+    return { value: row.materials[leaderboardType], isRating: false, win: false };
+  };
+
+  const scrollToCurrentRow = () => {
+    if (currentRowRef.current && tableWrapperRef.current) {
+      currentRowRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
   return (
     <LeaderboardContainer show={show}>
       {data ? (
@@ -468,17 +817,29 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                 const emojiUrl = emojis.getEmojiUrl(row.emoji.toString());
                 const emojiKey = `${row.id}-${row.emoji}`;
                 const isEmojiLoaded = loadedEmojis.has(emojiKey);
+                const isCurrentPlayer = isCurrentProfile(row);
+                const rankLabel = isCurrentPlayer && currentPlayerIndex >= LEADERBOARD_ENTRY_LIMIT ? "∅" : index + 1;
 
                 return (
-                  <tr key={row.id} onClick={() => handleRowClick(row)}>
-                    <td>{index + 1}</td>
+                  <tr
+                    key={row.id}
+                    ref={isCurrentPlayer ? currentRowRef : undefined}
+                    data-current={isCurrentPlayer ? "true" : "false"}
+                    onClick={() => handleRowClick(row)}
+                  >
+                    <td>{rankLabel}</td>
                     <td>
                       {!isEmojiLoaded && <EmojiPlaceholder />}
                       <EmojiImage style={{ display: isEmojiLoaded ? "flex" : "none" }}>
                         <AvatarImage src={emojiUrl} alt="" rainbowAura={!!row.aura} loading="eager" onLoad={() => handleEmojiLoad(emojiKey)} />
                       </EmojiImage>
                     </td>
-                    <td>{getLeaderboardDisplayName(row)}</td>
+                    <td>
+                      <NameCellContent>
+                        <NameText>{getLeaderboardDisplayName(row)}</NameText>
+                        {isCurrentPlayer && <YouBadge>you</YouBadge>}
+                      </NameCellContent>
+                    </td>
                     {getValueCell(row)}
                   </tr>
                 );
@@ -488,6 +849,42 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
         </TableWrapper>
       ) : (
         <LoadingText>UPDATING...</LoadingText>
+      )}
+      {currentPlayerData && currentPlayerIndex >= 0 && (
+        <>
+          {(["top", "bottom"] as const).map((position) => (
+            <FloatingRowContainer
+              key={position}
+              visible={currentRowPosition === (position === "top" ? "above" : "below")}
+              position={position}
+              suppressAnimation={position === "top" ? suppressPanelAnimation : bottomPanelHasAnimated}
+              onClick={scrollToCurrentRow}
+            >
+              <FloatingRowInner>
+                <FloatingRowRank>{currentPlayerRankLabel}</FloatingRowRank>
+                <FloatingRowEmoji>
+                  <EmojiImage>
+                    <AvatarImage
+                      src={emojis.getEmojiUrl(currentPlayerData.emoji.toString())}
+                      alt=""
+                      rainbowAura={!!currentPlayerData.aura}
+                      loading="eager"
+                    />
+                  </EmojiImage>
+                </FloatingRowEmoji>
+                <FloatingRowName>
+                  <NameCellContent>
+                    <NameText>{getLeaderboardDisplayName(currentPlayerData)}</NameText>
+                    <YouBadge>you</YouBadge>
+                  </NameCellContent>
+                </FloatingRowName>
+                <FloatingRowValue isRating={getFloatingValue(currentPlayerData).isRating} win={getFloatingValue(currentPlayerData).win}>
+                  {getFloatingValue(currentPlayerData).value}
+                </FloatingRowValue>
+              </FloatingRowInner>
+            </FloatingRowContainer>
+          ))}
+        </>
       )}
     </LeaderboardContainer>
   );
