@@ -755,7 +755,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
 
   const currentPlayerData = data?.find((row) => isCurrentProfile(row));
   const currentPlayerIndex = data?.findIndex((row) => isCurrentProfile(row)) ?? -1;
-  const currentPlayerRankLabel = currentPlayerIndex >= 50 ? "50+" : currentPlayerIndex + 1;
+  const currentPlayerRankLabel = currentPlayerIndex >= 50 ? "∅" : currentPlayerIndex + 1;
 
   const getFloatingValue = (row: LeaderboardEntry) => {
     if (leaderboardType === "rating") {
@@ -793,7 +793,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                 const emojiKey = `${row.id}-${row.emoji}`;
                 const isEmojiLoaded = loadedEmojis.has(emojiKey);
                 const isCurrentPlayer = isCurrentProfile(row);
-                const rankLabel = isCurrentPlayer && currentPlayerIndex >= 50 ? "50+" : index + 1;
+                const rankLabel = isCurrentPlayer && currentPlayerIndex >= 50 ? "∅" : index + 1;
 
                 return (
                   <tr
