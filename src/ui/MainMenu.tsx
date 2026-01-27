@@ -336,7 +336,7 @@ const ButtonRow = styled.div`
   margin: 0;
   align-items: center;
   white-space: nowrap;
-  padding: 1px 0 2px 3px;
+  padding: 1px 0 0 3px;
   width: 100%;
 `;
 
