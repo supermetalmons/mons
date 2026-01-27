@@ -13,6 +13,7 @@ export type LeaderboardType = "rating" | MiningMaterialName | "total";
 const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;
 
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
+  position: relative;
   opacity: 1;
   height: calc(min(69dvh - 10px - env(safe-area-inset-bottom) * 0.63, 100dvh - 110pt - env(safe-area-inset-bottom) * 0.63));
   margin-top: -2px;
@@ -189,6 +190,136 @@ const TableWrapper = styled.div`
 
   overscroll-behavior: contain;
   touch-action: pan-y;
+`;
+
+const FloatingRowContainer = styled.div<{ visible: boolean; position: "top" | "bottom" }>`
+  position: absolute;
+  ${(props) => (props.position === "top" ? "top: 0;" : "bottom: 0;")}
+  left: 0;
+  right: 0;
+  background: var(--color-white);
+  ${(props) => (props.position === "top" ? "border-bottom: 1px solid var(--color-gray-dd);" : "border-top: 1px solid var(--color-gray-dd);")}
+  box-shadow: ${(props) => (props.position === "top" ? "0 4px 12px rgba(0, 0, 0, 0.08)" : "0 -4px 12px rgba(0, 0, 0, 0.08)")};
+  transform: translateY(${(props) => (props.visible ? "0" : props.position === "top" ? "-100%" : "100%")});
+  opacity: ${(props) => (props.visible ? 1 : 0)};
+  transition: transform 0.25s ease-out, opacity 0.2s ease-out;
+  z-index: 10;
+  pointer-events: ${(props) => (props.visible ? "auto" : "none")};
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--color-deep-gray);
+    ${(props) => (props.position === "top" ? "border-bottom: 1px solid var(--color-gray-33);" : "border-top: 1px solid var(--color-gray-33);")}
+    box-shadow: ${(props) => (props.position === "top" ? "0 4px 12px rgba(0, 0, 0, 0.25)" : "0 -4px 12px rgba(0, 0, 0, 0.25)")};
+  }
+`;
+
+const FloatingRowInner = styled.div`
+  display: flex;
+  align-items: center;
+  padding: 10px 0;
+  font-size: 0.85rem;
+  color: var(--color-gray-33);
+  background-color: rgba(0, 122, 255, 0.08);
+  cursor: pointer;
+
+  @media (max-width: 360px) {
+    font-size: 0.8rem;
+    padding: 8px 0;
+  }
+
+  @media (max-width: 320px) {
+    font-size: 0.75rem;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-gray-f5);
+    background-color: rgba(11, 132, 255, 0.16);
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: rgba(0, 122, 255, 0.12);
+    }
+  }
+
+  @media (prefers-color-scheme: dark) and (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: rgba(11, 132, 255, 0.22);
+    }
+  }
+`;
+
+const FloatingRowRank = styled.div`
+  width: 8%;
+  text-align: left;
+  font-size: 0.75rem;
+  color: var(--color-gray-99);
+  padding-left: 5px;
+  box-shadow: inset 3px 0 0 var(--color-blue-primary);
+
+  @media (max-width: 320px) {
+    width: 10%;
+    padding-left: 3px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    box-shadow: inset 3px 0 0 var(--color-blue-primary-dark);
+  }
+`;
+
+const FloatingRowEmoji = styled.div`
+  width: 11.5%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+
+  @media (max-width: 320px) {
+    width: 13%;
+  }
+`;
+
+const FloatingRowName = styled.div`
+  width: 62%;
+  text-align: left;
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  @media (max-width: 320px) {
+    width: 57%;
+  }
+`;
+
+const FloatingRowValue = styled.div<{ isRating?: boolean; win?: boolean }>`
+  width: 18.5%;
+  text-align: right;
+  padding-right: 15px;
+  font-weight: 500;
+  color: ${(props) => {
+    if (props.isRating) {
+      return props.win ? "var(--leaderboardRatingWinColor)" : "var(--leaderboardRatingLossColor)";
+    }
+    return "var(--color-gray-77)";
+  }};
+
+  @media (max-width: 360px) {
+    padding-right: 10px;
+  }
+
+  @media (max-width: 320px) {
+    width: 20%;
+    padding-right: 5px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: ${(props) => {
+      if (props.isRating) {
+        return props.win ? "var(--leaderboardRatingWinColorDark)" : "var(--leaderboardRatingLossColorDark)";
+      }
+      return "var(--color-gray-99)";
+    }};
+  }
 `;
 
 const LoadingText = styled.div`
@@ -397,13 +528,65 @@ const createEmptyMaterials = (): Record<MiningMaterialName, number> => ({
 
 const leaderboardCache = new Map<LeaderboardType, LeaderboardEntry[]>();
 
+type RowPosition = "visible" | "above" | "below";
+
 export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType }) => {
   const [data, setData] = useState<LeaderboardEntry[] | null>(() => leaderboardCache.get(leaderboardType) ?? null);
   const [loadedEmojis, setLoadedEmojis] = useState<Set<string>>(new Set());
+  const [currentRowPosition, setCurrentRowPosition] = useState<RowPosition>("visible");
   const tableWrapperRef = useRef<HTMLDivElement>(null);
+  const currentRowRef = useRef<HTMLTableRowElement | null>(null);
   const prevLeaderboardTypeRef = useRef<LeaderboardType>(leaderboardType);
   const currentFetchRef = useRef<number>(0);
   const currentProfileId = storage.getProfileId("");
+
+  useEffect(() => {
+    const currentRow = currentRowRef.current;
+    const tableWrapper = tableWrapperRef.current;
+    if (!currentRow || !tableWrapper) {
+      setCurrentRowPosition("visible");
+      return;
+    }
+
+    const checkPosition = () => {
+      const rowRect = currentRow.getBoundingClientRect();
+      const wrapperRect = tableWrapper.getBoundingClientRect();
+
+      if (rowRect.bottom < wrapperRect.top) {
+        setCurrentRowPosition("above");
+      } else if (rowRect.top > wrapperRect.bottom) {
+        setCurrentRowPosition("below");
+      } else {
+        setCurrentRowPosition("visible");
+      }
+    };
+
+    checkPosition();
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setCurrentRowPosition("visible");
+          } else {
+            checkPosition();
+          }
+        });
+      },
+      {
+        root: tableWrapper,
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(currentRow);
+    tableWrapper.addEventListener("scroll", checkPosition, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      tableWrapper.removeEventListener("scroll", checkPosition);
+    };
+  }, [data, show]);
 
   useEffect(() => {
     if (show) {
@@ -528,6 +711,26 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
     return false;
   };
 
+  const currentPlayerData = data?.find((row) => isCurrentProfile(row));
+  const currentPlayerIndex = data?.findIndex((row) => isCurrentProfile(row)) ?? -1;
+
+  const getFloatingValue = (row: LeaderboardEntry) => {
+    if (leaderboardType === "rating") {
+      return { value: row.rating, isRating: true, win: row.win };
+    }
+    if (leaderboardType === "total") {
+      const total = Object.values(row.materials).reduce((sum, val) => sum + val, 0);
+      return { value: total, isRating: false, win: false };
+    }
+    return { value: row.materials[leaderboardType], isRating: false, win: false };
+  };
+
+  const scrollToCurrentRow = () => {
+    if (currentRowRef.current && tableWrapperRef.current) {
+      currentRowRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+    }
+  };
+
   return (
     <LeaderboardContainer show={show}>
       {data ? (
@@ -549,7 +752,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                 const isCurrentPlayer = isCurrentProfile(row);
 
                 return (
-                  <tr key={row.id} data-current={isCurrentPlayer ? "true" : "false"} onClick={() => handleRowClick(row)}>
+                  <tr
+                    key={row.id}
+                    ref={isCurrentPlayer ? currentRowRef : undefined}
+                    data-current={isCurrentPlayer ? "true" : "false"}
+                    onClick={() => handleRowClick(row)}
+                  >
                     <td>{index + 1}</td>
                     <td>
                       {!isEmojiLoaded && <EmojiPlaceholder />}
@@ -572,6 +780,41 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
         </TableWrapper>
       ) : (
         <LoadingText>UPDATING...</LoadingText>
+      )}
+      {currentPlayerData && currentPlayerIndex >= 0 && (
+        <>
+          {(["top", "bottom"] as const).map((position) => (
+            <FloatingRowContainer
+              key={position}
+              visible={currentRowPosition === (position === "top" ? "above" : "below")}
+              position={position}
+              onClick={scrollToCurrentRow}
+            >
+              <FloatingRowInner>
+                <FloatingRowRank>{currentPlayerIndex + 1}</FloatingRowRank>
+                <FloatingRowEmoji>
+                  <EmojiImage>
+                    <AvatarImage
+                      src={emojis.getEmojiUrl(currentPlayerData.emoji.toString())}
+                      alt=""
+                      rainbowAura={!!currentPlayerData.aura}
+                      loading="eager"
+                    />
+                  </EmojiImage>
+                </FloatingRowEmoji>
+                <FloatingRowName>
+                  <NameCellContent>
+                    <NameText>{getLeaderboardDisplayName(currentPlayerData)}</NameText>
+                    <YouBadge>you</YouBadge>
+                  </NameCellContent>
+                </FloatingRowName>
+                <FloatingRowValue isRating={getFloatingValue(currentPlayerData).isRating} win={getFloatingValue(currentPlayerData).win}>
+                  {getFloatingValue(currentPlayerData).value}
+                </FloatingRowValue>
+              </FloatingRowInner>
+            </FloatingRowContainer>
+          ))}
+        </>
       )}
     </LeaderboardContainer>
   );
