@@ -6,6 +6,7 @@ import { showShinyCard } from "./ShinyCard";
 import { PlayerProfile, MiningMaterialName, MINING_MATERIAL_NAMES } from "../connection/connectionModels";
 import { AvatarImage } from "./AvatarImage";
 import { isLocalHost } from "../utils/localDev";
+import { storage } from "../utils/storage";
 
 export type LeaderboardType = "rating" | MiningMaterialName | "total";
 
@@ -140,6 +141,40 @@ const LeaderboardTable = styled.table`
       }
     }
   }
+
+  tbody tr[data-current="true"] {
+    background-color: rgba(0, 122, 255, 0.08);
+  }
+
+  tbody tr[data-current="true"] td:first-child {
+    box-shadow: inset 3px 0 0 var(--color-blue-primary);
+  }
+
+  tbody tr[data-current="true"] td:nth-child(3) {
+    font-weight: 600;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    tbody tr[data-current="true"] {
+      background-color: rgba(11, 132, 255, 0.16);
+    }
+
+    tbody tr[data-current="true"] td:first-child {
+      box-shadow: inset 3px 0 0 var(--color-blue-primary-dark);
+    }
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    tbody tr[data-current="true"]:hover {
+      background-color: rgba(0, 122, 255, 0.12);
+    }
+  }
+
+  @media (prefers-color-scheme: dark) and (hover: hover) and (pointer: fine) {
+    tbody tr[data-current="true"]:hover {
+      background-color: rgba(11, 132, 255, 0.22);
+    }
+  }
 `;
 
 const TableWrapper = styled.div`
@@ -185,6 +220,43 @@ const MaterialCell = styled.td`
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-gray-99);
+  }
+`;
+
+const NameCellContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  min-width: 0;
+`;
+
+const NameText = styled.span`
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+`;
+
+const YouBadge = styled.span`
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 16px;
+  padding: 0 6px;
+  border-radius: 999px;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  background-color: rgba(0, 122, 255, 0.16);
+  color: var(--color-blue-primary);
+  flex-shrink: 0;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: rgba(11, 132, 255, 0.28);
+    color: #fff;
   }
 `;
 
@@ -331,6 +403,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
   const tableWrapperRef = useRef<HTMLDivElement>(null);
   const prevLeaderboardTypeRef = useRef<LeaderboardType>(leaderboardType);
   const currentFetchRef = useRef<number>(0);
+  const currentProfileId = storage.getProfileId("");
 
   useEffect(() => {
     if (show) {
@@ -450,6 +523,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
     return <MaterialCell>{row.materials[leaderboardType]}</MaterialCell>;
   };
 
+  const isCurrentProfile = (row: LeaderboardEntry): boolean => {
+    if (currentProfileId && row.id === currentProfileId) return true;
+    return false;
+  };
+
   return (
     <LeaderboardContainer show={show}>
       {data ? (
@@ -468,9 +546,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                 const emojiUrl = emojis.getEmojiUrl(row.emoji.toString());
                 const emojiKey = `${row.id}-${row.emoji}`;
                 const isEmojiLoaded = loadedEmojis.has(emojiKey);
+                const isCurrentPlayer = isCurrentProfile(row);
 
                 return (
-                  <tr key={row.id} onClick={() => handleRowClick(row)}>
+                  <tr key={row.id} data-current={isCurrentPlayer ? "true" : "false"} onClick={() => handleRowClick(row)}>
                     <td>{index + 1}</td>
                     <td>
                       {!isEmojiLoaded && <EmojiPlaceholder />}
@@ -478,7 +557,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                         <AvatarImage src={emojiUrl} alt="" rainbowAura={!!row.aura} loading="eager" onLoad={() => handleEmojiLoad(emojiKey)} />
                       </EmojiImage>
                     </td>
-                    <td>{getLeaderboardDisplayName(row)}</td>
+                    <td>
+                      <NameCellContent>
+                        <NameText>{getLeaderboardDisplayName(row)}</NameText>
+                        {isCurrentPlayer && <YouBadge>you</YouBadge>}
+                      </NameCellContent>
+                    </td>
                     {getValueCell(row)}
                   </tr>
                 );
