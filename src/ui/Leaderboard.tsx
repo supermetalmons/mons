@@ -194,7 +194,7 @@ const TableWrapper = styled.div`
   touch-action: pan-y;
 `;
 
-const FloatingRowContainer = styled.div<{ visible: boolean; position: "top" | "bottom" }>`
+const FloatingRowContainer = styled.div<{ visible: boolean; position: "top" | "bottom"; suppressAnimation: boolean }>`
   position: absolute;
   ${(props) => (props.position === "top" ? "top: 0;" : "bottom: 0;")}
   left: 0;
@@ -204,7 +204,7 @@ const FloatingRowContainer = styled.div<{ visible: boolean; position: "top" | "b
   box-shadow: ${(props) => (props.position === "top" ? "0 4px 12px rgba(0, 0, 0, 0.08)" : "0 -4px 12px rgba(0, 0, 0, 0.08)")};
   transform: translateY(${(props) => (props.visible ? "0" : props.position === "top" ? "-100%" : "100%")});
   opacity: ${(props) => (props.visible ? 1 : 0)};
-  transition: transform 0.25s ease-out, opacity 0.2s ease-out;
+  transition: ${(props) => (props.suppressAnimation ? "none" : "transform 0.25s ease-out, opacity 0.2s ease-out")};
   z-index: 10;
   pointer-events: ${(props) => (props.visible ? "auto" : "none")};
 
@@ -548,9 +548,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
   const [data, setData] = useState<LeaderboardEntry[] | null>(() => leaderboardCache.get(leaderboardType) ?? null);
   const [loadedEmojis, setLoadedEmojis] = useState<Set<string>>(new Set());
   const [currentRowPosition, setCurrentRowPosition] = useState<RowPosition>("visible");
+  const [suppressPanelAnimation, setSuppressPanelAnimation] = useState(true);
   const tableWrapperRef = useRef<HTMLDivElement>(null);
   const currentRowRef = useRef<HTMLTableRowElement | null>(null);
   const prevLeaderboardTypeRef = useRef<LeaderboardType>(leaderboardType);
+  const prevShowRef = useRef<boolean>(show);
   const currentFetchRef = useRef<number>(0);
   const currentProfileId = storage.getProfileId("");
   const currentLoginId = storage.getLoginId("");
@@ -640,13 +642,30 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
   }, [data, show]);
 
   useEffect(() => {
-    if (show) {
-      if (tableWrapperRef.current && prevLeaderboardTypeRef.current !== leaderboardType) {
-        tableWrapperRef.current.scrollTop = 0;
-      }
-      prevLeaderboardTypeRef.current = leaderboardType;
+    const menuJustOpened = show && !prevShowRef.current;
+    const leaderboardTypeChanged = prevLeaderboardTypeRef.current !== leaderboardType;
+
+    if (menuJustOpened || leaderboardTypeChanged) {
+      setSuppressPanelAnimation(true);
+    }
+
+    prevShowRef.current = show;
+    prevLeaderboardTypeRef.current = leaderboardType;
+
+    if (show && tableWrapperRef.current && leaderboardTypeChanged) {
+      tableWrapperRef.current.scrollTop = 0;
     }
   }, [show, leaderboardType]);
+
+  useEffect(() => {
+    if (!suppressPanelAnimation || !show || !data) return;
+
+    const timer = setTimeout(() => {
+      setSuppressPanelAnimation(false);
+    }, 50);
+
+    return () => clearTimeout(timer);
+  }, [suppressPanelAnimation, show, data]);
 
   useEffect(() => {
     setData(leaderboardCache.get(leaderboardType) ?? null);
@@ -828,6 +847,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
               key={position}
               visible={currentRowPosition === (position === "top" ? "above" : "below")}
               position={position}
+              suppressAnimation={suppressPanelAnimation}
               onClick={scrollToCurrentRow}
             >
               <FloatingRowInner>
