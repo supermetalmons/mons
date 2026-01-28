@@ -86,12 +86,14 @@ interface AnimatedHourglassButtonProps extends React.ButtonHTMLAttributes<HTMLBu
   config: HourglassConfig;
 }
 
-const AnimatedHourglassButton: React.FC<AnimatedHourglassButtonProps> = ({ config, onClick, ...props }) => {
+const AnimatedHourglassButton = React.forwardRef<HTMLButtonElement, AnimatedHourglassButtonProps>(({ config, onClick, ...props }, ref) => {
   return (
-    <ControlButton onClick={onClick} aria-label="Timer" {...props}>
+    <ControlButton ref={ref} onClick={onClick} aria-label="Timer" {...props}>
       <AnimatedHourglassIcon config={config} />
     </ControlButton>
   );
-};
+});
+
+AnimatedHourglassButton.displayName = "AnimatedHourglassButton";
 
 export default AnimatedHourglassButton;
