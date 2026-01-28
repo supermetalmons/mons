@@ -17,7 +17,7 @@ const LEADERBOARD_ENTRY_LIMIT = 99;
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
   position: relative;
   opacity: 1;
-  height: calc(min(69dvh - 10px - env(safe-area-inset-bottom) * 0.63, 100dvh - 110pt - env(safe-area-inset-bottom) * 0.63));
+  height: calc(min(69dvh + 34px - env(safe-area-inset-bottom) * 0.63, 100dvh - 66pt - env(safe-area-inset-bottom) * 0.63));
   margin-top: -2px;
   overflow: hidden;
   display: flex;
@@ -192,11 +192,12 @@ const TableWrapper = styled.div`
 
   overscroll-behavior: contain;
   touch-action: pan-y;
+  padding-bottom: 44px;
 `;
 
 const FloatingRowContainer = styled.div<{ visible: boolean; position: "top" | "bottom"; suppressAnimation: boolean }>`
   position: absolute;
-  ${(props) => (props.position === "top" ? "top: 0;" : "bottom: 0;")}
+  ${(props) => (props.position === "top" ? "top: 0;" : "bottom: 44px;")}
   left: 0;
   right: 0;
   background: var(--color-white);
