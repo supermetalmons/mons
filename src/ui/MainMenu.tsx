@@ -329,11 +329,11 @@ const IconLinkButton = styled.a`
 
 const LinksContainer = styled.div`
   position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
+  bottom: -6px;
+  left: -6px;
+  right: -6px;
   z-index: 5;
-  padding: 12px 6px 6px 6px;
+  padding: 3px 6px 4px 6px;
   background: rgba(255, 255, 255, 0.5);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);

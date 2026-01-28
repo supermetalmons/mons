@@ -192,12 +192,12 @@ const TableWrapper = styled.div`
 
   overscroll-behavior: contain;
   touch-action: pan-y;
-  padding-bottom: 44px;
+  padding-bottom: 27px;
 `;
 
 const FloatingRowContainer = styled.div<{ visible: boolean; position: "top" | "bottom"; suppressAnimation: boolean }>`
   position: absolute;
-  ${(props) => (props.position === "top" ? "top: 0;" : "bottom: 44px;")}
+  ${(props) => (props.position === "top" ? "top: 0;" : "bottom: 27px;")}
   left: 0;
   right: 0;
   background: var(--color-white);
