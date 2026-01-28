@@ -17,8 +17,8 @@ const LEADERBOARD_ENTRY_LIMIT = 99;
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
   position: relative;
   opacity: 1;
-  height: calc(min(69dvh - 10px - env(safe-area-inset-bottom) * 0.63, 100dvh - 110pt - env(safe-area-inset-bottom) * 0.63));
-  margin-top: -2px;
+  height: calc(min(69dvh + 34px - env(safe-area-inset-bottom) * 0.63, 100dvh - 66pt - env(safe-area-inset-bottom) * 0.63));
+  margin: -2px -6px 0 -6px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -80,21 +80,22 @@ const LeaderboardTable = styled.table`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    box-sizing: border-box;
 
     @media (prefers-color-scheme: dark) {
       border-bottom: 1px solid var(--color-gray-33);
     }
 
     &:nth-child(1) {
-      width: 8%;
+      width: 9.5%;
       text-align: left;
       font-size: 0.75rem;
       color: var(--color-gray-99);
-      padding-left: 5px;
+      padding-left: 11px;
 
       @media (max-width: 320px) {
-        width: 10%;
-        padding-left: 3px;
+        width: 11.5%;
+        padding-left: 9px;
       }
     }
     &:nth-child(2) {
@@ -108,11 +109,11 @@ const LeaderboardTable = styled.table`
       }
     }
     &:nth-child(3) {
-      width: 62%;
+      width: 60.5%;
       text-align: left;
 
       @media (max-width: 320px) {
-        width: 57%;
+        width: 55.5%;
       }
     }
     &:nth-child(4) {
@@ -192,16 +193,15 @@ const TableWrapper = styled.div`
 
   overscroll-behavior: contain;
   touch-action: pan-y;
+  padding-bottom: 27px;
 `;
 
 const FloatingRowContainer = styled.div<{ visible: boolean; position: "top" | "bottom"; suppressAnimation: boolean }>`
   position: absolute;
-  ${(props) => (props.position === "top" ? "top: 0;" : "bottom: 0;")}
+  ${(props) => (props.position === "top" ? "top: 0;" : "bottom: 27px;")}
   left: 0;
   right: 0;
   background: var(--color-white);
-  ${(props) => (props.position === "top" ? "border-bottom: 1px solid var(--color-gray-dd);" : "border-top: 1px solid var(--color-gray-dd);")}
-  box-shadow: ${(props) => (props.position === "top" ? "0 4px 12px rgba(0, 0, 0, 0.08)" : "0 -4px 12px rgba(0, 0, 0, 0.08)")};
   transform: translateY(${(props) => (props.visible ? "0" : props.position === "top" ? "-100%" : "100%")});
   opacity: ${(props) => (props.visible ? 1 : 0)};
   transition: ${(props) => (props.suppressAnimation ? "none" : "transform 0.25s ease-out, opacity 0.2s ease-out")};
@@ -210,8 +210,6 @@ const FloatingRowContainer = styled.div<{ visible: boolean; position: "top" | "b
 
   @media (prefers-color-scheme: dark) {
     background: var(--color-deep-gray);
-    ${(props) => (props.position === "top" ? "border-bottom: 1px solid var(--color-gray-33);" : "border-top: 1px solid var(--color-gray-33);")}
-    box-shadow: ${(props) => (props.position === "top" ? "0 4px 12px rgba(0, 0, 0, 0.25)" : "0 -4px 12px rgba(0, 0, 0, 0.25)")};
   }
 `;
 
@@ -252,16 +250,16 @@ const FloatingRowInner = styled.div`
 `;
 
 const FloatingRowRank = styled.div`
-  width: 8%;
+  width: 9.5%;
   text-align: left;
   font-size: 0.75rem;
   color: var(--color-gray-99);
-  padding-left: 5px;
+  padding-left: 11px;
   box-sizing: border-box;
 
   @media (max-width: 320px) {
-    width: 10%;
-    padding-left: 3px;
+    width: 11.5%;
+    padding-left: 9px;
   }
 `;
 
@@ -270,6 +268,7 @@ const FloatingRowEmoji = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  box-sizing: border-box;
 
   @media (max-width: 320px) {
     width: 13%;
@@ -277,15 +276,16 @@ const FloatingRowEmoji = styled.div`
 `;
 
 const FloatingRowName = styled.div`
-  width: 62%;
+  width: 60.5%;
   text-align: left;
   font-weight: 600;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  box-sizing: border-box;
 
   @media (max-width: 320px) {
-    width: 57%;
+    width: 55.5%;
   }
 `;
 

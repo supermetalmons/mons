@@ -328,24 +328,19 @@ const IconLinkButton = styled.a`
 `;
 
 const LinksContainer = styled.div`
-  position: relative;
+  position: absolute;
+  bottom: -6px;
+  left: -6px;
+  right: -6px;
   z-index: 5;
-  padding-top: 6px;
-  margin-top: -6px;
-  background: linear-gradient(
-    to bottom,
-    transparent 0px,
-    var(--color-white) 6px,
-    var(--color-white) 100%
-  );
+  padding: 3px 6px 4px 6px;
+  background: rgba(255, 255, 255, 0.5);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 0 0 10px 10px;
 
   @media (prefers-color-scheme: dark) {
-    background: linear-gradient(
-      to bottom,
-      transparent 0px,
-      var(--color-deep-gray) 6px,
-      var(--color-deep-gray) 100%
-    );
+    background: rgba(30, 30, 30, 0.5);
   }
 `;
 
@@ -354,8 +349,9 @@ const ButtonRow = styled.div`
   gap: 12px;
   margin: 0;
   align-items: center;
+  justify-content: center;
   white-space: nowrap;
-  padding: 1px 0 0 3px;
+  padding: 1px 0;
   width: 100%;
 `;
 
@@ -949,9 +945,6 @@ const MainMenu: React.FC = () => {
               <Leaderboard show={isMenuOpen} leaderboardType={leaderboardType} />
               <LinksContainer>
                 <ButtonRow>
-                  <IconLinkButton href="https://mons.shop" target="_blank" rel="noopener noreferrer">
-                    Shop
-                  </IconLinkButton>
                   <IconLinkButton href="https://mons.academy" target="_blank" rel="noopener noreferrer">
                     <FaUniversity />
                   </IconLinkButton>
