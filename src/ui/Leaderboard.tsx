@@ -257,6 +257,7 @@ const FloatingRowRank = styled.div`
   font-size: 0.75rem;
   color: var(--color-gray-99);
   padding-left: 5px;
+  box-sizing: border-box;
 
   @media (max-width: 320px) {
     width: 10%;
@@ -293,6 +294,7 @@ const FloatingRowValue = styled.div<{ isRating?: boolean; win?: boolean }>`
   text-align: right;
   padding-right: 15px;
   font-weight: 500;
+  box-sizing: border-box;
   color: ${(props) => {
     if (props.isRating) {
       return props.win ? "var(--leaderboardRatingWinColor)" : "var(--leaderboardRatingLossColor)";
