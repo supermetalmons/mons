@@ -202,8 +202,6 @@ const FloatingRowContainer = styled.div<{ visible: boolean; position: "top" | "b
   left: 0;
   right: 0;
   background: var(--color-white);
-  ${(props) => (props.position === "top" ? "border-bottom: 1px solid var(--color-gray-dd);" : "border-top: 1px solid var(--color-gray-dd);")}
-  box-shadow: ${(props) => (props.position === "top" ? "0 4px 12px rgba(0, 0, 0, 0.08)" : "0 -4px 12px rgba(0, 0, 0, 0.08)")};
   transform: translateY(${(props) => (props.visible ? "0" : props.position === "top" ? "-100%" : "100%")});
   opacity: ${(props) => (props.visible ? 1 : 0)};
   transition: ${(props) => (props.suppressAnimation ? "none" : "transform 0.25s ease-out, opacity 0.2s ease-out")};
@@ -212,8 +210,6 @@ const FloatingRowContainer = styled.div<{ visible: boolean; position: "top" | "b
 
   @media (prefers-color-scheme: dark) {
     background: var(--color-deep-gray);
-    ${(props) => (props.position === "top" ? "border-bottom: 1px solid var(--color-gray-33);" : "border-top: 1px solid var(--color-gray-33);")}
-    box-shadow: ${(props) => (props.position === "top" ? "0 4px 12px rgba(0, 0, 0, 0.25)" : "0 -4px 12px rgba(0, 0, 0, 0.25)")};
   }
 `;
 
