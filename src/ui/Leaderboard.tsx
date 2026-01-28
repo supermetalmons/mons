@@ -181,6 +181,9 @@ const LeaderboardTable = styled.table`
   }
 `;
 
+const BOTTOM_PANEL_OFFSET = 27;
+const BOTTOM_VISIBILITY_THRESHOLD = 30;
+
 const TableWrapper = styled.div`
   overflow-y: auto;
   flex: 1;
@@ -193,12 +196,12 @@ const TableWrapper = styled.div`
 
   overscroll-behavior: contain;
   touch-action: pan-y;
-  padding-bottom: 27px;
+  padding-bottom: ${BOTTOM_PANEL_OFFSET}px;
 `;
 
 const FloatingRowContainer = styled.div<{ visible: boolean; position: "top" | "bottom"; suppressAnimation: boolean }>`
   position: absolute;
-  ${(props) => (props.position === "top" ? "top: 0;" : "bottom: 27px;")}
+  ${(props) => (props.position === "top" ? "top: -2px; padding-top: 2px;" : `bottom: ${BOTTOM_PANEL_OFFSET}px;`)}
   left: 0;
   right: 0;
   background: var(--color-white);
@@ -607,10 +610,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
     const checkPosition = () => {
       const rowRect = currentRow.getBoundingClientRect();
       const wrapperRect = tableWrapper.getBoundingClientRect();
+      const visibleBottom = wrapperRect.bottom - BOTTOM_VISIBILITY_THRESHOLD;
 
       if (rowRect.bottom < wrapperRect.top) {
         setCurrentRowPosition("above");
-      } else if (rowRect.top > wrapperRect.bottom) {
+      } else if (rowRect.top > visibleBottom) {
         setCurrentRowPosition("below");
       } else {
         setCurrentRowPosition("visible");
@@ -631,6 +635,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
       },
       {
         root: tableWrapper,
+        rootMargin: `0px 0px -${BOTTOM_VISIBILITY_THRESHOLD}px 0px`,
         threshold: 0.1,
       }
     );
