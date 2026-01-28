@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useCallback, useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { resolveENS } from "../utils/ensResolver";
 import { connection } from "../connection/connection";
@@ -563,7 +563,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
   const currentProfileId = storage.getProfileId("");
   const currentLoginId = storage.getLoginId("");
 
-  const getCurrentPlayerEntry = (): LeaderboardEntry | null => {
+  const getCurrentPlayerEntry = useCallback((): LeaderboardEntry | null => {
     if (!currentProfileId) return null;
     const storedUsername = storage.getUsername("");
     const storedEth = storage.getEthAddress("");
@@ -597,7 +597,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
       mining: profile?.mining ?? storedMining,
     };
     return createLeaderboardEntry(mergedProfile);
-  };
+  }, [currentProfileId, currentLoginId]);
 
   useEffect(() => {
     const currentRow = currentRowRef.current;
@@ -757,7 +757,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
       .catch((error) => {
         console.error("Failed to fetch leaderboard data:", error);
       });
-  }, [show, leaderboardType]);
+  }, [show, leaderboardType, getCurrentPlayerEntry]);
 
   useAutoDownloadLeaderboardCards({ show, data });
 
