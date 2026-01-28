@@ -959,7 +959,7 @@ const BottomControls: React.FC = () => {
                 </WagerBetButton>
                 <WagerMaterialsGrid>
                   {MATERIALS.map((name) => (
-                    <WagerMaterialItem key={name} onClick={() => handleMaterialSelect(name)} disabled={materialAmounts[name] <= 0} style={{ opacity: materialAmounts[name] > 0 ? 1 : 0.4 }}>
+                    <WagerMaterialItem key={name} onClick={!isMobile ? () => handleMaterialSelect(name) : undefined} onTouchStart={isMobile ? () => handleMaterialSelect(name) : undefined} disabled={materialAmounts[name] <= 0} style={{ opacity: materialAmounts[name] > 0 ? 1 : 0.4 }}>
                       {materialUrls[name] && <WagerMaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
                       <WagerMaterialAmount>{materialAmounts[name]}</WagerMaterialAmount>
                     </WagerMaterialItem>
