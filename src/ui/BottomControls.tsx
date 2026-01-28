@@ -168,6 +168,8 @@ const BottomControls: React.FC = () => {
   const [isMoveHistoryButtonVisible, setIsMoveHistoryButtonVisible] = useState(false);
   const [isMoveHistoryPopupVisible, setIsMoveHistoryPopupVisible] = useState(false);
   const [isResignConfirmVisible, setIsResignConfirmVisible] = useState(false);
+  const [isTimerConfirmVisible, setIsTimerConfirmVisible] = useState(false);
+  const [isClaimVictoryConfirmVisible, setIsClaimVictoryConfirmVisible] = useState(false);
   const [isTimerButtonDisabled, setIsTimerButtonDisabled] = useState(true);
   const [isClaimVictoryVisible, setIsClaimVictoryVisible] = useState(false);
   const [isSamePuzzleAgainVisible, setIsSamePuzzleAgainVisible] = useState(false);
@@ -179,6 +181,8 @@ const BottomControls: React.FC = () => {
   const [timerConfig, setTimerConfig] = useState({ duration: 90, progress: 0, requestDate: Date.now() });
   const [stickerIds, setStickerIds] = useState<number[]>([]);
   const [pickerMaxHeight, setPickerMaxHeight] = useState<number | undefined>(undefined);
+  const [timerConfirmLeft, setTimerConfirmLeft] = useState<number | null>(null);
+  const [claimVictoryConfirmLeft, setClaimVictoryConfirmLeft] = useState<number | null>(null);
 
   const [isWagerMode, setIsWagerMode] = useState(false);
   const [wagerSelection, setWagerSelection] = useState<{ name: MaterialName | null; count: number }>({ name: null, count: 0 });
@@ -197,10 +201,15 @@ const BottomControls: React.FC = () => {
   const latestServiceMaterialsRef = useRef<Record<MaterialName, number>>({ dust: 0, slime: 0, gum: 0, metal: 0, ice: 0 });
 
   const pickerRef = useRef<HTMLDivElement>(null);
+  const controlsContainerRef = useRef<HTMLDivElement>(null);
   const voiceReactionButtonRef = useRef<HTMLButtonElement>(null);
   const moveHistoryButtonRef = useRef<HTMLButtonElement>(null);
   const resignButtonRef = useRef<HTMLButtonElement>(null);
   const resignConfirmRef = useRef<HTMLDivElement>(null);
+  const timerButtonRef = useRef<HTMLButtonElement>(null);
+  const timerConfirmRef = useRef<HTMLDivElement>(null);
+  const claimVictoryButtonRef = useRef<HTMLButtonElement>(null);
+  const claimVictoryConfirmRef = useRef<HTMLDivElement>(null);
   const hourglassEnableTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const cancelAutomatchRevealTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const navigationPopupRef = useRef<HTMLDivElement>(null);
@@ -212,10 +221,17 @@ const BottomControls: React.FC = () => {
   useEffect(() => {
     const handleClickOutside = (event: TouchEvent | MouseEvent) => {
       event.stopPropagation();
-      if ((pickerRef.current && !pickerRef.current.contains(event.target as Node) && !voiceReactionButtonRef.current?.contains(event.target as Node)) || (resignConfirmRef.current && !resignConfirmRef.current.contains(event.target as Node) && !resignButtonRef.current?.contains(event.target as Node))) {
+      if (
+        (pickerRef.current && !pickerRef.current.contains(event.target as Node) && !voiceReactionButtonRef.current?.contains(event.target as Node)) ||
+        (resignConfirmRef.current && !resignConfirmRef.current.contains(event.target as Node) && !resignButtonRef.current?.contains(event.target as Node)) ||
+        (timerConfirmRef.current && !timerConfirmRef.current.contains(event.target as Node) && !timerButtonRef.current?.contains(event.target as Node)) ||
+        (claimVictoryConfirmRef.current && !claimVictoryConfirmRef.current.contains(event.target as Node) && !claimVictoryButtonRef.current?.contains(event.target as Node))
+      ) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsReactionPickerVisible(false);
         setIsResignConfirmVisible(false);
+        setIsTimerConfirmVisible(false);
+        setIsClaimVictoryConfirmVisible(false);
       }
 
       if (moveHistoryPopupRef.current && !moveHistoryPopupRef.current.contains(event.target as Node) && !moveHistoryButtonRef.current?.contains(event.target as Node)) {
@@ -272,6 +288,46 @@ const BottomControls: React.FC = () => {
       setPickerMaxHeight(el.scrollHeight);
     });
   }, [stickerIds, isReactionPickerVisible, isWagerMode, wagerSelection]);
+
+  const updateTimerConfirmPosition = useCallback(() => {
+    if (!timerButtonRef.current || !controlsContainerRef.current) return;
+    const buttonRect = timerButtonRef.current.getBoundingClientRect();
+    const containerRect = controlsContainerRef.current.getBoundingClientRect();
+    const center = buttonRect.left + buttonRect.width / 2 - containerRect.left;
+    const padding = 16;
+    const clampedCenter = Math.min(containerRect.width - padding, Math.max(padding, center));
+    setTimerConfirmLeft(clampedCenter);
+  }, []);
+
+  const updateClaimVictoryConfirmPosition = useCallback(() => {
+    if (!claimVictoryButtonRef.current || !controlsContainerRef.current) return;
+    const buttonRect = claimVictoryButtonRef.current.getBoundingClientRect();
+    const containerRect = controlsContainerRef.current.getBoundingClientRect();
+    const center = buttonRect.left + buttonRect.width / 2 - containerRect.left;
+    const padding = 16;
+    const clampedCenter = Math.min(containerRect.width - padding, Math.max(padding, center));
+    setClaimVictoryConfirmLeft(clampedCenter);
+  }, []);
+
+  useEffect(() => {
+    if (!isTimerConfirmVisible) return;
+    const raf = requestAnimationFrame(updateTimerConfirmPosition);
+    window.addEventListener("resize", updateTimerConfirmPosition);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", updateTimerConfirmPosition);
+    };
+  }, [isTimerConfirmVisible, updateTimerConfirmPosition]);
+
+  useEffect(() => {
+    if (!isClaimVictoryConfirmVisible) return;
+    const raf = requestAnimationFrame(updateClaimVictoryConfirmPosition);
+    window.addEventListener("resize", updateClaimVictoryConfirmPosition);
+    return () => {
+      cancelAnimationFrame(raf);
+      window.removeEventListener("resize", updateClaimVictoryConfirmPosition);
+    };
+  }, [isClaimVictoryConfirmVisible, updateClaimVictoryConfirmPosition]);
 
   useEffect(() => {
     if (!isReactionPickerVisible) return;
@@ -463,6 +519,8 @@ const BottomControls: React.FC = () => {
     setIsTimerButtonDisabled(true);
     setIsStartTimerVisible(false);
     setIsClaimVictoryVisible(false);
+    setIsTimerConfirmVisible(false);
+    setIsClaimVictoryConfirmVisible(false);
   };
 
   showTimerButtonProgressing = (currentProgress: number, target: number, enableWhenTargetReached: boolean) => {
@@ -476,6 +534,8 @@ const BottomControls: React.FC = () => {
     setIsAutomoveButtonVisible(false);
     setIsUndoButtonVisible(false);
     setIsClaimVictoryVisible(false);
+    setIsTimerConfirmVisible(false);
+    setIsClaimVictoryConfirmVisible(false);
     setTimerConfig({ duration: target, progress: currentProgress, requestDate: Date.now() });
 
     if (enableWhenTargetReached) {
@@ -488,7 +548,7 @@ const BottomControls: React.FC = () => {
   };
 
   hasBottomPopupsVisible = () => {
-    return isReactionPickerVisible || isMoveHistoryPopupVisible || isResignConfirmVisible || isBoardStylePickerVisible || isWagerPanelVisible();
+    return isReactionPickerVisible || isMoveHistoryPopupVisible || isResignConfirmVisible || isTimerConfirmVisible || isClaimVictoryConfirmVisible || isBoardStylePickerVisible || isWagerPanelVisible();
   };
 
   enableTimerVictoryClaim = () => {
@@ -497,6 +557,8 @@ const BottomControls: React.FC = () => {
     setIsAutomoveButtonVisible(false);
     setIsStartTimerVisible(false);
     setIsClaimVictoryButtonDisabled(false);
+    setIsTimerConfirmVisible(false);
+    setIsClaimVictoryConfirmVisible(false);
   };
 
   setPlaySamePuzzleAgainButtonVisible = (visible: boolean) => {
@@ -572,6 +634,8 @@ const BottomControls: React.FC = () => {
     setIsStartTimerVisible(false);
     setIsClaimVictoryVisible(false);
     setIsResignConfirmVisible(false);
+    setIsTimerConfirmVisible(false);
+    setIsClaimVictoryConfirmVisible(false);
   };
 
   toggleReactionPicker = () => {
@@ -581,6 +645,8 @@ const BottomControls: React.FC = () => {
       }
       closeMenuAndInfoIfAny();
       setIsResignConfirmVisible(false);
+      setIsTimerConfirmVisible(false);
+      setIsClaimVictoryConfirmVisible(false);
       setIsMoveHistoryPopupVisible(false);
     }
     setIsReactionPickerVisible((prev) => !prev);
@@ -590,6 +656,8 @@ const BottomControls: React.FC = () => {
     if (!isMoveHistoryPopupVisible) {
       closeMenuAndInfoIfAny();
       setIsResignConfirmVisible(false);
+      setIsTimerConfirmVisible(false);
+      setIsClaimVictoryConfirmVisible(false);
       setIsReactionPickerVisible(false);
       setIsNavigationPopupVisible(false);
     }
@@ -600,6 +668,8 @@ const BottomControls: React.FC = () => {
     if (!isBoardStylePickerVisible) {
       closeMenuAndInfoIfAny();
       setIsResignConfirmVisible(false);
+      setIsTimerConfirmVisible(false);
+      setIsClaimVictoryConfirmVisible(false);
       setIsReactionPickerVisible(false);
       setIsNavigationPopupVisible(false);
     }
@@ -611,13 +681,20 @@ const BottomControls: React.FC = () => {
     if (!isResignConfirmVisible) {
       closeMenuAndInfoIfAny();
     }
+    setIsTimerConfirmVisible(false);
+    setIsClaimVictoryConfirmVisible(false);
     setIsResignConfirmVisible(!isResignConfirmVisible);
   };
 
   const handleTimerClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
-    didClickStartTimerButton();
-    setIsTimerButtonDisabled(true);
+    if (!isTimerConfirmVisible) {
+      closeMenuAndInfoIfAny();
+      updateTimerConfirmPosition();
+    }
+    setIsResignConfirmVisible(false);
+    setIsClaimVictoryConfirmVisible(false);
+    setIsTimerConfirmVisible(!isTimerConfirmVisible);
   };
 
   const handleHomeClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -633,6 +710,25 @@ const BottomControls: React.FC = () => {
 
   const handleClaimVictoryClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
+    if (!isClaimVictoryConfirmVisible) {
+      closeMenuAndInfoIfAny();
+      updateClaimVictoryConfirmPosition();
+    }
+    setIsResignConfirmVisible(false);
+    setIsTimerConfirmVisible(false);
+    setIsClaimVictoryConfirmVisible(!isClaimVictoryConfirmVisible);
+  };
+
+  const handleConfirmStartTimer = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setIsTimerConfirmVisible(false);
+    didClickStartTimerButton();
+    setIsTimerButtonDisabled(true);
+  };
+
+  const handleConfirmClaimVictory = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    setIsClaimVictoryConfirmVisible(false);
     didClickClaimVictoryByTimerButton();
     setIsClaimVictoryButtonDisabled(true);
   };
@@ -822,7 +918,7 @@ const BottomControls: React.FC = () => {
         </div>
       )}
       {isMoveHistoryPopupVisible && <MoveHistoryPopup ref={moveHistoryPopupRef} />}
-      <ControlsContainer>
+      <ControlsContainer ref={controlsContainerRef}>
         {isEndMatchButtonVisible && (
           <BottomPillButton onClick={handleEndMatchClick} isBlue={!isEndMatchConfirmed} disabled={isEndMatchConfirmed} isViewOnly={isEndMatchConfirmed}>
             {isEndMatchConfirmed ? "💨 Finished" : "🏁 End Match"}
@@ -902,11 +998,11 @@ const BottomControls: React.FC = () => {
           </BottomPillButton>
         )}
         {isClaimVictoryVisible && (
-          <ControlButton onClick={handleClaimVictoryClick} aria-label="Claim Victory" disabled={isClaimVictoryButtonDisabled}>
+          <ControlButton ref={claimVictoryButtonRef} onClick={handleClaimVictoryClick} aria-label="Claim Victory" disabled={isClaimVictoryButtonDisabled}>
             <FaTrophy />
           </ControlButton>
         )}
-        {isStartTimerVisible && <AnimatedHourglassButton config={timerConfig} onClick={handleTimerClick} disabled={isTimerButtonDisabled} />}
+        {isStartTimerVisible && <AnimatedHourglassButton ref={timerButtonRef} config={timerConfig} onClick={handleTimerClick} disabled={isTimerButtonDisabled} />}
         {isUndoButtonVisible && (
           <ControlButton onClick={!isMobile ? handleUndo : undefined} onTouchStart={isMobile ? handleUndo : undefined} aria-label="Undo" disabled={isUndoDisabled}>
             <FaUndo />
@@ -987,6 +1083,22 @@ const BottomControls: React.FC = () => {
               </>
             )}
           </ReactionPillsContainer>
+        )}
+        {isTimerConfirmVisible && (
+          <ResignConfirmation
+            ref={timerConfirmRef}
+            style={timerConfirmLeft !== null ? { left: `${timerConfirmLeft}px`, right: "auto", transform: "translateX(-50%)" } : undefined}
+          >
+            <ReactionPill onClick={handleConfirmStartTimer}>Start a Timer</ReactionPill>
+          </ResignConfirmation>
+        )}
+        {isClaimVictoryConfirmVisible && (
+          <ResignConfirmation
+            ref={claimVictoryConfirmRef}
+            style={claimVictoryConfirmLeft !== null ? { left: `${claimVictoryConfirmLeft}px`, right: "auto", transform: "translateX(-50%)" } : undefined}
+          >
+            <ReactionPill onClick={handleConfirmClaimVictory}>Claim Victory</ReactionPill>
+          </ResignConfirmation>
         )}
         {isResignConfirmVisible && (
           <ResignConfirmation ref={resignConfirmRef}>
