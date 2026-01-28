@@ -942,7 +942,8 @@ const BottomControls: React.FC = () => {
               <>
                 <WagerBetButton
                   $ready={wagerReady}
-                  onClick={wagerReady ? handleWagerSubmit : undefined}
+                  onClick={wagerReady && !isMobile ? handleWagerSubmit : undefined}
+                  onTouchStart={wagerReady && isMobile ? handleWagerSubmit : undefined}
                   disabled={!wagerReady}
                   style={{ cursor: wagerReady ? "pointer" : "default", opacity: wagerReady ? 1 : 0.6 }}>
                   {wagerMaterial && wagerCount > 0 ? (
@@ -969,7 +970,7 @@ const BottomControls: React.FC = () => {
             ) : (
               <>
                 {canSubmitWager && (
-                  <WagerBetButton $ready={true} onClick={handleWagerModeToggle}>
+                  <WagerBetButton $ready={true} onClick={!isMobile ? handleWagerModeToggle : undefined} onTouchStart={isMobile ? handleWagerModeToggle : undefined}>
                     Propose a Wager
                   </WagerBetButton>
                 )}
