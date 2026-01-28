@@ -349,8 +349,9 @@ const ButtonRow = styled.div`
   gap: 12px;
   margin: 0;
   align-items: center;
+  justify-content: center;
   white-space: nowrap;
-  padding: 1px 0 0 3px;
+  padding: 1px 0;
   width: 100%;
 `;
 
@@ -944,9 +945,6 @@ const MainMenu: React.FC = () => {
               <Leaderboard show={isMenuOpen} leaderboardType={leaderboardType} />
               <LinksContainer>
                 <ButtonRow>
-                  <IconLinkButton href="https://mons.shop" target="_blank" rel="noopener noreferrer">
-                    Shop
-                  </IconLinkButton>
                   <IconLinkButton href="https://mons.academy" target="_blank" rel="noopener noreferrer">
                     <FaUniversity />
                   </IconLinkButton>
