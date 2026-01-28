@@ -22,6 +22,7 @@ const STORAGE_KEYS = {
   CARD_BACKGROUND_ID: "cardBackgroundId",
   CARD_SUBTITLE_ID: "cardSubtitleId",
   CARD_STICKERS: "cardStickers",
+  REACTION_EXTRA_STICKER_IDS: "reactionExtraStickerIds",
   PROFILE_MONS: "profileMons",
   PROFILE_COUNTER: "profileCounter",
   PLAYER_NONCE: "playerNonce",
@@ -213,6 +214,14 @@ export const storage = {
     setItem(STORAGE_KEYS.CARD_STICKERS, value);
   },
 
+  getReactionExtraStickerIds: (defaultValue: number[]): number[] => {
+    return getItem(STORAGE_KEYS.REACTION_EXTRA_STICKER_IDS, defaultValue);
+  },
+
+  setReactionExtraStickerIds: (value: number[]): void => {
+    setItem(STORAGE_KEYS.REACTION_EXTRA_STICKER_IDS, value);
+  },
+
   getProfileMons: (defaultValue: string): string => {
     return getItem(STORAGE_KEYS.PROFILE_MONS, defaultValue);
   },
@@ -292,6 +301,7 @@ export const storage = {
     localStorage.removeItem(STORAGE_KEYS.CARD_BACKGROUND_ID);
     localStorage.removeItem(STORAGE_KEYS.CARD_SUBTITLE_ID);
     localStorage.removeItem(STORAGE_KEYS.CARD_STICKERS);
+    localStorage.removeItem(STORAGE_KEYS.REACTION_EXTRA_STICKER_IDS);
     localStorage.removeItem(STORAGE_KEYS.PROFILE_MONS);
     localStorage.removeItem(STORAGE_KEYS.PLAYER_NONCE);
     localStorage.removeItem(STORAGE_KEYS.COMPLETED_PROBLEMS);

@@ -102,6 +102,38 @@ let showPrimaryAction: (action: PrimaryActionType) => void;
 const STICKER_ID_WHITELIST: number[] = [9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466, 900316, 900101, 900393, 90063, 900109, 900228, 900245, 900267, 900374, 900347, 900382, 900429, 900225, 900999, 900189];
 const FIXED_STICKER_IDS: number[] = [900316, 900101, 900393, 90063, 900109, 900228, 900245, 900189, 900267, 900374, 900347, 900382, 900429, 900225, 900999];
 
+const mergeStickerIds = (base: number[], extra: number[]): number[] => {
+  if (!extra.length) return base.slice();
+  const seen = new Set<number>(base);
+  const merged = base.slice();
+  for (const id of extra) {
+    if (!seen.has(id)) {
+      seen.add(id);
+      merged.push(id);
+    }
+  }
+  return merged;
+};
+
+const normalizeStickerIds = (value: unknown): number[] => {
+  if (!Array.isArray(value)) return [];
+  return value.filter((id): id is number => typeof id === "number");
+};
+
+const getSwagpackReactionStickerIds = (value: unknown): number[] => {
+  if (!Array.isArray(value)) return [];
+  const ids = value.map((item) => (item as { id?: unknown }).id);
+  return normalizeStickerIds(ids);
+};
+
+const areStickerIdArraysEqual = (left: number[], right: number[]): boolean => {
+  if (left.length !== right.length) return false;
+  for (let i = 0; i < left.length; i += 1) {
+    if (left[i] !== right[i]) return false;
+  }
+  return true;
+};
+
 const BottomControls: React.FC = () => {
   const [isEndMatchButtonVisible, setIsEndMatchButtonVisible] = useState(false);
   const [isEndMatchConfirmed, setIsEndMatchConfirmed] = useState(false);
@@ -214,7 +246,8 @@ const BottomControls: React.FC = () => {
 
   useEffect(() => {
     if (isReactionPickerVisible) {
-      setStickerIds(FIXED_STICKER_IDS);
+      const cachedExtraIds = normalizeStickerIds(storage.getReactionExtraStickerIds([]));
+      setStickerIds(mergeStickerIds(FIXED_STICKER_IDS, cachedExtraIds));
     }
   }, [isReactionPickerVisible]);
 
@@ -246,22 +279,14 @@ const BottomControls: React.FC = () => {
     const fetchReactions = async () => {
       try {
         const data = await fetchNftsForStoredAddresses();
-        const extra = Array.isArray(data?.swagpack_reactions) ? data.swagpack_reactions : [];
-        const extraIds: number[] = extra.map((x: { id: number; count?: number }) => x.id).filter((id: unknown) => typeof id === "number");
-        if (!extraIds.length) return;
+        const extraIds = getSwagpackReactionStickerIds(data?.swagpack_reactions);
         if (isCancelled) return;
-        setStickerIds((prev) => {
-          const base = prev.length ? prev : FIXED_STICKER_IDS;
-          const seen = new Set<number>(base);
-          const merged = base.slice();
-          for (const id of extraIds) {
-            if (!seen.has(id)) {
-              seen.add(id);
-              merged.push(id);
-            }
-          }
-          return merged;
-        });
+        const nextStickerIds = mergeStickerIds(FIXED_STICKER_IDS, extraIds);
+        setStickerIds(nextStickerIds);
+        const cachedExtraIds = normalizeStickerIds(storage.getReactionExtraStickerIds([]));
+        if (!areStickerIdArraysEqual(cachedExtraIds, extraIds)) {
+          storage.setReactionExtraStickerIds(extraIds);
+        }
       } catch (_) {}
     };
     fetchReactions();
