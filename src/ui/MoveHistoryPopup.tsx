@@ -7,8 +7,8 @@ export function triggerMoveHistoryPopupReload() {
   if (moveHistoryReloadCallback) moveHistoryReloadCallback();
 }
 
-const ITEM_HEIGHT = 32;
-const VISIBLE_ITEMS = 5;
+const ITEM_HEIGHT = 24;
+const VISIBLE_ITEMS = 7;
 const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
 
 const MoveHistoryPopupContainer = styled.div`
@@ -78,8 +78,8 @@ const WheelItem = styled.div<{ $isSelected: boolean; $distance: number }>`
   align-items: center;
   justify-content: flex-start;
   scroll-snap-align: center;
-  font-size: 14px;
-  padding: 0 12px;
+  font-size: 12px;
+  padding: 0 10px;
   cursor: pointer;
   user-select: none;
   transition: opacity 0.15s ease, transform 0.15s ease;
