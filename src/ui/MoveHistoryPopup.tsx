@@ -9,13 +9,16 @@ export function triggerMoveHistoryPopupReload() {
 
 const ITEM_HEIGHT = 24;
 const VISIBLE_ITEMS = 7;
+const PADDING_ITEMS = Math.floor(VISIBLE_ITEMS / 2);
 const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
+const PLACEHOLDER_LABEL = "—";
+const PADDING_INDICES = Array.from({ length: PADDING_ITEMS }, (_, index) => index);
 
 const MoveHistoryPopupContainer = styled.div`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
-  width: 130pt;
+  width: 150px;
   height: ${PICKER_HEIGHT}px;
   display: flex;
   flex-direction: column;
@@ -72,24 +75,26 @@ const ScrollWheel = styled.div`
   }
 `;
 
-const WheelItem = styled.div<{ $isSelected: boolean; $distance: number }>`
+const WheelItem = styled.div<{ $isSelected: boolean; $distance: number; $isPlaceholder?: boolean }>`
   height: ${ITEM_HEIGHT}px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  scroll-snap-align: center;
+  scroll-snap-align: ${(props) => (props.$isPlaceholder ? "none" : "center")};
   font-size: 12px;
   padding: 0 10px;
-  cursor: pointer;
+  cursor: ${(props) => (props.$isPlaceholder ? "default" : "pointer")};
+  pointer-events: ${(props) => (props.$isPlaceholder ? "none" : "auto")};
   user-select: none;
   transition: opacity 0.15s ease, transform 0.15s ease;
   color: var(--color-gray-33);
   opacity: ${(props) => {
-    if (props.$isSelected) return 1;
-    if (props.$distance === 1) return 0.7;
-    if (props.$distance === 2) return 0.45;
-    if (props.$distance === 3) return 0.25;
-    return 0.15;
+    let opacity = 0.15;
+    if (props.$isSelected) opacity = 1;
+    else if (props.$distance === 1) opacity = 0.7;
+    else if (props.$distance === 2) opacity = 0.45;
+    else if (props.$distance === 3) opacity = 0.25;
+    return props.$isPlaceholder ? opacity * 0.85 : opacity;
   }};
   transform: ${(props) => {
     if (props.$isSelected) return "scale(1)";
@@ -103,12 +108,6 @@ const WheelItem = styled.div<{ $isSelected: boolean; $distance: number }>`
   @media (prefers-color-scheme: dark) {
     color: var(--color-gray-f0);
   }
-`;
-
-const Spacer = styled.div`
-  height: ${(PICKER_HEIGHT - ITEM_HEIGHT) / 2}px;
-  flex-shrink: 0;
-  scroll-snap-align: none;
 `;
 
 const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
@@ -224,7 +223,20 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       <WheelContainer>
         <SelectionIndicator />
         <ScrollWheel ref={scrollRef} onScroll={handleScroll} onMouseDown={handleMouseDown}>
-          <Spacer />
+          {PADDING_INDICES.map((offset) => {
+            const virtualIndex = offset - PADDING_ITEMS;
+            return (
+              <WheelItem
+                key={`placeholder-top-${offset}`}
+                $isSelected={false}
+                $distance={getDistance(virtualIndex)}
+                $isPlaceholder
+                aria-hidden="true"
+              >
+                {PLACEHOLDER_LABEL}
+              </WheelItem>
+            );
+          })}
           {items.map((text, index) => (
             <WheelItem
               key={index}
@@ -235,7 +247,20 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
               {index}. {text}
             </WheelItem>
           ))}
-          <Spacer />
+          {PADDING_INDICES.map((offset) => {
+            const virtualIndex = items.length + offset;
+            return (
+              <WheelItem
+                key={`placeholder-bottom-${offset}`}
+                $isSelected={false}
+                $distance={getDistance(virtualIndex)}
+                $isPlaceholder
+                aria-hidden="true"
+              >
+                {PLACEHOLDER_LABEL}
+              </WheelItem>
+            );
+          })}
         </ScrollWheel>
       </WheelContainer>
     </MoveHistoryPopupContainer>

@@ -1389,8 +1389,8 @@ function updateUndoButtonBasedOnGameState() {
   setUndoEnabled(canHandleUndo());
 }
 
-function updateBoardMoveStatuses() {
-  Board.updateMoveStatuses(game.active_color(), game.available_move_kinds(), game.inactive_player_items_counters());
+function updateBoardMoveStatuses(gameModel: MonsWeb.MonsGameModel = game) {
+  Board.updateMoveStatuses(gameModel.active_color(), gameModel.available_move_kinds(), gameModel.inactive_player_items_counters());
 }
 
 function setNewBoard(inFlashbackMode: boolean) {
@@ -1405,7 +1405,7 @@ function setNewBoard(inFlashbackMode: boolean) {
     disableAndHideUndoResignAndTimerControls();
     showRematchInterface();
   } else {
-    updateBoardMoveStatuses();
+    updateBoardMoveStatuses(displayGame);
   }
   const locationsWithContent = displayGame.locations_with_content().map((loc) => new Location(loc.i, loc.j));
   Board.removeItemsNotPresentIn(locationsWithContent);
