@@ -8,7 +8,7 @@ export function triggerMoveHistoryPopupReload() {
 }
 
 const ITEM_HEIGHT = 24;
-const VISIBLE_ITEMS = 5;
+const VISIBLE_ITEMS = 7;
 const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
 
 const MoveHistoryPopupContainer = styled.div`
@@ -86,12 +86,17 @@ const WheelItem = styled.div<{ $isSelected: boolean; $distance: number }>`
   color: var(--color-gray-33);
   opacity: ${(props) => {
     if (props.$isSelected) return 1;
-    if (props.$distance === 1) return 0.6;
-    return 0.3;
+    if (props.$distance === 1) return 0.7;
+    if (props.$distance === 2) return 0.45;
+    if (props.$distance === 3) return 0.25;
+    return 0.15;
   }};
   transform: ${(props) => {
-    const scale = props.$isSelected ? 1 : props.$distance === 1 ? 0.95 : 0.9;
-    return `scale(${scale})`;
+    if (props.$isSelected) return "scale(1)";
+    if (props.$distance === 1) return "scale(0.96)";
+    if (props.$distance === 2) return "scale(0.92)";
+    if (props.$distance === 3) return "scale(0.88)";
+    return "scale(0.85)";
   }};
   font-weight: ${(props) => (props.$isSelected ? 500 : 400)};
 
