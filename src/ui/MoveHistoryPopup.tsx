@@ -7,15 +7,15 @@ export function triggerMoveHistoryPopupReload() {
   if (moveHistoryReloadCallback) moveHistoryReloadCallback();
 }
 
-const ITEM_HEIGHT = 32;
-const VISIBLE_ITEMS = 5;
+const ITEM_HEIGHT = 24;
+const VISIBLE_ITEMS = 7;
 const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
 
 const MoveHistoryPopupContainer = styled.div`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
-  width: 150pt;
+  width: 130pt;
   height: ${PICKER_HEIGHT}px;
   display: flex;
   flex-direction: column;
@@ -78,20 +78,25 @@ const WheelItem = styled.div<{ $isSelected: boolean; $distance: number }>`
   align-items: center;
   justify-content: flex-start;
   scroll-snap-align: center;
-  font-size: 14px;
-  padding: 0 12px;
+  font-size: 12px;
+  padding: 0 10px;
   cursor: pointer;
   user-select: none;
   transition: opacity 0.15s ease, transform 0.15s ease;
   color: var(--color-gray-33);
   opacity: ${(props) => {
     if (props.$isSelected) return 1;
-    if (props.$distance === 1) return 0.6;
-    return 0.3;
+    if (props.$distance === 1) return 0.7;
+    if (props.$distance === 2) return 0.45;
+    if (props.$distance === 3) return 0.25;
+    return 0.15;
   }};
   transform: ${(props) => {
-    const scale = props.$isSelected ? 1 : props.$distance === 1 ? 0.95 : 0.9;
-    return `scale(${scale})`;
+    if (props.$isSelected) return "scale(1)";
+    if (props.$distance === 1) return "scale(0.96)";
+    if (props.$distance === 2) return "scale(0.92)";
+    if (props.$distance === 3) return "scale(0.88)";
+    return "scale(0.85)";
   }};
   font-weight: ${(props) => (props.$isSelected ? 500 : 400)};
 
