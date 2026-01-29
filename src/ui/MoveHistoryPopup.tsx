@@ -18,7 +18,7 @@ const MoveHistoryPopupContainer = styled.div`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
-  width: 130pt;
+  width: 150px;
   height: ${PICKER_HEIGHT}px;
   display: flex;
   flex-direction: column;
