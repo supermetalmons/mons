@@ -8,14 +8,14 @@ export function triggerMoveHistoryPopupReload() {
 }
 
 const ITEM_HEIGHT = 24;
-const VISIBLE_ITEMS = 7;
+const VISIBLE_ITEMS = 5;
 const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
 
 const MoveHistoryPopupContainer = styled.div`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
-  width: 150pt;
+  width: 130pt;
   height: ${PICKER_HEIGHT}px;
   display: flex;
   flex-direction: column;
