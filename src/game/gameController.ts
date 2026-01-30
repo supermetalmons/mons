@@ -103,7 +103,7 @@ export function didSyncTutorialProgress() {
 export function getVerboseTrackingEntities(): MoveHistoryEntry[] {
   const entities = game.verbose_tracking_entities();
   if (entities.length === 0) {
-    return [{ segments: [] }];
+    return [{ segments: [], hasTurnSeparator: false }];
   }
   return entities.map((e) => {
     const events = e.events();
