@@ -1,111 +1,196 @@
 import * as MonsWeb from "mons-web";
 import * as Board from "./board";
 
+export type MoveHistoryToken =
+  | { type: "icon"; icon: string; alt: string }
+  | { type: "text"; text: string }
+  | { type: "composite"; baseIcon: string; overlayIcon: string; alt: string; overlayAlt: string; variant: "mana" | "supermana" };
+
+export type MoveHistorySegment = MoveHistoryToken[];
+
+export type MoveHistoryEntry = {
+  segments: MoveHistorySegment[];
+};
+
 export function arrowForEvent(e: MonsWeb.EventModel): { arrow: string; isRight: boolean } {
   const from = e.loc1;
   const to = e.loc2;
-  if (!from || !to) return { arrow: "➡️", isRight: true };
+  if (!from || !to) return { arrow: "→", isRight: true };
   let di = to.i - from.i;
   let dj = to.j - from.j;
   if (Board.isFlipped) {
     di = -di;
     dj = -dj;
   }
-  if (di === 0 && dj > 0) return { arrow: "➡️", isRight: true };
-  if (di === 0 && dj < 0) return { arrow: "⬅️", isRight: false };
-  if (dj === 0 && di > 0) return { arrow: "⬇️", isRight: true };
-  if (dj === 0 && di < 0) return { arrow: "⬆️", isRight: true };
-  if (di < 0 && dj > 0) return { arrow: "↗️", isRight: true };
-  if (di > 0 && dj > 0) return { arrow: "↘️", isRight: true };
-  if (di > 0 && dj < 0) return { arrow: "↙️", isRight: false };
-  if (di < 0 && dj < 0) return { arrow: "↖️", isRight: false };
-  return { arrow: "➡️", isRight: true };
+  if (di === 0 && dj > 0) return { arrow: "→", isRight: true };
+  if (di === 0 && dj < 0) return { arrow: "←", isRight: false };
+  if (dj === 0 && di > 0) return { arrow: "↓", isRight: true };
+  if (dj === 0 && di < 0) return { arrow: "↑", isRight: true };
+  if (di < 0 && dj > 0) return { arrow: "↗", isRight: true };
+  if (di > 0 && dj > 0) return { arrow: "↘", isRight: true };
+  if (di > 0 && dj < 0) return { arrow: "↙", isRight: false };
+  if (di < 0 && dj < 0) return { arrow: "↖", isRight: false };
+  return { arrow: "→", isRight: true };
 }
 
-export function stringForSingleMoveEvents(events: MonsWeb.EventModel[]): string {
-  let out = "";
+function monIconForKind(kind: MonsWeb.MonKind | undefined, color?: MonsWeb.Color): { icon: string; alt: string } | null {
+  if (kind === undefined || kind === null) return null;
+  const isBlack = color === MonsWeb.Color.Black;
+  switch (kind) {
+    case MonsWeb.MonKind.Demon:
+      return { icon: isBlack ? "demonB" : "demon", alt: isBlack ? "black demon" : "demon" };
+    case MonsWeb.MonKind.Drainer:
+      return { icon: isBlack ? "drainerB" : "drainer", alt: isBlack ? "black drainer" : "drainer" };
+    case MonsWeb.MonKind.Angel:
+      return { icon: isBlack ? "angelB" : "angel", alt: isBlack ? "black angel" : "angel" };
+    case MonsWeb.MonKind.Spirit:
+      return { icon: isBlack ? "spiritB" : "spirit", alt: isBlack ? "black spirit" : "spirit" };
+    case MonsWeb.MonKind.Mystic:
+      return { icon: isBlack ? "mysticB" : "mystic", alt: isBlack ? "black mystic" : "mystic" };
+    default:
+      return null;
+  }
+}
 
-  let actor = "";
-  let action = "";
-  let arrow = "";
-  let target = "";
+function monIconForEvent(ev: MonsWeb.EventModel, fallbackKind?: MonsWeb.MonKind): { icon: string; alt: string } | null {
+  const mon = ev.item?.mon ?? ev.mon;
+  if (mon) {
+    return monIconForKind(mon.kind, mon.color);
+  }
+  if (fallbackKind !== undefined) {
+    return monIconForKind(fallbackKind, ev.color);
+  }
+  return null;
+}
 
-  let moveDirection: boolean | null = null;
+function manaIconFor(mana?: MonsWeb.ManaModel | null): { icon: string; alt: string } {
+  if (!mana) {
+    return { icon: "mana", alt: "mana" };
+  }
+  if (mana.kind === MonsWeb.ManaKind.Supermana) {
+    return { icon: "supermana", alt: "supermana" };
+  }
+  const isBlack = mana.color === MonsWeb.Color.Black;
+  return { icon: isBlack ? "manaB" : "mana", alt: isBlack ? "black mana" : "mana" };
+}
+
+function manaOverlayIconFor(mana?: MonsWeb.ManaModel | null): { icon: string; alt: string; variant: "mana" | "supermana" } {
+  if (!mana) {
+    return { icon: "mana", alt: "mana", variant: "mana" };
+  }
+  if (mana.kind === MonsWeb.ManaKind.Supermana) {
+    return { icon: "supermanaSimple", alt: "supermana", variant: "supermana" };
+  }
+  const isBlack = mana.color === MonsWeb.Color.Black;
+  return { icon: isBlack ? "manaB" : "mana", alt: isBlack ? "black mana" : "mana", variant: "mana" };
+}
+
+function consumableIconFor(consumable?: MonsWeb.Consumable | null): { icon: string; alt: string } {
+  switch (consumable) {
+    case MonsWeb.Consumable.Potion:
+      return { icon: "potion", alt: "potion" };
+    case MonsWeb.Consumable.Bomb:
+      return { icon: "bomb", alt: "bomb" };
+    case MonsWeb.Consumable.BombOrPotion:
+      return { icon: "bombOrPotion", alt: "bomb or potion" };
+    default:
+      return { icon: "bombOrPotion", alt: "consumable" };
+  }
+}
+
+export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHistoryEntry {
+  const segments: MoveHistorySegment[] = [];
+
   for (const ev of events) {
-    let s = "";
+    const tokens: MoveHistoryToken[] = [];
     switch (ev.kind) {
-      case MonsWeb.EventModelKind.MonMove:
-        let tmpMonRender = ""; // TODO: can be mon carrying smth
-        switch (ev.item?.mon?.kind) {
-          case MonsWeb.MonKind.Demon:
-            tmpMonRender = "😈";
-            break;
-          case MonsWeb.MonKind.Drainer:
-            tmpMonRender = "🐻";
-            break;
-          case MonsWeb.MonKind.Angel:
-            tmpMonRender = "😇";
-            break;
-          case MonsWeb.MonKind.Spirit:
-            tmpMonRender = "👻";
-            break;
-          case MonsWeb.MonKind.Mystic:
-            tmpMonRender = "🧙";
-            break;
+      case MonsWeb.EventModelKind.MonMove: {
+        const monToken = monIconForEvent(ev);
+        if (ev.item?.kind === MonsWeb.ItemModelKind.MonWithMana) {
+          const manaToken = manaOverlayIconFor(ev.item?.mana ?? ev.mana);
+          if (monToken) {
+            tokens.push({
+              type: "composite",
+              baseIcon: monToken.icon,
+              overlayIcon: manaToken.icon,
+              alt: `${monToken.alt} carrying ${manaToken.alt}`,
+              overlayAlt: manaToken.alt,
+              variant: manaToken.variant,
+            });
+          } else {
+            tokens.push({ type: "icon", icon: manaToken.icon, alt: manaToken.alt });
+          }
+        } else {
+          if (monToken) tokens.push({ type: "icon", ...monToken });
+          if (ev.item?.kind === MonsWeb.ItemModelKind.MonWithConsumable) {
+            const consumableToken = consumableIconFor(ev.item?.consumable);
+            tokens.push({ type: "icon", ...consumableToken });
+          }
         }
 
-        const monMoveArrow = arrowForEvent(ev);
-        s = tmpMonRender + monMoveArrow.arrow;
-        moveDirection = monMoveArrow.isRight;
+        tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
         break;
-      case MonsWeb.EventModelKind.ManaMove:
-        const manaMoveArrow = arrowForEvent(ev);
-        s = "💧" + manaMoveArrow.arrow;
-        moveDirection = manaMoveArrow.isRight;
+      }
+      case MonsWeb.EventModelKind.ManaMove: {
+        const manaToken = manaIconFor(ev.mana ?? ev.item?.mana);
+        tokens.push({ type: "icon", ...manaToken });
+        tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
         break;
-      case MonsWeb.EventModelKind.MysticAction:
-        const mysticActionArrow = arrowForEvent(ev);
-        s = "🧙⚡️" + mysticActionArrow.arrow;
-        moveDirection = mysticActionArrow.isRight;
+      }
+      case MonsWeb.EventModelKind.MysticAction: {
+        const monToken = monIconForEvent(ev, MonsWeb.MonKind.Mystic);
+        if (monToken) tokens.push({ type: "icon", ...monToken });
+        tokens.push({ type: "text", text: "⚡️" });
+        tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
         break;
-      case MonsWeb.EventModelKind.DemonAction:
-        const demonActionArrow = arrowForEvent(ev);
-        moveDirection = demonActionArrow.isRight;
-        s = "😈🔥" + demonActionArrow.arrow;
+      }
+      case MonsWeb.EventModelKind.DemonAction: {
+        const monToken = monIconForEvent(ev, MonsWeb.MonKind.Demon);
+        if (monToken) tokens.push({ type: "icon", ...monToken });
+        tokens.push({ type: "text", text: "🔥" });
+        tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
         break;
-      case MonsWeb.EventModelKind.SpiritTargetMove:
-        const spiritMoveArrow = arrowForEvent(ev);
-        s = "👻" + spiritMoveArrow.arrow;
-        moveDirection = spiritMoveArrow.isRight;
+      }
+      case MonsWeb.EventModelKind.SpiritTargetMove: {
+        const monToken = monIconForEvent(ev, MonsWeb.MonKind.Spirit);
+        if (monToken) tokens.push({ type: "icon", ...monToken });
+        tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
         break;
-      case MonsWeb.EventModelKind.BombAttack:
-        const bombAttackArrow = arrowForEvent(ev);
-        s = "💣" + bombAttackArrow.arrow;
-        moveDirection = bombAttackArrow.isRight;
+      }
+      case MonsWeb.EventModelKind.BombAttack: {
+        tokens.push({ type: "icon", ...consumableIconFor(MonsWeb.Consumable.Bomb) });
+        tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
         break;
-      case MonsWeb.EventModelKind.ManaScored:
-        s = ev.mana && ev.mana.kind === MonsWeb.ManaKind.Supermana ? "👑✅" : "💧✅";
+      }
+      case MonsWeb.EventModelKind.ManaScored: {
+        const manaToken = manaIconFor(ev.mana ?? ev.item?.mana);
+        tokens.push({ type: "icon", ...manaToken });
+        tokens.push({ type: "text", text: "✅" });
         break;
+      }
       case MonsWeb.EventModelKind.PickupBomb:
-        s = "💣";
+        tokens.push({ type: "icon", ...consumableIconFor(MonsWeb.Consumable.Bomb) });
         break;
       case MonsWeb.EventModelKind.PickupPotion:
-        s = "🧪";
+        tokens.push({ type: "icon", ...consumableIconFor(MonsWeb.Consumable.Potion) });
         break;
-      case MonsWeb.EventModelKind.PickupMana:
-        s = "💧";
+      case MonsWeb.EventModelKind.PickupMana: {
+        const manaToken = manaIconFor(ev.mana ?? ev.item?.mana);
+        tokens.push({ type: "icon", ...manaToken });
         break;
+      }
       case MonsWeb.EventModelKind.BombExplosion:
-        s = "💥";
+        tokens.push({ type: "text", text: "💥" });
         break;
       case MonsWeb.EventModelKind.GameOver:
-        s = "🏆";
+        tokens.push({ type: "text", text: "🏅" });
         break;
       case MonsWeb.EventModelKind.UsePotion:
-        s = "🧪🫧";
+        tokens.push({ type: "icon", ...consumableIconFor(MonsWeb.Consumable.Potion) });
+        tokens.push({ type: "text", text: "🫧" });
         break;
       case MonsWeb.EventModelKind.NextTurn:
-        s = "⏭️";
+        tokens.push({ type: "text", text: "⏭️" });
         break;
       case MonsWeb.EventModelKind.MonFainted:
       case MonsWeb.EventModelKind.ManaDropped:
@@ -113,25 +198,15 @@ export function stringForSingleMoveEvents(events: MonsWeb.EventModel[]): string 
       case MonsWeb.EventModelKind.Takeback:
       case MonsWeb.EventModelKind.SupermanaBackToBase:
       case MonsWeb.EventModelKind.DemonAdditionalStep:
-        s = "";
         break;
       default:
-        s = "";
+        break;
     }
-    if (s === "") continue;
-    if (out !== "") out += " ";
-    out += s;
-  }
 
-  if (moveDirection !== null) {
-    if (moveDirection) {
-      // TODO: actor before arrow
-    } else {
-      // TODO: actor after arrow
+    if (tokens.length > 0) {
+      segments.push(tokens);
     }
   }
 
-  // TODO: build output with actor / arrow / action / target
-
-  return out === "" ? "—" : out;
+  return { segments };
 }
