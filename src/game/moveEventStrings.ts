@@ -143,14 +143,14 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
       case MonsWeb.EventModelKind.MysticAction: {
         const monToken = monIconForEvent(ev, MonsWeb.MonKind.Mystic);
         if (monToken) tokens.push({ type: "icon", ...monToken });
-        tokens.push({ type: "text", text: "⚡️" });
+        tokens.push({ type: "emoji", emoji: "statusAction", alt: "action" });
         tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
         break;
       }
       case MonsWeb.EventModelKind.DemonAction: {
         const monToken = monIconForEvent(ev, MonsWeb.MonKind.Demon);
         if (monToken) tokens.push({ type: "icon", ...monToken });
-        tokens.push({ type: "text", text: "🔥" });
+        tokens.push({ type: "emoji", emoji: "statusAction", alt: "action" });
         tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
         break;
       }
