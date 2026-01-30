@@ -143,11 +143,10 @@ const EventSegment = styled.span`
   flex-shrink: 0;
 `;
 
-const EventIcon = styled.img<{ $pixelated?: boolean }>`
+const EventIcon = styled.img`
   width: 21px;
   height: 21px;
   flex-shrink: 0;
-  image-rendering: ${(props) => (props.$pixelated ? "pixelated" : "auto")};
 `;
 
 const CompositeIcon = styled.span`
@@ -158,20 +157,18 @@ const CompositeIcon = styled.span`
   overflow: visible;
 `;
 
-const CompositeBase = styled.img<{ $pixelated?: boolean }>`
+const CompositeBase = styled.img`
   width: 100%;
   height: 100%;
   display: block;
-  image-rendering: ${(props) => (props.$pixelated ? "pixelated" : "auto")};
 `;
 
-const CompositeOverlay = styled.img<{ $pixelated?: boolean }>`
+const CompositeOverlay = styled.img`
   position: absolute;
   width: var(--overlay-size, 80%);
   height: var(--overlay-size, 80%);
   left: var(--overlay-left, 30%);
   top: var(--overlay-top, 20%);
-  image-rendering: ${(props) => (props.$pixelated ? "pixelated" : "auto")};
 `;
 
 const EventText = styled.span`
@@ -302,7 +299,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   const renderToken = React.useCallback(
     (token: MoveHistoryToken, tokenIndex: number) => {
       if (token.type === "icon") {
-        return <EventIcon key={`icon-${tokenIndex}`} src={getIconImage(token.icon)} alt={token.alt} $pixelated />;
+        return <EventIcon key={`icon-${tokenIndex}`} src={getIconImage(token.icon)} alt={token.alt} />;
       }
       if (token.type === "composite") {
         const overlayStyle =
@@ -319,8 +316,8 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
               } as React.CSSProperties);
         return (
           <CompositeIcon key={`composite-${tokenIndex}`} style={overlayStyle} aria-label={token.alt}>
-            <CompositeBase src={getIconImage(token.baseIcon)} alt={token.alt} $pixelated />
-            <CompositeOverlay src={getIconImage(token.overlayIcon)} alt={token.overlayAlt} $pixelated />
+            <CompositeBase src={getIconImage(token.baseIcon)} alt={token.alt} />
+            <CompositeOverlay src={getIconImage(token.overlayIcon)} alt={token.overlayAlt} />
           </CompositeIcon>
         );
       }

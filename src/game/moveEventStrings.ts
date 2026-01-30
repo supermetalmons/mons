@@ -183,7 +183,7 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
         tokens.push({ type: "text", text: "💥" });
         break;
       case MonsWeb.EventModelKind.GameOver:
-        tokens.push({ type: "text", text: "🏆" });
+        tokens.push({ type: "text", text: "🏅" });
         break;
       case MonsWeb.EventModelKind.UsePotion:
         tokens.push({ type: "icon", ...consumableIconFor(MonsWeb.Consumable.Potion) });
