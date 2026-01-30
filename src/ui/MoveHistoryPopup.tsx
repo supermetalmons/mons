@@ -213,6 +213,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   const { emojis } = useEmojis();
   const [version, setVersion] = React.useState(0);
   const items = React.useMemo<MoveHistoryEntry[]>(() => {
+    void version;
     try {
       return getVerboseTrackingEntities();
     } catch {
