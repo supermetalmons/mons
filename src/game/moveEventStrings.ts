@@ -4,6 +4,7 @@ import * as Board from "./board";
 export type MoveHistoryToken =
   | { type: "icon"; icon: string; alt: string }
   | { type: "text"; text: string }
+  | { type: "emoji"; emoji: string; alt: string }
   | { type: "composite"; baseIcon: string; overlayIcon: string; alt: string; overlayAlt: string; variant: "mana" | "supermana" };
 
 export type MoveHistorySegment = MoveHistoryToken[];
@@ -185,11 +186,10 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
         tokens.push({ type: "text", text: "💥" });
         break;
       case MonsWeb.EventModelKind.GameOver:
-        tokens.push({ type: "text", text: "🏅" });
+        // TODO: add game ended indicator depending on the reason game ended
         break;
       case MonsWeb.EventModelKind.UsePotion:
-        tokens.push({ type: "icon", ...consumableIconFor(MonsWeb.Consumable.Potion) });
-        tokens.push({ type: "text", text: "🫧" });
+        tokens.push({ type: "emoji", emoji: "statusPotion", alt: "potion status" });
         break;
       case MonsWeb.EventModelKind.NextTurn:
         hasTurnSeparator = true;
