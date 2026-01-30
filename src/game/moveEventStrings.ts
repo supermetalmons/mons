@@ -10,6 +10,7 @@ export type MoveHistorySegment = MoveHistoryToken[];
 
 export type MoveHistoryEntry = {
   segments: MoveHistorySegment[];
+  hasTurnSeparator?: boolean;
 };
 
 export function arrowForEvent(e: MonsWeb.EventModel): { arrow: string; isRight: boolean } {
@@ -100,6 +101,7 @@ function consumableIconFor(consumable?: MonsWeb.Consumable | null): { icon: stri
 
 export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHistoryEntry {
   const segments: MoveHistorySegment[] = [];
+  let hasTurnSeparator = false;
 
   for (const ev of events) {
     const tokens: MoveHistoryToken[] = [];
@@ -190,7 +192,7 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
         tokens.push({ type: "text", text: "🫧" });
         break;
       case MonsWeb.EventModelKind.NextTurn:
-        tokens.push({ type: "text", text: "⏭️" });
+        hasTurnSeparator = true;
         break;
       case MonsWeb.EventModelKind.MonFainted:
       case MonsWeb.EventModelKind.ManaDropped:
@@ -208,5 +210,5 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
     }
   }
 
-  return { segments };
+  return { segments, hasTurnSeparator };
 }

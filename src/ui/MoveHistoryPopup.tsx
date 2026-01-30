@@ -82,6 +82,7 @@ const WheelItem = styled.div<{ $isSelected: boolean; $distance: number; $isPlace
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  position: relative;
   min-width: 0;
   scroll-snap-align: ${(props) => (props.$isPlaceholder ? "none" : "center")};
   font-size: 12px;
@@ -173,6 +174,21 @@ const CompositeOverlay = styled.img`
 
 const EventText = styled.span`
   line-height: 1;
+`;
+
+const TurnSeparator = styled.div`
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 0;
+  height: 1px;
+  background-color: rgba(120, 120, 128, 0.18);
+  pointer-events: none;
+  z-index: 0;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: rgba(120, 120, 128, 0.32);
+  }
 `;
 
 const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
@@ -369,6 +385,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
                   {entry.segments.length > 0 ? entry.segments.map(renderSegment) : <EventText>{PLACEHOLDER_LABEL}</EventText>}
                 </EventRow>
               </ItemContent>
+              {entry.hasTurnSeparator && index < items.length - 1 && <TurnSeparator aria-hidden="true" />}
             </WheelItem>
           ))}
           {PADDING_INDICES.map((offset) => {
