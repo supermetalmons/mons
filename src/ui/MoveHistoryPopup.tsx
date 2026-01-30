@@ -159,6 +159,14 @@ const EmojiIcon = styled.img`
   margin-right: -2px;
 `;
 
+const SquareIcon = styled.svg`
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  margin-left: 1px;
+  margin-right: 1px;
+`;
+
 const CompositeIcon = styled.span`
   position: relative;
   width: 21px;
@@ -332,6 +340,13 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
           ? `data:image/png;base64,${emojis[token.emoji]}`
           : "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
         return <EmojiIcon key={`emoji-${tokenIndex}`} src={src} alt={token.alt} />;
+      }
+      if (token.type === "square") {
+        return (
+          <SquareIcon key={`square-${tokenIndex}`} viewBox="0 0 12 12" aria-label={token.alt}>
+            <rect x="0" y="0" width="12" height="12" fill={token.color} rx="1" ry="1" />
+          </SquareIcon>
+        );
       }
       if (token.type === "composite") {
         const overlayStyle =

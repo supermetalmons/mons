@@ -1,10 +1,12 @@
 import * as MonsWeb from "mons-web";
 import * as Board from "./board";
+import { colors } from "../content/boardStyles";
 
 export type MoveHistoryToken =
   | { type: "icon"; icon: string; alt: string }
   | { type: "text"; text: string }
   | { type: "emoji"; emoji: string; alt: string }
+  | { type: "square"; color: string; alt: string }
   | { type: "composite"; baseIcon: string; overlayIcon: string; alt: string; overlayAlt: string; variant: "mana" | "supermana" };
 
 export type MoveHistorySegment = MoveHistoryToken[];
@@ -166,9 +168,7 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
         break;
       }
       case MonsWeb.EventModelKind.ManaScored: {
-        const manaToken = manaIconFor(ev.mana ?? ev.item?.mana);
-        tokens.push({ type: "icon", ...manaToken });
-        tokens.push({ type: "text", text: "✅" });
+        tokens.push({ type: "square", color: colors.manaPool, alt: "score" });
         break;
       }
       case MonsWeb.EventModelKind.PickupBomb:
@@ -183,7 +183,7 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
         break;
       }
       case MonsWeb.EventModelKind.BombExplosion:
-        tokens.push({ type: "text", text: "💥" });
+        // TODO: explosion indicator when there is a swagpacked one
         break;
       case MonsWeb.EventModelKind.GameOver:
         // TODO: add game ended indicator depending on the reason game ended
