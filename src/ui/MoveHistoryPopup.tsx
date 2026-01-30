@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { getVerboseTrackingEntities, didSelectVerboseTrackingEntity, didDismissMoveHistoryPopup } from "../game/gameController";
 import { useGameAssets } from "../hooks/useGameAssets";
+import { useEmojis } from "../hooks/useEmojis";
 import type { MoveHistoryEntry, MoveHistorySegment, MoveHistoryToken } from "../game/moveEventStrings";
 
 let moveHistoryReloadCallback: (() => void) | null = null;
@@ -150,6 +151,22 @@ const EventIcon = styled.img`
   flex-shrink: 0;
 `;
 
+const EmojiIcon = styled.img`
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+  margin-left: -2px;
+  margin-right: -2px;
+`;
+
+const SquareIcon = styled.svg`
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  margin-left: 1px;
+  margin-right: 1px;
+`;
+
 const CompositeIcon = styled.span`
   position: relative;
   width: 21px;
@@ -193,6 +210,7 @@ const TurnSeparator = styled.div`
 
 const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   const { assets } = useGameAssets();
+  const { emojis } = useEmojis();
   const [version, setVersion] = React.useState(0);
   const items = React.useMemo<MoveHistoryEntry[]>(() => {
     try {
@@ -317,6 +335,19 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       if (token.type === "icon") {
         return <EventIcon key={`icon-${tokenIndex}`} src={getIconImage(token.icon)} alt={token.alt} />;
       }
+      if (token.type === "emoji") {
+        const src = emojis?.[token.emoji]
+          ? `data:image/png;base64,${emojis[token.emoji]}`
+          : "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
+        return <EmojiIcon key={`emoji-${tokenIndex}`} src={src} alt={token.alt} />;
+      }
+      if (token.type === "square") {
+        return (
+          <SquareIcon key={`square-${tokenIndex}`} viewBox="0 0 12 12" aria-label={token.alt}>
+            <rect x="0" y="0" width="12" height="12" fill={token.color} rx="1" ry="1" />
+          </SquareIcon>
+        );
+      }
       if (token.type === "composite") {
         const overlayStyle =
           token.variant === "supermana"
@@ -343,7 +374,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
         </EventText>
       );
     },
-    [getIconImage]
+    [getIconImage, emojis]
   );
 
   const renderSegment = React.useCallback(
