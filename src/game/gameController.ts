@@ -1,6 +1,6 @@
 import initMonsWeb, * as MonsWeb from "mons-web";
 import * as Board from "./board";
-import { stringForSingleMoveEvents } from "./moveEventStrings";
+import { tokensForSingleMoveEvents, MoveHistoryEntry } from "./moveEventStrings";
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
@@ -100,14 +100,14 @@ export function didSyncTutorialProgress() {
   // TODO: update banner numbers if needed
 }
 
-export function getVerboseTrackingEntities(): string[] {
+export function getVerboseTrackingEntities(): MoveHistoryEntry[] {
   const entities = game.verbose_tracking_entities();
   if (entities.length === 0) {
-    return ["—"];
+    return [{ segments: [] }];
   }
   return entities.map((e) => {
     const events = e.events();
-    return stringForSingleMoveEvents(events);
+    return tokensForSingleMoveEvents(events);
   });
 }
 

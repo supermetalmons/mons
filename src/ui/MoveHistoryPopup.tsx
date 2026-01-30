@@ -1,6 +1,8 @@
 import React from "react";
 import styled from "styled-components";
 import { getVerboseTrackingEntities, didSelectVerboseTrackingEntity, didDismissMoveHistoryPopup } from "../game/gameController";
+import { useGameAssets } from "../hooks/useGameAssets";
+import type { MoveHistoryEntry, MoveHistorySegment, MoveHistoryToken } from "../game/moveEventStrings";
 
 let moveHistoryReloadCallback: (() => void) | null = null;
 export function triggerMoveHistoryPopupReload() {
@@ -80,6 +82,7 @@ const WheelItem = styled.div<{ $isSelected: boolean; $distance: number; $isPlace
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  min-width: 0;
   scroll-snap-align: ${(props) => (props.$isPlaceholder ? "none" : "center")};
   font-size: 12px;
   padding: 0 10px;
@@ -110,13 +113,81 @@ const WheelItem = styled.div<{ $isSelected: boolean; $distance: number; $isPlace
   }
 `;
 
-const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
-  let items: string[] = [];
-  try {
-    items = getVerboseTrackingEntities();
-  } catch {}
+const ItemContent = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  width: 100%;
+`;
 
+const IndexLabel = styled.span`
+  flex-shrink: 0;
+  min-width: 20px;
+  text-align: right;
+`;
+
+const EventRow = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+  overflow: visible;
+  white-space: nowrap;
+`;
+
+const EventSegment = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  flex-shrink: 0;
+`;
+
+const EventIcon = styled.img<{ $pixelated?: boolean }>`
+  width: 21px;
+  height: 21px;
+  flex-shrink: 0;
+  image-rendering: ${(props) => (props.$pixelated ? "pixelated" : "auto")};
+`;
+
+const CompositeIcon = styled.span`
+  position: relative;
+  width: 21px;
+  height: 21px;
+  flex-shrink: 0;
+  overflow: visible;
+`;
+
+const CompositeBase = styled.img<{ $pixelated?: boolean }>`
+  width: 100%;
+  height: 100%;
+  display: block;
+  image-rendering: ${(props) => (props.$pixelated ? "pixelated" : "auto")};
+`;
+
+const CompositeOverlay = styled.img<{ $pixelated?: boolean }>`
+  position: absolute;
+  width: var(--overlay-size, 80%);
+  height: var(--overlay-size, 80%);
+  left: var(--overlay-left, 30%);
+  top: var(--overlay-top, 20%);
+  image-rendering: ${(props) => (props.$pixelated ? "pixelated" : "auto")};
+`;
+
+const EventText = styled.span`
+  line-height: 1;
+`;
+
+const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
+  const { assets } = useGameAssets();
   const [version, setVersion] = React.useState(0);
+  const items = React.useMemo<MoveHistoryEntry[]>(() => {
+    try {
+      return getVerboseTrackingEntities();
+    } catch {
+      return [{ segments: [] }];
+    }
+  }, [version]);
   const [selectedIndex, setSelectedIndex] = React.useState(items.length - 1);
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const isDraggingRef = React.useRef(false);
@@ -218,6 +289,57 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   // Calculate distance from selected for styling
   const getDistance = (index: number) => Math.abs(index - selectedIndex);
 
+  const getIconImage = React.useCallback(
+    (iconName: string) => {
+      if (!assets || !assets[iconName]) {
+        return "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
+      }
+      return `data:image/png;base64,${assets[iconName]}`;
+    },
+    [assets]
+  );
+
+  const renderToken = React.useCallback(
+    (token: MoveHistoryToken, tokenIndex: number) => {
+      if (token.type === "icon") {
+        return <EventIcon key={`icon-${tokenIndex}`} src={getIconImage(token.icon)} alt={token.alt} $pixelated />;
+      }
+      if (token.type === "composite") {
+        const overlayStyle =
+          token.variant === "supermana"
+            ? ({
+                "--overlay-left": "14%",
+                "--overlay-top": "-11%",
+                "--overlay-size": "72%",
+              } as React.CSSProperties)
+            : ({
+                "--overlay-left": "35%",
+                "--overlay-top": "27%",
+                "--overlay-size": "93%",
+              } as React.CSSProperties);
+        return (
+          <CompositeIcon key={`composite-${tokenIndex}`} style={overlayStyle} aria-label={token.alt}>
+            <CompositeBase src={getIconImage(token.baseIcon)} alt={token.alt} $pixelated />
+            <CompositeOverlay src={getIconImage(token.overlayIcon)} alt={token.overlayAlt} $pixelated />
+          </CompositeIcon>
+        );
+      }
+      return (
+        <EventText key={`text-${tokenIndex}`}>
+          {token.text}
+        </EventText>
+      );
+    },
+    [getIconImage]
+  );
+
+  const renderSegment = React.useCallback(
+    (segment: MoveHistorySegment, segmentIndex: number) => (
+      <EventSegment key={`segment-${segmentIndex}`}>{segment.map(renderToken)}</EventSegment>
+    ),
+    [renderToken]
+  );
+
   return (
     <MoveHistoryPopupContainer ref={ref}>
       <WheelContainer>
@@ -237,14 +359,19 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
               </WheelItem>
             );
           })}
-          {items.map((text, index) => (
+          {items.map((entry, index) => (
             <WheelItem
               key={index}
               $isSelected={index === selectedIndex}
               $distance={getDistance(index)}
               onClick={() => handleItemClick(index)}
             >
-              {index}. {text}
+              <ItemContent>
+                <IndexLabel>{index}.</IndexLabel>
+                <EventRow>
+                  {entry.segments.length > 0 ? entry.segments.map(renderSegment) : <EventText>{PLACEHOLDER_LABEL}</EventText>}
+                </EventRow>
+              </ItemContent>
             </WheelItem>
           ))}
           {PADDING_INDICES.map((offset) => {
