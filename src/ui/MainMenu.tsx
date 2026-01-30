@@ -299,7 +299,7 @@ const IconLinkButton = styled.a`
   font-weight: 600;
   justify-content: center;
   height: 26px;
-  padding: 0 3px;
+  padding: 0 5px;
   border: none;
   border-radius: 0;
   background-color: transparent;
@@ -308,6 +308,8 @@ const IconLinkButton = styled.a`
   cursor: pointer;
   white-space: nowrap;
   flex-shrink: 0;
+  line-height: 1;
+  overflow: visible;
   -webkit-touch-callout: none;
   touch-action: pan-x;
   user-select: none;
@@ -334,6 +336,8 @@ const IconLinkButton = styled.a`
   svg {
     width: 0.8rem;
     height: 0.8rem;
+    display: block;
+    overflow: visible;
   }
 `;
 
