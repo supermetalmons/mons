@@ -143,23 +143,27 @@ exports.updateRatings = onCall(async (request) => {
   let loserNewRating = 0;
 
   if (canUpdateRatings) {
+    const hasMoves = (data) => typeof data.flatMovesString === "string" && data.flatMovesString.length > 0;
+    const bothPlayersMoved = hasMoves(matchData) && hasMoves(opponentMatchData);
     const newPlayerManaTotal = (playerProfile.totalManaPoints ?? 0) + playerManaPoints;
     const newOpponentManaTotal = (opponentProfile.totalManaPoints ?? 0) + opponentManaPoints;
     const newNonce1 = playerProfile.nonce + 1;
     const newNonce2 = opponentProfile.nonce + 1;
+    const updatedPlayerNonce = bothPlayersMoved ? newNonce1 : playerProfile.nonce;
+    const updatedOpponentNonce = bothPlayersMoved ? newNonce2 : opponentProfile.nonce;
 
     if (result === "win") {
       const [newWinnerRating, newLoserRating] = updateRating(playerProfile.rating, newNonce1, opponentProfile.rating, newNonce2);
       winnerNewRating = newWinnerRating;
       loserNewRating = newLoserRating;
-      updateUserRatingNonceAndManaPoints(playerProfile.profileId, newWinnerRating, newNonce1, true, newPlayerManaTotal);
-      updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newLoserRating, newNonce2, false, newOpponentManaTotal);
+      updateUserRatingNonceAndManaPoints(playerProfile.profileId, newWinnerRating, updatedPlayerNonce, true, newPlayerManaTotal);
+      updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newLoserRating, updatedOpponentNonce, false, newOpponentManaTotal);
     } else {
       const [newWinnerRating, newLoserRating] = updateRating(opponentProfile.rating, newNonce2, playerProfile.rating, newNonce1);
       winnerNewRating = newWinnerRating;
       loserNewRating = newLoserRating;
-      updateUserRatingNonceAndManaPoints(playerProfile.profileId, newLoserRating, newNonce1, false, newPlayerManaTotal);
-      updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newWinnerRating, newNonce2, true, newOpponentManaTotal);
+      updateUserRatingNonceAndManaPoints(playerProfile.profileId, newLoserRating, updatedPlayerNonce, false, newPlayerManaTotal);
+      updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newWinnerRating, updatedOpponentNonce, true, newOpponentManaTotal);
     }
   }
 
