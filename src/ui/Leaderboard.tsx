@@ -545,6 +545,13 @@ const createLeaderboardEntry = (entry: PlayerProfile): LeaderboardEntry => ({
 
 const profilesToEntries = (profiles: PlayerProfile[]): LeaderboardEntry[] => profiles.map(createLeaderboardEntry);
 
+const FEB_LEADERBOARD_EXCLUDED_USERNAMES = new Set(["obi", "ivan", "monsol", "meinong"]);
+
+const shouldExcludeFromFebLeaderboard = (entry: LeaderboardEntry): boolean => {
+  const normalized = entry.username?.trim().toLowerCase();
+  return normalized ? FEB_LEADERBOARD_EXCLUDED_USERNAMES.has(normalized) : false;
+};
+
 const leaderboardCache = new Map<LeaderboardType, LeaderboardEntry[]>();
 
 type RowPosition = "visible" | "above" | "below";
@@ -711,8 +718,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
         const currentEntry = getCurrentPlayerEntry();
         const mergedLeaderboardData =
           currentEntry && !leaderboardData.some((entry) => entry.id === currentEntry.id) ? [...leaderboardData, currentEntry] : leaderboardData;
-        leaderboardCache.set(leaderboardType, mergedLeaderboardData);
-        setData(mergedLeaderboardData);
+        const displayLeaderboardData =
+          leaderboardType === "gp" ? mergedLeaderboardData.filter((entry) => !shouldExcludeFromFebLeaderboard(entry)) : mergedLeaderboardData;
+        leaderboardCache.set(leaderboardType, displayLeaderboardData);
+        setData(displayLeaderboardData);
 
         if (leaderboardType === "total" || MINING_MATERIAL_NAMES.includes(leaderboardType as MiningMaterialName)) {
           const allEntries = profilesToEntries(profiles);
@@ -740,7 +749,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
           }
         }
 
-        mergedLeaderboardData.forEach(async (entry, index) => {
+        displayLeaderboardData.forEach(async (entry, index) => {
           if (entry.eth && !entry.username) {
             const ensName = await resolveENS(entry.eth);
             if (ensName) {
