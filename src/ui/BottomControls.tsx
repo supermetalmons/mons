@@ -14,7 +14,7 @@ import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, 
 import { fetchNftsForStoredAddresses } from "../services/nftService";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { showVideoReaction } from "./BoardComponent";
-import BoardStylePickerComponent from "./BoardStylePicker";
+import BoardStylePickerComponent, { preloadPangchiuBoardPreview } from "./BoardStylePicker";
 import { Sound } from "../utils/gameModels";
 import MoveHistoryPopup from "./MoveHistoryPopup";
 import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMiningService";
@@ -257,6 +257,40 @@ const BottomControls: React.FC = () => {
     document.addEventListener(defaultEarlyInputEventName, handleClickOutside);
     return () => {
       document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
+    };
+  }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    const win: any = typeof window !== "undefined" ? (window as any) : null;
+    const schedule = (fn: () => void) => {
+      if (!win) {
+        const t = setTimeout(() => {
+          if (!cancelled) fn();
+        }, 200);
+        return () => clearTimeout(t);
+      }
+      if (typeof win.requestIdleCallback === "function") {
+        const id = win.requestIdleCallback(() => {
+          if (!cancelled) fn();
+        });
+        return () => {
+          if (typeof win.cancelIdleCallback === "function") win.cancelIdleCallback(id);
+        };
+      }
+      const t = setTimeout(() => {
+        if (!cancelled) fn();
+      }, 200);
+      return () => clearTimeout(t);
+    };
+
+    const cleanup = schedule(() => {
+      preloadPangchiuBoardPreview();
+    });
+
+    return () => {
+      cancelled = true;
+      if (cleanup) cleanup();
     };
   }, []);
 
