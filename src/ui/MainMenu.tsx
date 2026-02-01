@@ -14,8 +14,11 @@ import { startPlayingMusic, stopPlayingMusic, playNextTrack } from "../content/m
 import { InfoPopover } from "./InfoPopover";
 import { MiningMaterialName } from "../connection/connectionModels";
 
-const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust", "total"];
+const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust", "total", "gp"];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
+
+const isMaterialLeaderboardType = (value: LeaderboardType): value is MiningMaterialName =>
+  value !== "rating" && value !== "gp" && value !== "total";
 
 const RockButtonContainer = styled.div`
   position: absolute;
@@ -190,7 +193,7 @@ const MenuTitle = styled.div`
 
 const LeaderboardTypeSelector = styled.div`
   display: flex;
-  gap: 6px;
+  gap: 5px;
   padding: 4px 0 8px 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -202,13 +205,13 @@ const LeaderboardTypeSelector = styled.div`
   }
 `;
 
-const LeaderboardTypeButton = styled.button<{ isSelected: boolean }>`
+const LeaderboardTypeButton = styled.button<{ isSelected: boolean; isText?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   height: 28px;
-  min-width: 28px;
-  padding: 0 8px;
+  min-width: ${(props) => (props.isText ? "29px" : "27px")};
+  padding: ${(props) => (props.isText ? "0 9px" : "0 7px")};
   border-radius: 14px;
   border: none;
   cursor: pointer;
@@ -877,6 +880,8 @@ const MainMenu: React.FC = () => {
     };
   }, [isMusicOpen]);
 
+  const showTotalAsIcons = Object.values(materialUrls).every((url) => url);
+
   return (
     <>
       <RockButtonContainer ref={menuRef}>
@@ -921,33 +926,46 @@ const MainMenu: React.FC = () => {
               <MenuBody>
                 {showExperimental && <MenuOverlay />}
                 <LeaderboardTypeSelector>
-                  {LEADERBOARD_TYPES.map((type) => (
-                    <LeaderboardTypeButton
-                      key={type}
-                      isSelected={leaderboardType === type}
-                      onClick={() => handleLeaderboardTypeChange(type)}
-                      onTouchStart={isMobile ? (e) => { e.stopPropagation(); } : undefined}>
-                      {type === "rating" ? (
-                        "Ratings"
-                      ) : type === "total" ? (
-                        Object.values(materialUrls).every(url => url) ? (
-                          <TotalMaterialsIconContainer>
-                            <img src={materialUrls.ice!} alt="ice" draggable={false} />
-                            <img src={materialUrls.metal!} alt="metal" draggable={false} />
-                            <img src={materialUrls.gum!} alt="gum" draggable={false} />
-                            <img src={materialUrls.slime!} alt="slime" draggable={false} />
-                            <img src={materialUrls.dust!} alt="dust" draggable={false} />
-                          </TotalMaterialsIconContainer>
+                  {LEADERBOARD_TYPES.map((type) => {
+                    const isMaterialType = isMaterialLeaderboardType(type);
+                    const isTextType =
+                      type === "rating" ||
+                      type === "gp" ||
+                      (type === "total" && !showTotalAsIcons) ||
+                      (isMaterialType && !materialUrls[type]);
+                    return (
+                      <LeaderboardTypeButton
+                        key={type}
+                        isSelected={leaderboardType === type}
+                        isText={isTextType}
+                        onClick={() => handleLeaderboardTypeChange(type)}
+                        onTouchStart={isMobile ? (e) => {
+                          e.stopPropagation();
+                        } : undefined}>
+                        {type === "rating" ? (
+                          "Elo"
+                        ) : type === "gp" ? (
+                          "Feb"
+                        ) : type === "total" ? (
+                          showTotalAsIcons ? (
+                            <TotalMaterialsIconContainer>
+                              <img src={materialUrls.ice!} alt="ice" draggable={false} />
+                              <img src={materialUrls.metal!} alt="metal" draggable={false} />
+                              <img src={materialUrls.gum!} alt="gum" draggable={false} />
+                              <img src={materialUrls.slime!} alt="slime" draggable={false} />
+                              <img src={materialUrls.dust!} alt="dust" draggable={false} />
+                            </TotalMaterialsIconContainer>
+                          ) : (
+                            "Total"
+                          )
+                        ) : materialUrls[type] ? (
+                          <LeaderboardTypeMaterialIcon src={materialUrls[type]!} alt={type} draggable={false} />
                         ) : (
-                          "Total"
-                        )
-                      ) : materialUrls[type] ? (
-                        <LeaderboardTypeMaterialIcon src={materialUrls[type]!} alt={type} draggable={false} />
-                      ) : (
-                        type.charAt(0).toUpperCase() + type.slice(1)
-                      )}
-                    </LeaderboardTypeButton>
-                  ))}
+                          type.charAt(0).toUpperCase() + type.slice(1)
+                        )}
+                      </LeaderboardTypeButton>
+                    );
+                  })}
                 </LeaderboardTypeSelector>
                 <Leaderboard show={isMenuOpen} leaderboardType={leaderboardType} />
                 <LinksContainer>

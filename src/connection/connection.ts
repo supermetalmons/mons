@@ -328,6 +328,7 @@ class Connection {
         profileCounter: data.custom?.profileCounter,
         profileMons: data.custom?.profileMons,
         cardStickers: data.custom?.cardStickers,
+        feb2026UniqueOpponentsCount: data.feb2026UniqueOpponentsCount ?? 0,
         completedProblemIds: data.custom?.completedProblems,
         isTutorialCompleted: data.custom?.tutorialCompleted,
         mining,
@@ -359,6 +360,7 @@ class Connection {
       profileCounter: data.custom?.profileCounter,
       profileMons: data.custom?.profileMons,
       cardStickers: data.custom?.cardStickers,
+      feb2026UniqueOpponentsCount: data.feb2026UniqueOpponentsCount ?? 0,
       completedProblemIds: undefined,
       isTutorialCompleted: undefined,
       mining,
@@ -386,7 +388,7 @@ class Connection {
       Date.now() - this.materialLeaderboardCacheTime < Connection.LEADERBOARD_CACHE_TTL;
   }
 
-  public async getLeaderboard(type: "rating" | MiningMaterialName | "total" = "rating"): Promise<PlayerProfile[]> {
+  public async getLeaderboard(type: "rating" | "gp" | MiningMaterialName | "total" = "rating"): Promise<PlayerProfile[]> {
     await this.ensureAuthenticated();
     const usersRef = collection(this.firestore, "users");
 
@@ -426,8 +428,9 @@ class Connection {
       return this.materialLeaderboardCache.get(materialType) ?? [];
     }
 
-    const orderField = "rating";
-    const q = query(usersRef, orderBy(orderField, "desc"), limit(LEADERBOARD_ENTRY_LIMIT));
+    // "gp" leaderboard is repurposed for Feb 2026 unique opponents.
+    const leaderboardOrderField = type === "gp" ? "feb2026UniqueOpponentsCount" : "rating";
+    const q = query(usersRef, orderBy(leaderboardOrderField, "desc"), limit(LEADERBOARD_ENTRY_LIMIT));
     const querySnapshot = await getDocs(q);
 
     const leaderboard: PlayerProfile[] = [];
