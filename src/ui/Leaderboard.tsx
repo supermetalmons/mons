@@ -9,7 +9,7 @@ import { isLocalHost } from "../utils/localDev";
 import { storage } from "../utils/storage";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 
-export type LeaderboardType = "rating" | MiningMaterialName | "total";
+export type LeaderboardType = "rating" | "gp" | MiningMaterialName | "total";
 
 const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;
 const LEADERBOARD_ENTRY_LIMIT = 99;
@@ -473,7 +473,7 @@ interface LeaderboardProps {
 interface LeaderboardEntry {
   eth?: string | null;
   sol?: string | null;
-  games: number;
+  gp: number;
   rating: number;
   win: boolean;
   id: string;
@@ -532,7 +532,7 @@ const createLeaderboardEntry = (entry: PlayerProfile): LeaderboardEntry => ({
   username: entry.username,
   eth: entry.eth,
   sol: entry.sol,
-  games: (entry.nonce ?? -1) + 1,
+  gp: (entry.nonce ?? -1) + 1,
   rating: Math.round(entry.rating ?? 1500),
   win: entry.win ?? true,
   id: entry.id,
@@ -773,6 +773,9 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
     if (leaderboardType === "rating") {
       return <RatingCell win={row.win}>{row.rating}</RatingCell>;
     }
+    if (leaderboardType === "gp") {
+      return <MaterialCell>{row.gp}</MaterialCell>;
+    }
     if (leaderboardType === "total") {
       const total = Object.values(row.materials).reduce((sum, val) => sum + val, 0);
       return <MaterialCell>{total}</MaterialCell>;
@@ -792,6 +795,9 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
   const getFloatingValue = (row: LeaderboardEntry) => {
     if (leaderboardType === "rating") {
       return { value: row.rating, isRating: true, win: row.win };
+    }
+    if (leaderboardType === "gp") {
+      return { value: row.gp, isRating: false, win: false };
     }
     if (leaderboardType === "total") {
       const total = Object.values(row.materials).reduce((sum, val) => sum + val, 0);
