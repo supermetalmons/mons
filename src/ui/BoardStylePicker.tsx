@@ -5,19 +5,65 @@ import { generateBoardPattern } from "../utils/boardPatternGenerator";
 import { isMobile } from "../utils/misc";
 import { toggleExperimentalMode } from "../game/board";
 
+const PANGCHIU_PREVIEW_URL = "https://assets.mons.link/board/bg/thumb/Pangchiu.jpg";
+
 let pangchiuImagePromise: Promise<string | null> | null = null;
+let pangchiuImageUrl: string | null = null;
+let pangchiuImageFailed = false;
+let pangchiuImageDecoded = false;
 
 const getPangchiuImageUrl = () => {
+  if (pangchiuImageUrl) {
+    return Promise.resolve(pangchiuImageUrl);
+  }
+  if (pangchiuImageFailed) {
+    return Promise.resolve(null);
+  }
   if (!pangchiuImagePromise) {
-    pangchiuImagePromise = fetch("https://assets.mons.link/board/bg/thumb/Pangchiu.jpg")
+    pangchiuImagePromise = fetch(PANGCHIU_PREVIEW_URL)
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch image");
         return res.blob();
       })
-      .then((blob) => URL.createObjectURL(blob))
-      .catch(() => null);
+      .then((blob) => {
+        pangchiuImageUrl = URL.createObjectURL(blob);
+        return pangchiuImageUrl;
+      })
+      .catch(() => {
+        pangchiuImageFailed = true;
+        return null;
+      });
   }
-  return pangchiuImagePromise;
+  return pangchiuImagePromise.then((url) => {
+    if (!url) {
+      pangchiuImageFailed = true;
+    }
+    return url;
+  });
+};
+
+export const preloadPangchiuBoardPreview = () => {
+  if (pangchiuImageUrl || pangchiuImageFailed || typeof window === "undefined") {
+    return;
+  }
+  getPangchiuImageUrl()
+    .then((url) => {
+      if (!url || typeof Image === "undefined") return;
+      const img = new Image();
+      img.src = url;
+      if (typeof img.decode === "function") {
+        img.decode()
+          .then(() => {
+            pangchiuImageDecoded = true;
+          })
+          .catch(() => {});
+      } else {
+        img.onload = () => {
+          pangchiuImageDecoded = true;
+        };
+      }
+    })
+    .catch(() => {});
 };
 
 export const BoardStylePicker = styled.div`
@@ -165,19 +211,51 @@ const BoardStylePickerComponent: React.FC = () => {
   const [currentColorSetKey, setCurrentColorSetKey] = useState<ColorSetKey>(getCurrentColorSetKey());
   const [isPangchiuBoardSelected, setIsPangchiuBoardSelected] = useState<boolean>(isPangchiuBoard());
 
-  const [imageLoadFailed, setImageLoadFailed] = useState(false);
-  const [imageLoaded, setImageLoaded] = useState(false);
-  const [pangchiuSrc, setPangchiuSrc] = useState<string | null>(null);
+  const [imageLoadFailed, setImageLoadFailed] = useState(pangchiuImageFailed);
+  const [imageLoaded, setImageLoaded] = useState(pangchiuImageDecoded);
+  const [pangchiuSrc, setPangchiuSrc] = useState<string | null>(pangchiuImageUrl);
 
   useEffect(() => {
+    let cancelled = false;
     getPangchiuImageUrl().then((url) => {
+      if (cancelled) return;
       if (url) {
         setPangchiuSrc(url);
-        setImageLoaded(true);
+        if (pangchiuImageDecoded) {
+          setImageLoaded(true);
+          return;
+        }
+        if (typeof Image === "undefined") {
+          setImageLoaded(true);
+          return;
+        }
+        const img = new Image();
+        img.src = url;
+        const decodePromise =
+          typeof img.decode === "function"
+            ? img.decode()
+            : new Promise<void>((resolve, reject) => {
+                img.onload = () => resolve();
+                img.onerror = () => reject();
+              });
+        decodePromise
+          .then(() => {
+            if (cancelled) return;
+            pangchiuImageDecoded = true;
+            setImageLoaded(true);
+          })
+          .catch(() => {
+            if (!cancelled) {
+              setImageLoadFailed(true);
+            }
+          });
       } else {
         setImageLoadFailed(true);
       }
     });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   const handleColorSetChange = (colorSetKey: ColorSetKey) => (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
