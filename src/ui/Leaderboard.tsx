@@ -473,7 +473,7 @@ interface LeaderboardProps {
 interface LeaderboardEntry {
   eth?: string | null;
   sol?: string | null;
-  gp: number;
+  febUniqueOpponents: number;
   rating: number;
   win: boolean;
   id: string;
@@ -532,7 +532,7 @@ const createLeaderboardEntry = (entry: PlayerProfile): LeaderboardEntry => ({
   username: entry.username,
   eth: entry.eth,
   sol: entry.sol,
-  gp: (entry.nonce ?? -1) + 1,
+  febUniqueOpponents: entry.feb2026UniqueOpponentsCount ?? 0,
   rating: Math.round(entry.rating ?? 1500),
   win: entry.win ?? true,
   id: entry.id,
@@ -584,6 +584,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
       win: profile?.win ?? true,
       emoji: profile?.emoji ?? storedEmoji,
       aura: profile?.aura ?? storedAura,
+      feb2026UniqueOpponentsCount: profile?.feb2026UniqueOpponentsCount ?? 0,
       cardBackgroundId: profile?.cardBackgroundId ?? storage.getCardBackgroundId(0),
       cardSubtitleId: profile?.cardSubtitleId ?? storage.getCardSubtitleId(0),
       profileCounter: profile?.profileCounter ?? storage.getProfileCounter("gp"),
@@ -774,7 +775,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
       return <RatingCell win={row.win}>{row.rating}</RatingCell>;
     }
     if (leaderboardType === "gp") {
-      return <MaterialCell>{row.gp}</MaterialCell>;
+      return <MaterialCell>{row.febUniqueOpponents}</MaterialCell>;
     }
     if (leaderboardType === "total") {
       const total = Object.values(row.materials).reduce((sum, val) => sum + val, 0);
@@ -797,7 +798,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
       return { value: row.rating, isRating: true, win: row.win };
     }
     if (leaderboardType === "gp") {
-      return { value: row.gp, isRating: false, win: false };
+      return { value: row.febUniqueOpponents, isRating: false, win: false };
     }
     if (leaderboardType === "total") {
       const total = Object.values(row.materials).reduce((sum, val) => sum + val, 0);

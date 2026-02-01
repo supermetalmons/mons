@@ -11,6 +11,43 @@ const materialTelegramEmojiIds = {
   ice: "5233743994676086020",
 };
 
+const FEB_CHALLENGE_START_UTC = Date.UTC(2026, 1, 1);
+const FEB_CHALLENGE_END_UTC = Date.UTC(2026, 2, 1);
+
+const isFebruaryChallengeActive = () => {
+  const now = Date.now();
+  return now >= FEB_CHALLENGE_START_UTC && now < FEB_CHALLENGE_END_UTC;
+};
+
+const updateFebruaryUniqueOpponents = async (profileId, opponentProfileId) => {
+  if (!profileId || !opponentProfileId || profileId === opponentProfileId) {
+    return;
+  }
+
+  try {
+    const firestore = admin.firestore();
+    const userRef = firestore.collection("users").doc(profileId);
+    await firestore.runTransaction(async (transaction) => {
+      const snap = await transaction.get(userRef);
+      if (!snap.exists) {
+        return;
+      }
+      const data = snap.data() || {};
+      const existingOpponents = Array.isArray(data.feb2026UniqueOpponents) ? data.feb2026UniqueOpponents : [];
+      if (existingOpponents.includes(opponentProfileId)) {
+        return;
+      }
+      const updatedOpponents = [...existingOpponents, opponentProfileId];
+      transaction.update(userRef, {
+        feb2026UniqueOpponents: updatedOpponents,
+        feb2026UniqueOpponentsCount: updatedOpponents.length,
+      });
+    });
+  } catch (error) {
+    console.error("Error updating February unique opponents:", error);
+  }
+};
+
 const getWagerSuffix = (inviteData, matchId) => {
   const wagerData = inviteData && inviteData.wagers && inviteData.wagers[matchId] ? inviteData.wagers[matchId] : null;
   const agreed = wagerData && wagerData.agreed ? wagerData.agreed : null;
@@ -151,19 +188,25 @@ exports.updateRatings = onCall(async (request) => {
     const newNonce2 = opponentProfile.nonce + 1;
     const updatedPlayerNonce = bothPlayersMoved ? newNonce1 : playerProfile.nonce;
     const updatedOpponentNonce = bothPlayersMoved ? newNonce2 : opponentProfile.nonce;
+    const shouldUpdateFebruaryChallenge = bothPlayersMoved && isFebruaryChallengeActive();
 
     if (result === "win") {
       const [newWinnerRating, newLoserRating] = updateRating(playerProfile.rating, newNonce1, opponentProfile.rating, newNonce2);
       winnerNewRating = newWinnerRating;
       loserNewRating = newLoserRating;
-      updateUserRatingNonceAndManaPoints(playerProfile.profileId, newWinnerRating, updatedPlayerNonce, true, newPlayerManaTotal);
-      updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newLoserRating, updatedOpponentNonce, false, newOpponentManaTotal);
+      void updateUserRatingNonceAndManaPoints(playerProfile.profileId, newWinnerRating, updatedPlayerNonce, true, newPlayerManaTotal);
+      void updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newLoserRating, updatedOpponentNonce, false, newOpponentManaTotal);
     } else {
       const [newWinnerRating, newLoserRating] = updateRating(opponentProfile.rating, newNonce2, playerProfile.rating, newNonce1);
       winnerNewRating = newWinnerRating;
       loserNewRating = newLoserRating;
-      updateUserRatingNonceAndManaPoints(playerProfile.profileId, newLoserRating, updatedPlayerNonce, false, newPlayerManaTotal);
-      updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newWinnerRating, updatedOpponentNonce, true, newOpponentManaTotal);
+      void updateUserRatingNonceAndManaPoints(playerProfile.profileId, newLoserRating, updatedPlayerNonce, false, newPlayerManaTotal);
+      void updateUserRatingNonceAndManaPoints(opponentProfile.profileId, newWinnerRating, updatedOpponentNonce, true, newOpponentManaTotal);
+    }
+
+    if (shouldUpdateFebruaryChallenge) {
+      void updateFebruaryUniqueOpponents(playerProfile.profileId, opponentProfile.profileId);
+      void updateFebruaryUniqueOpponents(opponentProfile.profileId, playerProfile.profileId);
     }
   }
 
