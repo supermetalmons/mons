@@ -249,27 +249,16 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
     }
   };
 
-  const insertPotionIntoActionSegment = (
-    segment: MoveHistorySegment,
-    actorSpan: { start: number; end: number } | null
-  ) => {
+  const insertPotionIntoActionSegment = (segment: MoveHistorySegment) => {
     const alreadyHasPotion = segment.some((token) => token.type === "emoji" && token.emoji === "statusPotion");
     if (alreadyHasPotion) return;
     const potionToken: MoveHistoryToken = { type: "emoji", emoji: "statusPotion", alt: "potion status" };
-    if (!actorSpan) {
-      segment.push(potionToken);
-      return;
-    }
     const actionIndex = segment.findIndex((token) => token.type === "emoji" && token.emoji === "statusAction");
     if (actionIndex === -1) {
       segment.push(potionToken);
-      return;
+    } else {
+      segment.splice(actionIndex + 1, 0, potionToken);
     }
-    if (actionIndex > actorSpan.end) {
-      segment.splice(actorSpan.start, 0, potionToken);
-      return;
-    }
-    segment.splice(actorSpan.end + 1, 0, potionToken);
   };
 
   for (let index = 0; index < events.length; index++) {
@@ -278,7 +267,6 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
     let segmentRole: "arrow" | "destination" | "normal" | "skip" = "normal";
     let arrowIsRight = true;
     let extraDestinationTokens: MoveHistorySegment | null = null;
-    let actionActorSpan: { start: number; end: number } | null = null;
     switch (ev.kind) {
       case MonsWeb.EventModelKind.MonMove: {
         const monToken = monIconForEvent(ev);
@@ -328,10 +316,6 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
         segmentRole = "arrow";
         const targetTokens = targetTokensFromActionEvents(events, index, ev.loc2);
         if (targetTokens.length > 0) extraDestinationTokens = targetTokens;
-        if (actorToken) {
-          const actorIndex = tokens.indexOf(actorToken);
-          if (actorIndex >= 0) actionActorSpan = { start: actorIndex, end: actorIndex };
-        }
         break;
       }
       case MonsWeb.EventModelKind.DemonAction: {
@@ -345,10 +329,6 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
         segmentRole = "arrow";
         const targetTokens = targetTokensFromActionEvents(events, index, ev.loc2);
         if (targetTokens.length > 0) extraDestinationTokens = targetTokens;
-        if (actorToken) {
-          const actorIndex = tokens.indexOf(actorToken);
-          if (actorIndex >= 0) actionActorSpan = { start: actorIndex, end: actorIndex };
-        }
         break;
       }
       case MonsWeb.EventModelKind.SpiritTargetMove: {
@@ -371,10 +351,6 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
           if (targetTokens.length > 0) tokens.push(...targetTokens);
           tokens.push(actionToken);
           if (actorToken) tokens.push(actorToken);
-        }
-        if (actorToken) {
-          const actorIndex = tokens.indexOf(actorToken);
-          if (actorIndex >= 0) actionActorSpan = { start: actorIndex, end: actorIndex };
         }
         arrowIsRight = isRight;
         segmentRole = "arrow";
@@ -416,7 +392,7 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
         break;
       case MonsWeb.EventModelKind.UsePotion:
         if (lastActionSegment) {
-          insertPotionIntoActionSegment(lastActionSegment, lastActionActorSpan);
+          insertPotionIntoActionSegment(lastActionSegment);
           segmentRole = "skip";
         } else {
           tokens.push({ type: "emoji", emoji: "statusPotion", alt: "potion status" });
@@ -452,10 +428,8 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
         ev.kind === MonsWeb.EventModelKind.SpiritTargetMove
       ) {
         lastActionSegment = tokens;
-        lastActionActorSpan = actionActorSpan;
       } else {
         lastActionSegment = null;
-        lastActionActorSpan = null;
       }
     } else if (segmentRole === "destination") {
       insertDestinationSegment(tokens);
@@ -464,7 +438,6 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
       lastArrowIndex = null;
       rightInsertIndex = segments.length;
       lastActionSegment = null;
-      lastActionActorSpan = null;
     }
 
     if (extraDestinationTokens) {
