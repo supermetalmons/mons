@@ -37,6 +37,16 @@ export function arrowForEvent(e: MonsWeb.EventModel): { arrow: string; isRight: 
   return { arrow: "→", isRight: true };
 }
 
+function addArrowToken(tokens: MoveHistoryToken[], ev: MonsWeb.EventModel) {
+  const { arrow, isRight } = arrowForEvent(ev);
+  const arrowToken: MoveHistoryToken = { type: "text", text: arrow };
+  if (isRight) {
+    tokens.push(arrowToken);
+  } else {
+    tokens.unshift(arrowToken);
+  }
+}
+
 function monIconForKind(kind: MonsWeb.MonKind | undefined, color?: MonsWeb.Color): { icon: string; alt: string } | null {
   if (kind === undefined || kind === null) return null;
   const isBlack = color === MonsWeb.Color.Black;
@@ -105,9 +115,14 @@ function consumableIconFor(consumable?: MonsWeb.Consumable | null): { icon: stri
 export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHistoryEntry {
   const segments: MoveHistorySegment[] = [];
   let hasTurnSeparator = false;
+  let lastArrowIndex: number | null = null;
+  let lastArrowIsRight = true;
+  let rightInsertIndex = 0;
 
   for (const ev of events) {
     const tokens: MoveHistoryToken[] = [];
+    let segmentRole: "arrow" | "destination" | "normal" | "skip" = "normal";
+    let arrowIsRight = true;
     switch (ev.kind) {
       case MonsWeb.EventModelKind.MonMove: {
         const monToken = monIconForEvent(ev);
@@ -133,53 +148,71 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
           }
         }
 
-        tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
+        addArrowToken(tokens, ev);
+        arrowIsRight = arrowForEvent(ev).isRight;
+        segmentRole = "arrow";
         break;
       }
       case MonsWeb.EventModelKind.ManaMove: {
         const manaToken = manaIconFor(ev.mana ?? ev.item?.mana);
         tokens.push({ type: "icon", ...manaToken });
-        tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
+        addArrowToken(tokens, ev);
+        arrowIsRight = arrowForEvent(ev).isRight;
+        segmentRole = "arrow";
         break;
       }
       case MonsWeb.EventModelKind.MysticAction: {
         const monToken = monIconForEvent(ev, MonsWeb.MonKind.Mystic);
         if (monToken) tokens.push({ type: "icon", ...monToken });
         tokens.push({ type: "emoji", emoji: "statusAction", alt: "action" });
-        tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
+        addArrowToken(tokens, ev);
+        arrowIsRight = arrowForEvent(ev).isRight;
+        segmentRole = "arrow";
         break;
       }
       case MonsWeb.EventModelKind.DemonAction: {
         const monToken = monIconForEvent(ev, MonsWeb.MonKind.Demon);
         if (monToken) tokens.push({ type: "icon", ...monToken });
         tokens.push({ type: "emoji", emoji: "statusAction", alt: "action" });
-        tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
+        addArrowToken(tokens, ev);
+        arrowIsRight = arrowForEvent(ev).isRight;
+        segmentRole = "arrow";
         break;
       }
       case MonsWeb.EventModelKind.SpiritTargetMove: {
         const monToken = monIconForEvent(ev, MonsWeb.MonKind.Spirit);
         if (monToken) tokens.push({ type: "icon", ...monToken });
-        tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
+        addArrowToken(tokens, ev);
+        arrowIsRight = arrowForEvent(ev).isRight;
+        segmentRole = "arrow";
         break;
       }
       case MonsWeb.EventModelKind.BombAttack: {
         tokens.push({ type: "icon", ...consumableIconFor(MonsWeb.Consumable.Bomb) });
-        tokens.push({ type: "text", text: arrowForEvent(ev).arrow });
+        addArrowToken(tokens, ev);
+        arrowIsRight = arrowForEvent(ev).isRight;
+        segmentRole = "arrow";
         break;
       }
       case MonsWeb.EventModelKind.ManaScored: {
         tokens.push({ type: "square", color: colors.manaPool, alt: "score" });
+        segmentRole = "destination";
         break;
       }
-      case MonsWeb.EventModelKind.PickupBomb:
+      case MonsWeb.EventModelKind.PickupBomb: {
         tokens.push({ type: "icon", ...consumableIconFor(MonsWeb.Consumable.Bomb) });
+        segmentRole = "destination";
         break;
-      case MonsWeb.EventModelKind.PickupPotion:
+      }
+      case MonsWeb.EventModelKind.PickupPotion: {
         tokens.push({ type: "icon", ...consumableIconFor(MonsWeb.Consumable.Potion) });
+        segmentRole = "destination";
         break;
+      }
       case MonsWeb.EventModelKind.PickupMana: {
         const manaToken = manaIconFor(ev.mana ?? ev.item?.mana);
         tokens.push({ type: "icon", ...manaToken });
+        segmentRole = "destination";
         break;
       }
       case MonsWeb.EventModelKind.BombExplosion:
@@ -193,6 +226,7 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
         break;
       case MonsWeb.EventModelKind.NextTurn:
         hasTurnSeparator = true;
+        segmentRole = "skip";
         break;
       case MonsWeb.EventModelKind.MonFainted:
       case MonsWeb.EventModelKind.ManaDropped:
@@ -205,9 +239,39 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
         break;
     }
 
-    if (tokens.length > 0) {
-      segments.push(tokens);
+    if (tokens.length === 0) {
+      continue;
     }
+
+    if (segmentRole === "arrow") {
+      segments.push(tokens);
+      lastArrowIndex = segments.length - 1;
+      lastArrowIsRight = arrowIsRight;
+      rightInsertIndex = lastArrowIndex + 1;
+      continue;
+    }
+
+    if (segmentRole === "destination") {
+      if (lastArrowIndex === null) {
+        segments.push(tokens);
+      } else if (lastArrowIsRight) {
+        segments.splice(rightInsertIndex, 0, tokens);
+        rightInsertIndex += 1;
+      } else {
+        segments.splice(lastArrowIndex, 0, tokens);
+        lastArrowIndex += 1;
+        rightInsertIndex = lastArrowIndex + 1;
+      }
+      continue;
+    }
+
+    if (segmentRole === "skip") {
+      continue;
+    }
+
+    segments.push(tokens);
+    lastArrowIndex = null;
+    rightInsertIndex = segments.length;
   }
 
   return { segments, hasTurnSeparator };
