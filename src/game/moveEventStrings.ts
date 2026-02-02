@@ -234,7 +234,6 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
   let lastArrowIsRight = true;
   let rightInsertIndex = 0;
   let lastActionSegment: MoveHistorySegment | null = null;
-  let lastActionActorSpan: { start: number; end: number } | null = null;
 
   const insertDestinationSegment = (segment: MoveHistorySegment) => {
     if (lastArrowIndex === null) {
