@@ -227,7 +227,7 @@ function consumableIconFor(consumable?: MonsWeb.Consumable | null): { icon: stri
   }
 }
 
-export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHistoryEntry {
+export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeColor?: MonsWeb.Color): MoveHistoryEntry {
   const segments: MoveHistorySegment[] = [];
   let hasTurnSeparator = false;
   let lastArrowIndex: number | null = null;
@@ -353,10 +353,7 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
       }
       case MonsWeb.EventModelKind.SpiritTargetMove: {
         const targetTokens = tokensForItem(ev.item);
-        const spiritToken =
-          ev.mon !== undefined && ev.mon !== null
-            ? monIconForKind(ev.mon.kind, ev.mon.color)
-            : monIconForKind(MonsWeb.MonKind.Spirit, MonsWeb.Color.White);
+        const spiritToken = monIconForKind(MonsWeb.MonKind.Spirit, activeColor ?? MonsWeb.Color.White);
         const actionToken: MoveHistoryToken = { type: "emoji", emoji: "statusAction", alt: "action" };
         const { arrow, isRight } = arrowForEvent(ev);
         const arrowToken: MoveHistoryToken = { type: "text", text: arrow };
