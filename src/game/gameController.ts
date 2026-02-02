@@ -107,7 +107,7 @@ export function getVerboseTrackingEntities(): MoveHistoryEntry[] {
   }
   return entities.map((entity) => {
     const events = entity.events();
-    return tokensForSingleMoveEvents(events);
+    return tokensForSingleMoveEvents(events, entity.color());
   });
 }
 
