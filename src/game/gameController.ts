@@ -105,8 +105,8 @@ export function getVerboseTrackingEntities(): MoveHistoryEntry[] {
   if (entities.length === 0) {
     return [{ segments: [], hasTurnSeparator: false }];
   }
-  return entities.map((e) => {
-    const events = e.events();
+  return entities.map((entity) => {
+    const events = entity.events();
     return tokensForSingleMoveEvents(events);
   });
 }
