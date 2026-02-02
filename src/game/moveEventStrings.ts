@@ -250,14 +250,26 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
   };
 
   const insertPotionIntoActionSegment = (segment: MoveHistorySegment) => {
-    const alreadyHasPotion = segment.some((token) => token.type === "emoji" && token.emoji === "statusPotion");
-    if (alreadyHasPotion) return;
     const potionToken: MoveHistoryToken = { type: "emoji", emoji: "statusPotion", alt: "potion status" };
     const actionIndex = segment.findIndex((token) => token.type === "emoji" && token.emoji === "statusAction");
+    const existingPotionIndices: number[] = [];
+    segment.forEach((token, index) => {
+      if (token.type === "emoji" && token.emoji === "statusPotion") {
+        existingPotionIndices.push(index);
+      }
+    });
     if (actionIndex === -1) {
-      segment.push(potionToken);
-    } else {
-      segment.splice(actionIndex + 1, 0, potionToken);
+      if (existingPotionIndices.length === 0) {
+        segment.push(potionToken);
+      }
+      return;
+    }
+    segment[actionIndex] = potionToken;
+    for (let i = existingPotionIndices.length - 1; i >= 0; i--) {
+      const index = existingPotionIndices[i];
+      if (index !== actionIndex) {
+        segment.splice(index, 1);
+      }
     }
   };
 
