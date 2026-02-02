@@ -47,6 +47,71 @@ function addArrowToken(tokens: MoveHistoryToken[], ev: MonsWeb.EventModel) {
   }
 }
 
+function addActionArrowTokens(tokens: MoveHistoryToken[], ev: MonsWeb.EventModel): boolean {
+  const { arrow, isRight } = arrowForEvent(ev);
+  const actionToken: MoveHistoryToken = { type: "emoji", emoji: "statusAction", alt: "action" };
+  const arrowToken: MoveHistoryToken = { type: "text", text: arrow };
+  if (isRight) {
+    tokens.push(actionToken);
+    tokens.push(arrowToken);
+  } else {
+    tokens.unshift(actionToken);
+    tokens.unshift(arrowToken);
+  }
+  return isRight;
+}
+
+function tokensForMon(mon: MonsWeb.Mon | undefined): MoveHistoryToken[] {
+  if (!mon) return [];
+  const monToken = monIconForKind(mon.kind, mon.color);
+  return monToken ? [{ type: "icon", ...monToken }] : [];
+}
+
+function locationsEqual(a?: MonsWeb.Location, b?: MonsWeb.Location): boolean {
+  if (!a || !b) return false;
+  return a.i === b.i && a.j === b.j;
+}
+
+function targetTokensFromActionEvents(
+  events: MonsWeb.EventModel[],
+  startIndex: number,
+  targetLoc?: MonsWeb.Location
+): MoveHistoryToken[] {
+  if (!targetLoc) return [];
+  let monTokens: MoveHistoryToken[] | null = null;
+  let supermanaTokens: MoveHistoryToken[] | null = null;
+  let manaTokens: MoveHistoryToken[] | null = null;
+
+  for (let i = startIndex + 1; i < events.length; i++) {
+    const next = events[i];
+    switch (next.kind) {
+      case MonsWeb.EventModelKind.MonFainted:
+        if (locationsEqual(next.loc1, targetLoc) || locationsEqual(next.loc2, targetLoc)) {
+          const tokens = tokensForMon(next.mon);
+          if (tokens.length > 0) {
+            monTokens = tokens;
+          }
+        }
+        break;
+      case MonsWeb.EventModelKind.ManaDropped:
+        if (locationsEqual(next.loc1, targetLoc) && next.mana) {
+          manaTokens = [{ type: "icon", ...manaIconFor(next.mana) }];
+        }
+        break;
+      case MonsWeb.EventModelKind.SupermanaBackToBase:
+        if (locationsEqual(next.loc1, targetLoc)) {
+          supermanaTokens = [{ type: "icon", icon: "supermana", alt: "supermana" }];
+        }
+        break;
+      default:
+        break;
+    }
+    if (monTokens) break;
+  }
+
+  return monTokens ?? supermanaTokens ?? manaTokens ?? [];
+}
+
 function monIconForKind(kind: MonsWeb.MonKind | undefined, color?: MonsWeb.Color): { icon: string; alt: string } | null {
   if (kind === undefined || kind === null) return null;
   const isBlack = color === MonsWeb.Color.Black;
@@ -118,11 +183,53 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
   let lastArrowIndex: number | null = null;
   let lastArrowIsRight = true;
   let rightInsertIndex = 0;
+  let lastActionSegment: MoveHistorySegment | null = null;
 
-  for (const ev of events) {
+  const insertDestinationSegment = (segment: MoveHistorySegment) => {
+    if (lastArrowIndex === null) {
+      segments.push(segment);
+    } else if (lastArrowIsRight) {
+      segments.splice(rightInsertIndex, 0, segment);
+      rightInsertIndex += 1;
+    } else {
+      segments.splice(lastArrowIndex, 0, segment);
+      lastArrowIndex += 1;
+      rightInsertIndex = lastArrowIndex + 1;
+    }
+  };
+
+  const insertPotionIntoActionSegment = (segment: MoveHistorySegment) => {
+    const alreadyHasPotion = segment.some((token) => token.type === "emoji" && token.emoji === "statusPotion");
+    if (alreadyHasPotion) return;
+    const potionToken: MoveHistoryToken = { type: "emoji", emoji: "statusPotion", alt: "potion status" };
+    const actionIndex = segment.findIndex((token) => token.type === "emoji" && token.emoji === "statusAction");
+    const firstActorIndex = segment.findIndex((token) => token.type === "icon" || token.type === "composite");
+    if (actionIndex === -1 || firstActorIndex === -1) {
+      segment.push(potionToken);
+      return;
+    }
+    if (actionIndex > firstActorIndex) {
+      segment.splice(firstActorIndex, 0, potionToken);
+      return;
+    }
+    let lastActorIndex = firstActorIndex;
+    for (let i = firstActorIndex + 1; i < segment.length; i++) {
+      const token = segment[i];
+      if (token.type === "icon" || token.type === "composite") {
+        lastActorIndex = i;
+      } else {
+        break;
+      }
+    }
+    segment.splice(lastActorIndex + 1, 0, potionToken);
+  };
+
+  for (let index = 0; index < events.length; index++) {
+    const ev = events[index];
     const tokens: MoveHistoryToken[] = [];
     let segmentRole: "arrow" | "destination" | "normal" | "skip" = "normal";
     let arrowIsRight = true;
+    let extraDestinationTokens: MoveHistorySegment | null = null;
     switch (ev.kind) {
       case MonsWeb.EventModelKind.MonMove: {
         const monToken = monIconForEvent(ev);
@@ -164,19 +271,19 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
       case MonsWeb.EventModelKind.MysticAction: {
         const monToken = monIconForEvent(ev, MonsWeb.MonKind.Mystic);
         if (monToken) tokens.push({ type: "icon", ...monToken });
-        tokens.push({ type: "emoji", emoji: "statusAction", alt: "action" });
-        addArrowToken(tokens, ev);
-        arrowIsRight = arrowForEvent(ev).isRight;
+        arrowIsRight = addActionArrowTokens(tokens, ev);
         segmentRole = "arrow";
+        const targetTokens = targetTokensFromActionEvents(events, index, ev.loc2);
+        if (targetTokens.length > 0) extraDestinationTokens = targetTokens;
         break;
       }
       case MonsWeb.EventModelKind.DemonAction: {
         const monToken = monIconForEvent(ev, MonsWeb.MonKind.Demon);
         if (monToken) tokens.push({ type: "icon", ...monToken });
-        tokens.push({ type: "emoji", emoji: "statusAction", alt: "action" });
-        addArrowToken(tokens, ev);
-        arrowIsRight = arrowForEvent(ev).isRight;
+        arrowIsRight = addActionArrowTokens(tokens, ev);
         segmentRole = "arrow";
+        const targetTokens = targetTokensFromActionEvents(events, index, ev.loc2);
+        if (targetTokens.length > 0) extraDestinationTokens = targetTokens;
         break;
       }
       case MonsWeb.EventModelKind.SpiritTargetMove: {
@@ -222,7 +329,12 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
         // TODO: add game ended indicator depending on the reason game ended
         break;
       case MonsWeb.EventModelKind.UsePotion:
-        tokens.push({ type: "emoji", emoji: "statusPotion", alt: "potion status" });
+        if (lastActionSegment) {
+          insertPotionIntoActionSegment(lastActionSegment);
+          segmentRole = "skip";
+        } else {
+          tokens.push({ type: "emoji", emoji: "statusPotion", alt: "potion status" });
+        }
         break;
       case MonsWeb.EventModelKind.NextTurn:
         hasTurnSeparator = true;
@@ -239,7 +351,7 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
         break;
     }
 
-    if (tokens.length === 0) {
+    if (tokens.length === 0 || segmentRole === "skip") {
       continue;
     }
 
@@ -248,30 +360,23 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[]): MoveHis
       lastArrowIndex = segments.length - 1;
       lastArrowIsRight = arrowIsRight;
       rightInsertIndex = lastArrowIndex + 1;
-      continue;
-    }
-
-    if (segmentRole === "destination") {
-      if (lastArrowIndex === null) {
-        segments.push(tokens);
-      } else if (lastArrowIsRight) {
-        segments.splice(rightInsertIndex, 0, tokens);
-        rightInsertIndex += 1;
+      if (ev.kind === MonsWeb.EventModelKind.MysticAction || ev.kind === MonsWeb.EventModelKind.DemonAction) {
+        lastActionSegment = tokens;
       } else {
-        segments.splice(lastArrowIndex, 0, tokens);
-        lastArrowIndex += 1;
-        rightInsertIndex = lastArrowIndex + 1;
+        lastActionSegment = null;
       }
-      continue;
+    } else if (segmentRole === "destination") {
+      insertDestinationSegment(tokens);
+    } else {
+      segments.push(tokens);
+      lastArrowIndex = null;
+      rightInsertIndex = segments.length;
+      lastActionSegment = null;
     }
 
-    if (segmentRole === "skip") {
-      continue;
+    if (extraDestinationTokens) {
+      insertDestinationSegment(extraDestinationTokens);
     }
-
-    segments.push(tokens);
-    lastArrowIndex = null;
-    rightInsertIndex = segments.length;
   }
 
   return { segments, hasTurnSeparator };
