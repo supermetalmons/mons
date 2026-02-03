@@ -445,8 +445,18 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
         break;
       }
       case MonsWeb.EventModelKind.PickupMana: {
-        const manaToken = manaIconFor(ev.mana ?? ev.item?.mana);
-        tokens.push({ type: "icon", ...manaToken });
+        const prevKind = index > 0 ? events[index - 1].kind : undefined;
+        const cameFromManaMove =
+          prevKind === MonsWeb.EventModelKind.ManaMove || prevKind === MonsWeb.EventModelKind.SpiritTargetMove;
+        if (cameFromManaMove && ev.mon) {
+          const monToken = monIconForKind(ev.mon.kind, ev.mon.color);
+          if (monToken) {
+            tokens.push({ type: "icon", ...monToken });
+          }
+        } else {
+          const manaToken = manaIconFor(ev.mana ?? ev.item?.mana);
+          tokens.push({ type: "icon", ...manaToken });
+        }
         segmentRole = "destination";
         break;
       }
