@@ -20,8 +20,11 @@ export type MoveHistorySegment = MoveHistoryToken[];
 
 export type MoveHistoryEntry = {
   segments: MoveHistorySegment[];
+  segmentRoles?: MoveHistorySegmentRole[];
   hasTurnSeparator?: boolean;
 };
+
+export type MoveHistorySegmentRole = "arrow" | "destination" | "normal";
 
 export function arrowForEvent(e: MonsWeb.EventModel): { arrow: string; isRight: boolean } {
   const from = e.loc1;
@@ -269,6 +272,7 @@ function consumableIconFor(consumable?: MonsWeb.Consumable | null): { icon: stri
 
 export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeColor?: MonsWeb.Color): MoveHistoryEntry {
   const segments: MoveHistorySegment[] = [];
+  const segmentRoles: MoveHistorySegmentRole[] = [];
   let hasTurnSeparator = false;
   let lastArrowIndex: number | null = null;
   let lastArrowIsRight = true;
@@ -278,11 +282,14 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
   const insertDestinationSegment = (segment: MoveHistorySegment) => {
     if (lastArrowIndex === null) {
       segments.push(segment);
+      segmentRoles.push("destination");
     } else if (lastArrowIsRight) {
       segments.splice(rightInsertIndex, 0, segment);
+      segmentRoles.splice(rightInsertIndex, 0, "destination");
       rightInsertIndex += 1;
     } else {
       segments.splice(lastArrowIndex, 0, segment);
+      segmentRoles.splice(lastArrowIndex, 0, "destination");
       lastArrowIndex += 1;
       rightInsertIndex = lastArrowIndex + 1;
     }
@@ -478,6 +485,7 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
 
     if (segmentRole === "arrow") {
       segments.push(tokens);
+      segmentRoles.push("arrow");
       lastArrowIndex = segments.length - 1;
       lastArrowIsRight = arrowIsRight;
       rightInsertIndex = lastArrowIndex + 1;
@@ -494,6 +502,7 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
       insertDestinationSegment(tokens);
     } else {
       segments.push(tokens);
+      segmentRoles.push("normal");
       lastArrowIndex = null;
       rightInsertIndex = segments.length;
       lastActionSegment = null;
@@ -504,5 +513,5 @@ export function tokensForSingleMoveEvents(events: MonsWeb.EventModel[], activeCo
     }
   }
 
-  return { segments, hasTurnSeparator };
+  return { segments, segmentRoles, hasTurnSeparator };
 }

@@ -3,7 +3,8 @@ import styled from "styled-components";
 import { getVerboseTrackingEntities, didSelectVerboseTrackingEntity, didDismissMoveHistoryPopup } from "../game/gameController";
 import { useGameAssets } from "../hooks/useGameAssets";
 import { useEmojis } from "../hooks/useEmojis";
-import type { MoveHistoryEntry, MoveHistorySegment, MoveHistoryToken } from "../game/moveEventStrings";
+import type { MoveHistoryEntry, MoveHistorySegment, MoveHistoryToken, MoveHistorySegmentRole } from "../game/moveEventStrings";
+import { colors } from "../content/boardStyles";
 
 let moveHistoryReloadCallback: (() => void) | null = null;
 export function triggerMoveHistoryPopupReload() {
@@ -132,7 +133,7 @@ const IndexLabel = styled.span`
 const EventRow = styled.div`
   display: flex;
   align-items: center;
-  gap: 6px;
+  gap: 3px;
   min-width: 0;
   overflow: visible;
   white-space: nowrap;
@@ -141,7 +142,7 @@ const EventRow = styled.div`
 const EventSegment = styled.span`
   display: inline-flex;
   align-items: center;
-  gap: 2px;
+  gap: 1px;
   flex-shrink: 0;
 `;
 
@@ -152,11 +153,16 @@ const EventIcon = styled.img`
 `;
 
 const EmojiIcon = styled.img`
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   flex-shrink: 0;
   margin-left: -2px;
   margin-right: -2px;
+`;
+
+const ActionEmojiIcon = styled(EmojiIcon)`
+  margin-left: 1px;
+  margin-right: 1px;
 `;
 
 const SquareIcon = styled.svg`
@@ -190,6 +196,8 @@ const CompositeOverlay = styled.img`
 `;
 
 const EventText = styled.span`
+  display: inline-flex;
+  align-items: center;
   line-height: 1;
 `;
 
@@ -332,15 +340,23 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   );
 
   const renderToken = React.useCallback(
-    (token: MoveHistoryToken, tokenIndex: number) => {
+    (token: MoveHistoryToken, tokenIndex: number, segmentRole?: MoveHistorySegmentRole) => {
       if (token.type === "icon") {
-        return <EventIcon key={`icon-${tokenIndex}`} src={getIconImage(token.icon)} alt={token.alt} />;
+        const isRegularManaIcon = token.icon === "mana" || token.icon === "manaB";
+        const iconStyle = isRegularManaIcon
+          ? ({
+              marginLeft: segmentRole === "destination" ? "-4px" : "-2px",
+              marginRight: segmentRole === "destination" ? "-4px" : "-2px",
+            } as React.CSSProperties)
+          : undefined;
+        return <EventIcon key={`icon-${tokenIndex}`} src={getIconImage(token.icon)} alt={token.alt} style={iconStyle} />;
       }
       if (token.type === "emoji") {
         const src = emojis?.[token.emoji]
           ? `data:image/png;base64,${emojis[token.emoji]}`
           : "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
-        return <EmojiIcon key={`emoji-${tokenIndex}`} src={src} alt={token.alt} />;
+        const EmojiComponent = token.emoji === "statusAction" || token.emoji === "statusPotion" ? ActionEmojiIcon : EmojiIcon;
+        return <EmojiComponent key={`emoji-${tokenIndex}`} src={src} alt={token.alt} />;
       }
       if (token.type === "square") {
         return (
@@ -385,8 +401,10 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   );
 
   const renderSegment = React.useCallback(
-    (segment: MoveHistorySegment, segmentIndex: number) => (
-      <EventSegment key={`segment-${segmentIndex}`}>{segment.map(renderToken)}</EventSegment>
+    (segment: MoveHistorySegment, segmentIndex: number, role?: MoveHistorySegmentRole) => (
+      <EventSegment key={`segment-${segmentIndex}`}>
+        {segment.map((token, tokenIndex) => renderToken(token, tokenIndex, role))}
+      </EventSegment>
     ),
     [renderToken]
   );
@@ -420,7 +438,17 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
               <ItemContent>
                 <IndexLabel>{index}.</IndexLabel>
                 <EventRow>
-                  {entry.segments.length > 0 ? entry.segments.map(renderSegment) : <EventText>{PLACEHOLDER_LABEL}</EventText>}
+                  {entry.segments.length > 0 ? (
+                    entry.segments.map((segment, segmentIndex) =>
+                      renderSegment(segment, segmentIndex, entry.segmentRoles?.[segmentIndex])
+                    )
+                  ) : index === 0 ? (
+                    <SquareIcon viewBox="0 0 12 12" aria-label="score">
+                      <rect x="0" y="0" width="12" height="12" fill={colors.manaPool} rx="1" ry="1" />
+                    </SquareIcon>
+                  ) : (
+                    <EventText>{PLACEHOLDER_LABEL}</EventText>
+                  )}
                 </EventRow>
               </ItemContent>
               {entry.hasTurnSeparator && index < items.length - 1 && <TurnSeparator aria-hidden="true" />}
