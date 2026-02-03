@@ -357,11 +357,17 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
                 "--overlay-top": "-11%",
                 "--overlay-size": "72%",
               } as React.CSSProperties)
-            : ({
-                "--overlay-left": "35%",
-                "--overlay-top": "27%",
-                "--overlay-size": "93%",
-              } as React.CSSProperties);
+            : token.variant === "bomb"
+              ? ({
+                  "--overlay-left": "54%",
+                  "--overlay-top": "52%",
+                  "--overlay-size": "50%",
+                } as React.CSSProperties)
+              : ({
+                  "--overlay-left": "35%",
+                  "--overlay-top": "27%",
+                  "--overlay-size": "93%",
+                } as React.CSSProperties);
         return (
           <CompositeIcon key={`composite-${tokenIndex}`} style={overlayStyle} aria-label={token.alt}>
             <CompositeBase src={getIconImage(token.baseIcon)} alt={token.alt} />
