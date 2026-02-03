@@ -15,7 +15,7 @@ const ITEM_HEIGHT = 24;
 const VISIBLE_ITEMS = 7;
 const PADDING_ITEMS = Math.floor(VISIBLE_ITEMS / 2);
 const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
-const PLACEHOLDER_LABEL = "—";
+const PLACEHOLDER_LABEL = "";
 const PADDING_INDICES = Array.from({ length: PADDING_ITEMS }, (_, index) => index);
 
 const MoveHistoryPopupContainer = styled.div`
