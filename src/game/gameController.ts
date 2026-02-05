@@ -16,8 +16,6 @@ import { showVideoReaction } from "../ui/BoardComponent";
 import { setIslandButtonDimmed } from "../index";
 import { setCurrentWagerMatch, subscribeToWagerState } from "./wagerState";
 
-const experimentalDrawingDevMode = false;
-
 export let initialFen = "";
 export let isWatchOnly = false;
 export let isOnlineGame = false;
@@ -175,12 +173,6 @@ export async function go() {
   playerSideColor = MonsWeb.Color.White;
   game = MonsWeb.MonsGameModel.new();
   initialFen = game.fen();
-
-  if (experimentalDrawingDevMode) {
-    isOnlineGame = true;
-    Board.runExperimentalMonsBoardAsDisplayAnimation();
-    return;
-  }
 
   if (isBotsLoopMode) {
     Board.toggleExperimentalMode(false, true, false, true);

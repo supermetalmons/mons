@@ -23,6 +23,7 @@ import { soundPlayer } from "../utils/SoundPlayer";
 import type { MaterialName } from "../services/rocksMiningService";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
+const valentinesLoaderEnabled = true;
 
 export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, pangchiu: boolean, doNotStore: boolean) {
   if (defaultMode) {
@@ -780,10 +781,6 @@ export function setBoardFlipped(flipped: boolean) {
   isFlipped = flipped;
 }
 
-export function runExperimentalMonsBoardAsDisplayAnimation() {
-  runMonsBoardAsDisplayWaitingAnimation();
-}
-
 export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
   if (monsBoardDisplayAnimationTimeout) return;
 
@@ -909,6 +906,11 @@ export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
 }
 
 export function runMonsBoardAsDisplayWaitingAnimation() {
+  if (valentinesLoaderEnabled) {
+    runMonsBoardAsDisplayWaitingHeartsAnimation();
+    return;
+  }
+
   if (monsBoardDisplayAnimationTimeout) return;
 
   let radius = 0;
@@ -953,7 +955,14 @@ export function stopMonsBoardAsDisplayAnimations() {
 
 function colorPixel(location: Location, white: boolean) {
   const flippedLocation = new Location(isFlipped ? 10 - location.i : location.i, location.j);
-  placeItem(white ? mana : manaB, flippedLocation, white ? ItemKind.Mana : ItemKind.ManaBlack, false);
+  const useValentines = valentinesLoaderEnabled;
+  const item = white
+    ? (useValentines ? angel : mana)
+    : (useValentines ? angelB : manaB);
+  const kind = white
+    ? (useValentines ? ItemKind.Angel : ItemKind.Mana)
+    : (useValentines ? ItemKind.AngelBlack : ItemKind.ManaBlack);
+  placeItem(item, flippedLocation, kind, false);
 }
 
 function cleanAllPixels() {
