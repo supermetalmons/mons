@@ -839,13 +839,17 @@ export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
   ];
 
   let frameIndex = 0;
+  let isWhite = true;
 
   function animate() {
     cleanAllPixels();
     for (const [x, y] of frames[frameIndex]) {
-      colorPixel(new Location(x, y), true);
+      colorPixel(new Location(x, y), isWhite);
     }
     frameIndex = (frameIndex + 1) % frames.length;
+    if (frameIndex === 0) {
+      isWhite = !isWhite;
+    }
     monsBoardDisplayAnimationTimeout = setTimeout(animate, 323);
   }
 
