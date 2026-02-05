@@ -846,9 +846,12 @@ export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
     for (const [x, y] of frames[frameIndex]) {
       colorPixel(new Location(x, y), isWhite);
     }
-    frameIndex = (frameIndex + 1) % frames.length;
-    if (frameIndex === 0) {
+    if (frameIndex === frames.length - 1) {
+      // After full heart, start next color from frame 1 (skip empty frame)
+      frameIndex = 1;
       isWhite = !isWhite;
+    } else {
+      frameIndex++;
     }
     monsBoardDisplayAnimationTimeout = setTimeout(animate, 323);
   }
