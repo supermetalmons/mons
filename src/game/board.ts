@@ -847,8 +847,12 @@ export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
       colorPixel(new Location(x, y), isWhite);
     }
     if (frameIndex === frames.length - 1) {
-      // After full heart, start next color from frame 1 (skip empty frame)
-      frameIndex = 1;
+      // Show center dot of next color on top of full heart
+      for (const [x, y] of frames[1]) {
+        colorPixel(new Location(x, y), !isWhite);
+      }
+      // Next frame continues growing the new color heart
+      frameIndex = 2;
       isWhite = !isWhite;
     } else {
       frameIndex++;
