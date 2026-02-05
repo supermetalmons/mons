@@ -23,6 +23,7 @@ import { soundPlayer } from "../utils/SoundPlayer";
 import type { MaterialName } from "../services/rocksMiningService";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
+const valentinesLoaderEnabled = true;
 
 export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, pangchiu: boolean, doNotStore: boolean) {
   if (defaultMode) {
@@ -780,128 +781,75 @@ export function setBoardFlipped(flipped: boolean) {
   isFlipped = flipped;
 }
 
-export function runExperimentalMonsBoardAsDisplayAnimation() {
-  runMonsBoardAsDisplayWaitingAnimation();
-}
-
 export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
   if (monsBoardDisplayAnimationTimeout) return;
 
   const frames: [number, number][][] = [
+    // Frame 0: empty
     [],
+    // Frame 1: center dot
     [[5, 5]],
+    // Frame 2: tiny heart seed
     [
+      [4, 4], [4, 6],
       [5, 5],
-      [5, 3],
-      [5, 7],
-      [4, 4],
-      [4, 6],
-      [6, 4],
-      [6, 6],
+      [6, 5],
+    ],
+    // Frame 3: small heart
+    [
+      [3, 4], [3, 6],
+      [4, 3], [4, 5], [4, 7],
+      [5, 4], [5, 6],
+      [6, 5],
+    ],
+    // Frame 4: medium heart
+    [
+      [2, 3], [2, 4], [2, 6], [2, 7],
+      [3, 2], [3, 5], [3, 8],
+      [4, 2], [4, 8],
+      [5, 3], [5, 7],
+      [6, 4], [6, 6],
       [7, 5],
     ],
+    // Frame 5: large heart
     [
-      [3, 3],
-      [3, 4],
-      [3, 6],
-      [3, 7],
-      [4, 5],
-      [4, 2],
-      [4, 8],
-      [5, 2],
-      [5, 8],
-      [6, 3],
-      [6, 7],
-      [7, 4],
-      [7, 6],
+      [1, 2], [1, 3], [1, 7], [1, 8],
+      [2, 1], [2, 4], [2, 6], [2, 9],
+      [3, 1], [3, 5], [3, 9],
+      [4, 1], [4, 9],
+      [5, 2], [5, 8],
+      [6, 3], [6, 7],
+      [7, 4], [7, 6],
       [8, 5],
     ],
+    // Frame 6: full heart
     [
-      [3, 1],
-      [3, 9],
-      [3, 4],
-      [3, 6],
-      [4, 5],
-      [4, 1],
-      [4, 9],
-      [5, 1],
-      [5, 9],
-      [2, 3],
-      [2, 2],
-      [2, 7],
-      [2, 8],
-      [6, 2],
-      [6, 8],
-      [7, 3],
-      [7, 7],
-      [8, 4],
-      [8, 6],
-      [9, 5],
-    ],
-    [
-      [1, 2],
-      [1, 8],
-      [1, 3],
-      [1, 7],
-      [2, 1],
-      [2, 4],
-      [2, 6],
-      [2, 9],
-      [3, 5],
-      [3, 0],
-      [3, 10],
-      [4, 0],
-      [4, 10],
-      [5, 0],
-      [5, 10],
-      [6, 1],
-      [6, 9],
-      [7, 2],
-      [7, 3],
-      [7, 8],
-      [7, 7],
-      [8, 4],
-      [8, 6],
-      [9, 5],
-    ],
-    [
-      [0, 2],
-      [0, 3],
-      [0, 7],
-      [0, 8],
-      [1, 1],
-      [1, 4],
-      [1, 6],
-      [1, 9],
-      [2, 0],
-      [2, 5],
-      [2, 10],
-      [3, 0],
-      [3, 10],
-      [4, 0],
-      [4, 10],
-      [5, 0],
-      [5, 10],
-      [6, 1],
-      [6, 9],
-      [7, 2],
-      [7, 8],
-      [8, 3],
-      [8, 7],
-      [9, 4],
-      [9, 6],
+      [0, 2], [0, 3], [0, 7], [0, 8],
+      [1, 1], [1, 4], [1, 6], [1, 9],
+      [2, 0], [2, 5], [2, 10],
+      [3, 0], [3, 10],
+      [4, 0], [4, 10],
+      [5, 0], [5, 10],
+      [6, 1], [6, 9],
+      [7, 2], [7, 8],
+      [8, 3], [8, 7],
+      [9, 4], [9, 6],
       [10, 5],
     ],
   ];
 
   let frameIndex = 0;
+  let isWhite = true;
 
   function animate() {
     cleanAllPixels();
     for (const [x, y] of frames[frameIndex]) {
-      colorPixel(new Location(x, y), true);
+      colorPixel(new Location(x, y), isWhite);
     }
     frameIndex = (frameIndex + 1) % frames.length;
+    if (frameIndex === 0) {
+      isWhite = !isWhite;
+    }
     monsBoardDisplayAnimationTimeout = setTimeout(animate, 323);
   }
 
@@ -909,6 +857,11 @@ export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
 }
 
 export function runMonsBoardAsDisplayWaitingAnimation() {
+  if (valentinesLoaderEnabled) {
+    runMonsBoardAsDisplayWaitingHeartsAnimation();
+    return;
+  }
+
   if (monsBoardDisplayAnimationTimeout) return;
 
   let radius = 0;
@@ -953,7 +906,14 @@ export function stopMonsBoardAsDisplayAnimations() {
 
 function colorPixel(location: Location, white: boolean) {
   const flippedLocation = new Location(isFlipped ? 10 - location.i : location.i, location.j);
-  placeItem(white ? mana : manaB, flippedLocation, white ? ItemKind.Mana : ItemKind.ManaBlack, false);
+  const useValentines = valentinesLoaderEnabled;
+  const item = white
+    ? (useValentines ? angel : mana)
+    : (useValentines ? angelB : manaB);
+  const kind = white
+    ? (useValentines ? ItemKind.Angel : ItemKind.Mana)
+    : (useValentines ? ItemKind.AngelBlack : ItemKind.ManaBlack);
+  placeItem(item, flippedLocation, kind, false);
 }
 
 function cleanAllPixels() {
