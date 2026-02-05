@@ -846,16 +846,9 @@ export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
     for (const [x, y] of frames[frameIndex]) {
       colorPixel(new Location(x, y), isWhite);
     }
-    if (frameIndex === frames.length - 1) {
-      // Show center dot of next color on top of full heart
-      for (const [x, y] of frames[1]) {
-        colorPixel(new Location(x, y), !isWhite);
-      }
-      // Next frame continues growing the new color heart
-      frameIndex = 2;
+    frameIndex = (frameIndex + 1) % frames.length;
+    if (frameIndex === 0) {
       isWhite = !isWhite;
-    } else {
-      frameIndex++;
     }
     monsBoardDisplayAnimationTimeout = setTimeout(animate, 323);
   }
