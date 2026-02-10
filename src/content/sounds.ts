@@ -67,7 +67,7 @@ function resolveSoundName(sound: Sound): ResolvedSound | null {
       name = "victory";
       break;
     case Sound.Defeat:
-      name = ["defeat", "defeat1", "defeat2"][Math.floor(Math.random() * 3)];
+      name = "defeat";
       break;
     case Sound.DidConnect:
       name = "didConnect";
