@@ -412,8 +412,10 @@ export function didReceiveRematchesSeriesEndIndicator() {
   Board.stopMonsBoardAsDisplayAnimations();
 }
 
-function automove() {
-  let output = game.smart_automove();
+function automove(onAutomoveButtonClick: boolean = false) {
+  const depth = onAutomoveButtonClick ? 2 : 3;
+  const maxNodes = onAutomoveButtonClick ? 420 : 2300;
+  let output = game.smartAutomoveWithBudget(depth, maxNodes);
   applyOutput([], "", output, false, true, AssistedInputKind.None);
   Board.hideItemSelectionOrConfirmationOverlay();
 
@@ -987,7 +989,7 @@ function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, ou
       }
 
       if (((isGameWithBot && game.active_color() === botPlayerColor) || isBotsLoopMode) && !isGameOver) {
-        setTimeout(() => automove(), isBotsLoopMode ? 777 : 777);
+        setTimeout(() => automove(), isBotsLoopMode ? 555 : 555);
       }
 
       if (isGameWithBot && !isPlayerSideTurn()) {
@@ -1025,7 +1027,7 @@ export function resetToTheStartOfThePuzzle() {
 
 export function didClickAutomoveButton() {
   if (isGameOver) return;
-  automove();
+  automove(true);
 }
 
 function hasBothEthOrSolAddresses(): boolean {
