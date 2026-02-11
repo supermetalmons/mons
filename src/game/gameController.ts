@@ -67,6 +67,12 @@ var currentInputs: Location[] = [];
 let blackTimerStash: string | null = null;
 let whiteTimerStash: string | null = null;
 
+type SmartAutomoveWithBudgetAsync = (depth: number, maxVisitedNodes: number) => Promise<MonsWeb.OutputModel>;
+type MonsGameModelWithSmartAsync = MonsWeb.MonsGameModel & {
+  smartAutomoveWithBudgetAsync?: SmartAutomoveWithBudgetAsync;
+  smart_automove_with_budget_async?: SmartAutomoveWithBudgetAsync;
+};
+
 export function getCurrentGameFen(): string {
   return game.fen();
 }
@@ -415,19 +421,38 @@ export function didReceiveRematchesSeriesEndIndicator() {
 function automove(onAutomoveButtonClick: boolean = false) {
   const depth = onAutomoveButtonClick ? 2 : 3;
   const maxNodes = onAutomoveButtonClick ? 420 : 2300;
-  let output = game.smartAutomoveWithBudget(depth, maxNodes);
-  applyOutput([], "", output, false, true, AssistedInputKind.None);
-  Board.hideItemSelectionOrConfirmationOverlay();
-
-  if (isBotsLoopMode) {
+  const smartAutomoveWithBudgetAsync =
+    (game as MonsGameModelWithSmartAsync).smartAutomoveWithBudgetAsync ??
+    (game as MonsGameModelWithSmartAsync).smart_automove_with_budget_async;
+  if (!smartAutomoveWithBudgetAsync) {
     return;
   }
+  smartAutomoveWithBudgetAsync
+    .call(game, depth, maxNodes)
+    .then((output: MonsWeb.OutputModel) => {
+      if (output.kind === MonsWeb.OutputModelKind.Events) {
+        const appliedOutput = game.process_input_fen(output.input_fen());
+        applyOutput([], "", appliedOutput, false, true, AssistedInputKind.None);
+      }
 
-  if (!isGameWithBot || isPlayerSideTurn()) {
-    setAutomoveActionEnabled(true);
-  } else {
-    setAutomoveActionEnabled(false);
-  }
+      Board.hideItemSelectionOrConfirmationOverlay();
+
+      if (isBotsLoopMode) {
+        return;
+      }
+
+      if (!isGameWithBot || isPlayerSideTurn()) {
+        setAutomoveActionEnabled(true);
+      } else {
+        setAutomoveActionEnabled(false);
+      }
+    })
+    .catch((e: unknown) => {
+      if (String(e).includes("smart automove already in progress")) {
+        return;
+      }
+      throw e;
+    });
 }
 
 function didConfirmRematchProposal() {
