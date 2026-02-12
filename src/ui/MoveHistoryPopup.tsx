@@ -73,6 +73,7 @@ const ScrollWheel = styled.div`
   scrollbar-width: none;
   -ms-overflow-style: none;
   overscroll-behavior: contain;
+  touch-action: pan-y;
 
   &::-webkit-scrollbar {
     display: none;
@@ -122,6 +123,7 @@ const ItemContent = styled.div`
   gap: 6px;
   min-width: 0;
   width: 100%;
+  pointer-events: none;
 `;
 
 const IndexLabel = styled.span`
@@ -150,6 +152,8 @@ const EventIcon = styled.img`
   width: 21px;
   height: 21px;
   flex-shrink: 0;
+  -webkit-user-drag: none;
+  user-drag: none;
 `;
 
 const EmojiIcon = styled.img`
@@ -158,6 +162,8 @@ const EmojiIcon = styled.img`
   flex-shrink: 0;
   margin-left: -2px;
   margin-right: -2px;
+  -webkit-user-drag: none;
+  user-drag: none;
 `;
 
 const ActionEmojiIcon = styled(EmojiIcon)`
@@ -185,6 +191,8 @@ const CompositeBase = styled.img`
   width: 100%;
   height: 100%;
   display: block;
+  -webkit-user-drag: none;
+  user-drag: none;
 `;
 
 const CompositeOverlay = styled.img`
@@ -193,6 +201,8 @@ const CompositeOverlay = styled.img`
   height: var(--overlay-size, 80%);
   left: var(--overlay-left, 30%);
   top: var(--overlay-top, 20%);
+  -webkit-user-drag: none;
+  user-drag: none;
 `;
 
 const EventText = styled.span`
