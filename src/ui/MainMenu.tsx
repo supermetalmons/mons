@@ -389,7 +389,7 @@ const CloseButton = styled.button`
   height: 26px;
   width: 26px;
   right: 6px;
-  top: 11px;
+  top: 6px;
   padding: 0;
   -webkit-touch-callout: none;
   touch-action: none;
