@@ -101,6 +101,29 @@ let showPrimaryAction: (action: PrimaryActionType) => void;
 
 const STICKER_ID_WHITELIST: number[] = [9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466, 900316, 900101, 900393, 90063, 900109, 900228, 900245, 900267, 900374, 900347, 900382, 900429, 900225, 900999, 900189];
 const FIXED_STICKER_IDS: number[] = [900316, 900101, 900393, 90063, 900109, 900228, 900245, 900189, 900267, 900374, 900347, 900382, 900429, 900225, 900999];
+const MATERIAL_IMAGE_BASE_URL = "https://assets.mons.link/rocks/materials";
+const STICKER_IMAGE_BASE_URL = "https://assets.mons.link/swagpack/64";
+const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
+const stickerImagePromises: Map<number, Promise<string | null>> = new Map();
+
+const fetchImageUrl = (url: string): Promise<string | null> =>
+  fetch(url)
+    .then((res) => {
+      if (!res.ok) throw new Error("Failed to fetch image");
+      return res.blob();
+    })
+    .then((blob) => URL.createObjectURL(blob))
+    .catch(() => null);
+
+const getCachedImageUrl = <T extends string | number>(cache: Map<T, Promise<string | null>>, key: T, url: string) => {
+  if (!cache.has(key)) {
+    cache.set(key, fetchImageUrl(url));
+  }
+  return cache.get(key)!;
+};
+
+const getMaterialImageUrl = (name: MaterialName) => getCachedImageUrl(materialImagePromises, name, `${MATERIAL_IMAGE_BASE_URL}/${name}.webp`);
+const getStickerImageUrl = (id: number) => getCachedImageUrl(stickerImagePromises, id, `${STICKER_IMAGE_BASE_URL}/${id}.webp`);
 
 const mergeStickerIds = (base: number[], extra: number[]): number[] => {
   if (!extra.length) return base.slice();
@@ -132,6 +155,11 @@ const areStickerIdArraysEqual = (left: number[], right: number[]): boolean => {
     if (left[i] !== right[i]) return false;
   }
   return true;
+};
+
+const getInitialStickerIds = (): number[] => {
+  const cachedExtraIds = normalizeStickerIds(storage.getReactionExtraStickerIds([]));
+  return mergeStickerIds(FIXED_STICKER_IDS, cachedExtraIds);
 };
 
 const BottomControls: React.FC = () => {
@@ -179,7 +207,7 @@ const BottomControls: React.FC = () => {
 
   const [isClaimVictoryButtonDisabled, setIsClaimVictoryButtonDisabled] = useState(false);
   const [timerConfig, setTimerConfig] = useState({ duration: 90, progress: 0, requestDate: Date.now() });
-  const [stickerIds, setStickerIds] = useState<number[]>([]);
+  const [stickerIds, setStickerIds] = useState<number[]>(() => getInitialStickerIds());
   const [pickerMaxHeight, setPickerMaxHeight] = useState<number | undefined>(undefined);
   const [timerConfirmLeft, setTimerConfirmLeft] = useState<number | null>(null);
   const [claimVictoryConfirmLeft, setClaimVictoryConfirmLeft] = useState<number | null>(null);
@@ -196,6 +224,7 @@ const BottomControls: React.FC = () => {
     MATERIALS.forEach((n) => (initial[n] = 0));
     return initial as Record<MaterialName, number>;
   });
+  const [stickerUrls, setStickerUrls] = useState<Record<number, string | null>>({});
   const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
   const frozenMaterialsRef = useRef<Record<MaterialName, number>>(getFrozenMaterials());
   const latestServiceMaterialsRef = useRef<Record<MaterialName, number>>({ dust: 0, slime: 0, gum: 0, metal: 0, ice: 0 });
@@ -295,10 +324,9 @@ const BottomControls: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (isReactionPickerVisible) {
-      const cachedExtraIds = normalizeStickerIds(storage.getReactionExtraStickerIds([]));
-      setStickerIds(mergeStickerIds(FIXED_STICKER_IDS, cachedExtraIds));
-    }
+    if (!isReactionPickerVisible) return;
+    const nextStickerIds = getInitialStickerIds();
+    setStickerIds((prev) => (areStickerIdArraysEqual(prev, nextStickerIds) ? prev : nextStickerIds));
   }, [isReactionPickerVisible]);
 
   useEffect(() => {
@@ -372,7 +400,7 @@ const BottomControls: React.FC = () => {
         const extraIds = getSwagpackReactionStickerIds(data?.swagpack_reactions);
         if (isCancelled) return;
         const nextStickerIds = mergeStickerIds(FIXED_STICKER_IDS, extraIds);
-        setStickerIds(nextStickerIds);
+        setStickerIds((prev) => (areStickerIdArraysEqual(prev, nextStickerIds) ? prev : nextStickerIds));
         const cachedExtraIds = normalizeStickerIds(storage.getReactionExtraStickerIds([]));
         if (!areStickerIdArraysEqual(cachedExtraIds, extraIds)) {
           storage.setReactionExtraStickerIds(extraIds);
@@ -419,22 +447,24 @@ const BottomControls: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    if (!isReactionPickerVisible || !stickerIds.length) return;
     let mounted = true;
-    const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
-    const getMaterialImageUrl = (name: MaterialName) => {
-      if (!materialImagePromises.has(name)) {
-        const url = `https://assets.mons.link/rocks/materials/${name}.webp`;
-        const p = fetch(url)
-          .then((res) => {
-            if (!res.ok) throw new Error("Failed to fetch image");
-            return res.blob();
-          })
-          .then((blob) => URL.createObjectURL(blob))
-          .catch(() => null);
-        materialImagePromises.set(name, p);
-      }
-      return materialImagePromises.get(name)!;
+    stickerIds.forEach((id) => {
+      getStickerImageUrl(id).then((url) => {
+        if (!mounted) return;
+        setStickerUrls((prev) => {
+          if (prev[id] === url) return prev;
+          return { ...prev, [id]: url };
+        });
+      });
+    });
+    return () => {
+      mounted = false;
     };
+  }, [isReactionPickerVisible, stickerIds]);
+
+  useEffect(() => {
+    let mounted = true;
     MATERIALS.forEach((name) => {
       getMaterialImageUrl(name).then((url) => {
         if (!mounted) return;
@@ -1111,7 +1141,7 @@ const BottomControls: React.FC = () => {
                 <ReactionPill onClick={() => handleReactionSelect("gg")}>gg</ReactionPill>
                 {stickerIds.map((id) => (
                   <StickerPill key={id} onClick={() => handleStickerSelect(id)} aria-label={`Sticker ${id}`}>
-                    <img src={`https://assets.mons.link/swagpack/64/${id}.webp`} alt="" loading="lazy" />
+                    <img src={stickerUrls[id] || `${STICKER_IMAGE_BASE_URL}/${id}.webp`} alt="" loading="lazy" />
                   </StickerPill>
                 ))}
               </>
