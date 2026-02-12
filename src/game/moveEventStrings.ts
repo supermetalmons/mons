@@ -71,12 +71,6 @@ function addActionArrowTokens(tokens: MoveHistoryToken[], ev: MonsWeb.EventModel
   return isRight;
 }
 
-function tokensForMon(mon: MonsWeb.Mon | undefined): MoveHistoryToken[] {
-  if (!mon) return [];
-  const monToken = monIconForKind(mon.kind, mon.color);
-  return monToken ? [{ type: "icon", ...monToken }] : [];
-}
-
 function compositeToken(
   base: { icon: string; alt: string },
   overlay: { icon: string; alt: string },

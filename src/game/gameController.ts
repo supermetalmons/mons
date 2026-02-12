@@ -425,8 +425,8 @@ export function didReceiveRematchesSeriesEndIndicator() {
 }
 
 function automove(onAutomoveButtonClick: boolean = false) {
-  const depth = onAutomoveButtonClick ? 3 : 4;
-  const maxNodes = onAutomoveButtonClick ? 699 : 2300;
+  const depth = onAutomoveButtonClick ? 2 : 3;
+  const maxNodes = onAutomoveButtonClick ? 420 : 2300;
   const shouldEnforceBotMovePacing = isBotsLoopMode || (isGameWithBot && game.active_color() === botPlayerColor);
   const fenBeforeAutomove = game.fen();
   const syncAutomoveActionState = () => {
