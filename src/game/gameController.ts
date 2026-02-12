@@ -59,6 +59,9 @@ let resignedColor: MonsWeb.Color | undefined;
 let winnerByTimerColor: MonsWeb.Color | undefined;
 
 let lastReactionTime = 0;
+const minimumIntervalBetweenBotMovesMs = 777;
+const botTurnComputationDelayMs = 420;
+let lastBotMoveTimestamp = 0;
 
 const processedVoiceReactions = new Set<string>();
 
@@ -66,6 +69,12 @@ var currentInputs: Location[] = [];
 
 let blackTimerStash: string | null = null;
 let whiteTimerStash: string | null = null;
+
+type SmartAutomoveWithBudgetAsync = (depth: number, maxVisitedNodes: number) => Promise<MonsWeb.OutputModel>;
+type MonsGameModelWithSmartAsync = MonsWeb.MonsGameModel & {
+  smartAutomoveWithBudgetAsync?: SmartAutomoveWithBudgetAsync;
+  smart_automove_with_budget_async?: SmartAutomoveWithBudgetAsync;
+};
 
 export function getCurrentGameFen(): string {
   return game.fen();
@@ -193,6 +202,7 @@ export async function go() {
     setNavigationListButtonVisible(false);
 
     setWatchOnlyState(true);
+    lastBotMoveTimestamp = 0;
     automove();
   } else if (isBoardSnapshotFlow) {
     const snapshot = decodeURIComponent(getSnapshotIdAndClearPathIfNeeded() || "");
@@ -258,6 +268,7 @@ function rematchInLoopMode() {
   Board.didToggleItemsStyleSet(false);
   Board.showRandomEmojisForLoopMode();
   setNewBoard(false);
+  lastBotMoveTimestamp = 0;
   automove();
 }
 
@@ -331,6 +342,7 @@ export function didClickStartBotGameButton() {
   playerSideColor = MonsWeb.Color.Black;
   isGameWithBot = true;
   showVoiceReactionButton(true);
+  lastBotMoveTimestamp = 0;
   automove();
 }
 
@@ -415,19 +427,56 @@ export function didReceiveRematchesSeriesEndIndicator() {
 function automove(onAutomoveButtonClick: boolean = false) {
   const depth = onAutomoveButtonClick ? 2 : 3;
   const maxNodes = onAutomoveButtonClick ? 420 : 2300;
-  let output = game.smartAutomoveWithBudget(depth, maxNodes);
-  applyOutput([], "", output, false, true, AssistedInputKind.None);
-  Board.hideItemSelectionOrConfirmationOverlay();
-
-  if (isBotsLoopMode) {
+  const shouldEnforceBotMovePacing = isBotsLoopMode || (isGameWithBot && game.active_color() === botPlayerColor);
+  const fenBeforeAutomove = game.fen();
+  const syncAutomoveActionState = () => {
+    if (isBotsLoopMode) {
+      return;
+    }
+    if (!isGameWithBot || isPlayerSideTurn()) {
+      setAutomoveActionEnabled(true);
+    } else {
+      setAutomoveActionEnabled(false);
+    }
+  };
+  const smartAutomoveWithBudgetAsync =
+    (game as MonsGameModelWithSmartAsync).smartAutomoveWithBudgetAsync ??
+    (game as MonsGameModelWithSmartAsync).smart_automove_with_budget_async;
+  if (!smartAutomoveWithBudgetAsync) {
     return;
   }
+  smartAutomoveWithBudgetAsync
+    .call(game, depth, maxNodes)
+    .then((output: MonsWeb.OutputModel) => {
+      if (output.kind === MonsWeb.OutputModelKind.Events) {
+        const applyOutputWhenReady = () => {
+          if (!isGameOver && game.fen() === fenBeforeAutomove) {
+            if (shouldEnforceBotMovePacing) {
+              lastBotMoveTimestamp = Date.now();
+            }
+            const appliedOutput = game.process_input_fen(output.input_fen());
+            applyOutput([], "", appliedOutput, false, true, AssistedInputKind.None);
+          }
+          syncAutomoveActionState();
+        };
+        const delayBeforeApplyMs = shouldEnforceBotMovePacing ? Math.max(0, lastBotMoveTimestamp + minimumIntervalBetweenBotMovesMs - Date.now()) : 0;
+        if (delayBeforeApplyMs > 0) {
+          window.setTimeout(applyOutputWhenReady, delayBeforeApplyMs);
+        } else {
+          applyOutputWhenReady();
+        }
+      } else {
+        syncAutomoveActionState();
+      }
 
-  if (!isGameWithBot || isPlayerSideTurn()) {
-    setAutomoveActionEnabled(true);
-  } else {
-    setAutomoveActionEnabled(false);
-  }
+      Board.hideItemSelectionOrConfirmationOverlay();
+    })
+    .catch((e: unknown) => {
+      if (String(e).includes("smart automove already in progress")) {
+        return;
+      }
+      throw e;
+    });
 }
 
 function didConfirmRematchProposal() {
@@ -988,8 +1037,17 @@ function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, ou
         processInput(AssistedInputKind.KeepSelectionAfterMove, InputModifier.None, mightKeepHighlightOnLocation);
       }
 
-      if (((isGameWithBot && game.active_color() === botPlayerColor) || isBotsLoopMode) && !isGameOver) {
-        setTimeout(() => automove(), isBotsLoopMode ? 555 : 555);
+      if (!isGameOver) {
+        if (isGameWithBot && game.active_color() === botPlayerColor) {
+          window.setTimeout(() => {
+            if (isGameOver || !isGameWithBot || game.active_color() !== botPlayerColor) {
+              return;
+            }
+            automove();
+          }, botTurnComputationDelayMs);
+        } else if (isBotsLoopMode) {
+          automove();
+        }
       }
 
       if (isGameWithBot && !isPlayerSideTurn()) {
