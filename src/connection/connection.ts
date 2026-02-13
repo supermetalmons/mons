@@ -107,7 +107,14 @@ class Connection {
   }
 
   private isSessionEpochActive(epoch: number) {
-    return this.sessionEpoch === epoch;
+    const isActive = this.sessionEpoch === epoch;
+    if (!isActive && process.env.NODE_ENV !== "production") {
+      console.log("stale-session-callback", {
+        expectedEpoch: epoch,
+        currentEpoch: this.sessionEpoch,
+      });
+    }
+    return isActive;
   }
 
   public beginMatchSessionTeardown() {

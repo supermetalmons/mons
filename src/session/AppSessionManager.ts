@@ -1,4 +1,4 @@
-import { beginMatchSession, getCurrentSessionId as getMatchSessionId, incrementSessionEpoch } from "../game/matchSession";
+import { beginMatchSession, getCurrentSessionEpoch, getCurrentSessionId as getMatchSessionId, incrementSessionEpoch } from "../game/matchSession";
 import { getLifecycleCounters } from "../lifecycle/lifecycleDiagnostics";
 import { initializeNavigation, pushRoutePath, replaceRoutePath, subscribeToNavigationState } from "../navigation/appNavigation";
 import { RouteState, getCurrentRouteState, getRoutePathForTarget } from "../navigation/routeState";
@@ -31,6 +31,7 @@ const logTransition = (from: RouteState, to: RouteState) => {
     from: from.path,
     to: to.path,
     sessionId: getMatchSessionId(),
+    epoch: getCurrentSessionEpoch(),
     counters,
   });
 };
@@ -118,7 +119,7 @@ export const transition = async (target: RouteState, options?: TransitionOptions
 };
 
 export const transitionToHome = async (options?: TransitionToHomeOptions) => {
-  const target = getCurrentRouteState();
+  const target = currentTarget;
   const homeTarget: RouteState = {
     mode: "home",
     path: "",

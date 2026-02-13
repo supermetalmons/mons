@@ -269,8 +269,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     storage.signOut();
     connection
       .signOut()
-      .then(() => transitionToHome({ resetProfileScope: true }))
-      .catch(() => transitionToHome({ resetProfileScope: true }));
+      .then(() => transitionToHome({ resetProfileScope: true, forceMatchScopeReset: true }))
+      .catch(() => transitionToHome({ resetProfileScope: true, forceMatchScopeReset: true }));
   };
 
   handleLogout = () => {

@@ -21,7 +21,7 @@ import { isBotsLoopMode } from "../connection/connection";
 import { launchConfetti, stopConfetti } from "./confetti";
 import { soundPlayer } from "../utils/SoundPlayer";
 import type { MaterialName } from "../services/rocksMiningService";
-import { decrementLifecycleCounter, incrementLifecycleCounter, setLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
+import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 const valentinesLoaderEnabled = true;
@@ -63,6 +63,7 @@ let boardInputHandler: ((event: Event) => void) | null = null;
 let hasSetupBoardRuntime = false;
 let didRegisterResizeHandler = false;
 const wavesIntervalIds = new Set<number>();
+const sparkleIntervalIds = new Set<number>();
 const boardTimeoutIds = new Set<number>();
 
 let board: HTMLElement | null;
@@ -233,6 +234,28 @@ const clearWavesIntervals = () => {
     decrementLifecycleCounter("boardIntervals");
   });
   wavesIntervalIds.clear();
+};
+
+const trackSparkleInterval = (intervalId: number) => {
+  sparkleIntervalIds.add(intervalId);
+  incrementLifecycleCounter("boardIntervals");
+};
+
+const clearTrackedSparkleInterval = (intervalId: number) => {
+  if (!sparkleIntervalIds.has(intervalId)) {
+    return;
+  }
+  sparkleIntervalIds.delete(intervalId);
+  clearInterval(intervalId);
+  decrementLifecycleCounter("boardIntervals");
+};
+
+const clearSparkleIntervals = () => {
+  sparkleIntervalIds.forEach((intervalId) => {
+    clearInterval(intervalId);
+    decrementLifecycleCounter("boardIntervals");
+  });
+  sparkleIntervalIds.clear();
 };
 
 export function fastForwardInstructionsIfNeeded() {
@@ -2652,6 +2675,7 @@ export function disposeBoardRuntime() {
   clearWagerPilesForNewMatch();
   handleWagerRenderState = null;
   clearWavesIntervals();
+  clearSparkleIntervals();
   clearTrackedBoardTimeouts();
   if (currentTextAnimation.timer) {
     clearTimeout(currentTextAnimation.timer);
@@ -2722,9 +2746,6 @@ export function disposeBoardRuntime() {
   highlightsLayer = null;
   boardBackgroundLayer = null;
   board = null;
-  setLifecycleCounter("boardIntervals", 0);
-  setLifecycleCounter("boardTimeouts", 0);
-  setLifecycleCounter("boardRaf", 0);
 }
 
 export function removeHighlights() {
@@ -2954,13 +2975,14 @@ function createSparklingContainer(location: Location): SVGElement {
   container.appendChild(mask);
   container.setAttribute("mask", `url(#mask-square-${location.toString()})`);
 
-  const intervalId = setInterval(() => {
+  const intervalId = window.setInterval(() => {
     if (!container.parentNode?.parentNode) {
-      clearInterval(intervalId);
+      clearTrackedSparkleInterval(intervalId);
       return;
     }
     createSparkleParticle(location, container);
   }, 230);
+  trackSparkleInterval(intervalId);
 
   return container;
 }
@@ -3522,10 +3544,13 @@ export async function indicateElectricHit(at: Location) {
 
 export async function indicatePotionUsage(at: Location, byOpponent: boolean) {
   const effects = await ensureParticleEffectsLoaded();
-  setTimeout(() => {
+  const potionTimeout = window.setTimeout(() => {
+    boardTimeoutIds.delete(potionTimeout);
+    decrementLifecycleCounter("boardTimeouts");
     playSounds([Sound.UsePotion]);
     effects.showPurpleBubbles(at);
   }, 300);
+  trackBoardTimeout(potionTimeout);
 }
 
 export async function indicateBombExplosion(at: Location) {
