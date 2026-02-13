@@ -154,6 +154,13 @@ export const initializeAppSessionManager = () => {
   currentTarget = getCurrentRouteState();
   beginMatchSession();
   subscribeToNavigationState((routeState, source) => {
+    if (source === "push" || source === "replace") {
+      if (isApplyingNavigation || isTransitioning) {
+        return;
+      }
+      currentTarget = routeState;
+      return;
+    }
     if (source !== "popstate") {
       return;
     }
