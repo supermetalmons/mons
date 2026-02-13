@@ -1494,16 +1494,19 @@ class Connection {
 
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
     applyCurrentRouteState();
-    const inviteChanged = this.inviteId && this.inviteId !== inviteId;
-    if (this.sameProfilePlayerUid === null || this.loginUid !== uid) {
-      this.setSameProfilePlayerUid(uid);
-    }
-
+    const previousInviteId = this.inviteId;
+    const inviteChanged = previousInviteId !== null && previousInviteId !== inviteId;
+    const shouldSetupSameProfileUid = this.sameProfilePlayerUid === null || this.loginUid !== uid;
     this.loginUid = uid;
     if (inviteChanged) {
       this.detachFromMatchSession();
+    } else if (previousInviteId === null) {
+      this.bumpSessionEpoch();
     }
-    const connectEpoch = this.bumpSessionEpoch();
+    if (shouldSetupSameProfileUid) {
+      this.setSameProfilePlayerUid(uid);
+    }
+    const connectEpoch = this.sessionEpoch;
     this.inviteId = inviteId;
     const inviteRef = ref(this.db, `invites/${inviteId}`);
     get(inviteRef)

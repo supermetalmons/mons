@@ -1120,9 +1120,12 @@ export function showVoiceReactionText(reactionText: string, opponents: boolean) 
   }
 
   renderPlayersNamesLabels();
-  setTimeout(() => {
+  const voiceReactionTimeout = window.setTimeout(() => {
+    boardTimeoutIds.delete(voiceReactionTimeout);
+    decrementLifecycleCounter("boardTimeouts");
     renderPlayersNamesLabels();
   }, 3000);
+  trackBoardTimeout(voiceReactionTimeout);
 }
 
 export function setupPlayerId(uid: string, opponent: boolean) {
