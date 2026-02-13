@@ -22,7 +22,7 @@ The end result must be equivalent to a fresh `/` load, without depending on full
 - Make route state dynamic and synchronized with browser history (`popstate`).
 - Make board/game/connection/UI transitions idempotent and race-safe.
 - Harden auth/profile lifecycle for repeated runtime transitions.
-- Add diagnostics and rollout controls for safe production cutover.
+- Add diagnostics for safe production cutover.
 
 ## Out of scope (initial refactor)
 
@@ -353,13 +353,12 @@ Exit criteria:
 
 - repeated logout/login works in same runtime with clean state.
 
-## Phase 5 - Soft-home transition rollout (flagged)
+## Phase 5 - Soft-home transition rollout
 
 Tasks:
 
 - Implement `transition({ mode: "home" })` using teardown ordering contract.
 - Replace all listed hard navigation/reload callsites with orchestrated transition.
-- Keep legacy fallback behind flags until release gate passes.
 
 Exit criteria:
 
@@ -400,14 +399,6 @@ Exit criteria:
 5. Async epoch guard rollout.
 6. Soft-home callsite migration (flagged).
 7. Auth/profile hardening + final cleanup.
-
----
-
-## Rollout Controls
-
-- `USE_IN_APP_HOME_NAV` default `off` until validation gate passes.
-- staged rollout: local -> staging -> canary -> full.
-- `IN_APP_HOME_DISABLED` emergency rollback control must remain available through stabilization period.
 
 ---
 
