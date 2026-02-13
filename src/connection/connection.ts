@@ -126,6 +126,27 @@ class Connection {
     return () => this.isSessionEpochActive(epoch);
   }
 
+  private createMatchContextGuard(inviteId: string, matchId: string): () => boolean {
+    const epoch = this.sessionEpoch;
+    return () => {
+      if (!this.isSessionEpochActive(epoch)) {
+        return false;
+      }
+      const isActive = this.inviteId === inviteId && this.matchId === matchId;
+      if (!isActive && process.env.NODE_ENV !== "production") {
+        console.log("stale-session-callback", {
+          expectedEpoch: epoch,
+          currentEpoch: this.sessionEpoch,
+          expectedInviteId: inviteId,
+          currentInviteId: this.inviteId,
+          expectedMatchId: matchId,
+          currentMatchId: this.matchId,
+        });
+      }
+      return isActive;
+    };
+  }
+
   private trackInviteWaitRef(inviteRef: any) {
     this.inviteWaitRefs.add(inviteRef);
     incrementLifecycleCounter("connectionObservers");
@@ -980,13 +1001,18 @@ class Connection {
     let prevFrozen: Record<MiningMaterialName, number> | null = null;
     let optimisticCount = 0;
     let optimisticApplied = false;
+    let sessionGuard: (() => boolean) | null = null;
+    let playerUid: string | null = null;
     try {
       await this.ensureAuthenticated();
-      if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) {
-        console.log("wager:send:skipped", { inviteId: this.inviteId, matchId: this.matchId });
+      const inviteId = this.inviteId;
+      const matchId = this.matchId;
+      playerUid = this.sameProfilePlayerUid;
+      if (!inviteId || !matchId || !playerUid) {
+        console.log("wager:send:skipped", { inviteId, matchId });
         return { ok: false };
       }
-      const playerUid = this.sameProfilePlayerUid;
+      sessionGuard = this.createMatchContextGuard(inviteId, matchId);
       const currentState = getWagerState();
       if (!currentState?.agreed && !currentState?.resolved) {
         const totalMaterials = rocksMiningService.getSnapshot().materials;
@@ -1011,14 +1037,17 @@ class Connection {
           optimisticApplied = true;
         }
       }
-      console.log("wager:send:start", { inviteId: this.inviteId, matchId: this.matchId, material, count });
+      console.log("wager:send:start", { inviteId, matchId, material, count });
       const sendWagerProposalFunction = httpsCallable(this.functions, "sendWagerProposal");
-      const data = await this.callWagerFunctionWithRetry("wager:send", () => sendWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId, material, count }));
+      const data = await this.callWagerFunctionWithRetry("wager:send", () => sendWagerProposalFunction({ inviteId, matchId, material, count }));
+      if (!sessionGuard()) {
+        return { ok: false };
+      }
       console.log("wager:send:done", data);
       if (optimisticApplied) {
         if (data && data.ok === false) {
           const latestState = getWagerState();
-          const proposal = latestState?.proposals && playerUid ? latestState.proposals[playerUid] : null;
+          const proposal = latestState?.proposals ? latestState.proposals[playerUid] : null;
           const shouldRollback = !!proposal && proposal.material === material && proposal.count === optimisticCount && !latestState?.agreed && !latestState?.resolved;
           if (shouldRollback) {
             this.setLocalWagerState(prevState);
@@ -1052,7 +1081,7 @@ class Connection {
           const serverCount = Math.max(0, Math.round(data.count));
           if (serverCount !== optimisticCount) {
             const latestState = getWagerState();
-            const proposal = latestState?.proposals && playerUid ? latestState.proposals[playerUid] : null;
+            const proposal = latestState?.proposals ? latestState.proposals[playerUid] : null;
             if (proposal && proposal.material === material && proposal.count === optimisticCount && !latestState?.agreed && !latestState?.resolved) {
               const proposals = { ...(latestState?.proposals ?? {}) };
               proposals[playerUid] = { ...proposal, count: serverCount };
@@ -1069,9 +1098,12 @@ class Connection {
       return data;
     } catch (error) {
       console.error("wager:send:error", error);
+      if (sessionGuard && !sessionGuard()) {
+        return { ok: false };
+      }
       if (optimisticApplied) {
         const latestState = getWagerState();
-        const proposal = latestState?.proposals && this.sameProfilePlayerUid ? latestState.proposals[this.sameProfilePlayerUid] : null;
+        const proposal = latestState?.proposals && playerUid ? latestState.proposals[playerUid] : null;
         const shouldRollback =
           !!proposal && proposal.material === material && proposal.count === optimisticCount && !latestState?.agreed && !latestState?.resolved;
         if (shouldRollback) {
@@ -1090,15 +1122,20 @@ class Connection {
     let prevFrozen: Record<MiningMaterialName, number> | null = null;
     let optimisticApplied = false;
     let proposal: WagerProposal | null = null;
+    let sessionGuard: (() => boolean) | null = null;
+    let playerUid: string | null = null;
     try {
       await this.ensureAuthenticated();
-      if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) {
-        console.log("wager:cancel:skipped", { inviteId: this.inviteId, matchId: this.matchId });
+      const inviteId = this.inviteId;
+      const matchId = this.matchId;
+      playerUid = this.sameProfilePlayerUid;
+      if (!inviteId || !matchId || !playerUid) {
+        console.log("wager:cancel:skipped", { inviteId, matchId });
         return { ok: false };
       }
-      const playerUid = this.sameProfilePlayerUid;
+      sessionGuard = this.createMatchContextGuard(inviteId, matchId);
       const currentState = getWagerState();
-      const existingProposal = currentState?.proposals && playerUid ? currentState.proposals[playerUid] : null;
+      const existingProposal = currentState?.proposals ? currentState.proposals[playerUid] : null;
       if (existingProposal && !currentState?.agreed && !currentState?.resolved) {
         prevState = this.cloneWagerState(currentState);
         prevFrozen = getFrozenMaterials();
@@ -1114,14 +1151,17 @@ class Connection {
         applyFrozenMaterialsDelta({ [proposal.material]: -proposal.count });
         optimisticApplied = true;
       }
-      console.log("wager:cancel:start", { inviteId: this.inviteId, matchId: this.matchId });
+      console.log("wager:cancel:start", { inviteId, matchId });
       const cancelWagerProposalFunction = httpsCallable(this.functions, "cancelWagerProposal");
-      const data = await this.callWagerFunctionWithRetry("wager:cancel", () => cancelWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId }));
+      const data = await this.callWagerFunctionWithRetry("wager:cancel", () => cancelWagerProposalFunction({ inviteId, matchId }));
+      if (!sessionGuard()) {
+        return { ok: false };
+      }
       console.log("wager:cancel:done", data);
       if (optimisticApplied && data && data.ok === false) {
         const latestState = getWagerState();
         const hasAgreedOrResolved = !!latestState?.agreed || !!latestState?.resolved;
-        const stillMissing = !latestState?.proposals || (playerUid && !latestState.proposals[playerUid]);
+        const stillMissing = !latestState?.proposals || !latestState.proposals[playerUid];
         if (!hasAgreedOrResolved && stillMissing) {
           this.setLocalWagerState(prevState);
           if (prevFrozen) {
@@ -1132,10 +1172,13 @@ class Connection {
       return data;
     } catch (error) {
       console.error("wager:cancel:error", error);
+      if (sessionGuard && !sessionGuard()) {
+        return { ok: false };
+      }
       if (optimisticApplied) {
         const latestState = getWagerState();
         const hasAgreedOrResolved = !!latestState?.agreed || !!latestState?.resolved;
-        const stillMissing = !latestState?.proposals || (this.sameProfilePlayerUid && !latestState.proposals[this.sameProfilePlayerUid]);
+        const stillMissing = !latestState?.proposals || (playerUid ? !latestState.proposals[playerUid] : true);
         if (!hasAgreedOrResolved && stillMissing) {
           this.setLocalWagerState(prevState);
           if (prevFrozen) {
@@ -1151,12 +1194,16 @@ class Connection {
     let prevState: MatchWagerState | null = null;
     let optimisticApplied = false;
     let opponentUid: string | null = null;
+    let sessionGuard: (() => boolean) | null = null;
     try {
       await this.ensureAuthenticated();
-      if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) {
-        console.log("wager:decline:skipped", { inviteId: this.inviteId, matchId: this.matchId });
+      const inviteId = this.inviteId;
+      const matchId = this.matchId;
+      if (!inviteId || !matchId || !this.sameProfilePlayerUid) {
+        console.log("wager:decline:skipped", { inviteId, matchId });
         return { ok: false };
       }
+      sessionGuard = this.createMatchContextGuard(inviteId, matchId);
       opponentUid = this.getOpponentId();
       const currentState = getWagerState();
       const existingProposal = opponentUid && currentState?.proposals ? currentState.proposals[opponentUid] : null;
@@ -1172,9 +1219,12 @@ class Connection {
         this.setLocalWagerState(nextState);
         optimisticApplied = true;
       }
-      console.log("wager:decline:start", { inviteId: this.inviteId, matchId: this.matchId });
+      console.log("wager:decline:start", { inviteId, matchId });
       const declineWagerProposalFunction = httpsCallable(this.functions, "declineWagerProposal");
-      const data = await this.callWagerFunctionWithRetry("wager:decline", () => declineWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId }));
+      const data = await this.callWagerFunctionWithRetry("wager:decline", () => declineWagerProposalFunction({ inviteId, matchId }));
+      if (!sessionGuard()) {
+        return { ok: false };
+      }
       console.log("wager:decline:done", data);
       if (optimisticApplied && data && data.ok === false) {
         const latestState = getWagerState();
@@ -1187,6 +1237,9 @@ class Connection {
       return data;
     } catch (error) {
       console.error("wager:decline:error", error);
+      if (sessionGuard && !sessionGuard()) {
+        return { ok: false };
+      }
       if (optimisticApplied) {
         const latestState = getWagerState();
         const hasAgreedOrResolved = !!latestState?.agreed || !!latestState?.resolved;
@@ -1205,12 +1258,16 @@ class Connection {
     let optimisticApplied = false;
     let optimisticAgreement: WagerAgreement | null = null;
     let opponentUid: string | null = null;
+    let sessionGuard: (() => boolean) | null = null;
     try {
       await this.ensureAuthenticated();
-      if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) {
-        console.log("wager:accept:skipped", { inviteId: this.inviteId, matchId: this.matchId });
+      const inviteId = this.inviteId;
+      const matchId = this.matchId;
+      if (!inviteId || !matchId || !this.sameProfilePlayerUid) {
+        console.log("wager:accept:skipped", { inviteId, matchId });
         return { ok: false };
       }
+      sessionGuard = this.createMatchContextGuard(inviteId, matchId);
       const playerUid = this.sameProfilePlayerUid;
       opponentUid = this.getOpponentId();
       const currentState = getWagerState();
@@ -1254,9 +1311,12 @@ class Connection {
           optimisticApplied = true;
         }
       }
-      console.log("wager:accept:start", { inviteId: this.inviteId, matchId: this.matchId });
+      console.log("wager:accept:start", { inviteId, matchId });
       const acceptWagerProposalFunction = httpsCallable(this.functions, "acceptWagerProposal");
-      const data = await this.callWagerFunctionWithRetry("wager:accept", () => acceptWagerProposalFunction({ inviteId: this.inviteId, matchId: this.matchId }));
+      const data = await this.callWagerFunctionWithRetry("wager:accept", () => acceptWagerProposalFunction({ inviteId, matchId }));
+      if (!sessionGuard()) {
+        return { ok: false };
+      }
       console.log("wager:accept:done", data);
       if (optimisticApplied && optimisticAgreement) {
         if (data && data.ok === false) {
@@ -1301,6 +1361,9 @@ class Connection {
       return data;
     } catch (error) {
       console.error("wager:accept:error", error);
+      if (sessionGuard && !sessionGuard()) {
+        return { ok: false };
+      }
       if (optimisticApplied && optimisticAgreement) {
         const latestState = getWagerState();
         const agreed = latestState?.agreed;

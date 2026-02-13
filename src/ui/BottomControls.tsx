@@ -1013,7 +1013,7 @@ const BottomControls: React.FC = () => {
     try {
       const result = await connection.cancelAutomatch();
       if (result && result.ok) {
-        await transitionToHome();
+        await transitionToHome({ forceMatchScopeReset: true });
       } else {
         setIsCancelAutomatchDisabled(false);
       }
