@@ -320,6 +320,7 @@ function startTextAnimation(text: string) {
   if (currentTextAnimation.timer) {
     clearTimeout(currentTextAnimation.timer);
     decrementLifecycleCounter("boardTimeouts");
+    currentTextAnimation.timer = null;
   }
 
   const chars = Array.from(text);
@@ -354,12 +355,15 @@ function startTextAnimation(text: string) {
       const delay = currentChar === " " ? 55 : 23;
       currentIndex += 1;
 
-      currentTextAnimation.timer = setTimeout(animateStep, delay);
+      currentTextAnimation.timer = setTimeout(() => {
+        currentTextAnimation.timer = null;
+        decrementLifecycleCounter("boardTimeouts");
+        animateStep();
+      }, delay);
       incrementLifecycleCounter("boardTimeouts");
     } else {
       currentTextAnimation.isAnimating = false;
       currentTextAnimation.fastForwardCallback = null;
-      decrementLifecycleCounter("boardTimeouts");
       currentTextAnimation.timer = null;
       toggleFromTalkingToIdle();
     }

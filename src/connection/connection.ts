@@ -234,7 +234,7 @@ class Connection {
 
   public setupConnection(autojoin: boolean): void {
     applyCurrentRouteState();
-    if (!isCreateNewInviteFlow) {
+    if (!isCreateNewInviteFlow && !isBoardSnapshotFlow && !isBotsLoopMode) {
       const sessionGuard = this.createSessionGuard();
       const inviteId = routePath;
       if (!inviteId) {
@@ -1531,7 +1531,7 @@ class Connection {
         this.observeRematchOrEndMatchIndicators();
         this.observeWagers();
 
-        const matchId = await this.getLatestBothSidesApprovedOrProposedByMeMatchId();
+        const matchId = await this.getLatestBothSidesApprovedOrProposedByMeMatchId(connectEpoch);
         if (!this.isSessionEpochActive(connectEpoch)) {
           return;
         }
@@ -1805,7 +1805,11 @@ class Connection {
     });
   }
 
-  private async getLatestBothSidesApprovedOrProposedByMeMatchId(): Promise<string> {
+  private async getLatestBothSidesApprovedOrProposedByMeMatchId(epoch?: number): Promise<string> {
+    const isCurrentEpoch = () => epoch === undefined || this.isSessionEpochActive(epoch);
+    if (!isCurrentEpoch()) {
+      return "";
+    }
     let rematchIndex = this.getLatestBothSidesApprovedRematchIndex();
     if (!this.inviteId || !this.latestInvite) {
       return "";
@@ -1819,12 +1823,18 @@ class Connection {
           const profileId = this.getLocalProfileId();
           if (profileId !== null) {
             const matchingUid = await this.checkBothPlayerProfiles(this.latestInvite.hostId, this.latestInvite.guestId ?? "", profileId);
+            if (!isCurrentEpoch()) {
+              return "";
+            }
             if (matchingUid !== null) {
               this.setSameProfilePlayerUid(matchingUid);
             }
           }
         }
 
+        if (!isCurrentEpoch()) {
+          return "";
+        }
         const proposedMoreAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid && hostRematchesLength > guestRematchesLength;
         const proposedMoreAsGuest = this.latestInvite.guestId === this.sameProfilePlayerUid && guestRematchesLength > hostRematchesLength;
         if (proposedMoreAsHost || proposedMoreAsGuest) {
@@ -1832,6 +1842,9 @@ class Connection {
           didDiscoverExistingRematchProposalWaitingForResponse();
         }
       }
+    }
+    if (!isCurrentEpoch()) {
+      return "";
     }
     if (!rematchIndex) {
       return this.inviteId;
