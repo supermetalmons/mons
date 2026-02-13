@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import styled from "styled-components";
 import { FaTimes, FaCheck } from "react-icons/fa";
 import { isWatchOnly, subscribeToWatchOnly } from "../game/gameController";
-import { getCurrentTarget, transition } from "../session/AppSessionManager";
 import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../content/boardStyles";
 import { defaultInputEventName, isMobile } from "../utils/misc";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
@@ -438,10 +437,6 @@ const BoardComponent: React.FC = () => {
   const showOpponentActions = !wagerActionsLocked && activeWagerPanelSide === "opponent" && !!opponentProposal;
   const showPlayerActions = !wagerActionsLocked && activeWagerPanelSide === "player" && !!playerProposal;
   const wagerPanelHasActions = showOpponentActions || showPlayerActions;
-
-  useEffect(() => {
-    void transition(getCurrentTarget(), { skipNavigation: true, force: true });
-  }, []);
 
   useEffect(() => {
     const unsubscribe = subscribeToWagerState((state) => {

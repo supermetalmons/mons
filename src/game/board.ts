@@ -44,7 +44,7 @@ export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, 
 
   updateBoardComponentForBoardStyleChange();
   didToggleItemsStyleSet();
-  setTimeout(() => updateLayout(), 1);
+  setManagedBoardTimeout(() => updateLayout(), 1);
 }
 
 export let playerSideMetadata = newEmptyPlayerMetadata();
@@ -213,6 +213,18 @@ let currentTextAnimation: {
 const trackBoardTimeout = (timeoutId: number) => {
   boardTimeoutIds.add(timeoutId);
   incrementLifecycleCounter("boardTimeouts");
+};
+
+const setManagedBoardTimeout = (callback: () => void, delay: number): number => {
+  const timeoutId = window.setTimeout(() => {
+    if (boardTimeoutIds.has(timeoutId)) {
+      boardTimeoutIds.delete(timeoutId);
+      decrementLifecycleCounter("boardTimeouts");
+    }
+    callback();
+  }, delay);
+  trackBoardTimeout(timeoutId);
+  return timeoutId;
 };
 
 const clearTrackedBoardTimeouts = () => {
@@ -402,7 +414,7 @@ export function flashPuzzleSuccess() {
 
 export function flashPuzzleFailure() {
   setBoardDimmed(true, "#94165135");
-  setTimeout(() => {
+  setManagedBoardTimeout(() => {
     setBoardDimmed(false);
   }, 333);
 }
@@ -2430,7 +2442,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     });
 
     nameText.addEventListener("touchend", () => {
-      setTimeout(() => {
+      setManagedBoardTimeout(() => {
         SVG.setFill(nameText, colors.scoreText);
       }, 100);
     });
@@ -2552,7 +2564,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
           avatar.style.transformOrigin = `0px ${isPangchiuBoard() ? 1369 : 1300}px`;
           avatar.style.transform = "scale(1.8)";
           avatar.style.transition = "transform 0.3s";
-          setTimeout(() => {
+          setManagedBoardTimeout(() => {
             avatar.style.transform = "scale(1)";
           }, 300);
         }
@@ -2784,7 +2796,7 @@ export function popOpponentsEmoji() {
 
   opponentAvatar.style.transition = "transform 0.3s";
   opponentAvatar.style.transform = "scale(1.8)";
-  setTimeout(() => {
+  setManagedBoardTimeout(() => {
     if (!opponentAvatar) return;
     opponentAvatar.style.transform = "scale(1)";
   }, 300);
@@ -3087,18 +3099,18 @@ function startBlinking(element: SVGElement) {
       element.style.opacity = "1";
     });
 
-    setTimeout(() => {
+    setManagedBoardTimeout(() => {
       if (!element.parentNode) return;
       element.style.transition = "";
       element.style.opacity = "0";
       element.style.transition = `opacity ${fadeDuration}ms`;
-      setTimeout(() => {
+      setManagedBoardTimeout(() => {
         if (!element.parentNode) return;
         blinkCycle();
       }, delayBetween);
     }, fadeDuration);
   }
-  setTimeout(() => {
+  setManagedBoardTimeout(() => {
     blinkCycle();
   }, 0);
 }
@@ -3221,7 +3233,7 @@ function highlightStartFromSuggestion(location: Location, color: string) {
 
   highlightsLayer?.append(highlight);
 
-  setTimeout(() => {
+  setManagedBoardTimeout(() => {
     highlight.remove();
   }, 100);
 }

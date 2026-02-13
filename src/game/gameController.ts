@@ -1783,7 +1783,7 @@ export function showNextProblem(problem: Problem) {
 
 export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matchId: string) {
   const activeMatchId = connection.getActiveMatchId();
-  if (activeMatchId && activeMatchId !== matchId) {
+  if (!activeMatchId || activeMatchId !== matchId) {
     return;
   }
   if (!didConnect) {
@@ -1885,6 +1885,10 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
 }
 
 export function didRecoverMyMatch(match: Match, matchId: string) {
+  const activeMatchId = connection.getActiveMatchId();
+  if (!activeMatchId || activeMatchId !== matchId) {
+    return;
+  }
   isReconnect = true;
   resetWagerStateForMatch(matchId);
 

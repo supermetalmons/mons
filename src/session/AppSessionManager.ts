@@ -21,6 +21,22 @@ let isApplyingNavigation = false;
 let currentTarget: AppSessionTarget = getCurrentRouteState();
 let pendingTransitionRequest: { target: RouteState; options?: TransitionOptions } | null = null;
 
+const waitForBoardRoot = async () => {
+  if (document.getElementById("monsboard")) {
+    return;
+  }
+  await new Promise<void>((resolve) => {
+    const poll = () => {
+      if (document.getElementById("monsboard")) {
+        resolve();
+      } else {
+        window.setTimeout(poll, 16);
+      }
+    };
+    poll();
+  });
+};
+
 const routeStatesMatch = (a: RouteState, b: RouteState) => {
   return a.mode === b.mode && a.path === b.path && a.inviteId === b.inviteId && a.snapshotId === b.snapshotId && a.autojoin === b.autojoin;
 };
@@ -51,6 +67,7 @@ const applyPathForTarget = (target: RouteState, replace = false) => {
 };
 
 const bootstrapForRoute = async () => {
+  await waitForBoardRoot();
   const gameController = await import("../game/gameController");
   await gameController.go();
   const mainGameLoadState = await import("../game/mainGameLoadState");
@@ -120,7 +137,6 @@ export const transition = async (target: RouteState, options?: TransitionOptions
 };
 
 export const transitionToHome = async (options?: TransitionToHomeOptions) => {
-  const target = currentTarget;
   const homeTarget: RouteState = {
     mode: "home",
     path: "",
@@ -128,10 +144,12 @@ export const transitionToHome = async (options?: TransitionToHomeOptions) => {
     snapshotId: null,
     autojoin: false,
   };
-  if (!routeStatesMatch(target, homeTarget) || options?.forceMatchScopeReset) {
+  const shouldForceMatchScopeReset = options?.forceMatchScopeReset === true;
+  const activeTarget = currentTarget;
+  if (!routeStatesMatch(activeTarget, homeTarget) || shouldForceMatchScopeReset) {
     await transition(homeTarget, {
       resetProfileScope: options?.resetProfileScope,
-      force: options?.forceMatchScopeReset === true,
+      force: shouldForceMatchScopeReset,
     });
   } else if (options?.resetProfileScope) {
     const lifecycleManager = await import("../lifecycle/lifecycleManager");
@@ -154,7 +172,6 @@ export const initializeAppSessionManager = () => {
   initialized = true;
   initializeNavigation();
   currentTarget = getCurrentRouteState();
-  beginMatchSession();
   subscribeToNavigationState((routeState, source) => {
     if (source === "push" || source === "replace") {
       if (isApplyingNavigation || isTransitioning) {
@@ -178,5 +195,6 @@ export const initializeAppSessionManager = () => {
     }
     void transition(routeState, { skipNavigation: true });
   });
+  void transition(currentTarget, { skipNavigation: true, force: true });
 };
 

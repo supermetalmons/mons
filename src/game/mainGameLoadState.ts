@@ -1,6 +1,7 @@
 type Listener = () => void;
 
 let loaded = false;
+let didLoadAtLeastOnce = false;
 const listeners: Listener[] = [];
 
 export function isMainGameLoaded() {
@@ -12,6 +13,7 @@ export function markMainGameLoaded() {
     return;
   }
   loaded = true;
+  didLoadAtLeastOnce = true;
   const pending = listeners.slice();
   listeners.length = 0;
   for (const listener of pending) {
@@ -35,5 +37,8 @@ export function onMainGameLoaded(listener: Listener) {
 
 export function resetMainGameLoadedState() {
   loaded = false;
+  if (didLoadAtLeastOnce) {
+    listeners.length = 0;
+  }
 }
 

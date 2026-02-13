@@ -32,9 +32,9 @@ const reportMatchScopeCounterDrift = () => {
 
 export const teardownMatchScope = () => {
   closeTransientUi();
-  connection.beginMatchSessionTeardown();
   disposeGameSession();
   disposeBoardRuntime();
+  connection.beginMatchSessionTeardown();
   connection.detachFromMatchSession();
   resetWagerStore();
   resetWagerMaterialsState();
