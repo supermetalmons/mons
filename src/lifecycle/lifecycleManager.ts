@@ -17,6 +17,7 @@ const reportMatchScopeCounterDrift = () => {
   }
   const counters = getLifecycleCounters();
   const drift = {
+    connectionObservers: counters.connectionObservers,
     boardDomListeners: counters.boardDomListeners,
     boardIntervals: counters.boardIntervals,
     boardTimeouts: counters.boardTimeouts,

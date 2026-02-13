@@ -264,7 +264,7 @@ export async function go() {
     lastBotMoveTimestamp = 0;
     automove();
   } else if (isBoardSnapshotFlow) {
-    const snapshot = decodeURIComponent(getSnapshotIdAndClearPathIfNeeded() || "");
+    const snapshot = getSnapshotIdAndClearPathIfNeeded() || "";
     const gameFromFen = MonsWeb.MonsGameModel.from_fen(snapshot);
     if (!gameFromFen) return;
     game = gameFromFen;

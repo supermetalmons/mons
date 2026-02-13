@@ -11,6 +11,6 @@ export const closeTransientUi = () => {
   hideNotificationBanner();
   hideShinyCard();
   resetIslandOverlayState();
-  clearBoardTransientUi(true);
+  clearBoardTransientUi(false);
 };
 

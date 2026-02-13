@@ -19,7 +19,7 @@ let initialized = false;
 let isTransitioning = false;
 let isApplyingNavigation = false;
 let currentTarget: AppSessionTarget = getCurrentRouteState();
-let pendingPopstateTarget: RouteState | null = null;
+let pendingTransitionRequest: { target: RouteState; options?: TransitionOptions } | null = null;
 
 const routeStatesMatch = (a: RouteState, b: RouteState) => {
   return a.mode === b.mode && a.path === b.path && a.inviteId === b.inviteId && a.snapshotId === b.snapshotId && a.autojoin === b.autojoin;
@@ -59,6 +59,7 @@ const bootstrapForRoute = async () => {
 
 const runTransition = async (target: RouteState, options?: TransitionOptions) => {
   if (isTransitioning) {
+    pendingTransitionRequest = { target, options };
     return;
   }
   const from = currentTarget;
@@ -106,10 +107,10 @@ const runTransition = async (target: RouteState, options?: TransitionOptions) =>
     }
   } finally {
     isTransitioning = false;
-    const queuedTarget = pendingPopstateTarget;
-    pendingPopstateTarget = null;
-    if (queuedTarget && !routeStatesMatch(queuedTarget, currentTarget)) {
-      void runTransition(queuedTarget, { skipNavigation: true });
+    const queuedRequest = pendingTransitionRequest;
+    pendingTransitionRequest = null;
+    if (queuedRequest && (queuedRequest.options?.force || !routeStatesMatch(queuedRequest.target, currentTarget))) {
+      void runTransition(queuedRequest.target, queuedRequest.options);
     }
   }
 };
@@ -169,7 +170,7 @@ export const initializeAppSessionManager = () => {
       return;
     }
     if (isTransitioning) {
-      pendingPopstateTarget = routeState;
+      void transition(routeState, { skipNavigation: true });
       return;
     }
     if (routeStatesMatch(routeState, currentTarget)) {

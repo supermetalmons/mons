@@ -1,8 +1,8 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { FaTimes, FaCheck } from "react-icons/fa";
-import { go, isWatchOnly, subscribeToWatchOnly } from "../game/gameController";
-import { markMainGameLoaded } from "../game/mainGameLoadState";
+import { isWatchOnly, subscribeToWatchOnly } from "../game/gameController";
+import { getCurrentTarget, transition } from "../session/AppSessionManager";
 import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../content/boardStyles";
 import { defaultInputEventName, isMobile } from "../utils/misc";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
@@ -237,7 +237,6 @@ const BoardComponent: React.FC = () => {
   const [playerVideoAppearing, setPlayerVideoAppearing] = useState(false);
   const opponentVideoDismissTimeoutRef = useRef<number | null>(null);
   const playerVideoDismissTimeoutRef = useRef<number | null>(null);
-  const initializationRef = useRef(false);
   const [currentColorSet, setCurrentColorSet] = useState<ColorSet>(getCurrentColorSet());
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
   const [isGridVisible, setIsGridVisible] = useState(!isCustomPictureBoardEnabled());
@@ -441,18 +440,7 @@ const BoardComponent: React.FC = () => {
   const wagerPanelHasActions = showOpponentActions || showPlayerActions;
 
   useEffect(() => {
-    if (!initializationRef.current) {
-      initializationRef.current = true;
-      const run = async () => {
-        try {
-          await go();
-        } catch {
-        } finally {
-          markMainGameLoaded();
-        }
-      };
-      run();
-    }
+    void transition(getCurrentTarget(), { skipNavigation: true, force: true });
   }, []);
 
   useEffect(() => {

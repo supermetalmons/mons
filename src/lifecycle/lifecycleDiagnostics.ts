@@ -19,20 +19,22 @@ const counters: LifecycleCounters = {
   gameTimeouts: 0,
 };
 
-const clamp = (value: number) => {
-  return value < 0 ? 0 : value;
-};
-
 export const incrementLifecycleCounter = (counter: LifecycleCounterName, amount = 1) => {
-  counters[counter] = clamp(counters[counter] + amount);
+  counters[counter] += amount;
 };
 
 export const decrementLifecycleCounter = (counter: LifecycleCounterName, amount = 1) => {
-  counters[counter] = clamp(counters[counter] - amount);
+  counters[counter] -= amount;
+  if (process.env.NODE_ENV !== "production" && counters[counter] < 0) {
+    console.warn("lifecycle-counter-negative", {
+      counter,
+      value: counters[counter],
+    });
+  }
 };
 
 export const setLifecycleCounter = (counter: LifecycleCounterName, value: number) => {
-  counters[counter] = clamp(value);
+  counters[counter] = value;
 };
 
 export const resetLifecycleCounters = () => {
