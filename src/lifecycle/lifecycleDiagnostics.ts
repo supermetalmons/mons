@@ -5,7 +5,8 @@ export type LifecycleCounterName =
   | "boardIntervals"
   | "boardTimeouts"
   | "boardRaf"
-  | "gameTimeouts";
+  | "gameTimeouts"
+  | "uiTimeouts";
 
 type LifecycleCounters = Record<LifecycleCounterName, number>;
 
@@ -17,6 +18,7 @@ const counters: LifecycleCounters = {
   boardTimeouts: 0,
   boardRaf: 0,
   gameTimeouts: 0,
+  uiTimeouts: 0,
 };
 
 export const incrementLifecycleCounter = (counter: LifecycleCounterName, amount = 1) => {

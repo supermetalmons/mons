@@ -13,6 +13,7 @@ import { showsShinyCardSomewhere } from "./ShinyCard";
 import { startPlayingMusic, stopPlayingMusic, playNextTrack } from "../content/music";
 import { InfoPopover } from "./InfoPopover";
 import { MiningMaterialName } from "../connection/connectionModels";
+import { registerMainMenuTransientUiHandler } from "./uiSession";
 
 const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust", "total", "gp"];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
@@ -833,13 +834,19 @@ const MainMenu: React.FC = () => {
     setIsMusicOpen(false);
   };
 
-  closeAllKindsOfPopups = () => {
+  const closeAllKindsOfPopupsHandler = useCallback(() => {
     closeProfilePopupIfAny();
     closeNavigationAndAppearancePopupIfAny();
     setIsInfoOpen(false);
     setIsMenuOpen(false);
     setIsMusicOpen(false);
-  };
+  }, []);
+
+  closeAllKindsOfPopups = closeAllKindsOfPopupsHandler;
+
+  useEffect(() => {
+    return registerMainMenuTransientUiHandler(closeAllKindsOfPopupsHandler);
+  }, [closeAllKindsOfPopupsHandler]);
 
   closeMenuAndInfoIfAllowedForEvent = (event: TouchEvent | MouseEvent) => {
     if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {

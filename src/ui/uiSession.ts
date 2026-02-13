@@ -1,16 +1,92 @@
-import { closeAllKindsOfPopups } from "./MainMenu";
-import { closeNavigationAndAppearancePopupIfAny } from "./BottomControls";
-import { hideNotificationBanner } from "./ProfileSignIn";
 import { hideShinyCard } from "./ShinyCard";
 import { resetIslandOverlayState } from "./islandOverlayState";
-import { clearBoardTransientUi } from "./BoardComponent";
+type SimpleTransientUiHandler = () => void;
+type BoardTransientUiHandler = (fadeOutVideos?: boolean) => void;
 
-export const closeTransientUi = () => {
-  closeNavigationAndAppearancePopupIfAny();
-  closeAllKindsOfPopups();
-  hideNotificationBanner();
+const noopSimpleHandler: SimpleTransientUiHandler = () => {};
+const noopBoardHandler: BoardTransientUiHandler = () => {};
+
+let closeNavigationAndAppearancePopupHandler: SimpleTransientUiHandler = noopSimpleHandler;
+let clearBottomControlsMatchScopeHandler: SimpleTransientUiHandler = noopSimpleHandler;
+let closeAllKindsOfPopupsHandler: SimpleTransientUiHandler = noopSimpleHandler;
+let hideNotificationBannerHandler: SimpleTransientUiHandler = noopSimpleHandler;
+let clearBoardTransientUiHandler: BoardTransientUiHandler = noopBoardHandler;
+
+let hasBottomControlsHandler = false;
+let hasMainMenuHandler = false;
+let hasProfileHandler = false;
+let hasBoardHandler = false;
+let hasPendingCloseTransientUi = false;
+
+const hasAllTransientUiHandlers = () => {
+  return hasBottomControlsHandler && hasMainMenuHandler && hasProfileHandler && hasBoardHandler;
+};
+
+const runCloseTransientUi = () => {
+  closeNavigationAndAppearancePopupHandler();
+  clearBottomControlsMatchScopeHandler();
+  closeAllKindsOfPopupsHandler();
+  hideNotificationBannerHandler();
   hideShinyCard();
   resetIslandOverlayState();
-  clearBoardTransientUi(false);
+  clearBoardTransientUiHandler(false);
+};
+
+const flushPendingCloseTransientUi = () => {
+  if (!hasPendingCloseTransientUi) {
+    return;
+  }
+  if (!hasAllTransientUiHandlers()) {
+    return;
+  }
+  hasPendingCloseTransientUi = false;
+  runCloseTransientUi();
+};
+
+export const registerBottomControlsTransientUiHandler = (handler: SimpleTransientUiHandler, clearMatchScopeHandler: SimpleTransientUiHandler = noopSimpleHandler) => {
+  closeNavigationAndAppearancePopupHandler = handler;
+  clearBottomControlsMatchScopeHandler = clearMatchScopeHandler;
+  hasBottomControlsHandler = true;
+  flushPendingCloseTransientUi();
+  return () => {
+    closeNavigationAndAppearancePopupHandler = noopSimpleHandler;
+    clearBottomControlsMatchScopeHandler = noopSimpleHandler;
+    hasBottomControlsHandler = false;
+  };
+};
+
+export const registerMainMenuTransientUiHandler = (handler: SimpleTransientUiHandler) => {
+  closeAllKindsOfPopupsHandler = handler;
+  hasMainMenuHandler = true;
+  flushPendingCloseTransientUi();
+  return () => {
+    closeAllKindsOfPopupsHandler = noopSimpleHandler;
+    hasMainMenuHandler = false;
+  };
+};
+
+export const registerProfileTransientUiHandler = (handler: SimpleTransientUiHandler) => {
+  hideNotificationBannerHandler = handler;
+  hasProfileHandler = true;
+  flushPendingCloseTransientUi();
+  return () => {
+    hideNotificationBannerHandler = noopSimpleHandler;
+    hasProfileHandler = false;
+  };
+};
+
+export const registerBoardTransientUiHandler = (handler: BoardTransientUiHandler) => {
+  clearBoardTransientUiHandler = handler;
+  hasBoardHandler = true;
+  flushPendingCloseTransientUi();
+  return () => {
+    clearBoardTransientUiHandler = noopBoardHandler;
+    hasBoardHandler = false;
+  };
+};
+
+export const closeTransientUi = () => {
+  runCloseTransientUi();
+  hasPendingCloseTransientUi = !hasAllTransientUiHandlers();
 };
 

@@ -23,6 +23,7 @@ const reportMatchScopeCounterDrift = () => {
     boardTimeouts: counters.boardTimeouts,
     boardRaf: counters.boardRaf,
     gameTimeouts: counters.gameTimeouts,
+    uiTimeouts: counters.uiTimeouts,
   };
   const hasDrift = Object.values(drift).some((value) => value !== 0);
   if (hasDrift) {
@@ -48,9 +49,5 @@ export const teardownProfileScope = () => {
   resetNftCache();
   resetPlayerMetadataCaches();
   resetEnsCache();
-};
-
-export const teardownForHomeTransition = () => {
-  teardownMatchScope();
 };
 

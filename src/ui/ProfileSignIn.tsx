@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import styled from "styled-components";
 import { storage } from "../utils/storage";
@@ -15,6 +15,7 @@ import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { hideShinyCard, showShinyCard, showsShinyCardSomewhere, updateShinyCardDisplayName } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
 import { transitionToHome } from "../session/AppSessionManager";
+import { registerProfileTransientUiHandler } from "./uiSession";
 
 const Container = styled.div`
   position: relative;
@@ -246,7 +247,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     }
   };
 
-  const hideNotificationBannerInternal = () => {
+  const hideNotificationBannerInternal = useCallback(() => {
     if (notificationTimeoutRef.current) {
       clearTimeout(notificationTimeoutRef.current);
       notificationTimeoutRef.current = null;
@@ -260,10 +261,14 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       setNotificationDismissType(null);
       notificationTimeoutRef.current = null;
     }, 400);
-  };
+  }, []);
 
   hideNotificationBanner = hideNotificationBannerInternal;
   showNotificationBanner = showNotificationBannerInternal;
+
+  useEffect(() => {
+    return registerProfileTransientUiHandler(hideNotificationBannerInternal);
+  }, [hideNotificationBannerInternal]);
 
   const performLogout = () => {
     storage.signOut();

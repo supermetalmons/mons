@@ -24,6 +24,8 @@ import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMateria
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 import { storage } from "../utils/storage";
 import { transitionToHome } from "../session/AppSessionManager";
+import { registerBottomControlsTransientUiHandler } from "./uiSession";
+import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 
@@ -240,13 +242,49 @@ const BottomControls: React.FC = () => {
   const timerConfirmRef = useRef<HTMLDivElement>(null);
   const claimVictoryButtonRef = useRef<HTMLButtonElement>(null);
   const claimVictoryConfirmRef = useRef<HTMLDivElement>(null);
-  const hourglassEnableTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-  const cancelAutomatchRevealTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hourglassEnableTimeoutRef = useRef<number | null>(null);
+  const cancelAutomatchRevealTimeoutRef = useRef<number | null>(null);
+  const matchScopedTimeoutIdsRef = useRef<Set<number>>(new Set());
   const navigationPopupRef = useRef<HTMLDivElement>(null);
   const navigationButtonRef = useRef<HTMLButtonElement>(null);
   const boardStylePickerRef = useRef<HTMLDivElement>(null);
   const brushButtonRef = useRef<HTMLButtonElement>(null);
   const moveHistoryPopupRef = useRef<HTMLDivElement>(null);
+
+  const clearTrackedMatchScopedTimeout = useCallback((timeoutId: number | null) => {
+    if (timeoutId === null) {
+      return;
+    }
+    if (matchScopedTimeoutIdsRef.current.has(timeoutId)) {
+      matchScopedTimeoutIdsRef.current.delete(timeoutId);
+      decrementLifecycleCounter("uiTimeouts");
+    }
+    clearTimeout(timeoutId);
+  }, []);
+
+  const setMatchScopedTimeout = useCallback((callback: () => void, delay: number, guard?: () => boolean): number => {
+    const timeoutId = window.setTimeout(() => {
+      if (matchScopedTimeoutIdsRef.current.has(timeoutId)) {
+        matchScopedTimeoutIdsRef.current.delete(timeoutId);
+        decrementLifecycleCounter("uiTimeouts");
+      }
+      if (guard && !guard()) {
+        return;
+      }
+      callback();
+    }, delay);
+    matchScopedTimeoutIdsRef.current.add(timeoutId);
+    incrementLifecycleCounter("uiTimeouts");
+    return timeoutId;
+  }, []);
+
+  const clearAllMatchScopedTimeouts = useCallback(() => {
+    matchScopedTimeoutIdsRef.current.forEach((timeoutId) => {
+      clearTimeout(timeoutId);
+      decrementLifecycleCounter("uiTimeouts");
+    });
+    matchScopedTimeoutIdsRef.current.clear();
+  }, []);
 
   useEffect(() => {
     const handleClickOutside = (event: TouchEvent | MouseEvent) => {
@@ -479,24 +517,21 @@ const BottomControls: React.FC = () => {
 
   useEffect(() => {
     return () => {
-      if (hourglassEnableTimeoutRef.current) {
-        clearTimeout(hourglassEnableTimeoutRef.current);
-      }
-      if (cancelAutomatchRevealTimeoutRef.current) {
-        clearTimeout(cancelAutomatchRevealTimeoutRef.current);
-      }
+      clearAllMatchScopedTimeouts();
+      hourglassEnableTimeoutRef.current = null;
+      cancelAutomatchRevealTimeoutRef.current = null;
     };
-  }, []);
+  }, [clearAllMatchScopedTimeouts]);
 
   useEffect(() => {
     if (cancelAutomatchRevealTimeoutRef.current) {
-      clearTimeout(cancelAutomatchRevealTimeoutRef.current);
+      clearTrackedMatchScopedTimeout(cancelAutomatchRevealTimeoutRef.current);
       cancelAutomatchRevealTimeoutRef.current = null;
     }
     if (automatchButtonTmpState && isAutomatchButtonVisible) {
       setIsCancelAutomatchVisible(false);
       setIsCancelAutomatchDisabled(false);
-      cancelAutomatchRevealTimeoutRef.current = setTimeout(() => {
+      cancelAutomatchRevealTimeoutRef.current = setMatchScopedTimeout(() => {
         setIsCancelAutomatchVisible(true);
       }, 10000);
     } else {
@@ -505,13 +540,13 @@ const BottomControls: React.FC = () => {
     }
     return () => {
       if (cancelAutomatchRevealTimeoutRef.current) {
-        clearTimeout(cancelAutomatchRevealTimeoutRef.current);
+        clearTrackedMatchScopedTimeout(cancelAutomatchRevealTimeoutRef.current);
         cancelAutomatchRevealTimeoutRef.current = null;
       }
     };
-  }, [automatchButtonTmpState, isAutomatchButtonVisible]);
+  }, [automatchButtonTmpState, clearTrackedMatchScopedTimeout, isAutomatchButtonVisible, setMatchScopedTimeout]);
 
-  closeNavigationAndAppearancePopupIfAny = () => {
+  const closeNavigationAndAppearancePopupIfAnyHandler = useCallback(() => {
     setIsNavigationPopupVisible(false);
     setIsBoardStylePickerVisible(false);
     setIsMoveHistoryPopupVisible(false);
@@ -520,17 +555,23 @@ const BottomControls: React.FC = () => {
     setIsTimerConfirmVisible(false);
     setIsClaimVictoryConfirmVisible(false);
     setIsWagerMode(false);
-    if (hourglassEnableTimeoutRef.current) {
-      clearTimeout(hourglassEnableTimeoutRef.current);
+    if (hourglassEnableTimeoutRef.current !== null) {
+      clearTrackedMatchScopedTimeout(hourglassEnableTimeoutRef.current);
       hourglassEnableTimeoutRef.current = null;
     }
-    if (cancelAutomatchRevealTimeoutRef.current) {
-      clearTimeout(cancelAutomatchRevealTimeoutRef.current);
+    if (cancelAutomatchRevealTimeoutRef.current !== null) {
+      clearTrackedMatchScopedTimeout(cancelAutomatchRevealTimeoutRef.current);
       cancelAutomatchRevealTimeoutRef.current = null;
     }
     setIsCancelAutomatchVisible(false);
     setIsCancelAutomatchDisabled(false);
-  };
+  }, [clearTrackedMatchScopedTimeout]);
+
+  closeNavigationAndAppearancePopupIfAny = closeNavigationAndAppearancePopupIfAnyHandler;
+
+  useEffect(() => {
+    return registerBottomControlsTransientUiHandler(closeNavigationAndAppearancePopupIfAnyHandler, clearAllMatchScopedTimeouts);
+  }, [clearAllMatchScopedTimeouts, closeNavigationAndAppearancePopupIfAnyHandler]);
 
   useEffect(() => {
     return () => {
@@ -581,7 +622,7 @@ const BottomControls: React.FC = () => {
         const sessionGuard = connection.createSessionGuard();
         if (didCreateInvite) {
           setInviteCopiedTmpState(true);
-          setTimeout(() => {
+          setMatchScopedTimeout(() => {
             if (!sessionGuard()) {
               return;
             }
@@ -639,7 +680,7 @@ const BottomControls: React.FC = () => {
 
   hideTimerButtons = () => {
     if (hourglassEnableTimeoutRef.current) {
-      clearTimeout(hourglassEnableTimeoutRef.current);
+      clearTrackedMatchScopedTimeout(hourglassEnableTimeoutRef.current);
       hourglassEnableTimeoutRef.current = null;
     }
     setIsTimerButtonDisabled(true);
@@ -651,7 +692,7 @@ const BottomControls: React.FC = () => {
 
   showTimerButtonProgressing = (currentProgress: number, target: number, enableWhenTargetReached: boolean) => {
     if (hourglassEnableTimeoutRef.current) {
-      clearTimeout(hourglassEnableTimeoutRef.current);
+      clearTrackedMatchScopedTimeout(hourglassEnableTimeoutRef.current);
       hourglassEnableTimeoutRef.current = null;
     }
 
@@ -666,7 +707,7 @@ const BottomControls: React.FC = () => {
 
     if (enableWhenTargetReached) {
       const timeUntilTarget = (target - currentProgress) * 1000;
-      hourglassEnableTimeoutRef.current = setTimeout(() => {
+      hourglassEnableTimeoutRef.current = setMatchScopedTimeout(() => {
         setIsTimerButtonDisabled(false);
         hourglassEnableTimeoutRef.current = null;
       }, timeUntilTarget);
@@ -876,7 +917,7 @@ const BottomControls: React.FC = () => {
     if (isGameWithBot) {
       const sessionGuard = connection.createSessionGuard();
       const responseStickerId = STICKER_ID_WHITELIST[Math.floor(Math.random() * STICKER_ID_WHITELIST.length)];
-      setTimeout(() => {
+      setMatchScopedTimeout(() => {
         if (!sessionGuard()) {
           return;
         }
@@ -887,14 +928,14 @@ const BottomControls: React.FC = () => {
       const sessionGuard = connection.createSessionGuard();
       connection.sendVoiceReaction(newStickerReaction(stickerId));
       setIsVoiceReactionDisabled(true);
-      setTimeout(() => {
+      setMatchScopedTimeout(() => {
         if (!sessionGuard()) {
           return;
         }
         setIsVoiceReactionDisabled(false);
       }, 9999);
     }
-  }, []);
+  }, [setMatchScopedTimeout]);
 
   const handleReactionSelect = useCallback((reaction: string) => {
     setIsReactionPickerVisible(false);
@@ -906,7 +947,7 @@ const BottomControls: React.FC = () => {
       const sessionGuard = connection.createSessionGuard();
       const responseReaction = reaction;
       const responseReactionObj = newReactionOfKind(responseReaction);
-      setTimeout(() => {
+      setMatchScopedTimeout(() => {
         if (!sessionGuard()) {
           return;
         }
@@ -917,14 +958,14 @@ const BottomControls: React.FC = () => {
       const sessionGuard = connection.createSessionGuard();
       connection.sendVoiceReaction(reactionObj);
       setIsVoiceReactionDisabled(true);
-      setTimeout(() => {
+      setMatchScopedTimeout(() => {
         if (!sessionGuard()) {
           return;
         }
         setIsVoiceReactionDisabled(false);
       }, 9999);
     }
-  }, []);
+  }, [setMatchScopedTimeout]);
 
   const playerUid = playerSideMetadata.uid;
   const opponentUid = opponentSideMetadata.uid;

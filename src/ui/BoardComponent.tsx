@@ -13,6 +13,7 @@ import { MatchWagerState } from "../connection/connectionModels";
 import { subscribeToWagerState } from "../game/wagerState";
 import { rocksMiningService } from "../services/rocksMiningService";
 import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
+import { registerBoardTransientUiHandler } from "./uiSession";
 
 const CircularButton = styled.button`
   width: 50%;
@@ -544,7 +545,7 @@ const BoardComponent: React.FC = () => {
     setActiveWagerPanelCount(null);
   }, []);
 
-  clearBoardTransientUi = (fadeOutVideos: boolean = true) => {
+  const clearBoardTransientUiHandler = useCallback((fadeOutVideos: boolean = true) => {
     clearWagerPanel();
     setOverlayState({ blurry: true, svgElement: null, withConfirmAndCancelButtons: false });
     if (opponentAuraRefs.current) {
@@ -573,7 +574,13 @@ const BoardComponent: React.FC = () => {
       setPlayerVideoAppearing(false);
       setPlayerVideoId(null);
     }
-  };
+  }, [clearVideoReactionsNow, clearWagerPanel, dismissOpponentVideo, dismissPlayerVideo, opponentVideoVisible, playerVideoVisible]);
+
+  clearBoardTransientUi = clearBoardTransientUiHandler;
+
+  useEffect(() => {
+    return registerBoardTransientUiHandler(clearBoardTransientUiHandler);
+  }, [clearBoardTransientUiHandler]);
 
   const openWagerPanelForSide = useCallback(
     (side: WagerPileSide | "winner") => {
