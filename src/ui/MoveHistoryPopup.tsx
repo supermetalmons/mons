@@ -211,20 +211,6 @@ const EventText = styled.span`
   line-height: 1;
 `;
 
-const TurnSeparator = styled.div`
-  position: absolute;
-  left: 10px;
-  right: 10px;
-  bottom: 0;
-  height: 1px;
-  background-color: rgba(120, 120, 128, 0.18);
-  pointer-events: none;
-  z-index: 0;
-
-  @media (prefers-color-scheme: dark) {
-    background-color: rgba(120, 120, 128, 0.32);
-  }
-`;
 
 const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   const { assets } = useGameAssets();
@@ -461,7 +447,6 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
                   )}
                 </EventRow>
               </ItemContent>
-              {entry.hasTurnSeparator && index < items.length - 1 && <TurnSeparator aria-hidden="true" />}
             </WheelItem>
           ))}
           {PADDING_INDICES.map((offset) => {
