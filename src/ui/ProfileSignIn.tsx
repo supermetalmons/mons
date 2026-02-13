@@ -14,6 +14,7 @@ import { SettingsModal } from "./SettingsModal";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { hideShinyCard, showShinyCard, showsShinyCardSomewhere, updateShinyCardDisplayName } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
+import { transitionToHome } from "../session/AppSessionManager";
 
 const Container = styled.div`
   position: relative;
@@ -116,10 +117,10 @@ let getIsInventoryPopupOpen: () => boolean = () => false;
 let getIsLogoutConfirmPopupOpen: () => boolean = () => false;
 let getIsSettingsPopupOpen: () => boolean = () => false;
 export let closeProfilePopupIfAny: () => void = () => {};
-export let handleEditDisplayName: () => void;
-export let showInventory: () => void;
-export let handleLogout: () => void;
-export let showSettings: () => void;
+export let handleEditDisplayName: () => void = () => {};
+export let showInventory: () => void = () => {};
+export let handleLogout: () => void = () => {};
+export let showSettings: () => void = () => {};
 export let hideNotificationBanner: () => void = () => {};
 export let showNotificationBanner: (title: string, subtitle: string, emojiId: string, successHandler: () => void) => void = () => {};
 
@@ -268,8 +269,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     storage.signOut();
     connection
       .signOut()
-      .then(() => window.location.reload())
-      .catch(() => window.location.reload());
+      .then(() => transitionToHome({ resetProfileScope: true }))
+      .catch(() => transitionToHome({ resetProfileScope: true }));
   };
 
   handleLogout = () => {
@@ -283,9 +284,25 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   closeProfilePopupIfAny = () => {
     didDismissSomethingWithOutsideTapJustNow();
     setIsOpen(false);
+    setIsInventoryOpen(false);
+    setIsLogoutConfirmOpen(false);
+    setIsSettingsOpen(false);
+    setIsEditingName(false);
     hideShinyCard();
     enterProfileEditingMode(false);
   };
+
+  useEffect(() => {
+    return () => {
+      closeProfilePopupIfAny = () => {};
+      handleEditDisplayName = () => {};
+      showInventory = () => {};
+      handleLogout = () => {};
+      showSettings = () => {};
+      hideNotificationBanner = () => {};
+      showNotificationBanner = () => {};
+    };
+  }, []);
 
   const handleSignInClick = () => {
     if (authStatus === "authenticated") {

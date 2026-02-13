@@ -39,12 +39,7 @@ export function useAuthStatus() {
   }, [setAuthStatus]);
 
   useEffect(() => {
-    let didPerformInitialSetup = false;
-    connection.subscribeToAuthChanges((uid) => {
-      if (didPerformInitialSetup) {
-        return;
-      }
-      didPerformInitialSetup = true;
+    const unsubscribe = connection.subscribeToAuthChanges((uid) => {
       if (uid !== null) {
         const storedLoginId = storage.getLoginId("");
         const storedEthAddress = storage.getEthAddress("");
@@ -86,6 +81,9 @@ export function useAuthStatus() {
         setTimeout(() => didAttemptAuthentication(), 23);
       }
     });
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   return { authStatus, setAuthStatus };

@@ -588,16 +588,16 @@ const DebugView = styled.div`
   z-index: 1;
 `;
 
-let getIsMenuOpen: () => boolean;
-let getIsInfoOpen: () => boolean;
-let getIsMusicOpen: () => boolean;
-export let toggleInfoVisibility: () => void;
-export let toggleMusicVisibility: () => void;
-export let closeMenuAndInfoIfAny: () => void;
-export let closeAllKindsOfPopups: () => void;
-export let closeMenuAndInfoIfAllowedForEvent: (event: TouchEvent | MouseEvent) => void;
-export let setIsMusicPlayingGlobal: (playing: boolean) => void;
-export let setDebugViewText: (text: string) => void;
+let getIsMenuOpen: () => boolean = () => false;
+let getIsInfoOpen: () => boolean = () => false;
+let getIsMusicOpen: () => boolean = () => false;
+export let toggleInfoVisibility: () => void = () => {};
+export let toggleMusicVisibility: () => void = () => {};
+export let closeMenuAndInfoIfAny: () => void = () => {};
+export let closeAllKindsOfPopups: () => void = () => {};
+export let closeMenuAndInfoIfAllowedForEvent: (event: TouchEvent | MouseEvent) => void = () => {};
+export let setIsMusicPlayingGlobal: (playing: boolean) => void = () => {};
+export let setDebugViewText: (text: string) => void = () => {};
 
 export function hasMainMenuPopupsVisible(): boolean {
   return getIsMenuOpen() || getIsInfoOpen() || getIsMusicOpen();
@@ -718,6 +718,21 @@ const MainMenu: React.FC = () => {
   getIsMenuOpen = () => isMenuOpen;
   getIsInfoOpen = () => isInfoOpen;
   getIsMusicOpen = () => isMusicOpen;
+
+  useEffect(() => {
+    return () => {
+      getIsMenuOpen = () => false;
+      getIsInfoOpen = () => false;
+      getIsMusicOpen = () => false;
+      toggleInfoVisibility = () => {};
+      toggleMusicVisibility = () => {};
+      closeMenuAndInfoIfAny = () => {};
+      closeAllKindsOfPopups = () => {};
+      closeMenuAndInfoIfAllowedForEvent = () => {};
+      setIsMusicPlayingGlobal = () => {};
+      setDebugViewText = () => {};
+    };
+  }, []);
 
   const menuRef = useRef<HTMLDivElement>(null);
   const infoRef = useRef<HTMLDivElement>(null);

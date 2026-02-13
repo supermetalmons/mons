@@ -18,9 +18,10 @@ import { showShinyCard, showsShinyCardSomewhere } from "../ui/ShinyCard";
 import { getMonId, getMonsIndexes, MonType } from "../utils/namedMons";
 import { instructor } from "../assets/talkingDude";
 import { isBotsLoopMode } from "../connection/connection";
-import { launchConfetti } from "./confetti";
+import { launchConfetti, stopConfetti } from "./confetti";
 import { soundPlayer } from "../utils/SoundPlayer";
 import type { MaterialName } from "../services/rocksMiningService";
+import { decrementLifecycleCounter, incrementLifecycleCounter, setLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 const valentinesLoaderEnabled = true;
@@ -58,6 +59,11 @@ let showsOpponentEndOfGameSuffix = false;
 
 let countdownInterval: NodeJS.Timeout | null = null;
 let monsBoardDisplayAnimationTimeout: NodeJS.Timeout | null = null;
+let boardInputHandler: ((event: Event) => void) | null = null;
+let hasSetupBoardRuntime = false;
+let didRegisterResizeHandler = false;
+const wavesIntervalIds = new Set<number>();
+const boardTimeoutIds = new Set<number>();
 
 let board: HTMLElement | null;
 let highlightsLayer: HTMLElement | null;
@@ -203,6 +209,32 @@ let currentTextAnimation: {
   timer: null,
 };
 
+const trackBoardTimeout = (timeoutId: number) => {
+  boardTimeoutIds.add(timeoutId);
+  incrementLifecycleCounter("boardTimeouts");
+};
+
+const clearTrackedBoardTimeouts = () => {
+  boardTimeoutIds.forEach((timeoutId) => {
+    clearTimeout(timeoutId);
+    decrementLifecycleCounter("boardTimeouts");
+  });
+  boardTimeoutIds.clear();
+};
+
+const trackWavesInterval = (intervalId: number) => {
+  wavesIntervalIds.add(intervalId);
+  incrementLifecycleCounter("boardIntervals");
+};
+
+const clearWavesIntervals = () => {
+  wavesIntervalIds.forEach((intervalId) => {
+    clearInterval(intervalId);
+    decrementLifecycleCounter("boardIntervals");
+  });
+  wavesIntervalIds.clear();
+};
+
 export function fastForwardInstructionsIfNeeded() {
   if (!currentTextAnimation.isAnimating || !currentTextAnimation.fastForwardCallback) {
     return false;
@@ -264,6 +296,7 @@ function startTextAnimation(text: string) {
 
   if (currentTextAnimation.timer) {
     clearTimeout(currentTextAnimation.timer);
+    decrementLifecycleCounter("boardTimeouts");
   }
 
   const chars = Array.from(text);
@@ -274,6 +307,7 @@ function startTextAnimation(text: string) {
   currentTextAnimation.fastForwardCallback = () => {
     if (currentTextAnimation.timer) {
       clearTimeout(currentTextAnimation.timer);
+      decrementLifecycleCounter("boardTimeouts");
       currentTextAnimation.timer = null;
     }
     isFastForwarding = true;
@@ -298,9 +332,11 @@ function startTextAnimation(text: string) {
       currentIndex += 1;
 
       currentTextAnimation.timer = setTimeout(animateStep, delay);
+      incrementLifecycleCounter("boardTimeouts");
     } else {
       currentTextAnimation.isAnimating = false;
       currentTextAnimation.fastForwardCallback = null;
+      decrementLifecycleCounter("boardTimeouts");
       currentTextAnimation.timer = null;
       toggleFromTalkingToIdle();
     }
@@ -682,6 +718,8 @@ export function hideBoardPlayersInfo() {
 }
 
 export function resetForNewGame() {
+  showsPlayerEndOfGameSuffix = false;
+  showsOpponentEndOfGameSuffix = false;
   if (isWatchOnly) {
     playerSideMetadata = newEmptyPlayerMetadata();
   }
@@ -783,6 +821,7 @@ export function setBoardFlipped(flipped: boolean) {
 
 export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
   if (monsBoardDisplayAnimationTimeout) return;
+  incrementLifecycleCounter("boardTimeouts");
 
   const frames: [number, number][][] = [
     // Frame 0: empty
@@ -863,6 +902,7 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
   }
 
   if (monsBoardDisplayAnimationTimeout) return;
+  incrementLifecycleCounter("boardTimeouts");
 
   let radius = 0;
   const maxRadius = 5;
@@ -900,6 +940,7 @@ export function stopMonsBoardAsDisplayAnimations() {
   if (monsBoardDisplayAnimationTimeout) {
     clearTimeout(monsBoardDisplayAnimationTimeout);
     monsBoardDisplayAnimationTimeout = null;
+    decrementLifecycleCounter("boardTimeouts");
     cleanAllPixels();
   }
 }
@@ -1190,6 +1231,7 @@ export function showTimer(color: string, remainingSeconds: number) {
   if (countdownInterval) {
     clearInterval(countdownInterval);
     countdownInterval = null;
+    decrementLifecycleCounter("boardIntervals");
   }
 
   if (activeTimer && activeTimer !== timerElement) {
@@ -1219,9 +1261,11 @@ export function showTimer(color: string, remainingSeconds: number) {
     if (remainingSeconds <= 0) {
       clearInterval(countdownInterval!);
       countdownInterval = null;
+      decrementLifecycleCounter("boardIntervals");
     }
     updateTimerDisplay(timerElement, remainingSeconds);
   }, 1000);
+  incrementLifecycleCounter("boardIntervals");
 
   updateNamesX();
 }
@@ -1241,10 +1285,13 @@ function updateTimerDisplay(timerElement: SVGElement, seconds: number) {
 export function hideTimerCountdownDigits() {
   showsPlayerTimer = false;
   showsOpponentTimer = false;
+  showsPlayerEndOfGameSuffix = false;
+  showsOpponentEndOfGameSuffix = false;
 
   if (countdownInterval) {
     clearInterval(countdownInterval);
     countdownInterval = null;
+    decrementLifecycleCounter("boardIntervals");
   }
   if (playerTimer && opponentTimer) {
     SVG.setHidden(playerTimer, true);
@@ -1758,12 +1805,14 @@ function clearDisappearingPile(side: "player" | "opponent") {
   if (side === "player") {
     if (disappearingPileTimers.player !== null) {
       window.clearTimeout(disappearingPileTimers.player);
+      decrementLifecycleCounter("boardTimeouts");
       disappearingPileTimers.player = null;
     }
     disappearingPlayerPile = null;
   } else {
     if (disappearingPileTimers.opponent !== null) {
       window.clearTimeout(disappearingPileTimers.opponent);
+      decrementLifecycleCounter("boardTimeouts");
       disappearingPileTimers.opponent = null;
     }
     disappearingOpponentPile = null;
@@ -1787,8 +1836,10 @@ function emitWagerRenderState() {
       clearDisappearingPile("player");
     } else if (!currentPlayerVisible && previousPlayerPileVisible && lastVisiblePlayerPileState) {
       clearDisappearingPile("player");
+      incrementLifecycleCounter("boardTimeouts");
       disappearingPlayerPile = { ...lastVisiblePlayerPileState, animation: "disappear", isPending: false };
       disappearingPileTimers.player = window.setTimeout(() => {
+        decrementLifecycleCounter("boardTimeouts");
         disappearingPlayerPile = null;
         disappearingPileTimers.player = null;
         emitWagerRenderState();
@@ -1800,8 +1851,10 @@ function emitWagerRenderState() {
       clearDisappearingPile("opponent");
     } else if (!currentOpponentVisible && previousOpponentPileVisible && lastVisibleOpponentPileState) {
       clearDisappearingPile("opponent");
+      incrementLifecycleCounter("boardTimeouts");
       disappearingOpponentPile = { ...lastVisibleOpponentPileState, animation: "disappear", isPending: false };
       disappearingPileTimers.opponent = window.setTimeout(() => {
+        decrementLifecycleCounter("boardTimeouts");
         disappearingOpponentPile = null;
         disappearingPileTimers.opponent = null;
         emitWagerRenderState();
@@ -1841,6 +1894,7 @@ function cancelWagerWinAnimation() {
   if (wagerWinAnimRaf !== null) {
     cancelAnimationFrame(wagerWinAnimRaf);
     wagerWinAnimRaf = null;
+    decrementLifecycleCounter("boardRaf");
   }
   wagerWinAnimActive = false;
   wagerWinAnimState = null;
@@ -1983,6 +2037,7 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
     if (!wagerWinAnimState || !winnerWagerPile) {
       wagerWinAnimActive = false;
       wagerWinAnimRaf = null;
+      decrementLifecycleCounter("boardRaf");
       return;
     }
     const { startTime, duration, iconSize, starts, targets, drifts, delays } = wagerWinAnimState;
@@ -2025,11 +2080,13 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
       wagerWinAnimActive = false;
       wagerWinAnimState = null;
       wagerWinAnimRaf = null;
+      decrementLifecycleCounter("boardRaf");
       emitWagerRenderState();
     }
   };
 
   wagerWinAnimRaf = requestAnimationFrame(animate);
+  incrementLifecycleCounter("boardRaf");
   return true;
 }
 
@@ -2055,6 +2112,23 @@ function updateNamesX() {
 }
 
 const updateLayout = () => {
+  if (
+    !hasSetupBoardRuntime ||
+    !opponentScoreText ||
+    !playerScoreText ||
+    !opponentTimer ||
+    !playerTimer ||
+    !opponentNameText ||
+    !playerNameText ||
+    !opponentAvatar ||
+    !playerAvatar ||
+    !opponentAvatarPlaceholder ||
+    !playerAvatarPlaceholder ||
+    opponentMoveStatusItems.length < 9 ||
+    playerMoveStatusItems.length < 9
+  ) {
+    return;
+  }
   const multiplicator = getOuterElementsMultiplicator();
 
   let shouldOffsetFromBorders = seeIfShouldOffsetFromBorders();
@@ -2062,9 +2136,9 @@ const updateLayout = () => {
 
   for (const isOpponent of [true, false]) {
     const avatarSize = getAvatarSize();
-    const numberText = isOpponent ? opponentScoreText! : playerScoreText!;
-    const timerText = isOpponent ? opponentTimer! : playerTimer!;
-    const nameText = isOpponent ? opponentNameText! : playerNameText!;
+    const numberText = isOpponent ? opponentScoreText : playerScoreText;
+    const timerText = isOpponent ? opponentTimer : playerTimer;
+    const nameText = isOpponent ? opponentNameText : playerNameText;
 
     const y = isOpponent ? 1 - avatarSize * 1.203 : isPangchiuBoard() ? 12.75 : 12.16;
 
@@ -2085,13 +2159,13 @@ const updateLayout = () => {
       SVG.setFrame(img, 11 - (1.15 * x + 1) * statusItemSize - statusItemsOffsetX, statusItemsY, statusItemSize, statusItemSize);
     }
 
-    const avatar = isOpponent ? opponentAvatar! : playerAvatar!;
+    const avatar = isOpponent ? opponentAvatar : playerAvatar;
     SVG.setFrame(avatar, offsetX, y, avatarSize, avatarSize);
     try {
       updateAuraForAvatarElement(isOpponent, avatar);
     } catch {}
 
-    const placeholder = isOpponent ? opponentAvatarPlaceholder! : playerAvatarPlaceholder!;
+    const placeholder = isOpponent ? opponentAvatarPlaceholder : playerAvatarPlaceholder;
     SVG.updateCircle(placeholder, offsetX + avatarSize / 2, y + avatarSize / 2, avatarSize / 3);
   }
 
@@ -2245,7 +2319,11 @@ function doNotShowAvatarPlaceholderAgain(opponent: boolean) {
 
 export async function setupGameInfoElements(allHiddenInitially: boolean) {
   const statusMove = loadImage(emojis.statusMove, "statusMoveEmoji");
-  window.addEventListener("resize", updateLayout);
+  if (!didRegisterResizeHandler) {
+    window.addEventListener("resize", updateLayout);
+    didRegisterResizeHandler = true;
+    incrementLifecycleCounter("boardDomListeners");
+  }
 
   let playerEmojiId = storage.getPlayerEmojiId("");
   if (playerEmojiId === "") {
@@ -2496,9 +2574,11 @@ export function didClickAndChangePlayerEmoji(newId: string, newEmojiUrl: string,
 }
 
 export function setupBoard() {
+  if (hasSetupBoardRuntime) {
+    disposeBoardRuntime();
+  }
   initializeBoardElements();
-
-  document.addEventListener(defaultInputEventName, function (event) {
+  boardInputHandler = (event: Event) => {
     const hasVisiblePopups = hasIslandOverlayVisible() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible() || showsShinyCardSomewhere;
     const didDismissSmth = !didNotDismissAnythingWithOutsideTapJustNow();
     if (didDismissSmth || hasVisiblePopups) {
@@ -2525,7 +2605,10 @@ export function setupBoard() {
       event.preventDefault();
       event.stopPropagation();
     }
-  });
+  };
+  document.addEventListener(defaultInputEventName, boardInputHandler);
+  incrementLifecycleCounter("boardDomListeners");
+  hasSetupBoardRuntime = true;
 
   for (let y = 0; y < 11; y++) {
     for (let x = 0; x < 11; x++) {
@@ -2541,9 +2624,104 @@ export function setupBoard() {
     addWaves(location);
   }
 
-  setTimeout(() => {
+  const preloadTimeout = window.setTimeout(() => {
+    boardTimeoutIds.delete(preloadTimeout);
+    decrementLifecycleCounter("boardTimeouts");
     preloadParticleEffects().catch(console.error);
   }, 100);
+  trackBoardTimeout(preloadTimeout);
+}
+
+export function disposeBoardRuntime() {
+  stopMonsBoardAsDisplayAnimations();
+  hideTimerCountdownDigits();
+  cancelWagerWinAnimation();
+  stopConfetti();
+  if (talkingDude) {
+    removeItemAndCleanUpAnimation(talkingDude);
+    talkingDude = null;
+  }
+  talkingDudeTextDiv = null;
+  instructionsContainerElement = undefined;
+  talkingDudeIsTalking = true;
+  currentTextAnimation.isAnimating = false;
+  currentTextAnimation.fastForwardCallback = null;
+  clearWagerPilesForNewMatch();
+  handleWagerRenderState = null;
+  clearWavesIntervals();
+  clearTrackedBoardTimeouts();
+  if (currentTextAnimation.timer) {
+    clearTimeout(currentTextAnimation.timer);
+    currentTextAnimation.timer = null;
+    decrementLifecycleCounter("boardTimeouts");
+  }
+  if (disappearingPileTimers.player !== null) {
+    clearTimeout(disappearingPileTimers.player);
+    disappearingPileTimers.player = null;
+    decrementLifecycleCounter("boardTimeouts");
+  }
+  if (disappearingPileTimers.opponent !== null) {
+    clearTimeout(disappearingPileTimers.opponent);
+    disappearingPileTimers.opponent = null;
+    decrementLifecycleCounter("boardTimeouts");
+  }
+  if (didRegisterResizeHandler) {
+    window.removeEventListener("resize", updateLayout);
+    didRegisterResizeHandler = false;
+    decrementLifecycleCounter("boardDomListeners");
+  }
+  if (boardInputHandler) {
+    document.removeEventListener(defaultInputEventName, boardInputHandler);
+    boardInputHandler = null;
+    decrementLifecycleCounter("boardDomListeners");
+  }
+  hasSetupBoardRuntime = false;
+  removeHighlights();
+  cleanAllPixels();
+  if (dimmingOverlay) {
+    dimmingOverlay.remove();
+    dimmingOverlay = undefined;
+  }
+  hideItemSelectionOrConfirmationOverlay();
+  if (itemsLayer) {
+    itemsLayer.innerHTML = "";
+  }
+  if (controlsLayer) {
+    controlsLayer.innerHTML = "";
+  }
+  if (effectsLayer) {
+    effectsLayer.innerHTML = "";
+  }
+  if (highlightsLayer) {
+    highlightsLayer.innerHTML = "";
+  }
+  if (board) {
+    const overlays = Array.from(board.querySelectorAll('[data-wager-pile], [data-wager-win-pile], [data-assets-pixel-only]'));
+    overlays.forEach((element) => element.remove());
+  }
+  opponentMoveStatusItems.length = 0;
+  playerMoveStatusItems.length = 0;
+  doNotShowPlayerAvatarPlaceholderAgain = false;
+  doNotShowOpponentAvatarPlaceholderAgain = false;
+  opponentAvatar = undefined;
+  playerAvatar = undefined;
+  opponentAvatarPlaceholder = undefined;
+  playerAvatarPlaceholder = undefined;
+  opponentScoreText = undefined;
+  playerScoreText = undefined;
+  opponentNameText = undefined;
+  playerNameText = undefined;
+  opponentTimer = undefined;
+  playerTimer = undefined;
+  controlsLayer = null;
+  itemsLayer = null;
+  effectsLayer = null;
+  highlightsLayer = null;
+  boardBackgroundLayer = null;
+  board = null;
+  setLifecycleCounter("boardIntervals", 0);
+  setLifecycleCounter("boardTimeouts", 0);
+  setLifecycleCounter("boardRaf", 0);
 }
 
 export function removeHighlights() {
@@ -3155,11 +3333,12 @@ function addWaves(location: Location) {
 
   let frameIndex = 0;
   wavesSquareElement.appendChild(getWavesFrame(location, frameIndex));
-  setInterval(() => {
+  const intervalId = window.setInterval(() => {
     frameIndex = (frameIndex + 1) % 9;
     wavesSquareElement.innerHTML = "";
     wavesSquareElement.appendChild(getWavesFrame(location, frameIndex));
   }, 200);
+  trackWavesInterval(intervalId);
 }
 
 function getWavesFrame(location: Location, frameIndex: number) {

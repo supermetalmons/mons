@@ -82,11 +82,12 @@ export const updateBoardComponentForBoardStyleChange = () => {
   listeners.forEach((listener) => listener());
 };
 
-export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void;
-export let showVideoReaction: (opponent: boolean, stickerId: number) => void;
-export let showRaibowAura: (visible: boolean, url: string, opponent: boolean) => void;
-export let updateAuraForAvatarElement: (opponent: boolean, avatarElement: SVGElement) => void;
-export let updateWagerPlayerUids: (playerUid: string, opponentUid: string) => void;
+export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void = () => {};
+export let showVideoReaction: (opponent: boolean, stickerId: number) => void = () => {};
+export let showRaibowAura: (visible: boolean, url: string, opponent: boolean) => void = () => {};
+export let updateAuraForAvatarElement: (opponent: boolean, avatarElement: SVGElement) => void = () => {};
+export let updateWagerPlayerUids: (playerUid: string, opponentUid: string) => void = () => {};
+export let clearBoardTransientUi: (fadeOutVideos?: boolean) => void = () => {};
 
 const VIDEO_CONTAINER_HEIGHT_GRID = "12.5%";
 const VIDEO_CONTAINER_HEIGHT_IMAGE = "13.5%";
@@ -234,6 +235,8 @@ const BoardComponent: React.FC = () => {
   const [playerVideoVisible, setPlayerVideoVisible] = useState(false);
   const [playerVideoFading, setPlayerVideoFading] = useState(false);
   const [playerVideoAppearing, setPlayerVideoAppearing] = useState(false);
+  const opponentVideoDismissTimeoutRef = useRef<number | null>(null);
+  const playerVideoDismissTimeoutRef = useRef<number | null>(null);
   const initializationRef = useRef(false);
   const [currentColorSet, setCurrentColorSet] = useState<ColorSet>(getCurrentColorSet());
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
@@ -317,14 +320,67 @@ const BoardComponent: React.FC = () => {
     }
   };
 
+  const clearOpponentVideoDismissTimeout = useCallback(() => {
+    if (opponentVideoDismissTimeoutRef.current !== null) {
+      window.clearTimeout(opponentVideoDismissTimeoutRef.current);
+      opponentVideoDismissTimeoutRef.current = null;
+    }
+  }, []);
+
+  const clearPlayerVideoDismissTimeout = useCallback(() => {
+    if (playerVideoDismissTimeoutRef.current !== null) {
+      window.clearTimeout(playerVideoDismissTimeoutRef.current);
+      playerVideoDismissTimeoutRef.current = null;
+    }
+  }, []);
+
+  const dismissOpponentVideo = useCallback((durationMs: number) => {
+    clearOpponentVideoDismissTimeout();
+    setOpponentVideoAppearing(false);
+    setOpponentVideoFading(true);
+    opponentVideoDismissTimeoutRef.current = window.setTimeout(() => {
+      setOpponentVideoVisible(false);
+      setOpponentVideoFading(false);
+      setOpponentVideoId(null);
+      opponentVideoDismissTimeoutRef.current = null;
+    }, durationMs);
+  }, [clearOpponentVideoDismissTimeout]);
+
+  const dismissPlayerVideo = useCallback((durationMs: number) => {
+    clearPlayerVideoDismissTimeout();
+    setPlayerVideoAppearing(false);
+    setPlayerVideoFading(true);
+    playerVideoDismissTimeoutRef.current = window.setTimeout(() => {
+      setPlayerVideoVisible(false);
+      setPlayerVideoFading(false);
+      setPlayerVideoId(null);
+      playerVideoDismissTimeoutRef.current = null;
+    }, durationMs);
+  }, [clearPlayerVideoDismissTimeout]);
+
+  const clearVideoReactionsNow = useCallback(() => {
+    clearOpponentVideoDismissTimeout();
+    clearPlayerVideoDismissTimeout();
+    setOpponentVideoVisible(false);
+    setOpponentVideoFading(false);
+    setOpponentVideoAppearing(false);
+    setOpponentVideoId(null);
+    setPlayerVideoVisible(false);
+    setPlayerVideoFading(false);
+    setPlayerVideoAppearing(false);
+    setPlayerVideoId(null);
+  }, [clearOpponentVideoDismissTimeout, clearPlayerVideoDismissTimeout]);
+
   showVideoReaction = (opponent: boolean, stickerId: number) => {
     if (opponent) {
+      clearOpponentVideoDismissTimeout();
       setOpponentVideoId(stickerId);
       setOpponentVideoVisible(true);
       setOpponentVideoFading(false);
       setOpponentVideoAppearing(true);
       setTimeout(() => setOpponentVideoAppearing(false), 400);
     } else {
+      clearPlayerVideoDismissTimeout();
       setPlayerVideoId(stickerId);
       setPlayerVideoVisible(true);
       setPlayerVideoFading(false);
@@ -351,6 +407,19 @@ const BoardComponent: React.FC = () => {
       hideAuraDom(targets.current.background);
     }
   };
+
+  useEffect(() => {
+    return () => {
+      clearOpponentVideoDismissTimeout();
+      clearPlayerVideoDismissTimeout();
+      setTopBoardOverlayVisible = () => {};
+      showVideoReaction = () => {};
+      showRaibowAura = () => {};
+      updateAuraForAvatarElement = () => {};
+      updateWagerPlayerUids = () => {};
+      clearBoardTransientUi = () => {};
+    };
+  }, [clearOpponentVideoDismissTimeout, clearPlayerVideoDismissTimeout]);
 
   const proposals = wagerState?.proposals || {};
   const playerUid = playerUidSnapshot;
@@ -491,6 +560,37 @@ const BoardComponent: React.FC = () => {
     setActiveWagerPanelRect(null);
     setActiveWagerPanelCount(null);
   }, []);
+
+  clearBoardTransientUi = (fadeOutVideos: boolean = true) => {
+    clearWagerPanel();
+    setOverlayState({ blurry: true, svgElement: null, withConfirmAndCancelButtons: false });
+    if (opponentAuraRefs.current) {
+      hideAuraDom(opponentAuraRefs.current.background);
+    }
+    if (playerAuraRefs.current) {
+      hideAuraDom(playerAuraRefs.current.background);
+    }
+    if (!fadeOutVideos) {
+      clearVideoReactionsNow();
+      return;
+    }
+    if (opponentVideoVisible) {
+      dismissOpponentVideo(120);
+    } else {
+      setOpponentVideoVisible(false);
+      setOpponentVideoFading(false);
+      setOpponentVideoAppearing(false);
+      setOpponentVideoId(null);
+    }
+    if (playerVideoVisible) {
+      dismissPlayerVideo(120);
+    } else {
+      setPlayerVideoVisible(false);
+      setPlayerVideoFading(false);
+      setPlayerVideoAppearing(false);
+      setPlayerVideoId(null);
+    }
+  };
 
   const openWagerPanelForSide = useCallback(
     (side: WagerPileSide | "winner") => {
@@ -1358,8 +1458,7 @@ const BoardComponent: React.FC = () => {
               muted
               playsInline
               onEnded={() => {
-                setOpponentVideoFading(true);
-                setTimeout(() => setOpponentVideoVisible(false), 200);
+                dismissOpponentVideo(200);
               }}>
               <source src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.mov`} type='video/quicktime; codecs="hvc1"' />
               <source src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.webm`} type="video/webm" />
@@ -1407,8 +1506,7 @@ const BoardComponent: React.FC = () => {
               muted
               playsInline
               onEnded={() => {
-                setPlayerVideoFading(true);
-                setTimeout(() => setPlayerVideoVisible(false), 200);
+                dismissPlayerVideo(200);
               }}>
               <source src={`https://assets.mons.link/swagpack/video/${playerVideoId}.mov`} type='video/quicktime; codecs="hvc1"' />
               <source src={`https://assets.mons.link/swagpack/video/${playerVideoId}.webm`} type="video/webm" />

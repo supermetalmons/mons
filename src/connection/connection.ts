@@ -9,9 +9,12 @@ import { Match, Invite, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningM
 import { storage } from "../utils/storage";
 import { generateNewInviteId } from "../utils/misc";
 import { setDebugViewText } from "../ui/MainMenu";
-import { getWagerState, setWagerState } from "../game/wagerState";
+import { getWagerState, setCurrentWagerMatch, setWagerState } from "../game/wagerState";
 import { applyFrozenMaterialsDelta, computeAvailableMaterials, getFrozenMaterials, setFrozenMaterials } from "../services/wagerMaterialsService";
 import { rocksMiningService } from "../services/rocksMiningService";
+import { getCurrentRouteState } from "../navigation/routeState";
+import { pushRoutePath } from "../navigation/appNavigation";
+import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 
 const createEmptyMiningMaterials = (): PlayerMiningMaterials => ({
   dust: 0,
@@ -40,17 +43,28 @@ const normalizeMiningData = (source: any): PlayerMiningData => {
 const controllerVersion = 2;
 const LEADERBOARD_ENTRY_LIMIT = 99;
 
-const initialPath = window.location.pathname.replace(/^\/|\/$/g, "");
-export const isCreateNewInviteFlow = initialPath === "";
-export const isBoardSnapshotFlow = initialPath.startsWith("snapshot/");
-export const isBotsLoopMode = initialPath === "watch";
+let routePath = "";
+export let isCreateNewInviteFlow = true;
+export let isBoardSnapshotFlow = false;
+export let isBotsLoopMode = false;
+let snapshotIdFromRoute: string | null = null;
+let routeAutojoin = false;
+
+const applyCurrentRouteState = () => {
+  const routeState = getCurrentRouteState();
+  routePath = routeState.path;
+  isCreateNewInviteFlow = routeState.mode === "home";
+  isBoardSnapshotFlow = routeState.mode === "snapshot";
+  isBotsLoopMode = routeState.mode === "watch";
+  snapshotIdFromRoute = routeState.snapshotId;
+  routeAutojoin = routeState.autojoin;
+};
+
+applyCurrentRouteState();
 
 export function getSnapshotIdAndClearPathIfNeeded(): string | null {
-  if (isBoardSnapshotFlow) {
-    const snapshotId = initialPath.substring("snapshot/".length);
-    return snapshotId;
-  }
-  return null;
+  applyCurrentRouteState();
+  return snapshotIdFromRoute;
 }
 
 class Connection {
@@ -79,6 +93,43 @@ class Connection {
   private newInviteId = "";
   private didCreateNewGameInvite = false;
   private currentUid: string | null = "";
+  private sessionEpoch = 0;
+  private inviteWaitRefs = new Set<any>();
+  private authUnsubscribers = new Set<() => void>();
+
+  public syncRouteState() {
+    applyCurrentRouteState();
+  }
+
+  private bumpSessionEpoch() {
+    this.sessionEpoch += 1;
+    return this.sessionEpoch;
+  }
+
+  private isSessionEpochActive(epoch: number) {
+    return this.sessionEpoch === epoch;
+  }
+
+  public beginMatchSessionTeardown() {
+    this.bumpSessionEpoch();
+  }
+
+  public createSessionGuard(): () => boolean {
+    const epoch = this.sessionEpoch;
+    return () => this.isSessionEpochActive(epoch);
+  }
+
+  private trackInviteWaitRef(inviteRef: any) {
+    this.inviteWaitRefs.add(inviteRef);
+    incrementLifecycleCounter("connectionObservers");
+  }
+
+  private releaseInviteWaitRef(inviteRef: any) {
+    if (this.inviteWaitRefs.has(inviteRef)) {
+      this.inviteWaitRefs.delete(inviteRef);
+      decrementLifecycleCounter("connectionObservers");
+    }
+  }
 
   constructor() {
     const firebaseConfig = {
@@ -175,11 +226,17 @@ class Connection {
   }
 
   public setupConnection(autojoin: boolean): void {
+    applyCurrentRouteState();
     if (!isCreateNewInviteFlow) {
-      const shouldAutojoin = autojoin || initialPath.startsWith("auto_");
+      const sessionGuard = this.createSessionGuard();
+      const inviteId = routePath;
+      if (!inviteId) {
+        return;
+      }
+      const shouldAutojoin = autojoin || routeAutojoin;
       this.signIn().then((uid) => {
-        if (uid) {
-          this.connectToGame(uid, initialPath, shouldAutojoin);
+        if (uid && sessionGuard()) {
+          this.connectToGame(uid, inviteId, shouldAutojoin);
         } else {
           console.log("failed to get game info");
         }
@@ -188,10 +245,11 @@ class Connection {
   }
 
   public connectToAutomatch(inviteId: string): void {
+    const sessionGuard = this.createSessionGuard();
     this.newInviteId = inviteId;
     this.updatePath(this.newInviteId);
     this.signIn().then((uid) => {
-      if (uid) {
+      if (uid && sessionGuard()) {
         this.connectToGame(uid, inviteId, true);
       } else {
         console.log("failed to get game info");
@@ -200,6 +258,7 @@ class Connection {
   }
 
   public didClickInviteButton(completion: (success: boolean) => void): void {
+    applyCurrentRouteState();
     if (this.didCreateNewGameInvite) {
       this.writeInviteLinkToClipboard();
       completion(true);
@@ -209,7 +268,7 @@ class Connection {
         this.writeInviteLinkToClipboard();
         this.createNewMatchInvite(completion);
       } else {
-        this.newInviteId = initialPath;
+        this.newInviteId = routePath;
         this.writeInviteLinkToClipboard();
         completion(true);
       }
@@ -223,12 +282,14 @@ class Connection {
 
   private updatePath(newInviteId: string): void {
     const newPath = `/${newInviteId}`;
-    window.history.pushState({ path: newPath }, "", newPath);
+    pushRoutePath(newPath);
+    applyCurrentRouteState();
   }
 
   private createNewMatchInvite(completion: (success: boolean) => void): void {
+    const sessionGuard = this.createSessionGuard();
     this.signIn().then((uid) => {
-      if (uid) {
+      if (uid && sessionGuard()) {
         this.createInvite(uid, this.newInviteId);
         this.didCreateNewGameInvite = true;
         this.updatePath(this.newInviteId);
@@ -259,12 +320,25 @@ class Connection {
   }
 
   public async seeIfFreshlySignedInProfileIsOneOfThePlayers(profileId: string): Promise<void> {
+    applyCurrentRouteState();
+    const sessionGuard = this.createSessionGuard();
     if (!this.latestInvite) {
       return;
     }
     const match = await this.checkBothPlayerProfiles(this.latestInvite.hostId, this.latestInvite.guestId ?? "", profileId);
+    if (!sessionGuard()) {
+      return;
+    }
     if (match !== null) {
-      window.location.reload();
+      const inviteToReconnect = this.inviteId ?? routePath;
+      if (!inviteToReconnect) {
+        return;
+      }
+      this.signIn().then((uid) => {
+        if (uid && sessionGuard()) {
+          this.connectToGame(uid, inviteToReconnect, false);
+        }
+      });
     }
   }
 
@@ -294,13 +368,56 @@ class Connection {
   public async signOut(): Promise<void> {
     try {
       await signOut(this.auth);
+      this.detachFromMatchSession();
+      this.detachFromProfileSession();
       this.loginUid = null;
       this.setSameProfilePlayerUid(null);
       this.cleanupWagerObserver();
+      rocksMiningService.resetProfileMiningState();
+      const [nftService, playerMetadata, ensResolver, leaderboard] = await Promise.all([
+        import("../services/nftService"),
+        import("../utils/playerMetadata"),
+        import("../utils/ensResolver"),
+        import("../ui/Leaderboard"),
+      ]);
+      nftService.resetNftCache();
+      playerMetadata.resetPlayerMetadataCaches();
+      ensResolver.resetEnsCache();
+      leaderboard.resetLeaderboardCache();
+      setFrozenMaterials(null);
     } catch (error) {
       console.error("Failed to sign out:", error);
       throw error;
     }
+  }
+
+  public detachFromMatchSession(): void {
+    this.bumpSessionEpoch();
+    this.cleanupRematchObservers();
+    this.cleanupWagerObserver();
+    this.stopObservingAllMatches();
+    this.inviteWaitRefs.forEach((inviteRef) => {
+      off(inviteRef);
+      decrementLifecycleCounter("connectionObservers");
+    });
+    this.inviteWaitRefs.clear();
+    this.latestInvite = null;
+    this.myMatch = null;
+    this.inviteId = null;
+    this.matchId = null;
+    this.didCreateNewGameInvite = false;
+    this.newInviteId = "";
+    this.optimisticResolvedMatchIds.clear();
+    setCurrentWagerMatch(null);
+  }
+
+  public detachFromProfileSession(): void {
+    this.loginUid = null;
+    this.setSameProfilePlayerUid(null);
+    this.currentUid = null;
+    this.observeMiningFrozen(null);
+    this.materialLeaderboardCache.clear();
+    this.materialLeaderboardCacheTime = 0;
   }
 
   public async getProfileByLoginId(loginId: string): Promise<PlayerProfile> {
@@ -507,14 +624,23 @@ class Connection {
     }
   }
 
-  public subscribeToAuthChanges(callback: (uid: string | null) => void): void {
-    onAuthStateChanged(this.auth, (user) => {
+  public subscribeToAuthChanges(callback: (uid: string | null) => void): () => void {
+    incrementLifecycleCounter("connectionAuthSubscribers");
+    const unsubscribe = onAuthStateChanged(this.auth, (user) => {
       const newUid = user?.uid ?? null;
       if (newUid !== this.currentUid) {
         this.currentUid = newUid;
         callback(newUid);
       }
     });
+    this.authUnsubscribers.add(unsubscribe);
+    return () => {
+      if (this.authUnsubscribers.has(unsubscribe)) {
+        this.authUnsubscribers.delete(unsubscribe);
+        decrementLifecycleCounter("connectionAuthSubscribers");
+      }
+      unsubscribe();
+    };
   }
 
   public getSameProfilePlayerUid(): string | null {
@@ -623,6 +749,7 @@ class Connection {
   }
 
   public sendRematchProposal(): void {
+    const sessionGuard = this.createSessionGuard();
     const newRematchProposalIndex = this.getRematchIndexAvailableForNewProposal();
     if (!newRematchProposalIndex || !this.latestInvite || !this.inviteId) {
       return;
@@ -663,6 +790,9 @@ class Connection {
 
     update(ref(this.db), updates)
       .then(() => {
+        if (!sessionGuard()) {
+          return;
+        }
         this.myMatch = nextMatch;
         this.matchId = nextMatchId;
         this.updateWagerStateForCurrentMatch();
@@ -677,6 +807,9 @@ class Connection {
         didJustCreateRematchProposalSuccessfully(inviteId);
       })
       .catch((error) => {
+        if (!sessionGuard()) {
+          return;
+        }
         console.error("Error updating match and rematches:", error);
         failedToCreateRematchProposal();
       });
@@ -787,13 +920,15 @@ class Connection {
   }
 
   public async updateRatings(): Promise<any> {
+    const sessionGuard = this.createSessionGuard();
+    const profileIdAtRequest = storage.getProfileId("");
     try {
       await this.ensureAuthenticated();
       const updateRatingsFunction = httpsCallable(this.functions, "updateRatings");
       const opponentId = this.getOpponentId();
       const response = await updateRatingsFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
       const data = response.data as { mining?: PlayerMiningData } | null;
-      if (data && data.mining) {
+      if (data && data.mining && sessionGuard() && storage.getProfileId("") === profileIdAtRequest) {
         rocksMiningService.setFromServer(data.mining, { persist: true });
       }
       return data;
@@ -804,6 +939,8 @@ class Connection {
   }
 
   public async resolveWagerOutcome(isWin?: boolean): Promise<any> {
+    const sessionGuard = this.createSessionGuard();
+    const profileIdAtRequest = storage.getProfileId("");
     try {
       await this.ensureAuthenticated();
       if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) {
@@ -821,7 +958,7 @@ class Connection {
       );
       const responseData = data as { mining?: PlayerMiningData } | null;
       console.log("wager:resolve:done", responseData);
-      if (responseData && responseData.mining) {
+      if (responseData && responseData.mining && sessionGuard() && storage.getProfileId("") === profileIdAtRequest) {
         rocksMiningService.setFromServer(responseData.mining, { persist: true });
       }
       return responseData;
@@ -1203,13 +1340,22 @@ class Connection {
     this.sameProfilePlayerUid = uid;
     this.observeMiningFrozen(uid);
     if (uid) {
+      const expectedUid = uid;
+      const expectedEpoch = this.sessionEpoch;
       setupPlayerId(uid, false);
       this.getProfileByLoginId(uid)
         .then((profile) => {
-          didGetPlayerProfile(profile, uid, true);
+          if (!this.isSessionEpochActive(expectedEpoch) || this.sameProfilePlayerUid !== expectedUid) {
+            return;
+          }
+          didGetPlayerProfile(profile, expectedUid, true);
         })
         .catch(() => {});
     }
+  }
+
+  public getActiveMatchId(): string | null {
+    return this.matchId;
   }
 
   public updateStoredEmoji(newId: number, aura: string | null | undefined): void {
@@ -1278,8 +1424,9 @@ class Connection {
   }
 
   public signInIfNeededAndConnectToGame(inviteId: string, autojoin: boolean): void {
+    const sessionGuard = this.createSessionGuard();
     this.signIn().then((uid) => {
-      if (uid) {
+      if (uid && sessionGuard()) {
         this.connectToGame(uid, inviteId, autojoin);
       } else {
         console.log("failed to get game info");
@@ -1288,13 +1435,25 @@ class Connection {
   }
 
   private sendMatchUpdate(): void {
+    const sessionGuard = this.createSessionGuard();
     set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${this.matchId}`), this.myMatch)
       .then(() => {
         console.log("Match update sent successfully");
       })
       .catch((error) => {
+        if (!sessionGuard()) {
+          return;
+        }
         console.error("Error sending match update:", error);
-        window.location.reload();
+        const inviteToReconnect = this.inviteId;
+        if (!inviteToReconnect) {
+          return;
+        }
+        this.signIn().then((uid) => {
+          if (uid && sessionGuard()) {
+            this.connectToGame(uid, inviteToReconnect, false);
+          }
+        });
       });
   }
 
@@ -1334,6 +1493,7 @@ class Connection {
   }
 
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
+    applyCurrentRouteState();
     const inviteChanged = this.inviteId && this.inviteId !== inviteId;
     if (this.sameProfilePlayerUid === null || this.loginUid !== uid) {
       this.setSameProfilePlayerUid(uid);
@@ -1341,12 +1501,16 @@ class Connection {
 
     this.loginUid = uid;
     if (inviteChanged) {
-      this.cleanupWagerObserver();
+      this.detachFromMatchSession();
     }
+    const connectEpoch = this.bumpSessionEpoch();
     this.inviteId = inviteId;
     const inviteRef = ref(this.db, `invites/${inviteId}`);
     get(inviteRef)
       .then(async (snapshot) => {
+        if (!this.isSessionEpochActive(connectEpoch)) {
+          return;
+        }
         const inviteData: Invite | null = snapshot.val();
         if (!inviteData) {
           console.log("No invite data found");
@@ -1358,17 +1522,24 @@ class Connection {
         this.observeWagers();
 
         const matchId = await this.getLatestBothSidesApprovedOrProposedByMeMatchId();
+        if (!this.isSessionEpochActive(connectEpoch)) {
+          return;
+        }
         this.matchId = matchId;
+        setCurrentWagerMatch(matchId);
         this.updateWagerStateForCurrentMatch();
 
         if (!inviteData.guestId && inviteData.hostId !== uid) {
           if (autojoin) {
             set(ref(this.db, `invites/${inviteId}/guestId`), uid)
               .then(() => {
+                if (!this.isSessionEpochActive(connectEpoch)) {
+                  return;
+                }
                 if (this.latestInvite) {
                   this.latestInvite.guestId = uid;
                 }
-                this.getOpponentsMatchAndCreateOwnMatch(matchId, inviteData.hostId);
+                this.getOpponentsMatchAndCreateOwnMatch(matchId, inviteData.hostId, connectEpoch);
               })
               .catch((error) => {
                 console.error("Error joining as a guest:", error);
@@ -1378,15 +1549,15 @@ class Connection {
           }
         } else {
           if (inviteData.hostId === uid) {
-            this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId);
+            this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
           } else if (inviteData.guestId === uid) {
-            this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId);
+            this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
           } else {
             if (this.sameProfilePlayerUid !== null && this.sameProfilePlayerUid !== this.loginUid) {
               if (this.sameProfilePlayerUid === inviteData.hostId) {
-                this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId);
+                this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
               } else {
-                this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId ?? "");
+                this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId ?? "", connectEpoch);
               }
               this.refreshTokenIfNeeded();
             } else {
@@ -1394,19 +1565,25 @@ class Connection {
               if (profileId !== null) {
                 this.checkBothPlayerProfiles(inviteData.hostId, inviteData.guestId ?? "", profileId)
                   .then((matchingUid) => {
+                    if (!this.isSessionEpochActive(connectEpoch)) {
+                      return;
+                    }
                     if (matchingUid === null) {
                       this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
                     } else if (matchingUid === inviteData.hostId) {
                       this.setSameProfilePlayerUid(matchingUid);
                       this.refreshTokenIfNeeded();
-                      this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId);
+                      this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
                     } else {
                       this.setSameProfilePlayerUid(matchingUid);
                       this.refreshTokenIfNeeded();
-                      this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId ?? "");
+                      this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId ?? "", connectEpoch);
                     }
                   })
                   .catch(() => {
+                    if (!this.isSessionEpochActive(connectEpoch)) {
+                      return;
+                    }
                     this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
                   });
               } else {
@@ -1421,10 +1598,13 @@ class Connection {
       });
   }
 
-  private reconnectAsGuest(matchId: string, hostId: string, guestId: string): void {
+  private reconnectAsGuest(matchId: string, hostId: string, guestId: string, epoch: number): void {
     const myMatchRef = ref(this.db, `players/${guestId}/matches/${matchId}`);
     get(myMatchRef)
       .then((snapshot) => {
+        if (!this.isSessionEpochActive(epoch)) {
+          return;
+        }
         const myMatchData: Match | null = snapshot.val();
         if (!myMatchData) {
           console.log("No match data found for guest");
@@ -1435,14 +1615,20 @@ class Connection {
         this.observeMatch(hostId, matchId);
       })
       .catch((error) => {
+        if (!this.isSessionEpochActive(epoch)) {
+          return;
+        }
         console.error("Failed to get guest's match:", error);
       });
   }
 
-  private reconnectAsHost(inviteId: string, matchId: string, hostId: string, guestId: string | null | undefined): void {
+  private reconnectAsHost(inviteId: string, matchId: string, hostId: string, guestId: string | null | undefined, epoch: number): void {
     const myMatchRef = ref(this.db, `players/${hostId}/matches/${matchId}`);
     get(myMatchRef)
       .then((snapshot) => {
+        if (!this.isSessionEpochActive(epoch)) {
+          return;
+        }
         const myMatchData: Match | null = snapshot.val();
         if (!myMatchData) {
           console.log("No match data found for host");
@@ -1456,7 +1642,11 @@ class Connection {
         } else {
           didFindYourOwnInviteThatNobodyJoined(inviteId.startsWith("auto_"));
           const inviteRef = ref(this.db, `invites/${inviteId}`);
+          this.trackInviteWaitRef(inviteRef);
           onValue(inviteRef, (snapshot) => {
+            if (!this.isSessionEpochActive(epoch)) {
+              return;
+            }
             const updatedInvite: Invite | null = snapshot.val();
             if (updatedInvite && updatedInvite.guestId) {
               if (this.latestInvite) {
@@ -1464,11 +1654,15 @@ class Connection {
               }
               this.observeMatch(updatedInvite.guestId, matchId);
               off(inviteRef);
+              this.releaseInviteWaitRef(inviteRef);
             }
           });
         }
       })
       .catch((error) => {
+        if (!this.isSessionEpochActive(epoch)) {
+          return;
+        }
         console.error("Failed to get host's match:", error);
       });
   }
@@ -1481,10 +1675,13 @@ class Connection {
     }
   }
 
-  private getOpponentsMatchAndCreateOwnMatch(matchId: string, hostId: string): void {
+  private getOpponentsMatchAndCreateOwnMatch(matchId: string, hostId: string, epoch: number): void {
     const opponentsMatchRef = ref(this.db, `players/${hostId}/matches/${matchId}`);
     get(opponentsMatchRef)
       .then((snapshot) => {
+        if (!this.isSessionEpochActive(epoch)) {
+          return;
+        }
         const opponentsMatchData: Match | null = snapshot.val();
         if (!opponentsMatchData) {
           console.log("No opponent's match data found");
@@ -1509,6 +1706,9 @@ class Connection {
 
         set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${matchId}`), match)
           .then(() => {
+            if (!this.isSessionEpochActive(epoch)) {
+              return;
+            }
             this.observeMatch(hostId, matchId);
           })
           .catch((error) => {
@@ -1516,11 +1716,15 @@ class Connection {
           });
       })
       .catch((error) => {
+        if (!this.isSessionEpochActive(epoch)) {
+          return;
+        }
         console.error("Failed to get opponent's match:", error);
       });
   }
 
   public createInvite(uid: string, inviteId: string): void {
+    const epoch = this.bumpSessionEpoch();
     const hostColor = Math.random() < 0.5 ? "white" : "black";
     const emojiId = getPlayersEmojiId();
 
@@ -1559,14 +1763,24 @@ class Connection {
     updates[`invites/${inviteId}`] = invite;
     update(ref(this.db), updates)
       .then(() => {
+        if (!this.isSessionEpochActive(epoch)) {
+          return;
+        }
         console.log("Match and invite created successfully");
       })
       .catch((error) => {
+        if (!this.isSessionEpochActive(epoch)) {
+          return;
+        }
         console.error("Error creating match and invite:", error);
       });
 
     const inviteRef = ref(this.db, `invites/${inviteId}`);
+    this.trackInviteWaitRef(inviteRef);
     onValue(inviteRef, (snapshot) => {
+      if (!this.isSessionEpochActive(epoch)) {
+        return;
+      }
       const updatedInvite: Invite | null = snapshot.val();
       if (updatedInvite && updatedInvite.guestId) {
         console.log(`Guest ${updatedInvite.guestId} joined the invite ${inviteId}`);
@@ -1576,6 +1790,7 @@ class Connection {
         this.updateWagerStateForCurrentMatch();
         this.observeMatch(updatedInvite.guestId, matchId);
         off(inviteRef);
+        this.releaseInviteWaitRef(inviteRef);
       }
     });
   }
@@ -1617,11 +1832,16 @@ class Connection {
 
   private observeRematchOrEndMatchIndicators() {
     if ((this.hostRematchesRef && this.guestRematchesRef) || !this.latestInvite || this.rematchSeriesEndIsIndicated()) return;
+    const observeEpoch = this.sessionEpoch;
 
     const hostObservationPath = `invites/${this.inviteId}/hostRematches`;
     this.hostRematchesRef = ref(this.db, hostObservationPath);
+    incrementLifecycleCounter("connectionObservers");
 
     onValue(this.hostRematchesRef, (snapshot) => {
+      if (!this.isSessionEpochActive(observeEpoch)) {
+        return;
+      }
       const rematchesString: string | null = snapshot.val();
       if (rematchesString !== null) {
         this.latestInvite!.hostRematches = rematchesString;
@@ -1634,8 +1854,12 @@ class Connection {
 
     const guestObservationPath = `invites/${this.inviteId}/guestRematches`;
     this.guestRematchesRef = ref(this.db, guestObservationPath);
+    incrementLifecycleCounter("connectionObservers");
 
     onValue(this.guestRematchesRef, (snapshot) => {
+      if (!this.isSessionEpochActive(observeEpoch)) {
+        return;
+      }
       const rematchesString: string | null = snapshot.val();
       if (rematchesString !== null) {
         this.latestInvite!.guestRematches = rematchesString;
@@ -1660,9 +1884,14 @@ class Connection {
     if (this.wagersRef || !this.inviteId) {
       return;
     }
+    const observeEpoch = this.sessionEpoch;
     const wagersRef = ref(this.db, `invites/${this.inviteId}/wagers`);
     this.wagersRef = wagersRef;
+    incrementLifecycleCounter("connectionObservers");
     onValue(wagersRef, (snapshot) => {
+      if (!this.isSessionEpochActive(observeEpoch)) {
+        return;
+      }
       const wagers = snapshot.val();
       if (this.latestInvite) {
         this.latestInvite.wagers = wagers;
@@ -1675,10 +1904,12 @@ class Connection {
     if (this.hostRematchesRef) {
       off(this.hostRematchesRef);
       this.hostRematchesRef = null;
+      decrementLifecycleCounter("connectionObservers");
     }
     if (this.guestRematchesRef) {
       off(this.guestRematchesRef);
       this.guestRematchesRef = null;
+      decrementLifecycleCounter("connectionObservers");
     }
   }
 
@@ -1686,6 +1917,7 @@ class Connection {
     if (this.wagersRef) {
       off(this.wagersRef);
       this.wagersRef = null;
+      decrementLifecycleCounter("connectionObservers");
     }
   }
 
@@ -1693,14 +1925,20 @@ class Connection {
     if (this.miningFrozenRef) {
       off(this.miningFrozenRef);
       this.miningFrozenRef = null;
+      decrementLifecycleCounter("connectionObservers");
     }
     if (!uid) {
       setFrozenMaterials(null);
       return;
     }
     const miningRef = ref(this.db, `players/${uid}/mining/frozen`);
+    const observeEpoch = this.sessionEpoch;
     this.miningFrozenRef = miningRef;
+    incrementLifecycleCounter("connectionObservers");
     onValue(miningRef, (snapshot) => {
+      if (!this.isSessionEpochActive(observeEpoch)) {
+        return;
+      }
       setFrozenMaterials(snapshot.val());
     });
   }
@@ -1708,26 +1946,43 @@ class Connection {
   private observeMatch(playerId: string, matchId: string): void {
     const matchRef = ref(this.db, `players/${playerId}/matches/${matchId}`);
     const key = `${matchId}_${playerId}`;
+    if (this.matchRefs[key]) {
+      return;
+    }
+    const observeEpoch = this.sessionEpoch;
     this.matchRefs[key] = matchRef;
+    incrementLifecycleCounter("connectionObservers");
 
     onValue(
       matchRef,
       (snapshot) => {
+        if (!this.isSessionEpochActive(observeEpoch)) {
+          return;
+        }
         const matchData: Match | null = snapshot.val();
         if (matchData) {
           didReceiveMatchUpdate(matchData, playerId, matchId);
         }
       },
       (error) => {
+        if (!this.isSessionEpochActive(observeEpoch)) {
+          return;
+        }
         console.error("Error observing match data:", error);
       }
     );
 
     this.getProfileByLoginId(playerId)
       .then((profile) => {
+        if (!this.isSessionEpochActive(observeEpoch)) {
+          return;
+        }
         didGetPlayerProfile(profile, playerId, false);
       })
       .catch((error) => {
+        if (!this.isSessionEpochActive(observeEpoch)) {
+          return;
+        }
         console.error("Error getting player profile:", error);
         this.observeProfile(playerId);
       });
@@ -1735,18 +1990,33 @@ class Connection {
 
   private observeProfile(playerId: string): void {
     const profileRef = ref(this.db, `players/${playerId}/profile`);
+    if (this.profileRefs[playerId]) {
+      return;
+    }
+    const observeEpoch = this.sessionEpoch;
     this.profileRefs[playerId] = profileRef;
+    incrementLifecycleCounter("connectionObservers");
 
     onValue(profileRef, (snapshot) => {
+      if (!this.isSessionEpochActive(observeEpoch)) {
+        return;
+      }
       const profile = snapshot.val();
       if (profile) {
         off(profileRef);
         delete this.profileRefs[playerId];
+        decrementLifecycleCounter("connectionObservers");
         this.getProfileByLoginId(playerId)
           .then((profile) => {
+            if (!this.isSessionEpochActive(observeEpoch)) {
+              return;
+            }
             didGetPlayerProfile(profile, playerId, false);
           })
           .catch((error) => {
+            if (!this.isSessionEpochActive(observeEpoch)) {
+              return;
+            }
             console.error("Error getting player profile:", error);
           });
       }
@@ -1786,17 +2056,27 @@ class Connection {
   }
 
   private stopObservingAllMatches(): void {
+    let removedMatchCount = 0;
     for (const key in this.matchRefs) {
       off(this.matchRefs[key]);
       console.log(`Stopped observing match for key ${key}`);
+      removedMatchCount += 1;
     }
     this.matchRefs = {};
+    if (removedMatchCount > 0) {
+      decrementLifecycleCounter("connectionObservers", removedMatchCount);
+    }
 
+    let removedProfileCount = 0;
     for (const key in this.profileRefs) {
       off(this.profileRefs[key]);
       console.log(`Stopped observing profile for key ${key}`);
+      removedProfileCount += 1;
     }
     this.profileRefs = {};
+    if (removedProfileCount > 0) {
+      decrementLifecycleCounter("connectionObservers", removedProfileCount);
+    }
   }
 }
 

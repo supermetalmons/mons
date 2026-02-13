@@ -33,3 +33,7 @@ export function onMainGameLoaded(listener: Listener) {
   };
 }
 
+export function resetMainGameLoadedState() {
+  loaded = false;
+}
+

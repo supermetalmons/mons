@@ -11,7 +11,27 @@ type ConfettiParticle = {
   gravity: number;
 };
 
+let activeCanvas: HTMLCanvasElement | null = null;
+let activeResizeHandler: (() => void) | null = null;
+let activeAnimationFrame: number | null = null;
+
+export function stopConfetti(): void {
+  if (activeAnimationFrame !== null) {
+    cancelAnimationFrame(activeAnimationFrame);
+    activeAnimationFrame = null;
+  }
+  if (activeResizeHandler) {
+    window.removeEventListener("resize", activeResizeHandler);
+    activeResizeHandler = null;
+  }
+  if (activeCanvas && activeCanvas.parentNode) {
+    activeCanvas.parentNode.removeChild(activeCanvas);
+  }
+  activeCanvas = null;
+}
+
 export function launchConfetti(count: number = 300, duration: number = 2300): void {
+  stopConfetti();
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
@@ -25,11 +45,14 @@ export function launchConfetti(count: number = 300, duration: number = 2300): vo
   canvas.width = window.innerWidth;
   canvas.height = window.innerHeight;
   document.body.appendChild(canvas);
+  activeCanvas = canvas;
 
-  window.addEventListener("resize", () => {
+  const resizeHandler = () => {
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
-  });
+  };
+  activeResizeHandler = resizeHandler;
+  window.addEventListener("resize", resizeHandler);
 
   const colors = ["#FFC700", "#FF0000", "#2E3192", "#41BBC7", "#FF66CC", "#33CC33"];
   const particles: ConfettiParticle[] = [];
@@ -75,10 +98,10 @@ export function launchConfetti(count: number = 300, duration: number = 2300): vo
       }
     }
     if (elapsedTime < duration || particles.length) {
-      requestAnimationFrame(animate);
+      activeAnimationFrame = requestAnimationFrame(animate);
     } else {
-      document.body.removeChild(canvas);
+      stopConfetti();
     }
   }
-  requestAnimationFrame(animate);
+  activeAnimationFrame = requestAnimationFrame(animate);
 }

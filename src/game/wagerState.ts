@@ -41,3 +41,10 @@ export const subscribeToWagerState = (listener: WagerStateListener) => {
     listeners.delete(listener);
   };
 };
+
+export const resetWagerStore = () => {
+  currentMatchId = null;
+  currentState = null;
+  currentStateMatchId = null;
+  notify();
+};

@@ -21,6 +21,7 @@ import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory, showSettings } from "./ui/ProfileSignIn";
 import { isMainGameLoaded, onMainGameLoaded } from "./game/mainGameLoadState";
 import { Sound } from "./utils/gameModels";
+import { initializeAppSessionManager } from "./session/AppSessionManager";
 
 const LazyIslandButton = lazy(() => import("./ui/IslandButton"));
 
@@ -38,8 +39,8 @@ export function hasFullScreenAlertVisible(): boolean {
   return getIsFullScreenAlertOpen();
 }
 
-export let enterProfileEditingMode: (enter: boolean) => void;
-export let setIslandButtonDimmed: (dimmed: boolean) => void;
+export let enterProfileEditingMode: (enter: boolean) => void = () => {};
+export let setIslandButtonDimmed: (dimmed: boolean) => void = () => {};
 
 const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
@@ -213,6 +214,7 @@ document.addEventListener(
 );
 
 connection.signIn();
+initializeAppSessionManager();
 
 (function suppressThirdPartyErrorOverlay() {
   if (typeof window === "undefined") return;

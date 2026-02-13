@@ -23,6 +23,7 @@ import { subscribeToWagerState } from "../game/wagerState";
 import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 import { storage } from "../utils/storage";
+import { transitionToHome } from "../session/AppSessionManager";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 
@@ -39,7 +40,7 @@ export function didDismissSomethingWithOutsideTapJustNow() {
 }
 
 export let closeNavigationAndAppearancePopupIfAny: () => void = () => {};
-export let setNavigationListButtonVisible: (visible: boolean) => void;
+export let setNavigationListButtonVisible: (visible: boolean) => void = () => {};
 
 export function resetOutsideTapDismissTimeout() {
   if (!isMobile) {
@@ -69,35 +70,35 @@ export function hasNavigationPopupVisible(): boolean {
 
 let getIsNavigationPopupOpen: () => boolean = () => false;
 
-let hasBottomPopupsVisible: () => boolean;
-let showVoiceReactionButton: (show: boolean) => void;
-let showMoveHistoryButton: (show: boolean) => void;
-let showResignButton: () => void;
-let setInviteLinkActionVisible: (visible: boolean) => void;
-let setAutomatchEnabled: (enabled: boolean) => void;
-let setAutomatchVisible: (visible: boolean) => void;
-let setBotGameOptionVisible: (visible: boolean) => void;
-let setPlaySamePuzzleAgainButtonVisible: (visible: boolean) => void;
-let setAutomatchWaitingState: (waiting: boolean) => void;
-let setBrushAndNavigationButtonDimmed: (dimmed: boolean) => void;
-let setBadgeVisible: (visible: boolean) => void;
+let hasBottomPopupsVisible: () => boolean = () => false;
+let showVoiceReactionButton: (show: boolean) => void = () => {};
+let showMoveHistoryButton: (show: boolean) => void = () => {};
+let showResignButton: () => void = () => {};
+let setInviteLinkActionVisible: (visible: boolean) => void = () => {};
+let setAutomatchEnabled: (enabled: boolean) => void = () => {};
+let setAutomatchVisible: (visible: boolean) => void = () => {};
+let setBotGameOptionVisible: (visible: boolean) => void = () => {};
+let setPlaySamePuzzleAgainButtonVisible: (visible: boolean) => void = () => {};
+let setAutomatchWaitingState: (waiting: boolean) => void = () => {};
+let setBrushAndNavigationButtonDimmed: (dimmed: boolean) => void = () => {};
+let setBadgeVisible: (visible: boolean) => void = () => {};
 
-let showWaitingStateText: (text: string) => void;
-let setHomeVisible: (visible: boolean) => void;
-let setEndMatchVisible: (visible: boolean) => void;
-let setEndMatchConfirmed: (confirmed: boolean) => void;
-let setUndoVisible: (visible: boolean) => void;
-let setAutomoveActionEnabled: (enabled: boolean) => void;
-let setAutomoveActionVisible: (visible: boolean) => void;
-let setWatchOnlyVisible: (visible: boolean) => void;
-let setUndoEnabled: (enabled: boolean) => void;
-let disableAndHideUndoResignAndTimerControls: () => void;
-let setIsReadyToCopyExistingInviteLink: () => void;
-let hideTimerButtons: () => void;
-let showTimerButtonProgressing: (currentProgress: number, target: number, enableWhenTargetReached: boolean) => void;
-let toggleReactionPicker: () => void;
-let enableTimerVictoryClaim: () => void;
-let showPrimaryAction: (action: PrimaryActionType) => void;
+let showWaitingStateText: (text: string) => void = () => {};
+let setHomeVisible: (visible: boolean) => void = () => {};
+let setEndMatchVisible: (visible: boolean) => void = () => {};
+let setEndMatchConfirmed: (confirmed: boolean) => void = () => {};
+let setUndoVisible: (visible: boolean) => void = () => {};
+let setAutomoveActionEnabled: (enabled: boolean) => void = () => {};
+let setAutomoveActionVisible: (visible: boolean) => void = () => {};
+let setWatchOnlyVisible: (visible: boolean) => void = () => {};
+let setUndoEnabled: (enabled: boolean) => void = () => {};
+let disableAndHideUndoResignAndTimerControls: () => void = () => {};
+let setIsReadyToCopyExistingInviteLink: () => void = () => {};
+let hideTimerButtons: () => void = () => {};
+let showTimerButtonProgressing: (currentProgress: number, target: number, enableWhenTargetReached: boolean) => void = () => {};
+let toggleReactionPicker: () => void = () => {};
+let enableTimerVictoryClaim: () => void = () => {};
+let showPrimaryAction: (action: PrimaryActionType) => void = () => {};
 
 const STICKER_ID_WHITELIST: number[] = [9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466, 900316, 900101, 900393, 90063, 900109, 900228, 900245, 900267, 900374, 900347, 900382, 900429, 900225, 900999, 900189];
 const FIXED_STICKER_IDS: number[] = [900316, 900101, 900393, 90063, 900109, 900228, 900245, 900189, 900267, 900374, 900347, 900382, 900429, 900225, 900999];
@@ -513,7 +514,61 @@ const BottomControls: React.FC = () => {
   closeNavigationAndAppearancePopupIfAny = () => {
     setIsNavigationPopupVisible(false);
     setIsBoardStylePickerVisible(false);
+    setIsMoveHistoryPopupVisible(false);
+    setIsReactionPickerVisible(false);
+    setIsResignConfirmVisible(false);
+    setIsTimerConfirmVisible(false);
+    setIsClaimVictoryConfirmVisible(false);
+    setIsWagerMode(false);
+    if (hourglassEnableTimeoutRef.current) {
+      clearTimeout(hourglassEnableTimeoutRef.current);
+      hourglassEnableTimeoutRef.current = null;
+    }
+    if (cancelAutomatchRevealTimeoutRef.current) {
+      clearTimeout(cancelAutomatchRevealTimeoutRef.current);
+      cancelAutomatchRevealTimeoutRef.current = null;
+    }
+    setIsCancelAutomatchVisible(false);
+    setIsCancelAutomatchDisabled(false);
   };
+
+  useEffect(() => {
+    return () => {
+      closeNavigationAndAppearancePopupIfAny = () => {};
+      setNavigationListButtonVisible = () => {};
+      getIsNavigationPopupOpen = () => false;
+      hasBottomPopupsVisible = () => false;
+      showVoiceReactionButton = () => {};
+      showMoveHistoryButton = () => {};
+      showResignButton = () => {};
+      setInviteLinkActionVisible = () => {};
+      setAutomatchEnabled = () => {};
+      setAutomatchVisible = () => {};
+      setBotGameOptionVisible = () => {};
+      setPlaySamePuzzleAgainButtonVisible = () => {};
+      setAutomatchWaitingState = () => {};
+      setBrushAndNavigationButtonDimmed = () => {};
+      setBadgeVisible = () => {};
+      showWaitingStateText = () => {};
+      setHomeVisible = () => {};
+      setEndMatchVisible = () => {};
+      setEndMatchConfirmed = () => {};
+      setUndoVisible = () => {};
+      setAutomoveActionEnabled = () => {};
+      setAutomoveActionVisible = () => {};
+      setWatchOnlyVisible = () => {};
+      setUndoEnabled = () => {};
+      disableAndHideUndoResignAndTimerControls = () => {};
+      setIsReadyToCopyExistingInviteLink = () => {};
+      hideTimerButtons = () => {};
+      showTimerButtonProgressing = () => {};
+      toggleReactionPicker = () => {};
+      enableTimerVictoryClaim = () => {};
+      showPrimaryAction = () => {};
+      isWagerPanelVisible = () => false;
+      handleWagerPanelOutsideTap = null;
+    };
+  }, []);
 
   const handleInviteClick = () => {
     soundPlayer.initializeOnUserInteraction(false);
@@ -523,9 +578,13 @@ const BottomControls: React.FC = () => {
     setIsInviteLoading(true);
     connection.didClickInviteButton((result: boolean) => {
       if (result) {
+        const sessionGuard = connection.createSessionGuard();
         if (didCreateInvite) {
           setInviteCopiedTmpState(true);
           setTimeout(() => {
+            if (!sessionGuard()) {
+              return;
+            }
             setInviteCopiedTmpState(false);
           }, 699);
         }
@@ -557,6 +616,9 @@ const BottomControls: React.FC = () => {
 
   showVoiceReactionButton = (show: boolean) => {
     setIsVoiceReactionButtonVisible(show);
+    if (!show) {
+      setIsVoiceReactionDisabled(false);
+    }
   };
 
   showMoveHistoryButton = (show: boolean) => {
@@ -643,6 +705,11 @@ const BottomControls: React.FC = () => {
 
   setInviteLinkActionVisible = (visible: boolean) => {
     setIsInviteLinkButtonVisible(visible);
+    if (!visible) {
+      setIsInviteLoading(false);
+      setDidCreateInvite(false);
+      setInviteCopiedTmpState(false);
+    }
   };
 
   setAutomatchWaitingState = (waiting: boolean) => {
@@ -807,15 +874,23 @@ const BottomControls: React.FC = () => {
     showVideoReaction(false, stickerId);
     playSounds([Sound.EmoteSent]);
     if (isGameWithBot) {
+      const sessionGuard = connection.createSessionGuard();
       const responseStickerId = STICKER_ID_WHITELIST[Math.floor(Math.random() * STICKER_ID_WHITELIST.length)];
       setTimeout(() => {
+        if (!sessionGuard()) {
+          return;
+        }
         showVideoReaction(true, responseStickerId);
         playSounds([Sound.EmoteReceived]);
       }, 5000);
     } else if (!puzzleMode) {
+      const sessionGuard = connection.createSessionGuard();
       connection.sendVoiceReaction(newStickerReaction(stickerId));
       setIsVoiceReactionDisabled(true);
       setTimeout(() => {
+        if (!sessionGuard()) {
+          return;
+        }
         setIsVoiceReactionDisabled(false);
       }, 9999);
     }
@@ -828,16 +903,24 @@ const BottomControls: React.FC = () => {
     showVoiceReactionText(reaction, false);
 
     if (isGameWithBot) {
+      const sessionGuard = connection.createSessionGuard();
       const responseReaction = reaction;
       const responseReactionObj = newReactionOfKind(responseReaction);
       setTimeout(() => {
+        if (!sessionGuard()) {
+          return;
+        }
         playReaction(responseReactionObj);
         showVoiceReactionText(reaction, true);
       }, 2000);
     } else if (!puzzleMode) {
+      const sessionGuard = connection.createSessionGuard();
       connection.sendVoiceReaction(reactionObj);
       setIsVoiceReactionDisabled(true);
       setTimeout(() => {
+        if (!sessionGuard()) {
+          return;
+        }
         setIsVoiceReactionDisabled(false);
       }, 9999);
     }
@@ -930,7 +1013,7 @@ const BottomControls: React.FC = () => {
     try {
       const result = await connection.cancelAutomatch();
       if (result && result.ok) {
-        window.location.href = "/";
+        await transitionToHome();
       } else {
         setIsCancelAutomatchDisabled(false);
       }
