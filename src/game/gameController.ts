@@ -209,7 +209,6 @@ export function didAttemptAuthentication() {
 }
 
 export async function go() {
-  connection.syncRouteState();
   clearAllManagedGameTimeouts();
   Board.setBoardFlipped(false);
   setIslandButtonDimmed(false);

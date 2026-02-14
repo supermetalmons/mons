@@ -261,6 +261,9 @@ const BoardComponent: React.FC = () => {
   const [playerVideoAppearing, setPlayerVideoAppearing] = useState(false);
   const opponentVideoDismissTimeoutRef = useRef<number | null>(null);
   const playerVideoDismissTimeoutRef = useRef<number | null>(null);
+  const opponentVideoAppearingTimeoutRef = useRef<number | null>(null);
+  const playerVideoAppearingTimeoutRef = useRef<number | null>(null);
+  const transitionTimeoutIdsRef = useRef<Set<number>>(new Set());
   const [currentColorSet, setCurrentColorSet] = useState<ColorSet>(getCurrentColorSet());
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
   const [isGridVisible, setIsGridVisible] = useState(!isCustomPictureBoardEnabled());
@@ -343,47 +346,79 @@ const BoardComponent: React.FC = () => {
     }
   };
 
-  const clearOpponentVideoDismissTimeout = useCallback(() => {
-    if (opponentVideoDismissTimeoutRef.current !== null) {
-      window.clearTimeout(opponentVideoDismissTimeoutRef.current);
-      opponentVideoDismissTimeoutRef.current = null;
-    }
+  const setTrackedTimeout = useCallback((callback: () => void, delay: number): number => {
+    const timeoutId = window.setTimeout(() => {
+      transitionTimeoutIdsRef.current.delete(timeoutId);
+      callback();
+    }, delay);
+    transitionTimeoutIdsRef.current.add(timeoutId);
+    return timeoutId;
   }, []);
 
-  const clearPlayerVideoDismissTimeout = useCallback(() => {
-    if (playerVideoDismissTimeoutRef.current !== null) {
-      window.clearTimeout(playerVideoDismissTimeoutRef.current);
-      playerVideoDismissTimeoutRef.current = null;
+  const clearTrackedTimeout = useCallback((timeoutId: number | null) => {
+    if (timeoutId === null) {
+      return;
     }
+    transitionTimeoutIdsRef.current.delete(timeoutId);
+    window.clearTimeout(timeoutId);
   }, []);
+
+  const clearAllTrackedTimeouts = useCallback(() => {
+    transitionTimeoutIdsRef.current.forEach((timeoutId) => {
+      window.clearTimeout(timeoutId);
+    });
+    transitionTimeoutIdsRef.current.clear();
+  }, []);
+
+  const clearOpponentVideoDismissTimeout = useCallback(() => {
+    clearTrackedTimeout(opponentVideoDismissTimeoutRef.current);
+    opponentVideoDismissTimeoutRef.current = null;
+  }, [clearTrackedTimeout]);
+
+  const clearPlayerVideoDismissTimeout = useCallback(() => {
+    clearTrackedTimeout(playerVideoDismissTimeoutRef.current);
+    playerVideoDismissTimeoutRef.current = null;
+  }, [clearTrackedTimeout]);
+
+  const clearOpponentVideoAppearingTimeout = useCallback(() => {
+    clearTrackedTimeout(opponentVideoAppearingTimeoutRef.current);
+    opponentVideoAppearingTimeoutRef.current = null;
+  }, [clearTrackedTimeout]);
+
+  const clearPlayerVideoAppearingTimeout = useCallback(() => {
+    clearTrackedTimeout(playerVideoAppearingTimeoutRef.current);
+    playerVideoAppearingTimeoutRef.current = null;
+  }, [clearTrackedTimeout]);
 
   const dismissOpponentVideo = useCallback((durationMs: number) => {
     clearOpponentVideoDismissTimeout();
     setOpponentVideoAppearing(false);
     setOpponentVideoFading(true);
-    opponentVideoDismissTimeoutRef.current = window.setTimeout(() => {
+    opponentVideoDismissTimeoutRef.current = setTrackedTimeout(() => {
       setOpponentVideoVisible(false);
       setOpponentVideoFading(false);
       setOpponentVideoId(null);
       opponentVideoDismissTimeoutRef.current = null;
     }, durationMs);
-  }, [clearOpponentVideoDismissTimeout]);
+  }, [clearOpponentVideoDismissTimeout, setTrackedTimeout]);
 
   const dismissPlayerVideo = useCallback((durationMs: number) => {
     clearPlayerVideoDismissTimeout();
     setPlayerVideoAppearing(false);
     setPlayerVideoFading(true);
-    playerVideoDismissTimeoutRef.current = window.setTimeout(() => {
+    playerVideoDismissTimeoutRef.current = setTrackedTimeout(() => {
       setPlayerVideoVisible(false);
       setPlayerVideoFading(false);
       setPlayerVideoId(null);
       playerVideoDismissTimeoutRef.current = null;
     }, durationMs);
-  }, [clearPlayerVideoDismissTimeout]);
+  }, [clearPlayerVideoDismissTimeout, setTrackedTimeout]);
 
   const clearVideoReactionsNow = useCallback(() => {
     clearOpponentVideoDismissTimeout();
     clearPlayerVideoDismissTimeout();
+    clearOpponentVideoAppearingTimeout();
+    clearPlayerVideoAppearingTimeout();
     setOpponentVideoVisible(false);
     setOpponentVideoFading(false);
     setOpponentVideoAppearing(false);
@@ -392,23 +427,31 @@ const BoardComponent: React.FC = () => {
     setPlayerVideoFading(false);
     setPlayerVideoAppearing(false);
     setPlayerVideoId(null);
-  }, [clearOpponentVideoDismissTimeout, clearPlayerVideoDismissTimeout]);
+  }, [clearOpponentVideoAppearingTimeout, clearOpponentVideoDismissTimeout, clearPlayerVideoAppearingTimeout, clearPlayerVideoDismissTimeout]);
 
   showVideoReactionImpl = (opponent: boolean, stickerId: number) => {
     if (opponent) {
       clearOpponentVideoDismissTimeout();
+      clearOpponentVideoAppearingTimeout();
       setOpponentVideoId(stickerId);
       setOpponentVideoVisible(true);
       setOpponentVideoFading(false);
       setOpponentVideoAppearing(true);
-      setTimeout(() => setOpponentVideoAppearing(false), 400);
+      opponentVideoAppearingTimeoutRef.current = setTrackedTimeout(() => {
+        setOpponentVideoAppearing(false);
+        opponentVideoAppearingTimeoutRef.current = null;
+      }, 400);
     } else {
       clearPlayerVideoDismissTimeout();
+      clearPlayerVideoAppearingTimeout();
       setPlayerVideoId(stickerId);
       setPlayerVideoVisible(true);
       setPlayerVideoFading(false);
       setPlayerVideoAppearing(true);
-      setTimeout(() => setPlayerVideoAppearing(false), 400);
+      playerVideoAppearingTimeoutRef.current = setTrackedTimeout(() => {
+        setPlayerVideoAppearing(false);
+        playerVideoAppearingTimeoutRef.current = null;
+      }, 400);
     }
   };
 
@@ -430,19 +473,6 @@ const BoardComponent: React.FC = () => {
       hideAuraDom(targets.current.background);
     }
   };
-
-  useEffect(() => {
-    return () => {
-      clearOpponentVideoDismissTimeout();
-      clearPlayerVideoDismissTimeout();
-      setTopBoardOverlayVisibleImpl = () => {};
-      showVideoReactionImpl = () => {};
-      showRaibowAuraImpl = () => {};
-      updateAuraForAvatarElementImpl = () => {};
-      updateWagerPlayerUidsImpl = () => {};
-      clearBoardTransientUiImpl = () => {};
-    };
-  }, [clearOpponentVideoDismissTimeout, clearPlayerVideoDismissTimeout]);
 
   const proposals = wagerState?.proposals || {};
   const playerUid = playerUidSnapshot;
@@ -569,8 +599,36 @@ const BoardComponent: React.FC = () => {
     setActiveWagerPanelCount(null);
   }, []);
 
+  const clearPendingWagerTransitionState = useCallback(() => {
+    clearAllTrackedTimeouts();
+    (["player", "opponent"] as const).forEach((sideKey) => {
+      pendingBlinkDelayTimersRef.current[sideKey] = null;
+      pendingBlinkEnabledRef.current[sideKey] = false;
+      previousMaterialUrlRef.current[sideKey] = null;
+      materialChangeOldIconsRef.current[sideKey].forEach((icon) => icon.remove());
+      materialChangeOldIconsRef.current[sideKey] = [];
+    });
+    opponentVideoDismissTimeoutRef.current = null;
+    playerVideoDismissTimeoutRef.current = null;
+    opponentVideoAppearingTimeoutRef.current = null;
+    playerVideoAppearingTimeoutRef.current = null;
+  }, [clearAllTrackedTimeouts]);
+
+  useEffect(() => {
+    return () => {
+      clearPendingWagerTransitionState();
+      setTopBoardOverlayVisibleImpl = () => {};
+      showVideoReactionImpl = () => {};
+      showRaibowAuraImpl = () => {};
+      updateAuraForAvatarElementImpl = () => {};
+      updateWagerPlayerUidsImpl = () => {};
+      clearBoardTransientUiImpl = () => {};
+    };
+  }, [clearPendingWagerTransitionState]);
+
   const clearBoardTransientUiHandler = useCallback((fadeOutVideos: boolean = true) => {
     clearWagerPanel();
+    clearPendingWagerTransitionState();
     setOverlayState({ blurry: true, svgElement: null, withConfirmAndCancelButtons: false });
     if (opponentAuraRefs.current) {
       hideAuraDom(opponentAuraRefs.current.background);
@@ -598,7 +656,7 @@ const BoardComponent: React.FC = () => {
       setPlayerVideoAppearing(false);
       setPlayerVideoId(null);
     }
-  }, [clearVideoReactionsNow, clearWagerPanel, dismissOpponentVideo, dismissPlayerVideo, opponentVideoVisible, playerVideoVisible]);
+  }, [clearPendingWagerTransitionState, clearVideoReactionsNow, clearWagerPanel, dismissOpponentVideo, dismissPlayerVideo, opponentVideoVisible, playerVideoVisible]);
 
   clearBoardTransientUiImpl = clearBoardTransientUiHandler;
 
@@ -805,7 +863,7 @@ const BoardComponent: React.FC = () => {
           container.style.animation = "none";
           if (sideKey) {
             if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
-              window.clearTimeout(pendingBlinkDelayTimersRef.current[sideKey]!);
+              clearTrackedTimeout(pendingBlinkDelayTimersRef.current[sideKey]);
               pendingBlinkDelayTimersRef.current[sideKey] = null;
             }
             pendingBlinkEnabledRef.current[sideKey] = false;
@@ -828,7 +886,7 @@ const BoardComponent: React.FC = () => {
           container.style.animation = "none";
           if (sideKey) {
             if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
-              window.clearTimeout(pendingBlinkDelayTimersRef.current[sideKey]!);
+              clearTrackedTimeout(pendingBlinkDelayTimersRef.current[sideKey]);
               pendingBlinkDelayTimersRef.current[sideKey] = null;
             }
             pendingBlinkEnabledRef.current[sideKey] = false;
@@ -851,9 +909,9 @@ const BoardComponent: React.FC = () => {
           if (pileState.animation === "appear") {
             pendingBlinkEnabledRef.current[sideKey] = false;
             if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
-              window.clearTimeout(pendingBlinkDelayTimersRef.current[sideKey]!);
+              clearTrackedTimeout(pendingBlinkDelayTimersRef.current[sideKey]);
             }
-            pendingBlinkDelayTimersRef.current[sideKey] = window.setTimeout(() => {
+            pendingBlinkDelayTimersRef.current[sideKey] = setTrackedTimeout(() => {
               pendingBlinkDelayTimersRef.current[sideKey] = null;
               pendingBlinkEnabledRef.current[sideKey] = true;
               container.style.animation = PENDING_PULSE_ANIMATION;
@@ -867,7 +925,7 @@ const BoardComponent: React.FC = () => {
           }
         } else if (sideKey) {
           if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
-            window.clearTimeout(pendingBlinkDelayTimersRef.current[sideKey]!);
+            clearTrackedTimeout(pendingBlinkDelayTimersRef.current[sideKey]);
             pendingBlinkDelayTimersRef.current[sideKey] = null;
           }
           pendingBlinkEnabledRef.current[sideKey] = false;
@@ -899,7 +957,7 @@ const BoardComponent: React.FC = () => {
           });
           materialChangeOldIconsRef.current[sideKey].forEach((icon) => icon.remove());
           materialChangeOldIconsRef.current[sideKey] = oldIcons;
-          setTimeout(() => {
+          setTrackedTimeout(() => {
             oldIcons.forEach((icon) => icon.remove());
             if (materialChangeOldIconsRef.current[sideKey] === oldIcons) {
               materialChangeOldIconsRef.current[sideKey] = [];
@@ -1135,7 +1193,7 @@ const BoardComponent: React.FC = () => {
         }
       }
     },
-    [clearWagerPanel, ensureWagerPileElements]
+    [clearTrackedTimeout, clearWagerPanel, ensureWagerPileElements, setTrackedTimeout]
   );
 
   useEffect(() => {

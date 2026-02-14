@@ -79,10 +79,6 @@ class Connection {
   private authUnsubscribers = new Set<() => void>();
   private pendingInviteCreation: { inviteId: string; promise: Promise<boolean> } | null = null;
 
-  public syncRouteState() {
-    getRouteStateSnapshot();
-  }
-
   private bumpSessionEpoch() {
     this.sessionEpoch += 1;
     return this.sessionEpoch;

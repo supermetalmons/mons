@@ -94,8 +94,6 @@ const runTransition = async (target: RouteState, options?: TransitionOptions) =>
     if (!options?.skipNavigation) {
       applyPathForTarget(target, options?.replace === true);
     }
-    const connectionModule = await import("../connection/connection");
-    connectionModule.connection.syncRouteState();
     beginMatchSession();
     await bootstrapForRoute();
     currentTarget = target;
@@ -109,8 +107,6 @@ const runTransition = async (target: RouteState, options?: TransitionOptions) =>
     try {
       const lifecycleManager = await import("../lifecycle/lifecycleManager");
       lifecycleManager.teardownMatchScope();
-      const connectionModule = await import("../connection/connection");
-      connectionModule.connection.syncRouteState();
       beginMatchSession();
       await bootstrapForRoute();
       currentTarget = getCurrentRouteState();

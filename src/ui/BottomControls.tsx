@@ -1058,15 +1058,22 @@ const BottomControls: React.FC = () => {
   const handleCancelAutomatchClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     if (isCancelAutomatchDisabled) return;
+    const sessionGuard = connection.createSessionGuard();
     setIsCancelAutomatchDisabled(true);
     try {
       const result = await connection.cancelAutomatch();
+      if (!sessionGuard()) {
+        return;
+      }
       if (result && result.ok) {
         await transitionToHome({ forceMatchScopeReset: true });
       } else {
         setIsCancelAutomatchDisabled(false);
       }
     } catch (_) {
+      if (!sessionGuard()) {
+        return;
+      }
       setIsCancelAutomatchDisabled(false);
     }
   };
