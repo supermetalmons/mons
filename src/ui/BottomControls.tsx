@@ -41,8 +41,16 @@ export function didDismissSomethingWithOutsideTapJustNow() {
   latestModalOutsideTapDismissDate = Date.now();
 }
 
-export let closeNavigationAndAppearancePopupIfAny: () => void = () => {};
-export let setNavigationListButtonVisible: (visible: boolean) => void = () => {};
+let closeNavigationAndAppearancePopupIfAnyImpl: () => void = () => {};
+let setNavigationListButtonVisibleImpl: (visible: boolean) => void = () => {};
+
+export const closeNavigationAndAppearancePopupIfAny = () => {
+  closeNavigationAndAppearancePopupIfAnyImpl();
+};
+
+export const setNavigationListButtonVisible = (visible: boolean) => {
+  setNavigationListButtonVisibleImpl(visible);
+};
 
 export function resetOutsideTapDismissTimeout() {
   if (!isMobile) {
@@ -567,7 +575,7 @@ const BottomControls: React.FC = () => {
     setIsCancelAutomatchDisabled(false);
   }, [clearTrackedMatchScopedTimeout]);
 
-  closeNavigationAndAppearancePopupIfAny = closeNavigationAndAppearancePopupIfAnyHandler;
+  closeNavigationAndAppearancePopupIfAnyImpl = closeNavigationAndAppearancePopupIfAnyHandler;
 
   useEffect(() => {
     return registerBottomControlsTransientUiHandler(closeNavigationAndAppearancePopupIfAnyHandler, clearAllMatchScopedTimeouts);
@@ -575,8 +583,8 @@ const BottomControls: React.FC = () => {
 
   useEffect(() => {
     return () => {
-      closeNavigationAndAppearancePopupIfAny = () => {};
-      setNavigationListButtonVisible = () => {};
+      closeNavigationAndAppearancePopupIfAnyImpl = () => {};
+      setNavigationListButtonVisibleImpl = () => {};
       getIsNavigationPopupOpen = () => false;
       hasBottomPopupsVisible = () => false;
       showVoiceReactionButton = () => {};
@@ -639,7 +647,7 @@ const BottomControls: React.FC = () => {
 
   getIsNavigationPopupOpen = () => isNavigationPopupVisible;
 
-  setNavigationListButtonVisible = (visible: boolean) => {
+  setNavigationListButtonVisibleImpl = (visible: boolean) => {
     setIsNavigationListButtonVisible(visible);
     if (!visible) {
       setIsNavigationPopupVisible(false);

@@ -12,8 +12,7 @@ import { setDebugViewText } from "../ui/MainMenu";
 import { getWagerState, setCurrentWagerMatch, setWagerState } from "../game/wagerState";
 import { applyFrozenMaterialsDelta, computeAvailableMaterials, getFrozenMaterials, setFrozenMaterials } from "../services/wagerMaterialsService";
 import { rocksMiningService } from "../services/rocksMiningService";
-import { getCurrentRouteState } from "../navigation/routeState";
-import { pushRoutePath } from "../navigation/appNavigation";
+import { RouteState, getCurrentRouteState } from "../navigation/routeState";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 
 const createEmptyMiningMaterials = (): PlayerMiningMaterials => ({
@@ -43,28 +42,10 @@ const normalizeMiningData = (source: any): PlayerMiningData => {
 const controllerVersion = 2;
 const LEADERBOARD_ENTRY_LIMIT = 99;
 
-let routePath = "";
-export let isCreateNewInviteFlow = true;
-export let isBoardSnapshotFlow = false;
-export let isBotsLoopMode = false;
-let snapshotIdFromRoute: string | null = null;
-let routeAutojoin = false;
-
-const applyCurrentRouteState = () => {
-  const routeState = getCurrentRouteState();
-  routePath = routeState.path;
-  isCreateNewInviteFlow = routeState.mode === "home";
-  isBoardSnapshotFlow = routeState.mode === "snapshot";
-  isBotsLoopMode = routeState.mode === "watch";
-  snapshotIdFromRoute = routeState.snapshotId;
-  routeAutojoin = routeState.autojoin;
-};
-
-applyCurrentRouteState();
+const getRouteStateSnapshot = () => getCurrentRouteState();
 
 export function getSnapshotIdAndClearPathIfNeeded(): string | null {
-  applyCurrentRouteState();
-  return snapshotIdFromRoute;
+  return getRouteStateSnapshot().snapshotId;
 }
 
 class Connection {
@@ -96,9 +77,10 @@ class Connection {
   private sessionEpoch = 0;
   private inviteWaitRefs = new Set<any>();
   private authUnsubscribers = new Set<() => void>();
+  private pendingInviteCreation: { inviteId: string; promise: Promise<boolean> } | null = null;
 
   public syncRouteState() {
-    applyCurrentRouteState();
+    getRouteStateSnapshot();
   }
 
   private bumpSessionEpoch() {
@@ -254,49 +236,44 @@ class Connection {
   }
 
   public setupConnection(autojoin: boolean): void {
-    applyCurrentRouteState();
-    if (!isCreateNewInviteFlow && !isBoardSnapshotFlow && !isBotsLoopMode) {
-      const sessionGuard = this.createSessionGuard();
-      const inviteId = routePath;
-      if (!inviteId) {
-        return;
-      }
-      const shouldAutojoin = autojoin || routeAutojoin;
-      this.signIn().then((uid) => {
-        if (uid && sessionGuard()) {
-          this.connectToGame(uid, inviteId, shouldAutojoin);
-        } else {
-          console.log("failed to get game info");
-        }
-      });
+    const routeState = getRouteStateSnapshot();
+    if (routeState.mode !== "invite" || !routeState.inviteId) {
+      return;
     }
-  }
-
-  public connectToAutomatch(inviteId: string): void {
     const sessionGuard = this.createSessionGuard();
-    this.newInviteId = inviteId;
-    this.updatePath(this.newInviteId);
+    const inviteId = routeState.inviteId;
+    const shouldAutojoin = autojoin || routeState.autojoin;
     this.signIn().then((uid) => {
       if (uid && sessionGuard()) {
-        this.connectToGame(uid, inviteId, true);
+        this.connectToGame(uid, inviteId, shouldAutojoin);
       } else {
         console.log("failed to get game info");
       }
     });
   }
 
+  public connectToAutomatch(inviteId: string): void {
+    this.newInviteId = inviteId;
+    void this.transitionToInvite(inviteId);
+  }
+
   public didClickInviteButton(completion: (success: boolean) => void): void {
-    applyCurrentRouteState();
+    const routeState = getRouteStateSnapshot();
     if (this.didCreateNewGameInvite) {
       this.writeInviteLinkToClipboard();
       completion(true);
     } else {
-      if (isCreateNewInviteFlow) {
+      if (routeState.mode === "home") {
         this.newInviteId = generateNewInviteId();
         this.writeInviteLinkToClipboard();
         this.createNewMatchInvite(completion);
       } else {
-        this.newInviteId = routePath;
+        const routeInviteId = routeState.inviteId ?? routeState.path;
+        if (!routeInviteId) {
+          completion(false);
+          return;
+        }
+        this.newInviteId = routeInviteId;
         this.writeInviteLinkToClipboard();
         completion(true);
       }
@@ -308,24 +285,51 @@ class Connection {
     navigator.clipboard.writeText(link);
   }
 
-  private updatePath(newInviteId: string): void {
-    const newPath = `/${newInviteId}`;
-    pushRoutePath(newPath);
-    applyCurrentRouteState();
+  private async transitionToInvite(inviteId: string): Promise<void> {
+    const target: RouteState = {
+      mode: "invite",
+      path: inviteId,
+      inviteId,
+      snapshotId: null,
+      autojoin: inviteId.startsWith("auto_"),
+    };
+    const appSessionManager = await import("../session/AppSessionManager");
+    await appSessionManager.transition(target);
+  }
+
+  private trackPendingInviteCreation(inviteId: string, promise: Promise<boolean>): void {
+    this.pendingInviteCreation = { inviteId, promise };
+  }
+
+  private async waitForPendingInviteCreation(inviteId: string, epoch: number): Promise<boolean> {
+    const pendingInviteCreation = this.pendingInviteCreation;
+    if (!pendingInviteCreation || pendingInviteCreation.inviteId !== inviteId) {
+      return false;
+    }
+    const didCreateInvite = await pendingInviteCreation.promise;
+    if (!this.isSessionEpochActive(epoch)) {
+      return false;
+    }
+    if (this.pendingInviteCreation && this.pendingInviteCreation.inviteId === inviteId && this.pendingInviteCreation.promise === pendingInviteCreation.promise) {
+      this.pendingInviteCreation = null;
+    }
+    return didCreateInvite;
   }
 
   private createNewMatchInvite(completion: (success: boolean) => void): void {
     const sessionGuard = this.createSessionGuard();
-    this.signIn().then((uid) => {
-      if (uid && sessionGuard()) {
-        this.createInvite(uid, this.newInviteId);
-        this.didCreateNewGameInvite = true;
-        this.updatePath(this.newInviteId);
-        completion(true);
-      } else {
+    void this.signIn().then((uid) => {
+      if (!uid || !sessionGuard()) {
         console.log("failed to sign in");
         completion(false);
+        return;
       }
+      const inviteId = this.newInviteId;
+      const createInvitePromise = this.createInvite(uid, inviteId);
+      this.trackPendingInviteCreation(inviteId, createInvitePromise);
+      this.didCreateNewGameInvite = true;
+      completion(true);
+      void this.transitionToInvite(inviteId);
     });
   }
 
@@ -348,7 +352,7 @@ class Connection {
   }
 
   public async seeIfFreshlySignedInProfileIsOneOfThePlayers(profileId: string): Promise<void> {
-    applyCurrentRouteState();
+    const routeState = getRouteStateSnapshot();
     const sessionGuard = this.createSessionGuard();
     if (!this.latestInvite) {
       return;
@@ -358,7 +362,7 @@ class Connection {
       return;
     }
     if (match !== null) {
-      const inviteToReconnect = this.inviteId ?? routePath;
+      const inviteToReconnect = this.inviteId ?? routeState.inviteId;
       if (!inviteToReconnect) {
         return;
       }
@@ -1563,7 +1567,6 @@ class Connection {
   }
 
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
-    applyCurrentRouteState();
     const previousInviteId = this.inviteId;
     const inviteChanged = previousInviteId !== null && previousInviteId !== inviteId;
     const shouldSetupSameProfileUid = this.sameProfilePlayerUid === null || this.loginUid !== uid;
@@ -1584,7 +1587,20 @@ class Connection {
         if (!this.isSessionEpochActive(connectEpoch)) {
           return;
         }
-        const inviteData: Invite | null = snapshot.val();
+        let inviteData: Invite | null = snapshot.val();
+        if (!inviteData) {
+          const didWaitForPendingInvite = await this.waitForPendingInviteCreation(inviteId, connectEpoch);
+          if (!this.isSessionEpochActive(connectEpoch)) {
+            return;
+          }
+          if (didWaitForPendingInvite) {
+            const refreshedSnapshot = await get(inviteRef);
+            if (!this.isSessionEpochActive(connectEpoch)) {
+              return;
+            }
+            inviteData = refreshedSnapshot.val();
+          }
+        }
         if (!inviteData) {
           console.log("No invite data found");
           return;
@@ -1796,7 +1812,7 @@ class Connection {
       });
   }
 
-  public createInvite(uid: string, inviteId: string): void {
+  public async createInvite(uid: string, inviteId: string): Promise<boolean> {
     const epoch = this.bumpSessionEpoch();
     const hostColor = Math.random() < 0.5 ? "white" : "black";
     const emojiId = getPlayersEmojiId();
@@ -1834,19 +1850,18 @@ class Connection {
     const updates: { [key: string]: any } = {};
     updates[`players/${this.loginUid}/matches/${matchId}`] = match;
     updates[`invites/${inviteId}`] = invite;
-    update(ref(this.db), updates)
-      .then(() => {
-        if (!this.isSessionEpochActive(epoch)) {
-          return;
-        }
-        console.log("Match and invite created successfully");
-      })
-      .catch((error) => {
-        if (!this.isSessionEpochActive(epoch)) {
-          return;
-        }
+    try {
+      await update(ref(this.db), updates);
+    } catch (error) {
+      if (this.isSessionEpochActive(epoch)) {
         console.error("Error creating match and invite:", error);
-      });
+      }
+      return false;
+    }
+    if (!this.isSessionEpochActive(epoch)) {
+      return true;
+    }
+    console.log("Match and invite created successfully");
 
     const inviteRef = ref(this.db, `invites/${inviteId}`);
     this.trackInviteWaitRef(inviteRef);
@@ -1866,6 +1881,7 @@ class Connection {
         this.releaseInviteWaitRef(inviteRef);
       }
     });
+    return true;
   }
 
   private async getLatestBothSidesApprovedOrProposedByMeMatchId(epoch?: number): Promise<string> {

@@ -4,7 +4,7 @@ import { tokensForSingleMoveEvents, MoveHistoryEntry } from "./moveEventStrings"
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
-import { connection, isCreateNewInviteFlow, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded, isBotsLoopMode } from "../connection/connection";
+import { connection, getSnapshotIdAndClearPathIfNeeded } from "../connection/connection";
 import { showMoveHistoryButton, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
 import { triggerMoveHistoryPopupReload } from "../ui/MoveHistoryPopup";
 import { Match, MatchWagerState } from "../connection/connectionModels";
@@ -18,6 +18,7 @@ import { setCurrentWagerMatch, subscribeToWagerState } from "./wagerState";
 import { transitionToHome } from "../session/AppSessionManager";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 import { getSessionGuard } from "./matchSession";
+import { getCurrentRouteState } from "../navigation/routeState";
 
 export let initialFen = "";
 export let isWatchOnly = false;
@@ -34,6 +35,9 @@ let didConnect = false;
 let isWaitingForInviteToGetAccepted = false;
 
 const watchOnlyListeners = new Set<(value: boolean) => void>();
+const isCreateInviteRoute = () => getCurrentRouteState().mode === "home";
+const isSnapshotRoute = () => getCurrentRouteState().mode === "snapshot";
+const isBotsRoute = () => getCurrentRouteState().mode === "watch";
 
 let currentWagerState: MatchWagerState | null = null;
 let wagerOutcomeShown = false;
@@ -191,7 +195,7 @@ function dismissBadgeAndNotificationBannerIfNeeded() {
 const notificationBannerIsDisabledUntilItsMadeLessAnnoying = true;
 
 export function didAttemptAuthentication() {
-  if (!isOnlineGame && !didStartLocalGame && isCreateNewInviteFlow && !isWaitingForInviteToGetAccepted && !didConnect) {
+  if (!isOnlineGame && !didStartLocalGame && isCreateInviteRoute() && !isWaitingForInviteToGetAccepted && !didConnect) {
     if (!getTutorialCompleted()) {
       setBadgeVisible(true);
       if (storage.isFirstLaunch()) {
@@ -242,7 +246,7 @@ export async function go() {
   game = MonsWeb.MonsGameModel.new();
   initialFen = game.fen();
 
-  if (isBotsLoopMode) {
+  if (isBotsRoute()) {
     Board.toggleExperimentalMode(false, true, false, true);
 
     game.locations_with_content().forEach((loc) => {
@@ -263,10 +267,13 @@ export async function go() {
     setWatchOnlyState(true);
     lastBotMoveTimestamp = 0;
     automove();
-  } else if (isBoardSnapshotFlow) {
+  } else if (isSnapshotRoute()) {
     const snapshot = getSnapshotIdAndClearPathIfNeeded() || "";
     const gameFromFen = MonsWeb.MonsGameModel.from_fen(snapshot);
-    if (!gameFromFen) return;
+    if (!gameFromFen) {
+      await transitionToHome({ forceMatchScopeReset: true });
+      return;
+    }
     game = gameFromFen;
     game.locations_with_content().forEach((loc) => {
       const location = new Location(loc.i, loc.j);
@@ -284,7 +291,7 @@ export async function go() {
     setNavigationListButtonVisible(false);
     setAutomoveActionVisible(true);
     showMoveHistoryButton(true);
-  } else if (isCreateNewInviteFlow) {
+  } else if (isCreateInviteRoute()) {
     game.locations_with_content().forEach((loc) => {
       const location = new Location(loc.i, loc.j);
       updateLocation(location);
@@ -302,13 +309,13 @@ export async function go() {
     setNavigationListButtonVisible(false);
   }
 
-  Board.setupGameInfoElements(!isCreateNewInviteFlow && !isBoardSnapshotFlow && !isBotsLoopMode);
-  if (isBoardSnapshotFlow || isBotsLoopMode) {
+  Board.setupGameInfoElements(!isCreateInviteRoute() && !isSnapshotRoute() && !isBotsRoute());
+  if (isSnapshotRoute() || isBotsRoute()) {
     updateBoardMoveStatuses();
     Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
   }
 
-  if (isBotsLoopMode) {
+  if (isBotsRoute()) {
     Board.showRandomEmojisForLoopMode();
   }
 }
@@ -447,7 +454,7 @@ export function didFindYourOwnInviteThatNobodyJoined(isAutomatch: boolean) {
     setInviteLinkActionVisible(true);
     setIsReadyToCopyExistingInviteLink();
     Board.runMonsBoardAsDisplayWaitingAnimation();
-  } else if (!isCreateNewInviteFlow) {
+  } else if (!isCreateInviteRoute()) {
     setAutomatchWaitingState(true);
     Board.runMonsBoardAsDisplayWaitingAnimation();
   }
@@ -569,10 +576,10 @@ function automove(onAutomoveButtonClick: boolean = false) {
   const sessionGuard = getSessionGuard();
   const depth = onAutomoveButtonClick ? 2 : 3;
   const maxNodes = onAutomoveButtonClick ? 420 : 2300;
-  const shouldEnforceBotMovePacing = isBotsLoopMode || (isGameWithBot && game.active_color() === botPlayerColor);
+  const shouldEnforceBotMovePacing = isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
   const fenBeforeAutomove = game.fen();
   const syncAutomoveActionState = () => {
-    if (isBotsLoopMode) {
+    if (isBotsRoute()) {
       return;
     }
     if (!isGameWithBot || isPlayerSideTurn()) {
@@ -731,7 +738,7 @@ export function didClickUndoButton() {
 }
 
 export function canChangeEmoji(opponents: boolean): boolean {
-  if ((storage.getLoginId("") && !opponents) || isBotsLoopMode) {
+  if ((storage.getLoginId("") && !opponents) || isBotsRoute()) {
     return false;
   }
   if (isOnlineGame || isGameWithBot) {
@@ -1202,7 +1209,7 @@ function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, ou
             }
             automove();
           }, botTurnComputationDelayMs, botTurnGuard);
-        } else if (isBotsLoopMode) {
+        } else if (isBotsRoute()) {
           automove();
         }
       }
@@ -1211,7 +1218,7 @@ function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, ou
         setAutomoveActionEnabled(false);
       }
 
-      if (isBotsLoopMode && isGameOver) {
+      if (isBotsRoute() && isGameOver) {
         const rematchGuard = getSessionGuard();
         setManagedGameTimeout(() => rematchInLoopMode(), 1150, rematchGuard);
       }
@@ -1403,7 +1410,7 @@ function syncWagerOutcome() {
 }
 
 function processInput(assistedInputKind: AssistedInputKind, inputModifier: InputModifier, inputLocation?: Location) {
-  if (isBotsLoopMode) {
+  if (isBotsRoute()) {
     return;
   }
 
@@ -1711,7 +1718,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
 }
 
 export function didClickInviteActionButtonBeforeThereIsInviteReady() {
-  if (!isCreateNewInviteFlow) return;
+  if (!isCreateInviteRoute()) return;
   setHomeVisible(true);
   setIslandButtonDimmed(true);
 

@@ -17,11 +17,11 @@ import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
 import { showShinyCard, showsShinyCardSomewhere } from "../ui/ShinyCard";
 import { getMonId, getMonsIndexes, MonType } from "../utils/namedMons";
 import { instructor } from "../assets/talkingDude";
-import { isBotsLoopMode } from "../connection/connection";
 import { launchConfetti, stopConfetti } from "./confetti";
 import { soundPlayer } from "../utils/SoundPlayer";
 import type { MaterialName } from "../services/rocksMiningService";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
+import { getCurrentRouteState } from "../navigation/routeState";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 const valentinesLoaderEnabled = true;
@@ -473,7 +473,7 @@ async function initializeAssets(onStart: boolean, isProfileMonsChange: boolean) 
 
     // TODO: set correct mons for both sides
 
-    if (storage.getProfileId("") && !isBotsLoopMode) {
+    if (storage.getProfileId("") && getCurrentRouteState().mode !== "watch") {
       const [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] = getMonsIndexes(false, null);
       drainer = loadImage(getSpriteByKey(getMonId(MonType.DRAINER, drainerIndex)), "drainer", true);
       angel = loadImage(getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), "angel", true);

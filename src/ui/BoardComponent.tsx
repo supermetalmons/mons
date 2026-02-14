@@ -82,12 +82,36 @@ export const updateBoardComponentForBoardStyleChange = () => {
   listeners.forEach((listener) => listener());
 };
 
-export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void = () => {};
-export let showVideoReaction: (opponent: boolean, stickerId: number) => void = () => {};
-export let showRaibowAura: (visible: boolean, url: string, opponent: boolean) => void = () => {};
-export let updateAuraForAvatarElement: (opponent: boolean, avatarElement: SVGElement) => void = () => {};
-export let updateWagerPlayerUids: (playerUid: string, opponentUid: string) => void = () => {};
-export let clearBoardTransientUi: (fadeOutVideos?: boolean) => void = () => {};
+let setTopBoardOverlayVisibleImpl: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void = () => {};
+let showVideoReactionImpl: (opponent: boolean, stickerId: number) => void = () => {};
+let showRaibowAuraImpl: (visible: boolean, url: string, opponent: boolean) => void = () => {};
+let updateAuraForAvatarElementImpl: (opponent: boolean, avatarElement: SVGElement) => void = () => {};
+let updateWagerPlayerUidsImpl: (playerUid: string, opponentUid: string) => void = () => {};
+let clearBoardTransientUiImpl: (fadeOutVideos?: boolean) => void = () => {};
+
+export const setTopBoardOverlayVisible = (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => {
+  setTopBoardOverlayVisibleImpl(blurry, svgElement, withConfirmAndCancelButtons, ok, cancel);
+};
+
+export const showVideoReaction = (opponent: boolean, stickerId: number) => {
+  showVideoReactionImpl(opponent, stickerId);
+};
+
+export const showRaibowAura = (visible: boolean, url: string, opponent: boolean) => {
+  showRaibowAuraImpl(visible, url, opponent);
+};
+
+export const updateAuraForAvatarElement = (opponent: boolean, avatarElement: SVGElement) => {
+  updateAuraForAvatarElementImpl(opponent, avatarElement);
+};
+
+export const updateWagerPlayerUids = (playerUid: string, opponentUid: string) => {
+  updateWagerPlayerUidsImpl(playerUid, opponentUid);
+};
+
+export const clearBoardTransientUi = (fadeOutVideos?: boolean) => {
+  clearBoardTransientUiImpl(fadeOutVideos);
+};
 
 const VIDEO_CONTAINER_HEIGHT_GRID = "12.5%";
 const VIDEO_CONTAINER_HEIGHT_IMAGE = "13.5%";
@@ -276,12 +300,12 @@ const BoardComponent: React.FC = () => {
   const opponentWrapperRef = useRef<HTMLDivElement | null>(null);
   const playerWrapperRef = useRef<HTMLDivElement | null>(null);
 
-  updateWagerPlayerUids = (nextPlayerUid: string, nextOpponentUid: string) => {
+  updateWagerPlayerUidsImpl = (nextPlayerUid: string, nextOpponentUid: string) => {
     setPlayerUidSnapshot((prev) => (prev === nextPlayerUid ? prev : nextPlayerUid));
     setOpponentUidSnapshot((prev) => (prev === nextOpponentUid ? prev : nextOpponentUid));
   };
 
-  updateAuraForAvatarElement = (opponent: boolean, avatarElement: SVGElement) => {
+  updateAuraForAvatarElementImpl = (opponent: boolean, avatarElement: SVGElement) => {
     const rect = avatarElement.getBoundingClientRect();
     const wrapper = opponent ? opponentWrapperRef.current : playerWrapperRef.current;
     const targets = opponent ? opponentAuraRefs : playerAuraRefs;
@@ -370,7 +394,7 @@ const BoardComponent: React.FC = () => {
     setPlayerVideoId(null);
   }, [clearOpponentVideoDismissTimeout, clearPlayerVideoDismissTimeout]);
 
-  showVideoReaction = (opponent: boolean, stickerId: number) => {
+  showVideoReactionImpl = (opponent: boolean, stickerId: number) => {
     if (opponent) {
       clearOpponentVideoDismissTimeout();
       setOpponentVideoId(stickerId);
@@ -388,11 +412,11 @@ const BoardComponent: React.FC = () => {
     }
   };
 
-  setTopBoardOverlayVisible = (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => {
+  setTopBoardOverlayVisibleImpl = (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => {
     setOverlayState({ blurry, svgElement, withConfirmAndCancelButtons, ok, cancel });
   };
 
-  showRaibowAura = (visible: boolean, url: string, opponent: boolean) => {
+  showRaibowAuraImpl = (visible: boolean, url: string, opponent: boolean) => {
     const targets = opponent ? opponentAuraRefs : playerAuraRefs;
     const container = opponent ? opponentAuraContainerRef.current : playerAuraContainerRef.current;
     if (!targets.current && container) {
@@ -411,12 +435,12 @@ const BoardComponent: React.FC = () => {
     return () => {
       clearOpponentVideoDismissTimeout();
       clearPlayerVideoDismissTimeout();
-      setTopBoardOverlayVisible = () => {};
-      showVideoReaction = () => {};
-      showRaibowAura = () => {};
-      updateAuraForAvatarElement = () => {};
-      updateWagerPlayerUids = () => {};
-      clearBoardTransientUi = () => {};
+      setTopBoardOverlayVisibleImpl = () => {};
+      showVideoReactionImpl = () => {};
+      showRaibowAuraImpl = () => {};
+      updateAuraForAvatarElementImpl = () => {};
+      updateWagerPlayerUidsImpl = () => {};
+      clearBoardTransientUiImpl = () => {};
     };
   }, [clearOpponentVideoDismissTimeout, clearPlayerVideoDismissTimeout]);
 
@@ -576,7 +600,7 @@ const BoardComponent: React.FC = () => {
     }
   }, [clearVideoReactionsNow, clearWagerPanel, dismissOpponentVideo, dismissPlayerVideo, opponentVideoVisible, playerVideoVisible]);
 
-  clearBoardTransientUi = clearBoardTransientUiHandler;
+  clearBoardTransientUiImpl = clearBoardTransientUiHandler;
 
   useEffect(() => {
     return registerBoardTransientUiHandler(clearBoardTransientUiHandler);

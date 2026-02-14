@@ -173,24 +173,13 @@ export const initializeAppSessionManager = () => {
   initializeNavigation();
   currentTarget = getCurrentRouteState();
   subscribeToNavigationState((routeState, source) => {
-    if (source === "push" || source === "replace") {
-      if (isApplyingNavigation || isTransitioning) {
-        return;
-      }
-      currentTarget = routeState;
-      return;
-    }
-    if (source !== "popstate") {
+    if (source !== "push" && source !== "replace" && source !== "popstate") {
       return;
     }
     if (isApplyingNavigation) {
       return;
     }
-    if (isTransitioning) {
-      void transition(routeState, { skipNavigation: true });
-      return;
-    }
-    if (routeStatesMatch(routeState, currentTarget)) {
+    if (!isTransitioning && routeStatesMatch(routeState, currentTarget)) {
       return;
     }
     void transition(routeState, { skipNavigation: true });

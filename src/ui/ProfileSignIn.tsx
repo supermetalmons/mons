@@ -117,13 +117,41 @@ let getIsEditingPopupOpen: () => boolean = () => false;
 let getIsInventoryPopupOpen: () => boolean = () => false;
 let getIsLogoutConfirmPopupOpen: () => boolean = () => false;
 let getIsSettingsPopupOpen: () => boolean = () => false;
-export let closeProfilePopupIfAny: () => void = () => {};
-export let handleEditDisplayName: () => void = () => {};
-export let showInventory: () => void = () => {};
-export let handleLogout: () => void = () => {};
-export let showSettings: () => void = () => {};
-export let hideNotificationBanner: () => void = () => {};
-export let showNotificationBanner: (title: string, subtitle: string, emojiId: string, successHandler: () => void) => void = () => {};
+let closeProfilePopupIfAnyImpl: () => void = () => {};
+let handleEditDisplayNameImpl: () => void = () => {};
+let showInventoryImpl: () => void = () => {};
+let handleLogoutImpl: () => void = () => {};
+let showSettingsImpl: () => void = () => {};
+let hideNotificationBannerImpl: () => void = () => {};
+let showNotificationBannerImpl: (title: string, subtitle: string, emojiId: string, successHandler: () => void) => void = () => {};
+
+export const closeProfilePopupIfAny = () => {
+  closeProfilePopupIfAnyImpl();
+};
+
+export const handleEditDisplayName = () => {
+  handleEditDisplayNameImpl();
+};
+
+export const showInventory = () => {
+  showInventoryImpl();
+};
+
+export const handleLogout = () => {
+  handleLogoutImpl();
+};
+
+export const showSettings = () => {
+  showSettingsImpl();
+};
+
+export const hideNotificationBanner = () => {
+  hideNotificationBannerImpl();
+};
+
+export const showNotificationBanner = (title: string, subtitle: string, emojiId: string, successHandler: () => void) => {
+  showNotificationBannerImpl(title, subtitle, emojiId, successHandler);
+};
 
 export function hasProfilePopupVisible(): boolean {
   return getIsProfilePopupOpen() || getIsEditingPopupOpen() || getIsInventoryPopupOpen() || getIsLogoutConfirmPopupOpen() || getIsSettingsPopupOpen();
@@ -263,8 +291,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     }, 400);
   }, []);
 
-  hideNotificationBanner = hideNotificationBannerInternal;
-  showNotificationBanner = showNotificationBannerInternal;
+  hideNotificationBannerImpl = hideNotificationBannerInternal;
+  showNotificationBannerImpl = showNotificationBannerInternal;
 
   useEffect(() => {
     return registerProfileTransientUiHandler(hideNotificationBannerInternal);
@@ -278,15 +306,15 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       .catch(() => transitionToHome({ resetProfileScope: true, forceMatchScopeReset: true }));
   };
 
-  handleLogout = () => {
+  handleLogoutImpl = () => {
     setIsLogoutConfirmOpen(true);
   };
 
-  showSettings = () => {
+  showSettingsImpl = () => {
     setIsSettingsOpen(true);
   };
 
-  closeProfilePopupIfAny = () => {
+  closeProfilePopupIfAnyImpl = () => {
     didDismissSomethingWithOutsideTapJustNow();
     setIsOpen(false);
     setIsInventoryOpen(false);
@@ -299,13 +327,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
   useEffect(() => {
     return () => {
-      closeProfilePopupIfAny = () => {};
-      handleEditDisplayName = () => {};
-      showInventory = () => {};
-      handleLogout = () => {};
-      showSettings = () => {};
-      hideNotificationBanner = () => {};
-      showNotificationBanner = () => {};
+      closeProfilePopupIfAnyImpl = () => {};
+      handleEditDisplayNameImpl = () => {};
+      showInventoryImpl = () => {};
+      handleLogoutImpl = () => {};
+      showSettingsImpl = () => {};
+      hideNotificationBannerImpl = () => {};
+      showNotificationBannerImpl = () => {};
     };
   }, []);
 
@@ -327,11 +355,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsOpen(!isOpen);
   };
 
-  showInventory = () => {
+  showInventoryImpl = () => {
     setIsInventoryOpen(true);
   };
 
-  handleEditDisplayName = () => {
+  handleEditDisplayNameImpl = () => {
     setIsEditingName(true);
   };
 

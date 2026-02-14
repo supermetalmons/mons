@@ -592,13 +592,41 @@ const DebugView = styled.div`
 let getIsMenuOpen: () => boolean = () => false;
 let getIsInfoOpen: () => boolean = () => false;
 let getIsMusicOpen: () => boolean = () => false;
-export let toggleInfoVisibility: () => void = () => {};
-export let toggleMusicVisibility: () => void = () => {};
-export let closeMenuAndInfoIfAny: () => void = () => {};
-export let closeAllKindsOfPopups: () => void = () => {};
-export let closeMenuAndInfoIfAllowedForEvent: (event: TouchEvent | MouseEvent) => void = () => {};
-export let setIsMusicPlayingGlobal: (playing: boolean) => void = () => {};
-export let setDebugViewText: (text: string) => void = () => {};
+let toggleInfoVisibilityImpl: () => void = () => {};
+let toggleMusicVisibilityImpl: () => void = () => {};
+let closeMenuAndInfoIfAnyImpl: () => void = () => {};
+let closeAllKindsOfPopupsImpl: () => void = () => {};
+let closeMenuAndInfoIfAllowedForEventImpl: (event: TouchEvent | MouseEvent) => void = () => {};
+let setIsMusicPlayingGlobalImpl: (playing: boolean) => void = () => {};
+let setDebugViewTextImpl: (text: string) => void = () => {};
+
+export const toggleInfoVisibility = () => {
+  toggleInfoVisibilityImpl();
+};
+
+export const toggleMusicVisibility = () => {
+  toggleMusicVisibilityImpl();
+};
+
+export const closeMenuAndInfoIfAny = () => {
+  closeMenuAndInfoIfAnyImpl();
+};
+
+export const closeAllKindsOfPopups = () => {
+  closeAllKindsOfPopupsImpl();
+};
+
+export const closeMenuAndInfoIfAllowedForEvent = (event: TouchEvent | MouseEvent) => {
+  closeMenuAndInfoIfAllowedForEventImpl(event);
+};
+
+export const setIsMusicPlayingGlobal = (playing: boolean) => {
+  setIsMusicPlayingGlobalImpl(playing);
+};
+
+export const setDebugViewText = (text: string) => {
+  setDebugViewTextImpl(text);
+};
 
 export function hasMainMenuPopupsVisible(): boolean {
   return getIsMenuOpen() || getIsInfoOpen() || getIsMusicOpen();
@@ -631,7 +659,7 @@ const MainMenu: React.FC = () => {
   const animationFrameRef = useRef<number | null>(null);
   const activeIndicesRef = useRef<number[]>([]);
 
-  setIsMusicPlayingGlobal = setIsMusicPlaying;
+  setIsMusicPlayingGlobalImpl = setIsMusicPlaying;
 
   useEffect(() => {
     let mounted = true;
@@ -725,13 +753,13 @@ const MainMenu: React.FC = () => {
       getIsMenuOpen = () => false;
       getIsInfoOpen = () => false;
       getIsMusicOpen = () => false;
-      toggleInfoVisibility = () => {};
-      toggleMusicVisibility = () => {};
-      closeMenuAndInfoIfAny = () => {};
-      closeAllKindsOfPopups = () => {};
-      closeMenuAndInfoIfAllowedForEvent = () => {};
-      setIsMusicPlayingGlobal = () => {};
-      setDebugViewText = () => {};
+      toggleInfoVisibilityImpl = () => {};
+      toggleMusicVisibilityImpl = () => {};
+      closeMenuAndInfoIfAnyImpl = () => {};
+      closeAllKindsOfPopupsImpl = () => {};
+      closeMenuAndInfoIfAllowedForEventImpl = () => {};
+      setIsMusicPlayingGlobalImpl = () => {};
+      setDebugViewTextImpl = () => {};
     };
   }, []);
 
@@ -804,7 +832,7 @@ const MainMenu: React.FC = () => {
     }
   };
 
-  toggleInfoVisibility = () => {
+  toggleInfoVisibilityImpl = () => {
     if (!isInfoOpen) {
       closeProfilePopupIfAny();
       closeNavigationAndAppearancePopupIfAny();
@@ -814,7 +842,7 @@ const MainMenu: React.FC = () => {
     setIsInfoOpen(!isInfoOpen);
   };
 
-  toggleMusicVisibility = () => {
+  toggleMusicVisibilityImpl = () => {
     if (!isMusicOpen) {
       closeProfilePopupIfAny();
       closeNavigationAndAppearancePopupIfAny();
@@ -824,11 +852,11 @@ const MainMenu: React.FC = () => {
     setIsMusicOpen(!isMusicOpen);
   };
 
-  setDebugViewText = (text: string) => {
+  setDebugViewTextImpl = (text: string) => {
     setDebugViewTextState(text);
   };
 
-  closeMenuAndInfoIfAny = () => {
+  closeMenuAndInfoIfAnyImpl = () => {
     setIsInfoOpen(false);
     setIsMenuOpen(false);
     setIsMusicOpen(false);
@@ -842,15 +870,15 @@ const MainMenu: React.FC = () => {
     setIsMusicOpen(false);
   }, []);
 
-  closeAllKindsOfPopups = closeAllKindsOfPopupsHandler;
+  closeAllKindsOfPopupsImpl = closeAllKindsOfPopupsHandler;
 
   useEffect(() => {
     return registerMainMenuTransientUiHandler(closeAllKindsOfPopupsHandler);
   }, [closeAllKindsOfPopupsHandler]);
 
-  closeMenuAndInfoIfAllowedForEvent = (event: TouchEvent | MouseEvent) => {
+  closeMenuAndInfoIfAllowedForEventImpl = (event: TouchEvent | MouseEvent) => {
     if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
-      closeMenuAndInfoIfAny();
+      closeMenuAndInfoIfAnyImpl();
     }
   };
 
