@@ -443,7 +443,6 @@ class Connection {
   public detachFromProfileSession(): void {
     this.loginUid = null;
     this.setSameProfilePlayerUid(null);
-    this.currentUid = null;
     this.observeMiningFrozen(null);
     this.materialLeaderboardCache.clear();
     this.materialLeaderboardCacheTime = 0;
