@@ -270,7 +270,7 @@ export async function go() {
     const snapshot = getSnapshotIdAndClearPathIfNeeded() || "";
     const gameFromFen = MonsWeb.MonsGameModel.from_fen(snapshot);
     if (!gameFromFen) {
-      await transitionToHome({ forceMatchScopeReset: true });
+      await transitionToHome({ forceMatchScopeReset: true, replace: true });
       return;
     }
     game = gameFromFen;

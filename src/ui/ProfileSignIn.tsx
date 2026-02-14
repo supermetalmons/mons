@@ -296,10 +296,14 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
   const performLogout = () => {
     storage.signOut();
+    setAuthStatusGlobally("unauthenticated");
     connection
       .signOut()
       .then(() => transitionToHome({ resetProfileScope: true, forceMatchScopeReset: true }))
-      .catch(() => transitionToHome({ resetProfileScope: true, forceMatchScopeReset: true }));
+      .catch(() => {
+        setAuthStatusGlobally("unauthenticated");
+        return transitionToHome({ resetProfileScope: true, forceMatchScopeReset: true });
+      });
   };
 
   const closeProfilePopupInternal = useCallback(() => {

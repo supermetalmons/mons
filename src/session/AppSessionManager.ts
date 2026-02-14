@@ -13,22 +13,31 @@ type TransitionOptions = {
 type TransitionToHomeOptions = {
   resetProfileScope?: boolean;
   forceMatchScopeReset?: boolean;
+  replace?: boolean;
+};
+type PendingTransitionRequest = {
+  target: RouteState;
+  options?: TransitionOptions;
+  waiters: Array<() => void>;
 };
 
 let initialized = false;
 let isTransitioning = false;
 let isApplyingNavigation = false;
 let currentTarget: AppSessionTarget = getCurrentRouteState();
-let pendingTransitionRequest: { target: RouteState; options?: TransitionOptions } | null = null;
+let pendingTransitionRequest: PendingTransitionRequest | null = null;
 
-const waitForBoardRoot = async () => {
+const waitForBoardRoot = async (timeoutMs = 30000) => {
   if (document.getElementById("monsboard")) {
     return;
   }
-  await new Promise<void>((resolve) => {
+  await new Promise<void>((resolve, reject) => {
+    const startedAt = performance.now();
     const poll = () => {
       if (document.getElementById("monsboard")) {
         resolve();
+      } else if (performance.now() - startedAt >= timeoutMs) {
+        reject(new Error("monsboard-root-timeout"));
       } else {
         window.setTimeout(poll, 16);
       }
@@ -76,8 +85,15 @@ const bootstrapForRoute = async () => {
 
 const runTransition = async (target: RouteState, options?: TransitionOptions) => {
   if (isTransitioning) {
-    pendingTransitionRequest = { target, options };
-    return;
+    return new Promise<void>((resolve) => {
+      if (pendingTransitionRequest) {
+        pendingTransitionRequest.target = target;
+        pendingTransitionRequest.options = options;
+        pendingTransitionRequest.waiters.push(resolve);
+      } else {
+        pendingTransitionRequest = { target, options, waiters: [resolve] };
+      }
+    });
   }
   const from = currentTarget;
   if (!options?.force && routeStatesMatch(from, target)) {
@@ -120,11 +136,14 @@ const runTransition = async (target: RouteState, options?: TransitionOptions) =>
     }
   } finally {
     isTransitioning = false;
-    const queuedRequest = pendingTransitionRequest;
-    pendingTransitionRequest = null;
-    if (queuedRequest && (queuedRequest.options?.force || !routeStatesMatch(queuedRequest.target, currentTarget))) {
-      void runTransition(queuedRequest.target, queuedRequest.options);
+  }
+  const queuedRequest = pendingTransitionRequest;
+  pendingTransitionRequest = null;
+  if (queuedRequest) {
+    if (queuedRequest.options?.force || !routeStatesMatch(queuedRequest.target, currentTarget)) {
+      await runTransition(queuedRequest.target, queuedRequest.options);
     }
+    queuedRequest.waiters.forEach((resolve) => resolve());
   }
 };
 
@@ -146,6 +165,7 @@ export const transitionToHome = async (options?: TransitionToHomeOptions) => {
     await transition(homeTarget, {
       resetProfileScope: options?.resetProfileScope,
       force: shouldForceMatchScopeReset,
+      replace: options?.replace,
     });
   } else if (options?.resetProfileScope) {
     const lifecycleManager = await import("../lifecycle/lifecycleManager");
