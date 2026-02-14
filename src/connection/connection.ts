@@ -398,6 +398,7 @@ class Connection {
       await signOut(this.auth);
       this.detachFromMatchSession();
       this.detachFromProfileSession();
+      this.pendingInviteCreation = null;
       this.loginUid = null;
       this.setSameProfilePlayerUid(null);
       this.cleanupWagerObserver();
@@ -435,7 +436,6 @@ class Connection {
     this.matchId = null;
     this.didCreateNewGameInvite = false;
     this.newInviteId = "";
-    this.pendingInviteCreation = null;
     this.optimisticResolvedMatchIds.clear();
     setCurrentWagerMatch(null);
   }
