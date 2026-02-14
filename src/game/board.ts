@@ -2728,7 +2728,6 @@ export function disposeBoardRuntime() {
   currentTextAnimation.isAnimating = false;
   currentTextAnimation.fastForwardCallback = null;
   clearWagerPilesForNewMatch();
-  handleWagerRenderState = null;
   clearWavesIntervals();
   clearSparkleIntervals();
   clearTrackedBoardTimeouts();

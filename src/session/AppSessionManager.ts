@@ -51,6 +51,23 @@ const routeStatesMatch = (a: RouteState, b: RouteState) => {
   return a.mode === b.mode && a.path === b.path && a.inviteId === b.inviteId && a.snapshotId === b.snapshotId && a.autojoin === b.autojoin;
 };
 
+const mergeQueuedTransitionOptions = (existing?: TransitionOptions, incoming?: TransitionOptions): TransitionOptions | undefined => {
+  const merged: TransitionOptions = {};
+  if (incoming?.replace !== undefined) {
+    merged.replace = incoming.replace;
+  }
+  if (incoming?.skipNavigation !== undefined) {
+    merged.skipNavigation = incoming.skipNavigation;
+  }
+  if (existing?.force || incoming?.force) {
+    merged.force = true;
+  }
+  if (existing?.resetProfileScope || incoming?.resetProfileScope) {
+    merged.resetProfileScope = true;
+  }
+  return Object.keys(merged).length > 0 ? merged : undefined;
+};
+
 const createHomeTarget = (): RouteState => {
   return {
     mode: "home",
@@ -99,7 +116,7 @@ const runTransition = async (target: RouteState, options?: TransitionOptions) =>
     return new Promise<void>((resolve) => {
       if (pendingTransitionRequest) {
         pendingTransitionRequest.target = target;
-        pendingTransitionRequest.options = options;
+        pendingTransitionRequest.options = mergeQueuedTransitionOptions(pendingTransitionRequest.options, options);
         pendingTransitionRequest.waiters.push(resolve);
       } else {
         pendingTransitionRequest = { target, options, waiters: [resolve] };

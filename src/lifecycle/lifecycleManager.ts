@@ -9,6 +9,7 @@ import { resetProfileMiningState } from "../services/rocksMiningService";
 import { resetNftCache } from "../services/nftService";
 import { resetPlayerMetadataCaches } from "../utils/playerMetadata";
 import { resetEnsCache } from "../utils/ensResolver";
+import { resetLeaderboardCache } from "../ui/Leaderboard";
 import { getLifecycleCounters } from "./lifecycleDiagnostics";
 
 const reportMatchScopeCounterDrift = () => {
@@ -49,5 +50,6 @@ export const teardownProfileScope = () => {
   resetNftCache();
   resetPlayerMetadataCaches();
   resetEnsCache();
+  resetLeaderboardCache();
 };
 
