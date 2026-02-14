@@ -1,3 +1,5 @@
+import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
+
 type ConfettiParticle = {
   x: number;
   y: number;
@@ -14,12 +16,30 @@ type ConfettiParticle = {
 let activeCanvas: HTMLCanvasElement | null = null;
 let activeResizeHandler: (() => void) | null = null;
 let activeAnimationFrame: number | null = null;
+let hasActiveRafCounter = false;
+
+const markConfettiRafActive = () => {
+  if (hasActiveRafCounter) {
+    return;
+  }
+  hasActiveRafCounter = true;
+  incrementLifecycleCounter("boardRaf");
+};
+
+const clearConfettiRafActive = () => {
+  if (!hasActiveRafCounter) {
+    return;
+  }
+  hasActiveRafCounter = false;
+  decrementLifecycleCounter("boardRaf");
+};
 
 export function stopConfetti(): void {
   if (activeAnimationFrame !== null) {
     cancelAnimationFrame(activeAnimationFrame);
     activeAnimationFrame = null;
   }
+  clearConfettiRafActive();
   if (activeResizeHandler) {
     window.removeEventListener("resize", activeResizeHandler);
     activeResizeHandler = null;
@@ -104,4 +124,5 @@ export function launchConfetti(count: number = 300, duration: number = 2300): vo
     }
   }
   activeAnimationFrame = requestAnimationFrame(animate);
+  markConfettiRafActive();
 }

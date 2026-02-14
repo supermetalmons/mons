@@ -9,6 +9,7 @@ const noopBoardHandler: BoardTransientUiHandler = () => {};
 let closeNavigationAndAppearancePopupHandler: SimpleTransientUiHandler = noopSimpleHandler;
 let clearBottomControlsMatchScopeHandler: SimpleTransientUiHandler = noopSimpleHandler;
 let closeAllKindsOfPopupsHandler: SimpleTransientUiHandler = noopSimpleHandler;
+let closeProfilePopupHandler: SimpleTransientUiHandler = noopSimpleHandler;
 let hideNotificationBannerHandler: SimpleTransientUiHandler = noopSimpleHandler;
 let clearBoardTransientUiHandler: BoardTransientUiHandler = noopBoardHandler;
 
@@ -26,6 +27,7 @@ const runCloseTransientUi = () => {
   closeNavigationAndAppearancePopupHandler();
   clearBottomControlsMatchScopeHandler();
   closeAllKindsOfPopupsHandler();
+  closeProfilePopupHandler();
   hideNotificationBannerHandler();
   hideShinyCard();
   resetIslandOverlayState();
@@ -65,12 +67,14 @@ export const registerMainMenuTransientUiHandler = (handler: SimpleTransientUiHan
   };
 };
 
-export const registerProfileTransientUiHandler = (handler: SimpleTransientUiHandler) => {
+export const registerProfileTransientUiHandler = (handler: SimpleTransientUiHandler, closePopupHandler: SimpleTransientUiHandler = noopSimpleHandler) => {
   hideNotificationBannerHandler = handler;
+  closeProfilePopupHandler = closePopupHandler;
   hasProfileHandler = true;
   flushPendingCloseTransientUi();
   return () => {
     hideNotificationBannerHandler = noopSimpleHandler;
+    closeProfilePopupHandler = noopSimpleHandler;
     hasProfileHandler = false;
   };
 };
@@ -86,7 +90,11 @@ export const registerBoardTransientUiHandler = (handler: BoardTransientUiHandler
 };
 
 export const closeTransientUi = () => {
+  if (!hasAllTransientUiHandlers()) {
+    hasPendingCloseTransientUi = true;
+    return;
+  }
+  hasPendingCloseTransientUi = false;
   runCloseTransientUi();
-  hasPendingCloseTransientUi = !hasAllTransientUiHandlers();
 };
 

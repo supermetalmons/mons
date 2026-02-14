@@ -435,6 +435,7 @@ class Connection {
     this.matchId = null;
     this.didCreateNewGameInvite = false;
     this.newInviteId = "";
+    this.pendingInviteCreation = null;
     this.optimisticResolvedMatchIds.clear();
     setCurrentWagerMatch(null);
   }

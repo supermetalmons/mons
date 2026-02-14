@@ -294,10 +294,6 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   hideNotificationBannerImpl = hideNotificationBannerInternal;
   showNotificationBannerImpl = showNotificationBannerInternal;
 
-  useEffect(() => {
-    return registerProfileTransientUiHandler(hideNotificationBannerInternal);
-  }, [hideNotificationBannerInternal]);
-
   const performLogout = () => {
     storage.signOut();
     connection
@@ -305,6 +301,21 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       .then(() => transitionToHome({ resetProfileScope: true, forceMatchScopeReset: true }))
       .catch(() => transitionToHome({ resetProfileScope: true, forceMatchScopeReset: true }));
   };
+
+  const closeProfilePopupInternal = useCallback(() => {
+    didDismissSomethingWithOutsideTapJustNow();
+    setIsOpen(false);
+    setIsInventoryOpen(false);
+    setIsLogoutConfirmOpen(false);
+    setIsSettingsOpen(false);
+    setIsEditingName(false);
+    hideShinyCard();
+    enterProfileEditingMode(false);
+  }, []);
+
+  useEffect(() => {
+    return registerProfileTransientUiHandler(hideNotificationBannerInternal, closeProfilePopupInternal);
+  }, [closeProfilePopupInternal, hideNotificationBannerInternal]);
 
   handleLogoutImpl = () => {
     setIsLogoutConfirmOpen(true);
@@ -314,16 +325,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsSettingsOpen(true);
   };
 
-  closeProfilePopupIfAnyImpl = () => {
-    didDismissSomethingWithOutsideTapJustNow();
-    setIsOpen(false);
-    setIsInventoryOpen(false);
-    setIsLogoutConfirmOpen(false);
-    setIsSettingsOpen(false);
-    setIsEditingName(false);
-    hideShinyCard();
-    enterProfileEditingMode(false);
-  };
+  closeProfilePopupIfAnyImpl = closeProfilePopupInternal;
 
   useEffect(() => {
     return () => {

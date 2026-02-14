@@ -862,19 +862,23 @@ const MainMenu: React.FC = () => {
     setIsMusicOpen(false);
   };
 
-  const closeAllKindsOfPopupsHandler = useCallback(() => {
-    closeProfilePopupIfAny();
-    closeNavigationAndAppearancePopupIfAny();
+  const closeMainMenuPopupsHandler = useCallback(() => {
     setIsInfoOpen(false);
     setIsMenuOpen(false);
     setIsMusicOpen(false);
   }, []);
 
+  const closeAllKindsOfPopupsHandler = useCallback(() => {
+    closeProfilePopupIfAny();
+    closeNavigationAndAppearancePopupIfAny();
+    closeMainMenuPopupsHandler();
+  }, [closeMainMenuPopupsHandler]);
+
   closeAllKindsOfPopupsImpl = closeAllKindsOfPopupsHandler;
 
   useEffect(() => {
-    return registerMainMenuTransientUiHandler(closeAllKindsOfPopupsHandler);
-  }, [closeAllKindsOfPopupsHandler]);
+    return registerMainMenuTransientUiHandler(closeMainMenuPopupsHandler);
+  }, [closeMainMenuPopupsHandler]);
 
   closeMenuAndInfoIfAllowedForEventImpl = (event: TouchEvent | MouseEvent) => {
     if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {

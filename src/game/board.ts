@@ -65,6 +65,10 @@ let didRegisterResizeHandler = false;
 const wavesIntervalIds = new Set<number>();
 const sparkleIntervalIds = new Set<number>();
 const boardTimeoutIds = new Set<number>();
+const boardRafIds = new Set<number>();
+let boardRuntimeToken = 0;
+
+const isBoardRuntimeTokenActive = (runtimeToken: number) => runtimeToken === boardRuntimeToken;
 
 let board: HTMLElement | null;
 let highlightsLayer: HTMLElement | null;
@@ -233,6 +237,39 @@ const clearTrackedBoardTimeouts = () => {
     decrementLifecycleCounter("boardTimeouts");
   });
   boardTimeoutIds.clear();
+};
+
+const setManagedBoardRaf = (callback: FrameRequestCallback): number => {
+  let rafId = 0;
+  rafId = window.requestAnimationFrame((timestamp) => {
+    if (boardRafIds.has(rafId)) {
+      boardRafIds.delete(rafId);
+      decrementLifecycleCounter("boardRaf");
+    }
+    callback(timestamp);
+  });
+  boardRafIds.add(rafId);
+  incrementLifecycleCounter("boardRaf");
+  return rafId;
+};
+
+const cancelManagedBoardRaf = (rafId: number | null) => {
+  if (rafId === null) {
+    return;
+  }
+  if (boardRafIds.has(rafId)) {
+    boardRafIds.delete(rafId);
+    decrementLifecycleCounter("boardRaf");
+  }
+  cancelAnimationFrame(rafId);
+};
+
+const clearTrackedBoardRafs = () => {
+  boardRafIds.forEach((rafId) => {
+    cancelAnimationFrame(rafId);
+    decrementLifecycleCounter("boardRaf");
+  });
+  boardRafIds.clear();
 };
 
 const trackWavesInterval = (intervalId: number) => {
@@ -663,8 +700,8 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false, isFainte
       let lastUpdateTime = Date.now();
       (image as any).__isAnimating = true;
 
-      function animate() {
-        if (!(image as any).__isAnimating) {
+      function animate(_timestamp: number) {
+        if (!(image as any).__isAnimating || !image.isConnected) {
           return;
         }
 
@@ -680,10 +717,10 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false, isFainte
           currentFrame = (currentFrame + 1) % totalFrames;
           lastUpdateTime = now;
         }
-        requestAnimationFrame(animate);
+        setManagedBoardRaf(animate);
       }
 
-      animate();
+      setManagedBoardRaf(animate);
     }
   }
 }
@@ -1467,14 +1504,14 @@ function createItemButton(overlay: SVGElement, x: number, y: number, wiggle: boo
       }
 
       if (button.parentNode && animationId !== null) {
-        animationId = requestAnimationFrame(animateWiggle);
+        animationId = setManagedBoardRaf(animateWiggle);
       }
     }
 
-    animationId = requestAnimationFrame(animateWiggle);
+    animationId = setManagedBoardRaf(animateWiggle);
     (button as any).__stopWiggle = () => {
       if (animationId !== null) {
-        cancelAnimationFrame(animationId);
+        cancelManagedBoardRaf(animationId);
         animationId = null;
       }
       button.setAttribute("x", originalX.toString());
@@ -1934,9 +1971,8 @@ function emitWagerRenderState() {
 
 function cancelWagerWinAnimation() {
   if (wagerWinAnimRaf !== null) {
-    cancelAnimationFrame(wagerWinAnimRaf);
+    cancelManagedBoardRaf(wagerWinAnimRaf);
     wagerWinAnimRaf = null;
-    decrementLifecycleCounter("boardRaf");
   }
   wagerWinAnimActive = false;
   wagerWinAnimState = null;
@@ -2079,7 +2115,6 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
     if (!wagerWinAnimState || !winnerWagerPile) {
       wagerWinAnimActive = false;
       wagerWinAnimRaf = null;
-      decrementLifecycleCounter("boardRaf");
       return;
     }
     const { startTime, duration, iconSize, starts, targets, drifts, delays } = wagerWinAnimState;
@@ -2107,7 +2142,7 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
     emitWagerRenderState();
 
     if (progress < 1) {
-      wagerWinAnimRaf = requestAnimationFrame(animate);
+      wagerWinAnimRaf = setManagedBoardRaf(animate);
     } else {
       for (let i = 0; i < winnerWagerPile.count; i += 1) {
         const target = targets[i];
@@ -2122,13 +2157,11 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
       wagerWinAnimActive = false;
       wagerWinAnimState = null;
       wagerWinAnimRaf = null;
-      decrementLifecycleCounter("boardRaf");
       emitWagerRenderState();
     }
   };
 
-  wagerWinAnimRaf = requestAnimationFrame(animate);
-  incrementLifecycleCounter("boardRaf");
+  wagerWinAnimRaf = setManagedBoardRaf(animate);
   return true;
 }
 
@@ -2360,6 +2393,7 @@ function doNotShowAvatarPlaceholderAgain(opponent: boolean) {
 }
 
 export async function setupGameInfoElements(allHiddenInitially: boolean) {
+  const runtimeToken = boardRuntimeToken;
   const statusMove = loadImage(emojis.statusMove, "statusMoveEmoji");
   if (!didRegisterResizeHandler) {
     window.addEventListener("resize", updateLayout);
@@ -2490,6 +2524,9 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
       updateAuraForAvatarElement(isOpponent, avatar);
     } catch {}
     avatar.onload = () => {
+      if (!isBoardRuntimeTokenActive(runtimeToken) || !avatar.isConnected) {
+        return;
+      }
       SVG.setHidden(placeholder, true);
       doNotShowAvatarPlaceholderAgain(isOpponent);
     };
@@ -2619,6 +2656,7 @@ export function setupBoard() {
   if (hasSetupBoardRuntime) {
     disposeBoardRuntime();
   }
+  boardRuntimeToken += 1;
   initializeBoardElements();
   boardInputHandler = (event: Event) => {
     const hasVisiblePopups = hasIslandOverlayVisible() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible() || showsShinyCardSomewhere;
@@ -2675,6 +2713,7 @@ export function setupBoard() {
 }
 
 export function disposeBoardRuntime() {
+  boardRuntimeToken += 1;
   stopMonsBoardAsDisplayAnimations();
   hideTimerCountdownDigits();
   cancelWagerWinAnimation();
@@ -2693,6 +2732,7 @@ export function disposeBoardRuntime() {
   clearWavesIntervals();
   clearSparkleIntervals();
   clearTrackedBoardTimeouts();
+  clearTrackedBoardRafs();
   if (currentTextAnimation.timer) {
     clearTimeout(currentTextAnimation.timer);
     currentTextAnimation.timer = null;
@@ -3034,10 +3074,10 @@ function createSparkleParticle(location: Location, container: SVGElement, animat
 
     particle.setAttribute("y", ((y - (velocity * timeDelta) / 1000) * 100).toString());
     SVG.setOpacity(particle, Math.max(0, opacity - (0.15 * timeDelta) / 1000));
-    requestAnimationFrame(animateParticle);
+    setManagedBoardRaf(animateParticle);
   }
 
-  requestAnimationFrame(animateParticle);
+  setManagedBoardRaf(animateParticle);
 }
 
 function setBase(item: SVGElement, location: Location) {
@@ -3095,7 +3135,7 @@ function startBlinking(element: SVGElement) {
 
   function blinkCycle() {
     if (!element.parentNode) return;
-    requestAnimationFrame(() => {
+    setManagedBoardRaf(() => {
       element.style.opacity = "1";
     });
 
