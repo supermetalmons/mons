@@ -1583,6 +1583,8 @@ class Connection {
     }
     if (shouldSetupSameProfileUid) {
       this.setSameProfilePlayerUid(uid);
+    } else {
+      this.observeMiningFrozen(this.sameProfilePlayerUid ?? uid);
     }
     const connectEpoch = this.sessionEpoch;
     this.inviteId = inviteId;
