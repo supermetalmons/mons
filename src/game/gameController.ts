@@ -4,7 +4,7 @@ import { tokensForSingleMoveEvents, MoveHistoryEntry } from "./moveEventStrings"
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
-import { connection, getSnapshotIdAndClearPathIfNeeded } from "../connection/connection";
+import { connection } from "../connection/connection";
 import { showMoveHistoryButton, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
 import { triggerMoveHistoryPopupReload } from "../ui/MoveHistoryPopup";
 import { Match, MatchWagerState } from "../connection/connectionModels";
@@ -18,7 +18,8 @@ import { setCurrentWagerMatch, subscribeToWagerState } from "./wagerState";
 import { transitionToHome } from "../session/AppSessionManager";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 import { getSessionGuard } from "./matchSession";
-import { getCurrentRouteState } from "../navigation/routeState";
+import { RouteState, getCurrentRouteState } from "../navigation/routeState";
+import { INVALID_SNAPSHOT_ROUTE_ERROR } from "../session/sessionErrors";
 
 export let initialFen = "";
 export let isWatchOnly = false;
@@ -35,9 +36,10 @@ let didConnect = false;
 let isWaitingForInviteToGetAccepted = false;
 
 const watchOnlyListeners = new Set<(value: boolean) => void>();
-const isCreateInviteRoute = () => getCurrentRouteState().mode === "home";
-const isSnapshotRoute = () => getCurrentRouteState().mode === "snapshot";
-const isBotsRoute = () => getCurrentRouteState().mode === "watch";
+let activeRouteState: RouteState = getCurrentRouteState();
+const isCreateInviteRoute = () => activeRouteState.mode === "home";
+const isSnapshotRoute = () => activeRouteState.mode === "snapshot";
+const isBotsRoute = () => activeRouteState.mode === "watch";
 
 let currentWagerState: MatchWagerState | null = null;
 let wagerOutcomeShown = false;
@@ -208,7 +210,9 @@ export function didAttemptAuthentication() {
   }
 }
 
-export async function go() {
+export async function go(routeStateOverride?: RouteState) {
+  const routeState = routeStateOverride ?? getCurrentRouteState();
+  activeRouteState = routeState;
   clearAllManagedGameTimeouts();
   Board.setBoardFlipped(false);
   setIslandButtonDimmed(false);
@@ -237,7 +241,7 @@ export async function go() {
       }
     });
   }
-  connection.setupConnection(false);
+  connection.setupConnection(false, routeState);
   Board.setupBoard();
   await initMonsWeb();
 
@@ -267,11 +271,10 @@ export async function go() {
     lastBotMoveTimestamp = 0;
     automove();
   } else if (isSnapshotRoute()) {
-    const snapshot = getSnapshotIdAndClearPathIfNeeded() || "";
+    const snapshot = routeState.snapshotId ?? "";
     const gameFromFen = MonsWeb.MonsGameModel.from_fen(snapshot);
     if (!gameFromFen) {
-      await transitionToHome({ forceMatchScopeReset: true, replace: true });
-      return;
+      throw new Error(INVALID_SNAPSHOT_ROUTE_ERROR);
     }
     game = gameFromFen;
     game.locations_with_content().forEach((loc) => {
@@ -1895,6 +1898,8 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   if (!activeMatchId || activeMatchId !== matchId) {
     return;
   }
+  setWatchOnlyState(false);
+  setWatchOnlyVisible(false);
   isReconnect = true;
   resetWagerStateForMatch(matchId);
 

@@ -2,6 +2,7 @@ import { beginMatchSession, getCurrentSessionEpoch, getCurrentSessionId as getMa
 import { getLifecycleCounters } from "../lifecycle/lifecycleDiagnostics";
 import { initializeNavigation, pushRoutePath, replaceRoutePath, subscribeToNavigationState } from "../navigation/appNavigation";
 import { RouteState, getCurrentRouteState, getRoutePathForTarget } from "../navigation/routeState";
+import { INVALID_SNAPSHOT_ROUTE_ERROR } from "./sessionErrors";
 
 export type AppSessionTarget = RouteState;
 type TransitionOptions = {
@@ -50,6 +51,16 @@ const routeStatesMatch = (a: RouteState, b: RouteState) => {
   return a.mode === b.mode && a.path === b.path && a.inviteId === b.inviteId && a.snapshotId === b.snapshotId && a.autojoin === b.autojoin;
 };
 
+const createHomeTarget = (): RouteState => {
+  return {
+    mode: "home",
+    path: "",
+    inviteId: null,
+    snapshotId: null,
+    autojoin: false,
+  };
+};
+
 const logTransition = (from: RouteState, to: RouteState) => {
   const counters = getLifecycleCounters();
   console.log("session-transition", {
@@ -75,10 +86,10 @@ const applyPathForTarget = (target: RouteState, replace = false) => {
   isApplyingNavigation = false;
 };
 
-const bootstrapForRoute = async () => {
+const bootstrapForRoute = async (target: RouteState) => {
   await waitForBoardRoot();
   const gameController = await import("../game/gameController");
-  await gameController.go();
+  await gameController.go(target);
   const mainGameLoadState = await import("../game/mainGameLoadState");
   mainGameLoadState.markMainGameLoaded();
 };
@@ -111,7 +122,7 @@ const runTransition = async (target: RouteState, options?: TransitionOptions) =>
       applyPathForTarget(target, options?.replace === true);
     }
     beginMatchSession();
-    await bootstrapForRoute();
+    await bootstrapForRoute(target);
     currentTarget = target;
     logTransition(from, target);
   } catch (error) {
@@ -120,12 +131,18 @@ const runTransition = async (target: RouteState, options?: TransitionOptions) =>
       to: target.path,
       error,
     });
+    const shouldRecoverToHome = error instanceof Error && error.message === INVALID_SNAPSHOT_ROUTE_ERROR;
     try {
       const lifecycleManager = await import("../lifecycle/lifecycleManager");
       lifecycleManager.teardownMatchScope();
+      const recoveryTarget = shouldRecoverToHome ? createHomeTarget() : getCurrentRouteState();
+      if (shouldRecoverToHome) {
+        applyPathForTarget(recoveryTarget, true);
+      }
       beginMatchSession();
-      await bootstrapForRoute();
-      currentTarget = getCurrentRouteState();
+      await bootstrapForRoute(recoveryTarget);
+      currentTarget = recoveryTarget;
+      logTransition(from, recoveryTarget);
     } catch (recoveryError) {
       currentTarget = getCurrentRouteState();
       console.error("session-transition-recovery-failed", {
@@ -152,13 +169,7 @@ export const transition = async (target: RouteState, options?: TransitionOptions
 };
 
 export const transitionToHome = async (options?: TransitionToHomeOptions) => {
-  const homeTarget: RouteState = {
-    mode: "home",
-    path: "",
-    inviteId: null,
-    snapshotId: null,
-    autojoin: false,
-  };
+  const homeTarget = createHomeTarget();
   const shouldForceMatchScopeReset = options?.forceMatchScopeReset === true;
   const activeTarget = currentTarget;
   if (!routeStatesMatch(activeTarget, homeTarget) || shouldForceMatchScopeReset) {

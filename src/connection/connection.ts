@@ -231,8 +231,8 @@ class Connection {
     return null;
   }
 
-  public setupConnection(autojoin: boolean): void {
-    const routeState = getRouteStateSnapshot();
+  public setupConnection(autojoin: boolean, routeStateOverride?: RouteState): void {
+    const routeState = routeStateOverride ?? getRouteStateSnapshot();
     if (routeState.mode !== "invite" || !routeState.inviteId) {
       return;
     }
@@ -362,11 +362,20 @@ class Connection {
       if (!inviteToReconnect) {
         return;
       }
-      this.signIn().then((uid) => {
-        if (uid && sessionGuard()) {
-          this.connectToGame(uid, inviteToReconnect, false);
-        }
-      });
+      const appSessionManager = await import("../session/AppSessionManager");
+      if (!sessionGuard()) {
+        return;
+      }
+      await appSessionManager.transition(
+        {
+          mode: "invite",
+          path: inviteToReconnect,
+          inviteId: inviteToReconnect,
+          snapshotId: null,
+          autojoin: inviteToReconnect.startsWith("auto_"),
+        },
+        { force: true }
+      );
     }
   }
 
