@@ -16,3 +16,4 @@ frontend:
       - 'shop/**'
       - 'docs/**'
       - 'rocks/**'
+      - 'icons/**'
