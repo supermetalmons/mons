@@ -2263,24 +2263,61 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
 }
 
 
+function getSvgTextWidthInBoardUnits(element: SVGElement | undefined): number {
+  if (!element) {
+    return 0;
+  }
+  try {
+    const textElement = element as unknown as SVGTextContentElement;
+    const width = textElement.getComputedTextLength ? textElement.getComputedTextLength() : 0;
+    if (Number.isFinite(width) && width > 0) {
+      return width / 100;
+    }
+  } catch {}
+  try {
+    const graphicElement = element as unknown as SVGGraphicsElement;
+    const bbox = graphicElement.getBBox ? graphicElement.getBBox() : null;
+    if (bbox && Number.isFinite(bbox.width) && bbox.width > 0) {
+      return bbox.width / 100;
+    }
+  } catch {}
+  return 0;
+}
+
+function getDynamicNameDelta(initialX: number, scoreText: SVGElement | undefined, timerText: SVGElement | undefined, showsTimer: boolean, multiplicator: number): number {
+  if (!scoreText) {
+    return 0;
+  }
+  const spacing = 0.14 * multiplicator;
+  const scoreX = parseFloat(scoreText.getAttribute("x") || "0") / 100;
+  const scoreRight = scoreX + getSvgTextWidthInBoardUnits(scoreText);
+  let minNameX = scoreRight + spacing;
+  if (showsTimer && timerText) {
+    const timerX = parseFloat(timerText.getAttribute("x") || "0") / 100;
+    const timerRight = timerX + getSvgTextWidthInBoardUnits(timerText);
+    minNameX = Math.max(minNameX, timerRight + spacing);
+  }
+  return Math.max(0, minNameX - initialX);
+}
+
 function updateNamesX() {
   if (playerNameText === undefined || opponentNameText === undefined) {
     return;
   }
 
   const multiplicator = getOuterElementsMultiplicator();
-
   const offsetX = seeIfShouldOffsetFromBorders() ? minHorizontalOffset : 0;
-
-  let initialX = offsetX + 1.45 * multiplicator + 0.1;
+  const initialX = offsetX + 1.45 * multiplicator + 0.1;
   const timerDelta = 0.95 * multiplicator;
   const statusDelta = 0.67 * multiplicator;
 
-  const playerDelta = (showsPlayerEndOfGameSuffix ? statusDelta : 0) + (showsPlayerTimer ? timerDelta : 0);
-  const opponentDelta = (showsOpponentEndOfGameSuffix ? statusDelta : 0) + (showsOpponentTimer ? timerDelta : 0);
+  const playerStaticDelta = (showsPlayerEndOfGameSuffix ? statusDelta : 0) + (showsPlayerTimer ? timerDelta : 0);
+  const opponentStaticDelta = (showsOpponentEndOfGameSuffix ? statusDelta : 0) + (showsOpponentTimer ? timerDelta : 0);
+  const playerDynamicDelta = getDynamicNameDelta(initialX, playerScoreText, playerTimer, showsPlayerTimer, multiplicator);
+  const opponentDynamicDelta = getDynamicNameDelta(initialX, opponentScoreText, opponentTimer, showsOpponentTimer, multiplicator);
 
-  SVG.setX(playerNameText, initialX + playerDelta);
-  SVG.setX(opponentNameText, initialX + opponentDelta);
+  SVG.setX(playerNameText, initialX + Math.max(playerStaticDelta, playerDynamicDelta));
+  SVG.setX(opponentNameText, initialX + Math.max(opponentStaticDelta, opponentDynamicDelta));
 }
 
 const updateLayout = () => {
