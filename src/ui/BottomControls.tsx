@@ -119,6 +119,7 @@ const STATUS_ICON_BASE_URL = "https://assets.mons.link/icons";
 const STATUS_ICON_URLS = {
   cloud: `${STATUS_ICON_BASE_URL}/cloud.webp`,
   spectating: `${STATUS_ICON_BASE_URL}/spectating.webp`,
+  automatch: `${STATUS_ICON_BASE_URL}/automatch.webp`,
 } as const;
 type StatusIconName = keyof typeof STATUS_ICON_URLS;
 const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
@@ -186,14 +187,14 @@ const BottomPillInlineIcon = styled.img`
   width: 1.42em;
   height: 1.42em;
   margin-left: -4px;
-  margin-right: 3px;
+  margin-right: 4px;
   flex-shrink: 0;
   -webkit-user-drag: none;
   user-drag: none;
 
   @media screen and (max-width: 359px) {
     margin-left: -3px;
-    margin-right: 2px;
+    margin-right: 3px;
   }
 `;
 
@@ -262,6 +263,7 @@ const BottomControls: React.FC = () => {
   const [statusIconUrls, setStatusIconUrls] = useState<Record<StatusIconName, string | null>>({
     cloud: null,
     spectating: null,
+    automatch: null,
   });
   const [stickerUrls, setStickerUrls] = useState<Record<number, string | null>>({});
   const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
@@ -1201,7 +1203,10 @@ const BottomControls: React.FC = () => {
         {isAutomatchButtonVisible && (
           <BottomPillButton onClick={handleAutomatchClick} isBlue={true} isViewOnly={automatchButtonTmpState} disabled={!isAutomatchButtonEnabled}>
             {automatchButtonTmpState ? (
-              "🥁 Automatching..."
+              <>
+                {statusIconUrls.automatch ? <BottomPillInlineIcon src={statusIconUrls.automatch} alt="" draggable={false} /> : "🥁 "}
+                {"Automatching..."}
+              </>
             ) : (
               <>
                 <FaStar style={{ marginRight: "6px", fontSize: "0.9em" }} />
