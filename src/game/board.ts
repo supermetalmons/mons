@@ -1205,10 +1205,24 @@ export function showVoiceReactionText(reactionText: string, opponents: boolean) 
 }
 
 export function setupPlayerId(uid: string, opponent: boolean) {
-  if (opponent) {
-    opponentSideMetadata.uid = uid;
+  const metadata = opponent ? opponentSideMetadata : playerSideMetadata;
+  if (metadata.uid !== uid) {
+    const previousEmojiUrl = emojis.getEmojiUrl(metadata.emojiId) || "";
+    metadata.uid = uid;
+    metadata.displayName = undefined;
+    metadata.username = undefined;
+    metadata.ethAddress = undefined;
+    metadata.solAddress = undefined;
+    metadata.ens = undefined;
+    metadata.voiceReactionText = "";
+    metadata.voiceReactionDate = undefined;
+    metadata.rating = undefined;
+    metadata.profile = null;
+    metadata.emojiId = "";
+    metadata.aura = "";
+    showRaibowAura(false, previousEmojiUrl, opponent);
   } else {
-    playerSideMetadata.uid = uid;
+    metadata.uid = uid;
   }
   recalculateDisplayNames();
   updateWagerPlayerUids(playerSideMetadata.uid, opponentSideMetadata.uid);
@@ -2657,6 +2671,8 @@ export function setupBoard() {
     disposeBoardRuntime();
   }
   boardRuntimeToken += 1;
+  opponentSideMetadata.emojiId = "";
+  opponentSideMetadata.aura = "";
   initializeBoardElements();
   boardInputHandler = (event: Event) => {
     const hasVisiblePopups = hasIslandOverlayVisible() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible() || showsShinyCardSomewhere;
