@@ -49,6 +49,8 @@
   --link-color-dark: #009aff;
   --card-color: #fafafa;
   --instruction-text-color: #000;
+  --instruction-bubble-bg: rgba(234, 240, 255, 0.92);
+  --instruction-bubble-stroke: rgba(180, 200, 230, 0.45);
   --bottomButtonBackgroundHover: #0069d9;
   --bottomButtonBackgroundActive: #0056b3;
   --bottomButtonBackgroundHoverDark: #1a91ff;
@@ -152,6 +154,8 @@
   :root {
     --card-color: #eeeeee;
     --instruction-text-color: #fff;
+    --instruction-bubble-bg: rgba(30, 32, 42, 0.9);
+    --instruction-bubble-stroke: rgba(255, 255, 255, 0.08);
   }
 }
 

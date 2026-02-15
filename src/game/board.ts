@@ -110,6 +110,7 @@ let activeTimer: SVGElement | null = null;
 let talkingDude: SVGElement | null = null;
 let talkingDudeTextDiv: HTMLElement | null;
 let instructionsContainerElement: SVGElement | undefined;
+let instructionsCloudBg: SVGPathElement | null = null;
 let talkingDudeIsTalking = true;
 
 let assets: any;
@@ -323,6 +324,71 @@ export function fastForwardInstructionsIfNeeded() {
   return true;
 }
 
+function generateCloudPath(x: number, y: number, w: number, h: number): string {
+  const padX = -2;
+  const padY = -2;
+  const l = x - padX;
+  const r = x + w + padX;
+  const t = y - padY;
+  const b = y + h + padY;
+
+  const totalW = r - l;
+  const totalH = b - t;
+  const cr = Math.min(totalH * 0.28, totalW * 0.03);
+  const bumpH = totalH * 0.12;
+  const bumpW = totalH * 0.10;
+
+  const topN = 5;
+  const topLen = totalW - 2 * cr;
+  const topSeg = topLen / topN;
+  const sideN = 1;
+  const sideLen = totalH - 2 * cr;
+  const sideSeg = sideLen / sideN;
+
+  const topAmps = [0.9, 1.2, 0.8, 1.15, 0.95];
+  const bottomAmps = [1.0, 0.85, 1.1, 0.9, 1.05];
+
+  let d = `M ${l + cr} ${t}`;
+
+  for (let i = 0; i < topN; i++) {
+    const sx = l + cr + i * topSeg;
+    const ex = sx + topSeg;
+    const mx = (sx + ex) / 2;
+    d += ` Q ${mx} ${t - bumpH * topAmps[i]} ${ex} ${t}`;
+  }
+
+  d += ` Q ${r} ${t} ${r} ${t + cr}`;
+
+  for (let i = 0; i < sideN; i++) {
+    const sy = t + cr + i * sideSeg;
+    const ey = sy + sideSeg;
+    const my = (sy + ey) / 2;
+    d += ` Q ${r + bumpW} ${my} ${r} ${ey}`;
+  }
+
+  d += ` Q ${r} ${b} ${r - cr} ${b}`;
+
+  for (let i = 0; i < topN; i++) {
+    const sx = r - cr - i * topSeg;
+    const ex = sx - topSeg;
+    const mx = (sx + ex) / 2;
+    d += ` Q ${mx} ${b + bumpH * bottomAmps[i]} ${ex} ${b}`;
+  }
+
+  d += ` Q ${l} ${b} ${l} ${b - cr}`;
+
+  for (let i = 0; i < sideN; i++) {
+    const sy = b - cr - i * sideSeg;
+    const ey = sy - sideSeg;
+    const my = (sy + ey) / 2;
+    d += ` Q ${l - bumpW} ${my} ${l} ${ey}`;
+  }
+
+  d += ` Q ${l} ${t} ${l + cr} ${t}`;
+  d += ` Z`;
+  return d;
+}
+
 export function showInstructionsText(text: string) {
   showTalkingDude(true);
 
@@ -348,9 +414,17 @@ export function showInstructionsText(text: string) {
     textDiv.style.textAlign = "left";
     textDiv.style.lineHeight = "1.2";
     textDiv.style.overflow = "visible";
-    textDiv.style.border = "2px dotted var(--instruction-text-color)";
     textDiv.style.pointerEvents = "none";
     textDiv.style.touchAction = "none";
+
+    const cloudPath = document.createElementNS(SVG.ns, "path") as SVGPathElement;
+    cloudPath.setAttribute("fill", "var(--instruction-bubble-bg)");
+    cloudPath.setAttribute("stroke", "var(--instruction-bubble-stroke)");
+    cloudPath.setAttribute("stroke-width", "1.5");
+    cloudPath.style.filter = "drop-shadow(0px 2px 10px var(--instruction-bubble-shadow))";
+    cloudPath.style.pointerEvents = "none";
+    containerGroup.appendChild(cloudPath);
+    instructionsCloudBg = cloudPath;
 
     foreignObject.appendChild(textDiv);
     containerGroup.appendChild(foreignObject);
@@ -2282,6 +2356,14 @@ const updateLayout = () => {
     const instructionsWidth = 10;
     SVG.setFrame(instructionsContainerElement, 11 - instructionsWidth - instructionsRightOffset, 0, instructionsWidth, 0.85);
 
+    if (instructionsCloudBg) {
+      const cloudX = (11 - instructionsWidth - instructionsRightOffset) * 100;
+      const cloudY = 0;
+      const cloudW = instructionsWidth * 100;
+      const cloudH = 0.85 * 100;
+      instructionsCloudBg.setAttribute("d", generateCloudPath(cloudX, cloudY, cloudW, cloudH));
+    }
+
     updateSpriteSheetClipRect(talkingDude);
   }
 
@@ -2750,6 +2832,7 @@ export function disposeBoardRuntime() {
   }
   talkingDudeTextDiv = null;
   instructionsContainerElement = undefined;
+  instructionsCloudBg = null;
   talkingDudeIsTalking = true;
   currentTextAnimation.isAnimating = false;
   currentTextAnimation.fastForwardCallback = null;
