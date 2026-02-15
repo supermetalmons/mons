@@ -250,6 +250,41 @@ class Connection {
 
   public connectToAutomatch(inviteId: string): void {
     this.newInviteId = inviteId;
+    const routeState = getRouteStateSnapshot();
+    const target: RouteState = {
+      mode: "invite",
+      path: inviteId,
+      inviteId,
+      snapshotId: null,
+      autojoin: inviteId.startsWith("auto_"),
+    };
+    if (routeState.mode === "home") {
+      const sessionGuard = this.createSessionGuard();
+      void import("../session/AppSessionManager")
+        .then(async (appSessionManager) => {
+          if (!sessionGuard()) {
+            return;
+          }
+          appSessionManager.adoptTargetWithoutTransition(target);
+          await this.ensureAuthenticated();
+          if (!sessionGuard()) {
+            return;
+          }
+          const uid = this.auth.currentUser?.uid;
+          if (!uid) {
+            void this.transitionToInvite(inviteId);
+            return;
+          }
+          this.connectToGame(uid, inviteId, true);
+        })
+        .catch(() => {
+          if (!sessionGuard()) {
+            return;
+          }
+          void this.transitionToInvite(inviteId);
+        });
+      return;
+    }
     void this.transitionToInvite(inviteId);
   }
 

@@ -209,6 +209,11 @@ export const getCurrentSessionId = () => {
   return getMatchSessionId();
 };
 
+export const adoptTargetWithoutTransition = (target: RouteState, replace = false) => {
+  currentTarget = target;
+  applyPathForTarget(target, replace);
+};
+
 export const initializeAppSessionManager = () => {
   if (initialized) {
     return;
