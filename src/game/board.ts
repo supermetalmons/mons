@@ -63,6 +63,9 @@ let showsPlayerTimer = false;
 let showsOpponentTimer = false;
 let showsPlayerEndOfGameSuffix = false;
 let showsOpponentEndOfGameSuffix = false;
+type EndOfGameMarker = "none" | "victory" | "resign";
+let playerEndOfGameMarker: EndOfGameMarker = "none";
+let opponentEndOfGameMarker: EndOfGameMarker = "none";
 
 let countdownInterval: NodeJS.Timeout | null = null;
 let monsBoardDisplayAnimationTimeout: NodeJS.Timeout | null = null;
@@ -96,8 +99,10 @@ let dimmingOverlay: SVGElement | undefined;
 let opponentNameText: SVGElement | undefined;
 let playerNameText: SVGElement | undefined;
 let opponentScoreText: SVGElement | undefined;
+let opponentEndOfGameIcon: SVGElement | undefined;
 
 let playerScoreText: SVGElement | undefined;
+let playerEndOfGameIcon: SVGElement | undefined;
 let opponentTimer: SVGElement | undefined;
 let playerTimer: SVGElement | undefined;
 let opponentAvatar: SVGElement | undefined;
@@ -132,6 +137,18 @@ let supermana: SVGElement;
 let supermanaSimple: SVGElement;
 
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
+const END_OF_GAME_ICON_BASE_URL = "https://assets.mons.link/icons";
+const END_OF_GAME_ICON_URLS = {
+  victory: `${END_OF_GAME_ICON_BASE_URL}/victory.webp`,
+  resign: `${END_OF_GAME_ICON_BASE_URL}/resign.webp`,
+} as const;
+type EndOfGameIconName = keyof typeof END_OF_GAME_ICON_URLS;
+const endOfGameIconPromises: Map<EndOfGameIconName, Promise<string | null>> = new Map();
+const endOfGameIconResolvedUrls: Partial<Record<EndOfGameIconName, string>> = {};
+const END_OF_GAME_ICON_OPACITY = 0.69;
+const END_OF_GAME_ICON_SIZE_MULTIPLIER = 0.53;
+const END_OF_GAME_ICON_GAP_MULTIPLIER = 0.06;
+const END_OF_GAME_NAME_OFFSET_MULTIPLIER = 0.54;
 const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
 const WAGER_PILE_SCALE = 1;
@@ -139,6 +156,36 @@ const WAGER_WIN_PILE_SCALE = 1.3333;
 const WAGER_ICON_SIZE_MULTIPLIER = 0.669;
 const WAGER_ICON_PADDING_FRAC = 0.15;
 const WAGER_WIN_ANIM_DURATION_MS = 800;
+
+const fetchCachedImageUrl = (url: string): Promise<string | null> =>
+  fetch(url)
+    .then((res) => {
+      if (!res.ok) throw new Error("Failed to fetch image");
+      return res.blob();
+    })
+    .then((blob) => URL.createObjectURL(blob))
+    .catch(() => null);
+
+const getEndOfGameIconCachedUrl = (name: EndOfGameIconName): Promise<string | null> => {
+  if (!endOfGameIconPromises.has(name)) {
+    const p = fetchCachedImageUrl(END_OF_GAME_ICON_URLS[name]).then((resolvedUrl) => {
+      if (resolvedUrl) {
+        endOfGameIconResolvedUrls[name] = resolvedUrl;
+      } else {
+        endOfGameIconPromises.delete(name);
+      }
+      return resolvedUrl;
+    });
+    endOfGameIconPromises.set(name, p);
+  }
+  return endOfGameIconPromises.get(name)!;
+};
+
+const preloadEndOfGameIcons = () => {
+  (Object.keys(END_OF_GAME_ICON_URLS) as EndOfGameIconName[]).forEach((name) => {
+    void getEndOfGameIconCachedUrl(name);
+  });
+};
 
 type WagerPile = {
   positions: Array<{ u: number; v: number }>;
@@ -202,6 +249,8 @@ let disappearingPileTimers: { player: number | null; opponent: number | null } =
 const WAGER_DISAPPEAR_ANIMATION_MS = 280;
 let playerPilePending = false;
 let opponentPilePending = false;
+
+preloadEndOfGameIcons();
 
 export function setWagerRenderHandler(handler: ((state: WagerRenderState) => void) | null) {
   handleWagerRenderState = handler;
@@ -868,6 +917,16 @@ export function hideBoardPlayersInfo() {
     playerScoreText.textContent = "";
     opponentScoreText.textContent = "";
   }
+  playerEndOfGameMarker = "none";
+  opponentEndOfGameMarker = "none";
+  showsPlayerEndOfGameSuffix = false;
+  showsOpponentEndOfGameSuffix = false;
+  if (playerEndOfGameIcon) {
+    SVG.setHidden(playerEndOfGameIcon, true);
+  }
+  if (opponentEndOfGameIcon) {
+    SVG.setHidden(opponentEndOfGameIcon, true);
+  }
 
   if (playerNameText && opponentNameText) {
     playerNameText.textContent = "";
@@ -878,6 +937,14 @@ export function hideBoardPlayersInfo() {
 export function resetForNewGame() {
   showsPlayerEndOfGameSuffix = false;
   showsOpponentEndOfGameSuffix = false;
+  playerEndOfGameMarker = "none";
+  opponentEndOfGameMarker = "none";
+  if (playerEndOfGameIcon) {
+    SVG.setHidden(playerEndOfGameIcon, true);
+  }
+  if (opponentEndOfGameIcon) {
+    SVG.setHidden(opponentEndOfGameIcon, true);
+  }
   clearVoiceReactionState();
   if (isWatchOnly) {
     playerSideMetadata = newEmptyPlayerMetadata();
@@ -1478,45 +1545,44 @@ export function hideTimerCountdownDigits() {
 }
 
 export function updateScore(white: number, black: number, winnerColor?: MonsWeb.Color, resignedColor?: MonsWeb.Color, winByTimerColor?: MonsWeb.Color) {
-  const victorySuffix = " 🏅";
-  const surrenderSuffix = " 🏳️";
-
-  let whiteSuffix = "";
-  let blackSuffix = "";
+  let whiteMarker: EndOfGameMarker = "none";
+  let blackMarker: EndOfGameMarker = "none";
 
   if (resignedColor !== null && resignedColor !== undefined) {
     if (resignedColor === MonsWeb.Color.Black) {
-      blackSuffix = surrenderSuffix;
+      blackMarker = "resign";
     } else {
-      whiteSuffix = surrenderSuffix;
+      whiteMarker = "resign";
     }
   } else if (winnerColor !== null && winnerColor !== undefined) {
     if (winnerColor === MonsWeb.Color.Black) {
-      blackSuffix = victorySuffix;
+      blackMarker = "victory";
     } else {
-      whiteSuffix = victorySuffix;
+      whiteMarker = "victory";
     }
   } else if (winByTimerColor !== null && winByTimerColor !== undefined) {
     if (winByTimerColor === MonsWeb.Color.Black) {
-      blackSuffix = victorySuffix;
+      blackMarker = "victory";
     } else {
-      whiteSuffix = victorySuffix;
+      whiteMarker = "victory";
     }
   }
 
   const playerScore = isFlipped ? black : white;
   const opponentScore = isFlipped ? white : black;
 
-  const playerSuffix = isFlipped ? blackSuffix : whiteSuffix;
-  const opponentSuffix = isFlipped ? whiteSuffix : blackSuffix;
+  const playerMarker = isFlipped ? blackMarker : whiteMarker;
+  const opponentMarker = isFlipped ? whiteMarker : blackMarker;
 
   if (playerScoreText && opponentScoreText) {
-    playerScoreText.textContent = playerScore.toString() + playerSuffix;
-    opponentScoreText.textContent = opponentScore.toString() + opponentSuffix;
+    playerScoreText.textContent = playerScore.toString();
+    opponentScoreText.textContent = opponentScore.toString();
   }
 
-  showsPlayerEndOfGameSuffix = playerSuffix !== "";
-  showsOpponentEndOfGameSuffix = opponentSuffix !== "";
+  playerEndOfGameMarker = playerMarker;
+  opponentEndOfGameMarker = opponentMarker;
+  showsPlayerEndOfGameSuffix = playerMarker !== "none";
+  showsOpponentEndOfGameSuffix = opponentMarker !== "none";
   updateNamesX();
   renderPlayersNamesLabels();
 }
@@ -2300,16 +2366,60 @@ function getDynamicNameDelta(initialX: number, scoreText: SVGElement | undefined
   return Math.max(0, minNameX - initialX);
 }
 
+function updateEndOfGameIcons(multiplicator: number) {
+  const iconSize = END_OF_GAME_ICON_SIZE_MULTIPLIER * multiplicator;
+  const iconGap = END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator;
+  const updateSingleIcon = (scoreText: SVGElement | undefined, icon: SVGElement | undefined, marker: EndOfGameMarker) => {
+    if (!scoreText || !icon || marker === "none" || (scoreText.textContent ?? "") === "") {
+      if (icon) {
+        SVG.setHidden(icon, true);
+      }
+      return;
+    }
+    const iconName: EndOfGameIconName = marker === "victory" ? "victory" : "resign";
+    const resolvedUrl = endOfGameIconResolvedUrls[iconName];
+    if (icon.getAttribute("data-marker") !== marker) {
+      icon.setAttribute("data-marker", marker);
+      void SVG.setImageUrl(icon, resolvedUrl || END_OF_GAME_ICON_URLS[iconName]);
+    }
+    if (!resolvedUrl) {
+      void getEndOfGameIconCachedUrl(iconName).then((url) => {
+        if (!url) {
+          return;
+        }
+        if (icon.getAttribute("data-marker") === marker) {
+          void SVG.setImageUrl(icon, url);
+        }
+      });
+    }
+    const scoreX = parseFloat(scoreText.getAttribute("x") || "0") / 100;
+    const scoreWidth = getSvgTextWidthInBoardUnits(scoreText);
+    const iconX = scoreX + scoreWidth + iconGap;
+    let iconY = parseFloat(scoreText.getAttribute("y") || "0") / 100 - iconSize * 0.8;
+    try {
+      const scoreBounds = (scoreText as unknown as SVGGraphicsElement).getBBox ? (scoreText as unknown as SVGGraphicsElement).getBBox() : null;
+      if (scoreBounds && Number.isFinite(scoreBounds.y) && Number.isFinite(scoreBounds.height)) {
+        iconY = scoreBounds.y / 100 + (scoreBounds.height / 100 - iconSize) / 2;
+      }
+    } catch {}
+    SVG.setFrame(icon, iconX, iconY, iconSize, iconSize);
+    SVG.setHidden(icon, false);
+  };
+
+  updateSingleIcon(playerScoreText, playerEndOfGameIcon, playerEndOfGameMarker);
+  updateSingleIcon(opponentScoreText, opponentEndOfGameIcon, opponentEndOfGameMarker);
+}
+
 function updateNamesX() {
   if (playerNameText === undefined || opponentNameText === undefined) {
     return;
   }
-
   const multiplicator = getOuterElementsMultiplicator();
+  updateEndOfGameIcons(multiplicator);
   const offsetX = seeIfShouldOffsetFromBorders() ? minHorizontalOffset : 0;
   const initialX = offsetX + 1.45 * multiplicator + 0.1;
   const timerDelta = 0.95 * multiplicator;
-  const statusDelta = 0.67 * multiplicator;
+  const statusDelta = END_OF_GAME_NAME_OFFSET_MULTIPLIER * multiplicator;
 
   const playerStaticDelta = (showsPlayerEndOfGameSuffix ? statusDelta : 0) + (showsPlayerTimer ? timerDelta : 0);
   const opponentStaticDelta = (showsOpponentEndOfGameSuffix ? statusDelta : 0) + (showsOpponentTimer ? timerDelta : 0);
@@ -2537,6 +2647,7 @@ function doNotShowAvatarPlaceholderAgain(opponent: boolean) {
 export async function setupGameInfoElements(allHiddenInitially: boolean) {
   const runtimeToken = boardRuntimeToken;
   const statusMove = loadImage(emojis.statusMove, "statusMoveEmoji");
+  preloadEndOfGameIcons();
   if (!didRegisterResizeHandler) {
     window.addEventListener("resize", updateLayout);
     didRegisterResizeHandler = true;
@@ -2567,6 +2678,18 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
       opponentScoreText = numberText;
     } else {
       playerScoreText = numberText;
+    }
+
+    const endOfGameIcon = document.createElementNS(SVG.ns, "image");
+    SVG.setHidden(endOfGameIcon, true);
+    SVG.setOpacity(endOfGameIcon, END_OF_GAME_ICON_OPACITY);
+    endOfGameIcon.setAttribute("overflow", "visible");
+    endOfGameIcon.setAttribute("pointer-events", "none");
+    controlsLayer?.append(endOfGameIcon);
+    if (isOpponent) {
+      opponentEndOfGameIcon = endOfGameIcon;
+    } else {
+      playerEndOfGameIcon = endOfGameIcon;
     }
 
     const timerText = document.createElementNS(SVG.ns, "text");
@@ -2937,6 +3060,10 @@ export function disposeBoardRuntime() {
   playerAvatarPlaceholder = undefined;
   opponentScoreText = undefined;
   playerScoreText = undefined;
+  opponentEndOfGameIcon = undefined;
+  playerEndOfGameIcon = undefined;
+  opponentEndOfGameMarker = "none";
+  playerEndOfGameMarker = "none";
   opponentNameText = undefined;
   playerNameText = undefined;
   opponentTimer = undefined;
