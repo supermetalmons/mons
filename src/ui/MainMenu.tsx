@@ -4,7 +4,7 @@ import { didDismissSomethingWithOutsideTapJustNow, didNotDismissAnythingWithOuts
 import styled from "styled-components";
 import { defaultEarlyInputEventName, isMobile, getBuildInfo } from "../utils/misc";
 import { storage } from "../utils/storage";
-import { Leaderboard, LeaderboardType } from "./Leaderboard";
+import { Leaderboard, LeaderboardType, LEADERBOARD_TYPE_ICON_URLS } from "./Leaderboard";
 import { toggleExperimentalMode } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
 import { getCurrentGameFen } from "../game/gameController";
@@ -17,6 +17,34 @@ import { registerMainMenuTransientUiHandler } from "./uiSession";
 
 const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust", "total", "gp"];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
+const MATERIAL_TYPES: MiningMaterialName[] = ["ice", "metal", "gum", "slime", "dust"];
+type LeaderboardSpecialType = keyof typeof LEADERBOARD_TYPE_ICON_URLS;
+
+const materialImagePromises: Map<MiningMaterialName, Promise<string | null>> = new Map();
+const specialLeaderboardTypeImagePromises: Map<LeaderboardSpecialType, Promise<string | null>> = new Map();
+
+const fetchImageUrl = (url: string): Promise<string | null> =>
+  fetch(url)
+    .then((res) => {
+      if (!res.ok) throw new Error("Failed to fetch image");
+      return res.blob();
+    })
+    .then((blob) => URL.createObjectURL(blob))
+    .catch(() => null);
+
+const getMaterialImageUrl = (name: MiningMaterialName) => {
+  if (!materialImagePromises.has(name)) {
+    materialImagePromises.set(name, fetchImageUrl(`${MATERIAL_BASE_URL}/${name}.webp`));
+  }
+  return materialImagePromises.get(name)!;
+};
+
+const getSpecialLeaderboardTypeImageUrl = (type: LeaderboardSpecialType) => {
+  if (!specialLeaderboardTypeImagePromises.has(type)) {
+    specialLeaderboardTypeImagePromises.set(type, fetchImageUrl(LEADERBOARD_TYPE_ICON_URLS[type]));
+  }
+  return specialLeaderboardTypeImagePromises.get(type)!;
+};
 
 const isMaterialLeaderboardType = (value: LeaderboardType): value is MiningMaterialName =>
   value !== "rating" && value !== "gp" && value !== "total";
@@ -194,7 +222,7 @@ const MenuTitle = styled.div`
 
 const LeaderboardTypeSelector = styled.div`
   display: flex;
-  gap: 5px;
+  gap: 6px;
   padding: 4px 0 8px 0;
   overflow-x: auto;
   scrollbar-width: none;
@@ -206,13 +234,13 @@ const LeaderboardTypeSelector = styled.div`
   }
 `;
 
-const LeaderboardTypeButton = styled.button<{ isSelected: boolean; isText?: boolean }>`
+const LeaderboardTypeButton = styled.button<{ isSelected: boolean; isText?: boolean; isSpecial?: boolean; isTotal?: boolean }>`
   display: flex;
   align-items: center;
   justify-content: center;
   height: 28px;
-  min-width: ${(props) => (props.isText ? "29px" : "27px")};
-  padding: ${(props) => (props.isText ? "0 9px" : "0 7px")};
+  min-width: ${(props) => (props.isTotal ? "26.5px" : props.isSpecial ? "32px" : props.isText ? "29px" : "27px")};
+  padding: ${(props) => (props.isTotal ? "0 6.5px" : props.isSpecial ? "0 7.5px" : props.isText ? "0 9px" : "0 7px")};
   border-radius: 14px;
   border: none;
   cursor: pointer;
@@ -250,6 +278,15 @@ const LeaderboardTypeMaterialIcon = styled.img`
   height: 22px;
   object-fit: contain;
   margin: 0 -3px;
+`;
+
+const LeaderboardTypeSpecialIcon = styled.img`
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+  margin: 0 -3px;
+  padding: 2px 3px;
+  box-sizing: border-box;
 `;
 
 const TotalMaterialsIconContainer = styled.div`
@@ -654,6 +691,10 @@ const MainMenu: React.FC = () => {
     metal: null,
     ice: null,
   });
+  const [specialLeaderboardTypeUrls, setSpecialLeaderboardTypeUrls] = useState<Record<LeaderboardSpecialType, string | null>>({
+    rating: null,
+    gp: null,
+  });
   const lastClickTime = useRef(0);
   const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
   const animationFrameRef = useRef<number | null>(null);
@@ -663,20 +704,19 @@ const MainMenu: React.FC = () => {
 
   useEffect(() => {
     let mounted = true;
-    const materials: MiningMaterialName[] = ["ice", "metal", "gum", "slime", "dust"];
-    materials.forEach((name) => {
-      const url = `${MATERIAL_BASE_URL}/${name}.webp`;
-      fetch(url)
-        .then((res) => {
-          if (!res.ok) throw new Error("Failed to fetch");
-          return res.blob();
-        })
-        .then((blob) => {
-          if (mounted) {
-            setMaterialUrls((prev) => ({ ...prev, [name]: URL.createObjectURL(blob) }));
-          }
-        })
-        .catch(() => {});
+    MATERIAL_TYPES.forEach((name) => {
+      void getMaterialImageUrl(name).then((url) => {
+        if (mounted) {
+          setMaterialUrls((prev) => (prev[name] === url ? prev : { ...prev, [name]: url }));
+        }
+      });
+    });
+    (Object.keys(LEADERBOARD_TYPE_ICON_URLS) as LeaderboardSpecialType[]).forEach((type) => {
+      void getSpecialLeaderboardTypeImageUrl(type).then((url) => {
+        if (mounted) {
+          setSpecialLeaderboardTypeUrls((prev) => (prev[type] === url ? prev : { ...prev, [type]: url }));
+        }
+      });
     });
     return () => {
       mounted = false;
@@ -934,7 +974,7 @@ const MainMenu: React.FC = () => {
     };
   }, [isMusicOpen]);
 
-  const showTotalAsIcons = Object.values(materialUrls).every((url) => url);
+  const showTotalAsIcons = MATERIAL_TYPES.every((name) => !!materialUrls[name]);
 
   return (
     <>
@@ -982,25 +1022,22 @@ const MainMenu: React.FC = () => {
                 <LeaderboardTypeSelector>
                   {LEADERBOARD_TYPES.map((type) => {
                     const isMaterialType = isMaterialLeaderboardType(type);
-                    const isTextType =
-                      type === "rating" ||
-                      type === "gp" ||
-                      (type === "total" && !showTotalAsIcons) ||
-                      (isMaterialType && !materialUrls[type]);
+                    const isSpecialType = type === "rating" || type === "gp";
+                    const typeIconUrl =
+                      type === "rating" ? specialLeaderboardTypeUrls.rating : type === "gp" ? specialLeaderboardTypeUrls.gp : isMaterialType ? materialUrls[type] : null;
+                    const isTextType = (type === "total" && !showTotalAsIcons) || (type !== "total" && !typeIconUrl);
                     return (
                       <LeaderboardTypeButton
                         key={type}
                         isSelected={leaderboardType === type}
                         isText={isTextType}
+                        isSpecial={isSpecialType}
+                        isTotal={type === "total"}
                         onClick={() => handleLeaderboardTypeChange(type)}
                         onTouchStart={isMobile ? (e) => {
                           e.stopPropagation();
                         } : undefined}>
-                        {type === "rating" ? (
-                          "Elo"
-                        ) : type === "gp" ? (
-                          "Feb"
-                        ) : type === "total" ? (
+                        {type === "total" ? (
                           showTotalAsIcons ? (
                             <TotalMaterialsIconContainer>
                               <img src={materialUrls.ice!} alt="ice" draggable={false} />
@@ -1012,8 +1049,16 @@ const MainMenu: React.FC = () => {
                           ) : (
                             "Total"
                           )
-                        ) : materialUrls[type] ? (
-                          <LeaderboardTypeMaterialIcon src={materialUrls[type]!} alt={type} draggable={false} />
+                        ) : typeIconUrl ? (
+                          isSpecialType ? (
+                            <LeaderboardTypeSpecialIcon src={typeIconUrl} alt={type === "rating" ? "Elo" : "Feb"} draggable={false} />
+                          ) : (
+                            <LeaderboardTypeMaterialIcon src={typeIconUrl} alt={type} draggable={false} />
+                          )
+                        ) : type === "rating" ? (
+                          "Elo"
+                        ) : type === "gp" ? (
+                          "Feb"
                         ) : (
                           type.charAt(0).toUpperCase() + type.slice(1)
                         )}
