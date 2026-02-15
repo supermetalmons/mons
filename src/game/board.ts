@@ -17,10 +17,11 @@ import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
 import { showShinyCard, showsShinyCardSomewhere } from "../ui/ShinyCard";
 import { getMonId, getMonsIndexes, MonType } from "../utils/namedMons";
 import { instructor } from "../assets/talkingDude";
-import { isBotsLoopMode } from "../connection/connection";
-import { launchConfetti } from "./confetti";
+import { launchConfetti, stopConfetti } from "./confetti";
 import { soundPlayer } from "../utils/SoundPlayer";
 import type { MaterialName } from "../services/rocksMiningService";
+import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
+import { getCurrentRouteState } from "../navigation/routeState";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 const valentinesLoaderEnabled = true;
@@ -43,7 +44,7 @@ export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, 
 
   updateBoardComponentForBoardStyleChange();
   didToggleItemsStyleSet();
-  setTimeout(() => updateLayout(), 1);
+  setManagedBoardTimeout(() => updateLayout(), 1);
 }
 
 export let playerSideMetadata = newEmptyPlayerMetadata();
@@ -58,6 +59,16 @@ let showsOpponentEndOfGameSuffix = false;
 
 let countdownInterval: NodeJS.Timeout | null = null;
 let monsBoardDisplayAnimationTimeout: NodeJS.Timeout | null = null;
+let boardInputHandler: ((event: Event) => void) | null = null;
+let hasSetupBoardRuntime = false;
+let didRegisterResizeHandler = false;
+const wavesIntervalIds = new Set<number>();
+const sparkleIntervalIds = new Set<number>();
+const boardTimeoutIds = new Set<number>();
+const boardRafIds = new Set<number>();
+let boardRuntimeToken = 0;
+
+const isBoardRuntimeTokenActive = (runtimeToken: number) => runtimeToken === boardRuntimeToken;
 
 let board: HTMLElement | null;
 let highlightsLayer: HTMLElement | null;
@@ -203,6 +214,99 @@ let currentTextAnimation: {
   timer: null,
 };
 
+const trackBoardTimeout = (timeoutId: number) => {
+  boardTimeoutIds.add(timeoutId);
+  incrementLifecycleCounter("boardTimeouts");
+};
+
+const setManagedBoardTimeout = (callback: () => void, delay: number): number => {
+  const timeoutId = window.setTimeout(() => {
+    if (boardTimeoutIds.has(timeoutId)) {
+      boardTimeoutIds.delete(timeoutId);
+      decrementLifecycleCounter("boardTimeouts");
+    }
+    callback();
+  }, delay);
+  trackBoardTimeout(timeoutId);
+  return timeoutId;
+};
+
+const clearTrackedBoardTimeouts = () => {
+  boardTimeoutIds.forEach((timeoutId) => {
+    clearTimeout(timeoutId);
+    decrementLifecycleCounter("boardTimeouts");
+  });
+  boardTimeoutIds.clear();
+};
+
+const setManagedBoardRaf = (callback: FrameRequestCallback): number => {
+  let rafId = 0;
+  rafId = window.requestAnimationFrame((timestamp) => {
+    if (boardRafIds.has(rafId)) {
+      boardRafIds.delete(rafId);
+      decrementLifecycleCounter("boardRaf");
+    }
+    callback(timestamp);
+  });
+  boardRafIds.add(rafId);
+  incrementLifecycleCounter("boardRaf");
+  return rafId;
+};
+
+const cancelManagedBoardRaf = (rafId: number | null) => {
+  if (rafId === null) {
+    return;
+  }
+  if (boardRafIds.has(rafId)) {
+    boardRafIds.delete(rafId);
+    decrementLifecycleCounter("boardRaf");
+  }
+  cancelAnimationFrame(rafId);
+};
+
+const clearTrackedBoardRafs = () => {
+  boardRafIds.forEach((rafId) => {
+    cancelAnimationFrame(rafId);
+    decrementLifecycleCounter("boardRaf");
+  });
+  boardRafIds.clear();
+};
+
+const trackWavesInterval = (intervalId: number) => {
+  wavesIntervalIds.add(intervalId);
+  incrementLifecycleCounter("boardIntervals");
+};
+
+const clearWavesIntervals = () => {
+  wavesIntervalIds.forEach((intervalId) => {
+    clearInterval(intervalId);
+    decrementLifecycleCounter("boardIntervals");
+  });
+  wavesIntervalIds.clear();
+};
+
+const trackSparkleInterval = (intervalId: number) => {
+  sparkleIntervalIds.add(intervalId);
+  incrementLifecycleCounter("boardIntervals");
+};
+
+const clearTrackedSparkleInterval = (intervalId: number) => {
+  if (!sparkleIntervalIds.has(intervalId)) {
+    return;
+  }
+  sparkleIntervalIds.delete(intervalId);
+  clearInterval(intervalId);
+  decrementLifecycleCounter("boardIntervals");
+};
+
+const clearSparkleIntervals = () => {
+  sparkleIntervalIds.forEach((intervalId) => {
+    clearInterval(intervalId);
+    decrementLifecycleCounter("boardIntervals");
+  });
+  sparkleIntervalIds.clear();
+};
+
 export function fastForwardInstructionsIfNeeded() {
   if (!currentTextAnimation.isAnimating || !currentTextAnimation.fastForwardCallback) {
     return false;
@@ -264,6 +368,8 @@ function startTextAnimation(text: string) {
 
   if (currentTextAnimation.timer) {
     clearTimeout(currentTextAnimation.timer);
+    decrementLifecycleCounter("boardTimeouts");
+    currentTextAnimation.timer = null;
   }
 
   const chars = Array.from(text);
@@ -274,6 +380,7 @@ function startTextAnimation(text: string) {
   currentTextAnimation.fastForwardCallback = () => {
     if (currentTextAnimation.timer) {
       clearTimeout(currentTextAnimation.timer);
+      decrementLifecycleCounter("boardTimeouts");
       currentTextAnimation.timer = null;
     }
     isFastForwarding = true;
@@ -297,7 +404,12 @@ function startTextAnimation(text: string) {
       const delay = currentChar === " " ? 55 : 23;
       currentIndex += 1;
 
-      currentTextAnimation.timer = setTimeout(animateStep, delay);
+      currentTextAnimation.timer = setTimeout(() => {
+        currentTextAnimation.timer = null;
+        decrementLifecycleCounter("boardTimeouts");
+        animateStep();
+      }, delay);
+      incrementLifecycleCounter("boardTimeouts");
     } else {
       currentTextAnimation.isAnimating = false;
       currentTextAnimation.fastForwardCallback = null;
@@ -339,7 +451,7 @@ export function flashPuzzleSuccess() {
 
 export function flashPuzzleFailure() {
   setBoardDimmed(true, "#94165135");
-  setTimeout(() => {
+  setManagedBoardTimeout(() => {
     setBoardDimmed(false);
   }, 333);
 }
@@ -398,7 +510,7 @@ async function initializeAssets(onStart: boolean, isProfileMonsChange: boolean) 
 
     // TODO: set correct mons for both sides
 
-    if (storage.getProfileId("") && !isBotsLoopMode) {
+    if (storage.getProfileId("") && getCurrentRouteState().mode !== "watch") {
       const [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] = getMonsIndexes(false, null);
       drainer = loadImage(getSpriteByKey(getMonId(MonType.DRAINER, drainerIndex)), "drainer", true);
       angel = loadImage(getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), "angel", true);
@@ -588,8 +700,8 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false, isFainte
       let lastUpdateTime = Date.now();
       (image as any).__isAnimating = true;
 
-      function animate() {
-        if (!(image as any).__isAnimating) {
+      function animate(_timestamp: number) {
+        if (!(image as any).__isAnimating || !image.isConnected) {
           return;
         }
 
@@ -605,10 +717,10 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false, isFainte
           currentFrame = (currentFrame + 1) % totalFrames;
           lastUpdateTime = now;
         }
-        requestAnimationFrame(animate);
+        setManagedBoardRaf(animate);
       }
 
-      animate();
+      setManagedBoardRaf(animate);
     }
   }
 }
@@ -682,6 +794,8 @@ export function hideBoardPlayersInfo() {
 }
 
 export function resetForNewGame() {
+  showsPlayerEndOfGameSuffix = false;
+  showsOpponentEndOfGameSuffix = false;
   if (isWatchOnly) {
     playerSideMetadata = newEmptyPlayerMetadata();
   }
@@ -783,6 +897,7 @@ export function setBoardFlipped(flipped: boolean) {
 
 export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
   if (monsBoardDisplayAnimationTimeout) return;
+  incrementLifecycleCounter("boardTimeouts");
 
   const frames: [number, number][][] = [
     // Frame 0: empty
@@ -863,6 +978,7 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
   }
 
   if (monsBoardDisplayAnimationTimeout) return;
+  incrementLifecycleCounter("boardTimeouts");
 
   let radius = 0;
   const maxRadius = 5;
@@ -900,6 +1016,7 @@ export function stopMonsBoardAsDisplayAnimations() {
   if (monsBoardDisplayAnimationTimeout) {
     clearTimeout(monsBoardDisplayAnimationTimeout);
     monsBoardDisplayAnimationTimeout = null;
+    decrementLifecycleCounter("boardTimeouts");
     cleanAllPixels();
   }
 }
@@ -1079,9 +1196,12 @@ export function showVoiceReactionText(reactionText: string, opponents: boolean) 
   }
 
   renderPlayersNamesLabels();
-  setTimeout(() => {
+  const voiceReactionTimeout = window.setTimeout(() => {
+    boardTimeoutIds.delete(voiceReactionTimeout);
+    decrementLifecycleCounter("boardTimeouts");
     renderPlayersNamesLabels();
   }, 3000);
+  trackBoardTimeout(voiceReactionTimeout);
 }
 
 export function setupPlayerId(uid: string, opponent: boolean) {
@@ -1190,6 +1310,7 @@ export function showTimer(color: string, remainingSeconds: number) {
   if (countdownInterval) {
     clearInterval(countdownInterval);
     countdownInterval = null;
+    decrementLifecycleCounter("boardIntervals");
   }
 
   if (activeTimer && activeTimer !== timerElement) {
@@ -1219,9 +1340,11 @@ export function showTimer(color: string, remainingSeconds: number) {
     if (remainingSeconds <= 0) {
       clearInterval(countdownInterval!);
       countdownInterval = null;
+      decrementLifecycleCounter("boardIntervals");
     }
     updateTimerDisplay(timerElement, remainingSeconds);
   }, 1000);
+  incrementLifecycleCounter("boardIntervals");
 
   updateNamesX();
 }
@@ -1241,10 +1364,13 @@ function updateTimerDisplay(timerElement: SVGElement, seconds: number) {
 export function hideTimerCountdownDigits() {
   showsPlayerTimer = false;
   showsOpponentTimer = false;
+  showsPlayerEndOfGameSuffix = false;
+  showsOpponentEndOfGameSuffix = false;
 
   if (countdownInterval) {
     clearInterval(countdownInterval);
     countdownInterval = null;
+    decrementLifecycleCounter("boardIntervals");
   }
   if (playerTimer && opponentTimer) {
     SVG.setHidden(playerTimer, true);
@@ -1378,14 +1504,14 @@ function createItemButton(overlay: SVGElement, x: number, y: number, wiggle: boo
       }
 
       if (button.parentNode && animationId !== null) {
-        animationId = requestAnimationFrame(animateWiggle);
+        animationId = setManagedBoardRaf(animateWiggle);
       }
     }
 
-    animationId = requestAnimationFrame(animateWiggle);
+    animationId = setManagedBoardRaf(animateWiggle);
     (button as any).__stopWiggle = () => {
       if (animationId !== null) {
-        cancelAnimationFrame(animationId);
+        cancelManagedBoardRaf(animationId);
         animationId = null;
       }
       button.setAttribute("x", originalX.toString());
@@ -1758,12 +1884,14 @@ function clearDisappearingPile(side: "player" | "opponent") {
   if (side === "player") {
     if (disappearingPileTimers.player !== null) {
       window.clearTimeout(disappearingPileTimers.player);
+      decrementLifecycleCounter("boardTimeouts");
       disappearingPileTimers.player = null;
     }
     disappearingPlayerPile = null;
   } else {
     if (disappearingPileTimers.opponent !== null) {
       window.clearTimeout(disappearingPileTimers.opponent);
+      decrementLifecycleCounter("boardTimeouts");
       disappearingPileTimers.opponent = null;
     }
     disappearingOpponentPile = null;
@@ -1787,8 +1915,10 @@ function emitWagerRenderState() {
       clearDisappearingPile("player");
     } else if (!currentPlayerVisible && previousPlayerPileVisible && lastVisiblePlayerPileState) {
       clearDisappearingPile("player");
+      incrementLifecycleCounter("boardTimeouts");
       disappearingPlayerPile = { ...lastVisiblePlayerPileState, animation: "disappear", isPending: false };
       disappearingPileTimers.player = window.setTimeout(() => {
+        decrementLifecycleCounter("boardTimeouts");
         disappearingPlayerPile = null;
         disappearingPileTimers.player = null;
         emitWagerRenderState();
@@ -1800,8 +1930,10 @@ function emitWagerRenderState() {
       clearDisappearingPile("opponent");
     } else if (!currentOpponentVisible && previousOpponentPileVisible && lastVisibleOpponentPileState) {
       clearDisappearingPile("opponent");
+      incrementLifecycleCounter("boardTimeouts");
       disappearingOpponentPile = { ...lastVisibleOpponentPileState, animation: "disappear", isPending: false };
       disappearingPileTimers.opponent = window.setTimeout(() => {
+        decrementLifecycleCounter("boardTimeouts");
         disappearingOpponentPile = null;
         disappearingPileTimers.opponent = null;
         emitWagerRenderState();
@@ -1839,7 +1971,7 @@ function emitWagerRenderState() {
 
 function cancelWagerWinAnimation() {
   if (wagerWinAnimRaf !== null) {
-    cancelAnimationFrame(wagerWinAnimRaf);
+    cancelManagedBoardRaf(wagerWinAnimRaf);
     wagerWinAnimRaf = null;
   }
   wagerWinAnimActive = false;
@@ -2010,7 +2142,7 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
     emitWagerRenderState();
 
     if (progress < 1) {
-      wagerWinAnimRaf = requestAnimationFrame(animate);
+      wagerWinAnimRaf = setManagedBoardRaf(animate);
     } else {
       for (let i = 0; i < winnerWagerPile.count; i += 1) {
         const target = targets[i];
@@ -2029,7 +2161,7 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
     }
   };
 
-  wagerWinAnimRaf = requestAnimationFrame(animate);
+  wagerWinAnimRaf = setManagedBoardRaf(animate);
   return true;
 }
 
@@ -2055,6 +2187,23 @@ function updateNamesX() {
 }
 
 const updateLayout = () => {
+  if (
+    !hasSetupBoardRuntime ||
+    !opponentScoreText ||
+    !playerScoreText ||
+    !opponentTimer ||
+    !playerTimer ||
+    !opponentNameText ||
+    !playerNameText ||
+    !opponentAvatar ||
+    !playerAvatar ||
+    !opponentAvatarPlaceholder ||
+    !playerAvatarPlaceholder ||
+    opponentMoveStatusItems.length < 9 ||
+    playerMoveStatusItems.length < 9
+  ) {
+    return;
+  }
   const multiplicator = getOuterElementsMultiplicator();
 
   let shouldOffsetFromBorders = seeIfShouldOffsetFromBorders();
@@ -2062,9 +2211,9 @@ const updateLayout = () => {
 
   for (const isOpponent of [true, false]) {
     const avatarSize = getAvatarSize();
-    const numberText = isOpponent ? opponentScoreText! : playerScoreText!;
-    const timerText = isOpponent ? opponentTimer! : playerTimer!;
-    const nameText = isOpponent ? opponentNameText! : playerNameText!;
+    const numberText = isOpponent ? opponentScoreText : playerScoreText;
+    const timerText = isOpponent ? opponentTimer : playerTimer;
+    const nameText = isOpponent ? opponentNameText : playerNameText;
 
     const y = isOpponent ? 1 - avatarSize * 1.203 : isPangchiuBoard() ? 12.75 : 12.16;
 
@@ -2085,13 +2234,13 @@ const updateLayout = () => {
       SVG.setFrame(img, 11 - (1.15 * x + 1) * statusItemSize - statusItemsOffsetX, statusItemsY, statusItemSize, statusItemSize);
     }
 
-    const avatar = isOpponent ? opponentAvatar! : playerAvatar!;
+    const avatar = isOpponent ? opponentAvatar : playerAvatar;
     SVG.setFrame(avatar, offsetX, y, avatarSize, avatarSize);
     try {
       updateAuraForAvatarElement(isOpponent, avatar);
     } catch {}
 
-    const placeholder = isOpponent ? opponentAvatarPlaceholder! : playerAvatarPlaceholder!;
+    const placeholder = isOpponent ? opponentAvatarPlaceholder : playerAvatarPlaceholder;
     SVG.updateCircle(placeholder, offsetX + avatarSize / 2, y + avatarSize / 2, avatarSize / 3);
   }
 
@@ -2244,8 +2393,13 @@ function doNotShowAvatarPlaceholderAgain(opponent: boolean) {
 }
 
 export async function setupGameInfoElements(allHiddenInitially: boolean) {
+  const runtimeToken = boardRuntimeToken;
   const statusMove = loadImage(emojis.statusMove, "statusMoveEmoji");
-  window.addEventListener("resize", updateLayout);
+  if (!didRegisterResizeHandler) {
+    window.addEventListener("resize", updateLayout);
+    didRegisterResizeHandler = true;
+    incrementLifecycleCounter("boardDomListeners");
+  }
 
   let playerEmojiId = storage.getPlayerEmojiId("");
   if (playerEmojiId === "") {
@@ -2322,7 +2476,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     });
 
     nameText.addEventListener("touchend", () => {
-      setTimeout(() => {
+      setManagedBoardTimeout(() => {
         SVG.setFill(nameText, colors.scoreText);
       }, 100);
     });
@@ -2370,6 +2524,9 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
       updateAuraForAvatarElement(isOpponent, avatar);
     } catch {}
     avatar.onload = () => {
+      if (!isBoardRuntimeTokenActive(runtimeToken) || !avatar.isConnected) {
+        return;
+      }
       SVG.setHidden(placeholder, true);
       doNotShowAvatarPlaceholderAgain(isOpponent);
     };
@@ -2444,7 +2601,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
           avatar.style.transformOrigin = `0px ${isPangchiuBoard() ? 1369 : 1300}px`;
           avatar.style.transform = "scale(1.8)";
           avatar.style.transition = "transform 0.3s";
-          setTimeout(() => {
+          setManagedBoardTimeout(() => {
             avatar.style.transform = "scale(1)";
           }, 300);
         }
@@ -2496,9 +2653,12 @@ export function didClickAndChangePlayerEmoji(newId: string, newEmojiUrl: string,
 }
 
 export function setupBoard() {
+  if (hasSetupBoardRuntime) {
+    disposeBoardRuntime();
+  }
+  boardRuntimeToken += 1;
   initializeBoardElements();
-
-  document.addEventListener(defaultInputEventName, function (event) {
+  boardInputHandler = (event: Event) => {
     const hasVisiblePopups = hasIslandOverlayVisible() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible() || showsShinyCardSomewhere;
     const didDismissSmth = !didNotDismissAnythingWithOutsideTapJustNow();
     if (didDismissSmth || hasVisiblePopups) {
@@ -2525,7 +2685,10 @@ export function setupBoard() {
       event.preventDefault();
       event.stopPropagation();
     }
-  });
+  };
+  document.addEventListener(defaultInputEventName, boardInputHandler);
+  incrementLifecycleCounter("boardDomListeners");
+  hasSetupBoardRuntime = true;
 
   for (let y = 0; y < 11; y++) {
     for (let x = 0; x < 11; x++) {
@@ -2541,9 +2704,103 @@ export function setupBoard() {
     addWaves(location);
   }
 
-  setTimeout(() => {
+  const preloadTimeout = window.setTimeout(() => {
+    boardTimeoutIds.delete(preloadTimeout);
+    decrementLifecycleCounter("boardTimeouts");
     preloadParticleEffects().catch(console.error);
   }, 100);
+  trackBoardTimeout(preloadTimeout);
+}
+
+export function disposeBoardRuntime() {
+  boardRuntimeToken += 1;
+  stopMonsBoardAsDisplayAnimations();
+  hideTimerCountdownDigits();
+  cancelWagerWinAnimation();
+  stopConfetti();
+  if (talkingDude) {
+    removeItemAndCleanUpAnimation(talkingDude);
+    talkingDude = null;
+  }
+  talkingDudeTextDiv = null;
+  instructionsContainerElement = undefined;
+  talkingDudeIsTalking = true;
+  currentTextAnimation.isAnimating = false;
+  currentTextAnimation.fastForwardCallback = null;
+  clearWagerPilesForNewMatch();
+  clearWavesIntervals();
+  clearSparkleIntervals();
+  clearTrackedBoardTimeouts();
+  clearTrackedBoardRafs();
+  if (currentTextAnimation.timer) {
+    clearTimeout(currentTextAnimation.timer);
+    currentTextAnimation.timer = null;
+    decrementLifecycleCounter("boardTimeouts");
+  }
+  if (disappearingPileTimers.player !== null) {
+    clearTimeout(disappearingPileTimers.player);
+    disappearingPileTimers.player = null;
+    decrementLifecycleCounter("boardTimeouts");
+  }
+  if (disappearingPileTimers.opponent !== null) {
+    clearTimeout(disappearingPileTimers.opponent);
+    disappearingPileTimers.opponent = null;
+    decrementLifecycleCounter("boardTimeouts");
+  }
+  if (didRegisterResizeHandler) {
+    window.removeEventListener("resize", updateLayout);
+    didRegisterResizeHandler = false;
+    decrementLifecycleCounter("boardDomListeners");
+  }
+  if (boardInputHandler) {
+    document.removeEventListener(defaultInputEventName, boardInputHandler);
+    boardInputHandler = null;
+    decrementLifecycleCounter("boardDomListeners");
+  }
+  hasSetupBoardRuntime = false;
+  removeHighlights();
+  cleanAllPixels();
+  if (dimmingOverlay) {
+    dimmingOverlay.remove();
+    dimmingOverlay = undefined;
+  }
+  hideItemSelectionOrConfirmationOverlay();
+  if (itemsLayer) {
+    itemsLayer.innerHTML = "";
+  }
+  if (controlsLayer) {
+    controlsLayer.innerHTML = "";
+  }
+  if (effectsLayer) {
+    effectsLayer.innerHTML = "";
+  }
+  if (highlightsLayer) {
+    highlightsLayer.innerHTML = "";
+  }
+  if (board) {
+    const overlays = Array.from(board.querySelectorAll('[data-wager-pile], [data-wager-win-pile], [data-assets-pixel-only]'));
+    overlays.forEach((element) => element.remove());
+  }
+  opponentMoveStatusItems.length = 0;
+  playerMoveStatusItems.length = 0;
+  doNotShowPlayerAvatarPlaceholderAgain = false;
+  doNotShowOpponentAvatarPlaceholderAgain = false;
+  opponentAvatar = undefined;
+  playerAvatar = undefined;
+  opponentAvatarPlaceholder = undefined;
+  playerAvatarPlaceholder = undefined;
+  opponentScoreText = undefined;
+  playerScoreText = undefined;
+  opponentNameText = undefined;
+  playerNameText = undefined;
+  opponentTimer = undefined;
+  playerTimer = undefined;
+  controlsLayer = null;
+  itemsLayer = null;
+  effectsLayer = null;
+  highlightsLayer = null;
+  boardBackgroundLayer = null;
+  board = null;
 }
 
 export function removeHighlights() {
@@ -2578,7 +2835,7 @@ export function popOpponentsEmoji() {
 
   opponentAvatar.style.transition = "transform 0.3s";
   opponentAvatar.style.transform = "scale(1.8)";
-  setTimeout(() => {
+  setManagedBoardTimeout(() => {
     if (!opponentAvatar) return;
     opponentAvatar.style.transform = "scale(1)";
   }, 300);
@@ -2773,13 +3030,14 @@ function createSparklingContainer(location: Location): SVGElement {
   container.appendChild(mask);
   container.setAttribute("mask", `url(#mask-square-${location.toString()})`);
 
-  const intervalId = setInterval(() => {
+  const intervalId = window.setInterval(() => {
     if (!container.parentNode?.parentNode) {
-      clearInterval(intervalId);
+      clearTrackedSparkleInterval(intervalId);
       return;
     }
     createSparkleParticle(location, container);
   }, 230);
+  trackSparkleInterval(intervalId);
 
   return container;
 }
@@ -2815,10 +3073,10 @@ function createSparkleParticle(location: Location, container: SVGElement, animat
 
     particle.setAttribute("y", ((y - (velocity * timeDelta) / 1000) * 100).toString());
     SVG.setOpacity(particle, Math.max(0, opacity - (0.15 * timeDelta) / 1000));
-    requestAnimationFrame(animateParticle);
+    setManagedBoardRaf(animateParticle);
   }
 
-  requestAnimationFrame(animateParticle);
+  setManagedBoardRaf(animateParticle);
 }
 
 function setBase(item: SVGElement, location: Location) {
@@ -2876,22 +3134,22 @@ function startBlinking(element: SVGElement) {
 
   function blinkCycle() {
     if (!element.parentNode) return;
-    requestAnimationFrame(() => {
+    setManagedBoardRaf(() => {
       element.style.opacity = "1";
     });
 
-    setTimeout(() => {
+    setManagedBoardTimeout(() => {
       if (!element.parentNode) return;
       element.style.transition = "";
       element.style.opacity = "0";
       element.style.transition = `opacity ${fadeDuration}ms`;
-      setTimeout(() => {
+      setManagedBoardTimeout(() => {
         if (!element.parentNode) return;
         blinkCycle();
       }, delayBetween);
     }, fadeDuration);
   }
-  setTimeout(() => {
+  setManagedBoardTimeout(() => {
     blinkCycle();
   }, 0);
 }
@@ -3014,7 +3272,7 @@ function highlightStartFromSuggestion(location: Location, color: string) {
 
   highlightsLayer?.append(highlight);
 
-  setTimeout(() => {
+  setManagedBoardTimeout(() => {
     highlight.remove();
   }, 100);
 }
@@ -3155,11 +3413,12 @@ function addWaves(location: Location) {
 
   let frameIndex = 0;
   wavesSquareElement.appendChild(getWavesFrame(location, frameIndex));
-  setInterval(() => {
+  const intervalId = window.setInterval(() => {
     frameIndex = (frameIndex + 1) % 9;
     wavesSquareElement.innerHTML = "";
     wavesSquareElement.appendChild(getWavesFrame(location, frameIndex));
   }, 200);
+  trackWavesInterval(intervalId);
 }
 
 function getWavesFrame(location: Location, frameIndex: number) {
@@ -3340,10 +3599,13 @@ export async function indicateElectricHit(at: Location) {
 
 export async function indicatePotionUsage(at: Location, byOpponent: boolean) {
   const effects = await ensureParticleEffectsLoaded();
-  setTimeout(() => {
+  const potionTimeout = window.setTimeout(() => {
+    boardTimeoutIds.delete(potionTimeout);
+    decrementLifecycleCounter("boardTimeouts");
     playSounds([Sound.UsePotion]);
     effects.showPurpleBubbles(at);
   }, 300);
+  trackBoardTimeout(potionTimeout);
 }
 
 export async function indicateBombExplosion(at: Location) {

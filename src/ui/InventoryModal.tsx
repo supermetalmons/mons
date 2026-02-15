@@ -332,6 +332,7 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
   const [dataOk, setDataOk] = useState<boolean | null>(null);
 
   useEffect(() => {
+    let isCancelled = false;
     if (popupRef.current) {
       popupRef.current.focus();
     }
@@ -340,6 +341,9 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
       setIsLoading(true);
       try {
         const data = await fetchNftsForStoredAddresses();
+        if (isCancelled) {
+          return;
+        }
         const ok = data?.ok === true;
         setDataOk(ok);
         if (data?.swagpack_avatars && Array.isArray(data.swagpack_avatars) && data.swagpack_avatars.length > 0) {
@@ -353,14 +357,22 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
           setSpecials([]);
         }
       } catch {
+        if (isCancelled) {
+          return;
+        }
         setAvatars([]);
         setSpecials([]);
         setDataOk(false);
       } finally {
-        setIsLoading(false);
+        if (!isCancelled) {
+          setIsLoading(false);
+        }
       }
     };
     fetchTokens();
+    return () => {
+      isCancelled = true;
+    };
   }, []);
 
   const cleanUpAndClose = () => {

@@ -1,8 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { FaTimes, FaCheck } from "react-icons/fa";
-import { go, isWatchOnly, subscribeToWatchOnly } from "../game/gameController";
-import { markMainGameLoaded } from "../game/mainGameLoadState";
+import { isWatchOnly, subscribeToWatchOnly } from "../game/gameController";
 import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../content/boardStyles";
 import { defaultInputEventName, isMobile } from "../utils/misc";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
@@ -14,6 +13,7 @@ import { MatchWagerState } from "../connection/connectionModels";
 import { subscribeToWagerState } from "../game/wagerState";
 import { rocksMiningService } from "../services/rocksMiningService";
 import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
+import { registerBoardTransientUiHandler } from "./uiSession";
 
 const CircularButton = styled.button`
   width: 50%;
@@ -82,11 +82,36 @@ export const updateBoardComponentForBoardStyleChange = () => {
   listeners.forEach((listener) => listener());
 };
 
-export let setTopBoardOverlayVisible: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void;
-export let showVideoReaction: (opponent: boolean, stickerId: number) => void;
-export let showRaibowAura: (visible: boolean, url: string, opponent: boolean) => void;
-export let updateAuraForAvatarElement: (opponent: boolean, avatarElement: SVGElement) => void;
-export let updateWagerPlayerUids: (playerUid: string, opponentUid: string) => void;
+let setTopBoardOverlayVisibleImpl: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void = () => {};
+let showVideoReactionImpl: (opponent: boolean, stickerId: number) => void = () => {};
+let showRaibowAuraImpl: (visible: boolean, url: string, opponent: boolean) => void = () => {};
+let updateAuraForAvatarElementImpl: (opponent: boolean, avatarElement: SVGElement) => void = () => {};
+let updateWagerPlayerUidsImpl: (playerUid: string, opponentUid: string) => void = () => {};
+let clearBoardTransientUiImpl: (fadeOutVideos?: boolean) => void = () => {};
+
+export const setTopBoardOverlayVisible = (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => {
+  setTopBoardOverlayVisibleImpl(blurry, svgElement, withConfirmAndCancelButtons, ok, cancel);
+};
+
+export const showVideoReaction = (opponent: boolean, stickerId: number) => {
+  showVideoReactionImpl(opponent, stickerId);
+};
+
+export const showRaibowAura = (visible: boolean, url: string, opponent: boolean) => {
+  showRaibowAuraImpl(visible, url, opponent);
+};
+
+export const updateAuraForAvatarElement = (opponent: boolean, avatarElement: SVGElement) => {
+  updateAuraForAvatarElementImpl(opponent, avatarElement);
+};
+
+export const updateWagerPlayerUids = (playerUid: string, opponentUid: string) => {
+  updateWagerPlayerUidsImpl(playerUid, opponentUid);
+};
+
+export const clearBoardTransientUi = (fadeOutVideos?: boolean) => {
+  clearBoardTransientUiImpl(fadeOutVideos);
+};
 
 const VIDEO_CONTAINER_HEIGHT_GRID = "12.5%";
 const VIDEO_CONTAINER_HEIGHT_IMAGE = "13.5%";
@@ -234,7 +259,11 @@ const BoardComponent: React.FC = () => {
   const [playerVideoVisible, setPlayerVideoVisible] = useState(false);
   const [playerVideoFading, setPlayerVideoFading] = useState(false);
   const [playerVideoAppearing, setPlayerVideoAppearing] = useState(false);
-  const initializationRef = useRef(false);
+  const opponentVideoDismissTimeoutRef = useRef<number | null>(null);
+  const playerVideoDismissTimeoutRef = useRef<number | null>(null);
+  const opponentVideoAppearingTimeoutRef = useRef<number | null>(null);
+  const playerVideoAppearingTimeoutRef = useRef<number | null>(null);
+  const transitionTimeoutIdsRef = useRef<Set<number>>(new Set());
   const [currentColorSet, setCurrentColorSet] = useState<ColorSet>(getCurrentColorSet());
   const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
   const [isGridVisible, setIsGridVisible] = useState(!isCustomPictureBoardEnabled());
@@ -274,12 +303,12 @@ const BoardComponent: React.FC = () => {
   const opponentWrapperRef = useRef<HTMLDivElement | null>(null);
   const playerWrapperRef = useRef<HTMLDivElement | null>(null);
 
-  updateWagerPlayerUids = (nextPlayerUid: string, nextOpponentUid: string) => {
+  updateWagerPlayerUidsImpl = (nextPlayerUid: string, nextOpponentUid: string) => {
     setPlayerUidSnapshot((prev) => (prev === nextPlayerUid ? prev : nextPlayerUid));
     setOpponentUidSnapshot((prev) => (prev === nextOpponentUid ? prev : nextOpponentUid));
   };
 
-  updateAuraForAvatarElement = (opponent: boolean, avatarElement: SVGElement) => {
+  updateAuraForAvatarElementImpl = (opponent: boolean, avatarElement: SVGElement) => {
     const rect = avatarElement.getBoundingClientRect();
     const wrapper = opponent ? opponentWrapperRef.current : playerWrapperRef.current;
     const targets = opponent ? opponentAuraRefs : playerAuraRefs;
@@ -317,27 +346,120 @@ const BoardComponent: React.FC = () => {
     }
   };
 
-  showVideoReaction = (opponent: boolean, stickerId: number) => {
+  const setTrackedTimeout = useCallback((callback: () => void, delay: number): number => {
+    const timeoutId = window.setTimeout(() => {
+      transitionTimeoutIdsRef.current.delete(timeoutId);
+      callback();
+    }, delay);
+    transitionTimeoutIdsRef.current.add(timeoutId);
+    return timeoutId;
+  }, []);
+
+  const clearTrackedTimeout = useCallback((timeoutId: number | null) => {
+    if (timeoutId === null) {
+      return;
+    }
+    transitionTimeoutIdsRef.current.delete(timeoutId);
+    window.clearTimeout(timeoutId);
+  }, []);
+
+  const clearAllTrackedTimeouts = useCallback(() => {
+    transitionTimeoutIdsRef.current.forEach((timeoutId) => {
+      window.clearTimeout(timeoutId);
+    });
+    transitionTimeoutIdsRef.current.clear();
+  }, []);
+
+  const clearOpponentVideoDismissTimeout = useCallback(() => {
+    clearTrackedTimeout(opponentVideoDismissTimeoutRef.current);
+    opponentVideoDismissTimeoutRef.current = null;
+  }, [clearTrackedTimeout]);
+
+  const clearPlayerVideoDismissTimeout = useCallback(() => {
+    clearTrackedTimeout(playerVideoDismissTimeoutRef.current);
+    playerVideoDismissTimeoutRef.current = null;
+  }, [clearTrackedTimeout]);
+
+  const clearOpponentVideoAppearingTimeout = useCallback(() => {
+    clearTrackedTimeout(opponentVideoAppearingTimeoutRef.current);
+    opponentVideoAppearingTimeoutRef.current = null;
+  }, [clearTrackedTimeout]);
+
+  const clearPlayerVideoAppearingTimeout = useCallback(() => {
+    clearTrackedTimeout(playerVideoAppearingTimeoutRef.current);
+    playerVideoAppearingTimeoutRef.current = null;
+  }, [clearTrackedTimeout]);
+
+  const dismissOpponentVideo = useCallback((durationMs: number) => {
+    clearOpponentVideoDismissTimeout();
+    setOpponentVideoAppearing(false);
+    setOpponentVideoFading(true);
+    opponentVideoDismissTimeoutRef.current = setTrackedTimeout(() => {
+      setOpponentVideoVisible(false);
+      setOpponentVideoFading(false);
+      setOpponentVideoId(null);
+      opponentVideoDismissTimeoutRef.current = null;
+    }, durationMs);
+  }, [clearOpponentVideoDismissTimeout, setTrackedTimeout]);
+
+  const dismissPlayerVideo = useCallback((durationMs: number) => {
+    clearPlayerVideoDismissTimeout();
+    setPlayerVideoAppearing(false);
+    setPlayerVideoFading(true);
+    playerVideoDismissTimeoutRef.current = setTrackedTimeout(() => {
+      setPlayerVideoVisible(false);
+      setPlayerVideoFading(false);
+      setPlayerVideoId(null);
+      playerVideoDismissTimeoutRef.current = null;
+    }, durationMs);
+  }, [clearPlayerVideoDismissTimeout, setTrackedTimeout]);
+
+  const clearVideoReactionsNow = useCallback(() => {
+    clearOpponentVideoDismissTimeout();
+    clearPlayerVideoDismissTimeout();
+    clearOpponentVideoAppearingTimeout();
+    clearPlayerVideoAppearingTimeout();
+    setOpponentVideoVisible(false);
+    setOpponentVideoFading(false);
+    setOpponentVideoAppearing(false);
+    setOpponentVideoId(null);
+    setPlayerVideoVisible(false);
+    setPlayerVideoFading(false);
+    setPlayerVideoAppearing(false);
+    setPlayerVideoId(null);
+  }, [clearOpponentVideoAppearingTimeout, clearOpponentVideoDismissTimeout, clearPlayerVideoAppearingTimeout, clearPlayerVideoDismissTimeout]);
+
+  showVideoReactionImpl = (opponent: boolean, stickerId: number) => {
     if (opponent) {
+      clearOpponentVideoDismissTimeout();
+      clearOpponentVideoAppearingTimeout();
       setOpponentVideoId(stickerId);
       setOpponentVideoVisible(true);
       setOpponentVideoFading(false);
       setOpponentVideoAppearing(true);
-      setTimeout(() => setOpponentVideoAppearing(false), 400);
+      opponentVideoAppearingTimeoutRef.current = setTrackedTimeout(() => {
+        setOpponentVideoAppearing(false);
+        opponentVideoAppearingTimeoutRef.current = null;
+      }, 400);
     } else {
+      clearPlayerVideoDismissTimeout();
+      clearPlayerVideoAppearingTimeout();
       setPlayerVideoId(stickerId);
       setPlayerVideoVisible(true);
       setPlayerVideoFading(false);
       setPlayerVideoAppearing(true);
-      setTimeout(() => setPlayerVideoAppearing(false), 400);
+      playerVideoAppearingTimeoutRef.current = setTrackedTimeout(() => {
+        setPlayerVideoAppearing(false);
+        playerVideoAppearingTimeoutRef.current = null;
+      }, 400);
     }
   };
 
-  setTopBoardOverlayVisible = (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => {
+  setTopBoardOverlayVisibleImpl = (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => {
     setOverlayState({ blurry, svgElement, withConfirmAndCancelButtons, ok, cancel });
   };
 
-  showRaibowAura = (visible: boolean, url: string, opponent: boolean) => {
+  showRaibowAuraImpl = (visible: boolean, url: string, opponent: boolean) => {
     const targets = opponent ? opponentAuraRefs : playerAuraRefs;
     const container = opponent ? opponentAuraContainerRef.current : playerAuraContainerRef.current;
     if (!targets.current && container) {
@@ -370,21 +492,6 @@ const BoardComponent: React.FC = () => {
   const showOpponentActions = !wagerActionsLocked && activeWagerPanelSide === "opponent" && !!opponentProposal;
   const showPlayerActions = !wagerActionsLocked && activeWagerPanelSide === "player" && !!playerProposal;
   const wagerPanelHasActions = showOpponentActions || showPlayerActions;
-
-  useEffect(() => {
-    if (!initializationRef.current) {
-      initializationRef.current = true;
-      const run = async () => {
-        try {
-          await go();
-        } catch {
-        } finally {
-          markMainGameLoaded();
-        }
-      };
-      run();
-    }
-  }, []);
 
   useEffect(() => {
     const unsubscribe = subscribeToWagerState((state) => {
@@ -491,6 +598,71 @@ const BoardComponent: React.FC = () => {
     setActiveWagerPanelRect(null);
     setActiveWagerPanelCount(null);
   }, []);
+
+  const clearPendingWagerTransitionState = useCallback(() => {
+    clearAllTrackedTimeouts();
+    (["player", "opponent"] as const).forEach((sideKey) => {
+      pendingBlinkDelayTimersRef.current[sideKey] = null;
+      pendingBlinkEnabledRef.current[sideKey] = false;
+      previousMaterialUrlRef.current[sideKey] = null;
+      materialChangeOldIconsRef.current[sideKey].forEach((icon) => icon.remove());
+      materialChangeOldIconsRef.current[sideKey] = [];
+    });
+    opponentVideoDismissTimeoutRef.current = null;
+    playerVideoDismissTimeoutRef.current = null;
+    opponentVideoAppearingTimeoutRef.current = null;
+    playerVideoAppearingTimeoutRef.current = null;
+  }, [clearAllTrackedTimeouts]);
+
+  useEffect(() => {
+    return () => {
+      clearPendingWagerTransitionState();
+      setTopBoardOverlayVisibleImpl = () => {};
+      showVideoReactionImpl = () => {};
+      showRaibowAuraImpl = () => {};
+      updateAuraForAvatarElementImpl = () => {};
+      updateWagerPlayerUidsImpl = () => {};
+      clearBoardTransientUiImpl = () => {};
+    };
+  }, [clearPendingWagerTransitionState]);
+
+  const clearBoardTransientUiHandler = useCallback((fadeOutVideos: boolean = true) => {
+    clearWagerPanel();
+    clearPendingWagerTransitionState();
+    setOverlayState({ blurry: true, svgElement: null, withConfirmAndCancelButtons: false });
+    if (opponentAuraRefs.current) {
+      hideAuraDom(opponentAuraRefs.current.background);
+    }
+    if (playerAuraRefs.current) {
+      hideAuraDom(playerAuraRefs.current.background);
+    }
+    if (!fadeOutVideos) {
+      clearVideoReactionsNow();
+      return;
+    }
+    if (opponentVideoVisible) {
+      dismissOpponentVideo(120);
+    } else {
+      setOpponentVideoVisible(false);
+      setOpponentVideoFading(false);
+      setOpponentVideoAppearing(false);
+      setOpponentVideoId(null);
+    }
+    if (playerVideoVisible) {
+      dismissPlayerVideo(120);
+    } else {
+      setPlayerVideoVisible(false);
+      setPlayerVideoFading(false);
+      setPlayerVideoAppearing(false);
+      setPlayerVideoId(null);
+    }
+  }, [clearPendingWagerTransitionState, clearVideoReactionsNow, clearWagerPanel, dismissOpponentVideo, dismissPlayerVideo, opponentVideoVisible, playerVideoVisible]);
+
+  clearBoardTransientUiImpl = clearBoardTransientUiHandler;
+
+  useEffect(() => {
+    return registerBoardTransientUiHandler(clearBoardTransientUiHandler);
+  }, [clearBoardTransientUiHandler]);
 
   const openWagerPanelForSide = useCallback(
     (side: WagerPileSide | "winner") => {
@@ -691,7 +863,7 @@ const BoardComponent: React.FC = () => {
           container.style.animation = "none";
           if (sideKey) {
             if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
-              window.clearTimeout(pendingBlinkDelayTimersRef.current[sideKey]!);
+              clearTrackedTimeout(pendingBlinkDelayTimersRef.current[sideKey]);
               pendingBlinkDelayTimersRef.current[sideKey] = null;
             }
             pendingBlinkEnabledRef.current[sideKey] = false;
@@ -714,7 +886,7 @@ const BoardComponent: React.FC = () => {
           container.style.animation = "none";
           if (sideKey) {
             if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
-              window.clearTimeout(pendingBlinkDelayTimersRef.current[sideKey]!);
+              clearTrackedTimeout(pendingBlinkDelayTimersRef.current[sideKey]);
               pendingBlinkDelayTimersRef.current[sideKey] = null;
             }
             pendingBlinkEnabledRef.current[sideKey] = false;
@@ -737,9 +909,9 @@ const BoardComponent: React.FC = () => {
           if (pileState.animation === "appear") {
             pendingBlinkEnabledRef.current[sideKey] = false;
             if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
-              window.clearTimeout(pendingBlinkDelayTimersRef.current[sideKey]!);
+              clearTrackedTimeout(pendingBlinkDelayTimersRef.current[sideKey]);
             }
-            pendingBlinkDelayTimersRef.current[sideKey] = window.setTimeout(() => {
+            pendingBlinkDelayTimersRef.current[sideKey] = setTrackedTimeout(() => {
               pendingBlinkDelayTimersRef.current[sideKey] = null;
               pendingBlinkEnabledRef.current[sideKey] = true;
               container.style.animation = PENDING_PULSE_ANIMATION;
@@ -753,7 +925,7 @@ const BoardComponent: React.FC = () => {
           }
         } else if (sideKey) {
           if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
-            window.clearTimeout(pendingBlinkDelayTimersRef.current[sideKey]!);
+            clearTrackedTimeout(pendingBlinkDelayTimersRef.current[sideKey]);
             pendingBlinkDelayTimersRef.current[sideKey] = null;
           }
           pendingBlinkEnabledRef.current[sideKey] = false;
@@ -785,7 +957,7 @@ const BoardComponent: React.FC = () => {
           });
           materialChangeOldIconsRef.current[sideKey].forEach((icon) => icon.remove());
           materialChangeOldIconsRef.current[sideKey] = oldIcons;
-          setTimeout(() => {
+          setTrackedTimeout(() => {
             oldIcons.forEach((icon) => icon.remove());
             if (materialChangeOldIconsRef.current[sideKey] === oldIcons) {
               materialChangeOldIconsRef.current[sideKey] = [];
@@ -1021,7 +1193,7 @@ const BoardComponent: React.FC = () => {
         }
       }
     },
-    [clearWagerPanel, ensureWagerPileElements]
+    [clearTrackedTimeout, clearWagerPanel, ensureWagerPileElements, setTrackedTimeout]
   );
 
   useEffect(() => {
@@ -1358,8 +1530,7 @@ const BoardComponent: React.FC = () => {
               muted
               playsInline
               onEnded={() => {
-                setOpponentVideoFading(true);
-                setTimeout(() => setOpponentVideoVisible(false), 200);
+                dismissOpponentVideo(200);
               }}>
               <source src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.mov`} type='video/quicktime; codecs="hvc1"' />
               <source src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.webm`} type="video/webm" />
@@ -1407,8 +1578,7 @@ const BoardComponent: React.FC = () => {
               muted
               playsInline
               onEnded={() => {
-                setPlayerVideoFading(true);
-                setTimeout(() => setPlayerVideoVisible(false), 200);
+                dismissPlayerVideo(200);
               }}>
               <source src={`https://assets.mons.link/swagpack/video/${playerVideoId}.mov`} type='video/quicktime; codecs="hvc1"' />
               <source src={`https://assets.mons.link/swagpack/video/${playerVideoId}.webm`} type="video/webm" />

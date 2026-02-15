@@ -181,6 +181,7 @@ export const rocksMiningService = {
   formatMiningDate,
   shouldShowRock,
   getRockImageUrl,
+  resetProfileMiningState,
 };
 
 function getSnapshot(): PlayerMiningData {
@@ -233,9 +234,14 @@ function didBreakRock(): DidBreakRockResult {
     materials: cloneMaterials(delta),
   };
   if (!isAnon) {
+    const profileIdAtRequest = profileId;
+    const sessionGuard = connection.createSessionGuard();
     connection
       .mineRock(payload.date, payload.materials)
       .then((response) => {
+        if (!sessionGuard() || getActiveProfileId() !== profileIdAtRequest) {
+          return;
+        }
         if (response && response.ok && response.mining) {
           setSnapshot(normalizeSnapshot(response.mining), true, false);
         }
@@ -266,4 +272,15 @@ function getRockImageUrl(dateOverride?: string): string {
   const hash = computeHash32(seed);
   const index = (hash % ROCK_VARIANT_COUNT) + 1;
   return `https://assets.mons.link/rocks/gan/${index}.webp`;
+}
+
+export function resetProfileMiningState() {
+  const profileId = getActiveProfileId();
+  const initial = loadInitialSnapshot(profileId);
+  snapshot = {
+    lastRockDate: initial.lastRockDate,
+    materials: cloneMaterials(initial.materials),
+  };
+  serverSnapshotLoaded = isAnonymousProfile(profileId);
+  notify();
 }
