@@ -50,6 +50,13 @@ export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, 
 export let playerSideMetadata = newEmptyPlayerMetadata();
 export let opponentSideMetadata = newEmptyPlayerMetadata();
 
+function clearVoiceReactionState() {
+  playerSideMetadata.voiceReactionText = "";
+  playerSideMetadata.voiceReactionDate = undefined;
+  opponentSideMetadata.voiceReactionText = "";
+  opponentSideMetadata.voiceReactionDate = undefined;
+}
+
 export let isFlipped = false;
 let traceIndex = 0;
 let showsPlayerTimer = false;
@@ -766,6 +773,7 @@ function initializeBoardElements() {
 }
 
 export function hideBoardPlayersInfo() {
+  clearVoiceReactionState();
   if (opponentAvatar && playerAvatar) {
     SVG.setHidden(opponentAvatar, true);
     SVG.setHidden(playerAvatar, true);
@@ -796,6 +804,7 @@ export function hideBoardPlayersInfo() {
 export function resetForNewGame() {
   showsPlayerEndOfGameSuffix = false;
   showsOpponentEndOfGameSuffix = false;
+  clearVoiceReactionState();
   if (isWatchOnly) {
     playerSideMetadata = newEmptyPlayerMetadata();
   }
@@ -2671,6 +2680,7 @@ export function setupBoard() {
     disposeBoardRuntime();
   }
   boardRuntimeToken += 1;
+  clearVoiceReactionState();
   opponentSideMetadata.emojiId = "";
   opponentSideMetadata.aura = "";
   initializeBoardElements();
