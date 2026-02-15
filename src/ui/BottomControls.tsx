@@ -1,6 +1,7 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
 import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaPaintBrush, FaScroll } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
+import styled from "styled-components";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
 import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, isOnlineGame, isWatchOnly, isMatchOver } from "../game/gameController";
 import { connection } from "../connection/connection";
@@ -114,8 +115,15 @@ const STICKER_ID_WHITELIST: number[] = [9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 6
 const FIXED_STICKER_IDS: number[] = [900316, 900101, 900393, 90063, 900109, 900228, 900245, 900189, 900267, 900374, 900347, 900382, 900429, 900225, 900999];
 const MATERIAL_IMAGE_BASE_URL = "https://assets.mons.link/rocks/materials";
 const STICKER_IMAGE_BASE_URL = "https://assets.mons.link/swagpack/64";
+const STATUS_ICON_BASE_URL = "https://assets.mons.link/icons";
+const STATUS_ICON_URLS = {
+  cloud: `${STATUS_ICON_BASE_URL}/cloud.webp`,
+  spectating: `${STATUS_ICON_BASE_URL}/spectating.webp`,
+} as const;
+type StatusIconName = keyof typeof STATUS_ICON_URLS;
 const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
 const stickerImagePromises: Map<number, Promise<string | null>> = new Map();
+const statusIconPromises: Map<StatusIconName, Promise<string | null>> = new Map();
 
 const fetchImageUrl = (url: string): Promise<string | null> =>
   fetch(url)
@@ -135,6 +143,7 @@ const getCachedImageUrl = <T extends string | number>(cache: Map<T, Promise<stri
 
 const getMaterialImageUrl = (name: MaterialName) => getCachedImageUrl(materialImagePromises, name, `${MATERIAL_IMAGE_BASE_URL}/${name}.webp`);
 const getStickerImageUrl = (id: number) => getCachedImageUrl(stickerImagePromises, id, `${STICKER_IMAGE_BASE_URL}/${id}.webp`);
+const getStatusIconUrl = (name: StatusIconName) => getCachedImageUrl(statusIconPromises, name, STATUS_ICON_URLS[name]);
 
 const mergeStickerIds = (base: number[], extra: number[]): number[] => {
   if (!extra.length) return base.slice();
@@ -172,6 +181,21 @@ const getInitialStickerIds = (): number[] => {
   const cachedExtraIds = normalizeStickerIds(storage.getReactionExtraStickerIds([]));
   return mergeStickerIds(FIXED_STICKER_IDS, cachedExtraIds);
 };
+
+const BottomPillInlineIcon = styled.img`
+  width: 1.42em;
+  height: 1.42em;
+  margin-left: -4px;
+  margin-right: 3px;
+  flex-shrink: 0;
+  -webkit-user-drag: none;
+  user-drag: none;
+
+  @media screen and (max-width: 359px) {
+    margin-left: -3px;
+    margin-right: 2px;
+  }
+`;
 
 const BottomControls: React.FC = () => {
   const [isEndMatchButtonVisible, setIsEndMatchButtonVisible] = useState(false);
@@ -234,6 +258,10 @@ const BottomControls: React.FC = () => {
     const initial: Partial<Record<MaterialName, number>> = {};
     MATERIALS.forEach((n) => (initial[n] = 0));
     return initial as Record<MaterialName, number>;
+  });
+  const [statusIconUrls, setStatusIconUrls] = useState<Record<StatusIconName, string | null>>({
+    cloud: null,
+    spectating: null,
   });
   const [stickerUrls, setStickerUrls] = useState<Record<number, string | null>>({});
   const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
@@ -516,6 +544,22 @@ const BottomControls: React.FC = () => {
       getMaterialImageUrl(name).then((url) => {
         if (!mounted) return;
         setMaterialUrls((prev) => ({ ...prev, [name]: url }));
+      });
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  useEffect(() => {
+    let mounted = true;
+    (Object.keys(STATUS_ICON_URLS) as StatusIconName[]).forEach((name) => {
+      getStatusIconUrl(name).then((url) => {
+        if (!mounted) return;
+        setStatusIconUrls((prev) => {
+          if (prev[name] === url) return prev;
+          return { ...prev, [name]: url };
+        });
       });
     });
     return () => {
@@ -1124,12 +1168,22 @@ const BottomControls: React.FC = () => {
       <ControlsContainer ref={controlsContainerRef}>
         {isEndMatchButtonVisible && (
           <BottomPillButton onClick={handleEndMatchClick} isBlue={!isEndMatchConfirmed} disabled={isEndMatchConfirmed} isViewOnly={isEndMatchConfirmed}>
-            {isEndMatchConfirmed ? "💨 Finished" : "🏁 End Match"}
+            {isEndMatchConfirmed ? (
+              <>
+                {statusIconUrls.cloud ? <BottomPillInlineIcon src={statusIconUrls.cloud} alt="" draggable={false} /> : "💨 "}
+                {"Finished"}
+              </>
+            ) : (
+              "🏁 End Match"
+            )}
           </BottomPillButton>
         )}
         {isWatchOnlyIndicatorVisible && (
           <BottomPillButton isViewOnly={true} disabled={true}>
-            {"📺 Spectating"}
+            <>
+              {statusIconUrls.spectating ? <BottomPillInlineIcon src={statusIconUrls.spectating} alt="" draggable={false} /> : "📺 "}
+              {"Spectating"}
+            </>
           </BottomPillButton>
         )}
         {isInviteLinkButtonVisible && !didCreateInvite && (
