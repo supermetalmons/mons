@@ -11,6 +11,11 @@ const materialTelegramEmojiIds = {
   ice: "5233743994676086020",
 };
 
+const matchStatusTelegramEmojiIds = {
+  timer: "5229098317530568280",
+  whiteFlag: "5228727932435863865",
+};
+
 const FEB_CHALLENGE_START_UTC = Date.UTC(2026, 1, 1);
 const FEB_CHALLENGE_END_UTC = Date.UTC(2026, 2, 1);
 
@@ -214,9 +219,11 @@ exports.updateRatings = onCall(async (request) => {
   const loserScore = result === "win" ? opponentManaPoints : playerManaPoints;
   let suffix = ` (${winnerScore} - ${loserScore})`;
   if (matchData.status === "surrendered" || opponentMatchData.status === "surrendered") {
-    suffix += " ⚐";
+    const icon = getTelegramEmojiTag(matchStatusTelegramEmojiIds.whiteFlag);
+    if (icon) suffix += ` ${icon}`;
   } else if (matchData.timer === "gg" || opponentMatchData.timer === "gg") {
-    suffix += " ⏲";
+    const icon = getTelegramEmojiTag(matchStatusTelegramEmojiIds.timer);
+    if (icon) suffix += ` ${icon}`;
   }
   const wagerSuffix = getWagerSuffix(inviteData, matchId);
   if (wagerSuffix) {
