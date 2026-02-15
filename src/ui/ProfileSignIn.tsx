@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import styled from "styled-components";
 import { storage } from "../utils/storage";
@@ -14,6 +14,8 @@ import { SettingsModal } from "./SettingsModal";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { hideShinyCard, showShinyCard, showsShinyCardSomewhere, updateShinyCardDisplayName } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
+import { transitionToHome } from "../session/AppSessionManager";
+import { registerProfileTransientUiHandler } from "./uiSession";
 
 const Container = styled.div`
   position: relative;
@@ -115,13 +117,41 @@ let getIsEditingPopupOpen: () => boolean = () => false;
 let getIsInventoryPopupOpen: () => boolean = () => false;
 let getIsLogoutConfirmPopupOpen: () => boolean = () => false;
 let getIsSettingsPopupOpen: () => boolean = () => false;
-export let closeProfilePopupIfAny: () => void = () => {};
-export let handleEditDisplayName: () => void;
-export let showInventory: () => void;
-export let handleLogout: () => void;
-export let showSettings: () => void;
-export let hideNotificationBanner: () => void = () => {};
-export let showNotificationBanner: (title: string, subtitle: string, emojiId: string, successHandler: () => void) => void = () => {};
+let closeProfilePopupIfAnyImpl: () => void = () => {};
+let handleEditDisplayNameImpl: () => void = () => {};
+let showInventoryImpl: () => void = () => {};
+let handleLogoutImpl: () => void = () => {};
+let showSettingsImpl: () => void = () => {};
+let hideNotificationBannerImpl: () => void = () => {};
+let showNotificationBannerImpl: (title: string, subtitle: string, emojiId: string, successHandler: () => void) => void = () => {};
+
+export const closeProfilePopupIfAny = () => {
+  closeProfilePopupIfAnyImpl();
+};
+
+export const handleEditDisplayName = () => {
+  handleEditDisplayNameImpl();
+};
+
+export const showInventory = () => {
+  showInventoryImpl();
+};
+
+export const handleLogout = () => {
+  handleLogoutImpl();
+};
+
+export const showSettings = () => {
+  showSettingsImpl();
+};
+
+export const hideNotificationBanner = () => {
+  hideNotificationBannerImpl();
+};
+
+export const showNotificationBanner = (title: string, subtitle: string, emojiId: string, successHandler: () => void) => {
+  showNotificationBannerImpl(title, subtitle, emojiId, successHandler);
+};
 
 export function hasProfilePopupVisible(): boolean {
   return getIsProfilePopupOpen() || getIsEditingPopupOpen() || getIsInventoryPopupOpen() || getIsLogoutConfirmPopupOpen() || getIsSettingsPopupOpen();
@@ -245,7 +275,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     }
   };
 
-  const hideNotificationBannerInternal = () => {
+  const hideNotificationBannerInternal = useCallback(() => {
     if (notificationTimeoutRef.current) {
       clearTimeout(notificationTimeoutRef.current);
       notificationTimeoutRef.current = null;
@@ -259,33 +289,59 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       setNotificationDismissType(null);
       notificationTimeoutRef.current = null;
     }, 400);
-  };
+  }, []);
 
-  hideNotificationBanner = hideNotificationBannerInternal;
-  showNotificationBanner = showNotificationBannerInternal;
+  hideNotificationBannerImpl = hideNotificationBannerInternal;
+  showNotificationBannerImpl = showNotificationBannerInternal;
 
   const performLogout = () => {
     storage.signOut();
+    setAuthStatusGlobally("unauthenticated");
     connection
       .signOut()
-      .then(() => window.location.reload())
-      .catch(() => window.location.reload());
+      .then(() => transitionToHome({ resetProfileScope: true, forceMatchScopeReset: true }))
+      .catch(() => {
+        setAuthStatusGlobally("unauthenticated");
+        return transitionToHome({ resetProfileScope: true, forceMatchScopeReset: true });
+      });
   };
 
-  handleLogout = () => {
+  const closeProfilePopupInternal = useCallback(() => {
+    didDismissSomethingWithOutsideTapJustNow();
+    setIsOpen(false);
+    setIsInventoryOpen(false);
+    setIsLogoutConfirmOpen(false);
+    setIsSettingsOpen(false);
+    setIsEditingName(false);
+    hideShinyCard();
+    enterProfileEditingMode(false);
+  }, []);
+
+  useEffect(() => {
+    return registerProfileTransientUiHandler(hideNotificationBannerInternal, closeProfilePopupInternal);
+  }, [closeProfilePopupInternal, hideNotificationBannerInternal]);
+
+  handleLogoutImpl = () => {
     setIsLogoutConfirmOpen(true);
   };
 
-  showSettings = () => {
+  showSettingsImpl = () => {
     setIsSettingsOpen(true);
   };
 
-  closeProfilePopupIfAny = () => {
-    didDismissSomethingWithOutsideTapJustNow();
-    setIsOpen(false);
-    hideShinyCard();
-    enterProfileEditingMode(false);
-  };
+  closeProfilePopupIfAnyImpl = closeProfilePopupInternal;
+
+  useEffect(() => {
+    return () => {
+      closeProfilePopupIfAnyImpl = () => {};
+      handleEditDisplayNameImpl = () => {};
+      showInventoryImpl = () => {};
+      handleLogoutImpl = () => {};
+      showSettingsImpl = () => {};
+      hideNotificationBannerImpl = () => {};
+      showNotificationBannerImpl = () => {};
+    };
+  }, []);
 
   const handleSignInClick = () => {
     if (authStatus === "authenticated") {
@@ -305,11 +361,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsOpen(!isOpen);
   };
 
-  showInventory = () => {
+  showInventoryImpl = () => {
     setIsInventoryOpen(true);
   };
 
-  handleEditDisplayName = () => {
+  handleEditDisplayNameImpl = () => {
     setIsEditingName(true);
   };
 

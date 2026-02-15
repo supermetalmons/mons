@@ -68,3 +68,8 @@ export const computeAvailableMaterials = (total: FrozenMaterials, frozen: Frozen
   });
   return result;
 };
+
+export const resetWagerMaterialsState = () => {
+  frozenMaterials = createEmptyMaterials();
+  notify();
+};

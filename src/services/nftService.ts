@@ -5,6 +5,7 @@ const USE_STUB_RESPONSE = false;
 
 const inFlightRequests: Map<string, Promise<any>> = new Map();
 const responseCache: Map<string, any> = new Map();
+let cacheGeneration = 0;
 
 function buildKey(sol: string, eth: string): string {
   const safeSol = sol || "";
@@ -54,10 +55,13 @@ export async function fetchNftsByAddresses(sol: string, eth: string): Promise<an
   if (existing) {
     return existing;
   }
+  const requestGeneration = cacheGeneration;
   const request = connection
     .getNfts(sol, eth)
     .then((data) => {
-      responseCache.set(key, data);
+      if (requestGeneration === cacheGeneration) {
+        responseCache.set(key, data);
+      }
       inFlightRequests.delete(key);
       return data;
     })
@@ -76,4 +80,10 @@ export async function fetchNftsForStoredAddresses(): Promise<any> {
     return null;
   }
   return fetchNftsByAddresses(sol, eth);
+}
+
+export function resetNftCache() {
+  cacheGeneration += 1;
+  inFlightRequests.clear();
+  responseCache.clear();
 }

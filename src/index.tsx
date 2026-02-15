@@ -11,7 +11,7 @@ import BoardComponent from "./ui/BoardComponent";
 import MainMenu, { toggleInfoVisibility, toggleMusicVisibility } from "./ui/MainMenu";
 import { config } from "./utils/wagmi";
 import { useAuthStatus, createEthereumAuthAdapter } from "./connection/authentication";
-import { connection, isCreateNewInviteFlow } from "./connection/connection";
+import { connection } from "./connection/connection";
 import BottomControls from "./ui/BottomControls";
 import { isMobile } from "./utils/misc";
 import { FaVolumeUp, FaMusic, FaVolumeMute, FaInfoCircle, FaRegGem, FaPowerOff, FaEllipsisH } from "react-icons/fa";
@@ -21,6 +21,8 @@ import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, showInventory, showSettings } from "./ui/ProfileSignIn";
 import { isMainGameLoaded, onMainGameLoaded } from "./game/mainGameLoadState";
 import { Sound } from "./utils/gameModels";
+import { initializeAppSessionManager } from "./session/AppSessionManager";
+import { getCurrentRouteState } from "./navigation/routeState";
 
 const LazyIslandButton = lazy(() => import("./ui/IslandButton"));
 
@@ -38,14 +40,14 @@ export function hasFullScreenAlertVisible(): boolean {
   return getIsFullScreenAlertOpen();
 }
 
-export let enterProfileEditingMode: (enter: boolean) => void;
-export let setIslandButtonDimmed: (dimmed: boolean) => void;
+export let enterProfileEditingMode: (enter: boolean) => void = () => {};
+export let setIslandButtonDimmed: (dimmed: boolean) => void = () => {};
 
 const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
   const [isProfileEditingMode, setIsProfileEditingMode] = useState(false);
   const [isMuted, setIsMuted] = useState(globalIsMuted);
-  const [isIslandButtonDim, setIsIslandButtonDim] = useState(!isCreateNewInviteFlow);
+  const [isIslandButtonDim, setIsIslandButtonDim] = useState(() => getCurrentRouteState().mode !== "home");
   const [shouldLoadIslandButton, setShouldLoadIslandButton] = useState(isMainGameLoaded());
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
 
@@ -213,6 +215,7 @@ document.addEventListener(
 );
 
 connection.signIn();
+initializeAppSessionManager();
 
 (function suppressThirdPartyErrorOverlay() {
   if (typeof window === "undefined") return;

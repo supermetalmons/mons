@@ -87,6 +87,7 @@ export function getStashedPlayerEthAddress(uid: string) {
 }
 
 export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId: string, own: boolean, onSuccess: () => void) {
+  const sessionGuard = connection.createSessionGuard();
   const noSol = profile.sol === undefined || profile.sol === "" || !profile.sol;
   const noEth = profile.eth === undefined || profile.eth === "" || !profile.eth;
   if (noSol && noEth) {
@@ -107,6 +108,9 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
           return null;
         })
         .then((data) => {
+          if (!sessionGuard()) {
+            return;
+          }
           if (data && data.name && data.name.trim() !== "") {
             ensDict[loginId] = {
               name: data.name,
@@ -128,6 +132,9 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
     connection
       .getProfileByLoginId(loginId)
       .then((profile) => {
+        if (!sessionGuard()) {
+          return;
+        }
         allProfilesDict[loginId] = profile;
         if (profile.emoji !== undefined && own) {
           syncTutorialProgress(profile.completedProblemIds ?? [], profile.isTutorialCompleted ?? false);
@@ -227,3 +234,11 @@ const updateRating = (winRating: number, winPlayerGamesCount: number, lossRating
 
   return [newWinRating, newLossRating];
 };
+
+export function resetPlayerMetadataCaches() {
+  Object.keys(usernamesForUids).forEach((key) => delete usernamesForUids[key]);
+  Object.keys(ethAddressesForUids).forEach((key) => delete ethAddressesForUids[key]);
+  Object.keys(solAddressesForUids).forEach((key) => delete solAddressesForUids[key]);
+  Object.keys(ensDict).forEach((key) => delete ensDict[key]);
+  Object.keys(allProfilesDict).forEach((key) => delete allProfilesDict[key]);
+}

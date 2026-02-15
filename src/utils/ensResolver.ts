@@ -3,8 +3,10 @@ type ENSCache = {
 };
 
 export let ensCache: ENSCache = {};
+let cacheGeneration = 0;
 
 export async function resolveENS(address: string): Promise<string | null> {
+  const requestGeneration = cacheGeneration;
   if (address in ensCache) {
     return ensCache[address];
   }
@@ -12,17 +14,28 @@ export async function resolveENS(address: string): Promise<string | null> {
   try {
     const response = await fetch(`https://api.ensideas.com/ens/resolve/${address}`);
     if (!response.ok) {
-      ensCache[address] = null;
+      if (requestGeneration === cacheGeneration) {
+        ensCache[address] = null;
+      }
       return null;
     }
 
     const data = await response.json();
     const name = data.name || null;
-    ensCache[address] = name;
+    if (requestGeneration === cacheGeneration) {
+      ensCache[address] = name;
+    }
     return name;
   } catch (error) {
     console.error("Failed to resolve ENS:", error);
-    ensCache[address] = null;
+    if (requestGeneration === cacheGeneration) {
+      ensCache[address] = null;
+    }
     return null;
   }
+}
+
+export function resetEnsCache() {
+  cacheGeneration += 1;
+  ensCache = {};
 }

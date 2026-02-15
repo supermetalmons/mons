@@ -13,6 +13,7 @@ import { showsShinyCardSomewhere } from "./ShinyCard";
 import { startPlayingMusic, stopPlayingMusic, playNextTrack } from "../content/music";
 import { InfoPopover } from "./InfoPopover";
 import { MiningMaterialName } from "../connection/connectionModels";
+import { registerMainMenuTransientUiHandler } from "./uiSession";
 
 const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust", "total", "gp"];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
@@ -588,16 +589,44 @@ const DebugView = styled.div`
   z-index: 1;
 `;
 
-let getIsMenuOpen: () => boolean;
-let getIsInfoOpen: () => boolean;
-let getIsMusicOpen: () => boolean;
-export let toggleInfoVisibility: () => void;
-export let toggleMusicVisibility: () => void;
-export let closeMenuAndInfoIfAny: () => void;
-export let closeAllKindsOfPopups: () => void;
-export let closeMenuAndInfoIfAllowedForEvent: (event: TouchEvent | MouseEvent) => void;
-export let setIsMusicPlayingGlobal: (playing: boolean) => void;
-export let setDebugViewText: (text: string) => void;
+let getIsMenuOpen: () => boolean = () => false;
+let getIsInfoOpen: () => boolean = () => false;
+let getIsMusicOpen: () => boolean = () => false;
+let toggleInfoVisibilityImpl: () => void = () => {};
+let toggleMusicVisibilityImpl: () => void = () => {};
+let closeMenuAndInfoIfAnyImpl: () => void = () => {};
+let closeAllKindsOfPopupsImpl: () => void = () => {};
+let closeMenuAndInfoIfAllowedForEventImpl: (event: TouchEvent | MouseEvent) => void = () => {};
+let setIsMusicPlayingGlobalImpl: (playing: boolean) => void = () => {};
+let setDebugViewTextImpl: (text: string) => void = () => {};
+
+export const toggleInfoVisibility = () => {
+  toggleInfoVisibilityImpl();
+};
+
+export const toggleMusicVisibility = () => {
+  toggleMusicVisibilityImpl();
+};
+
+export const closeMenuAndInfoIfAny = () => {
+  closeMenuAndInfoIfAnyImpl();
+};
+
+export const closeAllKindsOfPopups = () => {
+  closeAllKindsOfPopupsImpl();
+};
+
+export const closeMenuAndInfoIfAllowedForEvent = (event: TouchEvent | MouseEvent) => {
+  closeMenuAndInfoIfAllowedForEventImpl(event);
+};
+
+export const setIsMusicPlayingGlobal = (playing: boolean) => {
+  setIsMusicPlayingGlobalImpl(playing);
+};
+
+export const setDebugViewText = (text: string) => {
+  setDebugViewTextImpl(text);
+};
 
 export function hasMainMenuPopupsVisible(): boolean {
   return getIsMenuOpen() || getIsInfoOpen() || getIsMusicOpen();
@@ -630,7 +659,7 @@ const MainMenu: React.FC = () => {
   const animationFrameRef = useRef<number | null>(null);
   const activeIndicesRef = useRef<number[]>([]);
 
-  setIsMusicPlayingGlobal = setIsMusicPlaying;
+  setIsMusicPlayingGlobalImpl = setIsMusicPlaying;
 
   useEffect(() => {
     let mounted = true;
@@ -719,6 +748,21 @@ const MainMenu: React.FC = () => {
   getIsInfoOpen = () => isInfoOpen;
   getIsMusicOpen = () => isMusicOpen;
 
+  useEffect(() => {
+    return () => {
+      getIsMenuOpen = () => false;
+      getIsInfoOpen = () => false;
+      getIsMusicOpen = () => false;
+      toggleInfoVisibilityImpl = () => {};
+      toggleMusicVisibilityImpl = () => {};
+      closeMenuAndInfoIfAnyImpl = () => {};
+      closeAllKindsOfPopupsImpl = () => {};
+      closeMenuAndInfoIfAllowedForEventImpl = () => {};
+      setIsMusicPlayingGlobalImpl = () => {};
+      setDebugViewTextImpl = () => {};
+    };
+  }, []);
+
   const menuRef = useRef<HTMLDivElement>(null);
   const infoRef = useRef<HTMLDivElement>(null);
   const musicRef = useRef<HTMLDivElement>(null);
@@ -788,7 +832,7 @@ const MainMenu: React.FC = () => {
     }
   };
 
-  toggleInfoVisibility = () => {
+  toggleInfoVisibilityImpl = () => {
     if (!isInfoOpen) {
       closeProfilePopupIfAny();
       closeNavigationAndAppearancePopupIfAny();
@@ -798,7 +842,7 @@ const MainMenu: React.FC = () => {
     setIsInfoOpen(!isInfoOpen);
   };
 
-  toggleMusicVisibility = () => {
+  toggleMusicVisibilityImpl = () => {
     if (!isMusicOpen) {
       closeProfilePopupIfAny();
       closeNavigationAndAppearancePopupIfAny();
@@ -808,27 +852,37 @@ const MainMenu: React.FC = () => {
     setIsMusicOpen(!isMusicOpen);
   };
 
-  setDebugViewText = (text: string) => {
+  setDebugViewTextImpl = (text: string) => {
     setDebugViewTextState(text);
   };
 
-  closeMenuAndInfoIfAny = () => {
+  closeMenuAndInfoIfAnyImpl = () => {
     setIsInfoOpen(false);
     setIsMenuOpen(false);
     setIsMusicOpen(false);
   };
 
-  closeAllKindsOfPopups = () => {
+  const closeMainMenuPopupsHandler = useCallback(() => {
+    setIsInfoOpen(false);
+    setIsMenuOpen(false);
+    setIsMusicOpen(false);
+  }, []);
+
+  const closeAllKindsOfPopupsHandler = useCallback(() => {
     closeProfilePopupIfAny();
     closeNavigationAndAppearancePopupIfAny();
-    setIsInfoOpen(false);
-    setIsMenuOpen(false);
-    setIsMusicOpen(false);
-  };
+    closeMainMenuPopupsHandler();
+  }, [closeMainMenuPopupsHandler]);
 
-  closeMenuAndInfoIfAllowedForEvent = (event: TouchEvent | MouseEvent) => {
+  closeAllKindsOfPopupsImpl = closeAllKindsOfPopupsHandler;
+
+  useEffect(() => {
+    return registerMainMenuTransientUiHandler(closeMainMenuPopupsHandler);
+  }, [closeMainMenuPopupsHandler]);
+
+  closeMenuAndInfoIfAllowedForEventImpl = (event: TouchEvent | MouseEvent) => {
     if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
-      closeMenuAndInfoIfAny();
+      closeMenuAndInfoIfAnyImpl();
     }
   };
 

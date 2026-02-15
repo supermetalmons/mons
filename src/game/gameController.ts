@@ -4,7 +4,7 @@ import { tokensForSingleMoveEvents, MoveHistoryEntry } from "./moveEventStrings"
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction } from "../content/sounds";
-import { connection, isCreateNewInviteFlow, isBoardSnapshotFlow, getSnapshotIdAndClearPathIfNeeded, isBotsLoopMode } from "../connection/connection";
+import { connection } from "../connection/connection";
 import { showMoveHistoryButton, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
 import { triggerMoveHistoryPopupReload } from "../ui/MoveHistoryPopup";
 import { Match, MatchWagerState } from "../connection/connectionModels";
@@ -15,6 +15,11 @@ import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSig
 import { showVideoReaction } from "../ui/BoardComponent";
 import { setIslandButtonDimmed } from "../index";
 import { setCurrentWagerMatch, subscribeToWagerState } from "./wagerState";
+import { transitionToHome } from "../session/AppSessionManager";
+import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
+import { getSessionGuard } from "./matchSession";
+import { RouteState, getCurrentRouteState } from "../navigation/routeState";
+import { INVALID_SNAPSHOT_ROUTE_ERROR } from "../session/sessionErrors";
 
 export let initialFen = "";
 export let isWatchOnly = false;
@@ -31,6 +36,10 @@ let didConnect = false;
 let isWaitingForInviteToGetAccepted = false;
 
 const watchOnlyListeners = new Set<(value: boolean) => void>();
+let activeRouteState: RouteState = getCurrentRouteState();
+const isCreateInviteRoute = () => activeRouteState.mode === "home";
+const isSnapshotRoute = () => activeRouteState.mode === "snapshot";
+const isBotsRoute = () => activeRouteState.mode === "watch";
 
 let currentWagerState: MatchWagerState | null = null;
 let wagerOutcomeShown = false;
@@ -38,6 +47,7 @@ let wagerOutcomeAnimating = false;
 let wagerOutcomeAnimTimer: number | null = null;
 let wagerOutcomeAnimationAllowed = false;
 let didSetupWagerSubscription = false;
+let unsubscribeFromWagerState: (() => void) | null = null;
 
 let whiteProcessedMovesCount = 0;
 let blackProcessedMovesCount = 0;
@@ -69,6 +79,42 @@ var currentInputs: Location[] = [];
 
 let blackTimerStash: string | null = null;
 let whiteTimerStash: string | null = null;
+const activeGameTimeoutIds = new Set<number>();
+
+const setManagedGameTimeout = (callback: () => void, delay: number, guard?: () => boolean): number => {
+  incrementLifecycleCounter("gameTimeouts");
+  const timeoutId = window.setTimeout(() => {
+    if (activeGameTimeoutIds.has(timeoutId)) {
+      activeGameTimeoutIds.delete(timeoutId);
+      decrementLifecycleCounter("gameTimeouts");
+    }
+    if (guard && !guard()) {
+      return;
+    }
+    callback();
+  }, delay);
+  activeGameTimeoutIds.add(timeoutId);
+  return timeoutId;
+};
+
+const clearManagedGameTimeout = (timeoutId: number | null) => {
+  if (timeoutId === null) {
+    return;
+  }
+  if (activeGameTimeoutIds.has(timeoutId)) {
+    activeGameTimeoutIds.delete(timeoutId);
+    decrementLifecycleCounter("gameTimeouts");
+  }
+  clearTimeout(timeoutId);
+};
+
+const clearAllManagedGameTimeouts = () => {
+  activeGameTimeoutIds.forEach((timeoutId) => {
+    clearTimeout(timeoutId);
+    decrementLifecycleCounter("gameTimeouts");
+  });
+  activeGameTimeoutIds.clear();
+};
 
 type SmartAutomoveWithBudgetAsync = (depth: number, maxVisitedNodes: number) => Promise<MonsWeb.OutputModel>;
 type MonsGameModelWithSmartAsync = MonsWeb.MonsGameModel & {
@@ -151,7 +197,7 @@ function dismissBadgeAndNotificationBannerIfNeeded() {
 const notificationBannerIsDisabledUntilItsMadeLessAnnoying = true;
 
 export function didAttemptAuthentication() {
-  if (!isOnlineGame && !didStartLocalGame && isCreateNewInviteFlow && !isWaitingForInviteToGetAccepted && !didConnect) {
+  if (!isOnlineGame && !didStartLocalGame && isCreateInviteRoute() && !isWaitingForInviteToGetAccepted && !didConnect) {
     if (!getTutorialCompleted()) {
       setBadgeVisible(true);
       if (storage.isFirstLaunch()) {
@@ -164,10 +210,30 @@ export function didAttemptAuthentication() {
   }
 }
 
-export async function go() {
+export async function go(routeStateOverride?: RouteState) {
+  const routeState = routeStateOverride ?? getCurrentRouteState();
+  activeRouteState = routeState;
+  clearAllManagedGameTimeouts();
+  Board.setBoardFlipped(false);
+  setIslandButtonDimmed(false);
+  isOnlineGame = false;
+  isGameWithBot = false;
+  isWaitingForRematchResponse = false;
+  puzzleMode = false;
+  didStartLocalGame = false;
+  isGameOver = false;
+  isReconnect = false;
+  didConnect = false;
+  isWaitingForInviteToGetAccepted = false;
+  flashbackMode = false;
+  resignedColor = undefined;
+  winnerByTimerColor = undefined;
+  currentInputs = [];
+  setCurrentWagerMatch(null);
+  setWatchOnlyState(false);
   if (!didSetupWagerSubscription) {
     didSetupWagerSubscription = true;
-    subscribeToWagerState((state) => {
+    unsubscribeFromWagerState = subscribeToWagerState((state) => {
       currentWagerState = state;
       applyWagerState();
       if (isGameOver) {
@@ -175,7 +241,7 @@ export async function go() {
       }
     });
   }
-  connection.setupConnection(false);
+  connection.setupConnection(false, routeState);
   Board.setupBoard();
   await initMonsWeb();
 
@@ -183,7 +249,7 @@ export async function go() {
   game = MonsWeb.MonsGameModel.new();
   initialFen = game.fen();
 
-  if (isBotsLoopMode) {
+  if (isBotsRoute()) {
     Board.toggleExperimentalMode(false, true, false, true);
 
     game.locations_with_content().forEach((loc) => {
@@ -204,10 +270,12 @@ export async function go() {
     setWatchOnlyState(true);
     lastBotMoveTimestamp = 0;
     automove();
-  } else if (isBoardSnapshotFlow) {
-    const snapshot = decodeURIComponent(getSnapshotIdAndClearPathIfNeeded() || "");
+  } else if (isSnapshotRoute()) {
+    const snapshot = routeState.snapshotId ?? "";
     const gameFromFen = MonsWeb.MonsGameModel.from_fen(snapshot);
-    if (!gameFromFen) return;
+    if (!gameFromFen) {
+      throw new Error(INVALID_SNAPSHOT_ROUTE_ERROR);
+    }
     game = gameFromFen;
     game.locations_with_content().forEach((loc) => {
       const location = new Location(loc.i, loc.j);
@@ -225,7 +293,7 @@ export async function go() {
     setNavigationListButtonVisible(false);
     setAutomoveActionVisible(true);
     showMoveHistoryButton(true);
-  } else if (isCreateNewInviteFlow) {
+  } else if (isCreateInviteRoute()) {
     game.locations_with_content().forEach((loc) => {
       const location = new Location(loc.i, loc.j);
       updateLocation(location);
@@ -243,15 +311,90 @@ export async function go() {
     setNavigationListButtonVisible(false);
   }
 
-  Board.setupGameInfoElements(!isCreateNewInviteFlow && !isBoardSnapshotFlow && !isBotsLoopMode);
-  if (isBoardSnapshotFlow || isBotsLoopMode) {
+  Board.setupGameInfoElements(!isCreateInviteRoute() && !isSnapshotRoute() && !isBotsRoute());
+  if (isSnapshotRoute() || isBotsRoute()) {
     updateBoardMoveStatuses();
     Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
   }
 
-  if (isBotsLoopMode) {
+  if (isBotsRoute()) {
     Board.showRandomEmojisForLoopMode();
   }
+}
+
+export function disposeGameSession() {
+  clearAllManagedGameTimeouts();
+  Board.setBoardFlipped(false);
+  setIslandButtonDimmed(false);
+  if (unsubscribeFromWagerState) {
+    unsubscribeFromWagerState();
+    unsubscribeFromWagerState = null;
+  }
+  didSetupWagerSubscription = false;
+  if (wagerOutcomeAnimTimer !== null) {
+    clearManagedGameTimeout(wagerOutcomeAnimTimer);
+    wagerOutcomeAnimTimer = null;
+  }
+  isOnlineGame = false;
+  isGameWithBot = false;
+  isWaitingForRematchResponse = false;
+  puzzleMode = false;
+  selectedProblem = null;
+  didStartLocalGame = false;
+  isGameOver = false;
+  isReconnect = false;
+  didConnect = false;
+  isWaitingForInviteToGetAccepted = false;
+  setWatchOnlyState(false);
+  currentWagerState = null;
+  wagerOutcomeShown = false;
+  wagerOutcomeAnimating = false;
+  wagerOutcomeAnimationAllowed = false;
+  whiteProcessedMovesCount = 0;
+  blackProcessedMovesCount = 0;
+  didSetWhiteProcessedMovesCount = false;
+  didSetBlackProcessedMovesCount = false;
+  currentGameModelMatchId = null;
+  whiteFlatMovesString = null;
+  blackFlatMovesString = null;
+  wagerMatchId = null;
+  flashbackMode = false;
+  resignedColor = undefined;
+  winnerByTimerColor = undefined;
+  lastReactionTime = 0;
+  lastBotMoveTimestamp = 0;
+  processedVoiceReactions.clear();
+  currentInputs = [];
+  blackTimerStash = null;
+  whiteTimerStash = null;
+  setCurrentWagerMatch(null);
+  setHomeVisible(false);
+  setInviteLinkActionVisible(false);
+  setAutomatchVisible(false);
+  setBotGameOptionVisible(false);
+  setNavigationListButtonVisible(false);
+  setPlaySamePuzzleAgainButtonVisible(false);
+  setAutomatchWaitingState(false);
+  setAutomatchEnabled(true);
+  setBrushAndNavigationButtonDimmed(false);
+  setUndoVisible(false);
+  setAutomoveActionVisible(false);
+  setAutomoveActionEnabled(true);
+  setUndoEnabled(false);
+  setWatchOnlyVisible(false);
+  showVoiceReactionButton(false);
+  showMoveHistoryButton(false);
+  hideTimerButtons();
+  disableAndHideUndoResignAndTimerControls();
+  setEndMatchVisible(false);
+  setEndMatchConfirmed(false);
+  showWaitingStateText("");
+  showPrimaryAction(PrimaryActionType.None);
+  Board.stopMonsBoardAsDisplayAnimations();
+  Board.hideTimerCountdownDigits();
+  Board.hideAllMoveStatuses();
+  Board.removeHighlights();
+  Board.hideItemSelectionOrConfirmationOverlay();
 }
 
 export function failedToCreateRematchProposal() {
@@ -313,7 +456,7 @@ export function didFindYourOwnInviteThatNobodyJoined(isAutomatch: boolean) {
     setInviteLinkActionVisible(true);
     setIsReadyToCopyExistingInviteLink();
     Board.runMonsBoardAsDisplayWaitingAnimation();
-  } else if (!isCreateNewInviteFlow) {
+  } else if (!isCreateInviteRoute()) {
     setAutomatchWaitingState(true);
     Board.runMonsBoardAsDisplayWaitingAnimation();
   }
@@ -373,16 +516,23 @@ export function didClickAutomatchButton() {
   Board.hideAllMoveStatuses();
   isWaitingForInviteToGetAccepted = true;
   Board.runMonsBoardAsDisplayWaitingAnimation();
+  const sessionGuard = getSessionGuard();
 
   connection
     .automatch()
     .then((response) => {
+      if (!sessionGuard()) {
+        return;
+      }
       const automatchInviteId = response.inviteId;
       if (automatchInviteId) {
         connection.connectToAutomatch(automatchInviteId);
       }
     })
     .catch(() => {
+      if (!sessionGuard()) {
+        return;
+      }
       setAutomatchEnabled(true);
     });
 }
@@ -425,12 +575,13 @@ export function didReceiveRematchesSeriesEndIndicator() {
 }
 
 function automove(onAutomoveButtonClick: boolean = false) {
+  const sessionGuard = getSessionGuard();
   const depth = onAutomoveButtonClick ? 2 : 3;
   const maxNodes = onAutomoveButtonClick ? 420 : 2300;
-  const shouldEnforceBotMovePacing = isBotsLoopMode || (isGameWithBot && game.active_color() === botPlayerColor);
+  const shouldEnforceBotMovePacing = isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
   const fenBeforeAutomove = game.fen();
   const syncAutomoveActionState = () => {
-    if (isBotsLoopMode) {
+    if (isBotsRoute()) {
       return;
     }
     if (!isGameWithBot || isPlayerSideTurn()) {
@@ -448,8 +599,14 @@ function automove(onAutomoveButtonClick: boolean = false) {
   smartAutomoveWithBudgetAsync
     .call(game, depth, maxNodes)
     .then((output: MonsWeb.OutputModel) => {
+      if (!sessionGuard()) {
+        return;
+      }
       if (output.kind === MonsWeb.OutputModelKind.Events) {
         const applyOutputWhenReady = () => {
+          if (!sessionGuard()) {
+            return;
+          }
           if (!isGameOver && game.fen() === fenBeforeAutomove) {
             if (shouldEnforceBotMovePacing) {
               lastBotMoveTimestamp = Date.now();
@@ -461,7 +618,7 @@ function automove(onAutomoveButtonClick: boolean = false) {
         };
         const delayBeforeApplyMs = shouldEnforceBotMovePacing ? Math.max(0, lastBotMoveTimestamp + minimumIntervalBetweenBotMovesMs - Date.now()) : 0;
         if (delayBeforeApplyMs > 0) {
-          window.setTimeout(applyOutputWhenReady, delayBeforeApplyMs);
+          setManagedGameTimeout(applyOutputWhenReady, delayBeforeApplyMs, sessionGuard);
         } else {
           applyOutputWhenReady();
         }
@@ -489,7 +646,7 @@ function didConfirmRematchProposal() {
   }
 
   if (!isOnlineGame) {
-    window.location.href = "/";
+    void transitionToHome({ forceMatchScopeReset: true });
     return;
   }
 
@@ -524,9 +681,13 @@ export function didClickPrimaryActionButton(action: PrimaryActionType) {
 
 export function didClickClaimVictoryByTimerButton() {
   if (isOnlineGame && !isWatchOnly) {
+    const sessionGuard = getSessionGuard();
     connection
       .claimVictoryByTimer()
       .then((res) => {
+        if (!sessionGuard()) {
+          return;
+        }
         if (res.ok) {
           handleVictoryByTimer(false, playerSideColor === MonsWeb.Color.White ? "white" : "black", true);
         }
@@ -536,14 +697,18 @@ export function didClickClaimVictoryByTimerButton() {
 }
 
 export function didClickHomeButton() {
-  window.location.href = "/";
+  void transitionToHome({ forceMatchScopeReset: true });
 }
 
 export function didClickStartTimerButton() {
   if (isOnlineGame && !isWatchOnly && !isPlayerSideTurn()) {
+    const sessionGuard = getSessionGuard();
     connection
       .startTimer()
       .then((res) => {
+        if (!sessionGuard()) {
+          return;
+        }
         if (res.ok) {
           showTimerCountdown(false, res.timer, playerSideColor === MonsWeb.Color.White ? "white" : "black", res.duration);
         }
@@ -575,7 +740,7 @@ export function didClickUndoButton() {
 }
 
 export function canChangeEmoji(opponents: boolean): boolean {
-  if ((storage.getLoginId("") && !opponents) || isBotsLoopMode) {
+  if ((storage.getLoginId("") && !opponents) || isBotsRoute()) {
     return false;
   }
   if (isOnlineGame || isGameWithBot) {
@@ -1039,13 +1204,14 @@ function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, ou
 
       if (!isGameOver) {
         if (isGameWithBot && game.active_color() === botPlayerColor) {
-          window.setTimeout(() => {
+          const botTurnGuard = getSessionGuard();
+          setManagedGameTimeout(() => {
             if (isGameOver || !isGameWithBot || game.active_color() !== botPlayerColor) {
               return;
             }
             automove();
-          }, botTurnComputationDelayMs);
-        } else if (isBotsLoopMode) {
+          }, botTurnComputationDelayMs, botTurnGuard);
+        } else if (isBotsRoute()) {
           automove();
         }
       }
@@ -1054,8 +1220,9 @@ function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, ou
         setAutomoveActionEnabled(false);
       }
 
-      if (isBotsLoopMode && isGameOver) {
-        setTimeout(() => rematchInLoopMode(), 1150);
+      if (isBotsRoute() && isGameOver) {
+        const rematchGuard = getSessionGuard();
+        setManagedGameTimeout(() => rematchInLoopMode(), 1150, rematchGuard);
       }
 
       updateUndoButtonBasedOnGameState();
@@ -1158,7 +1325,7 @@ function resetWagerStateForMatch(matchId: string | null) {
   wagerOutcomeAnimating = false;
   wagerOutcomeAnimationAllowed = false;
   if (wagerOutcomeAnimTimer !== null) {
-    window.clearTimeout(wagerOutcomeAnimTimer);
+    clearManagedGameTimeout(wagerOutcomeAnimTimer);
     wagerOutcomeAnimTimer = null;
   }
   currentWagerState = null;
@@ -1227,14 +1394,15 @@ function syncWagerOutcome() {
     }
     wagerOutcomeAnimating = true;
     if (wagerOutcomeAnimTimer !== null) {
-      window.clearTimeout(wagerOutcomeAnimTimer);
+      clearManagedGameTimeout(wagerOutcomeAnimTimer);
     }
     Board.showResolvedWager(winnerIsOpponent, resolved.material, stakeCount, true);
     wagerOutcomeShown = true;
-    wagerOutcomeAnimTimer = window.setTimeout(() => {
+    const wagerOutcomeGuard = getSessionGuard();
+    wagerOutcomeAnimTimer = setManagedGameTimeout(() => {
       wagerOutcomeAnimating = false;
       wagerOutcomeAnimTimer = null;
-    }, 900);
+    }, 900, wagerOutcomeGuard);
     return;
   }
   if (wagerOutcomeAnimating) {
@@ -1244,7 +1412,7 @@ function syncWagerOutcome() {
 }
 
 function processInput(assistedInputKind: AssistedInputKind, inputModifier: InputModifier, inputLocation?: Location) {
-  if (isBotsLoopMode) {
+  if (isBotsRoute()) {
     return;
   }
 
@@ -1426,11 +1594,12 @@ function showTimerCountdown(onConnect: boolean, timer: any, timerColor: string, 
         if (!isWatchOnly && !isPlayerSideTurn()) {
           const target = 90;
           showTimerButtonProgressing(target - delta, target, false);
-          setTimeout(() => {
+          const timerClaimGuard = getSessionGuard();
+          setManagedGameTimeout(() => {
             if (game.turn_number() === turnNumber) {
               enableTimerVictoryClaim();
             }
-          }, delta * 1000);
+          }, delta * 1000, timerClaimGuard);
         }
       }
     }
@@ -1551,7 +1720,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
 }
 
 export function didClickInviteActionButtonBeforeThereIsInviteReady() {
-  if (!isCreateNewInviteFlow) return;
+  if (!isCreateInviteRoute()) return;
   setHomeVisible(true);
   setIslandButtonDimmed(true);
 
@@ -1622,6 +1791,10 @@ export function showNextProblem(problem: Problem) {
 }
 
 export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matchId: string) {
+  const activeMatchId = connection.getActiveMatchId();
+  if (!activeMatchId || activeMatchId !== matchId) {
+    return;
+  }
   if (!didConnect) {
     Board.stopMonsBoardAsDisplayAnimations();
     showWaitingStateText("");
@@ -1721,6 +1894,12 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
 }
 
 export function didRecoverMyMatch(match: Match, matchId: string) {
+  const activeMatchId = connection.getActiveMatchId();
+  if (!activeMatchId || activeMatchId !== matchId) {
+    return;
+  }
+  setWatchOnlyState(false);
+  setWatchOnlyVisible(false);
   isReconnect = true;
   resetWagerStateForMatch(matchId);
 

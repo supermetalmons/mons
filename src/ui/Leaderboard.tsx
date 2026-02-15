@@ -554,6 +554,10 @@ const shouldExcludeFromFebLeaderboard = (entry: LeaderboardEntry): boolean => {
 
 const leaderboardCache = new Map<LeaderboardType, LeaderboardEntry[]>();
 
+export const resetLeaderboardCache = () => {
+  leaderboardCache.clear();
+};
+
 type RowPosition = "visible" | "above" | "below";
 
 export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType }) => {
@@ -697,7 +701,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
   }, [leaderboardType]);
 
   useEffect(() => {
-    if (!show) return;
+    if (!show) {
+      currentFetchRef.current += 1;
+      return;
+    }
 
     if (tableWrapperRef.current) {
       setTimeout(() => {
@@ -749,24 +756,32 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
           }
         }
 
-        displayLeaderboardData.forEach(async (entry, index) => {
+        const activeLeaderboardType = leaderboardType;
+        displayLeaderboardData.forEach((entry, index) => {
           if (entry.eth && !entry.username) {
-            const ensName = await resolveENS(entry.eth);
-            if (ensName) {
+            void resolveENS(entry.eth).then((ensName) => {
+              if (!ensName || fetchId !== currentFetchRef.current) {
+                return;
+              }
               setData((prevData) => {
-                if (!prevData) return prevData;
+                if (!prevData || fetchId !== currentFetchRef.current || index >= prevData.length) {
+                  return prevData;
+                }
                 const newData = [...prevData];
                 newData[index] = { ...newData[index], ensName };
-                leaderboardCache.set(leaderboardType, newData);
+                leaderboardCache.set(activeLeaderboardType, newData);
                 return newData;
               });
-            }
+            });
           }
         });
       })
       .catch((error) => {
         console.error("Failed to fetch leaderboard data:", error);
       });
+    return () => {
+      currentFetchRef.current += 1;
+    };
   }, [show, leaderboardType, getCurrentPlayerEntry]);
 
   useAutoDownloadLeaderboardCards({ show, data });

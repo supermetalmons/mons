@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
 import { connection } from "./connection";
@@ -30,6 +30,7 @@ export function useAuthStatus() {
     }
     return "unauthenticated";
   });
+  const authAttemptTimeoutIdsRef = useRef<Set<number>>(new Set());
 
   useEffect(() => {
     globalSetAuthStatus = setAuthStatus;
@@ -39,12 +40,19 @@ export function useAuthStatus() {
   }, [setAuthStatus]);
 
   useEffect(() => {
-    let didPerformInitialSetup = false;
-    connection.subscribeToAuthChanges((uid) => {
-      if (didPerformInitialSetup) {
-        return;
-      }
-      didPerformInitialSetup = true;
+    const authAttemptTimeoutIds = authAttemptTimeoutIdsRef.current;
+    const scheduleDidAttemptAuthentication = () => {
+      const sessionGuard = connection.createSessionGuard();
+      const timeoutId = window.setTimeout(() => {
+        authAttemptTimeoutIds.delete(timeoutId);
+        if (!sessionGuard()) {
+          return;
+        }
+        didAttemptAuthentication();
+      }, 23);
+      authAttemptTimeoutIds.add(timeoutId);
+    };
+    const unsubscribe = connection.subscribeToAuthChanges((uid) => {
       if (uid !== null) {
         const storedLoginId = storage.getLoginId("");
         const storedEthAddress = storage.getEthAddress("");
@@ -76,16 +84,23 @@ export function useAuthStatus() {
           updateProfileDisplayName(storedUsername, storedEthAddress, storedSolAddress);
           const resolvedLoginUid = connection.getSameProfilePlayerUid() ?? uid;
           setupLoggedInPlayerProfile(profile, resolvedLoginUid);
-          setTimeout(() => didAttemptAuthentication(), 23);
+          scheduleDidAttemptAuthentication();
         } else {
           setAuthStatus("unauthenticated");
-          setTimeout(() => didAttemptAuthentication(), 23);
+          scheduleDidAttemptAuthentication();
         }
       } else {
         setAuthStatus("unauthenticated");
-        setTimeout(() => didAttemptAuthentication(), 23);
+        scheduleDidAttemptAuthentication();
       }
     });
+    return () => {
+      authAttemptTimeoutIds.forEach((timeoutId) => {
+        window.clearTimeout(timeoutId);
+      });
+      authAttemptTimeoutIds.clear();
+      unsubscribe();
+    };
   }, []);
 
   return { authStatus, setAuthStatus };
