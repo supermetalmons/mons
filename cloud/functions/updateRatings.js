@@ -13,7 +13,7 @@ const materialTelegramEmojiIds = {
 
 const matchStatusTelegramEmojiIds = {
   timer: "5229098317530568280",
-  whiteFlag: "5228727932435863865",
+  whiteFlag: "5228702136862282659",
 };
 
 const FEB_CHALLENGE_START_UTC = Date.UTC(2026, 1, 1);
