@@ -217,7 +217,7 @@ const getInviteBotButtonLayout = (scoreText: SVGElement, multiplicator: number, 
   const horizontalPaddingPx = Math.max(6, Math.round(fontSizePx * INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO));
   const width = (iconSizePx + iconGapPx + fontSizePx * 5.5 + 2 * horizontalPaddingPx) / 100;
   const scoreCenterY = scoreY - scoreFontBoardUnits * 0.35;
-  const y = scoreCenterY - height / 2 - 0.03 * multiplicator;
+  const y = scoreCenterY - height / 2 - 0.023 * multiplicator;
   return { x, y, width, height, fontSizePx, iconSizePx, iconGapPx, horizontalPaddingPx };
 };
 
