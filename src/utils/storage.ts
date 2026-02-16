@@ -5,6 +5,7 @@ const STORAGE_KEYS = {
 
   PREFERRED_ASSETS_SET: "preferredAssetsSet",
   BOARD_COLOR_SET: "boardColorSet",
+  BOARD_COLOR_SETS_BY_THEME: "boardColorSetsByTheme",
   IS_EXPERIMENTING_WITH_SPRITES: "isExperimentingWithSprites",
   DEBUG_VIEW_ENABLED: "debugViewEnabled",
 
@@ -76,6 +77,14 @@ export const storage = {
 
   setBoardColorSet: (value: string): void => {
     setItem(STORAGE_KEYS.BOARD_COLOR_SET, value);
+  },
+
+  getBoardColorSetsByTheme: (defaultValue: { light: string | null; dark: string | null }): { light: string | null; dark: string | null } => {
+    return getItem(STORAGE_KEYS.BOARD_COLOR_SETS_BY_THEME, defaultValue);
+  },
+
+  setBoardColorSetsByTheme: (value: { light: string | null; dark: string | null }): void => {
+    setItem(STORAGE_KEYS.BOARD_COLOR_SETS_BY_THEME, value);
   },
 
   getIsExperimentingWithSprites: (defaultValue: boolean): boolean => {

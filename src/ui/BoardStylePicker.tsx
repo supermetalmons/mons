@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { ColorSetKey, setBoardColorSet, getCurrentColorSetKey, colorSets, isPangchiuBoard } from "../content/boardStyles";
+import { ColorSetKey, setBoardColorSet, getCurrentColorSetKey, colorSets, isPangchiuBoard, resetBoardColorSetPreferences, subscribeToBoardColorSetChanges } from "../content/boardStyles";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
 import { isMobile } from "../utils/misc";
 import { toggleExperimentalMode } from "../game/board";
@@ -258,18 +258,29 @@ const BoardStylePickerComponent: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = subscribeToBoardColorSetChanges(() => {
+      setCurrentColorSetKey(getCurrentColorSetKey());
+    });
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
   const handleColorSetChange = (colorSetKey: ColorSetKey) => (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.preventDefault();
     setBoardColorSet(colorSetKey);
     toggleExperimentalMode(true, false, false, false);
-    setCurrentColorSetKey(colorSetKey);
+    setCurrentColorSetKey(getCurrentColorSetKey());
     setIsPangchiuBoardSelected(false);
   };
 
   const handlePangchiuBoardSelected = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     event.preventDefault();
+    resetBoardColorSetPreferences();
     toggleExperimentalMode(false, false, true, false);
     setIsPangchiuBoardSelected(true);
+    setCurrentColorSetKey(getCurrentColorSetKey());
   };
 
   const renderColorSquares = (colorSet: "light" | "dark") => {

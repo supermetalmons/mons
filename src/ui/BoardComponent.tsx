@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from
 import styled from "styled-components";
 import { FaTimes, FaCheck } from "react-icons/fa";
 import { isWatchOnly, subscribeToWatchOnly } from "../game/gameController";
-import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled } from "../content/boardStyles";
+import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled, subscribeToBoardColorSetChanges } from "../content/boardStyles";
 import { defaultInputEventName, isMobile } from "../utils/misc";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
 import { attachRainbowAura, hideRainbowAura as hideAuraDom, setRainbowAuraMask, showRainbowAura as showAuraDom } from "./rainbowAura";
@@ -540,9 +540,11 @@ const BoardComponent: React.FC = () => {
       }
     };
 
-    const unsubscribe = subscribeToBoardStyleChanges(updateColorSetAndGrid);
+    const unsubscribeBoardStyle = subscribeToBoardStyleChanges(updateColorSetAndGrid);
+    const unsubscribeBoardColorSet = subscribeToBoardColorSetChanges(updateColorSetAndGrid);
     return () => {
-      unsubscribe();
+      unsubscribeBoardStyle();
+      unsubscribeBoardColorSet();
     };
   }, []);
 

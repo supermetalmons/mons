@@ -103,17 +103,94 @@ export const colorSets = {
 
 export type ColorSetKey = keyof typeof colorSets;
 
-let currentColorSetKey: ColorSetKey = (() => {
-  const stored = storage.getBoardColorSet("default");
-  return stored in colorSets ? (stored as ColorSetKey) : "default";
-})();
+type ColorMode = "light" | "dark";
+type ColorSetPreferencesByMode = Record<ColorMode, ColorSetKey | null>;
+
+const DEFAULT_COLOR_SET_PREFERENCES_BY_MODE: ColorSetPreferencesByMode = {
+  light: null,
+  dark: null,
+};
+
+const isColorSetKey = (value: unknown): value is ColorSetKey => {
+  return typeof value === "string" && value in colorSets;
+};
+
+const normalizeColorSetPreferencesByMode = (value: { light: string | null; dark: string | null }): ColorSetPreferencesByMode => {
+  return {
+    light: isColorSetKey(value.light) ? value.light : null,
+    dark: isColorSetKey(value.dark) ? value.dark : null,
+  };
+};
+
+const getSystemColorMode = (): ColorMode => {
+  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+    return "light";
+  }
+  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+};
+
+const getDefaultColorSetForMode = (mode: ColorMode): ColorSetKey => {
+  return mode === "dark" ? "darkAndYellow" : "default";
+};
+
+let colorSetPreferencesByMode: ColorSetPreferencesByMode = normalizeColorSetPreferencesByMode(
+  storage.getBoardColorSetsByTheme({ ...DEFAULT_COLOR_SET_PREFERENCES_BY_MODE })
+);
+
+const resolveColorSetKeyForMode = (mode: ColorMode): ColorSetKey => {
+  return colorSetPreferencesByMode[mode] ?? getDefaultColorSetForMode(mode);
+};
+
+let currentColorMode: ColorMode = getSystemColorMode();
+let currentColorSetKey: ColorSetKey = resolveColorSetKeyForMode(currentColorMode);
+
+const boardColorSetListeners = new Set<() => void>();
+
+const notifyBoardColorSetListeners = () => {
+  boardColorSetListeners.forEach((listener) => listener());
+};
+
+const applyColorMode = (mode: ColorMode) => {
+  currentColorMode = mode;
+  currentColorSetKey = resolveColorSetKeyForMode(mode);
+  Board.didToggleBoardColors();
+  notifyBoardColorSetListeners();
+};
 
 export const getCurrentColorSet = () => colorSets[currentColorSetKey];
 
 export const getCurrentColorSetKey = () => currentColorSetKey;
 
-export const setBoardColorSet = (colorSetKey: ColorSetKey) => {
-  currentColorSetKey = colorSetKey;
-  storage.setBoardColorSet(currentColorSetKey);
-  Board.didToggleBoardColors();
+export const subscribeToBoardColorSetChanges = (listener: () => void) => {
+  boardColorSetListeners.add(listener);
+  return () => {
+    boardColorSetListeners.delete(listener);
+  };
 };
+
+export const setBoardColorSet = (colorSetKey: ColorSetKey) => {
+  colorSetPreferencesByMode = {
+    ...colorSetPreferencesByMode,
+    [currentColorMode]: colorSetKey,
+  };
+  storage.setBoardColorSetsByTheme(colorSetPreferencesByMode);
+  applyColorMode(currentColorMode);
+};
+
+export const resetBoardColorSetPreferences = () => {
+  colorSetPreferencesByMode = { ...DEFAULT_COLOR_SET_PREFERENCES_BY_MODE };
+  storage.setBoardColorSetsByTheme(colorSetPreferencesByMode);
+  applyColorMode(currentColorMode);
+};
+
+if (typeof window !== "undefined" && typeof window.matchMedia === "function") {
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const handleSystemThemeChange = (event: MediaQueryListEvent) => {
+    applyColorMode(event.matches ? "dark" : "light");
+  };
+  if (typeof mediaQuery.addEventListener === "function") {
+    mediaQuery.addEventListener("change", handleSystemThemeChange);
+  } else if (typeof mediaQuery.addListener === "function") {
+    mediaQuery.addListener(handleSystemThemeChange);
+  }
+}
