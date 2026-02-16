@@ -24,7 +24,7 @@ import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecyc
 import { getCurrentRouteState } from "../navigation/routeState";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
-const valentinesLoaderEnabled = true;
+const valentinesLoaderEnabled = false;
 
 export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, pangchiu: boolean, doNotStore: boolean) {
   if (defaultMode) {
@@ -1327,15 +1327,21 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
 
   let radius = 0;
   const maxRadius = 5;
+  let isWhite = true;
 
   function animate() {
     cleanAllPixels();
-    drawCircle(radius);
-    radius = radius >= maxRadius ? 0 : radius + 0.5;
+    drawCircle(radius, isWhite);
+    if (radius >= maxRadius) {
+      radius = 0;
+      isWhite = !isWhite;
+    } else {
+      radius += 0.5;
+    }
     monsBoardDisplayAnimationTimeout = setTimeout(animate, 200);
   }
 
-  function drawCircle(radius: number) {
+  function drawCircle(radius: number, white: boolean) {
     const minRadius = radius - 0.5;
     const maxRadius = radius + 0.5;
     const minRadiusSquared = minRadius * minRadius;
@@ -1348,7 +1354,7 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
         const distanceSquared = dx * dx + dy * dy;
 
         if (distanceSquared >= minRadiusSquared && distanceSquared <= maxRadiusSquared) {
-          colorPixel(new Location(x, y), true);
+          colorPixel(new Location(x, y), white);
         }
       }
     }
