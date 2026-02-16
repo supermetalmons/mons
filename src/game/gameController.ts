@@ -116,12 +116,6 @@ const clearAllManagedGameTimeouts = () => {
   activeGameTimeoutIds.clear();
 };
 
-type SmartAutomoveWithBudgetAsync = (depth: number, maxVisitedNodes: number) => Promise<MonsWeb.OutputModel>;
-type MonsGameModelWithSmartAsync = MonsWeb.MonsGameModel & {
-  smartAutomoveWithBudgetAsync?: SmartAutomoveWithBudgetAsync;
-  smart_automove_with_budget_async?: SmartAutomoveWithBudgetAsync;
-};
-
 export function getCurrentGameFen(): string {
   return game.fen();
 }
@@ -576,8 +570,7 @@ export function didReceiveRematchesSeriesEndIndicator() {
 
 function automove(onAutomoveButtonClick: boolean = false) {
   const sessionGuard = getSessionGuard();
-  const depth = onAutomoveButtonClick ? 2 : 3;
-  const maxNodes = onAutomoveButtonClick ? 420 : 2300;
+  const preference = onAutomoveButtonClick ? "fast" : "normal";
   const shouldEnforceBotMovePacing = isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
   const fenBeforeAutomove = game.fen();
   const syncAutomoveActionState = () => {
@@ -590,14 +583,8 @@ function automove(onAutomoveButtonClick: boolean = false) {
       setAutomoveActionEnabled(false);
     }
   };
-  const smartAutomoveWithBudgetAsync =
-    (game as MonsGameModelWithSmartAsync).smartAutomoveWithBudgetAsync ??
-    (game as MonsGameModelWithSmartAsync).smart_automove_with_budget_async;
-  if (!smartAutomoveWithBudgetAsync) {
-    return;
-  }
-  smartAutomoveWithBudgetAsync
-    .call(game, depth, maxNodes)
+  game
+    .smartAutomoveAsync(preference)
     .then((output: MonsWeb.OutputModel) => {
       if (!sessionGuard()) {
         return;
