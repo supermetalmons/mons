@@ -102,6 +102,8 @@ let opponentScoreText: SVGElement | undefined;
 let opponentEndOfGameIcon: SVGElement | undefined;
 let inviteBotButtonContainer: SVGElement | undefined;
 let inviteBotButtonElement: HTMLButtonElement | undefined;
+let inviteBotButtonIconElement: HTMLImageElement | undefined;
+let cleanupInviteBotButtonThemeListener: (() => void) | null = null;
 
 let playerScoreText: SVGElement | undefined;
 let playerEndOfGameIcon: SVGElement | undefined;
@@ -151,9 +153,18 @@ const END_OF_GAME_ICON_OPACITY = 0.69;
 const END_OF_GAME_ICON_SIZE_MULTIPLIER = 0.53;
 const END_OF_GAME_ICON_GAP_MULTIPLIER = 0.06;
 const END_OF_GAME_NAME_OFFSET_MULTIPLIER = 0.54;
-const INVITE_BOT_BUTTON_WIDTH_MULTIPLIER = 2.15;
-const INVITE_BOT_BUTTON_HEIGHT_MULTIPLIER = 0.44;
+const SCORE_TEXT_FONT_SIZE_MULTIPLIER = 50;
+const INVITE_BOT_BUTTON_WIDTH_MULTIPLIER = 3.5475;
 const INVITE_BOT_BUTTON_X_GAP_MULTIPLIER = 0.1;
+const INVITE_BOT_BUTTON_HEIGHT_TO_AVATAR_MULTIPLIER = 0.72;
+const INVITE_BOT_BUTTON_FONT_TO_HEIGHT_MULTIPLIER = 0.84;
+const INVITE_BOT_BUTTON_TEXT_ASCENT_MULTIPLIER = 0.78;
+const INVITE_BOT_BUTTON_PADDING_TO_HEIGHT_MULTIPLIER = 0.48;
+const INVITE_BOT_BUTTON_ICON_GAP_TO_HEIGHT_MULTIPLIER = 0.2;
+const INVITE_BOT_BUTTON_ICON_TO_FONT_MULTIPLIER = 0.95;
+const INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX = 12;
+const INVITE_BOT_BUTTON_FALLBACK_FONT_SIZE_MULTIPLIER = 22;
+const INVITE_BOT_BUTTON_FALLBACK_BASELINE_MULTIPLIER = 0.8;
 const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
 const WAGER_PILE_SCALE = 1;
@@ -161,6 +172,74 @@ const WAGER_WIN_PILE_SCALE = 1.3333;
 const WAGER_ICON_SIZE_MULTIPLIER = 0.669;
 const WAGER_ICON_PADDING_FRAC = 0.15;
 const WAGER_WIN_ANIM_DURATION_MS = 800;
+
+const applyInviteBotButtonColors = (button: HTMLButtonElement, state: "default" | "hover" | "active") => {
+  const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  if (dark) {
+    if (state === "active") {
+      button.style.backgroundColor = "var(--color-gray-55)";
+    } else if (state === "hover") {
+      button.style.backgroundColor = "var(--color-gray-44)";
+    } else {
+      button.style.backgroundColor = "var(--color-gray-33)";
+    }
+    button.style.color = "var(--color-blue-primary-dark)";
+  } else {
+    if (state === "active") {
+      button.style.backgroundColor = "var(--color-gray-d0)";
+    } else if (state === "hover") {
+      button.style.backgroundColor = "var(--color-gray-e0)";
+    } else {
+      button.style.backgroundColor = "var(--color-gray-f0)";
+    }
+    button.style.color = "var(--color-blue-primary)";
+  }
+};
+
+type InviteBotButtonLayout = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  fontSizePx: number;
+  iconSizePx: number;
+  iconGapPx: number;
+  horizontalPaddingPx: number;
+};
+
+const getInviteBotButtonLayout = (scoreText: SVGElement, multiplicator: number, avatarSize: number): InviteBotButtonLayout => {
+  const scoreX = parseFloat(scoreText.getAttribute("x") || "0") / 100;
+  const scoreY = parseFloat(scoreText.getAttribute("y") || "0") / 100;
+  const scoreWidth = getSvgTextWidthInBoardUnits(scoreText);
+  const width = INVITE_BOT_BUTTON_WIDTH_MULTIPLIER * multiplicator;
+  const height = avatarSize * INVITE_BOT_BUTTON_HEIGHT_TO_AVATAR_MULTIPLIER;
+  const x = scoreX + scoreWidth + INVITE_BOT_BUTTON_X_GAP_MULTIPLIER * multiplicator;
+  const boardWidthPx = boardBackgroundLayer?.getBoundingClientRect().width || 0;
+  const pxPerBoardUnit = boardWidthPx > 0 ? boardWidthPx / 11 : 0;
+  const fontSizePx = pxPerBoardUnit > 0
+    ? Math.max(INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX, Math.round(height * pxPerBoardUnit * INVITE_BOT_BUTTON_FONT_TO_HEIGHT_MULTIPLIER))
+    : Math.max(INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX, Math.round(INVITE_BOT_BUTTON_FALLBACK_FONT_SIZE_MULTIPLIER * multiplicator));
+  const buttonHeightPx = pxPerBoardUnit > 0 ? height * pxPerBoardUnit : Math.max(16, fontSizePx / INVITE_BOT_BUTTON_FONT_TO_HEIGHT_MULTIPLIER);
+  let y = scoreY - height * INVITE_BOT_BUTTON_FALLBACK_BASELINE_MULTIPLIER;
+  if (pxPerBoardUnit > 0) {
+    const fontSizeBoardUnits = fontSizePx / pxPerBoardUnit;
+    const baselineOffset = (height - fontSizeBoardUnits) / 2 + fontSizeBoardUnits * INVITE_BOT_BUTTON_TEXT_ASCENT_MULTIPLIER;
+    y = scoreY - baselineOffset;
+  }
+  const iconSizePx = Math.max(10, Math.round(fontSizePx * INVITE_BOT_BUTTON_ICON_TO_FONT_MULTIPLIER));
+  const iconGapPx = Math.max(4, Math.round(buttonHeightPx * INVITE_BOT_BUTTON_ICON_GAP_TO_HEIGHT_MULTIPLIER));
+  const horizontalPaddingPx = Math.max(8, Math.round(buttonHeightPx * INVITE_BOT_BUTTON_PADDING_TO_HEIGHT_MULTIPLIER));
+  return {
+    x,
+    y,
+    width,
+    height,
+    fontSizePx,
+    iconSizePx,
+    iconGapPx,
+    horizontalPaddingPx,
+  };
+};
 
 const fetchCachedImageUrl = (url: string): Promise<string | null> =>
   fetch(url)
@@ -1057,38 +1136,117 @@ function setupInviteBotButton() {
   if (!controlsLayer) {
     return;
   }
-  const buttonContainer = document.createElementNS(SVG.ns, "foreignObject");
-  buttonContainer.setAttribute("overflow", "visible");
-  buttonContainer.style.pointerEvents = "auto";
+  if (cleanupInviteBotButtonThemeListener) {
+    cleanupInviteBotButtonThemeListener();
+    cleanupInviteBotButtonThemeListener = null;
+  }
+  const container = document.createElementNS(SVG.ns, "foreignObject");
+  container.setAttribute("overflow", "visible");
+  container.style.pointerEvents = "auto";
   const button = document.createElementNS("http://www.w3.org/1999/xhtml", "button") as HTMLButtonElement;
   button.type = "button";
-  button.textContent = "Invite a Bot";
   button.style.width = "100%";
   button.style.height = "100%";
-  button.style.display = "block";
+  button.style.display = "flex";
+  button.style.alignItems = "center";
+  button.style.justifyContent = "center";
   button.style.margin = "0";
-  button.style.padding = "0";
+  button.style.padding = "0 16px";
   button.style.boxSizing = "border-box";
-  button.style.border = "1px solid rgba(121, 169, 255, 0.85)";
-  button.style.borderRadius = "8px";
-  button.style.background = "rgba(17, 29, 50, 0.9)";
-  button.style.color = "#eaf4ff";
-  button.style.fontFamily = "system-ui, -apple-system, sans-serif";
-  button.style.fontWeight = "600";
-  button.style.lineHeight = "1";
-  button.style.whiteSpace = "nowrap";
+  button.style.border = "none";
   button.style.cursor = "pointer";
-  button.style.touchAction = "manipulation";
   button.style.userSelect = "none";
+  button.style.touchAction = "manipulation";
+  button.style.whiteSpace = "nowrap";
+  button.style.fontWeight = "888";
+  button.style.lineHeight = "1";
+  button.style.outline = "none";
+  applyInviteBotButtonColors(button, "default");
+
+  const icon = document.createElementNS("http://www.w3.org/1999/xhtml", "img") as HTMLImageElement;
+  icon.src = `data:image/webp;base64,${emojis.pc}`;
+  icon.alt = "";
+  icon.draggable = false;
+  icon.style.display = "inline-flex";
+  icon.style.alignItems = "center";
+  icon.style.justifyContent = "center";
+  icon.style.objectFit = "contain";
+  icon.style.marginRight = "6px";
+
+  const label = document.createElementNS("http://www.w3.org/1999/xhtml", "span");
+  label.textContent = "Invite a Bot";
+
+  button.appendChild(icon);
+  button.appendChild(label);
+
+  let pressed = false;
+  let hovered = false;
+  const refreshColors = () => {
+    if (pressed) {
+      applyInviteBotButtonColors(button, "active");
+    } else if (hovered) {
+      applyInviteBotButtonColors(button, "hover");
+    } else {
+      applyInviteBotButtonColors(button, "default");
+    }
+  };
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  const handleThemeChange = () => {
+    refreshColors();
+  };
+  if (typeof mediaQuery.addEventListener === "function") {
+    mediaQuery.addEventListener("change", handleThemeChange);
+    cleanupInviteBotButtonThemeListener = () => {
+      mediaQuery.removeEventListener("change", handleThemeChange);
+    };
+  } else if (typeof mediaQuery.addListener === "function") {
+    mediaQuery.addListener(handleThemeChange);
+    cleanupInviteBotButtonThemeListener = () => {
+      mediaQuery.removeListener(handleThemeChange);
+    };
+  }
+
+  button.addEventListener("mouseenter", () => {
+    hovered = true;
+    refreshColors();
+  });
+  button.addEventListener("mouseleave", () => {
+    hovered = false;
+    pressed = false;
+    refreshColors();
+  });
+  button.addEventListener("mousedown", () => {
+    pressed = true;
+    refreshColors();
+  });
+  button.addEventListener("mouseup", () => {
+    pressed = false;
+    refreshColors();
+  });
+  button.addEventListener("touchstart", () => {
+    pressed = true;
+    refreshColors();
+  });
+  button.addEventListener("touchend", () => {
+    pressed = false;
+    refreshColors();
+  });
+  button.addEventListener("touchcancel", () => {
+    pressed = false;
+    refreshColors();
+  });
+
   button.addEventListener("click", (event) => {
     event.preventDefault();
     event.stopPropagation();
     didClickInviteBotIntoLocalGameButton();
   });
-  buttonContainer.appendChild(button);
-  controlsLayer.appendChild(buttonContainer);
-  inviteBotButtonContainer = buttonContainer;
+
+  container.appendChild(button);
+  controlsLayer.appendChild(container);
+  inviteBotButtonContainer = container;
   inviteBotButtonElement = button;
+  inviteBotButtonIconElement = icon;
   setInviteBotButtonVisible(false);
 }
 
@@ -2506,6 +2664,7 @@ const updateLayout = () => {
     return;
   }
   const multiplicator = getOuterElementsMultiplicator();
+  const scoreFontSize = SCORE_TEXT_FONT_SIZE_MULTIPLIER * multiplicator;
 
   let shouldOffsetFromBorders = seeIfShouldOffsetFromBorders();
   const offsetX = shouldOffsetFromBorders ? minHorizontalOffset : 0;
@@ -2522,8 +2681,8 @@ const updateLayout = () => {
     SVG.setOrigin(timerText, offsetX + avatarSize * 1.85, y + avatarSize * 0.73);
     SVG.setOrigin(nameText, 0, y + avatarSize * 0.65);
 
-    numberText.setAttribute("font-size", (50 * multiplicator).toString());
-    timerText.setAttribute("font-size", (50 * multiplicator).toString());
+    numberText.setAttribute("font-size", scoreFontSize.toString());
+    timerText.setAttribute("font-size", scoreFontSize.toString());
     nameText.setAttribute("font-size", (32 * multiplicator).toString());
 
     const statusItemsOffsetX = shouldOffsetFromBorders ? 0.21 * multiplicator : 0;
@@ -2546,16 +2705,18 @@ const updateLayout = () => {
   }
 
   if (inviteBotButtonContainer && inviteBotButtonElement && opponentScoreText) {
-    const scoreX = parseFloat(opponentScoreText.getAttribute("x") || "0") / 100;
-    const scoreY = parseFloat(opponentScoreText.getAttribute("y") || "0") / 100;
-    const scoreWidth = getSvgTextWidthInBoardUnits(opponentScoreText);
-    const inviteButtonWidth = INVITE_BOT_BUTTON_WIDTH_MULTIPLIER * multiplicator;
-    const inviteButtonHeight = INVITE_BOT_BUTTON_HEIGHT_MULTIPLIER * multiplicator;
-    const inviteButtonX = scoreX + scoreWidth + INVITE_BOT_BUTTON_X_GAP_MULTIPLIER * multiplicator;
-    const inviteButtonY = scoreY - inviteButtonHeight * 0.82;
-    SVG.setFrame(inviteBotButtonContainer, inviteButtonX, inviteButtonY, inviteButtonWidth, inviteButtonHeight);
-    inviteBotButtonElement.style.fontSize = `${Math.max(10, Math.round(14 * multiplicator))}px`;
-    inviteBotButtonElement.style.borderRadius = `${Math.max(4, Math.round(8 * multiplicator))}px`;
+    const avatarSize = getAvatarSize();
+    const layout = getInviteBotButtonLayout(opponentScoreText, multiplicator, avatarSize);
+    SVG.setFrame(inviteBotButtonContainer, layout.x, layout.y, layout.width, layout.height);
+    inviteBotButtonElement.style.fontSize = `${layout.fontSizePx}px`;
+    inviteBotButtonElement.style.borderRadius = "999px";
+    inviteBotButtonElement.style.paddingLeft = `${layout.horizontalPaddingPx}px`;
+    inviteBotButtonElement.style.paddingRight = `${layout.horizontalPaddingPx}px`;
+    if (inviteBotButtonIconElement) {
+      inviteBotButtonIconElement.style.marginRight = `${layout.iconGapPx}px`;
+      inviteBotButtonIconElement.style.width = `${layout.iconSizePx}px`;
+      inviteBotButtonIconElement.style.height = `${layout.iconSizePx}px`;
+    }
   }
 
   if (instructionsContainerElement && talkingDude) {
@@ -3087,6 +3248,10 @@ export function disposeBoardRuntime() {
     disappearingPileTimers.opponent = null;
     decrementLifecycleCounter("boardTimeouts");
   }
+  if (cleanupInviteBotButtonThemeListener) {
+    cleanupInviteBotButtonThemeListener();
+    cleanupInviteBotButtonThemeListener = null;
+  }
   if (didRegisterResizeHandler) {
     window.removeEventListener("resize", updateLayout);
     didRegisterResizeHandler = false;
@@ -3132,6 +3297,7 @@ export function disposeBoardRuntime() {
   opponentScoreText = undefined;
   inviteBotButtonContainer = undefined;
   inviteBotButtonElement = undefined;
+  inviteBotButtonIconElement = undefined;
   playerScoreText = undefined;
   opponentEndOfGameIcon = undefined;
   playerEndOfGameIcon = undefined;
