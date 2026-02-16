@@ -409,6 +409,43 @@ function rematchInLoopMode() {
   automove();
 }
 
+function startBotMatch(botColor: MonsWeb.Color) {
+  isGameOver = false;
+  flashbackMode = false;
+  resignedColor = undefined;
+  winnerByTimerColor = undefined;
+  didStartLocalGame = true;
+  isGameWithBot = true;
+  currentInputs = [];
+  blackTimerStash = null;
+  whiteTimerStash = null;
+  setHomeVisible(true);
+  setIslandButtonDimmed(true);
+  setUndoVisible(true);
+  setBrushAndNavigationButtonDimmed(true);
+  setInviteLinkActionVisible(false);
+  setAutomatchVisible(false);
+  setBotGameOptionVisible(false);
+  setNavigationListButtonVisible(false);
+  setAutomoveActionVisible(true);
+  setAutomoveActionEnabled(true);
+  showMoveHistoryButton(true);
+  showResignButton();
+  Board.setBoardFlipped(botColor === MonsWeb.Color.White);
+  Board.showOpponentAsBotPlayer();
+  Board.resetForNewGame();
+  game = MonsWeb.MonsGameModel.new();
+  setNewBoard(false);
+  botPlayerColor = botColor;
+  playerSideColor = botColor === MonsWeb.Color.White ? MonsWeb.Color.Black : MonsWeb.Color.White;
+  showVoiceReactionButton(true);
+  lastBotMoveTimestamp = 0;
+  updateUndoButtonBasedOnGameState();
+  if (game.active_color() === botPlayerColor) {
+    automove();
+  }
+}
+
 export function didJustCreateRematchProposalSuccessfully(inviteId: string) {
   setEndMatchVisible(true);
   showWaitingStateText("Ready to Play");
@@ -458,29 +495,7 @@ export function didFindYourOwnInviteThatNobodyJoined(isAutomatch: boolean) {
 
 export function didClickStartBotGameButton() {
   dismissBadgeAndNotificationBannerIfNeeded();
-  didStartLocalGame = true;
-  setHomeVisible(true);
-  setIslandButtonDimmed(true);
-
-  setUndoVisible(true);
-  setBrushAndNavigationButtonDimmed(true);
-  setInviteLinkActionVisible(false);
-  setAutomatchVisible(false);
-  setBotGameOptionVisible(false);
-  setNavigationListButtonVisible(false);
-  setAutomoveActionVisible(true);
-  showMoveHistoryButton(true);
-  showResignButton();
-  Board.setBoardFlipped(true);
-  Board.showOpponentAsBotPlayer();
-  Board.resetForNewGame();
-  setNewBoard(false);
-  botPlayerColor = MonsWeb.Color.White;
-  playerSideColor = MonsWeb.Color.Black;
-  isGameWithBot = true;
-  showVoiceReactionButton(true);
-  lastBotMoveTimestamp = 0;
-  automove();
+  startBotMatch(MonsWeb.Color.White);
 }
 
 export function handleFreshlySignedInProfileInGameIfNeeded(profileId: string) {
@@ -630,6 +645,12 @@ function didConfirmRematchProposal() {
       showNextProblem(nextProblem);
       return;
     }
+  }
+
+  if (isGameWithBot) {
+    const nextBotColor = botPlayerColor === MonsWeb.Color.White ? MonsWeb.Color.Black : MonsWeb.Color.White;
+    startBotMatch(nextBotColor);
+    return;
   }
 
   if (!isOnlineGame) {
