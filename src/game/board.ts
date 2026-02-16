@@ -140,7 +140,7 @@ const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 const END_OF_GAME_ICON_BASE_URL = "https://assets.mons.link/icons";
 const END_OF_GAME_ICON_URLS = {
   victory: `${END_OF_GAME_ICON_BASE_URL}/victory.webp`,
-  resign: `${END_OF_GAME_ICON_BASE_URL}/resign.webp`,
+  resign: `${END_OF_GAME_ICON_BASE_URL}/resign_1.webp`,
 } as const;
 type EndOfGameIconName = keyof typeof END_OF_GAME_ICON_URLS;
 const endOfGameIconPromises: Map<EndOfGameIconName, Promise<string | null>> = new Map();

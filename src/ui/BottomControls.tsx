@@ -120,6 +120,7 @@ const STATUS_ICON_URLS = {
   cloud: `${STATUS_ICON_BASE_URL}/cloud.webp`,
   spectating: `${STATUS_ICON_BASE_URL}/spectating.webp`,
   automatch: `${STATUS_ICON_BASE_URL}/automatch_1.webp`,
+  finish: `${STATUS_ICON_BASE_URL}/finish.webp`,
 } as const;
 type StatusIconName = keyof typeof STATUS_ICON_URLS;
 const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
@@ -264,6 +265,7 @@ const BottomControls: React.FC = () => {
     cloud: null,
     spectating: null,
     automatch: null,
+    finish: null,
   });
   const [stickerUrls, setStickerUrls] = useState<Record<number, string | null>>({});
   const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
@@ -1176,7 +1178,10 @@ const BottomControls: React.FC = () => {
                 {"Finished"}
               </>
             ) : (
-              "🏁 End Match"
+              <>
+                {statusIconUrls.finish ? <BottomPillInlineIcon src={statusIconUrls.finish} alt="" draggable={false} /> : "🏁 "}
+                {"End Match"}
+              </>
             )}
           </BottomPillButton>
         )}
