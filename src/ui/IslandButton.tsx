@@ -123,7 +123,7 @@ const SparkleRing = styled.div`
   transform: translate(-50%, -50%);
   animation: ${sparklePulse} 2s ease-in-out infinite;
   @media (prefers-color-scheme: light) {
-    background: radial-gradient(circle at 50% 50%, rgba(255, 240, 0, 0.5) 0%, rgba(255, 230, 0, 0.35) 40%, transparent 70%);
+    background: radial-gradient(circle at 50% 50%, rgba(120, 170, 255, 0.4) 0%, rgba(100, 150, 240, 0.25) 40%, transparent 70%);
   }
 `;
 
@@ -139,7 +139,7 @@ const SparkleCore = styled.div`
   animation: ${sparklePulse} 1.5s ease-in-out infinite;
   animation-delay: 0.25s;
   @media (prefers-color-scheme: light) {
-    background: radial-gradient(circle, rgba(255, 230, 0, 1) 0%, rgba(255, 210, 0, 0.85) 50%, transparent 100%);
+    background: radial-gradient(circle, rgba(130, 175, 255, 0.9) 0%, rgba(100, 150, 240, 0.7) 50%, transparent 100%);
   }
 `;
 
@@ -168,7 +168,7 @@ const SparkleRay = styled.div<{ $angle: number; $delay: number }>`
   @media (prefers-color-scheme: light) {
     width: 3px;
     height: 16px;
-    background: linear-gradient(to top, transparent 0%, rgba(255, 255, 0, 1) 25%, rgba(255, 255, 0, 1) 75%, transparent 100%);
+    background: linear-gradient(to top, transparent 0%, rgba(140, 185, 255, 0.5) 40%, rgba(140, 185, 255, 0.5) 60%, transparent 100%);
   }
 `;
 
@@ -203,7 +203,7 @@ const SparkleParticle = styled.div<{ $x: number; $y: number; $delay: number; $du
   }
   @media (prefers-color-scheme: light) {
     &::before, &::after {
-      background: rgba(255, 160, 50, 1);
+      background: rgba(80, 140, 240, 0.85);
     }
   }
 `;
