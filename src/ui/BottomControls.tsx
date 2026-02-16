@@ -119,7 +119,7 @@ const STATUS_ICON_BASE_URL = "https://assets.mons.link/icons";
 const STATUS_ICON_URLS = {
   cloud: `${STATUS_ICON_BASE_URL}/cloud.webp`,
   spectating: `${STATUS_ICON_BASE_URL}/spectating.webp`,
-  automatch: `${STATUS_ICON_BASE_URL}/automatch.webp`,
+  automatch: `${STATUS_ICON_BASE_URL}/automatch_1.webp`,
 } as const;
 type StatusIconName = keyof typeof STATUS_ICON_URLS;
 const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
