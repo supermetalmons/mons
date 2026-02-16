@@ -2505,9 +2505,9 @@ const updateLayout = () => {
 
     if (instructionsCloudBg) {
       const cloudX = (11 - instructionsWidth - instructionsRightOffset) * 100;
-      const cloudY = 0;
+      const cloudY = 2.3;
       const cloudW = instructionsWidth * 100;
-      const cloudH = 0.85 * 100;
+      const cloudH = 0.77 * 100;
       instructionsCloudBg.setAttribute("d", generateCloudPath(cloudX, cloudY, cloudW, cloudH));
     }
 
