@@ -16,7 +16,7 @@ export type Problem = {
 const descriptionDrainer = "Your drainer is the fastest way to move mana. Drainers can move onto the same tile as a mana to pick it up & carry it to a mana pool to score.";
 // const descriptionDrainer = "Move your drainer onto the same tile as a mana to pick it up, then carry it to a mana pool in any corner to score.";
 
-const descriptionMana = "💧 Once each turn (except for white's first turn), you must select one of your own mana & move it once in any direction. This ends your turn so save it until you're ready!";
+const descriptionMana = "Once each turn (except for white's first turn), you must select one of your own mana & move it once in any direction. This ends your turn so save it until you're ready!";
 // const descriptionMana = "You can move one mana once per turn (except for white's very first turn) entirely on its own, but this immediately ends your turn so save it until you're ready!";
 
 const descriptionSpirit = "It is also possible to move mana by using your spirit's active ability ⭐️, which can target a mana from exactly two tiles away & push it one tile in any direction.";
