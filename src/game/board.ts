@@ -154,17 +154,13 @@ const END_OF_GAME_ICON_SIZE_MULTIPLIER = 0.53;
 const END_OF_GAME_ICON_GAP_MULTIPLIER = 0.06;
 const END_OF_GAME_NAME_OFFSET_MULTIPLIER = 0.54;
 const SCORE_TEXT_FONT_SIZE_MULTIPLIER = 50;
-const INVITE_BOT_BUTTON_WIDTH_MULTIPLIER = 3.5475;
-const INVITE_BOT_BUTTON_X_GAP_MULTIPLIER = 0.1;
-const INVITE_BOT_BUTTON_HEIGHT_TO_AVATAR_MULTIPLIER = 0.72;
-const INVITE_BOT_BUTTON_FONT_TO_HEIGHT_MULTIPLIER = 0.84;
-const INVITE_BOT_BUTTON_TEXT_ASCENT_MULTIPLIER = 0.78;
-const INVITE_BOT_BUTTON_PADDING_TO_HEIGHT_MULTIPLIER = 0.48;
-const INVITE_BOT_BUTTON_ICON_GAP_TO_HEIGHT_MULTIPLIER = 0.2;
-const INVITE_BOT_BUTTON_ICON_TO_FONT_MULTIPLIER = 0.95;
+const INVITE_BOT_BUTTON_FONT_TO_SCORE_RATIO = 0.72;
+const INVITE_BOT_BUTTON_X_GAP_MULTIPLIER = 0.2;
+const INVITE_BOT_BUTTON_HEIGHT_TO_FONT_RATIO = 2.1;
 const INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX = 12;
-const INVITE_BOT_BUTTON_FALLBACK_FONT_SIZE_MULTIPLIER = 22;
-const INVITE_BOT_BUTTON_FALLBACK_BASELINE_MULTIPLIER = 0.8;
+const INVITE_BOT_BUTTON_ICON_TO_FONT_RATIO = 0.95;
+const INVITE_BOT_BUTTON_ICON_GAP_TO_FONT_RATIO = 0.4;
+const INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO = 0.9;
 const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
 const WAGER_PILE_SCALE = 1;
@@ -211,34 +207,18 @@ const getInviteBotButtonLayout = (scoreText: SVGElement, multiplicator: number, 
   const scoreX = parseFloat(scoreText.getAttribute("x") || "0") / 100;
   const scoreY = parseFloat(scoreText.getAttribute("y") || "0") / 100;
   const scoreWidth = getSvgTextWidthInBoardUnits(scoreText);
-  const width = INVITE_BOT_BUTTON_WIDTH_MULTIPLIER * multiplicator;
-  const height = avatarSize * INVITE_BOT_BUTTON_HEIGHT_TO_AVATAR_MULTIPLIER;
+  const scoreFontBoardUnits = SCORE_TEXT_FONT_SIZE_MULTIPLIER * multiplicator / 100;
+  const fontSizePx = Math.max(INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX, Math.round(SCORE_TEXT_FONT_SIZE_MULTIPLIER * multiplicator * INVITE_BOT_BUTTON_FONT_TO_SCORE_RATIO));
+  const fontBoardUnits = fontSizePx / 100;
+  const height = Math.min(fontBoardUnits * INVITE_BOT_BUTTON_HEIGHT_TO_FONT_RATIO, avatarSize * 0.88);
   const x = scoreX + scoreWidth + INVITE_BOT_BUTTON_X_GAP_MULTIPLIER * multiplicator;
-  const boardWidthPx = boardBackgroundLayer?.getBoundingClientRect().width || 0;
-  const pxPerBoardUnit = boardWidthPx > 0 ? boardWidthPx / 11 : 0;
-  const fontSizePx = pxPerBoardUnit > 0
-    ? Math.max(INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX, Math.round(height * pxPerBoardUnit * INVITE_BOT_BUTTON_FONT_TO_HEIGHT_MULTIPLIER))
-    : Math.max(INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX, Math.round(INVITE_BOT_BUTTON_FALLBACK_FONT_SIZE_MULTIPLIER * multiplicator));
-  const buttonHeightPx = pxPerBoardUnit > 0 ? height * pxPerBoardUnit : Math.max(16, fontSizePx / INVITE_BOT_BUTTON_FONT_TO_HEIGHT_MULTIPLIER);
-  let y = scoreY - height * INVITE_BOT_BUTTON_FALLBACK_BASELINE_MULTIPLIER;
-  if (pxPerBoardUnit > 0) {
-    const fontSizeBoardUnits = fontSizePx / pxPerBoardUnit;
-    const baselineOffset = (height - fontSizeBoardUnits) / 2 + fontSizeBoardUnits * INVITE_BOT_BUTTON_TEXT_ASCENT_MULTIPLIER;
-    y = scoreY - baselineOffset;
-  }
-  const iconSizePx = Math.max(10, Math.round(fontSizePx * INVITE_BOT_BUTTON_ICON_TO_FONT_MULTIPLIER));
-  const iconGapPx = Math.max(4, Math.round(buttonHeightPx * INVITE_BOT_BUTTON_ICON_GAP_TO_HEIGHT_MULTIPLIER));
-  const horizontalPaddingPx = Math.max(8, Math.round(buttonHeightPx * INVITE_BOT_BUTTON_PADDING_TO_HEIGHT_MULTIPLIER));
-  return {
-    x,
-    y,
-    width,
-    height,
-    fontSizePx,
-    iconSizePx,
-    iconGapPx,
-    horizontalPaddingPx,
-  };
+  const iconSizePx = Math.max(10, Math.round(fontSizePx * INVITE_BOT_BUTTON_ICON_TO_FONT_RATIO));
+  const iconGapPx = Math.max(2, Math.round(fontSizePx * INVITE_BOT_BUTTON_ICON_GAP_TO_FONT_RATIO));
+  const horizontalPaddingPx = Math.max(6, Math.round(fontSizePx * INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO));
+  const width = (iconSizePx + iconGapPx + fontSizePx * 5.5 + 2 * horizontalPaddingPx) / 100;
+  const scoreCenterY = scoreY - scoreFontBoardUnits * 0.35;
+  const y = scoreCenterY - height / 2 - 0.03 * multiplicator;
+  return { x, y, width, height, fontSizePx, iconSizePx, iconGapPx, horizontalPaddingPx };
 };
 
 const fetchCachedImageUrl = (url: string): Promise<string | null> =>
@@ -1145,7 +1125,7 @@ function setupInviteBotButton() {
   container.style.pointerEvents = "auto";
   const button = document.createElementNS("http://www.w3.org/1999/xhtml", "button") as HTMLButtonElement;
   button.type = "button";
-  button.style.width = "100%";
+  button.style.width = "fit-content";
   button.style.height = "100%";
   button.style.display = "flex";
   button.style.alignItems = "center";
@@ -1158,7 +1138,7 @@ function setupInviteBotButton() {
   button.style.userSelect = "none";
   button.style.touchAction = "manipulation";
   button.style.whiteSpace = "nowrap";
-  button.style.fontWeight = "888";
+  button.style.fontWeight = "600";
   button.style.lineHeight = "1";
   button.style.outline = "none";
   applyInviteBotButtonColors(button, "default");
