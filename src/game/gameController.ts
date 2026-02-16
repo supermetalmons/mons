@@ -80,6 +80,7 @@ var currentInputs: Location[] = [];
 let blackTimerStash: string | null = null;
 let whiteTimerStash: string | null = null;
 const activeGameTimeoutIds = new Set<number>();
+let isInviteBotIntoLocalGameUnavailable = false;
 
 const setManagedGameTimeout = (callback: () => void, delay: number, guard?: () => boolean): number => {
   incrementLifecycleCounter("gameTimeouts");
@@ -114,6 +115,29 @@ const clearAllManagedGameTimeouts = () => {
     decrementLifecycleCounter("gameTimeouts");
   });
   activeGameTimeoutIds.clear();
+};
+
+const shouldShowInviteBotIntoLocalGameButton = () => {
+  if (
+    isInviteBotIntoLocalGameUnavailable ||
+    isOnlineGame ||
+    isGameWithBot ||
+    isWatchOnly ||
+    puzzleMode ||
+    isGameOver ||
+    !didStartLocalGame ||
+    !isCreateInviteRoute()
+  ) {
+    return false;
+  }
+  if (game.active_color() !== MonsWeb.Color.Black) {
+    return false;
+  }
+  return game.turn_number() === 2;
+};
+
+const syncInviteBotIntoLocalGameButton = () => {
+  Board.setInviteBotButtonVisible(shouldShowInviteBotIntoLocalGameButton());
 };
 
 export function getCurrentGameFen(): string {
@@ -219,6 +243,7 @@ export async function go(routeStateOverride?: RouteState) {
   isReconnect = false;
   didConnect = false;
   isWaitingForInviteToGetAccepted = false;
+  isInviteBotIntoLocalGameUnavailable = false;
   flashbackMode = false;
   resignedColor = undefined;
   winnerByTimerColor = undefined;
@@ -314,6 +339,7 @@ export async function go(routeStateOverride?: RouteState) {
   if (isBotsRoute()) {
     Board.showRandomEmojisForLoopMode();
   }
+  syncInviteBotIntoLocalGameButton();
 }
 
 export function disposeGameSession() {
@@ -339,6 +365,7 @@ export function disposeGameSession() {
   isReconnect = false;
   didConnect = false;
   isWaitingForInviteToGetAccepted = false;
+  isInviteBotIntoLocalGameUnavailable = false;
   setWatchOnlyState(false);
   currentWagerState = null;
   wagerOutcomeShown = false;
@@ -387,6 +414,7 @@ export function disposeGameSession() {
   Board.stopMonsBoardAsDisplayAnimations();
   Board.hideTimerCountdownDigits();
   Board.hideAllMoveStatuses();
+  Board.setInviteBotButtonVisible(false);
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
 }
@@ -414,6 +442,7 @@ function startBotMatch(botColor: MonsWeb.Color) {
   flashbackMode = false;
   resignedColor = undefined;
   winnerByTimerColor = undefined;
+  isInviteBotIntoLocalGameUnavailable = true;
   didStartLocalGame = true;
   isGameWithBot = true;
   currentInputs = [];
@@ -441,6 +470,7 @@ function startBotMatch(botColor: MonsWeb.Color) {
   showVoiceReactionButton(true);
   lastBotMoveTimestamp = 0;
   updateUndoButtonBasedOnGameState();
+  syncInviteBotIntoLocalGameButton();
   if (game.active_color() === botPlayerColor) {
     automove();
   }
@@ -496,6 +526,36 @@ export function didFindYourOwnInviteThatNobodyJoined(isAutomatch: boolean) {
 export function didClickStartBotGameButton() {
   dismissBadgeAndNotificationBannerIfNeeded();
   startBotMatch(MonsWeb.Color.White);
+}
+
+export function didClickInviteBotIntoLocalGameButton() {
+  if (
+    isOnlineGame ||
+    isWatchOnly ||
+    isGameWithBot ||
+    puzzleMode ||
+    isGameOver ||
+    !didStartLocalGame ||
+    isInviteBotIntoLocalGameUnavailable ||
+    !isCreateInviteRoute() ||
+    game.active_color() !== MonsWeb.Color.Black
+  ) {
+    return;
+  }
+  isInviteBotIntoLocalGameUnavailable = true;
+  isGameWithBot = true;
+  botPlayerColor = MonsWeb.Color.Black;
+  playerSideColor = MonsWeb.Color.White;
+  Board.setBoardFlipped(false);
+  Board.showOpponentAsBotPlayer();
+  showResignButton();
+  showVoiceReactionButton(true);
+  setAutomoveActionVisible(true);
+  setAutomoveActionEnabled(false);
+  updateUndoButtonBasedOnGameState();
+  syncInviteBotIntoLocalGameButton();
+  lastBotMoveTimestamp = 0;
+  automove();
 }
 
 export function handleFreshlySignedInProfileInGameIfNeeded(profileId: string) {
@@ -588,6 +648,7 @@ function automove(onAutomoveButtonClick: boolean = false) {
   const preference = onAutomoveButtonClick ? "fast" : "normal";
   const shouldEnforceBotMovePacing = isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
   const fenBeforeAutomove = game.fen();
+  const inputColorBeforeAutomove = game.active_color();
   const syncAutomoveActionState = () => {
     if (isBotsRoute()) {
       return;
@@ -614,7 +675,7 @@ function automove(onAutomoveButtonClick: boolean = false) {
               lastBotMoveTimestamp = Date.now();
             }
             const appliedOutput = game.process_input_fen(output.input_fen());
-            applyOutput([], "", appliedOutput, false, true, AssistedInputKind.None);
+            applyOutput([], "", appliedOutput, false, true, AssistedInputKind.None, undefined, inputColorBeforeAutomove);
           }
           syncAutomoveActionState();
         };
@@ -822,7 +883,16 @@ function turnShouldBeConfirmedForOutputEvents(events: MonsWeb.EventModel[], fenB
   return hasMoves || actuallyHasPossibleAction;
 }
 
-function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, output: MonsWeb.OutputModel, isRemoteInput: boolean, isBotInput: boolean, assistedInputKind: AssistedInputKind, inputLocation?: Location) {
+function applyOutput(
+  takebackFensBeforeMove: string[],
+  fenBeforeMove: string,
+  output: MonsWeb.OutputModel,
+  isRemoteInput: boolean,
+  isBotInput: boolean,
+  assistedInputKind: AssistedInputKind,
+  inputLocation?: Location,
+  inputColorBeforeMove?: MonsWeb.Color
+) {
   switch (output.kind) {
     case MonsWeb.OutputModelKind.InvalidInput:
       const shouldTryToReselect = assistedInputKind === AssistedInputKind.None && currentInputs.length > 1 && inputLocation && !currentInputs[0].equals(inputLocation);
@@ -937,7 +1007,7 @@ function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, ou
           latestLocation,
           () => {
             game = targetGameToConfirm;
-            applyOutput([], "", output, isRemoteInput, isBotInput, assistedInputKind, inputLocation);
+            applyOutput([], "", output, isRemoteInput, isBotInput, assistedInputKind, inputLocation, inputColorBeforeMove);
           },
           () => {
             currentInputs = [];
@@ -1136,6 +1206,7 @@ function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, ou
             Board.removeHighlights();
             Board.hideItemSelectionOrConfirmationOverlay();
             updateUndoButtonBasedOnGameState();
+            syncInviteBotIntoLocalGameButton();
             triggerMoveHistoryPopupReload();
             return;
           case MonsWeb.EventModelKind.GameOver:
@@ -1173,6 +1244,10 @@ function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, ou
 
             break;
         }
+      }
+
+      if (!isRemoteInput && !isOnlineGame && !isGameWithBot && isCreateInviteRoute() && inputColorBeforeMove === MonsWeb.Color.Black) {
+        isInviteBotIntoLocalGameUnavailable = true;
       }
 
       Board.removeHighlights();
@@ -1234,6 +1309,7 @@ function applyOutput(takebackFensBeforeMove: string[], fenBeforeMove: string, ou
       }
 
       updateUndoButtonBasedOnGameState();
+      syncInviteBotIntoLocalGameButton();
 
       triggerMoveHistoryPopupReload();
 
@@ -1435,6 +1511,7 @@ function processInput(assistedInputKind: AssistedInputKind, inputModifier: Input
   }
 
   const gameInput = currentInputs.map((input) => new MonsWeb.Location(input.i, input.j));
+  const inputColorBeforeMove = game.active_color();
   const fenBeforeMove = game.fen();
   const takebacksBeforeMove = game.takeback_fens();
   let output: MonsWeb.OutputModel;
@@ -1455,7 +1532,7 @@ function processInput(assistedInputKind: AssistedInputKind, inputModifier: Input
   } else {
     output = game.process_input(gameInput);
   }
-  applyOutput(takebacksBeforeMove, fenBeforeMove, output, false, false, assistedInputKind, inputLocation);
+  applyOutput(takebacksBeforeMove, fenBeforeMove, output, false, false, assistedInputKind, inputLocation, inputColorBeforeMove);
 }
 
 function updateLocation(location: Location, inFlashbackMode: boolean = false) {

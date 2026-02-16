@@ -1,6 +1,6 @@
 import * as MonsWeb from "mons-web";
 import * as SVG from "../utils/svg";
-import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, sendPlayerEmojiUpdate, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle, cleanupCurrentInputs } from "./gameController";
+import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, sendPlayerEmojiUpdate, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle, cleanupCurrentInputs, didClickInviteBotIntoLocalGameButton } from "./gameController";
 import { Highlight, HighlightKind, InputModifier, Location, Sound, Trace, ItemKind } from "../utils/gameModels";
 import { colors, currentAssetsSet, AssetsSet, isCustomPictureBoardEnabled, isPangchiuBoard, setCurrentAssetsSet } from "../content/boardStyles";
 import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
@@ -100,6 +100,8 @@ let opponentNameText: SVGElement | undefined;
 let playerNameText: SVGElement | undefined;
 let opponentScoreText: SVGElement | undefined;
 let opponentEndOfGameIcon: SVGElement | undefined;
+let inviteBotButtonContainer: SVGElement | undefined;
+let inviteBotButtonElement: HTMLButtonElement | undefined;
 
 let playerScoreText: SVGElement | undefined;
 let playerEndOfGameIcon: SVGElement | undefined;
@@ -149,6 +151,9 @@ const END_OF_GAME_ICON_OPACITY = 0.69;
 const END_OF_GAME_ICON_SIZE_MULTIPLIER = 0.53;
 const END_OF_GAME_ICON_GAP_MULTIPLIER = 0.06;
 const END_OF_GAME_NAME_OFFSET_MULTIPLIER = 0.54;
+const INVITE_BOT_BUTTON_WIDTH_MULTIPLIER = 2.15;
+const INVITE_BOT_BUTTON_HEIGHT_MULTIPLIER = 0.44;
+const INVITE_BOT_BUTTON_X_GAP_MULTIPLIER = 0.1;
 const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
 const WAGER_PILE_SCALE = 1;
@@ -491,6 +496,7 @@ export function showInstructionsText(text: string) {
     SVG.setHidden(opponentScoreText, true);
     SVG.setHidden(opponentNameText, true);
   }
+  setInviteBotButtonVisible(false);
 }
 
 function startTextAnimation(text: string) {
@@ -932,6 +938,7 @@ export function hideBoardPlayersInfo() {
     playerNameText.textContent = "";
     opponentNameText.textContent = "";
   }
+  setInviteBotButtonVisible(false);
 }
 
 export function resetForNewGame() {
@@ -951,6 +958,7 @@ export function resetForNewGame() {
   }
   opponentSideMetadata = newEmptyPlayerMetadata();
   renderPlayersNamesLabels();
+  setInviteBotButtonVisible(false);
 
   if (opponentAvatar && playerAvatar) {
     SVG.setHidden(opponentAvatar, false);
@@ -1043,6 +1051,55 @@ export function toggleBoardFlipped() {
 
 export function setBoardFlipped(flipped: boolean) {
   isFlipped = flipped;
+}
+
+function setupInviteBotButton() {
+  if (!controlsLayer) {
+    return;
+  }
+  const buttonContainer = document.createElementNS(SVG.ns, "foreignObject");
+  buttonContainer.setAttribute("overflow", "visible");
+  buttonContainer.style.pointerEvents = "auto";
+  const button = document.createElementNS("http://www.w3.org/1999/xhtml", "button") as HTMLButtonElement;
+  button.type = "button";
+  button.textContent = "Invite a Bot";
+  button.style.width = "100%";
+  button.style.height = "100%";
+  button.style.display = "block";
+  button.style.margin = "0";
+  button.style.padding = "0";
+  button.style.boxSizing = "border-box";
+  button.style.border = "1px solid rgba(121, 169, 255, 0.85)";
+  button.style.borderRadius = "8px";
+  button.style.background = "rgba(17, 29, 50, 0.9)";
+  button.style.color = "#eaf4ff";
+  button.style.fontFamily = "system-ui, -apple-system, sans-serif";
+  button.style.fontWeight = "600";
+  button.style.lineHeight = "1";
+  button.style.whiteSpace = "nowrap";
+  button.style.cursor = "pointer";
+  button.style.touchAction = "manipulation";
+  button.style.userSelect = "none";
+  button.addEventListener("click", (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    didClickInviteBotIntoLocalGameButton();
+  });
+  buttonContainer.appendChild(button);
+  controlsLayer.appendChild(buttonContainer);
+  inviteBotButtonContainer = buttonContainer;
+  inviteBotButtonElement = button;
+  setInviteBotButtonVisible(false);
+}
+
+export function setInviteBotButtonVisible(visible: boolean) {
+  if (inviteBotButtonContainer) {
+    SVG.setHidden(inviteBotButtonContainer, !visible);
+  }
+  if (inviteBotButtonElement) {
+    inviteBotButtonElement.disabled = !visible;
+    inviteBotButtonElement.style.pointerEvents = visible ? "auto" : "none";
+  }
 }
 
 export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
@@ -2488,6 +2545,19 @@ const updateLayout = () => {
     SVG.updateCircle(placeholder, offsetX + avatarSize / 2, y + avatarSize / 2, avatarSize / 3);
   }
 
+  if (inviteBotButtonContainer && inviteBotButtonElement && opponentScoreText) {
+    const scoreX = parseFloat(opponentScoreText.getAttribute("x") || "0") / 100;
+    const scoreY = parseFloat(opponentScoreText.getAttribute("y") || "0") / 100;
+    const scoreWidth = getSvgTextWidthInBoardUnits(opponentScoreText);
+    const inviteButtonWidth = INVITE_BOT_BUTTON_WIDTH_MULTIPLIER * multiplicator;
+    const inviteButtonHeight = INVITE_BOT_BUTTON_HEIGHT_MULTIPLIER * multiplicator;
+    const inviteButtonX = scoreX + scoreWidth + INVITE_BOT_BUTTON_X_GAP_MULTIPLIER * multiplicator;
+    const inviteButtonY = scoreY - inviteButtonHeight * 0.82;
+    SVG.setFrame(inviteBotButtonContainer, inviteButtonX, inviteButtonY, inviteButtonWidth, inviteButtonHeight);
+    inviteBotButtonElement.style.fontSize = `${Math.max(10, Math.round(14 * multiplicator))}px`;
+    inviteBotButtonElement.style.borderRadius = `${Math.max(4, Math.round(8 * multiplicator))}px`;
+  }
+
   if (instructionsContainerElement && talkingDude) {
     const dudeBaseI = -0.3;
     const dudeBaseJ = -0.23;
@@ -2874,6 +2944,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     });
   }
 
+  setupInviteBotButton();
   updateLayout();
 
   if (!allHiddenInitially) {
@@ -3059,6 +3130,8 @@ export function disposeBoardRuntime() {
   opponentAvatarPlaceholder = undefined;
   playerAvatarPlaceholder = undefined;
   opponentScoreText = undefined;
+  inviteBotButtonContainer = undefined;
+  inviteBotButtonElement = undefined;
   playerScoreText = undefined;
   opponentEndOfGameIcon = undefined;
   playerEndOfGameIcon = undefined;
