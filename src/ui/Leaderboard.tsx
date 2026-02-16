@@ -12,7 +12,7 @@ import { getStashedPlayerProfile } from "../utils/playerMetadata";
 export type LeaderboardType = "rating" | "gp" | MiningMaterialName | "total";
 
 export const LEADERBOARD_TYPE_ICON_URLS = {
-  rating: "https://assets.mons.link/icons/elo.webp",
+  rating: "https://assets.mons.link/icons/elo_2.webp",
   gp: "https://assets.mons.link/icons/feb.webp",
 } as const;
 
