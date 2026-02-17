@@ -271,8 +271,6 @@ export async function go(routeStateOverride?: RouteState) {
   initialFen = game.fen();
 
   if (isBotsRoute()) {
-    Board.toggleExperimentalMode(false, true, false, true);
-
     game.locations_with_content().forEach((loc) => {
       const location = new Location(loc.i, loc.j);
       updateLocation(location);
