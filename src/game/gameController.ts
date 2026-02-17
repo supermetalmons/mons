@@ -1246,7 +1246,14 @@ function applyOutput(
         }
       }
 
-      if (!isRemoteInput && !isOnlineGame && !isGameWithBot && isCreateInviteRoute() && inputColorBeforeMove === MonsWeb.Color.Black) {
+      if (
+        !isRemoteInput &&
+        !isOnlineGame &&
+        !isGameWithBot &&
+        isCreateInviteRoute() &&
+        inputColorBeforeMove === MonsWeb.Color.Black &&
+        game.turn_number() > 2
+      ) {
         isInviteBotIntoLocalGameUnavailable = true;
       }
 
