@@ -304,7 +304,7 @@ const TotalMaterialsIconContainer = styled.div`
   img:nth-child(1) {
     top: -1px;
     left: 50%;
-    transform: translateX(-50%);
+    transform: translateX(-50%) translateX(6%) translateY(-6%);
     z-index: 1;
   }
 
@@ -317,6 +317,7 @@ const TotalMaterialsIconContainer = styled.div`
   img:nth-child(3) {
     bottom: -1px;
     right: 1px;
+    transform: translateX(3%);
     z-index: 3;
   }
 
