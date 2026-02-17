@@ -3,7 +3,7 @@ import * as Board from "./board";
 import { tokensForSingleMoveEvents, MoveHistoryEntry } from "./moveEventStrings";
 import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
-import { playSounds, playReaction } from "../content/sounds";
+import { playSounds, playReaction, newReactionOfKind } from "../content/sounds";
 import { connection } from "../connection/connection";
 import { showMoveHistoryButton, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
 import { triggerMoveHistoryPopupReload } from "../ui/MoveHistoryPopup";
@@ -547,6 +547,7 @@ export function didClickInviteBotIntoLocalGameButton() {
   ) {
     return;
   }
+  const shouldSendInviteYoReaction = game.active_color() === MonsWeb.Color.White && game.turn_number() === 1;
   isInviteBotIntoLocalGameUnavailable = true;
   isGameWithBot = true;
   botPlayerColor = MonsWeb.Color.Black;
@@ -559,6 +560,17 @@ export function didClickInviteBotIntoLocalGameButton() {
   setAutomoveActionEnabled(isPlayerSideTurn());
   updateUndoButtonBasedOnGameState();
   syncInviteBotIntoLocalGameButton();
+  if (shouldSendInviteYoReaction) {
+    const inviteReactionGuard = getSessionGuard();
+    setManagedGameTimeout(() => {
+      if (!isGameWithBot || isGameOver) {
+        return;
+      }
+      const reaction = newReactionOfKind("yo");
+      playReaction(reaction);
+      Board.showVoiceReactionText("yo", true);
+    }, 500, inviteReactionGuard);
+  }
   lastBotMoveTimestamp = 0;
   if (game.active_color() === botPlayerColor) {
     automove();
