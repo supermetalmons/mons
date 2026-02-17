@@ -2527,7 +2527,15 @@ function getSvgTextWidthInBoardUnits(element: SVGElement | undefined): number {
   return 0;
 }
 
-function getDynamicNameDelta(initialX: number, scoreText: SVGElement | undefined, timerText: SVGElement | undefined, showsTimer: boolean, multiplicator: number): number {
+function getDynamicNameDelta(
+  initialX: number,
+  scoreText: SVGElement | undefined,
+  timerText: SVGElement | undefined,
+  showsTimer: boolean,
+  endOfGameIcon: SVGElement | undefined,
+  showsEndOfGameMarker: boolean,
+  multiplicator: number
+): number {
   if (!scoreText) {
     return 0;
   }
@@ -2535,6 +2543,14 @@ function getDynamicNameDelta(initialX: number, scoreText: SVGElement | undefined
   const scoreX = parseFloat(scoreText.getAttribute("x") || "0") / 100;
   const scoreRight = scoreX + getSvgTextWidthInBoardUnits(scoreText);
   let minNameX = scoreRight + spacing;
+  if (showsEndOfGameMarker && endOfGameIcon) {
+    const iconHidden = endOfGameIcon.getAttribute("display") === "none";
+    if (!iconHidden) {
+      const iconX = parseFloat(endOfGameIcon.getAttribute("x") || "0") / 100;
+      const iconWidth = parseFloat(endOfGameIcon.getAttribute("width") || "0") / 100;
+      minNameX = Math.max(minNameX, iconX + iconWidth + spacing);
+    }
+  }
   if (showsTimer && timerText) {
     const timerX = parseFloat(timerText.getAttribute("x") || "0") / 100;
     const timerRight = timerX + getSvgTextWidthInBoardUnits(timerText);
@@ -2600,8 +2616,24 @@ function updateNamesX() {
 
   const playerStaticDelta = (showsPlayerEndOfGameSuffix ? statusDelta : 0) + (showsPlayerTimer ? timerDelta : 0);
   const opponentStaticDelta = (showsOpponentEndOfGameSuffix ? statusDelta : 0) + (showsOpponentTimer ? timerDelta : 0);
-  const playerDynamicDelta = getDynamicNameDelta(initialX, playerScoreText, playerTimer, showsPlayerTimer, multiplicator);
-  const opponentDynamicDelta = getDynamicNameDelta(initialX, opponentScoreText, opponentTimer, showsOpponentTimer, multiplicator);
+  const playerDynamicDelta = getDynamicNameDelta(
+    initialX,
+    playerScoreText,
+    playerTimer,
+    showsPlayerTimer,
+    playerEndOfGameIcon,
+    showsPlayerEndOfGameSuffix,
+    multiplicator
+  );
+  const opponentDynamicDelta = getDynamicNameDelta(
+    initialX,
+    opponentScoreText,
+    opponentTimer,
+    showsOpponentTimer,
+    opponentEndOfGameIcon,
+    showsOpponentEndOfGameSuffix,
+    multiplicator
+  );
 
   SVG.setX(playerNameText, initialX + Math.max(playerStaticDelta, playerDynamicDelta));
   SVG.setX(opponentNameText, initialX + Math.max(opponentStaticDelta, opponentDynamicDelta));
