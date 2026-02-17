@@ -1327,21 +1327,15 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
 
   let radius = 0;
   const maxRadius = 5;
-  let isWhite = true;
 
   function animate() {
     cleanAllPixels();
-    drawCircle(radius, isWhite);
-    if (radius >= maxRadius) {
-      radius = 0;
-      isWhite = !isWhite;
-    } else {
-      radius += 0.5;
-    }
+    drawCircle(radius);
+    radius = radius >= maxRadius ? 0 : radius + 0.5;
     monsBoardDisplayAnimationTimeout = setTimeout(animate, 200);
   }
 
-  function drawCircle(radius: number, white: boolean) {
+  function drawCircle(radius: number) {
     const minRadius = radius - 0.5;
     const maxRadius = radius + 0.5;
     const minRadiusSquared = minRadius * minRadius;
@@ -1354,7 +1348,7 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
         const distanceSquared = dx * dx + dy * dy;
 
         if (distanceSquared >= minRadiusSquared && distanceSquared <= maxRadiusSquared) {
-          colorPixel(new Location(x, y), white);
+          colorPixel(new Location(x, y), true);
         }
       }
     }
