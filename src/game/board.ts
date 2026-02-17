@@ -102,7 +102,6 @@ let opponentScoreText: SVGElement | undefined;
 let opponentEndOfGameIcon: SVGElement | undefined;
 let inviteBotButtonContainer: SVGElement | undefined;
 let inviteBotButtonElement: HTMLButtonElement | undefined;
-let inviteBotButtonIconElement: HTMLImageElement | undefined;
 let cleanupInviteBotButtonThemeListener: (() => void) | null = null;
 
 let playerScoreText: SVGElement | undefined;
@@ -154,13 +153,12 @@ const END_OF_GAME_ICON_SIZE_MULTIPLIER = 0.53;
 const END_OF_GAME_ICON_GAP_MULTIPLIER = 0.06;
 const END_OF_GAME_NAME_OFFSET_MULTIPLIER = 0.54;
 const SCORE_TEXT_FONT_SIZE_MULTIPLIER = 50;
-const INVITE_BOT_BUTTON_FONT_TO_SCORE_RATIO = 0.72;
-const INVITE_BOT_BUTTON_X_GAP_MULTIPLIER = 0.2;
+const INVITE_BOT_BUTTON_FONT_TO_SCORE_RATIO = 0.68;
+const INVITE_BOT_BUTTON_X_GAP_MULTIPLIER = 0.18;
 const INVITE_BOT_BUTTON_HEIGHT_TO_FONT_RATIO = 2.1;
 const INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX = 12;
-const INVITE_BOT_BUTTON_ICON_TO_FONT_RATIO = 0.95;
-const INVITE_BOT_BUTTON_ICON_GAP_TO_FONT_RATIO = 0.4;
 const INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO = 0.9;
+const INVITE_BOT_BUTTON_TEXT_WIDTH_TO_FONT_RATIO = 5.5;
 const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
 const WAGER_PILE_SCALE = 1;
@@ -198,8 +196,6 @@ type InviteBotButtonLayout = {
   width: number;
   height: number;
   fontSizePx: number;
-  iconSizePx: number;
-  iconGapPx: number;
   horizontalPaddingPx: number;
 };
 
@@ -212,13 +208,11 @@ const getInviteBotButtonLayout = (scoreText: SVGElement, multiplicator: number, 
   const fontBoardUnits = fontSizePx / 100;
   const height = Math.min(fontBoardUnits * INVITE_BOT_BUTTON_HEIGHT_TO_FONT_RATIO, avatarSize * 0.88);
   const x = scoreX + scoreWidth + INVITE_BOT_BUTTON_X_GAP_MULTIPLIER * multiplicator;
-  const iconSizePx = Math.max(10, Math.round(fontSizePx * INVITE_BOT_BUTTON_ICON_TO_FONT_RATIO));
-  const iconGapPx = Math.max(2, Math.round(fontSizePx * INVITE_BOT_BUTTON_ICON_GAP_TO_FONT_RATIO));
   const horizontalPaddingPx = Math.max(6, Math.round(fontSizePx * INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO));
-  const width = (iconSizePx + iconGapPx + fontSizePx * 5.5 + 2 * horizontalPaddingPx) / 100;
+  const width = (fontSizePx * INVITE_BOT_BUTTON_TEXT_WIDTH_TO_FONT_RATIO + 2 * horizontalPaddingPx) / 100;
   const scoreCenterY = scoreY - scoreFontBoardUnits * 0.35;
   const y = scoreCenterY - height / 2 - 0.023 * multiplicator;
-  return { x, y, width, height, fontSizePx, iconSizePx, iconGapPx, horizontalPaddingPx };
+  return { x, y, width, height, fontSizePx, horizontalPaddingPx };
 };
 
 const fetchCachedImageUrl = (url: string): Promise<string | null> =>
@@ -1143,20 +1137,9 @@ function setupInviteBotButton() {
   button.style.outline = "none";
   applyInviteBotButtonColors(button, "default");
 
-  const icon = document.createElementNS("http://www.w3.org/1999/xhtml", "img") as HTMLImageElement;
-  icon.src = `data:image/webp;base64,${emojis.pc}`;
-  icon.alt = "";
-  icon.draggable = false;
-  icon.style.display = "inline-flex";
-  icon.style.alignItems = "center";
-  icon.style.justifyContent = "center";
-  icon.style.objectFit = "contain";
-  icon.style.marginRight = "6px";
-
   const label = document.createElementNS("http://www.w3.org/1999/xhtml", "span");
   label.textContent = "Invite a Bot";
 
-  button.appendChild(icon);
   button.appendChild(label);
 
   let pressed = false;
@@ -1226,7 +1209,6 @@ function setupInviteBotButton() {
   controlsLayer.appendChild(container);
   inviteBotButtonContainer = container;
   inviteBotButtonElement = button;
-  inviteBotButtonIconElement = icon;
   setInviteBotButtonVisible(false);
 }
 
@@ -2692,11 +2674,6 @@ const updateLayout = () => {
     inviteBotButtonElement.style.borderRadius = "999px";
     inviteBotButtonElement.style.paddingLeft = `${layout.horizontalPaddingPx}px`;
     inviteBotButtonElement.style.paddingRight = `${layout.horizontalPaddingPx}px`;
-    if (inviteBotButtonIconElement) {
-      inviteBotButtonIconElement.style.marginRight = `${layout.iconGapPx}px`;
-      inviteBotButtonIconElement.style.width = `${layout.iconSizePx}px`;
-      inviteBotButtonIconElement.style.height = `${layout.iconSizePx}px`;
-    }
   }
 
   if (instructionsContainerElement && talkingDude) {
@@ -3277,7 +3254,6 @@ export function disposeBoardRuntime() {
   opponentScoreText = undefined;
   inviteBotButtonContainer = undefined;
   inviteBotButtonElement = undefined;
-  inviteBotButtonIconElement = undefined;
   playerScoreText = undefined;
   opponentEndOfGameIcon = undefined;
   playerEndOfGameIcon = undefined;

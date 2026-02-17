@@ -13,7 +13,7 @@ export type LeaderboardType = "rating" | "gp" | MiningMaterialName | "total";
 
 export const LEADERBOARD_TYPE_ICON_URLS = {
   rating: "https://assets.mons.link/icons/elo_2.webp",
-  gp: "https://assets.mons.link/icons/feb.webp",
+  gp: "https://assets.mons.link/icons/elo_1.webp",
 } as const;
 
 const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;

@@ -81,6 +81,7 @@ let blackTimerStash: string | null = null;
 let whiteTimerStash: string | null = null;
 const activeGameTimeoutIds = new Set<number>();
 let isInviteBotIntoLocalGameUnavailable = false;
+let didMakeFirstLocalPlayerMoveOnLocalBoard = false;
 
 const setManagedGameTimeout = (callback: () => void, delay: number, guard?: () => boolean): number => {
   incrementLifecycleCounter("gameTimeouts");
@@ -130,10 +131,10 @@ const shouldShowInviteBotIntoLocalGameButton = () => {
   ) {
     return false;
   }
-  if (game.active_color() !== MonsWeb.Color.Black) {
+  if (!didMakeFirstLocalPlayerMoveOnLocalBoard) {
     return false;
   }
-  return game.turn_number() === 2;
+  return game.turn_number() <= 2;
 };
 
 const syncInviteBotIntoLocalGameButton = () => {
@@ -244,6 +245,7 @@ export async function go(routeStateOverride?: RouteState) {
   didConnect = false;
   isWaitingForInviteToGetAccepted = false;
   isInviteBotIntoLocalGameUnavailable = false;
+  didMakeFirstLocalPlayerMoveOnLocalBoard = false;
   flashbackMode = false;
   resignedColor = undefined;
   winnerByTimerColor = undefined;
@@ -366,6 +368,7 @@ export function disposeGameSession() {
   didConnect = false;
   isWaitingForInviteToGetAccepted = false;
   isInviteBotIntoLocalGameUnavailable = false;
+  didMakeFirstLocalPlayerMoveOnLocalBoard = false;
   setWatchOnlyState(false);
   currentWagerState = null;
   wagerOutcomeShown = false;
@@ -443,6 +446,7 @@ function startBotMatch(botColor: MonsWeb.Color) {
   resignedColor = undefined;
   winnerByTimerColor = undefined;
   isInviteBotIntoLocalGameUnavailable = true;
+  didMakeFirstLocalPlayerMoveOnLocalBoard = false;
   didStartLocalGame = true;
   isGameWithBot = true;
   currentInputs = [];
@@ -538,7 +542,8 @@ export function didClickInviteBotIntoLocalGameButton() {
     !didStartLocalGame ||
     isInviteBotIntoLocalGameUnavailable ||
     !isCreateInviteRoute() ||
-    game.active_color() !== MonsWeb.Color.Black
+    !didMakeFirstLocalPlayerMoveOnLocalBoard ||
+    game.turn_number() > 2
   ) {
     return;
   }
@@ -551,11 +556,13 @@ export function didClickInviteBotIntoLocalGameButton() {
   showResignButton();
   showVoiceReactionButton(true);
   setAutomoveActionVisible(true);
-  setAutomoveActionEnabled(false);
+  setAutomoveActionEnabled(isPlayerSideTurn());
   updateUndoButtonBasedOnGameState();
   syncInviteBotIntoLocalGameButton();
   lastBotMoveTimestamp = 0;
-  automove();
+  if (game.active_color() === botPlayerColor) {
+    automove();
+  }
 }
 
 export function handleFreshlySignedInProfileInGameIfNeeded(profileId: string) {
@@ -1244,6 +1251,17 @@ function applyOutput(
 
             break;
         }
+      }
+
+      if (
+        !isRemoteInput &&
+        !isOnlineGame &&
+        !isGameWithBot &&
+        isCreateInviteRoute() &&
+        inputColorBeforeMove === MonsWeb.Color.White &&
+        game.turn_number() <= 2
+      ) {
+        didMakeFirstLocalPlayerMoveOnLocalBoard = true;
       }
 
       if (
