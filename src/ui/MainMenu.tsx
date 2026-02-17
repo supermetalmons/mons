@@ -222,16 +222,8 @@ const MenuTitle = styled.div`
 
 const LeaderboardTypeSelector = styled.div`
   display: flex;
-  gap: 6px;
-  padding: 4px 0 8px 0;
-  overflow-x: auto;
-  scrollbar-width: none;
-  -ms-overflow-style: none;
-  -webkit-overflow-scrolling: touch;
-
-  &::-webkit-scrollbar {
-    display: none;
-  }
+  gap: 4px;
+  padding: 4px 3px 8px 3px;
 `;
 
 const LeaderboardTypeButton = styled.button<{ isSelected: boolean; isText?: boolean; isSpecial?: boolean; isTotal?: boolean }>`
@@ -239,12 +231,12 @@ const LeaderboardTypeButton = styled.button<{ isSelected: boolean; isText?: bool
   align-items: center;
   justify-content: center;
   height: 28px;
-  min-width: ${(props) => (props.isTotal ? "26.5px" : props.isSpecial ? "32px" : props.isText ? "29px" : "27px")};
-  padding: ${(props) => (props.isTotal ? "0 6.5px" : props.isSpecial ? "0 7.5px" : props.isText ? "0 9px" : "0 7px")};
+  flex: 1 1 0;
+  min-width: 0;
+  padding: 0;
   border-radius: 14px;
   border: none;
   cursor: pointer;
-  flex-shrink: 0;
   font-size: 0.7rem;
   font-weight: 600;
   background-color: ${(props) => (props.isSelected ? "var(--color-blue-primary)" : "var(--color-gray-f9)")};
