@@ -3179,20 +3179,18 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
       soundPlayer.initializeOnUserInteraction(false);
       event.stopPropagation();
       preventTouchstartIfNeeded(event);
-
+      playSounds([Sound.Click]);
       const shouldChangeEmoji = canChangeEmoji(isOpponent);
 
       if (isOpponent) {
         if (shouldChangeEmoji) {
           pickAndDisplayDifferentEmoji(avatar, isOpponent);
-          playSounds([Sound.Click]);
         }
 
         popOpponentsEmoji();
       } else {
         if (shouldChangeEmoji) {
           pickAndDisplayDifferentEmoji(avatar, isOpponent);
-          playSounds([Sound.Click]);
         }
 
         if (isDesktopSafari) {
