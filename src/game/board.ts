@@ -69,6 +69,7 @@ let opponentEndOfGameMarker: EndOfGameMarker = "none";
 
 let countdownInterval: NodeJS.Timeout | null = null;
 let monsBoardDisplayAnimationTimeout: NodeJS.Timeout | null = null;
+let monsBoardDisplayAnimationRunToken = 0;
 let boardInputHandler: ((event: Event) => void) | null = null;
 let hasSetupBoardRuntime = false;
 let didRegisterResizeHandler = false;
@@ -994,6 +995,147 @@ export function hideBoardPlayersInfo() {
   setInviteBotButtonVisible(false);
 }
 
+function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boolean = false) {
+  const avatar = opponent ? opponentAvatar : playerAvatar;
+  const placeholder = opponent ? opponentAvatarPlaceholder : playerAvatarPlaceholder;
+  const metadata = opponent ? opponentSideMetadata : playerSideMetadata;
+  if (!avatar) {
+    return;
+  }
+  const getAvatarHref = (target: SVGElement) => {
+    const hrefByNamespace = target.getAttributeNS("http://www.w3.org/1999/xlink", "href");
+    if (hrefByNamespace !== null) {
+      return hrefByNamespace;
+    }
+    return target.getAttribute("href") ?? "";
+  };
+  const setAvatarUrlIfNeeded = (target: SVGElement, url: string) => {
+    if (getAvatarHref(target) === url) {
+      return false;
+    }
+    SVG.setImageUrl(target, url);
+    return true;
+  };
+  const setAvatarBotIfNeeded = (target: SVGElement) => {
+    const nextHref = `data:image/webp;base64,${emojis.pc}`;
+    if (getAvatarHref(target) === nextHref) {
+      return false;
+    }
+    SVG.setImage(target, emojis.pc);
+    return true;
+  };
+  const setHiddenIfNeeded = (target: SVGElement | undefined, hidden: boolean) => {
+    if (!target) {
+      return false;
+    }
+    const isHidden = target.getAttribute("display") === "none";
+    if (isHidden === hidden) {
+      return false;
+    }
+    SVG.setHidden(target, hidden);
+    return true;
+  };
+  const setAuraVisibilityIfNeeded = (target: SVGElement, auraVisible: boolean) => {
+    const nextValue = auraVisible ? "1" : "0";
+    const currentValue = target.getAttribute("data-aura-visible") ?? "";
+    if (currentValue === nextValue) {
+      return false;
+    }
+    target.setAttribute("data-aura-visible", nextValue);
+    return true;
+  };
+  const avatarIsHidden = avatar.getAttribute("display") === "none";
+  const placeholderIsHidden = placeholder ? placeholder.getAttribute("display") === "none" : true;
+  const keepHiddenState = !revealIfPossible && avatarIsHidden && placeholderIsHidden;
+  if (opponent && isGameWithBot) {
+    const didSetBotImage = setAvatarBotIfNeeded(avatar);
+    let didChangeVisibility = false;
+    if (!keepHiddenState) {
+      didChangeVisibility = setHiddenIfNeeded(avatar, false);
+      if (placeholder) {
+        didChangeVisibility = setHiddenIfNeeded(placeholder, true) || didChangeVisibility;
+      }
+    }
+    const didUpdateAuraVisibility = setAuraVisibilityIfNeeded(avatar, false);
+    if (didSetBotImage || didChangeVisibility || didUpdateAuraVisibility) {
+      showRaibowAura(false, emojis.pc, true);
+      try {
+        updateAuraForAvatarElement(true, avatar);
+      } catch {}
+    }
+    return;
+  }
+
+  let emojiId = metadata.emojiId ?? "";
+  let aura = opponent ? metadata.aura ?? "" : metadata.aura ?? storage.getPlayerEmojiAura("");
+  if (!opponent && !isWatchOnly && emojiId === "") {
+    const storedEmojiId = storage.getPlayerEmojiId("");
+    if (storedEmojiId !== "") {
+      emojiId = storedEmojiId;
+      metadata.emojiId = storedEmojiId;
+    }
+    if (aura === "") {
+      aura = storage.getPlayerEmojiAura("");
+      metadata.aura = aura;
+    }
+  }
+
+  const emojiUrl = emojiId !== "" ? emojis.getEmojiUrl(emojiId) || "" : "";
+  if (emojiUrl !== "") {
+    const didSetEmojiImage = setAvatarUrlIfNeeded(avatar, emojiUrl);
+    let didChangeVisibility = false;
+    if (!keepHiddenState) {
+      didChangeVisibility = setHiddenIfNeeded(avatar, false);
+      if (placeholder) {
+        didChangeVisibility = setHiddenIfNeeded(placeholder, true) || didChangeVisibility;
+      }
+    }
+    const didUpdateAuraVisibility = setAuraVisibilityIfNeeded(avatar, aura === "rainbow");
+    if (didSetEmojiImage || didChangeVisibility || didUpdateAuraVisibility) {
+      showRaibowAura(aura === "rainbow", emojiUrl, opponent);
+      try {
+        updateAuraForAvatarElement(opponent, avatar);
+      } catch {}
+    }
+    return;
+  }
+
+  const didClearAvatarImage = setAvatarUrlIfNeeded(avatar, "");
+  let didChangeVisibility = false;
+  if (!keepHiddenState) {
+    didChangeVisibility = setHiddenIfNeeded(avatar, true);
+    if (placeholder) {
+      didChangeVisibility = setHiddenIfNeeded(placeholder, false) || didChangeVisibility;
+    }
+  }
+  const didUpdateAuraVisibility = setAuraVisibilityIfNeeded(avatar, false);
+  if (didClearAvatarImage || didChangeVisibility || didUpdateAuraVisibility) {
+    showRaibowAura(false, "", opponent);
+    try {
+      updateAuraForAvatarElement(opponent, avatar);
+    } catch {}
+  }
+}
+
+export function showBoardPlayersInfo() {
+  syncAvatarForCurrentMetadata(false, true);
+  syncAvatarForCurrentMetadata(true, true);
+  renderPlayersNamesLabels();
+}
+
+export function resetPlayersMetadataForSession() {
+  clearVoiceReactionState();
+  const nextPlayerMetadata = newEmptyPlayerMetadata();
+  nextPlayerMetadata.emojiId = storage.getPlayerEmojiId("");
+  nextPlayerMetadata.aura = storage.getPlayerEmojiAura("");
+  playerSideMetadata = nextPlayerMetadata;
+  opponentSideMetadata = newEmptyPlayerMetadata();
+  updateWagerPlayerUids("", "");
+  syncAvatarForCurrentMetadata(false);
+  syncAvatarForCurrentMetadata(true);
+  renderPlayersNamesLabels();
+}
+
 export function resetForNewGame() {
   showsPlayerEndOfGameSuffix = false;
   showsOpponentEndOfGameSuffix = false;
@@ -1045,37 +1187,17 @@ export function resetForNewGame() {
 
 export function updateEmojiAndAuraIfNeeded(newEmojiId: string, aura: string | undefined, isOpponentSide: boolean) {
   const targetMetadata = isOpponentSide ? opponentSideMetadata : playerSideMetadata;
-  const currentId = targetMetadata.emojiId;
+  const currentId = targetMetadata.emojiId ?? "";
+  const nextId = newEmojiId ?? "";
   const newAura = isOpponentSide ? aura ?? "" : aura ?? storage.getPlayerEmojiAura("");
   const currentAura = targetMetadata.aura ?? "";
-  if (currentId === newEmojiId && currentAura === newAura) {
+  if (currentId === nextId && currentAura === newAura) {
+    syncAvatarForCurrentMetadata(isOpponentSide);
     return;
   }
-  const newEmojiUrl = emojis.getEmojiUrl(newEmojiId);
-  if (!newEmojiUrl) {
-    return;
-  }
-
-  targetMetadata.emojiId = newEmojiId;
+  targetMetadata.emojiId = nextId;
   targetMetadata.aura = newAura;
-
-  if (isOpponentSide) {
-    if (!opponentAvatar) return;
-    SVG.setImageUrl(opponentAvatar, newEmojiUrl);
-    const visible = newAura === "rainbow";
-    showRaibowAura(visible, newEmojiUrl, true);
-    try {
-      updateAuraForAvatarElement(true, opponentAvatar);
-    } catch {}
-  } else {
-    if (!playerAvatar) return;
-    SVG.setImageUrl(playerAvatar, newEmojiUrl);
-    const visible = newAura === "rainbow";
-    showRaibowAura(visible, newEmojiUrl, false);
-    try {
-      updateAuraForAvatarElement(false, playerAvatar);
-    } catch {}
-  }
+  syncAvatarForCurrentMetadata(isOpponentSide);
 }
 
 export function showRandomEmojisForLoopMode() {
@@ -1089,9 +1211,7 @@ export function showRandomEmojisForLoopMode() {
 }
 
 export function showOpponentAsBotPlayer() {
-  if (!opponentAvatar) return;
-  SVG.setImage(opponentAvatar, emojis.pc);
-  showRaibowAura(false, emojis.pc, true);
+  syncAvatarForCurrentMetadata(true, true);
 }
 
 export function getPlayersEmojiId(): number {
@@ -1224,6 +1344,7 @@ export function setInviteBotButtonVisible(visible: boolean) {
 
 export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
   if (monsBoardDisplayAnimationTimeout) return;
+  const runToken = ++monsBoardDisplayAnimationRunToken;
   incrementLifecycleCounter("boardTimeouts");
 
   const frames: [number, number][][] = [
@@ -1284,6 +1405,9 @@ export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
   let isWhite = true;
 
   function animate() {
+    if (runToken !== monsBoardDisplayAnimationRunToken) {
+      return;
+    }
     cleanAllPixels();
     for (const [x, y] of frames[frameIndex]) {
       colorPixel(new Location(x, y), isWhite);
@@ -1292,7 +1416,12 @@ export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
     if (frameIndex === 0) {
       isWhite = !isWhite;
     }
-    monsBoardDisplayAnimationTimeout = setTimeout(animate, 323);
+    monsBoardDisplayAnimationTimeout = setTimeout(() => {
+      if (runToken !== monsBoardDisplayAnimationRunToken) {
+        return;
+      }
+      animate();
+    }, 323);
   }
 
   animate();
@@ -1305,16 +1434,25 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
   }
 
   if (monsBoardDisplayAnimationTimeout) return;
+  const runToken = ++monsBoardDisplayAnimationRunToken;
   incrementLifecycleCounter("boardTimeouts");
 
   let radius = 0;
   const maxRadius = 5;
 
   function animate() {
+    if (runToken !== monsBoardDisplayAnimationRunToken) {
+      return;
+    }
     cleanAllPixels();
     drawCircle(radius);
     radius = radius >= maxRadius ? 0 : radius + 0.5;
-    monsBoardDisplayAnimationTimeout = setTimeout(animate, 200);
+    monsBoardDisplayAnimationTimeout = setTimeout(() => {
+      if (runToken !== monsBoardDisplayAnimationRunToken) {
+        return;
+      }
+      animate();
+    }, 200);
   }
 
   function drawCircle(radius: number) {
@@ -1340,12 +1478,17 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
 }
 
 export function stopMonsBoardAsDisplayAnimations() {
+  monsBoardDisplayAnimationRunToken += 1;
   if (monsBoardDisplayAnimationTimeout) {
     clearTimeout(monsBoardDisplayAnimationTimeout);
     monsBoardDisplayAnimationTimeout = null;
     decrementLifecycleCounter("boardTimeouts");
     cleanAllPixels();
   }
+}
+
+export function hasMonsBoardDisplayAnimationRunning() {
+  return monsBoardDisplayAnimationTimeout !== null;
 }
 
 function colorPixel(location: Location, white: boolean) {
@@ -1552,6 +1695,7 @@ export function setupPlayerId(uid: string, opponent: boolean) {
     metadata.uid = uid;
   }
   recalculateDisplayNames();
+  syncAvatarForCurrentMetadata(opponent);
   updateWagerPlayerUids(playerSideMetadata.uid, opponentSideMetadata.uid);
 }
 
@@ -1725,13 +1869,7 @@ export function updateScore(white: number, black: number, winnerColor?: MonsWeb.
   let whiteMarker: EndOfGameMarker = "none";
   let blackMarker: EndOfGameMarker = "none";
 
-  if (resignedColor !== null && resignedColor !== undefined) {
-    if (resignedColor === MonsWeb.Color.Black) {
-      blackMarker = "resign";
-    } else {
-      whiteMarker = "resign";
-    }
-  } else if (winnerColor !== null && winnerColor !== undefined) {
+  if (winnerColor !== null && winnerColor !== undefined) {
     if (winnerColor === MonsWeb.Color.Black) {
       blackMarker = "victory";
     } else {
@@ -1742,6 +1880,12 @@ export function updateScore(white: number, black: number, winnerColor?: MonsWeb.
       blackMarker = "victory";
     } else {
       whiteMarker = "victory";
+    }
+  } else if (resignedColor !== null && resignedColor !== undefined) {
+    if (resignedColor === MonsWeb.Color.Black) {
+      blackMarker = "resign";
+    } else {
+      whiteMarker = "resign";
     }
   }
 
@@ -3583,11 +3727,29 @@ function setBase(item: SVGElement, location: Location) {
   const logicalLocation = location;
   location = inBoardCoordinates(location);
   const key = location.toString();
+  const isSpriteSheet = item.getAttribute("data-is-sprite-sheet") === "true";
+  const sourceChild = item.children[0] as HTMLElement | undefined;
+  const sourceBackgroundImage = sourceChild?.style.backgroundImage ?? "";
+  const baseSignature = [
+    sourceBackgroundImage,
+    isSpriteSheet ? "sprite" : "static",
+    item.getAttribute("data-total-frames") ?? "",
+    item.getAttribute("data-frame-duration") ?? "",
+  ].join("|");
   if (hasBasePlaceholder(logicalLocation)) {
-    SVG.setHidden(basesPlaceholders[key], false);
-  } else {
+    const existing = basesPlaceholders[key];
+    const existingSignature = existing?.getAttribute("data-base-signature") ?? "";
+    if (existing && existingSignature === baseSignature) {
+      SVG.setHidden(existing, false);
+      return;
+    }
+    if (existing) {
+      removeItemAndCleanUpAnimation(existing);
+      delete basesPlaceholders[key];
+    }
+  }
+  if (!hasBasePlaceholder(logicalLocation)) {
     let img: SVGElement;
-    const isSpriteSheet = item.getAttribute("data-is-sprite-sheet") === "true";
     if (!isCustomPictureBoardEnabled) {
       img = item.cloneNode(true) as SVGElement;
       const firstChild = img.children[0] as HTMLElement;
@@ -3617,12 +3779,15 @@ function setBase(item: SVGElement, location: Location) {
       SVG.setFrame(img, location.j + 0.2, location.i + 0.2, 0.6, 0.6);
     }
 
+    img.setAttribute("data-base-signature", baseSignature);
     board?.appendChild(img);
     basesPlaceholders[key] = img;
 
     if (isSpriteSheet) {
       startAnimation(img, true);
     }
+  } else {
+    SVG.setHidden(basesPlaceholders[key], false);
   }
 }
 

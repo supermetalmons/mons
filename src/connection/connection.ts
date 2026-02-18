@@ -2,10 +2,10 @@ import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, Auth, signInAnonymously, onAuthStateChanged, signOut } from "firebase/auth";
 import { getDatabase, Database, ref, set, onValue, off, get, update } from "firebase/database";
 import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc } from "firebase/firestore";
-import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal } from "../game/gameController";
+import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal, didUpdateRematchSeriesMetadata } from "../game/gameController";
 import { getPlayersEmojiId, didGetPlayerProfile, setupPlayerId } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
-import { Match, Invite, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES, MiningMaterialName, MatchWagerState, WagerProposal, WagerAgreement } from "./connectionModels";
+import { Match, Invite, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES, MiningMaterialName, MatchWagerState, WagerProposal, WagerAgreement, RematchSeriesDescriptor, HistoricalMatchPair } from "./connectionModels";
 import { storage } from "../utils/storage";
 import { generateNewInviteId } from "../utils/misc";
 import { setDebugViewText } from "../ui/MainMenu";
@@ -892,12 +892,191 @@ class Connection {
     return this.latestInvite.guestRematches?.endsWith("x") || this.latestInvite.hostRematches?.endsWith("x") || false;
   }
 
+  private rematchIndices(rematches: string | null | undefined): number[] {
+    if (!rematches) {
+      return [];
+    }
+    const normalized = rematches.replace(/x+$/, "");
+    if (normalized === "") {
+      return [];
+    }
+    return normalized
+      .split(";")
+      .map((token) => Number.parseInt(token, 10))
+      .filter((value) => Number.isFinite(value) && value > 0);
+  }
+
+  private approvedRematchIndices(hostIndices: number[], guestIndices: number[]): number[] {
+    const approved: number[] = [];
+    const total = Math.min(hostIndices.length, guestIndices.length);
+    for (let i = 0; i < total; i++) {
+      if (hostIndices[i] !== guestIndices[i]) {
+        break;
+      }
+      approved.push(hostIndices[i]);
+    }
+    return approved;
+  }
+
+  private oppositeColor(color: string): "white" | "black" | null {
+    if (color === "white") {
+      return "black";
+    }
+    if (color === "black") {
+      return "white";
+    }
+    return null;
+  }
+
+  private rematchIndexFromMatchId(matchId: string): number | null {
+    if (!this.inviteId || !matchId) {
+      return null;
+    }
+    if (matchId === this.inviteId) {
+      return 0;
+    }
+    if (!matchId.startsWith(this.inviteId)) {
+      return null;
+    }
+    const suffix = matchId.slice(this.inviteId.length);
+    if (!/^\d+$/.test(suffix)) {
+      return null;
+    }
+    const parsedIndex = Number.parseInt(suffix, 10);
+    if (!Number.isFinite(parsedIndex) || parsedIndex <= 0) {
+      return null;
+    }
+    return parsedIndex;
+  }
+
+  private hostColorForRematchIndex(rematchIndex: number): "white" | "black" | null {
+    if (!this.latestInvite) {
+      return null;
+    }
+    const initialHostColor = this.latestInvite.hostColor;
+    const oppositeInitialHostColor = this.oppositeColor(initialHostColor);
+    if (!oppositeInitialHostColor) {
+      return null;
+    }
+    const hostColor = rematchIndex % 2 === 0 ? initialHostColor : oppositeInitialHostColor;
+    if (hostColor === "white" || hostColor === "black") {
+      return hostColor;
+    }
+    return null;
+  }
+
+  private pendingRematchIndexForCurrentPlayer(hostIndices: number[], guestIndices: number[], approvedLength: number): number | null {
+    if (!this.latestInvite || !this.sameProfilePlayerUid || this.rematchSeriesEndIsIndicated()) {
+      return null;
+    }
+    if (this.latestInvite.hostId === this.sameProfilePlayerUid && hostIndices.length > approvedLength) {
+      return hostIndices[approvedLength] ?? null;
+    }
+    if (this.latestInvite.guestId === this.sameProfilePlayerUid && guestIndices.length > approvedLength) {
+      return guestIndices[approvedLength] ?? null;
+    }
+    return null;
+  }
+
+  public getRematchSeriesDescriptor(): RematchSeriesDescriptor | null {
+    if (!this.latestInvite || !this.inviteId) {
+      return null;
+    }
+    const hostIndices = this.rematchIndices(this.latestInvite.hostRematches);
+    const guestIndices = this.rematchIndices(this.latestInvite.guestRematches);
+    const approvedIndices = this.approvedRematchIndices(hostIndices, guestIndices);
+    const pendingIndex = this.pendingRematchIndexForCurrentPlayer(hostIndices, guestIndices, approvedIndices.length);
+    const activeMatchId = this.matchId;
+    const activeMatchIndex = activeMatchId ? this.rematchIndexFromMatchId(activeMatchId) : null;
+    const allIndices = [0, ...approvedIndices];
+    if (pendingIndex !== null && pendingIndex > 0) {
+      allIndices.push(pendingIndex);
+    }
+    if (activeMatchIndex !== null && activeMatchIndex > 0) {
+      allIndices.push(activeMatchIndex);
+    }
+    const uniqueIndices = Array.from(new Set(allIndices)).sort((a, b) => a - b);
+    const matches = uniqueIndices.map((index) => {
+      const matchId = index === 0 ? this.inviteId! : `${this.inviteId}${index}`;
+      return {
+        index,
+        matchId,
+        isActiveMatch: activeMatchId === matchId,
+        isPendingResponse: pendingIndex === index,
+      };
+    });
+    return {
+      inviteId: this.inviteId,
+      activeMatchId,
+      hasSeries: matches.length > 1,
+      matches,
+    };
+  }
+
+  public getHostColorForMatch(matchId: string): "white" | "black" | null {
+    const rematchIndex = this.rematchIndexFromMatchId(matchId);
+    if (rematchIndex === null) {
+      return null;
+    }
+    return this.hostColorForRematchIndex(rematchIndex);
+  }
+
+  public matchBelongsToCurrentInvite(matchId: string): boolean {
+    return this.rematchIndexFromMatchId(matchId) !== null;
+  }
+
+  public getSameProfileColorForMatch(matchId: string): "white" | "black" | null {
+    if (!this.latestInvite || !this.sameProfilePlayerUid || !matchId) {
+      return null;
+    }
+    const hostColor = this.getHostColorForMatch(matchId);
+    if (!hostColor) {
+      return null;
+    }
+    const guestColor = this.oppositeColor(hostColor);
+    if (!guestColor) {
+      return null;
+    }
+    if (this.latestInvite.hostId === this.sameProfilePlayerUid) {
+      return hostColor;
+    }
+    if (this.latestInvite.guestId === this.sameProfilePlayerUid) {
+      return guestColor;
+    }
+    return null;
+  }
+
+  public async loadHistoricalMatchPair(matchId: string): Promise<HistoricalMatchPair | null> {
+    if (!this.latestInvite || !matchId) {
+      return null;
+    }
+    await this.ensureAuthenticated();
+    const hostPlayerId = this.latestInvite.hostId;
+    const guestPlayerId = this.latestInvite.guestId ?? null;
+    const hostRef = ref(this.db, `players/${hostPlayerId}/matches/${matchId}`);
+    const guestRef = guestPlayerId ? ref(this.db, `players/${guestPlayerId}/matches/${matchId}`) : null;
+    const hostSnapshot = await get(hostRef);
+    const guestSnapshot = guestRef ? await get(guestRef) : null;
+    const hostMatch: Match | null = hostSnapshot.val();
+    const guestMatch: Match | null = guestSnapshot ? guestSnapshot.val() : null;
+    if (!hostMatch && !guestMatch) {
+      return null;
+    }
+    return {
+      matchId,
+      hostPlayerId,
+      guestPlayerId,
+      hostMatch,
+      guestMatch,
+    };
+  }
+
   private getRematchIndexAvailableForNewProposal(): string | null {
     if (!this.latestInvite || this.rematchSeriesEndIsIndicated()) return null;
 
     const proposingAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid;
-    const guestRematchesLength = this.latestInvite.guestRematches ? this.latestInvite.guestRematches.length : 0;
-    const hostRematchesLength = this.latestInvite.hostRematches ? this.latestInvite.hostRematches.length : 0;
+    const guestRematchesLength = this.rematchIndices(this.latestInvite.guestRematches).length;
+    const hostRematchesLength = this.rematchIndices(this.latestInvite.hostRematches).length;
 
     const proposerRematchesLength = proposingAsHost ? hostRematchesLength : guestRematchesLength;
     const otherPlayerRematchesLength = proposingAsHost ? guestRematchesLength : hostRematchesLength;
@@ -1447,24 +1626,31 @@ class Connection {
     return id === "" ? null : id;
   }
 
+  private hydrateSameProfilePlayer(uid: string): void {
+    const expectedUid = uid;
+    const expectedEpoch = this.sessionEpoch;
+    setupPlayerId(uid, false);
+    this.getProfileByLoginId(uid)
+      .then((profile) => {
+        if (!this.isSessionEpochActive(expectedEpoch) || this.sameProfilePlayerUid !== expectedUid) {
+          return;
+        }
+        didGetPlayerProfile(profile, expectedUid, true);
+      })
+      .catch(() => {});
+  }
+
   private setSameProfilePlayerUid(uid: string | null): void {
     if (this.sameProfilePlayerUid === uid) {
+      if (uid) {
+        this.hydrateSameProfilePlayer(uid);
+      }
       return;
     }
     this.sameProfilePlayerUid = uid;
     this.observeMiningFrozen(uid);
     if (uid) {
-      const expectedUid = uid;
-      const expectedEpoch = this.sessionEpoch;
-      setupPlayerId(uid, false);
-      this.getProfileByLoginId(uid)
-        .then((profile) => {
-          if (!this.isSessionEpochActive(expectedEpoch) || this.sameProfilePlayerUid !== expectedUid) {
-            return;
-          }
-          didGetPlayerProfile(profile, expectedUid, true);
-        })
-        .catch(() => {});
+      this.hydrateSameProfilePlayer(uid);
     }
   }
 
@@ -1575,29 +1761,15 @@ class Connection {
     if (!this.inviteId || !this.latestInvite) {
       return null;
     }
-
-    const guestRematchesString = this.latestInvite.guestRematches?.replace(/x+$/, "");
-    const hostRematchesString = this.latestInvite.hostRematches?.replace(/x+$/, "");
-
-    if (!guestRematchesString || !hostRematchesString) {
+    const approvedIndices = this.approvedRematchIndices(
+      this.rematchIndices(this.latestInvite.hostRematches),
+      this.rematchIndices(this.latestInvite.guestRematches)
+    );
+    if (approvedIndices.length === 0) {
       return null;
     }
-
-    let commonPrefix = "";
-    for (let i = 0; i < Math.min(guestRematchesString.length, hostRematchesString.length); i++) {
-      if (guestRematchesString[i] === hostRematchesString[i]) {
-        commonPrefix += guestRematchesString[i];
-      } else {
-        break;
-      }
-    }
-
-    if (!commonPrefix) {
-      return null;
-    }
-
-    const lastNumber = parseInt(commonPrefix.includes(";") ? commonPrefix.split(";").pop()! : commonPrefix);
-    if (isNaN(lastNumber)) {
+    const lastNumber = approvedIndices[approvedIndices.length - 1];
+    if (lastNumber === undefined) {
       return null;
     }
 
@@ -1619,7 +1791,9 @@ class Connection {
     if (shouldSetupSameProfileUid) {
       this.setSameProfilePlayerUid(uid);
     } else {
-      this.observeMiningFrozen(this.sameProfilePlayerUid ?? uid);
+      const effectiveSameProfileUid = this.sameProfilePlayerUid ?? uid;
+      this.observeMiningFrozen(effectiveSameProfileUid);
+      this.hydrateSameProfilePlayer(effectiveSameProfileUid);
     }
     const connectEpoch = this.sessionEpoch;
     this.inviteId = inviteId;
@@ -1934,11 +2108,11 @@ class Connection {
     let rematchIndex = this.getLatestBothSidesApprovedRematchIndex();
     if (!this.inviteId || !this.latestInvite) {
       return "";
-    } else if (!this.rematchSeriesEndIsIndicated() && this.latestInvite.guestRematches?.length !== this.latestInvite.hostRematches?.length) {
-      const guestRematchesLength = this.latestInvite.guestRematches?.length ?? 0;
-      const hostRematchesLength = this.latestInvite.hostRematches?.length ?? 0;
+    } else {
+      const guestRematchesLength = this.rematchIndices(this.latestInvite.guestRematches).length;
+      const hostRematchesLength = this.rematchIndices(this.latestInvite.hostRematches).length;
 
-      if (guestRematchesLength !== hostRematchesLength) {
+      if (!this.rematchSeriesEndIsIndicated() && guestRematchesLength !== hostRematchesLength) {
         const alreadyHasSamePlayerProfileIdCorrectlySetup = this.sameProfilePlayerUid !== null && this.sameProfilePlayerUid !== this.loginUid;
         if (!alreadyHasSamePlayerProfileIdCorrectlySetup) {
           const profileId = this.getLocalProfileId();
@@ -1992,6 +2166,8 @@ class Connection {
         if (this.rematchSeriesEndIsIndicated()) {
           didReceiveRematchesSeriesEndIndicator();
           this.cleanupRematchObservers();
+        } else {
+          didUpdateRematchSeriesMetadata();
         }
       }
     });
@@ -2010,6 +2186,8 @@ class Connection {
         if (this.rematchSeriesEndIsIndicated()) {
           didReceiveRematchesSeriesEndIndicator();
           this.cleanupRematchObservers();
+        } else {
+          didUpdateRematchSeriesMetadata();
         }
       }
     });

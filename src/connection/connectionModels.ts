@@ -20,6 +20,28 @@ export interface Invite {
   wagers?: Record<string, MatchWagerState> | null;
 }
 
+export interface RematchSeriesMatchDescriptor {
+  index: number;
+  matchId: string;
+  isActiveMatch: boolean;
+  isPendingResponse: boolean;
+}
+
+export interface RematchSeriesDescriptor {
+  inviteId: string;
+  activeMatchId: string | null;
+  hasSeries: boolean;
+  matches: RematchSeriesMatchDescriptor[];
+}
+
+export interface HistoricalMatchPair {
+  matchId: string;
+  hostPlayerId: string;
+  guestPlayerId: string | null;
+  hostMatch: Match | null;
+  guestMatch: Match | null;
+}
+
 export interface Reaction {
   uuid: string;
   variation: number;

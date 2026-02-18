@@ -6,9 +6,25 @@ import { useEmojis } from "../hooks/useEmojis";
 import type { MoveHistoryEntry, MoveHistorySegment, MoveHistoryToken, MoveHistorySegmentRole } from "../game/moveEventStrings";
 import { colors } from "../content/boardStyles";
 
-let moveHistoryReloadCallback: (() => void) | null = null;
+const moveHistoryReloadListeners = new Set<() => void>();
+const moveHistorySelectionResetListeners = new Set<() => void>();
 export function triggerMoveHistoryPopupReload() {
-  if (moveHistoryReloadCallback) moveHistoryReloadCallback();
+  moveHistoryReloadListeners.forEach((listener) => listener());
+}
+export function subscribeMoveHistoryPopupReload(listener: () => void) {
+  moveHistoryReloadListeners.add(listener);
+  return () => {
+    moveHistoryReloadListeners.delete(listener);
+  };
+}
+export function triggerMoveHistoryPopupSelectionReset() {
+  moveHistorySelectionResetListeners.forEach((listener) => listener());
+}
+export function subscribeMoveHistoryPopupSelectionReset(listener: () => void) {
+  moveHistorySelectionResetListeners.add(listener);
+  return () => {
+    moveHistorySelectionResetListeners.delete(listener);
+  };
 }
 
 const ITEM_HEIGHT = 24;
@@ -216,6 +232,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   const { assets } = useGameAssets();
   const { emojis } = useEmojis();
   const [version, setVersion] = React.useState(0);
+  const [selectionResetToken, setSelectionResetToken] = React.useState(0);
   const items = React.useMemo<MoveHistoryEntry[]>(() => {
     void version;
     try {
@@ -246,10 +263,9 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
     if (items.length > 0) {
       const newIndex = items.length - 1;
       setSelectedIndex(newIndex);
-      // Use timeout to ensure DOM is ready
       setTimeout(() => scrollToIndex(newIndex, false), 0);
     }
-  }, [items.length, scrollToIndex]);
+  }, [items.length, selectionResetToken, scrollToIndex]);
 
   // Handle scroll to update selection continuously
   const handleScroll = React.useCallback(() => {
@@ -311,11 +327,12 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
     [scrollToIndex]
   );
 
-  // Reload callback
   React.useEffect(() => {
-    moveHistoryReloadCallback = () => setVersion((v) => v + 1);
+    const unsubscribe = subscribeMoveHistoryPopupReload(() => setVersion((v) => v + 1));
+    const unsubscribeSelectionReset = subscribeMoveHistoryPopupSelectionReset(() => setSelectionResetToken((value) => value + 1));
     return () => {
-      moveHistoryReloadCallback = null;
+      unsubscribe();
+      unsubscribeSelectionReset();
       try {
         didDismissMoveHistoryPopup();
       } catch {}
