@@ -201,35 +201,28 @@ const BottomPillInlineIcon = styled.img`
 `;
 
 const RematchSeriesInlineControl = styled.div`
-  width: 172px;
+  flex: 1 1 0;
+  min-width: 0;
   height: 32px;
   display: flex;
   align-items: center;
   padding: 0;
+  margin-left: -46px;
   border-radius: 0;
   background-color: transparent;
   overflow: hidden;
-  flex-shrink: 0;
-
-  @media screen and (max-width: 520px) {
-    width: 158px;
-  }
-
-  @media screen and (max-width: 430px) {
-    width: 146px;
-  }
-
-  @media screen and (max-width: 387px) {
-    width: 132px;
-  }
+  mask-image: linear-gradient(to right, transparent 0px, transparent 40px, black 46px);
+  -webkit-mask-image: linear-gradient(to right, transparent 0px, transparent 40px, black 46px);
 `;
 
 const RematchSeriesScroll = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  flex-direction: row-reverse;
   align-items: center;
   gap: 5px;
+  padding-left: 46px;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
@@ -243,16 +236,16 @@ const RematchSeriesScroll = styled.div`
 
 const RematchSeriesChip = styled.button<{ $isSelected: boolean; $isPending: boolean }>`
   border: none;
-  border-radius: 999px;
-  height: 22px;
-  min-width: 44px;
-  padding: 0 9px;
+  border-radius: 16px;
+  height: 32px;
+  min-width: 48px;
+  padding: 0 12px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 5px;
   flex-shrink: 0;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1;
   font-weight: ${(props) => (props.$isSelected ? 600 : 500)};
   cursor: pointer;
@@ -1346,7 +1339,7 @@ const BottomControls: React.FC = () => {
         {hasRematchSeriesNavigation && (
           <RematchSeriesInlineControl>
             <RematchSeriesScroll>
-              {rematchSeriesItems.map((seriesItem) => (
+              {[...rematchSeriesItems].reverse().map((seriesItem) => (
                 <RematchSeriesChip
                   key={seriesItem.matchId}
                   $isSelected={seriesItem.isSelected}

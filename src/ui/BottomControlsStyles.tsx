@@ -43,6 +43,7 @@ export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean 
   width: 32px;
   height: 32px;
   border-radius: 16px;
+  z-index: 1;
   opacity: ${(props) => (props.dimmed ? 0.77 : 1)};
   background-color: var(--color-gray-f9);
   border: none;
