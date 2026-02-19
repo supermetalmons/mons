@@ -61,8 +61,6 @@ export let isFlipped = false;
 let traceIndex = 0;
 let showsPlayerTimer = false;
 let showsOpponentTimer = false;
-let showsPlayerEndOfGameSuffix = false;
-let showsOpponentEndOfGameSuffix = false;
 type EndOfGameMarker = "none" | "victory" | "resign";
 let playerEndOfGameMarker: EndOfGameMarker = "none";
 let opponentEndOfGameMarker: EndOfGameMarker = "none";
@@ -987,8 +985,6 @@ export function hideBoardPlayersInfo() {
   }
   playerEndOfGameMarker = "none";
   opponentEndOfGameMarker = "none";
-  showsPlayerEndOfGameSuffix = false;
-  showsOpponentEndOfGameSuffix = false;
   if (playerEndOfGameIcon) {
     SVG.setHidden(playerEndOfGameIcon, true);
   }
@@ -1145,8 +1141,6 @@ export function resetPlayersMetadataForSession() {
 }
 
 export function resetForNewGame() {
-  showsPlayerEndOfGameSuffix = false;
-  showsOpponentEndOfGameSuffix = false;
   playerEndOfGameMarker = "none";
   opponentEndOfGameMarker = "none";
   if (playerEndOfGameIcon) {
@@ -1857,8 +1851,6 @@ function updateTimerDisplay(timerElement: SVGElement, seconds: number) {
 export function hideTimerCountdownDigits() {
   showsPlayerTimer = false;
   showsOpponentTimer = false;
-  showsPlayerEndOfGameSuffix = false;
-  showsOpponentEndOfGameSuffix = false;
 
   if (countdownInterval) {
     clearInterval(countdownInterval);
@@ -1910,8 +1902,6 @@ export function updateScore(white: number, black: number, winnerColor?: MonsWeb.
 
   playerEndOfGameMarker = playerMarker;
   opponentEndOfGameMarker = opponentMarker;
-  showsPlayerEndOfGameSuffix = playerMarker !== "none";
-  showsOpponentEndOfGameSuffix = opponentMarker !== "none";
   updateNamesX();
   renderPlayersNamesLabels();
 }
@@ -2715,12 +2705,15 @@ function getDynamicNameDelta(
   const scoreRight = scoreX + getSvgTextWidthInBoardUnits(scoreText);
   let minNameX = scoreRight + spacing;
   if (showsEndOfGameMarker && endOfGameIcon) {
+    const iconX = parseFloat(endOfGameIcon.getAttribute("x") || "0") / 100;
+    const measuredIconWidth = parseFloat(endOfGameIcon.getAttribute("width") || "0") / 100;
+    const fallbackIconWidth = END_OF_GAME_ICON_SIZE_MULTIPLIER * multiplicator;
+    const iconWidth = Number.isFinite(measuredIconWidth) && measuredIconWidth > 0 ? measuredIconWidth : fallbackIconWidth;
     const iconHidden = endOfGameIcon.getAttribute("display") === "none";
-    if (!iconHidden) {
-      const iconX = parseFloat(endOfGameIcon.getAttribute("x") || "0") / 100;
-      const iconWidth = parseFloat(endOfGameIcon.getAttribute("width") || "0") / 100;
-      minNameX = Math.max(minNameX, iconX + iconWidth + spacing);
-    }
+    const iconRight = !iconHidden || iconX > 0 ? iconX + iconWidth : scoreRight + END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator + iconWidth;
+    minNameX = Math.max(minNameX, iconRight + spacing);
+  } else if (showsEndOfGameMarker) {
+    minNameX = Math.max(minNameX, scoreRight + END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator + END_OF_GAME_ICON_SIZE_MULTIPLIER * multiplicator + spacing);
   }
   if (showsTimer && timerText) {
     const timerX = parseFloat(timerText.getAttribute("x") || "0") / 100;
@@ -2784,16 +2777,18 @@ function updateNamesX() {
   const initialX = offsetX + 1.45 * multiplicator + 0.1;
   const timerDelta = 0.95 * multiplicator;
   const statusDelta = END_OF_GAME_NAME_OFFSET_MULTIPLIER * multiplicator;
+  const playerHasEndOfGameMarker = playerEndOfGameMarker !== "none";
+  const opponentHasEndOfGameMarker = opponentEndOfGameMarker !== "none";
 
-  const playerStaticDelta = (showsPlayerEndOfGameSuffix ? statusDelta : 0) + (showsPlayerTimer ? timerDelta : 0);
-  const opponentStaticDelta = (showsOpponentEndOfGameSuffix ? statusDelta : 0) + (showsOpponentTimer ? timerDelta : 0);
+  const playerStaticDelta = (playerHasEndOfGameMarker ? statusDelta : 0) + (showsPlayerTimer ? timerDelta : 0);
+  const opponentStaticDelta = (opponentHasEndOfGameMarker ? statusDelta : 0) + (showsOpponentTimer ? timerDelta : 0);
   const playerDynamicDelta = getDynamicNameDelta(
     initialX,
     playerScoreText,
     playerTimer,
     showsPlayerTimer,
     playerEndOfGameIcon,
-    showsPlayerEndOfGameSuffix,
+    playerHasEndOfGameMarker,
     multiplicator
   );
   const opponentDynamicDelta = getDynamicNameDelta(
@@ -2802,7 +2797,7 @@ function updateNamesX() {
     opponentTimer,
     showsOpponentTimer,
     opponentEndOfGameIcon,
-    showsOpponentEndOfGameSuffix,
+    opponentHasEndOfGameMarker,
     multiplicator
   );
 
