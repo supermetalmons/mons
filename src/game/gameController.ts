@@ -79,6 +79,7 @@ var currentInputs: Location[] = [];
 
 let blackTimerStash: string | null = null;
 let whiteTimerStash: string | null = null;
+let timerStashMatchId: string | null = null;
 let pendingTimerResolutionOnRestore: boolean | null = null;
 const activeGameTimeoutIds = new Set<number>();
 let isInviteBotIntoLocalGameUnavailable = false;
@@ -184,6 +185,13 @@ const clearAllManagedGameTimeouts = () => {
     decrementLifecycleCounter("gameTimeouts");
   });
   activeGameTimeoutIds.clear();
+};
+
+const resetTimerStateForMatch = (matchId: string | null) => {
+  timerStashMatchId = matchId;
+  blackTimerStash = null;
+  whiteTimerStash = null;
+  pendingTimerResolutionOnRestore = null;
 };
 
 const shouldShowInviteBotIntoLocalGameButton = () => {
@@ -976,7 +984,7 @@ export async function go(routeStateOverride?: RouteState) {
   setCurrentWagerMatch(null);
   connection.setWagerViewMatchId(null);
   setWatchOnlyState(false);
-  pendingTimerResolutionOnRestore = null;
+  resetTimerStateForMatch(null);
   triggerMoveHistoryPopupReload();
   if (!didSetupWagerSubscription) {
     didSetupWagerSubscription = true;
@@ -1121,9 +1129,7 @@ export function disposeGameSession() {
   lastBotMoveTimestamp = 0;
   processedVoiceReactions.clear();
   currentInputs = [];
-  blackTimerStash = null;
-  whiteTimerStash = null;
-  pendingTimerResolutionOnRestore = null;
+  resetTimerStateForMatch(null);
   setCurrentWagerMatch(null);
   connection.setWagerViewMatchId(null);
   setHomeVisible(false);
@@ -1190,9 +1196,7 @@ function startBotMatch(botColor: MonsWeb.Color) {
   didStartLocalGame = true;
   isGameWithBot = true;
   currentInputs = [];
-  blackTimerStash = null;
-  whiteTimerStash = null;
-  pendingTimerResolutionOnRestore = null;
+  resetTimerStateForMatch(null);
   setHomeVisible(true);
   setIslandButtonDimmed(true);
   setUndoVisible(true);
@@ -1249,9 +1253,7 @@ export function didJustCreateRematchProposalSuccessfully(inviteId: string) {
 
   lastReactionTime = 0;
   currentInputs = [];
-  blackTimerStash = null;
-  whiteTimerStash = null;
-  pendingTimerResolutionOnRestore = null;
+  resetTimerStateForMatch(null);
 
   if (boardViewMode !== "historicalView") {
     enterWaitingLiveView();
@@ -2541,7 +2543,7 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     handleResignStatusWithoutRender(true, match.color);
   }
 
-  updateDisplayedTimerIfNeeded(true, match);
+  updateDisplayedTimerIfNeeded(true, match, matchId);
   ensureBoardViewInvariants("didConnectTo:after");
   void preloadRematchSeriesScores();
   triggerMoveHistoryPopupReload();
@@ -2579,7 +2581,10 @@ function applyTimerStateFromStashes(onConnect: boolean) {
   showTimerCountdown(onConnect, timerState.timer, timerState.timerColor);
 }
 
-function updateDisplayedTimerIfNeeded(onConnect: boolean, match: Match) {
+function updateDisplayedTimerIfNeeded(onConnect: boolean, match: Match, matchId: string) {
+  if (timerStashMatchId !== matchId) {
+    resetTimerStateForMatch(matchId);
+  }
   if (match.color === "white") {
     whiteTimerStash = match.timer;
   } else {
@@ -2615,7 +2620,11 @@ function showTimerCountdown(onConnect: boolean, timer: any, timerColor: string, 
           const target = 90;
           showTimerButtonProgressing(target - delta, target, false);
           const timerClaimGuard = getSessionGuard();
+          const timerClaimMatchId = connection.getActiveMatchId();
           setManagedGameTimeout(() => {
+            if (timerClaimMatchId !== null && connection.getActiveMatchId() !== timerClaimMatchId) {
+              return;
+            }
             if (game.turn_number() === turnNumber) {
               enableTimerVictoryClaim();
             }
@@ -2994,7 +3003,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
   if (didMutateLiveGameWithoutRender) {
     triggerMoveHistoryPopupReload();
   }
-  updateDisplayedTimerIfNeeded(didNotHaveBothMatchesSetupBeforeThisUpdate, match);
+  updateDisplayedTimerIfNeeded(didNotHaveBothMatchesSetupBeforeThisUpdate, match, matchId);
 }
 
 export function didRecoverMyMatch(match: Match, matchId: string) {
@@ -3039,7 +3048,7 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
     }
   }
 
-  updateDisplayedTimerIfNeeded(true, match);
+  updateDisplayedTimerIfNeeded(true, match, matchId);
   ensureBoardViewInvariants("didRecoverMyMatch:after");
   void preloadRematchSeriesScores();
 }

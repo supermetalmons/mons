@@ -352,6 +352,9 @@ const BottomControls: React.FC = () => {
   const claimVictoryButtonRef = useRef<HTMLButtonElement>(null);
   const claimVictoryConfirmRef = useRef<HTMLDivElement>(null);
   const hourglassEnableTimeoutRef = useRef<number | null>(null);
+  const hourglassEnableDeadlineRef = useRef<number | null>(null);
+  const isTimerButtonDisabledRef = useRef(true);
+  const isStartTimerVisibleRef = useRef(false);
   const cancelAutomatchRevealTimeoutRef = useRef<number | null>(null);
   const matchScopedTimeoutIdsRef = useRef<Set<number>>(new Set());
   const navigationPopupRef = useRef<HTMLDivElement>(null);
@@ -394,7 +397,51 @@ const BottomControls: React.FC = () => {
       decrementLifecycleCounter("uiTimeouts");
     });
     matchScopedTimeoutIdsRef.current.clear();
+    hourglassEnableTimeoutRef.current = null;
+    hourglassEnableDeadlineRef.current = null;
+    cancelAutomatchRevealTimeoutRef.current = null;
   }, []);
+
+  useEffect(() => {
+    isTimerButtonDisabledRef.current = isTimerButtonDisabled;
+  }, [isTimerButtonDisabled]);
+
+  useEffect(() => {
+    isStartTimerVisibleRef.current = isStartTimerVisible;
+  }, [isStartTimerVisible]);
+
+  const tryEnableTimerButtonFromDeadline = useCallback(() => {
+    const deadline = hourglassEnableDeadlineRef.current;
+    if (deadline === null || Date.now() < deadline) {
+      return;
+    }
+    if (hourglassEnableTimeoutRef.current !== null) {
+      clearTrackedMatchScopedTimeout(hourglassEnableTimeoutRef.current);
+      hourglassEnableTimeoutRef.current = null;
+    }
+    hourglassEnableDeadlineRef.current = null;
+    if (isStartTimerVisibleRef.current && isTimerButtonDisabledRef.current) {
+      setIsTimerButtonDisabled(false);
+    }
+  }, [clearTrackedMatchScopedTimeout]);
+
+  useEffect(() => {
+    const handleTimerDeadlineCheck = () => {
+      if (document.visibilityState === "hidden") {
+        return;
+      }
+      tryEnableTimerButtonFromDeadline();
+    };
+    handleTimerDeadlineCheck();
+    document.addEventListener("visibilitychange", handleTimerDeadlineCheck);
+    window.addEventListener("focus", handleTimerDeadlineCheck);
+    window.addEventListener("pageshow", handleTimerDeadlineCheck);
+    return () => {
+      document.removeEventListener("visibilitychange", handleTimerDeadlineCheck);
+      window.removeEventListener("focus", handleTimerDeadlineCheck);
+      window.removeEventListener("pageshow", handleTimerDeadlineCheck);
+    };
+  }, [tryEnableTimerButtonFromDeadline]);
 
   useEffect(() => {
     const handleClickOutside = (event: TouchEvent | MouseEvent) => {
@@ -645,6 +692,7 @@ const BottomControls: React.FC = () => {
     return () => {
       clearAllMatchScopedTimeouts();
       hourglassEnableTimeoutRef.current = null;
+      hourglassEnableDeadlineRef.current = null;
       cancelAutomatchRevealTimeoutRef.current = null;
     };
   }, [clearAllMatchScopedTimeouts]);
@@ -751,10 +799,6 @@ const BottomControls: React.FC = () => {
     setIsTimerConfirmVisible(false);
     setIsClaimVictoryConfirmVisible(false);
     setIsWagerMode(false);
-    if (hourglassEnableTimeoutRef.current !== null) {
-      clearTrackedMatchScopedTimeout(hourglassEnableTimeoutRef.current);
-      hourglassEnableTimeoutRef.current = null;
-    }
     if (cancelAutomatchRevealTimeoutRef.current !== null) {
       clearTrackedMatchScopedTimeout(cancelAutomatchRevealTimeoutRef.current);
       cancelAutomatchRevealTimeoutRef.current = null;
@@ -879,6 +923,7 @@ const BottomControls: React.FC = () => {
       clearTrackedMatchScopedTimeout(hourglassEnableTimeoutRef.current);
       hourglassEnableTimeoutRef.current = null;
     }
+    hourglassEnableDeadlineRef.current = null;
     setIsTimerButtonDisabled(true);
     setIsStartTimerVisible(false);
     setIsClaimVictoryVisible(false);
@@ -891,6 +936,7 @@ const BottomControls: React.FC = () => {
       clearTrackedMatchScopedTimeout(hourglassEnableTimeoutRef.current);
       hourglassEnableTimeoutRef.current = null;
     }
+    hourglassEnableDeadlineRef.current = null;
 
     setIsTimerButtonDisabled(true);
     setIsStartTimerVisible(true);
@@ -902,11 +948,14 @@ const BottomControls: React.FC = () => {
     setTimerConfig({ duration: target, progress: currentProgress, requestDate: Date.now() });
 
     if (enableWhenTargetReached) {
-      const timeUntilTarget = (target - currentProgress) * 1000;
+      const timeUntilTarget = Math.max(0, (target - currentProgress) * 1000);
+      hourglassEnableDeadlineRef.current = Date.now() + timeUntilTarget;
       hourglassEnableTimeoutRef.current = setMatchScopedTimeout(() => {
         setIsTimerButtonDisabled(false);
         hourglassEnableTimeoutRef.current = null;
+        hourglassEnableDeadlineRef.current = null;
       }, timeUntilTarget);
+      tryEnableTimerButtonFromDeadline();
     }
   };
 
