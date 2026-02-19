@@ -15,9 +15,10 @@ exports.automatch = onCall(async (request) => {
   const profileId = profile.profileId;
   const username = profile.username ?? "";
   const rating = profile.rating ?? 0;
-  const emojiId = request.data.emojiId;
+  const hasProfile = profileId !== "";
+  const emojiId = hasProfile ? (profile.emoji ?? "") : request.data.emojiId;
   const name = getDisplayNameFromAddress(username, ethAddress, solAddress, rating, emojiId);
-  const aura = request.data.aura || null;
+  const aura = hasProfile ? (profile.aura || null) : (request.data.aura || null);
 
   console.log("auto:fn:params", { rating, profileId, name, emojiId, aura: aura ? true : false });
   const automatchAttemptResult = await attemptAutomatch(uid, rating, username, ethAddress, solAddress, profileId, name, emojiId, aura, 0);
