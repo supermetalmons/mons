@@ -123,6 +123,7 @@ const STATUS_ICON_URLS = {
   automatch: `${STATUS_ICON_BASE_URL}/automatch_1.webp`,
   finish: `${STATUS_ICON_BASE_URL}/finish.webp`,
 } as const;
+const REMATCH_SERIES_INLINE_CONTROL_ENABLED = false;
 type StatusIconName = keyof typeof STATUS_ICON_URLS;
 const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
 const stickerImagePromises: Map<number, Promise<string | null>> = new Map();
@@ -1336,7 +1337,7 @@ const BottomControls: React.FC = () => {
       )}
       {isMoveHistoryPopupVisible && <MoveHistoryPopup ref={moveHistoryPopupRef} />}
       <ControlsContainer ref={controlsContainerRef}>
-        {hasRematchSeriesNavigation && (
+        {REMATCH_SERIES_INLINE_CONTROL_ENABLED && hasRematchSeriesNavigation && (
           <RematchSeriesInlineControl>
             <RematchSeriesScroll>
               {[...rematchSeriesItems].reverse().map((seriesItem) => (
