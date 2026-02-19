@@ -6,6 +6,7 @@ import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game
 import { PlayerMiningData, PlayerProfile } from "../connection/connectionModels";
 import { syncTutorialProgress } from "../content/problems";
 import { rocksMiningService } from "../services/rocksMiningService";
+import { notifyOtherTabsAboutSignIn } from "../session/logoutOrchestrator";
 
 export type AddressKind = "eth" | "sol";
 
@@ -98,6 +99,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
     rocksMiningService.setFromServer(res.mining, { persist: false });
   }
 
+  notifyOtherTabsAboutSignIn(profileId, res.uid);
   connection.forceTokenRefresh();
 
   if (!isWatchOnly) {

@@ -2,25 +2,42 @@ import { storage } from "../utils/storage";
 
 const LOGOUT_SYNC_CHANNEL = "mons-link-logout-sync";
 const LOGOUT_SYNC_STORAGE_KEY = "__mons_link_logout_sync__";
+const SIGN_IN_SYNC_CHANNEL = "mons-link-signin-sync";
+const SIGN_IN_SYNC_STORAGE_KEY = "__mons_link_signin_sync__";
 
 type LogoutSignal = {
   id: string;
+};
+
+type SignInSignal = {
+  id: string;
+  tabId: string;
+  profileId: string;
+  loginId: string;
 };
 
 type IndexedDbFactoryWithDatabases = IDBFactory & {
   databases?: () => Promise<Array<{ name?: string }>>;
 };
 
-let broadcastChannel: BroadcastChannel | null = null;
+let logoutBroadcastChannel: BroadcastChannel | null = null;
+let signInBroadcastChannel: BroadcastChannel | null = null;
 let didInstallListeners = false;
 let lastHandledSignalId = "";
+let lastHandledSignInSignalId = "";
 let isHandlingSignal = false;
 
 const createSignalId = (): string => {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`;
 };
 
+const tabId = createSignalId();
+
 const serializeLogoutSignal = (signal: LogoutSignal): string => {
+  return JSON.stringify(signal);
+};
+
+const serializeSignInSignal = (signal: SignInSignal): string => {
   return JSON.stringify(signal);
 };
 
@@ -34,6 +51,36 @@ const parseLogoutSignal = (value: unknown): LogoutSignal | null => {
       return null;
     }
     return { id: parsed.id };
+  } catch {
+    return null;
+  }
+};
+
+const parseSignInSignal = (value: unknown): SignInSignal | null => {
+  if (typeof value !== "string" || value === "") {
+    return null;
+  }
+  try {
+    const parsed = JSON.parse(value) as { id?: unknown; tabId?: unknown; profileId?: unknown; loginId?: unknown } | null;
+    if (
+      !parsed ||
+      typeof parsed.id !== "string" ||
+      parsed.id === "" ||
+      typeof parsed.tabId !== "string" ||
+      parsed.tabId === "" ||
+      typeof parsed.profileId !== "string" ||
+      parsed.profileId === "" ||
+      typeof parsed.loginId !== "string" ||
+      parsed.loginId === ""
+    ) {
+      return null;
+    }
+    return {
+      id: parsed.id,
+      tabId: parsed.tabId,
+      profileId: parsed.profileId,
+      loginId: parsed.loginId,
+    };
   } catch {
     return null;
   }
@@ -142,15 +189,34 @@ const handleLogoutSignal = (signalId: string) => {
   });
 };
 
-const getBroadcastChannel = (): BroadcastChannel | null => {
-  if (broadcastChannel) {
-    return broadcastChannel;
+const handleSignInSignal = (signal: SignInSignal) => {
+  if (!signal.id || signal.tabId === tabId || signal.id === lastHandledSignInSignalId) {
+    return;
+  }
+  lastHandledSignInSignalId = signal.id;
+  reloadAfterLogout();
+};
+
+const getLogoutBroadcastChannel = (): BroadcastChannel | null => {
+  if (logoutBroadcastChannel) {
+    return logoutBroadcastChannel;
   }
   if (typeof BroadcastChannel === "undefined") {
     return null;
   }
-  broadcastChannel = new BroadcastChannel(LOGOUT_SYNC_CHANNEL);
-  return broadcastChannel;
+  logoutBroadcastChannel = new BroadcastChannel(LOGOUT_SYNC_CHANNEL);
+  return logoutBroadcastChannel;
+};
+
+const getSignInBroadcastChannel = (): BroadcastChannel | null => {
+  if (signInBroadcastChannel) {
+    return signInBroadcastChannel;
+  }
+  if (typeof BroadcastChannel === "undefined") {
+    return null;
+  }
+  signInBroadcastChannel = new BroadcastChannel(SIGN_IN_SYNC_CHANNEL);
+  return signInBroadcastChannel;
 };
 
 const broadcastLogoutSignal = (signalId: string) => {
@@ -158,7 +224,20 @@ const broadcastLogoutSignal = (signalId: string) => {
   try {
     localStorage.setItem(LOGOUT_SYNC_STORAGE_KEY, payload);
   } catch {}
-  const channel = getBroadcastChannel();
+  const channel = getLogoutBroadcastChannel();
+  if (channel) {
+    try {
+      channel.postMessage(payload);
+    } catch {}
+  }
+};
+
+const broadcastSignInSignal = (signal: SignInSignal) => {
+  const payload = serializeSignInSignal(signal);
+  try {
+    localStorage.setItem(SIGN_IN_SYNC_STORAGE_KEY, payload);
+  } catch {}
+  const channel = getSignInBroadcastChannel();
   if (channel) {
     try {
       channel.postMessage(payload);
@@ -173,24 +252,44 @@ export const installLogoutSync = () => {
   didInstallListeners = true;
 
   window.addEventListener("storage", (event) => {
-    if (event.key !== LOGOUT_SYNC_STORAGE_KEY || !event.newValue) {
+    if (!event.newValue) {
       return;
     }
-    const signal = parseLogoutSignal(event.newValue);
-    if (!signal) {
+    if (event.key === LOGOUT_SYNC_STORAGE_KEY) {
+      const signal = parseLogoutSignal(event.newValue);
+      if (!signal) {
+        return;
+      }
+      handleLogoutSignal(signal.id);
       return;
     }
-    handleLogoutSignal(signal.id);
+    if (event.key === SIGN_IN_SYNC_STORAGE_KEY) {
+      const signal = parseSignInSignal(event.newValue);
+      if (!signal) {
+        return;
+      }
+      handleSignInSignal(signal);
+    }
   });
 
-  const channel = getBroadcastChannel();
-  if (channel) {
-    channel.onmessage = (event: MessageEvent) => {
+  const logoutChannel = getLogoutBroadcastChannel();
+  if (logoutChannel) {
+    logoutChannel.onmessage = (event: MessageEvent) => {
       const signal = parseLogoutSignal(event.data);
       if (!signal) {
         return;
       }
       handleLogoutSignal(signal.id);
+    };
+  }
+  const signInChannel = getSignInBroadcastChannel();
+  if (signInChannel) {
+    signInChannel.onmessage = (event: MessageEvent) => {
+      const signal = parseSignInSignal(event.data);
+      if (!signal) {
+        return;
+      }
+      handleSignInSignal(signal);
     };
   }
 };
@@ -204,4 +303,18 @@ export const performLogoutCleanupAndReload = async () => {
   } finally {
     reloadAfterLogout();
   }
+};
+
+export const notifyOtherTabsAboutSignIn = (profileId: string, loginId: string) => {
+  if (!profileId || !loginId) {
+    return;
+  }
+  const signal: SignInSignal = {
+    id: createSignalId(),
+    tabId,
+    profileId,
+    loginId,
+  };
+  lastHandledSignInSignalId = signal.id;
+  broadcastSignInSignal(signal);
 };
