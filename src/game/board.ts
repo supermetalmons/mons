@@ -113,6 +113,7 @@ let opponentAvatarPlaceholder: SVGElement | undefined;
 let playerAvatarPlaceholder: SVGElement | undefined;
 let doNotShowPlayerAvatarPlaceholderAgain = false;
 let doNotShowOpponentAvatarPlaceholderAgain = false;
+let localHumanSeriesOpponentEmojiId: string | null = null;
 let activeTimer: SVGElement | null = null;
 let talkingDude: SVGElement | null = null;
 let talkingDudeTextDiv: HTMLElement | null;
@@ -1083,6 +1084,17 @@ function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boole
       metadata.aura = aura;
     }
   }
+  if (opponent && !isOnlineGame && !isGameWithBot && emojiId === "") {
+    if (!localHumanSeriesOpponentEmojiId) {
+      const [fallbackEmojiId] = emojis.getRandomEmojiUrlOtherThan(playerSideMetadata.emojiId, true);
+      localHumanSeriesOpponentEmojiId = fallbackEmojiId;
+    }
+    emojiId = localHumanSeriesOpponentEmojiId;
+    metadata.emojiId = localHumanSeriesOpponentEmojiId;
+  }
+  if (opponent && !isOnlineGame && !isGameWithBot && emojiId !== "") {
+    localHumanSeriesOpponentEmojiId = emojiId;
+  }
 
   const emojiUrl = emojiId !== "" ? emojis.getEmojiUrl(emojiId) || "" : "";
   if (emojiUrl !== "") {
@@ -1125,6 +1137,10 @@ export function showBoardPlayersInfo() {
   syncAvatarForCurrentMetadata(false, true);
   syncAvatarForCurrentMetadata(true, true);
   renderPlayersNamesLabels();
+}
+
+export function resetLocalHumanSeriesOpponentAvatar() {
+  localHumanSeriesOpponentEmojiId = null;
 }
 
 export function resetPlayersMetadataForSession() {

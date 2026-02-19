@@ -210,6 +210,17 @@ const resetTimerStateForMatch = (matchId: string | null) => {
   pendingTimerResolutionOnRestore = null;
 };
 
+const isFirstLocalRematchSeriesMatchActive = () => {
+  if (!canTrackLocalRematchSeries()) {
+    return true;
+  }
+  ensureLocalRematchSeriesInitialized();
+  if (!localRematchSeriesInviteId || !localActiveRematchMatchId) {
+    return true;
+  }
+  return localActiveRematchMatchId === localRematchMatchIdForIndex(localRematchSeriesInviteId, 0);
+};
+
 const shouldShowInviteBotIntoLocalGameButton = () => {
   if (
     isInviteBotIntoLocalGameUnavailable ||
@@ -224,6 +235,9 @@ const shouldShowInviteBotIntoLocalGameButton = () => {
     return false;
   }
   if (!didMakeFirstLocalPlayerMoveOnLocalBoard) {
+    return false;
+  }
+  if (!isFirstLocalRematchSeriesMatchActive()) {
     return false;
   }
   return game.turn_number() <= 2;
@@ -366,11 +380,13 @@ function restoreLiveBoardView() {
           showTimerButtonProgressing(0, 90, true);
         }
       } else if (didStartLocalGame) {
+        if (!puzzleMode) {
+          showResignButton();
+        }
         showMoveHistoryButton(true);
         setUndoVisible(true);
         setAutomoveActionVisible(true);
         if (isGameWithBot) {
-          showResignButton();
           showVoiceReactionButton(true);
           setAutomoveActionEnabled(isPlayerSideTurn());
         } else {
@@ -482,6 +498,7 @@ function resetLocalRematchSeriesState() {
   localActiveRematchMatchId = null;
   localRematchMatchIds.length = 0;
   localRematchSnapshotsByMatchId.clear();
+  Board.resetLocalHumanSeriesOpponentAvatar();
 }
 
 function getLocalRematchSnapshot(matchId: string): LocalRematchSnapshot | null {
@@ -1401,6 +1418,9 @@ function rematchInLoopMode() {
 
 function startFreshLocalMatch() {
   ensureLocalRematchSeriesInitialized();
+  const activeLocalMatchIndex = localActiveRematchMatchId ? localRematchMatchIds.indexOf(localActiveRematchMatchId) : -1;
+  const playerStartsAsBlackInThisMatch = activeLocalMatchIndex >= 0 && activeLocalMatchIndex % 2 === 1;
+  playerSideColor = playerStartsAsBlackInThisMatch ? MonsWeb.Color.Black : MonsWeb.Color.White;
   prepareForNewLocalLiveMatch();
   isGameOver = false;
   isReconnect = false;
@@ -1414,7 +1434,6 @@ function startFreshLocalMatch() {
   didMakeFirstLocalPlayerMoveOnLocalBoard = false;
   didStartLocalGame = true;
   isGameWithBot = false;
-  playerSideColor = MonsWeb.Color.White;
   whiteProcessedMovesCount = 0;
   blackProcessedMovesCount = 0;
   didSetWhiteProcessedMovesCount = false;
@@ -1435,11 +1454,12 @@ function startFreshLocalMatch() {
   setAutomoveActionVisible(true);
   setAutomoveActionEnabled(true);
   showMoveHistoryButton(true);
+  showResignButton();
   showVoiceReactionButton(false);
   setEndMatchVisible(false);
   setEndMatchConfirmed(false);
   showWaitingStateText("");
-  Board.setBoardFlipped(false);
+  Board.setBoardFlipped(activeBoardShouldBeFlipped());
   Board.resetForNewGame();
   game = MonsWeb.MonsGameModel.new();
   setNewBoard(false);
@@ -1573,6 +1593,7 @@ export function didClickInviteBotIntoLocalGameButton() {
     isInviteBotIntoLocalGameUnavailable ||
     !isCreateInviteRoute() ||
     !didMakeFirstLocalPlayerMoveOnLocalBoard ||
+    !isFirstLocalRematchSeriesMatchActive() ||
     game.turn_number() > 2
   ) {
     return;
@@ -1860,6 +1881,17 @@ export function didClickConfirmResignButton() {
   if (!canHandleLiveBoardInput()) {
     return;
   }
+  if (!isOnlineGame && !isGameWithBot) {
+    const activeColor = game.active_color();
+    let activeColorString = "";
+    if (activeColor === MonsWeb.Color.White) {
+      activeColorString = "white";
+    } else if (activeColor === MonsWeb.Color.Black) {
+      activeColorString = "black";
+    }
+    handleResignStatus(false, activeColorString);
+    return;
+  }
   connection.surrender();
   handleResignStatus(false, "");
 }
@@ -2114,6 +2146,9 @@ function applyOutput(
         }
         setAutomoveActionVisible(true);
         showMoveHistoryButton(true);
+        if (!puzzleMode) {
+          showResignButton();
+        }
       }
 
       currentInputs = [];
@@ -3015,11 +3050,13 @@ function handleResignStatusWithoutRender(onConnect: boolean, resignSenderColor: 
   }
   if (game.winner_color() !== undefined || winnerByTimerColor !== undefined) {
     isGameOver = true;
+    syncInviteBotIntoLocalGameButton();
     resignedColor = undefined;
     return;
   }
   const justConfirmedResignYourself = resignSenderColor === "";
   isGameOver = true;
+  syncInviteBotIntoLocalGameButton();
   wagerOutcomeAnimationAllowed = !onConnect;
   if (justConfirmedResignYourself) {
     resignedColor = playerSideColor;
@@ -3042,12 +3079,14 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
   }
   if (game.winner_color() !== undefined || winnerByTimerColor !== undefined) {
     isGameOver = true;
+    syncInviteBotIntoLocalGameButton();
     resignedColor = undefined;
     return;
   }
 
   const justConfirmedResignYourself = resignSenderColor === "";
   isGameOver = true;
+  syncInviteBotIntoLocalGameButton();
   wagerOutcomeAnimationAllowed = !onConnect;
 
   if (justConfirmedResignYourself) {
