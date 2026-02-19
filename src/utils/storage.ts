@@ -36,6 +36,27 @@ const STORAGE_KEYS = {
 
 type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
 
+const EXTERNAL_USER_STORAGE_KEY_PREFIXES = ["wagmi", "wc@", "walletconnect", "rainbow", "rk-"];
+const EXTERNAL_USER_STORAGE_KEY_EXACT = ["WALLETCONNECT_DEEPLINK_CHOICE"];
+
+const shouldClearExternalUserStorageKey = (key: string): boolean => {
+  if (EXTERNAL_USER_STORAGE_KEY_EXACT.includes(key)) {
+    return true;
+  }
+  return EXTERNAL_USER_STORAGE_KEY_PREFIXES.some((prefix) => key.startsWith(prefix));
+};
+
+const removeMatchingStorageKeys = (store: Storage, predicate: (key: string) => boolean): void => {
+  const keysToRemove: string[] = [];
+  for (let i = 0; i < store.length; i += 1) {
+    const key = store.key(i);
+    if (key && predicate(key)) {
+      keysToRemove.push(key);
+    }
+  }
+  keysToRemove.forEach((key) => store.removeItem(key));
+};
+
 function getItem<T>(key: StorageKey | string, defaultValue: T): T {
   const item = localStorage.getItem(key);
   if (item === null || item === "null") return defaultValue;
@@ -296,26 +317,10 @@ export const storage = {
   },
 
   signOut: (): void => {
-    localStorage.removeItem(STORAGE_KEYS.PLAYER_EMOJI_ID);
-    localStorage.removeItem(STORAGE_KEYS.PLAYER_EMOJI_AURA);
-    localStorage.removeItem(STORAGE_KEYS.LOGIN_ID);
-    localStorage.removeItem(STORAGE_KEYS.PROFILE_ID);
-    localStorage.removeItem(STORAGE_KEYS.ETH_ADDRESS);
-    localStorage.removeItem(STORAGE_KEYS.SOL_ADDRESS);
-    localStorage.removeItem(STORAGE_KEYS.USERNAME);
-    localStorage.removeItem(STORAGE_KEYS.PLAYER_RATING);
-    localStorage.removeItem(STORAGE_KEYS.PLAYER_TOTAL_MANA_POINTS);
-    localStorage.removeItem(STORAGE_KEYS.PLAYER_MINING_LAST_ROCK_DATE);
-    localStorage.removeItem(STORAGE_KEYS.PLAYER_MINING_MATERIALS);
-    localStorage.removeItem(STORAGE_KEYS.CARD_BACKGROUND_ID);
-    localStorage.removeItem(STORAGE_KEYS.CARD_SUBTITLE_ID);
-    localStorage.removeItem(STORAGE_KEYS.CARD_STICKERS);
-    localStorage.removeItem(STORAGE_KEYS.REACTION_EXTRA_STICKER_IDS);
-    localStorage.removeItem(STORAGE_KEYS.PROFILE_MONS);
-    localStorage.removeItem(STORAGE_KEYS.PLAYER_NONCE);
-    localStorage.removeItem(STORAGE_KEYS.COMPLETED_PROBLEMS);
-    localStorage.removeItem(STORAGE_KEYS.TUTORIAL_COMPLETED);
-    localStorage.removeItem(STORAGE_KEYS.IS_FIRST_LAUNCH);
-    localStorage.removeItem(STORAGE_KEYS.ISLAND_MON_TYPE);
+    Object.values(STORAGE_KEYS).forEach((key) => {
+      localStorage.removeItem(key);
+    });
+    removeMatchingStorageKeys(localStorage, shouldClearExternalUserStorageKey);
+    removeMatchingStorageKeys(sessionStorage, shouldClearExternalUserStorageKey);
   },
 };

@@ -23,6 +23,7 @@ import { isMainGameLoaded, onMainGameLoaded } from "./game/mainGameLoadState";
 import { Sound } from "./utils/gameModels";
 import { initializeAppSessionManager } from "./session/AppSessionManager";
 import { getCurrentRouteState } from "./navigation/routeState";
+import { installLogoutSync } from "./session/logoutOrchestrator";
 
 const LazyIslandButton = lazy(() => import("./ui/IslandButton"));
 
@@ -215,6 +216,7 @@ document.addEventListener(
 );
 
 connection.signIn();
+installLogoutSync();
 initializeAppSessionManager();
 
 (function suppressThirdPartyErrorOverlay() {

@@ -14,8 +14,8 @@ import { SettingsModal } from "./SettingsModal";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { hideShinyCard, showShinyCard, showsShinyCardSomewhere, updateShinyCardDisplayName } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
-import { transitionToHome } from "../session/AppSessionManager";
 import { registerProfileTransientUiHandler } from "./uiSession";
+import { performLogoutCleanupAndReload } from "../session/logoutOrchestrator";
 
 const Container = styled.div`
   position: relative;
@@ -295,14 +295,22 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   showNotificationBannerImpl = showNotificationBannerInternal;
 
   const performLogout = () => {
-    storage.signOut();
     setAuthStatusGlobally("unauthenticated");
+    let didStartFinalReset = false;
+    const finalizeLogout = () => {
+      if (didStartFinalReset) {
+        return;
+      }
+      didStartFinalReset = true;
+      void performLogoutCleanupAndReload();
+    };
+    const fallbackTimeoutId = window.setTimeout(finalizeLogout, 1500);
     connection
       .signOut()
-      .then(() => transitionToHome({ resetProfileScope: true, forceMatchScopeReset: true }))
-      .catch(() => {
-        setAuthStatusGlobally("unauthenticated");
-        return transitionToHome({ resetProfileScope: true, forceMatchScopeReset: true });
+      .catch(() => {})
+      .finally(() => {
+        window.clearTimeout(fallbackTimeoutId);
+        finalizeLogout();
       });
   };
 

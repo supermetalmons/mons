@@ -438,29 +438,33 @@ class Connection {
   }
 
   public async signOut(): Promise<void> {
+    let authSignOutError: unknown = null;
     try {
       await signOut(this.auth);
-      this.detachFromMatchSession();
-      this.detachFromProfileSession();
-      this.pendingInviteCreation = null;
-      this.loginUid = null;
-      this.setSameProfilePlayerUid(null);
-      this.cleanupWagerObserver();
-      rocksMiningService.resetProfileMiningState();
-      const [nftService, playerMetadata, ensResolver, leaderboard] = await Promise.all([
-        import("../services/nftService"),
-        import("../utils/playerMetadata"),
-        import("../utils/ensResolver"),
-        import("../ui/Leaderboard"),
-      ]);
-      nftService.resetNftCache();
-      playerMetadata.resetPlayerMetadataCaches();
-      ensResolver.resetEnsCache();
-      leaderboard.resetLeaderboardCache();
-      setFrozenMaterials(null);
     } catch (error) {
+      authSignOutError = error;
       console.error("Failed to sign out:", error);
-      throw error;
+    }
+    this.detachFromMatchSession();
+    this.detachFromProfileSession();
+    this.pendingInviteCreation = null;
+    this.loginUid = null;
+    this.setSameProfilePlayerUid(null);
+    this.cleanupWagerObserver();
+    rocksMiningService.resetProfileMiningState();
+    const [nftService, playerMetadata, ensResolver, leaderboard] = await Promise.all([
+      import("../services/nftService"),
+      import("../utils/playerMetadata"),
+      import("../utils/ensResolver"),
+      import("../ui/Leaderboard"),
+    ]);
+    nftService.resetNftCache();
+    playerMetadata.resetPlayerMetadataCaches();
+    ensResolver.resetEnsCache();
+    leaderboard.resetLeaderboardCache();
+    setFrozenMaterials(null);
+    if (authSignOutError) {
+      throw authSignOutError;
     }
   }
 

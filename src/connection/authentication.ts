@@ -7,6 +7,7 @@ import { storage } from "../utils/storage";
 import { setupLoggedInPlayerProfile } from "../game/board";
 import { didAttemptAuthentication } from "../game/gameController";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
+import { performLogoutCleanupAndReload } from "../session/logoutOrchestrator";
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
 let globalSetAuthStatus: ((status: AuthStatus) => void) | null = null;
@@ -138,5 +139,11 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
       }
     },
 
-    signOut: async () => {},
+    signOut: async () => {
+      setAuthStatus("unauthenticated");
+      try {
+        await connection.signOut();
+      } catch {}
+      await performLogoutCleanupAndReload();
+    },
   });
