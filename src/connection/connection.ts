@@ -1,6 +1,6 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, Auth, signInAnonymously, onAuthStateChanged, signOut } from "firebase/auth";
-import { getDatabase, Database, ref, set, onValue, off, get, update } from "firebase/database";
+import { getDatabase, Database, ref, set, onValue, off, get, update, runTransaction } from "firebase/database";
 import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal, didUpdateRematchSeriesMetadata } from "../game/gameController";
 import { getPlayersEmojiId, didGetPlayerProfile, setupPlayerId } from "../game/board";
@@ -107,6 +107,14 @@ class Connection {
   private inviteWaitRefs = new Set<any>();
   private authUnsubscribers = new Set<() => void>();
   private pendingInviteCreation: { inviteId: string; promise: Promise<boolean> } | null = null;
+  private moveSendRequestId = 0;
+  private readonly moveSendRetryWindowMs = 60000;
+  private readonly moveSendAttemptMaxTimeoutMs = 20000;
+  private readonly moveSendPostRetryVerificationWindowMs = 3500;
+  private readonly moveSendPostRetryPollIntervalMs = 350;
+  private moveReconnectInFlight = false;
+  private moveReconnectLastAttemptAt = 0;
+  private readonly moveReconnectCooldownMs = 3000;
 
   private bumpSessionEpoch() {
     this.sessionEpoch += 1;
@@ -1772,10 +1780,341 @@ class Connection {
   }
 
   public sendMove(moveFen: string, newBoardFen: string): void {
-    if (!this.myMatch) return;
+    if (!this.myMatch || !this.matchId || !this.sameProfilePlayerUid) {
+      console.error("Cannot send critical move update: missing context", {
+        hasMatch: !!this.myMatch,
+        hasInviteId: !!this.inviteId,
+        hasMatchId: !!this.matchId,
+        hasPlayerUid: !!this.sameProfilePlayerUid,
+      });
+      const inviteToReconnect = this.inviteId;
+      if (inviteToReconnect) {
+        this.reconnectAfterMatchUpdateFailure(inviteToReconnect, this.createSessionGuard());
+      }
+      return;
+    }
+    const previousFlatMovesString = this.myMatch.flatMovesString ?? "";
     this.myMatch.fen = newBoardFen;
-    this.myMatch.flatMovesString = this.myMatch.flatMovesString ? `${this.myMatch.flatMovesString}-${moveFen}` : moveFen;
-    this.sendMatchUpdate();
+    this.myMatch.flatMovesString = previousFlatMovesString ? `${previousFlatMovesString}-${moveFen}` : moveFen;
+    const matchToPersist: Match = { ...this.myMatch };
+    const expectedFlatMovesString = this.myMatch.flatMovesString ?? "";
+    const requestId = ++this.moveSendRequestId;
+    void this.sendCriticalMoveUpdateWithRetry(
+      requestId,
+      this.inviteId,
+      this.matchId,
+      this.sameProfilePlayerUid,
+      matchToPersist,
+      newBoardFen,
+      expectedFlatMovesString,
+      previousFlatMovesString
+    );
+  }
+
+  private shouldContinueCriticalMoveSend(requestId: number, matchId: string, playerUid: string, sessionGuard: () => boolean): boolean {
+    return (
+      requestId === this.moveSendRequestId &&
+      sessionGuard() &&
+      this.matchId === matchId &&
+      this.sameProfilePlayerUid === playerUid
+    );
+  }
+
+  private async runMoveTransactionWithTimeout<T>(
+    promise: Promise<T>,
+    timeoutMs: number
+  ): Promise<{ timedOut: false; value: T } | { timedOut: true; pendingAttempt: Promise<void> }> {
+    let settled = false;
+    const trackedPromise = promise.finally(() => {
+      settled = true;
+    });
+    const raceResult = await Promise.race([
+      trackedPromise.then((value) => ({ kind: "value" as const, value })),
+      this.delay(timeoutMs).then(() => ({ kind: "timeout" as const })),
+    ]);
+    if (raceResult.kind === "timeout") {
+      if (settled) {
+        return { timedOut: false, value: await trackedPromise };
+      }
+      return {
+        timedOut: true,
+        pendingAttempt: trackedPromise.then(
+          () => undefined,
+          () => undefined
+        ),
+      };
+    }
+    return { timedOut: false, value: raceResult.value };
+  }
+
+  private getMoveSendErrorCode(error: unknown): string {
+    if (error instanceof Error) {
+      return error.message;
+    }
+    return "unknown-move-send-error";
+  }
+
+  private getMoveSendPendingAttempt(error: unknown): Promise<void> | null {
+    if (!error || typeof error !== "object") {
+      return null;
+    }
+    const pendingAttempt = (error as { pendingAttempt?: unknown }).pendingAttempt;
+    if (!pendingAttempt || typeof (pendingAttempt as Promise<void>).then !== "function") {
+      return null;
+    }
+    return pendingAttempt as Promise<void>;
+  }
+
+  private async waitForPromiseToSettle(promise: Promise<void>, timeoutMs: number): Promise<boolean> {
+    if (timeoutMs <= 0) {
+      return false;
+    }
+    let settled = false;
+    await Promise.race([
+      promise.finally(() => {
+        settled = true;
+      }),
+      this.delay(timeoutMs),
+    ]);
+    return settled;
+  }
+
+  private async sendMoveAttempt(
+    playerUid: string,
+    matchId: string,
+    matchToPersist: Match,
+    expectedFen: string,
+    expectedFlatMovesString: string,
+    previousFlatMovesString: string,
+    timeoutMs: number
+  ): Promise<void> {
+    const matchPath = `players/${playerUid}/matches/${matchId}`;
+    const matchRef = ref(this.db, matchPath);
+    const transactionResult = await this.runMoveTransactionWithTimeout(
+      runTransaction(
+        matchRef,
+        (currentValue) => {
+          const currentMatch = currentValue as Match | null;
+          if (!currentMatch) {
+            return matchToPersist;
+          }
+          const currentFlatMovesString = currentMatch.flatMovesString ?? "";
+          if (currentFlatMovesString === expectedFlatMovesString && currentMatch.fen === expectedFen) {
+            return currentMatch;
+          }
+          if (currentFlatMovesString !== previousFlatMovesString) {
+            return currentMatch;
+          }
+          return {
+            ...currentMatch,
+            fen: expectedFen,
+            flatMovesString: expectedFlatMovesString,
+          } as Match;
+        },
+        { applyLocally: false }
+      ),
+      timeoutMs
+    );
+    if (transactionResult.timedOut) {
+      const timeoutError = new Error("move-send-attempt-timeout") as Error & { pendingAttempt?: Promise<void> };
+      timeoutError.pendingAttempt = transactionResult.pendingAttempt;
+      throw timeoutError;
+    }
+    const result = transactionResult.value;
+    const persistedMatch = result.snapshot.val() as Match | null;
+    if (!persistedMatch) {
+      if (!result.committed) {
+        throw new Error("move-send-transaction-not-committed");
+      }
+      throw new Error("missing-persisted-match");
+    }
+    const persistedFlatMovesString = persistedMatch.flatMovesString ?? "";
+    if (persistedMatch.fen === expectedFen && persistedFlatMovesString === expectedFlatMovesString) {
+      return;
+    }
+    if (persistedFlatMovesString !== previousFlatMovesString) {
+      throw new Error("remote-move-chain-mismatch");
+    }
+    if (!result.committed) {
+      throw new Error("move-send-transaction-not-committed");
+    }
+    throw new Error("mismatch-persisted-match");
+  }
+
+  private async verifyMovePersistedAfterRetryWindow(
+    requestId: number,
+    playerUid: string,
+    matchId: string,
+    expectedFen: string,
+    expectedFlatMovesString: string,
+    sessionGuard: () => boolean
+  ): Promise<boolean> {
+    const verificationStartedAt = Date.now();
+    while (Date.now() - verificationStartedAt < this.moveSendPostRetryVerificationWindowMs) {
+      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+        return false;
+      }
+      const elapsedMs = Date.now() - verificationStartedAt;
+      const remainingMs = this.moveSendPostRetryVerificationWindowMs - elapsedMs;
+      if (remainingMs <= 0) {
+        return false;
+      }
+      const attemptTimeoutMs = Math.min(remainingMs, 1200);
+      const matchRef = ref(this.db, `players/${playerUid}/matches/${matchId}`);
+      try {
+        const verificationResult = await this.runMoveTransactionWithTimeout(get(matchRef), attemptTimeoutMs);
+        if (!verificationResult.timedOut) {
+          const persistedMatch = verificationResult.value.val() as Match | null;
+          const persistedFlatMovesString = persistedMatch?.flatMovesString ?? "";
+          if (persistedMatch && persistedMatch.fen === expectedFen && persistedFlatMovesString === expectedFlatMovesString) {
+            return true;
+          }
+        }
+      } catch {}
+      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+        return false;
+      }
+      const remainingAfterAttemptMs = this.moveSendPostRetryVerificationWindowMs - (Date.now() - verificationStartedAt);
+      if (remainingAfterAttemptMs <= 0) {
+        return false;
+      }
+      const waitMs = Math.min(this.moveSendPostRetryPollIntervalMs, remainingAfterAttemptMs);
+      await this.delay(waitMs);
+    }
+    return false;
+  }
+
+  private getMoveRetryDelayMs(attempt: number): number {
+    return Math.min(700 + attempt * 350, 3000);
+  }
+
+  private reconnectAfterMatchUpdateFailure(inviteId: string | null, sessionGuard: () => boolean): void {
+    if (!inviteId) {
+      return;
+    }
+    const now = Date.now();
+    if (this.moveReconnectInFlight) {
+      return;
+    }
+    if (now - this.moveReconnectLastAttemptAt < this.moveReconnectCooldownMs) {
+      return;
+    }
+    this.moveReconnectInFlight = true;
+    this.moveReconnectLastAttemptAt = now;
+    this.signIn()
+      .then((uid) => {
+        if (uid && sessionGuard()) {
+          this.connectToGame(uid, inviteId, false);
+        }
+      })
+      .finally(() => {
+        this.moveReconnectInFlight = false;
+      }
+    );
+  }
+
+  private async sendCriticalMoveUpdateWithRetry(
+    requestId: number,
+    inviteId: string | null,
+    matchId: string,
+    playerUid: string,
+    matchToPersist: Match,
+    expectedFen: string,
+    expectedFlatMovesString: string,
+    previousFlatMovesString: string
+  ): Promise<void> {
+    const sessionGuard = this.createSessionGuard();
+    const startedAt = Date.now();
+    let attempt = 0;
+    while (true) {
+      const elapsedMs = Date.now() - startedAt;
+      const remainingMs = this.moveSendRetryWindowMs - elapsedMs;
+      if (remainingMs <= 0) {
+        break;
+      }
+      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+        return;
+      }
+      attempt += 1;
+      try {
+        const attemptTimeoutMs = Math.min(remainingMs, this.moveSendAttemptMaxTimeoutMs);
+        await this.sendMoveAttempt(
+          playerUid,
+          matchId,
+          matchToPersist,
+          expectedFen,
+          expectedFlatMovesString,
+          previousFlatMovesString,
+          attemptTimeoutMs
+        );
+        if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+          return;
+        }
+        console.log("Match move sent successfully", { attempt });
+        return;
+      } catch (error) {
+        if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+          return;
+        }
+        const errorCode = this.getMoveSendErrorCode(error);
+        if (errorCode === "remote-move-chain-mismatch") {
+          console.error("Critical move update failed due to remote move-chain mismatch", { inviteId, matchId });
+          this.reconnectAfterMatchUpdateFailure(inviteId, sessionGuard);
+          return;
+        }
+        console.error("Error sending critical move update:", error);
+        this.reconnectAfterMatchUpdateFailure(inviteId, sessionGuard);
+        const pendingAttempt = this.getMoveSendPendingAttempt(error);
+        if (pendingAttempt) {
+          const remainingAfterFailureMs = this.moveSendRetryWindowMs - (Date.now() - startedAt);
+          if (remainingAfterFailureMs <= 0) {
+            break;
+          }
+          const didPendingAttemptSettle = await this.waitForPromiseToSettle(pendingAttempt, remainingAfterFailureMs);
+          if (!didPendingAttemptSettle) {
+            break;
+          }
+        }
+        const remainingAfterFailureMs = this.moveSendRetryWindowMs - (Date.now() - startedAt);
+        if (remainingAfterFailureMs <= 0) {
+          break;
+        }
+        const retryDelayMs = Math.min(this.getMoveRetryDelayMs(attempt), remainingAfterFailureMs);
+        if (retryDelayMs > 0) {
+          await this.delay(retryDelayMs);
+        }
+      }
+    }
+    if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+      return;
+    }
+    const didVerifyPersistedMove = await this.verifyMovePersistedAfterRetryWindow(
+      requestId,
+      playerUid,
+      matchId,
+      expectedFen,
+      expectedFlatMovesString,
+      sessionGuard
+    );
+    if (didVerifyPersistedMove) {
+      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+        return;
+      }
+      console.log("Match move send confirmed after retry window");
+      return;
+    }
+    if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+      return;
+    }
+    console.error("Critical move update could not be confirmed", {
+      inviteId,
+      matchId,
+      elapsedMs: Date.now() - startedAt,
+    });
+    this.reconnectAfterMatchUpdateFailure(this.inviteId ?? inviteId, sessionGuard);
+    if (typeof window !== "undefined") {
+      window.location.reload();
+    }
   }
 
   public signInIfNeededAndConnectToGame(inviteId: string, autojoin: boolean): void {
@@ -1804,11 +2143,7 @@ class Connection {
         if (!inviteToReconnect) {
           return;
         }
-        this.signIn().then((uid) => {
-          if (uid && sessionGuard()) {
-            this.connectToGame(uid, inviteToReconnect, false);
-          }
-        });
+        this.reconnectAfterMatchUpdateFailure(inviteToReconnect, sessionGuard);
       });
   }
 
