@@ -7,7 +7,7 @@ import { playSounds, playReaction, newReactionOfKind } from "../content/sounds";
 import { connection } from "../connection/connection";
 import { showMoveHistoryButton, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
 import { triggerMoveHistoryPopupReload } from "../ui/MoveHistoryPopup";
-import { Match, MatchWagerState, HistoricalMatchPair, RematchSeriesMatchDescriptor } from "../connection/connectionModels";
+import { Match, MatchWagerState, HistoricalMatchPair, RematchSeriesDescriptor, RematchSeriesMatchDescriptor } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress, getInitialProblem } from "../content/problems";
 import { storage } from "../utils/storage";
@@ -97,6 +97,11 @@ const historicalMatchPairMissUntilByMatchId = new Map<string, number>();
 const historicalMatchPairMissCooldownMs = 3000;
 let rematchScorePrefetchPromise: Promise<boolean> | null = null;
 let rematchScorePrefetchSignature = "";
+let localRematchSeriesIdSeed = 1;
+let localRematchSeriesInviteId: string | null = null;
+let localActiveRematchMatchId: string | null = null;
+const localRematchMatchIds: string[] = [];
+const localRematchSnapshotsByMatchId = new Map<string, LocalRematchSnapshot>();
 const boardViewDebugLogsEnabled = process.env.NODE_ENV !== "production";
 const summarizeWagerState = (state: MatchWagerState | null) => {
   const proposalKeys = Object.keys(state?.proposals || {});
@@ -150,6 +155,17 @@ export type RematchSeriesNavigatorItem = {
   isPendingResponse: boolean;
   isActiveMatch: boolean;
   isSelected: boolean;
+};
+
+type LocalRematchSnapshot = {
+  matchId: string;
+  index: number;
+  gameModel: MonsWeb.MonsGameModel;
+  fen: string;
+  whiteScore: number;
+  blackScore: number;
+  boardFlipped: boolean;
+  resignedColor: "white" | "black" | null;
 };
 
 const setManagedGameTimeout = (callback: () => void, delay: number, guard?: () => boolean): number => {
@@ -338,15 +354,29 @@ function restoreLiveBoardView() {
     applyWagerState();
     Board.markWagerInitialStateReceived();
     updateUndoButtonBasedOnGameState();
-    if (!isWatchOnly && isOnlineGame && !isGameOver && game.winner_color() === undefined) {
-      showResignButton();
-      showMoveHistoryButton(true);
-      if (isPlayerSideTurn()) {
-        hideTimerButtons();
+    if (!isWatchOnly && !isGameOver && game.winner_color() === undefined) {
+      if (isOnlineGame) {
+        showResignButton();
+        showMoveHistoryButton(true);
+        if (isPlayerSideTurn()) {
+          hideTimerButtons();
+          setUndoVisible(true);
+          setAutomoveActionVisible(true);
+        } else {
+          showTimerButtonProgressing(0, 90, true);
+        }
+      } else if (didStartLocalGame) {
+        showMoveHistoryButton(true);
         setUndoVisible(true);
         setAutomoveActionVisible(true);
-      } else {
-        showTimerButtonProgressing(0, 90, true);
+        if (isGameWithBot) {
+          showResignButton();
+          showVoiceReactionButton(true);
+          setAutomoveActionEnabled(isPlayerSideTurn());
+        } else {
+          showVoiceReactionButton(false);
+          setAutomoveActionEnabled(true);
+        }
       }
     }
   }
@@ -354,6 +384,19 @@ function restoreLiveBoardView() {
     console.log(`[board-view] restored ${boardViewMode}`);
   }
   triggerMoveHistoryPopupReload();
+}
+
+function prepareForNewLocalLiveMatch() {
+  nextBoardRenderSession();
+  boardViewMode = "activeLive";
+  clearViewedRematchState();
+  connection.setWagerViewMatchId(null);
+  flashbackMode = false;
+  currentInputs = [];
+  Board.removeHighlights();
+  Board.hideItemSelectionOrConfirmationOverlay();
+  Board.setBoardFlipped(activeBoardShouldBeFlipped());
+  applyBoardUiForCurrentView();
 }
 
 function enterHistoricalView(matchId: string, pair: HistoricalMatchPair, historicalGame: MonsWeb.MonsGameModel, sessionId: number): boolean {
@@ -404,6 +447,146 @@ function clearRematchHistoryCaches() {
   historicalMatchPairMissUntilByMatchId.clear();
   rematchScorePrefetchSignature = "";
   rematchScorePrefetchPromise = null;
+  resetLocalRematchSeriesState();
+}
+
+function canTrackLocalRematchSeries(): boolean {
+  if (isOnlineGame || isWatchOnly || puzzleMode) {
+    return false;
+  }
+  return isCreateInviteRoute() || isGameWithBot;
+}
+
+function localRematchMatchIdForIndex(inviteId: string, index: number): string {
+  return index === 0 ? inviteId : `${inviteId}${index}`;
+}
+
+function ensureLocalRematchSeriesInitialized() {
+  if (!canTrackLocalRematchSeries()) {
+    return;
+  }
+  if (localRematchSeriesInviteId && localActiveRematchMatchId && localRematchMatchIds.length > 0) {
+    return;
+  }
+  const nextSeriesId = localRematchSeriesIdSeed++;
+  const inviteId = `local-${nextSeriesId}`;
+  const initialMatchId = localRematchMatchIdForIndex(inviteId, 0);
+  localRematchSeriesInviteId = inviteId;
+  localActiveRematchMatchId = initialMatchId;
+  localRematchMatchIds.length = 0;
+  localRematchMatchIds.push(initialMatchId);
+}
+
+function resetLocalRematchSeriesState() {
+  localRematchSeriesInviteId = null;
+  localActiveRematchMatchId = null;
+  localRematchMatchIds.length = 0;
+  localRematchSnapshotsByMatchId.clear();
+}
+
+function getLocalRematchSnapshot(matchId: string): LocalRematchSnapshot | null {
+  return localRematchSnapshotsByMatchId.get(matchId) ?? null;
+}
+
+function getLocalRematchSeriesDescriptor(): RematchSeriesDescriptor | null {
+  if (!canTrackLocalRematchSeries()) {
+    return null;
+  }
+  ensureLocalRematchSeriesInitialized();
+  if (!localRematchSeriesInviteId || !localActiveRematchMatchId || localRematchMatchIds.length === 0) {
+    return null;
+  }
+  const matches: RematchSeriesMatchDescriptor[] = localRematchMatchIds.map((matchId, index) => ({
+    index,
+    matchId,
+    isActiveMatch: matchId === localActiveRematchMatchId,
+    isPendingResponse: false,
+  }));
+  return {
+    inviteId: localRematchSeriesInviteId,
+    activeMatchId: localActiveRematchMatchId,
+    hasSeries: matches.length > 1,
+    matches,
+  };
+}
+
+function getActiveRematchSeriesDescriptor(): RematchSeriesDescriptor | null {
+  if (isOnlineGame) {
+    return connection.getRematchSeriesDescriptor();
+  }
+  return getLocalRematchSeriesDescriptor();
+}
+
+function localColorFromMonsColor(color: MonsWeb.Color | undefined): "white" | "black" | null {
+  if (color === MonsWeb.Color.White) {
+    return "white";
+  }
+  if (color === MonsWeb.Color.Black) {
+    return "black";
+  }
+  return null;
+}
+
+function buildLocalHistoricalPair(snapshot: LocalRematchSnapshot): HistoricalMatchPair {
+  const resignedColor = snapshot.resignedColor;
+  const hostMatch: Match = {
+    version: 1,
+    color: resignedColor ?? "white",
+    emojiId: 0,
+    fen: snapshot.fen,
+    status: resignedColor ? "surrendered" : "finished",
+    flatMovesString: "",
+    timer: "",
+  };
+  return {
+    matchId: snapshot.matchId,
+    hostPlayerId: Board.playerSideMetadata.uid || "local",
+    guestPlayerId: null,
+    hostMatch,
+    guestMatch: null,
+  };
+}
+
+function snapshotCurrentLocalMatchForHistory() {
+  if (!canTrackLocalRematchSeries()) {
+    return;
+  }
+  ensureLocalRematchSeriesInitialized();
+  if (!localActiveRematchMatchId) {
+    return;
+  }
+  const matchIndex = localRematchMatchIds.indexOf(localActiveRematchMatchId);
+  if (matchIndex < 0) {
+    return;
+  }
+  const snapshot: LocalRematchSnapshot = {
+    matchId: localActiveRematchMatchId,
+    index: matchIndex,
+    gameModel: game,
+    fen: game.fen(),
+    whiteScore: game.white_score(),
+    blackScore: game.black_score(),
+    boardFlipped: activeBoardShouldBeFlipped(),
+    resignedColor: localColorFromMonsColor(resignedColor),
+  };
+  localRematchSnapshotsByMatchId.set(snapshot.matchId, snapshot);
+  historicalScoreCache.set(snapshot.matchId, { white: snapshot.whiteScore, black: snapshot.blackScore });
+}
+
+function advanceLocalRematchSeriesToNextMatch() {
+  if (!canTrackLocalRematchSeries()) {
+    return;
+  }
+  ensureLocalRematchSeriesInitialized();
+  if (!localRematchSeriesInviteId || !localActiveRematchMatchId) {
+    return;
+  }
+  snapshotCurrentLocalMatchForHistory();
+  const nextIndex = localRematchMatchIds.length;
+  const nextMatchId = localRematchMatchIdForIndex(localRematchSeriesInviteId, nextIndex);
+  localActiveRematchMatchId = nextMatchId;
+  localRematchMatchIds.push(nextMatchId);
+  historicalScoreCache.delete(nextMatchId);
 }
 
 function activeBoardShouldBeFlipped(): boolean {
@@ -457,7 +640,7 @@ function getViewedMatchPlayerColor(matchId: string, pair: HistoricalMatchPair): 
 }
 
 function getRematchIndexByMatchId(matchId: string): number | null {
-  const descriptor = connection.getRematchSeriesDescriptor();
+  const descriptor = getActiveRematchSeriesDescriptor();
   if (!descriptor) {
     return null;
   }
@@ -469,8 +652,13 @@ function getRematchIndexByMatchId(matchId: string): number | null {
 }
 
 function getViewedMatchBoardFlipped(matchId: string, pair: HistoricalMatchPair): boolean {
+  const localSnapshot = getLocalRematchSnapshot(matchId);
+  if (localSnapshot) {
+    return localSnapshot.boardFlipped;
+  }
   const targetIndex = getRematchIndexByMatchId(matchId);
-  const activeMatchId = connection.getActiveMatchId();
+  const activeDescriptor = getActiveRematchSeriesDescriptor();
+  const activeMatchId = activeDescriptor?.activeMatchId ?? connection.getActiveMatchId();
   const activeIndex = activeMatchId ? getRematchIndexByMatchId(activeMatchId) : null;
   if (targetIndex !== null && activeIndex !== null) {
     const flipParityChanged = Math.abs(targetIndex - activeIndex) % 2 === 1;
@@ -746,8 +934,17 @@ function getHistoricalResignedColor(matchId: string, pair: HistoricalMatchPair):
 }
 
 function getDisplayResignedColor(inFlashbackMode: boolean): MonsWeb.Color | undefined {
-  if (boardViewMode === "historicalView" && inFlashbackMode && viewedRematchMatchId && viewedRematchPair) {
-    return getHistoricalResignedColor(viewedRematchMatchId, viewedRematchPair);
+  if (boardViewMode === "historicalView" && inFlashbackMode && viewedRematchMatchId) {
+    const localSnapshot = getLocalRematchSnapshot(viewedRematchMatchId);
+    if (localSnapshot?.resignedColor === "white") {
+      return MonsWeb.Color.White;
+    }
+    if (localSnapshot?.resignedColor === "black") {
+      return MonsWeb.Color.Black;
+    }
+    if (viewedRematchPair) {
+      return getHistoricalResignedColor(viewedRematchMatchId, viewedRematchPair);
+    }
   }
   return resignedColor;
 }
@@ -767,10 +964,7 @@ function shouldShowTerminalIndicators(inFlashbackMode: boolean, displayGame: Mon
 }
 
 export function getRematchSeriesNavigatorItems(): RematchSeriesNavigatorItem[] {
-  if (!isOnlineGame) {
-    return [];
-  }
-  const descriptor = connection.getRematchSeriesDescriptor();
+  const descriptor = getActiveRematchSeriesDescriptor();
   if (!descriptor || !descriptor.hasSeries) {
     return [];
   }
@@ -783,8 +977,13 @@ export function getRematchSeriesNavigatorItems(): RematchSeriesNavigatorItem[] {
       whiteScore = game.white_score();
       blackScore = game.black_score();
     } else {
+      const localSnapshot = getLocalRematchSnapshot(descriptorItem.matchId);
+      if (localSnapshot) {
+        whiteScore = localSnapshot.whiteScore;
+        blackScore = localSnapshot.blackScore;
+      }
       const cachedScore = historicalScoreCache.get(descriptorItem.matchId);
-      if (cachedScore) {
+      if (!localSnapshot && cachedScore) {
         whiteScore = cachedScore.white;
         blackScore = cachedScore.black;
       }
@@ -856,7 +1055,8 @@ export async function preloadRematchSeriesScores(): Promise<boolean> {
 }
 
 export async function didSelectRematchSeriesMatch(matchId: string): Promise<boolean> {
-  const activeMatchId = connection.getActiveMatchId();
+  const descriptor = getActiveRematchSeriesDescriptor();
+  const activeMatchId = descriptor?.activeMatchId ?? null;
   if (!activeMatchId) {
     return false;
   }
@@ -873,14 +1073,26 @@ export async function didSelectRematchSeriesMatch(matchId: string): Promise<bool
   }
   const requestToken = ++viewedRematchRequestToken;
   const renderSessionId = nextBoardRenderSession();
-  const pair = await ensureHistoricalMatchPair(matchId);
-  if (requestToken !== viewedRematchRequestToken || !isBoardRenderSessionActive(renderSessionId) || !pair) {
+  if (isOnlineGame) {
+    const pair = await ensureHistoricalMatchPair(matchId);
+    if (requestToken !== viewedRematchRequestToken || !isBoardRenderSessionActive(renderSessionId) || !pair) {
+      return false;
+    }
+    const historicalGame = buildHistoricalGameModel(matchId, pair);
+    if (!historicalGame || !isBoardRenderSessionActive(renderSessionId)) {
+      return false;
+    }
+    return enterHistoricalView(matchId, pair, historicalGame, renderSessionId);
+  }
+  const localSnapshot = getLocalRematchSnapshot(matchId);
+  if (requestToken !== viewedRematchRequestToken || !isBoardRenderSessionActive(renderSessionId) || !localSnapshot) {
     return false;
   }
-  const historicalGame = buildHistoricalGameModel(matchId, pair);
+  const historicalGame = localSnapshot.gameModel;
   if (!historicalGame || !isBoardRenderSessionActive(renderSessionId)) {
     return false;
   }
+  const pair = buildLocalHistoricalPair(localSnapshot);
   return enterHistoricalView(matchId, pair, historicalGame, renderSessionId);
 }
 
@@ -1049,6 +1261,7 @@ export async function go(routeStateOverride?: RouteState) {
     setAutomoveActionVisible(true);
     showMoveHistoryButton(true);
   } else if (isCreateInviteRoute()) {
+    ensureLocalRematchSeriesInitialized();
     game.locations_with_content().forEach((loc) => {
       const location = new Location(loc.i, loc.j);
       updateLocation(location);
@@ -1186,8 +1399,63 @@ function rematchInLoopMode() {
   automove();
 }
 
-function startBotMatch(botColor: MonsWeb.Color) {
+function startFreshLocalMatch() {
+  ensureLocalRematchSeriesInitialized();
+  prepareForNewLocalLiveMatch();
   isGameOver = false;
+  isReconnect = false;
+  didConnect = false;
+  isWaitingForInviteToGetAccepted = false;
+  isWaitingForRematchResponse = false;
+  flashbackMode = false;
+  resignedColor = undefined;
+  winnerByTimerColor = undefined;
+  isInviteBotIntoLocalGameUnavailable = false;
+  didMakeFirstLocalPlayerMoveOnLocalBoard = false;
+  didStartLocalGame = true;
+  isGameWithBot = false;
+  playerSideColor = MonsWeb.Color.White;
+  whiteProcessedMovesCount = 0;
+  blackProcessedMovesCount = 0;
+  didSetWhiteProcessedMovesCount = false;
+  didSetBlackProcessedMovesCount = false;
+  currentGameModelMatchId = null;
+  whiteFlatMovesString = null;
+  blackFlatMovesString = null;
+  currentInputs = [];
+  resetTimerStateForMatch(null);
+  setHomeVisible(true);
+  setIslandButtonDimmed(true);
+  setUndoVisible(true);
+  setBrushAndNavigationButtonDimmed(true);
+  setInviteLinkActionVisible(false);
+  setAutomatchVisible(false);
+  setBotGameOptionVisible(false);
+  setNavigationListButtonVisible(false);
+  setAutomoveActionVisible(true);
+  setAutomoveActionEnabled(true);
+  showMoveHistoryButton(true);
+  showVoiceReactionButton(false);
+  setEndMatchVisible(false);
+  setEndMatchConfirmed(false);
+  showWaitingStateText("");
+  Board.setBoardFlipped(false);
+  Board.resetForNewGame();
+  game = MonsWeb.MonsGameModel.new();
+  setNewBoard(false);
+  updateUndoButtonBasedOnGameState();
+  syncInviteBotIntoLocalGameButton();
+  triggerMoveHistoryPopupReload();
+}
+
+function startBotMatch(botColor: MonsWeb.Color) {
+  ensureLocalRematchSeriesInitialized();
+  prepareForNewLocalLiveMatch();
+  isGameOver = false;
+  isReconnect = false;
+  didConnect = false;
+  isWaitingForInviteToGetAccepted = false;
+  isWaitingForRematchResponse = false;
   flashbackMode = false;
   resignedColor = undefined;
   winnerByTimerColor = undefined;
@@ -1195,6 +1463,13 @@ function startBotMatch(botColor: MonsWeb.Color) {
   didMakeFirstLocalPlayerMoveOnLocalBoard = false;
   didStartLocalGame = true;
   isGameWithBot = true;
+  whiteProcessedMovesCount = 0;
+  blackProcessedMovesCount = 0;
+  didSetWhiteProcessedMovesCount = false;
+  didSetBlackProcessedMovesCount = false;
+  currentGameModelMatchId = null;
+  whiteFlatMovesString = null;
+  blackFlatMovesString = null;
   currentInputs = [];
   resetTimerStateForMatch(null);
   setHomeVisible(true);
@@ -1492,12 +1767,18 @@ function didConfirmRematchProposal() {
   }
 
   if (isGameWithBot) {
+    advanceLocalRematchSeriesToNextMatch();
     const nextBotColor = botPlayerColor === MonsWeb.Color.White ? MonsWeb.Color.Black : MonsWeb.Color.White;
     startBotMatch(nextBotColor);
     return;
   }
 
   if (!isOnlineGame) {
+    if (canTrackLocalRematchSeries()) {
+      advanceLocalRematchSeriesToNextMatch();
+      startFreshLocalMatch();
+      return;
+    }
     void transitionToHome({ forceMatchScopeReset: true });
     return;
   }
@@ -1817,6 +2098,7 @@ function applyOutput(
       }
 
       if (!isOnlineGame && !didStartLocalGame) {
+        ensureLocalRematchSeriesInitialized();
         dismissBadgeAndNotificationBannerIfNeeded();
         didStartLocalGame = true;
         setHomeVisible(true);
@@ -2466,6 +2748,7 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     applyBoardUiForCurrentView();
   }
   resetWagerStateForMatch(matchId);
+  resetLocalRematchSeriesState();
   isOnlineGame = true;
   currentInputs = [];
   if (shouldRenderLiveBoard) {
