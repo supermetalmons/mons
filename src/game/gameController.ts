@@ -14,7 +14,7 @@ import { storage } from "../utils/storage";
 import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSignIn";
 import { showVideoReaction } from "../ui/BoardComponent";
 import { setIslandButtonDimmed } from "../index";
-import { setCurrentWagerMatch, subscribeToWagerState } from "./wagerState";
+import { getWagerState, setCurrentWagerMatch, subscribeToWagerState } from "./wagerState";
 import { transitionToHome } from "../session/AppSessionManager";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 import { getSessionGuard } from "./matchSession";
@@ -97,6 +97,49 @@ const historicalMatchPairMissCooldownMs = 3000;
 let rematchScorePrefetchPromise: Promise<boolean> | null = null;
 let rematchScorePrefetchSignature = "";
 const boardViewDebugLogsEnabled = process.env.NODE_ENV !== "production";
+const summarizeWagerState = (state: MatchWagerState | null) => {
+  const proposalKeys = Object.keys(state?.proposals || {});
+  const agreed = state?.agreed
+    ? {
+        material: state.agreed.material,
+        count: state.agreed.count,
+        total: state.agreed.total,
+        proposerId: state.agreed.proposerId,
+        accepterId: state.agreed.accepterId,
+      }
+    : null;
+  const resolved = state?.resolved
+    ? {
+        material: state.resolved.material,
+        count: state.resolved.count,
+        total: state.resolved.total,
+        winnerId: state.resolved.winnerId,
+        loserId: state.resolved.loserId,
+      }
+    : null;
+  return {
+    hasState: !!state,
+    proposalKeys,
+    agreed,
+    resolved,
+  };
+};
+const logWagerDebug = (event: string, payload: Record<string, unknown> = {}) => {
+  if (!boardViewDebugLogsEnabled) {
+    return;
+  }
+  console.log("wager-debug", {
+    event,
+    boardViewMode,
+    activeMatchId: connection.getActiveMatchId(),
+    viewedRematchMatchId,
+    wagerMatchId,
+    isWatchOnly,
+    isGameOver,
+    isReconnect,
+    ...payload,
+  });
+};
 
 export type RematchSeriesNavigatorItem = {
   matchId: string;
@@ -256,6 +299,7 @@ function enterWaitingLiveView() {
   nextBoardRenderSession();
   boardViewMode = "waitingLive";
   clearViewedRematchState();
+  connection.setWagerViewMatchId(null);
   flashbackMode = false;
   currentInputs = [];
   Board.removeHighlights();
@@ -272,6 +316,7 @@ function restoreLiveBoardView() {
   nextBoardRenderSession();
   boardViewMode = isWaitingForRematchResponse ? "waitingLive" : "activeLive";
   clearViewedRematchState();
+  connection.setWagerViewMatchId(null);
   flashbackMode = false;
   currentInputs = [];
   Board.removeHighlights();
@@ -283,6 +328,7 @@ function restoreLiveBoardView() {
     applyTimerStateFromStashes(pendingTimerResolutionOnRestore ?? isReconnect);
     pendingTimerResolutionOnRestore = null;
     applyWagerState();
+    Board.markWagerInitialStateReceived();
     updateUndoButtonBasedOnGameState();
     if (!isWatchOnly && isOnlineGame && !isGameOver && game.winner_color() === undefined) {
       showResignButton();
@@ -308,6 +354,7 @@ function enterHistoricalView(matchId: string, pair: HistoricalMatchPair, histori
   }
   boardViewMode = "historicalView";
   viewedRematchMatchId = matchId;
+  connection.setWagerViewMatchId(matchId);
   viewedRematchGame = historicalGame;
   viewedRematchPair = pair;
   Board.setBoardFlipped(getViewedMatchBoardFlipped(matchId, pair));
@@ -317,6 +364,7 @@ function enterHistoricalView(matchId: string, pair: HistoricalMatchPair, histori
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
   applyBoardUiForCurrentView();
+  applyWagerState();
   ensureBoardViewInvariants("enterHistoricalView");
   setNewBoard(true);
   if (boardViewDebugLogsEnabled) {
@@ -926,6 +974,7 @@ export async function go(routeStateOverride?: RouteState) {
   winnerByTimerColor = undefined;
   currentInputs = [];
   setCurrentWagerMatch(null);
+  connection.setWagerViewMatchId(null);
   setWatchOnlyState(false);
   pendingTimerResolutionOnRestore = null;
   triggerMoveHistoryPopupReload();
@@ -933,9 +982,11 @@ export async function go(routeStateOverride?: RouteState) {
     didSetupWagerSubscription = true;
     unsubscribeFromWagerState = subscribeToWagerState((state) => {
       currentWagerState = state;
+      logWagerDebug("subscription:update", { state: summarizeWagerState(state) });
       applyWagerState();
       if (isGameOver) {
-        syncWagerOutcome();
+        const outcomeState = syncWagerOutcome();
+        logWagerDebug("subscription:sync-on-gameover", { outcomeState });
       }
     });
   }
@@ -1074,6 +1125,7 @@ export function disposeGameSession() {
   whiteTimerStash = null;
   pendingTimerResolutionOnRestore = null;
   setCurrentWagerMatch(null);
+  connection.setWagerViewMatchId(null);
   setHomeVisible(false);
   setInviteLinkActionVisible(false);
   setAutomatchVisible(false);
@@ -2160,7 +2212,7 @@ function updateRatings(isWin: boolean) {
   }
 }
 
-function resetWagerStateForMatch(matchId: string | null, suppressBoardUpdate: boolean = false) {
+function resetWagerStateForMatch(matchId: string | null) {
   if (wagerMatchId === matchId) {
     return;
   }
@@ -2172,40 +2224,70 @@ function resetWagerStateForMatch(matchId: string | null, suppressBoardUpdate: bo
     clearManagedGameTimeout(wagerOutcomeAnimTimer);
     wagerOutcomeAnimTimer = null;
   }
-  currentWagerState = null;
   setCurrentWagerMatch(matchId);
-  if (!suppressBoardUpdate) {
-    Board.clearWagerPilesForNewMatch();
+  currentWagerState = getWagerState();
+  Board.clearWagerPilesForNewMatch();
+}
+
+function normalizeWagerStakeCount(countValue: unknown, totalValue: unknown): number {
+  const count = Math.round(Number(countValue));
+  if (Number.isFinite(count) && count > 0) {
+    return count;
   }
+  const total = Math.round(Number(totalValue));
+  if (Number.isFinite(total) && total > 0) {
+    return Math.max(0, Math.round(total / 2));
+  }
+  return 0;
 }
 
 function applyWagerState() {
-  if (boardViewMode !== "activeLive") {
+  logWagerDebug("apply:start", { state: summarizeWagerState(currentWagerState) });
+  if (boardViewMode === "waitingLive") {
+    logWagerDebug("apply:clear-waiting-live");
+    Board.clearWagerPilesForNewMatch();
     return;
   }
+  if (boardViewMode !== "activeLive" && boardViewMode !== "historicalView") {
+    logWagerDebug("apply:clear-non-live-view");
+    Board.clearWagerPilesForNewMatch();
+    return;
+  }
+  const isHistoricalView = boardViewMode === "historicalView";
   if (!currentWagerState) {
+    logWagerDebug("apply:clear-no-state");
     Board.clearWagerPiles();
     return;
   }
 
   if (currentWagerState.resolved) {
-    if (isGameOver || isReconnect) {
-      syncWagerOutcome();
+    if (isGameOver || isReconnect || isWatchOnly || isHistoricalView) {
+      const outcomeState = syncWagerOutcome();
+      logWagerDebug("apply:resolved-branch", { outcomeState });
+      if (outcomeState === "shown" || outcomeState === "deferred") {
+        return;
+      }
+    } else {
+      logWagerDebug("apply:resolved-skipped-not-eligible");
+      return;
     }
-    return;
   }
 
   if (currentWagerState.agreed && currentWagerState.agreed.material) {
-    const stakeCount =
-      currentWagerState.agreed.count ??
-      (currentWagerState.agreed.total ? Math.max(0, Math.round(currentWagerState.agreed.total / 2)) : 0);
+    const stakeCount = normalizeWagerStakeCount(currentWagerState.agreed.count, currentWagerState.agreed.total);
     if (stakeCount > 0) {
+      logWagerDebug("apply:show-agreed", { material: currentWagerState.agreed.material, stakeCount });
       Board.setWagerPiles({
         player: { material: currentWagerState.agreed.material, count: stakeCount, pending: false },
         opponent: { material: currentWagerState.agreed.material, count: stakeCount, pending: false },
       });
       return;
     }
+  }
+  if (isHistoricalView) {
+    logWagerDebug("apply:clear-historical-non-settled");
+    Board.clearWagerPiles();
+    return;
   }
 
   const proposals = currentWagerState.proposals || {};
@@ -2214,50 +2296,78 @@ function applyWagerState() {
   const playerProposal = playerUid && proposals[playerUid] ? proposals[playerUid] : null;
   const opponentProposal = opponentUid && proposals[opponentUid] ? proposals[opponentUid] : null;
   if (!playerProposal && !opponentProposal) {
+    logWagerDebug("apply:clear-no-proposals");
     Board.clearWagerPiles();
     return;
   }
+  logWagerDebug("apply:show-proposals", {
+    playerProposal: playerProposal ? { material: playerProposal.material, count: playerProposal.count } : null,
+    opponentProposal: opponentProposal ? { material: opponentProposal.material, count: opponentProposal.count } : null,
+    playerUid,
+    opponentUid,
+  });
   Board.setWagerPiles({
     player: playerProposal ? { material: playerProposal.material, count: playerProposal.count, pending: true } : null,
     opponent: opponentProposal ? { material: opponentProposal.material, count: opponentProposal.count, pending: true } : null,
   });
 }
 
-function syncWagerOutcome() {
+function syncWagerOutcome(): "shown" | "deferred" | "invalid" {
   if (!currentWagerState || !currentWagerState.resolved) {
-    return;
+    logWagerDebug("sync:invalid-missing-resolved");
+    return "invalid";
   }
   const resolved = currentWagerState.resolved;
-  if (!resolved.material) {
-    return;
+  const material = resolved.material || currentWagerState.agreed?.material || null;
+  if (!material) {
+    logWagerDebug("sync:invalid-missing-material", { resolved: summarizeWagerState(currentWagerState).resolved });
+    return "invalid";
   }
-  const stakeCount = resolved.count ?? (resolved.total ? Math.max(0, Math.round(resolved.total / 2)) : 0);
+  const stakeCount = normalizeWagerStakeCount(resolved.count, resolved.total ?? currentWagerState.agreed?.total);
   if (!stakeCount) {
-    return;
+    logWagerDebug("sync:invalid-zero-stake", { resolved: summarizeWagerState(currentWagerState).resolved });
+    return "invalid";
   }
   const winnerIsOpponent = resolved.winnerId === Board.opponentSideMetadata.uid;
   const shouldAnimate = isGameOver && wagerOutcomeAnimationAllowed && !isWatchOnly && !wagerOutcomeShown;
+  logWagerDebug("sync:computed", {
+    material,
+    stakeCount,
+    winnerIsOpponent,
+    shouldAnimate,
+    winnerId: resolved.winnerId,
+    boardOpponentUid: Board.opponentSideMetadata.uid,
+    boardPlayerUid: Board.playerSideMetadata.uid,
+    wagerOutcomeShown,
+    wagerOutcomeAnimating,
+    wagerOutcomeAnimationAllowed,
+  });
   if (shouldAnimate) {
     if (wagerOutcomeAnimating) {
-      return;
+      logWagerDebug("sync:deferred-animating");
+      return "deferred";
     }
     wagerOutcomeAnimating = true;
     if (wagerOutcomeAnimTimer !== null) {
       clearManagedGameTimeout(wagerOutcomeAnimTimer);
     }
-    Board.showResolvedWager(winnerIsOpponent, resolved.material, stakeCount, true);
+    Board.showResolvedWager(winnerIsOpponent, material, stakeCount, true);
     wagerOutcomeShown = true;
     const wagerOutcomeGuard = getSessionGuard();
     wagerOutcomeAnimTimer = setManagedGameTimeout(() => {
       wagerOutcomeAnimating = false;
       wagerOutcomeAnimTimer = null;
     }, 900, wagerOutcomeGuard);
-    return;
+    logWagerDebug("sync:shown-animated");
+    return "shown";
   }
   if (wagerOutcomeAnimating) {
-    return;
+    logWagerDebug("sync:deferred-existing-animation");
+    return "deferred";
   }
-  Board.showResolvedWager(winnerIsOpponent, resolved.material, stakeCount, false);
+  Board.showResolvedWager(winnerIsOpponent, material, stakeCount, false);
+  logWagerDebug("sync:shown-static");
+  return "shown";
 }
 
 function processInput(assistedInputKind: AssistedInputKind, inputModifier: InputModifier, inputLocation?: Location) {
@@ -2353,7 +2463,7 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     nextBoardRenderSession();
     applyBoardUiForCurrentView();
   }
-  resetWagerStateForMatch(matchId, !shouldRenderLiveBoard);
+  resetWagerStateForMatch(matchId);
   isOnlineGame = true;
   currentInputs = [];
   if (shouldRenderLiveBoard) {
@@ -2902,7 +3012,7 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   setWatchOnlyState(false);
   setWatchOnlyVisible(false);
   isReconnect = true;
-  resetWagerStateForMatch(matchId, !shouldRenderLiveBoard);
+  resetWagerStateForMatch(matchId);
 
   playerSideColor = match.color === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);

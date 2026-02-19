@@ -135,6 +135,7 @@ const WAGER_PANEL_COUNT_GAP_FRAC = 0.06;
 const WAGER_PANEL_COUNT_MIN_GAP_PX = 4;
 const WAGER_PANEL_COUNT_MIN_WIDTH_PX = 32;
 const WAGER_PANEL_COUNT_Y_OFFSET_FRAC = 0.04;
+const wagerUiDebugLogsEnabled = process.env.NODE_ENV !== "production";
 
 const PENDING_PULSE_KEYFRAMES_NAME = "wagerPilePendingPulse";
 const PENDING_PULSE_ANIMATION = `${PENDING_PULSE_KEYFRAMES_NAME} 1.4s ease-in-out infinite`;
@@ -290,6 +291,7 @@ const BoardComponent: React.FC = () => {
   const pendingBlinkEnabledRef = useRef<{ player: boolean; opponent: boolean }>({ player: false, opponent: false });
   const previousMaterialUrlRef = useRef<{ player: string | null; opponent: string | null }>({ player: null, opponent: null });
   const materialChangeOldIconsRef = useRef<{ player: HTMLImageElement[]; opponent: HTMLImageElement[] }>({ player: [], opponent: [] });
+  const lastWagerUiRenderSignatureRef = useRef<string>("");
   const wagerPanelStateRef = useRef<{ actionsLocked: boolean; playerHasProposal: boolean; opponentHasProposal: boolean }>({
     actionsLocked: true,
     playerHasProposal: false,
@@ -838,8 +840,30 @@ const BoardComponent: React.FC = () => {
   const applyWagerRenderState = useCallback(
     (state: WagerRenderState) => {
       wagerRenderStateRef.current = state;
+      const signature = [
+        state.player ? `${state.player.count}:${state.player.isPending ? 1 : 0}:${state.player.animation}` : "none",
+        state.opponent ? `${state.opponent.count}:${state.opponent.isPending ? 1 : 0}:${state.opponent.animation}` : "none",
+        state.winner ? `${state.winner.count}` : "none",
+        state.playerDisappearing ? `${state.playerDisappearing.count}` : "none",
+        state.opponentDisappearing ? `${state.opponentDisappearing.count}` : "none",
+        state.winAnimationActive ? "1" : "0",
+      ].join("|");
+      if (wagerUiDebugLogsEnabled && lastWagerUiRenderSignatureRef.current !== signature) {
+        lastWagerUiRenderSignatureRef.current = signature;
+        console.log("wager-debug", {
+          source: "board-ui",
+          event: "apply-render-state",
+          signature,
+          playerRect: state.player?.rect ?? null,
+          opponentRect: state.opponent?.rect ?? null,
+          winnerRect: state.winner?.rect ?? null,
+        });
+      }
       const elements = ensureWagerPileElements();
       if (!elements) {
+        if (wagerUiDebugLogsEnabled) {
+          console.log("wager-debug", { source: "board-ui", event: "apply-render-state:missing-elements" });
+        }
         return;
       }
 

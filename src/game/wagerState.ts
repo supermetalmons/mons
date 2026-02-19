@@ -32,6 +32,19 @@ export const setWagerState = (matchId: string | null, state: MatchWagerState | n
   notify();
 };
 
+export const syncCurrentWagerMatchState = (matchId: string | null, state: MatchWagerState | null) => {
+  currentMatchId = matchId;
+  if (!matchId) {
+    currentState = null;
+    currentStateMatchId = null;
+    notify();
+    return;
+  }
+  currentState = state;
+  currentStateMatchId = matchId;
+  notify();
+};
+
 export const getWagerState = () => currentState;
 
 export const subscribeToWagerState = (listener: WagerStateListener) => {

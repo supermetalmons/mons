@@ -9,7 +9,7 @@ import { Match, Invite, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningM
 import { storage } from "../utils/storage";
 import { generateNewInviteId } from "../utils/misc";
 import { setDebugViewText } from "../ui/MainMenu";
-import { getWagerState, setCurrentWagerMatch, setWagerState } from "../game/wagerState";
+import { getWagerState, setCurrentWagerMatch, setWagerState, syncCurrentWagerMatchState } from "../game/wagerState";
 import { applyFrozenMaterialsDelta, computeAvailableMaterials, getFrozenMaterials, setFrozenMaterials } from "../services/wagerMaterialsService";
 import { rocksMiningService } from "../services/rocksMiningService";
 import { RouteState, getCurrentRouteState } from "../navigation/routeState";
@@ -41,8 +41,36 @@ const normalizeMiningData = (source: any): PlayerMiningData => {
 
 const controllerVersion = 2;
 const LEADERBOARD_ENTRY_LIMIT = 99;
+const wagerDebugLogsEnabled = process.env.NODE_ENV !== "production";
 
 const getRouteStateSnapshot = () => getCurrentRouteState();
+const summarizeWagerState = (state: MatchWagerState | null) => {
+  const proposalKeys = Object.keys(state?.proposals || {});
+  const agreed = state?.agreed
+    ? {
+        material: state.agreed.material,
+        count: state.agreed.count,
+        total: state.agreed.total,
+        proposerId: state.agreed.proposerId,
+        accepterId: state.agreed.accepterId,
+      }
+    : null;
+  const resolved = state?.resolved
+    ? {
+        material: state.resolved.material,
+        count: state.resolved.count,
+        total: state.resolved.total,
+        winnerId: state.resolved.winnerId,
+        loserId: state.resolved.loserId,
+      }
+    : null;
+  return {
+    hasState: !!state,
+    proposalKeys,
+    agreed,
+    resolved,
+  };
+};
 
 export function getSnapshotIdAndClearPathIfNeeded(): string | null {
   return getRouteStateSnapshot().snapshotId;
@@ -70,6 +98,7 @@ class Connection {
   private myMatch: Match | null = null;
   private inviteId: string | null = null;
   private matchId: string | null = null;
+  private wagerViewMatchId: string | null = null;
 
   private newInviteId = "";
   private didCreateNewGameInvite = false;
@@ -123,6 +152,20 @@ class Connection {
       }
       return isActive;
     };
+  }
+
+  private logWagerDebug(event: string, payload: Record<string, unknown> = {}): void {
+    if (!wagerDebugLogsEnabled) {
+      return;
+    }
+    console.log("wager-debug", {
+      source: "connection",
+      event,
+      inviteId: this.inviteId,
+      activeMatchId: this.matchId,
+      wagerViewMatchId: this.wagerViewMatchId,
+      ...payload,
+    });
   }
 
   private trackInviteWaitRef(inviteRef: any) {
@@ -182,6 +225,7 @@ class Connection {
     if (!this.matchId) {
       return;
     }
+    this.logWagerDebug("set-local-state", { targetMatchId: this.matchId, state: summarizeWagerState(state) });
     if (this.latestInvite) {
       if (!this.latestInvite.wagers) {
         this.latestInvite.wagers = {};
@@ -482,6 +526,7 @@ class Connection {
     this.myMatch = null;
     this.inviteId = null;
     this.matchId = null;
+    this.wagerViewMatchId = null;
     this.didCreateNewGameInvite = false;
     this.newInviteId = "";
     this.optimisticResolvedMatchIds.clear();
@@ -1662,6 +1707,12 @@ class Connection {
     return this.matchId;
   }
 
+  public setWagerViewMatchId(matchId: string | null): void {
+    this.wagerViewMatchId = matchId;
+    this.logWagerDebug("set-view-match", { nextViewMatchId: matchId });
+    this.updateWagerStateForCurrentMatch();
+  }
+
   public updateStoredEmoji(newId: number, aura: string | null | undefined): void {
     this.updateCustomField("emoji", newId);
     if (aura !== undefined && aura !== null) this.updateCustomField("aura", aura);
@@ -1835,7 +1886,6 @@ class Connection {
           return;
         }
         this.matchId = matchId;
-        setCurrentWagerMatch(matchId);
         this.updateWagerStateForCurrentMatch();
 
         if (!inviteData.guestId && inviteData.hostId !== uid) {
@@ -2198,12 +2248,20 @@ class Connection {
   }
 
   private updateWagerStateForCurrentMatch() {
-    if (!this.matchId) {
+    const targetMatchId = this.wagerViewMatchId ?? this.matchId;
+    if (!targetMatchId) {
+      syncCurrentWagerMatchState(null, null);
+      this.logWagerDebug("publish-state:clear-no-target");
       return;
     }
     const wagers = this.latestInvite?.wagers ?? null;
-    const matchWagerState = wagers && wagers[this.matchId] ? wagers[this.matchId] : null;
-    setWagerState(this.matchId, matchWagerState);
+    const matchWagerState = wagers && wagers[targetMatchId] ? wagers[targetMatchId] : null;
+    this.logWagerDebug("publish-state", {
+      targetMatchId,
+      availableMatchIds: wagers ? Object.keys(wagers) : [],
+      state: summarizeWagerState(matchWagerState),
+    });
+    syncCurrentWagerMatchState(targetMatchId, matchWagerState);
   }
 
   private observeWagers() {
@@ -2219,6 +2277,7 @@ class Connection {
         return;
       }
       const wagers = snapshot.val();
+      this.logWagerDebug("observe-wagers:update", { availableMatchIds: wagers ? Object.keys(wagers) : [] });
       if (this.latestInvite) {
         this.latestInvite.wagers = wagers;
       }

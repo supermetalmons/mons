@@ -308,6 +308,14 @@ let disappearingPileTimers: { player: number | null; opponent: number | null } =
 const WAGER_DISAPPEAR_ANIMATION_MS = 280;
 let playerPilePending = false;
 let opponentPilePending = false;
+const boardWagerDebugLogsEnabled = process.env.NODE_ENV !== "production";
+let lastWagerEmitSignature = "";
+const logBoardWagerDebug = (event: string, payload: Record<string, unknown> = {}) => {
+  if (!boardWagerDebugLogsEnabled) {
+    return;
+  }
+  console.log("wager-debug", { source: "board", event, ...payload });
+};
 
 preloadEndOfGameIcons();
 
@@ -2441,15 +2449,34 @@ function emitWagerRenderState() {
 
   const playerRenderState = currentPlayerState ? { ...currentPlayerState, animation: playerAnimation } : null;
   const opponentRenderState = currentOpponentState ? { ...currentOpponentState, animation: opponentAnimation } : null;
+  const winnerRenderState = showWinner ? buildWagerRenderState(winnerWagerPile, "winner", "none", false) : null;
 
   const state: WagerRenderState = {
     player: playerRenderState,
     opponent: opponentRenderState,
-    winner: showWinner ? buildWagerRenderState(winnerWagerPile, "winner", "none", false) : null,
+    winner: winnerRenderState,
     winAnimationActive: wagerWinAnimActive,
     playerDisappearing: disappearingPlayerPile,
     opponentDisappearing: disappearingOpponentPile,
   };
+  const signature = [
+    state.player ? `${state.player.count}:${state.player.isPending ? 1 : 0}:${state.player.animation}` : "none",
+    state.opponent ? `${state.opponent.count}:${state.opponent.isPending ? 1 : 0}:${state.opponent.animation}` : "none",
+    state.winner ? `${state.winner.count}` : "none",
+    state.playerDisappearing ? `${state.playerDisappearing.count}` : "none",
+    state.opponentDisappearing ? `${state.opponentDisappearing.count}` : "none",
+    state.winAnimationActive ? "1" : "0",
+  ].join("|");
+  if (signature !== lastWagerEmitSignature) {
+    lastWagerEmitSignature = signature;
+    logBoardWagerDebug("emit-render-state", {
+      showWinner,
+      signature,
+      playerRect: state.player?.rect ?? null,
+      opponentRect: state.opponent?.rect ?? null,
+      winnerRect: state.winner?.rect ?? null,
+    });
+  }
   handleWagerRenderState(state);
 }
 
@@ -2976,9 +3003,11 @@ export function setWagerPiles(state: {
 }
 
 export function showResolvedWager(winnerIsOpponent: boolean, material: MaterialName, countPerSide: number, animate: boolean) {
+  logBoardWagerDebug("show-resolved:start", { winnerIsOpponent, material, countPerSide, animate });
   const playerPile = ensureWagerPile(false);
   const opponentPile = ensureWagerPile(true);
   if (!playerPile || !opponentPile) {
+    logBoardWagerDebug("show-resolved:skip-no-piles");
     return;
   }
   cancelWagerWinAnimation();
@@ -2988,15 +3017,18 @@ export function showResolvedWager(winnerIsOpponent: boolean, material: MaterialN
   updateWagerLayout();
   lastWagerWinnerIsOpponent = winnerIsOpponent;
   if (animate && startWagerWinAnimation(winnerIsOpponent)) {
+    logBoardWagerDebug("show-resolved:started-win-animation");
     return;
   }
   const winnerPile = ensureWinnerWagerPile();
   if (!winnerPile) {
+    logBoardWagerDebug("show-resolved:skip-no-winner-pile");
     return;
   }
   const total = Math.max(0, countPerSide * 2);
   syncWagerPileIcons(winnerPile, material, total, null, MAX_WAGER_WIN_PILE_ITEMS);
   winnerPileActive = true;
+  logBoardWagerDebug("show-resolved:show-winner-pile", { winnerCount: winnerPile.count, total });
   updateWagerLayout();
 }
 
