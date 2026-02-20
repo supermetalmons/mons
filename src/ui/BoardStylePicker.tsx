@@ -206,25 +206,28 @@ const ItemStyleButton = styled.button<{ isSelected?: boolean }>`
   height: 44px;
   min-width: 44px;
   min-height: 44px;
-  border-radius: 10px;
   border: none;
   outline: none;
   cursor: pointer;
   position: relative;
   -webkit-tap-highlight-color: transparent;
   padding: 0;
-  overflow: hidden;
   background: transparent;
   touch-action: none;
   user-select: none;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  opacity: ${(props) => (props.isSelected ? 1 : 0.58)};
-  transition: transform 0.08s ease, opacity 0.15s ease;
+  opacity: ${(props) => (props.isSelected ? 1 : 0.5)};
+  filter: ${(props) => (props.isSelected ? "drop-shadow(0 0 7px rgba(59, 130, 246, 0.85)) drop-shadow(0 0 3px rgba(59, 130, 246, 0.5))" : "none")};
+  transition: transform 0.1s ease, opacity 0.2s ease, filter 0.2s ease;
+
+  @media (prefers-color-scheme: dark) {
+    filter: ${(props) => (props.isSelected ? "drop-shadow(0 0 7px rgba(100, 165, 255, 0.8)) drop-shadow(0 0 3px rgba(100, 165, 255, 0.45))" : "none")};
+  }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      opacity: ${(props) => (props.isSelected ? 1 : 0.82)};
+      opacity: ${(props) => (props.isSelected ? 1 : 0.78)};
     }
   }
 
@@ -234,23 +237,10 @@ const ItemStyleButton = styled.button<{ isSelected?: boolean }>`
 `;
 
 const ItemStylePreview = styled.div<{ itemSet: AssetsSet; previewUrl: string | null }>`
-  display: flex;
-  align-items: center;
-  justify-content: center;
   width: 100%;
   height: 100%;
-  border-radius: 10px;
-  background-color: ${(props) => {
-    if (props.itemSet === AssetsSet.Pixel) {
-      return "#6f87d9";
-    }
-    if (props.itemSet === AssetsSet.Original) {
-      return "#5b5b5b";
-    }
-    return "#4d9d56";
-  }};
   background-image: ${(props) => props.previewUrl ?? "none"};
-  background-size: 78%;
+  background-size: 94%;
   background-position: center;
   background-repeat: no-repeat;
   ${(props) =>
