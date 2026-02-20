@@ -5,7 +5,7 @@ import styled from "styled-components";
 import { defaultEarlyInputEventName, isMobile, getBuildInfo } from "../utils/misc";
 import { storage } from "../utils/storage";
 import { Leaderboard, LeaderboardType, LEADERBOARD_TYPE_ICON_URLS } from "./Leaderboard";
-import { toggleExperimentalMode } from "../game/board";
+import { setAnimatedMonsEnabled } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
 import { getCurrentGameFen } from "../game/gameController";
 import { FaTelegramPlane, FaUniversity, FaPlay, FaStop, FaBackward, FaForward } from "react-icons/fa";
@@ -825,11 +825,7 @@ const MainMenu: React.FC = () => {
   const handleAnimatedMonsToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const checked = event.target.checked;
     setAreAnimatedMonsEnabled(checked);
-    if (checked) {
-      toggleExperimentalMode(false, true, false, false);
-    } else {
-      toggleExperimentalMode(true, false, false, false);
-    }
+    setAnimatedMonsEnabled(checked, false);
   };
 
   toggleInfoVisibilityImpl = () => {

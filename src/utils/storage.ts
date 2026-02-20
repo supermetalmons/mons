@@ -1,9 +1,10 @@
-import { AssetsSet } from "../content/boardStyles";
+import { AssetsSet, BoardStyleSet } from "../content/boardStyles";
 
 const STORAGE_KEYS = {
   IS_MUTED: "isMuted",
 
   PREFERRED_ASSETS_SET: "preferredAssetsSet",
+  BOARD_STYLE_SET: "boardStyleSet",
   BOARD_COLOR_SET: "boardColorSet",
   BOARD_COLOR_SETS_BY_THEME: "boardColorSetsByTheme",
   IS_EXPERIMENTING_WITH_SPRITES: "isExperimentingWithSprites",
@@ -89,6 +90,14 @@ export const storage = {
 
   setPreferredAssetsSet: (value: AssetsSet): void => {
     setItem(STORAGE_KEYS.PREFERRED_ASSETS_SET, value);
+  },
+
+  getBoardStyleSet: (defaultValue: BoardStyleSet | null): BoardStyleSet | null => {
+    return getItem(STORAGE_KEYS.BOARD_STYLE_SET, defaultValue);
+  },
+
+  setBoardStyleSet: (value: BoardStyleSet | null): void => {
+    setItem(STORAGE_KEYS.BOARD_STYLE_SET, value);
   },
 
   getBoardColorSet: (defaultValue: string): string => {

@@ -7,19 +7,92 @@ export enum AssetsSet {
   Pangchiu = "Pangchiu",
 }
 
-export let currentAssetsSet: AssetsSet = storage.getPreferredAssetsSet(AssetsSet.Pixel);
-
-export function setCurrentAssetsSet(set: AssetsSet) {
-  currentAssetsSet = set;
-  storage.setPreferredAssetsSet(set);
+export enum BoardStyleSet {
+  Grid = "Grid",
+  Pangchiu = "Pangchiu",
 }
 
-export const isPangchiuBoard = () => currentAssetsSet === AssetsSet.Pangchiu;
+const isAssetsSet = (value: unknown): value is AssetsSet => {
+  return typeof value === "string" && Object.values(AssetsSet).includes(value as AssetsSet);
+};
+
+const isBoardStyleSet = (value: unknown): value is BoardStyleSet => {
+  return typeof value === "string" && Object.values(BoardStyleSet).includes(value as BoardStyleSet);
+};
+
+const getStoredAssetsSet = (): AssetsSet => {
+  const storedAssetsSet = storage.getPreferredAssetsSet(AssetsSet.Pixel);
+  return isAssetsSet(storedAssetsSet) ? storedAssetsSet : AssetsSet.Pixel;
+};
+
+export let currentAssetsSet: AssetsSet = getStoredAssetsSet();
+const assetsSetListeners = new Set<() => void>();
+const notifyAssetsSetListeners = () => {
+  assetsSetListeners.forEach((listener) => listener());
+};
+
+export const subscribeToAssetsSetChanges = (listener: () => void) => {
+  assetsSetListeners.add(listener);
+  return () => {
+    assetsSetListeners.delete(listener);
+  };
+};
+
+export const getCurrentAssetsSet = () => currentAssetsSet;
+
+export function setCurrentAssetsSet(set: AssetsSet) {
+  if (currentAssetsSet === set) {
+    return;
+  }
+  currentAssetsSet = set;
+  storage.setPreferredAssetsSet(set);
+  notifyAssetsSetListeners();
+}
+
+const storedBoardStyleSet = storage.getBoardStyleSet(null);
+const resolveInitialBoardStyleSet = (): BoardStyleSet => {
+  if (isBoardStyleSet(storedBoardStyleSet)) {
+    return storedBoardStyleSet;
+  }
+  return currentAssetsSet === AssetsSet.Pangchiu ? BoardStyleSet.Pangchiu : BoardStyleSet.Grid;
+};
+
+export let currentBoardStyleSet: BoardStyleSet = resolveInitialBoardStyleSet();
+if (!isBoardStyleSet(storedBoardStyleSet)) {
+  storage.setBoardStyleSet(currentBoardStyleSet);
+}
+
+const boardStyleSetListeners = new Set<() => void>();
+const notifyBoardStyleSetListeners = () => {
+  boardStyleSetListeners.forEach((listener) => listener());
+};
+
+export const subscribeToBoardStyleSetChanges = (listener: () => void) => {
+  boardStyleSetListeners.add(listener);
+  return () => {
+    boardStyleSetListeners.delete(listener);
+  };
+};
+
+export const getCurrentBoardStyleSet = () => currentBoardStyleSet;
+
+export function setCurrentBoardStyleSet(set: BoardStyleSet) {
+  if (currentBoardStyleSet === set) {
+    return;
+  }
+  currentBoardStyleSet = set;
+  storage.setBoardStyleSet(set);
+  notifyBoardStyleSetListeners();
+}
+
+export const isPangchiuBoard = () => currentBoardStyleSet === BoardStyleSet.Pangchiu;
 export const isCustomPictureBoardEnabled = () => isPangchiuBoard();
 
 export const colors = {
   attackTarget: "#941651",
-  destination: isPangchiuBoard() ? "#00BC00" : "#009500",
+  get destination() {
+    return isPangchiuBoard() ? "#00BC00" : "#009500";
+  },
   spiritTarget: "#FF84FF",
   startFromSuggestion: "#FEFB00",
   selectedItem: "#00F900",

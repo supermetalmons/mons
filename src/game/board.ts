@@ -2,7 +2,7 @@ import * as MonsWeb from "mons-web";
 import * as SVG from "../utils/svg";
 import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, sendPlayerEmojiUpdate, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle, cleanupCurrentInputs, didClickInviteBotIntoLocalGameButton } from "./gameController";
 import { Highlight, HighlightKind, InputModifier, Location, Sound, Trace, ItemKind } from "../utils/gameModels";
-import { colors, currentAssetsSet, AssetsSet, isCustomPictureBoardEnabled, isPangchiuBoard, setCurrentAssetsSet } from "../content/boardStyles";
+import { colors, currentAssetsSet, AssetsSet, BoardStyleSet, getCurrentBoardStyleSet, isCustomPictureBoardEnabled, isPangchiuBoard, setCurrentAssetsSet, setCurrentBoardStyleSet } from "../content/boardStyles";
 import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
 import { playSounds } from "../content/sounds";
 import { hasNavigationPopupVisible, didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible, resetOutsideTapDismissTimeout } from "../ui/BottomControls";
@@ -26,25 +26,60 @@ import { getCurrentRouteState } from "../navigation/routeState";
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 const valentinesLoaderEnabled = false;
 
-export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, pangchiu: boolean, doNotStore: boolean) {
-  if (defaultMode) {
-    setCurrentAssetsSet(AssetsSet.Pixel);
-    isExperimentingWithSprites = false;
-  } else if (animated) {
-    setCurrentAssetsSet(AssetsSet.Pixel);
-    isExperimentingWithSprites = true;
-  } else if (pangchiu) {
-    setCurrentAssetsSet(AssetsSet.Pangchiu);
-    isExperimentingWithSprites = false;
+const refreshBoardAfterStyleChange = (reloadItems: boolean) => {
+  updateBoardComponentForBoardStyleChange();
+  if (reloadItems) {
+    void didToggleItemsStyleSet();
   }
+  setManagedBoardTimeout(() => updateLayout(), 1);
+};
 
+export function setBoardStyleSet(styleSet: BoardStyleSet) {
+  if (getCurrentBoardStyleSet() === styleSet) {
+    return;
+  }
+  setCurrentBoardStyleSet(styleSet);
+  refreshBoardAfterStyleChange(true);
+}
+
+export function setItemsStyleSet(set: AssetsSet, doNotStore: boolean = false) {
+  const didAssetsSetChange = currentAssetsSet !== set;
+  const didAnimatedSpritesChange = isExperimentingWithSprites;
+  if (!didAssetsSetChange && !didAnimatedSpritesChange) {
+    return;
+  }
+  setCurrentAssetsSet(set);
+  isExperimentingWithSprites = false;
   if (!doNotStore) {
     storage.setIsExperimentingWithSprites(isExperimentingWithSprites);
   }
+  refreshBoardAfterStyleChange(true);
+}
 
-  updateBoardComponentForBoardStyleChange();
-  didToggleItemsStyleSet();
-  setManagedBoardTimeout(() => updateLayout(), 1);
+export function setAnimatedMonsEnabled(enabled: boolean, doNotStore: boolean = false) {
+  const didAnimatedSpritesChange = isExperimentingWithSprites !== enabled;
+  if (!didAnimatedSpritesChange) {
+    return;
+  }
+  isExperimentingWithSprites = enabled;
+  if (!doNotStore) {
+    storage.setIsExperimentingWithSprites(isExperimentingWithSprites);
+  }
+  refreshBoardAfterStyleChange(true);
+}
+
+export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, pangchiu: boolean, doNotStore: boolean) {
+  if (defaultMode) {
+    setAnimatedMonsEnabled(false, doNotStore);
+    return;
+  }
+  if (animated) {
+    setAnimatedMonsEnabled(true, doNotStore);
+    return;
+  }
+  if (pangchiu) {
+    setItemsStyleSet(AssetsSet.Pangchiu, doNotStore);
+  }
 }
 
 export let playerSideMetadata = newEmptyPlayerMetadata();
@@ -776,9 +811,9 @@ export async function didToggleItemsStyleSet(isProfileMonsChange: boolean = fals
     showItemsAfterChangingAssetsStyle();
   }
 
-  const allPixelOnlyElements = [...(board?.querySelectorAll('[data-assets-pixel-only="true"]') ?? [])];
-  allPixelOnlyElements.forEach((element) => {
-    SVG.setHidden(element as SVGElement, currentAssetsSet !== AssetsSet.Pixel);
+  const allGridBoardOnlyElements = [...(board?.querySelectorAll('[data-grid-board-only="true"]') ?? [])];
+  allGridBoardOnlyElements.forEach((element) => {
+    SVG.setHidden(element as SVGElement, isCustomPictureBoardEnabled());
   });
 }
 
@@ -808,7 +843,7 @@ function loadBoardAssetImage(data: string, assetType: string, isSpriteSheet: boo
   div.style.backgroundSize = "100%";
   div.style.backgroundRepeat = "no-repeat";
 
-  if (currentAssetsSet === AssetsSet.Pixel || isTalkingDude) {
+  if (currentAssetsSet === AssetsSet.Pixel || isSpriteSheet || isTalkingDude) {
     div.style.imageRendering = "pixelated";
   }
 
@@ -3457,7 +3492,7 @@ export function disposeBoardRuntime() {
     highlightsLayer.innerHTML = "";
   }
   if (board) {
-    const overlays = Array.from(board.querySelectorAll('[data-wager-pile], [data-wager-win-pile], [data-assets-pixel-only]'));
+    const overlays = Array.from(board.querySelectorAll('[data-wager-pile], [data-wager-win-pile], [data-grid-board-only]'));
     overlays.forEach((element) => element.remove());
   }
   opponentMoveStatusItems.length = 0;
@@ -3701,8 +3736,8 @@ function placeItem(item: SVGElement, location: Location, kind: ItemKind, fainted
 function createSparklingContainer(location: Location): SVGElement {
   const container = document.createElementNS(SVG.ns, "g");
   container.setAttribute("class", "item");
-  container.setAttribute("data-assets-pixel-only", "true");
-  SVG.setHidden(container, currentAssetsSet !== AssetsSet.Pixel);
+  container.setAttribute("data-grid-board-only", "true");
+  SVG.setHidden(container, isCustomPictureBoardEnabled());
 
   const mask = document.createElementNS(SVG.ns, "mask");
   mask.setAttribute("id", `mask-square-${location.toString()}`);
@@ -3791,7 +3826,7 @@ function setBase(item: SVGElement, location: Location) {
   }
   if (!hasBasePlaceholder(logicalLocation)) {
     let img: SVGElement;
-    if (!isCustomPictureBoardEnabled) {
+    if (!isCustomPictureBoardEnabled()) {
       img = item.cloneNode(true) as SVGElement;
       const firstChild = img.children[0] as HTMLElement;
       firstChild.style.backgroundBlendMode = "saturation";
@@ -4094,7 +4129,7 @@ function highlightDestinationItem(location: Location, color: string, blinking: b
 }
 
 function getTraceColors(): string[] {
-  const isGradient = !isPangchiuBoard;
+  const isGradient = !isPangchiuBoard();
 
   if (traceIndex === (isGradient ? 6 : 7)) {
     traceIndex = 0;
@@ -4111,8 +4146,8 @@ function getTraceColors(): string[] {
 function addWaves(location: Location) {
   location = inBoardCoordinates(location);
   const wavesSquareElement = document.createElementNS(SVG.ns, "g");
-  wavesSquareElement.setAttribute("data-assets-pixel-only", "true");
-  SVG.setHidden(wavesSquareElement, currentAssetsSet !== AssetsSet.Pixel);
+  wavesSquareElement.setAttribute("data-grid-board-only", "true");
+  SVG.setHidden(wavesSquareElement, isCustomPictureBoardEnabled());
   wavesSquareElement.setAttribute("transform", `translate(${location.j * 100}, ${location.i * 100})`);
   SVG.setOpacity(wavesSquareElement, 0.5);
   board?.appendChild(wavesSquareElement);
@@ -4232,7 +4267,7 @@ export function didToggleBoardColors() {
     });
   });
 
-  if (!isCustomPictureBoardEnabled) {
+  if (!isCustomPictureBoardEnabled()) {
     Object.entries(basesPlaceholders).forEach(([key, element]) => {
       const [i, j] = key.split("-").map(Number);
       const squareColor = ((i + j) % 2 === 0 ? colors.lightSquare : colors.darkSquare) + "85";

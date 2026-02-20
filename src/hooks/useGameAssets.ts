@@ -33,6 +33,8 @@ export const useGameAssets = () => {
   const [isLoading, setIsLoading] = useState(!assetsCache);
 
   useEffect(() => {
+    let cancelled = false;
+
     if (assetsCache) {
       setAssets(assetsCache);
       setIsLoading(false);
@@ -41,9 +43,15 @@ export const useGameAssets = () => {
 
     setIsLoading(true);
     loadGameAssets().then((loadedAssets) => {
+      if (cancelled) {
+        return;
+      }
       setAssets(loadedAssets);
       setIsLoading(false);
     });
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   return { assets, isLoading };
