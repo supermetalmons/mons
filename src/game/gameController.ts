@@ -300,9 +300,11 @@ function applyBoardUiForCurrentView() {
     Board.stopMonsBoardAsDisplayAnimations();
     Board.showBoardPlayersInfo();
     showWaitingStateText("");
-    if (!isWatchOnly && connection.rematchSeriesEndIsIndicated()) {
+    if (!isWatchOnly && isOnlineGame && connection.rematchSeriesEndIsIndicated()) {
       setEndMatchVisible(true);
       setEndMatchConfirmed(true);
+    } else if (!isWatchOnly && isOnlineGame && (isGameOver || isWaitingForRematchResponse)) {
+      setEndMatchVisible(true);
     } else {
       setEndMatchVisible(false);
     }
