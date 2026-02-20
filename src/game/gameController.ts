@@ -309,9 +309,7 @@ function applyBoardUiForCurrentView() {
       setEndMatchVisible(false);
     }
     showVoiceReactionButton(false);
-    setAutomoveActionVisible(false);
-    setUndoVisible(false);
-    setUndoEnabled(false);
+    disableAndHideUndoResignAndTimerControls();
     hideTimerButtons();
     Board.hideTimerCountdownDigits();
     Board.hideAllMoveStatuses();
