@@ -155,6 +155,7 @@ export type RematchSeriesNavigatorItem = {
   isPendingResponse: boolean;
   isActiveMatch: boolean;
   isSelected: boolean;
+  playerIsWhite: boolean;
 };
 
 type LocalRematchSnapshot = {
@@ -987,6 +988,9 @@ export function getRematchSeriesNavigatorItems(): RematchSeriesNavigatorItem[] {
   }
   const activeMatchId = descriptor.activeMatchId;
   const selectedMatchId = viewedRematchMatchId ?? activeMatchId;
+  const activeMatchDescriptor = descriptor.matches.find((m: RematchSeriesMatchDescriptor) => m.isActiveMatch);
+  const activeMatchIndex = activeMatchDescriptor ? activeMatchDescriptor.index : 0;
+  const activePlayerIsWhite = playerSideColor !== MonsWeb.Color.Black;
   return descriptor.matches.map((descriptorItem: RematchSeriesMatchDescriptor) => {
     let whiteScore: number | null = null;
     let blackScore: number | null = null;
@@ -1005,6 +1009,8 @@ export function getRematchSeriesNavigatorItems(): RematchSeriesNavigatorItem[] {
         blackScore = cachedScore.black;
       }
     }
+    const indexDiff = Math.abs(descriptorItem.index - activeMatchIndex);
+    const playerIsWhite = indexDiff % 2 === 0 ? activePlayerIsWhite : !activePlayerIsWhite;
     return {
       matchId: descriptorItem.matchId,
       index: descriptorItem.index,
@@ -1013,6 +1019,7 @@ export function getRematchSeriesNavigatorItems(): RematchSeriesNavigatorItem[] {
       isPendingResponse: descriptorItem.isPendingResponse,
       isActiveMatch: descriptorItem.isActiveMatch,
       isSelected: selectedMatchId === descriptorItem.matchId,
+      playerIsWhite,
     };
   });
 }

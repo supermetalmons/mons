@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from "react";
-import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaPaintBrush, FaScroll } from "react-icons/fa";
+import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaPaintBrush, FaScroll, FaHourglassHalf } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import styled from "styled-components";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
@@ -207,22 +207,17 @@ const RematchSeriesInlineControl = styled.div`
   display: flex;
   align-items: center;
   padding: 0;
-  margin-left: -46px;
-  border-radius: 0;
-  background-color: transparent;
   overflow: hidden;
-  mask-image: linear-gradient(to right, transparent 0px, transparent 40px, black 46px);
-  -webkit-mask-image: linear-gradient(to right, transparent 0px, transparent 40px, black 46px);
+  mask-image: linear-gradient(to left, transparent 0px, black 6px);
+  -webkit-mask-image: linear-gradient(to left, transparent 0px, black 6px);
 `;
 
 const RematchSeriesScroll = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: row-reverse;
+  flex-direction: row;
   align-items: center;
-  gap: 5px;
-  padding-left: 46px;
   overflow-x: auto;
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
@@ -234,34 +229,101 @@ const RematchSeriesScroll = styled.div`
   }
 `;
 
-const RematchSeriesChip = styled.button<{ $isSelected: boolean; $isPending: boolean }>`
-  border: none;
+const RematchSeriesTrack = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  background: rgba(120, 120, 128, 0.1);
   border-radius: 16px;
   height: 32px;
-  min-width: 48px;
-  padding: 0 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
   flex-shrink: 0;
-  font-size: 12px;
-  line-height: 1;
-  font-weight: ${(props) => (props.$isSelected ? 600 : 500)};
-  cursor: pointer;
-  color: ${(props) => (props.$isSelected ? "var(--color-blue-primary)" : "var(--color-gray-33)")};
-  background: ${(props) =>
-    props.$isSelected ? "rgba(10, 132, 255, 0.16)" : props.$isPending ? "rgba(120, 120, 128, 0.2)" : "rgba(120, 120, 128, 0.13)"};
+  padding: 0 1px;
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.$isSelected ? "var(--color-blue-primary-dark)" : "var(--color-gray-f0)")};
-    background: ${(props) =>
-      props.$isSelected ? "rgba(10, 132, 255, 0.28)" : props.$isPending ? "rgba(120, 120, 128, 0.35)" : "rgba(120, 120, 128, 0.24)"};
+    background: rgba(120, 120, 128, 0.2);
+  }
+`;
+
+const RematchSeriesChip = styled.button<{ $isSelected: boolean }>`
+  border: none;
+  border-radius: 15px;
+  height: 30px;
+  min-width: 26px;
+  padding: 0 7px;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1px;
+  flex-shrink: 0;
+  cursor: pointer;
+  background: ${(props) => (props.$isSelected ? "rgba(10, 132, 255, 0.18)" : "transparent")};
+
+  @media (prefers-color-scheme: dark) {
+    background: ${(props) => (props.$isSelected ? "rgba(10, 132, 255, 0.3)" : "transparent")};
   }
 
   &:disabled {
     cursor: default;
     opacity: 0.6;
+  }
+`;
+
+const RematchScoreOpponent = styled.span<{ $isSelected: boolean }>`
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 400;
+  font-variant-numeric: tabular-nums;
+  color: ${(props) => (props.$isSelected ? "var(--color-blue-primary)" : "rgba(60, 60, 67, 0.45)")};
+
+  @media (prefers-color-scheme: dark) {
+    color: ${(props) => (props.$isSelected ? "rgba(100, 175, 255, 0.7)" : "rgba(235, 235, 245, 0.35)")};
+  }
+`;
+
+const RematchScorePlayer = styled.span<{ $isSelected: boolean }>`
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  color: ${(props) => (props.$isSelected ? "var(--color-blue-primary)" : "var(--color-gray-33)")};
+
+  @media (prefers-color-scheme: dark) {
+    color: ${(props) => (props.$isSelected ? "var(--color-blue-primary-dark)" : "var(--color-gray-f0)")};
+  }
+`;
+
+const RematchSeriesSeparator = styled.div`
+  width: 0.5px;
+  height: 16px;
+  background: rgba(120, 120, 128, 0.25);
+  flex-shrink: 0;
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(120, 120, 128, 0.35);
+  }
+`;
+
+const RematchWaitingIcon = styled.span<{ $isSelected: boolean }>`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: ${(props) => (props.$isSelected ? "var(--color-blue-primary)" : "rgba(60, 60, 67, 0.4)")};
+
+  @media (prefers-color-scheme: dark) {
+    color: ${(props) => (props.$isSelected ? "var(--color-blue-primary-dark)" : "rgba(235, 235, 245, 0.35)")};
+  }
+`;
+
+const RematchLoadingDots = styled.span<{ $isSelected: boolean }>`
+  font-size: 11px;
+  line-height: 1;
+  letter-spacing: 1px;
+  color: ${(props) => (props.$isSelected ? "var(--color-blue-primary)" : "rgba(60, 60, 67, 0.35)")};
+
+  @media (prefers-color-scheme: dark) {
+    color: ${(props) => (props.$isSelected ? "var(--color-blue-primary-dark)" : "rgba(235, 235, 245, 0.3)")};
   }
 `;
 
@@ -1097,14 +1159,25 @@ const BottomControls: React.FC = () => {
     }
   }, []);
 
-  const getRematchSeriesChipLabel = useCallback((item: RematchSeriesNavigatorItem) => {
+  const renderRematchSeriesChipContent = useCallback((item: RematchSeriesNavigatorItem) => {
     if (item.isPendingResponse) {
-      return "Waiting";
+      return (
+        <RematchWaitingIcon $isSelected={item.isSelected}>
+          <FaHourglassHalf />
+        </RematchWaitingIcon>
+      );
     }
     if (item.whiteScore !== null && item.blackScore !== null) {
-      return `${item.whiteScore}-${item.blackScore}`;
+      const opponentScore = item.playerIsWhite ? item.blackScore : item.whiteScore;
+      const playerScore = item.playerIsWhite ? item.whiteScore : item.blackScore;
+      return (
+        <>
+          <RematchScoreOpponent $isSelected={item.isSelected}>{opponentScore}</RematchScoreOpponent>
+          <RematchScorePlayer $isSelected={item.isSelected}>{playerScore}</RematchScorePlayer>
+        </>
+      );
     }
-    return "...";
+    return <RematchLoadingDots $isSelected={item.isSelected}>···</RematchLoadingDots>;
   }, []);
 
   const handleBrushClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -1388,17 +1461,20 @@ const BottomControls: React.FC = () => {
         {hasRematchSeriesNavigation && (
           <RematchSeriesInlineControl>
             <RematchSeriesScroll>
-              {[...rematchSeriesItems].reverse().map((seriesItem) => (
-                <RematchSeriesChip
-                  key={seriesItem.matchId}
-                  $isSelected={seriesItem.isSelected}
-                  $isPending={seriesItem.isPendingResponse}
-                  disabled={isRematchSeriesSelectionInFlight}
-                  onClick={() => void handleRematchSeriesChipClick(seriesItem.matchId)}
-                >
-                  <span>{getRematchSeriesChipLabel(seriesItem)}</span>
-                </RematchSeriesChip>
-              ))}
+              <RematchSeriesTrack>
+                {rematchSeriesItems.map((seriesItem, idx, arr) => (
+                  <React.Fragment key={seriesItem.matchId}>
+                    <RematchSeriesChip
+                      $isSelected={seriesItem.isSelected}
+                      disabled={isRematchSeriesSelectionInFlight}
+                      onClick={() => void handleRematchSeriesChipClick(seriesItem.matchId)}
+                    >
+                      {renderRematchSeriesChipContent(seriesItem)}
+                    </RematchSeriesChip>
+                    {idx < arr.length - 1 && !seriesItem.isSelected && !arr[idx + 1].isSelected && <RematchSeriesSeparator />}
+                  </React.Fragment>
+                ))}
+              </RematchSeriesTrack>
             </RematchSeriesScroll>
           </RematchSeriesInlineControl>
         )}
