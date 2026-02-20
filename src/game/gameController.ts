@@ -333,8 +333,10 @@ function applyBoardUiForCurrentView() {
   Board.stopMonsBoardAsDisplayAnimations();
   Board.showBoardPlayersInfo();
   showWaitingStateText("");
-  if (!isWatchOnly && isOnlineGame && !isGameOver) {
+  if (!isWatchOnly && isOnlineGame && !isGameOver && !connection.rematchSeriesEndIsIndicated()) {
     showVoiceReactionButton(true);
+  } else if (isOnlineGame) {
+    showVoiceReactionButton(false);
   }
   ensureBoardViewInvariants("applyBoardUiForCurrentView");
 }
@@ -1689,6 +1691,7 @@ export function didClickAutomatchButton() {
 }
 
 function showRematchInterface() {
+  showVoiceReactionButton(false);
   if (isWatchOnly) {
     return;
   }
@@ -2803,8 +2806,12 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     Board.resetForNewGame();
   }
 
-  if (!isWatchOnly && shouldRenderLiveBoard) {
-    showVoiceReactionButton(true);
+  if (shouldRenderLiveBoard && isOnlineGame) {
+    if (!isWatchOnly && !isGameOver && !connection.rematchSeriesEndIsIndicated()) {
+      showVoiceReactionButton(true);
+    } else {
+      showVoiceReactionButton(false);
+    }
   }
 
   if (isWatchOnly) {
