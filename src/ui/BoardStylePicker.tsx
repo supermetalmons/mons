@@ -217,26 +217,17 @@ const ItemStyleButton = styled.button<{ isSelected?: boolean }>`
   user-select: none;
   -webkit-touch-callout: none;
   -webkit-user-select: none;
-  -webkit-filter: ${(props) => (props.isSelected ? "drop-shadow(0 0 8px rgba(59, 130, 246, 0.9)) drop-shadow(0 0 4px rgba(59, 130, 246, 0.6)) drop-shadow(0 0 1px rgba(59, 130, 246, 0.8))" : "none")};
-  filter: ${(props) => (props.isSelected ? "drop-shadow(0 0 5px rgba(59, 130, 246, 0.9)) drop-shadow(0 0 2px rgba(59, 130, 246, 0.6)) drop-shadow(0 0 1px rgba(59, 130, 246, 0.8))" : "none")};
-  transition: transform 0.1s ease, filter 0.2s ease, -webkit-filter 0.2s ease;
+  opacity: ${(props) => (props.isSelected ? 1 : 0.45)};
+  filter: ${(props) => (props.isSelected ? "drop-shadow(0 0 4px rgba(59, 130, 246, 0.95))" : "none")};
+  transition: transform 0.1s ease, filter 0.2s ease, opacity 0.2s ease;
 
   @media (prefers-color-scheme: dark) {
-    -webkit-filter: ${(props) => (props.isSelected ? "drop-shadow(0 0 8px rgba(100, 165, 255, 0.85)) drop-shadow(0 0 4px rgba(100, 165, 255, 0.55)) drop-shadow(0 0 1px rgba(100, 165, 255, 0.75))" : "none")};
-    filter: ${(props) => (props.isSelected ? "drop-shadow(0 0 5px rgba(100, 165, 255, 0.85)) drop-shadow(0 0 2px rgba(100, 165, 255, 0.55)) drop-shadow(0 0 1px rgba(100, 165, 255, 0.75))" : "none")};
+    filter: ${(props) => (props.isSelected ? "drop-shadow(0 0 4px rgba(100, 165, 255, 0.95))" : "none")};
   }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      -webkit-filter: ${(props) => (props.isSelected ? undefined : "drop-shadow(0 0 5px rgba(59, 130, 246, 0.6))")};
-      filter: ${(props) => (props.isSelected ? undefined : "drop-shadow(0 0 3px rgba(59, 130, 246, 0.6))")};
-    }
-  }
-
-  @media (hover: hover) and (pointer: fine) and (prefers-color-scheme: dark) {
-    &:hover {
-      -webkit-filter: ${(props) => (props.isSelected ? undefined : "drop-shadow(0 0 5px rgba(100, 165, 255, 0.55))")};
-      filter: ${(props) => (props.isSelected ? undefined : "drop-shadow(0 0 3px rgba(100, 165, 255, 0.55))")};
+      opacity: 1;
     }
   }
 
