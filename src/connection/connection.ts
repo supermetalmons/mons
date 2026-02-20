@@ -8,7 +8,6 @@ import { getFunctions, Functions, httpsCallable } from "firebase/functions";
 import { Match, Invite, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES, MiningMaterialName, MatchWagerState, WagerProposal, WagerAgreement, RematchSeriesDescriptor, HistoricalMatchPair } from "./connectionModels";
 import { storage } from "../utils/storage";
 import { generateNewInviteId } from "../utils/misc";
-import { setDebugViewText } from "../ui/MainMenu";
 import { getWagerState, setCurrentWagerMatch, setWagerState, syncCurrentWagerMatchState } from "../game/wagerState";
 import { applyFrozenMaterialsDelta, computeAvailableMaterials, getFrozenMaterials, setFrozenMaterials } from "../services/wagerMaterialsService";
 import { rocksMiningService } from "../services/rocksMiningService";
@@ -2162,8 +2161,6 @@ class Connection {
     if (lastNumber === undefined) {
       return null;
     }
-
-    setDebugViewText("+" + lastNumber.toString());
 
     return lastNumber;
   }

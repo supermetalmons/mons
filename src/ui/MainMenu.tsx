@@ -600,25 +600,6 @@ const MusicControlButton = styled.button`
   }
 `;
 
-const DebugView = styled.div`
-  position: fixed;
-  top: 9px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 32px;
-  height: 32px;
-  background: #000;
-  border: 3px solid #00ff00;
-  border-radius: 16px;
-  color: #00ff00;
-  text-align: left;
-  font-weight: bold;
-  padding: 10px;
-  overflow: auto;
-  white-space: pre-wrap;
-  z-index: 1;
-`;
-
 let getIsMenuOpen: () => boolean = () => false;
 let getIsInfoOpen: () => boolean = () => false;
 let getIsMusicOpen: () => boolean = () => false;
@@ -628,7 +609,6 @@ let closeMenuAndInfoIfAnyImpl: () => void = () => {};
 let closeAllKindsOfPopupsImpl: () => void = () => {};
 let closeMenuAndInfoIfAllowedForEventImpl: (event: TouchEvent | MouseEvent) => void = () => {};
 let setIsMusicPlayingGlobalImpl: (playing: boolean) => void = () => {};
-let setDebugViewTextImpl: (text: string) => void = () => {};
 
 export const toggleInfoVisibility = () => {
   toggleInfoVisibilityImpl();
@@ -654,10 +634,6 @@ export const setIsMusicPlayingGlobal = (playing: boolean) => {
   setIsMusicPlayingGlobalImpl(playing);
 };
 
-export const setDebugViewText = (text: string) => {
-  setDebugViewTextImpl(text);
-};
-
 export function hasMainMenuPopupsVisible(): boolean {
   return getIsMenuOpen() || getIsInfoOpen() || getIsMusicOpen();
 }
@@ -670,8 +646,6 @@ const MainMenu: React.FC = () => {
   const [clickCount, setClickCount] = useState(0);
   const [showExperimental, setShowExperimental] = useState(false);
   const [copyButtonText, setCopyButtonText] = useState("copy board snapshot");
-  const [isDebugViewEnabled, setIsDebugViewEnabled] = useState<boolean>(storage.getDebugViewEnabled(false));
-  const [debugViewText, setDebugViewTextState] = useState<string>("");
   const [areAnimatedMonsEnabled, setAreAnimatedMonsEnabled] = useState<boolean>(storage.getIsExperimentingWithSprites(false));
   const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>(() => {
     const stored = storage.getLeaderboardType("rating");
@@ -792,7 +766,6 @@ const MainMenu: React.FC = () => {
       closeAllKindsOfPopupsImpl = () => {};
       closeMenuAndInfoIfAllowedForEventImpl = () => {};
       setIsMusicPlayingGlobalImpl = () => {};
-      setDebugViewTextImpl = () => {};
     };
   }, []);
 
@@ -849,12 +822,6 @@ const MainMenu: React.FC = () => {
     }
   };
 
-  const handleDebugViewToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = event.target.checked;
-    setIsDebugViewEnabled(checked);
-    storage.setDebugViewEnabled(checked);
-  };
-
   const handleAnimatedMonsToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
     const checked = event.target.checked;
     setAreAnimatedMonsEnabled(checked);
@@ -883,10 +850,6 @@ const MainMenu: React.FC = () => {
       setIsInfoOpen(false);
     }
     setIsMusicOpen(!isMusicOpen);
-  };
-
-  setDebugViewTextImpl = (text: string) => {
-    setDebugViewTextState(text);
   };
 
   closeMenuAndInfoIfAnyImpl = () => {
@@ -1093,10 +1056,6 @@ const MainMenu: React.FC = () => {
                       <input type="checkbox" checked={areAnimatedMonsEnabled} onChange={handleAnimatedMonsToggle} />
                       animated mons
                     </ToggleRow>
-                    <ToggleRow>
-                      <input type="checkbox" checked={isDebugViewEnabled} onChange={handleDebugViewToggle} />
-                      show inspector
-                    </ToggleRow>
                     <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
                     <BuildInfo>{getBuildInfo()}</BuildInfo>
                   </ExperimentalMenu>
@@ -1151,7 +1110,6 @@ const MainMenu: React.FC = () => {
           </MusicControlButton>
         </MusicControlsContainer>
       </MusicPopover>
-      {isDebugViewEnabled && <DebugView>{debugViewText || "~"}</DebugView>}
     </>
   );
 };
