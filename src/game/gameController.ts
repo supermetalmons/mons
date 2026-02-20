@@ -320,7 +320,7 @@ function applyBoardUiForCurrentView() {
     Board.runMonsBoardAsDisplayWaitingAnimation();
     Board.hideBoardPlayersInfo();
     setEndMatchVisible(true);
-    showWaitingStateText("Ready to Play");
+    showWaitingStateText("");
     showVoiceReactionButton(false);
     setAutomoveActionVisible(false);
     setUndoVisible(false);
@@ -1540,7 +1540,7 @@ export function didJustCreateRematchProposalSuccessfully(inviteId: string) {
   }
   clearRematchHistoryCaches();
   setEndMatchVisible(true);
-  showWaitingStateText("Ready to Play");
+  showWaitingStateText("");
 
   isGameOver = false;
   isReconnect = false;
