@@ -1323,6 +1323,9 @@ const BottomControls: React.FC = () => {
   const playerHasProposed = !!(playerUid && wagerState?.proposedBy && wagerState.proposedBy[playerUid]) || !!(playerUid && wagerState?.proposals && wagerState.proposals[playerUid]);
   const hasPlayers = !!playerUid && !!opponentUid;
   const isEligibleForWager = isOnlineGame && !isWatchOnly && !isGameWithBot && !isMatchOver() && playerHasProfile && opponentHasProfile && hasPlayers;
+  const isWatchOnlyMatchFinished = isWatchOnly && isMatchOver();
+  const isEndMatchPillVisible = isEndMatchButtonVisible || isWatchOnlyMatchFinished;
+  const isEndMatchPillFinished = isEndMatchConfirmed || isWatchOnlyMatchFinished;
   const canSubmitWager = isEligibleForWager && !hasAgreedWager && !hasResolvedWager && !playerHasProposed;
   const wagerMaterial = wagerSelection.name;
   const wagerCount = wagerSelection.count;
@@ -1480,9 +1483,9 @@ const BottomControls: React.FC = () => {
             </RematchSeriesScroll>
           </RematchSeriesInlineControl>
         )}
-        {isEndMatchButtonVisible && (
-          <BottomPillButton onClick={handleEndMatchClick} isBlue={!isEndMatchConfirmed} disabled={isEndMatchConfirmed} isViewOnly={isEndMatchConfirmed}>
-            {isEndMatchConfirmed ? (
+        {isEndMatchPillVisible && (
+          <BottomPillButton onClick={!isEndMatchPillFinished ? handleEndMatchClick : undefined} isBlue={!isEndMatchPillFinished} disabled={isEndMatchPillFinished} isViewOnly={isEndMatchPillFinished}>
+            {isEndMatchPillFinished ? (
               <>
                 {statusIconUrls.cloud ? <BottomPillInlineIcon src={statusIconUrls.cloud} alt="" draggable={false} /> : "💨 "}
                 {"Finished"}
@@ -1495,11 +1498,11 @@ const BottomControls: React.FC = () => {
             )}
           </BottomPillButton>
         )}
-        {isWatchOnlyIndicatorVisible && (
+        {isWatchOnlyIndicatorVisible && !isWatchOnlyMatchFinished && (
           <BottomPillButton isViewOnly={true} disabled={true}>
             <>
               {statusIconUrls.spectating ? <BottomPillInlineIcon src={statusIconUrls.spectating} alt="" draggable={false} /> : "📺 "}
-              {"Spectating"}
+              {"Watching"}
             </>
           </BottomPillButton>
         )}

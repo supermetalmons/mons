@@ -300,7 +300,12 @@ function applyBoardUiForCurrentView() {
     Board.stopMonsBoardAsDisplayAnimations();
     Board.showBoardPlayersInfo();
     showWaitingStateText("");
-    setEndMatchVisible(false);
+    if (!isWatchOnly && connection.rematchSeriesEndIsIndicated()) {
+      setEndMatchVisible(true);
+      setEndMatchConfirmed(true);
+    } else {
+      setEndMatchVisible(false);
+    }
     showVoiceReactionButton(false);
     setAutomoveActionVisible(false);
     setUndoVisible(false);
