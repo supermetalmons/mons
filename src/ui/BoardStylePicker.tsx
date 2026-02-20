@@ -253,6 +253,11 @@ const ItemStylePreview = styled.div<{ itemSet: AssetsSet; previewUrl: string | n
   background-size: 78%;
   background-position: center;
   background-repeat: no-repeat;
+  ${(props) =>
+    props.itemSet === AssetsSet.Pixel &&
+    `
+    image-rendering: pixelated;
+  `}
 `;
 
 export const PlaceholderImage = styled.img`
