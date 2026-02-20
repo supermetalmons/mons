@@ -293,11 +293,13 @@ const RematchScorePlayer = styled.span<{ $isSelected: boolean }>`
   }
 `;
 
-const RematchSeriesSeparator = styled.div`
+const RematchSeriesSeparator = styled.div<{ $hidden: boolean }>`
   width: 0.5px;
   height: 16px;
   background: rgba(120, 120, 128, 0.25);
   flex-shrink: 0;
+  opacity: ${(props) => (props.$hidden ? 0 : 1)};
+  transition: opacity 0.15s ease;
 
   @media (prefers-color-scheme: dark) {
     background: rgba(120, 120, 128, 0.35);
@@ -1471,7 +1473,7 @@ const BottomControls: React.FC = () => {
                     >
                       {renderRematchSeriesChipContent(seriesItem)}
                     </RematchSeriesChip>
-                    {idx < arr.length - 1 && !seriesItem.isSelected && !arr[idx + 1].isSelected && <RematchSeriesSeparator />}
+                    {idx < arr.length - 1 && <RematchSeriesSeparator $hidden={seriesItem.isSelected || arr[idx + 1].isSelected} />}
                   </React.Fragment>
                 ))}
               </RematchSeriesTrack>
