@@ -69,11 +69,24 @@ let resignedColor: MonsWeb.Color | undefined;
 let winnerByTimerColor: MonsWeb.Color | undefined;
 
 let lastReactionTime = 0;
+const botReactionVariationsWhenPlayerScores = [17, 20, 374, 429, 465, 900999];
+const botReactionVariationsWhenBotScores = [40, 63, 210, 900225];
+const botScoreReactionChance = 0.2;
+const botScoreReactionPlayedTurns = new Set<number>();
 const minimumIntervalBetweenBotMovesMs = 777;
 const botTurnComputationDelayMs = 420;
 let lastBotMoveTimestamp = 0;
 
 const processedVoiceReactions = new Set<string>();
+
+const resetBotScoreReactionState = () => {
+  botScoreReactionPlayedTurns.clear();
+};
+
+const getRandomReactionVariation = (variations: number[]): number => {
+  const variationIndex = Math.floor(Math.random() * variations.length);
+  return variations[variationIndex];
+};
 
 var currentInputs: Location[] = [];
 
@@ -1201,6 +1214,7 @@ export async function go(routeStateOverride?: RouteState) {
   const routeState = routeStateOverride ?? getCurrentRouteState();
   activeRouteState = routeState;
   clearAllManagedGameTimeouts();
+  resetBotScoreReactionState();
   isGameWithBot = false;
   nextBoardRenderSession();
   boardViewMode = "activeLive";
@@ -1324,6 +1338,7 @@ export async function go(routeStateOverride?: RouteState) {
 
 export function disposeGameSession() {
   clearAllManagedGameTimeouts();
+  resetBotScoreReactionState();
   isGameWithBot = false;
   nextBoardRenderSession();
   boardViewMode = "activeLive";
@@ -1436,6 +1451,7 @@ function startFreshLocalMatch() {
   const playerStartsAsBlackInThisMatch = activeLocalMatchIndex >= 0 && activeLocalMatchIndex % 2 === 1;
   playerSideColor = playerStartsAsBlackInThisMatch ? MonsWeb.Color.Black : MonsWeb.Color.White;
   prepareForNewLocalLiveMatch();
+  resetBotScoreReactionState();
   isGameOver = false;
   isReconnect = false;
   didConnect = false;
@@ -1485,6 +1501,7 @@ function startFreshLocalMatch() {
 function startBotMatch(botColor: MonsWeb.Color) {
   ensureLocalRematchSeriesInitialized();
   prepareForNewLocalLiveMatch();
+  resetBotScoreReactionState();
   isGameOver = false;
   isReconnect = false;
   didConnect = false;
@@ -1539,6 +1556,7 @@ export function didJustCreateRematchProposalSuccessfully(inviteId: string) {
     clearViewedRematchState();
   }
   clearRematchHistoryCaches();
+  resetBotScoreReactionState();
   setEndMatchVisible(true);
   showWaitingStateText("");
 
@@ -1613,6 +1631,7 @@ export function didClickInviteBotIntoLocalGameButton() {
     return;
   }
   const shouldSendInviteYoReaction = game.active_color() === MonsWeb.Color.White && game.turn_number() === 1;
+  resetBotScoreReactionState();
   isInviteBotIntoLocalGameUnavailable = true;
   isGameWithBot = true;
   botPlayerColor = MonsWeb.Color.Black;
@@ -2204,6 +2223,18 @@ function applyOutput(
             if (!flashbackMode) {
               Board.indicateWaterSplash(from);
               Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
+              if (isGameWithBot && inputColorBeforeMove !== undefined) {
+                const currentTurnNumber = game.turn_number();
+                if (!botScoreReactionPlayedTurns.has(currentTurnNumber)) {
+                  const isBotScoring = inputColorBeforeMove === botPlayerColor;
+                  const reactionVariations = isBotScoring ? botReactionVariationsWhenBotScores : botReactionVariationsWhenPlayerScores;
+                  botScoreReactionPlayedTurns.add(currentTurnNumber);
+                  if (Math.random() < botScoreReactionChance) {
+                    playSounds([Sound.EmoteReceived]);
+                    showVideoReaction(true, getRandomReactionVariation(reactionVariations));
+                  }
+                }
+              }
             }
             mustReleaseHighlight = true;
             break;
@@ -2798,6 +2829,7 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     applyBoardUiForCurrentView();
   }
   resetWagerStateForMatch(matchId);
+  resetBotScoreReactionState();
   resetLocalRematchSeriesState();
   isOnlineGame = true;
   currentInputs = [];
@@ -3363,6 +3395,7 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   setWatchOnlyVisible(false);
   isReconnect = true;
   resetWagerStateForMatch(matchId);
+  resetBotScoreReactionState();
 
   playerSideColor = match.color === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
