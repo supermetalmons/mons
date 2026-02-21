@@ -124,6 +124,7 @@ let boardBackgroundLayer: HTMLElement | null;
 const items: { [key: string]: SVGElement } = {};
 const basesPlaceholders: { [key: string]: SVGElement } = {};
 const wavesFrames: { [key: string]: SVGElement } = {};
+const waveCornerLocations = [new Location(0, 0), new Location(10, 0), new Location(0, 10), new Location(10, 10)];
 const opponentMoveStatusItems: SVGElement[] = [];
 const playerMoveStatusItems: SVGElement[] = [];
 const rotatedItemImageCache: Map<ItemKind, string> = new Map();
@@ -441,6 +442,20 @@ const clearWavesIntervals = () => {
     decrementLifecycleCounter("boardIntervals");
   });
   wavesIntervalIds.clear();
+};
+
+const refreshWaves = () => {
+  clearWavesIntervals();
+  if (!board) {
+    return;
+  }
+  const waveElements = board.querySelectorAll('[data-board-wave="true"]');
+  waveElements.forEach((element) => {
+    element.remove();
+  });
+  for (const location of waveCornerLocations) {
+    addWaves(location);
+  }
 };
 
 const trackSparkleInterval = (intervalId: number) => {
@@ -804,6 +819,7 @@ export async function didToggleItemsStyleSet(isProfileMonsChange: boolean = fals
 
   removeHighlights();
   cleanAllPixels();
+  refreshWaves();
   hideItemSelectionOrConfirmationOverlay();
   rotatedItemImageCache.clear();
 
@@ -3409,9 +3425,7 @@ export function setupBoard() {
     }
   }
 
-  for (const location of [new Location(0, 0), new Location(10, 0), new Location(0, 10), new Location(10, 10)]) {
-    addWaves(location);
-  }
+  refreshWaves();
 
   const preloadTimeout = window.setTimeout(() => {
     boardTimeoutIds.delete(preloadTimeout);
@@ -3750,16 +3764,44 @@ function createSparklingContainer(location: Location): SVGElement {
   container.appendChild(mask);
   container.setAttribute("mask", `url(#mask-square-${location.toString()})`);
 
-  const intervalId = window.setInterval(() => {
-    if (!container.parentNode?.parentNode) {
-      clearTrackedSparkleInterval(intervalId);
-      return;
+  if (currentAssetsSet === AssetsSet.Pixel) {
+    const intervalId = window.setInterval(() => {
+      if (!container.parentNode?.parentNode) {
+        clearTrackedSparkleInterval(intervalId);
+        return;
+      }
+      createSparkleParticle(location, container);
+    }, 230);
+    trackSparkleInterval(intervalId);
+  } else {
+    for (let i = 0; i < 2; i++) {
+      createSmoothSparkleParticle(location, container);
     }
-    createSparkleParticle(location, container);
-  }, 230);
-  trackSparkleInterval(intervalId);
+    const intervalId = window.setInterval(() => {
+      if (!container.parentNode?.parentNode) {
+        clearTrackedSparkleInterval(intervalId);
+        return;
+      }
+      createSmoothSparkleParticle(location, container);
+    }, 230);
+    trackSparkleInterval(intervalId);
+  }
 
   return container;
+}
+
+function createSmoothSparkleParticle(location: Location, container: SVGElement) {
+  const particle = smoothSparkle.cloneNode(true) as SVGElement;
+  const y = location.i + Math.random();
+  const size = Math.random() * 0.05 + 0.075;
+  const opacity = 0.45 + 0.4 * Math.random();
+  SVG.setFrame(particle, location.j + Math.random(), y, size, size);
+  SVG.setOpacity(particle, opacity);
+  container.appendChild(particle);
+
+  const velocity = (4 + 2 * Math.random()) * 0.01;
+  const duration = Math.random() * 1000 + 2500;
+  animateSparkleParticle(container, particle, y, opacity, velocity, duration);
 }
 
 function createSparkleParticle(location: Location, container: SVGElement, animating: boolean = true) {
@@ -3777,6 +3819,10 @@ function createSparkleParticle(location: Location, container: SVGElement, animat
 
   const velocity = (4 + 2 * Math.random()) * 0.01;
   const duration = Math.random() * 1000 + 2500;
+  animateSparkleParticle(container, particle, y, opacity, velocity, duration);
+}
+
+function animateSparkleParticle(container: SVGElement, particle: SVGElement, y: number, opacity: number, velocity: number, duration: number) {
   let startTime: number | null = null;
 
   function animateParticle(time: number) {
@@ -3787,7 +3833,9 @@ function createSparkleParticle(location: Location, container: SVGElement, animat
     let timeDelta = time - startTime;
     let progress = timeDelta / duration;
     if (progress > 1) {
-      container.removeChild(particle);
+      if (particle.parentNode === container) {
+        container.removeChild(particle);
+      }
       return;
     }
 
@@ -4147,10 +4195,16 @@ function addWaves(location: Location) {
   location = inBoardCoordinates(location);
   const wavesSquareElement = document.createElementNS(SVG.ns, "g");
   wavesSquareElement.setAttribute("data-grid-board-only", "true");
+  wavesSquareElement.setAttribute("data-board-wave", "true");
   SVG.setHidden(wavesSquareElement, isCustomPictureBoardEnabled());
   wavesSquareElement.setAttribute("transform", `translate(${location.j * 100}, ${location.i * 100})`);
   SVG.setOpacity(wavesSquareElement, 0.5);
   board?.appendChild(wavesSquareElement);
+
+  if (currentAssetsSet !== AssetsSet.Pixel) {
+    wavesSquareElement.appendChild(createSmoothWavesFrame());
+    return;
+  }
 
   let frameIndex = 0;
   wavesSquareElement.appendChild(getWavesFrame(location, frameIndex));
@@ -4160,6 +4214,65 @@ function addWaves(location: Location) {
     wavesSquareElement.appendChild(getWavesFrame(location, frameIndex));
   }, 200);
   trackWavesInterval(intervalId);
+}
+
+function createSmoothWavesFrame() {
+  const frame = document.createElementNS(SVG.ns, "g");
+
+  const background = document.createElementNS(SVG.ns, "rect");
+  SVG.setFrame(background, 0, 0, 1, 1);
+  SVG.setFill(background, colors.manaPool);
+  SVG.setOpacity(background, 0.14);
+  background.setAttribute("class", "poolBackground");
+  frame.appendChild(background);
+
+  const pixel = 1 / 32;
+  for (let i = 0; i < 10; i++) {
+    const width = (Math.floor(Math.random() * 4) + 3) * pixel;
+    const x = Math.random() * (1 - width);
+    const y = pixel * (2 + i * 3) + pixel * 0.35;
+    const amplitude = pixel * (0.42 + Math.random() * 0.2);
+    const drift = pixel * (0.45 + Math.random() * 0.45);
+    const opacity = 0.56 + Math.random() * 0.18;
+    const isWave1 = i % 2 === 0;
+    const path = document.createElementNS(SVG.ns, "path");
+    path.setAttribute("d", buildSmoothWavePathData(x, y, width, amplitude));
+    path.setAttribute("class", `${isWave1 ? "wave1" : "wave2"} smooth-wave`);
+    path.setAttribute("fill", "none");
+    path.setAttribute("stroke", isWave1 ? colors.wave1 : colors.wave2);
+    path.setAttribute("stroke-width", (pixel * 95).toString());
+    path.setAttribute("stroke-linecap", "round");
+    path.setAttribute("stroke-linejoin", "round");
+    SVG.setOpacity(path, opacity);
+    frame.appendChild(path);
+
+    path.animate(
+      [
+        { transform: `translateX(${-drift * 100}px)`, opacity: opacity * 0.78 },
+        { transform: `translateX(${drift * 100}px)`, opacity },
+      ],
+      {
+        duration: 1400 + Math.random() * 900,
+        delay: -Math.random() * 700,
+        direction: "alternate",
+        easing: "ease-in-out",
+        iterations: Infinity,
+      }
+    );
+  }
+
+  return frame;
+}
+
+function buildSmoothWavePathData(x: number, y: number, width: number, amplitude: number): string {
+  const xMid = x + width * 0.5;
+  const xQuarter = x + width * 0.25;
+  const xThreeQuarter = x + width * 0.75;
+  return [
+    `M ${x * 100} ${y * 100}`,
+    `C ${xQuarter * 100} ${(y - amplitude) * 100} ${xQuarter * 100} ${(y - amplitude) * 100} ${xMid * 100} ${y * 100}`,
+    `C ${xThreeQuarter * 100} ${(y + amplitude) * 100} ${xThreeQuarter * 100} ${(y + amplitude) * 100} ${(x + width) * 100} ${y * 100}`,
+  ].join(" ");
 }
 
 function getWavesFrame(location: Location, frameIndex: number) {
@@ -4243,20 +4356,28 @@ export function didToggleBoardColors() {
   const wave2Color = colors.wave2;
   const manaColor = colors.manaPool;
 
-  Object.values(wavesFrames).forEach((frame) => {
-    const wave1Elements = frame.querySelectorAll(".wave1");
-    const wave2Elements = frame.querySelectorAll(".wave2");
-    const poolElements = frame.querySelectorAll(".poolBackground");
+  const applyWaveColors = (root: ParentNode) => {
+    const wave1Elements = root.querySelectorAll(".wave1");
+    const wave2Elements = root.querySelectorAll(".wave2");
+    const poolElements = root.querySelectorAll(".poolBackground");
 
     wave1Elements.forEach((element) => {
       if (element instanceof SVGElement) {
-        SVG.setFill(element, wave1Color);
+        if (element.classList.contains("smooth-wave")) {
+          element.setAttribute("stroke", wave1Color);
+        } else {
+          SVG.setFill(element, wave1Color);
+        }
       }
     });
 
     wave2Elements.forEach((element) => {
       if (element instanceof SVGElement) {
-        SVG.setFill(element, wave2Color);
+        if (element.classList.contains("smooth-wave")) {
+          element.setAttribute("stroke", wave2Color);
+        } else {
+          SVG.setFill(element, wave2Color);
+        }
       }
     });
 
@@ -4265,7 +4386,14 @@ export function didToggleBoardColors() {
         SVG.setFill(element, manaColor);
       }
     });
+  };
+
+  Object.values(wavesFrames).forEach((frame) => {
+    applyWaveColors(frame);
   });
+  if (board) {
+    applyWaveColors(board);
+  }
 
   if (!isCustomPictureBoardEnabled()) {
     Object.entries(basesPlaceholders).forEach(([key, element]) => {
@@ -4305,6 +4433,42 @@ const sparkle = (() => {
   SVG.setFrameStr(rect3, "1", "1", "1", "1");
   SVG.setFill(rect3, colors.sparkleDark);
   svg.appendChild(rect3);
+
+  return svg;
+})();
+
+const smoothSparkle = (() => {
+  const svg = document.createElementNS(SVG.ns, "svg");
+  SVG.setSizeStr(svg, "3", "3");
+  svg.setAttribute("viewBox", "0 0 3 3");
+  SVG.setFill(svg, "transparent");
+
+  const line1 = document.createElementNS(SVG.ns, "line");
+  line1.setAttribute("x1", "0.42");
+  line1.setAttribute("y1", "1.5");
+  line1.setAttribute("x2", "2.58");
+  line1.setAttribute("y2", "1.5");
+  line1.setAttribute("stroke", colors.sparkleLight);
+  line1.setAttribute("stroke-width", "0.36");
+  line1.setAttribute("stroke-linecap", "round");
+  svg.appendChild(line1);
+
+  const line2 = document.createElementNS(SVG.ns, "line");
+  line2.setAttribute("x1", "1.5");
+  line2.setAttribute("y1", "0.42");
+  line2.setAttribute("x2", "1.5");
+  line2.setAttribute("y2", "2.58");
+  line2.setAttribute("stroke", colors.sparkleLight);
+  line2.setAttribute("stroke-width", "0.36");
+  line2.setAttribute("stroke-linecap", "round");
+  svg.appendChild(line2);
+
+  const center = document.createElementNS(SVG.ns, "circle");
+  center.setAttribute("cx", "1.5");
+  center.setAttribute("cy", "1.5");
+  center.setAttribute("r", "0.28");
+  center.setAttribute("fill", colors.sparkleDark);
+  svg.appendChild(center);
 
   return svg;
 })();
