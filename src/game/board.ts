@@ -107,6 +107,7 @@ let boardInputHandler: ((event: Event) => void) | null = null;
 let hasSetupBoardRuntime = false;
 let didRegisterResizeHandler = false;
 const wavesIntervalIds = new Set<number>();
+const wavesAnimations = new Set<Animation>();
 const sparkleIntervalIds = new Set<number>();
 const boardTimeoutIds = new Set<number>();
 const boardRafIds = new Set<number>();
@@ -436,12 +437,24 @@ const trackWavesInterval = (intervalId: number) => {
   incrementLifecycleCounter("boardIntervals");
 };
 
+const trackWavesAnimation = (animation: Animation) => {
+  wavesAnimations.add(animation);
+};
+
+const clearWavesAnimations = () => {
+  wavesAnimations.forEach((animation) => {
+    animation.cancel();
+  });
+  wavesAnimations.clear();
+};
+
 const clearWavesIntervals = () => {
   wavesIntervalIds.forEach((intervalId) => {
     clearInterval(intervalId);
     decrementLifecycleCounter("boardIntervals");
   });
   wavesIntervalIds.clear();
+  clearWavesAnimations();
 };
 
 const refreshWaves = () => {
@@ -4246,7 +4259,7 @@ function createSmoothWavesFrame() {
     SVG.setOpacity(path, opacity);
     frame.appendChild(path);
 
-    path.animate(
+    const animation = path.animate(
       [
         { transform: `translateX(${-drift * 100}px)`, opacity: opacity * 0.78 },
         { transform: `translateX(${drift * 100}px)`, opacity },
@@ -4259,6 +4272,7 @@ function createSmoothWavesFrame() {
         iterations: Infinity,
       }
     );
+    trackWavesAnimation(animation);
   }
 
   return frame;
