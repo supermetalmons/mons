@@ -100,6 +100,29 @@ type EndOfGameMarker = "none" | "victory" | "resign";
 let playerEndOfGameMarker: EndOfGameMarker = "none";
 let opponentEndOfGameMarker: EndOfGameMarker = "none";
 
+type SmoothWaveRenderData = {
+  path: SVGPathElement;
+  xPoints: number[];
+  yBase: number;
+  scaledAmplitudes: number[];
+  segments: string[];
+  speed: number;
+  phaseOffset: number;
+};
+
+type SmoothWaveAnimationData = {
+  container: SVGGElement;
+  frame: SVGGElement;
+  waves: SmoothWaveRenderData[];
+};
+
+const smoothWavePointCount = 12;
+const smoothWaveTaperMargin = 0.2;
+const smoothWaveFrameIntervalMs = 1000 / 30;
+const smoothWaveAngleStep = (2 * Math.PI) / smoothWavePointCount;
+const smoothWaveCosStep = Math.cos(smoothWaveAngleStep);
+const smoothWaveSinStep = Math.sin(smoothWaveAngleStep);
+
 let countdownInterval: NodeJS.Timeout | null = null;
 let monsBoardDisplayAnimationTimeout: NodeJS.Timeout | null = null;
 let monsBoardDisplayAnimationRunToken = 0;
@@ -107,7 +130,9 @@ let boardInputHandler: ((event: Event) => void) | null = null;
 let hasSetupBoardRuntime = false;
 let didRegisterResizeHandler = false;
 const wavesIntervalIds = new Set<number>();
-const wavesAnimations = new Set<Animation>();
+const smoothWaveAnimations = new Set<SmoothWaveAnimationData>();
+let smoothWaveTickerRafId: number | null = null;
+let smoothWaveTickerTimeoutId: number | null = null;
 const sparkleIntervalIds = new Set<number>();
 const boardTimeoutIds = new Set<number>();
 const boardRafIds = new Set<number>();
@@ -391,6 +416,17 @@ const setManagedBoardTimeout = (callback: () => void, delay: number): number => 
   return timeoutId;
 };
 
+const cancelManagedBoardTimeout = (timeoutId: number | null) => {
+  if (timeoutId === null) {
+    return;
+  }
+  if (boardTimeoutIds.has(timeoutId)) {
+    boardTimeoutIds.delete(timeoutId);
+    decrementLifecycleCounter("boardTimeouts");
+  }
+  clearTimeout(timeoutId);
+};
+
 const clearTrackedBoardTimeouts = () => {
   boardTimeoutIds.forEach((timeoutId) => {
     clearTimeout(timeoutId);
@@ -437,15 +473,51 @@ const trackWavesInterval = (intervalId: number) => {
   incrementLifecycleCounter("boardIntervals");
 };
 
-const trackWavesAnimation = (animation: Animation) => {
-  wavesAnimations.add(animation);
+const clearSmoothWaveAnimations = () => {
+  cancelManagedBoardRaf(smoothWaveTickerRafId);
+  cancelManagedBoardTimeout(smoothWaveTickerTimeoutId);
+  smoothWaveTickerRafId = null;
+  smoothWaveTickerTimeoutId = null;
+  smoothWaveAnimations.clear();
 };
 
-const clearWavesAnimations = () => {
-  wavesAnimations.forEach((animation) => {
-    animation.cancel();
-  });
-  wavesAnimations.clear();
+const isSmoothWaveAnimationVisible = (animation: SmoothWaveAnimationData) => animation.container.getAttribute("display") !== "none";
+
+const runSmoothWaveTicker = (timestamp: number) => {
+  smoothWaveTickerRafId = null;
+  if (smoothWaveAnimations.size === 0) {
+    return;
+  }
+  for (const animation of smoothWaveAnimations) {
+    if (!animation.container.isConnected) {
+      smoothWaveAnimations.delete(animation);
+      continue;
+    }
+    if (!isSmoothWaveAnimationVisible(animation)) {
+      continue;
+    }
+    for (const wave of animation.waves) {
+      updateFlowingWavePathData(wave, timestamp * wave.speed + wave.phaseOffset);
+    }
+  }
+  if (smoothWaveAnimations.size === 0) {
+    return;
+  }
+  smoothWaveTickerTimeoutId = setManagedBoardTimeout(() => {
+    smoothWaveTickerTimeoutId = null;
+    smoothWaveTickerRafId = setManagedBoardRaf(runSmoothWaveTicker);
+  }, smoothWaveFrameIntervalMs);
+};
+
+const scheduleSmoothWaveTickerNow = () => {
+  if (smoothWaveAnimations.size === 0 || smoothWaveTickerRafId !== null || smoothWaveTickerTimeoutId !== null) {
+    return;
+  }
+  smoothWaveTickerRafId = setManagedBoardRaf(runSmoothWaveTicker);
+};
+
+const ensureSmoothWaveTicker = () => {
+  scheduleSmoothWaveTickerNow();
 };
 
 const clearWavesIntervals = () => {
@@ -454,7 +526,7 @@ const clearWavesIntervals = () => {
     decrementLifecycleCounter("boardIntervals");
   });
   wavesIntervalIds.clear();
-  clearWavesAnimations();
+  clearSmoothWaveAnimations();
 };
 
 const refreshWaves = () => {
@@ -4215,7 +4287,7 @@ function addWaves(location: Location) {
   board?.appendChild(wavesSquareElement);
 
   if (currentAssetsSet !== AssetsSet.Pixel) {
-    wavesSquareElement.appendChild(createSmoothWavesFrame());
+    wavesSquareElement.appendChild(createSmoothWavesFrame(wavesSquareElement));
     return;
   }
 
@@ -4229,7 +4301,7 @@ function addWaves(location: Location) {
   trackWavesInterval(intervalId);
 }
 
-function createSmoothWavesFrame() {
+function createSmoothWavesFrame(container: SVGGElement) {
   const frame = document.createElementNS(SVG.ns, "g");
 
   const background = document.createElementNS(SVG.ns, "rect");
@@ -4240,53 +4312,82 @@ function createSmoothWavesFrame() {
   frame.appendChild(background);
 
   const pixel = 1 / 32;
+  const waves: SmoothWaveRenderData[] = [];
+
   for (let i = 0; i < 10; i++) {
     const width = (Math.floor(Math.random() * 4) + 3) * pixel;
     const x = Math.random() * (1 - width);
     const y = pixel * (2 + i * 3) + pixel * 0.35;
     const amplitude = pixel * (0.42 + Math.random() * 0.2);
-    const drift = pixel * (0.45 + Math.random() * 0.45);
     const opacity = 0.56 + Math.random() * 0.18;
     const isWave1 = i % 2 === 0;
     const path = document.createElementNS(SVG.ns, "path");
-    path.setAttribute("d", buildSmoothWavePathData(x, y, width, amplitude));
     path.setAttribute("class", `${isWave1 ? "wave1" : "wave2"} smooth-wave`);
     path.setAttribute("fill", "none");
     path.setAttribute("stroke", isWave1 ? colors.wave1 : colors.wave2);
-    path.setAttribute("stroke-width", (pixel * 95).toString());
+    path.setAttribute("stroke-width", (pixel * 130).toString());
     path.setAttribute("stroke-linecap", "round");
     path.setAttribute("stroke-linejoin", "round");
     SVG.setOpacity(path, opacity);
+    const speed = 0.003 + Math.random() * 0.0012;
+    const phaseOffset = Math.random() * Math.PI * 2;
+    const wave = buildFlowingWaveRenderData(path, x, y, width, amplitude, speed, phaseOffset);
+    updateFlowingWavePathData(wave, phaseOffset);
     frame.appendChild(path);
-
-    const animation = path.animate(
-      [
-        { transform: `translateX(${-drift * 100}px)`, opacity: opacity * 0.78 },
-        { transform: `translateX(${drift * 100}px)`, opacity },
-      ],
-      {
-        duration: 1400 + Math.random() * 900,
-        delay: -Math.random() * 700,
-        direction: "alternate",
-        easing: "ease-in-out",
-        iterations: Infinity,
-      }
-    );
-    trackWavesAnimation(animation);
+    waves.push(wave);
   }
+
+  const animation: SmoothWaveAnimationData = {
+    container,
+    frame,
+    waves,
+  };
+  smoothWaveAnimations.add(animation);
+  ensureSmoothWaveTicker();
 
   return frame;
 }
 
-function buildSmoothWavePathData(x: number, y: number, width: number, amplitude: number): string {
-  const xMid = x + width * 0.5;
-  const xQuarter = x + width * 0.25;
-  const xThreeQuarter = x + width * 0.75;
-  return [
-    `M ${x * 100} ${y * 100}`,
-    `C ${xQuarter * 100} ${(y - amplitude) * 100} ${xQuarter * 100} ${(y - amplitude) * 100} ${xMid * 100} ${y * 100}`,
-    `C ${xThreeQuarter * 100} ${(y + amplitude) * 100} ${xThreeQuarter * 100} ${(y + amplitude) * 100} ${(x + width) * 100} ${y * 100}`,
-  ].join(" ");
+function getSmoothWaveTaper(t: number): number {
+  if (t < smoothWaveTaperMargin) {
+    return 0.5 * (1 - Math.cos((Math.PI * t) / smoothWaveTaperMargin));
+  }
+  if (t > 1 - smoothWaveTaperMargin) {
+    return 0.5 * (1 - Math.cos((Math.PI * (1 - t)) / smoothWaveTaperMargin));
+  }
+  return 1;
+}
+
+function buildFlowingWaveRenderData(path: SVGPathElement, x: number, y: number, width: number, amplitude: number, speed: number, phaseOffset: number): SmoothWaveRenderData {
+  const xPoints = new Array<number>(smoothWavePointCount + 1);
+  const scaledAmplitudes = new Array<number>(smoothWavePointCount + 1);
+  for (let i = 0; i <= smoothWavePointCount; i++) {
+    const t = i / smoothWavePointCount;
+    xPoints[i] = (x + width * t) * 100;
+    scaledAmplitudes[i] = amplitude * getSmoothWaveTaper(t) * 100;
+  }
+  return {
+    path,
+    xPoints,
+    yBase: y * 100,
+    scaledAmplitudes,
+    segments: new Array<string>(smoothWavePointCount + 1),
+    speed,
+    phaseOffset,
+  };
+}
+
+function updateFlowingWavePathData(wave: SmoothWaveRenderData, phase: number): void {
+  let sinPhase = Math.sin(phase);
+  let cosPhase = Math.cos(phase);
+  for (let i = 0; i <= smoothWavePointCount; i++) {
+    wave.segments[i] = (i === 0 ? "M" : "L") + wave.xPoints[i] + " " + (wave.yBase + wave.scaledAmplitudes[i] * sinPhase);
+    const nextSin = sinPhase * smoothWaveCosStep + cosPhase * smoothWaveSinStep;
+    const nextCos = cosPhase * smoothWaveCosStep - sinPhase * smoothWaveSinStep;
+    sinPhase = nextSin;
+    cosPhase = nextCos;
+  }
+  wave.path.setAttribute("d", wave.segments.join(" "));
 }
 
 function getWavesFrame(location: Location, frameIndex: number) {
