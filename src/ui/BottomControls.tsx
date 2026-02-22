@@ -243,7 +243,7 @@ const RematchSeriesTrack = styled.div`
 
 const RematchSeriesChip = styled.button<{ $isSelected: boolean }>`
   border: none;
-  border-radius: 15px;
+  border-radius: 9px;
   height: 30px;
   min-width: 26px;
   padding: 0 7px;
@@ -256,10 +256,10 @@ const RematchSeriesChip = styled.button<{ $isSelected: boolean }>`
   cursor: pointer;
   font-family: ${rematchSeriesDigitsFontFamily};
   font-variant-numeric: tabular-nums;
-  background: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.06)" : "transparent")};
+  background: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.04)" : "transparent")};
 
   @media (prefers-color-scheme: dark) {
-    background: ${(props) => (props.$isSelected ? "rgba(255, 255, 255, 0.09)" : "transparent")};
+    background: ${(props) => (props.$isSelected ? "rgba(255, 255, 255, 0.06)" : "transparent")};
   }
 
   &:disabled {
