@@ -3859,16 +3859,14 @@ function createSparklingContainer(location: Location): SVGElement {
     }, 230);
     trackSparkleInterval(intervalId);
   } else {
-    for (let i = 0; i < 2; i++) {
-      createSmoothSparkleParticle(location, container);
-    }
+    createSmoothSparkleParticle(location, container);
     const intervalId = window.setInterval(() => {
       if (!container.parentNode?.parentNode) {
         clearTrackedSparkleInterval(intervalId);
         return;
       }
       createSmoothSparkleParticle(location, container);
-    }, 230);
+    }, 400);
     trackSparkleInterval(intervalId);
   }
 
@@ -3878,7 +3876,7 @@ function createSparklingContainer(location: Location): SVGElement {
 function createSmoothSparkleParticle(location: Location, container: SVGElement) {
   const particle = smoothSparkle.cloneNode(true) as SVGElement;
   const y = location.i + Math.random();
-  const size = Math.random() * 0.05 + 0.075;
+  const size = Math.random() * 0.08 + 0.12;
   const opacity = 0.45 + 0.4 * Math.random();
   SVG.setFrame(particle, location.j + Math.random(), y, size, size);
   SVG.setOpacity(particle, opacity);
