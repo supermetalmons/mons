@@ -4558,31 +4558,17 @@ const smoothSparkle = (() => {
   svg.setAttribute("viewBox", "0 0 3 3");
   SVG.setFill(svg, "transparent");
 
-  const line1 = document.createElementNS(SVG.ns, "line");
-  line1.setAttribute("x1", "0.42");
-  line1.setAttribute("y1", "1.5");
-  line1.setAttribute("x2", "2.58");
-  line1.setAttribute("y2", "1.5");
-  line1.setAttribute("stroke", colors.sparkleLight);
-  line1.setAttribute("stroke-width", "0.36");
-  line1.setAttribute("stroke-linecap", "round");
-  svg.appendChild(line1);
-
-  const line2 = document.createElementNS(SVG.ns, "line");
-  line2.setAttribute("x1", "1.5");
-  line2.setAttribute("y1", "0.42");
-  line2.setAttribute("x2", "1.5");
-  line2.setAttribute("y2", "2.58");
-  line2.setAttribute("stroke", colors.sparkleLight);
-  line2.setAttribute("stroke-width", "0.36");
-  line2.setAttribute("stroke-linecap", "round");
-  svg.appendChild(line2);
+  const star = document.createElementNS(SVG.ns, "path");
+  star.setAttribute("d", "M1.5 0.1 Q1.62 1.38 2.9 1.5 Q1.62 1.62 1.5 2.9 Q1.38 1.62 0.1 1.5 Q1.38 1.38 1.5 0.1Z");
+  star.setAttribute("fill", colors.sparkleLight);
+  star.setAttribute("opacity", "0.7");
+  svg.appendChild(star);
 
   const center = document.createElementNS(SVG.ns, "circle");
   center.setAttribute("cx", "1.5");
   center.setAttribute("cy", "1.5");
   center.setAttribute("r", "0.28");
-  center.setAttribute("fill", colors.sparkleDark);
+  center.setAttribute("fill", colors.sparkleLight);
   svg.appendChild(center);
 
   return svg;
