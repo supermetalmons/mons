@@ -30,6 +30,7 @@ import { registerBottomControlsTransientUiHandler } from "./uiSession";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
+const rematchSeriesDigitsFontFamily = 'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace';
 
 export enum PrimaryActionType {
   None = "none",
@@ -257,6 +258,8 @@ const RematchSeriesChip = styled.button<{ $isSelected: boolean }>`
   gap: 1px;
   flex-shrink: 0;
   cursor: pointer;
+  font-family: ${rematchSeriesDigitsFontFamily};
+  font-variant-numeric: tabular-nums;
   background: ${(props) => (props.$isSelected ? "rgba(10, 132, 255, 0.18)" : "transparent")};
 
   @media (prefers-color-scheme: dark) {
@@ -273,7 +276,6 @@ const RematchScoreOpponent = styled.span<{ $isSelected: boolean }>`
   font-size: 10px;
   line-height: 1;
   font-weight: 400;
-  font-variant-numeric: tabular-nums;
   color: ${(props) => (props.$isSelected ? "var(--color-blue-primary)" : "rgba(60, 60, 67, 0.45)")};
 
   @media (prefers-color-scheme: dark) {
@@ -285,7 +287,6 @@ const RematchScorePlayer = styled.span<{ $isSelected: boolean }>`
   font-size: 11px;
   line-height: 1;
   font-weight: 600;
-  font-variant-numeric: tabular-nums;
   color: ${(props) => (props.$isSelected ? "var(--color-blue-primary)" : "var(--color-gray-33)")};
 
   @media (prefers-color-scheme: dark) {
@@ -1179,7 +1180,7 @@ const BottomControls: React.FC = () => {
         </>
       );
     }
-    return <RematchLoadingDots $isSelected={item.isSelected}>···</RematchLoadingDots>;
+    return <RematchLoadingDots $isSelected={item.isSelected}>·</RematchLoadingDots>;
   }, []);
 
   const handleBrushClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
