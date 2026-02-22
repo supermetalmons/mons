@@ -313,7 +313,7 @@ const FlowSvg = styled.svg`
 
   @keyframes efd {
     to {
-      stroke-dashoffset: 8;
+      stroke-dashoffset: -8;
     }
   }
 
