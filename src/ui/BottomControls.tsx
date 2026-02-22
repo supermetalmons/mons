@@ -234,14 +234,14 @@ const RematchSeriesTrack = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background: rgba(120, 120, 128, 0.1);
+  background: var(--color-gray-f9);
   border-radius: 16px;
   height: 32px;
   flex-shrink: 0;
   padding: 0 1px;
 
   @media (prefers-color-scheme: dark) {
-    background: rgba(120, 120, 128, 0.2);
+    background: var(--primaryContainerBackgroundDark);
   }
 `;
 
