@@ -30,7 +30,6 @@ import { registerBottomControlsTransientUiHandler } from "./uiSession";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
-const ENABLE_REMATCH_SERIES_INLINE_CONTROL = false;
 
 export enum PrimaryActionType {
   None = "none",
@@ -1464,7 +1463,7 @@ const BottomControls: React.FC = () => {
       )}
       {isMoveHistoryPopupVisible && <MoveHistoryPopup ref={moveHistoryPopupRef} />}
       <ControlsContainer ref={controlsContainerRef}>
-        {ENABLE_REMATCH_SERIES_INLINE_CONTROL && hasRematchSeriesNavigation && (
+        {hasRematchSeriesNavigation && (
           <RematchSeriesInlineControl>
             <RematchSeriesScroll>
               <RematchSeriesTrack>
