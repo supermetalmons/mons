@@ -234,15 +234,11 @@ const RematchSeriesTrack = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  background: var(--color-gray-f9);
+  background: transparent;
   border-radius: 16px;
   height: 32px;
   flex-shrink: 0;
   padding: 0 1px;
-
-  @media (prefers-color-scheme: dark) {
-    background: var(--primaryContainerBackgroundDark);
-  }
 `;
 
 const RematchSeriesChip = styled.button<{ $isSelected: boolean }>`
@@ -260,15 +256,15 @@ const RematchSeriesChip = styled.button<{ $isSelected: boolean }>`
   cursor: pointer;
   font-family: ${rematchSeriesDigitsFontFamily};
   font-variant-numeric: tabular-nums;
-  background: ${(props) => (props.$isSelected ? "rgba(10, 132, 255, 0.18)" : "transparent")};
+  background: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.06)" : "transparent")};
 
   @media (prefers-color-scheme: dark) {
-    background: ${(props) => (props.$isSelected ? "rgba(10, 132, 255, 0.3)" : "transparent")};
+    background: ${(props) => (props.$isSelected ? "rgba(255, 255, 255, 0.09)" : "transparent")};
   }
 
   &:disabled {
     cursor: default;
-    opacity: 0.6;
+    opacity: 0.5;
   }
 `;
 
@@ -276,10 +272,10 @@ const RematchScoreOpponent = styled.span<{ $isSelected: boolean }>`
   font-size: 10px;
   line-height: 1;
   font-weight: 400;
-  color: ${(props) => (props.$isSelected ? "var(--color-blue-primary)" : "rgba(60, 60, 67, 0.45)")};
+  color: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.35)" : "rgba(0, 0, 0, 0.18)")};
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.$isSelected ? "rgba(100, 175, 255, 0.7)" : "rgba(235, 235, 245, 0.35)")};
+    color: ${(props) => (props.$isSelected ? "rgba(255, 255, 255, 0.38)" : "rgba(255, 255, 255, 0.18)")};
   }
 `;
 
@@ -287,23 +283,23 @@ const RematchScorePlayer = styled.span<{ $isSelected: boolean }>`
   font-size: 11px;
   line-height: 1;
   font-weight: 600;
-  color: ${(props) => (props.$isSelected ? "var(--color-blue-primary)" : "var(--color-gray-33)")};
+  color: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.5)" : "rgba(0, 0, 0, 0.22)")};
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.$isSelected ? "var(--color-blue-primary-dark)" : "var(--color-gray-f0)")};
+    color: ${(props) => (props.$isSelected ? "rgba(255, 255, 255, 0.55)" : "rgba(255, 255, 255, 0.22)")};
   }
 `;
 
 const RematchSeriesSeparator = styled.div<{ $hidden: boolean }>`
   width: 0.5px;
-  height: 16px;
-  background: rgba(120, 120, 128, 0.25);
+  height: 14px;
+  background: rgba(0, 0, 0, 0.1);
   flex-shrink: 0;
   opacity: ${(props) => (props.$hidden ? 0 : 1)};
   transition: opacity 0.15s ease;
 
   @media (prefers-color-scheme: dark) {
-    background: rgba(120, 120, 128, 0.35);
+    background: rgba(255, 255, 255, 0.12);
   }
 `;
 
@@ -312,10 +308,10 @@ const RematchWaitingIcon = styled.span<{ $isSelected: boolean }>`
   align-items: center;
   justify-content: center;
   font-size: 10px;
-  color: ${(props) => (props.$isSelected ? "var(--color-blue-primary)" : "rgba(60, 60, 67, 0.4)")};
+  color: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.4)" : "rgba(0, 0, 0, 0.18)")};
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.$isSelected ? "var(--color-blue-primary-dark)" : "rgba(235, 235, 245, 0.35)")};
+    color: ${(props) => (props.$isSelected ? "rgba(255, 255, 255, 0.45)" : "rgba(255, 255, 255, 0.18)")};
   }
 `;
 
@@ -323,10 +319,10 @@ const RematchLoadingDots = styled.span<{ $isSelected: boolean }>`
   font-size: 11px;
   line-height: 1;
   letter-spacing: 1px;
-  color: ${(props) => (props.$isSelected ? "var(--color-blue-primary)" : "rgba(60, 60, 67, 0.35)")};
+  color: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.4)" : "rgba(0, 0, 0, 0.15)")};
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.$isSelected ? "var(--color-blue-primary-dark)" : "rgba(235, 235, 245, 0.3)")};
+    color: ${(props) => (props.$isSelected ? "rgba(255, 255, 255, 0.45)" : "rgba(255, 255, 255, 0.15)")};
   }
 `;
 
