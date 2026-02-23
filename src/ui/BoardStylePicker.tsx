@@ -285,66 +285,6 @@ export const ImagePlaceholderBg = styled.div`
   }
 `;
 
-const FLOW_STEP = 56;
-
-const FlowSvg = styled.svg`
-  position: absolute;
-  top: 16px;
-  left: 16px;
-  width: calc(100% - 32px);
-  height: calc(100% - 32px);
-  pointer-events: none;
-
-  .fg {
-    fill: none;
-    stroke: rgba(59, 130, 246, 0.18);
-    stroke-width: 7;
-    stroke-linecap: round;
-  }
-
-  .fl {
-    fill: none;
-    stroke: rgba(59, 130, 246, 0.6);
-    stroke-width: 1.5;
-    stroke-linecap: round;
-    stroke-dasharray: 3 5;
-    animation: efd 0.6s linear infinite;
-  }
-
-  @keyframes efd {
-    to {
-      stroke-dashoffset: -8;
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .fg {
-      stroke: rgba(100, 165, 255, 0.18);
-    }
-    .fl {
-      stroke: rgba(100, 165, 255, 0.6);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .fl {
-      animation: none;
-    }
-  }
-`;
-
-const FlowLine: React.FC<{ from: number; to: number }> = React.memo(({ from, to }) => {
-  const x1 = 22 + from * FLOW_STEP;
-  const x2 = 22 + to * FLOW_STEP;
-  const d = `M${x1},22C${x1},49 ${x2},49 ${x2},76`;
-  return (
-    <FlowSvg viewBox="0 0 156 98">
-      <path d={d} className="fg" />
-      <path d={d} className="fl" />
-    </FlowSvg>
-  );
-});
-
 const BoardStylePickerComponent: React.FC = () => {
   const [currentColorSetKey, setCurrentColorSetKey] = useState<ColorSetKey>(getCurrentColorSetKey());
   const [selectedBoardStyleSet, setSelectedBoardStyleSet] = useState<BoardStyleSet>(getCurrentBoardStyleSet());
@@ -470,12 +410,9 @@ const BoardStylePickerComponent: React.FC = () => {
   };
 
   const isGridBoardSelected = selectedBoardStyleSet === BoardStyleSet.Grid;
-  const boardIndex = isGridBoardSelected ? (currentColorSetKey === "default" ? 0 : 1) : 2;
-  const itemsIndex = selectedItemsStyleSet === AssetsSet.Pixel ? 0 : selectedItemsStyleSet === AssetsSet.Original ? 1 : 2;
 
   return (
     <BoardStylePicker>
-      <FlowLine from={boardIndex} to={itemsIndex} />
       <SectionRow>
         <ColorSquare isSelected={isGridBoardSelected && currentColorSetKey === "default"} onClick={!isMobile ? handleColorSetChange("default") : undefined} onTouchStart={isMobile ? handleColorSetChange("default") : undefined} aria-label="Light board theme">
           {renderColorSquares("light")}
