@@ -986,6 +986,37 @@ function getHistoricalResignedColor(matchId: string, pair: HistoricalMatchPair):
   return hostStoredColor ?? guestStoredColor;
 }
 
+function getHistoricalWinnerByTimerColor(matchId: string, pair: HistoricalMatchPair): MonsWeb.Color | undefined {
+  const hostMatchWonByTimer = pair.hostMatch?.timer === "gg";
+  const guestMatchWonByTimer = pair.guestMatch?.timer === "gg";
+  if (!hostMatchWonByTimer && !guestMatchWonByTimer) {
+    return undefined;
+  }
+  const hostStoredColor = hostMatchWonByTimer ? toMonsColor(pair.hostMatch?.color) : undefined;
+  const guestStoredColor = guestMatchWonByTimer ? toMonsColor(pair.guestMatch?.color) : undefined;
+  if (hostStoredColor !== undefined && guestStoredColor === undefined) {
+    return hostStoredColor;
+  }
+  if (guestStoredColor !== undefined && hostStoredColor === undefined) {
+    return guestStoredColor;
+  }
+  if (hostStoredColor !== undefined && guestStoredColor !== undefined) {
+    if (hostStoredColor === guestStoredColor) {
+      return hostStoredColor;
+    }
+  }
+  const hostSeriesColor = toMonsColor(connection.getHostColorForMatch(matchId));
+  if (hostSeriesColor !== undefined) {
+    if (hostMatchWonByTimer && !guestMatchWonByTimer) {
+      return hostSeriesColor;
+    }
+    if (guestMatchWonByTimer && !hostMatchWonByTimer) {
+      return oppositeMonsColor(hostSeriesColor);
+    }
+  }
+  return hostStoredColor ?? guestStoredColor;
+}
+
 function getDisplayResignedColor(inFlashbackMode: boolean): MonsWeb.Color | undefined {
   if (boardViewMode === "historicalView" && inFlashbackMode && viewedRematchMatchId) {
     const localSnapshot = getLocalRematchSnapshot(viewedRematchMatchId);
@@ -1004,6 +1035,9 @@ function getDisplayResignedColor(inFlashbackMode: boolean): MonsWeb.Color | unde
 
 function getDisplayWinnerByTimerColor(inFlashbackMode: boolean): MonsWeb.Color | undefined {
   if (boardViewMode === "historicalView" && inFlashbackMode) {
+    if (viewedRematchMatchId && viewedRematchPair) {
+      return getHistoricalWinnerByTimerColor(viewedRematchMatchId, viewedRematchPair);
+    }
     return undefined;
   }
   return winnerByTimerColor;
