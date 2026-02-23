@@ -483,6 +483,7 @@ const BottomControls: React.FC = () => {
     hourglassEnableTimeoutRef.current = null;
     hourglassEnableDeadlineRef.current = null;
     cancelAutomatchRevealTimeoutRef.current = null;
+    setIsVoiceReactionDisabled(false);
   }, []);
 
   useEffect(() => {
@@ -981,7 +982,7 @@ const BottomControls: React.FC = () => {
   showVoiceReactionButton = (show: boolean) => {
     setIsVoiceReactionButtonVisible(show);
     if (!show) {
-      setIsVoiceReactionDisabled(false);
+      setIsReactionPickerVisible(false);
     }
   };
 
@@ -1277,6 +1278,10 @@ const BottomControls: React.FC = () => {
   };
 
   const handleStickerSelect = useCallback((stickerId: number) => {
+    if (!isVoiceReactionButtonVisible) {
+      setIsReactionPickerVisible(false);
+      return;
+    }
     setIsReactionPickerVisible(false);
     showVideoReaction(false, stickerId);
     playSounds([Sound.EmoteSent]);
@@ -1301,9 +1306,13 @@ const BottomControls: React.FC = () => {
         setIsVoiceReactionDisabled(false);
       }, 9999);
     }
-  }, [setMatchScopedTimeout]);
+  }, [isVoiceReactionButtonVisible, setMatchScopedTimeout]);
 
   const handleReactionSelect = useCallback((reaction: string) => {
+    if (!isVoiceReactionButtonVisible) {
+      setIsReactionPickerVisible(false);
+      return;
+    }
     setIsReactionPickerVisible(false);
     const reactionObj = newReactionOfKind(reaction);
     playReaction(reactionObj);
@@ -1331,7 +1340,7 @@ const BottomControls: React.FC = () => {
         setIsVoiceReactionDisabled(false);
       }, 9999);
     }
-  }, [setMatchScopedTimeout]);
+  }, [isVoiceReactionButtonVisible, setMatchScopedTimeout]);
 
   const playerUid = playerSideMetadata.uid;
   const opponentUid = opponentSideMetadata.uid;

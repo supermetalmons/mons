@@ -2,10 +2,10 @@ import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, Auth, signInAnonymously, onAuthStateChanged, signOut } from "firebase/auth";
 import { getDatabase, Database, ref, set, onValue, off, get, update, runTransaction } from "firebase/database";
 import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc } from "firebase/firestore";
-import { didFindInviteThatCanBeJoined, didReceiveMatchUpdate, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal, didUpdateRematchSeriesMetadata } from "../game/gameController";
+import { didFindInviteThatCanBeJoined, didReceiveInviteReactionUpdate, didReceiveMatchUpdate, didRecoverInviteReactions, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal, didUpdateRematchSeriesMetadata } from "../game/gameController";
 import { getPlayersEmojiId, didGetPlayerProfile, setupPlayerId } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
-import { Match, Invite, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES, MiningMaterialName, MatchWagerState, WagerProposal, WagerAgreement, RematchSeriesDescriptor, HistoricalMatchPair } from "./connectionModels";
+import { Match, Invite, InviteReaction, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES, MiningMaterialName, MatchWagerState, WagerProposal, WagerAgreement, RematchSeriesDescriptor, HistoricalMatchPair } from "./connectionModels";
 import { storage } from "../utils/storage";
 import { generateNewInviteId } from "../utils/misc";
 import { getWagerState, setCurrentWagerMatch, setWagerState, syncCurrentWagerMatchState } from "../game/wagerState";
@@ -85,6 +85,7 @@ class Connection {
   private hostRematchesRef: any = null;
   private guestRematchesRef: any = null;
   private wagersRef: any = null;
+  private inviteReactionsRef: any = null;
   private miningFrozenRef: any = null;
   private matchRefs: { [key: string]: any } = {};
   private profileRefs: { [key: string]: any } = {};
@@ -523,6 +524,7 @@ class Connection {
     this.bumpSessionEpoch();
     this.cleanupRematchObservers();
     this.cleanupWagerObserver();
+    this.cleanupInviteReactionObserver();
     this.stopObservingAllMatches();
     this.inviteWaitRefs.forEach((inviteRef) => {
       off(inviteRef);
@@ -1097,6 +1099,27 @@ class Connection {
       return hostColor;
     }
     if (this.latestInvite.guestId === this.sameProfilePlayerUid) {
+      return guestColor;
+    }
+    return null;
+  }
+
+  public getPlayerColorForMatch(matchId: string, playerUid: string): "white" | "black" | null {
+    if (!this.latestInvite || !playerUid) {
+      return null;
+    }
+    const hostColor = this.getHostColorForMatch(matchId);
+    if (!hostColor) {
+      return null;
+    }
+    const guestColor = this.oppositeColor(hostColor);
+    if (!guestColor) {
+      return null;
+    }
+    if (playerUid === this.latestInvite.hostId) {
+      return hostColor;
+    }
+    if (playerUid === this.latestInvite.guestId) {
       return guestColor;
     }
     return null;
@@ -1765,9 +1788,9 @@ class Connection {
   }
 
   public sendVoiceReaction(reaction: Reaction): void {
-    if (!this.myMatch) return;
-    this.myMatch.reaction = reaction;
-    set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${this.matchId}/reaction`), reaction).catch((error) => {
+    if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) return;
+    const inviteReaction: InviteReaction = { ...reaction, matchId: this.matchId };
+    set(ref(this.db, `invites/${this.inviteId}/reactions/${this.sameProfilePlayerUid}`), inviteReaction).catch((error) => {
       console.error("Error sending voice reaction:", error);
     });
   }
@@ -2210,6 +2233,8 @@ class Connection {
         }
 
         this.latestInvite = inviteData;
+        didRecoverInviteReactions(inviteData.reactions ?? null);
+        this.observeInviteReactions();
         this.observeRematchOrEndMatchIndicators();
         this.observeWagers();
 
@@ -2443,9 +2468,11 @@ class Connection {
     this.setSameProfilePlayerUid(uid);
     this.inviteId = inviteId;
     this.latestInvite = invite;
+    didRecoverInviteReactions(invite.reactions ?? null);
 
     const matchId = inviteId;
     this.matchId = matchId;
+    this.observeInviteReactions();
     this.observeWagers();
     this.updateWagerStateForCurrentMatch();
 
@@ -2617,6 +2644,34 @@ class Connection {
     });
   }
 
+  private observeInviteReactions() {
+    if (this.inviteReactionsRef || !this.inviteId) {
+      return;
+    }
+    const observeEpoch = this.sessionEpoch;
+    const inviteReactionsRef = ref(this.db, `invites/${this.inviteId}/reactions`);
+    this.inviteReactionsRef = inviteReactionsRef;
+    incrementLifecycleCounter("connectionObservers");
+    onValue(inviteReactionsRef, (snapshot) => {
+      if (!this.isSessionEpochActive(observeEpoch)) {
+        return;
+      }
+      const reactions = snapshot.val() as Record<string, InviteReaction> | null;
+      if (this.latestInvite) {
+        this.latestInvite.reactions = reactions;
+      }
+      if (!reactions) {
+        return;
+      }
+      Object.entries(reactions).forEach(([senderUid, inviteReaction]) => {
+        if (!inviteReaction || typeof inviteReaction.uuid !== "string") {
+          return;
+        }
+        didReceiveInviteReactionUpdate(inviteReaction, senderUid);
+      });
+    });
+  }
+
   private cleanupRematchObservers() {
     if (this.hostRematchesRef) {
       off(this.hostRematchesRef);
@@ -2634,6 +2689,14 @@ class Connection {
     if (this.wagersRef) {
       off(this.wagersRef);
       this.wagersRef = null;
+      decrementLifecycleCounter("connectionObservers");
+    }
+  }
+
+  private cleanupInviteReactionObserver() {
+    if (this.inviteReactionsRef) {
+      off(this.inviteReactionsRef);
+      this.inviteReactionsRef = null;
       decrementLifecycleCounter("connectionObservers");
     }
   }

@@ -7,7 +7,7 @@ import { playSounds, playReaction, newReactionOfKind } from "../content/sounds";
 import { connection } from "../connection/connection";
 import { showMoveHistoryButton, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
 import { triggerMoveHistoryPopupReload } from "../ui/MoveHistoryPopup";
-import { Match, MatchWagerState, HistoricalMatchPair, RematchSeriesDescriptor, RematchSeriesMatchDescriptor } from "../connection/connectionModels";
+import { Match, MatchWagerState, HistoricalMatchPair, InviteReaction, RematchSeriesDescriptor, RematchSeriesMatchDescriptor } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress, getInitialProblem } from "../content/problems";
 import { storage } from "../utils/storage";
@@ -308,6 +308,20 @@ function isBoardRenderSessionActive(sessionId: number): boolean {
   return sessionId === boardRenderSessionId;
 }
 
+function shouldShowOnlineReactionButton(): boolean {
+  return boardViewMode === "activeLive" && !isWatchOnly && isOnlineGame;
+}
+
+function playIncomingInviteReaction(reaction: InviteReaction, showReactionAtOpponentSide: boolean): void {
+  if (reaction.kind === "sticker") {
+    playSounds([Sound.EmoteReceived]);
+    showVideoReaction(showReactionAtOpponentSide, reaction.variation);
+    return;
+  }
+  Board.showVoiceReactionText(reaction.kind, showReactionAtOpponentSide);
+  playReaction(reaction);
+}
+
 function applyBoardUiForCurrentView() {
   if (boardViewMode === "historicalView") {
     Board.stopMonsBoardAsDisplayAnimations();
@@ -346,7 +360,7 @@ function applyBoardUiForCurrentView() {
   Board.stopMonsBoardAsDisplayAnimations();
   Board.showBoardPlayersInfo();
   showWaitingStateText("");
-  if (!isWatchOnly && isOnlineGame && !isGameOver && !connection.rematchSeriesEndIsIndicated()) {
+  if (shouldShowOnlineReactionButton()) {
     showVoiceReactionButton(true);
   } else if (isOnlineGame) {
     showVoiceReactionButton(false);
@@ -1710,7 +1724,6 @@ export function didClickAutomatchButton() {
 }
 
 function showRematchInterface() {
-  showVoiceReactionButton(false);
   if (isWatchOnly) {
     return;
   }
@@ -1743,7 +1756,6 @@ export function didReceiveRematchesSeriesEndIndicator() {
   showPrimaryAction(PrimaryActionType.None);
   setEndMatchVisible(true);
   setEndMatchConfirmed(true);
-  showVoiceReactionButton(false);
   if (boardViewMode === "waitingLive") {
     boardViewMode = "activeLive";
     nextBoardRenderSession();
@@ -1848,7 +1860,6 @@ function didConfirmRematchProposal() {
 export function didClickEndMatchButton() {
   showPrimaryAction(PrimaryActionType.None);
   setEndMatchConfirmed(true);
-  showVoiceReactionButton(false);
   connection.sendEndMatchIndicator();
   showWaitingStateText("");
   Board.stopMonsBoardAsDisplayAnimations();
@@ -2839,7 +2850,7 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   }
 
   if (shouldRenderLiveBoard && isOnlineGame) {
-    if (!isWatchOnly && !isGameOver && !connection.rematchSeriesEndIsIndicated()) {
+    if (shouldShowOnlineReactionButton()) {
       showVoiceReactionButton(true);
     } else {
       showVoiceReactionButton(false);
@@ -2883,10 +2894,6 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   if (isReconnect || isWatchOnly) {
     const movesCount = movesCountOfMatch(match);
     setProcessedMovesCountForColor(match.color, movesCount);
-  }
-
-  if (match.reaction && match.reaction.uuid) {
-    processedVoiceReactions.add(match.reaction.uuid);
   }
 
   if (shouldRenderLiveBoard) {
@@ -3240,6 +3247,56 @@ export function showNextProblem(problem: Problem) {
   didSelectPuzzle(problem);
 }
 
+export function didRecoverInviteReactions(reactions: Record<string, InviteReaction> | null | undefined) {
+  if (!reactions) {
+    return;
+  }
+  Object.values(reactions).forEach((reaction) => {
+    if (!reaction || typeof reaction.uuid !== "string") {
+      return;
+    }
+    processedVoiceReactions.add(reaction.uuid);
+  });
+}
+
+export function didReceiveInviteReactionUpdate(reaction: InviteReaction, senderUid: string) {
+  if (!reaction || typeof reaction.uuid !== "string" || typeof reaction.matchId !== "string") {
+    return;
+  }
+  if (!connection.matchBelongsToCurrentInvite(reaction.matchId)) {
+    return;
+  }
+  if (processedVoiceReactions.has(reaction.uuid)) {
+    return;
+  }
+  processedVoiceReactions.add(reaction.uuid);
+  if (!didConnect || !isOnlineGame) {
+    return;
+  }
+  if (!isWatchOnly) {
+    const myUid = connection.getSameProfilePlayerUid();
+    if (myUid && senderUid === myUid) {
+      return;
+    }
+  }
+  const currentTime = Date.now();
+  const watchOnlyAllowed = isWatchOnly ? didSetWhiteProcessedMovesCount && didSetBlackProcessedMovesCount : false;
+  const regularAllowed = isWatchOnly ? false : currentTime - lastReactionTime > 5000;
+  if (!watchOnlyAllowed && !regularAllowed) {
+    return;
+  }
+  let showReactionAtOpponentSide = true;
+  if (isWatchOnly) {
+    const senderColor = connection.getPlayerColorForMatch(reaction.matchId, senderUid);
+    if (!senderColor) {
+      return;
+    }
+    showReactionAtOpponentSide = senderColor === "black";
+  }
+  playIncomingInviteReaction(reaction, showReactionAtOpponentSide);
+  lastReactionTime = currentTime;
+}
+
 export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matchId: string) {
   const activeMatchId = connection.getActiveMatchId();
   if (!activeMatchId || activeMatchId !== matchId) {
@@ -3280,26 +3337,6 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
     applyWagerState();
     if (isGameOver) {
       syncWagerOutcome();
-    }
-  }
-
-  if (match.reaction && match.reaction.uuid && !processedVoiceReactions.has(match.reaction.uuid)) {
-    processedVoiceReactions.add(match.reaction.uuid);
-    if (shouldRenderLiveBoard) {
-      const currentTime = Date.now();
-      const watchOnlyAllowed = isWatchOnly ? didSetWhiteProcessedMovesCount && didSetBlackProcessedMovesCount : false;
-      const regularAllowed = isWatchOnly ? false : currentTime - lastReactionTime > 5000;
-      if (watchOnlyAllowed || regularAllowed) {
-        const showReactionAtOpponentSide = isWatchOnly ? isOpponentSide : true;
-        if (match.reaction.kind === "sticker") {
-          playSounds([Sound.EmoteReceived]);
-          showVideoReaction(showReactionAtOpponentSide, match.reaction.variation);
-        } else {
-          Board.showVoiceReactionText(match.reaction.kind, showReactionAtOpponentSide);
-          playReaction(match.reaction);
-        }
-        lastReactionTime = currentTime;
-      }
     }
   }
 

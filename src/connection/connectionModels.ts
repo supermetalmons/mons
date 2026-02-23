@@ -18,6 +18,7 @@ export interface Invite {
   hostRematches?: string | null;
   guestRematches?: string | null;
   wagers?: Record<string, MatchWagerState> | null;
+  reactions?: Record<string, InviteReaction> | null;
 }
 
 export interface RematchSeriesMatchDescriptor {
@@ -46,6 +47,10 @@ export interface Reaction {
   uuid: string;
   variation: number;
   kind: string;
+}
+
+export interface InviteReaction extends Reaction {
+  matchId: string;
 }
 
 export const MINING_MATERIAL_NAMES = ["dust", "slime", "gum", "metal", "ice"] as const;
