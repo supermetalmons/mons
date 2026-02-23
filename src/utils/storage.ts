@@ -8,6 +8,7 @@ const STORAGE_KEYS = {
   BOARD_COLOR_SET: "boardColorSet",
   BOARD_COLOR_SETS_BY_THEME: "boardColorSetsByTheme",
   IS_EXPERIMENTING_WITH_SPRITES: "isExperimentingWithSprites",
+  IS_REMATCH_SERIES_ENABLED: "isRematchSeriesEnabled",
 
   PLAYER_EMOJI_ID: "playerEmojiId",
   PLAYER_EMOJI_AURA: "playerEmojiAura",
@@ -122,6 +123,14 @@ export const storage = {
 
   setIsExperimentingWithSprites: (value: boolean): void => {
     setItem(STORAGE_KEYS.IS_EXPERIMENTING_WITH_SPRITES, value);
+  },
+
+  getIsRematchSeriesEnabled: (defaultValue: boolean): boolean => {
+    return getItem(STORAGE_KEYS.IS_REMATCH_SERIES_ENABLED, defaultValue);
+  },
+
+  setIsRematchSeriesEnabled: (value: boolean): void => {
+    setItem(STORAGE_KEYS.IS_REMATCH_SERIES_ENABLED, value);
   },
 
   getPlayerEmojiId: (defaultValue: string): string => {

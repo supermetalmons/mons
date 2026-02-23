@@ -384,6 +384,7 @@ const BottomControls: React.FC = () => {
   const [isMoveHistoryPopupVisible, setIsMoveHistoryPopupVisible] = useState(false);
   const [isRematchSeriesSelectionInFlight, setIsRematchSeriesSelectionInFlight] = useState(false);
   const [historyUiVersion, setHistoryUiVersion] = useState(0);
+  const [isRematchSeriesEnabled, setIsRematchSeriesEnabled] = useState(() => storage.getIsRematchSeriesEnabled(false));
   const [isResignConfirmVisible, setIsResignConfirmVisible] = useState(false);
   const [isTimerConfirmVisible, setIsTimerConfirmVisible] = useState(false);
   const [isClaimVictoryConfirmVisible, setIsClaimVictoryConfirmVisible] = useState(false);
@@ -808,6 +809,12 @@ const BottomControls: React.FC = () => {
     return subscribeMoveHistoryPopupReload(() => {
       setHistoryUiVersion((value) => value + 1);
     });
+  }, []);
+
+  useEffect(() => {
+    const handler = () => setIsRematchSeriesEnabled(storage.getIsRematchSeriesEnabled(false));
+    window.addEventListener("rematch-series-pref-change", handler);
+    return () => window.removeEventListener("rematch-series-pref-change", handler);
   }, []);
 
   const rematchSeriesItems: RematchSeriesNavigatorItem[] = (() => {
@@ -1496,7 +1503,7 @@ const BottomControls: React.FC = () => {
       )}
       {isMoveHistoryPopupVisible && <MoveHistoryPopup ref={moveHistoryPopupRef} />}
       <ControlsContainer ref={controlsContainerRef}>
-        {hasRematchSeriesNavigation && (
+        {hasRematchSeriesNavigation && isRematchSeriesEnabled && (
           <RematchSeriesInlineControl>
             <RematchSeriesScroll>
               <RematchSeriesTrack>
