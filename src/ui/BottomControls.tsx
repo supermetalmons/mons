@@ -256,10 +256,25 @@ const RematchSeriesChip = styled.button<{ $isSelected: boolean }>`
   cursor: pointer;
   font-family: ${rematchSeriesDigitsFontFamily};
   font-variant-numeric: tabular-nums;
-  background: ${(props) => (props.$isSelected ? "rgba(249, 249, 249, 0.77)" : "transparent")};
+  background: transparent;
+  position: relative;
 
-  @media (prefers-color-scheme: dark) {
-    background: ${(props) => (props.$isSelected ? "rgba(36, 36, 36, 0.77)" : "transparent")};
+  &::before {
+    content: "";
+    display: ${(props) => (props.$isSelected ? "block" : "none")};
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 18px;
+    height: 30px;
+    transform: translate(-50%, -50%);
+    border-radius: 50%;
+    background: rgba(249, 249, 249, 0.77);
+    z-index: 0;
+
+    @media (prefers-color-scheme: dark) {
+      background: rgba(36, 36, 36, 0.77);
+    }
   }
 
   &:disabled {
@@ -272,6 +287,8 @@ const RematchScoreOpponent = styled.span<{ $isSelected: boolean }>`
   font-size: 10px;
   line-height: 1;
   font-weight: 400;
+  position: relative;
+  z-index: 1;
   color: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.18)")};
 
   @media (prefers-color-scheme: dark) {
@@ -283,6 +300,8 @@ const RematchScorePlayer = styled.span<{ $isSelected: boolean }>`
   font-size: 10px;
   line-height: 1;
   font-weight: 400;
+  position: relative;
+  z-index: 1;
   color: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.18)")};
 
   @media (prefers-color-scheme: dark) {
@@ -308,6 +327,8 @@ const RematchWaitingIcon = styled.span<{ $isSelected: boolean }>`
   align-items: center;
   justify-content: center;
   font-size: 10px;
+  position: relative;
+  z-index: 1;
   color: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.35)" : "rgba(0, 0, 0, 0.18)")};
 
   @media (prefers-color-scheme: dark) {
@@ -319,6 +340,8 @@ const RematchLoadingDots = styled.span<{ $isSelected: boolean }>`
   font-size: 11px;
   line-height: 1;
   letter-spacing: 1px;
+  position: relative;
+  z-index: 1;
   color: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.35)" : "rgba(0, 0, 0, 0.15)")};
 
   @media (prefers-color-scheme: dark) {
@@ -1473,7 +1496,7 @@ const BottomControls: React.FC = () => {
                     >
                       {renderRematchSeriesChipContent(seriesItem)}
                     </RematchSeriesChip>
-                    {idx < arr.length - 1 && <RematchSeriesSeparator $hidden={seriesItem.isSelected || arr[idx + 1].isSelected} />}
+                    {idx < arr.length - 1 && <RematchSeriesSeparator $hidden={false} />}
                   </React.Fragment>
                 ))}
               </RematchSeriesTrack>
