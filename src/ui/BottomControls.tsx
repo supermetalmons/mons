@@ -1033,6 +1033,10 @@ const BottomControls: React.FC = () => {
 
     if (enableWhenTargetReached) {
       const timeUntilTarget = Math.max(0, (target - currentProgress) * 1000);
+      if (timeUntilTarget <= 0) {
+        setIsTimerButtonDisabled(false);
+        return;
+      }
       hourglassEnableDeadlineRef.current = Date.now() + timeUntilTarget;
       hourglassEnableTimeoutRef.current = setMatchScopedTimeout(() => {
         setIsTimerButtonDisabled(false);

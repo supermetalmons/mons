@@ -94,6 +94,11 @@ let blackTimerStash: string | null = null;
 let whiteTimerStash: string | null = null;
 let timerStashMatchId: string | null = null;
 let pendingTimerResolutionOnRestore: boolean | null = null;
+const timerActivationCooldownSeconds = 90;
+let timerActivationCooldownMatchId: string | null = null;
+let timerActivationCooldownTurnNumber: number | null = null;
+let timerActivationCooldownStartedAtMs: number | null = null;
+let timerVictoryClaimTimeoutId: number | null = null;
 const activeGameTimeoutIds = new Set<number>();
 let isInviteBotIntoLocalGameUnavailable = false;
 let didMakeFirstLocalPlayerMoveOnLocalBoard = false;
@@ -216,14 +221,98 @@ const clearAllManagedGameTimeouts = () => {
     decrementLifecycleCounter("gameTimeouts");
   });
   activeGameTimeoutIds.clear();
+  timerVictoryClaimTimeoutId = null;
 };
 
-const resetTimerStateForMatch = (matchId: string | null) => {
+function clearTimerActivationCooldownState() {
+  timerActivationCooldownMatchId = null;
+  timerActivationCooldownTurnNumber = null;
+  timerActivationCooldownStartedAtMs = null;
+  clearTimerVictoryClaimTimeout();
+}
+
+function clearTimerVictoryClaimTimeout() {
+  if (timerVictoryClaimTimeoutId !== null) {
+    clearManagedGameTimeout(timerVictoryClaimTimeoutId);
+    timerVictoryClaimTimeoutId = null;
+  }
+}
+
+function startTimerActivationCooldownState(matchId: string) {
+  timerActivationCooldownMatchId = matchId;
+  timerActivationCooldownTurnNumber = game.turn_number();
+  timerActivationCooldownStartedAtMs = Date.now();
+}
+
+function renderTimerActivationCooldownFromState(matchId: string): boolean {
+  if (
+    timerActivationCooldownMatchId === null ||
+    timerActivationCooldownTurnNumber === null ||
+    timerActivationCooldownStartedAtMs === null
+  ) {
+    return false;
+  }
+  if (timerActivationCooldownMatchId !== matchId) {
+    return false;
+  }
+  if (timerActivationCooldownTurnNumber !== game.turn_number()) {
+    return false;
+  }
+  const elapsedSeconds = Math.max(0, (Date.now() - timerActivationCooldownStartedAtMs) / 1000);
+  const progress = Math.min(timerActivationCooldownSeconds, elapsedSeconds);
+  showTimerButtonProgressing(progress, timerActivationCooldownSeconds, true);
+  return true;
+}
+
+function restoreOrStartTimerActivationCooldownProgress(matchId: string) {
+  if (renderTimerActivationCooldownFromState(matchId)) {
+    return;
+  }
+  startTimerActivationCooldownState(matchId);
+  showTimerButtonProgressing(0, timerActivationCooldownSeconds, true);
+}
+
+function resetTimerStateForMatch(matchId: string | null) {
   timerStashMatchId = matchId;
   blackTimerStash = null;
   whiteTimerStash = null;
   pendingTimerResolutionOnRestore = null;
-};
+  clearTimerActivationCooldownState();
+}
+
+function setTimerStashForColor(matchId: string | null, color: "white" | "black", timer: string | null) {
+  if (timerStashMatchId !== matchId) {
+    resetTimerStateForMatch(matchId);
+  }
+  if (color === "white") {
+    whiteTimerStash = timer;
+  } else {
+    blackTimerStash = timer;
+  }
+}
+
+function getTimerMatchIdCandidate(preferredMatchId?: string | null): string | null {
+  if (preferredMatchId) {
+    return preferredMatchId;
+  }
+  const activeMatchId = connection.getActiveMatchId();
+  if (activeMatchId) {
+    return activeMatchId;
+  }
+  if (timerStashMatchId) {
+    if (isOnlineGame && !connection.matchBelongsToCurrentInvite(timerStashMatchId)) {
+      return null;
+    }
+    return timerStashMatchId;
+  }
+  if (isOnlineGame) {
+    return null;
+  }
+  if (wagerMatchId) {
+    return wagerMatchId;
+  }
+  return null;
+}
 
 const isFirstLocalRematchSeriesMatchActive = () => {
   if (!canTrackLocalRematchSeries()) {
@@ -325,6 +414,7 @@ function playIncomingInviteReaction(reaction: InviteReaction, showReactionAtOppo
 
 function applyBoardUiForCurrentView() {
   if (boardViewMode === "historicalView") {
+    clearTimerVictoryClaimTimeout();
     Board.stopMonsBoardAsDisplayAnimations();
     Board.showBoardPlayersInfo();
     showWaitingStateText("");
@@ -344,6 +434,7 @@ function applyBoardUiForCurrentView() {
     return;
   }
   if (boardViewMode === "waitingLive") {
+    clearTimerVictoryClaimTimeout();
     Board.stopMonsBoardAsDisplayAnimations();
     Board.runMonsBoardAsDisplayWaitingAnimation();
     Board.hideBoardPlayersInfo();
@@ -399,7 +490,10 @@ function restoreLiveBoardView() {
   applyBoardUiForCurrentView();
   if (boardViewMode === "activeLive") {
     setNewBoard(false);
-    applyTimerStateFromStashes(pendingTimerResolutionOnRestore ?? isReconnect);
+    const didRestoreTimerState = applyTimerStateFromStashes(
+      pendingTimerResolutionOnRestore ?? isReconnect,
+      getTimerMatchIdCandidate()
+    );
     pendingTimerResolutionOnRestore = null;
     applyWagerState();
     Board.markWagerInitialStateReceived();
@@ -409,11 +503,17 @@ function restoreLiveBoardView() {
         showResignButton();
         showMoveHistoryButton(true);
         if (isPlayerSideTurn()) {
+          clearTimerActivationCooldownState();
           hideTimerButtons();
           setUndoVisible(true);
           setAutomoveActionVisible(true);
-        } else {
-          showTimerButtonProgressing(0, 90, true);
+        } else if (!didRestoreTimerState && !shouldWaitForTimerStashesBeforeFallback()) {
+          const timerMatchId = getTimerMatchIdCandidate();
+          if (timerMatchId) {
+            restoreOrStartTimerActivationCooldownProgress(timerMatchId);
+          } else {
+            showTimerButtonProgressing(0, timerActivationCooldownSeconds, true);
+          }
         }
       } else if (didStartLocalGame) {
         if (!puzzleMode) {
@@ -1976,6 +2076,11 @@ export function didClickStartTimerButton() {
     return;
   }
   if (isOnlineGame && !isWatchOnly && !isPlayerSideTurn()) {
+    const requestedMatchId = getTimerMatchIdCandidate();
+    if (!requestedMatchId) {
+      return;
+    }
+    const requestedTurnNumber = game.turn_number();
     const sessionGuard = getSessionGuard();
     connection
       .startTimer()
@@ -1984,7 +2089,21 @@ export function didClickStartTimerButton() {
           return;
         }
         if (res.ok) {
-          showTimerCountdown(false, res.timer, playerSideColor === MonsWeb.Color.White ? "white" : "black", res.duration);
+          const activeMatchId = connection.getActiveMatchId();
+          if (activeMatchId && activeMatchId !== requestedMatchId) {
+            return;
+          }
+          if (!activeMatchId && !connection.matchBelongsToCurrentInvite(requestedMatchId)) {
+            return;
+          }
+          if (game.turn_number() !== requestedTurnNumber || isPlayerSideTurn() || isGameOver) {
+            return;
+          }
+          const timerColor = playerSideColor === MonsWeb.Color.White ? "white" : "black";
+          setTimerStashForColor(requestedMatchId, timerColor, res.timer);
+          if (boardViewMode === "activeLive") {
+            showTimerCountdown(false, res.timer, timerColor, res.duration);
+          }
         }
       })
       .catch(() => {});
@@ -2427,12 +2546,21 @@ function applyOutput(
               }
               if (isOnlineGame) {
                 if (playerTurn) {
-                  hideTimerButtons();
+                  clearTimerActivationCooldownState();
+                  if (boardViewMode === "activeLive") {
+                    hideTimerButtons();
+                  }
                   setUndoVisible(true);
                   setAutomoveActionVisible(true);
                   showMoveHistoryButton(true);
                 } else {
-                  showTimerButtonProgressing(0, 90, true);
+                  const cooldownMatchId = getTimerMatchIdCandidate();
+                  if (cooldownMatchId) {
+                    startTimerActivationCooldownState(cooldownMatchId);
+                  }
+                  if (boardViewMode === "activeLive") {
+                    showTimerButtonProgressing(0, timerActivationCooldownSeconds, true);
+                  }
                 }
               }
             }
@@ -2460,6 +2588,7 @@ function applyOutput(
               updateRatings(isVictory);
             }
 
+            clearTimerActivationCooldownState();
             isGameOver = true;
             wagerOutcomeAnimationAllowed = !isWatchOnly;
             disableAndHideUndoResignAndTimerControls();
@@ -2972,11 +3101,14 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
       showResignButton();
       showMoveHistoryButton(true);
       if (isPlayerSideTurn()) {
+        clearTimerActivationCooldownState();
         hideTimerButtons();
         setUndoVisible(true);
         setAutomoveActionVisible(true);
       } else {
-        showTimerButtonProgressing(0, 90, true);
+        if (!shouldWaitForTimerStashesBeforeFallback()) {
+          restoreOrStartTimerActivationCooldownProgress(matchId);
+        }
       }
     }
   }
@@ -2990,7 +3122,14 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   triggerMoveHistoryPopupReload();
 }
 
-function getTimerStateFromStashes(): { timer: string | null; timerColor: string } | null {
+function getTimerStateFromStashes(expectedMatchId?: string | null): { timer: string | null; timerColor: string } | null {
+  if (isOnlineGame) {
+    if (!expectedMatchId || timerStashMatchId !== expectedMatchId) {
+      return null;
+    }
+  } else if (expectedMatchId && timerStashMatchId !== expectedMatchId) {
+    return null;
+  }
   if (isReconnect || isWatchOnly) {
     if (blackTimerStash === null || whiteTimerStash === null) {
       return null;
@@ -3011,28 +3150,54 @@ function getTimerStateFromStashes(): { timer: string | null; timerColor: string 
   return { timer, timerColor };
 }
 
-function applyTimerStateFromStashes(onConnect: boolean) {
+function applyTimerStateFromStashes(onConnect: boolean, expectedMatchId?: string | null): boolean {
   if (boardViewMode !== "activeLive") {
-    return;
+    return false;
   }
-  const timerState = getTimerStateFromStashes();
+  const timerState = getTimerStateFromStashes(expectedMatchId);
   if (!timerState) {
-    return;
+    return false;
   }
-  showTimerCountdown(onConnect, timerState.timer, timerState.timerColor);
+  return showTimerCountdown(onConnect, timerState.timer, timerState.timerColor);
+}
+
+function shouldWaitForTimerStashesBeforeFallback(): boolean {
+  if (!isWatchOnly && !isReconnect) {
+    return false;
+  }
+  return blackTimerStash === null || whiteTimerStash === null;
 }
 
 function updateDisplayedTimerIfNeeded(onConnect: boolean, match: Match, matchId: string) {
-  if (timerStashMatchId !== matchId) {
-    resetTimerStateForMatch(matchId);
-  }
+  const fallbackToCooldownOrClear = () => {
+    if (isGameOver || game.winner_color() !== undefined || winnerByTimerColor !== undefined) {
+      clearTimerActivationCooldownState();
+      hideTimerButtons();
+      Board.hideTimerCountdownDigits();
+      return;
+    }
+    if (!isWatchOnly && !isPlayerSideTurn()) {
+      restoreOrStartTimerActivationCooldownProgress(matchId);
+      return;
+    }
+    clearTimerActivationCooldownState();
+    hideTimerButtons();
+    Board.hideTimerCountdownDigits();
+  };
+
   if (match.color === "white") {
-    whiteTimerStash = match.timer;
+    setTimerStashForColor(matchId, "white", match.timer);
   } else {
-    blackTimerStash = match.timer;
+    setTimerStashForColor(matchId, "black", match.timer);
   }
-  const timerState = getTimerStateFromStashes();
+  const timerState = getTimerStateFromStashes(matchId);
   if (!timerState) {
+    if (boardViewMode === "activeLive") {
+      if (shouldWaitForTimerStashesBeforeFallback()) {
+        return;
+      }
+      fallbackToCooldownOrClear();
+    }
     return;
   }
   if (boardViewMode !== "activeLive") {
@@ -3042,38 +3207,60 @@ function updateDisplayedTimerIfNeeded(onConnect: boolean, match: Match, matchId:
     return;
   }
   pendingTimerResolutionOnRestore = null;
-  showTimerCountdown(onConnect, timerState.timer, timerState.timerColor);
+  const didShowTimerCountdown = showTimerCountdown(onConnect, timerState.timer, timerState.timerColor);
+  if (!didShowTimerCountdown) {
+    const hasExplicitTimerPayload =
+      typeof timerState.timer === "string" && timerState.timer !== "" && timerState.timer !== "gg";
+    if (hasExplicitTimerPayload) {
+      clearTimerActivationCooldownState();
+      hideTimerButtons();
+      Board.hideTimerCountdownDigits();
+      return;
+    }
+    fallbackToCooldownOrClear();
+  }
 }
 
-function showTimerCountdown(onConnect: boolean, timer: any, timerColor: string, duration?: number) {
+function showTimerCountdown(onConnect: boolean, timer: any, timerColor: string, duration?: number): boolean {
   if (timer === "gg") {
+    clearTimerActivationCooldownState();
     handleVictoryByTimer(onConnect, timerColor, false);
+    return true;
   } else if (timer && typeof timer === "string" && !isGameOver) {
     const [turnNumber, targetTimestamp] = timer.split(";").map(Number);
     if (!isNaN(turnNumber) && !isNaN(targetTimestamp)) {
       if (game.turn_number() === turnNumber) {
+        clearTimerActivationCooldownState();
         let delta = Math.max(0, Math.floor((targetTimestamp - Date.now()) / 1000));
         if (duration !== undefined && duration !== null) {
           delta = Math.min(Math.floor(duration / 1000), delta);
         }
         Board.showTimer(timerColor, delta);
         if (!isWatchOnly && !isPlayerSideTurn()) {
-          const target = 90;
+          const target = timerActivationCooldownSeconds;
           showTimerButtonProgressing(target - delta, target, false);
-          const timerClaimGuard = getSessionGuard();
-          const timerClaimMatchId = connection.getActiveMatchId();
-          setManagedGameTimeout(() => {
-            if (timerClaimMatchId !== null && connection.getActiveMatchId() !== timerClaimMatchId) {
-              return;
-            }
-            if (game.turn_number() === turnNumber) {
-              enableTimerVictoryClaim();
-            }
-          }, delta * 1000, timerClaimGuard);
+          const timerClaimMatchId = getTimerMatchIdCandidate();
+          if (timerClaimMatchId !== null) {
+            const timerClaimGuard = getSessionGuard();
+            timerVictoryClaimTimeoutId = setManagedGameTimeout(() => {
+              timerVictoryClaimTimeoutId = null;
+              if (connection.getActiveMatchId() !== timerClaimMatchId) {
+                return;
+              }
+              if (boardViewMode !== "activeLive" || isGameOver || isWatchOnly || isPlayerSideTurn()) {
+                return;
+              }
+              if (game.turn_number() === turnNumber) {
+                enableTimerVictoryClaim();
+              }
+            }, delta * 1000, timerClaimGuard);
+          }
         }
+        return true;
       }
     }
   }
+  return false;
 }
 
 function updateUndoButtonBasedOnGameState() {
@@ -3139,6 +3326,7 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
     return;
   }
 
+  clearTimerActivationCooldownState();
   isGameOver = true;
   wagerOutcomeAnimationAllowed = !onConnect;
 
@@ -3169,6 +3357,7 @@ function handleResignStatusWithoutRender(onConnect: boolean, resignSenderColor: 
   if (isGameOver) {
     return;
   }
+  clearTimerActivationCooldownState();
   if (game.winner_color() !== undefined || winnerByTimerColor !== undefined) {
     isGameOver = true;
     syncInviteBotIntoLocalGameButton();
@@ -3198,6 +3387,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
   if (isGameOver) {
     return;
   }
+  clearTimerActivationCooldownState();
   if (game.winner_color() !== undefined || winnerByTimerColor !== undefined) {
     isGameOver = true;
     syncInviteBotIntoLocalGameButton();
