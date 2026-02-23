@@ -103,6 +103,7 @@ let viewedRematchPair: HistoricalMatchPair | null = null;
 let viewedRematchRequestToken = 0;
 type BoardViewMode = "activeLive" | "waitingLive" | "historicalView";
 let boardViewMode: BoardViewMode = "activeLive";
+let isMoveHistoryPopupOpen = false;
 let boardRenderSessionId = 0;
 const historicalMatchPairCache = new Map<string, HistoricalMatchPair | null>();
 const historicalScoreCache = new Map<string, { white: number; black: number }>();
@@ -1015,6 +1016,28 @@ function shouldShowTerminalIndicators(inFlashbackMode: boolean, displayGame: Mon
   return displayGame.fen() === getMoveHistorySourceGame().fen();
 }
 
+function hasTerminalResultForDisplayedGame(displayGame: MonsWeb.MonsGameModel, inFlashbackMode: boolean): boolean {
+  if (!shouldShowTerminalIndicators(inFlashbackMode, displayGame)) {
+    return false;
+  }
+  const displayResignedColor = getDisplayResignedColor(inFlashbackMode);
+  const displayWinnerByTimerColor = getDisplayWinnerByTimerColor(inFlashbackMode);
+  return displayGame.winner_color() !== undefined || displayResignedColor !== undefined || displayWinnerByTimerColor !== undefined;
+}
+
+function shouldHideBoardMoveStatuses(displayGame: MonsWeb.MonsGameModel, inFlashbackMode: boolean): boolean {
+  if (boardViewMode === "waitingLive") {
+    return true;
+  }
+  if (isMoveHistoryPopupOpen) {
+    return false;
+  }
+  if (boardViewMode === "historicalView") {
+    return true;
+  }
+  return hasTerminalResultForDisplayedGame(displayGame, inFlashbackMode);
+}
+
 export function getRematchSeriesNavigatorItems(): RematchSeriesNavigatorItem[] {
   const descriptor = getActiveRematchSeriesDescriptor();
   if (!descriptor || !descriptor.hasSeries) {
@@ -1183,7 +1206,17 @@ export function didSelectVerboseTrackingEntity(index: number) {
   setNewBoard(true);
 }
 
+export function didOpenMoveHistoryPopup() {
+  if (isMoveHistoryPopupOpen) {
+    return;
+  }
+  isMoveHistoryPopupOpen = true;
+  const displayGame = flashbackMode ? flashbackStateGame : getMoveHistorySourceGame();
+  updateBoardMoveStatuses(displayGame, flashbackMode);
+}
+
 export function didDismissMoveHistoryPopup() {
+  isMoveHistoryPopupOpen = false;
   if (boardViewMode === "historicalView") {
     if (viewedRematchGame) {
       flashbackMode = true;
@@ -1200,7 +1233,9 @@ export function didDismissMoveHistoryPopup() {
     flashbackMode = false;
     Board.setBoardFlipped(activeBoardShouldBeFlipped());
     setNewBoard(false);
+    return;
   }
+  updateBoardMoveStatuses(game, false);
 }
 
 function dismissBadgeAndNotificationBannerIfNeeded() {
@@ -2449,11 +2484,7 @@ function applyOutput(
       }
 
       if (!flashbackMode) {
-        if (game.winner_color() !== undefined || resignedColor !== undefined) {
-          Board.hideAllMoveStatuses();
-        } else {
-          updateBoardMoveStatuses();
-        }
+        updateBoardMoveStatuses();
       }
 
       if (!flashbackMode && (isRemoteInput || isBotInput)) {
@@ -3015,8 +3046,8 @@ function updateUndoButtonBasedOnGameState() {
   setUndoEnabled(canHandleUndo());
 }
 
-function updateBoardMoveStatuses(gameModel: MonsWeb.MonsGameModel = game) {
-  if (boardViewMode === "waitingLive") {
+function updateBoardMoveStatuses(gameModel: MonsWeb.MonsGameModel = game, inFlashbackMode: boolean = flashbackMode) {
+  if (shouldHideBoardMoveStatuses(gameModel, inFlashbackMode)) {
     Board.hideAllMoveStatuses();
     return;
   }
@@ -3042,13 +3073,11 @@ function setNewBoard(inFlashbackMode: boolean) {
   const displayResignedColor = showTerminalIndicators ? getDisplayResignedColor(inFlashbackMode) : undefined;
   const displayWinnerByTimerColor = showTerminalIndicators ? getDisplayWinnerByTimerColor(inFlashbackMode) : undefined;
   Board.updateScore(displayGame.white_score(), displayGame.black_score(), displayGame.winner_color(), displayResignedColor, displayWinnerByTimerColor);
-  if (!flashbackMode && (displayGame.winner_color() !== undefined || resignedColor !== undefined)) {
-    Board.hideAllMoveStatuses();
+  if (!inFlashbackMode && hasTerminalResultForDisplayedGame(displayGame, inFlashbackMode)) {
     disableAndHideUndoResignAndTimerControls();
     showRematchInterface();
-  } else {
-    updateBoardMoveStatuses(displayGame);
   }
+  updateBoardMoveStatuses(displayGame, inFlashbackMode);
   const locationsWithContent = displayGame.locations_with_content().map((loc) => new Location(loc.i, loc.j));
   Board.removeItemsNotPresentIn(locationsWithContent);
   locationsWithContent.forEach((loc) => {
@@ -3081,13 +3110,13 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
 
   Board.hideTimerCountdownDigits();
   disableAndHideUndoResignAndTimerControls();
-  Board.hideAllMoveStatuses();
 
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
 
   winnerByTimerColor = winnerColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
+  updateBoardMoveStatuses(game, false);
   showRematchInterface();
   syncWagerOutcome();
 
@@ -3164,7 +3193,7 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
 
   Board.hideTimerCountdownDigits();
   disableAndHideUndoResignAndTimerControls();
-  Board.hideAllMoveStatuses();
+  updateBoardMoveStatuses(game, false);
 
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();

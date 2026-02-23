@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { getVerboseTrackingEntities, didSelectVerboseTrackingEntity, didDismissMoveHistoryPopup } from "../game/gameController";
+import { getVerboseTrackingEntities, didSelectVerboseTrackingEntity, didOpenMoveHistoryPopup, didDismissMoveHistoryPopup } from "../game/gameController";
 import { useGameAssets } from "../hooks/useGameAssets";
 import { useEmojis } from "../hooks/useEmojis";
 import type { MoveHistoryEntry, MoveHistorySegment, MoveHistoryToken, MoveHistorySegmentRole } from "../game/moveEventStrings";
@@ -328,6 +328,9 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   );
 
   React.useEffect(() => {
+    try {
+      didOpenMoveHistoryPopup();
+    } catch {}
     const unsubscribe = subscribeMoveHistoryPopupReload(() => setVersion((v) => v + 1));
     const unsubscribeSelectionReset = subscribeMoveHistoryPopupSelectionReset(() => setSelectionResetToken((value) => value + 1));
     return () => {
