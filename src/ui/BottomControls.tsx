@@ -3,7 +3,7 @@ import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnve
 import { IoSparklesSharp } from "react-icons/io5";
 import styled from "styled-components";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
-import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, isOnlineGame, isWatchOnly, isMatchOver, getRematchSeriesNavigatorItems, didSelectRematchSeriesMatch, preloadRematchSeriesScores } from "../game/gameController";
+import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, isOnlineGame, isWatchOnly, isMatchOver, getBoardViewMode, getRematchSeriesNavigatorItems, didSelectRematchSeriesMatch, preloadRematchSeriesScores } from "../game/gameController";
 import type { RematchSeriesNavigatorItem } from "../game/gameController";
 import { connection } from "../connection/connection";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
@@ -1369,7 +1369,7 @@ const BottomControls: React.FC = () => {
   const hasResolvedWager = !!wagerState?.resolved;
   const playerHasProposed = !!(playerUid && wagerState?.proposedBy && wagerState.proposedBy[playerUid]) || !!(playerUid && wagerState?.proposals && wagerState.proposals[playerUid]);
   const hasPlayers = !!playerUid && !!opponentUid;
-  const isEligibleForWager = isOnlineGame && !isWatchOnly && !isGameWithBot && !isMatchOver() && playerHasProfile && opponentHasProfile && hasPlayers;
+  const isEligibleForWager = isOnlineGame && !isWatchOnly && !isGameWithBot && getBoardViewMode() === "activeLive" && !isMatchOver() && playerHasProfile && opponentHasProfile && hasPlayers;
   const isWatchOnlyMatchFinished = isWatchOnly && isMatchOver();
   const isEndMatchPillVisible = isEndMatchButtonVisible || isWatchOnlyMatchFinished;
   const isEndMatchPillFinished = isEndMatchConfirmed || isWatchOnlyMatchFinished;

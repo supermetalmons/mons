@@ -360,6 +360,8 @@ export const isMatchOver = () => {
   return isGameOver;
 };
 
+export const getBoardViewMode = () => boardViewMode;
+
 const setWatchOnlyState = (value: boolean) => {
   if (isWatchOnly === value) {
     return;
@@ -427,7 +429,7 @@ function applyBoardUiForCurrentView() {
     } else {
       setEndMatchVisible(false);
     }
-    showVoiceReactionButton(false);
+    showVoiceReactionButton(isGameWithBot || (!isWatchOnly && isOnlineGame));
     disableAndHideUndoResignAndTimerControls();
     hideTimerButtons();
     Board.hideTimerCountdownDigits();
@@ -440,7 +442,7 @@ function applyBoardUiForCurrentView() {
     Board.hideBoardPlayersInfo();
     setEndMatchVisible(true);
     showWaitingStateText("");
-    showVoiceReactionButton(false);
+    showVoiceReactionButton(!isWatchOnly && isOnlineGame);
     setAutomoveActionVisible(false);
     setUndoVisible(false);
     setUndoEnabled(false);
@@ -2100,7 +2102,6 @@ function didConfirmRematchProposal() {
   Board.runMonsBoardAsDisplayWaitingAnimation();
   connection.sendRematchProposal();
   Board.hideBoardPlayersInfo();
-  showVoiceReactionButton(false);
 }
 
 export function didClickEndMatchButton() {
@@ -3607,7 +3608,7 @@ export function didReceiveInviteReactionUpdate(reaction: InviteReaction, senderU
     return;
   }
   processedVoiceReactions.add(reaction.uuid);
-  if (!didConnect || !isOnlineGame) {
+  if ((!didConnect && !isWaitingForRematchResponse) || !isOnlineGame) {
     return;
   }
   if (!isWatchOnly) {

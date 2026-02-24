@@ -1693,7 +1693,19 @@ export function didGetPlayerProfile(profile: PlayerProfile, loginId: string, own
 }
 
 function renderPlayersNamesLabels() {
-  if (!playerNameText || !opponentNameText || isWaitingForRematchResponse || playerScoreText?.textContent === "") return;
+  if (!playerNameText || !opponentNameText) return;
+
+  const currentTime = Date.now();
+  const thresholdDelta = 2500;
+  const hasPlayerReaction = playerSideMetadata.voiceReactionDate !== undefined && currentTime - playerSideMetadata.voiceReactionDate < thresholdDelta;
+  const hasOpponentReaction = opponentSideMetadata.voiceReactionDate !== undefined && currentTime - opponentSideMetadata.voiceReactionDate < thresholdDelta;
+
+  if (isWaitingForRematchResponse || playerScoreText?.textContent === "") {
+    const prefix = "~ ";
+    playerNameText.textContent = hasPlayerReaction ? prefix + playerSideMetadata.voiceReactionText : "";
+    opponentNameText.textContent = hasOpponentReaction ? prefix + opponentSideMetadata.voiceReactionText : "";
+    return;
+  }
   let playerNameString = "";
   let opponentNameString = "";
 
@@ -1715,16 +1727,14 @@ function renderPlayersNamesLabels() {
     }
   }
 
-  const currentTime = Date.now();
-  const thresholdDelta = 2500;
-  const prefix = " ~ ";
+  const reactionPrefix = " ~ ";
 
-  if (playerSideMetadata.voiceReactionDate !== undefined && currentTime - playerSideMetadata.voiceReactionDate < thresholdDelta) {
-    playerNameString += prefix + playerSideMetadata.voiceReactionText;
+  if (hasPlayerReaction) {
+    playerNameString += reactionPrefix + playerSideMetadata.voiceReactionText;
   }
 
-  if (opponentSideMetadata.voiceReactionDate !== undefined && currentTime - opponentSideMetadata.voiceReactionDate < thresholdDelta) {
-    opponentNameString += prefix + opponentSideMetadata.voiceReactionText;
+  if (hasOpponentReaction) {
+    opponentNameString += reactionPrefix + opponentSideMetadata.voiceReactionText;
   }
 
   playerNameText.textContent = playerNameString;
