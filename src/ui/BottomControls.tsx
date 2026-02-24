@@ -391,6 +391,7 @@ const BottomControls: React.FC = () => {
   const [isTimerButtonDisabled, setIsTimerButtonDisabled] = useState(true);
   const [isClaimVictoryVisible, setIsClaimVictoryVisible] = useState(false);
   const [isSamePuzzleAgainVisible, setIsSamePuzzleAgainVisible] = useState(false);
+  const [isEndMatchTemporarilyDisabled, setIsEndMatchTemporarilyDisabled] = useState(false);
 
   const [isCancelAutomatchVisible, setIsCancelAutomatchVisible] = useState(false);
   const [isCancelAutomatchDisabled, setIsCancelAutomatchDisabled] = useState(false);
@@ -447,6 +448,7 @@ const BottomControls: React.FC = () => {
   const brushButtonRef = useRef<HTMLButtonElement>(null);
   const moveHistoryPopupRef = useRef<HTMLDivElement>(null);
   const rematchSeriesSelectionLockRef = useRef(false);
+  const endMatchGracePeriodTimeoutRef = useRef<number | null>(null);
 
   const clearTrackedMatchScopedTimeout = useCallback((timeoutId: number | null) => {
     if (timeoutId === null) {
@@ -484,6 +486,11 @@ const BottomControls: React.FC = () => {
     hourglassEnableTimeoutRef.current = null;
     hourglassEnableDeadlineRef.current = null;
     cancelAutomatchRevealTimeoutRef.current = null;
+    if (endMatchGracePeriodTimeoutRef.current !== null) {
+      clearTimeout(endMatchGracePeriodTimeoutRef.current);
+      endMatchGracePeriodTimeoutRef.current = null;
+    }
+    setIsEndMatchTemporarilyDisabled(false);
     setIsVoiceReactionDisabled(false);
   }, []);
 
@@ -1418,6 +1425,16 @@ const BottomControls: React.FC = () => {
   const handlePrimaryActionClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     soundPlayer.initializeOnUserInteraction(false);
+    if (primaryAction === PrimaryActionType.Rematch) {
+      if (endMatchGracePeriodTimeoutRef.current !== null) {
+        clearTimeout(endMatchGracePeriodTimeoutRef.current);
+      }
+      setIsEndMatchTemporarilyDisabled(true);
+      endMatchGracePeriodTimeoutRef.current = window.setTimeout(() => {
+        endMatchGracePeriodTimeoutRef.current = null;
+        setIsEndMatchTemporarilyDisabled(false);
+      }, 3000);
+    }
     didClickPrimaryActionButton(primaryAction);
     setPrimaryAction(PrimaryActionType.None);
   };
@@ -1524,7 +1541,7 @@ const BottomControls: React.FC = () => {
           </RematchSeriesInlineControl>
         )}
         {isEndMatchPillVisible && (
-          <BottomPillButton onClick={!isEndMatchPillFinished ? handleEndMatchClick : undefined} isBlue={!isEndMatchPillFinished} disabled={isEndMatchPillFinished} isViewOnly={isEndMatchPillFinished}>
+          <BottomPillButton onClick={!isEndMatchPillFinished && !isEndMatchTemporarilyDisabled ? handleEndMatchClick : undefined} isBlue={!isEndMatchPillFinished} disabled={isEndMatchPillFinished || isEndMatchTemporarilyDisabled} isViewOnly={isEndMatchPillFinished || isEndMatchTemporarilyDisabled}>
             {isEndMatchPillFinished ? (
               <>
                 {statusIconUrls.cloud ? <BottomPillInlineIcon src={statusIconUrls.cloud} alt="" draggable={false} /> : "💨 "}
