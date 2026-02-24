@@ -96,6 +96,7 @@ class Connection {
 
   private latestInvite: Invite | null = null;
   private myMatch: Match | null = null;
+  private observedMatchSnapshots: Map<string, Match> = new Map();
   private inviteId: string | null = null;
   private matchId: string | null = null;
   private wagerViewMatchId: string | null = null;
@@ -885,6 +886,9 @@ class Connection {
       return;
     }
 
+    const previousMatchId = this.matchId;
+    const previousMatchPair = previousMatchId ? this.getCachedHistoricalMatchPair(previousMatchId) : null;
+
     this.stopObservingAllMatches();
 
     const proposingAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid;
@@ -895,7 +899,6 @@ class Connection {
     let newRematchesProposalsString = "";
 
     const inviteId = this.inviteId;
-    const previousMatchId = this.matchId;
     const nextMatchId = inviteId + newRematchProposalIndex;
     const nextMatch: Match = {
       version: controllerVersion,
@@ -935,7 +938,7 @@ class Connection {
           }
         }
         console.log("Successfully updated match and rematches");
-        didJustCreateRematchProposalSuccessfully(inviteId, previousMatchId);
+        didJustCreateRematchProposalSuccessfully(inviteId, previousMatchId, previousMatchPair);
       })
       .catch((error) => {
         if (!sessionGuard()) {
@@ -1148,6 +1151,36 @@ class Connection {
       guestPlayerId,
       hostMatch,
       guestMatch,
+    };
+  }
+
+  public getCachedHistoricalMatchPair(matchId: string): HistoricalMatchPair | null {
+    if (!this.latestInvite || !matchId) {
+      return null;
+    }
+    const hostPlayerId = this.latestInvite.hostId;
+    const guestPlayerId = this.latestInvite.guestId ?? null;
+    let hostMatch = this.observedMatchSnapshots.get(`${matchId}_${hostPlayerId}`) ?? null;
+    let guestMatch = guestPlayerId ? this.observedMatchSnapshots.get(`${matchId}_${guestPlayerId}`) ?? null : null;
+
+    if (this.myMatch && this.matchId === matchId && this.sameProfilePlayerUid) {
+      if (!hostMatch && this.sameProfilePlayerUid === hostPlayerId) {
+        hostMatch = this.myMatch;
+      }
+      if (!guestMatch && guestPlayerId && this.sameProfilePlayerUid === guestPlayerId) {
+        guestMatch = this.myMatch;
+      }
+    }
+
+    if (!hostMatch && !guestMatch) {
+      return null;
+    }
+    return {
+      matchId,
+      hostPlayerId,
+      guestPlayerId,
+      hostMatch: hostMatch ? { ...hostMatch } : null,
+      guestMatch: guestMatch ? { ...guestMatch } : null,
     };
   }
 
@@ -2742,7 +2775,10 @@ class Connection {
         }
         const matchData: Match | null = snapshot.val();
         if (matchData) {
+          this.observedMatchSnapshots.set(key, matchData);
           didReceiveMatchUpdate(matchData, playerId, matchId);
+        } else {
+          this.observedMatchSnapshots.delete(key);
         }
       },
       (error) => {
@@ -2844,6 +2880,7 @@ class Connection {
       removedMatchCount += 1;
     }
     this.matchRefs = {};
+    this.observedMatchSnapshots.clear();
     if (removedMatchCount > 0) {
       decrementLifecycleCounter("connectionObservers", removedMatchCount);
     }

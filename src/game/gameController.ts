@@ -1734,9 +1734,14 @@ function startBotMatch(botColor: MonsWeb.Color) {
   }
 }
 
-export function didJustCreateRematchProposalSuccessfully(inviteId: string, previousMatchId: string | null) {
+export function didJustCreateRematchProposalSuccessfully(inviteId: string, previousMatchId: string | null, previousMatchPair: HistoricalMatchPair | null) {
   if (boardViewMode !== "historicalView") {
     clearViewedRematchState();
+  }
+  const hasCompleteHistoricalPair = !!(previousMatchPair?.hostMatch && previousMatchPair?.guestMatch);
+  if (previousMatchId && previousMatchPair && hasCompleteHistoricalPair) {
+    historicalMatchPairCache.set(previousMatchId, previousMatchPair);
+    historicalMatchPairMissUntilByMatchId.delete(previousMatchId);
   }
   if (previousMatchId) {
     historicalScoreCache.set(previousMatchId, {
