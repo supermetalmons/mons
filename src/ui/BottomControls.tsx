@@ -1371,7 +1371,7 @@ const BottomControls: React.FC = () => {
   const hasPlayers = !!playerUid && !!opponentUid;
   const isEligibleForWager = isOnlineGame && !isWatchOnly && !isGameWithBot && getBoardViewMode() === "activeLive" && !isMatchOver() && playerHasProfile && opponentHasProfile && hasPlayers;
   const isWatchOnlyMatchFinished = isWatchOnly && isMatchOver();
-  const isEndMatchPillVisible = isEndMatchButtonVisible || isWatchOnlyMatchFinished;
+  const isEndMatchPillVisible = (isEndMatchButtonVisible && !isEndMatchTemporarilyDisabled) || isWatchOnlyMatchFinished;
   const isEndMatchPillFinished = isEndMatchConfirmed || isWatchOnlyMatchFinished;
   const canSubmitWager = isEligibleForWager && !hasAgreedWager && !hasResolvedWager && !playerHasProposed;
   const wagerMaterial = wagerSelection.name;
@@ -1541,7 +1541,7 @@ const BottomControls: React.FC = () => {
           </RematchSeriesInlineControl>
         )}
         {isEndMatchPillVisible && (
-          <BottomPillButton onClick={!isEndMatchPillFinished && !isEndMatchTemporarilyDisabled ? handleEndMatchClick : undefined} isBlue={!isEndMatchPillFinished} disabled={isEndMatchPillFinished || isEndMatchTemporarilyDisabled} isViewOnly={isEndMatchPillFinished || isEndMatchTemporarilyDisabled}>
+          <BottomPillButton onClick={!isEndMatchPillFinished ? handleEndMatchClick : undefined} isBlue={!isEndMatchPillFinished} disabled={isEndMatchPillFinished} isViewOnly={isEndMatchPillFinished}>
             {isEndMatchPillFinished ? (
               <>
                 {statusIconUrls.cloud ? <BottomPillInlineIcon src={statusIconUrls.cloud} alt="" draggable={false} /> : "💨 "}
