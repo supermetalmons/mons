@@ -436,7 +436,6 @@ function applyBoardUiForCurrentView() {
   }
   if (boardViewMode === "waitingLive") {
     clearTimerVictoryClaimTimeout();
-    Board.stopMonsBoardAsDisplayAnimations();
     Board.runMonsBoardAsDisplayWaitingAnimation();
     Board.hideBoardPlayersInfo();
     setEndMatchVisible(true);
