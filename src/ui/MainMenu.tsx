@@ -647,7 +647,6 @@ const MainMenu: React.FC = () => {
   const [showExperimental, setShowExperimental] = useState(false);
   const [copyButtonText, setCopyButtonText] = useState("copy board snapshot");
   const [areAnimatedMonsEnabled, setAreAnimatedMonsEnabled] = useState<boolean>(storage.getIsExperimentingWithSprites(false));
-  const [isRematchSeriesEnabled, setIsRematchSeriesEnabled] = useState<boolean>(storage.getIsRematchSeriesEnabled(false));
   const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>(() => {
     const stored = storage.getLeaderboardType("rating");
     return LEADERBOARD_TYPES.includes(stored as LeaderboardType) ? (stored as LeaderboardType) : "rating";
@@ -827,13 +826,6 @@ const MainMenu: React.FC = () => {
     const checked = event.target.checked;
     setAreAnimatedMonsEnabled(checked);
     setAnimatedMonsEnabled(checked, false);
-  };
-
-  const handleRematchSeriesToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = event.target.checked;
-    setIsRematchSeriesEnabled(checked);
-    storage.setIsRematchSeriesEnabled(checked);
-    window.dispatchEvent(new CustomEvent("rematch-series-pref-change"));
   };
 
   toggleInfoVisibilityImpl = () => {
@@ -1059,10 +1051,6 @@ const MainMenu: React.FC = () => {
                     <ToggleRow>
                       <input type="checkbox" checked={areAnimatedMonsEnabled} onChange={handleAnimatedMonsToggle} />
                       animated mons
-                    </ToggleRow>
-                    <ToggleRow>
-                      <input type="checkbox" checked={isRematchSeriesEnabled} onChange={handleRematchSeriesToggle} />
-                      rematch series
                     </ToggleRow>
                     <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
                     <BuildInfo>{getBuildInfo()}</BuildInfo>
