@@ -1370,7 +1370,7 @@ const BottomControls: React.FC = () => {
   const playerHasProposed = !!(playerUid && wagerState?.proposedBy && wagerState.proposedBy[playerUid]) || !!(playerUid && wagerState?.proposals && wagerState.proposals[playerUid]);
   const hasPlayers = !!playerUid && !!opponentUid;
   const isEligibleForWager = isOnlineGame && !isWatchOnly && !isGameWithBot && getBoardViewMode() === "activeLive" && !isMatchOver() && playerHasProfile && opponentHasProfile && hasPlayers;
-  const isWatchOnlyMatchFinished = isWatchOnly && isMatchOver();
+  const isWatchOnlyMatchFinished = isWatchOnly && isMatchOver() && !!connection.rematchSeriesEndIsIndicated();
   const isEndMatchPillVisible = (isEndMatchButtonVisible && !isEndMatchTemporarilyDisabled) || isWatchOnlyMatchFinished;
   const isEndMatchPillFinished = isEndMatchConfirmed || isWatchOnlyMatchFinished;
   const canSubmitWager = isEligibleForWager && !hasAgreedWager && !hasResolvedWager && !playerHasProposed;

@@ -2007,6 +2007,26 @@ export function didReceiveRematchesSeriesEndIndicator() {
 }
 
 export function didUpdateRematchSeriesMetadata() {
+  if (isWatchOnly) {
+    const didNavigate = connection.tryNavigateWatchOnlyToLatestApprovedMatch();
+    if (didNavigate) {
+      didConnect = false;
+      isGameOver = false;
+      whiteProcessedMovesCount = 0;
+      blackProcessedMovesCount = 0;
+      didSetWhiteProcessedMovesCount = false;
+      didSetBlackProcessedMovesCount = false;
+      currentGameModelMatchId = null;
+      whiteFlatMovesString = null;
+      blackFlatMovesString = null;
+      resignedColor = undefined;
+      winnerByTimerColor = undefined;
+      currentInputs = [];
+      restoreLiveBoardView();
+    }
+    triggerMoveHistoryPopupReload();
+    return;
+  }
   tryRestoreLiveViewAfterRematchAcceptance();
   triggerMoveHistoryPopupReload();
 }
@@ -3601,6 +3621,12 @@ export function didReceiveInviteReactionUpdate(reaction: InviteReaction, senderU
   if (!reaction || typeof reaction.uuid !== "string" || typeof reaction.matchId !== "string") {
     return;
   }
+  if (isWatchOnly) {
+    const activeMatchId = connection.getActiveMatchId();
+    if (!activeMatchId || reaction.matchId !== activeMatchId) {
+      return;
+    }
+  }
   if (!connection.matchBelongsToCurrentInvite(reaction.matchId)) {
     return;
   }
@@ -3625,11 +3651,17 @@ export function didReceiveInviteReactionUpdate(reaction: InviteReaction, senderU
   }
   let showReactionAtOpponentSide = true;
   if (isWatchOnly) {
-    const senderColor = connection.getPlayerColorForMatch(reaction.matchId, senderUid);
-    if (!senderColor) {
-      return;
+    if (senderUid === Board.opponentSideMetadata.uid) {
+      showReactionAtOpponentSide = true;
+    } else if (senderUid === Board.playerSideMetadata.uid) {
+      showReactionAtOpponentSide = false;
+    } else {
+      const senderColor = connection.getPlayerColorForMatch(reaction.matchId, senderUid);
+      if (!senderColor) {
+        return;
+      }
+      showReactionAtOpponentSide = senderColor === "black";
     }
-    showReactionAtOpponentSide = senderColor === "black";
   }
   playIncomingInviteReaction(reaction, showReactionAtOpponentSide);
   lastReactionTime = currentTime;

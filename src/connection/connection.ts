@@ -2426,6 +2426,21 @@ class Connection {
     }
   }
 
+  public tryNavigateWatchOnlyToLatestApprovedMatch(): boolean {
+    if (!this.inviteId || !this.latestInvite) return false;
+    const latestIndex = this.getLatestBothSidesApprovedRematchIndex();
+    const newMatchId = latestIndex ? this.inviteId + latestIndex.toString() : this.inviteId;
+    if (newMatchId === this.matchId) return false;
+    this.matchId = newMatchId;
+    this.updateWagerStateForCurrentMatch();
+    this.stopObservingAllMatches();
+    const hostId = this.latestInvite.hostId;
+    const guestId = this.latestInvite.guestId;
+    if (hostId) this.observeMatch(hostId, newMatchId);
+    if (guestId) this.observeMatch(guestId, newMatchId);
+    return true;
+  }
+
   private getOpponentsMatchAndCreateOwnMatch(matchId: string, hostId: string, epoch: number): void {
     const opponentsMatchRef = ref(this.db, `players/${hostId}/matches/${matchId}`);
     get(opponentsMatchRef)
