@@ -895,6 +895,7 @@ class Connection {
     let newRematchesProposalsString = "";
 
     const inviteId = this.inviteId;
+    const previousMatchId = this.matchId;
     const nextMatchId = inviteId + newRematchProposalIndex;
     const nextMatch: Match = {
       version: controllerVersion,
@@ -934,7 +935,7 @@ class Connection {
           }
         }
         console.log("Successfully updated match and rematches");
-        didJustCreateRematchProposalSuccessfully(inviteId);
+        didJustCreateRematchProposalSuccessfully(inviteId, previousMatchId);
       })
       .catch((error) => {
         if (!sessionGuard()) {

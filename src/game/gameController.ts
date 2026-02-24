@@ -1734,11 +1734,16 @@ function startBotMatch(botColor: MonsWeb.Color) {
   }
 }
 
-export function didJustCreateRematchProposalSuccessfully(inviteId: string) {
+export function didJustCreateRematchProposalSuccessfully(inviteId: string, previousMatchId: string | null) {
   if (boardViewMode !== "historicalView") {
     clearViewedRematchState();
   }
-  clearRematchHistoryCaches();
+  if (previousMatchId) {
+    historicalScoreCache.set(previousMatchId, {
+      white: game.white_score(),
+      black: game.black_score(),
+    });
+  }
   resetBotScoreReactionState();
   setEndMatchVisible(true);
   showWaitingStateText("");
