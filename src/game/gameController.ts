@@ -26,6 +26,7 @@ export let isWatchOnly = false;
 export let isOnlineGame = false;
 export let isGameWithBot = false;
 export let isWaitingForRematchResponse = false;
+let pendingRematchNavigationToLiveBoard = false;
 
 export let puzzleMode = false;
 let selectedProblem: Problem | null = null;
@@ -1409,6 +1410,7 @@ export async function go(routeStateOverride?: RouteState) {
   isOnlineGame = false;
   isGameWithBot = false;
   isWaitingForRematchResponse = false;
+  pendingRematchNavigationToLiveBoard = false;
   puzzleMode = false;
   didStartLocalGame = false;
   isGameOver = false;
@@ -1542,6 +1544,7 @@ export function disposeGameSession() {
   isOnlineGame = false;
   isGameWithBot = false;
   isWaitingForRematchResponse = false;
+  pendingRematchNavigationToLiveBoard = false;
   puzzleMode = false;
   selectedProblem = null;
   didStartLocalGame = false;
@@ -1607,6 +1610,7 @@ export function disposeGameSession() {
 
 export function failedToCreateRematchProposal() {
   isWaitingForRematchResponse = false;
+  pendingRematchNavigationToLiveBoard = false;
   boardViewMode = "activeLive";
   nextBoardRenderSession();
   applyBoardUiForCurrentView();
@@ -1959,10 +1963,37 @@ function navigateFromWaitingLiveToLastCompletedMatch() {
   }
 }
 
+function tryRestoreLiveViewAfterRematchAcceptance() {
+  if (!isOnlineGame || isWatchOnly) {
+    return;
+  }
+  if (!isWaitingForRematchResponse && !pendingRematchNavigationToLiveBoard) {
+    return;
+  }
+  const descriptor = getActiveRematchSeriesDescriptor();
+  const activeMatchId = descriptor?.activeMatchId ?? null;
+  if (!descriptor || !activeMatchId) {
+    return;
+  }
+  const activeMatch = descriptor.matches.find((item) => item.matchId === activeMatchId);
+  if (!activeMatch || activeMatch.isPendingResponse) {
+    return;
+  }
+  isWaitingForRematchResponse = false;
+  pendingRematchNavigationToLiveBoard = false;
+  if (boardViewMode === "historicalView") {
+    void didSelectRematchSeriesMatch(activeMatchId);
+  } else if (boardViewMode === "waitingLive") {
+    restoreLiveBoardView();
+  }
+  setEndMatchVisible(false);
+}
+
 export function didReceiveRematchesSeriesEndIndicator() {
   if (isWatchOnly) return;
   const wasWaitingForRematch = isWaitingForRematchResponse && boardViewMode !== "historicalView";
   isWaitingForRematchResponse = false;
+  pendingRematchNavigationToLiveBoard = false;
   showPrimaryAction(PrimaryActionType.None);
   setEndMatchVisible(true);
   setEndMatchConfirmed(true);
@@ -1975,6 +2006,7 @@ export function didReceiveRematchesSeriesEndIndicator() {
 }
 
 export function didUpdateRematchSeriesMetadata() {
+  tryRestoreLiveViewAfterRematchAcceptance();
   triggerMoveHistoryPopupReload();
 }
 
@@ -2060,6 +2092,11 @@ function didConfirmRematchProposal() {
     return;
   }
 
+  if (boardViewMode === "historicalView") {
+    isWaitingForRematchResponse = true;
+    enterWaitingLiveView();
+  }
+
   setEndMatchVisible(false);
   Board.runMonsBoardAsDisplayWaitingAnimation();
   connection.sendRematchProposal();
@@ -2075,6 +2112,7 @@ export function didClickEndMatchButton() {
   showWaitingStateText("");
   Board.stopMonsBoardAsDisplayAnimations();
   isWaitingForRematchResponse = false;
+  pendingRematchNavigationToLiveBoard = false;
   if (wasWaitingForRematch) {
     navigateFromWaitingLiveToLastCompletedMatch();
   }
@@ -3620,6 +3658,10 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
     }
     const wasWaitingForRematchResponse = isWaitingForRematchResponse;
     isWaitingForRematchResponse = false;
+    if (wasWaitingForRematchResponse && boardViewMode === "historicalView") {
+      pendingRematchNavigationToLiveBoard = true;
+      applyBoardUiForCurrentView();
+    }
     didConnectTo(match, matchPlayerUid, matchId);
     didConnect = true;
     if ((!isReconnect || wasWaitingForRematchResponse) && !isGameOver && !isWatchOnly) {
