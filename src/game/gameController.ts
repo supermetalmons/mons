@@ -1929,17 +1929,48 @@ export function showItemsAfterChangingAssetsStyle() {
   }
 }
 
+function navigateFromWaitingLiveToLastCompletedMatch() {
+  boardViewMode = "activeLive";
+  const renderSessionId = nextBoardRenderSession();
+  const descriptor = getActiveRematchSeriesDescriptor();
+  const completedMatches = descriptor?.matches.filter((m: RematchSeriesMatchDescriptor) => !m.isPendingResponse) ?? [];
+  const lastMatch = completedMatches.length > 0 ? completedMatches[completedMatches.length - 1] : null;
+  console.log("[end-match-nav] descriptor:", descriptor ? { inviteId: descriptor.inviteId, activeMatchId: descriptor.activeMatchId, hasSeries: descriptor.hasSeries, matchCount: descriptor.matches.length, matches: descriptor.matches.map(m => ({ matchId: m.matchId, isActive: m.isActiveMatch, isPending: m.isPendingResponse })) } : null);
+  console.log("[end-match-nav] completedMatches:", completedMatches.length, "lastMatch:", lastMatch?.matchId ?? "null");
+  console.log("[end-match-nav] historicalMatchPairCache keys:", Array.from(historicalMatchPairCache.keys()));
+  console.log("[end-match-nav] historicalScoreCache keys:", Array.from(historicalScoreCache.keys()));
+  let didNavigate = false;
+  if (lastMatch) {
+    const cachedPair = historicalMatchPairCache.get(lastMatch.matchId);
+    console.log("[end-match-nav] cachedPair for", lastMatch.matchId, ":", cachedPair ? "found" : "MISSING");
+    if (cachedPair) {
+      const historicalGame = buildHistoricalGameModel(lastMatch.matchId, cachedPair);
+      console.log("[end-match-nav] historicalGame:", historicalGame ? "built" : "FAILED");
+      if (historicalGame) {
+        console.log("[end-match-nav] renderSessionId:", renderSessionId, "boardRenderSessionId:", boardRenderSessionId);
+        didNavigate = enterHistoricalView(lastMatch.matchId, cachedPair, historicalGame, renderSessionId);
+        console.log("[end-match-nav] enterHistoricalView result:", didNavigate);
+      }
+    }
+  }
+  if (!didNavigate) {
+    console.log("[end-match-nav] fallback to activeLive applyBoardUiForCurrentView");
+    applyBoardUiForCurrentView();
+  }
+}
+
 export function didReceiveRematchesSeriesEndIndicator() {
   if (isWatchOnly) return;
+  const wasWaitingForRematch = isWaitingForRematchResponse && boardViewMode !== "historicalView";
   isWaitingForRematchResponse = false;
   showPrimaryAction(PrimaryActionType.None);
   setEndMatchVisible(true);
   setEndMatchConfirmed(true);
-  if (boardViewMode === "waitingLive") {
-    boardViewMode = "activeLive";
-    nextBoardRenderSession();
+  if (wasWaitingForRematch) {
+    navigateFromWaitingLiveToLastCompletedMatch();
+  } else {
+    applyBoardUiForCurrentView();
   }
-  applyBoardUiForCurrentView();
   triggerMoveHistoryPopupReload();
 }
 
@@ -2037,11 +2068,17 @@ function didConfirmRematchProposal() {
 }
 
 export function didClickEndMatchButton() {
+  const wasWaitingForRematch = isWaitingForRematchResponse && boardViewMode !== "historicalView";
   showPrimaryAction(PrimaryActionType.None);
   setEndMatchConfirmed(true);
   connection.sendEndMatchIndicator();
   showWaitingStateText("");
   Board.stopMonsBoardAsDisplayAnimations();
+  isWaitingForRematchResponse = false;
+  if (wasWaitingForRematch) {
+    navigateFromWaitingLiveToLastCompletedMatch();
+  }
+  triggerMoveHistoryPopupReload();
 }
 
 export function didClickPrimaryActionButton(action: PrimaryActionType) {

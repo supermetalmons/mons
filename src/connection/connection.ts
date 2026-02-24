@@ -1050,11 +1050,12 @@ class Connection {
     const pendingIndex = this.pendingRematchIndexForCurrentPlayer(hostIndices, guestIndices, approvedIndices.length);
     const activeMatchId = this.matchId;
     const activeMatchIndex = activeMatchId ? this.rematchIndexFromMatchId(activeMatchId) : null;
+    const isEnded = !!this.rematchSeriesEndIsIndicated();
     const allIndices = [0, ...approvedIndices];
     if (pendingIndex !== null && pendingIndex > 0) {
       allIndices.push(pendingIndex);
     }
-    if (activeMatchIndex !== null && activeMatchIndex > 0) {
+    if (activeMatchIndex !== null && activeMatchIndex > 0 && !isEnded) {
       allIndices.push(activeMatchIndex);
     }
     const uniqueIndices = Array.from(new Set(allIndices)).sort((a, b) => a - b);
