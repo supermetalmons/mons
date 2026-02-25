@@ -1359,6 +1359,7 @@ function updateWagerDisplayForMoveNavigation(selectedIndex: number, totalEntitie
     const winnerIsOpponent = resolved.winnerId === Board.opponentSideMetadata.uid;
     Board.showResolvedWager(winnerIsOpponent, material, stakeCount, true);
   } else {
+    Board.suppressWagerPileTransition();
     Board.setWagerPiles({
       player: { material, count: stakeCount, pending: false },
       opponent: { material, count: stakeCount, pending: false },

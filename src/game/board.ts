@@ -359,6 +359,7 @@ let wagerWinAnimState: {
 let lastWagerWinnerIsOpponent = false;
 let handleWagerRenderState: ((state: WagerRenderState) => void) | null = null;
 let wagerAnimationsReady = false;
+let suppressNextWagerPileTransition = false;
 let previousPlayerPileVisible = false;
 let previousOpponentPileVisible = false;
 let lastVisiblePlayerPileState: WagerPileRenderState | null = null;
@@ -2553,7 +2554,7 @@ function emitWagerRenderState() {
   let playerAnimation: WagerPileAnimation = "none";
   let opponentAnimation: WagerPileAnimation = "none";
 
-  if (wagerAnimationsReady && !wagerWinAnimActive && !showWinner) {
+  if (wagerAnimationsReady && !wagerWinAnimActive && !showWinner && !suppressNextWagerPileTransition) {
     if (currentPlayerVisible && !previousPlayerPileVisible) {
       playerAnimation = "appear";
       clearDisappearingPile("player");
@@ -2587,6 +2588,7 @@ function emitWagerRenderState() {
 
   previousPlayerPileVisible = currentPlayerVisible;
   previousOpponentPileVisible = currentOpponentVisible;
+  suppressNextWagerPileTransition = false;
 
   if (currentPlayerState) {
     lastVisiblePlayerPileState = currentPlayerState;
@@ -3111,6 +3113,10 @@ export function resetWagerAnimationState() {
 
 export function markWagerInitialStateReceived() {
   wagerAnimationsReady = true;
+}
+
+export function suppressWagerPileTransition() {
+  suppressNextWagerPileTransition = true;
 }
 
 export function clearWagerPiles() {
