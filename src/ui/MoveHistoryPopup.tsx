@@ -266,7 +266,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
     }
   });
 
-  // User scroll updates selection
+  // User scroll updates selection and dismisses snapshot
   const handleScroll = React.useCallback(() => {
     const el = scrollRef.current;
     if (!el || items.length === 0) return;
@@ -276,6 +276,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       selectedIndexRef.current = clamped;
       _popupIsFollowingLatest = clamped >= items.length - 1;
       setSelectedIndex(clamped);
+      setSnapshotIndex(null);
       didSelectVerboseTrackingEntity(clamped);
     }
   }, [items.length]);
@@ -313,23 +314,31 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
     };
   }, []);
 
-  // Triple-click opens snapshot link
+  // Triple-click shows inline snapshot button
   const lastClickTimeRef = React.useRef(0);
   const clickCountRef = React.useRef(0);
   const lastClickedIndexRef = React.useRef(-1);
+  const [snapshotIndex, setSnapshotIndex] = React.useState<number | null>(null);
 
-  const handleTripleClick = React.useCallback((index: number) => {
+  const handleSnapshotOpen = React.useCallback((e: React.MouseEvent, index: number) => {
+    e.stopPropagation();
     const fen = getFenForMoveHistoryIndex(index);
     if (fen) {
       const link = window.location.origin + "/snapshot/" + encodeURIComponent(fen);
       window.open(link, "_blank", "noopener,noreferrer");
     }
+    setSnapshotIndex(null);
   }, []);
 
   // Click on item to select it
   const handleItemClick = React.useCallback(
     (index: number) => {
       if (isDraggingRef.current) return;
+
+      if (snapshotIndex !== null) {
+        setSnapshotIndex(null);
+        return;
+      }
 
       const now = Date.now();
       if (index === lastClickedIndexRef.current && now - lastClickTimeRef.current < 500) {
@@ -342,7 +351,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
 
       if (clickCountRef.current >= 3) {
         clickCountRef.current = 0;
-        handleTripleClick(index);
+        setSnapshotIndex(index);
         return;
       }
 
@@ -353,7 +362,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       if (el) el.scrollTop = index * ITEM_HEIGHT;
       didSelectVerboseTrackingEntity(index);
     },
-    [items.length, handleTripleClick]
+    [items.length, snapshotIndex]
   );
 
   React.useEffect(() => {
@@ -386,6 +395,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       selectedIndexRef.current = newSelection;
       pendingScrollIndexRef.current = newSelection;
       setSelectedIndex(newSelection);
+      setSnapshotIndex(null);
       setVersion((v) => v + 1);
 
       if (_popupIsFollowingLatest && !wasFollowing) {
@@ -528,22 +538,31 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
               $distance={getDistance(index)}
               onClick={() => handleItemClick(index)}
             >
-              <ItemContent>
-                <IndexLabel>{index}.</IndexLabel>
-                <EventRow>
-                  {entry.segments.length > 0 ? (
-                    entry.segments.map((segment, segmentIndex) =>
-                      renderSegment(segment, segmentIndex, entry.segmentRoles?.[segmentIndex])
-                    )
-                  ) : index === 0 ? (
-                    <SquareIcon viewBox="0 0 12 12" aria-label="score">
-                      <rect x="0" y="0" width="12" height="12" fill={colors.manaPool} rx="1" ry="1" />
-                    </SquareIcon>
-                  ) : (
-                    <EventText>{PLACEHOLDER_LABEL}</EventText>
-                  )}
-                </EventRow>
-              </ItemContent>
+              {snapshotIndex === index ? (
+                <ItemContent
+                  style={{ justifyContent: "center", pointerEvents: "auto", cursor: "pointer" }}
+                  onClick={(e) => handleSnapshotOpen(e, index)}
+                >
+                  <EventText style={{ fontSize: 11, opacity: 0.85 }}>Open in new tab</EventText>
+                </ItemContent>
+              ) : (
+                <ItemContent>
+                  <IndexLabel>{index}.</IndexLabel>
+                  <EventRow>
+                    {entry.segments.length > 0 ? (
+                      entry.segments.map((segment, segmentIndex) =>
+                        renderSegment(segment, segmentIndex, entry.segmentRoles?.[segmentIndex])
+                      )
+                    ) : index === 0 ? (
+                      <SquareIcon viewBox="0 0 12 12" aria-label="score">
+                        <rect x="0" y="0" width="12" height="12" fill={colors.manaPool} rx="1" ry="1" />
+                      </SquareIcon>
+                    ) : (
+                      <EventText>{PLACEHOLDER_LABEL}</EventText>
+                    )}
+                  </EventRow>
+                </ItemContent>
+              )}
             </WheelItem>
           ))}
           {PADDING_INDICES.map((offset) => {
