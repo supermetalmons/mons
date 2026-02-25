@@ -349,7 +349,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       lastClickTimeRef.current = now;
       lastClickedIndexRef.current = index;
 
-      if (clickCountRef.current >= 3) {
+      if (clickCountRef.current >= 2) {
         clickCountRef.current = 0;
         setSnapshotIndex(index);
         return;
