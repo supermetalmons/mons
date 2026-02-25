@@ -1548,7 +1548,7 @@ const BottomControls: React.FC = () => {
             )}
           </BottomPillButton>
         )}
-        {isWatchOnlyIndicatorVisible && !isWatchOnlyMatchFinished && (
+        {isWatchOnlyIndicatorVisible && !isWatchOnlyMatchFinished && !isEndMatchConfirmed && (
           <BottomPillButton isViewOnly={true} disabled={true}>
             <>
               {statusIconUrls.spectating ? <BottomPillInlineIcon src={statusIconUrls.spectating} alt="" draggable={false} /> : "📺 "}

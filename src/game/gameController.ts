@@ -2010,7 +2010,11 @@ function tryRestoreLiveViewAfterRematchAcceptance() {
 }
 
 export function didReceiveRematchesSeriesEndIndicator() {
-  if (isWatchOnly) return;
+  if (isWatchOnly) {
+    setEndMatchVisible(true);
+    setEndMatchConfirmed(true);
+    return;
+  }
   const wasWaitingForRematch = isWaitingForRematchResponse && boardViewMode !== "historicalView";
   isWaitingForRematchResponse = false;
   pendingRematchNavigationToLiveBoard = false;
@@ -3719,6 +3723,10 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
     }
     didConnectTo(match, matchPlayerUid, matchId);
     didConnect = true;
+    if (isWatchOnly && connection.rematchSeriesEndIsIndicated()) {
+      setEndMatchVisible(true);
+      setEndMatchConfirmed(true);
+    }
     if ((!isReconnect || wasWaitingForRematchResponse) && !isGameOver && !isWatchOnly) {
       playSounds([Sound.DidConnect]);
     }
