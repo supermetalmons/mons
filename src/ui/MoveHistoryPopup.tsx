@@ -31,6 +31,8 @@ const ITEM_HEIGHT = 24;
 const VISIBLE_ITEMS = 7;
 const PADDING_ITEMS = Math.floor(VISIBLE_ITEMS / 2);
 const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
+const SMOOTH_SCROLL_SETTLE_FALLBACK_MS = 500;
+const AUTO_SCROLL_SETTLE_FALLBACK_MS = 80;
 const PLACEHOLDER_LABEL = "";
 const PADDING_INDICES = Array.from({ length: PADDING_ITEMS }, (_, index) => index);
 
@@ -242,21 +244,76 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
     }
   }, [version]);
   const [selectedIndex, setSelectedIndex] = React.useState(items.length - 1);
+  const selectedIndexRef = React.useRef(selectedIndex);
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const isDraggingRef = React.useRef(false);
   const startYRef = React.useRef(0);
   const startScrollTopRef = React.useRef(0);
+  const isProgrammaticScrollRef = React.useRef(false);
+  const scrollSettleTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+
+  React.useEffect(() => {
+    selectedIndexRef.current = selectedIndex;
+  }, [selectedIndex]);
+
+  const syncSelectionWithScroll = React.useCallback(() => {
+    const el = scrollRef.current;
+    if (!el || items.length === 0) return;
+
+    const scrollTop = el.scrollTop;
+    const newIndex = Math.round(scrollTop / ITEM_HEIGHT);
+    const clampedIndex = Math.max(0, Math.min(items.length - 1, newIndex));
+
+    if (clampedIndex !== selectedIndexRef.current) {
+      setSelectedIndex(clampedIndex);
+      didSelectVerboseTrackingEntity(clampedIndex);
+    }
+  }, [items.length]);
+
+  const completeProgrammaticScroll = React.useCallback(() => {
+    if (!isProgrammaticScrollRef.current) return;
+    isProgrammaticScrollRef.current = false;
+    if (scrollSettleTimeoutRef.current) {
+      clearTimeout(scrollSettleTimeoutRef.current);
+      scrollSettleTimeoutRef.current = undefined;
+    }
+    syncSelectionWithScroll();
+  }, [syncSelectionWithScroll]);
 
   // Scroll to selected index
   const scrollToIndex = React.useCallback((index: number, smooth = true) => {
     const el = scrollRef.current;
     if (!el) return;
+    if (scrollSettleTimeoutRef.current) {
+      clearTimeout(scrollSettleTimeoutRef.current);
+      scrollSettleTimeoutRef.current = undefined;
+    }
+    isProgrammaticScrollRef.current = true;
     const targetScroll = index * ITEM_HEIGHT;
     el.scrollTo({
       top: targetScroll,
       behavior: smooth ? "smooth" : "auto",
     });
-  }, []);
+    scrollSettleTimeoutRef.current = setTimeout(
+      completeProgrammaticScroll,
+      smooth ? SMOOTH_SCROLL_SETTLE_FALLBACK_MS : AUTO_SCROLL_SETTLE_FALLBACK_MS
+    );
+  }, [completeProgrammaticScroll]);
+
+  React.useEffect(() => {
+    const el = scrollRef.current;
+    if (!el) return;
+    if (!("onscrollend" in el)) return;
+
+    const handleScrollEnd = () => {
+      completeProgrammaticScroll();
+    };
+
+    el.addEventListener("scrollend", handleScrollEnd as EventListener);
+    return () => {
+      el.removeEventListener("scrollend", handleScrollEnd as EventListener);
+    };
+  }, [completeProgrammaticScroll]);
 
   // Initialize scroll position to the last item
   React.useEffect(() => {
@@ -267,20 +324,11 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
     }
   }, [items.length, selectionResetToken, scrollToIndex]);
 
-  // Handle scroll to update selection continuously
+  // Handle scroll to update selection continuously (only for manual swiping)
   const handleScroll = React.useCallback(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-
-    const scrollTop = el.scrollTop;
-    const newIndex = Math.round(scrollTop / ITEM_HEIGHT);
-    const clampedIndex = Math.max(0, Math.min(items.length - 1, newIndex));
-
-    if (clampedIndex !== selectedIndex) {
-      setSelectedIndex(clampedIndex);
-      didSelectVerboseTrackingEntity(clampedIndex);
-    }
-  }, [items.length, selectedIndex]);
+    if (isProgrammaticScrollRef.current) return;
+    syncSelectionWithScroll();
+  }, [syncSelectionWithScroll]);
 
   // Mouse drag support for desktop
   const handleMouseDown = React.useCallback((e: React.MouseEvent) => {
@@ -336,6 +384,10 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
     return () => {
       unsubscribe();
       unsubscribeSelectionReset();
+      if (scrollSettleTimeoutRef.current) {
+        clearTimeout(scrollSettleTimeoutRef.current);
+        scrollSettleTimeoutRef.current = undefined;
+      }
       try {
         didDismissMoveHistoryPopup();
       } catch {}
