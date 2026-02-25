@@ -5,6 +5,11 @@
 - Goal: fast, profile-scoped game list in `NavigationPicker`, while keeping RTDB as source of truth for invites and live matches.
 - Out of scope: replacing live gameplay sync with Firestore.
 
+## Locked Decisions (This Iteration)
+- Anonymous behavior: **fallback enabled** (show current-login games from RTDB if no profile-scoped index is available).
+- UI density: include **opponent name + opponent emoji** in each game row.
+- Navigation behavior: selecting a row navigates by `inviteId`; runtime match selection remains RTDB-driven by existing logic.
+
 ## Success Criteria
 - A signed-in player opens navigation and sees a sorted list of their games across all login UIDs linked to one profile.
 - Query is a single Firestore read path (`users/{profileId}/games`) with index-backed ordering.
@@ -38,8 +43,12 @@ Example payload:
   "opponentLoginId": "uid_opponent_current_or_last_seen",
   "hostLoginId": "uid_host",
   "guestLoginId": "uid_guest",
+  "opponentDisplayName": "rival123",
+  "opponentEmojiId": 17,
   "status": "active",
   "latestMatchId": "auto_AbC123XyZ092",
+  "listSortAt": "serverTimestamp",
+  "lastEventType": "rematch_proposed",
   "createdAt": "serverTimestamp",
   "updatedAt": "serverTimestamp",
   "endedAt": null,
@@ -55,7 +64,15 @@ Field rules:
   - `waiting`: guest not joined.
   - `active`: guest joined and no series end marker.
   - `ended`: series end marker found.
+- `opponentDisplayName`:
+  - snapshot string for cell rendering; projector resolves from opponent profile (username preferred, otherwise address-short form when available, otherwise `anon`).
+- `opponentEmojiId`:
+  - snapshot numeric emoji id from opponent profile when known.
 - `latestMatchId`: derived from invite rematch metadata (`inviteId`, `inviteId1`, `inviteId2`, ...).
+- `listSortAt`:
+  - list-order key used by UI query ordering; v1 defaults to same event time as `updatedAt`.
+- `lastEventType`:
+  - lightweight reason code for latest rank-relevant update (`invite_created`, `guest_joined`, `rematch_proposed`, `series_ended`, etc.).
 - `createdAt`:
   - first creation only (`set(..., { merge: true })` + preserve if exists).
 - `updatedAt`:
@@ -78,6 +95,15 @@ Status derivation from `invites/{inviteId}`:
 Notes:
 - We intentionally use invite-series granularity so list remains stable and cheap.
 - We do not update the list on every move. We only update on lifecycle events.
+- `latestMatchId` is for display/context only; click navigation still passes only `inviteId`.
+- After route open, existing runtime logic in `connection.connectToGame(...)` decides which match is active from RTDB state (including non-ended series behavior).
+
+### 3.1) Ordering Strategy (v1 + extensibility)
+- v1 ordering query: `orderBy("listSortAt", "desc")`.
+- v1 default behavior: projector sets `listSortAt = updatedAt` on meaningful invite-series events.
+- This gives immediate extensibility:
+  - we can later bump `listSortAt` for specific events (for example pending/rematch attention) without changing audit `updatedAt` semantics.
+  - we can keep event-specific behavior keyed by `lastEventType`.
 
 ## Projector Design (RTDB -> Firestore)
 
@@ -92,11 +118,11 @@ Exports:
   - responsibility:
     - upsert host profile doc
     - if guest exists, upsert guest profile doc
-    - refresh status, opponent fields, latestMatchId, updatedAt, endedAt
+    - refresh status, opponent fields (name+emoji), latestMatchId, listSortAt, updatedAt, endedAt
 - `projectMatchCreateToProfileGames`
   - trigger: `onValueCreated("/players/{loginUid}/matches/{matchId}")`
   - responsibility:
-    - if `matchId` belongs to an invite series (always true in current design), touch corresponding `users/{profileId}/games/{inviteId}` with `updatedAt`
+    - if `matchId` belongs to an invite series (always true in current design), touch corresponding `users/{profileId}/games/{inviteId}` with rank/event metadata (`listSortAt`, `updatedAt`, `lastEventType`)
     - do not process on match updates to avoid per-move write amplification
 
 ### 5) Profile Resolution Strategy
@@ -104,6 +130,9 @@ Exports:
   1. Read RTDB `players/{uid}/profile`.
   2. If missing, fallback to Firestore query `users.where("logins", "array-contains", uid).limit(1)`.
 - Cache UID->profileId in function process memory for warm invocations.
+- For opponent display snapshot:
+  - resolve opponent profile doc and extract display name + emoji id with safe fallbacks.
+  - include these snapshots in projected game docs to avoid N+1 client reads for list rendering.
 
 ### 6) Idempotency + Write Suppression
 - Deterministic doc path: `users/{profileId}/games/{inviteId}`.
@@ -139,11 +168,13 @@ Keep existing `/users/{userId}` update policy unchanged.
 Update `cloud/firestore.indexes.json`:
 - Composite index for collection `games`:
   - `status` ASC
-  - `updatedAt` DESC
+  - `listSortAt` DESC
+- (optional) collection index for all games:
+  - `listSortAt` DESC
 
 Reason:
-- Required for `where("status", "==", "active") + orderBy("updatedAt", "desc")`.
-- Plain `orderBy(updatedAt)` query can use single-field index.
+- Required for `where("status", "==", "active") + orderBy("listSortAt", "desc")`.
+- Plain `orderBy(listSortAt)` query can use single-field index.
 
 ## Backfill Plan (Historical Data)
 
@@ -182,34 +213,39 @@ Suggested shape:
 - `kind: "auto" | "direct"`
 - `status: "waiting" | "active" | "ended"`
 - `latestMatchId: string`
+- `opponentDisplayName?: string`
+- `opponentEmojiId?: number | null`
 - `opponentProfileId?: string | null`
 - `opponentLoginId?: string | null`
+- `listSortAtMs: number`
+- `lastEventType?: string`
 - `updatedAtMs: number`
 
 ### 12) Connection API
 - Add `subscribeProfileGamesFirestore(limit, onUpdate, onError)` in `src/connection/connection.ts`.
 - Query path:
   - `collection(this.firestore, "users", profileId, "games")`
-  - `orderBy("updatedAt", "desc")`
+  - `orderBy("listSortAt", "desc")`
   - `limit(n)`
 - If profile id is unavailable:
-  - return empty list and a deterministic UI message, or fallback to current-login list (decision below).
+  - **fallback path enabled**: query current-login RTDB games (Option A-lite, current UID only) and map to same `NavigationGameItem` shape.
 
 ### 13) UI Wiring
 - `src/ui/NavigationPicker.tsx`
   - add props: `games`, `isGamesLoading`, `onSelectGame(inviteId)`
   - render `GAMES` section above/below `LEARN` (decision below)
-  - per-row display minimal metadata: type + status + invite short id
+  - per-row display: opponent emoji, opponent name, type/status badge, invite short id
 - `src/ui/BottomControls.tsx`
   - own subscription lifecycle tied to popup visibility
   - on row click: call `transition({ mode: "invite", inviteId, ... })` via app session manager
 
 ### 14) Fallback Behavior
-- Primary behavior (recommended):
+- Primary behavior:
   - signed-in with profile: Firestore index.
-  - no profile: show empty state "Sign in to view cross-login game history".
-- Optional fallback:
-  - no profile: read only current login UID games from RTDB.
+- Locked fallback:
+  - no profile index path available: read current login UID games from RTDB and render a limited local list.
+- UI message for fallback mode:
+  - indicate this is current-login-only history (not merged cross-login profile history).
 
 ## Rollout Plan
 
@@ -237,6 +273,9 @@ Suggested shape:
 - Firestore writes increase by summary upserts per invite/series transition.
 - No per-move projection writes if `matches` trigger is create-only.
 - Runtime/gameplay path remains RTDB-first and unaffected.
+- Additional overhead for richer cells:
+  - projector does extra read(s) to resolve opponent name/emoji snapshots.
+  - this is event-bound overhead, not per-move overhead.
 
 ## Implementation Checklist by File
 - `cloud/functions/profileGamesProjector.js`
@@ -246,7 +285,7 @@ Suggested shape:
 - `cloud/firestore.rules`
   - add `/users/{userId}/games/{inviteId}` read rule for owner profile only
 - `cloud/firestore.indexes.json`
-  - add `status + updatedAt` composite index
+  - add `status + listSortAt` composite index
 - `cloud/admin/backfillProfileGamesFirestore.js`
   - add paginated historical backfill
 - `src/connection/connectionModels.ts`
@@ -264,9 +303,11 @@ Suggested shape:
 - Single-login profile sees all expected games.
 - Multi-login profile sees merged history across all linked UIDs.
 - Automatch and direct invites both appear with correct `kind`.
+- Opponent name + emoji render correctly from snapshot fields; fallback values render when missing.
 - Status transitions: waiting -> active -> ended.
-- Rematch proposal/approval updates `latestMatchId` and ordering.
+- Rematch proposal/approval updates `latestMatchId`, `listSortAt`, and ordering.
 - Clicking row opens correct invite route and reconnects.
+- No-profile fallback path shows current-login-only list.
 
 ### Security
 - User cannot read another profile's `/games` subcollection.
@@ -279,15 +320,11 @@ Suggested shape:
 - Re-running backfill is idempotent (mostly updates/skips, no corruption).
 
 ## Open Questions to Iterate Before Implementation
-1. Anonymous behavior:
-- Do we want empty-state only, or RTDB current-login fallback list?
-2. Row ordering semantics:
-- Should `updatedAt` track invite lifecycle only, or also terminal match updates?
-3. `latestMatchId` semantics:
-- Use max proposed index (current plan) or latest mutually approved index?
-4. UI density:
-- Minimal row (status + id) vs richer row (opponent display name + type badge)?
-5. Doc retention:
+1. Row ordering semantics (still open):
+- Keep `listSortAt` equal to lifecycle updates only, or apply extra custom boosts for specific event types?
+2. `latestMatchId` semantics (still open):
+- keep current `max proposed index` default, or change to `latest mutually-approved index` for display?
+3. Doc retention:
 - Keep ended games forever, or introduce archival window later?
 
 ## Assumptions
