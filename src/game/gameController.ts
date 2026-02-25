@@ -1330,8 +1330,6 @@ export function didSelectVerboseTrackingEntity(index: number) {
     return;
   }
   const entity = entities[index];
-  const eventsFen = String(entity.events_fen());
-  console.log(eventsFen);
 
   flashbackMode = true;
   const gameFen = entity.fen();
@@ -1340,6 +1338,32 @@ export function didSelectVerboseTrackingEntity(index: number) {
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
   setNewBoard(true);
+  updateWagerDisplayForMoveNavigation(index, entities.length);
+}
+
+function updateWagerDisplayForMoveNavigation(selectedIndex: number, totalEntities: number) {
+  if (!currentWagerState || !currentWagerState.resolved) {
+    return;
+  }
+  const resolved = currentWagerState.resolved;
+  const material = resolved.material || currentWagerState.agreed?.material || null;
+  if (!material) {
+    return;
+  }
+  const stakeCount = normalizeWagerStakeCount(resolved.count, resolved.total ?? currentWagerState.agreed?.total);
+  if (!stakeCount) {
+    return;
+  }
+  const isAtEnd = selectedIndex === totalEntities - 1;
+  if (isAtEnd) {
+    const winnerIsOpponent = resolved.winnerId === Board.opponentSideMetadata.uid;
+    Board.showResolvedWager(winnerIsOpponent, material, stakeCount, true);
+  } else {
+    Board.setWagerPiles({
+      player: { material, count: stakeCount, pending: false },
+      opponent: { material, count: stakeCount, pending: false },
+    });
+  }
 }
 
 export function didOpenMoveHistoryPopup() {
@@ -1362,6 +1386,7 @@ export function didDismissMoveHistoryPopup() {
       Board.hideItemSelectionOrConfirmationOverlay();
       setNewBoard(true);
     }
+    applyWagerState();
     return;
   }
   clearViewedRematchState();
@@ -1369,9 +1394,11 @@ export function didDismissMoveHistoryPopup() {
     flashbackMode = false;
     Board.setBoardFlipped(activeBoardShouldBeFlipped());
     setNewBoard(false);
+    applyWagerState();
     return;
   }
   updateBoardMoveStatuses(game, false);
+  applyWagerState();
 }
 
 function dismissBadgeAndNotificationBannerIfNeeded() {
@@ -1435,7 +1462,7 @@ export async function go(routeStateOverride?: RouteState) {
       currentWagerState = state;
       logWagerDebug("subscription:update", { state: summarizeWagerState(state) });
       applyWagerState();
-      if (isGameOver) {
+      if (isGameOver && !(isMoveHistoryPopupOpen && flashbackMode)) {
         const outcomeState = syncWagerOutcome();
         logWagerDebug("subscription:sync-on-gameover", { outcomeState });
       }
@@ -2909,6 +2936,10 @@ function normalizeWagerStakeCount(countValue: unknown, totalValue: unknown): num
 
 function applyWagerState() {
   logWagerDebug("apply:start", { state: summarizeWagerState(currentWagerState) });
+  if (isMoveHistoryPopupOpen && flashbackMode) {
+    logWagerDebug("apply:skip-move-navigation-active");
+    return;
+  }
   if (boardViewMode === "waitingLive") {
     logWagerDebug("apply:clear-waiting-live");
     Board.clearWagerPilesForNewMatch();
