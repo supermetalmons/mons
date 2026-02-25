@@ -27,12 +27,16 @@ export function subscribeMoveHistoryPopupSelectionReset(listener: () => void) {
   };
 }
 
+let _popupIsOpen = false;
+let _popupIsFollowingLatest = false;
+export function isMoveHistoryPopupFollowingLatest(): boolean {
+  return _popupIsOpen && _popupIsFollowingLatest;
+}
+
 const ITEM_HEIGHT = 24;
 const VISIBLE_ITEMS = 7;
 const PADDING_ITEMS = Math.floor(VISIBLE_ITEMS / 2);
 const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
-const SMOOTH_SCROLL_SETTLE_FALLBACK_MS = 500;
-const AUTO_SCROLL_SETTLE_FALLBACK_MS = 80;
 const PLACEHOLDER_LABEL = "";
 const PADDING_INDICES = Array.from({ length: PADDING_ITEMS }, (_, index) => index);
 
@@ -234,7 +238,6 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   const { assets } = useGameAssets();
   const { emojis } = useEmojis();
   const [version, setVersion] = React.useState(0);
-  const [selectionResetToken, setSelectionResetToken] = React.useState(0);
   const items = React.useMemo<MoveHistoryEntry[]>(() => {
     void version;
     try {
@@ -249,86 +252,33 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   const isDraggingRef = React.useRef(false);
   const startYRef = React.useRef(0);
   const startScrollTopRef = React.useRef(0);
-  const isProgrammaticScrollRef = React.useRef(false);
-  const scrollSettleTimeoutRef = React.useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
+  const pendingScrollIndexRef = React.useRef<number | null>(items.length - 1);
 
-  React.useEffect(() => {
-    selectedIndexRef.current = selectedIndex;
-  }, [selectedIndex]);
+  // Apply pending scroll after render when DOM reflects new items
+  React.useLayoutEffect(() => {
+    if (pendingScrollIndexRef.current !== null) {
+      const target = pendingScrollIndexRef.current;
+      pendingScrollIndexRef.current = null;
+      const el = scrollRef.current;
+      if (el) {
+        el.scrollTop = target * ITEM_HEIGHT;
+      }
+    }
+  });
 
-  const syncSelectionWithScroll = React.useCallback(() => {
+  // User scroll updates selection
+  const handleScroll = React.useCallback(() => {
     const el = scrollRef.current;
     if (!el || items.length === 0) return;
-
-    const scrollTop = el.scrollTop;
-    const newIndex = Math.round(scrollTop / ITEM_HEIGHT);
-    const clampedIndex = Math.max(0, Math.min(items.length - 1, newIndex));
-
-    if (clampedIndex !== selectedIndexRef.current) {
-      setSelectedIndex(clampedIndex);
-      didSelectVerboseTrackingEntity(clampedIndex);
+    const newIndex = Math.round(el.scrollTop / ITEM_HEIGHT);
+    const clamped = Math.max(0, Math.min(items.length - 1, newIndex));
+    if (clamped !== selectedIndexRef.current) {
+      selectedIndexRef.current = clamped;
+      _popupIsFollowingLatest = clamped >= items.length - 1;
+      setSelectedIndex(clamped);
+      didSelectVerboseTrackingEntity(clamped);
     }
   }, [items.length]);
-
-  const completeProgrammaticScroll = React.useCallback(() => {
-    if (!isProgrammaticScrollRef.current) return;
-    isProgrammaticScrollRef.current = false;
-    if (scrollSettleTimeoutRef.current) {
-      clearTimeout(scrollSettleTimeoutRef.current);
-      scrollSettleTimeoutRef.current = undefined;
-    }
-    syncSelectionWithScroll();
-  }, [syncSelectionWithScroll]);
-
-  // Scroll to selected index
-  const scrollToIndex = React.useCallback((index: number, smooth = true) => {
-    const el = scrollRef.current;
-    if (!el) return;
-    if (scrollSettleTimeoutRef.current) {
-      clearTimeout(scrollSettleTimeoutRef.current);
-      scrollSettleTimeoutRef.current = undefined;
-    }
-    isProgrammaticScrollRef.current = true;
-    const targetScroll = index * ITEM_HEIGHT;
-    el.scrollTo({
-      top: targetScroll,
-      behavior: smooth ? "smooth" : "auto",
-    });
-    scrollSettleTimeoutRef.current = setTimeout(
-      completeProgrammaticScroll,
-      smooth ? SMOOTH_SCROLL_SETTLE_FALLBACK_MS : AUTO_SCROLL_SETTLE_FALLBACK_MS
-    );
-  }, [completeProgrammaticScroll]);
-
-  React.useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    if (!("onscrollend" in el)) return;
-
-    const handleScrollEnd = () => {
-      completeProgrammaticScroll();
-    };
-
-    el.addEventListener("scrollend", handleScrollEnd as EventListener);
-    return () => {
-      el.removeEventListener("scrollend", handleScrollEnd as EventListener);
-    };
-  }, [completeProgrammaticScroll]);
-
-  // Initialize scroll position to the last item
-  React.useEffect(() => {
-    if (items.length > 0) {
-      const newIndex = items.length - 1;
-      setSelectedIndex(newIndex);
-      setTimeout(() => scrollToIndex(newIndex, false), 0);
-    }
-  }, [items.length, selectionResetToken, scrollToIndex]);
-
-  // Handle scroll to update selection continuously (only for manual swiping)
-  const handleScroll = React.useCallback(() => {
-    if (isProgrammaticScrollRef.current) return;
-    syncSelectionWithScroll();
-  }, [syncSelectionWithScroll]);
 
   // Mouse drag support for desktop
   const handleMouseDown = React.useCallback((e: React.MouseEvent) => {
@@ -366,28 +316,74 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   // Click on item to select it
   const handleItemClick = React.useCallback(
     (index: number) => {
-      if (!isDraggingRef.current) {
-        setSelectedIndex(index);
-        scrollToIndex(index);
-        didSelectVerboseTrackingEntity(index);
-      }
+      if (isDraggingRef.current) return;
+      selectedIndexRef.current = index;
+      _popupIsFollowingLatest = index >= items.length - 1;
+      setSelectedIndex(index);
+      const el = scrollRef.current;
+      if (el) el.scrollTop = index * ITEM_HEIGHT;
+      didSelectVerboseTrackingEntity(index);
     },
-    [scrollToIndex]
+    [items.length]
   );
 
   React.useEffect(() => {
+    _popupIsOpen = true;
+    _popupIsFollowingLatest = true;
     try {
       didOpenMoveHistoryPopup();
     } catch {}
-    const unsubscribe = subscribeMoveHistoryPopupReload(() => setVersion((v) => v + 1));
-    const unsubscribeSelectionReset = subscribeMoveHistoryPopupSelectionReset(() => setSelectionResetToken((value) => value + 1));
+
+    const unsubscribe = subscribeMoveHistoryPopupReload(() => {
+      let newItems: MoveHistoryEntry[];
+      try {
+        newItems = getVerboseTrackingEntities();
+      } catch {
+        newItems = [{ segments: [] }];
+      }
+      const newLatest = Math.max(0, newItems.length - 1);
+      const currentSel = selectedIndexRef.current;
+      const wasFollowing = _popupIsFollowingLatest;
+
+      let newSelection: number;
+      if (wasFollowing || currentSel >= newLatest) {
+        newSelection = newLatest;
+        _popupIsFollowingLatest = true;
+      } else {
+        newSelection = Math.min(currentSel, newLatest);
+        _popupIsFollowingLatest = newSelection >= newLatest;
+      }
+
+      selectedIndexRef.current = newSelection;
+      pendingScrollIndexRef.current = newSelection;
+      setSelectedIndex(newSelection);
+      setVersion((v) => v + 1);
+
+      if (_popupIsFollowingLatest && !wasFollowing) {
+        queueMicrotask(() => didSelectVerboseTrackingEntity(newSelection));
+      }
+    });
+
+    const unsubscribeSelectionReset = subscribeMoveHistoryPopupSelectionReset(() => {
+      let newItems: MoveHistoryEntry[];
+      try {
+        newItems = getVerboseTrackingEntities();
+      } catch {
+        newItems = [{ segments: [] }];
+      }
+      const newLatest = Math.max(0, newItems.length - 1);
+      _popupIsFollowingLatest = true;
+      selectedIndexRef.current = newLatest;
+      pendingScrollIndexRef.current = newLatest;
+      setSelectedIndex(newLatest);
+      setVersion((v) => v + 1);
+    });
+
     return () => {
       unsubscribe();
       unsubscribeSelectionReset();
-      if (scrollSettleTimeoutRef.current) {
-        clearTimeout(scrollSettleTimeoutRef.current);
-        scrollSettleTimeoutRef.current = undefined;
-      }
+      _popupIsOpen = false;
+      _popupIsFollowingLatest = false;
       try {
         didDismissMoveHistoryPopup();
       } catch {}

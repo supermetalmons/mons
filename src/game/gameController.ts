@@ -6,7 +6,7 @@ import { colors } from "../content/boardStyles";
 import { playSounds, playReaction, newReactionOfKind } from "../content/sounds";
 import { connection } from "../connection/connection";
 import { showMoveHistoryButton, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
-import { triggerMoveHistoryPopupReload } from "../ui/MoveHistoryPopup";
+import { triggerMoveHistoryPopupReload, isMoveHistoryPopupFollowingLatest } from "../ui/MoveHistoryPopup";
 import { Match, MatchWagerState, HistoricalMatchPair, InviteReaction, RematchSeriesDescriptor, RematchSeriesMatchDescriptor } from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
 import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress, getInitialProblem } from "../content/problems";
@@ -1329,6 +1329,18 @@ export function didSelectVerboseTrackingEntity(index: number) {
   if (index < 0 || index >= entities.length) {
     return;
   }
+
+  const isLatest = index === entities.length - 1;
+  if (isLatest && boardViewMode === "activeLive") {
+    flashbackMode = false;
+    currentInputs = [];
+    Board.removeHighlights();
+    Board.hideItemSelectionOrConfirmationOverlay();
+    setNewBoard(false);
+    applyWagerState();
+    return;
+  }
+
   const entity = entities[index];
 
   flashbackMode = true;
@@ -2764,6 +2776,10 @@ function applyOutput(
       }
 
       Board.removeHighlights();
+
+      if (flashbackMode && isMoveHistoryPopupFollowingLatest()) {
+        flashbackMode = false;
+      }
 
       const didUpdate = new Set<string>();
       for (const location of locationsToUpdate) {
