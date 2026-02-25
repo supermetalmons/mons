@@ -1324,6 +1324,18 @@ export function getVerboseTrackingEntities(): MoveHistoryEntry[] {
   });
 }
 
+export function getFenForMoveHistoryIndex(index: number): string | null {
+  const entities = getMoveHistorySourceGame().verbose_tracking_entities();
+  if (index < 0 || index >= entities.length) {
+    return null;
+  }
+  const isLatest = index === entities.length - 1;
+  if (isLatest) {
+    return getMoveHistorySourceGame().fen();
+  }
+  return entities[index].fen();
+}
+
 export function didSelectVerboseTrackingEntity(index: number) {
   const entities = getMoveHistorySourceGame().verbose_tracking_entities();
   if (index < 0 || index >= entities.length) {

@@ -7,7 +7,6 @@ import { storage } from "../utils/storage";
 import { Leaderboard, LeaderboardType, LEADERBOARD_TYPE_ICON_URLS } from "./Leaderboard";
 import { setAnimatedMonsEnabled } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
-import { getCurrentGameFen } from "../game/gameController";
 import { FaTelegramPlane, FaUniversity, FaPlay, FaStop, FaBackward, FaForward } from "react-icons/fa";
 import { showsShinyCardSomewhere } from "./ShinyCard";
 import { startPlayingMusic, stopPlayingMusic, playNextTrack } from "../content/music";
@@ -498,21 +497,6 @@ const ToggleRow = styled.label`
   }
 `;
 
-const CopyBoardButton = styled.button`
-  background: none;
-  border: none;
-  color: var(--copyBoardButtonColor);
-  cursor: pointer;
-  font-size: 13px;
-  text-decoration-line: underline;
-  text-decoration-style: dashed;
-  padding: 5px;
-
-  @media (prefers-color-scheme: dark) {
-    color: var(--color-gray-99);
-  }
-`;
-
 const MusicPopover = styled.div<{ isOpen: boolean }>`
   position: fixed;
   top: 56px;
@@ -645,7 +629,7 @@ const MainMenu: React.FC = () => {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [clickCount, setClickCount] = useState(0);
   const [showExperimental, setShowExperimental] = useState(false);
-  const [copyButtonText, setCopyButtonText] = useState("copy board snapshot");
+
   const [areAnimatedMonsEnabled, setAreAnimatedMonsEnabled] = useState<boolean>(storage.getIsExperimentingWithSprites(false));
   const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>(() => {
     const stored = storage.getLeaderboardType("rating");
@@ -800,16 +784,6 @@ const MainMenu: React.FC = () => {
     setShowExperimental(true);
   };
 
-  const copyBoardState = () => {
-    const currentFen = getCurrentGameFen();
-    console.log(currentFen);
-    const link = window.location.origin + "/snapshot/" + encodeURIComponent(currentFen);
-    navigator.clipboard.writeText(link);
-    setCopyButtonText("copied");
-    setTimeout(() => {
-      setCopyButtonText("copy board snapshot");
-    }, 333);
-  };
 
 
   const handleMusicPlaybackToggle = () => {
@@ -1052,7 +1026,6 @@ const MainMenu: React.FC = () => {
                       <input type="checkbox" checked={areAnimatedMonsEnabled} onChange={handleAnimatedMonsToggle} />
                       animated mons
                     </ToggleRow>
-                    <CopyBoardButton onClick={copyBoardState}>{copyButtonText}</CopyBoardButton>
                     <BuildInfo>{getBuildInfo()}</BuildInfo>
                   </ExperimentalMenu>
                 )}

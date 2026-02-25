@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { getVerboseTrackingEntities, didSelectVerboseTrackingEntity, didOpenMoveHistoryPopup, didDismissMoveHistoryPopup } from "../game/gameController";
+import { getVerboseTrackingEntities, didSelectVerboseTrackingEntity, didOpenMoveHistoryPopup, didDismissMoveHistoryPopup, getFenForMoveHistoryIndex } from "../game/gameController";
 import { useGameAssets } from "../hooks/useGameAssets";
 import { useEmojis } from "../hooks/useEmojis";
 import type { MoveHistoryEntry, MoveHistorySegment, MoveHistoryToken, MoveHistorySegmentRole } from "../game/moveEventStrings";
@@ -313,10 +313,39 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
     };
   }, []);
 
+  // Triple-click opens snapshot link
+  const lastClickTimeRef = React.useRef(0);
+  const clickCountRef = React.useRef(0);
+  const lastClickedIndexRef = React.useRef(-1);
+
+  const handleTripleClick = React.useCallback((index: number) => {
+    const fen = getFenForMoveHistoryIndex(index);
+    if (fen) {
+      const link = window.location.origin + "/snapshot/" + encodeURIComponent(fen);
+      window.open(link, "_blank", "noopener,noreferrer");
+    }
+  }, []);
+
   // Click on item to select it
   const handleItemClick = React.useCallback(
     (index: number) => {
       if (isDraggingRef.current) return;
+
+      const now = Date.now();
+      if (index === lastClickedIndexRef.current && now - lastClickTimeRef.current < 500) {
+        clickCountRef.current += 1;
+      } else {
+        clickCountRef.current = 1;
+      }
+      lastClickTimeRef.current = now;
+      lastClickedIndexRef.current = index;
+
+      if (clickCountRef.current >= 3) {
+        clickCountRef.current = 0;
+        handleTripleClick(index);
+        return;
+      }
+
       selectedIndexRef.current = index;
       _popupIsFollowingLatest = index >= items.length - 1;
       setSelectedIndex(index);
@@ -324,7 +353,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       if (el) el.scrollTop = index * ITEM_HEIGHT;
       didSelectVerboseTrackingEntity(index);
     },
-    [items.length]
+    [items.length, handleTripleClick]
   );
 
   React.useEffect(() => {
