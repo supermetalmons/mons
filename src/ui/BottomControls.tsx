@@ -27,6 +27,7 @@ import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMateria
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 import { storage } from "../utils/storage";
 import { transitionToHome } from "../session/AppSessionManager";
+import { getCurrentRouteState } from "../navigation/routeState";
 import { registerBottomControlsTransientUiHandler } from "./uiSession";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 
@@ -433,6 +434,8 @@ const BottomControls: React.FC = () => {
   });
   const navigationHasPagedGamesRef = useRef(false);
   const navigationPopupEpochRef = useRef(0);
+  const navigationQuickActionEpochRef = useRef(0);
+  const beginInviteFlowRef = useRef<(options?: { skipSoundInit?: boolean }) => void>(() => {});
   const [stickerUrls, setStickerUrls] = useState<Record<number, string | null>>({});
   const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
   const frozenMaterialsRef = useRef<Record<MaterialName, number>>(getFrozenMaterials());
@@ -1138,8 +1141,10 @@ const BottomControls: React.FC = () => {
     };
   }, []);
 
-  const handleInviteClick = () => {
-    soundPlayer.initializeOnUserInteraction(false);
+  const beginInviteFlow = (options?: { skipSoundInit?: boolean }) => {
+    if (!options?.skipSoundInit) {
+      soundPlayer.initializeOnUserInteraction(false);
+    }
     if (!didCreateInvite) {
       didClickInviteActionButtonBeforeThereIsInviteReady();
     }
@@ -1163,6 +1168,11 @@ const BottomControls: React.FC = () => {
       }
     });
   };
+
+  const handleInviteClick = () => {
+    beginInviteFlow();
+  };
+  beginInviteFlowRef.current = beginInviteFlow;
 
   getIsNavigationPopupOpen = () => isNavigationPopupVisible;
 
@@ -1634,8 +1644,10 @@ const BottomControls: React.FC = () => {
     didClickStartBotGameButton();
   };
 
-  const beginAutomatchFlow = useCallback(() => {
-    soundPlayer.initializeOnUserInteraction(false);
+  const beginAutomatchFlow = useCallback((options?: { skipSoundInit?: boolean }) => {
+    if (!options?.skipSoundInit) {
+      soundPlayer.initializeOnUserInteraction(false);
+    }
     didClickAutomatchButton((response) => {
       const inviteId = response && typeof response.inviteId === "string" ? response.inviteId : "";
       const mode = response && typeof response.mode === "string" ? response.mode : "";
@@ -1702,34 +1714,47 @@ const BottomControls: React.FC = () => {
     connection.connectToInvite(inviteId);
   };
 
+  const runNavigationQuickAction = (action: () => void, initializeSound = false) => {
+    const actionEpoch = navigationQuickActionEpochRef.current + 1;
+    navigationQuickActionEpochRef.current = actionEpoch;
+    if (initializeSound) {
+      soundPlayer.initializeOnUserInteraction(false);
+    }
+    void (async () => {
+      const shouldTransitionToHome = getCurrentRouteState().mode !== "home";
+      if (shouldTransitionToHome) {
+        try {
+          await transitionToHome({ forceMatchScopeReset: true });
+        } catch {
+          return;
+        }
+      }
+      if (navigationQuickActionEpochRef.current !== actionEpoch) {
+        return;
+      }
+      if (shouldTransitionToHome && getCurrentRouteState().mode !== "home") {
+        return;
+      }
+      action();
+    })();
+  };
+
   const handleNavigationStartAutomatch = () => {
     setIsNavigationPopupVisible(false);
     setIsBoardStylePickerVisible(false);
-    soundPlayer.initializeOnUserInteraction(false);
-    didClickAutomatchButton((response) => {
-      const inviteId = response && typeof response.inviteId === "string" ? response.inviteId : "";
-      const mode = response && typeof response.mode === "string" ? response.mode : "";
-      if (mode === "pending" && inviteId) {
-        setOptimisticPendingAutomatchItem(connection.createOptimisticPendingAutomatchItem(inviteId));
-      } else if (mode === "matched") {
-        setOptimisticPendingAutomatchItem(null);
-      }
-    });
-    setAutomatchEnabled(false);
-    setAutomatchButtonTmpState(true);
+    runNavigationQuickAction(() => beginAutomatchFlow({ skipSoundInit: true }), true);
   };
 
   const handleNavigationStartDirectGame = () => {
     setIsNavigationPopupVisible(false);
     setIsBoardStylePickerVisible(false);
-    handleInviteClick();
+    runNavigationQuickAction(() => beginInviteFlowRef.current({ skipSoundInit: true }), true);
   };
 
   const handleNavigationStartBotGame = () => {
     setIsNavigationPopupVisible(false);
     setIsBoardStylePickerVisible(false);
-    soundPlayer.initializeOnUserInteraction(false);
-    didClickStartBotGameButton();
+    runNavigationQuickAction(didClickStartBotGameButton, true);
   };
 
   const handleNavigationLoadMoreGames = () => {

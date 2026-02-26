@@ -321,35 +321,6 @@ class Connection {
 
   private openInvite(inviteId: string, autojoin: boolean): void {
     this.newInviteId = inviteId;
-    const routeState = getRouteStateSnapshot();
-    const target = this.buildInviteRouteTarget(inviteId, autojoin);
-    if (routeState.mode === "home") {
-      const sessionGuard = this.createSessionGuard();
-      void import("../session/AppSessionManager")
-        .then(async (appSessionManager) => {
-          if (!sessionGuard()) {
-            return;
-          }
-          appSessionManager.adoptTargetWithoutTransition(target);
-          await this.ensureAuthenticated();
-          if (!sessionGuard()) {
-            return;
-          }
-          const uid = this.auth.currentUser?.uid;
-          if (!uid) {
-            void this.transitionToInvite(inviteId, autojoin);
-            return;
-          }
-          this.connectToGame(uid, inviteId, autojoin);
-        })
-        .catch(() => {
-          if (!sessionGuard()) {
-            return;
-          }
-          void this.transitionToInvite(inviteId, autojoin);
-        });
-      return;
-    }
     void this.transitionToInvite(inviteId, autojoin);
   }
 
@@ -385,8 +356,45 @@ class Connection {
   }
 
   private writeInviteLinkToClipboard(): void {
+    if (typeof window === "undefined") {
+      return;
+    }
     const link = window.location.origin + "/" + this.newInviteId;
-    navigator.clipboard.writeText(link);
+    const clipboard = navigator.clipboard;
+    if (clipboard && typeof clipboard.writeText === "function") {
+      void clipboard.writeText(link).catch((error) => {
+        const didCopy = this.writeInviteLinkWithLegacyClipboardApi(link);
+        if (!didCopy && process.env.NODE_ENV !== "production") {
+          console.warn("failed-to-copy-invite-link", error);
+        }
+      });
+      return;
+    }
+    this.writeInviteLinkWithLegacyClipboardApi(link);
+  }
+
+  private writeInviteLinkWithLegacyClipboardApi(link: string): boolean {
+    if (typeof document === "undefined" || !document.body) {
+      return false;
+    }
+    const textArea = document.createElement("textarea");
+    textArea.value = link;
+    textArea.setAttribute("readonly", "true");
+    textArea.style.position = "fixed";
+    textArea.style.top = "0";
+    textArea.style.left = "-9999px";
+    textArea.style.opacity = "0";
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    let didCopy = false;
+    try {
+      didCopy = document.execCommand("copy");
+    } catch {
+      didCopy = false;
+    }
+    document.body.removeChild(textArea);
+    return didCopy;
   }
 
   private async transitionToInvite(inviteId: string, autojoin = inviteId.startsWith("auto_")): Promise<void> {
