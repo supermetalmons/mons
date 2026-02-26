@@ -6,6 +6,7 @@ import AnimatedHourglassButton from "./AnimatedHourglassButton";
 import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, isOnlineGame, isWatchOnly, isMatchOver, getBoardViewMode, getRematchSeriesNavigatorItems, didSelectRematchSeriesMatch, preloadRematchSeriesScores } from "../game/gameController";
 import type { RematchSeriesNavigatorItem } from "../game/gameController";
 import { connection } from "../connection/connection";
+import type { NavigationGamesPageCursor } from "../connection/connection";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playReaction, playSounds } from "../content/sounds";
@@ -371,10 +372,12 @@ const BottomControls: React.FC = () => {
   const [isBoardStylePickerVisible, setIsBoardStylePickerVisible] = useState(false);
   const [isBadgeVisible, setIsBadgeVisible] = useState(false);
   const [navigationProjectedGames, setNavigationProjectedGames] = useState<NavigationGameItem[]>([]);
+  const [navigationPagedGames, setNavigationPagedGames] = useState<NavigationGameItem[]>([]);
   const [isNavigationGamesLoading, setIsNavigationGamesLoading] = useState(false);
   const [isNavigationGamesLoadingMore, setIsNavigationGamesLoadingMore] = useState(false);
   const [navigationHasMoreGames, setNavigationHasMoreGames] = useState(false);
-  const [navigationGamesLimit, setNavigationGamesLimit] = useState(NAVIGATION_GAMES_PAGE_SIZE);
+  const [navigationGamesCursor, setNavigationGamesCursor] = useState<NavigationGamesPageCursor>(null);
+  const [navigationFallbackLimit, setNavigationFallbackLimit] = useState(NAVIGATION_GAMES_PAGE_SIZE);
   const [optimisticPendingAutomatchItem, setOptimisticPendingAutomatchItem] = useState<NavigationGameItem | null>(null);
   const [isNavigationFallbackScope, setIsNavigationFallbackScope] = useState(false);
 
@@ -428,6 +431,8 @@ const BottomControls: React.FC = () => {
     automatch: null,
     finish: null,
   });
+  const navigationHasPagedGamesRef = useRef(false);
+  const navigationPopupEpochRef = useRef(0);
   const [stickerUrls, setStickerUrls] = useState<Record<number, string | null>>({});
   const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
   const frozenMaterialsRef = useRef<Record<MaterialName, number>>(getFrozenMaterials());
@@ -799,49 +804,83 @@ const BottomControls: React.FC = () => {
 
   const mergedNavigationGames = useMemo(() => {
     const merged = navigationProjectedGames.slice();
+    navigationPagedGames.forEach((pagedItem) => {
+      if (!merged.some((item) => item.inviteId === pagedItem.inviteId)) {
+        merged.push(pagedItem);
+      }
+    });
     if (optimisticPendingAutomatchItem && !merged.some((item) => item.inviteId === optimisticPendingAutomatchItem.inviteId)) {
       merged.push(optimisticPendingAutomatchItem);
     }
     merged.sort(compareNavigationItems);
     return merged;
-  }, [compareNavigationItems, navigationProjectedGames, optimisticPendingAutomatchItem]);
+  }, [compareNavigationItems, navigationProjectedGames, navigationPagedGames, optimisticPendingAutomatchItem]);
+
+  useEffect(() => {
+    navigationHasPagedGamesRef.current = navigationPagedGames.length > 0;
+  }, [navigationPagedGames]);
 
   useEffect(() => {
     if (!optimisticPendingAutomatchItem) {
       return;
     }
-    if (navigationProjectedGames.some((item) => item.inviteId === optimisticPendingAutomatchItem.inviteId)) {
+    if (navigationProjectedGames.some((item) => item.inviteId === optimisticPendingAutomatchItem.inviteId) || navigationPagedGames.some((item) => item.inviteId === optimisticPendingAutomatchItem.inviteId)) {
       setOptimisticPendingAutomatchItem(null);
     }
-  }, [navigationProjectedGames, optimisticPendingAutomatchItem]);
+  }, [navigationProjectedGames, navigationPagedGames, optimisticPendingAutomatchItem]);
 
   useEffect(() => {
     let disposed = false;
     let unsubscribe: (() => void) | null = null;
-    const maxItems = navigationGamesLimit;
+    const popupEpoch = navigationPopupEpochRef.current + 1;
+    navigationPopupEpochRef.current = popupEpoch;
+    const sessionGuard = connection.createSessionGuard();
+    const isPopupEpochActive = () => !disposed && navigationPopupEpochRef.current === popupEpoch;
+    const stopNavigationInitialLoading = () => {
+      setIsNavigationGamesLoading(false);
+    };
+    const stopNavigationLoadMore = () => {
+      setIsNavigationGamesLoadingMore(false);
+    };
+    const stopAllNavigationLoading = () => {
+      stopNavigationInitialLoading();
+      stopNavigationLoadMore();
+    };
 
-    const loadFallbackGames = () => {
+    const loadFallbackGames = (maxItems: number) => {
       setIsNavigationFallbackScope(true);
-      const sessionGuard = connection.createSessionGuard();
+      setNavigationGamesCursor(null);
+      setNavigationPagedGames([]);
+      navigationHasPagedGamesRef.current = false;
+      stopNavigationLoadMore();
+      const requestedLimit = maxItems + 1;
       void connection
-        .getCurrentLoginFallbackGames(maxItems)
+        .getCurrentLoginFallbackGames(requestedLimit)
         .then((items) => {
-          if (disposed || !sessionGuard()) {
+          if (!isPopupEpochActive()) {
             return;
           }
-          setNavigationProjectedGames(items);
-          setNavigationHasMoreGames(items.length >= maxItems && items.length > 0);
-          setIsNavigationGamesLoading(false);
-          setIsNavigationGamesLoadingMore(false);
+          if (!sessionGuard()) {
+            stopAllNavigationLoading();
+            return;
+          }
+          const hasMore = items.length > maxItems;
+          const visibleItems = hasMore ? items.slice(0, maxItems) : items;
+          setNavigationProjectedGames(visibleItems);
+          setNavigationHasMoreGames(hasMore);
+          stopNavigationInitialLoading();
         })
         .catch(() => {
-          if (disposed || !sessionGuard()) {
+          if (!isPopupEpochActive()) {
+            return;
+          }
+          if (!sessionGuard()) {
+            stopAllNavigationLoading();
             return;
           }
           setNavigationProjectedGames([]);
           setNavigationHasMoreGames(false);
-          setIsNavigationGamesLoading(false);
-          setIsNavigationGamesLoadingMore(false);
+          stopNavigationInitialLoading();
         });
     };
 
@@ -850,58 +889,91 @@ const BottomControls: React.FC = () => {
       setIsNavigationGamesLoadingMore(false);
       setIsNavigationFallbackScope(false);
       setNavigationHasMoreGames(false);
-      if (navigationGamesLimit !== NAVIGATION_GAMES_PAGE_SIZE) {
-        setNavigationGamesLimit(NAVIGATION_GAMES_PAGE_SIZE);
-      }
+      setNavigationGamesCursor(null);
+      setNavigationFallbackLimit(NAVIGATION_GAMES_PAGE_SIZE);
+      setNavigationProjectedGames([]);
+      setNavigationPagedGames([]);
+      navigationHasPagedGamesRef.current = false;
       return () => {
         disposed = true;
+        navigationPopupEpochRef.current += 1;
         if (unsubscribe) {
           unsubscribe();
+          unsubscribe = null;
         }
       };
     }
 
-    if (maxItems === NAVIGATION_GAMES_PAGE_SIZE) {
-      setIsNavigationGamesLoading(true);
-    }
+    setIsNavigationGamesLoading(true);
+    setIsNavigationGamesLoadingMore(false);
     const localProfileId = storage.getProfileId("");
 
     if (localProfileId !== "") {
       setIsNavigationFallbackScope(false);
+      setNavigationFallbackLimit(NAVIGATION_GAMES_PAGE_SIZE);
+      setNavigationPagedGames([]);
+      navigationHasPagedGamesRef.current = false;
       unsubscribe = connection.subscribeProfileGamesFirestore(
-        maxItems,
+        NAVIGATION_GAMES_PAGE_SIZE,
         (items) => {
-          if (disposed) {
+          if (!isPopupEpochActive()) {
+            return;
+          }
+          if (!sessionGuard()) {
+            stopNavigationInitialLoading();
             return;
           }
           setNavigationProjectedGames(items);
-          setNavigationHasMoreGames(items.length >= maxItems && items.length > 0);
-          setIsNavigationGamesLoading(false);
-          setIsNavigationGamesLoadingMore(false);
-          setIsNavigationFallbackScope(false);
+          stopNavigationInitialLoading();
         },
         () => {
-          if (disposed) {
+          if (!isPopupEpochActive()) {
+            return;
+          }
+          if (!sessionGuard()) {
+            stopAllNavigationLoading();
             return;
           }
           if (unsubscribe) {
             unsubscribe();
             unsubscribe = null;
           }
-          loadFallbackGames();
+          setNavigationFallbackLimit(NAVIGATION_GAMES_PAGE_SIZE);
+          loadFallbackGames(NAVIGATION_GAMES_PAGE_SIZE);
+        },
+        (pageMeta) => {
+          if (!isPopupEpochActive()) {
+            return;
+          }
+          if (!sessionGuard()) {
+            stopNavigationInitialLoading();
+            return;
+          }
+          if (!navigationHasPagedGamesRef.current) {
+            setNavigationGamesCursor(pageMeta.nextCursor);
+            setNavigationHasMoreGames(pageMeta.hasMore);
+          } else if (!pageMeta.hasMore) {
+            setNavigationPagedGames([]);
+            navigationHasPagedGamesRef.current = false;
+            setNavigationGamesCursor(pageMeta.nextCursor);
+            setNavigationHasMoreGames(false);
+          }
         }
       );
     } else {
-      loadFallbackGames();
+      setNavigationFallbackLimit(NAVIGATION_GAMES_PAGE_SIZE);
+      loadFallbackGames(NAVIGATION_GAMES_PAGE_SIZE);
     }
 
     return () => {
       disposed = true;
+      navigationPopupEpochRef.current += 1;
       if (unsubscribe) {
         unsubscribe();
+        unsubscribe = null;
       }
     };
-  }, [isNavigationPopupVisible, navigationGamesLimit]);
+  }, [isNavigationPopupVisible]);
 
   useEffect(() => {
     return () => {
@@ -1664,8 +1736,91 @@ const BottomControls: React.FC = () => {
     if (!isNavigationPopupVisible || !navigationHasMoreGames || isNavigationGamesLoading || isNavigationGamesLoadingMore) {
       return;
     }
+
     setIsNavigationGamesLoadingMore(true);
-    setNavigationGamesLimit((value) => value + NAVIGATION_GAMES_PAGE_SIZE);
+    const localProfileId = storage.getProfileId("");
+    const sessionGuard = connection.createSessionGuard();
+    const popupEpoch = navigationPopupEpochRef.current;
+    const isCallbackActive = () => navigationPopupEpochRef.current === popupEpoch;
+    const stopLoadMore = () => {
+      setIsNavigationGamesLoadingMore(false);
+    };
+
+    if (localProfileId !== "" && !isNavigationFallbackScope) {
+      const nextCursor = navigationGamesCursor;
+      if (!nextCursor) {
+        setNavigationHasMoreGames(false);
+        stopLoadMore();
+        return;
+      }
+
+      void connection
+        .getProfileGamesFirestorePage(NAVIGATION_GAMES_PAGE_SIZE, nextCursor)
+        .then((page) => {
+          if (!isCallbackActive()) {
+            return;
+          }
+          if (!sessionGuard()) {
+            stopLoadMore();
+            return;
+          }
+          setNavigationPagedGames((previousItems) => {
+            const uniqueByInviteId = new Map<string, NavigationGameItem>();
+            previousItems.forEach((item) => uniqueByInviteId.set(item.inviteId, item));
+            page.items.forEach((item) => uniqueByInviteId.set(item.inviteId, item));
+            const mergedItems = Array.from(uniqueByInviteId.values());
+            mergedItems.sort(compareNavigationItems);
+            return mergedItems;
+          });
+          navigationHasPagedGamesRef.current = true;
+          setNavigationGamesCursor(page.nextCursor);
+          setNavigationHasMoreGames(page.hasMore);
+          stopLoadMore();
+        })
+        .catch(() => {
+          if (!isCallbackActive()) {
+            return;
+          }
+          if (!sessionGuard()) {
+            stopLoadMore();
+            return;
+          }
+          setNavigationHasMoreGames(false);
+          stopLoadMore();
+        });
+      return;
+    }
+
+    const nextFallbackLimit = navigationFallbackLimit + NAVIGATION_GAMES_PAGE_SIZE;
+    const requestedLimit = nextFallbackLimit + 1;
+    setNavigationFallbackLimit(nextFallbackLimit);
+    void connection
+      .getCurrentLoginFallbackGames(requestedLimit)
+      .then((items) => {
+        if (!isCallbackActive()) {
+          return;
+        }
+        if (!sessionGuard()) {
+          stopLoadMore();
+          return;
+        }
+        const hasMore = items.length > nextFallbackLimit;
+        const visibleItems = hasMore ? items.slice(0, nextFallbackLimit) : items;
+        setNavigationProjectedGames(visibleItems);
+        setNavigationHasMoreGames(hasMore);
+        stopLoadMore();
+      })
+      .catch(() => {
+        if (!isCallbackActive()) {
+          return;
+        }
+        if (!sessionGuard()) {
+          stopLoadMore();
+          return;
+        }
+        setNavigationHasMoreGames(false);
+        stopLoadMore();
+      });
   };
 
   const handleShare = async () => {

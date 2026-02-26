@@ -150,8 +150,10 @@ Backfill recency policy:
 ## 6) Frontend Behavior (Current)
 
 ## 6.1 Data loading strategy
-- navigation popup subscribes to Firestore profile list when profile id exists
-- if Firestore list subscription errors, it falls back to current-login RTDB aggregation
+- navigation popup subscribes live to Firestore profile first page (`80` rows) when profile id exists
+- additional rows are cursor-paginated pages (`80` per page)
+- load-more fetches only the next page using Firestore cursor (`startAfter(lastVisibleDoc)`)
+- if Firestore list read/subscription errors, it falls back to current-login RTDB aggregation
 - if user has no profile id, uses fallback directly
 - fallback scope is explicitly labeled in UI: “Showing games for current login only”
 
@@ -251,7 +253,7 @@ Check:
 ## 10) Known Limits (Current)
 
 - catch-up is bounded; no automated continuation queue yet
-- profile-mode fallback currently activates on Firestore subscription failure (not empty-result fallback)
+- profile-mode fallback currently activates on Firestore read/subscription failure (not empty-result fallback)
 - eventual consistency exists between RTDB writes and Firestore projection
 - opponent snapshot fields are not continuously refreshed for profile edits (acceptable for now)
 

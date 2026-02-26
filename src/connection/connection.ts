@@ -1,7 +1,7 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, Auth, signInAnonymously, onAuthStateChanged, signOut } from "firebase/auth";
 import { getDatabase, Database, ref, set, onValue, off, get, update, runTransaction } from "firebase/database";
-import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc, onSnapshot } from "firebase/firestore";
+import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc, onSnapshot, startAfter, QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveInviteReactionUpdate, didReceiveMatchUpdate, didRecoverInviteReactions, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal, didUpdateRematchSeriesMetadata } from "../game/gameController";
 import { getPlayersEmojiId, didGetPlayerProfile, setupPlayerId } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
@@ -41,6 +41,14 @@ const normalizeMiningData = (source: any): PlayerMiningData => {
 const controllerVersion = 2;
 const LEADERBOARD_ENTRY_LIMIT = 99;
 const wagerDebugLogsEnabled = process.env.NODE_ENV !== "production";
+
+export type NavigationGamesPageCursor = QueryDocumentSnapshot<DocumentData> | null;
+
+export interface NavigationGamesPageResult {
+  items: NavigationGameItem[];
+  nextCursor: NavigationGamesPageCursor;
+  hasMore: boolean;
+}
 
 const getRouteStateSnapshot = () => getCurrentRouteState();
 const summarizeWagerState = (state: MatchWagerState | null) => {
@@ -1393,7 +1401,50 @@ class Connection {
     };
   }
 
-  public subscribeProfileGamesFirestore(maxItems: number, onUpdate: (items: NavigationGameItem[]) => void, onError?: (error: unknown) => void): () => void {
+  public async getProfileGamesFirestorePage(maxItems: number, cursor: NavigationGamesPageCursor = null): Promise<NavigationGamesPageResult> {
+    await this.ensureAuthenticated();
+
+    const profileId = this.getLocalProfileId();
+    if (!profileId) {
+      return {
+        items: [],
+        nextCursor: null,
+        hasMore: false,
+      };
+    }
+
+    const boundedLimit = Number.isFinite(maxItems) && maxItems > 0 ? Math.floor(maxItems) : 40;
+    const gamesCollectionRef = collection(this.firestore, "users", profileId, "games");
+    const baseQuery =
+      cursor === null
+        ? query(gamesCollectionRef, orderBy("sortBucket", "asc"), orderBy("listSortAt", "desc"), limit(boundedLimit + 1))
+        : query(gamesCollectionRef, orderBy("sortBucket", "asc"), orderBy("listSortAt", "desc"), startAfter(cursor), limit(boundedLimit + 1));
+
+    const snapshot = await getDocs(baseQuery);
+    const visibleDocs = snapshot.docs.slice(0, boundedLimit);
+    const items: NavigationGameItem[] = [];
+    visibleDocs.forEach((docSnapshot) => {
+      const mapped = this.mapFirestoreGameDocToNavigationItem(docSnapshot.data() as Record<string, unknown>, docSnapshot.id);
+      if (mapped) {
+        items.push(mapped);
+      }
+    });
+
+    items.sort((a, b) => this.compareNavigationGameItems(a, b));
+
+    return {
+      items,
+      nextCursor: visibleDocs.length > 0 ? visibleDocs[visibleDocs.length - 1] : cursor,
+      hasMore: snapshot.docs.length > boundedLimit,
+    };
+  }
+
+  public subscribeProfileGamesFirestore(
+    maxItems: number,
+    onUpdate: (items: NavigationGameItem[]) => void,
+    onError?: (error: unknown) => void,
+    onPageMeta?: (result: NavigationGamesPageResult) => void
+  ): () => void {
     let unsubscribe: (() => void) | null = null;
     let disposed = false;
     const sessionGuard = this.createSessionGuard();
@@ -1414,7 +1465,7 @@ class Connection {
           collection(this.firestore, "users", profileId, "games"),
           orderBy("sortBucket", "asc"),
           orderBy("listSortAt", "desc"),
-          limit(boundedLimit)
+          limit(boundedLimit + 1)
         );
 
         unsubscribe = onSnapshot(
@@ -1423,8 +1474,9 @@ class Connection {
             if (disposed || !sessionGuard()) {
               return;
             }
+            const visibleDocs = snapshot.docs.slice(0, boundedLimit);
             const items: NavigationGameItem[] = [];
-            snapshot.forEach((docSnapshot) => {
+            visibleDocs.forEach((docSnapshot) => {
               const mapped = this.mapFirestoreGameDocToNavigationItem(docSnapshot.data() as Record<string, unknown>, docSnapshot.id);
               if (mapped) {
                 items.push(mapped);
@@ -1432,6 +1484,11 @@ class Connection {
             });
             items.sort((a, b) => this.compareNavigationGameItems(a, b));
             onUpdate(items);
+            onPageMeta?.({
+              items,
+              nextCursor: visibleDocs.length > 0 ? visibleDocs[visibleDocs.length - 1] : null,
+              hasMore: snapshot.docs.length > boundedLimit,
+            });
           },
           (error) => {
             if (disposed || !sessionGuard()) {
