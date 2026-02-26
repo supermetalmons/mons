@@ -74,17 +74,25 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
           } catch (e) {
             console.error("auto:edit:trigger:error", { inviteId: firstAutomatchId, error: e && e.message ? e.message : e });
           }
+          return {
+            ok: true,
+            inviteId: firstAutomatchId,
+            mode: "matched",
+            matchedImmediately: true,
+          };
         } else {
-          return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, aura, retryCount + 1);
+          return await attemptAutomatch(uid, rating, username, ethAddress, solAddress, profileId, name, emojiId, aura, retryCount + 1);
         }
       } catch (error) {
         console.error("auto:accept:error", { inviteId: firstAutomatchId, error: error && error.message ? error.message : error });
-        return await attemptAutomatch(uid, username, ethAddress, solAddress, profileId, name, emojiId, aura, retryCount + 1);
+        return await attemptAutomatch(uid, rating, username, ethAddress, solAddress, profileId, name, emojiId, aura, retryCount + 1);
       }
     }
     return {
       ok: true,
       inviteId: firstAutomatchId,
+      mode: "pending",
+      matchedImmediately: false,
     };
   } else {
     console.log("auto:attempt:createInvite");
@@ -97,6 +105,8 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
       hostColor: hostColor,
       guestId: null,
       password: password,
+      automatchStateHint: "pending",
+      automatchCanceledAt: null,
     };
 
     const match = {
@@ -129,6 +139,8 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
     return {
       ok: true,
       inviteId: inviteId,
+      mode: "pending",
+      matchedImmediately: false,
     };
   }
 }
@@ -136,7 +148,11 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
 async function acceptInvite(firstAutomatchId, invite, match, uid) {
   const updates = {};
   updates[`automatch/${firstAutomatchId}`] = null;
-  updates[`invites/${firstAutomatchId}`] = invite;
+  updates[`invites/${firstAutomatchId}`] = {
+    ...invite,
+    automatchStateHint: "matched",
+    automatchCanceledAt: null,
+  };
   updates[`players/${uid}/matches/${firstAutomatchId}`] = match;
   await admin.database().ref().update(updates);
   const guestIdRef = admin.database().ref(`invites/${firstAutomatchId}/guestId`);

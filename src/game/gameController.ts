@@ -1922,7 +1922,7 @@ export function didFindInviteThatCanBeJoined() {
   Board.runMonsBoardAsDisplayWaitingAnimation();
 }
 
-export function didClickAutomatchButton() {
+export function didClickAutomatchButton(onAutomatchResponse?: (response: any) => void) {
   setHomeVisible(true);
   setIslandButtonDimmed(true);
 
@@ -1946,6 +1946,7 @@ export function didClickAutomatchButton() {
       if (!sessionGuard()) {
         return;
       }
+      onAutomatchResponse?.(response);
       const automatchInviteId = response.inviteId;
       if (automatchInviteId) {
         connection.connectToAutomatch(automatchInviteId);

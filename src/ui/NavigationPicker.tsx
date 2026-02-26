@@ -4,11 +4,24 @@ import { problems, getCompletedProblemIds } from "../content/problems";
 import { didSelectPuzzle } from "../game/gameController";
 import { useGameAssets } from "../hooks/useGameAssets";
 import { FaCheck, FaCircle } from "react-icons/fa";
+import { NavigationGameItem } from "../connection/connectionModels";
+import { emojis } from "../content/emojis";
 
 interface NavigationPickerProps {
   showsPuzzles: boolean;
   showsHomeNavigation: boolean;
   navigateHome?: (event: React.MouseEvent<HTMLButtonElement>) => void;
+  games?: NavigationGameItem[];
+  isGamesLoading?: boolean;
+  isUsingFallbackScope?: boolean;
+  onSelectGame?: (inviteId: string) => void;
+  showQuickActions?: boolean;
+  showAutomatchAction?: boolean;
+  showDirectAction?: boolean;
+  showBotAction?: boolean;
+  onStartAutomatch?: () => void;
+  onStartDirectGame?: () => void;
+  onStartBotGame?: () => void;
 }
 
 const NavigationPickerContainer = styled.div`
@@ -16,7 +29,7 @@ const NavigationPickerContainer = styled.div`
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
   max-height: calc(100dvh - 120px - env(safe-area-inset-bottom));
-  max-width: 150pt;
+  max-width: 168pt;
   display: flex;
   flex-direction: column;
   background-color: var(--panel-light-90);
@@ -93,6 +106,45 @@ const NavigationPickerButton = styled.button`
   }
 `;
 
+const GameRow = styled(NavigationPickerButton)`
+  font-size: 0.8rem;
+  padding: 7px 8px 7px 0;
+`;
+
+const GameEmojiImage = styled.img`
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  flex-shrink: 0;
+`;
+
+const GameEmojiPlaceholder = styled.div`
+  width: 20px;
+  height: 20px;
+  border-radius: 2px;
+  background: rgba(128, 128, 128, 0.22);
+  flex-shrink: 0;
+`;
+
+const GameText = styled.span`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
+const GameStatus = styled.span`
+  margin-left: auto;
+  font-size: 0.52rem;
+  color: var(--navigationTextMuted);
+  text-transform: uppercase;
+`;
+
+const EmptyRow = styled.div`
+  font-size: 0.7rem;
+  color: var(--navigationTextMuted);
+  padding: 4px 0 8px;
+`;
+
 const CompletedIcon = styled(FaCheck)`
   color: var(--completedPuzzleIconColor);
   font-size: 0.5rem;
@@ -162,7 +214,22 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
   }
 `;
 
-const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, showsHomeNavigation, navigateHome }) => {
+const NavigationPicker: React.FC<NavigationPickerProps> = ({
+  showsPuzzles,
+  showsHomeNavigation,
+  navigateHome,
+  games = [],
+  isGamesLoading = false,
+  isUsingFallbackScope = false,
+  onSelectGame,
+  showQuickActions = false,
+  showAutomatchAction = false,
+  showDirectAction = false,
+  showBotAction = false,
+  onStartAutomatch,
+  onStartDirectGame,
+  onStartBotGame,
+}) => {
   const navigationPickerRef = useRef<HTMLDivElement>(null);
   const { assets } = useGameAssets();
 
@@ -188,27 +255,86 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({ showsPuzzles, shows
     return `data:image/png;base64,${assets[iconName]}`;
   };
 
-  const completedProblemsSet = getCompletedProblemIds();
+  const getGameStatusLabel = (game: NavigationGameItem): string => {
+    if (game.status === "pending") {
+      return "pending";
+    }
+    if (game.status === "active") {
+      return "active";
+    }
+    if (game.status === "ended") {
+      return "ended";
+    }
+    return "waiting";
+  };
 
+  const completedProblemsSet = getCompletedProblemIds();
   const firstUncompletedIndex = problems.findIndex((problem) => !completedProblemsSet.has(problem.id));
+  const hasIncompleteTutorial = firstUncompletedIndex !== -1;
+
+  const shouldRenderGamesSection = true;
+  const shouldRenderQuickActions =
+    showQuickActions && ((showAutomatchAction && !!onStartAutomatch) || (showDirectAction && !!onStartDirectGame) || (showBotAction && !!onStartBotGame));
+  const shouldRenderLearnSection = showsPuzzles;
+  const showTopLearn = shouldRenderLearnSection && hasIncompleteTutorial;
+  const showBottomLearn = shouldRenderLearnSection && !hasIncompleteTutorial;
+  const hasScrollableContent = showTopLearn || showBottomLearn || shouldRenderGamesSection || shouldRenderQuickActions;
+
+  const renderLearnSection = () => (
+    <>
+      <SectionTitle>LEARN</SectionTitle>
+      {problems.map((item, index) => (
+        <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
+          <PlaceholderImage src={getIconImage(item.icon)} alt="" />
+          {item.label}
+          {completedProblemsSet.has(item.id) && <CompletedIcon />}
+          {!completedProblemsSet.has(item.id) && index === firstUncompletedIndex && <UncompletedIcon />}
+        </NavigationPickerButton>
+      ))}
+    </>
+  );
 
   return (
     <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
-      {showsPuzzles && (
+      {hasScrollableContent && (
         <ScrollableList>
-          <SectionTitle>LEARN</SectionTitle>
-          {problems.map((item, index) => (
-            <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
-              <PlaceholderImage src={getIconImage(item.icon)} alt="" />
-              {item.label}
-              {completedProblemsSet.has(item.id) && <CompletedIcon />}
-              {!completedProblemsSet.has(item.id) && index === firstUncompletedIndex && <UncompletedIcon />}
-            </NavigationPickerButton>
-          ))}
+          {showTopLearn && renderLearnSection()}
+
+          {shouldRenderGamesSection && (
+            <>
+              <SectionTitle>GAMES</SectionTitle>
+              {isGamesLoading && <EmptyRow>Loading games...</EmptyRow>}
+              {!isGamesLoading && isUsingFallbackScope && <EmptyRow>Showing games for current login only</EmptyRow>}
+              {!isGamesLoading && games.length === 0 && <EmptyRow>No games yet</EmptyRow>}
+              {!isGamesLoading &&
+                games.map((game) => (
+                  <GameRow key={game.inviteId} onClick={() => onSelectGame?.(game.inviteId)}>
+                    {typeof game.opponentEmoji === "number" ? (
+                      <GameEmojiImage src={emojis.getEmojiUrl(game.opponentEmoji.toString())} alt="" />
+                    ) : (
+                      <GameEmojiPlaceholder />
+                    )}
+                    <GameText>{game.opponentName && game.opponentName !== "" ? game.opponentName : "anon"}</GameText>
+                    <GameStatus>{getGameStatusLabel(game)}</GameStatus>
+                  </GameRow>
+                ))}
+            </>
+          )}
+
+          {shouldRenderQuickActions && (
+            <>
+              <SectionTitle>NEW GAME</SectionTitle>
+              {showAutomatchAction && onStartAutomatch && <NavigationPickerButton onClick={onStartAutomatch}>Automatch</NavigationPickerButton>}
+              {showDirectAction && onStartDirectGame && <NavigationPickerButton onClick={onStartDirectGame}>Direct Link</NavigationPickerButton>}
+              {showBotAction && onStartBotGame && <NavigationPickerButton onClick={onStartBotGame}>Bot Game</NavigationPickerButton>}
+            </>
+          )}
+
+          {showBottomLearn && renderLearnSection()}
         </ScrollableList>
       )}
       {showsHomeNavigation && (
-        <HomeBoardButton onClick={handleHomeClick} $withTopBorder={showsPuzzles}>
+        <HomeBoardButton onClick={handleHomeClick} $withTopBorder={hasScrollableContent}>
           Home Board →
         </HomeBoardButton>
       )}

@@ -32,6 +32,8 @@ exports.cancelAutomatch = onCall(async (request) => {
   try {
     const updates = {};
     updates[`automatch/${inviteId}`] = null;
+    updates[`invites/${inviteId}/automatchStateHint`] = "canceled";
+    updates[`invites/${inviteId}/automatchCanceledAt`] = admin.database.ServerValue.TIMESTAMP;
     await admin.database().ref().update(updates);
     console.log("auto:cancel:db:ok", { inviteId });
   } catch (e) {
@@ -43,6 +45,10 @@ exports.cancelAutomatch = onCall(async (request) => {
   const guestIdAfter = guestIdSnapshotAfter.val();
   console.log("auto:cancel:guestRecheck", { inviteId, guestId: !!guestIdAfter });
   if (guestIdAfter) {
+    const matchedUpdates = {};
+    matchedUpdates[`invites/${inviteId}/automatchStateHint`] = "matched";
+    matchedUpdates[`invites/${inviteId}/automatchCanceledAt`] = null;
+    await admin.database().ref().update(matchedUpdates);
     return { ok: false };
   }
 

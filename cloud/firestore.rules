@@ -12,5 +12,11 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).removedKeys().size() == 0
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(["custom"]);
     }
+    match /users/{userId}/games/{inviteId} {
+      allow read: if request.auth != null
+        && get(/databases/$(database)/documents/users/$(userId)).data.logins != null
+        && get(/databases/$(database)/documents/users/$(userId)).data.logins.hasAll([request.auth.uid]);
+      allow write: if false;
+    }
   }
 }

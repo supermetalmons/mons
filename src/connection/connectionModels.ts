@@ -17,6 +17,8 @@ export interface Invite {
   guestId?: string | null;
   hostRematches?: string | null;
   guestRematches?: string | null;
+  automatchStateHint?: "pending" | "matched" | "canceled" | null;
+  automatchCanceledAt?: number | null;
   wagers?: Record<string, MatchWagerState> | null;
   reactions?: Record<string, InviteReaction> | null;
 }
@@ -41,6 +43,25 @@ export interface HistoricalMatchPair {
   guestPlayerId: string | null;
   hostMatch: Match | null;
   guestMatch: Match | null;
+}
+
+export type NavigationGameStatus = "pending" | "waiting" | "active" | "ended";
+
+export interface NavigationGameItem {
+  inviteId: string;
+  kind: "auto" | "direct";
+  status: NavigationGameStatus;
+  sortBucket: number;
+  listSortAtMs: number;
+  hostLoginId: string | null;
+  guestLoginId: string | null;
+  opponentProfileId: string | null;
+  opponentName: string | null;
+  opponentEmoji: number | null;
+  automatchStateHint: "pending" | "matched" | "canceled" | null;
+  isPendingAutomatch: boolean;
+  isFallback?: boolean;
+  isOptimistic?: boolean;
 }
 
 export interface Reaction {

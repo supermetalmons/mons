@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useCallback } from "react";
+import React, { useRef, useEffect, useState, useCallback, useMemo } from "react";
 import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaPaintBrush, FaScroll, FaHourglassHalf } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import styled from "styled-components";
@@ -20,7 +20,7 @@ import BoardStylePickerComponent, { preloadPangchiuBoardPreview } from "./BoardS
 import { Sound } from "../utils/gameModels";
 import MoveHistoryPopup, { subscribeMoveHistoryPopupReload, triggerMoveHistoryPopupSelectionReset } from "./MoveHistoryPopup";
 import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMiningService";
-import { MatchWagerState } from "../connection/connectionModels";
+import { MatchWagerState, NavigationGameItem } from "../connection/connectionModels";
 import { subscribeToWagerState } from "../game/wagerState";
 import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
@@ -369,6 +369,10 @@ const BottomControls: React.FC = () => {
   const [isNavigationPopupVisible, setIsNavigationPopupVisible] = useState(false);
   const [isBoardStylePickerVisible, setIsBoardStylePickerVisible] = useState(false);
   const [isBadgeVisible, setIsBadgeVisible] = useState(false);
+  const [navigationProjectedGames, setNavigationProjectedGames] = useState<NavigationGameItem[]>([]);
+  const [isNavigationGamesLoading, setIsNavigationGamesLoading] = useState(false);
+  const [optimisticPendingAutomatchItem, setOptimisticPendingAutomatchItem] = useState<NavigationGameItem | null>(null);
+  const [isNavigationFallbackScope, setIsNavigationFallbackScope] = useState(false);
 
   const [isUndoDisabled, setIsUndoDisabled] = useState(true);
   const [waitingStateText, setWaitingStateText] = useState("");
@@ -778,6 +782,109 @@ const BottomControls: React.FC = () => {
       mounted = false;
     };
   }, []);
+
+  const compareNavigationItems = useCallback((left: NavigationGameItem, right: NavigationGameItem) => {
+    if (left.sortBucket !== right.sortBucket) {
+      return left.sortBucket - right.sortBucket;
+    }
+    if (left.listSortAtMs !== right.listSortAtMs) {
+      return right.listSortAtMs - left.listSortAtMs;
+    }
+    return left.inviteId.localeCompare(right.inviteId);
+  }, []);
+
+  const mergedNavigationGames = useMemo(() => {
+    const merged = navigationProjectedGames.slice();
+    if (optimisticPendingAutomatchItem && !merged.some((item) => item.inviteId === optimisticPendingAutomatchItem.inviteId)) {
+      merged.push(optimisticPendingAutomatchItem);
+    }
+    merged.sort(compareNavigationItems);
+    return merged;
+  }, [compareNavigationItems, navigationProjectedGames, optimisticPendingAutomatchItem]);
+
+  useEffect(() => {
+    if (!optimisticPendingAutomatchItem) {
+      return;
+    }
+    if (navigationProjectedGames.some((item) => item.inviteId === optimisticPendingAutomatchItem.inviteId)) {
+      setOptimisticPendingAutomatchItem(null);
+    }
+  }, [navigationProjectedGames, optimisticPendingAutomatchItem]);
+
+  useEffect(() => {
+    let disposed = false;
+    let unsubscribe: (() => void) | null = null;
+    const maxItems = 80;
+
+    const loadFallbackGames = () => {
+      setIsNavigationFallbackScope(true);
+      const sessionGuard = connection.createSessionGuard();
+      void connection
+        .getCurrentLoginFallbackGames(maxItems)
+        .then((items) => {
+          if (disposed || !sessionGuard()) {
+            return;
+          }
+          setNavigationProjectedGames(items);
+          setIsNavigationGamesLoading(false);
+        })
+        .catch(() => {
+          if (disposed || !sessionGuard()) {
+            return;
+          }
+          setNavigationProjectedGames([]);
+          setIsNavigationGamesLoading(false);
+        });
+    };
+
+    if (!isNavigationPopupVisible) {
+      setIsNavigationGamesLoading(false);
+      setIsNavigationFallbackScope(false);
+      return () => {
+        disposed = true;
+        if (unsubscribe) {
+          unsubscribe();
+        }
+      };
+    }
+
+    setIsNavigationGamesLoading(true);
+    const localProfileId = storage.getProfileId("");
+
+    if (localProfileId !== "") {
+      setIsNavigationFallbackScope(false);
+      unsubscribe = connection.subscribeProfileGamesFirestore(
+        maxItems,
+        (items) => {
+          if (disposed) {
+            return;
+          }
+          setNavigationProjectedGames(items);
+          setIsNavigationGamesLoading(false);
+          setIsNavigationFallbackScope(false);
+        },
+        () => {
+          if (disposed) {
+            return;
+          }
+          if (unsubscribe) {
+            unsubscribe();
+            unsubscribe = null;
+          }
+          loadFallbackGames();
+        }
+      );
+    } else {
+      loadFallbackGames();
+    }
+
+    return () => {
+      disposed = true;
+      if (unsubscribe) {
+        unsubscribe();
+      }
+    };
+  }, [isNavigationPopupVisible]);
 
   useEffect(() => {
     return () => {
@@ -1438,12 +1545,24 @@ const BottomControls: React.FC = () => {
     didClickStartBotGameButton();
   };
 
-  const handleAutomatchClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-    event.stopPropagation();
+  const beginAutomatchFlow = useCallback(() => {
     soundPlayer.initializeOnUserInteraction(false);
-    didClickAutomatchButton();
+    didClickAutomatchButton((response) => {
+      const inviteId = response && typeof response.inviteId === "string" ? response.inviteId : "";
+      const mode = response && typeof response.mode === "string" ? response.mode : "";
+      if (mode === "pending" && inviteId) {
+        setOptimisticPendingAutomatchItem(connection.createOptimisticPendingAutomatchItem(inviteId));
+      } else if (mode === "matched") {
+        setOptimisticPendingAutomatchItem(null);
+      }
+    });
     setAutomatchEnabled(false);
     setAutomatchButtonTmpState(true);
+  }, []);
+
+  const handleAutomatchClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.stopPropagation();
+    beginAutomatchFlow();
   };
 
   const handleCancelAutomatchClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -1457,6 +1576,7 @@ const BottomControls: React.FC = () => {
         return;
       }
       if (result && result.ok) {
+        setOptimisticPendingAutomatchItem(null);
         await transitionToHome({ forceMatchScopeReset: true });
       } else {
         setIsCancelAutomatchDisabled(false);
@@ -1487,6 +1607,42 @@ const BottomControls: React.FC = () => {
     setIsNavigationPopupVisible(!isNavigationPopupVisible);
   };
 
+  const handleNavigationGameSelect = (inviteId: string) => {
+    setIsNavigationPopupVisible(false);
+    setIsBoardStylePickerVisible(false);
+    connection.connectToInvite(inviteId);
+  };
+
+  const handleNavigationStartAutomatch = () => {
+    setIsNavigationPopupVisible(false);
+    setIsBoardStylePickerVisible(false);
+    soundPlayer.initializeOnUserInteraction(false);
+    didClickAutomatchButton((response) => {
+      const inviteId = response && typeof response.inviteId === "string" ? response.inviteId : "";
+      const mode = response && typeof response.mode === "string" ? response.mode : "";
+      if (mode === "pending" && inviteId) {
+        setOptimisticPendingAutomatchItem(connection.createOptimisticPendingAutomatchItem(inviteId));
+      } else if (mode === "matched") {
+        setOptimisticPendingAutomatchItem(null);
+      }
+    });
+    setAutomatchEnabled(false);
+    setAutomatchButtonTmpState(true);
+  };
+
+  const handleNavigationStartDirectGame = () => {
+    setIsNavigationPopupVisible(false);
+    setIsBoardStylePickerVisible(false);
+    handleInviteClick();
+  };
+
+  const handleNavigationStartBotGame = () => {
+    setIsNavigationPopupVisible(false);
+    setIsBoardStylePickerVisible(false);
+    soundPlayer.initializeOnUserInteraction(false);
+    didClickStartBotGameButton();
+  };
+
   const handleShare = async () => {
     try {
       await navigator.share({
@@ -1508,7 +1664,22 @@ const BottomControls: React.FC = () => {
       )}
       {isNavigationPopupVisible && (
         <div ref={navigationPopupRef}>
-          <NavigationPicker showsPuzzles={isNavigationListButtonVisible} showsHomeNavigation={isDeepHomeButtonVisible} navigateHome={handleHomeClick} />
+          <NavigationPicker
+            showsPuzzles={isNavigationListButtonVisible}
+            showsHomeNavigation={isDeepHomeButtonVisible}
+            navigateHome={handleHomeClick}
+            games={mergedNavigationGames}
+            isGamesLoading={isNavigationGamesLoading}
+            isUsingFallbackScope={isNavigationFallbackScope}
+            onSelectGame={handleNavigationGameSelect}
+            showQuickActions={isDeepHomeButtonVisible}
+            showAutomatchAction={isAutomatchButtonVisible}
+            showDirectAction={isInviteLinkButtonVisible}
+            showBotAction={isBotGameButtonVisible}
+            onStartAutomatch={handleNavigationStartAutomatch}
+            onStartDirectGame={handleNavigationStartDirectGame}
+            onStartBotGame={handleNavigationStartBotGame}
+          />
         </div>
       )}
       {isMoveHistoryPopupVisible && <MoveHistoryPopup ref={moveHistoryPopupRef} />}

@@ -15,6 +15,15 @@ const { cancelWagerProposal } = require("./cancelWagerProposal");
 const { declineWagerProposal } = require("./declineWagerProposal");
 const { acceptWagerProposal } = require("./acceptWagerProposal");
 const { resolveWagerOutcome } = require("./resolveWagerOutcome");
+const {
+  onInviteCreated,
+  onInviteGuestIdChanged,
+  onInviteHostRematchesChanged,
+  onInviteGuestRematchesChanged,
+  onMatchCreated,
+  onAutomatchQueueWritten,
+  onProfileLinkCreated,
+} = require("./profileGamesProjector");
 
 exports.verifySolanaAddress = verifySolanaAddress;
 exports.verifyEthAddress = verifyEthAddress;
@@ -31,3 +40,10 @@ exports.cancelWagerProposal = cancelWagerProposal;
 exports.declineWagerProposal = declineWagerProposal;
 exports.acceptWagerProposal = acceptWagerProposal;
 exports.resolveWagerOutcome = resolveWagerOutcome;
+exports.projectProfileGamesOnInviteCreated = onInviteCreated;
+exports.projectProfileGamesOnInviteGuestIdChanged = onInviteGuestIdChanged;
+exports.projectProfileGamesOnInviteHostRematchesChanged = onInviteHostRematchesChanged;
+exports.projectProfileGamesOnInviteGuestRematchesChanged = onInviteGuestRematchesChanged;
+exports.projectProfileGamesOnMatchCreated = onMatchCreated;
+exports.projectProfileGamesOnAutomatchQueueWritten = onAutomatchQueueWritten;
+exports.projectProfileGamesOnProfileLinkCreated = onProfileLinkCreated;

@@ -1,11 +1,11 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
 import { getAuth, Auth, signInAnonymously, onAuthStateChanged, signOut } from "firebase/auth";
 import { getDatabase, Database, ref, set, onValue, off, get, update, runTransaction } from "firebase/database";
-import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc } from "firebase/firestore";
+import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc, onSnapshot } from "firebase/firestore";
 import { didFindInviteThatCanBeJoined, didReceiveInviteReactionUpdate, didReceiveMatchUpdate, didRecoverInviteReactions, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal, didUpdateRematchSeriesMetadata } from "../game/gameController";
 import { getPlayersEmojiId, didGetPlayerProfile, setupPlayerId } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
-import { Match, Invite, InviteReaction, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES, MiningMaterialName, MatchWagerState, WagerProposal, WagerAgreement, RematchSeriesDescriptor, HistoricalMatchPair } from "./connectionModels";
+import { Match, Invite, InviteReaction, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES, MiningMaterialName, MatchWagerState, WagerProposal, WagerAgreement, RematchSeriesDescriptor, HistoricalMatchPair, NavigationGameItem } from "./connectionModels";
 import { storage } from "../utils/storage";
 import { generateNewInviteId } from "../utils/misc";
 import { getWagerState, setCurrentWagerMatch, setWagerState, syncCurrentWagerMatchState } from "../game/wagerState";
@@ -301,16 +301,20 @@ class Connection {
     });
   }
 
-  public connectToAutomatch(inviteId: string): void {
-    this.newInviteId = inviteId;
-    const routeState = getRouteStateSnapshot();
-    const target: RouteState = {
+  private buildInviteRouteTarget(inviteId: string, autojoin: boolean): RouteState {
+    return {
       mode: "invite",
       path: inviteId,
       inviteId,
       snapshotId: null,
-      autojoin: inviteId.startsWith("auto_"),
+      autojoin,
     };
+  }
+
+  private openInvite(inviteId: string, autojoin: boolean): void {
+    this.newInviteId = inviteId;
+    const routeState = getRouteStateSnapshot();
+    const target = this.buildInviteRouteTarget(inviteId, autojoin);
     if (routeState.mode === "home") {
       const sessionGuard = this.createSessionGuard();
       void import("../session/AppSessionManager")
@@ -325,20 +329,28 @@ class Connection {
           }
           const uid = this.auth.currentUser?.uid;
           if (!uid) {
-            void this.transitionToInvite(inviteId);
+            void this.transitionToInvite(inviteId, autojoin);
             return;
           }
-          this.connectToGame(uid, inviteId, true);
+          this.connectToGame(uid, inviteId, autojoin);
         })
         .catch(() => {
           if (!sessionGuard()) {
             return;
           }
-          void this.transitionToInvite(inviteId);
+          void this.transitionToInvite(inviteId, autojoin);
         });
       return;
     }
-    void this.transitionToInvite(inviteId);
+    void this.transitionToInvite(inviteId, autojoin);
+  }
+
+  public connectToInvite(inviteId: string): void {
+    this.openInvite(inviteId, inviteId.startsWith("auto_"));
+  }
+
+  public connectToAutomatch(inviteId: string): void {
+    this.openInvite(inviteId, true);
   }
 
   public didClickInviteButton(completion: (success: boolean) => void): void {
@@ -369,14 +381,8 @@ class Connection {
     navigator.clipboard.writeText(link);
   }
 
-  private async transitionToInvite(inviteId: string): Promise<void> {
-    const target: RouteState = {
-      mode: "invite",
-      path: inviteId,
-      inviteId,
-      snapshotId: null,
-      autojoin: inviteId.startsWith("auto_"),
-    };
+  private async transitionToInvite(inviteId: string, autojoin = inviteId.startsWith("auto_")): Promise<void> {
+    const target = this.buildInviteRouteTarget(inviteId, autojoin);
     const appSessionManager = await import("../session/AppSessionManager");
     await appSessionManager.transition(target);
   }
@@ -1282,6 +1288,364 @@ class Connection {
       console.error("Error canceling automatch:", error);
       throw error;
     }
+  }
+
+  private normalizeNavigationStatus(status: unknown): "pending" | "waiting" | "active" | "ended" {
+    if (status === "pending" || status === "waiting" || status === "active" || status === "ended") {
+      return status;
+    }
+    return "waiting";
+  }
+
+  private getNavigationSortBucket(status: "pending" | "waiting" | "active" | "ended"): number {
+    if (status === "active") {
+      return 20;
+    }
+    if (status === "pending") {
+      return 30;
+    }
+    if (status === "ended") {
+      return 50;
+    }
+    return 40;
+  }
+
+  private readTimestampMillis(value: unknown): number {
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return Math.floor(value);
+    }
+    if (value && typeof value === "object" && "toMillis" in value && typeof (value as { toMillis: unknown }).toMillis === "function") {
+      try {
+        const millis = (value as { toMillis: () => number }).toMillis();
+        if (Number.isFinite(millis)) {
+          return Math.floor(millis);
+        }
+      } catch {}
+    }
+    return 0;
+  }
+
+  private compareNavigationGameItems(a: NavigationGameItem, b: NavigationGameItem): number {
+    if (a.sortBucket !== b.sortBucket) {
+      return a.sortBucket - b.sortBucket;
+    }
+    if (a.listSortAtMs !== b.listSortAtMs) {
+      return b.listSortAtMs - a.listSortAtMs;
+    }
+    return a.inviteId.localeCompare(b.inviteId);
+  }
+
+  private mapFirestoreGameDocToNavigationItem(rawData: Record<string, unknown>, fallbackInviteId: string): NavigationGameItem | null {
+    const inviteId = typeof rawData.inviteId === "string" && rawData.inviteId !== "" ? rawData.inviteId : fallbackInviteId;
+    if (!inviteId) {
+      return null;
+    }
+
+    const status = this.normalizeNavigationStatus(rawData.status);
+    const defaultSortBucket = this.getNavigationSortBucket(status);
+    const sortBucket = typeof rawData.sortBucket === "number" && Number.isFinite(rawData.sortBucket) ? Math.floor(rawData.sortBucket) : defaultSortBucket;
+    const listSortAtMs = this.readTimestampMillis(rawData.listSortAt);
+    const rawAutomatchStateHint = rawData.automatchStateHint;
+    const automatchStateHint = rawAutomatchStateHint === "pending" || rawAutomatchStateHint === "matched" || rawAutomatchStateHint === "canceled" ? rawAutomatchStateHint : null;
+    const rawOpponentEmoji = rawData.opponentEmoji ?? rawData.opponentEmojiId;
+    const rawOpponentName = rawData.opponentName ?? rawData.opponentDisplayName;
+    const opponentEmoji =
+      typeof rawOpponentEmoji === "number" && Number.isFinite(rawOpponentEmoji)
+        ? Math.floor(rawOpponentEmoji)
+        : typeof rawOpponentEmoji === "string" && rawOpponentEmoji !== "" && Number.isFinite(Number(rawOpponentEmoji))
+          ? Math.floor(Number(rawOpponentEmoji))
+          : null;
+
+    return {
+      inviteId,
+      kind: rawData.kind === "auto" ? "auto" : "direct",
+      status,
+      sortBucket,
+      listSortAtMs: listSortAtMs > 0 ? listSortAtMs : Date.now(),
+      hostLoginId: typeof rawData.hostLoginId === "string" ? rawData.hostLoginId : null,
+      guestLoginId: typeof rawData.guestLoginId === "string" ? rawData.guestLoginId : null,
+      opponentProfileId: typeof rawData.opponentProfileId === "string" ? rawData.opponentProfileId : null,
+      opponentName: typeof rawOpponentName === "string" ? rawOpponentName : null,
+      opponentEmoji,
+      automatchStateHint,
+      isPendingAutomatch: typeof rawData.isPendingAutomatch === "boolean" ? rawData.isPendingAutomatch : status === "pending",
+    };
+  }
+
+  public createOptimisticPendingAutomatchItem(inviteId: string): NavigationGameItem | null {
+    if (!inviteId || inviteId === "") {
+      return null;
+    }
+    return {
+      inviteId,
+      kind: "auto",
+      status: "pending",
+      sortBucket: 30,
+      listSortAtMs: Date.now(),
+      hostLoginId: this.auth.currentUser?.uid ?? null,
+      guestLoginId: null,
+      opponentProfileId: null,
+      opponentName: null,
+      opponentEmoji: null,
+      automatchStateHint: "pending",
+      isPendingAutomatch: true,
+      isOptimistic: true,
+    };
+  }
+
+  public subscribeProfileGamesFirestore(maxItems: number, onUpdate: (items: NavigationGameItem[]) => void, onError?: (error: unknown) => void): () => void {
+    let unsubscribe: (() => void) | null = null;
+    let disposed = false;
+    const sessionGuard = this.createSessionGuard();
+    const boundedLimit = Number.isFinite(maxItems) && maxItems > 0 ? Math.floor(maxItems) : 40;
+
+    void this.ensureAuthenticated()
+      .then(() => {
+        if (disposed || !sessionGuard()) {
+          return;
+        }
+        const profileId = this.getLocalProfileId();
+        if (!profileId) {
+          onUpdate([]);
+          return;
+        }
+
+        const gamesQuery = query(
+          collection(this.firestore, "users", profileId, "games"),
+          orderBy("sortBucket", "asc"),
+          orderBy("listSortAt", "desc"),
+          limit(boundedLimit)
+        );
+
+        unsubscribe = onSnapshot(
+          gamesQuery,
+          (snapshot) => {
+            if (disposed || !sessionGuard()) {
+              return;
+            }
+            const items: NavigationGameItem[] = [];
+            snapshot.forEach((docSnapshot) => {
+              const mapped = this.mapFirestoreGameDocToNavigationItem(docSnapshot.data() as Record<string, unknown>, docSnapshot.id);
+              if (mapped) {
+                items.push(mapped);
+              }
+            });
+            items.sort((a, b) => this.compareNavigationGameItems(a, b));
+            onUpdate(items);
+          },
+          (error) => {
+            if (disposed || !sessionGuard()) {
+              return;
+            }
+            onError?.(error);
+          }
+        );
+      })
+      .catch((error) => {
+        if (disposed || !sessionGuard()) {
+          return;
+        }
+        onError?.(error);
+      });
+
+    return () => {
+      disposed = true;
+      if (unsubscribe) {
+        unsubscribe();
+        unsubscribe = null;
+      }
+    };
+  }
+
+  private async getInviteForFallback(inviteId: string, inviteCache: Map<string, Invite | null>): Promise<Invite | null> {
+    if (inviteCache.has(inviteId)) {
+      return inviteCache.get(inviteId) || null;
+    }
+
+    const inviteSnapshot = await get(ref(this.db, `invites/${inviteId}`));
+    const inviteData = inviteSnapshot.exists() ? (inviteSnapshot.val() as Invite) : null;
+    inviteCache.set(inviteId, inviteData);
+    return inviteData;
+  }
+
+  private extractInviteMatchIndex(matchId: string, inviteId: string): number {
+    if (matchId === inviteId) {
+      return 0;
+    }
+    if (!matchId.startsWith(inviteId)) {
+      return 0;
+    }
+    const suffix = matchId.slice(inviteId.length);
+    if (!/^\d+$/.test(suffix)) {
+      return 0;
+    }
+    const parsed = Number.parseInt(suffix, 10);
+    return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
+  }
+
+  private buildFallbackSortHint(maxMatchIndex: number, lastSeenOrder: number): number {
+    const normalizedOrder = Number.isFinite(lastSeenOrder) && lastSeenOrder > 0 ? Math.floor(lastSeenOrder) : 1;
+    const normalizedIndex = Number.isFinite(maxMatchIndex) && maxMatchIndex > 0 ? Math.floor(maxMatchIndex) : 0;
+    return normalizedIndex > 0 ? normalizedIndex * 1_000_000 + normalizedOrder : normalizedOrder;
+  }
+
+  private async resolveFallbackInviteIdFromMatchId(matchId: string, inviteCache: Map<string, Invite | null>): Promise<string | null> {
+    if (matchId === "") {
+      return null;
+    }
+
+    const exactInvite = await this.getInviteForFallback(matchId, inviteCache);
+    if (exactInvite) {
+      return matchId;
+    }
+
+    const candidates: string[] = [];
+    for (let splitIndex = matchId.length - 1; splitIndex > 0; splitIndex -= 1) {
+      const suffix = matchId.slice(splitIndex);
+      if (!/^\d+$/.test(suffix)) {
+        continue;
+      }
+      const candidateInviteId = matchId.slice(0, splitIndex);
+      const candidateInvite = await this.getInviteForFallback(candidateInviteId, inviteCache);
+      if (candidateInvite && !candidates.includes(candidateInviteId)) {
+        candidates.push(candidateInviteId);
+      }
+    }
+
+    if (candidates.length === 1) {
+      return candidates[0];
+    }
+    if (candidates.length > 1) {
+      console.log("navigation:fallback:match-resolver:ambiguous", {
+        matchId,
+        candidates,
+      });
+    }
+    return null;
+  }
+
+  private async getFallbackOpponentProfile(opponentLoginId: string | null, profileCache: Map<string, PlayerProfile | null>): Promise<PlayerProfile | null> {
+    if (!opponentLoginId) {
+      return null;
+    }
+    if (profileCache.has(opponentLoginId)) {
+      return profileCache.get(opponentLoginId) || null;
+    }
+    let profile: PlayerProfile | null = null;
+    try {
+      profile = await this.getProfileByLoginId(opponentLoginId);
+    } catch {
+      profile = null;
+    }
+    profileCache.set(opponentLoginId, profile);
+    return profile;
+  }
+
+  private async buildFallbackNavigationItem(
+    inviteId: string,
+    inviteData: Invite,
+    currentLoginUid: string,
+    profileCache: Map<string, PlayerProfile | null>,
+    fallbackSortHint: number
+  ): Promise<NavigationGameItem | null> {
+    const inviteRecord = inviteData as Invite & {
+      automatchStateHint?: unknown;
+      automatchCanceledAt?: unknown;
+    };
+    const hostLoginId = typeof inviteRecord.hostId === "string" ? inviteRecord.hostId : null;
+    const guestLoginId = typeof inviteRecord.guestId === "string" ? inviteRecord.guestId : null;
+    const kind: "auto" | "direct" = inviteId.startsWith("auto_") ? "auto" : "direct";
+    const ended =
+      (typeof inviteRecord.hostRematches === "string" && inviteRecord.hostRematches.endsWith("x")) ||
+      (typeof inviteRecord.guestRematches === "string" && inviteRecord.guestRematches.endsWith("x"));
+    const rawHint = inviteRecord.automatchStateHint;
+    const automatchStateHint = rawHint === "pending" || rawHint === "matched" || rawHint === "canceled" ? rawHint : null;
+    if (kind === "auto" && !guestLoginId && automatchStateHint !== "pending") {
+      return null;
+    }
+
+    const status: "pending" | "waiting" | "active" | "ended" = ended
+      ? "ended"
+      : kind === "auto" && automatchStateHint === "pending"
+        ? "pending"
+        : guestLoginId
+          ? "active"
+          : "waiting";
+
+    const sortBucket = this.getNavigationSortBucket(status);
+    const canceledAt = typeof inviteRecord.automatchCanceledAt === "number" && Number.isFinite(inviteRecord.automatchCanceledAt) ? Math.floor(inviteRecord.automatchCanceledAt) : 0;
+    const normalizedFallbackSortHint = Number.isFinite(fallbackSortHint) && fallbackSortHint > 0 ? Math.floor(fallbackSortHint) : 1;
+    const listSortAtMs = status === "pending" ? Date.now() : canceledAt > 0 ? canceledAt : normalizedFallbackSortHint;
+
+    const opponentLoginId = hostLoginId === currentLoginUid ? guestLoginId : hostLoginId;
+    const opponentProfile = await this.getFallbackOpponentProfile(opponentLoginId, profileCache);
+
+    return {
+      inviteId,
+      kind,
+      status,
+      sortBucket,
+      listSortAtMs,
+      hostLoginId,
+      guestLoginId,
+      opponentProfileId: opponentProfile?.id ?? null,
+      opponentName: opponentProfile?.username ?? null,
+      opponentEmoji: typeof opponentProfile?.emoji === "number" ? opponentProfile.emoji : null,
+      automatchStateHint,
+      isPendingAutomatch: status === "pending",
+      isFallback: true,
+    };
+  }
+
+  public async getCurrentLoginFallbackGames(maxItems: number): Promise<NavigationGameItem[]> {
+    await this.ensureAuthenticated();
+    const currentLoginUid = this.auth.currentUser?.uid;
+    if (!currentLoginUid) {
+      return [];
+    }
+
+    const boundedLimit = Number.isFinite(maxItems) && maxItems > 0 ? Math.floor(maxItems) : 40;
+    const matchesSnapshot = await get(ref(this.db, `players/${currentLoginUid}/matches`));
+    if (!matchesSnapshot.exists()) {
+      return [];
+    }
+
+    const matches = matchesSnapshot.val() as Record<string, unknown>;
+    const matchIds = Object.keys(matches || {});
+    const inviteCache = new Map<string, Invite | null>();
+    const inviteIds = new Set<string>();
+    const inviteSortHints = new Map<string, number>();
+
+    let lastSeenOrder = matchIds.length;
+    for (const matchId of matchIds) {
+      const inviteId = await this.resolveFallbackInviteIdFromMatchId(matchId, inviteCache);
+      if (inviteId) {
+        inviteIds.add(inviteId);
+        const maxMatchIndex = this.extractInviteMatchIndex(matchId, inviteId);
+        const nextSortHint = this.buildFallbackSortHint(maxMatchIndex, lastSeenOrder);
+        const previousSortHint = inviteSortHints.get(inviteId);
+        if (!previousSortHint || nextSortHint > previousSortHint) {
+          inviteSortHints.set(inviteId, nextSortHint);
+        }
+      }
+      lastSeenOrder -= 1;
+    }
+
+    const profileCache = new Map<string, PlayerProfile | null>();
+    const items: NavigationGameItem[] = [];
+    for (const inviteId of inviteIds) {
+      const inviteData = await this.getInviteForFallback(inviteId, inviteCache);
+      if (!inviteData) {
+        continue;
+      }
+      const fallbackItem = await this.buildFallbackNavigationItem(inviteId, inviteData, currentLoginUid, profileCache, inviteSortHints.get(inviteId) ?? 1);
+      if (fallbackItem) {
+        items.push(fallbackItem);
+      }
+    }
+
+    items.sort((a, b) => this.compareNavigationGameItems(a, b));
+    return items.slice(0, boundedLimit);
   }
 
   public async updateRatings(): Promise<any> {
@@ -2296,7 +2660,30 @@ class Connection {
                 console.error("Error joining as a guest:", error);
               });
           } else {
-            didFindInviteThatCanBeJoined();
+            const profileId = this.getLocalProfileId();
+            if (profileId !== null) {
+              this.checkBothPlayerProfiles(inviteData.hostId, "", profileId)
+                .then((matchingUid) => {
+                  if (!this.isSessionEpochActive(connectEpoch)) {
+                    return;
+                  }
+                  if (matchingUid === inviteData.hostId) {
+                    this.setSameProfilePlayerUid(matchingUid);
+                    this.refreshTokenIfNeeded();
+                    this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
+                  } else {
+                    didFindInviteThatCanBeJoined();
+                  }
+                })
+                .catch(() => {
+                  if (!this.isSessionEpochActive(connectEpoch)) {
+                    return;
+                  }
+                  didFindInviteThatCanBeJoined();
+                });
+            } else {
+              didFindInviteThatCanBeJoined();
+            }
           }
         } else {
           if (inviteData.hostId === uid) {
