@@ -11,7 +11,8 @@ This is a product/design plan, not a code-level spec.
 
 ### 2.1 Core navigation outcome
 - A player can open navigation and see their game list.
-- Tapping a game opens that invite route and lets existing runtime logic recover the right board state.
+- Tapping a game opens that invite route and lets existing runtime logic recover board/match state.
+- Navigation target for list rows is invite path (`/{inviteId}`), not precomputed match path.
 
 ### 2.2 Priority ordering behavior
 - **Most important:** active games (not explicitly ended with `x`) stay on top.
@@ -22,11 +23,17 @@ This is a product/design plan, not a code-level spec.
 
 ### 2.4 Pending automatch visibility
 - After starting automatch and returning to home, an item appears immediately in the list (pending/searching state).
-- If automatch is canceled before acceptance, that pending item is removed.
-- If automatch gets accepted, it stays as a normal persistent game item.
+- Pending automatch visibility is queue-based, not invite-based:
+  - show pending only while `automatch/{inviteId}` exists
+  - if queue entry is removed and no guest joined, remove row from list
+  - if guest joined, keep row as persistent game item
 
 ### 2.5 Identity fallback
 - If profile-merged history is unavailable, show current-login-only fallback history (with clear messaging that scope is limited).
+
+### 2.6 Signed-in preservation
+- Legacy games played on old login UIDs must become visible after wallet/profile linking.
+- Linking must not “lose” prior game history in the new profile list.
 
 ---
 
@@ -54,6 +61,7 @@ This keeps player flow centered in one place instead of forcing a home-board det
 Use a read-model pattern:
 - RTDB remains the source of truth for invites, rematches, gameplay, and realtime move state.
 - Firestore stores a profile-scoped summary list optimized for fast read and sorting.
+- All projector triggers call a single shared recompute pipeline per invite to keep behavior deterministic and safe.
 
 This gives:
 - fast list rendering
@@ -70,15 +78,20 @@ without changing game runtime behavior.
 - Active first.
 - Waiting next.
 - Ended last.
+- Pending automatch rows are ranked above normal waiting rows.
 - Within each group, newest meaningful update first.
 
-### 5.2 Near-future attention states
+### 5.2 Backfill ordering policy
+- Historical backfill rows should not jump above newly active rows by accident.
+- Backfilled `listSortAt` uses a low baseline timestamp policy (old/neutral rank), then normal projector updates move rows up as fresh events occur.
+
+### 5.3 Near-future attention states
 Potential attention states that may promote rows:
 - outgoing wager proposal waiting for response
 - pending automatch search row
 - later: your-turn-now
 
-### 5.3 “Your turn” caution
+### 5.4 “Your turn” caution
 Your-turn ranking is intentionally delayed for careful iteration because:
 - naive backend projection can cause high-frequency writes
 - turn ownership depends on match-level state, not only invite-level state
@@ -89,15 +102,40 @@ Future-safe direction:
 
 ---
 
-## 6) Row Content Strategy
+## 6) Projection Scope and Noise Control
 
-### 6.1 V1 row density
+### 6.1 Trigger scope
+Projector is driven by invite lifecycle, match creation, automatch queue changes, and profile-link catch-up events.
+
+### 6.2 Noise suppression
+- Reaction churn must not drive list projection.
+- Wager-derived ranking/badging is deferred for now.
+- Invite updates that only touch ignored fields should skip recompute/writes.
+
+### 6.3 Reactions model decision
+- Keep reactions under invite model for now.
+- Do not move reactions out in this iteration; first ship with projector filtering and write suppression.
+- Revisit structural move only if production trigger volume still becomes a problem.
+
+---
+
+## 7) Identity and Linking Behavior
+
+- Profile list is ownership-scoped by profile ID, but source game data is login-UID scoped.
+- When `players/{loginUid}/profile` is established for a legacy login, run catch-up projection for that login’s historical invites.
+- Fallback behavior remains current-login-only if profile history is not yet available.
+
+---
+
+## 8) Row Content Strategy
+
+### 8.1 V1 row density
 - opponent emoji
 - opponent display name
 - type/status marker
 - minimal invite context
 
-### 6.2 Deliberately postponed row enrichments
+### 8.2 Deliberately postponed row enrichments
 - rematch count
 - latest score / move count / current score
 - deeper match stats in list cells
@@ -106,29 +144,30 @@ These can be added later once baseline list performance and correctness are stab
 
 ---
 
-## 7) Future Expansion Compatibility
+## 9) Future Expansion Compatibility
 
 This plan should support future list features without rethinking core architecture:
 
-### 7.1 Additional item families
+### 9.1 Additional item families
 - tournaments in same navigation surface
 - public recent automatch games browsing
 - favorites/pinned boards
 - local and bot sessions with cross-device resume semantics
 
-### 7.2 Advanced engagement and analytics
+### 9.2 Advanced engagement and analytics
 - home/navigation badging for “needs attention”
 - richer game analytics, piece usage, rating graphs
 
-### 7.3 Compatibility principle
-Keep the first list system simple but schema-extensible, so later item types and attention signals can be introduced with additive changes.
+### 9.3 Compatibility principle
+- First release remains games-focused.
+- Data shape should stay extensible (`entityType`, additive fields) so mixed-item navigation can be added without a rewrite.
 
 ---
 
-## 8) Constraints and Tradeoffs
+## 10) Constraints and Tradeoffs
 
 Known constraints for the first version:
-- eventual consistency between RTDB event and summary-list update
+- eventual consistency between RTDB events and summary-list update
 - invite-series granularity (not rematch-per-row)
 - snapshot fields (name/emoji) may lag until refresh events
 - fallback mode is current-login scope only, not fully merged profile history
@@ -137,18 +176,20 @@ These are acceptable for first release of reliable navigation.
 
 ---
 
-## 9) Rollout Path
+## 11) Rollout Path
 
 ### Phase A - backend shadow
-- build projection and security/index layer
+- build projection + filtering + security/index layer
+- include profile-link catch-up path
 - no UI switch yet
 
 ### Phase B - historical fill
-- backfill old data
+- backfill old data with locked ordering policy
 - validate quality and parity
 
 ### Phase C - UI activation
 - show games in navigation
+- add optimistic pending-automatch local row
 - keep fallback behavior
 
 ### Phase D - refinement
@@ -158,30 +199,21 @@ These are acceptable for first release of reliable navigation.
 
 ---
 
-## 10) Decisions We Should Lock Before Coding
+## 12) Current Defaults Chosen
 
-1. **Ranking policy baseline**
-- exact waiting-group order: pending automatch before normal waiting (recommended) vs same bucket
-
-2. **Outgoing wager treatment**
-- show as separate subsection vs badge within active rows in v1.1
-
-3. **Latest-match context display policy**
-- whether displayed rematch context should follow proposed progression or only mutually-approved progression
-
-4. **Future item model boundary**
-- keep first release as games-only list source with extension hooks (recommended), or generalize to multi-item-source storage immediately
-
-5. **Local/bot cross-device resume target**
-- when to define backend persistence requirements for local sessions (not needed for first release)
+- Pending automatch visibility is queue-based.
+- Row navigation opens invite route only.
+- Shared recompute projector is used for all relevant triggers.
+- Reactions and wager changes are ignored by v1 list ranking/projection logic.
+- Backfill uses low-baseline sort ordering for historical rows.
+- Legacy login histories are projected into profile list after linking.
 
 ---
 
-## 11) Working Principles for Iteration
+## 13) Working Principles for Iteration
 
 - Prefer predictable behavior over maximal data richness in v1.
 - Avoid backend writes tied to move-frequency events.
 - Keep list fast and understandable.
 - Add new ranking/badging logic only with explicit cost controls.
 - Maintain compatibility with RTDB runtime recovery semantics.
-

@@ -7,9 +7,10 @@ This is the code-facing specification that backs `plan.md`.
 ## 1.1 V1 (foundation)
 - Profile-scoped game list read model in Firestore.
 - Active games sorted above ended games.
-- Immediate pending automatch row behavior.
+- Pending automatch row behavior based on automatch queue presence.
 - Current-login fallback when profile index path is unavailable.
 - Navigation popup renders compact game rows (opponent emoji + name + status/type).
+- Row click navigates by invite route only (`/${inviteId}`).
 
 ## 1.2 V1.1 (next small increment)
 - Outgoing wager pending indicator and optional sectioning.
@@ -39,13 +40,20 @@ Write model anchors (unchanged):
   - [cloud/functions/automatch.js:116](cloud/functions/automatch.js:116)
   - [cloud/functions/automatch.js:140](cloud/functions/automatch.js:140)
 - automatch cancel behavior:
-  - [cloud/functions/cancelAutomatch.js](cloud/functions/cancelAutomatch.js)
+  - [cloud/functions/cancelAutomatch.js:33](cloud/functions/cancelAutomatch.js:33)
 
 Profile resolution anchors:
 - [src/connection/connection.ts:554](src/connection/connection.ts:554)
 - [cloud/functions/utils.js:287](cloud/functions/utils.js:287)
 - [cloud/functions/verifyEthAddress.js:44](cloud/functions/verifyEthAddress.js:44)
 - [cloud/functions/verifySolanaAddress.js:47](cloud/functions/verifySolanaAddress.js:47)
+
+High-churn invite subtrees to ignore in V1 projection:
+- reactions:
+  - [src/connection/connection.ts:1828](src/connection/connection.ts:1828)
+- wagers:
+  - [src/connection/connection.ts:2681](src/connection/connection.ts:2681)
+  - [cloud/functions/sendWagerProposal.js:44](cloud/functions/sendWagerProposal.js:44)
 
 Navigation UI anchors:
 - [src/ui/NavigationPicker.tsx:8](src/ui/NavigationPicker.tsx:8)
@@ -73,13 +81,13 @@ Required:
 - `hostLoginId: string | null`
 - `guestLoginId: string | null`
 - `status: "waiting" | "active" | "ended"`
-- `latestMatchId: string`
 - `sortBucket: number`
 - `listSortAt: Timestamp`
 - `lastEventType: string`
 - `createdAt: Timestamp`
 - `updatedAt: Timestamp`
 - `endedAt: Timestamp | null`
+- `isPendingAutomatch: boolean`
 - `projectorVersion: number`
 - `source: "rtdb-projector"`
 
@@ -89,9 +97,9 @@ Display snapshot fields:
 - `opponentDisplayName: string`
 - `opponentEmojiId: number | null`
 
-Attention fields (v1 foundation):
-- `isPendingAutomatch: boolean`
-- `hasPendingOutgoingWager: boolean`
+Optional/reserved fields (not required by V1 UI):
+- `latestMatchId?: string` (diagnostic only)
+- `hasPendingOutgoingWager?: boolean` (deferred until wager-aware projection is enabled)
 
 ### 3.2 Sort buckets (v1)
 - `20`: active
@@ -105,25 +113,34 @@ Primary query order:
 
 This enforces active-on-top while keeping future attention bucket space.
 
+### 3.3 Navigation semantics
+- UI must navigate by `inviteId` route only.
+- UI must not depend on `latestMatchId` for opening a game.
+
 ---
 
-## 4) Projection Triggers (RTDB -> Firestore)
+## 4) Projection Architecture (RTDB -> Firestore)
 
 Add module:
 - `cloud/functions/profileGamesProjector.js`
+
+Core pattern:
+- all triggers call one shared function:
+  - `recomputeInviteProjection(inviteId, reason, options)`
+- this function reads required RTDB/Firestore state and computes full target owner docs
+- this function performs idempotent upsert/delete with write suppression
 
 ### 4.1 `projectInviteToProfileGames`
 Trigger:
 - `onValueWritten("/invites/{inviteId}")`
 
 Responsibilities:
-- derive `kind/status/latestMatchId`
-- derive `hasPendingOutgoingWager` per owner side
-- resolve owner/opponent profile IDs
-- resolve opponent name/emoji snapshots
-- compute `sortBucket`
-- upsert host and guest docs (when applicable)
-- preserve idempotency and write suppression
+- detect if invite mutation touches meaningful projection fields
+- ignore updates that only change high-churn ignored keys (`reactions`, `wagers`, `matchesRatingUpdates`, `matchesWagerResolutions`)
+- call shared recompute only when relevant
+
+Relevant invite fields (V1):
+- `hostId`, `guestId`, `hostColor`, `hostRematches`, `guestRematches`, `password`, `version`
 
 ### 4.2 `projectMatchCreateToProfileGames`
 Trigger:
@@ -131,22 +148,37 @@ Trigger:
 
 Responsibilities:
 - derive root `inviteId` from `matchId`
-- resolve owner profile id
-- touch row recency fields (`listSortAt`, `updatedAt`, `lastEventType="match_created"`)
-- avoid per-move processing (create-only trigger)
+- call shared recompute
+- keep create-only (no per-move processing)
 
 ### 4.3 `projectAutomatchQueueToProfileGames`
 Trigger:
 - `onValueWritten("/automatch/{inviteId}")`
 
 Responsibilities:
-- when automatch queue entry appears:
-  - ensure immediate pending row (`isPendingAutomatch=true`, bucket 30)
-- when queue entry disappears:
-  - if invite has no guest and remains waiting, remove pending row for that owner
-  - if invite got accepted (`guestId` exists), keep row and clear pending state
+- call shared recompute for queue enter/leave events
+- enforce queue-based pending semantics:
+  - queue exists + auto invite waiting => pending row visible
+  - queue missing + auto invite still waiting => row removed
+  - accepted auto invite (`guestId` exists) => persistent non-pending row
 
-This trigger is required to satisfy immediate pending automatch UX and cancel-removal behavior.
+### 4.4 `projectProfileLinkCatchup`
+Trigger:
+- `onValueCreated("/players/{loginUid}/profile")`
+
+Responsibilities:
+- preserve legacy games when user links/signs in later
+- scan `players/{loginUid}/matches/*`
+- derive unique invite IDs from match IDs
+- run bounded-concurrency recompute for each invite ID
+
+### 4.5 Shared recompute write suppression
+Write only when computed payload changed materially.
+
+Suppression rule:
+- fetch existing doc(s)
+- compare projection-owned fields
+- skip Firestore write if no effective delta
 
 ---
 
@@ -157,15 +189,18 @@ This trigger is required to satisfy immediate pending automatch UX and cancel-re
 - `active` if guest exists and not ended
 - `waiting` otherwise
 
-## 5.2 Latest match id
-- parse rematch indices from host/guest strings after trimming trailing `x`
-- `latestIndex = max(0, ...indices)`
-- latest id is `inviteId` or `inviteId + latestIndex`
+## 5.2 Pending automatch
+- true only when:
+  - invite ID has `auto_` prefix
+  - invite is still waiting (`guestId` missing)
+  - corresponding queue row exists at `automatch/{inviteId}`
 
-## 5.3 Pending outgoing wager
-From invite wager state:
-- true when owner has a proposal pending response (no agreed/resolved yet for current relevant match context)
-- false otherwise
+Row removal rule:
+- if invite is `auto_`, still waiting, and queue row is absent => remove owner game row
+
+## 5.3 Latest match id (optional)
+- may be derived from rematch strings for diagnostics only
+- never used as route target
 
 ## 5.4 Sort bucket
 Function:
@@ -174,7 +209,15 @@ Function:
 3. else if waiting and pending automatch -> 30
 4. else waiting -> 40
 
-(Your-turn and other attention buckets are intentionally deferred.)
+## 5.5 `listSortAt` policy
+Live projection:
+- use server timestamp for meaningful events (`invite_changed`, `match_created`, `automatch_queue_changed`, `profile_link_catchup`)
+
+Backfill projection:
+- use low baseline timestamp (for example `Timestamp.fromMillis(1)`) for `listSortAt`
+- prevents historical rows from jumping above fresh rows immediately after migration
+
+(Your-turn and wager attention buckets are intentionally deferred.)
 
 ---
 
@@ -222,14 +265,16 @@ Backfill flow:
 1. page through RTDB invites
 2. derive summary fields
 3. resolve host/guest/opponent snapshots
-4. upsert both owner docs
-5. batch writes + retries + counters
+4. apply low-baseline `listSortAt`
+5. upsert both owner docs
+6. batch writes + retries + counters
 
 CLI options:
 - `--project`
 - `--dry-run`
 - `--limit`
 - `--since-key`
+- `--list-sort-baseline-ms` (default `1`)
 
 Idempotent by design.
 
@@ -248,7 +293,6 @@ export interface NavigationGameItem {
   inviteId: string;
   kind: "auto" | "direct";
   status: NavigationGameStatus;
-  latestMatchId: string;
   sortBucket: number;
   listSortAtMs: number;
   updatedAtMs: number;
@@ -258,8 +302,8 @@ export interface NavigationGameItem {
   opponentProfileId?: string | null;
   opponentLoginId?: string | null;
   isPendingAutomatch?: boolean;
-  hasPendingOutgoingWager?: boolean;
   isCurrentLoginFallback?: boolean;
+  isOptimisticLocal?: boolean;
 }
 ```
 
@@ -269,6 +313,8 @@ Update [src/connection/connection.ts](src/connection/connection.ts):
   - query by `sortBucket asc, listSortAt desc`
 - `getCurrentLoginFallbackGames(limit): Promise<NavigationGameItem[]>`
   - current-login-only RTDB fallback
+- `createOptimisticPendingAutomatchItem(inviteId): NavigationGameItem`
+  - local row for immediate UX after automatch starts
 
 ---
 
@@ -292,6 +338,8 @@ Row content:
 Update [src/ui/BottomControls.tsx](src/ui/BottomControls.tsx):
 - manage subscription lifecycle on popup open/close
 - load fallback path when profile index unavailable
+- merge optimistic pending automatch row with Firestore list
+- clear optimistic row on cancel/error or when projected row arrives
 - pass quick action handlers into `NavigationPicker`
 - route on row selection via app session transition
 
@@ -307,7 +355,7 @@ Required update direction:
   - incomplete tutorial rows above games
   - completed users still see tutorial entry point
 
-Use existing problems/tutor progress APIs; no backend changes required.
+Use existing problems/tutorial progress APIs; no backend changes required.
 
 ---
 
@@ -316,11 +364,18 @@ Use existing problems/tutor progress APIs; no backend changes required.
 Functional:
 - active games always sorted above ended
 - pending automatch row appears immediately after automatch start
-- pending automatch row removed on cancel
+- pending automatch row removed on cancel even if invite remains
 - accepted automatch row persists
 - direct and automatch rows coexist
 - fallback current-login list works when profile index unavailable
+- row click navigates by invite ID and runtime reconnect resolves match
 - compact row shows opponent name+emoji with safe fallback values
+- linked profile gains legacy login history after `players/{uid}/profile` creation
+
+Projection correctness:
+- invite writes for reactions only do not write Firestore game docs
+- invite writes for wagers only do not write Firestore game docs (V1)
+- projector writes are idempotent under duplicate trigger execution
 
 Security:
 - owner read allowed
@@ -329,24 +384,27 @@ Security:
 
 Migration:
 - backfill parity, idempotency, and re-run safety
+- baseline sort policy places historical rows below fresh updates
 
 Performance:
 - no per-move projection writes
 - acceptable list query latency at target limit sizes
+- acceptable projector invocation rate under reaction churn
 
 ---
 
 ## 13) Implementation Sequence
 
-1. Add projector module with 3 triggers (`invites`, `matches created`, `automatch queue`).
-2. Export triggers in `cloud/functions/index.js`.
-3. Update Firestore rules and indexes.
-4. Add and test backfill script.
-5. Deploy backend in shadow mode; validate docs.
-6. Add frontend types and connection APIs.
-7. Integrate navigation UI (games + actions + tutorial placement).
-8. Enable feature flag and monitor.
-9. Iterate on wager separation and ranking adjustments.
+1. Add projector module with shared recompute function.
+2. Add 4 triggers (`invites`, `matches created`, `automatch queue`, `players/{uid}/profile`).
+3. Export triggers in `cloud/functions/index.js`.
+4. Update Firestore rules and indexes.
+5. Add and test backfill script.
+6. Deploy backend in shadow mode; validate docs and trigger noise suppression.
+7. Add frontend types and connection APIs.
+8. Integrate navigation UI (games + actions + tutorial placement + optimistic pending row).
+9. Enable feature flag and monitor.
+10. Iterate on wager attention and ranking adjustments.
 
 ---
 
@@ -359,3 +417,6 @@ Preferred direction later:
 - optionally cache short-lived results locally
 - only introduce backend projection if proven necessary and bounded
 
+If invite-trigger volume remains high after filtering/suppression:
+- consider moving high-churn reaction data out of invite subtree in a separate migration
+- keep that migration separate from first game-list rollout
