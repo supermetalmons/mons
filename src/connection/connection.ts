@@ -1364,6 +1364,10 @@ class Connection {
           ? Math.floor(Number(rawOpponentEmoji))
           : null;
 
+    if ((status === "active" || status === "ended") && opponentEmoji === null) {
+      return null;
+    }
+
     return {
       inviteId,
       kind: rawData.kind === "auto" ? "auto" : "direct",
@@ -1726,6 +1730,9 @@ class Connection {
     const latestMatchId = this.deriveFallbackLatestMatchId(inviteId, inviteData, fallbackMaxMatchIndex);
     const opponentEmojiFromProfile = typeof opponentProfile?.emoji === "number" ? opponentProfile.emoji : null;
     const opponentEmoji = opponentEmojiFromProfile ?? (await this.getFallbackOpponentEmoji(opponentLoginId, latestMatchId, inviteId, emojiCache));
+    if ((status === "active" || status === "ended") && opponentEmoji === null) {
+      return null;
+    }
 
     return {
       inviteId,

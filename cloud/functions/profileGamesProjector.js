@@ -13,6 +13,8 @@ const PROFILE_LINK_CATCHUP_CONCURRENCY = 20;
 const PROFILE_LINK_CATCHUP_TIMEOUT_MS = 50000;
 
 const PROJECTOR_SCHEMA_VERSION = 2;
+const READ_RETRY_ATTEMPTS = 2;
+const READ_RETRY_DELAY_MS = 25;
 
 const loginToProfileCache = new Map();
 const profileSummaryCache = new Map();
@@ -22,6 +24,14 @@ const normalizeString = (value) => (typeof value === "string" && value.trim() !=
 const toTimestamp = (millis) => {
   const normalized = Number.isFinite(millis) ? Math.floor(Number(millis)) : Date.now();
   return admin.firestore.Timestamp.fromMillis(Math.max(1, normalized));
+};
+
+const delay = async (ms) => {
+  const safeDelay = Number.isFinite(ms) && ms > 0 ? Math.floor(ms) : 0;
+  if (safeDelay <= 0) {
+    return;
+  }
+  await new Promise((resolve) => setTimeout(resolve, safeDelay));
 };
 
 const readTimestampMillis = (value) => {
@@ -146,27 +156,35 @@ async function readLoginSummaryFromRtdbMatches(loginUid, latestMatchId, inviteId
   }
 
   for (const candidateMatchId of candidateMatchIds) {
-    try {
-      const matchSnapshot = await admin.database().ref(`players/${normalizedLoginUid}/matches/${candidateMatchId}`).once("value");
-      if (!matchSnapshot.exists()) {
-        continue;
+    for (let attempt = 1; attempt <= READ_RETRY_ATTEMPTS; attempt += 1) {
+      try {
+        const matchSnapshot = await admin.database().ref(`players/${normalizedLoginUid}/matches/${candidateMatchId}`).once("value");
+        if (!matchSnapshot.exists()) {
+          break;
+        }
+        const matchData = matchSnapshot.val() || {};
+        const emoji = getEmojiId(matchData.emojiId);
+        if (emoji !== null) {
+          const summary = {
+            name: null,
+            emoji,
+          };
+          cache.set(cacheKey, summary);
+          return summary;
+        }
+        break;
+      } catch (error) {
+        if (attempt >= READ_RETRY_ATTEMPTS) {
+          console.error("projector:login-summary-rtdb-read-failed", {
+            loginUid: normalizedLoginUid,
+            matchId: candidateMatchId,
+            attempts: attempt,
+            error: error && error.message ? error.message : error,
+          });
+          break;
+        }
+        await delay(READ_RETRY_DELAY_MS);
       }
-      const matchData = matchSnapshot.val() || {};
-      const emoji = getEmojiId(matchData.emojiId);
-      if (emoji !== null) {
-        const summary = {
-          name: null,
-          emoji,
-        };
-        cache.set(cacheKey, summary);
-        return summary;
-      }
-    } catch (error) {
-      console.error("projector:login-summary-rtdb-read-failed", {
-        loginUid: normalizedLoginUid,
-        matchId: candidateMatchId,
-        error: error && error.message ? error.message : error,
-      });
     }
   }
 
@@ -442,20 +460,28 @@ async function readProfileSummary(profileId) {
   }
 
   let summary = null;
-  try {
-    const profileDoc = await admin.firestore().collection("users").doc(normalizedProfileId).get();
-    if (profileDoc.exists) {
-      const profileData = profileDoc.data() || {};
-      summary = {
-        name: getProfileDisplayName(profileData),
-        emoji: getProfileEmoji(profileData),
-      };
+  for (let attempt = 1; attempt <= READ_RETRY_ATTEMPTS; attempt += 1) {
+    try {
+      const profileDoc = await admin.firestore().collection("users").doc(normalizedProfileId).get();
+      if (profileDoc.exists) {
+        const profileData = profileDoc.data() || {};
+        summary = {
+          name: getProfileDisplayName(profileData),
+          emoji: getProfileEmoji(profileData),
+        };
+      }
+      break;
+    } catch (error) {
+      if (attempt >= READ_RETRY_ATTEMPTS) {
+        console.error("projector:profile-summary-read-failed", {
+          profileId: normalizedProfileId,
+          attempts: attempt,
+          error: error && error.message ? error.message : error,
+        });
+        break;
+      }
+      await delay(READ_RETRY_DELAY_MS);
     }
-  } catch (error) {
-    console.error("projector:profile-summary-read-failed", {
-      profileId: normalizedProfileId,
-      error: error && error.message ? error.message : error,
-    });
   }
 
   profileSummaryCache.set(normalizedProfileId, summary);
@@ -635,6 +661,17 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
     }
     const existingOpponentEmoji = getEmojiId(existingDocData ? existingDocData.opponentEmoji ?? existingDocData.opponentEmojiId : null);
     const opponentEmoji = opponentEmojiFromProfile !== null ? opponentEmojiFromProfile : opponentEmojiFromLogin !== null ? opponentEmojiFromLogin : existingOpponentEmoji;
+
+    const requiresResolvedOpponentEmoji = status === "active" || status === "ended";
+    if (requiresResolvedOpponentEmoji && opponentEmoji === null) {
+      if (existingDocSnapshot) {
+        batch.delete(ownerDocRef);
+        deleteCount += 1;
+      } else {
+        skippedCount += 1;
+      }
+      continue;
+    }
 
     const projectionFingerprintPayload = {
       schemaVersion: PROJECTOR_SCHEMA_VERSION,
