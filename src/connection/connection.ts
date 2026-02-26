@@ -1546,6 +1546,91 @@ class Connection {
     return normalizedIndex > 0 ? normalizedIndex * 1_000_000 + normalizedOrder : normalizedOrder;
   }
 
+  private parseFallbackRematchIndices(rematches: unknown): number[] {
+    if (typeof rematches !== "string" || rematches === "") {
+      return [];
+    }
+    const normalized = rematches.replace(/x+$/, "");
+    if (normalized === "") {
+      return [];
+    }
+    return normalized
+      .split(";")
+      .map((token) => Number.parseInt(token, 10))
+      .filter((value) => Number.isFinite(value) && value > 0);
+  }
+
+  private deriveFallbackLatestMatchId(inviteId: string, inviteData: Invite, fallbackMaxMatchIndex: number): string {
+    const hostIndices = this.parseFallbackRematchIndices(inviteData.hostRematches);
+    const guestIndices = this.parseFallbackRematchIndices(inviteData.guestRematches);
+    let maxIndex = Number.isFinite(fallbackMaxMatchIndex) && fallbackMaxMatchIndex > 0 ? Math.floor(fallbackMaxMatchIndex) : 0;
+    hostIndices.forEach((index) => {
+      if (index > maxIndex) {
+        maxIndex = index;
+      }
+    });
+    guestIndices.forEach((index) => {
+      if (index > maxIndex) {
+        maxIndex = index;
+      }
+    });
+    return maxIndex > 0 ? `${inviteId}${maxIndex}` : inviteId;
+  }
+
+  private parseFallbackEmojiId(value: unknown): number | null {
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return Math.floor(value);
+    }
+    if (typeof value === "string" && value !== "") {
+      const parsed = Number(value);
+      if (Number.isFinite(parsed)) {
+        return Math.floor(parsed);
+      }
+    }
+    return null;
+  }
+
+  private async getFallbackOpponentEmoji(
+    opponentLoginId: string | null,
+    latestMatchId: string,
+    inviteId: string,
+    emojiCache: Map<string, number | null>
+  ): Promise<number | null> {
+    if (!opponentLoginId) {
+      return null;
+    }
+    const normalizedLatestMatchId = latestMatchId && latestMatchId !== "" ? latestMatchId : inviteId;
+    const cacheKey = `${opponentLoginId}|${normalizedLatestMatchId}|${inviteId}`;
+    if (emojiCache.has(cacheKey)) {
+      return emojiCache.get(cacheKey) ?? null;
+    }
+
+    const candidateMatchIds = [normalizedLatestMatchId];
+    if (inviteId !== normalizedLatestMatchId) {
+      candidateMatchIds.push(inviteId);
+    }
+
+    for (const candidateMatchId of candidateMatchIds) {
+      try {
+        const matchSnapshot = await get(ref(this.db, `players/${opponentLoginId}/matches/${candidateMatchId}`));
+        if (!matchSnapshot.exists()) {
+          continue;
+        }
+        const matchData = matchSnapshot.val() as { emojiId?: unknown } | null;
+        const parsedEmojiId = this.parseFallbackEmojiId(matchData?.emojiId);
+        if (parsedEmojiId !== null) {
+          emojiCache.set(cacheKey, parsedEmojiId);
+          return parsedEmojiId;
+        }
+      } catch {
+        continue;
+      }
+    }
+
+    emojiCache.set(cacheKey, null);
+    return null;
+  }
+
   private async resolveFallbackInviteIdFromMatchId(matchId: string, inviteCache: Map<string, Invite | null>): Promise<string | null> {
     if (matchId === "") {
       return null;
@@ -1603,7 +1688,9 @@ class Connection {
     inviteData: Invite,
     currentLoginUid: string,
     profileCache: Map<string, PlayerProfile | null>,
-    fallbackSortHint: number
+    emojiCache: Map<string, number | null>,
+    fallbackSortHint: number,
+    fallbackMaxMatchIndex: number
   ): Promise<NavigationGameItem | null> {
     const inviteRecord = inviteData as Invite & {
       automatchStateHint?: unknown;
@@ -1636,6 +1723,9 @@ class Connection {
 
     const opponentLoginId = hostLoginId === currentLoginUid ? guestLoginId : hostLoginId;
     const opponentProfile = await this.getFallbackOpponentProfile(opponentLoginId, profileCache);
+    const latestMatchId = this.deriveFallbackLatestMatchId(inviteId, inviteData, fallbackMaxMatchIndex);
+    const opponentEmojiFromProfile = typeof opponentProfile?.emoji === "number" ? opponentProfile.emoji : null;
+    const opponentEmoji = opponentEmojiFromProfile ?? (await this.getFallbackOpponentEmoji(opponentLoginId, latestMatchId, inviteId, emojiCache));
 
     return {
       inviteId,
@@ -1647,7 +1737,7 @@ class Connection {
       guestLoginId,
       opponentProfileId: opponentProfile?.id ?? null,
       opponentName: opponentProfile?.username ?? null,
-      opponentEmoji: typeof opponentProfile?.emoji === "number" ? opponentProfile.emoji : null,
+      opponentEmoji,
       automatchStateHint,
       isPendingAutomatch: status === "pending",
       isFallback: true,
@@ -1672,6 +1762,7 @@ class Connection {
     const inviteCache = new Map<string, Invite | null>();
     const inviteIds = new Set<string>();
     const inviteSortHints = new Map<string, number>();
+    const inviteMaxMatchIndices = new Map<string, number>();
 
     let lastSeenOrder = matchIds.length;
     for (const matchId of matchIds) {
@@ -1679,6 +1770,10 @@ class Connection {
       if (inviteId) {
         inviteIds.add(inviteId);
         const maxMatchIndex = this.extractInviteMatchIndex(matchId, inviteId);
+        const previousMaxMatchIndex = inviteMaxMatchIndices.get(inviteId) ?? 0;
+        if (maxMatchIndex > previousMaxMatchIndex) {
+          inviteMaxMatchIndices.set(inviteId, maxMatchIndex);
+        }
         const nextSortHint = this.buildFallbackSortHint(maxMatchIndex, lastSeenOrder);
         const previousSortHint = inviteSortHints.get(inviteId);
         if (!previousSortHint || nextSortHint > previousSortHint) {
@@ -1689,16 +1784,38 @@ class Connection {
     }
 
     const profileCache = new Map<string, PlayerProfile | null>();
+    const emojiCache = new Map<string, number | null>();
     const items: NavigationGameItem[] = [];
-    for (const inviteId of inviteIds) {
-      const inviteData = await this.getInviteForFallback(inviteId, inviteCache);
-      if (!inviteData) {
-        continue;
-      }
-      const fallbackItem = await this.buildFallbackNavigationItem(inviteId, inviteData, currentLoginUid, profileCache, inviteSortHints.get(inviteId) ?? 1);
-      if (fallbackItem) {
-        items.push(fallbackItem);
-      }
+    const inviteIdList = Array.from(inviteIds);
+    const buildConcurrency = 8;
+    for (let startIndex = 0; startIndex < inviteIdList.length; startIndex += buildConcurrency) {
+      const chunk = inviteIdList.slice(startIndex, startIndex + buildConcurrency);
+      const chunkItems = await Promise.all(
+        chunk.map(async (inviteId) => {
+          try {
+            const inviteData = await this.getInviteForFallback(inviteId, inviteCache);
+            if (!inviteData) {
+              return null;
+            }
+            return await this.buildFallbackNavigationItem(
+              inviteId,
+              inviteData,
+              currentLoginUid,
+              profileCache,
+              emojiCache,
+              inviteSortHints.get(inviteId) ?? 1,
+              inviteMaxMatchIndices.get(inviteId) ?? 0
+            );
+          } catch {
+            return null;
+          }
+        })
+      );
+      chunkItems.forEach((fallbackItem) => {
+        if (fallbackItem) {
+          items.push(fallbackItem);
+        }
+      });
     }
 
     items.sort((a, b) => this.compareNavigationGameItems(a, b));

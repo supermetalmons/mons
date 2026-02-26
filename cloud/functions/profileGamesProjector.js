@@ -111,6 +111,69 @@ const getProfileEmoji = (profileData) => {
   return null;
 };
 
+const getEmojiId = (value) => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return Math.floor(value);
+  }
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    if (Number.isFinite(parsed)) {
+      return Math.floor(parsed);
+    }
+  }
+  return null;
+};
+
+async function readLoginSummaryFromRtdbMatches(loginUid, latestMatchId, inviteId, cache) {
+  const normalizedLoginUid = normalizeString(loginUid);
+  if (!normalizedLoginUid) {
+    return null;
+  }
+
+  const normalizedLatestMatchId = normalizeString(latestMatchId);
+  const normalizedInviteId = normalizeString(inviteId);
+  const cacheKey = `${normalizedLoginUid}|${normalizedLatestMatchId || ""}|${normalizedInviteId || ""}`;
+  if (cache.has(cacheKey)) {
+    return cache.get(cacheKey);
+  }
+
+  const candidateMatchIds = [];
+  if (normalizedLatestMatchId) {
+    candidateMatchIds.push(normalizedLatestMatchId);
+  }
+  if (normalizedInviteId && normalizedInviteId !== normalizedLatestMatchId) {
+    candidateMatchIds.push(normalizedInviteId);
+  }
+
+  for (const candidateMatchId of candidateMatchIds) {
+    try {
+      const matchSnapshot = await admin.database().ref(`players/${normalizedLoginUid}/matches/${candidateMatchId}`).once("value");
+      if (!matchSnapshot.exists()) {
+        continue;
+      }
+      const matchData = matchSnapshot.val() || {};
+      const emoji = getEmojiId(matchData.emojiId);
+      if (emoji !== null) {
+        const summary = {
+          name: null,
+          emoji,
+        };
+        cache.set(cacheKey, summary);
+        return summary;
+      }
+    } catch (error) {
+      console.error("projector:login-summary-rtdb-read-failed", {
+        loginUid: normalizedLoginUid,
+        matchId: candidateMatchId,
+        error: error && error.message ? error.message : error,
+      });
+    }
+  }
+
+  cache.set(cacheKey, null);
+  return null;
+}
+
 const createInviteCandidatesFromMatchId = (matchId) => {
   const candidates = [];
   for (let splitIndex = matchId.length - 1; splitIndex > 0; splitIndex -= 1) {
@@ -470,6 +533,7 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
   const shouldProject = shouldProjectInvite({ inviteId: normalizedInviteId, inviteData, automatchStateHint });
   const sortBucket = getSortBucket(status);
   const latestMatchId = deriveLatestMatchId(normalizedInviteId, inviteData, options.latestMatchIdHint || null);
+  const loginSummaryCache = new Map();
 
   const existingDocsByOwnerProfileId = new Map();
   const existingDocs = [];
@@ -553,11 +617,24 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
       hostLoginId,
       guestLoginId,
     });
-    const opponentSummary = ownerContext.opponentProfileId ? await readProfileSummary(ownerContext.opponentProfileId) : null;
-
     const ownerDocRef = firestore.collection("users").doc(ownerProfileId).collection("games").doc(normalizedInviteId);
     const existingDocSnapshot = existingDocsByOwnerProfileId.get(ownerProfileId);
     const existingDocData = existingDocSnapshot ? existingDocSnapshot.data() : null;
+
+    const opponentProfileSummary = ownerContext.opponentProfileId ? await readProfileSummary(ownerContext.opponentProfileId) : null;
+    const opponentName = opponentProfileSummary && typeof opponentProfileSummary.name === "string" ? opponentProfileSummary.name : null;
+    const opponentEmojiFromProfile =
+      opponentProfileSummary && opponentProfileSummary.emoji !== null && opponentProfileSummary.emoji !== undefined
+        ? opponentProfileSummary.emoji
+        : null;
+    let opponentEmojiFromLogin = null;
+    if (opponentEmojiFromProfile === null && ownerContext.opponentLoginId) {
+      const opponentLoginSummary = await readLoginSummaryFromRtdbMatches(ownerContext.opponentLoginId, latestMatchId, normalizedInviteId, loginSummaryCache);
+      opponentEmojiFromLogin =
+        opponentLoginSummary && opponentLoginSummary.emoji !== null && opponentLoginSummary.emoji !== undefined ? opponentLoginSummary.emoji : null;
+    }
+    const existingOpponentEmoji = getEmojiId(existingDocData ? existingDocData.opponentEmoji ?? existingDocData.opponentEmojiId : null);
+    const opponentEmoji = opponentEmojiFromProfile !== null ? opponentEmojiFromProfile : opponentEmojiFromLogin !== null ? opponentEmojiFromLogin : existingOpponentEmoji;
 
     const projectionFingerprintPayload = {
       schemaVersion: PROJECTOR_SCHEMA_VERSION,
@@ -578,8 +655,8 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
       ownerLoginId: ownerContext.ownerLoginId,
       opponentProfileId: ownerContext.opponentProfileId,
       opponentLoginId: ownerContext.opponentLoginId,
-      opponentName: opponentSummary ? opponentSummary.name : null,
-      opponentEmoji: opponentSummary ? opponentSummary.emoji : null,
+      opponentName,
+      opponentEmoji,
     };
 
     const nextFingerprint = fingerprintForProjection(projectionFingerprintPayload);
@@ -609,10 +686,10 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
       ownerLoginId: ownerContext.ownerLoginId,
       opponentProfileId: ownerContext.opponentProfileId,
       opponentLoginId: ownerContext.opponentLoginId,
-      opponentName: opponentSummary ? opponentSummary.name : null,
-      opponentDisplayName: opponentSummary ? opponentSummary.name : null,
-      opponentEmoji: opponentSummary ? opponentSummary.emoji : null,
-      opponentEmojiId: opponentSummary ? opponentSummary.emoji : null,
+      opponentName,
+      opponentDisplayName: opponentName,
+      opponentEmoji,
+      opponentEmojiId: opponentEmoji,
       listSortAt: toTimestamp(nextListSortMs),
       createdAt: existingCreatedAt || toTimestamp(nowMs),
       updatedAt: toTimestamp(nowMs),
