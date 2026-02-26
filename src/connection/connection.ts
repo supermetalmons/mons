@@ -2880,12 +2880,13 @@ class Connection {
           } else if (inviteData.guestId === uid) {
             this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
           } else {
-            if (this.sameProfilePlayerUid !== null && this.sameProfilePlayerUid !== this.loginUid) {
-              if (this.sameProfilePlayerUid === inviteData.hostId) {
-                this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
-              } else {
-                this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId ?? "", connectEpoch);
-              }
+            const sameProfileUid = this.sameProfilePlayerUid;
+            const hasSameProfileUidAlias = sameProfileUid !== null && sameProfileUid !== this.loginUid;
+            if (hasSameProfileUidAlias && sameProfileUid === inviteData.hostId) {
+              this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
+              this.refreshTokenIfNeeded();
+            } else if (hasSameProfileUidAlias && inviteData.guestId && sameProfileUid === inviteData.guestId) {
+              this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
               this.refreshTokenIfNeeded();
             } else {
               const profileId = this.getLocalProfileId();

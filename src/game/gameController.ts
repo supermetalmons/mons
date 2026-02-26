@@ -79,6 +79,7 @@ const botTurnComputationDelayMs = 420;
 let lastBotMoveTimestamp = 0;
 
 const processedVoiceReactions = new Set<string>();
+let lastObservedMatchSideFallbackWarningKey = "";
 
 const resetBotScoreReactionState = () => {
   botScoreReactionPlayedTurns.clear();
@@ -1480,6 +1481,7 @@ export async function go(routeStateOverride?: RouteState) {
   connection.setWagerViewMatchId(null);
   setWatchOnlyState(false);
   resetTimerStateForMatch(null);
+  lastObservedMatchSideFallbackWarningKey = "";
   triggerMoveHistoryPopupReload();
   if (!didSetupWagerSubscription) {
     didSetupWagerSubscription = true;
@@ -1621,6 +1623,7 @@ export function disposeGameSession() {
   blackFlatMovesString = null;
   wagerMatchId = null;
   flashbackMode = false;
+  lastObservedMatchSideFallbackWarningKey = "";
   resignedColor = undefined;
   winnerByTimerColor = undefined;
   lastReactionTime = 0;
@@ -3176,6 +3179,59 @@ function location(locationModel: MonsWeb.Location): Location {
   return new Location(locationModel.i, locationModel.j);
 }
 
+const getKnownObservedMatchOwnUid = (): string => {
+  const sameProfileUid = connection.getSameProfilePlayerUid();
+  if (sameProfileUid && sameProfileUid !== "") {
+    return sameProfileUid;
+  }
+  return Board.playerSideMetadata.uid || "";
+};
+
+const warnObservedMatchSideFallbackIfNeeded = (matchId: string, matchPlayerUid: string, knownOwnUid: string, knownOpponentUid: string): void => {
+  if (!boardViewDebugLogsEnabled) {
+    return;
+  }
+  const warningKey = `${matchId}:${matchPlayerUid}:${knownOwnUid}:${knownOpponentUid}`;
+  if (warningKey === lastObservedMatchSideFallbackWarningKey) {
+    return;
+  }
+  lastObservedMatchSideFallbackWarningKey = warningKey;
+  console.warn("[board-view] fallback opponent-side classification for observed match", {
+    matchId,
+    matchPlayerUid,
+    knownOwnUid,
+    knownOpponentUid,
+    isReconnect,
+  });
+};
+
+const isObservedMatchOpponentSide = (match: Match, matchPlayerUid: string, matchId: string): boolean => {
+  if (isWatchOnly) {
+    return match.color === "black";
+  }
+  // Non-reconnect live flow observes the opponent stream only; keep legacy behavior.
+  if (!isReconnect) {
+    return true;
+  }
+  const knownOwnUid = getKnownObservedMatchOwnUid();
+  if (knownOwnUid && matchPlayerUid === knownOwnUid) {
+    return false;
+  }
+  const knownOpponentUid = Board.opponentSideMetadata.uid || "";
+  if (knownOpponentUid && matchPlayerUid === knownOpponentUid) {
+    return true;
+  }
+  const observedColor = toMonsColor(match.color);
+  if (observedColor !== undefined) {
+    return observedColor !== playerSideColor;
+  }
+  if (knownOwnUid && matchPlayerUid && matchPlayerUid !== knownOwnUid) {
+    return true;
+  }
+  warnObservedMatchSideFallbackIfNeeded(matchId, matchPlayerUid, knownOwnUid, knownOpponentUid);
+  return true;
+};
+
 function hasItemAt(location: Location): boolean {
   const item = game.item(new MonsWeb.Location(location.i, location.j));
   if (item !== undefined) {
@@ -3188,6 +3244,7 @@ function hasItemAt(location: Location): boolean {
 function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   ensureBoardViewInvariants("didConnectTo:before");
   const shouldRenderLiveBoard = !shouldPreserveHistoricalViewForCurrentInvite();
+  const incomingIsOpponentSide = isObservedMatchOpponentSide(match, matchPlayerUid, matchId);
   if (shouldRenderLiveBoard) {
     clearViewedRematchState();
     boardViewMode = "activeLive";
@@ -3215,21 +3272,27 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   if (isWatchOnly) {
     playerSideColor = MonsWeb.Color.White;
     if (shouldRenderLiveBoard) {
-      Board.setupPlayerId(matchPlayerUid, match.color === "black");
+      Board.setupPlayerId(matchPlayerUid, incomingIsOpponentSide);
     }
   } else {
-    playerSideColor = match.color === "white" ? MonsWeb.Color.Black : MonsWeb.Color.White;
+    playerSideColor = incomingIsOpponentSide
+      ? match.color === "white"
+        ? MonsWeb.Color.Black
+        : MonsWeb.Color.White
+      : match.color === "white"
+        ? MonsWeb.Color.White
+        : MonsWeb.Color.Black;
     if (shouldRenderLiveBoard) {
-      Board.setupPlayerId(matchPlayerUid, true);
+      Board.setupPlayerId(matchPlayerUid, incomingIsOpponentSide);
     }
   }
 
   if (!isWatchOnly && shouldRenderLiveBoard) {
-    Board.setBoardFlipped(match.color === "white");
+    Board.setBoardFlipped(playerSideColor === MonsWeb.Color.Black);
   }
 
   if (shouldRenderLiveBoard) {
-    Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, isWatchOnly ? match.color === "black" : true);
+    Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, incomingIsOpponentSide);
     applyWagerState();
     Board.markWagerInitialStateReceived();
   }
@@ -3764,7 +3827,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
 
   const shouldRenderLiveBoard = boardViewMode !== "historicalView";
   let didMutateLiveGameWithoutRender = false;
-  const isOpponentSide = isWatchOnly ? match.color === "black" : true;
+  const isOpponentSide = isObservedMatchOpponentSide(match, matchPlayerUid, matchId);
   if (shouldRenderLiveBoard) {
     Board.setupPlayerId(matchPlayerUid, isOpponentSide);
     Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, isOpponentSide);

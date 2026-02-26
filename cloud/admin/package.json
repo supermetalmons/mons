@@ -6,7 +6,7 @@
     "node": "20"
   },
   "dependencies": {
-    "firebase-admin": "^13.6.1"
+    "firebase-admin": "^13.7.0"
   },
   "scripts": {
     "start": "node listEthAddresses.js",
