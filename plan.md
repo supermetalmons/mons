@@ -27,9 +27,11 @@ This is a product/design plan, not a code-level spec.
   - show pending only while `automatch/{inviteId}` exists
   - if queue entry is removed and no guest joined, remove row from list
   - if guest joined, keep row as persistent game item
+- Automatch callable response should expose pending-vs-matched mode so optimistic UI state is immediately correct.
 
 ### 2.5 Identity fallback
 - If profile-merged history is unavailable, show current-login-only fallback history (with clear messaging that scope is limited).
+- Because client cannot read automatch queue directly, fallback path must rely on invite-visible marker fields for cancel/pending correctness.
 
 ### 2.6 Signed-in preservation
 - Legacy games played on old login UIDs must become visible after wallet/profile linking.
@@ -62,6 +64,7 @@ Use a read-model pattern:
 - RTDB remains the source of truth for invites, rematches, gameplay, and realtime move state.
 - Firestore stores a profile-scoped summary list optimized for fast read and sorting.
 - All projector triggers call a single shared recompute pipeline per invite to keep behavior deterministic and safe.
+- Prefer narrow trigger surfaces (targeted invite fields + match-create + queue + profile-link events) over broad invite-root triggering.
 
 This gives:
 - fast list rendering
@@ -84,6 +87,7 @@ without changing game runtime behavior.
 ### 5.2 Backfill ordering policy
 - Historical backfill rows should not jump above newly active rows by accident.
 - Backfilled `listSortAt` uses a low baseline timestamp policy (old/neutral rank), then normal projector updates move rows up as fresh events occur.
+- Backfill must never overwrite fresher live-projected recency fields.
 
 ### 5.3 Near-future attention states
 Potential attention states that may promote rows:
@@ -106,11 +110,13 @@ Future-safe direction:
 
 ### 6.1 Trigger scope
 Projector is driven by invite lifecycle, match creation, automatch queue changes, and profile-link catch-up events.
+- Invite lifecycle triggering should be field-targeted (not every invite subtree mutation).
 
 ### 6.2 Noise suppression
 - Reaction churn must not drive list projection.
 - Wager-derived ranking/badging is deferred for now.
 - Invite updates that only touch ignored fields should skip recompute/writes.
+- Duplicate/retried events must not reorder rows accidentally.
 
 ### 6.3 Reactions model decision
 - Keep reactions under invite model for now.
@@ -124,6 +130,7 @@ Projector is driven by invite lifecycle, match creation, automatch queue changes
 - Profile list is ownership-scoped by profile ID, but source game data is login-UID scoped.
 - When `players/{loginUid}/profile` is established for a legacy login, run catch-up projection for that login’s historical invites.
 - Fallback behavior remains current-login-only if profile history is not yet available.
+- Catch-up path should include workload guardrails (bounded batches/continuations) so large accounts do not timeout.
 
 ---
 
@@ -161,6 +168,7 @@ This plan should support future list features without rethinking core architectu
 ### 9.3 Compatibility principle
 - First release remains games-focused.
 - Data shape should stay extensible (`entityType`, additive fields) so mixed-item navigation can be added without a rewrite.
+- Match-id parsing rules should be centralized and robust so future item families do not rely on brittle ID assumptions.
 
 ---
 
@@ -202,11 +210,15 @@ These are acceptable for first release of reliable navigation.
 ## 12) Current Defaults Chosen
 
 - Pending automatch visibility is queue-based.
+- Fallback pending/cancel behavior uses invite-visible marker fields, not direct queue reads.
 - Row navigation opens invite route only.
 - Shared recompute projector is used for all relevant triggers.
+- Shared recompute is invoked from narrow triggers, not broad invite-root updates.
 - Reactions and wager changes are ignored by v1 list ranking/projection logic.
 - Backfill uses low-baseline sort ordering for historical rows.
+- Backfill cannot clobber fresher live-projected recency fields.
 - Legacy login histories are projected into profile list after linking.
+- Automatch callable returns explicit mode for immediate optimistic UI correctness.
 
 ---
 
