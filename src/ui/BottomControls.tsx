@@ -124,6 +124,7 @@ const STATUS_ICON_URLS = {
   automatch: `${STATUS_ICON_BASE_URL}/automatch_1.webp`,
   finish: `${STATUS_ICON_BASE_URL}/finish.webp`,
 } as const;
+const NAVIGATION_GAMES_PAGE_SIZE = 80;
 type StatusIconName = keyof typeof STATUS_ICON_URLS;
 const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
 const stickerImagePromises: Map<number, Promise<string | null>> = new Map();
@@ -371,6 +372,9 @@ const BottomControls: React.FC = () => {
   const [isBadgeVisible, setIsBadgeVisible] = useState(false);
   const [navigationProjectedGames, setNavigationProjectedGames] = useState<NavigationGameItem[]>([]);
   const [isNavigationGamesLoading, setIsNavigationGamesLoading] = useState(false);
+  const [isNavigationGamesLoadingMore, setIsNavigationGamesLoadingMore] = useState(false);
+  const [navigationHasMoreGames, setNavigationHasMoreGames] = useState(false);
+  const [navigationGamesLimit, setNavigationGamesLimit] = useState(NAVIGATION_GAMES_PAGE_SIZE);
   const [optimisticPendingAutomatchItem, setOptimisticPendingAutomatchItem] = useState<NavigationGameItem | null>(null);
   const [isNavigationFallbackScope, setIsNavigationFallbackScope] = useState(false);
 
@@ -814,7 +818,7 @@ const BottomControls: React.FC = () => {
   useEffect(() => {
     let disposed = false;
     let unsubscribe: (() => void) | null = null;
-    const maxItems = 80;
+    const maxItems = navigationGamesLimit;
 
     const loadFallbackGames = () => {
       setIsNavigationFallbackScope(true);
@@ -826,20 +830,29 @@ const BottomControls: React.FC = () => {
             return;
           }
           setNavigationProjectedGames(items);
+          setNavigationHasMoreGames(items.length >= maxItems && items.length > 0);
           setIsNavigationGamesLoading(false);
+          setIsNavigationGamesLoadingMore(false);
         })
         .catch(() => {
           if (disposed || !sessionGuard()) {
             return;
           }
           setNavigationProjectedGames([]);
+          setNavigationHasMoreGames(false);
           setIsNavigationGamesLoading(false);
+          setIsNavigationGamesLoadingMore(false);
         });
     };
 
     if (!isNavigationPopupVisible) {
       setIsNavigationGamesLoading(false);
+      setIsNavigationGamesLoadingMore(false);
       setIsNavigationFallbackScope(false);
+      setNavigationHasMoreGames(false);
+      if (navigationGamesLimit !== NAVIGATION_GAMES_PAGE_SIZE) {
+        setNavigationGamesLimit(NAVIGATION_GAMES_PAGE_SIZE);
+      }
       return () => {
         disposed = true;
         if (unsubscribe) {
@@ -848,7 +861,9 @@ const BottomControls: React.FC = () => {
       };
     }
 
-    setIsNavigationGamesLoading(true);
+    if (maxItems === NAVIGATION_GAMES_PAGE_SIZE) {
+      setIsNavigationGamesLoading(true);
+    }
     const localProfileId = storage.getProfileId("");
 
     if (localProfileId !== "") {
@@ -860,7 +875,9 @@ const BottomControls: React.FC = () => {
             return;
           }
           setNavigationProjectedGames(items);
+          setNavigationHasMoreGames(items.length >= maxItems && items.length > 0);
           setIsNavigationGamesLoading(false);
+          setIsNavigationGamesLoadingMore(false);
           setIsNavigationFallbackScope(false);
         },
         () => {
@@ -884,7 +901,7 @@ const BottomControls: React.FC = () => {
         unsubscribe();
       }
     };
-  }, [isNavigationPopupVisible]);
+  }, [isNavigationPopupVisible, navigationGamesLimit]);
 
   useEffect(() => {
     return () => {
@@ -1643,6 +1660,14 @@ const BottomControls: React.FC = () => {
     didClickStartBotGameButton();
   };
 
+  const handleNavigationLoadMoreGames = () => {
+    if (!isNavigationPopupVisible || !navigationHasMoreGames || isNavigationGamesLoading || isNavigationGamesLoadingMore) {
+      return;
+    }
+    setIsNavigationGamesLoadingMore(true);
+    setNavigationGamesLimit((value) => value + NAVIGATION_GAMES_PAGE_SIZE);
+  };
+
   const handleShare = async () => {
     try {
       await navigator.share({
@@ -1670,8 +1695,11 @@ const BottomControls: React.FC = () => {
             navigateHome={handleHomeClick}
             games={mergedNavigationGames}
             isGamesLoading={isNavigationGamesLoading}
+            isLoadingMoreGames={isNavigationGamesLoadingMore}
+            hasMoreGames={navigationHasMoreGames}
             isUsingFallbackScope={isNavigationFallbackScope}
             onSelectGame={handleNavigationGameSelect}
+            onLoadMoreGames={handleNavigationLoadMoreGames}
             showQuickActions={isDeepHomeButtonVisible}
             showAutomatchAction={isAutomatchButtonVisible}
             showDirectAction={isInviteLinkButtonVisible}

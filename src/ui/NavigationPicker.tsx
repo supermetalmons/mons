@@ -13,8 +13,11 @@ interface NavigationPickerProps {
   navigateHome?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   games?: NavigationGameItem[];
   isGamesLoading?: boolean;
+  isLoadingMoreGames?: boolean;
+  hasMoreGames?: boolean;
   isUsingFallbackScope?: boolean;
   onSelectGame?: (inviteId: string) => void;
+  onLoadMoreGames?: () => void;
   showQuickActions?: boolean;
   showAutomatchAction?: boolean;
   showDirectAction?: boolean;
@@ -145,6 +148,12 @@ const EmptyRow = styled.div`
   padding: 4px 0 8px;
 `;
 
+const LoadMoreGamesButton = styled(NavigationPickerButton)`
+  font-size: 0.72rem;
+  padding: 4px 8px 8px 0;
+  color: var(--color-blue-primary);
+`;
+
 const CompletedIcon = styled(FaCheck)`
   color: var(--completedPuzzleIconColor);
   font-size: 0.5rem;
@@ -220,8 +229,11 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   navigateHome,
   games = [],
   isGamesLoading = false,
+  isLoadingMoreGames = false,
+  hasMoreGames = false,
   isUsingFallbackScope = false,
   onSelectGame,
+  onLoadMoreGames,
   showQuickActions = false,
   showAutomatchAction = false,
   showDirectAction = false,
@@ -318,6 +330,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                     <GameStatus>{getGameStatusLabel(game)}</GameStatus>
                   </GameRow>
                 ))}
+              {!isGamesLoading && hasMoreGames && !isLoadingMoreGames && <LoadMoreGamesButton onClick={() => onLoadMoreGames?.()}>Load more games</LoadMoreGamesButton>}
+              {!isGamesLoading && isLoadingMoreGames && <EmptyRow>Loading more games...</EmptyRow>}
             </>
           )}
 
