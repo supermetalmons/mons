@@ -1,0 +1,97 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "automatch": {
+      ".read": "auth != null && auth.token.admin === true",
+      ".write": "auth != null && auth.token.admin === true"
+    },
+    "invites": {
+      "$inviteId": {
+        ".read": "(data.child('hostId').exists() && data.child('guestId').exists()) || (auth != null && (!data.child('password').exists() || auth.uid === data.child('hostId').val()))",
+        ".write": "(auth != null && !data.exists()) || (auth != null && data.exists() && data.child('password').exists() && newData.child('password').val() === data.child('password').val() && newData.child('hostId').val() === data.child('hostId').val() && !data.child('guestId').exists() && newData.child('guestId').val() === auth.uid && newData.child('version').val() === data.child('version').val() && newData.child('hostColor').val() === data.child('hostColor').val())",
+        
+        "hostId": {
+          ".validate": "auth.uid === newData.val() || newData.val() === data.val()"
+        },
+          
+        "password": {
+          ".read": "auth != null && auth.uid === data.parent().child('hostId').val()",
+          ".write": "auth != null && !data.exists() && newData.isString() && data.parent().child('hostId').val() === auth.uid",
+          ".validate": "newData.isString()"
+        },
+          
+        "guestId": {
+          ".write": "auth != null && !data.exists() && newData.isString() && auth.uid === newData.val()",
+          ".validate": "newData.isString() && auth.uid === newData.val() && (!data.parent().child('password').exists() || (data.parent().child('password').exists() && newData.parent().child('password').val() === data.parent().child('password').val()))"
+        },
+
+        "guestRematches": {
+          ".write": "auth.uid === data.parent().child('guestId').val() || (auth.token.profileId != null && root.child('players').child(data.parent().child('guestId').val()).child('profile').val() === auth.token.profileId)",
+          ".validate": "newData.isString() && (!data.exists() || newData.val().contains(data.val()))"
+        },
+
+        "hostRematches": {
+          ".write": "auth.uid === data.parent().child('hostId').val() || (auth.token.profileId != null && root.child('players').child(data.parent().child('hostId').val()).child('profile').val() === auth.token.profileId)",
+          ".validate": "newData.isString() && (!data.exists() || newData.val().contains(data.val()))"
+        },
+        "reactions": {
+          "$playerId": {
+            ".write": "auth != null && data.parent().parent().child('guestId').exists() && ((auth.uid === $playerId) || (auth.token.profileId != null && root.child('players').child($playerId).child('profile').val() === auth.token.profileId)) && ($playerId === data.parent().parent().child('hostId').val() || $playerId === data.parent().parent().child('guestId').val())",
+            ".validate": "newData.hasChildren(['uuid','kind','variation','matchId']) && newData.child('uuid').isString() && newData.child('kind').isString() && newData.child('variation').isNumber() && newData.child('matchId').isString()"
+          }
+        },
+        "matchesRatingUpdates": {
+          "$matchId": {
+            ".write": "auth != null && auth.token.admin === true",
+            ".validate": "!data.exists() && newData.isBoolean()"
+          }
+        },
+        "matchesWagerResolutions": {
+          "$matchId": {
+            ".write": "auth != null && auth.token.admin === true",
+            ".validate": "!data.exists() && newData.isBoolean()"
+          }
+        },
+        "wagers": {
+          ".write": "auth != null && auth.token.admin === true",
+          "$matchId": {
+            ".write": "auth != null && auth.token.admin === true"
+          }
+        }
+      }
+    },
+    "players": {
+      ".read": true,
+      "$userId": {
+        ".write": "auth != null && (auth.uid === $userId || auth.token.admin === true || (data.child('profile').exists() && data.child('profile').val() === auth.token.profileId))",
+        ".validate": "newData.exists() && newData.child('matches').exists()",
+        "mining": {
+          ".write": "auth != null && auth.token.admin === true",
+          "frozen": {
+            ".write": "auth != null && auth.token.admin === true",
+            ".validate": "newData.hasChildren(['dust','slime','gum','metal','ice'])"
+          }
+        },
+        "matches": {
+          "$matchId": {
+            "fen": {
+              ".validate": "newData.isString() && newData.val().length > 0"
+            },
+            "flatMovesString": {
+              ".validate": "newData.isString() && (!data.exists() || newData.val().contains(data.val()))"
+            },
+            "timer": {
+              ".validate": "newData.isString() && (newData.val() === '' || newData.val() === data.val() || (auth != null && auth.token.admin === true))"
+            },
+            ".validate": "(newData.exists() && newData.child('fen').exists()) && (!data.exists() || ((!data.child('flatMovesString').exists() || (data.child('flatMovesString').exists() && (data.child('fen').val() === newData.child('fen').val() || (data.child('fen').val() != newData.child('fen').val() && data.child('flatMovesString').val() != newData.child('flatMovesString').val())))) && (data.child('flatMovesString').exists() || data.child('fen').exists() && !data.child('flatMovesString').exists() && !newData.child('flatMovesString').exists())))"
+          }
+        },
+        "profile": {
+          ".write": "auth != null && auth.token.admin === true",
+          ".validate": "!data.exists() && newData.isString() && newData.val().length > 0"
+        }
+      }
+    }
+  }
+}
