@@ -471,31 +471,27 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
   const sortBucket = getSortBucket(status);
   const latestMatchId = deriveLatestMatchId(normalizedInviteId, inviteData, options.latestMatchIdHint || null);
 
-  let existingDocsSnapshot = null;
-  try {
-    existingDocsSnapshot = await firestore.collectionGroup("games").where("inviteId", "==", normalizedInviteId).get();
-  } catch (error) {
-    console.error("projector:existing-docs-query-failed", {
-      inviteId: normalizedInviteId,
-      reason,
-      error: error && error.message ? error.message : error,
-    });
-  }
-
   const existingDocsByOwnerProfileId = new Map();
   const existingDocs = [];
-
-  if (existingDocsSnapshot) {
-    existingDocsSnapshot.docs.forEach((docSnapshot) => {
-      const ownerRef = docSnapshot.ref.parent && docSnapshot.ref.parent.parent ? docSnapshot.ref.parent.parent : null;
-      const ownerProfileId = ownerRef ? ownerRef.id : null;
-      if (!ownerProfileId) {
-        return;
+  await Promise.all(
+    ownerProfileIds.map(async (ownerProfileId) => {
+      try {
+        const ownerDocSnapshot = await firestore.collection("users").doc(ownerProfileId).collection("games").doc(normalizedInviteId).get();
+        if (!ownerDocSnapshot.exists) {
+          return;
+        }
+        existingDocsByOwnerProfileId.set(ownerProfileId, ownerDocSnapshot);
+        existingDocs.push({ ownerProfileId, docSnapshot: ownerDocSnapshot });
+      } catch (error) {
+        console.error("projector:existing-doc-read-failed", {
+          inviteId: normalizedInviteId,
+          ownerProfileId,
+          reason,
+          error: error && error.message ? error.message : error,
+        });
       }
-      existingDocsByOwnerProfileId.set(ownerProfileId, docSnapshot);
-      existingDocs.push({ ownerProfileId, docSnapshot });
-    });
-  }
+    })
+  );
 
   const ownerSet = new Set(ownerProfileIds);
   const canPruneOwners = (!hostLoginId || !!hostProfileId) && (!guestLoginId || !!guestProfileId);

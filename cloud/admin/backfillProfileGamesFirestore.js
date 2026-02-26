@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-const admin = require("firebase-admin");
-const { initAdmin } = require("./_admin");
+const { initAdmin, admin } = require("./_admin");
 const { recomputeInviteProjection } = require("../functions/profileGamesProjector");
 
 const DEFAULT_LIST_SORT_BASELINE_MS = 1;
@@ -184,7 +183,13 @@ async function main() {
   });
 }
 
-main().catch((error) => {
-  console.error(error);
-  process.exit(1);
-});
+main()
+  .then(async () => {
+    await Promise.all(admin.apps.map((app) => app.delete().catch(() => {})));
+    process.exit(0);
+  })
+  .catch(async (error) => {
+    console.error(error);
+    await Promise.all(admin.apps.map((app) => app.delete().catch(() => {})));
+    process.exit(1);
+  });
