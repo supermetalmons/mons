@@ -93,12 +93,20 @@ function clearVoiceReactionState() {
 }
 
 export let isFlipped = false;
+let isMetadataDisplaySwapped = false;
 let traceIndex = 0;
 let showsPlayerTimer = false;
 let showsOpponentTimer = false;
 type EndOfGameMarker = "none" | "victory" | "resign";
 let playerEndOfGameMarker: EndOfGameMarker = "none";
 let opponentEndOfGameMarker: EndOfGameMarker = "none";
+
+const slotIsOpponentForMetadataSide = (metadataIsOpponent: boolean): boolean => (isMetadataDisplaySwapped ? !metadataIsOpponent : metadataIsOpponent);
+const metadataSideIsOpponentForSlot = (slotIsOpponent: boolean): boolean => (isMetadataDisplaySwapped ? !slotIsOpponent : slotIsOpponent);
+
+export function isMetadataSideDisplayedAtOpponentSlot(metadataIsOpponent: boolean): boolean {
+  return slotIsOpponentForMetadataSide(metadataIsOpponent);
+}
 
 type SmoothWaveRenderData = {
   path: SVGPathElement;
@@ -1138,8 +1146,9 @@ export function hideBoardPlayersInfo() {
 }
 
 function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boolean = false) {
-  const avatar = opponent ? opponentAvatar : playerAvatar;
-  const placeholder = opponent ? opponentAvatarPlaceholder : playerAvatarPlaceholder;
+  const slotIsOpponent = slotIsOpponentForMetadataSide(opponent);
+  const avatar = slotIsOpponent ? opponentAvatar : playerAvatar;
+  const placeholder = slotIsOpponent ? opponentAvatarPlaceholder : playerAvatarPlaceholder;
   const metadata = opponent ? opponentSideMetadata : playerSideMetadata;
   if (!avatar) {
     return;
@@ -1200,9 +1209,9 @@ function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boole
     }
     const didUpdateAuraVisibility = setAuraVisibilityIfNeeded(avatar, false);
     if (didSetBotImage || didChangeVisibility || didUpdateAuraVisibility) {
-      showRaibowAura(false, emojis.pc, true);
+      showRaibowAura(false, emojis.pc, slotIsOpponent);
       try {
-        updateAuraForAvatarElement(true, avatar);
+        updateAuraForAvatarElement(slotIsOpponent, avatar);
       } catch {}
     }
     return;
@@ -1245,9 +1254,9 @@ function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boole
     }
     const didUpdateAuraVisibility = setAuraVisibilityIfNeeded(avatar, aura === "rainbow");
     if (didSetEmojiImage || didChangeVisibility || didUpdateAuraVisibility) {
-      showRaibowAura(aura === "rainbow", emojiUrl, opponent);
+      showRaibowAura(aura === "rainbow", emojiUrl, slotIsOpponent);
       try {
-        updateAuraForAvatarElement(opponent, avatar);
+        updateAuraForAvatarElement(slotIsOpponent, avatar);
       } catch {}
     }
     return;
@@ -1263,9 +1272,9 @@ function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boole
   }
   const didUpdateAuraVisibility = setAuraVisibilityIfNeeded(avatar, false);
   if (didClearAvatarImage || didChangeVisibility || didUpdateAuraVisibility) {
-    showRaibowAura(false, "", opponent);
+    showRaibowAura(false, "", slotIsOpponent);
     try {
-      updateAuraForAvatarElement(opponent, avatar);
+      updateAuraForAvatarElement(slotIsOpponent, avatar);
     } catch {}
   }
 }
@@ -1379,6 +1388,16 @@ export function toggleBoardFlipped() {
 
 export function setBoardFlipped(flipped: boolean) {
   isFlipped = flipped;
+}
+
+export function setBoardMetadataDisplaySwapped(swapped: boolean) {
+  if (isMetadataDisplaySwapped === swapped) {
+    return;
+  }
+  isMetadataDisplaySwapped = swapped;
+  renderPlayersNamesLabels();
+  syncAvatarForCurrentMetadata(false);
+  syncAvatarForCurrentMetadata(true);
 }
 
 function setupInviteBotButton() {
@@ -1696,34 +1715,37 @@ export function didGetPlayerProfile(profile: PlayerProfile, loginId: string, own
 function renderPlayersNamesLabels() {
   if (!playerNameText || !opponentNameText) return;
 
+  const playerMetadata = metadataSideIsOpponentForSlot(false) ? opponentSideMetadata : playerSideMetadata;
+  const opponentMetadata = metadataSideIsOpponentForSlot(true) ? opponentSideMetadata : playerSideMetadata;
+
   const currentTime = Date.now();
   const thresholdDelta = 2500;
-  const hasPlayerReaction = playerSideMetadata.voiceReactionDate !== undefined && currentTime - playerSideMetadata.voiceReactionDate < thresholdDelta;
-  const hasOpponentReaction = opponentSideMetadata.voiceReactionDate !== undefined && currentTime - opponentSideMetadata.voiceReactionDate < thresholdDelta;
+  const hasPlayerReaction = playerMetadata.voiceReactionDate !== undefined && currentTime - playerMetadata.voiceReactionDate < thresholdDelta;
+  const hasOpponentReaction = opponentMetadata.voiceReactionDate !== undefined && currentTime - opponentMetadata.voiceReactionDate < thresholdDelta;
 
   if (isWaitingForRematchResponse || playerScoreText?.textContent === "") {
     const prefix = "~ ";
-    playerNameText.textContent = hasPlayerReaction ? prefix + playerSideMetadata.voiceReactionText : "";
-    opponentNameText.textContent = hasOpponentReaction ? prefix + opponentSideMetadata.voiceReactionText : "";
+    playerNameText.textContent = hasPlayerReaction ? prefix + playerMetadata.voiceReactionText : "";
+    opponentNameText.textContent = hasOpponentReaction ? prefix + opponentMetadata.voiceReactionText : "";
     return;
   }
   let playerNameString = "";
   let opponentNameString = "";
 
-  if ((!isOnlineGame || opponentSideMetadata.uid === "") && !isGameWithBot) {
+  if ((!isOnlineGame || opponentMetadata.uid === "") && !isGameWithBot) {
   } else {
     const placeholderName = "anon";
 
     if (!isGameWithBot) {
-      playerNameString = playerSideMetadata.displayName === undefined ? placeholderName : playerSideMetadata.displayName;
-      opponentNameString = opponentSideMetadata.displayName === undefined ? placeholderName : opponentSideMetadata.displayName;
+      playerNameString = playerMetadata.displayName === undefined ? placeholderName : playerMetadata.displayName;
+      opponentNameString = opponentMetadata.displayName === undefined ? placeholderName : opponentMetadata.displayName;
 
       const ratingPrefix = " • ";
-      if (playerSideMetadata.rating !== undefined) {
-        playerNameString += ratingPrefix + `${playerSideMetadata.rating}`;
+      if (playerMetadata.rating !== undefined) {
+        playerNameString += ratingPrefix + `${playerMetadata.rating}`;
       }
-      if (opponentSideMetadata.rating !== undefined) {
-        opponentNameString += ratingPrefix + `${opponentSideMetadata.rating}`;
+      if (opponentMetadata.rating !== undefined) {
+        opponentNameString += ratingPrefix + `${opponentMetadata.rating}`;
       }
     }
   }
@@ -1731,11 +1753,11 @@ function renderPlayersNamesLabels() {
   const reactionPrefix = " ~ ";
 
   if (hasPlayerReaction) {
-    playerNameString += reactionPrefix + playerSideMetadata.voiceReactionText;
+    playerNameString += reactionPrefix + playerMetadata.voiceReactionText;
   }
 
   if (hasOpponentReaction) {
-    opponentNameString += reactionPrefix + opponentSideMetadata.voiceReactionText;
+    opponentNameString += reactionPrefix + opponentMetadata.voiceReactionText;
   }
 
   playerNameText.textContent = playerNameString;
@@ -1842,6 +1864,7 @@ export function showVoiceReactionText(reactionText: string, opponents: boolean) 
 export function setupPlayerId(uid: string, opponent: boolean) {
   const metadata = opponent ? opponentSideMetadata : playerSideMetadata;
   if (metadata.uid !== uid) {
+    const slotIsOpponent = slotIsOpponentForMetadataSide(opponent);
     const previousEmojiUrl = emojis.getEmojiUrl(metadata.emojiId) || "";
     metadata.uid = uid;
     metadata.displayName = undefined;
@@ -1855,7 +1878,7 @@ export function setupPlayerId(uid: string, opponent: boolean) {
     metadata.profile = null;
     metadata.emojiId = "";
     metadata.aura = "";
-    showRaibowAura(false, previousEmojiUrl, opponent);
+    showRaibowAura(false, previousEmojiUrl, slotIsOpponent);
   } else {
     metadata.uid = uid;
   }
@@ -2354,14 +2377,15 @@ function getWagerVisibleScale(): number {
 }
 
 function getWagerRectForScale(isOpponent: boolean, scale: number): { x: number; y: number; w: number; h: number } {
+  const slotIsOpponent = slotIsOpponentForMetadataSide(isOpponent);
   const avatarSize = getAvatarSize();
-  const baseY = isOpponent ? 1 - avatarSize * 1.203 : isPangchiuBoard() ? 12.75 : 12.16;
+  const baseY = slotIsOpponent ? 1 - avatarSize * 1.203 : isPangchiuBoard() ? 12.75 : 12.16;
   const baseH = avatarSize;
   const baseW = avatarSize * 2;
   const h = baseH * scale;
   const w = baseW * scale;
   const x = 5.5 - w / 2;
-  const y = isOpponent ? baseY + baseH - h : baseY;
+  const y = slotIsOpponent ? baseY + baseH - h : baseY;
   return { x, y, w, h };
 }
 
@@ -3275,22 +3299,24 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
 
     nameText.addEventListener("click", (event) => {
       event.stopPropagation();
-      if (!isOpponent && !isWatchOnly) {
+      const metadataIsOpponent = metadataSideIsOpponentForSlot(isOpponent);
+      if (!metadataIsOpponent && !isWatchOnly) {
         return;
       }
 
-      if (canRedirectToExplorer(isOpponent) && didNotDismissAnythingWithOutsideTapJustNow()) {
-        redirectToAddressOnExplorer(isOpponent);
+      if (canRedirectToExplorer(metadataIsOpponent) && didNotDismissAnythingWithOutsideTapJustNow()) {
+        redirectToAddressOnExplorer(metadataIsOpponent);
         SVG.setFill(nameText, colors.scoreText);
       }
     });
 
     nameText.addEventListener("mouseenter", () => {
-      if (!isOpponent && !isWatchOnly) {
+      const metadataIsOpponent = metadataSideIsOpponentForSlot(isOpponent);
+      if (!metadataIsOpponent && !isWatchOnly) {
         return;
       }
 
-      if (canRedirectToExplorer(isOpponent)) {
+      if (canRedirectToExplorer(metadataIsOpponent)) {
         SVG.setFill(nameText, "#0071F9");
       }
     });
@@ -3375,17 +3401,18 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
       event.stopPropagation();
       preventTouchstartIfNeeded(event);
       playSounds([Sound.Click]);
-      const shouldChangeEmoji = canChangeEmoji(isOpponent);
+      const metadataIsOpponent = metadataSideIsOpponentForSlot(isOpponent);
+      const shouldChangeEmoji = canChangeEmoji(metadataIsOpponent);
 
-      if (isOpponent) {
+      if (metadataIsOpponent) {
         if (shouldChangeEmoji) {
-          pickAndDisplayDifferentEmoji(avatar, isOpponent);
+          pickAndDisplayDifferentEmoji(true);
         }
 
         popOpponentsEmoji();
       } else {
         if (shouldChangeEmoji) {
-          pickAndDisplayDifferentEmoji(avatar, isOpponent);
+          pickAndDisplayDifferentEmoji(false);
         }
 
         if (isDesktopSafari) {
@@ -3439,13 +3466,21 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
   }
 }
 
-function pickAndDisplayDifferentEmoji(avatar: SVGElement, isOpponent: boolean) {
-  if (isOpponent) {
+function pickAndDisplayDifferentEmoji(metadataIsOpponent: boolean) {
+  if (metadataIsOpponent) {
+    const slotIsOpponent = slotIsOpponentForMetadataSide(true);
+    const avatar = slotIsOpponent ? opponentAvatar : playerAvatar;
+    if (!avatar) {
+      return;
+    }
     const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(opponentSideMetadata.emojiId, true);
     opponentSideMetadata.emojiId = newId;
     SVG.setImageUrl(avatar, newEmojiUrl);
     const visible = (opponentSideMetadata.aura ?? "") === "rainbow";
-    showRaibowAura(visible, newEmojiUrl, true);
+    showRaibowAura(visible, newEmojiUrl, slotIsOpponent);
+    try {
+      updateAuraForAvatarElement(slotIsOpponent, avatar);
+    } catch {}
   } else {
     const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(playerSideMetadata.emojiId, false);
     didClickAndChangePlayerEmoji(newId, newEmojiUrl);
@@ -3464,12 +3499,14 @@ export function didClickAndChangePlayerEmoji(newId: string, newEmojiUrl: string,
     if (aura !== undefined) {
       playerSideMetadata.aura = aura;
     }
-    if (playerAvatar) {
-      SVG.setImageUrl(playerAvatar, newEmojiUrl);
+    const slotIsOpponent = slotIsOpponentForMetadataSide(false);
+    const avatar = slotIsOpponent ? opponentAvatar : playerAvatar;
+    if (avatar) {
+      SVG.setImageUrl(avatar, newEmojiUrl);
       const visible = (aura ?? storage.getPlayerEmojiAura("") ?? "") === "rainbow";
-      showRaibowAura(visible, newEmojiUrl, false);
+      showRaibowAura(visible, newEmojiUrl, slotIsOpponent);
       try {
-        updateAuraForAvatarElement(false, playerAvatar);
+        updateAuraForAvatarElement(slotIsOpponent, avatar);
       } catch {}
     }
   }
@@ -3664,15 +3701,17 @@ export function applyHighlights(highlights: Highlight[]) {
 }
 
 export function popOpponentsEmoji() {
-  if (!opponentAvatar) {
+  const slotIsOpponent = slotIsOpponentForMetadataSide(true);
+  const targetAvatar = slotIsOpponent ? opponentAvatar : playerAvatar;
+  if (!targetAvatar) {
     return;
   }
 
-  opponentAvatar.style.transition = "transform 0.3s";
-  opponentAvatar.style.transform = "scale(1.8)";
+  targetAvatar.style.transition = "transform 0.3s";
+  targetAvatar.style.transform = "scale(1.8)";
   setManagedBoardTimeout(() => {
-    if (!opponentAvatar) return;
-    opponentAvatar.style.transform = "scale(1)";
+    if (!targetAvatar.isConnected) return;
+    targetAvatar.style.transform = "scale(1)";
   }, 300);
 }
 

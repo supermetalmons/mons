@@ -112,6 +112,9 @@ type BoardViewMode = "activeLive" | "waitingLive" | "historicalView";
 let boardViewMode: BoardViewMode = "activeLive";
 let isMoveHistoryPopupOpen = false;
 let boardRenderSessionId = 0;
+let moveHistoryFlipOverrideSessionId: number | null = null;
+let moveHistoryFlipOverrideEnabled = false;
+let moveHistoryFlipOverrideBaseBoardFlipped: boolean | null = null;
 const historicalMatchPairCache = new Map<string, HistoricalMatchPair | null>();
 const historicalScoreCache = new Map<string, { white: number; black: number }>();
 const historicalMatchPairMissUntilByMatchId = new Map<string, number>();
@@ -393,8 +396,33 @@ function clearViewedRematchState() {
   viewedRematchPair = null;
 }
 
+function hasMoveHistoryFlipOverrideForCurrentSession(): boolean {
+  return moveHistoryFlipOverrideEnabled && moveHistoryFlipOverrideSessionId === boardRenderSessionId;
+}
+
+function clearMoveHistoryFlipOverrideForCurrentSession(): boolean {
+  if (!hasMoveHistoryFlipOverrideForCurrentSession()) {
+    return false;
+  }
+  const baseBoardFlipped = moveHistoryFlipOverrideBaseBoardFlipped;
+  moveHistoryFlipOverrideEnabled = false;
+  moveHistoryFlipOverrideSessionId = null;
+  moveHistoryFlipOverrideBaseBoardFlipped = null;
+  Board.setBoardMetadataDisplaySwapped(false);
+  if (baseBoardFlipped !== null) {
+    Board.setBoardFlipped(baseBoardFlipped);
+  } else {
+    Board.setBoardFlipped(!Board.isFlipped);
+  }
+  return true;
+}
+
 function nextBoardRenderSession(): number {
   boardRenderSessionId += 1;
+  Board.setBoardMetadataDisplaySwapped(false);
+  moveHistoryFlipOverrideEnabled = false;
+  moveHistoryFlipOverrideSessionId = null;
+  moveHistoryFlipOverrideBaseBoardFlipped = null;
   return boardRenderSessionId;
 }
 
@@ -406,13 +434,14 @@ function shouldShowOnlineReactionButton(): boolean {
   return boardViewMode === "activeLive" && !isWatchOnly && isOnlineGame;
 }
 
-function playIncomingInviteReaction(reaction: InviteReaction, showReactionAtOpponentSide: boolean): void {
+function playIncomingInviteReaction(reaction: InviteReaction, metadataIsOpponentSide: boolean): void {
+  const displaySlotIsOpponent = Board.isMetadataSideDisplayedAtOpponentSlot(metadataIsOpponentSide);
   if (reaction.kind === "sticker") {
     playSounds([Sound.EmoteReceived]);
-    showVideoReaction(showReactionAtOpponentSide, reaction.variation);
+    showVideoReaction(displaySlotIsOpponent, reaction.variation);
     return;
   }
-  Board.showVoiceReactionText(reaction.kind, showReactionAtOpponentSide);
+  Board.showVoiceReactionText(reaction.kind, metadataIsOpponentSide);
   playReaction(reaction);
 }
 
@@ -722,7 +751,7 @@ function snapshotCurrentLocalMatchForHistory() {
     fen: game.fen(),
     whiteScore: game.white_score(),
     blackScore: game.black_score(),
-    boardFlipped: activeBoardShouldBeFlipped(),
+    boardFlipped: baseBoardShouldBeFlipped(),
     resignedColor: localColorFromMonsColor(resignedColor),
   };
   localRematchSnapshotsByMatchId.set(snapshot.matchId, snapshot);
@@ -745,8 +774,12 @@ function advanceLocalRematchSeriesToNextMatch() {
   historicalScoreCache.delete(nextMatchId);
 }
 
-function activeBoardShouldBeFlipped(): boolean {
+function baseBoardShouldBeFlipped(): boolean {
   return playerSideColor === MonsWeb.Color.Black;
+}
+
+function activeBoardShouldBeFlipped(): boolean {
+  return hasMoveHistoryFlipOverrideForCurrentSession() ? !baseBoardShouldBeFlipped() : baseBoardShouldBeFlipped();
 }
 
 function canHandleLiveBoardInput(): boolean {
@@ -1273,6 +1306,8 @@ export async function preloadRematchSeriesScores(): Promise<boolean> {
 }
 
 export async function didSelectRematchSeriesMatch(matchId: string): Promise<boolean> {
+  const startedFromHistoricalView = boardViewMode === "historicalView";
+  const hadMoveHistoryFlipOverride = hasMoveHistoryFlipOverrideForCurrentSession();
   const descriptor = getActiveRematchSeriesDescriptor();
   const activeMatchId = descriptor?.activeMatchId ?? null;
   if (!activeMatchId) {
@@ -1289,8 +1324,15 @@ export async function didSelectRematchSeriesMatch(matchId: string): Promise<bool
     restoreLiveBoardView();
     return didHaveHistoricalSelection;
   }
+  if (hadMoveHistoryFlipOverride && clearMoveHistoryFlipOverrideForCurrentSession()) {
+    setNewBoard(startedFromHistoricalView);
+    triggerMoveHistoryPopupReload();
+  }
   const requestToken = ++viewedRematchRequestToken;
   const renderSessionId = nextBoardRenderSession();
+  if (!startedFromHistoricalView) {
+    Board.setBoardFlipped(activeBoardShouldBeFlipped());
+  }
   if (isOnlineGame) {
     const pair = await ensureHistoricalMatchPair(matchId);
     if (requestToken !== viewedRematchRequestToken || !isBoardRenderSessionActive(renderSessionId) || !pair) {
@@ -1335,6 +1377,48 @@ export function getFenForMoveHistoryIndex(index: number): string | null {
     return getMoveHistorySourceGame().fen();
   }
   return entities[index].fen();
+}
+
+export function didToggleMoveHistoryBoardFlip(selectedMoveHistoryIndex?: number) {
+  if (clearMoveHistoryFlipOverrideForCurrentSession()) {
+    const inFlashbackMode = flashbackMode;
+    setNewBoard(inFlashbackMode);
+    if (isMoveHistoryPopupOpen && inFlashbackMode) {
+      const entities = getMoveHistorySourceGame().verbose_tracking_entities();
+      const selectedIndex =
+        selectedMoveHistoryIndex !== undefined && selectedMoveHistoryIndex >= 0 && selectedMoveHistoryIndex < entities.length
+          ? selectedMoveHistoryIndex
+          : -1;
+      if (selectedIndex >= 0) {
+        updateWagerDisplayForMoveNavigation(selectedIndex, entities.length);
+      }
+    } else {
+      applyWagerState();
+    }
+    triggerMoveHistoryPopupReload();
+    return;
+  }
+
+  moveHistoryFlipOverrideSessionId = boardRenderSessionId;
+  moveHistoryFlipOverrideEnabled = true;
+  moveHistoryFlipOverrideBaseBoardFlipped = Board.isFlipped;
+  Board.setBoardMetadataDisplaySwapped(true);
+  Board.setBoardFlipped(!Board.isFlipped);
+  const inFlashbackMode = flashbackMode;
+  setNewBoard(inFlashbackMode);
+  if (isMoveHistoryPopupOpen && inFlashbackMode) {
+    const entities = getMoveHistorySourceGame().verbose_tracking_entities();
+    const selectedIndex =
+      selectedMoveHistoryIndex !== undefined && selectedMoveHistoryIndex >= 0 && selectedMoveHistoryIndex < entities.length
+        ? selectedMoveHistoryIndex
+        : -1;
+    if (selectedIndex >= 0) {
+      updateWagerDisplayForMoveNavigation(selectedIndex, entities.length);
+    }
+  } else {
+    applyWagerState();
+  }
+  triggerMoveHistoryPopupReload();
 }
 
 export function didSelectVerboseTrackingEntity(index: number) {
@@ -1669,6 +1753,7 @@ export function failedToCreateRematchProposal() {
   pendingRematchNavigationToLiveBoard = false;
   boardViewMode = "activeLive";
   nextBoardRenderSession();
+  Board.setBoardFlipped(activeBoardShouldBeFlipped());
   applyBoardUiForCurrentView();
   setNewBoard(false);
   setEndMatchVisible(true);
@@ -1889,8 +1974,16 @@ export function didClickInviteBotIntoLocalGameButton() {
   isGameWithBot = true;
   botPlayerColor = MonsWeb.Color.Black;
   playerSideColor = MonsWeb.Color.White;
-  Board.setBoardFlipped(false);
+  const boardWasFlippedBeforeTransition = Board.isFlipped;
+  const didClearMoveHistoryFlipOverride = clearMoveHistoryFlipOverrideForCurrentSession();
+  Board.setBoardFlipped(activeBoardShouldBeFlipped());
   Board.showOpponentAsBotPlayer();
+  if (Board.isFlipped !== boardWasFlippedBeforeTransition) {
+    setNewBoard(false);
+  }
+  if (didClearMoveHistoryFlipOverride) {
+    triggerMoveHistoryPopupReload();
+  }
   showResignButton();
   showVoiceReactionButton(true);
   setAutomoveActionVisible(true);
@@ -1993,6 +2086,7 @@ export function showItemsAfterChangingAssetsStyle() {
 function navigateFromWaitingLiveToLastCompletedMatch() {
   boardViewMode = "activeLive";
   const renderSessionId = nextBoardRenderSession();
+  Board.setBoardFlipped(activeBoardShouldBeFlipped());
   const descriptor = getActiveRematchSeriesDescriptor();
   const completedMatches = descriptor?.matches.filter((m: RematchSeriesMatchDescriptor) => !m.isPendingResponse) ?? [];
   const lastMatch = completedMatches.length > 0 ? completedMatches[completedMatches.length - 1] : null;
@@ -2586,7 +2680,7 @@ function applyOutput(
                   botScoreReactionPlayedTurns.add(currentTurnNumber);
                   if (Math.random() < botScoreReactionChance) {
                     playSounds([Sound.EmoteReceived]);
-                    showVideoReaction(true, getRandomReactionVariation(reactionVariations));
+                    showVideoReaction(Board.isMetadataSideDisplayedAtOpponentSlot(true), getRandomReactionVariation(reactionVariations));
                   }
                 }
               }
@@ -3287,10 +3381,6 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     }
   }
 
-  if (!isWatchOnly && shouldRenderLiveBoard) {
-    Board.setBoardFlipped(playerSideColor === MonsWeb.Color.Black);
-  }
-
   if (shouldRenderLiveBoard) {
     Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, incomingIsOpponentSide);
     applyWagerState();
@@ -3308,6 +3398,10 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   }
 
   verifyMovesIfNeeded(matchId, match.flatMovesString, match.color);
+
+  if (shouldRenderLiveBoard) {
+    Board.setBoardFlipped(activeBoardShouldBeFlipped());
+  }
 
   if (isReconnect || isWatchOnly) {
     const movesCount = movesCountOfMatch(match);
@@ -3694,6 +3788,8 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
 
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(problem.fen);
   if (!gameFromFen) return;
+  clearMoveHistoryFlipOverrideForCurrentSession();
+  flashbackMode = false;
   game = gameFromFen;
   didStartLocalGame = true;
   setHomeVisible(true);
@@ -3718,6 +3814,7 @@ export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = fa
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
   updateUndoButtonBasedOnGameState();
+  triggerMoveHistoryPopupReload();
 }
 
 export function showNextProblem(problem: Problem) {
@@ -3935,6 +4032,9 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
   if (!gameFromFen) return;
   game = gameFromFen;
+  if (shouldRenderLiveBoard) {
+    Board.setBoardFlipped(activeBoardShouldBeFlipped());
+  }
   if (game.winner_color() !== undefined) {
     disableAndHideUndoResignAndTimerControls();
     Board.hideTimerCountdownDigits();

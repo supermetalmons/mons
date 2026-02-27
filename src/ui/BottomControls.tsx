@@ -11,7 +11,7 @@ import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playReaction, playSounds } from "../content/sounds";
 import { newReactionOfKind, newStickerReaction } from "../content/sounds";
-import { showVoiceReactionText, opponentSideMetadata, playerSideMetadata } from "../game/board";
+import { showVoiceReactionText, opponentSideMetadata, playerSideMetadata, isMetadataSideDisplayedAtOpponentSlot } from "../game/board";
 import NavigationPicker from "./NavigationPicker";
 import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, ControlButton, BottomPillButton, ResignButton, ResignConfirmation, ReactionPillsContainer, ReactionPill, StickerPill, WagerBetButton, WagerMaterialsGrid, WagerMaterialItem, WagerMaterialIcon, WagerMaterialAmount, WagerButtonBadge, WagerButtonIcon, WagerButtonAmount } from "./BottomControlsStyles";
 import { fetchNftsForStoredAddresses } from "../services/nftService";
@@ -1500,7 +1500,7 @@ const BottomControls: React.FC = () => {
       return;
     }
     setIsReactionPickerVisible(false);
-    showVideoReaction(false, stickerId);
+    showVideoReaction(isMetadataSideDisplayedAtOpponentSlot(false), stickerId);
     playSounds([Sound.EmoteSent]);
     if (isGameWithBot) {
       const sessionGuard = connection.createSessionGuard();
@@ -1509,7 +1509,7 @@ const BottomControls: React.FC = () => {
         if (!sessionGuard()) {
           return;
         }
-        showVideoReaction(true, responseStickerId);
+        showVideoReaction(isMetadataSideDisplayedAtOpponentSlot(true), responseStickerId);
         playSounds([Sound.EmoteReceived]);
       }, 5000);
     } else if (!puzzleMode) {

@@ -1,6 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { getVerboseTrackingEntities, didSelectVerboseTrackingEntity, didOpenMoveHistoryPopup, didDismissMoveHistoryPopup, getFenForMoveHistoryIndex } from "../game/gameController";
+import {
+  getVerboseTrackingEntities,
+  didSelectVerboseTrackingEntity,
+  didOpenMoveHistoryPopup,
+  didDismissMoveHistoryPopup,
+  getFenForMoveHistoryIndex,
+  didToggleMoveHistoryBoardFlip,
+} from "../game/gameController";
 import { useGameAssets } from "../hooks/useGameAssets";
 import { useEmojis } from "../hooks/useEmojis";
 import type { MoveHistoryEntry, MoveHistorySegment, MoveHistoryToken, MoveHistorySegmentRole } from "../game/moveEventStrings";
@@ -68,6 +75,36 @@ const WheelContainer = styled.div`
   position: relative;
   height: 100%;
   overflow: hidden;
+`;
+
+const TopActions = styled.div`
+  position: absolute;
+  top: 6px;
+  left: 8px;
+  right: 8px;
+  display: flex;
+  justify-content: center;
+  z-index: 3;
+  pointer-events: none;
+`;
+
+const TopActionButton = styled.button`
+  pointer-events: auto;
+  border: none;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.08);
+  color: var(--color-gray-33);
+  padding: 2px 8px;
+  font-size: 11px;
+  line-height: 1.2;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(255, 255, 255, 0.12);
+    color: var(--color-gray-f0);
+  }
 `;
 
 const SelectionIndicator = styled.div`
@@ -253,23 +290,29 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   const startYRef = React.useRef(0);
   const startScrollTopRef = React.useRef(0);
   const pendingScrollIndexRef = React.useRef<number | null>(items.length - 1);
+  const [isAtTop, setIsAtTop] = React.useState(false);
 
   // Apply pending scroll after render when DOM reflects new items
   React.useLayoutEffect(() => {
+    const el = scrollRef.current;
+    if (!el) {
+      return;
+    }
     if (pendingScrollIndexRef.current !== null) {
       const target = pendingScrollIndexRef.current;
       pendingScrollIndexRef.current = null;
-      const el = scrollRef.current;
-      if (el) {
-        el.scrollTop = target * ITEM_HEIGHT;
-      }
+      el.scrollTop = target * ITEM_HEIGHT;
     }
-  });
+    const atTop = el.scrollTop <= 1;
+    setIsAtTop((prev) => (prev === atTop ? prev : atTop));
+  }, [items.length, selectedIndex, version]);
 
   // User scroll updates selection and dismisses snapshot
   const handleScroll = React.useCallback(() => {
     const el = scrollRef.current;
     if (!el || items.length === 0) return;
+    const atTop = el.scrollTop <= 1;
+    setIsAtTop((prev) => (prev === atTop ? prev : atTop));
     const newIndex = Math.round(el.scrollTop / ITEM_HEIGHT);
     const clamped = Math.max(0, Math.min(items.length - 1, newIndex));
     if (clamped !== selectedIndexRef.current) {
@@ -330,6 +373,11 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
     setSnapshotIndex(null);
   }, []);
 
+  const handleFlipBoard = React.useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    didToggleMoveHistoryBoardFlip(selectedIndexRef.current);
+  }, []);
+
   // Click on item to select it
   const handleItemClick = React.useCallback(
     (index: number) => {
@@ -359,7 +407,9 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       _popupIsFollowingLatest = index >= items.length - 1;
       setSelectedIndex(index);
       const el = scrollRef.current;
-      if (el) el.scrollTop = index * ITEM_HEIGHT;
+      if (el) {
+        el.scrollTop = index * ITEM_HEIGHT;
+      }
       didSelectVerboseTrackingEntity(index);
     },
     [items.length, snapshotIndex]
@@ -515,6 +565,13 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   return (
     <MoveHistoryPopupContainer ref={ref}>
       <WheelContainer>
+        {isAtTop && (
+          <TopActions>
+            <TopActionButton type="button" onClick={handleFlipBoard}>
+              flip the board
+            </TopActionButton>
+          </TopActions>
+        )}
         <SelectionIndicator />
         <ScrollWheel ref={scrollRef} onScroll={handleScroll} onMouseDown={handleMouseDown}>
           {PADDING_INDICES.map((offset) => {
