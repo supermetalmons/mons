@@ -3779,6 +3779,13 @@ export function resumeTutorialFromBanner() {
   didSelectPuzzle(getInitialProblem());
 }
 
+export function getSelectedPuzzleId(): string | null {
+  if (!puzzleMode || !selectedProblem) {
+    return null;
+  }
+  return selectedProblem.id;
+}
+
 export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = false) {
   dismissBadgeAndNotificationBannerIfNeeded();
   showPrimaryAction(PrimaryActionType.None);

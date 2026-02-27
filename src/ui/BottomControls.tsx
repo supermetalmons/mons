@@ -3,7 +3,7 @@ import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnve
 import { IoSparklesSharp } from "react-icons/io5";
 import styled from "styled-components";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
-import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, isOnlineGame, isWatchOnly, isMatchOver, getBoardViewMode, getRematchSeriesNavigatorItems, didSelectRematchSeriesMatch, preloadRematchSeriesScores } from "../game/gameController";
+import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, isOnlineGame, isWatchOnly, isMatchOver, getBoardViewMode, getRematchSeriesNavigatorItems, didSelectRematchSeriesMatch, preloadRematchSeriesScores, getSelectedPuzzleId } from "../game/gameController";
 import type { RematchSeriesNavigatorItem } from "../game/gameController";
 import { connection } from "../connection/connection";
 import type { NavigationGamesPageCursor } from "../connection/connection";
@@ -1857,6 +1857,10 @@ const BottomControls: React.FC = () => {
     } catch (_) {}
   };
 
+  const routeState = getCurrentRouteState();
+  const selectedGameInviteId = routeState.mode === "invite" ? routeState.inviteId : null;
+  const selectedProblemId = getSelectedPuzzleId();
+
   return (
     <>
       <BrushButton ref={brushButtonRef} dimmed={isBrushButtonDimmed} onClick={!isMobile ? handleBrushClick : undefined} onTouchStart={isMobile ? handleBrushClick : undefined} aria-label="Appearance">
@@ -1874,6 +1878,8 @@ const BottomControls: React.FC = () => {
             showsHomeNavigation={isDeepHomeButtonVisible}
             navigateHome={handleHomeClick}
             games={mergedNavigationGames}
+            selectedProblemId={selectedProblemId}
+            selectedGameInviteId={selectedGameInviteId}
             isGamesLoading={isNavigationGamesLoading}
             isLoadingMoreGames={isNavigationGamesLoadingMore}
             hasMoreGames={navigationHasMoreGames}

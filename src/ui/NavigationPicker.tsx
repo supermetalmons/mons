@@ -12,6 +12,8 @@ interface NavigationPickerProps {
   showsHomeNavigation: boolean;
   navigateHome?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   games?: NavigationGameItem[];
+  selectedProblemId?: string | null;
+  selectedGameInviteId?: string | null;
   isGamesLoading?: boolean;
   isLoadingMoreGames?: boolean;
   hasMoreGames?: boolean;
@@ -71,8 +73,10 @@ const SectionTitle = styled.div`
   }
 `;
 
-const NavigationPickerButton = styled.button`
-  background: none;
+const NavigationPickerButton = styled.button<{ $isSelected?: boolean }>`
+  background: ${(props) => (props.$isSelected ? "rgba(117, 187, 255, 0.28)" : "transparent")};
+  box-shadow: ${(props) => (props.$isSelected ? "inset 0 0 0 1px rgba(73, 156, 255, 0.44)" : "none")};
+  border-radius: 6px;
   font-size: 15px;
   border: none;
   padding: 6px 15px 6px 0;
@@ -83,28 +87,31 @@ const NavigationPickerButton = styled.button`
   display: flex;
   align-items: center;
   gap: 5px;
+  font-weight: ${(props) => (props.$isSelected ? 600 : 400)};
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: var(--interactiveHoverBackgroundLight);
+      background-color: ${(props) => (props.$isSelected ? "rgba(117, 187, 255, 0.36)" : "var(--interactiveHoverBackgroundLight)")};
     }
   }
 
   &:active {
-    background-color: var(--interactiveActiveBackgroundLight);
+    background-color: ${(props) => (props.$isSelected ? "rgba(117, 187, 255, 0.46)" : "var(--interactiveActiveBackgroundLight)")};
   }
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-gray-f0);
+    background: ${(props) => (props.$isSelected ? "rgba(75, 150, 255, 0.3)" : "transparent")};
+    box-shadow: ${(props) => (props.$isSelected ? "inset 0 0 0 1px rgba(104, 181, 255, 0.52)" : "none")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: var(--interactiveHoverBackgroundDark);
+        background-color: ${(props) => (props.$isSelected ? "rgba(75, 150, 255, 0.4)" : "var(--interactiveHoverBackgroundDark)")};
       }
     }
 
     &:active {
-      background-color: var(--interactiveActiveBackgroundDark);
+      background-color: ${(props) => (props.$isSelected ? "rgba(75, 150, 255, 0.5)" : "var(--interactiveActiveBackgroundDark)")};
     }
   }
 `;
@@ -135,11 +142,15 @@ const GameText = styled.span`
   text-overflow: ellipsis;
 `;
 
-const GameStatus = styled.span`
+const GameStatus = styled.span<{ $isSelected?: boolean }>`
   margin-left: auto;
   font-size: 0.52rem;
-  color: var(--navigationTextMuted);
+  color: ${(props) => (props.$isSelected ? "var(--color-blue-primary)" : "var(--navigationTextMuted)")};
   text-transform: uppercase;
+
+  @media (prefers-color-scheme: dark) {
+    color: ${(props) => (props.$isSelected ? "var(--color-blue-primary-dark)" : "var(--navigationTextMuted)")};
+  }
 `;
 
 const EmptyRow = styled.div`
@@ -228,6 +239,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   showsHomeNavigation,
   navigateHome,
   games = [],
+  selectedProblemId = null,
+  selectedGameInviteId = null,
   isGamesLoading = false,
   isLoadingMoreGames = false,
   hasMoreGames = false,
@@ -295,14 +308,17 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const renderLearnSection = () => (
     <>
       <SectionTitle>LEARN</SectionTitle>
-      {problems.map((item, index) => (
-        <NavigationPickerButton key={item.id} onClick={() => handleNavigationSelect(item.id)}>
-          <PlaceholderImage src={getIconImage(item.icon)} alt="" />
-          {item.label}
-          {completedProblemsSet.has(item.id) && <CompletedIcon />}
-          {!completedProblemsSet.has(item.id) && index === firstUncompletedIndex && <UncompletedIcon />}
-        </NavigationPickerButton>
-      ))}
+      {problems.map((item, index) => {
+        const isSelected = selectedProblemId === item.id;
+        return (
+          <NavigationPickerButton key={item.id} $isSelected={isSelected} onClick={() => handleNavigationSelect(item.id)}>
+            <PlaceholderImage src={getIconImage(item.icon)} alt="" />
+            {item.label}
+            {completedProblemsSet.has(item.id) && <CompletedIcon />}
+            {!completedProblemsSet.has(item.id) && index === firstUncompletedIndex && <UncompletedIcon />}
+          </NavigationPickerButton>
+        );
+      })}
     </>
   );
 
@@ -319,17 +335,20 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
               {!isGamesLoading && isUsingFallbackScope && <EmptyRow>Showing games for current login only</EmptyRow>}
               {!isGamesLoading && games.length === 0 && <EmptyRow>No games yet</EmptyRow>}
               {!isGamesLoading &&
-                games.map((game) => (
-                  <GameRow key={game.inviteId} onClick={() => onSelectGame?.(game.inviteId)}>
-                    {typeof game.opponentEmoji === "number" ? (
-                      <GameEmojiImage src={emojis.getEmojiUrl(game.opponentEmoji.toString())} alt="" />
-                    ) : (
-                      <GameEmojiPlaceholder />
-                    )}
-                    <GameText>{game.opponentName && game.opponentName !== "" ? game.opponentName : "anon"}</GameText>
-                    <GameStatus>{getGameStatusLabel(game)}</GameStatus>
-                  </GameRow>
-                ))}
+                games.map((game) => {
+                  const isSelected = selectedGameInviteId === game.inviteId;
+                  return (
+                    <GameRow key={game.inviteId} $isSelected={isSelected} onClick={() => onSelectGame?.(game.inviteId)}>
+                      {typeof game.opponentEmoji === "number" ? (
+                        <GameEmojiImage src={emojis.getEmojiUrl(game.opponentEmoji.toString())} alt="" />
+                      ) : (
+                        <GameEmojiPlaceholder />
+                      )}
+                      <GameText>{game.opponentName && game.opponentName !== "" ? game.opponentName : "anon"}</GameText>
+                      <GameStatus $isSelected={isSelected}>{getGameStatusLabel(game)}</GameStatus>
+                    </GameRow>
+                  );
+                })}
               {!isGamesLoading && hasMoreGames && !isLoadingMoreGames && <LoadMoreGamesButton onClick={() => onLoadMoreGames?.()}>Load more games</LoadMoreGamesButton>}
               {!isGamesLoading && isLoadingMoreGames && <EmptyRow>Loading more games...</EmptyRow>}
             </>
