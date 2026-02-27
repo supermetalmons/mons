@@ -1,12 +1,14 @@
 import { hideShinyCard } from "./ShinyCard";
 import { resetIslandOverlayState } from "./islandOverlayState";
 type SimpleTransientUiHandler = () => void;
+type NavigationTransientUiHandler = (options?: { preserveNavigationSelection?: boolean }) => void;
 type BoardTransientUiHandler = (fadeOutVideos?: boolean) => void;
 
 const noopSimpleHandler: SimpleTransientUiHandler = () => {};
+const noopNavigationHandler: NavigationTransientUiHandler = () => {};
 const noopBoardHandler: BoardTransientUiHandler = () => {};
 
-let closeNavigationAndAppearancePopupHandler: SimpleTransientUiHandler = noopSimpleHandler;
+let closeNavigationAndAppearancePopupHandler: NavigationTransientUiHandler = noopNavigationHandler;
 let clearBottomControlsMatchScopeHandler: SimpleTransientUiHandler = noopSimpleHandler;
 let closeAllKindsOfPopupsHandler: SimpleTransientUiHandler = noopSimpleHandler;
 let closeProfilePopupHandler: SimpleTransientUiHandler = noopSimpleHandler;
@@ -24,7 +26,7 @@ const hasAllTransientUiHandlers = () => {
 };
 
 const runCloseTransientUi = () => {
-  closeNavigationAndAppearancePopupHandler();
+  closeNavigationAndAppearancePopupHandler({ preserveNavigationSelection: true });
   clearBottomControlsMatchScopeHandler();
   closeAllKindsOfPopupsHandler();
   closeProfilePopupHandler();
@@ -45,13 +47,13 @@ const flushPendingCloseTransientUi = () => {
   runCloseTransientUi();
 };
 
-export const registerBottomControlsTransientUiHandler = (handler: SimpleTransientUiHandler, clearMatchScopeHandler: SimpleTransientUiHandler = noopSimpleHandler) => {
+export const registerBottomControlsTransientUiHandler = (handler: NavigationTransientUiHandler, clearMatchScopeHandler: SimpleTransientUiHandler = noopSimpleHandler) => {
   closeNavigationAndAppearancePopupHandler = handler;
   clearBottomControlsMatchScopeHandler = clearMatchScopeHandler;
   hasBottomControlsHandler = true;
   flushPendingCloseTransientUi();
   return () => {
-    closeNavigationAndAppearancePopupHandler = noopSimpleHandler;
+    closeNavigationAndAppearancePopupHandler = noopNavigationHandler;
     clearBottomControlsMatchScopeHandler = noopSimpleHandler;
     hasBottomControlsHandler = false;
   };
@@ -97,4 +99,3 @@ export const closeTransientUi = () => {
   hasPendingCloseTransientUi = false;
   runCloseTransientUi();
 };
-

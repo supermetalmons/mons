@@ -3,7 +3,7 @@ import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnve
 import { IoSparklesSharp } from "react-icons/io5";
 import styled from "styled-components";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
-import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, isOnlineGame, isWatchOnly, isMatchOver, getBoardViewMode, getRematchSeriesNavigatorItems, didSelectRematchSeriesMatch, preloadRematchSeriesScores, getSelectedPuzzleId } from "../game/gameController";
+import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, isOnlineGame, isWatchOnly, isMatchOver, getBoardViewMode, getRematchSeriesNavigatorItems, didSelectRematchSeriesMatch, preloadRematchSeriesScores, getSelectedPuzzleId, didSelectPuzzle } from "../game/gameController";
 import type { RematchSeriesNavigatorItem } from "../game/gameController";
 import { connection } from "../connection/connection";
 import type { NavigationGamesPageCursor } from "../connection/connection";
@@ -26,10 +26,11 @@ import { subscribeToWagerState } from "../game/wagerState";
 import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 import { storage } from "../utils/storage";
-import { transitionToHome } from "../session/AppSessionManager";
+import { getCurrentTarget, transitionToHome } from "../session/AppSessionManager";
 import { getCurrentRouteState } from "../navigation/routeState";
 import { registerBottomControlsTransientUiHandler } from "./uiSession";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
+import { problems } from "../content/problems";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 const rematchSeriesDigitsFontFamily = 'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace';
@@ -46,11 +47,15 @@ export function didDismissSomethingWithOutsideTapJustNow() {
   latestModalOutsideTapDismissDate = Date.now();
 }
 
-let closeNavigationAndAppearancePopupIfAnyImpl: () => void = () => {};
+type CloseNavigationAndAppearancePopupOptions = {
+  preserveNavigationSelection?: boolean;
+};
+
+let closeNavigationAndAppearancePopupIfAnyImpl: (options?: CloseNavigationAndAppearancePopupOptions) => void = () => {};
 let setNavigationListButtonVisibleImpl: (visible: boolean) => void = () => {};
 
-export const closeNavigationAndAppearancePopupIfAny = () => {
-  closeNavigationAndAppearancePopupIfAnyImpl();
+export const closeNavigationAndAppearancePopupIfAny = (options?: CloseNavigationAndAppearancePopupOptions) => {
+  closeNavigationAndAppearancePopupIfAnyImpl(options);
 };
 
 export const setNavigationListButtonVisible = (visible: boolean) => {
@@ -434,6 +439,7 @@ const BottomControls: React.FC = () => {
   });
   const navigationHasPagedGamesRef = useRef(false);
   const navigationPopupEpochRef = useRef(0);
+  const navigationSelectionEpochRef = useRef(0);
   const beginInviteFlowRef = useRef<(options?: { skipSoundInit?: boolean }) => void>(() => {});
   const [stickerUrls, setStickerUrls] = useState<Record<number, string | null>>({});
   const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
@@ -572,6 +578,7 @@ const BottomControls: React.FC = () => {
 
       if (navigationPopupRef.current && !navigationPopupRef.current.contains(event.target as Node) && !navigationButtonRef.current?.contains(event.target as Node)) {
         didDismissSomethingWithOutsideTapJustNow();
+        navigationSelectionEpochRef.current += 1;
         setIsNavigationPopupVisible(false);
       }
 
@@ -1094,7 +1101,10 @@ const BottomControls: React.FC = () => {
     };
   }, [clearTrackedMatchScopedTimeout, rematchSeriesMatchesKey, setMatchScopedTimeout]);
 
-  const closeNavigationAndAppearancePopupIfAnyHandler = useCallback(() => {
+  const closeNavigationAndAppearancePopupIfAnyHandler = useCallback((options?: CloseNavigationAndAppearancePopupOptions) => {
+    if (!options?.preserveNavigationSelection) {
+      navigationSelectionEpochRef.current += 1;
+    }
     setIsNavigationPopupVisible(false);
     setIsBoardStylePickerVisible(false);
     setIsMoveHistoryPopupVisible(false);
@@ -1391,6 +1401,7 @@ const BottomControls: React.FC = () => {
       setIsTimerConfirmVisible(false);
       setIsClaimVictoryConfirmVisible(false);
       setIsReactionPickerVisible(false);
+      navigationSelectionEpochRef.current += 1;
       setIsNavigationPopupVisible(false);
     }
     setIsMoveHistoryPopupVisible((prev) => !prev);
@@ -1441,6 +1452,7 @@ const BottomControls: React.FC = () => {
       setIsTimerConfirmVisible(false);
       setIsClaimVictoryConfirmVisible(false);
       setIsReactionPickerVisible(false);
+      navigationSelectionEpochRef.current += 1;
       setIsNavigationPopupVisible(false);
     }
     setIsBoardStylePickerVisible(!isBoardStylePickerVisible);
@@ -1469,6 +1481,7 @@ const BottomControls: React.FC = () => {
 
   const handleHomeClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
+    navigationSelectionEpochRef.current += 1;
     didClickHomeButton();
   };
 
@@ -1710,14 +1723,41 @@ const BottomControls: React.FC = () => {
   const handleNavigationButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     if (!isNavigationPopupVisible) {
       closeMenuAndInfoIfAny();
+    } else {
+      navigationSelectionEpochRef.current += 1;
     }
     setIsNavigationPopupVisible(!isNavigationPopupVisible);
   };
 
   const handleNavigationGameSelect = (inviteId: string) => {
+    navigationSelectionEpochRef.current += 1;
     setIsNavigationPopupVisible(false);
     setIsBoardStylePickerVisible(false);
     connection.connectToInvite(inviteId);
+  };
+
+  const handleNavigationProblemSelect = (problemId: string) => {
+    const selectedProblem = problems.find((item) => item.id === problemId);
+    if (!selectedProblem) {
+      return;
+    }
+    const selectionEpoch = navigationSelectionEpochRef.current + 1;
+    navigationSelectionEpochRef.current = selectionEpoch;
+    setIsNavigationPopupVisible(false);
+    setIsBoardStylePickerVisible(false);
+    void (async () => {
+      try {
+        await transitionToHome({ forceMatchScopeReset: true });
+      } catch {}
+      if (navigationSelectionEpochRef.current !== selectionEpoch) {
+        return;
+      }
+      const currentTarget = getCurrentTarget();
+      if (currentTarget.mode !== "home" || currentTarget.path !== "") {
+        return;
+      }
+      didSelectPuzzle(selectedProblem);
+    })();
   };
 
   const handleNavigationLoadMoreGames = () => {
@@ -1822,7 +1862,7 @@ const BottomControls: React.FC = () => {
 
   const routeState = getCurrentRouteState();
   const selectedGameInviteId = routeState.mode === "invite" ? routeState.inviteId : null;
-  const selectedProblemId = getSelectedPuzzleId();
+  const selectedProblemId = routeState.mode === "home" ? getSelectedPuzzleId() : null;
 
   return (
     <>
@@ -1847,6 +1887,7 @@ const BottomControls: React.FC = () => {
             hasMoreGames={navigationHasMoreGames}
             isUsingFallbackScope={isNavigationFallbackScope}
             onSelectGame={handleNavigationGameSelect}
+            onSelectProblem={handleNavigationProblemSelect}
             onLoadMoreGames={handleNavigationLoadMoreGames}
           />
         </div>

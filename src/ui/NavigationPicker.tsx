@@ -1,7 +1,6 @@
 import React, { useMemo, useRef } from "react";
 import styled from "styled-components";
 import { problems, getCompletedProblemIds } from "../content/problems";
-import { didSelectPuzzle } from "../game/gameController";
 import { useGameAssets } from "../hooks/useGameAssets";
 import { FaCheck, FaCircle } from "react-icons/fa";
 import { NavigationGameItem } from "../connection/connectionModels";
@@ -18,6 +17,7 @@ interface NavigationPickerProps {
   hasMoreGames?: boolean;
   isUsingFallbackScope?: boolean;
   onSelectGame?: (inviteId: string) => void;
+  onSelectProblem: (problemId: string) => void;
   onLoadMoreGames?: () => void;
 }
 
@@ -237,6 +237,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   hasMoreGames = false,
   isUsingFallbackScope = false,
   onSelectGame,
+  onSelectProblem,
   onLoadMoreGames,
 }) => {
   const navigationPickerRef = useRef<HTMLDivElement>(null);
@@ -270,10 +271,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   }, [games]);
 
   const handleNavigationSelect = (id: string) => {
-    const selectedItem = problems.find((item) => item.id === id);
-    if (selectedItem) {
-      didSelectPuzzle(selectedItem);
-    }
+    onSelectProblem(id);
   };
 
   const preventScroll = (e: React.TouchEvent) => {
