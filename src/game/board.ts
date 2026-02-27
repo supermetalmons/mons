@@ -134,7 +134,8 @@ const smoothWaveSinStep = Math.sin(smoothWaveAngleStep);
 let countdownInterval: NodeJS.Timeout | null = null;
 let monsBoardDisplayAnimationTimeout: NodeJS.Timeout | null = null;
 let monsBoardDisplayAnimationRunToken = 0;
-let monsBoardDisplayAnimationRadius = 0;
+let monsBoardDisplayAnimationLifecycleTracked = false;
+let preserveDisplayAnimation = false;
 let boardInputHandler: ((event: Event) => void) | null = null;
 let hasSetupBoardRuntime = false;
 let didRegisterResizeHandler = false;
@@ -1520,7 +1521,10 @@ export function setInviteBotButtonVisible(visible: boolean) {
 export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
   if (monsBoardDisplayAnimationTimeout) return;
   const runToken = ++monsBoardDisplayAnimationRunToken;
-  incrementLifecycleCounter("boardTimeouts");
+  if (!monsBoardDisplayAnimationLifecycleTracked) {
+    incrementLifecycleCounter("boardTimeouts");
+    monsBoardDisplayAnimationLifecycleTracked = true;
+  }
 
   const frames: [number, number][][] = [
     // Frame 0: empty
@@ -1602,6 +1606,22 @@ export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
   animate();
 }
 
+export function setPreserveDisplayAnimation(preserve: boolean) {
+  if (preserveDisplayAnimation === preserve) {
+    return;
+  }
+  preserveDisplayAnimation = preserve;
+  if (monsBoardDisplayAnimationTimeout) {
+    if (preserve && monsBoardDisplayAnimationLifecycleTracked) {
+      decrementLifecycleCounter("boardTimeouts");
+      monsBoardDisplayAnimationLifecycleTracked = false;
+    } else if (!preserve && !monsBoardDisplayAnimationLifecycleTracked) {
+      incrementLifecycleCounter("boardTimeouts");
+      monsBoardDisplayAnimationLifecycleTracked = true;
+    }
+  }
+}
+
 export function runMonsBoardAsDisplayWaitingAnimation() {
   if (valentinesLoaderEnabled) {
     runMonsBoardAsDisplayWaitingHeartsAnimation();
@@ -1610,8 +1630,12 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
 
   if (monsBoardDisplayAnimationTimeout) return;
   const runToken = ++monsBoardDisplayAnimationRunToken;
-  incrementLifecycleCounter("boardTimeouts");
+  if (!monsBoardDisplayAnimationLifecycleTracked) {
+    incrementLifecycleCounter("boardTimeouts");
+    monsBoardDisplayAnimationLifecycleTracked = true;
+  }
 
+  let radius = 0;
   const maxRadius = 5;
 
   function animate() {
@@ -1619,8 +1643,8 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
       return;
     }
     cleanAllPixels();
-    drawCircle(monsBoardDisplayAnimationRadius);
-    monsBoardDisplayAnimationRadius = monsBoardDisplayAnimationRadius >= maxRadius ? 0 : monsBoardDisplayAnimationRadius + 0.5;
+    drawCircle(radius);
+    radius = radius >= maxRadius ? 0 : radius + 0.5;
     monsBoardDisplayAnimationTimeout = setTimeout(() => {
       if (runToken !== monsBoardDisplayAnimationRunToken) {
         return;
@@ -1652,11 +1676,15 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
 }
 
 export function stopMonsBoardAsDisplayAnimations() {
+  if (preserveDisplayAnimation) return;
   monsBoardDisplayAnimationRunToken += 1;
   if (monsBoardDisplayAnimationTimeout) {
     clearTimeout(monsBoardDisplayAnimationTimeout);
     monsBoardDisplayAnimationTimeout = null;
-    decrementLifecycleCounter("boardTimeouts");
+    if (monsBoardDisplayAnimationLifecycleTracked) {
+      decrementLifecycleCounter("boardTimeouts");
+      monsBoardDisplayAnimationLifecycleTracked = false;
+    }
     cleanAllPixels();
   }
 }
@@ -3467,6 +3495,7 @@ export function didClickAndChangePlayerEmoji(newId: string, newEmojiUrl: string,
 }
 
 export function setupBoard() {
+  const shouldPreserveAnimation = preserveDisplayAnimation;
   if (hasSetupBoardRuntime) {
     disposeBoardRuntime();
   }
@@ -3475,6 +3504,7 @@ export function setupBoard() {
   opponentSideMetadata.emojiId = "";
   opponentSideMetadata.aura = "";
   initializeBoardElements();
+  const skipLayerRecreation = shouldPreserveAnimation && !!itemsLayer?.querySelector(".board-rect");
   boardInputHandler = (event: Event) => {
     const hasVisiblePopups = hasIslandOverlayVisible() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible() || showsShinyCardSomewhere;
     const didDismissSmth = !didNotDismissAnythingWithOutsideTapJustNow();
@@ -3507,13 +3537,15 @@ export function setupBoard() {
   incrementLifecycleCounter("boardDomListeners");
   hasSetupBoardRuntime = true;
 
-  for (let y = 0; y < 11; y++) {
-    for (let x = 0; x < 11; x++) {
-      const rect = document.createElementNS(SVG.ns, "rect");
-      SVG.setFrame(rect, x, y, 1, 1);
-      SVG.setFill(rect, "transparent");
-      rect.classList.add("board-rect");
-      itemsLayer?.appendChild(rect);
+  if (!skipLayerRecreation) {
+    for (let y = 0; y < 11; y++) {
+      for (let x = 0; x < 11; x++) {
+        const rect = document.createElementNS(SVG.ns, "rect");
+        SVG.setFrame(rect, x, y, 1, 1);
+        SVG.setFill(rect, "transparent");
+        rect.classList.add("board-rect");
+        itemsLayer?.appendChild(rect);
+      }
     }
   }
 
@@ -3579,13 +3611,15 @@ export function disposeBoardRuntime() {
   }
   hasSetupBoardRuntime = false;
   removeHighlights();
-  cleanAllPixels();
+  if (!preserveDisplayAnimation) {
+    cleanAllPixels();
+  }
   if (dimmingOverlay) {
     dimmingOverlay.remove();
     dimmingOverlay = undefined;
   }
   hideItemSelectionOrConfirmationOverlay();
-  if (itemsLayer) {
+  if (!preserveDisplayAnimation && itemsLayer) {
     itemsLayer.innerHTML = "";
   }
   if (controlsLayer) {

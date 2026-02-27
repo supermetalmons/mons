@@ -1603,6 +1603,7 @@ export async function go(routeStateOverride?: RouteState) {
   }
   connection.setupConnection(false, routeState);
   Board.setupBoard();
+  Board.setPreserveDisplayAnimation(false);
 
   if (isAutomatchTransition) {
     isOnlineGame = true;
@@ -1785,6 +1786,7 @@ export function disposeGameSession() {
   setEndMatchConfirmed(false);
   showWaitingStateText("");
   showPrimaryAction(PrimaryActionType.None);
+  Board.setPreserveDisplayAnimation(preserveAutomatchUi);
   Board.stopMonsBoardAsDisplayAnimations();
   Board.hideTimerCountdownDigits();
   Board.hideAllMoveStatuses();
