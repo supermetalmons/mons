@@ -8,7 +8,6 @@ import { NavigationGameItem } from "../connection/connectionModels";
 import { emojis } from "../content/emojis";
 
 interface NavigationPickerProps {
-  showsPuzzles: boolean;
   showsHomeNavigation: boolean;
   navigateHome?: (event: React.MouseEvent<HTMLButtonElement>) => void;
   games?: NavigationGameItem[];
@@ -20,13 +19,6 @@ interface NavigationPickerProps {
   isUsingFallbackScope?: boolean;
   onSelectGame?: (inviteId: string) => void;
   onLoadMoreGames?: () => void;
-  showQuickActions?: boolean;
-  showAutomatchAction?: boolean;
-  showDirectAction?: boolean;
-  showBotAction?: boolean;
-  onStartAutomatch?: () => void;
-  onStartDirectGame?: () => void;
-  onStartBotGame?: () => void;
 }
 
 const NavigationPickerContainer = styled.div`
@@ -235,7 +227,6 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
 `;
 
 const NavigationPicker: React.FC<NavigationPickerProps> = ({
-  showsPuzzles,
   showsHomeNavigation,
   navigateHome,
   games = [],
@@ -247,13 +238,6 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   isUsingFallbackScope = false,
   onSelectGame,
   onLoadMoreGames,
-  showQuickActions = false,
-  showAutomatchAction = false,
-  showDirectAction = false,
-  showBotAction = false,
-  onStartAutomatch,
-  onStartDirectGame,
-  onStartBotGame,
 }) => {
   const navigationPickerRef = useRef<HTMLDivElement>(null);
   const { assets } = useGameAssets();
@@ -298,12 +282,10 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const hasIncompleteTutorial = firstUncompletedIndex !== -1;
 
   const shouldRenderGamesSection = true;
-  const shouldRenderQuickActions =
-    showQuickActions && ((showAutomatchAction && !!onStartAutomatch) || (showDirectAction && !!onStartDirectGame) || (showBotAction && !!onStartBotGame));
-  const shouldRenderLearnSection = showsPuzzles;
+  const shouldRenderLearnSection = true;
   const showTopLearn = shouldRenderLearnSection && hasIncompleteTutorial;
   const showBottomLearn = shouldRenderLearnSection && !hasIncompleteTutorial;
-  const hasScrollableContent = showTopLearn || showBottomLearn || shouldRenderGamesSection || shouldRenderQuickActions;
+  const hasScrollableContent = showTopLearn || showBottomLearn || shouldRenderGamesSection;
 
   const renderLearnSection = () => (
     <>
@@ -351,15 +333,6 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                 })}
               {!isGamesLoading && hasMoreGames && !isLoadingMoreGames && <LoadMoreGamesButton onClick={() => onLoadMoreGames?.()}>Load more games</LoadMoreGamesButton>}
               {!isGamesLoading && isLoadingMoreGames && <EmptyRow>Loading more games...</EmptyRow>}
-            </>
-          )}
-
-          {shouldRenderQuickActions && (
-            <>
-              <SectionTitle>NEW GAME</SectionTitle>
-              {showAutomatchAction && onStartAutomatch && <NavigationPickerButton onClick={onStartAutomatch}>Automatch</NavigationPickerButton>}
-              {showDirectAction && onStartDirectGame && <NavigationPickerButton onClick={onStartDirectGame}>Direct Link</NavigationPickerButton>}
-              {showBotAction && onStartBotGame && <NavigationPickerButton onClick={onStartBotGame}>Bot Game</NavigationPickerButton>}
             </>
           )}
 

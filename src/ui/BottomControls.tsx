@@ -368,7 +368,7 @@ const BottomControls: React.FC = () => {
   const [isVoiceReactionDisabled, setIsVoiceReactionDisabled] = useState(false);
   const [isNavigationButtonDimmed, setIsNavigationButtonDimmed] = useState(false);
   const [isBrushButtonDimmed, setIsBrushButtonDimmed] = useState(false);
-  const [isNavigationListButtonVisible, setIsNavigationListButtonVisible] = useState(false);
+  const [, setIsNavigationListButtonVisible] = useState(false);
   const [isNavigationPopupVisible, setIsNavigationPopupVisible] = useState(false);
   const [isBoardStylePickerVisible, setIsBoardStylePickerVisible] = useState(false);
   const [isBadgeVisible, setIsBadgeVisible] = useState(false);
@@ -434,7 +434,6 @@ const BottomControls: React.FC = () => {
   });
   const navigationHasPagedGamesRef = useRef(false);
   const navigationPopupEpochRef = useRef(0);
-  const navigationQuickActionEpochRef = useRef(0);
   const beginInviteFlowRef = useRef<(options?: { skipSoundInit?: boolean }) => void>(() => {});
   const [stickerUrls, setStickerUrls] = useState<Record<number, string | null>>({});
   const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
@@ -1714,49 +1713,6 @@ const BottomControls: React.FC = () => {
     connection.connectToInvite(inviteId);
   };
 
-  const runNavigationQuickAction = (action: () => void, initializeSound = false) => {
-    const actionEpoch = navigationQuickActionEpochRef.current + 1;
-    navigationQuickActionEpochRef.current = actionEpoch;
-    if (initializeSound) {
-      soundPlayer.initializeOnUserInteraction(false);
-    }
-    void (async () => {
-      const shouldTransitionToHome = getCurrentRouteState().mode !== "home";
-      if (shouldTransitionToHome) {
-        try {
-          await transitionToHome({ forceMatchScopeReset: true });
-        } catch {
-          return;
-        }
-      }
-      if (navigationQuickActionEpochRef.current !== actionEpoch) {
-        return;
-      }
-      if (shouldTransitionToHome && getCurrentRouteState().mode !== "home") {
-        return;
-      }
-      action();
-    })();
-  };
-
-  const handleNavigationStartAutomatch = () => {
-    setIsNavigationPopupVisible(false);
-    setIsBoardStylePickerVisible(false);
-    runNavigationQuickAction(() => beginAutomatchFlow({ skipSoundInit: true }), true);
-  };
-
-  const handleNavigationStartDirectGame = () => {
-    setIsNavigationPopupVisible(false);
-    setIsBoardStylePickerVisible(false);
-    runNavigationQuickAction(() => beginInviteFlowRef.current({ skipSoundInit: true }), true);
-  };
-
-  const handleNavigationStartBotGame = () => {
-    setIsNavigationPopupVisible(false);
-    setIsBoardStylePickerVisible(false);
-    runNavigationQuickAction(didClickStartBotGameButton, true);
-  };
-
   const handleNavigationLoadMoreGames = () => {
     if (!isNavigationPopupVisible || !navigationHasMoreGames || isNavigationGamesLoading || isNavigationGamesLoadingMore) {
       return;
@@ -1874,7 +1830,6 @@ const BottomControls: React.FC = () => {
       {isNavigationPopupVisible && (
         <div ref={navigationPopupRef}>
           <NavigationPicker
-            showsPuzzles={isNavigationListButtonVisible}
             showsHomeNavigation={isDeepHomeButtonVisible}
             navigateHome={handleHomeClick}
             games={mergedNavigationGames}
@@ -1886,13 +1841,6 @@ const BottomControls: React.FC = () => {
             isUsingFallbackScope={isNavigationFallbackScope}
             onSelectGame={handleNavigationGameSelect}
             onLoadMoreGames={handleNavigationLoadMoreGames}
-            showQuickActions={isDeepHomeButtonVisible}
-            showAutomatchAction={isAutomatchButtonVisible}
-            showDirectAction={isInviteLinkButtonVisible}
-            showBotAction={isBotGameButtonVisible}
-            onStartAutomatch={handleNavigationStartAutomatch}
-            onStartDirectGame={handleNavigationStartDirectGame}
-            onStartBotGame={handleNavigationStartBotGame}
           />
         </div>
       )}
