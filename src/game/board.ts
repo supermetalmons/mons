@@ -134,6 +134,7 @@ const smoothWaveSinStep = Math.sin(smoothWaveAngleStep);
 let countdownInterval: NodeJS.Timeout | null = null;
 let monsBoardDisplayAnimationTimeout: NodeJS.Timeout | null = null;
 let monsBoardDisplayAnimationRunToken = 0;
+let monsBoardDisplayAnimationRadius = 0;
 let boardInputHandler: ((event: Event) => void) | null = null;
 let hasSetupBoardRuntime = false;
 let didRegisterResizeHandler = false;
@@ -1611,7 +1612,6 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
   const runToken = ++monsBoardDisplayAnimationRunToken;
   incrementLifecycleCounter("boardTimeouts");
 
-  let radius = 0;
   const maxRadius = 5;
 
   function animate() {
@@ -1619,8 +1619,8 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
       return;
     }
     cleanAllPixels();
-    drawCircle(radius);
-    radius = radius >= maxRadius ? 0 : radius + 0.5;
+    drawCircle(monsBoardDisplayAnimationRadius);
+    monsBoardDisplayAnimationRadius = monsBoardDisplayAnimationRadius >= maxRadius ? 0 : monsBoardDisplayAnimationRadius + 0.5;
     monsBoardDisplayAnimationTimeout = setTimeout(() => {
       if (runToken !== monsBoardDisplayAnimationRunToken) {
         return;

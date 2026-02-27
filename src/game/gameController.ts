@@ -35,6 +35,7 @@ let isGameOver = false;
 let isReconnect = false;
 let didConnect = false;
 let isWaitingForInviteToGetAccepted = false;
+let pendingAutomatchTransition = false;
 let pendingOnlineReconnectInviteId: string | null = null;
 let lastOnlineReconnectRequestedAtMs = 0;
 const onlineReconnectRequestCooldownMs = 3000;
@@ -1573,6 +1574,8 @@ export async function go(routeStateOverride?: RouteState) {
   isReconnect = false;
   didConnect = false;
   isWaitingForInviteToGetAccepted = false;
+  const isAutomatchTransition = pendingAutomatchTransition;
+  pendingAutomatchTransition = false;
   resetOnlineReconnectRequestState();
   isInviteBotIntoLocalGameUnavailable = false;
   didMakeFirstLocalPlayerMoveOnLocalBoard = false;
@@ -1600,6 +1603,18 @@ export async function go(routeStateOverride?: RouteState) {
   }
   connection.setupConnection(false, routeState);
   Board.setupBoard();
+
+  if (isAutomatchTransition) {
+    isOnlineGame = true;
+    isWaitingForInviteToGetAccepted = true;
+    setHomeVisible(true);
+    setIslandButtonDimmed(true);
+    setBrushAndNavigationButtonDimmed(true);
+    setNavigationListButtonVisible(false);
+    setAutomatchWaitingState(true);
+    Board.runMonsBoardAsDisplayWaitingAnimation();
+  }
+
   await initMonsWeb();
 
   playerSideColor = MonsWeb.Color.White;
@@ -1665,6 +1680,12 @@ export async function go(routeStateOverride?: RouteState) {
 
     setBrushAndNavigationButtonDimmed(true);
     setNavigationListButtonVisible(false);
+
+    if (isAutomatchTransition) {
+      isWaitingForInviteToGetAccepted = true;
+      setAutomatchWaitingState(true);
+      Board.runMonsBoardAsDisplayWaitingAnimation();
+    }
   }
 
   Board.setupGameInfoElements(!isCreateInviteRoute() && !isSnapshotRoute() && !isBotsRoute());
@@ -1680,6 +1701,7 @@ export async function go(routeStateOverride?: RouteState) {
 }
 
 export function disposeGameSession() {
+  const preserveAutomatchUi = pendingAutomatchTransition;
   clearAllManagedGameTimeouts();
   resetBotScoreReactionState();
   isGameWithBot = false;
@@ -1689,7 +1711,7 @@ export function disposeGameSession() {
   clearRematchHistoryCaches();
   Board.resetPlayersMetadataForSession();
   Board.setBoardFlipped(false);
-  setIslandButtonDimmed(false);
+  setIslandButtonDimmed(preserveAutomatchUi);
   if (unsubscribeFromWagerState) {
     unsubscribeFromWagerState();
     unsubscribeFromWagerState = null;
@@ -1709,7 +1731,7 @@ export function disposeGameSession() {
   isGameOver = false;
   isReconnect = false;
   didConnect = false;
-  isWaitingForInviteToGetAccepted = false;
+  isWaitingForInviteToGetAccepted = preserveAutomatchUi;
   resetOnlineReconnectRequestState();
   isInviteBotIntoLocalGameUnavailable = false;
   didMakeFirstLocalPlayerMoveOnLocalBoard = false;
@@ -1737,15 +1759,19 @@ export function disposeGameSession() {
   resetTimerStateForMatch(null);
   setCurrentWagerMatch(null);
   connection.setWagerViewMatchId(null);
-  setHomeVisible(false);
+  setHomeVisible(preserveAutomatchUi);
   setInviteLinkActionVisible(false);
-  setAutomatchVisible(false);
+  if (!preserveAutomatchUi) {
+    setAutomatchVisible(false);
+  }
   setBotGameOptionVisible(false);
   setNavigationListButtonVisible(false);
   setPlaySamePuzzleAgainButtonVisible(false);
-  setAutomatchWaitingState(false);
-  setAutomatchEnabled(true);
-  setBrushAndNavigationButtonDimmed(false);
+  if (!preserveAutomatchUi) {
+    setAutomatchWaitingState(false);
+    setAutomatchEnabled(true);
+  }
+  setBrushAndNavigationButtonDimmed(preserveAutomatchUi);
   setUndoVisible(false);
   setAutomoveActionVisible(false);
   setAutomoveActionEnabled(true);
@@ -2053,6 +2079,7 @@ export function didClickAutomatchButton(onAutomatchResponse?: (response: any) =>
   Board.removeHighlights();
   Board.hideAllMoveStatuses();
   isWaitingForInviteToGetAccepted = true;
+  pendingAutomatchTransition = true;
   Board.runMonsBoardAsDisplayWaitingAnimation();
   const sessionGuard = getSessionGuard();
 
@@ -2066,12 +2093,15 @@ export function didClickAutomatchButton(onAutomatchResponse?: (response: any) =>
       const automatchInviteId = response.inviteId;
       if (automatchInviteId) {
         connection.connectToAutomatch(automatchInviteId);
+      } else {
+        pendingAutomatchTransition = false;
       }
     })
     .catch(() => {
       if (!sessionGuard()) {
         return;
       }
+      pendingAutomatchTransition = false;
       setAutomatchEnabled(true);
     });
 }
