@@ -306,13 +306,10 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
 
   const completedProblemsSet = getCompletedProblemIds();
   const firstUncompletedIndex = problems.findIndex((problem) => !completedProblemsSet.has(problem.id));
-  const hasIncompleteTutorial = firstUncompletedIndex !== -1;
 
   const shouldRenderGamesSection = true;
   const shouldRenderLearnSection = true;
-  const showTopLearn = shouldRenderLearnSection && hasIncompleteTutorial;
-  const showBottomLearn = shouldRenderLearnSection && !hasIncompleteTutorial;
-  const hasScrollableContent = showTopLearn || showBottomLearn || shouldRenderGamesSection;
+  const hasScrollableContent = shouldRenderLearnSection || shouldRenderGamesSection;
 
   const renderLearnSection = () => (
     <>
@@ -335,8 +332,6 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
       {hasScrollableContent && (
         <ScrollableList>
-          {showTopLearn && renderLearnSection()}
-
           {shouldRenderGamesSection && (
             <>
               <SectionTitle>GAMES</SectionTitle>
@@ -363,7 +358,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
             </>
           )}
 
-          {showBottomLearn && renderLearnSection()}
+          {shouldRenderLearnSection && renderLearnSection()}
         </ScrollableList>
       )}
       {showsHomeNavigation && (
