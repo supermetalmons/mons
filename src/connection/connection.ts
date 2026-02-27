@@ -1187,6 +1187,9 @@ class Connection {
     const previousMatchPair = previousMatchId ? this.getCachedHistoricalMatchPair(previousMatchId) : null;
 
     this.stopObservingAllMatches();
+    this.cleanupRematchObservers();
+    this.cleanupInviteReactionObserver();
+    this.cleanupWagerObserver();
 
     const proposingAsHost = this.latestInvite.hostId === writableContext.actorUid;
     const emojiId = getPlayersEmojiId();
@@ -3306,15 +3309,21 @@ class Connection {
       return { actorUid: guestId, role: "guest" };
     }
     if (localProfileId) {
-      const matchingUid = await this.checkBothPlayerProfiles(hostId, guestId ?? "", localProfileId);
-      if (!this.isConnectAttemptActive(connectAttemptId, epoch)) {
-        return { actorUid: null, role: "watch" };
-      }
-      if (matchingUid === hostId) {
-        return { actorUid: hostId, role: "host" };
-      }
-      if (guestId && matchingUid === guestId) {
-        return { actorUid: guestId, role: "guest" };
+      try {
+        const matchingUid = await this.checkBothPlayerProfiles(hostId, guestId ?? "", localProfileId);
+        if (!this.isConnectAttemptActive(connectAttemptId, epoch)) {
+          return { actorUid: null, role: "watch" };
+        }
+        if (matchingUid === hostId) {
+          return { actorUid: hostId, role: "host" };
+        }
+        if (guestId && matchingUid === guestId) {
+          return { actorUid: guestId, role: "guest" };
+        }
+      } catch {
+        if (!this.isConnectAttemptActive(connectAttemptId, epoch)) {
+          return { actorUid: null, role: "watch" };
+        }
       }
     }
     return { actorUid: null, role: "watch" };
@@ -3419,22 +3428,25 @@ class Connection {
         this.observeInviteReactions(nextContext);
         this.observeRematchOrEndMatchIndicators(nextContext);
         this.observeWagers(nextContext);
-        if (hasPendingProposal && canWrite) {
-          didDiscoverExistingRematchProposalWaitingForResponse();
-        }
 
         if (!canWrite) {
-          enterWatchOnlyMode();
-          this.observeMatch(workingInvite.hostId, matchId, nextContext);
-          if (workingInvite.guestId) {
-            this.observeMatch(workingInvite.guestId, matchId, nextContext);
-          } else if (workingInvite.hostId !== uid && !autojoin) {
+          const canJoinAsGuest = !workingInvite.guestId && workingInvite.hostId !== uid && !autojoin;
+          if (canJoinAsGuest) {
             didFindInviteThatCanBeJoined();
+          } else {
+            enterWatchOnlyMode();
+            this.observeMatch(workingInvite.hostId, matchId, nextContext);
+            if (workingInvite.guestId) {
+              this.observeMatch(workingInvite.guestId, matchId, nextContext);
+            }
           }
           return;
         }
 
         didRecoverMyMatch(myMatch!, matchId);
+        if (hasPendingProposal) {
+          didDiscoverExistingRematchProposalWaitingForResponse();
+        }
         if (role === "host") {
           if (workingInvite.guestId) {
             this.observeMatch(workingInvite.guestId, matchId, nextContext);

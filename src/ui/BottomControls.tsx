@@ -1512,13 +1512,9 @@ const BottomControls: React.FC = () => {
         playSounds([Sound.EmoteReceived]);
       }, 5000);
     } else if (!puzzleMode) {
-      const sessionGuard = connection.createSessionGuard();
       connection.sendVoiceReaction(newStickerReaction(stickerId));
       setIsVoiceReactionDisabled(true);
       setMatchScopedTimeout(() => {
-        if (!sessionGuard()) {
-          return;
-        }
         setIsVoiceReactionDisabled(false);
       }, 9999);
     }
@@ -1546,13 +1542,9 @@ const BottomControls: React.FC = () => {
         showVoiceReactionText(reaction, true);
       }, 2000);
     } else if (!puzzleMode) {
-      const sessionGuard = connection.createSessionGuard();
       connection.sendVoiceReaction(reactionObj);
       setIsVoiceReactionDisabled(true);
       setMatchScopedTimeout(() => {
-        if (!sessionGuard()) {
-          return;
-        }
         setIsVoiceReactionDisabled(false);
       }, 9999);
     }
