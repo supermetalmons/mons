@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import { FaSyncAlt } from "react-icons/fa";
 import {
   getVerboseTrackingEntities,
   didSelectVerboseTrackingEntity,
@@ -79,7 +80,7 @@ const WheelContainer = styled.div`
 
 const TopActions = styled.div`
   position: absolute;
-  top: 6px;
+  top: 23px;
   left: 8px;
   right: 8px;
   display: flex;
@@ -90,21 +91,48 @@ const TopActions = styled.div`
 
 const TopActionButton = styled.button`
   pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   border: none;
   border-radius: 999px;
-  background: rgba(0, 0, 0, 0.08);
+  background: rgba(0, 0, 0, 0.12);
   color: var(--color-gray-33);
-  padding: 2px 8px;
+  padding: 4px 10px;
   font-size: 11px;
-  line-height: 1.2;
-  font-weight: 500;
+  line-height: 1;
+  font-weight: 600;
+  transition: background-color 0.15s ease;
   cursor: pointer;
   white-space: nowrap;
 
-  @media (prefers-color-scheme: dark) {
-    background: rgba(255, 255, 255, 0.12);
-    color: var(--color-gray-f0);
+  &:hover {
+    background: rgba(0, 0, 0, 0.18);
   }
+
+  &:active {
+    background: rgba(0, 0, 0, 0.18);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(255, 255, 255, 0.18);
+    color: var(--color-gray-f0);
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.24);
+    }
+  }
+`;
+
+const TopActionIcon = styled(FaSyncAlt)`
+  font-size: 8px;
+  display: block;
+  align-self: center;
+`;
+
+const TopActionLabel = styled.span`
+  display: block;
+  line-height: 1;
 `;
 
 const SelectionIndicator = styled.div`
@@ -568,7 +596,8 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
         {isAtTop && (
           <TopActions>
             <TopActionButton type="button" onClick={handleFlipBoard}>
-              flip the board
+              <TopActionIcon aria-hidden="true" />
+              <TopActionLabel>Flip Board</TopActionLabel>
             </TopActionButton>
           </TopActions>
         )}
