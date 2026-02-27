@@ -50,6 +50,20 @@ export interface NavigationGamesPageResult {
   hasMore: boolean;
 }
 
+type InviteRole = "host" | "guest" | "watch";
+
+type MatchRuntimeContext = {
+  contextId: number;
+  sessionEpoch: number;
+  inviteId: string;
+  matchId: string;
+  loginUid: string;
+  actorUid: string | null;
+  role: InviteRole;
+  canWrite: boolean;
+  createdAtMs: number;
+};
+
 const getRouteStateSnapshot = () => getCurrentRouteState();
 const summarizeWagerState = (state: MatchWagerState | null) => {
   const proposalKeys = Object.keys(state?.proposals || {});
@@ -97,6 +111,8 @@ class Connection {
   private miningFrozenRef: any = null;
   private matchRefs: { [key: string]: any } = {};
   private profileRefs: { [key: string]: any } = {};
+  private observerCleanupByContext = new Map<number, Map<string, () => void>>();
+  private activeObserverKeysByContext = new Map<number, Set<string>>();
 
   private loginUid: string | null = null;
   private sameProfilePlayerUid: string | null = null;
@@ -108,12 +124,14 @@ class Connection {
   private inviteId: string | null = null;
   private matchId: string | null = null;
   private wagerViewMatchId: string | null = null;
+  private activeContext: MatchRuntimeContext | null = null;
+  private nextContextId = 1;
+  private connectAttemptId = 0;
 
   private newInviteId = "";
   private didCreateNewGameInvite = false;
   private currentUid: string | null = "";
   private sessionEpoch = 0;
-  private inviteWaitRefs = new Set<any>();
   private authUnsubscribers = new Set<() => void>();
   private pendingInviteCreation: { inviteId: string; promise: Promise<boolean> } | null = null;
   private moveSendRequestId = 0;
@@ -124,6 +142,258 @@ class Connection {
   private moveReconnectInFlight = false;
   private moveReconnectLastAttemptAt = 0;
   private readonly moveReconnectCooldownMs = 3000;
+
+  private logContextEvent(event: string, payload: Record<string, unknown> = {}): void {
+    if (process.env.NODE_ENV === "production") {
+      return;
+    }
+    console.log(event, payload);
+  }
+
+  private beginConnectAttempt(): number {
+    this.connectAttemptId += 1;
+    return this.connectAttemptId;
+  }
+
+  private isConnectAttemptActive(connectAttemptId: number, epoch: number): boolean {
+    if (!this.isSessionEpochActive(epoch)) {
+      return false;
+    }
+    const isActive = this.connectAttemptId === connectAttemptId;
+    if (!isActive && process.env.NODE_ENV !== "production") {
+      this.logContextEvent("ctx.callback.stale_dropped", {
+        reason: "connect-attempt-mismatch",
+        expectedConnectAttemptId: connectAttemptId,
+        currentConnectAttemptId: this.connectAttemptId,
+        expectedEpoch: epoch,
+        currentEpoch: this.sessionEpoch,
+      });
+    }
+    return isActive;
+  }
+
+  private isContextActive(contextId: number, epoch: number): boolean {
+    if (!this.isSessionEpochActive(epoch)) {
+      return false;
+    }
+    const activeContext = this.activeContext;
+    const isActive = !!activeContext && activeContext.contextId === contextId && activeContext.sessionEpoch === epoch;
+    if (!isActive && process.env.NODE_ENV !== "production") {
+      this.logContextEvent("ctx.callback.stale_dropped", {
+        reason: "context-mismatch",
+        expectedContextId: contextId,
+        currentContextId: activeContext?.contextId ?? null,
+        expectedEpoch: epoch,
+        currentEpoch: this.sessionEpoch,
+      });
+    }
+    return isActive;
+  }
+
+  private registerObserverCleanup(contextId: number, key: string, cleanup: () => void): boolean {
+    let cleanupByKey = this.observerCleanupByContext.get(contextId);
+    if (!cleanupByKey) {
+      cleanupByKey = new Map();
+      this.observerCleanupByContext.set(contextId, cleanupByKey);
+    }
+    if (cleanupByKey.has(key)) {
+      return false;
+    }
+    cleanupByKey.set(key, cleanup);
+    let activeKeys = this.activeObserverKeysByContext.get(contextId);
+    if (!activeKeys) {
+      activeKeys = new Set();
+      this.activeObserverKeysByContext.set(contextId, activeKeys);
+    }
+    activeKeys.add(key);
+    return true;
+  }
+
+  private unregisterObserverCleanup(contextId: number, key: string): void {
+    const cleanupByKey = this.observerCleanupByContext.get(contextId);
+    if (cleanupByKey) {
+      cleanupByKey.delete(key);
+      if (cleanupByKey.size === 0) {
+        this.observerCleanupByContext.delete(contextId);
+      }
+    }
+    const activeKeys = this.activeObserverKeysByContext.get(contextId);
+    if (activeKeys) {
+      activeKeys.delete(key);
+      if (activeKeys.size === 0) {
+        this.activeObserverKeysByContext.delete(contextId);
+      }
+    }
+  }
+
+  private observeContextValue(
+    context: MatchRuntimeContext,
+    key: string,
+    targetRef: any,
+    onData: (snapshot: any) => void,
+    onError?: (error: unknown) => void,
+    onCleanup?: () => void
+  ): (() => void) | null {
+    const contextCleanup = () => {
+      off(targetRef);
+      decrementLifecycleCounter("connectionObservers");
+      onCleanup?.();
+    };
+    const isRegistered = this.registerObserverCleanup(context.contextId, key, contextCleanup);
+    if (!isRegistered) {
+      return null;
+    }
+    incrementLifecycleCounter("connectionObservers");
+    onValue(
+      targetRef,
+      (snapshot) => {
+        if (!this.isContextActive(context.contextId, context.sessionEpoch)) {
+          return;
+        }
+        onData(snapshot);
+      },
+      (error) => {
+        if (!this.isContextActive(context.contextId, context.sessionEpoch)) {
+          return;
+        }
+        onError?.(error);
+      }
+    );
+    return () => {
+      contextCleanup();
+      this.unregisterObserverCleanup(context.contextId, key);
+    };
+  }
+
+  private cleanupObserverContext(contextId: number, reason: string): void {
+    const cleanupByKey = this.observerCleanupByContext.get(contextId);
+    if (!cleanupByKey) {
+      return;
+    }
+    cleanupByKey.forEach((cleanup) => {
+      try {
+        cleanup();
+      } catch {}
+    });
+    this.observerCleanupByContext.delete(contextId);
+    this.activeObserverKeysByContext.delete(contextId);
+    this.logContextEvent("ctx.dispose", {
+      reason,
+      contextId,
+    });
+  }
+
+  private clearAllObserverContexts(reason: string): void {
+    const contextIds = Array.from(this.observerCleanupByContext.keys());
+    contextIds.forEach((contextId) => {
+      this.cleanupObserverContext(contextId, reason);
+    });
+  }
+
+  private buildRuntimeContext(
+    inviteId: string,
+    matchId: string,
+    loginUid: string,
+    actorUid: string | null,
+    role: InviteRole,
+    canWrite: boolean,
+    epoch: number
+  ): MatchRuntimeContext {
+    return {
+      contextId: this.nextContextId++,
+      sessionEpoch: epoch,
+      inviteId,
+      matchId,
+      loginUid,
+      actorUid,
+      role,
+      canWrite,
+      createdAtMs: Date.now(),
+    };
+  }
+
+  private activateContext(nextContext: MatchRuntimeContext, reason: string): void {
+    const previousContext = this.activeContext;
+    if (previousContext && previousContext.contextId !== nextContext.contextId) {
+      this.cleanupObserverContext(previousContext.contextId, `switch:${reason}`);
+      this.stopObservingAllMatches();
+    }
+    this.activeContext = nextContext;
+    this.inviteId = nextContext.inviteId;
+    this.matchId = nextContext.matchId;
+    const writableActorUid = nextContext.canWrite ? nextContext.actorUid : null;
+    this.setSameProfilePlayerUid(writableActorUid);
+    this.logContextEvent("ctx.activate", {
+      reason,
+      contextId: nextContext.contextId,
+      sessionEpoch: nextContext.sessionEpoch,
+      inviteId: nextContext.inviteId,
+      matchId: nextContext.matchId,
+      role: nextContext.role,
+      actorUid: nextContext.actorUid,
+      canWrite: nextContext.canWrite,
+    });
+  }
+
+  private clearActiveContext(reason: string): void {
+    const activeContext = this.activeContext;
+    if (activeContext) {
+      this.cleanupObserverContext(activeContext.contextId, reason);
+    } else {
+      this.logContextEvent("ctx.clear", {
+        reason,
+        contextId: null,
+      });
+    }
+    this.activeContext = null;
+    this.inviteId = null;
+    this.matchId = null;
+    this.setSameProfilePlayerUid(null);
+  }
+
+  public getActiveContextSnapshot(): { inviteId: string; matchId: string; canWrite: boolean; contextId: number } | null {
+    const activeContext = this.activeContext;
+    if (!activeContext) {
+      return null;
+    }
+    return {
+      inviteId: activeContext.inviteId,
+      matchId: activeContext.matchId,
+      canWrite: activeContext.canWrite,
+      contextId: activeContext.contextId,
+    };
+  }
+
+  private requireWritableContext(expectedMatchId?: string | null, reason = "write"): (MatchRuntimeContext & { actorUid: string; canWrite: true }) | null {
+    const activeContext = this.activeContext;
+    if (!activeContext || !activeContext.canWrite || !activeContext.actorUid) {
+      this.logContextEvent("ctx.write.blocked", {
+        reason,
+        blockReason: "no-writable-context",
+        contextId: activeContext?.contextId ?? null,
+        inviteId: activeContext?.inviteId ?? null,
+        matchId: activeContext?.matchId ?? null,
+      });
+      const inviteToReconnect = activeContext?.inviteId ?? this.inviteId;
+      if (inviteToReconnect) {
+        this.reconnectAfterMatchUpdateFailure(inviteToReconnect, this.createSessionGuard());
+      }
+      return null;
+    }
+    if (expectedMatchId && expectedMatchId !== activeContext.matchId) {
+      this.logContextEvent("ctx.write.blocked", {
+        reason,
+        blockReason: "expected-match-mismatch",
+        contextId: activeContext.contextId,
+        inviteId: activeContext.inviteId,
+        expectedMatchId,
+        activeMatchId: activeContext.matchId,
+        action: "drop-stale-write",
+      });
+      return null;
+    }
+    return activeContext as MatchRuntimeContext & { actorUid: string; canWrite: true };
+  }
 
   private bumpSessionEpoch() {
     this.sessionEpoch += 1;
@@ -152,19 +422,26 @@ class Connection {
 
   private createMatchContextGuard(inviteId: string, matchId: string): () => boolean {
     const epoch = this.sessionEpoch;
+    const contextId = this.activeContext?.contextId ?? null;
+    if (contextId === null && process.env.NODE_ENV !== "production") {
+      console.warn("createMatchContextGuard called without an active context", { inviteId, matchId, epoch });
+    }
     return () => {
       if (!this.isSessionEpochActive(epoch)) {
         return false;
       }
-      const isActive = this.inviteId === inviteId && this.matchId === matchId;
+      const activeContext = this.activeContext;
+      const isActive = !!activeContext && activeContext.inviteId === inviteId && activeContext.matchId === matchId && activeContext.contextId === contextId;
       if (!isActive && process.env.NODE_ENV !== "production") {
         console.log("stale-session-callback", {
           expectedEpoch: epoch,
           currentEpoch: this.sessionEpoch,
           expectedInviteId: inviteId,
-          currentInviteId: this.inviteId,
+          currentInviteId: activeContext?.inviteId ?? null,
           expectedMatchId: matchId,
-          currentMatchId: this.matchId,
+          currentMatchId: activeContext?.matchId ?? null,
+          expectedContextId: contextId,
+          currentContextId: activeContext?.contextId ?? null,
         });
       }
       return isActive;
@@ -183,18 +460,6 @@ class Connection {
       wagerViewMatchId: this.wagerViewMatchId,
       ...payload,
     });
-  }
-
-  private trackInviteWaitRef(inviteRef: any) {
-    this.inviteWaitRefs.add(inviteRef);
-    incrementLifecycleCounter("connectionObservers");
-  }
-
-  private releaseInviteWaitRef(inviteRef: any) {
-    if (this.inviteWaitRefs.has(inviteRef)) {
-      this.inviteWaitRefs.delete(inviteRef);
-      decrementLifecycleCounter("connectionObservers");
-    }
   }
 
   constructor() {
@@ -545,15 +810,13 @@ class Connection {
 
   public detachFromMatchSession(): void {
     this.bumpSessionEpoch();
+    this.beginConnectAttempt();
+    this.clearActiveContext("detach-match-session");
+    this.clearAllObserverContexts("detach-match-session");
     this.cleanupRematchObservers();
     this.cleanupWagerObserver();
     this.cleanupInviteReactionObserver();
     this.stopObservingAllMatches();
-    this.inviteWaitRefs.forEach((inviteRef) => {
-      off(inviteRef);
-      decrementLifecycleCounter("connectionObservers");
-    });
-    this.inviteWaitRefs.clear();
     this.latestInvite = null;
     this.myMatch = null;
     this.inviteId = null;
@@ -797,7 +1060,11 @@ class Connection {
   }
 
   public getSameProfilePlayerUid(): string | null {
-    return this.sameProfilePlayerUid;
+    const activeContext = this.activeContext;
+    if (activeContext && activeContext.canWrite) {
+      return activeContext.actorUid;
+    }
+    return null;
   }
 
   private async ensureAuthenticated(): Promise<void> {
@@ -810,10 +1077,11 @@ class Connection {
   }
 
   private applyOptimisticWagerResolution(isWin?: boolean): boolean {
-    if (!this.matchId || !this.sameProfilePlayerUid) {
+    const writableContext = this.requireWritableContext(undefined, "applyOptimisticWagerResolution");
+    if (!writableContext) {
       return false;
     }
-    const matchId = this.matchId;
+    const matchId = writableContext.matchId;
     if (this.optimisticResolvedMatchIds.has(matchId)) {
       return false;
     }
@@ -844,14 +1112,14 @@ class Connection {
       if (!agreedCount) {
         return false;
       }
-      const opponentId = this.getOpponentId();
+      const opponentId = this.getOpponentId(writableContext.actorUid);
       if (!opponentId) {
         return false;
       }
       material = agreed.material;
       count = Math.max(0, Math.round(agreedCount));
-      winnerId = isWin ? this.sameProfilePlayerUid : opponentId;
-      loserId = isWin ? opponentId : this.sameProfilePlayerUid;
+      winnerId = isWin ? writableContext.actorUid : opponentId;
+      loserId = isWin ? opponentId : writableContext.actorUid;
       const resolvedState: MatchWagerState = {
         ...(state ?? {}),
         proposals: undefined,
@@ -869,7 +1137,7 @@ class Connection {
     if (!material || !count || !winnerId || !loserId) {
       return false;
     }
-    const myId = this.sameProfilePlayerUid;
+    const myId = writableContext.actorUid;
     if (myId !== winnerId && myId !== loserId) {
       return false;
     }
@@ -894,33 +1162,40 @@ class Connection {
   }
 
   public sendEndMatchIndicator(): void {
-    if (!this.latestInvite || this.rematchSeriesEndIsIndicated()) return;
-    const endingAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid;
+    const writableContext = this.requireWritableContext(undefined, "sendEndMatchIndicator");
+    if (!writableContext || !this.latestInvite || this.rematchSeriesEndIsIndicated()) {
+      return;
+    }
+    const endingAsHost = this.latestInvite.hostId === writableContext.actorUid;
     const currentRematchesString = endingAsHost ? this.latestInvite.hostRematches : this.latestInvite.guestRematches;
     const updatedRematchesString = currentRematchesString ? currentRematchesString + "x" : "x";
-    set(ref(this.db, `invites/${this.inviteId}/${endingAsHost ? "hostRematches" : "guestRematches"}`), updatedRematchesString);
+    set(ref(this.db, `invites/${writableContext.inviteId}/${endingAsHost ? "hostRematches" : "guestRematches"}`), updatedRematchesString);
   }
 
   public sendRematchProposal(): void {
-    const sessionGuard = this.createSessionGuard();
+    const writableContext = this.requireWritableContext(undefined, "sendRematchProposal");
+    if (!writableContext) {
+      return;
+    }
+    const sessionGuard = this.createMatchContextGuard(writableContext.inviteId, writableContext.matchId);
     const newRematchProposalIndex = this.getRematchIndexAvailableForNewProposal();
-    if (!newRematchProposalIndex || !this.latestInvite || !this.inviteId) {
+    if (!newRematchProposalIndex || !this.latestInvite) {
       return;
     }
 
-    const previousMatchId = this.matchId;
+    const previousMatchId = writableContext.matchId;
     const previousMatchPair = previousMatchId ? this.getCachedHistoricalMatchPair(previousMatchId) : null;
 
     this.stopObservingAllMatches();
 
-    const proposingAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid;
+    const proposingAsHost = this.latestInvite.hostId === writableContext.actorUid;
     const emojiId = getPlayersEmojiId();
     const proposalIndexIsEven = parseInt(newRematchProposalIndex, 10) % 2 === 0;
     const initialGuestColor = this.latestInvite.hostColor === "white" ? "black" : "white";
     const newColor = proposalIndexIsEven ? (proposingAsHost ? this.latestInvite.hostColor : initialGuestColor) : proposingAsHost ? initialGuestColor : this.latestInvite.hostColor;
     let newRematchesProposalsString = "";
 
-    const inviteId = this.inviteId;
+    const inviteId = writableContext.inviteId;
     const nextMatchId = inviteId + newRematchProposalIndex;
     const nextMatch: Match = {
       version: controllerVersion,
@@ -934,14 +1209,14 @@ class Connection {
     };
 
     const updates: { [key: string]: any } = {};
-    updates[`players/${this.sameProfilePlayerUid}/matches/${nextMatchId}`] = nextMatch;
+    updates[`players/${writableContext.actorUid}/matches/${nextMatchId}`] = nextMatch;
 
     if (proposingAsHost) {
       newRematchesProposalsString = this.latestInvite.hostRematches ? this.latestInvite.hostRematches + ";" + newRematchProposalIndex : newRematchProposalIndex;
-      updates[`invites/${this.inviteId}/hostRematches`] = newRematchesProposalsString;
+      updates[`invites/${inviteId}/hostRematches`] = newRematchesProposalsString;
     } else {
       newRematchesProposalsString = this.latestInvite?.guestRematches ? this.latestInvite.guestRematches + ";" + newRematchProposalIndex : newRematchProposalIndex;
-      updates[`invites/${this.inviteId}/guestRematches`] = newRematchesProposalsString;
+      updates[`invites/${inviteId}/guestRematches`] = newRematchesProposalsString;
     }
 
     update(ref(this.db), updates)
@@ -950,8 +1225,20 @@ class Connection {
           return;
         }
         this.myMatch = nextMatch;
-        this.matchId = nextMatchId;
+        const rematchContext = this.buildRuntimeContext(
+          inviteId,
+          nextMatchId,
+          writableContext.loginUid,
+          writableContext.actorUid,
+          writableContext.role,
+          true,
+          this.sessionEpoch
+        );
+        this.activateContext(rematchContext, "rematch-proposed");
         this.updateWagerStateForCurrentMatch();
+        this.observeInviteReactions(rematchContext);
+        this.observeRematchOrEndMatchIndicators(rematchContext);
+        this.observeWagers(rematchContext);
         if (this.latestInvite) {
           if (proposingAsHost) {
             this.latestInvite.hostRematches = newRematchesProposalsString;
@@ -1050,13 +1337,14 @@ class Connection {
   }
 
   private pendingRematchIndexForCurrentPlayer(hostIndices: number[], guestIndices: number[], approvedLength: number): number | null {
-    if (!this.latestInvite || !this.sameProfilePlayerUid || this.rematchSeriesEndIsIndicated()) {
+    const actorUid = this.getSameProfilePlayerUid();
+    if (!this.latestInvite || !actorUid || this.rematchSeriesEndIsIndicated()) {
       return null;
     }
-    if (this.latestInvite.hostId === this.sameProfilePlayerUid && hostIndices.length > approvedLength) {
+    if (this.latestInvite.hostId === actorUid && hostIndices.length > approvedLength) {
       return hostIndices[approvedLength] ?? null;
     }
-    if (this.latestInvite.guestId === this.sameProfilePlayerUid && guestIndices.length > approvedLength) {
+    if (this.latestInvite.guestId === actorUid && guestIndices.length > approvedLength) {
       return guestIndices[approvedLength] ?? null;
     }
     return null;
@@ -1111,7 +1399,8 @@ class Connection {
   }
 
   public getSameProfileColorForMatch(matchId: string): "white" | "black" | null {
-    if (!this.latestInvite || !this.sameProfilePlayerUid || !matchId) {
+    const actorUid = this.getSameProfilePlayerUid();
+    if (!this.latestInvite || !actorUid || !matchId) {
       return null;
     }
     const hostColor = this.getHostColorForMatch(matchId);
@@ -1122,10 +1411,10 @@ class Connection {
     if (!guestColor) {
       return null;
     }
-    if (this.latestInvite.hostId === this.sameProfilePlayerUid) {
+    if (this.latestInvite.hostId === actorUid) {
       return hostColor;
     }
-    if (this.latestInvite.guestId === this.sameProfilePlayerUid) {
+    if (this.latestInvite.guestId === actorUid) {
       return guestColor;
     }
     return null;
@@ -1186,11 +1475,12 @@ class Connection {
     let hostMatch = this.observedMatchSnapshots.get(`${matchId}_${hostPlayerId}`) ?? null;
     let guestMatch = guestPlayerId ? this.observedMatchSnapshots.get(`${matchId}_${guestPlayerId}`) ?? null : null;
 
-    if (this.myMatch && this.matchId === matchId && this.sameProfilePlayerUid) {
-      if (!hostMatch && this.sameProfilePlayerUid === hostPlayerId) {
+    const cachedActorUid = this.getSameProfilePlayerUid();
+    if (this.myMatch && this.matchId === matchId && cachedActorUid) {
+      if (!hostMatch && cachedActorUid === hostPlayerId) {
         hostMatch = this.myMatch;
       }
-      if (!guestMatch && guestPlayerId && this.sameProfilePlayerUid === guestPlayerId) {
+      if (!guestMatch && guestPlayerId && cachedActorUid === guestPlayerId) {
         guestMatch = this.myMatch;
       }
     }
@@ -1210,7 +1500,7 @@ class Connection {
   private getRematchIndexAvailableForNewProposal(): string | null {
     if (!this.latestInvite || this.rematchSeriesEndIsIndicated()) return null;
 
-    const proposingAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid;
+    const proposingAsHost = this.latestInvite.hostId === this.getSameProfilePlayerUid();
     const guestRematchesLength = this.rematchIndices(this.latestInvite.guestRematches).length;
     const hostRematchesLength = this.rematchIndices(this.latestInvite.hostRematches).length;
 
@@ -1242,12 +1532,13 @@ class Connection {
     }
   }
 
-  public getOpponentId(): string {
-    if (!this.latestInvite || !this.sameProfilePlayerUid) {
+  public getOpponentId(actorUidOverride?: string | null): string {
+    const actorUid = actorUidOverride ?? this.getSameProfilePlayerUid();
+    if (!this.latestInvite || !actorUid) {
       return "";
     }
 
-    if (this.latestInvite.hostId === this.sameProfilePlayerUid) {
+    if (this.latestInvite.hostId === actorUid) {
       return this.latestInvite.guestId ?? "";
     } else {
       return this.latestInvite.hostId ?? "";
@@ -1257,9 +1548,18 @@ class Connection {
   public async startTimer(): Promise<any> {
     try {
       await this.ensureAuthenticated();
+      const writableContext = this.requireWritableContext(undefined, "startTimer");
+      if (!writableContext) {
+        return { ok: false };
+      }
       const startTimerFunction = httpsCallable(this.functions, "startMatchTimer");
-      const opponentId = this.getOpponentId();
-      const response = await startTimerFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
+      const opponentId = this.getOpponentId(writableContext.actorUid);
+      const response = await startTimerFunction({
+        playerId: writableContext.actorUid,
+        inviteId: writableContext.inviteId,
+        matchId: writableContext.matchId,
+        opponentId,
+      });
       return response.data;
     } catch (error) {
       console.error("Error starting a timer:", error);
@@ -1270,9 +1570,18 @@ class Connection {
   public async claimVictoryByTimer(): Promise<any> {
     try {
       await this.ensureAuthenticated();
+      const writableContext = this.requireWritableContext(undefined, "claimVictoryByTimer");
+      if (!writableContext) {
+        return { ok: false };
+      }
       const claimVictoryByTimerFunction = httpsCallable(this.functions, "claimMatchVictoryByTimer");
-      const opponentId = this.getOpponentId();
-      const response = await claimVictoryByTimerFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
+      const opponentId = this.getOpponentId(writableContext.actorUid);
+      const response = await claimVictoryByTimerFunction({
+        playerId: writableContext.actorUid,
+        inviteId: writableContext.inviteId,
+        matchId: writableContext.matchId,
+        opponentId,
+      });
       return response.data;
     } catch (error) {
       console.error("Error claiming victory by timer:", error);
@@ -1842,9 +2151,18 @@ class Connection {
     const profileIdAtRequest = storage.getProfileId("");
     try {
       await this.ensureAuthenticated();
+      const writableContext = this.requireWritableContext(undefined, "updateRatings");
+      if (!writableContext) {
+        return { ok: false };
+      }
       const updateRatingsFunction = httpsCallable(this.functions, "updateRatings");
-      const opponentId = this.getOpponentId();
-      const response = await updateRatingsFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId: opponentId });
+      const opponentId = this.getOpponentId(writableContext.actorUid);
+      const response = await updateRatingsFunction({
+        playerId: writableContext.actorUid,
+        inviteId: writableContext.inviteId,
+        matchId: writableContext.matchId,
+        opponentId,
+      });
       const data = response.data as { mining?: PlayerMiningData } | null;
       if (data && data.mining && sessionGuard() && storage.getProfileId("") === profileIdAtRequest) {
         rocksMiningService.setFromServer(data.mining, { persist: true });
@@ -1861,18 +2179,24 @@ class Connection {
     const profileIdAtRequest = storage.getProfileId("");
     try {
       await this.ensureAuthenticated();
-      if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) {
+      const writableContext = this.requireWritableContext(undefined, "resolveWagerOutcome");
+      if (!writableContext) {
         return { ok: false };
       }
-      const opponentId = this.getOpponentId();
+      const opponentId = this.getOpponentId(writableContext.actorUid);
       if (!opponentId) {
         return { ok: false };
       }
       this.applyOptimisticWagerResolution(isWin);
-      console.log("wager:resolve:start", { inviteId: this.inviteId, matchId: this.matchId, opponentId });
+      console.log("wager:resolve:start", { inviteId: writableContext.inviteId, matchId: writableContext.matchId, opponentId });
       const resolveWagerOutcomeFunction = httpsCallable(this.functions, "resolveWagerOutcome");
       const data = await this.callWagerFunctionWithRetry("wager:resolve", () =>
-        resolveWagerOutcomeFunction({ playerId: this.sameProfilePlayerUid, inviteId: this.inviteId, matchId: this.matchId, opponentId })
+        resolveWagerOutcomeFunction({
+          playerId: writableContext.actorUid,
+          inviteId: writableContext.inviteId,
+          matchId: writableContext.matchId,
+          opponentId,
+        })
       );
       const responseData = data as { mining?: PlayerMiningData } | null;
       console.log("wager:resolve:done", responseData);
@@ -1895,10 +2219,14 @@ class Connection {
     let playerUid: string | null = null;
     try {
       await this.ensureAuthenticated();
-      const inviteId = this.inviteId;
-      const matchId = this.matchId;
-      playerUid = this.sameProfilePlayerUid;
-      if (!inviteId || !matchId || !playerUid) {
+      const writableContext = this.requireWritableContext(undefined, "sendWagerProposal");
+      if (!writableContext) {
+        return { ok: false };
+      }
+      const inviteId = writableContext.inviteId;
+      const matchId = writableContext.matchId;
+      playerUid = writableContext.actorUid;
+      if (!playerUid) {
         console.log("wager:send:skipped", { inviteId, matchId });
         return { ok: false };
       }
@@ -2016,10 +2344,14 @@ class Connection {
     let playerUid: string | null = null;
     try {
       await this.ensureAuthenticated();
-      const inviteId = this.inviteId;
-      const matchId = this.matchId;
-      playerUid = this.sameProfilePlayerUid;
-      if (!inviteId || !matchId || !playerUid) {
+      const writableContext = this.requireWritableContext(undefined, "cancelWagerProposal");
+      if (!writableContext) {
+        return { ok: false };
+      }
+      const inviteId = writableContext.inviteId;
+      const matchId = writableContext.matchId;
+      playerUid = writableContext.actorUid;
+      if (!playerUid) {
         console.log("wager:cancel:skipped", { inviteId, matchId });
         return { ok: false };
       }
@@ -2085,16 +2417,22 @@ class Connection {
     let optimisticApplied = false;
     let opponentUid: string | null = null;
     let sessionGuard: (() => boolean) | null = null;
+    let playerUid: string | null = null;
     try {
       await this.ensureAuthenticated();
-      const inviteId = this.inviteId;
-      const matchId = this.matchId;
-      if (!inviteId || !matchId || !this.sameProfilePlayerUid) {
+      const writableContext = this.requireWritableContext(undefined, "declineWagerProposal");
+      if (!writableContext) {
+        return { ok: false };
+      }
+      const inviteId = writableContext.inviteId;
+      const matchId = writableContext.matchId;
+      playerUid = writableContext.actorUid;
+      if (!playerUid) {
         console.log("wager:decline:skipped", { inviteId, matchId });
         return { ok: false };
       }
       sessionGuard = this.createMatchContextGuard(inviteId, matchId);
-      opponentUid = this.getOpponentId();
+      opponentUid = this.getOpponentId(playerUid);
       const currentState = getWagerState();
       const existingProposal = opponentUid && currentState?.proposals ? currentState.proposals[opponentUid] : null;
       if (existingProposal && !currentState?.agreed && !currentState?.resolved) {
@@ -2151,15 +2489,19 @@ class Connection {
     let sessionGuard: (() => boolean) | null = null;
     try {
       await this.ensureAuthenticated();
-      const inviteId = this.inviteId;
-      const matchId = this.matchId;
-      if (!inviteId || !matchId || !this.sameProfilePlayerUid) {
+      const writableContext = this.requireWritableContext(undefined, "acceptWagerProposal");
+      if (!writableContext) {
+        return { ok: false };
+      }
+      const inviteId = writableContext.inviteId;
+      const matchId = writableContext.matchId;
+      if (!writableContext.actorUid) {
         console.log("wager:accept:skipped", { inviteId, matchId });
         return { ok: false };
       }
       sessionGuard = this.createMatchContextGuard(inviteId, matchId);
-      const playerUid = this.sameProfilePlayerUid;
-      opponentUid = this.getOpponentId();
+      const playerUid = writableContext.actorUid;
+      opponentUid = this.getOpponentId(playerUid);
       const currentState = getWagerState();
       const proposals = currentState?.proposals ?? null;
       const opponentProposal = opponentUid && proposals ? proposals[opponentUid] : null;
@@ -2279,13 +2621,18 @@ class Connection {
     if (!matchOnly) {
       this.updateStoredEmoji(newId, aura);
     }
-    if (!this.myMatch) return;
+    const writableContext = this.requireWritableContext(undefined, "updateEmoji");
+    if (!writableContext || !this.myMatch) {
+      return;
+    }
     this.myMatch.emojiId = newId;
     this.myMatch.aura = aura ?? undefined;
-    set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${this.matchId}/emojiId`), newId).catch((error) => {
+    set(ref(this.db, `players/${writableContext.actorUid}/matches/${writableContext.matchId}/emojiId`), newId).catch((error) => {
       console.error("Error updating emoji:", error);
     });
-    if (this.myMatch.aura !== undefined) set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${this.matchId}/aura`), this.myMatch.aura).catch(() => {});
+    if (this.myMatch.aura !== undefined) {
+      set(ref(this.db, `players/${writableContext.actorUid}/matches/${writableContext.matchId}/aura`), this.myMatch.aura).catch(() => {});
+    }
   }
 
   private getLocalProfileId(): string | null {
@@ -2322,7 +2669,7 @@ class Connection {
   }
 
   public getActiveMatchId(): string | null {
-    return this.matchId;
+    return this.activeContext?.matchId ?? null;
   }
 
   public setWagerViewMatchId(matchId: string | null): void {
@@ -2376,31 +2723,38 @@ class Connection {
   }
 
   public sendVoiceReaction(reaction: Reaction): void {
-    if (!this.inviteId || !this.matchId || !this.sameProfilePlayerUid) return;
-    const inviteReaction: InviteReaction = { ...reaction, matchId: this.matchId };
-    set(ref(this.db, `invites/${this.inviteId}/reactions/${this.sameProfilePlayerUid}`), inviteReaction).catch((error) => {
+    const writableContext = this.requireWritableContext(undefined, "sendVoiceReaction");
+    if (!writableContext) {
+      return;
+    }
+    const inviteReaction: InviteReaction = { ...reaction, matchId: writableContext.matchId };
+    set(ref(this.db, `invites/${writableContext.inviteId}/reactions/${writableContext.actorUid}`), inviteReaction).catch((error) => {
       console.error("Error sending voice reaction:", error);
     });
   }
 
-  public surrender(): void {
-    if (!this.myMatch) return;
+  public surrender(): boolean {
+    if (!this.myMatch) {
+      return false;
+    }
+    const previousStatus = this.myMatch.status;
     this.myMatch.status = "surrendered";
-    this.sendMatchUpdate();
+    const didQueueUpdate = this.sendMatchUpdate(this.activeContext?.matchId ?? null);
+    if (!didQueueUpdate) {
+      this.myMatch.status = previousStatus;
+      return false;
+    }
+    return true;
   }
 
-  public sendMove(moveFen: string, newBoardFen: string): void {
-    if (!this.myMatch || !this.matchId || !this.sameProfilePlayerUid) {
-      console.error("Cannot send critical move update: missing context", {
-        hasMatch: !!this.myMatch,
-        hasInviteId: !!this.inviteId,
-        hasMatchId: !!this.matchId,
-        hasPlayerUid: !!this.sameProfilePlayerUid,
+  public sendMove(moveFen: string, newBoardFen: string, expectedMatchId: string): void {
+    const writableContext = this.requireWritableContext(expectedMatchId, "sendMove");
+    if (!writableContext || !this.myMatch) {
+      this.logContextEvent("ctx.write.blocked", {
+        reason: "sendMove",
+        blockReason: "missing-writable-context-or-match",
+        expectedMatchId,
       });
-      const inviteToReconnect = this.inviteId;
-      if (inviteToReconnect) {
-        this.reconnectAfterMatchUpdateFailure(inviteToReconnect, this.createSessionGuard());
-      }
       return;
     }
     const previousFlatMovesString = this.myMatch.flatMovesString ?? "";
@@ -2411,9 +2765,11 @@ class Connection {
     const requestId = ++this.moveSendRequestId;
     void this.sendCriticalMoveUpdateWithRetry(
       requestId,
-      this.inviteId,
-      this.matchId,
-      this.sameProfilePlayerUid,
+      writableContext.inviteId,
+      writableContext.matchId,
+      writableContext.actorUid,
+      writableContext.contextId,
+      writableContext.sessionEpoch,
       matchToPersist,
       newBoardFen,
       expectedFlatMovesString,
@@ -2421,12 +2777,22 @@ class Connection {
     );
   }
 
-  private shouldContinueCriticalMoveSend(requestId: number, matchId: string, playerUid: string, sessionGuard: () => boolean): boolean {
+  private shouldContinueCriticalMoveSend(
+    requestId: number,
+    matchId: string,
+    playerUid: string,
+    contextId: number,
+    contextEpoch: number,
+    sessionGuard: () => boolean
+  ): boolean {
+    const activeContext = this.activeContext;
     return (
       requestId === this.moveSendRequestId &&
       sessionGuard() &&
-      this.matchId === matchId &&
-      this.sameProfilePlayerUid === playerUid
+      this.isContextActive(contextId, contextEpoch) &&
+      !!activeContext &&
+      activeContext.matchId === matchId &&
+      activeContext.actorUid === playerUid
     );
   }
 
@@ -2555,13 +2921,15 @@ class Connection {
     requestId: number,
     playerUid: string,
     matchId: string,
+    contextId: number,
+    contextEpoch: number,
     expectedFen: string,
     expectedFlatMovesString: string,
     sessionGuard: () => boolean
   ): Promise<boolean> {
     const verificationStartedAt = Date.now();
     while (Date.now() - verificationStartedAt < this.moveSendPostRetryVerificationWindowMs) {
-      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
         return false;
       }
       const elapsedMs = Date.now() - verificationStartedAt;
@@ -2581,7 +2949,7 @@ class Connection {
           }
         }
       } catch {}
-      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
         return false;
       }
       const remainingAfterAttemptMs = this.moveSendPostRetryVerificationWindowMs - (Date.now() - verificationStartedAt);
@@ -2628,6 +2996,8 @@ class Connection {
     inviteId: string | null,
     matchId: string,
     playerUid: string,
+    contextId: number,
+    contextEpoch: number,
     matchToPersist: Match,
     expectedFen: string,
     expectedFlatMovesString: string,
@@ -2642,7 +3012,7 @@ class Connection {
       if (remainingMs <= 0) {
         break;
       }
-      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
         return;
       }
       attempt += 1;
@@ -2657,22 +3027,48 @@ class Connection {
           previousFlatMovesString,
           attemptTimeoutMs
         );
-        if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+        if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
           return;
         }
-        console.log("Match move sent successfully", { attempt });
+        this.logContextEvent("ctx.write.success", {
+          reason: "sendMove",
+          attempt,
+          inviteId,
+          matchId,
+          actorUid: playerUid,
+          contextId,
+          sessionEpoch: contextEpoch,
+        });
+        this.myMatch = matchToPersist;
         return;
       } catch (error) {
-        if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+        if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
           return;
         }
         const errorCode = this.getMoveSendErrorCode(error);
         if (errorCode === "remote-move-chain-mismatch") {
-          console.error("Critical move update failed due to remote move-chain mismatch", { inviteId, matchId });
+          this.logContextEvent("ctx.write.fail", {
+            reason: "sendMove",
+            errorCode,
+            inviteId,
+            matchId,
+            actorUid: playerUid,
+            contextId,
+            sessionEpoch: contextEpoch,
+          });
           this.reconnectAfterMatchUpdateFailure(inviteId, sessionGuard);
           return;
         }
-        console.error("Error sending critical move update:", error);
+        this.logContextEvent("ctx.write.retry", {
+          reason: "sendMove",
+          inviteId,
+          matchId,
+          actorUid: playerUid,
+          contextId,
+          sessionEpoch: contextEpoch,
+          attempt,
+          errorCode,
+        });
         this.reconnectAfterMatchUpdateFailure(inviteId, sessionGuard);
         const pendingAttempt = this.getMoveSendPendingAttempt(error);
         if (pendingAttempt) {
@@ -2695,30 +3091,45 @@ class Connection {
         }
       }
     }
-    if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+    if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
       return;
     }
     const didVerifyPersistedMove = await this.verifyMovePersistedAfterRetryWindow(
       requestId,
       playerUid,
       matchId,
+      contextId,
+      contextEpoch,
       expectedFen,
       expectedFlatMovesString,
       sessionGuard
     );
     if (didVerifyPersistedMove) {
-      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
         return;
       }
-      console.log("Match move send confirmed after retry window");
+      this.logContextEvent("ctx.write.success", {
+        reason: "sendMove",
+        inviteId,
+        matchId,
+        actorUid: playerUid,
+        contextId,
+        sessionEpoch: contextEpoch,
+        viaPostRetryVerification: true,
+      });
+      this.myMatch = matchToPersist;
       return;
     }
-    if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, sessionGuard)) {
+    if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
       return;
     }
-    console.error("Critical move update could not be confirmed", {
+    this.logContextEvent("ctx.write.fail", {
+      reason: "sendMove",
       inviteId,
       matchId,
+      actorUid: playerUid,
+      contextId,
+      sessionEpoch: contextEpoch,
       elapsedMs: Date.now() - startedAt,
     });
     this.reconnectAfterMatchUpdateFailure(this.inviteId ?? inviteId, sessionGuard);
@@ -2738,269 +3149,325 @@ class Connection {
     });
   }
 
-  private sendMatchUpdate(): void {
-    const sessionGuard = this.createSessionGuard();
-    set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${this.matchId}`), this.myMatch)
+  private sendMatchUpdate(expectedMatchId: string | null): boolean {
+    const writableContext = this.requireWritableContext(expectedMatchId, "sendMatchUpdate");
+    if (!writableContext || !this.myMatch) {
+      return false;
+    }
+    const sessionGuard = this.createMatchContextGuard(writableContext.inviteId, writableContext.matchId);
+    set(ref(this.db, `players/${writableContext.actorUid}/matches/${writableContext.matchId}`), this.myMatch)
       .then(() => {
-        console.log("Match update sent successfully");
+        if (!sessionGuard()) {
+          return;
+        }
+        this.logContextEvent("ctx.write.success", {
+          reason: "sendMatchUpdate",
+          inviteId: writableContext.inviteId,
+          matchId: writableContext.matchId,
+          actorUid: writableContext.actorUid,
+          contextId: writableContext.contextId,
+          sessionEpoch: writableContext.sessionEpoch,
+        });
       })
       .catch((error) => {
         if (!sessionGuard()) {
           return;
         }
-        console.error("Error sending match update:", error);
-        const inviteToReconnect = this.inviteId;
-        if (!inviteToReconnect) {
-          return;
-        }
-        this.reconnectAfterMatchUpdateFailure(inviteToReconnect, sessionGuard);
+        this.logContextEvent("ctx.write.fail", {
+          reason: "sendMatchUpdate",
+          inviteId: writableContext.inviteId,
+          matchId: writableContext.matchId,
+          actorUid: writableContext.actorUid,
+          contextId: writableContext.contextId,
+          sessionEpoch: writableContext.sessionEpoch,
+          error: error instanceof Error ? error.message : String(error),
+        });
+        this.reconnectAfterMatchUpdateFailure(writableContext.inviteId, this.createSessionGuard());
       });
+    return true;
   }
 
-  private getLatestBothSidesApprovedRematchIndex(): number | null {
-    if (!this.inviteId || !this.latestInvite) {
+  private rematchSeriesEndIsIndicatedForInvite(invite: Invite | null | undefined): boolean {
+    if (!invite) {
+      return false;
+    }
+    return (
+      (typeof invite.hostRematches === "string" && invite.hostRematches.endsWith("x")) ||
+      (typeof invite.guestRematches === "string" && invite.guestRematches.endsWith("x"))
+    );
+  }
+
+  private getLatestBothSidesApprovedRematchIndexForInvite(invite: Invite | null | undefined): number | null {
+    if (!invite) {
       return null;
     }
-    const approvedIndices = this.approvedRematchIndices(
-      this.rematchIndices(this.latestInvite.hostRematches),
-      this.rematchIndices(this.latestInvite.guestRematches)
-    );
+    const approvedIndices = this.approvedRematchIndices(this.rematchIndices(invite.hostRematches), this.rematchIndices(invite.guestRematches));
     if (approvedIndices.length === 0) {
       return null;
     }
-    const lastNumber = approvedIndices[approvedIndices.length - 1];
-    if (lastNumber === undefined) {
+    const latestApproved = approvedIndices[approvedIndices.length - 1];
+    return latestApproved ?? null;
+  }
+
+  private getLatestBothSidesApprovedRematchIndex(): number | null {
+    return this.getLatestBothSidesApprovedRematchIndexForInvite(this.latestInvite);
+  }
+
+  private getLatestMatchIdForActor(
+    inviteId: string,
+    invite: Invite,
+    actorUid: string | null
+  ): { matchId: string; hasPendingProposal: boolean } {
+    const hostIndices = this.rematchIndices(invite.hostRematches);
+    const guestIndices = this.rematchIndices(invite.guestRematches);
+    let rematchIndex = this.getLatestBothSidesApprovedRematchIndexForInvite(invite);
+    let hasPendingProposal = false;
+    if (!this.rematchSeriesEndIsIndicatedForInvite(invite) && actorUid) {
+      const hostHasPending = invite.hostId === actorUid && hostIndices.length > guestIndices.length;
+      const guestHasPending = invite.guestId === actorUid && guestIndices.length > hostIndices.length;
+      if (hostHasPending || guestHasPending) {
+        rematchIndex = rematchIndex ? rematchIndex + 1 : 1;
+        hasPendingProposal = true;
+      }
+    }
+    if (!rematchIndex) {
+      return { matchId: inviteId, hasPendingProposal };
+    }
+    return { matchId: `${inviteId}${rematchIndex}`, hasPendingProposal };
+  }
+
+  private maybeRefreshContextAfterRematchMetadata(context: MatchRuntimeContext): void {
+    if (!this.latestInvite) {
+      return;
+    }
+    if (!this.isContextActive(context.contextId, context.sessionEpoch)) {
+      return;
+    }
+    if (!context.canWrite || !context.actorUid) {
+      return;
+    }
+    if (this.rematchSeriesEndIsIndicatedForInvite(this.latestInvite)) {
+      return;
+    }
+    const next = this.getLatestMatchIdForActor(context.inviteId, this.latestInvite, context.actorUid);
+    if (next.hasPendingProposal) {
+      didDiscoverExistingRematchProposalWaitingForResponse();
+    }
+    if (next.matchId === context.matchId) {
+      return;
+    }
+    this.logContextEvent("ctx.write.retry", {
+      reason: "rematch-context-rotate",
+      inviteId: context.inviteId,
+      currentMatchId: context.matchId,
+      nextMatchId: next.matchId,
+      actorUid: context.actorUid,
+      contextId: context.contextId,
+      sessionEpoch: context.sessionEpoch,
+    });
+    this.connectToGame(context.loginUid, context.inviteId, false);
+  }
+
+  private async fetchInviteWithPendingCreation(inviteId: string, epoch: number, connectAttemptId: number): Promise<Invite | null> {
+    const inviteRef = ref(this.db, `invites/${inviteId}`);
+    const initialSnapshot = await get(inviteRef);
+    if (!this.isConnectAttemptActive(connectAttemptId, epoch)) {
       return null;
     }
+    let inviteData: Invite | null = initialSnapshot.val();
+    if (inviteData) {
+      return inviteData;
+    }
+    const didWaitForPendingInvite = await this.waitForPendingInviteCreation(inviteId, epoch);
+    if (!didWaitForPendingInvite || !this.isConnectAttemptActive(connectAttemptId, epoch)) {
+      return null;
+    }
+    const refreshedSnapshot = await get(inviteRef);
+    if (!this.isConnectAttemptActive(connectAttemptId, epoch)) {
+      return null;
+    }
+    inviteData = refreshedSnapshot.val();
+    return inviteData;
+  }
 
-    return lastNumber;
+  private async resolveActorUidForInvite(
+    invite: Invite,
+    loginUid: string,
+    localProfileId: string | null,
+    epoch: number,
+    connectAttemptId: number
+  ): Promise<{ actorUid: string | null; role: InviteRole }> {
+    const hostId = invite.hostId;
+    const guestId = invite.guestId ?? null;
+    if (loginUid === hostId) {
+      return { actorUid: hostId, role: "host" };
+    }
+    if (guestId && loginUid === guestId) {
+      return { actorUid: guestId, role: "guest" };
+    }
+    if (localProfileId) {
+      const matchingUid = await this.checkBothPlayerProfiles(hostId, guestId ?? "", localProfileId);
+      if (!this.isConnectAttemptActive(connectAttemptId, epoch)) {
+        return { actorUid: null, role: "watch" };
+      }
+      if (matchingUid === hostId) {
+        return { actorUid: hostId, role: "host" };
+      }
+      if (guestId && matchingUid === guestId) {
+        return { actorUid: guestId, role: "guest" };
+      }
+    }
+    return { actorUid: null, role: "watch" };
+  }
+
+  private async createGuestMatchFromHost(
+    hostId: string,
+    guestId: string,
+    matchId: string,
+    epoch: number,
+    connectAttemptId: number
+  ): Promise<Match | null> {
+    const opponentsMatchSnapshot = await get(ref(this.db, `players/${hostId}/matches/${matchId}`));
+    if (!this.isConnectAttemptActive(connectAttemptId, epoch)) {
+      return null;
+    }
+    const opponentsMatch = opponentsMatchSnapshot.val() as Match | null;
+    if (!opponentsMatch) {
+      return null;
+    }
+    const match: Match = {
+      version: controllerVersion,
+      color: opponentsMatch.color === "black" ? "white" : "black",
+      emojiId: getPlayersEmojiId(),
+      aura: storage.getPlayerEmojiAura(""),
+      fen: initialFen,
+      status: "",
+      flatMovesString: "",
+      timer: "",
+    };
+    await set(ref(this.db, `players/${guestId}/matches/${matchId}`), match);
+    if (!this.isConnectAttemptActive(connectAttemptId, epoch)) {
+      return null;
+    }
+    return match;
   }
 
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
-    const previousInviteId = this.inviteId;
-    const inviteChanged = previousInviteId !== null && previousInviteId !== inviteId;
-    const shouldSetupSameProfileUid = this.sameProfilePlayerUid === null || this.loginUid !== uid;
+    const cachedInvite = this.inviteId === inviteId && this.latestInvite ? { ...this.latestInvite } : null;
+    this.detachFromMatchSession();
     this.loginUid = uid;
-    if (inviteChanged) {
-      this.detachFromMatchSession();
-    } else if (previousInviteId === null) {
-      this.bumpSessionEpoch();
-    }
-    if (shouldSetupSameProfileUid) {
-      this.setSameProfilePlayerUid(uid);
-    } else {
-      const effectiveSameProfileUid = this.sameProfilePlayerUid ?? uid;
-      this.observeMiningFrozen(effectiveSameProfileUid);
-      this.hydrateSameProfilePlayer(effectiveSameProfileUid);
-    }
     const connectEpoch = this.sessionEpoch;
-    this.inviteId = inviteId;
-    const inviteRef = ref(this.db, `invites/${inviteId}`);
-    get(inviteRef)
-      .then(async (snapshot) => {
-        if (!this.isSessionEpochActive(connectEpoch)) {
+    const connectAttemptId = this.connectAttemptId;
+    const isConnectActive = () => this.isConnectAttemptActive(connectAttemptId, connectEpoch);
+
+    const resolveInvite = cachedInvite
+      ? Promise.resolve(cachedInvite)
+      : this.fetchInviteWithPendingCreation(inviteId, connectEpoch, connectAttemptId);
+
+    void resolveInvite
+      .then(async (inviteData) => {
+        if (!isConnectActive()) {
           return;
-        }
-        let inviteData: Invite | null = snapshot.val();
-        if (!inviteData) {
-          const didWaitForPendingInvite = await this.waitForPendingInviteCreation(inviteId, connectEpoch);
-          if (!this.isSessionEpochActive(connectEpoch)) {
-            return;
-          }
-          if (didWaitForPendingInvite) {
-            const refreshedSnapshot = await get(inviteRef);
-            if (!this.isSessionEpochActive(connectEpoch)) {
-              return;
-            }
-            inviteData = refreshedSnapshot.val();
-          }
         }
         if (!inviteData) {
           console.log("No invite data found");
           return;
         }
 
-        this.latestInvite = inviteData;
-        didRecoverInviteReactions(inviteData.reactions ?? null);
-        this.observeInviteReactions();
-        this.observeRematchOrEndMatchIndicators();
-        this.observeWagers();
+        const workingInvite: Invite = { ...inviteData };
+        if (!workingInvite.guestId && workingInvite.hostId !== uid && autojoin) {
+          await set(ref(this.db, `invites/${inviteId}/guestId`), uid);
+          if (!isConnectActive()) {
+            return;
+          }
+          workingInvite.guestId = uid;
+        }
 
-        const matchId = await this.getLatestBothSidesApprovedOrProposedByMeMatchId(connectEpoch);
-        if (!this.isSessionEpochActive(connectEpoch)) {
+        const localProfileId = this.getLocalProfileId();
+        const { actorUid, role } = await this.resolveActorUidForInvite(workingInvite, uid, localProfileId, connectEpoch, connectAttemptId);
+        if (!isConnectActive()) {
           return;
         }
-        this.matchId = matchId;
+        const { matchId, hasPendingProposal } = this.getLatestMatchIdForActor(inviteId, workingInvite, actorUid);
+        const canWrite = role !== "watch" && !!actorUid;
+        let myMatch: Match | null = null;
+        if (canWrite && actorUid) {
+          const myMatchSnapshot = await get(ref(this.db, `players/${actorUid}/matches/${matchId}`));
+          if (!isConnectActive()) {
+            return;
+          }
+          myMatch = myMatchSnapshot.val() as Match | null;
+          if (!myMatch && role === "guest" && workingInvite.hostId && workingInvite.guestId === actorUid) {
+            myMatch = await this.createGuestMatchFromHost(workingInvite.hostId, actorUid, matchId, connectEpoch, connectAttemptId);
+          }
+          if (!isConnectActive()) {
+            return;
+          }
+          if (!myMatch) {
+            console.log("No match data found for writable role", { inviteId, matchId, role, actorUid });
+            return;
+          }
+        }
+
+        this.latestInvite = workingInvite;
+        this.myMatch = myMatch;
+        didRecoverInviteReactions(workingInvite.reactions ?? null);
+
+        const nextContext = this.buildRuntimeContext(inviteId, matchId, uid, canWrite ? actorUid : null, role, canWrite, connectEpoch);
+        this.activateContext(nextContext, "connect-to-game");
         this.updateWagerStateForCurrentMatch();
+        this.observeInviteReactions(nextContext);
+        this.observeRematchOrEndMatchIndicators(nextContext);
+        this.observeWagers(nextContext);
+        if (hasPendingProposal && canWrite) {
+          didDiscoverExistingRematchProposalWaitingForResponse();
+        }
 
-        if (!inviteData.guestId && inviteData.hostId !== uid) {
-          if (autojoin) {
-            set(ref(this.db, `invites/${inviteId}/guestId`), uid)
-              .then(() => {
-                if (!this.isSessionEpochActive(connectEpoch)) {
-                  return;
-                }
-                if (this.latestInvite) {
-                  this.latestInvite.guestId = uid;
-                }
-                this.getOpponentsMatchAndCreateOwnMatch(matchId, inviteData.hostId, connectEpoch);
-              })
-              .catch((error) => {
-                console.error("Error joining as a guest:", error);
-              });
-          } else {
-            const profileId = this.getLocalProfileId();
-            if (profileId !== null) {
-              this.checkBothPlayerProfiles(inviteData.hostId, "", profileId)
-                .then((matchingUid) => {
-                  if (!this.isSessionEpochActive(connectEpoch)) {
-                    return;
-                  }
-                  if (matchingUid === inviteData.hostId) {
-                    this.setSameProfilePlayerUid(matchingUid);
-                    this.refreshTokenIfNeeded();
-                    this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
-                  } else {
-                    didFindInviteThatCanBeJoined();
-                  }
-                })
-                .catch(() => {
-                  if (!this.isSessionEpochActive(connectEpoch)) {
-                    return;
-                  }
-                  didFindInviteThatCanBeJoined();
-                });
-            } else {
-              didFindInviteThatCanBeJoined();
-            }
+        if (!canWrite) {
+          enterWatchOnlyMode();
+          this.observeMatch(workingInvite.hostId, matchId, nextContext);
+          if (workingInvite.guestId) {
+            this.observeMatch(workingInvite.guestId, matchId, nextContext);
+          } else if (workingInvite.hostId !== uid && !autojoin) {
+            didFindInviteThatCanBeJoined();
           }
-        } else {
-          if (inviteData.hostId === uid) {
-            this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
-          } else if (inviteData.guestId === uid) {
-            this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
+          return;
+        }
+
+        didRecoverMyMatch(myMatch!, matchId);
+        if (role === "host") {
+          if (workingInvite.guestId) {
+            this.observeMatch(workingInvite.guestId, matchId, nextContext);
           } else {
-            const sameProfileUid = this.sameProfilePlayerUid;
-            const hasSameProfileUidAlias = sameProfileUid !== null && sameProfileUid !== this.loginUid;
-            if (hasSameProfileUidAlias && sameProfileUid === inviteData.hostId) {
-              this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
-              this.refreshTokenIfNeeded();
-            } else if (hasSameProfileUidAlias && inviteData.guestId && sameProfileUid === inviteData.guestId) {
-              this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
-              this.refreshTokenIfNeeded();
-            } else {
-              const profileId = this.getLocalProfileId();
-              if (profileId !== null) {
-                this.checkBothPlayerProfiles(inviteData.hostId, inviteData.guestId ?? "", profileId)
-                  .then((matchingUid) => {
-                    if (!this.isSessionEpochActive(connectEpoch)) {
-                      return;
-                    }
-                    if (matchingUid === null) {
-                      this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
-                    } else if (matchingUid === inviteData.hostId) {
-                      this.setSameProfilePlayerUid(matchingUid);
-                      this.refreshTokenIfNeeded();
-                      this.reconnectAsHost(inviteId, matchId, inviteData.hostId, inviteData.guestId, connectEpoch);
-                    } else {
-                      this.setSameProfilePlayerUid(matchingUid);
-                      this.refreshTokenIfNeeded();
-                      this.reconnectAsGuest(matchId, inviteData.hostId, inviteData.guestId ?? "", connectEpoch);
-                    }
-                  })
-                  .catch(() => {
-                    if (!this.isSessionEpochActive(connectEpoch)) {
-                      return;
-                    }
-                    this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
-                  });
-              } else {
-                this.enterWatchOnlyMode(matchId, inviteData.hostId, inviteData.guestId);
+            didFindYourOwnInviteThatNobodyJoined(inviteId.startsWith("auto_"));
+            const inviteRef = ref(this.db, `invites/${inviteId}`);
+            const observerKey = `invite-guest-join:${inviteId}:${matchId}`;
+            const unregister = this.observeContextValue(nextContext, observerKey, inviteRef, (snapshot) => {
+              const updatedInvite = snapshot.val() as Invite | null;
+              if (!updatedInvite || !updatedInvite.guestId) {
+                return;
               }
-            }
-          }
-        }
-      })
-      .catch((error) => {
-        console.error("Failed to retrieve invite data:", error);
-      });
-  }
-
-  private reconnectAsGuest(matchId: string, hostId: string, guestId: string, epoch: number): void {
-    const myMatchRef = ref(this.db, `players/${guestId}/matches/${matchId}`);
-    get(myMatchRef)
-      .then((snapshot) => {
-        if (!this.isSessionEpochActive(epoch)) {
-          return;
-        }
-        const myMatchData: Match | null = snapshot.val();
-        if (!myMatchData) {
-          console.log("No match data found for guest");
-          return;
-        }
-        this.myMatch = myMatchData;
-        didRecoverMyMatch(myMatchData, matchId);
-        this.observeMatch(hostId, matchId);
-      })
-      .catch((error) => {
-        if (!this.isSessionEpochActive(epoch)) {
-          return;
-        }
-        console.error("Failed to get guest's match:", error);
-      });
-  }
-
-  private reconnectAsHost(inviteId: string, matchId: string, hostId: string, guestId: string | null | undefined, epoch: number): void {
-    const myMatchRef = ref(this.db, `players/${hostId}/matches/${matchId}`);
-    get(myMatchRef)
-      .then((snapshot) => {
-        if (!this.isSessionEpochActive(epoch)) {
-          return;
-        }
-        const myMatchData: Match | null = snapshot.val();
-        if (!myMatchData) {
-          console.log("No match data found for host");
-          return;
-        }
-        this.myMatch = myMatchData;
-        didRecoverMyMatch(myMatchData, matchId);
-
-        if (guestId) {
-          this.observeMatch(guestId, matchId);
-        } else {
-          didFindYourOwnInviteThatNobodyJoined(inviteId.startsWith("auto_"));
-          const inviteRef = ref(this.db, `invites/${inviteId}`);
-          this.trackInviteWaitRef(inviteRef);
-          onValue(inviteRef, (snapshot) => {
-            if (!this.isSessionEpochActive(epoch)) {
-              return;
-            }
-            const updatedInvite: Invite | null = snapshot.val();
-            if (updatedInvite && updatedInvite.guestId) {
               if (this.latestInvite) {
                 this.latestInvite.guestId = updatedInvite.guestId;
               }
-              this.observeMatch(updatedInvite.guestId, matchId);
-              off(inviteRef);
-              this.releaseInviteWaitRef(inviteRef);
-            }
-          });
+              this.observeMatch(updatedInvite.guestId, matchId, nextContext);
+              unregister?.();
+            });
+          }
+        } else {
+          this.observeMatch(workingInvite.hostId, matchId, nextContext);
+        }
+
+        if (actorUid && actorUid !== uid) {
+          void this.refreshTokenIfNeeded();
         }
       })
       .catch((error) => {
-        if (!this.isSessionEpochActive(epoch)) {
+        if (!isConnectActive()) {
           return;
         }
-        console.error("Failed to get host's match:", error);
+        console.error("Failed to retrieve invite data:", error);
       });
-  }
-
-  private enterWatchOnlyMode(matchId: string, hostId: string, guestId?: string | null): void {
-    enterWatchOnlyMode();
-    this.observeMatch(hostId, matchId);
-    if (guestId) {
-      this.observeMatch(guestId, matchId);
-    }
   }
 
   public tryNavigateWatchOnlyToLatestApprovedMatch(): boolean {
@@ -3008,66 +3475,34 @@ class Connection {
     const latestIndex = this.getLatestBothSidesApprovedRematchIndex();
     const newMatchId = latestIndex ? this.inviteId + latestIndex.toString() : this.inviteId;
     if (newMatchId === this.matchId) return false;
-    this.matchId = newMatchId;
+    const activeContext = this.activeContext;
+    if (activeContext?.canWrite) {
+      return false;
+    }
+    const loginUid = activeContext?.loginUid ?? this.loginUid;
+    if (!loginUid) {
+      this.logContextEvent("ctx.watch.navigate.blocked", {
+        reason: "missing-login-uid",
+        inviteId: this.inviteId,
+        targetMatchId: newMatchId,
+      });
+      return false;
+    }
+    const nextWatchContext = this.buildRuntimeContext(this.inviteId, newMatchId, loginUid, null, "watch", false, this.sessionEpoch);
+    this.activateContext(nextWatchContext, "watch-only-rematch-nav");
+    this.observeInviteReactions(nextWatchContext);
+    this.observeRematchOrEndMatchIndicators(nextWatchContext);
+    this.observeWagers(nextWatchContext);
     this.updateWagerStateForCurrentMatch();
     this.stopObservingAllMatches();
     const hostId = this.latestInvite.hostId;
     const guestId = this.latestInvite.guestId;
-    if (hostId) this.observeMatch(hostId, newMatchId);
-    if (guestId) this.observeMatch(guestId, newMatchId);
+    if (hostId) this.observeMatch(hostId, newMatchId, nextWatchContext);
+    if (guestId) this.observeMatch(guestId, newMatchId, nextWatchContext);
     return true;
   }
 
-  private getOpponentsMatchAndCreateOwnMatch(matchId: string, hostId: string, epoch: number): void {
-    const opponentsMatchRef = ref(this.db, `players/${hostId}/matches/${matchId}`);
-    get(opponentsMatchRef)
-      .then((snapshot) => {
-        if (!this.isSessionEpochActive(epoch)) {
-          return;
-        }
-        const opponentsMatchData: Match | null = snapshot.val();
-        if (!opponentsMatchData) {
-          console.log("No opponent's match data found");
-          return;
-        }
-
-        const color = opponentsMatchData.color === "black" ? "white" : "black";
-        const emojiId = getPlayersEmojiId();
-        const aura = storage.getPlayerEmojiAura("");
-        const match: Match = {
-          version: controllerVersion,
-          color,
-          emojiId,
-          aura,
-          fen: initialFen,
-          status: "",
-          flatMovesString: "",
-          timer: "",
-        };
-
-        this.myMatch = match;
-
-        set(ref(this.db, `players/${this.sameProfilePlayerUid}/matches/${matchId}`), match)
-          .then(() => {
-            if (!this.isSessionEpochActive(epoch)) {
-              return;
-            }
-            this.observeMatch(hostId, matchId);
-          })
-          .catch((error) => {
-            console.error("Error creating player match:", error);
-          });
-      })
-      .catch((error) => {
-        if (!this.isSessionEpochActive(epoch)) {
-          return;
-        }
-        console.error("Failed to get opponent's match:", error);
-      });
-  }
-
   public async createInvite(uid: string, inviteId: string): Promise<boolean> {
-    const epoch = this.bumpSessionEpoch();
     const hostColor = Math.random() < 0.5 ? "white" : "black";
     const emojiId = getPlayersEmojiId();
 
@@ -3090,147 +3525,88 @@ class Connection {
       timer: "",
     };
 
-    this.myMatch = match;
-    this.loginUid = uid;
-    this.setSameProfilePlayerUid(uid);
-    this.inviteId = inviteId;
-    this.latestInvite = invite;
-    didRecoverInviteReactions(invite.reactions ?? null);
-
-    const matchId = inviteId;
-    this.matchId = matchId;
-    this.observeInviteReactions();
-    this.observeWagers();
-    this.updateWagerStateForCurrentMatch();
-
     const updates: { [key: string]: any } = {};
-    updates[`players/${this.loginUid}/matches/${matchId}`] = match;
+    updates[`players/${uid}/matches/${inviteId}`] = match;
     updates[`invites/${inviteId}`] = invite;
     try {
       await update(ref(this.db), updates);
     } catch (error) {
-      if (this.isSessionEpochActive(epoch)) {
-        console.error("Error creating match and invite:", error);
-      }
+      console.error("Error creating match and invite:", error);
       return false;
     }
-    if (!this.isSessionEpochActive(epoch)) {
-      return true;
-    }
     console.log("Match and invite created successfully");
-
-    const inviteRef = ref(this.db, `invites/${inviteId}`);
-    this.trackInviteWaitRef(inviteRef);
-    onValue(inviteRef, (snapshot) => {
-      if (!this.isSessionEpochActive(epoch)) {
-        return;
-      }
-      const updatedInvite: Invite | null = snapshot.val();
-      if (updatedInvite && updatedInvite.guestId) {
-        console.log(`Guest ${updatedInvite.guestId} joined the invite ${inviteId}`);
-        this.latestInvite = updatedInvite;
-        this.observeRematchOrEndMatchIndicators();
-        this.observeWagers();
-        this.updateWagerStateForCurrentMatch();
-        this.observeMatch(updatedInvite.guestId, matchId);
-        off(inviteRef);
-        this.releaseInviteWaitRef(inviteRef);
-      }
-    });
     return true;
   }
 
-  private async getLatestBothSidesApprovedOrProposedByMeMatchId(epoch?: number): Promise<string> {
-    const isCurrentEpoch = () => epoch === undefined || this.isSessionEpochActive(epoch);
-    if (!isCurrentEpoch()) {
-      return "";
+  private observeRematchOrEndMatchIndicators(context: MatchRuntimeContext | null = this.activeContext) {
+    if (!context || !this.latestInvite || this.rematchSeriesEndIsIndicatedForInvite(this.latestInvite)) {
+      return;
     }
-    let rematchIndex = this.getLatestBothSidesApprovedRematchIndex();
-    if (!this.inviteId || !this.latestInvite) {
-      return "";
-    } else {
-      const guestRematchesLength = this.rematchIndices(this.latestInvite.guestRematches).length;
-      const hostRematchesLength = this.rematchIndices(this.latestInvite.hostRematches).length;
 
-      if (!this.rematchSeriesEndIsIndicated() && guestRematchesLength !== hostRematchesLength) {
-        const alreadyHasSamePlayerProfileIdCorrectlySetup = this.sameProfilePlayerUid !== null && this.sameProfilePlayerUid !== this.loginUid;
-        if (!alreadyHasSamePlayerProfileIdCorrectlySetup) {
-          const profileId = this.getLocalProfileId();
-          if (profileId !== null) {
-            const matchingUid = await this.checkBothPlayerProfiles(this.latestInvite.hostId, this.latestInvite.guestId ?? "", profileId);
-            if (!isCurrentEpoch()) {
-              return "";
-            }
-            if (matchingUid !== null) {
-              this.setSameProfilePlayerUid(matchingUid);
-            }
-          }
+    const inviteId = context.inviteId;
+    const hostRef = ref(this.db, `invites/${inviteId}/hostRematches`);
+    this.hostRematchesRef = hostRef;
+    let unregisterHost: (() => void) | null = null;
+    let unregisterGuest: (() => void) | null = null;
+    const cleanupBothRematchObservers = () => {
+      unregisterHost?.();
+      unregisterHost = null;
+      unregisterGuest?.();
+      unregisterGuest = null;
+    };
+    unregisterHost = this.observeContextValue(
+      context,
+      `invite-host-rematches:${inviteId}`,
+      hostRef,
+      (snapshot) => {
+        const rematchesString: string | null = snapshot.val();
+        if (!this.latestInvite || rematchesString === null) {
+          return;
         }
-
-        if (!isCurrentEpoch()) {
-          return "";
-        }
-        const proposedMoreAsHost = this.latestInvite.hostId === this.sameProfilePlayerUid && hostRematchesLength > guestRematchesLength;
-        const proposedMoreAsGuest = this.latestInvite.guestId === this.sameProfilePlayerUid && guestRematchesLength > hostRematchesLength;
-        if (proposedMoreAsHost || proposedMoreAsGuest) {
-          rematchIndex = rematchIndex ? rematchIndex + 1 : 1;
-          didDiscoverExistingRematchProposalWaitingForResponse();
-        }
-      }
-    }
-    if (!isCurrentEpoch()) {
-      return "";
-    }
-    if (!rematchIndex) {
-      return this.inviteId;
-    } else {
-      return this.inviteId + rematchIndex.toString();
-    }
-  }
-
-  private observeRematchOrEndMatchIndicators() {
-    if ((this.hostRematchesRef && this.guestRematchesRef) || !this.latestInvite || this.rematchSeriesEndIsIndicated()) return;
-    const observeEpoch = this.sessionEpoch;
-
-    const hostObservationPath = `invites/${this.inviteId}/hostRematches`;
-    this.hostRematchesRef = ref(this.db, hostObservationPath);
-    incrementLifecycleCounter("connectionObservers");
-
-    onValue(this.hostRematchesRef, (snapshot) => {
-      if (!this.isSessionEpochActive(observeEpoch)) {
-        return;
-      }
-      const rematchesString: string | null = snapshot.val();
-      if (rematchesString !== null) {
-        this.latestInvite!.hostRematches = rematchesString;
-        if (this.rematchSeriesEndIsIndicated()) {
+        this.latestInvite.hostRematches = rematchesString;
+        if (this.rematchSeriesEndIsIndicatedForInvite(this.latestInvite)) {
+          cleanupBothRematchObservers();
           didReceiveRematchesSeriesEndIndicator();
-          this.cleanupRematchObservers();
         } else {
           didUpdateRematchSeriesMetadata();
         }
+        this.maybeRefreshContextAfterRematchMetadata(context);
+      },
+      undefined,
+      () => {
+        if (this.hostRematchesRef === hostRef) {
+          this.hostRematchesRef = null;
+        }
       }
-    });
+    );
 
-    const guestObservationPath = `invites/${this.inviteId}/guestRematches`;
-    this.guestRematchesRef = ref(this.db, guestObservationPath);
-    incrementLifecycleCounter("connectionObservers");
-
-    onValue(this.guestRematchesRef, (snapshot) => {
-      if (!this.isSessionEpochActive(observeEpoch)) {
-        return;
-      }
-      const rematchesString: string | null = snapshot.val();
-      if (rematchesString !== null) {
-        this.latestInvite!.guestRematches = rematchesString;
-        if (this.rematchSeriesEndIsIndicated()) {
+    const guestRef = ref(this.db, `invites/${inviteId}/guestRematches`);
+    this.guestRematchesRef = guestRef;
+    unregisterGuest = this.observeContextValue(
+      context,
+      `invite-guest-rematches:${inviteId}`,
+      guestRef,
+      (snapshot) => {
+        const rematchesString: string | null = snapshot.val();
+        if (!this.latestInvite || rematchesString === null) {
+          return;
+        }
+        this.latestInvite.guestRematches = rematchesString;
+        if (this.rematchSeriesEndIsIndicatedForInvite(this.latestInvite)) {
+          cleanupBothRematchObservers();
           didReceiveRematchesSeriesEndIndicator();
-          this.cleanupRematchObservers();
         } else {
           didUpdateRematchSeriesMetadata();
         }
+        this.maybeRefreshContextAfterRematchMetadata(context);
+      },
+      undefined,
+      () => {
+        if (this.guestRematchesRef === guestRef) {
+          this.guestRematchesRef = null;
+        }
       }
-    });
+    );
   }
 
   private updateWagerStateForCurrentMatch() {
@@ -3250,53 +3626,65 @@ class Connection {
     syncCurrentWagerMatchState(targetMatchId, matchWagerState);
   }
 
-  private observeWagers() {
-    if (this.wagersRef || !this.inviteId) {
+  private observeWagers(context: MatchRuntimeContext | null = this.activeContext) {
+    if (!context) {
       return;
     }
-    const observeEpoch = this.sessionEpoch;
-    const wagersRef = ref(this.db, `invites/${this.inviteId}/wagers`);
+    const wagersRef = ref(this.db, `invites/${context.inviteId}/wagers`);
     this.wagersRef = wagersRef;
-    incrementLifecycleCounter("connectionObservers");
-    onValue(wagersRef, (snapshot) => {
-      if (!this.isSessionEpochActive(observeEpoch)) {
-        return;
+    this.observeContextValue(
+      context,
+      `invite-wagers:${context.inviteId}`,
+      wagersRef,
+      (snapshot) => {
+        const wagers = snapshot.val();
+        this.logWagerDebug("observe-wagers:update", { availableMatchIds: wagers ? Object.keys(wagers) : [] });
+        if (this.latestInvite) {
+          this.latestInvite.wagers = wagers;
+        }
+        this.updateWagerStateForCurrentMatch();
+      },
+      undefined,
+      () => {
+        if (this.wagersRef === wagersRef) {
+          this.wagersRef = null;
+        }
       }
-      const wagers = snapshot.val();
-      this.logWagerDebug("observe-wagers:update", { availableMatchIds: wagers ? Object.keys(wagers) : [] });
-      if (this.latestInvite) {
-        this.latestInvite.wagers = wagers;
-      }
-      this.updateWagerStateForCurrentMatch();
-    });
+    );
   }
 
-  private observeInviteReactions() {
-    if (this.inviteReactionsRef || !this.inviteId) {
+  private observeInviteReactions(context: MatchRuntimeContext | null = this.activeContext) {
+    if (!context) {
       return;
     }
-    const observeEpoch = this.sessionEpoch;
-    const inviteReactionsRef = ref(this.db, `invites/${this.inviteId}/reactions`);
+    const inviteReactionsRef = ref(this.db, `invites/${context.inviteId}/reactions`);
     this.inviteReactionsRef = inviteReactionsRef;
-    incrementLifecycleCounter("connectionObservers");
-    onValue(inviteReactionsRef, (snapshot) => {
-      if (!this.isSessionEpochActive(observeEpoch)) {
-        return;
-      }
-      const reactions = snapshot.val() as Record<string, InviteReaction> | null;
-      if (this.latestInvite) {
-        this.latestInvite.reactions = reactions;
-      }
-      if (!reactions) {
-        return;
-      }
-      Object.entries(reactions).forEach(([senderUid, inviteReaction]) => {
-        if (!inviteReaction || typeof inviteReaction.uuid !== "string") {
+    this.observeContextValue(
+      context,
+      `invite-reactions:${context.inviteId}`,
+      inviteReactionsRef,
+      (snapshot) => {
+        const reactions = snapshot.val() as Record<string, InviteReaction> | null;
+        if (this.latestInvite) {
+          this.latestInvite.reactions = reactions;
+        }
+        if (!reactions) {
           return;
         }
-        didReceiveInviteReactionUpdate(inviteReaction, senderUid);
-      });
-    });
+        Object.entries(reactions).forEach(([senderUid, inviteReaction]) => {
+          if (!inviteReaction || typeof inviteReaction.uuid !== "string") {
+            return;
+          }
+          didReceiveInviteReactionUpdate(inviteReaction, senderUid);
+        });
+      },
+      undefined,
+      () => {
+        if (this.inviteReactionsRef === inviteReactionsRef) {
+          this.inviteReactionsRef = null;
+        }
+      }
+    );
   }
 
   private cleanupRematchObservers() {
@@ -3350,20 +3738,39 @@ class Connection {
     });
   }
 
-  private observeMatch(playerId: string, matchId: string): void {
+  private observeMatch(playerId: string, matchId: string, context: MatchRuntimeContext | null = this.activeContext): void {
     const matchRef = ref(this.db, `players/${playerId}/matches/${matchId}`);
     const key = `${matchId}_${playerId}`;
     if (this.matchRefs[key]) {
       return;
     }
-    const observeEpoch = this.sessionEpoch;
+    const observeEpoch = context?.sessionEpoch ?? this.sessionEpoch;
+    const contextId = context?.contextId ?? null;
+    const isObserverActive = () => {
+      if (contextId === null) {
+        return this.isSessionEpochActive(observeEpoch);
+      }
+      return this.isContextActive(contextId, observeEpoch);
+    };
+    if (context) {
+      this.unregisterObserverCleanup(context.contextId, `match:${key}`);
+      this.registerObserverCleanup(context.contextId, `match:${key}`, () => {
+        const existingRef = this.matchRefs[key];
+        if (existingRef) {
+          off(existingRef);
+          delete this.matchRefs[key];
+          decrementLifecycleCounter("connectionObservers");
+        }
+        this.observedMatchSnapshots.delete(key);
+      });
+    }
     this.matchRefs[key] = matchRef;
     incrementLifecycleCounter("connectionObservers");
 
     onValue(
       matchRef,
       (snapshot) => {
-        if (!this.isSessionEpochActive(observeEpoch)) {
+        if (!isObserverActive()) {
           return;
         }
         const matchData: Match | null = snapshot.val();
@@ -3375,7 +3782,7 @@ class Connection {
         }
       },
       (error) => {
-        if (!this.isSessionEpochActive(observeEpoch)) {
+        if (!isObserverActive()) {
           return;
         }
         console.error("Error observing match data:", error);
@@ -3384,31 +3791,49 @@ class Connection {
 
     this.getProfileByLoginId(playerId)
       .then((profile) => {
-        if (!this.isSessionEpochActive(observeEpoch)) {
+        if (!isObserverActive()) {
           return;
         }
         didGetPlayerProfile(profile, playerId, false);
       })
       .catch((error) => {
-        if (!this.isSessionEpochActive(observeEpoch)) {
+        if (!isObserverActive()) {
           return;
         }
         console.error("Error getting player profile:", error);
-        this.observeProfile(playerId);
+        this.observeProfile(playerId, context);
       });
   }
 
-  private observeProfile(playerId: string): void {
+  private observeProfile(playerId: string, context: MatchRuntimeContext | null = this.activeContext): void {
     const profileRef = ref(this.db, `players/${playerId}/profile`);
     if (this.profileRefs[playerId]) {
       return;
     }
-    const observeEpoch = this.sessionEpoch;
+    const observeEpoch = context?.sessionEpoch ?? this.sessionEpoch;
+    const contextId = context?.contextId ?? null;
+    const isObserverActive = () => {
+      if (contextId === null) {
+        return this.isSessionEpochActive(observeEpoch);
+      }
+      return this.isContextActive(contextId, observeEpoch);
+    };
+    if (context) {
+      this.unregisterObserverCleanup(context.contextId, `profile:${playerId}`);
+      this.registerObserverCleanup(context.contextId, `profile:${playerId}`, () => {
+        const existingRef = this.profileRefs[playerId];
+        if (existingRef) {
+          off(existingRef);
+          delete this.profileRefs[playerId];
+          decrementLifecycleCounter("connectionObservers");
+        }
+      });
+    }
     this.profileRefs[playerId] = profileRef;
     incrementLifecycleCounter("connectionObservers");
 
     onValue(profileRef, (snapshot) => {
-      if (!this.isSessionEpochActive(observeEpoch)) {
+      if (!isObserverActive()) {
         return;
       }
       const profile = snapshot.val();
@@ -3418,13 +3843,13 @@ class Connection {
         decrementLifecycleCounter("connectionObservers");
         this.getProfileByLoginId(playerId)
           .then((profile) => {
-            if (!this.isSessionEpochActive(observeEpoch)) {
+            if (!isObserverActive()) {
               return;
             }
             didGetPlayerProfile(profile, playerId, false);
           })
           .catch((error) => {
-            if (!this.isSessionEpochActive(observeEpoch)) {
+            if (!isObserverActive()) {
               return;
             }
             console.error("Error getting player profile:", error);

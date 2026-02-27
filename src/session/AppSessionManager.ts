@@ -201,6 +201,10 @@ export const transitionToHome = async (options?: TransitionToHomeOptions) => {
   }
 };
 
+export const isTransitionInProgress = (): boolean => {
+  return isTransitioning;
+};
+
 export const getCurrentTarget = (): RouteState => {
   return currentTarget;
 };
@@ -235,4 +239,3 @@ export const initializeAppSessionManager = () => {
   });
   void transition(currentTarget, { skipNavigation: true, force: true });
 };
-

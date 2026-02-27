@@ -15,7 +15,7 @@ import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSig
 import { showVideoReaction } from "../ui/BoardComponent";
 import { setIslandButtonDimmed } from "../index";
 import { getWagerState, setCurrentWagerMatch, subscribeToWagerState } from "./wagerState";
-import { transitionToHome } from "../session/AppSessionManager";
+import { isTransitionInProgress, transitionToHome } from "../session/AppSessionManager";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 import { getSessionGuard } from "./matchSession";
 import { RouteState, getCurrentRouteState } from "../navigation/routeState";
@@ -35,6 +35,9 @@ let isGameOver = false;
 let isReconnect = false;
 let didConnect = false;
 let isWaitingForInviteToGetAccepted = false;
+let pendingOnlineReconnectInviteId: string | null = null;
+let lastOnlineReconnectRequestedAtMs = 0;
+const onlineReconnectRequestCooldownMs = 3000;
 
 const watchOnlyListeners = new Set<(value: boolean) => void>();
 let activeRouteState: RouteState = getCurrentRouteState();
@@ -783,7 +786,22 @@ function activeBoardShouldBeFlipped(): boolean {
 }
 
 function canHandleLiveBoardInput(): boolean {
-  return boardViewMode === "activeLive" && !flashbackMode;
+  return boardViewMode === "activeLive" && !flashbackMode && !isTransitionInProgress();
+}
+
+function resetOnlineReconnectRequestState(): void {
+  pendingOnlineReconnectInviteId = null;
+  lastOnlineReconnectRequestedAtMs = 0;
+}
+
+function requestOnlineReconnect(inviteId: string, autojoin: boolean): void {
+  const now = Date.now();
+  if (pendingOnlineReconnectInviteId === inviteId && now - lastOnlineReconnectRequestedAtMs < onlineReconnectRequestCooldownMs) {
+    return;
+  }
+  pendingOnlineReconnectInviteId = inviteId;
+  lastOnlineReconnectRequestedAtMs = now;
+  connection.signInIfNeededAndConnectToGame(inviteId, autojoin);
 }
 
 function getMoveHistorySourceGame(): MonsWeb.MonsGameModel {
@@ -1555,6 +1573,7 @@ export async function go(routeStateOverride?: RouteState) {
   isReconnect = false;
   didConnect = false;
   isWaitingForInviteToGetAccepted = false;
+  resetOnlineReconnectRequestState();
   isInviteBotIntoLocalGameUnavailable = false;
   didMakeFirstLocalPlayerMoveOnLocalBoard = false;
   flashbackMode = false;
@@ -1691,6 +1710,7 @@ export function disposeGameSession() {
   isReconnect = false;
   didConnect = false;
   isWaitingForInviteToGetAccepted = false;
+  resetOnlineReconnectRequestState();
   isInviteBotIntoLocalGameUnavailable = false;
   didMakeFirstLocalPlayerMoveOnLocalBoard = false;
   setWatchOnlyState(false);
@@ -2179,6 +2199,10 @@ export function didUpdateRematchSeriesMetadata() {
 function automove(onAutomoveButtonClick: boolean = false) {
   const sessionGuard = getSessionGuard();
   const preference = onAutomoveButtonClick ? "fast" : "normal";
+  const expectedMatchId = getExpectedOnlineMatchIdOrReconnect();
+  if (isOnlineGame && !expectedMatchId) {
+    return;
+  }
   const shouldEnforceBotMovePacing = isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
   const fenBeforeAutomove = game.fen();
   const inputColorBeforeAutomove = game.active_color();
@@ -2204,11 +2228,15 @@ function automove(onAutomoveButtonClick: boolean = false) {
             return;
           }
           if (!isGameOver && game.fen() === fenBeforeAutomove) {
+            if (handleStaleOnlineLocalOutput(expectedMatchId)) {
+              syncAutomoveActionState();
+              return;
+            }
             if (shouldEnforceBotMovePacing) {
               lastBotMoveTimestamp = Date.now();
             }
             const appliedOutput = game.process_input_fen(output.input_fen());
-            applyOutput([], "", appliedOutput, false, true, AssistedInputKind.None, undefined, inputColorBeforeAutomove);
+            applyOutput([], "", appliedOutput, false, true, AssistedInputKind.None, undefined, inputColorBeforeAutomove, expectedMatchId);
           }
           syncAutomoveActionState();
         };
@@ -2364,7 +2392,11 @@ export function didClickConfirmResignButton() {
   if (!canHandleLiveBoardInput()) {
     return;
   }
-  if (!isOnlineGame && !isGameWithBot) {
+  if (!isOnlineGame) {
+    if (isGameWithBot) {
+      handleResignStatus(false, "");
+      return;
+    }
     const activeColor = game.active_color();
     let activeColorString = "";
     if (activeColor === MonsWeb.Color.White) {
@@ -2375,7 +2407,10 @@ export function didClickConfirmResignButton() {
     handleResignStatus(false, activeColorString);
     return;
   }
-  connection.surrender();
+  const didQueueSurrender = connection.surrender();
+  if (!didQueueSurrender) {
+    return;
+  }
   handleResignStatus(false, "");
 }
 
@@ -2394,8 +2429,12 @@ export function didClickUndoButton() {
     return;
   }
   if (canHandleUndo()) {
+    const expectedMatchId = getExpectedOnlineMatchIdOrReconnect();
+    if (isOnlineGame && !expectedMatchId) {
+      return;
+    }
     const output = game.takeback();
-    applyOutput([], "", output, false, false, AssistedInputKind.None);
+    applyOutput([], "", output, false, false, AssistedInputKind.None, undefined, undefined, expectedMatchId);
   }
 }
 
@@ -2482,7 +2521,8 @@ function applyOutput(
   isBotInput: boolean,
   assistedInputKind: AssistedInputKind,
   inputLocation?: Location,
-  inputColorBeforeMove?: MonsWeb.Color
+  inputColorBeforeMove?: MonsWeb.Color,
+  expectedMatchId: string | null = null
 ) {
   switch (output.kind) {
     case MonsWeb.OutputModelKind.InvalidInput:
@@ -2581,6 +2621,9 @@ function applyOutput(
       Board.applyHighlights([...selectedItemsHighlights, ...nextInputHighlights]);
       break;
     case MonsWeb.OutputModelKind.Events:
+      if (!isRemoteInput && handleStaleOnlineLocalOutput(expectedMatchId)) {
+        return;
+      }
       const moveFen = output.input_fen();
       const gameFen = game.fen();
 
@@ -2597,8 +2640,11 @@ function applyOutput(
           game.active_color() === MonsWeb.Color.Black,
           latestLocation,
           () => {
+            if (handleStaleOnlineLocalOutput(expectedMatchId)) {
+              return;
+            }
             game = targetGameToConfirm;
-            applyOutput([], "", output, isRemoteInput, isBotInput, assistedInputKind, inputLocation, inputColorBeforeMove);
+            applyOutput([], "", output, isRemoteInput, isBotInput, assistedInputKind, inputLocation, inputColorBeforeMove, expectedMatchId);
           },
           () => {
             currentInputs = [];
@@ -2609,7 +2655,12 @@ function applyOutput(
       }
 
       if (isOnlineGame && !isRemoteInput) {
-        connection.sendMove(moveFen, gameFen);
+        if (!expectedMatchId) {
+          console.warn("online-move-send-skipped: no expected match id at Events output");
+          void getExpectedOnlineMatchIdOrReconnect();
+        } else {
+          connection.sendMove(moveFen, gameFen, expectedMatchId);
+        }
       }
 
       if (!isOnlineGame && !didStartLocalGame) {
@@ -3198,6 +3249,46 @@ function syncWagerOutcome(): "shown" | "deferred" | "invalid" {
   return "shown";
 }
 
+function getExpectedOnlineMatchIdOrReconnect(): string | null {
+  if (!isOnlineGame) {
+    resetOnlineReconnectRequestState();
+    return null;
+  }
+  const activeMatchId = connection.getActiveMatchId();
+  if (activeMatchId) {
+    resetOnlineReconnectRequestState();
+    return activeMatchId;
+  }
+  const routeState = getCurrentRouteState();
+  if (routeState.mode === "invite" && routeState.inviteId) {
+    requestOnlineReconnect(routeState.inviteId, routeState.autojoin);
+  }
+  return null;
+}
+
+function handleStaleOnlineLocalOutput(expectedMatchId: string | null): boolean {
+  if (!isOnlineGame || !expectedMatchId) {
+    return false;
+  }
+  const activeMatchId = connection.getActiveMatchId();
+  if (activeMatchId && activeMatchId === expectedMatchId) {
+    return false;
+  }
+  if (process.env.NODE_ENV !== "production") {
+    console.log("stale-online-local-output", {
+      expectedMatchId,
+      activeMatchId,
+      hasActiveMatch: !!activeMatchId,
+    });
+  }
+  currentInputs = [];
+  Board.removeHighlights();
+  if (!activeMatchId) {
+    void getExpectedOnlineMatchIdOrReconnect();
+  }
+  return true;
+}
+
 function processInput(assistedInputKind: AssistedInputKind, inputModifier: InputModifier, inputLocation?: Location) {
   if (!canHandleLiveBoardInput()) {
     return;
@@ -3210,6 +3301,11 @@ function processInput(assistedInputKind: AssistedInputKind, inputModifier: Input
     if (game.active_color() !== playerSideColor) {
       return;
     }
+  }
+
+  const expectedMatchId = getExpectedOnlineMatchIdOrReconnect();
+  if (isOnlineGame && !expectedMatchId) {
+    return;
   }
 
   if (inputLocation) {
@@ -3238,7 +3334,7 @@ function processInput(assistedInputKind: AssistedInputKind, inputModifier: Input
   } else {
     output = game.process_input(gameInput);
   }
-  applyOutput(takebacksBeforeMove, fenBeforeMove, output, false, false, assistedInputKind, inputLocation, inputColorBeforeMove);
+  applyOutput(takebacksBeforeMove, fenBeforeMove, output, false, false, assistedInputKind, inputLocation, inputColorBeforeMove, expectedMatchId);
 }
 
 function updateLocation(location: Location, inFlashbackMode: boolean = false) {
@@ -3898,6 +3994,7 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
   ensureBoardViewInvariants("didReceiveMatchUpdate:start");
   if (!didConnect) {
     isWaitingForInviteToGetAccepted = false;
+    resetOnlineReconnectRequestState();
     if (boardViewMode !== "historicalView") {
       Board.stopMonsBoardAsDisplayAnimations();
       showWaitingStateText("");
