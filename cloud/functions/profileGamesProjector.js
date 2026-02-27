@@ -2,9 +2,9 @@ const admin = require("firebase-admin");
 const { onValueCreated, onValueWritten } = require("firebase-functions/v2/database");
 
 const SORT_BUCKETS = {
-  active: 20,
-  pending: 30,
-  waiting: 40,
+  pending: 20,
+  waiting: 30,
+  active: 40,
   ended: 50,
 };
 

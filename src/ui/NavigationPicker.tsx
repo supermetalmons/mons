@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import styled from "styled-components";
 import { problems, getCompletedProblemIds } from "../content/problems";
 import { didSelectPuzzle } from "../game/gameController";
@@ -242,6 +242,33 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const navigationPickerRef = useRef<HTMLDivElement>(null);
   const { assets } = useGameAssets();
 
+  const gamesForDisplay = useMemo(() => {
+    const getStatusPriority = (status: NavigationGameItem["status"]): number => {
+      if (status === "pending") {
+        return 0;
+      }
+      if (status === "waiting") {
+        return 1;
+      }
+      if (status === "active") {
+        return 2;
+      }
+      return 3;
+    };
+
+    return games.slice().sort((left, right) => {
+      const leftPriority = getStatusPriority(left.status);
+      const rightPriority = getStatusPriority(right.status);
+      if (leftPriority !== rightPriority) {
+        return leftPriority - rightPriority;
+      }
+      if (left.listSortAtMs !== right.listSortAtMs) {
+        return right.listSortAtMs - left.listSortAtMs;
+      }
+      return left.inviteId.localeCompare(right.inviteId);
+    });
+  }, [games]);
+
   const handleNavigationSelect = (id: string) => {
     const selectedItem = problems.find((item) => item.id === id);
     if (selectedItem) {
@@ -317,7 +344,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
               {!isGamesLoading && isUsingFallbackScope && <EmptyRow>Showing games for current login only</EmptyRow>}
               {!isGamesLoading && games.length === 0 && <EmptyRow>No games yet</EmptyRow>}
               {!isGamesLoading &&
-                games.map((game) => {
+                gamesForDisplay.map((game) => {
                   const isSelected = selectedGameInviteId === game.inviteId;
                   return (
                     <GameRow key={game.inviteId} $isSelected={isSelected} onClick={() => onSelectGame?.(game.inviteId)}>

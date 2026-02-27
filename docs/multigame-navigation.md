@@ -128,9 +128,9 @@ Notes:
 ## 5) Sorting and Projection Rules
 
 Current buckets:
-- `20` active
-- `30` pending automatch
-- `40` waiting
+- `20` pending automatch
+- `30` waiting
+- `40` active
 - `50` ended
 
 Query order:

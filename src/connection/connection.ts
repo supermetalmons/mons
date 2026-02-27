@@ -1626,16 +1626,19 @@ class Connection {
   }
 
   private getNavigationSortBucket(status: "pending" | "waiting" | "active" | "ended"): number {
-    if (status === "active") {
+    if (status === "pending") {
       return 20;
     }
-    if (status === "pending") {
+    if (status === "waiting") {
       return 30;
+    }
+    if (status === "active") {
+      return 40;
     }
     if (status === "ended") {
       return 50;
     }
-    return 40;
+    return 30;
   }
 
   private readTimestampMillis(value: unknown): number {
@@ -1670,8 +1673,7 @@ class Connection {
     }
 
     const status = this.normalizeNavigationStatus(rawData.status);
-    const defaultSortBucket = this.getNavigationSortBucket(status);
-    const sortBucket = typeof rawData.sortBucket === "number" && Number.isFinite(rawData.sortBucket) ? Math.floor(rawData.sortBucket) : defaultSortBucket;
+    const sortBucket = this.getNavigationSortBucket(status);
     const listSortAtMs = this.readTimestampMillis(rawData.listSortAt);
     const rawAutomatchStateHint = rawData.automatchStateHint;
     const automatchStateHint = rawAutomatchStateHint === "pending" || rawAutomatchStateHint === "matched" || rawAutomatchStateHint === "canceled" ? rawAutomatchStateHint : null;
@@ -1712,7 +1714,7 @@ class Connection {
       inviteId,
       kind: "auto",
       status: "pending",
-      sortBucket: 30,
+      sortBucket: this.getNavigationSortBucket("pending"),
       listSortAtMs: Date.now(),
       hostLoginId: this.auth.currentUser?.uid ?? null,
       guestLoginId: null,

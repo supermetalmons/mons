@@ -21,7 +21,7 @@ import BoardStylePickerComponent, { preloadPangchiuBoardPreview } from "./BoardS
 import { Sound } from "../utils/gameModels";
 import MoveHistoryPopup, { subscribeMoveHistoryPopupReload, triggerMoveHistoryPopupSelectionReset } from "./MoveHistoryPopup";
 import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMiningService";
-import { MatchWagerState, NavigationGameItem } from "../connection/connectionModels";
+import { MatchWagerState, NavigationGameItem, NavigationGameStatus } from "../connection/connectionModels";
 import { subscribeToWagerState } from "../game/wagerState";
 import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
@@ -794,15 +794,30 @@ const BottomControls: React.FC = () => {
     };
   }, []);
 
+  const getNavigationStatusPriority = useCallback((status: NavigationGameStatus): number => {
+    if (status === "pending") {
+      return 0;
+    }
+    if (status === "waiting") {
+      return 1;
+    }
+    if (status === "active") {
+      return 2;
+    }
+    return 3;
+  }, []);
+
   const compareNavigationItems = useCallback((left: NavigationGameItem, right: NavigationGameItem) => {
-    if (left.sortBucket !== right.sortBucket) {
-      return left.sortBucket - right.sortBucket;
+    const leftPriority = getNavigationStatusPriority(left.status);
+    const rightPriority = getNavigationStatusPriority(right.status);
+    if (leftPriority !== rightPriority) {
+      return leftPriority - rightPriority;
     }
     if (left.listSortAtMs !== right.listSortAtMs) {
       return right.listSortAtMs - left.listSortAtMs;
     }
     return left.inviteId.localeCompare(right.inviteId);
-  }, []);
+  }, [getNavigationStatusPriority]);
 
   const mergedNavigationGames = useMemo(() => {
     const merged = navigationProjectedGames.slice();
