@@ -3404,57 +3404,11 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
       const metadataIsOpponent = metadataSideIsOpponentForSlot(isOpponent);
       const shouldChangeEmoji = canChangeEmoji(metadataIsOpponent);
 
-      if (metadataIsOpponent) {
-        if (shouldChangeEmoji) {
-          pickAndDisplayDifferentEmoji(true);
-        }
-
-        popOpponentsEmoji();
-      } else {
-        if (shouldChangeEmoji) {
-          pickAndDisplayDifferentEmoji(false);
-        }
-
-        if (isDesktopSafari) {
-          const scale = 1.8;
-          const sizeString = (getAvatarSize() * 100).toString();
-          const newSizeString = (getAvatarSize() * 100 * scale).toString();
-
-          avatar.animate(
-            [
-              {
-                width: sizeString,
-                height: sizeString,
-                transform: "translate(0, 0)",
-                easing: "ease-out",
-              },
-              {
-                width: newSizeString,
-                height: newSizeString,
-                transform: `translate(0px, -${getAvatarSize() * 100}pt)`,
-                easing: "ease-in-out",
-              },
-              {
-                width: sizeString,
-                height: sizeString,
-                transform: "translate(0, 0)",
-                easing: "ease-in",
-              },
-            ],
-            {
-              duration: 420,
-              fill: "forwards",
-            }
-          );
-        } else {
-          avatar.style.transformOrigin = `0px ${isPangchiuBoard() ? 1369 : 1300}px`;
-          avatar.style.transform = "scale(1.8)";
-          avatar.style.transition = "transform 0.3s";
-          setManagedBoardTimeout(() => {
-            avatar.style.transform = "scale(1)";
-          }, 300);
-        }
+      if (shouldChangeEmoji) {
+        pickAndDisplayDifferentEmoji(metadataIsOpponent);
       }
+
+      animateAvatarPopForDisplaySlot(avatar, isOpponent);
     });
   }
 
@@ -3707,11 +3661,60 @@ export function popOpponentsEmoji() {
     return;
   }
 
-  targetAvatar.style.transition = "transform 0.3s";
-  targetAvatar.style.transform = "scale(1.8)";
+  animateAvatarPopForDisplaySlot(targetAvatar, slotIsOpponent);
+}
+
+function animateAvatarPopForDisplaySlot(avatar: SVGElement, slotIsOpponent: boolean) {
+  if (slotIsOpponent) {
+    avatar.style.transition = "transform 0.3s";
+    avatar.style.transform = "scale(1.8)";
+    setManagedBoardTimeout(() => {
+      if (!avatar.isConnected) return;
+      avatar.style.transform = "scale(1)";
+    }, 300);
+    return;
+  }
+
+  if (isDesktopSafari) {
+    const scale = 1.8;
+    const sizeString = (getAvatarSize() * 100).toString();
+    const newSizeString = (getAvatarSize() * 100 * scale).toString();
+
+    avatar.animate(
+      [
+        {
+          width: sizeString,
+          height: sizeString,
+          transform: "translate(0, 0)",
+          easing: "ease-out",
+        },
+        {
+          width: newSizeString,
+          height: newSizeString,
+          transform: `translate(0px, -${getAvatarSize() * 100}pt)`,
+          easing: "ease-in-out",
+        },
+        {
+          width: sizeString,
+          height: sizeString,
+          transform: "translate(0, 0)",
+          easing: "ease-in",
+        },
+      ],
+      {
+        duration: 420,
+        fill: "forwards",
+      }
+    );
+    return;
+  }
+
+  avatar.style.transformOrigin = `0px ${isPangchiuBoard() ? 1369 : 1300}px`;
+  avatar.style.transform = "scale(1.8)";
+  avatar.style.transition = "transform 0.3s";
   setManagedBoardTimeout(() => {
-    if (!targetAvatar.isConnected) return;
-    targetAvatar.style.transform = "scale(1)";
+    if (!avatar.isConnected) return;
+    avatar.style.transform = "scale(1)";
   }, 300);
 }
 
