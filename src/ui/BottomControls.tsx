@@ -1885,7 +1885,6 @@ const BottomControls: React.FC = () => {
             isGamesLoading={isNavigationGamesLoading}
             isLoadingMoreGames={isNavigationGamesLoadingMore}
             hasMoreGames={navigationHasMoreGames}
-            isUsingFallbackScope={isNavigationFallbackScope}
             onSelectGame={handleNavigationGameSelect}
             onSelectProblem={handleNavigationProblemSelect}
             onLoadMoreGames={handleNavigationLoadMoreGames}

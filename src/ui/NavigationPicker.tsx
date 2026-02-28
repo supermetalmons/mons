@@ -15,7 +15,6 @@ interface NavigationPickerProps {
   isGamesLoading?: boolean;
   isLoadingMoreGames?: boolean;
   hasMoreGames?: boolean;
-  isUsingFallbackScope?: boolean;
   onSelectGame?: (inviteId: string) => void;
   onSelectProblem: (problemId: string) => void;
   onLoadMoreGames?: () => void;
@@ -235,7 +234,6 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   isGamesLoading = false,
   isLoadingMoreGames = false,
   hasMoreGames = false,
-  isUsingFallbackScope = false,
   onSelectGame,
   onSelectProblem,
   onLoadMoreGames,
@@ -334,7 +332,6 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
             <>
               <SectionTitle>GAMES</SectionTitle>
               {isGamesLoading && <EmptyRow>Loading games...</EmptyRow>}
-              {!isGamesLoading && isUsingFallbackScope && <EmptyRow>Showing games for current login only</EmptyRow>}
               {!isGamesLoading && games.length === 0 && <EmptyRow>No games yet</EmptyRow>}
               {!isGamesLoading &&
                 gamesForDisplay.map((game) => {
