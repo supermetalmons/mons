@@ -51,16 +51,15 @@ const ScrollableList = styled.div`
   flex-grow: 1;
 `;
 
-const SectionTitle = styled.div`
-  font-size: 0.55rem;
-  font-weight: bold;
-  color: var(--navigationTextMuted);
-  text-align: left;
-  padding: 1px 0 2pt;
-  cursor: pointer;
+const SectionSeparator = styled.div`
+  height: 1px;
+  background-color: var(--navigationTextMuted);
+  opacity: 0.12;
+  margin: 6px -8px;
 
   @media (prefers-color-scheme: dark) {
-    color: var(--color-gray-a0);
+    background-color: var(--color-gray-a0);
+    opacity: 0.15;
   }
 `;
 
@@ -303,13 +302,12 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const completedProblemsSet = getCompletedProblemIds();
   const firstUncompletedIndex = problems.findIndex((problem) => !completedProblemsSet.has(problem.id));
 
-  const shouldRenderGamesSection = true;
+  const shouldRenderGamesSection = !isGamesLoading && games.length > 0;
   const shouldRenderLearnSection = true;
   const hasScrollableContent = shouldRenderLearnSection || shouldRenderGamesSection;
 
   const renderLearnSection = () => (
     <>
-      <SectionTitle>LEARN</SectionTitle>
       {problems.map((item, index) => {
         const isSelected = selectedProblemId === item.id;
         return (
@@ -330,11 +328,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
         <ScrollableList>
           {shouldRenderGamesSection && (
             <>
-              <SectionTitle>GAMES</SectionTitle>
-              {isGamesLoading && <EmptyRow>Loading games...</EmptyRow>}
-              {!isGamesLoading && games.length === 0 && <EmptyRow>No games yet</EmptyRow>}
-              {!isGamesLoading &&
-                gamesForDisplay.map((game) => {
+              {gamesForDisplay.map((game) => {
                   const isSelected = selectedGameInviteId === game.inviteId;
                   return (
                     <GameRow key={game.inviteId} $isSelected={isSelected} onClick={() => onSelectGame?.(game.inviteId)}>
@@ -348,10 +342,12 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                     </GameRow>
                   );
                 })}
-              {!isGamesLoading && hasMoreGames && !isLoadingMoreGames && <LoadMoreGamesButton onClick={() => onLoadMoreGames?.()}>Load more games</LoadMoreGamesButton>}
-              {!isGamesLoading && isLoadingMoreGames && <EmptyRow>Loading more games...</EmptyRow>}
+              {hasMoreGames && !isLoadingMoreGames && <LoadMoreGamesButton onClick={() => onLoadMoreGames?.()}>Load more games</LoadMoreGamesButton>}
+              {isLoadingMoreGames && <EmptyRow>Loading more games...</EmptyRow>}
             </>
           )}
+
+          {shouldRenderGamesSection && shouldRenderLearnSection && <SectionSeparator />}
 
           {shouldRenderLearnSection && renderLearnSection()}
         </ScrollableList>
