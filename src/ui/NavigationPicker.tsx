@@ -24,6 +24,7 @@ const NavigationPickerContainer = styled.div`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
+  height: 480px;
   max-height: calc(100dvh - 120px - env(safe-area-inset-bottom));
   max-width: 168pt;
   display: flex;
@@ -47,6 +48,7 @@ const NavigationPickerContainer = styled.div`
 
 const ScrollableList = styled.div`
   overflow-y: auto;
+  overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   flex-grow: 1;
 `;
