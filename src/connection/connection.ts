@@ -921,7 +921,7 @@ class Connection {
       Date.now() - this.materialLeaderboardCacheTime < Connection.LEADERBOARD_CACHE_TTL;
   }
 
-  public async getLeaderboard(type: "rating" | "gp" | MiningMaterialName | "total" = "rating"): Promise<PlayerProfile[]> {
+  public async getLeaderboard(type: "rating" | "mp" | MiningMaterialName | "total" = "rating"): Promise<PlayerProfile[]> {
     await this.ensureAuthenticated();
     const usersRef = collection(this.firestore, "users");
 
@@ -961,8 +961,7 @@ class Connection {
       return this.materialLeaderboardCache.get(materialType) ?? [];
     }
 
-    // "gp" leaderboard is repurposed for Feb 2026 unique opponents.
-    const leaderboardOrderField = type === "gp" ? "feb2026UniqueOpponentsCount" : "rating";
+    const leaderboardOrderField = type === "mp" ? "totalManaPoints" : "rating";
     const q = query(usersRef, orderBy(leaderboardOrderField, "desc"), limit(LEADERBOARD_ENTRY_LIMIT));
     const querySnapshot = await getDocs(q);
 

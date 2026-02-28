@@ -9,11 +9,11 @@ import { isLocalHost } from "../utils/localDev";
 import { storage } from "../utils/storage";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 
-export type LeaderboardType = "rating" | "gp" | MiningMaterialName | "total";
+export type LeaderboardType = "rating" | "mp" | MiningMaterialName | "total";
 
 export const LEADERBOARD_TYPE_ICON_URLS = {
   rating: "https://assets.mons.link/icons/elo_2.webp",
-  gp: "https://assets.mons.link/icons/elo_1.webp",
+  mp: "https://assets.mons.link/emojipack/1271.webp",
 } as const;
 
 const RENDER_AND_DOWNLOAD_ALL_ID_CARDS = false;
@@ -478,7 +478,7 @@ interface LeaderboardProps {
 interface LeaderboardEntry {
   eth?: string | null;
   sol?: string | null;
-  febUniqueOpponents: number;
+  mp: number;
   rating: number;
   win: boolean;
   id: string;
@@ -537,7 +537,7 @@ const createLeaderboardEntry = (entry: PlayerProfile): LeaderboardEntry => ({
   username: entry.username,
   eth: entry.eth,
   sol: entry.sol,
-  febUniqueOpponents: entry.feb2026UniqueOpponentsCount ?? 0,
+  mp: entry.totalManaPoints ?? 0,
   rating: Math.round(entry.rating ?? 1500),
   win: entry.win ?? true,
   id: entry.id,
@@ -549,13 +549,6 @@ const createLeaderboardEntry = (entry: PlayerProfile): LeaderboardEntry => ({
 });
 
 const profilesToEntries = (profiles: PlayerProfile[]): LeaderboardEntry[] => profiles.map(createLeaderboardEntry);
-
-const FEB_LEADERBOARD_EXCLUDED_USERNAMES = new Set(["obi", "ivan", "monsol", "meinong"]);
-
-const shouldExcludeFromFebLeaderboard = (entry: LeaderboardEntry): boolean => {
-  const normalized = entry.username?.trim().toLowerCase();
-  return normalized ? FEB_LEADERBOARD_EXCLUDED_USERNAMES.has(normalized) : false;
-};
 
 const leaderboardCache = new Map<LeaderboardType, LeaderboardEntry[]>();
 
@@ -600,7 +593,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
       win: profile?.win ?? true,
       emoji: profile?.emoji ?? storedEmoji,
       aura: profile?.aura ?? storedAura,
-      feb2026UniqueOpponentsCount: profile?.feb2026UniqueOpponentsCount ?? 0,
+      totalManaPoints: profile?.totalManaPoints ?? storage.getPlayerTotalManaPoints(0),
       cardBackgroundId: profile?.cardBackgroundId ?? storage.getCardBackgroundId(0),
       cardSubtitleId: profile?.cardSubtitleId ?? storage.getCardSubtitleId(0),
       profileCounter: profile?.profileCounter ?? storage.getProfileCounter("gp"),
@@ -730,8 +723,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
         const currentEntry = getCurrentPlayerEntry();
         const mergedLeaderboardData =
           currentEntry && !leaderboardData.some((entry) => entry.id === currentEntry.id) ? [...leaderboardData, currentEntry] : leaderboardData;
-        const displayLeaderboardData =
-          leaderboardType === "gp" ? mergedLeaderboardData.filter((entry) => !shouldExcludeFromFebLeaderboard(entry)) : mergedLeaderboardData;
+        const displayLeaderboardData = mergedLeaderboardData;
         leaderboardCache.set(leaderboardType, displayLeaderboardData);
         setData(displayLeaderboardData);
 
@@ -803,8 +795,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
     if (leaderboardType === "rating") {
       return <RatingCell win={row.win}>{row.rating}</RatingCell>;
     }
-    if (leaderboardType === "gp") {
-      return <MaterialCell>{row.febUniqueOpponents}</MaterialCell>;
+    if (leaderboardType === "mp") {
+      return <MaterialCell>{row.mp}</MaterialCell>;
     }
     if (leaderboardType === "total") {
       const total = Object.values(row.materials).reduce((sum, val) => sum + val, 0);
@@ -826,8 +818,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
     if (leaderboardType === "rating") {
       return { value: row.rating, isRating: true, win: row.win };
     }
-    if (leaderboardType === "gp") {
-      return { value: row.febUniqueOpponents, isRating: false, win: false };
+    if (leaderboardType === "mp") {
+      return { value: row.mp, isRating: false, win: false };
     }
     if (leaderboardType === "total") {
       const total = Object.values(row.materials).reduce((sum, val) => sum + val, 0);

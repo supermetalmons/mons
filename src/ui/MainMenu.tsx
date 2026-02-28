@@ -14,7 +14,7 @@ import { InfoPopover } from "./InfoPopover";
 import { MiningMaterialName } from "../connection/connectionModels";
 import { registerMainMenuTransientUiHandler } from "./uiSession";
 
-const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust", "total", "gp"];
+const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust", "total", "mp"];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 const MATERIAL_TYPES: MiningMaterialName[] = ["ice", "metal", "gum", "slime", "dust"];
 type LeaderboardSpecialType = keyof typeof LEADERBOARD_TYPE_ICON_URLS;
@@ -46,7 +46,7 @@ const getSpecialLeaderboardTypeImageUrl = (type: LeaderboardSpecialType) => {
 };
 
 const isMaterialLeaderboardType = (value: LeaderboardType): value is MiningMaterialName =>
-  value !== "rating" && value !== "gp" && value !== "total";
+  value !== "rating" && value !== "mp" && value !== "total";
 
 const RockButtonContainer = styled.div`
   position: absolute;
@@ -633,7 +633,8 @@ const MainMenu: React.FC = () => {
   const [areAnimatedMonsEnabled, setAreAnimatedMonsEnabled] = useState<boolean>(storage.getIsExperimentingWithSprites(false));
   const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>(() => {
     const stored = storage.getLeaderboardType("rating");
-    return LEADERBOARD_TYPES.includes(stored as LeaderboardType) ? (stored as LeaderboardType) : "rating";
+    const resolved = stored === "gp" ? "mp" : stored;
+    return LEADERBOARD_TYPES.includes(resolved as LeaderboardType) ? (resolved as LeaderboardType) : "rating";
   });
   const [materialUrls, setMaterialUrls] = useState<Record<MiningMaterialName, string | null>>({
     dust: null,
@@ -644,7 +645,7 @@ const MainMenu: React.FC = () => {
   });
   const [specialLeaderboardTypeUrls, setSpecialLeaderboardTypeUrls] = useState<Record<LeaderboardSpecialType, string | null>>({
     rating: null,
-    gp: null,
+    mp: null,
   });
   const lastClickTime = useRef(0);
   const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
@@ -948,9 +949,9 @@ const MainMenu: React.FC = () => {
                 <LeaderboardTypeSelector>
                   {LEADERBOARD_TYPES.map((type) => {
                     const isMaterialType = isMaterialLeaderboardType(type);
-                    const isSpecialType = type === "rating" || type === "gp";
+                    const isSpecialType = type === "rating" || type === "mp";
                     const typeIconUrl =
-                      type === "rating" ? specialLeaderboardTypeUrls.rating : type === "gp" ? specialLeaderboardTypeUrls.gp : isMaterialType ? materialUrls[type] : null;
+                      type === "rating" ? specialLeaderboardTypeUrls.rating : type === "mp" ? specialLeaderboardTypeUrls.mp : isMaterialType ? materialUrls[type] : null;
                     const isTextType = (type === "total" && !showTotalAsIcons) || (type !== "total" && !typeIconUrl);
                     return (
                       <LeaderboardTypeButton
@@ -977,14 +978,14 @@ const MainMenu: React.FC = () => {
                           )
                         ) : typeIconUrl ? (
                           isSpecialType ? (
-                            <LeaderboardTypeSpecialIcon src={typeIconUrl} alt={type === "rating" ? "Elo" : "Feb"} draggable={false} />
+                            <LeaderboardTypeSpecialIcon src={typeIconUrl} alt={type === "rating" ? "Elo" : "MP"} draggable={false} />
                           ) : (
                             <LeaderboardTypeMaterialIcon src={typeIconUrl} alt={type} draggable={false} />
                           )
                         ) : type === "rating" ? (
                           "Elo"
-                        ) : type === "gp" ? (
-                          "Feb"
+                        ) : type === "mp" ? (
+                          "MP"
                         ) : (
                           type.charAt(0).toUpperCase() + type.slice(1)
                         )}
