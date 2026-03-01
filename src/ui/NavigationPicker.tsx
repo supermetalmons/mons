@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 import { problems, getCompletedProblemIds } from "../content/problems";
 import { useGameAssets } from "../hooks/useGameAssets";
@@ -312,6 +312,7 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
 
 const MIN_AUTO_LOAD_NEXT_PAGE_THRESHOLD_PX = 640;
 const MIN_REASONABLE_EPOCH_MS = Date.UTC(2000, 0, 1);
+const SELECTED_ITEM_VISIBILITY_MARGIN_PX = 8;
 
 const NavigationPicker: React.FC<NavigationPickerProps> = ({
   showsHomeNavigation,
@@ -334,6 +335,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const isAutoLoadPendingRef = useRef(false);
   const hasUserScrolledRef = useRef(false);
   const canRunOneFollowUpLoadRef = useRef(false);
+  const hasResolvedInitialScrollPositionRef = useRef(false);
+  const isIgnoringInitialProgrammaticScrollRef = useRef(false);
   const { assets } = useGameAssets();
 
   const handleNavigationSelect = (id: string) => {
@@ -379,6 +382,11 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   }, [hasMoreGames, isGamesLoading, isLoadingMoreGames, onLoadMoreGames]);
 
   const handleScrollableListScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
+    if (isIgnoringInitialProgrammaticScrollRef.current) {
+      isIgnoringInitialProgrammaticScrollRef.current = false;
+      return;
+    }
+
     if (event.currentTarget.scrollTop > 0) {
       hasUserScrolledRef.current = true;
     }
@@ -395,6 +403,57 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   useEffect(() => {
     maybeLoadMoreGames(scrollableListRef.current, "effect");
   }, [maybeLoadMoreGames, topGames.length, pagedGames.length]);
+
+  useLayoutEffect(() => {
+    if (hasResolvedInitialScrollPositionRef.current) {
+      return;
+    }
+
+    hasResolvedInitialScrollPositionRef.current = true;
+
+    const container = scrollableListRef.current;
+    if (!container) {
+      return;
+    }
+
+    const selectedElement = container.querySelector<HTMLElement>("[data-navigation-selected-primary='true']")
+      ?? container.querySelector<HTMLElement>("[data-navigation-selected='true']");
+    if (!selectedElement) {
+      return;
+    }
+
+    const containerRect = container.getBoundingClientRect();
+    const selectedRect = selectedElement.getBoundingClientRect();
+
+    let nextScrollTop = container.scrollTop;
+    const topLimit = containerRect.top + SELECTED_ITEM_VISIBILITY_MARGIN_PX;
+    const bottomLimit = containerRect.bottom - SELECTED_ITEM_VISIBILITY_MARGIN_PX;
+
+    if (selectedRect.top < topLimit) {
+      nextScrollTop -= topLimit - selectedRect.top;
+    } else if (selectedRect.bottom > bottomLimit) {
+      nextScrollTop += selectedRect.bottom - bottomLimit;
+    } else {
+      return;
+    }
+
+    const maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight);
+    const clampedScrollTop = Math.max(0, Math.min(nextScrollTop, maxScrollTop));
+    if (Math.abs(clampedScrollTop - container.scrollTop) < 1) {
+      return;
+    }
+
+    isIgnoringInitialProgrammaticScrollRef.current = true;
+    container.scrollTop = clampedScrollTop;
+
+    if (typeof window !== "undefined") {
+      window.requestAnimationFrame(() => {
+        isIgnoringInitialProgrammaticScrollRef.current = false;
+      });
+    } else {
+      isIgnoringInitialProgrammaticScrollRef.current = false;
+    }
+  }, []);
 
   const getIconImage = (iconName: string) => {
     if (!assets || !assets[iconName]) {
@@ -461,7 +520,12 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
         };
         return (
           <GameRowContainer key={game.inviteId}>
-            <GameRow $isSelected={isSelected} onClick={() => onSelectGame?.(game.inviteId)}>
+            <GameRow
+              $isSelected={isSelected}
+              data-navigation-selected={isSelected ? "true" : undefined}
+              data-navigation-selected-primary={isSelected ? "true" : undefined}
+              onClick={() => onSelectGame?.(game.inviteId)}
+            >
               {isQueueStatus ? (
                 <QueuePrimaryContent>{getQueuePrimaryLabel(game)}</QueuePrimaryContent>
               ) : (
@@ -502,7 +566,13 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
       {problems.map((item, index) => {
         const isSelected = selectedProblemId === item.id;
         return (
-          <NavigationPickerButton key={item.id} $isSelected={isSelected} onClick={() => handleNavigationSelect(item.id)}>
+          <NavigationPickerButton
+            key={item.id}
+            $isSelected={isSelected}
+            data-navigation-selected={isSelected ? "true" : undefined}
+            data-navigation-selected-primary={!selectedGameInviteId && isSelected ? "true" : undefined}
+            onClick={() => handleNavigationSelect(item.id)}
+          >
             <PlaceholderImage src={getIconImage(item.icon)} alt="" />
             {item.label}
             {completedProblemsSet.has(item.id) && <CompletedIcon />}
