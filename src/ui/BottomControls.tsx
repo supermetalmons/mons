@@ -132,6 +132,7 @@ const STATUS_ICON_URLS = {
   finish: `${STATUS_ICON_BASE_URL}/finish.webp`,
 } as const;
 const NAVIGATION_GAMES_PAGE_SIZE = 80;
+const NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE = 50;
 type StatusIconName = keyof typeof STATUS_ICON_URLS;
 const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
 const stickerImagePromises: Map<number, Promise<string | null>> = new Map();
@@ -438,6 +439,7 @@ const BottomControls: React.FC = () => {
     finish: null,
   });
   const navigationHasPagedGamesRef = useRef(false);
+  const topNavigationInviteIdsRef = useRef<Set<string>>(new Set());
   const navigationPopupEpochRef = useRef(0);
   const navigationSelectionEpochRef = useRef(0);
   const beginInviteFlowRef = useRef<(options?: { skipSoundInit?: boolean }) => void>(() => {});
@@ -826,23 +828,35 @@ const BottomControls: React.FC = () => {
     return left.inviteId.localeCompare(right.inviteId);
   }, [getNavigationStatusPriority]);
 
-  const mergedNavigationGames = useMemo(() => {
+  const topNavigationGames = useMemo(() => {
     const merged = navigationProjectedGames.slice();
-    navigationPagedGames.forEach((pagedItem) => {
-      if (!merged.some((item) => item.inviteId === pagedItem.inviteId)) {
-        merged.push(pagedItem);
-      }
-    });
     if (optimisticPendingAutomatchItem && !merged.some((item) => item.inviteId === optimisticPendingAutomatchItem.inviteId)) {
       merged.push(optimisticPendingAutomatchItem);
     }
     merged.sort(compareNavigationItems);
     return merged;
-  }, [compareNavigationItems, navigationProjectedGames, navigationPagedGames, optimisticPendingAutomatchItem]);
+  }, [compareNavigationItems, navigationProjectedGames, optimisticPendingAutomatchItem]);
+
+  const topNavigationInviteIds = useMemo(() => {
+    return new Set(topNavigationGames.map((item) => item.inviteId));
+  }, [topNavigationGames]);
+
+  const pagedNavigationGames = useMemo(() => {
+    const uniqueByInviteId = new Map<string, NavigationGameItem>();
+    navigationPagedGames.forEach((pagedItem) => {
+      if (!topNavigationInviteIds.has(pagedItem.inviteId)) {
+        uniqueByInviteId.set(pagedItem.inviteId, pagedItem);
+      }
+    });
+    const merged = Array.from(uniqueByInviteId.values());
+    merged.sort(compareNavigationItems);
+    return merged;
+  }, [compareNavigationItems, navigationPagedGames, topNavigationInviteIds]);
 
   useEffect(() => {
-    navigationHasPagedGamesRef.current = navigationPagedGames.length > 0;
-  }, [navigationPagedGames]);
+    topNavigationInviteIdsRef.current = topNavigationInviteIds;
+    navigationHasPagedGamesRef.current = pagedNavigationGames.length > 0;
+  }, [topNavigationInviteIds, pagedNavigationGames.length]);
 
   useEffect(() => {
     if (!optimisticPendingAutomatchItem) {
@@ -1783,7 +1797,7 @@ const BottomControls: React.FC = () => {
       }
 
       void connection
-        .getProfileGamesFirestorePage(NAVIGATION_GAMES_PAGE_SIZE, nextCursor)
+        .getProfileGamesFirestorePage(NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE, nextCursor)
         .then((page) => {
           if (!isCallbackActive()) {
             return;
@@ -1797,10 +1811,9 @@ const BottomControls: React.FC = () => {
             previousItems.forEach((item) => uniqueByInviteId.set(item.inviteId, item));
             page.items.forEach((item) => uniqueByInviteId.set(item.inviteId, item));
             const mergedItems = Array.from(uniqueByInviteId.values());
-            mergedItems.sort(compareNavigationItems);
+            navigationHasPagedGamesRef.current = mergedItems.some((item) => !topNavigationInviteIdsRef.current.has(item.inviteId));
             return mergedItems;
           });
-          navigationHasPagedGamesRef.current = true;
           setNavigationGamesCursor(page.nextCursor);
           setNavigationHasMoreGames(page.hasMore);
           stopLoadMore();
@@ -1819,7 +1832,7 @@ const BottomControls: React.FC = () => {
       return;
     }
 
-    const nextFallbackLimit = navigationFallbackLimit + NAVIGATION_GAMES_PAGE_SIZE;
+    const nextFallbackLimit = navigationFallbackLimit + NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE;
     const requestedLimit = nextFallbackLimit + 1;
     setNavigationFallbackLimit(nextFallbackLimit);
     void connection
@@ -1834,7 +1847,15 @@ const BottomControls: React.FC = () => {
         }
         const hasMore = items.length > nextFallbackLimit;
         const visibleItems = hasMore ? items.slice(0, nextFallbackLimit) : items;
-        setNavigationProjectedGames(visibleItems);
+        const nextProjectedItems = visibleItems.slice(0, NAVIGATION_GAMES_PAGE_SIZE);
+        const nextPagedItems = visibleItems.slice(NAVIGATION_GAMES_PAGE_SIZE);
+        setNavigationProjectedGames(nextProjectedItems);
+        setNavigationPagedGames(nextPagedItems);
+        const nextTopInviteIds = new Set(nextProjectedItems.map((item) => item.inviteId));
+        if (optimisticPendingAutomatchItem) {
+          nextTopInviteIds.add(optimisticPendingAutomatchItem.inviteId);
+        }
+        navigationHasPagedGamesRef.current = nextPagedItems.some((item) => !nextTopInviteIds.has(item.inviteId));
         setNavigationHasMoreGames(hasMore);
         stopLoadMore();
       })
@@ -1879,7 +1900,8 @@ const BottomControls: React.FC = () => {
           <NavigationPicker
             showsHomeNavigation={isDeepHomeButtonVisible}
             navigateHome={handleHomeClick}
-            games={mergedNavigationGames}
+            topGames={topNavigationGames}
+            pagedGames={pagedNavigationGames}
             selectedProblemId={selectedProblemId}
             selectedGameInviteId={selectedGameInviteId}
             isGamesLoading={isNavigationGamesLoading}

@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useCallback, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { problems, getCompletedProblemIds } from "../content/problems";
 import { useGameAssets } from "../hooks/useGameAssets";
@@ -9,7 +9,8 @@ import { emojis } from "../content/emojis";
 interface NavigationPickerProps {
   showsHomeNavigation: boolean;
   navigateHome?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  games?: NavigationGameItem[];
+  topGames?: NavigationGameItem[];
+  pagedGames?: NavigationGameItem[];
   selectedProblemId?: string | null;
   selectedGameInviteId?: string | null;
   isGamesLoading?: boolean;
@@ -145,18 +146,6 @@ const GameStatus = styled.span<{ $isSelected?: boolean }>`
   }
 `;
 
-const EmptyRow = styled.div`
-  font-size: 0.7rem;
-  color: var(--navigationTextMuted);
-  padding: 4px 0 8px;
-`;
-
-const LoadMoreGamesButton = styled(NavigationPickerButton)`
-  font-size: 0.72rem;
-  padding: 4px 8px 8px 0;
-  color: var(--color-blue-primary);
-`;
-
 const CompletedIcon = styled(FaCheck)`
   color: var(--completedPuzzleIconColor);
   font-size: 0.5rem;
@@ -226,10 +215,13 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
   }
 `;
 
+const MIN_AUTO_LOAD_NEXT_PAGE_THRESHOLD_PX = 640;
+
 const NavigationPicker: React.FC<NavigationPickerProps> = ({
   showsHomeNavigation,
   navigateHome,
-  games = [],
+  topGames = [],
+  pagedGames = [],
   selectedProblemId = null,
   selectedGameInviteId = null,
   isGamesLoading = false,
@@ -240,34 +232,11 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   onLoadMoreGames,
 }) => {
   const navigationPickerRef = useRef<HTMLDivElement>(null);
+  const scrollableListRef = useRef<HTMLDivElement>(null);
+  const isAutoLoadPendingRef = useRef(false);
+  const hasUserScrolledRef = useRef(false);
+  const canRunOneFollowUpLoadRef = useRef(false);
   const { assets } = useGameAssets();
-
-  const gamesForDisplay = useMemo(() => {
-    const getStatusPriority = (status: NavigationGameItem["status"]): number => {
-      if (status === "pending") {
-        return 0;
-      }
-      if (status === "waiting") {
-        return 1;
-      }
-      if (status === "active") {
-        return 2;
-      }
-      return 3;
-    };
-
-    return games.slice().sort((left, right) => {
-      const leftPriority = getStatusPriority(left.status);
-      const rightPriority = getStatusPriority(right.status);
-      if (leftPriority !== rightPriority) {
-        return leftPriority - rightPriority;
-      }
-      if (left.listSortAtMs !== right.listSortAtMs) {
-        return right.listSortAtMs - left.listSortAtMs;
-      }
-      return left.inviteId.localeCompare(right.inviteId);
-    });
-  }, [games]);
 
   const handleNavigationSelect = (id: string) => {
     onSelectProblem(id);
@@ -280,6 +249,54 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const handleHomeClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     navigateHome?.(e);
   };
+
+  const maybeLoadMoreGames = useCallback((container: HTMLDivElement | null, source: "scroll" | "effect") => {
+    if (!container || !onLoadMoreGames || !hasMoreGames || isGamesLoading || isLoadingMoreGames || isAutoLoadPendingRef.current) {
+      return;
+    }
+
+    const isScrollable = container.scrollHeight > container.clientHeight + 1;
+    if (!hasUserScrolledRef.current && isScrollable) {
+      return;
+    }
+
+    if (hasUserScrolledRef.current && source === "effect" && !canRunOneFollowUpLoadRef.current) {
+      return;
+    }
+
+    const thresholdPx = Math.max(MIN_AUTO_LOAD_NEXT_PAGE_THRESHOLD_PX, container.clientHeight * 2);
+    const remainingScroll = container.scrollHeight - container.scrollTop - container.clientHeight;
+    if (remainingScroll > thresholdPx) {
+      return;
+    }
+
+    if (source === "scroll" && hasUserScrolledRef.current) {
+      canRunOneFollowUpLoadRef.current = true;
+    } else if (source === "effect") {
+      canRunOneFollowUpLoadRef.current = false;
+    }
+
+    isAutoLoadPendingRef.current = true;
+    onLoadMoreGames();
+  }, [hasMoreGames, isGamesLoading, isLoadingMoreGames, onLoadMoreGames]);
+
+  const handleScrollableListScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
+    if (event.currentTarget.scrollTop > 0) {
+      hasUserScrolledRef.current = true;
+    }
+    maybeLoadMoreGames(event.currentTarget, "scroll");
+  }, [maybeLoadMoreGames]);
+
+  useEffect(() => {
+    if (!isLoadingMoreGames) {
+      isAutoLoadPendingRef.current = false;
+      maybeLoadMoreGames(scrollableListRef.current, "effect");
+    }
+  }, [isLoadingMoreGames, maybeLoadMoreGames]);
+
+  useEffect(() => {
+    maybeLoadMoreGames(scrollableListRef.current, "effect");
+  }, [maybeLoadMoreGames, topGames.length, pagedGames.length]);
 
   const getIconImage = (iconName: string) => {
     if (!assets || !assets[iconName]) {
@@ -304,9 +321,29 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const completedProblemsSet = getCompletedProblemIds();
   const firstUncompletedIndex = problems.findIndex((problem) => !completedProblemsSet.has(problem.id));
 
-  const shouldRenderGamesSection = !isGamesLoading && games.length > 0;
+  const shouldRenderTopGamesSection = !isGamesLoading && topGames.length > 0;
+  const shouldRenderPagedGamesSection = !isGamesLoading && pagedGames.length > 0;
   const shouldRenderLearnSection = true;
-  const hasScrollableContent = shouldRenderLearnSection || shouldRenderGamesSection;
+  const hasScrollableContent = shouldRenderLearnSection || shouldRenderTopGamesSection || shouldRenderPagedGamesSection;
+
+  const renderGameRows = (gamesToRender: NavigationGameItem[]) => (
+    <>
+      {gamesToRender.map((game) => {
+        const isSelected = selectedGameInviteId === game.inviteId;
+        return (
+          <GameRow key={game.inviteId} $isSelected={isSelected} onClick={() => onSelectGame?.(game.inviteId)}>
+            {typeof game.opponentEmoji === "number" ? (
+              <GameEmojiImage src={emojis.getEmojiUrl(game.opponentEmoji.toString())} alt="" />
+            ) : (
+              <GameEmojiPlaceholder />
+            )}
+            <GameText>{game.opponentName && game.opponentName !== "" ? game.opponentName : "anon"}</GameText>
+            <GameStatus $isSelected={isSelected}>{getGameStatusLabel(game)}</GameStatus>
+          </GameRow>
+        );
+      })}
+    </>
+  );
 
   const renderLearnSection = () => (
     <>
@@ -327,31 +364,12 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   return (
     <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
       {hasScrollableContent && (
-        <ScrollableList>
-          {shouldRenderGamesSection && (
-            <>
-              {gamesForDisplay.map((game) => {
-                  const isSelected = selectedGameInviteId === game.inviteId;
-                  return (
-                    <GameRow key={game.inviteId} $isSelected={isSelected} onClick={() => onSelectGame?.(game.inviteId)}>
-                      {typeof game.opponentEmoji === "number" ? (
-                        <GameEmojiImage src={emojis.getEmojiUrl(game.opponentEmoji.toString())} alt="" />
-                      ) : (
-                        <GameEmojiPlaceholder />
-                      )}
-                      <GameText>{game.opponentName && game.opponentName !== "" ? game.opponentName : "anon"}</GameText>
-                      <GameStatus $isSelected={isSelected}>{getGameStatusLabel(game)}</GameStatus>
-                    </GameRow>
-                  );
-                })}
-              {hasMoreGames && !isLoadingMoreGames && <LoadMoreGamesButton onClick={() => onLoadMoreGames?.()}>Load more games</LoadMoreGamesButton>}
-              {isLoadingMoreGames && <EmptyRow>Loading more games...</EmptyRow>}
-            </>
-          )}
-
-          {shouldRenderGamesSection && shouldRenderLearnSection && <SectionSeparator />}
-
+        <ScrollableList ref={scrollableListRef} onScroll={handleScrollableListScroll}>
+          {shouldRenderTopGamesSection && renderGameRows(topGames)}
+          {shouldRenderLearnSection && shouldRenderTopGamesSection && <SectionSeparator />}
           {shouldRenderLearnSection && renderLearnSection()}
+          {shouldRenderLearnSection && shouldRenderPagedGamesSection && <SectionSeparator />}
+          {shouldRenderPagedGamesSection && renderGameRows(pagedGames)}
         </ScrollableList>
       )}
       {showsHomeNavigation && (
