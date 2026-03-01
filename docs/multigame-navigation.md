@@ -170,6 +170,15 @@ Backfill recency policy:
 - quick actions section (`Automatch`, `Direct Link`, `Bot Game`) when available
 - learn section (full list) remains available for completed users
 
+## 6.4 Waiting row removal
+- waiting rows render an inline `×` remove control in the Firestore-backed navigation list
+- remove calls backend `removeNavigationGame` callable; client does not write Firestore rows directly
+- backend delete scope is per-caller projection row only: `users/{profileId}/games/{inviteId}`
+- backend only deletes when invite is still waiting (no guest, not pending automatch, projection row status still `waiting`)
+- invite root in RTDB is never deleted, so direct-link acceptance remains functional
+- if invite is accepted later, projector triggers recreate/update the row as `active` and it reappears in navigation
+- fallback mode (RTDB-only aggregation) intentionally does not persist this hide/remove behavior
+
 ---
 
 ## 7) Security and Indexing

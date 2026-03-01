@@ -1617,6 +1617,26 @@ class Connection {
     }
   }
 
+  public async removeWaitingNavigationGame(inviteId: string): Promise<any> {
+    const normalizedInviteId = typeof inviteId === "string" ? inviteId.trim() : "";
+    if (!normalizedInviteId) {
+      return {
+        ok: false,
+        skipped: true,
+        reason: "invalid-invite-id",
+      };
+    }
+    try {
+      await this.ensureAuthenticated();
+      const removeNavigationGameFn = httpsCallable(this.functions, "removeNavigationGame");
+      const response = await removeNavigationGameFn({ inviteId: normalizedInviteId });
+      return response.data;
+    } catch (error) {
+      console.error("Error removing waiting navigation game:", error);
+      throw error;
+    }
+  }
+
   private normalizeNavigationStatus(status: unknown): "pending" | "waiting" | "active" | "ended" {
     if (status === "pending" || status === "waiting" || status === "active" || status === "ended") {
       return status;

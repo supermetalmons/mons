@@ -17,6 +17,8 @@ interface NavigationPickerProps {
   isLoadingMoreGames?: boolean;
   hasMoreGames?: boolean;
   onSelectGame?: (inviteId: string) => void;
+  onRemoveGame?: (inviteId: string) => void;
+  removingGameInviteIds?: Set<string>;
   onSelectProblem: (problemId: string) => void;
   onLoadMoreGames?: () => void;
 }
@@ -111,7 +113,16 @@ const NavigationPickerButton = styled.button<{ $isSelected?: boolean }>`
 
 const GameRow = styled(NavigationPickerButton)`
   font-size: 0.8rem;
+  flex: 1;
+  min-width: 0;
   padding: 7px 8px 7px 0;
+`;
+
+const GameRowContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
 `;
 
 const GameEmojiImage = styled.img`
@@ -143,6 +154,52 @@ const GameStatus = styled.span<{ $isSelected?: boolean }>`
 
   @media (prefers-color-scheme: dark) {
     color: ${(props) => (props.$isSelected ? "var(--color-blue-primary-dark)" : "var(--navigationTextMuted)")};
+  }
+`;
+
+const GameRemoveButton = styled.button<{ $isDisabled?: boolean }>`
+  margin-left: 2px;
+  width: 16px;
+  height: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-size: 0.7rem;
+  line-height: 1;
+  border: none;
+  padding: 0;
+  background: transparent;
+  color: var(--navigationTextMuted);
+  opacity: ${(props) => (props.$isDisabled ? 0.55 : 0.9)};
+  cursor: ${(props) => (props.$isDisabled ? "default" : "pointer")};
+  user-select: none;
+  flex-shrink: 0;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background-color: ${(props) => (props.$isDisabled ? "transparent" : "var(--interactiveHoverBackgroundLight)")};
+      color: var(--color-gray-33);
+    }
+  }
+
+  &:active {
+    background-color: ${(props) => (props.$isDisabled ? "transparent" : "var(--interactiveActiveBackgroundLight)")};
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--navigationTextMuted);
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: ${(props) => (props.$isDisabled ? "transparent" : "var(--interactiveHoverBackgroundDark)")};
+        color: var(--color-gray-f0);
+      }
+    }
+
+    &:active {
+      background-color: ${(props) => (props.$isDisabled ? "transparent" : "var(--interactiveActiveBackgroundDark)")};
+    }
   }
 `;
 
@@ -228,6 +285,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   isLoadingMoreGames = false,
   hasMoreGames = false,
   onSelectGame,
+  onRemoveGame,
+  removingGameInviteIds,
   onSelectProblem,
   onLoadMoreGames,
 }) => {
@@ -330,16 +389,38 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     <>
       {gamesToRender.map((game) => {
         const isSelected = selectedGameInviteId === game.inviteId;
+        const canRemove = game.status === "waiting" && !!onRemoveGame;
+        const isRemoving = !!removingGameInviteIds?.has(game.inviteId);
+        const handleRemoveClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+          event.preventDefault();
+          event.stopPropagation();
+          if (!isRemoving) {
+            onRemoveGame?.(game.inviteId);
+          }
+        };
         return (
-          <GameRow key={game.inviteId} $isSelected={isSelected} onClick={() => onSelectGame?.(game.inviteId)}>
-            {typeof game.opponentEmoji === "number" ? (
-              <GameEmojiImage src={emojis.getEmojiUrl(game.opponentEmoji.toString())} alt="" />
-            ) : (
-              <GameEmojiPlaceholder />
+          <GameRowContainer key={game.inviteId}>
+            <GameRow $isSelected={isSelected} onClick={() => onSelectGame?.(game.inviteId)}>
+              {typeof game.opponentEmoji === "number" ? (
+                <GameEmojiImage src={emojis.getEmojiUrl(game.opponentEmoji.toString())} alt="" />
+              ) : (
+                <GameEmojiPlaceholder />
+              )}
+              <GameText>{game.opponentName && game.opponentName !== "" ? game.opponentName : "anon"}</GameText>
+              <GameStatus $isSelected={isSelected}>{getGameStatusLabel(game)}</GameStatus>
+            </GameRow>
+            {canRemove && (
+              <GameRemoveButton
+                type="button"
+                aria-label="Remove waiting game"
+                $isDisabled={isRemoving}
+                disabled={isRemoving}
+                onClick={handleRemoveClick}
+              >
+                ×
+              </GameRemoveButton>
             )}
-            <GameText>{game.opponentName && game.opponentName !== "" ? game.opponentName : "anon"}</GameText>
-            <GameStatus $isSelected={isSelected}>{getGameStatusLabel(game)}</GameStatus>
-          </GameRow>
+          </GameRowContainer>
         );
       })}
     </>

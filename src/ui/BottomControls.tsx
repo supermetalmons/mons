@@ -387,6 +387,7 @@ const BottomControls: React.FC = () => {
   const [navigationFallbackLimit, setNavigationFallbackLimit] = useState(NAVIGATION_GAMES_PAGE_SIZE);
   const [optimisticPendingAutomatchItem, setOptimisticPendingAutomatchItem] = useState<NavigationGameItem | null>(null);
   const [isNavigationFallbackScope, setIsNavigationFallbackScope] = useState(false);
+  const [navigationRemovingInviteIds, setNavigationRemovingInviteIds] = useState<Set<string>>(new Set());
 
   const [isUndoDisabled, setIsUndoDisabled] = useState(true);
   const [waitingStateText, setWaitingStateText] = useState("");
@@ -828,14 +829,20 @@ const BottomControls: React.FC = () => {
     return left.inviteId.localeCompare(right.inviteId);
   }, [getNavigationStatusPriority]);
 
+  const isNavigationGameBeingRemoved = useCallback(
+    (item: NavigationGameItem) => item.status === "waiting" && navigationRemovingInviteIds.has(item.inviteId),
+    [navigationRemovingInviteIds]
+  );
+
   const topNavigationGames = useMemo(() => {
     const merged = navigationProjectedGames.slice();
     if (optimisticPendingAutomatchItem && !merged.some((item) => item.inviteId === optimisticPendingAutomatchItem.inviteId)) {
       merged.push(optimisticPendingAutomatchItem);
     }
-    merged.sort(compareNavigationItems);
-    return merged;
-  }, [compareNavigationItems, navigationProjectedGames, optimisticPendingAutomatchItem]);
+    const visibleItems = merged.filter((item) => !isNavigationGameBeingRemoved(item));
+    visibleItems.sort(compareNavigationItems);
+    return visibleItems;
+  }, [compareNavigationItems, isNavigationGameBeingRemoved, navigationProjectedGames, optimisticPendingAutomatchItem]);
 
   const topNavigationInviteIds = useMemo(() => {
     return new Set(topNavigationGames.map((item) => item.inviteId));
@@ -848,10 +855,10 @@ const BottomControls: React.FC = () => {
         uniqueByInviteId.set(pagedItem.inviteId, pagedItem);
       }
     });
-    const merged = Array.from(uniqueByInviteId.values());
-    merged.sort(compareNavigationItems);
-    return merged;
-  }, [compareNavigationItems, navigationPagedGames, topNavigationInviteIds]);
+    const visibleItems = Array.from(uniqueByInviteId.values()).filter((item) => !isNavigationGameBeingRemoved(item));
+    visibleItems.sort(compareNavigationItems);
+    return visibleItems;
+  }, [compareNavigationItems, isNavigationGameBeingRemoved, navigationPagedGames, topNavigationInviteIds]);
 
   useEffect(() => {
     topNavigationInviteIdsRef.current = topNavigationInviteIds;
@@ -926,6 +933,7 @@ const BottomControls: React.FC = () => {
       setIsNavigationGamesLoading(false);
       setIsNavigationGamesLoadingMore(false);
       setIsNavigationFallbackScope(false);
+      setNavigationRemovingInviteIds(new Set());
       setNavigationHasMoreGames(false);
       setNavigationGamesCursor(null);
       setNavigationFallbackLimit(NAVIGATION_GAMES_PAGE_SIZE);
@@ -1750,6 +1758,60 @@ const BottomControls: React.FC = () => {
     connection.connectToInvite(inviteId);
   };
 
+  const handleNavigationGameRemove = useCallback(
+    (inviteId: string) => {
+      if (isNavigationFallbackScope || !inviteId) {
+        return;
+      }
+      if (navigationRemovingInviteIds.has(inviteId)) {
+        return;
+      }
+
+      const sessionGuard = connection.createSessionGuard();
+      setNavigationRemovingInviteIds((prev) => {
+        if (prev.has(inviteId)) {
+          return prev;
+        }
+        const next = new Set(prev);
+        next.add(inviteId);
+        return next;
+      });
+
+      const clearRemovingFlag = () => {
+        setNavigationRemovingInviteIds((prev) => {
+          if (!prev.has(inviteId)) {
+            return prev;
+          }
+          const next = new Set(prev);
+          next.delete(inviteId);
+          return next;
+        });
+      };
+
+      void connection
+        .removeWaitingNavigationGame(inviteId)
+        .then((result) => {
+          if (!sessionGuard()) {
+            return;
+          }
+
+          if (result && result.ok && !result.skipped) {
+            setNavigationProjectedGames((prev) => prev.filter((item) => !(item.inviteId === inviteId && item.status === "waiting")));
+            setNavigationPagedGames((prev) => prev.filter((item) => !(item.inviteId === inviteId && item.status === "waiting")));
+          }
+
+          clearRemovingFlag();
+        })
+        .catch(() => {
+          if (!sessionGuard()) {
+            return;
+          }
+          clearRemovingFlag();
+        });
+    },
+    [isNavigationFallbackScope, navigationRemovingInviteIds]
+  );
+
   const handleNavigationProblemSelect = (problemId: string) => {
     const selectedProblem = problems.find((item) => item.id === problemId);
     if (!selectedProblem) {
@@ -1908,6 +1970,8 @@ const BottomControls: React.FC = () => {
             isLoadingMoreGames={isNavigationGamesLoadingMore}
             hasMoreGames={navigationHasMoreGames}
             onSelectGame={handleNavigationGameSelect}
+            onRemoveGame={!isNavigationFallbackScope ? handleNavigationGameRemove : undefined}
+            removingGameInviteIds={navigationRemovingInviteIds}
             onSelectProblem={handleNavigationProblemSelect}
             onLoadMoreGames={handleNavigationLoadMoreGames}
           />
