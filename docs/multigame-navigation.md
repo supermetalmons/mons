@@ -156,6 +156,10 @@ Backfill recency policy:
 - if Firestore list read/subscription errors, it falls back to current-login RTDB aggregation
 - if user has no profile id, uses fallback directly
 - fallback scope is explicitly labeled in UI: “Showing games for current login only”
+- warm cache behavior:
+  - top section (items above tutorials) is persisted per profile/login scope in local storage with a 1-year eviction horizon
+  - paged section (items below tutorials) is cached in memory for the current app run only and is not persisted across page reloads
+  - opening navigation hydrates cached rows first, then immediately revalidates from Firestore/fallback so visible content updates quickly
 
 ## 6.2 Optimistic automatch row
 - `automatch` callable now returns:

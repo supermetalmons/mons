@@ -31,6 +31,14 @@ import { getCurrentRouteState } from "../navigation/routeState";
 import { registerBottomControlsTransientUiHandler } from "./uiSession";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 import { problems } from "../content/problems";
+import {
+  NavigationGamesCacheScope,
+  clearNavigationGamesRuntimeCacheScope,
+  readNavigationGamesCacheSnapshot,
+  resolveNavigationGamesCacheScope,
+  writeNavigationGamesPersistedTopCache,
+  writeNavigationGamesRuntimeCache,
+} from "../services/navigationGamesCache";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 const rematchSeriesDigitsFontFamily = 'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace';
@@ -440,7 +448,9 @@ const BottomControls: React.FC = () => {
     finish: null,
   });
   const navigationHasPagedGamesRef = useRef(false);
+  const navigationLoadMoreInFlightRef = useRef(false);
   const topNavigationInviteIdsRef = useRef<Set<string>>(new Set());
+  const navigationCacheScopeRef = useRef<NavigationGamesCacheScope | null>(null);
   const navigationPopupEpochRef = useRef(0);
   const navigationSelectionEpochRef = useRef(0);
   const beginInviteFlowRef = useRef<(options?: { skipSoundInit?: boolean }) => void>(() => {});
@@ -866,6 +876,15 @@ const BottomControls: React.FC = () => {
   }, [topNavigationInviteIds, pagedNavigationGames.length]);
 
   useEffect(() => {
+    const scope = navigationCacheScopeRef.current;
+    if (!scope) {
+      return;
+    }
+    writeNavigationGamesRuntimeCache(scope, topNavigationGames, pagedNavigationGames);
+    writeNavigationGamesPersistedTopCache(scope, topNavigationGames, NAVIGATION_GAMES_PAGE_SIZE);
+  }, [topNavigationGames, pagedNavigationGames]);
+
+  useEffect(() => {
     if (!optimisticPendingAutomatchItem) {
       return;
     }
@@ -873,6 +892,30 @@ const BottomControls: React.FC = () => {
       setOptimisticPendingAutomatchItem(null);
     }
   }, [navigationProjectedGames, navigationPagedGames, optimisticPendingAutomatchItem]);
+
+  const hydrateNavigationGamesFromCache = useCallback(() => {
+    const cacheScope = resolveNavigationGamesCacheScope(storage.getProfileId(""), storage.getLoginId(""));
+    const previousCacheScope = navigationCacheScopeRef.current;
+    if (previousCacheScope && (!cacheScope || previousCacheScope.scopeKey !== cacheScope.scopeKey)) {
+      clearNavigationGamesRuntimeCacheScope(previousCacheScope.scopeKey);
+    }
+    navigationCacheScopeRef.current = cacheScope;
+
+    const hydratedSnapshot = readNavigationGamesCacheSnapshot(cacheScope);
+    setNavigationProjectedGames(hydratedSnapshot.topGames);
+    setNavigationPagedGames(hydratedSnapshot.pagedGames);
+    const hasHydratedPagedGames = hydratedSnapshot.pagedGames.length > 0;
+    navigationHasPagedGamesRef.current = hasHydratedPagedGames;
+
+    const hasProfileScope = cacheScope?.kind === "profile";
+    setIsNavigationFallbackScope(!hasProfileScope);
+
+    return {
+      cacheScope,
+      localProfileId: hasProfileScope && cacheScope ? cacheScope.scopeId : "",
+      hasHydratedPagedGames,
+    };
+  }, []);
 
   useEffect(() => {
     let disposed = false;
@@ -885,6 +928,7 @@ const BottomControls: React.FC = () => {
       setIsNavigationGamesLoading(false);
     };
     const stopNavigationLoadMore = () => {
+      navigationLoadMoreInFlightRef.current = false;
       setIsNavigationGamesLoadingMore(false);
     };
     const stopAllNavigationLoading = () => {
@@ -895,8 +939,6 @@ const BottomControls: React.FC = () => {
     const loadFallbackGames = (maxItems: number) => {
       setIsNavigationFallbackScope(true);
       setNavigationGamesCursor(null);
-      setNavigationPagedGames([]);
-      navigationHasPagedGamesRef.current = false;
       stopNavigationLoadMore();
       const requestedLimit = maxItems + 1;
       void connection
@@ -912,6 +954,10 @@ const BottomControls: React.FC = () => {
           const hasMore = items.length > maxItems;
           const visibleItems = hasMore ? items.slice(0, maxItems) : items;
           setNavigationProjectedGames(visibleItems);
+          if (!hasMore) {
+            setNavigationPagedGames([]);
+            navigationHasPagedGamesRef.current = false;
+          }
           setNavigationHasMoreGames(hasMore);
           stopNavigationInitialLoading();
         })
@@ -931,15 +977,13 @@ const BottomControls: React.FC = () => {
 
     if (!isNavigationPopupVisible) {
       setIsNavigationGamesLoading(false);
+      navigationLoadMoreInFlightRef.current = false;
       setIsNavigationGamesLoadingMore(false);
       setIsNavigationFallbackScope(false);
       setNavigationRemovingInviteIds(new Set());
       setNavigationHasMoreGames(false);
       setNavigationGamesCursor(null);
       setNavigationFallbackLimit(NAVIGATION_GAMES_PAGE_SIZE);
-      setNavigationProjectedGames([]);
-      setNavigationPagedGames([]);
-      navigationHasPagedGamesRef.current = false;
       return () => {
         disposed = true;
         navigationPopupEpochRef.current += 1;
@@ -950,15 +994,73 @@ const BottomControls: React.FC = () => {
       };
     }
 
+    const { localProfileId, hasHydratedPagedGames } = hydrateNavigationGamesFromCache();
+    let didAttemptWarmPagedRefresh = false;
+
+    const maybeWarmRefreshPagedGames = (cursor: NavigationGamesPageCursor) => {
+      if (didAttemptWarmPagedRefresh || !hasHydratedPagedGames || !cursor) {
+        return;
+      }
+      if (navigationLoadMoreInFlightRef.current) {
+        return;
+      }
+      didAttemptWarmPagedRefresh = true;
+      navigationLoadMoreInFlightRef.current = true;
+
+      void connection
+        .getProfileGamesFirestorePage(NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE, cursor)
+        .then((page) => {
+          if (!isPopupEpochActive()) {
+            return;
+          }
+          if (!sessionGuard()) {
+            return;
+          }
+
+          setNavigationPagedGames((previousItems) => {
+            const uniqueByInviteId = new Map<string, NavigationGameItem>();
+
+            page.items.forEach((item) => {
+              if (!topNavigationInviteIdsRef.current.has(item.inviteId)) {
+                uniqueByInviteId.set(item.inviteId, item);
+              }
+            });
+
+            if (page.hasMore) {
+              previousItems.forEach((item) => {
+                if (!topNavigationInviteIdsRef.current.has(item.inviteId) && !uniqueByInviteId.has(item.inviteId)) {
+                  uniqueByInviteId.set(item.inviteId, item);
+                }
+              });
+            }
+
+            const mergedItems = Array.from(uniqueByInviteId.values());
+            navigationHasPagedGamesRef.current = mergedItems.some((item) => !topNavigationInviteIdsRef.current.has(item.inviteId));
+            return mergedItems;
+          });
+
+          setNavigationGamesCursor(page.nextCursor);
+          setNavigationHasMoreGames(page.hasMore);
+        })
+        .catch(() => {
+          if (!isPopupEpochActive()) {
+            return;
+          }
+          if (!sessionGuard()) {
+            return;
+          }
+        })
+        .finally(() => {
+          navigationLoadMoreInFlightRef.current = false;
+        });
+    };
+
     setIsNavigationGamesLoading(true);
     setIsNavigationGamesLoadingMore(false);
-    const localProfileId = storage.getProfileId("");
 
     if (localProfileId !== "") {
       setIsNavigationFallbackScope(false);
       setNavigationFallbackLimit(NAVIGATION_GAMES_PAGE_SIZE);
-      setNavigationPagedGames([]);
-      navigationHasPagedGamesRef.current = false;
       unsubscribe = connection.subscribeProfileGamesFirestore(
         NAVIGATION_GAMES_PAGE_SIZE,
         (items) => {
@@ -1003,6 +1105,13 @@ const BottomControls: React.FC = () => {
             navigationHasPagedGamesRef.current = false;
             setNavigationGamesCursor(pageMeta.nextCursor);
             setNavigationHasMoreGames(false);
+          } else {
+            setNavigationGamesCursor((previousCursor) => previousCursor ?? pageMeta.nextCursor);
+            setNavigationHasMoreGames(true);
+          }
+
+          if (pageMeta.hasMore && pageMeta.nextCursor) {
+            maybeWarmRefreshPagedGames(pageMeta.nextCursor);
           }
         }
       );
@@ -1019,7 +1128,7 @@ const BottomControls: React.FC = () => {
         unsubscribe = null;
       }
     };
-  }, [isNavigationPopupVisible]);
+  }, [hydrateNavigationGamesFromCache, isNavigationPopupVisible]);
 
   useEffect(() => {
     return () => {
@@ -1745,6 +1854,7 @@ const BottomControls: React.FC = () => {
   const handleNavigationButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
     if (!isNavigationPopupVisible) {
       closeMenuAndInfoIfAny();
+      hydrateNavigationGamesFromCache();
     } else {
       navigationSelectionEpochRef.current += 1;
     }
@@ -1837,16 +1947,18 @@ const BottomControls: React.FC = () => {
   };
 
   const handleNavigationLoadMoreGames = () => {
-    if (!isNavigationPopupVisible || !navigationHasMoreGames || isNavigationGamesLoading || isNavigationGamesLoadingMore) {
+    if (!isNavigationPopupVisible || !navigationHasMoreGames || isNavigationGamesLoading || isNavigationGamesLoadingMore || navigationLoadMoreInFlightRef.current) {
       return;
     }
 
+    navigationLoadMoreInFlightRef.current = true;
     setIsNavigationGamesLoadingMore(true);
     const localProfileId = storage.getProfileId("");
     const sessionGuard = connection.createSessionGuard();
     const popupEpoch = navigationPopupEpochRef.current;
     const isCallbackActive = () => navigationPopupEpochRef.current === popupEpoch;
     const stopLoadMore = () => {
+      navigationLoadMoreInFlightRef.current = false;
       setIsNavigationGamesLoadingMore(false);
     };
 
@@ -1862,6 +1974,7 @@ const BottomControls: React.FC = () => {
         .getProfileGamesFirestorePage(NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE, nextCursor)
         .then((page) => {
           if (!isCallbackActive()) {
+            stopLoadMore();
             return;
           }
           if (!sessionGuard()) {
@@ -1882,6 +1995,7 @@ const BottomControls: React.FC = () => {
         })
         .catch(() => {
           if (!isCallbackActive()) {
+            stopLoadMore();
             return;
           }
           if (!sessionGuard()) {
@@ -1901,6 +2015,7 @@ const BottomControls: React.FC = () => {
       .getCurrentLoginFallbackGames(requestedLimit)
       .then((items) => {
         if (!isCallbackActive()) {
+          stopLoadMore();
           return;
         }
         if (!sessionGuard()) {
@@ -1923,6 +2038,7 @@ const BottomControls: React.FC = () => {
       })
       .catch(() => {
         if (!isCallbackActive()) {
+          stopLoadMore();
           return;
         }
         if (!sessionGuard()) {

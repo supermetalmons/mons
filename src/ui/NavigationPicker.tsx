@@ -413,8 +413,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const completedProblemsSet = getCompletedProblemIds();
   const firstUncompletedIndex = problems.findIndex((problem) => !completedProblemsSet.has(problem.id));
 
-  const shouldRenderTopGamesSection = !isGamesLoading && topGames.length > 0;
-  const shouldRenderPagedGamesSection = !isGamesLoading && pagedGames.length > 0;
+  const shouldRenderTopGamesSection = topGames.length > 0;
+  const shouldRenderPagedGamesSection = pagedGames.length > 0;
   const shouldRenderLearnSection = true;
   const hasScrollableContent = shouldRenderLearnSection || shouldRenderTopGamesSection || shouldRenderPagedGamesSection;
 
