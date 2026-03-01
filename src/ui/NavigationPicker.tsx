@@ -284,6 +284,7 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
 `;
 
 const MIN_AUTO_LOAD_NEXT_PAGE_THRESHOLD_PX = 640;
+const MIN_REASONABLE_EPOCH_MS = Date.UTC(2000, 0, 1);
 
 const NavigationPicker: React.FC<NavigationPickerProps> = ({
   showsHomeNavigation,
@@ -383,7 +384,21 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
       return "active";
     }
     if (game.status === "ended") {
-      return "ended";
+      const lastUpdateMs = Number.isFinite(game.listSortAtMs) ? Math.floor(game.listSortAtMs) : 0;
+      if (lastUpdateMs < MIN_REASONABLE_EPOCH_MS) {
+        return "long ago";
+      }
+      const date = new Date(lastUpdateMs);
+      if (Number.isNaN(date.getTime())) {
+        return "long ago";
+      }
+      const now = new Date();
+      const includeYear = date.getFullYear() !== now.getFullYear();
+      return date.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        ...(includeYear ? { year: "numeric" } : {}),
+      });
     }
     return "waiting";
   };
