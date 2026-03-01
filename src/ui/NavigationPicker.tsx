@@ -36,7 +36,7 @@ const NavigationPickerContainer = styled.div`
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 7pt;
-  padding: 8px;
+  padding: 6px 6px 8px;
   gap: 0;
   z-index: 7;
 
@@ -50,17 +50,45 @@ const NavigationPickerContainer = styled.div`
 `;
 
 const ScrollableList = styled.div`
-  overflow-y: auto;
+  overflow-y: overlay;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   flex-grow: 1;
+  padding-right: 2px;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(128, 128, 128, 0.25) transparent;
+
+  @supports not (overflow-y: overlay) {
+    overflow-y: auto;
+  }
+
+  &::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(128, 128, 128, 0.25);
+    border-radius: 3px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
+
+    &::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+    }
+  }
 `;
 
 const SectionSeparator = styled.div`
   height: 1px;
   background-color: var(--navigationTextMuted);
   opacity: 0.12;
-  margin: 6px -8px;
+  margin: 6px 4px;
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--color-gray-a0);
@@ -69,12 +97,11 @@ const SectionSeparator = styled.div`
 `;
 
 const NavigationPickerButton = styled.button<{ $isSelected?: boolean }>`
-  background: ${(props) => (props.$isSelected ? "rgba(117, 187, 255, 0.28)" : "transparent")};
-  box-shadow: ${(props) => (props.$isSelected ? "inset 0 0 0 1px rgba(73, 156, 255, 0.44)" : "none")};
+  background: ${(props) => (props.$isSelected ? "rgba(117, 187, 255, 0.22)" : "transparent")};
   border-radius: 6px;
   font-size: 15px;
-  border: none;
-  padding: 6px 15px 6px 0;
+  border: ${(props) => (props.$isSelected ? "1px solid rgba(73, 156, 255, 0.4)" : "1px solid transparent")};
+  padding: 6px 7px;
   cursor: pointer;
   text-align: left;
   color: var(--color-gray-33);
@@ -82,31 +109,31 @@ const NavigationPickerButton = styled.button<{ $isSelected?: boolean }>`
   display: flex;
   align-items: center;
   gap: 5px;
-  font-weight: ${(props) => (props.$isSelected ? 600 : 400)};
+  font-weight: ${(props) => (props.$isSelected ? 550 : 400)};
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.$isSelected ? "rgba(117, 187, 255, 0.36)" : "var(--interactiveHoverBackgroundLight)")};
+      background-color: ${(props) => (props.$isSelected ? "rgba(117, 187, 255, 0.30)" : "var(--interactiveHoverBackgroundLight)")};
     }
   }
 
   &:active {
-    background-color: ${(props) => (props.$isSelected ? "rgba(117, 187, 255, 0.46)" : "var(--interactiveActiveBackgroundLight)")};
+    background-color: ${(props) => (props.$isSelected ? "rgba(117, 187, 255, 0.38)" : "var(--interactiveActiveBackgroundLight)")};
   }
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-gray-f0);
-    background: ${(props) => (props.$isSelected ? "rgba(75, 150, 255, 0.3)" : "transparent")};
-    box-shadow: ${(props) => (props.$isSelected ? "inset 0 0 0 1px rgba(104, 181, 255, 0.52)" : "none")};
+    background: ${(props) => (props.$isSelected ? "rgba(75, 150, 255, 0.24)" : "transparent")};
+    border-color: ${(props) => (props.$isSelected ? "rgba(104, 181, 255, 0.45)" : "transparent")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.$isSelected ? "rgba(75, 150, 255, 0.4)" : "var(--interactiveHoverBackgroundDark)")};
+        background-color: ${(props) => (props.$isSelected ? "rgba(75, 150, 255, 0.34)" : "var(--interactiveHoverBackgroundDark)")};
       }
     }
 
     &:active {
-      background-color: ${(props) => (props.$isSelected ? "rgba(75, 150, 255, 0.5)" : "var(--interactiveActiveBackgroundDark)")};
+      background-color: ${(props) => (props.$isSelected ? "rgba(75, 150, 255, 0.42)" : "var(--interactiveActiveBackgroundDark)")};
     }
   }
 `;
@@ -115,7 +142,6 @@ const GameRow = styled(NavigationPickerButton)`
   font-size: 0.8rem;
   flex: 1;
   min-width: 0;
-  padding: 7px 8px 7px 0;
 `;
 
 const GameRowContainer = styled.div`
@@ -123,6 +149,7 @@ const GameRowContainer = styled.div`
   align-items: center;
   gap: 4px;
   width: 100%;
+  min-width: 0;
 `;
 
 const GameEmojiImage = styled.img`
@@ -150,9 +177,9 @@ const QueuePrimaryContent = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 0.72rem;
+  font-size: 0.66rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  letter-spacing: 0.01em;
   text-transform: uppercase;
   color: var(--navigationTextMuted);
 `;
@@ -219,7 +246,7 @@ const CompletedIcon = styled(FaCheck)`
   font-size: 0.5rem;
   margin-left: auto;
   flex-shrink: 0;
-  padding-left: 4pt;
+  padding-left: 4px;
 `;
 
 const UncompletedIcon = styled(FaCircle)`
@@ -227,7 +254,7 @@ const UncompletedIcon = styled(FaCircle)`
   font-size: 0.4rem;
   margin-left: auto;
   flex-shrink: 0;
-  padding-left: 7pt;
+  padding-left: 4px;
   overflow: visible;
 `;
 
