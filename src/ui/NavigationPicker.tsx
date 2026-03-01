@@ -146,6 +146,17 @@ const GameText = styled.span`
   text-overflow: ellipsis;
 `;
 
+const QueuePrimaryContent = styled.span`
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 0.72rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+  color: var(--navigationTextMuted);
+`;
+
 const GameStatus = styled.span<{ $isSelected?: boolean }>`
   margin-left: auto;
   font-size: 0.52rem;
@@ -377,6 +388,13 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     return "waiting";
   };
 
+  const getQueuePrimaryLabel = (game: NavigationGameItem): string => {
+    if (game.status === "pending") {
+      return "Automatching...";
+    }
+    return "Waiting for opponent";
+  };
+
   const completedProblemsSet = getCompletedProblemIds();
   const firstUncompletedIndex = problems.findIndex((problem) => !completedProblemsSet.has(problem.id));
 
@@ -389,6 +407,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     <>
       {gamesToRender.map((game) => {
         const isSelected = selectedGameInviteId === game.inviteId;
+        const isQueueStatus = game.status === "waiting" || game.status === "pending";
         const canRemove = game.status === "waiting" && !!onRemoveGame;
         const isRemoving = !!removingGameInviteIds?.has(game.inviteId);
         const handleRemoveClick = (event: React.MouseEvent<HTMLButtonElement>) => {
@@ -401,13 +420,19 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
         return (
           <GameRowContainer key={game.inviteId}>
             <GameRow $isSelected={isSelected} onClick={() => onSelectGame?.(game.inviteId)}>
-              {typeof game.opponentEmoji === "number" ? (
-                <GameEmojiImage src={emojis.getEmojiUrl(game.opponentEmoji.toString())} alt="" />
+              {isQueueStatus ? (
+                <QueuePrimaryContent>{getQueuePrimaryLabel(game)}</QueuePrimaryContent>
               ) : (
-                <GameEmojiPlaceholder />
+                <>
+                  {typeof game.opponentEmoji === "number" ? (
+                    <GameEmojiImage src={emojis.getEmojiUrl(game.opponentEmoji.toString())} alt="" />
+                  ) : (
+                    <GameEmojiPlaceholder />
+                  )}
+                  <GameText>{game.opponentName && game.opponentName !== "" ? game.opponentName : "anon"}</GameText>
+                  <GameStatus $isSelected={isSelected}>{getGameStatusLabel(game)}</GameStatus>
+                </>
               )}
-              <GameText>{game.opponentName && game.opponentName !== "" ? game.opponentName : "anon"}</GameText>
-              <GameStatus $isSelected={isSelected}>{getGameStatusLabel(game)}</GameStatus>
             </GameRow>
             {canRemove && (
               <GameRemoveButton
