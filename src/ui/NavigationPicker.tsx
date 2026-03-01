@@ -445,7 +445,11 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                     <GameEmojiPlaceholder />
                   )}
                   <GameText>{game.opponentName && game.opponentName !== "" ? game.opponentName : "anon"}</GameText>
-                  <GameStatus $isSelected={isSelected}>{getGameStatusLabel(game)}</GameStatus>
+                  {game.status === "active" ? (
+                    <UncompletedIcon />
+                  ) : (
+                    <GameStatus $isSelected={isSelected}>{getGameStatusLabel(game)}</GameStatus>
+                  )}
                 </>
               )}
             </GameRow>
