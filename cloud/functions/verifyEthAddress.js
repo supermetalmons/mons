@@ -13,14 +13,11 @@ exports.verifyEthAddress = onCall(async (request) => {
   const requestEmoji = requestData.emoji ?? 1;
   const requestAura = requestData.aura ?? null;
   const opId = requestData.opId;
-  const intentId = requestData.intentId;
-  if (!intentId || typeof intentId !== "string") {
-    throw new HttpsError("invalid-argument", "intentId is required.");
-  }
+  const intentId = typeof requestData.intentId === "string" ? requestData.intentId : "";
   if (!message || !signature) {
     throw new HttpsError("invalid-argument", "message and signature are required.");
   }
-  const resolvedOpId = opId || (typeof intentId === "string" && intentId !== "" ? `intent:${intentId}` : undefined);
+  const resolvedOpId = opId || (intentId ? `intent:${intentId}` : undefined);
   const replay = await peekAuthOpReplay({
     opId: resolvedOpId,
     kind: "verify",
@@ -46,14 +43,17 @@ exports.verifyEthAddress = onCall(async (request) => {
   }
   const address = fields && fields.data ? fields.data.address : null;
   const uid = request.auth.uid;
-  const intent = await consumeAuthIntent({
-    uid,
-    method: "eth",
-    intentId,
-  });
-  const expectedNonce = intent && typeof intent.nonce === "string" ? intent.nonce : "";
-  if (!expectedNonce) {
-    throw new HttpsError("failed-precondition", "intent-invalid");
+  let expectedNonce = uid;
+  if (intentId) {
+    const intent = await consumeAuthIntent({
+      uid,
+      method: "eth",
+      intentId,
+    });
+    expectedNonce = intent && typeof intent.nonce === "string" ? intent.nonce : "";
+    if (!expectedNonce) {
+      throw new HttpsError("failed-precondition", "intent-invalid");
+    }
   }
 
   if (!fields.success || fields.data.nonce !== expectedNonce || fields.data.statement !== "mons ftw") {

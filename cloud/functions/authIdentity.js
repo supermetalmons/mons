@@ -266,11 +266,32 @@ const validateMergeMethodConflict = (targetData, sourceData) => {
 };
 
 const ensureProfileClaimAndRtdb = async (uid, profileId) => {
-  const db = admin.database();
-  await db.ref(`players/${uid}/profile`).set(profileId);
-  const userRecord = await admin.auth().getUser(uid);
-  const claims = { ...(userRecord.customClaims || {}), profileId };
-  await admin.auth().setCustomUserClaims(uid, claims);
+  const normalizedUid = toCleanString(uid);
+  const normalizedProfileId = toCleanString(profileId);
+  if (!normalizedUid || !normalizedProfileId) {
+    throw new HttpsError("invalid-argument", "uid and profileId are required.");
+  }
+  const auth = admin.auth();
+  const profileRef = admin.database().ref(`players/${normalizedUid}/profile`);
+  const [profileSnapshot, userRecord] = await Promise.all([profileRef.once("value"), auth.getUser(normalizedUid)]);
+  const currentProfileId = toCleanString(profileSnapshot.val());
+  const currentClaims = userRecord.customClaims || {};
+  const currentClaimProfileId = toCleanString(currentClaims.profileId);
+  const writes = [];
+  if (currentProfileId !== normalizedProfileId) {
+    writes.push(profileRef.set(normalizedProfileId));
+  }
+  if (currentClaimProfileId !== normalizedProfileId) {
+    writes.push(
+      auth.setCustomUserClaims(normalizedUid, {
+        ...currentClaims,
+        profileId: normalizedProfileId,
+      })
+    );
+  }
+  if (writes.length > 0) {
+    await Promise.all(writes);
+  }
 };
 
 const readProfileByLoginUid = async (uid) => {
@@ -1694,13 +1715,27 @@ const syncProfileClaimForUid = async (uid) => {
   const profileSnapshot = await readProfileByLoginUid(uid);
   if (!profileSnapshot) {
     try {
-      const userRecord = await admin.auth().getUser(uid);
-      const claims = { ...(userRecord.customClaims || {}) };
-      if (Object.prototype.hasOwnProperty.call(claims, "profileId")) {
-        delete claims.profileId;
+      const normalizedUid = toCleanString(uid);
+      if (normalizedUid) {
+        const auth = admin.auth();
+        const profileRef = admin.database().ref(`players/${normalizedUid}/profile`);
+        const [userRecord, profileLinkSnapshot] = await Promise.all([auth.getUser(normalizedUid), profileRef.once("value")]);
+        const claims = { ...(userRecord.customClaims || {}) };
+        const hasProfileClaim = Object.prototype.hasOwnProperty.call(claims, "profileId");
+        if (hasProfileClaim) {
+          delete claims.profileId;
+        }
+        const writes = [];
+        if (hasProfileClaim) {
+          writes.push(auth.setCustomUserClaims(normalizedUid, claims));
+        }
+        if (profileLinkSnapshot.exists()) {
+          writes.push(profileRef.remove());
+        }
+        if (writes.length > 0) {
+          await Promise.all(writes);
+        }
       }
-      await admin.auth().setCustomUserClaims(uid, claims);
-      await admin.database().ref(`players/${uid}/profile`).remove();
     } catch {}
     return {
       ok: true,

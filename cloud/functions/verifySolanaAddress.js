@@ -13,15 +13,12 @@ exports.verifySolanaAddress = onCall(async (request) => {
   const signatureStr = typeof requestData.signature === "string" ? requestData.signature : "";
   const requestEmoji = requestData.emoji ?? 1;
   const requestAura = requestData.aura ?? null;
-  const intentId = requestData.intentId;
+  const intentId = typeof requestData.intentId === "string" ? requestData.intentId : "";
   const opId = requestData.opId;
-  if (!intentId || typeof intentId !== "string") {
-    throw new HttpsError("invalid-argument", "intentId is required.");
-  }
   if (!address || !signatureStr) {
     throw new HttpsError("invalid-argument", "address and signature are required.");
   }
-  const resolvedOpId = opId || (typeof intentId === "string" && intentId !== "" ? `intent:${intentId}` : undefined);
+  const resolvedOpId = opId || (intentId ? `intent:${intentId}` : undefined);
   const uid = request.auth.uid;
   const replay = await peekAuthOpReplay({
     opId: resolvedOpId,
@@ -32,14 +29,17 @@ exports.verifySolanaAddress = onCall(async (request) => {
   if (replay) {
     return replay;
   }
-  const intent = await consumeAuthIntent({
-    uid,
-    method: "sol",
-    intentId,
-  });
-  const expectedNonce = intent && typeof intent.nonce === "string" ? intent.nonce : "";
-  if (!expectedNonce) {
-    throw new HttpsError("failed-precondition", "intent-invalid");
+  let expectedNonce = uid;
+  if (intentId) {
+    const intent = await consumeAuthIntent({
+      uid,
+      method: "sol",
+      intentId,
+    });
+    expectedNonce = intent && typeof intent.nonce === "string" ? intent.nonce : "";
+    if (!expectedNonce) {
+      throw new HttpsError("failed-precondition", "intent-invalid");
+    }
   }
   const targetMessage = `Sign in mons.link with Solana nonce ${expectedNonce}`;
 

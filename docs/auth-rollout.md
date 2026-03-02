@@ -64,7 +64,7 @@ node preflightAuthAudit.js --project mons-link --out /tmp/auth_preflight_report.
   - `AUTH_DISABLE_APPLE_VERIFY=true`
   - `AUTH_DISABLE_UNLINK=true`
   - `AUTH_DISABLE_MERGE=true`
-- Note: ETH/SOL verification now requires `intentId` (legacy nonce-only verification is removed). Keep backend+frontend rollout tightly coordinated so users are on the new web bundle.
+- Note: ETH/SOL verification accepts both `intentId` and legacy UID-nonce sign-in during transition. Keep backend+frontend rollout coordinated and remove legacy fallback in a follow-up cleanup release.
 - Deploy functions from `/Users/ivan/Developer/mons/link/cloud`:
 ```bash
 firebase deploy --only functions --project mons-link
