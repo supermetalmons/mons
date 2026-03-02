@@ -7,11 +7,14 @@ declare global {
 let appleScriptPromise: Promise<void> | null = null;
 
 const APPLE_SCRIPT_SRC = "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
-const APPLE_CLIENT_ID = "link.mons";
-const APPLE_REDIRECT_URI = "https://mons.link";
+const APPLE_CLIENT_ID = (process.env.REACT_APP_APPLE_CLIENT_ID || "link.mons").trim();
+const APPLE_REDIRECT_URI = (process.env.REACT_APP_APPLE_REDIRECT_URI || "").trim();
 const APPLE_PENDING_INTENTS_STORAGE_KEY = "appleIntentByStateV1";
 const APPLE_PENDING_INTENT_MAX_ITEMS = 20;
 const APPLE_PENDING_INTENT_MAX_AGE_MS = 15 * 60 * 1000;
+const APPLE_DEFAULT_REDIRECT_URI = "https://mons.link";
+const APPLE_STATE_ENVELOPE_PREFIX = "apple.v1.";
+const APPLE_CALLBACK_PARAM_KEYS = ["state", "id_token", "error", "error_description", "code", "user"] as const;
 
 type ApplePendingIntentRecord = {
   state: string;
@@ -27,7 +30,92 @@ type AppleRedirectResult = {
   consentSource: string;
 };
 
+type AppleStateEnvelope = {
+  stateToken: string;
+  intentId: string;
+  consentSource: string;
+  expiresAtMs: number;
+};
+
+type AppleCallbackParams = {
+  state: string;
+  idToken: string;
+  error: string;
+  errorDescription: string;
+  code: string;
+};
+
 let pendingAppleRedirectResult: AppleRedirectResult | null = null;
+
+const encodeBase64Url = (value: string): string => {
+  if (typeof window === "undefined" || typeof window.btoa !== "function") {
+    return "";
+  }
+  try {
+    return window
+      .btoa(value)
+      .replace(/\+/g, "-")
+      .replace(/\//g, "_")
+      .replace(/=+$/g, "");
+  } catch {
+    return "";
+  }
+};
+
+const decodeBase64Url = (value: string): string => {
+  if (typeof window === "undefined" || typeof window.atob !== "function") {
+    return "";
+  }
+  const normalized = value.replace(/-/g, "+").replace(/_/g, "/");
+  const padding = normalized.length % 4 === 0 ? "" : "=".repeat(4 - (normalized.length % 4));
+  try {
+    return window.atob(normalized + padding);
+  } catch {
+    return "";
+  }
+};
+
+const buildAppleStateEnvelope = (record: ApplePendingIntentRecord): string => {
+  const payload = {
+    state: record.state,
+    intentId: record.intentId,
+    consentSource: record.consentSource,
+    expiresAtMs: record.expiresAtMs,
+  };
+  const encoded = encodeBase64Url(JSON.stringify(payload));
+  if (!encoded) {
+    return record.state;
+  }
+  return `${APPLE_STATE_ENVELOPE_PREFIX}${encoded}`;
+};
+
+const parseAppleStateEnvelope = (state: string): AppleStateEnvelope | null => {
+  if (!state || !state.startsWith(APPLE_STATE_ENVELOPE_PREFIX)) {
+    return null;
+  }
+  const payloadRaw = decodeBase64Url(state.slice(APPLE_STATE_ENVELOPE_PREFIX.length));
+  if (!payloadRaw) {
+    return null;
+  }
+  try {
+    const parsed = JSON.parse(payloadRaw);
+    const stateToken = typeof parsed?.state === "string" ? parsed.state : "";
+    const intentId = typeof parsed?.intentId === "string" ? parsed.intentId : "";
+    const consentSource = typeof parsed?.consentSource === "string" ? parsed.consentSource : "signin";
+    const expiresAtMs = typeof parsed?.expiresAtMs === "number" ? parsed.expiresAtMs : Number(parsed?.expiresAtMs);
+    if (!stateToken || !intentId || !Number.isFinite(expiresAtMs)) {
+      return null;
+    }
+    return {
+      stateToken,
+      intentId,
+      consentSource,
+      expiresAtMs: Math.floor(expiresAtMs),
+    };
+  } catch {
+    return null;
+  }
+};
 
 const loadAppleScript = async (): Promise<void> => {
   if (typeof window === "undefined") {
@@ -110,7 +198,13 @@ const getAppleClientId = (): string => {
 };
 
 const getAppleRedirectUri = (): string => {
-  return APPLE_REDIRECT_URI;
+  if (APPLE_REDIRECT_URI !== "") {
+    return APPLE_REDIRECT_URI;
+  }
+  if (typeof window !== "undefined" && window.location && window.location.origin) {
+    return window.location.origin;
+  }
+  return APPLE_DEFAULT_REDIRECT_URI;
 };
 
 const getPendingAppleIntentStores = (): Storage[] => {
@@ -261,14 +355,78 @@ const shouldUseRedirectFlow = (): boolean => {
   return /iP(hone|ad|od)/.test(ua) || (platform === "MacIntel" && maxTouchPoints > 1);
 };
 
-const clearAppleCallbackHash = (): void => {
+const parseAppleCallbackParamsFromRaw = (raw: string): AppleCallbackParams | null => {
+  if (!raw) {
+    return null;
+  }
+  const params = new URLSearchParams(raw);
+  const state = (params.get("state") || "").trim();
+  const idToken = (params.get("id_token") || "").trim();
+  const error = (params.get("error") || "").trim();
+  const errorDescription = (params.get("error_description") || "").trim();
+  const code = (params.get("code") || "").trim();
+  const hasState = state !== "";
+  const hasCodeForKnownAppleState = code !== "" && state.startsWith(APPLE_STATE_ENVELOPE_PREFIX);
+  const hasAppleSignal = hasState && (idToken !== "" || error !== "" || params.has("user") || hasCodeForKnownAppleState);
+  if (!hasAppleSignal) {
+    return null;
+  }
+  return {
+    state,
+    idToken,
+    error,
+    errorDescription,
+    code,
+  };
+};
+
+const readAppleCallbackParams = (): AppleCallbackParams | null => {
+  if (typeof window === "undefined") {
+    return null;
+  }
+  const hashRaw = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
+  const fromHash = parseAppleCallbackParamsFromRaw(hashRaw);
+  if (fromHash) {
+    return fromHash;
+  }
+  const searchRaw = window.location.search.startsWith("?") ? window.location.search.slice(1) : window.location.search;
+  return parseAppleCallbackParamsFromRaw(searchRaw);
+};
+
+const clearAppleCallbackParams = (): void => {
   if (typeof window === "undefined") {
     return;
   }
-  if (!window.location.hash) {
+  const currentUrl = new URL(window.location.href);
+  let didChange = false;
+  APPLE_CALLBACK_PARAM_KEYS.forEach((key) => {
+    if (currentUrl.searchParams.has(key)) {
+      didChange = true;
+      currentUrl.searchParams.delete(key);
+    }
+  });
+
+  if (currentUrl.hash) {
+    const hashRaw = currentUrl.hash.startsWith("#") ? currentUrl.hash.slice(1) : currentUrl.hash;
+    const hashParams = new URLSearchParams(hashRaw);
+    let hashChanged = false;
+    APPLE_CALLBACK_PARAM_KEYS.forEach((key) => {
+      if (hashParams.has(key)) {
+        hashChanged = true;
+        hashParams.delete(key);
+      }
+    });
+    if (hashChanged) {
+      didChange = true;
+      const nextHash = hashParams.toString();
+      currentUrl.hash = nextHash ? `#${nextHash}` : "";
+    }
+  }
+
+  if (!didChange) {
     return;
   }
-  const cleanUrl = `${window.location.pathname}${window.location.search}`;
+  const cleanUrl = `${currentUrl.pathname}${currentUrl.search}${currentUrl.hash}`;
   window.history.replaceState({}, document.title, cleanUrl);
 };
 
@@ -279,38 +437,39 @@ export const consumeAppleRedirectResult = (): AppleRedirectResult | null => {
   if (pendingAppleRedirectResult) {
     return pendingAppleRedirectResult;
   }
-  const hashRaw = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
-  if (!hashRaw) {
+  const callback = readAppleCallbackParams();
+  if (!callback) {
     return null;
   }
-  const params = new URLSearchParams(hashRaw);
-  const state = (params.get("state") || "").trim();
-  const idToken = (params.get("id_token") || "").trim();
-  const error = (params.get("error") || "").trim();
-  const errorDescription = (params.get("error_description") || "").trim();
-  const looksLikeAppleResponse = idToken !== "" || error !== "";
-  if (!looksLikeAppleResponse) {
-    return null;
-  }
-  clearAppleCallbackHash();
+  clearAppleCallbackParams();
+  const { state, idToken, error, errorDescription, code } = callback;
   if (!state) {
     throw new Error("Apple sign in returned without state. Please try again.");
   }
   const pending = takePendingAppleIntentRecord(state);
+  const stateEnvelope = parseAppleStateEnvelope(state);
+  const resolvedIntentId = pending?.intentId || stateEnvelope?.intentId || "";
+  const resolvedConsentSource = pending?.consentSource || stateEnvelope?.consentSource || "signin";
   if (error) {
     const details = errorDescription ? ` (${errorDescription})` : "";
     throw new Error(`Apple sign in failed: ${error}${details}`);
   }
-  if (!pending) {
+  if (!resolvedIntentId) {
+    throw new Error("Apple sign in session expired. Please try again.");
+  }
+  if (stateEnvelope && stateEnvelope.expiresAtMs <= Date.now()) {
     throw new Error("Apple sign in session expired. Please try again.");
   }
   if (!idToken) {
+    if (code) {
+      throw new Error("Apple sign in returned code without id_token.");
+    }
     throw new Error("Apple sign in did not return id_token.");
   }
   pendingAppleRedirectResult = {
     idToken,
-    intentId: pending.intentId,
-    consentSource: pending.consentSource,
+    intentId: resolvedIntentId,
+    consentSource: resolvedConsentSource,
   };
   return pendingAppleRedirectResult;
 };
@@ -335,13 +494,19 @@ export async function signInWithApplePopup({
   await loadAppleScript();
   const clientId = getAppleClientId();
   const redirectURI = getAppleRedirectUri();
-
-  storePendingAppleIntentRecord({
+  const nowMs = Date.now();
+  const pendingRecord: ApplePendingIntentRecord = {
     state,
     intentId,
     consentSource,
-    createdAtMs: Date.now(),
-    expiresAtMs: Number.isFinite(expiresAtMs) ? Math.floor(expiresAtMs) : Date.now() + APPLE_PENDING_INTENT_MAX_AGE_MS,
+    createdAtMs: nowMs,
+    expiresAtMs: Number.isFinite(expiresAtMs) ? Math.floor(expiresAtMs) : nowMs + APPLE_PENDING_INTENT_MAX_AGE_MS,
+  };
+  const resolvedState = buildAppleStateEnvelope(pendingRecord);
+
+  storePendingAppleIntentRecord({
+    ...pendingRecord,
+    state: resolvedState,
   });
 
   const useRedirect = shouldUseRedirectFlow();
@@ -350,7 +515,7 @@ export async function signInWithApplePopup({
     clientId,
     scope: "name email",
     redirectURI,
-    state,
+    state: resolvedState,
     nonce,
     usePopup: !useRedirect,
     ...(useRedirect
@@ -372,13 +537,13 @@ export async function signInWithApplePopup({
   const responseStateFromAuthorization = authorization && typeof authorization.state === "string" ? authorization.state : "";
   const responseStateFromRoot = response && typeof response.state === "string" ? response.state : "";
   const stateCandidates = [responseStateFromAuthorization, responseStateFromRoot].filter((value) => value !== "");
-  const hasMatchingState = stateCandidates.includes(state);
+  const hasMatchingState = stateCandidates.includes(resolvedState);
   if (!idToken) {
     throw new Error("Apple sign in did not return id_token");
   }
   if (!hasMatchingState) {
     throw new Error("Apple sign in state mismatch");
   }
-  takePendingAppleIntentRecord(state);
+  takePendingAppleIntentRecord(resolvedState);
   return { idToken };
 }
