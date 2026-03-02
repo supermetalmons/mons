@@ -243,10 +243,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           kind = "sol";
         } else {
           const intent = await consumePreparedAppleIntent();
-          const { idToken } = await signInWithApplePopup({
+          const signInResult = await signInWithApplePopup({
             nonce: intent.nonce,
             state: intent.state,
+            intentId: intent.intentId,
+            expiresAtMs: intent.expiresAtMs,
+            consentSource: "settings",
           });
+          if (!signInResult) {
+            setStatusText("Continue in Apple sign in...");
+            return;
+          }
+          const { idToken } = signInResult;
           result = await connection.verifyAppleToken(intent.intentId, idToken, "settings");
           kind = "apple";
         }

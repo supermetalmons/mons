@@ -3,6 +3,7 @@ import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
 import { connection } from "./connection";
 import { handleLoginSuccess } from "./loginSuccess";
+import { clearConsumedAppleRedirectResult, consumeAppleRedirectResult } from "./appleConnection";
 import { storage } from "../utils/storage";
 import { setupLoggedInPlayerProfile } from "../game/board";
 import { didAttemptAuthentication } from "../game/gameController";
@@ -13,6 +14,9 @@ let globalSetAuthStatus: ((status: AuthStatus) => void) | null = null;
 const ETH_INTENT_STORAGE_KEY = "ethIntentByNonceV1";
 const ETH_INTENT_MAX_ITEMS = 200;
 const ETH_INTENT_MAX_AGE_MS = 10 * 60 * 1000;
+type AppleRedirectResult = NonNullable<ReturnType<typeof consumeAppleRedirectResult>>;
+
+let inFlightAppleRedirectVerification: { key: string; promise: Promise<any> } | null = null;
 
 type EthIntentRecord = {
   nonce: string;
@@ -21,6 +25,26 @@ type EthIntentRecord = {
 };
 
 const ethIntentIdByNonce = new Map<string, { intentId: string; createdAtMs: number }>();
+
+const getAppleRedirectVerificationKey = (redirectResult: AppleRedirectResult): string => {
+  return `${redirectResult.intentId}::${redirectResult.idToken}::${redirectResult.consentSource}`;
+};
+
+const verifyAppleRedirectResultOnce = (redirectResult: AppleRedirectResult): Promise<any> => {
+  const key = getAppleRedirectVerificationKey(redirectResult);
+  if (inFlightAppleRedirectVerification && inFlightAppleRedirectVerification.key === key) {
+    return inFlightAppleRedirectVerification.promise;
+  }
+  const promise = connection
+    .verifyAppleToken(redirectResult.intentId, redirectResult.idToken, redirectResult.consentSource)
+    .finally(() => {
+      if (inFlightAppleRedirectVerification?.key === key) {
+        inFlightAppleRedirectVerification = null;
+      }
+    });
+  inFlightAppleRedirectVerification = { key, promise };
+  return promise;
+};
 
 const readStoredEthIntentRecords = (): EthIntentRecord[] => {
   if (typeof window === "undefined") {
@@ -164,6 +188,48 @@ export function useAuthStatus() {
     globalSetAuthStatus = setAuthStatus;
     return () => {
       globalSetAuthStatus = null;
+    };
+  }, [setAuthStatus]);
+
+  useEffect(() => {
+    let isCancelled = false;
+    const completeAppleRedirectSignInIfNeeded = async () => {
+      let redirectResult: ReturnType<typeof consumeAppleRedirectResult>;
+      try {
+        redirectResult = consumeAppleRedirectResult();
+      } catch (error) {
+        console.error("Apple redirect sign in error:", error);
+        return;
+      }
+      if (!redirectResult) {
+        return;
+      }
+      const shouldForceUnauthenticatedOnFailure = redirectResult.consentSource === "signin";
+      try {
+        const res = await verifyAppleRedirectResultOnce(redirectResult);
+        if (isCancelled) {
+          return;
+        }
+        clearConsumedAppleRedirectResult();
+        if (res && res.ok === true) {
+          handleLoginSuccess(res, "apple");
+          setAuthStatus("authenticated");
+        } else if (shouldForceUnauthenticatedOnFailure) {
+          setAuthStatus("unauthenticated");
+        }
+      } catch (error) {
+        if (!isCancelled) {
+          console.error("Apple redirect verify error:", error);
+          clearConsumedAppleRedirectResult();
+          if (shouldForceUnauthenticatedOnFailure) {
+            setAuthStatus("unauthenticated");
+          }
+        }
+      }
+    };
+    void completeAppleRedirectSignInIfNeeded();
+    return () => {
+      isCancelled = true;
     };
   }, [setAuthStatus]);
 

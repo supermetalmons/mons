@@ -507,10 +507,17 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setAppleText("Connecting...");
     try {
       const intent = await consumePreparedAppleIntent();
-      const { idToken } = await signInWithApplePopup({
+      const signInResult = await signInWithApplePopup({
         nonce: intent.nonce,
         state: intent.state,
+        intentId: intent.intentId,
+        expiresAtMs: intent.expiresAtMs,
+        consentSource: "signin",
       });
+      if (!signInResult) {
+        return;
+      }
+      const { idToken } = signInResult;
       setAppleText("Verifying...");
       const res = await connection.verifyAppleToken(intent.intentId, idToken, "signin");
       if (res && res.ok === true) {
