@@ -528,6 +528,34 @@ export const clearConsumedAppleRedirectResult = (): void => {
   pendingAppleRedirectResult = null;
 };
 
+const consumePendingAppleIntentRecords = (states: string[]): void => {
+  const seen = new Set<string>();
+  states.forEach((value) => {
+    const state = typeof value === "string" ? value : "";
+    if (!state || seen.has(state)) {
+      return;
+    }
+    seen.add(state);
+    takePendingAppleIntentRecord(state);
+  });
+};
+
+const parseApplePopupSignInResponse = (response: any, allowedStates: string[]): { idToken: string } => {
+  const authorization = response && response.authorization ? response.authorization : null;
+  const idToken = authorization && typeof authorization.id_token === "string" ? authorization.id_token : "";
+  const responseStateFromAuthorization = authorization && typeof authorization.state === "string" ? authorization.state : "";
+  const responseStateFromRoot = response && typeof response.state === "string" ? response.state : "";
+  const stateCandidates = [responseStateFromAuthorization, responseStateFromRoot].filter((value) => value !== "");
+  const hasMatchingState = stateCandidates.some((candidate) => allowedStates.includes(candidate));
+  if (!idToken) {
+    throw new Error("Apple sign in did not return id_token");
+  }
+  if (!hasMatchingState) {
+    throw new Error("Apple sign in state mismatch");
+  }
+  return { idToken };
+};
+
 export async function signInWithApplePopup({
   nonce,
   state,
@@ -542,9 +570,9 @@ export async function signInWithApplePopup({
   consentSource: string;
 }): Promise<{ idToken: string } | null> {
   await loadAppleScript();
-  const useRedirect = shouldUseRedirectFlow();
+  const preferRedirect = shouldUseRedirectFlow();
   const clientId = getAppleClientId();
-  const redirectURI = getAppleRedirectUri(useRedirect);
+  const redirectURI = getAppleRedirectUri(preferRedirect);
   const nowMs = Date.now();
   const pendingRecord: ApplePendingIntentRecord = {
     state,
@@ -553,45 +581,59 @@ export async function signInWithApplePopup({
     createdAtMs: nowMs,
     expiresAtMs: Number.isFinite(expiresAtMs) ? Math.floor(expiresAtMs) : nowMs + APPLE_PENDING_INTENT_MAX_AGE_MS,
   };
-  const resolvedState = useRedirect ? buildAppleStateEnvelope(pendingRecord) : state;
+  const redirectState = buildAppleStateEnvelope(pendingRecord);
+  const popupState = preferRedirect ? redirectState : state;
 
   storePendingAppleIntentRecord({
     ...pendingRecord,
-    state: resolvedState,
+    state: popupState,
   });
+  if (redirectState !== popupState) {
+    storePendingAppleIntentRecord({
+      ...pendingRecord,
+      state: redirectState,
+    });
+  }
 
-  window.AppleID.auth.init({
-    clientId,
-    scope: "name email",
-    redirectURI,
-    state: resolvedState,
-    nonce,
-    usePopup: !useRedirect,
-    responseType: "id_token",
-    responseMode: "fragment",
-  });
+  const runAppleSignIn = async ({ stateValue, usePopup }: { stateValue: string; usePopup: boolean }): Promise<any> => {
+    window.AppleID.auth.init({
+      clientId,
+      scope: "name email",
+      redirectURI,
+      state: stateValue,
+      nonce,
+      usePopup,
+      responseType: "id_token",
+      responseMode: "fragment",
+    });
+    return window.AppleID.auth.signIn();
+  };
 
-  if (useRedirect) {
-    await window.AppleID.auth.signIn();
+  // iOS redirect callbacks are fragile in Safari; prefer popup first and fallback to redirect when popup is unavailable.
+  if (preferRedirect) {
+    try {
+      const popupResponse = await runAppleSignIn({ stateValue: popupState, usePopup: true });
+      const parsed = parseApplePopupSignInResponse(popupResponse, [popupState, redirectState]);
+      consumePendingAppleIntentRecords([popupState, redirectState]);
+      return parsed;
+    } catch (error) {
+      const message = String((error as Error)?.message || "");
+      const lowerMessage = message.toLowerCase();
+      const shouldFallbackToRedirect =
+        lowerMessage.includes("popup") ||
+        lowerMessage.includes("window") ||
+        lowerMessage.includes("closed") ||
+        lowerMessage.includes("blocked");
+      if (!shouldFallbackToRedirect) {
+        throw error;
+      }
+    }
+    await runAppleSignIn({ stateValue: redirectState, usePopup: false });
     return null;
   }
 
-  const response = await window.AppleID.auth.signIn();
-  const authorization = response && response.authorization ? response.authorization : null;
-  const idToken = authorization && typeof authorization.id_token === "string" ? authorization.id_token : "";
-  const responseStateFromAuthorization = authorization && typeof authorization.state === "string" ? authorization.state : "";
-  const responseStateFromRoot = response && typeof response.state === "string" ? response.state : "";
-  const stateCandidates = [responseStateFromAuthorization, responseStateFromRoot].filter((value) => value !== "");
-  const hasMatchingState = stateCandidates.includes(resolvedState) || stateCandidates.includes(state);
-  if (!idToken) {
-    throw new Error("Apple sign in did not return id_token");
-  }
-  if (!hasMatchingState) {
-    throw new Error("Apple sign in state mismatch");
-  }
-  takePendingAppleIntentRecord(resolvedState);
-  if (resolvedState !== state) {
-    takePendingAppleIntentRecord(state);
-  }
-  return { idToken };
+  const popupResponse = await runAppleSignIn({ stateValue: popupState, usePopup: true });
+  const parsed = parseApplePopupSignInResponse(popupResponse, [popupState, redirectState]);
+  consumePendingAppleIntentRecords([popupState, redirectState]);
+  return parsed;
 }
