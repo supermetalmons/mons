@@ -1,6 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { SiweMessage } = require("siwe");
-const { consumeAuthIntent, normalizeMethodValue, linkVerifiedMethod, validateSiweDomainAndUri } = require("./authIdentity");
+const { consumeAuthIntent, normalizeMethodValue, linkVerifiedMethod, validateSiweDomainAndUri, peekAuthOpReplay } = require("./authIdentity");
 
 exports.verifyEthAddress = onCall(async (request) => {
   if (!request.auth) {
@@ -20,6 +20,15 @@ exports.verifyEthAddress = onCall(async (request) => {
     throw new HttpsError("invalid-argument", "message and signature are required.");
   }
   const resolvedOpId = opId || (typeof intentId === "string" && intentId !== "" ? `intent:${intentId}` : undefined);
+  const replay = await peekAuthOpReplay({
+    opId: resolvedOpId,
+    kind: "verify",
+    method: "eth",
+    uid: request.auth.uid,
+  });
+  if (replay) {
+    return replay;
+  }
 
   let siweMessage;
   try {
@@ -56,6 +65,7 @@ exports.verifyEthAddress = onCall(async (request) => {
     uid,
     method: "eth",
     methodValueRaw: normalizedEth,
+    methodValueLookupRaw: address,
     normalizedMethodValue: normalizedEth,
     requestEmoji,
     requestAura,

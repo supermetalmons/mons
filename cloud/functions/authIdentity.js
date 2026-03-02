@@ -13,6 +13,7 @@ const INTENT_TTL_MS = 5 * 60 * 1000;
 const MERGE_LOCK_TTL_MS = 10 * 60 * 1000;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT_MAX_COUNT = 20;
+const AUTH_OP_REPLAY_TTL_MS = 10 * 60 * 1000;
 
 const toCleanString = (value) => (typeof value === "string" && value.trim() !== "" ? value.trim() : "");
 const isFeatureDisabled = (name) => {
@@ -88,6 +89,14 @@ const getMethodField = (method) => {
 
 const getMethodKey = (method, normalizedValue) => {
   return `${method}:${Buffer.from(normalizedValue, "utf8").toString("base64url")}`;
+};
+
+const hashMethodValue = (method, normalizedValue) => {
+  const cleanValue = toCleanString(normalizedValue);
+  if (!cleanValue) {
+    return "";
+  }
+  return crypto.createHash("sha256").update(`${method}:${cleanValue}`).digest("hex");
 };
 
 const getMethodValueFromProfile = (profileData, method) => {
@@ -349,6 +358,172 @@ const buildProfileResponse = (profileDoc, uid, preferredAddress) => {
   };
 };
 
+const getAuthOpContextState = (opData, { opId, kind, method, uid }) => {
+  const existingUid = toCleanString(opData && opData.uid);
+  const existingKind = toCleanString(opData && opData.kind);
+  const existingMethod = toCleanString(opData && opData.method);
+  if (!existingUid || !existingKind || !existingMethod) {
+    return "missing";
+  }
+  if (existingUid !== uid || existingKind !== kind || existingMethod !== method) {
+    console.error("auth:op-context-mismatch", {
+      opId,
+      existingUid,
+      existingKind,
+      existingMethod,
+      requestedUid: uid,
+      requestedKind: kind,
+      requestedMethod: method,
+    });
+    return "mismatch";
+  }
+  return "match";
+};
+
+const getReplayResultFromAuthOpData = (opData) => {
+  const updatedAtMs = Math.max(parseNumber(opData && opData.updatedAtMs, 0), parseNumber(opData && opData.startedAtMs, 0));
+  if (updatedAtMs <= 0) {
+    return null;
+  }
+  if (Date.now() - updatedAtMs > AUTH_OP_REPLAY_TTL_MS) {
+    return null;
+  }
+  if (opData && opData.status === "success" && opData.result && typeof opData.result === "object") {
+    return opData.result;
+  }
+  return null;
+};
+
+const getExpectedMethodValueHashFromAuthOp = (method, opData) => {
+  const meta = opData && typeof opData.meta === "object" ? opData.meta : null;
+  const explicitHash = toCleanString(meta && meta.methodValueHash);
+  if (explicitHash) {
+    return explicitHash;
+  }
+  if (method === "apple") {
+    return "";
+  }
+  const rawValue = toCleanString(meta && meta.methodValue);
+  if (!rawValue || rawValue === "redacted") {
+    return "";
+  }
+  try {
+    const normalizedValue = normalizeMethodValue(method, rawValue);
+    return hashMethodValue(method, normalizedValue);
+  } catch {
+    return "";
+  }
+};
+
+const isVerifyReplayStillValid = async ({ opData, opId, method, uid, replay }) => {
+  if (!replay || typeof replay !== "object" || replay.ok !== true) {
+    return false;
+  }
+  const replayUid = toCleanString(replay.uid);
+  if (replayUid && replayUid !== uid) {
+    console.error("auth:verify-replay-uid-mismatch", {
+      opId,
+      method,
+      replayUid,
+      requestedUid: uid,
+    });
+    return false;
+  }
+
+  const currentProfile = await readProfileByLoginUid(uid);
+  if (!currentProfile) {
+    return false;
+  }
+  const currentProfileId = toCleanString(currentProfile.id);
+  const replayProfileId = toCleanString(replay.profileId);
+  if (replayProfileId && replayProfileId !== currentProfileId) {
+    console.error("auth:verify-replay-profile-mismatch", {
+      opId,
+      method,
+      replayProfileId,
+      currentProfileId,
+      uid,
+    });
+    return false;
+  }
+
+  const currentProfileData = currentProfile.data() || {};
+  const currentNormalizedValue = normalizeFromProfileByMethod(method, currentProfileData);
+  if (!currentNormalizedValue) {
+    return false;
+  }
+
+  const expectedHash = getExpectedMethodValueHashFromAuthOp(method, opData);
+  if (expectedHash) {
+    const currentHash = hashMethodValue(method, currentNormalizedValue);
+    if (currentHash !== expectedHash) {
+      console.error("auth:verify-replay-method-mismatch", {
+        opId,
+        method,
+        uid,
+        replayProfileId: replayProfileId || null,
+        currentProfileId,
+      });
+      return false;
+    }
+  }
+
+  return true;
+};
+
+const getAuthOpReplayResult = async ({ opData, opId, kind, method, uid }) => {
+  const replay = getReplayResultFromAuthOpData(opData);
+  if (!replay) {
+    return null;
+  }
+  if (kind === "verify") {
+    const isValid = await isVerifyReplayStillValid({
+      opData,
+      opId,
+      method,
+      uid,
+      replay,
+    });
+    if (!isValid) {
+      return null;
+    }
+  }
+  return replay;
+};
+
+const peekAuthOpReplay = async ({ opId, kind, method, uid }) => {
+  const resolvedOpId = toCleanString(opId);
+  if (!resolvedOpId) {
+    return null;
+  }
+  const firestore = admin.firestore();
+  const opRef = firestore.collection("authOps").doc(resolvedOpId);
+  const opSnapshot = await opRef.get();
+  if (!opSnapshot.exists) {
+    return null;
+  }
+  const data = opSnapshot.data() || {};
+  const contextState = getAuthOpContextState(data, {
+    opId: resolvedOpId,
+    kind,
+    method,
+    uid,
+  });
+  if (contextState === "mismatch") {
+    throw new HttpsError("permission-denied", "op-context-mismatch");
+  }
+  if (contextState === "missing") {
+    return null;
+  }
+  return getAuthOpReplayResult({
+    opData: data,
+    opId: resolvedOpId,
+    kind,
+    method,
+    uid,
+  });
+};
+
 const beginAuthOp = async ({ opId, kind, method, uid, meta }) => {
   const firestore = admin.firestore();
   const resolvedOpId = toCleanString(opId) || createOpId();
@@ -357,11 +532,29 @@ const beginAuthOp = async ({ opId, kind, method, uid, meta }) => {
   const opSnapshot = await opRef.get();
   if (opSnapshot.exists) {
     const data = opSnapshot.data() || {};
-    if (data.status === "success" && data.result && typeof data.result === "object") {
-      return {
+    const contextState = getAuthOpContextState(data, {
+      opId: resolvedOpId,
+      kind,
+      method,
+      uid,
+    });
+    if (contextState === "mismatch") {
+      throw new HttpsError("permission-denied", "op-context-mismatch");
+    }
+    if (contextState === "match") {
+      const replay = await getAuthOpReplayResult({
+        opData: data,
         opId: resolvedOpId,
-        replay: data.result,
-      };
+        kind,
+        method,
+        uid,
+      });
+      if (replay) {
+        return {
+          opId: resolvedOpId,
+          replay,
+        };
+      }
     }
   }
   await opRef.set(
@@ -888,6 +1081,7 @@ const linkVerifiedMethod = async ({
   uid,
   method,
   methodValueRaw,
+  methodValueLookupRaw,
   normalizedMethodValue,
   requestEmoji,
   requestAura,
@@ -905,6 +1099,7 @@ const linkVerifiedMethod = async ({
     uid,
     meta: {
       methodValue: method === "apple" ? "redacted" : methodValueRaw,
+      methodValueHash: hashMethodValue(method, normalizedMethodValue),
     },
   });
   if (op.replay) {
@@ -914,7 +1109,8 @@ const linkVerifiedMethod = async ({
   try {
     const firestore = admin.firestore();
     let currentProfile = await readProfileByLoginUid(uid);
-    let methodProfile = await readProfileByMethod(method, normalizedMethodValue, methodValueRaw);
+    const methodLookupValue = toCleanString(methodValueLookupRaw) || methodValueRaw;
+    let methodProfile = await readProfileByMethod(method, normalizedMethodValue, methodLookupValue);
     let targetProfileId = "";
     const revocationRef = firestore.collection("authMethodRevocations").doc(getMethodKey(method, normalizedMethodValue));
     const revocationSnapshot = await revocationRef.get();
@@ -939,7 +1135,7 @@ const linkVerifiedMethod = async ({
       });
       targetProfileId = createdResult.profileId;
       if (!targetProfileId) {
-        methodProfile = await readProfileByMethod(method, normalizedMethodValue, methodValueRaw);
+        methodProfile = await readProfileByMethod(method, normalizedMethodValue, methodLookupValue);
         if (!methodProfile) {
           throw new HttpsError("aborted", "method-index-race-retry");
         }
@@ -1343,6 +1539,7 @@ module.exports = {
   consumeAuthIntent,
   normalizeMethodValue,
   linkVerifiedMethod,
+  peekAuthOpReplay,
   buildProfileResponse,
   linkedMethodsFromProfileData,
   unlinkMethodForUid,

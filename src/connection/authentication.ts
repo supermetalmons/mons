@@ -10,7 +10,133 @@ import { updateProfileDisplayName } from "../ui/ProfileSignIn";
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
 let globalSetAuthStatus: ((status: AuthStatus) => void) | null = null;
-const ethIntentIdByNonce = new Map<string, string>();
+const ETH_INTENT_STORAGE_KEY = "ethIntentByNonceV1";
+const ETH_INTENT_MAX_ITEMS = 200;
+const ETH_INTENT_MAX_AGE_MS = 10 * 60 * 1000;
+
+type EthIntentRecord = {
+  nonce: string;
+  intentId: string;
+  createdAtMs: number;
+};
+
+const ethIntentIdByNonce = new Map<string, { intentId: string; createdAtMs: number }>();
+
+const readStoredEthIntentRecords = (): EthIntentRecord[] => {
+  if (typeof window === "undefined") {
+    return [];
+  }
+  try {
+    const raw = window.sessionStorage.getItem(ETH_INTENT_STORAGE_KEY);
+    if (!raw) {
+      return [];
+    }
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) {
+      return [];
+    }
+    const nowMs = Date.now();
+    return parsed
+      .map((item) => {
+        const nonce = typeof item?.nonce === "string" ? item.nonce : "";
+        const intentId = typeof item?.intentId === "string" ? item.intentId : "";
+        const createdAtMs = typeof item?.createdAtMs === "number" ? item.createdAtMs : Number(item?.createdAtMs);
+        if (!nonce || !intentId || !Number.isFinite(createdAtMs)) {
+          return null;
+        }
+        if (nowMs - createdAtMs > ETH_INTENT_MAX_AGE_MS) {
+          return null;
+        }
+        return {
+          nonce,
+          intentId,
+          createdAtMs: Math.floor(createdAtMs),
+        };
+      })
+      .filter((record): record is EthIntentRecord => !!record);
+  } catch {
+    return [];
+  }
+};
+
+const writeStoredEthIntentRecords = (records: EthIntentRecord[]): void => {
+  if (typeof window === "undefined") {
+    return;
+  }
+  try {
+    if (records.length === 0) {
+      window.sessionStorage.removeItem(ETH_INTENT_STORAGE_KEY);
+      return;
+    }
+    window.sessionStorage.setItem(ETH_INTENT_STORAGE_KEY, JSON.stringify(records));
+  } catch {}
+};
+
+const pruneAndPersistEthIntentRecords = (): void => {
+  const nowMs = Date.now();
+  const records = Array.from(ethIntentIdByNonce.entries())
+    .map(([nonce, value]) => ({
+      nonce,
+      intentId: value.intentId,
+      createdAtMs: value.createdAtMs,
+    }))
+    .filter((record) => {
+      return record.nonce !== "" && record.intentId !== "" && nowMs - record.createdAtMs <= ETH_INTENT_MAX_AGE_MS;
+    })
+    .sort((left, right) => left.createdAtMs - right.createdAtMs)
+    .slice(-ETH_INTENT_MAX_ITEMS);
+  ethIntentIdByNonce.clear();
+  records.forEach((record) => {
+    ethIntentIdByNonce.set(record.nonce, {
+      intentId: record.intentId,
+      createdAtMs: record.createdAtMs,
+    });
+  });
+  writeStoredEthIntentRecords(records);
+};
+
+const ensureEthIntentRecordsLoaded = (): void => {
+  if (ethIntentIdByNonce.size > 0) {
+    return;
+  }
+  const records = readStoredEthIntentRecords();
+  records.forEach((record) => {
+    ethIntentIdByNonce.set(record.nonce, {
+      intentId: record.intentId,
+      createdAtMs: record.createdAtMs,
+    });
+  });
+  pruneAndPersistEthIntentRecords();
+};
+
+const saveEthIntentRecord = (nonce: string, intentId: string): void => {
+  if (!nonce || !intentId) {
+    return;
+  }
+  ensureEthIntentRecordsLoaded();
+  ethIntentIdByNonce.set(nonce, {
+    intentId,
+    createdAtMs: Date.now(),
+  });
+  pruneAndPersistEthIntentRecords();
+};
+
+const takeEthIntentId = (nonce: string): string | undefined => {
+  if (!nonce) {
+    return undefined;
+  }
+  ensureEthIntentRecordsLoaded();
+  const record = ethIntentIdByNonce.get(nonce);
+  ethIntentIdByNonce.delete(nonce);
+  pruneAndPersistEthIntentRecords();
+  if (!record) {
+    return undefined;
+  }
+  if (Date.now() - record.createdAtMs > ETH_INTENT_MAX_AGE_MS) {
+    return undefined;
+  }
+  return record.intentId;
+};
 
 export function setAuthStatusGlobally(status: AuthStatus) {
   if (globalSetAuthStatus) {
@@ -113,13 +239,7 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
   return createAuthenticationAdapter({
     getNonce: async () => {
       const intent = await connection.beginAuthIntent("eth");
-      ethIntentIdByNonce.set(intent.nonce, intent.intentId);
-      if (ethIntentIdByNonce.size > 200) {
-        const oldestNonce = ethIntentIdByNonce.keys().next().value;
-        if (typeof oldestNonce === "string" && oldestNonce !== "") {
-          ethIntentIdByNonce.delete(oldestNonce);
-        }
-      }
+      saveEthIntentRecord(intent.nonce, intent.intentId);
       return intent.nonce;
     },
 
@@ -139,10 +259,7 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
       let intentId: string | undefined;
       try {
         const parsed = new SiweMessage(message);
-        intentId = ethIntentIdByNonce.get(parsed.nonce);
-        if (parsed.nonce) {
-          ethIntentIdByNonce.delete(parsed.nonce);
-        }
+        intentId = takeEthIntentId(parsed.nonce);
       } catch {
         intentId = undefined;
       }

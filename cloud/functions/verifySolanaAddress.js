@@ -1,7 +1,7 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const nacl = require("tweetnacl");
 const bs58 = require("bs58");
-const { consumeAuthIntent, normalizeMethodValue, linkVerifiedMethod } = require("./authIdentity");
+const { consumeAuthIntent, normalizeMethodValue, linkVerifiedMethod, peekAuthOpReplay } = require("./authIdentity");
 
 exports.verifySolanaAddress = onCall(async (request) => {
   if (!request.auth) {
@@ -22,6 +22,15 @@ exports.verifySolanaAddress = onCall(async (request) => {
   }
   const resolvedOpId = opId || (typeof intentId === "string" && intentId !== "" ? `intent:${intentId}` : undefined);
   const uid = request.auth.uid;
+  const replay = await peekAuthOpReplay({
+    opId: resolvedOpId,
+    kind: "verify",
+    method: "sol",
+    uid,
+  });
+  if (replay) {
+    return replay;
+  }
   const intent = await consumeAuthIntent({
     uid,
     method: "sol",

@@ -1,5 +1,5 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
-const { consumeAuthIntent, verifyAppleIdToken, normalizeMethodValue, linkVerifiedMethod } = require("./authIdentity");
+const { consumeAuthIntent, verifyAppleIdToken, normalizeMethodValue, linkVerifiedMethod, peekAuthOpReplay } = require("./authIdentity");
 
 exports.verifyAppleToken = onCall(async (request) => {
   if (!request.auth) {
@@ -24,6 +24,15 @@ exports.verifyAppleToken = onCall(async (request) => {
   }
   if (!intentId) {
     throw new HttpsError("invalid-argument", "intentId is required.");
+  }
+  const replay = await peekAuthOpReplay({
+    opId: resolvedOpId,
+    kind: "verify",
+    method: "apple",
+    uid,
+  });
+  if (replay) {
+    return replay;
   }
 
   const intent = await consumeAuthIntent({
