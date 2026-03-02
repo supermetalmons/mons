@@ -772,6 +772,10 @@ class Connection {
       if (this.auth.currentUser && this.auth.currentUser.uid) {
         return this.auth.currentUser.uid;
       }
+      await this.waitForInitialAuthState();
+      if (this.auth.currentUser && this.auth.currentUser.uid) {
+        return this.auth.currentUser.uid;
+      }
       await signInAnonymously(this.auth);
       const uid = this.auth.currentUser?.uid;
       return uid;

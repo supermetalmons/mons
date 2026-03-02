@@ -46,6 +46,21 @@ type AppleCallbackParams = {
 };
 
 let pendingAppleRedirectResult: AppleRedirectResult | null = null;
+let didConsumeInitialAppleCallbackSnapshot = false;
+
+const initialAppleCallbackSnapshot =
+  typeof window === "undefined"
+    ? null
+    : {
+        hashRaw: window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash,
+        searchRaw: window.location.search.startsWith("?") ? window.location.search.slice(1) : window.location.search,
+      };
+
+const logAppleRedirectDebug = (event: string, payload: Record<string, unknown> = {}): void => {
+  try {
+    console.log("apple-redirect-debug", { event, ...payload });
+  } catch {}
+};
 
 const encodeStatePart = (value: string): string => {
   if (!value) {
@@ -441,7 +456,23 @@ const readAppleCallbackParams = (): AppleCallbackParams | null => {
     return fromHash;
   }
   const searchRaw = window.location.search.startsWith("?") ? window.location.search.slice(1) : window.location.search;
-  return parseAppleCallbackParamsFromRaw(searchRaw);
+  const fromSearch = parseAppleCallbackParamsFromRaw(searchRaw);
+  if (fromSearch) {
+    return fromSearch;
+  }
+  if (!didConsumeInitialAppleCallbackSnapshot && initialAppleCallbackSnapshot) {
+    const fromInitialHash = parseAppleCallbackParamsFromRaw(initialAppleCallbackSnapshot.hashRaw);
+    if (fromInitialHash) {
+      didConsumeInitialAppleCallbackSnapshot = true;
+      return fromInitialHash;
+    }
+    const fromInitialSearch = parseAppleCallbackParamsFromRaw(initialAppleCallbackSnapshot.searchRaw);
+    if (fromInitialSearch) {
+      didConsumeInitialAppleCallbackSnapshot = true;
+      return fromInitialSearch;
+    }
+  }
+  return null;
 };
 
 const clearAppleCallbackParams = (): void => {
@@ -490,10 +521,21 @@ export const consumeAppleRedirectResult = (): AppleRedirectResult | null => {
   }
   const callback = readAppleCallbackParams();
   if (!callback) {
+    logAppleRedirectDebug("callback-missing", {
+      hasHash: window.location.hash !== "",
+      hasSearch: window.location.search !== "",
+    });
     return null;
   }
   clearAppleCallbackParams();
   const { state, idToken, error, errorDescription, code } = callback;
+  logAppleRedirectDebug("callback-detected", {
+    statePrefix: state.slice(0, APPLE_STATE_ENVELOPE_PREFIX.length),
+    stateLength: state.length,
+    hasIdToken: idToken !== "",
+    hasCode: code !== "",
+    hasError: error !== "",
+  });
   if (!state) {
     throw new Error("Apple sign in returned without state. Please try again.");
   }
@@ -501,6 +543,12 @@ export const consumeAppleRedirectResult = (): AppleRedirectResult | null => {
   const stateEnvelope = parseAppleStateEnvelope(state);
   const resolvedIntentId = pending?.intentId || stateEnvelope?.intentId || "";
   const resolvedConsentSource = pending?.consentSource || stateEnvelope?.consentSource || "signin";
+  logAppleRedirectDebug("callback-resolved", {
+    hasPending: !!pending,
+    hasEnvelope: !!stateEnvelope,
+    hasResolvedIntentId: resolvedIntentId !== "",
+    resolvedConsentSource,
+  });
   if (error) {
     const details = errorDescription ? ` (${errorDescription})` : "";
     throw new Error(`Apple sign in failed: ${error}${details}`);
@@ -555,6 +603,12 @@ export async function signInWithApplePopup({
     expiresAtMs: Number.isFinite(expiresAtMs) ? Math.floor(expiresAtMs) : nowMs + APPLE_PENDING_INTENT_MAX_AGE_MS,
   };
   const resolvedState = useRedirect ? buildAppleStateEnvelope(pendingRecord) : state;
+  logAppleRedirectDebug("signin-init", {
+    useRedirect,
+    redirectURI,
+    stateLength: resolvedState.length,
+    statePrefix: resolvedState.slice(0, APPLE_STATE_ENVELOPE_PREFIX.length),
+  });
 
   storePendingAppleIntentRecord({
     ...pendingRecord,
