@@ -17,25 +17,72 @@ const loadAppleScript = async (): Promise<void> => {
   }
   if (!appleScriptPromise) {
     appleScriptPromise = new Promise<void>((resolve, reject) => {
-      const existing = document.querySelector(`script[src="${APPLE_SCRIPT_SRC}"]`) as HTMLScriptElement | null;
-      if (existing) {
-        existing.addEventListener("load", () => resolve(), { once: true });
-        existing.addEventListener("error", () => reject(new Error("Failed to load Apple auth script")), { once: true });
-        return;
+      const existingScript = document.querySelector(`script[src="${APPLE_SCRIPT_SRC}"]`) as HTMLScriptElement | null;
+      if (existingScript) {
+        const didLoad = existingScript.getAttribute("data-loaded") === "true";
+        const didFail = existingScript.getAttribute("data-load-failed") === "true";
+        const readyState = (existingScript as any).readyState;
+        if (didLoad && (!window.AppleID || !window.AppleID.auth)) {
+          existingScript.remove();
+        } else if (didLoad || (window.AppleID && window.AppleID.auth)) {
+          resolve();
+          return;
+        }
+        if (didFail || readyState === "complete") {
+          existingScript.remove();
+        } else {
+          existingScript.addEventListener(
+            "load",
+            () => {
+              existingScript.setAttribute("data-loaded", "true");
+              existingScript.removeAttribute("data-load-failed");
+              resolve();
+            },
+            { once: true }
+          );
+          existingScript.addEventListener(
+            "error",
+            () => {
+              existingScript.setAttribute("data-load-failed", "true");
+              reject(new Error("Failed to load Apple auth script"));
+            },
+            { once: true }
+          );
+          return;
+        }
       }
       const script = document.createElement("script");
       script.src = APPLE_SCRIPT_SRC;
       script.async = true;
-      script.onload = () => resolve();
-      script.onerror = () => reject(new Error("Failed to load Apple auth script"));
+      script.onload = () => {
+        script.setAttribute("data-loaded", "true");
+        script.removeAttribute("data-load-failed");
+        resolve();
+      };
+      script.onerror = () => {
+        script.setAttribute("data-load-failed", "true");
+        reject(new Error("Failed to load Apple auth script"));
+      };
       document.head.appendChild(script);
     });
   }
-  await appleScriptPromise;
+  try {
+    await appleScriptPromise;
+  } catch (error) {
+    appleScriptPromise = null;
+    throw error;
+  }
   if (!window.AppleID || !window.AppleID.auth) {
+    const scripts = document.querySelectorAll(`script[src="${APPLE_SCRIPT_SRC}"]`);
+    scripts.forEach((script) => script.remove());
+    appleScriptPromise = null;
     throw new Error("Apple auth library unavailable");
   }
 };
+
+export async function preloadAppleSignInLibrary(): Promise<void> {
+  await loadAppleScript();
+}
 
 const getAppleClientId = (): string => {
   const clientId = (process.env.REACT_APP_APPLE_CLIENT_ID || "").trim();

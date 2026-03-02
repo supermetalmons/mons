@@ -7,6 +7,7 @@ import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeMenuAndInfoIfAllowedForEvent, closeMenuAndInfoIfAny } from "./MainMenu";
 import { setAuthStatusGlobally } from "../connection/authentication";
 import { handleLoginSuccess } from "../connection/loginSuccess";
+import { preloadAppleSignInLibrary, signInWithApplePopup } from "../connection/appleConnection";
 import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
 import { LogoutConfirmModal } from "./LogoutConfirmModal";
@@ -195,6 +196,31 @@ interface NotificationState {
   successHandler: () => void;
 }
 
+type AuthIntentResponse = {
+  ok: boolean;
+  intentId: string;
+  nonce: string;
+  state: string;
+  expiresAtMs: number;
+};
+
+const APPLE_INTENT_REFRESH_BUFFER_MS = 30 * 1000;
+
+const isAppleIntentUsable = (intent: AuthIntentResponse | null): intent is AuthIntentResponse => {
+  if (!intent) {
+    return false;
+  }
+  return typeof intent.intentId === "string" &&
+    intent.intentId !== "" &&
+    typeof intent.nonce === "string" &&
+    intent.nonce !== "" &&
+    typeof intent.state === "string" &&
+    intent.state !== "" &&
+    typeof intent.expiresAtMs === "number" &&
+    Number.isFinite(intent.expiresAtMs) &&
+    intent.expiresAtMs - Date.now() > APPLE_INTENT_REFRESH_BUFFER_MS;
+};
+
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [solanaText, setSolanaText] = useState("Solana");
@@ -213,6 +239,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const [notificationDismissType, setNotificationDismissType] = useState<"click" | "close" | null>(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const notificationTimeoutRef = useRef<number | null>(null);
+  const appleIntentRef = useRef<AuthIntentResponse | null>(null);
+  const appleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(null);
 
   getIsInventoryPopupOpen = () => isInventoryOpen;
   getIsEditingPopupOpen = () => isEditingName;
@@ -410,6 +438,37 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsSettingsOpen(false);
   };
 
+  const ensurePreparedAppleIntent = useCallback(async (): Promise<AuthIntentResponse> => {
+    if (isAppleIntentUsable(appleIntentRef.current)) {
+      return appleIntentRef.current;
+    }
+    if (!appleIntentPromiseRef.current) {
+      appleIntentPromiseRef.current = connection
+        .beginAuthIntent("apple")
+        .then((intent) => {
+          appleIntentRef.current = intent;
+          return intent;
+        })
+        .finally(() => {
+          appleIntentPromiseRef.current = null;
+        });
+    }
+    return appleIntentPromiseRef.current;
+  }, []);
+
+  const consumePreparedAppleIntent = useCallback(async (): Promise<AuthIntentResponse> => {
+    const intent = await ensurePreparedAppleIntent();
+    appleIntentRef.current = null;
+    return intent;
+  }, [ensurePreparedAppleIntent]);
+
+  useEffect(() => {
+    if (!isOpen || authStatus === "authenticated") {
+      return;
+    }
+    void preloadAppleSignInLibrary().catch(() => {});
+  }, [isOpen, authStatus]);
+
   const handleSolanaClick = async () => {
     if (isSolanaConnecting) return;
 
@@ -447,8 +506,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsAppleConnecting(true);
     setAppleText("Connecting...");
     try {
-      const intent = await connection.beginAuthIntent("apple");
-      const { signInWithApplePopup } = await import("../connection/appleConnection");
+      const intent = await consumePreparedAppleIntent();
       const { idToken } = await signInWithApplePopup({
         nonce: intent.nonce,
         state: intent.state,

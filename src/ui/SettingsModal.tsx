@@ -7,6 +7,7 @@ import { storage } from "../utils/storage";
 import { updateProfileDisplayName } from "./ProfileSignIn";
 import { handleLoginSuccess, AddressKind } from "../connection/loginSuccess";
 import { setAuthStatusGlobally } from "../connection/authentication";
+import { preloadAppleSignInLibrary, signInWithApplePopup } from "../connection/appleConnection";
 
 const SettingsPopup = styled(ModalPopup)`
   padding: 20px;
@@ -123,6 +124,31 @@ const EMPTY_LINKED_METHODS: LinkedMethods = {
   sol: false,
 };
 
+type AuthIntentResponse = {
+  ok: boolean;
+  intentId: string;
+  nonce: string;
+  state: string;
+  expiresAtMs: number;
+};
+
+const APPLE_INTENT_REFRESH_BUFFER_MS = 30 * 1000;
+
+const isAppleIntentUsable = (intent: AuthIntentResponse | null): intent is AuthIntentResponse => {
+  if (!intent) {
+    return false;
+  }
+  return typeof intent.intentId === "string" &&
+    intent.intentId !== "" &&
+    typeof intent.nonce === "string" &&
+    intent.nonce !== "" &&
+    typeof intent.state === "string" &&
+    intent.state !== "" &&
+    typeof intent.expiresAtMs === "number" &&
+    Number.isFinite(intent.expiresAtMs) &&
+    intent.expiresAtMs - Date.now() > APPLE_INTENT_REFRESH_BUFFER_MS;
+};
+
 export interface SettingsModalProps {
   onClose: () => void;
 }
@@ -133,6 +159,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [busyMethod, setBusyMethod] = useState<MethodKey | null>(null);
   const [statusText, setStatusText] = useState<string>("");
+  const appleIntentRef = useRef<AuthIntentResponse | null>(null);
+  const appleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(null);
 
   const linkedCount = useMemo(() => {
     return Object.values(linkedMethods).filter(Boolean).length;
@@ -157,11 +185,36 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     }
   }, []);
 
+  const ensurePreparedAppleIntent = useCallback(async (): Promise<AuthIntentResponse> => {
+    if (isAppleIntentUsable(appleIntentRef.current)) {
+      return appleIntentRef.current;
+    }
+    if (!appleIntentPromiseRef.current) {
+      appleIntentPromiseRef.current = connection
+        .beginAuthIntent("apple")
+        .then((intent) => {
+          appleIntentRef.current = intent;
+          return intent;
+        })
+        .finally(() => {
+          appleIntentPromiseRef.current = null;
+        });
+    }
+    return appleIntentPromiseRef.current;
+  }, []);
+
+  const consumePreparedAppleIntent = useCallback(async (): Promise<AuthIntentResponse> => {
+    const intent = await ensurePreparedAppleIntent();
+    appleIntentRef.current = null;
+    return intent;
+  }, [ensurePreparedAppleIntent]);
+
   useEffect(() => {
     if (popupRef.current) {
       popupRef.current.focus();
     }
     void refreshLinkedMethods();
+    void preloadAppleSignInLibrary().catch(() => {});
   }, [refreshLinkedMethods]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
@@ -189,8 +242,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           result = await connection.verifySolanaAddress(publicKey, signature, intentId);
           kind = "sol";
         } else {
-          const intent = await connection.beginAuthIntent("apple");
-          const { signInWithApplePopup } = await import("../connection/appleConnection");
+          const intent = await consumePreparedAppleIntent();
           const { idToken } = await signInWithApplePopup({
             nonce: intent.nonce,
             state: intent.state,
@@ -214,7 +266,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         await refreshLinkedMethods();
       }
     },
-    [refreshLinkedMethods]
+    [refreshLinkedMethods, consumePreparedAppleIntent]
   );
 
   const runDisconnectFlow = useCallback(

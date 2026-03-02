@@ -88,41 +88,41 @@ export function getStashedPlayerEthAddress(uid: string) {
 
 export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId: string, own: boolean, onSuccess: () => void) {
   const sessionGuard = connection.createSessionGuard();
-  const noSol = profile.sol === undefined || profile.sol === "" || !profile.sol;
-  const noEth = profile.eth === undefined || profile.eth === "" || !profile.eth;
-  if (noSol && noEth) {
-    return;
+  usernamesForUids[loginId] = profile.username ?? "";
+  const ethAddress = profile.eth ?? "";
+  const solAddress = profile.sol ?? "";
+  if (ethAddress) {
+    ethAddressesForUids[loginId] = ethAddress;
+  } else {
+    delete ethAddressesForUids[loginId];
+  }
+  if (solAddress) {
+    solAddressesForUids[loginId] = solAddress;
+  } else {
+    delete solAddressesForUids[loginId];
   }
 
-  usernamesForUids[loginId] = profile.username ?? "";
-
-  if (noSol) {
-    const ethAddress = profile.eth ?? "";
-    ethAddressesForUids[loginId] = ethAddress;
-    if (!ensDict[loginId] && !usernamesForUids[loginId]) {
-      fetch(`https://api.ensideas.com/ens/resolve/${ethAddress}`)
-        .then((response) => {
-          if (response.ok) {
-            return response.json();
-          }
-          return null;
-        })
-        .then((data) => {
-          if (!sessionGuard()) {
-            return;
-          }
-          if (data && data.name && data.name.trim() !== "") {
-            ensDict[loginId] = {
-              name: data.name,
-              avatar: data.avatar,
-            };
-            onSuccess();
-          }
-        })
-        .catch(() => {});
-    }
-  } else {
-    solAddressesForUids[loginId] = profile.sol ?? "";
+  if (ethAddress && !ensDict[loginId] && !usernamesForUids[loginId]) {
+    fetch(`https://api.ensideas.com/ens/resolve/${ethAddress}`)
+      .then((response) => {
+        if (response.ok) {
+          return response.json();
+        }
+        return null;
+      })
+      .then((data) => {
+        if (!sessionGuard()) {
+          return;
+        }
+        if (data && data.name && data.name.trim() !== "") {
+          ensDict[loginId] = {
+            name: data.name,
+            avatar: data.avatar,
+          };
+          onSuccess();
+        }
+      })
+      .catch(() => {});
   }
 
   if (profile.rating !== undefined && profile.nonce !== undefined) {

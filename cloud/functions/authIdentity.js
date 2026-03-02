@@ -14,6 +14,8 @@ const MERGE_LOCK_TTL_MS = 10 * 60 * 1000;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT_MAX_COUNT = 20;
 const AUTH_OP_REPLAY_TTL_MS = 10 * 60 * 1000;
+const MERGE_LOCK_RELEASE_MAX_ATTEMPTS = 3;
+const MERGE_LOCK_RELEASE_RETRY_BASE_DELAY_MS = 80;
 
 const toCleanString = (value) => (typeof value === "string" && value.trim() !== "" ? value.trim() : "");
 const isFeatureDisabled = (name) => {
@@ -38,6 +40,7 @@ const parseNumber = (value, fallback) => {
   const numeric = typeof value === "number" ? value : Number(value);
   return Number.isFinite(numeric) ? numeric : fallback;
 };
+const waitMs = (value) => new Promise((resolve) => setTimeout(resolve, value));
 
 const createOpId = () => crypto.randomBytes(16).toString("hex");
 const createToken = (bytes = 18) => crypto.randomBytes(bytes).toString("base64url");
@@ -703,47 +706,118 @@ const consumeAuthIntent = async ({ uid, method, intentId }) => {
   return intentData;
 };
 
-const acquireMergeLock = async (targetProfileId, sourceProfileId, opId) => {
+const acquireMergeLocks = async ({ targetProfileId, sourceProfileId, opId }) => {
+  const participants = Array.from(new Set([toCleanString(targetProfileId), toCleanString(sourceProfileId)].filter((value) => value !== ""))).sort();
+  if (participants.length === 0) {
+    return [];
+  }
   const firestore = admin.firestore();
-  const key = [targetProfileId, sourceProfileId].sort().join("__");
-  const lockRef = firestore.collection("mergeLocks").doc(key);
+  const lockRefs = participants.map((profileId) => firestore.collection("mergeLocks").doc(`profile:${profileId}`));
   const nowMs = Date.now();
   await firestore.runTransaction(async (transaction) => {
-    const snapshot = await transaction.get(lockRef);
-    if (snapshot.exists) {
+    const snapshots = await Promise.all(lockRefs.map((lockRef) => transaction.get(lockRef)));
+    snapshots.forEach((snapshot) => {
+      if (!snapshot.exists) {
+        return;
+      }
       const data = snapshot.data() || {};
       const expiresAtMs = parseNumber(data.expiresAtMs, 0);
       if (expiresAtMs > nowMs && toCleanString(data.opId) !== opId) {
         throw new HttpsError("aborted", "merge-lock-active");
       }
-    }
-    transaction.set(lockRef, {
-      key,
-      opId,
-      targetProfileId,
-      sourceProfileId,
-      expiresAtMs: nowMs + MERGE_LOCK_TTL_MS,
-      updatedAtMs: nowMs,
+    });
+    lockRefs.forEach((lockRef, index) => {
+      const profileId = participants[index];
+      transaction.set(
+        lockRef,
+        {
+          key: lockRef.id,
+          opId,
+          profileId,
+          targetProfileId,
+          sourceProfileId,
+          expiresAtMs: nowMs + MERGE_LOCK_TTL_MS,
+          updatedAtMs: nowMs,
+        },
+        { merge: true }
+      );
     });
   });
-  return lockRef;
+  return lockRefs;
 };
 
-const releaseMergeLock = async (lockRef, opId) => {
-  if (!lockRef) {
+const releaseMergeLocks = async (lockRefs, opId) => {
+  if (!Array.isArray(lockRefs) || lockRefs.length === 0) {
     return;
   }
-  try {
-    const snapshot = await lockRef.get();
-    if (!snapshot.exists) {
-      return;
-    }
-    const data = snapshot.data() || {};
-    if (toCleanString(data.opId) !== opId) {
-      return;
-    }
-    await lockRef.delete();
-  } catch {}
+  const firestore = admin.firestore();
+  const hardFailures = [];
+  await Promise.all(
+    lockRefs.map(async (lockRef) => {
+      let releaseError = null;
+      for (let attempt = 1; attempt <= MERGE_LOCK_RELEASE_MAX_ATTEMPTS; attempt += 1) {
+        try {
+          await firestore.runTransaction(async (transaction) => {
+            const snapshot = await transaction.get(lockRef);
+            if (!snapshot.exists) {
+              return;
+            }
+            const data = snapshot.data() || {};
+            if (toCleanString(data.opId) !== opId) {
+              return;
+            }
+            transaction.delete(lockRef);
+          });
+          releaseError = null;
+          break;
+        } catch (error) {
+          releaseError = error;
+          if (attempt < MERGE_LOCK_RELEASE_MAX_ATTEMPTS) {
+            await waitMs(MERGE_LOCK_RELEASE_RETRY_BASE_DELAY_MS * attempt);
+          }
+        }
+      }
+
+      if (!releaseError) {
+        return;
+      }
+
+      const nowMs = Date.now();
+      try {
+        await firestore.runTransaction(async (transaction) => {
+          const snapshot = await transaction.get(lockRef);
+          if (!snapshot.exists) {
+            return;
+          }
+          const data = snapshot.data() || {};
+          if (toCleanString(data.opId) !== opId) {
+            return;
+          }
+          transaction.set(
+            lockRef,
+            {
+              expiresAtMs: nowMs - 1,
+              updatedAtMs: nowMs,
+            },
+            { merge: true }
+          );
+        });
+      } catch (fallbackError) {
+        hardFailures.push({
+          lockId: lockRef.id,
+          releaseError: toCleanString(releaseError && releaseError.message) || "unknown",
+          fallbackError: toCleanString(fallbackError && fallbackError.message) || "unknown",
+        });
+      }
+    })
+  );
+
+  if (hardFailures.length > 0) {
+    console.error("auth:merge:lock-release-failed", {
+      opId,
+      failures: hardFailures,
+    });
+  }
 };
 
 const commitOperations = async (operations) => {
@@ -835,8 +909,12 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
   const firestore = admin.firestore();
   const targetRef = firestore.collection("users").doc(targetProfileId);
   const sourceRef = firestore.collection("users").doc(sourceProfileId);
-  let lockRef = null;
-  lockRef = await acquireMergeLock(targetProfileId, sourceProfileId, opId);
+  let lockRefs = [];
+  lockRefs = await acquireMergeLocks({
+    targetProfileId,
+    sourceProfileId,
+    opId,
+  });
 
   try {
     const [targetSnapshot, sourceSnapshot] = await Promise.all([targetRef.get(), sourceRef.get()]);
@@ -969,7 +1047,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
     await sourceRef.delete();
     return mergedTargetSnapshot;
   } finally {
-    await releaseMergeLock(lockRef, opId);
+    await releaseMergeLocks(lockRefs, opId);
   }
 };
 
