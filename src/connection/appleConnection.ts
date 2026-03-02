@@ -235,9 +235,6 @@ const getAppleRedirectUri = (): string => {
   if (APPLE_REDIRECT_URI !== "") {
     return APPLE_REDIRECT_URI;
   }
-  if (typeof window !== "undefined" && window.location && window.location.origin) {
-    return window.location.origin;
-  }
   return APPLE_DEFAULT_REDIRECT_URI;
 };
 
@@ -528,6 +525,7 @@ export async function signInWithApplePopup({
   await loadAppleScript();
   const clientId = getAppleClientId();
   const redirectURI = getAppleRedirectUri();
+  const useRedirect = shouldUseRedirectFlow();
   const nowMs = Date.now();
   const pendingRecord: ApplePendingIntentRecord = {
     state,
@@ -536,14 +534,12 @@ export async function signInWithApplePopup({
     createdAtMs: nowMs,
     expiresAtMs: Number.isFinite(expiresAtMs) ? Math.floor(expiresAtMs) : nowMs + APPLE_PENDING_INTENT_MAX_AGE_MS,
   };
-  const resolvedState = buildAppleStateEnvelope(pendingRecord);
+  const resolvedState = state;
 
   storePendingAppleIntentRecord({
     ...pendingRecord,
     state: resolvedState,
   });
-
-  const useRedirect = shouldUseRedirectFlow();
 
   window.AppleID.auth.init({
     clientId,
@@ -552,12 +548,8 @@ export async function signInWithApplePopup({
     state: resolvedState,
     nonce,
     usePopup: !useRedirect,
-    ...(useRedirect
-      ? {
-          responseType: "id_token",
-          responseMode: "fragment",
-        }
-      : {}),
+    responseType: "id_token",
+    responseMode: "fragment",
   });
 
   if (useRedirect) {
