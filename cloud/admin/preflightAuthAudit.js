@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 const fs = require("fs");
-const admin = require("firebase-admin");
-const { initAdmin } = require("./_admin");
+const { initAdmin, admin } = require("./_admin");
 
 const normalizeEth = (value) => {
   if (typeof value !== "string") {

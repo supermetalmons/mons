@@ -7,6 +7,8 @@ declare global {
 let appleScriptPromise: Promise<void> | null = null;
 
 const APPLE_SCRIPT_SRC = "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
+const APPLE_CLIENT_ID = "link.mons";
+const APPLE_REDIRECT_URI = "https://mons.link";
 
 const loadAppleScript = async (): Promise<void> => {
   if (typeof window === "undefined") {
@@ -85,19 +87,11 @@ export async function preloadAppleSignInLibrary(): Promise<void> {
 }
 
 const getAppleClientId = (): string => {
-  const clientId = (process.env.REACT_APP_APPLE_CLIENT_ID || "").trim();
-  if (!clientId) {
-    throw new Error("Missing REACT_APP_APPLE_CLIENT_ID");
-  }
-  return clientId;
+  return APPLE_CLIENT_ID;
 };
 
 const getAppleRedirectUri = (): string => {
-  const configured = (process.env.REACT_APP_APPLE_REDIRECT_URI || "").trim();
-  if (configured) {
-    return configured;
-  }
-  return window.location.origin;
+  return APPLE_REDIRECT_URI;
 };
 
 export async function signInWithApplePopup({ nonce, state }: { nonce: string; state: string }): Promise<{ idToken: string }> {

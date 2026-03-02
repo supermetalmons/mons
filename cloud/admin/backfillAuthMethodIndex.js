@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-const admin = require("firebase-admin");
-const { initAdmin } = require("./_admin");
+const { initAdmin, admin } = require("./_admin");
 
 const toCleanString = (value) => (typeof value === "string" && value.trim() !== "" ? value.trim() : "");
 
