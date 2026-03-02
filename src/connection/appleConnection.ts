@@ -119,11 +119,14 @@ export async function signInWithApplePopup({ nonce, state }: { nonce: string; st
   const response = await window.AppleID.auth.signIn();
   const authorization = response && response.authorization ? response.authorization : null;
   const idToken = authorization && typeof authorization.id_token === "string" ? authorization.id_token : "";
-  const responseState = authorization && typeof authorization.state === "string" ? authorization.state : "";
+  const responseStateFromAuthorization = authorization && typeof authorization.state === "string" ? authorization.state : "";
+  const responseStateFromRoot = response && typeof response.state === "string" ? response.state : "";
+  const stateCandidates = [responseStateFromAuthorization, responseStateFromRoot].filter((value) => value !== "");
+  const hasMatchingState = stateCandidates.includes(state);
   if (!idToken) {
     throw new Error("Apple sign in did not return id_token");
   }
-  if (responseState && responseState !== state) {
+  if (!hasMatchingState) {
     throw new Error("Apple sign in state mismatch");
   }
   return { idToken };

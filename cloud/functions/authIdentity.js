@@ -14,6 +14,7 @@ const MERGE_LOCK_TTL_MS = 10 * 60 * 1000;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT_MAX_COUNT = 20;
 const AUTH_OP_REPLAY_TTL_MS = 10 * 60 * 1000;
+const LINK_METHOD_MAX_ATTEMPTS = 3;
 const MERGE_LOCK_RELEASE_MAX_ATTEMPTS = 3;
 const MERGE_LOCK_RELEASE_RETRY_BASE_DELAY_MS = 80;
 
@@ -315,7 +316,11 @@ const readProfileByMethod = async (method, normalizedValue, rawValue) => {
           const liveIndexData = liveIndexSnapshot.data() || {};
           const indexedProfileId = toCleanString(liveIndexData.profileId);
           if (indexedProfileId && indexedProfileId !== doc.id) {
-            throw new HttpsError("failed-precondition", "method-index-conflict");
+            const indexedProfileRef = firestore.collection("users").doc(indexedProfileId);
+            const indexedProfileSnapshot = await transaction.get(indexedProfileRef);
+            if (indexedProfileSnapshot.exists) {
+              throw new HttpsError("failed-precondition", "method-index-conflict");
+            }
           }
         }
         transaction.set(
@@ -1091,8 +1096,15 @@ const createInitialProfileWithIndex = async ({ uid, method, normalizedMethodValu
     const indexSnapshot = await transaction.get(indexRef);
     if (indexSnapshot.exists) {
       const indexData = indexSnapshot.data() || {};
-      profileId = toCleanString(indexData.profileId);
-      return;
+      const indexedProfileId = toCleanString(indexData.profileId);
+      if (indexedProfileId) {
+        const indexedProfileRef = firestore.collection("users").doc(indexedProfileId);
+        const indexedProfileSnapshot = await transaction.get(indexedProfileRef);
+        if (indexedProfileSnapshot.exists) {
+          profileId = indexedProfileId;
+          return;
+        }
+      }
     }
     const userRef = firestore.collection("users").doc();
     profileId = userRef.id;
@@ -1117,46 +1129,51 @@ const createInitialProfileWithIndex = async ({ uid, method, normalizedMethodValu
   return { profileId, created };
 };
 
-const ensureProfileMethodAndLogin = async ({ profileId, uid, method, normalizedMethodValue, methodValueRaw, appleEmailMasked, consentSource }) => {
+const ensureProfileMethodAndLoginAndIndex = async ({ profileId, uid, method, normalizedMethodValue, methodValueRaw, appleEmailMasked, consentSource }) => {
   const firestore = admin.firestore();
   const profileRef = firestore.collection("users").doc(profileId);
-  const profileSnapshot = await profileRef.get();
-  if (!profileSnapshot.exists) {
-    throw new HttpsError("not-found", "profile-not-found");
-  }
-  const profileData = profileSnapshot.data() || {};
-  ensureMethodCompatibility(profileData, method, normalizedMethodValue);
-  const patch = buildMethodPatch({ method, methodValueRaw, appleEmailMasked, consentSource });
-  await profileRef.set(
-    {
-      ...patch,
-      logins: admin.firestore.FieldValue.arrayUnion(uid),
-    },
-    { merge: true }
-  );
-};
-
-const bindMethodIndexToProfile = async ({ method, normalizedMethodValue, profileId }) => {
-  const firestore = admin.firestore();
   const indexRef = firestore.collection("authMethodIndex").doc(getMethodKey(method, normalizedMethodValue));
   let conflictProfileId = "";
+  const nowMs = Date.now();
   await firestore.runTransaction(async (transaction) => {
-    const snapshot = await transaction.get(indexRef);
-    if (snapshot.exists) {
-      const data = snapshot.data() || {};
-      const indexedProfileId = toCleanString(data.profileId);
+    conflictProfileId = "";
+    const profileSnapshot = await transaction.get(profileRef);
+    if (!profileSnapshot.exists) {
+      throw new HttpsError("not-found", "profile-not-found");
+    }
+    const profileData = profileSnapshot.data() || {};
+    ensureMethodCompatibility(profileData, method, normalizedMethodValue);
+
+    const indexSnapshot = await transaction.get(indexRef);
+    if (indexSnapshot.exists) {
+      const indexData = indexSnapshot.data() || {};
+      const indexedProfileId = toCleanString(indexData.profileId);
       if (indexedProfileId && indexedProfileId !== profileId) {
-        conflictProfileId = indexedProfileId;
-        return;
+        const indexedProfileRef = firestore.collection("users").doc(indexedProfileId);
+        const indexedProfileSnapshot = await transaction.get(indexedProfileRef);
+        if (indexedProfileSnapshot.exists) {
+          conflictProfileId = indexedProfileId;
+          return;
+        }
       }
     }
+
+    const patch = buildMethodPatch({ method, methodValueRaw, appleEmailMasked, consentSource });
+    transaction.set(
+      profileRef,
+      {
+        ...patch,
+        logins: admin.firestore.FieldValue.arrayUnion(uid),
+      },
+      { merge: true }
+    );
     transaction.set(
       indexRef,
       {
         profileId,
         method,
         normalizedValue: normalizedMethodValue,
-        updatedAtMs: Date.now(),
+        updatedAtMs: nowMs,
       },
       { merge: true }
     );
@@ -1232,19 +1249,6 @@ const linkVerifiedMethod = async ({
       targetProfileId = methodProfile.id;
     } else if (currentProfile && !methodProfile) {
       targetProfileId = currentProfile.id;
-      const conflictProfileId = await bindMethodIndexToProfile({
-        method,
-        normalizedMethodValue,
-        profileId: currentProfile.id,
-      });
-      if (conflictProfileId && conflictProfileId !== currentProfile.id) {
-        const mergedSnapshot = await mergeProfiles({
-          targetProfileId: currentProfile.id,
-          sourceProfileId: conflictProfileId,
-          opId: op.opId,
-        });
-        targetProfileId = mergedSnapshot.id;
-      }
     } else if (currentProfile && methodProfile && currentProfile.id === methodProfile.id) {
       targetProfileId = currentProfile.id;
     } else if (currentProfile && methodProfile && currentProfile.id !== methodProfile.id) {
@@ -1258,15 +1262,31 @@ const linkVerifiedMethod = async ({
       throw new HttpsError("internal", "unexpected-auth-state");
     }
 
-    await ensureProfileMethodAndLogin({
-      profileId: targetProfileId,
-      uid,
-      method,
-      normalizedMethodValue,
-      methodValueRaw,
-      appleEmailMasked,
-      consentSource,
-    });
+    let didLinkMethod = false;
+    for (let attempt = 1; attempt <= LINK_METHOD_MAX_ATTEMPTS; attempt += 1) {
+      const conflictProfileId = await ensureProfileMethodAndLoginAndIndex({
+        profileId: targetProfileId,
+        uid,
+        method,
+        normalizedMethodValue,
+        methodValueRaw,
+        appleEmailMasked,
+        consentSource,
+      });
+      if (!conflictProfileId || conflictProfileId === targetProfileId) {
+        didLinkMethod = true;
+        break;
+      }
+      const mergedSnapshot = await mergeProfiles({
+        targetProfileId,
+        sourceProfileId: conflictProfileId,
+        opId: op.opId,
+      });
+      targetProfileId = mergedSnapshot.id;
+    }
+    if (!didLinkMethod) {
+      throw new HttpsError("aborted", "method-index-race-retry");
+    }
 
     const targetProfileSnapshot = await admin.firestore().collection("users").doc(targetProfileId).get();
     if (!targetProfileSnapshot.exists) {
