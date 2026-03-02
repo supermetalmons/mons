@@ -133,6 +133,7 @@ class Connection {
   private currentUid: string | null = "";
   private sessionEpoch = 0;
   private authUnsubscribers = new Set<() => void>();
+  private authBootstrapPromise: Promise<void> | null = null;
   private pendingInviteCreation: { inviteId: string; promise: Promise<boolean> } | null = null;
   private moveSendRequestId = 0;
   private readonly moveSendRetryWindowMs = 60000;
@@ -1132,7 +1133,52 @@ class Connection {
     return null;
   }
 
+  private async waitForInitialAuthState(): Promise<void> {
+    if (this.auth.currentUser) {
+      return;
+    }
+    if (!this.authBootstrapPromise) {
+      this.authBootstrapPromise = new Promise<void>((resolve) => {
+        let settled = false;
+        let timeoutId: ReturnType<typeof setTimeout> | null = null;
+        let unsubscribe: (() => void) | null = null;
+        const finish = () => {
+          if (settled) {
+            return;
+          }
+          settled = true;
+          if (timeoutId) {
+            clearTimeout(timeoutId);
+          }
+          if (unsubscribe) {
+            unsubscribe();
+          }
+          resolve();
+        };
+        unsubscribe = onAuthStateChanged(
+          this.auth,
+          () => {
+            finish();
+          },
+          () => {
+            finish();
+          }
+        );
+        timeoutId = setTimeout(() => {
+          finish();
+        }, 1500);
+      }).finally(() => {
+        this.authBootstrapPromise = null;
+      });
+    }
+    await this.authBootstrapPromise;
+  }
+
   private async ensureAuthenticated(): Promise<void> {
+    if (this.auth.currentUser) {
+      return;
+    }
+    await this.waitForInitialAuthState();
     if (!this.auth.currentUser) {
       const uid = await this.signIn();
       if (!uid) {
