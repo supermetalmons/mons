@@ -218,7 +218,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   }, [refreshLinkedMethods]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter" || e.key === "Escape") {
+    if (e.key === "Escape") {
       e.stopPropagation();
       onClose();
     }

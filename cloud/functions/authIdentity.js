@@ -19,6 +19,14 @@ const MERGE_LOCK_RELEASE_MAX_ATTEMPTS = 3;
 const MERGE_LOCK_RELEASE_RETRY_BASE_DELAY_MS = 80;
 
 const toCleanString = (value) => (typeof value === "string" && value.trim() !== "" ? value.trim() : "");
+const normalizeMethodName = (value) => toCleanString(value).toLowerCase();
+const assertSupportedMethod = (value) => {
+  const method = normalizeMethodName(value);
+  if (!METHOD_FIELD_BY_TYPE[method]) {
+    throw new HttpsError("invalid-argument", "Unsupported auth method.");
+  }
+  return method;
+};
 const isFeatureDisabled = (name) => {
   const value = toCleanString(process.env[name]).toLowerCase();
   return value === "1" || value === "true" || value === "yes";
@@ -654,10 +662,7 @@ const beginAuthIntent = async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
-  const method = toCleanString(request.data && request.data.method);
-  if (!METHOD_FIELD_BY_TYPE[method]) {
-    throw new HttpsError("invalid-argument", "Unsupported auth method.");
-  }
+  const method = assertSupportedMethod(request.data && request.data.method);
   await enforceRateLimit({ uid: request.auth.uid, method: `intent-${method}`, request });
 
   const firestore = admin.firestore();
@@ -860,53 +865,115 @@ const commitOperations = async (operations) => {
   }
 };
 
-const syncMethodIndexesForProfileData = async (profileId, profileData, options = {}) => {
-  const { force = false, allowedProfileIds = [] } = options;
-  const allowedOwners = new Set(
-    [profileId, ...allowedProfileIds]
-      .map((value) => toCleanString(value))
-      .filter((value) => value !== "")
-  );
-  const indexEntries = [];
-  const eth = normalizeFromProfileByMethod("eth", profileData);
-  if (eth) {
-    indexEntries.push({ method: "eth", normalizedValue: eth });
+const runWithRetries = async ({ attempts = 3, baseDelayMs = 100, work }) => {
+  let lastError = null;
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      await work(attempt);
+      return null;
+    } catch (error) {
+      lastError = error;
+      if (attempt < attempts) {
+        await waitMs(baseDelayMs * attempt);
+      }
+    }
   }
-  const sol = normalizeFromProfileByMethod("sol", profileData);
-  if (sol) {
-    indexEntries.push({ method: "sol", normalizedValue: sol });
-  }
-  const appleSub = normalizeFromProfileByMethod("apple", profileData);
-  if (appleSub) {
-    indexEntries.push({ method: "apple", normalizedValue: appleSub });
+  return lastError;
+};
+
+const persistPendingClaimSync = async ({ targetRef, targetProfileId, sourceProfileId, failedLoginUids, opId }) => {
+  const firestore = admin.firestore();
+  const nowMs = Date.now();
+  const pendingPayload = {
+    pendingClaimSyncLogins: failedLoginUids,
+    pendingClaimSyncUpdatedAtMs: nowMs,
+  };
+  const pendingWriteError = await runWithRetries({
+    attempts: 3,
+    baseDelayMs: 120,
+    work: async () => {
+      await targetRef.set(pendingPayload, { merge: true });
+    },
+  });
+  if (!pendingWriteError) {
+    return { location: "profile" };
   }
 
-  const firestore = admin.firestore();
-  for (const entry of indexEntries) {
-    const indexRef = firestore.collection("authMethodIndex").doc(getMethodKey(entry.method, entry.normalizedValue));
-    await firestore.runTransaction(async (transaction) => {
-      const snapshot = await transaction.get(indexRef);
-      if (snapshot.exists) {
-        const data = snapshot.data() || {};
-        const indexedProfileId = toCleanString(data.profileId);
-        if (force) {
-          if (indexedProfileId && !allowedOwners.has(indexedProfileId)) {
-            throw new HttpsError("failed-precondition", "method-index-conflict");
-          }
-        } else if (indexedProfileId && indexedProfileId !== profileId) {
-          throw new HttpsError("failed-precondition", "method-index-conflict");
-        }
-      }
-      transaction.set(
-        indexRef,
+  const fallbackRef = firestore.collection("authClaimSyncBacklog").doc(toCleanString(opId) || createOpId());
+  const fallbackWriteError = await runWithRetries({
+    attempts: 3,
+    baseDelayMs: 160,
+    work: async () => {
+      await fallbackRef.set(
         {
-          profileId,
-          method: entry.method,
-          normalizedValue: entry.normalizedValue,
+          opId: toCleanString(opId) || null,
+          targetProfileId,
+          sourceProfileId,
+          failedLoginUids,
+          status: "pending",
+          createdAtMs: nowMs,
           updatedAtMs: Date.now(),
         },
         { merge: true }
       );
+    },
+  });
+  if (!fallbackWriteError) {
+    console.warn("auth:merge:claim-sync-pending-fallback", {
+      opId,
+      targetProfileId,
+      sourceProfileId,
+      failedLoginUids,
+    });
+    return { location: "backlog" };
+  }
+
+  console.error("auth:merge:claim-sync-pending-write-failed", {
+    opId,
+    targetProfileId,
+    sourceProfileId,
+    failedLoginUids,
+    profileWriteError: toCleanString(pendingWriteError && pendingWriteError.message) || String(pendingWriteError),
+    fallbackWriteError: toCleanString(fallbackWriteError && fallbackWriteError.message) || String(fallbackWriteError),
+  });
+  return { location: "unpersisted" };
+};
+
+const recordMergeGameSyncFailure = async ({ targetProfileId, sourceProfileId, opId, stage, operationsCount, error }) => {
+  const firestore = admin.firestore();
+  const failureMessage = toCleanString(error && error.message) || String(error);
+  const normalizedStage = toCleanString(stage) || "unknown";
+  const nowMs = Date.now();
+  const backlogRef = firestore.collection("authMergeGameBacklog").doc(`${toCleanString(opId) || createOpId()}:${normalizedStage}`);
+  const backlogError = await runWithRetries({
+    attempts: 3,
+    baseDelayMs: 160,
+    work: async () => {
+      await backlogRef.set(
+        {
+          opId: toCleanString(opId) || null,
+          targetProfileId,
+          sourceProfileId,
+          stage: normalizedStage,
+          operationsCount,
+          error: failureMessage,
+          status: "pending",
+          createdAtMs: nowMs,
+          updatedAtMs: Date.now(),
+        },
+        { merge: true }
+      );
+    },
+  });
+  if (backlogError) {
+    console.error("auth:merge:game-copy-backlog-write-failed", {
+      opId,
+      targetProfileId,
+      sourceProfileId,
+      stage: normalizedStage,
+      operationsCount,
+      copyError: failureMessage,
+      backlogError: toCleanString(backlogError && backlogError.message) || String(backlogError),
     });
   }
 };
@@ -985,39 +1052,176 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
       mergedSourceProfileId: sourceProfileId,
     };
 
-    await targetRef.set(mergedData, { merge: true });
-
     const [sourceGamesSnapshot, targetGamesSnapshot] = await Promise.all([sourceRef.collection("games").get(), targetRef.collection("games").get()]);
     const targetGameByInvite = new Map();
     targetGamesSnapshot.forEach((doc) => {
       targetGameByInvite.set(doc.id, doc);
     });
-    const gameOps = [];
+    const gameCopyOps = [];
+    const sourceGameDeleteOps = [];
     sourceGamesSnapshot.forEach((sourceGameDoc) => {
       const sourceDataForInvite = sourceGameDoc.data() || {};
       const targetDocForInvite = targetGameByInvite.get(sourceGameDoc.id);
       const shouldWriteToTarget = !targetDocForInvite || readMergeFreshness(sourceDataForInvite) >= readMergeFreshness(targetDocForInvite.data() || {});
       if (shouldWriteToTarget) {
-        gameOps.push({
+        gameCopyOps.push({
           type: "set",
           ref: targetRef.collection("games").doc(sourceGameDoc.id),
           data: sourceDataForInvite,
           merge: true,
         });
       }
-      gameOps.push({
+      sourceGameDeleteOps.push({
         type: "delete",
         ref: sourceGameDoc.ref,
       });
     });
-    await commitOperations(gameOps);
 
-    const mergedTargetSnapshot = await targetRef.get();
-    const mergedTargetData = mergedTargetSnapshot.data() || {};
-    await syncMethodIndexesForProfileData(targetProfileId, mergedTargetData, {
-      force: true,
-      allowedProfileIds: [sourceProfileId, targetProfileId],
+    const methodIndexEntries = [];
+    if (mergedEth) {
+      methodIndexEntries.push({ method: "eth", normalizedValue: mergedEth });
+    }
+    if (mergedSol) {
+      methodIndexEntries.push({ method: "sol", normalizedValue: mergedSol });
+    }
+    if (mergedAppleSub) {
+      methodIndexEntries.push({ method: "apple", normalizedValue: mergedAppleSub });
+    }
+    const allowedIndexOwners = new Set(
+      [targetProfileId, sourceProfileId]
+        .map((value) => toCleanString(value))
+        .filter((value) => value !== "")
+    );
+    const nowMs = Date.now();
+    await firestore.runTransaction(async (transaction) => {
+      const [liveTargetSnapshot, liveSourceSnapshot] = await Promise.all([transaction.get(targetRef), transaction.get(sourceRef)]);
+      if (!liveTargetSnapshot.exists) {
+        throw new HttpsError("not-found", "target-profile-not-found");
+      }
+      for (const entry of methodIndexEntries) {
+        const indexRef = firestore.collection("authMethodIndex").doc(getMethodKey(entry.method, entry.normalizedValue));
+        const indexSnapshot = await transaction.get(indexRef);
+        if (indexSnapshot.exists) {
+          const indexData = indexSnapshot.data() || {};
+          const indexedProfileId = toCleanString(indexData.profileId);
+          if (indexedProfileId && !allowedIndexOwners.has(indexedProfileId)) {
+            throw new HttpsError("failed-precondition", "method-index-conflict");
+          }
+        }
+        transaction.set(
+          indexRef,
+          {
+            profileId: targetProfileId,
+            method: entry.method,
+            normalizedValue: entry.normalizedValue,
+            updatedAtMs: nowMs,
+          },
+          { merge: true }
+        );
+      }
+      transaction.set(targetRef, mergedData, { merge: true });
+      if (liveSourceSnapshot.exists) {
+        transaction.delete(sourceRef);
+      }
     });
+    const mergedTargetSnapshot = await targetRef.get();
+    const gameCopyError = await runWithRetries({
+      attempts: 3,
+      baseDelayMs: 120,
+      work: async () => {
+        await commitOperations(gameCopyOps);
+      },
+    });
+    if (gameCopyError) {
+      console.error("auth:merge:game-copy-partial-failure", {
+        opId,
+        targetProfileId,
+        sourceProfileId,
+        gameCopyOpsCount: gameCopyOps.length,
+        error: toCleanString(gameCopyError && gameCopyError.message) || String(gameCopyError),
+      });
+      const pendingMarkerError = await runWithRetries({
+        attempts: 3,
+        baseDelayMs: 120,
+        work: async () => {
+          await targetRef.set(
+            {
+              pendingMergeGameCopySourceProfileId: sourceProfileId,
+              pendingMergeGameCopyUpdatedAtMs: Date.now(),
+            },
+            { merge: true }
+          );
+        },
+      });
+      if (pendingMarkerError) {
+        console.error("auth:merge:game-copy-pending-marker-write-failed", {
+          opId,
+          targetProfileId,
+          sourceProfileId,
+          error: toCleanString(pendingMarkerError && pendingMarkerError.message) || String(pendingMarkerError),
+        });
+      }
+      await recordMergeGameSyncFailure({
+        targetProfileId,
+        sourceProfileId,
+        opId,
+        stage: "copy",
+        operationsCount: gameCopyOps.length,
+        error: gameCopyError,
+      });
+    } else {
+      const clearPendingMarkerError = await runWithRetries({
+        attempts: 3,
+        baseDelayMs: 120,
+        work: async () => {
+          const targetSnapshotForMarker = await targetRef.get();
+          const targetMarkerData = targetSnapshotForMarker.data() || {};
+          const pendingSourceProfileId = toCleanString(targetMarkerData.pendingMergeGameCopySourceProfileId);
+          if (pendingSourceProfileId && pendingSourceProfileId !== sourceProfileId) {
+            return;
+          }
+          await targetRef.set(
+            {
+              pendingMergeGameCopySourceProfileId: admin.firestore.FieldValue.delete(),
+              pendingMergeGameCopyUpdatedAtMs: admin.firestore.FieldValue.delete(),
+            },
+            { merge: true }
+          );
+        },
+      });
+      if (clearPendingMarkerError) {
+        console.error("auth:merge:game-copy-pending-marker-clear-failed", {
+          opId,
+          targetProfileId,
+          sourceProfileId,
+          error: toCleanString(clearPendingMarkerError && clearPendingMarkerError.message) || String(clearPendingMarkerError),
+        });
+      }
+      const sourceGameCleanupError = await runWithRetries({
+        attempts: 3,
+        baseDelayMs: 100,
+        work: async () => {
+          await commitOperations(sourceGameDeleteOps);
+        },
+      });
+      if (sourceGameCleanupError) {
+        console.error("auth:merge:source-games-cleanup-partial-failure", {
+          opId,
+          targetProfileId,
+          sourceProfileId,
+          sourceGameDeleteOpsCount: sourceGameDeleteOps.length,
+          error: toCleanString(sourceGameCleanupError && sourceGameCleanupError.message) || String(sourceGameCleanupError),
+        });
+        await recordMergeGameSyncFailure({
+          targetProfileId,
+          sourceProfileId,
+          opId,
+          stage: "cleanup",
+          operationsCount: sourceGameDeleteOps.length,
+          error: sourceGameCleanupError,
+        });
+      }
+    }
 
     const claimSyncResults = await Promise.allSettled(
       mergedLogins.map(async (loginUid) => {
@@ -1037,28 +1241,42 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
     }
     if (retryClaimFailures.length > 0) {
       console.error("auth:merge:claim-sync-partial-failure", {
+        opId,
         targetProfileId,
         sourceProfileId,
         failedLoginUids: retryClaimFailures,
       });
-      await targetRef.set(
-        {
-          pendingClaimSyncLogins: retryClaimFailures,
-          pendingClaimSyncUpdatedAtMs: Date.now(),
-        },
-        { merge: true }
-      );
+      await persistPendingClaimSync({
+        targetRef,
+        targetProfileId,
+        sourceProfileId,
+        failedLoginUids: retryClaimFailures,
+        opId,
+      });
     } else {
-      await targetRef.set(
-        {
-          pendingClaimSyncLogins: admin.firestore.FieldValue.delete(),
-          pendingClaimSyncUpdatedAtMs: admin.firestore.FieldValue.delete(),
+      const pendingClearError = await runWithRetries({
+        attempts: 3,
+        baseDelayMs: 120,
+        work: async () => {
+          await targetRef.set(
+            {
+              pendingClaimSyncLogins: admin.firestore.FieldValue.delete(),
+              pendingClaimSyncUpdatedAtMs: admin.firestore.FieldValue.delete(),
+            },
+            { merge: true }
+          );
         },
-        { merge: true }
-      );
+      });
+      if (pendingClearError) {
+        console.error("auth:merge:claim-sync-pending-clear-failed", {
+          opId,
+          targetProfileId,
+          sourceProfileId,
+          error: toCleanString(pendingClearError && pendingClearError.message) || String(pendingClearError),
+        });
+      }
     }
 
-    await sourceRef.delete();
     return mergedTargetSnapshot;
   } finally {
     await releaseMergeLocks(lockRefs, opId);
@@ -1308,14 +1526,15 @@ const linkVerifiedMethod = async ({
 };
 
 const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
+  const normalizedMethod = assertSupportedMethod(method);
   if (isFeatureDisabled("AUTH_DISABLE_UNLINK")) {
     throw new HttpsError("failed-precondition", "unlink-disabled");
   }
-  await enforceRateLimit({ uid, method: `unlink-${method}`, request });
+  await enforceRateLimit({ uid, method: `unlink-${normalizedMethod}`, request });
   const op = await beginAuthOp({
     opId,
     kind: "unlink",
-    method,
+    method: normalizedMethod,
     uid,
     meta: null,
   });
@@ -1338,8 +1557,8 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
       }
       const liveProfileData = liveProfileSnapshot.data() || {};
       const linkedCount = linkedMethodCount(liveProfileData);
-      const normalizedValue = normalizeFromProfileByMethod(method, liveProfileData);
-      const rawValue = getMethodValueFromProfile(liveProfileData, method);
+      const normalizedValue = normalizeFromProfileByMethod(normalizedMethod, liveProfileData);
+      const rawValue = getMethodValueFromProfile(liveProfileData, normalizedMethod);
       if (!normalizedValue && !rawValue) {
         throw new HttpsError("failed-precondition", "method-not-linked");
       }
@@ -1348,11 +1567,11 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
       }
 
       const updateData = {};
-      if (method === "eth") {
+      if (normalizedMethod === "eth") {
         updateData.eth = admin.firestore.FieldValue.delete();
-      } else if (method === "sol") {
+      } else if (normalizedMethod === "sol") {
         updateData.sol = admin.firestore.FieldValue.delete();
-      } else if (method === "apple") {
+      } else if (normalizedMethod === "apple") {
         updateData.appleSub = admin.firestore.FieldValue.delete();
         updateData.appleEmailMasked = admin.firestore.FieldValue.delete();
         updateData.appleLinkedAt = admin.firestore.FieldValue.delete();
@@ -1364,7 +1583,7 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
       transaction.update(profileRef, updateData);
 
       if (normalizedValue) {
-        const methodDocId = getMethodKey(method, normalizedValue);
+        const methodDocId = getMethodKey(normalizedMethod, normalizedValue);
         const indexRef = firestore.collection("authMethodIndex").doc(methodDocId);
         const revocationRef = firestore.collection("authMethodRevocations").doc(methodDocId);
         const indexSnapshot = await transaction.get(indexRef);
@@ -1376,7 +1595,7 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
         }
         transaction.set(revocationRef, {
           profileId,
-          method,
+          method: normalizedMethod,
           normalizedValue,
           revokedAtMs: Date.now(),
           updatedAtMs: Date.now(),
