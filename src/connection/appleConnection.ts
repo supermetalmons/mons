@@ -106,8 +106,6 @@ export async function signInWithApplePopup({ nonce, state }: { nonce: string; st
     state,
     nonce,
     usePopup: true,
-    responseType: "id_token",
-    responseMode: "fragment",
   });
 
   const response = await window.AppleID.auth.signIn();

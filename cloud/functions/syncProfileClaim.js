@@ -1,7 +1,7 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { syncProfileClaimForUid } = require("./authIdentity");
 
-exports.syncProfileClaim = onCall(async (request) => {
+exports.syncProfileClaim = onCall({ invoker: "public" }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }

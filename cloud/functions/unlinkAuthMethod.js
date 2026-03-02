@@ -1,7 +1,7 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const { unlinkMethodForUid } = require("./authIdentity");
 
-exports.unlinkAuthMethod = onCall(async (request) => {
+exports.unlinkAuthMethod = onCall({ invoker: "public" }, async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
