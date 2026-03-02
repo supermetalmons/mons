@@ -44,6 +44,15 @@ const waitMs = (value) => new Promise((resolve) => setTimeout(resolve, value));
 
 const createOpId = () => crypto.randomBytes(16).toString("hex");
 const createToken = (bytes = 18) => crypto.randomBytes(bytes).toString("base64url");
+const createSiweNonce = (length = 24) => {
+  const targetLength = Number.isFinite(length) && length >= 8 ? Math.floor(length) : 24;
+  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let value = "";
+  for (let index = 0; index < targetLength; index += 1) {
+    value += alphabet[crypto.randomInt(alphabet.length)];
+  }
+  return value;
+};
 
 const normalizeEth = (value) => {
   const input = toCleanString(value).toLowerCase();
@@ -649,7 +658,7 @@ const beginAuthIntent = async (request) => {
   const firestore = admin.firestore();
   const nowMs = Date.now();
   const intentId = createToken(18);
-  const nonce = createToken(18);
+  const nonce = method === "eth" ? createSiweNonce(24) : createToken(18);
   const state = createToken(18);
   const expiresAtMs = nowMs + INTENT_TTL_MS;
   await firestore.collection("authIntents").doc(intentId).set({

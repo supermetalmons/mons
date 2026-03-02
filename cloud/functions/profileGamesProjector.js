@@ -1,5 +1,6 @@
 const admin = require("firebase-admin");
 const { onValueCreated, onValueWritten } = require("firebase-functions/v2/database");
+const { onDocumentDeleted } = require("firebase-functions/v2/firestore");
 
 const SORT_BUCKETS = {
   pending: 20,
@@ -11,6 +12,11 @@ const SORT_BUCKETS = {
 const PROFILE_LINK_CATCHUP_MAX_INVITES = 300;
 const PROFILE_LINK_CATCHUP_CONCURRENCY = 20;
 const PROFILE_LINK_CATCHUP_TIMEOUT_MS = 50000;
+const PROFILE_LINK_STALE_CLEANUP_MERGE_WINDOW_MS = 15 * 60 * 1000;
+const PROFILE_LINK_STALE_CLEANUP_WAIT_MAX_MS = 4000;
+const PROFILE_LINK_STALE_CLEANUP_WAIT_STEP_MS = 250;
+const PROFILE_DELETE_GAMES_CLEANUP_BATCH_SIZE = 400;
+const PROFILE_DELETE_GAMES_CLEANUP_TIMEOUT_MS = 50000;
 
 const PROJECTOR_SCHEMA_VERSION = 2;
 const READ_RETRY_ATTEMPTS = 2;
@@ -829,6 +835,62 @@ const processWithConcurrency = async (items, concurrency, worker, shouldContinue
   await Promise.all(runners);
 };
 
+const readNumericMillis = (value) => {
+  const fromTimestamp = readTimestampMillis(value);
+  if (Number.isFinite(fromTimestamp)) {
+    return fromTimestamp;
+  }
+  const numeric = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(numeric) ? Math.floor(numeric) : null;
+};
+
+const hasRecentMergeMarkerForSource = (targetData, staleProfileId) => {
+  const mergedSourceProfileId = normalizeString(targetData && targetData.mergedSourceProfileId);
+  if (!mergedSourceProfileId || mergedSourceProfileId !== staleProfileId) {
+    return false;
+  }
+  const mergedAtMs = readNumericMillis(targetData && targetData.mergedAtMs);
+  if (!Number.isFinite(mergedAtMs)) {
+    return false;
+  }
+  return Date.now() - mergedAtMs <= PROFILE_LINK_STALE_CLEANUP_MERGE_WINDOW_MS;
+};
+
+const waitForProfileDeletion = async (profileRef) => {
+  const startedAt = Date.now();
+  while (Date.now() - startedAt <= PROFILE_LINK_STALE_CLEANUP_WAIT_MAX_MS) {
+    const snapshot = await profileRef.get();
+    if (!snapshot.exists) {
+      return true;
+    }
+    await delay(PROFILE_LINK_STALE_CLEANUP_WAIT_STEP_MS);
+  }
+  const finalSnapshot = await profileRef.get();
+  return !finalSnapshot.exists;
+};
+
+const deleteProfileGamesProjectionDocs = async (profileRef) => {
+  const startedAt = Date.now();
+  let deleted = 0;
+  while (Date.now() - startedAt <= PROFILE_DELETE_GAMES_CLEANUP_TIMEOUT_MS) {
+    const snapshot = await profileRef.collection("games").limit(PROFILE_DELETE_GAMES_CLEANUP_BATCH_SIZE).get();
+    if (snapshot.empty) {
+      return { deleted, complete: true };
+    }
+    const batch = profileRef.firestore.batch();
+    snapshot.docs.forEach((doc) => {
+      batch.delete(doc.ref);
+    });
+    await batch.commit();
+    deleted += snapshot.size;
+  }
+  const remainingSnapshot = await profileRef.collection("games").limit(1).get();
+  return {
+    deleted,
+    complete: remainingSnapshot.empty,
+  };
+};
+
 const onInviteCreated = onValueCreated("/invites/{inviteId}", async (event) => {
   const inviteId = event.params.inviteId;
   await recomputeInviteProjection(inviteId, "invite-created", {
@@ -939,6 +1001,7 @@ const processProfileLinkCatchup = async ({ loginUid, profileId, staleProfileId =
 
   let processed = 0;
   let failed = 0;
+  const successfullyRecomputedInviteIds = [];
 
   await processWithConcurrency(
     inviteIds,
@@ -952,6 +1015,7 @@ const processProfileLinkCatchup = async ({ loginUid, profileId, staleProfileId =
           eventTimestampMs: Date.now(),
           preserveNewerListSortAt: true,
         });
+        successfullyRecomputedInviteIds.push(inviteId);
         processed += 1;
       } catch (error) {
         failed += 1;
@@ -970,20 +1034,38 @@ const processProfileLinkCatchup = async ({ loginUid, profileId, staleProfileId =
   const didHitInviteCap = inviteIds.length >= PROFILE_LINK_CATCHUP_MAX_INVITES;
 
   let staleCleanupDeleted = 0;
-  if (staleProfileId && staleProfileId !== profileId && inviteIds.length > 0) {
+  let staleCleanupState = "skipped";
+  if (staleProfileId && staleProfileId !== profileId) {
     const firestore = admin.firestore();
-    const deleteOps = inviteIds.map((inviteId) => ({
-      type: "delete",
-      ref: firestore.collection("users").doc(staleProfileId).collection("games").doc(inviteId),
-    }));
-    while (deleteOps.length > 0) {
-      const batch = firestore.batch();
-      const chunk = deleteOps.splice(0, 400);
-      chunk.forEach((op) => {
-        batch.delete(op.ref);
-      });
-      await batch.commit();
-      staleCleanupDeleted += chunk.length;
+    const targetRef = firestore.collection("users").doc(profileId);
+    const staleRef = firestore.collection("users").doc(staleProfileId);
+    const targetSnapshot = await targetRef.get();
+    if (!targetSnapshot.exists) {
+      staleCleanupState = "target-profile-missing";
+    } else if (!hasRecentMergeMarkerForSource(targetSnapshot.data() || {}, staleProfileId)) {
+      staleCleanupState = "merge-marker-mismatch";
+    } else if (successfullyRecomputedInviteIds.length === 0) {
+      staleCleanupState = "no-successful-recomputes";
+    } else {
+      const staleProfileDeleted = await waitForProfileDeletion(staleRef);
+      if (!staleProfileDeleted) {
+        staleCleanupState = "stale-profile-still-exists";
+      } else {
+        staleCleanupState = "done";
+        const deleteOps = successfullyRecomputedInviteIds.map((inviteId) => ({
+          type: "delete",
+          ref: firestore.collection("users").doc(staleProfileId).collection("games").doc(inviteId),
+        }));
+        while (deleteOps.length > 0) {
+          const batch = firestore.batch();
+          const chunk = deleteOps.splice(0, 400);
+          chunk.forEach((op) => {
+            batch.delete(op.ref);
+          });
+          await batch.commit();
+          staleCleanupDeleted += chunk.length;
+        }
+      }
     }
   }
 
@@ -997,6 +1079,7 @@ const processProfileLinkCatchup = async ({ loginUid, profileId, staleProfileId =
     processed,
     failed,
     staleCleanupDeleted,
+    staleCleanupState,
     didTimeout,
     didHitInviteCap,
     elapsedMs: Date.now() - startedAt,
@@ -1035,6 +1118,29 @@ const onProfileLinkWritten = onValueWritten("/players/{loginUid}/profile", async
   });
 });
 
+const onProfileDeleted = onDocumentDeleted(
+  {
+    document: "users/{profileId}",
+    retry: true,
+  },
+  async (event) => {
+    const profileId = normalizeString(event.params.profileId);
+    if (!profileId) {
+      return;
+    }
+    const profileRef = admin.firestore().collection("users").doc(profileId);
+    const cleanup = await deleteProfileGamesProjectionDocs(profileRef);
+    console.log("projector:profile-delete-games-cleanup:done", {
+      profileId,
+      deleted: cleanup.deleted,
+      complete: cleanup.complete,
+    });
+    if (!cleanup.complete) {
+      throw new Error(`projector:profile-delete-games-cleanup-incomplete:${profileId}`);
+    }
+  }
+);
+
 module.exports = {
   SORT_BUCKETS,
   PROFILE_LINK_CATCHUP_MAX_INVITES,
@@ -1052,4 +1158,5 @@ module.exports = {
   onAutomatchQueueWritten,
   onProfileLinkCreated,
   onProfileLinkWritten,
+  onProfileDeleted,
 };

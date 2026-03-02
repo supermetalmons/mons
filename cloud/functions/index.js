@@ -30,6 +30,7 @@ const {
   onAutomatchQueueWritten,
   onProfileLinkCreated,
   onProfileLinkWritten,
+  onProfileDeleted,
 } = require("./profileGamesProjector");
 
 exports.verifySolanaAddress = verifySolanaAddress;
@@ -61,3 +62,4 @@ exports.projectProfileGamesOnMatchCreated = onMatchCreated;
 exports.projectProfileGamesOnAutomatchQueueWritten = onAutomatchQueueWritten;
 exports.projectProfileGamesOnProfileLinkCreated = onProfileLinkCreated;
 exports.projectProfileGamesOnProfileLinkWritten = onProfileLinkWritten;
+exports.projectProfileGamesOnProfileDeleted = onProfileDeleted;
