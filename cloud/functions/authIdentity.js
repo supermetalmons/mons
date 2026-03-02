@@ -1140,16 +1140,20 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
       if (!liveTargetSnapshot.exists) {
         throw new HttpsError("not-found", "target-profile-not-found");
       }
-      for (const entry of methodIndexEntries) {
-        const indexRef = firestore.collection("authMethodIndex").doc(getMethodKey(entry.method, entry.normalizedValue));
-        const indexSnapshot = await transaction.get(indexRef);
-        if (indexSnapshot.exists) {
+      const methodIndexRefs = methodIndexEntries.map((entry) => firestore.collection("authMethodIndex").doc(getMethodKey(entry.method, entry.normalizedValue)));
+      const methodIndexSnapshots = methodIndexRefs.length > 0 ? await Promise.all(methodIndexRefs.map((indexRef) => transaction.get(indexRef))) : [];
+      methodIndexEntries.forEach((entry, entryIndex) => {
+        const indexSnapshot = methodIndexSnapshots[entryIndex];
+        if (indexSnapshot && indexSnapshot.exists) {
           const indexData = indexSnapshot.data() || {};
           const indexedProfileId = toCleanString(indexData.profileId);
           if (indexedProfileId && !allowedIndexOwners.has(indexedProfileId)) {
             throw new HttpsError("failed-precondition", "method-index-conflict");
           }
         }
+      });
+      methodIndexEntries.forEach((entry, entryIndex) => {
+        const indexRef = methodIndexRefs[entryIndex];
         transaction.set(
           indexRef,
           {
@@ -1160,7 +1164,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
           },
           { merge: true }
         );
-      }
+      });
       transaction.set(targetRef, mergedData, { merge: true });
       if (liveSourceSnapshot.exists) {
         transaction.set(sourceRef, sourceMergeRetainedPatch, { merge: true });

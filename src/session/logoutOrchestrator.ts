@@ -176,6 +176,13 @@ const clearClientPersistenceForLogout = async () => {
 
 const reloadAfterLogout = () => {
   window.location.reload();
+  // Safari can occasionally ignore reload() when called from async cleanup chains.
+  // If unload has not started shortly after, force same-url navigation.
+  window.setTimeout(() => {
+    try {
+      window.location.replace(window.location.href);
+    } catch {}
+  }, 400);
 };
 
 const handleLogoutSignal = (signalId: string) => {
