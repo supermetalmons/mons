@@ -8,12 +8,13 @@ exports.verifySolanaAddress = onCall(async (request) => {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
 
-  const address = typeof request.data.address === "string" ? request.data.address : "";
-  const signatureStr = typeof request.data.signature === "string" ? request.data.signature : "";
-  const requestEmoji = request.data.emoji ?? 1;
-  const requestAura = request.data.aura ?? null;
-  const intentId = request.data.intentId;
-  const opId = request.data.opId;
+  const requestData = request && request.data && typeof request.data === "object" ? request.data : {};
+  const address = typeof requestData.address === "string" ? requestData.address : "";
+  const signatureStr = typeof requestData.signature === "string" ? requestData.signature : "";
+  const requestEmoji = requestData.emoji ?? 1;
+  const requestAura = requestData.aura ?? null;
+  const intentId = requestData.intentId;
+  const opId = requestData.opId;
   if (!intentId || typeof intentId !== "string") {
     throw new HttpsError("invalid-argument", "intentId is required.");
   }

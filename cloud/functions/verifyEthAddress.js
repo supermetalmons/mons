@@ -7,12 +7,13 @@ exports.verifyEthAddress = onCall(async (request) => {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
 
-  const message = typeof request.data.message === "string" ? request.data.message : "";
-  const signature = typeof request.data.signature === "string" ? request.data.signature : "";
-  const requestEmoji = request.data.emoji ?? 1;
-  const requestAura = request.data.aura ?? null;
-  const opId = request.data.opId;
-  const intentId = request.data.intentId;
+  const requestData = request && request.data && typeof request.data === "object" ? request.data : {};
+  const message = typeof requestData.message === "string" ? requestData.message : "";
+  const signature = typeof requestData.signature === "string" ? requestData.signature : "";
+  const requestEmoji = requestData.emoji ?? 1;
+  const requestAura = requestData.aura ?? null;
+  const opId = requestData.opId;
+  const intentId = requestData.intentId;
   if (!intentId || typeof intentId !== "string") {
     throw new HttpsError("invalid-argument", "intentId is required.");
   }

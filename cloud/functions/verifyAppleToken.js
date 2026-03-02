@@ -11,13 +11,14 @@ exports.verifyAppleToken = onCall(async (request) => {
   }
 
   const uid = request.auth.uid;
-  const idToken = typeof request.data.idToken === "string" ? request.data.idToken : "";
-  const intentId = typeof request.data.intentId === "string" ? request.data.intentId : "";
-  const requestEmoji = request.data.emoji ?? 1;
-  const requestAura = request.data.aura ?? null;
-  const opId = request.data.opId;
+  const requestData = request && request.data && typeof request.data === "object" ? request.data : {};
+  const idToken = typeof requestData.idToken === "string" ? requestData.idToken : "";
+  const intentId = typeof requestData.intentId === "string" ? requestData.intentId : "";
+  const requestEmoji = requestData.emoji ?? 1;
+  const requestAura = requestData.aura ?? null;
+  const opId = requestData.opId;
   const resolvedOpId = opId || (intentId ? `intent:${intentId}` : undefined);
-  const consentSource = typeof request.data.consentSource === "string" ? request.data.consentSource : "signin";
+  const consentSource = typeof requestData.consentSource === "string" ? requestData.consentSource : "signin";
 
   if (!idToken) {
     throw new HttpsError("invalid-argument", "idToken is required.");

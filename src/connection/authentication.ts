@@ -158,6 +158,7 @@ export function useAuthStatus() {
     return "unauthenticated";
   });
   const authAttemptTimeoutIdsRef = useRef<Set<number>>(new Set());
+  const authChangeVersionRef = useRef(0);
 
   useEffect(() => {
     globalSetAuthStatus = setAuthStatus;
@@ -167,12 +168,16 @@ export function useAuthStatus() {
   }, [setAuthStatus]);
 
   useEffect(() => {
+    let isCancelled = false;
     const authAttemptTimeoutIds = authAttemptTimeoutIdsRef.current;
     const scheduleDidAttemptAuthentication = () => {
+      if (isCancelled) {
+        return;
+      }
       const sessionGuard = connection.createSessionGuard();
       const timeoutId = window.setTimeout(() => {
         authAttemptTimeoutIds.delete(timeoutId);
-        if (!sessionGuard()) {
+        if (isCancelled || !sessionGuard()) {
           return;
         }
         didAttemptAuthentication();
@@ -180,50 +185,117 @@ export function useAuthStatus() {
       authAttemptTimeoutIds.add(timeoutId);
     };
     const unsubscribe = connection.subscribeToAuthChanges((uid) => {
-      if (uid !== null) {
-        const storedLoginId = storage.getLoginId("");
-        const storedEthAddress = storage.getEthAddress("");
-        const storedSolAddress = storage.getSolAddress("");
-        const storedUsername = storage.getUsername("");
-        const profileId = storage.getProfileId("");
-        if (profileId !== "" && storedLoginId === uid) {
-          connection.refreshTokenIfNeeded();
-          void connection.syncProfileClaim().catch(() => {});
-          const emojiString = storage.getPlayerEmojiId("1");
-          const emoji = parseInt(emojiString);
-          const profile = {
-            id: profileId,
-            username: storedUsername,
-            eth: storedEthAddress,
-            sol: storedSolAddress,
-            rating: undefined,
-            nonce: undefined,
-            win: undefined,
-            emoji: emoji,
-            aura: storage.getPlayerEmojiAura(""),
-            cardBackgroundId: undefined,
-            cardSubtitleId: undefined,
-            profileCounter: undefined,
-            profileMons: undefined,
-            cardStickers: undefined,
-            completedProblemIds: undefined,
-            isTutorialCompleted: undefined,
-          };
-          updateProfileDisplayName(storedUsername, storedEthAddress, storedSolAddress);
-          const resolvedLoginUid = connection.getSameProfilePlayerUid() ?? uid;
-          setupLoggedInPlayerProfile(profile, resolvedLoginUid);
-          setAuthStatus("authenticated");
-          scheduleDidAttemptAuthentication();
-        } else {
-          setAuthStatus("unauthenticated");
-          scheduleDidAttemptAuthentication();
-        }
-      } else {
+      if (isCancelled) {
+        return;
+      }
+      authChangeVersionRef.current += 1;
+      const authChangeVersion = authChangeVersionRef.current;
+      const isCurrentAuthChange = () => authChangeVersionRef.current === authChangeVersion;
+      if (uid === null) {
         setAuthStatus("unauthenticated");
         scheduleDidAttemptAuthentication();
+        return;
       }
+
+      const storedLoginId = storage.getLoginId("");
+      const storedEthAddress = storage.getEthAddress("");
+      const storedSolAddress = storage.getSolAddress("");
+      const storedUsername = storage.getUsername("");
+      const profileId = storage.getProfileId("");
+      if (profileId === "" || storedLoginId !== uid) {
+        setAuthStatus("unauthenticated");
+        scheduleDidAttemptAuthentication();
+        return;
+      }
+
+      connection.refreshTokenIfNeeded();
+      const sessionGuard = connection.createSessionGuard();
+      void (async () => {
+        const isStillValid = () => !isCancelled && sessionGuard() && isCurrentAuthChange();
+        let resolvedProfileId = profileId;
+        let resolvedUsername = storedUsername;
+        let resolvedEthAddress = storedEthAddress;
+        let resolvedSolAddress = storedSolAddress;
+        const storedEmojiRaw = Number.parseInt(storage.getPlayerEmojiId("1"), 10);
+        let resolvedEmoji = Number.isFinite(storedEmojiRaw) && storedEmojiRaw > 0 ? storedEmojiRaw : 1;
+        let resolvedAura = storage.getPlayerEmojiAura("");
+
+        try {
+          const claimSyncResult = await connection.syncProfileClaim();
+          if (!isStillValid()) {
+            return;
+          }
+          const syncedProfileId = typeof claimSyncResult?.profileId === "string" ? claimSyncResult.profileId : "";
+          if (!syncedProfileId) {
+            setAuthStatus("unauthenticated");
+            scheduleDidAttemptAuthentication();
+            return;
+          }
+          if (syncedProfileId !== profileId) {
+            const authoritativeProfile = await connection.getProfileByLoginId(uid);
+            if (!isStillValid()) {
+              return;
+            }
+            const authoritativeProfileId = typeof authoritativeProfile.id === "string" ? authoritativeProfile.id : "";
+            if (!authoritativeProfileId) {
+              setAuthStatus("unauthenticated");
+              scheduleDidAttemptAuthentication();
+              return;
+            }
+            resolvedProfileId = authoritativeProfileId;
+            resolvedUsername = authoritativeProfile.username ?? "";
+            resolvedEthAddress = authoritativeProfile.eth ?? "";
+            resolvedSolAddress = authoritativeProfile.sol ?? "";
+            const authoritativeEmoji =
+              Number.isFinite(authoritativeProfile.emoji) && authoritativeProfile.emoji > 0
+                ? Math.floor(authoritativeProfile.emoji)
+                : resolvedEmoji;
+            resolvedEmoji = authoritativeEmoji;
+            resolvedAura = authoritativeProfile.aura ?? "";
+            storage.setProfileId(resolvedProfileId);
+            storage.setUsername(resolvedUsername);
+            storage.setEthAddress(resolvedEthAddress);
+            storage.setSolAddress(resolvedSolAddress);
+            storage.setPlayerEmojiId(resolvedEmoji.toString());
+            storage.setPlayerEmojiAura(resolvedAura);
+          }
+        } catch {
+          if (!isStillValid()) {
+            return;
+          }
+        }
+
+        if (!isStillValid()) {
+          return;
+        }
+        const profile = {
+          id: resolvedProfileId,
+          username: resolvedUsername,
+          eth: resolvedEthAddress,
+          sol: resolvedSolAddress,
+          rating: undefined,
+          nonce: undefined,
+          win: undefined,
+          emoji: resolvedEmoji,
+          aura: resolvedAura,
+          cardBackgroundId: undefined,
+          cardSubtitleId: undefined,
+          profileCounter: undefined,
+          profileMons: undefined,
+          cardStickers: undefined,
+          completedProblemIds: undefined,
+          isTutorialCompleted: undefined,
+        };
+        updateProfileDisplayName(resolvedUsername, resolvedEthAddress, resolvedSolAddress);
+        const resolvedLoginUid = connection.getSameProfilePlayerUid() ?? uid;
+        setupLoggedInPlayerProfile(profile, resolvedLoginUid);
+        setAuthStatus("authenticated");
+        scheduleDidAttemptAuthentication();
+      })();
     });
     return () => {
+      isCancelled = true;
+      authChangeVersionRef.current += 1;
       authAttemptTimeoutIds.forEach((timeoutId) => {
         window.clearTimeout(timeoutId);
       });

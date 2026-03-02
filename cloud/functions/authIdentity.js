@@ -1093,6 +1093,27 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
         .filter((value) => value !== "")
     );
     const nowMs = Date.now();
+    const sourceMergeRetainedPatch = {
+      logins: [],
+      eth: admin.firestore.FieldValue.delete(),
+      sol: admin.firestore.FieldValue.delete(),
+      appleSub: admin.firestore.FieldValue.delete(),
+      appleEmailMasked: admin.firestore.FieldValue.delete(),
+      appleLinkedAt: admin.firestore.FieldValue.delete(),
+      appleConsentAt: admin.firestore.FieldValue.delete(),
+      appleConsentSource: admin.firestore.FieldValue.delete(),
+      username: admin.firestore.FieldValue.delete(),
+      rating: admin.firestore.FieldValue.delete(),
+      totalManaPoints: admin.firestore.FieldValue.delete(),
+      nonce: admin.firestore.FieldValue.delete(),
+      win: admin.firestore.FieldValue.delete(),
+      feb2026UniqueOpponentsCount: admin.firestore.FieldValue.delete(),
+      custom: admin.firestore.FieldValue.delete(),
+      mining: admin.firestore.FieldValue.delete(),
+      mergedIntoProfileId: targetProfileId,
+      mergedAtMs: nowMs,
+      mergeSourceRetainedForGameCopy: true,
+    };
     await firestore.runTransaction(async (transaction) => {
       const [liveTargetSnapshot, liveSourceSnapshot] = await Promise.all([transaction.get(targetRef), transaction.get(sourceRef)]);
       if (!liveTargetSnapshot.exists) {
@@ -1121,7 +1142,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
       }
       transaction.set(targetRef, mergedData, { merge: true });
       if (liveSourceSnapshot.exists) {
-        transaction.delete(sourceRef);
+        transaction.set(sourceRef, sourceMergeRetainedPatch, { merge: true });
       }
     });
     const mergedTargetSnapshot = await targetRef.get();
@@ -1219,6 +1240,33 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
           stage: "cleanup",
           operationsCount: sourceGameDeleteOps.length,
           error: sourceGameCleanupError,
+        });
+      }
+      const sourceDeleteError = await runWithRetries({
+        attempts: 3,
+        baseDelayMs: 120,
+        work: async () => {
+          const sourceSnapshotForDelete = await sourceRef.get();
+          if (!sourceSnapshotForDelete.exists) {
+            return;
+          }
+          await sourceRef.delete();
+        },
+      });
+      if (sourceDeleteError) {
+        console.error("auth:merge:source-profile-delete-partial-failure", {
+          opId,
+          targetProfileId,
+          sourceProfileId,
+          error: toCleanString(sourceDeleteError && sourceDeleteError.message) || String(sourceDeleteError),
+        });
+        await recordMergeGameSyncFailure({
+          targetProfileId,
+          sourceProfileId,
+          opId,
+          stage: "delete-source-profile",
+          operationsCount: 1,
+          error: sourceDeleteError,
         });
       }
     }
@@ -1676,10 +1724,15 @@ const syncProfileClaimForUid = async (uid) => {
 };
 
 const APPLE_ISSUER = "https://appleid.apple.com";
+const APPLE_JWKS_CACHE_MAX_AGE_MS = 60 * 60 * 1000;
+const APPLE_JWKS_UNKNOWN_KID_FORCE_REFRESH_COOLDOWN_MS = 60 * 1000;
+const APPLE_JWKS_RECENT_FETCH_WINDOW_MS = 5 * 1000;
 let appleJwksCache = {
   fetchedAtMs: 0,
   keysByKid: new Map(),
 };
+let appleJwksFetchPromise = null;
+let appleJwksLastUnknownKidRefreshAtMs = 0;
 
 const getAppleAudiences = () => {
   const configured = toCleanString(process.env.APPLE_AUDIENCES);
@@ -1729,32 +1782,44 @@ const readJwt = (token) => {
   };
 };
 
-const fetchAppleJwks = async () => {
+const fetchAppleJwks = async (options = {}) => {
+  const forceRefresh = !!(options && options.forceRefresh);
   const nowMs = Date.now();
-  if (nowMs - appleJwksCache.fetchedAtMs < 60 * 60 * 1000 && appleJwksCache.keysByKid.size > 0) {
+  if (!forceRefresh && nowMs - appleJwksCache.fetchedAtMs < APPLE_JWKS_CACHE_MAX_AGE_MS && appleJwksCache.keysByKid.size > 0) {
     return appleJwksCache.keysByKid;
   }
-  const response = await fetch("https://appleid.apple.com/auth/keys");
-  if (!response.ok) {
-    throw new HttpsError("internal", "Failed to fetch Apple JWKS.");
+  if (appleJwksFetchPromise) {
+    return appleJwksFetchPromise;
   }
-  const data = await response.json();
-  const keys = Array.isArray(data && data.keys) ? data.keys : [];
-  const keysByKid = new Map();
-  keys.forEach((key) => {
-    const kid = toCleanString(key && key.kid);
-    if (kid) {
-      keysByKid.set(kid, key);
+  appleJwksFetchPromise = (async () => {
+    const fetchedAtMs = Date.now();
+    const response = await fetch("https://appleid.apple.com/auth/keys");
+    if (!response.ok) {
+      throw new HttpsError("internal", "Failed to fetch Apple JWKS.");
     }
-  });
-  if (keysByKid.size === 0) {
-    throw new HttpsError("internal", "Apple JWKS keyset is empty.");
+    const data = await response.json();
+    const keys = Array.isArray(data && data.keys) ? data.keys : [];
+    const keysByKid = new Map();
+    keys.forEach((key) => {
+      const kid = toCleanString(key && key.kid);
+      if (kid) {
+        keysByKid.set(kid, key);
+      }
+    });
+    if (keysByKid.size === 0) {
+      throw new HttpsError("internal", "Apple JWKS keyset is empty.");
+    }
+    appleJwksCache = {
+      fetchedAtMs,
+      keysByKid,
+    };
+    return keysByKid;
+  })();
+  try {
+    return await appleJwksFetchPromise;
+  } finally {
+    appleJwksFetchPromise = null;
   }
-  appleJwksCache = {
-    fetchedAtMs: nowMs,
-    keysByKid,
-  };
-  return keysByKid;
 };
 
 const verifyAppleJwtSignature = async (idToken) => {
@@ -1764,8 +1829,25 @@ const verifyAppleJwtSignature = async (idToken) => {
   if (algorithm !== "RS256" || !keyId) {
     throw new HttpsError("permission-denied", "Unsupported Apple JWT algorithm.");
   }
-  const keysByKid = await fetchAppleJwks();
-  const jwk = keysByKid.get(keyId);
+  let keysByKid = await fetchAppleJwks();
+  let jwk = keysByKid.get(keyId);
+  if (!jwk) {
+    if (appleJwksFetchPromise) {
+      keysByKid = await appleJwksFetchPromise;
+      jwk = keysByKid.get(keyId);
+    }
+  }
+  if (!jwk) {
+    const nowMs = Date.now();
+    const cacheWasFetchedRecently = nowMs - appleJwksCache.fetchedAtMs < APPLE_JWKS_RECENT_FETCH_WINDOW_MS;
+    const canForceRefreshUnknownKid =
+      !cacheWasFetchedRecently && nowMs - appleJwksLastUnknownKidRefreshAtMs >= APPLE_JWKS_UNKNOWN_KID_FORCE_REFRESH_COOLDOWN_MS;
+    if (canForceRefreshUnknownKid) {
+      appleJwksLastUnknownKidRefreshAtMs = nowMs;
+      keysByKid = await fetchAppleJwks({ forceRefresh: true });
+      jwk = keysByKid.get(keyId);
+    }
+  }
   if (!jwk) {
     throw new HttpsError("permission-denied", "Unknown Apple JWT key id.");
   }
