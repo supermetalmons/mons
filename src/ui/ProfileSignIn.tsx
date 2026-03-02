@@ -173,7 +173,7 @@ const formatDisplayName = (username: string | null, ethAddress: string | null, s
   pendingUsername = null;
   pendingEthAddress = null;
   pendingSolAddress = null;
-  return "";
+  return "anon";
 };
 
 export const updateProfileDisplayName = (username: string | null, ethAddress: string | null, solAddress: string | null) => {
@@ -198,7 +198,9 @@ interface NotificationState {
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [solanaText, setSolanaText] = useState("Solana");
+  const [appleText, setAppleText] = useState("Apple");
   const [isSolanaConnecting, setIsSolanaConnecting] = useState(false);
+  const [isAppleConnecting, setIsAppleConnecting] = useState(false);
   const [profileDisplayName, setProfileDisplayName] = useState(() => formatDisplayName(pendingUsername, pendingEthAddress, pendingSolAddress));
   const [isEditingName, setIsEditingName] = useState(false);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
@@ -414,10 +416,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsSolanaConnecting(true);
     try {
       const { connectToSolana } = await import("../connection/solanaConnection");
-      const { publicKey, signature } = await connectToSolana();
+      const { publicKey, signature, intentId } = await connectToSolana();
       setSolanaText("Verifying...");
 
-      const res = await connection.verifySolanaAddress(publicKey, signature);
+      const res = await connection.verifySolanaAddress(publicKey, signature, intentId);
       if (res && res.ok === true) {
         handleLoginSuccess(res, "sol");
         setAuthStatusGlobally("authenticated");
@@ -436,6 +438,36 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       }
     } finally {
       setIsSolanaConnecting(false);
+    }
+  };
+
+  const handleAppleClick = async () => {
+    if (isAppleConnecting) return;
+
+    setIsAppleConnecting(true);
+    setAppleText("Connecting...");
+    try {
+      const intent = await connection.beginAuthIntent("apple");
+      const { signInWithApplePopup } = await import("../connection/appleConnection");
+      const { idToken } = await signInWithApplePopup({
+        nonce: intent.nonce,
+        state: intent.state,
+      });
+      setAppleText("Verifying...");
+      const res = await connection.verifyAppleToken(intent.intentId, idToken, "signin");
+      if (res && res.ok === true) {
+        handleLoginSuccess(res, "apple");
+        setAuthStatusGlobally("authenticated");
+        setIsOpen(false);
+        hideShinyCard();
+        enterProfileEditingMode(false);
+      }
+      setAppleText("Apple");
+    } catch (error) {
+      console.error("Apple sign in error:", error);
+      setAppleText("Apple");
+    } finally {
+      setIsAppleConnecting(false);
     }
   };
 
@@ -463,6 +495,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
             <>
               <ConnectButton.Custom>{({ openConnectModal }) => <CustomConnectButton onClick={openConnectModal}>Ethereum</CustomConnectButton>}</ConnectButton.Custom>
               <CustomConnectButton onClick={handleSolanaClick}>{solanaText}</CustomConnectButton>
+              <CustomConnectButton onClick={handleAppleClick}>{appleText}</CustomConnectButton>
             </>
           </ConnectButtonWrapper>
         </ConnectButtonPopover>

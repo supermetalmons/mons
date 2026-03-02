@@ -1,141 +1,64 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
-const admin = require("firebase-admin");
 const nacl = require("tweetnacl");
 const bs58 = require("bs58");
-const { normalizeMiningSnapshot } = require("./miningHelpers");
+const { consumeAuthIntent, normalizeMethodValue, linkVerifiedMethod } = require("./authIdentity");
 
 exports.verifySolanaAddress = onCall(async (request) => {
   if (!request.auth) {
     throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
   }
 
-  const address = request.data.address;
-  const signatureStr = request.data.signature;
-  let requestEmoji = request.data.emoji ?? 1;
-  let requestAura = request.data.aura ?? null;
+  const address = typeof request.data.address === "string" ? request.data.address : "";
+  const signatureStr = typeof request.data.signature === "string" ? request.data.signature : "";
+  const requestEmoji = request.data.emoji ?? 1;
+  const requestAura = request.data.aura ?? null;
+  const intentId = request.data.intentId;
+  const opId = request.data.opId;
+  if (!intentId || typeof intentId !== "string") {
+    throw new HttpsError("invalid-argument", "intentId is required.");
+  }
+  if (!address || !signatureStr) {
+    throw new HttpsError("invalid-argument", "address and signature are required.");
+  }
+  const resolvedOpId = opId || (typeof intentId === "string" && intentId !== "" ? `intent:${intentId}` : undefined);
   const uid = request.auth.uid;
-  const targetMessage = `Sign in mons.link with Solana nonce ${uid}`;
+  const intent = await consumeAuthIntent({
+    uid,
+    method: "sol",
+    intentId,
+  });
+  const expectedNonce = intent && typeof intent.nonce === "string" ? intent.nonce : "";
+  if (!expectedNonce) {
+    throw new HttpsError("failed-precondition", "intent-invalid");
+  }
+  const targetMessage = `Sign in mons.link with Solana nonce ${expectedNonce}`;
 
   const signatureBytes = new Uint8Array(Buffer.from(signatureStr, "base64"));
-  const publicKeyBytes = bs58.default.decode(address);
+  let publicKeyBytes;
+  try {
+    publicKeyBytes = bs58.default.decode(address);
+  } catch {
+    throw new HttpsError("invalid-argument", "Invalid Solana address.");
+  }
   const messageBytes = new TextEncoder().encode(targetMessage);
   const matchingSignature = nacl.sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
 
-  if (matchingSignature) {
-    let responseAddress = address;
-    let profileId = null;
-    let emoji = null;
-    let aura = null;
-    let username = null;
-    let rating = null;
-    let nonce = null;
-    let totalManaPoints = null;
-    let cardBackgroundId = null;
-    let cardStickers = null;
-    let cardSubtitleId = null;
-    let profileCounter = null;
-    let profileMons = null;
-    let completedProblems = null;
-    let tutorialCompleted = null;
-    let mining = normalizeMiningSnapshot();
-
-    const firestore = admin.firestore();
-    const userQuery = await firestore.collection("users").where("logins", "array-contains", uid).limit(1).get();
-
-    if (userQuery.empty) {
-      const db = admin.database();
-      const profileIdRef = db.ref(`players/${uid}/profile`);
-
-      const userWithMatchingSolAddressQuery = await firestore.collection("users").where("sol", "==", address).get();
-      if (userWithMatchingSolAddressQuery.empty) {
-        const newMining = normalizeMiningSnapshot();
-        const docRef = await firestore.collection("users").add({
-          sol: address,
-          logins: [uid],
-          custom: {
-            emoji: requestEmoji,
-            aura: requestAura,
-          },
-          mining: newMining,
-        });
-        await profileIdRef.set(docRef.id);
-        profileId = docRef.id;
-        emoji = requestEmoji;
-        aura = requestAura || null;
-        mining = newMining;
-      } else {
-        const userDoc = userWithMatchingSolAddressQuery.docs[0];
-        const userData = userDoc.data();
-        if (!userData.logins.includes(uid)) {
-          await userDoc.ref.update({
-            logins: [...userData.logins, uid],
-          });
-          await profileIdRef.set(userDoc.id);
-        }
-        profileId = userDoc.id;
-        emoji = userData.custom?.emoji ?? requestEmoji;
-        aura = userData.custom?.aura || null;
-        rating = userData.rating || null;
-        nonce = userData.nonce || null;
-        totalManaPoints = userData.totalManaPoints || null;
-        cardBackgroundId = userData.custom?.cardBackgroundId || null;
-        cardStickers = userData.custom?.cardStickers || null;
-        cardSubtitleId = userData.custom?.cardSubtitleId || null;
-        profileCounter = userData.custom?.profileCounter || null;
-        profileMons = userData.custom?.profileMons || null;
-        completedProblems = userData.custom?.completedProblems || null;
-        tutorialCompleted = userData.custom?.tutorialCompleted || null;
-        username = userData.username || null;
-        mining = normalizeMiningSnapshot(userData.mining);
-      }
-    } else {
-      const userDoc = userQuery.docs[0];
-      const userData = userDoc.data();
-      responseAddress = userData.sol;
-      profileId = userDoc.id;
-      emoji = userData.custom?.emoji ?? requestEmoji;
-      aura = userData.custom?.aura || null;
-      rating = userData.rating || null;
-      nonce = userData.nonce || null;
-      totalManaPoints = userData.totalManaPoints || null;
-      cardBackgroundId = userData.custom?.cardBackgroundId || null;
-      cardStickers = userData.custom?.cardStickers || null;
-      cardSubtitleId = userData.custom?.cardSubtitleId || null;
-      profileCounter = userData.custom?.profileCounter || null;
-      profileMons = userData.custom?.profileMons || null;
-      completedProblems = userData.custom?.completedProblems || null;
-      tutorialCompleted = userData.custom?.tutorialCompleted || null;
-      username = userData.username || null;
-      mining = normalizeMiningSnapshot(userData.mining);
-    }
-
-    await admin.auth().setCustomUserClaims(uid, {
-      profileId: profileId,
-    });
-
-    return {
-      ok: true,
-      uid: uid,
-      address: responseAddress,
-      profileId: profileId,
-      emoji: emoji,
-      aura: aura,
-      username: username,
-      rating: rating,
-      nonce: nonce,
-      totalManaPoints: totalManaPoints,
-      cardBackgroundId: cardBackgroundId,
-      cardStickers: cardStickers,
-      cardSubtitleId: cardSubtitleId,
-      profileCounter: profileCounter,
-      profileMons: profileMons,
-      completedProblems: completedProblems,
-      tutorialCompleted: tutorialCompleted,
-      mining,
-    };
-  } else {
-    return {
-      ok: false,
-    };
+  if (!matchingSignature) {
+    return { ok: false };
   }
+
+  const normalizedSol = normalizeMethodValue("sol", address);
+  const response = await linkVerifiedMethod({
+    uid,
+    method: "sol",
+    methodValueRaw: address,
+    normalizedMethodValue: normalizedSol,
+    requestEmoji,
+    requestAura,
+    preferredAddress: address,
+    opId: resolvedOpId,
+    request,
+  });
+
+  return response;
 });

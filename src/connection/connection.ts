@@ -768,6 +768,9 @@ class Connection {
 
   public async signIn(): Promise<string | undefined> {
     try {
+      if (this.auth.currentUser && this.auth.currentUser.uid) {
+        return this.auth.currentUser.uid;
+      }
       await signInAnonymously(this.auth);
       const uid = this.auth.currentUser?.uid;
       return uid;
@@ -985,14 +988,77 @@ class Connection {
     }
   }
 
-  public async verifySolanaAddress(address: string, signature: string): Promise<any> {
+  public async beginAuthIntent(method: "eth" | "sol" | "apple"): Promise<{ ok: boolean; intentId: string; nonce: string; state: string; expiresAtMs: number }> {
+    try {
+      await this.ensureAuthenticated();
+      const beginAuthIntentFunction = httpsCallable(this.functions, "beginAuthIntent");
+      const response = await beginAuthIntentFunction({ method });
+      return response.data as { ok: boolean; intentId: string; nonce: string; state: string; expiresAtMs: number };
+    } catch (error) {
+      console.error("Error beginning auth intent:", error);
+      throw error;
+    }
+  }
+
+  public async getLinkedAuthMethods(): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const getLinkedAuthMethodsFunction = httpsCallable(this.functions, "getLinkedAuthMethods");
+      const response = await getLinkedAuthMethodsFunction({});
+      return response.data;
+    } catch (error) {
+      console.error("Error getting linked auth methods:", error);
+      throw error;
+    }
+  }
+
+  public async syncProfileClaim(): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const syncProfileClaimFunction = httpsCallable(this.functions, "syncProfileClaim");
+      const response = await syncProfileClaimFunction({});
+      return response.data;
+    } catch (error) {
+      console.error("Error syncing profile claim:", error);
+      throw error;
+    }
+  }
+
+  public async unlinkAuthMethod(method: "eth" | "sol" | "apple"): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const unlinkAuthMethodFunction = httpsCallable(this.functions, "unlinkAuthMethod");
+      const response = await unlinkAuthMethodFunction({ method });
+      return response.data;
+    } catch (error) {
+      console.error("Error unlinking auth method:", error);
+      throw error;
+    }
+  }
+
+  public async verifyAppleToken(intentId: string, idToken: string, consentSource = "signin"): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const verifyAppleTokenFunction = httpsCallable(this.functions, "verifyAppleToken");
+      const emojiString = storage.getPlayerEmojiId("1");
+      const emoji = parseInt(emojiString);
+      const aura = storage.getPlayerEmojiAura("");
+      const response = await verifyAppleTokenFunction({ intentId, idToken, emoji, aura, consentSource });
+      return response.data;
+    } catch (error) {
+      console.error("Error verifying Apple token:", error);
+      throw error;
+    }
+  }
+
+  public async verifySolanaAddress(address: string, signature: string, intentId: string): Promise<any> {
     try {
       await this.ensureAuthenticated();
       const verifySolanaAddressFunction = httpsCallable(this.functions, "verifySolanaAddress");
       const emojiString = storage.getPlayerEmojiId("1");
       const emoji = parseInt(emojiString);
       const aura = storage.getPlayerEmojiAura("");
-      const response = await verifySolanaAddressFunction({ address, signature, emoji, aura });
+      const response = await verifySolanaAddressFunction({ address, signature, emoji, aura, intentId });
       return response.data;
     } catch (error) {
       console.error("Error verifying Solana address:", error);
@@ -1024,14 +1090,14 @@ class Connection {
     }
   }
 
-  public async verifyEthAddress(message: string, signature: string): Promise<any> {
+  public async verifyEthAddress(message: string, signature: string, intentId: string): Promise<any> {
     try {
       await this.ensureAuthenticated();
       const verifyEthAddressFunction = httpsCallable(this.functions, "verifyEthAddress");
       const emojiString = storage.getPlayerEmojiId("1");
       const emoji = parseInt(emojiString);
       const aura = storage.getPlayerEmojiAura("");
-      const response = await verifyEthAddressFunction({ message, signature, emoji, aura });
+      const response = await verifyEthAddressFunction({ message, signature, emoji, aura, intentId });
       return response.data;
     } catch (error) {
       console.error("Error verifying Ethereum address:", error);

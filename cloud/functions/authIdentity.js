@@ -1,0 +1,1354 @@
+const crypto = require("crypto");
+const admin = require("firebase-admin");
+const { HttpsError } = require("firebase-functions/v2/https");
+const { normalizeMiningSnapshot } = require("./miningHelpers");
+
+const METHOD_FIELD_BY_TYPE = {
+  eth: "eth",
+  sol: "sol",
+  apple: "appleSub",
+};
+
+const INTENT_TTL_MS = 5 * 60 * 1000;
+const MERGE_LOCK_TTL_MS = 10 * 60 * 1000;
+const RATE_LIMIT_WINDOW_MS = 60 * 1000;
+const RATE_LIMIT_MAX_COUNT = 20;
+
+const toCleanString = (value) => (typeof value === "string" && value.trim() !== "" ? value.trim() : "");
+const isFeatureDisabled = (name) => {
+  const value = toCleanString(process.env[name]).toLowerCase();
+  return value === "1" || value === "true" || value === "yes";
+};
+
+const hasValue = (value) => {
+  if (value === undefined || value === null) {
+    return false;
+  }
+  if (typeof value === "string") {
+    return value.trim() !== "";
+  }
+  if (Array.isArray(value)) {
+    return value.length > 0;
+  }
+  return true;
+};
+
+const parseNumber = (value, fallback) => {
+  const numeric = typeof value === "number" ? value : Number(value);
+  return Number.isFinite(numeric) ? numeric : fallback;
+};
+
+const createOpId = () => crypto.randomBytes(16).toString("hex");
+const createToken = (bytes = 18) => crypto.randomBytes(bytes).toString("base64url");
+
+const normalizeEth = (value) => {
+  const input = toCleanString(value).toLowerCase();
+  if (!/^0x[a-f0-9]{40}$/.test(input)) {
+    throw new HttpsError("invalid-argument", "Invalid Ethereum address.");
+  }
+  return input;
+};
+
+const normalizeSol = (value) => {
+  const input = toCleanString(value);
+  if (input.length < 20 || input.length > 64) {
+    throw new HttpsError("invalid-argument", "Invalid Solana address.");
+  }
+  return input;
+};
+
+const normalizeAppleSub = (value) => {
+  const input = toCleanString(value);
+  if (input.length < 6) {
+    throw new HttpsError("invalid-argument", "Invalid Apple subject.");
+  }
+  return input;
+};
+
+const normalizeMethodValue = (method, value) => {
+  if (method === "eth") {
+    return normalizeEth(value);
+  }
+  if (method === "sol") {
+    return normalizeSol(value);
+  }
+  if (method === "apple") {
+    return normalizeAppleSub(value);
+  }
+  throw new HttpsError("invalid-argument", "Unsupported auth method.");
+};
+
+const getMethodField = (method) => {
+  const field = METHOD_FIELD_BY_TYPE[method];
+  if (!field) {
+    throw new HttpsError("invalid-argument", "Unsupported auth method.");
+  }
+  return field;
+};
+
+const getMethodKey = (method, normalizedValue) => {
+  return `${method}:${Buffer.from(normalizedValue, "utf8").toString("base64url")}`;
+};
+
+const getMethodValueFromProfile = (profileData, method) => {
+  const field = getMethodField(method);
+  return toCleanString(profileData && profileData[field]);
+};
+
+const normalizeFromProfileByMethod = (method, profileData) => {
+  const value = getMethodValueFromProfile(profileData, method);
+  if (!value) {
+    return "";
+  }
+  try {
+    return normalizeMethodValue(method, value);
+  } catch {
+    return "";
+  }
+};
+
+const linkedMethodsFromProfileData = (profileData) => ({
+  apple: normalizeFromProfileByMethod("apple", profileData) !== "",
+  eth: normalizeFromProfileByMethod("eth", profileData) !== "",
+  sol: normalizeFromProfileByMethod("sol", profileData) !== "",
+});
+
+const linkedMethodCount = (profileData) => {
+  const linked = linkedMethodsFromProfileData(profileData);
+  return [linked.apple, linked.eth, linked.sol].filter(Boolean).length;
+};
+
+const pickTargetOrSource = (targetValue, sourceValue) => (hasValue(targetValue) ? targetValue : sourceValue);
+
+const maskEmail = (value) => {
+  const email = toCleanString(value);
+  if (!email.includes("@")) {
+    return null;
+  }
+  const [localPart, domain] = email.split("@");
+  if (!domain) {
+    return null;
+  }
+  if (!localPart) {
+    return `***@${domain}`;
+  }
+  if (localPart.length === 1) {
+    return `${localPart}***@${domain}`;
+  }
+  return `${localPart.slice(0, 1)}***${localPart.slice(-1)}@${domain}`;
+};
+
+const toMillis = (value) => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return Math.floor(value);
+  }
+  if (value && typeof value.toMillis === "function") {
+    try {
+      const millis = value.toMillis();
+      if (Number.isFinite(millis)) {
+        return Math.floor(millis);
+      }
+    } catch {}
+  }
+  if (value && typeof value === "object" && Number.isFinite(value._seconds)) {
+    const nanos = Number.isFinite(value._nanoseconds) ? value._nanoseconds : 0;
+    return Math.floor(value._seconds * 1000 + nanos / 1e6);
+  }
+  return 0;
+};
+
+const readMergeFreshness = (docData) => {
+  return Math.max(toMillis(docData && docData.updatedAt), toMillis(docData && docData.listSortAt));
+};
+
+const mergeUniqueStringArray = (left, right) => {
+  const result = [];
+  const add = (value) => {
+    if (typeof value === "string" && value.trim() !== "" && !result.includes(value)) {
+      result.push(value);
+    }
+  };
+  if (Array.isArray(left)) {
+    left.forEach(add);
+  }
+  if (Array.isArray(right)) {
+    right.forEach(add);
+  }
+  return result;
+};
+
+const mergeMining = (targetData, sourceData) => {
+  const targetMining = normalizeMiningSnapshot(targetData && targetData.mining);
+  const sourceMining = normalizeMiningSnapshot(sourceData && sourceData.mining);
+  const lastRockDate = [targetMining.lastRockDate, sourceMining.lastRockDate]
+    .filter((value) => typeof value === "string" && value !== "")
+    .sort()
+    .pop() || null;
+  return {
+    lastRockDate,
+    materials: {
+      dust: parseNumber(targetMining.materials.dust, 0) + parseNumber(sourceMining.materials.dust, 0),
+      slime: parseNumber(targetMining.materials.slime, 0) + parseNumber(sourceMining.materials.slime, 0),
+      gum: parseNumber(targetMining.materials.gum, 0) + parseNumber(sourceMining.materials.gum, 0),
+      metal: parseNumber(targetMining.materials.metal, 0) + parseNumber(sourceMining.materials.metal, 0),
+      ice: parseNumber(targetMining.materials.ice, 0) + parseNumber(sourceMining.materials.ice, 0),
+    },
+  };
+};
+
+const mergeCustom = (targetData, sourceData) => {
+  const targetCustom = targetData && typeof targetData.custom === "object" && targetData.custom ? targetData.custom : {};
+  const sourceCustom = sourceData && typeof sourceData.custom === "object" && sourceData.custom ? sourceData.custom : {};
+  const merged = {
+    ...sourceCustom,
+    ...targetCustom,
+  };
+  merged.emoji = pickTargetOrSource(targetCustom.emoji, sourceCustom.emoji);
+  merged.aura = pickTargetOrSource(targetCustom.aura, sourceCustom.aura);
+  merged.cardBackgroundId = pickTargetOrSource(targetCustom.cardBackgroundId, sourceCustom.cardBackgroundId);
+  merged.cardStickers = pickTargetOrSource(targetCustom.cardStickers, sourceCustom.cardStickers);
+  merged.cardSubtitleId = pickTargetOrSource(targetCustom.cardSubtitleId, sourceCustom.cardSubtitleId);
+  merged.profileCounter = pickTargetOrSource(targetCustom.profileCounter, sourceCustom.profileCounter);
+  merged.profileMons = pickTargetOrSource(targetCustom.profileMons, sourceCustom.profileMons);
+  merged.completedProblems = mergeUniqueStringArray(targetCustom.completedProblems, sourceCustom.completedProblems);
+  merged.tutorialCompleted = !!targetCustom.tutorialCompleted || !!sourceCustom.tutorialCompleted;
+  return merged;
+};
+
+const ensureMethodCompatibility = (profileData, method, normalizedValue) => {
+  const existing = normalizeFromProfileByMethod(method, profileData);
+  if (existing && existing !== normalizedValue) {
+    throw new HttpsError("failed-precondition", "method-already-linked-different");
+  }
+};
+
+const validateMergeMethodConflict = (targetData, sourceData) => {
+  const checks = [
+    ["eth", normalizeFromProfileByMethod("eth", targetData), normalizeFromProfileByMethod("eth", sourceData)],
+    ["sol", normalizeFromProfileByMethod("sol", targetData), normalizeFromProfileByMethod("sol", sourceData)],
+    ["apple", normalizeFromProfileByMethod("apple", targetData), normalizeFromProfileByMethod("apple", sourceData)],
+  ];
+  for (const [, targetValue, sourceValue] of checks) {
+    if (targetValue && sourceValue && targetValue !== sourceValue) {
+      throw new HttpsError("failed-precondition", "merge-method-conflict");
+    }
+  }
+};
+
+const ensureProfileClaimAndRtdb = async (uid, profileId) => {
+  const db = admin.database();
+  await db.ref(`players/${uid}/profile`).set(profileId);
+  const userRecord = await admin.auth().getUser(uid);
+  const claims = { ...(userRecord.customClaims || {}), profileId };
+  await admin.auth().setCustomUserClaims(uid, claims);
+};
+
+const readProfileByLoginUid = async (uid) => {
+  const firestore = admin.firestore();
+  const snapshot = await firestore.collection("users").where("logins", "array-contains", uid).limit(2).get();
+  if (snapshot.empty) {
+    return null;
+  }
+  if (snapshot.size > 1) {
+    throw new HttpsError("failed-precondition", "login-profile-conflict");
+  }
+  return snapshot.docs[0];
+};
+
+const readProfileByMethod = async (method, normalizedValue, rawValue) => {
+  const firestore = admin.firestore();
+  const indexRef = firestore.collection("authMethodIndex").doc(getMethodKey(method, normalizedValue));
+  const indexSnapshot = await indexRef.get();
+  if (indexSnapshot.exists) {
+    const indexData = indexSnapshot.data() || {};
+    const profileId = toCleanString(indexData.profileId);
+    if (profileId) {
+      const profileDoc = await firestore.collection("users").doc(profileId).get();
+      if (profileDoc.exists) {
+        return profileDoc;
+      }
+    }
+  }
+
+  const field = getMethodField(method);
+  const candidateValues = [];
+  const cleanRawValue = toCleanString(rawValue);
+  if (cleanRawValue) {
+    candidateValues.push(cleanRawValue);
+  }
+  if (!candidateValues.includes(normalizedValue)) {
+    candidateValues.push(normalizedValue);
+  }
+
+  for (const candidate of candidateValues) {
+    const snapshot = await firestore.collection("users").where(field, "==", candidate).limit(2).get();
+    if (!snapshot.empty) {
+      if (snapshot.size > 1) {
+        throw new HttpsError("failed-precondition", "legacy-method-duplicate-ownership");
+      }
+      const doc = snapshot.docs[0];
+      const nowMs = Date.now();
+      await firestore.runTransaction(async (transaction) => {
+        const liveIndexSnapshot = await transaction.get(indexRef);
+        if (liveIndexSnapshot.exists) {
+          const liveIndexData = liveIndexSnapshot.data() || {};
+          const indexedProfileId = toCleanString(liveIndexData.profileId);
+          if (indexedProfileId && indexedProfileId !== doc.id) {
+            throw new HttpsError("failed-precondition", "method-index-conflict");
+          }
+        }
+        transaction.set(
+          indexRef,
+          {
+            profileId: doc.id,
+            method,
+            normalizedValue,
+            updatedAtMs: nowMs,
+          },
+          { merge: true }
+        );
+      });
+      return doc;
+    }
+  }
+
+  return null;
+};
+
+const buildProfileResponse = (profileDoc, uid, preferredAddress) => {
+  const data = (profileDoc && profileDoc.data()) || {};
+  const custom = data.custom && typeof data.custom === "object" ? data.custom : {};
+  const linkedMethods = linkedMethodsFromProfileData(data);
+  const eth = normalizeFromProfileByMethod("eth", data) || null;
+  const sol = normalizeFromProfileByMethod("sol", data) || null;
+  const emojiRaw = custom.emoji;
+  const emojiNumber = Number.isFinite(typeof emojiRaw === "number" ? emojiRaw : Number(emojiRaw)) ? Math.floor(Number(emojiRaw)) : 1;
+  return {
+    ok: true,
+    uid,
+    profileId: profileDoc.id,
+    username: toCleanString(data.username) || null,
+    address: preferredAddress || eth || sol || null,
+    eth,
+    sol,
+    linkedMethods,
+    appleLinked: linkedMethods.apple,
+    emoji: emojiNumber > 0 ? emojiNumber : 1,
+    aura: custom.aura || null,
+    rating: data.rating ?? null,
+    nonce: data.nonce ?? null,
+    totalManaPoints: data.totalManaPoints ?? null,
+    cardBackgroundId: custom.cardBackgroundId || null,
+    cardStickers: custom.cardStickers || null,
+    cardSubtitleId: custom.cardSubtitleId || null,
+    profileCounter: custom.profileCounter || null,
+    profileMons: custom.profileMons || null,
+    completedProblems: custom.completedProblems || null,
+    tutorialCompleted: custom.tutorialCompleted || null,
+    mining: normalizeMiningSnapshot(data.mining),
+  };
+};
+
+const beginAuthOp = async ({ opId, kind, method, uid, meta }) => {
+  const firestore = admin.firestore();
+  const resolvedOpId = toCleanString(opId) || createOpId();
+  const opRef = firestore.collection("authOps").doc(resolvedOpId);
+  const nowMs = Date.now();
+  const opSnapshot = await opRef.get();
+  if (opSnapshot.exists) {
+    const data = opSnapshot.data() || {};
+    if (data.status === "success" && data.result && typeof data.result === "object") {
+      return {
+        opId: resolvedOpId,
+        replay: data.result,
+      };
+    }
+  }
+  await opRef.set(
+    {
+      opId: resolvedOpId,
+      kind,
+      method,
+      uid,
+      status: "started",
+      meta: meta || null,
+      startedAtMs: nowMs,
+      updatedAtMs: nowMs,
+    },
+    { merge: true }
+  );
+  return { opId: resolvedOpId, replay: null };
+};
+
+const finishAuthOp = async ({ opId, result, error }) => {
+  if (!opId) {
+    return;
+  }
+  const firestore = admin.firestore();
+  const opRef = firestore.collection("authOps").doc(opId);
+  const nowMs = Date.now();
+  if (error) {
+    await opRef.set(
+      {
+        status: "failed",
+        errorCode: error.code || null,
+        errorMessage: error.message || String(error),
+        updatedAtMs: nowMs,
+      },
+      { merge: true }
+    );
+    return;
+  }
+  await opRef.set(
+    {
+      status: "success",
+      result,
+      updatedAtMs: nowMs,
+    },
+    { merge: true }
+  );
+};
+
+const enforceRateLimit = async ({ uid, method, request }) => {
+  const firestore = admin.firestore();
+  const ip = toCleanString(request && request.rawRequest && request.rawRequest.ip) || "unknown";
+  const ipHash = crypto.createHash("sha256").update(ip).digest("hex").slice(0, 12);
+  const key = `${method}:${uid}:${ipHash}`;
+  const nowMs = Date.now();
+  const rateRef = firestore.collection("authRateLimits").doc(key);
+  await firestore.runTransaction(async (transaction) => {
+    const snapshot = await transaction.get(rateRef);
+    const data = snapshot.exists ? snapshot.data() || {} : {};
+    const windowStartedAtMs = parseNumber(data.windowStartedAtMs, 0);
+    const inWindow = nowMs - windowStartedAtMs <= RATE_LIMIT_WINDOW_MS;
+    const nextCount = inWindow ? parseNumber(data.count, 0) + 1 : 1;
+    if (nextCount > RATE_LIMIT_MAX_COUNT) {
+      throw new HttpsError("resource-exhausted", "Too many auth attempts.");
+    }
+    transaction.set(
+      rateRef,
+      {
+        uid,
+        method,
+        ipHash,
+        windowStartedAtMs: inWindow ? windowStartedAtMs : nowMs,
+        count: nextCount,
+        updatedAtMs: nowMs,
+      },
+      { merge: true }
+    );
+  });
+};
+
+const beginAuthIntent = async (request) => {
+  if (!request.auth) {
+    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+  }
+  const method = toCleanString(request.data && request.data.method);
+  if (!METHOD_FIELD_BY_TYPE[method]) {
+    throw new HttpsError("invalid-argument", "Unsupported auth method.");
+  }
+  await enforceRateLimit({ uid: request.auth.uid, method: `intent-${method}`, request });
+
+  const firestore = admin.firestore();
+  const nowMs = Date.now();
+  const intentId = createToken(18);
+  const nonce = createToken(18);
+  const state = createToken(18);
+  const expiresAtMs = nowMs + INTENT_TTL_MS;
+  await firestore.collection("authIntents").doc(intentId).set({
+    intentId,
+    uid: request.auth.uid,
+    method,
+    nonce,
+    state,
+    createdAtMs: nowMs,
+    expiresAtMs,
+    consumedAtMs: null,
+  });
+  return {
+    ok: true,
+    intentId,
+    nonce,
+    state,
+    expiresAtMs,
+  };
+};
+
+const consumeAuthIntent = async ({ uid, method, intentId }) => {
+  const normalizedIntentId = toCleanString(intentId);
+  if (!normalizedIntentId) {
+    return null;
+  }
+  const firestore = admin.firestore();
+  const intentRef = firestore.collection("authIntents").doc(normalizedIntentId);
+  const nowMs = Date.now();
+  let intentData = null;
+  await firestore.runTransaction(async (transaction) => {
+    const snapshot = await transaction.get(intentRef);
+    if (!snapshot.exists) {
+      throw new HttpsError("failed-precondition", "intent-not-found");
+    }
+    const data = snapshot.data() || {};
+    if (toCleanString(data.uid) !== uid) {
+      throw new HttpsError("permission-denied", "intent-user-mismatch");
+    }
+    if (toCleanString(data.method) !== method) {
+      throw new HttpsError("failed-precondition", "intent-method-mismatch");
+    }
+    if (parseNumber(data.expiresAtMs, 0) < nowMs) {
+      throw new HttpsError("deadline-exceeded", "intent-expired");
+    }
+    if (parseNumber(data.consumedAtMs, 0) > 0) {
+      throw new HttpsError("failed-precondition", "intent-consumed");
+    }
+    transaction.update(intentRef, {
+      consumedAtMs: nowMs,
+    });
+    intentData = data;
+  });
+  return intentData;
+};
+
+const acquireMergeLock = async (targetProfileId, sourceProfileId, opId) => {
+  const firestore = admin.firestore();
+  const key = [targetProfileId, sourceProfileId].sort().join("__");
+  const lockRef = firestore.collection("mergeLocks").doc(key);
+  const nowMs = Date.now();
+  await firestore.runTransaction(async (transaction) => {
+    const snapshot = await transaction.get(lockRef);
+    if (snapshot.exists) {
+      const data = snapshot.data() || {};
+      const expiresAtMs = parseNumber(data.expiresAtMs, 0);
+      if (expiresAtMs > nowMs && toCleanString(data.opId) !== opId) {
+        throw new HttpsError("aborted", "merge-lock-active");
+      }
+    }
+    transaction.set(lockRef, {
+      key,
+      opId,
+      targetProfileId,
+      sourceProfileId,
+      expiresAtMs: nowMs + MERGE_LOCK_TTL_MS,
+      updatedAtMs: nowMs,
+    });
+  });
+  return lockRef;
+};
+
+const releaseMergeLock = async (lockRef, opId) => {
+  if (!lockRef) {
+    return;
+  }
+  try {
+    const snapshot = await lockRef.get();
+    if (!snapshot.exists) {
+      return;
+    }
+    const data = snapshot.data() || {};
+    if (toCleanString(data.opId) !== opId) {
+      return;
+    }
+    await lockRef.delete();
+  } catch {}
+};
+
+const commitOperations = async (operations) => {
+  if (!Array.isArray(operations) || operations.length === 0) {
+    return;
+  }
+  const firestore = admin.firestore();
+  const chunkSize = 400;
+  for (let index = 0; index < operations.length; index += chunkSize) {
+    const batch = firestore.batch();
+    const chunk = operations.slice(index, index + chunkSize);
+    chunk.forEach((operation) => {
+      if (operation.type === "set") {
+        if (operation.merge === true) {
+          batch.set(operation.ref, operation.data, { merge: true });
+        } else {
+          batch.set(operation.ref, operation.data);
+        }
+      } else if (operation.type === "update") {
+        batch.update(operation.ref, operation.data);
+      } else if (operation.type === "delete") {
+        batch.delete(operation.ref);
+      }
+    });
+    await batch.commit();
+  }
+};
+
+const syncMethodIndexesForProfileData = async (profileId, profileData, options = {}) => {
+  const { force = false, allowedProfileIds = [] } = options;
+  const allowedOwners = new Set(
+    [profileId, ...allowedProfileIds]
+      .map((value) => toCleanString(value))
+      .filter((value) => value !== "")
+  );
+  const indexEntries = [];
+  const eth = normalizeFromProfileByMethod("eth", profileData);
+  if (eth) {
+    indexEntries.push({ method: "eth", normalizedValue: eth });
+  }
+  const sol = normalizeFromProfileByMethod("sol", profileData);
+  if (sol) {
+    indexEntries.push({ method: "sol", normalizedValue: sol });
+  }
+  const appleSub = normalizeFromProfileByMethod("apple", profileData);
+  if (appleSub) {
+    indexEntries.push({ method: "apple", normalizedValue: appleSub });
+  }
+
+  const firestore = admin.firestore();
+  for (const entry of indexEntries) {
+    const indexRef = firestore.collection("authMethodIndex").doc(getMethodKey(entry.method, entry.normalizedValue));
+    await firestore.runTransaction(async (transaction) => {
+      const snapshot = await transaction.get(indexRef);
+      if (snapshot.exists) {
+        const data = snapshot.data() || {};
+        const indexedProfileId = toCleanString(data.profileId);
+        if (force) {
+          if (indexedProfileId && !allowedOwners.has(indexedProfileId)) {
+            throw new HttpsError("failed-precondition", "method-index-conflict");
+          }
+        } else if (indexedProfileId && indexedProfileId !== profileId) {
+          throw new HttpsError("failed-precondition", "method-index-conflict");
+        }
+      }
+      transaction.set(
+        indexRef,
+        {
+          profileId,
+          method: entry.method,
+          normalizedValue: entry.normalizedValue,
+          updatedAtMs: Date.now(),
+        },
+        { merge: true }
+      );
+    });
+  }
+};
+
+const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
+  if (isFeatureDisabled("AUTH_DISABLE_MERGE")) {
+    throw new HttpsError("failed-precondition", "merge-disabled");
+  }
+  if (targetProfileId === sourceProfileId) {
+    const targetDoc = await admin.firestore().collection("users").doc(targetProfileId).get();
+    return targetDoc;
+  }
+
+  const firestore = admin.firestore();
+  const targetRef = firestore.collection("users").doc(targetProfileId);
+  const sourceRef = firestore.collection("users").doc(sourceProfileId);
+  let lockRef = null;
+  lockRef = await acquireMergeLock(targetProfileId, sourceProfileId, opId);
+
+  try {
+    const [targetSnapshot, sourceSnapshot] = await Promise.all([targetRef.get(), sourceRef.get()]);
+    if (!targetSnapshot.exists) {
+      throw new HttpsError("not-found", "target-profile-not-found");
+    }
+    if (!sourceSnapshot.exists) {
+      return targetSnapshot;
+    }
+
+    const targetData = targetSnapshot.data() || {};
+    const sourceData = sourceSnapshot.data() || {};
+    validateMergeMethodConflict(targetData, sourceData);
+    const targetEth = normalizeFromProfileByMethod("eth", targetData);
+    const sourceEth = normalizeFromProfileByMethod("eth", sourceData);
+    const targetSol = normalizeFromProfileByMethod("sol", targetData);
+    const sourceSol = normalizeFromProfileByMethod("sol", sourceData);
+    const targetAppleSub = normalizeFromProfileByMethod("apple", targetData);
+    const sourceAppleSub = normalizeFromProfileByMethod("apple", sourceData);
+    const mergedEth = targetEth || sourceEth;
+    const mergedSol = targetSol || sourceSol;
+    const mergedAppleSub = targetAppleSub || sourceAppleSub;
+
+    const mergedCustom = mergeCustom(targetData, sourceData);
+    const mergedMining = mergeMining(targetData, sourceData);
+    const mergedLogins = mergeUniqueStringArray(targetData.logins, sourceData.logins);
+    const resolveAppleMetadata = (targetValue, sourceValue) => {
+      if (!mergedAppleSub) {
+        return admin.firestore.FieldValue.delete();
+      }
+      if (targetAppleSub) {
+        return pickTargetOrSource(targetValue, sourceValue) || admin.firestore.FieldValue.delete();
+      }
+      return hasValue(sourceValue) ? sourceValue : admin.firestore.FieldValue.delete();
+    };
+    const mergedData = {
+      logins: mergedLogins,
+      username: pickTargetOrSource(targetData.username, sourceData.username) || "",
+      rating: Math.min(parseNumber(targetData.rating, 1500), parseNumber(sourceData.rating, 1500)),
+      nonce: Math.max(parseNumber(targetData.nonce, -1), parseNumber(sourceData.nonce, -1)),
+      totalManaPoints: parseNumber(targetData.totalManaPoints, 0) + parseNumber(sourceData.totalManaPoints, 0),
+      win: hasValue(targetData.win) ? targetData.win : sourceData.win,
+      feb2026UniqueOpponentsCount: Math.max(parseNumber(targetData.feb2026UniqueOpponentsCount, 0), parseNumber(sourceData.feb2026UniqueOpponentsCount, 0)),
+      eth: mergedEth || admin.firestore.FieldValue.delete(),
+      sol: mergedSol || admin.firestore.FieldValue.delete(),
+      appleSub: mergedAppleSub || admin.firestore.FieldValue.delete(),
+      appleEmailMasked: resolveAppleMetadata(targetData.appleEmailMasked, sourceData.appleEmailMasked),
+      appleLinkedAt: resolveAppleMetadata(targetData.appleLinkedAt, sourceData.appleLinkedAt),
+      appleConsentAt: resolveAppleMetadata(targetData.appleConsentAt, sourceData.appleConsentAt),
+      appleConsentSource: resolveAppleMetadata(targetData.appleConsentSource, sourceData.appleConsentSource),
+      custom: mergedCustom,
+      mining: mergedMining,
+      mergedAtMs: Date.now(),
+      mergedSourceProfileId: sourceProfileId,
+    };
+
+    await targetRef.set(mergedData, { merge: true });
+
+    const [sourceGamesSnapshot, targetGamesSnapshot] = await Promise.all([sourceRef.collection("games").get(), targetRef.collection("games").get()]);
+    const targetGameByInvite = new Map();
+    targetGamesSnapshot.forEach((doc) => {
+      targetGameByInvite.set(doc.id, doc);
+    });
+    const gameOps = [];
+    sourceGamesSnapshot.forEach((sourceGameDoc) => {
+      const sourceDataForInvite = sourceGameDoc.data() || {};
+      const targetDocForInvite = targetGameByInvite.get(sourceGameDoc.id);
+      const shouldWriteToTarget = !targetDocForInvite || readMergeFreshness(sourceDataForInvite) >= readMergeFreshness(targetDocForInvite.data() || {});
+      if (shouldWriteToTarget) {
+        gameOps.push({
+          type: "set",
+          ref: targetRef.collection("games").doc(sourceGameDoc.id),
+          data: sourceDataForInvite,
+          merge: true,
+        });
+      }
+      gameOps.push({
+        type: "delete",
+        ref: sourceGameDoc.ref,
+      });
+    });
+    await commitOperations(gameOps);
+
+    const mergedTargetSnapshot = await targetRef.get();
+    const mergedTargetData = mergedTargetSnapshot.data() || {};
+    await syncMethodIndexesForProfileData(targetProfileId, mergedTargetData, {
+      force: true,
+      allowedProfileIds: [sourceProfileId, targetProfileId],
+    });
+
+    const claimSyncResults = await Promise.allSettled(
+      mergedLogins.map(async (loginUid) => {
+        await ensureProfileClaimAndRtdb(loginUid, targetProfileId);
+      })
+    );
+    const initialClaimFailures = claimSyncResults
+      .map((result, index) => (result.status === "rejected" ? mergedLogins[index] : null))
+      .filter((value) => typeof value === "string" && value !== "");
+    const retryClaimFailures = [];
+    for (const failedLoginUid of initialClaimFailures) {
+      try {
+        await ensureProfileClaimAndRtdb(failedLoginUid, targetProfileId);
+      } catch {
+        retryClaimFailures.push(failedLoginUid);
+      }
+    }
+    if (retryClaimFailures.length > 0) {
+      console.error("auth:merge:claim-sync-partial-failure", {
+        targetProfileId,
+        sourceProfileId,
+        failedLoginUids: retryClaimFailures,
+      });
+      await targetRef.set(
+        {
+          pendingClaimSyncLogins: retryClaimFailures,
+          pendingClaimSyncUpdatedAtMs: Date.now(),
+        },
+        { merge: true }
+      );
+    } else {
+      await targetRef.set(
+        {
+          pendingClaimSyncLogins: admin.firestore.FieldValue.delete(),
+          pendingClaimSyncUpdatedAtMs: admin.firestore.FieldValue.delete(),
+        },
+        { merge: true }
+      );
+    }
+
+    await sourceRef.delete();
+    return mergedTargetSnapshot;
+  } finally {
+    await releaseMergeLock(lockRef, opId);
+  }
+};
+
+const buildMethodPatch = ({ method, methodValueRaw, appleEmailMasked, consentSource }) => {
+  if (method === "eth") {
+    return { eth: methodValueRaw };
+  }
+  if (method === "sol") {
+    return { sol: methodValueRaw };
+  }
+  if (method === "apple") {
+    const patch = {
+      appleSub: methodValueRaw,
+      appleLinkedAt: Date.now(),
+      appleConsentAt: Date.now(),
+      appleConsentSource: consentSource || "signin",
+    };
+    if (appleEmailMasked) {
+      patch.appleEmailMasked = appleEmailMasked;
+    }
+    return patch;
+  }
+  throw new HttpsError("invalid-argument", "Unsupported auth method.");
+};
+
+const createInitialProfileWithIndex = async ({ uid, method, normalizedMethodValue, methodValueRaw, requestEmoji, requestAura, appleEmailMasked, consentSource }) => {
+  const firestore = admin.firestore();
+  const indexRef = firestore.collection("authMethodIndex").doc(getMethodKey(method, normalizedMethodValue));
+  let profileId = "";
+  let created = false;
+  await firestore.runTransaction(async (transaction) => {
+    const indexSnapshot = await transaction.get(indexRef);
+    if (indexSnapshot.exists) {
+      const indexData = indexSnapshot.data() || {};
+      profileId = toCleanString(indexData.profileId);
+      return;
+    }
+    const userRef = firestore.collection("users").doc();
+    profileId = userRef.id;
+    created = true;
+    const baseProfile = {
+      logins: [uid],
+      custom: {
+        emoji: requestEmoji ?? 1,
+        aura: requestAura ?? null,
+      },
+      mining: normalizeMiningSnapshot(),
+    };
+    const methodPatch = buildMethodPatch({ method, methodValueRaw, appleEmailMasked, consentSource });
+    transaction.set(userRef, { ...baseProfile, ...methodPatch });
+    transaction.set(indexRef, {
+      profileId,
+      method,
+      normalizedValue: normalizedMethodValue,
+      updatedAtMs: Date.now(),
+    });
+  });
+  return { profileId, created };
+};
+
+const ensureProfileMethodAndLogin = async ({ profileId, uid, method, normalizedMethodValue, methodValueRaw, appleEmailMasked, consentSource }) => {
+  const firestore = admin.firestore();
+  const profileRef = firestore.collection("users").doc(profileId);
+  const profileSnapshot = await profileRef.get();
+  if (!profileSnapshot.exists) {
+    throw new HttpsError("not-found", "profile-not-found");
+  }
+  const profileData = profileSnapshot.data() || {};
+  ensureMethodCompatibility(profileData, method, normalizedMethodValue);
+  const patch = buildMethodPatch({ method, methodValueRaw, appleEmailMasked, consentSource });
+  await profileRef.set(
+    {
+      ...patch,
+      logins: admin.firestore.FieldValue.arrayUnion(uid),
+    },
+    { merge: true }
+  );
+};
+
+const bindMethodIndexToProfile = async ({ method, normalizedMethodValue, profileId }) => {
+  const firestore = admin.firestore();
+  const indexRef = firestore.collection("authMethodIndex").doc(getMethodKey(method, normalizedMethodValue));
+  let conflictProfileId = "";
+  await firestore.runTransaction(async (transaction) => {
+    const snapshot = await transaction.get(indexRef);
+    if (snapshot.exists) {
+      const data = snapshot.data() || {};
+      const indexedProfileId = toCleanString(data.profileId);
+      if (indexedProfileId && indexedProfileId !== profileId) {
+        conflictProfileId = indexedProfileId;
+        return;
+      }
+    }
+    transaction.set(
+      indexRef,
+      {
+        profileId,
+        method,
+        normalizedValue: normalizedMethodValue,
+        updatedAtMs: Date.now(),
+      },
+      { merge: true }
+    );
+  });
+  return conflictProfileId;
+};
+
+const linkVerifiedMethod = async ({
+  uid,
+  method,
+  methodValueRaw,
+  normalizedMethodValue,
+  requestEmoji,
+  requestAura,
+  appleEmailMasked,
+  consentSource,
+  preferredAddress,
+  opId,
+  request,
+}) => {
+  await enforceRateLimit({ uid, method: `verify-${method}`, request });
+  const op = await beginAuthOp({
+    opId,
+    kind: "verify",
+    method,
+    uid,
+    meta: {
+      methodValue: method === "apple" ? "redacted" : methodValueRaw,
+    },
+  });
+  if (op.replay) {
+    return op.replay;
+  }
+
+  try {
+    const firestore = admin.firestore();
+    let currentProfile = await readProfileByLoginUid(uid);
+    let methodProfile = await readProfileByMethod(method, normalizedMethodValue, methodValueRaw);
+    let targetProfileId = "";
+    const revocationRef = firestore.collection("authMethodRevocations").doc(getMethodKey(method, normalizedMethodValue));
+    const revocationSnapshot = await revocationRef.get();
+    if (revocationSnapshot.exists) {
+      const revocationData = revocationSnapshot.data() || {};
+      const revokedProfileId = toCleanString(revocationData.profileId);
+      if (!currentProfile || !revokedProfileId || currentProfile.id !== revokedProfileId) {
+        throw new HttpsError("permission-denied", "method-unlinked");
+      }
+    }
+
+    if (!currentProfile && !methodProfile) {
+      const createdResult = await createInitialProfileWithIndex({
+        uid,
+        method,
+        normalizedMethodValue,
+        methodValueRaw,
+        requestEmoji,
+        requestAura,
+        appleEmailMasked,
+        consentSource,
+      });
+      targetProfileId = createdResult.profileId;
+      if (!targetProfileId) {
+        methodProfile = await readProfileByMethod(method, normalizedMethodValue, methodValueRaw);
+        if (!methodProfile) {
+          throw new HttpsError("aborted", "method-index-race-retry");
+        }
+        targetProfileId = methodProfile.id;
+      }
+    } else if (!currentProfile && methodProfile) {
+      targetProfileId = methodProfile.id;
+    } else if (currentProfile && !methodProfile) {
+      targetProfileId = currentProfile.id;
+      const conflictProfileId = await bindMethodIndexToProfile({
+        method,
+        normalizedMethodValue,
+        profileId: currentProfile.id,
+      });
+      if (conflictProfileId && conflictProfileId !== currentProfile.id) {
+        const mergedSnapshot = await mergeProfiles({
+          targetProfileId: currentProfile.id,
+          sourceProfileId: conflictProfileId,
+          opId: op.opId,
+        });
+        targetProfileId = mergedSnapshot.id;
+      }
+    } else if (currentProfile && methodProfile && currentProfile.id === methodProfile.id) {
+      targetProfileId = currentProfile.id;
+    } else if (currentProfile && methodProfile && currentProfile.id !== methodProfile.id) {
+      const mergedSnapshot = await mergeProfiles({
+        targetProfileId: currentProfile.id,
+        sourceProfileId: methodProfile.id,
+        opId: op.opId,
+      });
+      targetProfileId = mergedSnapshot.id;
+    } else {
+      throw new HttpsError("internal", "unexpected-auth-state");
+    }
+
+    await ensureProfileMethodAndLogin({
+      profileId: targetProfileId,
+      uid,
+      method,
+      normalizedMethodValue,
+      methodValueRaw,
+      appleEmailMasked,
+      consentSource,
+    });
+
+    const targetProfileSnapshot = await admin.firestore().collection("users").doc(targetProfileId).get();
+    if (!targetProfileSnapshot.exists) {
+      throw new HttpsError("internal", "target-profile-missing");
+    }
+    await ensureProfileClaimAndRtdb(uid, targetProfileId);
+    if (revocationSnapshot.exists) {
+      await revocationRef.delete().catch(() => {});
+    }
+
+    const response = buildProfileResponse(targetProfileSnapshot, uid, preferredAddress || methodValueRaw);
+    response.opId = op.opId;
+    await finishAuthOp({ opId: op.opId, result: response });
+    return response;
+  } catch (error) {
+    await finishAuthOp({ opId: op.opId, error });
+    throw error;
+  }
+};
+
+const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
+  if (isFeatureDisabled("AUTH_DISABLE_UNLINK")) {
+    throw new HttpsError("failed-precondition", "unlink-disabled");
+  }
+  await enforceRateLimit({ uid, method: `unlink-${method}`, request });
+  const op = await beginAuthOp({
+    opId,
+    kind: "unlink",
+    method,
+    uid,
+    meta: null,
+  });
+  if (op.replay) {
+    return op.replay;
+  }
+
+  try {
+    const profileSnapshot = await readProfileByLoginUid(uid);
+    if (!profileSnapshot) {
+      throw new HttpsError("not-found", "profile-not-found");
+    }
+    const profileId = profileSnapshot.id;
+    const firestore = admin.firestore();
+    const profileRef = firestore.collection("users").doc(profileId);
+    await firestore.runTransaction(async (transaction) => {
+      const liveProfileSnapshot = await transaction.get(profileRef);
+      if (!liveProfileSnapshot.exists) {
+        throw new HttpsError("not-found", "profile-not-found");
+      }
+      const liveProfileData = liveProfileSnapshot.data() || {};
+      const linkedCount = linkedMethodCount(liveProfileData);
+      const normalizedValue = normalizeFromProfileByMethod(method, liveProfileData);
+      const rawValue = getMethodValueFromProfile(liveProfileData, method);
+      if (!normalizedValue && !rawValue) {
+        throw new HttpsError("failed-precondition", "method-not-linked");
+      }
+      if (normalizedValue && linkedCount <= 1) {
+        throw new HttpsError("failed-precondition", "cannot-remove-last-method");
+      }
+
+      const updateData = {};
+      if (method === "eth") {
+        updateData.eth = admin.firestore.FieldValue.delete();
+      } else if (method === "sol") {
+        updateData.sol = admin.firestore.FieldValue.delete();
+      } else if (method === "apple") {
+        updateData.appleSub = admin.firestore.FieldValue.delete();
+        updateData.appleEmailMasked = admin.firestore.FieldValue.delete();
+        updateData.appleLinkedAt = admin.firestore.FieldValue.delete();
+        updateData.appleConsentAt = admin.firestore.FieldValue.delete();
+        updateData.appleConsentSource = admin.firestore.FieldValue.delete();
+      } else {
+        throw new HttpsError("invalid-argument", "Unsupported auth method.");
+      }
+      transaction.update(profileRef, updateData);
+
+      if (normalizedValue) {
+        const methodDocId = getMethodKey(method, normalizedValue);
+        const indexRef = firestore.collection("authMethodIndex").doc(methodDocId);
+        const revocationRef = firestore.collection("authMethodRevocations").doc(methodDocId);
+        const indexSnapshot = await transaction.get(indexRef);
+        if (indexSnapshot.exists) {
+          const indexData = indexSnapshot.data() || {};
+          if (toCleanString(indexData.profileId) === profileId) {
+            transaction.delete(indexRef);
+          }
+        }
+        transaction.set(revocationRef, {
+          profileId,
+          method,
+          normalizedValue,
+          revokedAtMs: Date.now(),
+          updatedAtMs: Date.now(),
+        });
+      }
+    });
+
+    const refreshedSnapshot = await profileRef.get();
+    const refreshedLinkedMethods = linkedMethodsFromProfileData(refreshedSnapshot.data() || {});
+    const response = {
+      ok: true,
+      profileId,
+      linkedMethods: refreshedLinkedMethods,
+      appleLinked: refreshedLinkedMethods.apple,
+    };
+    await finishAuthOp({ opId: op.opId, result: response });
+    return response;
+  } catch (error) {
+    await finishAuthOp({ opId: op.opId, error });
+    throw error;
+  }
+};
+
+const getLinkedMethodsForUid = async (uid) => {
+  const profileSnapshot = await readProfileByLoginUid(uid);
+  if (!profileSnapshot) {
+    return {
+      ok: true,
+      profileId: null,
+      linkedMethods: {
+        apple: false,
+        eth: false,
+        sol: false,
+      },
+      appleLinked: false,
+    };
+  }
+  const linkedMethods = linkedMethodsFromProfileData(profileSnapshot.data() || {});
+  return {
+    ok: true,
+    profileId: profileSnapshot.id,
+    linkedMethods,
+    appleLinked: linkedMethods.apple,
+  };
+};
+
+const syncProfileClaimForUid = async (uid) => {
+  const profileSnapshot = await readProfileByLoginUid(uid);
+  if (!profileSnapshot) {
+    try {
+      const userRecord = await admin.auth().getUser(uid);
+      const claims = { ...(userRecord.customClaims || {}) };
+      if (Object.prototype.hasOwnProperty.call(claims, "profileId")) {
+        delete claims.profileId;
+      }
+      await admin.auth().setCustomUserClaims(uid, claims);
+      await admin.database().ref(`players/${uid}/profile`).remove();
+    } catch {}
+    return {
+      ok: true,
+      profileId: null,
+      linkedMethods: {
+        apple: false,
+        eth: false,
+        sol: false,
+      },
+      appleLinked: false,
+    };
+  }
+  await ensureProfileClaimAndRtdb(uid, profileSnapshot.id);
+  const linkedMethods = linkedMethodsFromProfileData(profileSnapshot.data() || {});
+  return {
+    ok: true,
+    profileId: profileSnapshot.id,
+    linkedMethods,
+    appleLinked: linkedMethods.apple,
+  };
+};
+
+const APPLE_ISSUER = "https://appleid.apple.com";
+let appleJwksCache = {
+  fetchedAtMs: 0,
+  keysByKid: new Map(),
+};
+
+const getAppleAudiences = () => {
+  const configured = toCleanString(process.env.APPLE_AUDIENCES);
+  if (configured) {
+    return configured
+      .split(",")
+      .map((token) => token.trim())
+      .filter((token) => token !== "");
+  }
+  const fallback = toCleanString(process.env.APPLE_CLIENT_ID);
+  if (fallback) {
+    return [fallback];
+  }
+  return [];
+};
+
+const buildNonceHashes = (nonce) => {
+  const digestBuffer = crypto.createHash("sha256").update(nonce).digest();
+  const digestHex = digestBuffer.toString("hex");
+  const digestBase64Url = digestBuffer.toString("base64url");
+  return new Set([nonce, digestHex, digestBase64Url]);
+};
+
+const decodeJwtPart = (value) => {
+  try {
+    return JSON.parse(Buffer.from(value, "base64url").toString("utf8"));
+  } catch {
+    throw new HttpsError("invalid-argument", "Invalid JWT structure.");
+  }
+};
+
+const readJwt = (token) => {
+  const parts = token.split(".");
+  if (parts.length !== 3) {
+    throw new HttpsError("invalid-argument", "Invalid JWT format.");
+  }
+  const [encodedHeader, encodedPayload, encodedSignature] = parts;
+  const header = decodeJwtPart(encodedHeader);
+  const payload = decodeJwtPart(encodedPayload);
+  const signature = Buffer.from(encodedSignature, "base64url");
+  const signedContent = `${encodedHeader}.${encodedPayload}`;
+  return {
+    header,
+    payload,
+    signature,
+    signedContent,
+  };
+};
+
+const fetchAppleJwks = async () => {
+  const nowMs = Date.now();
+  if (nowMs - appleJwksCache.fetchedAtMs < 60 * 60 * 1000 && appleJwksCache.keysByKid.size > 0) {
+    return appleJwksCache.keysByKid;
+  }
+  const response = await fetch("https://appleid.apple.com/auth/keys");
+  if (!response.ok) {
+    throw new HttpsError("internal", "Failed to fetch Apple JWKS.");
+  }
+  const data = await response.json();
+  const keys = Array.isArray(data && data.keys) ? data.keys : [];
+  const keysByKid = new Map();
+  keys.forEach((key) => {
+    const kid = toCleanString(key && key.kid);
+    if (kid) {
+      keysByKid.set(kid, key);
+    }
+  });
+  if (keysByKid.size === 0) {
+    throw new HttpsError("internal", "Apple JWKS keyset is empty.");
+  }
+  appleJwksCache = {
+    fetchedAtMs: nowMs,
+    keysByKid,
+  };
+  return keysByKid;
+};
+
+const verifyAppleJwtSignature = async (idToken) => {
+  const { header, payload, signature, signedContent } = readJwt(idToken);
+  const algorithm = toCleanString(header.alg);
+  const keyId = toCleanString(header.kid);
+  if (algorithm !== "RS256" || !keyId) {
+    throw new HttpsError("permission-denied", "Unsupported Apple JWT algorithm.");
+  }
+  const keysByKid = await fetchAppleJwks();
+  const jwk = keysByKid.get(keyId);
+  if (!jwk) {
+    throw new HttpsError("permission-denied", "Unknown Apple JWT key id.");
+  }
+  let isValidSignature = false;
+  try {
+    const publicKey = crypto.createPublicKey({
+      key: jwk,
+      format: "jwk",
+    });
+    const verifier = crypto.createVerify("RSA-SHA256");
+    verifier.update(signedContent);
+    verifier.end();
+    isValidSignature = verifier.verify(publicKey, signature);
+  } catch {
+    isValidSignature = false;
+  }
+  if (!isValidSignature) {
+    throw new HttpsError("permission-denied", "Invalid Apple token signature.");
+  }
+  return payload;
+};
+
+const verifyAppleIdToken = async ({ idToken, expectedNonce }) => {
+  const audiences = getAppleAudiences();
+  if (!Array.isArray(audiences) || audiences.length === 0) {
+    throw new HttpsError("failed-precondition", "APPLE_CLIENT_ID or APPLE_AUDIENCES is required.");
+  }
+  const payload = await verifyAppleJwtSignature(idToken);
+  const issuer = toCleanString(payload.iss);
+  if (issuer !== APPLE_ISSUER) {
+    throw new HttpsError("permission-denied", "apple-issuer-mismatch");
+  }
+  const audience = toCleanString(payload.aud);
+  if (!audiences.includes(audience)) {
+    throw new HttpsError("permission-denied", "apple-audience-mismatch");
+  }
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  const exp = parseNumber(payload.exp, 0);
+  if (!Number.isFinite(exp) || exp <= nowSeconds) {
+    throw new HttpsError("permission-denied", "apple-token-expired");
+  }
+  const nonceClaim = toCleanString(payload.nonce);
+  if (expectedNonce) {
+    const acceptedNonces = buildNonceHashes(expectedNonce);
+    if (!acceptedNonces.has(nonceClaim)) {
+      throw new HttpsError("permission-denied", "apple-nonce-mismatch");
+    }
+  }
+  const subject = normalizeAppleSub(payload.sub);
+  return {
+    sub: subject,
+    emailMasked: maskEmail(payload.email),
+    emailVerified: payload.email_verified === true || payload.email_verified === "true",
+  };
+};
+
+const getAllowedSiweDomains = () => {
+  const configured = toCleanString(process.env.SIWE_ALLOWED_DOMAINS);
+  if (configured) {
+    return configured
+      .split(",")
+      .map((domain) => domain.trim().toLowerCase())
+      .filter((domain) => domain !== "");
+  }
+  return ["mons.link", "www.mons.link", "localhost", "127.0.0.1"];
+};
+
+const validateSiweDomainAndUri = (fieldsData) => {
+  const allowedDomains = new Set(getAllowedSiweDomains());
+  const domain = toCleanString(fieldsData && fieldsData.domain).toLowerCase();
+  const uriRaw = toCleanString(fieldsData && fieldsData.uri);
+  let uriHost = "";
+  if (uriRaw) {
+    try {
+      uriHost = toCleanString(new URL(uriRaw).host).toLowerCase();
+    } catch {}
+  }
+  if (!domain || !allowedDomains.has(domain)) {
+    const bareDomain = domain.includes(":") ? domain.split(":")[0] : domain;
+    if (!bareDomain || !allowedDomains.has(bareDomain)) {
+      throw new HttpsError("permission-denied", "siwe-domain-not-allowed");
+    }
+  }
+  if (uriHost) {
+    if (allowedDomains.has(uriHost)) {
+      return;
+    }
+    const bareHost = uriHost.includes(":") ? uriHost.split(":")[0] : uriHost;
+    if (!allowedDomains.has(bareHost)) {
+      throw new HttpsError("permission-denied", "siwe-uri-not-allowed");
+    }
+  }
+};
+
+module.exports = {
+  beginAuthIntent,
+  consumeAuthIntent,
+  normalizeMethodValue,
+  linkVerifiedMethod,
+  buildProfileResponse,
+  linkedMethodsFromProfileData,
+  unlinkMethodForUid,
+  getLinkedMethodsForUid,
+  syncProfileClaimForUid,
+  verifyAppleIdToken,
+  validateSiweDomainAndUri,
+  ensureProfileClaimAndRtdb,
+};

@@ -907,13 +907,7 @@ const onAutomatchQueueWritten = onValueWritten("/automatch/{inviteId}", async (e
   });
 });
 
-const onProfileLinkCreated = onValueCreated("/players/{loginUid}/profile", async (event) => {
-  const loginUid = normalizeString(event.params.loginUid);
-  const profileId = normalizeString(event.data.val());
-  if (!loginUid || !profileId) {
-    return;
-  }
-
+const processProfileLinkCatchup = async ({ loginUid, profileId, staleProfileId = null, eventLabel }) => {
   const startedAt = Date.now();
   const shouldContinue = () => Date.now() - startedAt < PROFILE_LINK_CATCHUP_TIMEOUT_MS;
 
@@ -975,16 +969,69 @@ const onProfileLinkCreated = onValueCreated("/players/{loginUid}/profile", async
   const didTimeout = !shouldContinue();
   const didHitInviteCap = inviteIds.length >= PROFILE_LINK_CATCHUP_MAX_INVITES;
 
+  let staleCleanupDeleted = 0;
+  if (staleProfileId && staleProfileId !== profileId && inviteIds.length > 0) {
+    const firestore = admin.firestore();
+    const deleteOps = inviteIds.map((inviteId) => ({
+      type: "delete",
+      ref: firestore.collection("users").doc(staleProfileId).collection("games").doc(inviteId),
+    }));
+    while (deleteOps.length > 0) {
+      const batch = firestore.batch();
+      const chunk = deleteOps.splice(0, 400);
+      chunk.forEach((op) => {
+        batch.delete(op.ref);
+      });
+      await batch.commit();
+      staleCleanupDeleted += chunk.length;
+    }
+  }
+
   console.log("projector:profile-link-catchup:done", {
+    event: eventLabel,
     loginUid,
     profileId,
+    staleProfileId: staleProfileId || null,
     matchIdsScanned: matchIds.length,
     inviteIdsResolved: inviteIds.length,
     processed,
     failed,
+    staleCleanupDeleted,
     didTimeout,
     didHitInviteCap,
     elapsedMs: Date.now() - startedAt,
+  });
+};
+
+const onProfileLinkCreated = onValueCreated("/players/{loginUid}/profile", async (event) => {
+  const loginUid = normalizeString(event.params.loginUid);
+  const profileId = normalizeString(event.data.val());
+  if (!loginUid || !profileId) {
+    return;
+  }
+  await processProfileLinkCatchup({
+    loginUid,
+    profileId,
+    staleProfileId: null,
+    eventLabel: "created",
+  });
+});
+
+const onProfileLinkWritten = onValueWritten("/players/{loginUid}/profile", async (event) => {
+  if (!event.data.before.exists()) {
+    return;
+  }
+  const loginUid = normalizeString(event.params.loginUid);
+  const beforeProfileId = normalizeString(event.data.before.val());
+  const afterProfileId = normalizeString(event.data.after.val());
+  if (!loginUid || !afterProfileId || afterProfileId === beforeProfileId) {
+    return;
+  }
+  await processProfileLinkCatchup({
+    loginUid,
+    profileId: afterProfileId,
+    staleProfileId: beforeProfileId || null,
+    eventLabel: "written",
   });
 });
 
@@ -1004,4 +1051,5 @@ module.exports = {
   onMatchCreated,
   onAutomatchQueueWritten,
   onProfileLinkCreated,
+  onProfileLinkWritten,
 };

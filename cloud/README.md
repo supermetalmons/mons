@@ -15,3 +15,17 @@
 `node listAddresses.js`
 
 `node listAddresses.js --project mons-link --out-eth /tmp/eth_addresses.txt --out-sol /tmp/sol_addresses.txt`
+
+`node preflightAuthAudit.js --project mons-link --out /tmp/auth_preflight_report.json`
+
+`node backfillAuthMethodIndex.js --project mons-link --dry-run`
+
+## auth rollout flags
+
+`AUTH_DISABLE_APPLE_VERIFY=true`
+
+`AUTH_DISABLE_UNLINK=true`
+
+`AUTH_DISABLE_MERGE=true`
+
+Detailed rollout sequence and checks: `../docs/auth-rollout.md`

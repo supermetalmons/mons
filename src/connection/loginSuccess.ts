@@ -8,14 +8,16 @@ import { syncTutorialProgress } from "../content/problems";
 import { rocksMiningService } from "../services/rocksMiningService";
 import { notifyOtherTabsAboutSignIn } from "../session/logoutOrchestrator";
 
-export type AddressKind = "eth" | "sol";
+export type AddressKind = "eth" | "sol" | "apple";
 
 interface VerifyResponse {
   ok: true;
   uid: string;
   profileId: string;
-  username: string;
-  address: string;
+  username: string | null;
+  address?: string | null;
+  eth?: string | null;
+  sol?: string | null;
   emoji: number;
   aura?: string | null;
   rating?: number;
@@ -34,10 +36,13 @@ interface VerifyResponse {
 
 export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind): void {
   const { emoji, profileId } = res;
+  const username = res.username ?? "";
+  const resolvedEth = res.eth ?? (addressKind === "eth" ? res.address ?? null : null);
+  const resolvedSol = res.sol ?? (addressKind === "sol" ? res.address ?? null : null);
 
   const profile: PlayerProfile = {
     id: profileId,
-    username: res.username,
+    username,
     rating: undefined,
     nonce: undefined,
     win: undefined,
@@ -50,13 +55,9 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
     aura: res.aura ?? undefined,
     completedProblemIds: undefined,
     isTutorialCompleted: undefined,
+    eth: resolvedEth ?? null,
+    sol: resolvedSol ?? null,
   };
-
-  if (addressKind === "eth") {
-    (profile as any).eth = res.address;
-  } else {
-    (profile as any).sol = res.address;
-  }
 
   if (res.rating !== undefined) profile.rating = res.rating;
   if (res.nonce !== undefined) profile.nonce = res.nonce;
@@ -71,19 +72,14 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   const resolvedLoginUid = connection.getSameProfilePlayerUid() ?? res.uid;
   setupLoggedInPlayerProfile(profile, resolvedLoginUid);
 
-  storage.setUsername(res.username);
+  storage.setUsername(username);
   storage.setProfileId(profileId);
   storage.setPlayerEmojiId(emoji.toString());
   storage.setPlayerEmojiAura(res.aura ?? "");
   storage.setLoginId(res.uid);
-
-  if (addressKind === "eth") {
-    storage.setEthAddress(res.address);
-    updateProfileDisplayName(res.username, res.address, null);
-  } else {
-    storage.setSolAddress(res.address);
-    updateProfileDisplayName(res.username, null, res.address);
-  }
+  storage.setEthAddress(resolvedEth ?? "");
+  storage.setSolAddress(resolvedSol ?? "");
+  updateProfileDisplayName(username, resolvedEth ?? null, resolvedSol ?? null);
 
   if (res.rating !== undefined) storage.setPlayerRating(res.rating);
   if (res.nonce !== undefined) storage.setPlayerNonce(res.nonce);

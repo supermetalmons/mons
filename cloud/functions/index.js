@@ -3,6 +3,11 @@ admin.initializeApp();
 
 const { verifySolanaAddress } = require("./verifySolanaAddress");
 const { verifyEthAddress } = require("./verifyEthAddress");
+const { beginAuthIntent } = require("./beginAuthIntent");
+const { verifyAppleToken } = require("./verifyAppleToken");
+const { unlinkAuthMethod } = require("./unlinkAuthMethod");
+const { getLinkedAuthMethods } = require("./getLinkedAuthMethods");
+const { syncProfileClaim } = require("./syncProfileClaim");
 const { updateRatings } = require("./updateRatings");
 const { startMatchTimer, claimMatchVictoryByTimer } = require("./matchTimers");
 const { automatch } = require("./automatch");
@@ -24,10 +29,16 @@ const {
   onMatchCreated,
   onAutomatchQueueWritten,
   onProfileLinkCreated,
+  onProfileLinkWritten,
 } = require("./profileGamesProjector");
 
 exports.verifySolanaAddress = verifySolanaAddress;
 exports.verifyEthAddress = verifyEthAddress;
+exports.beginAuthIntent = beginAuthIntent;
+exports.verifyAppleToken = verifyAppleToken;
+exports.unlinkAuthMethod = unlinkAuthMethod;
+exports.getLinkedAuthMethods = getLinkedAuthMethods;
+exports.syncProfileClaim = syncProfileClaim;
 exports.startMatchTimer = startMatchTimer;
 exports.claimMatchVictoryByTimer = claimMatchVictoryByTimer;
 exports.automatch = automatch;
@@ -49,3 +60,4 @@ exports.projectProfileGamesOnInviteGuestRematchesChanged = onInviteGuestRematche
 exports.projectProfileGamesOnMatchCreated = onMatchCreated;
 exports.projectProfileGamesOnAutomatchQueueWritten = onAutomatchQueueWritten;
 exports.projectProfileGamesOnProfileLinkCreated = onProfileLinkCreated;
+exports.projectProfileGamesOnProfileLinkWritten = onProfileLinkWritten;

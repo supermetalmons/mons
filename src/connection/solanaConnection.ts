@@ -9,7 +9,7 @@ declare global {
 
 let walletAdapter: BaseMessageSignerWalletAdapter | null = null;
 
-export async function connectToSolana(): Promise<{ publicKey: string; signature: string }> {
+export async function connectToSolana(): Promise<{ publicKey: string; signature: string; intentId: string }> {
   try {
     if (!window.solana) {
       throw new Error("not found");
@@ -28,10 +28,12 @@ export async function connectToSolana(): Promise<{ publicKey: string; signature:
       throw new Error("not connected");
     }
 
-    const nonce = await connection.signIn();
-    if (!nonce) throw new Error("Failed to get nonce");
+    const intent = await connection.beginAuthIntent("sol");
+    if (!intent || !intent.nonce || !intent.intentId) {
+      throw new Error("Failed to begin Solana auth intent");
+    }
 
-    const message = `Sign in mons.link with Solana nonce ${nonce}`;
+    const message = `Sign in mons.link with Solana nonce ${intent.nonce}`;
     const encodedMessage = new TextEncoder().encode(message);
     const signatureResponse = await walletAdapter.signMessage(encodedMessage);
 
@@ -40,6 +42,7 @@ export async function connectToSolana(): Promise<{ publicKey: string; signature:
     return {
       publicKey: publicKey.toString(),
       signature: btoa(String.fromCharCode(...signature)),
+      intentId: intent.intentId,
     };
   } catch (error) {
     console.error("Solana connection error:", error);
