@@ -47,19 +47,38 @@ type AppleCallbackParams = {
 
 let pendingAppleRedirectResult: AppleRedirectResult | null = null;
 
-const encodeBase64Url = (value: string): string => {
-  if (typeof window === "undefined" || typeof window.btoa !== "function") {
+const encodeStatePart = (value: string): string => {
+  if (!value) {
     return "";
   }
   try {
-    return window
-      .btoa(value)
-      .replace(/\+/g, "-")
-      .replace(/\//g, "_")
-      .replace(/=+$/g, "");
+    return encodeURIComponent(value);
   } catch {
     return "";
   }
+};
+
+const decodeStatePart = (value: string): string => {
+  if (!value) {
+    return "";
+  }
+  try {
+    return decodeURIComponent(value);
+  } catch {
+    return "";
+  }
+};
+
+const buildAppleStateEnvelope = (record: ApplePendingIntentRecord): string => {
+  const stateTokenPart = encodeStatePart(record.state);
+  const intentIdPart = encodeStatePart(record.intentId);
+  const consentSourcePart = encodeStatePart(record.consentSource || "signin");
+  const expiresAtMsPart = Number.isFinite(record.expiresAtMs) ? Math.floor(record.expiresAtMs).toString(36) : "";
+  if (!stateTokenPart || !intentIdPart || !consentSourcePart || !expiresAtMsPart) {
+    return record.state;
+  }
+  // Keep state compact to avoid provider-side truncation on redirect flows.
+  return `${APPLE_STATE_ENVELOPE_PREFIX}${stateTokenPart}.${intentIdPart}.${expiresAtMsPart}.${consentSourcePart}`;
 };
 
 const decodeBase64Url = (value: string): string => {
@@ -75,30 +94,34 @@ const decodeBase64Url = (value: string): string => {
   }
 };
 
-const buildAppleStateEnvelope = (record: ApplePendingIntentRecord): string => {
-  const payload = {
-    state: record.state,
-    intentId: record.intentId,
-    consentSource: record.consentSource,
-    expiresAtMs: record.expiresAtMs,
-  };
-  const encoded = encodeBase64Url(JSON.stringify(payload));
-  if (!encoded) {
-    return record.state;
-  }
-  return `${APPLE_STATE_ENVELOPE_PREFIX}${encoded}`;
-};
-
-const parseAppleStateEnvelope = (state: string): AppleStateEnvelope | null => {
-  if (!state || !state.startsWith(APPLE_STATE_ENVELOPE_PREFIX)) {
+const parseCompactAppleStateEnvelope = (payloadRaw: string): AppleStateEnvelope | null => {
+  const parts = payloadRaw.split(".");
+  if (parts.length < 4) {
     return null;
   }
-  const payloadRaw = decodeBase64Url(state.slice(APPLE_STATE_ENVELOPE_PREFIX.length));
-  if (!payloadRaw) {
+  const [stateTokenRaw, intentIdRaw, expiresAtMsRaw, ...consentSourceParts] = parts;
+  const stateToken = decodeStatePart(stateTokenRaw || "");
+  const intentId = decodeStatePart(intentIdRaw || "");
+  const consentSource = decodeStatePart(consentSourceParts.join(".")) || "signin";
+  const expiresAtMs = Number.parseInt(expiresAtMsRaw || "", 36);
+  if (!stateToken || !intentId || !Number.isFinite(expiresAtMs)) {
+    return null;
+  }
+  return {
+    stateToken,
+    intentId,
+    consentSource,
+    expiresAtMs: Math.floor(expiresAtMs),
+  };
+};
+
+const parseLegacyAppleStateEnvelope = (payloadRaw: string): AppleStateEnvelope | null => {
+  const decoded = decodeBase64Url(payloadRaw);
+  if (!decoded) {
     return null;
   }
   try {
-    const parsed = JSON.parse(payloadRaw);
+    const parsed = JSON.parse(decoded);
     const stateToken = typeof parsed?.state === "string" ? parsed.state : "";
     const intentId = typeof parsed?.intentId === "string" ? parsed.intentId : "";
     const consentSource = typeof parsed?.consentSource === "string" ? parsed.consentSource : "signin";
@@ -115,6 +138,17 @@ const parseAppleStateEnvelope = (state: string): AppleStateEnvelope | null => {
   } catch {
     return null;
   }
+};
+
+const parseAppleStateEnvelope = (state: string): AppleStateEnvelope | null => {
+  if (!state || !state.startsWith(APPLE_STATE_ENVELOPE_PREFIX)) {
+    return null;
+  }
+  const payloadRaw = state.slice(APPLE_STATE_ENVELOPE_PREFIX.length);
+  if (!payloadRaw) {
+    return null;
+  }
+  return parseCompactAppleStateEnvelope(payloadRaw) || parseLegacyAppleStateEnvelope(payloadRaw);
 };
 
 const loadAppleScript = async (): Promise<void> => {
@@ -367,7 +401,7 @@ const parseAppleCallbackParamsFromRaw = (raw: string): AppleCallbackParams | nul
   const code = (params.get("code") || "").trim();
   const hasState = state !== "";
   const hasCodeForKnownAppleState = code !== "" && state.startsWith(APPLE_STATE_ENVELOPE_PREFIX);
-  const hasAppleSignal = hasState && (idToken !== "" || error !== "" || params.has("user") || hasCodeForKnownAppleState);
+  const hasAppleSignal = hasState && (idToken !== "" || error !== "" || hasCodeForKnownAppleState);
   if (!hasAppleSignal) {
     return null;
   }
@@ -537,7 +571,7 @@ export async function signInWithApplePopup({
   const responseStateFromAuthorization = authorization && typeof authorization.state === "string" ? authorization.state : "";
   const responseStateFromRoot = response && typeof response.state === "string" ? response.state : "";
   const stateCandidates = [responseStateFromAuthorization, responseStateFromRoot].filter((value) => value !== "");
-  const hasMatchingState = stateCandidates.includes(resolvedState);
+  const hasMatchingState = stateCandidates.includes(resolvedState) || stateCandidates.includes(state);
   if (!idToken) {
     throw new Error("Apple sign in did not return id_token");
   }
@@ -545,5 +579,8 @@ export async function signInWithApplePopup({
     throw new Error("Apple sign in state mismatch");
   }
   takePendingAppleIntentRecord(resolvedState);
+  if (resolvedState !== state) {
+    takePendingAppleIntentRecord(state);
+  }
   return { idToken };
 }
