@@ -219,6 +219,27 @@ export function useAuthStatus() {
         const storedEmojiRaw = Number.parseInt(storage.getPlayerEmojiId("1"), 10);
         let resolvedEmoji = Number.isFinite(storedEmojiRaw) && storedEmojiRaw > 0 ? storedEmojiRaw : 1;
         let resolvedAura = storage.getPlayerEmojiAura("");
+        const applyAuthoritativeProfile = (authoritativeProfile: any): boolean => {
+          const authoritativeProfileId = typeof authoritativeProfile?.id === "string" ? authoritativeProfile.id : "";
+          if (!authoritativeProfileId) {
+            return false;
+          }
+          resolvedProfileId = authoritativeProfileId;
+          resolvedUsername = authoritativeProfile.username ?? "";
+          resolvedEthAddress = authoritativeProfile.eth ?? "";
+          resolvedSolAddress = authoritativeProfile.sol ?? "";
+          const authoritativeEmoji =
+            Number.isFinite(authoritativeProfile.emoji) && authoritativeProfile.emoji > 0 ? Math.floor(authoritativeProfile.emoji) : resolvedEmoji;
+          resolvedEmoji = authoritativeEmoji;
+          resolvedAura = authoritativeProfile.aura ?? "";
+          storage.setProfileId(resolvedProfileId);
+          storage.setUsername(resolvedUsername);
+          storage.setEthAddress(resolvedEthAddress);
+          storage.setSolAddress(resolvedSolAddress);
+          storage.setPlayerEmojiId(resolvedEmoji.toString());
+          storage.setPlayerEmojiAura(resolvedAura);
+          return true;
+        };
 
         try {
           const claimSyncResult = await connection.syncProfileClaim();
@@ -242,26 +263,22 @@ export function useAuthStatus() {
               scheduleDidAttemptAuthentication();
               return;
             }
-            resolvedProfileId = authoritativeProfileId;
-            resolvedUsername = authoritativeProfile.username ?? "";
-            resolvedEthAddress = authoritativeProfile.eth ?? "";
-            resolvedSolAddress = authoritativeProfile.sol ?? "";
-            const authoritativeEmoji =
-              Number.isFinite(authoritativeProfile.emoji) && authoritativeProfile.emoji > 0
-                ? Math.floor(authoritativeProfile.emoji)
-                : resolvedEmoji;
-            resolvedEmoji = authoritativeEmoji;
-            resolvedAura = authoritativeProfile.aura ?? "";
-            storage.setProfileId(resolvedProfileId);
-            storage.setUsername(resolvedUsername);
-            storage.setEthAddress(resolvedEthAddress);
-            storage.setSolAddress(resolvedSolAddress);
-            storage.setPlayerEmojiId(resolvedEmoji.toString());
-            storage.setPlayerEmojiAura(resolvedAura);
+            applyAuthoritativeProfile(authoritativeProfile);
           }
         } catch {
           if (!isStillValid()) {
             return;
+          }
+          try {
+            const authoritativeProfile = await connection.getProfileByLoginId(uid);
+            if (!isStillValid()) {
+              return;
+            }
+            applyAuthoritativeProfile(authoritativeProfile);
+          } catch {
+            if (!isStillValid()) {
+              return;
+            }
           }
         }
 
