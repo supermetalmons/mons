@@ -43,7 +43,7 @@ exports.editUsername = onCall(async (request) => {
     if (hasApple && !hasEth && !hasSol) {
       return {
         ok: false,
-        validationError: "Apple-linked accounts must keep a username.",
+        validationError: "Can't be empty.",
       };
     }
     await clearUsernameForProfile({ profileId: userDoc.id });
