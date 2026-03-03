@@ -546,13 +546,57 @@ export const clearConsumedAppleRedirectResult = (): void => {
   pendingAppleRedirectResult = null;
 };
 
-const waitForApplePopupResult = (): Promise<any> => {
+const extractApplePopupSignals = (
+  value: any
+): {
+  idToken: string;
+  stateCandidates: string[];
+} => {
+  const authorization =
+    value && typeof value === "object" && value.authorization && typeof value.authorization === "object" ? value.authorization : null;
+  const idTokenFromAuthorization = authorization && typeof authorization.id_token === "string" ? authorization.id_token : "";
+  const idTokenFromRoot = value && typeof value === "object" && typeof value.id_token === "string" ? value.id_token : "";
+  const stateFromAuthorization = authorization && typeof authorization.state === "string" ? authorization.state : "";
+  const stateFromRoot = value && typeof value === "object" && typeof value.state === "string" ? value.state : "";
+  const stateCandidates = [stateFromAuthorization, stateFromRoot].filter((candidate) => candidate !== "");
+  return {
+    idToken: idTokenFromAuthorization || idTokenFromRoot,
+    stateCandidates,
+  };
+};
+
+const hasMatchingApplePopupState = (stateCandidates: string[], expectedStates: ReadonlySet<string>): boolean => {
+  if (expectedStates.size === 0) {
+    return false;
+  }
+  return stateCandidates.some((candidate) => expectedStates.has(candidate));
+};
+
+const getApplePopupSignalScore = (value: any, expectedStates: ReadonlySet<string>): number => {
+  const { idToken, stateCandidates } = extractApplePopupSignals(value);
+  return (idToken !== "" ? 2 : 0) + (hasMatchingApplePopupState(stateCandidates, expectedStates) ? 1 : 0);
+};
+
+const isCompleteApplePopupResult = (value: any, expectedStates: ReadonlySet<string>): boolean => {
+  return getApplePopupSignalScore(value, expectedStates) === 3;
+};
+
+const waitForApplePopupResult = (expectedStates: string[]): Promise<any> => {
+  const INCOMPLETE_RESULT_GRACE_MS = 1500;
+  type PopupResultSource = "event" | "promise";
+  const expectedStateSet = new Set(expectedStates.filter((candidate) => candidate !== ""));
+
   return new Promise((resolve, reject) => {
     let settled = false;
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    let fallbackResolveId: ReturnType<typeof setTimeout> | null = null;
+    let pendingIncompleteResult: { value: any; score: number; source: PopupResultSource } | null = null;
     const cleanup = () => {
       if (timeoutId) {
         clearTimeout(timeoutId);
+      }
+      if (fallbackResolveId) {
+        clearTimeout(fallbackResolveId);
       }
       document.removeEventListener("AppleIDSignInOnSuccess", onSuccess as EventListener);
       document.removeEventListener("AppleIDSignInOnFailure", onFailure as EventListener);
@@ -573,10 +617,46 @@ const waitForApplePopupResult = (): Promise<any> => {
       cleanup();
       reject(error instanceof Error ? error : new Error(String(error)));
     };
+
+    const rememberIncompleteResult = (value: any, source: PopupResultSource) => {
+      const nextScore = getApplePopupSignalScore(value, expectedStateSet);
+      if (!pendingIncompleteResult) {
+        pendingIncompleteResult = { value, score: nextScore, source };
+        return;
+      }
+      const shouldReplace =
+        nextScore > pendingIncompleteResult.score || (nextScore === pendingIncompleteResult.score && source === "event" && pendingIncompleteResult.source !== "event");
+      if (shouldReplace) {
+        pendingIncompleteResult = { value, score: nextScore, source };
+      }
+    };
+
+    const maybeResolve = (value: any, source: PopupResultSource) => {
+      if (isCompleteApplePopupResult(value, expectedStateSet)) {
+        if (fallbackResolveId) {
+          clearTimeout(fallbackResolveId);
+          fallbackResolveId = null;
+        }
+        finishResolve(value);
+        return;
+      }
+      rememberIncompleteResult(value, source);
+      if (settled) {
+        return;
+      }
+      if (fallbackResolveId) {
+        clearTimeout(fallbackResolveId);
+      }
+      // Allow AppleIDSignInOnSuccess to provide complete payload before falling back.
+      fallbackResolveId = setTimeout(() => {
+        fallbackResolveId = null;
+        finishResolve(pendingIncompleteResult ? pendingIncompleteResult.value : value);
+      }, INCOMPLETE_RESULT_GRACE_MS);
+    };
     const onSuccess = (event: Event) => {
       const detail = (event as CustomEvent<any>).detail;
       const data = detail && typeof detail === "object" && "data" in detail ? detail.data : detail;
-      finishResolve(data);
+      maybeResolve(data, "event");
     };
     const onFailure = (event: Event) => {
       const detail = (event as CustomEvent<any>).detail;
@@ -598,7 +678,7 @@ const waitForApplePopupResult = (): Promise<any> => {
     timeoutId = setTimeout(() => {
       finishReject(new Error("Apple sign in popup timed out"));
     }, 60000);
-    Promise.resolve(window.AppleID.auth.signIn()).then(finishResolve).catch(finishReject);
+    Promise.resolve(window.AppleID.auth.signIn()).then((value) => maybeResolve(value, "promise")).catch(finishReject);
   });
 };
 
@@ -661,14 +741,10 @@ export async function signInWithApplePopup({
     return null;
   }
 
-  const response = await waitForApplePopupResult();
-  const authorization = response && response.authorization ? response.authorization : null;
-  const idToken = authorization && typeof authorization.id_token === "string" ? authorization.id_token : "";
-  const responseStateFromAuthorization = authorization && typeof authorization.state === "string" ? authorization.state : "";
-  const responseStateFromRoot = response && typeof response.state === "string" ? response.state : "";
-  const stateCandidates = [responseStateFromAuthorization, responseStateFromRoot].filter((value) => value !== "");
-  const hasMatchingState = stateCandidates.includes(resolvedState) || stateCandidates.includes(state);
-  if (!idToken) {
+  const response = await waitForApplePopupResult([resolvedState, state]);
+  const popupSignals = extractApplePopupSignals(response);
+  const hasMatchingState = popupSignals.stateCandidates.includes(resolvedState) || popupSignals.stateCandidates.includes(state);
+  if (!popupSignals.idToken) {
     throw new Error("Apple sign in did not return id_token");
   }
   if (!hasMatchingState) {
@@ -678,5 +754,5 @@ export async function signInWithApplePopup({
   if (resolvedState !== state) {
     takePendingAppleIntentRecord(state);
   }
-  return { idToken };
+  return { idToken: popupSignals.idToken };
 }
