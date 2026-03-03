@@ -2230,7 +2230,7 @@ export function didUpdateRematchSeriesMetadata() {
 
 function automove(onAutomoveButtonClick: boolean = false) {
   const sessionGuard = getSessionGuard();
-  const preference = onAutomoveButtonClick ? "fast" : "normal";
+  const preference = onAutomoveButtonClick ? "fast" : "normal"; // TODO: add strength picker
   const expectedMatchId = getExpectedOnlineMatchIdOrReconnect();
   if (isOnlineGame && !expectedMatchId) {
     return;
