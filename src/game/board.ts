@@ -1117,8 +1117,8 @@ export function hideBoardPlayersInfo() {
     try {
       const opponentUrl = emojis.getEmojiUrl(opponentSideMetadata.emojiId) || "";
       const playerUrl = emojis.getEmojiUrl(playerSideMetadata.emojiId) || "";
-      if (opponentUrl) showRaibowAura(false, opponentUrl, true);
-      if (playerUrl) showRaibowAura(false, playerUrl, false);
+      showRaibowAura(false, opponentUrl, true);
+      showRaibowAura(false, playerUrl, false);
     } catch {}
   }
 
@@ -1220,7 +1220,7 @@ function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boole
   }
 
   let emojiId = metadata.emojiId ?? "";
-  let aura = opponent ? metadata.aura ?? "" : metadata.aura ?? storage.getPlayerEmojiAura("");
+  let aura = metadata.aura ?? (!opponent && !isWatchOnly ? storage.getPlayerEmojiAura("") : "");
   if (!opponent && !isWatchOnly && emojiId === "") {
     const storedEmojiId = storage.getPlayerEmojiId("");
     if (storedEmojiId !== "") {
@@ -1327,10 +1327,10 @@ export function resetForNewGame() {
     try {
       const playerUrl = emojis.getEmojiUrl(playerSideMetadata.emojiId) || "";
       const opponentUrl = emojis.getEmojiUrl(opponentSideMetadata.emojiId) || "";
-      const playerAuraVisible = (playerSideMetadata.aura ?? storage.getPlayerEmojiAura("")) === "rainbow";
+      const playerAuraVisible = (playerSideMetadata.aura ?? (!isWatchOnly ? storage.getPlayerEmojiAura("") : "")) === "rainbow";
       const opponentAuraVisible = (opponentSideMetadata.aura ?? "") === "rainbow";
-      if (playerUrl) showRaibowAura(playerAuraVisible, playerUrl, false);
-      if (opponentUrl) showRaibowAura(opponentAuraVisible, opponentUrl, true);
+      showRaibowAura(playerAuraVisible && playerUrl !== "", playerUrl, false);
+      showRaibowAura(opponentAuraVisible && opponentUrl !== "", opponentUrl, true);
       updateAuraForAvatarElement(false, playerAvatar);
       updateAuraForAvatarElement(true, opponentAvatar);
     } catch {}
@@ -1355,7 +1355,7 @@ export function updateEmojiAndAuraIfNeeded(newEmojiId: string, aura: string | un
   const targetMetadata = isOpponentSide ? opponentSideMetadata : playerSideMetadata;
   const currentId = targetMetadata.emojiId ?? "";
   const nextId = newEmojiId ?? "";
-  const newAura = isOpponentSide ? aura ?? "" : aura ?? storage.getPlayerEmojiAura("");
+  const newAura = aura ?? (!isOpponentSide && !isWatchOnly ? storage.getPlayerEmojiAura("") : "");
   const currentAura = targetMetadata.aura ?? "";
   if (currentId === nextId && currentAura === newAura) {
     syncAvatarForCurrentMetadata(isOpponentSide);
@@ -3394,7 +3394,11 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
     if (isOpponent) {
       opponentSideMetadata.aura = opponentSideMetadata.aura ?? "";
     } else {
-      playerSideMetadata.aura = storage.getPlayerEmojiAura("") ?? "";
+      if (!isWatchOnly) {
+        playerSideMetadata.aura = storage.getPlayerEmojiAura("") ?? "";
+      } else {
+        playerSideMetadata.aura = playerSideMetadata.aura ?? "";
+      }
     }
     const shouldShowAura = (isOpponent ? opponentSideMetadata.aura : playerSideMetadata.aura) === "rainbow";
     showRaibowAura(shouldShowAura, emojiUrl, isOpponent);
