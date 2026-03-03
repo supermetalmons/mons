@@ -443,15 +443,20 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       return appleIntentRef.current;
     }
     if (!appleIntentPromiseRef.current) {
-      appleIntentPromiseRef.current = connection
+      const pendingIntentPromise = connection
         .beginAuthIntent("apple")
         .then((intent) => {
-          appleIntentRef.current = intent;
+          if (appleIntentPromiseRef.current === pendingIntentPromise) {
+            appleIntentRef.current = intent;
+          }
           return intent;
         })
         .finally(() => {
-          appleIntentPromiseRef.current = null;
+          if (appleIntentPromiseRef.current === pendingIntentPromise) {
+            appleIntentPromiseRef.current = null;
+          }
         });
+      appleIntentPromiseRef.current = pendingIntentPromise;
     }
     return appleIntentPromiseRef.current;
   }, []);

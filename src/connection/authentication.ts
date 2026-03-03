@@ -162,6 +162,11 @@ const takeEthIntentId = (nonce: string): string | undefined => {
   return record.intentId;
 };
 
+export const clearEthIntentState = (): void => {
+  ethIntentIdByNonce.clear();
+  writeStoredEthIntentRecords([]);
+};
+
 export function setAuthStatusGlobally(status: AuthStatus) {
   if (globalSetAuthStatus) {
     globalSetAuthStatus(status);

@@ -118,6 +118,12 @@ node preflightAuthAudit.js --project mons-link --out /tmp/auth_preflight_post_ba
 - Backfill is idempotent and safe to rerun.
 - `readProfileByMethod` already has legacy field fallback; index backfill is still required for consistency and concurrency guarantees.
 - Merges are lock-protected via `mergeLocks` and operation-id logged via `authOps`.
+- If switching to immediate reuse after unlink, purge historical revocation tombstones:
+```bash
+cd /Users/ivan/Developer/mons/link/cloud/admin
+node cleanupAuthMethodRevocations.js --project mons-link --dry-run
+node cleanupAuthMethodRevocations.js --project mons-link
+```
 
 ## Smoke Test Checklist
 
@@ -129,7 +135,7 @@ Run end-to-end after each enablement phase:
 4. ETH-first -> add SOL and SOL-first -> add ETH both converge to one profile.
 5. Wallet-first -> add Apple does not create duplicate profile.
 6. Unlink blocked when only one method remains.
-7. Unlink succeeds with 2+ methods and removed method can no longer sign in.
+7. Unlink succeeds with 2+ methods, detaches from old profile, and the removed method can be reused on a different profile.
 8. Collision merge keeps current profile as target and applies `rating=min`.
 9. Profile remap updates projector output (`users/{profileId}/games`) correctly.
 10. `syncProfileClaim` restores missing claim/profile link for active UID.
@@ -148,7 +154,6 @@ Monitor logs/metrics for:
 - `merge-method-conflict`
 - `merge-lock-active`
 - `cannot-remove-last-method`
-- `method-unlinked`
 - `apple-audience-mismatch` / `apple-nonce-mismatch`
 - index ownership conflicts reported by backfill/audit
 

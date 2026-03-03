@@ -539,6 +539,21 @@ export const clearConsumedAppleRedirectResult = (): void => {
   pendingAppleRedirectResult = null;
 };
 
+export const clearAppleSignInTransientState = (): void => {
+  pendingAppleRedirectResult = null;
+  // Avoid replaying stale callback params captured at initial load.
+  didConsumeInitialAppleCallbackSnapshot = true;
+  if (typeof window !== "undefined") {
+    const hashRaw = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
+    const searchRaw = window.location.search.startsWith("?") ? window.location.search.slice(1) : window.location.search;
+    const hasAppleCallbackParams = !!parseAppleCallbackParamsFromRaw(hashRaw) || !!parseAppleCallbackParamsFromRaw(searchRaw);
+    if (hasAppleCallbackParams) {
+      clearAppleCallbackParams();
+    }
+  }
+  writePendingAppleIntentRecords([]);
+};
+
 const extractApplePopupSignals = (
   value: any
 ): {

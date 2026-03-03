@@ -316,9 +316,38 @@ const readProfileByMethod = async (method, normalizedValue, rawValue) => {
     if (profileId) {
       const profileDoc = await firestore.collection("users").doc(profileId).get();
       if (profileDoc.exists) {
-        return profileDoc;
+        const indexedNormalizedValue = normalizeFromProfileByMethod(method, profileDoc.data() || {});
+        if (indexedNormalizedValue === normalizedValue) {
+          return profileDoc;
+        }
       }
     }
+    // Index points to a profile that no longer owns this method. Remove stale row best-effort
+    // with a conditional transaction so we do not delete a concurrently repaired index.
+    await firestore
+      .runTransaction(async (transaction) => {
+        const liveIndexSnapshot = await transaction.get(indexRef);
+        if (!liveIndexSnapshot.exists) {
+          return;
+        }
+        const liveIndexData = liveIndexSnapshot.data() || {};
+        const liveProfileId = toCleanString(liveIndexData.profileId);
+        if (!liveProfileId) {
+          transaction.delete(indexRef);
+          return;
+        }
+        const liveProfileRef = firestore.collection("users").doc(liveProfileId);
+        const liveProfileSnapshot = await transaction.get(liveProfileRef);
+        if (!liveProfileSnapshot.exists) {
+          transaction.delete(indexRef);
+          return;
+        }
+        const liveNormalizedValue = normalizeFromProfileByMethod(method, liveProfileSnapshot.data() || {});
+        if (liveNormalizedValue !== normalizedValue) {
+          transaction.delete(indexRef);
+        }
+      })
+      .catch(() => {});
   }
 
   const field = getMethodField(method);
@@ -348,7 +377,10 @@ const readProfileByMethod = async (method, normalizedValue, rawValue) => {
             const indexedProfileRef = firestore.collection("users").doc(indexedProfileId);
             const indexedProfileSnapshot = await transaction.get(indexedProfileRef);
             if (indexedProfileSnapshot.exists) {
-              throw new HttpsError("failed-precondition", "method-index-conflict");
+              const indexedNormalizedValue = normalizeFromProfileByMethod(method, indexedProfileSnapshot.data() || {});
+              if (indexedNormalizedValue === normalizedValue) {
+                throw new HttpsError("failed-precondition", "method-index-conflict");
+              }
             }
           }
         }
@@ -1392,8 +1424,11 @@ const createInitialProfileWithIndex = async ({ uid, method, normalizedMethodValu
         const indexedProfileRef = firestore.collection("users").doc(indexedProfileId);
         const indexedProfileSnapshot = await transaction.get(indexedProfileRef);
         if (indexedProfileSnapshot.exists) {
-          profileId = indexedProfileId;
-          return;
+          const indexedNormalizedValue = normalizeFromProfileByMethod(method, indexedProfileSnapshot.data() || {});
+          if (indexedNormalizedValue === normalizedMethodValue) {
+            profileId = indexedProfileId;
+            return;
+          }
         }
       }
     }
@@ -1443,8 +1478,11 @@ const ensureProfileMethodAndLoginAndIndex = async ({ profileId, uid, method, nor
         const indexedProfileRef = firestore.collection("users").doc(indexedProfileId);
         const indexedProfileSnapshot = await transaction.get(indexedProfileRef);
         if (indexedProfileSnapshot.exists) {
-          conflictProfileId = indexedProfileId;
-          return;
+          const indexedNormalizedValue = normalizeFromProfileByMethod(method, indexedProfileSnapshot.data() || {});
+          if (indexedNormalizedValue === normalizedMethodValue) {
+            conflictProfileId = indexedProfileId;
+            return;
+          }
         }
       }
     }
@@ -1508,14 +1546,6 @@ const linkVerifiedMethod = async ({
     let methodProfile = await readProfileByMethod(method, normalizedMethodValue, methodLookupValue);
     let targetProfileId = "";
     const revocationRef = firestore.collection("authMethodRevocations").doc(getMethodKey(method, normalizedMethodValue));
-    const revocationSnapshot = await revocationRef.get();
-    if (revocationSnapshot.exists) {
-      const revocationData = revocationSnapshot.data() || {};
-      const revokedProfileId = toCleanString(revocationData.profileId);
-      if (!currentProfile || !revokedProfileId || currentProfile.id !== revokedProfileId) {
-        throw new HttpsError("permission-denied", "method-unlinked");
-      }
-    }
 
     if (!currentProfile && !methodProfile) {
       const createdResult = await createInitialProfileWithIndex({
@@ -1584,9 +1614,8 @@ const linkVerifiedMethod = async ({
       throw new HttpsError("internal", "target-profile-missing");
     }
     await ensureProfileClaimAndRtdb(uid, targetProfileId);
-    if (revocationSnapshot.exists) {
-      await revocationRef.delete().catch(() => {});
-    }
+    // Unlink no longer reserves methods. Clean up any historical revocation tombstone.
+    await revocationRef.delete().catch(() => {});
 
     const response = buildProfileResponse(targetProfileSnapshot, uid, preferredAddress || methodValueRaw);
     response.opId = op.opId;
@@ -1653,26 +1682,42 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
       } else {
         throw new HttpsError("invalid-argument", "Unsupported auth method.");
       }
-      transaction.update(profileRef, updateData);
-
+      let indexRef = null;
+      let shouldDeleteIndex = false;
+      let revocationRef = null;
       if (normalizedValue) {
         const methodDocId = getMethodKey(normalizedMethod, normalizedValue);
-        const indexRef = firestore.collection("authMethodIndex").doc(methodDocId);
-        const revocationRef = firestore.collection("authMethodRevocations").doc(methodDocId);
+        indexRef = firestore.collection("authMethodIndex").doc(methodDocId);
+        revocationRef = firestore.collection("authMethodRevocations").doc(methodDocId);
         const indexSnapshot = await transaction.get(indexRef);
         if (indexSnapshot.exists) {
           const indexData = indexSnapshot.data() || {};
-          if (toCleanString(indexData.profileId) === profileId) {
-            transaction.delete(indexRef);
+          const indexedProfileId = toCleanString(indexData.profileId);
+          if (!indexedProfileId || indexedProfileId === profileId) {
+            shouldDeleteIndex = true;
+          } else {
+            const indexedProfileRef = firestore.collection("users").doc(indexedProfileId);
+            const indexedProfileSnapshot = await transaction.get(indexedProfileRef);
+            if (!indexedProfileSnapshot.exists) {
+              shouldDeleteIndex = true;
+            } else {
+              const indexedNormalizedValue = normalizeFromProfileByMethod(normalizedMethod, indexedProfileSnapshot.data() || {});
+              if (indexedNormalizedValue !== normalizedValue) {
+                shouldDeleteIndex = true;
+              }
+            }
           }
         }
-        transaction.set(revocationRef, {
-          profileId,
-          method: normalizedMethod,
-          normalizedValue,
-          revokedAtMs: Date.now(),
-          updatedAtMs: Date.now(),
-        });
+      }
+
+      transaction.update(profileRef, updateData);
+
+      if (shouldDeleteIndex && indexRef) {
+        transaction.delete(indexRef);
+      }
+      if (normalizedValue && revocationRef) {
+        // Immediate reuse policy: clear stale tombstones on unlink.
+        transaction.delete(revocationRef);
       }
     });
 

@@ -6,8 +6,8 @@ import { connection } from "../connection/connection";
 import { storage } from "../utils/storage";
 import { updateProfileDisplayName } from "./ProfileSignIn";
 import { handleLoginSuccess, AddressKind } from "../connection/loginSuccess";
-import { setAuthStatusGlobally } from "../connection/authentication";
-import { preloadAppleSignInLibrary, signInWithApplePopup } from "../connection/appleConnection";
+import { clearEthIntentState, setAuthStatusGlobally } from "../connection/authentication";
+import { clearAppleSignInTransientState, preloadAppleSignInLibrary, signInWithApplePopup } from "../connection/appleConnection";
 
 const SettingsPopup = styled(ModalPopup)`
   padding: 20px;
@@ -190,15 +190,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       return appleIntentRef.current;
     }
     if (!appleIntentPromiseRef.current) {
-      appleIntentPromiseRef.current = connection
+      const pendingIntentPromise = connection
         .beginAuthIntent("apple")
         .then((intent) => {
-          appleIntentRef.current = intent;
+          if (appleIntentPromiseRef.current === pendingIntentPromise) {
+            appleIntentRef.current = intent;
+          }
           return intent;
         })
         .finally(() => {
-          appleIntentPromiseRef.current = null;
+          if (appleIntentPromiseRef.current === pendingIntentPromise) {
+            appleIntentPromiseRef.current = null;
+          }
         });
+      appleIntentPromiseRef.current = pendingIntentPromise;
     }
     return appleIntentPromiseRef.current;
   }, []);
@@ -295,9 +300,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         if (result && result.ok === true) {
           if (method === "eth") {
             storage.setEthAddress("");
+            clearEthIntentState();
           }
           if (method === "sol") {
             storage.setSolAddress("");
+          }
+          if (method === "apple") {
+            clearAppleSignInTransientState();
+            appleIntentRef.current = null;
+            appleIntentPromiseRef.current = null;
           }
           updateProfileDisplayName(storage.getUsername(""), storage.getEthAddress(""), storage.getSolAddress(""));
           setStatusText(`${method} removed.`);
