@@ -386,13 +386,6 @@ const takePendingAppleIntentRecord = (state: string): ApplePendingIntentRecord |
   return record;
 };
 
-const hasPendingAppleIntentRecord = (state: string): boolean => {
-  if (!state) {
-    return false;
-  }
-  return readPendingAppleIntentRecords().some((item) => item.state === state);
-};
-
 const shouldUseRedirectFlow = (): boolean => {
   return false;
 };
