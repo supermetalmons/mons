@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton, Subtitle } from "./SharedModalComponents";
-import { getBuildInfo } from "../utils/misc";
+import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton } from "./SharedModalComponents";
 import { connection } from "../connection/connection";
 import { storage } from "../utils/storage";
 import { updateProfileDisplayName } from "./ProfileSignIn";
@@ -18,10 +17,6 @@ const SettingsPopup = styled(ModalPopup)`
 const SettingsTitle = styled(ModalTitle)`
   margin-bottom: 8px;
   text-align: left;
-`;
-
-const NonItalicSubtitle = styled(Subtitle)`
-  font-style: normal;
 `;
 
 const SectionTitle = styled.h4`
@@ -361,7 +356,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           {renderMethodRow("apple", "Apple")}
         </MethodsList>
         <InfoText>{statusText}</InfoText>
-        <NonItalicSubtitle>{getBuildInfo()}</NonItalicSubtitle>
         <ButtonsContainer>
           <SaveButton disabled={false} onClick={onClose}>
             OK
