@@ -79,6 +79,13 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
       setIsValid(true);
       return;
     }
+    const trimmedName = name.trim();
+
+    if (trimmedName.toLowerCase() === "anon") {
+      setErrorMessage("This name is reserved.");
+      setIsValid(false);
+      return;
+    }
 
     if (name.length > 14) {
       setErrorMessage("Must be shorter than 15 characters.");

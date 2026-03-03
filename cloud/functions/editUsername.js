@@ -1,5 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
+const { isReservedExplicitUsername, setExplicitUsernameForProfile, clearUsernameForProfile } = require("./usernameRegistry");
 
 exports.editUsername = onCall(async (request) => {
   if (!request.auth) {
@@ -21,26 +22,42 @@ exports.editUsername = onCall(async (request) => {
 
   const userDoc = userQuery.docs[0];
   const userData = userDoc.data();
-  const usernameBefore = userData.username;
+  const usernameBefore = typeof userData.username === "string" ? userData.username.trim() : "";
+  const trimmedUsername = newUsername.trim();
 
-  if (usernameBefore === newUsername) {
+  if (isReservedExplicitUsername(trimmedUsername)) {
+    return {
+      ok: false,
+      validationError: "This name is reserved.",
+    };
+  }
+
+  if (usernameBefore === trimmedUsername) {
     return { ok: true };
   }
 
-  if (newUsername === "") {
-    const userRef = firestore.collection("users").doc(userDoc.id);
-    await userRef.update({ username: newUsername });
+  if (trimmedUsername === "") {
+    const hasApple = typeof userData.appleSub === "string" && userData.appleSub.trim() !== "";
+    const hasEth = typeof userData.eth === "string" && userData.eth.trim() !== "";
+    const hasSol = typeof userData.sol === "string" && userData.sol.trim() !== "";
+    if (hasApple && !hasEth && !hasSol) {
+      return {
+        ok: false,
+        validationError: "Apple-linked accounts must keep a username.",
+      };
+    }
+    await clearUsernameForProfile({ profileId: userDoc.id });
     return { ok: true };
   }
 
-  if (newUsername.length > 14) {
+  if (trimmedUsername.length > 14) {
     return {
       ok: false,
       validationError: "Must be shorter than 15 characters.",
     };
   }
 
-  if (!/^[a-zA-Z0-9]+$/.test(newUsername)) {
+  if (!/^[a-zA-Z0-9]+$/.test(trimmedUsername)) {
     return {
       ok: false,
       validationError: "Use only letters and numbers.",
@@ -48,28 +65,16 @@ exports.editUsername = onCall(async (request) => {
   }
 
   const takenNameError = "That name has been taken. Choose another.";
-
-  const usernameQuery = await firestore.collection("users").where("username", "==", newUsername).limit(1).get();
-  if (!usernameQuery.empty) {
+  const claimResult = await setExplicitUsernameForProfile({
+    profileId: userDoc.id,
+    username: trimmedUsername,
+  });
+  if (claimResult.status === "taken") {
     return {
       ok: false,
       validationError: takenNameError,
     };
   }
 
-  const result = await firestore.runTransaction(async (transaction) => {
-    const usernameCheckSnapshot = await transaction.get(firestore.collection("users").where("username", "==", newUsername).limit(1));
-    if (!usernameCheckSnapshot.empty) {
-      return {
-        ok: false,
-        validationError: takenNameError,
-      };
-    }
-
-    const userRef = firestore.collection("users").doc(userDoc.id);
-    transaction.update(userRef, { username: newUsername });
-    return { ok: true };
-  });
-
-  return result;
+  return { ok: true };
 });

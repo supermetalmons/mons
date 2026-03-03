@@ -2,6 +2,7 @@ const crypto = require("crypto");
 const admin = require("firebase-admin");
 const { HttpsError } = require("firebase-functions/v2/https");
 const { normalizeMiningSnapshot } = require("./miningHelpers");
+const { assignRandomUsernameIfNeededForAppleProfile } = require("./usernameRegistry");
 
 const METHOD_FIELD_BY_TYPE = {
   eth: "eth",
@@ -1609,9 +1610,12 @@ const linkVerifiedMethod = async ({
       throw new HttpsError("aborted", "method-index-race-retry");
     }
 
-    const targetProfileSnapshot = await admin.firestore().collection("users").doc(targetProfileId).get();
+    let targetProfileSnapshot = await admin.firestore().collection("users").doc(targetProfileId).get();
     if (!targetProfileSnapshot.exists) {
       throw new HttpsError("internal", "target-profile-missing");
+    }
+    if (method === "apple") {
+      targetProfileSnapshot = await assignRandomUsernameIfNeededForAppleProfile({ profileId: targetProfileId });
     }
     await ensureProfileClaimAndRtdb(uid, targetProfileId);
     // Unlink no longer reserves methods. Clean up any historical revocation tombstone.
