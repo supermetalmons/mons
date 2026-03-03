@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
+import { flushSync } from "react-dom";
 import styled from "styled-components";
 import { storage } from "../utils/storage";
 import { connection } from "../connection/connection";
@@ -328,7 +329,7 @@ const getAppleButtonLabel = (state: AppleButtonUiState): string => {
     return "Preparing...";
   }
   if (state === "confirm") {
-    return "Confirm";
+    return "Proceed";
   }
   if (state === "connecting") {
     return "Connecting...";
@@ -763,7 +764,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         }
         return;
       }
-      setAppleStateIfMounted("connecting");
+      if (isMountedRef.current && isActionCurrent()) {
+        flushSync(() => {
+          setAppleButtonState("connecting");
+        });
+      }
       const signInResult = await signInWithApplePopup({
         nonce: intent.nonce,
         state: intent.state,

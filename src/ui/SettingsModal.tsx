@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { flushSync } from "react-dom";
 import styled from "styled-components";
 import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton } from "./SharedModalComponents";
 import { connection } from "../connection/connection";
@@ -155,7 +156,7 @@ const getAppleButtonLabel = (state: AppleButtonUiState): string => {
     return "Preparing...";
   }
   if (state === "confirm") {
-    return "Confirm";
+    return "Proceed";
   }
   if (state === "connecting") {
     return "Connecting...";
@@ -459,9 +460,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 
     setSettingsAppleFlowInProgress(true);
     if (isMountedRef.current && isActionCurrent()) {
-      setBusyMethod("apple");
-      setAppleButtonState("connecting");
-      setStatusText("Connecting apple...");
+      flushSync(() => {
+        setBusyMethod("apple");
+        setAppleButtonState("connecting");
+        setStatusText("Connecting apple...");
+      });
     }
     try {
       const signInResult = await signInWithApplePopup({
