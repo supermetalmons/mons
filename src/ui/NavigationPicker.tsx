@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { problems, getCompletedProblemIds } from "../content/problems";
 import { useGameAssets } from "../hooks/useGameAssets";
 import { FaCheck, FaCircle } from "react-icons/fa";
-import { NavigationGameItem } from "../connection/connectionModels";
+import { NavigationGameItem, NavigationGameStatus } from "../connection/connectionModels";
 import { emojis } from "../content/emojis";
 
 interface NavigationPickerProps {
@@ -16,7 +16,7 @@ interface NavigationPickerProps {
   isGamesLoading?: boolean;
   isLoadingMoreGames?: boolean;
   hasMoreGames?: boolean;
-  onSelectGame?: (inviteId: string) => void;
+  onSelectGame?: (inviteId: string, options?: { status?: NavigationGameStatus }) => void;
   onRemoveGame?: (inviteId: string) => void;
   removingGameInviteIds?: Set<string>;
   onSelectProblem: (problemId: string) => void;
@@ -524,7 +524,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
               $isSelected={isSelected}
               data-navigation-selected={isSelected ? "true" : undefined}
               data-navigation-selected-primary={isSelected ? "true" : undefined}
-              onClick={() => onSelectGame?.(game.inviteId)}
+              onClick={() => onSelectGame?.(game.inviteId, { status: game.status })}
             >
               {isQueueStatus ? (
                 <QueuePrimaryContent>{getQueuePrimaryLabel(game)}</QueuePrimaryContent>
