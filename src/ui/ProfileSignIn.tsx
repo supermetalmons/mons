@@ -162,6 +162,100 @@ let setProfileDisplayNameGlobal: ((name: string) => void) | null = null;
 let pendingUsername: string | null = null;
 let pendingEthAddress: string | null = null;
 let pendingSolAddress: string | null = null;
+const LOGOUT_UI_RECOVERY_TIMEOUT_MS = 5000;
+const LOGOUT_SIGN_OUT_FALLBACK_DELAY_MS = 700;
+const LOGOUT_UI_LAST_RESORT_UNLOCK_TIMEOUT_MS = 12000;
+let logoutUiRecoveryTimeoutId: number | null = null;
+let logoutUiLastResortUnlockTimeoutId: number | null = null;
+let latestLogoutAttemptId = 0;
+let finalizedLogoutAttemptId: number | null = null;
+let isLogoutUiLockedGlobal = false;
+const logoutUiLockListeners = new Set<(isLocked: boolean) => void>();
+
+const setLogoutUiLocked = (isLocked: boolean) => {
+  if (isLogoutUiLockedGlobal === isLocked) {
+    return;
+  }
+  isLogoutUiLockedGlobal = isLocked;
+  logoutUiLockListeners.forEach((listener) => {
+    try {
+      listener(isLocked);
+    } catch {}
+  });
+};
+
+export const isLogoutUiLocked = (): boolean => {
+  return isLogoutUiLockedGlobal;
+};
+
+export const subscribeToLogoutUiLock = (listener: (isLocked: boolean) => void): (() => void) => {
+  logoutUiLockListeners.add(listener);
+  return () => {
+    logoutUiLockListeners.delete(listener);
+  };
+};
+
+const clearLogoutUiRecoveryTimeout = () => {
+  if (logoutUiRecoveryTimeoutId !== null) {
+    window.clearTimeout(logoutUiRecoveryTimeoutId);
+    logoutUiRecoveryTimeoutId = null;
+  }
+};
+
+const clearLogoutUiLastResortUnlockTimeout = () => {
+  if (logoutUiLastResortUnlockTimeoutId !== null) {
+    window.clearTimeout(logoutUiLastResortUnlockTimeoutId);
+    logoutUiLastResortUnlockTimeoutId = null;
+  }
+};
+
+const beginLogoutAttempt = (): number => {
+  clearLogoutUiRecoveryTimeout();
+  clearLogoutUiLastResortUnlockTimeout();
+  latestLogoutAttemptId += 1;
+  finalizedLogoutAttemptId = null;
+  setLogoutUiLocked(true);
+  return latestLogoutAttemptId;
+};
+
+const armLogoutUiLastResortUnlockTimeout = (logoutAttemptId: number) => {
+  clearLogoutUiLastResortUnlockTimeout();
+  logoutUiLastResortUnlockTimeoutId = window.setTimeout(() => {
+    logoutUiLastResortUnlockTimeoutId = null;
+    if (latestLogoutAttemptId !== logoutAttemptId) {
+      return;
+    }
+    setLogoutUiLocked(false);
+    // Last resort only: if navigation keeps failing, restore controls so user is not trapped.
+    setAuthStatusGlobally("unauthenticated");
+  }, LOGOUT_UI_LAST_RESORT_UNLOCK_TIMEOUT_MS);
+};
+
+const armLogoutUiRecoveryTimeout = (logoutAttemptId: number) => {
+  clearLogoutUiRecoveryTimeout();
+  logoutUiRecoveryTimeoutId = window.setTimeout(() => {
+    logoutUiRecoveryTimeoutId = null;
+    if (latestLogoutAttemptId !== logoutAttemptId) {
+      return;
+    }
+    if (finalizedLogoutAttemptId !== logoutAttemptId) {
+      finalizedLogoutAttemptId = logoutAttemptId;
+    }
+    // Keep auth controls hidden while forcing a heavier retry.
+    setAuthStatusGlobally("loading");
+    // If sign out is stalled or reload failed, still force canonical logout cleanup + reload.
+    armLogoutUiLastResortUnlockTimeout(logoutAttemptId);
+    void performLogoutCleanupAndReload({ cleanupMode: "thorough" });
+  }, LOGOUT_UI_RECOVERY_TIMEOUT_MS);
+};
+
+const isLatestLogoutAttempt = (logoutAttemptId: number): boolean => {
+  return latestLogoutAttemptId === logoutAttemptId;
+};
+
+const didFinalizeLogoutAttempt = (logoutAttemptId: number): boolean => {
+  return finalizedLogoutAttemptId === logoutAttemptId;
+};
 
 const formatDisplayName = (username: string | null, ethAddress: string | null, solAddress: string | null): string => {
   if (username) {
@@ -284,6 +378,28 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     };
   }, []);
 
+  useEffect(() => {
+    if (authStatus === "loading") {
+      return;
+    }
+    clearLogoutUiRecoveryTimeout();
+    clearLogoutUiLastResortUnlockTimeout();
+    setLogoutUiLocked(false);
+  }, [authStatus]);
+
+  const beginImmediateLogoutUiCleanup = useCallback(() => {
+    setLogoutUiLocked(true);
+    setIsOpen(false);
+    setIsInventoryOpen(false);
+    setIsLogoutConfirmOpen(false);
+    setIsSettingsOpen(false);
+    setIsEditingName(false);
+    hideShinyCard();
+    enterProfileEditingMode(false);
+    // Keep auth controls hidden until the hard reload lands to avoid flicker.
+    setAuthStatusGlobally("loading");
+  }, []);
+
   const showNotificationBannerInternal = async (title: string, subtitle: string, emojiId: string, successHandler: () => void) => {
     if (notificationTimeoutRef.current) {
       clearTimeout(notificationTimeoutRef.current);
@@ -325,16 +441,27 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   showNotificationBannerImpl = showNotificationBannerInternal;
 
   const performLogout = () => {
-    setAuthStatusGlobally("unauthenticated");
+    const logoutAttemptId = beginLogoutAttempt();
+    beginImmediateLogoutUiCleanup();
+    armLogoutUiRecoveryTimeout(logoutAttemptId);
     let didStartFinalReset = false;
     const finalizeLogout = () => {
       if (didStartFinalReset) {
         return;
       }
+      if (!isLatestLogoutAttempt(logoutAttemptId)) {
+        return;
+      }
+      if (didFinalizeLogoutAttempt(logoutAttemptId)) {
+        return;
+      }
+      finalizedLogoutAttemptId = logoutAttemptId;
       didStartFinalReset = true;
       void performLogoutCleanupAndReload();
     };
-    const fallbackTimeoutId = window.setTimeout(finalizeLogout, 1500);
+    const fallbackTimeoutId = window.setTimeout(() => {
+      finalizeLogout();
+    }, LOGOUT_SIGN_OUT_FALLBACK_DELAY_MS);
     connection
       .signOut()
       .catch(() => {})
@@ -424,7 +551,6 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   const handleConfirmLogout = () => {
-    setIsLogoutConfirmOpen(false);
     performLogout();
   };
 

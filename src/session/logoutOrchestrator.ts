@@ -4,9 +4,13 @@ const LOGOUT_SYNC_CHANNEL = "mons-link-logout-sync";
 const LOGOUT_SYNC_STORAGE_KEY = "__mons_link_logout_sync__";
 const SIGN_IN_SYNC_CHANNEL = "mons-link-signin-sync";
 const SIGN_IN_SYNC_STORAGE_KEY = "__mons_link_signin_sync__";
+const FAST_PRE_RELOAD_CLEANUP_MS = 150;
+const THOROUGH_PRE_RELOAD_CLEANUP_MS = 2500;
+const SAFARI_RELOAD_FALLBACK_DELAY_MS = 180;
 
 type LogoutSignal = {
   id: string;
+  cleanupMode?: LogoutCleanupMode;
 };
 
 type SignInSignal = {
@@ -19,6 +23,8 @@ type SignInSignal = {
 type IndexedDbFactoryWithDatabases = IDBFactory & {
   databases?: () => Promise<Array<{ name?: string }>>;
 };
+
+type LogoutCleanupMode = "fast" | "thorough";
 
 let logoutBroadcastChannel: BroadcastChannel | null = null;
 let signInBroadcastChannel: BroadcastChannel | null = null;
@@ -46,11 +52,12 @@ const parseLogoutSignal = (value: unknown): LogoutSignal | null => {
     return null;
   }
   try {
-    const parsed = JSON.parse(value) as { id?: unknown } | null;
+    const parsed = JSON.parse(value) as { id?: unknown; cleanupMode?: unknown } | null;
     if (!parsed || typeof parsed.id !== "string" || parsed.id === "") {
       return null;
     }
-    return { id: parsed.id };
+    const cleanupMode = parsed.cleanupMode === "thorough" ? "thorough" : parsed.cleanupMode === "fast" ? "fast" : undefined;
+    return { id: parsed.id, cleanupMode };
   } catch {
     return null;
   }
@@ -155,7 +162,13 @@ const clearCacheStorageForLogout = async () => {
   } catch {}
 };
 
-const clearClientPersistenceForLogout = async () => {
+const waitFor = (ms: number): Promise<void> => {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
+};
+
+const clearCriticalClientPersistenceForLogout = () => {
   try {
     storage.signOut();
   } catch {}
@@ -165,13 +178,20 @@ const clearClientPersistenceForLogout = async () => {
   try {
     clearSessionStorageForLogout();
   } catch {}
-  await Promise.all([
-    clearIndexedDbForLogout().catch(() => {}),
-    clearCacheStorageForLogout().catch(() => {}),
-  ]);
   try {
     localStorage.removeItem(LOGOUT_SYNC_STORAGE_KEY);
   } catch {}
+};
+
+const clearClientPersistenceForLogout = async (cleanupMode: LogoutCleanupMode = "fast") => {
+  clearCriticalClientPersistenceForLogout();
+  const heavyCleanupPromise = Promise.all([
+    clearIndexedDbForLogout().catch(() => {}),
+    clearCacheStorageForLogout().catch(() => {}),
+  ]);
+  const preReloadBudgetMs = cleanupMode === "thorough" ? THOROUGH_PRE_RELOAD_CLEANUP_MS : FAST_PRE_RELOAD_CLEANUP_MS;
+  // Keep reload snappy by bounding pre-reload cleanup time.
+  await Promise.race([heavyCleanupPromise, waitFor(preReloadBudgetMs)]);
 };
 
 const reloadAfterLogout = () => {
@@ -182,17 +202,22 @@ const reloadAfterLogout = () => {
     try {
       window.location.replace(window.location.href);
     } catch {}
-  }, 400);
+  }, SAFARI_RELOAD_FALLBACK_DELAY_MS);
 };
 
-const handleLogoutSignal = (signalId: string) => {
-  if (!signalId || signalId === lastHandledSignalId || isHandlingSignal) {
+const handleLogoutSignal = (signal: LogoutSignal) => {
+  if (!signal.id || signal.id === lastHandledSignalId || isHandlingSignal) {
     return;
   }
   isHandlingSignal = true;
-  lastHandledSignalId = signalId;
-  void clearClientPersistenceForLogout().finally(() => {
-    reloadAfterLogout();
+  lastHandledSignalId = signal.id;
+  void clearClientPersistenceForLogout(signal.cleanupMode ?? "fast").finally(() => {
+    try {
+      reloadAfterLogout();
+    } finally {
+      // If navigation fails, allow later logout signals to retry cleanup/reload.
+      isHandlingSignal = false;
+    }
   });
 };
 
@@ -226,8 +251,8 @@ const getSignInBroadcastChannel = (): BroadcastChannel | null => {
   return signInBroadcastChannel;
 };
 
-const broadcastLogoutSignal = (signalId: string) => {
-  const payload = serializeLogoutSignal({ id: signalId });
+const broadcastLogoutSignal = (signalId: string, cleanupMode: LogoutCleanupMode) => {
+  const payload = serializeLogoutSignal({ id: signalId, cleanupMode });
   try {
     localStorage.setItem(LOGOUT_SYNC_STORAGE_KEY, payload);
   } catch {}
@@ -267,7 +292,7 @@ export const installLogoutSync = () => {
       if (!signal) {
         return;
       }
-      handleLogoutSignal(signal.id);
+      handleLogoutSignal(signal);
       return;
     }
     if (event.key === SIGN_IN_SYNC_STORAGE_KEY) {
@@ -286,7 +311,7 @@ export const installLogoutSync = () => {
       if (!signal) {
         return;
       }
-      handleLogoutSignal(signal.id);
+      handleLogoutSignal(signal);
     };
   }
   const signInChannel = getSignInBroadcastChannel();
@@ -301,12 +326,13 @@ export const installLogoutSync = () => {
   }
 };
 
-export const performLogoutCleanupAndReload = async () => {
+export const performLogoutCleanupAndReload = async (options?: { cleanupMode?: LogoutCleanupMode }) => {
+  const cleanupMode = options?.cleanupMode ?? "fast";
   const signalId = createSignalId();
   lastHandledSignalId = signalId;
-  broadcastLogoutSignal(signalId);
+  broadcastLogoutSignal(signalId, cleanupMode);
   try {
-    await clearClientPersistenceForLogout();
+    await clearClientPersistenceForLogout(cleanupMode);
   } finally {
     reloadAfterLogout();
   }

@@ -18,7 +18,7 @@ import { FaVolumeUp, FaMusic, FaVolumeMute, FaInfoCircle, FaRegGem, FaPowerOff, 
 import { preloadSounds } from "./content/sounds";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { storage } from "./utils/storage";
-import ProfileSignIn, { handleLogout, showInventory, showSettings } from "./ui/ProfileSignIn";
+import ProfileSignIn, { handleLogout, isLogoutUiLocked, showInventory, showSettings, subscribeToLogoutUiLock } from "./ui/ProfileSignIn";
 import { isMainGameLoaded, onMainGameLoaded } from "./game/mainGameLoadState";
 import { Sound } from "./utils/gameModels";
 import { initializeAppSessionManager } from "./session/AppSessionManager";
@@ -50,7 +50,9 @@ const App = () => {
   const [isMuted, setIsMuted] = useState(globalIsMuted);
   const [isIslandButtonDim, setIsIslandButtonDim] = useState(() => getCurrentRouteState().mode !== "home");
   const [shouldLoadIslandButton, setShouldLoadIslandButton] = useState(isMainGameLoaded());
+  const [isLogoutUiLockedState, setIsLogoutUiLockedState] = useState(() => isLogoutUiLocked());
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
+  const shouldHideAuthControls = authStatus === "loading" || isLogoutUiLockedState;
 
   enterProfileEditingMode = (enter: boolean) => {
     setIsProfileEditingMode(enter);
@@ -75,6 +77,12 @@ const App = () => {
     });
     return unsubscribe;
   }, [shouldLoadIslandButton]);
+
+  useEffect(() => {
+    return subscribeToLogoutUiLock((isLocked) => {
+      setIsLogoutUiLockedState(isLocked);
+    });
+  }, []);
 
   const handleMuteToggle = useCallback((event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
@@ -123,7 +131,7 @@ const App = () => {
             }}>
             <div className="app-container">
               <div className="top-buttons-container">
-                {authStatus !== "loading" && (
+                {!shouldHideAuthControls && (
                   <>
                     {shouldLoadIslandButton && (
                       <Suspense fallback={null}>
@@ -159,7 +167,7 @@ const App = () => {
                     </div>
                   </>
                 )}
-                {authStatus !== "loading" && <ProfileSignIn authStatus={authStatus} />}
+                {!shouldHideAuthControls && <ProfileSignIn authStatus={authStatus} />}
               </div>
               <BoardComponent />
               <MainMenu />
