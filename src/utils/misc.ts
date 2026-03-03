@@ -42,12 +42,11 @@ export function getBuildInfo(): string {
   return process.env.REACT_APP_BUILD_DATETIME
     ? (() => {
         const date = new Date(Number(process.env.REACT_APP_BUILD_DATETIME) * 1000);
-        const year = date.getUTCFullYear().toString().slice(-2);
-        const month = (date.getUTCMonth() + 1).toString().padStart(2, "0");
-        const day = date.getUTCDate().toString().padStart(2, "0");
-        const hours = date.getUTCHours().toString().padStart(2, "0");
-        const minutes = date.getUTCMinutes().toString().padStart(2, "0");
-        return `build ${year}.${month}.${day} (${hours}.${minutes})`;
+        const weekDays = ["sun", "mon", "tue", "wed", "thu", "fri", "sat"];
+        const day = weekDays[date.getDay()];
+        const hours = date.getHours().toString().padStart(2, "0");
+        const minutes = date.getMinutes().toString().padStart(2, "0");
+        return `build ${day} (${hours}:${minutes})`;
       })()
     : "local dev";
 }
