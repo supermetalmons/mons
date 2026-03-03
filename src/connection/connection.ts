@@ -767,6 +767,20 @@ class Connection {
     }
   }
 
+  public async getCurrentProfileClaimId(): Promise<string> {
+    const user = this.auth.currentUser;
+    if (!user) {
+      return "";
+    }
+    try {
+      const token = await user.getIdTokenResult();
+      const profileId = token && token.claims ? token.claims.profileId : "";
+      return typeof profileId === "string" ? profileId : "";
+    } catch {
+      return "";
+    }
+  }
+
   public async signIn(): Promise<string | undefined> {
     try {
       if (this.auth.currentUser && this.auth.currentUser.uid) {

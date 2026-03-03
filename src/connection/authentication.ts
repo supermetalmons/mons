@@ -290,6 +290,21 @@ export function useAuthStatus() {
         const storedEmojiRaw = Number.parseInt(storage.getPlayerEmojiId("1"), 10);
         let resolvedEmoji = Number.isFinite(storedEmojiRaw) && storedEmojiRaw > 0 ? storedEmojiRaw : 1;
         let resolvedAura = storage.getPlayerEmojiAura("");
+        let isIdentityVerified = false;
+        const resetResolvedIdentityToFallback = (nextProfileId: string): void => {
+          resolvedProfileId = nextProfileId;
+          resolvedUsername = "";
+          resolvedEthAddress = "";
+          resolvedSolAddress = "";
+          resolvedEmoji = 1;
+          resolvedAura = "";
+          storage.setProfileId(nextProfileId);
+          storage.setUsername("");
+          storage.setEthAddress("");
+          storage.setSolAddress("");
+          storage.setPlayerEmojiId("1");
+          storage.setPlayerEmojiAura("");
+        };
         const applyAuthoritativeProfile = (authoritativeProfile: any): boolean => {
           const authoritativeProfileId = typeof authoritativeProfile?.id === "string" ? authoritativeProfile.id : "";
           if (!authoritativeProfileId) {
@@ -324,18 +339,20 @@ export function useAuthStatus() {
             return;
           }
           if (syncedProfileId !== profileId) {
-            const authoritativeProfile = await connection.getProfileByLoginId(uid);
-            if (!isStillValid()) {
-              return;
+            resetResolvedIdentityToFallback(syncedProfileId);
+            try {
+              const authoritativeProfile = await connection.getProfileByLoginId(uid);
+              if (!isStillValid()) {
+                return;
+              }
+              applyAuthoritativeProfile(authoritativeProfile);
+            } catch {
+              if (!isStillValid()) {
+                return;
+              }
             }
-            const authoritativeProfileId = typeof authoritativeProfile.id === "string" ? authoritativeProfile.id : "";
-            if (!authoritativeProfileId) {
-              setAuthStatus("unauthenticated");
-              scheduleDidAttemptAuthentication();
-              return;
-            }
-            applyAuthoritativeProfile(authoritativeProfile);
           }
+          isIdentityVerified = true;
         } catch {
           if (!isStillValid()) {
             return;
@@ -345,15 +362,27 @@ export function useAuthStatus() {
             if (!isStillValid()) {
               return;
             }
-            applyAuthoritativeProfile(authoritativeProfile);
+            isIdentityVerified = applyAuthoritativeProfile(authoritativeProfile);
           } catch {
             if (!isStillValid()) {
               return;
+            }
+            const claimedProfileId = await connection.getCurrentProfileClaimId();
+            if (!isStillValid()) {
+              return;
+            }
+            if (claimedProfileId !== "" && claimedProfileId === profileId) {
+              isIdentityVerified = true;
             }
           }
         }
 
         if (!isStillValid()) {
+          return;
+        }
+        if (!isIdentityVerified) {
+          setAuthStatus("unauthenticated");
+          scheduleDidAttemptAuthentication();
           return;
         }
         const profile = {
