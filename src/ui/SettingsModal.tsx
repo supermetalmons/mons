@@ -81,13 +81,16 @@ const MethodStatus = styled.div`
 const ActionButton = styled.button<{ danger?: boolean }>`
   border: none;
   border-radius: 14px;
-  padding: 7px 12px;
+  padding: 7px 10px;
   font-size: 0.8rem;
   font-weight: 700;
   cursor: pointer;
   color: white;
   background: ${(props) => (props.danger ? "var(--dangerButtonBackground)" : "var(--color-blue-primary)")};
-  min-width: 84px;
+  width: 112px;
+  min-width: 112px;
+  text-align: center;
+  white-space: nowrap;
 
   &:disabled {
     opacity: 0.45;
@@ -111,6 +114,7 @@ const InfoText = styled.div`
 `;
 
 type MethodKey = "apple" | "eth" | "sol";
+type NonAppleMethodKey = Exclude<MethodKey, "apple">;
 type LinkedMethods = Record<MethodKey, boolean>;
 
 const EMPTY_LINKED_METHODS: LinkedMethods = {
@@ -126,6 +130,8 @@ type AuthIntentResponse = {
   state: string;
   expiresAtMs: number;
 };
+
+type AppleButtonUiState = "idle" | "preparing" | "confirm" | "connecting" | "verifying";
 
 const APPLE_INTENT_REFRESH_BUFFER_MS = 30 * 1000;
 
@@ -144,6 +150,44 @@ const isAppleIntentUsable = (intent: AuthIntentResponse | null): intent is AuthI
     intent.expiresAtMs - Date.now() > APPLE_INTENT_REFRESH_BUFFER_MS;
 };
 
+const getAppleButtonLabel = (state: AppleButtonUiState): string => {
+  if (state === "preparing") {
+    return "Preparing...";
+  }
+  if (state === "confirm") {
+    return "Confirm";
+  }
+  if (state === "connecting") {
+    return "Connecting...";
+  }
+  if (state === "verifying") {
+    return "Verifying...";
+  }
+  return "Connect";
+};
+
+let isSettingsAppleFlowInProgress = false;
+const settingsAppleFlowListeners = new Set<(inProgress: boolean) => void>();
+
+const setSettingsAppleFlowInProgress = (inProgress: boolean): void => {
+  if (isSettingsAppleFlowInProgress === inProgress) {
+    return;
+  }
+  isSettingsAppleFlowInProgress = inProgress;
+  settingsAppleFlowListeners.forEach((listener) => {
+    try {
+      listener(inProgress);
+    } catch {}
+  });
+};
+
+const subscribeSettingsAppleFlowProgress = (listener: (inProgress: boolean) => void): (() => void) => {
+  settingsAppleFlowListeners.add(listener);
+  return () => {
+    settingsAppleFlowListeners.delete(listener);
+  };
+};
+
 export interface SettingsModalProps {
   onClose: () => void;
 }
@@ -154,8 +198,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [busyMethod, setBusyMethod] = useState<MethodKey | null>(null);
   const [statusText, setStatusText] = useState<string>("");
+  const [appleButtonState, setAppleButtonState] = useState<AppleButtonUiState>("idle");
+  const [isGlobalAppleFlowInProgress, setIsGlobalAppleFlowInProgress] = useState<boolean>(() => isSettingsAppleFlowInProgress);
   const appleIntentRef = useRef<AuthIntentResponse | null>(null);
   const appleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(null);
+  const isMountedRef = useRef(true);
+  const latestAppleActionRef = useRef(0);
+  const previousGlobalAppleFlowRef = useRef(isSettingsAppleFlowInProgress);
+  const appleConfirmExpiryTimeoutRef = useRef<number | null>(null);
+  const shouldRefreshAfterAppleFlowLoadRef = useRef(false);
 
   const linkedCount = useMemo(() => {
     return Object.values(linkedMethods).filter(Boolean).length;
@@ -212,14 +263,108 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     return intent;
   }, []);
 
+  const clearAppleConfirmExpiryTimeout = useCallback(() => {
+    if (appleConfirmExpiryTimeoutRef.current) {
+      window.clearTimeout(appleConfirmExpiryTimeoutRef.current);
+      appleConfirmExpiryTimeoutRef.current = null;
+    }
+  }, []);
+
+  const scheduleAppleConfirmExpiryTimeout = useCallback(() => {
+    clearAppleConfirmExpiryTimeout();
+    const intent = appleIntentRef.current;
+    if (!intent) {
+      return;
+    }
+    const msUntilIntentIsStale = intent.expiresAtMs - Date.now() - APPLE_INTENT_REFRESH_BUFFER_MS;
+    if (msUntilIntentIsStale <= 0) {
+      if (isMountedRef.current) {
+        setAppleButtonState((current) => (current === "confirm" ? "idle" : current));
+      }
+      return;
+    }
+    appleConfirmExpiryTimeoutRef.current = window.setTimeout(() => {
+      appleConfirmExpiryTimeoutRef.current = null;
+      if (!isMountedRef.current) {
+        return;
+      }
+      if (!isAppleIntentUsable(appleIntentRef.current)) {
+        setAppleButtonState((current) => (current === "confirm" ? "idle" : current));
+      }
+    }, msUntilIntentIsStale + 50);
+  }, [clearAppleConfirmExpiryTimeout]);
+
+  useEffect(() => {
+    return () => {
+      isMountedRef.current = false;
+      clearAppleConfirmExpiryTimeout();
+    };
+  }, [clearAppleConfirmExpiryTimeout]);
+
+  useEffect(() => {
+    return subscribeSettingsAppleFlowProgress((inProgress) => {
+      if (isMountedRef.current) {
+        setIsGlobalAppleFlowInProgress(inProgress);
+      }
+    });
+  }, []);
+
   useEffect(() => {
     if (popupRef.current) {
       popupRef.current.focus();
     }
     void refreshLinkedMethods();
+  }, [refreshLinkedMethods]);
+
+  useEffect(() => {
+    if (isLoading || linkedMethods.apple) {
+      return;
+    }
     void preloadAppleSignInLibrary().catch(() => {});
     void ensurePreparedAppleIntent().catch(() => {});
-  }, [refreshLinkedMethods, ensurePreparedAppleIntent]);
+  }, [isLoading, linkedMethods.apple, ensurePreparedAppleIntent]);
+
+  useEffect(() => {
+    if (!linkedMethods.apple) {
+      return;
+    }
+    latestAppleActionRef.current += 1;
+    clearAppleConfirmExpiryTimeout();
+    setAppleButtonState("idle");
+  }, [clearAppleConfirmExpiryTimeout, linkedMethods.apple]);
+
+  useEffect(() => {
+    if (appleButtonState !== "confirm") {
+      clearAppleConfirmExpiryTimeout();
+      return;
+    }
+    scheduleAppleConfirmExpiryTimeout();
+    return clearAppleConfirmExpiryTimeout;
+  }, [appleButtonState, clearAppleConfirmExpiryTimeout, scheduleAppleConfirmExpiryTimeout]);
+
+  useEffect(() => {
+    const wasInProgress = previousGlobalAppleFlowRef.current;
+    previousGlobalAppleFlowRef.current = isGlobalAppleFlowInProgress;
+    if (!wasInProgress || isGlobalAppleFlowInProgress || busyMethod === "apple") {
+      return;
+    }
+    if (statusText === "Apple sign in already in progress...") {
+      setStatusText("");
+    }
+    if (isLoading) {
+      shouldRefreshAfterAppleFlowLoadRef.current = true;
+      return;
+    }
+    void refreshLinkedMethods();
+  }, [busyMethod, isGlobalAppleFlowInProgress, isLoading, refreshLinkedMethods, statusText]);
+
+  useEffect(() => {
+    if (isLoading || !shouldRefreshAfterAppleFlowLoadRef.current) {
+      return;
+    }
+    shouldRefreshAfterAppleFlowLoadRef.current = false;
+    void refreshLinkedMethods();
+  }, [isLoading, refreshLinkedMethods]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Escape") {
@@ -229,7 +374,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   };
 
   const runConnectFlow = useCallback(
-    async (method: MethodKey) => {
+    async (method: NonAppleMethodKey) => {
       setBusyMethod(method);
       setStatusText(`Connecting ${method}...`);
       try {
@@ -245,27 +390,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           const { publicKey, signature, intentId } = await connectToSolana();
           result = await connection.verifySolanaAddress(publicKey, signature, intentId);
           kind = "sol";
-        } else {
-          const intent = takePreparedAppleIntent();
-          if (!intent) {
-            setStatusText("Preparing Apple sign in...");
-            void ensurePreparedAppleIntent().catch(() => {});
-            return;
-          }
-          const signInResult = await signInWithApplePopup({
-            nonce: intent.nonce,
-            state: intent.state,
-            intentId: intent.intentId,
-            expiresAtMs: intent.expiresAtMs,
-            consentSource: "settings",
-          });
-          if (!signInResult) {
-            setStatusText("Continue in Apple sign in...");
-            return;
-          }
-          const { idToken } = signInResult;
-          result = await connection.verifyAppleToken(intent.intentId, idToken, "settings");
-          kind = "apple";
         }
 
         if (result && result.ok === true) {
@@ -283,7 +407,121 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         await refreshLinkedMethods();
       }
     },
-    [refreshLinkedMethods, takePreparedAppleIntent, ensurePreparedAppleIntent]
+    [refreshLinkedMethods]
+  );
+
+  const runAppleConnectFlow = useCallback(async () => {
+    if (isLoading || busyMethod !== null) {
+      return;
+    }
+    if (isSettingsAppleFlowInProgress) {
+      if (isMountedRef.current) {
+        setStatusText("Apple sign in already in progress...");
+      }
+      return;
+    }
+
+    const actionId = latestAppleActionRef.current + 1;
+    latestAppleActionRef.current = actionId;
+    const isActionCurrent = () => latestAppleActionRef.current === actionId;
+    const setAppleUiIfMounted = (nextState: AppleButtonUiState, nextStatusText?: string) => {
+      if (!isMountedRef.current || !isActionCurrent()) {
+        return;
+      }
+      setAppleButtonState(nextState);
+      if (typeof nextStatusText === "string") {
+        setStatusText(nextStatusText);
+      }
+    };
+
+    const intent = takePreparedAppleIntent();
+    if (!intent) {
+      setAppleUiIfMounted("preparing", "Preparing Apple sign in...");
+      try {
+        await Promise.all([preloadAppleSignInLibrary(), ensurePreparedAppleIntent()]);
+        if (!isActionCurrent()) {
+          return;
+        }
+        if (!isAppleIntentUsable(appleIntentRef.current)) {
+          setAppleUiIfMounted("idle", "Apple sign in is no longer ready. Please try again.");
+          return;
+        }
+        if (isMountedRef.current && isActionCurrent()) {
+          setStatusText("");
+          setAppleButtonState("confirm");
+        }
+      } catch (error) {
+        console.error("Failed to prepare apple sign in:", error);
+        setAppleUiIfMounted("idle", "Failed to prepare Apple sign in.");
+      }
+      return;
+    }
+
+    setSettingsAppleFlowInProgress(true);
+    if (isMountedRef.current && isActionCurrent()) {
+      setBusyMethod("apple");
+      setAppleButtonState("connecting");
+      setStatusText("Connecting apple...");
+    }
+    try {
+      const signInResult = await signInWithApplePopup({
+        nonce: intent.nonce,
+        state: intent.state,
+        intentId: intent.intentId,
+        expiresAtMs: intent.expiresAtMs,
+        consentSource: "settings",
+      });
+      if (!isActionCurrent()) {
+        return;
+      }
+      if (!signInResult) {
+        setAppleUiIfMounted("idle", "");
+        return;
+      }
+      const { idToken } = signInResult;
+      setAppleUiIfMounted("verifying", "Verifying apple...");
+      const result = await connection.verifyAppleToken(intent.intentId, idToken, "settings");
+      if (!isActionCurrent()) {
+        return;
+      }
+      if (result && result.ok === true) {
+        handleLoginSuccess(result, "apple");
+        setAuthStatusGlobally("authenticated");
+        if (isMountedRef.current) {
+          setStatusText("apple connected.");
+        }
+      } else {
+        if (isMountedRef.current) {
+          setStatusText("Failed to connect apple.");
+        }
+      }
+    } catch (error) {
+      console.error("Failed to connect apple:", error);
+      if (isMountedRef.current && isActionCurrent()) {
+        setStatusText("Failed to connect apple.");
+      }
+    } finally {
+      setSettingsAppleFlowInProgress(false);
+      if (!isActionCurrent()) {
+        return;
+      }
+      if (isMountedRef.current) {
+        setBusyMethod((current) => (current === "apple" ? null : current));
+        setAppleButtonState("idle");
+        await refreshLinkedMethods();
+      }
+    }
+  }, [busyMethod, ensurePreparedAppleIntent, isLoading, refreshLinkedMethods, takePreparedAppleIntent]);
+
+  const handleConnectClick = useCallback(
+    (method: MethodKey) => {
+      if (method === "apple") {
+        void runAppleConnectFlow();
+        return;
+      }
+      void runConnectFlow(method);
+    },
+    [runAppleConnectFlow, runConnectFlow]
   );
 
   const runDisconnectFlow = useCallback(
@@ -324,8 +562,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const renderMethodRow = (method: MethodKey, label: string) => {
     const isLinked = linkedMethods[method];
     const isBusy = busyMethod === method;
-    const disableConnect = isLoading || isBusy || busyMethod !== null;
+    const isAppleMethod = method === "apple";
+    const isOtherMethodBusy = busyMethod !== null && busyMethod !== method;
+    const isApplePreparing = appleButtonState === "preparing";
+    const isAppleBusyState = isGlobalAppleFlowInProgress || appleButtonState === "connecting" || appleButtonState === "verifying";
+    const disableConnect = isAppleMethod
+      ? isLoading || isBusy || isOtherMethodBusy || isApplePreparing || isAppleBusyState
+      : isLoading || isBusy || busyMethod !== null;
     const disableDisconnect = isLoading || isBusy || busyMethod !== null || linkedCount <= 1;
+    const connectText = isAppleMethod
+      ? isGlobalAppleFlowInProgress && appleButtonState === "idle"
+        ? "Connecting..."
+        : getAppleButtonLabel(appleButtonState)
+      : isBusy
+        ? "Connecting..."
+        : "Connect";
     return (
       <MethodRow key={method}>
         <MethodMeta>
@@ -337,8 +588,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
             {isBusy ? "Removing..." : "Remove"}
           </ActionButton>
         ) : (
-          <ActionButton disabled={disableConnect} onClick={() => void runConnectFlow(method)}>
-            {isBusy ? "Connecting..." : "Connect"}
+          <ActionButton disabled={disableConnect} onClick={() => handleConnectClick(method)}>
+            {connectText}
           </ActionButton>
         )}
       </MethodRow>

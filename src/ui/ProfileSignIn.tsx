@@ -67,9 +67,12 @@ const ConnectButtonPopover = styled.div`
   top: 100%;
   margin-top: 16px;
   z-index: 50;
+  width: 188px;
 `;
 
 const ConnectButtonWrapper = styled.div`
+  width: 100%;
+  box-sizing: border-box;
   padding: 8px;
   background-color: var(--color-white);
   border-radius: 12px;
@@ -84,13 +87,16 @@ const ConnectButtonWrapper = styled.div`
 `;
 
 const CustomConnectButton = styled(BaseButton)`
-  min-width: 130px;
+  width: 100%;
+  min-width: 0;
   color: var(--color-black);
-  padding: 12px 24px;
+  padding: 11px 14px;
   border: none;
   border-radius: 8px;
   font-weight: bold;
   font-size: 0.81rem;
+  text-align: center;
+  white-space: nowrap;
   cursor: pointer;
 
   background-color: var(--color-gray-f9);
@@ -315,12 +321,29 @@ const isAppleIntentUsable = (intent: AuthIntentResponse | null): intent is AuthI
     intent.expiresAtMs - Date.now() > APPLE_INTENT_REFRESH_BUFFER_MS;
 };
 
+type AppleButtonUiState = "idle" | "preparing" | "confirm" | "connecting" | "verifying";
+
+const getAppleButtonLabel = (state: AppleButtonUiState): string => {
+  if (state === "preparing") {
+    return "Preparing...";
+  }
+  if (state === "confirm") {
+    return "Confirm";
+  }
+  if (state === "connecting") {
+    return "Connecting...";
+  }
+  if (state === "verifying") {
+    return "Verifying...";
+  }
+  return "Apple";
+};
+
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [solanaText, setSolanaText] = useState("Solana");
-  const [appleText, setAppleText] = useState("Apple");
+  const [appleButtonState, setAppleButtonState] = useState<AppleButtonUiState>("idle");
   const [isSolanaConnecting, setIsSolanaConnecting] = useState(false);
-  const [isAppleConnecting, setIsAppleConnecting] = useState(false);
   const [profileDisplayName, setProfileDisplayName] = useState(() => formatDisplayName(pendingUsername, pendingEthAddress, pendingSolAddress));
   const [isEditingName, setIsEditingName] = useState(false);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
@@ -335,6 +358,45 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const notificationTimeoutRef = useRef<number | null>(null);
   const appleIntentRef = useRef<AuthIntentResponse | null>(null);
   const appleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(null);
+  const appleConfirmExpiryTimeoutRef = useRef<number | null>(null);
+  const isMountedRef = useRef(true);
+  const isOpenRef = useRef(isOpen);
+  const authStatusRef = useRef(authStatus);
+  const latestAppleActionRef = useRef(0);
+
+  const appleText = getAppleButtonLabel(appleButtonState);
+  const isAppleBusy = appleButtonState === "preparing" || appleButtonState === "connecting" || appleButtonState === "verifying";
+
+  const clearAppleConfirmExpiryTimeout = useCallback(() => {
+    if (appleConfirmExpiryTimeoutRef.current) {
+      window.clearTimeout(appleConfirmExpiryTimeoutRef.current);
+      appleConfirmExpiryTimeoutRef.current = null;
+    }
+  }, []);
+
+  const scheduleAppleConfirmExpiryTimeout = useCallback(() => {
+    clearAppleConfirmExpiryTimeout();
+    const intent = appleIntentRef.current;
+    if (!intent) {
+      return;
+    }
+    const msUntilIntentIsStale = intent.expiresAtMs - Date.now() - APPLE_INTENT_REFRESH_BUFFER_MS;
+    if (msUntilIntentIsStale <= 0) {
+      if (isMountedRef.current) {
+        setAppleButtonState((current) => (current === "confirm" ? "idle" : current));
+      }
+      return;
+    }
+    appleConfirmExpiryTimeoutRef.current = window.setTimeout(() => {
+      appleConfirmExpiryTimeoutRef.current = null;
+      if (!isMountedRef.current) {
+        return;
+      }
+      if (!isAppleIntentUsable(appleIntentRef.current)) {
+        setAppleButtonState((current) => (current === "confirm" ? "idle" : current));
+      }
+    }, msUntilIntentIsStale + 50);
+  }, [clearAppleConfirmExpiryTimeout]);
 
   getIsInventoryPopupOpen = () => isInventoryOpen;
   getIsEditingPopupOpen = () => isEditingName;
@@ -372,11 +434,43 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
   useEffect(() => {
     return () => {
+      isMountedRef.current = false;
+      clearAppleConfirmExpiryTimeout();
       if (notificationTimeoutRef.current) {
         clearTimeout(notificationTimeoutRef.current);
       }
     };
-  }, []);
+  }, [clearAppleConfirmExpiryTimeout]);
+
+  useEffect(() => {
+    isOpenRef.current = isOpen;
+  }, [isOpen]);
+
+  useEffect(() => {
+    authStatusRef.current = authStatus;
+  }, [authStatus]);
+
+  useEffect(() => {
+    if (authStatus === "authenticated" && appleButtonState !== "idle") {
+      setAppleButtonState("idle");
+      return;
+    }
+    if (authStatus === "authenticated" || !isOpen || appleButtonState !== "confirm") {
+      return;
+    }
+    if (!isAppleIntentUsable(appleIntentRef.current)) {
+      setAppleButtonState("idle");
+    }
+  }, [authStatus, isOpen, appleButtonState]);
+
+  useEffect(() => {
+    if (appleButtonState !== "confirm") {
+      clearAppleConfirmExpiryTimeout();
+      return;
+    }
+    scheduleAppleConfirmExpiryTimeout();
+    return clearAppleConfirmExpiryTimeout;
+  }, [appleButtonState, clearAppleConfirmExpiryTimeout, scheduleAppleConfirmExpiryTimeout]);
 
   useEffect(() => {
     if (authStatus === "loading") {
@@ -636,20 +730,40 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   const handleAppleClick = async () => {
-    if (isAppleConnecting) return;
+    if (isAppleBusy) {
+      return;
+    }
 
-    setIsAppleConnecting(true);
-    setAppleText("Connecting...");
+    const actionId = latestAppleActionRef.current + 1;
+    latestAppleActionRef.current = actionId;
+    const isActionCurrent = () => latestAppleActionRef.current === actionId;
+    const setAppleStateIfMounted = (nextState: AppleButtonUiState) => {
+      if (isMountedRef.current && isActionCurrent()) {
+        setAppleButtonState(nextState);
+      }
+    };
     try {
       const intent = takePreparedAppleIntent();
       if (!intent) {
-        setAppleText("Preparing...");
-        void ensurePreparedAppleIntent().finally(() => {
-          setAppleText("Apple");
-          setIsAppleConnecting(false);
-        });
+        setAppleStateIfMounted("preparing");
+        await Promise.all([preloadAppleSignInLibrary(), ensurePreparedAppleIntent()]);
+        if (!isActionCurrent()) {
+          return;
+        }
+        if (!isAppleIntentUsable(appleIntentRef.current)) {
+          setAppleStateIfMounted("idle");
+          return;
+        }
+        if (isMountedRef.current) {
+          if (isOpenRef.current && authStatusRef.current !== "authenticated") {
+            setAppleButtonState("confirm");
+          } else {
+            setAppleButtonState("idle");
+          }
+        }
         return;
       }
+      setAppleStateIfMounted("connecting");
       const signInResult = await signInWithApplePopup({
         nonce: intent.nonce,
         state: intent.state,
@@ -658,24 +772,31 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         consentSource: "signin",
       });
       if (!signInResult) {
+        setAppleStateIfMounted("idle");
+        return;
+      }
+      if (!isActionCurrent()) {
         return;
       }
       const { idToken } = signInResult;
-      setAppleText("Verifying...");
+      setAppleStateIfMounted("verifying");
       const res = await connection.verifyAppleToken(intent.intentId, idToken, "signin");
+      if (!isActionCurrent()) {
+        return;
+      }
       if (res && res.ok === true) {
         handleLoginSuccess(res, "apple");
+        setAppleStateIfMounted("idle");
         setAuthStatusGlobally("authenticated");
         setIsOpen(false);
         hideShinyCard();
         enterProfileEditingMode(false);
+        return;
       }
-      setAppleText("Apple");
+      setAppleStateIfMounted("idle");
     } catch (error) {
       console.error("Apple sign in error:", error);
-      setAppleText("Apple");
-    } finally {
-      setIsAppleConnecting(false);
+      setAppleStateIfMounted("idle");
     }
   };
 
