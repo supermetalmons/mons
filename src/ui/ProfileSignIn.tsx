@@ -456,18 +456,22 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     return appleIntentPromiseRef.current;
   }, []);
 
-  const consumePreparedAppleIntent = useCallback(async (): Promise<AuthIntentResponse> => {
-    const intent = await ensurePreparedAppleIntent();
+  const takePreparedAppleIntent = useCallback((): AuthIntentResponse | null => {
+    if (!isAppleIntentUsable(appleIntentRef.current)) {
+      return null;
+    }
+    const intent = appleIntentRef.current;
     appleIntentRef.current = null;
     return intent;
-  }, [ensurePreparedAppleIntent]);
+  }, []);
 
   useEffect(() => {
     if (!isOpen || authStatus === "authenticated") {
       return;
     }
     void preloadAppleSignInLibrary().catch(() => {});
-  }, [isOpen, authStatus]);
+    void ensurePreparedAppleIntent().catch(() => {});
+  }, [isOpen, authStatus, ensurePreparedAppleIntent]);
 
   const handleSolanaClick = async () => {
     if (isSolanaConnecting) return;
@@ -506,7 +510,15 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsAppleConnecting(true);
     setAppleText("Connecting...");
     try {
-      const intent = await consumePreparedAppleIntent();
+      const intent = takePreparedAppleIntent();
+      if (!intent) {
+        setAppleText("Preparing...");
+        void ensurePreparedAppleIntent().finally(() => {
+          setAppleText("Apple");
+          setIsAppleConnecting(false);
+        });
+        return;
+      }
       const signInResult = await signInWithApplePopup({
         nonce: intent.nonce,
         state: intent.state,

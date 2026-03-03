@@ -34,7 +34,6 @@ Set in root app env (`/Users/ivan/Developer/mons/link/.env` or deployment env):
 | Key | Required | Example | Notes |
 | --- | --- | --- | --- |
 | `REACT_APP_APPLE_CLIENT_ID` | Yes | `com.mons.web` | Must match Apple web Service ID used for `id_token`. |
-| `REACT_APP_APPLE_REDIRECT_URI` | Optional | `https://mons.link` | If omitted, frontend uses `window.location.origin`. Must be whitelisted in Apple config. |
 
 ## Deployment Order
 
@@ -43,7 +42,7 @@ Run these steps in order.
 1. Prepare Apple configuration
 - In Apple Developer, ensure web Sign in with Apple is configured for your domain(s).
 - Ensure returned audience matches `APPLE_CLIENT_ID` or one value in `APPLE_AUDIENCES`.
-- Ensure redirect URI matches `REACT_APP_APPLE_REDIRECT_URI` (or site origin if omitted).
+- Ensure redirect URI includes the hardcoded web callback origin `https://mons.link`.
 
 2. Preflight audit (production data, no writes)
 - From `/Users/ivan/Developer/mons/link/cloud/admin`:

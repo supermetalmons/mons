@@ -8,11 +8,10 @@ let appleScriptPromise: Promise<void> | null = null;
 
 const APPLE_SCRIPT_SRC = "https://appleid.cdn-apple.com/appleauth/static/jsapi/appleid/1/en_US/appleid.auth.js";
 const APPLE_CLIENT_ID = (process.env.REACT_APP_APPLE_CLIENT_ID || "link.mons").trim();
-const APPLE_REDIRECT_URI = (process.env.REACT_APP_APPLE_REDIRECT_URI || "").trim();
+const APPLE_REDIRECT_URI = "https://mons.link";
 const APPLE_PENDING_INTENTS_STORAGE_KEY = "appleIntentByStateV1";
 const APPLE_PENDING_INTENT_MAX_ITEMS = 20;
 const APPLE_PENDING_INTENT_MAX_AGE_MS = 15 * 60 * 1000;
-const APPLE_DEFAULT_REDIRECT_URI = "https://mons.link";
 const APPLE_STATE_ENVELOPE_PREFIX = "apple.v1.";
 const APPLE_CALLBACK_PARAM_KEYS = ["state", "id_token", "error", "error_description", "code", "user"] as const;
 
@@ -42,7 +41,6 @@ type AppleCallbackParams = {
   idToken: string;
   error: string;
   errorDescription: string;
-  code: string;
 };
 
 let pendingAppleRedirectResult: AppleRedirectResult | null = null;
@@ -246,22 +244,8 @@ const getAppleClientId = (): string => {
   return APPLE_CLIENT_ID;
 };
 
-const getAppleRedirectUri = (isRedirectFlow: boolean): string => {
-  if (APPLE_REDIRECT_URI !== "") {
-    return APPLE_REDIRECT_URI;
-  }
-  if (isRedirectFlow && typeof window !== "undefined" && window.location && window.location.origin) {
-    try {
-      const originUrl = new URL(window.location.origin);
-      const hostname = (originUrl.hostname || "").toLowerCase();
-      const isHttps = originUrl.protocol === "https:";
-      const isMonsHost = hostname === "mons.link" || hostname.endsWith(".mons.link");
-      if (isHttps && isMonsHost) {
-        return originUrl.origin;
-      }
-    } catch {}
-  }
-  return APPLE_DEFAULT_REDIRECT_URI;
+const getAppleRedirectUri = (): string => {
+  return APPLE_REDIRECT_URI;
 };
 
 const getPendingAppleIntentStores = (): Storage[] => {
@@ -410,13 +394,7 @@ const hasPendingAppleIntentRecord = (state: string): boolean => {
 };
 
 const shouldUseRedirectFlow = (): boolean => {
-  if (typeof window === "undefined") {
-    return false;
-  }
-  const ua = window.navigator.userAgent || "";
-  const platform = window.navigator.platform || "";
-  const maxTouchPoints = Number.isFinite(window.navigator.maxTouchPoints) ? window.navigator.maxTouchPoints : 0;
-  return /iP(hone|ad|od)/.test(ua) || (platform === "MacIntel" && maxTouchPoints > 1);
+  return false;
 };
 
 const parseAppleCallbackParamsFromRaw = (raw: string): AppleCallbackParams | null => {
@@ -428,12 +406,8 @@ const parseAppleCallbackParamsFromRaw = (raw: string): AppleCallbackParams | nul
   const idToken = (params.get("id_token") || "").trim();
   const error = (params.get("error") || "").trim();
   const errorDescription = (params.get("error_description") || "").trim();
-  const code = (params.get("code") || "").trim();
   const hasState = state !== "";
-  const hasKnownAppleState = state.startsWith(APPLE_STATE_ENVELOPE_PREFIX) || hasPendingAppleIntentRecord(state);
-  const hasCodeForKnownAppleState = code !== "" && hasKnownAppleState;
-  const hasUserForKnownAppleState = params.has("user") && hasKnownAppleState;
-  const hasAppleSignal = hasState && (idToken !== "" || error !== "" || hasCodeForKnownAppleState || hasUserForKnownAppleState);
+  const hasAppleSignal = hasState && (idToken !== "" || error !== "");
   if (!hasAppleSignal) {
     return null;
   }
@@ -442,7 +416,6 @@ const parseAppleCallbackParamsFromRaw = (raw: string): AppleCallbackParams | nul
     idToken,
     error,
     errorDescription,
-    code,
   };
 };
 
@@ -528,12 +501,11 @@ export const consumeAppleRedirectResult = (): AppleRedirectResult | null => {
     return null;
   }
   clearAppleCallbackParams();
-  const { state, idToken, error, errorDescription, code } = callback;
+  const { state, idToken, error, errorDescription } = callback;
   logAppleRedirectDebug("callback-detected", {
     statePrefix: state.slice(0, APPLE_STATE_ENVELOPE_PREFIX.length),
     stateLength: state.length,
     hasIdToken: idToken !== "",
-    hasCode: code !== "",
     hasError: error !== "",
   });
   if (!state) {
@@ -560,9 +532,6 @@ export const consumeAppleRedirectResult = (): AppleRedirectResult | null => {
     throw new Error("Apple sign in session expired. Please try again.");
   }
   if (!idToken) {
-    if (code) {
-      throw new Error("Apple sign in returned code without id_token.");
-    }
     throw new Error("Apple sign in did not return id_token.");
   }
   pendingAppleRedirectResult = {
@@ -575,6 +544,62 @@ export const consumeAppleRedirectResult = (): AppleRedirectResult | null => {
 
 export const clearConsumedAppleRedirectResult = (): void => {
   pendingAppleRedirectResult = null;
+};
+
+const waitForApplePopupResult = (): Promise<any> => {
+  return new Promise((resolve, reject) => {
+    let settled = false;
+    let timeoutId: ReturnType<typeof setTimeout> | null = null;
+    const cleanup = () => {
+      if (timeoutId) {
+        clearTimeout(timeoutId);
+      }
+      document.removeEventListener("AppleIDSignInOnSuccess", onSuccess as EventListener);
+      document.removeEventListener("AppleIDSignInOnFailure", onFailure as EventListener);
+    };
+    const finishResolve = (value: any) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      cleanup();
+      resolve(value);
+    };
+    const finishReject = (error: unknown) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      cleanup();
+      reject(error instanceof Error ? error : new Error(String(error)));
+    };
+    const onSuccess = (event: Event) => {
+      const detail = (event as CustomEvent<any>).detail;
+      const data = detail && typeof detail === "object" && "data" in detail ? detail.data : detail;
+      finishResolve(data);
+    };
+    const onFailure = (event: Event) => {
+      const detail = (event as CustomEvent<any>).detail;
+      const err = detail && typeof detail === "object" && "error" in detail ? detail.error : detail;
+      let message = "";
+      if (typeof err === "string") {
+        message = err;
+      } else {
+        try {
+          message = JSON.stringify(err || {});
+        } catch {
+          message = "";
+        }
+      }
+      finishReject(new Error(message || "Apple sign in failed"));
+    };
+    document.addEventListener("AppleIDSignInOnSuccess", onSuccess as EventListener);
+    document.addEventListener("AppleIDSignInOnFailure", onFailure as EventListener);
+    timeoutId = setTimeout(() => {
+      finishReject(new Error("Apple sign in popup timed out"));
+    }, 60000);
+    Promise.resolve(window.AppleID.auth.signIn()).then(finishResolve).catch(finishReject);
+  });
 };
 
 export async function signInWithApplePopup({
@@ -593,7 +618,7 @@ export async function signInWithApplePopup({
   await loadAppleScript();
   const useRedirect = shouldUseRedirectFlow();
   const clientId = getAppleClientId();
-  const redirectURI = getAppleRedirectUri(useRedirect);
+  const redirectURI = getAppleRedirectUri();
   const nowMs = Date.now();
   const pendingRecord: ApplePendingIntentRecord = {
     state,
@@ -627,7 +652,7 @@ export async function signInWithApplePopup({
     state: resolvedState,
     nonce,
     usePopup: !useRedirect,
-    responseType: "code id_token",
+    responseType: "id_token",
     responseMode: "fragment",
   });
 
@@ -636,7 +661,7 @@ export async function signInWithApplePopup({
     return null;
   }
 
-  const response = await window.AppleID.auth.signIn();
+  const response = await waitForApplePopupResult();
   const authorization = response && response.authorization ? response.authorization : null;
   const idToken = authorization && typeof authorization.id_token === "string" ? authorization.id_token : "";
   const responseStateFromAuthorization = authorization && typeof authorization.state === "string" ? authorization.state : "";

@@ -203,11 +203,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     return appleIntentPromiseRef.current;
   }, []);
 
-  const consumePreparedAppleIntent = useCallback(async (): Promise<AuthIntentResponse> => {
-    const intent = await ensurePreparedAppleIntent();
+  const takePreparedAppleIntent = useCallback((): AuthIntentResponse | null => {
+    if (!isAppleIntentUsable(appleIntentRef.current)) {
+      return null;
+    }
+    const intent = appleIntentRef.current;
     appleIntentRef.current = null;
     return intent;
-  }, [ensurePreparedAppleIntent]);
+  }, []);
 
   useEffect(() => {
     if (popupRef.current) {
@@ -215,7 +218,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     }
     void refreshLinkedMethods();
     void preloadAppleSignInLibrary().catch(() => {});
-  }, [refreshLinkedMethods]);
+    void ensurePreparedAppleIntent().catch(() => {});
+  }, [refreshLinkedMethods, ensurePreparedAppleIntent]);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Escape") {
@@ -242,7 +246,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           result = await connection.verifySolanaAddress(publicKey, signature, intentId);
           kind = "sol";
         } else {
-          const intent = await consumePreparedAppleIntent();
+          const intent = takePreparedAppleIntent();
+          if (!intent) {
+            setStatusText("Preparing Apple sign in...");
+            void ensurePreparedAppleIntent().catch(() => {});
+            return;
+          }
           const signInResult = await signInWithApplePopup({
             nonce: intent.nonce,
             state: intent.state,
@@ -274,7 +283,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         await refreshLinkedMethods();
       }
     },
-    [refreshLinkedMethods, consumePreparedAppleIntent]
+    [refreshLinkedMethods, takePreparedAppleIntent, ensurePreparedAppleIntent]
   );
 
   const runDisconnectFlow = useCallback(
