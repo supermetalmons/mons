@@ -156,10 +156,10 @@ const getAppleButtonLabel = (state: AppleButtonUiState): string => {
     return "Preparing...";
   }
   if (state === "confirm") {
-    return "Apple";
+    return "Connect";
   }
   if (state === "connecting") {
-    return "Apple";
+    return "Connect";
   }
   if (state === "verifying") {
     return "Verifying...";
