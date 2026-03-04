@@ -8,6 +8,7 @@ import { updateProfileDisplayName } from "./ProfileSignIn";
 import { handleLoginSuccess, AddressKind } from "../connection/loginSuccess";
 import { clearEthIntentState, setAuthStatusGlobally } from "../connection/authentication";
 import { clearAppleSignInTransientState, preloadAppleSignInLibrary, signInWithApplePopup } from "../connection/appleConnection";
+import { isMobile } from "../utils/misc";
 
 const SettingsPopup = styled(ModalPopup)`
   padding: 20px;
@@ -326,6 +327,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   }, [isLoading, linkedMethods.apple, ensurePreparedAppleIntent]);
 
   useEffect(() => {
+    if (isLoading) {
+      return;
+    }
+    if (!linkedMethods.eth) {
+      void import("../connection/ethereumConnection").catch(() => {});
+    }
+    if (!linkedMethods.sol) {
+      void import("../connection/solanaConnection").catch(() => {});
+    }
+  }, [isLoading, linkedMethods.eth, linkedMethods.sol]);
+
+  useEffect(() => {
     if (!linkedMethods.apple) {
       return;
     }
@@ -580,6 +593,18 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       : isBusy
         ? "Connecting..."
         : "Connect";
+    const handleConnectPress = () => {
+      if (disableConnect) {
+        return;
+      }
+      handleConnectClick(method);
+    };
+    const handleDisconnectPress = () => {
+      if (disableDisconnect) {
+        return;
+      }
+      void runDisconnectFlow(method);
+    };
     return (
       <MethodRow key={method}>
         <MethodMeta>
@@ -587,11 +612,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           <MethodStatus>{isLinked ? "Linked" : "Not linked"}</MethodStatus>
         </MethodMeta>
         {isLinked ? (
-          <ActionButton danger={true} disabled={disableDisconnect} onClick={() => void runDisconnectFlow(method)}>
+          <ActionButton
+            danger={true}
+            disabled={disableDisconnect}
+            onClick={!isMobile ? handleDisconnectPress : undefined}
+            onTouchEnd={isMobile ? handleDisconnectPress : undefined}>
             {isBusy ? "Removing..." : "Remove"}
           </ActionButton>
         ) : (
-          <ActionButton disabled={disableConnect} onClick={() => handleConnectClick(method)}>
+          <ActionButton disabled={disableConnect} onClick={!isMobile ? handleConnectPress : undefined} onTouchEnd={isMobile ? handleConnectPress : undefined}>
             {connectText}
           </ActionButton>
         )}
