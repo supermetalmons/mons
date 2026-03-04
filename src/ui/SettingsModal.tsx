@@ -21,18 +21,6 @@ const SettingsTitle = styled(ModalTitle)`
   text-align: left;
 `;
 
-const SectionTitle = styled.h4`
-  margin: 8px 0 10px 0;
-  font-size: 0.88rem;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  color: var(--color-gray-69);
-
-  @media (prefers-color-scheme: dark) {
-    color: var(--secondaryTextColorDark);
-  }
-`;
-
 const MethodsList = styled.div`
   display: flex;
   flex-direction: column;
@@ -71,15 +59,6 @@ const MethodName = styled.div`
   }
 `;
 
-const MethodStatus = styled.div`
-  font-size: 0.76rem;
-  color: var(--color-gray-69);
-
-  @media (prefers-color-scheme: dark) {
-    color: var(--secondaryTextColorDark);
-  }
-`;
-
 const ActionButton = styled.button<{ danger?: boolean }>`
   border: none;
   border-radius: 14px;
@@ -101,17 +80,6 @@ const ActionButton = styled.button<{ danger?: boolean }>`
 
   @media (prefers-color-scheme: dark) {
     background: ${(props) => (props.danger ? "var(--dangerButtonBackgroundDark)" : "var(--color-blue-primary-dark)")};
-  }
-`;
-
-const InfoText = styled.div`
-  min-height: 18px;
-  font-size: 0.76rem;
-  color: var(--color-gray-69);
-  margin-bottom: 8px;
-
-  @media (prefers-color-scheme: dark) {
-    color: var(--secondaryTextColorDark);
   }
 `;
 
@@ -199,8 +167,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const [linkedMethods, setLinkedMethods] = useState<LinkedMethods>(EMPTY_LINKED_METHODS);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [busyMethod, setBusyMethod] = useState<MethodKey | null>(null);
-  const [statusText, setStatusText] = useState<string>("");
   const [appleButtonState, setAppleButtonState] = useState<AppleButtonUiState>("idle");
+  const [solanaConnectText, setSolanaConnectText] = useState<string>("Connect");
   const [isGlobalAppleFlowInProgress, setIsGlobalAppleFlowInProgress] = useState<boolean>(() => isSettingsAppleFlowInProgress);
   const appleIntentRef = useRef<AuthIntentResponse | null>(null);
   const appleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(null);
@@ -208,6 +176,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const latestAppleActionRef = useRef(0);
   const previousGlobalAppleFlowRef = useRef(isSettingsAppleFlowInProgress);
   const appleConfirmExpiryTimeoutRef = useRef<number | null>(null);
+  const solanaNotFoundTimeoutRef = useRef<number | null>(null);
   const shouldRefreshAfterAppleFlowLoadRef = useRef(false);
 
   const linkedCount = useMemo(() => {
@@ -224,10 +193,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         eth: !!linked.eth,
         sol: !!linked.sol,
       });
-      setStatusText("");
     } catch (error) {
       console.error("Failed to fetch linked methods:", error);
-      setStatusText("Failed to load linked methods.");
     } finally {
       setIsLoading(false);
     }
@@ -272,6 +239,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     }
   }, []);
 
+  const clearSolanaNotFoundTimeout = useCallback(() => {
+    if (solanaNotFoundTimeoutRef.current !== null) {
+      window.clearTimeout(solanaNotFoundTimeoutRef.current);
+      solanaNotFoundTimeoutRef.current = null;
+    }
+  }, []);
+
   const scheduleAppleConfirmExpiryTimeout = useCallback(() => {
     clearAppleConfirmExpiryTimeout();
     const intent = appleIntentRef.current;
@@ -300,8 +274,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     return () => {
       isMountedRef.current = false;
       clearAppleConfirmExpiryTimeout();
+      clearSolanaNotFoundTimeout();
     };
-  }, [clearAppleConfirmExpiryTimeout]);
+  }, [clearAppleConfirmExpiryTimeout, clearSolanaNotFoundTimeout]);
 
   useEffect(() => {
     return subscribeSettingsAppleFlowProgress((inProgress) => {
@@ -362,15 +337,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     if (!wasInProgress || isGlobalAppleFlowInProgress || busyMethod === "apple") {
       return;
     }
-    if (statusText === "Apple sign in already in progress...") {
-      setStatusText("");
-    }
     if (isLoading) {
       shouldRefreshAfterAppleFlowLoadRef.current = true;
       return;
     }
     void refreshLinkedMethods();
-  }, [busyMethod, isGlobalAppleFlowInProgress, isLoading, refreshLinkedMethods, statusText]);
+  }, [busyMethod, isGlobalAppleFlowInProgress, isLoading, refreshLinkedMethods]);
 
   useEffect(() => {
     if (isLoading || !shouldRefreshAfterAppleFlowLoadRef.current) {
@@ -390,7 +362,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const runConnectFlow = useCallback(
     async (method: NonAppleMethodKey) => {
       setBusyMethod(method);
-      setStatusText(`Connecting ${method}...`);
       try {
         let result: any = null;
         let kind: AddressKind = method;
@@ -402,6 +373,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         } else if (method === "sol") {
           const { connectToSolana } = await import("../connection/solanaConnection");
           const { publicKey, signature, intentId } = await connectToSolana();
+          clearSolanaNotFoundTimeout();
+          setSolanaConnectText("Verifying...");
           result = await connection.verifySolanaAddress(publicKey, signature, intentId);
           kind = "sol";
         }
@@ -409,19 +382,33 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         if (result && result.ok === true) {
           handleLoginSuccess(result, kind);
           setAuthStatusGlobally("authenticated");
-          setStatusText(`${method} connected.`);
-        } else {
-          setStatusText(`Failed to connect ${method}.`);
+        }
+        if (method === "sol") {
+          setSolanaConnectText("Connect");
         }
       } catch (error) {
         console.error(`Failed to connect ${method}:`, error);
-        setStatusText(`Failed to connect ${method}.`);
+        if (method === "sol") {
+          const errorMessage = error instanceof Error ? error.message : "";
+          if (errorMessage === "not found") {
+            setSolanaConnectText("Not Found");
+            clearSolanaNotFoundTimeout();
+            solanaNotFoundTimeoutRef.current = window.setTimeout(() => {
+              solanaNotFoundTimeoutRef.current = null;
+              if (isMountedRef.current) {
+                setSolanaConnectText("Connect");
+              }
+            }, 500);
+          } else {
+            setSolanaConnectText("Connect");
+          }
+        }
       } finally {
         setBusyMethod(null);
         await refreshLinkedMethods();
       }
     },
-    [refreshLinkedMethods]
+    [clearSolanaNotFoundTimeout, refreshLinkedMethods]
   );
 
   const runAppleConnectFlow = useCallback(async () => {
@@ -429,44 +416,37 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       return;
     }
     if (isSettingsAppleFlowInProgress) {
-      if (isMountedRef.current) {
-        setStatusText("Apple sign in already in progress...");
-      }
       return;
     }
 
     const actionId = latestAppleActionRef.current + 1;
     latestAppleActionRef.current = actionId;
     const isActionCurrent = () => latestAppleActionRef.current === actionId;
-    const setAppleUiIfMounted = (nextState: AppleButtonUiState, nextStatusText?: string) => {
+    const setAppleUiIfMounted = (nextState: AppleButtonUiState) => {
       if (!isMountedRef.current || !isActionCurrent()) {
         return;
       }
       setAppleButtonState(nextState);
-      if (typeof nextStatusText === "string") {
-        setStatusText(nextStatusText);
-      }
     };
 
     const intent = takePreparedAppleIntent();
     if (!intent) {
-      setAppleUiIfMounted("preparing", "Preparing Apple sign in...");
+      setAppleUiIfMounted("preparing");
       try {
         await Promise.all([preloadAppleSignInLibrary(), ensurePreparedAppleIntent()]);
         if (!isActionCurrent()) {
           return;
         }
         if (!isAppleIntentUsable(appleIntentRef.current)) {
-          setAppleUiIfMounted("idle", "Apple sign in is no longer ready. Please try again.");
+          setAppleUiIfMounted("idle");
           return;
         }
         if (isMountedRef.current && isActionCurrent()) {
-          setStatusText("");
           setAppleButtonState("confirm");
         }
       } catch (error) {
         console.error("Failed to prepare apple sign in:", error);
-        setAppleUiIfMounted("idle", "Failed to prepare Apple sign in.");
+        setAppleUiIfMounted("idle");
       }
       return;
     }
@@ -476,7 +456,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       flushSync(() => {
         setBusyMethod("apple");
         setAppleButtonState("connecting");
-        setStatusText("Connecting apple...");
       });
     }
     try {
@@ -491,11 +470,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         return;
       }
       if (!signInResult) {
-        setAppleUiIfMounted("idle", "");
+        setAppleUiIfMounted("idle");
         return;
       }
       const { idToken } = signInResult;
-      setAppleUiIfMounted("verifying", "Verifying apple...");
+      setAppleUiIfMounted("verifying");
       const result = await connection.verifyAppleToken(intent.intentId, idToken, "settings");
       if (!isActionCurrent()) {
         return;
@@ -503,19 +482,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       if (result && result.ok === true) {
         handleLoginSuccess(result, "apple");
         setAuthStatusGlobally("authenticated");
-        if (isMountedRef.current) {
-          setStatusText("apple connected.");
-        }
-      } else {
-        if (isMountedRef.current) {
-          setStatusText("Failed to connect apple.");
-        }
       }
     } catch (error) {
       console.error("Failed to connect apple:", error);
-      if (isMountedRef.current && isActionCurrent()) {
-        setStatusText("Failed to connect apple.");
-      }
     } finally {
       setSettingsAppleFlowInProgress(false);
       if (!isActionCurrent()) {
@@ -543,7 +512,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const runDisconnectFlow = useCallback(
     async (method: MethodKey) => {
       setBusyMethod(method);
-      setStatusText(`Removing ${method}...`);
       try {
         const result = await connection.unlinkAuthMethod(method);
         if (result && result.ok === true) {
@@ -560,19 +528,15 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
             appleIntentPromiseRef.current = null;
           }
           updateProfileDisplayName(storage.getUsername(""), storage.getEthAddress(""), storage.getSolAddress(""));
-          setStatusText(`${method} removed.`);
-        } else {
-          setStatusText(`Unable to remove ${method}.`);
         }
       } catch (error) {
         console.error(`Failed to unlink ${method}:`, error);
-        setStatusText(linkedCount <= 1 ? "At least one method must remain linked." : `Failed to remove ${method}.`);
       } finally {
         setBusyMethod(null);
         await refreshLinkedMethods();
       }
     },
-    [linkedCount, refreshLinkedMethods]
+    [refreshLinkedMethods]
   );
 
   const renderMethodRow = (method: MethodKey, label: string) => {
@@ -587,11 +551,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       : isLoading || isBusy || busyMethod !== null;
     const disableDisconnect = isLoading || isBusy || busyMethod !== null || linkedCount <= 1;
     const connectText = isAppleMethod
-      ? isGlobalAppleFlowInProgress && appleButtonState === "idle"
-        ? "Connecting..."
-        : getAppleButtonLabel(appleButtonState)
-      : isBusy
-        ? "Connecting..."
+      ? getAppleButtonLabel(appleButtonState)
+      : method === "sol"
+        ? solanaConnectText
         : "Connect";
     const handleConnectPress = () => {
       if (disableConnect) {
@@ -611,7 +573,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       <MethodRow key={method}>
         <MethodMeta>
           <MethodName>{label}</MethodName>
-          <MethodStatus>{isLinked ? "Linked" : "Not linked"}</MethodStatus>
         </MethodMeta>
         {isLinked ? (
           <ActionButton
@@ -634,13 +595,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     <ModalOverlay onClick={onClose}>
       <SettingsPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0}>
         <SettingsTitle>Settings</SettingsTitle>
-        <SectionTitle>Sign In Methods</SectionTitle>
         <MethodsList>
           {renderMethodRow("eth", "Ethereum")}
           {renderMethodRow("sol", "Solana")}
           {renderMethodRow("apple", "Apple")}
         </MethodsList>
-        <InfoText>{statusText}</InfoText>
         <ButtonsContainer>
           <SaveButton disabled={false} onClick={onClose}>
             OK
