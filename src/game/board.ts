@@ -1400,6 +1400,7 @@ export function setBoardMetadataDisplaySwapped(swapped: boolean) {
   renderPlayersNamesLabels();
   syncAvatarForCurrentMetadata(false);
   syncAvatarForCurrentMetadata(true);
+  updateLayout();
 }
 
 function setupInviteBotButton() {
@@ -3080,9 +3081,10 @@ const updateLayout = () => {
     SVG.updateCircle(placeholder, offsetX + avatarSize / 2, y + avatarSize / 2, avatarSize / 3);
   }
 
-  if (inviteBotButtonContainer && inviteBotButtonElement && opponentScoreText) {
+  const inviteBotAnchorScoreText = isMetadataDisplaySwapped ? playerScoreText : opponentScoreText;
+  if (inviteBotButtonContainer && inviteBotButtonElement && inviteBotAnchorScoreText) {
     const avatarSize = getAvatarSize();
-    const layout = getInviteBotButtonLayout(opponentScoreText, multiplicator, avatarSize);
+    const layout = getInviteBotButtonLayout(inviteBotAnchorScoreText, multiplicator, avatarSize);
     SVG.setFrame(inviteBotButtonContainer, layout.x, layout.y, layout.width, layout.height);
     inviteBotButtonElement.style.fontSize = `${layout.fontSizePx}px`;
     inviteBotButtonElement.style.borderRadius = "999px";
