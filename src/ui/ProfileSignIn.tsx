@@ -68,7 +68,7 @@ const ConnectButtonPopover = styled.div`
   top: 100%;
   margin-top: 16px;
   z-index: 50;
-  width: 188px;
+  width: 135px;
 `;
 
 const ConnectButtonWrapper = styled.div`
@@ -360,6 +360,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const appleIntentRef = useRef<AuthIntentResponse | null>(null);
   const appleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(null);
   const appleConfirmExpiryTimeoutRef = useRef<number | null>(null);
+  const ethereumConnectModalRef = useRef<(() => void) | null>(null);
+  const ethereumConnectRetryTimeoutRef = useRef<number | null>(null);
   const isMountedRef = useRef(true);
   const isOpenRef = useRef(isOpen);
   const authStatusRef = useRef(authStatus);
@@ -372,6 +374,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     if (appleConfirmExpiryTimeoutRef.current) {
       window.clearTimeout(appleConfirmExpiryTimeoutRef.current);
       appleConfirmExpiryTimeoutRef.current = null;
+    }
+  }, []);
+
+  const clearEthereumConnectRetryTimeout = useCallback(() => {
+    if (ethereumConnectRetryTimeoutRef.current !== null) {
+      window.clearTimeout(ethereumConnectRetryTimeoutRef.current);
+      ethereumConnectRetryTimeoutRef.current = null;
     }
   }, []);
 
@@ -436,12 +445,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   useEffect(() => {
     return () => {
       isMountedRef.current = false;
+      clearEthereumConnectRetryTimeout();
       clearAppleConfirmExpiryTimeout();
       if (notificationTimeoutRef.current) {
         clearTimeout(notificationTimeoutRef.current);
       }
     };
-  }, [clearAppleConfirmExpiryTimeout]);
+  }, [clearAppleConfirmExpiryTimeout, clearEthereumConnectRetryTimeout]);
 
   useEffect(() => {
     isOpenRef.current = isOpen;
@@ -450,6 +460,14 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   useEffect(() => {
     authStatusRef.current = authStatus;
   }, [authStatus]);
+
+  useEffect(() => {
+    if (isOpen) {
+      return;
+    }
+    ethereumConnectModalRef.current = null;
+    clearEthereumConnectRetryTimeout();
+  }, [isOpen, clearEthereumConnectRetryTimeout]);
 
   useEffect(() => {
     if (authStatus === "authenticated" && appleButtonState !== "idle") {
@@ -695,6 +713,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     if (!isOpen || authStatus === "authenticated") {
       return;
     }
+    void import("../connection/solanaConnection").catch(() => {});
     void preloadAppleSignInLibrary().catch(() => {});
     void ensurePreparedAppleIntent().catch(() => {});
   }, [isOpen, authStatus, ensurePreparedAppleIntent]);
@@ -805,6 +824,37 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     }
   };
 
+  const handleEthereumClick = useCallback(() => {
+    const openConnectModal = ethereumConnectModalRef.current;
+    if (openConnectModal) {
+      clearEthereumConnectRetryTimeout();
+      openConnectModal();
+      return;
+    }
+
+    clearEthereumConnectRetryTimeout();
+    const startedAtMs = Date.now();
+    const tryOpenConnectModal = () => {
+      if (!isMountedRef.current || !isOpenRef.current || authStatusRef.current === "authenticated") {
+        clearEthereumConnectRetryTimeout();
+        return;
+      }
+      const modalOpener = ethereumConnectModalRef.current;
+      if (modalOpener) {
+        clearEthereumConnectRetryTimeout();
+        modalOpener();
+        return;
+      }
+      if (Date.now() - startedAtMs >= 1000) {
+        clearEthereumConnectRetryTimeout();
+        return;
+      }
+      ethereumConnectRetryTimeoutRef.current = window.setTimeout(tryOpenConnectModal, 40);
+    };
+
+    ethereumConnectRetryTimeoutRef.current = window.setTimeout(tryOpenConnectModal, 0);
+  }, [clearEthereumConnectRetryTimeout]);
+
   const handleNotificationClick = () => {
     if (notificationState?.successHandler) {
       notificationState.successHandler();
@@ -827,9 +877,18 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         <ConnectButtonPopover>
           <ConnectButtonWrapper>
             <>
-              <ConnectButton.Custom>{({ openConnectModal }) => <CustomConnectButton onClick={openConnectModal}>Ethereum</CustomConnectButton>}</ConnectButton.Custom>
-              <CustomConnectButton onClick={handleSolanaClick}>{solanaText}</CustomConnectButton>
-              <CustomConnectButton onClick={handleAppleClick}>{appleText}</CustomConnectButton>
+              <ConnectButton.Custom>
+                {({ openConnectModal }) => {
+                  ethereumConnectModalRef.current = openConnectModal ?? null;
+                  return <CustomConnectButton onClick={!isMobile ? handleEthereumClick : undefined} onTouchStart={isMobile ? handleEthereumClick : undefined}>Ethereum</CustomConnectButton>;
+                }}
+              </ConnectButton.Custom>
+              <CustomConnectButton onClick={!isMobile ? handleSolanaClick : undefined} onTouchStart={isMobile ? handleSolanaClick : undefined}>
+                {solanaText}
+              </CustomConnectButton>
+              <CustomConnectButton onClick={!isMobile ? handleAppleClick : undefined} onTouchStart={isMobile ? handleAppleClick : undefined}>
+                {appleText}
+              </CustomConnectButton>
             </>
           </ConnectButtonWrapper>
         </ConnectButtonPopover>
