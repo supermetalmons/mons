@@ -605,6 +605,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       }
       void runDisconnectFlow(method);
     };
+    const connectOnClick = isAppleMethod ? handleConnectPress : !isMobile ? handleConnectPress : undefined;
+    const connectOnTouchEnd = !isAppleMethod && isMobile ? handleConnectPress : undefined;
     return (
       <MethodRow key={method}>
         <MethodMeta>
@@ -620,7 +622,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
             {isBusy ? "Removing..." : "Remove"}
           </ActionButton>
         ) : (
-          <ActionButton disabled={disableConnect} onClick={!isMobile ? handleConnectPress : undefined} onTouchEnd={isMobile ? handleConnectPress : undefined}>
+          <ActionButton disabled={disableConnect} onClick={connectOnClick} onTouchEnd={connectOnTouchEnd}>
             {connectText}
           </ActionButton>
         )}
