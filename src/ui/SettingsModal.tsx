@@ -84,18 +84,20 @@ const ActionSpacer = styled.div`
   height: 28px;
 `;
 
-const ConnectButton = styled.button`
-  border: 1px solid var(--color-gray-dd);
+const ConnectButton = styled.button<{ $message?: boolean }>`
+  border: none;
   border-radius: 999px;
   padding: 6px 12px;
   font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
-  color: var(--color-blue-primary);
+  color: ${(props) => (props.$message ? "var(--color-gray-33)" : "var(--color-blue-primary)")};
   background: var(--color-gray-f0);
   min-width: 84px;
   text-align: center;
   white-space: nowrap;
+  transition: background-color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
 
   &:disabled {
     opacity: 0.55;
@@ -113,8 +115,7 @@ const ConnectButton = styled.button`
   }
 
   @media (prefers-color-scheme: dark) {
-    border-color: var(--color-gray-44);
-    color: var(--color-blue-primary-dark);
+    color: ${(props) => (props.$message ? "var(--color-gray-f0)" : "var(--color-blue-primary-dark)")};
     background: var(--color-gray-33);
 
     @media (hover: hover) and (pointer: fine) {
@@ -133,9 +134,9 @@ const RemoveIconButton = styled.button`
   width: 24px;
   height: 24px;
   border-radius: 999px;
-  border: 1px solid var(--color-gray-dd);
+  border: none;
   background: var(--color-gray-f0);
-  color: var(--color-gray-77);
+  color: var(--color-gray-33);
   font-size: 0.95rem;
   font-weight: 600;
   line-height: 1;
@@ -144,11 +145,12 @@ const RemoveIconButton = styled.button`
   display: inline-flex;
   justify-content: center;
   align-items: center;
+  transition: background-color 0.3s ease;
+  -webkit-tap-highlight-color: transparent;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) {
       background: var(--color-gray-e0);
-      color: var(--color-gray-55);
     }
   }
 
@@ -162,14 +164,12 @@ const RemoveIconButton = styled.button`
   }
 
   @media (prefers-color-scheme: dark) {
-    border-color: var(--color-gray-44);
     background: var(--color-gray-33);
-    color: var(--color-gray-a0);
+    color: var(--color-gray-f0);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover:not(:disabled) {
         background: var(--color-gray-44);
-        color: var(--color-gray-f0);
       }
     }
 
@@ -808,7 +808,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
             )
           ) : (
             connectText !== "Connect" ? (
-              <ConnectButton disabled={true}>{connectText}</ConnectButton>
+              <ConnectButton disabled={true} $message={true}>
+                {connectText}
+              </ConnectButton>
             ) : (
               <ConnectIconButton disabled={disableConnect} onClick={connectOnClick} onTouchEnd={connectOnTouchEnd}>
                 +
