@@ -88,7 +88,7 @@ let showRaibowAuraImpl: (visible: boolean, url: string, opponent: boolean) => vo
 let updateAuraForAvatarElementImpl: (opponent: boolean, avatarElement: SVGElement) => void = () => {};
 let updateWagerPlayerUidsImpl: (playerUid: string, opponentUid: string) => void = () => {};
 let clearBoardTransientUiImpl: (fadeOutVideos?: boolean) => void = () => {};
-type BotStrengthControlMode = "fast" | "normal" | "pro";
+type BotStrengthControlMode = "normal" | "pro" | "ultra";
 type BotStrengthControlOverlayState = {
   visible: boolean;
   mode: BotStrengthControlMode;
@@ -1382,8 +1382,8 @@ const BoardComponent: React.FC = () => {
     outline: "none",
     boxSizing: "border-box" as const,
   };
-  const botStrengthModeLabel = botStrengthControlOverlay.mode === "fast" ? "Fast" : botStrengthControlOverlay.mode === "pro" ? "Pro" : "Normal";
-  const botStrengthVisibleGyrusCount = botStrengthControlOverlay.mode === "fast" ? 1 : botStrengthControlOverlay.mode === "normal" ? 2 : 3;
+  const botStrengthModeLabel = botStrengthControlOverlay.mode === "pro" ? "Pro" : botStrengthControlOverlay.mode === "ultra" ? "Ultra" : "Normal";
+  const botStrengthVisibleGyrusCount = botStrengthControlOverlay.mode === "normal" ? 1 : botStrengthControlOverlay.mode === "pro" ? 2 : 3;
   const botStrengthSizePx = botStrengthControlOverlay.size * 100;
   const botStrengthXpx = botStrengthControlOverlay.x * 100;
   const botStrengthYpx = botStrengthControlOverlay.y * 100;

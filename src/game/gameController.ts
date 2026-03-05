@@ -45,10 +45,11 @@ let activeRouteState: RouteState = getCurrentRouteState();
 const isCreateInviteRoute = () => activeRouteState.mode === "home";
 const isSnapshotRoute = () => activeRouteState.mode === "snapshot";
 const isBotsRoute = () => activeRouteState.mode === "watch";
-type BotAutomoveMode = "fast" | "normal" | "pro";
-const botAutomoveModeCycle: BotAutomoveMode[] = ["fast", "normal", "pro"];
+type BotAutomoveMode = "normal" | "pro" | "ultra";
+type AutomovePreference = "fast" | BotAutomoveMode;
+const botAutomoveModeCycle: BotAutomoveMode[] = ["normal", "pro", "ultra"];
 const normalizeBotAutomoveMode = (value: string | null | undefined): BotAutomoveMode => {
-  if (value === "fast" || value === "normal" || value === "pro") {
+  if (value === "normal" || value === "pro" || value === "ultra") {
     return value;
   }
   return "normal";
@@ -2268,7 +2269,7 @@ export function didUpdateRematchSeriesMetadata() {
 function automove(onAutomoveButtonClick: boolean = false) {
   const sessionGuard = getSessionGuard();
   const shouldUseSelectedBotMode = isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
-  const preference: BotAutomoveMode = shouldUseSelectedBotMode ? botAutomoveMode : onAutomoveButtonClick ? "fast" : "normal";
+  const preference: AutomovePreference = onAutomoveButtonClick ? "fast" : shouldUseSelectedBotMode ? botAutomoveMode : "normal";
   const expectedMatchId = getExpectedOnlineMatchIdOrReconnect();
   if (isOnlineGame && !expectedMatchId) {
     return;
