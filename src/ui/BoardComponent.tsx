@@ -279,7 +279,7 @@ const BoardComponent: React.FC = () => {
   const playerVideoAppearingTimeoutRef = useRef<number | null>(null);
   const transitionTimeoutIdsRef = useRef<Set<number>>(new Set());
   const [currentColorSet, setCurrentColorSet] = useState<ColorSet>(getCurrentColorSet());
-  const [prefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
+  const [prefersDarkMode, setPrefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
   const [isGridVisible, setIsGridVisible] = useState(!isCustomPictureBoardEnabled());
   const [shouldIncludePangchiuImage, setShouldIncludePangchiuImage] = useState(isCustomPictureBoardEnabled());
   const [overlayState, setOverlayState] = useState<{ blurry: boolean; svgElement: SVGElement | null; withConfirmAndCancelButtons: boolean; ok?: () => void; cancel?: () => void }>({ blurry: true, svgElement: null, withConfirmAndCancelButtons: false });
@@ -598,6 +598,27 @@ const BoardComponent: React.FC = () => {
   useEffect(() => {
     activeWagerPanelCountRef.current = activeWagerPanelCount;
   }, [activeWagerPanelCount]);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+    const update = (matches: boolean) => {
+      setPrefersDarkMode((prev) => (prev === matches ? prev : matches));
+    };
+    const handleChange = (event: MediaQueryListEvent) => {
+      update(event.matches);
+    };
+    update(mediaQuery.matches);
+    if (typeof mediaQuery.addEventListener === "function") {
+      mediaQuery.addEventListener("change", handleChange);
+      return () => {
+        mediaQuery.removeEventListener("change", handleChange);
+      };
+    }
+    mediaQuery.addListener(handleChange);
+    return () => {
+      mediaQuery.removeListener(handleChange);
+    };
+  }, []);
 
   useEffect(() => {
     if (!botStrengthControlOverlay.visible) {
@@ -1369,7 +1390,7 @@ const BoardComponent: React.FC = () => {
   const botStrengthIconSizePx = botStrengthSizePx * 0.72;
   const botStrengthIconOffsetPx = (botStrengthSizePx - botStrengthIconSizePx) / 2;
   const botStrengthIconScale = botStrengthIconSizePx / 24;
-  const botStrengthStroke = Math.max(1.2, Math.min(2.4, botStrengthSizePx * 0.07));
+  const botStrengthStroke = Math.max(0.9, Math.min(1.8, botStrengthSizePx * 0.05));
   const isBotStrengthDark = prefersDarkMode;
   const botStrengthFill = isBotStrengthDark
     ? botStrengthPressed
@@ -1382,17 +1403,6 @@ const BoardComponent: React.FC = () => {
       : botStrengthHovered
         ? "var(--color-gray-e0)"
         : "var(--color-gray-f0)";
-  const botStrengthBorder = isBotStrengthDark
-    ? botStrengthPressed
-      ? "var(--color-gray-44)"
-      : botStrengthHovered
-        ? "var(--color-gray-33)"
-        : "var(--color-gray-22)"
-    : botStrengthPressed
-      ? "var(--color-gray-c7)"
-      : botStrengthHovered
-        ? "var(--color-gray-d0)"
-        : "var(--color-gray-e0)";
   const botStrengthColor = isBotStrengthDark ? "var(--color-blue-primary-dark)" : "var(--color-blue-primary)";
   const handleBotStrengthPointerDown = (event: React.SyntheticEvent) => {
     event.stopPropagation();
@@ -1489,7 +1499,7 @@ const BoardComponent: React.FC = () => {
             onTouchCancel={handleBotStrengthPointerLeave}
             onClick={!isMobile ? handleBotStrengthControlClick : undefined}
             onTouchEndCapture={isMobile ? handleBotStrengthControlClick : undefined}>
-            <rect x={0} y={0} width={botStrengthSizePx} height={botStrengthSizePx} rx={botStrengthSizePx / 2} ry={botStrengthSizePx / 2} fill={botStrengthFill} stroke={botStrengthBorder} strokeWidth={1} />
+            <rect x={0} y={0} width={botStrengthSizePx} height={botStrengthSizePx} rx={botStrengthSizePx / 2} ry={botStrengthSizePx / 2} fill={botStrengthFill} stroke="none" />
             <g transform={`translate(${botStrengthIconOffsetPx} ${botStrengthIconOffsetPx}) scale(${botStrengthIconScale})`} fill="none" stroke={botStrengthColor} strokeWidth={botStrengthStroke} strokeLinecap="round" strokeLinejoin="round">
               <path d="M9.2 6.1c-2 0-3.6 1.7-3.6 3.7 0 .3 0 .6.1.9a3.8 3.8 0 0 0 1.8 7.2h1.4m5.9-11.8c2 0 3.6 1.7 3.6 3.7 0 .3 0 .6-.1.9a3.8 3.8 0 0 1-1.8 7.2h-1.4M12 5.2v12.6M9.1 8.8c.9-.8 2-1.2 2.9-1.2m0 0c1 0 2 .4 2.9 1.2" />
               <path d="M7.7 12.1c1.4-.3 2.7.2 3.7 1.1" opacity={botStrengthVisibleGyrusCount >= 1 ? 1 : 0.14} />
