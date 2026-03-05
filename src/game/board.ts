@@ -236,6 +236,7 @@ const INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO = 0.9;
 const INVITE_BOT_BUTTON_TEXT_WIDTH_TO_FONT_RATIO = 5.5;
 const BOT_STRENGTH_BUTTON_SIZE_TO_INVITE_HEIGHT = 0.82;
 const BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER = 0.12;
+const BOT_STRENGTH_VOICE_REACTION_EXTRA_GAP_MULTIPLIER = 0.08;
 const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
 const WAGER_PILE_SCALE = 1;
@@ -2962,12 +2963,13 @@ function getDynamicNameDelta(
   showsTimer: boolean,
   endOfGameIcon: SVGElement | undefined,
   showsEndOfGameMarker: boolean,
-  multiplicator: number
+  multiplicator: number,
+  extraSpacing: number = 0
 ): number {
   if (!scoreText) {
     return 0;
   }
-  const spacing = 0.14 * multiplicator;
+  const spacing = 0.14 * multiplicator + extraSpacing;
   const scoreX = parseFloat(scoreText.getAttribute("x") || "0") / 100;
   const scoreRight = scoreX + getSvgTextWidthInBoardUnits(scoreText);
   let minNameX = scoreRight + spacing;
@@ -2993,7 +2995,17 @@ function getDynamicNameDelta(
 function updateEndOfGameIcons(multiplicator: number) {
   const iconSize = END_OF_GAME_ICON_SIZE_MULTIPLIER * multiplicator;
   const iconGap = END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator;
-  const updateSingleIcon = (scoreText: SVGElement | undefined, icon: SVGElement | undefined, marker: EndOfGameMarker) => {
+  const topControlAnchorScoreText = isMetadataDisplaySwapped ? playerScoreText : opponentScoreText;
+  const topControlLayout =
+    botStrengthControlVisible && topControlAnchorScoreText
+      ? getBotStrengthControlLayout(topControlAnchorScoreText, multiplicator, getAvatarSize())
+      : null;
+  const updateSingleIcon = (
+    scoreText: SVGElement | undefined,
+    icon: SVGElement | undefined,
+    marker: EndOfGameMarker,
+    isTopControlSide: boolean
+  ) => {
     if (!scoreText || !icon || marker === "none" || (scoreText.textContent ?? "") === "") {
       if (icon) {
         SVG.setHidden(icon, true);
@@ -3018,7 +3030,10 @@ function updateEndOfGameIcons(multiplicator: number) {
     }
     const scoreX = parseFloat(scoreText.getAttribute("x") || "0") / 100;
     const scoreWidth = getSvgTextWidthInBoardUnits(scoreText);
-    const iconX = scoreX + scoreWidth + iconGap;
+    let iconX = scoreX + scoreWidth + iconGap;
+    if (isTopControlSide && topControlLayout) {
+      iconX = Math.max(iconX, topControlLayout.x + topControlLayout.size + iconGap);
+    }
     let iconY = parseFloat(scoreText.getAttribute("y") || "0") / 100 - iconSize * 0.8;
     try {
       const scoreBounds = (scoreText as unknown as SVGGraphicsElement).getBBox ? (scoreText as unknown as SVGGraphicsElement).getBBox() : null;
@@ -3030,8 +3045,8 @@ function updateEndOfGameIcons(multiplicator: number) {
     SVG.setHidden(icon, false);
   };
 
-  updateSingleIcon(playerScoreText, playerEndOfGameIcon, playerEndOfGameMarker);
-  updateSingleIcon(opponentScoreText, opponentEndOfGameIcon, opponentEndOfGameMarker);
+  updateSingleIcon(playerScoreText, playerEndOfGameIcon, playerEndOfGameMarker, topControlAnchorScoreText === playerScoreText);
+  updateSingleIcon(opponentScoreText, opponentEndOfGameIcon, opponentEndOfGameMarker, topControlAnchorScoreText === opponentScoreText);
 }
 
 function updateNamesX() {
@@ -3049,6 +3064,13 @@ function updateNamesX() {
 
   const playerStaticDelta = (playerHasEndOfGameMarker ? statusDelta : 0) + (showsPlayerTimer ? timerDelta : 0);
   const opponentStaticDelta = (opponentHasEndOfGameMarker ? statusDelta : 0) + (showsOpponentTimer ? timerDelta : 0);
+  const topControlSlotHasEndOfGameMarker = isMetadataDisplaySwapped ? playerHasEndOfGameMarker : opponentHasEndOfGameMarker;
+  const topControlNameText = isMetadataDisplaySwapped ? playerNameText : opponentNameText;
+  const topControlHasVoiceReaction = (topControlNameText?.textContent ?? "").includes("~ ");
+  const topVoiceReactionExtraSpacing =
+    botStrengthControlVisible && topControlSlotHasEndOfGameMarker && topControlHasVoiceReaction
+      ? BOT_STRENGTH_VOICE_REACTION_EXTRA_GAP_MULTIPLIER * multiplicator
+      : 0;
   const playerDynamicDelta = getDynamicNameDelta(
     initialX,
     playerScoreText,
@@ -3056,7 +3078,8 @@ function updateNamesX() {
     showsPlayerTimer,
     playerEndOfGameIcon,
     playerHasEndOfGameMarker,
-    multiplicator
+    multiplicator,
+    isMetadataDisplaySwapped ? topVoiceReactionExtraSpacing : 0
   );
   const opponentDynamicDelta = getDynamicNameDelta(
     initialX,
@@ -3065,7 +3088,8 @@ function updateNamesX() {
     showsOpponentTimer,
     opponentEndOfGameIcon,
     opponentHasEndOfGameMarker,
-    multiplicator
+    multiplicator,
+    isMetadataDisplaySwapped ? 0 : topVoiceReactionExtraSpacing
   );
 
   let playerBotStrengthDelta = 0;
