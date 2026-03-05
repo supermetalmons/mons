@@ -1387,10 +1387,10 @@ const BoardComponent: React.FC = () => {
   const botStrengthSizePx = botStrengthControlOverlay.size * 100;
   const botStrengthXpx = botStrengthControlOverlay.x * 100;
   const botStrengthYpx = botStrengthControlOverlay.y * 100;
-  const botStrengthIconSizePx = botStrengthSizePx * 0.72;
+  const botStrengthIconSizePx = botStrengthSizePx * 0.75;
   const botStrengthIconOffsetPx = (botStrengthSizePx - botStrengthIconSizePx) / 2;
   const botStrengthIconScale = botStrengthIconSizePx / 24;
-  const botStrengthStroke = Math.max(0.9, Math.min(1.8, botStrengthSizePx * 0.05));
+  const botStrengthStroke = Math.max(0.8, Math.min(1.5, botStrengthSizePx * 0.042));
   const isBotStrengthDark = prefersDarkMode;
   const botStrengthFill = isBotStrengthDark
     ? botStrengthPressed
@@ -1501,10 +1501,16 @@ const BoardComponent: React.FC = () => {
             onTouchEndCapture={isMobile ? handleBotStrengthControlClick : undefined}>
             <rect x={0} y={0} width={botStrengthSizePx} height={botStrengthSizePx} rx={botStrengthSizePx / 2} ry={botStrengthSizePx / 2} fill={botStrengthFill} stroke="none" />
             <g transform={`translate(${botStrengthIconOffsetPx} ${botStrengthIconOffsetPx}) scale(${botStrengthIconScale})`} fill="none" stroke={botStrengthColor} strokeWidth={botStrengthStroke} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M9.2 6.1c-2 0-3.6 1.7-3.6 3.7 0 .3 0 .6.1.9a3.8 3.8 0 0 0 1.8 7.2h1.4m5.9-11.8c2 0 3.6 1.7 3.6 3.7 0 .3 0 .6-.1.9a3.8 3.8 0 0 1-1.8 7.2h-1.4M12 5.2v12.6M9.1 8.8c.9-.8 2-1.2 2.9-1.2m0 0c1 0 2 .4 2.9 1.2" />
-              <path d="M7.7 12.1c1.4-.3 2.7.2 3.7 1.1" opacity={botStrengthVisibleGyrusCount >= 1 ? 1 : 0.14} />
-              <path d="M8 14.8c1.3-.2 2.2.2 3 1" opacity={botStrengthVisibleGyrusCount >= 2 ? 1 : 0.14} />
-              <path d="M16.3 12.1c-1.4-.3-2.7.2-3.7 1.1m3.4 1.6c-1.3-.2-2.2.2-3 1" opacity={botStrengthVisibleGyrusCount >= 3 ? 1 : 0.14} />
+              <path d="M12 5v13" />
+              <path d="M17.6 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.6 1.5" />
+              <path d="M18 5.1a4 4 0 0 1 2.5 5.8" />
+              <path d="M18 18a4 4 0 0 0 2-7.5" />
+              <path d="M6 5.1a4 4 0 0 0-2.5 5.8" />
+              <path d="M6 18a4 4 0 0 1-2-7.5" />
+              <path d="M20 17.5A4 4 0 1 1 12 18a4 4 0 1 1-8-.5" />
+              {botStrengthVisibleGyrusCount >= 1 && <path d="M12 8.5c-1.5.8-3.5 1.2-5 .5M12 14c1.5.6 3.2.2 4.5-.6" />}
+              {botStrengthVisibleGyrusCount >= 2 && <path d="M4 11c1.5-.6 3.5-.3 5 .7M12 16c1.5.5 3 .2 4.5-.5" />}
+              {botStrengthVisibleGyrusCount >= 3 && <path d="M20 9.5c-1.5-.5-3.2-.7-5-.1M12 17c-1.5-.3-3.2-.1-4.5.5" />}
             </g>
           </g>
         )}
