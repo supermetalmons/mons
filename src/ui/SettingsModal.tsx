@@ -136,7 +136,7 @@ const RemoveIconButton = styled.button`
   border-radius: 999px;
   border: none;
   background: var(--color-gray-f0);
-  color: var(--color-gray-33);
+  color: var(--color-gray-77);
   font-size: 0.95rem;
   font-weight: 600;
   line-height: 1;
@@ -165,7 +165,7 @@ const RemoveIconButton = styled.button`
 
   @media (prefers-color-scheme: dark) {
     background: var(--color-gray-33);
-    color: var(--color-gray-f0);
+    color: var(--color-gray-a0);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover:not(:disabled) {
