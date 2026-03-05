@@ -1,7 +1,7 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 
-const { MATERIAL_KEYS, normalizeMaterials, sumMaterials, createDeterministicDrops, formatMiningDate } = require("./miningHelpers");
+const { MATERIAL_KEYS, normalizeMaterials, sumMaterials, createDropsForMiningEvent, formatMiningDate } = require("./miningHelpers");
 
 exports.mineRock = onCall(async (request) => {
   if (!request.auth) {
@@ -55,7 +55,7 @@ exports.mineRock = onCall(async (request) => {
       reason: "date-not-advanced",
     };
   }
-  const expected = createDeterministicDrops(profileId, date);
+  const expected = createDropsForMiningEvent(profileId, date, userData.mining);
   const expectedDelta = expected.delta;
   const materialsMatch = MATERIAL_KEYS.every((key) => delta[key] === expectedDelta[key]);
   if (!materialsMatch) {

@@ -67,6 +67,23 @@ const pickWeightedMaterial = (random) => {
   return "ice";
 };
 
+const isFirstMiningEvent = (source) => {
+  const normalized = normalizeMiningSnapshot(source);
+  if (normalized.lastRockDate) {
+    return false;
+  }
+  return !MATERIAL_KEYS.some((key) => normalized.materials[key] > 0);
+};
+
+const createFirstRockDrops = () => {
+  const delta = createEmptyMaterials();
+  delta.dust = 1;
+  return {
+    drops: ["dust"],
+    delta,
+  };
+};
+
 const createDeterministicDrops = (profileId, date) => {
   const random = createSeededRandom(profileId, date);
   const count = 2 + Math.floor(random() * 4);
@@ -80,11 +97,21 @@ const createDeterministicDrops = (profileId, date) => {
   return { drops, delta };
 };
 
+const createDropsForMiningEvent = (profileId, date, miningSnapshot) => {
+  if (isFirstMiningEvent(miningSnapshot)) {
+    return createFirstRockDrops();
+  }
+  return createDeterministicDrops(profileId, date);
+};
+
 module.exports = {
   MATERIAL_KEYS,
   normalizeMaterials,
   sumMaterials,
   normalizeMiningSnapshot,
   formatMiningDate,
+  isFirstMiningEvent,
+  createFirstRockDrops,
   createDeterministicDrops,
+  createDropsForMiningEvent,
 };

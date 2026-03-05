@@ -150,6 +150,22 @@ const pickWeightedMaterial = (random: () => number): MiningMaterialName => {
   return "ice";
 };
 
+const isFirstMiningEvent = (source: PlayerMiningData): boolean => {
+  if (source.lastRockDate) {
+    return false;
+  }
+  return !MATERIALS.some((name) => source.materials[name] > 0);
+};
+
+const createFirstRockDrops = (): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
+  const delta = createEmptyMaterials();
+  delta.dust = 1;
+  return {
+    drops: ["dust"],
+    delta,
+  };
+};
+
 const createDropsFromRandom = (random: () => number): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
   const count = 2 + Math.floor(random() * 4);
   const drops: MiningMaterialName[] = [];
@@ -162,7 +178,10 @@ const createDropsFromRandom = (random: () => number): { drops: MiningMaterialNam
   return { drops, delta };
 };
 
-const createDrops = (profileId: string, date: string): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
+const createDrops = (profileId: string, date: string, currentSnapshot: PlayerMiningData): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
+  if (isFirstMiningEvent(currentSnapshot)) {
+    return createFirstRockDrops();
+  }
   return createDropsFromRandom(createSeededRandom(profileId, date));
 };
 
@@ -221,7 +240,7 @@ function didBreakRock(): DidBreakRockResult {
         drops: [] as MiningMaterialName[],
         delta: createEmptyMaterials(),
       }
-    : createDrops(profileId, date);
+    : createDrops(profileId, date, snapshot);
   const { drops, delta } = dropsData;
   const baseMaterials = isAnon ? createEmptyMaterials() : cloneMaterials(snapshot.materials);
   const nextSnapshot: PlayerMiningData = {
