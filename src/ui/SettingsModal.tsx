@@ -26,12 +26,12 @@ const MethodsList = styled.div`
   flex-direction: column;
   margin-bottom: 14px;
   border-radius: 12px;
-  border: 1px solid var(--color-gray-dd);
+  border: 1px solid rgba(224, 224, 224, 0.45);
   overflow: hidden;
-  background: var(--color-white);
+  background: var(--color-gray-f9);
 
   @media (prefers-color-scheme: dark) {
-    border-color: var(--color-gray-44);
+    border-color: rgba(68, 68, 68, 0.45);
     background: var(--color-gray-27);
   }
 `;
@@ -45,12 +45,12 @@ const MethodRow = styled.div`
   min-height: 42px;
 
   & + & {
-    border-top: 1px solid var(--color-gray-e0);
+    border-top: 1px solid rgba(224, 224, 224, 0.45);
   }
 
   @media (prefers-color-scheme: dark) {
     & + & {
-      border-top-color: var(--color-gray-44);
+      border-top-color: rgba(68, 68, 68, 0.45);
     }
   }
 `;
