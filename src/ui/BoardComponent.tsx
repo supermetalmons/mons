@@ -1508,9 +1508,9 @@ const BoardComponent: React.FC = () => {
               <path d="M6 5.1a4 4 0 0 0-2.5 5.8" />
               <path d="M6 18a4 4 0 0 1-2-7.5" />
               <path d="M20 17.5A4 4 0 1 1 12 18a4 4 0 1 1-8-.5" />
-              {botStrengthVisibleGyrusCount >= 1 && <path d="M12 8.5c-1.5.8-3.5 1.2-5 .5M12 14c1.5.6 3.2.2 4.5-.6" />}
-              {botStrengthVisibleGyrusCount >= 2 && <path d="M4 11c1.5-.6 3.5-.3 5 .7M12 16c1.5.5 3 .2 4.5-.5" />}
-              {botStrengthVisibleGyrusCount >= 3 && <path d="M20 9.5c-1.5-.5-3.2-.7-5-.1M12 17c-1.5-.3-3.2-.1-4.5.5" />}
+              {botStrengthVisibleGyrusCount >= 1 && <path d="M12 8c1.5-1 3.5-1 5 0 M12 12.5c-1.5.8-3.5.8-5 0" />}
+              {botStrengthVisibleGyrusCount >= 2 && <path d="M12 9.5c-1.5-.8-3.5-.8-5 0 M12 14c2 .8 4 .8 5.5 0" />}
+              {botStrengthVisibleGyrusCount >= 3 && <path d="M12 11c2-.7 4-.7 5.5 0 M12 15.5c-1.5.7-3 .7-4.5 0" />}
             </g>
           </g>
         )}
