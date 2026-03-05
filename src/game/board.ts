@@ -1474,7 +1474,7 @@ function setupInviteBotButton() {
   applyInviteBotButtonColors(button, "default");
 
   const label = document.createElementNS("http://www.w3.org/1999/xhtml", "span");
-  label.textContent = "Invite a Bot";
+  label.textContent = "Invite Bot";
 
   button.appendChild(label);
 
