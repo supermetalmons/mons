@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 import styled from "styled-components";
 import { FaTimes, FaCheck } from "react-icons/fa";
-import { isWatchOnly, subscribeToWatchOnly } from "../game/gameController";
+import { isWatchOnly, subscribeToWatchOnly, didClickBotStrengthControlButton } from "../game/gameController";
 import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled, subscribeToBoardColorSetChanges } from "../content/boardStyles";
 import { defaultInputEventName, isMobile } from "../utils/misc";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
@@ -88,6 +88,15 @@ let showRaibowAuraImpl: (visible: boolean, url: string, opponent: boolean) => vo
 let updateAuraForAvatarElementImpl: (opponent: boolean, avatarElement: SVGElement) => void = () => {};
 let updateWagerPlayerUidsImpl: (playerUid: string, opponentUid: string) => void = () => {};
 let clearBoardTransientUiImpl: (fadeOutVideos?: boolean) => void = () => {};
+type BotStrengthControlMode = "fast" | "normal" | "pro";
+type BotStrengthControlOverlayState = {
+  visible: boolean;
+  mode: BotStrengthControlMode;
+  x: number;
+  y: number;
+  size: number;
+};
+let setBotStrengthControlOverlayStateImpl: (state: BotStrengthControlOverlayState) => void = () => {};
 
 export const setTopBoardOverlayVisible = (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => {
   setTopBoardOverlayVisibleImpl(blurry, svgElement, withConfirmAndCancelButtons, ok, cancel);
@@ -111,6 +120,10 @@ export const updateWagerPlayerUids = (playerUid: string, opponentUid: string) =>
 
 export const clearBoardTransientUi = (fadeOutVideos?: boolean) => {
   clearBoardTransientUiImpl(fadeOutVideos);
+};
+
+export const setBotStrengthControlOverlayState = (state: BotStrengthControlOverlayState) => {
+  setBotStrengthControlOverlayStateImpl(state);
 };
 
 const VIDEO_CONTAINER_HEIGHT_GRID = "12.5%";
@@ -279,6 +292,15 @@ const BoardComponent: React.FC = () => {
   const [activeWagerPanelSide, setActiveWagerPanelSide] = useState<WagerPileSide | "winner" | null>(null);
   const [activeWagerPanelRect, setActiveWagerPanelRect] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
   const [activeWagerPanelCount, setActiveWagerPanelCount] = useState<number | null>(null);
+  const [botStrengthControlOverlay, setBotStrengthControlOverlay] = useState<BotStrengthControlOverlayState>({
+    visible: false,
+    mode: "normal",
+    x: 0,
+    y: 0,
+    size: 0,
+  });
+  const [botStrengthHovered, setBotStrengthHovered] = useState(false);
+  const [botStrengthPressed, setBotStrengthPressed] = useState(false);
   const [boardPixelSize, setBoardPixelSize] = useState<{ width: number; height: number } | null>(null);
   const wagerPilesLayerRef = useRef<HTMLDivElement | null>(null);
   const wagerPileElementsRef = useRef<WagerPileElements | null>(null);
@@ -334,6 +356,21 @@ const BoardComponent: React.FC = () => {
         hideAuraDom(targets.current.background);
       }
     }
+  };
+
+  setBotStrengthControlOverlayStateImpl = (nextState: BotStrengthControlOverlayState) => {
+    setBotStrengthControlOverlay((prevState) => {
+      if (
+        prevState.visible === nextState.visible &&
+        prevState.mode === nextState.mode &&
+        prevState.x === nextState.x &&
+        prevState.y === nextState.y &&
+        prevState.size === nextState.size
+      ) {
+        return prevState;
+      }
+      return nextState;
+    });
   };
 
   const handleConfirmClick = () => {
@@ -563,6 +600,13 @@ const BoardComponent: React.FC = () => {
   }, [activeWagerPanelCount]);
 
   useEffect(() => {
+    if (!botStrengthControlOverlay.visible) {
+      setBotStrengthHovered(false);
+      setBotStrengthPressed(false);
+    }
+  }, [botStrengthControlOverlay.visible]);
+
+  useEffect(() => {
     wagerPanelStateRef.current = {
       actionsLocked: wagerActionsLocked,
       playerHasProposal: !!playerProposal,
@@ -627,6 +671,7 @@ const BoardComponent: React.FC = () => {
       updateAuraForAvatarElementImpl = () => {};
       updateWagerPlayerUidsImpl = () => {};
       clearBoardTransientUiImpl = () => {};
+      setBotStrengthControlOverlayStateImpl = () => {};
     };
   }, [clearPendingWagerTransitionState]);
 
@@ -1316,6 +1361,58 @@ const BoardComponent: React.FC = () => {
     outline: "none",
     boxSizing: "border-box" as const,
   };
+  const botStrengthModeLabel = botStrengthControlOverlay.mode === "fast" ? "Fast" : botStrengthControlOverlay.mode === "pro" ? "Pro" : "Normal";
+  const botStrengthVisibleGyrusCount = botStrengthControlOverlay.mode === "fast" ? 1 : botStrengthControlOverlay.mode === "normal" ? 2 : 3;
+  const botStrengthSizePx = botStrengthControlOverlay.size * 100;
+  const botStrengthXpx = botStrengthControlOverlay.x * 100;
+  const botStrengthYpx = botStrengthControlOverlay.y * 100;
+  const botStrengthIconSizePx = botStrengthSizePx * 0.72;
+  const botStrengthIconOffsetPx = (botStrengthSizePx - botStrengthIconSizePx) / 2;
+  const botStrengthIconScale = botStrengthIconSizePx / 24;
+  const botStrengthStroke = Math.max(1.2, Math.min(2.4, botStrengthSizePx * 0.07));
+  const isBotStrengthDark = prefersDarkMode;
+  const botStrengthFill = isBotStrengthDark
+    ? botStrengthPressed
+      ? "var(--color-gray-55)"
+      : botStrengthHovered
+        ? "var(--color-gray-44)"
+        : "var(--color-gray-33)"
+    : botStrengthPressed
+      ? "var(--color-gray-d0)"
+      : botStrengthHovered
+        ? "var(--color-gray-e0)"
+        : "var(--color-gray-f0)";
+  const botStrengthBorder = isBotStrengthDark
+    ? botStrengthPressed
+      ? "var(--color-gray-44)"
+      : botStrengthHovered
+        ? "var(--color-gray-33)"
+        : "var(--color-gray-22)"
+    : botStrengthPressed
+      ? "var(--color-gray-c7)"
+      : botStrengthHovered
+        ? "var(--color-gray-d0)"
+        : "var(--color-gray-e0)";
+  const botStrengthColor = isBotStrengthDark ? "var(--color-blue-primary-dark)" : "var(--color-blue-primary)";
+  const handleBotStrengthPointerDown = (event: React.SyntheticEvent) => {
+    event.stopPropagation();
+    setBotStrengthPressed(true);
+  };
+  const handleBotStrengthPointerUp = (event: React.SyntheticEvent) => {
+    event.stopPropagation();
+    setBotStrengthPressed(false);
+  };
+  const handleBotStrengthPointerLeave = () => {
+    setBotStrengthHovered(false);
+    setBotStrengthPressed(false);
+  };
+  const handleBotStrengthControlClick = (event: React.SyntheticEvent) => {
+    event.stopPropagation();
+    if (event.cancelable) {
+      event.preventDefault();
+    }
+    didClickBotStrengthControlButton();
+  };
 
   return (
     <>
@@ -1377,6 +1474,30 @@ const BoardComponent: React.FC = () => {
         <g id="itemsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
         <g id="controlsLayer"></g>
         <g id="effectsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
+        {botStrengthControlOverlay.visible && botStrengthControlOverlay.size > 0 && (
+          <g
+            transform={`translate(${botStrengthXpx} ${botStrengthYpx})`}
+            style={{ pointerEvents: "all", cursor: "pointer" }}
+            role="button"
+            aria-label={`Bot strength: ${botStrengthModeLabel}`}
+            onMouseEnter={() => setBotStrengthHovered(true)}
+            onMouseLeave={handleBotStrengthPointerLeave}
+            onMouseDown={handleBotStrengthPointerDown}
+            onMouseUp={handleBotStrengthPointerUp}
+            onTouchStart={handleBotStrengthPointerDown}
+            onTouchEnd={handleBotStrengthPointerUp}
+            onTouchCancel={handleBotStrengthPointerLeave}
+            onClick={!isMobile ? handleBotStrengthControlClick : undefined}
+            onTouchEndCapture={isMobile ? handleBotStrengthControlClick : undefined}>
+            <rect x={0} y={0} width={botStrengthSizePx} height={botStrengthSizePx} rx={botStrengthSizePx / 2} ry={botStrengthSizePx / 2} fill={botStrengthFill} stroke={botStrengthBorder} strokeWidth={1} />
+            <g transform={`translate(${botStrengthIconOffsetPx} ${botStrengthIconOffsetPx}) scale(${botStrengthIconScale})`} fill="none" stroke={botStrengthColor} strokeWidth={botStrengthStroke} strokeLinecap="round" strokeLinejoin="round">
+              <path d="M9.2 6.1c-2 0-3.6 1.7-3.6 3.7 0 .3 0 .6.1.9a3.8 3.8 0 0 0 1.8 7.2h1.4m5.9-11.8c2 0 3.6 1.7 3.6 3.7 0 .3 0 .6-.1.9a3.8 3.8 0 0 1-1.8 7.2h-1.4M12 5.2v12.6M9.1 8.8c.9-.8 2-1.2 2.9-1.2m0 0c1 0 2 .4 2.9 1.2" />
+              <path d="M7.7 12.1c1.4-.3 2.7.2 3.7 1.1" opacity={botStrengthVisibleGyrusCount >= 1 ? 1 : 0.14} />
+              <path d="M8 14.8c1.3-.2 2.2.2 3 1" opacity={botStrengthVisibleGyrusCount >= 2 ? 1 : 0.14} />
+              <path d="M16.3 12.1c-1.4-.3-2.7.2-3.7 1.1m3.4 1.6c-1.3-.2-2.2.2-3 1" opacity={botStrengthVisibleGyrusCount >= 3 ? 1 : 0.14} />
+            </g>
+          </g>
+        )}
       </svg>
 
       <div

@@ -32,6 +32,7 @@ const STORAGE_KEYS = {
   IS_FIRST_LAUNCH: "isFirstLaunch",
   ISLAND_MON_TYPE: "islandMonType",
   LEADERBOARD_TYPE: "leaderboardType",
+  BOT_AUTOMOVE_MODE: "botAutomoveMode",
 } as const;
 
 type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
@@ -314,6 +315,14 @@ export const storage = {
 
   setLeaderboardType: (value: string): void => {
     setItem(STORAGE_KEYS.LEADERBOARD_TYPE, value);
+  },
+
+  getBotAutomoveMode: (defaultValue: string): string => {
+    return getItem(STORAGE_KEYS.BOT_AUTOMOVE_MODE, defaultValue);
+  },
+
+  setBotAutomoveMode: (value: string): void => {
+    setItem(STORAGE_KEYS.BOT_AUTOMOVE_MODE, value);
   },
 
   signOut: (): void => {

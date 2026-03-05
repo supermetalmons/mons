@@ -45,6 +45,15 @@ let activeRouteState: RouteState = getCurrentRouteState();
 const isCreateInviteRoute = () => activeRouteState.mode === "home";
 const isSnapshotRoute = () => activeRouteState.mode === "snapshot";
 const isBotsRoute = () => activeRouteState.mode === "watch";
+type BotAutomoveMode = "fast" | "normal" | "pro";
+const botAutomoveModeCycle: BotAutomoveMode[] = ["fast", "normal", "pro"];
+const normalizeBotAutomoveMode = (value: string | null | undefined): BotAutomoveMode => {
+  if (value === "fast" || value === "normal" || value === "pro") {
+    return value;
+  }
+  return "normal";
+};
+let botAutomoveMode: BotAutomoveMode = normalizeBotAutomoveMode(storage.getBotAutomoveMode("normal"));
 
 let currentWagerState: MatchWagerState | null = null;
 let wagerOutcomeShown = false;
@@ -356,8 +365,17 @@ const shouldShowInviteBotIntoLocalGameButton = () => {
   return game.turn_number() <= 2;
 };
 
+const shouldShowBotStrengthControlButton = () =>
+  !isOnlineGame && isGameWithBot && !isWatchOnly && boardViewMode === "activeLive" && !flashbackMode;
+
+const syncBotStrengthControlButton = () => {
+  Board.setBotStrengthControlMode(botAutomoveMode);
+  Board.setBotStrengthControlVisible(shouldShowBotStrengthControlButton());
+};
+
 const syncInviteBotIntoLocalGameButton = () => {
   Board.setInviteBotButtonVisible(shouldShowInviteBotIntoLocalGameButton());
+  syncBotStrengthControlButton();
 };
 
 export function getCurrentGameFen(): string {
@@ -468,6 +486,7 @@ function applyBoardUiForCurrentView() {
     hideTimerButtons();
     Board.hideTimerCountdownDigits();
     Board.hideAllMoveStatuses();
+    syncInviteBotIntoLocalGameButton();
     return;
   }
   if (boardViewMode === "waitingLive") {
@@ -483,6 +502,7 @@ function applyBoardUiForCurrentView() {
     hideTimerButtons();
     Board.hideTimerCountdownDigits();
     Board.hideAllMoveStatuses();
+    syncInviteBotIntoLocalGameButton();
     return;
   }
   Board.stopMonsBoardAsDisplayAnimations();
@@ -494,6 +514,7 @@ function applyBoardUiForCurrentView() {
     showVoiceReactionButton(false);
   }
   ensureBoardViewInvariants("applyBoardUiForCurrentView");
+  syncInviteBotIntoLocalGameButton();
 }
 
 function enterWaitingLiveView() {
@@ -1454,6 +1475,7 @@ export function didSelectVerboseTrackingEntity(index: number) {
     Board.hideItemSelectionOrConfirmationOverlay();
     setNewBoard(false);
     applyWagerState();
+    syncInviteBotIntoLocalGameButton();
     return;
   }
 
@@ -1467,6 +1489,7 @@ export function didSelectVerboseTrackingEntity(index: number) {
   Board.hideItemSelectionOrConfirmationOverlay();
   setNewBoard(true);
   updateWagerDisplayForMoveNavigation(index, entities.length);
+  syncInviteBotIntoLocalGameButton();
 }
 
 function updateWagerDisplayForMoveNavigation(selectedIndex: number, totalEntities: number) {
@@ -1516,6 +1539,7 @@ export function didDismissMoveHistoryPopup() {
       setNewBoard(true);
     }
     applyWagerState();
+    syncInviteBotIntoLocalGameButton();
     return;
   }
   clearViewedRematchState();
@@ -1524,10 +1548,12 @@ export function didDismissMoveHistoryPopup() {
     Board.setBoardFlipped(activeBoardShouldBeFlipped());
     setNewBoard(false);
     applyWagerState();
+    syncInviteBotIntoLocalGameButton();
     return;
   }
   updateBoardMoveStatuses(game, false);
   applyWagerState();
+  syncInviteBotIntoLocalGameButton();
 }
 
 function dismissBadgeAndNotificationBannerIfNeeded() {
@@ -1588,6 +1614,7 @@ export async function go(routeStateOverride?: RouteState) {
   setWatchOnlyState(false);
   resetTimerStateForMatch(null);
   lastObservedMatchSideFallbackWarningKey = "";
+  Board.setBotStrengthControlVisible(false);
   triggerMoveHistoryPopupReload();
   if (!didSetupWagerSubscription) {
     didSetupWagerSubscription = true;
@@ -1604,6 +1631,8 @@ export async function go(routeStateOverride?: RouteState) {
   connection.setupConnection(false, routeState);
   Board.setupBoard();
   Board.setPreserveDisplayAnimation(false);
+  Board.setBotStrengthControlMode(botAutomoveMode);
+  Board.setBotStrengthControlVisible(false);
 
   if (isAutomatchTransition) {
     isOnlineGame = true;
@@ -1791,6 +1820,7 @@ export function disposeGameSession() {
   Board.hideTimerCountdownDigits();
   Board.hideAllMoveStatuses();
   Board.setInviteBotButtonVisible(false);
+  Board.setBotStrengthControlVisible(false);
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
   triggerMoveHistoryPopupReload();
@@ -2055,6 +2085,13 @@ export function didClickInviteBotIntoLocalGameButton() {
   }
 }
 
+export function didClickBotStrengthControlButton() {
+  const nextIndex = (botAutomoveModeCycle.indexOf(botAutomoveMode) + 1) % botAutomoveModeCycle.length;
+  botAutomoveMode = botAutomoveModeCycle[nextIndex] ?? "normal";
+  storage.setBotAutomoveMode(botAutomoveMode);
+  syncBotStrengthControlButton();
+}
+
 export function handleFreshlySignedInProfileInGameIfNeeded(profileId: string) {
   if (isWatchOnly) {
     connection.seeIfFreshlySignedInProfileIsOneOfThePlayers(profileId);
@@ -2230,7 +2267,8 @@ export function didUpdateRematchSeriesMetadata() {
 
 function automove(onAutomoveButtonClick: boolean = false) {
   const sessionGuard = getSessionGuard();
-  const preference = onAutomoveButtonClick ? "fast" : "normal"; // TODO: add strength picker
+  const shouldUseSelectedBotMode = isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
+  const preference: BotAutomoveMode = shouldUseSelectedBotMode ? botAutomoveMode : onAutomoveButtonClick ? "fast" : "normal";
   const expectedMatchId = getExpectedOnlineMatchIdOrReconnect();
   if (isOnlineGame && !expectedMatchId) {
     return;

@@ -10,7 +10,7 @@ import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { hasIslandOverlayVisible } from "../ui/islandOverlayState";
 import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername, getStashedPlayerProfile } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
-import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange, showRaibowAura, updateAuraForAvatarElement, updateWagerPlayerUids } from "../ui/BoardComponent";
+import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange, showRaibowAura, updateAuraForAvatarElement, updateWagerPlayerUids, setBotStrengthControlOverlayState } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
 import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
@@ -174,6 +174,9 @@ let opponentEndOfGameIcon: SVGElement | undefined;
 let inviteBotButtonContainer: SVGElement | undefined;
 let inviteBotButtonElement: HTMLButtonElement | undefined;
 let cleanupInviteBotButtonThemeListener: (() => void) | null = null;
+type BotAutomoveMode = "fast" | "normal" | "pro";
+let botStrengthControlMode: BotAutomoveMode = "normal";
+let botStrengthControlVisible = false;
 
 let playerScoreText: SVGElement | undefined;
 let playerEndOfGameIcon: SVGElement | undefined;
@@ -231,6 +234,8 @@ const INVITE_BOT_BUTTON_HEIGHT_TO_FONT_RATIO = 2.1;
 const INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX = 12;
 const INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO = 0.9;
 const INVITE_BOT_BUTTON_TEXT_WIDTH_TO_FONT_RATIO = 5.5;
+const BOT_STRENGTH_BUTTON_SIZE_TO_INVITE_HEIGHT = 0.82;
+const BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER = 0.12;
 const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
 const WAGER_PILE_SCALE = 1;
@@ -271,6 +276,12 @@ type InviteBotButtonLayout = {
   horizontalPaddingPx: number;
 };
 
+type BotStrengthControlLayout = {
+  x: number;
+  y: number;
+  size: number;
+};
+
 const getInviteBotButtonLayout = (scoreText: SVGElement, multiplicator: number, avatarSize: number): InviteBotButtonLayout => {
   const scoreX = parseFloat(scoreText.getAttribute("x") || "0") / 100;
   const scoreY = parseFloat(scoreText.getAttribute("y") || "0") / 100;
@@ -285,6 +296,31 @@ const getInviteBotButtonLayout = (scoreText: SVGElement, multiplicator: number, 
   const scoreCenterY = scoreY - scoreFontBoardUnits * 0.35;
   const y = scoreCenterY - height / 2 - 0.023 * multiplicator;
   return { x, y, width, height, fontSizePx, horizontalPaddingPx };
+};
+
+const getBotStrengthControlLayout = (scoreText: SVGElement, multiplicator: number, avatarSize: number): BotStrengthControlLayout => {
+  const inviteLayout = getInviteBotButtonLayout(scoreText, multiplicator, avatarSize);
+  const size = inviteLayout.height * BOT_STRENGTH_BUTTON_SIZE_TO_INVITE_HEIGHT;
+  const x = inviteLayout.x;
+  const y = inviteLayout.y + (inviteLayout.height - size) / 2;
+  return { x, y, size };
+};
+
+const syncBotStrengthControlOverlay = (layout: BotStrengthControlLayout | null = null) => {
+  let resolvedLayout = layout;
+  if (!resolvedLayout && boardBackgroundLayer && playerScoreText && opponentScoreText) {
+    const topControlAnchorScoreText = isMetadataDisplaySwapped ? playerScoreText : opponentScoreText;
+    const multiplicator = getOuterElementsMultiplicator();
+    const avatarSize = getAvatarSize();
+    resolvedLayout = getBotStrengthControlLayout(topControlAnchorScoreText, multiplicator, avatarSize);
+  }
+  setBotStrengthControlOverlayState({
+    visible: botStrengthControlVisible && !!resolvedLayout,
+    mode: botStrengthControlMode,
+    x: resolvedLayout?.x ?? 0,
+    y: resolvedLayout?.y ?? 0,
+    size: resolvedLayout?.size ?? 0,
+  });
 };
 
 const fetchCachedImageUrl = (url: string): Promise<string | null> =>
@@ -704,6 +740,7 @@ export function showInstructionsText(text: string) {
     SVG.setHidden(opponentNameText, true);
   }
   setInviteBotButtonVisible(false);
+  setBotStrengthControlVisible(false);
 }
 
 function startTextAnimation(text: string) {
@@ -1145,6 +1182,7 @@ export function hideBoardPlayersInfo() {
     opponentNameText.textContent = "";
   }
   setInviteBotButtonVisible(false);
+  setBotStrengthControlVisible(false);
 }
 
 function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boolean = false) {
@@ -1320,6 +1358,7 @@ export function resetForNewGame() {
   opponentSideMetadata = newEmptyPlayerMetadata();
   renderPlayersNamesLabels();
   setInviteBotButtonVisible(false);
+  setBotStrengthControlVisible(false);
 
   if (opponentAvatar && playerAvatar) {
     SVG.setHidden(opponentAvatar, false);
@@ -1517,6 +1556,17 @@ export function setInviteBotButtonVisible(visible: boolean) {
     inviteBotButtonElement.disabled = !visible;
     inviteBotButtonElement.style.pointerEvents = visible ? "auto" : "none";
   }
+}
+
+export function setBotStrengthControlMode(mode: BotAutomoveMode) {
+  botStrengthControlMode = mode;
+  syncBotStrengthControlOverlay();
+}
+
+export function setBotStrengthControlVisible(visible: boolean) {
+  botStrengthControlVisible = visible;
+  syncBotStrengthControlOverlay();
+  updateNamesX();
 }
 
 export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
@@ -3018,8 +3068,23 @@ function updateNamesX() {
     multiplicator
   );
 
-  SVG.setX(playerNameText, initialX + Math.max(playerStaticDelta, playerDynamicDelta));
-  SVG.setX(opponentNameText, initialX + Math.max(opponentStaticDelta, opponentDynamicDelta));
+  let playerBotStrengthDelta = 0;
+  let opponentBotStrengthDelta = 0;
+  const topControlAnchorScoreText = isMetadataDisplaySwapped ? playerScoreText : opponentScoreText;
+  if (botStrengthControlVisible && topControlAnchorScoreText) {
+    const avatarSize = getAvatarSize();
+    const botLayout = getBotStrengthControlLayout(topControlAnchorScoreText, multiplicator, avatarSize);
+    const minNameX = botLayout.x + botLayout.size + BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER * multiplicator;
+    const delta = Math.max(0, minNameX - initialX);
+    if (isMetadataDisplaySwapped) {
+      playerBotStrengthDelta = delta;
+    } else {
+      opponentBotStrengthDelta = delta;
+    }
+  }
+
+  SVG.setX(playerNameText, initialX + Math.max(playerStaticDelta, playerDynamicDelta, playerBotStrengthDelta));
+  SVG.setX(opponentNameText, initialX + Math.max(opponentStaticDelta, opponentDynamicDelta, opponentBotStrengthDelta));
 }
 
 const updateLayout = () => {
@@ -3081,15 +3146,22 @@ const updateLayout = () => {
     SVG.updateCircle(placeholder, offsetX + avatarSize / 2, y + avatarSize / 2, avatarSize / 3);
   }
 
-  const inviteBotAnchorScoreText = isMetadataDisplaySwapped ? playerScoreText : opponentScoreText;
-  if (inviteBotButtonContainer && inviteBotButtonElement && inviteBotAnchorScoreText) {
+  const topControlAnchorScoreText = isMetadataDisplaySwapped ? playerScoreText : opponentScoreText;
+  if (inviteBotButtonContainer && inviteBotButtonElement && topControlAnchorScoreText) {
     const avatarSize = getAvatarSize();
-    const layout = getInviteBotButtonLayout(inviteBotAnchorScoreText, multiplicator, avatarSize);
+    const layout = getInviteBotButtonLayout(topControlAnchorScoreText, multiplicator, avatarSize);
     SVG.setFrame(inviteBotButtonContainer, layout.x, layout.y, layout.width, layout.height);
     inviteBotButtonElement.style.fontSize = `${layout.fontSizePx}px`;
     inviteBotButtonElement.style.borderRadius = "999px";
     inviteBotButtonElement.style.paddingLeft = `${layout.horizontalPaddingPx}px`;
     inviteBotButtonElement.style.paddingRight = `${layout.horizontalPaddingPx}px`;
+  }
+  if (topControlAnchorScoreText) {
+    const avatarSize = getAvatarSize();
+    const layout = getBotStrengthControlLayout(topControlAnchorScoreText, multiplicator, avatarSize);
+    syncBotStrengthControlOverlay(layout);
+  } else {
+    syncBotStrengthControlOverlay(null);
   }
 
   if (instructionsContainerElement && talkingDude) {
@@ -3605,6 +3677,13 @@ export function disposeBoardRuntime() {
     cleanupInviteBotButtonThemeListener();
     cleanupInviteBotButtonThemeListener = null;
   }
+  setBotStrengthControlOverlayState({
+    visible: false,
+    mode: botStrengthControlMode,
+    x: 0,
+    y: 0,
+    size: 0,
+  });
   if (didRegisterResizeHandler) {
     window.removeEventListener("resize", updateLayout);
     didRegisterResizeHandler = false;
@@ -3652,6 +3731,7 @@ export function disposeBoardRuntime() {
   opponentScoreText = undefined;
   inviteBotButtonContainer = undefined;
   inviteBotButtonElement = undefined;
+  botStrengthControlVisible = false;
   playerScoreText = undefined;
   opponentEndOfGameIcon = undefined;
   playerEndOfGameIcon = undefined;
