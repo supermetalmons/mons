@@ -24,8 +24,16 @@ const SettingsTitle = styled(ModalTitle)`
 const MethodsList = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
   margin-bottom: 14px;
+  border-radius: 12px;
+  border: 1px solid var(--color-gray-dd);
+  overflow: hidden;
+  background: var(--color-white);
+
+  @media (prefers-color-scheme: dark) {
+    border-color: var(--color-gray-44);
+    background: var(--color-gray-27);
+  }
 `;
 
 const MethodRow = styled.div`
@@ -33,12 +41,17 @@ const MethodRow = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 10px 10px 10px 12px;
-  border-radius: 10px;
-  background: var(--color-gray-f5);
+  padding: 10px 12px;
+  min-height: 42px;
+
+  & + & {
+    border-top: 1px solid var(--color-gray-e0);
+  }
 
   @media (prefers-color-scheme: dark) {
-    background: var(--color-gray-25);
+    & + & {
+      border-top-color: var(--color-gray-44);
+    }
   }
 `;
 
@@ -49,43 +62,179 @@ const MethodMeta = styled.div`
   min-width: 0;
 `;
 
-const MethodName = styled.div`
-  font-size: 0.92rem;
-  font-weight: 700;
-  color: var(--color-gray-33);
+const MethodName = styled.div<{ linked: boolean }>`
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: ${(props) => (props.linked ? "var(--color-gray-33)" : "var(--color-gray-99)")};
 
   @media (prefers-color-scheme: dark) {
-    color: var(--color-gray-f5);
+    color: ${(props) => (props.linked ? "var(--color-gray-f0)" : "var(--color-gray-77)")};
   }
 `;
 
-const ActionButton = styled.button<{ danger?: boolean }>`
-  border: none;
-  border-radius: 14px;
-  padding: 7px 10px;
-  font-size: 0.8rem;
-  font-weight: 700;
+const RowActions = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  min-width: 88px;
+`;
+
+const ActionSpacer = styled.div`
+  width: 84px;
+  height: 28px;
+`;
+
+const ConnectButton = styled.button`
+  border: 1px solid var(--color-gray-dd);
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
   cursor: pointer;
-  color: white;
-  background: ${(props) => (props.danger ? "var(--dangerButtonBackground)" : "var(--color-blue-primary)")};
-  width: 112px;
-  min-width: 112px;
+  color: var(--color-blue-primary);
+  background: var(--color-gray-f0);
+  min-width: 84px;
   text-align: center;
   white-space: nowrap;
 
   &:disabled {
-    opacity: 0.45;
+    opacity: 0.55;
+    cursor: default;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled) {
+      background: var(--color-gray-e0);
+    }
+  }
+
+  &:active:not(:disabled) {
+    background: var(--color-gray-d0);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    border-color: var(--color-gray-44);
+    color: var(--color-blue-primary-dark);
+    background: var(--color-gray-33);
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover:not(:disabled) {
+        background: var(--color-gray-44);
+      }
+    }
+
+    &:active:not(:disabled) {
+      background: var(--color-gray-55);
+    }
+  }
+`;
+
+const RemoveIconButton = styled.button`
+  width: 24px;
+  height: 24px;
+  border-radius: 999px;
+  border: 1px solid var(--color-gray-dd);
+  background: var(--color-gray-f0);
+  color: var(--color-gray-77);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1;
+  padding: 0;
+  cursor: pointer;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled) {
+      background: var(--color-gray-e0);
+      color: var(--color-gray-55);
+    }
+  }
+
+  &:active:not(:disabled) {
+    background: var(--color-gray-d0);
+  }
+
+  &:disabled {
+    opacity: 0.55;
     cursor: default;
   }
 
   @media (prefers-color-scheme: dark) {
-    background: ${(props) => (props.danger ? "var(--dangerButtonBackgroundDark)" : "var(--color-blue-primary-dark)")};
+    border-color: var(--color-gray-44);
+    background: var(--color-gray-33);
+    color: var(--color-gray-a0);
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover:not(:disabled) {
+        background: var(--color-gray-44);
+        color: var(--color-gray-f0);
+      }
+    }
+
+    &:active:not(:disabled) {
+      background: var(--color-gray-55);
+    }
+  }
+`;
+
+const ConnectIconButton = styled(RemoveIconButton)`
+  color: var(--color-blue-primary);
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-blue-primary-dark);
+  }
+`;
+
+const RemoveConfirmButton = styled.button`
+  border: none;
+  border-radius: 999px;
+  padding: 6px 12px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  color: var(--color-white);
+  background: var(--dangerButtonBackground);
+  min-width: 84px;
+  text-align: center;
+  white-space: nowrap;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled) {
+      background: var(--dangerButtonBackgroundHover);
+    }
+  }
+
+  &:active:not(:disabled) {
+    background: var(--dangerButtonBackgroundActive);
+  }
+
+  &:disabled {
+    opacity: 0.55;
+    cursor: default;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--dangerButtonBackgroundDark);
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover:not(:disabled) {
+        background: var(--dangerButtonBackgroundHoverDark);
+      }
+    }
+
+    &:active:not(:disabled) {
+      background: var(--dangerButtonBackgroundActiveDark);
+    }
   }
 `;
 
 type MethodKey = "apple" | "eth" | "sol";
 type NonAppleMethodKey = Exclude<MethodKey, "apple">;
 type LinkedMethods = Record<MethodKey, boolean>;
+type PendingDisconnectStep = "remove" | "confirm";
+type PendingDisconnectState = { method: MethodKey; step: PendingDisconnectStep };
 
 const EMPTY_LINKED_METHODS: LinkedMethods = {
   apple: false,
@@ -120,22 +269,6 @@ const isAppleIntentUsable = (intent: AuthIntentResponse | null): intent is AuthI
     intent.expiresAtMs - Date.now() > APPLE_INTENT_REFRESH_BUFFER_MS;
 };
 
-const getAppleButtonLabel = (state: AppleButtonUiState): string => {
-  if (state === "preparing") {
-    return "Preparing...";
-  }
-  if (state === "confirm") {
-    return "Connect";
-  }
-  if (state === "connecting") {
-    return "Connect";
-  }
-  if (state === "verifying") {
-    return "Verifying...";
-  }
-  return "Connect";
-};
-
 let isSettingsAppleFlowInProgress = false;
 const settingsAppleFlowListeners = new Set<(inProgress: boolean) => void>();
 
@@ -168,6 +301,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [busyMethod, setBusyMethod] = useState<MethodKey | null>(null);
   const [appleButtonState, setAppleButtonState] = useState<AppleButtonUiState>("idle");
+  const [pendingDisconnectState, setPendingDisconnectState] = useState<PendingDisconnectState | null>(null);
   const [solanaConnectText, setSolanaConnectText] = useState<string>("Connect");
   const [isGlobalAppleFlowInProgress, setIsGlobalAppleFlowInProgress] = useState<boolean>(() => isSettingsAppleFlowInProgress);
   const appleIntentRef = useRef<AuthIntentResponse | null>(null);
@@ -176,7 +310,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const latestAppleActionRef = useRef(0);
   const previousGlobalAppleFlowRef = useRef(isSettingsAppleFlowInProgress);
   const appleConfirmExpiryTimeoutRef = useRef<number | null>(null);
+  const pendingDisconnectTimeoutRef = useRef<number | null>(null);
   const solanaNotFoundTimeoutRef = useRef<number | null>(null);
+  const hasLoadedLinkedMethodsRef = useRef(false);
   const shouldRefreshAfterAppleFlowLoadRef = useRef(false);
 
   const linkedCount = useMemo(() => {
@@ -184,7 +320,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   }, [linkedMethods]);
 
   const refreshLinkedMethods = useCallback(async () => {
-    setIsLoading(true);
+    const shouldShowLoading = !hasLoadedLinkedMethodsRef.current;
+    if (shouldShowLoading) {
+      setIsLoading(true);
+    }
     try {
       const data = await connection.getLinkedAuthMethods();
       const linked = data && data.linkedMethods ? data.linkedMethods : EMPTY_LINKED_METHODS;
@@ -196,7 +335,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     } catch (error) {
       console.error("Failed to fetch linked methods:", error);
     } finally {
-      setIsLoading(false);
+      if (shouldShowLoading) {
+        hasLoadedLinkedMethodsRef.current = true;
+        setIsLoading(false);
+      }
     }
   }, []);
 
@@ -246,6 +388,13 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     }
   }, []);
 
+  const clearPendingDisconnectTimeout = useCallback(() => {
+    if (pendingDisconnectTimeoutRef.current !== null) {
+      window.clearTimeout(pendingDisconnectTimeoutRef.current);
+      pendingDisconnectTimeoutRef.current = null;
+    }
+  }, []);
+
   const scheduleAppleConfirmExpiryTimeout = useCallback(() => {
     clearAppleConfirmExpiryTimeout();
     const intent = appleIntentRef.current;
@@ -271,12 +420,54 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   }, [clearAppleConfirmExpiryTimeout]);
 
   useEffect(() => {
+    isMountedRef.current = true;
     return () => {
       isMountedRef.current = false;
       clearAppleConfirmExpiryTimeout();
+      clearPendingDisconnectTimeout();
       clearSolanaNotFoundTimeout();
     };
-  }, [clearAppleConfirmExpiryTimeout, clearSolanaNotFoundTimeout]);
+  }, [clearAppleConfirmExpiryTimeout, clearPendingDisconnectTimeout, clearSolanaNotFoundTimeout]);
+
+  useEffect(() => {
+    if (pendingDisconnectState && !linkedMethods[pendingDisconnectState.method]) {
+      setPendingDisconnectState(null);
+    }
+  }, [linkedMethods, pendingDisconnectState]);
+
+  useEffect(() => {
+    clearPendingDisconnectTimeout();
+    if (!pendingDisconnectState || busyMethod === pendingDisconnectState.method) {
+      return;
+    }
+    const { method, step } = pendingDisconnectState;
+    pendingDisconnectTimeoutRef.current = window.setTimeout(() => {
+      pendingDisconnectTimeoutRef.current = null;
+      setPendingDisconnectState((current) => {
+        if (!current) {
+          return current;
+        }
+        if (current.method !== method || current.step !== step) {
+          return current;
+        }
+        return null;
+      });
+    }, 1500);
+    return clearPendingDisconnectTimeout;
+  }, [busyMethod, clearPendingDisconnectTimeout, pendingDisconnectState]);
+
+  useEffect(() => {
+    if (solanaConnectText !== "Not Found") {
+      clearSolanaNotFoundTimeout();
+      return;
+    }
+    clearSolanaNotFoundTimeout();
+    solanaNotFoundTimeoutRef.current = window.setTimeout(() => {
+      solanaNotFoundTimeoutRef.current = null;
+      setSolanaConnectText("Connect");
+    }, 650);
+    return clearSolanaNotFoundTimeout;
+  }, [clearSolanaNotFoundTimeout, solanaConnectText]);
 
   useEffect(() => {
     return subscribeSettingsAppleFlowProgress((inProgress) => {
@@ -374,7 +565,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           const { connectToSolana } = await import("../connection/solanaConnection");
           const { publicKey, signature, intentId } = await connectToSolana();
           clearSolanaNotFoundTimeout();
-          setSolanaConnectText("Verifying...");
           result = await connection.verifySolanaAddress(publicKey, signature, intentId);
           kind = "sol";
         }
@@ -392,13 +582,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           const errorMessage = error instanceof Error ? error.message : "";
           if (errorMessage === "not found") {
             setSolanaConnectText("Not Found");
-            clearSolanaNotFoundTimeout();
-            solanaNotFoundTimeoutRef.current = window.setTimeout(() => {
-              solanaNotFoundTimeoutRef.current = null;
-              if (isMountedRef.current) {
-                setSolanaConnectText("Connect");
-              }
-            }, 500);
           } else {
             setSolanaConnectText("Connect");
           }
@@ -500,6 +683,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 
   const handleConnectClick = useCallback(
     (method: MethodKey) => {
+      setPendingDisconnectState(null);
       if (method === "apple") {
         void runAppleConnectFlow();
         return;
@@ -511,6 +695,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 
   const runDisconnectFlow = useCallback(
     async (method: MethodKey) => {
+      setPendingDisconnectState({ method, step: "confirm" });
       setBusyMethod(method);
       try {
         const result = await connection.unlinkAuthMethod(method);
@@ -532,8 +717,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       } catch (error) {
         console.error(`Failed to unlink ${method}:`, error);
       } finally {
-        setBusyMethod(null);
+        setPendingDisconnectState(null);
         await refreshLinkedMethods();
+        setBusyMethod((current) => (current === method ? null : current));
       }
     },
     [refreshLinkedMethods]
@@ -550,16 +736,31 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       ? isLoading || isBusy || isOtherMethodBusy || isApplePreparing || isAppleBusyState
       : isLoading || isBusy || busyMethod !== null;
     const disableDisconnect = isLoading || isBusy || busyMethod !== null || linkedCount <= 1;
-    const connectText = isAppleMethod
-      ? getAppleButtonLabel(appleButtonState)
-      : method === "sol"
-        ? solanaConnectText
-        : "Connect";
+    const connectText = method === "sol" ? solanaConnectText : "Connect";
+    const showDisconnectControl = isLinked;
+    const pendingDisconnectStep = pendingDisconnectState?.method === method ? pendingDisconnectState.step : null;
     const handleConnectPress = () => {
       if (disableConnect) {
         return;
       }
       handleConnectClick(method);
+    };
+    const handleDisconnectReveal = () => {
+      if (!showDisconnectControl || disableDisconnect) {
+        return;
+      }
+      setPendingDisconnectState((current) => {
+        if (current && current.method === method) {
+          return null;
+        }
+        return { method, step: "remove" };
+      });
+    };
+    const handleDisconnectAdvance = () => {
+      if (disableDisconnect) {
+        return;
+      }
+      setPendingDisconnectState({ method, step: "confirm" });
     };
     const handleDisconnectPress = () => {
       if (disableDisconnect) {
@@ -569,24 +770,52 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     };
     const connectOnClick = isAppleMethod ? handleConnectPress : !isMobile ? handleConnectPress : undefined;
     const connectOnTouchEnd = !isAppleMethod && isMobile ? handleConnectPress : undefined;
+    const disconnectRevealOnClick = !isMobile ? handleDisconnectReveal : undefined;
+    const disconnectRevealOnTouchEnd = isMobile ? handleDisconnectReveal : undefined;
+    const disconnectAdvanceOnClick = !isMobile ? handleDisconnectAdvance : undefined;
+    const disconnectAdvanceOnTouchEnd = isMobile ? handleDisconnectAdvance : undefined;
+    const disconnectOnClick = !isMobile ? handleDisconnectPress : undefined;
+    const disconnectOnTouchEnd = isMobile ? handleDisconnectPress : undefined;
     return (
       <MethodRow key={method}>
         <MethodMeta>
-          <MethodName>{label}</MethodName>
+          <MethodName linked={!isLoading && isLinked}>{label}</MethodName>
         </MethodMeta>
-        {isLinked ? (
-          <ActionButton
-            danger={true}
-            disabled={disableDisconnect}
-            onClick={!isMobile ? handleDisconnectPress : undefined}
-            onTouchEnd={isMobile ? handleDisconnectPress : undefined}>
-            {isBusy ? "Removing..." : "Remove"}
-          </ActionButton>
-        ) : (
-          <ActionButton disabled={disableConnect} onClick={connectOnClick} onTouchEnd={connectOnTouchEnd}>
-            {connectText}
-          </ActionButton>
-        )}
+        <RowActions>
+          {isLoading ? (
+            <ActionSpacer />
+          ) : isLinked ? (
+            showDisconnectControl ? (
+              isBusy ? (
+                <RemoveConfirmButton disabled={true}>Removing...</RemoveConfirmButton>
+              ) : (
+              pendingDisconnectStep === "remove" ? (
+                <RemoveConfirmButton disabled={disableDisconnect} onClick={disconnectAdvanceOnClick} onTouchEnd={disconnectAdvanceOnTouchEnd}>
+                  Remove
+                </RemoveConfirmButton>
+              ) : pendingDisconnectStep === "confirm" ? (
+                <RemoveConfirmButton disabled={disableDisconnect} onClick={disconnectOnClick} onTouchEnd={disconnectOnTouchEnd}>
+                  Confirm
+                </RemoveConfirmButton>
+              ) : (
+                <RemoveIconButton disabled={disableDisconnect} onClick={disconnectRevealOnClick} onTouchEnd={disconnectRevealOnTouchEnd}>
+                  ×
+                </RemoveIconButton>
+              )
+              )
+            ) : (
+              <ActionSpacer />
+            )
+          ) : (
+            connectText !== "Connect" ? (
+              <ConnectButton disabled={true}>{connectText}</ConnectButton>
+            ) : (
+              <ConnectIconButton disabled={disableConnect} onClick={connectOnClick} onTouchEnd={connectOnTouchEnd}>
+                +
+              </ConnectIconButton>
+            )
+          )}
+        </RowActions>
       </MethodRow>
     );
   };
