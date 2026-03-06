@@ -41,7 +41,6 @@ exports.beginXRedirectAuth = onCall({ invoker: "public" }, async (request) => {
   const codeVerifier = createXCodeVerifier();
   const codeChallenge = buildXCodeChallenge(codeVerifier);
   const nowMs = Date.now();
-  const expiresAtMs = nowMs + X_REDIRECT_FLOW_TTL_MS;
 
   const firestore = admin.firestore();
   const intentSnapshot = await firestore.collection("authIntents").doc(intentId).get();
@@ -58,6 +57,11 @@ exports.beginXRedirectAuth = onCall({ invoker: "public" }, async (request) => {
   if (Number(intentData.expiresAtMs) <= nowMs || Number(intentData.consumedAtMs) > 0) {
     throw new HttpsError("failed-precondition", "x-intent-invalid");
   }
+  const intentExpiresAtMs = Number(intentData.expiresAtMs);
+  if (!Number.isFinite(intentExpiresAtMs) || intentExpiresAtMs <= nowMs) {
+    throw new HttpsError("failed-precondition", "x-intent-invalid");
+  }
+  const expiresAtMs = Math.min(nowMs + X_REDIRECT_FLOW_TTL_MS, intentExpiresAtMs);
 
   const flowDoc = {
     flowId,

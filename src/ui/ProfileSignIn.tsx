@@ -11,6 +11,8 @@ import { handleLoginSuccess } from "../connection/loginSuccess";
 import { preloadAppleSignInLibrary, signInWithApplePopup } from "../connection/appleConnection";
 import { isXRedirectStartedError, startXRedirectAuth } from "../connection/xConnection";
 import { formatAuthCooldownErrorMessage } from "../connection/authCooldownErrors";
+import { formatXAuthErrorMessage } from "../connection/xAuthErrors";
+import { consumePendingXAuthUiFeedback, subscribeToXAuthUiFeedback, XAuthUiFeedback } from "../connection/xAuthUiFeedback";
 import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
 import { LogoutConfirmModal } from "./LogoutConfirmModal";
@@ -161,6 +163,7 @@ let hideNotificationBannerImpl: () => void = () => {};
 let showNotificationBannerImpl: (title: string, subtitle: string, emojiId: string, successHandler: () => void) => void = () => {};
 let setSignInInlineAuthErrorImpl: (message: string | null) => void = () => {};
 let openProfileSignInPopupImpl: () => void = () => {};
+let pendingSignInInlineAuthError: string | null | undefined = undefined;
 
 export const closeProfilePopupIfAny = () => {
   closeProfilePopupIfAnyImpl();
@@ -191,6 +194,7 @@ export const showNotificationBanner = (title: string, subtitle: string, emojiId:
 };
 
 export const setSignInInlineAuthError = (message: string | null) => {
+  pendingSignInInlineAuthError = typeof message === "string" ? message : null;
   setSignInInlineAuthErrorImpl(message);
 };
 
@@ -568,7 +572,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setAuthStatusGlobally("loading");
   }, []);
 
-  const showNotificationBannerInternal = async (title: string, subtitle: string, emojiId: string, successHandler: () => void) => {
+  const showNotificationBannerInternal = useCallback(async (title: string, subtitle: string, emojiId: string, successHandler: () => void) => {
     if (notificationTimeoutRef.current) {
       clearTimeout(notificationTimeoutRef.current);
       notificationTimeoutRef.current = null;
@@ -587,7 +591,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     } catch (error) {
       console.error("Failed to load notification component:", error);
     }
-  };
+  }, []);
 
   const hideNotificationBannerInternal = useCallback(() => {
     if (notificationTimeoutRef.current) {
@@ -692,12 +696,45 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       if (!isMountedRef.current) {
         return;
       }
+      pendingSignInInlineAuthError = undefined;
       setInlineAuthError(typeof message === "string" ? message : "");
     };
+    if (pendingSignInInlineAuthError !== undefined) {
+      const pendingMessage = pendingSignInInlineAuthError;
+      pendingSignInInlineAuthError = undefined;
+      setInlineAuthError(typeof pendingMessage === "string" ? pendingMessage : "");
+    }
     return () => {
       setSignInInlineAuthErrorImpl = () => {};
     };
   }, []);
+
+  useEffect(() => {
+    const applyFeedback = (feedback: XAuthUiFeedback) => {
+      if (!isMountedRef.current) {
+        return;
+      }
+      if (feedback.target === "signin") {
+        closeMenuAndInfoIfAny();
+        setInlineAuthError(feedback.message);
+        setIsOpen(true);
+        return;
+      }
+
+      const title = feedback.kind === "success" ? "X connected" : "X link failed";
+      const openSettingsFromBanner = () => {
+        setIsSettingsOpen(true);
+      };
+      void showNotificationBannerInternal(title, feedback.message, storage.getPlayerEmojiId("1"), openSettingsFromBanner);
+    };
+
+    const pendingFeedback = consumePendingXAuthUiFeedback();
+    if (pendingFeedback) {
+      applyFeedback(pendingFeedback);
+    }
+
+    return subscribeToXAuthUiFeedback(applyFeedback);
+  }, [showNotificationBannerInternal]);
 
   useEffect(() => {
     if (isOpen) {
@@ -824,10 +861,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         setInlineAuthError(cooldownMessage);
       } else if (isXRedirectStartedError(error)) {
         setInlineAuthError("");
-      } else if (error instanceof Error && error.message.trim() !== "") {
-        setInlineAuthError(error.message);
       } else {
-        setInlineAuthError("X sign in failed. Please try again.");
+        setInlineAuthError(formatXAuthErrorMessage(error, "signin"));
       }
     } finally {
       if (isMountedRef.current) {

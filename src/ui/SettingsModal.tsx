@@ -10,6 +10,7 @@ import { handleLoginSuccess, AddressKind } from "../connection/loginSuccess";
 import { clearEthIntentState, setAuthStatusGlobally } from "../connection/authentication";
 import { clearAppleSignInTransientState, preloadAppleSignInLibrary, signInWithApplePopup } from "../connection/appleConnection";
 import { isXRedirectStartedError, startXRedirectAuth } from "../connection/xConnection";
+import { formatXAuthErrorMessage } from "../connection/xAuthErrors";
 import { isMobile } from "../utils/misc";
 
 const SettingsPopup = styled(ModalPopup)`
@@ -621,10 +622,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         } else if (method === "x") {
           if (isXRedirectStartedError(error)) {
             setAuthErrorMessage("");
-          } else if (error instanceof Error && error.message.trim() !== "") {
-            setAuthErrorMessage(error.message);
           } else {
-            setAuthErrorMessage("X sign in failed. Please try again.");
+            setAuthErrorMessage(formatXAuthErrorMessage(error, "link"));
           }
         }
         if (method === "sol") {

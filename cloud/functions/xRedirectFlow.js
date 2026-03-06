@@ -107,15 +107,6 @@ const getAllowedReturnOrigins = (rawRequest) => {
       .map((value) => parseOriginOrEmpty(value))
       .filter((value) => value !== "")
   );
-
-  const callerOrigin = parseOriginOrEmpty(rawRequest && rawRequest.headers && rawRequest.headers.origin);
-  if (callerOrigin) {
-    allowed.add(callerOrigin);
-  }
-  const callerRefererOrigin = parseOriginOrEmpty(rawRequest && rawRequest.headers && rawRequest.headers.referer);
-  if (callerRefererOrigin) {
-    allowed.add(callerRefererOrigin);
-  }
   return allowed;
 };
 

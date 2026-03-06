@@ -6,6 +6,8 @@ import { handleLoginSuccess } from "./loginSuccess";
 import { clearConsumedAppleRedirectResult, consumeAppleRedirectResult } from "./appleConnection";
 import { clearConsumedXRedirectResult, consumeXRedirectResult } from "./xConnection";
 import { formatAuthCooldownErrorMessage } from "./authCooldownErrors";
+import { formatXAuthErrorMessage } from "./xAuthErrors";
+import { publishXAuthUiFeedback } from "./xAuthUiFeedback";
 import { storage } from "../utils/storage";
 import { setupLoggedInPlayerProfile } from "../game/board";
 import { didAttemptAuthentication } from "../game/gameController";
@@ -68,6 +70,18 @@ const completeXRedirectResultOnce = (redirectResult: XRedirectResult): Promise<a
     });
   inFlightXRedirectCompletion = { key, promise };
   return promise;
+};
+
+const getXAuthAction = (consentSource: "signin" | "settings"): "signin" | "link" => {
+  return consentSource === "settings" ? "link" : "signin";
+};
+
+const publishXAuthErrorFeedback = (consentSource: "signin" | "settings", message: string): void => {
+  publishXAuthUiFeedback({
+    target: consentSource,
+    kind: "error",
+    message,
+  });
 };
 
 const readStoredEthIntentRecords = (): EthIntentRecord[] => {
@@ -283,7 +297,10 @@ export function useAuthStatus() {
       const shouldForceUnauthenticatedOnFailure = redirectResult.consentSource === "signin";
       if (redirectResult.status === "failed") {
         console.error("X redirect sign in callback failed:", redirectResult.errorCode || "unknown");
-        setSignInInlineAuthError("X sign in failed. Please try again.");
+        publishXAuthErrorFeedback(
+          redirectResult.consentSource,
+          formatXAuthErrorMessage(redirectResult.errorCode, getXAuthAction(redirectResult.consentSource))
+        );
         clearConsumedXRedirectResult();
         if (shouldForceUnauthenticatedOnFailure) {
           setAuthStatus("unauthenticated");
@@ -300,6 +317,13 @@ export function useAuthStatus() {
           setSignInInlineAuthError(null);
           handleLoginSuccess(res, "x");
           setAuthStatus("authenticated");
+          if (redirectResult.consentSource === "settings") {
+            publishXAuthUiFeedback({
+              target: "settings",
+              kind: "success",
+              message: "Tap to review your linked sign-in methods.",
+            });
+          }
         } else if (shouldForceUnauthenticatedOnFailure) {
           setAuthStatus("unauthenticated");
         }
@@ -310,9 +334,12 @@ export function useAuthStatus() {
         console.error("X redirect verify error:", error);
         const cooldownMessage = formatAuthCooldownErrorMessage(error);
         if (cooldownMessage) {
-          setSignInInlineAuthError(cooldownMessage);
-        } else if (error instanceof Error && error.message.trim() !== "") {
-          setSignInInlineAuthError(error.message);
+          publishXAuthErrorFeedback(redirectResult.consentSource, cooldownMessage);
+        } else {
+          publishXAuthErrorFeedback(
+            redirectResult.consentSource,
+            formatXAuthErrorMessage(error, getXAuthAction(redirectResult.consentSource))
+          );
         }
         clearConsumedXRedirectResult();
         if (shouldForceUnauthenticatedOnFailure) {

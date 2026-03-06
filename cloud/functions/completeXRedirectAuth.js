@@ -49,10 +49,6 @@ exports.completeXRedirectAuth = onCall({ invoker: "public" }, async (request) =>
   if (toCleanString(flowData.uid) !== request.auth.uid) {
     throw new HttpsError("permission-denied", "x-redirect-flow-user-mismatch");
   }
-  if (isFlowExpired(flowData, nowMs)) {
-    throw new HttpsError("deadline-exceeded", "x-redirect-flow-expired");
-  }
-
   const flowStatus = toCleanString(flowData.status);
   if (flowStatus === "completed" && flowData.result && typeof flowData.result === "object") {
     return flowData.result;
@@ -60,6 +56,17 @@ exports.completeXRedirectAuth = onCall({ invoker: "public" }, async (request) =>
   if (flowStatus === "failed") {
     const flowErrorCode = toCleanString(flowData.errorCode) || "x-redirect-failed";
     throw new HttpsError("failed-precondition", flowErrorCode);
+  }
+  if (isFlowExpired(flowData, nowMs)) {
+    await flowRef.set(
+      {
+        status: "failed",
+        errorCode: "x-redirect-flow-expired",
+        updatedAtMs: nowMs,
+      },
+      { merge: true }
+    );
+    throw new HttpsError("deadline-exceeded", "x-redirect-flow-expired");
   }
   if (flowStatus !== "verified") {
     throw new HttpsError("failed-precondition", "x-redirect-not-ready");
@@ -92,11 +99,27 @@ exports.completeXRedirectAuth = onCall({ invoker: "public" }, async (request) =>
     return replay;
   }
 
-  await consumeAuthIntent({
-    uid: request.auth.uid,
-    method: "x",
-    intentId,
-  });
+  try {
+    await consumeAuthIntent({
+      uid: request.auth.uid,
+      method: "x",
+      intentId,
+    });
+  } catch (error) {
+    const errorCode = toCleanString(error && error.message);
+    if (errorCode === "intent-expired") {
+      await flowRef.set(
+        {
+          status: "failed",
+          errorCode: "x-redirect-flow-expired",
+          updatedAtMs: Date.now(),
+        },
+        { merge: true }
+      );
+      throw new HttpsError("deadline-exceeded", "x-redirect-flow-expired");
+    }
+    throw error;
+  }
 
   const requestEmoji = requestData.emoji ?? 1;
   const requestAura = requestData.aura ?? null;

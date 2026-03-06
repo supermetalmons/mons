@@ -26,13 +26,15 @@ APPLE_AUDIENCES=com.mons.web
 X_CLIENT_ID=your_x_client_id
 X_CLIENT_SECRET=your_x_client_secret
 X_OAUTH_REDIRECT_URI=https://us-central1-mons-link.cloudfunctions.net/xAuthRedirectCallback
-X_REDIRECT_ALLOWED_ORIGINS=https://mons.link,https://www.mons.link,http://localhost:3000
+X_REDIRECT_ALLOWED_ORIGINS=https://mons.link,https://www.mons.link,http://localhost:3000,http://127.0.0.1:3000
 SIWE_ALLOWED_DOMAINS=mons.link,www.mons.link,localhost,127.0.0.1
 AUTH_DISABLE_APPLE_VERIFY=false
 AUTH_DISABLE_X_VERIFY=true
 AUTH_DISABLE_UNLINK=false
 AUTH_DISABLE_MERGE=false
 ```
+
+`X_REDIRECT_ALLOWED_ORIGINS` must list every frontend origin that is allowed to receive the post-auth redirect. Origins are no longer inferred from request headers.
 
 Use `AUTH_DISABLE_X_VERIFY=true` for the first safe deploy, then flip it to `false` after canary validation.
 
