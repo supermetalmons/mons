@@ -9,6 +9,7 @@ import { closeMenuAndInfoIfAllowedForEvent, closeMenuAndInfoIfAny } from "./Main
 import { setAuthStatusGlobally } from "../connection/authentication";
 import { handleLoginSuccess } from "../connection/loginSuccess";
 import { preloadAppleSignInLibrary, signInWithApplePopup } from "../connection/appleConnection";
+import { formatAuthCooldownErrorMessage } from "../connection/authCooldownErrors";
 import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
 import { LogoutConfirmModal } from "./LogoutConfirmModal";
@@ -120,6 +121,23 @@ const CustomConnectButton = styled(BaseButton)`
   }
 `;
 
+const InlineAuthError = styled.div`
+  width: 100%;
+  box-sizing: border-box;
+  border-radius: 8px;
+  background: rgba(220, 53, 69, 0.08);
+  color: var(--dangerButtonBackground);
+  font-size: 0.74rem;
+  line-height: 1.35;
+  padding: 8px 9px;
+  text-align: left;
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(220, 53, 69, 0.22);
+    color: var(--dangerButtonBackgroundDark);
+  }
+`;
+
 let getIsProfilePopupOpen: () => boolean = () => false;
 let getIsEditingPopupOpen: () => boolean = () => false;
 let getIsInventoryPopupOpen: () => boolean = () => false;
@@ -132,6 +150,7 @@ let handleLogoutImpl: () => void = () => {};
 let showSettingsImpl: () => void = () => {};
 let hideNotificationBannerImpl: () => void = () => {};
 let showNotificationBannerImpl: (title: string, subtitle: string, emojiId: string, successHandler: () => void) => void = () => {};
+let setSignInInlineAuthErrorImpl: (message: string | null) => void = () => {};
 
 export const closeProfilePopupIfAny = () => {
   closeProfilePopupIfAnyImpl();
@@ -159,6 +178,10 @@ export const hideNotificationBanner = () => {
 
 export const showNotificationBanner = (title: string, subtitle: string, emojiId: string, successHandler: () => void) => {
   showNotificationBannerImpl(title, subtitle, emojiId, successHandler);
+};
+
+export const setSignInInlineAuthError = (message: string | null) => {
+  setSignInInlineAuthErrorImpl(message);
 };
 
 export function hasProfilePopupVisible(): boolean {
@@ -343,6 +366,7 @@ const getAppleButtonLabel = (state: AppleButtonUiState): string => {
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [solanaText, setSolanaText] = useState("Solana");
+  const [inlineAuthError, setInlineAuthError] = useState("");
   const [appleButtonState, setAppleButtonState] = useState<AppleButtonUiState>("idle");
   const [isSolanaConnecting, setIsSolanaConnecting] = useState(false);
   const [profileDisplayName, setProfileDisplayName] = useState(() => formatDisplayName(pendingUsername, pendingEthAddress, pendingSolAddress));
@@ -618,8 +642,28 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       showSettingsImpl = () => {};
       hideNotificationBannerImpl = () => {};
       showNotificationBannerImpl = () => {};
+      setSignInInlineAuthErrorImpl = () => {};
     };
   }, []);
+
+  useEffect(() => {
+    setSignInInlineAuthErrorImpl = (message) => {
+      if (!isMountedRef.current) {
+        return;
+      }
+      setInlineAuthError(typeof message === "string" ? message : "");
+    };
+    return () => {
+      setSignInInlineAuthErrorImpl = () => {};
+    };
+  }, []);
+
+  useEffect(() => {
+    if (isOpen) {
+      return;
+    }
+    setInlineAuthError("");
+  }, [isOpen]);
 
   const handleSignInClick = () => {
     if (authStatus === "authenticated") {
@@ -721,6 +765,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const handleSolanaClick = async () => {
     if (isSolanaConnecting) return;
 
+    setInlineAuthError("");
     setIsSolanaConnecting(true);
     try {
       const { connectToSolana } = await import("../connection/solanaConnection");
@@ -729,6 +774,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
       const res = await connection.verifySolanaAddress(publicKey, signature, intentId);
       if (res && res.ok === true) {
+        setInlineAuthError("");
         handleLoginSuccess(res, "sol");
         setAuthStatusGlobally("authenticated");
         setIsOpen(false);
@@ -738,6 +784,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
       setSolanaText("Solana");
     } catch (error) {
+      const cooldownMessage = formatAuthCooldownErrorMessage(error);
+      if (cooldownMessage) {
+        setInlineAuthError(cooldownMessage);
+      }
       if ((error as Error).message === "not found") {
         setSolanaText("Not Found");
         setTimeout(() => setSolanaText("Solana"), 500);
@@ -754,6 +804,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       return;
     }
 
+    setInlineAuthError("");
     const actionId = latestAppleActionRef.current + 1;
     latestAppleActionRef.current = actionId;
     const isActionCurrent = () => latestAppleActionRef.current === actionId;
@@ -809,6 +860,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         return;
       }
       if (res && res.ok === true) {
+        setInlineAuthError("");
         handleLoginSuccess(res, "apple");
         setAppleStateIfMounted("idle");
         setAuthStatusGlobally("authenticated");
@@ -820,11 +872,16 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       setAppleStateIfMounted("idle");
     } catch (error) {
       console.error("Apple sign in error:", error);
+      const cooldownMessage = formatAuthCooldownErrorMessage(error);
+      if (cooldownMessage) {
+        setInlineAuthError(cooldownMessage);
+      }
       setAppleStateIfMounted("idle");
     }
   };
 
   const handleEthereumClick = useCallback(() => {
+    setInlineAuthError("");
     const openConnectModal = ethereumConnectModalRef.current;
     if (openConnectModal) {
       clearEthereumConnectRetryTimeout();
@@ -889,6 +946,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
               <CustomConnectButton onClick={handleAppleClick}>
                 {appleText}
               </CustomConnectButton>
+              {inlineAuthError ? <InlineAuthError>{inlineAuthError}</InlineAuthError> : null}
             </>
           </ConnectButtonWrapper>
         </ConnectButtonPopover>

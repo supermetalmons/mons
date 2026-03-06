@@ -3,6 +3,7 @@ import { flushSync } from "react-dom";
 import styled from "styled-components";
 import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton } from "./SharedModalComponents";
 import { connection } from "../connection/connection";
+import { formatAuthCooldownErrorMessage } from "../connection/authCooldownErrors";
 import { storage } from "../utils/storage";
 import { updateProfileDisplayName } from "./ProfileSignIn";
 import { handleLoginSuccess, AddressKind } from "../connection/loginSuccess";
@@ -230,6 +231,22 @@ const RemoveConfirmButton = styled.button`
   }
 `;
 
+const InlineAuthError = styled.div`
+  border-radius: 8px;
+  background: rgba(220, 53, 69, 0.08);
+  color: var(--dangerButtonBackground);
+  font-size: 0.74rem;
+  line-height: 1.35;
+  padding: 8px 10px;
+  margin-bottom: 12px;
+  text-align: left;
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(220, 53, 69, 0.22);
+    color: var(--dangerButtonBackgroundDark);
+  }
+`;
+
 type MethodKey = "apple" | "eth" | "sol";
 type NonAppleMethodKey = Exclude<MethodKey, "apple">;
 type LinkedMethods = Record<MethodKey, boolean>;
@@ -304,6 +321,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const [pendingDisconnectState, setPendingDisconnectState] = useState<PendingDisconnectState | null>(null);
   const [solanaConnectText, setSolanaConnectText] = useState<string>("Connect");
   const [isGlobalAppleFlowInProgress, setIsGlobalAppleFlowInProgress] = useState<boolean>(() => isSettingsAppleFlowInProgress);
+  const [authErrorMessage, setAuthErrorMessage] = useState<string>("");
   const appleIntentRef = useRef<AuthIntentResponse | null>(null);
   const appleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(null);
   const isMountedRef = useRef(true);
@@ -552,6 +570,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 
   const runConnectFlow = useCallback(
     async (method: NonAppleMethodKey) => {
+      setAuthErrorMessage("");
       setBusyMethod(method);
       try {
         let result: any = null;
@@ -570,6 +589,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         }
 
         if (result && result.ok === true) {
+          setAuthErrorMessage("");
           handleLoginSuccess(result, kind);
           setAuthStatusGlobally("authenticated");
         }
@@ -578,6 +598,10 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         }
       } catch (error) {
         console.error(`Failed to connect ${method}:`, error);
+        const cooldownMessage = formatAuthCooldownErrorMessage(error);
+        if (cooldownMessage) {
+          setAuthErrorMessage(cooldownMessage);
+        }
         if (method === "sol") {
           const errorMessage = error instanceof Error ? error.message : "";
           if (errorMessage === "not found") {
@@ -602,6 +626,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       return;
     }
 
+    setAuthErrorMessage("");
     const actionId = latestAppleActionRef.current + 1;
     latestAppleActionRef.current = actionId;
     const isActionCurrent = () => latestAppleActionRef.current === actionId;
@@ -663,11 +688,16 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         return;
       }
       if (result && result.ok === true) {
+        setAuthErrorMessage("");
         handleLoginSuccess(result, "apple");
         setAuthStatusGlobally("authenticated");
       }
     } catch (error) {
       console.error("Failed to connect apple:", error);
+      const cooldownMessage = formatAuthCooldownErrorMessage(error);
+      if (cooldownMessage) {
+        setAuthErrorMessage(cooldownMessage);
+      }
     } finally {
       setSettingsAppleFlowInProgress(false);
       if (!isActionCurrent()) {
@@ -695,6 +725,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
 
   const runDisconnectFlow = useCallback(
     async (method: MethodKey) => {
+      setAuthErrorMessage("");
       setPendingDisconnectState({ method, step: "confirm" });
       setBusyMethod(method);
       try {
@@ -831,6 +862,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           {renderMethodRow("sol", "Solana")}
           {renderMethodRow("apple", "Apple")}
         </MethodsList>
+        {authErrorMessage ? <InlineAuthError>{authErrorMessage}</InlineAuthError> : null}
         <ButtonsContainer>
           <SaveButton disabled={false} onClick={onClose}>
             OK

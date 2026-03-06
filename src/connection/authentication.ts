@@ -4,10 +4,11 @@ import { SiweMessage } from "siwe";
 import { connection } from "./connection";
 import { handleLoginSuccess } from "./loginSuccess";
 import { clearConsumedAppleRedirectResult, consumeAppleRedirectResult } from "./appleConnection";
+import { formatAuthCooldownErrorMessage } from "./authCooldownErrors";
 import { storage } from "../utils/storage";
 import { setupLoggedInPlayerProfile } from "../game/board";
 import { didAttemptAuthentication } from "../game/gameController";
-import { updateProfileDisplayName } from "../ui/ProfileSignIn";
+import { setSignInInlineAuthError, updateProfileDisplayName } from "../ui/ProfileSignIn";
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
 let globalSetAuthStatus: ((status: AuthStatus) => void) | null = null;
@@ -217,6 +218,7 @@ export function useAuthStatus() {
         }
         clearConsumedAppleRedirectResult();
         if (res && res.ok === true) {
+          setSignInInlineAuthError(null);
           handleLoginSuccess(res, "apple");
           setAuthStatus("authenticated");
         } else if (shouldForceUnauthenticatedOnFailure) {
@@ -225,6 +227,10 @@ export function useAuthStatus() {
       } catch (error) {
         if (!isCancelled) {
           console.error("Apple redirect verify error:", error);
+          const cooldownMessage = formatAuthCooldownErrorMessage(error);
+          if (cooldownMessage) {
+            setSignInInlineAuthError(cooldownMessage);
+          }
           clearConsumedAppleRedirectResult();
           if (shouldForceUnauthenticatedOnFailure) {
             setAuthStatus("unauthenticated");
@@ -455,14 +461,26 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
       if (!intentId) {
         throw new Error("Missing Ethereum auth intent. Please retry sign in.");
       }
-      const res = await connection.verifyEthAddress(message, signature, intentId);
-      if (res && res.ok === true) {
-        handleLoginSuccess(res, "eth");
-        setAuthStatus("authenticated");
-        return true;
-      } else {
+      setSignInInlineAuthError(null);
+      try {
+        const res = await connection.verifyEthAddress(message, signature, intentId);
+        if (res && res.ok === true) {
+          setSignInInlineAuthError(null);
+          handleLoginSuccess(res, "eth");
+          setAuthStatus("authenticated");
+          return true;
+        }
+        setSignInInlineAuthError(null);
         setAuthStatus("unauthenticated");
         return false;
+      } catch (error) {
+        const cooldownMessage = formatAuthCooldownErrorMessage(error);
+        if (cooldownMessage) {
+          setSignInInlineAuthError(cooldownMessage);
+          setAuthStatus("unauthenticated");
+          return false;
+        }
+        throw error;
       }
     },
 

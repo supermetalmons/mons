@@ -15,6 +15,7 @@ const MERGE_LOCK_TTL_MS = 10 * 60 * 1000;
 const RATE_LIMIT_WINDOW_MS = 60 * 1000;
 const RATE_LIMIT_MAX_COUNT = 20;
 const AUTH_OP_REPLAY_TTL_MS = 10 * 60 * 1000;
+const AUTH_METHOD_REUSE_COOLDOWN_MS = 24 * 60 * 60 * 1000;
 const LINK_METHOD_MAX_ATTEMPTS = 3;
 const MERGE_LOCK_RELEASE_MAX_ATTEMPTS = 3;
 const MERGE_LOCK_RELEASE_RETRY_BASE_DELAY_MS = 80;
@@ -51,6 +52,151 @@ const parseNumber = (value, fallback) => {
   return Number.isFinite(numeric) ? numeric : fallback;
 };
 const waitMs = (value) => new Promise((resolve) => setTimeout(resolve, value));
+
+const getProfileMethodCooldownDocId = (profileId, method) => {
+  const normalizedProfileId = toCleanString(profileId);
+  const normalizedMethod = assertSupportedMethod(method);
+  if (!normalizedProfileId) {
+    throw new HttpsError("invalid-argument", "profileId is required.");
+  }
+  return `${normalizedProfileId}:${normalizedMethod}`;
+};
+
+const parseCooldownRetryAtMs = (docData, fallbackCooldownMs = AUTH_METHOD_REUSE_COOLDOWN_MS) => {
+  const retryAtMs = parseNumber(docData && docData.retryAtMs, 0);
+  if (retryAtMs > 0) {
+    return retryAtMs;
+  }
+  const expiresAtMs = parseNumber(docData && docData.expiresAtMs, 0);
+  if (expiresAtMs > 0) {
+    return expiresAtMs;
+  }
+  const startedAtMs = Math.max(
+    parseNumber(docData && docData.startedAtMs, 0),
+    parseNumber(docData && docData.revokedAtMs, 0),
+    parseNumber(docData && docData.createdAtMs, 0),
+    parseNumber(docData && docData.updatedAtMs, 0)
+  );
+  const cooldownMs = parseNumber(docData && docData.cooldownMs, fallbackCooldownMs);
+  if (startedAtMs > 0 && cooldownMs > 0) {
+    return startedAtMs + cooldownMs;
+  }
+  return 0;
+};
+
+const buildMethodReuseCooldownDetails = ({ method, retryAtMs }) => {
+  const normalizedMethod = assertSupportedMethod(method);
+  return {
+    reason: "method-reuse-cooldown",
+    scope: "method",
+    method: normalizedMethod,
+    retryAtMs: Math.max(parseNumber(retryAtMs, 0), 0),
+    cooldownMs: AUTH_METHOD_REUSE_COOLDOWN_MS,
+  };
+};
+
+const buildProfileMethodCooldownDetails = ({ method, profileId, retryAtMs }) => {
+  const normalizedMethod = assertSupportedMethod(method);
+  const normalizedProfileId = toCleanString(profileId);
+  return {
+    reason: "profile-method-cooldown",
+    scope: "profile-method",
+    method: normalizedMethod,
+    retryAtMs: Math.max(parseNumber(retryAtMs, 0), 0),
+    cooldownMs: AUTH_METHOD_REUSE_COOLDOWN_MS,
+    profileId: normalizedProfileId || null,
+  };
+};
+
+const throwMethodReuseCooldownError = ({ method, retryAtMs }) => {
+  throw new HttpsError("failed-precondition", "method-reuse-cooldown", buildMethodReuseCooldownDetails({ method, retryAtMs }));
+};
+
+const throwProfileMethodCooldownError = ({ method, profileId, retryAtMs }) => {
+  throw new HttpsError(
+    "failed-precondition",
+    "profile-method-cooldown",
+    buildProfileMethodCooldownDetails({
+      method,
+      profileId,
+      retryAtMs,
+    })
+  );
+};
+
+const queueCleanupRef = (cleanupRefsByPath, ref) => {
+  if (!cleanupRefsByPath || !ref || typeof ref.path !== "string") {
+    return;
+  }
+  cleanupRefsByPath.set(ref.path, ref);
+};
+
+const applyQueuedCleanupDeletes = ({ transaction, cleanupRefsByPath }) => {
+  if (!cleanupRefsByPath || cleanupRefsByPath.size === 0) {
+    return;
+  }
+  cleanupRefsByPath.forEach((ref) => {
+    transaction.delete(ref);
+  });
+};
+
+const ensureCooldownInactiveInTransaction = async ({ transaction, ref, nowMs, onActive, cleanupRefsByPath }) => {
+  const snapshot = await transaction.get(ref);
+  if (!snapshot.exists) {
+    return;
+  }
+  const retryAtMs = parseCooldownRetryAtMs(snapshot.data() || {});
+  if (retryAtMs > nowMs) {
+    onActive(retryAtMs);
+    return;
+  }
+  queueCleanupRef(cleanupRefsByPath, ref);
+};
+
+const enforceMethodReuseCooldownInTransaction = async ({ transaction, method, normalizedMethodValue, nowMs, cleanupRefsByPath }) => {
+  const normalizedMethod = assertSupportedMethod(method);
+  const normalizedValue = toCleanString(normalizedMethodValue);
+  if (!normalizedValue) {
+    return;
+  }
+  const firestore = admin.firestore();
+  const revocationRef = firestore.collection("authMethodRevocations").doc(getMethodKey(normalizedMethod, normalizedValue));
+  await ensureCooldownInactiveInTransaction({
+    transaction,
+    ref: revocationRef,
+    nowMs,
+    cleanupRefsByPath,
+    onActive: (retryAtMs) => {
+      throwMethodReuseCooldownError({
+        method: normalizedMethod,
+        retryAtMs,
+      });
+    },
+  });
+};
+
+const enforceProfileMethodCooldownInTransaction = async ({ transaction, profileId, method, nowMs, cleanupRefsByPath }) => {
+  const normalizedProfileId = toCleanString(profileId);
+  if (!normalizedProfileId) {
+    throw new HttpsError("invalid-argument", "profileId is required.");
+  }
+  const normalizedMethod = assertSupportedMethod(method);
+  const firestore = admin.firestore();
+  const profileCooldownRef = firestore.collection("authProfileMethodCooldowns").doc(getProfileMethodCooldownDocId(normalizedProfileId, normalizedMethod));
+  await ensureCooldownInactiveInTransaction({
+    transaction,
+    ref: profileCooldownRef,
+    nowMs,
+    cleanupRefsByPath,
+    onActive: (retryAtMs) => {
+      throwProfileMethodCooldownError({
+        method: normalizedMethod,
+        profileId: normalizedProfileId,
+        retryAtMs,
+      });
+    },
+  });
+};
 
 const createOpId = () => crypto.randomBytes(16).toString("hex");
 const createToken = (bytes = 18) => crypto.randomBytes(bytes).toString("base64url");
@@ -1417,6 +1563,7 @@ const createInitialProfileWithIndex = async ({ uid, method, normalizedMethodValu
   let profileId = "";
   let created = false;
   await firestore.runTransaction(async (transaction) => {
+    const cleanupRefsByPath = new Map();
     const indexSnapshot = await transaction.get(indexRef);
     if (indexSnapshot.exists) {
       const indexData = indexSnapshot.data() || {};
@@ -1433,6 +1580,18 @@ const createInitialProfileWithIndex = async ({ uid, method, normalizedMethodValu
         }
       }
     }
+    const nowMs = Date.now();
+    await enforceMethodReuseCooldownInTransaction({
+      transaction,
+      method,
+      normalizedMethodValue,
+      nowMs,
+      cleanupRefsByPath,
+    });
+    applyQueuedCleanupDeletes({
+      transaction,
+      cleanupRefsByPath,
+    });
     const userRef = firestore.collection("users").doc();
     profileId = userRef.id;
     created = true;
@@ -1461,8 +1620,9 @@ const ensureProfileMethodAndLoginAndIndex = async ({ profileId, uid, method, nor
   const profileRef = firestore.collection("users").doc(profileId);
   const indexRef = firestore.collection("authMethodIndex").doc(getMethodKey(method, normalizedMethodValue));
   let conflictProfileId = "";
-  const nowMs = Date.now();
   await firestore.runTransaction(async (transaction) => {
+    const nowMs = Date.now();
+    const cleanupRefsByPath = new Map();
     conflictProfileId = "";
     const profileSnapshot = await transaction.get(profileRef);
     if (!profileSnapshot.exists) {
@@ -1470,6 +1630,25 @@ const ensureProfileMethodAndLoginAndIndex = async ({ profileId, uid, method, nor
     }
     const profileData = profileSnapshot.data() || {};
     ensureMethodCompatibility(profileData, method, normalizedMethodValue);
+    const existingNormalizedValue = normalizeFromProfileByMethod(method, profileData);
+    const isMethodAlreadyLinkedToProfile = existingNormalizedValue === normalizedMethodValue;
+
+    if (!isMethodAlreadyLinkedToProfile) {
+      await enforceProfileMethodCooldownInTransaction({
+        transaction,
+        profileId,
+        method,
+        nowMs,
+        cleanupRefsByPath,
+      });
+      await enforceMethodReuseCooldownInTransaction({
+        transaction,
+        method,
+        normalizedMethodValue,
+        nowMs,
+        cleanupRefsByPath,
+      });
+    }
 
     const indexSnapshot = await transaction.get(indexRef);
     if (indexSnapshot.exists) {
@@ -1487,6 +1666,11 @@ const ensureProfileMethodAndLoginAndIndex = async ({ profileId, uid, method, nor
         }
       }
     }
+
+    applyQueuedCleanupDeletes({
+      transaction,
+      cleanupRefsByPath,
+    });
 
     const patch = buildMethodPatch({ method, methodValueRaw, appleEmailMasked, consentSource });
     transaction.set(
@@ -1546,7 +1730,6 @@ const linkVerifiedMethod = async ({
     const methodLookupValue = toCleanString(methodValueLookupRaw) || methodValueRaw;
     let methodProfile = await readProfileByMethod(method, normalizedMethodValue, methodLookupValue);
     let targetProfileId = "";
-    const revocationRef = firestore.collection("authMethodRevocations").doc(getMethodKey(method, normalizedMethodValue));
 
     if (!currentProfile && !methodProfile) {
       const createdResult = await createInitialProfileWithIndex({
@@ -1574,12 +1757,9 @@ const linkVerifiedMethod = async ({
     } else if (currentProfile && methodProfile && currentProfile.id === methodProfile.id) {
       targetProfileId = currentProfile.id;
     } else if (currentProfile && methodProfile && currentProfile.id !== methodProfile.id) {
-      const mergedSnapshot = await mergeProfiles({
-        targetProfileId: currentProfile.id,
-        sourceProfileId: methodProfile.id,
-        opId: op.opId,
-      });
-      targetProfileId = mergedSnapshot.id;
+      // Defer merge until ensureProfileMethodAndLoginAndIndex has applied cooldown checks.
+      // The retry loop below will return conflictProfileId and merge deterministically.
+      targetProfileId = currentProfile.id;
     } else {
       throw new HttpsError("internal", "unexpected-auth-state");
     }
@@ -1618,8 +1798,6 @@ const linkVerifiedMethod = async ({
       targetProfileSnapshot = await assignRandomUsernameIfNeededForAppleProfile({ profileId: targetProfileId });
     }
     await ensureProfileClaimAndRtdb(uid, targetProfileId);
-    // Unlink no longer reserves methods. Clean up any historical revocation tombstone.
-    await revocationRef.delete().catch(() => {});
 
     const response = buildProfileResponse(targetProfileSnapshot, uid, preferredAddress || methodValueRaw);
     response.opId = op.opId;
@@ -1689,6 +1867,7 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
       let indexRef = null;
       let shouldDeleteIndex = false;
       let revocationRef = null;
+      const profileMethodCooldownRef = firestore.collection("authProfileMethodCooldowns").doc(getProfileMethodCooldownDocId(profileId, normalizedMethod));
       if (normalizedValue) {
         const methodDocId = getMethodKey(normalizedMethod, normalizedValue);
         indexRef = firestore.collection("authMethodIndex").doc(methodDocId);
@@ -1719,9 +1898,40 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
       if (shouldDeleteIndex && indexRef) {
         transaction.delete(indexRef);
       }
+
+      const cooldownStartedAtMs = Date.now();
+      const cooldownRetryAtMs = cooldownStartedAtMs + AUTH_METHOD_REUSE_COOLDOWN_MS;
+      transaction.set(
+        profileMethodCooldownRef,
+        {
+          profileId,
+          method: normalizedMethod,
+          scope: "profile-method",
+          unlinkedByUid: uid,
+          cooldownMs: AUTH_METHOD_REUSE_COOLDOWN_MS,
+          startedAtMs: cooldownStartedAtMs,
+          retryAtMs: cooldownRetryAtMs,
+          updatedAtMs: cooldownStartedAtMs,
+        },
+        { merge: true }
+      );
+
       if (normalizedValue && revocationRef) {
-        // Immediate reuse policy: clear stale tombstones on unlink.
-        transaction.delete(revocationRef);
+        transaction.set(
+          revocationRef,
+          {
+            method: normalizedMethod,
+            normalizedValue,
+            profileId,
+            scope: "method",
+            unlinkedByUid: uid,
+            cooldownMs: AUTH_METHOD_REUSE_COOLDOWN_MS,
+            startedAtMs: cooldownStartedAtMs,
+            retryAtMs: cooldownRetryAtMs,
+            updatedAtMs: cooldownStartedAtMs,
+          },
+          { merge: true }
+        );
       }
     });
 
