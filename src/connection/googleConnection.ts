@@ -9,8 +9,7 @@ let googleScriptPromise: Promise<void> | null = null;
 const GOOGLE_SCRIPT_SRC = "https://accounts.google.com/gsi/client";
 const GOOGLE_SIGN_IN_TIMEOUT_MS = 60 * 1000;
 const GOOGLE_SCRIPT_LOAD_TIMEOUT_MS = 15 * 1000;
-const GOOGLE_CLIENT_ID_PLACEHOLDER = "REPLACE_WITH_YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com";
-const GOOGLE_CLIENT_ID = GOOGLE_CLIENT_ID_PLACEHOLDER;
+const GOOGLE_CLIENT_ID = "390871694056-dbt5ip4d7b7ehnlfq49cu9b5fe6drhnf.apps.googleusercontent.com";
 
 const waitForGoogleLibrary = (timeoutMs: number): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -137,9 +136,6 @@ const loadGoogleScript = async (): Promise<void> => {
 };
 
 const getGoogleClientId = (): string => {
-  if (!GOOGLE_CLIENT_ID || GOOGLE_CLIENT_ID === GOOGLE_CLIENT_ID_PLACEHOLDER) {
-    throw new Error("Google sign in is not configured. Fill GOOGLE_CLIENT_ID in src/connection/googleConnection.ts.");
-  }
   return GOOGLE_CLIENT_ID;
 };
 
