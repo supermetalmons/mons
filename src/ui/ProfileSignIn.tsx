@@ -401,6 +401,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const [settingsInlineMessage, setSettingsInlineMessage] = useState<{ id: number; kind: "error" | "success"; message: string } | null>(null);
   const [NotificationComponent, setNotificationComponent] = useState<React.ComponentType<any> | null>(null);
   const [isNotificationVisible, setIsNotificationVisible] = useState(false);
   const [notificationState, setNotificationState] = useState<NotificationState | null>(null);
@@ -417,6 +418,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const isOpenRef = useRef(isOpen);
   const authStatusRef = useRef(authStatus);
   const latestAppleActionRef = useRef(0);
+  const nextSettingsInlineMessageIdRef = useRef(0);
 
   const appleText = getAppleButtonLabel(appleButtonState);
   const xText = getXButtonLabel(xButtonState);
@@ -565,6 +567,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsInventoryOpen(false);
     setIsLogoutConfirmOpen(false);
     setIsSettingsOpen(false);
+    setSettingsInlineMessage(null);
     setIsEditingName(false);
     hideShinyCard();
     enterProfileEditingMode(false);
@@ -649,6 +652,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsInventoryOpen(false);
     setIsLogoutConfirmOpen(false);
     setIsSettingsOpen(false);
+    setSettingsInlineMessage(null);
     setIsEditingName(false);
     hideShinyCard();
     enterProfileEditingMode(false);
@@ -720,12 +724,14 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         setIsOpen(true);
         return;
       }
-
-      const title = feedback.kind === "success" ? "X connected" : "X link failed";
-      const openSettingsFromBanner = () => {
-        setIsSettingsOpen(true);
-      };
-      void showNotificationBannerInternal(title, feedback.message, storage.getPlayerEmojiId("1"), openSettingsFromBanner);
+      nextSettingsInlineMessageIdRef.current += 1;
+      setSettingsInlineMessage({
+        id: nextSettingsInlineMessageIdRef.current,
+        kind: feedback.kind,
+        message: feedback.message,
+      });
+      setIsOpen(false);
+      setIsSettingsOpen(true);
     };
 
     const pendingFeedback = consumePendingXAuthUiFeedback();
@@ -734,7 +740,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     }
 
     return subscribeToXAuthUiFeedback(applyFeedback);
-  }, [showNotificationBannerInternal]);
+  }, []);
 
   useEffect(() => {
     if (isOpen) {
@@ -797,6 +803,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const handleCloseSettings = () => {
     didDismissSomethingWithOutsideTapJustNow();
     setIsSettingsOpen(false);
+    setSettingsInlineMessage(null);
   };
 
   const ensurePreparedAppleIntent = useCallback(async (): Promise<AuthIntentResponse> => {
@@ -1067,7 +1074,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       {isEditingName && <NameEditModal initialName={storage.getUsername("")} onSave={handleSaveDisplayName} onCancel={handleCancelEditName} />}
       {isInventoryOpen && <InventoryModal onCancel={handleDismissInventory} />}
       {isLogoutConfirmOpen && <LogoutConfirmModal onConfirm={handleConfirmLogout} onCancel={handleCancelLogout} />}
-      {isSettingsOpen && <SettingsModal onClose={handleCloseSettings} />}
+      {isSettingsOpen && <SettingsModal onClose={handleCloseSettings} xInlineMessage={settingsInlineMessage} />}
     </Container>
   );
 };

@@ -321,7 +321,7 @@ export function useAuthStatus() {
             publishXAuthUiFeedback({
               target: "settings",
               kind: "success",
-              message: "Tap to review your linked sign-in methods.",
+              message: "X linked successfully.",
             });
           }
         } else if (shouldForceUnauthenticatedOnFailure) {
