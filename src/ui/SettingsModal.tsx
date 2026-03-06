@@ -27,7 +27,7 @@ const SettingsTitle = styled(ModalTitle)`
 const MethodsList = styled.div`
   display: flex;
   flex-direction: column;
-  margin-bottom: 14px;
+  margin-bottom: 12px;
   border-radius: 12px;
   border: 1px solid rgba(224, 224, 224, 0.45);
   overflow: hidden;
@@ -44,8 +44,8 @@ const MethodRow = styled.div`
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  padding: 10px 12px;
-  min-height: 42px;
+  padding: 8px 12px;
+  min-height: 34px;
 
   & + & {
     border-top: 1px solid rgba(224, 224, 224, 0.45);
@@ -61,7 +61,7 @@ const MethodRow = styled.div`
 const MethodMeta = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 0;
   min-width: 0;
 `;
 
@@ -79,24 +79,24 @@ const RowActions = styled.div`
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  min-width: 88px;
+  min-width: 76px;
 `;
 
 const ActionSpacer = styled.div`
-  width: 84px;
-  height: 28px;
+  width: 72px;
+  height: 22px;
 `;
 
 const ConnectButton = styled.button<{ $message?: boolean }>`
   border: none;
   border-radius: 999px;
-  padding: 6px 12px;
+  padding: 4px 10px;
   font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
   color: ${(props) => (props.$message ? "var(--color-gray-33)" : "var(--color-blue-primary)")};
   background: var(--color-gray-f0);
-  min-width: 84px;
+  min-width: 76px;
   text-align: center;
   white-space: nowrap;
   transition: background-color 0.3s ease;
@@ -134,8 +134,8 @@ const ConnectButton = styled.button<{ $message?: boolean }>`
 `;
 
 const RemoveIconButton = styled.button`
-  width: 24px;
-  height: 24px;
+  width: 22px;
+  height: 22px;
   border-radius: 999px;
   border: none;
   background: var(--color-gray-f0);
@@ -193,13 +193,13 @@ const ConnectIconButton = styled(RemoveIconButton)`
 const RemoveConfirmButton = styled.button`
   border: none;
   border-radius: 999px;
-  padding: 6px 12px;
+  padding: 4px 10px;
   font-size: 0.72rem;
   font-weight: 600;
   cursor: pointer;
   color: var(--color-white);
   background: var(--dangerButtonBackground);
-  min-width: 84px;
+  min-width: 76px;
   text-align: center;
   white-space: nowrap;
 
