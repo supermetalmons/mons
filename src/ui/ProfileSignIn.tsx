@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from "react";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { flushSync } from "react-dom";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { storage } from "../utils/storage";
 import { connection } from "../connection/connection";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
@@ -36,32 +36,40 @@ const BaseButton = styled.button`
   touch-action: none;
 `;
 
-const SignInButton = styled(BaseButton)<{ isConnected?: boolean }>`
-  background-color: ${(props) => (props.isConnected ? "var(--color-gray-f9de)" : "var(--profileSigninTint)")};
+type SignInButtonVisualProps = {
+  $isConnected?: boolean;
+};
+
+export const signInButtonVisualStyles = css<SignInButtonVisualProps>`
+  background-color: ${(props) => (props.$isConnected ? "var(--color-gray-f9de)" : "var(--profileSigninTint)")};
 
   padding: 8px 16px;
-  font-weight: ${(props) => (props.isConnected ? "750" : "888")};
-  font-size: ${(props) => (props.isConnected ? "0.9rem" : "0.95rem")};
-  color: ${(props) => (props.isConnected ? "var(--profileConnectedText)" : "white")};
-  border-radius: ${(props) => (props.isConnected ? "16px" : "16px")};
+  font-weight: ${(props) => (props.$isConnected ? "750" : "888")};
+  font-size: ${(props) => (props.$isConnected ? "0.9rem" : "0.95rem")};
+  color: ${(props) => (props.$isConnected ? "var(--profileConnectedText)" : "white")};
+  border-radius: 16px;
   border: none;
   cursor: pointer;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.isConnected ? "var(--color-gray-f5)" : "var(--bottomButtonBackgroundHover)")};
+      background-color: ${(props) => (props.$isConnected ? "var(--color-gray-f5)" : "var(--bottomButtonBackgroundHover)")};
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: ${(props) => (props.isConnected ? "var(--color-gray-25d5)" : "var(--profileSigninTintDark)")};
+    background-color: ${(props) => (props.$isConnected ? "var(--color-gray-25d5)" : "var(--profileSigninTintDark)")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.isConnected ? "var(--color-gray-27)" : "var(--bottomButtonBackgroundHoverDark)")};
+        background-color: ${(props) => (props.$isConnected ? "var(--color-gray-27)" : "var(--bottomButtonBackgroundHoverDark)")};
       }
     }
   }
+`;
+
+const SignInButton = styled(BaseButton)<SignInButtonVisualProps>`
+  ${signInButtonVisualStyles}
 `;
 
 const ConnectButtonPopover = styled.div`
@@ -152,6 +160,7 @@ let showSettingsImpl: () => void = () => {};
 let hideNotificationBannerImpl: () => void = () => {};
 let showNotificationBannerImpl: (title: string, subtitle: string, emojiId: string, successHandler: () => void) => void = () => {};
 let setSignInInlineAuthErrorImpl: (message: string | null) => void = () => {};
+let openProfileSignInPopupImpl: () => void = () => {};
 
 export const closeProfilePopupIfAny = () => {
   closeProfilePopupIfAnyImpl();
@@ -183,6 +192,10 @@ export const showNotificationBanner = (title: string, subtitle: string, emojiId:
 
 export const setSignInInlineAuthError = (message: string | null) => {
   setSignInInlineAuthErrorImpl(message);
+};
+
+export const openProfileSignInPopup = () => {
+  openProfileSignInPopupImpl();
 };
 
 export function hasProfilePopupVisible(): boolean {
@@ -672,7 +685,16 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setIsSettingsOpen(true);
   };
 
+  const openProfileSignInPopupInternal = useCallback(() => {
+    if (authStatus === "authenticated" || isOpen) {
+      return;
+    }
+    closeMenuAndInfoIfAny();
+    setIsOpen(true);
+  }, [authStatus, isOpen]);
+
   closeProfilePopupIfAnyImpl = closeProfilePopupInternal;
+  openProfileSignInPopupImpl = openProfileSignInPopupInternal;
 
   useEffect(() => {
     return () => {
@@ -684,6 +706,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       hideNotificationBannerImpl = () => {};
       showNotificationBannerImpl = () => {};
       setSignInInlineAuthErrorImpl = () => {};
+      openProfileSignInPopupImpl = () => {};
     };
   }, []);
 
@@ -1041,7 +1064,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
 
   return (
     <Container ref={popoverRef}>
-      <SignInButton onClick={!isMobile ? handleSignInClick : undefined} onTouchStart={isMobile ? handleSignInClick : undefined} isConnected={authStatus === "authenticated"}>
+      <SignInButton onClick={!isMobile ? handleSignInClick : undefined} onTouchStart={isMobile ? handleSignInClick : undefined} $isConnected={authStatus === "authenticated"}>
         {authStatus === "authenticated" ? profileDisplayName || "Connected" : "Sign In"}
       </SignInButton>
       {isOpen && authStatus !== "authenticated" && (

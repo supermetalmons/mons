@@ -15,6 +15,7 @@ import { setIslandOverlayState, resetIslandOverlayState } from "./islandOverlayS
 import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMiningService";
 import { useGameAssets } from "../hooks/useGameAssets";
 import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
+import { signInButtonVisualStyles, openProfileSignInPopup } from "./ProfileSignIn";
 
 const FEATURE_GLOWS_ON_HOTSPOT = true;
 const FEATURE_MON_TYPE_SELECTOR = false;
@@ -24,6 +25,7 @@ const ROCK_LAYER_Z_INDEX = 500;
 const THEORETICAL_ROCK_SQUARE = { cx: 0.5018, cy: 0.1773, side: 0.142 };
 const THEORETICAL_ROCK_BOTTOM = Math.max(0, Math.min(1, THEORETICAL_ROCK_SQUARE.cy + THEORETICAL_ROCK_SQUARE.side * 0.5));
 const MIN_OVERLAY_CLOSE_DELAY_MS = 160;
+const ANON_SIGN_IN_DROP_SETTLE_MS = 620;
 const MON_TYPE_ORDER: MonType[] = [MonType.DEMON, MonType.ANGEL, MonType.DRAINER, MonType.SPIRIT, MonType.MYSTIC];
 const DEFAULT_MON_TYPE = MonType.DRAINER;
 const MON_TYPE_ICON_KEYS: Record<MonType, string> = {
@@ -206,6 +208,84 @@ const SparkleParticle = styled.div<{ $x: number; $y: number; $delay: number; $du
       background: rgba(80, 140, 240, 0.85);
     }
   }
+`;
+
+const anonSignInDrop = keyframes`
+  0% {
+    opacity: 0;
+    transform: translate3d(-50%, -50%, 0) translate3d(0, -52px, 0) scale(0.96);
+  }
+  18% {
+    opacity: 1;
+  }
+  74% {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0) translate3d(0, 2px, 0) scale(1);
+  }
+  100% {
+    opacity: 1;
+    transform: translate3d(-50%, -50%, 0) translate3d(0, 0, 0) scale(1);
+  }
+`;
+
+const anonSignInShadowDrop = keyframes`
+  0% {
+    opacity: 0;
+    transform: translate3d(-50%, -50%, 0) scale(0.35);
+  }
+  24% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 0.24;
+    transform: translate3d(-50%, -50%, 0) scale(1);
+  }
+`;
+
+const RockSignInShadow = styled.div<{ $settled: boolean; $hidden?: boolean }>`
+  position: absolute;
+  left: 48.8%;
+  top: 40.8%;
+  width: 18%;
+  height: 3.2%;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.24);
+  pointer-events: none;
+  z-index: 759;
+  opacity: ${(p) => (p.$hidden ? 0 : 0.24)};
+  filter: blur(1.2px);
+  visibility: ${(p) => (p.$hidden ? "hidden" : "visible")};
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-origin: center center;
+  contain: layout paint;
+  transform: translate3d(-50%, -50%, 0);
+  animation: ${(p) => (p.$hidden || p.$settled ? "none" : anonSignInShadowDrop)} ${ANON_SIGN_IN_DROP_SETTLE_MS}ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+`;
+
+const RockSignInButton = styled.button<{ $settled: boolean; $isConnected?: boolean; $hidden?: boolean }>`
+  ${signInButtonVisualStyles}
+  position: absolute;
+  left: 48.8%;
+  top: 37%;
+  white-space: nowrap;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  visibility: ${(p) => (p.$hidden ? "hidden" : "visible")};
+  opacity: ${(p) => (p.$hidden ? 0 : 1)};
+  pointer-events: ${(p) => (p.$hidden ? "none" : p.$settled ? "auto" : "none")};
+  z-index: 760;
+  box-shadow: 0 8px 18px rgba(0, 0, 0, 0.16);
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform-origin: center center;
+  contain: layout paint;
+  transform: translate3d(-50%, -50%, 0);
+  animation: ${(p) => (p.$hidden || p.$settled ? "none" : anonSignInDrop)} ${ANON_SIGN_IN_DROP_SETTLE_MS}ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 `;
 
 const MaterialsBar = styled.div<{ $visible: boolean }>`
@@ -971,14 +1051,43 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     },
     [setRockBottomYState]
   );
+  const anonSignInDropCounterRef = useRef(0);
+  const anonSignInDropSettleTimeoutRef = useRef<number | null>(null);
+  const anonSignInDropPointerHandledRef = useRef(false);
+  const [anonSignInDropState, setAnonSignInDropState] = useState<{ key: number; settled: boolean } | null>(null);
+
+  const clearAnonSignInDrop = useCallback(() => {
+    if (anonSignInDropSettleTimeoutRef.current !== null) {
+      window.clearTimeout(anonSignInDropSettleTimeoutRef.current);
+      anonSignInDropSettleTimeoutRef.current = null;
+    }
+    anonSignInDropPointerHandledRef.current = false;
+    setAnonSignInDropState(null);
+  }, []);
+
+  const showAnonSignInDrop = useCallback(() => {
+    if (anonSignInDropSettleTimeoutRef.current !== null) {
+      window.clearTimeout(anonSignInDropSettleTimeoutRef.current);
+      anonSignInDropSettleTimeoutRef.current = null;
+    }
+    const key = anonSignInDropCounterRef.current + 1;
+    anonSignInDropCounterRef.current = key;
+    setAnonSignInDropState({ key, settled: false });
+    anonSignInDropSettleTimeoutRef.current = window.setTimeout(() => {
+      anonSignInDropSettleTimeoutRef.current = null;
+      setAnonSignInDropState((current) => (current && current.key === key ? { ...current, settled: true } : current));
+    }, ANON_SIGN_IN_DROP_SETTLE_MS);
+  }, []);
+
   useEffect(() => {
     if (!rockAvailable) return;
     setRockBreaking(false);
     setRockReady(false);
+    clearAnonSignInDrop();
     rockBoxRef.current = null;
     setRockImageUrl(getRockImageUrl());
     setRockRenderKey((prev) => prev + 1);
-  }, [rockAvailable, setRockReady]);
+  }, [clearAnonSignInDrop, rockAvailable, setRockReady]);
   const computeEntityZIndex = useCallback(
     (baselineY: number) => {
       const clampedBaseline = Math.max(0, Math.min(1, baselineY));
@@ -1005,6 +1114,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       setSparkleFading(false);
     }
   }, [islandOverlayVisible]);
+  const isSignedIn = storage.getProfileId("") !== "";
+  useEffect(() => {
+    if (isSignedIn) {
+      clearAnonSignInDrop();
+    }
+  }, [clearAnonSignInDrop, isSignedIn]);
   type MaterialDropEntry = {
     id: number;
     el: HTMLImageElement;
@@ -2261,6 +2376,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     overlayPhaseRef.current = "idle";
     overlayActiveRef.current = false;
     overlayJustOpenedAtRef.current = 0;
+    clearAnonSignInDrop();
     amountsDecoupledRef.current = false;
     const resetMaterials = computeAvailableMaterials(latestServiceMaterialsRef.current, frozenMaterialsRef.current);
     setMaterialAmounts(resetMaterials);
@@ -2350,7 +2466,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     setIslandTranslate({ x: 0, y: 0 });
     setIslandScale({ x: 1, y: 1 });
     setWalkReady(false);
-  }, []);
+  }, [clearAnonSignInDrop]);
 
   const handleIslandOpen = useCallback(
     (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
@@ -2404,6 +2520,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       setIslandClosing(false);
       setIslandOpening(true);
       setIslandActive(false);
+      clearAnonSignInDrop();
       setRockBreaking(false);
       setRockReady(false);
       try {
@@ -2429,7 +2546,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         } catch {}
       });
     },
-    [islandImgLoaded, islandNatural, setRockBottomY, setRockReady, updateRockBox]
+    [clearAnonSignInDrop, islandImgLoaded, islandNatural, setRockBottomY, setRockReady, updateRockBox]
   );
 
   const spawnIconParticles = useCallback((sourceEl: HTMLElement, src: string) => {
@@ -2611,6 +2728,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         materialPullFlushRef.current = null;
       }
       materialPullQueueRef.current = [];
+    };
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      if (anonSignInDropSettleTimeoutRef.current !== null) {
+        window.clearTimeout(anonSignInDropSettleTimeoutRef.current);
+        anonSignInDropSettleTimeoutRef.current = null;
+      }
     };
   }, []);
 
@@ -2883,6 +3009,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (walkCleanup) walkCleanup();
       walkingDragCleanupRef.current = null;
       walkingDragActiveRef.current = false;
+      clearAnonSignInDrop();
       try {
         const heroImg = islandHeroImgRef.current;
         const heroWrap = heroImg ? (heroImg.parentElement as HTMLElement | null) : null;
@@ -2948,7 +3075,44 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         setIslandScale({ x: uniformScale, y: uniformScale });
       });
     },
-    [finalizeOverlayClose, islandNatural, islandOverlayVisible]
+    [clearAnonSignInDrop, finalizeOverlayClose, islandNatural, islandOverlayVisible]
+  );
+
+  const handleAnonSignInDropPress = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+      if (!anonSignInDropState?.settled) {
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      anonSignInDropPointerHandledRef.current = true;
+      clearAnonSignInDrop();
+      handleIslandClose();
+      requestAnimationFrame(() => {
+        openProfileSignInPopup();
+      });
+    },
+    [anonSignInDropState?.settled, clearAnonSignInDrop, handleIslandClose]
+  );
+
+  const handleAnonSignInDropClick = useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      if (!anonSignInDropState?.settled) {
+        return;
+      }
+      if (anonSignInDropPointerHandledRef.current) {
+        anonSignInDropPointerHandledRef.current = false;
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      clearAnonSignInDrop();
+      handleIslandClose();
+      requestAnimationFrame(() => {
+        openProfileSignInPopup();
+      });
+    },
+    [anonSignInDropState?.settled, clearAnonSignInDrop, handleIslandClose]
   );
 
   useEffect(() => {
@@ -4246,8 +4410,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const disablePrevMonType = isAtFirstMonType;
   const disableNextMonType = isAtLastMonType;
 
-  const isSignedIn = storage.getProfileId("") !== "";
   const showSparkle = isSignedIn && rockAvailable && !islandOverlayShown && !sparkleFading && sparkleMounted;
+  const shouldPrewarmAnonSignInDrop = islandOverlayVisible && !islandClosing && !isSignedIn && !anonSignInDropState && (rockAvailable || rockBreaking);
 
   return (
     <>
@@ -4334,6 +4498,30 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                       })}
                   </HotspotOverlay>
                 )}
+                {shouldPrewarmAnonSignInDrop && (
+                  <>
+                    <RockSignInShadow $hidden $settled />
+                    <RockSignInButton type="button" $hidden $isConnected={false} $settled aria-hidden="true" tabIndex={-1}>
+                      Sign In
+                    </RockSignInButton>
+                  </>
+                )}
+                {anonSignInDropState && !islandClosing && (
+                  <>
+                    <RockSignInShadow key={`shadow-${anonSignInDropState.key}`} $settled={anonSignInDropState.settled} />
+                    <RockSignInButton
+                      key={anonSignInDropState.key}
+                      type="button"
+                      $isConnected={false}
+                      $settled={anonSignInDropState.settled}
+                      onClick={handleAnonSignInDropClick}
+                      onMouseDown={!isMobile ? handleAnonSignInDropPress : undefined}
+                      onTouchStart={isMobile ? handleAnonSignInDropPress : undefined}
+                      aria-label="Sign in">
+                      Sign In
+                    </RockSignInButton>
+                  </>
+                )}
                 {(() => {
                   const widthPct = DUDE_BOUNDS_WIDTH_FRAC * 1.3 * 100;
                   const topOffsetFrac = 0.0135;
@@ -4413,7 +4601,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                             walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
                             walkSuppressionHitsRemainingRef.current = WALK_SUPPRESSION_HIT_COUNT;
                             const count = drops.length;
-                            if (count === 0) return;
+                            if (count === 0) {
+                              if (storage.getProfileId("") === "") {
+                                showAnonSignInDrop();
+                              }
+                              return;
+                            }
                             const now = performance.now();
                             const rect = lastRockRectRef.current;
                             const fallBase = rect ? rect.height * 0.15 : 24;
