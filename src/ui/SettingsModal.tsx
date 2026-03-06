@@ -962,7 +962,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         <MethodsList>
           {renderMethodRow("eth", "Ethereum")}
           {renderMethodRow("sol", "Solana")}
-          {renderMethodRow("google", "Google")}
           {renderMethodRow("apple", "Apple")}
         </MethodsList>
         {authErrorMessage ? <InlineAuthError>{authErrorMessage}</InlineAuthError> : null}

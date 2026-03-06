@@ -1093,9 +1093,6 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
               <CustomConnectButton onClick={!isMobile ? handleSolanaClick : undefined} onTouchStart={isMobile ? handleSolanaClick : undefined}>
                 {solanaText}
               </CustomConnectButton>
-              <CustomConnectButton onClick={!isMobile ? handleGoogleClick : undefined} onTouchStart={isMobile ? handleGoogleClick : undefined}>
-                {googleText}
-              </CustomConnectButton>
               <CustomConnectButton onClick={handleAppleClick}>
                 {appleText}
               </CustomConnectButton>
