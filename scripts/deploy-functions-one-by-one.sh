@@ -57,7 +57,10 @@ else
     verifySolanaAddress
     verifyEthAddress
     beginAuthIntent
+    beginXRedirectAuth
     verifyAppleToken
+    completeXRedirectAuth
+    xAuthRedirectCallback
     unlinkAuthMethod
     getLinkedAuthMethods
     syncProfileClaim

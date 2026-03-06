@@ -38,10 +38,10 @@ exports.editUsername = onCall(async (request) => {
 
   if (trimmedUsername === "") {
     const hasApple = typeof userData.appleSub === "string" && userData.appleSub.trim() !== "";
-    const hasGoogle = typeof userData.googleSub === "string" && userData.googleSub.trim() !== "";
+    const hasX = typeof userData.xUserId === "string" && userData.xUserId.trim() !== "";
     const hasEth = typeof userData.eth === "string" && userData.eth.trim() !== "";
     const hasSol = typeof userData.sol === "string" && userData.sol.trim() !== "";
-    if ((hasApple || hasGoogle) && !hasEth && !hasSol) {
+    if ((hasApple || hasX) && !hasEth && !hasSol) {
       return {
         ok: false,
         validationError: "Can't be empty.",

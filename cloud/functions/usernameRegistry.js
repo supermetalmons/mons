@@ -596,7 +596,7 @@ const claimUsernameForProfile = async ({ profileId, username }) => {
   return result;
 };
 
-const assignRandomUsernameIfNeededForAppleProfile = async ({ profileId, maxAttempts = AUTO_NAME_MAX_ATTEMPTS }) => {
+const assignRandomUsernameIfNeededForWalletlessProfile = async ({ profileId, maxAttempts = AUTO_NAME_MAX_ATTEMPTS }) => {
   const resolvedProfileId = toCleanString(profileId);
   if (!resolvedProfileId) {
     throw new HttpsError("invalid-argument", "profileId is required.");
@@ -814,7 +814,7 @@ module.exports = {
   loadAutoNameBases,
   buildRandomAutoUsername,
   claimUsernameForProfile,
-  assignRandomUsernameIfNeededForAppleProfile,
+  assignRandomUsernameIfNeededForWalletlessProfile,
   setExplicitUsernameForProfile,
   clearUsernameForProfile,
 };

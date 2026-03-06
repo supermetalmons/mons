@@ -1,15 +1,14 @@
 const crypto = require("crypto");
 const admin = require("firebase-admin");
 const { HttpsError } = require("firebase-functions/v2/https");
-const { OAuth2Client } = require("google-auth-library");
 const { normalizeMiningSnapshot } = require("./miningHelpers");
-const { assignRandomUsernameIfNeededForAppleProfile } = require("./usernameRegistry");
+const { assignRandomUsernameIfNeededForWalletlessProfile } = require("./usernameRegistry");
 
 const METHOD_FIELD_BY_TYPE = {
   eth: "eth",
   sol: "sol",
   apple: "appleSub",
-  google: "googleSub",
+  x: "xUserId",
 };
 
 const INTENT_TTL_MS = 5 * 60 * 1000;
@@ -236,10 +235,10 @@ const normalizeAppleSub = (value) => {
   return input;
 };
 
-const normalizeGoogleSub = (value) => {
+const normalizeXUserId = (value) => {
   const input = toCleanString(value);
-  if (input.length < 6) {
-    throw new HttpsError("invalid-argument", "Invalid Google subject.");
+  if (!/^\d+$/.test(input)) {
+    throw new HttpsError("invalid-argument", "Invalid X user id.");
   }
   return input;
 };
@@ -254,8 +253,8 @@ const normalizeMethodValue = (method, value) => {
   if (method === "apple") {
     return normalizeAppleSub(value);
   }
-  if (method === "google") {
-    return normalizeGoogleSub(value);
+  if (method === "x") {
+    return normalizeXUserId(value);
   }
   throw new HttpsError("invalid-argument", "Unsupported auth method.");
 };
@@ -301,12 +300,12 @@ const linkedMethodsFromProfileData = (profileData) => ({
   apple: normalizeFromProfileByMethod("apple", profileData) !== "",
   eth: normalizeFromProfileByMethod("eth", profileData) !== "",
   sol: normalizeFromProfileByMethod("sol", profileData) !== "",
-  google: normalizeFromProfileByMethod("google", profileData) !== "",
+  x: normalizeFromProfileByMethod("x", profileData) !== "",
 });
 
 const linkedMethodCount = (profileData) => {
   const linked = linkedMethodsFromProfileData(profileData);
-  return [linked.apple, linked.eth, linked.sol, linked.google].filter(Boolean).length;
+  return [linked.apple, linked.eth, linked.sol, linked.x].filter(Boolean).length;
 };
 
 const pickTargetOrSource = (targetValue, sourceValue) => (hasValue(targetValue) ? targetValue : sourceValue);
@@ -418,7 +417,7 @@ const validateMergeMethodConflict = (targetData, sourceData) => {
     ["eth", normalizeFromProfileByMethod("eth", targetData), normalizeFromProfileByMethod("eth", sourceData)],
     ["sol", normalizeFromProfileByMethod("sol", targetData), normalizeFromProfileByMethod("sol", sourceData)],
     ["apple", normalizeFromProfileByMethod("apple", targetData), normalizeFromProfileByMethod("apple", sourceData)],
-    ["google", normalizeFromProfileByMethod("google", targetData), normalizeFromProfileByMethod("google", sourceData)],
+    ["x", normalizeFromProfileByMethod("x", targetData), normalizeFromProfileByMethod("x", sourceData)],
   ];
   for (const [, targetValue, sourceValue] of checks) {
     if (targetValue && sourceValue && targetValue !== sourceValue) {
@@ -640,7 +639,7 @@ const getExpectedMethodValueHashFromAuthOp = (method, opData) => {
   if (explicitHash) {
     return explicitHash;
   }
-  if (method === "apple" || method === "google") {
+  if (method === "apple" || method === "x") {
     return "";
   }
   const rawValue = toCleanString(meta && meta.methodValue);
@@ -1230,12 +1229,12 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
     const sourceSol = normalizeFromProfileByMethod("sol", sourceData);
     const targetAppleSub = normalizeFromProfileByMethod("apple", targetData);
     const sourceAppleSub = normalizeFromProfileByMethod("apple", sourceData);
-    const targetGoogleSub = normalizeFromProfileByMethod("google", targetData);
-    const sourceGoogleSub = normalizeFromProfileByMethod("google", sourceData);
+    const targetXUserId = normalizeFromProfileByMethod("x", targetData);
+    const sourceXUserId = normalizeFromProfileByMethod("x", sourceData);
     const mergedEth = targetEth || sourceEth;
     const mergedSol = targetSol || sourceSol;
     const mergedAppleSub = targetAppleSub || sourceAppleSub;
-    const mergedGoogleSub = targetGoogleSub || sourceGoogleSub;
+    const mergedXUserId = targetXUserId || sourceXUserId;
 
     const mergedCustom = mergeCustom(targetData, sourceData);
     const mergedMining = mergeMining(targetData, sourceData);
@@ -1249,11 +1248,11 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
       }
       return hasValue(sourceValue) ? sourceValue : admin.firestore.FieldValue.delete();
     };
-    const resolveGoogleMetadata = (targetValue, sourceValue) => {
-      if (!mergedGoogleSub) {
+    const resolveXMetadata = (targetValue, sourceValue) => {
+      if (!mergedXUserId) {
         return admin.firestore.FieldValue.delete();
       }
-      if (targetGoogleSub) {
+      if (targetXUserId) {
         return pickTargetOrSource(targetValue, sourceValue) || admin.firestore.FieldValue.delete();
       }
       return hasValue(sourceValue) ? sourceValue : admin.firestore.FieldValue.delete();
@@ -1273,11 +1272,11 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
       appleLinkedAt: resolveAppleMetadata(targetData.appleLinkedAt, sourceData.appleLinkedAt),
       appleConsentAt: resolveAppleMetadata(targetData.appleConsentAt, sourceData.appleConsentAt),
       appleConsentSource: resolveAppleMetadata(targetData.appleConsentSource, sourceData.appleConsentSource),
-      googleSub: mergedGoogleSub || admin.firestore.FieldValue.delete(),
-      googleEmailMasked: resolveGoogleMetadata(targetData.googleEmailMasked, sourceData.googleEmailMasked),
-      googleLinkedAt: resolveGoogleMetadata(targetData.googleLinkedAt, sourceData.googleLinkedAt),
-      googleConsentAt: resolveGoogleMetadata(targetData.googleConsentAt, sourceData.googleConsentAt),
-      googleConsentSource: resolveGoogleMetadata(targetData.googleConsentSource, sourceData.googleConsentSource),
+      xUserId: mergedXUserId || admin.firestore.FieldValue.delete(),
+      xUsername: resolveXMetadata(targetData.xUsername, sourceData.xUsername),
+      xLinkedAt: resolveXMetadata(targetData.xLinkedAt, sourceData.xLinkedAt),
+      xConsentAt: resolveXMetadata(targetData.xConsentAt, sourceData.xConsentAt),
+      xConsentSource: resolveXMetadata(targetData.xConsentSource, sourceData.xConsentSource),
       custom: mergedCustom,
       mining: mergedMining,
       mergedAtMs: Date.now(),
@@ -1319,8 +1318,8 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
     if (mergedAppleSub) {
       methodIndexEntries.push({ method: "apple", normalizedValue: mergedAppleSub });
     }
-    if (mergedGoogleSub) {
-      methodIndexEntries.push({ method: "google", normalizedValue: mergedGoogleSub });
+    if (mergedXUserId) {
+      methodIndexEntries.push({ method: "x", normalizedValue: mergedXUserId });
     }
     const allowedIndexOwners = new Set(
       [targetProfileId, sourceProfileId]
@@ -1337,11 +1336,11 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
       appleLinkedAt: admin.firestore.FieldValue.delete(),
       appleConsentAt: admin.firestore.FieldValue.delete(),
       appleConsentSource: admin.firestore.FieldValue.delete(),
-      googleSub: admin.firestore.FieldValue.delete(),
-      googleEmailMasked: admin.firestore.FieldValue.delete(),
-      googleLinkedAt: admin.firestore.FieldValue.delete(),
-      googleConsentAt: admin.firestore.FieldValue.delete(),
-      googleConsentSource: admin.firestore.FieldValue.delete(),
+      xUserId: admin.firestore.FieldValue.delete(),
+      xUsername: admin.firestore.FieldValue.delete(),
+      xLinkedAt: admin.firestore.FieldValue.delete(),
+      xConsentAt: admin.firestore.FieldValue.delete(),
+      xConsentSource: admin.firestore.FieldValue.delete(),
       username: admin.firestore.FieldValue.delete(),
       rating: admin.firestore.FieldValue.delete(),
       totalManaPoints: admin.firestore.FieldValue.delete(),
@@ -1575,7 +1574,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
   }
 };
 
-const buildMethodPatch = ({ method, methodValueRaw, appleEmailMasked, googleEmailMasked, consentSource }) => {
+const buildMethodPatch = ({ method, methodValueRaw, appleEmailMasked, xUsername, consentSource }) => {
   if (method === "eth") {
     return { eth: methodValueRaw };
   }
@@ -1594,15 +1593,15 @@ const buildMethodPatch = ({ method, methodValueRaw, appleEmailMasked, googleEmai
     }
     return patch;
   }
-  if (method === "google") {
+  if (method === "x") {
     const patch = {
-      googleSub: methodValueRaw,
-      googleLinkedAt: Date.now(),
-      googleConsentAt: Date.now(),
-      googleConsentSource: consentSource || "signin",
+      xUserId: methodValueRaw,
+      xLinkedAt: Date.now(),
+      xConsentAt: Date.now(),
+      xConsentSource: consentSource || "signin",
     };
-    if (googleEmailMasked) {
-      patch.googleEmailMasked = googleEmailMasked;
+    if (xUsername) {
+      patch.xUsername = xUsername;
     }
     return patch;
   }
@@ -1617,7 +1616,7 @@ const createInitialProfileWithIndex = async ({
   requestEmoji,
   requestAura,
   appleEmailMasked,
-  googleEmailMasked,
+  xUsername,
   consentSource,
 }) => {
   const firestore = admin.firestore();
@@ -1665,7 +1664,7 @@ const createInitialProfileWithIndex = async ({
       },
       mining: normalizeMiningSnapshot(),
     };
-    const methodPatch = buildMethodPatch({ method, methodValueRaw, appleEmailMasked, googleEmailMasked, consentSource });
+    const methodPatch = buildMethodPatch({ method, methodValueRaw, appleEmailMasked, xUsername, consentSource });
     transaction.set(userRef, { ...baseProfile, ...methodPatch });
     transaction.set(indexRef, {
       profileId,
@@ -1684,7 +1683,7 @@ const ensureProfileMethodAndLoginAndIndex = async ({
   normalizedMethodValue,
   methodValueRaw,
   appleEmailMasked,
-  googleEmailMasked,
+  xUsername,
   consentSource,
 }) => {
   const firestore = admin.firestore();
@@ -1743,7 +1742,7 @@ const ensureProfileMethodAndLoginAndIndex = async ({
       cleanupRefsByPath,
     });
 
-    const patch = buildMethodPatch({ method, methodValueRaw, appleEmailMasked, googleEmailMasked, consentSource });
+    const patch = buildMethodPatch({ method, methodValueRaw, appleEmailMasked, xUsername, consentSource });
     transaction.set(
       profileRef,
       {
@@ -1775,7 +1774,7 @@ const linkVerifiedMethod = async ({
   requestEmoji,
   requestAura,
   appleEmailMasked,
-  googleEmailMasked,
+  xUsername,
   consentSource,
   preferredAddress,
   opId,
@@ -1788,7 +1787,7 @@ const linkVerifiedMethod = async ({
     method,
     uid,
     meta: {
-      methodValue: method === "apple" || method === "google" ? "redacted" : methodValueRaw,
+      methodValue: method === "apple" || method === "x" ? "redacted" : methodValueRaw,
       methodValueHash: hashMethodValue(method, normalizedMethodValue),
     },
   });
@@ -1812,7 +1811,7 @@ const linkVerifiedMethod = async ({
         requestEmoji,
         requestAura,
         appleEmailMasked,
-        googleEmailMasked,
+        xUsername,
         consentSource,
       });
       targetProfileId = createdResult.profileId;
@@ -1846,7 +1845,7 @@ const linkVerifiedMethod = async ({
         normalizedMethodValue,
         methodValueRaw,
         appleEmailMasked,
-        googleEmailMasked,
+        xUsername,
         consentSource,
       });
       if (!conflictProfileId || conflictProfileId === targetProfileId) {
@@ -1868,8 +1867,8 @@ const linkVerifiedMethod = async ({
     if (!targetProfileSnapshot.exists) {
       throw new HttpsError("internal", "target-profile-missing");
     }
-    if (method === "apple" || method === "google") {
-      targetProfileSnapshot = await assignRandomUsernameIfNeededForAppleProfile({ profileId: targetProfileId });
+    if (method === "apple" || method === "x") {
+      targetProfileSnapshot = await assignRandomUsernameIfNeededForWalletlessProfile({ profileId: targetProfileId });
     }
     await ensureProfileClaimAndRtdb(uid, targetProfileId);
 
@@ -1935,12 +1934,12 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
         updateData.appleLinkedAt = admin.firestore.FieldValue.delete();
         updateData.appleConsentAt = admin.firestore.FieldValue.delete();
         updateData.appleConsentSource = admin.firestore.FieldValue.delete();
-      } else if (normalizedMethod === "google") {
-        updateData.googleSub = admin.firestore.FieldValue.delete();
-        updateData.googleEmailMasked = admin.firestore.FieldValue.delete();
-        updateData.googleLinkedAt = admin.firestore.FieldValue.delete();
-        updateData.googleConsentAt = admin.firestore.FieldValue.delete();
-        updateData.googleConsentSource = admin.firestore.FieldValue.delete();
+      } else if (normalizedMethod === "x") {
+        updateData.xUserId = admin.firestore.FieldValue.delete();
+        updateData.xUsername = admin.firestore.FieldValue.delete();
+        updateData.xLinkedAt = admin.firestore.FieldValue.delete();
+        updateData.xConsentAt = admin.firestore.FieldValue.delete();
+        updateData.xConsentSource = admin.firestore.FieldValue.delete();
       } else {
         throw new HttpsError("invalid-argument", "Unsupported auth method.");
       }
@@ -2041,7 +2040,7 @@ const getLinkedMethodsForUid = async (uid) => {
         apple: false,
         eth: false,
         sol: false,
-        google: false,
+        x: false,
       },
       appleLinked: false,
     };
@@ -2088,7 +2087,7 @@ const syncProfileClaimForUid = async (uid) => {
         apple: false,
         eth: false,
         sol: false,
-        google: false,
+        x: false,
       },
       appleLinked: false,
     };
@@ -2101,24 +2100,6 @@ const syncProfileClaimForUid = async (uid) => {
     linkedMethods,
     appleLinked: linkedMethods.apple,
   };
-};
-
-const GOOGLE_ISSUERS = new Set(["accounts.google.com", "https://accounts.google.com"]);
-const googleOauthClient = new OAuth2Client();
-
-const getGoogleAudiences = () => {
-  const configured = toCleanString(process.env.GOOGLE_AUDIENCES);
-  if (configured) {
-    return configured
-      .split(",")
-      .map((token) => token.trim())
-      .filter((token) => token !== "");
-  }
-  const fallback = toCleanString(process.env.GOOGLE_CLIENT_ID);
-  if (fallback) {
-    return [fallback];
-  }
-  return [];
 };
 
 const APPLE_ISSUER = "https://appleid.apple.com";
@@ -2302,52 +2283,6 @@ const verifyAppleIdToken = async ({ idToken, expectedNonce }) => {
   };
 };
 
-const verifyGoogleIdToken = async ({ idToken, expectedNonce }) => {
-  const audiences = getGoogleAudiences();
-  if (!Array.isArray(audiences) || audiences.length === 0) {
-    throw new HttpsError("failed-precondition", "GOOGLE_CLIENT_ID or GOOGLE_AUDIENCES is required.");
-  }
-  if (!toCleanString(idToken)) {
-    throw new HttpsError("invalid-argument", "idToken is required.");
-  }
-  let payload = null;
-  try {
-    const ticket = await googleOauthClient.verifyIdToken({
-      idToken,
-      audience: audiences,
-    });
-    payload = ticket.getPayload() || null;
-  } catch {
-    throw new HttpsError("permission-denied", "google-token-invalid");
-  }
-  if (!payload || typeof payload !== "object") {
-    throw new HttpsError("permission-denied", "google-token-invalid");
-  }
-  const issuer = toCleanString(payload.iss);
-  if (!GOOGLE_ISSUERS.has(issuer)) {
-    throw new HttpsError("permission-denied", "google-issuer-mismatch");
-  }
-  const audience = toCleanString(payload.aud);
-  if (!audiences.includes(audience)) {
-    throw new HttpsError("permission-denied", "google-audience-mismatch");
-  }
-  const nowSeconds = Math.floor(Date.now() / 1000);
-  const exp = parseNumber(payload.exp, 0);
-  if (!Number.isFinite(exp) || exp <= nowSeconds) {
-    throw new HttpsError("permission-denied", "google-token-expired");
-  }
-  const nonceClaim = toCleanString(payload.nonce);
-  if (expectedNonce && nonceClaim !== expectedNonce) {
-    throw new HttpsError("permission-denied", "google-nonce-mismatch");
-  }
-  const subject = normalizeGoogleSub(payload.sub);
-  return {
-    sub: subject,
-    emailMasked: maskEmail(payload.email),
-    emailVerified: payload.email_verified === true || payload.email_verified === "true",
-  };
-};
-
 const getAllowedSiweDomains = () => {
   const configured = toCleanString(process.env.SIWE_ALLOWED_DOMAINS);
   if (configured) {
@@ -2398,7 +2333,6 @@ module.exports = {
   getLinkedMethodsForUid,
   syncProfileClaimForUid,
   verifyAppleIdToken,
-  verifyGoogleIdToken,
   validateSiweDomainAndUri,
   ensureProfileClaimAndRtdb,
 };

@@ -9,7 +9,7 @@ import { closeMenuAndInfoIfAllowedForEvent, closeMenuAndInfoIfAny } from "./Main
 import { setAuthStatusGlobally } from "../connection/authentication";
 import { handleLoginSuccess } from "../connection/loginSuccess";
 import { preloadAppleSignInLibrary, signInWithApplePopup } from "../connection/appleConnection";
-import { clearGoogleSignInTransientState, isGoogleSignInCancelledError, preloadGoogleSignInLibrary, signInWithGooglePopup } from "../connection/googleConnection";
+import { isXRedirectStartedError, startXRedirectAuth } from "../connection/xConnection";
 import { formatAuthCooldownErrorMessage } from "../connection/authCooldownErrors";
 import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
@@ -343,7 +343,6 @@ type AuthIntentResponse = {
 };
 
 const APPLE_INTENT_REFRESH_BUFFER_MS = 30 * 1000;
-const GOOGLE_INTENT_REFRESH_BUFFER_MS = 30 * 1000;
 
 const isAppleIntentUsable = (intent: AuthIntentResponse | null): intent is AuthIntentResponse => {
   if (!intent) {
@@ -360,23 +359,8 @@ const isAppleIntentUsable = (intent: AuthIntentResponse | null): intent is AuthI
     intent.expiresAtMs - Date.now() > APPLE_INTENT_REFRESH_BUFFER_MS;
 };
 
-const isGoogleIntentUsable = (intent: AuthIntentResponse | null): intent is AuthIntentResponse => {
-  if (!intent) {
-    return false;
-  }
-  return typeof intent.intentId === "string" &&
-    intent.intentId !== "" &&
-    typeof intent.nonce === "string" &&
-    intent.nonce !== "" &&
-    typeof intent.state === "string" &&
-    intent.state !== "" &&
-    typeof intent.expiresAtMs === "number" &&
-    Number.isFinite(intent.expiresAtMs) &&
-    intent.expiresAtMs - Date.now() > GOOGLE_INTENT_REFRESH_BUFFER_MS;
-};
-
 type AppleButtonUiState = "idle" | "preparing" | "confirm" | "connecting" | "verifying";
-type GoogleButtonUiState = "idle" | "connecting" | "verifying";
+type XButtonUiState = "idle" | "connecting";
 
 const getAppleButtonLabel = (state: AppleButtonUiState): string => {
   if (state === "preparing") {
@@ -394,14 +378,11 @@ const getAppleButtonLabel = (state: AppleButtonUiState): string => {
   return "Apple";
 };
 
-const getGoogleButtonLabel = (state: GoogleButtonUiState): string => {
+const getXButtonLabel = (state: XButtonUiState): string => {
   if (state === "connecting") {
-    return "Google";
+    return "X";
   }
-  if (state === "verifying") {
-    return "Verifying...";
-  }
-  return "Google";
+  return "X";
 };
 
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
@@ -409,7 +390,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const [solanaText, setSolanaText] = useState("Solana");
   const [inlineAuthError, setInlineAuthError] = useState("");
   const [appleButtonState, setAppleButtonState] = useState<AppleButtonUiState>("idle");
-  const [googleButtonState, setGoogleButtonState] = useState<GoogleButtonUiState>("idle");
+  const [xButtonState, setXButtonState] = useState<XButtonUiState>("idle");
   const [isSolanaConnecting, setIsSolanaConnecting] = useState(false);
   const [profileDisplayName, setProfileDisplayName] = useState(() => formatDisplayName(pendingUsername, pendingEthAddress, pendingSolAddress));
   const [isEditingName, setIsEditingName] = useState(false);
@@ -425,8 +406,6 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const notificationTimeoutRef = useRef<number | null>(null);
   const appleIntentRef = useRef<AuthIntentResponse | null>(null);
   const appleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(null);
-  const googleIntentRef = useRef<AuthIntentResponse | null>(null);
-  const googleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(null);
   const appleConfirmExpiryTimeoutRef = useRef<number | null>(null);
   const ethereumConnectModalRef = useRef<(() => void) | null>(null);
   const ethereumConnectRetryTimeoutRef = useRef<number | null>(null);
@@ -436,9 +415,9 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const latestAppleActionRef = useRef(0);
 
   const appleText = getAppleButtonLabel(appleButtonState);
-  const googleText = getGoogleButtonLabel(googleButtonState);
+  const xText = getXButtonLabel(xButtonState);
   const isAppleBusy = appleButtonState === "preparing" || appleButtonState === "connecting" || appleButtonState === "verifying";
-  const isGoogleBusy = googleButtonState === "connecting" || googleButtonState === "verifying";
+  const isXBusy = xButtonState === "connecting";
 
   const clearAppleConfirmExpiryTimeout = useCallback(() => {
     if (appleConfirmExpiryTimeoutRef.current) {
@@ -517,9 +496,6 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       isMountedRef.current = false;
       clearEthereumConnectRetryTimeout();
       clearAppleConfirmExpiryTimeout();
-      clearGoogleSignInTransientState();
-      googleIntentRef.current = null;
-      googleIntentPromiseRef.current = null;
       if (notificationTimeoutRef.current) {
         clearTimeout(notificationTimeoutRef.current);
       }
@@ -556,10 +532,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   }, [authStatus, isOpen, appleButtonState]);
 
   useEffect(() => {
-    if (authStatus === "authenticated" && googleButtonState !== "idle") {
-      setGoogleButtonState("idle");
+    if (authStatus === "authenticated" && xButtonState !== "idle") {
+      setXButtonState("idle");
     }
-  }, [authStatus, googleButtonState]);
+  }, [authStatus, xButtonState]);
 
   useEffect(() => {
     if (appleButtonState !== "confirm") {
@@ -818,79 +794,27 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     return intent;
   }, []);
 
-  const ensurePreparedGoogleIntent = useCallback(async (): Promise<AuthIntentResponse> => {
-    if (isGoogleIntentUsable(googleIntentRef.current)) {
-      return googleIntentRef.current;
-    }
-    if (!googleIntentPromiseRef.current) {
-      const pendingIntentPromise = connection
-        .beginAuthIntent("google")
-        .then((intent) => {
-          if (googleIntentPromiseRef.current === pendingIntentPromise) {
-            googleIntentRef.current = intent;
-          }
-          return intent;
-        })
-        .finally(() => {
-          if (googleIntentPromiseRef.current === pendingIntentPromise) {
-            googleIntentPromiseRef.current = null;
-          }
-        });
-      googleIntentPromiseRef.current = pendingIntentPromise;
-    }
-    return googleIntentPromiseRef.current;
-  }, []);
-
-  const takePreparedGoogleIntent = useCallback((): AuthIntentResponse | null => {
-    if (!isGoogleIntentUsable(googleIntentRef.current)) {
-      googleIntentRef.current = null;
-      return null;
-    }
-    const intent = googleIntentRef.current;
-    googleIntentRef.current = null;
-    return intent;
-  }, []);
-
   useEffect(() => {
     if (!isOpen || authStatus === "authenticated") {
       return;
     }
     void import("../connection/solanaConnection").catch(() => {});
     void preloadAppleSignInLibrary().catch(() => {});
-    void preloadGoogleSignInLibrary().catch(() => {});
-    void ensurePreparedGoogleIntent().catch(() => {});
     void ensurePreparedAppleIntent().catch(() => {});
-  }, [isOpen, authStatus, ensurePreparedAppleIntent, ensurePreparedGoogleIntent]);
+  }, [isOpen, authStatus, ensurePreparedAppleIntent]);
 
-  const handleGoogleClick = async () => {
-    if (isGoogleBusy) {
+  const handleXClick = async () => {
+    if (isXBusy) {
       return;
     }
     setInlineAuthError("");
-    setGoogleButtonState("connecting");
+    setXButtonState("connecting");
     try {
-      const intent = takePreparedGoogleIntent() || await connection.beginAuthIntent("google");
-      const signInResult = await signInWithGooglePopup({
-        nonce: intent.nonce,
+      const intent = await connection.beginAuthIntent("x");
+      await startXRedirectAuth({
         intentId: intent.intentId,
         consentSource: "signin",
       });
-      setGoogleButtonState("verifying");
-      const res = await connection.verifyGoogleToken(intent.intentId, signInResult.idToken, "signin");
-      if (!isMountedRef.current) {
-        return;
-      }
-      if (res && res.ok === true) {
-        setInlineAuthError("");
-        handleLoginSuccess(res, "google");
-        setGoogleButtonState("idle");
-        setAuthStatusGlobally("authenticated");
-        setIsOpen(false);
-        hideShinyCard();
-        enterProfileEditingMode(false);
-        return;
-      }
-      setGoogleButtonState("idle");
     } catch (error) {
       if (!isMountedRef.current) {
         return;
@@ -898,16 +822,16 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       const cooldownMessage = formatAuthCooldownErrorMessage(error);
       if (cooldownMessage) {
         setInlineAuthError(cooldownMessage);
-      } else if (isGoogleSignInCancelledError(error)) {
+      } else if (isXRedirectStartedError(error)) {
         setInlineAuthError("");
       } else if (error instanceof Error && error.message.trim() !== "") {
         setInlineAuthError(error.message);
       } else {
-        setInlineAuthError("Google sign in failed. Please try again.");
+        setInlineAuthError("X sign in failed. Please try again.");
       }
-      setGoogleButtonState("idle");
-      if (isOpenRef.current && authStatusRef.current !== "authenticated") {
-        void ensurePreparedGoogleIntent().catch(() => {});
+    } finally {
+      if (isMountedRef.current) {
+        setXButtonState("idle");
       }
     }
   };
@@ -1095,6 +1019,9 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
               </CustomConnectButton>
               <CustomConnectButton onClick={handleAppleClick}>
                 {appleText}
+              </CustomConnectButton>
+              <CustomConnectButton onClick={handleXClick}>
+                {xText}
               </CustomConnectButton>
               {inlineAuthError ? <InlineAuthError>{inlineAuthError}</InlineAuthError> : null}
             </>

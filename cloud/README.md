@@ -20,14 +20,22 @@
 
 `node backfillAuthMethodIndex.js --project mons-link --dry-run`
 
+`node scrubGoogleAuthData.js --project mons-link --out /tmp/google_auth_scrub_report.json`
+
+`node scrubGoogleAuthData.js --project mons-link --write --force`
+
+`cd /Users/ivan/Developer/mons/link/cloud && firebase functions:delete beginGoogleRedirectAuth completeGoogleRedirectAuth googleAuthRedirectCallback verifyGoogleToken --project mons-link --region us-central1 --force && firebase deploy --only functions --project mons-link`
+
 ## auth rollout flags
 
 `AUTH_DISABLE_APPLE_VERIFY=true`
 
-`AUTH_DISABLE_GOOGLE_VERIFY=true`
+`AUTH_DISABLE_X_VERIFY=true`
 
 `AUTH_DISABLE_UNLINK=true`
 
 `AUTH_DISABLE_MERGE=true`
 
 Detailed rollout sequence and checks: `../docs/auth-rollout.md`
+
+X provider setup and deploy checklist: `../docs/x-auth-deploy.md`

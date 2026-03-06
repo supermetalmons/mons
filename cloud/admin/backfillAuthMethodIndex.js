@@ -21,9 +21,9 @@ const normalizeAppleSub = (value) => {
   return normalized.length >= 6 ? normalized : "";
 };
 
-const normalizeGoogleSub = (value) => {
+const normalizeXUserId = (value) => {
   const normalized = toCleanString(value);
-  return normalized.length >= 6 ? normalized : "";
+  return /^\d+$/.test(normalized) ? normalized : "";
 };
 
 const methodKey = (method, normalizedValue) => {
@@ -65,14 +65,14 @@ async function main() {
         { method: "eth", normalizedValue: normalizeEth(data.eth) },
         { method: "sol", normalizedValue: normalizeSol(data.sol) },
         { method: "apple", normalizedValue: normalizeAppleSub(data.appleSub) },
-        { method: "google", normalizedValue: normalizeGoogleSub(data.googleSub) },
+        { method: "x", normalizedValue: normalizeXUserId(data.xUserId) },
       ];
 
       for (const entry of entries) {
         if (!entry.normalizedValue) {
           const fieldName =
             entry.method === "apple" ? "appleSub"
-            : entry.method === "google" ? "googleSub"
+            : entry.method === "x" ? "xUserId"
             : entry.method;
           const rawValue = toCleanString(data[fieldName]);
           if (rawValue) {

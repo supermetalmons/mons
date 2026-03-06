@@ -4,7 +4,7 @@ import { SiweMessage } from "siwe";
 import { connection } from "./connection";
 import { handleLoginSuccess } from "./loginSuccess";
 import { clearConsumedAppleRedirectResult, consumeAppleRedirectResult } from "./appleConnection";
-import { clearConsumedGoogleRedirectResult, consumeGoogleRedirectResult } from "./googleConnection";
+import { clearConsumedXRedirectResult, consumeXRedirectResult } from "./xConnection";
 import { formatAuthCooldownErrorMessage } from "./authCooldownErrors";
 import { storage } from "../utils/storage";
 import { setupLoggedInPlayerProfile } from "../game/board";
@@ -17,10 +17,10 @@ const ETH_INTENT_STORAGE_KEY = "ethIntentByNonceV1";
 const ETH_INTENT_MAX_ITEMS = 200;
 const ETH_INTENT_MAX_AGE_MS = 10 * 60 * 1000;
 type AppleRedirectResult = NonNullable<ReturnType<typeof consumeAppleRedirectResult>>;
-type GoogleRedirectResult = NonNullable<ReturnType<typeof consumeGoogleRedirectResult>>;
+type XRedirectResult = NonNullable<ReturnType<typeof consumeXRedirectResult>>;
 
 let inFlightAppleRedirectVerification: { key: string; promise: Promise<any> } | null = null;
-let inFlightGoogleRedirectCompletion: { key: string; promise: Promise<any> } | null = null;
+let inFlightXRedirectCompletion: { key: string; promise: Promise<any> } | null = null;
 
 type EthIntentRecord = {
   nonce: string;
@@ -50,23 +50,23 @@ const verifyAppleRedirectResultOnce = (redirectResult: AppleRedirectResult): Pro
   return promise;
 };
 
-const getGoogleRedirectCompletionKey = (redirectResult: GoogleRedirectResult): string => {
+const getXRedirectCompletionKey = (redirectResult: XRedirectResult): string => {
   return `${redirectResult.flowId}::${redirectResult.status}::${redirectResult.errorCode}::${redirectResult.consentSource}`;
 };
 
-const completeGoogleRedirectResultOnce = (redirectResult: GoogleRedirectResult): Promise<any> => {
-  const key = getGoogleRedirectCompletionKey(redirectResult);
-  if (inFlightGoogleRedirectCompletion && inFlightGoogleRedirectCompletion.key === key) {
-    return inFlightGoogleRedirectCompletion.promise;
+const completeXRedirectResultOnce = (redirectResult: XRedirectResult): Promise<any> => {
+  const key = getXRedirectCompletionKey(redirectResult);
+  if (inFlightXRedirectCompletion && inFlightXRedirectCompletion.key === key) {
+    return inFlightXRedirectCompletion.promise;
   }
   const promise = connection
-    .completeGoogleRedirectAuth({ flowId: redirectResult.flowId })
+    .completeXRedirectAuth({ flowId: redirectResult.flowId })
     .finally(() => {
-      if (inFlightGoogleRedirectCompletion?.key === key) {
-        inFlightGoogleRedirectCompletion = null;
+      if (inFlightXRedirectCompletion?.key === key) {
+        inFlightXRedirectCompletion = null;
       }
     });
-  inFlightGoogleRedirectCompletion = { key, promise };
+  inFlightXRedirectCompletion = { key, promise };
   return promise;
 };
 
@@ -269,12 +269,12 @@ export function useAuthStatus() {
 
   useEffect(() => {
     let isCancelled = false;
-    const completeGoogleRedirectSignInIfNeeded = async () => {
-      let redirectResult: ReturnType<typeof consumeGoogleRedirectResult>;
+    const completeXRedirectSignInIfNeeded = async () => {
+      let redirectResult: ReturnType<typeof consumeXRedirectResult>;
       try {
-        redirectResult = consumeGoogleRedirectResult();
+        redirectResult = consumeXRedirectResult();
       } catch (error) {
-        console.error("Google redirect sign in parse error:", error);
+        console.error("X redirect sign in parse error:", error);
         return;
       }
       if (!redirectResult) {
@@ -282,23 +282,23 @@ export function useAuthStatus() {
       }
       const shouldForceUnauthenticatedOnFailure = redirectResult.consentSource === "signin";
       if (redirectResult.status === "failed") {
-        console.error("Google redirect sign in callback failed:", redirectResult.errorCode || "unknown");
-        setSignInInlineAuthError("Google sign in failed. Please try again.");
-        clearConsumedGoogleRedirectResult();
+        console.error("X redirect sign in callback failed:", redirectResult.errorCode || "unknown");
+        setSignInInlineAuthError("X sign in failed. Please try again.");
+        clearConsumedXRedirectResult();
         if (shouldForceUnauthenticatedOnFailure) {
           setAuthStatus("unauthenticated");
         }
         return;
       }
       try {
-        const res = await completeGoogleRedirectResultOnce(redirectResult);
+        const res = await completeXRedirectResultOnce(redirectResult);
         if (isCancelled) {
           return;
         }
-        clearConsumedGoogleRedirectResult();
+        clearConsumedXRedirectResult();
         if (res && res.ok === true) {
           setSignInInlineAuthError(null);
-          handleLoginSuccess(res, "google");
+          handleLoginSuccess(res, "x");
           setAuthStatus("authenticated");
         } else if (shouldForceUnauthenticatedOnFailure) {
           setAuthStatus("unauthenticated");
@@ -307,20 +307,20 @@ export function useAuthStatus() {
         if (isCancelled) {
           return;
         }
-        console.error("Google redirect verify error:", error);
+        console.error("X redirect verify error:", error);
         const cooldownMessage = formatAuthCooldownErrorMessage(error);
         if (cooldownMessage) {
           setSignInInlineAuthError(cooldownMessage);
         } else if (error instanceof Error && error.message.trim() !== "") {
           setSignInInlineAuthError(error.message);
         }
-        clearConsumedGoogleRedirectResult();
+        clearConsumedXRedirectResult();
         if (shouldForceUnauthenticatedOnFailure) {
           setAuthStatus("unauthenticated");
         }
       }
     };
-    void completeGoogleRedirectSignInIfNeeded();
+    void completeXRedirectSignInIfNeeded();
     return () => {
       isCancelled = true;
     };

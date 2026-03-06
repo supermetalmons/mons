@@ -8,7 +8,7 @@ import { syncTutorialProgress } from "../content/problems";
 import { rocksMiningService } from "../services/rocksMiningService";
 import { notifyOtherTabsAboutSignIn } from "../session/logoutOrchestrator";
 
-export type AddressKind = "eth" | "sol" | "apple" | "google";
+export type AddressKind = "eth" | "sol" | "apple" | "x";
 
 interface VerifyResponse {
   ok: true;

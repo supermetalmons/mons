@@ -29,12 +29,12 @@ const normalizeAppleSub = (value) => {
   return normalized.length >= 6 ? normalized : "";
 };
 
-const normalizeGoogleSub = (value) => {
+const normalizeXUserId = (value) => {
   if (typeof value !== "string") {
     return "";
   }
   const normalized = value.trim();
-  return normalized.length >= 6 ? normalized : "";
+  return /^\d+$/.test(normalized) ? normalized : "";
 };
 
 async function main() {
@@ -53,12 +53,12 @@ async function main() {
   const ethOwners = new Map();
   const solOwners = new Map();
   const appleOwners = new Map();
-  const googleOwners = new Map();
+  const xOwners = new Map();
   const loginToProfiles = new Map();
   const malformedEth = [];
   const malformedSol = [];
   const malformedApple = [];
-  const malformedGoogle = [];
+  const malformedX = [];
 
   let totalProfiles = 0;
   let lastDoc = null;
@@ -79,7 +79,7 @@ async function main() {
       const rawEth = typeof data.eth === "string" ? data.eth.trim() : "";
       const rawSol = typeof data.sol === "string" ? data.sol.trim() : "";
       const rawApple = typeof data.appleSub === "string" ? data.appleSub.trim() : "";
-      const rawGoogle = typeof data.googleSub === "string" ? data.googleSub.trim() : "";
+      const rawX = typeof data.xUserId === "string" ? data.xUserId.trim() : "";
 
       if (rawEth) {
         const normalizedEth = normalizeEth(rawEth);
@@ -111,14 +111,14 @@ async function main() {
           appleOwners.set(normalizedApple, owners);
         }
       }
-      if (rawGoogle) {
-        const normalizedGoogle = normalizeGoogleSub(rawGoogle);
-        if (!normalizedGoogle) {
-          malformedGoogle.push({ profileId, value: rawGoogle });
+      if (rawX) {
+        const normalizedX = normalizeXUserId(rawX);
+        if (!normalizedX) {
+          malformedX.push({ profileId, value: rawX });
         } else {
-          const owners = googleOwners.get(normalizedGoogle) || [];
+          const owners = xOwners.get(normalizedX) || [];
           owners.push(profileId);
-          googleOwners.set(normalizedGoogle, owners);
+          xOwners.set(normalizedX, owners);
         }
       }
 
@@ -142,7 +142,7 @@ async function main() {
   const duplicateEth = [];
   const duplicateSol = [];
   const duplicateApple = [];
-  const duplicateGoogle = [];
+  const duplicateX = [];
   ethOwners.forEach((profileIds, eth) => {
     if (profileIds.length > 1) {
       duplicateEth.push({ eth, profileIds });
@@ -158,9 +158,9 @@ async function main() {
       duplicateApple.push({ appleSub, profileIds });
     }
   });
-  googleOwners.forEach((profileIds, googleSub) => {
+  xOwners.forEach((profileIds, xUserId) => {
     if (profileIds.length > 1) {
-      duplicateGoogle.push({ googleSub, profileIds });
+      duplicateX.push({ xUserId, profileIds });
     }
   });
 
@@ -204,21 +204,21 @@ async function main() {
     malformedEthCount: malformedEth.length,
     malformedSolCount: malformedSol.length,
     malformedAppleCount: malformedApple.length,
-    malformedGoogleCount: malformedGoogle.length,
+    malformedXCount: malformedX.length,
     duplicateEthCount: duplicateEth.length,
     duplicateSolCount: duplicateSol.length,
     duplicateAppleCount: duplicateApple.length,
-    duplicateGoogleCount: duplicateGoogle.length,
+    duplicateXCount: duplicateX.length,
     conflictingLoginsCount: conflictingLogins.length,
     loginProfileLinkMismatchesCount: loginProfileLinkMismatches.length,
     malformedEth,
     malformedSol,
     malformedApple,
-    malformedGoogle,
+    malformedX,
     duplicateEth,
     duplicateSol,
     duplicateApple,
-    duplicateGoogle,
+    duplicateX,
     conflictingLogins,
     loginProfileLinkMismatches,
   };
@@ -230,11 +230,11 @@ async function main() {
     malformedEthCount: report.malformedEthCount,
     malformedSolCount: report.malformedSolCount,
     malformedAppleCount: report.malformedAppleCount,
-    malformedGoogleCount: report.malformedGoogleCount,
+    malformedXCount: report.malformedXCount,
     duplicateEthCount: report.duplicateEthCount,
     duplicateSolCount: report.duplicateSolCount,
     duplicateAppleCount: report.duplicateAppleCount,
-    duplicateGoogleCount: report.duplicateGoogleCount,
+    duplicateXCount: report.duplicateXCount,
     conflictingLoginsCount: report.conflictingLoginsCount,
     loginProfileLinkMismatchesCount: report.loginProfileLinkMismatchesCount,
   }, null, 2));

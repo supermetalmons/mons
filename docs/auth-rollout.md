@@ -1,61 +1,54 @@
 # Auth Rollout Runbook
 
-This runbook covers rollout of the unified auth identity transition:
+This runbook covers the current unified auth rollout:
 
 - anonymous Firebase auth remains the session anchor
-- Apple / Google / ETH / SOL can be linked and unlinked on one profile
+- Apple / X / ETH / SOL can be linked and unlinked on one profile
 - profile merge is deterministic (`rating = min(...)`)
 - method ownership is enforced via `authMethodIndex`
 
-## Environment Additions
+## Environment
 
 Set these before rollout.
 
 ### Cloud Functions env
 
-Recommended location (Firebase Functions v2): `cloud/functions/.env.<project-id>` (for example `.env.mons-link`).
+Recommended location: `cloud/functions/.env.<project-id>` such as `.env.mons-link`.
 
 | Key | Required | Example | Notes |
 | --- | --- | --- | --- |
 | `APPLE_CLIENT_ID` | Yes (or `APPLE_AUDIENCES`) | `com.mons.web` | Apple audience accepted by backend token verification. |
 | `APPLE_AUDIENCES` | Optional | `com.mons.web,com.mons.staging` | Comma-separated allowlist. Overrides single-client-id mode. |
-| `GOOGLE_CLIENT_ID` | Yes (or `GOOGLE_AUDIENCES`) | `1234567890-abcdef.apps.googleusercontent.com` | Google audience accepted by backend token verification. |
-| `GOOGLE_AUDIENCES` | Optional | `123.apps.googleusercontent.com,456.apps.googleusercontent.com` | Comma-separated allowlist. Overrides single-client-id mode. |
-| `SIWE_ALLOWED_DOMAINS` | Yes | `mons.link,www.mons.link,staging.mons.link,localhost,127.0.0.1` | Required for ETH SIWE domain/URI validation. |
+| `X_CLIENT_ID` | Yes | `twitter-client-id` | X OAuth 2.0 client ID used to build the authorize URL. |
+| `X_CLIENT_SECRET` | Yes | `twitter-client-secret` | X confidential client secret used during token exchange. |
+| `X_OAUTH_REDIRECT_URI` | Yes | `https://us-central1-mons-link.cloudfunctions.net/xAuthRedirectCallback` | Must exactly match the callback configured in X Developer Portal. |
+| `X_REDIRECT_ALLOWED_ORIGINS` | Yes | `https://mons.link,https://www.mons.link,http://localhost:3000` | Allowlist for safe post-auth return URLs. |
+| `SIWE_ALLOWED_DOMAINS` | Yes | `mons.link,www.mons.link,staging.mons.link,localhost,127.0.0.1` | Required for ETH SIWE domain and URI validation. |
 | `AUTH_DISABLE_APPLE_VERIFY` | Yes | `true` during initial deploy | Kill switch for Apple verify endpoint. |
-| `AUTH_DISABLE_GOOGLE_VERIFY` | Yes | `true` during initial deploy | Kill switch for Google verify endpoint. |
+| `AUTH_DISABLE_X_VERIFY` | Yes | `true` during initial deploy | Kill switch for X redirect auth. |
 | `AUTH_DISABLE_UNLINK` | Yes | `true` during initial deploy | Kill switch for unlink endpoint. |
 | `AUTH_DISABLE_MERGE` | Yes | `true` during initial deploy | Kill switch for cross-profile merge. |
 
-Flag values are treated as disabled when set to: `1`, `true`, or `yes` (case-insensitive).
-To enable a feature, set the flag to `false` (or remove the key).
+Flag values are treated as disabled when set to `1`, `true`, or `yes` (case-insensitive). To enable a feature, set the flag to `false` or remove the key.
 
 ### Web app env
 
-Set in root app env (`/Users/ivan/Developer/mons/link/.env` or deployment env):
+Set in `/Users/ivan/Developer/mons/link/.env` or deployment env:
 
 | Key | Required | Example | Notes |
 | --- | --- | --- | --- |
-| `REACT_APP_APPLE_CLIENT_ID` | Yes | `com.mons.web` | Must match Apple web Service ID used for `id_token`. |
+| `REACT_APP_APPLE_CLIENT_ID` | Yes | `com.mons.web` | Must match the Apple web Service ID used for `id_token`. |
 
-Google client ID is configured via hardcoded placeholder in frontend source:
-
-- File: `/Users/ivan/Developer/mons/link/src/connection/googleConnection.ts`
-- Constant: `GOOGLE_CLIENT_ID`
-- Replace default value `REPLACE_WITH_YOUR_GOOGLE_WEB_CLIENT_ID.apps.googleusercontent.com` with your production Google web client ID.
+X does not require a frontend client ID constant. The app asks Functions for the full authorize URL and then redirects.
 
 ## Deployment Order
 
-Run these steps in order.
+1. Prepare provider configuration.
+- In Apple Developer, ensure web Sign in with Apple is configured for your production domain.
+- In X Developer Portal, create a confidential OAuth 2.0 app and register the exact callback URL used in `X_OAUTH_REDIRECT_URI`.
+- Confirm X scopes are `tweet.read users.read`.
 
-1. Prepare provider configuration
-- In Apple Developer, ensure web Sign in with Apple is configured for your domain(s).
-- Ensure Apple returned audience matches `APPLE_CLIENT_ID` or one value in `APPLE_AUDIENCES`.
-- Ensure Apple redirect URI includes the hardcoded web callback origin `https://mons.link`.
-- In Google Cloud Console, ensure Google Identity Services web client is configured for your domain(s).
-- Ensure Google returned audience matches `GOOGLE_CLIENT_ID` or one value in `GOOGLE_AUDIENCES`.
-
-2. Preflight audit (production data, no writes)
+2. Preflight audit with no writes.
 - From `/Users/ivan/Developer/mons/link/cloud/admin`:
 ```bash
 gcloud auth application-default login
@@ -65,132 +58,129 @@ node preflightAuthAudit.js --project mons-link --out /tmp/auth_preflight_report.
   - `duplicateEthCount`
   - `duplicateSolCount`
   - `duplicateAppleCount`
-  - `duplicateGoogleCount`
+  - `duplicateXCount`
   - `conflictingLoginsCount`
-- Investigate (but do not necessarily block) when non-zero:
-  - `loginProfileLinkMismatchesCount` (can be auto-repaired by `syncProfileClaim` on user activity)
+- Investigate `loginProfileLinkMismatchesCount` separately. Active users can self-heal via `syncProfileClaim`.
 
-3. Deploy backend in safe mode (features gated)
+3. Deploy backend in safe mode.
 - Set:
   - `AUTH_DISABLE_APPLE_VERIFY=true`
-  - `AUTH_DISABLE_GOOGLE_VERIFY=true`
+  - `AUTH_DISABLE_X_VERIFY=true`
   - `AUTH_DISABLE_UNLINK=true`
   - `AUTH_DISABLE_MERGE=true`
-- Note: ETH/SOL verification now requires `intentId` for all sign-ins. Keep backend+frontend rollout coordinated to avoid old clients attempting legacy UID-nonce sign-in.
 - Deploy functions from `/Users/ivan/Developer/mons/link/cloud`:
 ```bash
 firebase deploy --only functions --project mons-link
 ```
 
-4. Backfill `authMethodIndex`
+4. Backfill `authMethodIndex`.
 - From `/Users/ivan/Developer/mons/link/cloud/admin`:
 ```bash
 node backfillAuthMethodIndex.js --project mons-link --dry-run
 node backfillAuthMethodIndex.js --project mons-link
 ```
-- If output shows conflicts, stop and resolve ownership before proceeding.
+- Stop if the script reports ownership conflicts.
 
-5. Re-run preflight audit
-- Confirm no new conflicts or malformed identities:
+5. Re-run the preflight audit.
+- Confirm the post-backfill report stays clean:
 ```bash
 node preflightAuthAudit.js --project mons-link --out /tmp/auth_preflight_post_backfill.json
 ```
 
-6. Enable merge first, keep Apple/Google/unlink off
+6. Enable merge first and keep Apple/X/unlink disabled.
 - Set:
   - `AUTH_DISABLE_MERGE=false`
   - `AUTH_DISABLE_APPLE_VERIFY=true`
-  - `AUTH_DISABLE_GOOGLE_VERIFY=true`
+  - `AUTH_DISABLE_X_VERIFY=true`
   - `AUTH_DISABLE_UNLINK=true`
 - Deploy functions.
-- Run canary checks for ETH/SOL sign-in and ETH<->SOL linking only.
+- Run ETH/SOL sign-in and ETH<->SOL linking canaries only.
 
-7. Deploy frontend with settings + Apple/Google UI
-- Deploy web app after backend callables are live.
-- Keep Apple/Google verify disabled until backend canary is stable.
+7. Deploy the frontend with Apple/X UI.
+- Deploy the web app only after backend callables are live.
+- Keep Apple and X verification disabled until backend canary looks stable.
 
-8. Enable Apple verify for canary cohort
+8. Enable Apple verification for canary.
 - Set:
   - `AUTH_DISABLE_APPLE_VERIFY=false`
-  - `AUTH_DISABLE_GOOGLE_VERIFY=true`
+  - `AUTH_DISABLE_X_VERIFY=true`
   - `AUTH_DISABLE_UNLINK=true`
   - `AUTH_DISABLE_MERGE=false`
 - Deploy functions.
-- Run Apple-first and wallet-first link tests on canary users.
+- Run Apple-first and wallet-first link tests.
 
-9. Enable Google verify for canary cohort
+9. Enable X verification for canary.
 - Set:
-  - `AUTH_DISABLE_GOOGLE_VERIFY=false`
+  - `AUTH_DISABLE_X_VERIFY=false`
   - `AUTH_DISABLE_UNLINK=true`
   - `AUTH_DISABLE_MERGE=false`
 - Deploy functions.
-- Run Google-first and wallet-first link tests on canary users.
+- Run X-first and wallet-first link tests.
 
-10. Enable unlink last
-- Set:
-  - `AUTH_DISABLE_UNLINK=false`
+10. Enable unlink last.
+- Set `AUTH_DISABLE_UNLINK=false`.
 - Deploy functions.
-- Verify unlink guard blocks removing the last remaining method.
+- Verify the guard still blocks removing the last remaining auth method.
 
-11. Full rollout
-- Ramp from canary to full traffic.
-- Keep all verify/unlink/merge kill switches available for instant rollback.
+11. Roll out fully.
+- Expand from canary to full traffic.
+- Keep the Apple/X/unlink/merge kill switches available for rollback.
 
-## Backfill and Data Safety Notes
+## Backfill and Data Safety
 
 - Backfill is idempotent and safe to rerun.
-- `readProfileByMethod` already has legacy field fallback; index backfill is still required for consistency and concurrency guarantees.
+- `readProfileByMethod` still has legacy-field fallback, but index backfill is required for consistency and concurrency guarantees.
 - Merges are lock-protected via `mergeLocks` and operation-id logged via `authOps`.
-- Unlink now applies a 24-hour cooldown to:
-  - the unlinked method value (`authMethodRevocations`)
-  - the unlinking profile+method type (`authProfileMethodCooldowns`)
-- Run periodic cleanup to remove expired method cooldown docs:
+- Unlink applies a 24-hour cooldown to:
+  - the unlinked method value in `authMethodRevocations`
+  - the unlinking profile + method type in `authProfileMethodCooldowns`
+- Periodically clean expired cooldown docs:
 ```bash
 cd /Users/ivan/Developer/mons/link/cloud/admin
 node cleanupAuthMethodRevocations.js --project mons-link --dry-run
 node cleanupAuthMethodRevocations.js --project mons-link
 ```
 
-## Smoke Test Checklist
+## Smoke Tests
 
-Run end-to-end after each enablement phase:
+Run these end to end after each enablement phase:
 
 1. anon -> Apple sign-in creates one profile and sets `players/{uid}/profile`.
-2. anon -> Google sign-in creates one profile and sets `players/{uid}/profile`.
-3. Apple-first -> add ETH -> both Apple and ETH sign into same profile.
-4. Google-first -> add ETH -> both Google and ETH sign into same profile.
-5. Apple-first -> add SOL -> both Apple and SOL sign into same profile.
-6. Google-first -> add SOL -> both Google and SOL sign into same profile.
+2. anon -> X sign-in creates one profile and sets `players/{uid}/profile`.
+3. Apple-first -> add ETH -> both Apple and ETH sign into the same profile.
+4. X-first -> add ETH -> both X and ETH sign into the same profile.
+5. Apple-first -> add SOL -> both Apple and SOL sign into the same profile.
+6. X-first -> add SOL -> both X and SOL sign into the same profile.
 7. ETH-first -> add SOL and SOL-first -> add ETH both converge to one profile.
-8. Wallet-first -> add Apple does not create duplicate profile.
-9. Wallet-first -> add Google does not create duplicate profile.
-10. Unlink blocked when only one method remains.
+8. Wallet-first -> add Apple does not create a duplicate profile.
+9. Wallet-first -> add X does not create a duplicate profile.
+10. Unlink is blocked when only one method remains.
 11. Unlink succeeds with 2+ methods and writes 24-hour cooldowns for method reuse and same-type relinking.
 12. During cooldown, signing in with that recently unlinked method is blocked with `method-reuse-cooldown`.
 13. During cooldown, linking another method of that type on the unlinking profile is blocked with `profile-method-cooldown`.
-14. Collision merge keeps current profile as target and applies `rating=min`.
-15. Profile remap updates projector output (`users/{profileId}/games`) correctly.
-16. `syncProfileClaim` restores missing claim/profile link for active UID.
+14. Collision merge keeps the current profile as target and applies `rating=min`.
+15. Profile remap updates projector output at `users/{profileId}/games`.
+16. `syncProfileClaim` restores a missing claim/profile link for an active UID.
 
-## Apple/Google Compliance Notes
+## Provider Notes
 
-- Keep Apple and Google account linking user-initiated (settings/sign-in actions).
-- Do not expose raw Apple/Google `sub` values or full email to clients.
-- Ensure Apple and Google domain/audience configuration matches production and any staged domain used in rollout.
+- Keep Apple and X account linking user-initiated from sign-in or settings flows.
+- Do not expose raw Apple `sub` or X `xUserId` values to clients unless required for auth internals.
+- X identity is keyed by `xUserId`. `xUsername` is informational metadata and may change without breaking auth.
 
-## Observability During Rollout
+## Observability
 
-Monitor logs/metrics for:
+Monitor logs for:
 
-- verify success/failure rate by method
+- verify success and failure rate by method
 - `merge-method-conflict`
 - `merge-lock-active`
 - `cannot-remove-last-method`
 - `method-reuse-cooldown`
 - `profile-method-cooldown`
 - `apple-audience-mismatch` / `apple-nonce-mismatch`
-- `google-audience-mismatch` / `google-nonce-mismatch`
-- index ownership conflicts reported by backfill/audit
+- `x-oauth-*` and `x-redirect-*` failures
+- index ownership conflicts reported by backfill or audit
 
 Use:
 ```bash
@@ -198,18 +188,18 @@ cd /Users/ivan/Developer/mons/link/cloud
 firebase functions:log --project mons-link
 ```
 
-## Rollback Playbook
+## Rollback
 
 For immediate stabilization, set and deploy:
 
 - `AUTH_DISABLE_APPLE_VERIFY=true`
-- `AUTH_DISABLE_GOOGLE_VERIFY=true`
+- `AUTH_DISABLE_X_VERIFY=true`
 - `AUTH_DISABLE_UNLINK=true`
-- `AUTH_DISABLE_MERGE=true` (only if merge path is the issue)
+- `AUTH_DISABLE_MERGE=true` when merge is implicated
 
 Then:
 
-1. Keep existing linked method sign-in operational while Google/Apple verify are disabled.
-2. Pause rollout cohort expansion.
-3. Run `preflightAuthAudit.js` and `backfillAuthMethodIndex.js --dry-run` to identify drift/conflicts.
-4. Re-enable features one by one after fixes.
+1. Keep existing linked-method sign-in operational while Apple/X verification is disabled.
+2. Pause rollout expansion.
+3. Run `preflightAuthAudit.js` and `backfillAuthMethodIndex.js --dry-run` to identify drift or conflicts.
+4. Re-enable features one by one after fixing the root issue.

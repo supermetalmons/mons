@@ -1007,7 +1007,7 @@ class Connection {
     }
   }
 
-  public async beginAuthIntent(method: "eth" | "sol" | "apple" | "google"): Promise<{ ok: boolean; intentId: string; nonce: string; state: string; expiresAtMs: number }> {
+  public async beginAuthIntent(method: "eth" | "sol" | "apple" | "x"): Promise<{ ok: boolean; intentId: string; nonce: string; state: string; expiresAtMs: number }> {
     try {
       await this.ensureAuthenticated();
       const beginAuthIntentFunction = httpsCallable(this.functions, "beginAuthIntent");
@@ -1043,7 +1043,7 @@ class Connection {
     }
   }
 
-  public async unlinkAuthMethod(method: "eth" | "sol" | "apple" | "google"): Promise<any> {
+  public async unlinkAuthMethod(method: "eth" | "sol" | "apple" | "x"): Promise<any> {
     try {
       await this.ensureAuthenticated();
       const unlinkAuthMethodFunction = httpsCallable(this.functions, "unlinkAuthMethod");
@@ -1070,58 +1070,41 @@ class Connection {
     }
   }
 
-  public async verifyGoogleToken(intentId: string, idToken: string, consentSource = "signin"): Promise<any> {
-    try {
-      await this.ensureAuthenticated();
-      const verifyGoogleTokenFunction = httpsCallable(this.functions, "verifyGoogleToken");
-      const emojiString = storage.getPlayerEmojiId("1");
-      const emoji = parseInt(emojiString);
-      const aura = storage.getPlayerEmojiAura("");
-      const response = await verifyGoogleTokenFunction({ intentId, idToken, emoji, aura, consentSource });
-      return response.data;
-    } catch (error) {
-      console.error("Error verifying Google token:", error);
-      throw error;
-    }
-  }
-
-  public async beginGoogleRedirectAuth(params: {
+  public async beginXRedirectAuth(params: {
     intentId: string;
-    nonce: string;
     consentSource?: "signin" | "settings";
     returnUrl?: string;
   }): Promise<{ ok: boolean; flowId: string; authUrl: string; expiresAtMs: number }> {
     try {
       await this.ensureAuthenticated();
-      const beginGoogleRedirectAuthFunction = httpsCallable(this.functions, "beginGoogleRedirectAuth");
-      const response = await beginGoogleRedirectAuthFunction({
+      const beginXRedirectAuthFunction = httpsCallable(this.functions, "beginXRedirectAuth");
+      const response = await beginXRedirectAuthFunction({
         intentId: params.intentId,
-        nonce: params.nonce,
         consentSource: params.consentSource || "signin",
         returnUrl: params.returnUrl || "",
       });
       return response.data as { ok: boolean; flowId: string; authUrl: string; expiresAtMs: number };
     } catch (error) {
-      console.error("Error beginning Google redirect auth:", error);
+      console.error("Error beginning X redirect auth:", error);
       throw error;
     }
   }
 
-  public async completeGoogleRedirectAuth(params: { flowId: string }): Promise<any> {
+  public async completeXRedirectAuth(params: { flowId: string }): Promise<any> {
     try {
       await this.ensureAuthenticated();
-      const completeGoogleRedirectAuthFunction = httpsCallable(this.functions, "completeGoogleRedirectAuth");
+      const completeXRedirectAuthFunction = httpsCallable(this.functions, "completeXRedirectAuth");
       const emojiString = storage.getPlayerEmojiId("1");
       const emoji = parseInt(emojiString);
       const aura = storage.getPlayerEmojiAura("");
-      const response = await completeGoogleRedirectAuthFunction({
+      const response = await completeXRedirectAuthFunction({
         flowId: params.flowId,
         emoji,
         aura,
       });
       return response.data;
     } catch (error) {
-      console.error("Error completing Google redirect auth:", error);
+      console.error("Error completing X redirect auth:", error);
       throw error;
     }
   }
