@@ -10,7 +10,7 @@ exports.unlinkAuthMethod = onCall({ invoker: "public" }, async (request) => {
   if (!method) {
     throw new HttpsError("invalid-argument", "method is required.");
   }
-  if (!["eth", "sol", "apple"].includes(method)) {
+  if (!["eth", "sol", "apple", "google"].includes(method)) {
     throw new HttpsError("invalid-argument", "Unsupported auth method.");
   }
   const opId = requestData.opId;

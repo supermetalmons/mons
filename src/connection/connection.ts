@@ -1007,7 +1007,7 @@ class Connection {
     }
   }
 
-  public async beginAuthIntent(method: "eth" | "sol" | "apple"): Promise<{ ok: boolean; intentId: string; nonce: string; state: string; expiresAtMs: number }> {
+  public async beginAuthIntent(method: "eth" | "sol" | "apple" | "google"): Promise<{ ok: boolean; intentId: string; nonce: string; state: string; expiresAtMs: number }> {
     try {
       await this.ensureAuthenticated();
       const beginAuthIntentFunction = httpsCallable(this.functions, "beginAuthIntent");
@@ -1043,7 +1043,7 @@ class Connection {
     }
   }
 
-  public async unlinkAuthMethod(method: "eth" | "sol" | "apple"): Promise<any> {
+  public async unlinkAuthMethod(method: "eth" | "sol" | "apple" | "google"): Promise<any> {
     try {
       await this.ensureAuthenticated();
       const unlinkAuthMethodFunction = httpsCallable(this.functions, "unlinkAuthMethod");
@@ -1066,6 +1066,21 @@ class Connection {
       return response.data;
     } catch (error) {
       console.error("Error verifying Apple token:", error);
+      throw error;
+    }
+  }
+
+  public async verifyGoogleToken(intentId: string, idToken: string, consentSource = "signin"): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const verifyGoogleTokenFunction = httpsCallable(this.functions, "verifyGoogleToken");
+      const emojiString = storage.getPlayerEmojiId("1");
+      const emoji = parseInt(emojiString);
+      const aura = storage.getPlayerEmojiAura("");
+      const response = await verifyGoogleTokenFunction({ intentId, idToken, emoji, aura, consentSource });
+      return response.data;
+    } catch (error) {
+      console.error("Error verifying Google token:", error);
       throw error;
     }
   }

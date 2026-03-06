@@ -9,6 +9,7 @@ import { updateProfileDisplayName } from "./ProfileSignIn";
 import { handleLoginSuccess, AddressKind } from "../connection/loginSuccess";
 import { clearEthIntentState, setAuthStatusGlobally } from "../connection/authentication";
 import { clearAppleSignInTransientState, preloadAppleSignInLibrary, signInWithApplePopup } from "../connection/appleConnection";
+import { preloadGoogleSignInLibrary, signInWithGooglePopup } from "../connection/googleConnection";
 import { isMobile } from "../utils/misc";
 
 const SettingsPopup = styled(ModalPopup)`
@@ -247,7 +248,7 @@ const InlineAuthError = styled.div`
   }
 `;
 
-type MethodKey = "apple" | "eth" | "sol";
+type MethodKey = "apple" | "eth" | "sol" | "google";
 type NonAppleMethodKey = Exclude<MethodKey, "apple">;
 type LinkedMethods = Record<MethodKey, boolean>;
 type PendingDisconnectStep = "remove" | "confirm";
@@ -257,6 +258,7 @@ const EMPTY_LINKED_METHODS: LinkedMethods = {
   apple: false,
   eth: false,
   sol: false,
+  google: false,
 };
 
 type AuthIntentResponse = {
@@ -270,6 +272,7 @@ type AuthIntentResponse = {
 type AppleButtonUiState = "idle" | "preparing" | "confirm" | "connecting" | "verifying";
 
 const APPLE_INTENT_REFRESH_BUFFER_MS = 30 * 1000;
+const GOOGLE_INTENT_REFRESH_BUFFER_MS = 30 * 1000;
 
 const isAppleIntentUsable = (intent: AuthIntentResponse | null): intent is AuthIntentResponse => {
   if (!intent) {
@@ -284,6 +287,21 @@ const isAppleIntentUsable = (intent: AuthIntentResponse | null): intent is AuthI
     typeof intent.expiresAtMs === "number" &&
     Number.isFinite(intent.expiresAtMs) &&
     intent.expiresAtMs - Date.now() > APPLE_INTENT_REFRESH_BUFFER_MS;
+};
+
+const isGoogleIntentUsable = (intent: AuthIntentResponse | null): intent is AuthIntentResponse => {
+  if (!intent) {
+    return false;
+  }
+  return typeof intent.intentId === "string" &&
+    intent.intentId !== "" &&
+    typeof intent.nonce === "string" &&
+    intent.nonce !== "" &&
+    typeof intent.state === "string" &&
+    intent.state !== "" &&
+    typeof intent.expiresAtMs === "number" &&
+    Number.isFinite(intent.expiresAtMs) &&
+    intent.expiresAtMs - Date.now() > GOOGLE_INTENT_REFRESH_BUFFER_MS;
 };
 
 let isSettingsAppleFlowInProgress = false;
@@ -324,6 +342,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
   const [authErrorMessage, setAuthErrorMessage] = useState<string>("");
   const appleIntentRef = useRef<AuthIntentResponse | null>(null);
   const appleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(null);
+  const googleIntentRef = useRef<AuthIntentResponse | null>(null);
+  const googleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(null);
   const isMountedRef = useRef(true);
   const latestAppleActionRef = useRef(0);
   const previousGlobalAppleFlowRef = useRef(isSettingsAppleFlowInProgress);
@@ -349,6 +369,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         apple: !!linked.apple,
         eth: !!linked.eth,
         sol: !!linked.sol,
+        google: !!linked.google,
       });
     } catch (error) {
       console.error("Failed to fetch linked methods:", error);
@@ -389,6 +410,39 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     }
     const intent = appleIntentRef.current;
     appleIntentRef.current = null;
+    return intent;
+  }, []);
+
+  const ensurePreparedGoogleIntent = useCallback(async (): Promise<AuthIntentResponse> => {
+    if (isGoogleIntentUsable(googleIntentRef.current)) {
+      return googleIntentRef.current;
+    }
+    if (!googleIntentPromiseRef.current) {
+      const pendingIntentPromise = connection
+        .beginAuthIntent("google")
+        .then((intent) => {
+          if (googleIntentPromiseRef.current === pendingIntentPromise) {
+            googleIntentRef.current = intent;
+          }
+          return intent;
+        })
+        .finally(() => {
+          if (googleIntentPromiseRef.current === pendingIntentPromise) {
+            googleIntentPromiseRef.current = null;
+          }
+        });
+      googleIntentPromiseRef.current = pendingIntentPromise;
+    }
+    return googleIntentPromiseRef.current;
+  }, []);
+
+  const takePreparedGoogleIntent = useCallback((): AuthIntentResponse | null => {
+    if (!isGoogleIntentUsable(googleIntentRef.current)) {
+      googleIntentRef.current = null;
+      return null;
+    }
+    const intent = googleIntentRef.current;
+    googleIntentRef.current = null;
     return intent;
   }, []);
 
@@ -444,6 +498,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       clearAppleConfirmExpiryTimeout();
       clearPendingDisconnectTimeout();
       clearSolanaNotFoundTimeout();
+      googleIntentRef.current = null;
+      googleIntentPromiseRef.current = null;
     };
   }, [clearAppleConfirmExpiryTimeout, clearPendingDisconnectTimeout, clearSolanaNotFoundTimeout]);
 
@@ -520,7 +576,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     if (!linkedMethods.sol) {
       void import("../connection/solanaConnection").catch(() => {});
     }
-  }, [isLoading, linkedMethods.eth, linkedMethods.sol]);
+    if (!linkedMethods.google) {
+      void preloadGoogleSignInLibrary().catch(() => {});
+      void ensurePreparedGoogleIntent().catch(() => {});
+    }
+  }, [isLoading, linkedMethods.eth, linkedMethods.sol, linkedMethods.google, ensurePreparedGoogleIntent]);
 
   useEffect(() => {
     if (!linkedMethods.apple) {
@@ -530,6 +590,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     clearAppleConfirmExpiryTimeout();
     setAppleButtonState("idle");
   }, [clearAppleConfirmExpiryTimeout, linkedMethods.apple]);
+
+  useEffect(() => {
+    if (!linkedMethods.google) {
+      return;
+    }
+    googleIntentRef.current = null;
+    googleIntentPromiseRef.current = null;
+  }, [linkedMethods.google]);
 
   useEffect(() => {
     if (appleButtonState !== "confirm") {
@@ -572,6 +640,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
     async (method: NonAppleMethodKey) => {
       setAuthErrorMessage("");
       setBusyMethod(method);
+      let shouldPrepareGoogleIntentAfterAttempt = method === "google";
       try {
         let result: any = null;
         let kind: AddressKind = method;
@@ -586,12 +655,20 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           clearSolanaNotFoundTimeout();
           result = await connection.verifySolanaAddress(publicKey, signature, intentId);
           kind = "sol";
+        } else if (method === "google") {
+          const intent = takePreparedGoogleIntent() || await connection.beginAuthIntent("google");
+          const signInResult = await signInWithGooglePopup({ nonce: intent.nonce });
+          result = await connection.verifyGoogleToken(intent.intentId, signInResult.idToken, "settings");
+          kind = "google";
         }
 
         if (result && result.ok === true) {
           setAuthErrorMessage("");
           handleLoginSuccess(result, kind);
           setAuthStatusGlobally("authenticated");
+          if (method === "google") {
+            shouldPrepareGoogleIntentAfterAttempt = false;
+          }
         }
         if (method === "sol") {
           setSolanaConnectText("Connect");
@@ -601,6 +678,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         const cooldownMessage = formatAuthCooldownErrorMessage(error);
         if (cooldownMessage) {
           setAuthErrorMessage(cooldownMessage);
+        } else if (method === "google") {
+          if (error instanceof Error && error.message.trim() !== "") {
+            setAuthErrorMessage(error.message);
+          } else {
+            setAuthErrorMessage("Google sign in failed. Please try again.");
+          }
         }
         if (method === "sol") {
           const errorMessage = error instanceof Error ? error.message : "";
@@ -613,9 +696,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       } finally {
         setBusyMethod(null);
         await refreshLinkedMethods();
+        if (shouldPrepareGoogleIntentAfterAttempt && isMountedRef.current) {
+          void ensurePreparedGoogleIntent().catch(() => {});
+        }
       }
     },
-    [clearSolanaNotFoundTimeout, refreshLinkedMethods]
+    [clearSolanaNotFoundTimeout, ensurePreparedGoogleIntent, refreshLinkedMethods, takePreparedGoogleIntent]
   );
 
   const runAppleConnectFlow = useCallback(async () => {
@@ -860,6 +946,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         <MethodsList>
           {renderMethodRow("eth", "Ethereum")}
           {renderMethodRow("sol", "Solana")}
+          {renderMethodRow("google", "Google")}
           {renderMethodRow("apple", "Apple")}
         </MethodsList>
         {authErrorMessage ? <InlineAuthError>{authErrorMessage}</InlineAuthError> : null}

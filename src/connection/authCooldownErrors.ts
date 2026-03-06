@@ -1,4 +1,4 @@
-export type AuthMethodKey = "eth" | "sol" | "apple";
+export type AuthMethodKey = "eth" | "sol" | "apple" | "google";
 export type AuthCooldownReason = "method-reuse-cooldown" | "profile-method-cooldown";
 export type AuthCooldownScope = "method" | "profile-method";
 
@@ -28,7 +28,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> => {
 
 const normalizeMethodKey = (value: unknown): AuthMethodKey | null => {
   const method = toCleanString(value).toLowerCase();
-  if (method === "eth" || method === "sol" || method === "apple") {
+  if (method === "eth" || method === "sol" || method === "apple" || method === "google") {
     return method;
   }
   return null;
@@ -83,6 +83,7 @@ const parseFallbackFromMessage = (message: string): AuthCooldownErrorDetails | n
   }
   const method =
     lowerMessage.includes("apple") ? "apple"
+    : lowerMessage.includes("google") ? "google"
     : lowerMessage.includes("sol") ? "sol"
     : lowerMessage.includes("eth") || lowerMessage.includes("ethereum") ? "eth"
     : null;
@@ -105,6 +106,9 @@ const getMethodLabel = (method: AuthMethodKey | null): string => {
   }
   if (method === "apple") {
     return "Apple";
+  }
+  if (method === "google") {
+    return "Google";
   }
   return "this sign-in method";
 };

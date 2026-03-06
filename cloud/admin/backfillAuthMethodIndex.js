@@ -21,6 +21,11 @@ const normalizeAppleSub = (value) => {
   return normalized.length >= 6 ? normalized : "";
 };
 
+const normalizeGoogleSub = (value) => {
+  const normalized = toCleanString(value);
+  return normalized.length >= 6 ? normalized : "";
+};
+
 const methodKey = (method, normalizedValue) => {
   return `${method}:${Buffer.from(normalizedValue, "utf8").toString("base64url")}`;
 };
@@ -60,11 +65,16 @@ async function main() {
         { method: "eth", normalizedValue: normalizeEth(data.eth) },
         { method: "sol", normalizedValue: normalizeSol(data.sol) },
         { method: "apple", normalizedValue: normalizeAppleSub(data.appleSub) },
+        { method: "google", normalizedValue: normalizeGoogleSub(data.googleSub) },
       ];
 
       for (const entry of entries) {
         if (!entry.normalizedValue) {
-          const rawValue = toCleanString(data[entry.method === "apple" ? "appleSub" : entry.method]);
+          const fieldName =
+            entry.method === "apple" ? "appleSub"
+            : entry.method === "google" ? "googleSub"
+            : entry.method;
+          const rawValue = toCleanString(data[fieldName]);
           if (rawValue) {
             malformed.push({ profileId, method: entry.method, value: rawValue });
           }

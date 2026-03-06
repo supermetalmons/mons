@@ -29,6 +29,14 @@ const normalizeAppleSub = (value) => {
   return normalized.length >= 6 ? normalized : "";
 };
 
+const normalizeGoogleSub = (value) => {
+  if (typeof value !== "string") {
+    return "";
+  }
+  const normalized = value.trim();
+  return normalized.length >= 6 ? normalized : "";
+};
+
 async function main() {
   if (!initAdmin()) {
     throw new Error("Failed to initialize Admin SDK.");
@@ -45,10 +53,12 @@ async function main() {
   const ethOwners = new Map();
   const solOwners = new Map();
   const appleOwners = new Map();
+  const googleOwners = new Map();
   const loginToProfiles = new Map();
   const malformedEth = [];
   const malformedSol = [];
   const malformedApple = [];
+  const malformedGoogle = [];
 
   let totalProfiles = 0;
   let lastDoc = null;
@@ -69,6 +79,7 @@ async function main() {
       const rawEth = typeof data.eth === "string" ? data.eth.trim() : "";
       const rawSol = typeof data.sol === "string" ? data.sol.trim() : "";
       const rawApple = typeof data.appleSub === "string" ? data.appleSub.trim() : "";
+      const rawGoogle = typeof data.googleSub === "string" ? data.googleSub.trim() : "";
 
       if (rawEth) {
         const normalizedEth = normalizeEth(rawEth);
@@ -100,6 +111,16 @@ async function main() {
           appleOwners.set(normalizedApple, owners);
         }
       }
+      if (rawGoogle) {
+        const normalizedGoogle = normalizeGoogleSub(rawGoogle);
+        if (!normalizedGoogle) {
+          malformedGoogle.push({ profileId, value: rawGoogle });
+        } else {
+          const owners = googleOwners.get(normalizedGoogle) || [];
+          owners.push(profileId);
+          googleOwners.set(normalizedGoogle, owners);
+        }
+      }
 
       const logins = Array.isArray(data.logins) ? data.logins : [];
       logins.forEach((loginUid) => {
@@ -121,6 +142,7 @@ async function main() {
   const duplicateEth = [];
   const duplicateSol = [];
   const duplicateApple = [];
+  const duplicateGoogle = [];
   ethOwners.forEach((profileIds, eth) => {
     if (profileIds.length > 1) {
       duplicateEth.push({ eth, profileIds });
@@ -134,6 +156,11 @@ async function main() {
   appleOwners.forEach((profileIds, appleSub) => {
     if (profileIds.length > 1) {
       duplicateApple.push({ appleSub, profileIds });
+    }
+  });
+  googleOwners.forEach((profileIds, googleSub) => {
+    if (profileIds.length > 1) {
+      duplicateGoogle.push({ googleSub, profileIds });
     }
   });
 
@@ -177,17 +204,21 @@ async function main() {
     malformedEthCount: malformedEth.length,
     malformedSolCount: malformedSol.length,
     malformedAppleCount: malformedApple.length,
+    malformedGoogleCount: malformedGoogle.length,
     duplicateEthCount: duplicateEth.length,
     duplicateSolCount: duplicateSol.length,
     duplicateAppleCount: duplicateApple.length,
+    duplicateGoogleCount: duplicateGoogle.length,
     conflictingLoginsCount: conflictingLogins.length,
     loginProfileLinkMismatchesCount: loginProfileLinkMismatches.length,
     malformedEth,
     malformedSol,
     malformedApple,
+    malformedGoogle,
     duplicateEth,
     duplicateSol,
     duplicateApple,
+    duplicateGoogle,
     conflictingLogins,
     loginProfileLinkMismatches,
   };
@@ -199,9 +230,11 @@ async function main() {
     malformedEthCount: report.malformedEthCount,
     malformedSolCount: report.malformedSolCount,
     malformedAppleCount: report.malformedAppleCount,
+    malformedGoogleCount: report.malformedGoogleCount,
     duplicateEthCount: report.duplicateEthCount,
     duplicateSolCount: report.duplicateSolCount,
     duplicateAppleCount: report.duplicateAppleCount,
+    duplicateGoogleCount: report.duplicateGoogleCount,
     conflictingLoginsCount: report.conflictingLoginsCount,
     loginProfileLinkMismatchesCount: report.loginProfileLinkMismatchesCount,
   }, null, 2));
