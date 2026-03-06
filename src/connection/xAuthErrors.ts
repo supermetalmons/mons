@@ -72,6 +72,7 @@ export const formatXAuthErrorMessage = (value: unknown, action: XAuthAction): st
     return getCanceledMessage(action);
   }
   if (
+    code === "x-redirect-complete-timeout" ||
     code === "x-redirect-expired" ||
     code === "x-redirect-flow-expired" ||
     code === "intent-expired" ||

@@ -23,6 +23,7 @@ const X_REDIRECT_CALLBACK_PARAM_KEYS = [
 
 let pendingXRedirectResult: XRedirectResult | null = null;
 let didConsumeInitialXRedirectSnapshot = false;
+const pendingXRedirectResultListeners = new Set<(result: XRedirectResult | null) => void>();
 
 const initialXRedirectSnapshot =
   typeof window === "undefined"
@@ -82,6 +83,47 @@ const readXRedirectParams = (): XRedirectResult | null => {
   return null;
 };
 
+export const peekXRedirectResult = (): XRedirectResult | null => {
+  if (pendingXRedirectResult) {
+    return pendingXRedirectResult;
+  }
+  if (typeof window === "undefined") {
+    return null;
+  }
+  const searchRaw = window.location.search.startsWith("?") ? window.location.search.slice(1) : window.location.search;
+  const hashRaw = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
+  const fromSearch = parseXRedirectParamsFromRaw(searchRaw);
+  if (fromSearch) {
+    return fromSearch;
+  }
+  const fromHash = parseXRedirectParamsFromRaw(hashRaw);
+  if (fromHash) {
+    return fromHash;
+  }
+  if (didConsumeInitialXRedirectSnapshot || !initialXRedirectSnapshot) {
+    return null;
+  }
+  return parseXRedirectParamsFromRaw(initialXRedirectSnapshot.searchRaw) || parseXRedirectParamsFromRaw(initialXRedirectSnapshot.hashRaw);
+};
+
+const notifyPendingXRedirectResultListeners = (): void => {
+  pendingXRedirectResultListeners.forEach((listener) => {
+    try {
+      listener(pendingXRedirectResult);
+    } catch {}
+  });
+};
+
+export const subscribeToPendingXRedirectResult = (listener: (result: XRedirectResult | null) => void): (() => void) => {
+  pendingXRedirectResultListeners.add(listener);
+  try {
+    listener(pendingXRedirectResult || peekXRedirectResult());
+  } catch {}
+  return () => {
+    pendingXRedirectResultListeners.delete(listener);
+  };
+};
+
 const clearXRedirectParams = (): void => {
   if (typeof window === "undefined") {
     return;
@@ -125,13 +167,19 @@ export const consumeXRedirectResult = (): XRedirectResult | null => {
   if (!parsed) {
     return null;
   }
+  didConsumeInitialXRedirectSnapshot = true;
   clearXRedirectParams();
   pendingXRedirectResult = parsed;
+  notifyPendingXRedirectResultListeners();
   return pendingXRedirectResult;
 };
 
 export const clearConsumedXRedirectResult = (): void => {
+  if (!pendingXRedirectResult) {
+    return;
+  }
   pendingXRedirectResult = null;
+  notifyPendingXRedirectResultListeners();
 };
 
 export const isXRedirectStartedError = (value: unknown): boolean => {
