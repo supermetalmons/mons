@@ -679,7 +679,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         if (cooldownMessage) {
           setAuthErrorMessage(cooldownMessage);
         } else if (method === "google") {
-          if (error instanceof Error && error.message.trim() !== "") {
+          if (error instanceof Error && error.message.toLowerCase().includes("cancelled")) {
+            setAuthErrorMessage("");
+          } else if (error instanceof Error && error.message.trim() !== "") {
             setAuthErrorMessage(error.message);
           } else {
             setAuthErrorMessage("Google sign in failed. Please try again.");

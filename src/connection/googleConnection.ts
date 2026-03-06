@@ -10,6 +10,7 @@ const GOOGLE_SCRIPT_SRC = "https://accounts.google.com/gsi/client";
 const GOOGLE_SIGN_IN_TIMEOUT_MS = 60 * 1000;
 const GOOGLE_SCRIPT_LOAD_TIMEOUT_MS = 15 * 1000;
 const GOOGLE_CLIENT_ID = "390871694056-dbt5ip4d7b7ehnlfq49cu9b5fe6drhnf.apps.googleusercontent.com";
+const GOOGLE_DIALOG_OVERLAY_ID = "google-sign-in-overlay";
 
 const waitForGoogleLibrary = (timeoutMs: number): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -136,32 +137,113 @@ const loadGoogleScript = async (): Promise<void> => {
 };
 
 const getGoogleClientId = (): string => {
+  if (!GOOGLE_CLIENT_ID) {
+    throw new Error("Google sign in is not configured.");
+  }
   return GOOGLE_CLIENT_ID;
 };
 
-const readMomentState = (notification: any, predicateName: string): boolean => {
-  try {
-    const predicate = notification && typeof notification[predicateName] === "function" ? notification[predicateName] : null;
-    if (!predicate) {
-      return false;
-    }
-    return !!predicate.call(notification);
-  } catch {
-    return false;
+const createGoogleSignInDialog = ({
+  onCancel,
+}: {
+  onCancel: () => void;
+}): { buttonHost: HTMLDivElement; close: () => void } => {
+  const existing = document.getElementById(GOOGLE_DIALOG_OVERLAY_ID);
+  if (existing && existing.parentNode) {
+    existing.parentNode.removeChild(existing);
   }
-};
 
-const readMomentReason = (notification: any, getterName: string): string => {
-  try {
-    const getter = notification && typeof notification[getterName] === "function" ? notification[getterName] : null;
-    if (!getter) {
-      return "";
+  const overlay = document.createElement("div");
+  overlay.id = GOOGLE_DIALOG_OVERLAY_ID;
+  overlay.style.position = "fixed";
+  overlay.style.inset = "0";
+  overlay.style.zIndex = "2147483647";
+  overlay.style.background = "rgba(17, 24, 39, 0.62)";
+  overlay.style.display = "flex";
+  overlay.style.alignItems = "center";
+  overlay.style.justifyContent = "center";
+  overlay.style.padding = "16px";
+
+  const panel = document.createElement("div");
+  panel.style.width = "100%";
+  panel.style.maxWidth = "360px";
+  panel.style.borderRadius = "12px";
+  panel.style.background = "#ffffff";
+  panel.style.boxShadow = "0 16px 38px rgba(0, 0, 0, 0.25)";
+  panel.style.padding = "18px";
+  panel.style.boxSizing = "border-box";
+  panel.style.fontFamily = "system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif";
+  panel.style.color = "#111827";
+
+  const heading = document.createElement("div");
+  heading.textContent = "Continue with Google";
+  heading.style.fontSize = "17px";
+  heading.style.fontWeight = "650";
+  heading.style.marginBottom = "8px";
+
+  const subheading = document.createElement("div");
+  subheading.textContent = "Use your Google account to sign in.";
+  subheading.style.fontSize = "13px";
+  subheading.style.color = "#4b5563";
+  subheading.style.marginBottom = "14px";
+
+  const buttonHost = document.createElement("div");
+  buttonHost.style.display = "flex";
+  buttonHost.style.justifyContent = "center";
+  buttonHost.style.marginBottom = "12px";
+
+  const cancelButton = document.createElement("button");
+  cancelButton.type = "button";
+  cancelButton.textContent = "Cancel";
+  cancelButton.style.width = "100%";
+  cancelButton.style.border = "none";
+  cancelButton.style.borderRadius = "8px";
+  cancelButton.style.background = "#f3f4f6";
+  cancelButton.style.color = "#111827";
+  cancelButton.style.fontWeight = "600";
+  cancelButton.style.fontSize = "13px";
+  cancelButton.style.padding = "10px 12px";
+  cancelButton.style.cursor = "pointer";
+
+  const handleOverlayClick = (event: MouseEvent) => {
+    if (event.target === overlay) {
+      onCancel();
     }
-    const value = getter.call(notification);
-    return typeof value === "string" ? value : "";
-  } catch {
-    return "";
-  }
+  };
+  const handleKeyDown = (event: KeyboardEvent) => {
+    if (event.key === "Escape") {
+      event.preventDefault();
+      onCancel();
+    }
+  };
+  const handleCancelClick = () => {
+    onCancel();
+  };
+
+  cancelButton.addEventListener("click", handleCancelClick);
+  overlay.addEventListener("click", handleOverlayClick);
+  window.addEventListener("keydown", handleKeyDown, true);
+
+  panel.appendChild(heading);
+  panel.appendChild(subheading);
+  panel.appendChild(buttonHost);
+  panel.appendChild(cancelButton);
+  overlay.appendChild(panel);
+  document.body.appendChild(overlay);
+  window.setTimeout(() => {
+    cancelButton.focus();
+  }, 0);
+
+  const close = () => {
+    cancelButton.removeEventListener("click", handleCancelClick);
+    overlay.removeEventListener("click", handleOverlayClick);
+    window.removeEventListener("keydown", handleKeyDown, true);
+    if (overlay.parentNode) {
+      overlay.parentNode.removeChild(overlay);
+    }
+  };
+
+  return { buttonHost, close };
 };
 
 export async function preloadGoogleSignInLibrary(): Promise<void> {
@@ -181,11 +263,16 @@ export async function signInWithGooglePopup({ nonce }: { nonce: string }): Promi
 
   return new Promise((resolve, reject) => {
     let settled = false;
+    let closeDialog: (() => void) | null = null;
     const timeoutId = window.setTimeout(() => {
       if (settled) {
         return;
       }
       settled = true;
+      if (closeDialog) {
+        closeDialog();
+        closeDialog = null;
+      }
       try {
         googleId.cancel();
       } catch {}
@@ -198,6 +285,10 @@ export async function signInWithGooglePopup({ nonce }: { nonce: string }): Promi
       }
       settled = true;
       window.clearTimeout(timeoutId);
+      if (closeDialog) {
+        closeDialog();
+        closeDialog = null;
+      }
       try {
         googleId.cancel();
       } catch {}
@@ -210,6 +301,10 @@ export async function signInWithGooglePopup({ nonce }: { nonce: string }): Promi
       }
       settled = true;
       window.clearTimeout(timeoutId);
+      if (closeDialog) {
+        closeDialog();
+        closeDialog = null;
+      }
       try {
         googleId.cancel();
       } catch {}
@@ -226,8 +321,6 @@ export async function signInWithGooglePopup({ nonce }: { nonce: string }): Promi
         nonce,
         auto_select: false,
         itp_support: true,
-        use_fedcm_for_prompt: true,
-        cancel_on_tap_outside: true,
         ux_mode: "popup",
         callback: (response: any) => {
           const idToken = typeof response?.credential === "string" ? response.credential : "";
@@ -244,31 +337,19 @@ export async function signInWithGooglePopup({ nonce }: { nonce: string }): Promi
     }
 
     try {
-      googleId.prompt((notification: any) => {
-        if (settled || !notification) {
-          return;
-        }
-        const isNotDisplayed = readMomentState(notification, "isNotDisplayed");
-        if (isNotDisplayed) {
-          const reason = readMomentReason(notification, "getNotDisplayedReason");
-          finishReject(new Error(reason ? `Google sign in unavailable: ${reason}` : "Google sign in unavailable."));
-          return;
-        }
-        const isSkipped = readMomentState(notification, "isSkippedMoment");
-        if (isSkipped) {
-          const reason = readMomentReason(notification, "getSkippedReason");
-          if (reason && reason !== "credential_returned") {
-            finishReject(new Error(reason === "user_cancel" ? "Google sign in was cancelled." : `Google sign in skipped: ${reason}`));
-            return;
-          }
-        }
-        const isDismissed = readMomentState(notification, "isDismissedMoment");
-        if (isDismissed) {
-          const reason = readMomentReason(notification, "getDismissedReason");
-          if (reason && reason !== "credential_returned") {
-            finishReject(new Error(`Google sign in dismissed: ${reason}`));
-          }
-        }
+      const dialog = createGoogleSignInDialog({
+        onCancel: () => {
+          finishReject(new Error("Google sign in was cancelled."));
+        },
+      });
+      closeDialog = dialog.close;
+      googleId.renderButton(dialog.buttonHost, {
+        type: "standard",
+        theme: "outline",
+        size: "large",
+        text: "continue_with",
+        shape: "pill",
+        width: 280,
       });
     } catch (error) {
       finishReject(error);

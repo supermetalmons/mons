@@ -887,6 +887,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       const cooldownMessage = formatAuthCooldownErrorMessage(error);
       if (cooldownMessage) {
         setInlineAuthError(cooldownMessage);
+      } else if (error instanceof Error && error.message.toLowerCase().includes("cancelled")) {
+        setInlineAuthError("");
       } else if (error instanceof Error && error.message.trim() !== "") {
         setInlineAuthError(error.message);
       } else {
