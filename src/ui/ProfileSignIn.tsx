@@ -9,7 +9,7 @@ import { closeMenuAndInfoIfAllowedForEvent, closeMenuAndInfoIfAny } from "./Main
 import { setAuthStatusGlobally } from "../connection/authentication";
 import { handleLoginSuccess } from "../connection/loginSuccess";
 import { preloadAppleSignInLibrary, signInWithApplePopup } from "../connection/appleConnection";
-import { preloadGoogleSignInLibrary, signInWithGooglePopup } from "../connection/googleConnection";
+import { clearGoogleSignInTransientState, isGoogleSignInCancelledError, preloadGoogleSignInLibrary, signInWithGooglePopup } from "../connection/googleConnection";
 import { formatAuthCooldownErrorMessage } from "../connection/authCooldownErrors";
 import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
@@ -517,6 +517,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       isMountedRef.current = false;
       clearEthereumConnectRetryTimeout();
       clearAppleConfirmExpiryTimeout();
+      clearGoogleSignInTransientState();
       googleIntentRef.current = null;
       googleIntentPromiseRef.current = null;
       if (notificationTimeoutRef.current) {
@@ -872,6 +873,9 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       const signInResult = await signInWithGooglePopup({ nonce: intent.nonce });
       setGoogleButtonState("verifying");
       const res = await connection.verifyGoogleToken(intent.intentId, signInResult.idToken, "signin");
+      if (!isMountedRef.current) {
+        return;
+      }
       if (res && res.ok === true) {
         setInlineAuthError("");
         handleLoginSuccess(res, "google");
@@ -884,10 +888,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       }
       setGoogleButtonState("idle");
     } catch (error) {
+      if (!isMountedRef.current) {
+        return;
+      }
       const cooldownMessage = formatAuthCooldownErrorMessage(error);
       if (cooldownMessage) {
         setInlineAuthError(cooldownMessage);
-      } else if (error instanceof Error && error.message.toLowerCase().includes("cancelled")) {
+      } else if (isGoogleSignInCancelledError(error)) {
         setInlineAuthError("");
       } else if (error instanceof Error && error.message.trim() !== "") {
         setInlineAuthError(error.message);

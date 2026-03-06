@@ -5,12 +5,54 @@ declare global {
 }
 
 let googleScriptPromise: Promise<void> | null = null;
+type GoogleSignInRejectReason = "cancelled" | "timeout" | "aborted";
+type GoogleSignInErrorCode = "google-sign-in-cancelled" | "google-sign-in-timeout" | "google-sign-in-aborted";
+
+type ActiveGoogleSignInHandle = {
+  abort: (reason: GoogleSignInRejectReason) => void;
+  cleanupDom: () => void;
+};
+
+let activeGoogleSignInHandle: ActiveGoogleSignInHandle | null = null;
 
 const GOOGLE_SCRIPT_SRC = "https://accounts.google.com/gsi/client";
 const GOOGLE_SIGN_IN_TIMEOUT_MS = 60 * 1000;
-const GOOGLE_SCRIPT_LOAD_TIMEOUT_MS = 15 * 1000;
+const GOOGLE_SCRIPT_LOAD_TIMEOUT_MS = 20 * 1000;
+const GOOGLE_SCRIPT_LOAD_MAX_ATTEMPTS = 2;
+const GOOGLE_SCRIPT_RETRY_DELAY_MS = 400;
 const GOOGLE_CLIENT_ID = "390871694056-dbt5ip4d7b7ehnlfq49cu9b5fe6drhnf.apps.googleusercontent.com";
 const GOOGLE_DIALOG_OVERLAY_ID = "google-sign-in-overlay";
+const GOOGLE_SCRIPT_SELECTOR = `script[src="${GOOGLE_SCRIPT_SRC}"],script[src^="${GOOGLE_SCRIPT_SRC}?"]`;
+
+const GOOGLE_SIGN_IN_ERROR_BY_REASON: Record<GoogleSignInRejectReason, { code: GoogleSignInErrorCode; message: string }> = {
+  cancelled: {
+    code: "google-sign-in-cancelled",
+    message: "Google sign in was cancelled.",
+  },
+  timeout: {
+    code: "google-sign-in-timeout",
+    message: "Google sign in timed out. Please try again.",
+  },
+  aborted: {
+    code: "google-sign-in-aborted",
+    message: "Google sign in was cancelled.",
+  },
+};
+
+const buildGoogleSignInError = (reason: GoogleSignInRejectReason): Error => {
+  const config = GOOGLE_SIGN_IN_ERROR_BY_REASON[reason];
+  const error = new Error(config.message);
+  (error as Error & { code?: GoogleSignInErrorCode }).code = config.code;
+  return error;
+};
+
+export const isGoogleSignInCancelledError = (value: unknown): boolean => {
+  if (!value || typeof value !== "object") {
+    return false;
+  }
+  const code = (value as { code?: unknown }).code;
+  return code === "google-sign-in-cancelled" || code === "google-sign-in-aborted";
+};
 
 const waitForGoogleLibrary = (timeoutMs: number): Promise<void> => {
   return new Promise((resolve, reject) => {
@@ -97,6 +139,50 @@ const waitForScriptReady = (script: HTMLScriptElement): Promise<void> => {
   });
 };
 
+const sleep = (ms: number): Promise<void> => {
+  return new Promise((resolve) => {
+    window.setTimeout(resolve, ms);
+  });
+};
+
+const findGoogleScriptElement = (): HTMLScriptElement | null => {
+  return document.querySelector(GOOGLE_SCRIPT_SELECTOR) as HTMLScriptElement | null;
+};
+
+const removeGoogleScriptElements = (): void => {
+  const scripts = document.querySelectorAll(GOOGLE_SCRIPT_SELECTOR);
+  scripts.forEach((script) => {
+    if (script.parentNode) {
+      script.parentNode.removeChild(script);
+    }
+  });
+};
+
+const loadGoogleScriptOnce = async (attemptIndex: number): Promise<void> => {
+  const existingScript = findGoogleScriptElement();
+  if (existingScript) {
+    const didFail = existingScript.getAttribute("data-load-failed") === "true";
+    if (didFail) {
+      existingScript.remove();
+    } else {
+      await waitForScriptReady(existingScript);
+      return;
+    }
+  }
+  const script = document.createElement("script");
+  const cacheBustSuffix = attemptIndex > 0 ? `?cb=${Date.now()}-${attemptIndex}` : "";
+  script.src = `${GOOGLE_SCRIPT_SRC}${cacheBustSuffix}`;
+  script.async = true;
+  script.defer = true;
+  const waitPromise = waitForScriptReady(script);
+  const scriptParent = document.head || document.body || document.documentElement;
+  if (!scriptParent) {
+    throw new Error("Google auth library unavailable");
+  }
+  scriptParent.appendChild(script);
+  await waitPromise;
+};
+
 const loadGoogleScript = async (): Promise<void> => {
   if (typeof window === "undefined") {
     throw new Error("Google sign in is unavailable in this environment");
@@ -105,24 +191,25 @@ const loadGoogleScript = async (): Promise<void> => {
     return;
   }
   if (!googleScriptPromise) {
-    googleScriptPromise = new Promise<void>((resolve, reject) => {
-      const existingScript = document.querySelector(`script[src="${GOOGLE_SCRIPT_SRC}"]`) as HTMLScriptElement | null;
-      if (existingScript) {
-        const didFail = existingScript.getAttribute("data-load-failed") === "true";
-        if (didFail) {
-          existingScript.remove();
-        } else {
-          void waitForScriptReady(existingScript).then(resolve).catch(reject);
+    googleScriptPromise = (async () => {
+      let lastError: unknown = null;
+      for (let attemptIndex = 0; attemptIndex < GOOGLE_SCRIPT_LOAD_MAX_ATTEMPTS; attemptIndex += 1) {
+        try {
+          await loadGoogleScriptOnce(attemptIndex);
           return;
+        } catch (error) {
+          lastError = error;
+          removeGoogleScriptElements();
+          if (window.google?.accounts?.id) {
+            return;
+          }
+          if (attemptIndex + 1 < GOOGLE_SCRIPT_LOAD_MAX_ATTEMPTS) {
+            await sleep(GOOGLE_SCRIPT_RETRY_DELAY_MS * (attemptIndex + 1));
+          }
         }
       }
-      const script = document.createElement("script");
-      script.src = GOOGLE_SCRIPT_SRC;
-      script.async = true;
-      script.defer = true;
-      void waitForScriptReady(script).then(resolve).catch(reject);
-      document.head.appendChild(script);
-    });
+      throw lastError instanceof Error ? lastError : new Error("Failed to load Google auth script");
+    })();
   }
   try {
     await googleScriptPromise;
@@ -220,20 +307,6 @@ const createGoogleSignInDialog = ({
     onCancel();
   };
 
-  cancelButton.addEventListener("click", handleCancelClick);
-  overlay.addEventListener("click", handleOverlayClick);
-  window.addEventListener("keydown", handleKeyDown, true);
-
-  panel.appendChild(heading);
-  panel.appendChild(subheading);
-  panel.appendChild(buttonHost);
-  panel.appendChild(cancelButton);
-  overlay.appendChild(panel);
-  document.body.appendChild(overlay);
-  window.setTimeout(() => {
-    cancelButton.focus();
-  }, 0);
-
   const close = () => {
     cancelButton.removeEventListener("click", handleCancelClick);
     overlay.removeEventListener("click", handleOverlayClick);
@@ -243,11 +316,56 @@ const createGoogleSignInDialog = ({
     }
   };
 
+  try {
+    cancelButton.addEventListener("click", handleCancelClick);
+    overlay.addEventListener("click", handleOverlayClick);
+    window.addEventListener("keydown", handleKeyDown, true);
+
+    panel.appendChild(heading);
+    panel.appendChild(subheading);
+    panel.appendChild(buttonHost);
+    panel.appendChild(cancelButton);
+    overlay.appendChild(panel);
+    document.body.appendChild(overlay);
+    window.setTimeout(() => {
+      if (document.body.contains(cancelButton)) {
+        cancelButton.focus();
+      }
+    }, 0);
+  } catch (error) {
+    close();
+    throw error;
+  }
+
   return { buttonHost, close };
 };
 
 export async function preloadGoogleSignInLibrary(): Promise<void> {
   await loadGoogleScript();
+}
+
+export function clearGoogleSignInTransientState(): void {
+  if (typeof window === "undefined" || typeof document === "undefined") {
+    activeGoogleSignInHandle = null;
+    return;
+  }
+  const activeHandle = activeGoogleSignInHandle;
+  activeGoogleSignInHandle = null;
+  if (activeHandle) {
+    try {
+      activeHandle.abort("aborted");
+    } catch {}
+    try {
+      activeHandle.cleanupDom();
+    } catch {}
+  }
+  const existing = document.getElementById(GOOGLE_DIALOG_OVERLAY_ID);
+  if (existing && existing.parentNode) {
+    existing.parentNode.removeChild(existing);
+  }
+  try {
+    window.google?.accounts?.id?.cancel?.();
+  } catch {}
 }
 
 export async function signInWithGooglePopup({ nonce }: { nonce: string }): Promise<{ idToken: string }> {
@@ -260,15 +378,25 @@ export async function signInWithGooglePopup({ nonce }: { nonce: string }): Promi
   if (!googleId) {
     throw new Error("Google auth library unavailable");
   }
+  clearGoogleSignInTransientState();
 
   return new Promise((resolve, reject) => {
     let settled = false;
     let closeDialog: (() => void) | null = null;
-    const timeoutId = window.setTimeout(() => {
-      if (settled) {
-        return;
+    let timeoutId: number | null = null;
+    let handleRef: ActiveGoogleSignInHandle | null = null;
+
+    const clearActiveHandle = () => {
+      if (activeGoogleSignInHandle === handleRef) {
+        activeGoogleSignInHandle = null;
       }
-      settled = true;
+    };
+
+    const cleanup = () => {
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+        timeoutId = null;
+      }
       if (closeDialog) {
         closeDialog();
         closeDialog = null;
@@ -276,7 +404,30 @@ export async function signInWithGooglePopup({ nonce }: { nonce: string }): Promi
       try {
         googleId.cancel();
       } catch {}
-      reject(new Error("Google sign in timed out"));
+      clearActiveHandle();
+    };
+
+    const abortActiveAttempt = (reason: GoogleSignInRejectReason) => {
+      if (settled) {
+        return;
+      }
+      settled = true;
+      cleanup();
+      reject(buildGoogleSignInError(reason));
+    };
+
+    handleRef = {
+      abort: abortActiveAttempt,
+      cleanupDom: () => {
+        if (closeDialog) {
+          closeDialog();
+          closeDialog = null;
+        }
+      },
+    };
+    activeGoogleSignInHandle = handleRef;
+    timeoutId = window.setTimeout(() => {
+      abortActiveAttempt("timeout");
     }, GOOGLE_SIGN_IN_TIMEOUT_MS);
 
     const finishResolve = (idToken: string) => {
@@ -284,14 +435,7 @@ export async function signInWithGooglePopup({ nonce }: { nonce: string }): Promi
         return;
       }
       settled = true;
-      window.clearTimeout(timeoutId);
-      if (closeDialog) {
-        closeDialog();
-        closeDialog = null;
-      }
-      try {
-        googleId.cancel();
-      } catch {}
+      cleanup();
       resolve({ idToken });
     };
 
@@ -300,14 +444,7 @@ export async function signInWithGooglePopup({ nonce }: { nonce: string }): Promi
         return;
       }
       settled = true;
-      window.clearTimeout(timeoutId);
-      if (closeDialog) {
-        closeDialog();
-        closeDialog = null;
-      }
-      try {
-        googleId.cancel();
-      } catch {}
+      cleanup();
       reject(error instanceof Error ? error : new Error(String(error)));
     };
 
@@ -339,7 +476,7 @@ export async function signInWithGooglePopup({ nonce }: { nonce: string }): Promi
     try {
       const dialog = createGoogleSignInDialog({
         onCancel: () => {
-          finishReject(new Error("Google sign in was cancelled."));
+          abortActiveAttempt("cancelled");
         },
       });
       closeDialog = dialog.close;

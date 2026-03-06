@@ -9,7 +9,7 @@ import { updateProfileDisplayName } from "./ProfileSignIn";
 import { handleLoginSuccess, AddressKind } from "../connection/loginSuccess";
 import { clearEthIntentState, setAuthStatusGlobally } from "../connection/authentication";
 import { clearAppleSignInTransientState, preloadAppleSignInLibrary, signInWithApplePopup } from "../connection/appleConnection";
-import { preloadGoogleSignInLibrary, signInWithGooglePopup } from "../connection/googleConnection";
+import { clearGoogleSignInTransientState, isGoogleSignInCancelledError, preloadGoogleSignInLibrary, signInWithGooglePopup } from "../connection/googleConnection";
 import { isMobile } from "../utils/misc";
 
 const SettingsPopup = styled(ModalPopup)`
@@ -498,6 +498,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
       clearAppleConfirmExpiryTimeout();
       clearPendingDisconnectTimeout();
       clearSolanaNotFoundTimeout();
+      clearGoogleSignInTransientState();
       googleIntentRef.current = null;
       googleIntentPromiseRef.current = null;
     };
@@ -661,6 +662,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           result = await connection.verifyGoogleToken(intent.intentId, signInResult.idToken, "settings");
           kind = "google";
         }
+        if (!isMountedRef.current) {
+          return;
+        }
 
         if (result && result.ok === true) {
           setAuthErrorMessage("");
@@ -675,11 +679,14 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
         }
       } catch (error) {
         console.error(`Failed to connect ${method}:`, error);
+        if (!isMountedRef.current) {
+          return;
+        }
         const cooldownMessage = formatAuthCooldownErrorMessage(error);
         if (cooldownMessage) {
           setAuthErrorMessage(cooldownMessage);
         } else if (method === "google") {
-          if (error instanceof Error && error.message.toLowerCase().includes("cancelled")) {
+          if (isGoogleSignInCancelledError(error)) {
             setAuthErrorMessage("");
           } else if (error instanceof Error && error.message.trim() !== "") {
             setAuthErrorMessage(error.message);
@@ -696,6 +703,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           }
         }
       } finally {
+        if (!isMountedRef.current) {
+          return;
+        }
         setBusyMethod(null);
         await refreshLinkedMethods();
         if (shouldPrepareGoogleIntentAfterAttempt && isMountedRef.current) {
