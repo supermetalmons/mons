@@ -233,10 +233,10 @@ const RemoveConfirmButton = styled.button`
   }
 `;
 
-const InlineAuthError = styled.div<{ $kind?: "error" | "success" }>`
+const InlineAuthError = styled.div`
   border-radius: 8px;
-  background: ${(props) => (props.$kind === "success" ? "rgba(25, 135, 84, 0.1)" : "rgba(220, 53, 69, 0.08)")};
-  color: ${(props) => (props.$kind === "success" ? "#198754" : "var(--dangerButtonBackground)")};
+  background: rgba(220, 53, 69, 0.08);
+  color: var(--dangerButtonBackground);
   font-size: 0.74rem;
   line-height: 1.35;
   padding: 8px 10px;
@@ -244,15 +244,10 @@ const InlineAuthError = styled.div<{ $kind?: "error" | "success" }>`
   text-align: left;
 
   @media (prefers-color-scheme: dark) {
-    background: ${(props) => (props.$kind === "success" ? "rgba(25, 135, 84, 0.24)" : "rgba(220, 53, 69, 0.22)")};
-    color: ${(props) => (props.$kind === "success" ? "#4fd18f" : "var(--dangerButtonBackgroundDark)")};
+    background: rgba(220, 53, 69, 0.22);
+    color: var(--dangerButtonBackgroundDark);
   }
 `;
-
-type InlineAuthMessageState = {
-  kind: "error" | "success";
-  text: string;
-};
 
 type MethodKey = "apple" | "eth" | "sol" | "x";
 type NonAppleMethodKey = Exclude<MethodKey, "apple">;
@@ -318,7 +313,7 @@ const subscribeSettingsAppleFlowProgress = (listener: (inProgress: boolean) => v
 
 export interface SettingsModalProps {
   onClose: () => void;
-  xInlineMessage?: { id: number; kind: "error" | "success"; message: string } | null;
+  xInlineMessage?: { id: number; message: string } | null;
 }
 
 export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, xInlineMessage = null }) => {
@@ -330,9 +325,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, xInlineMe
   const [pendingDisconnectState, setPendingDisconnectState] = useState<PendingDisconnectState | null>(null);
   const [solanaConnectText, setSolanaConnectText] = useState<string>("Connect");
   const [isGlobalAppleFlowInProgress, setIsGlobalAppleFlowInProgress] = useState<boolean>(() => isSettingsAppleFlowInProgress);
-  const [authMessage, setAuthMessage] = useState<InlineAuthMessageState | null>(() =>
-    xInlineMessage ? { kind: xInlineMessage.kind, text: xInlineMessage.message } : null
-  );
+  const [authMessage, setAuthMessage] = useState<string>(() => xInlineMessage?.message ?? "");
   const appleIntentRef = useRef<AuthIntentResponse | null>(null);
   const appleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(null);
   const isMountedRef = useRef(true);
@@ -520,7 +513,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, xInlineMe
       return;
     }
     appliedXInlineMessageIdRef.current = xInlineMessage.id;
-    setAuthMessage({ kind: xInlineMessage.kind, text: xInlineMessage.message });
+    setAuthMessage(xInlineMessage.message);
   }, [xInlineMessage]);
 
   useEffect(() => {
@@ -591,7 +584,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, xInlineMe
 
   const runConnectFlow = useCallback(
     async (method: NonAppleMethodKey) => {
-      setAuthMessage(null);
+      setAuthMessage("");
       setBusyMethod(method);
       let didStartXRedirect = false;
       try {
@@ -621,7 +614,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, xInlineMe
         }
 
         if (result && result.ok === true) {
-          setAuthMessage(null);
+          setAuthMessage("");
           handleLoginSuccess(result, kind);
           setAuthStatusGlobally("authenticated");
         }
@@ -635,12 +628,12 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, xInlineMe
         }
         const cooldownMessage = formatAuthCooldownErrorMessage(error);
         if (cooldownMessage) {
-          setAuthMessage({ kind: "error", text: cooldownMessage });
+          setAuthMessage(cooldownMessage);
         } else if (method === "x") {
           if (isXRedirectStartedError(error)) {
-            setAuthMessage(null);
+            setAuthMessage("");
           } else {
-            setAuthMessage({ kind: "error", text: formatXAuthErrorMessage(error, "link") });
+            setAuthMessage(formatXAuthErrorMessage(error, "link"));
           }
         }
         if (method === "sol") {
@@ -676,7 +669,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, xInlineMe
       return;
     }
 
-    setAuthMessage(null);
+    setAuthMessage("");
     const actionId = latestAppleActionRef.current + 1;
     latestAppleActionRef.current = actionId;
     const isActionCurrent = () => latestAppleActionRef.current === actionId;
@@ -738,7 +731,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, xInlineMe
         return;
       }
       if (result && result.ok === true) {
-        setAuthMessage(null);
+        setAuthMessage("");
         handleLoginSuccess(result, "apple");
         setAuthStatusGlobally("authenticated");
       }
@@ -746,7 +739,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, xInlineMe
       console.error("Failed to connect apple:", error);
       const cooldownMessage = formatAuthCooldownErrorMessage(error);
       if (cooldownMessage) {
-        setAuthMessage({ kind: "error", text: cooldownMessage });
+        setAuthMessage(cooldownMessage);
       }
     } finally {
       setSettingsAppleFlowInProgress(false);
@@ -775,7 +768,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, xInlineMe
 
   const runDisconnectFlow = useCallback(
     async (method: MethodKey) => {
-      setAuthMessage(null);
+      setAuthMessage("");
       setPendingDisconnectState({ method, step: "confirm" });
       setBusyMethod(method);
       try {
@@ -913,7 +906,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose, xInlineMe
           {renderMethodRow("apple", "Apple")}
           {renderMethodRow("x", "X")}
         </MethodsList>
-        {authMessage ? <InlineAuthError $kind={authMessage.kind}>{authMessage.text}</InlineAuthError> : null}
+        {authMessage ? <InlineAuthError>{authMessage}</InlineAuthError> : null}
         <ButtonsContainer>
           <SaveButton disabled={false} onClick={onClose}>
             OK

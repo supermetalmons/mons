@@ -401,7 +401,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [settingsInlineMessage, setSettingsInlineMessage] = useState<{ id: number; kind: "error" | "success"; message: string } | null>(null);
+  const [settingsInlineMessage, setSettingsInlineMessage] = useState<{ id: number; message: string } | null>(null);
   const [NotificationComponent, setNotificationComponent] = useState<React.ComponentType<any> | null>(null);
   const [isNotificationVisible, setIsNotificationVisible] = useState(false);
   const [notificationState, setNotificationState] = useState<NotificationState | null>(null);
@@ -724,12 +724,15 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         setIsOpen(true);
         return;
       }
-      nextSettingsInlineMessageIdRef.current += 1;
-      setSettingsInlineMessage({
-        id: nextSettingsInlineMessageIdRef.current,
-        kind: feedback.kind,
-        message: feedback.message,
-      });
+      if (feedback.kind === "error") {
+        nextSettingsInlineMessageIdRef.current += 1;
+        setSettingsInlineMessage({
+          id: nextSettingsInlineMessageIdRef.current,
+          message: feedback.message,
+        });
+      } else {
+        setSettingsInlineMessage(null);
+      }
       setIsOpen(false);
       setIsSettingsOpen(true);
     };
