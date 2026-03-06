@@ -8,8 +8,11 @@ setGlobalOptions({
 const { verifySolanaAddress } = require("./verifySolanaAddress");
 const { verifyEthAddress } = require("./verifyEthAddress");
 const { beginAuthIntent } = require("./beginAuthIntent");
+const { beginGoogleRedirectAuth } = require("./beginGoogleRedirectAuth");
 const { verifyAppleToken } = require("./verifyAppleToken");
 const { verifyGoogleToken } = require("./verifyGoogleToken");
+const { completeGoogleRedirectAuth } = require("./completeGoogleRedirectAuth");
+const { googleAuthRedirectCallback } = require("./googleAuthRedirectCallback");
 const { unlinkAuthMethod } = require("./unlinkAuthMethod");
 const { getLinkedAuthMethods } = require("./getLinkedAuthMethods");
 const { syncProfileClaim } = require("./syncProfileClaim");
@@ -41,8 +44,11 @@ const {
 exports.verifySolanaAddress = verifySolanaAddress;
 exports.verifyEthAddress = verifyEthAddress;
 exports.beginAuthIntent = beginAuthIntent;
+exports.beginGoogleRedirectAuth = beginGoogleRedirectAuth;
 exports.verifyAppleToken = verifyAppleToken;
 exports.verifyGoogleToken = verifyGoogleToken;
+exports.completeGoogleRedirectAuth = completeGoogleRedirectAuth;
+exports.googleAuthRedirectCallback = googleAuthRedirectCallback;
 exports.unlinkAuthMethod = unlinkAuthMethod;
 exports.getLinkedAuthMethods = getLinkedAuthMethods;
 exports.syncProfileClaim = syncProfileClaim;

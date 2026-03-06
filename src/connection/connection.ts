@@ -1085,6 +1085,47 @@ class Connection {
     }
   }
 
+  public async beginGoogleRedirectAuth(params: {
+    intentId: string;
+    nonce: string;
+    consentSource?: "signin" | "settings";
+    returnUrl?: string;
+  }): Promise<{ ok: boolean; flowId: string; authUrl: string; expiresAtMs: number }> {
+    try {
+      await this.ensureAuthenticated();
+      const beginGoogleRedirectAuthFunction = httpsCallable(this.functions, "beginGoogleRedirectAuth");
+      const response = await beginGoogleRedirectAuthFunction({
+        intentId: params.intentId,
+        nonce: params.nonce,
+        consentSource: params.consentSource || "signin",
+        returnUrl: params.returnUrl || "",
+      });
+      return response.data as { ok: boolean; flowId: string; authUrl: string; expiresAtMs: number };
+    } catch (error) {
+      console.error("Error beginning Google redirect auth:", error);
+      throw error;
+    }
+  }
+
+  public async completeGoogleRedirectAuth(params: { flowId: string }): Promise<any> {
+    try {
+      await this.ensureAuthenticated();
+      const completeGoogleRedirectAuthFunction = httpsCallable(this.functions, "completeGoogleRedirectAuth");
+      const emojiString = storage.getPlayerEmojiId("1");
+      const emoji = parseInt(emojiString);
+      const aura = storage.getPlayerEmojiAura("");
+      const response = await completeGoogleRedirectAuthFunction({
+        flowId: params.flowId,
+        emoji,
+        aura,
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Error completing Google redirect auth:", error);
+      throw error;
+    }
+  }
+
   public async verifySolanaAddress(address: string, signature: string, intentId: string): Promise<any> {
     try {
       await this.ensureAuthenticated();

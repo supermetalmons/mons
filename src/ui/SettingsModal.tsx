@@ -658,7 +658,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ onClose }) => {
           kind = "sol";
         } else if (method === "google") {
           const intent = takePreparedGoogleIntent() || await connection.beginAuthIntent("google");
-          const signInResult = await signInWithGooglePopup({ nonce: intent.nonce });
+          const signInResult = await signInWithGooglePopup({
+            nonce: intent.nonce,
+            intentId: intent.intentId,
+            consentSource: "settings",
+          });
           result = await connection.verifyGoogleToken(intent.intentId, signInResult.idToken, "settings");
           kind = "google";
         }

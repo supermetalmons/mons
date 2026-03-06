@@ -870,7 +870,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setGoogleButtonState("connecting");
     try {
       const intent = takePreparedGoogleIntent() || await connection.beginAuthIntent("google");
-      const signInResult = await signInWithGooglePopup({ nonce: intent.nonce });
+      const signInResult = await signInWithGooglePopup({
+        nonce: intent.nonce,
+        intentId: intent.intentId,
+        consentSource: "signin",
+      });
       setGoogleButtonState("verifying");
       const res = await connection.verifyGoogleToken(intent.intentId, signInResult.idToken, "signin");
       if (!isMountedRef.current) {

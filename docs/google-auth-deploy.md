@@ -13,8 +13,11 @@ Use this when you only want to add Google as another linked auth method with min
 
 1. Confirm Google OAuth web client is configured in Google Cloud Console.
 2. Confirm your production domain(s) are added to authorized JavaScript origins.
-3. Confirm the client ID you will use is a **Web application** OAuth client ID.
-4. Confirm you can deploy both Functions and Web app to production.
+3. Confirm your production callback URL is added to authorized redirect URIs:
+   - `https://<region>-<project-id>.cloudfunctions.net/googleAuthRedirectCallback`
+   - or your configured `GOOGLE_OAUTH_REDIRECT_URI` value.
+4. Confirm the client ID you will use is a **Web application** OAuth client ID.
+5. Confirm you can deploy both Functions and Web app to production.
 
 ## 2. Required Environment Variables
 
@@ -29,6 +32,18 @@ Set either:
 or:
 
 - `GOOGLE_AUDIENCES=<comma-separated-allowed-client-ids>`
+
+Set OAuth code-exchange secret:
+
+- `GOOGLE_CLIENT_SECRET=<prod_web_client_secret>`
+
+Optional (recommended for explicit callback):
+
+- `GOOGLE_OAUTH_REDIRECT_URI=https://<region>-<project-id>.cloudfunctions.net/googleAuthRedirectCallback`
+
+Optional (tighten return redirect targets):
+
+- `GOOGLE_REDIRECT_ALLOWED_ORIGINS=https://mons.link,https://www.mons.link`
 
 Also set rollout kill switch:
 
