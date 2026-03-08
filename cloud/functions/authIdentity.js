@@ -53,6 +53,31 @@ const parseNumber = (value, fallback) => {
   return Number.isFinite(numeric) ? numeric : fallback;
 };
 const waitMs = (value) => new Promise((resolve) => setTimeout(resolve, value));
+const isSafeFirestoreDocIdSegment = (value) => {
+  const cleaned = toCleanString(value);
+  if (!cleaned || cleaned === "." || cleaned === "..") {
+    return false;
+  }
+  return !cleaned.includes("/");
+};
+const toUsernameLookupKey = (username) => toCleanString(username).toLowerCase();
+const getUsernameIndexDocIds = (username) => {
+  const cleaned = toCleanString(username);
+  if (!cleaned) {
+    return [];
+  }
+  const canonical = toUsernameLookupKey(cleaned);
+  if (!isSafeFirestoreDocIdSegment(canonical)) {
+    return [];
+  }
+  if (canonical === cleaned) {
+    return [canonical];
+  }
+  if (!isSafeFirestoreDocIdSegment(cleaned)) {
+    return [canonical];
+  }
+  return [canonical, cleaned];
+};
 
 const getProfileMethodCooldownDocId = (profileId, method) => {
   const normalizedProfileId = toCleanString(profileId);
@@ -1239,6 +1264,8 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
     const mergedCustom = mergeCustom(targetData, sourceData);
     const mergedMining = mergeMining(targetData, sourceData);
     const mergedLogins = mergeUniqueStringArray(targetData.logins, sourceData.logins);
+    const mergedUsername = pickTargetOrSource(targetData.username, sourceData.username) || "";
+    const mergedUsernameLookupKey = toUsernameLookupKey(mergedUsername);
     const resolveAppleMetadata = (targetValue, sourceValue) => {
       if (!mergedAppleSub) {
         return admin.firestore.FieldValue.delete();
@@ -1259,7 +1286,8 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
     };
     const mergedData = {
       logins: mergedLogins,
-      username: pickTargetOrSource(targetData.username, sourceData.username) || "",
+      username: mergedUsername,
+      usernameLookupKey: mergedUsernameLookupKey || admin.firestore.FieldValue.delete(),
       rating: Math.min(parseNumber(targetData.rating, 1500), parseNumber(sourceData.rating, 1500)),
       nonce: Math.max(parseNumber(targetData.nonce, -1), parseNumber(sourceData.nonce, -1)),
       totalManaPoints: parseNumber(targetData.totalManaPoints, 0) + parseNumber(sourceData.totalManaPoints, 0),
@@ -1342,6 +1370,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
       xConsentAt: admin.firestore.FieldValue.delete(),
       xConsentSource: admin.firestore.FieldValue.delete(),
       username: admin.firestore.FieldValue.delete(),
+      usernameLookupKey: admin.firestore.FieldValue.delete(),
       rating: admin.firestore.FieldValue.delete(),
       totalManaPoints: admin.firestore.FieldValue.delete(),
       nonce: admin.firestore.FieldValue.delete(),
@@ -1370,6 +1399,84 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
           }
         }
       });
+
+      const usernameIndexCollection = firestore.collection("usernameIndex");
+      const liveTargetData = liveTargetSnapshot.data() || {};
+      const liveSourceData = liveSourceSnapshot.exists ? liveSourceSnapshot.data() || {} : {};
+      const liveTargetUsername = toCleanString(liveTargetData.username);
+      const liveSourceUsername = toCleanString(liveSourceData.username);
+      const mergedUsername = toCleanString(mergedData.username);
+      const mergedUsernameKeyCandidate = toUsernameLookupKey(mergedUsername);
+      const mergedUsernameKey = isSafeFirestoreDocIdSegment(mergedUsernameKeyCandidate) ? mergedUsernameKeyCandidate : "";
+      let mergedUsernameIndexRef = null;
+
+      if (mergedUsernameKey) {
+        mergedUsernameIndexRef = usernameIndexCollection.doc(mergedUsernameKey);
+        const mergedUsernameIndexSnapshot = await transaction.get(mergedUsernameIndexRef);
+        if (mergedUsernameIndexSnapshot.exists) {
+          const mergedUsernameIndexData = mergedUsernameIndexSnapshot.data() || {};
+          const indexedProfileId = toCleanString(mergedUsernameIndexData.profileId);
+          if (indexedProfileId && !allowedIndexOwners.has(indexedProfileId)) {
+            const indexedProfileRef = firestore.collection("users").doc(indexedProfileId);
+            const indexedProfileSnapshot = await transaction.get(indexedProfileRef);
+            if (indexedProfileSnapshot.exists) {
+              const indexedProfileData = indexedProfileSnapshot.data() || {};
+              const indexedUsernameKey = toUsernameLookupKey(indexedProfileData.username);
+              if (indexedUsernameKey === mergedUsernameKey) {
+                throw new HttpsError("failed-precondition", "username-index-conflict");
+              }
+            }
+          }
+        }
+
+        const lookupKeyConflictSnapshot = await transaction.get(
+          firestore.collection("users").where("usernameLookupKey", "==", mergedUsernameKey)
+        );
+        lookupKeyConflictSnapshot.forEach((userSnapshot) => {
+          const userId = toCleanString(userSnapshot.id);
+          if (allowedIndexOwners.has(userId)) {
+            return;
+          }
+          const userData = userSnapshot.data() || {};
+          if (toUsernameLookupKey(userData.username) === mergedUsernameKey) {
+            throw new HttpsError("failed-precondition", "username-index-conflict");
+          }
+        });
+
+        const exactUsernameSnapshot = await transaction.get(firestore.collection("users").where("username", "==", mergedUsername).limit(3));
+        exactUsernameSnapshot.forEach((userSnapshot) => {
+          if (!allowedIndexOwners.has(toCleanString(userSnapshot.id))) {
+            throw new HttpsError("failed-precondition", "username-index-conflict");
+          }
+        });
+
+        if (mergedUsername !== mergedUsernameKey) {
+          const lowercaseUsernameSnapshot = await transaction.get(
+            firestore.collection("users").where("username", "==", mergedUsernameKey).limit(3)
+          );
+          lowercaseUsernameSnapshot.forEach((userSnapshot) => {
+            if (!allowedIndexOwners.has(toCleanString(userSnapshot.id))) {
+              throw new HttpsError("failed-precondition", "username-index-conflict");
+            }
+          });
+        }
+      }
+
+      const staleUsernameIndexDocIds = new Set();
+      getUsernameIndexDocIds(liveTargetUsername).forEach((docId) => staleUsernameIndexDocIds.add(docId));
+      getUsernameIndexDocIds(liveSourceUsername).forEach((docId) => staleUsernameIndexDocIds.add(docId));
+      getUsernameIndexDocIds(mergedUsername).forEach((docId) => {
+        if (docId !== mergedUsernameKey) {
+          staleUsernameIndexDocIds.add(docId);
+        }
+      });
+      if (mergedUsernameKey) {
+        staleUsernameIndexDocIds.delete(mergedUsernameKey);
+      }
+      const staleUsernameIndexRefs = Array.from(staleUsernameIndexDocIds).map((docId) => usernameIndexCollection.doc(docId));
+      const staleUsernameIndexSnapshots =
+        staleUsernameIndexRefs.length > 0 ? await Promise.all(staleUsernameIndexRefs.map((ref) => transaction.get(ref))) : [];
+
       methodIndexEntries.forEach((entry, entryIndex) => {
         const indexRef = methodIndexRefs[entryIndex];
         transaction.set(
@@ -1383,6 +1490,29 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
           { merge: true }
         );
       });
+      if (mergedUsernameIndexRef) {
+        transaction.set(
+          mergedUsernameIndexRef,
+          {
+            profileId: targetProfileId,
+            username: mergedUsername,
+            lookupKey: mergedUsernameKey,
+            updatedAtMs: nowMs,
+          },
+          { merge: true }
+        );
+      }
+      staleUsernameIndexSnapshots.forEach((indexSnapshot, index) => {
+        if (!indexSnapshot.exists) {
+          return;
+        }
+        const indexData = indexSnapshot.data() || {};
+        const indexedProfileId = toCleanString(indexData.profileId);
+        if (indexedProfileId === targetProfileId || indexedProfileId === sourceProfileId) {
+          transaction.delete(staleUsernameIndexRefs[index]);
+        }
+      });
+
       transaction.set(targetRef, mergedData, { merge: true });
       if (liveSourceSnapshot.exists) {
         transaction.set(sourceRef, sourceMergeRetainedPatch, { merge: true });
@@ -1868,7 +1998,10 @@ const linkVerifiedMethod = async ({
       throw new HttpsError("internal", "target-profile-missing");
     }
     if (method === "apple" || method === "x") {
-      targetProfileSnapshot = await assignRandomUsernameIfNeededForWalletlessProfile({ profileId: targetProfileId });
+      targetProfileSnapshot = await assignRandomUsernameIfNeededForWalletlessProfile({
+        profileId: targetProfileId,
+        preferredUsername: method === "x" ? xUsername : null,
+      });
     }
     await ensureProfileClaimAndRtdb(uid, targetProfileId);
 

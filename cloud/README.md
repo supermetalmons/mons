@@ -20,6 +20,10 @@
 
 `node backfillAuthMethodIndex.js --project mons-link --dry-run`
 
+`node backfillUsernameIndexCaseInsensitive.js --project mons-link --dry-run`
+
+`node backfillUsernameIndexCaseInsensitive.js --project mons-link --write`
+
 `node scrubGoogleAuthData.js --project mons-link --out /tmp/google_auth_scrub_report.json`
 
 `node scrubGoogleAuthData.js --project mons-link --write --force`
@@ -39,3 +43,5 @@
 Detailed rollout sequence and checks: `../docs/auth-rollout.md`
 
 X provider setup and deploy checklist: `../docs/x-auth-deploy.md`
+
+Username migration note: run `backfillUsernameIndexCaseInsensitive.js --write` to backfill `usernameIndex` + `users.usernameLookupKey`, then confirm `strictUniquenessReady: true` before relying on strict case-insensitive username uniqueness.
