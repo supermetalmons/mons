@@ -3,20 +3,20 @@ import styled from "styled-components";
 import { problems, getCompletedProblemIds } from "../content/problems";
 import { useGameAssets } from "../hooks/useGameAssets";
 import { FaCheck, FaCircle } from "react-icons/fa";
-import { NavigationGameItem, NavigationGameStatus } from "../connection/connectionModels";
+import { NavigationGameItem, NavigationGameStatus, NavigationItem, NavigationEventItem } from "../connection/connectionModels";
 import { emojis } from "../content/emojis";
 
 interface NavigationPickerProps {
   showsHomeNavigation: boolean;
   navigateHome?: (event: React.MouseEvent<HTMLButtonElement>) => void;
-  topGames?: NavigationGameItem[];
-  pagedGames?: NavigationGameItem[];
+  topGames?: NavigationItem[];
+  pagedGames?: NavigationItem[];
   selectedProblemId?: string | null;
-  selectedGameInviteId?: string | null;
+  selectedNavigationItemId?: string | null;
   isGamesLoading?: boolean;
   isLoadingMoreGames?: boolean;
   hasMoreGames?: boolean;
-  onSelectGame?: (inviteId: string, options?: { status?: NavigationGameStatus }) => void;
+  onSelectGame?: (item: NavigationItem, options?: { status?: NavigationGameStatus }) => void;
   onRemoveGame?: (inviteId: string) => void;
   removingGameInviteIds?: Set<string>;
   onSelectProblem: (problemId: string) => void;
@@ -173,6 +173,32 @@ const GameText = styled.span`
   text-overflow: ellipsis;
 `;
 
+const EventAvatarStack = styled.div`
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+`;
+
+const EventAvatarItem = styled.div`
+  width: 18px;
+  height: 18px;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-right: -4px;
+  border: 1.5px solid rgba(255, 255, 255, 0.9);
+  background: rgba(128, 128, 128, 0.18);
+
+  @media (prefers-color-scheme: dark) {
+    border-color: rgba(31, 35, 42, 0.95);
+  }
+
+  img {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
+`;
+
 const QueuePrimaryContent = styled.span`
   white-space: nowrap;
   overflow: hidden;
@@ -320,7 +346,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   topGames = [],
   pagedGames = [],
   selectedProblemId = null,
-  selectedGameInviteId = null,
+  selectedNavigationItemId = null,
   isGamesLoading = false,
   isLoadingMoreGames = false,
   hasMoreGames = false,
@@ -504,31 +530,68 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const shouldRenderLearnSection = true;
   const hasScrollableContent = shouldRenderLearnSection || shouldRenderTopGamesSection || shouldRenderPagedGamesSection;
 
-  const renderGameRows = (gamesToRender: NavigationGameItem[]) => (
+  const formatEventRowDate = (event: NavigationEventItem): string => {
+    const sourceMs = event.startAtMs ?? event.listSortAtMs;
+    if (!Number.isFinite(sourceMs) || sourceMs <= 0) {
+      return event.status;
+    }
+    return new Date(sourceMs).toLocaleString(undefined, {
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+    });
+  };
+
+  const renderEventPreview = (event: NavigationEventItem) => {
+    const preview = event.participantPreview.slice(0, 3);
+    const remainingCount = Math.max(0, event.participantCount - preview.length);
+    return (
+      <EventAvatarStack>
+        {preview.map((participant, index) => (
+          <EventAvatarItem key={`${participant.profileId ?? participant.displayName ?? "participant"}_${index}`}>
+            {typeof participant.emojiId === "number" ? <img src={emojis.getEmojiUrl(participant.emojiId.toString())} alt="" /> : null}
+          </EventAvatarItem>
+        ))}
+        {remainingCount > 0 && <QueuePrimaryContent>{`+${remainingCount}`}</QueuePrimaryContent>}
+      </EventAvatarStack>
+    );
+  };
+
+  const renderGameRows = (gamesToRender: NavigationItem[]) => (
     <>
-      {gamesToRender.map((game) => {
-        const isSelected = selectedGameInviteId === game.inviteId;
-        const isQueueStatus = game.status === "waiting" || game.status === "pending";
-        const canRemove = game.status === "waiting" && !!onRemoveGame;
-        const isRemoving = !!removingGameInviteIds?.has(game.inviteId);
+      {gamesToRender.map((item) => {
+        const isSelected = selectedNavigationItemId === item.id;
+        const isGame = item.entityType === "game";
+        const game = isGame ? item : null;
+        const event = item.entityType === "event" ? item : null;
+        const isQueueStatus = !!game && (game.status === "waiting" || game.status === "pending");
+        const canRemove = !!game && game.status === "waiting" && !!onRemoveGame;
+        const isRemoving = !!game && !!removingGameInviteIds?.has(game.inviteId);
         const handleRemoveClick = (event: React.MouseEvent<HTMLButtonElement>) => {
           event.preventDefault();
           event.stopPropagation();
-          if (!isRemoving) {
+          if (!isRemoving && game) {
             onRemoveGame?.(game.inviteId);
           }
         };
         return (
-          <GameRowContainer key={game.inviteId}>
+          <GameRowContainer key={item.id}>
             <GameRow
               $isSelected={isSelected}
               data-navigation-selected={isSelected ? "true" : undefined}
               data-navigation-selected-primary={isSelected ? "true" : undefined}
-              onClick={() => onSelectGame?.(game.inviteId, { status: game.status })}
+              onClick={() => onSelectGame?.(item, isGame ? { status: item.status } : undefined)}
             >
-              {isQueueStatus ? (
+              {isQueueStatus && game ? (
                 <QueuePrimaryContent>{getQueuePrimaryLabel(game)}</QueuePrimaryContent>
-              ) : (
+              ) : event ? (
+                <>
+                  {renderEventPreview(event)}
+                  <GameText>{formatEventRowDate(event)}</GameText>
+                  {event.status === "active" ? <UncompletedIcon /> : <GameStatus $isSelected={isSelected}>{event.status}</GameStatus>}
+                </>
+              ) : game ? (
                 <>
                   {typeof game.opponentEmoji === "number" ? (
                     <GameEmojiImage src={emojis.getEmojiUrl(game.opponentEmoji.toString())} alt="" />
@@ -542,14 +605,14 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                     <GameStatus $isSelected={isSelected}>{getGameStatusLabel(game)}</GameStatus>
                   )}
                 </>
-              )}
+              ) : null}
             </GameRow>
             {canRemove && (
               <GameRemoveButton
                 type="button"
                 aria-label="Remove waiting game"
-                $isDisabled={isRemoving}
-                disabled={isRemoving}
+                $isDisabled={!!isRemoving}
+                disabled={!!isRemoving}
                 onClick={handleRemoveClick}
               >
                 ×
@@ -570,7 +633,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
             key={item.id}
             $isSelected={isSelected}
             data-navigation-selected={isSelected ? "true" : undefined}
-            data-navigation-selected-primary={!selectedGameInviteId && isSelected ? "true" : undefined}
+            data-navigation-selected-primary={!selectedNavigationItemId && isSelected ? "true" : undefined}
             onClick={() => handleNavigationSelect(item.id)}
           >
             <PlaceholderImage src={getIconImage(item.icon)} alt="" />

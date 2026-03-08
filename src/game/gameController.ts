@@ -20,6 +20,7 @@ import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecyc
 import { getSessionGuard } from "./matchSession";
 import { RouteState, getCurrentRouteState } from "../navigation/routeState";
 import { INVALID_SNAPSHOT_ROUTE_ERROR } from "../session/sessionErrors";
+import { closeEventModal, openEventModal } from "../ui/eventModalController";
 
 export let initialFen = "";
 export let isWatchOnly = false;
@@ -42,7 +43,7 @@ const onlineReconnectRequestCooldownMs = 3000;
 
 const watchOnlyListeners = new Set<(value: boolean) => void>();
 let activeRouteState: RouteState = getCurrentRouteState();
-const isCreateInviteRoute = () => activeRouteState.mode === "home";
+const isCreateInviteRoute = () => activeRouteState.mode === "home" || activeRouteState.mode === "event";
 const isSnapshotRoute = () => activeRouteState.mode === "snapshot";
 const isBotsRoute = () => activeRouteState.mode === "watch";
 type BotAutomoveMode = "normal" | "pro" | "ultra";
@@ -1581,6 +1582,11 @@ export function didAttemptAuthentication() {
 export async function go(routeStateOverride?: RouteState) {
   const routeState = routeStateOverride ?? getCurrentRouteState();
   activeRouteState = routeState;
+  if (routeState.mode === "event" && routeState.eventId) {
+    openEventModal(routeState.eventId, { restoreHomeOnClose: true });
+  } else {
+    void closeEventModal({ skipHomeTransition: true });
+  }
   clearAllManagedGameTimeouts();
   resetBotScoreReactionState();
   isGameWithBot = false;
@@ -2147,7 +2153,11 @@ export function didClickAutomatchButton(onAutomatchResponse?: (response: any) =>
 }
 
 function showRematchInterface() {
-  if (isWatchOnly) {
+  const eventId = connection.getCurrentInviteEventId();
+  if (eventId) {
+    void connection.syncEventState(eventId).catch(() => {});
+  }
+  if (isWatchOnly || connection.isCurrentInviteEventOwned()) {
     return;
   }
   if (connection.rematchSeriesEndIsIndicated()) {

@@ -28,17 +28,20 @@ const { cancelWagerProposal } = require("./cancelWagerProposal");
 const { declineWagerProposal } = require("./declineWagerProposal");
 const { acceptWagerProposal } = require("./acceptWagerProposal");
 const { resolveWagerOutcome } = require("./resolveWagerOutcome");
+const { createEvent, joinEvent, syncEventState } = require("./events");
 const {
   onInviteCreated,
   onInviteGuestIdChanged,
   onInviteHostRematchesChanged,
   onInviteGuestRematchesChanged,
   onMatchCreated,
+  onInviteMatchRatingUpdated,
   onAutomatchQueueWritten,
   onProfileLinkCreated,
   onProfileLinkWritten,
   onProfileDeleted,
 } = require("./profileGamesProjector");
+const { onEventWritten } = require("./eventProjector");
 
 exports.verifySolanaAddress = verifySolanaAddress;
 exports.verifyEthAddress = verifyEthAddress;
@@ -64,12 +67,17 @@ exports.cancelWagerProposal = cancelWagerProposal;
 exports.declineWagerProposal = declineWagerProposal;
 exports.acceptWagerProposal = acceptWagerProposal;
 exports.resolveWagerOutcome = resolveWagerOutcome;
+exports.createEvent = createEvent;
+exports.joinEvent = joinEvent;
+exports.syncEventState = syncEventState;
 exports.projectProfileGamesOnInviteCreated = onInviteCreated;
 exports.projectProfileGamesOnInviteGuestIdChanged = onInviteGuestIdChanged;
 exports.projectProfileGamesOnInviteHostRematchesChanged = onInviteHostRematchesChanged;
 exports.projectProfileGamesOnInviteGuestRematchesChanged = onInviteGuestRematchesChanged;
 exports.projectProfileGamesOnMatchCreated = onMatchCreated;
+exports.projectProfileGamesOnInviteMatchRatingUpdated = onInviteMatchRatingUpdated;
 exports.projectProfileGamesOnAutomatchQueueWritten = onAutomatchQueueWritten;
 exports.projectProfileGamesOnProfileLinkCreated = onProfileLinkCreated;
 exports.projectProfileGamesOnProfileLinkWritten = onProfileLinkWritten;
 exports.projectProfileGamesOnProfileDeleted = onProfileDeleted;
+exports.projectProfileGamesOnEventWritten = onEventWritten;

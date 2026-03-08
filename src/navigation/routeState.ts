@@ -1,10 +1,11 @@
-export type RouteMode = "home" | "invite" | "snapshot" | "watch";
+export type RouteMode = "home" | "invite" | "snapshot" | "watch" | "event";
 
 export type RouteState = {
   mode: RouteMode;
   path: string;
   inviteId: string | null;
   snapshotId: string | null;
+  eventId: string | null;
   autojoin: boolean;
 };
 
@@ -32,6 +33,7 @@ export const parseRouteState = (pathname: string): RouteState => {
       path,
       inviteId: null,
       snapshotId: null,
+      eventId: null,
       autojoin: false,
     };
   }
@@ -41,6 +43,18 @@ export const parseRouteState = (pathname: string): RouteState => {
       path,
       inviteId: null,
       snapshotId: null,
+      eventId: null,
+      autojoin: false,
+    };
+  }
+  if (path.startsWith("event/")) {
+    const eventId = path.substring("event/".length);
+    return {
+      mode: "event",
+      path,
+      inviteId: null,
+      snapshotId: null,
+      eventId: eventId || null,
       autojoin: false,
     };
   }
@@ -50,6 +64,7 @@ export const parseRouteState = (pathname: string): RouteState => {
       path,
       inviteId: null,
       snapshotId: decodeSnapshotId(path),
+      eventId: null,
       autojoin: false,
     };
   }
@@ -58,6 +73,7 @@ export const parseRouteState = (pathname: string): RouteState => {
     path,
     inviteId: path,
     snapshotId: null,
+    eventId: null,
     autojoin: path.startsWith("auto_"),
   };
 };
@@ -73,10 +89,12 @@ export const getRoutePathForTarget = (target: RouteState): string => {
   if (target.mode === "watch") {
     return "/watch";
   }
+  if (target.mode === "event") {
+    return `/event/${target.eventId ?? ""}`;
+  }
   if (target.mode === "snapshot") {
     const encoded = encodeURIComponent(target.snapshotId ?? "");
     return `/snapshot/${encoded}`;
   }
   return `/${target.inviteId ?? ""}`;
 };
-

@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback, useMemo } from "react";
-import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaPaintBrush, FaScroll, FaHourglassHalf } from "react-icons/fa";
+import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaPaintBrush, FaScroll, FaHourglassHalf, FaUsers } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import styled from "styled-components";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
@@ -21,7 +21,8 @@ import BoardStylePickerComponent, { preloadPangchiuBoardPreview } from "./BoardS
 import { Sound } from "../utils/gameModels";
 import MoveHistoryPopup, { subscribeMoveHistoryPopupReload, triggerMoveHistoryPopupSelectionReset } from "./MoveHistoryPopup";
 import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMiningService";
-import { MatchWagerState, NavigationGameItem, NavigationGameStatus } from "../connection/connectionModels";
+import { MatchWagerState, NavigationGameItem, NavigationGameStatus, NavigationItem } from "../connection/connectionModels";
+import { compareNavigationItems as compareNavigationItemsByDisplayOrder } from "../services/navigationItemOrdering";
 import { subscribeToWagerState } from "../game/wagerState";
 import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
@@ -31,6 +32,7 @@ import { getCurrentRouteState } from "../navigation/routeState";
 import { registerBottomControlsTransientUiHandler } from "./uiSession";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 import { problems } from "../content/problems";
+import { getEventModalState, openEventModal, subscribeToEventModalState } from "./eventModalController";
 import {
   NavigationGamesCacheScope,
   clearNavigationGamesRuntimeCacheScope,
@@ -461,8 +463,8 @@ const BottomControls: React.FC = () => {
   const [isNavigationPopupVisible, setIsNavigationPopupVisible] = useState(false);
   const [isBoardStylePickerVisible, setIsBoardStylePickerVisible] = useState(false);
   const [isBadgeVisible, setIsBadgeVisible] = useState(false);
-  const [navigationProjectedGames, setNavigationProjectedGames] = useState<NavigationGameItem[]>([]);
-  const [navigationPagedGames, setNavigationPagedGames] = useState<NavigationGameItem[]>([]);
+  const [navigationProjectedGames, setNavigationProjectedGames] = useState<NavigationItem[]>([]);
+  const [navigationPagedGames, setNavigationPagedGames] = useState<NavigationItem[]>([]);
   const [isNavigationGamesLoading, setIsNavigationGamesLoading] = useState(false);
   const [isNavigationGamesLoadingMore, setIsNavigationGamesLoadingMore] = useState(false);
   const [navigationHasMoreGames, setNavigationHasMoreGames] = useState(false);
@@ -471,6 +473,10 @@ const BottomControls: React.FC = () => {
   const [optimisticPendingAutomatchItem, setOptimisticPendingAutomatchItem] = useState<NavigationGameItem | null>(null);
   const [isNavigationFallbackScope, setIsNavigationFallbackScope] = useState(false);
   const [navigationRemovingInviteIds, setNavigationRemovingInviteIds] = useState<Set<string>>(new Set());
+  const [selectedEventModalId, setSelectedEventModalId] = useState<string | null>(() => {
+    const state = getEventModalState();
+    return state.isOpen ? state.eventId : null;
+  });
 
   const [isUndoDisabled, setIsUndoDisabled] = useState(true);
   const [waitingStateText, setWaitingStateText] = useState("");
@@ -525,7 +531,7 @@ const BottomControls: React.FC = () => {
   });
   const navigationHasPagedGamesRef = useRef(false);
   const navigationLoadMoreInFlightRef = useRef(false);
-  const topNavigationInviteIdsRef = useRef<Set<string>>(new Set());
+  const topNavigationItemIdsRef = useRef<Set<string>>(new Set());
   const navigationCacheScopeRef = useRef<NavigationGamesCacheScope | null>(null);
   const navigationPopupEpochRef = useRef(0);
   const navigationSelectionEpochRef = useRef(0);
@@ -933,66 +939,47 @@ const BottomControls: React.FC = () => {
     };
   }, []);
 
-  const getNavigationStatusPriority = useCallback((status: NavigationGameStatus): number => {
-    if (status === "pending") {
-      return 0;
-    }
-    if (status === "waiting") {
-      return 1;
-    }
-    if (status === "active") {
-      return 2;
-    }
-    return 3;
+  useEffect(() => {
+    return subscribeToEventModalState((state) => {
+      setSelectedEventModalId(state.isOpen ? state.eventId : null);
+    });
   }, []);
 
-  const compareNavigationItems = useCallback((left: NavigationGameItem, right: NavigationGameItem) => {
-    const leftPriority = getNavigationStatusPriority(left.status);
-    const rightPriority = getNavigationStatusPriority(right.status);
-    if (leftPriority !== rightPriority) {
-      return leftPriority - rightPriority;
-    }
-    if (left.listSortAtMs !== right.listSortAtMs) {
-      return right.listSortAtMs - left.listSortAtMs;
-    }
-    return left.inviteId.localeCompare(right.inviteId);
-  }, [getNavigationStatusPriority]);
-
   const isNavigationGameBeingRemoved = useCallback(
-    (item: NavigationGameItem) => item.status === "waiting" && navigationRemovingInviteIds.has(item.inviteId),
+    (item: NavigationItem) => item.entityType === "game" && item.status === "waiting" && navigationRemovingInviteIds.has(item.inviteId),
     [navigationRemovingInviteIds]
   );
 
   const topNavigationGames = useMemo(() => {
     const merged = navigationProjectedGames.slice();
-    if (optimisticPendingAutomatchItem && !merged.some((item) => item.inviteId === optimisticPendingAutomatchItem.inviteId)) {
+    if (optimisticPendingAutomatchItem && !merged.some((item) => item.id === optimisticPendingAutomatchItem.id)) {
       merged.push(optimisticPendingAutomatchItem);
     }
     const visibleItems = merged.filter((item) => !isNavigationGameBeingRemoved(item));
-    visibleItems.sort(compareNavigationItems);
+    visibleItems.sort(compareNavigationItemsByDisplayOrder);
     return visibleItems;
-  }, [compareNavigationItems, isNavigationGameBeingRemoved, navigationProjectedGames, optimisticPendingAutomatchItem]);
+  }, [isNavigationGameBeingRemoved, navigationProjectedGames, optimisticPendingAutomatchItem]);
 
-  const topNavigationInviteIds = useMemo(() => {
-    return new Set(topNavigationGames.map((item) => item.inviteId));
+  const topNavigationItemIds = useMemo(() => {
+    return new Set(topNavigationGames.map((item) => item.id));
   }, [topNavigationGames]);
 
   const pagedNavigationGames = useMemo(() => {
-    const uniqueByInviteId = new Map<string, NavigationGameItem>();
+    const uniqueById = new Map<string, NavigationItem>();
     navigationPagedGames.forEach((pagedItem) => {
-      if (!topNavigationInviteIds.has(pagedItem.inviteId)) {
-        uniqueByInviteId.set(pagedItem.inviteId, pagedItem);
+      if (!topNavigationItemIds.has(pagedItem.id)) {
+        uniqueById.set(pagedItem.id, pagedItem);
       }
     });
-    const visibleItems = Array.from(uniqueByInviteId.values()).filter((item) => !isNavigationGameBeingRemoved(item));
-    visibleItems.sort(compareNavigationItems);
+    const visibleItems = Array.from(uniqueById.values()).filter((item) => !isNavigationGameBeingRemoved(item));
+    visibleItems.sort(compareNavigationItemsByDisplayOrder);
     return visibleItems;
-  }, [compareNavigationItems, isNavigationGameBeingRemoved, navigationPagedGames, topNavigationInviteIds]);
+  }, [isNavigationGameBeingRemoved, navigationPagedGames, topNavigationItemIds]);
 
   useEffect(() => {
-    topNavigationInviteIdsRef.current = topNavigationInviteIds;
+    topNavigationItemIdsRef.current = topNavigationItemIds;
     navigationHasPagedGamesRef.current = pagedNavigationGames.length > 0;
-  }, [topNavigationInviteIds, pagedNavigationGames.length]);
+  }, [topNavigationItemIds, pagedNavigationGames.length]);
 
   useEffect(() => {
     const scope = navigationCacheScopeRef.current;
@@ -1007,7 +994,7 @@ const BottomControls: React.FC = () => {
     if (!optimisticPendingAutomatchItem) {
       return;
     }
-    if (navigationProjectedGames.some((item) => item.inviteId === optimisticPendingAutomatchItem.inviteId) || navigationPagedGames.some((item) => item.inviteId === optimisticPendingAutomatchItem.inviteId)) {
+    if (navigationProjectedGames.some((item) => item.id === optimisticPendingAutomatchItem.id) || navigationPagedGames.some((item) => item.id === optimisticPendingAutomatchItem.id)) {
       setOptimisticPendingAutomatchItem(null);
     }
   }, [navigationProjectedGames, navigationPagedGames, optimisticPendingAutomatchItem]);
@@ -1137,24 +1124,24 @@ const BottomControls: React.FC = () => {
           }
 
           setNavigationPagedGames((previousItems) => {
-            const uniqueByInviteId = new Map<string, NavigationGameItem>();
+            const uniqueById = new Map<string, NavigationItem>();
 
             page.items.forEach((item) => {
-              if (!topNavigationInviteIdsRef.current.has(item.inviteId)) {
-                uniqueByInviteId.set(item.inviteId, item);
+              if (!topNavigationItemIdsRef.current.has(item.id)) {
+                uniqueById.set(item.id, item);
               }
             });
 
             if (page.hasMore) {
               previousItems.forEach((item) => {
-                if (!topNavigationInviteIdsRef.current.has(item.inviteId) && !uniqueByInviteId.has(item.inviteId)) {
-                  uniqueByInviteId.set(item.inviteId, item);
+                if (!topNavigationItemIdsRef.current.has(item.id) && !uniqueById.has(item.id)) {
+                  uniqueById.set(item.id, item);
                 }
               });
             }
 
-            const mergedItems = Array.from(uniqueByInviteId.values());
-            navigationHasPagedGamesRef.current = mergedItems.some((item) => !topNavigationInviteIdsRef.current.has(item.inviteId));
+            const mergedItems = Array.from(uniqueById.values());
+            navigationHasPagedGamesRef.current = mergedItems.some((item) => !topNavigationItemIdsRef.current.has(item.id));
             return mergedItems;
           });
 
@@ -2061,10 +2048,29 @@ const BottomControls: React.FC = () => {
     setIsNavigationPopupVisible(!isNavigationPopupVisible);
   };
 
-  const handleNavigationGameSelect = (inviteId: string, options?: { status?: NavigationGameStatus }) => {
+  const handleNavigationGameSelect = (item: NavigationItem, options?: { status?: NavigationGameStatus }) => {
     navigationSelectionEpochRef.current += 1;
     setIsNavigationPopupVisible(false);
     setIsBoardStylePickerVisible(false);
+    if (item.entityType === "event") {
+      if (getCurrentRouteState().mode === "invite") {
+        openEventModal(item.eventId, { restoreHomeOnClose: false });
+        return;
+      }
+      void (async () => {
+        const appSessionManager = await import("../session/AppSessionManager");
+        await appSessionManager.transition({
+          mode: "event",
+          path: `event/${item.eventId}`,
+          inviteId: null,
+          snapshotId: null,
+          eventId: item.eventId,
+          autojoin: false,
+        });
+      })();
+      return;
+    }
+    const inviteId = item.inviteId;
     if (options?.status === "pending") {
       clearPendingDelayedCancelAutomatchIntent();
       pendingFreshAutomatchCancelRevealAtMs = 0;
@@ -2129,8 +2135,8 @@ const BottomControls: React.FC = () => {
           }
 
           if (result && result.ok && !result.skipped) {
-            setNavigationProjectedGames((prev) => prev.filter((item) => !(item.inviteId === inviteId && item.status === "waiting")));
-            setNavigationPagedGames((prev) => prev.filter((item) => !(item.inviteId === inviteId && item.status === "waiting")));
+            setNavigationProjectedGames((prev) => prev.filter((item) => !(item.entityType === "game" && item.inviteId === inviteId && item.status === "waiting")));
+            setNavigationPagedGames((prev) => prev.filter((item) => !(item.entityType === "game" && item.inviteId === inviteId && item.status === "waiting")));
           }
 
           clearRemovingFlag();
@@ -2205,11 +2211,11 @@ const BottomControls: React.FC = () => {
             return;
           }
           setNavigationPagedGames((previousItems) => {
-            const uniqueByInviteId = new Map<string, NavigationGameItem>();
-            previousItems.forEach((item) => uniqueByInviteId.set(item.inviteId, item));
-            page.items.forEach((item) => uniqueByInviteId.set(item.inviteId, item));
-            const mergedItems = Array.from(uniqueByInviteId.values());
-            navigationHasPagedGamesRef.current = mergedItems.some((item) => !topNavigationInviteIdsRef.current.has(item.inviteId));
+            const uniqueById = new Map<string, NavigationItem>();
+            previousItems.forEach((item) => uniqueById.set(item.id, item));
+            page.items.forEach((item) => uniqueById.set(item.id, item));
+            const mergedItems = Array.from(uniqueById.values());
+            navigationHasPagedGamesRef.current = mergedItems.some((item) => !topNavigationItemIdsRef.current.has(item.id));
             return mergedItems;
           });
           setNavigationGamesCursor(page.nextCursor);
@@ -2251,11 +2257,11 @@ const BottomControls: React.FC = () => {
         const nextPagedItems = visibleItems.slice(NAVIGATION_GAMES_PAGE_SIZE);
         setNavigationProjectedGames(nextProjectedItems);
         setNavigationPagedGames(nextPagedItems);
-        const nextTopInviteIds = new Set(nextProjectedItems.map((item) => item.inviteId));
+        const nextTopItemIds = new Set(nextProjectedItems.map((item) => item.id));
         if (optimisticPendingAutomatchItem) {
-          nextTopInviteIds.add(optimisticPendingAutomatchItem.inviteId);
+          nextTopItemIds.add(optimisticPendingAutomatchItem.id);
         }
-        navigationHasPagedGamesRef.current = nextPagedItems.some((item) => !nextTopInviteIds.has(item.inviteId));
+        navigationHasPagedGamesRef.current = nextPagedItems.some((item) => !nextTopItemIds.has(item.id));
         setNavigationHasMoreGames(hasMore);
         stopLoadMore();
       })
@@ -2283,8 +2289,17 @@ const BottomControls: React.FC = () => {
   };
 
   const routeState = getCurrentRouteState();
-  const selectedGameInviteId = routeState.mode === "invite" ? routeState.inviteId : null;
-  const selectedProblemId = routeState.mode === "home" ? getSelectedPuzzleId() : null;
+  const selectedProblemId = routeState.mode === "home" || routeState.mode === "event" ? getSelectedPuzzleId() : null;
+  const selectedNavigationItemId =
+    selectedEventModalId
+      ? `event_${selectedEventModalId}`
+      : routeState.mode === "event" && routeState.eventId
+        ? `event_${routeState.eventId}`
+        : routeState.mode === "invite"
+          ? routeState.inviteId
+          : null;
+  const currentInviteEventId = connection.getCurrentInviteEventId();
+  const isEventGameButtonVisible = isOnlineGame && connection.isCurrentInviteEventOwned() && !!currentInviteEventId;
 
   return (
     <>
@@ -2304,7 +2319,7 @@ const BottomControls: React.FC = () => {
             topGames={topNavigationGames}
             pagedGames={pagedNavigationGames}
             selectedProblemId={selectedProblemId}
-            selectedGameInviteId={selectedGameInviteId}
+            selectedNavigationItemId={selectedNavigationItemId}
             isGamesLoading={isNavigationGamesLoading}
             isLoadingMoreGames={isNavigationGamesLoadingMore}
             hasMoreGames={navigationHasMoreGames}
@@ -2461,6 +2476,15 @@ const BottomControls: React.FC = () => {
         {isResignButtonVisible && (
           <ControlButton onClick={handleResignClick} aria-label="Resign" ref={resignButtonRef} disabled={false}>
             <FaFlag />
+          </ControlButton>
+        )}
+        {isEventGameButtonVisible && (
+          <ControlButton
+            onClick={!isMobile ? () => openEventModal(currentInviteEventId as string, { restoreHomeOnClose: false }) : undefined}
+            onTouchStart={isMobile ? () => openEventModal(currentInviteEventId as string, { restoreHomeOnClose: false }) : undefined}
+            aria-label="Event"
+          >
+            <FaUsers />
           </ControlButton>
         )}
         <NavigationListButton ref={navigationButtonRef} dimmed={isNavigationButtonDimmed} onClick={!isMobile ? handleNavigationButtonClick : undefined} onTouchStart={isMobile ? handleNavigationButtonClick : undefined} aria-label="Navigation">

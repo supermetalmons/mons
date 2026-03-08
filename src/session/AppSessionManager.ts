@@ -48,7 +48,7 @@ const waitForBoardRoot = async (timeoutMs = 30000) => {
 };
 
 const routeStatesMatch = (a: RouteState, b: RouteState) => {
-  return a.mode === b.mode && a.path === b.path && a.inviteId === b.inviteId && a.snapshotId === b.snapshotId && a.autojoin === b.autojoin;
+  return a.mode === b.mode && a.path === b.path && a.inviteId === b.inviteId && a.snapshotId === b.snapshotId && a.eventId === b.eventId && a.autojoin === b.autojoin;
 };
 
 const mergeQueuedTransitionOptions = (existing?: TransitionOptions, incoming?: TransitionOptions): TransitionOptions | undefined => {
@@ -74,6 +74,7 @@ const createHomeTarget = (): RouteState => {
     path: "",
     inviteId: null,
     snapshotId: null,
+    eventId: null,
     autojoin: false,
   };
 };

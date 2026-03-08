@@ -130,7 +130,7 @@ async function replaceAutomatchBotMessageText(inviteId, newText, isHtml = false)
     const messageId = val && val.telegramMessageId ? val.telegramMessageId : null;
     if (!messageId) {
       console.warn("auto:edit:noMessageId", { inviteId });
-      return;
+      return false;
     }
     try {
       const body = {
@@ -153,18 +153,26 @@ async function replaceAutomatchBotMessageText(inviteId, newText, isHtml = false)
         data = await res.json();
       } catch (_) {}
       console.log("auto:edit:response", { inviteId, status: res.status, ok: data && data.ok, description: data && data.description });
+      if (!res.ok || !data || data.ok !== true) {
+        return false;
+      }
       try {
         await admin.database().ref(`automatchMessages/${inviteId}/text`).set(newText);
         console.log("auto:edit:db:ok", { inviteId });
+        return true;
       } catch (e) {
         console.error("auto:edit:db:error", { inviteId, error: e && e.message ? e.message : e });
+        return false;
       }
     } catch (e) {
       console.error("auto:edit:error", { inviteId, error: e && e.message ? e.message : e });
+      return false;
     }
   } catch (e) {
     console.error("auto:edit:outerError", { inviteId, error: e && e.message ? e.message : e });
+    return false;
   }
+  return false;
 }
 
 async function replaceAutomatchBotMessageByDeletingOriginal(inviteId, newText, isHtml = false) {
@@ -231,9 +239,10 @@ async function appendAutomatchBotMessageText(inviteId, appendText, isHtml = fals
     const currentText = val && val.text ? val.text : "";
     const combinedText = currentText ? `${currentText}\n\n${appendText}` : appendText;
     console.log("auto:append:computed", { inviteId, currentLength: currentText.length, newLength: combinedText ? combinedText.length : 0 });
-    await replaceAutomatchBotMessageText(inviteId, combinedText, isHtml);
+    return await replaceAutomatchBotMessageText(inviteId, combinedText, isHtml);
   } catch (e) {
     console.error("auto:append:error", { inviteId, error: e && e.message ? e.message : e });
+    return false;
   }
 }
 

@@ -5,12 +5,36 @@ import { getFirestore, Firestore, collection, query, where, limit, getDocs, orde
 import { didFindInviteThatCanBeJoined, didReceiveInviteReactionUpdate, didReceiveMatchUpdate, didRecoverInviteReactions, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal, didUpdateRematchSeriesMetadata } from "../game/gameController";
 import { getPlayersEmojiId, didGetPlayerProfile, setupPlayerId } from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
-import { Match, Invite, InviteReaction, Reaction, PlayerProfile, PlayerMiningData, PlayerMiningMaterials, MINING_MATERIAL_NAMES, MiningMaterialName, MatchWagerState, WagerProposal, WagerAgreement, RematchSeriesDescriptor, HistoricalMatchPair, NavigationGameItem } from "./connectionModels";
+import {
+  Match,
+  Invite,
+  InviteReaction,
+  Reaction,
+  PlayerProfile,
+  PlayerMiningData,
+  PlayerMiningMaterials,
+  MINING_MATERIAL_NAMES,
+  MiningMaterialName,
+  MatchWagerState,
+  WagerProposal,
+  WagerAgreement,
+  RematchSeriesDescriptor,
+  HistoricalMatchPair,
+  NavigationGameItem,
+  NavigationItem,
+  NavigationItemStatus,
+  EventNavigationPreviewParticipant,
+  EventRecord,
+  EventParticipant,
+  EventRound,
+  EventMatch,
+} from "./connectionModels";
 import { storage } from "../utils/storage";
 import { generateNewInviteId } from "../utils/misc";
 import { getWagerState, setCurrentWagerMatch, setWagerState, syncCurrentWagerMatchState } from "../game/wagerState";
 import { applyFrozenMaterialsDelta, computeAvailableMaterials, getFrozenMaterials, setFrozenMaterials } from "../services/wagerMaterialsService";
 import { rocksMiningService } from "../services/rocksMiningService";
+import { compareNavigationItems as compareNavigationItemsByDisplayOrder } from "../services/navigationItemOrdering";
 import { RouteState, getCurrentRouteState } from "../navigation/routeState";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 
@@ -45,7 +69,7 @@ const wagerDebugLogsEnabled = process.env.NODE_ENV !== "production";
 export type NavigationGamesPageCursor = QueryDocumentSnapshot<DocumentData> | null;
 
 export interface NavigationGamesPageResult {
-  items: NavigationGameItem[];
+  items: NavigationItem[];
   nextCursor: NavigationGamesPageCursor;
   hasMore: boolean;
 }
@@ -135,6 +159,10 @@ class Connection {
   private authUnsubscribers = new Set<() => void>();
   private authBootstrapPromise: Promise<void> | null = null;
   private pendingInviteCreation: { inviteId: string; promise: Promise<boolean> } | null = null;
+  private inFlightEventSyncById = new Map<
+    string,
+    Promise<{ ok: boolean; didChange?: boolean; skipped?: boolean; event?: EventRecord | null }>
+  >();
   private moveSendRequestId = 0;
   private readonly moveSendRetryWindowMs = 60000;
   private readonly moveSendAttemptMaxTimeoutMs = 20000;
@@ -581,6 +609,7 @@ class Connection {
       path: inviteId,
       inviteId,
       snapshotId: null,
+      eventId: null,
       autojoin,
     };
   }
@@ -604,7 +633,7 @@ class Connection {
       this.writeInviteLinkToClipboard();
       completion(true);
     } else {
-      if (routeState.mode === "home") {
+      if (routeState.mode === "home" || routeState.mode === "event") {
         this.newInviteId = generateNewInviteId();
         this.writeInviteLinkToClipboard();
         this.createNewMatchInvite(completion);
@@ -626,12 +655,24 @@ class Connection {
       return;
     }
     const link = window.location.origin + "/" + this.newInviteId;
+    this.writeLinkToClipboard(link, "failed-to-copy-invite-link");
+  }
+
+  public writeEventLinkToClipboard(eventId: string): void {
+    if (typeof window === "undefined" || !eventId) {
+      return;
+    }
+    const link = `${window.location.origin}/event/${eventId}`;
+    this.writeLinkToClipboard(link, "failed-to-copy-event-link");
+  }
+
+  private writeLinkToClipboard(link: string, warningLabel: string): void {
     const clipboard = navigator.clipboard;
     if (clipboard && typeof clipboard.writeText === "function") {
       void clipboard.writeText(link).catch((error) => {
         const didCopy = this.writeInviteLinkWithLegacyClipboardApi(link);
         if (!didCopy && process.env.NODE_ENV !== "production") {
-          console.warn("failed-to-copy-invite-link", error);
+          console.warn(warningLabel, error);
         }
       });
       return;
@@ -748,6 +789,7 @@ class Connection {
           path: inviteToReconnect,
           inviteId: inviteToReconnect,
           snapshotId: null,
+          eventId: null,
           autojoin: inviteToReconnect.startsWith("auto_"),
         },
         { force: true }
@@ -1329,6 +1371,14 @@ class Connection {
     }
   }
 
+  public getCurrentInviteEventId(): string | null {
+    return typeof this.latestInvite?.eventId === "string" && this.latestInvite.eventId !== "" ? this.latestInvite.eventId : null;
+  }
+
+  public isCurrentInviteEventOwned(): boolean {
+    return this.latestInvite?.eventOwned === true;
+  }
+
   public sendEndMatchIndicator(): void {
     const writableContext = this.requireWritableContext(undefined, "sendEndMatchIndicator");
     if (!writableContext || !this.latestInvite || this.rematchSeriesEndIsIndicated()) {
@@ -1806,14 +1856,143 @@ class Connection {
     }
   }
 
-  private normalizeNavigationStatus(status: unknown): "pending" | "waiting" | "active" | "ended" {
-    if (status === "pending" || status === "waiting" || status === "active" || status === "ended") {
+  public async createEvent(startsInMinutes: number): Promise<{ ok: boolean; eventId?: string; event?: EventRecord | null }> {
+    try {
+      await this.ensureAuthenticated();
+      const createEventFunction = httpsCallable(this.functions, "createEvent");
+      const response = await createEventFunction({
+        startsInMinutes: this.normalizeFiniteNumber(startsInMinutes, 0),
+      });
+      const data = response.data as { ok?: boolean; eventId?: unknown; event?: unknown };
+      return {
+        ok: data?.ok === true,
+        eventId: typeof data?.eventId === "string" ? data.eventId : undefined,
+        event: this.mapDatabaseEventRecord(data?.event ?? null, typeof data?.eventId === "string" ? data.eventId : ""),
+      };
+    } catch (error) {
+      console.error("Error creating event:", error);
+      throw error;
+    }
+  }
+
+  public async joinEvent(eventId: string): Promise<{ ok: boolean; eventId?: string }> {
+    try {
+      await this.ensureAuthenticated();
+      const joinEventFunction = httpsCallable(this.functions, "joinEvent");
+      const response = await joinEventFunction({ eventId });
+      const data = response.data as { ok?: boolean; eventId?: unknown };
+      return {
+        ok: data?.ok === true,
+        eventId: typeof data?.eventId === "string" ? data.eventId : undefined,
+      };
+    } catch (error) {
+      console.error("Error joining event:", error);
+      throw error;
+    }
+  }
+
+  public async syncEventState(eventId: string): Promise<{ ok: boolean; didChange?: boolean; skipped?: boolean; event?: EventRecord | null }> {
+    const normalizedEventId = this.normalizeString(eventId).trim();
+    if (!normalizedEventId) {
+      return { ok: false, skipped: true, event: null };
+    }
+
+    const existingSync = this.inFlightEventSyncById.get(normalizedEventId);
+    if (existingSync) {
+      return existingSync;
+    }
+
+    const syncPromise = (async () => {
+      try {
+        await this.ensureAuthenticated();
+        const syncEventStateFunction = httpsCallable(this.functions, "syncEventState");
+        const maxAttempts = 6;
+
+        for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
+          const response = await syncEventStateFunction({ eventId: normalizedEventId });
+          const data = response.data as { ok?: boolean; didChange?: unknown; skipped?: unknown; event?: unknown };
+          const parsed = {
+            ok: data?.ok === true,
+            didChange: typeof data?.didChange === "boolean" ? data.didChange : undefined,
+            skipped: typeof data?.skipped === "boolean" ? data.skipped : undefined,
+            event: this.mapDatabaseEventRecord(data?.event ?? null, normalizedEventId),
+          };
+          if (!parsed.skipped || attempt >= maxAttempts - 1) {
+            return parsed;
+          }
+          await this.delay(140 * (attempt + 1));
+        }
+
+        return { ok: false, skipped: true, event: null };
+      } catch (error) {
+        console.error("Error syncing event state:", error);
+        throw error;
+      } finally {
+        this.inFlightEventSyncById.delete(normalizedEventId);
+      }
+    })();
+
+    this.inFlightEventSyncById.set(normalizedEventId, syncPromise);
+    return syncPromise;
+  }
+
+  public subscribeToEvent(eventId: string, onUpdate: (event: EventRecord | null) => void, onError?: (error: unknown) => void): () => void {
+    const normalizedEventId = typeof eventId === "string" ? eventId.trim() : "";
+    if (!normalizedEventId) {
+      onUpdate(null);
+      return () => {};
+    }
+    const eventRef = ref(this.db, `events/${normalizedEventId}`);
+    let disposed = false;
+    let unsubscribe: (() => void) | null = null;
+    const sessionGuard = this.createSessionGuard();
+
+    void this.ensureAuthenticated()
+      .then(() => {
+        if (disposed || !sessionGuard()) {
+          return;
+        }
+        unsubscribe = onValue(
+          eventRef,
+          (snapshot) => {
+            if (disposed || !sessionGuard()) {
+              return;
+            }
+            if (!snapshot.exists()) {
+              onUpdate(null);
+              return;
+            }
+            onUpdate(this.mapDatabaseEventRecord(snapshot.val(), normalizedEventId));
+          },
+          (error) => {
+            if (disposed || !sessionGuard()) {
+              return;
+            }
+            onError?.(error);
+          }
+        );
+      })
+      .catch((error) => {
+        if (disposed || !sessionGuard()) {
+          return;
+        }
+        onError?.(error);
+      });
+
+    return () => {
+      disposed = true;
+      unsubscribe?.();
+    };
+  }
+
+  private normalizeNavigationStatus(status: unknown): NavigationItemStatus {
+    if (status === "pending" || status === "waiting" || status === "active" || status === "ended" || status === "dismissed") {
       return status;
     }
     return "waiting";
   }
 
-  private getNavigationSortBucket(status: "pending" | "waiting" | "active" | "ended"): number {
+  private getNavigationSortBucket(status: NavigationItemStatus): number {
     if (status === "pending") {
       return 20;
     }
@@ -1824,6 +2003,9 @@ class Connection {
       return 40;
     }
     if (status === "ended") {
+      return 50;
+    }
+    if (status === "dismissed") {
       return 50;
     }
     return 30;
@@ -1844,23 +2026,87 @@ class Connection {
     return 0;
   }
 
-  private compareNavigationGameItems(a: NavigationGameItem, b: NavigationGameItem): number {
-    if (a.sortBucket !== b.sortBucket) {
-      return a.sortBucket - b.sortBucket;
-    }
-    if (a.listSortAtMs !== b.listSortAtMs) {
-      return b.listSortAtMs - a.listSortAtMs;
-    }
-    return a.inviteId.localeCompare(b.inviteId);
+  private normalizeNavigationEntityType(value: unknown): "game" | "event" {
+    return value === "event" ? "event" : "game";
   }
 
-  private mapFirestoreGameDocToNavigationItem(rawData: Record<string, unknown>, fallbackInviteId: string): NavigationGameItem | null {
+  private normalizeStringOrNull(value: unknown): string | null {
+    return typeof value === "string" && value !== "" ? value : null;
+  }
+
+  private normalizeString(value: unknown): string {
+    return typeof value === "string" ? value : "";
+  }
+
+  private normalizeFiniteNumber(value: unknown, fallback = 0): number {
+    if (typeof value === "number" && Number.isFinite(value)) {
+      return Math.floor(value);
+    }
+    if (typeof value === "string" && value !== "" && Number.isFinite(Number(value))) {
+      return Math.floor(Number(value));
+    }
+    return fallback;
+  }
+
+  private mapFirestoreParticipantPreview(value: unknown): EventNavigationPreviewParticipant[] {
+    if (!Array.isArray(value)) {
+      return [];
+    }
+    return value.reduce<EventNavigationPreviewParticipant[]>((acc, participant) => {
+      if (!participant || typeof participant !== "object") {
+        return acc;
+      }
+      const raw = participant as Record<string, unknown>;
+      const emojiId = this.normalizeFiniteNumber(raw.emojiId, NaN);
+      acc.push({
+        profileId: this.normalizeStringOrNull(raw.profileId),
+        displayName: this.normalizeStringOrNull(raw.displayName),
+        emojiId: Number.isFinite(emojiId) ? emojiId : null,
+        aura: this.normalizeStringOrNull(raw.aura),
+      });
+      return acc;
+    }, []);
+  }
+
+  private compareNavigationItems(a: NavigationItem, b: NavigationItem): number {
+    return compareNavigationItemsByDisplayOrder(a, b);
+  }
+
+  private mapFirestoreGameDocToNavigationItem(rawData: Record<string, unknown>, fallbackInviteId: string): NavigationItem | null {
+    const entityType = this.normalizeNavigationEntityType(rawData.entityType);
+    if (entityType === "event") {
+      const eventId = this.normalizeStringOrNull(rawData.eventId);
+      if (!eventId) {
+        return null;
+      }
+      const rawStatus = this.normalizeNavigationStatus(rawData.status);
+      if (rawStatus === "pending") {
+        return null;
+      }
+      const status: Exclude<NavigationItemStatus, "pending"> = rawStatus;
+      return {
+        id: typeof rawData.id === "string" && rawData.id !== "" ? rawData.id : `event_${eventId}`,
+        entityType: "event",
+        eventId,
+        status,
+        sortBucket: this.getNavigationSortBucket(status),
+        listSortAtMs: this.readTimestampMillis(rawData.listSortAt) || Date.now(),
+        startAtMs: this.readTimestampMillis(rawData.startAt) || null,
+        updatedAtMs: this.readTimestampMillis(rawData.updatedAt) || null,
+        endedAtMs: this.readTimestampMillis(rawData.endedAt) || null,
+        participantCount: this.normalizeFiniteNumber(rawData.participantCount, 0),
+        participantPreview: this.mapFirestoreParticipantPreview(rawData.participantPreview),
+        winnerDisplayName: this.normalizeStringOrNull(rawData.winnerDisplayName),
+      };
+    }
+
     const inviteId = typeof rawData.inviteId === "string" && rawData.inviteId !== "" ? rawData.inviteId : fallbackInviteId;
     if (!inviteId) {
       return null;
     }
 
-    const status = this.normalizeNavigationStatus(rawData.status);
+    const rawStatus = this.normalizeNavigationStatus(rawData.status);
+    const status = rawStatus === "dismissed" ? "ended" : rawStatus;
     const sortBucket = this.getNavigationSortBucket(status);
     const listSortAtMs = this.readTimestampMillis(rawData.listSortAt);
     const rawAutomatchStateHint = rawData.automatchStateHint;
@@ -1879,6 +2125,8 @@ class Connection {
     }
 
     return {
+      id: inviteId,
+      entityType: "game",
       inviteId,
       kind: rawData.kind === "auto" ? "auto" : "direct",
       status,
@@ -1894,11 +2142,121 @@ class Connection {
     };
   }
 
+  private mapEventParticipant(rawData: Record<string, unknown>, fallbackProfileId: string): EventParticipant {
+    return {
+      profileId: this.normalizeString(rawData.profileId) || fallbackProfileId,
+      loginUid: this.normalizeString(rawData.loginUid),
+      username: this.normalizeString(rawData.username),
+      displayName: this.normalizeString(rawData.displayName),
+      emojiId: this.normalizeFiniteNumber(rawData.emojiId, 0),
+      aura: this.normalizeString(rawData.aura),
+      joinedAtMs: this.normalizeFiniteNumber(rawData.joinedAtMs, 0),
+      state: rawData.state === "eliminated" || rawData.state === "winner" ? rawData.state : "active",
+      eliminatedRoundIndex: Number.isFinite(this.normalizeFiniteNumber(rawData.eliminatedRoundIndex, NaN)) ? this.normalizeFiniteNumber(rawData.eliminatedRoundIndex, NaN) : null,
+      eliminatedByProfileId: this.normalizeStringOrNull(rawData.eliminatedByProfileId),
+    };
+  }
+
+  private mapEventMatch(rawData: Record<string, unknown>, fallbackMatchKey: string): EventMatch {
+    return {
+      matchKey: this.normalizeString(rawData.matchKey) || fallbackMatchKey,
+      inviteId: this.normalizeString(rawData.inviteId),
+      status: rawData.status === "host" || rawData.status === "guest" ? rawData.status : "pending",
+      resolvedAtMs: Number.isFinite(this.normalizeFiniteNumber(rawData.resolvedAtMs, NaN)) ? this.normalizeFiniteNumber(rawData.resolvedAtMs, NaN) : null,
+      winnerProfileId: this.normalizeStringOrNull(rawData.winnerProfileId),
+      loserProfileId: this.normalizeStringOrNull(rawData.loserProfileId),
+      hostProfileId: this.normalizeString(rawData.hostProfileId),
+      hostLoginUid: this.normalizeString(rawData.hostLoginUid),
+      hostDisplayName: this.normalizeString(rawData.hostDisplayName),
+      hostEmojiId: this.normalizeFiniteNumber(rawData.hostEmojiId, 0),
+      hostAura: this.normalizeString(rawData.hostAura),
+      guestProfileId: this.normalizeString(rawData.guestProfileId),
+      guestLoginUid: this.normalizeString(rawData.guestLoginUid),
+      guestDisplayName: this.normalizeString(rawData.guestDisplayName),
+      guestEmojiId: this.normalizeFiniteNumber(rawData.guestEmojiId, 0),
+      guestAura: this.normalizeString(rawData.guestAura),
+    };
+  }
+
+  private mapEventRound(rawData: Record<string, unknown>, fallbackRoundIndex: number): EventRound {
+    const matchesInput = rawData.matches && typeof rawData.matches === "object" ? (rawData.matches as Record<string, unknown>) : {};
+    const matches: Record<string, EventMatch> = {};
+    Object.keys(matchesInput).forEach((matchKey) => {
+      const matchValue = matchesInput[matchKey];
+      if (!matchValue || typeof matchValue !== "object") {
+        return;
+      }
+      matches[matchKey] = this.mapEventMatch(matchValue as Record<string, unknown>, matchKey);
+    });
+    const completedAtMs = this.normalizeFiniteNumber(rawData.completedAtMs, NaN);
+    return {
+      roundIndex: this.normalizeFiniteNumber(rawData.roundIndex, fallbackRoundIndex),
+      status: rawData.status === "completed" ? "completed" : "active",
+      createdAtMs: this.normalizeFiniteNumber(rawData.createdAtMs, 0),
+      completedAtMs: Number.isFinite(completedAtMs) ? completedAtMs : null,
+      byeProfileId: this.normalizeStringOrNull(rawData.byeProfileId),
+      byeReason: rawData.byeReason === "preferred" || rawData.byeReason === "random" ? rawData.byeReason : null,
+      matches,
+    };
+  }
+
+  private mapDatabaseEventRecord(rawValue: unknown, fallbackEventId: string): EventRecord | null {
+    if (!rawValue || typeof rawValue !== "object") {
+      return null;
+    }
+    const rawData = rawValue as Record<string, unknown>;
+    const eventId = this.normalizeString(rawData.eventId) || fallbackEventId;
+    if (!eventId) {
+      return null;
+    }
+    const participantsInput = rawData.participants && typeof rawData.participants === "object" ? (rawData.participants as Record<string, unknown>) : {};
+    const roundsInput = rawData.rounds && typeof rawData.rounds === "object" ? (rawData.rounds as Record<string, unknown>) : {};
+    const participants: Record<string, EventParticipant> = {};
+    const rounds: Record<string, EventRound> = {};
+
+    Object.keys(participantsInput).forEach((profileId) => {
+      const participantValue = participantsInput[profileId];
+      if (!participantValue || typeof participantValue !== "object") {
+        return;
+      }
+      participants[profileId] = this.mapEventParticipant(participantValue as Record<string, unknown>, profileId);
+    });
+
+    Object.keys(roundsInput).forEach((roundKey) => {
+      const roundValue = roundsInput[roundKey];
+      if (!roundValue || typeof roundValue !== "object") {
+        return;
+      }
+      rounds[roundKey] = this.mapEventRound(roundValue as Record<string, unknown>, this.normalizeFiniteNumber(roundKey, 0));
+    });
+
+    return {
+      schemaVersion: this.normalizeFiniteNumber(rawData.schemaVersion, 1),
+      eventId,
+      status: rawData.status === "active" || rawData.status === "ended" || rawData.status === "dismissed" ? rawData.status : "scheduled",
+      createdAtMs: this.normalizeFiniteNumber(rawData.createdAtMs, 0),
+      updatedAtMs: this.normalizeFiniteNumber(rawData.updatedAtMs, 0),
+      startAtMs: this.normalizeFiniteNumber(rawData.startAtMs, 0),
+      startedAtMs: Number.isFinite(this.normalizeFiniteNumber(rawData.startedAtMs, NaN)) ? this.normalizeFiniteNumber(rawData.startedAtMs, NaN) : null,
+      endedAtMs: Number.isFinite(this.normalizeFiniteNumber(rawData.endedAtMs, NaN)) ? this.normalizeFiniteNumber(rawData.endedAtMs, NaN) : null,
+      createdByProfileId: this.normalizeString(rawData.createdByProfileId),
+      createdByLoginUid: this.normalizeString(rawData.createdByLoginUid),
+      createdByUsername: this.normalizeString(rawData.createdByUsername),
+      winnerProfileId: this.normalizeStringOrNull(rawData.winnerProfileId),
+      winnerDisplayName: this.normalizeStringOrNull(rawData.winnerDisplayName),
+      currentRoundIndex: Number.isFinite(this.normalizeFiniteNumber(rawData.currentRoundIndex, NaN)) ? this.normalizeFiniteNumber(rawData.currentRoundIndex, NaN) : null,
+      participants,
+      rounds,
+    };
+  }
+
   public createOptimisticPendingAutomatchItem(inviteId: string): NavigationGameItem | null {
     if (!inviteId || inviteId === "") {
       return null;
     }
     return {
+      id: inviteId,
+      entityType: "game",
       inviteId,
       kind: "auto",
       status: "pending",
@@ -1936,7 +2294,7 @@ class Connection {
 
     const snapshot = await getDocs(baseQuery);
     const visibleDocs = snapshot.docs.slice(0, boundedLimit);
-    const items: NavigationGameItem[] = [];
+    const items: NavigationItem[] = [];
     visibleDocs.forEach((docSnapshot) => {
       const mapped = this.mapFirestoreGameDocToNavigationItem(docSnapshot.data() as Record<string, unknown>, docSnapshot.id);
       if (mapped) {
@@ -1944,7 +2302,7 @@ class Connection {
       }
     });
 
-    items.sort((a, b) => this.compareNavigationGameItems(a, b));
+    items.sort((a, b) => this.compareNavigationItems(a, b));
 
     return {
       items,
@@ -1955,7 +2313,7 @@ class Connection {
 
   public subscribeProfileGamesFirestore(
     maxItems: number,
-    onUpdate: (items: NavigationGameItem[]) => void,
+    onUpdate: (items: NavigationItem[]) => void,
     onError?: (error: unknown) => void,
     onPageMeta?: (result: NavigationGamesPageResult) => void
   ): () => void {
@@ -1989,14 +2347,14 @@ class Connection {
               return;
             }
             const visibleDocs = snapshot.docs.slice(0, boundedLimit);
-            const items: NavigationGameItem[] = [];
+            const items: NavigationItem[] = [];
             visibleDocs.forEach((docSnapshot) => {
               const mapped = this.mapFirestoreGameDocToNavigationItem(docSnapshot.data() as Record<string, unknown>, docSnapshot.id);
               if (mapped) {
                 items.push(mapped);
               }
             });
-            items.sort((a, b) => this.compareNavigationGameItems(a, b));
+            items.sort((a, b) => this.compareNavigationItems(a, b));
             onUpdate(items);
             onPageMeta?.({
               items,
@@ -2245,6 +2603,8 @@ class Connection {
     }
 
     return {
+      id: inviteId,
+      entityType: "game",
       inviteId,
       kind,
       status,
@@ -2335,7 +2695,7 @@ class Connection {
       });
     }
 
-    items.sort((a, b) => this.compareNavigationGameItems(a, b));
+    items.sort((a, b) => this.compareNavigationItems(a, b));
     return items.slice(0, boundedLimit);
   }
 
@@ -2348,6 +2708,12 @@ class Connection {
       if (!writableContext) {
         return { ok: false };
       }
+      const inviteEventId =
+        this.inviteId === writableContext.inviteId &&
+        typeof this.latestInvite?.eventId === "string" &&
+        this.latestInvite.eventId !== ""
+          ? this.latestInvite.eventId
+          : null;
       const updateRatingsFunction = httpsCallable(this.functions, "updateRatings");
       const opponentId = this.getOpponentId(writableContext.actorUid);
       const response = await updateRatingsFunction({
@@ -2356,6 +2722,11 @@ class Connection {
         matchId: writableContext.matchId,
         opponentId,
       });
+      const resolvedEventId =
+        inviteEventId || (this.inviteId === writableContext.inviteId ? this.getCurrentInviteEventId() : null);
+      if (resolvedEventId) {
+        void this.syncEventState(resolvedEventId).catch(() => {});
+      }
       const data = response.data as { mining?: PlayerMiningData } | null;
       if (data && data.mining && sessionGuard() && storage.getProfileId("") === profileIdAtRequest) {
         rocksMiningService.setFromServer(data.mining, { persist: true });

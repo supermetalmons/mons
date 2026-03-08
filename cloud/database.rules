@@ -6,6 +6,16 @@
       ".read": "auth != null && auth.token.admin === true",
       ".write": "auth != null && auth.token.admin === true"
     },
+    "events": {
+      "$eventId": {
+        ".read": "auth != null",
+        ".write": "auth != null && auth.token.admin === true"
+      }
+    },
+    "eventLocks": {
+      ".read": "auth != null && auth.token.admin === true",
+      ".write": "auth != null && auth.token.admin === true"
+    },
     "invites": {
       "$inviteId": {
         ".read": "(data.child('hostId').exists() && data.child('guestId').exists()) || (auth != null && (!data.child('password').exists() || auth.uid === data.child('hostId').val()))",
@@ -27,12 +37,12 @@
         },
 
         "guestRematches": {
-          ".write": "auth.uid === data.parent().child('guestId').val() || (auth.token.profileId != null && root.child('players').child(data.parent().child('guestId').val()).child('profile').val() === auth.token.profileId)",
+          ".write": "!data.parent().child('eventId').exists() && (auth.uid === data.parent().child('guestId').val() || (auth.token.profileId != null && root.child('players').child(data.parent().child('guestId').val()).child('profile').val() === auth.token.profileId))",
           ".validate": "newData.isString() && (!data.exists() || newData.val().contains(data.val()))"
         },
 
         "hostRematches": {
-          ".write": "auth.uid === data.parent().child('hostId').val() || (auth.token.profileId != null && root.child('players').child(data.parent().child('hostId').val()).child('profile').val() === auth.token.profileId)",
+          ".write": "!data.parent().child('eventId').exists() && (auth.uid === data.parent().child('hostId').val() || (auth.token.profileId != null && root.child('players').child(data.parent().child('hostId').val()).child('profile').val() === auth.token.profileId))",
           ".validate": "newData.isString() && (!data.exists() || newData.val().contains(data.val()))"
         },
         "reactions": {

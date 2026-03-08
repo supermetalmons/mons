@@ -13,6 +13,8 @@ import { startPlayingMusic, stopPlayingMusic, playNextTrack } from "../content/m
 import { InfoPopover } from "./InfoPopover";
 import { MiningMaterialName } from "../connection/connectionModels";
 import { registerMainMenuTransientUiHandler } from "./uiSession";
+import { connection } from "../connection/connection";
+import { transition } from "../session/AppSessionManager";
 
 const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust", "total", "mp"];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
@@ -497,6 +499,54 @@ const ToggleRow = styled.label`
   }
 `;
 
+const ExperimentalInput = styled.input`
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
+  background: rgba(111, 126, 141, 0.12);
+  color: var(--color-gray-25);
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-gray-f5);
+  }
+`;
+
+const ExperimentalActionButton = styled.button`
+  height: 40px;
+  border: none;
+  border-radius: 999px;
+  padding: 0 14px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--color-blue-primary);
+  color: white;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--color-blue-primary-dark);
+  }
+`;
+
+const ExperimentalInlineError = styled.div`
+  font-size: 12px;
+  line-height: 1.35;
+  color: var(--dangerButtonBackground);
+  text-align: center;
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--dangerButtonBackgroundDark);
+  }
+`;
+
 const MusicPopover = styled.div<{ isOpen: boolean }>`
   position: fixed;
   top: 56px;
@@ -629,6 +679,9 @@ const MainMenu: React.FC = () => {
   const [isMusicPlaying, setIsMusicPlaying] = useState(false);
   const [clickCount, setClickCount] = useState(0);
   const [showExperimental, setShowExperimental] = useState(false);
+  const [eventStartsInMinutes, setEventStartsInMinutes] = useState("5");
+  const [isCreatingEvent, setIsCreatingEvent] = useState(false);
+  const [eventCreateError, setEventCreateError] = useState("");
 
   const [areAnimatedMonsEnabled, setAreAnimatedMonsEnabled] = useState<boolean>(storage.getIsExperimentingWithSprites(false));
   const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>(() => {
@@ -803,6 +856,44 @@ const MainMenu: React.FC = () => {
     setAnimatedMonsEnabled(checked, false);
   };
 
+  const handleCreateEvent = useCallback(() => {
+    const parsedStartsInMinutes = Math.floor(Number(eventStartsInMinutes));
+    if (!Number.isFinite(parsedStartsInMinutes) || parsedStartsInMinutes < 1) {
+      setEventCreateError("Enter at least 1 minute.");
+      return;
+    }
+    const startsInMinutes = parsedStartsInMinutes;
+    setEventCreateError("");
+    setIsCreatingEvent(true);
+    void connection
+      .createEvent(startsInMinutes)
+      .then(async (result) => {
+        if (!result.ok || !result.eventId) {
+          setEventCreateError("Failed to create event.");
+          return;
+        }
+        setIsMenuOpen(false);
+        setShowExperimental(false);
+        await transition({
+          mode: "event",
+          path: `event/${result.eventId}`,
+          inviteId: null,
+          snapshotId: null,
+          eventId: result.eventId,
+          autojoin: false,
+        });
+      })
+      .catch((error) => {
+        const message = error && typeof error === "object" && "message" in error && typeof (error as { message?: unknown }).message === "string"
+          ? (error as { message: string }).message.replace(/^Firebase:\s*/i, "")
+          : "Failed to create event.";
+        setEventCreateError(message);
+      })
+      .finally(() => {
+        setIsCreatingEvent(false);
+      });
+  }, [eventStartsInMinutes]);
+
   toggleInfoVisibilityImpl = () => {
     if (!isInfoOpen) {
       closeProfilePopupIfAny();
@@ -902,6 +993,7 @@ const MainMenu: React.FC = () => {
   }, [isMusicOpen]);
 
   const showTotalAsIcons = MATERIAL_TYPES.every((name) => !!materialUrls[name]);
+  const canCreatePilotEvents = storage.getUsername("").toLowerCase() === "ivan";
 
   return (
     <>
@@ -1027,6 +1119,25 @@ const MainMenu: React.FC = () => {
                       <input type="checkbox" checked={areAnimatedMonsEnabled} onChange={handleAnimatedMonsToggle} />
                       animated mons
                     </ToggleRow>
+                    {canCreatePilotEvents && (
+                      <>
+                        <ExperimentalInput
+                          type="number"
+                          min="1"
+                          step="1"
+                          value={eventStartsInMinutes}
+                          onChange={(event) => {
+                            setEventStartsInMinutes(event.target.value);
+                            setEventCreateError("");
+                          }}
+                          placeholder="minutes from now"
+                        />
+                        <ExperimentalActionButton type="button" onClick={handleCreateEvent} disabled={isCreatingEvent}>
+                          {isCreatingEvent ? "Creating Event..." : "Create Event"}
+                        </ExperimentalActionButton>
+                      </>
+                    )}
+                    {eventCreateError !== "" && <ExperimentalInlineError>{eventCreateError}</ExperimentalInlineError>}
                     <BuildInfo>{getBuildInfo()}</BuildInfo>
                   </ExperimentalMenu>
                 )}

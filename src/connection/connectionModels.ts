@@ -19,6 +19,10 @@ export interface Invite {
   guestRematches?: string | null;
   automatchStateHint?: "pending" | "matched" | "canceled" | null;
   automatchCanceledAt?: number | null;
+  eventId?: string | null;
+  eventRoundIndex?: number | null;
+  eventMatchKey?: string | null;
+  eventOwned?: boolean | null;
   wagers?: Record<string, MatchWagerState> | null;
   reactions?: Record<string, InviteReaction> | null;
 }
@@ -45,9 +49,17 @@ export interface HistoricalMatchPair {
   guestMatch: Match | null;
 }
 
+export type NavigationItemStatus = "pending" | "waiting" | "active" | "ended" | "dismissed";
 export type NavigationGameStatus = "pending" | "waiting" | "active" | "ended";
+export type NavigationEventStatus = "waiting" | "active" | "ended" | "dismissed";
+export type EventStatus = "scheduled" | "active" | "ended" | "dismissed";
+export type EventParticipantState = "active" | "eliminated" | "winner";
+export type EventMatchStatus = "pending" | "host" | "guest";
+export type EventRoundStatus = "active" | "completed";
 
 export interface NavigationGameItem {
+  id: string;
+  entityType: "game";
   inviteId: string;
   kind: "auto" | "direct";
   status: NavigationGameStatus;
@@ -62,6 +74,93 @@ export interface NavigationGameItem {
   isPendingAutomatch: boolean;
   isFallback?: boolean;
   isOptimistic?: boolean;
+}
+
+export interface EventNavigationPreviewParticipant {
+  profileId: string | null;
+  displayName: string | null;
+  emojiId: number | null;
+  aura: string | null;
+}
+
+export interface NavigationEventItem {
+  id: string;
+  entityType: "event";
+  eventId: string;
+  status: NavigationEventStatus;
+  sortBucket: number;
+  listSortAtMs: number;
+  startAtMs: number | null;
+  updatedAtMs: number | null;
+  endedAtMs: number | null;
+  participantCount: number;
+  participantPreview: EventNavigationPreviewParticipant[];
+  winnerDisplayName: string | null;
+  isFallback?: boolean;
+  isOptimistic?: boolean;
+}
+
+export type NavigationItem = NavigationGameItem | NavigationEventItem;
+
+export interface EventParticipant {
+  profileId: string;
+  loginUid: string;
+  username: string;
+  displayName: string;
+  emojiId: number;
+  aura: string;
+  joinedAtMs: number;
+  state: EventParticipantState;
+  eliminatedRoundIndex: number | null;
+  eliminatedByProfileId: string | null;
+}
+
+export interface EventMatch {
+  matchKey: string;
+  inviteId: string;
+  status: EventMatchStatus;
+  resolvedAtMs: number | null;
+  winnerProfileId: string | null;
+  loserProfileId: string | null;
+  hostProfileId: string;
+  hostLoginUid: string;
+  hostDisplayName: string;
+  hostEmojiId: number;
+  hostAura: string;
+  guestProfileId: string;
+  guestLoginUid: string;
+  guestDisplayName: string;
+  guestEmojiId: number;
+  guestAura: string;
+}
+
+export interface EventRound {
+  roundIndex: number;
+  status: EventRoundStatus;
+  createdAtMs: number;
+  completedAtMs: number | null;
+  byeProfileId: string | null;
+  byeReason: "preferred" | "random" | null;
+  matches: Record<string, EventMatch>;
+}
+
+export interface EventRecord {
+  schemaVersion: number;
+  eventId: string;
+  status: EventStatus;
+  createdAtMs: number;
+  updatedAtMs: number;
+  startAtMs: number;
+  startedAtMs: number | null;
+  endedAtMs: number | null;
+  createdByProfileId: string;
+  createdByLoginUid: string;
+  createdByUsername: string;
+  winnerProfileId: string | null;
+  winnerDisplayName: string | null;
+  currentRoundIndex: number | null;
+  participants: Record<string, EventParticipant>;
+  rounds: Record<string, EventRound>;
 }
 
 export interface Reaction {

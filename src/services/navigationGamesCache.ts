@@ -1,4 +1,4 @@
-import { NavigationGameItem, NavigationGameStatus } from "../connection/connectionModels";
+import { NavigationItem, NavigationEventItem, NavigationItemStatus } from "../connection/connectionModels";
 
 type NavigationGamesScopeKind = "profile" | "login";
 
@@ -9,32 +9,32 @@ export interface NavigationGamesCacheScope {
 }
 
 interface NavigationGamesRuntimeEntry {
-  topGames: NavigationGameItem[];
-  pagedGames: NavigationGameItem[];
+  topGames: NavigationItem[];
+  pagedGames: NavigationItem[];
 }
 
 interface PersistedTopGamesPayload {
   version: number;
   updatedAtMs: number;
-  topGames: NavigationGameItem[];
+  topGames: NavigationItem[];
 }
 
 export interface NavigationGamesCacheSnapshot {
-  topGames: NavigationGameItem[];
-  pagedGames: NavigationGameItem[];
+  topGames: NavigationItem[];
+  pagedGames: NavigationItem[];
 }
 
 export const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
-const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_VERSION = 1;
-const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_KEY_PREFIX = "navigationGamesTopCache:v1:";
+const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_VERSION = 3;
+const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_KEY_PREFIX = "navigationGamesTopCache:v3:";
 const NAVIGATION_GAMES_MAX_RUNTIME_ITEMS_PER_SECTION = 500;
 
 const runtimeCacheByScope = new Map<string, NavigationGamesRuntimeEntry>();
 
-const NAVIGATION_GAME_STATUS_VALUES: NavigationGameStatus[] = ["pending", "waiting", "active", "ended"];
+const NAVIGATION_ITEM_STATUS_VALUES: NavigationItemStatus[] = ["pending", "waiting", "active", "ended", "dismissed"];
 
-const isNavigationGameStatus = (value: unknown): value is NavigationGameStatus => {
-  return typeof value === "string" && NAVIGATION_GAME_STATUS_VALUES.includes(value as NavigationGameStatus);
+const isNavigationItemStatus = (value: unknown): value is NavigationItemStatus => {
+  return typeof value === "string" && NAVIGATION_ITEM_STATUS_VALUES.includes(value as NavigationItemStatus);
 };
 
 const getNormalizedStringOrNull = (value: unknown): string | null => {
@@ -55,12 +55,61 @@ const getNormalizedBooleanOrUndefined = (value: unknown): boolean | undefined =>
   return undefined;
 };
 
-const sanitizeNavigationGameItem = (value: unknown): NavigationGameItem | null => {
+const sanitizeNavigationGameItem = (value: unknown): NavigationItem | null => {
   if (!value || typeof value !== "object") {
     return null;
   }
 
   const raw = value as Record<string, unknown>;
+  const entityType = raw.entityType === "event" ? "event" : "game";
+  const id = typeof raw.id === "string" && raw.id !== "" ? raw.id : null;
+
+  if (entityType === "event") {
+    const eventId = typeof raw.eventId === "string" ? raw.eventId : "";
+    if (eventId === "") {
+      return null;
+    }
+    const status = isNavigationItemStatus(raw.status) && raw.status !== "pending" ? raw.status : null;
+    if (!status) {
+      return null;
+    }
+    const sortBucket = typeof raw.sortBucket === "number" && Number.isFinite(raw.sortBucket) ? Math.floor(raw.sortBucket) : 0;
+    const listSortAtMs = typeof raw.listSortAtMs === "number" && Number.isFinite(raw.listSortAtMs) ? Math.floor(raw.listSortAtMs) : 0;
+    const participantPreview = Array.isArray(raw.participantPreview)
+      ? raw.participantPreview
+          .map((participant) => {
+            if (!participant || typeof participant !== "object") {
+              return null;
+            }
+            const preview = participant as Record<string, unknown>;
+            return {
+              profileId: getNormalizedStringOrNull(preview.profileId),
+              displayName: getNormalizedStringOrNull(preview.displayName),
+              emojiId: getNormalizedNumberOrNull(preview.emojiId),
+              aura: getNormalizedStringOrNull(preview.aura),
+            };
+          })
+          .filter((participant): participant is NonNullable<NavigationEventItem["participantPreview"][number]> => !!participant)
+      : [];
+
+    return {
+      id: id ?? `event_${eventId}`,
+      entityType: "event",
+      eventId,
+      status,
+      sortBucket,
+      listSortAtMs,
+      startAtMs: getNormalizedNumberOrNull(raw.startAtMs),
+      updatedAtMs: getNormalizedNumberOrNull(raw.updatedAtMs),
+      endedAtMs: getNormalizedNumberOrNull(raw.endedAtMs),
+      participantCount: getNormalizedNumberOrNull(raw.participantCount) ?? participantPreview.length,
+      participantPreview,
+      winnerDisplayName: getNormalizedStringOrNull(raw.winnerDisplayName),
+      isFallback: getNormalizedBooleanOrUndefined(raw.isFallback),
+      isOptimistic: getNormalizedBooleanOrUndefined(raw.isOptimistic),
+    };
+  }
+
   const inviteId = typeof raw.inviteId === "string" ? raw.inviteId : "";
   if (inviteId === "") {
     return null;
@@ -71,7 +120,7 @@ const sanitizeNavigationGameItem = (value: unknown): NavigationGameItem | null =
     return null;
   }
 
-  const status = isNavigationGameStatus(raw.status) ? raw.status : null;
+  const status = isNavigationItemStatus(raw.status) && raw.status !== "dismissed" ? raw.status : null;
   if (!status) {
     return null;
   }
@@ -83,6 +132,8 @@ const sanitizeNavigationGameItem = (value: unknown): NavigationGameItem | null =
   const automatchStateHint = rawAutomatchHint === "pending" || rawAutomatchHint === "matched" || rawAutomatchHint === "canceled" ? rawAutomatchHint : null;
 
   return {
+    id: id ?? inviteId,
+    entityType: "game",
     inviteId,
     kind,
     status,
@@ -100,13 +151,13 @@ const sanitizeNavigationGameItem = (value: unknown): NavigationGameItem | null =
   };
 };
 
-const sanitizeNavigationGames = (games: unknown, options?: { maxItems?: number; excludeOptimistic?: boolean }): NavigationGameItem[] => {
+const sanitizeNavigationGames = (games: unknown, options?: { maxItems?: number; excludeOptimistic?: boolean }): NavigationItem[] => {
   if (!Array.isArray(games)) {
     return [];
   }
   const maxItems = options?.maxItems ?? Number.MAX_SAFE_INTEGER;
   const excludeOptimistic = options?.excludeOptimistic ?? false;
-  const uniqueByInviteId = new Map<string, NavigationGameItem>();
+  const uniqueById = new Map<string, NavigationItem>();
 
   for (const item of games) {
     const normalizedItem = sanitizeNavigationGameItem(item);
@@ -116,15 +167,15 @@ const sanitizeNavigationGames = (games: unknown, options?: { maxItems?: number; 
     if (excludeOptimistic && normalizedItem.isOptimistic) {
       continue;
     }
-    if (!uniqueByInviteId.has(normalizedItem.inviteId)) {
-      uniqueByInviteId.set(normalizedItem.inviteId, normalizedItem);
+    if (!uniqueById.has(normalizedItem.id)) {
+      uniqueById.set(normalizedItem.id, normalizedItem);
     }
-    if (uniqueByInviteId.size >= maxItems) {
+    if (uniqueById.size >= maxItems) {
       break;
     }
   }
 
-  return Array.from(uniqueByInviteId.values());
+  return Array.from(uniqueById.values());
 };
 
 const getPersistedTopCacheStorageKey = (scope: NavigationGamesCacheScope): string => {
@@ -151,7 +202,7 @@ export const resolveNavigationGamesCacheScope = (profileId: string, loginId: str
   return null;
 };
 
-const readPersistedTopCache = (scope: NavigationGamesCacheScope): NavigationGameItem[] => {
+const readPersistedTopCache = (scope: NavigationGamesCacheScope): NavigationItem[] => {
   const storageKey = getPersistedTopCacheStorageKey(scope);
   try {
     const raw = localStorage.getItem(storageKey);
@@ -212,8 +263,8 @@ export const readNavigationGamesCacheSnapshot = (scope: NavigationGamesCacheScop
 
 export const writeNavigationGamesRuntimeCache = (
   scope: NavigationGamesCacheScope | null,
-  topGames: NavigationGameItem[],
-  pagedGames: NavigationGameItem[]
+  topGames: NavigationItem[],
+  pagedGames: NavigationItem[]
 ): void => {
   if (!scope) {
     return;
@@ -224,7 +275,7 @@ export const writeNavigationGamesRuntimeCache = (
   });
 };
 
-export const writeNavigationGamesPersistedTopCache = (scope: NavigationGamesCacheScope | null, topGames: NavigationGameItem[], maxItems: number): void => {
+export const writeNavigationGamesPersistedTopCache = (scope: NavigationGamesCacheScope | null, topGames: NavigationItem[], maxItems: number): void => {
   if (!scope) {
     return;
   }

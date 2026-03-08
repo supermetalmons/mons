@@ -345,8 +345,33 @@ const getAutomatchStateHint = (inviteId, inviteData, automatchData) => {
   return "canceled";
 };
 
-const deriveProjectionStatus = ({ inviteId, inviteData, automatchStateHint }) => {
+const isEventOwnedInvite = (inviteData) => {
+  if (!inviteData || typeof inviteData !== "object") {
+    return false;
+  }
+  return inviteData.eventOwned === true || !!normalizeString(inviteData.eventId);
+};
+
+const eventMatchHasCompletedRatingUpdate = (inviteData, latestMatchId) => {
+  if (!isEventOwnedInvite(inviteData)) {
+    return false;
+  }
+  const normalizedLatestMatchId = normalizeString(latestMatchId);
+  if (!normalizedLatestMatchId) {
+    return false;
+  }
+  const matchesRatingUpdates = inviteData && typeof inviteData.matchesRatingUpdates === "object" ? inviteData.matchesRatingUpdates : null;
+  if (!matchesRatingUpdates) {
+    return false;
+  }
+  return matchesRatingUpdates[normalizedLatestMatchId] === true;
+};
+
+const deriveProjectionStatus = ({ inviteId, inviteData, automatchStateHint, latestMatchId }) => {
   if (rematchSeriesEnded(inviteData)) {
+    return "ended";
+  }
+  if (eventMatchHasCompletedRatingUpdate(inviteData, latestMatchId)) {
     return "ended";
   }
   const hasGuest = !!normalizeString(inviteData ? inviteData.guestId : null);
@@ -561,10 +586,10 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
   const ownerProfileIds = getOwnerProfileIds(hostProfileId, guestProfileId);
 
   const automatchStateHint = getAutomatchStateHint(normalizedInviteId, inviteData, automatchData);
-  const status = deriveProjectionStatus({ inviteId: normalizedInviteId, inviteData, automatchStateHint });
+  const latestMatchId = deriveLatestMatchId(normalizedInviteId, inviteData, options.latestMatchIdHint || null);
+  const status = deriveProjectionStatus({ inviteId: normalizedInviteId, inviteData, automatchStateHint, latestMatchId });
   const shouldProject = shouldProjectInvite({ inviteId: normalizedInviteId, inviteData, automatchStateHint });
   const sortBucket = getSortBucket(status);
-  const latestMatchId = deriveLatestMatchId(normalizedInviteId, inviteData, options.latestMatchIdHint || null);
   const loginSummaryCache = new Map();
 
   const existingDocsByOwnerProfileId = new Map();
@@ -952,6 +977,17 @@ const onMatchCreated = onValueCreated("/players/{loginUid}/matches/{matchId}", a
   });
 });
 
+const onInviteMatchRatingUpdated = onValueCreated("/invites/{inviteId}/matchesRatingUpdates/{matchId}", async (event) => {
+  const matchId = normalizeString(event.params.matchId);
+  if (!matchId) {
+    return;
+  }
+  await recomputeInviteProjection(event.params.inviteId, "invite-match-rating-updated", {
+    eventTimestampMs: Date.now(),
+    latestMatchIdHint: matchId,
+  });
+});
+
 const onAutomatchQueueWritten = onValueWritten("/automatch/{inviteId}", async (event) => {
   const inviteId = event.params.inviteId;
   const beforeExists = event.data.before.exists();
@@ -1155,6 +1191,7 @@ module.exports = {
   onInviteHostRematchesChanged,
   onInviteGuestRematchesChanged,
   onMatchCreated,
+  onInviteMatchRatingUpdated,
   onAutomatchQueueWritten,
   onProfileLinkCreated,
   onProfileLinkWritten,

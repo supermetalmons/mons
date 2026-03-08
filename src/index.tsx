@@ -19,6 +19,7 @@ import { preloadSounds } from "./content/sounds";
 import { soundPlayer } from "./utils/SoundPlayer";
 import { storage } from "./utils/storage";
 import ProfileSignIn, { handleLogout, isLogoutUiLocked, showInventory, showSettings, subscribeToLogoutUiLock } from "./ui/ProfileSignIn";
+import EventModal from "./ui/EventModal";
 import { isMainGameLoaded, onMainGameLoaded } from "./game/mainGameLoadState";
 import { Sound } from "./utils/gameModels";
 import { initializeAppSessionManager } from "./session/AppSessionManager";
@@ -48,7 +49,10 @@ const App = () => {
   const { authStatus, setAuthStatus } = useAuthStatus();
   const [isProfileEditingMode, setIsProfileEditingMode] = useState(false);
   const [isMuted, setIsMuted] = useState(globalIsMuted);
-  const [isIslandButtonDim, setIsIslandButtonDim] = useState(() => getCurrentRouteState().mode !== "home");
+  const [isIslandButtonDim, setIsIslandButtonDim] = useState(() => {
+    const routeState = getCurrentRouteState();
+    return routeState.mode !== "home" && routeState.mode !== "event";
+  });
   const [shouldLoadIslandButton, setShouldLoadIslandButton] = useState(isMainGameLoaded());
   const [isLogoutUiLockedState, setIsLogoutUiLockedState] = useState(() => isLogoutUiLocked());
   const ethereumAuthAdapter = createEthereumAuthAdapter(setAuthStatus);
@@ -172,6 +176,7 @@ const App = () => {
               <BoardComponent />
               <MainMenu />
               <BottomControls />
+              <EventModal />
             </div>
           </RainbowKitProvider>
         </RainbowKitAuthenticationProvider>
