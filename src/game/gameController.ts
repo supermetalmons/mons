@@ -46,12 +46,15 @@ let activeRouteState: RouteState = getCurrentRouteState();
 const isCreateInviteRoute = () => activeRouteState.mode === "home" || activeRouteState.mode === "event";
 const isSnapshotRoute = () => activeRouteState.mode === "snapshot";
 const isBotsRoute = () => activeRouteState.mode === "watch";
-type BotAutomoveMode = "normal" | "pro" | "ultra";
-type AutomovePreference = "fast" | BotAutomoveMode;
-const botAutomoveModeCycle: BotAutomoveMode[] = ["normal", "pro", "ultra"];
+type BotAutomoveMode = "fast" | "normal" | "pro";
+type AutomovePreference = BotAutomoveMode;
+const botAutomoveModeCycle: BotAutomoveMode[] = ["fast", "normal", "pro"];
 const normalizeBotAutomoveMode = (value: string | null | undefined): BotAutomoveMode => {
-  if (value === "normal" || value === "pro" || value === "ultra") {
+  if (value === "fast" || value === "normal" || value === "pro") {
     return value;
+  }
+  if (value === "ultra") {
+    return "pro";
   }
   return "normal";
 };

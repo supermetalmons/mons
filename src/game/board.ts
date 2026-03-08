@@ -174,7 +174,7 @@ let opponentEndOfGameIcon: SVGElement | undefined;
 let inviteBotButtonContainer: SVGElement | undefined;
 let inviteBotButtonElement: HTMLButtonElement | undefined;
 let cleanupInviteBotButtonThemeListener: (() => void) | null = null;
-type BotAutomoveMode = "normal" | "pro" | "ultra";
+type BotAutomoveMode = "fast" | "normal" | "pro";
 let botStrengthControlMode: BotAutomoveMode = "normal";
 let botStrengthControlVisible = false;
 
