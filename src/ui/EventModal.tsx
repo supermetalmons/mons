@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
 import { FaCopy, FaTimes } from "react-icons/fa";
 import { connection } from "../connection/connection";
@@ -8,6 +8,9 @@ import { emojis } from "../content/emojis";
 import { storage } from "../utils/storage";
 import { openProfileSignInPopup } from "./ProfileSignIn";
 import { getCurrentRouteState } from "../navigation/routeState";
+import { didNotDismissAnythingWithOutsideTapJustNow } from "./BottomControls";
+import { showShinyCard, showsShinyCardSomewhere } from "./ShinyCard";
+import { getStashedPlayerProfile } from "../utils/playerMetadata";
 
 const Overlay = styled.div`
   position: fixed;
@@ -141,11 +144,37 @@ const ParticipantsList = styled.div`
   gap: 8px;
 `;
 
-const ParticipantRow = styled.div`
+const ParticipantRow = styled.button`
   display: flex;
   align-items: center;
   gap: 10px;
   min-width: 0;
+  width: 100%;
+  border: none;
+  background: transparent;
+  padding: 6px 4px;
+  border-radius: 10px;
+  text-align: left;
+  cursor: pointer;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.72;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: rgba(99, 114, 130, 0.09);
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background: rgba(255, 255, 255, 0.06);
+      }
+    }
+  }
 `;
 
 const Avatar = styled.img`
@@ -426,6 +455,18 @@ const EventAvatar: React.FC<{ emojiId?: number | null; displayName?: string | nu
   return <AvatarFallback aria-hidden="true" />;
 };
 
+const getParticipantDisplayName = (participant: EventParticipant): string => {
+  const displayName = participant.displayName?.trim();
+  if (displayName) {
+    return displayName;
+  }
+  const username = participant.username?.trim();
+  if (username) {
+    return username;
+  }
+  return "anon";
+};
+
 const EventModal: React.FC = () => {
   const [modalState, setModalState] = useState(() => getEventModalState());
   const [eventRecord, setEventRecord] = useState<EventRecord | null>(null);
@@ -435,6 +476,10 @@ const EventModal: React.FC = () => {
   const [nowMs, setNowMs] = useState(() => Date.now());
   const [pendingJoinEventId, setPendingJoinEventId] = useState<string | null>(null);
   const [pendingJoinRequestedAtMs, setPendingJoinRequestedAtMs] = useState(0);
+  const [openingParticipantId, setOpeningParticipantId] = useState<string | null>(null);
+  const openingParticipantIdRef = useRef<string | null>(null);
+  const participantLookupSessionRef = useRef(0);
+  const ignoreNextBackdropClickRef = useRef(false);
 
   useEffect(() => {
     return subscribeToEventModalState((nextState) => {
@@ -443,12 +488,21 @@ const EventModal: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    participantLookupSessionRef.current += 1;
+    openingParticipantIdRef.current = null;
+    setOpeningParticipantId(null);
+  }, [modalState.eventId, modalState.isOpen]);
+
+  useEffect(() => {
     if (!modalState.isOpen || !modalState.eventId) {
       setEventRecord(null);
       setInlineError(null);
       setCopyState("idle");
       setPendingJoinEventId(null);
       setPendingJoinRequestedAtMs(0);
+      setOpeningParticipantId(null);
+      openingParticipantIdRef.current = null;
+      ignoreNextBackdropClickRef.current = false;
       return;
     }
 
@@ -542,9 +596,21 @@ const EventModal: React.FC = () => {
   const currentRoute = getCurrentRouteState();
   const isJoinWindowOpen = !!eventRecord && eventRecord.status === "scheduled" && nowMs < eventRecord.startAtMs;
 
+  const handleBackdropPointerDown = useCallback((event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    if (event.target !== event.currentTarget) {
+      return;
+    }
+    ignoreNextBackdropClickRef.current = showsShinyCardSomewhere;
+  }, []);
+
   const handleBackdropClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       if (event.target !== event.currentTarget) {
+        return;
+      }
+      const shouldKeepVisibleForOutsideDismiss = ignoreNextBackdropClickRef.current || showsShinyCardSomewhere || !didNotDismissAnythingWithOutsideTapJustNow();
+      ignoreNextBackdropClickRef.current = false;
+      if (shouldKeepVisibleForOutsideDismiss) {
         return;
       }
       void closeEventModal();
@@ -602,12 +668,59 @@ const EventModal: React.FC = () => {
     connection.connectToInvite(inviteId);
   }, [currentRoute.inviteId, currentRoute.mode]);
 
+  const resolveParticipantProfile = useCallback(async (participant: EventParticipant) => {
+    const cachedProfile = participant.loginUid ? getStashedPlayerProfile(participant.loginUid) : undefined;
+    if (cachedProfile && cachedProfile.id === participant.profileId) {
+      return cachedProfile;
+    }
+    if (!participant.loginUid) {
+      return null;
+    }
+    const exactProfile = await connection.getProfileByLoginId(participant.loginUid);
+    return exactProfile ?? null;
+  }, []);
+
+  const handleParticipantClick = useCallback(async (participant: EventParticipant) => {
+    const participantKey = participant.profileId || participant.loginUid;
+    if (!participantKey || openingParticipantIdRef.current) {
+      return;
+    }
+    const lookupSession = participantLookupSessionRef.current;
+    openingParticipantIdRef.current = participantKey;
+    setOpeningParticipantId(participantKey);
+    setInlineError(null);
+    try {
+      const profile = await resolveParticipantProfile(participant);
+      if (participantLookupSessionRef.current !== lookupSession) {
+        return;
+      }
+      if (!profile) {
+        setInlineError("Unable to load player profile.");
+        return;
+      }
+      await showShinyCard(profile, getParticipantDisplayName(participant), true);
+    } catch (error) {
+      if (participantLookupSessionRef.current !== lookupSession) {
+        return;
+      }
+      setInlineError(formatEventError(error));
+    } finally {
+      if (participantLookupSessionRef.current !== lookupSession) {
+        return;
+      }
+      if (openingParticipantIdRef.current === participantKey) {
+        openingParticipantIdRef.current = null;
+      }
+      setOpeningParticipantId((current) => (current === participantKey ? null : current));
+    }
+  }, [resolveParticipantProfile]);
+
   if (!modalState.isOpen || !modalState.eventId) {
     return null;
   }
 
   return (
-    <Overlay onClick={handleBackdropClick}>
+    <Overlay onMouseDown={handleBackdropPointerDown} onTouchStart={handleBackdropPointerDown} onClick={handleBackdropClick}>
       <ModalCard onClick={(event) => event.stopPropagation()}>
         <ModalScroll>
           <HeaderRow>
@@ -632,10 +745,23 @@ const EventModal: React.FC = () => {
             <SectionTitle>Participants</SectionTitle>
             <ParticipantsList>
               {participants.map((participant) => (
-                <ParticipantRow key={participant.profileId}>
+                <ParticipantRow
+                  key={participant.profileId}
+                  type="button"
+                  onClick={() => void handleParticipantClick(participant)}
+                  disabled={openingParticipantId !== null}
+                >
                   <EventAvatar emojiId={participant.emojiId} displayName={participant.displayName} />
-                  <ParticipantName>{participant.displayName || "anon"}</ParticipantName>
-                  <ParticipantState>{participant.state === "winner" ? "winner" : participant.state === "eliminated" ? "out" : ""}</ParticipantState>
+                  <ParticipantName>{getParticipantDisplayName(participant)}</ParticipantName>
+                  <ParticipantState>
+                    {openingParticipantId === (participant.profileId || participant.loginUid)
+                      ? "loading"
+                      : participant.state === "winner"
+                        ? "winner"
+                        : participant.state === "eliminated"
+                          ? "out"
+                          : ""}
+                  </ParticipantState>
                 </ParticipantRow>
               ))}
               {!participants.length && <FooterNote>{isLoading ? "loading participants..." : "no participants yet"}</FooterNote>}

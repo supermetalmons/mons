@@ -82,6 +82,7 @@ const cardStyles = `
 }`;
 
 const SHINY_CARD_CAPTURE_SCALE = 4;
+const SHINY_CARD_Z_INDEX = 100200;
 const INVENTORY_ONLY_BG_ID = 100;
 const INVENTORY_ONLY_STICKER_TYPE = "big-mon-top-right";
 const INVENTORY_ONLY_STICKER_NAME = "gate";
@@ -256,7 +257,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   window.addEventListener("resize", updateCardWidth);
 
   cardContainer.style.perspective = "1000px";
-  cardContainer.style.zIndex = "100000";
+  cardContainer.style.zIndex = `${SHINY_CARD_Z_INDEX}`;
   cardContainer.setAttribute("data-shiny-card", "true");
   cardContainer.style.userSelect = "none";
   cardContainer.style.touchAction = "none";
