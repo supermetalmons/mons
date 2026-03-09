@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import { FaCopy, FaTimes } from "react-icons/fa";
+import { FaCheck, FaCopy, FaTimes } from "react-icons/fa";
 import { connection } from "../connection/connection";
 import { EventMatch, EventParticipant, EventRecord, EventRound } from "../connection/connectionModels";
 import { closeEventModal, EVENT_MODAL_Z_INDEX, getEventModalState, subscribeToEventModalState } from "./eventModalController";
@@ -20,34 +20,32 @@ const Overlay = styled.div`
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: rgba(18, 24, 33, 0.28);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  background: var(--modalOverlayBackground);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
 
   @media (prefers-color-scheme: dark) {
-    background: rgba(5, 8, 13, 0.54);
+    background: var(--modalOverlayBackgroundDark);
   }
 `;
 
 const ModalCard = styled.div`
   width: min(540px, calc(100vw - 24px));
-  max-height: min(760px, calc(100vh - 24px));
+  max-height: min(720px, calc(100vh - 24px));
   overflow: hidden;
-  border-radius: 22px;
-  background: rgba(255, 255, 255, 0.92);
-  box-shadow: 0 30px 80px rgba(16, 24, 40, 0.24);
-  border: 1px solid rgba(255, 255, 255, 0.35);
+  border-radius: 16px;
+  background: var(--color-white);
+  box-shadow: 0 6px 20px var(--standardBoxShadow);
 
   @media (prefers-color-scheme: dark) {
-    background: rgba(30, 34, 41, 0.92);
-    border-color: rgba(255, 255, 255, 0.08);
+    background: var(--color-deep-gray);
   }
 `;
 
 const ModalScroll = styled.div`
   max-height: inherit;
   overflow-y: auto;
-  padding: 18px 18px 20px;
+  padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -66,21 +64,25 @@ const HeaderText = styled.div`
 
 const Title = styled.h2`
   margin: 0;
-  font-size: 1.08rem;
+  font-size: 1.1rem;
   line-height: 1.15;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   text-transform: uppercase;
-  color: var(--color-gray-25);
+  color: var(--color-gray-33);
 
   @media (prefers-color-scheme: dark) {
-    color: var(--color-gray-f5);
+    color: var(--color-gray-f0);
   }
 `;
 
 const Subtitle = styled.div`
-  margin-top: 6px;
+  margin-top: 4px;
   font-size: 0.82rem;
-  color: var(--navigationTextMuted);
+  color: var(--color-gray-69);
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--color-gray-a0);
+  }
 `;
 
 const HeaderButtons = styled.div`
@@ -91,42 +93,52 @@ const HeaderButtons = styled.div`
 `;
 
 const HeaderIconButton = styled.button`
-  width: 34px;
-  height: 34px;
-  border-radius: 999px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
   border: none;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background: rgba(99, 114, 130, 0.12);
+  background: var(--color-gray-f0);
   color: var(--color-gray-33);
   cursor: pointer;
+  transition: background-color 0.2s ease;
+  -webkit-tap-highlight-color: transparent;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: rgba(99, 114, 130, 0.18);
+      background: var(--color-gray-e0);
     }
   }
 
+  &:active {
+    background: var(--color-gray-d0);
+  }
+
   @media (prefers-color-scheme: dark) {
-    background: rgba(255, 255, 255, 0.08);
+    background: var(--color-gray-33);
     color: var(--color-gray-f0);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background: rgba(255, 255, 255, 0.14);
+        background: var(--color-gray-44);
       }
+    }
+
+    &:active {
+      background: var(--color-gray-55);
     }
   }
 `;
 
 const CardSection = styled.div`
   padding: 14px;
-  border-radius: 16px;
-  background: rgba(111, 126, 141, 0.09);
+  border-radius: 12px;
+  background: var(--color-gray-f9);
 
   @media (prefers-color-scheme: dark) {
-    background: rgba(255, 255, 255, 0.06);
+    background: var(--color-gray-27);
   }
 `;
 
@@ -163,14 +175,14 @@ const ParticipantRow = styled.button`
   }
 
   @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background: rgba(99, 114, 130, 0.09);
+    &:hover:not(:disabled) {
+      background: rgba(0, 0, 0, 0.04);
     }
   }
 
   @media (prefers-color-scheme: dark) {
     @media (hover: hover) and (pointer: fine) {
-      &:hover {
+      &:hover:not(:disabled) {
         background: rgba(255, 255, 255, 0.06);
       }
     }
@@ -234,29 +246,28 @@ const RoundTitle = styled.div`
 `;
 
 const MatchButton = styled.button<{ $highlighted?: boolean }>`
-  border: 1px solid ${(props) => (props.$highlighted ? "rgba(47, 127, 255, 0.48)" : "rgba(111, 126, 141, 0.18)")};
-  border-radius: 14px;
-  background: ${(props) => (props.$highlighted ? "rgba(61, 133, 255, 0.14)" : "rgba(255, 255, 255, 0.52)")};
+  border: none;
+  border-radius: 12px;
+  background: ${(props) => (props.$highlighted ? "rgba(0, 122, 255, 0.06)" : "var(--color-white)")};
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
   gap: 6px;
   text-align: left;
   cursor: pointer;
+  transition: background-color 0.15s ease;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: ${(props) => (props.$highlighted ? "rgba(61, 133, 255, 0.19)" : "rgba(255, 255, 255, 0.74)")};
+      background: ${(props) => (props.$highlighted ? "rgba(0, 122, 255, 0.1)" : "var(--color-gray-f5)")};
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background: ${(props) => (props.$highlighted ? "rgba(61, 133, 255, 0.18)" : "rgba(255, 255, 255, 0.04)")};
-    border-color: ${(props) => (props.$highlighted ? "rgba(89, 159, 255, 0.5)" : "rgba(255, 255, 255, 0.08)")};
-
+    background: ${(props) => (props.$highlighted ? "rgba(11, 132, 255, 0.12)" : "var(--color-gray-23)")};
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background: ${(props) => (props.$highlighted ? "rgba(61, 133, 255, 0.24)" : "rgba(255, 255, 255, 0.07)")};
+        background: ${(props) => (props.$highlighted ? "rgba(11, 132, 255, 0.18)" : "var(--color-gray-33)")};
       }
     }
   }
@@ -286,21 +297,16 @@ const MatchMeta = styled.div`
   color: var(--navigationTextMuted);
 `;
 
-const ByeBadge = styled.div`
-  font-size: 0.76rem;
-  color: var(--navigationTextMuted);
-`;
-
 const InlineError = styled.div`
-  padding: 10px 12px;
-  border-radius: 12px;
-  background: rgba(220, 53, 69, 0.09);
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(220, 53, 69, 0.08);
   color: var(--dangerButtonBackground);
-  font-size: 0.8rem;
+  font-size: 0.74rem;
   line-height: 1.35;
 
   @media (prefers-color-scheme: dark) {
-    background: rgba(220, 53, 69, 0.2);
+    background: rgba(220, 53, 69, 0.22);
     color: var(--dangerButtonBackgroundDark);
   }
 `;
@@ -314,18 +320,42 @@ const Footer = styled.div`
 
 const FooterButton = styled.button<{ $primary?: boolean }>`
   height: 42px;
-  padding: 0 16px;
-  border-radius: 999px;
+  padding: 0 20px;
+  border-radius: 20px;
   border: none;
   cursor: pointer;
   font-weight: 700;
-  background: ${(props) => (props.$primary ? "var(--color-blue-primary)" : "rgba(111, 126, 141, 0.16)")};
+  font-size: 0.9rem;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: background-color 0.2s ease;
+  background: ${(props) => (props.$primary ? "var(--color-blue-primary)" : "var(--color-gray-f0)")};
   color: ${(props) => (props.$primary ? "white" : "var(--color-gray-33)")};
   opacity: ${(props) => (props.disabled ? 0.56 : 1)};
 
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled) {
+      background: ${(props) => (props.$primary ? "var(--bottomButtonBackgroundHover)" : "var(--color-gray-e0)")};
+    }
+  }
+
+  &:active:not(:disabled) {
+    background: ${(props) => (props.$primary ? "var(--bottomButtonBackgroundActive)" : "var(--color-gray-d0)")};
+  }
+
   @media (prefers-color-scheme: dark) {
-    background: ${(props) => (props.$primary ? "var(--color-blue-primary-dark)" : "rgba(255, 255, 255, 0.08)")};
+    background: ${(props) => (props.$primary ? "var(--color-blue-primary-dark)" : "var(--color-gray-33)")};
     color: ${(props) => (props.$primary ? "white" : "var(--color-gray-f0)")};
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover:not(:disabled) {
+        background: ${(props) => (props.$primary ? "var(--bottomButtonBackgroundHoverDark)" : "var(--color-gray-44)")};
+      }
+    }
+
+    &:active:not(:disabled) {
+      background: ${(props) => (props.$primary ? "var(--bottomButtonBackgroundActiveDark)" : "var(--color-gray-55)")};
+    }
   }
 `;
 
@@ -368,10 +398,10 @@ const formatRelativeStart = (event: EventRecord | null, nowMs: number): string =
     return "dismissed: not enough players";
   }
   if (event.status === "ended") {
-    return event.winnerDisplayName ? `${event.winnerDisplayName} won the event` : "event ended";
+    return event.winnerDisplayName ? `${event.winnerDisplayName} won` : "event ended";
   }
   if (event.status === "active") {
-    return "event is live";
+    return "live";
   }
   const deltaMs = event.startAtMs - nowMs;
   if (deltaMs <= 0) {
@@ -730,7 +760,7 @@ const EventModal: React.FC = () => {
             </HeaderText>
             <HeaderButtons>
               <HeaderIconButton type="button" onClick={handleCopyClick} aria-label="Copy event link">
-                <FaCopy />
+                {copyState === "copied" ? <FaCheck /> : <FaCopy />}
               </HeaderIconButton>
               <HeaderIconButton type="button" onClick={() => void closeEventModal()} aria-label="Close event">
                 <FaTimes />
@@ -738,48 +768,43 @@ const EventModal: React.FC = () => {
             </HeaderButtons>
           </HeaderRow>
 
-          {copyState === "copied" && <FooterNote>event link copied</FooterNote>}
           {inlineError && <InlineError>{inlineError}</InlineError>}
 
-          <CardSection>
-            <SectionTitle>Participants</SectionTitle>
-            <ParticipantsList>
-              {participants.map((participant) => (
-                <ParticipantRow
-                  key={participant.profileId}
-                  type="button"
-                  onClick={() => void handleParticipantClick(participant)}
-                  disabled={openingParticipantId !== null}
-                >
-                  <EventAvatar emojiId={participant.emojiId} displayName={participant.displayName} />
-                  <ParticipantName>{getParticipantDisplayName(participant)}</ParticipantName>
-                  <ParticipantState>
-                    {openingParticipantId === (participant.profileId || participant.loginUid)
-                      ? "loading"
-                      : participant.state === "winner"
-                        ? "winner"
-                        : participant.state === "eliminated"
-                          ? "out"
-                          : ""}
-                  </ParticipantState>
-                </ParticipantRow>
-              ))}
-              {!participants.length && <FooterNote>{isLoading ? "loading participants..." : "no participants yet"}</FooterNote>}
-            </ParticipantsList>
-          </CardSection>
+          {eventRecord?.status !== "active" && eventRecord?.status !== "ended" && (
+            <CardSection>
+              <SectionTitle>Players</SectionTitle>
+              <ParticipantsList>
+                {participants.map((participant) => (
+                  <ParticipantRow
+                    key={participant.profileId}
+                    type="button"
+                    onClick={() => void handleParticipantClick(participant)}
+                    disabled={openingParticipantId !== null}
+                  >
+                    <EventAvatar emojiId={participant.emojiId} displayName={participant.displayName} />
+                    <ParticipantName>{getParticipantDisplayName(participant)}</ParticipantName>
+                    <ParticipantState>
+                      {openingParticipantId === (participant.profileId || participant.loginUid)
+                        ? "loading"
+                        : participant.state === "winner"
+                          ? "winner"
+                          : participant.state === "eliminated"
+                            ? "out"
+                            : ""}
+                    </ParticipantState>
+                  </ParticipantRow>
+                ))}
+                {!participants.length && <FooterNote>{isLoading ? "loading players..." : "no players yet"}</FooterNote>}
+              </ParticipantsList>
+            </CardSection>
+          )}
 
           {(eventRecord?.status === "active" || eventRecord?.status === "ended") && (
             <CardSection>
-              <SectionTitle>Bracket</SectionTitle>
               <RoundsList>
                 {rounds.map((round) => (
                   <RoundCard key={round.roundIndex}>
                     <RoundTitle>{`Round ${round.roundIndex + 1}`}</RoundTitle>
-                    {round.byeProfileId && (
-                      <ByeBadge>
-                        bye: {eventRecord.participants[round.byeProfileId]?.displayName ?? "unknown"}
-                      </ByeBadge>
-                    )}
                     {Object.values(round.matches).map((match) => {
                       const isPlayable = eventUiState.playableMatch?.inviteId === match.inviteId;
                       return (
@@ -792,17 +817,10 @@ const EventModal: React.FC = () => {
                             <EventAvatar emojiId={match.guestEmojiId} displayName={match.guestDisplayName} />
                             <MatchPlayerName>{match.guestDisplayName || "anon"}</MatchPlayerName>
                           </MatchPlayerLine>
-                          <MatchMeta>
-                            {match.status === "pending"
-                              ? isPlayable
-                                ? "your game"
-                                : "open game"
-                              : `winner: ${
-                                  match.winnerProfileId
-                                    ? eventRecord.participants[match.winnerProfileId]?.displayName ?? "unknown"
-                                    : "unknown"
-                                }`}
-                          </MatchMeta>
+                          {isPlayable && <MatchMeta>your match</MatchMeta>}
+                          {match.status !== "pending" && match.winnerProfileId && (
+                            <MatchMeta>{eventRecord.participants[match.winnerProfileId]?.displayName ?? "unknown"} won</MatchMeta>
+                          )}
                         </MatchButton>
                       );
                     })}
@@ -830,7 +848,7 @@ const EventModal: React.FC = () => {
                 <FooterButton type="button" $primary={true} disabled={true}>
                   Play
                 </FooterButton>
-                <FooterNote>{nowMs >= eventRecord.startAtMs ? "waiting for more players" : "not started yet"}</FooterNote>
+{nowMs >= eventRecord.startAtMs && <FooterNote>waiting for more players</FooterNote>}
               </>
             )}
 
@@ -851,13 +869,10 @@ const EventModal: React.FC = () => {
 
             {!eventUiState.isJoined && eventRecord?.status === "scheduled" && !isJoinWindowOpen && (
               <FooterNote>
-                {Object.keys(eventRecord.participants ?? {}).length < 2 ? "waiting for more players" : "event is no longer accepting new participants"}
+                {Object.keys(eventRecord.participants ?? {}).length < 2 ? "waiting for more players" : "event is no longer accepting players"}
               </FooterNote>
             )}
 
-            {eventRecord?.status === "dismissed" && <FooterNote>dismissed: not enough players</FooterNote>}
-            {eventRecord?.status === "ended" && eventRecord?.winnerDisplayName && <FooterNote>{`${eventRecord.winnerDisplayName} won the event`}</FooterNote>}
-            {eventUiState.isEliminated && <FooterNote>you are out, but you can still spectate</FooterNote>}
           </Footer>
         </ModalScroll>
       </ModalCard>
