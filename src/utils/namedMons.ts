@@ -15,6 +15,10 @@ export const angelTypes = ["applecreme", "gerp", "goxfold", "mowch", "mummyfly"]
 export const drainerTypes = ["deino", "greenseech", "omom", "supermetaldrop", "zwubbi", "royal_aguapwoshi"];
 export const spiritTypes = ["melmut", "omenstatue", "owg"];
 export const mysticTypes = ["chamgot", "dart", "estalibur"];
+export const royalAguapwoshiDrainerIndex = drainerTypes.indexOf("royal_aguapwoshi");
+const randomizableDrainerIndexes = drainerTypes
+  .map((_, index) => index)
+  .filter((index) => index !== royalAguapwoshiDrainerIndex);
 
 export function getMonId(type: MonType, index: number): string {
   switch (type) {
@@ -38,7 +42,18 @@ export function getDefaultMonId(type: MonType, profileId: string): number {
     case MonType.ANGEL:
       return getStableRandomIdForProfileId(profileId, angelTypes.length);
     case MonType.DRAINER:
-      return getStableRandomIdForProfileId(profileId, drainerTypes.length);
+      if (drainerTypes.length === 0) {
+        return 0;
+      }
+      const defaultDrainerIndex = getStableRandomIdForProfileId(profileId, drainerTypes.length);
+      if (defaultDrainerIndex !== royalAguapwoshiDrainerIndex) {
+        return defaultDrainerIndex;
+      }
+      if (randomizableDrainerIndexes.length === 0) {
+        return defaultDrainerIndex;
+      }
+      const fallbackIndex = getStableRandomIdForProfileId(profileId, randomizableDrainerIndexes.length);
+      return randomizableDrainerIndexes[fallbackIndex];
     case MonType.SPIRIT:
       return getStableRandomIdForProfileId(profileId, spiritTypes.length);
     case MonType.MYSTIC:

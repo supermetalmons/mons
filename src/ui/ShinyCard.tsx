@@ -8,7 +8,7 @@ import { handleEditDisplayName } from "./ProfileSignIn";
 import { didClickAndChangePlayerEmoji, didUpdateIdCardMons } from "../game/board";
 import { STICKER_ADD_PROMPTS_FRAMES, STICKER_PATHS } from "../utils/stickers";
 import { PlayerProfile } from "../connection/connectionModels";
-import { MonType, getMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes, getMonsIndexes } from "../utils/namedMons";
+import { MonType, getMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes, getMonsIndexes, royalAguapwoshiDrainerIndex } from "../utils/namedMons";
 import { attachRainbowAura, setRainbowAuraMask, showRainbowAura, hideRainbowAura } from "./rainbowAura";
 
 const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
@@ -1545,7 +1545,10 @@ async function updateUndoButton() {
 export function setOwnershipVerifiedSpecialItem(id: number) {
   switch (id) {
     case 0:
-      updateContent("drainer", 5, drainerIndex);
+      if (royalAguapwoshiDrainerIndex < 0) {
+        break;
+      }
+      updateContent("drainer", royalAguapwoshiDrainerIndex, drainerIndex);
       didUpdateIdCardMons();
       break;
     case 1:
