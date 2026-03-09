@@ -176,11 +176,34 @@ const GameText = styled.span`
 const EventAvatarStack = styled.div`
   display: flex;
   align-items: center;
-  gap: 2px;
+  gap: 1px;
   flex-shrink: 0;
 `;
 
 const EventAvatarImage = styled(GameEmojiImage)``;
+
+const EventOverflowBadge = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 3px;
+  border-radius: 9px;
+  margin-left: 0;
+  background: rgba(128, 128, 128, 0.09);
+  font-size: 0.55rem;
+  font-weight: 600;
+  color: var(--navigationTextMuted);
+  flex-shrink: 0;
+  letter-spacing: -0.02em;
+  white-space: nowrap;
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(255, 255, 255, 0.07);
+  }
+`;
 
 const QueuePrimaryContent = styled.span`
   white-space: nowrap;
@@ -544,9 +567,11 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const hasScrollableContent = shouldRenderLearnSection || shouldRenderTopGamesSection || shouldRenderPagedGamesSection;
 
   const renderEventPreview = (event: NavigationEventItem) => {
+    const maxVisible = 3;
     const preview = event.participantPreview
       .filter((participant) => typeof participant.emojiId === "number")
-      .slice(0, 3);
+      .slice(0, maxVisible);
+    const overflow = event.participantCount - preview.length;
     return (
       <EventAvatarStack>
         {preview.map((participant, index) => (
@@ -556,6 +581,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
             alt=""
           />
         ))}
+        {overflow > 0 && <EventOverflowBadge>+{overflow}</EventOverflowBadge>}
       </EventAvatarStack>
     );
   };
