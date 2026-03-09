@@ -176,28 +176,11 @@ const GameText = styled.span`
 const EventAvatarStack = styled.div`
   display: flex;
   align-items: center;
+  gap: 2px;
   flex-shrink: 0;
 `;
 
-const EventAvatarItem = styled.div`
-  width: 18px;
-  height: 18px;
-  border-radius: 999px;
-  overflow: hidden;
-  margin-right: -4px;
-  border: 1.5px solid rgba(255, 255, 255, 0.9);
-  background: rgba(128, 128, 128, 0.18);
-
-  @media (prefers-color-scheme: dark) {
-    border-color: rgba(31, 35, 42, 0.95);
-  }
-
-  img {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-`;
+const EventAvatarImage = styled(GameEmojiImage)``;
 
 const QueuePrimaryContent = styled.span`
   white-space: nowrap;
@@ -522,6 +505,33 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     return "Waiting for opponent";
   };
 
+  const getEventStatusLabel = (event: NavigationEventItem): string => {
+    if (event.status === "ended" || event.status === "dismissed") {
+      const sourceMs = event.endedAtMs ?? event.updatedAtMs ?? event.listSortAtMs;
+      if (!Number.isFinite(sourceMs) || sourceMs < MIN_REASONABLE_EPOCH_MS) {
+        return "long ago";
+      }
+
+      const date = new Date(sourceMs);
+      if (Number.isNaN(date.getTime())) {
+        return "long ago";
+      }
+
+      const now = new Date();
+      const includeYear = date.getFullYear() !== now.getFullYear();
+      return date.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+        ...(includeYear ? { year: "numeric" } : {}),
+      });
+    }
+    if (event.status === "waiting") {
+      return "SOON";
+    }
+
+    return event.status;
+  };
+
   const completedProblemsSet = getCompletedProblemIds();
   const firstUncompletedIndex = problems.findIndex((problem) => !completedProblemsSet.has(problem.id));
 
@@ -530,30 +540,19 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const shouldRenderLearnSection = true;
   const hasScrollableContent = shouldRenderLearnSection || shouldRenderTopGamesSection || shouldRenderPagedGamesSection;
 
-  const formatEventRowDate = (event: NavigationEventItem): string => {
-    const sourceMs = event.startAtMs ?? event.listSortAtMs;
-    if (!Number.isFinite(sourceMs) || sourceMs <= 0) {
-      return event.status;
-    }
-    return new Date(sourceMs).toLocaleString(undefined, {
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    });
-  };
-
   const renderEventPreview = (event: NavigationEventItem) => {
-    const preview = event.participantPreview.slice(0, 3);
-    const remainingCount = Math.max(0, event.participantCount - preview.length);
+    const preview = event.participantPreview
+      .filter((participant) => typeof participant.emojiId === "number")
+      .slice(0, 3);
     return (
       <EventAvatarStack>
         {preview.map((participant, index) => (
-          <EventAvatarItem key={`${participant.profileId ?? participant.displayName ?? "participant"}_${index}`}>
-            {typeof participant.emojiId === "number" ? <img src={emojis.getEmojiUrl(participant.emojiId.toString())} alt="" /> : null}
-          </EventAvatarItem>
+          <EventAvatarImage
+            key={`${participant.profileId ?? participant.displayName ?? "participant"}_${index}`}
+            src={emojis.getEmojiUrl(participant.emojiId!.toString())}
+            alt=""
+          />
         ))}
-        {remainingCount > 0 && <QueuePrimaryContent>{`+${remainingCount}`}</QueuePrimaryContent>}
       </EventAvatarStack>
     );
   };
@@ -588,8 +587,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
               ) : event ? (
                 <>
                   {renderEventPreview(event)}
-                  <GameText>{formatEventRowDate(event)}</GameText>
-                  {event.status === "active" ? <UncompletedIcon /> : <GameStatus $isSelected={isSelected}>{event.status}</GameStatus>}
+                  {event.status === "active" ? <UncompletedIcon /> : <GameStatus $isSelected={isSelected}>{getEventStatusLabel(event)}</GameStatus>}
                 </>
               ) : game ? (
                 <>
