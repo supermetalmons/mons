@@ -205,13 +205,19 @@ const ParticipantState = styled.div`
   color: var(--navigationTextMuted);
 `;
 
-const RoundsList = styled.div`
+const RoundsGroup = styled.div`
   display: flex;
   flex-direction: column;
   gap: 12px;
 `;
 
-const RoundCard = styled.div`
+const RoundSection = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+const MatchesList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -221,6 +227,7 @@ const RoundTitle = styled.div`
   font-size: 0.8rem;
   font-weight: 700;
   text-align: left;
+  padding-left: 2px;
   color: var(--color-gray-33);
 
   @media (prefers-color-scheme: dark) {
@@ -766,32 +773,34 @@ const EventModal: React.FC = () => {
           )}
 
           {(eventRecord?.status === "active" || eventRecord?.status === "ended") && (
-            <CardSection>
-              <RoundsList>
-                {rounds.map((round) => (
-                  <RoundCard key={round.roundIndex}>
-                    <RoundTitle>{`Round ${round.roundIndex + 1}`}</RoundTitle>
-                    {Object.values(round.matches).map((match) => {
-                      const isPlayable = eventUiState.playableMatch?.inviteId === match.inviteId;
-                      return (
-                        <MatchButton key={match.matchKey} type="button" $highlighted={isPlayable || currentRoute.inviteId === match.inviteId} onClick={() => void openMatch(match.inviteId)}>
-                          <MatchPlayerLine>
-                            <EventAvatar emojiId={match.hostEmojiId} displayName={match.hostDisplayName} />
-                            <MatchPlayerName $bold={match.winnerProfileId === match.hostProfileId}>{match.hostDisplayName || "anon"}</MatchPlayerName>
-                          </MatchPlayerLine>
-                          <MatchPlayerLine>
-                            <EventAvatar emojiId={match.guestEmojiId} displayName={match.guestDisplayName} />
-                            <MatchPlayerName $bold={match.winnerProfileId === match.guestProfileId}>{match.guestDisplayName || "anon"}</MatchPlayerName>
-                          </MatchPlayerLine>
-                          {isPlayable && <MatchMeta>your match</MatchMeta>}
-                        </MatchButton>
-                      );
-                    })}
-                  </RoundCard>
-                ))}
-                {!rounds.length && <FooterNote>{eventRecord?.status === "active" ? "building bracket..." : "no bracket yet"}</FooterNote>}
-              </RoundsList>
-            </CardSection>
+            <RoundsGroup>
+              {rounds.map((round) => (
+                <RoundSection key={round.roundIndex}>
+                  {rounds.length > 1 && <RoundTitle>{`Round ${round.roundIndex + 1}`}</RoundTitle>}
+                  <CardSection>
+                    <MatchesList>
+                      {Object.values(round.matches).map((match) => {
+                        const isPlayable = eventUiState.playableMatch?.inviteId === match.inviteId;
+                        return (
+                          <MatchButton key={match.matchKey} type="button" $highlighted={isPlayable || currentRoute.inviteId === match.inviteId} onClick={() => void openMatch(match.inviteId)}>
+                            <MatchPlayerLine>
+                              <EventAvatar emojiId={match.hostEmojiId} displayName={match.hostDisplayName} />
+                              <MatchPlayerName $bold={match.winnerProfileId === match.hostProfileId}>{match.hostDisplayName || "anon"}</MatchPlayerName>
+                            </MatchPlayerLine>
+                            <MatchPlayerLine>
+                              <EventAvatar emojiId={match.guestEmojiId} displayName={match.guestDisplayName} />
+                              <MatchPlayerName $bold={match.winnerProfileId === match.guestProfileId}>{match.guestDisplayName || "anon"}</MatchPlayerName>
+                            </MatchPlayerLine>
+                            {isPlayable && <MatchMeta>your match</MatchMeta>}
+                          </MatchButton>
+                        );
+                      })}
+                    </MatchesList>
+                  </CardSection>
+                </RoundSection>
+              ))}
+              {!rounds.length && <FooterNote>{eventRecord?.status === "active" ? "building bracket..." : "no bracket yet"}</FooterNote>}
+            </RoundsGroup>
           )}
 
           <Footer>
