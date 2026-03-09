@@ -17,14 +17,16 @@ import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
 import { LogoutConfirmModal } from "./LogoutConfirmModal";
 import { SettingsModal } from "./SettingsModal";
+import { getEventModalState, subscribeToEventModalState } from "./eventModalController";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { hideShinyCard, showShinyCard, showsShinyCardSomewhere, updateShinyCardDisplayName } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
 import { registerProfileTransientUiHandler } from "./uiSession";
 import { performLogoutCleanupAndReload } from "../session/logoutOrchestrator";
 
-const Container = styled.div`
+const Container = styled.div<{ $liftAboveEventModal?: boolean }>`
   position: relative;
+  z-index: ${(props) => (props.$liftAboveEventModal ? 46 : "auto")};
 `;
 
 const BaseButton = styled.button`
@@ -403,6 +405,10 @@ const getXButtonLabel = (state: XButtonUiState): string => {
 
 export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [isEventModalVisible, setIsEventModalVisible] = useState(() => {
+    const eventModalState = getEventModalState();
+    return eventModalState.isOpen && !!eventModalState.eventId;
+  });
   const [solanaText, setSolanaText] = useState("Solana");
   const [inlineAuthError, setInlineAuthError] = useState("");
   const [appleButtonState, setAppleButtonState] = useState<AppleButtonUiState>("idle");
@@ -445,6 +451,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   const isAppleBusy = appleButtonState === "preparing" || appleButtonState === "connecting" || appleButtonState === "verifying";
   const isXBusy = xButtonState === "connecting";
   const isPendingXSignInRedirectBlockingUi = isPendingXSignInRedirect && !isPendingXSignInRedirectStale;
+  const shouldLiftAboveEventModal = isEventModalVisible && authStatus !== "authenticated";
+
+  useEffect(() => {
+    return subscribeToEventModalState((nextState) => {
+      setIsEventModalVisible(nextState.isOpen && !!nextState.eventId);
+    });
+  }, []);
 
   const clearAppleConfirmExpiryTimeout = useCallback(() => {
     if (appleConfirmExpiryTimeoutRef.current) {
@@ -1207,7 +1220,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   return (
-    <Container ref={popoverRef}>
+    <Container ref={popoverRef} $liftAboveEventModal={shouldLiftAboveEventModal}>
       <SignInButton disabled={isPendingXSignInRedirectBlockingUi} aria-busy={isPendingXSignInRedirectBlockingUi} onClick={!isMobile ? handleSignInClick : undefined} onTouchStart={isMobile ? handleSignInClick : undefined} $isConnected={authStatus === "authenticated"} $isPending={isPendingXSignInRedirectBlockingUi}>
         {authStatus === "authenticated" ? profileDisplayName || "Connected" : isPendingXSignInRedirectBlockingUi ? "Verifying..." : isPendingXSignInRedirect ? "Try Again" : "Sign In"}
       </SignInButton>
