@@ -75,7 +75,6 @@ const Title = styled.h2`
   }
 `;
 
-
 const HeaderButtons = styled.div`
   display: flex;
   align-items: center;
@@ -124,21 +123,13 @@ const HeaderIconButton = styled.button`
 `;
 
 const CardSection = styled.div`
-  padding: 14px;
+  padding: 16px;
   border-radius: 12px;
   background: var(--color-gray-f9);
 
   @media (prefers-color-scheme: dark) {
     background: var(--color-gray-27);
   }
-`;
-
-const SectionTitle = styled.div`
-  margin-bottom: 10px;
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--navigationTextMuted);
 `;
 
 const ParticipantsList = styled.div`
@@ -150,12 +141,12 @@ const ParticipantsList = styled.div`
 const ParticipantRow = styled.button`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
   width: 100%;
   border: none;
   background: transparent;
-  padding: 6px 4px;
+  padding: 6px 8px;
   border-radius: 10px;
   text-align: left;
   cursor: pointer;
@@ -227,7 +218,7 @@ const RoundCard = styled.div`
 `;
 
 const RoundTitle = styled.div`
-  font-size: 0.78rem;
+  font-size: 0.8rem;
   font-weight: 700;
   text-align: left;
   color: var(--color-gray-33);
@@ -286,7 +277,7 @@ const MatchPlayerName = styled.div<{ $bold?: boolean }>`
 `;
 
 const MatchMeta = styled.div`
-  font-size: 0.72rem;
+  font-size: 0.7rem;
   color: var(--navigationTextMuted);
 `;
 
@@ -295,7 +286,7 @@ const InlineError = styled.div`
   border-radius: 8px;
   background: rgba(220, 53, 69, 0.08);
   color: var(--dangerButtonBackground);
-  font-size: 0.74rem;
+  font-size: 0.75rem;
   line-height: 1.35;
 
   @media (prefers-color-scheme: dark) {
@@ -307,7 +298,7 @@ const InlineError = styled.div`
 const Footer = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   flex-wrap: wrap;
 `;
 
@@ -366,7 +357,6 @@ type EventUiState = {
 
 const PENDING_JOIN_POLL_INTERVAL_MS = 350;
 const PENDING_JOIN_POLL_TIMEOUT_MS = 60_000;
-
 
 const formatRelativeStart = (event: EventRecord | null, nowMs: number): string => {
   if (!event) {
@@ -821,7 +811,7 @@ const EventModal: React.FC = () => {
                 <FooterButton type="button" $primary={true} disabled={true}>
                   Play
                 </FooterButton>
-{nowMs >= eventRecord.startAtMs && <FooterNote>waiting for more players</FooterNote>}
+                {nowMs >= eventRecord.startAtMs && <FooterNote>waiting for more players</FooterNote>}
               </>
             )}
 
