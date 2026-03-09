@@ -535,8 +535,11 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const completedProblemsSet = getCompletedProblemIds();
   const firstUncompletedIndex = problems.findIndex((problem) => !completedProblemsSet.has(problem.id));
 
-  const shouldRenderTopGamesSection = topGames.length > 0;
-  const shouldRenderPagedGamesSection = pagedGames.length > 0;
+  const visibleTopGames = topGames.filter((item) => !(item.entityType === "event" && item.status === "dismissed"));
+  const visiblePagedGames = pagedGames.filter((item) => !(item.entityType === "event" && item.status === "dismissed"));
+
+  const shouldRenderTopGamesSection = visibleTopGames.length > 0;
+  const shouldRenderPagedGamesSection = visiblePagedGames.length > 0;
   const shouldRenderLearnSection = true;
   const hasScrollableContent = shouldRenderLearnSection || shouldRenderTopGamesSection || shouldRenderPagedGamesSection;
 
@@ -648,11 +651,11 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
       {hasScrollableContent && (
         <ScrollableList ref={scrollableListRef} onScroll={handleScrollableListScroll}>
-          {shouldRenderTopGamesSection && renderGameRows(topGames)}
+          {shouldRenderTopGamesSection && renderGameRows(visibleTopGames)}
           {shouldRenderLearnSection && shouldRenderTopGamesSection && <SectionSeparator />}
           {shouldRenderLearnSection && renderLearnSection()}
           {shouldRenderLearnSection && shouldRenderPagedGamesSection && <SectionSeparator />}
-          {shouldRenderPagedGamesSection && renderGameRows(pagedGames)}
+          {shouldRenderPagedGamesSection && renderGameRows(visiblePagedGames)}
         </ScrollableList>
       )}
       {showsHomeNavigation && (
