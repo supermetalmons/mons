@@ -1,4 +1,4 @@
-import { AssetsSet, BoardStyleSet } from "../content/boardStyles";
+import type { AssetsSet, BoardStyleSet } from "../content/boardStyles";
 
 const STORAGE_KEYS = {
   IS_MUTED: "isMuted",

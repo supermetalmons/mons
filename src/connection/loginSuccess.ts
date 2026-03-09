@@ -6,7 +6,7 @@ import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game
 import { PlayerMiningData, PlayerProfile } from "../connection/connectionModels";
 import { syncTutorialProgress } from "../content/problems";
 import { rocksMiningService } from "../services/rocksMiningService";
-import { notifyOtherTabsAboutSignIn } from "../session/logoutOrchestrator";
+import { clearPendingLogoutWipeAfterSignIn, enforcePendingLogoutWipeIfNeeded, notifyOtherTabsAboutSignIn } from "../session/logoutOrchestrator";
 
 export type AddressKind = "eth" | "sol" | "apple" | "x";
 
@@ -35,6 +35,7 @@ interface VerifyResponse {
 }
 
 export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind): void {
+  enforcePendingLogoutWipeIfNeeded();
   const { emoji, profileId } = res;
   const username = res.username ?? "";
   const resolvedEth = res.eth ?? (addressKind === "eth" ? res.address ?? null : null);
@@ -96,6 +97,7 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
   }
 
   notifyOtherTabsAboutSignIn(profileId, res.uid);
+  clearPendingLogoutWipeAfterSignIn();
   connection.forceTokenRefresh();
 
   if (!isWatchOnly) {
