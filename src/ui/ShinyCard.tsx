@@ -1,5 +1,5 @@
 import { connection } from "../connection/connection";
-import { emojipackSize, emojis, getIncrementedEmojiId } from "../content/emojis";
+import { emojipackSize, emojis, getIncrementedEmojiId, swagpackStart } from "../content/emojis";
 import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile, getStableRandomIdForProfileId } from "../utils/misc";
 import { isLocalHost } from "../utils/localDev";
@@ -82,6 +82,51 @@ const cardStyles = `
 }`;
 
 const SHINY_CARD_CAPTURE_SCALE = 4;
+const INVENTORY_ONLY_BG_ID = 100;
+const INVENTORY_ONLY_STICKER_TYPE = "big-mon-top-right";
+const INVENTORY_ONLY_STICKER_NAME = "gate";
+type UpdateSource = "default" | "inventory";
+
+const isInventoryOnlyEmojiId = (emojiId: string | number | undefined): boolean => {
+  const parsed = Number.parseInt(`${emojiId ?? ""}`, 10);
+  return Number.isFinite(parsed) && parsed >= swagpackStart;
+};
+
+const getNextRegularCardBackgroundId = (currentBgId: number): number => {
+  if (!Number.isFinite(currentBgId) || currentBgId < 0 || currentBgId >= totalCardBgsCount) {
+    return 0;
+  }
+  return (currentBgId + 1) % totalCardBgsCount;
+};
+
+const getNextRegularDrainerId = (currentDrainerId: number): number => {
+  const regularDrainerCount = drainerTypes.length - 1;
+  if (regularDrainerCount <= 0) {
+    return 0;
+  }
+  if (!Number.isFinite(currentDrainerId) || currentDrainerId < 0 || currentDrainerId >= regularDrainerCount) {
+    return 0;
+  }
+  return (currentDrainerId + 1) % regularDrainerCount;
+};
+
+const getUndoUpdateSource = (contentType: string, oldId: any): UpdateSource => {
+  switch (contentType) {
+    case "emojiAndAura":
+      if (isInventoryOnlyEmojiId(oldId?.emojiId) || oldId?.aura === "rainbow") {
+        return "inventory";
+      }
+      return "default";
+    case "bg":
+      return Number(oldId) === INVENTORY_ONLY_BG_ID ? "inventory" : "default";
+    case "drainer":
+      return Number(oldId) === royalAguapwoshiDrainerIndex ? "inventory" : "default";
+    case INVENTORY_ONLY_STICKER_TYPE:
+      return oldId === INVENTORY_ONLY_STICKER_NAME ? "inventory" : "default";
+    default:
+      return "default";
+  }
+};
 
 const getShinyCardDownloadFileName = (displayName: string) => {
   const trimmed = displayName.trim();
@@ -737,7 +782,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
       enterEditingMode();
       return;
     }
-    updateContent("bg", (cardIndex + 1) % totalCardBgsCount, cardIndex);
+    updateContent("bg", getNextRegularCardBackgroundId(cardIndex), cardIndex);
   });
   ownBgImg = img;
 
@@ -1397,7 +1442,7 @@ async function didClickMonImage(monType: string) {
       updateContent(monType, (angelIndex + 1) % angelTypes.length, angelIndex);
       break;
     case "drainer":
-      updateContent(monType, (drainerIndex + 1) % (drainerTypes.length - 1), drainerIndex);
+      updateContent(monType, getNextRegularDrainerId(drainerIndex), drainerIndex);
       break;
     case "spirit":
       updateContent(monType, (spiritIndex + 1) % spiritTypes.length, spiritIndex);
@@ -1409,7 +1454,7 @@ async function didClickMonImage(monType: string) {
   didUpdateIdCardMons();
 }
 
-async function updateContent(contentType: string, newId: any, oldId: any | null) {
+async function updateContent(contentType: string, newId: any, oldId: any | null, source: UpdateSource = "default") {
   switch (contentType) {
     case "profileCounter":
       const newCounter = newId;
@@ -1425,6 +1470,9 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
     case "emojiAndAura":
       const nextEmojiId = newId?.emojiId;
       const nextAura = newId?.aura ?? "";
+      if (source !== "inventory" && (isInventoryOnlyEmojiId(nextEmojiId) || nextAura === "rainbow")) {
+        return;
+      }
       const nextSmallEmojiUrl = emojis.getEmojiUrl(nextEmojiId);
       storage.setPlayerEmojiAura(nextAura);
       didClickAndChangePlayerEmoji(nextEmojiId, nextSmallEmojiUrl, nextAura);
@@ -1443,6 +1491,9 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
       }
       break;
     case "bg":
+      if (source !== "inventory" && newId === INVENTORY_ONLY_BG_ID) {
+        return;
+      }
       const newCardName = `${newId}.webp`;
       storage.setCardBackgroundId(newId);
       cardIndex = newId;
@@ -1461,6 +1512,9 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
     case "drainer":
     case "spirit":
     case "mystic":
+      if (contentType === "drainer" && source !== "inventory" && newId === royalAguapwoshiDrainerIndex) {
+        return;
+      }
       let newImageData = "";
       let img: HTMLImageElement | null;
       const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
@@ -1506,6 +1560,9 @@ async function updateContent(contentType: string, newId: any, oldId: any | null)
     case "type-logo":
       const nextSticker = newId;
       const type = contentType;
+      if (source !== "inventory" && type === INVENTORY_ONLY_STICKER_TYPE && nextSticker === INVENTORY_ONLY_STICKER_NAME) {
+        return;
+      }
 
       const updatedStickers = { ...currentlySelectedStickers };
 
@@ -1548,29 +1605,33 @@ export function setOwnershipVerifiedSpecialItem(id: number) {
       if (royalAguapwoshiDrainerIndex < 0) {
         break;
       }
-      updateContent("drainer", royalAguapwoshiDrainerIndex, drainerIndex);
+      updateContent("drainer", royalAguapwoshiDrainerIndex, drainerIndex, "inventory");
       didUpdateIdCardMons();
       break;
     case 1:
-      updateContent("bg", 100, cardIndex);
+      updateContent("bg", INVENTORY_ONLY_BG_ID, cardIndex, "inventory");
       break;
     case 2:
-      const type = "big-mon-top-right";
+      const type = INVENTORY_ONLY_STICKER_TYPE;
       const currentSticker = currentlySelectedStickers[type];
-      updateContent(type, "gate", currentSticker);
+      updateContent(type, INVENTORY_ONLY_STICKER_NAME, currentSticker, "inventory");
       break;
   }
 }
 
 export function setOwnershipVerifiedIdCardEmoji(id: number, aura: string) {
+  if (!isInventoryOnlyEmojiId(id)) {
+    return;
+  }
   const oldEmojiId = storage.getPlayerEmojiId("1");
   const oldAura = storage.getPlayerEmojiAura("");
-  updateContent("emojiAndAura", { emojiId: id, aura }, { emojiId: oldEmojiId, aura: oldAura });
+  updateContent("emojiAndAura", { emojiId: id, aura: aura === "rainbow" ? "rainbow" : "" }, { emojiId: oldEmojiId, aura: oldAura }, "inventory");
 }
 
 async function didClickIdCardEditUndoButton() {
   if (undoQueue.length > 0) {
     const [contentType, oldId] = undoQueue.pop()!;
-    updateContent(contentType, oldId, null);
+    updateContent(contentType, oldId, null, getUndoUpdateSource(contentType, oldId));
+    updateUndoButton();
   }
 }

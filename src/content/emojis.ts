@@ -1,6 +1,6 @@
 export const emojipackSize = 155;
-const swagpackStart = 1000;
-const swagpackEnd = 1466;
+export const swagpackStart = 1000;
+export const swagpackEnd = 1466;
 const swagpackSize = swagpackEnd - swagpackStart + 1;
 
 export const emojis = {
