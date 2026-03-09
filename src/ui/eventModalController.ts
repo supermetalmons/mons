@@ -4,6 +4,9 @@ export type EventModalState = {
   restoreHomeOnClose: boolean;
 };
 
+export const EVENT_MODAL_Z_INDEX = 100100;
+export const EVENT_MODAL_AUTH_Z_INDEX = EVENT_MODAL_Z_INDEX + 1;
+
 type EventModalListener = (state: EventModalState) => void;
 
 let state: EventModalState = {

@@ -17,7 +17,7 @@ import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
 import { LogoutConfirmModal } from "./LogoutConfirmModal";
 import { SettingsModal } from "./SettingsModal";
-import { getEventModalState, subscribeToEventModalState } from "./eventModalController";
+import { EVENT_MODAL_AUTH_Z_INDEX, getEventModalState, subscribeToEventModalState } from "./eventModalController";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { hideShinyCard, showShinyCard, showsShinyCardSomewhere, updateShinyCardDisplayName } from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
@@ -26,7 +26,7 @@ import { performLogoutCleanupAndReload } from "../session/logoutOrchestrator";
 
 const Container = styled.div<{ $liftAboveEventModal?: boolean }>`
   position: relative;
-  z-index: ${(props) => (props.$liftAboveEventModal ? 46 : "auto")};
+  z-index: ${(props) => (props.$liftAboveEventModal ? EVENT_MODAL_AUTH_Z_INDEX : "auto")};
 `;
 
 const BaseButton = styled.button`

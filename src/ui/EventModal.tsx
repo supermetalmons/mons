@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { FaCopy, FaTimes } from "react-icons/fa";
 import { connection } from "../connection/connection";
 import { EventMatch, EventParticipant, EventRecord, EventRound } from "../connection/connectionModels";
-import { closeEventModal, getEventModalState, subscribeToEventModalState } from "./eventModalController";
+import { closeEventModal, EVENT_MODAL_Z_INDEX, getEventModalState, subscribeToEventModalState } from "./eventModalController";
 import { emojis } from "../content/emojis";
 import { storage } from "../utils/storage";
 import { openProfileSignInPopup } from "./ProfileSignIn";
@@ -12,7 +12,7 @@ import { getCurrentRouteState } from "../navigation/routeState";
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
-  z-index: 45;
+  z-index: ${EVENT_MODAL_Z_INDEX};
   display: flex;
   align-items: center;
   justify-content: center;
