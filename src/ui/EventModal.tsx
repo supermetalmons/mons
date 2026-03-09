@@ -75,15 +75,6 @@ const Title = styled.h2`
   }
 `;
 
-const Subtitle = styled.div`
-  margin-top: 4px;
-  font-size: 0.82rem;
-  color: var(--color-gray-69);
-
-  @media (prefers-color-scheme: dark) {
-    color: var(--color-gray-a0);
-  }
-`;
 
 const HeaderButtons = styled.div`
   display: flex;
@@ -238,6 +229,7 @@ const RoundCard = styled.div`
 const RoundTitle = styled.div`
   font-size: 0.78rem;
   font-weight: 700;
+  text-align: left;
   color: var(--color-gray-33);
 
   @media (prefers-color-scheme: dark) {
@@ -280,8 +272,9 @@ const MatchPlayerLine = styled.div`
   min-width: 0;
 `;
 
-const MatchPlayerName = styled.div`
+const MatchPlayerName = styled.div<{ $bold?: boolean }>`
   min-width: 0;
+  font-weight: ${(props) => (props.$bold ? 700 : "normal")};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -374,21 +367,6 @@ type EventUiState = {
 const PENDING_JOIN_POLL_INTERVAL_MS = 350;
 const PENDING_JOIN_POLL_TIMEOUT_MS = 60_000;
 
-const formatEventDateTitle = (startAtMs: number): string => {
-  if (!Number.isFinite(startAtMs) || startAtMs <= 0) {
-    return "EVENT";
-  }
-  return new Date(startAtMs)
-    .toLocaleString(undefined, {
-      weekday: "short",
-      month: "short",
-      day: "numeric",
-      hour: "numeric",
-      minute: "2-digit",
-    })
-    .replace(",", "")
-    .toUpperCase();
-};
 
 const formatRelativeStart = (event: EventRecord | null, nowMs: number): string => {
   if (!event) {
@@ -409,7 +387,7 @@ const formatRelativeStart = (event: EventRecord | null, nowMs: number): string =
     return participantCount < 2 ? "not enough players yet" : "starting now";
   }
   const minutes = Math.max(1, Math.ceil(deltaMs / 60000));
-  return `starting in ${minutes} minute${minutes === 1 ? "" : "s"}`;
+  return `in ${minutes} minute${minutes === 1 ? "" : "s"}`;
 };
 
 const getSortedParticipants = (event: EventRecord | null): EventParticipant[] => {
@@ -755,8 +733,7 @@ const EventModal: React.FC = () => {
         <ModalScroll>
           <HeaderRow>
             <HeaderText>
-              <Title>{eventRecord ? formatEventDateTitle(eventRecord.startAtMs) : "EVENT"}</Title>
-              <Subtitle>{formatRelativeStart(eventRecord, nowMs)}</Subtitle>
+              <Title>{formatRelativeStart(eventRecord, nowMs)}</Title>
             </HeaderText>
             <HeaderButtons>
               <HeaderIconButton type="button" onClick={handleCopyClick} aria-label="Copy event link">
@@ -772,7 +749,6 @@ const EventModal: React.FC = () => {
 
           {eventRecord?.status !== "active" && eventRecord?.status !== "ended" && (
             <CardSection>
-              <SectionTitle>Players</SectionTitle>
               <ParticipantsList>
                 {participants.map((participant) => (
                   <ParticipantRow
@@ -811,16 +787,13 @@ const EventModal: React.FC = () => {
                         <MatchButton key={match.matchKey} type="button" $highlighted={isPlayable || currentRoute.inviteId === match.inviteId} onClick={() => void openMatch(match.inviteId)}>
                           <MatchPlayerLine>
                             <EventAvatar emojiId={match.hostEmojiId} displayName={match.hostDisplayName} />
-                            <MatchPlayerName>{match.hostDisplayName || "anon"}</MatchPlayerName>
+                            <MatchPlayerName $bold={match.winnerProfileId === match.hostProfileId}>{match.hostDisplayName || "anon"}</MatchPlayerName>
                           </MatchPlayerLine>
                           <MatchPlayerLine>
                             <EventAvatar emojiId={match.guestEmojiId} displayName={match.guestDisplayName} />
-                            <MatchPlayerName>{match.guestDisplayName || "anon"}</MatchPlayerName>
+                            <MatchPlayerName $bold={match.winnerProfileId === match.guestProfileId}>{match.guestDisplayName || "anon"}</MatchPlayerName>
                           </MatchPlayerLine>
                           {isPlayable && <MatchMeta>your match</MatchMeta>}
-                          {match.status !== "pending" && match.winnerProfileId && (
-                            <MatchMeta>{eventRecord.participants[match.winnerProfileId]?.displayName ?? "unknown"} won</MatchMeta>
-                          )}
                         </MatchButton>
                       );
                     })}
