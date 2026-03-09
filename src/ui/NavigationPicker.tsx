@@ -567,10 +567,11 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const hasScrollableContent = shouldRenderLearnSection || shouldRenderTopGamesSection || shouldRenderPagedGamesSection;
 
   const renderEventPreview = (event: NavigationEventItem) => {
-    const maxVisible = 3;
-    const preview = event.participantPreview
-      .filter((participant) => typeof participant.emojiId === "number")
-      .slice(0, maxVisible);
+    const validParticipants = event.participantPreview
+      .filter((participant) => typeof participant.emojiId === "number");
+    const showBadge = event.participantCount > 6;
+    const maxVisible = showBadge ? 5 : 6;
+    const preview = validParticipants.slice(0, maxVisible);
     const overflow = event.participantCount - preview.length;
     return (
       <EventAvatarStack>
@@ -581,7 +582,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
             alt=""
           />
         ))}
-        {overflow > 0 && <EventOverflowBadge>+{overflow}</EventOverflowBadge>}
+        {showBadge && overflow > 0 && <EventOverflowBadge>+{overflow}</EventOverflowBadge>}
       </EventAvatarStack>
     );
   };
