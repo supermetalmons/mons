@@ -2097,31 +2097,11 @@ const BottomControls: React.FC = () => {
       const requestSeq = pendingNavigationOpenedEventModalRequestSeqRef.current + 1;
       pendingNavigationOpenedEventModalRequestSeqRef.current = requestSeq;
       pendingNavigationOpenedEventModalRequestedAtMsRef.current = Date.now();
-      if (getCurrentRouteState().mode === "invite") {
-        openEventModal(item.eventId, { restoreHomeOnClose: false });
-        if (pendingNavigationOpenedEventModalRequestSeqRef.current === requestSeq) {
-          pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
-          pendingNavigationOpenedEventModalRequestSeqRef.current += 1;
-        }
-        return;
+      openEventModal(item.eventId, { restoreHomeOnClose: false });
+      if (pendingNavigationOpenedEventModalRequestSeqRef.current === requestSeq) {
+        pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
+        pendingNavigationOpenedEventModalRequestSeqRef.current += 1;
       }
-      void (async () => {
-        try {
-          const appSessionManager = await import("../session/AppSessionManager");
-          await appSessionManager.transition({
-            mode: "event",
-            path: `event/${item.eventId}`,
-            inviteId: null,
-            snapshotId: null,
-            eventId: item.eventId,
-            autojoin: false,
-          });
-        } catch {}
-        if (pendingNavigationOpenedEventModalRequestSeqRef.current === requestSeq) {
-          pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
-          pendingNavigationOpenedEventModalRequestSeqRef.current += 1;
-        }
-      })();
       return;
     }
     pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;

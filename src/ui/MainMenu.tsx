@@ -14,7 +14,7 @@ import { InfoPopover } from "./InfoPopover";
 import { MiningMaterialName } from "../connection/connectionModels";
 import { registerMainMenuTransientUiHandler } from "./uiSession";
 import { connection } from "../connection/connection";
-import { transition } from "../session/AppSessionManager";
+import { openEventModal } from "./eventModalController";
 
 const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust", "total", "mp"];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
@@ -867,21 +867,14 @@ const MainMenu: React.FC = () => {
     setIsCreatingEvent(true);
     void connection
       .createEvent(startsInMinutes)
-      .then(async (result) => {
+      .then((result) => {
         if (!result.ok || !result.eventId) {
           setEventCreateError("Failed to create event.");
           return;
         }
         setIsMenuOpen(false);
         setShowExperimental(false);
-        await transition({
-          mode: "event",
-          path: `event/${result.eventId}`,
-          inviteId: null,
-          snapshotId: null,
-          eventId: result.eventId,
-          autojoin: false,
-        });
+        openEventModal(result.eventId, { restoreHomeOnClose: false });
       })
       .catch((error) => {
         const message = error && typeof error === "object" && "message" in error && typeof (error as { message?: unknown }).message === "string"
