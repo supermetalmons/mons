@@ -36,7 +36,8 @@ const NavigationPickerContainer = styled.div`
   backdrop-filter: blur(3px);
   -webkit-backdrop-filter: blur(3px);
   border-radius: 7pt;
-  padding: 6px 6px 8px;
+  overflow: hidden;
+  padding: 0;
   gap: 0;
   z-index: 7;
 
@@ -50,37 +51,15 @@ const NavigationPickerContainer = styled.div`
 `;
 
 const ScrollableList = styled.div`
-  overflow-y: overlay;
+  overflow-y: auto;
   overflow-x: hidden;
   -webkit-overflow-scrolling: touch;
   flex-grow: 1;
-  padding-right: 2px;
-  scrollbar-width: thin;
-  scrollbar-color: rgba(128, 128, 128, 0.25) transparent;
-
-  @supports not (overflow-y: overlay) {
-    overflow-y: auto;
-  }
+  padding: 6px 0 8px;
+  scrollbar-width: none;
 
   &::-webkit-scrollbar {
-    width: 3px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: rgba(128, 128, 128, 0.25);
-    border-radius: 3px;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    scrollbar-color: rgba(255, 255, 255, 0.15) transparent;
-
-    &::-webkit-scrollbar-thumb {
-      background: rgba(255, 255, 255, 0.15);
-    }
+    display: none;
   }
 `;
 
@@ -88,7 +67,7 @@ const SectionSeparator = styled.div`
   height: 1px;
   background-color: var(--navigationTextMuted);
   opacity: 0.12;
-  margin: 6px 4px;
+  margin: 0;
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--color-gray-a0);
@@ -98,10 +77,10 @@ const SectionSeparator = styled.div`
 
 const NavigationPickerButton = styled.button<{ $isSelected?: boolean }>`
   background: ${(props) => (props.$isSelected ? "rgba(117, 187, 255, 0.22)" : "transparent")};
-  border-radius: 6px;
-  font-size: 15px;
-  border: ${(props) => (props.$isSelected ? "1px solid rgba(73, 156, 255, 0.4)" : "1px solid transparent")};
-  padding: 6px 7px;
+  border-radius: 0;
+  font-size: 0.8rem;
+  border: none;
+  padding: 6px 12px;
   cursor: pointer;
   text-align: left;
   color: var(--color-gray-33);
@@ -124,7 +103,6 @@ const NavigationPickerButton = styled.button<{ $isSelected?: boolean }>`
   @media (prefers-color-scheme: dark) {
     color: var(--color-gray-f0);
     background: ${(props) => (props.$isSelected ? "rgba(75, 150, 255, 0.24)" : "transparent")};
-    border-color: ${(props) => (props.$isSelected ? "rgba(104, 181, 255, 0.45)" : "transparent")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
@@ -139,7 +117,6 @@ const NavigationPickerButton = styled.button<{ $isSelected?: boolean }>`
 `;
 
 const GameRow = styled(NavigationPickerButton)`
-  font-size: 0.8rem;
   flex: 1;
   min-width: 0;
 `;
@@ -147,7 +124,6 @@ const GameRow = styled(NavigationPickerButton)`
 const GameRowContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 4px;
   width: 100%;
   min-width: 0;
 `;
@@ -228,7 +204,8 @@ const GameStatus = styled.span<{ $isSelected?: boolean }>`
 `;
 
 const GameRemoveButton = styled.button<{ $isDisabled?: boolean }>`
-  margin-left: 2px;
+  margin-left: -8px;
+  margin-right: 6px;
   width: 16px;
   height: 16px;
   display: inline-flex;
@@ -291,8 +268,8 @@ const UncompletedIcon = styled(FaCircle)`
 `;
 
 const PlaceholderImage = styled.img`
-  width: 23px;
-  height: 23px;
+  width: 20px;
+  height: 20px;
   flex-shrink: 0;
 `;
 
@@ -309,8 +286,8 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
   border: none;
   cursor: pointer;
   text-align: center;
-  width: 100%;
-  margin-top: ${(props) => (props.$withTopBorder ? "8px" : "0")};
+  width: calc(100% - 12px);
+  margin: ${(props) => (props.$withTopBorder ? "8px" : "0")} 6px 8px;
   -webkit-user-select: none;
   user-select: none;
   -webkit-tap-highlight-color: transparent;
