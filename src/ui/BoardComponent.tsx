@@ -149,6 +149,7 @@ const WAGER_PANEL_COUNT_MIN_GAP_PX = 4;
 const WAGER_PANEL_COUNT_MIN_WIDTH_PX = 32;
 const WAGER_PANEL_COUNT_Y_OFFSET_FRAC = 0.04;
 const wagerUiDebugLogsEnabled = process.env.NODE_ENV !== "production";
+const BOT_STRENGTH_IGNORE_MOUSE_AFTER_TOUCH_MS = 700;
 
 const PENDING_PULSE_KEYFRAMES_NAME = "wagerPilePendingPulse";
 const PENDING_PULSE_ANIMATION = `${PENDING_PULSE_KEYFRAMES_NAME} 1.4s ease-in-out infinite`;
@@ -326,6 +327,7 @@ const BoardComponent: React.FC = () => {
   const auraLayerRef = useRef<HTMLDivElement | null>(null);
   const opponentWrapperRef = useRef<HTMLDivElement | null>(null);
   const playerWrapperRef = useRef<HTMLDivElement | null>(null);
+  const botStrengthIgnoreMouseUntilRef = useRef(0);
 
   updateWagerPlayerUidsImpl = (nextPlayerUid: string, nextOpponentUid: string) => {
     setPlayerUidSnapshot((prev) => (prev === nextPlayerUid ? prev : nextPlayerUid));
@@ -626,6 +628,25 @@ const BoardComponent: React.FC = () => {
       setBotStrengthPressed(false);
     }
   }, [botStrengthControlOverlay.visible]);
+
+  useEffect(() => {
+    if (!botStrengthPressed) {
+      return;
+    }
+    const clearPressed = () => {
+      setBotStrengthPressed(false);
+    };
+    window.addEventListener("touchend", clearPressed, { passive: true });
+    window.addEventListener("touchcancel", clearPressed, { passive: true });
+    window.addEventListener("mouseup", clearPressed);
+    window.addEventListener("blur", clearPressed);
+    return () => {
+      window.removeEventListener("touchend", clearPressed);
+      window.removeEventListener("touchcancel", clearPressed);
+      window.removeEventListener("mouseup", clearPressed);
+      window.removeEventListener("blur", clearPressed);
+    };
+  }, [botStrengthPressed]);
 
   useEffect(() => {
     wagerPanelStateRef.current = {
@@ -1392,29 +1413,70 @@ const BoardComponent: React.FC = () => {
   const botStrengthIconScale = botStrengthIconSizePx / 24;
   const botStrengthStroke = Math.max(0.8, Math.min(1.5, botStrengthSizePx * 0.042));
   const isBotStrengthDark = prefersDarkMode;
+  const canUseFinePointerHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const shouldShowBotStrengthInteractionFill = !isMobile;
+  const showBotStrengthHover = shouldShowBotStrengthInteractionFill && canUseFinePointerHover && botStrengthHovered;
+  const showBotStrengthPressed = shouldShowBotStrengthInteractionFill && botStrengthPressed;
   const botStrengthFill = isBotStrengthDark
-    ? botStrengthPressed
+    ? showBotStrengthPressed
       ? "var(--color-gray-55)"
-      : botStrengthHovered
+      : showBotStrengthHover
         ? "var(--color-gray-44)"
         : "var(--color-gray-33)"
-    : botStrengthPressed
+    : showBotStrengthPressed
       ? "var(--color-gray-d0)"
-      : botStrengthHovered
+      : showBotStrengthHover
         ? "var(--color-gray-e0)"
         : "var(--color-gray-f0)";
   const botStrengthColor = isBotStrengthDark ? "var(--color-blue-primary-dark)" : "var(--color-blue-primary)";
+  const markBotStrengthTouchInteraction = () => {
+    botStrengthIgnoreMouseUntilRef.current = Date.now() + BOT_STRENGTH_IGNORE_MOUSE_AFTER_TOUCH_MS;
+  };
+  const shouldIgnoreBotStrengthMouseEvent = () => Date.now() < botStrengthIgnoreMouseUntilRef.current;
+  const handleBotStrengthMouseEnter = () => {
+    if (!canUseFinePointerHover) {
+      return;
+    }
+    if (shouldIgnoreBotStrengthMouseEvent()) {
+      return;
+    }
+    setBotStrengthHovered(true);
+  };
   const handleBotStrengthPointerDown = (event: React.SyntheticEvent) => {
     event.stopPropagation();
+    if (event.type === "touchstart") {
+      markBotStrengthTouchInteraction();
+      setBotStrengthHovered(false);
+      setBotStrengthPressed(false);
+      return;
+    } else if (event.type === "mousedown" && !canUseFinePointerHover) {
+      return;
+    } else if (event.type === "mousedown" && shouldIgnoreBotStrengthMouseEvent()) {
+      return;
+    }
     setBotStrengthPressed(true);
   };
   const handleBotStrengthPointerUp = (event: React.SyntheticEvent) => {
     event.stopPropagation();
+    if (event.type === "touchend") {
+      markBotStrengthTouchInteraction();
+      setBotStrengthHovered(false);
+      setBotStrengthPressed(false);
+      return;
+    } else if (event.type === "mouseup" && !canUseFinePointerHover) {
+      return;
+    } else if (event.type === "mouseup" && shouldIgnoreBotStrengthMouseEvent()) {
+      return;
+    }
     setBotStrengthPressed(false);
   };
   const handleBotStrengthPointerLeave = () => {
     setBotStrengthHovered(false);
     setBotStrengthPressed(false);
+  };
+  const handleBotStrengthTouchCancel = () => {
+    markBotStrengthTouchInteraction();
+    handleBotStrengthPointerLeave();
   };
   const handleBotStrengthControlClick = (event: React.SyntheticEvent) => {
     event.stopPropagation();
@@ -1490,13 +1552,13 @@ const BoardComponent: React.FC = () => {
             style={{ pointerEvents: "all", cursor: "pointer" }}
             role="button"
             aria-label={`Bot strength: ${botStrengthModeLabel}`}
-            onMouseEnter={() => setBotStrengthHovered(true)}
+            onMouseEnter={handleBotStrengthMouseEnter}
             onMouseLeave={handleBotStrengthPointerLeave}
             onMouseDown={handleBotStrengthPointerDown}
             onMouseUp={handleBotStrengthPointerUp}
             onTouchStart={handleBotStrengthPointerDown}
             onTouchEnd={handleBotStrengthPointerUp}
-            onTouchCancel={handleBotStrengthPointerLeave}
+            onTouchCancel={handleBotStrengthTouchCancel}
             onClick={!isMobile ? handleBotStrengthControlClick : undefined}
             onTouchEndCapture={isMobile ? handleBotStrengthControlClick : undefined}>
             <rect x={0} y={0} width={botStrengthSizePx} height={botStrengthSizePx} rx={botStrengthSizePx / 2} ry={botStrengthSizePx / 2} fill={botStrengthFill} stroke="none" />
