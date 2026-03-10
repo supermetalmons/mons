@@ -234,9 +234,11 @@ const INVITE_BOT_BUTTON_HEIGHT_TO_FONT_RATIO = 2.1;
 const INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX = 12;
 const INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO = 0.9;
 const INVITE_BOT_BUTTON_TEXT_WIDTH_TO_FONT_RATIO = 5.5;
-const BOT_STRENGTH_BUTTON_SIZE_TO_INVITE_HEIGHT = 0.82;
-const BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER = 0.12;
-const BOT_STRENGTH_VOICE_REACTION_EXTRA_GAP_MULTIPLIER = 0.08;
+const BOT_STRENGTH_BUTTON_SCALE = 1.23;
+const BOT_STRENGTH_BUTTON_SIZE_TO_INVITE_HEIGHT = 0.82 * BOT_STRENGTH_BUTTON_SCALE;
+const BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER = 0.12 * BOT_STRENGTH_BUTTON_SCALE;
+const BOT_STRENGTH_VOICE_REACTION_EXTRA_GAP_MULTIPLIER = 0.08 * BOT_STRENGTH_BUTTON_SCALE;
+const BOT_STRENGTH_BUTTON_LEFT_SHIFT_MULTIPLIER = 0.045;
 const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
 const WAGER_PILE_SCALE = 1;
@@ -302,7 +304,7 @@ const getInviteBotButtonLayout = (scoreText: SVGElement, multiplicator: number, 
 const getBotStrengthControlLayout = (scoreText: SVGElement, multiplicator: number, avatarSize: number): BotStrengthControlLayout => {
   const inviteLayout = getInviteBotButtonLayout(scoreText, multiplicator, avatarSize);
   const size = inviteLayout.height * BOT_STRENGTH_BUTTON_SIZE_TO_INVITE_HEIGHT;
-  const x = inviteLayout.x;
+  const x = inviteLayout.x - BOT_STRENGTH_BUTTON_LEFT_SHIFT_MULTIPLIER * multiplicator;
   const y = inviteLayout.y + (inviteLayout.height - size) / 2;
   return { x, y, size };
 };
