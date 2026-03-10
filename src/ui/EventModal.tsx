@@ -666,7 +666,7 @@ const EventModal: React.FC = () => {
     if (!inviteId) {
       return;
     }
-    await closeEventModal({ skipHomeTransition: true });
+    await closeEventModal({ skipHomeTransition: true, reason: "launch_game" });
     if (currentRoute.mode === "invite" && currentRoute.inviteId === inviteId) {
       return;
     }

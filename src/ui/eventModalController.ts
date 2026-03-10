@@ -1,7 +1,10 @@
+export type EventModalCloseReason = "dismiss" | "launch_game" | "route_change";
+
 export type EventModalState = {
   isOpen: boolean;
   eventId: string | null;
   restoreHomeOnClose: boolean;
+  lastCloseReason: EventModalCloseReason | null;
 };
 
 export const EVENT_MODAL_Z_INDEX = 100100;
@@ -13,6 +16,7 @@ let state: EventModalState = {
   isOpen: false,
   eventId: null,
   restoreHomeOnClose: false,
+  lastCloseReason: null,
 };
 
 const listeners = new Set<EventModalListener>();
@@ -46,16 +50,19 @@ export const openEventModal = (eventId: string, options?: { restoreHomeOnClose?:
     isOpen: true,
     eventId: normalizedEventId,
     restoreHomeOnClose: options?.restoreHomeOnClose === true,
+    lastCloseReason: null,
   };
   emit();
 };
 
-export const closeEventModal = async (options?: { skipHomeTransition?: boolean }): Promise<void> => {
+export const closeEventModal = async (options?: { skipHomeTransition?: boolean; reason?: EventModalCloseReason }): Promise<void> => {
+  const closeReason: EventModalCloseReason = options?.reason ?? "dismiss";
   const shouldRestoreHome = state.isOpen && state.restoreHomeOnClose && options?.skipHomeTransition !== true;
   state = {
     isOpen: false,
     eventId: null,
     restoreHomeOnClose: false,
+    lastCloseReason: closeReason,
   };
   emit();
   if (!shouldRestoreHome) {

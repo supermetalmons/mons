@@ -1588,7 +1588,7 @@ export async function go(routeStateOverride?: RouteState) {
   if (routeState.mode === "event" && routeState.eventId) {
     openEventModal(routeState.eventId, { restoreHomeOnClose: true });
   } else {
-    void closeEventModal({ skipHomeTransition: true });
+    void closeEventModal({ skipHomeTransition: true, reason: "route_change" });
   }
   clearAllManagedGameTimeouts();
   resetBotScoreReactionState();

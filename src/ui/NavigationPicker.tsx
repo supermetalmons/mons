@@ -449,6 +449,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     }
 
     const selectedElement = container.querySelector<HTMLElement>("[data-navigation-selected-primary='true']")
+      ?? container.querySelector<HTMLElement>("[data-navigation-active='true']")
       ?? container.querySelector<HTMLElement>("[data-navigation-selected='true']");
     if (!selectedElement) {
       return;
@@ -590,8 +591,9 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   const renderGameRows = (gamesToRender: NavigationItem[]) => (
     <>
       {gamesToRender.map((item) => {
-        const isSelected = selectedNavigationItemId === item.id;
         const isGame = item.entityType === "game";
+        const isActiveItem = selectedNavigationItemId === item.id;
+        const isSelected = isGame && isActiveItem;
         const game = isGame ? item : null;
         const event = item.entityType === "event" ? item : null;
         const isQueueStatus = !!game && (game.status === "waiting" || game.status === "pending");
@@ -608,6 +610,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
           <GameRowContainer key={item.id}>
             <GameRow
               $isSelected={isSelected}
+              data-navigation-active={isActiveItem ? "true" : undefined}
               data-navigation-selected={isSelected ? "true" : undefined}
               data-navigation-selected-primary={isSelected ? "true" : undefined}
               onClick={() => onSelectGame?.(item, isGame ? { status: item.status } : undefined)}

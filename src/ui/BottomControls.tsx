@@ -27,7 +27,7 @@ import { subscribeToWagerState } from "../game/wagerState";
 import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 import { storage } from "../utils/storage";
-import { getCurrentTarget, transitionToHome } from "../session/AppSessionManager";
+import { getCurrentTarget, isTransitionInProgress, transitionToHome } from "../session/AppSessionManager";
 import { getCurrentRouteState } from "../navigation/routeState";
 import { registerBottomControlsTransientUiHandler } from "./uiSession";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
@@ -43,6 +43,7 @@ import {
 } from "../services/navigationGamesCache";
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
+const EVENT_MODAL_NAV_AUTOCLOSE_SUPPRESS_MS = 10000;
 const rematchSeriesDigitsFontFamily = 'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace';
 
 export enum PrimaryActionType {
@@ -473,10 +474,11 @@ const BottomControls: React.FC = () => {
   const [optimisticPendingAutomatchItem, setOptimisticPendingAutomatchItem] = useState<NavigationGameItem | null>(null);
   const [isNavigationFallbackScope, setIsNavigationFallbackScope] = useState(false);
   const [navigationRemovingInviteIds, setNavigationRemovingInviteIds] = useState<Set<string>>(new Set());
-  const [selectedEventModalId, setSelectedEventModalId] = useState<string | null>(() => {
-    const state = getEventModalState();
-    return state.isOpen ? state.eventId : null;
-  });
+  const initialEventModalState = getEventModalState();
+  const pendingNavigationOpenedEventModalRequestedAtMsRef = useRef(0);
+  const pendingNavigationOpenedEventModalRequestSeqRef = useRef(0);
+  const wasEventModalVisibleRef = useRef(initialEventModalState.isOpen && !!initialEventModalState.eventId);
+  const [selectedEventModalId, setSelectedEventModalId] = useState<string | null>(initialEventModalState.isOpen ? initialEventModalState.eventId : null);
 
   const [isUndoDisabled, setIsUndoDisabled] = useState(true);
   const [waitingStateText, setWaitingStateText] = useState("");
@@ -580,6 +582,25 @@ const BottomControls: React.FC = () => {
     }
     clearTimeout(timeoutId);
   }, []);
+
+  const isEventModalVisible = useCallback(() => {
+    const modalState = getEventModalState();
+    return modalState.isOpen && !!modalState.eventId;
+  }, []);
+
+  const shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal = useCallback(() => {
+    if (isEventModalVisible()) {
+      return true;
+    }
+    const requestedAtMs = pendingNavigationOpenedEventModalRequestedAtMsRef.current;
+    if (requestedAtMs <= 0) {
+      return false;
+    }
+    if (Date.now() - requestedAtMs > EVENT_MODAL_NAV_AUTOCLOSE_SUPPRESS_MS) {
+      return false;
+    }
+    return isTransitionInProgress() || getCurrentRouteState().mode === "event";
+  }, [isEventModalVisible]);
 
   const setMatchScopedTimeout = useCallback((callback: () => void, delay: number, guard?: () => boolean): number => {
     const timeoutId = window.setTimeout(() => {
@@ -715,9 +736,11 @@ const BottomControls: React.FC = () => {
       }
 
       if (navigationPopupRef.current && !navigationPopupRef.current.contains(event.target as Node) && !navigationButtonRef.current?.contains(event.target as Node)) {
-        didDismissSomethingWithOutsideTapJustNow();
-        navigationSelectionEpochRef.current += 1;
-        setIsNavigationPopupVisible(false);
+        if (!isEventModalVisible()) {
+          didDismissSomethingWithOutsideTapJustNow();
+          navigationSelectionEpochRef.current += 1;
+          setIsNavigationPopupVisible(false);
+        }
       }
 
       if (boardStylePickerRef.current && !boardStylePickerRef.current.contains(event.target as Node) && !brushButtonRef.current?.contains(event.target as Node)) {
@@ -734,7 +757,7 @@ const BottomControls: React.FC = () => {
     return () => {
       document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
     };
-  }, []);
+  }, [isEventModalVisible]);
 
   useEffect(() => {
     let cancelled = false;
@@ -941,7 +964,22 @@ const BottomControls: React.FC = () => {
 
   useEffect(() => {
     return subscribeToEventModalState((state) => {
-      setSelectedEventModalId(state.isOpen ? state.eventId : null);
+      const isVisible = state.isOpen && !!state.eventId;
+      const wasVisible = wasEventModalVisibleRef.current;
+
+      if (wasVisible && !isVisible) {
+        pendingNavigationOpenedEventModalRequestSeqRef.current += 1;
+        if (state.lastCloseReason === "dismiss" && getCurrentRouteState().mode === "event") {
+          pendingNavigationOpenedEventModalRequestedAtMsRef.current = Date.now();
+        } else {
+          pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
+        }
+      } else if (isVisible) {
+        pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
+      }
+
+      wasEventModalVisibleRef.current = isVisible;
+      setSelectedEventModalId(isVisible ? state.eventId : null);
     });
   }, []);
 
@@ -1374,7 +1412,11 @@ const BottomControls: React.FC = () => {
     if (!options?.preserveNavigationSelection) {
       navigationSelectionEpochRef.current += 1;
     }
-    setIsNavigationPopupVisible(false);
+    const shouldSuppressNavigationAutoClose =
+      options?.preserveNavigationSelection === true && shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal();
+    if (!shouldSuppressNavigationAutoClose) {
+      setIsNavigationPopupVisible(false);
+    }
     setIsBoardStylePickerVisible(false);
     setIsMoveHistoryPopupVisible(false);
     setIsReactionPickerVisible(false);
@@ -1382,7 +1424,7 @@ const BottomControls: React.FC = () => {
     setIsTimerConfirmVisible(false);
     setIsClaimVictoryConfirmVisible(false);
     setIsWagerMode(false);
-  }, []);
+  }, [shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal]);
 
   closeNavigationAndAppearancePopupIfAnyImpl = closeNavigationAndAppearancePopupIfAnyHandler;
 
@@ -1465,7 +1507,7 @@ const BottomControls: React.FC = () => {
 
   setNavigationListButtonVisibleImpl = (visible: boolean) => {
     setIsNavigationListButtonVisible(visible);
-    if (!visible) {
+    if (!visible && !shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal()) {
       setIsNavigationPopupVisible(false);
     }
   };
@@ -2050,26 +2092,41 @@ const BottomControls: React.FC = () => {
 
   const handleNavigationGameSelect = (item: NavigationItem, options?: { status?: NavigationGameStatus }) => {
     navigationSelectionEpochRef.current += 1;
-    setIsNavigationPopupVisible(false);
     setIsBoardStylePickerVisible(false);
     if (item.entityType === "event") {
+      const requestSeq = pendingNavigationOpenedEventModalRequestSeqRef.current + 1;
+      pendingNavigationOpenedEventModalRequestSeqRef.current = requestSeq;
+      pendingNavigationOpenedEventModalRequestedAtMsRef.current = Date.now();
       if (getCurrentRouteState().mode === "invite") {
         openEventModal(item.eventId, { restoreHomeOnClose: false });
+        if (pendingNavigationOpenedEventModalRequestSeqRef.current === requestSeq) {
+          pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
+          pendingNavigationOpenedEventModalRequestSeqRef.current += 1;
+        }
         return;
       }
       void (async () => {
-        const appSessionManager = await import("../session/AppSessionManager");
-        await appSessionManager.transition({
-          mode: "event",
-          path: `event/${item.eventId}`,
-          inviteId: null,
-          snapshotId: null,
-          eventId: item.eventId,
-          autojoin: false,
-        });
+        try {
+          const appSessionManager = await import("../session/AppSessionManager");
+          await appSessionManager.transition({
+            mode: "event",
+            path: `event/${item.eventId}`,
+            inviteId: null,
+            snapshotId: null,
+            eventId: item.eventId,
+            autojoin: false,
+          });
+        } catch {}
+        if (pendingNavigationOpenedEventModalRequestSeqRef.current === requestSeq) {
+          pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
+          pendingNavigationOpenedEventModalRequestSeqRef.current += 1;
+        }
       })();
       return;
     }
+    pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
+    pendingNavigationOpenedEventModalRequestSeqRef.current += 1;
+    setIsNavigationPopupVisible(false);
     const inviteId = item.inviteId;
     if (options?.status === "pending") {
       clearPendingDelayedCancelAutomatchIntent();
