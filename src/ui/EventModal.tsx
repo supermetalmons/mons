@@ -8,7 +8,7 @@ import { emojis } from "../content/emojis";
 import { storage } from "../utils/storage";
 import { openProfileSignInPopup } from "./ProfileSignIn";
 import { getCurrentRouteState } from "../navigation/routeState";
-import { didNotDismissAnythingWithOutsideTapJustNow } from "./BottomControls";
+import { didDismissSomethingWithOutsideTapJustNow, didNotDismissAnythingWithOutsideTapJustNow } from "./BottomControls";
 import { showShinyCard, showsShinyCardSomewhere } from "./ShinyCard";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 
@@ -613,6 +613,7 @@ const EventModal: React.FC = () => {
       if (shouldKeepVisibleForOutsideDismiss) {
         return;
       }
+      didDismissSomethingWithOutsideTapJustNow();
       void closeEventModal();
     },
     []

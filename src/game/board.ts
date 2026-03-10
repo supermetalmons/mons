@@ -22,6 +22,7 @@ import { soundPlayer } from "../utils/SoundPlayer";
 import type { MaterialName } from "../services/rocksMiningService";
 import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
 import { getCurrentRouteState } from "../navigation/routeState";
+import { hasEventModalVisible } from "../ui/eventModalController";
 
 let isExperimentingWithSprites = storage.getIsExperimentingWithSprites(false);
 const valentinesLoaderEnabled = false;
@@ -3610,7 +3611,14 @@ export function setupBoard() {
   initializeBoardElements();
   const skipLayerRecreation = shouldPreserveAnimation && !!itemsLayer?.querySelector(".board-rect");
   boardInputHandler = (event: Event) => {
-    const hasVisiblePopups = hasIslandOverlayVisible() || hasMainMenuPopupsVisible() || hasBottomPopupsVisible() || hasProfilePopupVisible() || hasNavigationPopupVisible() || showsShinyCardSomewhere;
+    const hasVisiblePopups =
+      hasIslandOverlayVisible() ||
+      hasMainMenuPopupsVisible() ||
+      hasBottomPopupsVisible() ||
+      hasProfilePopupVisible() ||
+      hasNavigationPopupVisible() ||
+      hasEventModalVisible() ||
+      showsShinyCardSomewhere;
     const didDismissSmth = !didNotDismissAnythingWithOutsideTapJustNow();
     if (didDismissSmth || hasVisiblePopups) {
       if (!hasVisiblePopups && didDismissSmth) {
