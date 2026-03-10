@@ -137,6 +137,7 @@ const historicalMatchPairCache = new Map<string, HistoricalMatchPair | null>();
 const historicalScoreCache = new Map<string, { white: number; black: number }>();
 const historicalMatchPairMissUntilByMatchId = new Map<string, number>();
 const historicalMatchPairMissCooldownMs = 3000;
+const historicalMatchPairRetryDelayMs = 250;
 let rematchScorePrefetchPromise: Promise<boolean> | null = null;
 let rematchScorePrefetchSignature = "";
 let localRematchSeriesIdSeed = 1;
@@ -998,6 +999,14 @@ function getReconstructedGameFromPair(matchId: string, pair: HistoricalMatchPair
   return buildGameFromMoveStreams(whiteMoves, blackMoves);
 }
 
+function moveHistoryEntitiesCount(gameModel: MonsWeb.MonsGameModel): number {
+  try {
+    return gameModel.verbose_tracking_entities().length;
+  } catch {
+    return 0;
+  }
+}
+
 function getBestHistoricalGameModel(matchId: string, pair: HistoricalMatchPair): MonsWeb.MonsGameModel | null {
   const preferredMatch = getPreferredMatchFromHistoricalPair(pair);
   if (preferredMatch) {
@@ -1044,17 +1053,21 @@ function cacheHistoricalScore(matchId: string, pair: HistoricalMatchPair): boole
   return true;
 }
 
-async function ensureHistoricalMatchPair(matchId: string): Promise<HistoricalMatchPair | null> {
-  if (historicalMatchPairCache.has(matchId)) {
-    return historicalMatchPairCache.get(matchId) ?? null;
+async function ensureHistoricalMatchPair(matchId: string, options?: { forceRefresh?: boolean }): Promise<HistoricalMatchPair | null> {
+  const forceRefresh = options?.forceRefresh === true;
+  const cachedPair = historicalMatchPairCache.get(matchId) ?? null;
+  if (!forceRefresh && historicalMatchPairCache.has(matchId)) {
+    return cachedPair;
   }
-  const now = Date.now();
-  const missUntil = historicalMatchPairMissUntilByMatchId.get(matchId);
-  if (missUntil !== undefined) {
-    if (missUntil > now) {
-      return null;
+  if (!forceRefresh) {
+    const now = Date.now();
+    const missUntil = historicalMatchPairMissUntilByMatchId.get(matchId);
+    if (missUntil !== undefined) {
+      if (missUntil > now) {
+        return null;
+      }
+      historicalMatchPairMissUntilByMatchId.delete(matchId);
     }
-    historicalMatchPairMissUntilByMatchId.delete(matchId);
   }
   let pair: HistoricalMatchPair | null = null;
   try {
@@ -1066,10 +1079,13 @@ async function ensureHistoricalMatchPair(matchId: string): Promise<HistoricalMat
     historicalMatchPairCache.set(matchId, pair);
     historicalMatchPairMissUntilByMatchId.delete(matchId);
     cacheHistoricalScore(matchId, pair);
-  } else {
-    historicalMatchPairMissUntilByMatchId.set(matchId, Date.now() + historicalMatchPairMissCooldownMs);
+    return pair;
   }
-  return pair;
+  historicalMatchPairMissUntilByMatchId.set(matchId, Date.now() + historicalMatchPairMissCooldownMs);
+  if (!forceRefresh) {
+    return null;
+  }
+  return historicalMatchPairCache.get(matchId) ?? null;
 }
 
 function getMatchMovesByColor(matchId: string, pair: HistoricalMatchPair): { whiteMoves: string | null; blackMoves: string | null } {
@@ -1110,6 +1126,44 @@ function getMatchMovesByColor(matchId: string, pair: HistoricalMatchPair): { whi
     whiteMoves,
     blackMoves,
   };
+}
+
+function countRecordedMovesInHistoricalPair(matchId: string, pair: HistoricalMatchPair): number {
+  const { whiteMoves, blackMoves } = getMatchMovesByColor(matchId, pair);
+  return movesArrayFromFlatString(whiteMoves).length + movesArrayFromFlatString(blackMoves).length;
+}
+
+function hasSuspiciouslyShortHistoricalMoveHistory(
+  matchId: string,
+  pair: HistoricalMatchPair,
+  historicalGame: MonsWeb.MonsGameModel,
+): boolean {
+  const historyEntitiesCount = moveHistoryEntitiesCount(historicalGame);
+  if (historyEntitiesCount > 1) {
+    return false;
+  }
+  const recordedMovesCount = countRecordedMovesInHistoricalPair(matchId, pair);
+  return recordedMovesCount > historyEntitiesCount;
+}
+
+function shouldPreferRefreshedHistoricalData(
+  matchId: string,
+  currentPair: HistoricalMatchPair,
+  currentHistoricalGame: MonsWeb.MonsGameModel,
+  refreshedPair: HistoricalMatchPair,
+  refreshedHistoricalGame: MonsWeb.MonsGameModel,
+): boolean {
+  const currentHistoryEntitiesCount = moveHistoryEntitiesCount(currentHistoricalGame);
+  const refreshedHistoryEntitiesCount = moveHistoryEntitiesCount(refreshedHistoricalGame);
+  if (refreshedHistoryEntitiesCount !== currentHistoryEntitiesCount) {
+    return refreshedHistoryEntitiesCount > currentHistoryEntitiesCount;
+  }
+  const currentTurnNumber = currentHistoricalGame.turn_number();
+  const refreshedTurnNumber = refreshedHistoricalGame.turn_number();
+  if (refreshedTurnNumber !== currentTurnNumber) {
+    return refreshedTurnNumber > currentTurnNumber;
+  }
+  return countRecordedMovesInHistoricalPair(matchId, refreshedPair) > countRecordedMovesInHistoricalPair(matchId, currentPair);
 }
 
 function buildHistoricalGameModel(matchId: string, pair: HistoricalMatchPair): MonsWeb.MonsGameModel | null {
@@ -1379,14 +1433,45 @@ export async function didSelectRematchSeriesMatch(matchId: string): Promise<bool
     Board.setBoardFlipped(activeBoardShouldBeFlipped());
   }
   if (isOnlineGame) {
-    const pair = await ensureHistoricalMatchPair(matchId);
+    const hadRecentMissBeforeLookup = (historicalMatchPairMissUntilByMatchId.get(matchId) ?? 0) > Date.now();
+    let pair = await ensureHistoricalMatchPair(matchId);
+    if (!pair && !hadRecentMissBeforeLookup) {
+      if (requestToken !== viewedRematchRequestToken || !isBoardRenderSessionActive(renderSessionId)) {
+        return false;
+      }
+      pair = await ensureHistoricalMatchPair(matchId, { forceRefresh: true });
+    }
     if (requestToken !== viewedRematchRequestToken || !isBoardRenderSessionActive(renderSessionId) || !pair) {
       return false;
     }
-    const historicalGame = buildHistoricalGameModel(matchId, pair);
+    let historicalGame = buildHistoricalGameModel(matchId, pair);
     if (!historicalGame || !isBoardRenderSessionActive(renderSessionId)) {
       return false;
     }
+
+    if (hasSuspiciouslyShortHistoricalMoveHistory(matchId, pair, historicalGame)) {
+      await new Promise<void>((resolve) => {
+        window.setTimeout(resolve, historicalMatchPairRetryDelayMs);
+      });
+      if (requestToken !== viewedRematchRequestToken || !isBoardRenderSessionActive(renderSessionId)) {
+        return false;
+      }
+      const refreshedPair = await ensureHistoricalMatchPair(matchId, { forceRefresh: true });
+      if (requestToken !== viewedRematchRequestToken || !isBoardRenderSessionActive(renderSessionId)) {
+        return false;
+      }
+      if (refreshedPair) {
+        const refreshedHistoricalGame = buildHistoricalGameModel(matchId, refreshedPair);
+        if (
+          refreshedHistoricalGame &&
+          shouldPreferRefreshedHistoricalData(matchId, pair, historicalGame, refreshedPair, refreshedHistoricalGame)
+        ) {
+          pair = refreshedPair;
+          historicalGame = refreshedHistoricalGame;
+        }
+      }
+    }
+
     return enterHistoricalView(matchId, pair, historicalGame, renderSessionId);
   }
   const localSnapshot = getLocalRematchSnapshot(matchId);
@@ -3139,6 +3224,9 @@ function verifyMovesIfNeeded(matchId: string, flatMovesString: string, color: st
       whiteFlatMovesString = null;
       blackFlatMovesString = null;
       showMoveHistoryButton(true);
+      if (isMoveHistoryPopupOpen && boardViewMode !== "historicalView") {
+        triggerMoveHistoryPopupReload();
+      }
     }
   }
 }
