@@ -283,11 +283,6 @@ const MatchPlayerName = styled.div<{ $bold?: boolean }>`
   }
 `;
 
-const MatchMeta = styled.div`
-  font-size: 0.7rem;
-  color: var(--navigationTextMuted);
-`;
-
 const InlineError = styled.div`
   padding: 8px 10px;
   border-radius: 8px;
@@ -791,7 +786,6 @@ const EventModal: React.FC = () => {
                               <EventAvatar emojiId={match.guestEmojiId} displayName={match.guestDisplayName} />
                               <MatchPlayerName $bold={match.winnerProfileId === match.guestProfileId}>{match.guestDisplayName || "anon"}</MatchPlayerName>
                             </MatchPlayerLine>
-                            {isPlayable && <MatchMeta>your match</MatchMeta>}
                           </MatchButton>
                         );
                       })}
