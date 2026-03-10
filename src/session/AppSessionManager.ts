@@ -51,6 +51,10 @@ const routeStatesMatch = (a: RouteState, b: RouteState) => {
   return a.mode === b.mode && a.path === b.path && a.inviteId === b.inviteId && a.snapshotId === b.snapshotId && a.eventId === b.eventId && a.autojoin === b.autojoin;
 };
 
+const isLobbyRoute = (target: RouteState): boolean => {
+  return target.mode === "home" || target.mode === "event";
+};
+
 const mergeQueuedTransitionOptions = (existing?: TransitionOptions, incoming?: TransitionOptions): TransitionOptions | undefined => {
   const merged: TransitionOptions = {};
   if (incoming?.replace !== undefined) {
@@ -112,6 +116,17 @@ const bootstrapForRoute = async (target: RouteState) => {
   mainGameLoadState.markMainGameLoaded();
 };
 
+const syncEventModalForLobbyTarget = async (target: RouteState) => {
+  const eventModalController = await import("../ui/eventModalController");
+  if (target.mode === "event" && target.eventId) {
+    eventModalController.openEventModal(target.eventId, { restoreHomeOnClose: true });
+    return;
+  }
+  if (eventModalController.hasEventModalVisible()) {
+    await eventModalController.closeEventModal({ skipHomeTransition: true, reason: "route_change" });
+  }
+};
+
 const runTransition = async (target: RouteState, options?: TransitionOptions) => {
   if (isTransitioning) {
     return new Promise<void>((resolve) => {
@@ -128,7 +143,36 @@ const runTransition = async (target: RouteState, options?: TransitionOptions) =>
   if (!options?.force && routeStatesMatch(from, target)) {
     return;
   }
+  const shouldUseLightweightLobbyTransition = !options?.force && !options?.resetProfileScope && isLobbyRoute(from) && isLobbyRoute(target);
   isTransitioning = true;
+  if (shouldUseLightweightLobbyTransition) {
+    try {
+      if (!options?.skipNavigation) {
+        applyPathForTarget(target, options?.replace === true);
+      }
+      await syncEventModalForLobbyTarget(target);
+      currentTarget = target;
+      logTransition(from, target);
+    } catch (error) {
+      currentTarget = getCurrentRouteState();
+      console.error("session-transition-light-failed", {
+        from: from.path,
+        to: target.path,
+        error,
+      });
+    } finally {
+      isTransitioning = false;
+    }
+    const queuedRequest = pendingTransitionRequest;
+    pendingTransitionRequest = null;
+    if (queuedRequest) {
+      if (queuedRequest.options?.force || !routeStatesMatch(queuedRequest.target, currentTarget)) {
+        await runTransition(queuedRequest.target, queuedRequest.options);
+      }
+      queuedRequest.waiters.forEach((resolve) => resolve());
+    }
+    return;
+  }
   incrementSessionEpoch();
   try {
     const lifecycleManager = await import("../lifecycle/lifecycleManager");
