@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import styled from "styled-components";
-import { FaCheck, FaCopy, FaTimes } from "react-icons/fa";
+import { FaCheck, FaLink, FaTimes } from "react-icons/fa";
 import { connection } from "../connection/connection";
 import { EventMatch, EventParticipant, EventRecord, EventRound } from "../connection/connectionModels";
 import { closeEventModal, EVENT_MODAL_Z_INDEX, getEventModalState, subscribeToEventModalState } from "./eventModalController";
@@ -90,11 +90,19 @@ const HeaderIconButton = styled.button`
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  line-height: 0;
   background: var(--color-gray-f0);
   color: var(--color-gray-33);
   cursor: pointer;
   transition: background-color 0.2s ease;
   -webkit-tap-highlight-color: transparent;
+
+  svg {
+    width: 14px;
+    height: 14px;
+    overflow: visible;
+    flex-shrink: 0;
+  }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -730,7 +738,7 @@ const EventModal: React.FC = () => {
             </HeaderText>
             <HeaderButtons>
               <HeaderIconButton type="button" onClick={handleCopyClick} aria-label="Copy event link">
-                {copyState === "copied" ? <FaCheck /> : <FaCopy />}
+                {copyState === "copied" ? <FaCheck /> : <FaLink />}
               </HeaderIconButton>
               <HeaderIconButton type="button" onClick={() => void closeEventModal()} aria-label="Close event">
                 <FaTimes />
