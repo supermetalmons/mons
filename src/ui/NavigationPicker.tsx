@@ -29,7 +29,7 @@ const NavigationPickerContainer = styled.div`
   right: 8px;
   height: 480px;
   max-height: calc(100dvh - 120px - env(safe-area-inset-bottom));
-  max-width: 168pt;
+  width: 148pt;
   display: flex;
   flex-direction: column;
   background-color: var(--panel-light-90);
