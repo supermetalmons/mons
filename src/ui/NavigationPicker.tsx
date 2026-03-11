@@ -160,27 +160,30 @@ const FightCloudWrapper = styled.div`
 
 const FightCloudSvg = styled.svg`
   position: absolute;
-  top: -2px;
-  left: -6px;
-  width: calc(100% + 12px);
-  height: calc(100% + 4px);
+  top: -4px;
+  left: -8px;
+  width: calc(100% + 16px);
+  height: calc(100% + 8px);
   pointer-events: none;
 
   .fc-body {
-    fill: rgba(155, 170, 190, 0.14);
+    fill: rgba(155, 170, 190, 0.24);
+    stroke: rgba(155, 170, 190, 0.18);
+    stroke-width: 0.8;
   }
 
   .fc-star {
-    fill: rgba(155, 170, 190, 0.35);
+    fill: rgba(155, 170, 190, 0.50);
   }
 
   @media (prefers-color-scheme: dark) {
     .fc-body {
-      fill: rgba(190, 210, 235, 0.09);
+      fill: rgba(190, 210, 235, 0.16);
+      stroke: rgba(190, 210, 235, 0.12);
     }
 
     .fc-star {
-      fill: rgba(190, 210, 235, 0.22);
+      fill: rgba(190, 210, 235, 0.38);
     }
   }
 `;
@@ -351,10 +354,11 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
 const FightCloudBackground = React.memo(() => (
   <FightCloudSvg viewBox="0 0 100 36" preserveAspectRatio="none" aria-hidden="true">
     <path className="fc-body" d="M10,18 C8,12 12,6 20,8 C24,2 32,4 38,8 C44,2 52,3 58,8 C64,2 74,4 80,9 C88,5 97,11 94,18 C98,25 90,33 82,29 C76,34 66,33 58,29 C52,34 42,33 36,29 C28,34 18,32 14,26 C6,30 3,23 10,18Z" />
-    <path className="fc-star" d="M4,4.5 L4.88,6.12 L6.5,7 L4.88,7.88 L4,9.5 L3.12,7.88 L1.5,7 L3.12,6.12Z" />
-    <path className="fc-star" d="M96,6 L96.7,7.3 L98,8 L96.7,8.7 L96,10 L95.3,8.7 L94,8 L95.3,7.3Z" />
-    <path className="fc-star" d="M50,0.2 L50.63,1.37 L51.8,2 L50.63,2.63 L50,3.8 L49.37,2.63 L48.2,2 L49.37,1.37Z" />
-    <path className="fc-star" d="M90,29 L90.7,30.3 L92,31 L90.7,31.7 L90,33 L89.3,31.7 L88,31 L89.3,30.3Z" />
+    <path className="fc-star" d="M4,3.5 L5.22,5.78 L7.5,7 L5.22,8.22 L4,10.5 L2.78,8.22 L0.5,7 L2.78,5.78Z" />
+    <path className="fc-star" d="M96,5 L97.05,6.95 L99,8 L97.05,9.05 L96,11 L94.95,9.05 L93,8 L94.95,6.95Z" />
+    <path className="fc-star" d="M50,-0.5 L50.88,1.12 L52.5,2 L50.88,2.88 L50,4.5 L49.12,2.88 L47.5,2 L49.12,1.12Z" />
+    <path className="fc-star" d="M90,28.2 L90.98,30.02 L92.8,31 L90.98,31.98 L90,33.8 L89.02,31.98 L87.2,31 L89.02,30.02Z" />
+    <path className="fc-star" d="M14,27.8 L14.77,29.23 L16.2,30 L14.77,30.77 L14,32.2 L13.23,30.77 L11.8,30 L13.23,29.23Z" />
   </FightCloudSvg>
 ));
 
