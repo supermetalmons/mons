@@ -146,6 +146,38 @@ const GameRow = styled(NavigationPickerButton)<{
   padding-right: ${(props) => (props.$hasTrailingAction ? "32px" : "12px")};
 `;
 
+const EventRow = styled(GameRow)`
+  && {
+    background: transparent;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &&:hover {
+      background-color: transparent;
+    }
+  }
+
+  &&:active {
+    background-color: transparent;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    && {
+      background: transparent;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &&:hover {
+        background-color: transparent;
+      }
+    }
+
+    &&:active {
+      background-color: transparent;
+    }
+  }
+`;
+
 const GameRowContainer = styled.div`
   position: relative;
   width: 100%;
@@ -235,19 +267,133 @@ const CloudShape = styled.path`
   stroke: currentColor;
   stroke-opacity: 0.09;
   stroke-width: 0.6;
+  transition: fill-opacity 0.12s, stroke-opacity 0.12s, fill 0.12s, stroke 0.12s;
+
+  @media (hover: hover) and (pointer: fine) {
+    button:hover & {
+      fill-opacity: 0.10;
+      stroke-opacity: 0.15;
+    }
+  }
+
+  button:active & {
+    fill-opacity: 0.14;
+    stroke-opacity: 0.19;
+  }
+
+  button[data-navigation-active="true"] & {
+    fill: rgba(117, 187, 255, 1);
+    fill-opacity: 0.22;
+    stroke: rgba(117, 187, 255, 1);
+    stroke-opacity: 0.30;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    button[data-navigation-active="true"]:hover & {
+      fill-opacity: 0.28;
+      stroke-opacity: 0.36;
+    }
+  }
+
+  button[data-navigation-active="true"]:active & {
+    fill-opacity: 0.34;
+    stroke-opacity: 0.42;
+  }
 
   @media (prefers-color-scheme: dark) {
     fill-opacity: 0.07;
     stroke-opacity: 0.12;
+
+    @media (hover: hover) and (pointer: fine) {
+      button:hover & {
+        fill-opacity: 0.12;
+        stroke-opacity: 0.17;
+      }
+    }
+
+    button:active & {
+      fill-opacity: 0.16;
+      stroke-opacity: 0.21;
+    }
+
+    button[data-navigation-active="true"] & {
+      fill: rgba(75, 150, 255, 1);
+      fill-opacity: 0.24;
+      stroke: rgba(75, 150, 255, 1);
+      stroke-opacity: 0.32;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      button[data-navigation-active="true"]:hover & {
+        fill-opacity: 0.30;
+        stroke-opacity: 0.38;
+      }
+    }
+
+    button[data-navigation-active="true"]:active & {
+      fill-opacity: 0.36;
+      stroke-opacity: 0.44;
+    }
   }
 `;
 
 const SparkleShape = styled.path`
   fill: currentColor;
   fill-opacity: 0.14;
+  transition: fill-opacity 0.12s, fill 0.12s;
+
+  @media (hover: hover) and (pointer: fine) {
+    button:hover & {
+      fill-opacity: 0.20;
+    }
+  }
+
+  button:active & {
+    fill-opacity: 0.24;
+  }
+
+  button[data-navigation-active="true"] & {
+    fill: rgba(117, 187, 255, 1);
+    fill-opacity: 0.40;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    button[data-navigation-active="true"]:hover & {
+      fill-opacity: 0.48;
+    }
+  }
+
+  button[data-navigation-active="true"]:active & {
+    fill-opacity: 0.55;
+  }
 
   @media (prefers-color-scheme: dark) {
     fill-opacity: 0.18;
+
+    @media (hover: hover) and (pointer: fine) {
+      button:hover & {
+        fill-opacity: 0.24;
+      }
+    }
+
+    button:active & {
+      fill-opacity: 0.28;
+    }
+
+    button[data-navigation-active="true"] & {
+      fill: rgba(75, 150, 255, 1);
+      fill-opacity: 0.42;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      button[data-navigation-active="true"]:hover & {
+        fill-opacity: 0.50;
+      }
+    }
+
+    button[data-navigation-active="true"]:active & {
+      fill-opacity: 0.58;
+    }
   }
 `;
 
@@ -850,9 +996,10 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
             onRemoveGame?.(game.inviteId);
           }
         };
+        const Row = event ? EventRow : GameRow;
         return (
           <GameRowContainer key={item.id}>
-            <GameRow
+            <Row
               $isSelected={isSelected}
               $hasTrailingAction={canRemove}
               data-navigation-active={isActiveItem ? "true" : undefined}
@@ -916,7 +1063,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                   )}
                 </>
               ) : null}
-            </GameRow>
+            </Row>
             {canRemove && (
               <GameRemoveButton
                 type="button"
