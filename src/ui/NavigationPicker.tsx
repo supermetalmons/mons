@@ -254,6 +254,29 @@ const EventAvatarImage = styled(GameEmojiImage)``;
 const EventAvatarPlaceholder = styled(GameEmojiPlaceholder)`
   background: transparent;
 `;
+const EventAvatarQuestionSlot = styled(EventAvatarPlaceholder)`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-left: 2px;
+  border-radius: 999px;
+  background: rgba(120, 120, 120, 0.18);
+  color: rgba(74, 74, 74, 0.58);
+
+  &::before {
+    content: "+";
+    font-size: 10px;
+    font-weight: 500;
+    line-height: 1;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(220, 220, 220, 0.56);
+  }
+`;
 
 const FightCloudCanvas = styled.svg`
   position: absolute;
@@ -875,10 +898,15 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     const showBadge = normalizedParticipantCount > 6;
     const maxVisible = showBadge ? 5 : 6;
     const participantSlots = Math.min(normalizedParticipantCount, maxVisible);
+    const shouldShowUnknownOpponentSlot =
+      event.status === "waiting" && normalizedParticipantCount === 1;
+    const renderedParticipantSlots = shouldShowUnknownOpponentSlot
+      ? Math.max(2, participantSlots)
+      : participantSlots;
     const preview = event.participantPreview.slice(0, participantSlots);
     const overflow = Math.max(0, normalizedParticipantCount - participantSlots);
     const hasBadge = overflow > 0;
-    const itemCount = participantSlots + (hasBadge ? 1 : 0);
+    const itemCount = renderedParticipantSlots + (hasBadge ? 1 : 0);
 
     if (itemCount === 0) return null;
 
@@ -898,7 +926,12 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
           <SparkleShape d={sparkles} />
         </FightCloudCanvas>
         <FightCloudInner>
-          {Array.from({ length: participantSlots }, (_, index) => {
+          {Array.from({ length: renderedParticipantSlots }, (_, index) => {
+            if (shouldShowUnknownOpponentSlot && index === participantSlots) {
+              return (
+                <EventAvatarQuestionSlot key={`slot_${index}`} aria-hidden="true" />
+              );
+            }
             const participant = preview[index];
             if (!participant) {
               return (
