@@ -101,6 +101,8 @@ import {
   rocksMiningService,
 } from "../services/rocksMiningService";
 import {
+  EventNavigationPreviewParticipant,
+  EventRecord,
   MatchWagerState,
   NavigationGameItem,
   NavigationGameStatus,
@@ -763,6 +765,51 @@ function buildEventCloudPath(): string {
 
 const EVENT_CLOUD_PATH = buildEventCloudPath();
 
+const mapEventRecordToNavigationPreview = (
+  eventRecord: EventRecord | null,
+): EventNavigationPreviewParticipant[] => {
+  if (!eventRecord) {
+    return [];
+  }
+  return Object.values(eventRecord.participants)
+    .sort((left, right) => left.joinedAtMs - right.joinedAtMs)
+    .map((participant) => {
+      const displayName = participant.displayName?.trim();
+      const username = participant.username?.trim();
+      const emojiId = Number.isFinite(participant.emojiId)
+        ? Math.trunc(participant.emojiId)
+        : NaN;
+      return {
+        profileId: participant.profileId?.trim() || null,
+        displayName: displayName || username || null,
+        emojiId: Number.isFinite(emojiId) && emojiId > 0 ? emojiId : null,
+        aura: participant.aura?.trim() || null,
+      };
+    });
+};
+
+const areEventPreviewParticipantsEqual = (
+  left: EventNavigationPreviewParticipant[],
+  right: EventNavigationPreviewParticipant[],
+): boolean => {
+  if (left.length !== right.length) {
+    return false;
+  }
+  for (let index = 0; index < left.length; index += 1) {
+    const leftParticipant = left[index];
+    const rightParticipant = right[index];
+    if (
+      leftParticipant.profileId !== rightParticipant.profileId ||
+      leftParticipant.displayName !== rightParticipant.displayName ||
+      leftParticipant.emojiId !== rightParticipant.emojiId ||
+      leftParticipant.aura !== rightParticipant.aura
+    ) {
+      return false;
+    }
+  }
+  return true;
+};
+
 const BottomControls: React.FC = () => {
   const [isEndMatchButtonVisible, setIsEndMatchButtonVisible] = useState(false);
   const [isEndMatchConfirmed, setIsEndMatchConfirmed] = useState(false);
@@ -812,6 +859,9 @@ const BottomControls: React.FC = () => {
     useState(false);
   const [navigationRemovingInviteIds, setNavigationRemovingInviteIds] =
     useState<Set<string>>(new Set());
+  const [liveEventCloudAvatars, setLiveEventCloudAvatars] = useState<
+    EventNavigationPreviewParticipant[]
+  >([]);
   const initialEventModalState = getEventModalState();
   const pendingNavigationOpenedEventModalRequestedAtMsRef = useRef(0);
   const pendingNavigationOpenedEventModalRequestSeqRef = useRef(0);
@@ -910,6 +960,7 @@ const BottomControls: React.FC = () => {
   const navigationHasPagedGamesRef = useRef(false);
   const navigationLoadMoreInFlightRef = useRef(false);
   const topNavigationItemIdsRef = useRef<Set<string>>(new Set());
+  const eventCloudSubscriptionEventIdRef = useRef<string | null>(null);
   const navigationCacheScopeRef = useRef<NavigationGamesCacheScope | null>(
     null,
   );
@@ -3074,16 +3125,74 @@ const BottomControls: React.FC = () => {
     connection.isCurrentInviteEventOwned() &&
     !!currentInviteEventId;
 
+  useEffect(() => {
+    if (!isEventGameButtonVisible || !currentInviteEventId) {
+      eventCloudSubscriptionEventIdRef.current = null;
+      setLiveEventCloudAvatars([]);
+      return;
+    }
+    if (eventCloudSubscriptionEventIdRef.current !== currentInviteEventId) {
+      eventCloudSubscriptionEventIdRef.current = currentInviteEventId;
+      setLiveEventCloudAvatars([]);
+    }
+    let disposed = false;
+
+    const unsubscribe = connection.subscribeToEvent(
+      currentInviteEventId,
+      (eventRecord) => {
+        if (disposed) {
+          return;
+        }
+        const nextAvatars = mapEventRecordToNavigationPreview(eventRecord).slice(
+          0,
+          6,
+        );
+        setLiveEventCloudAvatars((previousAvatars) =>
+          areEventPreviewParticipantsEqual(previousAvatars, nextAvatars)
+            ? previousAvatars
+            : nextAvatars,
+        );
+      },
+    );
+
+    void connection.syncEventState(currentInviteEventId).catch(() => {});
+
+    return () => {
+      disposed = true;
+      unsubscribe();
+    };
+  }, [currentInviteEventId, isEventGameButtonVisible]);
+
   const eventCloudAvatars = useMemo(() => {
     if (!currentInviteEventId) return [];
+    const liveFallback = liveEventCloudAvatars.slice(0, 6);
+    if (liveFallback.length > 0) {
+      return liveFallback;
+    }
     const eventNavId = `event_${currentInviteEventId}`;
     const all = [...topNavigationGames, ...pagedNavigationGames];
-    const eventItem = all.find(
+    let eventItem = all.find(
       (item) => item.entityType === "event" && item.id === eventNavId,
     );
-    if (!eventItem || eventItem.entityType !== "event") return [];
+    if (!eventItem || eventItem.entityType !== "event") {
+      const cacheScope = resolveNavigationGamesCacheScope(
+        storage.getProfileId(""),
+        storage.getLoginId(""),
+      );
+      const cached = readNavigationGamesCacheSnapshot(cacheScope);
+      const cachedAll = [...cached.topGames, ...cached.pagedGames];
+      eventItem = cachedAll.find(
+        (item) => item.entityType === "event" && item.id === eventNavId,
+      );
+    }
+    if (!eventItem || eventItem.entityType !== "event") return liveFallback;
     return eventItem.participantPreview.slice(0, 6);
-  }, [currentInviteEventId, topNavigationGames, pagedNavigationGames]);
+  }, [
+    currentInviteEventId,
+    liveEventCloudAvatars,
+    topNavigationGames,
+    pagedNavigationGames,
+  ]);
 
   return (
     <>
