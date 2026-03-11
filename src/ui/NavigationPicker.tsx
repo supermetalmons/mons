@@ -447,7 +447,7 @@ const GameRemoveButton = styled.button<{ $isDisabled?: boolean }>`
 `;
 
 const CompletedIcon = styled(FaCheck)`
-  color: var(--completedPuzzleIconColor);
+  color: var(--navigationTextMuted);
   font-size: 0.5rem;
   margin-left: auto;
   flex-shrink: 0;
