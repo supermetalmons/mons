@@ -209,11 +209,49 @@ const GameText = styled.span`
   text-overflow: ellipsis;
 `;
 
-const EventAvatarStack = styled.div`
+const FightCloudWrap = styled.div`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 3px;
+`;
+
+const FightCloudSvg = styled.svg`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  overflow: visible;
+`;
+
+const FightCloudBody = styled.g`
+  fill: #000;
+  opacity: 0.055;
+
+  @media (prefers-color-scheme: dark) {
+    fill: #fff;
+    opacity: 0.08;
+  }
+`;
+
+const FightCloudStars = styled.g`
+  fill: #000;
+  opacity: 0.12;
+
+  @media (prefers-color-scheme: dark) {
+    fill: #fff;
+    opacity: 0.17;
+  }
+`;
+
+const FightCloudContent = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   gap: 1px;
-  flex-shrink: 0;
+  z-index: 1;
 `;
 
 const EventAvatarImage = styled(GameEmojiImage)``;
@@ -398,6 +436,66 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
     }
   }
 `;
+
+function fightCloudStarPath(cx: number, cy: number, s: number): string {
+  const i = s * 0.22;
+  return `M${cx},${cy - s}L${cx + i},${cy - i}L${cx + s},${cy}L${cx + i},${cy + i}L${cx},${cy + s}L${cx - i},${cy + i}L${cx - s},${cy}L${cx - i},${cy - i}Z`;
+}
+
+interface FightCloudLayout {
+  cloudW: number;
+  cloudH: number;
+  circles: Array<{ cx: number; cy: number; r: number }>;
+  stars: string[];
+}
+
+function computeFightCloudLayout(
+  visibleCount: number,
+  showBadge: boolean,
+): FightCloudLayout {
+  const contentW = visibleCount * 21 - 1 + (showBadge ? 20 : 0);
+  const padX = 8;
+  const cloudW = contentW + padX * 2;
+  const cloudH = 30;
+  const midY = cloudH / 2;
+  const bumpR = 8;
+  const spacing = bumpR * 1.2;
+  const minCx = bumpR;
+  const maxCx = cloudW - bumpR;
+  const span = maxCx - minCx;
+  const count = Math.max(3, Math.round(span / spacing) + 1);
+  const step = count > 1 ? span / (count - 1) : 0;
+
+  const circles: FightCloudLayout["circles"] = [];
+  for (let idx = 0; idx < count; idx++) {
+    circles.push({
+      cx: minCx + idx * step,
+      cy: midY + (idx % 2 === 0 ? -2.5 : 2.5),
+      r: bumpR + (idx % 3 === 0 ? 1.2 : idx % 3 === 1 ? -0.4 : 0.4),
+    });
+  }
+
+  circles.push({ cx: 3.5, cy: midY - 3, r: 4.5 });
+  circles.push({ cx: cloudW - 3.5, cy: midY + 3, r: 4.5 });
+
+  if (cloudW > 60) {
+    circles.push({ cx: cloudW * 0.3, cy: 3, r: 4 });
+    circles.push({ cx: cloudW * 0.7, cy: cloudH - 3, r: 3.5 });
+  }
+
+  const stars: string[] = [];
+  stars.push(fightCloudStarPath(4, 5, 3));
+  stars.push(fightCloudStarPath(cloudW - 4, cloudH - 5, 2.8));
+  if (cloudW > 50) {
+    stars.push(fightCloudStarPath(cloudW - 7, 4.5, 2.5));
+  }
+  if (cloudW > 90) {
+    stars.push(fightCloudStarPath(cloudW * 0.48, 2, 2.2));
+    stars.push(fightCloudStarPath(cloudW * 0.32, cloudH - 2, 2));
+  }
+
+  return { cloudW, cloudH, circles, stars };
+}
 
 const MIN_AUTO_LOAD_NEXT_PAGE_THRESHOLD_PX = 640;
 const MIN_REASONABLE_EPOCH_MS = Date.UTC(2000, 0, 1);
@@ -675,19 +773,40 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     const maxVisible = showBadge ? 5 : 6;
     const preview = validParticipants.slice(0, maxVisible);
     const overflow = event.participantCount - preview.length;
+    const hasBadge = showBadge && overflow > 0;
+    const cloud = computeFightCloudLayout(preview.length, hasBadge);
     return (
-      <EventAvatarStack>
-        {preview.map((participant, index) => (
-          <EventAvatarImage
-            key={`${participant.profileId ?? participant.displayName ?? "participant"}_${index}`}
-            src={emojis.getEmojiUrl(participant.emojiId!.toString())}
-            alt=""
-          />
-        ))}
-        {showBadge && overflow > 0 && (
-          <EventOverflowBadge>+{overflow}</EventOverflowBadge>
-        )}
-      </EventAvatarStack>
+      <FightCloudWrap>
+        <FightCloudSvg
+          width={cloud.cloudW}
+          height={cloud.cloudH}
+          viewBox={`0 0 ${cloud.cloudW} ${cloud.cloudH}`}
+          aria-hidden="true"
+        >
+          <FightCloudBody>
+            {cloud.circles.map((c, i) => (
+              <circle key={i} cx={c.cx} cy={c.cy} r={c.r} />
+            ))}
+          </FightCloudBody>
+          <FightCloudStars>
+            {cloud.stars.map((d, i) => (
+              <path key={i} d={d} />
+            ))}
+          </FightCloudStars>
+        </FightCloudSvg>
+        <FightCloudContent>
+          {preview.map((participant, index) => (
+            <EventAvatarImage
+              key={`${participant.profileId ?? participant.displayName ?? "participant"}_${index}`}
+              src={emojis.getEmojiUrl(participant.emojiId!.toString())}
+              alt=""
+            />
+          ))}
+          {hasBadge && (
+            <EventOverflowBadge>+{overflow}</EventOverflowBadge>
+          )}
+        </FightCloudContent>
+      </FightCloudWrap>
     );
   };
 
