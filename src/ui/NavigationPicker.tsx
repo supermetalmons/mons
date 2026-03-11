@@ -116,14 +116,14 @@ const NavigationPickerButton = styled.button<{ $isSelected?: boolean }>`
   }
 `;
 
-const GameRow = styled(NavigationPickerButton)`
-  flex: 1;
+const GameRow = styled(NavigationPickerButton)<{ $hasTrailingAction?: boolean }>`
+  width: 100%;
   min-width: 0;
+  padding-right: ${(props) => (props.$hasTrailingAction ? "32px" : "12px")};
 `;
 
 const GameRowContainer = styled.div`
-  display: flex;
-  align-items: center;
+  position: relative;
   width: 100%;
   min-width: 0;
 `;
@@ -204,8 +204,11 @@ const GameStatus = styled.span<{ $isSelected?: boolean }>`
 `;
 
 const GameRemoveButton = styled.button<{ $isDisabled?: boolean }>`
-  margin-left: -8px;
-  margin-right: 6px;
+  position: absolute;
+  top: 50%;
+  right: 6px;
+  transform: translateY(-50%);
+  z-index: 1;
   width: 16px;
   height: 16px;
   display: inline-flex;
@@ -587,6 +590,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
           <GameRowContainer key={item.id}>
             <GameRow
               $isSelected={isSelected}
+              $hasTrailingAction={canRemove}
               data-navigation-active={isActiveItem ? "true" : undefined}
               data-navigation-selected={isSelected ? "true" : undefined}
               data-navigation-selected-primary={isSelected ? "true" : undefined}
