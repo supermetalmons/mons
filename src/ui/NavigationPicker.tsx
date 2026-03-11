@@ -251,11 +251,19 @@ const FightCloudSvgElement = styled.svg`
   overflow: visible;
 `;
 
-const FightCloudPuff = styled.ellipse`
-  fill: rgba(160, 174, 200, 0.19);
+const FightCloudBody = styled.g`
+  opacity: 0.19;
 
   @media (prefers-color-scheme: dark) {
-    fill: rgba(148, 168, 204, 0.13);
+    opacity: 0.13;
+  }
+`;
+
+const FightCloudPuff = styled.ellipse`
+  fill: rgb(155, 170, 200);
+
+  @media (prefers-color-scheme: dark) {
+    fill: rgb(150, 170, 210);
   }
 `;
 
@@ -451,7 +459,7 @@ const FightCloudBackground = React.memo(
       const badgeW = hasBadge ? 20 : 0;
       const gaps = Math.max(0, avatarCount - 1 + (hasBadge ? 1 : 0));
       const innerW = avatarCount * 20 + gaps + badgeW;
-      const padX = 9;
+      const padX = 5;
       const w = innerW + padX * 2;
       const h = 36;
       const midY = h / 2;
@@ -462,13 +470,13 @@ const FightCloudBackground = React.memo(
       for (let i = 0; i < n; i++) {
         const t = n === 1 ? 0.5 : i / (n - 1);
         puffs.push({
-          cx: 7 + t * (w - 14),
+          cx: 5 + t * (w - 10),
           cy: midY + Math.sin(i * 2.3 + 0.5) * 2.5,
-          rx: 13 + Math.sin(i * 1.1 + 0.3) * 3,
+          rx: 12 + Math.sin(i * 1.1 + 0.3) * 3,
           ry: 13 + Math.cos(i * 1.7) * 2.5,
         });
       }
-      puffs.push({ cx: w / 2, cy: midY, rx: w * 0.36, ry: h * 0.36 });
+      puffs.push({ cx: w / 2, cy: midY, rx: w * 0.38, ry: h * 0.36 });
 
       const sparkles = FIGHT_CLOUD_SPARKLE_ANCHORS.map(({ dx, dy, s }) =>
         fightCloudSparklePath(dx * w, dy * h, s),
@@ -484,9 +492,11 @@ const FightCloudBackground = React.memo(
         viewBox={`0 0 ${layout.w} ${layout.h}`}
         aria-hidden="true"
       >
-        {layout.puffs.map((p, i) => (
-          <FightCloudPuff key={i} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />
-        ))}
+        <FightCloudBody>
+          {layout.puffs.map((p, i) => (
+            <FightCloudPuff key={i} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />
+          ))}
+        </FightCloudBody>
         {layout.sparkles.map((d, i) => (
           <FightCloudSparkle key={i} d={d} />
         ))}
