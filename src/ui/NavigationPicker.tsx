@@ -143,7 +143,7 @@ const GameRow = styled(NavigationPickerButton)<{
 }>`
   width: 100%;
   min-width: 0;
-  padding-right: ${(props) => (props.$hasTrailingAction ? "32px" : "12px")};
+  padding-right: 12px;
 `;
 
 const EventRow = styled(GameRow)`
@@ -361,7 +361,6 @@ const QueuePrimaryContent = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 0.75rem;
   font-weight: inherit;
   letter-spacing: 0.01em;
   color: var(--navigationTextMuted);
@@ -389,7 +388,8 @@ const GameRemoveButton = styled.button<{ $isDisabled?: boolean }>`
   top: 50%;
   right: 6px;
   transform: translateY(-50%);
-  z-index: 1;
+  z-index: 2;
+  pointer-events: auto;
   width: 16px;
   height: 16px;
   display: inline-flex;
