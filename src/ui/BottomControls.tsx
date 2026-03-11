@@ -656,32 +656,11 @@ const EventCloudButtonOuter = styled.button`
 `;
 
 const EventCloudShape = styled.path`
-  fill: var(--color-gray-f0);
+  fill: var(--color-gray-f9);
   stroke: none;
-  transition: fill 0.15s;
-
-  @media (hover: hover) and (pointer: fine) {
-    button:hover & {
-      fill: var(--color-gray-e0);
-    }
-  }
-
-  button:active & {
-    fill: var(--color-gray-d0);
-  }
 
   @media (prefers-color-scheme: dark) {
-    fill: var(--color-gray-33);
-
-    @media (hover: hover) and (pointer: fine) {
-      button:hover & {
-        fill: var(--color-gray-44);
-      }
-    }
-
-    button:active & {
-      fill: var(--color-gray-55);
-    }
+    fill: var(--primaryContainerBackgroundDark);
   }
 `;
 
