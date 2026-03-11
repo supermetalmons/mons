@@ -146,6 +146,7 @@ import {
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 const EVENT_MODAL_NAV_AUTOCLOSE_SUPPRESS_MS = 10000;
+const EVENT_GAME_BUTTON_STICKY_DURATION_MS = 2500;
 const rematchSeriesDigitsFontFamily =
   'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace';
 
@@ -870,9 +871,14 @@ const BottomControls: React.FC = () => {
   const wasEventModalVisibleRef = useRef(
     initialEventModalState.isOpen && !!initialEventModalState.eventId,
   );
+  const activeEventModalEventIdRef = useRef<string | null>(
+    initialEventModalState.isOpen ? initialEventModalState.eventId : null,
+  );
   const [selectedEventModalId, setSelectedEventModalId] = useState<
     string | null
   >(initialEventModalState.isOpen ? initialEventModalState.eventId : null);
+  const [eventGameButtonStickyEventId, setEventGameButtonStickyEventId] =
+    useState<string | null>(null);
 
   const [isUndoDisabled, setIsUndoDisabled] = useState(true);
   const [waitingStateText, setWaitingStateText] = useState("");
@@ -963,6 +969,7 @@ const BottomControls: React.FC = () => {
   const navigationLoadMoreInFlightRef = useRef(false);
   const topNavigationItemIdsRef = useRef<Set<string>>(new Set());
   const eventCloudSubscriptionEventIdRef = useRef<string | null>(null);
+  const eventGameButtonStickyTimeoutRef = useRef<number | null>(null);
   const navigationCacheScopeRef = useRef<NavigationGamesCacheScope | null>(
     null,
   );
@@ -1093,6 +1100,37 @@ const BottomControls: React.FC = () => {
     setIsEndMatchTemporarilyDisabled(false);
     setIsVoiceReactionDisabled(false);
   }, []);
+
+  const clearEventGameButtonStickyState = useCallback(() => {
+    if (eventGameButtonStickyTimeoutRef.current !== null) {
+      window.clearTimeout(eventGameButtonStickyTimeoutRef.current);
+      eventGameButtonStickyTimeoutRef.current = null;
+    }
+    setEventGameButtonStickyEventId(null);
+  }, []);
+
+  const holdEventGameButtonDuringLaunchTransition = useCallback(
+    (eventId: string) => {
+      const normalizedEventId =
+        typeof eventId === "string" ? eventId.trim() : "";
+      if (!normalizedEventId) {
+        clearEventGameButtonStickyState();
+        return;
+      }
+      if (eventGameButtonStickyTimeoutRef.current !== null) {
+        window.clearTimeout(eventGameButtonStickyTimeoutRef.current);
+        eventGameButtonStickyTimeoutRef.current = null;
+      }
+      setEventGameButtonStickyEventId(normalizedEventId);
+      eventGameButtonStickyTimeoutRef.current = window.setTimeout(() => {
+        eventGameButtonStickyTimeoutRef.current = null;
+        setEventGameButtonStickyEventId((currentValue) =>
+          currentValue === normalizedEventId ? null : currentValue,
+        );
+      }, EVENT_GAME_BUTTON_STICKY_DURATION_MS);
+    },
+    [clearEventGameButtonStickyState],
+  );
 
   useEffect(() => {
     isTimerButtonDisabledRef.current = isTimerButtonDisabled;
@@ -1480,9 +1518,14 @@ const BottomControls: React.FC = () => {
     return subscribeToEventModalState((state) => {
       const isVisible = state.isOpen && !!state.eventId;
       const wasVisible = wasEventModalVisibleRef.current;
+      if (isVisible && state.eventId) {
+        activeEventModalEventIdRef.current = state.eventId;
+      }
 
       if (wasVisible && !isVisible) {
         pendingNavigationOpenedEventModalRequestSeqRef.current += 1;
+        const closingEventId = activeEventModalEventIdRef.current;
+        activeEventModalEventIdRef.current = null;
         if (
           state.lastCloseReason === "dismiss" &&
           getCurrentRouteState().mode === "event"
@@ -1492,14 +1535,25 @@ const BottomControls: React.FC = () => {
         } else {
           pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
         }
+        if (state.lastCloseReason === "launch_game" && closingEventId) {
+          holdEventGameButtonDuringLaunchTransition(closingEventId);
+        } else {
+          clearEventGameButtonStickyState();
+        }
       } else if (isVisible) {
         pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
+        clearEventGameButtonStickyState();
+      } else {
+        activeEventModalEventIdRef.current = null;
       }
 
       wasEventModalVisibleRef.current = isVisible;
       setSelectedEventModalId(isVisible ? state.eventId : null);
     });
-  }, []);
+  }, [
+    clearEventGameButtonStickyState,
+    holdEventGameButtonDuringLaunchTransition,
+  ]);
 
   const isNavigationGameBeingRemoved = useCallback(
     (item: NavigationItem) =>
@@ -1849,6 +1903,10 @@ const BottomControls: React.FC = () => {
 
   useEffect(() => {
     return () => {
+      if (eventGameButtonStickyTimeoutRef.current !== null) {
+        window.clearTimeout(eventGameButtonStickyTimeoutRef.current);
+        eventGameButtonStickyTimeoutRef.current = null;
+      }
       clearAllMatchScopedTimeouts();
       hourglassEnableTimeoutRef.current = null;
       hourglassEnableDeadlineRef.current = null;
@@ -3122,38 +3180,69 @@ const BottomControls: React.FC = () => {
         ? routeState.inviteId
         : null;
   const currentInviteEventId = connection.getCurrentInviteEventId();
+  const routeIsInvite = routeState.mode === "invite";
+  const shouldUseStickyEventGameButton =
+    routeIsInvite &&
+    !!eventGameButtonStickyEventId &&
+    (!currentInviteEventId ||
+      currentInviteEventId === eventGameButtonStickyEventId);
+  const effectiveInviteEventId =
+    currentInviteEventId ??
+    (shouldUseStickyEventGameButton ? eventGameButtonStickyEventId : null);
   const isEventGameButtonVisible =
-    isOnlineGame &&
-    connection.isCurrentInviteEventOwned() &&
-    !!currentInviteEventId;
+    (isOnlineGame &&
+      connection.isCurrentInviteEventOwned() &&
+      !!currentInviteEventId) ||
+    shouldUseStickyEventGameButton;
 
   useEffect(() => {
-    if (!currentInviteEventId) {
+    if (!eventGameButtonStickyEventId) {
+      return;
+    }
+    if (!routeIsInvite) {
+      clearEventGameButtonStickyState();
+      return;
+    }
+    if (
+      currentInviteEventId &&
+      currentInviteEventId !== eventGameButtonStickyEventId
+    ) {
+      clearEventGameButtonStickyState();
+    }
+  }, [
+    clearEventGameButtonStickyState,
+    currentInviteEventId,
+    eventGameButtonStickyEventId,
+    routeIsInvite,
+  ]);
+
+  useEffect(() => {
+    if (!effectiveInviteEventId) {
       eventCloudSubscriptionEventIdRef.current = null;
       setLiveEventCloudAvatars([]);
       return;
     }
-    if (eventCloudSubscriptionEventIdRef.current === currentInviteEventId) {
+    if (eventCloudSubscriptionEventIdRef.current === effectiveInviteEventId) {
       return;
     }
-    eventCloudSubscriptionEventIdRef.current = currentInviteEventId;
+    eventCloudSubscriptionEventIdRef.current = effectiveInviteEventId;
     setLiveEventCloudAvatars(
       getEventCloudAvatarsFromNavigationSources(
-        currentInviteEventId,
+        effectiveInviteEventId,
         topNavigationGames,
         pagedNavigationGames,
       ),
     );
-  }, [currentInviteEventId, pagedNavigationGames, topNavigationGames]);
+  }, [effectiveInviteEventId, pagedNavigationGames, topNavigationGames]);
 
   useEffect(() => {
-    if (!currentInviteEventId || !isEventGameButtonVisible) {
+    if (!effectiveInviteEventId || !isEventGameButtonVisible) {
       return;
     }
     let disposed = false;
 
     const unsubscribe = connection.subscribeToEvent(
-      currentInviteEventId,
+      effectiveInviteEventId,
       (eventRecord) => {
         if (disposed) {
           return;
@@ -3176,16 +3265,16 @@ const BottomControls: React.FC = () => {
       },
     );
 
-    void connection.syncEventState(currentInviteEventId).catch(() => {});
+    void connection.syncEventState(effectiveInviteEventId).catch(() => {});
 
     return () => {
       disposed = true;
       unsubscribe();
     };
-  }, [currentInviteEventId, isEventGameButtonVisible]);
+  }, [effectiveInviteEventId, isEventGameButtonVisible]);
 
   const eventCloudAvatars = useMemo(() => {
-    if (!currentInviteEventId) {
+    if (!effectiveInviteEventId) {
       return [];
     }
     const liveFallback = liveEventCloudAvatars.slice(
@@ -3196,12 +3285,12 @@ const BottomControls: React.FC = () => {
       return liveFallback;
     }
     return getEventCloudAvatarsFromNavigationSources(
-      currentInviteEventId,
+      effectiveInviteEventId,
       topNavigationGames,
       pagedNavigationGames,
     );
   }, [
-    currentInviteEventId,
+    effectiveInviteEventId,
     liveEventCloudAvatars,
     topNavigationGames,
     pagedNavigationGames,
@@ -3258,7 +3347,7 @@ const BottomControls: React.FC = () => {
                 onClick={
                   !isMobile
                     ? () =>
-                        openEventModal(currentInviteEventId as string, {
+                        openEventModal(effectiveInviteEventId as string, {
                           restoreHomeOnClose: false,
                         })
                     : undefined
@@ -3266,7 +3355,7 @@ const BottomControls: React.FC = () => {
                 onTouchStart={
                   isMobile
                     ? () =>
-                        openEventModal(currentInviteEventId as string, {
+                        openEventModal(effectiveInviteEventId as string, {
                           restoreHomeOnClose: false,
                         })
                     : undefined
