@@ -149,11 +149,40 @@ const GameText = styled.span`
   text-overflow: ellipsis;
 `;
 
-const EventAvatarStack = styled.div`
-  display: flex;
+const FightCloudWrapper = styled.div`
+  position: relative;
+  display: inline-flex;
   align-items: center;
   gap: 1px;
   flex-shrink: 0;
+  margin-left: 2px;
+`;
+
+const FightCloudSvg = styled.svg`
+  position: absolute;
+  top: -2px;
+  left: -6px;
+  width: calc(100% + 12px);
+  height: calc(100% + 4px);
+  pointer-events: none;
+
+  .fc-body {
+    fill: rgba(155, 170, 190, 0.14);
+  }
+
+  .fc-star {
+    fill: rgba(155, 170, 190, 0.35);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .fc-body {
+      fill: rgba(190, 210, 235, 0.09);
+    }
+
+    .fc-star {
+      fill: rgba(190, 210, 235, 0.22);
+    }
+  }
 `;
 
 const EventAvatarImage = styled(GameEmojiImage)``;
@@ -318,6 +347,16 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
     }
   }
 `;
+
+const FightCloudBackground = React.memo(() => (
+  <FightCloudSvg viewBox="0 0 100 36" preserveAspectRatio="none" aria-hidden="true">
+    <path className="fc-body" d="M10,18 C8,12 12,6 20,8 C24,2 32,4 38,8 C44,2 52,3 58,8 C64,2 74,4 80,9 C88,5 97,11 94,18 C98,25 90,33 82,29 C76,34 66,33 58,29 C52,34 42,33 36,29 C28,34 18,32 14,26 C6,30 3,23 10,18Z" />
+    <path className="fc-star" d="M4,4.5 L4.88,6.12 L6.5,7 L4.88,7.88 L4,9.5 L3.12,7.88 L1.5,7 L3.12,6.12Z" />
+    <path className="fc-star" d="M96,6 L96.7,7.3 L98,8 L96.7,8.7 L96,10 L95.3,8.7 L94,8 L95.3,7.3Z" />
+    <path className="fc-star" d="M50,0.2 L50.63,1.37 L51.8,2 L50.63,2.63 L50,3.8 L49.37,2.63 L48.2,2 L49.37,1.37Z" />
+    <path className="fc-star" d="M90,29 L90.7,30.3 L92,31 L90.7,31.7 L90,33 L89.3,31.7 L88,31 L89.3,30.3Z" />
+  </FightCloudSvg>
+));
 
 const MIN_AUTO_LOAD_NEXT_PAGE_THRESHOLD_PX = 640;
 const MIN_REASONABLE_EPOCH_MS = Date.UTC(2000, 0, 1);
@@ -552,7 +591,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     const preview = validParticipants.slice(0, maxVisible);
     const overflow = event.participantCount - preview.length;
     return (
-      <EventAvatarStack>
+      <FightCloudWrapper>
+        <FightCloudBackground />
         {preview.map((participant, index) => (
           <EventAvatarImage
             key={`${participant.profileId ?? participant.displayName ?? "participant"}_${index}`}
@@ -561,7 +601,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
           />
         ))}
         {showBadge && overflow > 0 && <EventOverflowBadge>+{overflow}</EventOverflowBadge>}
-      </EventAvatarStack>
+      </FightCloudWrapper>
     );
   };
 
