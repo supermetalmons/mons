@@ -448,7 +448,7 @@ function buildFightCloudPath(w: number, h: number): string {
   const cx = w / 2;
   const cy = h / 2;
   const rx = w / 2 - 1;
-  const ry = h / 2 - 1;
+  const ry = h / 2 - 3;
   const n = Math.max(7, Math.min(10, Math.round(w / 10)));
   const step = (Math.PI * 2) / n;
   const parts: string[] = [];
@@ -458,7 +458,8 @@ function buildFightCloudPath(w: number, h: number): string {
     const aE = a + step;
     const x0 = cx + rx * Math.cos(a);
     const y0 = cy + ry * Math.sin(a);
-    const bump = 4.5 + 2.5 * Math.sin(i * 3.7 + 1.2);
+    const vert = Math.sin(aM) * Math.sin(aM);
+    const bump = (4.5 + 2.5 * Math.sin(i * 3.7 + 1.2)) * (1 - 0.65 * vert);
     const cpx = cx + (rx + bump) * Math.cos(aM);
     const cpy = cy + (ry + bump) * Math.sin(aM);
     const x1 = cx + rx * Math.cos(aE);
