@@ -3204,6 +3204,58 @@ class Connection {
     return id === "" ? null : id;
   }
 
+  private getLocalLoginId(): string | null {
+    const id = storage.getLoginId("");
+    return id === "" ? null : id;
+  }
+
+  private async resolveLocalProfileId(loginUid?: string | null): Promise<string | null> {
+    const storedProfileId = this.getLocalProfileId();
+    const storedLoginUid = this.getLocalLoginId();
+    const normalizedLoginUid = this.normalizeStringOrNull(loginUid);
+    if (storedProfileId && !normalizedLoginUid) {
+      return storedProfileId;
+    }
+
+    if (!normalizedLoginUid) {
+      const claimedProfileId = this.normalizeStringOrNull(await this.getCurrentProfileClaimId());
+      if (claimedProfileId) {
+        return claimedProfileId;
+      }
+      return storedProfileId;
+    }
+
+    try {
+      const profileSnapshot = await get(ref(this.db, `players/${normalizedLoginUid}/profile`));
+      const linkedProfileId = this.normalizeStringOrNull(profileSnapshot.val());
+      if (linkedProfileId) {
+        return linkedProfileId;
+      }
+    } catch {
+      // fall through
+    }
+
+    try {
+      const profile = await this.getProfileByLoginId(normalizedLoginUid);
+      return this.normalizeStringOrNull(profile.id);
+    } catch {
+      // fall through
+    }
+
+    const claimedProfileId = this.normalizeStringOrNull(await this.getCurrentProfileClaimId());
+    if (claimedProfileId) {
+      return claimedProfileId;
+    }
+
+    const canUseStoredProfileForLogin =
+      !!storedProfileId && (!normalizedLoginUid || !storedLoginUid || storedLoginUid === normalizedLoginUid);
+    if (canUseStoredProfileForLogin) {
+      return storedProfileId;
+    }
+
+    return null;
+  }
+
   private hydrateSameProfilePlayer(uid: string): void {
     const expectedUid = uid;
     const expectedEpoch = this.sessionEpoch;
@@ -3945,15 +3997,61 @@ class Connection {
         }
 
         const workingInvite: Invite = { ...inviteData };
-        if (!workingInvite.guestId && workingInvite.hostId !== uid && autojoin) {
-          await set(ref(this.db, `invites/${inviteId}/guestId`), uid);
+        const localProfileId = await this.resolveLocalProfileId(uid);
+        if (!isConnectActive()) {
+          return;
+        }
+        let shouldAutojoinAsGuest = !workingInvite.guestId && workingInvite.hostId !== uid && autojoin;
+        if (shouldAutojoinAsGuest && localProfileId) {
+          const sameProfilePlayerUid = await this.checkBothPlayerProfiles(workingInvite.hostId, "", localProfileId);
           if (!isConnectActive()) {
             return;
           }
-          workingInvite.guestId = uid;
+          if (sameProfilePlayerUid === workingInvite.hostId) {
+            shouldAutojoinAsGuest = false;
+          }
+        }
+        if (shouldAutojoinAsGuest) {
+          const guestIdRef = ref(this.db, `invites/${inviteId}/guestId`);
+          try {
+            const guestJoinResult = await runTransaction(
+              guestIdRef,
+              (currentGuestId) => {
+                if (typeof currentGuestId === "string" && currentGuestId !== "") {
+                  return;
+                }
+                return uid;
+              },
+              { applyLocally: false }
+            );
+            if (!isConnectActive()) {
+              return;
+            }
+            const resolvedGuestId = guestJoinResult.snapshot.val();
+            if (typeof resolvedGuestId === "string" && resolvedGuestId !== "") {
+              workingInvite.guestId = resolvedGuestId;
+            } else if (guestJoinResult.committed) {
+              workingInvite.guestId = uid;
+            }
+          } catch {
+            if (!isConnectActive()) {
+              return;
+            }
+            try {
+              const guestIdSnapshot = await get(guestIdRef);
+              if (!isConnectActive()) {
+                return;
+              }
+              const resolvedGuestId = guestIdSnapshot.val();
+              if (typeof resolvedGuestId === "string" && resolvedGuestId !== "") {
+                workingInvite.guestId = resolvedGuestId;
+              }
+            } catch {
+              // Keep invite context even when autojoin races fail.
+            }
+          }
         }
 
-        const localProfileId = this.getLocalProfileId();
         const { actorUid, role } = await this.resolveActorUidForInvite(workingInvite, uid, localProfileId, connectEpoch, connectAttemptId);
         if (!isConnectActive()) {
           return;
