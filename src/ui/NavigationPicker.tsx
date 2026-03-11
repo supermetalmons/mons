@@ -447,9 +447,9 @@ const QUEUE_MANA_SLOTS: QueueManaSlot[] = ["top", "right", "bottom", "left"];
 function buildFightCloudPath(w: number, h: number): string {
   const cx = w / 2;
   const cy = h / 2;
-  const rx = w / 2 - 3;
-  const ry = h / 2 - 2;
-  const n = Math.max(5, Math.min(8, Math.round(w / 14)));
+  const rx = w / 2 - 1;
+  const ry = h / 2 - 1;
+  const n = Math.max(7, Math.min(10, Math.round(w / 10)));
   const step = (Math.PI * 2) / n;
   const parts: string[] = [];
   for (let i = 0; i < n; i++) {
@@ -516,8 +516,8 @@ function getFightCloudPaths(w: number, h: number) {
   return v;
 }
 
-const FIGHT_CLOUD_PAD_X = 7;
-const FIGHT_CLOUD_H = 28;
+const FIGHT_CLOUD_PAD_X = 10;
+const FIGHT_CLOUD_H = 32;
 
 const NavigationPicker: React.FC<NavigationPickerProps> = ({
   showsHomeNavigation,
