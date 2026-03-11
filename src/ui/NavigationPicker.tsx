@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
 import styled from "styled-components";
 import { problems, getCompletedProblemIds } from "../content/problems";
 import { useGameAssets } from "../hooks/useGameAssets";
@@ -209,13 +209,6 @@ const GameText = styled.span`
   text-overflow: ellipsis;
 `;
 
-const EventAvatarStack = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 1px;
-  flex-shrink: 0;
-`;
-
 const EventAvatarImage = styled(GameEmojiImage)``;
 
 const EventOverflowBadge = styled.span`
@@ -239,6 +232,56 @@ const EventOverflowBadge = styled.span`
   @media (prefers-color-scheme: dark) {
     background: rgba(255, 255, 255, 0.07);
   }
+`;
+
+const FightCloudWrapper = styled.div`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: 2px;
+`;
+
+const FightCloudSvgElement = styled.svg`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  overflow: visible;
+`;
+
+const FightCloudPuff = styled.ellipse`
+  fill: rgba(160, 174, 200, 0.19);
+
+  @media (prefers-color-scheme: dark) {
+    fill: rgba(148, 168, 204, 0.13);
+  }
+`;
+
+const FightCloudSparkle = styled.path`
+  fill: rgba(140, 155, 185, 0.40);
+
+  @media (prefers-color-scheme: dark) {
+    fill: rgba(165, 182, 214, 0.26);
+  }
+`;
+
+const FightCloudMotionLine = styled.line`
+  stroke: rgba(140, 155, 185, 0.30);
+  stroke-width: 1;
+  stroke-linecap: round;
+
+  @media (prefers-color-scheme: dark) {
+    stroke: rgba(165, 182, 214, 0.20);
+  }
+`;
+
+const FightCloudContentLayer = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1px;
 `;
 
 const QueuePrimaryContent = styled.span`
@@ -398,6 +441,76 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
     }
   }
 `;
+
+const FIGHT_CLOUD_SPARKLE_ANCHORS = [
+  { dx: 0.92, dy: 0.08, s: 3.2 },
+  { dx: 0.05, dy: 0.88, s: 2.5 },
+  { dx: 0.72, dy: 0.94, s: 2.2 },
+];
+
+const FIGHT_CLOUD_LINE_ANCHORS = [
+  { x1: 0.03, y1: 0.28, x2: -0.03, y2: 0.12 },
+  { x1: 0.97, y1: 0.68, x2: 1.04, y2: 0.82 },
+];
+
+const fightCloudSparklePath = (cx: number, cy: number, s: number): string => {
+  const a = s * 0.28;
+  return `M${cx},${cy - s}L${cx + a},${cy - a}L${cx + s},${cy}L${cx + a},${cy + a}L${cx},${cy + s}L${cx - a},${cy + a}L${cx - s},${cy}L${cx - a},${cy - a}Z`;
+};
+
+const FightCloudBackground = React.memo(({ avatarCount, hasBadge }: { avatarCount: number; hasBadge: boolean }) => {
+  const layout = useMemo(() => {
+    const badgeW = hasBadge ? 20 : 0;
+    const gaps = Math.max(0, avatarCount - 1 + (hasBadge ? 1 : 0));
+    const innerW = avatarCount * 20 + gaps + badgeW;
+    const padX = 8;
+    const w = innerW + padX * 2;
+    const h = 30;
+    const midY = h / 2;
+
+    const n = Math.max(3, Math.round(w / 18));
+    const puffs: Array<{ cx: number; cy: number; rx: number; ry: number }> = [];
+    for (let i = 0; i < n; i++) {
+      const t = n === 1 ? 0.5 : i / (n - 1);
+      puffs.push({
+        cx: 7 + t * (w - 14),
+        cy: midY + Math.sin(i * 2.3 + 0.5) * 2,
+        rx: 12 + Math.sin(i * 1.1 + 0.3) * 3,
+        ry: 10 + Math.cos(i * 1.7) * 2,
+      });
+    }
+    puffs.push({ cx: w / 2, cy: midY, rx: w * 0.36, ry: h * 0.32 });
+
+    const sparkles = FIGHT_CLOUD_SPARKLE_ANCHORS.map(({ dx, dy, s }) =>
+      fightCloudSparklePath(dx * w, dy * h, s)
+    );
+
+    const lines = FIGHT_CLOUD_LINE_ANCHORS.map(({ x1, y1, x2, y2 }) => ({
+      x1: x1 * w, y1: y1 * h, x2: x2 * w, y2: y2 * h,
+    }));
+
+    return { w, h, puffs, sparkles, lines };
+  }, [avatarCount, hasBadge]);
+
+  return (
+    <FightCloudSvgElement
+      width={layout.w}
+      height={layout.h}
+      viewBox={`0 0 ${layout.w} ${layout.h}`}
+      aria-hidden="true"
+    >
+      {layout.puffs.map((p, i) => (
+        <FightCloudPuff key={i} cx={p.cx} cy={p.cy} rx={p.rx} ry={p.ry} />
+      ))}
+      {layout.sparkles.map((d, i) => (
+        <FightCloudSparkle key={i} d={d} />
+      ))}
+      {layout.lines.map((l, i) => (
+        <FightCloudMotionLine key={i} x1={l.x1} y1={l.y1} x2={l.x2} y2={l.y2} />
+      ))}
+    </FightCloudSvgElement>
+  );
+});
 
 const MIN_AUTO_LOAD_NEXT_PAGE_THRESHOLD_PX = 640;
 const MIN_REASONABLE_EPOCH_MS = Date.UTC(2000, 0, 1);
@@ -675,19 +788,26 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     const maxVisible = showBadge ? 5 : 6;
     const preview = validParticipants.slice(0, maxVisible);
     const overflow = event.participantCount - preview.length;
+    const hasBadge = showBadge && overflow > 0;
     return (
-      <EventAvatarStack>
-        {preview.map((participant, index) => (
-          <EventAvatarImage
-            key={`${participant.profileId ?? participant.displayName ?? "participant"}_${index}`}
-            src={emojis.getEmojiUrl(participant.emojiId!.toString())}
-            alt=""
-          />
-        ))}
-        {showBadge && overflow > 0 && (
-          <EventOverflowBadge>+{overflow}</EventOverflowBadge>
-        )}
-      </EventAvatarStack>
+      <FightCloudWrapper>
+        <FightCloudBackground
+          avatarCount={preview.length}
+          hasBadge={hasBadge}
+        />
+        <FightCloudContentLayer>
+          {preview.map((participant, index) => (
+            <EventAvatarImage
+              key={`${participant.profileId ?? participant.displayName ?? "participant"}_${index}`}
+              src={emojis.getEmojiUrl(participant.emojiId!.toString())}
+              alt=""
+            />
+          ))}
+          {hasBadge && (
+            <EventOverflowBadge>+{overflow}</EventOverflowBadge>
+          )}
+        </FightCloudContentLayer>
+      </FightCloudWrapper>
     );
   };
 
