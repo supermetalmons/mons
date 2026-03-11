@@ -7,11 +7,26 @@ const SORT_BUCKETS = {
   ended: 50,
   dismissed: 50,
 };
+const NAVIGATION_PARTICIPANT_PREVIEW_LIMIT = 6;
 const MAX_BATCH_WRITES = 450;
 const MAX_TIMESTAMP_MS = 253402300799999;
 
 const normalizeString = (value) =>
   typeof value === "string" && value.trim() !== "" ? value.trim() : null;
+
+const normalizeFiniteNumberOrNull = (value) => {
+  const numeric =
+    typeof value === "number"
+      ? value
+      : typeof value === "string" && value.trim() !== ""
+        ? Number(value)
+        : NaN;
+  if (!Number.isFinite(numeric)) {
+    return null;
+  }
+  const normalized = Math.floor(numeric);
+  return normalized > 0 ? normalized : null;
+};
 
 const toTimestamp = (millis) => {
   const normalized =
@@ -79,11 +94,7 @@ const buildPreviewParticipants = (participants) => {
     .map((participant) => ({
       profileId: normalizeString(participant.profileId),
       displayName: normalizeString(participant.displayName),
-      emojiId:
-        typeof participant.emojiId === "number" &&
-        Number.isFinite(participant.emojiId)
-          ? Math.floor(participant.emojiId)
-          : null,
+      emojiId: normalizeFiniteNumberOrNull(participant.emojiId),
       aura: normalizeString(participant.aura),
     }));
 };
@@ -176,7 +187,10 @@ async function projectEvent(eventId, beforeData, afterData) {
           ? toTimestamp(afterData.endedAtMs)
           : null,
       participantCount: previewParticipants.length,
-      participantPreview: previewParticipants.slice(0, 4),
+      participantPreview: previewParticipants.slice(
+        0,
+        NAVIGATION_PARTICIPANT_PREVIEW_LIMIT,
+      ),
       winnerDisplayName: normalizeString(afterData.winnerDisplayName),
     };
 

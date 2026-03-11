@@ -251,6 +251,9 @@ const FightCloudWrap = styled.div`
 `;
 
 const EventAvatarImage = styled(GameEmojiImage)``;
+const EventAvatarPlaceholder = styled(GameEmojiPlaceholder)`
+  background: transparent;
+`;
 
 const FightCloudCanvas = styled.svg`
   position: absolute;
@@ -267,11 +270,13 @@ const CloudShape = styled.path`
   stroke: currentColor;
   stroke-opacity: 0.09;
   stroke-width: 0.6;
-  transition: fill-opacity 0.12s, stroke-opacity 0.12s;
+  transition:
+    fill-opacity 0.12s,
+    stroke-opacity 0.12s;
 
   @media (hover: hover) and (pointer: fine) {
     button:hover & {
-      fill-opacity: 0.10;
+      fill-opacity: 0.1;
       stroke-opacity: 0.15;
     }
   }
@@ -306,7 +311,7 @@ const SparkleShape = styled.path`
 
   @media (hover: hover) and (pointer: fine) {
     button:hover & {
-      fill-opacity: 0.20;
+      fill-opacity: 0.2;
     }
   }
 
@@ -554,11 +559,7 @@ function buildFightCloudPath(w: number, h: number): string {
   return parts.join("");
 }
 
-function buildSparklePath(
-  cx: number,
-  cy: number,
-  s: number,
-): string {
+function buildSparklePath(cx: number, cy: number, s: number): string {
   const d = s * 0.28;
   return [
     `M${cx},${(cy - s).toFixed(1)}`,
@@ -592,7 +593,10 @@ function getFightCloudPaths(w: number, h: number) {
   const k = `${w}|${h}`;
   let v = fightCloudCache.get(k);
   if (!v) {
-    v = { cloud: buildFightCloudPath(w, h), sparkles: buildCloudSparkles(w, h) };
+    v = {
+      cloud: buildFightCloudPath(w, h),
+      sparkles: buildCloudSparkles(w, h),
+    };
     fightCloudCache.set(k, v);
   }
   return v;
@@ -865,15 +869,16 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     shouldRenderPagedGamesSection;
 
   const renderEventPreview = (event: NavigationEventItem) => {
-    const validParticipants = event.participantPreview.filter(
-      (participant) => typeof participant.emojiId === "number",
-    );
-    const showBadge = event.participantCount > 6;
+    const normalizedParticipantCount = Number.isFinite(event.participantCount)
+      ? Math.max(0, Math.trunc(event.participantCount))
+      : 0;
+    const showBadge = normalizedParticipantCount > 6;
     const maxVisible = showBadge ? 5 : 6;
-    const preview = validParticipants.slice(0, maxVisible);
-    const overflow = event.participantCount - preview.length;
-    const hasBadge = showBadge && overflow > 0;
-    const itemCount = preview.length + (hasBadge ? 1 : 0);
+    const participantSlots = Math.min(normalizedParticipantCount, maxVisible);
+    const preview = event.participantPreview.slice(0, participantSlots);
+    const overflow = Math.max(0, normalizedParticipantCount - participantSlots);
+    const hasBadge = overflow > 0;
+    const itemCount = participantSlots + (hasBadge ? 1 : 0);
 
     if (itemCount === 0) return null;
 
@@ -893,13 +898,36 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
           <SparkleShape d={sparkles} />
         </FightCloudCanvas>
         <FightCloudInner>
-          {preview.map((participant, index) => (
-            <EventAvatarImage
-              key={`${participant.profileId ?? participant.displayName ?? "p"}_${index}`}
-              src={emojis.getEmojiUrl(participant.emojiId!.toString())}
-              alt=""
-            />
-          ))}
+          {Array.from({ length: participantSlots }, (_, index) => {
+            const participant = preview[index];
+            if (!participant) {
+              return (
+                <EventAvatarPlaceholder
+                  key={`slot_${index}`}
+                  aria-hidden="true"
+                />
+              );
+            }
+            const normalizedEmojiId =
+              participant.emojiId == null ? NaN : Number(participant.emojiId);
+            if (Number.isFinite(normalizedEmojiId) && normalizedEmojiId > 0) {
+              return (
+                <EventAvatarImage
+                  key={`slot_${index}`}
+                  src={emojis.getEmojiUrl(
+                    Math.trunc(normalizedEmojiId).toString(),
+                  )}
+                  alt=""
+                />
+              );
+            }
+            return (
+              <EventAvatarPlaceholder
+                key={`slot_${index}`}
+                aria-hidden="true"
+              />
+            );
+          })}
           {hasBadge && <FightCloudBadge>+{overflow}</FightCloudBadge>}
         </FightCloudInner>
       </FightCloudWrap>

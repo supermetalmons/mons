@@ -59,8 +59,12 @@ const getNormalizedStringOrNull = (value: unknown): string | null => {
 };
 
 const getNormalizedNumberOrNull = (value: unknown): number | null => {
-  if (typeof value === "number" && Number.isFinite(value)) {
-    return Math.floor(value);
+  if (typeof value === "number") {
+    return Number.isFinite(value) ? Math.floor(value) : null;
+  }
+  if (typeof value === "string" && value.trim() !== "") {
+    const parsed = Number(value);
+    return Number.isFinite(parsed) ? Math.floor(parsed) : null;
   }
   return null;
 };

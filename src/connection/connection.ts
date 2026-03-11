@@ -2581,6 +2581,9 @@ class Connection {
         return null;
       }
       const status: Exclude<NavigationItemStatus, "pending"> = rawStatus;
+      const participantPreview = this.mapFirestoreParticipantPreview(
+        rawData.participantPreview,
+      );
       return {
         id:
           typeof rawData.id === "string" && rawData.id !== ""
@@ -2597,11 +2600,9 @@ class Connection {
         endedAtMs: this.readTimestampMillis(rawData.endedAt) || null,
         participantCount: this.normalizeFiniteNumber(
           rawData.participantCount,
-          0,
+          participantPreview.length,
         ),
-        participantPreview: this.mapFirestoreParticipantPreview(
-          rawData.participantPreview,
-        ),
+        participantPreview,
         winnerDisplayName: this.normalizeStringOrNull(
           rawData.winnerDisplayName,
         ),
