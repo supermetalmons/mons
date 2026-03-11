@@ -209,16 +209,57 @@ const GameText = styled.span`
   text-overflow: ellipsis;
 `;
 
-const EventAvatarStack = styled.div`
+const FightCloudWrap = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
-  gap: 1px;
+  justify-content: center;
   flex-shrink: 0;
+  margin-left: 2px;
 `;
 
 const EventAvatarImage = styled(GameEmojiImage)``;
 
-const EventOverflowBadge = styled.span`
+const FightCloudCanvas = styled.svg`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: visible;
+  pointer-events: none;
+`;
+
+const CloudShape = styled.path`
+  fill: currentColor;
+  fill-opacity: 0.05;
+  stroke: currentColor;
+  stroke-opacity: 0.09;
+  stroke-width: 0.6;
+
+  @media (prefers-color-scheme: dark) {
+    fill-opacity: 0.07;
+    stroke-opacity: 0.12;
+  }
+`;
+
+const SparkleShape = styled.path`
+  fill: currentColor;
+  fill-opacity: 0.14;
+
+  @media (prefers-color-scheme: dark) {
+    fill-opacity: 0.18;
+  }
+`;
+
+const FightCloudInner = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  z-index: 1;
+`;
+
+const FightCloudBadge = styled.span`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -227,17 +268,16 @@ const EventOverflowBadge = styled.span`
   height: 18px;
   padding: 0 3px;
   border-radius: 9px;
-  margin-left: 0;
-  background: rgba(128, 128, 128, 0.09);
   font-size: 0.55rem;
   font-weight: 600;
   color: var(--navigationTextMuted);
   flex-shrink: 0;
   letter-spacing: -0.02em;
   white-space: nowrap;
+  background: rgba(128, 128, 128, 0.08);
 
   @media (prefers-color-scheme: dark) {
-    background: rgba(255, 255, 255, 0.07);
+    background: rgba(255, 255, 255, 0.06);
   }
 `;
 
@@ -403,6 +443,81 @@ const MIN_AUTO_LOAD_NEXT_PAGE_THRESHOLD_PX = 640;
 const MIN_REASONABLE_EPOCH_MS = Date.UTC(2000, 0, 1);
 const SELECTED_ITEM_VISIBILITY_MARGIN_PX = 8;
 const QUEUE_MANA_SLOTS: QueueManaSlot[] = ["top", "right", "bottom", "left"];
+
+function buildFightCloudPath(w: number, h: number): string {
+  const cx = w / 2;
+  const cy = h / 2;
+  const rx = w / 2 - 2;
+  const ry = h / 2 - 2;
+  const n = Math.max(12, Math.round((w + h) * 0.35));
+  const step = (Math.PI * 2) / n;
+  const parts: string[] = [];
+  for (let i = 0; i < n; i++) {
+    const a = i * step;
+    const aM = a + step / 2;
+    const aE = a + step;
+    const x0 = cx + rx * Math.cos(a);
+    const y0 = cy + ry * Math.sin(a);
+    const bump = 2.8 + 1.6 * Math.sin(i * 3.7 + 1.2);
+    const cpx = cx + (rx + bump) * Math.cos(aM);
+    const cpy = cy + (ry + bump) * Math.sin(aM);
+    const x1 = cx + rx * Math.cos(aE);
+    const y1 = cy + ry * Math.sin(aE);
+    if (i === 0) parts.push(`M${x0.toFixed(1)},${y0.toFixed(1)}`);
+    parts.push(
+      `Q${cpx.toFixed(1)},${cpy.toFixed(1)},${x1.toFixed(1)},${y1.toFixed(1)}`,
+    );
+  }
+  parts.push("Z");
+  return parts.join("");
+}
+
+function buildSparklePath(
+  cx: number,
+  cy: number,
+  s: number,
+): string {
+  const d = s * 0.28;
+  return [
+    `M${cx},${(cy - s).toFixed(1)}`,
+    `L${(cx + d).toFixed(1)},${(cy - d).toFixed(1)}`,
+    `L${(cx + s).toFixed(1)},${cy}`,
+    `L${(cx + d).toFixed(1)},${(cy + d).toFixed(1)}`,
+    `L${cx},${(cy + s).toFixed(1)}`,
+    `L${(cx - d).toFixed(1)},${(cy + d).toFixed(1)}`,
+    `L${(cx - s).toFixed(1)},${cy}`,
+    `L${(cx - d).toFixed(1)},${(cy - d).toFixed(1)}`,
+    "Z",
+  ].join("");
+}
+
+function buildCloudSparkles(w: number, h: number): string {
+  const parts = [
+    buildSparklePath(w - 2, 3.5, 2.5),
+    buildSparklePath(3, h - 3, 2),
+  ];
+  if (w > 60) {
+    parts.push(buildSparklePath(w * 0.3, 1.5, 1.8));
+  }
+  if (w > 90) {
+    parts.push(buildSparklePath(w * 0.7, h - 1.5, 1.6));
+  }
+  return parts.join("");
+}
+
+const fightCloudCache = new Map<string, { cloud: string; sparkles: string }>();
+function getFightCloudPaths(w: number, h: number) {
+  const k = `${w}|${h}`;
+  let v = fightCloudCache.get(k);
+  if (!v) {
+    v = { cloud: buildFightCloudPath(w, h), sparkles: buildCloudSparkles(w, h) };
+    fightCloudCache.set(k, v);
+  }
+  return v;
+}
+
+const FIGHT_CLOUD_PAD_X = 7;
+const FIGHT_CLOUD_H = 28;
 
 const NavigationPicker: React.FC<NavigationPickerProps> = ({
   showsHomeNavigation,
@@ -675,19 +790,37 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     const maxVisible = showBadge ? 5 : 6;
     const preview = validParticipants.slice(0, maxVisible);
     const overflow = event.participantCount - preview.length;
+    const hasBadge = showBadge && overflow > 0;
+    const itemCount = preview.length + (hasBadge ? 1 : 0);
+
+    if (itemCount === 0) return null;
+
+    const contentW = itemCount * 21 - 1;
+    const cloudW = contentW + FIGHT_CLOUD_PAD_X * 2;
+    const { cloud, sparkles } = getFightCloudPaths(cloudW, FIGHT_CLOUD_H);
+
     return (
-      <EventAvatarStack>
-        {preview.map((participant, index) => (
-          <EventAvatarImage
-            key={`${participant.profileId ?? participant.displayName ?? "participant"}_${index}`}
-            src={emojis.getEmojiUrl(participant.emojiId!.toString())}
-            alt=""
-          />
-        ))}
-        {showBadge && overflow > 0 && (
-          <EventOverflowBadge>+{overflow}</EventOverflowBadge>
-        )}
-      </EventAvatarStack>
+      <FightCloudWrap>
+        <FightCloudCanvas
+          width={cloudW}
+          height={FIGHT_CLOUD_H}
+          viewBox={`0 0 ${cloudW} ${FIGHT_CLOUD_H}`}
+          aria-hidden="true"
+        >
+          <CloudShape d={cloud} />
+          <SparkleShape d={sparkles} />
+        </FightCloudCanvas>
+        <FightCloudInner>
+          {preview.map((participant, index) => (
+            <EventAvatarImage
+              key={`${participant.profileId ?? participant.displayName ?? "p"}_${index}`}
+              src={emojis.getEmojiUrl(participant.emojiId!.toString())}
+              alt=""
+            />
+          ))}
+          {hasBadge && <FightCloudBadge>+{overflow}</FightCloudBadge>}
+        </FightCloudInner>
+      </FightCloudWrap>
     );
   };
 
