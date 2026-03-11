@@ -710,6 +710,7 @@ type CloudAvatarSlot = { x: number; y: number; r: number };
 
 const CLOUD_VISUAL_SIZE = 38;
 const CLOUD_INSET = (32 - CLOUD_VISUAL_SIZE) / 2;
+const EVENT_CLOUD_MAX_AVATARS = 4;
 
 const CLOUD_AVATAR_LAYOUTS: CloudAvatarSlot[][] = [
   [],
@@ -802,26 +803,31 @@ const mapEventRecordToNavigationPreview = (
     });
 };
 
-const areEventPreviewParticipantsEqual = (
-  left: EventNavigationPreviewParticipant[],
-  right: EventNavigationPreviewParticipant[],
-): boolean => {
-  if (left.length !== right.length) {
-    return false;
+const getEventCloudAvatarsFromNavigationSources = (
+  eventId: string,
+  topGames: NavigationItem[],
+  pagedGames: NavigationItem[],
+): EventNavigationPreviewParticipant[] => {
+  const eventNavId = `event_${eventId}`;
+  const all = [...topGames, ...pagedGames];
+  let eventItem = all.find(
+    (item) => item.entityType === "event" && item.id === eventNavId,
+  );
+  if (!eventItem || eventItem.entityType !== "event") {
+    const cacheScope = resolveNavigationGamesCacheScope(
+      storage.getProfileId(""),
+      storage.getLoginId(""),
+    );
+    const cached = readNavigationGamesCacheSnapshot(cacheScope);
+    const cachedAll = [...cached.topGames, ...cached.pagedGames];
+    eventItem = cachedAll.find(
+      (item) => item.entityType === "event" && item.id === eventNavId,
+    );
   }
-  for (let index = 0; index < left.length; index += 1) {
-    const leftParticipant = left[index];
-    const rightParticipant = right[index];
-    if (
-      leftParticipant.profileId !== rightParticipant.profileId ||
-      leftParticipant.displayName !== rightParticipant.displayName ||
-      leftParticipant.emojiId !== rightParticipant.emojiId ||
-      leftParticipant.aura !== rightParticipant.aura
-    ) {
-      return false;
-    }
+  if (!eventItem || eventItem.entityType !== "event") {
+    return [];
   }
-  return true;
+  return eventItem.participantPreview.slice(0, EVENT_CLOUD_MAX_AVATARS);
 };
 
 const BottomControls: React.FC = () => {
@@ -3140,14 +3146,27 @@ const BottomControls: React.FC = () => {
     !!currentInviteEventId;
 
   useEffect(() => {
-    if (!isEventGameButtonVisible || !currentInviteEventId) {
+    if (!currentInviteEventId) {
       eventCloudSubscriptionEventIdRef.current = null;
       setLiveEventCloudAvatars([]);
       return;
     }
-    if (eventCloudSubscriptionEventIdRef.current !== currentInviteEventId) {
-      eventCloudSubscriptionEventIdRef.current = currentInviteEventId;
-      setLiveEventCloudAvatars([]);
+    if (eventCloudSubscriptionEventIdRef.current === currentInviteEventId) {
+      return;
+    }
+    eventCloudSubscriptionEventIdRef.current = currentInviteEventId;
+    setLiveEventCloudAvatars(
+      getEventCloudAvatarsFromNavigationSources(
+        currentInviteEventId,
+        topNavigationGames,
+        pagedNavigationGames,
+      ),
+    );
+  }, [currentInviteEventId, pagedNavigationGames, topNavigationGames]);
+
+  useEffect(() => {
+    if (!currentInviteEventId || !isEventGameButtonVisible) {
+      return;
     }
     let disposed = false;
 
@@ -3159,12 +3178,19 @@ const BottomControls: React.FC = () => {
         }
         const nextAvatars = mapEventRecordToNavigationPreview(
           eventRecord,
-        ).slice(0, 6);
-        setLiveEventCloudAvatars((previousAvatars) =>
-          areEventPreviewParticipantsEqual(previousAvatars, nextAvatars)
-            ? previousAvatars
-            : nextAvatars,
-        );
+        ).slice(0, EVENT_CLOUD_MAX_AVATARS);
+        setLiveEventCloudAvatars((previousAvatars) => {
+          if (previousAvatars.length >= EVENT_CLOUD_MAX_AVATARS) {
+            return previousAvatars;
+          }
+          if (previousAvatars.length === 0) {
+            return nextAvatars.length > 0 ? nextAvatars : previousAvatars;
+          }
+          if (nextAvatars.length > previousAvatars.length) {
+            return nextAvatars;
+          }
+          return previousAvatars;
+        });
       },
     );
 
@@ -3177,29 +3203,21 @@ const BottomControls: React.FC = () => {
   }, [currentInviteEventId, isEventGameButtonVisible]);
 
   const eventCloudAvatars = useMemo(() => {
-    if (!currentInviteEventId) return [];
-    const liveFallback = liveEventCloudAvatars.slice(0, 6);
+    if (!currentInviteEventId) {
+      return [];
+    }
+    const liveFallback = liveEventCloudAvatars.slice(
+      0,
+      EVENT_CLOUD_MAX_AVATARS,
+    );
     if (liveFallback.length > 0) {
       return liveFallback;
     }
-    const eventNavId = `event_${currentInviteEventId}`;
-    const all = [...topNavigationGames, ...pagedNavigationGames];
-    let eventItem = all.find(
-      (item) => item.entityType === "event" && item.id === eventNavId,
+    return getEventCloudAvatarsFromNavigationSources(
+      currentInviteEventId,
+      topNavigationGames,
+      pagedNavigationGames,
     );
-    if (!eventItem || eventItem.entityType !== "event") {
-      const cacheScope = resolveNavigationGamesCacheScope(
-        storage.getProfileId(""),
-        storage.getLoginId(""),
-      );
-      const cached = readNavigationGamesCacheSnapshot(cacheScope);
-      const cachedAll = [...cached.topGames, ...cached.pagedGames];
-      eventItem = cachedAll.find(
-        (item) => item.entityType === "event" && item.id === eventNavId,
-      );
-    }
-    if (!eventItem || eventItem.entityType !== "event") return liveFallback;
-    return eventItem.participantPreview.slice(0, 6);
   }, [
     currentInviteEventId,
     liveEventCloudAvatars,
@@ -3290,8 +3308,9 @@ const BottomControls: React.FC = () => {
                   <EventCloudShape d={EVENT_CLOUD_PATH} />
                 </svg>
                 {(
-                  CLOUD_AVATAR_LAYOUTS[Math.min(eventCloudAvatars.length, 6)] ??
-                  CLOUD_AVATAR_LAYOUTS[0]
+                  CLOUD_AVATAR_LAYOUTS[
+                    Math.min(eventCloudAvatars.length, EVENT_CLOUD_MAX_AVATARS)
+                  ] ?? CLOUD_AVATAR_LAYOUTS[0]
                 ).map((slot, i) => {
                   const participant = eventCloudAvatars[i];
                   const emojiId =
