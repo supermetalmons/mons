@@ -154,6 +154,7 @@ const EventAvatarStack = styled.div`
   align-items: center;
   gap: 1px;
   flex-shrink: 0;
+  position: relative;
 `;
 
 const EventAvatarImage = styled(GameEmojiImage)``;
@@ -178,6 +179,20 @@ const EventOverflowBadge = styled.span`
 
   @media (prefers-color-scheme: dark) {
     background: rgba(255, 255, 255, 0.07);
+  }
+`;
+
+const FightCloudContainer = styled.div`
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  margin-left: 1px;
+  --cloud-puff: rgba(0, 0, 0, 0.05);
+  --cloud-star: rgba(0, 0, 0, 0.15);
+
+  @media (prefers-color-scheme: dark) {
+    --cloud-puff: rgba(255, 255, 255, 0.065);
+    --cloud-star: rgba(255, 255, 255, 0.19);
   }
 `;
 
@@ -318,6 +333,48 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
     }
   }
 `;
+
+const fightCloudStarPoints = (cx: number, cy: number, r: number): string => {
+  const ir = r * 0.3;
+  return `${cx},${cy - r} ${cx + ir},${cy - ir} ${cx + r},${cy} ${cx + ir},${cy + ir} ${cx},${cy + r} ${cx - ir},${cy + ir} ${cx - r},${cy} ${cx - ir},${cy - ir}`;
+};
+
+const FightCloudBackdrop: React.FC<{ avatarCount: number; hasBadge: boolean }> = React.memo(({ avatarCount, hasBadge }) => {
+  const contentW = Math.max(1, avatarCount) * 21 - 1 + (hasBadge ? 20 : 0);
+  const px = 5;
+  const py = 4;
+  const w = contentW + px * 2;
+  const h = 20 + py * 2;
+  const cx = w / 2;
+  const cy = h / 2;
+
+  return (
+    <svg
+      aria-hidden="true"
+      overflow="visible"
+      width={w}
+      height={h}
+      viewBox={`0 0 ${w} ${h}`}
+      style={{
+        position: "absolute",
+        top: "50%",
+        left: "50%",
+        transform: "translate(-50%, -50%)",
+        pointerEvents: "none",
+      }}
+    >
+      <ellipse cx={cx} cy={cy} rx={cx - 1} ry={cy - 0.5} fill="var(--cloud-puff)" />
+      <circle cx={px + 2} cy={cy - 1} r={cy * 0.7} fill="var(--cloud-puff)" />
+      <circle cx={w - px - 2} cy={cy + 1} r={cy * 0.65} fill="var(--cloud-puff)" />
+      <circle cx={cx * 0.7} cy={py * 0.3} r={cy * 0.5} fill="var(--cloud-puff)" />
+      <circle cx={cx * 1.3} cy={h - py * 0.3} r={cy * 0.45} fill="var(--cloud-puff)" />
+      <circle cx={cx * 1.1} cy={py * 0.5} r={cy * 0.4} fill="var(--cloud-puff)" />
+      <polygon points={fightCloudStarPoints(w - 1, 3.5, 2.5)} fill="var(--cloud-star)" />
+      <polygon points={fightCloudStarPoints(2, h - 2.5, 2)} fill="var(--cloud-star)" />
+      <polygon points={fightCloudStarPoints(cx * 1.4, 1.5, 1.8)} fill="var(--cloud-star)" />
+    </svg>
+  );
+});
 
 const MIN_AUTO_LOAD_NEXT_PAGE_THRESHOLD_PX = 640;
 const MIN_REASONABLE_EPOCH_MS = Date.UTC(2000, 0, 1);
@@ -551,17 +608,21 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     const maxVisible = showBadge ? 5 : 6;
     const preview = validParticipants.slice(0, maxVisible);
     const overflow = event.participantCount - preview.length;
+    const hasBadge = showBadge && overflow > 0;
     return (
-      <EventAvatarStack>
-        {preview.map((participant, index) => (
-          <EventAvatarImage
-            key={`${participant.profileId ?? participant.displayName ?? "participant"}_${index}`}
-            src={emojis.getEmojiUrl(participant.emojiId!.toString())}
-            alt=""
-          />
-        ))}
-        {showBadge && overflow > 0 && <EventOverflowBadge>+{overflow}</EventOverflowBadge>}
-      </EventAvatarStack>
+      <FightCloudContainer>
+        {preview.length > 0 && <FightCloudBackdrop avatarCount={preview.length} hasBadge={hasBadge} />}
+        <EventAvatarStack>
+          {preview.map((participant, index) => (
+            <EventAvatarImage
+              key={`${participant.profileId ?? participant.displayName ?? "participant"}_${index}`}
+              src={emojis.getEmojiUrl(participant.emojiId!.toString())}
+              alt=""
+            />
+          ))}
+          {hasBadge && <EventOverflowBadge>+{overflow}</EventOverflowBadge>}
+        </EventAvatarStack>
+      </FightCloudContainer>
     );
   };
 
