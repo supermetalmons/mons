@@ -149,11 +149,30 @@ const GameText = styled.span`
   text-overflow: ellipsis;
 `;
 
+const FightCloudWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+  margin-left: -2px;
+`;
+
+const FightCloudSvg = styled.svg`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+`;
+
 const EventAvatarStack = styled.div`
+  position: relative;
   display: flex;
   align-items: center;
   gap: 1px;
   flex-shrink: 0;
+  padding: 0 5px;
+  z-index: 1;
 `;
 
 const EventAvatarImage = styled(GameEmojiImage)``;
@@ -168,17 +187,13 @@ const EventOverflowBadge = styled.span`
   padding: 0 3px;
   border-radius: 9px;
   margin-left: 0;
-  background: rgba(128, 128, 128, 0.09);
+  background: none;
   font-size: 0.55rem;
   font-weight: 600;
   color: var(--navigationTextMuted);
   flex-shrink: 0;
   letter-spacing: -0.02em;
   white-space: nowrap;
-
-  @media (prefers-color-scheme: dark) {
-    background: rgba(255, 255, 255, 0.07);
-  }
 `;
 
 const QueuePrimaryContent = styled.span`
@@ -551,17 +566,38 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     const maxVisible = showBadge ? 5 : 6;
     const preview = validParticipants.slice(0, maxVisible);
     const overflow = event.participantCount - preview.length;
+    const itemCount = preview.length + (showBadge && overflow > 0 ? 1 : 0);
+    const cloudW = Math.max(36, itemCount * 21 + 14);
+    const cloudH = 30;
     return (
-      <EventAvatarStack>
-        {preview.map((participant, index) => (
-          <EventAvatarImage
-            key={`${participant.profileId ?? participant.displayName ?? "participant"}_${index}`}
-            src={emojis.getEmojiUrl(participant.emojiId!.toString())}
-            alt=""
-          />
-        ))}
-        {showBadge && overflow > 0 && <EventOverflowBadge>+{overflow}</EventOverflowBadge>}
-      </EventAvatarStack>
+      <FightCloudWrapper>
+        <FightCloudSvg width={cloudW} height={cloudH} viewBox={`0 0 ${cloudW} ${cloudH}`} aria-hidden="true">
+          <g opacity="0.55">
+            <ellipse cx={cloudW * 0.5} cy={cloudH * 0.52} rx={cloudW * 0.48} ry={cloudH * 0.44} fill="var(--fightCloudFill, rgba(180,190,210,0.32))" />
+            <ellipse cx={cloudW * 0.22} cy={cloudH * 0.42} rx={cloudW * 0.2} ry={cloudH * 0.36} fill="var(--fightCloudFill, rgba(180,190,210,0.32))" />
+            <ellipse cx={cloudW * 0.78} cy={cloudH * 0.42} rx={cloudW * 0.2} ry={cloudH * 0.36} fill="var(--fightCloudFill, rgba(180,190,210,0.32))" />
+            <ellipse cx={cloudW * 0.35} cy={cloudH * 0.28} rx={cloudW * 0.17} ry={cloudH * 0.24} fill="var(--fightCloudFill, rgba(180,190,210,0.32))" />
+            <ellipse cx={cloudW * 0.65} cy={cloudH * 0.28} rx={cloudW * 0.17} ry={cloudH * 0.24} fill="var(--fightCloudFill, rgba(180,190,210,0.32))" />
+            <ellipse cx={cloudW * 0.5} cy={cloudH * 0.72} rx={cloudW * 0.32} ry={cloudH * 0.22} fill="var(--fightCloudFill, rgba(180,190,210,0.32))" />
+          </g>
+          <g fill="var(--fightCloudSparkle, rgba(160,170,190,0.45))">
+            <polygon points={`${cloudW * 0.08},${cloudH * 0.18} ${cloudW * 0.1},${cloudH * 0.12} ${cloudW * 0.12},${cloudH * 0.18} ${cloudW * 0.1},${cloudH * 0.24}`} />
+            <polygon points={`${cloudW * 0.9},${cloudH * 0.2} ${cloudW * 0.92},${cloudH * 0.14} ${cloudW * 0.94},${cloudH * 0.2} ${cloudW * 0.92},${cloudH * 0.26}`} />
+            <polygon points={`${cloudW * 0.15},${cloudH * 0.75} ${cloudW * 0.17},${cloudH * 0.7} ${cloudW * 0.19},${cloudH * 0.75} ${cloudW * 0.17},${cloudH * 0.8}`} />
+            <polygon points={`${cloudW * 0.84},${cloudH * 0.72} ${cloudW * 0.86},${cloudH * 0.67} ${cloudW * 0.88},${cloudH * 0.72} ${cloudW * 0.86},${cloudH * 0.77}`} />
+          </g>
+        </FightCloudSvg>
+        <EventAvatarStack>
+          {preview.map((participant, index) => (
+            <EventAvatarImage
+              key={`${participant.profileId ?? participant.displayName ?? "participant"}_${index}`}
+              src={emojis.getEmojiUrl(participant.emojiId!.toString())}
+              alt=""
+            />
+          ))}
+          {showBadge && overflow > 0 && <EventOverflowBadge>+{overflow}</EventOverflowBadge>}
+        </EventAvatarStack>
+      </FightCloudWrapper>
     );
   };
 

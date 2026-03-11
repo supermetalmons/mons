@@ -148,6 +148,8 @@
   --wagerButtonBackgroundReadyDark: #218f5e;
   --wagerButtonBackgroundReadyHoverDark: #25a06a;
   --wagerButtonBackgroundReadyActiveDark: #29b176;
+  --fightCloudFill: rgba(180, 190, 210, 0.32);
+  --fightCloudSparkle: rgba(150, 160, 185, 0.5);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -156,6 +158,8 @@
     --instruction-text-color: #fff;
     --instruction-bubble-bg: rgba(30, 32, 42, 0.9);
     --instruction-bubble-stroke: rgba(255, 255, 255, 0.08);
+    --fightCloudFill: rgba(130, 145, 180, 0.28);
+    --fightCloudSparkle: rgba(170, 185, 220, 0.4);
   }
 }
 
