@@ -143,6 +143,42 @@ const GameEmojiPlaceholder = styled.div`
   flex-shrink: 0;
 `;
 
+type QueueManaSlot = "top" | "right" | "bottom" | "left";
+
+const QueueManaCluster = styled.span`
+  position: relative;
+  width: 20px;
+  height: 20px;
+  flex-shrink: 0;
+`;
+
+const QueueManaIcon = styled.img<{ $slot: QueueManaSlot }>`
+  position: absolute;
+  width: 11px;
+  height: 11px;
+  object-fit: contain;
+  left: ${(props) => {
+    if (props.$slot === "left") {
+      return "27%";
+    }
+    if (props.$slot === "right") {
+      return "73%";
+    }
+    return "50%";
+  }};
+  top: ${(props) => {
+    if (props.$slot === "top") {
+      return "27%";
+    }
+    if (props.$slot === "bottom") {
+      return "73%";
+    }
+    return "50%";
+  }};
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+`;
+
 const GameText = styled.span`
   white-space: nowrap;
   overflow: hidden;
@@ -185,10 +221,9 @@ const QueuePrimaryContent = styled.span`
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 0.66rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  font-weight: inherit;
   letter-spacing: 0.01em;
-  text-transform: uppercase;
   color: var(--navigationTextMuted);
 `;
 
@@ -325,6 +360,7 @@ const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
 const MIN_AUTO_LOAD_NEXT_PAGE_THRESHOLD_PX = 640;
 const MIN_REASONABLE_EPOCH_MS = Date.UTC(2000, 0, 1);
 const SELECTED_ITEM_VISIBILITY_MARGIN_PX = 8;
+const QUEUE_MANA_SLOTS: QueueManaSlot[] = ["top", "right", "bottom", "left"];
 
 const NavigationPicker: React.FC<NavigationPickerProps> = ({
   showsHomeNavigation,
@@ -509,6 +545,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     return "Waiting for opponent";
   };
 
+  const queueManaImage = getIconImage("mana");
+
   const getEventStatusLabel = (event: NavigationEventItem): string => {
     if (event.status === "ended" || event.status === "dismissed") {
       const sourceMs = event.endedAtMs ?? event.updatedAtMs ?? event.listSortAtMs;
@@ -597,7 +635,14 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
               onClick={() => onSelectGame?.(item, isGame ? { status: item.status } : undefined)}
             >
               {isQueueStatus && game ? (
-                <QueuePrimaryContent>{getQueuePrimaryLabel(game)}</QueuePrimaryContent>
+                <>
+                  <QueueManaCluster aria-hidden="true">
+                    {QUEUE_MANA_SLOTS.map((slot) => (
+                      <QueueManaIcon key={slot} $slot={slot} src={queueManaImage} alt="" />
+                    ))}
+                  </QueueManaCluster>
+                  <QueuePrimaryContent>{getQueuePrimaryLabel(game)}</QueuePrimaryContent>
+                </>
               ) : event ? (
                 <>
                   {renderEventPreview(event)}
