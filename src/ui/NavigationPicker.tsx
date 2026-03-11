@@ -327,36 +327,6 @@ const CloudShape = styled.path`
   }
 `;
 
-const SparkleShape = styled.path`
-  fill: currentColor;
-  fill-opacity: 0.14;
-  transition: fill-opacity 0.12s;
-
-  @media (hover: hover) and (pointer: fine) {
-    button:hover & {
-      fill-opacity: 0.2;
-    }
-  }
-
-  button:active & {
-    fill-opacity: 0.24;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    fill-opacity: 0.18;
-
-    @media (hover: hover) and (pointer: fine) {
-      button:hover & {
-        fill-opacity: 0.24;
-      }
-    }
-
-    button:active & {
-      fill-opacity: 0.28;
-    }
-  }
-`;
-
 const FightCloudInner = styled.div`
   position: relative;
   display: flex;
@@ -582,44 +552,12 @@ function buildFightCloudPath(w: number, h: number): string {
   return parts.join("");
 }
 
-function buildSparklePath(cx: number, cy: number, s: number): string {
-  const d = s * 0.28;
-  return [
-    `M${cx},${(cy - s).toFixed(1)}`,
-    `L${(cx + d).toFixed(1)},${(cy - d).toFixed(1)}`,
-    `L${(cx + s).toFixed(1)},${cy}`,
-    `L${(cx + d).toFixed(1)},${(cy + d).toFixed(1)}`,
-    `L${cx},${(cy + s).toFixed(1)}`,
-    `L${(cx - d).toFixed(1)},${(cy + d).toFixed(1)}`,
-    `L${(cx - s).toFixed(1)},${cy}`,
-    `L${(cx - d).toFixed(1)},${(cy - d).toFixed(1)}`,
-    "Z",
-  ].join("");
-}
-
-function buildCloudSparkles(w: number, h: number): string {
-  const parts = [
-    buildSparklePath(w - 2, 3.5, 2.5),
-    buildSparklePath(3, h - 3, 2),
-  ];
-  if (w > 60) {
-    parts.push(buildSparklePath(w * 0.3, 1.5, 1.8));
-  }
-  if (w > 90) {
-    parts.push(buildSparklePath(w * 0.7, h - 1.5, 1.6));
-  }
-  return parts.join("");
-}
-
-const fightCloudCache = new Map<string, { cloud: string; sparkles: string }>();
-function getFightCloudPaths(w: number, h: number) {
+const fightCloudCache = new Map<string, string>();
+function getFightCloudPath(w: number, h: number) {
   const k = `${w}|${h}`;
   let v = fightCloudCache.get(k);
   if (!v) {
-    v = {
-      cloud: buildFightCloudPath(w, h),
-      sparkles: buildCloudSparkles(w, h),
-    };
+    v = buildFightCloudPath(w, h);
     fightCloudCache.set(k, v);
   }
   return v;
@@ -912,7 +850,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
 
     const contentW = itemCount * 21 - 1;
     const cloudW = contentW + FIGHT_CLOUD_PAD_X * 2;
-    const { cloud, sparkles } = getFightCloudPaths(cloudW, FIGHT_CLOUD_H);
+    const cloud = getFightCloudPath(cloudW, FIGHT_CLOUD_H);
 
     return (
       <FightCloudWrap>
@@ -923,7 +861,6 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
           aria-hidden="true"
         >
           <CloudShape d={cloud} />
-          <SparkleShape d={sparkles} />
         </FightCloudCanvas>
         <FightCloudInner>
           {Array.from({ length: renderedParticipantSlots }, (_, index) => {
