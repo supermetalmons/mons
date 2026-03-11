@@ -2640,7 +2640,11 @@ function showRematchInterface() {
   if (eventId) {
     void connection.syncEventState(eventId).catch(() => {});
   }
-  if (isWatchOnly || connection.isCurrentInviteEventOwned()) {
+  if (connection.isCurrentInviteEventOwned()) {
+    didReceiveRematchesSeriesEndIndicator();
+    return;
+  }
+  if (isWatchOnly) {
     return;
   }
   if (connection.rematchSeriesEndIsIndicated()) {
