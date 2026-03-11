@@ -19,7 +19,6 @@ import {
   FaPaintBrush,
   FaScroll,
   FaHourglassHalf,
-  FaUsers,
 } from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import styled from "styled-components";
@@ -128,6 +127,7 @@ import {
   incrementLifecycleCounter,
 } from "../lifecycle/lifecycleDiagnostics";
 import { problems } from "../content/problems";
+import { emojis } from "../content/emojis";
 import {
   getEventModalState,
   openEventModal,
@@ -619,6 +619,149 @@ const RematchLoadingDots = styled.span<{ $isSelected: boolean }>`
         : "rgba(255, 255, 255, 0.15)"};
   }
 `;
+
+const EventCloudButtonOuter = styled.button`
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-user-select: none;
+  user-select: none;
+  outline: none;
+  overflow: visible;
+  flex-shrink: 0;
+`;
+
+const EventCloudShape = styled.path`
+  fill: var(--color-gray-f0);
+  stroke: none;
+  transition: fill 0.15s;
+
+  @media (hover: hover) and (pointer: fine) {
+    button:hover & {
+      fill: var(--color-gray-e0);
+    }
+  }
+
+  button:active & {
+    fill: var(--color-gray-d0);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    fill: var(--color-gray-33);
+
+    @media (hover: hover) and (pointer: fine) {
+      button:hover & {
+        fill: var(--color-gray-44);
+      }
+    }
+
+    button:active & {
+      fill: var(--color-gray-55);
+    }
+  }
+`;
+
+const EventCloudAvatar = styled.img`
+  position: absolute;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 1;
+  object-fit: cover;
+  image-rendering: auto;
+`;
+
+const EventCloudAvatarPlaceholder = styled.div`
+  position: absolute;
+  border-radius: 2px;
+  pointer-events: none;
+  z-index: 1;
+  background: rgba(128, 128, 128, 0.15);
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(255, 255, 255, 0.08);
+  }
+`;
+
+type CloudAvatarSlot = { x: number; y: number; r: number };
+
+const CLOUD_VISUAL_SIZE = 38;
+const CLOUD_INSET = (32 - CLOUD_VISUAL_SIZE) / 2;
+
+const CLOUD_AVATAR_LAYOUTS: CloudAvatarSlot[][] = [
+  [],
+  [{ x: 19, y: 19, r: 0 }],
+  [
+    { x: 14, y: 19, r: -15 },
+    { x: 25, y: 18, r: 12 },
+  ],
+  [
+    { x: 19, y: 12, r: 8 },
+    { x: 13, y: 25, r: -12 },
+    { x: 26, y: 25, r: 15 },
+  ],
+  [
+    { x: 14, y: 13, r: -10 },
+    { x: 26, y: 12, r: 14 },
+    { x: 12, y: 26, r: 8 },
+    { x: 26, y: 26, r: -12 },
+  ],
+  [
+    { x: 19, y: 11, r: 5 },
+    { x: 11, y: 21, r: -15 },
+    { x: 28, y: 20, r: 10 },
+    { x: 13, y: 29, r: 12 },
+    { x: 26, y: 29, r: -8 },
+  ],
+  [
+    { x: 14, y: 12, r: -12 },
+    { x: 25, y: 11, r: 15 },
+    { x: 11, y: 22, r: 8 },
+    { x: 28, y: 21, r: -10 },
+    { x: 14, y: 30, r: 5 },
+    { x: 26, y: 29, r: -15 },
+  ],
+];
+
+const CLOUD_AVATAR_SIZE = 11;
+
+function buildEventCloudPath(): string {
+  const sz = CLOUD_VISUAL_SIZE;
+  const cx = sz / 2;
+  const cy = sz / 2;
+  const rx = 14;
+  const ry = 14;
+  const n = 8;
+  const step = (Math.PI * 2) / n;
+  const bumps = [4.5, 3.2, 5.2, 3.8, 5.0, 3.0, 5.5, 3.5];
+  const parts: string[] = [];
+  for (let i = 0; i < n; i++) {
+    const a = i * step;
+    const aM = a + step / 2;
+    const aE = a + step;
+    const x0 = cx + rx * Math.cos(a);
+    const y0 = cy + ry * Math.sin(a);
+    const cpx = cx + (rx + bumps[i]) * Math.cos(aM);
+    const cpy = cy + (ry + bumps[i]) * Math.sin(aM);
+    const x1 = cx + rx * Math.cos(aE);
+    const y1 = cy + ry * Math.sin(aE);
+    if (i === 0) parts.push(`M${x0.toFixed(1)},${y0.toFixed(1)}`);
+    parts.push(
+      `Q${cpx.toFixed(1)},${cpy.toFixed(1)},${x1.toFixed(1)},${y1.toFixed(1)}`,
+    );
+  }
+  parts.push("Z");
+  return parts.join("");
+}
+
+const EVENT_CLOUD_PATH = buildEventCloudPath();
 
 const BottomControls: React.FC = () => {
   const [isEndMatchButtonVisible, setIsEndMatchButtonVisible] = useState(false);
@@ -2931,6 +3074,17 @@ const BottomControls: React.FC = () => {
     connection.isCurrentInviteEventOwned() &&
     !!currentInviteEventId;
 
+  const eventCloudAvatars = useMemo(() => {
+    if (!currentInviteEventId) return [];
+    const eventNavId = `event_${currentInviteEventId}`;
+    const all = [...topNavigationGames, ...pagedNavigationGames];
+    const eventItem = all.find(
+      (item) => item.entityType === "event" && item.id === eventNavId,
+    );
+    if (!eventItem || eventItem.entityType !== "event") return [];
+    return eventItem.participantPreview.slice(0, 6);
+  }, [currentInviteEventId, topNavigationGames, pagedNavigationGames]);
+
   return (
     <>
       <BrushButton
@@ -3216,7 +3370,7 @@ const BottomControls: React.FC = () => {
           </ControlButton>
         )}
         {isEventGameButtonVisible && (
-          <ControlButton
+          <EventCloudButtonOuter
             onClick={
               !isMobile
                 ? () =>
@@ -3235,8 +3389,57 @@ const BottomControls: React.FC = () => {
             }
             aria-label="Event"
           >
-            <FaUsers />
-          </ControlButton>
+            <svg
+              width={CLOUD_VISUAL_SIZE}
+              height={CLOUD_VISUAL_SIZE}
+              viewBox={`0 0 ${CLOUD_VISUAL_SIZE} ${CLOUD_VISUAL_SIZE}`}
+              style={{
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+                overflow: "visible",
+                pointerEvents: "none",
+              }}
+              aria-hidden="true"
+            >
+              <EventCloudShape d={EVENT_CLOUD_PATH} />
+            </svg>
+            {(
+              CLOUD_AVATAR_LAYOUTS[
+                Math.min(eventCloudAvatars.length, 6)
+              ] ?? CLOUD_AVATAR_LAYOUTS[0]
+            ).map((slot, i) => {
+              const participant = eventCloudAvatars[i];
+              const emojiId =
+                participant?.emojiId != null
+                  ? Number(participant.emojiId)
+                  : NaN;
+              const posStyle = {
+                width: CLOUD_AVATAR_SIZE,
+                height: CLOUD_AVATAR_SIZE,
+                left: slot.x - CLOUD_AVATAR_SIZE / 2 + CLOUD_INSET,
+                top: slot.y - CLOUD_AVATAR_SIZE / 2 + CLOUD_INSET,
+                transform: `rotate(${slot.r}deg)`,
+              };
+              if (Number.isFinite(emojiId) && emojiId > 0) {
+                return (
+                  <EventCloudAvatar
+                    key={i}
+                    src={emojis.getEmojiUrl(Math.trunc(emojiId).toString())}
+                    alt=""
+                    style={posStyle}
+                  />
+                );
+              }
+              return (
+                <EventCloudAvatarPlaceholder
+                  key={i}
+                  style={posStyle}
+                />
+              );
+            })}
+          </EventCloudButtonOuter>
         )}
         <NavigationListButton
           ref={navigationButtonRef}
