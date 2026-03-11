@@ -447,9 +447,9 @@ const QUEUE_MANA_SLOTS: QueueManaSlot[] = ["top", "right", "bottom", "left"];
 function buildFightCloudPath(w: number, h: number): string {
   const cx = w / 2;
   const cy = h / 2;
-  const rx = w / 2 - 2;
+  const rx = w / 2 - 3;
   const ry = h / 2 - 2;
-  const n = Math.max(12, Math.round((w + h) * 0.35));
+  const n = Math.max(5, Math.min(8, Math.round(w / 14)));
   const step = (Math.PI * 2) / n;
   const parts: string[] = [];
   for (let i = 0; i < n; i++) {
@@ -458,7 +458,7 @@ function buildFightCloudPath(w: number, h: number): string {
     const aE = a + step;
     const x0 = cx + rx * Math.cos(a);
     const y0 = cy + ry * Math.sin(a);
-    const bump = 2.8 + 1.6 * Math.sin(i * 3.7 + 1.2);
+    const bump = 4.5 + 2.5 * Math.sin(i * 3.7 + 1.2);
     const cpx = cx + (rx + bump) * Math.cos(aM);
     const cpy = cy + (ry + bump) * Math.sin(aM);
     const x1 = cx + rx * Math.cos(aE);
