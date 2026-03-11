@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 const { initAdmin, admin } = require("./_admin");
 
-const toCleanString = (value) => (typeof value === "string" && value.trim() !== "" ? value.trim() : "");
+const toCleanString = (value) =>
+  typeof value === "string" && value.trim() !== "" ? value.trim() : "";
 
 const normalizeEth = (value) => {
   const normalized = toCleanString(value).toLowerCase();
@@ -48,7 +49,10 @@ async function main() {
 
   let lastDoc = null;
   while (true) {
-    let query = firestore.collection("users").orderBy(admin.firestore.FieldPath.documentId()).limit(pageSize);
+    let query = firestore
+      .collection("users")
+      .orderBy(admin.firestore.FieldPath.documentId())
+      .limit(pageSize);
     if (lastDoc) {
       query = query.startAfter(lastDoc);
     }
@@ -71,16 +75,24 @@ async function main() {
       for (const entry of entries) {
         if (!entry.normalizedValue) {
           const fieldName =
-            entry.method === "apple" ? "appleSub"
-            : entry.method === "x" ? "xUserId"
-            : entry.method;
+            entry.method === "apple"
+              ? "appleSub"
+              : entry.method === "x"
+                ? "xUserId"
+                : entry.method;
           const rawValue = toCleanString(data[fieldName]);
           if (rawValue) {
-            malformed.push({ profileId, method: entry.method, value: rawValue });
+            malformed.push({
+              profileId,
+              method: entry.method,
+              value: rawValue,
+            });
           }
           continue;
         }
-        const indexRef = firestore.collection("authMethodIndex").doc(methodKey(entry.method, entry.normalizedValue));
+        const indexRef = firestore
+          .collection("authMethodIndex")
+          .doc(methodKey(entry.method, entry.normalizedValue));
         const indexSnapshot = await indexRef.get();
         if (!indexSnapshot.exists) {
           createdIndexes += 1;
@@ -100,7 +112,10 @@ async function main() {
           if (!indexedProfileId) {
             repairedIndexes += 1;
             if (!dryRun) {
-              await indexRef.set({ profileId, updatedAtMs: Date.now() }, { merge: true });
+              await indexRef.set(
+                { profileId, updatedAtMs: Date.now() },
+                { merge: true },
+              );
             }
           }
           continue;

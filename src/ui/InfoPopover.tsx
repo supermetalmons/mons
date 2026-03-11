@@ -71,41 +71,73 @@ interface InfoPopoverProps {
   isOpen: boolean;
 }
 
-export const InfoPopover = forwardRef<HTMLDivElement, InfoPopoverProps>(({ isOpen }, ref) => {
-  const { assets } = useGameAssets();
-  const { emojis } = useEmojis();
+export const InfoPopover = forwardRef<HTMLDivElement, InfoPopoverProps>(
+  ({ isOpen }, ref) => {
+    const { assets } = useGameAssets();
+    const { emojis } = useEmojis();
 
-  const getIconImage = (iconName: string) => {
-    if (!assets || !assets[iconName]) {
-      return "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
-    }
-    return `data:image/png;base64,${assets[iconName]}`;
-  };
+    const getIconImage = (iconName: string) => {
+      if (!assets || !assets[iconName]) {
+        return "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
+      }
+      return `data:image/png;base64,${assets[iconName]}`;
+    };
 
-  const getEmojiImage = (emojiName: string) => {
-    if (!emojis || !emojis[emojiName]) {
-      return "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
-    }
-    return `data:image/png;base64,${emojis[emojiName]}`;
-  };
+    const getEmojiImage = (emojiName: string) => {
+      if (!emojis || !emojis[emojiName]) {
+        return "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
+      }
+      return `data:image/png;base64,${emojis[emojiName]}`;
+    };
 
-  return (
-    <StyledInfoPopover ref={ref} isOpen={isOpen}>
-      <img className="icon-image" src={getIconImage("drainer")} alt="drainer" /> Carry mana with the drainer.
-      <br />
-      <img className="icon-image" src={getIconImage("manaB")} alt="manaB" /> Bring mana to the corners to score.
-      <br />
-      <img className="icon-image" src={getIconImage("mana")} alt="mana" /> Score 5 points to win.
-      <br />
-      <span style={{ opacity: 0.95 }}>⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯</span>
-      <br />
-      <img className="emoji-image" src={getEmojiImage("statusMove")} alt="move" /> Move your mons up to a total of 5 spaces.
-      <br />
-      <img className="emoji-image" src={getEmojiImage("statusAction")} alt="action" /> Use one action: demon, spirit, or mystic.
-      <br />
-      <img className="emoji-image" src={getEmojiImage("statusMana")} alt="mana" /> Use your one mana move to end your turn.
-    </StyledInfoPopover>
-  );
-});
+    return (
+      <StyledInfoPopover ref={ref} isOpen={isOpen}>
+        <img
+          className="icon-image"
+          src={getIconImage("drainer")}
+          alt="drainer"
+        />{" "}
+        Carry mana with the drainer.
+        <br />
+        <img
+          className="icon-image"
+          src={getIconImage("manaB")}
+          alt="manaB"
+        />{" "}
+        Bring mana to the corners to score.
+        <br />
+        <img
+          className="icon-image"
+          src={getIconImage("mana")}
+          alt="mana"
+        />{" "}
+        Score 5 points to win.
+        <br />
+        <span style={{ opacity: 0.95 }}>⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯⋯</span>
+        <br />
+        <img
+          className="emoji-image"
+          src={getEmojiImage("statusMove")}
+          alt="move"
+        />{" "}
+        Move your mons up to a total of 5 spaces.
+        <br />
+        <img
+          className="emoji-image"
+          src={getEmojiImage("statusAction")}
+          alt="action"
+        />{" "}
+        Use one action: demon, spirit, or mystic.
+        <br />
+        <img
+          className="emoji-image"
+          src={getEmojiImage("statusMana")}
+          alt="mana"
+        />{" "}
+        Use your one mana move to end your turn.
+      </StyledInfoPopover>
+    );
+  },
+);
 
 InfoPopover.displayName = "InfoPopover";

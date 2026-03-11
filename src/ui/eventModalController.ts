@@ -33,7 +33,9 @@ export const getEventModalState = (): EventModalState => {
   return state;
 };
 
-export const subscribeToEventModalState = (listener: EventModalListener): (() => void) => {
+export const subscribeToEventModalState = (
+  listener: EventModalListener,
+): (() => void) => {
   listeners.add(listener);
   listener(state);
   return () => {
@@ -41,7 +43,10 @@ export const subscribeToEventModalState = (listener: EventModalListener): (() =>
   };
 };
 
-export const openEventModal = (eventId: string, options?: { restoreHomeOnClose?: boolean }): void => {
+export const openEventModal = (
+  eventId: string,
+  options?: { restoreHomeOnClose?: boolean },
+): void => {
   const normalizedEventId = typeof eventId === "string" ? eventId.trim() : "";
   if (!normalizedEventId) {
     return;
@@ -55,9 +60,15 @@ export const openEventModal = (eventId: string, options?: { restoreHomeOnClose?:
   emit();
 };
 
-export const closeEventModal = async (options?: { skipHomeTransition?: boolean; reason?: EventModalCloseReason }): Promise<void> => {
+export const closeEventModal = async (options?: {
+  skipHomeTransition?: boolean;
+  reason?: EventModalCloseReason;
+}): Promise<void> => {
   const closeReason: EventModalCloseReason = options?.reason ?? "dismiss";
-  const shouldRestoreHome = state.isOpen && state.restoreHomeOnClose && options?.skipHomeTransition !== true;
+  const shouldRestoreHome =
+    state.isOpen &&
+    state.restoreHomeOnClose &&
+    options?.skipHomeTransition !== true;
   state = {
     isOpen: false,
     eventId: null,

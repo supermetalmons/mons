@@ -1,5 +1,8 @@
 const admin = require("firebase-admin");
-const { onValueCreated, onValueWritten } = require("firebase-functions/v2/database");
+const {
+  onValueCreated,
+  onValueWritten,
+} = require("firebase-functions/v2/database");
 const { onDocumentDeleted } = require("firebase-functions/v2/firestore");
 
 const SORT_BUCKETS = {
@@ -25,10 +28,13 @@ const READ_RETRY_DELAY_MS = 25;
 const loginToProfileCache = new Map();
 const profileSummaryCache = new Map();
 
-const normalizeString = (value) => (typeof value === "string" && value.trim() !== "" ? value.trim() : null);
+const normalizeString = (value) =>
+  typeof value === "string" && value.trim() !== "" ? value.trim() : null;
 
 const toTimestamp = (millis) => {
-  const normalized = Number.isFinite(millis) ? Math.floor(Number(millis)) : Date.now();
+  const normalized = Number.isFinite(millis)
+    ? Math.floor(Number(millis))
+    : Date.now();
   return admin.firestore.Timestamp.fromMillis(Math.max(1, normalized));
 };
 
@@ -56,7 +62,9 @@ const readTimestampMillis = (value) => {
     }
   }
   if (typeof value === "object" && Number.isFinite(value._seconds)) {
-    const nanos = Number.isFinite(value._nanoseconds) ? Number(value._nanoseconds) : 0;
+    const nanos = Number.isFinite(value._nanoseconds)
+      ? Number(value._nanoseconds)
+      : 0;
     return Math.floor(Number(value._seconds) * 1000 + nanos / 1e6);
   }
   return null;
@@ -80,8 +88,14 @@ const rematchSeriesEnded = (inviteData) => {
   if (!inviteData || typeof inviteData !== "object") {
     return false;
   }
-  const hostRematches = typeof inviteData.hostRematches === "string" ? inviteData.hostRematches : "";
-  const guestRematches = typeof inviteData.guestRematches === "string" ? inviteData.guestRematches : "";
+  const hostRematches =
+    typeof inviteData.hostRematches === "string"
+      ? inviteData.hostRematches
+      : "";
+  const guestRematches =
+    typeof inviteData.guestRematches === "string"
+      ? inviteData.guestRematches
+      : "";
   return hostRematches.endsWith("x") || guestRematches.endsWith("x");
 };
 
@@ -96,7 +110,10 @@ const getProfileDisplayName = (profileData) => {
   if (!profileData || typeof profileData !== "object") {
     return "anon";
   }
-  if (typeof profileData.username === "string" && profileData.username.trim() !== "") {
+  if (
+    typeof profileData.username === "string" &&
+    profileData.username.trim() !== ""
+  ) {
     return profileData.username.trim();
   }
   if (typeof profileData.eth === "string" && profileData.eth.trim() !== "") {
@@ -112,7 +129,10 @@ const getProfileEmoji = (profileData) => {
   if (!profileData || typeof profileData !== "object") {
     return null;
   }
-  const customEmoji = profileData.custom && typeof profileData.custom === "object" ? profileData.custom.emoji : undefined;
+  const customEmoji =
+    profileData.custom && typeof profileData.custom === "object"
+      ? profileData.custom.emoji
+      : undefined;
   const fallbackEmoji = profileData.emoji;
   const source = customEmoji !== undefined ? customEmoji : fallbackEmoji;
   if (typeof source === "number" && Number.isFinite(source)) {
@@ -140,7 +160,12 @@ const getEmojiId = (value) => {
   return null;
 };
 
-async function readLoginSummaryFromRtdbMatches(loginUid, latestMatchId, inviteId, cache) {
+async function readLoginSummaryFromRtdbMatches(
+  loginUid,
+  latestMatchId,
+  inviteId,
+  cache,
+) {
   const normalizedLoginUid = normalizeString(loginUid);
   if (!normalizedLoginUid) {
     return null;
@@ -164,7 +189,10 @@ async function readLoginSummaryFromRtdbMatches(loginUid, latestMatchId, inviteId
   for (const candidateMatchId of candidateMatchIds) {
     for (let attempt = 1; attempt <= READ_RETRY_ATTEMPTS; attempt += 1) {
       try {
-        const matchSnapshot = await admin.database().ref(`players/${normalizedLoginUid}/matches/${candidateMatchId}`).once("value");
+        const matchSnapshot = await admin
+          .database()
+          .ref(`players/${normalizedLoginUid}/matches/${candidateMatchId}`)
+          .once("value");
         if (!matchSnapshot.exists()) {
           break;
         }
@@ -230,7 +258,10 @@ const readInviteExists = async (inviteId, inviteExistenceCache) => {
     .once("value")
     .then((snapshot) => snapshot.exists())
     .catch((error) => {
-      console.error("projector:invite-exists-read-failed", { inviteId, error: error && error.message ? error.message : error });
+      console.error("projector:invite-exists-read-failed", {
+        inviteId,
+        error: error && error.message ? error.message : error,
+      });
       return false;
     });
   if (inviteExistenceCache) {
@@ -286,7 +317,11 @@ async function resolveInviteIdFromMatchId(matchId, options = {}) {
 const getHintMatchIndex = (inviteId, latestMatchIdHint) => {
   const normalizedInviteId = normalizeString(inviteId);
   const normalizedHint = normalizeString(latestMatchIdHint);
-  if (!normalizedInviteId || !normalizedHint || !normalizedHint.startsWith(normalizedInviteId)) {
+  if (
+    !normalizedInviteId ||
+    !normalizedHint ||
+    !normalizedHint.startsWith(normalizedInviteId)
+  ) {
     return 0;
   }
   const suffix = normalizedHint.slice(normalizedInviteId.length);
@@ -301,8 +336,12 @@ const getHintMatchIndex = (inviteId, latestMatchIdHint) => {
 };
 
 const deriveLatestMatchId = (inviteId, inviteData, latestMatchIdHint) => {
-  const hostIndices = parseRematchIndices(inviteData ? inviteData.hostRematches : null);
-  const guestIndices = parseRematchIndices(inviteData ? inviteData.guestRematches : null);
+  const hostIndices = parseRematchIndices(
+    inviteData ? inviteData.hostRematches : null,
+  );
+  const guestIndices = parseRematchIndices(
+    inviteData ? inviteData.guestRematches : null,
+  );
 
   let maxIndex = 0;
   hostIndices.forEach((index) => {
@@ -334,12 +373,18 @@ const getAutomatchStateHint = (inviteId, inviteData, automatchData) => {
   if (normalizeString(inviteData ? inviteData.guestId : null)) {
     return "matched";
   }
-  const marker = normalizeString(inviteData ? inviteData.automatchStateHint : null);
+  const marker = normalizeString(
+    inviteData ? inviteData.automatchStateHint : null,
+  );
   if (marker === "pending" || marker === "matched" || marker === "canceled") {
     return marker;
   }
   const canceledAt = inviteData ? inviteData.automatchCanceledAt : null;
-  if (typeof canceledAt === "number" && Number.isFinite(canceledAt) && canceledAt > 0) {
+  if (
+    typeof canceledAt === "number" &&
+    Number.isFinite(canceledAt) &&
+    canceledAt > 0
+  ) {
     return "canceled";
   }
   return "canceled";
@@ -349,7 +394,9 @@ const isEventOwnedInvite = (inviteData) => {
   if (!inviteData || typeof inviteData !== "object") {
     return false;
   }
-  return inviteData.eventOwned === true || !!normalizeString(inviteData.eventId);
+  return (
+    inviteData.eventOwned === true || !!normalizeString(inviteData.eventId)
+  );
 };
 
 const eventMatchHasCompletedRatingUpdate = (inviteData, latestMatchId) => {
@@ -360,14 +407,22 @@ const eventMatchHasCompletedRatingUpdate = (inviteData, latestMatchId) => {
   if (!normalizedLatestMatchId) {
     return false;
   }
-  const matchesRatingUpdates = inviteData && typeof inviteData.matchesRatingUpdates === "object" ? inviteData.matchesRatingUpdates : null;
+  const matchesRatingUpdates =
+    inviteData && typeof inviteData.matchesRatingUpdates === "object"
+      ? inviteData.matchesRatingUpdates
+      : null;
   if (!matchesRatingUpdates) {
     return false;
   }
   return matchesRatingUpdates[normalizedLatestMatchId] === true;
 };
 
-const deriveProjectionStatus = ({ inviteId, inviteData, automatchStateHint, latestMatchId }) => {
+const deriveProjectionStatus = ({
+  inviteId,
+  inviteData,
+  automatchStateHint,
+  latestMatchId,
+}) => {
   if (rematchSeriesEnded(inviteData)) {
     return "ended";
   }
@@ -415,17 +470,31 @@ const fingerprintForProjection = (payload) => {
   return JSON.stringify(payload);
 };
 
-const pickListSortMillis = ({ options, status, automatchData, nowMs, existingListSortMs }) => {
-  let nextSortMillis = Number.isFinite(options.listSortAtMs) ? Math.floor(options.listSortAtMs) : nowMs;
+const pickListSortMillis = ({
+  options,
+  status,
+  automatchData,
+  nowMs,
+  existingListSortMs,
+}) => {
+  let nextSortMillis = Number.isFinite(options.listSortAtMs)
+    ? Math.floor(options.listSortAtMs)
+    : nowMs;
 
   if (!Number.isFinite(options.listSortAtMs) && status === "pending") {
-    const queueTimestamp = automatchData && Number.isFinite(automatchData.timestamp) ? Math.floor(automatchData.timestamp) : null;
+    const queueTimestamp =
+      automatchData && Number.isFinite(automatchData.timestamp)
+        ? Math.floor(automatchData.timestamp)
+        : null;
     if (queueTimestamp && queueTimestamp > 0) {
       nextSortMillis = queueTimestamp;
     }
   }
 
-  if (options.preserveNewerListSortAt !== false && Number.isFinite(existingListSortMs)) {
+  if (
+    options.preserveNewerListSortAt !== false &&
+    Number.isFinite(existingListSortMs)
+  ) {
     nextSortMillis = Math.max(nextSortMillis, existingListSortMs);
   }
 
@@ -449,7 +518,10 @@ async function resolveProfileIdForLogin(loginUid) {
   let profileId = null;
 
   try {
-    const profileSnapshot = await admin.database().ref(`players/${normalizedLoginUid}/profile`).once("value");
+    const profileSnapshot = await admin
+      .database()
+      .ref(`players/${normalizedLoginUid}/profile`)
+      .once("value");
     const profileValue = normalizeString(profileSnapshot.val());
     if (profileValue) {
       profileId = profileValue;
@@ -463,7 +535,12 @@ async function resolveProfileIdForLogin(loginUid) {
 
   if (!profileId) {
     try {
-      const usersSnapshot = await admin.firestore().collection("users").where("logins", "array-contains", normalizedLoginUid).limit(1).get();
+      const usersSnapshot = await admin
+        .firestore()
+        .collection("users")
+        .where("logins", "array-contains", normalizedLoginUid)
+        .limit(1)
+        .get();
       if (!usersSnapshot.empty) {
         profileId = usersSnapshot.docs[0].id;
       }
@@ -493,7 +570,11 @@ async function readProfileSummary(profileId) {
   let summary = null;
   for (let attempt = 1; attempt <= READ_RETRY_ATTEMPTS; attempt += 1) {
     try {
-      const profileDoc = await admin.firestore().collection("users").doc(normalizedProfileId).get();
+      const profileDoc = await admin
+        .firestore()
+        .collection("users")
+        .doc(normalizedProfileId)
+        .get();
       if (profileDoc.exists) {
         const profileData = profileDoc.data() || {};
         summary = {
@@ -530,7 +611,13 @@ const getOwnerProfileIds = (hostProfileId, guestProfileId) => {
   return owners;
 };
 
-const getOwnerContext = ({ ownerProfileId, hostProfileId, guestProfileId, hostLoginId, guestLoginId }) => {
+const getOwnerContext = ({
+  ownerProfileId,
+  hostProfileId,
+  guestProfileId,
+  hostLoginId,
+  guestLoginId,
+}) => {
   if (ownerProfileId === hostProfileId) {
     return {
       ownerRole: "host",
@@ -576,19 +663,41 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
   ]);
 
   const inviteData = inviteSnapshot.exists() ? inviteSnapshot.val() : null;
-  const automatchData = automatchSnapshot.exists() ? automatchSnapshot.val() : null;
+  const automatchData = automatchSnapshot.exists()
+    ? automatchSnapshot.val()
+    : null;
 
   const hostLoginId = normalizeString(inviteData ? inviteData.hostId : null);
   const guestLoginId = normalizeString(inviteData ? inviteData.guestId : null);
 
-  const [hostProfileId, guestProfileId] = await Promise.all([resolveProfileIdForLogin(hostLoginId), resolveProfileIdForLogin(guestLoginId)]);
+  const [hostProfileId, guestProfileId] = await Promise.all([
+    resolveProfileIdForLogin(hostLoginId),
+    resolveProfileIdForLogin(guestLoginId),
+  ]);
 
   const ownerProfileIds = getOwnerProfileIds(hostProfileId, guestProfileId);
 
-  const automatchStateHint = getAutomatchStateHint(normalizedInviteId, inviteData, automatchData);
-  const latestMatchId = deriveLatestMatchId(normalizedInviteId, inviteData, options.latestMatchIdHint || null);
-  const status = deriveProjectionStatus({ inviteId: normalizedInviteId, inviteData, automatchStateHint, latestMatchId });
-  const shouldProject = shouldProjectInvite({ inviteId: normalizedInviteId, inviteData, automatchStateHint });
+  const automatchStateHint = getAutomatchStateHint(
+    normalizedInviteId,
+    inviteData,
+    automatchData,
+  );
+  const latestMatchId = deriveLatestMatchId(
+    normalizedInviteId,
+    inviteData,
+    options.latestMatchIdHint || null,
+  );
+  const status = deriveProjectionStatus({
+    inviteId: normalizedInviteId,
+    inviteData,
+    automatchStateHint,
+    latestMatchId,
+  });
+  const shouldProject = shouldProjectInvite({
+    inviteId: normalizedInviteId,
+    inviteData,
+    automatchStateHint,
+  });
   const sortBucket = getSortBucket(status);
   const loginSummaryCache = new Map();
 
@@ -597,7 +706,12 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
   await Promise.all(
     ownerProfileIds.map(async (ownerProfileId) => {
       try {
-        const ownerDocSnapshot = await firestore.collection("users").doc(ownerProfileId).collection("games").doc(normalizedInviteId).get();
+        const ownerDocSnapshot = await firestore
+          .collection("users")
+          .doc(ownerProfileId)
+          .collection("games")
+          .doc(normalizedInviteId)
+          .get();
         if (!ownerDocSnapshot.exists) {
           return;
         }
@@ -611,11 +725,12 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
           error: error && error.message ? error.message : error,
         });
       }
-    })
+    }),
   );
 
   const ownerSet = new Set(ownerProfileIds);
-  const canPruneOwners = (!hostLoginId || !!hostProfileId) && (!guestLoginId || !!guestProfileId);
+  const canPruneOwners =
+    (!hostLoginId || !!hostProfileId) && (!guestLoginId || !!guestProfileId);
   const batch = firestore.batch();
 
   let setCount = 0;
@@ -623,7 +738,10 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
   let skippedCount = 0;
 
   for (const existing of existingDocs) {
-    if (!shouldProject || (canPruneOwners && !ownerSet.has(existing.ownerProfileId))) {
+    if (
+      !shouldProject ||
+      (canPruneOwners && !ownerSet.has(existing.ownerProfileId))
+    ) {
       batch.delete(existing.docSnapshot.ref);
       deleteCount += 1;
     }
@@ -662,7 +780,10 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
     sortBucket,
     isPendingAutomatch: status === "pending",
     automatchStateHint,
-    automatchCanceledAt: typeof (inviteData && inviteData.automatchCanceledAt) === "number" ? inviteData.automatchCanceledAt : null,
+    automatchCanceledAt:
+      typeof (inviteData && inviteData.automatchCanceledAt) === "number"
+        ? inviteData.automatchCanceledAt
+        : null,
     latestMatchId,
   };
 
@@ -674,26 +795,59 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
       hostLoginId,
       guestLoginId,
     });
-    const ownerDocRef = firestore.collection("users").doc(ownerProfileId).collection("games").doc(normalizedInviteId);
-    const existingDocSnapshot = existingDocsByOwnerProfileId.get(ownerProfileId);
-    const existingDocData = existingDocSnapshot ? existingDocSnapshot.data() : null;
+    const ownerDocRef = firestore
+      .collection("users")
+      .doc(ownerProfileId)
+      .collection("games")
+      .doc(normalizedInviteId);
+    const existingDocSnapshot =
+      existingDocsByOwnerProfileId.get(ownerProfileId);
+    const existingDocData = existingDocSnapshot
+      ? existingDocSnapshot.data()
+      : null;
 
-    const opponentProfileSummary = ownerContext.opponentProfileId ? await readProfileSummary(ownerContext.opponentProfileId) : null;
-    const opponentName = opponentProfileSummary && typeof opponentProfileSummary.name === "string" ? opponentProfileSummary.name : null;
+    const opponentProfileSummary = ownerContext.opponentProfileId
+      ? await readProfileSummary(ownerContext.opponentProfileId)
+      : null;
+    const opponentName =
+      opponentProfileSummary && typeof opponentProfileSummary.name === "string"
+        ? opponentProfileSummary.name
+        : null;
     const opponentEmojiFromProfile =
-      opponentProfileSummary && opponentProfileSummary.emoji !== null && opponentProfileSummary.emoji !== undefined
+      opponentProfileSummary &&
+      opponentProfileSummary.emoji !== null &&
+      opponentProfileSummary.emoji !== undefined
         ? opponentProfileSummary.emoji
         : null;
     let opponentEmojiFromLogin = null;
     if (opponentEmojiFromProfile === null && ownerContext.opponentLoginId) {
-      const opponentLoginSummary = await readLoginSummaryFromRtdbMatches(ownerContext.opponentLoginId, latestMatchId, normalizedInviteId, loginSummaryCache);
+      const opponentLoginSummary = await readLoginSummaryFromRtdbMatches(
+        ownerContext.opponentLoginId,
+        latestMatchId,
+        normalizedInviteId,
+        loginSummaryCache,
+      );
       opponentEmojiFromLogin =
-        opponentLoginSummary && opponentLoginSummary.emoji !== null && opponentLoginSummary.emoji !== undefined ? opponentLoginSummary.emoji : null;
+        opponentLoginSummary &&
+        opponentLoginSummary.emoji !== null &&
+        opponentLoginSummary.emoji !== undefined
+          ? opponentLoginSummary.emoji
+          : null;
     }
-    const existingOpponentEmoji = getEmojiId(existingDocData ? existingDocData.opponentEmoji ?? existingDocData.opponentEmojiId : null);
-    const opponentEmoji = opponentEmojiFromProfile !== null ? opponentEmojiFromProfile : opponentEmojiFromLogin !== null ? opponentEmojiFromLogin : existingOpponentEmoji;
+    const existingOpponentEmoji = getEmojiId(
+      existingDocData
+        ? (existingDocData.opponentEmoji ?? existingDocData.opponentEmojiId)
+        : null,
+    );
+    const opponentEmoji =
+      opponentEmojiFromProfile !== null
+        ? opponentEmojiFromProfile
+        : opponentEmojiFromLogin !== null
+          ? opponentEmojiFromLogin
+          : existingOpponentEmoji;
 
-    const requiresResolvedOpponentEmoji = status === "active" || status === "ended";
+    const requiresResolvedOpponentEmoji =
+      status === "active" || status === "ended";
     if (requiresResolvedOpponentEmoji && opponentEmoji === null) {
       if (existingDocSnapshot) {
         batch.delete(ownerDocRef);
@@ -727,15 +881,23 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
       opponentEmoji,
     };
 
-    const nextFingerprint = fingerprintForProjection(projectionFingerprintPayload);
-    const previousFingerprint = existingDocData && typeof existingDocData.lastEventFingerprint === "string" ? existingDocData.lastEventFingerprint : null;
+    const nextFingerprint = fingerprintForProjection(
+      projectionFingerprintPayload,
+    );
+    const previousFingerprint =
+      existingDocData &&
+      typeof existingDocData.lastEventFingerprint === "string"
+        ? existingDocData.lastEventFingerprint
+        : null;
 
     if (previousFingerprint && previousFingerprint === nextFingerprint) {
       skippedCount += 1;
       continue;
     }
 
-    const existingListSortMs = existingDocData ? readTimestampMillis(existingDocData.listSortAt) : null;
+    const existingListSortMs = existingDocData
+      ? readTimestampMillis(existingDocData.listSortAt)
+      : null;
     const nextListSortMs = pickListSortMillis({
       options,
       status,
@@ -744,7 +906,9 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
       existingListSortMs,
     });
 
-    const existingCreatedAt = existingDocData ? existingDocData.createdAt : null;
+    const existingCreatedAt = existingDocData
+      ? existingDocData.createdAt
+      : null;
     const existingEndedAt = existingDocData ? existingDocData.endedAt : null;
 
     const projectionDocData = {
@@ -761,7 +925,8 @@ async function recomputeInviteProjection(inviteId, reason, options = {}) {
       listSortAt: toTimestamp(nextListSortMs),
       createdAt: existingCreatedAt || toTimestamp(nowMs),
       updatedAt: toTimestamp(nowMs),
-      endedAt: status === "ended" ? existingEndedAt || toTimestamp(nowMs) : null,
+      endedAt:
+        status === "ended" ? existingEndedAt || toTimestamp(nowMs) : null,
       lastEventFingerprint: nextFingerprint,
       lastEventType: normalizeString(reason) || null,
       lastEventReason: normalizeString(reason) || null,
@@ -796,7 +961,10 @@ async function syncAutomatchInviteMarkerFromQueue(inviteId, queueExists) {
     return { ok: false, updated: false, reason: "invalid-invite-id" };
   }
 
-  const inviteSnapshot = await admin.database().ref(`invites/${normalizedInviteId}`).once("value");
+  const inviteSnapshot = await admin
+    .database()
+    .ref(`invites/${normalizedInviteId}`)
+    .once("value");
   if (!inviteSnapshot.exists()) {
     return { ok: true, updated: false, reason: "missing-invite" };
   }
@@ -804,12 +972,18 @@ async function syncAutomatchInviteMarkerFromQueue(inviteId, queueExists) {
   const inviteData = inviteSnapshot.val() || {};
   const guestId = normalizeString(inviteData.guestId);
   const currentHint = normalizeString(inviteData.automatchStateHint);
-  const currentCanceledAt = typeof inviteData.automatchCanceledAt === "number" ? inviteData.automatchCanceledAt : null;
+  const currentCanceledAt =
+    typeof inviteData.automatchCanceledAt === "number"
+      ? inviteData.automatchCanceledAt
+      : null;
 
   const nextHint = queueExists ? "pending" : guestId ? "matched" : "canceled";
   const nextCanceledAt = nextHint === "canceled" ? Date.now() : null;
 
-  const canceledAtChanged = nextHint === "canceled" ? currentCanceledAt === null : currentCanceledAt !== null;
+  const canceledAtChanged =
+    nextHint === "canceled"
+      ? currentCanceledAt === null
+      : currentCanceledAt !== null;
   const hintChanged = currentHint !== nextHint;
 
   if (!hintChanged && !canceledAtChanged) {
@@ -838,7 +1012,12 @@ const hasMeaningfulValueChange = (before, after) => {
   return true;
 };
 
-const processWithConcurrency = async (items, concurrency, worker, shouldContinue) => {
+const processWithConcurrency = async (
+  items,
+  concurrency,
+  worker,
+  shouldContinue,
+) => {
   if (items.length === 0) {
     return;
   }
@@ -870,7 +1049,9 @@ const readNumericMillis = (value) => {
 };
 
 const hasRecentMergeMarkerForSource = (targetData, staleProfileId) => {
-  const mergedSourceProfileId = normalizeString(targetData && targetData.mergedSourceProfileId);
+  const mergedSourceProfileId = normalizeString(
+    targetData && targetData.mergedSourceProfileId,
+  );
   if (!mergedSourceProfileId || mergedSourceProfileId !== staleProfileId) {
     return false;
   }
@@ -898,7 +1079,10 @@ const deleteProfileGamesProjectionDocs = async (profileRef) => {
   const startedAt = Date.now();
   let deleted = 0;
   while (Date.now() - startedAt <= PROFILE_DELETE_GAMES_CLEANUP_TIMEOUT_MS) {
-    const snapshot = await profileRef.collection("games").limit(PROFILE_DELETE_GAMES_CLEANUP_BATCH_SIZE).get();
+    const snapshot = await profileRef
+      .collection("games")
+      .limit(PROFILE_DELETE_GAMES_CLEANUP_BATCH_SIZE)
+      .get();
     if (snapshot.empty) {
       return { deleted, complete: true };
     }
@@ -923,93 +1107,135 @@ const onInviteCreated = onValueCreated("/invites/{inviteId}", async (event) => {
   });
 });
 
-const onInviteGuestIdChanged = onValueWritten("/invites/{inviteId}/guestId", async (event) => {
-  const before = event.data.before.val();
-  const after = event.data.after.val();
-  if (!hasMeaningfulValueChange(before, after)) {
-    return;
-  }
-  await recomputeInviteProjection(event.params.inviteId, "invite-guest-id", {
-    eventTimestampMs: Date.now(),
-  });
-});
-
-const onInviteHostRematchesChanged = onValueWritten("/invites/{inviteId}/hostRematches", async (event) => {
-  const before = event.data.before.val();
-  const after = event.data.after.val();
-  if (!hasMeaningfulValueChange(before, after)) {
-    return;
-  }
-  await recomputeInviteProjection(event.params.inviteId, "invite-host-rematches", {
-    eventTimestampMs: Date.now(),
-  });
-});
-
-const onInviteGuestRematchesChanged = onValueWritten("/invites/{inviteId}/guestRematches", async (event) => {
-  const before = event.data.before.val();
-  const after = event.data.after.val();
-  if (!hasMeaningfulValueChange(before, after)) {
-    return;
-  }
-  await recomputeInviteProjection(event.params.inviteId, "invite-guest-rematches", {
-    eventTimestampMs: Date.now(),
-  });
-});
-
-const onMatchCreated = onValueCreated("/players/{loginUid}/matches/{matchId}", async (event) => {
-  const matchId = normalizeString(event.params.matchId);
-  if (!matchId) {
-    return;
-  }
-
-  const inviteId = await resolveInviteIdFromMatchId(matchId);
-  if (!inviteId) {
-    console.log("projector:match-created:invite-unresolved", {
-      loginUid: event.params.loginUid,
-      matchId,
+const onInviteGuestIdChanged = onValueWritten(
+  "/invites/{inviteId}/guestId",
+  async (event) => {
+    const before = event.data.before.val();
+    const after = event.data.after.val();
+    if (!hasMeaningfulValueChange(before, after)) {
+      return;
+    }
+    await recomputeInviteProjection(event.params.inviteId, "invite-guest-id", {
+      eventTimestampMs: Date.now(),
     });
-    return;
-  }
+  },
+);
 
-  await recomputeInviteProjection(inviteId, "match-created", {
-    eventTimestampMs: Date.now(),
-    latestMatchIdHint: matchId,
-  });
-});
+const onInviteHostRematchesChanged = onValueWritten(
+  "/invites/{inviteId}/hostRematches",
+  async (event) => {
+    const before = event.data.before.val();
+    const after = event.data.after.val();
+    if (!hasMeaningfulValueChange(before, after)) {
+      return;
+    }
+    await recomputeInviteProjection(
+      event.params.inviteId,
+      "invite-host-rematches",
+      {
+        eventTimestampMs: Date.now(),
+      },
+    );
+  },
+);
 
-const onInviteMatchRatingUpdated = onValueCreated("/invites/{inviteId}/matchesRatingUpdates/{matchId}", async (event) => {
-  const matchId = normalizeString(event.params.matchId);
-  if (!matchId) {
-    return;
-  }
-  await recomputeInviteProjection(event.params.inviteId, "invite-match-rating-updated", {
-    eventTimestampMs: Date.now(),
-    latestMatchIdHint: matchId,
-  });
-});
+const onInviteGuestRematchesChanged = onValueWritten(
+  "/invites/{inviteId}/guestRematches",
+  async (event) => {
+    const before = event.data.before.val();
+    const after = event.data.after.val();
+    if (!hasMeaningfulValueChange(before, after)) {
+      return;
+    }
+    await recomputeInviteProjection(
+      event.params.inviteId,
+      "invite-guest-rematches",
+      {
+        eventTimestampMs: Date.now(),
+      },
+    );
+  },
+);
 
-const onAutomatchQueueWritten = onValueWritten("/automatch/{inviteId}", async (event) => {
-  const inviteId = event.params.inviteId;
-  const beforeExists = event.data.before.exists();
-  const afterExists = event.data.after.exists();
-  const beforeVal = beforeExists ? event.data.before.val() : null;
-  const afterVal = afterExists ? event.data.after.val() : null;
+const onMatchCreated = onValueCreated(
+  "/players/{loginUid}/matches/{matchId}",
+  async (event) => {
+    const matchId = normalizeString(event.params.matchId);
+    if (!matchId) {
+      return;
+    }
 
-  if (beforeExists === afterExists && JSON.stringify(beforeVal) === JSON.stringify(afterVal)) {
-    return;
-  }
+    const inviteId = await resolveInviteIdFromMatchId(matchId);
+    if (!inviteId) {
+      console.log("projector:match-created:invite-unresolved", {
+        loginUid: event.params.loginUid,
+        matchId,
+      });
+      return;
+    }
 
-  await syncAutomatchInviteMarkerFromQueue(inviteId, afterExists);
-  await recomputeInviteProjection(inviteId, "automatch-queue", {
-    eventTimestampMs: Date.now(),
-  });
-});
+    await recomputeInviteProjection(inviteId, "match-created", {
+      eventTimestampMs: Date.now(),
+      latestMatchIdHint: matchId,
+    });
+  },
+);
 
-const processProfileLinkCatchup = async ({ loginUid, profileId, staleProfileId = null, eventLabel }) => {
+const onInviteMatchRatingUpdated = onValueCreated(
+  "/invites/{inviteId}/matchesRatingUpdates/{matchId}",
+  async (event) => {
+    const matchId = normalizeString(event.params.matchId);
+    if (!matchId) {
+      return;
+    }
+    await recomputeInviteProjection(
+      event.params.inviteId,
+      "invite-match-rating-updated",
+      {
+        eventTimestampMs: Date.now(),
+        latestMatchIdHint: matchId,
+      },
+    );
+  },
+);
+
+const onAutomatchQueueWritten = onValueWritten(
+  "/automatch/{inviteId}",
+  async (event) => {
+    const inviteId = event.params.inviteId;
+    const beforeExists = event.data.before.exists();
+    const afterExists = event.data.after.exists();
+    const beforeVal = beforeExists ? event.data.before.val() : null;
+    const afterVal = afterExists ? event.data.after.val() : null;
+
+    if (
+      beforeExists === afterExists &&
+      JSON.stringify(beforeVal) === JSON.stringify(afterVal)
+    ) {
+      return;
+    }
+
+    await syncAutomatchInviteMarkerFromQueue(inviteId, afterExists);
+    await recomputeInviteProjection(inviteId, "automatch-queue", {
+      eventTimestampMs: Date.now(),
+    });
+  },
+);
+
+const processProfileLinkCatchup = async ({
+  loginUid,
+  profileId,
+  staleProfileId = null,
+  eventLabel,
+}) => {
   const startedAt = Date.now();
-  const shouldContinue = () => Date.now() - startedAt < PROFILE_LINK_CATCHUP_TIMEOUT_MS;
+  const shouldContinue = () =>
+    Date.now() - startedAt < PROFILE_LINK_CATCHUP_TIMEOUT_MS;
 
-  const matchesSnapshot = await admin.database().ref(`players/${loginUid}/matches`).once("value");
+  const matchesSnapshot = await admin
+    .database()
+    .ref(`players/${loginUid}/matches`)
+    .once("value");
   if (!matchesSnapshot.exists()) {
     return;
   }
@@ -1027,7 +1253,9 @@ const processProfileLinkCatchup = async ({ loginUid, profileId, staleProfileId =
     if (inviteIds.length >= PROFILE_LINK_CATCHUP_MAX_INVITES) {
       break;
     }
-    const inviteId = await resolveInviteIdFromMatchId(matchId, { inviteExistenceCache });
+    const inviteId = await resolveInviteIdFromMatchId(matchId, {
+      inviteExistenceCache,
+    });
     if (!inviteId || inviteSet.has(inviteId)) {
       continue;
     }
@@ -1063,7 +1291,7 @@ const processProfileLinkCatchup = async ({ loginUid, profileId, staleProfileId =
         });
       }
     },
-    shouldContinue
+    shouldContinue,
   );
 
   const didTimeout = !shouldContinue();
@@ -1078,7 +1306,12 @@ const processProfileLinkCatchup = async ({ loginUid, profileId, staleProfileId =
     const targetSnapshot = await targetRef.get();
     if (!targetSnapshot.exists) {
       staleCleanupState = "target-profile-missing";
-    } else if (!hasRecentMergeMarkerForSource(targetSnapshot.data() || {}, staleProfileId)) {
+    } else if (
+      !hasRecentMergeMarkerForSource(
+        targetSnapshot.data() || {},
+        staleProfileId,
+      )
+    ) {
       staleCleanupState = "merge-marker-mismatch";
     } else if (successfullyRecomputedInviteIds.length === 0) {
       staleCleanupState = "no-successful-recomputes";
@@ -1090,7 +1323,11 @@ const processProfileLinkCatchup = async ({ loginUid, profileId, staleProfileId =
         staleCleanupState = "done";
         const deleteOps = successfullyRecomputedInviteIds.map((inviteId) => ({
           type: "delete",
-          ref: firestore.collection("users").doc(staleProfileId).collection("games").doc(inviteId),
+          ref: firestore
+            .collection("users")
+            .doc(staleProfileId)
+            .collection("games")
+            .doc(inviteId),
         }));
         while (deleteOps.length > 0) {
           const batch = firestore.batch();
@@ -1122,37 +1359,43 @@ const processProfileLinkCatchup = async ({ loginUid, profileId, staleProfileId =
   });
 };
 
-const onProfileLinkCreated = onValueCreated("/players/{loginUid}/profile", async (event) => {
-  const loginUid = normalizeString(event.params.loginUid);
-  const profileId = normalizeString(event.data.val());
-  if (!loginUid || !profileId) {
-    return;
-  }
-  await processProfileLinkCatchup({
-    loginUid,
-    profileId,
-    staleProfileId: null,
-    eventLabel: "created",
-  });
-});
+const onProfileLinkCreated = onValueCreated(
+  "/players/{loginUid}/profile",
+  async (event) => {
+    const loginUid = normalizeString(event.params.loginUid);
+    const profileId = normalizeString(event.data.val());
+    if (!loginUid || !profileId) {
+      return;
+    }
+    await processProfileLinkCatchup({
+      loginUid,
+      profileId,
+      staleProfileId: null,
+      eventLabel: "created",
+    });
+  },
+);
 
-const onProfileLinkWritten = onValueWritten("/players/{loginUid}/profile", async (event) => {
-  if (!event.data.before.exists()) {
-    return;
-  }
-  const loginUid = normalizeString(event.params.loginUid);
-  const beforeProfileId = normalizeString(event.data.before.val());
-  const afterProfileId = normalizeString(event.data.after.val());
-  if (!loginUid || !afterProfileId || afterProfileId === beforeProfileId) {
-    return;
-  }
-  await processProfileLinkCatchup({
-    loginUid,
-    profileId: afterProfileId,
-    staleProfileId: beforeProfileId || null,
-    eventLabel: "written",
-  });
-});
+const onProfileLinkWritten = onValueWritten(
+  "/players/{loginUid}/profile",
+  async (event) => {
+    if (!event.data.before.exists()) {
+      return;
+    }
+    const loginUid = normalizeString(event.params.loginUid);
+    const beforeProfileId = normalizeString(event.data.before.val());
+    const afterProfileId = normalizeString(event.data.after.val());
+    if (!loginUid || !afterProfileId || afterProfileId === beforeProfileId) {
+      return;
+    }
+    await processProfileLinkCatchup({
+      loginUid,
+      profileId: afterProfileId,
+      staleProfileId: beforeProfileId || null,
+      eventLabel: "written",
+    });
+  },
+);
 
 const onProfileDeleted = onDocumentDeleted(
   {
@@ -1172,9 +1415,11 @@ const onProfileDeleted = onDocumentDeleted(
       complete: cleanup.complete,
     });
     if (!cleanup.complete) {
-      throw new Error(`projector:profile-delete-games-cleanup-incomplete:${profileId}`);
+      throw new Error(
+        `projector:profile-delete-games-cleanup-incomplete:${profileId}`,
+      );
     }
-  }
+  },
 );
 
 module.exports = {

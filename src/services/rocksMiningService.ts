@@ -1,5 +1,10 @@
 import { connection } from "../connection/connection";
-import { MINING_MATERIAL_NAMES, MiningMaterialName, PlayerMiningData, PlayerMiningMaterials } from "../connection/connectionModels";
+import {
+  MINING_MATERIAL_NAMES,
+  MiningMaterialName,
+  PlayerMiningData,
+  PlayerMiningMaterials,
+} from "../connection/connectionModels";
 import { storage } from "../utils/storage";
 
 const ROCK_VARIANT_COUNT = 27;
@@ -22,7 +27,10 @@ const computeHash32 = (value: string): number => {
   return hash;
 };
 
-const createSeededRandom = (profileId: string, date: string): (() => number) => {
+const createSeededRandom = (
+  profileId: string,
+  date: string,
+): (() => number) => {
   const source = profileId ? `${profileId}:${date}` : date;
   let state = computeHash32(source) || 1;
   return () => {
@@ -56,7 +64,9 @@ const createEmptyMaterials = (): PlayerMiningMaterials => ({
   ice: 0,
 });
 
-const cloneMaterials = (source: PlayerMiningMaterials): PlayerMiningMaterials => {
+const cloneMaterials = (
+  source: PlayerMiningMaterials,
+): PlayerMiningMaterials => {
   const result = createEmptyMaterials();
   MATERIALS.forEach((name) => {
     result[name] = source[name];
@@ -64,18 +74,24 @@ const cloneMaterials = (source: PlayerMiningMaterials): PlayerMiningMaterials =>
   return result;
 };
 
-const normalizeMaterials = (source?: Partial<PlayerMiningMaterials> | null): PlayerMiningMaterials => {
+const normalizeMaterials = (
+  source?: Partial<PlayerMiningMaterials> | null,
+): PlayerMiningMaterials => {
   const base = createEmptyMaterials();
   MATERIALS.forEach((name) => {
     const raw = source ? (source as Record<string, unknown>)[name] : undefined;
     const numeric = typeof raw === "number" ? raw : Number(raw);
-    const value = Number.isFinite(numeric) ? Math.max(0, Math.round(numeric as number)) : 0;
+    const value = Number.isFinite(numeric)
+      ? Math.max(0, Math.round(numeric as number))
+      : 0;
     base[name] = value;
   });
   return base;
 };
 
-const normalizeSnapshot = (source?: PlayerMiningData | null): PlayerMiningData => {
+const normalizeSnapshot = (
+  source?: PlayerMiningData | null,
+): PlayerMiningData => {
   if (!source) {
     return {
       lastRockDate: null,
@@ -83,7 +99,8 @@ const normalizeSnapshot = (source?: PlayerMiningData | null): PlayerMiningData =
     };
   }
   return {
-    lastRockDate: typeof source.lastRockDate === "string" ? source.lastRockDate : null,
+    lastRockDate:
+      typeof source.lastRockDate === "string" ? source.lastRockDate : null,
     materials: normalizeMaterials(source.materials),
   };
 };
@@ -96,7 +113,9 @@ const formatMiningDate = (date: Date): string => {
 };
 
 const loadInitialSnapshot = (profileId: string): PlayerMiningData => {
-  const materials = isAnonymousProfile(profileId) ? createEmptyMaterials() : normalizeMaterials(storage.getMiningMaterials(createEmptyMaterials()));
+  const materials = isAnonymousProfile(profileId)
+    ? createEmptyMaterials()
+    : normalizeMaterials(storage.getMiningMaterials(createEmptyMaterials()));
   const lastRockDateRaw = storage.getMiningLastRockDate(null);
   return {
     lastRockDate: typeof lastRockDateRaw === "string" ? lastRockDateRaw : null,
@@ -121,10 +140,16 @@ const notify = () => {
   listeners.forEach((listener) => listener(current));
 };
 
-const setSnapshot = (next: PlayerMiningData, persist: boolean, notifyListeners: boolean = true) => {
+const setSnapshot = (
+  next: PlayerMiningData,
+  persist: boolean,
+  notifyListeners: boolean = true,
+) => {
   const profileId = getActiveProfileId();
   const isAnon = isAnonymousProfile(profileId);
-  const materials = isAnon ? createEmptyMaterials() : cloneMaterials(next.materials);
+  const materials = isAnon
+    ? createEmptyMaterials()
+    : cloneMaterials(next.materials);
   snapshot = {
     lastRockDate: next.lastRockDate,
     materials,
@@ -157,7 +182,10 @@ const isFirstMiningEvent = (source: PlayerMiningData): boolean => {
   return !MATERIALS.some((name) => source.materials[name] > 0);
 };
 
-const createFirstRockDrops = (): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
+const createFirstRockDrops = (): {
+  drops: MiningMaterialName[];
+  delta: PlayerMiningMaterials;
+} => {
   const delta = createEmptyMaterials();
   delta.dust = 1;
   return {
@@ -166,7 +194,9 @@ const createFirstRockDrops = (): { drops: MiningMaterialName[]; delta: PlayerMin
   };
 };
 
-const createDropsFromRandom = (random: () => number): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
+const createDropsFromRandom = (
+  random: () => number,
+): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
   const count = 2 + Math.floor(random() * 4);
   const drops: MiningMaterialName[] = [];
   const delta = createEmptyMaterials();
@@ -178,14 +208,21 @@ const createDropsFromRandom = (random: () => number): { drops: MiningMaterialNam
   return { drops, delta };
 };
 
-const createDrops = (profileId: string, date: string, currentSnapshot: PlayerMiningData): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
+const createDrops = (
+  profileId: string,
+  date: string,
+  currentSnapshot: PlayerMiningData,
+): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
   if (isFirstMiningEvent(currentSnapshot)) {
     return createFirstRockDrops();
   }
   return createDropsFromRandom(createSeededRandom(profileId, date));
 };
 
-const createTestingDrops = (): { drops: MiningMaterialName[]; delta: PlayerMiningMaterials } => {
+const createTestingDrops = (): {
+  drops: MiningMaterialName[];
+  delta: PlayerMiningMaterials;
+} => {
   return createDropsFromRandom(Math.random);
 };
 
@@ -208,7 +245,9 @@ function getSnapshot(): PlayerMiningData {
   const isAnon = isAnonymousProfile(profileId);
   return {
     lastRockDate: snapshot.lastRockDate,
-    materials: isAnon ? createEmptyMaterials() : cloneMaterials(snapshot.materials),
+    materials: isAnon
+      ? createEmptyMaterials()
+      : cloneMaterials(snapshot.materials),
   };
 }
 
@@ -220,7 +259,10 @@ function subscribe(listener: MiningListener): MiningSubscription {
   };
 }
 
-function setFromServer(data?: PlayerMiningData | null, options?: { persist?: boolean; notify?: boolean }): void {
+function setFromServer(
+  data?: PlayerMiningData | null,
+  options?: { persist?: boolean; notify?: boolean },
+): void {
   const normalized = normalizeSnapshot(data);
   serverSnapshotLoaded = true;
   const shouldNotify = options?.notify !== false;
@@ -242,7 +284,9 @@ function didBreakRock(): DidBreakRockResult {
       }
     : createDrops(profileId, date, snapshot);
   const { drops, delta } = dropsData;
-  const baseMaterials = isAnon ? createEmptyMaterials() : cloneMaterials(snapshot.materials);
+  const baseMaterials = isAnon
+    ? createEmptyMaterials()
+    : cloneMaterials(snapshot.materials);
   const nextSnapshot: PlayerMiningData = {
     lastRockDate: date,
     materials: baseMaterials,

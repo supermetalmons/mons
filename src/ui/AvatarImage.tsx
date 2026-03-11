@@ -1,6 +1,15 @@
 import React from "react";
 import styled, { keyframes } from "styled-components";
-import { getRainbowAuraGradient, RAINBOW_AURA_SCALE, RAINBOW_AURA_OFFSET_PERCENT, RAINBOW_AURA_BLUR_PX, RAINBOW_AURA_OPACITY, RAINBOW_MASK_CSS_BASE, RAINBOW_AURA_ROTATION_S, RAINBOW_AURA_ROTATOR_SIZE_PERCENT } from "./rainbowAura";
+import {
+  getRainbowAuraGradient,
+  RAINBOW_AURA_SCALE,
+  RAINBOW_AURA_OFFSET_PERCENT,
+  RAINBOW_AURA_BLUR_PX,
+  RAINBOW_AURA_OPACITY,
+  RAINBOW_MASK_CSS_BASE,
+  RAINBOW_AURA_ROTATION_S,
+  RAINBOW_AURA_ROTATOR_SIZE_PERCENT,
+} from "./rainbowAura";
 
 const rotate = keyframes`
   to { transform: rotate(360deg); }
@@ -76,7 +85,13 @@ interface AvatarImageProps {
   onLoad?: () => void;
 }
 
-export const AvatarImage: React.FC<AvatarImageProps> = ({ src, alt, rainbowAura = false, loading = "lazy", onLoad }) => {
+export const AvatarImage: React.FC<AvatarImageProps> = ({
+  src,
+  alt,
+  rainbowAura = false,
+  loading = "lazy",
+  onLoad,
+}) => {
   return (
     <AvatarContainer>
       {rainbowAura && (
@@ -88,7 +103,12 @@ export const AvatarImage: React.FC<AvatarImageProps> = ({ src, alt, rainbowAura 
           </RainbowInner>
         </RainbowBackground>
       )}
-      <StyledAvatarImage src={src} alt={alt} loading={loading} onLoad={onLoad} />
+      <StyledAvatarImage
+        src={src}
+        alt={alt}
+        loading={loading}
+        onLoad={onLoad}
+      />
     </AvatarContainer>
   );
 };

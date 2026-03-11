@@ -1,9 +1,58 @@
 import { initializeApp, FirebaseApp } from "firebase/app";
-import { getAuth, Auth, signInAnonymously, onAuthStateChanged, signOut } from "firebase/auth";
-import { getDatabase, Database, ref, set, onValue, off, get, update, runTransaction } from "firebase/database";
-import { getFirestore, Firestore, collection, query, where, limit, getDocs, orderBy, updateDoc, doc, onSnapshot, startAfter, QueryDocumentSnapshot, DocumentData } from "firebase/firestore";
-import { didFindInviteThatCanBeJoined, didReceiveInviteReactionUpdate, didReceiveMatchUpdate, didRecoverInviteReactions, initialFen, didRecoverMyMatch, enterWatchOnlyMode, didFindYourOwnInviteThatNobodyJoined, didReceiveRematchesSeriesEndIndicator, didDiscoverExistingRematchProposalWaitingForResponse, didJustCreateRematchProposalSuccessfully, failedToCreateRematchProposal, didUpdateRematchSeriesMetadata } from "../game/gameController";
-import { getPlayersEmojiId, didGetPlayerProfile, setupPlayerId } from "../game/board";
+import {
+  getAuth,
+  Auth,
+  signInAnonymously,
+  onAuthStateChanged,
+  signOut,
+} from "firebase/auth";
+import {
+  getDatabase,
+  Database,
+  ref,
+  set,
+  onValue,
+  off,
+  get,
+  update,
+  runTransaction,
+} from "firebase/database";
+import {
+  getFirestore,
+  Firestore,
+  collection,
+  query,
+  where,
+  limit,
+  getDocs,
+  orderBy,
+  updateDoc,
+  doc,
+  onSnapshot,
+  startAfter,
+  QueryDocumentSnapshot,
+  DocumentData,
+} from "firebase/firestore";
+import {
+  didFindInviteThatCanBeJoined,
+  didReceiveInviteReactionUpdate,
+  didReceiveMatchUpdate,
+  didRecoverInviteReactions,
+  initialFen,
+  didRecoverMyMatch,
+  enterWatchOnlyMode,
+  didFindYourOwnInviteThatNobodyJoined,
+  didReceiveRematchesSeriesEndIndicator,
+  didDiscoverExistingRematchProposalWaitingForResponse,
+  didJustCreateRematchProposalSuccessfully,
+  failedToCreateRematchProposal,
+  didUpdateRematchSeriesMetadata,
+} from "../game/gameController";
+import {
+  getPlayersEmojiId,
+  didGetPlayerProfile,
+  setupPlayerId,
+} from "../game/board";
 import { getFunctions, Functions, httpsCallable } from "firebase/functions";
 import {
   Match,
@@ -31,12 +80,25 @@ import {
 } from "./connectionModels";
 import { storage } from "../utils/storage";
 import { generateNewInviteId } from "../utils/misc";
-import { getWagerState, setCurrentWagerMatch, setWagerState, syncCurrentWagerMatchState } from "../game/wagerState";
-import { applyFrozenMaterialsDelta, computeAvailableMaterials, getFrozenMaterials, setFrozenMaterials } from "../services/wagerMaterialsService";
+import {
+  getWagerState,
+  setCurrentWagerMatch,
+  setWagerState,
+  syncCurrentWagerMatchState,
+} from "../game/wagerState";
+import {
+  applyFrozenMaterialsDelta,
+  computeAvailableMaterials,
+  getFrozenMaterials,
+  setFrozenMaterials,
+} from "../services/wagerMaterialsService";
 import { rocksMiningService } from "../services/rocksMiningService";
 import { compareNavigationItems as compareNavigationItemsByDisplayOrder } from "../services/navigationItemOrdering";
 import { RouteState, getCurrentRouteState } from "../navigation/routeState";
-import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
+import {
+  decrementLifecycleCounter,
+  incrementLifecycleCounter,
+} from "../lifecycle/lifecycleDiagnostics";
 
 const createEmptyMiningMaterials = (): PlayerMiningMaterials => ({
   dust: 0,
@@ -47,15 +109,25 @@ const createEmptyMiningMaterials = (): PlayerMiningMaterials => ({
 });
 
 const normalizeMiningData = (source: any): PlayerMiningData => {
-  const materialsInput = source && typeof source === "object" ? (source.materials ?? source) : undefined;
+  const materialsInput =
+    source && typeof source === "object"
+      ? (source.materials ?? source)
+      : undefined;
   const materials = createEmptyMiningMaterials();
   MINING_MATERIAL_NAMES.forEach((name) => {
-    const raw = materialsInput ? (materialsInput as Record<string, unknown>)[name] : undefined;
+    const raw = materialsInput
+      ? (materialsInput as Record<string, unknown>)[name]
+      : undefined;
     const numeric = typeof raw === "number" ? raw : Number(raw);
-    const value = Number.isFinite(numeric) ? Math.max(0, Math.round(numeric as number)) : 0;
+    const value = Number.isFinite(numeric)
+      ? Math.max(0, Math.round(numeric as number))
+      : 0;
     materials[name] = value;
   });
-  const lastRockDate = source && typeof source.lastRockDate === "string" ? source.lastRockDate : null;
+  const lastRockDate =
+    source && typeof source.lastRockDate === "string"
+      ? source.lastRockDate
+      : null;
   return {
     lastRockDate,
     materials,
@@ -66,7 +138,8 @@ const controllerVersion = 2;
 const LEADERBOARD_ENTRY_LIMIT = 99;
 const wagerDebugLogsEnabled = process.env.NODE_ENV !== "production";
 
-export type NavigationGamesPageCursor = QueryDocumentSnapshot<DocumentData> | null;
+export type NavigationGamesPageCursor =
+  QueryDocumentSnapshot<DocumentData> | null;
 
 export interface NavigationGamesPageResult {
   items: NavigationItem[];
@@ -158,10 +231,18 @@ class Connection {
   private sessionEpoch = 0;
   private authUnsubscribers = new Set<() => void>();
   private authBootstrapPromise: Promise<void> | null = null;
-  private pendingInviteCreation: { inviteId: string; promise: Promise<boolean> } | null = null;
+  private pendingInviteCreation: {
+    inviteId: string;
+    promise: Promise<boolean>;
+  } | null = null;
   private inFlightEventSyncById = new Map<
     string,
-    Promise<{ ok: boolean; didChange?: boolean; skipped?: boolean; event?: EventRecord | null }>
+    Promise<{
+      ok: boolean;
+      didChange?: boolean;
+      skipped?: boolean;
+      event?: EventRecord | null;
+    }>
   >();
   private moveSendRequestId = 0;
   private readonly moveSendRetryWindowMs = 60000;
@@ -172,7 +253,10 @@ class Connection {
   private moveReconnectLastAttemptAt = 0;
   private readonly moveReconnectCooldownMs = 3000;
 
-  private logContextEvent(event: string, payload: Record<string, unknown> = {}): void {
+  private logContextEvent(
+    event: string,
+    payload: Record<string, unknown> = {},
+  ): void {
     if (process.env.NODE_ENV === "production") {
       return;
     }
@@ -184,7 +268,10 @@ class Connection {
     return this.connectAttemptId;
   }
 
-  private isConnectAttemptActive(connectAttemptId: number, epoch: number): boolean {
+  private isConnectAttemptActive(
+    connectAttemptId: number,
+    epoch: number,
+  ): boolean {
     if (!this.isSessionEpochActive(epoch)) {
       return false;
     }
@@ -206,7 +293,10 @@ class Connection {
       return false;
     }
     const activeContext = this.activeContext;
-    const isActive = !!activeContext && activeContext.contextId === contextId && activeContext.sessionEpoch === epoch;
+    const isActive =
+      !!activeContext &&
+      activeContext.contextId === contextId &&
+      activeContext.sessionEpoch === epoch;
     if (!isActive && process.env.NODE_ENV !== "production") {
       this.logContextEvent("ctx.callback.stale_dropped", {
         reason: "context-mismatch",
@@ -219,7 +309,11 @@ class Connection {
     return isActive;
   }
 
-  private registerObserverCleanup(contextId: number, key: string, cleanup: () => void): boolean {
+  private registerObserverCleanup(
+    contextId: number,
+    key: string,
+    cleanup: () => void,
+  ): boolean {
     let cleanupByKey = this.observerCleanupByContext.get(contextId);
     if (!cleanupByKey) {
       cleanupByKey = new Map();
@@ -261,14 +355,18 @@ class Connection {
     targetRef: any,
     onData: (snapshot: any) => void,
     onError?: (error: unknown) => void,
-    onCleanup?: () => void
+    onCleanup?: () => void,
   ): (() => void) | null {
     const contextCleanup = () => {
       off(targetRef);
       decrementLifecycleCounter("connectionObservers");
       onCleanup?.();
     };
-    const isRegistered = this.registerObserverCleanup(context.contextId, key, contextCleanup);
+    const isRegistered = this.registerObserverCleanup(
+      context.contextId,
+      key,
+      contextCleanup,
+    );
     if (!isRegistered) {
       return null;
     }
@@ -286,7 +384,7 @@ class Connection {
           return;
         }
         onError?.(error);
-      }
+      },
     );
     return () => {
       contextCleanup();
@@ -326,7 +424,7 @@ class Connection {
     actorUid: string | null,
     role: InviteRole,
     canWrite: boolean,
-    epoch: number
+    epoch: number,
   ): MatchRuntimeContext {
     return {
       contextId: this.nextContextId++,
@@ -341,10 +439,19 @@ class Connection {
     };
   }
 
-  private activateContext(nextContext: MatchRuntimeContext, reason: string): void {
+  private activateContext(
+    nextContext: MatchRuntimeContext,
+    reason: string,
+  ): void {
     const previousContext = this.activeContext;
-    if (previousContext && previousContext.contextId !== nextContext.contextId) {
-      this.cleanupObserverContext(previousContext.contextId, `switch:${reason}`);
+    if (
+      previousContext &&
+      previousContext.contextId !== nextContext.contextId
+    ) {
+      this.cleanupObserverContext(
+        previousContext.contextId,
+        `switch:${reason}`,
+      );
       this.stopObservingAllMatches();
     }
     this.activeContext = nextContext;
@@ -380,7 +487,12 @@ class Connection {
     this.setSameProfilePlayerUid(null);
   }
 
-  public getActiveContextSnapshot(): { inviteId: string; matchId: string; canWrite: boolean; contextId: number } | null {
+  public getActiveContextSnapshot(): {
+    inviteId: string;
+    matchId: string;
+    canWrite: boolean;
+    contextId: number;
+  } | null {
     const activeContext = this.activeContext;
     if (!activeContext) {
       return null;
@@ -393,7 +505,10 @@ class Connection {
     };
   }
 
-  private requireWritableContext(expectedMatchId?: string | null, reason = "write"): (MatchRuntimeContext & { actorUid: string; canWrite: true }) | null {
+  private requireWritableContext(
+    expectedMatchId?: string | null,
+    reason = "write",
+  ): (MatchRuntimeContext & { actorUid: string; canWrite: true }) | null {
     const activeContext = this.activeContext;
     if (!activeContext || !activeContext.canWrite || !activeContext.actorUid) {
       this.logContextEvent("ctx.write.blocked", {
@@ -405,7 +520,10 @@ class Connection {
       });
       const inviteToReconnect = activeContext?.inviteId ?? this.inviteId;
       if (inviteToReconnect) {
-        this.reconnectAfterMatchUpdateFailure(inviteToReconnect, this.createSessionGuard());
+        this.reconnectAfterMatchUpdateFailure(
+          inviteToReconnect,
+          this.createSessionGuard(),
+        );
       }
       return null;
     }
@@ -421,7 +539,10 @@ class Connection {
       });
       return null;
     }
-    return activeContext as MatchRuntimeContext & { actorUid: string; canWrite: true };
+    return activeContext as MatchRuntimeContext & {
+      actorUid: string;
+      canWrite: true;
+    };
   }
 
   private bumpSessionEpoch() {
@@ -449,18 +570,29 @@ class Connection {
     return () => this.isSessionEpochActive(epoch);
   }
 
-  private createMatchContextGuard(inviteId: string, matchId: string): () => boolean {
+  private createMatchContextGuard(
+    inviteId: string,
+    matchId: string,
+  ): () => boolean {
     const epoch = this.sessionEpoch;
     const contextId = this.activeContext?.contextId ?? null;
     if (contextId === null && process.env.NODE_ENV !== "production") {
-      console.warn("createMatchContextGuard called without an active context", { inviteId, matchId, epoch });
+      console.warn("createMatchContextGuard called without an active context", {
+        inviteId,
+        matchId,
+        epoch,
+      });
     }
     return () => {
       if (!this.isSessionEpochActive(epoch)) {
         return false;
       }
       const activeContext = this.activeContext;
-      const isActive = !!activeContext && activeContext.inviteId === inviteId && activeContext.matchId === matchId && activeContext.contextId === contextId;
+      const isActive =
+        !!activeContext &&
+        activeContext.inviteId === inviteId &&
+        activeContext.matchId === matchId &&
+        activeContext.contextId === contextId;
       if (!isActive && process.env.NODE_ENV !== "production") {
         console.log("stale-session-callback", {
           expectedEpoch: epoch,
@@ -477,7 +609,10 @@ class Connection {
     };
   }
 
-  private logWagerDebug(event: string, payload: Record<string, unknown> = {}): void {
+  private logWagerDebug(
+    event: string,
+    payload: Record<string, unknown> = {},
+  ): void {
     if (!wagerDebugLogsEnabled) {
       return;
     }
@@ -493,7 +628,9 @@ class Connection {
 
   constructor() {
     const firebaseConfig = {
-      apiKey: process.env.REACT_APP_MONS_FIREBASE_API_KEY || "AIzaSyC8Ihr4kDd34z-RXe8XTBCFtFbXebifo5Y",
+      apiKey:
+        process.env.REACT_APP_MONS_FIREBASE_API_KEY ||
+        "AIzaSyC8Ihr4kDd34z-RXe8XTBCFtFbXebifo5Y",
       authDomain: "mons-link.firebaseapp.com",
       projectId: "mons-link",
       storageBucket: "mons-link.firebasestorage.app",
@@ -508,18 +645,27 @@ class Connection {
     this.functions = getFunctions(this.app);
   }
 
-  private cloneWagerState(state: MatchWagerState | null): MatchWagerState | null {
+  private cloneWagerState(
+    state: MatchWagerState | null,
+  ): MatchWagerState | null {
     if (!state) {
       return null;
     }
     const proposals = state.proposals
-      ? Object.keys(state.proposals).reduce((acc, key) => {
-          const proposal = state.proposals ? state.proposals[key] : null;
-          if (proposal) {
-            acc[key] = { material: proposal.material, count: proposal.count, createdAt: proposal.createdAt };
-          }
-          return acc;
-        }, {} as Record<string, WagerProposal>)
+      ? Object.keys(state.proposals).reduce(
+          (acc, key) => {
+            const proposal = state.proposals ? state.proposals[key] : null;
+            if (proposal) {
+              acc[key] = {
+                material: proposal.material,
+                count: proposal.count,
+                createdAt: proposal.createdAt,
+              };
+            }
+            return acc;
+          },
+          {} as Record<string, WagerProposal>,
+        )
       : undefined;
     const proposedBy = state.proposedBy ? { ...state.proposedBy } : undefined;
     const agreed = state.agreed ? { ...state.agreed } : undefined;
@@ -536,7 +682,10 @@ class Connection {
     if (!this.matchId) {
       return;
     }
-    this.logWagerDebug("set-local-state", { targetMatchId: this.matchId, state: summarizeWagerState(state) });
+    this.logWagerDebug("set-local-state", {
+      targetMatchId: this.matchId,
+      state: summarizeWagerState(state),
+    });
     if (this.latestInvite) {
       if (!this.latestInvite.wagers) {
         this.latestInvite.wagers = {};
@@ -555,11 +704,20 @@ class Connection {
   }
 
   private shouldRetryWagerResult(result: any): boolean {
-    const reason = result && typeof result.reason === "string" ? result.reason : "";
-    return reason === "proposal-unavailable" || reason === "proposal-missing" || reason === "match-not-found";
+    const reason =
+      result && typeof result.reason === "string" ? result.reason : "";
+    return (
+      reason === "proposal-unavailable" ||
+      reason === "proposal-missing" ||
+      reason === "match-not-found"
+    );
   }
 
-  private async callWagerFunctionWithRetry(label: string, call: () => Promise<any>, maxAttempts = 3): Promise<any> {
+  private async callWagerFunctionWithRetry(
+    label: string,
+    call: () => Promise<any>,
+    maxAttempts = 3,
+  ): Promise<any> {
     let attempt = 0;
     while (attempt < maxAttempts) {
       attempt += 1;
@@ -568,8 +726,16 @@ class Connection {
           console.log(`${label}:retry`, { attempt });
         }
         const response = await call();
-        const data = response && typeof response === "object" && "data" in response ? (response as any).data : response;
-        if (data && data.ok === false && this.shouldRetryWagerResult(data) && attempt < maxAttempts) {
+        const data =
+          response && typeof response === "object" && "data" in response
+            ? (response as any).data
+            : response;
+        if (
+          data &&
+          data.ok === false &&
+          this.shouldRetryWagerResult(data) &&
+          attempt < maxAttempts
+        ) {
           await this.delay(160 * attempt);
           continue;
         }
@@ -586,7 +752,10 @@ class Connection {
     return null;
   }
 
-  public setupConnection(autojoin: boolean, routeStateOverride?: RouteState): void {
+  public setupConnection(
+    autojoin: boolean,
+    routeStateOverride?: RouteState,
+  ): void {
     const routeState = routeStateOverride ?? getRouteStateSnapshot();
     if (routeState.mode !== "invite" || !routeState.inviteId) {
       return;
@@ -603,7 +772,10 @@ class Connection {
     });
   }
 
-  private buildInviteRouteTarget(inviteId: string, autojoin: boolean): RouteState {
+  private buildInviteRouteTarget(
+    inviteId: string,
+    autojoin: boolean,
+  ): RouteState {
     return {
       mode: "invite",
       path: inviteId,
@@ -704,17 +876,26 @@ class Connection {
     return didCopy;
   }
 
-  private async transitionToInvite(inviteId: string, autojoin = inviteId.startsWith("auto_")): Promise<void> {
+  private async transitionToInvite(
+    inviteId: string,
+    autojoin = inviteId.startsWith("auto_"),
+  ): Promise<void> {
     const target = this.buildInviteRouteTarget(inviteId, autojoin);
     const appSessionManager = await import("../session/AppSessionManager");
     await appSessionManager.transition(target);
   }
 
-  private trackPendingInviteCreation(inviteId: string, promise: Promise<boolean>): void {
+  private trackPendingInviteCreation(
+    inviteId: string,
+    promise: Promise<boolean>,
+  ): void {
     this.pendingInviteCreation = { inviteId, promise };
   }
 
-  private async waitForPendingInviteCreation(inviteId: string, epoch: number): Promise<boolean> {
+  private async waitForPendingInviteCreation(
+    inviteId: string,
+    epoch: number,
+  ): Promise<boolean> {
     const pendingInviteCreation = this.pendingInviteCreation;
     if (!pendingInviteCreation || pendingInviteCreation.inviteId !== inviteId) {
       return false;
@@ -723,7 +904,11 @@ class Connection {
     if (!this.isSessionEpochActive(epoch)) {
       return false;
     }
-    if (this.pendingInviteCreation && this.pendingInviteCreation.inviteId === inviteId && this.pendingInviteCreation.promise === pendingInviteCreation.promise) {
+    if (
+      this.pendingInviteCreation &&
+      this.pendingInviteCreation.inviteId === inviteId &&
+      this.pendingInviteCreation.promise === pendingInviteCreation.promise
+    ) {
       this.pendingInviteCreation = null;
     }
     return didCreateInvite;
@@ -764,13 +949,19 @@ class Connection {
     }
   }
 
-  public async seeIfFreshlySignedInProfileIsOneOfThePlayers(profileId: string): Promise<void> {
+  public async seeIfFreshlySignedInProfileIsOneOfThePlayers(
+    profileId: string,
+  ): Promise<void> {
     const routeState = getRouteStateSnapshot();
     const sessionGuard = this.createSessionGuard();
     if (!this.latestInvite) {
       return;
     }
-    const match = await this.checkBothPlayerProfiles(this.latestInvite.hostId, this.latestInvite.guestId ?? "", profileId);
+    const match = await this.checkBothPlayerProfiles(
+      this.latestInvite.hostId,
+      this.latestInvite.guestId ?? "",
+      profileId,
+    );
     if (!sessionGuard()) {
       return;
     }
@@ -792,7 +983,7 @@ class Connection {
           eventId: null,
           autojoin: inviteToReconnect.startsWith("auto_"),
         },
-        { force: true }
+        { force: true },
       );
     }
   }
@@ -856,12 +1047,13 @@ class Connection {
     this.setSameProfilePlayerUid(null);
     this.cleanupWagerObserver();
     rocksMiningService.resetProfileMiningState();
-    const [nftService, playerMetadata, ensResolver, leaderboard] = await Promise.all([
-      import("../services/nftService"),
-      import("../utils/playerMetadata"),
-      import("../utils/ensResolver"),
-      import("../ui/Leaderboard"),
-    ]);
+    const [nftService, playerMetadata, ensResolver, leaderboard] =
+      await Promise.all([
+        import("../services/nftService"),
+        import("../utils/playerMetadata"),
+        import("../utils/ensResolver"),
+        import("../ui/Leaderboard"),
+      ]);
     nftService.resetNftCache();
     playerMetadata.resetPlayerMetadataCaches();
     ensResolver.resetEnsCache();
@@ -903,7 +1095,11 @@ class Connection {
   public async getProfileByLoginId(loginId: string): Promise<PlayerProfile> {
     await this.ensureAuthenticated();
     const usersRef = collection(this.firestore, "users");
-    const q = query(usersRef, where("logins", "array-contains", loginId), limit(1));
+    const q = query(
+      usersRef,
+      where("logins", "array-contains", loginId),
+      limit(1),
+    );
     const querySnapshot = await getDocs(q);
     if (!querySnapshot.empty) {
       const doc = querySnapshot.docs[0];
@@ -934,7 +1130,8 @@ class Connection {
     throw new Error("Profile not found");
   }
 
-  private materialLeaderboardCache: Map<MiningMaterialName, PlayerProfile[]> = new Map();
+  private materialLeaderboardCache: Map<MiningMaterialName, PlayerProfile[]> =
+    new Map();
   private materialLeaderboardCacheTime: number = 0;
   private static LEADERBOARD_CACHE_TTL = 60000;
 
@@ -967,7 +1164,13 @@ class Connection {
   private async fetchAllMaterialLeaderboards(): Promise<void> {
     const usersRef = collection(this.firestore, "users");
     const materialQueries = MINING_MATERIAL_NAMES.map((material) =>
-      getDocs(query(usersRef, orderBy(`mining.materials.${material}`, "desc"), limit(LEADERBOARD_ENTRY_LIMIT)))
+      getDocs(
+        query(
+          usersRef,
+          orderBy(`mining.materials.${material}`, "desc"),
+          limit(LEADERBOARD_ENTRY_LIMIT),
+        ),
+      ),
     );
     const snapshots = await Promise.all(materialQueries);
     MINING_MATERIAL_NAMES.forEach((material, index) => {
@@ -981,11 +1184,16 @@ class Connection {
   }
 
   private isMaterialCacheValid(): boolean {
-    return this.materialLeaderboardCache.size === MINING_MATERIAL_NAMES.length &&
-      Date.now() - this.materialLeaderboardCacheTime < Connection.LEADERBOARD_CACHE_TTL;
+    return (
+      this.materialLeaderboardCache.size === MINING_MATERIAL_NAMES.length &&
+      Date.now() - this.materialLeaderboardCacheTime <
+        Connection.LEADERBOARD_CACHE_TTL
+    );
   }
 
-  public async getLeaderboard(type: "rating" | "mp" | MiningMaterialName | "total" = "rating"): Promise<PlayerProfile[]> {
+  public async getLeaderboard(
+    type: "rating" | "mp" | MiningMaterialName | "total" = "rating",
+  ): Promise<PlayerProfile[]> {
     await this.ensureAuthenticated();
     const usersRef = collection(this.firestore, "users");
 
@@ -1006,8 +1214,12 @@ class Connection {
       });
       const profiles = Array.from(profileMap.values());
       profiles.sort((a, b) => {
-        const totalA = a.mining ? Object.values(a.mining.materials).reduce((sum, val) => sum + val, 0) : 0;
-        const totalB = b.mining ? Object.values(b.mining.materials).reduce((sum, val) => sum + val, 0) : 0;
+        const totalA = a.mining
+          ? Object.values(a.mining.materials).reduce((sum, val) => sum + val, 0)
+          : 0;
+        const totalB = b.mining
+          ? Object.values(b.mining.materials).reduce((sum, val) => sum + val, 0)
+          : 0;
         return totalB - totalA;
       });
       return profiles.slice(0, LEADERBOARD_ENTRY_LIMIT);
@@ -1026,7 +1238,11 @@ class Connection {
     }
 
     const leaderboardOrderField = type === "mp" ? "totalManaPoints" : "rating";
-    const q = query(usersRef, orderBy(leaderboardOrderField, "desc"), limit(LEADERBOARD_ENTRY_LIMIT));
+    const q = query(
+      usersRef,
+      orderBy(leaderboardOrderField, "desc"),
+      limit(LEADERBOARD_ENTRY_LIMIT),
+    );
     const querySnapshot = await getDocs(q);
 
     const leaderboard: PlayerProfile[] = [];
@@ -1040,7 +1256,10 @@ class Connection {
   public async editUsername(username: string): Promise<any> {
     try {
       await this.ensureAuthenticated();
-      const editUsernameFunction = httpsCallable(this.functions, "editUsername");
+      const editUsernameFunction = httpsCallable(
+        this.functions,
+        "editUsername",
+      );
       const response = await editUsernameFunction({ username });
       return response.data;
     } catch (error) {
@@ -1049,12 +1268,27 @@ class Connection {
     }
   }
 
-  public async beginAuthIntent(method: "eth" | "sol" | "apple" | "x"): Promise<{ ok: boolean; intentId: string; nonce: string; state: string; expiresAtMs: number }> {
+  public async beginAuthIntent(method: "eth" | "sol" | "apple" | "x"): Promise<{
+    ok: boolean;
+    intentId: string;
+    nonce: string;
+    state: string;
+    expiresAtMs: number;
+  }> {
     try {
       await this.ensureAuthenticated();
-      const beginAuthIntentFunction = httpsCallable(this.functions, "beginAuthIntent");
+      const beginAuthIntentFunction = httpsCallable(
+        this.functions,
+        "beginAuthIntent",
+      );
       const response = await beginAuthIntentFunction({ method });
-      return response.data as { ok: boolean; intentId: string; nonce: string; state: string; expiresAtMs: number };
+      return response.data as {
+        ok: boolean;
+        intentId: string;
+        nonce: string;
+        state: string;
+        expiresAtMs: number;
+      };
     } catch (error) {
       console.error("Error beginning auth intent:", error);
       throw error;
@@ -1064,7 +1298,10 @@ class Connection {
   public async getLinkedAuthMethods(): Promise<any> {
     try {
       await this.ensureAuthenticated();
-      const getLinkedAuthMethodsFunction = httpsCallable(this.functions, "getLinkedAuthMethods");
+      const getLinkedAuthMethodsFunction = httpsCallable(
+        this.functions,
+        "getLinkedAuthMethods",
+      );
       const response = await getLinkedAuthMethodsFunction({});
       return response.data;
     } catch (error) {
@@ -1076,7 +1313,10 @@ class Connection {
   public async syncProfileClaim(): Promise<any> {
     try {
       await this.ensureAuthenticated();
-      const syncProfileClaimFunction = httpsCallable(this.functions, "syncProfileClaim");
+      const syncProfileClaimFunction = httpsCallable(
+        this.functions,
+        "syncProfileClaim",
+      );
       const response = await syncProfileClaimFunction({});
       return response.data;
     } catch (error) {
@@ -1085,10 +1325,15 @@ class Connection {
     }
   }
 
-  public async unlinkAuthMethod(method: "eth" | "sol" | "apple" | "x"): Promise<any> {
+  public async unlinkAuthMethod(
+    method: "eth" | "sol" | "apple" | "x",
+  ): Promise<any> {
     try {
       await this.ensureAuthenticated();
-      const unlinkAuthMethodFunction = httpsCallable(this.functions, "unlinkAuthMethod");
+      const unlinkAuthMethodFunction = httpsCallable(
+        this.functions,
+        "unlinkAuthMethod",
+      );
       const response = await unlinkAuthMethodFunction({ method });
       return response.data;
     } catch (error) {
@@ -1097,14 +1342,27 @@ class Connection {
     }
   }
 
-  public async verifyAppleToken(intentId: string, idToken: string, consentSource = "signin"): Promise<any> {
+  public async verifyAppleToken(
+    intentId: string,
+    idToken: string,
+    consentSource = "signin",
+  ): Promise<any> {
     try {
       await this.ensureAuthenticated();
-      const verifyAppleTokenFunction = httpsCallable(this.functions, "verifyAppleToken");
+      const verifyAppleTokenFunction = httpsCallable(
+        this.functions,
+        "verifyAppleToken",
+      );
       const emojiString = storage.getPlayerEmojiId("1");
       const emoji = parseInt(emojiString);
       const aura = storage.getPlayerEmojiAura("");
-      const response = await verifyAppleTokenFunction({ intentId, idToken, emoji, aura, consentSource });
+      const response = await verifyAppleTokenFunction({
+        intentId,
+        idToken,
+        emoji,
+        aura,
+        consentSource,
+      });
       return response.data;
     } catch (error) {
       console.error("Error verifying Apple token:", error);
@@ -1116,16 +1374,29 @@ class Connection {
     intentId: string;
     consentSource?: "signin" | "settings";
     returnUrl?: string;
-  }): Promise<{ ok: boolean; flowId: string; authUrl: string; expiresAtMs: number }> {
+  }): Promise<{
+    ok: boolean;
+    flowId: string;
+    authUrl: string;
+    expiresAtMs: number;
+  }> {
     try {
       await this.ensureAuthenticated();
-      const beginXRedirectAuthFunction = httpsCallable(this.functions, "beginXRedirectAuth");
+      const beginXRedirectAuthFunction = httpsCallable(
+        this.functions,
+        "beginXRedirectAuth",
+      );
       const response = await beginXRedirectAuthFunction({
         intentId: params.intentId,
         consentSource: params.consentSource || "signin",
         returnUrl: params.returnUrl || "",
       });
-      return response.data as { ok: boolean; flowId: string; authUrl: string; expiresAtMs: number };
+      return response.data as {
+        ok: boolean;
+        flowId: string;
+        authUrl: string;
+        expiresAtMs: number;
+      };
     } catch (error) {
       console.error("Error beginning X redirect auth:", error);
       throw error;
@@ -1135,7 +1406,10 @@ class Connection {
   public async completeXRedirectAuth(params: { flowId: string }): Promise<any> {
     try {
       await this.ensureAuthenticated();
-      const completeXRedirectAuthFunction = httpsCallable(this.functions, "completeXRedirectAuth");
+      const completeXRedirectAuthFunction = httpsCallable(
+        this.functions,
+        "completeXRedirectAuth",
+      );
       const emojiString = storage.getPlayerEmojiId("1");
       const emoji = parseInt(emojiString);
       const aura = storage.getPlayerEmojiAura("");
@@ -1151,14 +1425,27 @@ class Connection {
     }
   }
 
-  public async verifySolanaAddress(address: string, signature: string, intentId: string): Promise<any> {
+  public async verifySolanaAddress(
+    address: string,
+    signature: string,
+    intentId: string,
+  ): Promise<any> {
     try {
       await this.ensureAuthenticated();
-      const verifySolanaAddressFunction = httpsCallable(this.functions, "verifySolanaAddress");
+      const verifySolanaAddressFunction = httpsCallable(
+        this.functions,
+        "verifySolanaAddress",
+      );
       const emojiString = storage.getPlayerEmojiId("1");
       const emoji = parseInt(emojiString);
       const aura = storage.getPlayerEmojiAura("");
-      const response = await verifySolanaAddressFunction({ address, signature, emoji, aura, intentId });
+      const response = await verifySolanaAddressFunction({
+        address,
+        signature,
+        emoji,
+        aura,
+        intentId,
+      });
       return response.data;
     } catch (error) {
       console.error("Error verifying Solana address:", error);
@@ -1178,7 +1465,10 @@ class Connection {
     }
   }
 
-  public async mineRock(date: string, materials: PlayerMiningMaterials): Promise<any> {
+  public async mineRock(
+    date: string,
+    materials: PlayerMiningMaterials,
+  ): Promise<any> {
     try {
       await this.ensureAuthenticated();
       const mineRockFunction = httpsCallable(this.functions, "mineRock");
@@ -1190,14 +1480,27 @@ class Connection {
     }
   }
 
-  public async verifyEthAddress(message: string, signature: string, intentId: string): Promise<any> {
+  public async verifyEthAddress(
+    message: string,
+    signature: string,
+    intentId: string,
+  ): Promise<any> {
     try {
       await this.ensureAuthenticated();
-      const verifyEthAddressFunction = httpsCallable(this.functions, "verifyEthAddress");
+      const verifyEthAddressFunction = httpsCallable(
+        this.functions,
+        "verifyEthAddress",
+      );
       const emojiString = storage.getPlayerEmojiId("1");
       const emoji = parseInt(emojiString);
       const aura = storage.getPlayerEmojiAura("");
-      const response = await verifyEthAddressFunction({ message, signature, emoji, aura, intentId });
+      const response = await verifyEthAddressFunction({
+        message,
+        signature,
+        emoji,
+        aura,
+        intentId,
+      });
       return response.data;
     } catch (error) {
       console.error("Error verifying Ethereum address:", error);
@@ -1205,7 +1508,9 @@ class Connection {
     }
   }
 
-  public subscribeToAuthChanges(callback: (uid: string | null) => void): () => void {
+  public subscribeToAuthChanges(
+    callback: (uid: string | null) => void,
+  ): () => void {
     incrementLifecycleCounter("connectionAuthSubscribers");
     const unsubscribe = onAuthStateChanged(this.auth, (user) => {
       const newUid = user?.uid ?? null;
@@ -1261,7 +1566,7 @@ class Connection {
           },
           () => {
             finish();
-          }
+          },
         );
         timeoutId = setTimeout(() => {
           finish();
@@ -1287,7 +1592,10 @@ class Connection {
   }
 
   private applyOptimisticWagerResolution(isWin?: boolean): boolean {
-    const writableContext = this.requireWritableContext(undefined, "applyOptimisticWagerResolution");
+    const writableContext = this.requireWritableContext(
+      undefined,
+      "applyOptimisticWagerResolution",
+    );
     if (!writableContext) {
       return false;
     }
@@ -1318,7 +1626,9 @@ class Connection {
       if (typeof isWin !== "boolean") {
         return false;
       }
-      const agreedCount = agreed.count ?? (agreed.total ? Math.max(0, Math.round(agreed.total / 2)) : 0);
+      const agreedCount =
+        agreed.count ??
+        (agreed.total ? Math.max(0, Math.round(agreed.total / 2)) : 0);
       if (!agreedCount) {
         return false;
       }
@@ -1356,8 +1666,14 @@ class Connection {
     if (delta !== 0) {
       const snapshot = rocksMiningService.getSnapshot();
       const currentMaterials = snapshot.materials;
-      const nextMaterials = { ...currentMaterials, [material]: Math.max(0, (currentMaterials[material] ?? 0) + delta) };
-      rocksMiningService.setFromServer({ ...snapshot, materials: nextMaterials }, { persist: true });
+      const nextMaterials = {
+        ...currentMaterials,
+        [material]: Math.max(0, (currentMaterials[material] ?? 0) + delta),
+      };
+      rocksMiningService.setFromServer(
+        { ...snapshot, materials: nextMaterials },
+        { persist: true },
+      );
     }
     this.optimisticResolvedMatchIds.add(matchId);
     return true;
@@ -1372,7 +1688,10 @@ class Connection {
   }
 
   public getCurrentInviteEventId(): string | null {
-    return typeof this.latestInvite?.eventId === "string" && this.latestInvite.eventId !== "" ? this.latestInvite.eventId : null;
+    return typeof this.latestInvite?.eventId === "string" &&
+      this.latestInvite.eventId !== ""
+      ? this.latestInvite.eventId
+      : null;
   }
 
   public isCurrentInviteEventOwned(): boolean {
@@ -1380,40 +1699,74 @@ class Connection {
   }
 
   public sendEndMatchIndicator(): void {
-    const writableContext = this.requireWritableContext(undefined, "sendEndMatchIndicator");
-    if (!writableContext || !this.latestInvite || this.rematchSeriesEndIsIndicated()) {
+    const writableContext = this.requireWritableContext(
+      undefined,
+      "sendEndMatchIndicator",
+    );
+    if (
+      !writableContext ||
+      !this.latestInvite ||
+      this.rematchSeriesEndIsIndicated()
+    ) {
       return;
     }
     const endingAsHost = this.latestInvite.hostId === writableContext.actorUid;
-    const currentRematchesString = endingAsHost ? this.latestInvite.hostRematches : this.latestInvite.guestRematches;
-    const updatedRematchesString = currentRematchesString ? currentRematchesString + "x" : "x";
-    set(ref(this.db, `invites/${writableContext.inviteId}/${endingAsHost ? "hostRematches" : "guestRematches"}`), updatedRematchesString);
+    const currentRematchesString = endingAsHost
+      ? this.latestInvite.hostRematches
+      : this.latestInvite.guestRematches;
+    const updatedRematchesString = currentRematchesString
+      ? currentRematchesString + "x"
+      : "x";
+    set(
+      ref(
+        this.db,
+        `invites/${writableContext.inviteId}/${endingAsHost ? "hostRematches" : "guestRematches"}`,
+      ),
+      updatedRematchesString,
+    );
   }
 
   public sendRematchProposal(): void {
-    const writableContext = this.requireWritableContext(undefined, "sendRematchProposal");
+    const writableContext = this.requireWritableContext(
+      undefined,
+      "sendRematchProposal",
+    );
     if (!writableContext) {
       return;
     }
-    const sessionGuard = this.createMatchContextGuard(writableContext.inviteId, writableContext.matchId);
-    const newRematchProposalIndex = this.getRematchIndexAvailableForNewProposal();
+    const sessionGuard = this.createMatchContextGuard(
+      writableContext.inviteId,
+      writableContext.matchId,
+    );
+    const newRematchProposalIndex =
+      this.getRematchIndexAvailableForNewProposal();
     if (!newRematchProposalIndex || !this.latestInvite) {
       return;
     }
 
     const previousMatchId = writableContext.matchId;
-    const previousMatchPair = previousMatchId ? this.getCachedHistoricalMatchPair(previousMatchId) : null;
+    const previousMatchPair = previousMatchId
+      ? this.getCachedHistoricalMatchPair(previousMatchId)
+      : null;
 
     this.stopObservingAllMatches();
     this.cleanupRematchObservers();
     this.cleanupInviteReactionObserver();
     this.cleanupWagerObserver();
 
-    const proposingAsHost = this.latestInvite.hostId === writableContext.actorUid;
+    const proposingAsHost =
+      this.latestInvite.hostId === writableContext.actorUid;
     const emojiId = getPlayersEmojiId();
     const proposalIndexIsEven = parseInt(newRematchProposalIndex, 10) % 2 === 0;
-    const initialGuestColor = this.latestInvite.hostColor === "white" ? "black" : "white";
-    const newColor = proposalIndexIsEven ? (proposingAsHost ? this.latestInvite.hostColor : initialGuestColor) : proposingAsHost ? initialGuestColor : this.latestInvite.hostColor;
+    const initialGuestColor =
+      this.latestInvite.hostColor === "white" ? "black" : "white";
+    const newColor = proposalIndexIsEven
+      ? proposingAsHost
+        ? this.latestInvite.hostColor
+        : initialGuestColor
+      : proposingAsHost
+        ? initialGuestColor
+        : this.latestInvite.hostColor;
     let newRematchesProposalsString = "";
 
     const inviteId = writableContext.inviteId;
@@ -1430,14 +1783,21 @@ class Connection {
     };
 
     const updates: { [key: string]: any } = {};
-    updates[`players/${writableContext.actorUid}/matches/${nextMatchId}`] = nextMatch;
+    updates[`players/${writableContext.actorUid}/matches/${nextMatchId}`] =
+      nextMatch;
 
     if (proposingAsHost) {
-      newRematchesProposalsString = this.latestInvite.hostRematches ? this.latestInvite.hostRematches + ";" + newRematchProposalIndex : newRematchProposalIndex;
-      updates[`invites/${inviteId}/hostRematches`] = newRematchesProposalsString;
+      newRematchesProposalsString = this.latestInvite.hostRematches
+        ? this.latestInvite.hostRematches + ";" + newRematchProposalIndex
+        : newRematchProposalIndex;
+      updates[`invites/${inviteId}/hostRematches`] =
+        newRematchesProposalsString;
     } else {
-      newRematchesProposalsString = this.latestInvite?.guestRematches ? this.latestInvite.guestRematches + ";" + newRematchProposalIndex : newRematchProposalIndex;
-      updates[`invites/${inviteId}/guestRematches`] = newRematchesProposalsString;
+      newRematchesProposalsString = this.latestInvite?.guestRematches
+        ? this.latestInvite.guestRematches + ";" + newRematchProposalIndex
+        : newRematchProposalIndex;
+      updates[`invites/${inviteId}/guestRematches`] =
+        newRematchesProposalsString;
     }
 
     update(ref(this.db), updates)
@@ -1453,7 +1813,7 @@ class Connection {
           writableContext.actorUid,
           writableContext.role,
           true,
-          this.sessionEpoch
+          this.sessionEpoch,
         );
         this.activateContext(rematchContext, "rematch-proposed");
         this.updateWagerStateForCurrentMatch();
@@ -1468,7 +1828,11 @@ class Connection {
           }
         }
         console.log("Successfully updated match and rematches");
-        didJustCreateRematchProposalSuccessfully(inviteId, previousMatchId, previousMatchPair);
+        didJustCreateRematchProposalSuccessfully(
+          inviteId,
+          previousMatchId,
+          previousMatchPair,
+        );
       })
       .catch((error) => {
         if (!sessionGuard()) {
@@ -1481,7 +1845,11 @@ class Connection {
 
   public rematchSeriesEndIsIndicated(): boolean | null {
     if (!this.latestInvite) return null;
-    return this.latestInvite.guestRematches?.endsWith("x") || this.latestInvite.hostRematches?.endsWith("x") || false;
+    return (
+      this.latestInvite.guestRematches?.endsWith("x") ||
+      this.latestInvite.hostRematches?.endsWith("x") ||
+      false
+    );
   }
 
   private rematchIndices(rematches: string | null | undefined): number[] {
@@ -1498,7 +1866,10 @@ class Connection {
       .filter((value) => Number.isFinite(value) && value > 0);
   }
 
-  private approvedRematchIndices(hostIndices: number[], guestIndices: number[]): number[] {
+  private approvedRematchIndices(
+    hostIndices: number[],
+    guestIndices: number[],
+  ): number[] {
     const approved: number[] = [];
     const total = Math.min(hostIndices.length, guestIndices.length);
     for (let i = 0; i < total; i++) {
@@ -1541,7 +1912,9 @@ class Connection {
     return parsedIndex;
   }
 
-  private hostColorForRematchIndex(rematchIndex: number): "white" | "black" | null {
+  private hostColorForRematchIndex(
+    rematchIndex: number,
+  ): "white" | "black" | null {
     if (!this.latestInvite) {
       return null;
     }
@@ -1550,22 +1923,33 @@ class Connection {
     if (!oppositeInitialHostColor) {
       return null;
     }
-    const hostColor = rematchIndex % 2 === 0 ? initialHostColor : oppositeInitialHostColor;
+    const hostColor =
+      rematchIndex % 2 === 0 ? initialHostColor : oppositeInitialHostColor;
     if (hostColor === "white" || hostColor === "black") {
       return hostColor;
     }
     return null;
   }
 
-  private pendingRematchIndexForCurrentPlayer(hostIndices: number[], guestIndices: number[], approvedLength: number): number | null {
+  private pendingRematchIndexForCurrentPlayer(
+    hostIndices: number[],
+    guestIndices: number[],
+    approvedLength: number,
+  ): number | null {
     const actorUid = this.getSameProfilePlayerUid();
     if (!this.latestInvite || !actorUid || this.rematchSeriesEndIsIndicated()) {
       return null;
     }
-    if (this.latestInvite.hostId === actorUid && hostIndices.length > approvedLength) {
+    if (
+      this.latestInvite.hostId === actorUid &&
+      hostIndices.length > approvedLength
+    ) {
       return hostIndices[approvedLength] ?? null;
     }
-    if (this.latestInvite.guestId === actorUid && guestIndices.length > approvedLength) {
+    if (
+      this.latestInvite.guestId === actorUid &&
+      guestIndices.length > approvedLength
+    ) {
       return guestIndices[approvedLength] ?? null;
     }
     return null;
@@ -1577,10 +1961,19 @@ class Connection {
     }
     const hostIndices = this.rematchIndices(this.latestInvite.hostRematches);
     const guestIndices = this.rematchIndices(this.latestInvite.guestRematches);
-    const approvedIndices = this.approvedRematchIndices(hostIndices, guestIndices);
-    const pendingIndex = this.pendingRematchIndexForCurrentPlayer(hostIndices, guestIndices, approvedIndices.length);
+    const approvedIndices = this.approvedRematchIndices(
+      hostIndices,
+      guestIndices,
+    );
+    const pendingIndex = this.pendingRematchIndexForCurrentPlayer(
+      hostIndices,
+      guestIndices,
+      approvedIndices.length,
+    );
     const activeMatchId = this.matchId;
-    const activeMatchIndex = activeMatchId ? this.rematchIndexFromMatchId(activeMatchId) : null;
+    const activeMatchIndex = activeMatchId
+      ? this.rematchIndexFromMatchId(activeMatchId)
+      : null;
     const isEnded = !!this.rematchSeriesEndIsIndicated();
     const allIndices = [0, ...approvedIndices];
     if (pendingIndex !== null && pendingIndex > 0) {
@@ -1619,7 +2012,9 @@ class Connection {
     return this.rematchIndexFromMatchId(matchId) !== null;
   }
 
-  public getSameProfileColorForMatch(matchId: string): "white" | "black" | null {
+  public getSameProfileColorForMatch(
+    matchId: string,
+  ): "white" | "black" | null {
     const actorUid = this.getSameProfilePlayerUid();
     if (!this.latestInvite || !actorUid || !matchId) {
       return null;
@@ -1641,7 +2036,10 @@ class Connection {
     return null;
   }
 
-  public getPlayerColorForMatch(matchId: string, playerUid: string): "white" | "black" | null {
+  public getPlayerColorForMatch(
+    matchId: string,
+    playerUid: string,
+  ): "white" | "black" | null {
     if (!this.latestInvite || !playerUid) {
       return null;
     }
@@ -1662,7 +2060,9 @@ class Connection {
     return null;
   }
 
-  public async loadHistoricalMatchPair(matchId: string): Promise<HistoricalMatchPair | null> {
+  public async loadHistoricalMatchPair(
+    matchId: string,
+  ): Promise<HistoricalMatchPair | null> {
     if (!this.latestInvite || !matchId) {
       return null;
     }
@@ -1670,7 +2070,9 @@ class Connection {
     const hostPlayerId = this.latestInvite.hostId;
     const guestPlayerId = this.latestInvite.guestId ?? null;
     const hostRef = ref(this.db, `players/${hostPlayerId}/matches/${matchId}`);
-    const guestRef = guestPlayerId ? ref(this.db, `players/${guestPlayerId}/matches/${matchId}`) : null;
+    const guestRef = guestPlayerId
+      ? ref(this.db, `players/${guestPlayerId}/matches/${matchId}`)
+      : null;
     const hostSnapshot = await get(hostRef);
     const guestSnapshot = guestRef ? await get(guestRef) : null;
     const hostMatch: Match | null = hostSnapshot.val();
@@ -1687,14 +2089,19 @@ class Connection {
     };
   }
 
-  public getCachedHistoricalMatchPair(matchId: string): HistoricalMatchPair | null {
+  public getCachedHistoricalMatchPair(
+    matchId: string,
+  ): HistoricalMatchPair | null {
     if (!this.latestInvite || !matchId) {
       return null;
     }
     const hostPlayerId = this.latestInvite.hostId;
     const guestPlayerId = this.latestInvite.guestId ?? null;
-    let hostMatch = this.observedMatchSnapshots.get(`${matchId}_${hostPlayerId}`) ?? null;
-    let guestMatch = guestPlayerId ? this.observedMatchSnapshots.get(`${matchId}_${guestPlayerId}`) ?? null : null;
+    let hostMatch =
+      this.observedMatchSnapshots.get(`${matchId}_${hostPlayerId}`) ?? null;
+    let guestMatch = guestPlayerId
+      ? (this.observedMatchSnapshots.get(`${matchId}_${guestPlayerId}`) ?? null)
+      : null;
 
     const cachedActorUid = this.getSameProfilePlayerUid();
     if (this.myMatch && this.matchId === matchId && cachedActorUid) {
@@ -1721,12 +2128,21 @@ class Connection {
   private getRematchIndexAvailableForNewProposal(): string | null {
     if (!this.latestInvite || this.rematchSeriesEndIsIndicated()) return null;
 
-    const proposingAsHost = this.latestInvite.hostId === this.getSameProfilePlayerUid();
-    const guestRematchesLength = this.rematchIndices(this.latestInvite.guestRematches).length;
-    const hostRematchesLength = this.rematchIndices(this.latestInvite.hostRematches).length;
+    const proposingAsHost =
+      this.latestInvite.hostId === this.getSameProfilePlayerUid();
+    const guestRematchesLength = this.rematchIndices(
+      this.latestInvite.guestRematches,
+    ).length;
+    const hostRematchesLength = this.rematchIndices(
+      this.latestInvite.hostRematches,
+    ).length;
 
-    const proposerRematchesLength = proposingAsHost ? hostRematchesLength : guestRematchesLength;
-    const otherPlayerRematchesLength = proposingAsHost ? guestRematchesLength : hostRematchesLength;
+    const proposerRematchesLength = proposingAsHost
+      ? hostRematchesLength
+      : guestRematchesLength;
+    const otherPlayerRematchesLength = proposingAsHost
+      ? guestRematchesLength
+      : hostRematchesLength;
 
     const latestCommonIndex = this.getLatestBothSidesApprovedRematchIndex();
 
@@ -1769,11 +2185,17 @@ class Connection {
   public async startTimer(): Promise<any> {
     try {
       await this.ensureAuthenticated();
-      const writableContext = this.requireWritableContext(undefined, "startTimer");
+      const writableContext = this.requireWritableContext(
+        undefined,
+        "startTimer",
+      );
       if (!writableContext) {
         return { ok: false };
       }
-      const startTimerFunction = httpsCallable(this.functions, "startMatchTimer");
+      const startTimerFunction = httpsCallable(
+        this.functions,
+        "startMatchTimer",
+      );
       const opponentId = this.getOpponentId(writableContext.actorUid);
       const response = await startTimerFunction({
         playerId: writableContext.actorUid,
@@ -1791,11 +2213,17 @@ class Connection {
   public async claimVictoryByTimer(): Promise<any> {
     try {
       await this.ensureAuthenticated();
-      const writableContext = this.requireWritableContext(undefined, "claimVictoryByTimer");
+      const writableContext = this.requireWritableContext(
+        undefined,
+        "claimVictoryByTimer",
+      );
       if (!writableContext) {
         return { ok: false };
       }
-      const claimVictoryByTimerFunction = httpsCallable(this.functions, "claimMatchVictoryByTimer");
+      const claimVictoryByTimerFunction = httpsCallable(
+        this.functions,
+        "claimMatchVictoryByTimer",
+      );
       const opponentId = this.getOpponentId(writableContext.actorUid);
       const response = await claimVictoryByTimerFunction({
         playerId: writableContext.actorUid,
@@ -1827,7 +2255,10 @@ class Connection {
   public async cancelAutomatch(): Promise<any> {
     try {
       await this.ensureAuthenticated();
-      const cancelAutomatchFn = httpsCallable(this.functions, "cancelAutomatch");
+      const cancelAutomatchFn = httpsCallable(
+        this.functions,
+        "cancelAutomatch",
+      );
       const response = await cancelAutomatchFn({});
       return response.data;
     } catch (error) {
@@ -1837,7 +2268,8 @@ class Connection {
   }
 
   public async removeWaitingNavigationGame(inviteId: string): Promise<any> {
-    const normalizedInviteId = typeof inviteId === "string" ? inviteId.trim() : "";
+    const normalizedInviteId =
+      typeof inviteId === "string" ? inviteId.trim() : "";
     if (!normalizedInviteId) {
       return {
         ok: false,
@@ -1847,8 +2279,13 @@ class Connection {
     }
     try {
       await this.ensureAuthenticated();
-      const removeNavigationGameFn = httpsCallable(this.functions, "removeNavigationGame");
-      const response = await removeNavigationGameFn({ inviteId: normalizedInviteId });
+      const removeNavigationGameFn = httpsCallable(
+        this.functions,
+        "removeNavigationGame",
+      );
+      const response = await removeNavigationGameFn({
+        inviteId: normalizedInviteId,
+      });
       return response.data;
     } catch (error) {
       console.error("Error removing waiting navigation game:", error);
@@ -1856,18 +2293,27 @@ class Connection {
     }
   }
 
-  public async createEvent(startsInMinutes: number): Promise<{ ok: boolean; eventId?: string; event?: EventRecord | null }> {
+  public async createEvent(
+    startsInMinutes: number,
+  ): Promise<{ ok: boolean; eventId?: string; event?: EventRecord | null }> {
     try {
       await this.ensureAuthenticated();
       const createEventFunction = httpsCallable(this.functions, "createEvent");
       const response = await createEventFunction({
         startsInMinutes: this.normalizeFiniteNumber(startsInMinutes, 0),
       });
-      const data = response.data as { ok?: boolean; eventId?: unknown; event?: unknown };
+      const data = response.data as {
+        ok?: boolean;
+        eventId?: unknown;
+        event?: unknown;
+      };
       return {
         ok: data?.ok === true,
         eventId: typeof data?.eventId === "string" ? data.eventId : undefined,
-        event: this.mapDatabaseEventRecord(data?.event ?? null, typeof data?.eventId === "string" ? data.eventId : ""),
+        event: this.mapDatabaseEventRecord(
+          data?.event ?? null,
+          typeof data?.eventId === "string" ? data.eventId : "",
+        ),
       };
     } catch (error) {
       console.error("Error creating event:", error);
@@ -1875,7 +2321,9 @@ class Connection {
     }
   }
 
-  public async joinEvent(eventId: string): Promise<{ ok: boolean; eventId?: string }> {
+  public async joinEvent(
+    eventId: string,
+  ): Promise<{ ok: boolean; eventId?: string }> {
     try {
       await this.ensureAuthenticated();
       const joinEventFunction = httpsCallable(this.functions, "joinEvent");
@@ -1891,7 +2339,12 @@ class Connection {
     }
   }
 
-  public async syncEventState(eventId: string): Promise<{ ok: boolean; didChange?: boolean; skipped?: boolean; event?: EventRecord | null }> {
+  public async syncEventState(eventId: string): Promise<{
+    ok: boolean;
+    didChange?: boolean;
+    skipped?: boolean;
+    event?: EventRecord | null;
+  }> {
     const normalizedEventId = this.normalizeString(eventId).trim();
     if (!normalizedEventId) {
       return { ok: false, skipped: true, event: null };
@@ -1905,17 +2358,32 @@ class Connection {
     const syncPromise = (async () => {
       try {
         await this.ensureAuthenticated();
-        const syncEventStateFunction = httpsCallable(this.functions, "syncEventState");
+        const syncEventStateFunction = httpsCallable(
+          this.functions,
+          "syncEventState",
+        );
         const maxAttempts = 6;
 
         for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
-          const response = await syncEventStateFunction({ eventId: normalizedEventId });
-          const data = response.data as { ok?: boolean; didChange?: unknown; skipped?: unknown; event?: unknown };
+          const response = await syncEventStateFunction({
+            eventId: normalizedEventId,
+          });
+          const data = response.data as {
+            ok?: boolean;
+            didChange?: unknown;
+            skipped?: unknown;
+            event?: unknown;
+          };
           const parsed = {
             ok: data?.ok === true,
-            didChange: typeof data?.didChange === "boolean" ? data.didChange : undefined,
-            skipped: typeof data?.skipped === "boolean" ? data.skipped : undefined,
-            event: this.mapDatabaseEventRecord(data?.event ?? null, normalizedEventId),
+            didChange:
+              typeof data?.didChange === "boolean" ? data.didChange : undefined,
+            skipped:
+              typeof data?.skipped === "boolean" ? data.skipped : undefined,
+            event: this.mapDatabaseEventRecord(
+              data?.event ?? null,
+              normalizedEventId,
+            ),
           };
           if (!parsed.skipped || attempt >= maxAttempts - 1) {
             return parsed;
@@ -1936,7 +2404,11 @@ class Connection {
     return syncPromise;
   }
 
-  public subscribeToEvent(eventId: string, onUpdate: (event: EventRecord | null) => void, onError?: (error: unknown) => void): () => void {
+  public subscribeToEvent(
+    eventId: string,
+    onUpdate: (event: EventRecord | null) => void,
+    onError?: (error: unknown) => void,
+  ): () => void {
     const normalizedEventId = typeof eventId === "string" ? eventId.trim() : "";
     if (!normalizedEventId) {
       onUpdate(null);
@@ -1962,14 +2434,16 @@ class Connection {
               onUpdate(null);
               return;
             }
-            onUpdate(this.mapDatabaseEventRecord(snapshot.val(), normalizedEventId));
+            onUpdate(
+              this.mapDatabaseEventRecord(snapshot.val(), normalizedEventId),
+            );
           },
           (error) => {
             if (disposed || !sessionGuard()) {
               return;
             }
             onError?.(error);
-          }
+          },
         );
       })
       .catch((error) => {
@@ -1986,7 +2460,13 @@ class Connection {
   }
 
   private normalizeNavigationStatus(status: unknown): NavigationItemStatus {
-    if (status === "pending" || status === "waiting" || status === "active" || status === "ended" || status === "dismissed") {
+    if (
+      status === "pending" ||
+      status === "waiting" ||
+      status === "active" ||
+      status === "ended" ||
+      status === "dismissed"
+    ) {
       return status;
     }
     return "waiting";
@@ -2015,7 +2495,12 @@ class Connection {
     if (typeof value === "number" && Number.isFinite(value)) {
       return Math.floor(value);
     }
-    if (value && typeof value === "object" && "toMillis" in value && typeof (value as { toMillis: unknown }).toMillis === "function") {
+    if (
+      value &&
+      typeof value === "object" &&
+      "toMillis" in value &&
+      typeof (value as { toMillis: unknown }).toMillis === "function"
+    ) {
       try {
         const millis = (value as { toMillis: () => number }).toMillis();
         if (Number.isFinite(millis)) {
@@ -2042,37 +2527,49 @@ class Connection {
     if (typeof value === "number" && Number.isFinite(value)) {
       return Math.floor(value);
     }
-    if (typeof value === "string" && value !== "" && Number.isFinite(Number(value))) {
+    if (
+      typeof value === "string" &&
+      value !== "" &&
+      Number.isFinite(Number(value))
+    ) {
       return Math.floor(Number(value));
     }
     return fallback;
   }
 
-  private mapFirestoreParticipantPreview(value: unknown): EventNavigationPreviewParticipant[] {
+  private mapFirestoreParticipantPreview(
+    value: unknown,
+  ): EventNavigationPreviewParticipant[] {
     if (!Array.isArray(value)) {
       return [];
     }
-    return value.reduce<EventNavigationPreviewParticipant[]>((acc, participant) => {
-      if (!participant || typeof participant !== "object") {
+    return value.reduce<EventNavigationPreviewParticipant[]>(
+      (acc, participant) => {
+        if (!participant || typeof participant !== "object") {
+          return acc;
+        }
+        const raw = participant as Record<string, unknown>;
+        const emojiId = this.normalizeFiniteNumber(raw.emojiId, NaN);
+        acc.push({
+          profileId: this.normalizeStringOrNull(raw.profileId),
+          displayName: this.normalizeStringOrNull(raw.displayName),
+          emojiId: Number.isFinite(emojiId) ? emojiId : null,
+          aura: this.normalizeStringOrNull(raw.aura),
+        });
         return acc;
-      }
-      const raw = participant as Record<string, unknown>;
-      const emojiId = this.normalizeFiniteNumber(raw.emojiId, NaN);
-      acc.push({
-        profileId: this.normalizeStringOrNull(raw.profileId),
-        displayName: this.normalizeStringOrNull(raw.displayName),
-        emojiId: Number.isFinite(emojiId) ? emojiId : null,
-        aura: this.normalizeStringOrNull(raw.aura),
-      });
-      return acc;
-    }, []);
+      },
+      [],
+    );
   }
 
   private compareNavigationItems(a: NavigationItem, b: NavigationItem): number {
     return compareNavigationItemsByDisplayOrder(a, b);
   }
 
-  private mapFirestoreGameDocToNavigationItem(rawData: Record<string, unknown>, fallbackInviteId: string): NavigationItem | null {
+  private mapFirestoreGameDocToNavigationItem(
+    rawData: Record<string, unknown>,
+    fallbackInviteId: string,
+  ): NavigationItem | null {
     const entityType = this.normalizeNavigationEntityType(rawData.entityType);
     if (entityType === "event") {
       const eventId = this.normalizeStringOrNull(rawData.eventId);
@@ -2085,22 +2582,36 @@ class Connection {
       }
       const status: Exclude<NavigationItemStatus, "pending"> = rawStatus;
       return {
-        id: typeof rawData.id === "string" && rawData.id !== "" ? rawData.id : `event_${eventId}`,
+        id:
+          typeof rawData.id === "string" && rawData.id !== ""
+            ? rawData.id
+            : `event_${eventId}`,
         entityType: "event",
         eventId,
         status,
         sortBucket: this.getNavigationSortBucket(status),
-        listSortAtMs: this.readTimestampMillis(rawData.listSortAt) || Date.now(),
+        listSortAtMs:
+          this.readTimestampMillis(rawData.listSortAt) || Date.now(),
         startAtMs: this.readTimestampMillis(rawData.startAt) || null,
         updatedAtMs: this.readTimestampMillis(rawData.updatedAt) || null,
         endedAtMs: this.readTimestampMillis(rawData.endedAt) || null,
-        participantCount: this.normalizeFiniteNumber(rawData.participantCount, 0),
-        participantPreview: this.mapFirestoreParticipantPreview(rawData.participantPreview),
-        winnerDisplayName: this.normalizeStringOrNull(rawData.winnerDisplayName),
+        participantCount: this.normalizeFiniteNumber(
+          rawData.participantCount,
+          0,
+        ),
+        participantPreview: this.mapFirestoreParticipantPreview(
+          rawData.participantPreview,
+        ),
+        winnerDisplayName: this.normalizeStringOrNull(
+          rawData.winnerDisplayName,
+        ),
       };
     }
 
-    const inviteId = typeof rawData.inviteId === "string" && rawData.inviteId !== "" ? rawData.inviteId : fallbackInviteId;
+    const inviteId =
+      typeof rawData.inviteId === "string" && rawData.inviteId !== ""
+        ? rawData.inviteId
+        : fallbackInviteId;
     if (!inviteId) {
       return null;
     }
@@ -2110,13 +2621,20 @@ class Connection {
     const sortBucket = this.getNavigationSortBucket(status);
     const listSortAtMs = this.readTimestampMillis(rawData.listSortAt);
     const rawAutomatchStateHint = rawData.automatchStateHint;
-    const automatchStateHint = rawAutomatchStateHint === "pending" || rawAutomatchStateHint === "matched" || rawAutomatchStateHint === "canceled" ? rawAutomatchStateHint : null;
+    const automatchStateHint =
+      rawAutomatchStateHint === "pending" ||
+      rawAutomatchStateHint === "matched" ||
+      rawAutomatchStateHint === "canceled"
+        ? rawAutomatchStateHint
+        : null;
     const rawOpponentEmoji = rawData.opponentEmoji ?? rawData.opponentEmojiId;
     const rawOpponentName = rawData.opponentName ?? rawData.opponentDisplayName;
     const opponentEmoji =
       typeof rawOpponentEmoji === "number" && Number.isFinite(rawOpponentEmoji)
         ? Math.floor(rawOpponentEmoji)
-        : typeof rawOpponentEmoji === "string" && rawOpponentEmoji !== "" && Number.isFinite(Number(rawOpponentEmoji))
+        : typeof rawOpponentEmoji === "string" &&
+            rawOpponentEmoji !== "" &&
+            Number.isFinite(Number(rawOpponentEmoji))
           ? Math.floor(Number(rawOpponentEmoji))
           : null;
 
@@ -2132,17 +2650,29 @@ class Connection {
       status,
       sortBucket,
       listSortAtMs: listSortAtMs > 0 ? listSortAtMs : Date.now(),
-      hostLoginId: typeof rawData.hostLoginId === "string" ? rawData.hostLoginId : null,
-      guestLoginId: typeof rawData.guestLoginId === "string" ? rawData.guestLoginId : null,
-      opponentProfileId: typeof rawData.opponentProfileId === "string" ? rawData.opponentProfileId : null,
-      opponentName: typeof rawOpponentName === "string" ? rawOpponentName : null,
+      hostLoginId:
+        typeof rawData.hostLoginId === "string" ? rawData.hostLoginId : null,
+      guestLoginId:
+        typeof rawData.guestLoginId === "string" ? rawData.guestLoginId : null,
+      opponentProfileId:
+        typeof rawData.opponentProfileId === "string"
+          ? rawData.opponentProfileId
+          : null,
+      opponentName:
+        typeof rawOpponentName === "string" ? rawOpponentName : null,
       opponentEmoji,
       automatchStateHint,
-      isPendingAutomatch: typeof rawData.isPendingAutomatch === "boolean" ? rawData.isPendingAutomatch : status === "pending",
+      isPendingAutomatch:
+        typeof rawData.isPendingAutomatch === "boolean"
+          ? rawData.isPendingAutomatch
+          : status === "pending",
     };
   }
 
-  private mapEventParticipant(rawData: Record<string, unknown>, fallbackProfileId: string): EventParticipant {
+  private mapEventParticipant(
+    rawData: Record<string, unknown>,
+    fallbackProfileId: string,
+  ): EventParticipant {
     return {
       profileId: this.normalizeString(rawData.profileId) || fallbackProfileId,
       loginUid: this.normalizeString(rawData.loginUid),
@@ -2151,18 +2681,37 @@ class Connection {
       emojiId: this.normalizeFiniteNumber(rawData.emojiId, 0),
       aura: this.normalizeString(rawData.aura),
       joinedAtMs: this.normalizeFiniteNumber(rawData.joinedAtMs, 0),
-      state: rawData.state === "eliminated" || rawData.state === "winner" ? rawData.state : "active",
-      eliminatedRoundIndex: Number.isFinite(this.normalizeFiniteNumber(rawData.eliminatedRoundIndex, NaN)) ? this.normalizeFiniteNumber(rawData.eliminatedRoundIndex, NaN) : null,
-      eliminatedByProfileId: this.normalizeStringOrNull(rawData.eliminatedByProfileId),
+      state:
+        rawData.state === "eliminated" || rawData.state === "winner"
+          ? rawData.state
+          : "active",
+      eliminatedRoundIndex: Number.isFinite(
+        this.normalizeFiniteNumber(rawData.eliminatedRoundIndex, NaN),
+      )
+        ? this.normalizeFiniteNumber(rawData.eliminatedRoundIndex, NaN)
+        : null,
+      eliminatedByProfileId: this.normalizeStringOrNull(
+        rawData.eliminatedByProfileId,
+      ),
     };
   }
 
-  private mapEventMatch(rawData: Record<string, unknown>, fallbackMatchKey: string): EventMatch {
+  private mapEventMatch(
+    rawData: Record<string, unknown>,
+    fallbackMatchKey: string,
+  ): EventMatch {
     return {
       matchKey: this.normalizeString(rawData.matchKey) || fallbackMatchKey,
       inviteId: this.normalizeString(rawData.inviteId),
-      status: rawData.status === "host" || rawData.status === "guest" ? rawData.status : "pending",
-      resolvedAtMs: Number.isFinite(this.normalizeFiniteNumber(rawData.resolvedAtMs, NaN)) ? this.normalizeFiniteNumber(rawData.resolvedAtMs, NaN) : null,
+      status:
+        rawData.status === "host" || rawData.status === "guest"
+          ? rawData.status
+          : "pending",
+      resolvedAtMs: Number.isFinite(
+        this.normalizeFiniteNumber(rawData.resolvedAtMs, NaN),
+      )
+        ? this.normalizeFiniteNumber(rawData.resolvedAtMs, NaN)
+        : null,
       winnerProfileId: this.normalizeStringOrNull(rawData.winnerProfileId),
       loserProfileId: this.normalizeStringOrNull(rawData.loserProfileId),
       hostProfileId: this.normalizeString(rawData.hostProfileId),
@@ -2178,29 +2727,50 @@ class Connection {
     };
   }
 
-  private mapEventRound(rawData: Record<string, unknown>, fallbackRoundIndex: number): EventRound {
-    const matchesInput = rawData.matches && typeof rawData.matches === "object" ? (rawData.matches as Record<string, unknown>) : {};
+  private mapEventRound(
+    rawData: Record<string, unknown>,
+    fallbackRoundIndex: number,
+  ): EventRound {
+    const matchesInput =
+      rawData.matches && typeof rawData.matches === "object"
+        ? (rawData.matches as Record<string, unknown>)
+        : {};
     const matches: Record<string, EventMatch> = {};
     Object.keys(matchesInput).forEach((matchKey) => {
       const matchValue = matchesInput[matchKey];
       if (!matchValue || typeof matchValue !== "object") {
         return;
       }
-      matches[matchKey] = this.mapEventMatch(matchValue as Record<string, unknown>, matchKey);
+      matches[matchKey] = this.mapEventMatch(
+        matchValue as Record<string, unknown>,
+        matchKey,
+      );
     });
-    const completedAtMs = this.normalizeFiniteNumber(rawData.completedAtMs, NaN);
+    const completedAtMs = this.normalizeFiniteNumber(
+      rawData.completedAtMs,
+      NaN,
+    );
     return {
-      roundIndex: this.normalizeFiniteNumber(rawData.roundIndex, fallbackRoundIndex),
+      roundIndex: this.normalizeFiniteNumber(
+        rawData.roundIndex,
+        fallbackRoundIndex,
+      ),
       status: rawData.status === "completed" ? "completed" : "active",
       createdAtMs: this.normalizeFiniteNumber(rawData.createdAtMs, 0),
       completedAtMs: Number.isFinite(completedAtMs) ? completedAtMs : null,
       byeProfileId: this.normalizeStringOrNull(rawData.byeProfileId),
-      byeReason: rawData.byeReason === "preferred" || rawData.byeReason === "random" ? rawData.byeReason : null,
+      byeReason:
+        rawData.byeReason === "preferred" || rawData.byeReason === "random"
+          ? rawData.byeReason
+          : null,
       matches,
     };
   }
 
-  private mapDatabaseEventRecord(rawValue: unknown, fallbackEventId: string): EventRecord | null {
+  private mapDatabaseEventRecord(
+    rawValue: unknown,
+    fallbackEventId: string,
+  ): EventRecord | null {
     if (!rawValue || typeof rawValue !== "object") {
       return null;
     }
@@ -2209,8 +2779,14 @@ class Connection {
     if (!eventId) {
       return null;
     }
-    const participantsInput = rawData.participants && typeof rawData.participants === "object" ? (rawData.participants as Record<string, unknown>) : {};
-    const roundsInput = rawData.rounds && typeof rawData.rounds === "object" ? (rawData.rounds as Record<string, unknown>) : {};
+    const participantsInput =
+      rawData.participants && typeof rawData.participants === "object"
+        ? (rawData.participants as Record<string, unknown>)
+        : {};
+    const roundsInput =
+      rawData.rounds && typeof rawData.rounds === "object"
+        ? (rawData.rounds as Record<string, unknown>)
+        : {};
     const participants: Record<string, EventParticipant> = {};
     const rounds: Record<string, EventRound> = {};
 
@@ -2219,7 +2795,10 @@ class Connection {
       if (!participantValue || typeof participantValue !== "object") {
         return;
       }
-      participants[profileId] = this.mapEventParticipant(participantValue as Record<string, unknown>, profileId);
+      participants[profileId] = this.mapEventParticipant(
+        participantValue as Record<string, unknown>,
+        profileId,
+      );
     });
 
     Object.keys(roundsInput).forEach((roundKey) => {
@@ -2227,30 +2806,52 @@ class Connection {
       if (!roundValue || typeof roundValue !== "object") {
         return;
       }
-      rounds[roundKey] = this.mapEventRound(roundValue as Record<string, unknown>, this.normalizeFiniteNumber(roundKey, 0));
+      rounds[roundKey] = this.mapEventRound(
+        roundValue as Record<string, unknown>,
+        this.normalizeFiniteNumber(roundKey, 0),
+      );
     });
 
     return {
       schemaVersion: this.normalizeFiniteNumber(rawData.schemaVersion, 1),
       eventId,
-      status: rawData.status === "active" || rawData.status === "ended" || rawData.status === "dismissed" ? rawData.status : "scheduled",
+      status:
+        rawData.status === "active" ||
+        rawData.status === "ended" ||
+        rawData.status === "dismissed"
+          ? rawData.status
+          : "scheduled",
       createdAtMs: this.normalizeFiniteNumber(rawData.createdAtMs, 0),
       updatedAtMs: this.normalizeFiniteNumber(rawData.updatedAtMs, 0),
       startAtMs: this.normalizeFiniteNumber(rawData.startAtMs, 0),
-      startedAtMs: Number.isFinite(this.normalizeFiniteNumber(rawData.startedAtMs, NaN)) ? this.normalizeFiniteNumber(rawData.startedAtMs, NaN) : null,
-      endedAtMs: Number.isFinite(this.normalizeFiniteNumber(rawData.endedAtMs, NaN)) ? this.normalizeFiniteNumber(rawData.endedAtMs, NaN) : null,
+      startedAtMs: Number.isFinite(
+        this.normalizeFiniteNumber(rawData.startedAtMs, NaN),
+      )
+        ? this.normalizeFiniteNumber(rawData.startedAtMs, NaN)
+        : null,
+      endedAtMs: Number.isFinite(
+        this.normalizeFiniteNumber(rawData.endedAtMs, NaN),
+      )
+        ? this.normalizeFiniteNumber(rawData.endedAtMs, NaN)
+        : null,
       createdByProfileId: this.normalizeString(rawData.createdByProfileId),
       createdByLoginUid: this.normalizeString(rawData.createdByLoginUid),
       createdByUsername: this.normalizeString(rawData.createdByUsername),
       winnerProfileId: this.normalizeStringOrNull(rawData.winnerProfileId),
       winnerDisplayName: this.normalizeStringOrNull(rawData.winnerDisplayName),
-      currentRoundIndex: Number.isFinite(this.normalizeFiniteNumber(rawData.currentRoundIndex, NaN)) ? this.normalizeFiniteNumber(rawData.currentRoundIndex, NaN) : null,
+      currentRoundIndex: Number.isFinite(
+        this.normalizeFiniteNumber(rawData.currentRoundIndex, NaN),
+      )
+        ? this.normalizeFiniteNumber(rawData.currentRoundIndex, NaN)
+        : null,
       participants,
       rounds,
     };
   }
 
-  public createOptimisticPendingAutomatchItem(inviteId: string): NavigationGameItem | null {
+  public createOptimisticPendingAutomatchItem(
+    inviteId: string,
+  ): NavigationGameItem | null {
     if (!inviteId || inviteId === "") {
       return null;
     }
@@ -2273,7 +2874,10 @@ class Connection {
     };
   }
 
-  public async getProfileGamesFirestorePage(maxItems: number, cursor: NavigationGamesPageCursor = null): Promise<NavigationGamesPageResult> {
+  public async getProfileGamesFirestorePage(
+    maxItems: number,
+    cursor: NavigationGamesPageCursor = null,
+  ): Promise<NavigationGamesPageResult> {
     await this.ensureAuthenticated();
 
     const profileId = this.getLocalProfileId();
@@ -2285,18 +2889,38 @@ class Connection {
       };
     }
 
-    const boundedLimit = Number.isFinite(maxItems) && maxItems > 0 ? Math.floor(maxItems) : 40;
-    const gamesCollectionRef = collection(this.firestore, "users", profileId, "games");
+    const boundedLimit =
+      Number.isFinite(maxItems) && maxItems > 0 ? Math.floor(maxItems) : 40;
+    const gamesCollectionRef = collection(
+      this.firestore,
+      "users",
+      profileId,
+      "games",
+    );
     const baseQuery =
       cursor === null
-        ? query(gamesCollectionRef, orderBy("sortBucket", "asc"), orderBy("listSortAt", "desc"), limit(boundedLimit + 1))
-        : query(gamesCollectionRef, orderBy("sortBucket", "asc"), orderBy("listSortAt", "desc"), startAfter(cursor), limit(boundedLimit + 1));
+        ? query(
+            gamesCollectionRef,
+            orderBy("sortBucket", "asc"),
+            orderBy("listSortAt", "desc"),
+            limit(boundedLimit + 1),
+          )
+        : query(
+            gamesCollectionRef,
+            orderBy("sortBucket", "asc"),
+            orderBy("listSortAt", "desc"),
+            startAfter(cursor),
+            limit(boundedLimit + 1),
+          );
 
     const snapshot = await getDocs(baseQuery);
     const visibleDocs = snapshot.docs.slice(0, boundedLimit);
     const items: NavigationItem[] = [];
     visibleDocs.forEach((docSnapshot) => {
-      const mapped = this.mapFirestoreGameDocToNavigationItem(docSnapshot.data() as Record<string, unknown>, docSnapshot.id);
+      const mapped = this.mapFirestoreGameDocToNavigationItem(
+        docSnapshot.data() as Record<string, unknown>,
+        docSnapshot.id,
+      );
       if (mapped) {
         items.push(mapped);
       }
@@ -2306,7 +2930,8 @@ class Connection {
 
     return {
       items,
-      nextCursor: visibleDocs.length > 0 ? visibleDocs[visibleDocs.length - 1] : cursor,
+      nextCursor:
+        visibleDocs.length > 0 ? visibleDocs[visibleDocs.length - 1] : cursor,
       hasMore: snapshot.docs.length > boundedLimit,
     };
   }
@@ -2315,12 +2940,13 @@ class Connection {
     maxItems: number,
     onUpdate: (items: NavigationItem[]) => void,
     onError?: (error: unknown) => void,
-    onPageMeta?: (result: NavigationGamesPageResult) => void
+    onPageMeta?: (result: NavigationGamesPageResult) => void,
   ): () => void {
     let unsubscribe: (() => void) | null = null;
     let disposed = false;
     const sessionGuard = this.createSessionGuard();
-    const boundedLimit = Number.isFinite(maxItems) && maxItems > 0 ? Math.floor(maxItems) : 40;
+    const boundedLimit =
+      Number.isFinite(maxItems) && maxItems > 0 ? Math.floor(maxItems) : 40;
 
     void this.ensureAuthenticated()
       .then(() => {
@@ -2337,7 +2963,7 @@ class Connection {
           collection(this.firestore, "users", profileId, "games"),
           orderBy("sortBucket", "asc"),
           orderBy("listSortAt", "desc"),
-          limit(boundedLimit + 1)
+          limit(boundedLimit + 1),
         );
 
         unsubscribe = onSnapshot(
@@ -2349,7 +2975,10 @@ class Connection {
             const visibleDocs = snapshot.docs.slice(0, boundedLimit);
             const items: NavigationItem[] = [];
             visibleDocs.forEach((docSnapshot) => {
-              const mapped = this.mapFirestoreGameDocToNavigationItem(docSnapshot.data() as Record<string, unknown>, docSnapshot.id);
+              const mapped = this.mapFirestoreGameDocToNavigationItem(
+                docSnapshot.data() as Record<string, unknown>,
+                docSnapshot.id,
+              );
               if (mapped) {
                 items.push(mapped);
               }
@@ -2358,7 +2987,10 @@ class Connection {
             onUpdate(items);
             onPageMeta?.({
               items,
-              nextCursor: visibleDocs.length > 0 ? visibleDocs[visibleDocs.length - 1] : null,
+              nextCursor:
+                visibleDocs.length > 0
+                  ? visibleDocs[visibleDocs.length - 1]
+                  : null,
               hasMore: snapshot.docs.length > boundedLimit,
             });
           },
@@ -2367,7 +2999,7 @@ class Connection {
               return;
             }
             onError?.(error);
-          }
+          },
         );
       })
       .catch((error) => {
@@ -2386,13 +3018,18 @@ class Connection {
     };
   }
 
-  private async getInviteForFallback(inviteId: string, inviteCache: Map<string, Invite | null>): Promise<Invite | null> {
+  private async getInviteForFallback(
+    inviteId: string,
+    inviteCache: Map<string, Invite | null>,
+  ): Promise<Invite | null> {
     if (inviteCache.has(inviteId)) {
       return inviteCache.get(inviteId) || null;
     }
 
     const inviteSnapshot = await get(ref(this.db, `invites/${inviteId}`));
-    const inviteData = inviteSnapshot.exists() ? (inviteSnapshot.val() as Invite) : null;
+    const inviteData = inviteSnapshot.exists()
+      ? (inviteSnapshot.val() as Invite)
+      : null;
     inviteCache.set(inviteId, inviteData);
     return inviteData;
   }
@@ -2412,10 +3049,21 @@ class Connection {
     return Number.isFinite(parsed) && parsed > 0 ? parsed : 0;
   }
 
-  private buildFallbackSortHint(maxMatchIndex: number, lastSeenOrder: number): number {
-    const normalizedOrder = Number.isFinite(lastSeenOrder) && lastSeenOrder > 0 ? Math.floor(lastSeenOrder) : 1;
-    const normalizedIndex = Number.isFinite(maxMatchIndex) && maxMatchIndex > 0 ? Math.floor(maxMatchIndex) : 0;
-    return normalizedIndex > 0 ? normalizedIndex * 1_000_000 + normalizedOrder : normalizedOrder;
+  private buildFallbackSortHint(
+    maxMatchIndex: number,
+    lastSeenOrder: number,
+  ): number {
+    const normalizedOrder =
+      Number.isFinite(lastSeenOrder) && lastSeenOrder > 0
+        ? Math.floor(lastSeenOrder)
+        : 1;
+    const normalizedIndex =
+      Number.isFinite(maxMatchIndex) && maxMatchIndex > 0
+        ? Math.floor(maxMatchIndex)
+        : 0;
+    return normalizedIndex > 0
+      ? normalizedIndex * 1_000_000 + normalizedOrder
+      : normalizedOrder;
   }
 
   private parseFallbackRematchIndices(rematches: unknown): number[] {
@@ -2432,10 +3080,21 @@ class Connection {
       .filter((value) => Number.isFinite(value) && value > 0);
   }
 
-  private deriveFallbackLatestMatchId(inviteId: string, inviteData: Invite, fallbackMaxMatchIndex: number): string {
-    const hostIndices = this.parseFallbackRematchIndices(inviteData.hostRematches);
-    const guestIndices = this.parseFallbackRematchIndices(inviteData.guestRematches);
-    let maxIndex = Number.isFinite(fallbackMaxMatchIndex) && fallbackMaxMatchIndex > 0 ? Math.floor(fallbackMaxMatchIndex) : 0;
+  private deriveFallbackLatestMatchId(
+    inviteId: string,
+    inviteData: Invite,
+    fallbackMaxMatchIndex: number,
+  ): string {
+    const hostIndices = this.parseFallbackRematchIndices(
+      inviteData.hostRematches,
+    );
+    const guestIndices = this.parseFallbackRematchIndices(
+      inviteData.guestRematches,
+    );
+    let maxIndex =
+      Number.isFinite(fallbackMaxMatchIndex) && fallbackMaxMatchIndex > 0
+        ? Math.floor(fallbackMaxMatchIndex)
+        : 0;
     hostIndices.forEach((index) => {
       if (index > maxIndex) {
         maxIndex = index;
@@ -2466,12 +3125,13 @@ class Connection {
     opponentLoginId: string | null,
     latestMatchId: string,
     inviteId: string,
-    emojiCache: Map<string, number | null>
+    emojiCache: Map<string, number | null>,
   ): Promise<number | null> {
     if (!opponentLoginId) {
       return null;
     }
-    const normalizedLatestMatchId = latestMatchId && latestMatchId !== "" ? latestMatchId : inviteId;
+    const normalizedLatestMatchId =
+      latestMatchId && latestMatchId !== "" ? latestMatchId : inviteId;
     const cacheKey = `${opponentLoginId}|${normalizedLatestMatchId}|${inviteId}`;
     if (emojiCache.has(cacheKey)) {
       return emojiCache.get(cacheKey) ?? null;
@@ -2484,7 +3144,12 @@ class Connection {
 
     for (const candidateMatchId of candidateMatchIds) {
       try {
-        const matchSnapshot = await get(ref(this.db, `players/${opponentLoginId}/matches/${candidateMatchId}`));
+        const matchSnapshot = await get(
+          ref(
+            this.db,
+            `players/${opponentLoginId}/matches/${candidateMatchId}`,
+          ),
+        );
         if (!matchSnapshot.exists()) {
           continue;
         }
@@ -2503,7 +3168,10 @@ class Connection {
     return null;
   }
 
-  private async resolveFallbackInviteIdFromMatchId(matchId: string, inviteCache: Map<string, Invite | null>): Promise<string | null> {
+  private async resolveFallbackInviteIdFromMatchId(
+    matchId: string,
+    inviteCache: Map<string, Invite | null>,
+  ): Promise<string | null> {
     if (matchId === "") {
       return null;
     }
@@ -2520,7 +3188,10 @@ class Connection {
         continue;
       }
       const candidateInviteId = matchId.slice(0, splitIndex);
-      const candidateInvite = await this.getInviteForFallback(candidateInviteId, inviteCache);
+      const candidateInvite = await this.getInviteForFallback(
+        candidateInviteId,
+        inviteCache,
+      );
       if (candidateInvite && !candidates.includes(candidateInviteId)) {
         candidates.push(candidateInviteId);
       }
@@ -2538,7 +3209,10 @@ class Connection {
     return null;
   }
 
-  private async getFallbackOpponentProfile(opponentLoginId: string | null, profileCache: Map<string, PlayerProfile | null>): Promise<PlayerProfile | null> {
+  private async getFallbackOpponentProfile(
+    opponentLoginId: string | null,
+    profileCache: Map<string, PlayerProfile | null>,
+  ): Promise<PlayerProfile | null> {
     if (!opponentLoginId) {
       return null;
     }
@@ -2562,20 +3236,29 @@ class Connection {
     profileCache: Map<string, PlayerProfile | null>,
     emojiCache: Map<string, number | null>,
     fallbackSortHint: number,
-    fallbackMaxMatchIndex: number
+    fallbackMaxMatchIndex: number,
   ): Promise<NavigationGameItem | null> {
     const inviteRecord = inviteData as Invite & {
       automatchStateHint?: unknown;
       automatchCanceledAt?: unknown;
     };
-    const hostLoginId = typeof inviteRecord.hostId === "string" ? inviteRecord.hostId : null;
-    const guestLoginId = typeof inviteRecord.guestId === "string" ? inviteRecord.guestId : null;
-    const kind: "auto" | "direct" = inviteId.startsWith("auto_") ? "auto" : "direct";
+    const hostLoginId =
+      typeof inviteRecord.hostId === "string" ? inviteRecord.hostId : null;
+    const guestLoginId =
+      typeof inviteRecord.guestId === "string" ? inviteRecord.guestId : null;
+    const kind: "auto" | "direct" = inviteId.startsWith("auto_")
+      ? "auto"
+      : "direct";
     const ended =
-      (typeof inviteRecord.hostRematches === "string" && inviteRecord.hostRematches.endsWith("x")) ||
-      (typeof inviteRecord.guestRematches === "string" && inviteRecord.guestRematches.endsWith("x"));
+      (typeof inviteRecord.hostRematches === "string" &&
+        inviteRecord.hostRematches.endsWith("x")) ||
+      (typeof inviteRecord.guestRematches === "string" &&
+        inviteRecord.guestRematches.endsWith("x"));
     const rawHint = inviteRecord.automatchStateHint;
-    const automatchStateHint = rawHint === "pending" || rawHint === "matched" || rawHint === "canceled" ? rawHint : null;
+    const automatchStateHint =
+      rawHint === "pending" || rawHint === "matched" || rawHint === "canceled"
+        ? rawHint
+        : null;
     if (kind === "auto" && !guestLoginId && automatchStateHint !== "pending") {
       return null;
     }
@@ -2589,15 +3272,43 @@ class Connection {
           : "waiting";
 
     const sortBucket = this.getNavigationSortBucket(status);
-    const canceledAt = typeof inviteRecord.automatchCanceledAt === "number" && Number.isFinite(inviteRecord.automatchCanceledAt) ? Math.floor(inviteRecord.automatchCanceledAt) : 0;
-    const normalizedFallbackSortHint = Number.isFinite(fallbackSortHint) && fallbackSortHint > 0 ? Math.floor(fallbackSortHint) : 1;
-    const listSortAtMs = status === "pending" ? Date.now() : canceledAt > 0 ? canceledAt : normalizedFallbackSortHint;
+    const canceledAt =
+      typeof inviteRecord.automatchCanceledAt === "number" &&
+      Number.isFinite(inviteRecord.automatchCanceledAt)
+        ? Math.floor(inviteRecord.automatchCanceledAt)
+        : 0;
+    const normalizedFallbackSortHint =
+      Number.isFinite(fallbackSortHint) && fallbackSortHint > 0
+        ? Math.floor(fallbackSortHint)
+        : 1;
+    const listSortAtMs =
+      status === "pending"
+        ? Date.now()
+        : canceledAt > 0
+          ? canceledAt
+          : normalizedFallbackSortHint;
 
-    const opponentLoginId = hostLoginId === currentLoginUid ? guestLoginId : hostLoginId;
-    const opponentProfile = await this.getFallbackOpponentProfile(opponentLoginId, profileCache);
-    const latestMatchId = this.deriveFallbackLatestMatchId(inviteId, inviteData, fallbackMaxMatchIndex);
-    const opponentEmojiFromProfile = typeof opponentProfile?.emoji === "number" ? opponentProfile.emoji : null;
-    const opponentEmoji = opponentEmojiFromProfile ?? (await this.getFallbackOpponentEmoji(opponentLoginId, latestMatchId, inviteId, emojiCache));
+    const opponentLoginId =
+      hostLoginId === currentLoginUid ? guestLoginId : hostLoginId;
+    const opponentProfile = await this.getFallbackOpponentProfile(
+      opponentLoginId,
+      profileCache,
+    );
+    const latestMatchId = this.deriveFallbackLatestMatchId(
+      inviteId,
+      inviteData,
+      fallbackMaxMatchIndex,
+    );
+    const opponentEmojiFromProfile =
+      typeof opponentProfile?.emoji === "number" ? opponentProfile.emoji : null;
+    const opponentEmoji =
+      opponentEmojiFromProfile ??
+      (await this.getFallbackOpponentEmoji(
+        opponentLoginId,
+        latestMatchId,
+        inviteId,
+        emojiCache,
+      ));
     if ((status === "active" || status === "ended") && opponentEmoji === null) {
       return null;
     }
@@ -2621,15 +3332,20 @@ class Connection {
     };
   }
 
-  public async getCurrentLoginFallbackGames(maxItems: number): Promise<NavigationGameItem[]> {
+  public async getCurrentLoginFallbackGames(
+    maxItems: number,
+  ): Promise<NavigationGameItem[]> {
     await this.ensureAuthenticated();
     const currentLoginUid = this.auth.currentUser?.uid;
     if (!currentLoginUid) {
       return [];
     }
 
-    const boundedLimit = Number.isFinite(maxItems) && maxItems > 0 ? Math.floor(maxItems) : 40;
-    const matchesSnapshot = await get(ref(this.db, `players/${currentLoginUid}/matches`));
+    const boundedLimit =
+      Number.isFinite(maxItems) && maxItems > 0 ? Math.floor(maxItems) : 40;
+    const matchesSnapshot = await get(
+      ref(this.db, `players/${currentLoginUid}/matches`),
+    );
     if (!matchesSnapshot.exists()) {
       return [];
     }
@@ -2643,7 +3359,10 @@ class Connection {
 
     let lastSeenOrder = matchIds.length;
     for (const matchId of matchIds) {
-      const inviteId = await this.resolveFallbackInviteIdFromMatchId(matchId, inviteCache);
+      const inviteId = await this.resolveFallbackInviteIdFromMatchId(
+        matchId,
+        inviteCache,
+      );
       if (inviteId) {
         inviteIds.add(inviteId);
         const maxMatchIndex = this.extractInviteMatchIndex(matchId, inviteId);
@@ -2651,7 +3370,10 @@ class Connection {
         if (maxMatchIndex > previousMaxMatchIndex) {
           inviteMaxMatchIndices.set(inviteId, maxMatchIndex);
         }
-        const nextSortHint = this.buildFallbackSortHint(maxMatchIndex, lastSeenOrder);
+        const nextSortHint = this.buildFallbackSortHint(
+          maxMatchIndex,
+          lastSeenOrder,
+        );
         const previousSortHint = inviteSortHints.get(inviteId);
         if (!previousSortHint || nextSortHint > previousSortHint) {
           inviteSortHints.set(inviteId, nextSortHint);
@@ -2665,12 +3387,22 @@ class Connection {
     const items: NavigationGameItem[] = [];
     const inviteIdList = Array.from(inviteIds);
     const buildConcurrency = 8;
-    for (let startIndex = 0; startIndex < inviteIdList.length; startIndex += buildConcurrency) {
-      const chunk = inviteIdList.slice(startIndex, startIndex + buildConcurrency);
+    for (
+      let startIndex = 0;
+      startIndex < inviteIdList.length;
+      startIndex += buildConcurrency
+    ) {
+      const chunk = inviteIdList.slice(
+        startIndex,
+        startIndex + buildConcurrency,
+      );
       const chunkItems = await Promise.all(
         chunk.map(async (inviteId) => {
           try {
-            const inviteData = await this.getInviteForFallback(inviteId, inviteCache);
+            const inviteData = await this.getInviteForFallback(
+              inviteId,
+              inviteCache,
+            );
             if (!inviteData) {
               return null;
             }
@@ -2681,12 +3413,12 @@ class Connection {
               profileCache,
               emojiCache,
               inviteSortHints.get(inviteId) ?? 1,
-              inviteMaxMatchIndices.get(inviteId) ?? 0
+              inviteMaxMatchIndices.get(inviteId) ?? 0,
             );
           } catch {
             return null;
           }
-        })
+        }),
       );
       chunkItems.forEach((fallbackItem) => {
         if (fallbackItem) {
@@ -2704,7 +3436,10 @@ class Connection {
     const profileIdAtRequest = storage.getProfileId("");
     try {
       await this.ensureAuthenticated();
-      const writableContext = this.requireWritableContext(undefined, "updateRatings");
+      const writableContext = this.requireWritableContext(
+        undefined,
+        "updateRatings",
+      );
       if (!writableContext) {
         return { ok: false };
       }
@@ -2714,7 +3449,10 @@ class Connection {
         this.latestInvite.eventId !== ""
           ? this.latestInvite.eventId
           : null;
-      const updateRatingsFunction = httpsCallable(this.functions, "updateRatings");
+      const updateRatingsFunction = httpsCallable(
+        this.functions,
+        "updateRatings",
+      );
       const opponentId = this.getOpponentId(writableContext.actorUid);
       const response = await updateRatingsFunction({
         playerId: writableContext.actorUid,
@@ -2723,12 +3461,20 @@ class Connection {
         opponentId,
       });
       const resolvedEventId =
-        inviteEventId || (this.inviteId === writableContext.inviteId ? this.getCurrentInviteEventId() : null);
+        inviteEventId ||
+        (this.inviteId === writableContext.inviteId
+          ? this.getCurrentInviteEventId()
+          : null);
       if (resolvedEventId) {
         void this.syncEventState(resolvedEventId).catch(() => {});
       }
       const data = response.data as { mining?: PlayerMiningData } | null;
-      if (data && data.mining && sessionGuard() && storage.getProfileId("") === profileIdAtRequest) {
+      if (
+        data &&
+        data.mining &&
+        sessionGuard() &&
+        storage.getProfileId("") === profileIdAtRequest
+      ) {
         rocksMiningService.setFromServer(data.mining, { persist: true });
       }
       return data;
@@ -2743,7 +3489,10 @@ class Connection {
     const profileIdAtRequest = storage.getProfileId("");
     try {
       await this.ensureAuthenticated();
-      const writableContext = this.requireWritableContext(undefined, "resolveWagerOutcome");
+      const writableContext = this.requireWritableContext(
+        undefined,
+        "resolveWagerOutcome",
+      );
       if (!writableContext) {
         return { ok: false };
       }
@@ -2752,20 +3501,34 @@ class Connection {
         return { ok: false };
       }
       this.applyOptimisticWagerResolution(isWin);
-      console.log("wager:resolve:start", { inviteId: writableContext.inviteId, matchId: writableContext.matchId, opponentId });
-      const resolveWagerOutcomeFunction = httpsCallable(this.functions, "resolveWagerOutcome");
+      console.log("wager:resolve:start", {
+        inviteId: writableContext.inviteId,
+        matchId: writableContext.matchId,
+        opponentId,
+      });
+      const resolveWagerOutcomeFunction = httpsCallable(
+        this.functions,
+        "resolveWagerOutcome",
+      );
       const data = await this.callWagerFunctionWithRetry("wager:resolve", () =>
         resolveWagerOutcomeFunction({
           playerId: writableContext.actorUid,
           inviteId: writableContext.inviteId,
           matchId: writableContext.matchId,
           opponentId,
-        })
+        }),
       );
       const responseData = data as { mining?: PlayerMiningData } | null;
       console.log("wager:resolve:done", responseData);
-      if (responseData && responseData.mining && sessionGuard() && storage.getProfileId("") === profileIdAtRequest) {
-        rocksMiningService.setFromServer(responseData.mining, { persist: true });
+      if (
+        responseData &&
+        responseData.mining &&
+        sessionGuard() &&
+        storage.getProfileId("") === profileIdAtRequest
+      ) {
+        rocksMiningService.setFromServer(responseData.mining, {
+          persist: true,
+        });
       }
       return responseData;
     } catch (error) {
@@ -2774,7 +3537,10 @@ class Connection {
     }
   }
 
-  public async sendWagerProposal(material: MiningMaterialName, count: number): Promise<any> {
+  public async sendWagerProposal(
+    material: MiningMaterialName,
+    count: number,
+  ): Promise<any> {
     let prevState: MatchWagerState | null = null;
     let prevFrozen: Record<MiningMaterialName, number> | null = null;
     let optimisticCount = 0;
@@ -2783,7 +3549,10 @@ class Connection {
     let playerUid: string | null = null;
     try {
       await this.ensureAuthenticated();
-      const writableContext = this.requireWritableContext(undefined, "sendWagerProposal");
+      const writableContext = this.requireWritableContext(
+        undefined,
+        "sendWagerProposal",
+      );
       if (!writableContext) {
         return { ok: false };
       }
@@ -2799,14 +3568,24 @@ class Connection {
       if (!currentState?.agreed && !currentState?.resolved) {
         const totalMaterials = rocksMiningService.getSnapshot().materials;
         const frozenMaterials = getFrozenMaterials();
-        const available = computeAvailableMaterials(totalMaterials, frozenMaterials);
+        const available = computeAvailableMaterials(
+          totalMaterials,
+          frozenMaterials,
+        );
         const availableCount = available[material] ?? 0;
-        optimisticCount = Math.max(0, Math.min(Math.round(count), availableCount));
+        optimisticCount = Math.max(
+          0,
+          Math.min(Math.round(count), availableCount),
+        );
         if (optimisticCount > 0) {
           prevState = this.cloneWagerState(currentState);
           prevFrozen = frozenMaterials;
           const proposals = { ...(currentState?.proposals ?? {}) };
-          proposals[playerUid] = { material, count: optimisticCount, createdAt: Date.now() };
+          proposals[playerUid] = {
+            material,
+            count: optimisticCount,
+            createdAt: Date.now(),
+          };
           const proposedBy = { ...(currentState?.proposedBy ?? {}) };
           proposedBy[playerUid] = true;
           const nextState: MatchWagerState = {
@@ -2820,8 +3599,13 @@ class Connection {
         }
       }
       console.log("wager:send:start", { inviteId, matchId, material, count });
-      const sendWagerProposalFunction = httpsCallable(this.functions, "sendWagerProposal");
-      const data = await this.callWagerFunctionWithRetry("wager:send", () => sendWagerProposalFunction({ inviteId, matchId, material, count }));
+      const sendWagerProposalFunction = httpsCallable(
+        this.functions,
+        "sendWagerProposal",
+      );
+      const data = await this.callWagerFunctionWithRetry("wager:send", () =>
+        sendWagerProposalFunction({ inviteId, matchId, material, count }),
+      );
       if (!sessionGuard()) {
         return { ok: false };
       }
@@ -2829,8 +3613,15 @@ class Connection {
       if (optimisticApplied) {
         if (data && data.ok === false) {
           const latestState = getWagerState();
-          const proposal = latestState?.proposals ? latestState.proposals[playerUid] : null;
-          const shouldRollback = !!proposal && proposal.material === material && proposal.count === optimisticCount && !latestState?.agreed && !latestState?.resolved;
+          const proposal = latestState?.proposals
+            ? latestState.proposals[playerUid]
+            : null;
+          const shouldRollback =
+            !!proposal &&
+            proposal.material === material &&
+            proposal.count === optimisticCount &&
+            !latestState?.agreed &&
+            !latestState?.resolved;
           if (shouldRollback) {
             this.setLocalWagerState(prevState);
             if (prevFrozen) {
@@ -2839,13 +3630,20 @@ class Connection {
           }
         } else if (data && data.agreed) {
           const agreed = data.agreed as WagerAgreement;
-          const rawCount = typeof agreed.count === "number" ? agreed.count : Number(agreed.count);
+          const rawCount =
+            typeof agreed.count === "number"
+              ? agreed.count
+              : Number(agreed.count);
           const agreedCount = Number.isFinite(rawCount)
             ? Math.max(0, Math.round(rawCount))
             : agreed.total
-            ? Math.max(0, Math.round(agreed.total / 2))
-            : 0;
-          const nextAgreed: WagerAgreement = { ...agreed, count: agreedCount, total: agreed.total ?? agreedCount * 2 };
+              ? Math.max(0, Math.round(agreed.total / 2))
+              : 0;
+          const nextAgreed: WagerAgreement = {
+            ...agreed,
+            count: agreedCount,
+            total: agreed.total ?? agreedCount * 2,
+          };
           const latestState = getWagerState();
           if (!latestState?.resolved) {
             const nextState: MatchWagerState = {
@@ -2863,11 +3661,22 @@ class Connection {
           const serverCount = Math.max(0, Math.round(data.count));
           if (serverCount !== optimisticCount) {
             const latestState = getWagerState();
-            const proposal = latestState?.proposals ? latestState.proposals[playerUid] : null;
-            if (proposal && proposal.material === material && proposal.count === optimisticCount && !latestState?.agreed && !latestState?.resolved) {
+            const proposal = latestState?.proposals
+              ? latestState.proposals[playerUid]
+              : null;
+            if (
+              proposal &&
+              proposal.material === material &&
+              proposal.count === optimisticCount &&
+              !latestState?.agreed &&
+              !latestState?.resolved
+            ) {
               const proposals = { ...(latestState?.proposals ?? {}) };
               proposals[playerUid] = { ...proposal, count: serverCount };
-              const nextState: MatchWagerState = { ...(latestState ?? {}), proposals };
+              const nextState: MatchWagerState = {
+                ...(latestState ?? {}),
+                proposals,
+              };
               this.setLocalWagerState(nextState);
               const delta = serverCount - optimisticCount;
               if (delta !== 0) {
@@ -2885,9 +3694,16 @@ class Connection {
       }
       if (optimisticApplied) {
         const latestState = getWagerState();
-        const proposal = latestState?.proposals && playerUid ? latestState.proposals[playerUid] : null;
+        const proposal =
+          latestState?.proposals && playerUid
+            ? latestState.proposals[playerUid]
+            : null;
         const shouldRollback =
-          !!proposal && proposal.material === material && proposal.count === optimisticCount && !latestState?.agreed && !latestState?.resolved;
+          !!proposal &&
+          proposal.material === material &&
+          proposal.count === optimisticCount &&
+          !latestState?.agreed &&
+          !latestState?.resolved;
         if (shouldRollback) {
           this.setLocalWagerState(prevState);
           if (prevFrozen) {
@@ -2908,7 +3724,10 @@ class Connection {
     let playerUid: string | null = null;
     try {
       await this.ensureAuthenticated();
-      const writableContext = this.requireWritableContext(undefined, "cancelWagerProposal");
+      const writableContext = this.requireWritableContext(
+        undefined,
+        "cancelWagerProposal",
+      );
       if (!writableContext) {
         return { ok: false };
       }
@@ -2921,8 +3740,14 @@ class Connection {
       }
       sessionGuard = this.createMatchContextGuard(inviteId, matchId);
       const currentState = getWagerState();
-      const existingProposal = currentState?.proposals ? currentState.proposals[playerUid] : null;
-      if (existingProposal && !currentState?.agreed && !currentState?.resolved) {
+      const existingProposal = currentState?.proposals
+        ? currentState.proposals[playerUid]
+        : null;
+      if (
+        existingProposal &&
+        !currentState?.agreed &&
+        !currentState?.resolved
+      ) {
         prevState = this.cloneWagerState(currentState);
         prevFrozen = getFrozenMaterials();
         proposal = existingProposal;
@@ -2938,16 +3763,23 @@ class Connection {
         optimisticApplied = true;
       }
       console.log("wager:cancel:start", { inviteId, matchId });
-      const cancelWagerProposalFunction = httpsCallable(this.functions, "cancelWagerProposal");
-      const data = await this.callWagerFunctionWithRetry("wager:cancel", () => cancelWagerProposalFunction({ inviteId, matchId }));
+      const cancelWagerProposalFunction = httpsCallable(
+        this.functions,
+        "cancelWagerProposal",
+      );
+      const data = await this.callWagerFunctionWithRetry("wager:cancel", () =>
+        cancelWagerProposalFunction({ inviteId, matchId }),
+      );
       if (!sessionGuard()) {
         return { ok: false };
       }
       console.log("wager:cancel:done", data);
       if (optimisticApplied && data && data.ok === false) {
         const latestState = getWagerState();
-        const hasAgreedOrResolved = !!latestState?.agreed || !!latestState?.resolved;
-        const stillMissing = !latestState?.proposals || !latestState.proposals[playerUid];
+        const hasAgreedOrResolved =
+          !!latestState?.agreed || !!latestState?.resolved;
+        const stillMissing =
+          !latestState?.proposals || !latestState.proposals[playerUid];
         if (!hasAgreedOrResolved && stillMissing) {
           this.setLocalWagerState(prevState);
           if (prevFrozen) {
@@ -2963,8 +3795,11 @@ class Connection {
       }
       if (optimisticApplied) {
         const latestState = getWagerState();
-        const hasAgreedOrResolved = !!latestState?.agreed || !!latestState?.resolved;
-        const stillMissing = !latestState?.proposals || (playerUid ? !latestState.proposals[playerUid] : true);
+        const hasAgreedOrResolved =
+          !!latestState?.agreed || !!latestState?.resolved;
+        const stillMissing =
+          !latestState?.proposals ||
+          (playerUid ? !latestState.proposals[playerUid] : true);
         if (!hasAgreedOrResolved && stillMissing) {
           this.setLocalWagerState(prevState);
           if (prevFrozen) {
@@ -2984,7 +3819,10 @@ class Connection {
     let playerUid: string | null = null;
     try {
       await this.ensureAuthenticated();
-      const writableContext = this.requireWritableContext(undefined, "declineWagerProposal");
+      const writableContext = this.requireWritableContext(
+        undefined,
+        "declineWagerProposal",
+      );
       if (!writableContext) {
         return { ok: false };
       }
@@ -2998,8 +3836,15 @@ class Connection {
       sessionGuard = this.createMatchContextGuard(inviteId, matchId);
       opponentUid = this.getOpponentId(playerUid);
       const currentState = getWagerState();
-      const existingProposal = opponentUid && currentState?.proposals ? currentState.proposals[opponentUid] : null;
-      if (existingProposal && !currentState?.agreed && !currentState?.resolved) {
+      const existingProposal =
+        opponentUid && currentState?.proposals
+          ? currentState.proposals[opponentUid]
+          : null;
+      if (
+        existingProposal &&
+        !currentState?.agreed &&
+        !currentState?.resolved
+      ) {
         prevState = this.cloneWagerState(currentState);
         const proposals = { ...(currentState?.proposals ?? {}) };
         delete proposals[opponentUid];
@@ -3012,16 +3857,24 @@ class Connection {
         optimisticApplied = true;
       }
       console.log("wager:decline:start", { inviteId, matchId });
-      const declineWagerProposalFunction = httpsCallable(this.functions, "declineWagerProposal");
-      const data = await this.callWagerFunctionWithRetry("wager:decline", () => declineWagerProposalFunction({ inviteId, matchId }));
+      const declineWagerProposalFunction = httpsCallable(
+        this.functions,
+        "declineWagerProposal",
+      );
+      const data = await this.callWagerFunctionWithRetry("wager:decline", () =>
+        declineWagerProposalFunction({ inviteId, matchId }),
+      );
       if (!sessionGuard()) {
         return { ok: false };
       }
       console.log("wager:decline:done", data);
       if (optimisticApplied && data && data.ok === false) {
         const latestState = getWagerState();
-        const hasAgreedOrResolved = !!latestState?.agreed || !!latestState?.resolved;
-        const stillMissing = !latestState?.proposals || (opponentUid && !latestState.proposals[opponentUid]);
+        const hasAgreedOrResolved =
+          !!latestState?.agreed || !!latestState?.resolved;
+        const stillMissing =
+          !latestState?.proposals ||
+          (opponentUid && !latestState.proposals[opponentUid]);
         if (!hasAgreedOrResolved && stillMissing) {
           this.setLocalWagerState(prevState);
         }
@@ -3034,8 +3887,11 @@ class Connection {
       }
       if (optimisticApplied) {
         const latestState = getWagerState();
-        const hasAgreedOrResolved = !!latestState?.agreed || !!latestState?.resolved;
-        const stillMissing = !latestState?.proposals || (opponentUid && !latestState.proposals[opponentUid]);
+        const hasAgreedOrResolved =
+          !!latestState?.agreed || !!latestState?.resolved;
+        const stillMissing =
+          !latestState?.proposals ||
+          (opponentUid && !latestState.proposals[opponentUid]);
         if (!hasAgreedOrResolved && stillMissing) {
           this.setLocalWagerState(prevState);
         }
@@ -3053,7 +3909,10 @@ class Connection {
     let sessionGuard: (() => boolean) | null = null;
     try {
       await this.ensureAuthenticated();
-      const writableContext = this.requireWritableContext(undefined, "acceptWagerProposal");
+      const writableContext = this.requireWritableContext(
+        undefined,
+        "acceptWagerProposal",
+      );
       if (!writableContext) {
         return { ok: false };
       }
@@ -3068,15 +3927,29 @@ class Connection {
       opponentUid = this.getOpponentId(playerUid);
       const currentState = getWagerState();
       const proposals = currentState?.proposals ?? null;
-      const opponentProposal = opponentUid && proposals ? proposals[opponentUid] : null;
+      const opponentProposal =
+        opponentUid && proposals ? proposals[opponentUid] : null;
       const ownProposal = playerUid && proposals ? proposals[playerUid] : null;
-      if (opponentProposal && !currentState?.agreed && !currentState?.resolved) {
+      if (
+        opponentProposal &&
+        !currentState?.agreed &&
+        !currentState?.resolved
+      ) {
         const totalMaterials = rocksMiningService.getSnapshot().materials;
         const frozenMaterials = getFrozenMaterials();
-        const available = computeAvailableMaterials(totalMaterials, frozenMaterials);
+        const available = computeAvailableMaterials(
+          totalMaterials,
+          frozenMaterials,
+        );
         const opponentCount = Math.max(0, Math.round(opponentProposal.count));
-        const extraAvailable = ownProposal && ownProposal.material === opponentProposal.material ? Math.max(0, Math.round(ownProposal.count)) : 0;
-        const acceptedCount = Math.min(opponentCount, (available[opponentProposal.material] ?? 0) + extraAvailable);
+        const extraAvailable =
+          ownProposal && ownProposal.material === opponentProposal.material
+            ? Math.max(0, Math.round(ownProposal.count))
+            : 0;
+        const acceptedCount = Math.min(
+          opponentCount,
+          (available[opponentProposal.material] ?? 0) + extraAvailable,
+        );
         if (acceptedCount > 0) {
           prevState = this.cloneWagerState(currentState);
           prevFrozen = frozenMaterials;
@@ -3099,17 +3972,24 @@ class Connection {
           if (ownProposal) {
             const ownCount = Math.max(0, Math.round(ownProposal.count));
             if (ownCount > 0) {
-              deltas[ownProposal.material] = (deltas[ownProposal.material] ?? 0) - ownCount;
+              deltas[ownProposal.material] =
+                (deltas[ownProposal.material] ?? 0) - ownCount;
             }
           }
-          deltas[opponentProposal.material] = (deltas[opponentProposal.material] ?? 0) + acceptedCount;
+          deltas[opponentProposal.material] =
+            (deltas[opponentProposal.material] ?? 0) + acceptedCount;
           applyFrozenMaterialsDelta(deltas);
           optimisticApplied = true;
         }
       }
       console.log("wager:accept:start", { inviteId, matchId });
-      const acceptWagerProposalFunction = httpsCallable(this.functions, "acceptWagerProposal");
-      const data = await this.callWagerFunctionWithRetry("wager:accept", () => acceptWagerProposalFunction({ inviteId, matchId }));
+      const acceptWagerProposalFunction = httpsCallable(
+        this.functions,
+        "acceptWagerProposal",
+      );
+      const data = await this.callWagerFunctionWithRetry("wager:accept", () =>
+        acceptWagerProposalFunction({ inviteId, matchId }),
+      );
       if (!sessionGuard()) {
         return { ok: false };
       }
@@ -3143,12 +4023,21 @@ class Connection {
               agreed.proposerId === optimisticAgreement.proposerId &&
               agreed.accepterId === optimisticAgreement.accepterId
             ) {
-              const nextAgreed = { ...agreed, count: serverCount, total: serverCount * 2 };
-              const nextState: MatchWagerState = { ...(latestState ?? {}), agreed: nextAgreed };
+              const nextAgreed = {
+                ...agreed,
+                count: serverCount,
+                total: serverCount * 2,
+              };
+              const nextState: MatchWagerState = {
+                ...(latestState ?? {}),
+                agreed: nextAgreed,
+              };
               this.setLocalWagerState(nextState);
               const delta = serverCount - optimisticAgreement.count;
               if (delta !== 0) {
-                applyFrozenMaterialsDelta({ [optimisticAgreement.material]: delta });
+                applyFrozenMaterialsDelta({
+                  [optimisticAgreement.material]: delta,
+                });
               }
             }
           }
@@ -3181,21 +4070,40 @@ class Connection {
     }
   }
 
-  public updateEmoji(newId: number, matchOnly: boolean, aura: string | null | undefined): void {
+  public updateEmoji(
+    newId: number,
+    matchOnly: boolean,
+    aura: string | null | undefined,
+  ): void {
     if (!matchOnly) {
       this.updateStoredEmoji(newId, aura);
     }
-    const writableContext = this.requireWritableContext(undefined, "updateEmoji");
+    const writableContext = this.requireWritableContext(
+      undefined,
+      "updateEmoji",
+    );
     if (!writableContext || !this.myMatch) {
       return;
     }
     this.myMatch.emojiId = newId;
     this.myMatch.aura = aura ?? undefined;
-    set(ref(this.db, `players/${writableContext.actorUid}/matches/${writableContext.matchId}/emojiId`), newId).catch((error) => {
+    set(
+      ref(
+        this.db,
+        `players/${writableContext.actorUid}/matches/${writableContext.matchId}/emojiId`,
+      ),
+      newId,
+    ).catch((error) => {
       console.error("Error updating emoji:", error);
     });
     if (this.myMatch.aura !== undefined) {
-      set(ref(this.db, `players/${writableContext.actorUid}/matches/${writableContext.matchId}/aura`), this.myMatch.aura).catch(() => {});
+      set(
+        ref(
+          this.db,
+          `players/${writableContext.actorUid}/matches/${writableContext.matchId}/aura`,
+        ),
+        this.myMatch.aura,
+      ).catch(() => {});
     }
   }
 
@@ -3209,7 +4117,9 @@ class Connection {
     return id === "" ? null : id;
   }
 
-  private async resolveLocalProfileId(loginUid?: string | null): Promise<string | null> {
+  private async resolveLocalProfileId(
+    loginUid?: string | null,
+  ): Promise<string | null> {
     const storedProfileId = this.getLocalProfileId();
     const storedLoginUid = this.getLocalLoginId();
     const normalizedLoginUid = this.normalizeStringOrNull(loginUid);
@@ -3218,7 +4128,9 @@ class Connection {
     }
 
     if (!normalizedLoginUid) {
-      const claimedProfileId = this.normalizeStringOrNull(await this.getCurrentProfileClaimId());
+      const claimedProfileId = this.normalizeStringOrNull(
+        await this.getCurrentProfileClaimId(),
+      );
       if (claimedProfileId) {
         return claimedProfileId;
       }
@@ -3226,7 +4138,9 @@ class Connection {
     }
 
     try {
-      const profileSnapshot = await get(ref(this.db, `players/${normalizedLoginUid}/profile`));
+      const profileSnapshot = await get(
+        ref(this.db, `players/${normalizedLoginUid}/profile`),
+      );
       const linkedProfileId = this.normalizeStringOrNull(profileSnapshot.val());
       if (linkedProfileId) {
         return linkedProfileId;
@@ -3242,13 +4156,18 @@ class Connection {
       // fall through
     }
 
-    const claimedProfileId = this.normalizeStringOrNull(await this.getCurrentProfileClaimId());
+    const claimedProfileId = this.normalizeStringOrNull(
+      await this.getCurrentProfileClaimId(),
+    );
     if (claimedProfileId) {
       return claimedProfileId;
     }
 
     const canUseStoredProfileForLogin =
-      !!storedProfileId && (!normalizedLoginUid || !storedLoginUid || storedLoginUid === normalizedLoginUid);
+      !!storedProfileId &&
+      (!normalizedLoginUid ||
+        !storedLoginUid ||
+        storedLoginUid === normalizedLoginUid);
     if (canUseStoredProfileForLogin) {
       return storedProfileId;
     }
@@ -3262,7 +4181,10 @@ class Connection {
     setupPlayerId(uid, false);
     this.getProfileByLoginId(uid)
       .then((profile) => {
-        if (!this.isSessionEpochActive(expectedEpoch) || this.sameProfilePlayerUid !== expectedUid) {
+        if (
+          !this.isSessionEpochActive(expectedEpoch) ||
+          this.sameProfilePlayerUid !== expectedUid
+        ) {
           return;
         }
         didGetPlayerProfile(profile, expectedUid, true);
@@ -3294,9 +4216,13 @@ class Connection {
     this.updateWagerStateForCurrentMatch();
   }
 
-  public updateStoredEmoji(newId: number, aura: string | null | undefined): void {
+  public updateStoredEmoji(
+    newId: number,
+    aura: string | null | undefined,
+  ): void {
     this.updateCustomField("emoji", newId);
-    if (aura !== undefined && aura !== null) this.updateCustomField("aura", aura);
+    if (aura !== undefined && aura !== null)
+      this.updateCustomField("aura", aura);
   }
 
   public updateCardBackgroundId(newId: number): void {
@@ -3339,12 +4265,24 @@ class Connection {
   }
 
   public sendVoiceReaction(reaction: Reaction): void {
-    const writableContext = this.requireWritableContext(undefined, "sendVoiceReaction");
+    const writableContext = this.requireWritableContext(
+      undefined,
+      "sendVoiceReaction",
+    );
     if (!writableContext) {
       return;
     }
-    const inviteReaction: InviteReaction = { ...reaction, matchId: writableContext.matchId };
-    set(ref(this.db, `invites/${writableContext.inviteId}/reactions/${writableContext.actorUid}`), inviteReaction).catch((error) => {
+    const inviteReaction: InviteReaction = {
+      ...reaction,
+      matchId: writableContext.matchId,
+    };
+    set(
+      ref(
+        this.db,
+        `invites/${writableContext.inviteId}/reactions/${writableContext.actorUid}`,
+      ),
+      inviteReaction,
+    ).catch((error) => {
       console.error("Error sending voice reaction:", error);
     });
   }
@@ -3355,7 +4293,9 @@ class Connection {
     }
     const previousStatus = this.myMatch.status;
     this.myMatch.status = "surrendered";
-    const didQueueUpdate = this.sendMatchUpdate(this.activeContext?.matchId ?? null);
+    const didQueueUpdate = this.sendMatchUpdate(
+      this.activeContext?.matchId ?? null,
+    );
     if (!didQueueUpdate) {
       this.myMatch.status = previousStatus;
       return false;
@@ -3363,8 +4303,15 @@ class Connection {
     return true;
   }
 
-  public sendMove(moveFen: string, newBoardFen: string, expectedMatchId: string): void {
-    const writableContext = this.requireWritableContext(expectedMatchId, "sendMove");
+  public sendMove(
+    moveFen: string,
+    newBoardFen: string,
+    expectedMatchId: string,
+  ): void {
+    const writableContext = this.requireWritableContext(
+      expectedMatchId,
+      "sendMove",
+    );
     if (!writableContext || !this.myMatch) {
       this.logContextEvent("ctx.write.blocked", {
         reason: "sendMove",
@@ -3375,7 +4322,9 @@ class Connection {
     }
     const previousFlatMovesString = this.myMatch.flatMovesString ?? "";
     this.myMatch.fen = newBoardFen;
-    this.myMatch.flatMovesString = previousFlatMovesString ? `${previousFlatMovesString}-${moveFen}` : moveFen;
+    this.myMatch.flatMovesString = previousFlatMovesString
+      ? `${previousFlatMovesString}-${moveFen}`
+      : moveFen;
     const matchToPersist: Match = { ...this.myMatch };
     const expectedFlatMovesString = this.myMatch.flatMovesString ?? "";
     const requestId = ++this.moveSendRequestId;
@@ -3389,7 +4338,7 @@ class Connection {
       matchToPersist,
       newBoardFen,
       expectedFlatMovesString,
-      previousFlatMovesString
+      previousFlatMovesString,
     );
   }
 
@@ -3399,7 +4348,7 @@ class Connection {
     playerUid: string,
     contextId: number,
     contextEpoch: number,
-    sessionGuard: () => boolean
+    sessionGuard: () => boolean,
   ): boolean {
     const activeContext = this.activeContext;
     return (
@@ -3414,8 +4363,11 @@ class Connection {
 
   private async runMoveTransactionWithTimeout<T>(
     promise: Promise<T>,
-    timeoutMs: number
-  ): Promise<{ timedOut: false; value: T } | { timedOut: true; pendingAttempt: Promise<void> }> {
+    timeoutMs: number,
+  ): Promise<
+    | { timedOut: false; value: T }
+    | { timedOut: true; pendingAttempt: Promise<void> }
+  > {
     let settled = false;
     const trackedPromise = promise.finally(() => {
       settled = true;
@@ -3432,7 +4384,7 @@ class Connection {
         timedOut: true,
         pendingAttempt: trackedPromise.then(
           () => undefined,
-          () => undefined
+          () => undefined,
         ),
       };
     }
@@ -3450,14 +4402,21 @@ class Connection {
     if (!error || typeof error !== "object") {
       return null;
     }
-    const pendingAttempt = (error as { pendingAttempt?: unknown }).pendingAttempt;
-    if (!pendingAttempt || typeof (pendingAttempt as Promise<void>).then !== "function") {
+    const pendingAttempt = (error as { pendingAttempt?: unknown })
+      .pendingAttempt;
+    if (
+      !pendingAttempt ||
+      typeof (pendingAttempt as Promise<void>).then !== "function"
+    ) {
       return null;
     }
     return pendingAttempt as Promise<void>;
   }
 
-  private async waitForPromiseToSettle(promise: Promise<void>, timeoutMs: number): Promise<boolean> {
+  private async waitForPromiseToSettle(
+    promise: Promise<void>,
+    timeoutMs: number,
+  ): Promise<boolean> {
     if (timeoutMs <= 0) {
       return false;
     }
@@ -3478,7 +4437,7 @@ class Connection {
     expectedFen: string,
     expectedFlatMovesString: string,
     previousFlatMovesString: string,
-    timeoutMs: number
+    timeoutMs: number,
   ): Promise<void> {
     const matchPath = `players/${playerUid}/matches/${matchId}`;
     const matchRef = ref(this.db, matchPath);
@@ -3491,7 +4450,10 @@ class Connection {
             return matchToPersist;
           }
           const currentFlatMovesString = currentMatch.flatMovesString ?? "";
-          if (currentFlatMovesString === expectedFlatMovesString && currentMatch.fen === expectedFen) {
+          if (
+            currentFlatMovesString === expectedFlatMovesString &&
+            currentMatch.fen === expectedFen
+          ) {
             return currentMatch;
           }
           if (currentFlatMovesString !== previousFlatMovesString) {
@@ -3503,12 +4465,14 @@ class Connection {
             flatMovesString: expectedFlatMovesString,
           } as Match;
         },
-        { applyLocally: false }
+        { applyLocally: false },
       ),
-      timeoutMs
+      timeoutMs,
     );
     if (transactionResult.timedOut) {
-      const timeoutError = new Error("move-send-attempt-timeout") as Error & { pendingAttempt?: Promise<void> };
+      const timeoutError = new Error("move-send-attempt-timeout") as Error & {
+        pendingAttempt?: Promise<void>;
+      };
       timeoutError.pendingAttempt = transactionResult.pendingAttempt;
       throw timeoutError;
     }
@@ -3521,7 +4485,10 @@ class Connection {
       throw new Error("missing-persisted-match");
     }
     const persistedFlatMovesString = persistedMatch.flatMovesString ?? "";
-    if (persistedMatch.fen === expectedFen && persistedFlatMovesString === expectedFlatMovesString) {
+    if (
+      persistedMatch.fen === expectedFen &&
+      persistedFlatMovesString === expectedFlatMovesString
+    ) {
       return;
     }
     if (persistedFlatMovesString !== previousFlatMovesString) {
@@ -3541,38 +4508,73 @@ class Connection {
     contextEpoch: number,
     expectedFen: string,
     expectedFlatMovesString: string,
-    sessionGuard: () => boolean
+    sessionGuard: () => boolean,
   ): Promise<boolean> {
     const verificationStartedAt = Date.now();
-    while (Date.now() - verificationStartedAt < this.moveSendPostRetryVerificationWindowMs) {
-      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
+    while (
+      Date.now() - verificationStartedAt <
+      this.moveSendPostRetryVerificationWindowMs
+    ) {
+      if (
+        !this.shouldContinueCriticalMoveSend(
+          requestId,
+          matchId,
+          playerUid,
+          contextId,
+          contextEpoch,
+          sessionGuard,
+        )
+      ) {
         return false;
       }
       const elapsedMs = Date.now() - verificationStartedAt;
-      const remainingMs = this.moveSendPostRetryVerificationWindowMs - elapsedMs;
+      const remainingMs =
+        this.moveSendPostRetryVerificationWindowMs - elapsedMs;
       if (remainingMs <= 0) {
         return false;
       }
       const attemptTimeoutMs = Math.min(remainingMs, 1200);
       const matchRef = ref(this.db, `players/${playerUid}/matches/${matchId}`);
       try {
-        const verificationResult = await this.runMoveTransactionWithTimeout(get(matchRef), attemptTimeoutMs);
+        const verificationResult = await this.runMoveTransactionWithTimeout(
+          get(matchRef),
+          attemptTimeoutMs,
+        );
         if (!verificationResult.timedOut) {
           const persistedMatch = verificationResult.value.val() as Match | null;
-          const persistedFlatMovesString = persistedMatch?.flatMovesString ?? "";
-          if (persistedMatch && persistedMatch.fen === expectedFen && persistedFlatMovesString === expectedFlatMovesString) {
+          const persistedFlatMovesString =
+            persistedMatch?.flatMovesString ?? "";
+          if (
+            persistedMatch &&
+            persistedMatch.fen === expectedFen &&
+            persistedFlatMovesString === expectedFlatMovesString
+          ) {
             return true;
           }
         }
       } catch {}
-      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
+      if (
+        !this.shouldContinueCriticalMoveSend(
+          requestId,
+          matchId,
+          playerUid,
+          contextId,
+          contextEpoch,
+          sessionGuard,
+        )
+      ) {
         return false;
       }
-      const remainingAfterAttemptMs = this.moveSendPostRetryVerificationWindowMs - (Date.now() - verificationStartedAt);
+      const remainingAfterAttemptMs =
+        this.moveSendPostRetryVerificationWindowMs -
+        (Date.now() - verificationStartedAt);
       if (remainingAfterAttemptMs <= 0) {
         return false;
       }
-      const waitMs = Math.min(this.moveSendPostRetryPollIntervalMs, remainingAfterAttemptMs);
+      const waitMs = Math.min(
+        this.moveSendPostRetryPollIntervalMs,
+        remainingAfterAttemptMs,
+      );
       await this.delay(waitMs);
     }
     return false;
@@ -3582,7 +4584,10 @@ class Connection {
     return Math.min(700 + attempt * 350, 3000);
   }
 
-  private reconnectAfterMatchUpdateFailure(inviteId: string | null, sessionGuard: () => boolean): void {
+  private reconnectAfterMatchUpdateFailure(
+    inviteId: string | null,
+    sessionGuard: () => boolean,
+  ): void {
     if (!inviteId) {
       return;
     }
@@ -3603,8 +4608,7 @@ class Connection {
       })
       .finally(() => {
         this.moveReconnectInFlight = false;
-      }
-    );
+      });
   }
 
   private async sendCriticalMoveUpdateWithRetry(
@@ -3617,7 +4621,7 @@ class Connection {
     matchToPersist: Match,
     expectedFen: string,
     expectedFlatMovesString: string,
-    previousFlatMovesString: string
+    previousFlatMovesString: string,
   ): Promise<void> {
     const sessionGuard = this.createSessionGuard();
     const startedAt = Date.now();
@@ -3628,12 +4632,24 @@ class Connection {
       if (remainingMs <= 0) {
         break;
       }
-      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
+      if (
+        !this.shouldContinueCriticalMoveSend(
+          requestId,
+          matchId,
+          playerUid,
+          contextId,
+          contextEpoch,
+          sessionGuard,
+        )
+      ) {
         return;
       }
       attempt += 1;
       try {
-        const attemptTimeoutMs = Math.min(remainingMs, this.moveSendAttemptMaxTimeoutMs);
+        const attemptTimeoutMs = Math.min(
+          remainingMs,
+          this.moveSendAttemptMaxTimeoutMs,
+        );
         await this.sendMoveAttempt(
           playerUid,
           matchId,
@@ -3641,9 +4657,18 @@ class Connection {
           expectedFen,
           expectedFlatMovesString,
           previousFlatMovesString,
-          attemptTimeoutMs
+          attemptTimeoutMs,
         );
-        if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
+        if (
+          !this.shouldContinueCriticalMoveSend(
+            requestId,
+            matchId,
+            playerUid,
+            contextId,
+            contextEpoch,
+            sessionGuard,
+          )
+        ) {
           return;
         }
         this.logContextEvent("ctx.write.success", {
@@ -3658,7 +4683,16 @@ class Connection {
         this.myMatch = matchToPersist;
         return;
       } catch (error) {
-        if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
+        if (
+          !this.shouldContinueCriticalMoveSend(
+            requestId,
+            matchId,
+            playerUid,
+            contextId,
+            contextEpoch,
+            sessionGuard,
+          )
+        ) {
           return;
         }
         const errorCode = this.getMoveSendErrorCode(error);
@@ -3688,40 +4722,67 @@ class Connection {
         this.reconnectAfterMatchUpdateFailure(inviteId, sessionGuard);
         const pendingAttempt = this.getMoveSendPendingAttempt(error);
         if (pendingAttempt) {
-          const remainingAfterFailureMs = this.moveSendRetryWindowMs - (Date.now() - startedAt);
+          const remainingAfterFailureMs =
+            this.moveSendRetryWindowMs - (Date.now() - startedAt);
           if (remainingAfterFailureMs <= 0) {
             break;
           }
-          const didPendingAttemptSettle = await this.waitForPromiseToSettle(pendingAttempt, remainingAfterFailureMs);
+          const didPendingAttemptSettle = await this.waitForPromiseToSettle(
+            pendingAttempt,
+            remainingAfterFailureMs,
+          );
           if (!didPendingAttemptSettle) {
             break;
           }
         }
-        const remainingAfterFailureMs = this.moveSendRetryWindowMs - (Date.now() - startedAt);
+        const remainingAfterFailureMs =
+          this.moveSendRetryWindowMs - (Date.now() - startedAt);
         if (remainingAfterFailureMs <= 0) {
           break;
         }
-        const retryDelayMs = Math.min(this.getMoveRetryDelayMs(attempt), remainingAfterFailureMs);
+        const retryDelayMs = Math.min(
+          this.getMoveRetryDelayMs(attempt),
+          remainingAfterFailureMs,
+        );
         if (retryDelayMs > 0) {
           await this.delay(retryDelayMs);
         }
       }
     }
-    if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
+    if (
+      !this.shouldContinueCriticalMoveSend(
+        requestId,
+        matchId,
+        playerUid,
+        contextId,
+        contextEpoch,
+        sessionGuard,
+      )
+    ) {
       return;
     }
-    const didVerifyPersistedMove = await this.verifyMovePersistedAfterRetryWindow(
-      requestId,
-      playerUid,
-      matchId,
-      contextId,
-      contextEpoch,
-      expectedFen,
-      expectedFlatMovesString,
-      sessionGuard
-    );
+    const didVerifyPersistedMove =
+      await this.verifyMovePersistedAfterRetryWindow(
+        requestId,
+        playerUid,
+        matchId,
+        contextId,
+        contextEpoch,
+        expectedFen,
+        expectedFlatMovesString,
+        sessionGuard,
+      );
     if (didVerifyPersistedMove) {
-      if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
+      if (
+        !this.shouldContinueCriticalMoveSend(
+          requestId,
+          matchId,
+          playerUid,
+          contextId,
+          contextEpoch,
+          sessionGuard,
+        )
+      ) {
         return;
       }
       this.logContextEvent("ctx.write.success", {
@@ -3736,7 +4797,16 @@ class Connection {
       this.myMatch = matchToPersist;
       return;
     }
-    if (!this.shouldContinueCriticalMoveSend(requestId, matchId, playerUid, contextId, contextEpoch, sessionGuard)) {
+    if (
+      !this.shouldContinueCriticalMoveSend(
+        requestId,
+        matchId,
+        playerUid,
+        contextId,
+        contextEpoch,
+        sessionGuard,
+      )
+    ) {
       return;
     }
     this.logContextEvent("ctx.write.fail", {
@@ -3748,13 +4818,19 @@ class Connection {
       sessionEpoch: contextEpoch,
       elapsedMs: Date.now() - startedAt,
     });
-    this.reconnectAfterMatchUpdateFailure(this.inviteId ?? inviteId, sessionGuard);
+    this.reconnectAfterMatchUpdateFailure(
+      this.inviteId ?? inviteId,
+      sessionGuard,
+    );
     if (typeof window !== "undefined") {
       window.location.reload();
     }
   }
 
-  public signInIfNeededAndConnectToGame(inviteId: string, autojoin: boolean): void {
+  public signInIfNeededAndConnectToGame(
+    inviteId: string,
+    autojoin: boolean,
+  ): void {
     const sessionGuard = this.createSessionGuard();
     this.signIn().then((uid) => {
       if (uid && sessionGuard()) {
@@ -3766,12 +4842,24 @@ class Connection {
   }
 
   private sendMatchUpdate(expectedMatchId: string | null): boolean {
-    const writableContext = this.requireWritableContext(expectedMatchId, "sendMatchUpdate");
+    const writableContext = this.requireWritableContext(
+      expectedMatchId,
+      "sendMatchUpdate",
+    );
     if (!writableContext || !this.myMatch) {
       return false;
     }
-    const sessionGuard = this.createMatchContextGuard(writableContext.inviteId, writableContext.matchId);
-    set(ref(this.db, `players/${writableContext.actorUid}/matches/${writableContext.matchId}`), this.myMatch)
+    const sessionGuard = this.createMatchContextGuard(
+      writableContext.inviteId,
+      writableContext.matchId,
+    );
+    set(
+      ref(
+        this.db,
+        `players/${writableContext.actorUid}/matches/${writableContext.matchId}`,
+      ),
+      this.myMatch,
+    )
       .then(() => {
         if (!sessionGuard()) {
           return;
@@ -3798,26 +4886,38 @@ class Connection {
           sessionEpoch: writableContext.sessionEpoch,
           error: error instanceof Error ? error.message : String(error),
         });
-        this.reconnectAfterMatchUpdateFailure(writableContext.inviteId, this.createSessionGuard());
+        this.reconnectAfterMatchUpdateFailure(
+          writableContext.inviteId,
+          this.createSessionGuard(),
+        );
       });
     return true;
   }
 
-  private rematchSeriesEndIsIndicatedForInvite(invite: Invite | null | undefined): boolean {
+  private rematchSeriesEndIsIndicatedForInvite(
+    invite: Invite | null | undefined,
+  ): boolean {
     if (!invite) {
       return false;
     }
     return (
-      (typeof invite.hostRematches === "string" && invite.hostRematches.endsWith("x")) ||
-      (typeof invite.guestRematches === "string" && invite.guestRematches.endsWith("x"))
+      (typeof invite.hostRematches === "string" &&
+        invite.hostRematches.endsWith("x")) ||
+      (typeof invite.guestRematches === "string" &&
+        invite.guestRematches.endsWith("x"))
     );
   }
 
-  private getLatestBothSidesApprovedRematchIndexForInvite(invite: Invite | null | undefined): number | null {
+  private getLatestBothSidesApprovedRematchIndexForInvite(
+    invite: Invite | null | undefined,
+  ): number | null {
     if (!invite) {
       return null;
     }
-    const approvedIndices = this.approvedRematchIndices(this.rematchIndices(invite.hostRematches), this.rematchIndices(invite.guestRematches));
+    const approvedIndices = this.approvedRematchIndices(
+      this.rematchIndices(invite.hostRematches),
+      this.rematchIndices(invite.guestRematches),
+    );
     if (approvedIndices.length === 0) {
       return null;
     }
@@ -3826,21 +4926,26 @@ class Connection {
   }
 
   private getLatestBothSidesApprovedRematchIndex(): number | null {
-    return this.getLatestBothSidesApprovedRematchIndexForInvite(this.latestInvite);
+    return this.getLatestBothSidesApprovedRematchIndexForInvite(
+      this.latestInvite,
+    );
   }
 
   private getLatestMatchIdForActor(
     inviteId: string,
     invite: Invite,
-    actorUid: string | null
+    actorUid: string | null,
   ): { matchId: string; hasPendingProposal: boolean } {
     const hostIndices = this.rematchIndices(invite.hostRematches);
     const guestIndices = this.rematchIndices(invite.guestRematches);
-    let rematchIndex = this.getLatestBothSidesApprovedRematchIndexForInvite(invite);
+    let rematchIndex =
+      this.getLatestBothSidesApprovedRematchIndexForInvite(invite);
     let hasPendingProposal = false;
     if (!this.rematchSeriesEndIsIndicatedForInvite(invite) && actorUid) {
-      const hostHasPending = invite.hostId === actorUid && hostIndices.length > guestIndices.length;
-      const guestHasPending = invite.guestId === actorUid && guestIndices.length > hostIndices.length;
+      const hostHasPending =
+        invite.hostId === actorUid && hostIndices.length > guestIndices.length;
+      const guestHasPending =
+        invite.guestId === actorUid && guestIndices.length > hostIndices.length;
       if (hostHasPending || guestHasPending) {
         rematchIndex = rematchIndex ? rematchIndex + 1 : 1;
         hasPendingProposal = true;
@@ -3852,7 +4957,9 @@ class Connection {
     return { matchId: `${inviteId}${rematchIndex}`, hasPendingProposal };
   }
 
-  private maybeRefreshContextAfterRematchMetadata(context: MatchRuntimeContext): void {
+  private maybeRefreshContextAfterRematchMetadata(
+    context: MatchRuntimeContext,
+  ): void {
     if (!this.latestInvite) {
       return;
     }
@@ -3865,7 +4972,11 @@ class Connection {
     if (this.rematchSeriesEndIsIndicatedForInvite(this.latestInvite)) {
       return;
     }
-    const next = this.getLatestMatchIdForActor(context.inviteId, this.latestInvite, context.actorUid);
+    const next = this.getLatestMatchIdForActor(
+      context.inviteId,
+      this.latestInvite,
+      context.actorUid,
+    );
     if (next.hasPendingProposal) {
       didDiscoverExistingRematchProposalWaitingForResponse();
     }
@@ -3884,7 +4995,11 @@ class Connection {
     this.connectToGame(context.loginUid, context.inviteId, false);
   }
 
-  private async fetchInviteWithPendingCreation(inviteId: string, epoch: number, connectAttemptId: number): Promise<Invite | null> {
+  private async fetchInviteWithPendingCreation(
+    inviteId: string,
+    epoch: number,
+    connectAttemptId: number,
+  ): Promise<Invite | null> {
     const inviteRef = ref(this.db, `invites/${inviteId}`);
     const initialSnapshot = await get(inviteRef);
     if (!this.isConnectAttemptActive(connectAttemptId, epoch)) {
@@ -3894,8 +5009,14 @@ class Connection {
     if (inviteData) {
       return inviteData;
     }
-    const didWaitForPendingInvite = await this.waitForPendingInviteCreation(inviteId, epoch);
-    if (!didWaitForPendingInvite || !this.isConnectAttemptActive(connectAttemptId, epoch)) {
+    const didWaitForPendingInvite = await this.waitForPendingInviteCreation(
+      inviteId,
+      epoch,
+    );
+    if (
+      !didWaitForPendingInvite ||
+      !this.isConnectAttemptActive(connectAttemptId, epoch)
+    ) {
       return null;
     }
     const refreshedSnapshot = await get(inviteRef);
@@ -3911,7 +5032,7 @@ class Connection {
     loginUid: string,
     localProfileId: string | null,
     epoch: number,
-    connectAttemptId: number
+    connectAttemptId: number,
   ): Promise<{ actorUid: string | null; role: InviteRole }> {
     const hostId = invite.hostId;
     const guestId = invite.guestId ?? null;
@@ -3923,7 +5044,11 @@ class Connection {
     }
     if (localProfileId) {
       try {
-        const matchingUid = await this.checkBothPlayerProfiles(hostId, guestId ?? "", localProfileId);
+        const matchingUid = await this.checkBothPlayerProfiles(
+          hostId,
+          guestId ?? "",
+          localProfileId,
+        );
         if (!this.isConnectAttemptActive(connectAttemptId, epoch)) {
           return { actorUid: null, role: "watch" };
         }
@@ -3947,9 +5072,11 @@ class Connection {
     guestId: string,
     matchId: string,
     epoch: number,
-    connectAttemptId: number
+    connectAttemptId: number,
   ): Promise<Match | null> {
-    const opponentsMatchSnapshot = await get(ref(this.db, `players/${hostId}/matches/${matchId}`));
+    const opponentsMatchSnapshot = await get(
+      ref(this.db, `players/${hostId}/matches/${matchId}`),
+    );
     if (!this.isConnectAttemptActive(connectAttemptId, epoch)) {
       return null;
     }
@@ -3975,16 +5102,24 @@ class Connection {
   }
 
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
-    const cachedInvite = this.inviteId === inviteId && this.latestInvite ? { ...this.latestInvite } : null;
+    const cachedInvite =
+      this.inviteId === inviteId && this.latestInvite
+        ? { ...this.latestInvite }
+        : null;
     this.detachFromMatchSession();
     this.loginUid = uid;
     const connectEpoch = this.sessionEpoch;
     const connectAttemptId = this.connectAttemptId;
-    const isConnectActive = () => this.isConnectAttemptActive(connectAttemptId, connectEpoch);
+    const isConnectActive = () =>
+      this.isConnectAttemptActive(connectAttemptId, connectEpoch);
 
     const resolveInvite = cachedInvite
       ? Promise.resolve(cachedInvite)
-      : this.fetchInviteWithPendingCreation(inviteId, connectEpoch, connectAttemptId);
+      : this.fetchInviteWithPendingCreation(
+          inviteId,
+          connectEpoch,
+          connectAttemptId,
+        );
 
     void resolveInvite
       .then(async (inviteData) => {
@@ -4001,9 +5136,14 @@ class Connection {
         if (!isConnectActive()) {
           return;
         }
-        let shouldAutojoinAsGuest = !workingInvite.guestId && workingInvite.hostId !== uid && autojoin;
+        let shouldAutojoinAsGuest =
+          !workingInvite.guestId && workingInvite.hostId !== uid && autojoin;
         if (shouldAutojoinAsGuest && localProfileId) {
-          const sameProfilePlayerUid = await this.checkBothPlayerProfiles(workingInvite.hostId, "", localProfileId);
+          const sameProfilePlayerUid = await this.checkBothPlayerProfiles(
+            workingInvite.hostId,
+            "",
+            localProfileId,
+          );
           if (!isConnectActive()) {
             return;
           }
@@ -4017,12 +5157,15 @@ class Connection {
             const guestJoinResult = await runTransaction(
               guestIdRef,
               (currentGuestId) => {
-                if (typeof currentGuestId === "string" && currentGuestId !== "") {
+                if (
+                  typeof currentGuestId === "string" &&
+                  currentGuestId !== ""
+                ) {
                   return;
                 }
                 return uid;
               },
-              { applyLocally: false }
+              { applyLocally: false },
             );
             if (!isConnectActive()) {
               return;
@@ -4043,7 +5186,10 @@ class Connection {
                 return;
               }
               const resolvedGuestId = guestIdSnapshot.val();
-              if (typeof resolvedGuestId === "string" && resolvedGuestId !== "") {
+              if (
+                typeof resolvedGuestId === "string" &&
+                resolvedGuestId !== ""
+              ) {
                 workingInvite.guestId = resolvedGuestId;
               }
             } catch {
@@ -4052,27 +5198,55 @@ class Connection {
           }
         }
 
-        const { actorUid, role } = await this.resolveActorUidForInvite(workingInvite, uid, localProfileId, connectEpoch, connectAttemptId);
+        const { actorUid, role } = await this.resolveActorUidForInvite(
+          workingInvite,
+          uid,
+          localProfileId,
+          connectEpoch,
+          connectAttemptId,
+        );
         if (!isConnectActive()) {
           return;
         }
-        const { matchId, hasPendingProposal } = this.getLatestMatchIdForActor(inviteId, workingInvite, actorUid);
+        const { matchId, hasPendingProposal } = this.getLatestMatchIdForActor(
+          inviteId,
+          workingInvite,
+          actorUid,
+        );
         const canWrite = role !== "watch" && !!actorUid;
         let myMatch: Match | null = null;
         if (canWrite && actorUid) {
-          const myMatchSnapshot = await get(ref(this.db, `players/${actorUid}/matches/${matchId}`));
+          const myMatchSnapshot = await get(
+            ref(this.db, `players/${actorUid}/matches/${matchId}`),
+          );
           if (!isConnectActive()) {
             return;
           }
           myMatch = myMatchSnapshot.val() as Match | null;
-          if (!myMatch && role === "guest" && workingInvite.hostId && workingInvite.guestId === actorUid) {
-            myMatch = await this.createGuestMatchFromHost(workingInvite.hostId, actorUid, matchId, connectEpoch, connectAttemptId);
+          if (
+            !myMatch &&
+            role === "guest" &&
+            workingInvite.hostId &&
+            workingInvite.guestId === actorUid
+          ) {
+            myMatch = await this.createGuestMatchFromHost(
+              workingInvite.hostId,
+              actorUid,
+              matchId,
+              connectEpoch,
+              connectAttemptId,
+            );
           }
           if (!isConnectActive()) {
             return;
           }
           if (!myMatch) {
-            console.log("No match data found for writable role", { inviteId, matchId, role, actorUid });
+            console.log("No match data found for writable role", {
+              inviteId,
+              matchId,
+              role,
+              actorUid,
+            });
             return;
           }
         }
@@ -4081,7 +5255,15 @@ class Connection {
         this.myMatch = myMatch;
         didRecoverInviteReactions(workingInvite.reactions ?? null);
 
-        const nextContext = this.buildRuntimeContext(inviteId, matchId, uid, canWrite ? actorUid : null, role, canWrite, connectEpoch);
+        const nextContext = this.buildRuntimeContext(
+          inviteId,
+          matchId,
+          uid,
+          canWrite ? actorUid : null,
+          role,
+          canWrite,
+          connectEpoch,
+        );
         this.activateContext(nextContext, "connect-to-game");
         this.updateWagerStateForCurrentMatch();
         this.observeInviteReactions(nextContext);
@@ -4089,7 +5271,8 @@ class Connection {
         this.observeWagers(nextContext);
 
         if (!canWrite) {
-          const canJoinAsGuest = !workingInvite.guestId && workingInvite.hostId !== uid && !autojoin;
+          const canJoinAsGuest =
+            !workingInvite.guestId && workingInvite.hostId !== uid && !autojoin;
           if (canJoinAsGuest) {
             didFindInviteThatCanBeJoined();
           } else {
@@ -4113,17 +5296,22 @@ class Connection {
             didFindYourOwnInviteThatNobodyJoined(inviteId.startsWith("auto_"));
             const inviteRef = ref(this.db, `invites/${inviteId}`);
             const observerKey = `invite-guest-join:${inviteId}:${matchId}`;
-            const unregister = this.observeContextValue(nextContext, observerKey, inviteRef, (snapshot) => {
-              const updatedInvite = snapshot.val() as Invite | null;
-              if (!updatedInvite || !updatedInvite.guestId) {
-                return;
-              }
-              if (this.latestInvite) {
-                this.latestInvite.guestId = updatedInvite.guestId;
-              }
-              this.observeMatch(updatedInvite.guestId, matchId, nextContext);
-              unregister?.();
-            });
+            const unregister = this.observeContextValue(
+              nextContext,
+              observerKey,
+              inviteRef,
+              (snapshot) => {
+                const updatedInvite = snapshot.val() as Invite | null;
+                if (!updatedInvite || !updatedInvite.guestId) {
+                  return;
+                }
+                if (this.latestInvite) {
+                  this.latestInvite.guestId = updatedInvite.guestId;
+                }
+                this.observeMatch(updatedInvite.guestId, matchId, nextContext);
+                unregister?.();
+              },
+            );
           }
         } else {
           this.observeMatch(workingInvite.hostId, matchId, nextContext);
@@ -4144,7 +5332,9 @@ class Connection {
   public tryNavigateWatchOnlyToLatestApprovedMatch(): boolean {
     if (!this.inviteId || !this.latestInvite) return false;
     const latestIndex = this.getLatestBothSidesApprovedRematchIndex();
-    const newMatchId = latestIndex ? this.inviteId + latestIndex.toString() : this.inviteId;
+    const newMatchId = latestIndex
+      ? this.inviteId + latestIndex.toString()
+      : this.inviteId;
     if (newMatchId === this.matchId) return false;
     const activeContext = this.activeContext;
     if (activeContext?.canWrite) {
@@ -4159,7 +5349,15 @@ class Connection {
       });
       return false;
     }
-    const nextWatchContext = this.buildRuntimeContext(this.inviteId, newMatchId, loginUid, null, "watch", false, this.sessionEpoch);
+    const nextWatchContext = this.buildRuntimeContext(
+      this.inviteId,
+      newMatchId,
+      loginUid,
+      null,
+      "watch",
+      false,
+      this.sessionEpoch,
+    );
     this.activateContext(nextWatchContext, "watch-only-rematch-nav");
     this.observeInviteReactions(nextWatchContext);
     this.observeRematchOrEndMatchIndicators(nextWatchContext);
@@ -4209,8 +5407,14 @@ class Connection {
     return true;
   }
 
-  private observeRematchOrEndMatchIndicators(context: MatchRuntimeContext | null = this.activeContext) {
-    if (!context || !this.latestInvite || this.rematchSeriesEndIsIndicatedForInvite(this.latestInvite)) {
+  private observeRematchOrEndMatchIndicators(
+    context: MatchRuntimeContext | null = this.activeContext,
+  ) {
+    if (
+      !context ||
+      !this.latestInvite ||
+      this.rematchSeriesEndIsIndicatedForInvite(this.latestInvite)
+    ) {
       return;
     }
 
@@ -4248,7 +5452,7 @@ class Connection {
         if (this.hostRematchesRef === hostRef) {
           this.hostRematchesRef = null;
         }
-      }
+      },
     );
 
     const guestRef = ref(this.db, `invites/${inviteId}/guestRematches`);
@@ -4276,7 +5480,7 @@ class Connection {
         if (this.guestRematchesRef === guestRef) {
           this.guestRematchesRef = null;
         }
-      }
+      },
     );
   }
 
@@ -4288,7 +5492,8 @@ class Connection {
       return;
     }
     const wagers = this.latestInvite?.wagers ?? null;
-    const matchWagerState = wagers && wagers[targetMatchId] ? wagers[targetMatchId] : null;
+    const matchWagerState =
+      wagers && wagers[targetMatchId] ? wagers[targetMatchId] : null;
     this.logWagerDebug("publish-state", {
       targetMatchId,
       availableMatchIds: wagers ? Object.keys(wagers) : [],
@@ -4297,7 +5502,9 @@ class Connection {
     syncCurrentWagerMatchState(targetMatchId, matchWagerState);
   }
 
-  private observeWagers(context: MatchRuntimeContext | null = this.activeContext) {
+  private observeWagers(
+    context: MatchRuntimeContext | null = this.activeContext,
+  ) {
     if (!context) {
       return;
     }
@@ -4309,7 +5516,9 @@ class Connection {
       wagersRef,
       (snapshot) => {
         const wagers = snapshot.val();
-        this.logWagerDebug("observe-wagers:update", { availableMatchIds: wagers ? Object.keys(wagers) : [] });
+        this.logWagerDebug("observe-wagers:update", {
+          availableMatchIds: wagers ? Object.keys(wagers) : [],
+        });
         if (this.latestInvite) {
           this.latestInvite.wagers = wagers;
         }
@@ -4320,22 +5529,30 @@ class Connection {
         if (this.wagersRef === wagersRef) {
           this.wagersRef = null;
         }
-      }
+      },
     );
   }
 
-  private observeInviteReactions(context: MatchRuntimeContext | null = this.activeContext) {
+  private observeInviteReactions(
+    context: MatchRuntimeContext | null = this.activeContext,
+  ) {
     if (!context) {
       return;
     }
-    const inviteReactionsRef = ref(this.db, `invites/${context.inviteId}/reactions`);
+    const inviteReactionsRef = ref(
+      this.db,
+      `invites/${context.inviteId}/reactions`,
+    );
     this.inviteReactionsRef = inviteReactionsRef;
     this.observeContextValue(
       context,
       `invite-reactions:${context.inviteId}`,
       inviteReactionsRef,
       (snapshot) => {
-        const reactions = snapshot.val() as Record<string, InviteReaction> | null;
+        const reactions = snapshot.val() as Record<
+          string,
+          InviteReaction
+        > | null;
         if (this.latestInvite) {
           this.latestInvite.reactions = reactions;
         }
@@ -4354,7 +5571,7 @@ class Connection {
         if (this.inviteReactionsRef === inviteReactionsRef) {
           this.inviteReactionsRef = null;
         }
-      }
+      },
     );
   }
 
@@ -4409,7 +5626,11 @@ class Connection {
     });
   }
 
-  private observeMatch(playerId: string, matchId: string, context: MatchRuntimeContext | null = this.activeContext): void {
+  private observeMatch(
+    playerId: string,
+    matchId: string,
+    context: MatchRuntimeContext | null = this.activeContext,
+  ): void {
     const matchRef = ref(this.db, `players/${playerId}/matches/${matchId}`);
     const key = `${matchId}_${playerId}`;
     if (this.matchRefs[key]) {
@@ -4457,7 +5678,7 @@ class Connection {
           return;
         }
         console.error("Error observing match data:", error);
-      }
+      },
     );
 
     this.getProfileByLoginId(playerId)
@@ -4476,7 +5697,10 @@ class Connection {
       });
   }
 
-  private observeProfile(playerId: string, context: MatchRuntimeContext | null = this.activeContext): void {
+  private observeProfile(
+    playerId: string,
+    context: MatchRuntimeContext | null = this.activeContext,
+  ): void {
     const profileRef = ref(this.db, `players/${playerId}/profile`);
     if (this.profileRefs[playerId]) {
       return;
@@ -4491,14 +5715,18 @@ class Connection {
     };
     if (context) {
       this.unregisterObserverCleanup(context.contextId, `profile:${playerId}`);
-      this.registerObserverCleanup(context.contextId, `profile:${playerId}`, () => {
-        const existingRef = this.profileRefs[playerId];
-        if (existingRef) {
-          off(existingRef);
-          delete this.profileRefs[playerId];
-          decrementLifecycleCounter("connectionObservers");
-        }
-      });
+      this.registerObserverCleanup(
+        context.contextId,
+        `profile:${playerId}`,
+        () => {
+          const existingRef = this.profileRefs[playerId];
+          if (existingRef) {
+            off(existingRef);
+            delete this.profileRefs[playerId];
+            decrementLifecycleCounter("connectionObservers");
+          }
+        },
+      );
     }
     this.profileRefs[playerId] = profileRef;
     incrementLifecycleCounter("connectionObservers");
@@ -4529,7 +5757,11 @@ class Connection {
     });
   }
 
-  public async checkBothPlayerProfiles(hostPlayerId: string, guestPlayerId: string, profileValue: string): Promise<string | null> {
+  public async checkBothPlayerProfiles(
+    hostPlayerId: string,
+    guestPlayerId: string,
+    profileValue: string,
+  ): Promise<string | null> {
     try {
       const hostProfileRef = ref(this.db, `players/${hostPlayerId}/profile`);
 
@@ -4541,9 +5773,15 @@ class Connection {
           return hostPlayerId;
         }
       } else {
-        const guestProfileRef = ref(this.db, `players/${guestPlayerId}/profile`);
+        const guestProfileRef = ref(
+          this.db,
+          `players/${guestPlayerId}/profile`,
+        );
 
-        const [hostSnapshot, guestSnapshot] = await Promise.all([get(hostProfileRef), get(guestProfileRef)]);
+        const [hostSnapshot, guestSnapshot] = await Promise.all([
+          get(hostProfileRef),
+          get(guestProfileRef),
+        ]);
 
         const hostProfile = hostSnapshot.val();
         const guestProfile = guestSnapshot.val();

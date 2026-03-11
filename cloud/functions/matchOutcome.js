@@ -8,7 +8,8 @@ const loadMons = async () => {
 };
 
 const isNonEmptyString = (value) => typeof value === "string" && value !== "";
-const normalizeColor = (value) => (value === "white" || value === "black" ? value : null);
+const normalizeColor = (value) =>
+  value === "white" || value === "black" ? value : null;
 
 async function resolveMatchWinner(matchData, opponentMatchData) {
   if (!matchData || !opponentMatchData) {
@@ -29,7 +30,10 @@ async function resolveMatchWinner(matchData, opponentMatchData) {
     return { winner: null, reason: "missing-color" };
   }
 
-  if (!isNonEmptyString(matchData.fen) || !isNonEmptyString(opponentMatchData.fen)) {
+  if (
+    !isNonEmptyString(matchData.fen) ||
+    !isNonEmptyString(opponentMatchData.fen)
+  ) {
     return { winner: null, reason: "missing-fen" };
   }
 
@@ -37,26 +41,49 @@ async function resolveMatchWinner(matchData, opponentMatchData) {
   let winnerColorFen = "";
 
   if (playerColor === "white") {
-    winnerColorFen = mons.winner(matchData.fen, opponentMatchData.fen, matchData.flatMovesString || "", opponentMatchData.flatMovesString || "");
+    winnerColorFen = mons.winner(
+      matchData.fen,
+      opponentMatchData.fen,
+      matchData.flatMovesString || "",
+      opponentMatchData.flatMovesString || "",
+    );
   } else {
-    winnerColorFen = mons.winner(opponentMatchData.fen, matchData.fen, opponentMatchData.flatMovesString || "", matchData.flatMovesString || "");
+    winnerColorFen = mons.winner(
+      opponentMatchData.fen,
+      matchData.fen,
+      opponentMatchData.flatMovesString || "",
+      matchData.flatMovesString || "",
+    );
   }
 
   if (winnerColorFen === "w") {
     return {
-      winner: playerColor === "white" ? "player" : opponentColor === "white" ? "opponent" : null,
+      winner:
+        playerColor === "white"
+          ? "player"
+          : opponentColor === "white"
+            ? "opponent"
+            : null,
       reason: "winner-color",
     };
   }
 
   if (winnerColorFen === "b") {
     return {
-      winner: playerColor === "black" ? "player" : opponentColor === "black" ? "opponent" : null,
+      winner:
+        playerColor === "black"
+          ? "player"
+          : opponentColor === "black"
+            ? "opponent"
+            : null,
       reason: "winner-color",
     };
   }
 
-  return { winner: null, reason: winnerColorFen === "x" ? "invalid-game" : "pending" };
+  return {
+    winner: null,
+    reason: winnerColorFen === "x" ? "invalid-game" : "pending",
+  };
 }
 
 module.exports = {

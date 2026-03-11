@@ -1,7 +1,21 @@
-import { beginMatchSession, getCurrentSessionEpoch, getCurrentSessionId as getMatchSessionId, incrementSessionEpoch } from "../game/matchSession";
+import {
+  beginMatchSession,
+  getCurrentSessionEpoch,
+  getCurrentSessionId as getMatchSessionId,
+  incrementSessionEpoch,
+} from "../game/matchSession";
 import { getLifecycleCounters } from "../lifecycle/lifecycleDiagnostics";
-import { initializeNavigation, pushRoutePath, replaceRoutePath, subscribeToNavigationState } from "../navigation/appNavigation";
-import { RouteState, getCurrentRouteState, getRoutePathForTarget } from "../navigation/routeState";
+import {
+  initializeNavigation,
+  pushRoutePath,
+  replaceRoutePath,
+  subscribeToNavigationState,
+} from "../navigation/appNavigation";
+import {
+  RouteState,
+  getCurrentRouteState,
+  getRoutePathForTarget,
+} from "../navigation/routeState";
 import { INVALID_SNAPSHOT_ROUTE_ERROR } from "./sessionErrors";
 
 export type AppSessionTarget = RouteState;
@@ -48,14 +62,24 @@ const waitForBoardRoot = async (timeoutMs = 30000) => {
 };
 
 const routeStatesMatch = (a: RouteState, b: RouteState) => {
-  return a.mode === b.mode && a.path === b.path && a.inviteId === b.inviteId && a.snapshotId === b.snapshotId && a.eventId === b.eventId && a.autojoin === b.autojoin;
+  return (
+    a.mode === b.mode &&
+    a.path === b.path &&
+    a.inviteId === b.inviteId &&
+    a.snapshotId === b.snapshotId &&
+    a.eventId === b.eventId &&
+    a.autojoin === b.autojoin
+  );
 };
 
 const isLobbyRoute = (target: RouteState): boolean => {
   return target.mode === "home" || target.mode === "event";
 };
 
-const mergeQueuedTransitionOptions = (existing?: TransitionOptions, incoming?: TransitionOptions): TransitionOptions | undefined => {
+const mergeQueuedTransitionOptions = (
+  existing?: TransitionOptions,
+  incoming?: TransitionOptions,
+): TransitionOptions | undefined => {
   const merged: TransitionOptions = {};
   if (incoming?.replace !== undefined) {
     merged.replace = incoming.replace;
@@ -119,20 +143,31 @@ const bootstrapForRoute = async (target: RouteState) => {
 const syncEventModalForLobbyTarget = async (target: RouteState) => {
   const eventModalController = await import("../ui/eventModalController");
   if (target.mode === "event" && target.eventId) {
-    eventModalController.openEventModal(target.eventId, { restoreHomeOnClose: true });
+    eventModalController.openEventModal(target.eventId, {
+      restoreHomeOnClose: true,
+    });
     return;
   }
   if (eventModalController.hasEventModalVisible()) {
-    await eventModalController.closeEventModal({ skipHomeTransition: true, reason: "route_change" });
+    await eventModalController.closeEventModal({
+      skipHomeTransition: true,
+      reason: "route_change",
+    });
   }
 };
 
-const runTransition = async (target: RouteState, options?: TransitionOptions) => {
+const runTransition = async (
+  target: RouteState,
+  options?: TransitionOptions,
+) => {
   if (isTransitioning) {
     return new Promise<void>((resolve) => {
       if (pendingTransitionRequest) {
         pendingTransitionRequest.target = target;
-        pendingTransitionRequest.options = mergeQueuedTransitionOptions(pendingTransitionRequest.options, options);
+        pendingTransitionRequest.options = mergeQueuedTransitionOptions(
+          pendingTransitionRequest.options,
+          options,
+        );
         pendingTransitionRequest.waiters.push(resolve);
       } else {
         pendingTransitionRequest = { target, options, waiters: [resolve] };
@@ -143,7 +178,11 @@ const runTransition = async (target: RouteState, options?: TransitionOptions) =>
   if (!options?.force && routeStatesMatch(from, target)) {
     return;
   }
-  const shouldUseLightweightLobbyTransition = !options?.force && !options?.resetProfileScope && isLobbyRoute(from) && isLobbyRoute(target);
+  const shouldUseLightweightLobbyTransition =
+    !options?.force &&
+    !options?.resetProfileScope &&
+    isLobbyRoute(from) &&
+    isLobbyRoute(target);
   isTransitioning = true;
   if (shouldUseLightweightLobbyTransition) {
     try {
@@ -166,7 +205,10 @@ const runTransition = async (target: RouteState, options?: TransitionOptions) =>
     const queuedRequest = pendingTransitionRequest;
     pendingTransitionRequest = null;
     if (queuedRequest) {
-      if (queuedRequest.options?.force || !routeStatesMatch(queuedRequest.target, currentTarget)) {
+      if (
+        queuedRequest.options?.force ||
+        !routeStatesMatch(queuedRequest.target, currentTarget)
+      ) {
         await runTransition(queuedRequest.target, queuedRequest.options);
       }
       queuedRequest.waiters.forEach((resolve) => resolve());
@@ -193,11 +235,14 @@ const runTransition = async (target: RouteState, options?: TransitionOptions) =>
       to: target.path,
       error,
     });
-    const shouldRecoverToHome = error instanceof Error && error.message === INVALID_SNAPSHOT_ROUTE_ERROR;
+    const shouldRecoverToHome =
+      error instanceof Error && error.message === INVALID_SNAPSHOT_ROUTE_ERROR;
     try {
       const lifecycleManager = await import("../lifecycle/lifecycleManager");
       lifecycleManager.teardownMatchScope();
-      const recoveryTarget = shouldRecoverToHome ? createHomeTarget() : getCurrentRouteState();
+      const recoveryTarget = shouldRecoverToHome
+        ? createHomeTarget()
+        : getCurrentRouteState();
       if (shouldRecoverToHome) {
         applyPathForTarget(recoveryTarget, true);
       }
@@ -219,14 +264,20 @@ const runTransition = async (target: RouteState, options?: TransitionOptions) =>
   const queuedRequest = pendingTransitionRequest;
   pendingTransitionRequest = null;
   if (queuedRequest) {
-    if (queuedRequest.options?.force || !routeStatesMatch(queuedRequest.target, currentTarget)) {
+    if (
+      queuedRequest.options?.force ||
+      !routeStatesMatch(queuedRequest.target, currentTarget)
+    ) {
       await runTransition(queuedRequest.target, queuedRequest.options);
     }
     queuedRequest.waiters.forEach((resolve) => resolve());
   }
 };
 
-export const transition = async (target: RouteState, options?: TransitionOptions) => {
+export const transition = async (
+  target: RouteState,
+  options?: TransitionOptions,
+) => {
   await runTransition(target, options);
 };
 
@@ -234,7 +285,10 @@ export const transitionToHome = async (options?: TransitionToHomeOptions) => {
   const homeTarget = createHomeTarget();
   const shouldForceMatchScopeReset = options?.forceMatchScopeReset === true;
   const activeTarget = currentTarget;
-  if (!routeStatesMatch(activeTarget, homeTarget) || shouldForceMatchScopeReset) {
+  if (
+    !routeStatesMatch(activeTarget, homeTarget) ||
+    shouldForceMatchScopeReset
+  ) {
     await transition(homeTarget, {
       resetProfileScope: options?.resetProfileScope,
       force: shouldForceMatchScopeReset,
@@ -258,7 +312,10 @@ export const getCurrentSessionId = () => {
   return getMatchSessionId();
 };
 
-export const adoptTargetWithoutTransition = (target: RouteState, replace = false) => {
+export const adoptTargetWithoutTransition = (
+  target: RouteState,
+  replace = false,
+) => {
   currentTarget = target;
   applyPathForTarget(target, replace);
 };

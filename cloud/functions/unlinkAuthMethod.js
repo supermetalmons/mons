@@ -3,10 +3,19 @@ const { unlinkMethodForUid } = require("./authIdentity");
 
 exports.unlinkAuthMethod = onCall({ invoker: "public" }, async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
-  const requestData = request && request.data && typeof request.data === "object" ? request.data : {};
-  const method = typeof requestData.method === "string" ? requestData.method.trim().toLowerCase() : "";
+  const requestData =
+    request && request.data && typeof request.data === "object"
+      ? request.data
+      : {};
+  const method =
+    typeof requestData.method === "string"
+      ? requestData.method.trim().toLowerCase()
+      : "";
   if (!method) {
     throw new HttpsError("invalid-argument", "method is required.");
   }

@@ -72,10 +72,13 @@ exports.joinEvent = joinEvent;
 exports.syncEventState = syncEventState;
 exports.projectProfileGamesOnInviteCreated = onInviteCreated;
 exports.projectProfileGamesOnInviteGuestIdChanged = onInviteGuestIdChanged;
-exports.projectProfileGamesOnInviteHostRematchesChanged = onInviteHostRematchesChanged;
-exports.projectProfileGamesOnInviteGuestRematchesChanged = onInviteGuestRematchesChanged;
+exports.projectProfileGamesOnInviteHostRematchesChanged =
+  onInviteHostRematchesChanged;
+exports.projectProfileGamesOnInviteGuestRematchesChanged =
+  onInviteGuestRematchesChanged;
 exports.projectProfileGamesOnMatchCreated = onMatchCreated;
-exports.projectProfileGamesOnInviteMatchRatingUpdated = onInviteMatchRatingUpdated;
+exports.projectProfileGamesOnInviteMatchRatingUpdated =
+  onInviteMatchRatingUpdated;
 exports.projectProfileGamesOnAutomatchQueueWritten = onAutomatchQueueWritten;
 exports.projectProfileGamesOnProfileLinkCreated = onProfileLinkCreated;
 exports.projectProfileGamesOnProfileLinkWritten = onProfileLinkWritten;

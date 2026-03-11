@@ -3,7 +3,11 @@ import styled from "styled-components";
 import { resolveENS } from "../utils/ensResolver";
 import { connection } from "../connection/connection";
 import { showShinyCard } from "./ShinyCard";
-import { PlayerProfile, MiningMaterialName, MINING_MATERIAL_NAMES } from "../connection/connectionModels";
+import {
+  PlayerProfile,
+  MiningMaterialName,
+  MINING_MATERIAL_NAMES,
+} from "../connection/connectionModels";
 import { AvatarImage } from "./AvatarImage";
 import { isLocalHost } from "../utils/localDev";
 import { storage } from "../utils/storage";
@@ -22,7 +26,12 @@ const LEADERBOARD_ENTRY_LIMIT = 99;
 export const LeaderboardContainer = styled.div<{ show: boolean }>`
   position: relative;
   opacity: 1;
-  height: calc(min(69dvh + 34px - env(safe-area-inset-bottom) * 0.63, 100dvh - 66pt - env(safe-area-inset-bottom) * 0.63));
+  height: calc(
+    min(
+      69dvh + 34px - env(safe-area-inset-bottom) * 0.63,
+      100dvh - 66pt - env(safe-area-inset-bottom) * 0.63
+    )
+  );
   margin: -2px -6px 0 -6px;
   overflow: hidden;
   display: flex;
@@ -204,15 +213,28 @@ const TableWrapper = styled.div`
   padding-bottom: ${BOTTOM_PANEL_OFFSET}px;
 `;
 
-const FloatingRowContainer = styled.div<{ visible: boolean; position: "top" | "bottom"; suppressAnimation: boolean }>`
+const FloatingRowContainer = styled.div<{
+  visible: boolean;
+  position: "top" | "bottom";
+  suppressAnimation: boolean;
+}>`
   position: absolute;
-  ${(props) => (props.position === "top" ? "top: -2px; padding-top: 2px;" : `bottom: ${BOTTOM_PANEL_OFFSET}px;`)}
+  ${(props) =>
+    props.position === "top"
+      ? "top: -2px; padding-top: 2px;"
+      : `bottom: ${BOTTOM_PANEL_OFFSET}px;`}
   left: 0;
   right: 0;
   background: var(--color-white);
-  transform: translateY(${(props) => (props.visible ? "0" : props.position === "top" ? "-100%" : "100%")});
+  transform: translateY(
+    ${(props) =>
+      props.visible ? "0" : props.position === "top" ? "-100%" : "100%"}
+  );
   opacity: ${(props) => (props.visible ? 1 : 0)};
-  transition: ${(props) => (props.suppressAnimation ? "none" : "transform 0.25s ease-out, opacity 0.2s ease-out")};
+  transition: ${(props) =>
+    props.suppressAnimation
+      ? "none"
+      : "transform 0.25s ease-out, opacity 0.2s ease-out"};
   z-index: 10;
   pointer-events: ${(props) => (props.visible ? "auto" : "none")};
 
@@ -305,7 +327,9 @@ const FloatingRowValue = styled.div<{ isRating?: boolean; win?: boolean }>`
   box-sizing: border-box;
   color: ${(props) => {
     if (props.isRating) {
-      return props.win ? "var(--leaderboardRatingWinColor)" : "var(--leaderboardRatingLossColor)";
+      return props.win
+        ? "var(--leaderboardRatingWinColor)"
+        : "var(--leaderboardRatingLossColor)";
     }
     return "var(--color-gray-77)";
   }};
@@ -322,7 +346,9 @@ const FloatingRowValue = styled.div<{ isRating?: boolean; win?: boolean }>`
   @media (prefers-color-scheme: dark) {
     color: ${(props) => {
       if (props.isRating) {
-        return props.win ? "var(--leaderboardRatingWinColorDark)" : "var(--leaderboardRatingLossColorDark)";
+        return props.win
+          ? "var(--leaderboardRatingWinColorDark)"
+          : "var(--leaderboardRatingLossColorDark)";
       }
       return "var(--color-gray-99)";
     }};
@@ -344,11 +370,17 @@ const LoadingText = styled.div`
 `;
 
 const RatingCell = styled.td<{ win: boolean }>`
-  color: ${(props) => (props.win ? "var(--leaderboardRatingWinColor)" : "var(--leaderboardRatingLossColor)")};
+  color: ${(props) =>
+    props.win
+      ? "var(--leaderboardRatingWinColor)"
+      : "var(--leaderboardRatingLossColor)"};
   font-weight: 500;
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.win ? "var(--leaderboardRatingWinColorDark)" : "var(--leaderboardRatingLossColorDark)")};
+    color: ${(props) =>
+      props.win
+        ? "var(--leaderboardRatingWinColorDark)"
+        : "var(--leaderboardRatingLossColorDark)"};
   }
 `;
 
@@ -498,7 +530,13 @@ const getLeaderboardDisplayName = (row: LeaderboardEntry): string => {
   return "";
 };
 
-const useAutoDownloadLeaderboardCards = ({ show, data }: { show: boolean; data: LeaderboardEntry[] | null }) => {
+const useAutoDownloadLeaderboardCards = ({
+  show,
+  data,
+}: {
+  show: boolean;
+  data: LeaderboardEntry[] | null;
+}) => {
   const autoDownloadRunRef = useRef(0);
   const autoDownloadHasRunRef = useRef(false);
 
@@ -508,7 +546,13 @@ const useAutoDownloadLeaderboardCards = ({ show, data }: { show: boolean; data: 
       autoDownloadHasRunRef.current = false;
       return;
     }
-    if (!isLocalHost() || !RENDER_AND_DOWNLOAD_ALL_ID_CARDS || !data || data.length === 0 || autoDownloadHasRunRef.current) {
+    if (
+      !isLocalHost() ||
+      !RENDER_AND_DOWNLOAD_ALL_ID_CARDS ||
+      !data ||
+      data.length === 0 ||
+      autoDownloadHasRunRef.current
+    ) {
       return;
     }
     autoDownloadHasRunRef.current = true;
@@ -518,7 +562,12 @@ const useAutoDownloadLeaderboardCards = ({ show, data }: { show: boolean; data: 
         if (autoDownloadRunRef.current !== runId) {
           return;
         }
-        await showShinyCard(row.profile, getLeaderboardDisplayName(row), true, true);
+        await showShinyCard(
+          row.profile,
+          getLeaderboardDisplayName(row),
+          true,
+          true,
+        );
       }
     };
     void run();
@@ -545,10 +594,13 @@ const createLeaderboardEntry = (entry: PlayerProfile): LeaderboardEntry => ({
   aura: entry.aura,
   ensName: null,
   profile: entry,
-  materials: entry.mining?.materials ? { ...createEmptyMaterials(), ...entry.mining.materials } : createEmptyMaterials(),
+  materials: entry.mining?.materials
+    ? { ...createEmptyMaterials(), ...entry.mining.materials }
+    : createEmptyMaterials(),
 });
 
-const profilesToEntries = (profiles: PlayerProfile[]): LeaderboardEntry[] => profiles.map(createLeaderboardEntry);
+const profilesToEntries = (profiles: PlayerProfile[]): LeaderboardEntry[] =>
+  profiles.map(createLeaderboardEntry);
 
 const leaderboardCache = new Map<LeaderboardType, LeaderboardEntry[]>();
 
@@ -558,10 +610,16 @@ export const resetLeaderboardCache = () => {
 
 type RowPosition = "visible" | "above" | "below";
 
-export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType }) => {
-  const [data, setData] = useState<LeaderboardEntry[] | null>(() => leaderboardCache.get(leaderboardType) ?? null);
+export const Leaderboard: React.FC<LeaderboardProps> = ({
+  show,
+  leaderboardType,
+}) => {
+  const [data, setData] = useState<LeaderboardEntry[] | null>(
+    () => leaderboardCache.get(leaderboardType) ?? null,
+  );
   const [loadedEmojis, setLoadedEmojis] = useState<Set<string>>(new Set());
-  const [currentRowPosition, setCurrentRowPosition] = useState<RowPosition>("visible");
+  const [currentRowPosition, setCurrentRowPosition] =
+    useState<RowPosition>("visible");
   const [suppressPanelAnimation, setSuppressPanelAnimation] = useState(true);
   const [bottomPanelHasAnimated, setBottomPanelHasAnimated] = useState(false);
   const tableWrapperRef = useRef<HTMLDivElement>(null);
@@ -579,13 +637,20 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
     const storedSol = storage.getSolAddress("");
     const storedEmoji = parseInt(storage.getPlayerEmojiId("1"), 10) || 1;
     const storedAura = storage.getPlayerEmojiAura("") || undefined;
-    const storedMaterials = storage.getMiningMaterials(createEmptyMaterials()) as Record<MiningMaterialName, number>;
+    const storedMaterials = storage.getMiningMaterials(
+      createEmptyMaterials(),
+    ) as Record<MiningMaterialName, number>;
     const storedMining = {
       lastRockDate: storage.getMiningLastRockDate(null),
       materials: { ...createEmptyMaterials(), ...storedMaterials },
     };
-    const stashedProfile = currentLoginId ? getStashedPlayerProfile(currentLoginId) : undefined;
-    const profile = stashedProfile && stashedProfile.id === currentProfileId ? stashedProfile : undefined;
+    const stashedProfile = currentLoginId
+      ? getStashedPlayerProfile(currentLoginId)
+      : undefined;
+    const profile =
+      stashedProfile && stashedProfile.id === currentProfileId
+        ? stashedProfile
+        : undefined;
     const mergedProfile: PlayerProfile = {
       id: currentProfileId,
       nonce: profile?.nonce ?? storage.getPlayerNonce(-1),
@@ -593,10 +658,13 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
       win: profile?.win ?? true,
       emoji: profile?.emoji ?? storedEmoji,
       aura: profile?.aura ?? storedAura,
-      totalManaPoints: profile?.totalManaPoints ?? storage.getPlayerTotalManaPoints(0),
-      cardBackgroundId: profile?.cardBackgroundId ?? storage.getCardBackgroundId(0),
+      totalManaPoints:
+        profile?.totalManaPoints ?? storage.getPlayerTotalManaPoints(0),
+      cardBackgroundId:
+        profile?.cardBackgroundId ?? storage.getCardBackgroundId(0),
       cardSubtitleId: profile?.cardSubtitleId ?? storage.getCardSubtitleId(0),
-      profileCounter: profile?.profileCounter ?? storage.getProfileCounter("gp"),
+      profileCounter:
+        profile?.profileCounter ?? storage.getProfileCounter("gp"),
       profileMons: profile?.profileMons ?? storage.getProfileMons(""),
       cardStickers: profile?.cardStickers ?? storage.getCardStickers(""),
       username: profile?.username ?? (storedUsername ? storedUsername : null),
@@ -647,7 +715,7 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
         root: tableWrapper,
         rootMargin: `0px 0px -${BOTTOM_VISIBILITY_THRESHOLD}px 0px`,
         threshold: 0.1,
-      }
+      },
     );
 
     observer.observe(currentRow);
@@ -661,7 +729,8 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
 
   useEffect(() => {
     const menuJustOpened = show && !prevShowRef.current;
-    const leaderboardTypeChanged = prevLeaderboardTypeRef.current !== leaderboardType;
+    const leaderboardTypeChanged =
+      prevLeaderboardTypeRef.current !== leaderboardType;
 
     if (menuJustOpened || leaderboardTypeChanged) {
       setSuppressPanelAnimation(true);
@@ -722,12 +791,18 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
         const leaderboardData = profilesToEntries(profiles);
         const currentEntry = getCurrentPlayerEntry();
         const mergedLeaderboardData =
-          currentEntry && !leaderboardData.some((entry) => entry.id === currentEntry.id) ? [...leaderboardData, currentEntry] : leaderboardData;
+          currentEntry &&
+          !leaderboardData.some((entry) => entry.id === currentEntry.id)
+            ? [...leaderboardData, currentEntry]
+            : leaderboardData;
         const displayLeaderboardData = mergedLeaderboardData;
         leaderboardCache.set(leaderboardType, displayLeaderboardData);
         setData(displayLeaderboardData);
 
-        if (leaderboardType === "total" || MINING_MATERIAL_NAMES.includes(leaderboardType as MiningMaterialName)) {
+        if (
+          leaderboardType === "total" ||
+          MINING_MATERIAL_NAMES.includes(leaderboardType as MiningMaterialName)
+        ) {
           const allEntries = profilesToEntries(profiles);
           const entryMap = new Map<string, LeaderboardEntry>();
           allEntries.forEach((e) => entryMap.set(e.id, e));
@@ -744,8 +819,14 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
           if (!leaderboardCache.has("total")) {
             const sorted = [...entryMap.values()]
               .sort((a, b) => {
-                const totalA = Object.values(a.materials).reduce((sum, val) => sum + val, 0);
-                const totalB = Object.values(b.materials).reduce((sum, val) => sum + val, 0);
+                const totalA = Object.values(a.materials).reduce(
+                  (sum, val) => sum + val,
+                  0,
+                );
+                const totalB = Object.values(b.materials).reduce(
+                  (sum, val) => sum + val,
+                  0,
+                );
                 return totalB - totalA;
               })
               .slice(0, LEADERBOARD_ENTRY_LIMIT);
@@ -761,7 +842,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                 return;
               }
               setData((prevData) => {
-                if (!prevData || fetchId !== currentFetchRef.current || index >= prevData.length) {
+                if (
+                  !prevData ||
+                  fetchId !== currentFetchRef.current ||
+                  index >= prevData.length
+                ) {
                   return prevData;
                 }
                 const newData = [...prevData];
@@ -799,7 +884,10 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
       return <MaterialCell>{row.mp}</MaterialCell>;
     }
     if (leaderboardType === "total") {
-      const total = Object.values(row.materials).reduce((sum, val) => sum + val, 0);
+      const total = Object.values(row.materials).reduce(
+        (sum, val) => sum + val,
+        0,
+      );
       return <MaterialCell>{total}</MaterialCell>;
     }
     return <MaterialCell>{row.materials[leaderboardType]}</MaterialCell>;
@@ -811,8 +899,12 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
   };
 
   const currentPlayerData = data?.find((row) => isCurrentProfile(row));
-  const currentPlayerIndex = data?.findIndex((row) => isCurrentProfile(row)) ?? -1;
-  const currentPlayerRankLabel = currentPlayerIndex >= LEADERBOARD_ENTRY_LIMIT ? "∅" : currentPlayerIndex + 1;
+  const currentPlayerIndex =
+    data?.findIndex((row) => isCurrentProfile(row)) ?? -1;
+  const currentPlayerRankLabel =
+    currentPlayerIndex >= LEADERBOARD_ENTRY_LIMIT
+      ? "∅"
+      : currentPlayerIndex + 1;
 
   const getFloatingValue = (row: LeaderboardEntry) => {
     if (leaderboardType === "rating") {
@@ -822,15 +914,25 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
       return { value: row.mp, isRating: false, win: false };
     }
     if (leaderboardType === "total") {
-      const total = Object.values(row.materials).reduce((sum, val) => sum + val, 0);
+      const total = Object.values(row.materials).reduce(
+        (sum, val) => sum + val,
+        0,
+      );
       return { value: total, isRating: false, win: false };
     }
-    return { value: row.materials[leaderboardType], isRating: false, win: false };
+    return {
+      value: row.materials[leaderboardType],
+      isRating: false,
+      win: false,
+    };
   };
 
   const scrollToCurrentRow = () => {
     if (currentRowRef.current && tableWrapperRef.current) {
-      currentRowRef.current.scrollIntoView({ behavior: "smooth", block: "center" });
+      currentRowRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center",
+      });
     }
   };
 
@@ -853,7 +955,11 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                 const emojiKey = `${row.id}-${row.emoji}`;
                 const isEmojiLoaded = loadedEmojis.has(emojiKey);
                 const isCurrentPlayer = isCurrentProfile(row);
-                const rankLabel = isCurrentPlayer && currentPlayerIndex >= LEADERBOARD_ENTRY_LIMIT ? "∅" : index + 1;
+                const rankLabel =
+                  isCurrentPlayer &&
+                  currentPlayerIndex >= LEADERBOARD_ENTRY_LIMIT
+                    ? "∅"
+                    : index + 1;
 
                 return (
                   <tr
@@ -865,8 +971,16 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                     <td>{rankLabel}</td>
                     <td>
                       {!isEmojiLoaded && <EmojiPlaceholder />}
-                      <EmojiImage style={{ display: isEmojiLoaded ? "flex" : "none" }}>
-                        <AvatarImage src={emojiUrl} alt="" rainbowAura={!!row.aura} loading="eager" onLoad={() => handleEmojiLoad(emojiKey)} />
+                      <EmojiImage
+                        style={{ display: isEmojiLoaded ? "flex" : "none" }}
+                      >
+                        <AvatarImage
+                          src={emojiUrl}
+                          alt=""
+                          rainbowAura={!!row.aura}
+                          loading="eager"
+                          onLoad={() => handleEmojiLoad(emojiKey)}
+                        />
                       </EmojiImage>
                     </td>
                     <td>
@@ -890,9 +1004,15 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
           {(["top", "bottom"] as const).map((position) => (
             <FloatingRowContainer
               key={position}
-              visible={currentRowPosition === (position === "top" ? "above" : "below")}
+              visible={
+                currentRowPosition === (position === "top" ? "above" : "below")
+              }
               position={position}
-              suppressAnimation={position === "top" ? suppressPanelAnimation : bottomPanelHasAnimated}
+              suppressAnimation={
+                position === "top"
+                  ? suppressPanelAnimation
+                  : bottomPanelHasAnimated
+              }
               onClick={scrollToCurrentRow}
             >
               <FloatingRowInner>
@@ -900,7 +1020,9 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                 <FloatingRowEmoji>
                   <EmojiImage>
                     <AvatarImage
-                      src={emojis.getEmojiUrl(currentPlayerData.emoji.toString())}
+                      src={emojis.getEmojiUrl(
+                        currentPlayerData.emoji.toString(),
+                      )}
                       alt=""
                       rainbowAura={!!currentPlayerData.aura}
                       loading="eager"
@@ -909,11 +1031,16 @@ export const Leaderboard: React.FC<LeaderboardProps> = ({ show, leaderboardType 
                 </FloatingRowEmoji>
                 <FloatingRowName>
                   <NameCellContent>
-                    <NameText>{getLeaderboardDisplayName(currentPlayerData)}</NameText>
+                    <NameText>
+                      {getLeaderboardDisplayName(currentPlayerData)}
+                    </NameText>
                     <YouBadge>you</YouBadge>
                   </NameCellContent>
                 </FloatingRowName>
-                <FloatingRowValue isRating={getFloatingValue(currentPlayerData).isRating} win={getFloatingValue(currentPlayerData).win}>
+                <FloatingRowValue
+                  isRating={getFloatingValue(currentPlayerData).isRating}
+                  win={getFloatingValue(currentPlayerData).win}
+                >
                   {getFloatingValue(currentPlayerData).value}
                 </FloatingRowValue>
               </FloatingRowInner>

@@ -9,7 +9,11 @@ declare global {
 
 let walletAdapter: BaseMessageSignerWalletAdapter | null = null;
 
-export async function connectToSolana(): Promise<{ publicKey: string; signature: string; intentId: string }> {
+export async function connectToSolana(): Promise<{
+  publicKey: string;
+  signature: string;
+  intentId: string;
+}> {
   try {
     if (!window.solana) {
       throw new Error("not found");
@@ -37,7 +41,10 @@ export async function connectToSolana(): Promise<{ publicKey: string; signature:
     const encodedMessage = new TextEncoder().encode(message);
     const signatureResponse = await walletAdapter.signMessage(encodedMessage);
 
-    const signature = signatureResponse instanceof Uint8Array ? signatureResponse : new Uint8Array((signatureResponse as any).signature);
+    const signature =
+      signatureResponse instanceof Uint8Array
+        ? signatureResponse
+        : new Uint8Array((signatureResponse as any).signature);
 
     return {
       publicKey: publicKey.toString(),

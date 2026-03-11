@@ -12,12 +12,16 @@ const createEmptyMaterials = (): FrozenMaterials => {
   return result;
 };
 
-const normalizeMaterials = (source?: Partial<Record<MaterialName, number>> | null): FrozenMaterials => {
+const normalizeMaterials = (
+  source?: Partial<Record<MaterialName, number>> | null,
+): FrozenMaterials => {
   const result = createEmptyMaterials();
   MATERIALS.forEach((name) => {
     const raw = source ? (source as Record<string, unknown>)[name] : undefined;
     const numeric = typeof raw === "number" ? raw : Number(raw);
-    result[name] = Number.isFinite(numeric) ? Math.max(0, Math.round(numeric)) : 0;
+    result[name] = Number.isFinite(numeric)
+      ? Math.max(0, Math.round(numeric))
+      : 0;
   });
   return result;
 };
@@ -35,7 +39,9 @@ export const getFrozenMaterials = (): FrozenMaterials => {
   return { ...frozenMaterials };
 };
 
-export const setFrozenMaterials = (source?: Partial<Record<MaterialName, number>> | null): void => {
+export const setFrozenMaterials = (
+  source?: Partial<Record<MaterialName, number>> | null,
+): void => {
   frozenMaterials = normalizeMaterials(source);
   notify();
 };
@@ -48,7 +54,9 @@ export const subscribeToFrozenMaterials = (listener: FrozenListener) => {
   };
 };
 
-export const applyFrozenMaterialsDelta = (deltas?: Partial<Record<MaterialName, number>> | null): FrozenMaterials => {
+export const applyFrozenMaterialsDelta = (
+  deltas?: Partial<Record<MaterialName, number>> | null,
+): FrozenMaterials => {
   const current = getFrozenMaterials();
   const next = { ...current };
   MATERIALS.forEach((name) => {
@@ -61,7 +69,10 @@ export const applyFrozenMaterialsDelta = (deltas?: Partial<Record<MaterialName, 
   return getFrozenMaterials();
 };
 
-export const computeAvailableMaterials = (total: FrozenMaterials, frozen: FrozenMaterials): FrozenMaterials => {
+export const computeAvailableMaterials = (
+  total: FrozenMaterials,
+  frozen: FrozenMaterials,
+): FrozenMaterials => {
   const result = createEmptyMaterials();
   MATERIALS.forEach((name) => {
     result[name] = Math.max(0, (total[name] ?? 0) - (frozen[name] ?? 0));

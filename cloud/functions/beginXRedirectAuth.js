@@ -16,14 +16,26 @@ const {
 
 exports.beginXRedirectAuth = onCall({ invoker: "public" }, async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
-  const xDisabledValue = `${process.env.AUTH_DISABLE_X_VERIFY || ""}`.trim().toLowerCase();
-  if (xDisabledValue === "1" || xDisabledValue === "true" || xDisabledValue === "yes") {
+  const xDisabledValue = `${process.env.AUTH_DISABLE_X_VERIFY || ""}`
+    .trim()
+    .toLowerCase();
+  if (
+    xDisabledValue === "1" ||
+    xDisabledValue === "true" ||
+    xDisabledValue === "yes"
+  ) {
     throw new HttpsError("failed-precondition", "x-auth-disabled");
   }
 
-  const requestData = request && request.data && typeof request.data === "object" ? request.data : {};
+  const requestData =
+    request && request.data && typeof request.data === "object"
+      ? request.data
+      : {};
   const intentId = toCleanString(requestData.intentId);
   if (!intentId) {
     throw new HttpsError("invalid-argument", "intentId is required.");
@@ -43,7 +55,10 @@ exports.beginXRedirectAuth = onCall({ invoker: "public" }, async (request) => {
   const nowMs = Date.now();
 
   const firestore = admin.firestore();
-  const intentSnapshot = await firestore.collection("authIntents").doc(intentId).get();
+  const intentSnapshot = await firestore
+    .collection("authIntents")
+    .doc(intentId)
+    .get();
   if (!intentSnapshot.exists) {
     throw new HttpsError("failed-precondition", "x-intent-invalid");
   }
@@ -54,14 +69,20 @@ exports.beginXRedirectAuth = onCall({ invoker: "public" }, async (request) => {
   if (toCleanString(intentData.method) !== "x") {
     throw new HttpsError("failed-precondition", "x-intent-method-mismatch");
   }
-  if (Number(intentData.expiresAtMs) <= nowMs || Number(intentData.consumedAtMs) > 0) {
+  if (
+    Number(intentData.expiresAtMs) <= nowMs ||
+    Number(intentData.consumedAtMs) > 0
+  ) {
     throw new HttpsError("failed-precondition", "x-intent-invalid");
   }
   const intentExpiresAtMs = Number(intentData.expiresAtMs);
   if (!Number.isFinite(intentExpiresAtMs) || intentExpiresAtMs <= nowMs) {
     throw new HttpsError("failed-precondition", "x-intent-invalid");
   }
-  const expiresAtMs = Math.min(nowMs + X_REDIRECT_FLOW_TTL_MS, intentExpiresAtMs);
+  const expiresAtMs = Math.min(
+    nowMs + X_REDIRECT_FLOW_TTL_MS,
+    intentExpiresAtMs,
+  );
 
   const flowDoc = {
     flowId,
@@ -82,7 +103,10 @@ exports.beginXRedirectAuth = onCall({ invoker: "public" }, async (request) => {
     errorCode: null,
   };
 
-  await firestore.collection(X_REDIRECT_FLOW_COLLECTION).doc(flowId).set(flowDoc, { merge: false });
+  await firestore
+    .collection(X_REDIRECT_FLOW_COLLECTION)
+    .doc(flowId)
+    .set(flowDoc, { merge: false });
 
   const authUrl = buildXOauthUrl({
     clientId,

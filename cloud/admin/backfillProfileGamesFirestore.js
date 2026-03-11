@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 const { initAdmin, admin } = require("./_admin");
-const { recomputeInviteProjection } = require("../functions/profileGamesProjector");
+const {
+  recomputeInviteProjection,
+} = require("../functions/profileGamesProjector");
 
 const DEFAULT_LIST_SORT_BASELINE_MS = 1;
 const DEFAULT_CONCURRENCY = 10;
@@ -37,7 +39,10 @@ const parseArgs = (argv) => {
       continue;
     }
     if (arg === "--list-sort-baseline-ms" && argv[i + 1]) {
-      listSortBaselineMs = parseNumberArg(argv[i + 1], DEFAULT_LIST_SORT_BASELINE_MS);
+      listSortBaselineMs = parseNumberArg(
+        argv[i + 1],
+        DEFAULT_LIST_SORT_BASELINE_MS,
+      );
       i += 1;
       continue;
     }
@@ -79,7 +84,11 @@ const listInviteIds = async (sinceKey, limit) => {
   let cursor = sinceKey || null;
 
   while (true) {
-    let invitesQuery = admin.database().ref("invites").orderByKey().limitToFirst(INVITES_PAGE_SIZE + 1);
+    let invitesQuery = admin
+      .database()
+      .ref("invites")
+      .orderByKey()
+      .limitToFirst(INVITES_PAGE_SIZE + 1);
     if (cursor) {
       invitesQuery = invitesQuery.startAt(cursor);
     }
@@ -117,7 +126,9 @@ async function main() {
   const options = parseArgs(process.argv.slice(2));
 
   if (!initAdmin()) {
-    throw new Error("Failed to initialize Admin SDK with Application Default Credentials. Run gcloud auth application-default login.");
+    throw new Error(
+      "Failed to initialize Admin SDK with Application Default Credentials. Run gcloud auth application-default login.",
+    );
   }
 
   const inviteIds = await listInviteIds(options.sinceKey, options.limit);
@@ -136,38 +147,45 @@ async function main() {
   let totalDeletes = 0;
   let totalSkipped = 0;
 
-  await processWithConcurrency(inviteIds, DEFAULT_CONCURRENCY, async (inviteId, index) => {
-    try {
-      const result = await recomputeInviteProjection(inviteId, "backfill", {
-        dryRun: options.dryRun,
-        listSortAtMs: options.listSortBaselineMs,
-        preserveNewerListSortAt: true,
-        eventTimestampMs: Date.now(),
-      });
-
-      processed += 1;
-      totalWrites += result && Number.isFinite(result.writes) ? result.writes : 0;
-      totalDeletes += result && Number.isFinite(result.deletes) ? result.deletes : 0;
-      totalSkipped += result && Number.isFinite(result.skipped) ? result.skipped : 0;
-
-      if ((index + 1) % 100 === 0 || index === inviteIds.length - 1) {
-        console.log("backfill-profile-games:progress", {
-          processed,
-          total: inviteIds.length,
-          writes: totalWrites,
-          deletes: totalDeletes,
-          skipped: totalSkipped,
+  await processWithConcurrency(
+    inviteIds,
+    DEFAULT_CONCURRENCY,
+    async (inviteId, index) => {
+      try {
+        const result = await recomputeInviteProjection(inviteId, "backfill", {
           dryRun: options.dryRun,
+          listSortAtMs: options.listSortBaselineMs,
+          preserveNewerListSortAt: true,
+          eventTimestampMs: Date.now(),
+        });
+
+        processed += 1;
+        totalWrites +=
+          result && Number.isFinite(result.writes) ? result.writes : 0;
+        totalDeletes +=
+          result && Number.isFinite(result.deletes) ? result.deletes : 0;
+        totalSkipped +=
+          result && Number.isFinite(result.skipped) ? result.skipped : 0;
+
+        if ((index + 1) % 100 === 0 || index === inviteIds.length - 1) {
+          console.log("backfill-profile-games:progress", {
+            processed,
+            total: inviteIds.length,
+            writes: totalWrites,
+            deletes: totalDeletes,
+            skipped: totalSkipped,
+            dryRun: options.dryRun,
+          });
+        }
+      } catch (error) {
+        failed += 1;
+        console.error("backfill-profile-games:error", {
+          inviteId,
+          error: error && error.message ? error.message : error,
         });
       }
-    } catch (error) {
-      failed += 1;
-      console.error("backfill-profile-games:error", {
-        inviteId,
-        error: error && error.message ? error.message : error,
-      });
-    }
-  });
+    },
+  );
 
   console.log("backfill-profile-games:done", {
     dryRun: options.dryRun,

@@ -3,7 +3,10 @@ const fetch = require("node-fetch");
 
 exports.getNfts = onCall(async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
 
   const sol = request.data.sol;
@@ -14,7 +17,13 @@ exports.getNfts = onCall(async (request) => {
   }
 
   try {
-    const validReactionIds = [9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466];
+    const validReactionIds = [
+      9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148,
+      163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245,
+      246, 250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318,
+      325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429,
+      430, 444, 465, 466,
+    ];
     async function fetchCollectionIdCounts(ownerAddress, collectionId) {
       const idCounts = new Map();
       if (!ownerAddress) return [];
@@ -31,25 +40,30 @@ exports.getNfts = onCall(async (request) => {
         if (cursor) {
           params.cursor = cursor;
         }
-        const solResponse = await fetch("https://mainnet.helius-rpc.com/?api-key=" + process.env.HELIUS_API_KEY, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
+        const solResponse = await fetch(
+          "https://mainnet.helius-rpc.com/?api-key=" +
+            process.env.HELIUS_API_KEY,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              jsonrpc: "2.0",
+              id: "mons-get-nfts",
+              method: "searchAssets",
+              params,
+            }),
           },
-          body: JSON.stringify({
-            jsonrpc: "2.0",
-            id: "mons-get-nfts",
-            method: "searchAssets",
-            params,
-          }),
-        });
+        );
         const solData = await solResponse.json();
         if (!solResponse.ok) {
           return [];
         }
         const resultNode = solData?.result || {};
         const items = resultNode?.items || [];
-        total = typeof resultNode?.total === "number" ? resultNode.total : total;
+        total =
+          typeof resultNode?.total === "number" ? resultNode.total : total;
         for (const item of items) {
           const jsonUri = item?.content?.json_uri || "";
           if (typeof jsonUri !== "string" || jsonUri.length === 0) continue;
@@ -71,7 +85,10 @@ exports.getNfts = onCall(async (request) => {
         cursor = resultNode?.cursor;
         if (!cursor) break;
       }
-      return Array.from(idCounts.entries()).map(([id, count]) => ({ id, count }));
+      return Array.from(idCounts.entries()).map(([id, count]) => ({
+        id,
+        count,
+      }));
     }
 
     let swagpack_avatars = [];
@@ -79,11 +96,19 @@ exports.getNfts = onCall(async (request) => {
     let specials = [];
 
     if (sol) {
-      const primaryCollectionId = "C22esis7kQMbX9JGWsMaKvsh1X5GeBmHPju28jiKDyAP";
-      const specialsCollectionId = "GCcbUaghGawyM76BhJHsHUXb9kq7H3AZhPL7S3p9WajP";
+      const primaryCollectionId =
+        "C22esis7kQMbX9JGWsMaKvsh1X5GeBmHPju28jiKDyAP";
+      const specialsCollectionId =
+        "GCcbUaghGawyM76BhJHsHUXb9kq7H3AZhPL7S3p9WajP";
       const avatarsPromise = fetchCollectionIdCounts(sol, primaryCollectionId);
-      const specialsPromise = fetchCollectionIdCounts(sol, specialsCollectionId);
-      const [avatars, specialIds] = await Promise.all([avatarsPromise, specialsPromise]);
+      const specialsPromise = fetchCollectionIdCounts(
+        sol,
+        specialsCollectionId,
+      );
+      const [avatars, specialIds] = await Promise.all([
+        avatarsPromise,
+        specialsPromise,
+      ]);
       swagpack_avatars = avatars;
       const reactionSet = new Set(validReactionIds);
       swagpack_reactions = avatars.filter((x) => reactionSet.has(x.id));

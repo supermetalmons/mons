@@ -1,5 +1,7 @@
 export type AuthMethodKey = "eth" | "sol" | "apple" | "x";
-export type AuthCooldownReason = "method-reuse-cooldown" | "profile-method-cooldown";
+export type AuthCooldownReason =
+  | "method-reuse-cooldown"
+  | "profile-method-cooldown";
 export type AuthCooldownScope = "method" | "profile-method";
 
 export interface AuthCooldownErrorDetails {
@@ -28,7 +30,12 @@ const isRecord = (value: unknown): value is Record<string, unknown> => {
 
 const normalizeMethodKey = (value: unknown): AuthMethodKey | null => {
   const method = toCleanString(value).toLowerCase();
-  if (method === "eth" || method === "sol" || method === "apple" || method === "x") {
+  if (
+    method === "eth" ||
+    method === "sol" ||
+    method === "apple" ||
+    method === "x"
+  ) {
     return method;
   }
   return null;
@@ -36,13 +43,19 @@ const normalizeMethodKey = (value: unknown): AuthMethodKey | null => {
 
 const normalizeCooldownReason = (value: unknown): AuthCooldownReason | null => {
   const reason = toCleanString(value);
-  if (reason === "method-reuse-cooldown" || reason === "profile-method-cooldown") {
+  if (
+    reason === "method-reuse-cooldown" ||
+    reason === "profile-method-cooldown"
+  ) {
     return reason;
   }
   return null;
 };
 
-const normalizeCooldownScope = (value: unknown, reason: AuthCooldownReason): AuthCooldownScope => {
+const normalizeCooldownScope = (
+  value: unknown,
+  reason: AuthCooldownReason,
+): AuthCooldownScope => {
   const scope = toCleanString(value);
   if (scope === "method" || scope === "profile-method") {
     return scope;
@@ -50,7 +63,9 @@ const normalizeCooldownScope = (value: unknown, reason: AuthCooldownReason): Aut
   return reason === "profile-method-cooldown" ? "profile-method" : "method";
 };
 
-const parseDetailsObject = (value: unknown): AuthCooldownErrorDetails | null => {
+const parseDetailsObject = (
+  value: unknown,
+): AuthCooldownErrorDetails | null => {
   if (!isRecord(value)) {
     return null;
   }
@@ -71,7 +86,9 @@ const parseDetailsObject = (value: unknown): AuthCooldownErrorDetails | null => 
   };
 };
 
-const parseFallbackFromMessage = (message: string): AuthCooldownErrorDetails | null => {
+const parseFallbackFromMessage = (
+  message: string,
+): AuthCooldownErrorDetails | null => {
   const lowerMessage = message.toLowerCase();
   const reason = lowerMessage.includes("profile-method-cooldown")
     ? "profile-method-cooldown"
@@ -81,12 +98,15 @@ const parseFallbackFromMessage = (message: string): AuthCooldownErrorDetails | n
   if (!reason) {
     return null;
   }
-  const method =
-    lowerMessage.includes("apple") ? "apple"
-    : lowerMessage.includes(" x ") || lowerMessage.includes("\"x\"") ? "x"
-    : lowerMessage.includes("sol") ? "sol"
-    : lowerMessage.includes("eth") || lowerMessage.includes("ethereum") ? "eth"
-    : null;
+  const method = lowerMessage.includes("apple")
+    ? "apple"
+    : lowerMessage.includes(" x ") || lowerMessage.includes('"x"')
+      ? "x"
+      : lowerMessage.includes("sol")
+        ? "sol"
+        : lowerMessage.includes("eth") || lowerMessage.includes("ethereum")
+          ? "eth"
+          : null;
   return {
     reason,
     scope: reason === "profile-method-cooldown" ? "profile-method" : "method",
@@ -127,7 +147,9 @@ const formatRetryAt = (retryAtMs: number | null): string | null => {
   });
 };
 
-export const parseAuthCooldownError = (error: unknown): AuthCooldownErrorDetails | null => {
+export const parseAuthCooldownError = (
+  error: unknown,
+): AuthCooldownErrorDetails | null => {
   if (!isRecord(error)) {
     return null;
   }
@@ -151,7 +173,9 @@ export const parseAuthCooldownError = (error: unknown): AuthCooldownErrorDetails
   return parseFallbackFromMessage(message);
 };
 
-export const formatAuthCooldownErrorMessage = (error: unknown): string | null => {
+export const formatAuthCooldownErrorMessage = (
+  error: unknown,
+): string | null => {
   const details = parseAuthCooldownError(error);
   if (!details) {
     return null;
@@ -159,7 +183,9 @@ export const formatAuthCooldownErrorMessage = (error: unknown): string | null =>
   const methodLabel = getMethodLabel(details.method);
   const retryAtText = formatRetryAt(details.retryAtMs);
   if (details.reason === "method-reuse-cooldown") {
-    const methodSignInLabel = details.method ? `${methodLabel} sign-in` : "sign-in method";
+    const methodSignInLabel = details.method
+      ? `${methodLabel} sign-in`
+      : "sign-in method";
     if (retryAtText) {
       return `This ${methodSignInLabel} was recently unlinked. Try again after ${retryAtText}.`;
     }

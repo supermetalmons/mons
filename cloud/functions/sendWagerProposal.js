@@ -1,30 +1,62 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { isMaterialName, normalizeCount, reserveFrozenMaterials, updateFrozenMaterials, readUserMiningMaterials, resolveWagerParticipants } = require("./wagerHelpers");
+const {
+  isMaterialName,
+  normalizeCount,
+  reserveFrozenMaterials,
+  updateFrozenMaterials,
+  readUserMiningMaterials,
+  resolveWagerParticipants,
+} = require("./wagerHelpers");
 
 exports.sendWagerProposal = onCall(async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
 
   const authUid = request.auth.uid;
-  const authProfileId = request.auth.token && request.auth.token.profileId ? request.auth.token.profileId : null;
+  const authProfileId =
+    request.auth.token && request.auth.token.profileId
+      ? request.auth.token.profileId
+      : null;
   const inviteId = request.data && request.data.inviteId;
   const matchId = request.data && request.data.matchId;
   const material = request.data && request.data.material;
   const requestedCount = normalizeCount(request.data && request.data.count);
-  const baseDebug = { authUid, authProfileId, inviteId, matchId, material, requestedCount };
+  const baseDebug = {
+    authUid,
+    authProfileId,
+    inviteId,
+    matchId,
+    material,
+    requestedCount,
+  };
 
-  if (typeof inviteId !== "string" || typeof matchId !== "string" || !isMaterialName(material) || requestedCount <= 0) {
+  if (
+    typeof inviteId !== "string" ||
+    typeof matchId !== "string" ||
+    !isMaterialName(material) ||
+    requestedCount <= 0
+  ) {
     return { ok: false, reason: "invalid-argument", debug: baseDebug };
   }
 
-  const inviteSnap = await admin.database().ref(`invites/${inviteId}`).once("value");
+  const inviteSnap = await admin
+    .database()
+    .ref(`invites/${inviteId}`)
+    .once("value");
   const inviteData = inviteSnap.val();
   if (!inviteData) {
     return { ok: false, reason: "invite-not-found", debug: baseDebug };
   }
-  const inviteDebug = { ...baseDebug, hostId: inviteData.hostId || null, guestId: inviteData.guestId || null };
+  const inviteDebug = {
+    ...baseDebug,
+    hostId: inviteData.hostId || null,
+    guestId: inviteData.guestId || null,
+  };
   if (!inviteData.guestId) {
     return { ok: false, reason: "missing-opponent", debug: inviteDebug };
   }
@@ -36,12 +68,23 @@ exports.sendWagerProposal = onCall(async (request) => {
   const playerDebug = { ...inviteDebug, playerUid, opponentUid };
 
   const totalMaterials = await readUserMiningMaterials(playerProfile.profileId);
-  const reservedCount = await reserveFrozenMaterials(playerUid, material, requestedCount, totalMaterials);
+  const reservedCount = await reserveFrozenMaterials(
+    playerUid,
+    material,
+    requestedCount,
+    totalMaterials,
+  );
   if (reservedCount <= 0) {
-    return { ok: false, reason: "insufficient-materials", debug: { ...playerDebug, reservedCount } };
+    return {
+      ok: false,
+      reason: "insufficient-materials",
+      debug: { ...playerDebug, reservedCount },
+    };
   }
 
-  const wagerRef = admin.database().ref(`invites/${inviteId}/wagers/${matchId}`);
+  const wagerRef = admin
+    .database()
+    .ref(`invites/${inviteId}/wagers/${matchId}`);
   const now = Date.now();
   let autoAgreement = null;
   let autoOpponentCount = 0;
@@ -57,9 +100,16 @@ exports.sendWagerProposal = onCall(async (request) => {
     if (proposals[playerUid] || proposedBy[playerUid]) {
       return;
     }
-    const opponentProposal = opponentUid && proposals ? proposals[opponentUid] : null;
-    const opponentCount = opponentProposal ? normalizeCount(opponentProposal.count) : 0;
-    if (opponentProposal && opponentProposal.material === material && opponentCount > 0) {
+    const opponentProposal =
+      opponentUid && proposals ? proposals[opponentUid] : null;
+    const opponentCount = opponentProposal
+      ? normalizeCount(opponentProposal.count)
+      : 0;
+    if (
+      opponentProposal &&
+      opponentProposal.material === material &&
+      opponentCount > 0
+    ) {
       const acceptedCount = Math.min(reservedCount, opponentCount);
       if (acceptedCount <= 0) {
         return;
@@ -117,8 +167,17 @@ exports.sendWagerProposal = onCall(async (request) => {
         await updateFrozenMaterials(opponentUid, { [material]: opponentDelta });
       }
     }
-    return { ok: true, count: agreedCount, agreed: autoAgreement, debug: { ...playerDebug, reservedCount, agreedCount, auto: true } };
+    return {
+      ok: true,
+      count: agreedCount,
+      agreed: autoAgreement,
+      debug: { ...playerDebug, reservedCount, agreedCount, auto: true },
+    };
   }
 
-  return { ok: true, count: reservedCount, debug: { ...playerDebug, reservedCount } };
+  return {
+    ok: true,
+    count: reservedCount,
+    debug: { ...playerDebug, reservedCount },
+  };
 });

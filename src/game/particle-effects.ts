@@ -15,11 +15,17 @@ type ParticleConfig = {
     angle: number,
     defs: SVGDefsElement,
     i: number,
-    now: number
+    now: number,
   ) => {
     main: SVGElement;
     extra?: SVGElement;
-    update: (x: number, y: number, size: number, opacity: number, t: number) => void;
+    update: (
+      x: number,
+      y: number,
+      size: number,
+      opacity: number,
+      t: number,
+    ) => void;
     cleanup?: () => void;
   };
   fadeOutStrength?: number;
@@ -37,7 +43,11 @@ function inBoardCoordinates(location: Location): Location {
   }
 }
 
-function spawnParticlesAt(at: Location, config: ParticleConfig, insertAtBeginning: boolean) {
+function spawnParticlesAt(
+  at: Location,
+  config: ParticleConfig,
+  insertAtBeginning: boolean,
+) {
   const location = inBoardCoordinates(at);
 
   const group = document.createElementNS(SVG.ns, "g");
@@ -62,18 +72,36 @@ function spawnParticlesAt(at: Location, config: ParticleConfig, insertAtBeginnin
     size: number;
     startTime: number;
     finished: boolean;
-    update: (x: number, y: number, size: number, opacity: number, t: number) => void;
+    update: (
+      x: number,
+      y: number,
+      size: number,
+      opacity: number,
+      t: number,
+    ) => void;
     cleanup?: () => void;
   }> = [];
 
   const now = performance.now();
 
   for (let i = 0; i < config.numParticles; i++) {
-    const angle = (2 * Math.PI * i) / config.numParticles + Math.random() * (Math.PI / config.numParticles);
+    const angle =
+      (2 * Math.PI * i) / config.numParticles +
+      Math.random() * (Math.PI / config.numParticles);
     const distance = config.maxDistance * (0.8 + Math.random() * 0.4);
-    const size = config.minParticleSize + Math.random() * (config.maxParticleSize - config.minParticleSize);
+    const size =
+      config.minParticleSize +
+      Math.random() * (config.maxParticleSize - config.minParticleSize);
 
-    const { main, extra, update, cleanup } = config.createParticle(centerX, centerY, size, angle, defs, i, now);
+    const { main, extra, update, cleanup } = config.createParticle(
+      centerX,
+      centerY,
+      size,
+      angle,
+      defs,
+      i,
+      now,
+    );
 
     group.appendChild(main);
     if (extra) group.appendChild(extra);
@@ -113,7 +141,12 @@ function spawnParticlesAt(at: Location, config: ParticleConfig, insertAtBeginnin
         const y = centerY + Math.sin(particle.angle) * currentDistance;
         const fadeEase = Math.pow(t, 2);
         const opacity = 1 - fadeEase * (config.fadeOutStrength ?? 0.7);
-        const sizeGrowth = config.sizeGrowthThreshold && config.sizeGrowthMultiplier && t < config.sizeGrowthThreshold ? t * config.sizeGrowthMultiplier : 1;
+        const sizeGrowth =
+          config.sizeGrowthThreshold &&
+          config.sizeGrowthMultiplier &&
+          t < config.sizeGrowthThreshold
+            ? t * config.sizeGrowthMultiplier
+            : 1;
         const currentSize = particle.size * sizeGrowth;
         particle.update(x, y, currentSize, opacity, t);
         activeParticles++;
@@ -148,11 +181,20 @@ export function indicateElectricHit(at: Location) {
         return outward + crackling;
       },
       createParticle: (centerX, centerY, size, angle, defs, i, now) => {
-        const rotatePoint = (px: number, py: number, cosr: number, sinr: number) => {
+        const rotatePoint = (
+          px: number,
+          py: number,
+          cosr: number,
+          sinr: number,
+        ) => {
           return [px * cosr - py * sinr, px * sinr + py * cosr];
         };
 
-        const transformCommands = (commands: any[], cosr: number, sinr: number) => {
+        const transformCommands = (
+          commands: any[],
+          cosr: number,
+          sinr: number,
+        ) => {
           return commands.map((cmd) => {
             if (cmd.type === "M" || cmd.type === "L") {
               const [nx, ny] = rotatePoint(cmd.x, cmd.y, cosr, sinr);
@@ -170,9 +212,12 @@ export function indicateElectricHit(at: Location) {
         const buildD = (rotatedCommands: any[], tx: number, ty: number) => {
           return rotatedCommands
             .map((cmd) => {
-              if (cmd.type === "M") return `M ${(cmd.x + tx).toString()} ${(cmd.y + ty).toString()}`;
-              if (cmd.type === "L") return `L ${(cmd.x + tx).toString()} ${(cmd.y + ty).toString()}`;
-              if (cmd.type === "Q") return `Q ${(cmd.cx + tx).toString()} ${(cmd.cy + ty).toString()} ${(cmd.x + tx).toString()} ${(cmd.y + ty).toString()}`;
+              if (cmd.type === "M")
+                return `M ${(cmd.x + tx).toString()} ${(cmd.y + ty).toString()}`;
+              if (cmd.type === "L")
+                return `L ${(cmd.x + tx).toString()} ${(cmd.y + ty).toString()}`;
+              if (cmd.type === "Q")
+                return `Q ${(cmd.cx + tx).toString()} ${(cmd.cy + ty).toString()} ${(cmd.x + tx).toString()} ${(cmd.y + ty).toString()}`;
               return cmd;
             })
             .join(" ");
@@ -230,15 +275,24 @@ export function indicateElectricHit(at: Location) {
           const progress = j / segments;
           const x = progress * boltLength;
           const deviation = (Math.random() - 0.5) * 2;
-          const y = Math.sin(progress * Math.PI * 3 + deviation) * zigzagAmplitude * (1 - progress * 0.3);
+          const y =
+            Math.sin(progress * Math.PI * 3 + deviation) *
+            zigzagAmplitude *
+            (1 - progress * 0.3);
           mainPoints.push({ x, y });
 
           if (j === 1) {
             mainCommands.push({ type: "L", x, y });
           } else {
             const prevPoint = mainPoints[j - 1];
-            const controlX = prevPoint.x + (x - prevPoint.x) * 0.6 + (Math.random() - 0.5) * 15;
-            const controlY = prevPoint.y + (y - prevPoint.y) * 0.6 + (Math.random() - 0.5) * 15;
+            const controlX =
+              prevPoint.x +
+              (x - prevPoint.x) * 0.6 +
+              (Math.random() - 0.5) * 15;
+            const controlY =
+              prevPoint.y +
+              (y - prevPoint.y) * 0.6 +
+              (Math.random() - 0.5) * 15;
             mainCommands.push({ type: "Q", cx: controlX, cy: controlY, x, y });
           }
         }
@@ -250,7 +304,10 @@ export function indicateElectricHit(at: Location) {
 
         const mainBolt = document.createElementNS(SVG.ns, "path");
         mainBolt.setAttribute("stroke", `url(#${electricGradientId})`);
-        mainBolt.setAttribute("stroke-width", (2 + Math.random() * 2).toString());
+        mainBolt.setAttribute(
+          "stroke-width",
+          (2 + Math.random() * 2).toString(),
+        );
         mainBolt.setAttribute("stroke-linecap", "round");
         mainBolt.setAttribute("fill", "none");
         container.appendChild(mainBolt);
@@ -265,11 +322,20 @@ export function indicateElectricHit(at: Location) {
             const branchSegments = 3 + Math.floor(Math.random() * 3);
 
             const branchCommands: any[] = [];
-            branchCommands.push({ type: "M", x: branchPoint.x, y: branchPoint.y });
+            branchCommands.push({
+              type: "M",
+              x: branchPoint.x,
+              y: branchPoint.y,
+            });
             for (let k = 1; k <= branchSegments; k++) {
               const branchProgress = k / branchSegments;
-              const branchX = branchPoint.x + Math.cos(branchAngle) * branchLength * branchProgress;
-              const branchY = branchPoint.y + Math.sin(branchAngle) * branchLength * branchProgress + (Math.random() - 0.5) * 10 * branchProgress;
+              const branchX =
+                branchPoint.x +
+                Math.cos(branchAngle) * branchLength * branchProgress;
+              const branchY =
+                branchPoint.y +
+                Math.sin(branchAngle) * branchLength * branchProgress +
+                (Math.random() - 0.5) * 10 * branchProgress;
               branchCommands.push({ type: "L", x: branchX, y: branchY });
             }
 
@@ -301,7 +367,10 @@ export function indicateElectricHit(at: Location) {
         mainBolt.setAttribute("d", buildD(rotatedMain, initialTx, initialTy));
         glow.setAttribute("d", buildD(rotatedMain, initialTx, initialTy));
         for (const b of branches) {
-          b.element.setAttribute("d", buildD(b.rotatedCommands, initialTx, initialTy));
+          b.element.setAttribute(
+            "d",
+            buildD(b.rotatedCommands, initialTx, initialTy),
+          );
         }
 
         const crackleFrequency = 50 + Math.random() * 20;
@@ -311,8 +380,14 @@ export function indicateElectricHit(at: Location) {
         return {
           main: container,
           update: (x, y, currentSize, opacity, t) => {
-            const crackle = 1 + Math.sin(t * crackleFrequency + flickerOffset) * intensityVariation;
-            const secondary = 1 + Math.sin(t * (crackleFrequency * 1.7) + flickerOffset + Math.PI) * 0.3;
+            const crackle =
+              1 +
+              Math.sin(t * crackleFrequency + flickerOffset) *
+                intensityVariation;
+            const secondary =
+              1 +
+              Math.sin(t * (crackleFrequency * 1.7) + flickerOffset + Math.PI) *
+                0.3;
             const flicker = crackle * secondary;
             const spike = Math.random() < 0.1 ? 1.5 + Math.random() * 0.5 : 1;
             const electricOpacity = opacity * flicker * spike;
@@ -325,13 +400,16 @@ export function indicateElectricHit(at: Location) {
             for (const b of branches) {
               b.element.setAttribute("d", buildD(b.rotatedCommands, tx, ty));
             }
-            container.style.opacity = Math.max(0, Math.min(1, electricOpacity)).toString();
+            container.style.opacity = Math.max(
+              0,
+              Math.min(1, electricOpacity),
+            ).toString();
             glow.setAttribute("opacity", (0.3 * flicker * opacity).toString());
           },
         };
       },
     },
-    false
+    false,
   );
 }
 
@@ -389,7 +467,10 @@ export function showPurpleBubbles(at: Location) {
         particle.setAttribute("fill", `url(#gradient-${particleId})`);
         particle.setAttribute("stroke", strokeColor);
         particle.setAttribute("stroke-width", particleStrokeWidth.toString());
-        particle.setAttribute("stroke-opacity", particleStrokeOpacity.toString());
+        particle.setAttribute(
+          "stroke-opacity",
+          particleStrokeOpacity.toString(),
+        );
         particle.style.pointerEvents = "none";
         particle.style.overflow = "visible";
 
@@ -397,8 +478,14 @@ export function showPurpleBubbles(at: Location) {
         const glareSize = size * glareSizeRatio;
         glare.setAttribute("rx", ((glareSize / 2) * 100).toString());
         glare.setAttribute("ry", ((glareSize / 3) * 100).toString());
-        glare.setAttribute("cx", ((centerX + size * glareOffsetXRatio) * 100).toString());
-        glare.setAttribute("cy", ((centerY + size * glareOffsetYRatio) * 100).toString());
+        glare.setAttribute(
+          "cx",
+          ((centerX + size * glareOffsetXRatio) * 100).toString(),
+        );
+        glare.setAttribute(
+          "cy",
+          ((centerY + size * glareOffsetYRatio) * 100).toString(),
+        );
         SVG.setFill(glare, glareColor);
         glare.setAttribute("opacity", glareOpacity.toString());
         glare.style.pointerEvents = "none";
@@ -413,9 +500,18 @@ export function showPurpleBubbles(at: Location) {
             particle.setAttribute("r", ((currentSize / 2) * 100).toString());
             particle.style.opacity = opacity.toString();
             const glareSize = currentSize * glareSizeRatio;
-            const glareOpacityCurrent = Math.min(1, opacity * glareOpacityBoost);
-            glare.setAttribute("cx", ((x + currentSize * glareOffsetXRatio) * 100).toString());
-            glare.setAttribute("cy", ((y + currentSize * glareOffsetYRatio) * 100).toString());
+            const glareOpacityCurrent = Math.min(
+              1,
+              opacity * glareOpacityBoost,
+            );
+            glare.setAttribute(
+              "cx",
+              ((x + currentSize * glareOffsetXRatio) * 100).toString(),
+            );
+            glare.setAttribute(
+              "cy",
+              ((y + currentSize * glareOffsetYRatio) * 100).toString(),
+            );
             glare.setAttribute("rx", ((glareSize / 2) * 100).toString());
             glare.setAttribute("ry", ((glareSize / 3) * 100).toString());
             glare.style.opacity = glareOpacityCurrent.toString();
@@ -423,7 +519,7 @@ export function showPurpleBubbles(at: Location) {
         };
       },
     },
-    true
+    true,
   );
 }
 
@@ -509,7 +605,8 @@ export function indicateBombExplosion(at: Location) {
           for (let s = 0; s < spikes; s++) {
             const baseA = angleOffset + s * step;
             const aLong = baseA + (Math.random() - 0.5) * step * 0.12;
-            const aShort = baseA + step / 2 + (Math.random() - 0.5) * step * 0.1;
+            const aShort =
+              baseA + step / 2 + (Math.random() - 0.5) * step * 0.1;
             const rLongVar = longR * (0.92 + Math.random() * 0.22);
             const rShortVar = shortR * (0.9 + Math.random() * 0.18);
             const xL = Math.cos(aLong) * rLongVar * 100 + offsetX;
@@ -524,9 +621,13 @@ export function indicateBombExplosion(at: Location) {
 
         star.setAttribute("points", buildPoints());
 
-        const baseRotation = (angle * 180) / Math.PI + (Math.random() * 160 - 80);
+        const baseRotation =
+          (angle * 180) / Math.PI + (Math.random() * 160 - 80);
         const spin = (Math.random() - 0.5) * 70;
-        container.setAttribute("transform", `translate(${(centerX * 100).toString()} ${(centerY * 100).toString()}) rotate(${baseRotation.toString()}) scale(1)`);
+        container.setAttribute(
+          "transform",
+          `translate(${(centerX * 100).toString()} ${(centerY * 100).toString()}) rotate(${baseRotation.toString()}) scale(1)`,
+        );
 
         return {
           main: container,
@@ -535,8 +636,14 @@ export function indicateBombExplosion(at: Location) {
             const ty = y * 100;
             const scale = currentSize / size;
             const rot = baseRotation + spin * t;
-            container.setAttribute("transform", `translate(${tx.toString()} ${ty.toString()}) rotate(${rot.toString()}) scale(${scale.toString()})`);
-            container.style.opacity = Math.max(0, Math.min(1, opacity * 1.1)).toString();
+            container.setAttribute(
+              "transform",
+              `translate(${tx.toString()} ${ty.toString()}) rotate(${rot.toString()}) scale(${scale.toString()})`,
+            );
+            container.style.opacity = Math.max(
+              0,
+              Math.min(1, opacity * 1.1),
+            ).toString();
             const coreR = currentSize * (0.28 - 0.16 * t) * 100;
             core.setAttribute("r", Math.max(0, coreR).toString());
             core.setAttribute("opacity", (opacity * 0.85).toString());
@@ -544,7 +651,7 @@ export function indicateBombExplosion(at: Location) {
         };
       },
     },
-    false
+    false,
   );
 }
 
@@ -566,7 +673,17 @@ export function indicateFlameGround(at: Location) {
         return outward + wiggle;
       },
       createParticle: (centerX, centerY, size, angle, defs, i, now) => {
-        const flameColors = ["#FF4500", "#FF6347", "#FF8C00", "#FFD700", "#FFA500", "#DC143C", "#FF2500", "#FF4000", "#FF6600"];
+        const flameColors = [
+          "#FF4500",
+          "#FF6347",
+          "#FF8C00",
+          "#FFD700",
+          "#FFA500",
+          "#DC143C",
+          "#FF2500",
+          "#FF4000",
+          "#FF6600",
+        ];
         const coreColor = flameColors[i % flameColors.length];
         const outerColor = i % 3 === 0 ? "#FF4500" : "#FF8C00";
 
@@ -643,8 +760,10 @@ export function indicateFlameGround(at: Location) {
         return {
           main: flame,
           update: (x, y, currentSize, opacity, t) => {
-            const flicker = 1 + Math.sin(t * flickerSpeed + flickerOffset) * 0.15;
-            const lateralOffset = Math.sin(t * 12 + flickerOffset) * lateralDrift * (1 - t * 0.5);
+            const flicker =
+              1 + Math.sin(t * flickerSpeed + flickerOffset) * 0.15;
+            const lateralOffset =
+              Math.sin(t * 12 + flickerOffset) * lateralDrift * (1 - t * 0.5);
             const flameX = x + lateralOffset * 0.3;
             const flameY = y;
 
@@ -654,7 +773,8 @@ export function indicateFlameGround(at: Location) {
             const halfWidth = flameWidth / 2;
             const animTipX = flameX + tipVariation * halfWidth;
             const animTipY = flameY - flameHeight / 2.2;
-            const windEffect = Math.sin(t * 6 + flickerOffset) * 0.1 * (1 - t * 0.7);
+            const windEffect =
+              Math.sin(t * 6 + flickerOffset) * 0.1 * (1 - t * 0.7);
 
             const pathData = `M ${animTipX * 100} ${animTipY * 100} 
                             C ${(flameX - halfWidth * leftCtrl1 + asymmetryFactor * halfWidth + windEffect) * 100} ${(flameY - flameHeight / 2.5) * 100}, 
@@ -674,12 +794,15 @@ export function indicateFlameGround(at: Location) {
                               ${animTipX * 100} ${animTipY * 100} Z`;
             flame.setAttribute("d", pathData);
             const flickerOpacity = opacity * (0.7 + 0.3 * flicker);
-            flame.style.opacity = Math.max(0, Math.min(1, flickerOpacity)).toString();
+            flame.style.opacity = Math.max(
+              0,
+              Math.min(1, flickerOpacity),
+            ).toString();
           },
         };
       },
     },
-    false
+    false,
   );
 }
 
@@ -701,7 +824,15 @@ export function indicateSpiritAction(at: Location) {
         return outward + swirl;
       },
       createParticle: (centerX, centerY, size, angle, defs, i, now) => {
-        const transformPoint = (px: number, py: number, s: number, cosr: number, sinr: number, tx: number, ty: number) => {
+        const transformPoint = (
+          px: number,
+          py: number,
+          s: number,
+          cosr: number,
+          sinr: number,
+          tx: number,
+          ty: number,
+        ) => {
           px *= s;
           py *= s;
           const px2 = px * cosr - py * sinr;
@@ -709,21 +840,67 @@ export function indicateSpiritAction(at: Location) {
           return [px2 + tx, py2 + ty];
         };
 
-        const transformCommands = (commands: any[], scale: number, rotation: number, tx: number, ty: number) => {
+        const transformCommands = (
+          commands: any[],
+          scale: number,
+          rotation: number,
+          tx: number,
+          ty: number,
+        ) => {
           const rad = (rotation * Math.PI) / 180;
           const cosr = Math.cos(rad);
           const sinr = Math.sin(rad);
           return commands.map((cmd) => {
             if (cmd.type === "Z") return { type: "Z" };
             if (cmd.type === "M") {
-              const [nx, ny] = transformPoint(cmd.x, cmd.y, scale, cosr, sinr, tx, ty);
+              const [nx, ny] = transformPoint(
+                cmd.x,
+                cmd.y,
+                scale,
+                cosr,
+                sinr,
+                tx,
+                ty,
+              );
               return { type: "M", x: nx, y: ny };
             }
             if (cmd.type === "C") {
-              const [nx1, ny1] = transformPoint(cmd.x1, cmd.y1, scale, cosr, sinr, tx, ty);
-              const [nx2, ny2] = transformPoint(cmd.x2, cmd.y2, scale, cosr, sinr, tx, ty);
-              const [nx3, ny3] = transformPoint(cmd.x3, cmd.y3, scale, cosr, sinr, tx, ty);
-              return { type: "C", x1: nx1, y1: ny1, x2: nx2, y2: ny2, x3: nx3, y3: ny3 };
+              const [nx1, ny1] = transformPoint(
+                cmd.x1,
+                cmd.y1,
+                scale,
+                cosr,
+                sinr,
+                tx,
+                ty,
+              );
+              const [nx2, ny2] = transformPoint(
+                cmd.x2,
+                cmd.y2,
+                scale,
+                cosr,
+                sinr,
+                tx,
+                ty,
+              );
+              const [nx3, ny3] = transformPoint(
+                cmd.x3,
+                cmd.y3,
+                scale,
+                cosr,
+                sinr,
+                tx,
+                ty,
+              );
+              return {
+                type: "C",
+                x1: nx1,
+                y1: ny1,
+                x2: nx2,
+                y2: ny2,
+                x3: nx3,
+                y3: ny3,
+              };
             }
             return cmd;
           });
@@ -733,14 +910,23 @@ export function indicateSpiritAction(at: Location) {
           return commands
             .map((cmd) => {
               if (cmd.type === "Z") return "Z";
-              if (cmd.type === "M") return `M ${(cmd.x * 100).toString()} ${(cmd.y * 100).toString()}`;
-              if (cmd.type === "C") return `C ${(cmd.x1 * 100).toString()} ${(cmd.y1 * 100).toString()} ${(cmd.x2 * 100).toString()} ${(cmd.y2 * 100).toString()} ${(cmd.x3 * 100).toString()} ${(cmd.y3 * 100).toString()}`;
+              if (cmd.type === "M")
+                return `M ${(cmd.x * 100).toString()} ${(cmd.y * 100).toString()}`;
+              if (cmd.type === "C")
+                return `C ${(cmd.x1 * 100).toString()} ${(cmd.y1 * 100).toString()} ${(cmd.x2 * 100).toString()} ${(cmd.y2 * 100).toString()} ${(cmd.x3 * 100).toString()} ${(cmd.y3 * 100).toString()}`;
               return cmd;
             })
             .join(" ");
         };
 
-        const addBlob = (commands: any[], bx: number, by: number, radius: number, ox: number, oy: number) => {
+        const addBlob = (
+          commands: any[],
+          bx: number,
+          by: number,
+          radius: number,
+          ox: number,
+          oy: number,
+        ) => {
           commands.push({ type: "M", x: bx - radius + ox, y: by + oy });
           commands.push({
             type: "C",
@@ -792,7 +978,14 @@ export function indicateSpiritAction(at: Location) {
         const centerRadius = puffSize * (1.1 + Math.random() * 0.5);
         const centerOffsetX = puffSize * (Math.random() * 0.4 - 0.2);
         const centerOffsetY = puffSize * (Math.random() * 0.3 - 0.15);
-        addBlob(commands, baseX, baseY, centerRadius, centerOffsetX, centerOffsetY);
+        addBlob(
+          commands,
+          baseX,
+          baseY,
+          centerRadius,
+          centerOffsetX,
+          centerOffsetY,
+        );
 
         for (let i = 0; i < puffCount; i++) {
           const angle = (i / puffCount) * Math.PI * 2;
@@ -843,19 +1036,34 @@ export function indicateSpiritAction(at: Location) {
         const floatAmplitude = 0.12 + Math.random() * 0.08;
 
         const computeEffects = (t: number) => {
-          const windEffect = Math.sin(t * windFrequency * Math.PI * 2 + windPhase) * windStrength;
-          const floatEffect = Math.sin(t * floatFrequency * Math.PI * 2) * floatAmplitude;
+          const windEffect =
+            Math.sin(t * windFrequency * Math.PI * 2 + windPhase) *
+            windStrength;
+          const floatEffect =
+            Math.sin(t * floatFrequency * Math.PI * 2) * floatAmplitude;
           const rotation = windEffect * 12;
           const scale = 0.85 + floatEffect * 0.15;
           return { rotation, scale };
         };
 
-        const setTransform = (x: number, y: number, rotation: number, scale: number) => {
-          const transformed = transformCommands(commands, scale, rotation, x, y);
+        const setTransform = (
+          x: number,
+          y: number,
+          rotation: number,
+          scale: number,
+        ) => {
+          const transformed = transformCommands(
+            commands,
+            scale,
+            rotation,
+            x,
+            y,
+          );
           cloud.setAttribute("d", commandsToD(transformed));
         };
 
-        const { rotation: initialRotation, scale: initialScale } = computeEffects(0);
+        const { rotation: initialRotation, scale: initialScale } =
+          computeEffects(0);
         setTransform(centerX, centerY, initialRotation, initialScale);
 
         return {
@@ -868,7 +1076,7 @@ export function indicateSpiritAction(at: Location) {
         };
       },
     },
-    false
+    false,
   );
 }
 
@@ -890,7 +1098,14 @@ export function indicateWaterSplash(at: Location) {
         return outward + gentleFloat;
       },
       createParticle: (centerX, centerY, size, angle, defs, i, now) => {
-        const vibrantWaterColors = ["#35D2F8", "#B2F9FD", "#6EEBFA", "#A0F3F9", "#35D2F8", "#B2F9FD"];
+        const vibrantWaterColors = [
+          "#35D2F8",
+          "#B2F9FD",
+          "#6EEBFA",
+          "#A0F3F9",
+          "#35D2F8",
+          "#B2F9FD",
+        ];
         const dropletColor = vibrantWaterColors[i % vibrantWaterColors.length];
         const isSpecialDroplet = size > 0.2;
         const gradientId = `water-droplet-gradient-${i}-${now}`;
@@ -978,10 +1193,13 @@ export function indicateWaterSplash(at: Location) {
             const currentVelY = velocityY + gravity * t;
             const currentX = x + currentVelX * t;
             const currentY = y + currentVelY * t;
-            const speed = Math.sqrt(currentVelX * currentVelX + currentVelY * currentVelY);
+            const speed = Math.sqrt(
+              currentVelX * currentVelX + currentVelY * currentVelY,
+            );
             const stretch = 1 + speed * 0.3;
             const dropletWidth = currentSize * (1.0 + Math.random() * 0.1);
-            const dropletHeight = currentSize * (1.4 + Math.random() * 0.1) * stretch;
+            const dropletHeight =
+              currentSize * (1.4 + Math.random() * 0.1) * stretch;
             const motionAngle = Math.atan2(currentVelY, currentVelX);
             const rotationDegrees = (motionAngle * 180) / Math.PI - 90;
             const pathData = `M ${currentX * 100} ${(currentY - dropletHeight * 0.5) * 100}
@@ -999,32 +1217,50 @@ export function indicateWaterSplash(at: Location) {
                                ${currentX * 100} ${(currentY - dropletHeight * 0.5) * 100} Z`;
 
             droplet.setAttribute("d", pathData);
-            droplet.setAttribute("transform", `rotate(${rotationDegrees} ${currentX * 100} ${currentY * 100})`);
+            droplet.setAttribute(
+              "transform",
+              `rotate(${rotationDegrees} ${currentX * 100} ${currentY * 100})`,
+            );
             droplet.style.opacity = (opacity * 0.78).toString();
 
             if (sparkle) {
               const globalTime = (now + t * 350) / 1000;
-              const lightFlicker = 0.8 + Math.sin(globalTime * 8) * 0.15 + Math.sin(globalTime * 23) * 0.05;
-              const individualVariation = 0.95 + Math.sin(i * 2.4 + globalTime * 12) * 0.05;
+              const lightFlicker =
+                0.8 +
+                Math.sin(globalTime * 8) * 0.15 +
+                Math.sin(globalTime * 23) * 0.05;
+              const individualVariation =
+                0.95 + Math.sin(i * 2.4 + globalTime * 12) * 0.05;
               const twinkle = lightFlicker * individualVariation;
               const sparkleOffsetX = -dropletWidth * 0.15;
               const sparkleOffsetY = -dropletHeight * 0.25;
-              const motionAngle = Math.atan2(currentVelY, currentVelX) - Math.PI / 2;
-              const rotatedOffsetX = sparkleOffsetX * Math.cos(motionAngle) - sparkleOffsetY * Math.sin(motionAngle);
-              const rotatedOffsetY = sparkleOffsetX * Math.sin(motionAngle) + sparkleOffsetY * Math.cos(motionAngle);
+              const motionAngle =
+                Math.atan2(currentVelY, currentVelX) - Math.PI / 2;
+              const rotatedOffsetX =
+                sparkleOffsetX * Math.cos(motionAngle) -
+                sparkleOffsetY * Math.sin(motionAngle);
+              const rotatedOffsetY =
+                sparkleOffsetX * Math.sin(motionAngle) +
+                sparkleOffsetY * Math.cos(motionAngle);
               const sharedBob = Math.sin(globalTime * 6) * 0.01;
               const sparkleX = currentX + rotatedOffsetX;
               const sparkleY = currentY + rotatedOffsetY + sharedBob;
 
               sparkle.setAttribute("cx", (sparkleX * 100).toString());
               sparkle.setAttribute("cy", (sparkleY * 100).toString());
-              sparkle.setAttribute("transform", `rotate(${rotationDegrees} ${sparkleX * 100} ${sparkleY * 100})`);
-              sparkle.style.opacity = Math.max(0, opacity * twinkle * 0.75).toString();
+              sparkle.setAttribute(
+                "transform",
+                `rotate(${rotationDegrees} ${sparkleX * 100} ${sparkleY * 100})`,
+              );
+              sparkle.style.opacity = Math.max(
+                0,
+                opacity * twinkle * 0.75,
+              ).toString();
             }
           },
         };
       },
     },
-    false
+    false,
   );
 }

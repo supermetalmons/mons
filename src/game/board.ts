@@ -1,16 +1,67 @@
 import * as MonsWeb from "mons-web";
 import * as SVG from "../utils/svg";
-import { isOnlineGame, didClickSquare, didSelectInputModifier, canChangeEmoji, sendPlayerEmojiUpdate, isWatchOnly, isGameWithBot, isWaitingForRematchResponse, showItemsAfterChangingAssetsStyle, cleanupCurrentInputs, didClickInviteBotIntoLocalGameButton } from "./gameController";
-import { Highlight, HighlightKind, InputModifier, Location, Sound, Trace, ItemKind } from "../utils/gameModels";
-import { colors, currentAssetsSet, AssetsSet, BoardStyleSet, getCurrentBoardStyleSet, isCustomPictureBoardEnabled, isPangchiuBoard, setCurrentAssetsSet, setCurrentBoardStyleSet } from "../content/boardStyles";
+import {
+  isOnlineGame,
+  didClickSquare,
+  didSelectInputModifier,
+  canChangeEmoji,
+  sendPlayerEmojiUpdate,
+  isWatchOnly,
+  isGameWithBot,
+  isWaitingForRematchResponse,
+  showItemsAfterChangingAssetsStyle,
+  cleanupCurrentInputs,
+  didClickInviteBotIntoLocalGameButton,
+} from "./gameController";
+import {
+  Highlight,
+  HighlightKind,
+  InputModifier,
+  Location,
+  Sound,
+  Trace,
+  ItemKind,
+} from "../utils/gameModels";
+import {
+  colors,
+  currentAssetsSet,
+  AssetsSet,
+  BoardStyleSet,
+  getCurrentBoardStyleSet,
+  isCustomPictureBoardEnabled,
+  isPangchiuBoard,
+  setCurrentAssetsSet,
+  setCurrentBoardStyleSet,
+} from "../content/boardStyles";
 import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
 import { playSounds } from "../content/sounds";
-import { hasNavigationPopupVisible, didNotDismissAnythingWithOutsideTapJustNow, hasBottomPopupsVisible, resetOutsideTapDismissTimeout } from "../ui/BottomControls";
+import {
+  hasNavigationPopupVisible,
+  didNotDismissAnythingWithOutsideTapJustNow,
+  hasBottomPopupsVisible,
+  resetOutsideTapDismissTimeout,
+} from "../ui/BottomControls";
 import { hasMainMenuPopupsVisible } from "../ui/MainMenu";
 import { hasIslandOverlayVisible } from "../ui/islandOverlayState";
-import { newEmptyPlayerMetadata, getStashedPlayerEthAddress, getStashedPlayerSolAddress, getEnsNameForUid, getRatingForUid, updatePlayerMetadataWithProfile, getStashedUsername, getStashedPlayerProfile } from "../utils/playerMetadata";
+import {
+  newEmptyPlayerMetadata,
+  getStashedPlayerEthAddress,
+  getStashedPlayerSolAddress,
+  getEnsNameForUid,
+  getRatingForUid,
+  updatePlayerMetadataWithProfile,
+  getStashedUsername,
+  getStashedPlayerProfile,
+} from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
-import { setTopBoardOverlayVisible, updateBoardComponentForBoardStyleChange, showRaibowAura, updateAuraForAvatarElement, updateWagerPlayerUids, setBotStrengthControlOverlayState } from "../ui/BoardComponent";
+import {
+  setTopBoardOverlayVisible,
+  updateBoardComponentForBoardStyleChange,
+  showRaibowAura,
+  updateAuraForAvatarElement,
+  updateWagerPlayerUids,
+  setBotStrengthControlOverlayState,
+} from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
 import { hasProfilePopupVisible } from "../ui/ProfileSignIn";
@@ -20,7 +71,10 @@ import { instructor } from "../assets/talkingDude";
 import { launchConfetti, stopConfetti } from "./confetti";
 import { soundPlayer } from "../utils/SoundPlayer";
 import type { MaterialName } from "../services/rocksMiningService";
-import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
+import {
+  decrementLifecycleCounter,
+  incrementLifecycleCounter,
+} from "../lifecycle/lifecycleDiagnostics";
 import { getCurrentRouteState } from "../navigation/routeState";
 import { hasEventModalVisible } from "../ui/eventModalController";
 
@@ -57,7 +111,10 @@ export function setItemsStyleSet(set: AssetsSet, doNotStore: boolean = false) {
   refreshBoardAfterStyleChange(true);
 }
 
-export function setAnimatedMonsEnabled(enabled: boolean, doNotStore: boolean = false) {
+export function setAnimatedMonsEnabled(
+  enabled: boolean,
+  doNotStore: boolean = false,
+) {
   const didAnimatedSpritesChange = isExperimentingWithSprites !== enabled;
   if (!didAnimatedSpritesChange) {
     return;
@@ -69,7 +126,12 @@ export function setAnimatedMonsEnabled(enabled: boolean, doNotStore: boolean = f
   refreshBoardAfterStyleChange(true);
 }
 
-export function toggleExperimentalMode(defaultMode: boolean, animated: boolean, pangchiu: boolean, doNotStore: boolean) {
+export function toggleExperimentalMode(
+  defaultMode: boolean,
+  animated: boolean,
+  pangchiu: boolean,
+  doNotStore: boolean,
+) {
   if (defaultMode) {
     setAnimatedMonsEnabled(false, doNotStore);
     return;
@@ -102,10 +164,14 @@ type EndOfGameMarker = "none" | "victory" | "resign";
 let playerEndOfGameMarker: EndOfGameMarker = "none";
 let opponentEndOfGameMarker: EndOfGameMarker = "none";
 
-const slotIsOpponentForMetadataSide = (metadataIsOpponent: boolean): boolean => (isMetadataDisplaySwapped ? !metadataIsOpponent : metadataIsOpponent);
-const metadataSideIsOpponentForSlot = (slotIsOpponent: boolean): boolean => (isMetadataDisplaySwapped ? !slotIsOpponent : slotIsOpponent);
+const slotIsOpponentForMetadataSide = (metadataIsOpponent: boolean): boolean =>
+  isMetadataDisplaySwapped ? !metadataIsOpponent : metadataIsOpponent;
+const metadataSideIsOpponentForSlot = (slotIsOpponent: boolean): boolean =>
+  isMetadataDisplaySwapped ? !slotIsOpponent : slotIsOpponent;
 
-export function isMetadataSideDisplayedAtOpponentSlot(metadataIsOpponent: boolean): boolean {
+export function isMetadataSideDisplayedAtOpponentSlot(
+  metadataIsOpponent: boolean,
+): boolean {
   return slotIsOpponentForMetadataSide(metadataIsOpponent);
 }
 
@@ -149,7 +215,8 @@ const boardTimeoutIds = new Set<number>();
 const boardRafIds = new Set<number>();
 let boardRuntimeToken = 0;
 
-const isBoardRuntimeTokenActive = (runtimeToken: number) => runtimeToken === boardRuntimeToken;
+const isBoardRuntimeTokenActive = (runtimeToken: number) =>
+  runtimeToken === boardRuntimeToken;
 
 let board: HTMLElement | null;
 let highlightsLayer: HTMLElement | null;
@@ -161,7 +228,12 @@ let boardBackgroundLayer: HTMLElement | null;
 const items: { [key: string]: SVGElement } = {};
 const basesPlaceholders: { [key: string]: SVGElement } = {};
 const wavesFrames: { [key: string]: SVGElement } = {};
-const waveCornerLocations = [new Location(0, 0), new Location(10, 0), new Location(0, 10), new Location(10, 10)];
+const waveCornerLocations = [
+  new Location(0, 0),
+  new Location(10, 0),
+  new Location(0, 10),
+  new Location(10, 10),
+];
 const opponentMoveStatusItems: SVGElement[] = [];
 const playerMoveStatusItems: SVGElement[] = [];
 const rotatedItemImageCache: Map<ItemKind, string> = new Map();
@@ -222,8 +294,12 @@ const END_OF_GAME_ICON_URLS = {
   resign: `${END_OF_GAME_ICON_BASE_URL}/resign_1.webp`,
 } as const;
 type EndOfGameIconName = keyof typeof END_OF_GAME_ICON_URLS;
-const endOfGameIconPromises: Map<EndOfGameIconName, Promise<string | null>> = new Map();
-const endOfGameIconResolvedUrls: Partial<Record<EndOfGameIconName, string>> = {};
+const endOfGameIconPromises: Map<
+  EndOfGameIconName,
+  Promise<string | null>
+> = new Map();
+const endOfGameIconResolvedUrls: Partial<Record<EndOfGameIconName, string>> =
+  {};
 const END_OF_GAME_ICON_OPACITY = 0.69;
 const END_OF_GAME_ICON_SIZE_MULTIPLIER = 0.53;
 const END_OF_GAME_ICON_GAP_MULTIPLIER = 0.06;
@@ -236,9 +312,12 @@ const INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX = 12;
 const INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO = 0.9;
 const INVITE_BOT_BUTTON_TEXT_WIDTH_TO_FONT_RATIO = 5.5;
 const BOT_STRENGTH_BUTTON_SCALE = 1.23;
-const BOT_STRENGTH_BUTTON_SIZE_TO_INVITE_HEIGHT = 0.82 * BOT_STRENGTH_BUTTON_SCALE;
-const BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER = 0.12 * BOT_STRENGTH_BUTTON_SCALE;
-const BOT_STRENGTH_VOICE_REACTION_EXTRA_GAP_MULTIPLIER = 0.08 * BOT_STRENGTH_BUTTON_SCALE;
+const BOT_STRENGTH_BUTTON_SIZE_TO_INVITE_HEIGHT =
+  0.82 * BOT_STRENGTH_BUTTON_SCALE;
+const BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER =
+  0.12 * BOT_STRENGTH_BUTTON_SCALE;
+const BOT_STRENGTH_VOICE_REACTION_EXTRA_GAP_MULTIPLIER =
+  0.08 * BOT_STRENGTH_BUTTON_SCALE;
 const BOT_STRENGTH_BUTTON_LEFT_SHIFT_MULTIPLIER = 0.045;
 const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
@@ -248,7 +327,10 @@ const WAGER_ICON_SIZE_MULTIPLIER = 0.669;
 const WAGER_ICON_PADDING_FRAC = 0.15;
 const WAGER_WIN_ANIM_DURATION_MS = 800;
 
-const applyInviteBotButtonColors = (button: HTMLButtonElement, state: "default" | "hover" | "active") => {
+const applyInviteBotButtonColors = (
+  button: HTMLButtonElement,
+  state: "default" | "hover" | "active",
+) => {
   const dark = window.matchMedia("(prefers-color-scheme: dark)").matches;
   if (dark) {
     if (state === "active") {
@@ -286,37 +368,81 @@ type BotStrengthControlLayout = {
   size: number;
 };
 
-const getInviteBotButtonLayout = (scoreText: SVGElement, multiplicator: number, avatarSize: number): InviteBotButtonLayout => {
+const getInviteBotButtonLayout = (
+  scoreText: SVGElement,
+  multiplicator: number,
+  avatarSize: number,
+): InviteBotButtonLayout => {
   const scoreX = parseFloat(scoreText.getAttribute("x") || "0") / 100;
   const scoreY = parseFloat(scoreText.getAttribute("y") || "0") / 100;
   const scoreWidth = getSvgTextWidthInBoardUnits(scoreText);
-  const scoreFontBoardUnits = SCORE_TEXT_FONT_SIZE_MULTIPLIER * multiplicator / 100;
-  const fontSizePx = Math.max(INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX, Math.round(SCORE_TEXT_FONT_SIZE_MULTIPLIER * multiplicator * INVITE_BOT_BUTTON_FONT_TO_SCORE_RATIO));
+  const scoreFontBoardUnits =
+    (SCORE_TEXT_FONT_SIZE_MULTIPLIER * multiplicator) / 100;
+  const fontSizePx = Math.max(
+    INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX,
+    Math.round(
+      SCORE_TEXT_FONT_SIZE_MULTIPLIER *
+        multiplicator *
+        INVITE_BOT_BUTTON_FONT_TO_SCORE_RATIO,
+    ),
+  );
   const fontBoardUnits = fontSizePx / 100;
-  const height = Math.min(fontBoardUnits * INVITE_BOT_BUTTON_HEIGHT_TO_FONT_RATIO, avatarSize * 0.88);
-  const x = scoreX + scoreWidth + INVITE_BOT_BUTTON_X_GAP_MULTIPLIER * multiplicator;
-  const horizontalPaddingPx = Math.max(6, Math.round(fontSizePx * INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO));
-  const width = (fontSizePx * INVITE_BOT_BUTTON_TEXT_WIDTH_TO_FONT_RATIO + 2 * horizontalPaddingPx) / 100;
+  const height = Math.min(
+    fontBoardUnits * INVITE_BOT_BUTTON_HEIGHT_TO_FONT_RATIO,
+    avatarSize * 0.88,
+  );
+  const x =
+    scoreX + scoreWidth + INVITE_BOT_BUTTON_X_GAP_MULTIPLIER * multiplicator;
+  const horizontalPaddingPx = Math.max(
+    6,
+    Math.round(fontSizePx * INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO),
+  );
+  const width =
+    (fontSizePx * INVITE_BOT_BUTTON_TEXT_WIDTH_TO_FONT_RATIO +
+      2 * horizontalPaddingPx) /
+    100;
   const scoreCenterY = scoreY - scoreFontBoardUnits * 0.35;
   const y = scoreCenterY - height / 2 - 0.023 * multiplicator;
   return { x, y, width, height, fontSizePx, horizontalPaddingPx };
 };
 
-const getBotStrengthControlLayout = (scoreText: SVGElement, multiplicator: number, avatarSize: number): BotStrengthControlLayout => {
-  const inviteLayout = getInviteBotButtonLayout(scoreText, multiplicator, avatarSize);
+const getBotStrengthControlLayout = (
+  scoreText: SVGElement,
+  multiplicator: number,
+  avatarSize: number,
+): BotStrengthControlLayout => {
+  const inviteLayout = getInviteBotButtonLayout(
+    scoreText,
+    multiplicator,
+    avatarSize,
+  );
   const size = inviteLayout.height * BOT_STRENGTH_BUTTON_SIZE_TO_INVITE_HEIGHT;
-  const x = inviteLayout.x - BOT_STRENGTH_BUTTON_LEFT_SHIFT_MULTIPLIER * multiplicator;
+  const x =
+    inviteLayout.x - BOT_STRENGTH_BUTTON_LEFT_SHIFT_MULTIPLIER * multiplicator;
   const y = inviteLayout.y + (inviteLayout.height - size) / 2;
   return { x, y, size };
 };
 
-const syncBotStrengthControlOverlay = (layout: BotStrengthControlLayout | null = null) => {
+const syncBotStrengthControlOverlay = (
+  layout: BotStrengthControlLayout | null = null,
+) => {
   let resolvedLayout = layout;
-  if (!resolvedLayout && boardBackgroundLayer && playerScoreText && opponentScoreText) {
-    const topControlAnchorScoreText = isMetadataDisplaySwapped ? playerScoreText : opponentScoreText;
+  if (
+    !resolvedLayout &&
+    boardBackgroundLayer &&
+    playerScoreText &&
+    opponentScoreText
+  ) {
+    const topControlAnchorScoreText = isMetadataDisplaySwapped
+      ? playerScoreText
+      : opponentScoreText;
     const multiplicator = getOuterElementsMultiplicator();
     const avatarSize = getAvatarSize();
-    resolvedLayout = getBotStrengthControlLayout(topControlAnchorScoreText, multiplicator, avatarSize);
+    resolvedLayout = getBotStrengthControlLayout(
+      topControlAnchorScoreText,
+      multiplicator,
+      avatarSize,
+    );
   }
   setBotStrengthControlOverlayState({
     visible: botStrengthControlVisible && !!resolvedLayout,
@@ -336,25 +462,31 @@ const fetchCachedImageUrl = (url: string): Promise<string | null> =>
     .then((blob) => URL.createObjectURL(blob))
     .catch(() => null);
 
-const getEndOfGameIconCachedUrl = (name: EndOfGameIconName): Promise<string | null> => {
+const getEndOfGameIconCachedUrl = (
+  name: EndOfGameIconName,
+): Promise<string | null> => {
   if (!endOfGameIconPromises.has(name)) {
-    const p = fetchCachedImageUrl(END_OF_GAME_ICON_URLS[name]).then((resolvedUrl) => {
-      if (resolvedUrl) {
-        endOfGameIconResolvedUrls[name] = resolvedUrl;
-      } else {
-        endOfGameIconPromises.delete(name);
-      }
-      return resolvedUrl;
-    });
+    const p = fetchCachedImageUrl(END_OF_GAME_ICON_URLS[name]).then(
+      (resolvedUrl) => {
+        if (resolvedUrl) {
+          endOfGameIconResolvedUrls[name] = resolvedUrl;
+        } else {
+          endOfGameIconPromises.delete(name);
+        }
+        return resolvedUrl;
+      },
+    );
     endOfGameIconPromises.set(name, p);
   }
   return endOfGameIconPromises.get(name)!;
 };
 
 const preloadEndOfGameIcons = () => {
-  (Object.keys(END_OF_GAME_ICON_URLS) as EndOfGameIconName[]).forEach((name) => {
-    void getEndOfGameIconCachedUrl(name);
-  });
+  (Object.keys(END_OF_GAME_ICON_URLS) as EndOfGameIconName[]).forEach(
+    (name) => {
+      void getEndOfGameIconCachedUrl(name);
+    },
+  );
 };
 
 type WagerPile = {
@@ -416,13 +548,17 @@ let lastVisiblePlayerPileState: WagerPileRenderState | null = null;
 let lastVisibleOpponentPileState: WagerPileRenderState | null = null;
 let disappearingPlayerPile: WagerPileRenderState | null = null;
 let disappearingOpponentPile: WagerPileRenderState | null = null;
-let disappearingPileTimers: { player: number | null; opponent: number | null } = { player: null, opponent: null };
+let disappearingPileTimers: { player: number | null; opponent: number | null } =
+  { player: null, opponent: null };
 const WAGER_DISAPPEAR_ANIMATION_MS = 280;
 let playerPilePending = false;
 let opponentPilePending = false;
 const boardWagerDebugLogsEnabled = process.env.NODE_ENV !== "production";
 let lastWagerEmitSignature = "";
-const logBoardWagerDebug = (event: string, payload: Record<string, unknown> = {}) => {
+const logBoardWagerDebug = (
+  event: string,
+  payload: Record<string, unknown> = {},
+) => {
   if (!boardWagerDebugLogsEnabled) {
     return;
   }
@@ -431,7 +567,9 @@ const logBoardWagerDebug = (event: string, payload: Record<string, unknown> = {}
 
 preloadEndOfGameIcons();
 
-export function setWagerRenderHandler(handler: ((state: WagerRenderState) => void) | null) {
+export function setWagerRenderHandler(
+  handler: ((state: WagerRenderState) => void) | null,
+) {
   handleWagerRenderState = handler;
   if (handler) {
     emitWagerRenderState();
@@ -455,7 +593,10 @@ const trackBoardTimeout = (timeoutId: number) => {
   incrementLifecycleCounter("boardTimeouts");
 };
 
-const setManagedBoardTimeout = (callback: () => void, delay: number): number => {
+const setManagedBoardTimeout = (
+  callback: () => void,
+  delay: number,
+): number => {
   const timeoutId = window.setTimeout(() => {
     if (boardTimeoutIds.has(timeoutId)) {
       boardTimeoutIds.delete(timeoutId);
@@ -532,7 +673,8 @@ const clearSmoothWaveAnimations = () => {
   smoothWaveAnimations.clear();
 };
 
-const isSmoothWaveAnimationVisible = (animation: SmoothWaveAnimationData) => animation.container.getAttribute("display") !== "none";
+const isSmoothWaveAnimationVisible = (animation: SmoothWaveAnimationData) =>
+  animation.container.getAttribute("display") !== "none";
 
 const runSmoothWaveTicker = (timestamp: number) => {
   smoothWaveTickerRafId = null;
@@ -548,7 +690,10 @@ const runSmoothWaveTicker = (timestamp: number) => {
       continue;
     }
     for (const wave of animation.waves) {
-      updateFlowingWavePathData(wave, timestamp * wave.speed + wave.phaseOffset);
+      updateFlowingWavePathData(
+        wave,
+        timestamp * wave.speed + wave.phaseOffset,
+      );
     }
   }
   if (smoothWaveAnimations.size === 0) {
@@ -561,7 +706,11 @@ const runSmoothWaveTicker = (timestamp: number) => {
 };
 
 const scheduleSmoothWaveTickerNow = () => {
-  if (smoothWaveAnimations.size === 0 || smoothWaveTickerRafId !== null || smoothWaveTickerTimeoutId !== null) {
+  if (
+    smoothWaveAnimations.size === 0 ||
+    smoothWaveTickerRafId !== null ||
+    smoothWaveTickerTimeoutId !== null
+  ) {
     return;
   }
   smoothWaveTickerRafId = setManagedBoardRaf(runSmoothWaveTicker);
@@ -617,7 +766,10 @@ const clearSparkleIntervals = () => {
 };
 
 export function fastForwardInstructionsIfNeeded() {
-  if (!currentTextAnimation.isAnimating || !currentTextAnimation.fastForwardCallback) {
+  if (
+    !currentTextAnimation.isAnimating ||
+    !currentTextAnimation.fastForwardCallback
+  ) {
     return false;
   }
 
@@ -637,7 +789,7 @@ function generateCloudPath(x: number, y: number, w: number, h: number): string {
   const totalH = b - t;
   const cr = Math.min(totalH * 0.28, totalW * 0.03);
   const bumpH = totalH * 0.12;
-  const bumpW = totalH * 0.10;
+  const bumpW = totalH * 0.1;
 
   const topN = 5;
   const topLen = totalW - 2 * cr;
@@ -718,11 +870,15 @@ export function showInstructionsText(text: string) {
     textDiv.style.pointerEvents = "none";
     textDiv.style.touchAction = "none";
 
-    const cloudPath = document.createElementNS(SVG.ns, "path") as SVGPathElement;
+    const cloudPath = document.createElementNS(
+      SVG.ns,
+      "path",
+    ) as SVGPathElement;
     cloudPath.setAttribute("fill", "var(--instruction-bubble-bg)");
     cloudPath.setAttribute("stroke", "var(--instruction-bubble-stroke)");
     cloudPath.setAttribute("stroke-width", "1.5");
-    cloudPath.style.filter = "drop-shadow(0px 2px 10px var(--instruction-bubble-shadow))";
+    cloudPath.style.filter =
+      "drop-shadow(0px 2px 10px var(--instruction-bubble-shadow))";
     cloudPath.style.pointerEvents = "none";
     containerGroup.appendChild(cloudPath);
     instructionsCloudBg = cloudPath;
@@ -737,7 +893,12 @@ export function showInstructionsText(text: string) {
 
   startTextAnimation(text);
 
-  if (opponentAvatar && opponentAvatarPlaceholder && opponentScoreText && opponentNameText) {
+  if (
+    opponentAvatar &&
+    opponentAvatarPlaceholder &&
+    opponentScoreText &&
+    opponentNameText
+  ) {
     SVG.setHidden(opponentAvatar, true);
     SVG.setHidden(opponentAvatarPlaceholder, true);
     SVG.setHidden(opponentScoreText, true);
@@ -884,7 +1045,10 @@ export async function didUpdateIdCardMons() {
   }
 }
 
-async function initializeAssets(onStart: boolean, isProfileMonsChange: boolean) {
+async function initializeAssets(
+  onStart: boolean,
+  isProfileMonsChange: boolean,
+) {
   assets = (await import(`../assets/gameAssets${currentAssetsSet}`)).gameAssets;
 
   if (isExperimentingWithSprites) {
@@ -895,12 +1059,33 @@ async function initializeAssets(onStart: boolean, isProfileMonsChange: boolean) 
     // TODO: set correct mons for both sides
 
     if (storage.getProfileId("") && getCurrentRouteState().mode !== "watch") {
-      const [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] = getMonsIndexes(false, null);
-      drainer = loadImage(getSpriteByKey(getMonId(MonType.DRAINER, drainerIndex)), "drainer", true);
-      angel = loadImage(getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), "angel", true);
-      demon = loadImage(getSpriteByKey(getMonId(MonType.DEMON, demonIndex)), "demon", true);
-      spirit = loadImage(getSpriteByKey(getMonId(MonType.SPIRIT, spiritIndex)), "spirit", true);
-      mystic = loadImage(getSpriteByKey(getMonId(MonType.MYSTIC, mysticIndex)), "mystic", true);
+      const [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] =
+        getMonsIndexes(false, null);
+      drainer = loadImage(
+        getSpriteByKey(getMonId(MonType.DRAINER, drainerIndex)),
+        "drainer",
+        true,
+      );
+      angel = loadImage(
+        getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)),
+        "angel",
+        true,
+      );
+      demon = loadImage(
+        getSpriteByKey(getMonId(MonType.DEMON, demonIndex)),
+        "demon",
+        true,
+      );
+      spirit = loadImage(
+        getSpriteByKey(getMonId(MonType.SPIRIT, spiritIndex)),
+        "spirit",
+        true,
+      );
+      mystic = loadImage(
+        getSpriteByKey(getMonId(MonType.MYSTIC, mysticIndex)),
+        "mystic",
+        true,
+      );
     } else {
       drainer = loadImage(getRandomSpriteOfType("drainer"), "drainer", true);
       angel = loadImage(getRandomSpriteOfType("angel"), "angel", true);
@@ -951,7 +1136,9 @@ async function initializeAssets(onStart: boolean, isProfileMonsChange: boolean) 
 
 await initializeAssets(true, false);
 
-export async function didToggleItemsStyleSet(isProfileMonsChange: boolean = false) {
+export async function didToggleItemsStyleSet(
+  isProfileMonsChange: boolean = false,
+) {
   await initializeAssets(false, isProfileMonsChange);
 
   removeHighlights();
@@ -964,13 +1151,19 @@ export async function didToggleItemsStyleSet(isProfileMonsChange: boolean = fals
     showItemsAfterChangingAssetsStyle();
   }
 
-  const allGridBoardOnlyElements = [...(board?.querySelectorAll('[data-grid-board-only="true"]') ?? [])];
+  const allGridBoardOnlyElements = [
+    ...(board?.querySelectorAll('[data-grid-board-only="true"]') ?? []),
+  ];
   allGridBoardOnlyElements.forEach((element) => {
     SVG.setHidden(element as SVGElement, isCustomPictureBoardEnabled());
   });
 }
 
-function loadImage(data: string, assetType: string, isSpriteSheet: boolean = false): SVGElement {
+function loadImage(
+  data: string,
+  assetType: string,
+  isSpriteSheet: boolean = false,
+): SVGElement {
   if (assetType !== "nonGame" && assetType !== "statusMoveEmoji") {
     return loadBoardAssetImage(data, assetType, isSpriteSheet);
   }
@@ -982,7 +1175,11 @@ function loadImage(data: string, assetType: string, isSpriteSheet: boolean = fal
   return image;
 }
 
-function loadBoardAssetImage(data: string, assetType: string, isSpriteSheet: boolean = false): SVGElement {
+function loadBoardAssetImage(
+  data: string,
+  assetType: string,
+  isSpriteSheet: boolean = false,
+): SVGElement {
   const isTalkingDude = assetType === "talkingDude";
   const foreignObject = document.createElementNS(SVG.ns, "foreignObject");
   SVG.setSize(foreignObject, 1, 1);
@@ -1007,23 +1204,46 @@ function loadBoardAssetImage(data: string, assetType: string, isSpriteSheet: boo
     foreignObject.setAttribute("data-total-frames", isTalkingDude ? "5" : "4");
     foreignObject.setAttribute("data-frame-duration", "169");
     foreignObject.setAttribute("data-frame-width", isTalkingDude ? "1.4" : "1");
-    foreignObject.setAttribute("data-frame-height", isTalkingDude ? "2.8" : "1");
-    const totalFrames = parseInt(foreignObject.getAttribute("data-total-frames") || "1", 10);
-    const frameWidth = parseFloat(foreignObject.getAttribute("data-frame-width") || "1");
-    const frameHeight = parseFloat(foreignObject.getAttribute("data-frame-height") || "1");
+    foreignObject.setAttribute(
+      "data-frame-height",
+      isTalkingDude ? "2.8" : "1",
+    );
+    const totalFrames = parseInt(
+      foreignObject.getAttribute("data-total-frames") || "1",
+      10,
+    );
+    const frameWidth = parseFloat(
+      foreignObject.getAttribute("data-frame-width") || "1",
+    );
+    const frameHeight = parseFloat(
+      foreignObject.getAttribute("data-frame-height") || "1",
+    );
     SVG.setSize(foreignObject, frameWidth * totalFrames, frameHeight);
   }
 
   return foreignObject;
 }
 
-function setSpriteSheetClipRect(rect: SVGElement, image: SVGElement, frameWidth: number, frameHeight: number, isTalkingDude: boolean) {
-  const baseX = parseFloat(image.getAttribute("data-base-x") || image.getAttribute("x") || "0");
-  const baseY = parseFloat(image.getAttribute("data-base-y") || image.getAttribute("y") || "0");
+function setSpriteSheetClipRect(
+  rect: SVGElement,
+  image: SVGElement,
+  frameWidth: number,
+  frameHeight: number,
+  isTalkingDude: boolean,
+) {
+  const baseX = parseFloat(
+    image.getAttribute("data-base-x") || image.getAttribute("x") || "0",
+  );
+  const baseY = parseFloat(
+    image.getAttribute("data-base-y") || image.getAttribute("y") || "0",
+  );
   rect.setAttribute("x", baseX.toString());
   rect.setAttribute("y", baseY.toString());
   rect.setAttribute("width", (frameWidth * 100).toString());
-  rect.setAttribute("height", (frameHeight * (isTalkingDude ? 50 : 100)).toString());
+  rect.setAttribute(
+    "height",
+    (frameHeight * (isTalkingDude ? 50 : 100)).toString(),
+  );
 }
 
 function updateSpriteSheetClipRect(image: SVGElement) {
@@ -1035,18 +1255,37 @@ function updateSpriteSheetClipRect(image: SVGElement) {
   const rect = clipPath?.querySelector("rect") as SVGElement | null;
   if (!rect) return;
   const frameWidth = parseFloat(image.getAttribute("data-frame-width") || "1");
-  const frameHeight = parseFloat(image.getAttribute("data-frame-height") || "1");
-  const totalFrames = parseInt(image.getAttribute("data-total-frames") || "1", 10);
+  const frameHeight = parseFloat(
+    image.getAttribute("data-frame-height") || "1",
+  );
+  const totalFrames = parseInt(
+    image.getAttribute("data-total-frames") || "1",
+    10,
+  );
   const isTalkingDude = totalFrames === 5;
   setSpriteSheetClipRect(rect, image, frameWidth, frameHeight, isTalkingDude);
 }
 
-function startAnimation(image: SVGElement, keepStatic: boolean = false, isFainted: boolean = false): void {
+function startAnimation(
+  image: SVGElement,
+  keepStatic: boolean = false,
+  isFainted: boolean = false,
+): void {
   if (image.getAttribute("data-is-sprite-sheet") === "true") {
-    const totalFrames = parseInt(image.getAttribute("data-total-frames") || "1", 10);
-    const frameDuration = parseInt(image.getAttribute("data-frame-duration") || "169", 10);
-    const frameWidth = parseFloat(image.getAttribute("data-frame-width") || "1");
-    const frameHeight = parseFloat(image.getAttribute("data-frame-height") || "1");
+    const totalFrames = parseInt(
+      image.getAttribute("data-total-frames") || "1",
+      10,
+    );
+    const frameDuration = parseInt(
+      image.getAttribute("data-frame-duration") || "169",
+      10,
+    );
+    const frameWidth = parseFloat(
+      image.getAttribute("data-frame-width") || "1",
+    );
+    const frameHeight = parseFloat(
+      image.getAttribute("data-frame-height") || "1",
+    );
 
     if (isFainted) {
       SVG.setSize(image, frameWidth, frameHeight * totalFrames);
@@ -1054,8 +1293,12 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false, isFainte
 
     const isTalkingDude = totalFrames === 5;
 
-    const initialX = parseFloat(image.getAttribute("data-base-x") || image.getAttribute("x") || "0");
-    const initialY = parseFloat(image.getAttribute("data-base-y") || image.getAttribute("y") || "0");
+    const initialX = parseFloat(
+      image.getAttribute("data-base-x") || image.getAttribute("x") || "0",
+    );
+    const initialY = parseFloat(
+      image.getAttribute("data-base-y") || image.getAttribute("y") || "0",
+    );
     const clipPathId = `clip-path-${Math.random().toString(36).slice(2, 11)}`;
     const clipPath = document.createElementNS(SVG.ns, "clipPath");
     clipPath.setAttribute("id", clipPathId);
@@ -1092,8 +1335,12 @@ function startAnimation(image: SVGElement, keepStatic: boolean = false, isFainte
 
         const now = Date.now();
         if (now - lastUpdateTime >= frameDuration) {
-          const baseX = parseFloat(image.getAttribute("data-base-x") || initialX.toString());
-          const baseY = parseFloat(image.getAttribute("data-base-y") || initialY.toString());
+          const baseX = parseFloat(
+            image.getAttribute("data-base-x") || initialX.toString(),
+          );
+          const baseY = parseFloat(
+            image.getAttribute("data-base-y") || initialY.toString(),
+          );
           const x = baseX - currentFrame * frameWidth * 100;
           const y = isTalkingDude && talkingDudeIsTalking ? baseY - 140 : baseY;
           image.setAttribute("x", x.toString());
@@ -1115,7 +1362,9 @@ function removeItemAndCleanUpAnimation(item: SVGElement): void {
   if (item.getAttribute("data-is-sprite-sheet") === "true") {
     spriteSheetItem = item;
   } else if (item.tagName === "g") {
-    const spriteChild = Array.from(item.children).find((child) => child.getAttribute("data-is-sprite-sheet") === "true");
+    const spriteChild = Array.from(item.children).find(
+      (child) => child.getAttribute("data-is-sprite-sheet") === "true",
+    );
     if (spriteChild) {
       spriteSheetItem = spriteChild as SVGElement;
     }
@@ -1156,7 +1405,8 @@ export function hideBoardPlayersInfo() {
     SVG.setHidden(opponentAvatar, true);
     SVG.setHidden(playerAvatar, true);
     try {
-      const opponentUrl = emojis.getEmojiUrl(opponentSideMetadata.emojiId) || "";
+      const opponentUrl =
+        emojis.getEmojiUrl(opponentSideMetadata.emojiId) || "";
       const playerUrl = emojis.getEmojiUrl(playerSideMetadata.emojiId) || "";
       showRaibowAura(false, opponentUrl, true);
       showRaibowAura(false, playerUrl, false);
@@ -1189,16 +1439,24 @@ export function hideBoardPlayersInfo() {
   setBotStrengthControlVisible(false);
 }
 
-function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boolean = false) {
+function syncAvatarForCurrentMetadata(
+  opponent: boolean,
+  revealIfPossible: boolean = false,
+) {
   const slotIsOpponent = slotIsOpponentForMetadataSide(opponent);
   const avatar = slotIsOpponent ? opponentAvatar : playerAvatar;
-  const placeholder = slotIsOpponent ? opponentAvatarPlaceholder : playerAvatarPlaceholder;
+  const placeholder = slotIsOpponent
+    ? opponentAvatarPlaceholder
+    : playerAvatarPlaceholder;
   const metadata = opponent ? opponentSideMetadata : playerSideMetadata;
   if (!avatar) {
     return;
   }
   const getAvatarHref = (target: SVGElement) => {
-    const hrefByNamespace = target.getAttributeNS("http://www.w3.org/1999/xlink", "href");
+    const hrefByNamespace = target.getAttributeNS(
+      "http://www.w3.org/1999/xlink",
+      "href",
+    );
     if (hrefByNamespace !== null) {
       return hrefByNamespace;
     }
@@ -1219,7 +1477,10 @@ function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boole
     SVG.setImage(target, emojis.pc);
     return true;
   };
-  const setHiddenIfNeeded = (target: SVGElement | undefined, hidden: boolean) => {
+  const setHiddenIfNeeded = (
+    target: SVGElement | undefined,
+    hidden: boolean,
+  ) => {
     if (!target) {
       return false;
     }
@@ -1230,7 +1491,10 @@ function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boole
     SVG.setHidden(target, hidden);
     return true;
   };
-  const setAuraVisibilityIfNeeded = (target: SVGElement, auraVisible: boolean) => {
+  const setAuraVisibilityIfNeeded = (
+    target: SVGElement,
+    auraVisible: boolean,
+  ) => {
     const nextValue = auraVisible ? "1" : "0";
     const currentValue = target.getAttribute("data-aura-visible") ?? "";
     if (currentValue === nextValue) {
@@ -1240,15 +1504,19 @@ function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boole
     return true;
   };
   const avatarIsHidden = avatar.getAttribute("display") === "none";
-  const placeholderIsHidden = placeholder ? placeholder.getAttribute("display") === "none" : true;
-  const keepHiddenState = !revealIfPossible && avatarIsHidden && placeholderIsHidden;
+  const placeholderIsHidden = placeholder
+    ? placeholder.getAttribute("display") === "none"
+    : true;
+  const keepHiddenState =
+    !revealIfPossible && avatarIsHidden && placeholderIsHidden;
   if (opponent && isGameWithBot) {
     const didSetBotImage = setAvatarBotIfNeeded(avatar);
     let didChangeVisibility = false;
     if (!keepHiddenState) {
       didChangeVisibility = setHiddenIfNeeded(avatar, false);
       if (placeholder) {
-        didChangeVisibility = setHiddenIfNeeded(placeholder, true) || didChangeVisibility;
+        didChangeVisibility =
+          setHiddenIfNeeded(placeholder, true) || didChangeVisibility;
       }
     }
     const didUpdateAuraVisibility = setAuraVisibilityIfNeeded(avatar, false);
@@ -1262,7 +1530,9 @@ function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boole
   }
 
   let emojiId = metadata.emojiId ?? "";
-  let aura = metadata.aura ?? (!opponent && !isWatchOnly ? storage.getPlayerEmojiAura("") : "");
+  let aura =
+    metadata.aura ??
+    (!opponent && !isWatchOnly ? storage.getPlayerEmojiAura("") : "");
   if (!opponent && !isWatchOnly && emojiId === "") {
     const storedEmojiId = storage.getPlayerEmojiId("");
     if (storedEmojiId !== "") {
@@ -1276,7 +1546,10 @@ function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boole
   }
   if (opponent && !isOnlineGame && !isGameWithBot && emojiId === "") {
     if (!localHumanSeriesOpponentEmojiId) {
-      const [fallbackEmojiId] = emojis.getRandomEmojiUrlOtherThan(playerSideMetadata.emojiId, true);
+      const [fallbackEmojiId] = emojis.getRandomEmojiUrlOtherThan(
+        playerSideMetadata.emojiId,
+        true,
+      );
       localHumanSeriesOpponentEmojiId = fallbackEmojiId;
     }
     emojiId = localHumanSeriesOpponentEmojiId;
@@ -1293,10 +1566,14 @@ function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boole
     if (!keepHiddenState) {
       didChangeVisibility = setHiddenIfNeeded(avatar, false);
       if (placeholder) {
-        didChangeVisibility = setHiddenIfNeeded(placeholder, true) || didChangeVisibility;
+        didChangeVisibility =
+          setHiddenIfNeeded(placeholder, true) || didChangeVisibility;
       }
     }
-    const didUpdateAuraVisibility = setAuraVisibilityIfNeeded(avatar, aura === "rainbow");
+    const didUpdateAuraVisibility = setAuraVisibilityIfNeeded(
+      avatar,
+      aura === "rainbow",
+    );
     if (didSetEmojiImage || didChangeVisibility || didUpdateAuraVisibility) {
       showRaibowAura(aura === "rainbow", emojiUrl, slotIsOpponent);
       try {
@@ -1311,7 +1588,8 @@ function syncAvatarForCurrentMetadata(opponent: boolean, revealIfPossible: boole
   if (!keepHiddenState) {
     didChangeVisibility = setHiddenIfNeeded(avatar, true);
     if (placeholder) {
-      didChangeVisibility = setHiddenIfNeeded(placeholder, false) || didChangeVisibility;
+      didChangeVisibility =
+        setHiddenIfNeeded(placeholder, false) || didChangeVisibility;
     }
   }
   const didUpdateAuraVisibility = setAuraVisibilityIfNeeded(avatar, false);
@@ -1369,11 +1647,19 @@ export function resetForNewGame() {
     SVG.setHidden(playerAvatar, false);
     try {
       const playerUrl = emojis.getEmojiUrl(playerSideMetadata.emojiId) || "";
-      const opponentUrl = emojis.getEmojiUrl(opponentSideMetadata.emojiId) || "";
-      const playerAuraVisible = (playerSideMetadata.aura ?? (!isWatchOnly ? storage.getPlayerEmojiAura("") : "")) === "rainbow";
-      const opponentAuraVisible = (opponentSideMetadata.aura ?? "") === "rainbow";
+      const opponentUrl =
+        emojis.getEmojiUrl(opponentSideMetadata.emojiId) || "";
+      const playerAuraVisible =
+        (playerSideMetadata.aura ??
+          (!isWatchOnly ? storage.getPlayerEmojiAura("") : "")) === "rainbow";
+      const opponentAuraVisible =
+        (opponentSideMetadata.aura ?? "") === "rainbow";
       showRaibowAura(playerAuraVisible && playerUrl !== "", playerUrl, false);
-      showRaibowAura(opponentAuraVisible && opponentUrl !== "", opponentUrl, true);
+      showRaibowAura(
+        opponentAuraVisible && opponentUrl !== "",
+        opponentUrl,
+        true,
+      );
       updateAuraForAvatarElement(false, playerAvatar);
       updateAuraForAvatarElement(true, opponentAvatar);
     } catch {}
@@ -1394,11 +1680,19 @@ export function resetForNewGame() {
   clearWagerPilesForNewMatch();
 }
 
-export function updateEmojiAndAuraIfNeeded(newEmojiId: string, aura: string | undefined, isOpponentSide: boolean) {
-  const targetMetadata = isOpponentSide ? opponentSideMetadata : playerSideMetadata;
+export function updateEmojiAndAuraIfNeeded(
+  newEmojiId: string,
+  aura: string | undefined,
+  isOpponentSide: boolean,
+) {
+  const targetMetadata = isOpponentSide
+    ? opponentSideMetadata
+    : playerSideMetadata;
   const currentId = targetMetadata.emojiId ?? "";
   const nextId = newEmojiId ?? "";
-  const newAura = aura ?? (!isOpponentSide && !isWatchOnly ? storage.getPlayerEmojiAura("") : "");
+  const newAura =
+    aura ??
+    (!isOpponentSide && !isWatchOnly ? storage.getPlayerEmojiAura("") : "");
   const currentAura = targetMetadata.aura ?? "";
   if (currentId === nextId && currentAura === newAura) {
     syncAvatarForCurrentMetadata(isOpponentSide);
@@ -1415,8 +1709,16 @@ export function showRandomEmojisForLoopMode() {
   const [, opponentUrl] = emojis.getRandomEmojiUrl(true);
   SVG.setImageUrl(playerAvatar, playerUrl);
   SVG.setImageUrl(opponentAvatar, opponentUrl);
-  showRaibowAura((playerSideMetadata.aura ?? "") === "rainbow", playerUrl, false);
-  showRaibowAura((opponentSideMetadata.aura ?? "") === "rainbow", opponentUrl, true);
+  showRaibowAura(
+    (playerSideMetadata.aura ?? "") === "rainbow",
+    playerUrl,
+    false,
+  );
+  showRaibowAura(
+    (opponentSideMetadata.aura ?? "") === "rainbow",
+    opponentUrl,
+    true,
+  );
 }
 
 export function showOpponentAsBotPlayer() {
@@ -1424,7 +1726,9 @@ export function showOpponentAsBotPlayer() {
 }
 
 export function getPlayersEmojiId(): number {
-  return parseInt(playerSideMetadata.emojiId !== "" ? playerSideMetadata.emojiId : "1");
+  return parseInt(
+    playerSideMetadata.emojiId !== "" ? playerSideMetadata.emojiId : "1",
+  );
 }
 
 export function toggleBoardFlipped() {
@@ -1457,7 +1761,10 @@ function setupInviteBotButton() {
   const container = document.createElementNS(SVG.ns, "foreignObject");
   container.setAttribute("overflow", "visible");
   container.style.pointerEvents = "auto";
-  const button = document.createElementNS("http://www.w3.org/1999/xhtml", "button") as HTMLButtonElement;
+  const button = document.createElementNS(
+    "http://www.w3.org/1999/xhtml",
+    "button",
+  ) as HTMLButtonElement;
   button.type = "button";
   button.style.width = "fit-content";
   button.style.height = "100%";
@@ -1477,7 +1784,10 @@ function setupInviteBotButton() {
   button.style.outline = "none";
   applyInviteBotButtonColors(button, "default");
 
-  const label = document.createElementNS("http://www.w3.org/1999/xhtml", "span");
+  const label = document.createElementNS(
+    "http://www.w3.org/1999/xhtml",
+    "span",
+  );
   label.textContent = "Invite Bot";
 
   button.appendChild(label);
@@ -1588,49 +1898,89 @@ export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
     [[5, 5]],
     // Frame 2: tiny heart seed
     [
-      [4, 4], [4, 6],
+      [4, 4],
+      [4, 6],
       [5, 5],
       [6, 5],
     ],
     // Frame 3: small heart
     [
-      [3, 4], [3, 6],
-      [4, 3], [4, 5], [4, 7],
-      [5, 4], [5, 6],
+      [3, 4],
+      [3, 6],
+      [4, 3],
+      [4, 5],
+      [4, 7],
+      [5, 4],
+      [5, 6],
       [6, 5],
     ],
     // Frame 4: medium heart
     [
-      [2, 3], [2, 4], [2, 6], [2, 7],
-      [3, 2], [3, 5], [3, 8],
-      [4, 2], [4, 8],
-      [5, 3], [5, 7],
-      [6, 4], [6, 6],
+      [2, 3],
+      [2, 4],
+      [2, 6],
+      [2, 7],
+      [3, 2],
+      [3, 5],
+      [3, 8],
+      [4, 2],
+      [4, 8],
+      [5, 3],
+      [5, 7],
+      [6, 4],
+      [6, 6],
       [7, 5],
     ],
     // Frame 5: large heart
     [
-      [1, 2], [1, 3], [1, 7], [1, 8],
-      [2, 1], [2, 4], [2, 6], [2, 9],
-      [3, 1], [3, 5], [3, 9],
-      [4, 1], [4, 9],
-      [5, 2], [5, 8],
-      [6, 3], [6, 7],
-      [7, 4], [7, 6],
+      [1, 2],
+      [1, 3],
+      [1, 7],
+      [1, 8],
+      [2, 1],
+      [2, 4],
+      [2, 6],
+      [2, 9],
+      [3, 1],
+      [3, 5],
+      [3, 9],
+      [4, 1],
+      [4, 9],
+      [5, 2],
+      [5, 8],
+      [6, 3],
+      [6, 7],
+      [7, 4],
+      [7, 6],
       [8, 5],
     ],
     // Frame 6: full heart
     [
-      [0, 2], [0, 3], [0, 7], [0, 8],
-      [1, 1], [1, 4], [1, 6], [1, 9],
-      [2, 0], [2, 5], [2, 10],
-      [3, 0], [3, 10],
-      [4, 0], [4, 10],
-      [5, 0], [5, 10],
-      [6, 1], [6, 9],
-      [7, 2], [7, 8],
-      [8, 3], [8, 7],
-      [9, 4], [9, 6],
+      [0, 2],
+      [0, 3],
+      [0, 7],
+      [0, 8],
+      [1, 1],
+      [1, 4],
+      [1, 6],
+      [1, 9],
+      [2, 0],
+      [2, 5],
+      [2, 10],
+      [3, 0],
+      [3, 10],
+      [4, 0],
+      [4, 10],
+      [5, 0],
+      [5, 10],
+      [6, 1],
+      [6, 9],
+      [7, 2],
+      [7, 8],
+      [8, 3],
+      [8, 7],
+      [9, 4],
+      [9, 6],
       [10, 5],
     ],
   ];
@@ -1720,7 +2070,10 @@ export function runMonsBoardAsDisplayWaitingAnimation() {
         const dy = y - 5;
         const distanceSquared = dx * dx + dy * dy;
 
-        if (distanceSquared >= minRadiusSquared && distanceSquared <= maxRadiusSquared) {
+        if (
+          distanceSquared >= minRadiusSquared &&
+          distanceSquared <= maxRadiusSquared
+        ) {
           colorPixel(new Location(x, y), true);
         }
       }
@@ -1749,14 +2102,25 @@ export function hasMonsBoardDisplayAnimationRunning() {
 }
 
 function colorPixel(location: Location, white: boolean) {
-  const flippedLocation = new Location(isFlipped ? 10 - location.i : location.i, location.j);
+  const flippedLocation = new Location(
+    isFlipped ? 10 - location.i : location.i,
+    location.j,
+  );
   const useValentines = valentinesLoaderEnabled;
   const item = white
-    ? (useValentines ? angel : mana)
-    : (useValentines ? angelB : manaB);
+    ? useValentines
+      ? angel
+      : mana
+    : useValentines
+      ? angelB
+      : manaB;
   const kind = white
-    ? (useValentines ? ItemKind.Angel : ItemKind.Mana)
-    : (useValentines ? ItemKind.AngelBlack : ItemKind.ManaBlack);
+    ? useValentines
+      ? ItemKind.Angel
+      : ItemKind.Mana
+    : useValentines
+      ? ItemKind.AngelBlack
+      : ItemKind.ManaBlack;
   placeItem(item, flippedLocation, kind, false);
 }
 
@@ -1774,7 +2138,11 @@ function cleanAllPixels() {
   }
 }
 
-export function didGetPlayerProfile(profile: PlayerProfile, loginId: string, own: boolean) {
+export function didGetPlayerProfile(
+  profile: PlayerProfile,
+  loginId: string,
+  own: boolean,
+) {
   updatePlayerMetadataWithProfile(profile, loginId, own, () => {
     recalculateDisplayNames();
   });
@@ -1785,7 +2153,9 @@ export function didGetPlayerProfile(profile: PlayerProfile, loginId: string, own
     const aura = profile.aura;
     if (emojiId) {
       const isOpponent = loginId === opponentSideMetadata.uid;
-      const isPlayer = loginId === playerSideMetadata.uid || (playerSideMetadata.uid === "" && own);
+      const isPlayer =
+        loginId === playerSideMetadata.uid ||
+        (playerSideMetadata.uid === "" && own);
       if (isOpponent) {
         updateEmojiAndAuraIfNeeded(emojiId, aura, true);
       } else if (isPlayer) {
@@ -1798,18 +2168,30 @@ export function didGetPlayerProfile(profile: PlayerProfile, loginId: string, own
 function renderPlayersNamesLabels() {
   if (!playerNameText || !opponentNameText) return;
 
-  const playerMetadata = metadataSideIsOpponentForSlot(false) ? opponentSideMetadata : playerSideMetadata;
-  const opponentMetadata = metadataSideIsOpponentForSlot(true) ? opponentSideMetadata : playerSideMetadata;
+  const playerMetadata = metadataSideIsOpponentForSlot(false)
+    ? opponentSideMetadata
+    : playerSideMetadata;
+  const opponentMetadata = metadataSideIsOpponentForSlot(true)
+    ? opponentSideMetadata
+    : playerSideMetadata;
 
   const currentTime = Date.now();
   const thresholdDelta = 2500;
-  const hasPlayerReaction = playerMetadata.voiceReactionDate !== undefined && currentTime - playerMetadata.voiceReactionDate < thresholdDelta;
-  const hasOpponentReaction = opponentMetadata.voiceReactionDate !== undefined && currentTime - opponentMetadata.voiceReactionDate < thresholdDelta;
+  const hasPlayerReaction =
+    playerMetadata.voiceReactionDate !== undefined &&
+    currentTime - playerMetadata.voiceReactionDate < thresholdDelta;
+  const hasOpponentReaction =
+    opponentMetadata.voiceReactionDate !== undefined &&
+    currentTime - opponentMetadata.voiceReactionDate < thresholdDelta;
 
   if (isWaitingForRematchResponse || playerScoreText?.textContent === "") {
     const prefix = "~ ";
-    playerNameText.textContent = hasPlayerReaction ? prefix + playerMetadata.voiceReactionText : "";
-    opponentNameText.textContent = hasOpponentReaction ? prefix + opponentMetadata.voiceReactionText : "";
+    playerNameText.textContent = hasPlayerReaction
+      ? prefix + playerMetadata.voiceReactionText
+      : "";
+    opponentNameText.textContent = hasOpponentReaction
+      ? prefix + opponentMetadata.voiceReactionText
+      : "";
     return;
   }
   let playerNameString = "";
@@ -1820,8 +2202,14 @@ function renderPlayersNamesLabels() {
     const placeholderName = "anon";
 
     if (!isGameWithBot) {
-      playerNameString = playerMetadata.displayName === undefined ? placeholderName : playerMetadata.displayName;
-      opponentNameString = opponentMetadata.displayName === undefined ? placeholderName : opponentMetadata.displayName;
+      playerNameString =
+        playerMetadata.displayName === undefined
+          ? placeholderName
+          : playerMetadata.displayName;
+      opponentNameString =
+        opponentMetadata.displayName === undefined
+          ? placeholderName
+          : opponentMetadata.displayName;
 
       const ratingPrefix = " • ";
       if (playerMetadata.rating !== undefined) {
@@ -1847,7 +2235,10 @@ function renderPlayersNamesLabels() {
   opponentNameText.textContent = opponentNameString;
 }
 
-export function setupLoggedInPlayerProfile(profile: PlayerProfile, loginId: string) {
+export function setupLoggedInPlayerProfile(
+  profile: PlayerProfile,
+  loginId: string,
+) {
   if (!isWatchOnly) {
     setupPlayerId(loginId, false);
     didGetPlayerProfile(profile, loginId, true);
@@ -1895,7 +2286,10 @@ export function recalculateDisplayNames() {
     }
   }
 
-  if (playerSideMetadata.ens === undefined && playerSideMetadata.username === undefined) {
+  if (
+    playerSideMetadata.ens === undefined &&
+    playerSideMetadata.username === undefined
+  ) {
     const ens = getEnsNameForUid(playerSideMetadata.uid);
     if (ens !== undefined) {
       playerSideMetadata.ens = ens;
@@ -1903,7 +2297,10 @@ export function recalculateDisplayNames() {
     }
   }
 
-  if (opponentSideMetadata.ens === undefined && opponentSideMetadata.username === undefined) {
+  if (
+    opponentSideMetadata.ens === undefined &&
+    opponentSideMetadata.username === undefined
+  ) {
     const ens = getEnsNameForUid(opponentSideMetadata.uid);
     if (ens !== undefined) {
       opponentSideMetadata.ens = ens;
@@ -1924,7 +2321,10 @@ export function recalculateDisplayNames() {
   renderPlayersNamesLabels();
 }
 
-export function showVoiceReactionText(reactionText: string, opponents: boolean) {
+export function showVoiceReactionText(
+  reactionText: string,
+  opponents: boolean,
+) {
   const currentTime = Date.now();
 
   if (opponents) {
@@ -1971,8 +2371,12 @@ export function setupPlayerId(uid: string, opponent: boolean) {
 }
 
 function canRedirectToExplorer(opponent: boolean) {
-  let ethAddress = opponent ? opponentSideMetadata.ethAddress : playerSideMetadata.ethAddress;
-  let solAddress = opponent ? opponentSideMetadata.solAddress : playerSideMetadata.solAddress;
+  let ethAddress = opponent
+    ? opponentSideMetadata.ethAddress
+    : playerSideMetadata.ethAddress;
+  let solAddress = opponent
+    ? opponentSideMetadata.solAddress
+    : playerSideMetadata.solAddress;
   return ethAddress !== undefined || solAddress !== undefined;
 }
 
@@ -1989,7 +2393,9 @@ function redirectToAddressOnExplorer(opponent: boolean) {
 }
 
 export function removeItemsNotPresentIn(locations: Location[]) {
-  const locationSet = new Set(locations.map((location) => inBoardCoordinates(location).toString()));
+  const locationSet = new Set(
+    locations.map((location) => inBoardCoordinates(location).toString()),
+  );
 
   for (const key in items) {
     if (!locationSet.has(key)) {
@@ -2009,19 +2415,35 @@ export function removeItemsNotPresentIn(locations: Location[]) {
 }
 
 export function hideAllMoveStatuses() {
-  const allMoveStatusItems = [...opponentMoveStatusItems, ...playerMoveStatusItems];
+  const allMoveStatusItems = [
+    ...opponentMoveStatusItems,
+    ...playerMoveStatusItems,
+  ];
   allMoveStatusItems.forEach((item) => SVG.setHidden(item, true));
 }
 
-export function updateMoveStatuses(color: MonsWeb.Color, moveKinds: Int32Array, otherPlayerStatuses: Int32Array) {
-  const playerSideActive = isFlipped ? color === MonsWeb.Color.White : color === MonsWeb.Color.Black;
-  const otherItemsToSetup = playerSideActive ? playerMoveStatusItems : opponentMoveStatusItems;
-  const itemsToSetup = playerSideActive ? opponentMoveStatusItems : playerMoveStatusItems;
+export function updateMoveStatuses(
+  color: MonsWeb.Color,
+  moveKinds: Int32Array,
+  otherPlayerStatuses: Int32Array,
+) {
+  const playerSideActive = isFlipped
+    ? color === MonsWeb.Color.White
+    : color === MonsWeb.Color.Black;
+  const otherItemsToSetup = playerSideActive
+    ? playerMoveStatusItems
+    : opponentMoveStatusItems;
+  const itemsToSetup = playerSideActive
+    ? opponentMoveStatusItems
+    : playerMoveStatusItems;
   updateStatusElements(itemsToSetup, moveKinds);
   updateStatusElements(otherItemsToSetup, otherPlayerStatuses);
 }
 
-function updateStatusElements(itemsToSetup: SVGElement[], moveKinds: Int32Array) {
+function updateStatusElements(
+  itemsToSetup: SVGElement[],
+  moveKinds: Int32Array,
+) {
   const monMoves = moveKinds[0];
   let manaMoves = moveKinds[1];
   let actions = moveKinds[2];
@@ -2134,7 +2556,13 @@ export function hideTimerCountdownDigits() {
   updateNamesX();
 }
 
-export function updateScore(white: number, black: number, winnerColor?: MonsWeb.Color, resignedColor?: MonsWeb.Color, winByTimerColor?: MonsWeb.Color) {
+export function updateScore(
+  white: number,
+  black: number,
+  winnerColor?: MonsWeb.Color,
+  resignedColor?: MonsWeb.Color,
+  winByTimerColor?: MonsWeb.Color,
+) {
   let whiteMarker: EndOfGameMarker = "none";
   let blackMarker: EndOfGameMarker = "none";
 
@@ -2183,7 +2611,12 @@ export function hideItemSelectionOrConfirmationOverlay() {
   }
 }
 
-export function showEndTurnConfirmationOverlay(isBlack: boolean, finishLocation: Location, ok: () => void, cancel: () => void): void {
+export function showEndTurnConfirmationOverlay(
+  isBlack: boolean,
+  finishLocation: Location,
+  ok: () => void,
+  cancel: () => void,
+): void {
   showEndOfTurnHighlight(finishLocation);
   const overlay = document.createElementNS(SVG.ns, "g");
   const background = createFullBoardBackgroundElement();
@@ -2205,13 +2638,27 @@ export function showEndTurnConfirmationOverlay(isBlack: boolean, finishLocation:
     onCancel();
   });
 
-  createItemButton(overlay, 392.5, 365, true, isBlack ? assets.manaB : assets.mana, () => onCancel());
+  createItemButton(
+    overlay,
+    392.5,
+    365,
+    true,
+    isBlack ? assets.manaB : assets.mana,
+    () => onCancel(),
+  );
   showsItemSelectionOrConfirmationOverlay = true;
 
   setTopBoardOverlayVisible(true, overlay, true, onOk, onCancel);
 }
 
-function createItemButton(overlay: SVGElement, x: number, y: number, wiggle: boolean, asset: string, completion: () => void): void {
+function createItemButton(
+  overlay: SVGElement,
+  x: number,
+  y: number,
+  wiggle: boolean,
+  asset: string,
+  completion: () => void,
+): void {
   const button = document.createElementNS(SVG.ns, "foreignObject");
   button.setAttribute("x", x.toString());
   button.setAttribute("y", y.toString());
@@ -2245,7 +2692,8 @@ function createItemButton(overlay: SVGElement, x: number, y: number, wiggle: boo
       } else if (lastPhase === "wiggle") {
         const progress = Math.min(phaseElapsed / wiggleDuration, 1);
         const angle = progress * wiggleOscillations * 2 * Math.PI;
-        const offsetX = Math.sin(angle) * wiggleAmplitude * (1 - progress * 0.3);
+        const offsetX =
+          Math.sin(angle) * wiggleAmplitude * (1 - progress * 0.3);
         button.setAttribute("x", (originalX + offsetX).toString());
         if (phaseElapsed >= wiggleDuration) {
           lastPhase = "pause";
@@ -2269,7 +2717,10 @@ function createItemButton(overlay: SVGElement, x: number, y: number, wiggle: boo
     };
   }
 
-  const div = document.createElementNS("http://www.w3.org/1999/xhtml", "div") as HTMLDivElement;
+  const div = document.createElementNS(
+    "http://www.w3.org/1999/xhtml",
+    "div",
+  ) as HTMLDivElement;
   div.style.width = "100%";
   div.style.height = "100%";
   div.style.display = "block";
@@ -2310,8 +2761,12 @@ export function showItemSelection(): void {
   const background = createFullBoardBackgroundElement();
   overlay.appendChild(background);
 
-  createItemButton(overlay, 220, 365, false, assets.bomb, () => didSelectInputModifier(InputModifier.Bomb));
-  createItemButton(overlay, 565, 365, false, assets.potion, () => didSelectInputModifier(InputModifier.Potion));
+  createItemButton(overlay, 220, 365, false, assets.bomb, () =>
+    didSelectInputModifier(InputModifier.Bomb),
+  );
+  createItemButton(overlay, 565, 365, false, assets.potion, () =>
+    didSelectInputModifier(InputModifier.Potion),
+  );
 
   background.addEventListener(defaultInputEventName, (event) => {
     preventTouchstartIfNeeded(event);
@@ -2353,19 +2808,44 @@ export function putItem(item: MonsWeb.ItemModel, location: Location) {
       const isFainted = item.mon?.is_fainted();
       switch (item.mon?.kind) {
         case MonsWeb.MonKind.Demon:
-          placeItem(isBlack ? demonB : demon, location, isBlack ? ItemKind.DemonBlack : ItemKind.Demon, isFainted);
+          placeItem(
+            isBlack ? demonB : demon,
+            location,
+            isBlack ? ItemKind.DemonBlack : ItemKind.Demon,
+            isFainted,
+          );
           break;
         case MonsWeb.MonKind.Drainer:
-          placeItem(isBlack ? drainerB : drainer, location, isBlack ? ItemKind.DrainerBlack : ItemKind.Drainer, isFainted);
+          placeItem(
+            isBlack ? drainerB : drainer,
+            location,
+            isBlack ? ItemKind.DrainerBlack : ItemKind.Drainer,
+            isFainted,
+          );
           break;
         case MonsWeb.MonKind.Angel:
-          placeItem(isBlack ? angelB : angel, location, isBlack ? ItemKind.AngelBlack : ItemKind.Angel, isFainted);
+          placeItem(
+            isBlack ? angelB : angel,
+            location,
+            isBlack ? ItemKind.AngelBlack : ItemKind.Angel,
+            isFainted,
+          );
           break;
         case MonsWeb.MonKind.Spirit:
-          placeItem(isBlack ? spiritB : spirit, location, isBlack ? ItemKind.SpiritBlack : ItemKind.Spirit, isFainted);
+          placeItem(
+            isBlack ? spiritB : spirit,
+            location,
+            isBlack ? ItemKind.SpiritBlack : ItemKind.Spirit,
+            isFainted,
+          );
           break;
         case MonsWeb.MonKind.Mystic:
-          placeItem(isBlack ? mysticB : mystic, location, isBlack ? ItemKind.MysticBlack : ItemKind.Mystic, isFainted);
+          placeItem(
+            isBlack ? mysticB : mystic,
+            location,
+            isBlack ? ItemKind.MysticBlack : ItemKind.Mystic,
+            isFainted,
+          );
           break;
       }
       break;
@@ -2373,7 +2853,11 @@ export function putItem(item: MonsWeb.ItemModel, location: Location) {
       switch (item.mana?.kind) {
         case MonsWeb.ManaKind.Regular:
           const isBlack = item.mana.color === MonsWeb.Color.Black;
-          placeItem(isBlack ? manaB : mana, location, isBlack ? ItemKind.ManaBlack : ItemKind.Mana);
+          placeItem(
+            isBlack ? manaB : mana,
+            location,
+            isBlack ? ItemKind.ManaBlack : ItemKind.Mana,
+          );
           break;
         case MonsWeb.ManaKind.Supermana:
           placeItem(supermana, location, ItemKind.Supermana);
@@ -2384,29 +2868,58 @@ export function putItem(item: MonsWeb.ItemModel, location: Location) {
       const isBlackDrainer = item.mon?.color === MonsWeb.Color.Black;
       const isSupermana = item.mana?.kind === MonsWeb.ManaKind.Supermana;
       if (isSupermana) {
-        placeMonWithSupermana(isBlackDrainer ? drainerB : drainer, location, isBlackDrainer ? ItemKind.DrainerBlack : ItemKind.Drainer);
+        placeMonWithSupermana(
+          isBlackDrainer ? drainerB : drainer,
+          location,
+          isBlackDrainer ? ItemKind.DrainerBlack : ItemKind.Drainer,
+        );
       } else {
         const isBlackMana = item.mana?.color === MonsWeb.Color.Black;
-        placeMonWithMana(isBlackDrainer ? drainerB : drainer, isBlackMana ? manaB : mana, location, isBlackDrainer ? ItemKind.DrainerBlack : ItemKind.Drainer);
+        placeMonWithMana(
+          isBlackDrainer ? drainerB : drainer,
+          isBlackMana ? manaB : mana,
+          location,
+          isBlackDrainer ? ItemKind.DrainerBlack : ItemKind.Drainer,
+        );
       }
       break;
     case MonsWeb.ItemModelKind.MonWithConsumable:
       const isBlackWithConsumable = item.mon?.color === MonsWeb.Color.Black;
       switch (item.mon?.kind) {
         case MonsWeb.MonKind.Demon:
-          placeMonWithBomb(isBlackWithConsumable ? demonB : demon, location, isBlackWithConsumable ? ItemKind.DemonBlack : ItemKind.Demon);
+          placeMonWithBomb(
+            isBlackWithConsumable ? demonB : demon,
+            location,
+            isBlackWithConsumable ? ItemKind.DemonBlack : ItemKind.Demon,
+          );
           break;
         case MonsWeb.MonKind.Drainer:
-          placeMonWithBomb(isBlackWithConsumable ? drainerB : drainer, location, isBlackWithConsumable ? ItemKind.DrainerBlack : ItemKind.Drainer);
+          placeMonWithBomb(
+            isBlackWithConsumable ? drainerB : drainer,
+            location,
+            isBlackWithConsumable ? ItemKind.DrainerBlack : ItemKind.Drainer,
+          );
           break;
         case MonsWeb.MonKind.Angel:
-          placeMonWithBomb(isBlackWithConsumable ? angelB : angel, location, isBlackWithConsumable ? ItemKind.AngelBlack : ItemKind.Angel);
+          placeMonWithBomb(
+            isBlackWithConsumable ? angelB : angel,
+            location,
+            isBlackWithConsumable ? ItemKind.AngelBlack : ItemKind.Angel,
+          );
           break;
         case MonsWeb.MonKind.Spirit:
-          placeMonWithBomb(isBlackWithConsumable ? spiritB : spirit, location, isBlackWithConsumable ? ItemKind.SpiritBlack : ItemKind.Spirit);
+          placeMonWithBomb(
+            isBlackWithConsumable ? spiritB : spirit,
+            location,
+            isBlackWithConsumable ? ItemKind.SpiritBlack : ItemKind.Spirit,
+          );
           break;
         case MonsWeb.MonKind.Mystic:
-          placeMonWithBomb(isBlackWithConsumable ? mysticB : mystic, location, isBlackWithConsumable ? ItemKind.MysticBlack : ItemKind.Mystic);
+          placeMonWithBomb(
+            isBlackWithConsumable ? mysticB : mystic,
+            location,
+            isBlackWithConsumable ? ItemKind.MysticBlack : ItemKind.Mystic,
+          );
           break;
       }
       break;
@@ -2459,10 +2972,17 @@ function getWagerVisibleScale(): number {
   return Math.max(0.1, 1 - WAGER_ICON_PADDING_FRAC * 2);
 }
 
-function getWagerRectForScale(isOpponent: boolean, scale: number): { x: number; y: number; w: number; h: number } {
+function getWagerRectForScale(
+  isOpponent: boolean,
+  scale: number,
+): { x: number; y: number; w: number; h: number } {
   const slotIsOpponent = slotIsOpponentForMetadataSide(isOpponent);
   const avatarSize = getAvatarSize();
-  const baseY = slotIsOpponent ? 1 - avatarSize * 1.203 : isPangchiuBoard() ? 12.75 : 12.16;
+  const baseY = slotIsOpponent
+    ? 1 - avatarSize * 1.203
+    : isPangchiuBoard()
+      ? 12.75
+      : 12.16;
   const baseH = avatarSize;
   const baseW = avatarSize * 2;
   const h = baseH * scale;
@@ -2506,7 +3026,9 @@ function ensureWinnerWagerPile(): WagerPile | null {
   return winnerWagerPile;
 }
 
-function generateWagerPositions(count: number): Array<{ u: number; v: number }> {
+function generateWagerPositions(
+  count: number,
+): Array<{ u: number; v: number }> {
   if (count <= 0) return [];
   const grid = Math.max(1, Math.ceil(Math.sqrt(count)));
   const cell = 1 / grid;
@@ -2527,12 +3049,19 @@ function generateWagerPositions(count: number): Array<{ u: number; v: number }> 
   return positions.slice(0, count);
 }
 
-function syncWagerPileIcons(pile: WagerPile, material: MaterialName, count: number, materialUrl?: string | null, maxItems = MAX_WAGER_PILE_ITEMS) {
+function syncWagerPileIcons(
+  pile: WagerPile,
+  material: MaterialName,
+  count: number,
+  materialUrl?: string | null,
+  maxItems = MAX_WAGER_PILE_ITEMS,
+) {
   const visibleCount = Math.max(0, Math.min(maxItems, count));
   const nextUrl = materialUrl || getWagerMaterialUrl(material);
   const sameMaterial = pile.material === material;
   const sameVisibleCount = pile.count === visibleCount;
-  const reusePositions = sameMaterial && sameVisibleCount && pile.positions.length === visibleCount;
+  const reusePositions =
+    sameMaterial && sameVisibleCount && pile.positions.length === visibleCount;
   pile.material = material;
   pile.materialUrl = nextUrl;
   pile.count = visibleCount;
@@ -2543,7 +3072,9 @@ function syncWagerPileIcons(pile: WagerPile, material: MaterialName, count: numb
     } else if (sameMaterial && pile.positions.length > 0) {
       const nextPositions = pile.positions.slice(0, visibleCount);
       if (nextPositions.length < visibleCount) {
-        nextPositions.push(...generateWagerPositions(visibleCount - nextPositions.length));
+        nextPositions.push(
+          ...generateWagerPositions(visibleCount - nextPositions.length),
+        );
       }
       pile.positions = nextPositions;
     } else {
@@ -2553,17 +3084,27 @@ function syncWagerPileIcons(pile: WagerPile, material: MaterialName, count: numb
   pile.frames = [];
 }
 
-function getWagerPileRect(isOpponent: boolean): { x: number; y: number; w: number; h: number } {
+function getWagerPileRect(isOpponent: boolean): {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+} {
   return getWagerRectForScale(isOpponent, WAGER_PILE_SCALE);
 }
 
-function getWagerWinnerRect(isOpponent: boolean): { x: number; y: number; w: number; h: number } {
+function getWagerWinnerRect(isOpponent: boolean): {
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+} {
   return getWagerRectForScale(isOpponent, WAGER_WIN_PILE_SCALE);
 }
 
 function getWagerIconLayout(
   rect: { x: number; y: number; w: number; h: number },
-  iconSizeOverride?: number
+  iconSizeOverride?: number,
 ): { iconSize: number; padding: number; maxX: number; maxY: number } {
   const visibleScale = getWagerVisibleScale();
   const rawIconSize = getAvatarSize() * WAGER_ICON_SIZE_MULTIPLIER;
@@ -2576,7 +3117,10 @@ function getWagerIconLayout(
   return { iconSize, padding, maxX, maxY };
 }
 
-function updateWagerPileLayout(pile: WagerPile, rect: { x: number; y: number; w: number; h: number }) {
+function updateWagerPileLayout(
+  pile: WagerPile,
+  rect: { x: number; y: number; w: number; h: number },
+) {
   const layout = getWagerIconLayout(rect);
   pile.rect = rect;
   pile.iconSize = layout.iconSize;
@@ -2606,16 +3150,26 @@ function updateWagerLayout() {
     updateWagerPileLayout(opponentWagerPile, getWagerPileRect(true));
   }
   if (winnerWagerPile && winnerPileActive && !wagerWinAnimActive) {
-    updateWagerPileLayout(winnerWagerPile, getWagerWinnerRect(lastWagerWinnerIsOpponent));
+    updateWagerPileLayout(
+      winnerWagerPile,
+      getWagerWinnerRect(lastWagerWinnerIsOpponent),
+    );
   }
   emitWagerRenderState();
 }
 
-function buildWagerRenderState(pile: WagerPile | null, side: WagerPileSide | "winner", animation: WagerPileAnimation, isPending: boolean): WagerPileRenderState | null {
+function buildWagerRenderState(
+  pile: WagerPile | null,
+  side: WagerPileSide | "winner",
+  animation: WagerPileAnimation,
+  isPending: boolean,
+): WagerPileRenderState | null {
   if (!pile || pile.count === 0 || !pile.rect) {
     return null;
   }
-  const materialUrl = pile.materialUrl || (pile.material ? getWagerMaterialUrl(pile.material) : "");
+  const materialUrl =
+    pile.materialUrl ||
+    (pile.material ? getWagerMaterialUrl(pile.material) : "");
   if (!materialUrl) {
     return null;
   }
@@ -2651,24 +3205,56 @@ function clearDisappearingPile(side: "player" | "opponent") {
 }
 
 function emitWagerRenderState() {
-  const showWinner = Boolean(winnerPileActive && winnerWagerPile && winnerWagerPile.count > 0 && winnerWagerPile.rect);
+  const showWinner = Boolean(
+    winnerPileActive &&
+    winnerWagerPile &&
+    winnerWagerPile.count > 0 &&
+    winnerWagerPile.rect,
+  );
 
-  const currentPlayerState = showWinner ? null : buildWagerRenderState(playerWagerPile, "player", "none", playerPilePending);
-  const currentOpponentState = showWinner ? null : buildWagerRenderState(opponentWagerPile, "opponent", "none", opponentPilePending);
+  const currentPlayerState = showWinner
+    ? null
+    : buildWagerRenderState(
+        playerWagerPile,
+        "player",
+        "none",
+        playerPilePending,
+      );
+  const currentOpponentState = showWinner
+    ? null
+    : buildWagerRenderState(
+        opponentWagerPile,
+        "opponent",
+        "none",
+        opponentPilePending,
+      );
   const currentPlayerVisible = !!currentPlayerState;
   const currentOpponentVisible = !!currentOpponentState;
 
   let playerAnimation: WagerPileAnimation = "none";
   let opponentAnimation: WagerPileAnimation = "none";
 
-  if (wagerAnimationsReady && !wagerWinAnimActive && !showWinner && !suppressNextWagerPileTransition) {
+  if (
+    wagerAnimationsReady &&
+    !wagerWinAnimActive &&
+    !showWinner &&
+    !suppressNextWagerPileTransition
+  ) {
     if (currentPlayerVisible && !previousPlayerPileVisible) {
       playerAnimation = "appear";
       clearDisappearingPile("player");
-    } else if (!currentPlayerVisible && previousPlayerPileVisible && lastVisiblePlayerPileState) {
+    } else if (
+      !currentPlayerVisible &&
+      previousPlayerPileVisible &&
+      lastVisiblePlayerPileState
+    ) {
       clearDisappearingPile("player");
       incrementLifecycleCounter("boardTimeouts");
-      disappearingPlayerPile = { ...lastVisiblePlayerPileState, animation: "disappear", isPending: false };
+      disappearingPlayerPile = {
+        ...lastVisiblePlayerPileState,
+        animation: "disappear",
+        isPending: false,
+      };
       disappearingPileTimers.player = window.setTimeout(() => {
         decrementLifecycleCounter("boardTimeouts");
         disappearingPlayerPile = null;
@@ -2680,10 +3266,18 @@ function emitWagerRenderState() {
     if (currentOpponentVisible && !previousOpponentPileVisible) {
       opponentAnimation = "appear";
       clearDisappearingPile("opponent");
-    } else if (!currentOpponentVisible && previousOpponentPileVisible && lastVisibleOpponentPileState) {
+    } else if (
+      !currentOpponentVisible &&
+      previousOpponentPileVisible &&
+      lastVisibleOpponentPileState
+    ) {
       clearDisappearingPile("opponent");
       incrementLifecycleCounter("boardTimeouts");
-      disappearingOpponentPile = { ...lastVisibleOpponentPileState, animation: "disappear", isPending: false };
+      disappearingOpponentPile = {
+        ...lastVisibleOpponentPileState,
+        animation: "disappear",
+        isPending: false,
+      };
       disappearingPileTimers.opponent = window.setTimeout(() => {
         decrementLifecycleCounter("boardTimeouts");
         disappearingOpponentPile = null;
@@ -2708,9 +3302,15 @@ function emitWagerRenderState() {
     return;
   }
 
-  const playerRenderState = currentPlayerState ? { ...currentPlayerState, animation: playerAnimation } : null;
-  const opponentRenderState = currentOpponentState ? { ...currentOpponentState, animation: opponentAnimation } : null;
-  const winnerRenderState = showWinner ? buildWagerRenderState(winnerWagerPile, "winner", "none", false) : null;
+  const playerRenderState = currentPlayerState
+    ? { ...currentPlayerState, animation: playerAnimation }
+    : null;
+  const opponentRenderState = currentOpponentState
+    ? { ...currentOpponentState, animation: opponentAnimation }
+    : null;
+  const winnerRenderState = showWinner
+    ? buildWagerRenderState(winnerWagerPile, "winner", "none", false)
+    : null;
 
   const state: WagerRenderState = {
     player: playerRenderState,
@@ -2721,8 +3321,12 @@ function emitWagerRenderState() {
     opponentDisappearing: disappearingOpponentPile,
   };
   const signature = [
-    state.player ? `${state.player.count}:${state.player.isPending ? 1 : 0}:${state.player.animation}` : "none",
-    state.opponent ? `${state.opponent.count}:${state.opponent.isPending ? 1 : 0}:${state.opponent.animation}` : "none",
+    state.player
+      ? `${state.player.count}:${state.player.isPending ? 1 : 0}:${state.player.animation}`
+      : "none",
+    state.opponent
+      ? `${state.opponent.count}:${state.opponent.isPending ? 1 : 0}:${state.opponent.animation}`
+      : "none",
     state.winner ? `${state.winner.count}` : "none",
     state.playerDisappearing ? `${state.playerDisappearing.count}` : "none",
     state.opponentDisappearing ? `${state.opponentDisappearing.count}` : "none",
@@ -2753,7 +3357,7 @@ function cancelWagerWinAnimation() {
 function getWagerIconFrame(
   rect: { x: number; y: number; w: number; h: number },
   layout: { iconSize: number; padding: number; maxX: number; maxY: number },
-  pos: { u: number; v: number }
+  pos: { u: number; v: number },
 ): { x: number; y: number } {
   return {
     x: rect.x - layout.padding + pos.u * layout.maxX,
@@ -2765,7 +3369,7 @@ function buildWagerFrames(
   rect: { x: number; y: number; w: number; h: number },
   layout: { iconSize: number; padding: number; maxX: number; maxY: number },
   positions: Array<{ u: number; v: number }>,
-  count: number
+  count: number,
 ): Array<{ x: number; y: number }> {
   const frames: Array<{ x: number; y: number }> = [];
   const initialCount = Math.min(count, positions.length);
@@ -2773,7 +3377,9 @@ function buildWagerFrames(
     frames.push(getWagerIconFrame(rect, layout, positions[i]));
   }
   while (frames.length < count) {
-    frames.push(getWagerIconFrame(rect, layout, { u: Math.random(), v: Math.random() }));
+    frames.push(
+      getWagerIconFrame(rect, layout, { u: Math.random(), v: Math.random() }),
+    );
   }
   return frames;
 }
@@ -2788,7 +3394,10 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
   if (!material) {
     return false;
   }
-  const winnerCount = Math.max(0, winnerSource.actualCount || winnerSource.count);
+  const winnerCount = Math.max(
+    0,
+    winnerSource.actualCount || winnerSource.count,
+  );
   const loserCount = Math.max(0, loserSource.actualCount || loserSource.count);
   const totalCount = winnerCount + loserCount;
   if (totalCount <= 0) {
@@ -2801,10 +3410,23 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
 
   cancelWagerWinAnimation();
 
-  const materialUrl = winnerSource.materialUrl || loserSource.materialUrl || null;
-  const displayWinnerCount = Math.min(winnerSource.count, MAX_WAGER_WIN_PILE_ITEMS);
-  const displayTotal = Math.min(MAX_WAGER_WIN_PILE_ITEMS, displayWinnerCount + loserCount);
-  syncWagerPileIcons(winnerPile, material, displayTotal, materialUrl, MAX_WAGER_WIN_PILE_ITEMS);
+  const materialUrl =
+    winnerSource.materialUrl || loserSource.materialUrl || null;
+  const displayWinnerCount = Math.min(
+    winnerSource.count,
+    MAX_WAGER_WIN_PILE_ITEMS,
+  );
+  const displayTotal = Math.min(
+    MAX_WAGER_WIN_PILE_ITEMS,
+    displayWinnerCount + loserCount,
+  );
+  syncWagerPileIcons(
+    winnerPile,
+    material,
+    displayTotal,
+    materialUrl,
+    MAX_WAGER_WIN_PILE_ITEMS,
+  );
 
   const visibleCount = winnerPile.count;
   if (visibleCount === 0) {
@@ -2824,26 +3446,54 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
   const winnerSourceLayout = getWagerIconLayout(winnerSourceRect, iconSize);
   const loserLayout = getWagerIconLayout(loserRect, iconSize);
 
-  const winnerAnchoredCount = Math.min(winnerVisible, winnerSource.positions.length);
-  const winnerAnchoredStarts = buildWagerFrames(winnerSourceRect, winnerSourceLayout, winnerSource.positions, winnerAnchoredCount);
+  const winnerAnchoredCount = Math.min(
+    winnerVisible,
+    winnerSource.positions.length,
+  );
+  const winnerAnchoredStarts = buildWagerFrames(
+    winnerSourceRect,
+    winnerSourceLayout,
+    winnerSource.positions,
+    winnerAnchoredCount,
+  );
   const winnerExtraCount = winnerVisible - winnerAnchoredCount;
-  const extraPositions = generateWagerPositions(winnerExtraCount + loserVisible);
+  const extraPositions = generateWagerPositions(
+    winnerExtraCount + loserVisible,
+  );
   const winnerExtraPositions = extraPositions.slice(0, winnerExtraCount);
-  const loserPositions = extraPositions.slice(winnerExtraCount, winnerExtraCount + loserVisible);
+  const loserPositions = extraPositions.slice(
+    winnerExtraCount,
+    winnerExtraCount + loserVisible,
+  );
 
   const clamp01 = (value: number) => Math.max(0, Math.min(1, value));
   const winnerAnchoredPositions = winnerAnchoredStarts.map((frame) => {
-    const u = winnerLayout.maxX > 0 ? (frame.x - winnerRect.x + winnerLayout.padding) / winnerLayout.maxX : 0.5;
-    const v = winnerLayout.maxY > 0 ? (frame.y - winnerRect.y + winnerLayout.padding) / winnerLayout.maxY : 0.5;
+    const u =
+      winnerLayout.maxX > 0
+        ? (frame.x - winnerRect.x + winnerLayout.padding) / winnerLayout.maxX
+        : 0.5;
+    const v =
+      winnerLayout.maxY > 0
+        ? (frame.y - winnerRect.y + winnerLayout.padding) / winnerLayout.maxY
+        : 0.5;
     return { u: clamp01(u), v: clamp01(v) };
   });
 
   const winnerPositions = winnerAnchoredPositions.concat(winnerExtraPositions);
   winnerPile.positions = winnerPositions.concat(loserPositions);
 
-  const targets = winnerPile.positions.map((pos) => getWagerIconFrame(winnerRect, winnerLayout, pos));
-  const winnerExtraStarts = winnerExtraPositions.map((pos) => getWagerIconFrame(winnerRect, winnerLayout, pos));
-  const loserStarts = buildWagerFrames(loserRect, loserLayout, loserSource.positions, loserVisible);
+  const targets = winnerPile.positions.map((pos) =>
+    getWagerIconFrame(winnerRect, winnerLayout, pos),
+  );
+  const winnerExtraStarts = winnerExtraPositions.map((pos) =>
+    getWagerIconFrame(winnerRect, winnerLayout, pos),
+  );
+  const loserStarts = buildWagerFrames(
+    loserRect,
+    loserLayout,
+    loserSource.positions,
+    loserVisible,
+  );
   const starts = winnerAnchoredStarts.concat(winnerExtraStarts, loserStarts);
 
   winnerPile.rect = winnerRect;
@@ -2865,7 +3515,9 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
     return { x: nx * amp * dir, y: ny * amp * dir };
   });
 
-  const delays = starts.map((_, index) => (index < winnerVisible ? 0 : Math.random() * 0.1));
+  const delays = starts.map((_, index) =>
+    index < winnerVisible ? 0 : Math.random() * 0.1,
+  );
 
   clearDisappearingPile("player");
   clearDisappearingPile("opponent");
@@ -2889,12 +3541,16 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
       wagerWinAnimRaf = null;
       return;
     }
-    const { startTime, duration, iconSize, starts, targets, drifts, delays } = wagerWinAnimState;
+    const { startTime, duration, iconSize, starts, targets, drifts, delays } =
+      wagerWinAnimState;
     const progress = Math.max(0, Math.min(1, (time - startTime) / duration));
     for (let i = 0; i < winnerWagerPile.count; i += 1) {
       const delay = delays[i] || 0;
       const denom = 1 - delay;
-      const local = denom > 0 ? Math.max(0, Math.min(1, (progress - delay) / denom)) : progress;
+      const local =
+        denom > 0
+          ? Math.max(0, Math.min(1, (progress - delay) / denom))
+          : progress;
       const eased = 1 - Math.pow(1 - local, 3);
       const driftScale = Math.sin(local * Math.PI);
       const start = starts[i] || targets[i];
@@ -2937,14 +3593,15 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
   return true;
 }
 
-
 function getSvgTextWidthInBoardUnits(element: SVGElement | undefined): number {
   if (!element) {
     return 0;
   }
   try {
     const textElement = element as unknown as SVGTextContentElement;
-    const width = textElement.getComputedTextLength ? textElement.getComputedTextLength() : 0;
+    const width = textElement.getComputedTextLength
+      ? textElement.getComputedTextLength()
+      : 0;
     if (Number.isFinite(width) && width > 0) {
       return width / 100;
     }
@@ -2967,7 +3624,7 @@ function getDynamicNameDelta(
   endOfGameIcon: SVGElement | undefined,
   showsEndOfGameMarker: boolean,
   multiplicator: number,
-  extraSpacing: number = 0
+  extraSpacing: number = 0,
 ): number {
   if (!scoreText) {
     return 0;
@@ -2978,14 +3635,29 @@ function getDynamicNameDelta(
   let minNameX = scoreRight + spacing;
   if (showsEndOfGameMarker && endOfGameIcon) {
     const iconX = parseFloat(endOfGameIcon.getAttribute("x") || "0") / 100;
-    const measuredIconWidth = parseFloat(endOfGameIcon.getAttribute("width") || "0") / 100;
+    const measuredIconWidth =
+      parseFloat(endOfGameIcon.getAttribute("width") || "0") / 100;
     const fallbackIconWidth = END_OF_GAME_ICON_SIZE_MULTIPLIER * multiplicator;
-    const iconWidth = Number.isFinite(measuredIconWidth) && measuredIconWidth > 0 ? measuredIconWidth : fallbackIconWidth;
+    const iconWidth =
+      Number.isFinite(measuredIconWidth) && measuredIconWidth > 0
+        ? measuredIconWidth
+        : fallbackIconWidth;
     const iconHidden = endOfGameIcon.getAttribute("display") === "none";
-    const iconRight = !iconHidden || iconX > 0 ? iconX + iconWidth : scoreRight + END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator + iconWidth;
+    const iconRight =
+      !iconHidden || iconX > 0
+        ? iconX + iconWidth
+        : scoreRight +
+          END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator +
+          iconWidth;
     minNameX = Math.max(minNameX, iconRight + spacing);
   } else if (showsEndOfGameMarker) {
-    minNameX = Math.max(minNameX, scoreRight + END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator + END_OF_GAME_ICON_SIZE_MULTIPLIER * multiplicator + spacing);
+    minNameX = Math.max(
+      minNameX,
+      scoreRight +
+        END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator +
+        END_OF_GAME_ICON_SIZE_MULTIPLIER * multiplicator +
+        spacing,
+    );
   }
   if (showsTimer && timerText) {
     const timerX = parseFloat(timerText.getAttribute("x") || "0") / 100;
@@ -2998,28 +3670,43 @@ function getDynamicNameDelta(
 function updateEndOfGameIcons(multiplicator: number) {
   const iconSize = END_OF_GAME_ICON_SIZE_MULTIPLIER * multiplicator;
   const iconGap = END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator;
-  const topControlAnchorScoreText = isMetadataDisplaySwapped ? playerScoreText : opponentScoreText;
+  const topControlAnchorScoreText = isMetadataDisplaySwapped
+    ? playerScoreText
+    : opponentScoreText;
   const topControlLayout =
     botStrengthControlVisible && topControlAnchorScoreText
-      ? getBotStrengthControlLayout(topControlAnchorScoreText, multiplicator, getAvatarSize())
+      ? getBotStrengthControlLayout(
+          topControlAnchorScoreText,
+          multiplicator,
+          getAvatarSize(),
+        )
       : null;
   const updateSingleIcon = (
     scoreText: SVGElement | undefined,
     icon: SVGElement | undefined,
     marker: EndOfGameMarker,
-    isTopControlSide: boolean
+    isTopControlSide: boolean,
   ) => {
-    if (!scoreText || !icon || marker === "none" || (scoreText.textContent ?? "") === "") {
+    if (
+      !scoreText ||
+      !icon ||
+      marker === "none" ||
+      (scoreText.textContent ?? "") === ""
+    ) {
       if (icon) {
         SVG.setHidden(icon, true);
       }
       return;
     }
-    const iconName: EndOfGameIconName = marker === "victory" ? "victory" : "resign";
+    const iconName: EndOfGameIconName =
+      marker === "victory" ? "victory" : "resign";
     const resolvedUrl = endOfGameIconResolvedUrls[iconName];
     if (icon.getAttribute("data-marker") !== marker) {
       icon.setAttribute("data-marker", marker);
-      void SVG.setImageUrl(icon, resolvedUrl || END_OF_GAME_ICON_URLS[iconName]);
+      void SVG.setImageUrl(
+        icon,
+        resolvedUrl || END_OF_GAME_ICON_URLS[iconName],
+      );
     }
     if (!resolvedUrl) {
       void getEndOfGameIconCachedUrl(iconName).then((url) => {
@@ -3035,12 +3722,22 @@ function updateEndOfGameIcons(multiplicator: number) {
     const scoreWidth = getSvgTextWidthInBoardUnits(scoreText);
     let iconX = scoreX + scoreWidth + iconGap;
     if (isTopControlSide && topControlLayout) {
-      iconX = Math.max(iconX, topControlLayout.x + topControlLayout.size + iconGap);
+      iconX = Math.max(
+        iconX,
+        topControlLayout.x + topControlLayout.size + iconGap,
+      );
     }
-    let iconY = parseFloat(scoreText.getAttribute("y") || "0") / 100 - iconSize * 0.8;
+    let iconY =
+      parseFloat(scoreText.getAttribute("y") || "0") / 100 - iconSize * 0.8;
     try {
-      const scoreBounds = (scoreText as unknown as SVGGraphicsElement).getBBox ? (scoreText as unknown as SVGGraphicsElement).getBBox() : null;
-      if (scoreBounds && Number.isFinite(scoreBounds.y) && Number.isFinite(scoreBounds.height)) {
+      const scoreBounds = (scoreText as unknown as SVGGraphicsElement).getBBox
+        ? (scoreText as unknown as SVGGraphicsElement).getBBox()
+        : null;
+      if (
+        scoreBounds &&
+        Number.isFinite(scoreBounds.y) &&
+        Number.isFinite(scoreBounds.height)
+      ) {
         iconY = scoreBounds.y / 100 + (scoreBounds.height / 100 - iconSize) / 2;
       }
     } catch {}
@@ -3048,8 +3745,18 @@ function updateEndOfGameIcons(multiplicator: number) {
     SVG.setHidden(icon, false);
   };
 
-  updateSingleIcon(playerScoreText, playerEndOfGameIcon, playerEndOfGameMarker, topControlAnchorScoreText === playerScoreText);
-  updateSingleIcon(opponentScoreText, opponentEndOfGameIcon, opponentEndOfGameMarker, topControlAnchorScoreText === opponentScoreText);
+  updateSingleIcon(
+    playerScoreText,
+    playerEndOfGameIcon,
+    playerEndOfGameMarker,
+    topControlAnchorScoreText === playerScoreText,
+  );
+  updateSingleIcon(
+    opponentScoreText,
+    opponentEndOfGameIcon,
+    opponentEndOfGameMarker,
+    topControlAnchorScoreText === opponentScoreText,
+  );
 }
 
 function updateNamesX() {
@@ -3065,13 +3772,25 @@ function updateNamesX() {
   const playerHasEndOfGameMarker = playerEndOfGameMarker !== "none";
   const opponentHasEndOfGameMarker = opponentEndOfGameMarker !== "none";
 
-  const playerStaticDelta = (playerHasEndOfGameMarker ? statusDelta : 0) + (showsPlayerTimer ? timerDelta : 0);
-  const opponentStaticDelta = (opponentHasEndOfGameMarker ? statusDelta : 0) + (showsOpponentTimer ? timerDelta : 0);
-  const topControlSlotHasEndOfGameMarker = isMetadataDisplaySwapped ? playerHasEndOfGameMarker : opponentHasEndOfGameMarker;
-  const topControlNameText = isMetadataDisplaySwapped ? playerNameText : opponentNameText;
-  const topControlHasVoiceReaction = (topControlNameText?.textContent ?? "").includes("~ ");
+  const playerStaticDelta =
+    (playerHasEndOfGameMarker ? statusDelta : 0) +
+    (showsPlayerTimer ? timerDelta : 0);
+  const opponentStaticDelta =
+    (opponentHasEndOfGameMarker ? statusDelta : 0) +
+    (showsOpponentTimer ? timerDelta : 0);
+  const topControlSlotHasEndOfGameMarker = isMetadataDisplaySwapped
+    ? playerHasEndOfGameMarker
+    : opponentHasEndOfGameMarker;
+  const topControlNameText = isMetadataDisplaySwapped
+    ? playerNameText
+    : opponentNameText;
+  const topControlHasVoiceReaction = (
+    topControlNameText?.textContent ?? ""
+  ).includes("~ ");
   const topVoiceReactionExtraSpacing =
-    botStrengthControlVisible && topControlSlotHasEndOfGameMarker && topControlHasVoiceReaction
+    botStrengthControlVisible &&
+    topControlSlotHasEndOfGameMarker &&
+    topControlHasVoiceReaction
       ? BOT_STRENGTH_VOICE_REACTION_EXTRA_GAP_MULTIPLIER * multiplicator
       : 0;
   const playerDynamicDelta = getDynamicNameDelta(
@@ -3082,7 +3801,7 @@ function updateNamesX() {
     playerEndOfGameIcon,
     playerHasEndOfGameMarker,
     multiplicator,
-    isMetadataDisplaySwapped ? topVoiceReactionExtraSpacing : 0
+    isMetadataDisplaySwapped ? topVoiceReactionExtraSpacing : 0,
   );
   const opponentDynamicDelta = getDynamicNameDelta(
     initialX,
@@ -3092,16 +3811,25 @@ function updateNamesX() {
     opponentEndOfGameIcon,
     opponentHasEndOfGameMarker,
     multiplicator,
-    isMetadataDisplaySwapped ? 0 : topVoiceReactionExtraSpacing
+    isMetadataDisplaySwapped ? 0 : topVoiceReactionExtraSpacing,
   );
 
   let playerBotStrengthDelta = 0;
   let opponentBotStrengthDelta = 0;
-  const topControlAnchorScoreText = isMetadataDisplaySwapped ? playerScoreText : opponentScoreText;
+  const topControlAnchorScoreText = isMetadataDisplaySwapped
+    ? playerScoreText
+    : opponentScoreText;
   if (botStrengthControlVisible && topControlAnchorScoreText) {
     const avatarSize = getAvatarSize();
-    const botLayout = getBotStrengthControlLayout(topControlAnchorScoreText, multiplicator, avatarSize);
-    const minNameX = botLayout.x + botLayout.size + BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER * multiplicator;
+    const botLayout = getBotStrengthControlLayout(
+      topControlAnchorScoreText,
+      multiplicator,
+      avatarSize,
+    );
+    const minNameX =
+      botLayout.x +
+      botLayout.size +
+      BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER * multiplicator;
     const delta = Math.max(0, minNameX - initialX);
     if (isMetadataDisplaySwapped) {
       playerBotStrengthDelta = delta;
@@ -3110,8 +3838,20 @@ function updateNamesX() {
     }
   }
 
-  SVG.setX(playerNameText, initialX + Math.max(playerStaticDelta, playerDynamicDelta, playerBotStrengthDelta));
-  SVG.setX(opponentNameText, initialX + Math.max(opponentStaticDelta, opponentDynamicDelta, opponentBotStrengthDelta));
+  SVG.setX(
+    playerNameText,
+    initialX +
+      Math.max(playerStaticDelta, playerDynamicDelta, playerBotStrengthDelta),
+  );
+  SVG.setX(
+    opponentNameText,
+    initialX +
+      Math.max(
+        opponentStaticDelta,
+        opponentDynamicDelta,
+        opponentBotStrengthDelta,
+      ),
+  );
 }
 
 const updateLayout = () => {
@@ -3144,23 +3884,45 @@ const updateLayout = () => {
     const timerText = isOpponent ? opponentTimer : playerTimer;
     const nameText = isOpponent ? opponentNameText : playerNameText;
 
-    const y = isOpponent ? 1 - avatarSize * 1.203 : isPangchiuBoard() ? 12.75 : 12.16;
+    const y = isOpponent
+      ? 1 - avatarSize * 1.203
+      : isPangchiuBoard()
+        ? 12.75
+        : 12.16;
 
-    SVG.setOrigin(numberText, offsetX + avatarSize * 1.21, y + avatarSize * 0.73);
-    SVG.setOrigin(timerText, offsetX + avatarSize * 1.85, y + avatarSize * 0.73);
+    SVG.setOrigin(
+      numberText,
+      offsetX + avatarSize * 1.21,
+      y + avatarSize * 0.73,
+    );
+    SVG.setOrigin(
+      timerText,
+      offsetX + avatarSize * 1.85,
+      y + avatarSize * 0.73,
+    );
     SVG.setOrigin(nameText, 0, y + avatarSize * 0.65);
 
     numberText.setAttribute("font-size", scoreFontSize.toString());
     timerText.setAttribute("font-size", scoreFontSize.toString());
     nameText.setAttribute("font-size", (32 * multiplicator).toString());
 
-    const statusItemsOffsetX = shouldOffsetFromBorders ? 0.21 * multiplicator : 0;
+    const statusItemsOffsetX = shouldOffsetFromBorders
+      ? 0.21 * multiplicator
+      : 0;
     const statusItemsY = y + avatarSize * (isOpponent ? 0.23 : 0.1);
     const statusItemSize = 0.5 * multiplicator;
 
     for (let x = 0; x < 9; x++) {
-      const img = isOpponent ? opponentMoveStatusItems[x] : playerMoveStatusItems[x];
-      SVG.setFrame(img, 11 - (1.15 * x + 1) * statusItemSize - statusItemsOffsetX, statusItemsY, statusItemSize, statusItemSize);
+      const img = isOpponent
+        ? opponentMoveStatusItems[x]
+        : playerMoveStatusItems[x];
+      SVG.setFrame(
+        img,
+        11 - (1.15 * x + 1) * statusItemSize - statusItemsOffsetX,
+        statusItemsY,
+        statusItemSize,
+        statusItemSize,
+      );
     }
 
     const avatar = isOpponent ? opponentAvatar : playerAvatar;
@@ -3169,15 +3931,38 @@ const updateLayout = () => {
       updateAuraForAvatarElement(isOpponent, avatar);
     } catch {}
 
-    const placeholder = isOpponent ? opponentAvatarPlaceholder : playerAvatarPlaceholder;
-    SVG.updateCircle(placeholder, offsetX + avatarSize / 2, y + avatarSize / 2, avatarSize / 3);
+    const placeholder = isOpponent
+      ? opponentAvatarPlaceholder
+      : playerAvatarPlaceholder;
+    SVG.updateCircle(
+      placeholder,
+      offsetX + avatarSize / 2,
+      y + avatarSize / 2,
+      avatarSize / 3,
+    );
   }
 
-  const topControlAnchorScoreText = isMetadataDisplaySwapped ? playerScoreText : opponentScoreText;
-  if (inviteBotButtonContainer && inviteBotButtonElement && topControlAnchorScoreText) {
+  const topControlAnchorScoreText = isMetadataDisplaySwapped
+    ? playerScoreText
+    : opponentScoreText;
+  if (
+    inviteBotButtonContainer &&
+    inviteBotButtonElement &&
+    topControlAnchorScoreText
+  ) {
     const avatarSize = getAvatarSize();
-    const layout = getInviteBotButtonLayout(topControlAnchorScoreText, multiplicator, avatarSize);
-    SVG.setFrame(inviteBotButtonContainer, layout.x, layout.y, layout.width, layout.height);
+    const layout = getInviteBotButtonLayout(
+      topControlAnchorScoreText,
+      multiplicator,
+      avatarSize,
+    );
+    SVG.setFrame(
+      inviteBotButtonContainer,
+      layout.x,
+      layout.y,
+      layout.width,
+      layout.height,
+    );
     inviteBotButtonElement.style.fontSize = `${layout.fontSizePx}px`;
     inviteBotButtonElement.style.borderRadius = "999px";
     inviteBotButtonElement.style.paddingLeft = `${layout.horizontalPaddingPx}px`;
@@ -3185,7 +3970,11 @@ const updateLayout = () => {
   }
   if (topControlAnchorScoreText) {
     const avatarSize = getAvatarSize();
-    const layout = getBotStrengthControlLayout(topControlAnchorScoreText, multiplicator, avatarSize);
+    const layout = getBotStrengthControlLayout(
+      topControlAnchorScoreText,
+      multiplicator,
+      avatarSize,
+    );
     syncBotStrengthControlOverlay(layout);
   } else {
     syncBotStrengthControlOverlay(null);
@@ -3195,23 +3984,36 @@ const updateLayout = () => {
     const dudeBaseI = -0.3;
     const dudeBaseJ = -0.23;
     const narrowShiftFactor = 0.5;
-    const narrowRightShift = shouldOffsetFromBorders ? narrowShiftFactor * minHorizontalOffset : 0;
+    const narrowRightShift = shouldOffsetFromBorders
+      ? narrowShiftFactor * minHorizontalOffset
+      : 0;
     const location = new Location(dudeBaseI, dudeBaseJ + narrowRightShift);
     setCenterTranformOrigin(talkingDude, location);
     SVG.setOrigin(talkingDude, location.j, location.i);
     talkingDude.setAttribute("data-base-x", (location.j * 100).toString());
     talkingDude.setAttribute("data-base-y", (location.i * 100).toString());
 
-    const instructionsRightMargin = shouldOffsetFromBorders ? 0.28 * multiplicator : 0;
+    const instructionsRightMargin = shouldOffsetFromBorders
+      ? 0.28 * multiplicator
+      : 0;
     const instructionsWidth = 10 - narrowRightShift - instructionsRightMargin;
-    SVG.setFrame(instructionsContainerElement, 11 - instructionsWidth - instructionsRightMargin, 0, instructionsWidth, 0.85);
+    SVG.setFrame(
+      instructionsContainerElement,
+      11 - instructionsWidth - instructionsRightMargin,
+      0,
+      instructionsWidth,
+      0.85,
+    );
 
     if (instructionsCloudBg) {
       const cloudX = (11 - instructionsWidth - instructionsRightMargin) * 100;
       const cloudY = 2.3;
       const cloudW = instructionsWidth * 100;
       const cloudH = 0.77 * 100;
-      instructionsCloudBg.setAttribute("d", generateCloudPath(cloudX, cloudY, cloudW, cloudH));
+      instructionsCloudBg.setAttribute(
+        "d",
+        generateCloudPath(cloudX, cloudY, cloudW, cloudH),
+      );
     }
 
     updateSpriteSheetClipRect(talkingDude);
@@ -3221,7 +4023,11 @@ const updateLayout = () => {
   updateNamesX();
 };
 
-export function showDebugWagerPiles(material: MaterialName, count: number, materialUrl?: string | null) {
+export function showDebugWagerPiles(
+  material: MaterialName,
+  count: number,
+  materialUrl?: string | null,
+) {
   cancelWagerWinAnimation();
   winnerPileActive = false;
   const playerPile = ensureWagerPile(false);
@@ -3290,7 +4096,11 @@ export function clearWagerPilesForNewMatch() {
 
 export function setWagerPiles(state: {
   player?: { material: MaterialName; count: number; pending?: boolean } | null;
-  opponent?: { material: MaterialName; count: number; pending?: boolean } | null;
+  opponent?: {
+    material: MaterialName;
+    count: number;
+    pending?: boolean;
+  } | null;
 }) {
   cancelWagerWinAnimation();
   winnerPileActive = false;
@@ -3307,7 +4117,11 @@ export function setWagerPiles(state: {
   if (state.opponent) {
     const opponentPile = ensureWagerPile(true);
     if (opponentPile) {
-      syncWagerPileIcons(opponentPile, state.opponent.material, state.opponent.count);
+      syncWagerPileIcons(
+        opponentPile,
+        state.opponent.material,
+        state.opponent.count,
+      );
     }
     opponentPilePending = state.opponent.pending ?? false;
   } else {
@@ -3318,8 +4132,18 @@ export function setWagerPiles(state: {
   updateWagerLayout();
 }
 
-export function showResolvedWager(winnerIsOpponent: boolean, material: MaterialName, countPerSide: number, animate: boolean) {
-  logBoardWagerDebug("show-resolved:start", { winnerIsOpponent, material, countPerSide, animate });
+export function showResolvedWager(
+  winnerIsOpponent: boolean,
+  material: MaterialName,
+  countPerSide: number,
+  animate: boolean,
+) {
+  logBoardWagerDebug("show-resolved:start", {
+    winnerIsOpponent,
+    material,
+    countPerSide,
+    animate,
+  });
   const playerPile = ensureWagerPile(false);
   const opponentPile = ensureWagerPile(true);
   if (!playerPile || !opponentPile) {
@@ -3342,9 +4166,18 @@ export function showResolvedWager(winnerIsOpponent: boolean, material: MaterialN
     return;
   }
   const total = Math.max(0, countPerSide * 2);
-  syncWagerPileIcons(winnerPile, material, total, null, MAX_WAGER_WIN_PILE_ITEMS);
+  syncWagerPileIcons(
+    winnerPile,
+    material,
+    total,
+    null,
+    MAX_WAGER_WIN_PILE_ITEMS,
+  );
   winnerPileActive = true;
-  logBoardWagerDebug("show-resolved:show-winner-pile", { winnerCount: winnerPile.count, total });
+  logBoardWagerDebug("show-resolved:show-winner-pile", {
+    winnerCount: winnerPile.count,
+    total,
+  });
   updateWagerLayout();
 }
 
@@ -3373,7 +4206,10 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
   }
 
   const playerEmojiUrl = emojis.getEmojiUrl(playerEmojiId);
-  const [opponentEmojiId, opponentEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(playerEmojiId, true);
+  const [opponentEmojiId, opponentEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(
+    playerEmojiId,
+    true,
+  );
 
   playerSideMetadata.emojiId = playerEmojiId;
   opponentSideMetadata.emojiId = opponentEmojiId;
@@ -3433,7 +4269,10 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
         return;
       }
 
-      if (canRedirectToExplorer(metadataIsOpponent) && didNotDismissAnythingWithOutsideTapJustNow()) {
+      if (
+        canRedirectToExplorer(metadataIsOpponent) &&
+        didNotDismissAnythingWithOutsideTapJustNow()
+      ) {
         redirectToAddressOnExplorer(metadataIsOpponent);
         SVG.setFill(nameText, colors.scoreText);
       }
@@ -3501,7 +4340,9 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
         playerSideMetadata.aura = playerSideMetadata.aura ?? "";
       }
     }
-    const shouldShowAura = (isOpponent ? opponentSideMetadata.aura : playerSideMetadata.aura) === "rainbow";
+    const shouldShowAura =
+      (isOpponent ? opponentSideMetadata.aura : playerSideMetadata.aura) ===
+      "rainbow";
     showRaibowAura(shouldShowAura, emojiUrl, isOpponent);
     try {
       updateAuraForAvatarElement(isOpponent, avatar);
@@ -3560,7 +4401,10 @@ function pickAndDisplayDifferentEmoji(metadataIsOpponent: boolean) {
     if (!avatar) {
       return;
     }
-    const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(opponentSideMetadata.emojiId, true);
+    const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(
+      opponentSideMetadata.emojiId,
+      true,
+    );
     opponentSideMetadata.emojiId = newId;
     SVG.setImageUrl(avatar, newEmojiUrl);
     const visible = (opponentSideMetadata.aura ?? "") === "rainbow";
@@ -3569,12 +4413,19 @@ function pickAndDisplayDifferentEmoji(metadataIsOpponent: boolean) {
       updateAuraForAvatarElement(slotIsOpponent, avatar);
     } catch {}
   } else {
-    const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(playerSideMetadata.emojiId, false);
+    const [newId, newEmojiUrl] = emojis.getRandomEmojiUrlOtherThan(
+      playerSideMetadata.emojiId,
+      false,
+    );
     didClickAndChangePlayerEmoji(newId, newEmojiUrl);
   }
 }
 
-export function didClickAndChangePlayerEmoji(newId: string, newEmojiUrl: string, aura?: string) {
+export function didClickAndChangePlayerEmoji(
+  newId: string,
+  newEmojiUrl: string,
+  aura?: string,
+) {
   storage.setPlayerEmojiId(newId);
   if (aura !== undefined) {
     storage.setPlayerEmojiAura(aura);
@@ -3590,7 +4441,8 @@ export function didClickAndChangePlayerEmoji(newId: string, newEmojiUrl: string,
     const avatar = slotIsOpponent ? opponentAvatar : playerAvatar;
     if (avatar) {
       SVG.setImageUrl(avatar, newEmojiUrl);
-      const visible = (aura ?? storage.getPlayerEmojiAura("") ?? "") === "rainbow";
+      const visible =
+        (aura ?? storage.getPlayerEmojiAura("") ?? "") === "rainbow";
       showRaibowAura(visible, newEmojiUrl, slotIsOpponent);
       try {
         updateAuraForAvatarElement(slotIsOpponent, avatar);
@@ -3609,7 +4461,8 @@ export function setupBoard() {
   opponentSideMetadata.emojiId = "";
   opponentSideMetadata.aura = "";
   initializeBoardElements();
-  const skipLayerRecreation = shouldPreserveAnimation && !!itemsLayer?.querySelector(".board-rect");
+  const skipLayerRecreation =
+    shouldPreserveAnimation && !!itemsLayer?.querySelector(".board-rect");
   boardInputHandler = (event: Event) => {
     const hasVisiblePopups =
       hasIslandOverlayVisible() ||
@@ -3628,7 +4481,11 @@ export function setupBoard() {
     }
 
     const target = event.target as SVGElement;
-    if (target && target.nodeName === "rect" && target.classList.contains("board-rect")) {
+    if (
+      target &&
+      target.nodeName === "rect" &&
+      target.classList.contains("board-rect")
+    ) {
       const rawX = parseInt(target.getAttribute("x") || "-100") / 100;
       const rawY = parseInt(target.getAttribute("y") || "-100") / 100;
 
@@ -3638,7 +4495,9 @@ export function setupBoard() {
       didClickSquare(new Location(y, x));
       event.preventDefault();
       event.stopPropagation();
-    } else if (!target.closest("a, button, select, [data-notification-banner='true']")) {
+    } else if (
+      !target.closest("a, button, select, [data-notification-banner='true']")
+    ) {
       hideItemSelectionOrConfirmationOverlay();
       didClickSquare(new Location(-1, -1));
       event.preventDefault();
@@ -3751,7 +4610,11 @@ export function disposeBoardRuntime() {
     highlightsLayer.innerHTML = "";
   }
   if (board) {
-    const overlays = Array.from(board.querySelectorAll('[data-wager-pile], [data-wager-win-pile], [data-grid-board-only]'));
+    const overlays = Array.from(
+      board.querySelectorAll(
+        "[data-wager-pile], [data-wager-win-pile], [data-grid-board-only]",
+      ),
+    );
     overlays.forEach((element) => element.remove());
   }
   opponentMoveStatusItems.length = 0;
@@ -3818,7 +4681,10 @@ export function popOpponentsEmoji() {
   animateAvatarPopForDisplaySlot(targetAvatar, slotIsOpponent);
 }
 
-function animateAvatarPopForDisplaySlot(avatar: SVGElement, slotIsOpponent: boolean) {
+function animateAvatarPopForDisplaySlot(
+  avatar: SVGElement,
+  slotIsOpponent: boolean,
+) {
   if (slotIsOpponent) {
     avatar.style.transition = "transform 0.3s";
     avatar.style.transform = "scale(1.8)";
@@ -3858,7 +4724,7 @@ function animateAvatarPopForDisplaySlot(avatar: SVGElement, slotIsOpponent: bool
       {
         duration: 420,
         fill: "forwards",
-      }
+      },
     );
     return;
   }
@@ -3877,7 +4743,10 @@ export function drawTrace(trace: Trace) {
   const to = inBoardCoordinates(trace.to);
 
   const gradient = document.createElementNS(SVG.ns, "linearGradient");
-  gradient.setAttribute("id", `trace-gradient-${from.toString()}-${to.toString()}`);
+  gradient.setAttribute(
+    "id",
+    `trace-gradient-${from.toString()}-${to.toString()}`,
+  );
   const colors = getTraceColors();
 
   const stop1 = document.createElementNS(SVG.ns, "stop");
@@ -3923,7 +4792,11 @@ export function hasBasePlaceholder(location: Location): boolean {
   return basesPlaceholders.hasOwnProperty(key);
 }
 
-function placeMonWithBomb(item: SVGElement, location: Location, baseItemKind: ItemKind) {
+function placeMonWithBomb(
+  item: SVGElement,
+  location: Location,
+  baseItemKind: ItemKind,
+) {
   location = inBoardCoordinates(location);
   const img = item.cloneNode(true) as SVGElement;
   SVG.setOrigin(img, location.j, location.i);
@@ -3940,7 +4813,11 @@ function placeMonWithBomb(item: SVGElement, location: Location, baseItemKind: It
   startAnimation(img);
 }
 
-function placeMonWithSupermana(item: SVGElement, location: Location, baseItemKind: ItemKind) {
+function placeMonWithSupermana(
+  item: SVGElement,
+  location: Location,
+  baseItemKind: ItemKind,
+) {
   location = inBoardCoordinates(location);
   const img = item.cloneNode(true) as SVGElement;
   SVG.setOrigin(img, location.j, location.i);
@@ -3965,7 +4842,12 @@ function placeMonWithSupermana(item: SVGElement, location: Location, baseItemKin
   }
 }
 
-function placeMonWithMana(item: SVGElement, mana: SVGElement, location: Location, baseItemKind: ItemKind) {
+function placeMonWithMana(
+  item: SVGElement,
+  mana: SVGElement,
+  location: Location,
+  baseItemKind: ItemKind,
+) {
   location = inBoardCoordinates(location);
   const img = item.cloneNode(true) as SVGElement;
   SVG.setOrigin(img, location.j, location.i);
@@ -3992,7 +4874,13 @@ function setCenterTranformOrigin(item: SVGElement, location: Location) {
   item.style.transformOrigin = `${centerX}px ${centerY}px`;
 }
 
-function placeItem(item: SVGElement, location: Location, kind: ItemKind, fainted = false, sparkles = false) {
+function placeItem(
+  item: SVGElement,
+  location: Location,
+  kind: ItemKind,
+  fainted = false,
+  sparkles = false,
+) {
   const logicalLocation = location;
   location = inBoardCoordinates(location);
   const key = location.toString();
@@ -4085,7 +4973,10 @@ function createSparklingContainer(location: Location): SVGElement {
   return container;
 }
 
-function createSmoothSparkleParticle(location: Location, container: SVGElement) {
+function createSmoothSparkleParticle(
+  location: Location,
+  container: SVGElement,
+) {
   const particle = smoothSparkle.cloneNode(true) as SVGElement;
   const y = location.i + Math.random();
   const size = Math.random() * 0.08 + 0.12;
@@ -4099,7 +4990,11 @@ function createSmoothSparkleParticle(location: Location, container: SVGElement) 
   animateSparkleParticle(container, particle, y, opacity, velocity, duration);
 }
 
-function createSparkleParticle(location: Location, container: SVGElement, animating: boolean = true) {
+function createSparkleParticle(
+  location: Location,
+  container: SVGElement,
+  animating: boolean = true,
+) {
   const particle = sparkle.cloneNode(true) as SVGElement;
   const y = location.i + Math.random();
   const size = Math.random() * 0.05 + 0.075;
@@ -4117,7 +5012,14 @@ function createSparkleParticle(location: Location, container: SVGElement, animat
   animateSparkleParticle(container, particle, y, opacity, velocity, duration);
 }
 
-function animateSparkleParticle(container: SVGElement, particle: SVGElement, y: number, opacity: number, velocity: number, duration: number) {
+function animateSparkleParticle(
+  container: SVGElement,
+  particle: SVGElement,
+  y: number,
+  opacity: number,
+  velocity: number,
+  duration: number,
+) {
   let startTime: number | null = null;
 
   function animateParticle(time: number) {
@@ -4134,7 +5036,10 @@ function animateSparkleParticle(container: SVGElement, particle: SVGElement, y: 
       return;
     }
 
-    particle.setAttribute("y", ((y - (velocity * timeDelta) / 1000) * 100).toString());
+    particle.setAttribute(
+      "y",
+      ((y - (velocity * timeDelta) / 1000) * 100).toString(),
+    );
     SVG.setOpacity(particle, Math.max(0, opacity - (0.15 * timeDelta) / 1000));
     setManagedBoardRaf(animateParticle);
   }
@@ -4157,7 +5062,8 @@ function setBase(item: SVGElement, location: Location) {
   ].join("|");
   if (hasBasePlaceholder(logicalLocation)) {
     const existing = basesPlaceholders[key];
-    const existingSignature = existing?.getAttribute("data-base-signature") ?? "";
+    const existingSignature =
+      existing?.getAttribute("data-base-signature") ?? "";
     if (existing && existingSignature === baseSignature) {
       SVG.setHidden(existing, false);
       return;
@@ -4173,7 +5079,10 @@ function setBase(item: SVGElement, location: Location) {
       img = item.cloneNode(true) as SVGElement;
       const firstChild = img.children[0] as HTMLElement;
       firstChild.style.backgroundBlendMode = "saturation";
-      firstChild.style.backgroundColor = ((location.i + location.j) % 2 === 0 ? colors.lightSquare : colors.darkSquare) + "85";
+      firstChild.style.backgroundColor =
+        ((location.i + location.j) % 2 === 0
+          ? colors.lightSquare
+          : colors.darkSquare) + "85";
     } else {
       img = document.createElementNS(SVG.ns, "image");
       SVG.setOpacity(img, 0.5);
@@ -4185,8 +5094,14 @@ function setBase(item: SVGElement, location: Location) {
 
       if (isSpriteSheet) {
         img.setAttribute("data-is-sprite-sheet", "true");
-        img.setAttribute("data-total-frames", item.getAttribute("data-total-frames") || "4");
-        img.setAttribute("data-frame-duration", item.getAttribute("data-frame-duration") || "169");
+        img.setAttribute(
+          "data-total-frames",
+          item.getAttribute("data-total-frames") || "4",
+        );
+        img.setAttribute(
+          "data-frame-duration",
+          item.getAttribute("data-frame-duration") || "169",
+        );
       }
     }
 
@@ -4238,7 +5153,11 @@ function startBlinking(element: SVGElement) {
   }, 0);
 }
 
-function highlightEmptyDestination(location: Location, color: string, blinking: boolean) {
+function highlightEmptyDestination(
+  location: Location,
+  color: string,
+  blinking: boolean,
+) {
   location = inBoardCoordinates(location);
   let highlight: SVGElement;
 
@@ -4246,7 +5165,13 @@ function highlightEmptyDestination(location: Location, color: string, blinking: 
     highlight = document.createElementNS(SVG.ns, "rect");
     const side = 0.27;
     const originOffset = (1 - side) * 0.5;
-    SVG.setFrame(highlight, location.j + originOffset, location.i + originOffset, side, side);
+    SVG.setFrame(
+      highlight,
+      location.j + originOffset,
+      location.i + originOffset,
+      side,
+      side,
+    );
     highlight.setAttribute("rx", "7");
     highlight.setAttribute("ry", "7");
     if (!blinking) {
@@ -4361,7 +5286,11 @@ function highlightStartFromSuggestion(location: Location, color: string) {
   }, 100);
 }
 
-function highlightDestinationItem(location: Location, color: string, blinking: boolean) {
+function highlightDestinationItem(
+  location: Location,
+  color: string,
+  blinking: boolean,
+) {
   location = inBoardCoordinates(location);
 
   if (isPangchiuBoard()) {
@@ -4492,7 +5421,10 @@ function addWaves(location: Location) {
   wavesSquareElement.setAttribute("data-grid-board-only", "true");
   wavesSquareElement.setAttribute("data-board-wave", "true");
   SVG.setHidden(wavesSquareElement, isCustomPictureBoardEnabled());
-  wavesSquareElement.setAttribute("transform", `translate(${location.j * 100}, ${location.i * 100})`);
+  wavesSquareElement.setAttribute(
+    "transform",
+    `translate(${location.j * 100}, ${location.i * 100})`,
+  );
   SVG.setOpacity(wavesSquareElement, 0.5);
   board?.appendChild(wavesSquareElement);
 
@@ -4541,7 +5473,15 @@ function createSmoothWavesFrame(container: SVGGElement) {
     SVG.setOpacity(path, opacity);
     const speed = 0.003 + Math.random() * 0.0012;
     const phaseOffset = Math.random() * Math.PI * 2;
-    const wave = buildFlowingWaveRenderData(path, x, y, width, amplitude, speed, phaseOffset);
+    const wave = buildFlowingWaveRenderData(
+      path,
+      x,
+      y,
+      width,
+      amplitude,
+      speed,
+      phaseOffset,
+    );
     updateFlowingWavePathData(wave, phaseOffset);
     frame.appendChild(path);
     waves.push(wave);
@@ -4568,7 +5508,15 @@ function getSmoothWaveTaper(t: number): number {
   return 1;
 }
 
-function buildFlowingWaveRenderData(path: SVGPathElement, x: number, y: number, width: number, amplitude: number, speed: number, phaseOffset: number): SmoothWaveRenderData {
+function buildFlowingWaveRenderData(
+  path: SVGPathElement,
+  x: number,
+  y: number,
+  width: number,
+  amplitude: number,
+  speed: number,
+  phaseOffset: number,
+): SmoothWaveRenderData {
   const xPoints = new Array<number>(smoothWavePointCount + 1);
   const scaledAmplitudes = new Array<number>(smoothWavePointCount + 1);
   for (let i = 0; i <= smoothWavePointCount; i++) {
@@ -4587,11 +5535,18 @@ function buildFlowingWaveRenderData(path: SVGPathElement, x: number, y: number, 
   };
 }
 
-function updateFlowingWavePathData(wave: SmoothWaveRenderData, phase: number): void {
+function updateFlowingWavePathData(
+  wave: SmoothWaveRenderData,
+  phase: number,
+): void {
   let sinPhase = Math.sin(phase);
   let cosPhase = Math.cos(phase);
   for (let i = 0; i <= smoothWavePointCount; i++) {
-    wave.segments[i] = (i === 0 ? "M" : "L") + wave.xPoints[i] + " " + (wave.yBase + wave.scaledAmplitudes[i] * sinPhase);
+    wave.segments[i] =
+      (i === 0 ? "M" : "L") +
+      wave.xPoints[i] +
+      " " +
+      (wave.yBase + wave.scaledAmplitudes[i] * sinPhase);
     const nextSin = sinPhase * smoothWaveCosStep + cosPhase * smoothWaveSinStep;
     const nextCos = cosPhase * smoothWaveCosStep - sinPhase * smoothWaveSinStep;
     sinPhase = nextSin;
@@ -4615,7 +5570,10 @@ function getWavesFrame(location: Location, frameIndex: number) {
         const baseBottomRect = document.createElementNS(SVG.ns, "rect");
         SVG.setFrame(baseBottomRect, x, y, width, pixel);
         SVG.setFill(baseBottomRect, baseColor);
-        baseBottomRect.setAttribute("class", `wave-bottom ${i % 2 === 0 ? "wave1" : "wave2"}`);
+        baseBottomRect.setAttribute(
+          "class",
+          `wave-bottom ${i % 2 === 0 ? "wave1" : "wave2"}`,
+        );
 
         const slidingBottomRect = document.createElementNS(SVG.ns, "rect");
         SVG.setFrame(slidingBottomRect, x + width, y, 0, pixel);
@@ -4625,7 +5583,10 @@ function getWavesFrame(location: Location, frameIndex: number) {
         const slidingTopRect = document.createElementNS(SVG.ns, "rect");
         SVG.setFrame(slidingTopRect, x + width, y - pixel, 0, pixel);
         SVG.setFill(slidingTopRect, baseColor);
-        slidingTopRect.setAttribute("class", `wave-top ${i % 2 === 0 ? "wave1" : "wave2"}`);
+        slidingTopRect.setAttribute(
+          "class",
+          `wave-top ${i % 2 === 0 ? "wave1" : "wave2"}`,
+        );
 
         frame.appendChild(baseBottomRect);
         frame.appendChild(slidingTopRect);
@@ -4636,8 +5597,12 @@ function getWavesFrame(location: Location, frameIndex: number) {
       const prevKey = location.toString() + (frameIndex - 1).toString();
       const frame = wavesFrames[prevKey].cloneNode(true) as SVGElement;
 
-      const baseBottomRects = frame.querySelectorAll(".wave-bottom:not(.poolBackground)");
-      const slidingBottomRects = frame.querySelectorAll(".wave-bottom.poolBackground");
+      const baseBottomRects = frame.querySelectorAll(
+        ".wave-bottom:not(.poolBackground)",
+      );
+      const slidingBottomRects = frame.querySelectorAll(
+        ".wave-bottom.poolBackground",
+      );
       const slidingTopRects = frame.querySelectorAll(".wave-top");
 
       for (let i = 0; i < baseBottomRects.length; i++) {
@@ -4645,7 +5610,8 @@ function getWavesFrame(location: Location, frameIndex: number) {
         const slidingBottomRect = slidingBottomRects[i];
         const slidingTopRect = slidingTopRects[i];
         const baseX = parseFloat(baseBottomRect.getAttribute("x") ?? "0") / 100;
-        const baseWidth = parseFloat(baseBottomRect.getAttribute("width") ?? "0") / 100;
+        const baseWidth =
+          parseFloat(baseBottomRect.getAttribute("width") ?? "0") / 100;
         let sliderX = baseX + baseWidth - pixel * frameIndex;
         const attemptedWidth = Math.min(frameIndex, 3) * pixel;
         const visibleWidth = (() => {
@@ -4667,7 +5633,10 @@ function getWavesFrame(location: Location, frameIndex: number) {
         })();
         slidingBottomRect.setAttribute("x", (sliderX * 100).toString());
         slidingTopRect.setAttribute("x", (sliderX * 100).toString());
-        slidingBottomRect.setAttribute("width", (visibleWidth * 100).toString());
+        slidingBottomRect.setAttribute(
+          "width",
+          (visibleWidth * 100).toString(),
+        );
         slidingTopRect.setAttribute("width", (visibleWidth * 100).toString());
       }
       wavesFrames[key] = frame;
@@ -4723,7 +5692,8 @@ export function didToggleBoardColors() {
   if (!isCustomPictureBoardEnabled()) {
     Object.entries(basesPlaceholders).forEach(([key, element]) => {
       const [i, j] = key.split("-").map(Number);
-      const squareColor = ((i + j) % 2 === 0 ? colors.lightSquare : colors.darkSquare) + "85";
+      const squareColor =
+        ((i + j) % 2 === 0 ? colors.lightSquare : colors.darkSquare) + "85";
       const firstChild = element.children[0] as HTMLElement;
       firstChild.style.backgroundColor = squareColor;
     });
@@ -4769,7 +5739,10 @@ const smoothSparkle = (() => {
   SVG.setFill(svg, "transparent");
 
   const star = document.createElementNS(SVG.ns, "path");
-  star.setAttribute("d", "M1.5 0.1 Q1.62 1.38 2.9 1.5 Q1.62 1.62 1.5 2.9 Q1.38 1.62 0.1 1.5 Q1.38 1.38 1.5 0.1Z");
+  star.setAttribute(
+    "d",
+    "M1.5 0.1 Q1.62 1.38 2.9 1.5 Q1.62 1.62 1.5 2.9 Q1.38 1.62 0.1 1.5 Q1.38 1.38 1.5 0.1Z",
+  );
   star.setAttribute("fill", colors.sparkleLight);
   star.setAttribute("opacity", "0.7");
   svg.appendChild(star);

@@ -27,7 +27,10 @@ const sumMaterials = (a, b) => {
 
 const normalizeMiningSnapshot = (source) => {
   const materials = normalizeMaterials(source && source.materials);
-  const lastRockDate = typeof (source && source.lastRockDate) === "string" ? source.lastRockDate : null;
+  const lastRockDate =
+    typeof (source && source.lastRockDate) === "string"
+      ? source.lastRockDate
+      : null;
   return {
     lastRockDate,
     materials,

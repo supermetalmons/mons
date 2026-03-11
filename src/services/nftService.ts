@@ -14,9 +14,16 @@ function buildKey(sol: string, eth: string): string {
 }
 
 function generateStubResponse() {
-  const validReactionIds = [9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466];
+  const validReactionIds = [
+    9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163,
+    168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246,
+    250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318, 325,
+    328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430,
+    444, 465, 466,
+  ];
   const validAvatarIds = Array.from({ length: 467 }, (_, i) => i);
-  const randomInt = (min: number, max: number) => Math.floor(Math.random() * (max - min + 1)) + min;
+  const randomInt = (min: number, max: number) =>
+    Math.floor(Math.random() * (max - min + 1)) + min;
   const shuffled = (arr: number[]) => {
     const a = arr.slice();
     for (let i = a.length - 1; i > 0; i--) {
@@ -29,20 +36,39 @@ function generateStubResponse() {
   };
 
   const reactionCount = randomInt(1, Math.min(50, validReactionIds.length));
-  const selectedReactionIds = shuffled(validReactionIds).slice(0, reactionCount);
-  const swagpack_reactions = selectedReactionIds.map((id) => ({ id, count: randomInt(1, 10) }));
+  const selectedReactionIds = shuffled(validReactionIds).slice(
+    0,
+    reactionCount,
+  );
+  const swagpack_reactions = selectedReactionIds.map((id) => ({
+    id,
+    count: randomInt(1, 10),
+  }));
 
   const usedIds = new Set(selectedReactionIds);
   const maxExtraAvatars = 50 - swagpack_reactions.length;
-  const extraAvatarCount = maxExtraAvatars > 0 ? randomInt(0, maxExtraAvatars) : 0;
-  const availableAvatarOnlyIds = shuffled(validAvatarIds.filter((id) => !usedIds.has(id))).slice(0, extraAvatarCount);
-  const swagpack_avatars = [...swagpack_reactions.map((x) => ({ id: x.id, count: x.count })), ...availableAvatarOnlyIds.map((id) => ({ id, count: randomInt(1, 10) }))];
-  const specials = [{id: 0, count: 1}, {id: 1, count: 2}, {id: 2, count: 3}]
+  const extraAvatarCount =
+    maxExtraAvatars > 0 ? randomInt(0, maxExtraAvatars) : 0;
+  const availableAvatarOnlyIds = shuffled(
+    validAvatarIds.filter((id) => !usedIds.has(id)),
+  ).slice(0, extraAvatarCount);
+  const swagpack_avatars = [
+    ...swagpack_reactions.map((x) => ({ id: x.id, count: x.count })),
+    ...availableAvatarOnlyIds.map((id) => ({ id, count: randomInt(1, 10) })),
+  ];
+  const specials = [
+    { id: 0, count: 1 },
+    { id: 1, count: 2 },
+    { id: 2, count: 3 },
+  ];
 
   return { ok: true, specials, swagpack_avatars, swagpack_reactions };
 }
 
-export async function fetchNftsByAddresses(sol: string, eth: string): Promise<any> {
+export async function fetchNftsByAddresses(
+  sol: string,
+  eth: string,
+): Promise<any> {
   if (USE_STUB_RESPONSE) {
     return generateStubResponse();
   }

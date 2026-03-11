@@ -36,7 +36,10 @@ export const ControlsContainer = styled.div`
   }
 `;
 
-export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
+export const BrushButton = styled.button<{
+  disabled?: boolean;
+  dimmed?: boolean;
+}>`
   position: fixed;
   bottom: max(10px, env(safe-area-inset-bottom));
   left: 9px;
@@ -101,7 +104,12 @@ export const BrushButton = styled.button<{ disabled?: boolean; dimmed?: boolean 
   }
 `;
 
-export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boolean; isViewOnly?: boolean; disabled?: boolean }>`
+export const BottomPillButton = styled.button<{
+  isPink?: boolean;
+  isBlue?: boolean;
+  isViewOnly?: boolean;
+  disabled?: boolean;
+}>`
   height: 32px;
   font-weight: 888;
   font-size: 0.88rem;
@@ -175,45 +183,119 @@ export const BottomPillButton = styled.button<{ isPink?: boolean; isBlue?: boole
     font-size: 0.3rem;
   }
 
-  cursor: ${(props) => (props.isViewOnly || (props.isPink && props.disabled) ? "default" : "pointer")};
+  cursor: ${(props) =>
+    props.isViewOnly || (props.isPink && props.disabled)
+      ? "default"
+      : "pointer"};
   transition: background-color 0.3s ease;
   text-align: center;
   display: flex;
   align-items: center;
   justify-content: center;
 
-  background-color: ${(props) => (props.isViewOnly ? "var(--color-gray-f0)" : props.isBlue ? "var(--color-gray-f0)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabled)" : props.isPink ? "var(--color-pink-light)" : "var(--color-blue-primary)")};
-  color: ${(props) => (props.isPink && props.disabled ? "var(--color-white)" : props.isViewOnly ? "var(--viewOnlyButtonTextColor)" : props.isBlue ? "var(--color-blue-primary)" : "var(--color-white)")};
+  background-color: ${(props) =>
+    props.isViewOnly
+      ? "var(--color-gray-f0)"
+      : props.isBlue
+        ? "var(--color-gray-f0)"
+        : props.isPink && props.disabled
+          ? "var(--pinkButtonBackgroundDisabled)"
+          : props.isPink
+            ? "var(--color-pink-light)"
+            : "var(--color-blue-primary)"};
+  color: ${(props) =>
+    props.isPink && props.disabled
+      ? "var(--color-white)"
+      : props.isViewOnly
+        ? "var(--viewOnlyButtonTextColor)"
+        : props.isBlue
+          ? "var(--color-blue-primary)"
+          : "var(--color-white)"};
   border: none;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.isViewOnly ? "var(--color-gray-f0)" : props.isBlue ? "var(--color-gray-e0)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabled)" : props.isPink ? "var(--color-pink-mid)" : "var(--bottomButtonBackgroundHover)")};
+      background-color: ${(props) =>
+        props.isViewOnly
+          ? "var(--color-gray-f0)"
+          : props.isBlue
+            ? "var(--color-gray-e0)"
+            : props.isPink && props.disabled
+              ? "var(--pinkButtonBackgroundDisabled)"
+              : props.isPink
+                ? "var(--color-pink-mid)"
+                : "var(--bottomButtonBackgroundHover)"};
     }
   }
 
   &:active {
-    background-color: ${(props) => (props.isViewOnly ? "var(--color-gray-f0)" : props.isBlue ? "var(--color-gray-d0)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabled)" : props.isPink ? "var(--pinkButtonBackgroundActive)" : "var(--bottomButtonBackgroundActive)")};
+    background-color: ${(props) =>
+      props.isViewOnly
+        ? "var(--color-gray-f0)"
+        : props.isBlue
+          ? "var(--color-gray-d0)"
+          : props.isPink && props.disabled
+            ? "var(--pinkButtonBackgroundDisabled)"
+            : props.isPink
+              ? "var(--pinkButtonBackgroundActive)"
+              : "var(--bottomButtonBackgroundActive)"};
   }
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.isPink && props.disabled ? "var(--color-text-on-pink-disabled)" : props.isViewOnly ? "var(--color-gray-77)" : props.isBlue ? "var(--color-blue-primary-dark)" : "var(--color-white)")};
+    color: ${(props) =>
+      props.isPink && props.disabled
+        ? "var(--color-text-on-pink-disabled)"
+        : props.isViewOnly
+          ? "var(--color-gray-77)"
+          : props.isBlue
+            ? "var(--color-blue-primary-dark)"
+            : "var(--color-white)"};
 
-    background-color: ${(props) => (props.isViewOnly ? "var(--color-gray-33)" : props.isBlue ? "var(--color-gray-33)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabledDark)" : props.isPink ? "var(--color-pink-mid)" : "var(--color-blue-primary-dark)")};
+    background-color: ${(props) =>
+      props.isViewOnly
+        ? "var(--color-gray-33)"
+        : props.isBlue
+          ? "var(--color-gray-33)"
+          : props.isPink && props.disabled
+            ? "var(--pinkButtonBackgroundDisabledDark)"
+            : props.isPink
+              ? "var(--color-pink-mid)"
+              : "var(--color-blue-primary-dark)"};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.isViewOnly ? "var(--color-gray-33)" : props.isBlue ? "var(--color-gray-44)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabledDark)" : props.isPink ? "var(--color-pink-light)" : "var(--bottomButtonBackgroundHoverDark)")};
+        background-color: ${(props) =>
+          props.isViewOnly
+            ? "var(--color-gray-33)"
+            : props.isBlue
+              ? "var(--color-gray-44)"
+              : props.isPink && props.disabled
+                ? "var(--pinkButtonBackgroundDisabledDark)"
+                : props.isPink
+                  ? "var(--color-pink-light)"
+                  : "var(--bottomButtonBackgroundHoverDark)"};
       }
     }
 
     &:active {
-      background-color: ${(props) => (props.isViewOnly ? "var(--color-gray-33)" : props.isBlue ? "var(--color-gray-55)" : props.isPink && props.disabled ? "var(--pinkButtonBackgroundDisabledDark)" : props.isPink ? "var(--pinkButtonBackgroundActiveDark)" : "var(--bottomButtonBackgroundActiveDark)")};
+      background-color: ${(props) =>
+        props.isViewOnly
+          ? "var(--color-gray-33)"
+          : props.isBlue
+            ? "var(--color-gray-55)"
+            : props.isPink && props.disabled
+              ? "var(--pinkButtonBackgroundDisabledDark)"
+              : props.isPink
+                ? "var(--pinkButtonBackgroundActiveDark)"
+                : "var(--bottomButtonBackgroundActiveDark)"};
     }
   }
 `;
 
-export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?: boolean }>`
+export const NavigationListButton = styled.button<{
+  disabled?: boolean;
+  dimmed?: boolean;
+}>`
   position: relative;
   width: 32px;
   height: 32px;
@@ -237,7 +319,8 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   svg {
     width: ${(props) => (props.dimmed ? "16px" : "13px")};
     height: ${(props) => (props.dimmed ? "16px" : "13px")};
-    color: ${(props) => (props.dimmed ? "var(--color-gray-33)" : "var(--color-blue-primary)")};
+    color: ${(props) =>
+      props.dimmed ? "var(--color-gray-33)" : "var(--color-blue-primary)"};
     overflow: visible;
   }
 
@@ -259,7 +342,10 @@ export const NavigationListButton = styled.button<{ disabled?: boolean; dimmed?:
   @media (prefers-color-scheme: dark) {
     background-color: var(--color-gray-33);
     svg {
-      color: ${(props) => (props.dimmed ? "var(--color-gray-f0)" : "var(--color-blue-primary-dark)")};
+      color: ${(props) =>
+        props.dimmed
+          ? "var(--color-gray-f0)"
+          : "var(--color-blue-primary-dark)"};
     }
 
     @media (hover: hover) and (pointer: fine) {
@@ -297,18 +383,23 @@ export const ControlButton = styled.button<{ disabled?: boolean }>`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.disabled ? "var(--color-gray-f0)" : "var(--color-gray-e0)")};
+      background-color: ${(props) =>
+        props.disabled ? "var(--color-gray-f0)" : "var(--color-gray-e0)"};
     }
   }
 
   &:active {
-    background-color: ${(props) => (props.disabled ? "var(--color-gray-f0)" : "var(--color-gray-d0)")};
+    background-color: ${(props) =>
+      props.disabled ? "var(--color-gray-f0)" : "var(--color-gray-d0)"};
   }
 
   svg {
     width: 16px;
     height: 16px;
-    color: ${(props) => (props.disabled ? "var(--lightDisabledTextColor2)" : "var(--color-gray-33)")};
+    color: ${(props) =>
+      props.disabled
+        ? "var(--lightDisabledTextColor2)"
+        : "var(--color-gray-33)"};
     overflow: visible;
   }
 
@@ -317,16 +408,19 @@ export const ControlButton = styled.button<{ disabled?: boolean }>`
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.disabled ? "var(--color-gray-33)" : "var(--color-gray-44)")};
+        background-color: ${(props) =>
+          props.disabled ? "var(--color-gray-33)" : "var(--color-gray-44)"};
       }
     }
 
     &:active {
-      background-color: ${(props) => (props.disabled ? "var(--color-gray-33)" : "var(--color-gray-55)")};
+      background-color: ${(props) =>
+        props.disabled ? "var(--color-gray-33)" : "var(--color-gray-55)"};
     }
 
     svg {
-      color: ${(props) => (props.disabled ? "var(--color-gray-77)" : "var(--color-gray-f0)")};
+      color: ${(props) =>
+        props.disabled ? "var(--color-gray-77)" : "var(--color-gray-f0)"};
     }
   }
 `;
@@ -423,7 +517,9 @@ export const ResignButton = styled(ReactionButton)`
   }
 `;
 
-export const ReactionPillsContainer = styled.div<{ animatedMaxHeight?: number }>`
+export const ReactionPillsContainer = styled.div<{
+  animatedMaxHeight?: number;
+}>`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
   right: 8px;
@@ -436,7 +532,10 @@ export const ReactionPillsContainer = styled.div<{ animatedMaxHeight?: number }>
   flex-wrap: wrap;
   gap: 6px;
   width: min(90vw, 204px);
-  max-height: ${(props) => (props.animatedMaxHeight ? `min(calc(100dvh - 120px - env(safe-area-inset-bottom)), ${props.animatedMaxHeight}px)` : "calc(100dvh - 120px - env(safe-area-inset-bottom))")};
+  max-height: ${(props) =>
+    props.animatedMaxHeight
+      ? `min(calc(100dvh - 120px - env(safe-area-inset-bottom)), ${props.animatedMaxHeight}px)`
+      : "calc(100dvh - 120px - env(safe-area-inset-bottom))"};
   transition: max-height 0.16s ease-out;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
@@ -534,7 +633,10 @@ export const WagerBetButton = styled.button<{ $ready?: boolean }>`
   border-radius: 17px;
   padding: 0 14px;
   border: none;
-  background-color: ${(p) => (p.$ready ? "var(--wagerButtonBackgroundReady)" : "var(--wagerButtonBackground)")};
+  background-color: ${(p) =>
+    p.$ready
+      ? "var(--wagerButtonBackgroundReady)"
+      : "var(--wagerButtonBackground)"};
   color: #fff;
   display: flex;
   align-items: center;
@@ -550,26 +652,41 @@ export const WagerBetButton = styled.button<{ $ready?: boolean }>`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(p) => (p.$ready ? "var(--wagerButtonBackgroundReadyHover)" : "var(--wagerButtonBackground)")};
+      background-color: ${(p) =>
+        p.$ready
+          ? "var(--wagerButtonBackgroundReadyHover)"
+          : "var(--wagerButtonBackground)"};
     }
   }
 
   &:active {
-    background-color: ${(p) => (p.$ready ? "var(--wagerButtonBackgroundReadyActive)" : "var(--wagerButtonBackground)")};
+    background-color: ${(p) =>
+      p.$ready
+        ? "var(--wagerButtonBackgroundReadyActive)"
+        : "var(--wagerButtonBackground)"};
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: ${(p) => (p.$ready ? "var(--wagerButtonBackgroundReadyDark)" : "var(--wagerButtonBackgroundDark)")};
+    background-color: ${(p) =>
+      p.$ready
+        ? "var(--wagerButtonBackgroundReadyDark)"
+        : "var(--wagerButtonBackgroundDark)"};
     color: #fff;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(p) => (p.$ready ? "var(--wagerButtonBackgroundReadyHoverDark)" : "var(--wagerButtonBackgroundDark)")};
+        background-color: ${(p) =>
+          p.$ready
+            ? "var(--wagerButtonBackgroundReadyHoverDark)"
+            : "var(--wagerButtonBackgroundDark)"};
       }
     }
 
     &:active {
-      background-color: ${(p) => (p.$ready ? "var(--wagerButtonBackgroundReadyActiveDark)" : "var(--wagerButtonBackgroundDark)")};
+      background-color: ${(p) =>
+        p.$ready
+          ? "var(--wagerButtonBackgroundReadyActiveDark)"
+          : "var(--wagerButtonBackgroundDark)"};
     }
   }
 `;
@@ -633,7 +750,15 @@ export const WagerMaterialAmount = styled.span`
   line-height: 1;
   color: var(--color-gray-33);
   font-weight: 600;
-  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    SF Mono,
+    Menlo,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
   letter-spacing: 0.2px;
 
   @media (prefers-color-scheme: dark) {
@@ -658,6 +783,14 @@ export const WagerButtonAmount = styled.span`
   line-height: 1;
   color: inherit;
   font-weight: 700;
-  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    SF Mono,
+    Menlo,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
   letter-spacing: 0.2px;
 `;

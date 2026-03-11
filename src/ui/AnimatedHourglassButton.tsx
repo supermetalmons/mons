@@ -13,7 +13,9 @@ interface AnimatedHourglassIconProps {
   config: HourglassConfig;
 }
 
-const AnimatedHourglassIcon: React.FC<AnimatedHourglassIconProps> = ({ config }) => {
+const AnimatedHourglassIcon: React.FC<AnimatedHourglassIconProps> = ({
+  config,
+}) => {
   const { duration, progress, requestDate } = config;
   const [elapsedTime, setElapsedTime] = useState<number>(progress);
 
@@ -51,7 +53,12 @@ const AnimatedHourglassIcon: React.FC<AnimatedHourglassIconProps> = ({ config })
   const bottomSandY = 56 - bottomSandHeight; // Moves up from y=56 to y=32
 
   return (
-    <svg width="64" height="64" viewBox="0 0 64 64" style={{ display: "block" }}>
+    <svg
+      width="64"
+      height="64"
+      viewBox="0 0 64 64"
+      style={{ display: "block" }}
+    >
       {/* Hourglass outline */}
       <path
         d="
@@ -66,14 +73,22 @@ const AnimatedHourglassIcon: React.FC<AnimatedHourglassIconProps> = ({ config })
       />
 
       {/* Top bulb sand */}
-      <path d="M16,8 L48,8 L32,32 Z" fill="currentColor" clipPath="url(#top-sand-clip)" />
+      <path
+        d="M16,8 L48,8 L32,32 Z"
+        fill="currentColor"
+        clipPath="url(#top-sand-clip)"
+      />
       {/* Clip path for top bulb sand */}
       <clipPath id="top-sand-clip">
         <rect x="0" y={topSandY} width="64" height={topSandHeight} />
       </clipPath>
 
       {/* Bottom bulb sand */}
-      <path d="M16,56 L48,56 L32,32 Z" fill="currentColor" clipPath="url(#bottom-sand-clip)" />
+      <path
+        d="M16,56 L48,56 L32,32 Z"
+        fill="currentColor"
+        clipPath="url(#bottom-sand-clip)"
+      />
       {/* Clip path for bottom bulb sand */}
       <clipPath id="bottom-sand-clip">
         <rect x="0" y={bottomSandY} width="64" height={bottomSandHeight} />
@@ -86,7 +101,10 @@ interface AnimatedHourglassButtonProps extends React.ButtonHTMLAttributes<HTMLBu
   config: HourglassConfig;
 }
 
-const AnimatedHourglassButton = React.forwardRef<HTMLButtonElement, AnimatedHourglassButtonProps>(({ config, onClick, ...props }, ref) => {
+const AnimatedHourglassButton = React.forwardRef<
+  HTMLButtonElement,
+  AnimatedHourglassButtonProps
+>(({ config, onClick, ...props }, ref) => {
   return (
     <ControlButton ref={ref} onClick={onClick} aria-label="Timer" {...props}>
       <AnimatedHourglassIcon config={config} />

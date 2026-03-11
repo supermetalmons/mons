@@ -2,7 +2,9 @@ const crypto = require("crypto");
 const admin = require("firebase-admin");
 const { HttpsError } = require("firebase-functions/v2/https");
 const { normalizeMiningSnapshot } = require("./miningHelpers");
-const { assignRandomUsernameIfNeededForWalletlessProfile } = require("./usernameRegistry");
+const {
+  assignRandomUsernameIfNeededForWalletlessProfile,
+} = require("./usernameRegistry");
 
 const METHOD_FIELD_BY_TYPE = {
   eth: "eth",
@@ -21,7 +23,8 @@ const LINK_METHOD_MAX_ATTEMPTS = 3;
 const MERGE_LOCK_RELEASE_MAX_ATTEMPTS = 3;
 const MERGE_LOCK_RELEASE_RETRY_BASE_DELAY_MS = 80;
 
-const toCleanString = (value) => (typeof value === "string" && value.trim() !== "" ? value.trim() : "");
+const toCleanString = (value) =>
+  typeof value === "string" && value.trim() !== "" ? value.trim() : "";
 const normalizeMethodName = (value) => toCleanString(value).toLowerCase();
 const assertSupportedMethod = (value) => {
   const method = normalizeMethodName(value);
@@ -88,7 +91,10 @@ const getProfileMethodCooldownDocId = (profileId, method) => {
   return `${normalizedProfileId}:${normalizedMethod}`;
 };
 
-const parseCooldownRetryAtMs = (docData, fallbackCooldownMs = AUTH_METHOD_REUSE_COOLDOWN_MS) => {
+const parseCooldownRetryAtMs = (
+  docData,
+  fallbackCooldownMs = AUTH_METHOD_REUSE_COOLDOWN_MS,
+) => {
   const retryAtMs = parseNumber(docData && docData.retryAtMs, 0);
   if (retryAtMs > 0) {
     return retryAtMs;
@@ -101,9 +107,12 @@ const parseCooldownRetryAtMs = (docData, fallbackCooldownMs = AUTH_METHOD_REUSE_
     parseNumber(docData && docData.startedAtMs, 0),
     parseNumber(docData && docData.revokedAtMs, 0),
     parseNumber(docData && docData.createdAtMs, 0),
-    parseNumber(docData && docData.updatedAtMs, 0)
+    parseNumber(docData && docData.updatedAtMs, 0),
   );
-  const cooldownMs = parseNumber(docData && docData.cooldownMs, fallbackCooldownMs);
+  const cooldownMs = parseNumber(
+    docData && docData.cooldownMs,
+    fallbackCooldownMs,
+  );
   if (startedAtMs > 0 && cooldownMs > 0) {
     return startedAtMs + cooldownMs;
   }
@@ -121,7 +130,11 @@ const buildMethodReuseCooldownDetails = ({ method, retryAtMs }) => {
   };
 };
 
-const buildProfileMethodCooldownDetails = ({ method, profileId, retryAtMs }) => {
+const buildProfileMethodCooldownDetails = ({
+  method,
+  profileId,
+  retryAtMs,
+}) => {
   const normalizedMethod = assertSupportedMethod(method);
   const normalizedProfileId = toCleanString(profileId);
   return {
@@ -135,7 +148,11 @@ const buildProfileMethodCooldownDetails = ({ method, profileId, retryAtMs }) => 
 };
 
 const throwMethodReuseCooldownError = ({ method, retryAtMs }) => {
-  throw new HttpsError("failed-precondition", "method-reuse-cooldown", buildMethodReuseCooldownDetails({ method, retryAtMs }));
+  throw new HttpsError(
+    "failed-precondition",
+    "method-reuse-cooldown",
+    buildMethodReuseCooldownDetails({ method, retryAtMs }),
+  );
 };
 
 const throwProfileMethodCooldownError = ({ method, profileId, retryAtMs }) => {
@@ -146,7 +163,7 @@ const throwProfileMethodCooldownError = ({ method, profileId, retryAtMs }) => {
       method,
       profileId,
       retryAtMs,
-    })
+    }),
   );
 };
 
@@ -166,7 +183,13 @@ const applyQueuedCleanupDeletes = ({ transaction, cleanupRefsByPath }) => {
   });
 };
 
-const ensureCooldownInactiveInTransaction = async ({ transaction, ref, nowMs, onActive, cleanupRefsByPath }) => {
+const ensureCooldownInactiveInTransaction = async ({
+  transaction,
+  ref,
+  nowMs,
+  onActive,
+  cleanupRefsByPath,
+}) => {
   const snapshot = await transaction.get(ref);
   if (!snapshot.exists) {
     return;
@@ -179,14 +202,22 @@ const ensureCooldownInactiveInTransaction = async ({ transaction, ref, nowMs, on
   queueCleanupRef(cleanupRefsByPath, ref);
 };
 
-const enforceMethodReuseCooldownInTransaction = async ({ transaction, method, normalizedMethodValue, nowMs, cleanupRefsByPath }) => {
+const enforceMethodReuseCooldownInTransaction = async ({
+  transaction,
+  method,
+  normalizedMethodValue,
+  nowMs,
+  cleanupRefsByPath,
+}) => {
   const normalizedMethod = assertSupportedMethod(method);
   const normalizedValue = toCleanString(normalizedMethodValue);
   if (!normalizedValue) {
     return;
   }
   const firestore = admin.firestore();
-  const revocationRef = firestore.collection("authMethodRevocations").doc(getMethodKey(normalizedMethod, normalizedValue));
+  const revocationRef = firestore
+    .collection("authMethodRevocations")
+    .doc(getMethodKey(normalizedMethod, normalizedValue));
   await ensureCooldownInactiveInTransaction({
     transaction,
     ref: revocationRef,
@@ -201,14 +232,22 @@ const enforceMethodReuseCooldownInTransaction = async ({ transaction, method, no
   });
 };
 
-const enforceProfileMethodCooldownInTransaction = async ({ transaction, profileId, method, nowMs, cleanupRefsByPath }) => {
+const enforceProfileMethodCooldownInTransaction = async ({
+  transaction,
+  profileId,
+  method,
+  nowMs,
+  cleanupRefsByPath,
+}) => {
   const normalizedProfileId = toCleanString(profileId);
   if (!normalizedProfileId) {
     throw new HttpsError("invalid-argument", "profileId is required.");
   }
   const normalizedMethod = assertSupportedMethod(method);
   const firestore = admin.firestore();
-  const profileCooldownRef = firestore.collection("authProfileMethodCooldowns").doc(getProfileMethodCooldownDocId(normalizedProfileId, normalizedMethod));
+  const profileCooldownRef = firestore
+    .collection("authProfileMethodCooldowns")
+    .doc(getProfileMethodCooldownDocId(normalizedProfileId, normalizedMethod));
   await ensureCooldownInactiveInTransaction({
     transaction,
     ref: profileCooldownRef,
@@ -225,10 +264,13 @@ const enforceProfileMethodCooldownInTransaction = async ({ transaction, profileI
 };
 
 const createOpId = () => crypto.randomBytes(16).toString("hex");
-const createToken = (bytes = 18) => crypto.randomBytes(bytes).toString("base64url");
+const createToken = (bytes = 18) =>
+  crypto.randomBytes(bytes).toString("base64url");
 const createSiweNonce = (length = 24) => {
-  const targetLength = Number.isFinite(length) && length >= 8 ? Math.floor(length) : 24;
-  const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const targetLength =
+    Number.isFinite(length) && length >= 8 ? Math.floor(length) : 24;
+  const alphabet =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
   let value = "";
   for (let index = 0; index < targetLength; index += 1) {
     value += alphabet[crypto.randomInt(alphabet.length)];
@@ -301,7 +343,10 @@ const hashMethodValue = (method, normalizedValue) => {
   if (!cleanValue) {
     return "";
   }
-  return crypto.createHash("sha256").update(`${method}:${cleanValue}`).digest("hex");
+  return crypto
+    .createHash("sha256")
+    .update(`${method}:${cleanValue}`)
+    .digest("hex");
 };
 
 const getMethodValueFromProfile = (profileData, method) => {
@@ -330,10 +375,12 @@ const linkedMethodsFromProfileData = (profileData) => ({
 
 const linkedMethodCount = (profileData) => {
   const linked = linkedMethodsFromProfileData(profileData);
-  return [linked.apple, linked.eth, linked.sol, linked.x].filter(Boolean).length;
+  return [linked.apple, linked.eth, linked.sol, linked.x].filter(Boolean)
+    .length;
 };
 
-const pickTargetOrSource = (targetValue, sourceValue) => (hasValue(targetValue) ? targetValue : sourceValue);
+const pickTargetOrSource = (targetValue, sourceValue) =>
+  hasValue(targetValue) ? targetValue : sourceValue;
 
 const maskEmail = (value) => {
   const email = toCleanString(value);
@@ -373,13 +420,20 @@ const toMillis = (value) => {
 };
 
 const readMergeFreshness = (docData) => {
-  return Math.max(toMillis(docData && docData.updatedAt), toMillis(docData && docData.listSortAt));
+  return Math.max(
+    toMillis(docData && docData.updatedAt),
+    toMillis(docData && docData.listSortAt),
+  );
 };
 
 const mergeUniqueStringArray = (left, right) => {
   const result = [];
   const add = (value) => {
-    if (typeof value === "string" && value.trim() !== "" && !result.includes(value)) {
+    if (
+      typeof value === "string" &&
+      value.trim() !== "" &&
+      !result.includes(value)
+    ) {
       result.push(value);
     }
   };
@@ -395,54 +449,109 @@ const mergeUniqueStringArray = (left, right) => {
 const mergeMining = (targetData, sourceData) => {
   const targetMining = normalizeMiningSnapshot(targetData && targetData.mining);
   const sourceMining = normalizeMiningSnapshot(sourceData && sourceData.mining);
-  const lastRockDate = [targetMining.lastRockDate, sourceMining.lastRockDate]
-    .filter((value) => typeof value === "string" && value !== "")
-    .sort()
-    .pop() || null;
+  const lastRockDate =
+    [targetMining.lastRockDate, sourceMining.lastRockDate]
+      .filter((value) => typeof value === "string" && value !== "")
+      .sort()
+      .pop() || null;
   return {
     lastRockDate,
     materials: {
-      dust: parseNumber(targetMining.materials.dust, 0) + parseNumber(sourceMining.materials.dust, 0),
-      slime: parseNumber(targetMining.materials.slime, 0) + parseNumber(sourceMining.materials.slime, 0),
-      gum: parseNumber(targetMining.materials.gum, 0) + parseNumber(sourceMining.materials.gum, 0),
-      metal: parseNumber(targetMining.materials.metal, 0) + parseNumber(sourceMining.materials.metal, 0),
-      ice: parseNumber(targetMining.materials.ice, 0) + parseNumber(sourceMining.materials.ice, 0),
+      dust:
+        parseNumber(targetMining.materials.dust, 0) +
+        parseNumber(sourceMining.materials.dust, 0),
+      slime:
+        parseNumber(targetMining.materials.slime, 0) +
+        parseNumber(sourceMining.materials.slime, 0),
+      gum:
+        parseNumber(targetMining.materials.gum, 0) +
+        parseNumber(sourceMining.materials.gum, 0),
+      metal:
+        parseNumber(targetMining.materials.metal, 0) +
+        parseNumber(sourceMining.materials.metal, 0),
+      ice:
+        parseNumber(targetMining.materials.ice, 0) +
+        parseNumber(sourceMining.materials.ice, 0),
     },
   };
 };
 
 const mergeCustom = (targetData, sourceData) => {
-  const targetCustom = targetData && typeof targetData.custom === "object" && targetData.custom ? targetData.custom : {};
-  const sourceCustom = sourceData && typeof sourceData.custom === "object" && sourceData.custom ? sourceData.custom : {};
+  const targetCustom =
+    targetData && typeof targetData.custom === "object" && targetData.custom
+      ? targetData.custom
+      : {};
+  const sourceCustom =
+    sourceData && typeof sourceData.custom === "object" && sourceData.custom
+      ? sourceData.custom
+      : {};
   const merged = {
     ...sourceCustom,
     ...targetCustom,
   };
   merged.emoji = pickTargetOrSource(targetCustom.emoji, sourceCustom.emoji);
   merged.aura = pickTargetOrSource(targetCustom.aura, sourceCustom.aura);
-  merged.cardBackgroundId = pickTargetOrSource(targetCustom.cardBackgroundId, sourceCustom.cardBackgroundId);
-  merged.cardStickers = pickTargetOrSource(targetCustom.cardStickers, sourceCustom.cardStickers);
-  merged.cardSubtitleId = pickTargetOrSource(targetCustom.cardSubtitleId, sourceCustom.cardSubtitleId);
-  merged.profileCounter = pickTargetOrSource(targetCustom.profileCounter, sourceCustom.profileCounter);
-  merged.profileMons = pickTargetOrSource(targetCustom.profileMons, sourceCustom.profileMons);
-  merged.completedProblems = mergeUniqueStringArray(targetCustom.completedProblems, sourceCustom.completedProblems);
-  merged.tutorialCompleted = !!targetCustom.tutorialCompleted || !!sourceCustom.tutorialCompleted;
+  merged.cardBackgroundId = pickTargetOrSource(
+    targetCustom.cardBackgroundId,
+    sourceCustom.cardBackgroundId,
+  );
+  merged.cardStickers = pickTargetOrSource(
+    targetCustom.cardStickers,
+    sourceCustom.cardStickers,
+  );
+  merged.cardSubtitleId = pickTargetOrSource(
+    targetCustom.cardSubtitleId,
+    sourceCustom.cardSubtitleId,
+  );
+  merged.profileCounter = pickTargetOrSource(
+    targetCustom.profileCounter,
+    sourceCustom.profileCounter,
+  );
+  merged.profileMons = pickTargetOrSource(
+    targetCustom.profileMons,
+    sourceCustom.profileMons,
+  );
+  merged.completedProblems = mergeUniqueStringArray(
+    targetCustom.completedProblems,
+    sourceCustom.completedProblems,
+  );
+  merged.tutorialCompleted =
+    !!targetCustom.tutorialCompleted || !!sourceCustom.tutorialCompleted;
   return merged;
 };
 
 const ensureMethodCompatibility = (profileData, method, normalizedValue) => {
   const existing = normalizeFromProfileByMethod(method, profileData);
   if (existing && existing !== normalizedValue) {
-    throw new HttpsError("failed-precondition", "method-already-linked-different");
+    throw new HttpsError(
+      "failed-precondition",
+      "method-already-linked-different",
+    );
   }
 };
 
 const validateMergeMethodConflict = (targetData, sourceData) => {
   const checks = [
-    ["eth", normalizeFromProfileByMethod("eth", targetData), normalizeFromProfileByMethod("eth", sourceData)],
-    ["sol", normalizeFromProfileByMethod("sol", targetData), normalizeFromProfileByMethod("sol", sourceData)],
-    ["apple", normalizeFromProfileByMethod("apple", targetData), normalizeFromProfileByMethod("apple", sourceData)],
-    ["x", normalizeFromProfileByMethod("x", targetData), normalizeFromProfileByMethod("x", sourceData)],
+    [
+      "eth",
+      normalizeFromProfileByMethod("eth", targetData),
+      normalizeFromProfileByMethod("eth", sourceData),
+    ],
+    [
+      "sol",
+      normalizeFromProfileByMethod("sol", targetData),
+      normalizeFromProfileByMethod("sol", sourceData),
+    ],
+    [
+      "apple",
+      normalizeFromProfileByMethod("apple", targetData),
+      normalizeFromProfileByMethod("apple", sourceData),
+    ],
+    [
+      "x",
+      normalizeFromProfileByMethod("x", targetData),
+      normalizeFromProfileByMethod("x", sourceData),
+    ],
   ];
   for (const [, targetValue, sourceValue] of checks) {
     if (targetValue && sourceValue && targetValue !== sourceValue) {
@@ -459,7 +568,10 @@ const ensureProfileClaimAndRtdb = async (uid, profileId) => {
   }
   const auth = admin.auth();
   const profileRef = admin.database().ref(`players/${normalizedUid}/profile`);
-  const [profileSnapshot, userRecord] = await Promise.all([profileRef.once("value"), auth.getUser(normalizedUid)]);
+  const [profileSnapshot, userRecord] = await Promise.all([
+    profileRef.once("value"),
+    auth.getUser(normalizedUid),
+  ]);
   const currentProfileId = toCleanString(profileSnapshot.val());
   const currentClaims = userRecord.customClaims || {};
   const currentClaimProfileId = toCleanString(currentClaims.profileId);
@@ -472,7 +584,7 @@ const ensureProfileClaimAndRtdb = async (uid, profileId) => {
       auth.setCustomUserClaims(normalizedUid, {
         ...currentClaims,
         profileId: normalizedProfileId,
-      })
+      }),
     );
   }
   if (writes.length > 0) {
@@ -482,7 +594,11 @@ const ensureProfileClaimAndRtdb = async (uid, profileId) => {
 
 const readProfileByLoginUid = async (uid) => {
   const firestore = admin.firestore();
-  const snapshot = await firestore.collection("users").where("logins", "array-contains", uid).limit(2).get();
+  const snapshot = await firestore
+    .collection("users")
+    .where("logins", "array-contains", uid)
+    .limit(2)
+    .get();
   if (snapshot.empty) {
     return null;
   }
@@ -494,15 +610,23 @@ const readProfileByLoginUid = async (uid) => {
 
 const readProfileByMethod = async (method, normalizedValue, rawValue) => {
   const firestore = admin.firestore();
-  const indexRef = firestore.collection("authMethodIndex").doc(getMethodKey(method, normalizedValue));
+  const indexRef = firestore
+    .collection("authMethodIndex")
+    .doc(getMethodKey(method, normalizedValue));
   const indexSnapshot = await indexRef.get();
   if (indexSnapshot.exists) {
     const indexData = indexSnapshot.data() || {};
     const profileId = toCleanString(indexData.profileId);
     if (profileId) {
-      const profileDoc = await firestore.collection("users").doc(profileId).get();
+      const profileDoc = await firestore
+        .collection("users")
+        .doc(profileId)
+        .get();
       if (profileDoc.exists) {
-        const indexedNormalizedValue = normalizeFromProfileByMethod(method, profileDoc.data() || {});
+        const indexedNormalizedValue = normalizeFromProfileByMethod(
+          method,
+          profileDoc.data() || {},
+        );
         if (indexedNormalizedValue === normalizedValue) {
           return profileDoc;
         }
@@ -528,7 +652,10 @@ const readProfileByMethod = async (method, normalizedValue, rawValue) => {
           transaction.delete(indexRef);
           return;
         }
-        const liveNormalizedValue = normalizeFromProfileByMethod(method, liveProfileSnapshot.data() || {});
+        const liveNormalizedValue = normalizeFromProfileByMethod(
+          method,
+          liveProfileSnapshot.data() || {},
+        );
         if (liveNormalizedValue !== normalizedValue) {
           transaction.delete(indexRef);
         }
@@ -547,10 +674,17 @@ const readProfileByMethod = async (method, normalizedValue, rawValue) => {
   }
 
   for (const candidate of candidateValues) {
-    const snapshot = await firestore.collection("users").where(field, "==", candidate).limit(2).get();
+    const snapshot = await firestore
+      .collection("users")
+      .where(field, "==", candidate)
+      .limit(2)
+      .get();
     if (!snapshot.empty) {
       if (snapshot.size > 1) {
-        throw new HttpsError("failed-precondition", "legacy-method-duplicate-ownership");
+        throw new HttpsError(
+          "failed-precondition",
+          "legacy-method-duplicate-ownership",
+        );
       }
       const doc = snapshot.docs[0];
       const nowMs = Date.now();
@@ -560,12 +694,21 @@ const readProfileByMethod = async (method, normalizedValue, rawValue) => {
           const liveIndexData = liveIndexSnapshot.data() || {};
           const indexedProfileId = toCleanString(liveIndexData.profileId);
           if (indexedProfileId && indexedProfileId !== doc.id) {
-            const indexedProfileRef = firestore.collection("users").doc(indexedProfileId);
-            const indexedProfileSnapshot = await transaction.get(indexedProfileRef);
+            const indexedProfileRef = firestore
+              .collection("users")
+              .doc(indexedProfileId);
+            const indexedProfileSnapshot =
+              await transaction.get(indexedProfileRef);
             if (indexedProfileSnapshot.exists) {
-              const indexedNormalizedValue = normalizeFromProfileByMethod(method, indexedProfileSnapshot.data() || {});
+              const indexedNormalizedValue = normalizeFromProfileByMethod(
+                method,
+                indexedProfileSnapshot.data() || {},
+              );
               if (indexedNormalizedValue === normalizedValue) {
-                throw new HttpsError("failed-precondition", "method-index-conflict");
+                throw new HttpsError(
+                  "failed-precondition",
+                  "method-index-conflict",
+                );
               }
             }
           }
@@ -578,7 +721,7 @@ const readProfileByMethod = async (method, normalizedValue, rawValue) => {
             normalizedValue,
             updatedAtMs: nowMs,
           },
-          { merge: true }
+          { merge: true },
         );
       });
       return doc;
@@ -590,12 +733,17 @@ const readProfileByMethod = async (method, normalizedValue, rawValue) => {
 
 const buildProfileResponse = (profileDoc, uid, preferredAddress) => {
   const data = (profileDoc && profileDoc.data()) || {};
-  const custom = data.custom && typeof data.custom === "object" ? data.custom : {};
+  const custom =
+    data.custom && typeof data.custom === "object" ? data.custom : {};
   const linkedMethods = linkedMethodsFromProfileData(data);
   const eth = normalizeFromProfileByMethod("eth", data) || null;
   const sol = normalizeFromProfileByMethod("sol", data) || null;
   const emojiRaw = custom.emoji;
-  const emojiNumber = Number.isFinite(typeof emojiRaw === "number" ? emojiRaw : Number(emojiRaw)) ? Math.floor(Number(emojiRaw)) : 1;
+  const emojiNumber = Number.isFinite(
+    typeof emojiRaw === "number" ? emojiRaw : Number(emojiRaw),
+  )
+    ? Math.floor(Number(emojiRaw))
+    : 1;
   return {
     ok: true,
     uid,
@@ -629,7 +777,11 @@ const getAuthOpContextState = (opData, { opId, kind, method, uid }) => {
   if (!existingUid || !existingKind || !existingMethod) {
     return "missing";
   }
-  if (existingUid !== uid || existingKind !== kind || existingMethod !== method) {
+  if (
+    existingUid !== uid ||
+    existingKind !== kind ||
+    existingMethod !== method
+  ) {
     console.error("auth:op-context-mismatch", {
       opId,
       existingUid,
@@ -645,14 +797,22 @@ const getAuthOpContextState = (opData, { opId, kind, method, uid }) => {
 };
 
 const getReplayResultFromAuthOpData = (opData) => {
-  const updatedAtMs = Math.max(parseNumber(opData && opData.updatedAtMs, 0), parseNumber(opData && opData.startedAtMs, 0));
+  const updatedAtMs = Math.max(
+    parseNumber(opData && opData.updatedAtMs, 0),
+    parseNumber(opData && opData.startedAtMs, 0),
+  );
   if (updatedAtMs <= 0) {
     return null;
   }
   if (Date.now() - updatedAtMs > AUTH_OP_REPLAY_TTL_MS) {
     return null;
   }
-  if (opData && opData.status === "success" && opData.result && typeof opData.result === "object") {
+  if (
+    opData &&
+    opData.status === "success" &&
+    opData.result &&
+    typeof opData.result === "object"
+  ) {
     return opData.result;
   }
   return null;
@@ -679,7 +839,13 @@ const getExpectedMethodValueHashFromAuthOp = (method, opData) => {
   }
 };
 
-const isVerifyReplayStillValid = async ({ opData, opId, method, uid, replay }) => {
+const isVerifyReplayStillValid = async ({
+  opData,
+  opId,
+  method,
+  uid,
+  replay,
+}) => {
   if (!replay || typeof replay !== "object" || replay.ok !== true) {
     return false;
   }
@@ -712,7 +878,10 @@ const isVerifyReplayStillValid = async ({ opData, opId, method, uid, replay }) =
   }
 
   const currentProfileData = currentProfile.data() || {};
-  const currentNormalizedValue = normalizeFromProfileByMethod(method, currentProfileData);
+  const currentNormalizedValue = normalizeFromProfileByMethod(
+    method,
+    currentProfileData,
+  );
   if (!currentNormalizedValue) {
     return false;
   }
@@ -832,7 +1001,7 @@ const beginAuthOp = async ({ opId, kind, method, uid, meta }) => {
       startedAtMs: nowMs,
       updatedAtMs: nowMs,
     },
-    { merge: true }
+    { merge: true },
   );
   return { opId: resolvedOpId, replay: null };
 };
@@ -852,7 +1021,7 @@ const finishAuthOp = async ({ opId, result, error }) => {
         errorMessage: error.message || String(error),
         updatedAtMs: nowMs,
       },
-      { merge: true }
+      { merge: true },
     );
     return;
   }
@@ -862,14 +1031,20 @@ const finishAuthOp = async ({ opId, result, error }) => {
       result,
       updatedAtMs: nowMs,
     },
-    { merge: true }
+    { merge: true },
   );
 };
 
 const enforceRateLimit = async ({ uid, method, request }) => {
   const firestore = admin.firestore();
-  const ip = toCleanString(request && request.rawRequest && request.rawRequest.ip) || "unknown";
-  const ipHash = crypto.createHash("sha256").update(ip).digest("hex").slice(0, 12);
+  const ip =
+    toCleanString(request && request.rawRequest && request.rawRequest.ip) ||
+    "unknown";
+  const ipHash = crypto
+    .createHash("sha256")
+    .update(ip)
+    .digest("hex")
+    .slice(0, 12);
   const key = `${method}:${uid}:${ipHash}`;
   const nowMs = Date.now();
   const rateRef = firestore.collection("authRateLimits").doc(key);
@@ -892,17 +1067,24 @@ const enforceRateLimit = async ({ uid, method, request }) => {
         count: nextCount,
         updatedAtMs: nowMs,
       },
-      { merge: true }
+      { merge: true },
     );
   });
 };
 
 const beginAuthIntent = async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
   const method = assertSupportedMethod(request.data && request.data.method);
-  await enforceRateLimit({ uid: request.auth.uid, method: `intent-${method}`, request });
+  await enforceRateLimit({
+    uid: request.auth.uid,
+    method: `intent-${method}`,
+    request,
+  });
 
   const firestore = admin.firestore();
   const nowMs = Date.now();
@@ -964,16 +1146,30 @@ const consumeAuthIntent = async ({ uid, method, intentId }) => {
   return intentData;
 };
 
-const acquireMergeLocks = async ({ targetProfileId, sourceProfileId, opId }) => {
-  const participants = Array.from(new Set([toCleanString(targetProfileId), toCleanString(sourceProfileId)].filter((value) => value !== ""))).sort();
+const acquireMergeLocks = async ({
+  targetProfileId,
+  sourceProfileId,
+  opId,
+}) => {
+  const participants = Array.from(
+    new Set(
+      [toCleanString(targetProfileId), toCleanString(sourceProfileId)].filter(
+        (value) => value !== "",
+      ),
+    ),
+  ).sort();
   if (participants.length === 0) {
     return [];
   }
   const firestore = admin.firestore();
-  const lockRefs = participants.map((profileId) => firestore.collection("mergeLocks").doc(`profile:${profileId}`));
+  const lockRefs = participants.map((profileId) =>
+    firestore.collection("mergeLocks").doc(`profile:${profileId}`),
+  );
   const nowMs = Date.now();
   await firestore.runTransaction(async (transaction) => {
-    const snapshots = await Promise.all(lockRefs.map((lockRef) => transaction.get(lockRef)));
+    const snapshots = await Promise.all(
+      lockRefs.map((lockRef) => transaction.get(lockRef)),
+    );
     snapshots.forEach((snapshot) => {
       if (!snapshot.exists) {
         return;
@@ -997,7 +1193,7 @@ const acquireMergeLocks = async ({ targetProfileId, sourceProfileId, opId }) => 
           expiresAtMs: nowMs + MERGE_LOCK_TTL_MS,
           updatedAtMs: nowMs,
         },
-        { merge: true }
+        { merge: true },
       );
     });
   });
@@ -1013,7 +1209,11 @@ const releaseMergeLocks = async (lockRefs, opId) => {
   await Promise.all(
     lockRefs.map(async (lockRef) => {
       let releaseError = null;
-      for (let attempt = 1; attempt <= MERGE_LOCK_RELEASE_MAX_ATTEMPTS; attempt += 1) {
+      for (
+        let attempt = 1;
+        attempt <= MERGE_LOCK_RELEASE_MAX_ATTEMPTS;
+        attempt += 1
+      ) {
         try {
           await firestore.runTransaction(async (transaction) => {
             const snapshot = await transaction.get(lockRef);
@@ -1057,17 +1257,19 @@ const releaseMergeLocks = async (lockRefs, opId) => {
               expiresAtMs: nowMs - 1,
               updatedAtMs: nowMs,
             },
-            { merge: true }
+            { merge: true },
           );
         });
       } catch (fallbackError) {
         hardFailures.push({
           lockId: lockRef.id,
-          releaseError: toCleanString(releaseError && releaseError.message) || "unknown",
-          fallbackError: toCleanString(fallbackError && fallbackError.message) || "unknown",
+          releaseError:
+            toCleanString(releaseError && releaseError.message) || "unknown",
+          fallbackError:
+            toCleanString(fallbackError && fallbackError.message) || "unknown",
         });
       }
-    })
+    }),
   );
 
   if (hardFailures.length > 0) {
@@ -1120,7 +1322,13 @@ const runWithRetries = async ({ attempts = 3, baseDelayMs = 100, work }) => {
   return lastError;
 };
 
-const persistPendingClaimSync = async ({ targetRef, targetProfileId, sourceProfileId, failedLoginUids, opId }) => {
+const persistPendingClaimSync = async ({
+  targetRef,
+  targetProfileId,
+  sourceProfileId,
+  failedLoginUids,
+  opId,
+}) => {
   const firestore = admin.firestore();
   const nowMs = Date.now();
   const pendingPayload = {
@@ -1138,7 +1346,9 @@ const persistPendingClaimSync = async ({ targetRef, targetProfileId, sourceProfi
     return { location: "profile" };
   }
 
-  const fallbackRef = firestore.collection("authClaimSyncBacklog").doc(toCleanString(opId) || createOpId());
+  const fallbackRef = firestore
+    .collection("authClaimSyncBacklog")
+    .doc(toCleanString(opId) || createOpId());
   const fallbackWriteError = await runWithRetries({
     attempts: 3,
     baseDelayMs: 160,
@@ -1153,7 +1363,7 @@ const persistPendingClaimSync = async ({ targetRef, targetProfileId, sourceProfi
           createdAtMs: nowMs,
           updatedAtMs: Date.now(),
         },
-        { merge: true }
+        { merge: true },
       );
     },
   });
@@ -1172,18 +1382,31 @@ const persistPendingClaimSync = async ({ targetRef, targetProfileId, sourceProfi
     targetProfileId,
     sourceProfileId,
     failedLoginUids,
-    profileWriteError: toCleanString(pendingWriteError && pendingWriteError.message) || String(pendingWriteError),
-    fallbackWriteError: toCleanString(fallbackWriteError && fallbackWriteError.message) || String(fallbackWriteError),
+    profileWriteError:
+      toCleanString(pendingWriteError && pendingWriteError.message) ||
+      String(pendingWriteError),
+    fallbackWriteError:
+      toCleanString(fallbackWriteError && fallbackWriteError.message) ||
+      String(fallbackWriteError),
   });
   return { location: "unpersisted" };
 };
 
-const recordMergeGameSyncFailure = async ({ targetProfileId, sourceProfileId, opId, stage, operationsCount, error }) => {
+const recordMergeGameSyncFailure = async ({
+  targetProfileId,
+  sourceProfileId,
+  opId,
+  stage,
+  operationsCount,
+  error,
+}) => {
   const firestore = admin.firestore();
   const failureMessage = toCleanString(error && error.message) || String(error);
   const normalizedStage = toCleanString(stage) || "unknown";
   const nowMs = Date.now();
-  const backlogRef = firestore.collection("authMergeGameBacklog").doc(`${toCleanString(opId) || createOpId()}:${normalizedStage}`);
+  const backlogRef = firestore
+    .collection("authMergeGameBacklog")
+    .doc(`${toCleanString(opId) || createOpId()}:${normalizedStage}`);
   const backlogError = await runWithRetries({
     attempts: 3,
     baseDelayMs: 160,
@@ -1200,7 +1423,7 @@ const recordMergeGameSyncFailure = async ({ targetProfileId, sourceProfileId, op
           createdAtMs: nowMs,
           updatedAtMs: Date.now(),
         },
-        { merge: true }
+        { merge: true },
       );
     },
   });
@@ -1212,7 +1435,9 @@ const recordMergeGameSyncFailure = async ({ targetProfileId, sourceProfileId, op
       stage: normalizedStage,
       operationsCount,
       copyError: failureMessage,
-      backlogError: toCleanString(backlogError && backlogError.message) || String(backlogError),
+      backlogError:
+        toCleanString(backlogError && backlogError.message) ||
+        String(backlogError),
     });
   }
 };
@@ -1222,7 +1447,11 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
     throw new HttpsError("failed-precondition", "merge-disabled");
   }
   if (targetProfileId === sourceProfileId) {
-    const targetDoc = await admin.firestore().collection("users").doc(targetProfileId).get();
+    const targetDoc = await admin
+      .firestore()
+      .collection("users")
+      .doc(targetProfileId)
+      .get();
     return targetDoc;
   }
 
@@ -1237,7 +1466,10 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
   });
 
   try {
-    const [targetSnapshot, sourceSnapshot] = await Promise.all([targetRef.get(), sourceRef.get()]);
+    const [targetSnapshot, sourceSnapshot] = await Promise.all([
+      targetRef.get(),
+      sourceRef.get(),
+    ]);
     if (!targetSnapshot.exists) {
       throw new HttpsError("not-found", "target-profile-not-found");
     }
@@ -1263,55 +1495,102 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
 
     const mergedCustom = mergeCustom(targetData, sourceData);
     const mergedMining = mergeMining(targetData, sourceData);
-    const mergedLogins = mergeUniqueStringArray(targetData.logins, sourceData.logins);
-    const mergedUsername = pickTargetOrSource(targetData.username, sourceData.username) || "";
+    const mergedLogins = mergeUniqueStringArray(
+      targetData.logins,
+      sourceData.logins,
+    );
+    const mergedUsername =
+      pickTargetOrSource(targetData.username, sourceData.username) || "";
     const mergedUsernameLookupKey = toUsernameLookupKey(mergedUsername);
     const resolveAppleMetadata = (targetValue, sourceValue) => {
       if (!mergedAppleSub) {
         return admin.firestore.FieldValue.delete();
       }
       if (targetAppleSub) {
-        return pickTargetOrSource(targetValue, sourceValue) || admin.firestore.FieldValue.delete();
+        return (
+          pickTargetOrSource(targetValue, sourceValue) ||
+          admin.firestore.FieldValue.delete()
+        );
       }
-      return hasValue(sourceValue) ? sourceValue : admin.firestore.FieldValue.delete();
+      return hasValue(sourceValue)
+        ? sourceValue
+        : admin.firestore.FieldValue.delete();
     };
     const resolveXMetadata = (targetValue, sourceValue) => {
       if (!mergedXUserId) {
         return admin.firestore.FieldValue.delete();
       }
       if (targetXUserId) {
-        return pickTargetOrSource(targetValue, sourceValue) || admin.firestore.FieldValue.delete();
+        return (
+          pickTargetOrSource(targetValue, sourceValue) ||
+          admin.firestore.FieldValue.delete()
+        );
       }
-      return hasValue(sourceValue) ? sourceValue : admin.firestore.FieldValue.delete();
+      return hasValue(sourceValue)
+        ? sourceValue
+        : admin.firestore.FieldValue.delete();
     };
     const mergedData = {
       logins: mergedLogins,
       username: mergedUsername,
-      usernameLookupKey: mergedUsernameLookupKey || admin.firestore.FieldValue.delete(),
-      rating: Math.min(parseNumber(targetData.rating, 1500), parseNumber(sourceData.rating, 1500)),
-      nonce: Math.max(parseNumber(targetData.nonce, -1), parseNumber(sourceData.nonce, -1)),
-      totalManaPoints: parseNumber(targetData.totalManaPoints, 0) + parseNumber(sourceData.totalManaPoints, 0),
+      usernameLookupKey:
+        mergedUsernameLookupKey || admin.firestore.FieldValue.delete(),
+      rating: Math.min(
+        parseNumber(targetData.rating, 1500),
+        parseNumber(sourceData.rating, 1500),
+      ),
+      nonce: Math.max(
+        parseNumber(targetData.nonce, -1),
+        parseNumber(sourceData.nonce, -1),
+      ),
+      totalManaPoints:
+        parseNumber(targetData.totalManaPoints, 0) +
+        parseNumber(sourceData.totalManaPoints, 0),
       win: hasValue(targetData.win) ? targetData.win : sourceData.win,
-      feb2026UniqueOpponentsCount: Math.max(parseNumber(targetData.feb2026UniqueOpponentsCount, 0), parseNumber(sourceData.feb2026UniqueOpponentsCount, 0)),
+      feb2026UniqueOpponentsCount: Math.max(
+        parseNumber(targetData.feb2026UniqueOpponentsCount, 0),
+        parseNumber(sourceData.feb2026UniqueOpponentsCount, 0),
+      ),
       eth: mergedEth || admin.firestore.FieldValue.delete(),
       sol: mergedSol || admin.firestore.FieldValue.delete(),
       appleSub: mergedAppleSub || admin.firestore.FieldValue.delete(),
-      appleEmailMasked: resolveAppleMetadata(targetData.appleEmailMasked, sourceData.appleEmailMasked),
-      appleLinkedAt: resolveAppleMetadata(targetData.appleLinkedAt, sourceData.appleLinkedAt),
-      appleConsentAt: resolveAppleMetadata(targetData.appleConsentAt, sourceData.appleConsentAt),
-      appleConsentSource: resolveAppleMetadata(targetData.appleConsentSource, sourceData.appleConsentSource),
+      appleEmailMasked: resolveAppleMetadata(
+        targetData.appleEmailMasked,
+        sourceData.appleEmailMasked,
+      ),
+      appleLinkedAt: resolveAppleMetadata(
+        targetData.appleLinkedAt,
+        sourceData.appleLinkedAt,
+      ),
+      appleConsentAt: resolveAppleMetadata(
+        targetData.appleConsentAt,
+        sourceData.appleConsentAt,
+      ),
+      appleConsentSource: resolveAppleMetadata(
+        targetData.appleConsentSource,
+        sourceData.appleConsentSource,
+      ),
       xUserId: mergedXUserId || admin.firestore.FieldValue.delete(),
       xUsername: resolveXMetadata(targetData.xUsername, sourceData.xUsername),
       xLinkedAt: resolveXMetadata(targetData.xLinkedAt, sourceData.xLinkedAt),
-      xConsentAt: resolveXMetadata(targetData.xConsentAt, sourceData.xConsentAt),
-      xConsentSource: resolveXMetadata(targetData.xConsentSource, sourceData.xConsentSource),
+      xConsentAt: resolveXMetadata(
+        targetData.xConsentAt,
+        sourceData.xConsentAt,
+      ),
+      xConsentSource: resolveXMetadata(
+        targetData.xConsentSource,
+        sourceData.xConsentSource,
+      ),
       custom: mergedCustom,
       mining: mergedMining,
       mergedAtMs: Date.now(),
       mergedSourceProfileId: sourceProfileId,
     };
 
-    const [sourceGamesSnapshot, targetGamesSnapshot] = await Promise.all([sourceRef.collection("games").get(), targetRef.collection("games").get()]);
+    const [sourceGamesSnapshot, targetGamesSnapshot] = await Promise.all([
+      sourceRef.collection("games").get(),
+      targetRef.collection("games").get(),
+    ]);
     const targetGameByInvite = new Map();
     targetGamesSnapshot.forEach((doc) => {
       targetGameByInvite.set(doc.id, doc);
@@ -1321,7 +1600,10 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
     sourceGamesSnapshot.forEach((sourceGameDoc) => {
       const sourceDataForInvite = sourceGameDoc.data() || {};
       const targetDocForInvite = targetGameByInvite.get(sourceGameDoc.id);
-      const shouldWriteToTarget = !targetDocForInvite || readMergeFreshness(sourceDataForInvite) >= readMergeFreshness(targetDocForInvite.data() || {});
+      const shouldWriteToTarget =
+        !targetDocForInvite ||
+        readMergeFreshness(sourceDataForInvite) >=
+          readMergeFreshness(targetDocForInvite.data() || {});
       if (shouldWriteToTarget) {
         gameCopyOps.push({
           type: "set",
@@ -1344,7 +1626,10 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
       methodIndexEntries.push({ method: "sol", normalizedValue: mergedSol });
     }
     if (mergedAppleSub) {
-      methodIndexEntries.push({ method: "apple", normalizedValue: mergedAppleSub });
+      methodIndexEntries.push({
+        method: "apple",
+        normalizedValue: mergedAppleSub,
+      });
     }
     if (mergedXUserId) {
       methodIndexEntries.push({ method: "x", normalizedValue: mergedXUserId });
@@ -1352,7 +1637,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
     const allowedIndexOwners = new Set(
       [targetProfileId, sourceProfileId]
         .map((value) => toCleanString(value))
-        .filter((value) => value !== "")
+        .filter((value) => value !== ""),
     );
     const nowMs = Date.now();
     const sourceMergeRetainedPatch = {
@@ -1383,54 +1668,90 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
       mergeSourceRetainedForGameCopy: true,
     };
     await firestore.runTransaction(async (transaction) => {
-      const [liveTargetSnapshot, liveSourceSnapshot] = await Promise.all([transaction.get(targetRef), transaction.get(sourceRef)]);
+      const [liveTargetSnapshot, liveSourceSnapshot] = await Promise.all([
+        transaction.get(targetRef),
+        transaction.get(sourceRef),
+      ]);
       if (!liveTargetSnapshot.exists) {
         throw new HttpsError("not-found", "target-profile-not-found");
       }
-      const methodIndexRefs = methodIndexEntries.map((entry) => firestore.collection("authMethodIndex").doc(getMethodKey(entry.method, entry.normalizedValue)));
-      const methodIndexSnapshots = methodIndexRefs.length > 0 ? await Promise.all(methodIndexRefs.map((indexRef) => transaction.get(indexRef))) : [];
+      const methodIndexRefs = methodIndexEntries.map((entry) =>
+        firestore
+          .collection("authMethodIndex")
+          .doc(getMethodKey(entry.method, entry.normalizedValue)),
+      );
+      const methodIndexSnapshots =
+        methodIndexRefs.length > 0
+          ? await Promise.all(
+              methodIndexRefs.map((indexRef) => transaction.get(indexRef)),
+            )
+          : [];
       methodIndexEntries.forEach((entry, entryIndex) => {
         const indexSnapshot = methodIndexSnapshots[entryIndex];
         if (indexSnapshot && indexSnapshot.exists) {
           const indexData = indexSnapshot.data() || {};
           const indexedProfileId = toCleanString(indexData.profileId);
           if (indexedProfileId && !allowedIndexOwners.has(indexedProfileId)) {
-            throw new HttpsError("failed-precondition", "method-index-conflict");
+            throw new HttpsError(
+              "failed-precondition",
+              "method-index-conflict",
+            );
           }
         }
       });
 
       const usernameIndexCollection = firestore.collection("usernameIndex");
       const liveTargetData = liveTargetSnapshot.data() || {};
-      const liveSourceData = liveSourceSnapshot.exists ? liveSourceSnapshot.data() || {} : {};
+      const liveSourceData = liveSourceSnapshot.exists
+        ? liveSourceSnapshot.data() || {}
+        : {};
       const liveTargetUsername = toCleanString(liveTargetData.username);
       const liveSourceUsername = toCleanString(liveSourceData.username);
       const mergedUsername = toCleanString(mergedData.username);
       const mergedUsernameKeyCandidate = toUsernameLookupKey(mergedUsername);
-      const mergedUsernameKey = isSafeFirestoreDocIdSegment(mergedUsernameKeyCandidate) ? mergedUsernameKeyCandidate : "";
+      const mergedUsernameKey = isSafeFirestoreDocIdSegment(
+        mergedUsernameKeyCandidate,
+      )
+        ? mergedUsernameKeyCandidate
+        : "";
       let mergedUsernameIndexRef = null;
 
       if (mergedUsernameKey) {
         mergedUsernameIndexRef = usernameIndexCollection.doc(mergedUsernameKey);
-        const mergedUsernameIndexSnapshot = await transaction.get(mergedUsernameIndexRef);
+        const mergedUsernameIndexSnapshot = await transaction.get(
+          mergedUsernameIndexRef,
+        );
         if (mergedUsernameIndexSnapshot.exists) {
-          const mergedUsernameIndexData = mergedUsernameIndexSnapshot.data() || {};
-          const indexedProfileId = toCleanString(mergedUsernameIndexData.profileId);
+          const mergedUsernameIndexData =
+            mergedUsernameIndexSnapshot.data() || {};
+          const indexedProfileId = toCleanString(
+            mergedUsernameIndexData.profileId,
+          );
           if (indexedProfileId && !allowedIndexOwners.has(indexedProfileId)) {
-            const indexedProfileRef = firestore.collection("users").doc(indexedProfileId);
-            const indexedProfileSnapshot = await transaction.get(indexedProfileRef);
+            const indexedProfileRef = firestore
+              .collection("users")
+              .doc(indexedProfileId);
+            const indexedProfileSnapshot =
+              await transaction.get(indexedProfileRef);
             if (indexedProfileSnapshot.exists) {
               const indexedProfileData = indexedProfileSnapshot.data() || {};
-              const indexedUsernameKey = toUsernameLookupKey(indexedProfileData.username);
+              const indexedUsernameKey = toUsernameLookupKey(
+                indexedProfileData.username,
+              );
               if (indexedUsernameKey === mergedUsernameKey) {
-                throw new HttpsError("failed-precondition", "username-index-conflict");
+                throw new HttpsError(
+                  "failed-precondition",
+                  "username-index-conflict",
+                );
               }
             }
           }
         }
 
         const lookupKeyConflictSnapshot = await transaction.get(
-          firestore.collection("users").where("usernameLookupKey", "==", mergedUsernameKey)
+          firestore
+            .collection("users")
+            .where("usernameLookupKey", "==", mergedUsernameKey),
         );
         lookupKeyConflictSnapshot.forEach((userSnapshot) => {
           const userId = toCleanString(userSnapshot.id);
@@ -1439,32 +1760,53 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
           }
           const userData = userSnapshot.data() || {};
           if (toUsernameLookupKey(userData.username) === mergedUsernameKey) {
-            throw new HttpsError("failed-precondition", "username-index-conflict");
+            throw new HttpsError(
+              "failed-precondition",
+              "username-index-conflict",
+            );
           }
         });
 
-        const exactUsernameSnapshot = await transaction.get(firestore.collection("users").where("username", "==", mergedUsername).limit(3));
+        const exactUsernameSnapshot = await transaction.get(
+          firestore
+            .collection("users")
+            .where("username", "==", mergedUsername)
+            .limit(3),
+        );
         exactUsernameSnapshot.forEach((userSnapshot) => {
           if (!allowedIndexOwners.has(toCleanString(userSnapshot.id))) {
-            throw new HttpsError("failed-precondition", "username-index-conflict");
+            throw new HttpsError(
+              "failed-precondition",
+              "username-index-conflict",
+            );
           }
         });
 
         if (mergedUsername !== mergedUsernameKey) {
           const lowercaseUsernameSnapshot = await transaction.get(
-            firestore.collection("users").where("username", "==", mergedUsernameKey).limit(3)
+            firestore
+              .collection("users")
+              .where("username", "==", mergedUsernameKey)
+              .limit(3),
           );
           lowercaseUsernameSnapshot.forEach((userSnapshot) => {
             if (!allowedIndexOwners.has(toCleanString(userSnapshot.id))) {
-              throw new HttpsError("failed-precondition", "username-index-conflict");
+              throw new HttpsError(
+                "failed-precondition",
+                "username-index-conflict",
+              );
             }
           });
         }
       }
 
       const staleUsernameIndexDocIds = new Set();
-      getUsernameIndexDocIds(liveTargetUsername).forEach((docId) => staleUsernameIndexDocIds.add(docId));
-      getUsernameIndexDocIds(liveSourceUsername).forEach((docId) => staleUsernameIndexDocIds.add(docId));
+      getUsernameIndexDocIds(liveTargetUsername).forEach((docId) =>
+        staleUsernameIndexDocIds.add(docId),
+      );
+      getUsernameIndexDocIds(liveSourceUsername).forEach((docId) =>
+        staleUsernameIndexDocIds.add(docId),
+      );
       getUsernameIndexDocIds(mergedUsername).forEach((docId) => {
         if (docId !== mergedUsernameKey) {
           staleUsernameIndexDocIds.add(docId);
@@ -1473,9 +1815,15 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
       if (mergedUsernameKey) {
         staleUsernameIndexDocIds.delete(mergedUsernameKey);
       }
-      const staleUsernameIndexRefs = Array.from(staleUsernameIndexDocIds).map((docId) => usernameIndexCollection.doc(docId));
+      const staleUsernameIndexRefs = Array.from(staleUsernameIndexDocIds).map(
+        (docId) => usernameIndexCollection.doc(docId),
+      );
       const staleUsernameIndexSnapshots =
-        staleUsernameIndexRefs.length > 0 ? await Promise.all(staleUsernameIndexRefs.map((ref) => transaction.get(ref))) : [];
+        staleUsernameIndexRefs.length > 0
+          ? await Promise.all(
+              staleUsernameIndexRefs.map((ref) => transaction.get(ref)),
+            )
+          : [];
 
       methodIndexEntries.forEach((entry, entryIndex) => {
         const indexRef = methodIndexRefs[entryIndex];
@@ -1487,7 +1835,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
             normalizedValue: entry.normalizedValue,
             updatedAtMs: nowMs,
           },
-          { merge: true }
+          { merge: true },
         );
       });
       if (mergedUsernameIndexRef) {
@@ -1499,7 +1847,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
             lookupKey: mergedUsernameKey,
             updatedAtMs: nowMs,
           },
-          { merge: true }
+          { merge: true },
         );
       }
       staleUsernameIndexSnapshots.forEach((indexSnapshot, index) => {
@@ -1508,7 +1856,10 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
         }
         const indexData = indexSnapshot.data() || {};
         const indexedProfileId = toCleanString(indexData.profileId);
-        if (indexedProfileId === targetProfileId || indexedProfileId === sourceProfileId) {
+        if (
+          indexedProfileId === targetProfileId ||
+          indexedProfileId === sourceProfileId
+        ) {
           transaction.delete(staleUsernameIndexRefs[index]);
         }
       });
@@ -1532,7 +1883,9 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
         targetProfileId,
         sourceProfileId,
         gameCopyOpsCount: gameCopyOps.length,
-        error: toCleanString(gameCopyError && gameCopyError.message) || String(gameCopyError),
+        error:
+          toCleanString(gameCopyError && gameCopyError.message) ||
+          String(gameCopyError),
       });
       const pendingMarkerError = await runWithRetries({
         attempts: 3,
@@ -1543,7 +1896,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
               pendingMergeGameCopySourceProfileId: sourceProfileId,
               pendingMergeGameCopyUpdatedAtMs: Date.now(),
             },
-            { merge: true }
+            { merge: true },
           );
         },
       });
@@ -1552,7 +1905,9 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
           opId,
           targetProfileId,
           sourceProfileId,
-          error: toCleanString(pendingMarkerError && pendingMarkerError.message) || String(pendingMarkerError),
+          error:
+            toCleanString(pendingMarkerError && pendingMarkerError.message) ||
+            String(pendingMarkerError),
         });
       }
       await recordMergeGameSyncFailure({
@@ -1570,16 +1925,23 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
         work: async () => {
           const targetSnapshotForMarker = await targetRef.get();
           const targetMarkerData = targetSnapshotForMarker.data() || {};
-          const pendingSourceProfileId = toCleanString(targetMarkerData.pendingMergeGameCopySourceProfileId);
-          if (pendingSourceProfileId && pendingSourceProfileId !== sourceProfileId) {
+          const pendingSourceProfileId = toCleanString(
+            targetMarkerData.pendingMergeGameCopySourceProfileId,
+          );
+          if (
+            pendingSourceProfileId &&
+            pendingSourceProfileId !== sourceProfileId
+          ) {
             return;
           }
           await targetRef.set(
             {
-              pendingMergeGameCopySourceProfileId: admin.firestore.FieldValue.delete(),
-              pendingMergeGameCopyUpdatedAtMs: admin.firestore.FieldValue.delete(),
+              pendingMergeGameCopySourceProfileId:
+                admin.firestore.FieldValue.delete(),
+              pendingMergeGameCopyUpdatedAtMs:
+                admin.firestore.FieldValue.delete(),
             },
-            { merge: true }
+            { merge: true },
           );
         },
       });
@@ -1588,7 +1950,10 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
           opId,
           targetProfileId,
           sourceProfileId,
-          error: toCleanString(clearPendingMarkerError && clearPendingMarkerError.message) || String(clearPendingMarkerError),
+          error:
+            toCleanString(
+              clearPendingMarkerError && clearPendingMarkerError.message,
+            ) || String(clearPendingMarkerError),
         });
       }
       const sourceGameCleanupError = await runWithRetries({
@@ -1604,7 +1969,10 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
           targetProfileId,
           sourceProfileId,
           sourceGameDeleteOpsCount: sourceGameDeleteOps.length,
-          error: toCleanString(sourceGameCleanupError && sourceGameCleanupError.message) || String(sourceGameCleanupError),
+          error:
+            toCleanString(
+              sourceGameCleanupError && sourceGameCleanupError.message,
+            ) || String(sourceGameCleanupError),
         });
         await recordMergeGameSyncFailure({
           targetProfileId,
@@ -1631,7 +1999,9 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
           opId,
           targetProfileId,
           sourceProfileId,
-          error: toCleanString(sourceDeleteError && sourceDeleteError.message) || String(sourceDeleteError),
+          error:
+            toCleanString(sourceDeleteError && sourceDeleteError.message) ||
+            String(sourceDeleteError),
         });
         await recordMergeGameSyncFailure({
           targetProfileId,
@@ -1647,10 +2017,12 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
     const claimSyncResults = await Promise.allSettled(
       mergedLogins.map(async (loginUid) => {
         await ensureProfileClaimAndRtdb(loginUid, targetProfileId);
-      })
+      }),
     );
     const initialClaimFailures = claimSyncResults
-      .map((result, index) => (result.status === "rejected" ? mergedLogins[index] : null))
+      .map((result, index) =>
+        result.status === "rejected" ? mergedLogins[index] : null,
+      )
       .filter((value) => typeof value === "string" && value !== "");
     const retryClaimFailures = [];
     for (const failedLoginUid of initialClaimFailures) {
@@ -1684,7 +2056,7 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
               pendingClaimSyncLogins: admin.firestore.FieldValue.delete(),
               pendingClaimSyncUpdatedAtMs: admin.firestore.FieldValue.delete(),
             },
-            { merge: true }
+            { merge: true },
           );
         },
       });
@@ -1693,7 +2065,9 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
           opId,
           targetProfileId,
           sourceProfileId,
-          error: toCleanString(pendingClearError && pendingClearError.message) || String(pendingClearError),
+          error:
+            toCleanString(pendingClearError && pendingClearError.message) ||
+            String(pendingClearError),
         });
       }
     }
@@ -1704,7 +2078,13 @@ const mergeProfiles = async ({ targetProfileId, sourceProfileId, opId }) => {
   }
 };
 
-const buildMethodPatch = ({ method, methodValueRaw, appleEmailMasked, xUsername, consentSource }) => {
+const buildMethodPatch = ({
+  method,
+  methodValueRaw,
+  appleEmailMasked,
+  xUsername,
+  consentSource,
+}) => {
   if (method === "eth") {
     return { eth: methodValueRaw };
   }
@@ -1750,7 +2130,9 @@ const createInitialProfileWithIndex = async ({
   consentSource,
 }) => {
   const firestore = admin.firestore();
-  const indexRef = firestore.collection("authMethodIndex").doc(getMethodKey(method, normalizedMethodValue));
+  const indexRef = firestore
+    .collection("authMethodIndex")
+    .doc(getMethodKey(method, normalizedMethodValue));
   let profileId = "";
   let created = false;
   await firestore.runTransaction(async (transaction) => {
@@ -1760,10 +2142,15 @@ const createInitialProfileWithIndex = async ({
       const indexData = indexSnapshot.data() || {};
       const indexedProfileId = toCleanString(indexData.profileId);
       if (indexedProfileId) {
-        const indexedProfileRef = firestore.collection("users").doc(indexedProfileId);
+        const indexedProfileRef = firestore
+          .collection("users")
+          .doc(indexedProfileId);
         const indexedProfileSnapshot = await transaction.get(indexedProfileRef);
         if (indexedProfileSnapshot.exists) {
-          const indexedNormalizedValue = normalizeFromProfileByMethod(method, indexedProfileSnapshot.data() || {});
+          const indexedNormalizedValue = normalizeFromProfileByMethod(
+            method,
+            indexedProfileSnapshot.data() || {},
+          );
           if (indexedNormalizedValue === normalizedMethodValue) {
             profileId = indexedProfileId;
             return;
@@ -1794,7 +2181,13 @@ const createInitialProfileWithIndex = async ({
       },
       mining: normalizeMiningSnapshot(),
     };
-    const methodPatch = buildMethodPatch({ method, methodValueRaw, appleEmailMasked, xUsername, consentSource });
+    const methodPatch = buildMethodPatch({
+      method,
+      methodValueRaw,
+      appleEmailMasked,
+      xUsername,
+      consentSource,
+    });
     transaction.set(userRef, { ...baseProfile, ...methodPatch });
     transaction.set(indexRef, {
       profileId,
@@ -1818,7 +2211,9 @@ const ensureProfileMethodAndLoginAndIndex = async ({
 }) => {
   const firestore = admin.firestore();
   const profileRef = firestore.collection("users").doc(profileId);
-  const indexRef = firestore.collection("authMethodIndex").doc(getMethodKey(method, normalizedMethodValue));
+  const indexRef = firestore
+    .collection("authMethodIndex")
+    .doc(getMethodKey(method, normalizedMethodValue));
   let conflictProfileId = "";
   await firestore.runTransaction(async (transaction) => {
     const nowMs = Date.now();
@@ -1830,8 +2225,12 @@ const ensureProfileMethodAndLoginAndIndex = async ({
     }
     const profileData = profileSnapshot.data() || {};
     ensureMethodCompatibility(profileData, method, normalizedMethodValue);
-    const existingNormalizedValue = normalizeFromProfileByMethod(method, profileData);
-    const isMethodAlreadyLinkedToProfile = existingNormalizedValue === normalizedMethodValue;
+    const existingNormalizedValue = normalizeFromProfileByMethod(
+      method,
+      profileData,
+    );
+    const isMethodAlreadyLinkedToProfile =
+      existingNormalizedValue === normalizedMethodValue;
 
     if (!isMethodAlreadyLinkedToProfile) {
       await enforceProfileMethodCooldownInTransaction({
@@ -1855,10 +2254,15 @@ const ensureProfileMethodAndLoginAndIndex = async ({
       const indexData = indexSnapshot.data() || {};
       const indexedProfileId = toCleanString(indexData.profileId);
       if (indexedProfileId && indexedProfileId !== profileId) {
-        const indexedProfileRef = firestore.collection("users").doc(indexedProfileId);
+        const indexedProfileRef = firestore
+          .collection("users")
+          .doc(indexedProfileId);
         const indexedProfileSnapshot = await transaction.get(indexedProfileRef);
         if (indexedProfileSnapshot.exists) {
-          const indexedNormalizedValue = normalizeFromProfileByMethod(method, indexedProfileSnapshot.data() || {});
+          const indexedNormalizedValue = normalizeFromProfileByMethod(
+            method,
+            indexedProfileSnapshot.data() || {},
+          );
           if (indexedNormalizedValue === normalizedMethodValue) {
             conflictProfileId = indexedProfileId;
             return;
@@ -1872,14 +2276,20 @@ const ensureProfileMethodAndLoginAndIndex = async ({
       cleanupRefsByPath,
     });
 
-    const patch = buildMethodPatch({ method, methodValueRaw, appleEmailMasked, xUsername, consentSource });
+    const patch = buildMethodPatch({
+      method,
+      methodValueRaw,
+      appleEmailMasked,
+      xUsername,
+      consentSource,
+    });
     transaction.set(
       profileRef,
       {
         ...patch,
         logins: admin.firestore.FieldValue.arrayUnion(uid),
       },
-      { merge: true }
+      { merge: true },
     );
     transaction.set(
       indexRef,
@@ -1889,7 +2299,7 @@ const ensureProfileMethodAndLoginAndIndex = async ({
         normalizedValue: normalizedMethodValue,
         updatedAtMs: nowMs,
       },
-      { merge: true }
+      { merge: true },
     );
   });
   return conflictProfileId;
@@ -1917,7 +2327,8 @@ const linkVerifiedMethod = async ({
     method,
     uid,
     meta: {
-      methodValue: method === "apple" || method === "x" ? "redacted" : methodValueRaw,
+      methodValue:
+        method === "apple" || method === "x" ? "redacted" : methodValueRaw,
       methodValueHash: hashMethodValue(method, normalizedMethodValue),
     },
   });
@@ -1928,8 +2339,13 @@ const linkVerifiedMethod = async ({
   try {
     const firestore = admin.firestore();
     let currentProfile = await readProfileByLoginUid(uid);
-    const methodLookupValue = toCleanString(methodValueLookupRaw) || methodValueRaw;
-    let methodProfile = await readProfileByMethod(method, normalizedMethodValue, methodLookupValue);
+    const methodLookupValue =
+      toCleanString(methodValueLookupRaw) || methodValueRaw;
+    let methodProfile = await readProfileByMethod(
+      method,
+      normalizedMethodValue,
+      methodLookupValue,
+    );
     let targetProfileId = "";
 
     if (!currentProfile && !methodProfile) {
@@ -1946,7 +2362,11 @@ const linkVerifiedMethod = async ({
       });
       targetProfileId = createdResult.profileId;
       if (!targetProfileId) {
-        methodProfile = await readProfileByMethod(method, normalizedMethodValue, methodLookupValue);
+        methodProfile = await readProfileByMethod(
+          method,
+          normalizedMethodValue,
+          methodLookupValue,
+        );
         if (!methodProfile) {
           throw new HttpsError("aborted", "method-index-race-retry");
         }
@@ -1956,9 +2376,17 @@ const linkVerifiedMethod = async ({
       targetProfileId = methodProfile.id;
     } else if (currentProfile && !methodProfile) {
       targetProfileId = currentProfile.id;
-    } else if (currentProfile && methodProfile && currentProfile.id === methodProfile.id) {
+    } else if (
+      currentProfile &&
+      methodProfile &&
+      currentProfile.id === methodProfile.id
+    ) {
       targetProfileId = currentProfile.id;
-    } else if (currentProfile && methodProfile && currentProfile.id !== methodProfile.id) {
+    } else if (
+      currentProfile &&
+      methodProfile &&
+      currentProfile.id !== methodProfile.id
+    ) {
       // Defer merge until ensureProfileMethodAndLoginAndIndex has applied cooldown checks.
       // The retry loop below will return conflictProfileId and merge deterministically.
       targetProfileId = currentProfile.id;
@@ -1993,19 +2421,28 @@ const linkVerifiedMethod = async ({
       throw new HttpsError("aborted", "method-index-race-retry");
     }
 
-    let targetProfileSnapshot = await admin.firestore().collection("users").doc(targetProfileId).get();
+    let targetProfileSnapshot = await admin
+      .firestore()
+      .collection("users")
+      .doc(targetProfileId)
+      .get();
     if (!targetProfileSnapshot.exists) {
       throw new HttpsError("internal", "target-profile-missing");
     }
     if (method === "apple" || method === "x") {
-      targetProfileSnapshot = await assignRandomUsernameIfNeededForWalletlessProfile({
-        profileId: targetProfileId,
-        preferredUsername: method === "x" ? xUsername : null,
-      });
+      targetProfileSnapshot =
+        await assignRandomUsernameIfNeededForWalletlessProfile({
+          profileId: targetProfileId,
+          preferredUsername: method === "x" ? xUsername : null,
+        });
     }
     await ensureProfileClaimAndRtdb(uid, targetProfileId);
 
-    const response = buildProfileResponse(targetProfileSnapshot, uid, preferredAddress || methodValueRaw);
+    const response = buildProfileResponse(
+      targetProfileSnapshot,
+      uid,
+      preferredAddress || methodValueRaw,
+    );
     response.opId = op.opId;
     await finishAuthOp({ opId: op.opId, result: response });
     return response;
@@ -2020,7 +2457,11 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
   if (isFeatureDisabled("AUTH_DISABLE_UNLINK")) {
     throw new HttpsError("failed-precondition", "unlink-disabled");
   }
-  await enforceRateLimit({ uid, method: `unlink-${normalizedMethod}`, request });
+  await enforceRateLimit({
+    uid,
+    method: `unlink-${normalizedMethod}`,
+    request,
+  });
   const op = await beginAuthOp({
     opId,
     kind: "unlink",
@@ -2047,13 +2488,22 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
       }
       const liveProfileData = liveProfileSnapshot.data() || {};
       const linkedCount = linkedMethodCount(liveProfileData);
-      const normalizedValue = normalizeFromProfileByMethod(normalizedMethod, liveProfileData);
-      const rawValue = getMethodValueFromProfile(liveProfileData, normalizedMethod);
+      const normalizedValue = normalizeFromProfileByMethod(
+        normalizedMethod,
+        liveProfileData,
+      );
+      const rawValue = getMethodValueFromProfile(
+        liveProfileData,
+        normalizedMethod,
+      );
       if (!normalizedValue && !rawValue) {
         throw new HttpsError("failed-precondition", "method-not-linked");
       }
       if (normalizedValue && linkedCount <= 1) {
-        throw new HttpsError("failed-precondition", "cannot-remove-last-method");
+        throw new HttpsError(
+          "failed-precondition",
+          "cannot-remove-last-method",
+        );
       }
 
       const updateData = {};
@@ -2079,11 +2529,15 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
       let indexRef = null;
       let shouldDeleteIndex = false;
       let revocationRef = null;
-      const profileMethodCooldownRef = firestore.collection("authProfileMethodCooldowns").doc(getProfileMethodCooldownDocId(profileId, normalizedMethod));
+      const profileMethodCooldownRef = firestore
+        .collection("authProfileMethodCooldowns")
+        .doc(getProfileMethodCooldownDocId(profileId, normalizedMethod));
       if (normalizedValue) {
         const methodDocId = getMethodKey(normalizedMethod, normalizedValue);
         indexRef = firestore.collection("authMethodIndex").doc(methodDocId);
-        revocationRef = firestore.collection("authMethodRevocations").doc(methodDocId);
+        revocationRef = firestore
+          .collection("authMethodRevocations")
+          .doc(methodDocId);
         const indexSnapshot = await transaction.get(indexRef);
         if (indexSnapshot.exists) {
           const indexData = indexSnapshot.data() || {};
@@ -2091,12 +2545,18 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
           if (!indexedProfileId || indexedProfileId === profileId) {
             shouldDeleteIndex = true;
           } else {
-            const indexedProfileRef = firestore.collection("users").doc(indexedProfileId);
-            const indexedProfileSnapshot = await transaction.get(indexedProfileRef);
+            const indexedProfileRef = firestore
+              .collection("users")
+              .doc(indexedProfileId);
+            const indexedProfileSnapshot =
+              await transaction.get(indexedProfileRef);
             if (!indexedProfileSnapshot.exists) {
               shouldDeleteIndex = true;
             } else {
-              const indexedNormalizedValue = normalizeFromProfileByMethod(normalizedMethod, indexedProfileSnapshot.data() || {});
+              const indexedNormalizedValue = normalizeFromProfileByMethod(
+                normalizedMethod,
+                indexedProfileSnapshot.data() || {},
+              );
               if (indexedNormalizedValue !== normalizedValue) {
                 shouldDeleteIndex = true;
               }
@@ -2112,7 +2572,8 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
       }
 
       const cooldownStartedAtMs = Date.now();
-      const cooldownRetryAtMs = cooldownStartedAtMs + AUTH_METHOD_REUSE_COOLDOWN_MS;
+      const cooldownRetryAtMs =
+        cooldownStartedAtMs + AUTH_METHOD_REUSE_COOLDOWN_MS;
       transaction.set(
         profileMethodCooldownRef,
         {
@@ -2125,7 +2586,7 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
           retryAtMs: cooldownRetryAtMs,
           updatedAtMs: cooldownStartedAtMs,
         },
-        { merge: true }
+        { merge: true },
       );
 
       if (normalizedValue && revocationRef) {
@@ -2142,13 +2603,15 @@ const unlinkMethodForUid = async ({ uid, method, opId, request }) => {
             retryAtMs: cooldownRetryAtMs,
             updatedAtMs: cooldownStartedAtMs,
           },
-          { merge: true }
+          { merge: true },
         );
       }
     });
 
     const refreshedSnapshot = await profileRef.get();
-    const refreshedLinkedMethods = linkedMethodsFromProfileData(refreshedSnapshot.data() || {});
+    const refreshedLinkedMethods = linkedMethodsFromProfileData(
+      refreshedSnapshot.data() || {},
+    );
     const response = {
       ok: true,
       profileId,
@@ -2178,7 +2641,9 @@ const getLinkedMethodsForUid = async (uid) => {
       appleLinked: false,
     };
   }
-  const linkedMethods = linkedMethodsFromProfileData(profileSnapshot.data() || {});
+  const linkedMethods = linkedMethodsFromProfileData(
+    profileSnapshot.data() || {},
+  );
   return {
     ok: true,
     profileId: profileSnapshot.id,
@@ -2194,10 +2659,18 @@ const syncProfileClaimForUid = async (uid) => {
       const normalizedUid = toCleanString(uid);
       if (normalizedUid) {
         const auth = admin.auth();
-        const profileRef = admin.database().ref(`players/${normalizedUid}/profile`);
-        const [userRecord, profileLinkSnapshot] = await Promise.all([auth.getUser(normalizedUid), profileRef.once("value")]);
+        const profileRef = admin
+          .database()
+          .ref(`players/${normalizedUid}/profile`);
+        const [userRecord, profileLinkSnapshot] = await Promise.all([
+          auth.getUser(normalizedUid),
+          profileRef.once("value"),
+        ]);
         const claims = { ...(userRecord.customClaims || {}) };
-        const hasProfileClaim = Object.prototype.hasOwnProperty.call(claims, "profileId");
+        const hasProfileClaim = Object.prototype.hasOwnProperty.call(
+          claims,
+          "profileId",
+        );
         if (hasProfileClaim) {
           delete claims.profileId;
         }
@@ -2226,7 +2699,9 @@ const syncProfileClaimForUid = async (uid) => {
     };
   }
   await ensureProfileClaimAndRtdb(uid, profileSnapshot.id);
-  const linkedMethods = linkedMethodsFromProfileData(profileSnapshot.data() || {});
+  const linkedMethods = linkedMethodsFromProfileData(
+    profileSnapshot.data() || {},
+  );
   return {
     ok: true,
     profileId: profileSnapshot.id,
@@ -2297,7 +2772,11 @@ const readJwt = (token) => {
 const fetchAppleJwks = async (options = {}) => {
   const forceRefresh = !!(options && options.forceRefresh);
   const nowMs = Date.now();
-  if (!forceRefresh && nowMs - appleJwksCache.fetchedAtMs < APPLE_JWKS_CACHE_MAX_AGE_MS && appleJwksCache.keysByKid.size > 0) {
+  if (
+    !forceRefresh &&
+    nowMs - appleJwksCache.fetchedAtMs < APPLE_JWKS_CACHE_MAX_AGE_MS &&
+    appleJwksCache.keysByKid.size > 0
+  ) {
     return appleJwksCache.keysByKid;
   }
   if (appleJwksFetchPromise) {
@@ -2339,7 +2818,10 @@ const verifyAppleJwtSignature = async (idToken) => {
   const algorithm = toCleanString(header.alg);
   const keyId = toCleanString(header.kid);
   if (algorithm !== "RS256" || !keyId) {
-    throw new HttpsError("permission-denied", "Unsupported Apple JWT algorithm.");
+    throw new HttpsError(
+      "permission-denied",
+      "Unsupported Apple JWT algorithm.",
+    );
   }
   let keysByKid = await fetchAppleJwks();
   let jwk = keysByKid.get(keyId);
@@ -2351,9 +2833,12 @@ const verifyAppleJwtSignature = async (idToken) => {
   }
   if (!jwk) {
     const nowMs = Date.now();
-    const cacheWasFetchedRecently = nowMs - appleJwksCache.fetchedAtMs < APPLE_JWKS_RECENT_FETCH_WINDOW_MS;
+    const cacheWasFetchedRecently =
+      nowMs - appleJwksCache.fetchedAtMs < APPLE_JWKS_RECENT_FETCH_WINDOW_MS;
     const canForceRefreshUnknownKid =
-      !cacheWasFetchedRecently && nowMs - appleJwksLastUnknownKidRefreshAtMs >= APPLE_JWKS_UNKNOWN_KID_FORCE_REFRESH_COOLDOWN_MS;
+      !cacheWasFetchedRecently &&
+      nowMs - appleJwksLastUnknownKidRefreshAtMs >=
+        APPLE_JWKS_UNKNOWN_KID_FORCE_REFRESH_COOLDOWN_MS;
     if (canForceRefreshUnknownKid) {
       appleJwksLastUnknownKidRefreshAtMs = nowMs;
       keysByKid = await fetchAppleJwks({ forceRefresh: true });
@@ -2385,7 +2870,10 @@ const verifyAppleJwtSignature = async (idToken) => {
 const verifyAppleIdToken = async ({ idToken, expectedNonce }) => {
   const audiences = getAppleAudiences();
   if (!Array.isArray(audiences) || audiences.length === 0) {
-    throw new HttpsError("failed-precondition", "APPLE_CLIENT_ID or APPLE_AUDIENCES is required.");
+    throw new HttpsError(
+      "failed-precondition",
+      "APPLE_CLIENT_ID or APPLE_AUDIENCES is required.",
+    );
   }
   const payload = await verifyAppleJwtSignature(idToken);
   const issuer = toCleanString(payload.iss);
@@ -2412,7 +2900,8 @@ const verifyAppleIdToken = async ({ idToken, expectedNonce }) => {
   return {
     sub: subject,
     emailMasked: maskEmail(payload.email),
-    emailVerified: payload.email_verified === true || payload.email_verified === "true",
+    emailVerified:
+      payload.email_verified === true || payload.email_verified === "true",
   };
 };
 

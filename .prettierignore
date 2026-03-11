@@ -1,0 +1,7 @@
+node_modules/
+build/
+coverage/
+package-lock.json
+cloud/**/node_modules/
+.claude/
+.cursor/

@@ -14,14 +14,24 @@ exports.startMatchTimer = onCall(async (request) => {
     const profileId = profileSnapshot.val();
     const customClaims = request.auth.token || {};
     if (!customClaims.profileId || customClaims.profileId !== profileId) {
-      throw new HttpsError("permission-denied", "You don't have permission to perform this action for this player.");
+      throw new HttpsError(
+        "permission-denied",
+        "You don't have permission to perform this action for this player.",
+      );
     }
   }
 
-  const matchRef = admin.database().ref(`players/${playerId}/matches/${matchId}`);
-  const opponentMatchRef = admin.database().ref(`players/${opponentId}/matches/${matchId}`);
+  const matchRef = admin
+    .database()
+    .ref(`players/${playerId}/matches/${matchId}`);
+  const opponentMatchRef = admin
+    .database()
+    .ref(`players/${opponentId}/matches/${matchId}`);
 
-  const [matchSnapshot, opponentMatchSnapshot] = await batchReadWithRetry([matchRef, opponentMatchRef]);
+  const [matchSnapshot, opponentMatchSnapshot] = await batchReadWithRetry([
+    matchRef,
+    opponentMatchRef,
+  ]);
 
   const matchData = matchSnapshot.val();
   const opponentMatchData = opponentMatchSnapshot.val();
@@ -36,7 +46,13 @@ exports.startMatchTimer = onCall(async (request) => {
     game = mons.MonsGameModel.from_fen(opponentMatchData.fen);
   }
 
-  if (matchData.status === "surrendered" || opponentMatchData.status === "surrendered" || game.winner_color() !== undefined || matchData.timer === "gg" || opponentMatchData.timer === "gg") {
+  if (
+    matchData.status === "surrendered" ||
+    opponentMatchData.status === "surrendered" ||
+    game.winner_color() !== undefined ||
+    matchData.timer === "gg" ||
+    opponentMatchData.timer === "gg"
+  ) {
     throw new HttpsError("failed-precondition", "game is already over.");
   }
 
@@ -52,15 +68,22 @@ exports.startMatchTimer = onCall(async (request) => {
 
   let result = game.verify_moves(whiteFlatMovesString, blackFlatMovesString);
   if (!result) {
-    throw new HttpsError("failed-precondition", "something is wrong with the moves.");
+    throw new HttpsError(
+      "failed-precondition",
+      "something is wrong with the moves.",
+    );
   }
 
   let turnNumber = game.turn_number();
   let activeColor = game.active_color();
-  let opponentColorModel = opponentColor === "white" ? mons.Color.White : mons.Color.Black;
+  let opponentColorModel =
+    opponentColor === "white" ? mons.Color.White : mons.Color.Black;
 
   if (activeColor !== opponentColorModel) {
-    throw new HttpsError("failed-precondition", "can't start a timer on your own turn.");
+    throw new HttpsError(
+      "failed-precondition",
+      "can't start a timer on your own turn.",
+    );
   }
 
   const duration = 90000;
@@ -88,19 +111,35 @@ exports.claimMatchVictoryByTimer = onCall(async (request) => {
     const profileId = profileSnapshot.val();
     const customClaims = request.auth.token || {};
     if (!customClaims.profileId || customClaims.profileId !== profileId) {
-      throw new HttpsError("permission-denied", "You don't have permission to perform this action for this player.");
+      throw new HttpsError(
+        "permission-denied",
+        "You don't have permission to perform this action for this player.",
+      );
     }
   }
 
-  const matchRef = admin.database().ref(`players/${playerId}/matches/${matchId}`);
-  const opponentMatchRef = admin.database().ref(`players/${opponentId}/matches/${matchId}`);
+  const matchRef = admin
+    .database()
+    .ref(`players/${playerId}/matches/${matchId}`);
+  const opponentMatchRef = admin
+    .database()
+    .ref(`players/${opponentId}/matches/${matchId}`);
   const inviteRef = admin.database().ref(`invites/${inviteId}`);
 
-  const [matchSnapshot, opponentMatchSnapshot, inviteSnapshot] = await batchReadWithRetry([matchRef, opponentMatchRef, inviteRef]);
+  const [matchSnapshot, opponentMatchSnapshot, inviteSnapshot] =
+    await batchReadWithRetry([matchRef, opponentMatchRef, inviteRef]);
 
   const inviteData = inviteSnapshot.val();
-  if (!((inviteData.hostId === playerId && inviteData.guestId === opponentId) || (inviteData.hostId === opponentId && inviteData.guestId === playerId))) {
-    throw new HttpsError("permission-denied", "Players don't match invite data");
+  if (
+    !(
+      (inviteData.hostId === playerId && inviteData.guestId === opponentId) ||
+      (inviteData.hostId === opponentId && inviteData.guestId === playerId)
+    )
+  ) {
+    throw new HttpsError(
+      "permission-denied",
+      "Players don't match invite data",
+    );
   }
 
   const matchData = matchSnapshot.val();
@@ -116,7 +155,13 @@ exports.claimMatchVictoryByTimer = onCall(async (request) => {
     game = mons.MonsGameModel.from_fen(opponentMatchData.fen);
   }
 
-  if (matchData.status === "surrendered" || opponentMatchData.status === "surrendered" || matchData.timer === "gg" || opponentMatchData.timer === "gg" || game.winner_color() !== undefined) {
+  if (
+    matchData.status === "surrendered" ||
+    opponentMatchData.status === "surrendered" ||
+    matchData.timer === "gg" ||
+    opponentMatchData.timer === "gg" ||
+    game.winner_color() !== undefined
+  ) {
     throw new HttpsError("failed-precondition", "game is already over.");
   }
 
@@ -132,14 +177,21 @@ exports.claimMatchVictoryByTimer = onCall(async (request) => {
 
   let result = game.verify_moves(whiteFlatMovesString, blackFlatMovesString);
   if (!result) {
-    throw new HttpsError("failed-precondition", "something is wrong with the moves.");
+    throw new HttpsError(
+      "failed-precondition",
+      "something is wrong with the moves.",
+    );
   }
 
   let activeColor = game.active_color();
-  let opponentColorModel = opponentColor === "white" ? mons.Color.White : mons.Color.Black;
+  let opponentColorModel =
+    opponentColor === "white" ? mons.Color.White : mons.Color.Black;
 
   if (activeColor !== opponentColorModel) {
-    throw new HttpsError("failed-precondition", "can't claim timer victory on your own turn.");
+    throw new HttpsError(
+      "failed-precondition",
+      "can't claim timer victory on your own turn.",
+    );
   }
 
   const timer = matchData.timer;
@@ -152,14 +204,23 @@ exports.claimMatchVictoryByTimer = onCall(async (request) => {
         await matchRef.child("timer").set("gg");
         return { ok: true };
       } else if (!sameTurn) {
-        throw new HttpsError("failed-precondition", "can't claim this timer anymore, it's turn is over.");
+        throw new HttpsError(
+          "failed-precondition",
+          "can't claim this timer anymore, it's turn is over.",
+        );
       } else {
-        throw new HttpsError("failed-precondition", `can't claim yet, ${timeDelta} ms remaining`);
+        throw new HttpsError(
+          "failed-precondition",
+          `can't claim yet, ${timeDelta} ms remaining`,
+        );
       }
     } else {
       throw new HttpsError("failed-precondition", "wrong timer format.");
     }
   } else {
-    throw new HttpsError("failed-precondition", "could not find an existing timer.");
+    throw new HttpsError(
+      "failed-precondition",
+      "could not find an existing timer.",
+    );
   }
 });

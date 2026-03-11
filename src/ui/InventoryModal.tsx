@@ -1,8 +1,17 @@
 import React, { useRef, useEffect, useState } from "react";
 import styled from "styled-components";
-import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, SaveButton } from "./SharedModalComponents";
+import {
+  ModalOverlay,
+  ModalPopup,
+  ModalTitle,
+  ButtonsContainer,
+  SaveButton,
+} from "./SharedModalComponents";
 import { fetchNftsForStoredAddresses } from "../services/nftService";
-import { setOwnershipVerifiedIdCardEmoji, setOwnershipVerifiedSpecialItem } from "./ShinyCard";
+import {
+  setOwnershipVerifiedIdCardEmoji,
+  setOwnershipVerifiedSpecialItem,
+} from "./ShinyCard";
 import { AvatarImage } from "./AvatarImage";
 
 const InventoryOverlay = styled(ModalOverlay)`
@@ -66,7 +75,11 @@ const TopOverlay = styled(OverlayPanel)`
   @media (prefers-color-scheme: dark) {
     background-color: var(--color-deep-gray);
     &::after {
-      background: linear-gradient(to bottom, var(--color-deep-gray), transparent);
+      background: linear-gradient(
+        to bottom,
+        var(--color-deep-gray),
+        transparent
+      );
     }
   }
 `;
@@ -241,7 +254,9 @@ const AvatarTile = styled(NFTNameContainer)`
   position: relative;
   padding: 0;
   overflow: visible;
-  transition: transform 0.13s ease-out, box-shadow 0.13s ease-out;
+  transition:
+    transform 0.13s ease-out,
+    box-shadow 0.13s ease-out;
   will-change: transform;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
@@ -346,12 +361,20 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
         }
         const ok = data?.ok === true;
         setDataOk(ok);
-        if (data?.swagpack_avatars && Array.isArray(data.swagpack_avatars) && data.swagpack_avatars.length > 0) {
+        if (
+          data?.swagpack_avatars &&
+          Array.isArray(data.swagpack_avatars) &&
+          data.swagpack_avatars.length > 0
+        ) {
           setAvatars(data.swagpack_avatars);
         } else {
           setAvatars([]);
         }
-        if (data?.specials && Array.isArray(data.specials) && data.specials.length > 0) {
+        if (
+          data?.specials &&
+          Array.isArray(data.specials) &&
+          data.specials.length > 0
+        ) {
           setSpecials(data.specials);
         } else {
           setSpecials([]);
@@ -391,7 +414,14 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
 
   return (
     <InventoryOverlay onClick={cleanUpAndClose}>
-      <InventoryPopup ref={popupRef} onClick={(e) => e.stopPropagation()} onKeyDown={handleKeyDown} tabIndex={0} autoFocus hasNfts={avatars.length > 0 || specials.length > 0}>
+      <InventoryPopup
+        ref={popupRef}
+        onClick={(e) => e.stopPropagation()}
+        onKeyDown={handleKeyDown}
+        tabIndex={0}
+        autoFocus
+        hasNfts={avatars.length > 0 || specials.length > 0}
+      >
         <TopOverlay>
           <TopBar>
             <InventoryTitle>Collectibles</InventoryTitle>
@@ -405,7 +435,11 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
             ) : avatars.length === 0 && specials.length === 0 ? (
               <LoadingText>
                 {dataOk ? (
-                  <ShinyPurpleLink href="https://magiceden.io/marketplace/swag_pack" target="_blank" rel="noopener noreferrer">
+                  <ShinyPurpleLink
+                    href="https://magiceden.io/marketplace/swag_pack"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     get swag pack
                   </ShinyPurpleLink>
                 ) : (
@@ -416,15 +450,43 @@ export const InventoryModal: React.FC<InventoryModalProps> = ({ onCancel }) => {
               <NFTGridContainer>
                 <NFTGrid>
                   {specials.map((item) => (
-                    <AvatarTile key={`special-${item.id}`} onClick={() => setOwnershipVerifiedSpecialItem(item.id)}>
-                      <SpecialImage src={`https://assets.mons.link/drops/bd4/${item.id}.webp`} alt="" loading="lazy" />
-                      {item.count > 1 && <CountIndicator count={item.count}>{item.count}</CountIndicator>}
+                    <AvatarTile
+                      key={`special-${item.id}`}
+                      onClick={() => setOwnershipVerifiedSpecialItem(item.id)}
+                    >
+                      <SpecialImage
+                        src={`https://assets.mons.link/drops/bd4/${item.id}.webp`}
+                        alt=""
+                        loading="lazy"
+                      />
+                      {item.count > 1 && (
+                        <CountIndicator count={item.count}>
+                          {item.count}
+                        </CountIndicator>
+                      )}
                     </AvatarTile>
                   ))}
                   {avatars.map((item) => (
-                    <AvatarTile key={item.id} onClick={() => setOwnershipVerifiedIdCardEmoji(item.id + 1000, item.count >= 3 ? "rainbow" : "")}>
-                      <AvatarImage src={`https://assets.mons.link/swagpack/420/${item.id}.webp`} alt="" rainbowAura={item.count >= 3} loading="lazy" />
-                      {item.count > 1 && <CountIndicator count={item.count}>{item.count}</CountIndicator>}
+                    <AvatarTile
+                      key={item.id}
+                      onClick={() =>
+                        setOwnershipVerifiedIdCardEmoji(
+                          item.id + 1000,
+                          item.count >= 3 ? "rainbow" : "",
+                        )
+                      }
+                    >
+                      <AvatarImage
+                        src={`https://assets.mons.link/swagpack/420/${item.id}.webp`}
+                        alt=""
+                        rainbowAura={item.count >= 3}
+                        loading="lazy"
+                      />
+                      {item.count > 1 && (
+                        <CountIndicator count={item.count}>
+                          {item.count}
+                        </CountIndicator>
+                      )}
                     </AvatarTile>
                   ))}
                 </NFTGrid>

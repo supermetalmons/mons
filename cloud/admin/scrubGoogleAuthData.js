@@ -10,7 +10,8 @@ const GOOGLE_USER_FIELDS = [
   "googleConsentSource",
 ];
 
-const toCleanString = (value) => (typeof value === "string" && value.trim() !== "" ? value.trim() : "");
+const toCleanString = (value) =>
+  typeof value === "string" && value.trim() !== "" ? value.trim() : "";
 
 const hasGoogleFields = (data) => {
   return GOOGLE_USER_FIELDS.some((field) => {
@@ -59,7 +60,9 @@ const listDocs = async (query, pageSize) => {
 const paginateCollection = async (collectionRef, pageSize, onDoc) => {
   let lastDoc = null;
   while (true) {
-    let query = collectionRef.orderBy(admin.firestore.FieldPath.documentId()).limit(pageSize);
+    let query = collectionRef
+      .orderBy(admin.firestore.FieldPath.documentId())
+      .limit(pageSize);
     if (lastDoc) {
       query = query.startAfter(lastDoc);
     }
@@ -119,51 +122,75 @@ async function main() {
   });
 
   const authMethodIndexDocs = await listDocs(
-    firestore.collection("authMethodIndex")
+    firestore
+      .collection("authMethodIndex")
       .orderBy(admin.firestore.FieldPath.documentId())
       .startAt("google:")
       .endAt("google:\uf8ff")
       .limit(pageSize),
-    pageSize
+    pageSize,
   );
   const authMethodRevocationDocs = await listDocs(
-    firestore.collection("authMethodRevocations")
+    firestore
+      .collection("authMethodRevocations")
       .orderBy(admin.firestore.FieldPath.documentId())
       .startAt("google:")
       .endAt("google:\uf8ff")
       .limit(pageSize),
-    pageSize
+    pageSize,
   );
   const authProfileMethodCooldownDocs = await listDocs(
-    firestore.collection("authProfileMethodCooldowns")
+    firestore
+      .collection("authProfileMethodCooldowns")
       .where("method", "==", "google")
       .limit(pageSize),
-    pageSize
+    pageSize,
   );
   const authIntentDocs = await listDocs(
-    firestore.collection("authIntents")
+    firestore
+      .collection("authIntents")
       .where("method", "==", "google")
       .limit(pageSize),
-    pageSize
+    pageSize,
   );
   const authOpDocs = await listDocs(
-    firestore.collection("authOps")
+    firestore
+      .collection("authOps")
       .where("method", "==", "google")
       .limit(pageSize),
-    pageSize
+    pageSize,
   );
   const authRateLimitDocs = (
     await Promise.all([
-      listDocs(firestore.collection("authRateLimits").where("method", "==", "intent-google").limit(pageSize), pageSize),
-      listDocs(firestore.collection("authRateLimits").where("method", "==", "verify-google").limit(pageSize), pageSize),
-      listDocs(firestore.collection("authRateLimits").where("method", "==", "unlink-google").limit(pageSize), pageSize),
+      listDocs(
+        firestore
+          .collection("authRateLimits")
+          .where("method", "==", "intent-google")
+          .limit(pageSize),
+        pageSize,
+      ),
+      listDocs(
+        firestore
+          .collection("authRateLimits")
+          .where("method", "==", "verify-google")
+          .limit(pageSize),
+        pageSize,
+      ),
+      listDocs(
+        firestore
+          .collection("authRateLimits")
+          .where("method", "==", "unlink-google")
+          .limit(pageSize),
+        pageSize,
+      ),
     ])
   ).flat();
   const googleRedirectFlowDocs = await listDocs(
-    firestore.collection("googleAuthRedirectFlows")
+    firestore
+      .collection("googleAuthRedirectFlows")
       .orderBy(admin.firestore.FieldPath.documentId())
       .limit(pageSize),
-    pageSize
+    pageSize,
   );
 
   const report = {
@@ -183,27 +210,37 @@ async function main() {
     googleOnlyProfiles,
     authMethodIndexDocIds: authMethodIndexDocs.map((doc) => doc.id),
     authMethodRevocationDocIds: authMethodRevocationDocs.map((doc) => doc.id),
-    authProfileMethodCooldownDocIds: authProfileMethodCooldownDocs.map((doc) => doc.id),
+    authProfileMethodCooldownDocIds: authProfileMethodCooldownDocs.map(
+      (doc) => doc.id,
+    ),
     authIntentDocIds: authIntentDocs.map((doc) => doc.id),
     authOpDocIds: authOpDocs.map((doc) => doc.id),
-    authRateLimitDocIds: Array.from(new Set(authRateLimitDocs.map((doc) => doc.id))),
+    authRateLimitDocIds: Array.from(
+      new Set(authRateLimitDocs.map((doc) => doc.id)),
+    ),
     googleAuthRedirectFlowDocIds: googleRedirectFlowDocs.map((doc) => doc.id),
   };
 
   console.log("Google auth scrub summary:");
-  console.log(JSON.stringify({
-    usersWithGoogleFieldsCount: report.usersWithGoogleFieldsCount,
-    googleOnlyProfilesCount: report.googleOnlyProfilesCount,
-    authMethodIndexCount: report.authMethodIndexCount,
-    authMethodRevocationsCount: report.authMethodRevocationsCount,
-    authProfileMethodCooldownsCount: report.authProfileMethodCooldownsCount,
-    authIntentsCount: report.authIntentsCount,
-    authOpsCount: report.authOpsCount,
-    authRateLimitsCount: report.authRateLimitsCount,
-    googleAuthRedirectFlowsCount: report.googleAuthRedirectFlowsCount,
-    write: report.write,
-    force: report.force,
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        usersWithGoogleFieldsCount: report.usersWithGoogleFieldsCount,
+        googleOnlyProfilesCount: report.googleOnlyProfilesCount,
+        authMethodIndexCount: report.authMethodIndexCount,
+        authMethodRevocationsCount: report.authMethodRevocationsCount,
+        authProfileMethodCooldownsCount: report.authProfileMethodCooldownsCount,
+        authIntentsCount: report.authIntentsCount,
+        authOpsCount: report.authOpsCount,
+        authRateLimitsCount: report.authRateLimitsCount,
+        googleAuthRedirectFlowsCount: report.googleAuthRedirectFlowsCount,
+        write: report.write,
+        force: report.force,
+      },
+      null,
+      2,
+    ),
+  );
 
   if (outPath) {
     fs.writeFileSync(outPath, JSON.stringify(report, null, 2));
@@ -215,7 +252,9 @@ async function main() {
   }
 
   if (googleOnlyProfiles.length > 0 && !force) {
-    throw new Error("Write mode blocked: googleOnlyProfiles detected. Re-run with --force to remove Google auth from those profiles.");
+    throw new Error(
+      "Write mode blocked: googleOnlyProfiles detected. Re-run with --force to remove Google auth from those profiles.",
+    );
   }
 
   const fieldDelete = admin.firestore.FieldValue.delete();
@@ -241,7 +280,9 @@ async function main() {
     ...authProfileMethodCooldownDocs,
     ...authIntentDocs,
     ...authOpDocs,
-    ...Array.from(new Map(authRateLimitDocs.map((doc) => [doc.id, doc])).values()),
+    ...Array.from(
+      new Map(authRateLimitDocs.map((doc) => [doc.id, doc])).values(),
+    ),
     ...googleRedirectFlowDocs,
   ].forEach((doc) => {
     operations.push({

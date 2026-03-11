@@ -1,4 +1,7 @@
-import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
+import {
+  decrementLifecycleCounter,
+  incrementLifecycleCounter,
+} from "../lifecycle/lifecycleDiagnostics";
 
 type ConfettiParticle = {
   x: number;
@@ -50,7 +53,10 @@ export function stopConfetti(): void {
   activeCanvas = null;
 }
 
-export function launchConfetti(count: number = 300, duration: number = 2300): void {
+export function launchConfetti(
+  count: number = 300,
+  duration: number = 2300,
+): void {
   stopConfetti();
   const canvas = document.createElement("canvas");
   const ctx = canvas.getContext("2d");
@@ -74,7 +80,14 @@ export function launchConfetti(count: number = 300, duration: number = 2300): vo
   activeResizeHandler = resizeHandler;
   window.addEventListener("resize", resizeHandler);
 
-  const colors = ["#FFC700", "#FF0000", "#2E3192", "#41BBC7", "#FF66CC", "#33CC33"];
+  const colors = [
+    "#FFC700",
+    "#FF0000",
+    "#2E3192",
+    "#41BBC7",
+    "#FF66CC",
+    "#33CC33",
+  ];
   const particles: ConfettiParticle[] = [];
   for (let i = 0; i < count; i++) {
     particles.push({
@@ -113,7 +126,11 @@ export function launchConfetti(count: number = 300, duration: number = 2300): vo
       ctx.fillStyle = p.color;
       ctx.fillRect(-p.radius / 2, -p.radius / 2, p.radius, p.radius);
       ctx.restore();
-      if (p.y > canvas.height + p.radius || p.x < -p.radius || p.x > canvas.width + p.radius) {
+      if (
+        p.y > canvas.height + p.radius ||
+        p.x < -p.radius ||
+        p.x > canvas.width + p.radius
+      ) {
         particles.splice(i, 1);
       }
     }

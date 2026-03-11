@@ -14,7 +14,10 @@ async function listUniqueAddresses({ outEth, outSol }) {
       let lastDoc = null;
       let totalDocs = 0;
       while (true) {
-        let q = firestore.collection("users").orderBy(admin.firestore.FieldPath.documentId()).limit(pageSize);
+        let q = firestore
+          .collection("users")
+          .orderBy(admin.firestore.FieldPath.documentId())
+          .limit(pageSize);
         if (lastDoc) q = q.startAfter(lastDoc);
         const snap = await q.get();
         if (snap.empty) break;
@@ -33,11 +36,15 @@ async function listUniqueAddresses({ outEth, outSol }) {
       const solList = Array.from(solSet).sort();
       if (outEth) {
         fs.writeFileSync(outEth, ethList.join("\n") + "\n");
-        console.log(`Wrote ${ethList.length} unique ETH addresses from ${totalDocs} user docs to ${outEth}`);
+        console.log(
+          `Wrote ${ethList.length} unique ETH addresses from ${totalDocs} user docs to ${outEth}`,
+        );
       }
       if (outSol) {
         fs.writeFileSync(outSol, solList.join("\n") + "\n");
-        console.log(`Wrote ${solList.length} unique SOL addresses from ${totalDocs} user docs to ${outSol}`);
+        console.log(
+          `Wrote ${solList.length} unique SOL addresses from ${totalDocs} user docs to ${outSol}`,
+        );
       }
       if (!outEth && !outSol) {
         console.log(`ETH (${ethList.length})`);
@@ -52,7 +59,9 @@ async function listUniqueAddresses({ outEth, outSol }) {
       } catch {}
     }
   }
-  throw new Error("Failed to initialize Admin SDK with Application Default Credentials. Run gcloud auth application-default login.");
+  throw new Error(
+    "Failed to initialize Admin SDK with Application Default Credentials. Run gcloud auth application-default login.",
+  );
 }
 
 async function main() {
@@ -68,5 +77,3 @@ main().catch((err) => {
   console.error(err);
   process.exit(1);
 });
-
-

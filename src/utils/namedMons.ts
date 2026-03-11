@@ -11,11 +11,25 @@ export enum MonType {
 }
 
 export const demonTypes = ["borgalo", "notchur"];
-export const angelTypes = ["applecreme", "gerp", "goxfold", "mowch", "mummyfly"];
-export const drainerTypes = ["deino", "greenseech", "omom", "supermetaldrop", "zwubbi", "royal_aguapwoshi"];
+export const angelTypes = [
+  "applecreme",
+  "gerp",
+  "goxfold",
+  "mowch",
+  "mummyfly",
+];
+export const drainerTypes = [
+  "deino",
+  "greenseech",
+  "omom",
+  "supermetaldrop",
+  "zwubbi",
+  "royal_aguapwoshi",
+];
 export const spiritTypes = ["melmut", "omenstatue", "owg"];
 export const mysticTypes = ["chamgot", "dart", "estalibur"];
-export const royalAguapwoshiDrainerIndex = drainerTypes.indexOf("royal_aguapwoshi");
+export const royalAguapwoshiDrainerIndex =
+  drainerTypes.indexOf("royal_aguapwoshi");
 const randomizableDrainerIndexes = drainerTypes
   .map((_, index) => index)
   .filter((index) => index !== royalAguapwoshiDrainerIndex);
@@ -45,14 +59,20 @@ export function getDefaultMonId(type: MonType, profileId: string): number {
       if (drainerTypes.length === 0) {
         return 0;
       }
-      const defaultDrainerIndex = getStableRandomIdForProfileId(profileId, drainerTypes.length);
+      const defaultDrainerIndex = getStableRandomIdForProfileId(
+        profileId,
+        drainerTypes.length,
+      );
       if (defaultDrainerIndex !== royalAguapwoshiDrainerIndex) {
         return defaultDrainerIndex;
       }
       if (randomizableDrainerIndexes.length === 0) {
         return defaultDrainerIndex;
       }
-      const fallbackIndex = getStableRandomIdForProfileId(profileId, randomizableDrainerIndexes.length);
+      const fallbackIndex = getStableRandomIdForProfileId(
+        profileId,
+        randomizableDrainerIndexes.length,
+      );
       return randomizableDrainerIndexes[fallbackIndex];
     case MonType.SPIRIT:
       return getStableRandomIdForProfileId(profileId, spiritTypes.length);
@@ -61,8 +81,13 @@ export function getDefaultMonId(type: MonType, profileId: string): number {
   }
 }
 
-export function getMonsIndexes(isOtherPlayer: boolean, profile: PlayerProfile | null): [number, number, number, number, number] {
-  const currentIndexes = isOtherPlayer ? profile?.profileMons ?? "" : storage.getProfileMons("");
+export function getMonsIndexes(
+  isOtherPlayer: boolean,
+  profile: PlayerProfile | null,
+): [number, number, number, number, number] {
+  const currentIndexes = isOtherPlayer
+    ? (profile?.profileMons ?? "")
+    : storage.getProfileMons("");
 
   let useDefaultIndexes = true;
   let demonIndex = 0;
@@ -87,7 +112,9 @@ export function getMonsIndexes(isOtherPlayer: boolean, profile: PlayerProfile | 
   }
 
   if (useDefaultIndexes) {
-    const profileId = isOtherPlayer ? profile?.id ?? "" : storage.getProfileId("");
+    const profileId = isOtherPlayer
+      ? (profile?.id ?? "")
+      : storage.getProfileId("");
     demonIndex = getDefaultMonId(MonType.DEMON, profileId);
     angelIndex = getDefaultMonId(MonType.ANGEL, profileId);
     drainerIndex = getDefaultMonId(MonType.DRAINER, profileId);

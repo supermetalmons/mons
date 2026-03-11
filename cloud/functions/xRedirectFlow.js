@@ -43,7 +43,8 @@ const normalizeConsentSource = (value) => {
   return normalized === "settings" ? "settings" : "signin";
 };
 
-const createXRedirectFlowId = () => crypto.randomBytes(18).toString("base64url");
+const createXRedirectFlowId = () =>
+  crypto.randomBytes(18).toString("base64url");
 
 const createXCodeVerifier = () => crypto.randomBytes(48).toString("base64url");
 
@@ -60,9 +61,14 @@ const buildOriginFromHeaders = ({ headers, protocolHint }) => {
   if (!host) {
     throw new HttpsError("internal", "x-redirect-host-missing");
   }
-  const forwardedProtoRaw = toCleanString(headers && headers["x-forwarded-proto"]);
-  const forwardedProto = forwardedProtoRaw ? forwardedProtoRaw.split(",")[0].trim() : "";
-  const protocolCandidate = forwardedProto || toCleanString(protocolHint) || "https";
+  const forwardedProtoRaw = toCleanString(
+    headers && headers["x-forwarded-proto"],
+  );
+  const forwardedProto = forwardedProtoRaw
+    ? forwardedProtoRaw.split(",")[0].trim()
+    : "";
+  const protocolCandidate =
+    forwardedProto || toCleanString(protocolHint) || "https";
   const protocol = protocolCandidate === "http" ? "http" : "https";
   return `${protocol}://${host}`;
 };
@@ -105,7 +111,7 @@ const getAllowedReturnOrigins = (rawRequest) => {
   const allowed = new Set(
     configuredOrigins
       .map((value) => parseOriginOrEmpty(value))
-      .filter((value) => value !== "")
+      .filter((value) => value !== ""),
   );
   return allowed;
 };
@@ -162,7 +168,10 @@ const buildXOauthUrl = ({ clientId, callbackUri, flowId, codeChallenge }) => {
 };
 
 const buildXBasicAuthorizationHeader = ({ clientId, clientSecret }) => {
-  const credentials = Buffer.from(`${clientId}:${clientSecret}`, "utf8").toString("base64");
+  const credentials = Buffer.from(
+    `${clientId}:${clientSecret}`,
+    "utf8",
+  ).toString("base64");
   return `Basic ${credentials}`;
 };
 
@@ -181,7 +190,10 @@ const buildReturnUrlWithXRedirectStatus = ({
   } else {
     nextUrl.searchParams.delete(X_REDIRECT_RESULT_PARAMS.error);
   }
-  nextUrl.searchParams.set(X_REDIRECT_RESULT_PARAMS.consentSource, normalizeConsentSource(consentSource));
+  nextUrl.searchParams.set(
+    X_REDIRECT_RESULT_PARAMS.consentSource,
+    normalizeConsentSource(consentSource),
+  );
   return nextUrl.toString();
 };
 

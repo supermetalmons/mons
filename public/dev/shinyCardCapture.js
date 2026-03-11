@@ -36,7 +36,7 @@ const waitForCardAssets = async (root) => {
   await Promise.all(
     images.map((img) => {
       return waitForImage(img);
-    })
+    }),
   );
   if (document.fonts && document.fonts.ready) {
     await document.fonts.ready;
@@ -58,7 +58,7 @@ const fetchDataUrl = async (url) => {
   try {
     const response = await fetch(url, {
       mode: "cors",
-      credentials: "omit"
+      credentials: "omit",
     });
     if (!response.ok) {
       return null;
@@ -100,7 +100,7 @@ const inlineImagesForCapture = async (root) => {
       }
       img.src = dataUrl;
       img.removeAttribute("srcset");
-    })
+    }),
   );
   const styledElements = Array.from(root.querySelectorAll("*"));
   await Promise.all(
@@ -119,14 +119,15 @@ const inlineImagesForCapture = async (root) => {
           element.style.maskImage = next;
         }
       }
-      const webkitMaskImage = element.style.getPropertyValue("-webkit-mask-image");
+      const webkitMaskImage =
+        element.style.getPropertyValue("-webkit-mask-image");
       if (webkitMaskImage) {
         const next = await replaceStyleUrl(webkitMaskImage);
         if (next !== webkitMaskImage) {
           element.style.setProperty("-webkit-mask-image", next);
         }
       }
-    })
+    }),
   );
 };
 
@@ -172,7 +173,9 @@ const downloadShinyCardPng = async (card, options) => {
         return;
       }
       const htmlToImage = await loadHtmlToImage();
-      const toBlob = htmlToImage.toBlob || (htmlToImage.default && htmlToImage.default.toBlob);
+      const toBlob =
+        htmlToImage.toBlob ||
+        (htmlToImage.default && htmlToImage.default.toBlob);
       if (!toBlob) {
         return;
       }
@@ -180,14 +183,14 @@ const downloadShinyCardPng = async (card, options) => {
         cacheBust: true,
         fetchRequestInit: {
           mode: "cors",
-          credentials: "omit"
+          credentials: "omit",
         },
         pixelRatio: (window.devicePixelRatio || 1) * options.scale,
         style: {
           transform: "none",
           transformStyle: "flat",
-          boxShadow: "none"
-        }
+          boxShadow: "none",
+        },
       });
     } finally {
       if (captureWrapper.parentNode) {
@@ -234,7 +237,13 @@ const cancelShinyCardDownload = () => {
   resolveShinyCardDownload();
 };
 
-const scheduleShinyCardDownload = ({ card, fileName, readyPromise, scale, delayMs = 1000 }) => {
+const scheduleShinyCardDownload = ({
+  card,
+  fileName,
+  readyPromise,
+  scale,
+  delayMs = 1000,
+}) => {
   cancelShinyCardDownload();
   const token = shinyCardDownloadToken;
   const promise = new Promise((resolve) => {
@@ -250,7 +259,7 @@ const scheduleShinyCardDownload = ({ card, fileName, readyPromise, scale, delayM
           fileName,
           readyPromise,
           scale,
-          isStillValid: () => token === shinyCardDownloadToken
+          isStillValid: () => token === shinyCardDownloadToken,
         });
       } finally {
         resolveShinyCardDownload();
@@ -262,5 +271,5 @@ const scheduleShinyCardDownload = ({ card, fileName, readyPromise, scale, delayM
 
 window.monsShinyCardCapture = {
   scheduleShinyCardDownload,
-  cancelShinyCardDownload
+  cancelShinyCardDownload,
 };

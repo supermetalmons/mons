@@ -13,11 +13,17 @@ export enum BoardStyleSet {
 }
 
 const isAssetsSet = (value: unknown): value is AssetsSet => {
-  return typeof value === "string" && Object.values(AssetsSet).includes(value as AssetsSet);
+  return (
+    typeof value === "string" &&
+    Object.values(AssetsSet).includes(value as AssetsSet)
+  );
 };
 
 const isBoardStyleSet = (value: unknown): value is BoardStyleSet => {
-  return typeof value === "string" && Object.values(BoardStyleSet).includes(value as BoardStyleSet);
+  return (
+    typeof value === "string" &&
+    Object.values(BoardStyleSet).includes(value as BoardStyleSet)
+  );
 };
 
 const getStoredAssetsSet = (): AssetsSet => {
@@ -54,7 +60,9 @@ const resolveInitialBoardStyleSet = (): BoardStyleSet => {
   if (isBoardStyleSet(storedBoardStyleSet)) {
     return storedBoardStyleSet;
   }
-  return currentAssetsSet === AssetsSet.Pangchiu ? BoardStyleSet.Pangchiu : BoardStyleSet.Grid;
+  return currentAssetsSet === AssetsSet.Pangchiu
+    ? BoardStyleSet.Pangchiu
+    : BoardStyleSet.Grid;
 };
 
 export let currentBoardStyleSet: BoardStyleSet = resolveInitialBoardStyleSet();
@@ -85,7 +93,8 @@ export function setCurrentBoardStyleSet(set: BoardStyleSet) {
   notifyBoardStyleSetListeners();
 }
 
-export const isPangchiuBoard = () => currentBoardStyleSet === BoardStyleSet.Pangchiu;
+export const isPangchiuBoard = () =>
+  currentBoardStyleSet === BoardStyleSet.Pangchiu;
 export const isCustomPictureBoardEnabled = () => isPangchiuBoard();
 
 export const colors = {
@@ -117,7 +126,9 @@ export const colors = {
   } as { [key: string]: string },
 
   getRainbow: function (index: string) {
-    return isPangchiuBoard() ? this.pangchiuBoardRainbow[index] : this.rainbow[index];
+    return isPangchiuBoard()
+      ? this.pangchiuBoardRainbow[index]
+      : this.rainbow[index];
   },
   itemSelectionBackground: "rgba(0, 0, 0, 0.5)",
   scoreText: "gray",
@@ -188,7 +199,10 @@ const isColorSetKey = (value: unknown): value is ColorSetKey => {
   return typeof value === "string" && value in colorSets;
 };
 
-const normalizeColorSetPreferencesByMode = (value: { light: string | null; dark: string | null }): ColorSetPreferencesByMode => {
+const normalizeColorSetPreferencesByMode = (value: {
+  light: string | null;
+  dark: string | null;
+}): ColorSetPreferencesByMode => {
   return {
     light: isColorSetKey(value.light) ? value.light : null,
     dark: isColorSetKey(value.dark) ? value.dark : null,
@@ -196,26 +210,35 @@ const normalizeColorSetPreferencesByMode = (value: { light: string | null; dark:
 };
 
 const getSystemColorMode = (): ColorMode => {
-  if (typeof window === "undefined" || typeof window.matchMedia !== "function") {
+  if (
+    typeof window === "undefined" ||
+    typeof window.matchMedia !== "function"
+  ) {
     return "light";
   }
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
 };
 
 const getDefaultColorSetForMode = (mode: ColorMode): ColorSetKey => {
   return mode === "dark" ? "darkAndYellow" : "default";
 };
 
-let colorSetPreferencesByMode: ColorSetPreferencesByMode = normalizeColorSetPreferencesByMode(
-  storage.getBoardColorSetsByTheme({ ...DEFAULT_COLOR_SET_PREFERENCES_BY_MODE })
-);
+let colorSetPreferencesByMode: ColorSetPreferencesByMode =
+  normalizeColorSetPreferencesByMode(
+    storage.getBoardColorSetsByTheme({
+      ...DEFAULT_COLOR_SET_PREFERENCES_BY_MODE,
+    }),
+  );
 
 const resolveColorSetKeyForMode = (mode: ColorMode): ColorSetKey => {
   return colorSetPreferencesByMode[mode] ?? getDefaultColorSetForMode(mode);
 };
 
 let currentColorMode: ColorMode = getSystemColorMode();
-let currentColorSetKey: ColorSetKey = resolveColorSetKeyForMode(currentColorMode);
+let currentColorSetKey: ColorSetKey =
+  resolveColorSetKeyForMode(currentColorMode);
 
 const boardColorSetListeners = new Set<() => void>();
 

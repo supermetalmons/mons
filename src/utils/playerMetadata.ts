@@ -50,7 +50,10 @@ export function openEthAddress(address: string) {
   window.open(etherscanUrl, "_blank", "noopener,noreferrer");
 }
 
-export function recalculateRatingsLocallyForUids(victoryUid: string, defeatUid: string) {
+export function recalculateRatingsLocallyForUids(
+  victoryUid: string,
+  defeatUid: string,
+) {
   const rating1 = getRatingForUid(victoryUid);
   const rating2 = getRatingForUid(defeatUid);
   const nonce1 = getNonceForUid(victoryUid);
@@ -63,7 +66,12 @@ export function recalculateRatingsLocallyForUids(victoryUid: string, defeatUid: 
   const newNonce1 = nonce1 + 1;
   const newNonce2 = nonce2 + 1;
 
-  const [newRating1, newRating2] = updateRating(rating1, newNonce1, rating2, newNonce2);
+  const [newRating1, newRating2] = updateRating(
+    rating1,
+    newNonce1,
+    rating2,
+    newNonce2,
+  );
 
   setRatingAndNonceForUid(victoryUid, newRating1, newNonce1);
   setRatingAndNonceForUid(defeatUid, newRating2, newNonce2);
@@ -77,7 +85,9 @@ export function getStashedPlayerSolAddress(uid: string) {
   return solAddressesForUids[uid];
 }
 
-export function getStashedPlayerProfile(uid: string): PlayerProfile | undefined {
+export function getStashedPlayerProfile(
+  uid: string,
+): PlayerProfile | undefined {
   if (!uid) return undefined;
   return allProfilesDict[uid];
 }
@@ -86,7 +96,12 @@ export function getStashedPlayerEthAddress(uid: string) {
   return ethAddressesForUids[uid];
 }
 
-export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId: string, own: boolean, onSuccess: () => void) {
+export function updatePlayerMetadataWithProfile(
+  profile: PlayerProfile,
+  loginId: string,
+  own: boolean,
+  onSuccess: () => void,
+) {
   const sessionGuard = connection.createSessionGuard();
   usernamesForUids[loginId] = profile.username ?? "";
   const ethAddress = profile.eth ?? "";
@@ -137,14 +152,19 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
         }
         allProfilesDict[loginId] = profile;
         if (profile.emoji !== undefined && own) {
-          syncTutorialProgress(profile.completedProblemIds ?? [], profile.isTutorialCompleted ?? false);
+          syncTutorialProgress(
+            profile.completedProblemIds ?? [],
+            profile.isTutorialCompleted ?? false,
+          );
           storage.setPlayerEmojiId(profile.emoji.toString());
           storage.setPlayerEmojiAura(profile.aura ?? "");
           storage.setUsername(profile.username ?? "");
           storage.setPlayerRating(profile.rating ?? 1500);
           storage.setPlayerNonce(profile.nonce ?? -1);
           if ((profile as any).totalManaPoints !== undefined) {
-            storage.setPlayerTotalManaPoints((profile as any).totalManaPoints ?? 0);
+            storage.setPlayerTotalManaPoints(
+              (profile as any).totalManaPoints ?? 0,
+            );
           }
 
           if (profile.cardBackgroundId) {
@@ -170,12 +190,22 @@ export function updatePlayerMetadataWithProfile(profile: PlayerProfile, loginId:
           if (profile.mining) {
             storage.setMiningLastRockDate(profile.mining.lastRockDate ?? null);
             storage.setMiningMaterials(profile.mining.materials);
-            rocksMiningService.setFromServer(profile.mining, { persist: false });
+            rocksMiningService.setFromServer(profile.mining, {
+              persist: false,
+            });
           }
 
-          updateProfileDisplayName(profile.username ?? "", storage.getEthAddress(""), storage.getSolAddress(""));
+          updateProfileDisplayName(
+            profile.username ?? "",
+            storage.getEthAddress(""),
+            storage.getSolAddress(""),
+          );
           if (!isWatchOnly) {
-            updateEmojiAndAuraIfNeeded(profile.emoji.toString(), profile.aura, false);
+            updateEmojiAndAuraIfNeeded(
+              profile.emoji.toString(),
+              profile.aura,
+              false,
+            );
           }
           connection.updateEmoji(profile.emoji, true, profile.aura ?? "");
         }
@@ -195,7 +225,11 @@ function getNonceForUid(uid: string): number | undefined {
   return allProfilesDict[uid]?.nonce;
 }
 
-function setRatingAndNonceForUid(uid: string, rating: number, nonce: number): void {
+function setRatingAndNonceForUid(
+  uid: string,
+  rating: number,
+  nonce: number,
+): void {
   if (!uid) return;
   if (allProfilesDict[uid]) {
     allProfilesDict[uid].rating = rating;
@@ -214,7 +248,12 @@ const solAddressesForUids: { [key: string]: string } = {};
 const ensDict: { [key: string]: { name: string; avatar: string } } = {};
 const allProfilesDict: { [key: string]: PlayerProfile } = {};
 
-const updateRating = (winRating: number, winPlayerGamesCount: number, lossRating: number, lossPlayerGamesCount: number) => {
+const updateRating = (
+  winRating: number,
+  winPlayerGamesCount: number,
+  lossRating: number,
+  lossPlayerGamesCount: number,
+) => {
   const settings = {
     tau: 0.75,
     rating: 1500,
@@ -224,8 +263,16 @@ const updateRating = (winRating: number, winPlayerGamesCount: number, lossRating
 
   const ranking = new glicko2.Glicko2(settings);
   const adjustRd = (gamesCount: number) => Math.max(60, 350 - gamesCount);
-  const winner = ranking.makePlayer(winRating, adjustRd(winPlayerGamesCount), 0.06);
-  const loser = ranking.makePlayer(lossRating, adjustRd(lossPlayerGamesCount), 0.06);
+  const winner = ranking.makePlayer(
+    winRating,
+    adjustRd(winPlayerGamesCount),
+    0.06,
+  );
+  const loser = ranking.makePlayer(
+    lossRating,
+    adjustRd(lossPlayerGamesCount),
+    0.06,
+  );
   const matches: [any, any, number][] = [[winner, loser, 1]];
   ranking.updateRatings(matches);
 
@@ -237,8 +284,12 @@ const updateRating = (winRating: number, winPlayerGamesCount: number, lossRating
 
 export function resetPlayerMetadataCaches() {
   Object.keys(usernamesForUids).forEach((key) => delete usernamesForUids[key]);
-  Object.keys(ethAddressesForUids).forEach((key) => delete ethAddressesForUids[key]);
-  Object.keys(solAddressesForUids).forEach((key) => delete solAddressesForUids[key]);
+  Object.keys(ethAddressesForUids).forEach(
+    (key) => delete ethAddressesForUids[key],
+  );
+  Object.keys(solAddressesForUids).forEach(
+    (key) => delete solAddressesForUids[key],
+  );
   Object.keys(ensDict).forEach((key) => delete ensDict[key]);
   Object.keys(allProfilesDict).forEach((key) => delete allProfilesDict[key]);
 }

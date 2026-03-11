@@ -5,28 +5,54 @@ import styled, { css } from "styled-components";
 import { storage } from "../utils/storage";
 import { connection } from "../connection/connection";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
-import { closeMenuAndInfoIfAllowedForEvent, closeMenuAndInfoIfAny } from "./MainMenu";
+import {
+  closeMenuAndInfoIfAllowedForEvent,
+  closeMenuAndInfoIfAny,
+} from "./MainMenu";
 import { setAuthStatusGlobally } from "../connection/authentication";
 import { handleLoginSuccess } from "../connection/loginSuccess";
-import { preloadAppleSignInLibrary, signInWithApplePopup } from "../connection/appleConnection";
-import { clearConsumedXRedirectResult, isXRedirectStartedError, peekXRedirectResult, startXRedirectAuth, subscribeToPendingXRedirectResult } from "../connection/xConnection";
+import {
+  preloadAppleSignInLibrary,
+  signInWithApplePopup,
+} from "../connection/appleConnection";
+import {
+  clearConsumedXRedirectResult,
+  isXRedirectStartedError,
+  peekXRedirectResult,
+  startXRedirectAuth,
+  subscribeToPendingXRedirectResult,
+} from "../connection/xConnection";
 import { formatAuthCooldownErrorMessage } from "../connection/authCooldownErrors";
 import { formatXAuthErrorMessage } from "../connection/xAuthErrors";
-import { consumePendingXAuthUiFeedback, subscribeToXAuthUiFeedback, XAuthUiFeedback } from "../connection/xAuthUiFeedback";
+import {
+  consumePendingXAuthUiFeedback,
+  subscribeToXAuthUiFeedback,
+  XAuthUiFeedback,
+} from "../connection/xAuthUiFeedback";
 import { NameEditModal } from "./NameEditModal";
 import { InventoryModal } from "./InventoryModal";
 import { LogoutConfirmModal } from "./LogoutConfirmModal";
 import { SettingsModal } from "./SettingsModal";
-import { EVENT_MODAL_AUTH_Z_INDEX, getEventModalState, subscribeToEventModalState } from "./eventModalController";
+import {
+  EVENT_MODAL_AUTH_Z_INDEX,
+  getEventModalState,
+  subscribeToEventModalState,
+} from "./eventModalController";
 import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
-import { hideShinyCard, showShinyCard, showsShinyCardSomewhere, updateShinyCardDisplayName } from "./ShinyCard";
+import {
+  hideShinyCard,
+  showShinyCard,
+  showsShinyCardSomewhere,
+  updateShinyCardDisplayName,
+} from "./ShinyCard";
 import { enterProfileEditingMode } from "../index";
 import { registerProfileTransientUiHandler } from "./uiSession";
 import { performLogoutCleanupAndReload } from "../session/logoutOrchestrator";
 
 const Container = styled.div<{ $liftAboveEventModal?: boolean }>`
   position: relative;
-  z-index: ${(props) => (props.$liftAboveEventModal ? EVENT_MODAL_AUTH_Z_INDEX : "auto")};
+  z-index: ${(props) =>
+    props.$liftAboveEventModal ? EVENT_MODAL_AUTH_Z_INDEX : "auto"};
 `;
 
 const BaseButton = styled.button`
@@ -46,12 +72,20 @@ type SignInButtonVisualProps = {
 };
 
 export const signInButtonVisualStyles = css<SignInButtonVisualProps>`
-  background-color: ${(props) => (props.$isConnected || props.$isPending ? "var(--color-gray-f9de)" : "var(--profileSigninTint)")};
+  background-color: ${(props) =>
+    props.$isConnected || props.$isPending
+      ? "var(--color-gray-f9de)"
+      : "var(--profileSigninTint)"};
 
   padding: 8px 16px;
-  font-weight: ${(props) => (props.$isConnected || props.$isPending ? "750" : "888")};
-  font-size: ${(props) => (props.$isConnected || props.$isPending ? "0.9rem" : "0.95rem")};
-  color: ${(props) => (props.$isConnected || props.$isPending ? "var(--profileConnectedText)" : "white")};
+  font-weight: ${(props) =>
+    props.$isConnected || props.$isPending ? "750" : "888"};
+  font-size: ${(props) =>
+    props.$isConnected || props.$isPending ? "0.9rem" : "0.95rem"};
+  color: ${(props) =>
+    props.$isConnected || props.$isPending
+      ? "var(--profileConnectedText)"
+      : "white"};
   border-radius: 16px;
   border: none;
   cursor: pointer;
@@ -62,16 +96,25 @@ export const signInButtonVisualStyles = css<SignInButtonVisualProps>`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.$isConnected || props.$isPending ? "var(--color-gray-f5)" : "var(--bottomButtonBackgroundHover)")};
+      background-color: ${(props) =>
+        props.$isConnected || props.$isPending
+          ? "var(--color-gray-f5)"
+          : "var(--bottomButtonBackgroundHover)"};
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: ${(props) => (props.$isConnected || props.$isPending ? "var(--color-gray-25d5)" : "var(--profileSigninTintDark)")};
+    background-color: ${(props) =>
+      props.$isConnected || props.$isPending
+        ? "var(--color-gray-25d5)"
+        : "var(--profileSigninTintDark)"};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.$isConnected || props.$isPending ? "var(--color-gray-27)" : "var(--bottomButtonBackgroundHoverDark)")};
+        background-color: ${(props) =>
+          props.$isConnected || props.$isPending
+            ? "var(--color-gray-27)"
+            : "var(--bottomButtonBackgroundHoverDark)"};
       }
     }
   }
@@ -172,7 +215,12 @@ let showInventoryImpl: () => void = () => {};
 let handleLogoutImpl: () => void = () => {};
 let showSettingsImpl: () => void = () => {};
 let hideNotificationBannerImpl: () => void = () => {};
-let showNotificationBannerImpl: (title: string, subtitle: string, emojiId: string, successHandler: () => void) => void = () => {};
+let showNotificationBannerImpl: (
+  title: string,
+  subtitle: string,
+  emojiId: string,
+  successHandler: () => void,
+) => void = () => {};
 let setSignInInlineAuthErrorImpl: (message: string | null) => void = () => {};
 let openProfileSignInPopupImpl: () => void = () => {};
 let pendingSignInInlineAuthError: string | null | undefined = undefined;
@@ -201,7 +249,12 @@ export const hideNotificationBanner = () => {
   hideNotificationBannerImpl();
 };
 
-export const showNotificationBanner = (title: string, subtitle: string, emojiId: string, successHandler: () => void) => {
+export const showNotificationBanner = (
+  title: string,
+  subtitle: string,
+  emojiId: string,
+  successHandler: () => void,
+) => {
   showNotificationBannerImpl(title, subtitle, emojiId, successHandler);
 };
 
@@ -215,7 +268,13 @@ export const openProfileSignInPopup = () => {
 };
 
 export function hasProfilePopupVisible(): boolean {
-  return getIsProfilePopupOpen() || getIsEditingPopupOpen() || getIsInventoryPopupOpen() || getIsLogoutConfirmPopupOpen() || getIsSettingsPopupOpen();
+  return (
+    getIsProfilePopupOpen() ||
+    getIsEditingPopupOpen() ||
+    getIsInventoryPopupOpen() ||
+    getIsLogoutConfirmPopupOpen() ||
+    getIsSettingsPopupOpen()
+  );
 }
 
 let setProfileDisplayNameGlobal: ((name: string) => void) | null = null;
@@ -250,7 +309,9 @@ export const isLogoutUiLocked = (): boolean => {
   return isLogoutUiLockedGlobal;
 };
 
-export const subscribeToLogoutUiLock = (listener: (isLocked: boolean) => void): (() => void) => {
+export const subscribeToLogoutUiLock = (
+  listener: (isLocked: boolean) => void,
+): (() => void) => {
   logoutUiLockListeners.add(listener);
   return () => {
     logoutUiLockListeners.delete(listener);
@@ -319,7 +380,11 @@ const didFinalizeLogoutAttempt = (logoutAttemptId: number): boolean => {
   return finalizedLogoutAttemptId === logoutAttemptId;
 };
 
-const formatDisplayName = (username: string | null, ethAddress: string | null, solAddress: string | null): string => {
+const formatDisplayName = (
+  username: string | null,
+  ethAddress: string | null,
+  solAddress: string | null,
+): string => {
   if (username) {
     return username;
   } else if (ethAddress) {
@@ -333,7 +398,11 @@ const formatDisplayName = (username: string | null, ethAddress: string | null, s
   return "anon";
 };
 
-export const updateProfileDisplayName = (username: string | null, ethAddress: string | null, solAddress: string | null) => {
+export const updateProfileDisplayName = (
+  username: string | null,
+  ethAddress: string | null,
+  solAddress: string | null,
+) => {
   if (!setProfileDisplayNameGlobal) {
     pendingUsername = username ?? null;
     pendingEthAddress = ethAddress ?? null;
@@ -362,11 +431,14 @@ type AuthIntentResponse = {
 
 const APPLE_INTENT_REFRESH_BUFFER_MS = 30 * 1000;
 
-const isAppleIntentUsable = (intent: AuthIntentResponse | null): intent is AuthIntentResponse => {
+const isAppleIntentUsable = (
+  intent: AuthIntentResponse | null,
+): intent is AuthIntentResponse => {
   if (!intent) {
     return false;
   }
-  return typeof intent.intentId === "string" &&
+  return (
+    typeof intent.intentId === "string" &&
     intent.intentId !== "" &&
     typeof intent.nonce === "string" &&
     intent.nonce !== "" &&
@@ -374,10 +446,16 @@ const isAppleIntentUsable = (intent: AuthIntentResponse | null): intent is AuthI
     intent.state !== "" &&
     typeof intent.expiresAtMs === "number" &&
     Number.isFinite(intent.expiresAtMs) &&
-    intent.expiresAtMs - Date.now() > APPLE_INTENT_REFRESH_BUFFER_MS;
+    intent.expiresAtMs - Date.now() > APPLE_INTENT_REFRESH_BUFFER_MS
+  );
 };
 
-type AppleButtonUiState = "idle" | "preparing" | "confirm" | "connecting" | "verifying";
+type AppleButtonUiState =
+  | "idle"
+  | "preparing"
+  | "confirm"
+  | "connecting"
+  | "verifying";
 type XButtonUiState = "idle" | "connecting";
 
 const getAppleButtonLabel = (state: AppleButtonUiState): string => {
@@ -403,7 +481,9 @@ const getXButtonLabel = (state: XButtonUiState): string => {
   return "X";
 };
 
-export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus }) => {
+export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({
+  authStatus,
+}) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isEventModalVisible, setIsEventModalVisible] = useState(() => {
     const eventModalState = getEventModalState();
@@ -411,47 +491,70 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   });
   const [solanaText, setSolanaText] = useState("Solana");
   const [inlineAuthError, setInlineAuthError] = useState("");
-  const [appleButtonState, setAppleButtonState] = useState<AppleButtonUiState>("idle");
+  const [appleButtonState, setAppleButtonState] =
+    useState<AppleButtonUiState>("idle");
   const [xButtonState, setXButtonState] = useState<XButtonUiState>("idle");
-  const [isPendingXSignInRedirect, setIsPendingXSignInRedirect] = useState<boolean>(() => {
-    return peekXRedirectResult()?.consentSource === "signin";
-  });
-  const [isPendingXSignInRedirectStale, setIsPendingXSignInRedirectStale] = useState(false);
+  const [isPendingXSignInRedirect, setIsPendingXSignInRedirect] =
+    useState<boolean>(() => {
+      return peekXRedirectResult()?.consentSource === "signin";
+    });
+  const [isPendingXSignInRedirectStale, setIsPendingXSignInRedirectStale] =
+    useState(false);
   const [isSolanaConnecting, setIsSolanaConnecting] = useState(false);
-  const [profileDisplayName, setProfileDisplayName] = useState(() => formatDisplayName(pendingUsername, pendingEthAddress, pendingSolAddress));
+  const [profileDisplayName, setProfileDisplayName] = useState(() =>
+    formatDisplayName(pendingUsername, pendingEthAddress, pendingSolAddress),
+  );
   const [isEditingName, setIsEditingName] = useState(false);
   const [isInventoryOpen, setIsInventoryOpen] = useState(false);
   const [isLogoutConfirmOpen, setIsLogoutConfirmOpen] = useState(false);
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [settingsInlineMessage, setSettingsInlineMessage] = useState<{ id: number; message: string } | null>(null);
-  const [NotificationComponent, setNotificationComponent] = useState<React.ComponentType<any> | null>(null);
+  const [settingsInlineMessage, setSettingsInlineMessage] = useState<{
+    id: number;
+    message: string;
+  } | null>(null);
+  const [NotificationComponent, setNotificationComponent] =
+    useState<React.ComponentType<any> | null>(null);
   const [isNotificationVisible, setIsNotificationVisible] = useState(false);
-  const [notificationState, setNotificationState] = useState<NotificationState | null>(null);
+  const [notificationState, setNotificationState] =
+    useState<NotificationState | null>(null);
   const [isNotificationMounted, setIsNotificationMounted] = useState(false);
-  const [notificationDismissType, setNotificationDismissType] = useState<"click" | "close" | null>(null);
+  const [notificationDismissType, setNotificationDismissType] = useState<
+    "click" | "close" | null
+  >(null);
   const popoverRef = useRef<HTMLDivElement>(null);
   const notificationTimeoutRef = useRef<number | null>(null);
   const appleIntentRef = useRef<AuthIntentResponse | null>(null);
-  const appleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(null);
+  const appleIntentPromiseRef = useRef<Promise<AuthIntentResponse> | null>(
+    null,
+  );
   const appleConfirmExpiryTimeoutRef = useRef<number | null>(null);
   const ethereumConnectModalRef = useRef<(() => void) | null>(null);
   const ethereumConnectRetryTimeoutRef = useRef<number | null>(null);
   const pendingXSignInStaleTimeoutRef = useRef<number | null>(null);
   const xRedirectNavigationFallbackTimeoutRef = useRef<number | null>(null);
-  const xRedirectVisibilityRecoveryHandlerRef = useRef<(() => void) | null>(null);
+  const xRedirectVisibilityRecoveryHandlerRef = useRef<(() => void) | null>(
+    null,
+  );
   const isMountedRef = useRef(true);
   const isOpenRef = useRef(isOpen);
   const authStatusRef = useRef(authStatus);
   const latestAppleActionRef = useRef(0);
   const nextSettingsInlineMessageIdRef = useRef(0);
-  const shouldReopenSettingsAfterXRedirectRef = useRef(peekXRedirectResult()?.consentSource === "settings");
+  const shouldReopenSettingsAfterXRedirectRef = useRef(
+    peekXRedirectResult()?.consentSource === "settings",
+  );
 
   const appleText = getAppleButtonLabel(appleButtonState);
   const xText = getXButtonLabel(xButtonState);
-  const isAppleBusy = appleButtonState === "preparing" || appleButtonState === "connecting" || appleButtonState === "verifying";
+  const isAppleBusy =
+    appleButtonState === "preparing" ||
+    appleButtonState === "connecting" ||
+    appleButtonState === "verifying";
   const isXBusy = xButtonState === "connecting";
-  const isPendingXSignInRedirectBlockingUi = isPendingXSignInRedirect && !isPendingXSignInRedirectStale;
-  const shouldLiftAboveEventModal = isEventModalVisible && authStatus !== "authenticated";
+  const isPendingXSignInRedirectBlockingUi =
+    isPendingXSignInRedirect && !isPendingXSignInRedirectStale;
+  const shouldLiftAboveEventModal =
+    isEventModalVisible && authStatus !== "authenticated";
 
   useEffect(() => {
     return subscribeToEventModalState((nextState) => {
@@ -491,7 +594,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     if (!xRedirectVisibilityRecoveryHandlerRef.current) {
       return;
     }
-    document.removeEventListener("visibilitychange", xRedirectVisibilityRecoveryHandlerRef.current);
+    document.removeEventListener(
+      "visibilitychange",
+      xRedirectVisibilityRecoveryHandlerRef.current,
+    );
     xRedirectVisibilityRecoveryHandlerRef.current = null;
   }, []);
 
@@ -510,10 +616,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     if (!intent) {
       return;
     }
-    const msUntilIntentIsStale = intent.expiresAtMs - Date.now() - APPLE_INTENT_REFRESH_BUFFER_MS;
+    const msUntilIntentIsStale =
+      intent.expiresAtMs - Date.now() - APPLE_INTENT_REFRESH_BUFFER_MS;
     if (msUntilIntentIsStale <= 0) {
       if (isMountedRef.current) {
-        setAppleButtonState((current) => (current === "confirm" ? "idle" : current));
+        setAppleButtonState((current) =>
+          current === "confirm" ? "idle" : current,
+        );
       }
       return;
     }
@@ -523,7 +632,9 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         return;
       }
       if (!isAppleIntentUsable(appleIntentRef.current)) {
-        setAppleButtonState((current) => (current === "confirm" ? "idle" : current));
+        setAppleButtonState((current) =>
+          current === "confirm" ? "idle" : current,
+        );
       }
     }, msUntilIntentIsStale + 50);
   }, [clearAppleConfirmExpiryTimeout]);
@@ -532,7 +643,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     clearPendingXSignInStaleTimeout();
     pendingXSignInStaleTimeoutRef.current = window.setTimeout(() => {
       pendingXSignInStaleTimeoutRef.current = null;
-      if (!isMountedRef.current || peekXRedirectResult()?.consentSource !== "signin") {
+      if (
+        !isMountedRef.current ||
+        peekXRedirectResult()?.consentSource !== "signin"
+      ) {
         return;
       }
       setIsPendingXSignInRedirectStale(true);
@@ -549,7 +663,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       return;
     }
     setXButtonState("idle");
-  }, [clearXRedirectNavigationFallbackTimeout, clearXRedirectVisibilityRecovery]);
+  }, [
+    clearXRedirectNavigationFallbackTimeout,
+    clearXRedirectVisibilityRecovery,
+  ]);
 
   const scheduleXRedirectNavigationFallback = useCallback(() => {
     clearXRedirectNavigationFallbackTimeout();
@@ -573,7 +690,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       xRedirectVisibilityRecoveryHandlerRef.current = handleVisibilityChange;
       document.addEventListener("visibilitychange", handleVisibilityChange);
     }, X_REDIRECT_NAVIGATION_FALLBACK_DELAY_MS);
-  }, [clearXRedirectNavigationFallbackTimeout, clearXRedirectVisibilityRecovery, recoverXRedirectNavigationIfStalled]);
+  }, [
+    clearXRedirectNavigationFallbackTimeout,
+    clearXRedirectVisibilityRecovery,
+    recoverXRedirectNavigationIfStalled,
+  ]);
 
   getIsInventoryPopupOpen = () => isInventoryOpen;
   getIsEditingPopupOpen = () => isEditingName;
@@ -586,15 +707,26 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     const handleClickOutside = (event: TouchEvent | MouseEvent) => {
       event.stopPropagation();
       const target = event.target as Node;
-      const shinyCardElement = document.querySelector('[data-shiny-card="true"]');
+      const shinyCardElement = document.querySelector(
+        '[data-shiny-card="true"]',
+      );
       const isInsidePopover = popoverRef.current?.contains(target) || false;
       const isInsideShinyCard = shinyCardElement?.contains(target) || false;
 
-      if (target instanceof Element && target.closest(".info-button, .sound-button, .music-button, tr, .shiny-card-done-button")) {
+      if (
+        target instanceof Element &&
+        target.closest(
+          ".info-button, .sound-button, .music-button, tr, .shiny-card-done-button",
+        )
+      ) {
         return;
       }
 
-      if ((isOpen || showsShinyCardSomewhere) && !isInsidePopover && !isInsideShinyCard) {
+      if (
+        (isOpen || showsShinyCardSomewhere) &&
+        !isInsidePopover &&
+        !isInsideShinyCard
+      ) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsOpen(false);
         hideShinyCard();
@@ -606,7 +738,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     };
 
     document.addEventListener(defaultEarlyInputEventName, handleClickOutside);
-    return () => document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
+    return () =>
+      document.removeEventListener(
+        defaultEarlyInputEventName,
+        handleClickOutside,
+      );
   });
 
   useEffect(() => {
@@ -621,7 +757,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         clearTimeout(notificationTimeoutRef.current);
       }
     };
-  }, [clearAppleConfirmExpiryTimeout, clearEthereumConnectRetryTimeout, clearPendingXSignInStaleTimeout, clearXRedirectNavigationFallbackTimeout, clearXRedirectVisibilityRecovery]);
+  }, [
+    clearAppleConfirmExpiryTimeout,
+    clearEthereumConnectRetryTimeout,
+    clearPendingXSignInStaleTimeout,
+    clearXRedirectNavigationFallbackTimeout,
+    clearXRedirectVisibilityRecovery,
+  ]);
 
   useEffect(() => {
     isOpenRef.current = isOpen;
@@ -648,7 +790,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         shouldReopenSettingsAfterXRedirectRef.current = true;
         return;
       }
-      if (!shouldReopenSettingsAfterXRedirectRef.current || !isMountedRef.current) {
+      if (
+        !shouldReopenSettingsAfterXRedirectRef.current ||
+        !isMountedRef.current
+      ) {
         return;
       }
       shouldReopenSettingsAfterXRedirectRef.current = false;
@@ -656,7 +801,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       closeProfileTransientUiForSettingsReopen();
       setIsSettingsOpen(true);
     });
-  }, [armPendingXSignInStaleTimeout, clearPendingXSignInStaleTimeout, closeProfileTransientUiForSettingsReopen]);
+  }, [
+    armPendingXSignInStaleTimeout,
+    clearPendingXSignInStaleTimeout,
+    closeProfileTransientUiForSettingsReopen,
+  ]);
 
   useEffect(() => {
     if (isOpen) {
@@ -671,7 +820,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       setAppleButtonState("idle");
       return;
     }
-    if (authStatus === "authenticated" || !isOpen || appleButtonState !== "confirm") {
+    if (
+      authStatus === "authenticated" ||
+      !isOpen ||
+      appleButtonState !== "confirm"
+    ) {
       return;
     }
     if (!isAppleIntentUsable(appleIntentRef.current)) {
@@ -685,7 +838,12 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       clearXRedirectVisibilityRecovery();
       setXButtonState("idle");
     }
-  }, [authStatus, clearXRedirectNavigationFallbackTimeout, clearXRedirectVisibilityRecovery, xButtonState]);
+  }, [
+    authStatus,
+    clearXRedirectNavigationFallbackTimeout,
+    clearXRedirectVisibilityRecovery,
+    xButtonState,
+  ]);
 
   useEffect(() => {
     if (appleButtonState !== "confirm") {
@@ -694,7 +852,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     }
     scheduleAppleConfirmExpiryTimeout();
     return clearAppleConfirmExpiryTimeout;
-  }, [appleButtonState, clearAppleConfirmExpiryTimeout, scheduleAppleConfirmExpiryTimeout]);
+  }, [
+    appleButtonState,
+    clearAppleConfirmExpiryTimeout,
+    scheduleAppleConfirmExpiryTimeout,
+  ]);
 
   useEffect(() => {
     if (authStatus === "loading") {
@@ -719,26 +881,35 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setAuthStatusGlobally("loading");
   }, []);
 
-  const showNotificationBannerInternal = useCallback(async (title: string, subtitle: string, emojiId: string, successHandler: () => void) => {
-    if (notificationTimeoutRef.current) {
-      clearTimeout(notificationTimeoutRef.current);
-      notificationTimeoutRef.current = null;
-    }
+  const showNotificationBannerInternal = useCallback(
+    async (
+      title: string,
+      subtitle: string,
+      emojiId: string,
+      successHandler: () => void,
+    ) => {
+      if (notificationTimeoutRef.current) {
+        clearTimeout(notificationTimeoutRef.current);
+        notificationTimeoutRef.current = null;
+      }
 
-    try {
-      const { NotificationBannerComponent } = await import("./NotificationBanner");
-      setNotificationComponent(() => NotificationBannerComponent);
-      setNotificationState({ title, subtitle, emojiId, successHandler });
-      setNotificationDismissType(null);
-      setIsNotificationMounted(true);
+      try {
+        const { NotificationBannerComponent } =
+          await import("./NotificationBanner");
+        setNotificationComponent(() => NotificationBannerComponent);
+        setNotificationState({ title, subtitle, emojiId, successHandler });
+        setNotificationDismissType(null);
+        setIsNotificationMounted(true);
 
-      requestAnimationFrame(() => {
-        setIsNotificationVisible(true);
-      });
-    } catch (error) {
-      console.error("Failed to load notification component:", error);
-    }
-  }, []);
+        requestAnimationFrame(() => {
+          setIsNotificationVisible(true);
+        });
+      } catch (error) {
+        console.error("Failed to load notification component:", error);
+      }
+    },
+    [],
+  );
 
   const hideNotificationBannerInternal = useCallback(() => {
     if (notificationTimeoutRef.current) {
@@ -803,7 +974,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   }, []);
 
   useEffect(() => {
-    return registerProfileTransientUiHandler(hideNotificationBannerInternal, closeProfilePopupInternal);
+    return registerProfileTransientUiHandler(
+      hideNotificationBannerInternal,
+      closeProfilePopupInternal,
+    );
   }, [closeProfilePopupInternal, hideNotificationBannerInternal]);
 
   handleLogoutImpl = () => {
@@ -818,11 +992,17 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     clearPendingXSignInStaleTimeout();
     setIsPendingXSignInRedirectStale(false);
     clearConsumedXRedirectResult();
-    setInlineAuthError(formatXAuthErrorMessage("x-redirect-complete-timeout", "signin"));
+    setInlineAuthError(
+      formatXAuthErrorMessage("x-redirect-complete-timeout", "signin"),
+    );
   }, [clearPendingXSignInStaleTimeout]);
 
   const openProfileSignInPopupInternal = useCallback(() => {
-    if (authStatus === "authenticated" || isOpen || isPendingXSignInRedirectBlockingUi) {
+    if (
+      authStatus === "authenticated" ||
+      isOpen ||
+      isPendingXSignInRedirectBlockingUi
+    ) {
       return;
     }
     if (isPendingXSignInRedirect) {
@@ -830,7 +1010,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     }
     closeMenuAndInfoIfAny();
     setIsOpen(true);
-  }, [authStatus, isOpen, isPendingXSignInRedirect, isPendingXSignInRedirectBlockingUi, recoverFromStalePendingXSignInRedirect]);
+  }, [
+    authStatus,
+    isOpen,
+    isPendingXSignInRedirect,
+    isPendingXSignInRedirectBlockingUi,
+    recoverFromStalePendingXSignInRedirect,
+  ]);
 
   closeProfilePopupIfAnyImpl = closeProfilePopupInternal;
   openProfileSignInPopupImpl = openProfileSignInPopupInternal;
@@ -860,7 +1046,9 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     if (pendingSignInInlineAuthError !== undefined) {
       const pendingMessage = pendingSignInInlineAuthError;
       pendingSignInInlineAuthError = undefined;
-      setInlineAuthError(typeof pendingMessage === "string" ? pendingMessage : "");
+      setInlineAuthError(
+        typeof pendingMessage === "string" ? pendingMessage : "",
+      );
     }
     return () => {
       setSignInInlineAuthErrorImpl = () => {};
@@ -939,7 +1127,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   const handleSaveDisplayName = (newName: string) => {
-    updateProfileDisplayName(newName, storage.getEthAddress(""), storage.getSolAddress(""));
+    updateProfileDisplayName(
+      newName,
+      storage.getEthAddress(""),
+      storage.getSolAddress(""),
+    );
     storage.setUsername(newName);
     setIsEditingName(false);
   };
@@ -969,28 +1161,29 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setSettingsInlineMessage(null);
   };
 
-  const ensurePreparedAppleIntent = useCallback(async (): Promise<AuthIntentResponse> => {
-    if (isAppleIntentUsable(appleIntentRef.current)) {
-      return appleIntentRef.current;
-    }
-    if (!appleIntentPromiseRef.current) {
-      const pendingIntentPromise = connection
-        .beginAuthIntent("apple")
-        .then((intent) => {
-          if (appleIntentPromiseRef.current === pendingIntentPromise) {
-            appleIntentRef.current = intent;
-          }
-          return intent;
-        })
-        .finally(() => {
-          if (appleIntentPromiseRef.current === pendingIntentPromise) {
-            appleIntentPromiseRef.current = null;
-          }
-        });
-      appleIntentPromiseRef.current = pendingIntentPromise;
-    }
-    return appleIntentPromiseRef.current;
-  }, []);
+  const ensurePreparedAppleIntent =
+    useCallback(async (): Promise<AuthIntentResponse> => {
+      if (isAppleIntentUsable(appleIntentRef.current)) {
+        return appleIntentRef.current;
+      }
+      if (!appleIntentPromiseRef.current) {
+        const pendingIntentPromise = connection
+          .beginAuthIntent("apple")
+          .then((intent) => {
+            if (appleIntentPromiseRef.current === pendingIntentPromise) {
+              appleIntentRef.current = intent;
+            }
+            return intent;
+          })
+          .finally(() => {
+            if (appleIntentPromiseRef.current === pendingIntentPromise) {
+              appleIntentPromiseRef.current = null;
+            }
+          });
+        appleIntentPromiseRef.current = pendingIntentPromise;
+      }
+      return appleIntentPromiseRef.current;
+    }, []);
 
   const takePreparedAppleIntent = useCallback((): AuthIntentResponse | null => {
     if (!isAppleIntentUsable(appleIntentRef.current)) {
@@ -1062,11 +1255,16 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     setInlineAuthError("");
     setIsSolanaConnecting(true);
     try {
-      const { connectToSolana } = await import("../connection/solanaConnection");
+      const { connectToSolana } =
+        await import("../connection/solanaConnection");
       const { publicKey, signature, intentId } = await connectToSolana();
       setSolanaText("Verifying...");
 
-      const res = await connection.verifySolanaAddress(publicKey, signature, intentId);
+      const res = await connection.verifySolanaAddress(
+        publicKey,
+        signature,
+        intentId,
+      );
       if (res && res.ok === true) {
         setInlineAuthError("");
         handleLoginSuccess(res, "sol");
@@ -1111,7 +1309,10 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       const intent = takePreparedAppleIntent();
       if (!intent) {
         setAppleStateIfMounted("preparing");
-        await Promise.all([preloadAppleSignInLibrary(), ensurePreparedAppleIntent()]);
+        await Promise.all([
+          preloadAppleSignInLibrary(),
+          ensurePreparedAppleIntent(),
+        ]);
         if (!isActionCurrent()) {
           return;
         }
@@ -1149,7 +1350,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
       }
       const { idToken } = signInResult;
       setAppleStateIfMounted("verifying");
-      const res = await connection.verifyAppleToken(intent.intentId, idToken, "signin");
+      const res = await connection.verifyAppleToken(
+        intent.intentId,
+        idToken,
+        "signin",
+      );
       if (!isActionCurrent()) {
         return;
       }
@@ -1186,7 +1391,11 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
     clearEthereumConnectRetryTimeout();
     const startedAtMs = Date.now();
     const tryOpenConnectModal = () => {
-      if (!isMountedRef.current || !isOpenRef.current || authStatusRef.current === "authenticated") {
+      if (
+        !isMountedRef.current ||
+        !isOpenRef.current ||
+        authStatusRef.current === "authenticated"
+      ) {
         clearEthereumConnectRetryTimeout();
         return;
       }
@@ -1200,10 +1409,16 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
         clearEthereumConnectRetryTimeout();
         return;
       }
-      ethereumConnectRetryTimeoutRef.current = window.setTimeout(tryOpenConnectModal, 40);
+      ethereumConnectRetryTimeoutRef.current = window.setTimeout(
+        tryOpenConnectModal,
+        40,
+      );
     };
 
-    ethereumConnectRetryTimeoutRef.current = window.setTimeout(tryOpenConnectModal, 0);
+    ethereumConnectRetryTimeoutRef.current = window.setTimeout(
+      tryOpenConnectModal,
+      0,
+    );
   }, [clearEthereumConnectRetryTimeout]);
 
   const handleNotificationClick = () => {
@@ -1220,39 +1435,97 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({ authStatus })
   };
 
   return (
-    <Container ref={popoverRef} $liftAboveEventModal={shouldLiftAboveEventModal}>
-      <SignInButton disabled={isPendingXSignInRedirectBlockingUi} aria-busy={isPendingXSignInRedirectBlockingUi} onClick={!isMobile ? handleSignInClick : undefined} onTouchStart={isMobile ? handleSignInClick : undefined} $isConnected={authStatus === "authenticated"} $isPending={isPendingXSignInRedirectBlockingUi}>
-        {authStatus === "authenticated" ? profileDisplayName || "Connected" : isPendingXSignInRedirectBlockingUi ? "Verifying..." : isPendingXSignInRedirect ? "Try Again" : "Sign In"}
+    <Container
+      ref={popoverRef}
+      $liftAboveEventModal={shouldLiftAboveEventModal}
+    >
+      <SignInButton
+        disabled={isPendingXSignInRedirectBlockingUi}
+        aria-busy={isPendingXSignInRedirectBlockingUi}
+        onClick={!isMobile ? handleSignInClick : undefined}
+        onTouchStart={isMobile ? handleSignInClick : undefined}
+        $isConnected={authStatus === "authenticated"}
+        $isPending={isPendingXSignInRedirectBlockingUi}
+      >
+        {authStatus === "authenticated"
+          ? profileDisplayName || "Connected"
+          : isPendingXSignInRedirectBlockingUi
+            ? "Verifying..."
+            : isPendingXSignInRedirect
+              ? "Try Again"
+              : "Sign In"}
       </SignInButton>
-      {isOpen && authStatus !== "authenticated" && !isPendingXSignInRedirectBlockingUi && (
-        <ConnectButtonPopover>
-          <ConnectButtonWrapper>
-            <>
-              <ConnectButton.Custom>
-                {({ openConnectModal }) => {
-                  ethereumConnectModalRef.current = openConnectModal ?? null;
-                  return <CustomConnectButton onClick={!isMobile ? handleEthereumClick : undefined} onTouchStart={isMobile ? handleEthereumClick : undefined}>Ethereum</CustomConnectButton>;
-                }}
-              </ConnectButton.Custom>
-              <CustomConnectButton onClick={!isMobile ? handleSolanaClick : undefined} onTouchStart={isMobile ? handleSolanaClick : undefined}>
-                {solanaText}
-              </CustomConnectButton>
-              <CustomConnectButton onClick={handleAppleClick}>
-                {appleText}
-              </CustomConnectButton>
-              <CustomConnectButton disabled={isXBusy} onClick={handleXClick}>
-                {xText}
-              </CustomConnectButton>
-              {inlineAuthError ? <InlineAuthError>{inlineAuthError}</InlineAuthError> : null}
-            </>
-          </ConnectButtonWrapper>
-        </ConnectButtonPopover>
+      {isOpen &&
+        authStatus !== "authenticated" &&
+        !isPendingXSignInRedirectBlockingUi && (
+          <ConnectButtonPopover>
+            <ConnectButtonWrapper>
+              <>
+                <ConnectButton.Custom>
+                  {({ openConnectModal }) => {
+                    ethereumConnectModalRef.current = openConnectModal ?? null;
+                    return (
+                      <CustomConnectButton
+                        onClick={!isMobile ? handleEthereumClick : undefined}
+                        onTouchStart={
+                          isMobile ? handleEthereumClick : undefined
+                        }
+                      >
+                        Ethereum
+                      </CustomConnectButton>
+                    );
+                  }}
+                </ConnectButton.Custom>
+                <CustomConnectButton
+                  onClick={!isMobile ? handleSolanaClick : undefined}
+                  onTouchStart={isMobile ? handleSolanaClick : undefined}
+                >
+                  {solanaText}
+                </CustomConnectButton>
+                <CustomConnectButton onClick={handleAppleClick}>
+                  {appleText}
+                </CustomConnectButton>
+                <CustomConnectButton disabled={isXBusy} onClick={handleXClick}>
+                  {xText}
+                </CustomConnectButton>
+                {inlineAuthError ? (
+                  <InlineAuthError>{inlineAuthError}</InlineAuthError>
+                ) : null}
+              </>
+            </ConnectButtonWrapper>
+          </ConnectButtonPopover>
+        )}
+      {NotificationComponent && isNotificationMounted && notificationState && (
+        <NotificationComponent
+          isVisible={isNotificationVisible}
+          onClose={handleNotificationClose}
+          onClick={handleNotificationClick}
+          title={notificationState.title}
+          subtitle={notificationState.subtitle}
+          emojiId={notificationState.emojiId}
+          dismissType={notificationDismissType}
+        />
       )}
-      {NotificationComponent && isNotificationMounted && notificationState && <NotificationComponent isVisible={isNotificationVisible} onClose={handleNotificationClose} onClick={handleNotificationClick} title={notificationState.title} subtitle={notificationState.subtitle} emojiId={notificationState.emojiId} dismissType={notificationDismissType} />}
-      {isEditingName && <NameEditModal initialName={storage.getUsername("")} onSave={handleSaveDisplayName} onCancel={handleCancelEditName} />}
+      {isEditingName && (
+        <NameEditModal
+          initialName={storage.getUsername("")}
+          onSave={handleSaveDisplayName}
+          onCancel={handleCancelEditName}
+        />
+      )}
       {isInventoryOpen && <InventoryModal onCancel={handleDismissInventory} />}
-      {isLogoutConfirmOpen && <LogoutConfirmModal onConfirm={handleConfirmLogout} onCancel={handleCancelLogout} />}
-      {isSettingsOpen && <SettingsModal onClose={handleCloseSettings} xInlineMessage={settingsInlineMessage} />}
+      {isLogoutConfirmOpen && (
+        <LogoutConfirmModal
+          onConfirm={handleConfirmLogout}
+          onCancel={handleCancelLogout}
+        />
+      )}
+      {isSettingsOpen && (
+        <SettingsModal
+          onClose={handleCloseSettings}
+          xInlineMessage={settingsInlineMessage}
+        />
+      )}
     </Container>
   );
 };

@@ -27,7 +27,10 @@ function ensureRainbowAuraStylesInjected(): void {
   document.head.appendChild(style);
 }
 
-export function createRainbowAuraElements(): { background: HTMLDivElement; inner: HTMLDivElement } {
+export function createRainbowAuraElements(): {
+  background: HTMLDivElement;
+  inner: HTMLDivElement;
+} {
   ensureRainbowAuraStylesInjected();
   const background = document.createElement("div");
   background.style.cssText = `position:absolute;z-index:1;width:${RAINBOW_AURA_SCALE * 100}%;height:${RAINBOW_AURA_SCALE * 100}%;top:${RAINBOW_AURA_OFFSET_PERCENT}%;left:${RAINBOW_AURA_OFFSET_PERCENT}%;filter:blur(${RAINBOW_AURA_BLUR_PX}px);opacity:${RAINBOW_AURA_OPACITY};pointer-events:none;visibility:hidden;overflow:visible;`;
@@ -48,7 +51,10 @@ export function createRainbowAuraElements(): { background: HTMLDivElement; inner
   return { background, inner };
 }
 
-export function attachRainbowAura(container: HTMLElement): { background: HTMLDivElement; inner: HTMLDivElement } {
+export function attachRainbowAura(container: HTMLElement): {
+  background: HTMLDivElement;
+  inner: HTMLDivElement;
+} {
   const { background, inner } = createRainbowAuraElements();
   container.appendChild(background);
   return { background, inner };

@@ -1,6 +1,36 @@
 import { setIsMusicPlayingGlobal } from "../ui/MainMenu";
 
-const tracks = ["arploop", "band", "bell-dance", "bell-glide", "bounce", "bubble-jam", "buzz", "change", "chimes-photography_going-home", "clock-tower", "cloud-propeller-2", "cloud-propeller", "crumbs", "driver", "drreams", "ewejam", "gilded", "gustofwind", "honkshoooo-memememeee-zzzZZZ", "jelly-jam", "mana-pool", "melodine", "object", "organwhawha", "ping", "runner", "spirit-track", "super", "whale2"];
+const tracks = [
+  "arploop",
+  "band",
+  "bell-dance",
+  "bell-glide",
+  "bounce",
+  "bubble-jam",
+  "buzz",
+  "change",
+  "chimes-photography_going-home",
+  "clock-tower",
+  "cloud-propeller-2",
+  "cloud-propeller",
+  "crumbs",
+  "driver",
+  "drreams",
+  "ewejam",
+  "gilded",
+  "gustofwind",
+  "honkshoooo-memememeee-zzzZZZ",
+  "jelly-jam",
+  "mana-pool",
+  "melodine",
+  "object",
+  "organwhawha",
+  "ping",
+  "runner",
+  "spirit-track",
+  "super",
+  "whale2",
+];
 
 let audioElement: HTMLAudioElement | null = null;
 let currentTrack = "";

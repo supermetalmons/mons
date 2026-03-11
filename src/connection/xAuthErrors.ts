@@ -12,18 +12,24 @@ const extractErrorCode = (value: unknown): string => {
     return value.trim().toLowerCase();
   }
   if (value instanceof Error) {
-    const details = toCleanString((value as Error & { details?: unknown }).details);
+    const details = toCleanString(
+      (value as Error & { details?: unknown }).details,
+    );
     if (details) {
       return details.toLowerCase();
     }
     return value.message.trim().toLowerCase();
   }
   if (typeof value === "object") {
-    const maybeDetails = toCleanString((value as { details?: unknown }).details);
+    const maybeDetails = toCleanString(
+      (value as { details?: unknown }).details,
+    );
     if (maybeDetails) {
       return maybeDetails.toLowerCase();
     }
-    const maybeMessage = toCleanString((value as { message?: unknown }).message);
+    const maybeMessage = toCleanString(
+      (value as { message?: unknown }).message,
+    );
     if (maybeMessage) {
       return maybeMessage.toLowerCase();
     }
@@ -40,11 +46,15 @@ const getActionLabel = (action: XAuthAction): string => {
 };
 
 const getCanceledMessage = (action: XAuthAction): string => {
-  return action === "link" ? "Linking X was canceled." : "X sign in was canceled.";
+  return action === "link"
+    ? "Linking X was canceled."
+    : "X sign in was canceled.";
 };
 
 const getUnavailableMessage = (action: XAuthAction): string => {
-  return action === "link" ? "Linking X is temporarily unavailable." : "X sign in is temporarily unavailable.";
+  return action === "link"
+    ? "Linking X is temporarily unavailable."
+    : "X sign in is temporarily unavailable.";
 };
 
 const getSameSessionMessage = (action: XAuthAction): string => {
@@ -60,10 +70,15 @@ const getLostSessionMessage = (action: XAuthAction): string => {
 };
 
 const getFallbackMessage = (action: XAuthAction): string => {
-  return action === "link" ? "X link failed. Please try again." : "X sign in failed. Please try again.";
+  return action === "link"
+    ? "X link failed. Please try again."
+    : "X sign in failed. Please try again.";
 };
 
-export const formatXAuthErrorMessage = (value: unknown, action: XAuthAction): string => {
+export const formatXAuthErrorMessage = (
+  value: unknown,
+  action: XAuthAction,
+): string => {
   const code = extractErrorCode(value);
   if (!code) {
     return getFallbackMessage(action);
@@ -83,7 +98,10 @@ export const formatXAuthErrorMessage = (value: unknown, action: XAuthAction): st
   if (code === "x-auth-disabled") {
     return getUnavailableMessage(action);
   }
-  if (code === "x-redirect-flow-user-mismatch" || code === "op-context-mismatch") {
+  if (
+    code === "x-redirect-flow-user-mismatch" ||
+    code === "op-context-mismatch"
+  ) {
     return getSameSessionMessage(action);
   }
   if (code === "x-redirect-flow-not-found") {

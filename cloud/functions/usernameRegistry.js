@@ -8,10 +8,14 @@ const AUTO_UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 const AUTO_LOWER = "abcdefghijklmnopqrstuvwxyz";
 const USERNAME_LOOKUP_KEY_FIELD = "usernameLookupKey";
 
-const toCleanString = (value) => (typeof value === "string" ? value.trim() : "");
-const buildUsernameLookupKey = (username) => toCleanString(username).toLowerCase();
-const isAlphanumericUsername = (username) => USERNAME_ALLOWED_RE.test(toCleanString(username));
-const isReservedExplicitUsername = (name) => buildUsernameLookupKey(name) === "anon";
+const toCleanString = (value) =>
+  typeof value === "string" ? value.trim() : "";
+const buildUsernameLookupKey = (username) =>
+  toCleanString(username).toLowerCase();
+const isAlphanumericUsername = (username) =>
+  USERNAME_ALLOWED_RE.test(toCleanString(username));
+const isReservedExplicitUsername = (name) =>
+  buildUsernameLookupKey(name) === "anon";
 const isSafeFirestoreDocIdSegment = (value) => {
   const cleaned = toCleanString(value);
   if (!cleaned || cleaned === "." || cleaned === "..") {
@@ -68,10 +72,16 @@ const claimOrSetUsernameForProfile = async ({
   const usernameKey = buildUsernameLookupKey(resolvedUsername);
 
   if (!resolvedProfileId || !resolvedUsername) {
-    throw new HttpsError("invalid-argument", "profileId and username are required.");
+    throw new HttpsError(
+      "invalid-argument",
+      "profileId and username are required.",
+    );
   }
   if (!isAlphanumericUsername(resolvedUsername)) {
-    throw new HttpsError("invalid-argument", "username must contain only letters and numbers.");
+    throw new HttpsError(
+      "invalid-argument",
+      "username must contain only letters and numbers.",
+    );
   }
   if (isReservedExplicitUsername(resolvedUsername)) {
     throw new HttpsError("invalid-argument", "username is reserved.");
@@ -80,8 +90,13 @@ const claimOrSetUsernameForProfile = async ({
   const firestore = admin.firestore();
   const usersRef = firestore.collection("users");
   const profileRef = usersRef.doc(resolvedProfileId);
-  const canonicalIndexRef = firestore.collection("usernameIndex").doc(usernameKey);
-  const legacyIndexRef = usernameKey === resolvedUsername ? null : firestore.collection("usernameIndex").doc(resolvedUsername);
+  const canonicalIndexRef = firestore
+    .collection("usernameIndex")
+    .doc(usernameKey);
+  const legacyIndexRef =
+    usernameKey === resolvedUsername
+      ? null
+      : firestore.collection("usernameIndex").doc(resolvedUsername);
 
   let result = {
     status: "taken",
@@ -106,9 +121,14 @@ const claimOrSetUsernameForProfile = async ({
     const profileData = profileSnapshot.data() || {};
     const currentUsername = toCleanString(profileData.username);
     const currentUsernameKey = buildUsernameLookupKey(currentUsername);
-    const hasExplicitCurrentUsername = currentUsername !== "" && !isReservedExplicitUsername(currentUsername);
+    const hasExplicitCurrentUsername =
+      currentUsername !== "" && !isReservedExplicitUsername(currentUsername);
 
-    if (rejectIfDifferentExplicitCurrent && hasExplicitCurrentUsername && currentUsername !== resolvedUsername) {
+    if (
+      rejectIfDifferentExplicitCurrent &&
+      hasExplicitCurrentUsername &&
+      currentUsername !== resolvedUsername
+    ) {
       result = {
         status: "already-has-username",
         username: currentUsername,
@@ -125,14 +145,14 @@ const claimOrSetUsernameForProfile = async ({
           lookupKey: usernameKey,
           updatedAtMs: nowMs,
         },
-        { merge: true }
+        { merge: true },
       );
       transaction.set(
         profileRef,
         {
           [USERNAME_LOOKUP_KEY_FIELD]: usernameKey,
         },
-        { merge: true }
+        { merge: true },
       );
 
       if (legacyIndexRef && legacyIndexSnapshot && legacyIndexSnapshot.exists) {
@@ -161,12 +181,20 @@ const claimOrSetUsernameForProfile = async ({
       if (!indexedProfileId || indexedProfileId === resolvedProfileId) {
         return;
       }
-      const indexedProfileSnapshot = await transaction.get(usersRef.doc(indexedProfileId));
+      const indexedProfileSnapshot = await transaction.get(
+        usersRef.doc(indexedProfileId),
+      );
       if (!indexedProfileSnapshot.exists) {
         return;
       }
       const indexedProfileData = indexedProfileSnapshot.data() || {};
-      if (isUsernameOwnedByProfileForKey(indexedProfileData.username, indexedProfileId, usernameKey)) {
+      if (
+        isUsernameOwnedByProfileForKey(
+          indexedProfileData.username,
+          indexedProfileId,
+          usernameKey,
+        )
+      ) {
         takenByDifferentProfile = true;
         return;
       }
@@ -183,13 +211,17 @@ const claimOrSetUsernameForProfile = async ({
     }
 
     if (!takenByDifferentProfile) {
-      const lookupKeySnapshot = await transaction.get(usersRef.where(USERNAME_LOOKUP_KEY_FIELD, "==", usernameKey));
+      const lookupKeySnapshot = await transaction.get(
+        usersRef.where(USERNAME_LOOKUP_KEY_FIELD, "==", usernameKey),
+      );
       if (!lookupKeySnapshot.empty) {
         lookupKeySnapshot.docs.forEach((doc) => {
           if (takenByDifferentProfile || doc.id === resolvedProfileId) {
             return;
           }
-          const docUsernameKey = buildUsernameLookupKey((doc.data() || {}).username);
+          const docUsernameKey = buildUsernameLookupKey(
+            (doc.data() || {}).username,
+          );
           if (docUsernameKey === usernameKey) {
             takenByDifferentProfile = true;
           }
@@ -198,7 +230,9 @@ const claimOrSetUsernameForProfile = async ({
     }
 
     if (!takenByDifferentProfile) {
-      const exactMatchSnapshot = await transaction.get(usersRef.where("username", "==", resolvedUsername).limit(2));
+      const exactMatchSnapshot = await transaction.get(
+        usersRef.where("username", "==", resolvedUsername).limit(2),
+      );
       if (exactMatchSnapshot.size > 1) {
         takenByDifferentProfile = true;
       } else if (!exactMatchSnapshot.empty) {
@@ -210,7 +244,9 @@ const claimOrSetUsernameForProfile = async ({
     }
 
     if (!takenByDifferentProfile && usernameKey !== resolvedUsername) {
-      const lowercaseMatchSnapshot = await transaction.get(usersRef.where("username", "==", usernameKey).limit(2));
+      const lowercaseMatchSnapshot = await transaction.get(
+        usersRef.where("username", "==", usernameKey).limit(2),
+      );
       if (lowercaseMatchSnapshot.size > 1) {
         takenByDifferentProfile = true;
       } else if (!lowercaseMatchSnapshot.empty) {
@@ -230,8 +266,15 @@ const claimOrSetUsernameForProfile = async ({
     }
 
     const refsToDelete = [];
-    if (currentUsername && currentUsernameKey && currentUsernameKey !== usernameKey && isSafeFirestoreDocIdSegment(currentUsernameKey)) {
-      refsToDelete.push(firestore.collection("usernameIndex").doc(currentUsernameKey));
+    if (
+      currentUsername &&
+      currentUsernameKey &&
+      currentUsernameKey !== usernameKey &&
+      isSafeFirestoreDocIdSegment(currentUsernameKey)
+    ) {
+      refsToDelete.push(
+        firestore.collection("usernameIndex").doc(currentUsernameKey),
+      );
     }
     if (
       currentUsername &&
@@ -239,7 +282,9 @@ const claimOrSetUsernameForProfile = async ({
       currentUsername !== resolvedUsername &&
       isSafeFirestoreDocIdSegment(currentUsername)
     ) {
-      refsToDelete.push(firestore.collection("usernameIndex").doc(currentUsername));
+      refsToDelete.push(
+        firestore.collection("usernameIndex").doc(currentUsername),
+      );
     }
     if (legacyIndexRef) {
       refsToDelete.push(legacyIndexRef);
@@ -254,7 +299,10 @@ const claimOrSetUsernameForProfile = async ({
     });
 
     const deleteRefs = Array.from(uniqueDeleteRefs.values());
-    const deleteSnapshots = deleteRefs.length > 0 ? await Promise.all(deleteRefs.map((ref) => transaction.get(ref))) : [];
+    const deleteSnapshots =
+      deleteRefs.length > 0
+        ? await Promise.all(deleteRefs.map((ref) => transaction.get(ref)))
+        : [];
     deleteSnapshots.forEach((snapshot, index) => {
       const ref = deleteRefs[index];
       if (!snapshot.exists) {
@@ -278,7 +326,7 @@ const claimOrSetUsernameForProfile = async ({
         lookupKey: usernameKey,
         updatedAtMs: nowMs,
       },
-      { merge: true }
+      { merge: true },
     );
     transaction.update(profileRef, {
       username: resolvedUsername,
@@ -322,28 +370,43 @@ const assignRandomUsernameIfNeededForWalletlessProfile = async ({
 
   const profileData = profileSnapshot.data() || {};
   const currentUsername = toCleanString(profileData.username);
-  const hasExplicitUsername = currentUsername !== "" && !isReservedExplicitUsername(currentUsername);
+  const hasExplicitUsername =
+    currentUsername !== "" && !isReservedExplicitUsername(currentUsername);
   const hasEth = toCleanString(profileData.eth) !== "";
   const hasSol = toCleanString(profileData.sol) !== "";
   if (hasExplicitUsername || hasEth || hasSol) {
     return profileSnapshot;
   }
 
-  const attemptLimit = Number.isInteger(maxAttempts) && maxAttempts > 0 ? maxAttempts : AUTO_NAME_MAX_ATTEMPTS;
+  const attemptLimit =
+    Number.isInteger(maxAttempts) && maxAttempts > 0
+      ? maxAttempts
+      : AUTO_NAME_MAX_ATTEMPTS;
   const cleanedPreferredUsername = toCleanString(preferredUsername);
-  const shouldTryPreferredUsername = isAlphanumericUsername(cleanedPreferredUsername) && !isReservedExplicitUsername(cleanedPreferredUsername);
+  const shouldTryPreferredUsername =
+    isAlphanumericUsername(cleanedPreferredUsername) &&
+    !isReservedExplicitUsername(cleanedPreferredUsername);
   const totalAttempts = attemptLimit + (shouldTryPreferredUsername ? 1 : 0);
 
   for (let attempt = 0; attempt < totalAttempts; attempt += 1) {
-    const candidate = attempt === 0 && shouldTryPreferredUsername ? cleanedPreferredUsername : buildRandomAutoUsername();
+    const candidate =
+      attempt === 0 && shouldTryPreferredUsername
+        ? cleanedPreferredUsername
+        : buildRandomAutoUsername();
     const claimResult = await claimUsernameForProfile({
       profileId: resolvedProfileId,
       username: candidate,
     });
-    if (claimResult.status === "claimed" || claimResult.status === "already-has-username") {
+    if (
+      claimResult.status === "claimed" ||
+      claimResult.status === "already-has-username"
+    ) {
       const refreshedSnapshot = await profileRef.get();
       if (!refreshedSnapshot.exists) {
-        throw new HttpsError("internal", "profile-missing-after-username-claim");
+        throw new HttpsError(
+          "internal",
+          "profile-missing-after-username-claim",
+        );
       }
       return refreshedSnapshot;
     }
@@ -381,7 +444,9 @@ const clearUsernameForProfile = async ({ profileId }) => {
 
     const profileData = profileSnapshot.data() || {};
     const currentUsername = toCleanString(profileData.username);
-    const currentLookupKey = toCleanString(profileData[USERNAME_LOOKUP_KEY_FIELD]);
+    const currentLookupKey = toCleanString(
+      profileData[USERNAME_LOOKUP_KEY_FIELD],
+    );
     if (currentUsername === "") {
       if (currentLookupKey) {
         transaction.update(profileRef, {
@@ -398,8 +463,13 @@ const clearUsernameForProfile = async ({ profileId }) => {
       return;
     }
 
-    const refsToDelete = getUsernameIndexDocIds(currentUsername).map((docId) => firestore.collection("usernameIndex").doc(docId));
-    const deleteSnapshots = refsToDelete.length > 0 ? await Promise.all(refsToDelete.map((ref) => transaction.get(ref))) : [];
+    const refsToDelete = getUsernameIndexDocIds(currentUsername).map((docId) =>
+      firestore.collection("usernameIndex").doc(docId),
+    );
+    const deleteSnapshots =
+      refsToDelete.length > 0
+        ? await Promise.all(refsToDelete.map((ref) => transaction.get(ref)))
+        : [];
     deleteSnapshots.forEach((snapshot, index) => {
       if (!snapshot.exists) {
         return;

@@ -21,9 +21,12 @@ const resolveRetryAtMs = (docData) => {
     parseNumber(docData && docData.startedAtMs, 0),
     parseNumber(docData && docData.revokedAtMs, 0),
     parseNumber(docData && docData.createdAtMs, 0),
-    parseNumber(docData && docData.updatedAtMs, 0)
+    parseNumber(docData && docData.updatedAtMs, 0),
   );
-  const cooldownMs = parseNumber(docData && docData.cooldownMs, DEFAULT_AUTH_METHOD_COOLDOWN_MS);
+  const cooldownMs = parseNumber(
+    docData && docData.cooldownMs,
+    DEFAULT_AUTH_METHOD_COOLDOWN_MS,
+  );
   if (startedAtMs > 0 && cooldownMs > 0) {
     return startedAtMs + cooldownMs;
   }
@@ -48,7 +51,10 @@ async function main() {
   let lastDoc = null;
 
   while (true) {
-    let query = firestore.collection("authMethodRevocations").orderBy(admin.firestore.FieldPath.documentId()).limit(pageSize);
+    let query = firestore
+      .collection("authMethodRevocations")
+      .orderBy(admin.firestore.FieldPath.documentId())
+      .limit(pageSize);
     if (lastDoc) {
       query = query.startAfter(lastDoc);
     }
@@ -105,8 +111,8 @@ async function main() {
         unknownSkipped,
       },
       null,
-      2
-    )
+      2,
+    ),
   );
 }
 

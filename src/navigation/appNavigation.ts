@@ -54,4 +54,3 @@ export const replaceRoutePath = (path: string) => {
 export const initializeNavigation = () => {
   ensurePopstateListener();
 };
-

@@ -1,22 +1,93 @@
 import initMonsWeb, * as MonsWeb from "mons-web";
 import * as Board from "./board";
-import { tokensForSingleMoveEvents, MoveHistoryEntry } from "./moveEventStrings";
-import { Location, Highlight, HighlightKind, AssistedInputKind, Sound, InputModifier, Trace } from "../utils/gameModels";
+import {
+  tokensForSingleMoveEvents,
+  MoveHistoryEntry,
+} from "./moveEventStrings";
+import {
+  Location,
+  Highlight,
+  HighlightKind,
+  AssistedInputKind,
+  Sound,
+  InputModifier,
+  Trace,
+} from "../utils/gameModels";
 import { colors } from "../content/boardStyles";
 import { playSounds, playReaction, newReactionOfKind } from "../content/sounds";
 import { connection } from "../connection/connection";
-import { showMoveHistoryButton, setWatchOnlyVisible, showResignButton, showVoiceReactionButton, setUndoEnabled, setUndoVisible, disableAndHideUndoResignAndTimerControls, hideTimerButtons, showTimerButtonProgressing, enableTimerVictoryClaim, showPrimaryAction, PrimaryActionType, setInviteLinkActionVisible, setAutomatchVisible, setHomeVisible, setBadgeVisible, setIsReadyToCopyExistingInviteLink, setAutomoveActionVisible, setAutomoveActionEnabled, setAutomatchEnabled, setAutomatchWaitingState, setBotGameOptionVisible, setEndMatchVisible, setEndMatchConfirmed, showWaitingStateText, setBrushAndNavigationButtonDimmed, setNavigationListButtonVisible, setPlaySamePuzzleAgainButtonVisible, closeNavigationAndAppearancePopupIfAny } from "../ui/BottomControls";
-import { triggerMoveHistoryPopupReload, isMoveHistoryPopupFollowingLatest } from "../ui/MoveHistoryPopup";
-import { Match, MatchWagerState, HistoricalMatchPair, InviteReaction, RematchSeriesDescriptor, RematchSeriesMatchDescriptor } from "../connection/connectionModels";
+import {
+  showMoveHistoryButton,
+  setWatchOnlyVisible,
+  showResignButton,
+  showVoiceReactionButton,
+  setUndoEnabled,
+  setUndoVisible,
+  disableAndHideUndoResignAndTimerControls,
+  hideTimerButtons,
+  showTimerButtonProgressing,
+  enableTimerVictoryClaim,
+  showPrimaryAction,
+  PrimaryActionType,
+  setInviteLinkActionVisible,
+  setAutomatchVisible,
+  setHomeVisible,
+  setBadgeVisible,
+  setIsReadyToCopyExistingInviteLink,
+  setAutomoveActionVisible,
+  setAutomoveActionEnabled,
+  setAutomatchEnabled,
+  setAutomatchWaitingState,
+  setBotGameOptionVisible,
+  setEndMatchVisible,
+  setEndMatchConfirmed,
+  showWaitingStateText,
+  setBrushAndNavigationButtonDimmed,
+  setNavigationListButtonVisible,
+  setPlaySamePuzzleAgainButtonVisible,
+  closeNavigationAndAppearancePopupIfAny,
+} from "../ui/BottomControls";
+import {
+  triggerMoveHistoryPopupReload,
+  isMoveHistoryPopupFollowingLatest,
+} from "../ui/MoveHistoryPopup";
+import {
+  Match,
+  MatchWagerState,
+  HistoricalMatchPair,
+  InviteReaction,
+  RematchSeriesDescriptor,
+  RematchSeriesMatchDescriptor,
+} from "../connection/connectionModels";
 import { recalculateRatingsLocallyForUids } from "../utils/playerMetadata";
-import { getNextProblem, Problem, markProblemCompleted, getTutorialCompleted, getTutorialProgress, getInitialProblem } from "../content/problems";
+import {
+  getNextProblem,
+  Problem,
+  markProblemCompleted,
+  getTutorialCompleted,
+  getTutorialProgress,
+  getInitialProblem,
+} from "../content/problems";
 import { storage } from "../utils/storage";
-import { showNotificationBanner, hideNotificationBanner } from "../ui/ProfileSignIn";
+import {
+  showNotificationBanner,
+  hideNotificationBanner,
+} from "../ui/ProfileSignIn";
 import { showVideoReaction } from "../ui/BoardComponent";
 import { setIslandButtonDimmed } from "../index";
-import { getWagerState, setCurrentWagerMatch, subscribeToWagerState } from "./wagerState";
-import { isTransitionInProgress, transitionToHome } from "../session/AppSessionManager";
-import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
+import {
+  getWagerState,
+  setCurrentWagerMatch,
+  subscribeToWagerState,
+} from "./wagerState";
+import {
+  isTransitionInProgress,
+  transitionToHome,
+} from "../session/AppSessionManager";
+import {
+  decrementLifecycleCounter,
+  incrementLifecycleCounter,
+} from "../lifecycle/lifecycleDiagnostics";
 import { getSessionGuard } from "./matchSession";
 import { RouteState, getCurrentRouteState } from "../navigation/routeState";
 import { INVALID_SNAPSHOT_ROUTE_ERROR } from "../session/sessionErrors";
@@ -43,13 +114,16 @@ const onlineReconnectRequestCooldownMs = 3000;
 
 const watchOnlyListeners = new Set<(value: boolean) => void>();
 let activeRouteState: RouteState = getCurrentRouteState();
-const isCreateInviteRoute = () => activeRouteState.mode === "home" || activeRouteState.mode === "event";
+const isCreateInviteRoute = () =>
+  activeRouteState.mode === "home" || activeRouteState.mode === "event";
 const isSnapshotRoute = () => activeRouteState.mode === "snapshot";
 const isBotsRoute = () => activeRouteState.mode === "watch";
 type BotAutomoveMode = "fast" | "normal" | "pro";
 type AutomovePreference = BotAutomoveMode;
 const botAutomoveModeCycle: BotAutomoveMode[] = ["fast", "normal", "pro"];
-const normalizeBotAutomoveMode = (value: string | null | undefined): BotAutomoveMode => {
+const normalizeBotAutomoveMode = (
+  value: string | null | undefined,
+): BotAutomoveMode => {
   if (value === "fast" || value === "normal" || value === "pro") {
     return value;
   }
@@ -58,7 +132,9 @@ const normalizeBotAutomoveMode = (value: string | null | undefined): BotAutomove
   }
   return "normal";
 };
-let botAutomoveMode: BotAutomoveMode = normalizeBotAutomoveMode(storage.getBotAutomoveMode("normal"));
+let botAutomoveMode: BotAutomoveMode = normalizeBotAutomoveMode(
+  storage.getBotAutomoveMode("normal"),
+);
 
 let currentWagerState: MatchWagerState | null = null;
 let wagerOutcomeShown = false;
@@ -134,7 +210,10 @@ let moveHistoryFlipOverrideSessionId: number | null = null;
 let moveHistoryFlipOverrideEnabled = false;
 let moveHistoryFlipOverrideBaseBoardFlipped: boolean | null = null;
 const historicalMatchPairCache = new Map<string, HistoricalMatchPair | null>();
-const historicalScoreCache = new Map<string, { white: number; black: number }>();
+const historicalScoreCache = new Map<
+  string,
+  { white: number; black: number }
+>();
 const historicalMatchPairMissUntilByMatchId = new Map<string, number>();
 const historicalMatchPairMissCooldownMs = 3000;
 const historicalMatchPairRetryDelayMs = 250;
@@ -173,7 +252,10 @@ const summarizeWagerState = (state: MatchWagerState | null) => {
     resolved,
   };
 };
-const logWagerDebug = (event: string, payload: Record<string, unknown> = {}) => {
+const logWagerDebug = (
+  event: string,
+  payload: Record<string, unknown> = {},
+) => {
   if (!boardViewDebugLogsEnabled) {
     return;
   }
@@ -212,7 +294,11 @@ type LocalRematchSnapshot = {
   resignedColor: "white" | "black" | null;
 };
 
-const setManagedGameTimeout = (callback: () => void, delay: number, guard?: () => boolean): number => {
+const setManagedGameTimeout = (
+  callback: () => void,
+  delay: number,
+  guard?: () => boolean,
+): number => {
   incrementLifecycleCounter("gameTimeouts");
   const timeoutId = window.setTimeout(() => {
     if (activeGameTimeoutIds.has(timeoutId)) {
@@ -282,7 +368,10 @@ function renderTimerActivationCooldownFromState(matchId: string): boolean {
   if (timerActivationCooldownTurnNumber !== game.turn_number()) {
     return false;
   }
-  const elapsedSeconds = Math.max(0, (Date.now() - timerActivationCooldownStartedAtMs) / 1000);
+  const elapsedSeconds = Math.max(
+    0,
+    (Date.now() - timerActivationCooldownStartedAtMs) / 1000,
+  );
   const progress = Math.min(timerActivationCooldownSeconds, elapsedSeconds);
   showTimerButtonProgressing(progress, timerActivationCooldownSeconds, true);
   return true;
@@ -304,7 +393,11 @@ function resetTimerStateForMatch(matchId: string | null) {
   clearTimerActivationCooldownState();
 }
 
-function setTimerStashForColor(matchId: string | null, color: "white" | "black", timer: string | null) {
+function setTimerStashForColor(
+  matchId: string | null,
+  color: "white" | "black",
+  timer: string | null,
+) {
   if (timerStashMatchId !== matchId) {
     resetTimerStateForMatch(matchId);
   }
@@ -315,7 +408,9 @@ function setTimerStashForColor(matchId: string | null, color: "white" | "black",
   }
 }
 
-function getTimerMatchIdCandidate(preferredMatchId?: string | null): string | null {
+function getTimerMatchIdCandidate(
+  preferredMatchId?: string | null,
+): string | null {
   if (preferredMatchId) {
     return preferredMatchId;
   }
@@ -324,7 +419,10 @@ function getTimerMatchIdCandidate(preferredMatchId?: string | null): string | nu
     return activeMatchId;
   }
   if (timerStashMatchId) {
-    if (isOnlineGame && !connection.matchBelongsToCurrentInvite(timerStashMatchId)) {
+    if (
+      isOnlineGame &&
+      !connection.matchBelongsToCurrentInvite(timerStashMatchId)
+    ) {
       return null;
     }
     return timerStashMatchId;
@@ -346,7 +444,10 @@ const isFirstLocalRematchSeriesMatchActive = () => {
   if (!localRematchSeriesInviteId || !localActiveRematchMatchId) {
     return true;
   }
-  return localActiveRematchMatchId === localRematchMatchIdForIndex(localRematchSeriesInviteId, 0);
+  return (
+    localActiveRematchMatchId ===
+    localRematchMatchIdForIndex(localRematchSeriesInviteId, 0)
+  );
 };
 
 const shouldShowInviteBotIntoLocalGameButton = () => {
@@ -372,7 +473,11 @@ const shouldShowInviteBotIntoLocalGameButton = () => {
 };
 
 const shouldShowBotStrengthControlButton = () =>
-  !isOnlineGame && isGameWithBot && !isWatchOnly && boardViewMode === "activeLive" && !flashbackMode;
+  !isOnlineGame &&
+  isGameWithBot &&
+  !isWatchOnly &&
+  boardViewMode === "activeLive" &&
+  !flashbackMode;
 
 const syncBotStrengthControlButton = () => {
   Board.setBotStrengthControlMode(botAutomoveMode);
@@ -425,7 +530,10 @@ function clearViewedRematchState() {
 }
 
 function hasMoveHistoryFlipOverrideForCurrentSession(): boolean {
-  return moveHistoryFlipOverrideEnabled && moveHistoryFlipOverrideSessionId === boardRenderSessionId;
+  return (
+    moveHistoryFlipOverrideEnabled &&
+    moveHistoryFlipOverrideSessionId === boardRenderSessionId
+  );
 }
 
 function clearMoveHistoryFlipOverrideForCurrentSession(): boolean {
@@ -462,8 +570,13 @@ function shouldShowOnlineReactionButton(): boolean {
   return boardViewMode === "activeLive" && !isWatchOnly && isOnlineGame;
 }
 
-function playIncomingInviteReaction(reaction: InviteReaction, metadataIsOpponentSide: boolean): void {
-  const displaySlotIsOpponent = Board.isMetadataSideDisplayedAtOpponentSlot(metadataIsOpponentSide);
+function playIncomingInviteReaction(
+  reaction: InviteReaction,
+  metadataIsOpponentSide: boolean,
+): void {
+  const displaySlotIsOpponent = Board.isMetadataSideDisplayedAtOpponentSlot(
+    metadataIsOpponentSide,
+  );
   if (reaction.kind === "sticker") {
     playSounds([Sound.EmoteReceived]);
     showVideoReaction(displaySlotIsOpponent, reaction.variation);
@@ -479,10 +592,18 @@ function applyBoardUiForCurrentView() {
     Board.stopMonsBoardAsDisplayAnimations();
     Board.showBoardPlayersInfo();
     showWaitingStateText("");
-    if (!isWatchOnly && isOnlineGame && connection.rematchSeriesEndIsIndicated()) {
+    if (
+      !isWatchOnly &&
+      isOnlineGame &&
+      connection.rematchSeriesEndIsIndicated()
+    ) {
       setEndMatchVisible(true);
       setEndMatchConfirmed(true);
-    } else if (!isWatchOnly && isOnlineGame && (isGameOver || isWaitingForRematchResponse)) {
+    } else if (
+      !isWatchOnly &&
+      isOnlineGame &&
+      (isGameOver || isWaitingForRematchResponse)
+    ) {
       setEndMatchVisible(true);
     } else {
       setEndMatchVisible(false);
@@ -555,7 +676,7 @@ function restoreLiveBoardView() {
     setNewBoard(false);
     const didRestoreTimerState = applyTimerStateFromStashes(
       pendingTimerResolutionOnRestore ?? isReconnect,
-      getTimerMatchIdCandidate()
+      getTimerMatchIdCandidate(),
     );
     pendingTimerResolutionOnRestore = null;
     applyWagerState();
@@ -570,7 +691,10 @@ function restoreLiveBoardView() {
           hideTimerButtons();
           setUndoVisible(true);
           setAutomoveActionVisible(true);
-        } else if (!didRestoreTimerState && !shouldWaitForTimerStashesBeforeFallback()) {
+        } else if (
+          !didRestoreTimerState &&
+          !shouldWaitForTimerStashesBeforeFallback()
+        ) {
           const timerMatchId = getTimerMatchIdCandidate();
           if (timerMatchId) {
             restoreOrStartTimerActivationCooldownProgress(timerMatchId);
@@ -614,7 +738,12 @@ function prepareForNewLocalLiveMatch() {
   applyBoardUiForCurrentView();
 }
 
-function enterHistoricalView(matchId: string, pair: HistoricalMatchPair, historicalGame: MonsWeb.MonsGameModel, sessionId: number): boolean {
+function enterHistoricalView(
+  matchId: string,
+  pair: HistoricalMatchPair,
+  historicalGame: MonsWeb.MonsGameModel,
+  sessionId: number,
+): boolean {
   if (!isBoardRenderSessionActive(sessionId)) {
     return false;
   }
@@ -641,10 +770,15 @@ function enterHistoricalView(matchId: string, pair: HistoricalMatchPair, histori
 }
 
 function ensureBoardViewInvariants(source: string) {
-  if (boardViewMode === "historicalView" && Board.hasMonsBoardDisplayAnimationRunning()) {
+  if (
+    boardViewMode === "historicalView" &&
+    Board.hasMonsBoardDisplayAnimationRunning()
+  ) {
     Board.stopMonsBoardAsDisplayAnimations();
     if (boardViewDebugLogsEnabled) {
-      console.warn(`[board-view] waiting animation stopped during historical view: ${source}`);
+      console.warn(
+        `[board-view] waiting animation stopped during historical view: ${source}`,
+      );
     }
   }
 }
@@ -680,7 +814,11 @@ function ensureLocalRematchSeriesInitialized() {
   if (!canTrackLocalRematchSeries()) {
     return;
   }
-  if (localRematchSeriesInviteId && localActiveRematchMatchId && localRematchMatchIds.length > 0) {
+  if (
+    localRematchSeriesInviteId &&
+    localActiveRematchMatchId &&
+    localRematchMatchIds.length > 0
+  ) {
     return;
   }
   const nextSeriesId = localRematchSeriesIdSeed++;
@@ -709,15 +847,21 @@ function getLocalRematchSeriesDescriptor(): RematchSeriesDescriptor | null {
     return null;
   }
   ensureLocalRematchSeriesInitialized();
-  if (!localRematchSeriesInviteId || !localActiveRematchMatchId || localRematchMatchIds.length === 0) {
+  if (
+    !localRematchSeriesInviteId ||
+    !localActiveRematchMatchId ||
+    localRematchMatchIds.length === 0
+  ) {
     return null;
   }
-  const matches: RematchSeriesMatchDescriptor[] = localRematchMatchIds.map((matchId, index) => ({
-    index,
-    matchId,
-    isActiveMatch: matchId === localActiveRematchMatchId,
-    isPendingResponse: false,
-  }));
+  const matches: RematchSeriesMatchDescriptor[] = localRematchMatchIds.map(
+    (matchId, index) => ({
+      index,
+      matchId,
+      isActiveMatch: matchId === localActiveRematchMatchId,
+      isPendingResponse: false,
+    }),
+  );
   return {
     inviteId: localRematchSeriesInviteId,
     activeMatchId: localActiveRematchMatchId,
@@ -733,7 +877,9 @@ function getActiveRematchSeriesDescriptor(): RematchSeriesDescriptor | null {
   return getLocalRematchSeriesDescriptor();
 }
 
-function localColorFromMonsColor(color: MonsWeb.Color | undefined): "white" | "black" | null {
+function localColorFromMonsColor(
+  color: MonsWeb.Color | undefined,
+): "white" | "black" | null {
   if (color === MonsWeb.Color.White) {
     return "white";
   }
@@ -743,7 +889,9 @@ function localColorFromMonsColor(color: MonsWeb.Color | undefined): "white" | "b
   return null;
 }
 
-function buildLocalHistoricalPair(snapshot: LocalRematchSnapshot): HistoricalMatchPair {
+function buildLocalHistoricalPair(
+  snapshot: LocalRematchSnapshot,
+): HistoricalMatchPair {
   const resignedColor = snapshot.resignedColor;
   const hostMatch: Match = {
     version: 1,
@@ -786,7 +934,10 @@ function snapshotCurrentLocalMatchForHistory() {
     resignedColor: localColorFromMonsColor(resignedColor),
   };
   localRematchSnapshotsByMatchId.set(snapshot.matchId, snapshot);
-  historicalScoreCache.set(snapshot.matchId, { white: snapshot.whiteScore, black: snapshot.blackScore });
+  historicalScoreCache.set(snapshot.matchId, {
+    white: snapshot.whiteScore,
+    black: snapshot.blackScore,
+  });
 }
 
 function advanceLocalRematchSeriesToNextMatch() {
@@ -799,7 +950,10 @@ function advanceLocalRematchSeriesToNextMatch() {
   }
   snapshotCurrentLocalMatchForHistory();
   const nextIndex = localRematchMatchIds.length;
-  const nextMatchId = localRematchMatchIdForIndex(localRematchSeriesInviteId, nextIndex);
+  const nextMatchId = localRematchMatchIdForIndex(
+    localRematchSeriesInviteId,
+    nextIndex,
+  );
   localActiveRematchMatchId = nextMatchId;
   localRematchMatchIds.push(nextMatchId);
   historicalScoreCache.delete(nextMatchId);
@@ -810,11 +964,17 @@ function baseBoardShouldBeFlipped(): boolean {
 }
 
 function activeBoardShouldBeFlipped(): boolean {
-  return hasMoveHistoryFlipOverrideForCurrentSession() ? !baseBoardShouldBeFlipped() : baseBoardShouldBeFlipped();
+  return hasMoveHistoryFlipOverrideForCurrentSession()
+    ? !baseBoardShouldBeFlipped()
+    : baseBoardShouldBeFlipped();
 }
 
 function canHandleLiveBoardInput(): boolean {
-  return boardViewMode === "activeLive" && !flashbackMode && !isTransitionInProgress();
+  return (
+    boardViewMode === "activeLive" &&
+    !flashbackMode &&
+    !isTransitionInProgress()
+  );
 }
 
 function resetOnlineReconnectRequestState(): void {
@@ -824,7 +984,10 @@ function resetOnlineReconnectRequestState(): void {
 
 function requestOnlineReconnect(inviteId: string, autojoin: boolean): void {
   const now = Date.now();
-  if (pendingOnlineReconnectInviteId === inviteId && now - lastOnlineReconnectRequestedAtMs < onlineReconnectRequestCooldownMs) {
+  if (
+    pendingOnlineReconnectInviteId === inviteId &&
+    now - lastOnlineReconnectRequestedAtMs < onlineReconnectRequestCooldownMs
+  ) {
     return;
   }
   pendingOnlineReconnectInviteId = inviteId;
@@ -836,11 +999,15 @@ function getMoveHistorySourceGame(): MonsWeb.MonsGameModel {
   return viewedRematchGame ?? game;
 }
 
-function getViewedMatchPlayerColor(matchId: string, pair: HistoricalMatchPair): "white" | "black" | null {
+function getViewedMatchPlayerColor(
+  matchId: string,
+  pair: HistoricalMatchPair,
+): "white" | "black" | null {
   if (isWatchOnly) {
     return null;
   }
-  const localPlayerUid = Board.playerSideMetadata.uid || connection.getSameProfilePlayerUid();
+  const localPlayerUid =
+    Board.playerSideMetadata.uid || connection.getSameProfilePlayerUid();
   if (localPlayerUid) {
     const hostColorBySeries = connection.getHostColorForMatch(matchId);
     if (hostColorBySeries) {
@@ -860,13 +1027,19 @@ function getViewedMatchPlayerColor(matchId: string, pair: HistoricalMatchPair): 
     return null;
   }
   if (pair.hostPlayerId === localPlayerUid) {
-    if (pair.hostMatch?.color === "white" || pair.hostMatch?.color === "black") {
+    if (
+      pair.hostMatch?.color === "white" ||
+      pair.hostMatch?.color === "black"
+    ) {
       return pair.hostMatch.color;
     }
     return null;
   }
   if (pair.guestPlayerId === localPlayerUid) {
-    if (pair.guestMatch?.color === "white" || pair.guestMatch?.color === "black") {
+    if (
+      pair.guestMatch?.color === "white" ||
+      pair.guestMatch?.color === "black"
+    ) {
       return pair.guestMatch.color;
     }
     return null;
@@ -879,25 +1052,35 @@ function getRematchIndexByMatchId(matchId: string): number | null {
   if (!descriptor) {
     return null;
   }
-  const item = descriptor.matches.find((candidate) => candidate.matchId === matchId);
+  const item = descriptor.matches.find(
+    (candidate) => candidate.matchId === matchId,
+  );
   if (!item) {
     return null;
   }
   return item.index;
 }
 
-function getViewedMatchBoardFlipped(matchId: string, pair: HistoricalMatchPair): boolean {
+function getViewedMatchBoardFlipped(
+  matchId: string,
+  pair: HistoricalMatchPair,
+): boolean {
   const localSnapshot = getLocalRematchSnapshot(matchId);
   if (localSnapshot) {
     return localSnapshot.boardFlipped;
   }
   const targetIndex = getRematchIndexByMatchId(matchId);
   const activeDescriptor = getActiveRematchSeriesDescriptor();
-  const activeMatchId = activeDescriptor?.activeMatchId ?? connection.getActiveMatchId();
-  const activeIndex = activeMatchId ? getRematchIndexByMatchId(activeMatchId) : null;
+  const activeMatchId =
+    activeDescriptor?.activeMatchId ?? connection.getActiveMatchId();
+  const activeIndex = activeMatchId
+    ? getRematchIndexByMatchId(activeMatchId)
+    : null;
   if (targetIndex !== null && activeIndex !== null) {
     const flipParityChanged = Math.abs(targetIndex - activeIndex) % 2 === 1;
-    return flipParityChanged ? !activeBoardShouldBeFlipped() : activeBoardShouldBeFlipped();
+    return flipParityChanged
+      ? !activeBoardShouldBeFlipped()
+      : activeBoardShouldBeFlipped();
   }
   const viewedPlayerColor = getViewedMatchPlayerColor(matchId, pair);
   if (viewedPlayerColor) {
@@ -906,7 +1089,9 @@ function getViewedMatchBoardFlipped(matchId: string, pair: HistoricalMatchPair):
   return activeBoardShouldBeFlipped();
 }
 
-function getPreferredMatchFromHistoricalPair(pair: HistoricalMatchPair): Match | null {
+function getPreferredMatchFromHistoricalPair(
+  pair: HistoricalMatchPair,
+): Match | null {
   const hostMatch = pair.hostMatch;
   const guestMatch = pair.guestMatch;
   if (hostMatch && !guestMatch) {
@@ -934,7 +1119,8 @@ function getPreferredMatchFromHistoricalPair(pair: HistoricalMatchPair): Match |
       return guestMatch;
     }
   }
-  const localPlayerUid = Board.playerSideMetadata.uid || connection.getSameProfilePlayerUid();
+  const localPlayerUid =
+    Board.playerSideMetadata.uid || connection.getSameProfilePlayerUid();
   if (localPlayerUid) {
     if (pair.hostPlayerId === localPlayerUid) {
       return hostMatch;
@@ -958,7 +1144,10 @@ function movesArrayFromFlatString(flatMovesString: string | null): string[] {
   return flatMovesString.split("-").filter((move) => move !== "");
 }
 
-function buildGameFromMoveStreams(whiteMovesString: string, blackMovesString: string): MonsWeb.MonsGameModel | null {
+function buildGameFromMoveStreams(
+  whiteMovesString: string,
+  blackMovesString: string,
+): MonsWeb.MonsGameModel | null {
   const gameFromMoves = MonsWeb.MonsGameModel.new();
   const whiteMoves = movesArrayFromFlatString(whiteMovesString);
   const blackMoves = movesArrayFromFlatString(blackMovesString);
@@ -991,7 +1180,10 @@ function buildGameFromMoveStreams(whiteMovesString: string, blackMovesString: st
   return gameFromMoves;
 }
 
-function getReconstructedGameFromPair(matchId: string, pair: HistoricalMatchPair): MonsWeb.MonsGameModel | null {
+function getReconstructedGameFromPair(
+  matchId: string,
+  pair: HistoricalMatchPair,
+): MonsWeb.MonsGameModel | null {
   const { whiteMoves, blackMoves } = getMatchMovesByColor(matchId, pair);
   if (whiteMoves === null || blackMoves === null) {
     return null;
@@ -1007,7 +1199,10 @@ function moveHistoryEntitiesCount(gameModel: MonsWeb.MonsGameModel): number {
   }
 }
 
-function getBestHistoricalGameModel(matchId: string, pair: HistoricalMatchPair): MonsWeb.MonsGameModel | null {
+function getBestHistoricalGameModel(
+  matchId: string,
+  pair: HistoricalMatchPair,
+): MonsWeb.MonsGameModel | null {
   const preferredMatch = getPreferredMatchFromHistoricalPair(pair);
   if (preferredMatch) {
     const baseGame = MonsWeb.MonsGameModel.from_fen(preferredMatch.fen);
@@ -1029,7 +1224,10 @@ function getBestHistoricalGameModel(matchId: string, pair: HistoricalMatchPair):
   return null;
 }
 
-function getScoreFromHistoricalPair(matchId: string, pair: HistoricalMatchPair): { white: number; black: number } | null {
+function getScoreFromHistoricalPair(
+  matchId: string,
+  pair: HistoricalMatchPair,
+): { white: number; black: number } | null {
   const historicalGame = getBestHistoricalGameModel(matchId, pair);
   if (!historicalGame) {
     return null;
@@ -1040,20 +1238,30 @@ function getScoreFromHistoricalPair(matchId: string, pair: HistoricalMatchPair):
   };
 }
 
-function cacheHistoricalScore(matchId: string, pair: HistoricalMatchPair): boolean {
+function cacheHistoricalScore(
+  matchId: string,
+  pair: HistoricalMatchPair,
+): boolean {
   const score = getScoreFromHistoricalPair(matchId, pair);
   if (!score) {
     return false;
   }
   const previous = historicalScoreCache.get(matchId);
-  if (previous && previous.white === score.white && previous.black === score.black) {
+  if (
+    previous &&
+    previous.white === score.white &&
+    previous.black === score.black
+  ) {
     return false;
   }
   historicalScoreCache.set(matchId, score);
   return true;
 }
 
-async function ensureHistoricalMatchPair(matchId: string, options?: { forceRefresh?: boolean }): Promise<HistoricalMatchPair | null> {
+async function ensureHistoricalMatchPair(
+  matchId: string,
+  options?: { forceRefresh?: boolean },
+): Promise<HistoricalMatchPair | null> {
   const forceRefresh = options?.forceRefresh === true;
   const cachedPair = historicalMatchPairCache.get(matchId) ?? null;
   if (!forceRefresh && historicalMatchPairCache.has(matchId)) {
@@ -1081,17 +1289,24 @@ async function ensureHistoricalMatchPair(matchId: string, options?: { forceRefre
     cacheHistoricalScore(matchId, pair);
     return pair;
   }
-  historicalMatchPairMissUntilByMatchId.set(matchId, Date.now() + historicalMatchPairMissCooldownMs);
+  historicalMatchPairMissUntilByMatchId.set(
+    matchId,
+    Date.now() + historicalMatchPairMissCooldownMs,
+  );
   if (!forceRefresh) {
     return null;
   }
   return historicalMatchPairCache.get(matchId) ?? null;
 }
 
-function getMatchMovesByColor(matchId: string, pair: HistoricalMatchPair): { whiteMoves: string | null; blackMoves: string | null } {
+function getMatchMovesByColor(
+  matchId: string,
+  pair: HistoricalMatchPair,
+): { whiteMoves: string | null; blackMoves: string | null } {
   let whiteMoves: string | null = null;
   let blackMoves: string | null = null;
-  const movesFromMatch = (match: Match | null): string => match?.flatMovesString ?? "";
+  const movesFromMatch = (match: Match | null): string =>
+    match?.flatMovesString ?? "";
   const assignMovesByStoredColor = (match: Match | null) => {
     if (!match) {
       return;
@@ -1128,9 +1343,15 @@ function getMatchMovesByColor(matchId: string, pair: HistoricalMatchPair): { whi
   };
 }
 
-function countRecordedMovesInHistoricalPair(matchId: string, pair: HistoricalMatchPair): number {
+function countRecordedMovesInHistoricalPair(
+  matchId: string,
+  pair: HistoricalMatchPair,
+): number {
   const { whiteMoves, blackMoves } = getMatchMovesByColor(matchId, pair);
-  return movesArrayFromFlatString(whiteMoves).length + movesArrayFromFlatString(blackMoves).length;
+  return (
+    movesArrayFromFlatString(whiteMoves).length +
+    movesArrayFromFlatString(blackMoves).length
+  );
 }
 
 function hasSuspiciouslyShortHistoricalMoveHistory(
@@ -1153,8 +1374,12 @@ function shouldPreferRefreshedHistoricalData(
   refreshedPair: HistoricalMatchPair,
   refreshedHistoricalGame: MonsWeb.MonsGameModel,
 ): boolean {
-  const currentHistoryEntitiesCount = moveHistoryEntitiesCount(currentHistoricalGame);
-  const refreshedHistoryEntitiesCount = moveHistoryEntitiesCount(refreshedHistoricalGame);
+  const currentHistoryEntitiesCount = moveHistoryEntitiesCount(
+    currentHistoricalGame,
+  );
+  const refreshedHistoryEntitiesCount = moveHistoryEntitiesCount(
+    refreshedHistoricalGame,
+  );
   if (refreshedHistoryEntitiesCount !== currentHistoryEntitiesCount) {
     return refreshedHistoryEntitiesCount > currentHistoryEntitiesCount;
   }
@@ -1163,14 +1388,22 @@ function shouldPreferRefreshedHistoricalData(
   if (refreshedTurnNumber !== currentTurnNumber) {
     return refreshedTurnNumber > currentTurnNumber;
   }
-  return countRecordedMovesInHistoricalPair(matchId, refreshedPair) > countRecordedMovesInHistoricalPair(matchId, currentPair);
+  return (
+    countRecordedMovesInHistoricalPair(matchId, refreshedPair) >
+    countRecordedMovesInHistoricalPair(matchId, currentPair)
+  );
 }
 
-function buildHistoricalGameModel(matchId: string, pair: HistoricalMatchPair): MonsWeb.MonsGameModel | null {
+function buildHistoricalGameModel(
+  matchId: string,
+  pair: HistoricalMatchPair,
+): MonsWeb.MonsGameModel | null {
   return getBestHistoricalGameModel(matchId, pair);
 }
 
-function toMonsColor(color: string | null | undefined): MonsWeb.Color | undefined {
+function toMonsColor(
+  color: string | null | undefined,
+): MonsWeb.Color | undefined {
   if (color === "white") {
     return MonsWeb.Color.White;
   }
@@ -1180,7 +1413,9 @@ function toMonsColor(color: string | null | undefined): MonsWeb.Color | undefine
   return undefined;
 }
 
-function oppositeMonsColor(color: MonsWeb.Color | undefined): MonsWeb.Color | undefined {
+function oppositeMonsColor(
+  color: MonsWeb.Color | undefined,
+): MonsWeb.Color | undefined {
   if (color === MonsWeb.Color.White) {
     return MonsWeb.Color.Black;
   }
@@ -1190,14 +1425,21 @@ function oppositeMonsColor(color: MonsWeb.Color | undefined): MonsWeb.Color | un
   return undefined;
 }
 
-function getHistoricalResignedColor(matchId: string, pair: HistoricalMatchPair): MonsWeb.Color | undefined {
+function getHistoricalResignedColor(
+  matchId: string,
+  pair: HistoricalMatchPair,
+): MonsWeb.Color | undefined {
   const hostMatchResigned = pair.hostMatch?.status === "surrendered";
   const guestMatchResigned = pair.guestMatch?.status === "surrendered";
   if (!hostMatchResigned && !guestMatchResigned) {
     return undefined;
   }
-  const hostStoredColor = hostMatchResigned ? toMonsColor(pair.hostMatch?.color) : undefined;
-  const guestStoredColor = guestMatchResigned ? toMonsColor(pair.guestMatch?.color) : undefined;
+  const hostStoredColor = hostMatchResigned
+    ? toMonsColor(pair.hostMatch?.color)
+    : undefined;
+  const guestStoredColor = guestMatchResigned
+    ? toMonsColor(pair.guestMatch?.color)
+    : undefined;
   if (hostStoredColor !== undefined && guestStoredColor === undefined) {
     return hostStoredColor;
   }
@@ -1221,14 +1463,21 @@ function getHistoricalResignedColor(matchId: string, pair: HistoricalMatchPair):
   return hostStoredColor ?? guestStoredColor;
 }
 
-function getHistoricalWinnerByTimerColor(matchId: string, pair: HistoricalMatchPair): MonsWeb.Color | undefined {
+function getHistoricalWinnerByTimerColor(
+  matchId: string,
+  pair: HistoricalMatchPair,
+): MonsWeb.Color | undefined {
   const hostMatchWonByTimer = pair.hostMatch?.timer === "gg";
   const guestMatchWonByTimer = pair.guestMatch?.timer === "gg";
   if (!hostMatchWonByTimer && !guestMatchWonByTimer) {
     return undefined;
   }
-  const hostStoredColor = hostMatchWonByTimer ? toMonsColor(pair.hostMatch?.color) : undefined;
-  const guestStoredColor = guestMatchWonByTimer ? toMonsColor(pair.guestMatch?.color) : undefined;
+  const hostStoredColor = hostMatchWonByTimer
+    ? toMonsColor(pair.hostMatch?.color)
+    : undefined;
+  const guestStoredColor = guestMatchWonByTimer
+    ? toMonsColor(pair.guestMatch?.color)
+    : undefined;
   if (hostStoredColor !== undefined && guestStoredColor === undefined) {
     return hostStoredColor;
   }
@@ -1252,8 +1501,14 @@ function getHistoricalWinnerByTimerColor(matchId: string, pair: HistoricalMatchP
   return hostStoredColor ?? guestStoredColor;
 }
 
-function getDisplayResignedColor(inFlashbackMode: boolean): MonsWeb.Color | undefined {
-  if (boardViewMode === "historicalView" && inFlashbackMode && viewedRematchMatchId) {
+function getDisplayResignedColor(
+  inFlashbackMode: boolean,
+): MonsWeb.Color | undefined {
+  if (
+    boardViewMode === "historicalView" &&
+    inFlashbackMode &&
+    viewedRematchMatchId
+  ) {
     const localSnapshot = getLocalRematchSnapshot(viewedRematchMatchId);
     if (localSnapshot?.resignedColor === "white") {
       return MonsWeb.Color.White;
@@ -1262,39 +1517,61 @@ function getDisplayResignedColor(inFlashbackMode: boolean): MonsWeb.Color | unde
       return MonsWeb.Color.Black;
     }
     if (viewedRematchPair) {
-      return getHistoricalResignedColor(viewedRematchMatchId, viewedRematchPair);
+      return getHistoricalResignedColor(
+        viewedRematchMatchId,
+        viewedRematchPair,
+      );
     }
   }
   return resignedColor;
 }
 
-function getDisplayWinnerByTimerColor(inFlashbackMode: boolean): MonsWeb.Color | undefined {
+function getDisplayWinnerByTimerColor(
+  inFlashbackMode: boolean,
+): MonsWeb.Color | undefined {
   if (boardViewMode === "historicalView" && inFlashbackMode) {
     if (viewedRematchMatchId && viewedRematchPair) {
-      return getHistoricalWinnerByTimerColor(viewedRematchMatchId, viewedRematchPair);
+      return getHistoricalWinnerByTimerColor(
+        viewedRematchMatchId,
+        viewedRematchPair,
+      );
     }
     return undefined;
   }
   return winnerByTimerColor;
 }
 
-function shouldShowTerminalIndicators(inFlashbackMode: boolean, displayGame: MonsWeb.MonsGameModel): boolean {
+function shouldShowTerminalIndicators(
+  inFlashbackMode: boolean,
+  displayGame: MonsWeb.MonsGameModel,
+): boolean {
   if (!flashbackMode || !inFlashbackMode) {
     return true;
   }
   return displayGame.fen() === getMoveHistorySourceGame().fen();
 }
 
-function hasTerminalResultForDisplayedGame(displayGame: MonsWeb.MonsGameModel, inFlashbackMode: boolean): boolean {
+function hasTerminalResultForDisplayedGame(
+  displayGame: MonsWeb.MonsGameModel,
+  inFlashbackMode: boolean,
+): boolean {
   if (!shouldShowTerminalIndicators(inFlashbackMode, displayGame)) {
     return false;
   }
   const displayResignedColor = getDisplayResignedColor(inFlashbackMode);
-  const displayWinnerByTimerColor = getDisplayWinnerByTimerColor(inFlashbackMode);
-  return displayGame.winner_color() !== undefined || displayResignedColor !== undefined || displayWinnerByTimerColor !== undefined;
+  const displayWinnerByTimerColor =
+    getDisplayWinnerByTimerColor(inFlashbackMode);
+  return (
+    displayGame.winner_color() !== undefined ||
+    displayResignedColor !== undefined ||
+    displayWinnerByTimerColor !== undefined
+  );
 }
 
-function shouldHideBoardMoveStatuses(displayGame: MonsWeb.MonsGameModel, inFlashbackMode: boolean): boolean {
+function shouldHideBoardMoveStatuses(
+  displayGame: MonsWeb.MonsGameModel,
+  inFlashbackMode: boolean,
+): boolean {
   if (boardViewMode === "waitingLive") {
     return true;
   }
@@ -1314,40 +1591,47 @@ export function getRematchSeriesNavigatorItems(): RematchSeriesNavigatorItem[] {
   }
   const activeMatchId = descriptor.activeMatchId;
   const selectedMatchId = viewedRematchMatchId ?? activeMatchId;
-  const activeMatchDescriptor = descriptor.matches.find((m: RematchSeriesMatchDescriptor) => m.isActiveMatch);
-  const activeMatchIndex = activeMatchDescriptor ? activeMatchDescriptor.index : 0;
+  const activeMatchDescriptor = descriptor.matches.find(
+    (m: RematchSeriesMatchDescriptor) => m.isActiveMatch,
+  );
+  const activeMatchIndex = activeMatchDescriptor
+    ? activeMatchDescriptor.index
+    : 0;
   const activePlayerIsWhite = playerSideColor !== MonsWeb.Color.Black;
-  return descriptor.matches.map((descriptorItem: RematchSeriesMatchDescriptor) => {
-    let whiteScore: number | null = null;
-    let blackScore: number | null = null;
-    if (descriptorItem.matchId === activeMatchId) {
-      whiteScore = game.white_score();
-      blackScore = game.black_score();
-    } else {
-      const localSnapshot = getLocalRematchSnapshot(descriptorItem.matchId);
-      if (localSnapshot) {
-        whiteScore = localSnapshot.whiteScore;
-        blackScore = localSnapshot.blackScore;
+  return descriptor.matches.map(
+    (descriptorItem: RematchSeriesMatchDescriptor) => {
+      let whiteScore: number | null = null;
+      let blackScore: number | null = null;
+      if (descriptorItem.matchId === activeMatchId) {
+        whiteScore = game.white_score();
+        blackScore = game.black_score();
+      } else {
+        const localSnapshot = getLocalRematchSnapshot(descriptorItem.matchId);
+        if (localSnapshot) {
+          whiteScore = localSnapshot.whiteScore;
+          blackScore = localSnapshot.blackScore;
+        }
+        const cachedScore = historicalScoreCache.get(descriptorItem.matchId);
+        if (!localSnapshot && cachedScore) {
+          whiteScore = cachedScore.white;
+          blackScore = cachedScore.black;
+        }
       }
-      const cachedScore = historicalScoreCache.get(descriptorItem.matchId);
-      if (!localSnapshot && cachedScore) {
-        whiteScore = cachedScore.white;
-        blackScore = cachedScore.black;
-      }
-    }
-    const indexDiff = Math.abs(descriptorItem.index - activeMatchIndex);
-    const playerIsWhite = indexDiff % 2 === 0 ? activePlayerIsWhite : !activePlayerIsWhite;
-    return {
-      matchId: descriptorItem.matchId,
-      index: descriptorItem.index,
-      whiteScore,
-      blackScore,
-      isPendingResponse: descriptorItem.isPendingResponse,
-      isActiveMatch: descriptorItem.isActiveMatch,
-      isSelected: selectedMatchId === descriptorItem.matchId,
-      playerIsWhite,
-    };
-  });
+      const indexDiff = Math.abs(descriptorItem.index - activeMatchIndex);
+      const playerIsWhite =
+        indexDiff % 2 === 0 ? activePlayerIsWhite : !activePlayerIsWhite;
+      return {
+        matchId: descriptorItem.matchId,
+        index: descriptorItem.index,
+        whiteScore,
+        blackScore,
+        isPendingResponse: descriptorItem.isPendingResponse,
+        isActiveMatch: descriptorItem.isActiveMatch,
+        isSelected: selectedMatchId === descriptorItem.matchId,
+        playerIsWhite,
+      };
+    },
+  );
 }
 
 export async function preloadRematchSeriesScores(): Promise<boolean> {
@@ -1359,16 +1643,23 @@ export async function preloadRematchSeriesScores(): Promise<boolean> {
     return false;
   }
   const targetMatchIds = descriptor.matches
-    .filter((descriptorItem) => descriptorItem.matchId !== descriptor.activeMatchId)
+    .filter(
+      (descriptorItem) => descriptorItem.matchId !== descriptor.activeMatchId,
+    )
     .map((descriptorItem) => descriptorItem.matchId);
   const signature = `${descriptor.activeMatchId ?? ""}|${targetMatchIds.join("|")}`;
-  if (rematchScorePrefetchPromise && rematchScorePrefetchSignature === signature) {
+  if (
+    rematchScorePrefetchPromise &&
+    rematchScorePrefetchSignature === signature
+  ) {
     return rematchScorePrefetchPromise;
   }
   rematchScorePrefetchSignature = signature;
   rematchScorePrefetchPromise = (async () => {
     let didChange = false;
-    const pendingMatchIds = targetMatchIds.filter((matchId) => !historicalScoreCache.has(matchId));
+    const pendingMatchIds = targetMatchIds.filter(
+      (matchId) => !historicalScoreCache.has(matchId),
+    );
     if (pendingMatchIds.length === 0) {
       return false;
     }
@@ -1404,9 +1695,12 @@ export async function preloadRematchSeriesScores(): Promise<boolean> {
   }
 }
 
-export async function didSelectRematchSeriesMatch(matchId: string): Promise<boolean> {
+export async function didSelectRematchSeriesMatch(
+  matchId: string,
+): Promise<boolean> {
   const startedFromHistoricalView = boardViewMode === "historicalView";
-  const hadMoveHistoryFlipOverride = hasMoveHistoryFlipOverrideForCurrentSession();
+  const hadMoveHistoryFlipOverride =
+    hasMoveHistoryFlipOverrideForCurrentSession();
   const descriptor = getActiveRematchSeriesDescriptor();
   const activeMatchId = descriptor?.activeMatchId ?? null;
   if (!activeMatchId) {
@@ -1416,14 +1710,20 @@ export async function didSelectRematchSeriesMatch(matchId: string): Promise<bool
     return false;
   }
   if (matchId === activeMatchId) {
-    const didHaveHistoricalSelection = boardViewMode === "historicalView" || viewedRematchMatchId !== null || flashbackMode;
+    const didHaveHistoricalSelection =
+      boardViewMode === "historicalView" ||
+      viewedRematchMatchId !== null ||
+      flashbackMode;
     if (!didHaveHistoricalSelection) {
       return false;
     }
     restoreLiveBoardView();
     return didHaveHistoricalSelection;
   }
-  if (hadMoveHistoryFlipOverride && clearMoveHistoryFlipOverrideForCurrentSession()) {
+  if (
+    hadMoveHistoryFlipOverride &&
+    clearMoveHistoryFlipOverrideForCurrentSession()
+  ) {
     setNewBoard(startedFromHistoricalView);
     triggerMoveHistoryPopupReload();
   }
@@ -1433,15 +1733,23 @@ export async function didSelectRematchSeriesMatch(matchId: string): Promise<bool
     Board.setBoardFlipped(activeBoardShouldBeFlipped());
   }
   if (isOnlineGame) {
-    const hadRecentMissBeforeLookup = (historicalMatchPairMissUntilByMatchId.get(matchId) ?? 0) > Date.now();
+    const hadRecentMissBeforeLookup =
+      (historicalMatchPairMissUntilByMatchId.get(matchId) ?? 0) > Date.now();
     let pair = await ensureHistoricalMatchPair(matchId);
     if (!pair && !hadRecentMissBeforeLookup) {
-      if (requestToken !== viewedRematchRequestToken || !isBoardRenderSessionActive(renderSessionId)) {
+      if (
+        requestToken !== viewedRematchRequestToken ||
+        !isBoardRenderSessionActive(renderSessionId)
+      ) {
         return false;
       }
       pair = await ensureHistoricalMatchPair(matchId, { forceRefresh: true });
     }
-    if (requestToken !== viewedRematchRequestToken || !isBoardRenderSessionActive(renderSessionId) || !pair) {
+    if (
+      requestToken !== viewedRematchRequestToken ||
+      !isBoardRenderSessionActive(renderSessionId) ||
+      !pair
+    ) {
       return false;
     }
     let historicalGame = buildHistoricalGameModel(matchId, pair);
@@ -1449,22 +1757,41 @@ export async function didSelectRematchSeriesMatch(matchId: string): Promise<bool
       return false;
     }
 
-    if (hasSuspiciouslyShortHistoricalMoveHistory(matchId, pair, historicalGame)) {
+    if (
+      hasSuspiciouslyShortHistoricalMoveHistory(matchId, pair, historicalGame)
+    ) {
       await new Promise<void>((resolve) => {
         window.setTimeout(resolve, historicalMatchPairRetryDelayMs);
       });
-      if (requestToken !== viewedRematchRequestToken || !isBoardRenderSessionActive(renderSessionId)) {
+      if (
+        requestToken !== viewedRematchRequestToken ||
+        !isBoardRenderSessionActive(renderSessionId)
+      ) {
         return false;
       }
-      const refreshedPair = await ensureHistoricalMatchPair(matchId, { forceRefresh: true });
-      if (requestToken !== viewedRematchRequestToken || !isBoardRenderSessionActive(renderSessionId)) {
+      const refreshedPair = await ensureHistoricalMatchPair(matchId, {
+        forceRefresh: true,
+      });
+      if (
+        requestToken !== viewedRematchRequestToken ||
+        !isBoardRenderSessionActive(renderSessionId)
+      ) {
         return false;
       }
       if (refreshedPair) {
-        const refreshedHistoricalGame = buildHistoricalGameModel(matchId, refreshedPair);
+        const refreshedHistoricalGame = buildHistoricalGameModel(
+          matchId,
+          refreshedPair,
+        );
         if (
           refreshedHistoricalGame &&
-          shouldPreferRefreshedHistoricalData(matchId, pair, historicalGame, refreshedPair, refreshedHistoricalGame)
+          shouldPreferRefreshedHistoricalData(
+            matchId,
+            pair,
+            historicalGame,
+            refreshedPair,
+            refreshedHistoricalGame,
+          )
         ) {
           pair = refreshedPair;
           historicalGame = refreshedHistoricalGame;
@@ -1475,7 +1802,11 @@ export async function didSelectRematchSeriesMatch(matchId: string): Promise<bool
     return enterHistoricalView(matchId, pair, historicalGame, renderSessionId);
   }
   const localSnapshot = getLocalRematchSnapshot(matchId);
-  if (requestToken !== viewedRematchRequestToken || !isBoardRenderSessionActive(renderSessionId) || !localSnapshot) {
+  if (
+    requestToken !== viewedRematchRequestToken ||
+    !isBoardRenderSessionActive(renderSessionId) ||
+    !localSnapshot
+  ) {
     return false;
   }
   const historicalGame = localSnapshot.gameModel;
@@ -1509,14 +1840,18 @@ export function getFenForMoveHistoryIndex(index: number): string | null {
   return entities[index].fen();
 }
 
-export function didToggleMoveHistoryBoardFlip(selectedMoveHistoryIndex?: number) {
+export function didToggleMoveHistoryBoardFlip(
+  selectedMoveHistoryIndex?: number,
+) {
   if (clearMoveHistoryFlipOverrideForCurrentSession()) {
     const inFlashbackMode = flashbackMode;
     setNewBoard(inFlashbackMode);
     if (isMoveHistoryPopupOpen && inFlashbackMode) {
       const entities = getMoveHistorySourceGame().verbose_tracking_entities();
       const selectedIndex =
-        selectedMoveHistoryIndex !== undefined && selectedMoveHistoryIndex >= 0 && selectedMoveHistoryIndex < entities.length
+        selectedMoveHistoryIndex !== undefined &&
+        selectedMoveHistoryIndex >= 0 &&
+        selectedMoveHistoryIndex < entities.length
           ? selectedMoveHistoryIndex
           : -1;
       if (selectedIndex >= 0) {
@@ -1539,7 +1874,9 @@ export function didToggleMoveHistoryBoardFlip(selectedMoveHistoryIndex?: number)
   if (isMoveHistoryPopupOpen && inFlashbackMode) {
     const entities = getMoveHistorySourceGame().verbose_tracking_entities();
     const selectedIndex =
-      selectedMoveHistoryIndex !== undefined && selectedMoveHistoryIndex >= 0 && selectedMoveHistoryIndex < entities.length
+      selectedMoveHistoryIndex !== undefined &&
+      selectedMoveHistoryIndex >= 0 &&
+      selectedMoveHistoryIndex < entities.length
         ? selectedMoveHistoryIndex
         : -1;
     if (selectedIndex >= 0) {
@@ -1582,22 +1919,30 @@ export function didSelectVerboseTrackingEntity(index: number) {
   syncInviteBotIntoLocalGameButton();
 }
 
-function updateWagerDisplayForMoveNavigation(selectedIndex: number, totalEntities: number) {
+function updateWagerDisplayForMoveNavigation(
+  selectedIndex: number,
+  totalEntities: number,
+) {
   if (!currentWagerState || !currentWagerState.resolved) {
     return;
   }
   const resolved = currentWagerState.resolved;
-  const material = resolved.material || currentWagerState.agreed?.material || null;
+  const material =
+    resolved.material || currentWagerState.agreed?.material || null;
   if (!material) {
     return;
   }
-  const stakeCount = normalizeWagerStakeCount(resolved.count, resolved.total ?? currentWagerState.agreed?.total);
+  const stakeCount = normalizeWagerStakeCount(
+    resolved.count,
+    resolved.total ?? currentWagerState.agreed?.total,
+  );
   if (!stakeCount) {
     return;
   }
   const isAtEnd = selectedIndex === totalEntities - 1;
   if (isAtEnd) {
-    const winnerIsOpponent = resolved.winnerId === Board.opponentSideMetadata.uid;
+    const winnerIsOpponent =
+      resolved.winnerId === Board.opponentSideMetadata.uid;
     Board.showResolvedWager(winnerIsOpponent, material, stakeCount, true);
   } else {
     Board.suppressWagerPileTransition();
@@ -1613,7 +1958,9 @@ export function didOpenMoveHistoryPopup() {
     return;
   }
   isMoveHistoryPopupOpen = true;
-  const displayGame = flashbackMode ? flashbackStateGame : getMoveHistorySourceGame();
+  const displayGame = flashbackMode
+    ? flashbackStateGame
+    : getMoveHistorySourceGame();
   updateBoardMoveStatuses(displayGame, flashbackMode);
 }
 
@@ -1654,14 +2001,25 @@ function dismissBadgeAndNotificationBannerIfNeeded() {
 const notificationBannerIsDisabledUntilItsMadeLessAnnoying = true;
 
 export function didAttemptAuthentication() {
-  if (!isOnlineGame && !didStartLocalGame && isCreateInviteRoute() && !isWaitingForInviteToGetAccepted && !didConnect) {
+  if (
+    !isOnlineGame &&
+    !didStartLocalGame &&
+    isCreateInviteRoute() &&
+    !isWaitingForInviteToGetAccepted &&
+    !didConnect
+  ) {
     if (!getTutorialCompleted()) {
       setBadgeVisible(true);
       if (storage.isFirstLaunch()) {
         storage.trackFirstLaunch();
       } else if (!notificationBannerIsDisabledUntilItsMadeLessAnnoying) {
         const [completed, total] = getTutorialProgress();
-        showNotificationBanner("Play Mons 101", `${completed} / ${total} lessons completed`, "104", resumeTutorialFromBanner);
+        showNotificationBanner(
+          "Play Mons 101",
+          `${completed} / ${total} lessons completed`,
+          "104",
+          resumeTutorialFromBanner,
+        );
       }
     }
   }
@@ -1715,7 +2073,9 @@ export async function go(routeStateOverride?: RouteState) {
     didSetupWagerSubscription = true;
     unsubscribeFromWagerState = subscribeToWagerState((state) => {
       currentWagerState = state;
-      logWagerDebug("subscription:update", { state: summarizeWagerState(state) });
+      logWagerDebug("subscription:update", {
+        state: summarizeWagerState(state),
+      });
       applyWagerState();
       if (isGameOver && !(isMoveHistoryPopupOpen && flashbackMode)) {
         const outcomeState = syncWagerOutcome();
@@ -1813,10 +2173,18 @@ export async function go(routeStateOverride?: RouteState) {
     }
   }
 
-  Board.setupGameInfoElements(!isCreateInviteRoute() && !isSnapshotRoute() && !isBotsRoute());
+  Board.setupGameInfoElements(
+    !isCreateInviteRoute() && !isSnapshotRoute() && !isBotsRoute(),
+  );
   if (isSnapshotRoute() || isBotsRoute()) {
     updateBoardMoveStatuses();
-    Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
+    Board.updateScore(
+      game.white_score(),
+      game.black_score(),
+      game.winner_color(),
+      resignedColor,
+      winnerByTimerColor,
+    );
   }
 
   if (isBotsRoute()) {
@@ -1937,7 +2305,10 @@ function rematchInLoopMode() {
   isGameOver = false;
   game = MonsWeb.MonsGameModel.new();
   Board.toggleBoardFlipped();
-  playerSideColor = playerSideColor === MonsWeb.Color.White ? MonsWeb.Color.Black : MonsWeb.Color.White;
+  playerSideColor =
+    playerSideColor === MonsWeb.Color.White
+      ? MonsWeb.Color.Black
+      : MonsWeb.Color.White;
   Board.resetForNewGame();
   Board.didToggleItemsStyleSet(false);
   Board.showRandomEmojisForLoopMode();
@@ -1948,9 +2319,14 @@ function rematchInLoopMode() {
 
 function startFreshLocalMatch() {
   ensureLocalRematchSeriesInitialized();
-  const activeLocalMatchIndex = localActiveRematchMatchId ? localRematchMatchIds.indexOf(localActiveRematchMatchId) : -1;
-  const playerStartsAsBlackInThisMatch = activeLocalMatchIndex >= 0 && activeLocalMatchIndex % 2 === 1;
-  playerSideColor = playerStartsAsBlackInThisMatch ? MonsWeb.Color.Black : MonsWeb.Color.White;
+  const activeLocalMatchIndex = localActiveRematchMatchId
+    ? localRematchMatchIds.indexOf(localActiveRematchMatchId)
+    : -1;
+  const playerStartsAsBlackInThisMatch =
+    activeLocalMatchIndex >= 0 && activeLocalMatchIndex % 2 === 1;
+  playerSideColor = playerStartsAsBlackInThisMatch
+    ? MonsWeb.Color.Black
+    : MonsWeb.Color.White;
   prepareForNewLocalLiveMatch();
   resetBotScoreReactionState();
   isGameOver = false;
@@ -2042,7 +2418,10 @@ function startBotMatch(botColor: MonsWeb.Color) {
   game = MonsWeb.MonsGameModel.new();
   setNewBoard(false);
   botPlayerColor = botColor;
-  playerSideColor = botColor === MonsWeb.Color.White ? MonsWeb.Color.Black : MonsWeb.Color.White;
+  playerSideColor =
+    botColor === MonsWeb.Color.White
+      ? MonsWeb.Color.Black
+      : MonsWeb.Color.White;
   showVoiceReactionButton(true);
   lastBotMoveTimestamp = 0;
   updateUndoButtonBasedOnGameState();
@@ -2052,11 +2431,17 @@ function startBotMatch(botColor: MonsWeb.Color) {
   }
 }
 
-export function didJustCreateRematchProposalSuccessfully(inviteId: string, previousMatchId: string | null, previousMatchPair: HistoricalMatchPair | null) {
+export function didJustCreateRematchProposalSuccessfully(
+  inviteId: string,
+  previousMatchId: string | null,
+  previousMatchPair: HistoricalMatchPair | null,
+) {
   if (boardViewMode !== "historicalView") {
     clearViewedRematchState();
   }
-  const hasCompleteHistoricalPair = !!(previousMatchPair?.hostMatch && previousMatchPair?.guestMatch);
+  const hasCompleteHistoricalPair = !!(
+    previousMatchPair?.hostMatch && previousMatchPair?.guestMatch
+  );
   if (previousMatchId && previousMatchPair && hasCompleteHistoricalPair) {
     historicalMatchPairCache.set(previousMatchId, previousMatchPair);
     historicalMatchPairMissUntilByMatchId.delete(previousMatchId);
@@ -2141,14 +2526,16 @@ export function didClickInviteBotIntoLocalGameButton() {
   ) {
     return;
   }
-  const shouldSendInviteYoReaction = game.active_color() === MonsWeb.Color.White && game.turn_number() === 1;
+  const shouldSendInviteYoReaction =
+    game.active_color() === MonsWeb.Color.White && game.turn_number() === 1;
   resetBotScoreReactionState();
   isInviteBotIntoLocalGameUnavailable = true;
   isGameWithBot = true;
   botPlayerColor = MonsWeb.Color.Black;
   playerSideColor = MonsWeb.Color.White;
   const boardWasFlippedBeforeTransition = Board.isFlipped;
-  const didClearMoveHistoryFlipOverride = clearMoveHistoryFlipOverrideForCurrentSession();
+  const didClearMoveHistoryFlipOverride =
+    clearMoveHistoryFlipOverrideForCurrentSession();
   Board.setBoardFlipped(activeBoardShouldBeFlipped());
   Board.showOpponentAsBotPlayer();
   if (Board.isFlipped !== boardWasFlippedBeforeTransition) {
@@ -2165,14 +2552,18 @@ export function didClickInviteBotIntoLocalGameButton() {
   syncInviteBotIntoLocalGameButton();
   if (shouldSendInviteYoReaction) {
     const inviteReactionGuard = getSessionGuard();
-    setManagedGameTimeout(() => {
-      if (!isGameWithBot || isGameOver) {
-        return;
-      }
-      const reaction = newReactionOfKind("yo");
-      playReaction(reaction);
-      Board.showVoiceReactionText("yo", true);
-    }, 500, inviteReactionGuard);
+    setManagedGameTimeout(
+      () => {
+        if (!isGameWithBot || isGameOver) {
+          return;
+        }
+        const reaction = newReactionOfKind("yo");
+        playReaction(reaction);
+        Board.showVoiceReactionText("yo", true);
+      },
+      500,
+      inviteReactionGuard,
+    );
   }
   lastBotMoveTimestamp = 0;
   if (game.active_color() === botPlayerColor) {
@@ -2181,7 +2572,9 @@ export function didClickInviteBotIntoLocalGameButton() {
 }
 
 export function didClickBotStrengthControlButton() {
-  const nextIndex = (botAutomoveModeCycle.indexOf(botAutomoveMode) + 1) % botAutomoveModeCycle.length;
+  const nextIndex =
+    (botAutomoveModeCycle.indexOf(botAutomoveMode) + 1) %
+    botAutomoveModeCycle.length;
   botAutomoveMode = botAutomoveModeCycle[nextIndex] ?? "normal";
   storage.setBotAutomoveMode(botAutomoveMode);
   syncBotStrengthControlButton();
@@ -2198,7 +2591,9 @@ export function didFindInviteThatCanBeJoined() {
   Board.runMonsBoardAsDisplayWaitingAnimation();
 }
 
-export function didClickAutomatchButton(onAutomatchResponse?: (response: any) => void) {
+export function didClickAutomatchButton(
+  onAutomatchResponse?: (response: any) => void,
+) {
   setHomeVisible(true);
   setIslandButtonDimmed(true);
 
@@ -2276,15 +2671,29 @@ function navigateFromWaitingLiveToLastCompletedMatch() {
   const renderSessionId = nextBoardRenderSession();
   Board.setBoardFlipped(activeBoardShouldBeFlipped());
   const descriptor = getActiveRematchSeriesDescriptor();
-  const completedMatches = descriptor?.matches.filter((m: RematchSeriesMatchDescriptor) => !m.isPendingResponse) ?? [];
-  const lastMatch = completedMatches.length > 0 ? completedMatches[completedMatches.length - 1] : null;
+  const completedMatches =
+    descriptor?.matches.filter(
+      (m: RematchSeriesMatchDescriptor) => !m.isPendingResponse,
+    ) ?? [];
+  const lastMatch =
+    completedMatches.length > 0
+      ? completedMatches[completedMatches.length - 1]
+      : null;
   let didNavigate = false;
   if (lastMatch) {
     const cachedPair = historicalMatchPairCache.get(lastMatch.matchId);
     if (cachedPair) {
-      const historicalGame = buildHistoricalGameModel(lastMatch.matchId, cachedPair);
+      const historicalGame = buildHistoricalGameModel(
+        lastMatch.matchId,
+        cachedPair,
+      );
       if (historicalGame) {
-        didNavigate = enterHistoricalView(lastMatch.matchId, cachedPair, historicalGame, renderSessionId);
+        didNavigate = enterHistoricalView(
+          lastMatch.matchId,
+          cachedPair,
+          historicalGame,
+          renderSessionId,
+        );
       }
     }
   }
@@ -2305,7 +2714,9 @@ function tryRestoreLiveViewAfterRematchAcceptance() {
   if (!descriptor || !activeMatchId) {
     return;
   }
-  const activeMatch = descriptor.matches.find((item) => item.matchId === activeMatchId);
+  const activeMatch = descriptor.matches.find(
+    (item) => item.matchId === activeMatchId,
+  );
   if (!activeMatch || activeMatch.isPendingResponse) {
     return;
   }
@@ -2325,7 +2736,8 @@ export function didReceiveRematchesSeriesEndIndicator() {
     setEndMatchConfirmed(true);
     return;
   }
-  const wasWaitingForRematch = isWaitingForRematchResponse && boardViewMode !== "historicalView";
+  const wasWaitingForRematch =
+    isWaitingForRematchResponse && boardViewMode !== "historicalView";
   isWaitingForRematchResponse = false;
   pendingRematchNavigationToLiveBoard = false;
   showPrimaryAction(PrimaryActionType.None);
@@ -2366,13 +2778,19 @@ export function didUpdateRematchSeriesMetadata() {
 
 function automove(onAutomoveButtonClick: boolean = false) {
   const sessionGuard = getSessionGuard();
-  const shouldUseSelectedBotMode = isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
-  const preference: AutomovePreference = onAutomoveButtonClick ? "fast" : shouldUseSelectedBotMode ? botAutomoveMode : "normal";
+  const shouldUseSelectedBotMode =
+    isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
+  const preference: AutomovePreference = onAutomoveButtonClick
+    ? "fast"
+    : shouldUseSelectedBotMode
+      ? botAutomoveMode
+      : "normal";
   const expectedMatchId = getExpectedOnlineMatchIdOrReconnect();
   if (isOnlineGame && !expectedMatchId) {
     return;
   }
-  const shouldEnforceBotMovePacing = isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
+  const shouldEnforceBotMovePacing =
+    isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
   const fenBeforeAutomove = game.fen();
   const inputColorBeforeAutomove = game.active_color();
   const syncAutomoveActionState = () => {
@@ -2405,13 +2823,34 @@ function automove(onAutomoveButtonClick: boolean = false) {
               lastBotMoveTimestamp = Date.now();
             }
             const appliedOutput = game.process_input_fen(output.input_fen());
-            applyOutput([], "", appliedOutput, false, true, AssistedInputKind.None, undefined, inputColorBeforeAutomove, expectedMatchId);
+            applyOutput(
+              [],
+              "",
+              appliedOutput,
+              false,
+              true,
+              AssistedInputKind.None,
+              undefined,
+              inputColorBeforeAutomove,
+              expectedMatchId,
+            );
           }
           syncAutomoveActionState();
         };
-        const delayBeforeApplyMs = shouldEnforceBotMovePacing ? Math.max(0, lastBotMoveTimestamp + minimumIntervalBetweenBotMovesMs - Date.now()) : 0;
+        const delayBeforeApplyMs = shouldEnforceBotMovePacing
+          ? Math.max(
+              0,
+              lastBotMoveTimestamp +
+                minimumIntervalBetweenBotMovesMs -
+                Date.now(),
+            )
+          : 0;
         if (delayBeforeApplyMs > 0) {
-          setManagedGameTimeout(applyOutputWhenReady, delayBeforeApplyMs, sessionGuard);
+          setManagedGameTimeout(
+            applyOutputWhenReady,
+            delayBeforeApplyMs,
+            sessionGuard,
+          );
         } else {
           applyOutputWhenReady();
         }
@@ -2440,7 +2879,10 @@ function didConfirmRematchProposal() {
 
   if (isGameWithBot) {
     advanceLocalRematchSeriesToNextMatch();
-    const nextBotColor = botPlayerColor === MonsWeb.Color.White ? MonsWeb.Color.Black : MonsWeb.Color.White;
+    const nextBotColor =
+      botPlayerColor === MonsWeb.Color.White
+        ? MonsWeb.Color.Black
+        : MonsWeb.Color.White;
     startBotMatch(nextBotColor);
     return;
   }
@@ -2467,7 +2909,8 @@ function didConfirmRematchProposal() {
 }
 
 export function didClickEndMatchButton() {
-  const wasWaitingForRematch = isWaitingForRematchResponse && boardViewMode !== "historicalView";
+  const wasWaitingForRematch =
+    isWaitingForRematchResponse && boardViewMode !== "historicalView";
   showPrimaryAction(PrimaryActionType.None);
   setEndMatchConfirmed(true);
   connection.sendEndMatchIndicator();
@@ -2507,7 +2950,11 @@ export function didClickClaimVictoryByTimerButton() {
           return;
         }
         if (res.ok) {
-          handleVictoryByTimer(false, playerSideColor === MonsWeb.Color.White ? "white" : "black", true);
+          handleVictoryByTimer(
+            false,
+            playerSideColor === MonsWeb.Color.White ? "white" : "black",
+            true,
+          );
         }
       })
       .catch(() => {});
@@ -2540,13 +2987,21 @@ export function didClickStartTimerButton() {
           if (activeMatchId && activeMatchId !== requestedMatchId) {
             return;
           }
-          if (!activeMatchId && !connection.matchBelongsToCurrentInvite(requestedMatchId)) {
+          if (
+            !activeMatchId &&
+            !connection.matchBelongsToCurrentInvite(requestedMatchId)
+          ) {
             return;
           }
-          if (game.turn_number() !== requestedTurnNumber || isPlayerSideTurn() || isGameOver) {
+          if (
+            game.turn_number() !== requestedTurnNumber ||
+            isPlayerSideTurn() ||
+            isGameOver
+          ) {
             return;
           }
-          const timerColor = playerSideColor === MonsWeb.Color.White ? "white" : "black";
+          const timerColor =
+            playerSideColor === MonsWeb.Color.White ? "white" : "black";
           setTimerStashForColor(requestedMatchId, timerColor, res.timer);
           if (boardViewMode === "activeLive") {
             showTimerCountdown(false, res.timer, timerColor, res.duration);
@@ -2603,7 +3058,17 @@ export function didClickUndoButton() {
       return;
     }
     const output = game.takeback();
-    applyOutput([], "", output, false, false, AssistedInputKind.None, undefined, undefined, expectedMatchId);
+    applyOutput(
+      [],
+      "",
+      output,
+      false,
+      false,
+      AssistedInputKind.None,
+      undefined,
+      undefined,
+      expectedMatchId,
+    );
   }
 }
 
@@ -2628,7 +3093,13 @@ export function isPlayerSideTurn(): boolean {
 }
 
 export function didSelectInputModifier(inputModifier: InputModifier) {
-  if (!canHandleLiveBoardInput() || (isOnlineGame && !didConnect) || isWatchOnly || isGameOver || isWaitingForInviteToGetAccepted) {
+  if (
+    !canHandleLiveBoardInput() ||
+    (isOnlineGame && !didConnect) ||
+    isWatchOnly ||
+    isGameOver ||
+    isWaitingForInviteToGetAccepted
+  ) {
     return;
   }
   processInput(AssistedInputKind.None, inputModifier);
@@ -2641,17 +3112,32 @@ export function didClickSquare(location: Location) {
       return;
     }
   }
-  if (!canHandleLiveBoardInput() || (isOnlineGame && !didConnect) || isWatchOnly || isGameOver || isWaitingForInviteToGetAccepted) {
+  if (
+    !canHandleLiveBoardInput() ||
+    (isOnlineGame && !didConnect) ||
+    isWatchOnly ||
+    isGameOver ||
+    isWaitingForInviteToGetAccepted
+  ) {
     return;
   }
   processInput(AssistedInputKind.None, InputModifier.None, location);
 }
 
-function turnShouldBeConfirmedForOutputEvents(events: MonsWeb.EventModel[], fenBeforeMove: string): boolean {
+function turnShouldBeConfirmedForOutputEvents(
+  events: MonsWeb.EventModel[],
+  fenBeforeMove: string,
+): boolean {
   const wasFirstTurn = game.turn_number() === 2;
-  const hasNextTurn = events.some((e) => e.kind === MonsWeb.EventModelKind.NextTurn);
-  const hasGameOver = events.some((e) => e.kind === MonsWeb.EventModelKind.GameOver);
-  const hasManaMove = events.some((e) => e.kind === MonsWeb.EventModelKind.ManaMove);
+  const hasNextTurn = events.some(
+    (e) => e.kind === MonsWeb.EventModelKind.NextTurn,
+  );
+  const hasGameOver = events.some(
+    (e) => e.kind === MonsWeb.EventModelKind.GameOver,
+  );
+  const hasManaMove = events.some(
+    (e) => e.kind === MonsWeb.EventModelKind.ManaMove,
+  );
 
   if (wasFirstTurn || hasGameOver || !hasNextTurn || !hasManaMove) {
     return false;
@@ -2671,7 +3157,14 @@ function turnShouldBeConfirmedForOutputEvents(events: MonsWeb.EventModel[], fenB
         const nextOutput = gameBeforeMove.process_input([loc]);
         if (nextOutput.kind === MonsWeb.OutputModelKind.NextInputOptions) {
           const nextInputs = nextOutput.next_inputs();
-          if (nextInputs.some((input) => input.kind === MonsWeb.NextInputKind.MysticAction || input.kind === MonsWeb.NextInputKind.DemonAction || input.kind === MonsWeb.NextInputKind.SpiritTargetCapture)) {
+          if (
+            nextInputs.some(
+              (input) =>
+                input.kind === MonsWeb.NextInputKind.MysticAction ||
+                input.kind === MonsWeb.NextInputKind.DemonAction ||
+                input.kind === MonsWeb.NextInputKind.SpiritTargetCapture,
+            )
+          ) {
             actuallyHasPossibleAction = true;
             break;
           }
@@ -2691,22 +3184,44 @@ function applyOutput(
   assistedInputKind: AssistedInputKind,
   inputLocation?: Location,
   inputColorBeforeMove?: MonsWeb.Color,
-  expectedMatchId: string | null = null
+  expectedMatchId: string | null = null,
 ) {
   switch (output.kind) {
     case MonsWeb.OutputModelKind.InvalidInput:
-      const shouldTryToReselect = assistedInputKind === AssistedInputKind.None && currentInputs.length > 1 && inputLocation && !currentInputs[0].equals(inputLocation);
-      const shouldHelpFindOptions = assistedInputKind === AssistedInputKind.None && currentInputs.length === 1;
+      const shouldTryToReselect =
+        assistedInputKind === AssistedInputKind.None &&
+        currentInputs.length > 1 &&
+        inputLocation &&
+        !currentInputs[0].equals(inputLocation);
+      const shouldHelpFindOptions =
+        assistedInputKind === AssistedInputKind.None &&
+        currentInputs.length === 1;
       currentInputs = [];
       Board.removeHighlights();
       if (shouldTryToReselect) {
-        processInput(AssistedInputKind.ReselectLastInvalidInput, InputModifier.None, inputLocation);
+        processInput(
+          AssistedInputKind.ReselectLastInvalidInput,
+          InputModifier.None,
+          inputLocation,
+        );
       } else if (shouldHelpFindOptions) {
-        processInput(AssistedInputKind.FindStartLocationsAfterInvalidInput, InputModifier.None);
+        processInput(
+          AssistedInputKind.FindStartLocationsAfterInvalidInput,
+          InputModifier.None,
+        );
       }
       break;
     case MonsWeb.OutputModelKind.LocationsToStartFrom:
-      const startFromHighlights: Highlight[] = output.locations().map((loc) => new Highlight(new Location(loc.i, loc.j), HighlightKind.StartFromSuggestion, colors.startFromSuggestion));
+      const startFromHighlights: Highlight[] = output
+        .locations()
+        .map(
+          (loc) =>
+            new Highlight(
+              new Location(loc.i, loc.j),
+              HighlightKind.StartFromSuggestion,
+              colors.startFromSuggestion,
+            ),
+        );
       Board.removeHighlights();
       Board.applyHighlights(startFromHighlights);
       break;
@@ -2727,11 +3242,16 @@ function applyOutput(
         let highlightKind: HighlightKind;
         switch (input.kind) {
           case MonsWeb.NextInputKind.MonMove:
-            highlightKind = hasItemAt(location) || Board.hasBasePlaceholder(location) ? HighlightKind.TargetSuggestion : HighlightKind.EmptySquare;
+            highlightKind =
+              hasItemAt(location) || Board.hasBasePlaceholder(location)
+                ? HighlightKind.TargetSuggestion
+                : HighlightKind.EmptySquare;
             color = colors.destination;
             break;
           case MonsWeb.NextInputKind.ManaMove:
-            highlightKind = hasItemAt(location) ? HighlightKind.TargetSuggestion : HighlightKind.EmptySquare;
+            highlightKind = hasItemAt(location)
+              ? HighlightKind.TargetSuggestion
+              : HighlightKind.EmptySquare;
             color = colors.destination;
             break;
           case MonsWeb.NextInputKind.MysticAction:
@@ -2743,7 +3263,9 @@ function applyOutput(
             color = colors.attackTarget;
             break;
           case MonsWeb.NextInputKind.DemonAdditionalStep:
-            highlightKind = Board.hasBasePlaceholder(location) ? HighlightKind.TargetSuggestion : HighlightKind.EmptySquare;
+            highlightKind = Board.hasBasePlaceholder(location)
+              ? HighlightKind.TargetSuggestion
+              : HighlightKind.EmptySquare;
             color = colors.attackTarget;
             break;
           case MonsWeb.NextInputKind.SpiritTargetCapture:
@@ -2751,7 +3273,10 @@ function applyOutput(
             color = colors.spiritTarget;
             break;
           case MonsWeb.NextInputKind.SpiritTargetMove:
-            highlightKind = hasItemAt(location) || Board.hasBasePlaceholder(location) ? HighlightKind.TargetSuggestion : HighlightKind.EmptySquare;
+            highlightKind =
+              hasItemAt(location) || Board.hasBasePlaceholder(location)
+                ? HighlightKind.TargetSuggestion
+                : HighlightKind.EmptySquare;
             color = colors.spiritTarget;
             break;
           case MonsWeb.NextInputKind.SelectConsumable:
@@ -2787,7 +3312,10 @@ function applyOutput(
       });
 
       Board.removeHighlights();
-      Board.applyHighlights([...selectedItemsHighlights, ...nextInputHighlights]);
+      Board.applyHighlights([
+        ...selectedItemsHighlights,
+        ...nextInputHighlights,
+      ]);
       break;
     case MonsWeb.OutputModelKind.Events:
       if (!isRemoteInput && handleStaleOnlineLocalOutput(expectedMatchId)) {
@@ -2798,7 +3326,11 @@ function applyOutput(
 
       const events = output.events();
 
-      if (!isRemoteInput && fenBeforeMove !== "" && turnShouldBeConfirmedForOutputEvents(events, fenBeforeMove)) {
+      if (
+        !isRemoteInput &&
+        fenBeforeMove !== "" &&
+        turnShouldBeConfirmedForOutputEvents(events, fenBeforeMove)
+      ) {
         const targetGameToConfirm = game;
         game = game.without_last_turn(takebackFensBeforeMove)!;
         const latestLocation = currentInputs[currentInputs.length - 1];
@@ -2813,19 +3345,31 @@ function applyOutput(
               return;
             }
             game = targetGameToConfirm;
-            applyOutput([], "", output, isRemoteInput, isBotInput, assistedInputKind, inputLocation, inputColorBeforeMove, expectedMatchId);
+            applyOutput(
+              [],
+              "",
+              output,
+              isRemoteInput,
+              isBotInput,
+              assistedInputKind,
+              inputLocation,
+              inputColorBeforeMove,
+              expectedMatchId,
+            );
           },
           () => {
             currentInputs = [];
             Board.removeHighlights();
-          }
+          },
         );
         return;
       }
 
       if (isOnlineGame && !isRemoteInput) {
         if (!expectedMatchId) {
-          console.warn("online-move-send-skipped: no expected match id at Events output");
+          console.warn(
+            "online-move-send-skipped: no expected match id at Events output",
+          );
           void getExpectedOnlineMatchIdOrReconnect();
         } else {
           connection.sendMove(moveFen, gameFen, expectedMatchId);
@@ -2891,16 +3435,27 @@ function applyOutput(
             locationsToUpdate.push(from);
             if (!flashbackMode) {
               Board.indicateWaterSplash(from);
-              Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
+              Board.updateScore(
+                game.white_score(),
+                game.black_score(),
+                game.winner_color(),
+                resignedColor,
+                winnerByTimerColor,
+              );
               if (isGameWithBot && inputColorBeforeMove !== undefined) {
                 const currentTurnNumber = game.turn_number();
                 if (!botScoreReactionPlayedTurns.has(currentTurnNumber)) {
                   const isBotScoring = inputColorBeforeMove === botPlayerColor;
-                  const reactionVariations = isBotScoring ? botReactionVariationsWhenBotScores : botReactionVariationsWhenPlayerScores;
+                  const reactionVariations = isBotScoring
+                    ? botReactionVariationsWhenBotScores
+                    : botReactionVariationsWhenPlayerScores;
                   botScoreReactionPlayedTurns.add(currentTurnNumber);
                   if (Math.random() < botScoreReactionChance) {
                     playSounds([Sound.EmoteReceived]);
-                    showVideoReaction(Board.isMetadataSideDisplayedAtOpponentSlot(true), getRandomReactionVariation(reactionVariations));
+                    showVideoReaction(
+                      Board.isMetadataSideDisplayedAtOpponentSlot(true),
+                      getRandomReactionVariation(reactionVariations),
+                    );
                   }
                 }
               }
@@ -3029,7 +3584,11 @@ function applyOutput(
                     startTimerActivationCooldownState(cooldownMatchId);
                   }
                   if (boardViewMode === "activeLive") {
-                    showTimerButtonProgressing(0, timerActivationCooldownSeconds, true);
+                    showTimerButtonProgressing(
+                      0,
+                      timerActivationCooldownSeconds,
+                      true,
+                    );
                   }
                 }
               }
@@ -3137,18 +3696,30 @@ function applyOutput(
       }
 
       if (mightKeepHighlightOnLocation !== undefined && !mustReleaseHighlight) {
-        processInput(AssistedInputKind.KeepSelectionAfterMove, InputModifier.None, mightKeepHighlightOnLocation);
+        processInput(
+          AssistedInputKind.KeepSelectionAfterMove,
+          InputModifier.None,
+          mightKeepHighlightOnLocation,
+        );
       }
 
       if (!isGameOver) {
         if (isGameWithBot && game.active_color() === botPlayerColor) {
           const botTurnGuard = getSessionGuard();
-          setManagedGameTimeout(() => {
-            if (isGameOver || !isGameWithBot || game.active_color() !== botPlayerColor) {
-              return;
-            }
-            automove();
-          }, botTurnComputationDelayMs, botTurnGuard);
+          setManagedGameTimeout(
+            () => {
+              if (
+                isGameOver ||
+                !isGameWithBot ||
+                game.active_color() !== botPlayerColor
+              ) {
+                return;
+              }
+              automove();
+            },
+            botTurnComputationDelayMs,
+            botTurnGuard,
+          );
         } else if (isBotsRoute()) {
           automove();
         }
@@ -3196,12 +3767,23 @@ export function didClickAutomoveButton() {
 }
 
 function hasBothEthOrSolAddresses(): boolean {
-  const playerSide = Board.playerSideMetadata.ethAddress ?? Board.playerSideMetadata.solAddress;
-  const opponentSide = Board.opponentSideMetadata.ethAddress ?? Board.opponentSideMetadata.solAddress;
-  return playerSide !== undefined && opponentSide !== undefined && playerSide !== opponentSide;
+  const playerSide =
+    Board.playerSideMetadata.ethAddress ?? Board.playerSideMetadata.solAddress;
+  const opponentSide =
+    Board.opponentSideMetadata.ethAddress ??
+    Board.opponentSideMetadata.solAddress;
+  return (
+    playerSide !== undefined &&
+    opponentSide !== undefined &&
+    playerSide !== opponentSide
+  );
 }
 
-function verifyMovesIfNeeded(matchId: string, flatMovesString: string, color: string) {
+function verifyMovesIfNeeded(
+  matchId: string,
+  flatMovesString: string,
+  color: string,
+) {
   if (currentGameModelMatchId === matchId && game.is_moves_verified()) {
     return;
   }
@@ -3276,7 +3858,10 @@ function resetWagerStateForMatch(matchId: string | null) {
   Board.clearWagerPilesForNewMatch();
 }
 
-function normalizeWagerStakeCount(countValue: unknown, totalValue: unknown): number {
+function normalizeWagerStakeCount(
+  countValue: unknown,
+  totalValue: unknown,
+): number {
   const count = Math.round(Number(countValue));
   if (Number.isFinite(count) && count > 0) {
     return count;
@@ -3289,7 +3874,9 @@ function normalizeWagerStakeCount(countValue: unknown, totalValue: unknown): num
 }
 
 function applyWagerState() {
-  logWagerDebug("apply:start", { state: summarizeWagerState(currentWagerState) });
+  logWagerDebug("apply:start", {
+    state: summarizeWagerState(currentWagerState),
+  });
   if (isMoveHistoryPopupOpen && flashbackMode) {
     logWagerDebug("apply:skip-move-navigation-active");
     return;
@@ -3325,12 +3912,26 @@ function applyWagerState() {
   }
 
   if (currentWagerState.agreed && currentWagerState.agreed.material) {
-    const stakeCount = normalizeWagerStakeCount(currentWagerState.agreed.count, currentWagerState.agreed.total);
+    const stakeCount = normalizeWagerStakeCount(
+      currentWagerState.agreed.count,
+      currentWagerState.agreed.total,
+    );
     if (stakeCount > 0) {
-      logWagerDebug("apply:show-agreed", { material: currentWagerState.agreed.material, stakeCount });
+      logWagerDebug("apply:show-agreed", {
+        material: currentWagerState.agreed.material,
+        stakeCount,
+      });
       Board.setWagerPiles({
-        player: { material: currentWagerState.agreed.material, count: stakeCount, pending: false },
-        opponent: { material: currentWagerState.agreed.material, count: stakeCount, pending: false },
+        player: {
+          material: currentWagerState.agreed.material,
+          count: stakeCount,
+          pending: false,
+        },
+        opponent: {
+          material: currentWagerState.agreed.material,
+          count: stakeCount,
+          pending: false,
+        },
       });
       return;
     }
@@ -3344,22 +3945,40 @@ function applyWagerState() {
   const proposals = currentWagerState.proposals || {};
   const playerUid = Board.playerSideMetadata.uid;
   const opponentUid = Board.opponentSideMetadata.uid;
-  const playerProposal = playerUid && proposals[playerUid] ? proposals[playerUid] : null;
-  const opponentProposal = opponentUid && proposals[opponentUid] ? proposals[opponentUid] : null;
+  const playerProposal =
+    playerUid && proposals[playerUid] ? proposals[playerUid] : null;
+  const opponentProposal =
+    opponentUid && proposals[opponentUid] ? proposals[opponentUid] : null;
   if (!playerProposal && !opponentProposal) {
     logWagerDebug("apply:clear-no-proposals");
     Board.clearWagerPiles();
     return;
   }
   logWagerDebug("apply:show-proposals", {
-    playerProposal: playerProposal ? { material: playerProposal.material, count: playerProposal.count } : null,
-    opponentProposal: opponentProposal ? { material: opponentProposal.material, count: opponentProposal.count } : null,
+    playerProposal: playerProposal
+      ? { material: playerProposal.material, count: playerProposal.count }
+      : null,
+    opponentProposal: opponentProposal
+      ? { material: opponentProposal.material, count: opponentProposal.count }
+      : null,
     playerUid,
     opponentUid,
   });
   Board.setWagerPiles({
-    player: playerProposal ? { material: playerProposal.material, count: playerProposal.count, pending: true } : null,
-    opponent: opponentProposal ? { material: opponentProposal.material, count: opponentProposal.count, pending: true } : null,
+    player: playerProposal
+      ? {
+          material: playerProposal.material,
+          count: playerProposal.count,
+          pending: true,
+        }
+      : null,
+    opponent: opponentProposal
+      ? {
+          material: opponentProposal.material,
+          count: opponentProposal.count,
+          pending: true,
+        }
+      : null,
   });
 }
 
@@ -3369,18 +3988,30 @@ function syncWagerOutcome(): "shown" | "deferred" | "invalid" {
     return "invalid";
   }
   const resolved = currentWagerState.resolved;
-  const material = resolved.material || currentWagerState.agreed?.material || null;
+  const material =
+    resolved.material || currentWagerState.agreed?.material || null;
   if (!material) {
-    logWagerDebug("sync:invalid-missing-material", { resolved: summarizeWagerState(currentWagerState).resolved });
+    logWagerDebug("sync:invalid-missing-material", {
+      resolved: summarizeWagerState(currentWagerState).resolved,
+    });
     return "invalid";
   }
-  const stakeCount = normalizeWagerStakeCount(resolved.count, resolved.total ?? currentWagerState.agreed?.total);
+  const stakeCount = normalizeWagerStakeCount(
+    resolved.count,
+    resolved.total ?? currentWagerState.agreed?.total,
+  );
   if (!stakeCount) {
-    logWagerDebug("sync:invalid-zero-stake", { resolved: summarizeWagerState(currentWagerState).resolved });
+    logWagerDebug("sync:invalid-zero-stake", {
+      resolved: summarizeWagerState(currentWagerState).resolved,
+    });
     return "invalid";
   }
   const winnerIsOpponent = resolved.winnerId === Board.opponentSideMetadata.uid;
-  const shouldAnimate = isGameOver && wagerOutcomeAnimationAllowed && !isWatchOnly && !wagerOutcomeShown;
+  const shouldAnimate =
+    isGameOver &&
+    wagerOutcomeAnimationAllowed &&
+    !isWatchOnly &&
+    !wagerOutcomeShown;
   logWagerDebug("sync:computed", {
     material,
     stakeCount,
@@ -3405,10 +4036,14 @@ function syncWagerOutcome(): "shown" | "deferred" | "invalid" {
     Board.showResolvedWager(winnerIsOpponent, material, stakeCount, true);
     wagerOutcomeShown = true;
     const wagerOutcomeGuard = getSessionGuard();
-    wagerOutcomeAnimTimer = setManagedGameTimeout(() => {
-      wagerOutcomeAnimating = false;
-      wagerOutcomeAnimTimer = null;
-    }, 900, wagerOutcomeGuard);
+    wagerOutcomeAnimTimer = setManagedGameTimeout(
+      () => {
+        wagerOutcomeAnimating = false;
+        wagerOutcomeAnimTimer = null;
+      },
+      900,
+      wagerOutcomeGuard,
+    );
     logWagerDebug("sync:shown-animated");
     return "shown";
   }
@@ -3461,7 +4096,11 @@ function handleStaleOnlineLocalOutput(expectedMatchId: string | null): boolean {
   return true;
 }
 
-function processInput(assistedInputKind: AssistedInputKind, inputModifier: InputModifier, inputLocation?: Location) {
+function processInput(
+  assistedInputKind: AssistedInputKind,
+  inputModifier: InputModifier,
+  inputLocation?: Location,
+) {
   if (!canHandleLiveBoardInput()) {
     return;
   }
@@ -3484,7 +4123,9 @@ function processInput(assistedInputKind: AssistedInputKind, inputModifier: Input
     currentInputs.push(inputLocation);
   }
 
-  const gameInput = currentInputs.map((input) => new MonsWeb.Location(input.i, input.j));
+  const gameInput = currentInputs.map(
+    (input) => new MonsWeb.Location(input.i, input.j),
+  );
   const inputColorBeforeMove = game.active_color();
   const fenBeforeMove = game.fen();
   const takebacksBeforeMove = game.takeback_fens();
@@ -3506,13 +4147,25 @@ function processInput(assistedInputKind: AssistedInputKind, inputModifier: Input
   } else {
     output = game.process_input(gameInput);
   }
-  applyOutput(takebacksBeforeMove, fenBeforeMove, output, false, false, assistedInputKind, inputLocation, inputColorBeforeMove, expectedMatchId);
+  applyOutput(
+    takebacksBeforeMove,
+    fenBeforeMove,
+    output,
+    false,
+    false,
+    assistedInputKind,
+    inputLocation,
+    inputColorBeforeMove,
+    expectedMatchId,
+  );
 }
 
 function updateLocation(location: Location, inFlashbackMode: boolean = false) {
   if (boardViewMode === "historicalView" && !inFlashbackMode) {
     if (boardViewDebugLogsEnabled) {
-      console.warn("[board-view] blocked live location repaint during historicalView");
+      console.warn(
+        "[board-view] blocked live location repaint during historicalView",
+      );
     }
     return;
   }
@@ -3530,7 +4183,9 @@ function updateLocation(location: Location, inFlashbackMode: boolean = false) {
   if (item !== undefined) {
     Board.putItem(item, location);
   } else {
-    const square = displayGame.square(new MonsWeb.Location(location.i, location.j));
+    const square = displayGame.square(
+      new MonsWeb.Location(location.i, location.j),
+    );
     if (square !== undefined) {
       Board.setupSquare(square, location);
     }
@@ -3549,7 +4204,12 @@ const getKnownObservedMatchOwnUid = (): string => {
   return Board.playerSideMetadata.uid || "";
 };
 
-const warnObservedMatchSideFallbackIfNeeded = (matchId: string, matchPlayerUid: string, knownOwnUid: string, knownOpponentUid: string): void => {
+const warnObservedMatchSideFallbackIfNeeded = (
+  matchId: string,
+  matchPlayerUid: string,
+  knownOwnUid: string,
+  knownOpponentUid: string,
+): void => {
   if (!boardViewDebugLogsEnabled) {
     return;
   }
@@ -3558,16 +4218,23 @@ const warnObservedMatchSideFallbackIfNeeded = (matchId: string, matchPlayerUid: 
     return;
   }
   lastObservedMatchSideFallbackWarningKey = warningKey;
-  console.warn("[board-view] fallback opponent-side classification for observed match", {
-    matchId,
-    matchPlayerUid,
-    knownOwnUid,
-    knownOpponentUid,
-    isReconnect,
-  });
+  console.warn(
+    "[board-view] fallback opponent-side classification for observed match",
+    {
+      matchId,
+      matchPlayerUid,
+      knownOwnUid,
+      knownOpponentUid,
+      isReconnect,
+    },
+  );
 };
 
-const isObservedMatchOpponentSide = (match: Match, matchPlayerUid: string, matchId: string): boolean => {
+const isObservedMatchOpponentSide = (
+  match: Match,
+  matchPlayerUid: string,
+  matchId: string,
+): boolean => {
   if (isWatchOnly) {
     return match.color === "black";
   }
@@ -3590,7 +4257,12 @@ const isObservedMatchOpponentSide = (match: Match, matchPlayerUid: string, match
   if (knownOwnUid && matchPlayerUid && matchPlayerUid !== knownOwnUid) {
     return true;
   }
-  warnObservedMatchSideFallbackIfNeeded(matchId, matchPlayerUid, knownOwnUid, knownOpponentUid);
+  warnObservedMatchSideFallbackIfNeeded(
+    matchId,
+    matchPlayerUid,
+    knownOwnUid,
+    knownOpponentUid,
+  );
   return true;
 };
 
@@ -3606,7 +4278,11 @@ function hasItemAt(location: Location): boolean {
 function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   ensureBoardViewInvariants("didConnectTo:before");
   const shouldRenderLiveBoard = !shouldPreserveHistoricalViewForCurrentInvite();
-  const incomingIsOpponentSide = isObservedMatchOpponentSide(match, matchPlayerUid, matchId);
+  const incomingIsOpponentSide = isObservedMatchOpponentSide(
+    match,
+    matchPlayerUid,
+    matchId,
+  );
   if (shouldRenderLiveBoard) {
     clearViewedRematchState();
     boardViewMode = "activeLive";
@@ -3650,12 +4326,20 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   }
 
   if (shouldRenderLiveBoard) {
-    Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, incomingIsOpponentSide);
+    Board.updateEmojiAndAuraIfNeeded(
+      match.emojiId.toString(),
+      match.aura,
+      incomingIsOpponentSide,
+    );
     applyWagerState();
     Board.markWagerInitialStateReceived();
   }
 
-  if (!isReconnect || (isReconnect && !game.is_later_than(match.fen)) || isWatchOnly) {
+  if (
+    !isReconnect ||
+    (isReconnect && !game.is_later_than(match.fen)) ||
+    isWatchOnly
+  ) {
     const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
     if (!gameFromFen) return;
     game = gameFromFen;
@@ -3708,7 +4392,9 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
   triggerMoveHistoryPopupReload();
 }
 
-function getTimerStateFromStashes(expectedMatchId?: string | null): { timer: string | null; timerColor: string } | null {
+function getTimerStateFromStashes(
+  expectedMatchId?: string | null,
+): { timer: string | null; timerColor: string } | null {
   if (isOnlineGame) {
     if (!expectedMatchId || timerStashMatchId !== expectedMatchId) {
       return null;
@@ -3736,7 +4422,10 @@ function getTimerStateFromStashes(expectedMatchId?: string | null): { timer: str
   return { timer, timerColor };
 }
 
-function applyTimerStateFromStashes(onConnect: boolean, expectedMatchId?: string | null): boolean {
+function applyTimerStateFromStashes(
+  onConnect: boolean,
+  expectedMatchId?: string | null,
+): boolean {
   if (boardViewMode !== "activeLive") {
     return false;
   }
@@ -3754,9 +4443,17 @@ function shouldWaitForTimerStashesBeforeFallback(): boolean {
   return blackTimerStash === null || whiteTimerStash === null;
 }
 
-function updateDisplayedTimerIfNeeded(onConnect: boolean, match: Match, matchId: string) {
+function updateDisplayedTimerIfNeeded(
+  onConnect: boolean,
+  match: Match,
+  matchId: string,
+) {
   const fallbackToCooldownOrClear = () => {
-    if (isGameOver || game.winner_color() !== undefined || winnerByTimerColor !== undefined) {
+    if (
+      isGameOver ||
+      game.winner_color() !== undefined ||
+      winnerByTimerColor !== undefined
+    ) {
       clearTimerActivationCooldownState();
       hideTimerButtons();
       Board.hideTimerCountdownDigits();
@@ -3793,10 +4490,16 @@ function updateDisplayedTimerIfNeeded(onConnect: boolean, match: Match, matchId:
     return;
   }
   pendingTimerResolutionOnRestore = null;
-  const didShowTimerCountdown = showTimerCountdown(onConnect, timerState.timer, timerState.timerColor);
+  const didShowTimerCountdown = showTimerCountdown(
+    onConnect,
+    timerState.timer,
+    timerState.timerColor,
+  );
   if (!didShowTimerCountdown) {
     const hasExplicitTimerPayload =
-      typeof timerState.timer === "string" && timerState.timer !== "" && timerState.timer !== "gg";
+      typeof timerState.timer === "string" &&
+      timerState.timer !== "" &&
+      timerState.timer !== "gg";
     if (hasExplicitTimerPayload) {
       clearTimerActivationCooldownState();
       hideTimerButtons();
@@ -3807,7 +4510,12 @@ function updateDisplayedTimerIfNeeded(onConnect: boolean, match: Match, matchId:
   }
 }
 
-function showTimerCountdown(onConnect: boolean, timer: any, timerColor: string, duration?: number): boolean {
+function showTimerCountdown(
+  onConnect: boolean,
+  timer: any,
+  timerColor: string,
+  duration?: number,
+): boolean {
   if (timer === "gg") {
     clearTimerActivationCooldownState();
     handleVictoryByTimer(onConnect, timerColor, false);
@@ -3817,7 +4525,10 @@ function showTimerCountdown(onConnect: boolean, timer: any, timerColor: string, 
     if (!isNaN(turnNumber) && !isNaN(targetTimestamp)) {
       if (game.turn_number() === turnNumber) {
         clearTimerActivationCooldownState();
-        let delta = Math.max(0, Math.floor((targetTimestamp - Date.now()) / 1000));
+        let delta = Math.max(
+          0,
+          Math.floor((targetTimestamp - Date.now()) / 1000),
+        );
         if (duration !== undefined && duration !== null) {
           delta = Math.min(Math.floor(duration / 1000), delta);
         }
@@ -3828,18 +4539,27 @@ function showTimerCountdown(onConnect: boolean, timer: any, timerColor: string, 
           const timerClaimMatchId = getTimerMatchIdCandidate();
           if (timerClaimMatchId !== null) {
             const timerClaimGuard = getSessionGuard();
-            timerVictoryClaimTimeoutId = setManagedGameTimeout(() => {
-              timerVictoryClaimTimeoutId = null;
-              if (connection.getActiveMatchId() !== timerClaimMatchId) {
-                return;
-              }
-              if (boardViewMode !== "activeLive" || isGameOver || isWatchOnly || isPlayerSideTurn()) {
-                return;
-              }
-              if (game.turn_number() === turnNumber) {
-                enableTimerVictoryClaim();
-              }
-            }, delta * 1000, timerClaimGuard);
+            timerVictoryClaimTimeoutId = setManagedGameTimeout(
+              () => {
+                timerVictoryClaimTimeoutId = null;
+                if (connection.getActiveMatchId() !== timerClaimMatchId) {
+                  return;
+                }
+                if (
+                  boardViewMode !== "activeLive" ||
+                  isGameOver ||
+                  isWatchOnly ||
+                  isPlayerSideTurn()
+                ) {
+                  return;
+                }
+                if (game.turn_number() === turnNumber) {
+                  enableTimerVictoryClaim();
+                }
+              },
+              delta * 1000,
+              timerClaimGuard,
+            );
           }
         }
         return true;
@@ -3853,18 +4573,27 @@ function updateUndoButtonBasedOnGameState() {
   setUndoEnabled(canHandleUndo());
 }
 
-function updateBoardMoveStatuses(gameModel: MonsWeb.MonsGameModel = game, inFlashbackMode: boolean = flashbackMode) {
+function updateBoardMoveStatuses(
+  gameModel: MonsWeb.MonsGameModel = game,
+  inFlashbackMode: boolean = flashbackMode,
+) {
   if (shouldHideBoardMoveStatuses(gameModel, inFlashbackMode)) {
     Board.hideAllMoveStatuses();
     return;
   }
-  Board.updateMoveStatuses(gameModel.active_color(), gameModel.available_move_kinds(), gameModel.inactive_player_items_counters());
+  Board.updateMoveStatuses(
+    gameModel.active_color(),
+    gameModel.available_move_kinds(),
+    gameModel.inactive_player_items_counters(),
+  );
 }
 
 function setNewBoard(inFlashbackMode: boolean) {
   if (boardViewMode === "historicalView" && !inFlashbackMode) {
     if (boardViewDebugLogsEnabled) {
-      console.warn("[board-view] blocked live board repaint during historicalView");
+      console.warn(
+        "[board-view] blocked live board repaint during historicalView",
+      );
     }
     return;
   }
@@ -3876,16 +4605,34 @@ function setNewBoard(inFlashbackMode: boolean) {
   }
 
   const displayGame = flashbackMode ? flashbackStateGame : game;
-  const showTerminalIndicators = shouldShowTerminalIndicators(inFlashbackMode, displayGame);
-  const displayResignedColor = showTerminalIndicators ? getDisplayResignedColor(inFlashbackMode) : undefined;
-  const displayWinnerByTimerColor = showTerminalIndicators ? getDisplayWinnerByTimerColor(inFlashbackMode) : undefined;
-  Board.updateScore(displayGame.white_score(), displayGame.black_score(), displayGame.winner_color(), displayResignedColor, displayWinnerByTimerColor);
-  if (!inFlashbackMode && hasTerminalResultForDisplayedGame(displayGame, inFlashbackMode)) {
+  const showTerminalIndicators = shouldShowTerminalIndicators(
+    inFlashbackMode,
+    displayGame,
+  );
+  const displayResignedColor = showTerminalIndicators
+    ? getDisplayResignedColor(inFlashbackMode)
+    : undefined;
+  const displayWinnerByTimerColor = showTerminalIndicators
+    ? getDisplayWinnerByTimerColor(inFlashbackMode)
+    : undefined;
+  Board.updateScore(
+    displayGame.white_score(),
+    displayGame.black_score(),
+    displayGame.winner_color(),
+    displayResignedColor,
+    displayWinnerByTimerColor,
+  );
+  if (
+    !inFlashbackMode &&
+    hasTerminalResultForDisplayedGame(displayGame, inFlashbackMode)
+  ) {
     disableAndHideUndoResignAndTimerControls();
     showRematchInterface();
   }
   updateBoardMoveStatuses(displayGame, inFlashbackMode);
-  const locationsWithContent = displayGame.locations_with_content().map((loc) => new Location(loc.i, loc.j));
+  const locationsWithContent = displayGame
+    .locations_with_content()
+    .map((loc) => new Location(loc.i, loc.j));
   Board.removeItemsNotPresentIn(locationsWithContent);
   locationsWithContent.forEach((loc) => {
     const location = new Location(loc.i, loc.j);
@@ -3894,7 +4641,9 @@ function setNewBoard(inFlashbackMode: boolean) {
 }
 
 function getProcessedMovesCount(color: string): number {
-  return color === "white" ? whiteProcessedMovesCount : blackProcessedMovesCount;
+  return color === "white"
+    ? whiteProcessedMovesCount
+    : blackProcessedMovesCount;
 }
 
 function setProcessedMovesCountForColor(color: string, count: number) {
@@ -3907,7 +4656,11 @@ function setProcessedMovesCountForColor(color: string, count: number) {
   }
 }
 
-function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaimedByYourself: boolean) {
+function handleVictoryByTimer(
+  onConnect: boolean,
+  winnerColor: string,
+  justClaimedByYourself: boolean,
+) {
   if (isGameOver) {
     return;
   }
@@ -3922,8 +4675,15 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
 
-  winnerByTimerColor = winnerColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
-  Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
+  winnerByTimerColor =
+    winnerColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
+  Board.updateScore(
+    game.white_score(),
+    game.black_score(),
+    game.winner_color(),
+    resignedColor,
+    winnerByTimerColor,
+  );
   updateBoardMoveStatuses(game, false);
   showRematchInterface();
   syncWagerOutcome();
@@ -3939,7 +4699,10 @@ function handleVictoryByTimer(onConnect: boolean, winnerColor: string, justClaim
   }
 }
 
-function handleResignStatusWithoutRender(onConnect: boolean, resignSenderColor: string) {
+function handleResignStatusWithoutRender(
+  onConnect: boolean,
+  resignSenderColor: string,
+) {
   if (isGameOver) {
     return;
   }
@@ -3959,7 +4722,8 @@ function handleResignStatusWithoutRender(onConnect: boolean, resignSenderColor: 
     playSounds([Sound.Defeat]);
     updateRatings(false);
   } else {
-    resignedColor = resignSenderColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
+    resignedColor =
+      resignSenderColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   }
   if (!onConnect && !justConfirmedResignYourself) {
     playSounds([Sound.Victory]);
@@ -3991,7 +4755,8 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
     playSounds([Sound.Defeat]);
     updateRatings(false);
   } else {
-    resignedColor = resignSenderColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
+    resignedColor =
+      resignSenderColor === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   }
 
   if (!onConnect && !justConfirmedResignYourself) {
@@ -4008,8 +4773,17 @@ function handleResignStatus(onConnect: boolean, resignSenderColor: string) {
   Board.removeHighlights();
   Board.hideItemSelectionOrConfirmationOverlay();
 
-  if (!onConnect || (didSetWhiteProcessedMovesCount && didSetBlackProcessedMovesCount)) {
-    Board.updateScore(game.white_score(), game.black_score(), game.winner_color(), resignedColor, winnerByTimerColor);
+  if (
+    !onConnect ||
+    (didSetWhiteProcessedMovesCount && didSetBlackProcessedMovesCount)
+  ) {
+    Board.updateScore(
+      game.white_score(),
+      game.black_score(),
+      game.winner_color(),
+      resignedColor,
+      winnerByTimerColor,
+    );
   }
   showRematchInterface();
   syncWagerOutcome();
@@ -4054,7 +4828,10 @@ export function getSelectedPuzzleId(): string | null {
   return selectedProblem.id;
 }
 
-export function didSelectPuzzle(problem: Problem, skipInstructions: boolean = false) {
+export function didSelectPuzzle(
+  problem: Problem,
+  skipInstructions: boolean = false,
+) {
   dismissBadgeAndNotificationBannerIfNeeded();
   showPrimaryAction(PrimaryActionType.None);
   setPlaySamePuzzleAgainButtonVisible(false);
@@ -4096,7 +4873,9 @@ export function showNextProblem(problem: Problem) {
   didSelectPuzzle(problem);
 }
 
-export function didRecoverInviteReactions(reactions: Record<string, InviteReaction> | null | undefined) {
+export function didRecoverInviteReactions(
+  reactions: Record<string, InviteReaction> | null | undefined,
+) {
   if (!reactions) {
     return;
   }
@@ -4108,8 +4887,15 @@ export function didRecoverInviteReactions(reactions: Record<string, InviteReacti
   });
 }
 
-export function didReceiveInviteReactionUpdate(reaction: InviteReaction, senderUid: string) {
-  if (!reaction || typeof reaction.uuid !== "string" || typeof reaction.matchId !== "string") {
+export function didReceiveInviteReactionUpdate(
+  reaction: InviteReaction,
+  senderUid: string,
+) {
+  if (
+    !reaction ||
+    typeof reaction.uuid !== "string" ||
+    typeof reaction.matchId !== "string"
+  ) {
     return;
   }
   if (isWatchOnly) {
@@ -4135,8 +4921,12 @@ export function didReceiveInviteReactionUpdate(reaction: InviteReaction, senderU
     }
   }
   const currentTime = Date.now();
-  const watchOnlyAllowed = isWatchOnly ? didSetWhiteProcessedMovesCount && didSetBlackProcessedMovesCount : false;
-  const regularAllowed = isWatchOnly ? false : currentTime - lastReactionTime > 5000;
+  const watchOnlyAllowed = isWatchOnly
+    ? didSetWhiteProcessedMovesCount && didSetBlackProcessedMovesCount
+    : false;
+  const regularAllowed = isWatchOnly
+    ? false
+    : currentTime - lastReactionTime > 5000;
   if (!watchOnlyAllowed && !regularAllowed) {
     return;
   }
@@ -4147,7 +4937,10 @@ export function didReceiveInviteReactionUpdate(reaction: InviteReaction, senderU
     } else if (senderUid === Board.playerSideMetadata.uid) {
       showReactionAtOpponentSide = false;
     } else {
-      const senderColor = connection.getPlayerColorForMatch(reaction.matchId, senderUid);
+      const senderColor = connection.getPlayerColorForMatch(
+        reaction.matchId,
+        senderUid,
+      );
       if (!senderColor) {
         return;
       }
@@ -4158,7 +4951,11 @@ export function didReceiveInviteReactionUpdate(reaction: InviteReaction, senderU
   lastReactionTime = currentTime;
 }
 
-export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matchId: string) {
+export function didReceiveMatchUpdate(
+  match: Match,
+  matchPlayerUid: string,
+  matchId: string,
+) {
   const activeMatchId = connection.getActiveMatchId();
   if (!activeMatchId || activeMatchId !== matchId) {
     return;
@@ -4192,7 +4989,11 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
       setEndMatchVisible(true);
       setEndMatchConfirmed(true);
     }
-    if ((!isReconnect || wasWaitingForRematchResponse) && !isGameOver && !isWatchOnly) {
+    if (
+      (!isReconnect || wasWaitingForRematchResponse) &&
+      !isGameOver &&
+      !isWatchOnly
+    ) {
       playSounds([Sound.DidConnect]);
     }
     return;
@@ -4200,23 +5001,40 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
 
   const shouldRenderLiveBoard = boardViewMode !== "historicalView";
   let didMutateLiveGameWithoutRender = false;
-  const isOpponentSide = isObservedMatchOpponentSide(match, matchPlayerUid, matchId);
+  const isOpponentSide = isObservedMatchOpponentSide(
+    match,
+    matchPlayerUid,
+    matchId,
+  );
   if (shouldRenderLiveBoard) {
     Board.setupPlayerId(matchPlayerUid, isOpponentSide);
-    Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, isOpponentSide);
+    Board.updateEmojiAndAuraIfNeeded(
+      match.emojiId.toString(),
+      match.aura,
+      isOpponentSide,
+    );
     applyWagerState();
     if (isGameOver) {
       syncWagerOutcome();
     }
   }
 
-  if (isGameOver && !(isWatchOnly && (!didSetWhiteProcessedMovesCount || !didSetBlackProcessedMovesCount))) {
+  if (
+    isGameOver &&
+    !(
+      isWatchOnly &&
+      (!didSetWhiteProcessedMovesCount || !didSetBlackProcessedMovesCount)
+    )
+  ) {
     return;
   }
 
   let didNotHaveBothMatchesSetupBeforeThisUpdate = false;
   const movesCount = movesCountOfMatch(match);
-  if (isWatchOnly && (!didSetWhiteProcessedMovesCount || !didSetBlackProcessedMovesCount)) {
+  if (
+    isWatchOnly &&
+    (!didSetWhiteProcessedMovesCount || !didSetBlackProcessedMovesCount)
+  ) {
     didNotHaveBothMatchesSetupBeforeThisUpdate = true;
     if (!game.is_later_than(match.fen)) {
       const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
@@ -4273,17 +5091,27 @@ export function didReceiveMatchUpdate(match: Match, matchPlayerUid: string, matc
 
   if (match.status === "surrendered") {
     if (shouldRenderLiveBoard) {
-      handleResignStatus(didNotHaveBothMatchesSetupBeforeThisUpdate, match.color);
+      handleResignStatus(
+        didNotHaveBothMatchesSetupBeforeThisUpdate,
+        match.color,
+      );
     } else {
       didMutateLiveGameWithoutRender = true;
-      handleResignStatusWithoutRender(didNotHaveBothMatchesSetupBeforeThisUpdate, match.color);
+      handleResignStatusWithoutRender(
+        didNotHaveBothMatchesSetupBeforeThisUpdate,
+        match.color,
+      );
     }
   }
 
   if (didMutateLiveGameWithoutRender) {
     triggerMoveHistoryPopupReload();
   }
-  updateDisplayedTimerIfNeeded(didNotHaveBothMatchesSetupBeforeThisUpdate, match, matchId);
+  updateDisplayedTimerIfNeeded(
+    didNotHaveBothMatchesSetupBeforeThisUpdate,
+    match,
+    matchId,
+  );
 }
 
 export function didRecoverMyMatch(match: Match, matchId: string) {
@@ -4304,7 +5132,8 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   resetWagerStateForMatch(matchId);
   resetBotScoreReactionState();
 
-  playerSideColor = match.color === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
+  playerSideColor =
+    match.color === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
   const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
   if (!gameFromFen) return;
   game = gameFromFen;
@@ -4319,7 +5148,11 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
   const movesCount = movesCountOfMatch(match);
   setProcessedMovesCountForColor(match.color, movesCount);
   if (shouldRenderLiveBoard) {
-    Board.updateEmojiAndAuraIfNeeded(match.emojiId.toString(), match.aura, false);
+    Board.updateEmojiAndAuraIfNeeded(
+      match.emojiId.toString(),
+      match.aura,
+      false,
+    );
     applyWagerState();
     Board.markWagerInitialStateReceived();
   }

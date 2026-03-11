@@ -1,7 +1,11 @@
 #!/usr/bin/env node
 const fs = require("fs");
 const path = require("path");
-const { getDisplayNameFromAddress, sendBotMessage, getTelegramEmojiTag } = require("../functions/utils");
+const {
+  getDisplayNameFromAddress,
+  sendBotMessage,
+  getTelegramEmojiTag,
+} = require("../functions/utils");
 
 try {
   const envPath = path.resolve(__dirname, "../functions/.env");
@@ -14,7 +18,10 @@ try {
       if (idx === -1) continue;
       const key = trimmed.slice(0, idx).trim();
       let value = trimmed.slice(idx + 1).trim();
-      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))
+      ) {
         value = value.slice(1, -1);
       }
       if (!process.env[key]) process.env[key] = value;
@@ -32,7 +39,10 @@ function buildEmojiSafeLink(message, href) {
   let match;
   while ((match = regex.exec(text)) !== null) {
     if (match.index > lastIndex) {
-      segments.push({ type: "text", value: text.slice(lastIndex, match.index) });
+      segments.push({
+        type: "text",
+        value: text.slice(lastIndex, match.index),
+      });
     }
     segments.push({ type: "emoji", value: match[0] });
     lastIndex = match.index + match[0].length;
@@ -565,10 +575,16 @@ function pickRandomSwagpack(excludedIds) {
 
 function generateRatings() {
   const primary = randomInt(minRating, maxRating);
-  let secondary = primary + randomInt(-maxRatingDifference, maxRatingDifference);
+  let secondary =
+    primary + randomInt(-maxRatingDifference, maxRatingDifference);
   secondary = clamp(secondary, minRating, maxRating);
   if (Math.abs(secondary - primary) > maxRatingDifference) {
-    secondary = clamp(primary + (secondary > primary ? maxRatingDifference : -maxRatingDifference), minRating, maxRating);
+    secondary = clamp(
+      primary +
+        (secondary > primary ? maxRatingDifference : -maxRatingDifference),
+      minRating,
+      maxRating,
+    );
   }
   return [primary, secondary];
 }
@@ -580,24 +596,43 @@ function createPlayers() {
   const playerOne = {
     ...first,
     rating: ratingOne,
-    displayName: getDisplayNameFromAddress(first.username, "", "", ratingOne, first.emoji),
+    displayName: getDisplayNameFromAddress(
+      first.username,
+      "",
+      "",
+      ratingOne,
+      first.emoji,
+    ),
   };
   const playerTwo = {
     ...second,
     rating: ratingTwo,
-    displayName: getDisplayNameFromAddress(second.username, "", "", ratingTwo, second.emoji),
+    displayName: getDisplayNameFromAddress(
+      second.username,
+      "",
+      "",
+      ratingTwo,
+      second.emoji,
+    ),
   };
   return [playerOne, playerTwo];
 }
 
 function buildMatchMessage(playerOne, playerTwo) {
-  const matchLine = buildEmojiSafeLink(`${playerOne.displayName} vs. ${playerTwo.displayName}`, defaultLink);
+  const matchLine = buildEmojiSafeLink(
+    `${playerOne.displayName} vs. ${playerTwo.displayName}`,
+    defaultLink,
+  );
   return `${matchLine}`;
 }
 
 function createMatchMessage() {
   const [playerOne, playerTwo] = createPlayers();
-  return { message: buildMatchMessage(playerOne, playerTwo), playerOne, playerTwo };
+  return {
+    message: buildMatchMessage(playerOne, playerTwo),
+    playerOne,
+    playerTwo,
+  };
 }
 
 async function main() {
@@ -613,7 +648,13 @@ async function main() {
   const sendLookingMessage = async () => {
     const swagpack = pickRandomSwagpack();
     const [rating] = generateRatings();
-    const name = getDisplayNameFromAddress(swagpack.username, "", "", rating, swagpack.emoji);
+    const name = getDisplayNameFromAddress(
+      swagpack.username,
+      "",
+      "",
+      rating,
+      swagpack.emoji,
+    );
     const message = `${name} is looking for a match https://mons.link ${emojiSuffix}`;
     await sendWithLog(message);
   };

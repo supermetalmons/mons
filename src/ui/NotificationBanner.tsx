@@ -3,7 +3,10 @@ import styled from "styled-components";
 import { isMobile } from "../utils/misc";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 
-const NotificationBanner = styled.div<{ isVisible: boolean; dismissType?: "click" | "close" | null }>`
+const NotificationBanner = styled.div<{
+  isVisible: boolean;
+  dismissType?: "click" | "close" | null;
+}>`
   position: fixed;
   top: 56px;
   right: 9pt;
@@ -39,7 +42,10 @@ const NotificationBanner = styled.div<{ isVisible: boolean; dismissType?: "click
 
   &:active {
     transform: ${(props) => {
-      if (!props.isVisible) return props.dismissType === "click" ? "translateX(0) scale(0.95)" : "translateX(100%) scale(1)";
+      if (!props.isVisible)
+        return props.dismissType === "click"
+          ? "translateX(0) scale(0.95)"
+          : "translateX(100%) scale(1)";
       return "translateX(0) scale(0.98)";
     }};
   }
@@ -177,15 +183,31 @@ interface NotificationBannerComponentProps {
   dismissType?: "click" | "close" | null;
 }
 
-export const NotificationBannerComponent: React.FC<NotificationBannerComponentProps> = ({ isVisible, onClose, onClick, title, subtitle, emojiId, dismissType }) => {
-  const handleNotificationClick = (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+export const NotificationBannerComponent: React.FC<
+  NotificationBannerComponentProps
+> = ({
+  isVisible,
+  onClose,
+  onClick,
+  title,
+  subtitle,
+  emojiId,
+  dismissType,
+}) => {
+  const handleNotificationClick = (
+    event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>,
+  ) => {
     event.preventDefault();
     event.stopPropagation();
     didDismissSomethingWithOutsideTapJustNow();
     onClick();
   };
 
-  const handleCloseClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+  const handleCloseClick = (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.TouchEvent<HTMLButtonElement>,
+  ) => {
     event.preventDefault();
     event.stopPropagation();
     didDismissSomethingWithOutsideTapJustNow();
@@ -193,13 +215,24 @@ export const NotificationBannerComponent: React.FC<NotificationBannerComponentPr
   };
 
   return (
-    <NotificationBanner data-notification-banner="true" isVisible={isVisible} dismissType={dismissType} onClick={handleNotificationClick}>
-      <NotificationImage src={`https://assets.mons.link/emojipack_hq/${emojiId}.webp`} alt="" />
+    <NotificationBanner
+      data-notification-banner="true"
+      isVisible={isVisible}
+      dismissType={dismissType}
+      onClick={handleNotificationClick}
+    >
+      <NotificationImage
+        src={`https://assets.mons.link/emojipack_hq/${emojiId}.webp`}
+        alt=""
+      />
       <NotificationContent>
         <NotificationTitle>{title}</NotificationTitle>
         <NotificationSubtitle>{subtitle}</NotificationSubtitle>
       </NotificationContent>
-      <CloseButton onClick={!isMobile ? handleCloseClick : undefined} onTouchStart={isMobile ? handleCloseClick : undefined}>
+      <CloseButton
+        onClick={!isMobile ? handleCloseClick : undefined}
+        onTouchStart={isMobile ? handleCloseClick : undefined}
+      >
         ×
       </CloseButton>
     </NotificationBanner>

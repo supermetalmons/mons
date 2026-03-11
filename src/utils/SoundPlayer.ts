@@ -13,8 +13,16 @@ export class SoundPlayer {
   private isResuming = false;
 
   constructor() {
-    document.addEventListener("touchend", () => this.initializeOnUserInteraction(false), { once: true });
-    document.addEventListener("click", () => this.initializeOnUserInteraction(false), { once: true });
+    document.addEventListener(
+      "touchend",
+      () => this.initializeOnUserInteraction(false),
+      { once: true },
+    );
+    document.addEventListener(
+      "click",
+      () => this.initializeOnUserInteraction(false),
+      { once: true },
+    );
     this.attachVisibilityHandlers();
   }
 
@@ -26,7 +34,9 @@ export class SoundPlayer {
     const isMuted = getIsMuted();
     if (this.isInitialized || (isMuted && !force)) return;
     if (document.visibilityState !== "visible" && !force) return;
-    this.audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
+    this.audioContext = new (
+      window.AudioContext || (window as any).webkitAudioContext
+    )();
     this.attachStateChangeHandler();
     await this.unlockOnce(force);
     this.isInitialized = true;
@@ -65,7 +75,8 @@ export class SoundPlayer {
   }
 
   private unlockOnce = async (force: boolean = false) => {
-    if ((getIsMuted() && !force) || document.visibilityState !== "visible") return;
+    if ((getIsMuted() && !force) || document.visibilityState !== "visible")
+      return;
     if (!this.audioContext) return;
     if (this.audioContext.state === "closed") return;
     try {
@@ -75,7 +86,11 @@ export class SoundPlayer {
         await this.audioContext.resume();
         this.isResuming = false;
       }
-      const buffer = this.audioContext.createBuffer(1, 1, this.audioContext.sampleRate);
+      const buffer = this.audioContext.createBuffer(
+        1,
+        1,
+        this.audioContext.sampleRate,
+      );
       const source = this.audioContext.createBufferSource();
       source.buffer = buffer;
       source.connect(this.audioContext.destination);
@@ -169,18 +184,26 @@ export class SoundPlayer {
       }
     };
     if (typeof this.audioContext.addEventListener === "function") {
-      this.audioContext.addEventListener("statechange", handle as EventListener);
+      this.audioContext.addEventListener(
+        "statechange",
+        handle as EventListener,
+      );
     } else {
       (this.audioContext as any).onstatechange = handle;
     }
     if (ctx && typeof ctx.addEventListener === "function") {
       try {
-        ctx.addEventListener("interruptionend", () => this.setupRestartListeners());
+        ctx.addEventListener("interruptionend", () =>
+          this.setupRestartListeners(),
+        );
       } catch (_) {}
     }
   }
 
-  public async playSound(url: string, volumeMultiplier: number = 1): Promise<void> {
+  public async playSound(
+    url: string,
+    volumeMultiplier: number = 1,
+  ): Promise<void> {
     if (!this.isInitialized) return;
     if (document.visibilityState !== "visible" && isMobile) return;
     const ctx = await this.prepareContext();

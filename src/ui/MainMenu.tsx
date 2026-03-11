@@ -1,28 +1,72 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import { logoBase64 } from "../content/uiAssets";
-import { didDismissSomethingWithOutsideTapJustNow, didNotDismissAnythingWithOutsideTapJustNow, closeNavigationAndAppearancePopupIfAny } from "./BottomControls";
+import {
+  didDismissSomethingWithOutsideTapJustNow,
+  didNotDismissAnythingWithOutsideTapJustNow,
+  closeNavigationAndAppearancePopupIfAny,
+} from "./BottomControls";
 import styled from "styled-components";
-import { defaultEarlyInputEventName, isMobile, getBuildInfo } from "../utils/misc";
+import {
+  defaultEarlyInputEventName,
+  isMobile,
+  getBuildInfo,
+} from "../utils/misc";
 import { storage } from "../utils/storage";
-import { Leaderboard, LeaderboardType, LEADERBOARD_TYPE_ICON_URLS } from "./Leaderboard";
+import {
+  Leaderboard,
+  LeaderboardType,
+  LEADERBOARD_TYPE_ICON_URLS,
+} from "./Leaderboard";
 import { setAnimatedMonsEnabled } from "../game/board";
 import { closeProfilePopupIfAny } from "./ProfileSignIn";
-import { FaTelegramPlane, FaUniversity, FaPlay, FaStop, FaBackward, FaForward } from "react-icons/fa";
+import {
+  FaTelegramPlane,
+  FaUniversity,
+  FaPlay,
+  FaStop,
+  FaBackward,
+  FaForward,
+} from "react-icons/fa";
 import { showsShinyCardSomewhere } from "./ShinyCard";
-import { startPlayingMusic, stopPlayingMusic, playNextTrack } from "../content/music";
+import {
+  startPlayingMusic,
+  stopPlayingMusic,
+  playNextTrack,
+} from "../content/music";
 import { InfoPopover } from "./InfoPopover";
 import { MiningMaterialName } from "../connection/connectionModels";
 import { registerMainMenuTransientUiHandler } from "./uiSession";
 import { connection } from "../connection/connection";
 import { openEventModal } from "./eventModalController";
 
-const LEADERBOARD_TYPES: LeaderboardType[] = ["rating", "ice", "metal", "gum", "slime", "dust", "total", "mp"];
+const LEADERBOARD_TYPES: LeaderboardType[] = [
+  "rating",
+  "ice",
+  "metal",
+  "gum",
+  "slime",
+  "dust",
+  "total",
+  "mp",
+];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
-const MATERIAL_TYPES: MiningMaterialName[] = ["ice", "metal", "gum", "slime", "dust"];
+const MATERIAL_TYPES: MiningMaterialName[] = [
+  "ice",
+  "metal",
+  "gum",
+  "slime",
+  "dust",
+];
 type LeaderboardSpecialType = keyof typeof LEADERBOARD_TYPE_ICON_URLS;
 
-const materialImagePromises: Map<MiningMaterialName, Promise<string | null>> = new Map();
-const specialLeaderboardTypeImagePromises: Map<LeaderboardSpecialType, Promise<string | null>> = new Map();
+const materialImagePromises: Map<
+  MiningMaterialName,
+  Promise<string | null>
+> = new Map();
+const specialLeaderboardTypeImagePromises: Map<
+  LeaderboardSpecialType,
+  Promise<string | null>
+> = new Map();
 
 const fetchImageUrl = (url: string): Promise<string | null> =>
   fetch(url)
@@ -35,19 +79,27 @@ const fetchImageUrl = (url: string): Promise<string | null> =>
 
 const getMaterialImageUrl = (name: MiningMaterialName) => {
   if (!materialImagePromises.has(name)) {
-    materialImagePromises.set(name, fetchImageUrl(`${MATERIAL_BASE_URL}/${name}.webp`));
+    materialImagePromises.set(
+      name,
+      fetchImageUrl(`${MATERIAL_BASE_URL}/${name}.webp`),
+    );
   }
   return materialImagePromises.get(name)!;
 };
 
 const getSpecialLeaderboardTypeImageUrl = (type: LeaderboardSpecialType) => {
   if (!specialLeaderboardTypeImagePromises.has(type)) {
-    specialLeaderboardTypeImagePromises.set(type, fetchImageUrl(LEADERBOARD_TYPE_ICON_URLS[type]));
+    specialLeaderboardTypeImagePromises.set(
+      type,
+      fetchImageUrl(LEADERBOARD_TYPE_ICON_URLS[type]),
+    );
   }
   return specialLeaderboardTypeImagePromises.get(type)!;
 };
 
-const isMaterialLeaderboardType = (value: LeaderboardType): value is MiningMaterialName =>
+const isMaterialLeaderboardType = (
+  value: LeaderboardType,
+): value is MiningMaterialName =>
   value !== "rating" && value !== "mp" && value !== "total";
 
 const RockButtonContainer = styled.div`
@@ -168,7 +220,8 @@ const RockMenu = styled.div<{ isOpen: boolean; showLeaderboard: boolean }>`
   padding: 6px;
   display: flex;
   flex-direction: column;
-  box-shadow: ${(props) => (props.isOpen ? "0 6px 20px var(--notificationBannerShadow)" : "none")};
+  box-shadow: ${(props) =>
+    props.isOpen ? "0 6px 20px var(--notificationBannerShadow)" : "none"};
   width: ${(props) => (props.showLeaderboard ? "min(300px, 83dvw)" : "230px")};
 
   transform-origin: top left;
@@ -227,7 +280,12 @@ const LeaderboardTypeSelector = styled.div`
   padding: 4px 3px 8px 3px;
 `;
 
-const LeaderboardTypeButton = styled.button<{ isSelected: boolean; isText?: boolean; isSpecial?: boolean; isTotal?: boolean }>`
+const LeaderboardTypeButton = styled.button<{
+  isSelected: boolean;
+  isText?: boolean;
+  isSpecial?: boolean;
+  isTotal?: boolean;
+}>`
   display: flex;
   align-items: center;
   justify-content: center;
@@ -240,7 +298,8 @@ const LeaderboardTypeButton = styled.button<{ isSelected: boolean; isText?: bool
   cursor: pointer;
   font-size: 0.7rem;
   font-weight: 600;
-  background-color: ${(props) => (props.isSelected ? "var(--color-blue-primary)" : "var(--color-gray-f9)")};
+  background-color: ${(props) =>
+    props.isSelected ? "var(--color-blue-primary)" : "var(--color-gray-f9)"};
   color: ${(props) => (props.isSelected ? "#fff" : "#707070")};
   -webkit-touch-callout: none;
   touch-action: manipulation;
@@ -250,17 +309,26 @@ const LeaderboardTypeButton = styled.button<{ isSelected: boolean; isText?: bool
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.isSelected ? "var(--color-blue-primary)" : "var(--color-gray-f5)")};
+      background-color: ${(props) =>
+        props.isSelected
+          ? "var(--color-blue-primary)"
+          : "var(--color-gray-f5)"};
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background-color: ${(props) => (props.isSelected ? "var(--color-blue-primary-dark)" : "var(--color-gray-25)")};
+    background-color: ${(props) =>
+      props.isSelected
+        ? "var(--color-blue-primary-dark)"
+        : "var(--color-gray-25)"};
     color: ${(props) => (props.isSelected ? "#fff" : "var(--color-gray-99)")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.isSelected ? "var(--color-blue-primary-dark)" : "var(--color-gray-27)")};
+        background-color: ${(props) =>
+          props.isSelected
+            ? "var(--color-blue-primary-dark)"
+            : "var(--color-gray-27)"};
       }
     }
   }
@@ -403,7 +471,6 @@ const ButtonRow = styled.div`
   padding: 1px 0;
   width: 100%;
 `;
-
 
 const CloseButton = styled.button`
   display: none;
@@ -641,7 +708,9 @@ let toggleInfoVisibilityImpl: () => void = () => {};
 let toggleMusicVisibilityImpl: () => void = () => {};
 let closeMenuAndInfoIfAnyImpl: () => void = () => {};
 let closeAllKindsOfPopupsImpl: () => void = () => {};
-let closeMenuAndInfoIfAllowedForEventImpl: (event: TouchEvent | MouseEvent) => void = () => {};
+let closeMenuAndInfoIfAllowedForEventImpl: (
+  event: TouchEvent | MouseEvent,
+) => void = () => {};
 let setIsMusicPlayingGlobalImpl: (playing: boolean) => void = () => {};
 
 export const toggleInfoVisibility = () => {
@@ -660,7 +729,9 @@ export const closeAllKindsOfPopups = () => {
   closeAllKindsOfPopupsImpl();
 };
 
-export const closeMenuAndInfoIfAllowedForEvent = (event: TouchEvent | MouseEvent) => {
+export const closeMenuAndInfoIfAllowedForEvent = (
+  event: TouchEvent | MouseEvent,
+) => {
   closeMenuAndInfoIfAllowedForEventImpl(event);
 };
 
@@ -683,25 +754,37 @@ const MainMenu: React.FC = () => {
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [eventCreateError, setEventCreateError] = useState("");
 
-  const [areAnimatedMonsEnabled, setAreAnimatedMonsEnabled] = useState<boolean>(storage.getIsExperimentingWithSprites(false));
-  const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>(() => {
-    const stored = storage.getLeaderboardType("rating");
-    const resolved = stored === "gp" ? "mp" : stored;
-    return LEADERBOARD_TYPES.includes(resolved as LeaderboardType) ? (resolved as LeaderboardType) : "rating";
-  });
-  const [materialUrls, setMaterialUrls] = useState<Record<MiningMaterialName, string | null>>({
+  const [areAnimatedMonsEnabled, setAreAnimatedMonsEnabled] = useState<boolean>(
+    storage.getIsExperimentingWithSprites(false),
+  );
+  const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>(
+    () => {
+      const stored = storage.getLeaderboardType("rating");
+      const resolved = stored === "gp" ? "mp" : stored;
+      return LEADERBOARD_TYPES.includes(resolved as LeaderboardType)
+        ? (resolved as LeaderboardType)
+        : "rating";
+    },
+  );
+  const [materialUrls, setMaterialUrls] = useState<
+    Record<MiningMaterialName, string | null>
+  >({
     dust: null,
     slime: null,
     gum: null,
     metal: null,
     ice: null,
   });
-  const [specialLeaderboardTypeUrls, setSpecialLeaderboardTypeUrls] = useState<Record<LeaderboardSpecialType, string | null>>({
+  const [specialLeaderboardTypeUrls, setSpecialLeaderboardTypeUrls] = useState<
+    Record<LeaderboardSpecialType, string | null>
+  >({
     rating: null,
     mp: null,
   });
   const lastClickTime = useRef(0);
-  const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>([]);
+  const [cracks, setCracks] = useState<Array<{ angle: number; color: string }>>(
+    [],
+  );
   const animationFrameRef = useRef<number | null>(null);
   const activeIndicesRef = useRef<number[]>([]);
 
@@ -712,14 +795,20 @@ const MainMenu: React.FC = () => {
     MATERIAL_TYPES.forEach((name) => {
       void getMaterialImageUrl(name).then((url) => {
         if (mounted) {
-          setMaterialUrls((prev) => (prev[name] === url ? prev : { ...prev, [name]: url }));
+          setMaterialUrls((prev) =>
+            prev[name] === url ? prev : { ...prev, [name]: url },
+          );
         }
       });
     });
-    (Object.keys(LEADERBOARD_TYPE_ICON_URLS) as LeaderboardSpecialType[]).forEach((type) => {
+    (
+      Object.keys(LEADERBOARD_TYPE_ICON_URLS) as LeaderboardSpecialType[]
+    ).forEach((type) => {
       void getSpecialLeaderboardTypeImageUrl(type).then((url) => {
         if (mounted) {
-          setSpecialLeaderboardTypeUrls((prev) => (prev[type] === url ? prev : { ...prev, [type]: url }));
+          setSpecialLeaderboardTypeUrls((prev) =>
+            prev[type] === url ? prev : { ...prev, [type]: url },
+          );
         }
       });
     });
@@ -838,8 +927,6 @@ const MainMenu: React.FC = () => {
     setShowExperimental(true);
   };
 
-
-
   const handleMusicPlaybackToggle = () => {
     if (isMusicPlaying) {
       stopPlayingMusic();
@@ -850,7 +937,9 @@ const MainMenu: React.FC = () => {
     }
   };
 
-  const handleAnimatedMonsToggle = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleAnimatedMonsToggle = (
+    event: React.ChangeEvent<HTMLInputElement>,
+  ) => {
     const checked = event.target.checked;
     setAreAnimatedMonsEnabled(checked);
     setAnimatedMonsEnabled(checked, false);
@@ -877,9 +966,16 @@ const MainMenu: React.FC = () => {
         openEventModal(result.eventId, { restoreHomeOnClose: false });
       })
       .catch((error) => {
-        const message = error && typeof error === "object" && "message" in error && typeof (error as { message?: unknown }).message === "string"
-          ? (error as { message: string }).message.replace(/^Firebase:\s*/i, "")
-          : "Failed to create event.";
+        const message =
+          error &&
+          typeof error === "object" &&
+          "message" in error &&
+          typeof (error as { message?: unknown }).message === "string"
+            ? (error as { message: string }).message.replace(
+                /^Firebase:\s*/i,
+                "",
+              )
+            : "Failed to create event.";
         setEventCreateError(message);
       })
       .finally(() => {
@@ -932,15 +1028,28 @@ const MainMenu: React.FC = () => {
   }, [closeMainMenuPopupsHandler]);
 
   closeMenuAndInfoIfAllowedForEventImpl = (event: TouchEvent | MouseEvent) => {
-    if (isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node)) {
+    if (
+      isMenuOpen &&
+      menuRef.current &&
+      !menuRef.current.contains(event.target as Node)
+    ) {
       closeMenuAndInfoIfAnyImpl();
     }
   };
 
   useEffect(() => {
     const handleTapOutside = (event: any) => {
-      const shouldKeepVisibleWhenShinyCardIsBeingDismissed = isMobile ? showsShinyCardSomewhere || !didNotDismissAnythingWithOutsideTapJustNow() : false;
-      if (!shouldKeepVisibleWhenShinyCardIsBeingDismissed && isMenuOpen && menuRef.current && !menuRef.current.contains(event.target as Node) && !event.target.closest('[data-shiny-card="true"]')) {
+      const shouldKeepVisibleWhenShinyCardIsBeingDismissed = isMobile
+        ? showsShinyCardSomewhere ||
+          !didNotDismissAnythingWithOutsideTapJustNow()
+        : false;
+      if (
+        !shouldKeepVisibleWhenShinyCardIsBeingDismissed &&
+        isMenuOpen &&
+        menuRef.current &&
+        !menuRef.current.contains(event.target as Node) &&
+        !event.target.closest('[data-shiny-card="true"]')
+      ) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsMenuOpen(false);
         setShowExperimental(false);
@@ -957,7 +1066,12 @@ const MainMenu: React.FC = () => {
     const handleTapOutside = (event: any) => {
       event.stopPropagation();
       const isInfoButton = event.target.closest(".info-button");
-      if (isInfoOpen && infoRef.current && !infoRef.current.contains(event.target as Node) && !isInfoButton) {
+      if (
+        isInfoOpen &&
+        infoRef.current &&
+        !infoRef.current.contains(event.target as Node) &&
+        !isInfoButton
+      ) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsInfoOpen(false);
       }
@@ -965,7 +1079,10 @@ const MainMenu: React.FC = () => {
 
     document.addEventListener(defaultEarlyInputEventName, handleTapOutside);
     return () => {
-      document.removeEventListener(defaultEarlyInputEventName, handleTapOutside);
+      document.removeEventListener(
+        defaultEarlyInputEventName,
+        handleTapOutside,
+      );
     };
   }, [isInfoOpen]);
 
@@ -973,7 +1090,12 @@ const MainMenu: React.FC = () => {
     const handleTapOutside = (event: any) => {
       event.stopPropagation();
       const isMusicButton = event.target.closest(".music-button");
-      if (isMusicOpen && musicRef.current && !musicRef.current.contains(event.target as Node) && !isMusicButton) {
+      if (
+        isMusicOpen &&
+        musicRef.current &&
+        !musicRef.current.contains(event.target as Node) &&
+        !isMusicButton
+      ) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsMusicOpen(false);
       }
@@ -981,7 +1103,10 @@ const MainMenu: React.FC = () => {
 
     document.addEventListener(defaultEarlyInputEventName, handleTapOutside);
     return () => {
-      document.removeEventListener(defaultEarlyInputEventName, handleTapOutside);
+      document.removeEventListener(
+        defaultEarlyInputEventName,
+        handleTapOutside,
+      );
     };
   }, [isMusicOpen]);
 
@@ -1009,24 +1134,35 @@ const MainMenu: React.FC = () => {
         <RockMenuWrapper
           isOpen={isMenuOpen}
           onMouseLeave={(e) => {
-            if (window.matchMedia("(hover: hover) and (pointer: fine)").matches) {
+            if (
+              window.matchMedia("(hover: hover) and (pointer: fine)").matches
+            ) {
               const relatedTarget = e.relatedTarget as Element | null;
-              if (relatedTarget && relatedTarget.closest && !relatedTarget.closest('[data-shiny-card="true"]')) {
+              if (
+                relatedTarget &&
+                relatedTarget.closest &&
+                !relatedTarget.closest('[data-shiny-card="true"]')
+              ) {
                 setIsMenuOpen(false);
                 setShowExperimental(false);
               }
             }
-          }}>
+          }}
+        >
           <RockMenu isOpen={isMenuOpen} showLeaderboard={true}>
             <MenuContent>
-              <MenuTitle onClick={!isMobile ? handleTitleClick : undefined} onTouchStart={isMobile ? handleTitleClick : undefined}>
+              <MenuTitle
+                onClick={!isMobile ? handleTitleClick : undefined}
+                onTouchStart={isMobile ? handleTitleClick : undefined}
+              >
                 <MenuTitleText>MONS.LINK</MenuTitleText>
               </MenuTitle>
               <CloseButton
                 onClick={() => {
                   setIsMenuOpen(false);
                   setShowExperimental(false);
-                }}>
+                }}
+              >
                 ×
               </CloseButton>
               <MenuBody>
@@ -1036,8 +1172,16 @@ const MainMenu: React.FC = () => {
                     const isMaterialType = isMaterialLeaderboardType(type);
                     const isSpecialType = type === "rating" || type === "mp";
                     const typeIconUrl =
-                      type === "rating" ? specialLeaderboardTypeUrls.rating : type === "mp" ? specialLeaderboardTypeUrls.mp : isMaterialType ? materialUrls[type] : null;
-                    const isTextType = (type === "total" && !showTotalAsIcons) || (type !== "total" && !typeIconUrl);
+                      type === "rating"
+                        ? specialLeaderboardTypeUrls.rating
+                        : type === "mp"
+                          ? specialLeaderboardTypeUrls.mp
+                          : isMaterialType
+                            ? materialUrls[type]
+                            : null;
+                    const isTextType =
+                      (type === "total" && !showTotalAsIcons) ||
+                      (type !== "total" && !typeIconUrl);
                     return (
                       <LeaderboardTypeButton
                         key={type}
@@ -1046,26 +1190,59 @@ const MainMenu: React.FC = () => {
                         isSpecial={isSpecialType}
                         isTotal={type === "total"}
                         onClick={() => handleLeaderboardTypeChange(type)}
-                        onTouchStart={isMobile ? (e) => {
-                          e.stopPropagation();
-                        } : undefined}>
+                        onTouchStart={
+                          isMobile
+                            ? (e) => {
+                                e.stopPropagation();
+                              }
+                            : undefined
+                        }
+                      >
                         {type === "total" ? (
                           showTotalAsIcons ? (
                             <TotalMaterialsIconContainer>
-                              <img src={materialUrls.ice!} alt="ice" draggable={false} />
-                              <img src={materialUrls.metal!} alt="metal" draggable={false} />
-                              <img src={materialUrls.gum!} alt="gum" draggable={false} />
-                              <img src={materialUrls.slime!} alt="slime" draggable={false} />
-                              <img src={materialUrls.dust!} alt="dust" draggable={false} />
+                              <img
+                                src={materialUrls.ice!}
+                                alt="ice"
+                                draggable={false}
+                              />
+                              <img
+                                src={materialUrls.metal!}
+                                alt="metal"
+                                draggable={false}
+                              />
+                              <img
+                                src={materialUrls.gum!}
+                                alt="gum"
+                                draggable={false}
+                              />
+                              <img
+                                src={materialUrls.slime!}
+                                alt="slime"
+                                draggable={false}
+                              />
+                              <img
+                                src={materialUrls.dust!}
+                                alt="dust"
+                                draggable={false}
+                              />
                             </TotalMaterialsIconContainer>
                           ) : (
                             "Total"
                           )
                         ) : typeIconUrl ? (
                           isSpecialType ? (
-                            <LeaderboardTypeSpecialIcon src={typeIconUrl} alt={type === "rating" ? "Elo" : "MP"} draggable={false} />
+                            <LeaderboardTypeSpecialIcon
+                              src={typeIconUrl}
+                              alt={type === "rating" ? "Elo" : "MP"}
+                              draggable={false}
+                            />
                           ) : (
-                            <LeaderboardTypeMaterialIcon src={typeIconUrl} alt={type} draggable={false} />
+                            <LeaderboardTypeMaterialIcon
+                              src={typeIconUrl}
+                              alt={type}
+                              draggable={false}
+                            />
                           )
                         ) : type === "rating" ? (
                           "Elo"
@@ -1078,29 +1255,84 @@ const MainMenu: React.FC = () => {
                     );
                   })}
                 </LeaderboardTypeSelector>
-                <Leaderboard show={isMenuOpen} leaderboardType={leaderboardType} />
+                <Leaderboard
+                  show={isMenuOpen}
+                  leaderboardType={leaderboardType}
+                />
                 <LinksContainer>
                   <ButtonRow>
-                    <IconLinkButton href="https://mons.academy" target="_blank" rel="noopener noreferrer">
+                    <IconLinkButton
+                      href="https://mons.academy"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <FaUniversity />
                     </IconLinkButton>
-                    <IconLinkButton href="https://x.com/supermetalx" target="_blank" rel="noopener noreferrer">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" stroke="currentColor" strokeWidth="0.2" />
+                    <IconLinkButton
+                      href="https://x.com/supermetalx"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1em"
+                        height="1em"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
+                        <path
+                          d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"
+                          stroke="currentColor"
+                          strokeWidth="0.2"
+                        />
                       </svg>
                     </IconLinkButton>
-                    <IconLinkButton href="https://farcaster.xyz/~/channel/mons" target="_blank" rel="noopener noreferrer">
-                      <svg width="1.2em" height="1.2em" viewBox="0 0 777 777" xmlns="http://www.w3.org/2000/svg" version="1.1" fill="currentColor">
-                        <path id="path" d="M145.778 44.556 L630.222 44.556 630.222 733.445 559.111 733.445 559.111 417.889 558.414 417.889 C550.554 330.677 477.258 262.333 388 262.333 298.742 262.333 225.446 330.677 217.586 417.889 L216.889 417.889 216.889 733.445 145.778 733.445 145.778 44.556 Z" />
-                        <path id="path-1" d="M16.889 142.333 L45.778 240.111 70.222 240.111 70.222 635.667 C57.949 635.667 48 645.616 48 657.889 L48 684.556 43.556 684.556 C31.283 684.556 21.333 694.505 21.333 706.778 L21.333 733.445 270.222 733.445 270.222 706.778 C270.222 694.505 260.273 684.556 248 684.556 L243.556 684.556 243.556 657.889 C243.556 645.616 233.606 635.667 221.333 635.667 L194.667 635.667 194.667 142.333 16.889 142.333 Z" />
-                        <path id="path-2" d="M563.556 635.667 C551.283 635.667 541.333 645.616 541.333 657.889 L541.333 684.556 536.889 684.556 C524.616 684.556 514.667 694.505 514.667 706.778 L514.667 733.445 763.556 733.445 763.556 706.778 C763.556 694.505 753.606 684.556 741.333 684.556 L736.889 684.556 736.889 657.889 C736.889 645.616 726.94 635.667 714.667 635.667 L714.667 240.111 739.111 240.111 768 142.333 590.222 142.333 590.222 635.667 563.556 635.667 Z" />
+                    <IconLinkButton
+                      href="https://farcaster.xyz/~/channel/mons"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <svg
+                        width="1.2em"
+                        height="1.2em"
+                        viewBox="0 0 777 777"
+                        xmlns="http://www.w3.org/2000/svg"
+                        version="1.1"
+                        fill="currentColor"
+                      >
+                        <path
+                          id="path"
+                          d="M145.778 44.556 L630.222 44.556 630.222 733.445 559.111 733.445 559.111 417.889 558.414 417.889 C550.554 330.677 477.258 262.333 388 262.333 298.742 262.333 225.446 330.677 217.586 417.889 L216.889 417.889 216.889 733.445 145.778 733.445 145.778 44.556 Z"
+                        />
+                        <path
+                          id="path-1"
+                          d="M16.889 142.333 L45.778 240.111 70.222 240.111 70.222 635.667 C57.949 635.667 48 645.616 48 657.889 L48 684.556 43.556 684.556 C31.283 684.556 21.333 694.505 21.333 706.778 L21.333 733.445 270.222 733.445 270.222 706.778 C270.222 694.505 260.273 684.556 248 684.556 L243.556 684.556 243.556 657.889 C243.556 645.616 233.606 635.667 221.333 635.667 L194.667 635.667 194.667 142.333 16.889 142.333 Z"
+                        />
+                        <path
+                          id="path-2"
+                          d="M563.556 635.667 C551.283 635.667 541.333 645.616 541.333 657.889 L541.333 684.556 536.889 684.556 C524.616 684.556 514.667 694.505 514.667 706.778 L514.667 733.445 763.556 733.445 763.556 706.778 C763.556 694.505 753.606 684.556 741.333 684.556 L736.889 684.556 736.889 657.889 C736.889 645.616 726.94 635.667 714.667 635.667 L714.667 240.111 739.111 240.111 768 142.333 590.222 142.333 590.222 635.667 563.556 635.667 Z"
+                        />
                       </svg>
                     </IconLinkButton>
-                    <IconLinkButton href="https://t.me/supermetalmons" target="_blank" rel="noopener noreferrer">
+                    <IconLinkButton
+                      href="https://t.me/supermetalmons"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
                       <FaTelegramPlane />
                     </IconLinkButton>
-                    <IconLinkButton href="https://github.com/supermetalmons" target="_blank" rel="noopener noreferrer">
-                      <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24" fill="currentColor">
+                    <IconLinkButton
+                      href="https://github.com/supermetalmons"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="1em"
+                        height="1em"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                      >
                         <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z" />
                       </svg>
                     </IconLinkButton>
@@ -1109,7 +1341,11 @@ const MainMenu: React.FC = () => {
                 {showExperimental && (
                   <ExperimentalMenu>
                     <ToggleRow>
-                      <input type="checkbox" checked={areAnimatedMonsEnabled} onChange={handleAnimatedMonsToggle} />
+                      <input
+                        type="checkbox"
+                        checked={areAnimatedMonsEnabled}
+                        onChange={handleAnimatedMonsToggle}
+                      />
                       animated mons
                     </ToggleRow>
                     {canCreatePilotEvents && (
@@ -1125,12 +1361,22 @@ const MainMenu: React.FC = () => {
                           }}
                           placeholder="minutes from now"
                         />
-                        <ExperimentalActionButton type="button" onClick={handleCreateEvent} disabled={isCreatingEvent}>
-                          {isCreatingEvent ? "Creating Event..." : "Create Event"}
+                        <ExperimentalActionButton
+                          type="button"
+                          onClick={handleCreateEvent}
+                          disabled={isCreatingEvent}
+                        >
+                          {isCreatingEvent
+                            ? "Creating Event..."
+                            : "Create Event"}
                         </ExperimentalActionButton>
                       </>
                     )}
-                    {eventCreateError !== "" && <ExperimentalInlineError>{eventCreateError}</ExperimentalInlineError>}
+                    {eventCreateError !== "" && (
+                      <ExperimentalInlineError>
+                        {eventCreateError}
+                      </ExperimentalInlineError>
+                    )}
                     <BuildInfo>{getBuildInfo()}</BuildInfo>
                   </ExperimentalMenu>
                 )}
@@ -1166,7 +1412,8 @@ const MainMenu: React.FC = () => {
                   setIsInfoOpen(false);
                   setIsMusicOpen(false);
                 },
-              })}>
+              })}
+        >
           <img src={logoBase64} alt="" />
         </RockButton>
       </RockButtonContainer>
@@ -1178,7 +1425,9 @@ const MainMenu: React.FC = () => {
           <MusicControlButton onClick={() => playNextTrack()}>
             <FaBackward />
           </MusicControlButton>
-          <MusicControlButton onClick={handleMusicPlaybackToggle}>{isMusicPlaying ? <FaStop /> : <FaPlay />}</MusicControlButton>
+          <MusicControlButton onClick={handleMusicPlaybackToggle}>
+            {isMusicPlaying ? <FaStop /> : <FaPlay />}
+          </MusicControlButton>
           <MusicControlButton onClick={() => playNextTrack()}>
             <FaForward />
           </MusicControlButton>

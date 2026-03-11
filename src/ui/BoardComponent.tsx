@@ -1,18 +1,52 @@
-import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { FaTimes, FaCheck } from "react-icons/fa";
-import { isWatchOnly, subscribeToWatchOnly, didClickBotStrengthControlButton } from "../game/gameController";
-import { ColorSet, getCurrentColorSet, isCustomPictureBoardEnabled, subscribeToBoardColorSetChanges } from "../content/boardStyles";
+import {
+  isWatchOnly,
+  subscribeToWatchOnly,
+  didClickBotStrengthControlButton,
+} from "../game/gameController";
+import {
+  ColorSet,
+  getCurrentColorSet,
+  isCustomPictureBoardEnabled,
+  subscribeToBoardColorSetChanges,
+} from "../content/boardStyles";
 import { defaultInputEventName, isMobile } from "../utils/misc";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
-import { attachRainbowAura, hideRainbowAura as hideAuraDom, setRainbowAuraMask, showRainbowAura as showAuraDom } from "./rainbowAura";
-import { playerSideMetadata, opponentSideMetadata, setWagerRenderHandler, WagerPileSide, WagerRenderState, WagerPileRenderState } from "../game/board";
-import { setWagerPanelOutsideTapHandler, setWagerPanelVisibilityChecker } from "./BottomControls";
+import {
+  attachRainbowAura,
+  hideRainbowAura as hideAuraDom,
+  setRainbowAuraMask,
+  showRainbowAura as showAuraDom,
+} from "./rainbowAura";
+import {
+  playerSideMetadata,
+  opponentSideMetadata,
+  setWagerRenderHandler,
+  WagerPileSide,
+  WagerRenderState,
+  WagerPileRenderState,
+} from "../game/board";
+import {
+  setWagerPanelOutsideTapHandler,
+  setWagerPanelVisibilityChecker,
+} from "./BottomControls";
 import { connection } from "../connection/connection";
 import { MatchWagerState } from "../connection/connectionModels";
 import { subscribeToWagerState } from "../game/wagerState";
 import { rocksMiningService } from "../services/rocksMiningService";
-import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
+import {
+  computeAvailableMaterials,
+  getFrozenMaterials,
+  subscribeToFrozenMaterials,
+} from "../services/wagerMaterialsService";
 import { registerBoardTransientUiHandler } from "./uiSession";
 
 const CircularButton = styled.button`
@@ -82,11 +116,30 @@ export const updateBoardComponentForBoardStyleChange = () => {
   listeners.forEach((listener) => listener());
 };
 
-let setTopBoardOverlayVisibleImpl: (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => void = () => {};
-let showVideoReactionImpl: (opponent: boolean, stickerId: number) => void = () => {};
-let showRaibowAuraImpl: (visible: boolean, url: string, opponent: boolean) => void = () => {};
-let updateAuraForAvatarElementImpl: (opponent: boolean, avatarElement: SVGElement) => void = () => {};
-let updateWagerPlayerUidsImpl: (playerUid: string, opponentUid: string) => void = () => {};
+let setTopBoardOverlayVisibleImpl: (
+  blurry: boolean,
+  svgElement: SVGElement | null,
+  withConfirmAndCancelButtons: boolean,
+  ok?: () => void,
+  cancel?: () => void,
+) => void = () => {};
+let showVideoReactionImpl: (
+  opponent: boolean,
+  stickerId: number,
+) => void = () => {};
+let showRaibowAuraImpl: (
+  visible: boolean,
+  url: string,
+  opponent: boolean,
+) => void = () => {};
+let updateAuraForAvatarElementImpl: (
+  opponent: boolean,
+  avatarElement: SVGElement,
+) => void = () => {};
+let updateWagerPlayerUidsImpl: (
+  playerUid: string,
+  opponentUid: string,
+) => void = () => {};
 let clearBoardTransientUiImpl: (fadeOutVideos?: boolean) => void = () => {};
 type BotStrengthControlMode = "fast" | "normal" | "pro";
 type BotStrengthControlOverlayState = {
@@ -96,25 +149,49 @@ type BotStrengthControlOverlayState = {
   y: number;
   size: number;
 };
-let setBotStrengthControlOverlayStateImpl: (state: BotStrengthControlOverlayState) => void = () => {};
+let setBotStrengthControlOverlayStateImpl: (
+  state: BotStrengthControlOverlayState,
+) => void = () => {};
 
-export const setTopBoardOverlayVisible = (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => {
-  setTopBoardOverlayVisibleImpl(blurry, svgElement, withConfirmAndCancelButtons, ok, cancel);
+export const setTopBoardOverlayVisible = (
+  blurry: boolean,
+  svgElement: SVGElement | null,
+  withConfirmAndCancelButtons: boolean,
+  ok?: () => void,
+  cancel?: () => void,
+) => {
+  setTopBoardOverlayVisibleImpl(
+    blurry,
+    svgElement,
+    withConfirmAndCancelButtons,
+    ok,
+    cancel,
+  );
 };
 
 export const showVideoReaction = (opponent: boolean, stickerId: number) => {
   showVideoReactionImpl(opponent, stickerId);
 };
 
-export const showRaibowAura = (visible: boolean, url: string, opponent: boolean) => {
+export const showRaibowAura = (
+  visible: boolean,
+  url: string,
+  opponent: boolean,
+) => {
   showRaibowAuraImpl(visible, url, opponent);
 };
 
-export const updateAuraForAvatarElement = (opponent: boolean, avatarElement: SVGElement) => {
+export const updateAuraForAvatarElement = (
+  opponent: boolean,
+  avatarElement: SVGElement,
+) => {
   updateAuraForAvatarElementImpl(opponent, avatarElement);
 };
 
-export const updateWagerPlayerUids = (playerUid: string, opponentUid: string) => {
+export const updateWagerPlayerUids = (
+  playerUid: string,
+  opponentUid: string,
+) => {
   updateWagerPlayerUidsImpl(playerUid, opponentUid);
 };
 
@@ -122,7 +199,9 @@ export const clearBoardTransientUi = (fadeOutVideos?: boolean) => {
   clearBoardTransientUiImpl(fadeOutVideos);
 };
 
-export const setBotStrengthControlOverlayState = (state: BotStrengthControlOverlayState) => {
+export const setBotStrengthControlOverlayState = (
+  state: BotStrengthControlOverlayState,
+) => {
   setBotStrengthControlOverlayStateImpl(state);
 };
 
@@ -193,7 +272,7 @@ const getWagerPanelLayout = (
   rect: { x: number; y: number; w: number; h: number },
   isOpponent: boolean,
   boardPixelSize: { width: number; height: number } | null,
-  hasActions: boolean
+  hasActions: boolean,
 ): {
   x: number;
   y: number;
@@ -210,37 +289,66 @@ const getWagerPanelLayout = (
   buttonPaddingXPx: number;
   countGap: number;
 } => {
-  const pxPerUnitX = boardPixelSize ? boardPixelSize.width / BOARD_WIDTH_UNITS : null;
-  const pxPerUnitY = boardPixelSize ? boardPixelSize.height / BOARD_HEIGHT_UNITS : null;
+  const pxPerUnitX = boardPixelSize
+    ? boardPixelSize.width / BOARD_WIDTH_UNITS
+    : null;
+  const pxPerUnitY = boardPixelSize
+    ? boardPixelSize.height / BOARD_HEIGHT_UNITS
+    : null;
   const minPaddingX = pxPerUnitX ? WAGER_PANEL_MIN_PADDING_PX / pxPerUnitX : 0;
   const minPaddingY = pxPerUnitY ? WAGER_PANEL_MIN_PADDING_PX / pxPerUnitY : 0;
   const paddingX = Math.max(rect.w * WAGER_PANEL_PADDING_X_FRAC, minPaddingX);
   const paddingY = Math.max(rect.h * WAGER_PANEL_PADDING_Y_FRAC, minPaddingY);
-  const minButtonHeight = pxPerUnitY ? WAGER_PANEL_MIN_BUTTON_HEIGHT_PX / pxPerUnitY : 0;
-  const buttonHeight = hasActions ? Math.max(rect.h * WAGER_PANEL_BUTTON_HEIGHT_FRAC, minButtonHeight) : 0;
-  const minCountGap = pxPerUnitX ? WAGER_PANEL_COUNT_MIN_GAP_PX / pxPerUnitX : 0;
+  const minButtonHeight = pxPerUnitY
+    ? WAGER_PANEL_MIN_BUTTON_HEIGHT_PX / pxPerUnitY
+    : 0;
+  const buttonHeight = hasActions
+    ? Math.max(rect.h * WAGER_PANEL_BUTTON_HEIGHT_FRAC, minButtonHeight)
+    : 0;
+  const minCountGap = pxPerUnitX
+    ? WAGER_PANEL_COUNT_MIN_GAP_PX / pxPerUnitX
+    : 0;
   const countGap = Math.max(rect.w * WAGER_PANEL_COUNT_GAP_FRAC, minCountGap);
-  const minCountWidth = pxPerUnitX ? WAGER_PANEL_COUNT_MIN_WIDTH_PX / pxPerUnitX : 0;
+  const minCountWidth = pxPerUnitX
+    ? WAGER_PANEL_COUNT_MIN_WIDTH_PX / pxPerUnitX
+    : 0;
   const pileGap = hasActions ? rect.h * WAGER_PANEL_PILE_GAP_FRAC : 0;
   const borderAndBufferPx = 4;
-  const opponentButtonsMinWidthPx = WAGER_PANEL_MIN_DECLINE_BUTTON_WIDTH_PX + WAGER_PANEL_MIN_ACCEPT_BUTTON_WIDTH_PX + WAGER_PANEL_BUTTON_GAP_PX + borderAndBufferPx;
-  const playerButtonMinWidthPx = WAGER_PANEL_MIN_PLAYER_BUTTON_WIDTH_PX + borderAndBufferPx;
-  const buttonRowMinWidthPx = isOpponent ? opponentButtonsMinWidthPx : playerButtonMinWidthPx;
-  const buttonRowMinWidthUnits = pxPerUnitX ? buttonRowMinWidthPx / pxPerUnitX : 0;
+  const opponentButtonsMinWidthPx =
+    WAGER_PANEL_MIN_DECLINE_BUTTON_WIDTH_PX +
+    WAGER_PANEL_MIN_ACCEPT_BUTTON_WIDTH_PX +
+    WAGER_PANEL_BUTTON_GAP_PX +
+    borderAndBufferPx;
+  const playerButtonMinWidthPx =
+    WAGER_PANEL_MIN_PLAYER_BUTTON_WIDTH_PX + borderAndBufferPx;
+  const buttonRowMinWidthPx = isOpponent
+    ? opponentButtonsMinWidthPx
+    : playerButtonMinWidthPx;
+  const buttonRowMinWidthUnits = pxPerUnitX
+    ? buttonRowMinWidthPx / pxPerUnitX
+    : 0;
   const minPanelContentWidth = rect.w + countGap + minCountWidth;
-  const buttonRowWidth = hasActions ? Math.max(rect.w, buttonRowMinWidthUnits, minPanelContentWidth) : minPanelContentWidth;
+  const buttonRowWidth = hasActions
+    ? Math.max(rect.w, buttonRowMinWidthUnits, minPanelContentWidth)
+    : minPanelContentWidth;
   const panelWidth = buttonRowWidth + paddingX * 2;
   const panelHeight = rect.h + paddingY * 2 + pileGap + buttonHeight;
   const centerX = rect.x + rect.w / 2;
   const panelX = centerX - panelWidth / 2;
-  const panelY = isOpponent ? rect.y - paddingY : rect.y - (panelHeight - rect.h - paddingY);
+  const panelY = isOpponent
+    ? rect.y - paddingY
+    : rect.y - (panelHeight - rect.h - paddingY);
   const rowValues = hasActions
     ? isOpponent
       ? [paddingY, rect.h, pileGap, buttonHeight, paddingY]
       : [paddingY, buttonHeight, pileGap, rect.h, paddingY]
     : [paddingY, rect.h, paddingY];
-  const gridRows = rowValues.map((value) => `${(value / panelHeight) * 100}%`).join(" ");
-  const paddingXPx = pxPerUnitX ? paddingX * pxPerUnitX : WAGER_PANEL_MIN_PADDING_PX;
+  const gridRows = rowValues
+    .map((value) => `${(value / panelHeight) * 100}%`)
+    .join(" ");
+  const paddingXPx = pxPerUnitX
+    ? paddingX * pxPerUnitX
+    : WAGER_PANEL_MIN_PADDING_PX;
   const pileRow = hasActions ? (isOpponent ? 2 : 4) : 2;
   const buttonRow = hasActions ? (isOpponent ? 4 : 2) : 0;
 
@@ -279,66 +387,142 @@ const BoardComponent: React.FC = () => {
   const opponentVideoAppearingTimeoutRef = useRef<number | null>(null);
   const playerVideoAppearingTimeoutRef = useRef<number | null>(null);
   const transitionTimeoutIdsRef = useRef<Set<number>>(new Set());
-  const [currentColorSet, setCurrentColorSet] = useState<ColorSet>(getCurrentColorSet());
-  const [prefersDarkMode, setPrefersDarkMode] = useState(window.matchMedia("(prefers-color-scheme: dark)").matches);
-  const [isGridVisible, setIsGridVisible] = useState(!isCustomPictureBoardEnabled());
-  const [shouldIncludePangchiuImage, setShouldIncludePangchiuImage] = useState(isCustomPictureBoardEnabled());
-  const [overlayState, setOverlayState] = useState<{ blurry: boolean; svgElement: SVGElement | null; withConfirmAndCancelButtons: boolean; ok?: () => void; cancel?: () => void }>({ blurry: true, svgElement: null, withConfirmAndCancelButtons: false });
+  const [currentColorSet, setCurrentColorSet] =
+    useState<ColorSet>(getCurrentColorSet());
+  const [prefersDarkMode, setPrefersDarkMode] = useState(
+    window.matchMedia("(prefers-color-scheme: dark)").matches,
+  );
+  const [isGridVisible, setIsGridVisible] = useState(
+    !isCustomPictureBoardEnabled(),
+  );
+  const [shouldIncludePangchiuImage, setShouldIncludePangchiuImage] = useState(
+    isCustomPictureBoardEnabled(),
+  );
+  const [overlayState, setOverlayState] = useState<{
+    blurry: boolean;
+    svgElement: SVGElement | null;
+    withConfirmAndCancelButtons: boolean;
+    ok?: () => void;
+    cancel?: () => void;
+  }>({ blurry: true, svgElement: null, withConfirmAndCancelButtons: false });
   const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
-  const [miningMaterials, setMiningMaterials] = useState(rocksMiningService.getSnapshot().materials);
-  const [frozenMaterials, setFrozenMaterialsState] = useState(getFrozenMaterials());
+  const [miningMaterials, setMiningMaterials] = useState(
+    rocksMiningService.getSnapshot().materials,
+  );
+  const [frozenMaterials, setFrozenMaterialsState] =
+    useState(getFrozenMaterials());
   const [watchOnlySnapshot, setWatchOnlySnapshot] = useState(isWatchOnly);
-  const [playerUidSnapshot, setPlayerUidSnapshot] = useState(playerSideMetadata.uid);
-  const [opponentUidSnapshot, setOpponentUidSnapshot] = useState(opponentSideMetadata.uid);
-  const [activeWagerPanelSide, setActiveWagerPanelSide] = useState<WagerPileSide | "winner" | null>(null);
-  const [activeWagerPanelRect, setActiveWagerPanelRect] = useState<{ x: number; y: number; w: number; h: number } | null>(null);
-  const [activeWagerPanelCount, setActiveWagerPanelCount] = useState<number | null>(null);
-  const [botStrengthControlOverlay, setBotStrengthControlOverlay] = useState<BotStrengthControlOverlayState>({
-    visible: false,
-    mode: "normal",
-    x: 0,
-    y: 0,
-    size: 0,
-  });
+  const [playerUidSnapshot, setPlayerUidSnapshot] = useState(
+    playerSideMetadata.uid,
+  );
+  const [opponentUidSnapshot, setOpponentUidSnapshot] = useState(
+    opponentSideMetadata.uid,
+  );
+  const [activeWagerPanelSide, setActiveWagerPanelSide] = useState<
+    WagerPileSide | "winner" | null
+  >(null);
+  const [activeWagerPanelRect, setActiveWagerPanelRect] = useState<{
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  } | null>(null);
+  const [activeWagerPanelCount, setActiveWagerPanelCount] = useState<
+    number | null
+  >(null);
+  const [botStrengthControlOverlay, setBotStrengthControlOverlay] =
+    useState<BotStrengthControlOverlayState>({
+      visible: false,
+      mode: "normal",
+      x: 0,
+      y: 0,
+      size: 0,
+    });
   const [botStrengthHovered, setBotStrengthHovered] = useState(false);
   const [botStrengthPressed, setBotStrengthPressed] = useState(false);
-  const [boardPixelSize, setBoardPixelSize] = useState<{ width: number; height: number } | null>(null);
+  const [boardPixelSize, setBoardPixelSize] = useState<{
+    width: number;
+    height: number;
+  } | null>(null);
   const wagerPilesLayerRef = useRef<HTMLDivElement | null>(null);
   const wagerPileElementsRef = useRef<WagerPileElements | null>(null);
   const wagerRenderStateRef = useRef<WagerRenderState | null>(null);
   const activeWagerPanelSideRef = useRef<WagerPileSide | "winner" | null>(null);
-  const activeWagerPanelRectRef = useRef<{ x: number; y: number; w: number; h: number } | null>(null);
+  const activeWagerPanelRectRef = useRef<{
+    x: number;
+    y: number;
+    w: number;
+    h: number;
+  } | null>(null);
   const activeWagerPanelCountRef = useRef<number | null>(null);
-  const disappearingAnimationStartedRef = useRef<{ player: boolean; opponent: boolean }>({ player: false, opponent: false });
-  const pendingBlinkDelayTimersRef = useRef<{ player: number | null; opponent: number | null }>({ player: null, opponent: null });
-  const pendingBlinkEnabledRef = useRef<{ player: boolean; opponent: boolean }>({ player: false, opponent: false });
-  const previousMaterialUrlRef = useRef<{ player: string | null; opponent: string | null }>({ player: null, opponent: null });
-  const materialChangeOldIconsRef = useRef<{ player: HTMLImageElement[]; opponent: HTMLImageElement[] }>({ player: [], opponent: [] });
+  const disappearingAnimationStartedRef = useRef<{
+    player: boolean;
+    opponent: boolean;
+  }>({ player: false, opponent: false });
+  const pendingBlinkDelayTimersRef = useRef<{
+    player: number | null;
+    opponent: number | null;
+  }>({ player: null, opponent: null });
+  const pendingBlinkEnabledRef = useRef<{ player: boolean; opponent: boolean }>(
+    { player: false, opponent: false },
+  );
+  const previousMaterialUrlRef = useRef<{
+    player: string | null;
+    opponent: string | null;
+  }>({ player: null, opponent: null });
+  const materialChangeOldIconsRef = useRef<{
+    player: HTMLImageElement[];
+    opponent: HTMLImageElement[];
+  }>({ player: [], opponent: [] });
   const lastWagerUiRenderSignatureRef = useRef<string>("");
-  const wagerPanelStateRef = useRef<{ actionsLocked: boolean; playerHasProposal: boolean; opponentHasProposal: boolean }>({
+  const wagerPanelStateRef = useRef<{
+    actionsLocked: boolean;
+    playerHasProposal: boolean;
+    opponentHasProposal: boolean;
+  }>({
     actionsLocked: true,
     playerHasProposal: false,
     opponentHasProposal: false,
   });
   const opponentAuraContainerRef = useRef<HTMLDivElement | null>(null);
   const playerAuraContainerRef = useRef<HTMLDivElement | null>(null);
-  const opponentAuraRefs = useRef<{ background: HTMLDivElement; inner: HTMLDivElement } | null>(null);
-  const playerAuraRefs = useRef<{ background: HTMLDivElement; inner: HTMLDivElement } | null>(null);
+  const opponentAuraRefs = useRef<{
+    background: HTMLDivElement;
+    inner: HTMLDivElement;
+  } | null>(null);
+  const playerAuraRefs = useRef<{
+    background: HTMLDivElement;
+    inner: HTMLDivElement;
+  } | null>(null);
   const auraLayerRef = useRef<HTMLDivElement | null>(null);
   const opponentWrapperRef = useRef<HTMLDivElement | null>(null);
   const playerWrapperRef = useRef<HTMLDivElement | null>(null);
   const botStrengthIgnoreMouseUntilRef = useRef(0);
 
-  updateWagerPlayerUidsImpl = (nextPlayerUid: string, nextOpponentUid: string) => {
-    setPlayerUidSnapshot((prev) => (prev === nextPlayerUid ? prev : nextPlayerUid));
-    setOpponentUidSnapshot((prev) => (prev === nextOpponentUid ? prev : nextOpponentUid));
+  updateWagerPlayerUidsImpl = (
+    nextPlayerUid: string,
+    nextOpponentUid: string,
+  ) => {
+    setPlayerUidSnapshot((prev) =>
+      prev === nextPlayerUid ? prev : nextPlayerUid,
+    );
+    setOpponentUidSnapshot((prev) =>
+      prev === nextOpponentUid ? prev : nextOpponentUid,
+    );
   };
 
-  updateAuraForAvatarElementImpl = (opponent: boolean, avatarElement: SVGElement) => {
+  updateAuraForAvatarElementImpl = (
+    opponent: boolean,
+    avatarElement: SVGElement,
+  ) => {
     const rect = avatarElement.getBoundingClientRect();
-    const wrapper = opponent ? opponentWrapperRef.current : playerWrapperRef.current;
+    const wrapper = opponent
+      ? opponentWrapperRef.current
+      : playerWrapperRef.current;
     const targets = opponent ? opponentAuraRefs : playerAuraRefs;
-    const container = opponent ? opponentAuraContainerRef.current : playerAuraContainerRef.current;
+    const container = opponent
+      ? opponentAuraContainerRef.current
+      : playerAuraContainerRef.current;
     if (wrapper) {
       wrapper.style.position = "absolute";
       wrapper.style.left = `${rect.left}px`;
@@ -353,14 +537,18 @@ const BoardComponent: React.FC = () => {
       targets.current = attachRainbowAura(container);
     }
     if (targets.current) {
-      const isHidden = avatarElement.style.display === "none" || avatarElement.style.visibility === "hidden";
+      const isHidden =
+        avatarElement.style.display === "none" ||
+        avatarElement.style.visibility === "hidden";
       if (isHidden) {
         hideAuraDom(targets.current.background);
       }
     }
   };
 
-  setBotStrengthControlOverlayStateImpl = (nextState: BotStrengthControlOverlayState) => {
+  setBotStrengthControlOverlayStateImpl = (
+    nextState: BotStrengthControlOverlayState,
+  ) => {
     setBotStrengthControlOverlay((prevState) => {
       if (
         prevState.visible === nextState.visible &&
@@ -387,14 +575,17 @@ const BoardComponent: React.FC = () => {
     }
   };
 
-  const setTrackedTimeout = useCallback((callback: () => void, delay: number): number => {
-    const timeoutId = window.setTimeout(() => {
-      transitionTimeoutIdsRef.current.delete(timeoutId);
-      callback();
-    }, delay);
-    transitionTimeoutIdsRef.current.add(timeoutId);
-    return timeoutId;
-  }, []);
+  const setTrackedTimeout = useCallback(
+    (callback: () => void, delay: number): number => {
+      const timeoutId = window.setTimeout(() => {
+        transitionTimeoutIdsRef.current.delete(timeoutId);
+        callback();
+      }, delay);
+      transitionTimeoutIdsRef.current.add(timeoutId);
+      return timeoutId;
+    },
+    [],
+  );
 
   const clearTrackedTimeout = useCallback((timeoutId: number | null) => {
     if (timeoutId === null) {
@@ -431,29 +622,35 @@ const BoardComponent: React.FC = () => {
     playerVideoAppearingTimeoutRef.current = null;
   }, [clearTrackedTimeout]);
 
-  const dismissOpponentVideo = useCallback((durationMs: number) => {
-    clearOpponentVideoDismissTimeout();
-    setOpponentVideoAppearing(false);
-    setOpponentVideoFading(true);
-    opponentVideoDismissTimeoutRef.current = setTrackedTimeout(() => {
-      setOpponentVideoVisible(false);
-      setOpponentVideoFading(false);
-      setOpponentVideoId(null);
-      opponentVideoDismissTimeoutRef.current = null;
-    }, durationMs);
-  }, [clearOpponentVideoDismissTimeout, setTrackedTimeout]);
+  const dismissOpponentVideo = useCallback(
+    (durationMs: number) => {
+      clearOpponentVideoDismissTimeout();
+      setOpponentVideoAppearing(false);
+      setOpponentVideoFading(true);
+      opponentVideoDismissTimeoutRef.current = setTrackedTimeout(() => {
+        setOpponentVideoVisible(false);
+        setOpponentVideoFading(false);
+        setOpponentVideoId(null);
+        opponentVideoDismissTimeoutRef.current = null;
+      }, durationMs);
+    },
+    [clearOpponentVideoDismissTimeout, setTrackedTimeout],
+  );
 
-  const dismissPlayerVideo = useCallback((durationMs: number) => {
-    clearPlayerVideoDismissTimeout();
-    setPlayerVideoAppearing(false);
-    setPlayerVideoFading(true);
-    playerVideoDismissTimeoutRef.current = setTrackedTimeout(() => {
-      setPlayerVideoVisible(false);
-      setPlayerVideoFading(false);
-      setPlayerVideoId(null);
-      playerVideoDismissTimeoutRef.current = null;
-    }, durationMs);
-  }, [clearPlayerVideoDismissTimeout, setTrackedTimeout]);
+  const dismissPlayerVideo = useCallback(
+    (durationMs: number) => {
+      clearPlayerVideoDismissTimeout();
+      setPlayerVideoAppearing(false);
+      setPlayerVideoFading(true);
+      playerVideoDismissTimeoutRef.current = setTrackedTimeout(() => {
+        setPlayerVideoVisible(false);
+        setPlayerVideoFading(false);
+        setPlayerVideoId(null);
+        playerVideoDismissTimeoutRef.current = null;
+      }, durationMs);
+    },
+    [clearPlayerVideoDismissTimeout, setTrackedTimeout],
+  );
 
   const clearVideoReactionsNow = useCallback(() => {
     clearOpponentVideoDismissTimeout();
@@ -468,7 +665,12 @@ const BoardComponent: React.FC = () => {
     setPlayerVideoFading(false);
     setPlayerVideoAppearing(false);
     setPlayerVideoId(null);
-  }, [clearOpponentVideoAppearingTimeout, clearOpponentVideoDismissTimeout, clearPlayerVideoAppearingTimeout, clearPlayerVideoDismissTimeout]);
+  }, [
+    clearOpponentVideoAppearingTimeout,
+    clearOpponentVideoDismissTimeout,
+    clearPlayerVideoAppearingTimeout,
+    clearPlayerVideoDismissTimeout,
+  ]);
 
   showVideoReactionImpl = (opponent: boolean, stickerId: number) => {
     if (opponent) {
@@ -496,13 +698,27 @@ const BoardComponent: React.FC = () => {
     }
   };
 
-  setTopBoardOverlayVisibleImpl = (blurry: boolean, svgElement: SVGElement | null, withConfirmAndCancelButtons: boolean, ok?: () => void, cancel?: () => void) => {
-    setOverlayState({ blurry, svgElement, withConfirmAndCancelButtons, ok, cancel });
+  setTopBoardOverlayVisibleImpl = (
+    blurry: boolean,
+    svgElement: SVGElement | null,
+    withConfirmAndCancelButtons: boolean,
+    ok?: () => void,
+    cancel?: () => void,
+  ) => {
+    setOverlayState({
+      blurry,
+      svgElement,
+      withConfirmAndCancelButtons,
+      ok,
+      cancel,
+    });
   };
 
   showRaibowAuraImpl = (visible: boolean, url: string, opponent: boolean) => {
     const targets = opponent ? opponentAuraRefs : playerAuraRefs;
-    const container = opponent ? opponentAuraContainerRef.current : playerAuraContainerRef.current;
+    const container = opponent
+      ? opponentAuraContainerRef.current
+      : playerAuraContainerRef.current;
     if (!targets.current && container) {
       targets.current = attachRainbowAura(container);
     }
@@ -518,20 +734,45 @@ const BoardComponent: React.FC = () => {
   const proposals = wagerState?.proposals || {};
   const playerUid = playerUidSnapshot;
   const opponentUid = opponentUidSnapshot;
-  const playerProposal = playerUid && proposals[playerUid] ? proposals[playerUid] : null;
-  const opponentProposal = opponentUid && proposals[opponentUid] ? proposals[opponentUid] : null;
+  const playerProposal =
+    playerUid && proposals[playerUid] ? proposals[playerUid] : null;
+  const opponentProposal =
+    opponentUid && proposals[opponentUid] ? proposals[opponentUid] : null;
   const wagerAgreement = wagerState?.agreed ?? null;
   const wagerResolved = wagerState?.resolved ?? null;
-  const wagerActionsLocked = watchOnlySnapshot || !!wagerAgreement || !!wagerResolved;
-  const availableMaterials = computeAvailableMaterials(miningMaterials, frozenMaterials);
+  const wagerActionsLocked =
+    watchOnlySnapshot || !!wagerAgreement || !!wagerResolved;
+  const availableMaterials = computeAvailableMaterials(
+    miningMaterials,
+    frozenMaterials,
+  );
   const opponentMaterial = opponentProposal?.material ?? null;
   const opponentCount = opponentProposal?.count ?? 0;
-  const extraAvailable = playerProposal && opponentMaterial && playerProposal.material === opponentMaterial ? playerProposal.count : 0;
-  const acceptCount = opponentMaterial ? Math.min(opponentCount, (availableMaterials[opponentMaterial] ?? 0) + extraAvailable) : 0;
-  const acceptLabel = acceptCount > 0 && acceptCount < opponentCount ? `Accept (${acceptCount})` : "Accept";
+  const extraAvailable =
+    playerProposal &&
+    opponentMaterial &&
+    playerProposal.material === opponentMaterial
+      ? playerProposal.count
+      : 0;
+  const acceptCount = opponentMaterial
+    ? Math.min(
+        opponentCount,
+        (availableMaterials[opponentMaterial] ?? 0) + extraAvailable,
+      )
+    : 0;
+  const acceptLabel =
+    acceptCount > 0 && acceptCount < opponentCount
+      ? `Accept (${acceptCount})`
+      : "Accept";
   const canAccept = acceptCount > 0;
-  const showOpponentActions = !wagerActionsLocked && activeWagerPanelSide === "opponent" && !!opponentProposal;
-  const showPlayerActions = !wagerActionsLocked && activeWagerPanelSide === "player" && !!playerProposal;
+  const showOpponentActions =
+    !wagerActionsLocked &&
+    activeWagerPanelSide === "opponent" &&
+    !!opponentProposal;
+  const showPlayerActions =
+    !wagerActionsLocked &&
+    activeWagerPanelSide === "player" &&
+    !!playerProposal;
   const wagerPanelHasActions = showOpponentActions || showPlayerActions;
 
   useEffect(() => {
@@ -581,8 +822,12 @@ const BoardComponent: React.FC = () => {
       }
     };
 
-    const unsubscribeBoardStyle = subscribeToBoardStyleChanges(updateColorSetAndGrid);
-    const unsubscribeBoardColorSet = subscribeToBoardColorSetChanges(updateColorSetAndGrid);
+    const unsubscribeBoardStyle = subscribeToBoardStyleChanges(
+      updateColorSetAndGrid,
+    );
+    const unsubscribeBoardColorSet = subscribeToBoardColorSetChanges(
+      updateColorSetAndGrid,
+    );
     return () => {
       unsubscribeBoardStyle();
       unsubscribeBoardColorSet();
@@ -695,7 +940,9 @@ const BoardComponent: React.FC = () => {
       pendingBlinkDelayTimersRef.current[sideKey] = null;
       pendingBlinkEnabledRef.current[sideKey] = false;
       previousMaterialUrlRef.current[sideKey] = null;
-      materialChangeOldIconsRef.current[sideKey].forEach((icon) => icon.remove());
+      materialChangeOldIconsRef.current[sideKey].forEach((icon) =>
+        icon.remove(),
+      );
       materialChangeOldIconsRef.current[sideKey] = [];
     });
     opponentVideoDismissTimeoutRef.current = null;
@@ -717,37 +964,52 @@ const BoardComponent: React.FC = () => {
     };
   }, [clearPendingWagerTransitionState]);
 
-  const clearBoardTransientUiHandler = useCallback((fadeOutVideos: boolean = true) => {
-    clearWagerPanel();
-    clearPendingWagerTransitionState();
-    setOverlayState({ blurry: true, svgElement: null, withConfirmAndCancelButtons: false });
-    if (opponentAuraRefs.current) {
-      hideAuraDom(opponentAuraRefs.current.background);
-    }
-    if (playerAuraRefs.current) {
-      hideAuraDom(playerAuraRefs.current.background);
-    }
-    if (!fadeOutVideos) {
-      clearVideoReactionsNow();
-      return;
-    }
-    if (opponentVideoVisible) {
-      dismissOpponentVideo(120);
-    } else {
-      setOpponentVideoVisible(false);
-      setOpponentVideoFading(false);
-      setOpponentVideoAppearing(false);
-      setOpponentVideoId(null);
-    }
-    if (playerVideoVisible) {
-      dismissPlayerVideo(120);
-    } else {
-      setPlayerVideoVisible(false);
-      setPlayerVideoFading(false);
-      setPlayerVideoAppearing(false);
-      setPlayerVideoId(null);
-    }
-  }, [clearPendingWagerTransitionState, clearVideoReactionsNow, clearWagerPanel, dismissOpponentVideo, dismissPlayerVideo, opponentVideoVisible, playerVideoVisible]);
+  const clearBoardTransientUiHandler = useCallback(
+    (fadeOutVideos: boolean = true) => {
+      clearWagerPanel();
+      clearPendingWagerTransitionState();
+      setOverlayState({
+        blurry: true,
+        svgElement: null,
+        withConfirmAndCancelButtons: false,
+      });
+      if (opponentAuraRefs.current) {
+        hideAuraDom(opponentAuraRefs.current.background);
+      }
+      if (playerAuraRefs.current) {
+        hideAuraDom(playerAuraRefs.current.background);
+      }
+      if (!fadeOutVideos) {
+        clearVideoReactionsNow();
+        return;
+      }
+      if (opponentVideoVisible) {
+        dismissOpponentVideo(120);
+      } else {
+        setOpponentVideoVisible(false);
+        setOpponentVideoFading(false);
+        setOpponentVideoAppearing(false);
+        setOpponentVideoId(null);
+      }
+      if (playerVideoVisible) {
+        dismissPlayerVideo(120);
+      } else {
+        setPlayerVideoVisible(false);
+        setPlayerVideoFading(false);
+        setPlayerVideoAppearing(false);
+        setPlayerVideoId(null);
+      }
+    },
+    [
+      clearPendingWagerTransitionState,
+      clearVideoReactionsNow,
+      clearWagerPanel,
+      dismissOpponentVideo,
+      dismissPlayerVideo,
+      opponentVideoVisible,
+      playerVideoVisible,
+    ],
+  );
 
   clearBoardTransientUiImpl = clearBoardTransientUiHandler;
 
@@ -762,19 +1024,25 @@ const BoardComponent: React.FC = () => {
         clearWagerPanel();
         return;
       }
-      const pileState = side === "winner" ? state.winner : side === "opponent" ? state.opponent : state.player;
+      const pileState =
+        side === "winner"
+          ? state.winner
+          : side === "opponent"
+            ? state.opponent
+            : state.player;
       if (!pileState) {
         clearWagerPanel();
         return;
       }
       activeWagerPanelSideRef.current = side;
       activeWagerPanelRectRef.current = pileState.rect;
-      activeWagerPanelCountRef.current = pileState.actualCount ?? pileState.count;
+      activeWagerPanelCountRef.current =
+        pileState.actualCount ?? pileState.count;
       setActiveWagerPanelSide(side);
       setActiveWagerPanelRect(pileState.rect);
       setActiveWagerPanelCount(pileState.actualCount ?? pileState.count);
     },
-    [clearWagerPanel]
+    [clearWagerPanel],
   );
 
   const handleWagerCancel = useCallback(
@@ -792,7 +1060,7 @@ const BoardComponent: React.FC = () => {
       clearWagerPanel();
       connection.cancelWagerProposal().catch(() => {});
     },
-    [clearWagerPanel, playerProposal, wagerActionsLocked]
+    [clearWagerPanel, playerProposal, wagerActionsLocked],
   );
 
   const handleWagerDecline = useCallback(
@@ -810,7 +1078,7 @@ const BoardComponent: React.FC = () => {
       clearWagerPanel();
       connection.declineWagerProposal().catch(() => {});
     },
-    [clearWagerPanel, opponentProposal, wagerActionsLocked]
+    [clearWagerPanel, opponentProposal, wagerActionsLocked],
   );
 
   const handleWagerAccept = useCallback(
@@ -828,7 +1096,7 @@ const BoardComponent: React.FC = () => {
       clearWagerPanel();
       connection.acceptWagerProposal().catch(() => {});
     },
-    [canAccept, clearWagerPanel, opponentProposal, wagerActionsLocked]
+    [canAccept, clearWagerPanel, opponentProposal, wagerActionsLocked],
   );
 
   useEffect(() => {
@@ -859,7 +1127,10 @@ const BoardComponent: React.FC = () => {
     }
     layer.innerHTML = "";
 
-    const createPileContainer = (side: WagerPileSide | "winner", isInteractive: boolean) => {
+    const createPileContainer = (
+      side: WagerPileSide | "winner",
+      isInteractive: boolean,
+    ) => {
       const container = document.createElement("div");
       container.dataset.wagerPile = side;
       container.style.position = "absolute";
@@ -907,7 +1178,13 @@ const BoardComponent: React.FC = () => {
     const player = createPileContainer("player", true);
     const opponent = createPileContainer("opponent", true);
     const winner = createPileContainer("winner", true);
-    layer.append(playerDisappearing, opponentDisappearing, player, opponent, winner);
+    layer.append(
+      playerDisappearing,
+      opponentDisappearing,
+      player,
+      opponent,
+      winner,
+    );
     const elements: WagerPileElements = {
       player,
       opponent,
@@ -928,14 +1205,23 @@ const BoardComponent: React.FC = () => {
     (state: WagerRenderState) => {
       wagerRenderStateRef.current = state;
       const signature = [
-        state.player ? `${state.player.count}:${state.player.isPending ? 1 : 0}:${state.player.animation}` : "none",
-        state.opponent ? `${state.opponent.count}:${state.opponent.isPending ? 1 : 0}:${state.opponent.animation}` : "none",
+        state.player
+          ? `${state.player.count}:${state.player.isPending ? 1 : 0}:${state.player.animation}`
+          : "none",
+        state.opponent
+          ? `${state.opponent.count}:${state.opponent.isPending ? 1 : 0}:${state.opponent.animation}`
+          : "none",
         state.winner ? `${state.winner.count}` : "none",
         state.playerDisappearing ? `${state.playerDisappearing.count}` : "none",
-        state.opponentDisappearing ? `${state.opponentDisappearing.count}` : "none",
+        state.opponentDisappearing
+          ? `${state.opponentDisappearing.count}`
+          : "none",
         state.winAnimationActive ? "1" : "0",
       ].join("|");
-      if (wagerUiDebugLogsEnabled && lastWagerUiRenderSignatureRef.current !== signature) {
+      if (
+        wagerUiDebugLogsEnabled &&
+        lastWagerUiRenderSignatureRef.current !== signature
+      ) {
         lastWagerUiRenderSignatureRef.current = signature;
         console.log("wager-debug", {
           source: "board-ui",
@@ -949,7 +1235,10 @@ const BoardComponent: React.FC = () => {
       const elements = ensureWagerPileElements();
       if (!elements) {
         if (wagerUiDebugLogsEnabled) {
-          console.log("wager-debug", { source: "board-ui", event: "apply-render-state:missing-elements" });
+          console.log("wager-debug", {
+            source: "board-ui",
+            event: "apply-render-state:missing-elements",
+          });
         }
         return;
       }
@@ -966,11 +1255,15 @@ const BoardComponent: React.FC = () => {
         icons: HTMLImageElement[],
         pileState: WagerPileRenderState | null,
         isOpponentSide: boolean,
-        side: WagerPileSide | "winner"
+        side: WagerPileSide | "winner",
       ) => {
         const sideKey = side === "player" || side === "opponent" ? side : null;
 
-        if (!pileState || pileState.count <= 0 || pileState.frames.length === 0) {
+        if (
+          !pileState ||
+          pileState.count <= 0 ||
+          pileState.frames.length === 0
+        ) {
           container.style.opacity = "0";
           container.style.pointerEvents = "none";
           container.style.animation = "none";
@@ -981,7 +1274,9 @@ const BoardComponent: React.FC = () => {
             }
             pendingBlinkEnabledRef.current[sideKey] = false;
             previousMaterialUrlRef.current[sideKey] = null;
-            materialChangeOldIconsRef.current[sideKey].forEach((icon) => icon.remove());
+            materialChangeOldIconsRef.current[sideKey].forEach((icon) =>
+              icon.remove(),
+            );
             materialChangeOldIconsRef.current[sideKey] = [];
           }
           while (icons.length > 0) {
@@ -1004,7 +1299,9 @@ const BoardComponent: React.FC = () => {
             }
             pendingBlinkEnabledRef.current[sideKey] = false;
             previousMaterialUrlRef.current[sideKey] = null;
-            materialChangeOldIconsRef.current[sideKey].forEach((icon) => icon.remove());
+            materialChangeOldIconsRef.current[sideKey].forEach((icon) =>
+              icon.remove(),
+            );
             materialChangeOldIconsRef.current[sideKey] = [];
           }
           while (icons.length > 0) {
@@ -1024,17 +1321,25 @@ const BoardComponent: React.FC = () => {
             if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
               clearTrackedTimeout(pendingBlinkDelayTimersRef.current[sideKey]);
             }
-            pendingBlinkDelayTimersRef.current[sideKey] = setTrackedTimeout(() => {
-              pendingBlinkDelayTimersRef.current[sideKey] = null;
-              pendingBlinkEnabledRef.current[sideKey] = true;
-              container.style.animation = PENDING_PULSE_ANIMATION;
-            }, PENDING_BLINK_DELAY_MS);
+            pendingBlinkDelayTimersRef.current[sideKey] = setTrackedTimeout(
+              () => {
+                pendingBlinkDelayTimersRef.current[sideKey] = null;
+                pendingBlinkEnabledRef.current[sideKey] = true;
+                container.style.animation = PENDING_PULSE_ANIMATION;
+              },
+              PENDING_BLINK_DELAY_MS,
+            );
             container.style.animation = "none";
           } else {
-            if (!pendingBlinkEnabledRef.current[sideKey] && pendingBlinkDelayTimersRef.current[sideKey] === null) {
+            if (
+              !pendingBlinkEnabledRef.current[sideKey] &&
+              pendingBlinkDelayTimersRef.current[sideKey] === null
+            ) {
               pendingBlinkEnabledRef.current[sideKey] = true;
             }
-            container.style.animation = pendingBlinkEnabledRef.current[sideKey] ? PENDING_PULSE_ANIMATION : "none";
+            container.style.animation = pendingBlinkEnabledRef.current[sideKey]
+              ? PENDING_PULSE_ANIMATION
+              : "none";
           }
         } else if (sideKey) {
           if (pendingBlinkDelayTimersRef.current[sideKey] !== null) {
@@ -1056,11 +1361,20 @@ const BoardComponent: React.FC = () => {
         const sizePctW = (iconSize / rect.w) * 100;
         const sizePctH = (iconSize / rect.h) * 100;
         const visibleCount = Math.min(pileState.count, pileState.frames.length);
-        const animationOffsetY = isOpponentSide ? -APPEAR_ANIMATION_OFFSET_PCT : APPEAR_ANIMATION_OFFSET_PCT;
+        const animationOffsetY = isOpponentSide
+          ? -APPEAR_ANIMATION_OFFSET_PCT
+          : APPEAR_ANIMATION_OFFSET_PCT;
 
-        const prevMaterial = sideKey ? previousMaterialUrlRef.current[sideKey] : null;
-        const materialChanged = sideKey && prevMaterial !== null && prevMaterial !== materialUrl && icons.length > 0;
-        const shouldAnimate = pileState.animation === "appear" || materialChanged;
+        const prevMaterial = sideKey
+          ? previousMaterialUrlRef.current[sideKey]
+          : null;
+        const materialChanged =
+          sideKey &&
+          prevMaterial !== null &&
+          prevMaterial !== materialUrl &&
+          icons.length > 0;
+        const shouldAnimate =
+          pileState.animation === "appear" || materialChanged;
 
         if (materialChanged && sideKey) {
           const oldIcons = [...icons];
@@ -1068,7 +1382,9 @@ const BoardComponent: React.FC = () => {
             icon.style.transition = `opacity ${MATERIAL_CHANGE_FADE_MS}ms ease-out`;
             icon.style.opacity = "0";
           });
-          materialChangeOldIconsRef.current[sideKey].forEach((icon) => icon.remove());
+          materialChangeOldIconsRef.current[sideKey].forEach((icon) =>
+            icon.remove(),
+          );
           materialChangeOldIconsRef.current[sideKey] = oldIcons;
           setTrackedTimeout(() => {
             oldIcons.forEach((icon) => icon.remove());
@@ -1148,7 +1464,11 @@ const BoardComponent: React.FC = () => {
           };
 
           const firstNewIcon = icons[newIconsStartIndex];
-          if (firstNewIcon && firstNewIcon.complete && firstNewIcon.naturalWidth > 0) {
+          if (
+            firstNewIcon &&
+            firstNewIcon.complete &&
+            firstNewIcon.naturalWidth > 0
+          ) {
             triggerAnimation();
           } else if (firstNewIcon) {
             const onLoad = () => {
@@ -1169,9 +1489,13 @@ const BoardComponent: React.FC = () => {
         icons: HTMLImageElement[],
         disappearingState: WagerPileRenderState | null,
         side: "player" | "opponent",
-        startingOpacity: string
+        startingOpacity: string,
       ) => {
-        if (!disappearingState || disappearingState.count <= 0 || disappearingState.frames.length === 0) {
+        if (
+          !disappearingState ||
+          disappearingState.count <= 0 ||
+          disappearingState.frames.length === 0
+        ) {
           container.style.transition = "none";
           container.style.opacity = "0";
           container.style.pointerEvents = "none";
@@ -1208,7 +1532,10 @@ const BoardComponent: React.FC = () => {
         const iconSize = disappearingState.iconSize;
         const sizePctW = (iconSize / rect.w) * 100;
         const sizePctH = (iconSize / rect.h) * 100;
-        const visibleCount = Math.min(disappearingState.count, disappearingState.frames.length);
+        const visibleCount = Math.min(
+          disappearingState.count,
+          disappearingState.frames.length,
+        );
 
         while (icons.length > visibleCount) {
           const icon = icons.pop();
@@ -1269,15 +1596,49 @@ const BoardComponent: React.FC = () => {
         }
       };
 
-      const opponentCurrentOpacity = state.opponentDisappearing ? window.getComputedStyle(elements.opponent).opacity : "1";
-      const playerCurrentOpacity = state.playerDisappearing ? window.getComputedStyle(elements.player).opacity : "1";
+      const opponentCurrentOpacity = state.opponentDisappearing
+        ? window.getComputedStyle(elements.opponent).opacity
+        : "1";
+      const playerCurrentOpacity = state.playerDisappearing
+        ? window.getComputedStyle(elements.player).opacity
+        : "1";
 
-      updatePile(elements.opponent, elements.opponentIcons, state.opponent, true, "opponent");
-      updatePile(elements.player, elements.playerIcons, state.player, false, "player");
-      updatePile(elements.winner, elements.winnerIcons, state.winner, false, "winner");
+      updatePile(
+        elements.opponent,
+        elements.opponentIcons,
+        state.opponent,
+        true,
+        "opponent",
+      );
+      updatePile(
+        elements.player,
+        elements.playerIcons,
+        state.player,
+        false,
+        "player",
+      );
+      updatePile(
+        elements.winner,
+        elements.winnerIcons,
+        state.winner,
+        false,
+        "winner",
+      );
 
-      updateDisappearingPile(elements.opponentDisappearing, elements.opponentDisappearingIcons, state.opponentDisappearing, "opponent", opponentCurrentOpacity);
-      updateDisappearingPile(elements.playerDisappearing, elements.playerDisappearingIcons, state.playerDisappearing, "player", playerCurrentOpacity);
+      updateDisappearingPile(
+        elements.opponentDisappearing,
+        elements.opponentDisappearingIcons,
+        state.opponentDisappearing,
+        "opponent",
+        opponentCurrentOpacity,
+      );
+      updateDisappearingPile(
+        elements.playerDisappearing,
+        elements.playerDisappearingIcons,
+        state.playerDisappearing,
+        "player",
+        playerCurrentOpacity,
+      );
 
       const activeSide = activeWagerPanelSideRef.current;
       if (activeSide) {
@@ -1286,13 +1647,23 @@ const BoardComponent: React.FC = () => {
         } else if (state.winner && activeSide !== "winner") {
           clearWagerPanel();
         } else {
-          const pileState = activeSide === "winner" ? state.winner : activeSide === "opponent" ? state.opponent : state.player;
+          const pileState =
+            activeSide === "winner"
+              ? state.winner
+              : activeSide === "opponent"
+                ? state.opponent
+                : state.player;
           if (!pileState) {
             clearWagerPanel();
           } else {
             const prevRect = activeWagerPanelRectRef.current;
             const nextRect = pileState.rect;
-            const rectChanged = !prevRect || prevRect.x !== nextRect.x || prevRect.y !== nextRect.y || prevRect.w !== nextRect.w || prevRect.h !== nextRect.h;
+            const rectChanged =
+              !prevRect ||
+              prevRect.x !== nextRect.x ||
+              prevRect.y !== nextRect.y ||
+              prevRect.w !== nextRect.w ||
+              prevRect.h !== nextRect.h;
             if (rectChanged) {
               activeWagerPanelRectRef.current = nextRect;
               setActiveWagerPanelRect(nextRect);
@@ -1306,7 +1677,12 @@ const BoardComponent: React.FC = () => {
         }
       }
     },
-    [clearTrackedTimeout, clearWagerPanel, ensureWagerPileElements, setTrackedTimeout]
+    [
+      clearTrackedTimeout,
+      clearWagerPanel,
+      ensureWagerPileElements,
+      setTrackedTimeout,
+    ],
   );
 
   useEffect(() => {
@@ -1319,13 +1695,18 @@ const BoardComponent: React.FC = () => {
   }, [applyWagerRenderState]);
 
   useEffect(() => {
-    setWagerPanelVisibilityChecker(() => activeWagerPanelSideRef.current !== null);
+    setWagerPanelVisibilityChecker(
+      () => activeWagerPanelSideRef.current !== null,
+    );
     setWagerPanelOutsideTapHandler((event) => {
       if (!activeWagerPanelSideRef.current) {
         return false;
       }
       const target = event.target;
-      if (target instanceof Element && target.closest('[data-wager-panel="true"], [data-wager-pile]')) {
+      if (
+        target instanceof Element &&
+        target.closest('[data-wager-panel="true"], [data-wager-pile]')
+      ) {
         return false;
       }
       clearWagerPanel();
@@ -1337,10 +1718,11 @@ const BoardComponent: React.FC = () => {
     };
   }, [clearWagerPanel]);
 
-
   const standardBoardTransform = "translate(0,100)";
   const pangchiuBoardTransform = "translate(83,184) scale(0.85892388)";
-  const activeWagerPileRect = activeWagerPanelSide ? activeWagerPanelRect : null;
+  const activeWagerPileRect = activeWagerPanelSide
+    ? activeWagerPanelRect
+    : null;
   const isOpponentPanel =
     activeWagerPanelSide === "opponent"
       ? true
@@ -1350,17 +1732,33 @@ const BoardComponent: React.FC = () => {
           ? activeWagerPileRect.y < BOARD_HEIGHT_UNITS * 0.5
           : false;
   const wagerPanelLayout =
-    activeWagerPanelSide && activeWagerPileRect ? getWagerPanelLayout(activeWagerPileRect, isOpponentPanel, boardPixelSize, wagerPanelHasActions) : null;
+    activeWagerPanelSide && activeWagerPileRect
+      ? getWagerPanelLayout(
+          activeWagerPileRect,
+          isOpponentPanel,
+          boardPixelSize,
+          wagerPanelHasActions,
+        )
+      : null;
   const wagerCountLayout =
     wagerPanelLayout && activeWagerPileRect && activeWagerPanelCount !== null
       ? (() => {
-          const pxPerUnitX = boardPixelSize ? boardPixelSize.width / BOARD_WIDTH_UNITS : null;
-          const minGap = pxPerUnitX ? WAGER_PANEL_COUNT_MIN_GAP_PX / pxPerUnitX : 0;
+          const pxPerUnitX = boardPixelSize
+            ? boardPixelSize.width / BOARD_WIDTH_UNITS
+            : null;
+          const minGap = pxPerUnitX
+            ? WAGER_PANEL_COUNT_MIN_GAP_PX / pxPerUnitX
+            : 0;
           const gap = Math.max(wagerPanelLayout.countGap, minGap);
-          const centerY = activeWagerPileRect.y + activeWagerPileRect.h / 2 - activeWagerPileRect.h * WAGER_PANEL_COUNT_Y_OFFSET_FRAC;
+          const centerY =
+            activeWagerPileRect.y +
+            activeWagerPileRect.h / 2 -
+            activeWagerPileRect.h * WAGER_PANEL_COUNT_Y_OFFSET_FRAC;
           const left = activeWagerPileRect.x + activeWagerPileRect.w + gap;
-          const leftPct = ((left - wagerPanelLayout.x) / wagerPanelLayout.width) * 100;
-          const topPct = ((centerY - wagerPanelLayout.y) / wagerPanelLayout.height) * 100;
+          const leftPct =
+            ((left - wagerPanelLayout.x) / wagerPanelLayout.width) * 100;
+          const topPct =
+            ((centerY - wagerPanelLayout.y) / wagerPanelLayout.height) * 100;
           return { leftPct, topPct };
         })()
       : null;
@@ -1403,20 +1801,40 @@ const BoardComponent: React.FC = () => {
     outline: "none",
     boxSizing: "border-box" as const,
   };
-  const botStrengthModeLabel = botStrengthControlOverlay.mode === "fast" ? "Fast" : botStrengthControlOverlay.mode === "pro" ? "Pro" : "Normal";
-  const botStrengthVisibleGyrusCount = botStrengthControlOverlay.mode === "fast" ? 1 : botStrengthControlOverlay.mode === "normal" ? 2 : 3;
+  const botStrengthModeLabel =
+    botStrengthControlOverlay.mode === "fast"
+      ? "Fast"
+      : botStrengthControlOverlay.mode === "pro"
+        ? "Pro"
+        : "Normal";
+  const botStrengthVisibleGyrusCount =
+    botStrengthControlOverlay.mode === "fast"
+      ? 1
+      : botStrengthControlOverlay.mode === "normal"
+        ? 2
+        : 3;
   const botStrengthSizePx = botStrengthControlOverlay.size * 100;
   const botStrengthXpx = botStrengthControlOverlay.x * 100;
   const botStrengthYpx = botStrengthControlOverlay.y * 100;
   const botStrengthIconSizePx = botStrengthSizePx * 0.75;
-  const botStrengthIconOffsetPx = (botStrengthSizePx - botStrengthIconSizePx) / 2;
+  const botStrengthIconOffsetPx =
+    (botStrengthSizePx - botStrengthIconSizePx) / 2;
   const botStrengthIconScale = botStrengthIconSizePx / 24;
-  const botStrengthStroke = Math.max(0.8, Math.min(1.5, botStrengthSizePx * 0.042));
+  const botStrengthStroke = Math.max(
+    0.8,
+    Math.min(1.5, botStrengthSizePx * 0.042),
+  );
   const isBotStrengthDark = prefersDarkMode;
-  const canUseFinePointerHover = window.matchMedia("(hover: hover) and (pointer: fine)").matches;
+  const canUseFinePointerHover = window.matchMedia(
+    "(hover: hover) and (pointer: fine)",
+  ).matches;
   const shouldShowBotStrengthInteractionFill = !isMobile;
-  const showBotStrengthHover = shouldShowBotStrengthInteractionFill && canUseFinePointerHover && botStrengthHovered;
-  const showBotStrengthPressed = shouldShowBotStrengthInteractionFill && botStrengthPressed;
+  const showBotStrengthHover =
+    shouldShowBotStrengthInteractionFill &&
+    canUseFinePointerHover &&
+    botStrengthHovered;
+  const showBotStrengthPressed =
+    shouldShowBotStrengthInteractionFill && botStrengthPressed;
   const botStrengthFill = isBotStrengthDark
     ? showBotStrengthPressed
       ? "var(--color-gray-55)"
@@ -1428,11 +1846,15 @@ const BoardComponent: React.FC = () => {
       : showBotStrengthHover
         ? "var(--color-gray-e0)"
         : "var(--color-gray-f0)";
-  const botStrengthColor = isBotStrengthDark ? "var(--color-blue-primary-dark)" : "var(--color-blue-primary)";
+  const botStrengthColor = isBotStrengthDark
+    ? "var(--color-blue-primary-dark)"
+    : "var(--color-blue-primary)";
   const markBotStrengthTouchInteraction = () => {
-    botStrengthIgnoreMouseUntilRef.current = Date.now() + BOT_STRENGTH_IGNORE_MOUSE_AFTER_TOUCH_MS;
+    botStrengthIgnoreMouseUntilRef.current =
+      Date.now() + BOT_STRENGTH_IGNORE_MOUSE_AFTER_TOUCH_MS;
   };
-  const shouldIgnoreBotStrengthMouseEvent = () => Date.now() < botStrengthIgnoreMouseUntilRef.current;
+  const shouldIgnoreBotStrengthMouseEvent = () =>
+    Date.now() < botStrengthIgnoreMouseUntilRef.current;
   const handleBotStrengthMouseEnter = () => {
     if (!canUseFinePointerHover) {
       return;
@@ -1451,7 +1873,10 @@ const BoardComponent: React.FC = () => {
       return;
     } else if (event.type === "mousedown" && !canUseFinePointerHover) {
       return;
-    } else if (event.type === "mousedown" && shouldIgnoreBotStrengthMouseEvent()) {
+    } else if (
+      event.type === "mousedown" &&
+      shouldIgnoreBotStrengthMouseEvent()
+    ) {
       return;
     }
     setBotStrengthPressed(true);
@@ -1465,7 +1890,10 @@ const BoardComponent: React.FC = () => {
       return;
     } else if (event.type === "mouseup" && !canUseFinePointerHover) {
       return;
-    } else if (event.type === "mouseup" && shouldIgnoreBotStrengthMouseEvent()) {
+    } else if (
+      event.type === "mouseup" &&
+      shouldIgnoreBotStrengthMouseEvent()
+    ) {
       return;
     }
     setBotStrengthPressed(false);
@@ -1488,8 +1916,29 @@ const BoardComponent: React.FC = () => {
 
   return (
     <>
-      <div ref={auraLayerRef} style={{ position: "fixed", inset: 0, pointerEvents: "none", zIndex: 0, overflow: "visible" }}>
-        <div ref={opponentWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10, overflow: "visible" }}>
+      <div
+        ref={auraLayerRef}
+        style={{
+          position: "fixed",
+          inset: 0,
+          pointerEvents: "none",
+          zIndex: 0,
+          overflow: "visible",
+        }}
+      >
+        <div
+          ref={opponentWrapperRef}
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            width: 0,
+            height: 0,
+            pointerEvents: "none",
+            zIndex: 10,
+            overflow: "visible",
+          }}
+        >
           <div
             style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
             ref={(div) => {
@@ -1500,7 +1949,19 @@ const BoardComponent: React.FC = () => {
             }}
           />
         </div>
-        <div ref={playerWrapperRef} style={{ position: "absolute", left: 0, top: 0, width: 0, height: 0, pointerEvents: "none", zIndex: 10, overflow: "visible" }}>
+        <div
+          ref={playerWrapperRef}
+          style={{
+            position: "absolute",
+            left: 0,
+            top: 0,
+            width: 0,
+            height: 0,
+            pointerEvents: "none",
+            zIndex: 10,
+            overflow: "visible",
+          }}
+        >
           <div
             style={{ position: "absolute", inset: 0, pointerEvents: "none" }}
             ref={(div) => {
@@ -1513,7 +1974,13 @@ const BoardComponent: React.FC = () => {
         </div>
       </div>
 
-      <svg xmlns="http://www.w3.org/2000/svg" className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`} viewBox="0 0 1100 1410" shapeRendering="crispEdges" overflow="visible">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}
+        viewBox="0 0 1100 1410"
+        shapeRendering="crispEdges"
+        overflow="visible"
+      >
         {isGridVisible ? (
           <g id="boardBackgroundLayer">
             {generateBoardPattern({
@@ -1526,7 +1993,17 @@ const BoardComponent: React.FC = () => {
           </g>
         ) : (
           <g id="boardBackgroundLayer">
-            <rect x="1" y="101" height="1161" width="1098" fill={prefersDarkMode ? "var(--color-gray-23)" : "var(--boardBackgroundLight)"} />
+            <rect
+              x="1"
+              y="101"
+              height="1161"
+              width="1098"
+              fill={
+                prefersDarkMode
+                  ? "var(--color-gray-23)"
+                  : "var(--boardBackgroundLight)"
+              }
+            />
             {shouldIncludePangchiuImage && (
               <image
                 href="https://assets.mons.link/board/bg/Pangchiu.jpg"
@@ -1534,48 +2011,96 @@ const BoardComponent: React.FC = () => {
                 y="100"
                 width="1100"
                 style={{
-                  backgroundColor: prefersDarkMode ? "var(--color-gray-23)" : "var(--boardBackgroundLight)",
+                  backgroundColor: prefersDarkMode
+                    ? "var(--color-gray-23)"
+                    : "var(--boardBackgroundLight)",
                   display: isGridVisible ? "none" : "block",
                 }}
               />
             )}
           </g>
         )}
-        <g id="monsboard" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
-        <g id="highlightsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
-        <g id="itemsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
+        <g
+          id="monsboard"
+          transform={
+            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
+          }
+        ></g>
+        <g
+          id="highlightsLayer"
+          transform={
+            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
+          }
+        ></g>
+        <g
+          id="itemsLayer"
+          transform={
+            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
+          }
+        ></g>
         <g id="controlsLayer"></g>
-        <g id="effectsLayer" transform={isGridVisible ? standardBoardTransform : pangchiuBoardTransform}></g>
-        {botStrengthControlOverlay.visible && botStrengthControlOverlay.size > 0 && (
-          <g
-            transform={`translate(${botStrengthXpx} ${botStrengthYpx})`}
-            style={{ pointerEvents: "all", cursor: "pointer" }}
-            role="button"
-            aria-label={`Bot strength: ${botStrengthModeLabel}`}
-            onMouseEnter={handleBotStrengthMouseEnter}
-            onMouseLeave={handleBotStrengthPointerLeave}
-            onMouseDown={handleBotStrengthPointerDown}
-            onMouseUp={handleBotStrengthPointerUp}
-            onTouchStart={handleBotStrengthPointerDown}
-            onTouchEnd={handleBotStrengthPointerUp}
-            onTouchCancel={handleBotStrengthTouchCancel}
-            onClick={!isMobile ? handleBotStrengthControlClick : undefined}
-            onTouchEndCapture={isMobile ? handleBotStrengthControlClick : undefined}>
-            <rect x={0} y={0} width={botStrengthSizePx} height={botStrengthSizePx} rx={botStrengthSizePx / 2} ry={botStrengthSizePx / 2} fill={botStrengthFill} stroke="none" />
-            <g transform={`translate(${botStrengthIconOffsetPx} ${botStrengthIconOffsetPx}) scale(${botStrengthIconScale})`} fill="none" stroke={botStrengthColor} strokeWidth={botStrengthStroke} strokeLinecap="round" strokeLinejoin="round">
-              <path d="M12 5v13" />
-              <path d="M17.6 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.6 1.5" />
-              <path d="M18 5.1a4 4 0 0 1 2.5 5.8" />
-              <path d="M18 18a4 4 0 0 0 2-7.5" />
-              <path d="M6 5.1a4 4 0 0 0-2.5 5.8" />
-              <path d="M6 18a4 4 0 0 1-2-7.5" />
-              <path d="M20 17.5A4 4 0 1 1 12 18a4 4 0 1 1-8-.5" />
-              {botStrengthVisibleGyrusCount >= 1 && <path d="M12 8c1.5-1 3.5-1 5 0 M12 12.5c-1.5.8-3.5.8-5 0" />}
-              {botStrengthVisibleGyrusCount >= 2 && <path d="M12 9.5c-1.5-.8-3.5-.8-5 0 M12 14c2 .8 4 .8 5.5 0" />}
-              {botStrengthVisibleGyrusCount >= 3 && <path d="M12 11c2-.7 4-.7 5.5 0 M12 15.5c-1.5.7-3 .7-4.5 0" />}
+        <g
+          id="effectsLayer"
+          transform={
+            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
+          }
+        ></g>
+        {botStrengthControlOverlay.visible &&
+          botStrengthControlOverlay.size > 0 && (
+            <g
+              transform={`translate(${botStrengthXpx} ${botStrengthYpx})`}
+              style={{ pointerEvents: "all", cursor: "pointer" }}
+              role="button"
+              aria-label={`Bot strength: ${botStrengthModeLabel}`}
+              onMouseEnter={handleBotStrengthMouseEnter}
+              onMouseLeave={handleBotStrengthPointerLeave}
+              onMouseDown={handleBotStrengthPointerDown}
+              onMouseUp={handleBotStrengthPointerUp}
+              onTouchStart={handleBotStrengthPointerDown}
+              onTouchEnd={handleBotStrengthPointerUp}
+              onTouchCancel={handleBotStrengthTouchCancel}
+              onClick={!isMobile ? handleBotStrengthControlClick : undefined}
+              onTouchEndCapture={
+                isMobile ? handleBotStrengthControlClick : undefined
+              }
+            >
+              <rect
+                x={0}
+                y={0}
+                width={botStrengthSizePx}
+                height={botStrengthSizePx}
+                rx={botStrengthSizePx / 2}
+                ry={botStrengthSizePx / 2}
+                fill={botStrengthFill}
+                stroke="none"
+              />
+              <g
+                transform={`translate(${botStrengthIconOffsetPx} ${botStrengthIconOffsetPx}) scale(${botStrengthIconScale})`}
+                fill="none"
+                stroke={botStrengthColor}
+                strokeWidth={botStrengthStroke}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 5v13" />
+                <path d="M17.6 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.6 1.5" />
+                <path d="M18 5.1a4 4 0 0 1 2.5 5.8" />
+                <path d="M18 18a4 4 0 0 0 2-7.5" />
+                <path d="M6 5.1a4 4 0 0 0-2.5 5.8" />
+                <path d="M6 18a4 4 0 0 1-2-7.5" />
+                <path d="M20 17.5A4 4 0 1 1 12 18a4 4 0 1 1-8-.5" />
+                {botStrengthVisibleGyrusCount >= 1 && (
+                  <path d="M12 8c1.5-1 3.5-1 5 0 M12 12.5c-1.5.8-3.5.8-5 0" />
+                )}
+                {botStrengthVisibleGyrusCount >= 2 && (
+                  <path d="M12 9.5c-1.5-.8-3.5-.8-5 0 M12 14c2 .8 4 .8 5.5 0" />
+                )}
+                {botStrengthVisibleGyrusCount >= 3 && (
+                  <path d="M12 11c2-.7 4-.7 5.5 0 M12 15.5c-1.5.7-3 .7-4.5 0" />
+                )}
+              </g>
             </g>
-          </g>
-        )}
+          )}
       </svg>
 
       <div
@@ -1583,14 +2108,16 @@ const BoardComponent: React.FC = () => {
         style={{
           aspectRatio: "110 / 141",
           pointerEvents: "none",
-        }}>
+        }}
+      >
         <div
           style={{
             position: "absolute",
             inset: 0,
             pointerEvents: "none",
             zIndex: 0,
-          }}>
+          }}
+        >
           {wagerPanelLayout && (
             <div
               data-wager-panel="true"
@@ -1615,7 +2142,8 @@ const BoardComponent: React.FC = () => {
                 pointerEvents: "auto",
                 userSelect: "none",
                 zIndex: 2,
-              }}>
+              }}
+            >
               {wagerCountLayout && (
                 <div
                   aria-hidden="true"
@@ -1627,15 +2155,21 @@ const BoardComponent: React.FC = () => {
                     fontSize: "0.72em",
                     fontWeight: 500,
                     letterSpacing: "0.02em",
-                    color: prefersDarkMode ? "rgba(240, 240, 240, 0.6)" : "rgba(40, 40, 40, 0.52)",
+                    color: prefersDarkMode
+                      ? "rgba(240, 240, 240, 0.6)"
+                      : "rgba(40, 40, 40, 0.52)",
                     pointerEvents: "none",
                     userSelect: "none",
                     whiteSpace: "nowrap",
-                  }}>
+                  }}
+                >
                   ({activeWagerPanelCount})
                 </div>
               )}
-              <div aria-hidden="true" style={{ gridRow: wagerPanelLayout.pileRow }} />
+              <div
+                aria-hidden="true"
+                style={{ gridRow: wagerPanelLayout.pileRow }}
+              />
               {wagerPanelHasActions && (
                 <div
                   data-wager-panel="true"
@@ -1648,7 +2182,8 @@ const BoardComponent: React.FC = () => {
                     height: "100%",
                     width: "100%",
                     overflow: "visible",
-                  }}>
+                  }}
+                >
                   {showOpponentActions && (
                     <>
                       <button
@@ -1662,7 +2197,8 @@ const BoardComponent: React.FC = () => {
                           minWidth: `${wagerPanelLayout.declineButtonMinWidthPx}px`,
                           paddingLeft: `${wagerPanelLayout.buttonPaddingXPx}px`,
                           paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
-                        }}>
+                        }}
+                      >
                         Decline
                       </button>
                       <button
@@ -1679,7 +2215,8 @@ const BoardComponent: React.FC = () => {
                           paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
                           opacity: canAccept ? 1 : 0.5,
                           cursor: "pointer",
-                        }}>
+                        }}
+                      >
                         {acceptLabel}
                       </button>
                     </>
@@ -1696,7 +2233,8 @@ const BoardComponent: React.FC = () => {
                         minWidth: `${wagerPanelLayout.playerButtonMinWidthPx}px`,
                         paddingLeft: `${wagerPanelLayout.buttonPaddingXPx}px`,
                         paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
-                      }}>
+                      }}
+                    >
                       Cancel Proposal
                     </button>
                   )}
@@ -1720,13 +2258,16 @@ const BoardComponent: React.FC = () => {
             left: "50%",
             transform: "translate(-50%, -100%)",
             top: isGridVisible ? "7.02%" : "7.05%",
-            height: isGridVisible ? VIDEO_CONTAINER_HEIGHT_GRID : VIDEO_CONTAINER_HEIGHT_IMAGE,
+            height: isGridVisible
+              ? VIDEO_CONTAINER_HEIGHT_GRID
+              : VIDEO_CONTAINER_HEIGHT_IMAGE,
             maxHeight: VIDEO_CONTAINER_MAX_HEIGHT,
             aspectRatio: VIDEO_CONTAINER_ASPECT_RATIO,
             zIndex: VIDEO_CONTAINER_Z_INDEX,
             pointerEvents: "none",
             touchAction: "none",
-          }}>
+          }}
+        >
           <div
             style={{
               position: "absolute",
@@ -1745,20 +2286,39 @@ const BoardComponent: React.FC = () => {
                 position: "absolute",
                 left: "50%",
                 top: "50%",
-                transform: opponentVideoAppearing ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)" : opponentVideoFading ? "translate(-50%, -50%) scale(0.8) rotate(0deg)" : "translate(-50%, -50%) scale(1) rotate(0deg)",
+                transform: opponentVideoAppearing
+                  ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)"
+                  : opponentVideoFading
+                    ? "translate(-50%, -50%) scale(0.8) rotate(0deg)"
+                    : "translate(-50%, -50%) scale(1) rotate(0deg)",
                 width: "100%",
                 height: "100%",
-                opacity: opponentVideoAppearing ? 0 : opponentVideoFading ? 0 : 1,
-                transition: opponentVideoAppearing ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)" : opponentVideoFading ? "opacity 0.2s ease-in, transform 0.2s ease-in" : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+                opacity: opponentVideoAppearing
+                  ? 0
+                  : opponentVideoFading
+                    ? 0
+                    : 1,
+                transition: opponentVideoAppearing
+                  ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+                  : opponentVideoFading
+                    ? "opacity 0.2s ease-in, transform 0.2s ease-in"
+                    : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
               }}
               autoPlay
               muted
               playsInline
               onEnded={() => {
                 dismissOpponentVideo(200);
-              }}>
-              <source src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.mov`} type='video/quicktime; codecs="hvc1"' />
-              <source src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.webm`} type="video/webm" />
+              }}
+            >
+              <source
+                src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.mov`}
+                type='video/quicktime; codecs="hvc1"'
+              />
+              <source
+                src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.webm`}
+                type="video/webm"
+              />
             </video>
           )}
         </div>
@@ -1768,13 +2328,16 @@ const BoardComponent: React.FC = () => {
             left: "50%",
             transform: "translateX(-50%)",
             top: isGridVisible ? "85.22%" : "89.65%",
-            height: isGridVisible ? VIDEO_CONTAINER_HEIGHT_GRID : VIDEO_CONTAINER_HEIGHT_IMAGE,
+            height: isGridVisible
+              ? VIDEO_CONTAINER_HEIGHT_GRID
+              : VIDEO_CONTAINER_HEIGHT_IMAGE,
             maxHeight: VIDEO_CONTAINER_MAX_HEIGHT,
             aspectRatio: VIDEO_CONTAINER_ASPECT_RATIO,
             zIndex: VIDEO_CONTAINER_Z_INDEX,
             pointerEvents: "none",
             touchAction: "none",
-          }}>
+          }}
+        >
           <div
             style={{
               position: "absolute",
@@ -1793,20 +2356,35 @@ const BoardComponent: React.FC = () => {
                 position: "absolute",
                 left: "50%",
                 top: "50%",
-                transform: playerVideoAppearing ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)" : playerVideoFading ? "translate(-50%, -50%) scale(0.8) rotate(0deg)" : "translate(-50%, -50%) scale(1) rotate(0deg)",
+                transform: playerVideoAppearing
+                  ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)"
+                  : playerVideoFading
+                    ? "translate(-50%, -50%) scale(0.8) rotate(0deg)"
+                    : "translate(-50%, -50%) scale(1) rotate(0deg)",
                 width: "100%",
                 height: "100%",
                 opacity: playerVideoAppearing ? 0 : playerVideoFading ? 0 : 1,
-                transition: playerVideoAppearing ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)" : playerVideoFading ? "opacity 0.2s ease-in, transform 0.2s ease-in" : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+                transition: playerVideoAppearing
+                  ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+                  : playerVideoFading
+                    ? "opacity 0.2s ease-in, transform 0.2s ease-in"
+                    : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
               }}
               autoPlay
               muted
               playsInline
               onEnded={() => {
                 dismissPlayerVideo(200);
-              }}>
-              <source src={`https://assets.mons.link/swagpack/video/${playerVideoId}.mov`} type='video/quicktime; codecs="hvc1"' />
-              <source src={`https://assets.mons.link/swagpack/video/${playerVideoId}.webm`} type="video/webm" />
+              }}
+            >
+              <source
+                src={`https://assets.mons.link/swagpack/video/${playerVideoId}.mov`}
+                type='video/quicktime; codecs="hvc1"'
+              />
+              <source
+                src={`https://assets.mons.link/swagpack/video/${playerVideoId}.webm`}
+                type="video/webm"
+              />
             </video>
           )}
         </div>
@@ -1832,7 +2410,10 @@ const BoardComponent: React.FC = () => {
             ref={(div) => {
               if (div && overlayState.svgElement) {
                 div.innerHTML = "";
-                const wrapperSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+                const wrapperSvg = document.createElementNS(
+                  "http://www.w3.org/2000/svg",
+                  "svg",
+                );
                 wrapperSvg.style.position = "absolute";
                 wrapperSvg.style.top = "0";
                 wrapperSvg.style.left = "0";
@@ -1860,11 +2441,18 @@ const BoardComponent: React.FC = () => {
               height: "10.8%",
               aspectRatio: "3.75",
               pointerEvents: "all",
-            }}>
-            <CircularButton onClick={!isMobile ? handleCancelClick : undefined} onTouchStart={isMobile ? handleCancelClick : undefined}>
+            }}
+          >
+            <CircularButton
+              onClick={!isMobile ? handleCancelClick : undefined}
+              onTouchStart={isMobile ? handleCancelClick : undefined}
+            >
               <FaTimes />
             </CircularButton>
-            <CircularButton onClick={!isMobile ? handleConfirmClick : undefined} onTouchStart={isMobile ? handleConfirmClick : undefined}>
+            <CircularButton
+              onClick={!isMobile ? handleConfirmClick : undefined}
+              onTouchStart={isMobile ? handleConfirmClick : undefined}
+            >
               <FaCheck />
             </CircularButton>
           </div>

@@ -1,24 +1,47 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
-const { consumeAuthIntent, verifyAppleIdToken, normalizeMethodValue, linkVerifiedMethod, peekAuthOpReplay } = require("./authIdentity");
+const {
+  consumeAuthIntent,
+  verifyAppleIdToken,
+  normalizeMethodValue,
+  linkVerifiedMethod,
+  peekAuthOpReplay,
+} = require("./authIdentity");
 
 exports.verifyAppleToken = onCall({ invoker: "public" }, async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
-  const appleDisabledValue = `${process.env.AUTH_DISABLE_APPLE_VERIFY || ""}`.trim().toLowerCase();
-  if (appleDisabledValue === "1" || appleDisabledValue === "true" || appleDisabledValue === "yes") {
+  const appleDisabledValue = `${process.env.AUTH_DISABLE_APPLE_VERIFY || ""}`
+    .trim()
+    .toLowerCase();
+  if (
+    appleDisabledValue === "1" ||
+    appleDisabledValue === "true" ||
+    appleDisabledValue === "yes"
+  ) {
     throw new HttpsError("failed-precondition", "apple-auth-disabled");
   }
 
   const uid = request.auth.uid;
-  const requestData = request && request.data && typeof request.data === "object" ? request.data : {};
-  const idToken = typeof requestData.idToken === "string" ? requestData.idToken : "";
-  const intentId = typeof requestData.intentId === "string" ? requestData.intentId : "";
+  const requestData =
+    request && request.data && typeof request.data === "object"
+      ? request.data
+      : {};
+  const idToken =
+    typeof requestData.idToken === "string" ? requestData.idToken : "";
+  const intentId =
+    typeof requestData.intentId === "string" ? requestData.intentId : "";
   const requestEmoji = requestData.emoji ?? 1;
   const requestAura = requestData.aura ?? null;
   const opId = requestData.opId;
   const resolvedOpId = opId || (intentId ? `intent:${intentId}` : undefined);
-  const consentSource = typeof requestData.consentSource === "string" ? requestData.consentSource : "signin";
+  const consentSource =
+    typeof requestData.consentSource === "string"
+      ? requestData.consentSource
+      : "signin";
 
   if (!idToken) {
     throw new HttpsError("invalid-argument", "idToken is required.");

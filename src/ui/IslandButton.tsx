@@ -1,4 +1,12 @@
-import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, startTransition } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+  startTransition,
+} from "react";
 import { isMobile } from "../utils/misc";
 import styled, { keyframes } from "styled-components";
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
@@ -6,16 +14,39 @@ import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import { closeAllKindsOfPopups } from "./MainMenu";
 import IslandRock, { IslandRockHandle, getRockImageUrl } from "./IslandRock";
 import { soundPlayer } from "../utils/SoundPlayer";
-import { playSounds, preloadSounds, playRockSound, RockSound, directlyPlaySoundNamed } from "../content/sounds";
-import { miningJumpingPetsIdleAndWalking as islandMonsMining, shadow as islandMonsShadow } from "../assets/islandMons";
+import {
+  playSounds,
+  preloadSounds,
+  playRockSound,
+  RockSound,
+  directlyPlaySoundNamed,
+} from "../content/sounds";
+import {
+  miningJumpingPetsIdleAndWalking as islandMonsMining,
+  shadow as islandMonsShadow,
+} from "../assets/islandMons";
 import { getOwnMonIdByType, MonType } from "../utils/namedMons";
 import { storage } from "../utils/storage";
 import { Sound } from "../utils/gameModels";
-import { setIslandOverlayState, resetIslandOverlayState } from "./islandOverlayState";
-import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMiningService";
+import {
+  setIslandOverlayState,
+  resetIslandOverlayState,
+} from "./islandOverlayState";
+import {
+  MATERIALS,
+  MaterialName,
+  rocksMiningService,
+} from "../services/rocksMiningService";
 import { useGameAssets } from "../hooks/useGameAssets";
-import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
-import { signInButtonVisualStyles, openProfileSignInPopup } from "./ProfileSignIn";
+import {
+  computeAvailableMaterials,
+  getFrozenMaterials,
+  subscribeToFrozenMaterials,
+} from "../services/wagerMaterialsService";
+import {
+  signInButtonVisualStyles,
+  openProfileSignInPopup,
+} from "./ProfileSignIn";
 
 const FEATURE_GLOWS_ON_HOTSPOT = true;
 const FEATURE_MON_TYPE_SELECTOR = false;
@@ -23,10 +54,19 @@ const STARS_URL = "https://assets.mons.link/rocks/underground/stars.webp";
 const TOUCH_EDGE_DEADZONE_PX = 5;
 const ROCK_LAYER_Z_INDEX = 500;
 const THEORETICAL_ROCK_SQUARE = { cx: 0.5018, cy: 0.1773, side: 0.142 };
-const THEORETICAL_ROCK_BOTTOM = Math.max(0, Math.min(1, THEORETICAL_ROCK_SQUARE.cy + THEORETICAL_ROCK_SQUARE.side * 0.5));
+const THEORETICAL_ROCK_BOTTOM = Math.max(
+  0,
+  Math.min(1, THEORETICAL_ROCK_SQUARE.cy + THEORETICAL_ROCK_SQUARE.side * 0.5),
+);
 const MIN_OVERLAY_CLOSE_DELAY_MS = 160;
 const ANON_SIGN_IN_DROP_SETTLE_MS = 620;
-const MON_TYPE_ORDER: MonType[] = [MonType.DEMON, MonType.ANGEL, MonType.DRAINER, MonType.SPIRIT, MonType.MYSTIC];
+const MON_TYPE_ORDER: MonType[] = [
+  MonType.DEMON,
+  MonType.ANGEL,
+  MonType.DRAINER,
+  MonType.SPIRIT,
+  MonType.MYSTIC,
+];
 const DEFAULT_MON_TYPE = MonType.DRAINER;
 const MON_TYPE_ICON_KEYS: Record<MonType, string> = {
   [MonType.DEMON]: "demon",
@@ -35,7 +75,8 @@ const MON_TYPE_ICON_KEYS: Record<MonType, string> = {
   [MonType.SPIRIT]: "spirit",
   [MonType.MYSTIC]: "mystic",
 };
-const FALLBACK_MON_ICON = "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
+const FALLBACK_MON_ICON =
+  "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
 const ensureMonType = (value: string): MonType => {
   const maybe = value as MonType;
   return MON_TYPE_ORDER.includes(maybe) ? maybe : DEFAULT_MON_TYPE;
@@ -98,20 +139,29 @@ const twinkle = keyframes`
   50% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
 `;
 
-const SparkleContainer = styled.div<{ $visible: boolean; $fading: boolean; $dimmed: boolean }>`
+const SparkleContainer = styled.div<{
+  $visible: boolean;
+  $fading: boolean;
+  $dimmed: boolean;
+}>`
   position: absolute;
   left: 16px;
   top: 16px;
   width: 56px;
   height: 56px;
   transform: translate(-50%, -50%) scale(${(p) => (p.$dimmed ? 0.77 : 1)});
-  -webkit-transform: translate(-50%, -50%) scale(${(p) => (p.$dimmed ? 0.77 : 1)});
+  -webkit-transform: translate(-50%, -50%)
+    scale(${(p) => (p.$dimmed ? 0.77 : 1)});
   pointer-events: none;
   z-index: 0;
   opacity: ${(p) => (p.$fading ? 0 : p.$visible ? 1 : 0)};
   will-change: opacity, transform;
-  -webkit-transition: opacity ${(p) => (p.$fading ? "150ms" : "900ms")} ease-out, transform 150ms ease;
-  transition: opacity ${(p) => (p.$fading ? "150ms" : "900ms")} ease-out, transform 150ms ease;
+  -webkit-transition:
+    opacity ${(p) => (p.$fading ? "150ms" : "900ms")} ease-out,
+    transform 150ms ease;
+  transition:
+    opacity ${(p) => (p.$fading ? "150ms" : "900ms")} ease-out,
+    transform 150ms ease;
 `;
 
 const SparkleRing = styled.div`
@@ -121,11 +171,21 @@ const SparkleRing = styled.div`
   width: 46px;
   height: 46px;
   border-radius: 50%;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 215, 100, 0.5) 0%, rgba(255, 180, 60, 0.3) 40%, transparent 70%);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(255, 215, 100, 0.5) 0%,
+    rgba(255, 180, 60, 0.3) 40%,
+    transparent 70%
+  );
   transform: translate(-50%, -50%);
   animation: ${sparklePulse} 2s ease-in-out infinite;
   @media (prefers-color-scheme: light) {
-    background: radial-gradient(circle at 50% 50%, rgba(120, 170, 255, 0.4) 0%, rgba(100, 150, 240, 0.25) 40%, transparent 70%);
+    background: radial-gradient(
+      circle at 50% 50%,
+      rgba(120, 170, 255, 0.4) 0%,
+      rgba(100, 150, 240, 0.25) 40%,
+      transparent 70%
+    );
   }
 `;
 
@@ -135,13 +195,23 @@ const SparkleCore = styled.div`
   top: 50%;
   width: 12px;
   height: 12px;
-  background: radial-gradient(circle, rgba(255, 255, 220, 0.95) 0%, rgba(255, 230, 140, 0.7) 50%, transparent 100%);
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 220, 0.95) 0%,
+    rgba(255, 230, 140, 0.7) 50%,
+    transparent 100%
+  );
   border-radius: 50%;
   transform: translate(-50%, -50%);
   animation: ${sparklePulse} 1.5s ease-in-out infinite;
   animation-delay: 0.25s;
   @media (prefers-color-scheme: light) {
-    background: radial-gradient(circle, rgba(130, 175, 255, 0.9) 0%, rgba(100, 150, 240, 0.7) 50%, transparent 100%);
+    background: radial-gradient(
+      circle,
+      rgba(130, 175, 255, 0.9) 0%,
+      rgba(100, 150, 240, 0.7) 50%,
+      transparent 100%
+    );
   }
 `;
 
@@ -162,7 +232,12 @@ const SparkleRay = styled.div<{ $angle: number; $delay: number }>`
   top: 50%;
   width: 2px;
   height: 14px;
-  background: linear-gradient(to top, transparent 0%, rgba(255, 240, 180, 0.9) 50%, transparent 100%);
+  background: linear-gradient(
+    to top,
+    transparent 0%,
+    rgba(255, 240, 180, 0.9) 50%,
+    transparent 100%
+  );
   transform-origin: center bottom;
   transform: translate(-50%, -100%) rotate(${(p) => p.$angle}deg);
   animation: ${sparklePulse} 1.8s ease-in-out infinite;
@@ -170,11 +245,23 @@ const SparkleRay = styled.div<{ $angle: number; $delay: number }>`
   @media (prefers-color-scheme: light) {
     width: 3px;
     height: 16px;
-    background: linear-gradient(to top, transparent 0%, rgba(140, 185, 255, 0.5) 40%, rgba(140, 185, 255, 0.5) 60%, transparent 100%);
+    background: linear-gradient(
+      to top,
+      transparent 0%,
+      rgba(140, 185, 255, 0.5) 40%,
+      rgba(140, 185, 255, 0.5) 60%,
+      transparent 100%
+    );
   }
 `;
 
-const SparkleParticle = styled.div<{ $x: number; $y: number; $delay: number; $duration: number; $dimmed: boolean }>`
+const SparkleParticle = styled.div<{
+  $x: number;
+  $y: number;
+  $delay: number;
+  $duration: number;
+  $dimmed: boolean;
+}>`
   position: absolute;
   left: ${(p) => p.$x}%;
   top: ${(p) => p.$y}%;
@@ -184,7 +271,8 @@ const SparkleParticle = styled.div<{ $x: number; $y: number; $delay: number; $du
   animation: ${twinkle} ${(p) => p.$duration}s ease-in-out infinite;
   animation-delay: ${(p) => p.$delay}s;
   visibility: ${(p) => (p.$dimmed ? "hidden" : "visible")};
-  &::before, &::after {
+  &::before,
+  &::after {
     content: "";
     position: absolute;
     background: rgba(255, 245, 200, 0.75);
@@ -204,7 +292,8 @@ const SparkleParticle = styled.div<{ $x: number; $y: number; $delay: number; $du
     transform: translateY(-50%);
   }
   @media (prefers-color-scheme: light) {
-    &::before, &::after {
+    &::before,
+    &::after {
       background: rgba(80, 140, 240, 0.85);
     }
   }
@@ -260,10 +349,15 @@ const RockSignInShadow = styled.div<{ $settled: boolean; $hidden?: boolean }>`
   transform-origin: center center;
   contain: layout paint;
   transform: translate3d(-50%, -50%, 0);
-  animation: ${(p) => (p.$hidden || p.$settled ? "none" : anonSignInShadowDrop)} ${ANON_SIGN_IN_DROP_SETTLE_MS}ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: ${(p) => (p.$hidden || p.$settled ? "none" : anonSignInShadowDrop)}
+    ${ANON_SIGN_IN_DROP_SETTLE_MS}ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 `;
 
-const RockSignInButton = styled.button<{ $settled: boolean; $isConnected?: boolean; $hidden?: boolean }>`
+const RockSignInButton = styled.button<{
+  $settled: boolean;
+  $isConnected?: boolean;
+  $hidden?: boolean;
+}>`
   ${signInButtonVisualStyles}
   position: absolute;
   left: 48.8%;
@@ -285,7 +379,8 @@ const RockSignInButton = styled.button<{ $settled: boolean; $isConnected?: boole
   transform-origin: center center;
   contain: layout paint;
   transform: translate3d(-50%, -50%, 0);
-  animation: ${(p) => (p.$hidden || p.$settled ? "none" : anonSignInDrop)} ${ANON_SIGN_IN_DROP_SETTLE_MS}ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation: ${(p) => (p.$hidden || p.$settled ? "none" : anonSignInDrop)}
+    ${ANON_SIGN_IN_DROP_SETTLE_MS}ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
 `;
 
 const MaterialsBar = styled.div<{ $visible: boolean }>`
@@ -366,7 +461,15 @@ const MaterialAmount = styled.span`
   line-height: 1;
   color: var(--instruction-text-color);
   font-weight: 600;
-  font-family: ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace;
+  font-family:
+    ui-monospace,
+    SFMono-Regular,
+    SF Mono,
+    Menlo,
+    Consolas,
+    "Liberation Mono",
+    "Courier New",
+    monospace;
   letter-spacing: 0.2px;
 `;
 
@@ -399,7 +502,9 @@ const MonTypeArrowButton = styled.button`
   color: var(--instruction-text-color);
   cursor: pointer;
   line-height: 0;
-  transition: color 160ms ease, opacity 160ms ease;
+  transition:
+    color 160ms ease,
+    opacity 160ms ease;
 
   &:disabled {
     opacity: 0.35;
@@ -450,13 +555,22 @@ const SelectorSafeHitbox = styled.div<{ $active: boolean }>`
   z-index: 2;
 `;
 
-const Overlay = styled.div<{ $visible: boolean; $opening: boolean; $closing: boolean }>`
+const Overlay = styled.div<{
+  $visible: boolean;
+  $opening: boolean;
+  $closing: boolean;
+}>`
   position: fixed;
   inset: 0;
   cursor: pointer;
   background: rgba(0, 0, 0, 0.1);
   opacity: ${(p) => (p.$visible ? 1 : 0)};
-  transition: ${(p) => (p.$opening ? "opacity 380ms cubic-bezier(0.16, 1, 0.3, 1) 100ms" : p.$closing ? "opacity 320ms ease-out 50ms" : "opacity 320ms ease-in")};
+  transition: ${(p) =>
+    p.$opening
+      ? "opacity 380ms cubic-bezier(0.16, 1, 0.3, 1) 100ms"
+      : p.$closing
+        ? "opacity 320ms ease-out 50ms"
+        : "opacity 320ms ease-in"};
   pointer-events: ${(p) => (p.$visible ? "auto" : "none")};
   cursor: pointer;
   z-index: ${(p) => (p.$visible || p.$opening || p.$closing ? 90000 : 0)};
@@ -495,14 +609,19 @@ const SafeHitbox = styled.div<{ $active: boolean }>`
   z-index: 1;
 `;
 
-const Layer = styled.div<{ $visible: boolean; $opening: boolean; $closing: boolean }>`
+const Layer = styled.div<{
+  $visible: boolean;
+  $opening: boolean;
+  $closing: boolean;
+}>`
   position: fixed;
   inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: ${(p) => (p.$visible || p.$opening || p.$closing ? 90001 : 0)};
-  pointer-events: ${(p) => (p.$visible || p.$opening || p.$closing ? "auto" : "none")};
+  pointer-events: ${(p) =>
+    p.$visible || p.$opening || p.$closing ? "auto" : "none"};
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
@@ -510,11 +629,17 @@ const Layer = styled.div<{ $visible: boolean; $opening: boolean; $closing: boole
   -webkit-user-select: none;
 `;
 
-const Animator = styled.div<{ $tx: number; $ty: number; $sx: number; $sy: number }>`
+const Animator = styled.div<{
+  $tx: number;
+  $ty: number;
+  $sx: number;
+  $sy: number;
+}>`
   pointer-events: auto;
   cursor: pointer;
   transition: transform 300ms ease;
-  transform: translate(${(p) => p.$tx}px, ${(p) => p.$ty}px) scale(${(p) => p.$sx}, ${(p) => p.$sy});
+  transform: translate(${(p) => p.$tx}px, ${(p) => p.$ty}px)
+    scale(${(p) => p.$sx}, ${(p) => p.$sy});
   -webkit-tap-highlight-color: transparent;
   -webkit-touch-callout: none;
   user-select: none;
@@ -588,8 +713,17 @@ const HotspotCircle = styled.div<{ $visible: boolean }>`
   box-sizing: border-box;
   touch-action: none;
   pointer-events: none;
-  background: radial-gradient(circle at 50% 50%, rgba(0, 200, 255, 0.9) 0%, rgba(0, 200, 255, 0.45) 40%, rgba(0, 200, 255, 0.2) 60%, rgba(0, 0, 0, 0) 70%);
-  box-shadow: 0 0 14px rgba(0, 200, 255, 0.7), 0 0 28px rgba(0, 200, 255, 0.35), inset 0 0 22px rgba(0, 200, 255, 0.5);
+  background: radial-gradient(
+    circle at 50% 50%,
+    rgba(0, 200, 255, 0.9) 0%,
+    rgba(0, 200, 255, 0.45) 40%,
+    rgba(0, 200, 255, 0.2) 60%,
+    rgba(0, 0, 0, 0) 70%
+  );
+  box-shadow:
+    0 0 14px rgba(0, 200, 255, 0.7),
+    0 0 28px rgba(0, 200, 255, 0.35),
+    inset 0 0 22px rgba(0, 200, 255, 0.5);
   opacity: ${(p) => (p.$visible ? 0 : 0)};
   animation: ${(p) => (p.$visible ? fadePulse : "none")} 520ms ease-out;
   cursor: pointer;
@@ -598,7 +732,11 @@ const HotspotCircle = styled.div<{ $visible: boolean }>`
     position: absolute;
     inset: 16%;
     border-radius: 50%;
-    background: radial-gradient(circle, rgba(255, 255, 255, 0.85) 0%, rgba(0, 200, 255, 0) 70%);
+    background: radial-gradient(
+      circle,
+      rgba(255, 255, 255, 0.85) 0%,
+      rgba(0, 200, 255, 0) 70%
+    );
     filter: blur(6px);
     opacity: 0.8;
     pointer-events: none;
@@ -624,7 +762,8 @@ const StarsOverlayImage = styled.img<{ $visible: boolean; $hold: boolean }>`
   z-index: 3;
   filter: brightness(3) saturate(3) contrast(3) blur(0.5px);
   opacity: ${(p) => (p.$hold ? 1 : 0)};
-  animation: ${(p) => (p.$hold ? "none" : p.$visible ? overlayFlash : "none")} 520ms ease-out;
+  animation: ${(p) => (p.$hold ? "none" : p.$visible ? overlayFlash : "none")}
+    520ms ease-out;
 `;
 
 const MaskedArea = styled.div<{ $cx: number; $cy: number; $visible: boolean }>`
@@ -633,8 +772,18 @@ const MaskedArea = styled.div<{ $cx: number; $cy: number; $visible: boolean }>`
   pointer-events: none;
   cursor: pointer;
   z-index: 2;
-  -webkit-mask-image: radial-gradient(circle at ${(p) => p.$cx}% ${(p) => p.$cy}%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 9%, rgba(0, 0, 0, 0) 14%);
-  mask-image: radial-gradient(circle at ${(p) => p.$cx}% ${(p) => p.$cy}%, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 9%, rgba(0, 0, 0, 0) 14%);
+  -webkit-mask-image: radial-gradient(
+    circle at ${(p) => p.$cx}% ${(p) => p.$cy}%,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 9%,
+    rgba(0, 0, 0, 0) 14%
+  );
+  mask-image: radial-gradient(
+    circle at ${(p) => p.$cx}% ${(p) => p.$cy}%,
+    rgba(0, 0, 0, 1) 0%,
+    rgba(0, 0, 0, 1) 9%,
+    rgba(0, 0, 0, 0) 14%
+  );
   -webkit-mask-repeat: no-repeat;
   mask-repeat: no-repeat;
 `;
@@ -642,17 +791,61 @@ const MaskedArea = styled.div<{ $cx: number; $cy: number; $visible: boolean }>`
 type IslandHotspot = { cxPct: number; cyPct: number; dPct: number };
 
 const ISLAND_HOTSPOTS: IslandHotspot[] = [
-  { cxPct: 0.2267901200343747, cyPct: 0.4402455174645712, dPct: 0.0852713178294574 },
-  { cxPct: 0.1408001429826479, cyPct: 0.4011414993640988, dPct: 0.0867806613609959 },
-  { cxPct: 0.2303384803038283, cyPct: 0.5319767441860465, dPct: 0.0929130855394721 },
-  { cxPct: 0.1434036537022149, cyPct: 0.486757145371548, dPct: 0.0845797097419015 },
-  { cxPct: 0.2285643001691015, cyPct: 0.623062015503876, dPct: 0.0883856918681502 },
-  { cxPct: 0.3438860089263438, cyPct: 0.6941214864568193, dPct: 0.1009076145131653 },
-  { cxPct: 0.3845540733282993, cyPct: 0.81524926686217, dPct: 0.1389820732761389 },
-  { cxPct: 0.2498544617858232, cyPct: 0.7180232558139535, dPct: 0.0950205478459788 },
-  { cxPct: 0.3228039265039013, cyPct: 0.4941348973607038, dPct: 0.0965006757489889 },
-  { cxPct: 0.1482926420001678, cyPct: 0.5733137829912024, dPct: 0.0805273150244885 },
-  { cxPct: 0.3254887154962665, cyPct: 0.5967741935483871, dPct: 0.1046383272819784 },
+  {
+    cxPct: 0.2267901200343747,
+    cyPct: 0.4402455174645712,
+    dPct: 0.0852713178294574,
+  },
+  {
+    cxPct: 0.1408001429826479,
+    cyPct: 0.4011414993640988,
+    dPct: 0.0867806613609959,
+  },
+  {
+    cxPct: 0.2303384803038283,
+    cyPct: 0.5319767441860465,
+    dPct: 0.0929130855394721,
+  },
+  {
+    cxPct: 0.1434036537022149,
+    cyPct: 0.486757145371548,
+    dPct: 0.0845797097419015,
+  },
+  {
+    cxPct: 0.2285643001691015,
+    cyPct: 0.623062015503876,
+    dPct: 0.0883856918681502,
+  },
+  {
+    cxPct: 0.3438860089263438,
+    cyPct: 0.6941214864568193,
+    dPct: 0.1009076145131653,
+  },
+  {
+    cxPct: 0.3845540733282993,
+    cyPct: 0.81524926686217,
+    dPct: 0.1389820732761389,
+  },
+  {
+    cxPct: 0.2498544617858232,
+    cyPct: 0.7180232558139535,
+    dPct: 0.0950205478459788,
+  },
+  {
+    cxPct: 0.3228039265039013,
+    cyPct: 0.4941348973607038,
+    dPct: 0.0965006757489889,
+  },
+  {
+    cxPct: 0.1482926420001678,
+    cyPct: 0.5733137829912024,
+    dPct: 0.0805273150244885,
+  },
+  {
+    cxPct: 0.3254887154962665,
+    cyPct: 0.5967741935483871,
+    dPct: 0.1046383272819784,
+  },
 ];
 
 const HOTSPOT_LABELS: number[] = [2, 1, 5, 4, 8, 9, 11, 10, 3, 7, 6];
@@ -841,13 +1034,23 @@ const getIslandImageUrl = () => {
   return islandImagePromise;
 };
 
-type MaterialPullRect = { left: number; top: number; width: number; height: number };
+type MaterialPullRect = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 let persistentMonPosRef: { x: number; y: number } | null = null;
 
-const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
+const materialImagePromises: Map<
+  MaterialName,
+  Promise<string | null>
+> = new Map();
 
-let monSpritesModulePromise: Promise<{ getSpriteByKey: (key: string) => string }> | null = null;
+let monSpritesModulePromise: Promise<{
+  getSpriteByKey: (key: string) => string;
+}> | null = null;
 const getMonSpritesModule = () => {
   if (!monSpritesModulePromise) {
     monSpritesModulePromise = import("../assets/monsSprites");
@@ -870,9 +1073,15 @@ const getMaterialImageUrl = (name: MaterialName) => {
   return materialImagePromises.get(name)!;
 };
 
-export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) {
+export function IslandButton({
+  imageUrl = DEFAULT_URL,
+  dimmed = false,
+}: Props) {
   const [islandImgLoaded, setIslandImgLoaded] = useState(false);
-  const [islandNatural, setIslandNatural] = useState<{ w: number; h: number } | null>(null);
+  const [islandNatural, setIslandNatural] = useState<{
+    w: number;
+    h: number;
+  } | null>(null);
   const islandButtonImgRef = useRef<HTMLImageElement | null>(null);
   const islandButtonRef = useRef<HTMLButtonElement | null>(null);
   const islandHeroImgRef = useRef<HTMLImageElement | null>(null);
@@ -883,17 +1092,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [islandAnimating, setIslandAnimating] = useState(false);
   const [islandClosing, setIslandClosing] = useState(false);
   const [islandOpening, setIslandOpening] = useState(false);
-  const [islandTranslate, setIslandTranslate] = useState<{ x: number; y: number }>({ x: 0, y: 0 });
-  const [islandScale, setIslandScale] = useState<{ x: number; y: number }>({ x: 1, y: 1 });
+  const [islandTranslate, setIslandTranslate] = useState<{
+    x: number;
+    y: number;
+  }>({ x: 0, y: 0 });
+  const [islandScale, setIslandScale] = useState<{ x: number; y: number }>({
+    x: 1,
+    y: 1,
+  });
   const overlayJustOpenedAtRef = useRef<number>(0);
   const [resolvedUrl, setResolvedUrl] = useState<string>(imageUrl);
   const heroHitCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const overlayActiveRef = useRef<boolean>(false);
   const heroTransformFrameRef = useRef<number | null>(null);
-  const overlayPhaseRef = useRef<"idle" | "opening" | "open" | "closing">("idle");
+  const overlayPhaseRef = useRef<"idle" | "opening" | "open" | "closing">(
+    "idle",
+  );
   const [decorVisible, setDecorVisible] = useState(false);
   const [starsVisible, setStarsVisible] = useState(false);
-  const [starsMaskCenter, setStarsMaskCenter] = useState<{ xPct: number; yPct: number }>({ xPct: 50, yPct: 50 });
+  const [starsMaskCenter, setStarsMaskCenter] = useState<{
+    xPct: number;
+    yPct: number;
+  }>({ xPct: 50, yPct: 50 });
   const starsTimerRef = useRef<number>(0);
   const [starsHold, setStarsHold] = useState(false);
   const starsAnimActiveRef = useRef<boolean>(false);
@@ -915,9 +1135,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       resetIslandOverlayState();
     };
   }, []);
-  const starsCenterTargetRef = useRef<{ xPct: number; yPct: number } | null>(null);
+  const starsCenterTargetRef = useRef<{ xPct: number; yPct: number } | null>(
+    null,
+  );
   const starsCenterRafRef = useRef<number | null>(null);
-  const lastStarsCenterRef = useRef<{ xPct: number; yPct: number }>(starsMaskCenter);
+  const lastStarsCenterRef = useRef<{ xPct: number; yPct: number }>(
+    starsMaskCenter,
+  );
   const setStarsCenterImmediate = useCallback((xPct: number, yPct: number) => {
     const cx = Math.max(0, Math.min(100, xPct));
     const cy = Math.max(0, Math.min(100, yPct));
@@ -958,14 +1182,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, []);
   const starsImgRef = useRef<HTMLImageElement | null>(null);
   const heroWrapRef = useRef<HTMLDivElement | null>(null);
-  const [materialAmounts, setMaterialAmounts] = useState<Record<MaterialName, number>>(() => {
+  const [materialAmounts, setMaterialAmounts] = useState<
+    Record<MaterialName, number>
+  >(() => {
     const snapshot = rocksMiningService.getSnapshot();
     return computeAvailableMaterials(snapshot.materials, getFrozenMaterials());
   });
-  const latestServiceMaterialsRef = useRef<Record<MaterialName, number>>({ ...rocksMiningService.getSnapshot().materials });
-  const frozenMaterialsRef = useRef<Record<MaterialName, number>>(getFrozenMaterials());
+  const latestServiceMaterialsRef = useRef<Record<MaterialName, number>>({
+    ...rocksMiningService.getSnapshot().materials,
+  });
+  const frozenMaterialsRef =
+    useRef<Record<MaterialName, number>>(getFrozenMaterials());
   const amountsDecoupledRef = useRef(false);
-  const [materialUrls, setMaterialUrls] = useState<Record<MaterialName, string | null>>(() => {
+  const [materialUrls, setMaterialUrls] = useState<
+    Record<MaterialName, string | null>
+  >(() => {
     const initial: Partial<Record<MaterialName, string | null>> = {};
     MATERIALS.forEach((n) => (initial[n] = null));
     return initial as Record<MaterialName, string | null>;
@@ -973,14 +1204,23 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [dudeVisible, setDudeVisible] = useState(false);
   const [monVisible, setMonVisible] = useState(false);
   const [monTeleporting, setMonTeleporting] = useState(false);
-  const materialItemRefs = useRef<Record<MaterialName, HTMLDivElement | null>>({ dust: null, slime: null, gum: null, metal: null, ice: null });
+  const materialItemRefs = useRef<Record<MaterialName, HTMLDivElement | null>>({
+    dust: null,
+    slime: null,
+    gum: null,
+    metal: null,
+    ice: null,
+  });
   const decodedMaterialsRef = useRef<Set<MaterialName>>(new Set());
   useEffect(() => {
     const unsubscribe = rocksMiningService.subscribe((snapshot) => {
       const next = { ...snapshot.materials };
       latestServiceMaterialsRef.current = next;
       if (!amountsDecoupledRef.current) {
-        const available = computeAvailableMaterials(next, frozenMaterialsRef.current);
+        const available = computeAvailableMaterials(
+          next,
+          frozenMaterialsRef.current,
+        );
         setMaterialAmounts(available);
       }
       setRockAvailable(rocksMiningService.shouldShowRock());
@@ -991,7 +1231,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const unsubscribe = subscribeToFrozenMaterials((materials) => {
       frozenMaterialsRef.current = materials;
       if (!amountsDecoupledRef.current) {
-        const available = computeAvailableMaterials(latestServiceMaterialsRef.current, materials);
+        const available = computeAvailableMaterials(
+          latestServiceMaterialsRef.current,
+          materials,
+        );
         setMaterialAmounts(available);
       }
     });
@@ -1009,7 +1252,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       return false;
     },
-    [materialItemRefs]
+    [materialItemRefs],
   );
   const materialsBarRef = useRef<HTMLDivElement | null>(null);
   const safeHitboxRef = useRef<HTMLDivElement | null>(null);
@@ -1017,12 +1260,16 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const rockRef = useRef<IslandRockHandle | null>(null);
   const fxContainerRef = useRef<HTMLDivElement | null>(null);
   const lastRockRectRef = useRef<DOMRect | null>(null);
-  const [rockAvailable, setRockAvailable] = useState(() => rocksMiningService.shouldShowRock());
+  const [rockAvailable, setRockAvailable] = useState(() =>
+    rocksMiningService.shouldShowRock(),
+  );
   const [sparkleFading, setSparkleFading] = useState(false);
   const [sparkleMounted, setSparkleMounted] = useState(false);
   const walkSuppressedUntilRef = useRef<number>(0);
   const walkSuppressionHitsRemainingRef = useRef<number>(0);
-  const walkSuppressionAnchorRef = useRef<{ x: number; y: number } | null>(null);
+  const walkSuppressionAnchorRef = useRef<{ x: number; y: number } | null>(
+    null,
+  );
   const [rockReady, setRockReadyState] = useState(false);
   const [rockImageUrl, setRockImageUrl] = useState(() => getRockImageUrl());
   const [rockRenderKey, setRockRenderKey] = useState(0);
@@ -1036,9 +1283,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return next;
       });
     },
-    [setRockReadyState]
+    [setRockReadyState],
   );
-  const rockBoxRef = useRef<{ left: number; top: number; right: number; bottom: number } | null>(null);
+  const rockBoxRef = useRef<{
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+  } | null>(null);
   const [rockBottomY, setRockBottomYState] = useState<number>(1);
   const rockBottomYRef = useRef(rockBottomY);
   const setRockBottomY = useCallback(
@@ -1049,12 +1301,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return next;
       });
     },
-    [setRockBottomYState]
+    [setRockBottomYState],
   );
   const anonSignInDropCounterRef = useRef(0);
   const anonSignInDropSettleTimeoutRef = useRef<number | null>(null);
   const anonSignInDropPointerHandledRef = useRef(false);
-  const [anonSignInDropState, setAnonSignInDropState] = useState<{ key: number; settled: boolean } | null>(null);
+  const [anonSignInDropState, setAnonSignInDropState] = useState<{
+    key: number;
+    settled: boolean;
+  } | null>(null);
 
   const clearAnonSignInDrop = useCallback(() => {
     if (anonSignInDropSettleTimeoutRef.current !== null) {
@@ -1075,7 +1330,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     setAnonSignInDropState({ key, settled: false });
     anonSignInDropSettleTimeoutRef.current = window.setTimeout(() => {
       anonSignInDropSettleTimeoutRef.current = null;
-      setAnonSignInDropState((current) => (current && current.key === key ? { ...current, settled: true } : current));
+      setAnonSignInDropState((current) =>
+        current && current.key === key
+          ? { ...current, settled: true }
+          : current,
+      );
     }, ANON_SIGN_IN_DROP_SETTLE_MS);
   }, []);
 
@@ -1093,11 +1352,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const clampedBaseline = Math.max(0, Math.min(1, baselineY));
       const base = Math.round(clampedBaseline * 100);
       if (!rockAvailable) return 600 + base;
-      const measuredBottom = rockBottomY < 1 ? Math.max(0, Math.min(1, rockBottomY)) : null;
-      const effectiveBottom = measuredBottom !== null ? measuredBottom : THEORETICAL_ROCK_BOTTOM;
+      const measuredBottom =
+        rockBottomY < 1 ? Math.max(0, Math.min(1, rockBottomY)) : null;
+      const effectiveBottom =
+        measuredBottom !== null ? measuredBottom : THEORETICAL_ROCK_BOTTOM;
       return clampedBaseline >= effectiveBottom ? 700 + base : 300 + base;
     },
-    [rockBottomY, rockAvailable]
+    [rockBottomY, rockAvailable],
   );
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1133,10 +1394,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
   const materialDropsRef = useRef<MaterialDropEntry[]>([]);
   const materialDropCounterRef = useRef(0);
-  const materialPullQueueRef = useRef<Array<{ name: MaterialName; rect: MaterialPullRect }>>([]);
+  const materialPullQueueRef = useRef<
+    Array<{ name: MaterialName; rect: MaterialPullRect }>
+  >([]);
   const materialPullFlushRef = useRef<number | null>(null);
 
-  const [heroSize, setHeroSize] = useState<{ w: number; h: number }>({ w: 0, h: 0 });
+  const [heroSize, setHeroSize] = useState<{ w: number; h: number }>({
+    w: 0,
+    h: 0,
+  });
   const heroSizeRef = useRef(heroSize);
   heroSizeRef.current = heroSize;
 
@@ -1154,11 +1420,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     direction: "cw" | "ccw" | null;
     center: { x: number; y: number } | null;
   }>({ lastAngle: null, totalRotation: 0, direction: null, center: null });
-  const [hotspotVisible, setHotspotVisible] = useState<boolean[]>(() => new Array(ISLAND_HOTSPOTS.length).fill(false));
-  const hotspotTimersRef = useRef<number[]>(new Array(ISLAND_HOTSPOTS.length).fill(0));
+  const [hotspotVisible, setHotspotVisible] = useState<boolean[]>(() =>
+    new Array(ISLAND_HOTSPOTS.length).fill(false),
+  );
+  const hotspotTimersRef = useRef<number[]>(
+    new Array(ISLAND_HOTSPOTS.length).fill(0),
+  );
   const lastTouchAtRef = useRef<number>(0);
   const flashEntriesRef = useRef<((indices: Set<number>) => void) | null>(null);
-  const spawnIconParticlesFnRef = useRef<((el: HTMLElement, src: string) => void) | null>(null);
+  const spawnIconParticlesFnRef = useRef<
+    ((el: HTMLElement, src: string) => void) | null
+  >(null);
 
   const DISMISS_ALLOWED_TRIANGLE_A: Array<{ x: number; y: number }> = useMemo(
     () => [
@@ -1166,7 +1438,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       { x: 0.2087, y: 1.0 },
       { x: 0.0, y: 1.0 },
     ],
-    []
+    [],
   );
   const DISMISS_ALLOWED_TRIANGLE_B: Array<{ x: number; y: number }> = useMemo(
     () => [
@@ -1174,19 +1446,22 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       { x: 1.0, y: 1.0 },
       { x: 0.6977, y: 1.0 },
     ],
-    []
+    [],
   );
-  const pointInTriangle = useCallback((px: number, py: number, tri: Array<{ x: number; y: number }>) => {
-    const a = tri[0];
-    const b = tri[1];
-    const c = tri[2];
-    const s1 = (px - c.x) * (b.y - c.y) - (b.x - c.x) * (py - c.y);
-    const s2 = (px - a.x) * (c.y - a.y) - (c.x - a.x) * (py - a.y);
-    const s3 = (px - b.x) * (a.y - b.y) - (a.x - b.x) * (py - b.y);
-    const hasNeg = s1 < 0 || s2 < 0 || s3 < 0;
-    const hasPos = s1 > 0 || s2 > 0 || s3 > 0;
-    return !(hasNeg && hasPos);
-  }, []);
+  const pointInTriangle = useCallback(
+    (px: number, py: number, tri: Array<{ x: number; y: number }>) => {
+      const a = tri[0];
+      const b = tri[1];
+      const c = tri[2];
+      const s1 = (px - c.x) * (b.y - c.y) - (b.x - c.x) * (py - c.y);
+      const s2 = (px - a.x) * (c.y - a.y) - (c.x - a.x) * (py - a.y);
+      const s3 = (px - b.x) * (a.y - b.y) - (a.x - b.x) * (py - b.y);
+      const hasNeg = s1 < 0 || s2 < 0 || s3 < 0;
+      const hasPos = s1 > 0 || s2 > 0 || s3 > 0;
+      return !(hasNeg && hasPos);
+    },
+    [],
+  );
 
   const NO_WALK_TETRAGON: Array<{ x: number; y: number }> = useMemo(
     () => [
@@ -1195,7 +1470,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       { x: 0.4079, y: 0.6358 },
       { x: 0.0579, y: 0.5272 },
     ],
-    []
+    [],
   );
 
   const STAR_SHINE_PENTAGON = useMemo<Array<{ x: number; y: number }>>(
@@ -1206,7 +1481,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       { x: 0.8997, y: 0.497 },
       { x: 0.6474, y: 0.9014 },
     ],
-    []
+    [],
   );
 
   const STAR_SHINE_PENTAGON_BOUNDS = useMemo(() => {
@@ -1224,7 +1499,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return { minX, maxX, minY, maxY };
   }, [STAR_SHINE_PENTAGON]);
 
-  const SMALLER_SMOOTH_CYCLING_ELLIPSE = useMemo<{ cx: number; cy: number; rx: number; ryTop: number; ryBottom: number }>(
+  const SMALLER_SMOOTH_CYCLING_ELLIPSE = useMemo<{
+    cx: number;
+    cy: number;
+    rx: number;
+    ryTop: number;
+    ryBottom: number;
+  }>(
     () => ({
       cx: 0.4982,
       cy: 0.1928,
@@ -1232,10 +1513,16 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       ryTop: 0.1143,
       ryBottom: 0.1492,
     }),
-    []
+    [],
   );
 
-  const SMOOTH_CYCLING_ELLIPSE = useMemo<{ cx: number; cy: number; rx: number; ryTop: number; ryBottom: number }>(
+  const SMOOTH_CYCLING_ELLIPSE = useMemo<{
+    cx: number;
+    cy: number;
+    rx: number;
+    ryTop: number;
+    ryBottom: number;
+  }>(
     () => ({
       cx: 0.4982,
       cy: 0.1928,
@@ -1243,7 +1530,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       ryTop: 0.1143,
       ryBottom: 0.175,
     }),
-    []
+    [],
   );
   const smoothEllipseMetrics = useMemo(() => {
     const rx = Math.max(1e-6, SMOOTH_CYCLING_ELLIPSE.rx);
@@ -1262,7 +1549,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (dy < -1e-6) return smoothEllipseMetrics.invRyTopSq;
       return smoothEllipseMetrics.invRyMidSq;
     },
-    [smoothEllipseMetrics]
+    [smoothEllipseMetrics],
   );
   const isInsideSmoothEllipse = useCallback(
     (x: number, y: number) => {
@@ -1272,7 +1559,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (smoothEllipseMetrics.invRxSq === 0 || invRySq === 0) return false;
       return dx * dx * smoothEllipseMetrics.invRxSq + dy * dy * invRySq <= 1;
     },
-    [SMOOTH_CYCLING_ELLIPSE, pickInvRySq, smoothEllipseMetrics]
+    [SMOOTH_CYCLING_ELLIPSE, pickInvRySq, smoothEllipseMetrics],
   );
   const projectToSmoothEllipse = useCallback(
     (x: number, y: number) => {
@@ -1280,9 +1567,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const dy = y - SMOOTH_CYCLING_ELLIPSE.cy;
       const invRySq = pickInvRySq(dy);
       if (smoothEllipseMetrics.invRxSq === 0 || invRySq === 0) {
-        return { x: Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cx)), y: Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cy)) };
+        return {
+          x: Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cx)),
+          y: Math.max(0, Math.min(1, SMOOTH_CYCLING_ELLIPSE.cy)),
+        };
       }
-      const denom = Math.sqrt(dx * dx * smoothEllipseMetrics.invRxSq + dy * dy * invRySq) || 1;
+      const denom =
+        Math.sqrt(dx * dx * smoothEllipseMetrics.invRxSq + dy * dy * invRySq) ||
+        1;
       const px = SMOOTH_CYCLING_ELLIPSE.cx + dx / denom;
       const py = SMOOTH_CYCLING_ELLIPSE.cy + dy / denom;
       const vx = px - SMOOTH_CYCLING_ELLIPSE.cx;
@@ -1291,9 +1583,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const inset = SAFE_POINT_EDGE_INSET;
       const innerX = px - (vx / vlen) * inset;
       const innerY = py - (vy / vlen) * inset;
-      return { x: Math.max(0, Math.min(1, innerX)), y: Math.max(0, Math.min(1, innerY)) };
+      return {
+        x: Math.max(0, Math.min(1, innerX)),
+        y: Math.max(0, Math.min(1, innerY)),
+      };
     },
-    [SMOOTH_CYCLING_ELLIPSE, pickInvRySq, smoothEllipseMetrics]
+    [SMOOTH_CYCLING_ELLIPSE, pickInvRySq, smoothEllipseMetrics],
   );
 
   const activateMaterial = useCallback(
@@ -1308,7 +1603,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const f = spawnIconParticlesFnRef.current;
       if (f) f(img as HTMLImageElement, url);
     },
-    [materialUrls]
+    [materialUrls],
   );
 
   useEffect(() => {
@@ -1341,7 +1636,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const el = refs[n];
         if (!el) continue;
         const r = el.getBoundingClientRect();
-        if (clientX >= r.left && clientX <= r.right && clientY >= r.top && clientY <= r.bottom) set.add(n);
+        if (
+          clientX >= r.left &&
+          clientX <= r.right &&
+          clientY >= r.top &&
+          clientY <= r.bottom
+        )
+          set.add(n);
       }
       return set;
     };
@@ -1355,7 +1656,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       indices.forEach((i) => {
         const originalLabel = HOTSPOT_LABELS[i] ?? i + 1;
         let sound: RockSound | null = null;
-        const pick = (arr: RockSound[]) => arr[Math.floor(Math.random() * arr.length)];
+        const pick = (arr: RockSound[]) =>
+          arr[Math.floor(Math.random() * arr.length)];
         switch (originalLabel) {
           case 11:
             sound = pick([RockSound.S1A, RockSound.S1B, RockSound.S1C]);
@@ -1382,13 +1684,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             sound = pick([RockSound.S8A, RockSound.S8B, RockSound.S8C]);
             break;
           case 3:
-            sound = pick([RockSound.S9A, RockSound.S9B, RockSound.S9C, RockSound.S9D]);
+            sound = pick([
+              RockSound.S9A,
+              RockSound.S9B,
+              RockSound.S9C,
+              RockSound.S9D,
+            ]);
             break;
           case 2:
-            sound = pick([RockSound.S10A, RockSound.S10B, RockSound.S10C, RockSound.S10D]);
+            sound = pick([
+              RockSound.S10A,
+              RockSound.S10B,
+              RockSound.S10C,
+              RockSound.S10D,
+            ]);
             break;
           case 1:
-            sound = pick([RockSound.S11A, RockSound.S11B, RockSound.S11C, RockSound.S11D]);
+            sound = pick([
+              RockSound.S11A,
+              RockSound.S11B,
+              RockSound.S11C,
+              RockSound.S11D,
+            ]);
             break;
         }
         if (sound) playRockSound(sound);
@@ -1405,7 +1722,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const next = [...prev];
           indices.forEach((i) => {
             next[i] = true;
-            if (hotspotTimersRef.current[i]) window.clearTimeout(hotspotTimersRef.current[i]);
+            if (hotspotTimersRef.current[i])
+              window.clearTimeout(hotspotTimersRef.current[i]);
             hotspotTimersRef.current[i] = window.setTimeout(() => {
               setHotspotVisible((cur) => {
                 const n2 = [...cur];
@@ -1504,19 +1822,39 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     };
     window.addEventListener("mousedown", onDown as any, { capture: true });
     window.addEventListener("mouseup", onUp, { capture: true });
-    window.addEventListener("touchstart", onDown as any, { passive: true, capture: true });
+    window.addEventListener("touchstart", onDown as any, {
+      passive: true,
+      capture: true,
+    });
     window.addEventListener("touchend", onUp, { capture: true });
     window.addEventListener("touchcancel", onUp, { capture: true });
     window.addEventListener("mousemove", onMoveMouse, { capture: true });
-    window.addEventListener("touchmove", onMoveTouch as any, { passive: true, capture: true });
+    window.addEventListener("touchmove", onMoveTouch as any, {
+      passive: true,
+      capture: true,
+    });
     return () => {
-      window.removeEventListener("mousedown", onDown as any, { capture: true } as any);
+      window.removeEventListener(
+        "mousedown",
+        onDown as any,
+        { capture: true } as any,
+      );
       window.removeEventListener("mouseup", onUp, { capture: true } as any);
-      window.removeEventListener("touchstart", onDown as any, { capture: true } as any);
+      window.removeEventListener(
+        "touchstart",
+        onDown as any,
+        { capture: true } as any,
+      );
       window.removeEventListener("touchend", onUp, { capture: true } as any);
       window.removeEventListener("touchcancel", onUp, { capture: true } as any);
-      window.removeEventListener("mousemove", onMoveMouse, { capture: true } as any);
-      window.removeEventListener("touchmove", onMoveTouch as any, { capture: true } as any);
+      window.removeEventListener("mousemove", onMoveMouse, {
+        capture: true,
+      } as any);
+      window.removeEventListener(
+        "touchmove",
+        onMoveTouch as any,
+        { capture: true } as any,
+      );
     };
   }, [activateMaterial, islandOverlayVisible, islandClosing, islandOpening]);
 
@@ -1541,14 +1879,25 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     };
   }, [islandOverlayVisible, islandClosing]);
 
-  const [dudePos, setDudePos] = useState<{ x: number; y: number }>({ x: DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT, y: DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT });
+  const [dudePos, setDudePos] = useState<{ x: number; y: number }>({
+    x: DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT,
+    y: DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT,
+  });
   const [dudeFacingLeft, setDudeFacingLeft] = useState<boolean>(false);
 
   const hasSyncedDudeRef = useRef<boolean>(false);
-  const initialDudePosRef = useRef<{ x: number; y: number } | null>({ x: DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT, y: DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT });
+  const initialDudePosRef = useRef<{ x: number; y: number } | null>({
+    x: DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT,
+    y: DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT,
+  });
   const dudeWrapRef = useRef<HTMLDivElement | null>(null);
 
-  const moveAnimRef = useRef<{ start: number; from: { x: number; y: number }; to: { x: number; y: number }; duration: number } | null>(null);
+  const moveAnimRef = useRef<{
+    start: number;
+    from: { x: number; y: number };
+    to: { x: number; y: number };
+    duration: number;
+  } | null>(null);
   const rafRef = useRef<number | null>(null);
 
   const [miningPlaying, setMiningPlaying] = useState(false);
@@ -1558,23 +1907,36 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const [walkingPlaying, setWalkingPlaying] = useState(false);
   const [pettingPlaying, setPettingPlaying] = useState(false);
   const [standingPlaying, setStandingPlaying] = useState(false);
-  const sheetAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
-  const currentAnimKindRef = useRef<"none" | "mining" | "walking" | "petting" | "standing">("none");
+  const sheetAnimRef = useRef<{
+    start: number;
+    raf: number | null;
+    lastFrame: number;
+  } | null>(null);
+  const currentAnimKindRef = useRef<
+    "none" | "mining" | "walking" | "petting" | "standing"
+  >("none");
 
   const { assets } = useGameAssets();
-  const [currentMonType, setCurrentMonType] = useState<MonType>(() => ensureMonType(storage.getIslandMonType(MonType.DRAINER)));
+  const [currentMonType, setCurrentMonType] = useState<MonType>(() =>
+    ensureMonType(storage.getIslandMonType(MonType.DRAINER)),
+  );
   const [monPos, setMonPos] = useState<{ x: number; y: number } | null>(null);
   const [monFacingLeft, setMonFacingLeftState] = useState<boolean>(false);
   const monFacingLeftRef = useRef(monFacingLeft);
-  const setMonFacingLeft = useCallback<React.Dispatch<React.SetStateAction<boolean>>>(
+  const setMonFacingLeft = useCallback<
+    React.Dispatch<React.SetStateAction<boolean>>
+  >(
     (value) => {
       setMonFacingLeftState((prev) => {
-        const nextValue = typeof value === "function" ? (value as (prev: boolean) => boolean)(prev) : value;
+        const nextValue =
+          typeof value === "function"
+            ? (value as (prev: boolean) => boolean)(prev)
+            : value;
         monFacingLeftRef.current = nextValue;
         return nextValue;
       });
     },
-    [setMonFacingLeftState]
+    [setMonFacingLeftState],
   );
   const [monSpriteData, setMonSpriteData] = useState<string>("");
   const [monKey, setMonKey] = useState<string | null>(null);
@@ -1582,7 +1944,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const monWrapRef = useRef<HTMLDivElement | null>(null);
   const monFrameWrapRef = useRef<HTMLDivElement | null>(null);
   const monStripImgRef = useRef<HTMLImageElement | null>(null);
-  const monAnimRef = useRef<{ start: number; raf: number | null; lastFrame: number } | null>(null);
+  const monAnimRef = useRef<{
+    start: number;
+    raf: number | null;
+    lastFrame: number;
+  } | null>(null);
   const monNaturalSizeRef = useRef<{ w: number; h: number }>({ w: 0, h: 0 });
   const monResizeObserverRef = useRef<ResizeObserver | null>(null);
   const monFlipTimerRef = useRef<number | null>(null);
@@ -1638,17 +2004,33 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, []);
 
   const playSheetAnimation = useCallback(
-    (kind: "mining" | "walking" | "petting" | "standing", opts?: { onStep?: () => void }) => {
+    (
+      kind: "mining" | "walking" | "petting" | "standing",
+      opts?: { onStep?: () => void },
+    ) => {
       if (!dudeWrapRef.current) return;
       const sheetImg = miningImageRef.current;
       if (!sheetImg) return;
       if (kind === "mining" && miningPlaying) return;
-      if (kind === "walking" && currentAnimKindRef.current === "walking" && sheetAnimRef.current && sheetAnimRef.current.raf !== null) return;
+      if (
+        kind === "walking" &&
+        currentAnimKindRef.current === "walking" &&
+        sheetAnimRef.current &&
+        sheetAnimRef.current.raf !== null
+      )
+        return;
       if (kind === "petting" && pettingPlaying) return;
-      if (kind === "standing" && currentAnimKindRef.current === "standing" && sheetAnimRef.current && sheetAnimRef.current.raf !== null) return;
+      if (
+        kind === "standing" &&
+        currentAnimKindRef.current === "standing" &&
+        sheetAnimRef.current &&
+        sheetAnimRef.current.raf !== null
+      )
+        return;
 
       try {
-        if (sheetAnimRef.current && sheetAnimRef.current.raf) cancelAnimationFrame(sheetAnimRef.current.raf);
+        if (sheetAnimRef.current && sheetAnimRef.current.raf)
+          cancelAnimationFrame(sheetAnimRef.current.raf);
         sheetAnimRef.current = null;
         currentAnimKindRef.current = "none";
         setMiningPlaying(false);
@@ -1689,25 +2071,51 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
 
         const frameAspect = frameWidth / singleRowHeight;
         wrap.style.setProperty("--dude-frame-aspect", frameAspect.toString());
-        frameWrap.style.setProperty("--dude-frame-aspect", frameAspect.toString());
-        stripImg.style.setProperty("--dude-frame-count", DUDE_FRAME_COUNT.toString());
-        stripImg.style.setProperty("--dude-strip-rows", DUDE_SHEET_ROWS.toString());
+        frameWrap.style.setProperty(
+          "--dude-frame-aspect",
+          frameAspect.toString(),
+        );
+        stripImg.style.setProperty(
+          "--dude-frame-count",
+          DUDE_FRAME_COUNT.toString(),
+        );
+        stripImg.style.setProperty(
+          "--dude-strip-rows",
+          DUDE_SHEET_ROWS.toString(),
+        );
         wrap.style.removeProperty("width");
         frameWrap.style.removeProperty("width");
         frameWrap.style.removeProperty("height");
         stripImg.style.removeProperty("width");
         stripImg.style.removeProperty("height");
 
-        const rowIndex = kind === "mining" ? 0 : kind === "walking" ? 1 : kind === "petting" ? 2 : 3;
+        const rowIndex =
+          kind === "mining"
+            ? 0
+            : kind === "walking"
+              ? 1
+              : kind === "petting"
+                ? 2
+                : 3;
         const rowShiftPct = rowIndex * (100 / DUDE_SHEET_ROWS);
         const initialFrameIndex = kind === "walking" ? 1 : 0;
-        const initialFrameShiftPct = initialFrameIndex * (100 / DUDE_FRAME_COUNT);
+        const initialFrameShiftPct =
+          initialFrameIndex * (100 / DUDE_FRAME_COUNT);
         stripImg.style.transform = `translate(${-initialFrameShiftPct}%, ${-rowShiftPct}%)`;
 
-        const frameMs = kind === "walking" ? WALKING_FRAME_MS : kind === "standing" ? STANDING_FRAME_MS : MINING_FRAME_MS;
+        const frameMs =
+          kind === "walking"
+            ? WALKING_FRAME_MS
+            : kind === "standing"
+              ? STANDING_FRAME_MS
+              : MINING_FRAME_MS;
         const loop = kind === "walking" || kind === "standing";
 
-        const animObj = { start: performance.now(), raf: null as number | null, lastFrame: -1 };
+        const animObj = {
+          start: performance.now(),
+          raf: null as number | null,
+          lastFrame: -1,
+        };
         sheetAnimRef.current = animObj;
         currentAnimKindRef.current = kind;
 
@@ -1716,8 +2124,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const anim = animObj;
           const elapsed = performance.now() - anim.start;
           const rawFrame = Math.floor(elapsed / frameMs);
-          const baseFrame = loop ? ((rawFrame % DUDE_FRAME_COUNT) + DUDE_FRAME_COUNT) % DUDE_FRAME_COUNT : Math.min(DUDE_FRAME_COUNT - 1, Math.max(0, rawFrame));
-          const frame = kind === "walking" ? (baseFrame + 1) % DUDE_FRAME_COUNT : baseFrame;
+          const baseFrame = loop
+            ? ((rawFrame % DUDE_FRAME_COUNT) + DUDE_FRAME_COUNT) %
+              DUDE_FRAME_COUNT
+            : Math.min(DUDE_FRAME_COUNT - 1, Math.max(0, rawFrame));
+          const frame =
+            kind === "walking" ? (baseFrame + 1) % DUDE_FRAME_COUNT : baseFrame;
           if (frame !== anim.lastFrame) {
             anim.lastFrame = frame;
             const frameShiftPct = frame * (100 / DUDE_FRAME_COUNT);
@@ -1743,7 +2155,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       };
       requestAnimationFrame(init);
     },
-    [miningPlaying, pettingPlaying]
+    [miningPlaying, pettingPlaying],
   );
 
   const updateDudeStripSizing = useCallback(() => {
@@ -1761,7 +2173,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const frameAspect = frameWidth / singleRowHeight;
     wrap.style.setProperty("--dude-frame-aspect", frameAspect.toString());
     frameWrap.style.setProperty("--dude-frame-aspect", frameAspect.toString());
-    stripImg.style.setProperty("--dude-frame-count", DUDE_FRAME_COUNT.toString());
+    stripImg.style.setProperty(
+      "--dude-frame-count",
+      DUDE_FRAME_COUNT.toString(),
+    );
     stripImg.style.setProperty("--dude-strip-rows", DUDE_SHEET_ROWS.toString());
     frameWrap.style.removeProperty("width");
     frameWrap.style.removeProperty("height");
@@ -1769,10 +2184,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     stripImg.style.removeProperty("height");
 
     const kind = currentAnimKindRef.current;
-    const rowIndex = kind === "mining" ? 0 : kind === "walking" ? 1 : kind === "petting" ? 2 : 3;
+    const rowIndex =
+      kind === "mining"
+        ? 0
+        : kind === "walking"
+          ? 1
+          : kind === "petting"
+            ? 2
+            : 3;
     const rowShiftPct = rowIndex * (100 / DUDE_SHEET_ROWS);
     const lastFrame = sheetAnimRef.current?.lastFrame ?? -1;
-    const frameIndex = lastFrame === -1 && kind === "walking" ? 1 : Math.max(0, lastFrame);
+    const frameIndex =
+      lastFrame === -1 && kind === "walking" ? 1 : Math.max(0, lastFrame);
     const frameShiftPct = frameIndex * (100 / DUDE_FRAME_COUNT);
     stripImg.style.transform = `translate(${-frameShiftPct}%, ${-rowShiftPct}%)`;
   }, []);
@@ -1794,9 +2217,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   useLayoutEffect(() => {
     if (!islandOverlayVisible || islandClosing) return;
     updateDudeStripSizing();
-  }, [islandOverlayVisible, islandClosing, updateDudeStripSizing, heroSize.h, heroSize.w, dudeVisible]);
+  }, [
+    islandOverlayVisible,
+    islandClosing,
+    updateDudeStripSizing,
+    heroSize.h,
+    heroSize.w,
+    dudeVisible,
+  ]);
 
-  const startStandingAnimation = useCallback(() => playSheetAnimation("standing"), [playSheetAnimation]);
+  const startStandingAnimation = useCallback(
+    () => playSheetAnimation("standing"),
+    [playSheetAnimation],
+  );
 
   useEffect(() => {
     if (!islandOverlayVisible || islandClosing) return;
@@ -1807,7 +2240,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     raf1 = requestAnimationFrame(() => {
       raf2 = requestAnimationFrame(() => {
         timer = window.setTimeout(() => {
-          if (miningPlaying || walkingPlaying || pettingPlaying || standingPlaying) return;
+          if (
+            miningPlaying ||
+            walkingPlaying ||
+            pettingPlaying ||
+            standingPlaying
+          )
+            return;
           startStandingAnimation();
         }, 180);
       });
@@ -1817,10 +2256,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (raf2) cancelAnimationFrame(raf2);
       if (timer !== null) window.clearTimeout(timer);
     };
-  }, [islandOverlayVisible, islandClosing, dudeVisible, miningPlaying, walkingPlaying, pettingPlaying, standingPlaying, startStandingAnimation]);
+  }, [
+    islandOverlayVisible,
+    islandClosing,
+    dudeVisible,
+    miningPlaying,
+    walkingPlaying,
+    pettingPlaying,
+    standingPlaying,
+    startStandingAnimation,
+  ]);
 
   useEffect(() => {
-    const shouldBeMarkedOpen = islandOverlayShown || islandOpening || islandClosing;
+    const shouldBeMarkedOpen =
+      islandOverlayShown || islandOpening || islandClosing;
     if (shouldBeMarkedOpen) {
       document.body.classList.add("island-overlay-open");
     } else {
@@ -1832,7 +2281,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, [islandOverlayShown, islandOpening, islandClosing]);
 
   useEffect(() => {
-    overlayActiveRef.current = islandOverlayVisible || islandOpening || islandClosing;
+    overlayActiveRef.current =
+      islandOverlayVisible || islandOpening || islandClosing;
   }, [islandOverlayVisible, islandOpening, islandClosing]);
 
   useEffect(() => {
@@ -1928,7 +2378,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           if (!cancelled) fn();
         });
         return () => {
-          if (typeof win.cancelIdleCallback === "function") win.cancelIdleCallback(id);
+          if (typeof win.cancelIdleCallback === "function")
+            win.cancelIdleCallback(id);
         };
       }
       const t = setTimeout(() => {
@@ -1944,7 +2395,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           if (!url || cancelled) return;
           const img = new Image();
           img.src = url;
-          const p: Promise<void> = typeof (img as any).decode === "function" ? (img as any).decode() : Promise.resolve();
+          const p: Promise<void> =
+            typeof (img as any).decode === "function"
+              ? (img as any).decode()
+              : Promise.resolve();
           p.then(() => {
             if (!cancelled) decodedMaterialsRef.current.add(name);
           }).catch(() => {});
@@ -1967,7 +2421,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const hero = islandHeroImgRef.current;
     if (!hero) return;
     const rect = hero.getBoundingClientRect();
-    setHeroSize({ w: Math.max(1, Math.round(rect.width)), h: Math.max(1, Math.round(rect.height)) });
+    setHeroSize({
+      w: Math.max(1, Math.round(rect.width)),
+      h: Math.max(1, Math.round(rect.height)),
+    });
     let canvas = heroHitCanvasRef.current;
     if (!canvas) {
       canvas = document.createElement("canvas");
@@ -1992,7 +2449,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const hero = islandHeroImgRef.current;
       if (!hero) return;
       const rect = hero.getBoundingClientRect();
-      setHeroSize({ w: Math.max(1, Math.round(rect.width)), h: Math.max(1, Math.round(rect.height)) });
+      setHeroSize({
+        w: Math.max(1, Math.round(rect.width)),
+        h: Math.max(1, Math.round(rect.height)),
+      });
     };
     if (islandOverlayVisible) {
       window.addEventListener("resize", onResize);
@@ -2033,21 +2493,48 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     if (!heroSize.w || !heroSize.h) return;
     if (walkReady) return;
     initializeWalkPolygonIfNeeded();
-  }, [islandOverlayVisible, islandOpening, islandClosing, heroSize.w, heroSize.h, walkReady, initializeWalkPolygonIfNeeded]);
+  }, [
+    islandOverlayVisible,
+    islandOpening,
+    islandClosing,
+    heroSize.w,
+    heroSize.h,
+    walkReady,
+    initializeWalkPolygonIfNeeded,
+  ]);
 
-  const getDudeBounds = useCallback((): { left: number; top: number; right: number; bottom: number; area: number } => {
+  const getDudeBounds = useCallback((): {
+    left: number;
+    top: number;
+    right: number;
+    bottom: number;
+    area: number;
+  } => {
     const widthFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_WIDTH_FRAC));
     const heightFrac = Math.max(0.001, Math.min(1, DUDE_BOUNDS_HEIGHT_FRAC));
     const refPos = latestDudePosRef.current;
-    const hasValidRefPos = refPos && isFinite(refPos.x) && isFinite(refPos.y) && !(refPos.x === 0 && refPos.y === 0);
-    const fallback = initialDudePosRef.current ?? { x: DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT, y: DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT };
+    const hasValidRefPos =
+      refPos &&
+      isFinite(refPos.x) &&
+      isFinite(refPos.y) &&
+      !(refPos.x === 0 && refPos.y === 0);
+    const fallback = initialDudePosRef.current ?? {
+      x: DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT,
+      y: DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT,
+    };
     const cx = hasValidRefPos ? refPos.x : fallback.x;
     const bottomY = hasValidRefPos ? refPos.y : fallback.y;
     const left = cx - widthFrac * 0.5;
     const right = cx + widthFrac * 0.5;
     const top = bottomY - heightFrac;
     const bottom = bottomY;
-    return { left, top, right, bottom, area: Math.max(0, right - left) * Math.max(0, bottom - top) };
+    return {
+      left,
+      top,
+      right,
+      bottom,
+      area: Math.max(0, right - left) * Math.max(0, bottom - top),
+    };
   }, []);
 
   const findValidMonLocation = useCallback(
@@ -2063,8 +2550,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const centerX = ellipse.cx;
       const centerY = ellipse.cy;
       const invRxSq = rx > 0 ? 1 / (rx * rx) : 0;
-      const invRyTopSq = ellipse.ryTop > 0 ? 1 / (ellipse.ryTop * ellipse.ryTop) : 0;
-      const invRyBottomSq = ellipse.ryBottom > 0 ? 1 / (ellipse.ryBottom * ellipse.ryBottom) : 0;
+      const invRyTopSq =
+        ellipse.ryTop > 0 ? 1 / (ellipse.ryTop * ellipse.ryTop) : 0;
+      const invRyBottomSq =
+        ellipse.ryBottom > 0 ? 1 / (ellipse.ryBottom * ellipse.ryBottom) : 0;
       const rangeX = maxX - minX;
       const rangeY = maxY - minY;
       const insideEllipse = (cx: number, bottomY: number) => {
@@ -2075,7 +2564,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if (invRySq === 0) return false;
         return dx * dx * invRxSq + dy * dy * invRySq <= 1;
       };
-      const widthFrac = getMonBoundsWidthFrac(latestMonKeyRef.current ?? monKey);
+      const widthFrac = getMonBoundsWidthFrac(
+        latestMonKeyRef.current ?? monKey,
+      );
       const heightFrac = MON_HEIGHT_FRAC;
       const halfWidth = widthFrac * 0.5;
       const monArea = widthFrac * heightFrac;
@@ -2090,7 +2581,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         top: THEORETICAL_ROCK_SQUARE.cy - rockHalf,
         bottom: THEORETICAL_ROCK_SQUARE.cy + rockHalf,
       } as { left: number; top: number; right: number; bottom: number };
-      const tryFindNonOverlappingPosition = (): { x: number; y: number } | null => {
+      const tryFindNonOverlappingPosition = (): {
+        x: number;
+        y: number;
+      } | null => {
         let attempts = 0;
         while (attempts < 777) {
           attempts++;
@@ -2103,15 +2597,27 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           const right = cx + halfWidth;
           const top = bottomY - heightFrac;
           const bottom = bottomY;
-          let ix = Math.max(0, Math.min(rockB.right, right) - Math.max(rockB.left, left));
+          let ix = Math.max(
+            0,
+            Math.min(rockB.right, right) - Math.max(rockB.left, left),
+          );
           if (ix > 0) {
-            let iy = Math.max(0, Math.min(rockB.bottom, bottom) - Math.max(rockB.top, top));
+            let iy = Math.max(
+              0,
+              Math.min(rockB.bottom, bottom) - Math.max(rockB.top, top),
+            );
             if (ix * iy > rockOverlapLimit) continue;
           }
           if (dudeB) {
-            ix = Math.max(0, Math.min(dudeB.right, right) - Math.max(dudeB.left, left));
+            ix = Math.max(
+              0,
+              Math.min(dudeB.right, right) - Math.max(dudeB.left, left),
+            );
             if (ix > 0) {
-              const iy = Math.max(0, Math.min(dudeB.bottom, bottom) - Math.max(dudeB.top, top));
+              const iy = Math.max(
+                0,
+                Math.min(dudeB.bottom, bottom) - Math.max(dudeB.top, top),
+              );
               if (ix * iy > dudeOverlapLimit) continue;
             }
           }
@@ -2135,7 +2641,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       return defaultCandidate;
     },
-    [SMALLER_SMOOTH_CYCLING_ELLIPSE, monKey, getDudeBounds]
+    [SMALLER_SMOOTH_CYCLING_ELLIPSE, monKey, getDudeBounds],
   );
 
   useEffect(() => {
@@ -2147,7 +2653,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const storedType = ensureMonType(storage.getIslandMonType(MonType.DRAINER));
     setCurrentMonType(storedType);
     updateMonSprite(storedType);
-  }, [islandOverlayVisible, setMonFacingLeft, findValidMonLocation, updateMonSprite, setCurrentMonType]);
+  }, [
+    islandOverlayVisible,
+    setMonFacingLeft,
+    findValidMonLocation,
+    updateMonSprite,
+    setCurrentMonType,
+  ]);
 
   useEffect(() => {
     if (!decorVisible || islandClosing || !islandOverlayVisible) return;
@@ -2163,7 +2675,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         monFlipTimerRef.current = null;
       }
     };
-  }, [decorVisible, islandClosing, islandOverlayVisible, setMonFacingLeft, monSpriteData, monPos]);
+  }, [
+    decorVisible,
+    islandClosing,
+    islandOverlayVisible,
+    setMonFacingLeft,
+    monSpriteData,
+    monPos,
+  ]);
 
   const petMon = useCallback(() => {
     const frame = monFrameWrapRef.current;
@@ -2184,7 +2703,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     }
     monPetTimerRef.current = window.setTimeout(() => {
       try {
-        frame.style.transition = "transform 220ms cubic-bezier(0.22, 1, 0.36, 1)";
+        frame.style.transition =
+          "transform 220ms cubic-bezier(0.22, 1, 0.36, 1)";
         frame.style.transform = `scale(${baseX}, 1)`;
       } catch {}
       if (monPetTimerRef.current !== null) {
@@ -2224,11 +2744,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       img.src = `data:image/webp;base64,${monSpriteData}`;
       const startAnim = () => {
         const frameCount = MON_FRAME_COUNT;
-        monNaturalSizeRef.current = { w: img.naturalWidth || 1, h: img.naturalHeight || 1 };
+        monNaturalSizeRef.current = {
+          w: img.naturalWidth || 1,
+          h: img.naturalHeight || 1,
+        };
         stripImg.style.visibility = "hidden";
         updateMonStripSizing();
         stripImg.style.transform = `translateX(0%)`;
-        monAnimRef.current = { start: performance.now(), raf: null, lastFrame: -1 };
+        monAnimRef.current = {
+          start: performance.now(),
+          raf: null,
+          lastFrame: -1,
+        };
         const MON_FRAME_MS = 220;
         const step = () => {
           const anim = monAnimRef.current;
@@ -2276,13 +2803,27 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       monResizeObserverRef.current = null;
       setMonVisible(false);
     };
-  }, [decorVisible, islandClosing, monSpriteData, monPos, updateMonStripSizing]);
+  }, [
+    decorVisible,
+    islandClosing,
+    monSpriteData,
+    monPos,
+    updateMonStripSizing,
+  ]);
 
   useLayoutEffect(() => {
     if (!decorVisible || islandClosing) return;
     if (!monSpriteData || !monPos) return;
     updateMonStripSizing();
-  }, [decorVisible, islandClosing, monSpriteData, monPos, heroSize.h, heroSize.w, updateMonStripSizing]);
+  }, [
+    decorVisible,
+    islandClosing,
+    monSpriteData,
+    monPos,
+    heroSize.h,
+    heroSize.w,
+    updateMonStripSizing,
+  ]);
 
   const measureHeroSize = useCallback(() => {
     const hero = islandHeroImgRef.current;
@@ -2378,7 +2919,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     overlayJustOpenedAtRef.current = 0;
     clearAnonSignInDrop();
     amountsDecoupledRef.current = false;
-    const resetMaterials = computeAvailableMaterials(latestServiceMaterialsRef.current, frozenMaterialsRef.current);
+    const resetMaterials = computeAvailableMaterials(
+      latestServiceMaterialsRef.current,
+      frozenMaterialsRef.current,
+    );
     setMaterialAmounts(resetMaterials);
     const container = fxContainerRef.current;
     if (container && container.parentNode) {
@@ -2391,7 +2935,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     if (heroImg) {
       const heroWrap = heroImg.parentElement as HTMLElement | null;
       if (heroWrap) {
-        const nodes = heroWrap.querySelectorAll('[data-fx="material-drop"], [data-fx="material-drop-shadow"]');
+        const nodes = heroWrap.querySelectorAll(
+          '[data-fx="material-drop"], [data-fx="material-drop-shadow"]',
+        );
         nodes.forEach((n) => {
           try {
             n.parentElement?.removeChild(n);
@@ -2469,7 +3015,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, [clearAnonSignInDrop]);
 
   const handleIslandOpen = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    (
+      event:
+        | React.MouseEvent<HTMLButtonElement>
+        | React.TouchEvent<HTMLButtonElement>,
+    ) => {
       if (overlayPhaseRef.current !== "idle") {
         return;
       }
@@ -2486,7 +3036,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if (playerSeemedInitialized) {
           playSounds([Sound.IslandShowUp]);
         }
-        preloadSounds([Sound.PickaxeHit, Sound.PickaxeMiss, Sound.RockOpen, Sound.CollectingMaterials, Sound.IslandClose]).catch(() => {});
+        preloadSounds([
+          Sound.PickaxeHit,
+          Sound.PickaxeMiss,
+          Sound.RockOpen,
+          Sound.CollectingMaterials,
+          Sound.IslandClose,
+        ]).catch(() => {});
       });
 
       closeAllKindsOfPopups();
@@ -2498,7 +3054,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const nextMaterials = { ...snapshot.materials };
       latestServiceMaterialsRef.current = nextMaterials;
       amountsDecoupledRef.current = false;
-      const available = computeAvailableMaterials(nextMaterials, frozenMaterialsRef.current);
+      const available = computeAvailableMaterials(
+        nextMaterials,
+        frozenMaterialsRef.current,
+      );
       setMaterialAmounts(available);
       const rect = imgEl.getBoundingClientRect();
       const vh = window.innerHeight;
@@ -2546,75 +3105,93 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         } catch {}
       });
     },
-    [clearAnonSignInDrop, islandImgLoaded, islandNatural, setRockBottomY, setRockReady, updateRockBox]
+    [
+      clearAnonSignInDrop,
+      islandImgLoaded,
+      islandNatural,
+      setRockBottomY,
+      setRockReady,
+      updateRockBox,
+    ],
   );
 
-  const spawnIconParticles = useCallback((sourceEl: HTMLElement, src: string) => {
-    const numParticles = 10;
-    const durationMs = 420;
-    const start = performance.now();
-    const rect = sourceEl.getBoundingClientRect();
-    const startX = rect.left + rect.width / 2;
-    const startY = rect.top + rect.height / 2;
-    const baseSize = Math.max(14, Math.min(28, rect.width * 0.7));
-    const els: HTMLImageElement[] = [];
-    let fxContainer = fxContainerRef.current as HTMLDivElement | null;
-    if (!fxContainer) {
-      fxContainer = document.createElement("div");
-      fxContainer.style.position = "fixed";
-      fxContainer.style.left = "0";
-      fxContainer.style.top = "0";
-      fxContainer.style.right = "0";
-      fxContainer.style.bottom = "0";
-      fxContainer.style.pointerEvents = "none";
-      fxContainer.style.zIndex = "90005";
+  const spawnIconParticles = useCallback(
+    (sourceEl: HTMLElement, src: string) => {
+      const numParticles = 10;
+      const durationMs = 420;
+      const start = performance.now();
+      const rect = sourceEl.getBoundingClientRect();
+      const startX = rect.left + rect.width / 2;
+      const startY = rect.top + rect.height / 2;
+      const baseSize = Math.max(14, Math.min(28, rect.width * 0.7));
+      const els: HTMLImageElement[] = [];
+      let fxContainer = fxContainerRef.current as HTMLDivElement | null;
+      if (!fxContainer) {
+        fxContainer = document.createElement("div");
+        fxContainer.style.position = "fixed";
+        fxContainer.style.left = "0";
+        fxContainer.style.top = "0";
+        fxContainer.style.right = "0";
+        fxContainer.style.bottom = "0";
+        fxContainer.style.pointerEvents = "none";
+        fxContainer.style.zIndex = "90005";
 
-      fxContainerRef.current = fxContainer;
-      document.body.appendChild(fxContainer);
-    }
-    for (let i = 0; i < numParticles; i++) {
-      const el = document.createElement("img");
-      el.src = src;
-      el.draggable = false;
-      el.style.position = "absolute";
-      el.style.left = "0";
-      el.style.top = "0";
-      el.style.width = `${baseSize}px`;
-      el.style.height = `${baseSize}px`;
-      el.style.pointerEvents = "none";
-      el.style.zIndex = "90003";
-      el.style.backfaceVisibility = "hidden";
-      el.style.transform = `translate(${startX - baseSize / 2}px, ${startY - baseSize / 2}px) scale(1)`;
-      el.style.opacity = "1";
-      el.setAttribute("data-fx", "icon-particle");
-      fxContainer.appendChild(el);
-      els.push(el);
-    }
-    const angles = els.map((_, i) => (i / numParticles) * Math.PI * 2 + Math.random() * (Math.PI / numParticles) - Math.PI / 2);
-    const distances = els.map(() => 60 + Math.random() * 80);
-    const rotations = els.map(() => (Math.random() - 0.5) * 0.4);
-    function easeOutCubic(t: number) {
-      return 1 - Math.pow(1 - t, 3);
-    }
-    function step(now: number) {
-      const t = Math.min(1, (now - start) / durationMs);
-      const e = easeOutCubic(t);
-      for (let i = 0; i < els.length; i++) {
-        const dx = Math.cos(angles[i]) * distances[i] * e;
-        const dy = Math.sin(angles[i]) * distances[i] * e + 0.35 * distances[i] * e * e;
-        const s = 1 - 0.35 * e;
-        const r = rotations[i] * 90 * e;
-        els[i].style.transform = `translate(${startX - baseSize / 2 + dx}px, ${startY - baseSize / 2 + dy}px) scale(${s}) rotate(${r}deg)`;
-        els[i].style.opacity = `${1 - e}`;
+        fxContainerRef.current = fxContainer;
+        document.body.appendChild(fxContainer);
       }
-      if (t < 1) {
-        requestAnimationFrame(step);
-      } else {
-        for (const el of els) el.remove();
+      for (let i = 0; i < numParticles; i++) {
+        const el = document.createElement("img");
+        el.src = src;
+        el.draggable = false;
+        el.style.position = "absolute";
+        el.style.left = "0";
+        el.style.top = "0";
+        el.style.width = `${baseSize}px`;
+        el.style.height = `${baseSize}px`;
+        el.style.pointerEvents = "none";
+        el.style.zIndex = "90003";
+        el.style.backfaceVisibility = "hidden";
+        el.style.transform = `translate(${startX - baseSize / 2}px, ${startY - baseSize / 2}px) scale(1)`;
+        el.style.opacity = "1";
+        el.setAttribute("data-fx", "icon-particle");
+        fxContainer.appendChild(el);
+        els.push(el);
       }
-    }
-    requestAnimationFrame(step);
-  }, []);
+      const angles = els.map(
+        (_, i) =>
+          (i / numParticles) * Math.PI * 2 +
+          Math.random() * (Math.PI / numParticles) -
+          Math.PI / 2,
+      );
+      const distances = els.map(() => 60 + Math.random() * 80);
+      const rotations = els.map(() => (Math.random() - 0.5) * 0.4);
+      function easeOutCubic(t: number) {
+        return 1 - Math.pow(1 - t, 3);
+      }
+      function step(now: number) {
+        const t = Math.min(1, (now - start) / durationMs);
+        const e = easeOutCubic(t);
+        for (let i = 0; i < els.length; i++) {
+          const dx = Math.cos(angles[i]) * distances[i] * e;
+          const dy =
+            Math.sin(angles[i]) * distances[i] * e +
+            0.35 * distances[i] * e * e;
+          const s = 1 - 0.35 * e;
+          const r = rotations[i] * 90 * e;
+          els[i].style.transform =
+            `translate(${startX - baseSize / 2 + dx}px, ${startY - baseSize / 2 + dy}px) scale(${s}) rotate(${r}deg)`;
+          els[i].style.opacity = `${1 - e}`;
+        }
+        if (t < 1) {
+          requestAnimationFrame(step);
+        } else {
+          for (const el of els) el.remove();
+        }
+      }
+      requestAnimationFrame(step);
+    },
+    [],
+  );
 
   useEffect(() => {
     spawnIconParticlesFnRef.current = spawnIconParticles;
@@ -2626,7 +3203,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!url) return;
       const host = materialItemRefs.current[name];
       if (!host) return;
-      const targetImg = (host.querySelector("img") as HTMLImageElement | null) || null;
+      const targetImg =
+        (host.querySelector("img") as HTMLImageElement | null) || null;
       const toRect = (targetImg || host).getBoundingClientRect();
 
       let fxContainer = fxContainerRef.current as HTMLDivElement | null;
@@ -2699,7 +3277,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }));
       }
     },
-    [materialItemRefs, materialUrls, setMaterialAmounts]
+    [materialItemRefs, materialUrls, setMaterialAmounts],
   );
 
   const flushMaterialPullQueue = useCallback(() => {
@@ -2716,9 +3294,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     (name: MaterialName, rect: MaterialPullRect) => {
       materialPullQueueRef.current.push({ name, rect });
       if (materialPullFlushRef.current !== null) return;
-      materialPullFlushRef.current = requestAnimationFrame(() => flushMaterialPullQueue());
+      materialPullFlushRef.current = requestAnimationFrame(() =>
+        flushMaterialPullQueue(),
+      );
     },
-    [flushMaterialPullQueue]
+    [flushMaterialPullQueue],
   );
 
   useEffect(() => {
@@ -2758,13 +3338,24 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     return { clamped, zone, zMain, zShadow };
   }, []);
 
-  const setMaterialDropZ = useCallback((entry: MaterialDropEntry, info: { clamped: number; zone: MaterialDropEntry["zone"]; zMain: number; zShadow: number }) => {
-    entry.baseline = info.clamped;
-    entry.zone = info.zone;
-    entry.lastZ = info.zMain;
-    entry.el.style.zIndex = `${info.zMain}`;
-    entry.shadow.style.zIndex = `${info.zShadow}`;
-  }, []);
+  const setMaterialDropZ = useCallback(
+    (
+      entry: MaterialDropEntry,
+      info: {
+        clamped: number;
+        zone: MaterialDropEntry["zone"];
+        zMain: number;
+        zShadow: number;
+      },
+    ) => {
+      entry.baseline = info.clamped;
+      entry.zone = info.zone;
+      entry.lastZ = info.zMain;
+      entry.el.style.zIndex = `${info.zMain}`;
+      entry.shadow.style.zIndex = `${info.zShadow}`;
+    },
+    [],
+  );
 
   const updateFlightZoneIfNeeded = useCallback(
     (entry: MaterialDropEntry, baselineFrac: number) => {
@@ -2775,7 +3366,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         entry.baseline = info.clamped;
       }
     },
-    [calculateMaterialZ, setMaterialDropZ]
+    [calculateMaterialZ, setMaterialDropZ],
   );
 
   const settleMaterialDrop = useCallback(
@@ -2784,19 +3375,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       entry.phase = "settled";
       setMaterialDropZ(entry, info);
     },
-    [calculateMaterialZ, setMaterialDropZ]
+    [calculateMaterialZ, setMaterialDropZ],
   );
 
   const refreshMaterialDropZ = useCallback(() => {
     const heroImg = islandHeroImgRef.current;
-    const heroWrap = heroImg ? (heroImg.parentElement as HTMLElement | null) : null;
+    const heroWrap = heroImg
+      ? (heroImg.parentElement as HTMLElement | null)
+      : null;
     if (!heroWrap) return;
     const wrapBox = heroWrap.getBoundingClientRect();
     materialDropsRef.current = materialDropsRef.current.filter((drop) => {
       const { el, shadow } = drop;
       if (!el.isConnected || !shadow.isConnected) return false;
       const elBox = el.getBoundingClientRect();
-      const baselineFrac = Math.max(0, Math.min(1, (elBox.top - wrapBox.top + elBox.height * 0.8) / Math.max(1, wrapBox.height)));
+      const baselineFrac = Math.max(
+        0,
+        Math.min(
+          1,
+          (elBox.top - wrapBox.top + elBox.height * 0.8) /
+            Math.max(1, wrapBox.height),
+        ),
+      );
       if (drop.phase === "flight") {
         updateFlightZoneIfNeeded(drop, baselineFrac);
       } else {
@@ -2811,7 +3411,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, [refreshMaterialDropZ, rockReady, rockBottomY]);
 
   const spawnMaterialDrop = useCallback(
-    async (name: MaterialName, delay: number, common?: { duration1: number; spread: number; lift: number; fall: number; start: number; angle?: number }): Promise<MaterialName> => {
+    async (
+      name: MaterialName,
+      delay: number,
+      common?: {
+        duration1: number;
+        spread: number;
+        lift: number;
+        fall: number;
+        start: number;
+        angle?: number;
+      },
+    ): Promise<MaterialName> => {
       const url = await getMaterialImageUrl(name);
       if (!url) return name;
       const rockLayer = rockLayerRef.current;
@@ -2824,10 +3435,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const startX = rect.left + rect.width / 2;
       const startY = rect.top + rect.height * 0.5;
       const originOffsetX = (Math.random() - 0.5) * rect.width * 0.2;
-      const originOffsetY = -rect.height * 0.12 + Math.random() * rect.height * 0.16;
+      const originOffsetY =
+        -rect.height * 0.12 + Math.random() * rect.height * 0.16;
       const wrapBox = heroWrap.getBoundingClientRect();
-      const baseXPct = ((startX + originOffsetX - wrapBox.left) / Math.max(1, wrapBox.width)) * 100;
-      const baseYPct = ((startY + originOffsetY - wrapBox.top) / Math.max(1, wrapBox.height)) * 100;
+      const baseXPct =
+        ((startX + originOffsetX - wrapBox.left) / Math.max(1, wrapBox.width)) *
+        100;
+      const baseYPct =
+        ((startY + originOffsetY - wrapBox.top) / Math.max(1, wrapBox.height)) *
+        100;
       const el = document.createElement("img");
       el.src = url;
       el.draggable = false;
@@ -2851,13 +3467,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       shadowEl.style.borderRadius = "50%";
       shadowEl.style.background = "rgba(0,0,0,0.28)";
       shadowEl.style.pointerEvents = "none";
-      shadowEl.style.willChange = "left, top, width, height, filter, opacity, z-index";
+      shadowEl.style.willChange =
+        "left, top, width, height, filter, opacity, z-index";
       shadowEl.style.transform = "translate(-50%, -50%)";
       shadowEl.style.display = "none";
       shadowEl.setAttribute("data-fx", "material-drop-shadow");
       heroWrap.appendChild(shadowEl);
       const elBoxInit = el.getBoundingClientRect();
-      const baselineInitFrac = Math.max(0, Math.min(1, (elBoxInit.top - wrapBox.top + elBoxInit.height * 0.8) / Math.max(1, wrapBox.height)));
+      const baselineInitFrac = Math.max(
+        0,
+        Math.min(
+          1,
+          (elBoxInit.top - wrapBox.top + elBoxInit.height * 0.8) /
+            Math.max(1, wrapBox.height),
+        ),
+      );
       const initInfo = calculateMaterialZ(baselineInitFrac);
       const dropEntry: MaterialDropEntry = {
         id: materialDropCounterRef.current++,
@@ -2874,7 +3498,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const angle = common?.angle ?? (Math.random() - 0.5) * Math.PI * 0.5;
       const spreadLocal = common?.spread ?? 24 + Math.random() * 48;
       const liftLocal = common?.lift ?? 12 + Math.random() * 18;
-      const fallLocal = common?.fall ?? 12 + Math.random() * 14 + rect.height * 0.15;
+      const fallLocal =
+        common?.fall ?? 12 + Math.random() * 14 + rect.height * 0.15;
       const duration1 = common?.duration1 ?? 600 + Math.random() * 140;
       const start = (common?.start ?? performance.now()) + delay;
       function easeOutQuart(t: number) {
@@ -2887,7 +3512,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             try {
               shadowEl.remove();
             } catch {}
-            materialDropsRef.current = materialDropsRef.current.filter((drop) => drop.id !== dropEntry.id);
+            materialDropsRef.current = materialDropsRef.current.filter(
+              (drop) => drop.id !== dropEntry.id,
+            );
             resolve(name);
             return;
           }
@@ -2897,21 +3524,31 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           }
           const t = Math.min(1, (now - start) / duration1);
           const e = easeOutQuart(t);
-          const wrapEl = islandHeroImgRef.current ? (islandHeroImgRef.current.parentElement as HTMLElement | null) : null;
+          const wrapEl = islandHeroImgRef.current
+            ? (islandHeroImgRef.current.parentElement as HTMLElement | null)
+            : null;
           if (!wrapEl) {
             el.remove();
             try {
               shadowEl.remove();
             } catch {}
-            materialDropsRef.current = materialDropsRef.current.filter((drop) => drop.id !== dropEntry.id);
+            materialDropsRef.current = materialDropsRef.current.filter(
+              (drop) => drop.id !== dropEntry.id,
+            );
             resolve(name);
             return;
           }
           const currentWrapBox = wrapEl.getBoundingClientRect();
-          const dxPct = Math.sin(angle) * (spreadLocal / Math.max(1, currentWrapBox.width)) * 100 * e;
+          const dxPct =
+            Math.sin(angle) *
+            (spreadLocal / Math.max(1, currentWrapBox.width)) *
+            100 *
+            e;
           const u = 1 - (2 * t - 1) * (2 * t - 1);
-          const liftPct = (liftLocal / Math.max(1, currentWrapBox.height)) * 100;
-          const fallPct = (fallLocal / Math.max(1, currentWrapBox.height)) * 100;
+          const liftPct =
+            (liftLocal / Math.max(1, currentWrapBox.height)) * 100;
+          const fallPct =
+            (fallLocal / Math.max(1, currentWrapBox.height)) * 100;
           const dyPct = -liftPct * u + fallPct * t * t;
           const s = 0.95 + 0.05 * e;
           const cx = baseXPct + dxPct;
@@ -2920,10 +3557,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           el.style.top = `${cy}%`;
           if (t < 1) {
             const elBox = el.getBoundingClientRect();
-            const widthPctItem = (elBox.width / Math.max(1, currentWrapBox.width)) * 100;
+            const widthPctItem =
+              (elBox.width / Math.max(1, currentWrapBox.width)) * 100;
             const widthScale = 0.62 + 0.08 * e;
-            const clampedWidthPct = Math.max(0, Math.min(100, widthPctItem * widthScale));
-            const baselinePct = ((elBox.top - currentWrapBox.top + elBox.height * 0.8) / Math.max(1, currentWrapBox.height)) * 100;
+            const clampedWidthPct = Math.max(
+              0,
+              Math.min(100, widthPctItem * widthScale),
+            );
+            const baselinePct =
+              ((elBox.top - currentWrapBox.top + elBox.height * 0.8) /
+                Math.max(1, currentWrapBox.height)) *
+              100;
             const maxBlurPx = Math.max(0.5, currentWrapBox.height * 0.014);
             const minBlurPx = Math.max(0.2, currentWrapBox.height * 0.004);
             const blurPx = minBlurPx + (maxBlurPx - minBlurPx) * (1 - e);
@@ -2940,10 +3584,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             updateFlightZoneIfNeeded(dropEntry, baselineFracNow);
           } else {
             const elBox = el.getBoundingClientRect();
-            const widthPctItem = (elBox.width / Math.max(1, currentWrapBox.width)) * 100;
+            const widthPctItem =
+              (elBox.width / Math.max(1, currentWrapBox.width)) * 100;
             const finalWidthScale = 0.62 + 0.08 * 1;
-            const finalWidthPct = Math.max(0, Math.min(100, widthPctItem * finalWidthScale));
-            const baselinePct = ((elBox.top - currentWrapBox.top + elBox.height * 0.8) / Math.max(1, currentWrapBox.height)) * 100;
+            const finalWidthPct = Math.max(
+              0,
+              Math.min(100, widthPctItem * finalWidthScale),
+            );
+            const baselinePct =
+              ((elBox.top - currentWrapBox.top + elBox.height * 0.8) /
+                Math.max(1, currentWrapBox.height)) *
+              100;
             const minBlurPx = Math.max(0.2, currentWrapBox.height * 0.004);
             const finalBlurPx = minBlurPx;
             const finalOpacity = 0.12 + 0.16 * 1;
@@ -2963,7 +3614,16 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             requestAnimationFrame(step1);
           } else {
             const elBoxFinal = el.getBoundingClientRect();
-            const baselineFinalFrac = Math.max(0, Math.min(1, (elBoxFinal.top - currentWrapBox.top + elBoxFinal.height * 0.8) / Math.max(1, currentWrapBox.height)));
+            const baselineFinalFrac = Math.max(
+              0,
+              Math.min(
+                1,
+                (elBoxFinal.top -
+                  currentWrapBox.top +
+                  elBoxFinal.height * 0.8) /
+                  Math.max(1, currentWrapBox.height),
+              ),
+            );
             settleMaterialDrop(dropEntry, baselineFinalFrac);
             resolve(name);
           }
@@ -2971,7 +3631,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         requestAnimationFrame(step1);
       });
     },
-    [calculateMaterialZ, setMaterialDropZ, settleMaterialDrop, updateFlightZoneIfNeeded]
+    [
+      calculateMaterialZ,
+      setMaterialDropZ,
+      settleMaterialDrop,
+      updateFlightZoneIfNeeded,
+    ],
   );
 
   const handleIslandClose = useCallback(
@@ -2985,7 +3650,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           }
         }
       }
-      if (Date.now() - overlayJustOpenedAtRef.current < MIN_OVERLAY_CLOSE_DELAY_MS) {
+      if (
+        Date.now() - overlayJustOpenedAtRef.current <
+        MIN_OVERLAY_CLOSE_DELAY_MS
+      ) {
         return;
       }
       if (overlayPhaseRef.current === "opening" && !islandOverlayVisible) {
@@ -3012,9 +3680,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       clearAnonSignInDrop();
       try {
         const heroImg = islandHeroImgRef.current;
-        const heroWrap = heroImg ? (heroImg.parentElement as HTMLElement | null) : null;
+        const heroWrap = heroImg
+          ? (heroImg.parentElement as HTMLElement | null)
+          : null;
         if (heroWrap) {
-          const nodes = heroWrap.querySelectorAll('[data-fx="material-drop"], [data-fx="material-drop-shadow"]');
+          const nodes = heroWrap.querySelectorAll(
+            '[data-fx="material-drop"], [data-fx="material-drop-shadow"]',
+          );
           nodes.forEach((n) => {
             try {
               n.parentElement?.removeChild(n);
@@ -3075,11 +3747,20 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         setIslandScale({ x: uniformScale, y: uniformScale });
       });
     },
-    [clearAnonSignInDrop, finalizeOverlayClose, islandNatural, islandOverlayVisible]
+    [
+      clearAnonSignInDrop,
+      finalizeOverlayClose,
+      islandNatural,
+      islandOverlayVisible,
+    ],
   );
 
   const handleAnonSignInDropPress = useCallback(
-    (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+    (
+      event:
+        | React.MouseEvent<HTMLButtonElement>
+        | React.TouchEvent<HTMLButtonElement>,
+    ) => {
       if (!anonSignInDropState?.settled) {
         return;
       }
@@ -3092,7 +3773,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         openProfileSignInPopup();
       });
     },
-    [anonSignInDropState?.settled, clearAnonSignInDrop, handleIslandClose]
+    [anonSignInDropState?.settled, clearAnonSignInDrop, handleIslandClose],
   );
 
   const handleAnonSignInDropClick = useCallback(
@@ -3112,7 +3793,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         openProfileSignInPopup();
       });
     },
-    [anonSignInDropState?.settled, clearAnonSignInDrop, handleIslandClose]
+    [anonSignInDropState?.settled, clearAnonSignInDrop, handleIslandClose],
   );
 
   useEffect(() => {
@@ -3151,7 +3832,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       setIslandAnimating(false);
     },
-    [islandActive, initializeWalkPolygonIfNeeded, measureHeroSize]
+    [islandActive, initializeWalkPolygonIfNeeded, measureHeroSize],
   );
 
   const handleOverlayTransitionEnd = useCallback(
@@ -3164,22 +3845,29 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         updateRockBox();
       } catch {}
     },
-    [finalizeOverlayClose, islandOverlayVisible, updateRockBox]
+    [finalizeOverlayClose, islandOverlayVisible, updateRockBox],
   );
 
-  const pointInPolygon = useCallback((x: number, y: number, poly: Array<{ x: number; y: number }>) => {
-    let inside = false;
-    for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
-      const xi = poly[i].x;
-      const yi = poly[i].y;
-      const xj = poly[j].x;
-      const yj = poly[j].y;
-      const intersect = yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
-      if (intersect) inside = !inside;
-    }
-    return inside;
-  }, []);
-  const isInsideHole = useCallback((x: number, y: number) => pointInPolygon(x, y, NO_WALK_TETRAGON), [pointInPolygon, NO_WALK_TETRAGON]);
+  const pointInPolygon = useCallback(
+    (x: number, y: number, poly: Array<{ x: number; y: number }>) => {
+      let inside = false;
+      for (let i = 0, j = poly.length - 1; i < poly.length; j = i++) {
+        const xi = poly[i].x;
+        const yi = poly[i].y;
+        const xj = poly[j].x;
+        const yj = poly[j].y;
+        const intersect =
+          yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi;
+        if (intersect) inside = !inside;
+      }
+      return inside;
+    },
+    [],
+  );
+  const isInsideHole = useCallback(
+    (x: number, y: number) => pointInPolygon(x, y, NO_WALK_TETRAGON),
+    [pointInPolygon, NO_WALK_TETRAGON],
+  );
   const holeCentroid = useMemo(() => {
     if (NO_WALK_TETRAGON.length === 0) return { x: 0.5, y: 0.5 };
     let sx = 0;
@@ -3225,7 +3913,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           x: Math.max(0, Math.min(1, best.x + (dirX / len) * step * 4)),
           y: Math.max(0, Math.min(1, best.y + (dirY / len) * step * 4)),
         };
-        if (!pointInPolygon(candidate2.x, candidate2.y, NO_WALK_TETRAGON) && isInsideSmoothEllipse(candidate2.x, candidate2.y)) {
+        if (
+          !pointInPolygon(candidate2.x, candidate2.y, NO_WALK_TETRAGON) &&
+          isInsideSmoothEllipse(candidate2.x, candidate2.y)
+        ) {
           return candidate2;
         }
         return null;
@@ -3233,18 +3924,25 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!isInsideSmoothEllipse(candidate.x, candidate.y)) return null;
       return candidate;
     },
-    [NO_WALK_TETRAGON, holeCentroid, isInsideSmoothEllipse, pointInPolygon]
+    [NO_WALK_TETRAGON, holeCentroid, isInsideSmoothEllipse, pointInPolygon],
   );
-  const isInsideWalkArea = useCallback((x: number, y: number) => isInsideSmoothEllipse(x, y) && !isInsideHole(x, y), [isInsideHole, isInsideSmoothEllipse]);
+  const isInsideWalkArea = useCallback(
+    (x: number, y: number) =>
+      isInsideSmoothEllipse(x, y) && !isInsideHole(x, y),
+    [isInsideHole, isInsideSmoothEllipse],
+  );
   const clampWalkTarget = useCallback(
     (from: { x: number; y: number }, desired: { x: number; y: number }) => {
-      if (isInsideWalkArea(desired.x, desired.y)) return { x: desired.x, y: desired.y };
+      if (isInsideWalkArea(desired.x, desired.y))
+        return { x: desired.x, y: desired.y };
       const insideEllipse = isInsideSmoothEllipse(desired.x, desired.y);
       if (isInsideHole(desired.x, desired.y)) {
         const projected = projectOutsideHole(desired);
-        if (projected && !isInsideHole(projected.x, projected.y)) return projected;
+        if (projected && !isInsideHole(projected.x, projected.y))
+          return projected;
         const ellipseFallback = projectToSmoothEllipse(desired.x, desired.y);
-        if (!isInsideHole(ellipseFallback.x, ellipseFallback.y)) return ellipseFallback;
+        if (!isInsideHole(ellipseFallback.x, ellipseFallback.y))
+          return ellipseFallback;
         return { x: from.x, y: from.y };
       }
       if (!insideEllipse) {
@@ -3253,7 +3951,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
       if (insideEllipse) {
         const outsideHole = projectOutsideHole(desired);
-        if (outsideHole && isInsideSmoothEllipse(outsideHole.x, outsideHole.y) && !isInsideHole(outsideHole.x, outsideHole.y)) {
+        if (
+          outsideHole &&
+          isInsideSmoothEllipse(outsideHole.x, outsideHole.y) &&
+          !isInsideHole(outsideHole.x, outsideHole.y)
+        ) {
           return outsideHole;
         }
       }
@@ -3261,13 +3963,26 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!isInsideHole(fallback.x, fallback.y)) return fallback;
       return { x: from.x, y: from.y };
     },
-    [isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, projectOutsideHole, projectToSmoothEllipse]
+    [
+      isInsideHole,
+      isInsideSmoothEllipse,
+      isInsideWalkArea,
+      projectOutsideHole,
+      projectToSmoothEllipse,
+    ],
   );
-  const getSafeAreaEllipse = useCallback((): { cx: number; cy: number; rx: number; ry: number } | null => {
+  const getSafeAreaEllipse = useCallback((): {
+    cx: number;
+    cy: number;
+    rx: number;
+    ry: number;
+  } | null => {
     const box = rockBoxRef.current;
     if (!box) return null;
-    const cx = (box.left + box.right) * 0.5 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X;
-    const cy = (box.top + box.bottom) * 0.5 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y;
+    const cx =
+      (box.left + box.right) * 0.5 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_X;
+    const cy =
+      (box.top + box.bottom) * 0.5 + SAFE_POINT_AREA_ELLIPSE_CENTER_OFFSET_Y;
     const rx = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_X;
     const ry = SAFE_POINT_AREA_ELLIPSE_RADIUS_FRAC_Y;
     return { cx, cy, rx, ry };
@@ -3280,14 +3995,26 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const dy = (y - ellipse.cy) / ellipse.ry;
       return dx * dx + dy * dy <= 1;
     },
-    [getSafeAreaEllipse]
+    [getSafeAreaEllipse],
   );
 
-  const computeOverlapArea = useCallback((a: { left: number; top: number; right: number; bottom: number }, b: { left: number; top: number; right: number; bottom: number }) => {
-    const ix = Math.max(0, Math.min(a.right, b.right) - Math.max(a.left, b.left));
-    const iy = Math.max(0, Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top));
-    return ix * iy;
-  }, []);
+  const computeOverlapArea = useCallback(
+    (
+      a: { left: number; top: number; right: number; bottom: number },
+      b: { left: number; top: number; right: number; bottom: number },
+    ) => {
+      const ix = Math.max(
+        0,
+        Math.min(a.right, b.right) - Math.max(a.left, b.left),
+      );
+      const iy = Math.max(
+        0,
+        Math.min(a.bottom, b.bottom) - Math.max(a.top, b.top),
+      );
+      return ix * iy;
+    },
+    [],
+  );
 
   const getMonBounds = useCallback(() => {
     const pos = latestMonPosRef.current || monPos;
@@ -3301,7 +4028,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const right = cx + widthFrac * 0.5;
     const top = bottomY - heightFrac;
     const bottom = bottomY;
-    return { left, top, right, bottom, area: Math.max(0, right - left) * Math.max(0, bottom - top) };
+    return {
+      left,
+      top,
+      right,
+      bottom,
+      area: Math.max(0, right - left) * Math.max(0, bottom - top),
+    };
   }, [monKey, monPos]);
 
   const getMonBoundsWithExpansion = useCallback(() => {
@@ -3321,7 +4054,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       widthFrac,
       heightFrac,
     };
-    const expandedWidthFrac = Math.max(0.001, Math.min(1, widthFrac + DUDE_BOUNDS_WIDTH_FRAC * 1.35));
+    const expandedWidthFrac = Math.max(
+      0.001,
+      Math.min(1, widthFrac + DUDE_BOUNDS_WIDTH_FRAC * 1.35),
+    );
     const expandedHeightFrac = Math.max(0.001, Math.min(1, heightFrac * 1.4));
     const expandedVerticalShift = heightFrac * 0.35;
     const expanded = {
@@ -3366,7 +4102,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     const baseX = monFacingLeftRef.current ? -1 : 1;
     try {
       requestAnimationFrame(() => {
-        frame.style.transition = "transform 160ms cubic-bezier(0.22, 1, 0.36, 1)";
+        frame.style.transition =
+          "transform 160ms cubic-bezier(0.22, 1, 0.36, 1)";
         frame.style.transform = `scale(${baseX}, 1)`;
         setTimeout(() => {
           try {
@@ -3387,8 +4124,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     if (!heroWrap) return;
     const frameBox = frame.getBoundingClientRect();
     const wrapBox = heroWrap.getBoundingClientRect();
-    const cxPct = ((frameBox.left - wrapBox.left + frameBox.width / 2) / Math.max(1, wrapBox.width)) * 100;
-    const cyPct = ((frameBox.top - wrapBox.top + frameBox.height / 2) / Math.max(1, wrapBox.height)) * 100;
+    const cxPct =
+      ((frameBox.left - wrapBox.left + frameBox.width / 2) /
+        Math.max(1, wrapBox.width)) *
+      100;
+    const cyPct =
+      ((frameBox.top - wrapBox.top + frameBox.height / 2) /
+        Math.max(1, wrapBox.height)) *
+      100;
     const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
     svg.setAttribute("viewBox", "0 0 100 100");
     svg.setAttribute("preserveAspectRatio", "none");
@@ -3399,12 +4142,21 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     svg.style.height = "100%";
     svg.style.overflow = "visible";
     svg.style.pointerEvents = "none";
-    const monBaselineY = (monPos ? monPos.y : MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+    const monBaselineY =
+      (monPos ? monPos.y : MON_REL_Y) + MON_BASELINE_Y_OFFSET;
     svg.style.zIndex = `${computeEntityZIndex(monBaselineY)}`;
     heroWrap.appendChild(svg);
     const num = 13;
     let remaining = num;
-    const runParticle = (group: SVGGElement, c1: SVGCircleElement, c2: SVGCircleElement, start: number, duration: number, dx: number, dy: number) => {
+    const runParticle = (
+      group: SVGGElement,
+      c1: SVGCircleElement,
+      c2: SVGCircleElement,
+      start: number,
+      duration: number,
+      dx: number,
+      dy: number,
+    ) => {
       function step(now: number) {
         if (now < start) {
           requestAnimationFrame(step);
@@ -3414,7 +4166,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const e = 1 - Math.pow(1 - t, 3);
         const x = cxPct + dx * e;
         const y = cyPct + dy * e;
-        group.setAttribute("transform", `translate(${x} ${y}) scale(${0.8 + 0.3 * e})`);
+        group.setAttribute(
+          "transform",
+          `translate(${x} ${y}) scale(${0.8 + 0.3 * e})`,
+        );
         const fade = 1 - Math.pow(t, 1.6);
         c1.setAttribute("opacity", (0.9 * fade).toString());
         c2.setAttribute("opacity", (0.85 * fade).toString());
@@ -3436,8 +4191,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     };
     for (let i = 0; i < num; i++) {
       const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      const c1 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
-      const c2 = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+      const c1 = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle",
+      );
+      const c2 = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle",
+      );
       const r = 0.6 + Math.random() * 0.9;
       c1.setAttribute("r", r.toString());
       c1.setAttribute("fill", "#c6dcff");
@@ -3456,7 +4217,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const dy = Math.sin(angle + swirl) * dist;
       const start = performance.now() + Math.random() * 30;
       const duration = 360 + Math.random() * 140;
-      runParticle(g as SVGGElement, c1 as SVGCircleElement, c2 as SVGCircleElement, start, duration, dx, dy);
+      runParticle(
+        g as SVGGElement,
+        c1 as SVGCircleElement,
+        c2 as SVGCircleElement,
+        start,
+        duration,
+        dx,
+        dy,
+      );
     }
   }, [monPos, computeEntityZIndex]);
 
@@ -3480,16 +4249,35 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         animateTeleportAppear();
       }, 30);
     }, 180);
-  }, [findValidMonLocation, monPos, setMonFacingLeft, teleportFXStart, spawnTeleportSparkles, prepareTeleportAppear, animateTeleportAppear]);
+  }, [
+    findValidMonLocation,
+    monPos,
+    setMonFacingLeft,
+    teleportFXStart,
+    spawnTeleportSparkles,
+    prepareTeleportAppear,
+    animateTeleportAppear,
+  ]);
 
   const onThreeCirclesComplete = useCallback(
     (direction: "cw" | "ccw", source: "gesture" | "control" = "gesture") => {
       if (!monPos) return;
-      const typeOrder: MonType[] = [MonType.DEMON, MonType.ANGEL, MonType.DRAINER, MonType.SPIRIT, MonType.MYSTIC];
+      const typeOrder: MonType[] = [
+        MonType.DEMON,
+        MonType.ANGEL,
+        MonType.DRAINER,
+        MonType.SPIRIT,
+        MonType.MYSTIC,
+      ];
       const storedType = storage.getIslandMonType(MonType.DRAINER) as MonType;
-      const currentType = typeOrder.includes(storedType) ? storedType : MonType.DRAINER;
+      const currentType = typeOrder.includes(storedType)
+        ? storedType
+        : MonType.DRAINER;
       const currentIndex = typeOrder.indexOf(currentType);
-      const nextIndex = direction === "ccw" ? (currentIndex + 1) % typeOrder.length : (currentIndex - 1 + typeOrder.length) % typeOrder.length;
+      const nextIndex =
+        direction === "ccw"
+          ? (currentIndex + 1) % typeOrder.length
+          : (currentIndex - 1 + typeOrder.length) % typeOrder.length;
       const nextType = typeOrder[nextIndex];
       storage.setIslandMonType(nextType);
       setCurrentMonType(nextType);
@@ -3518,7 +4306,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }, 30);
       }, 180);
     },
-    [monPos, teleportFXStart, updateMonSprite, setMonFacingLeft, findValidMonLocation, prepareTeleportAppear, spawnTeleportSparkles, animateTeleportAppear, setCurrentMonType]
+    [
+      monPos,
+      teleportFXStart,
+      updateMonSprite,
+      setMonFacingLeft,
+      findValidMonLocation,
+      prepareTeleportAppear,
+      spawnTeleportSparkles,
+      animateTeleportAppear,
+      setCurrentMonType,
+    ],
   );
 
   const firstMonType = MON_TYPE_ORDER[0];
@@ -3527,15 +4325,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const isAtLastMonType = currentMonType === lastMonType;
 
   const handleMonTypeArrowClick = useCallback(
-    (direction: "cw" | "ccw") => (event: React.MouseEvent<HTMLButtonElement>) => {
-      event.stopPropagation();
-      event.preventDefault();
-      if ((direction === "cw" && isAtFirstMonType) || (direction === "ccw" && isAtLastMonType)) {
-        return;
-      }
-      onThreeCirclesComplete(direction, "control");
-    },
-    [onThreeCirclesComplete, isAtFirstMonType, isAtLastMonType]
+    (direction: "cw" | "ccw") =>
+      (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.stopPropagation();
+        event.preventDefault();
+        if (
+          (direction === "cw" && isAtFirstMonType) ||
+          (direction === "ccw" && isAtLastMonType)
+        ) {
+          return;
+        }
+        onThreeCirclesComplete(direction, "control");
+      },
+    [onThreeCirclesComplete, isAtFirstMonType, isAtLastMonType],
   );
 
   const updateCircleTracking = useCallback(
@@ -3543,8 +4345,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const monPosition = latestMonPosRef.current || monPos;
       if (!monPosition) return;
 
-      const monBaselineCenterX = (monPosition.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT;
-      const monBaselineCenterY = (monPosition.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+      const monBaselineCenterX =
+        (monPosition.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT;
+      const monBaselineCenterY =
+        (monPosition.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
       const dx = dudeX - monBaselineCenterX;
       const dy = dudeY - monBaselineCenterY;
       const currentAngle = Math.atan2(dy, dx);
@@ -3591,7 +4395,7 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         tracking.center = { x: monBaselineCenterX, y: monBaselineCenterY };
       }
     },
-    [monPos, onThreeCirclesComplete]
+    [monPos, onThreeCirclesComplete],
   );
 
   const resetCircleTracking = useCallback(() => {
@@ -3620,7 +4424,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       clearTeleportCheckTimeout();
       teleportMonToRandomNonOverlappingSpot();
     }
-  }, [getMonBounds, getDudeBounds, computeOverlapArea, teleportMonToRandomNonOverlappingSpot, clearTeleportCheckTimeout]);
+  }, [
+    getMonBounds,
+    getDudeBounds,
+    computeOverlapArea,
+    teleportMonToRandomNonOverlappingSpot,
+    clearTeleportCheckTimeout,
+  ]);
 
   const scheduleTeleportOverlapCheck = useCallback(() => {
     if (teleportCheckTimeoutRef.current !== null) return;
@@ -3635,7 +4445,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
     rafRef.current = null;
     moveAnimRef.current = null;
     scheduleTeleportOverlapCheck();
-    const wAnim = currentAnimKindRef.current === "walking" ? sheetAnimRef.current : null;
+    const wAnim =
+      currentAnimKindRef.current === "walking" ? sheetAnimRef.current : null;
     if (wAnim) {
       if (wAnim.raf) cancelAnimationFrame(wAnim.raf);
       sheetAnimRef.current = null;
@@ -3645,11 +4456,19 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, [scheduleTeleportOverlapCheck]);
 
   const latestDudePosRef = useRef<{ x: number; y: number }>({ x: 0, y: 0 });
-  const moveTargetMetaRef = useRef<{ x: number; y: number; facingLeft: boolean; onArrive?: () => void } | null>(null);
+  const moveTargetMetaRef = useRef<{
+    x: number;
+    y: number;
+    facingLeft: boolean;
+    onArrive?: () => void;
+  } | null>(null);
   const dragModeRef = useRef<"none" | "free" | "edge">("none");
   const lastFacingFlipAtRef = useRef<number>(0);
   const lastFacingDirRef = useRef<boolean>(false);
-  const lastEllipsePointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 });
+  const lastEllipsePointerRef = useRef<{ x: number; y: number }>({
+    x: -1,
+    y: -1,
+  });
   const lastPointerRef = useRef<{ x: number; y: number }>({ x: -1, y: -1 });
   const teleportCheckTimeoutRef = useRef<number | null>(null);
   useEffect(() => {
@@ -3663,26 +4482,38 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   }, [clearTeleportCheckTimeout]);
   const getReferencePos = useCallback(() => {
     const ref = latestDudePosRef.current;
-    if (ref && Number.isFinite(ref.x) && Number.isFinite(ref.y) && !(ref.x === 0 && ref.y === 0)) return ref;
+    if (
+      ref &&
+      Number.isFinite(ref.x) &&
+      Number.isFinite(ref.y) &&
+      !(ref.x === 0 && ref.y === 0)
+    )
+      return ref;
     return dudePos;
   }, [dudePos]);
-  const decideFacingWithHysteresis = useCallback((from: { x: number; y: number }, to: { x: number; y: number }) => {
-    const dx = to.x - from.x;
-    if (Math.abs(dx) < FACING_DX_EPS) {
-      return lastFacingDirRef.current;
-    }
-    const desiredLeft = dx < 0;
-    if (desiredLeft !== lastFacingDirRef.current) {
-      const now = performance.now();
-      if (now - lastFacingFlipAtRef.current >= FACING_FLIP_HYST_MS) {
-        lastFacingFlipAtRef.current = now;
-        lastFacingDirRef.current = desiredLeft;
+  const decideFacingWithHysteresis = useCallback(
+    (from: { x: number; y: number }, to: { x: number; y: number }) => {
+      const dx = to.x - from.x;
+      if (Math.abs(dx) < FACING_DX_EPS) {
+        return lastFacingDirRef.current;
       }
-    }
-    return lastFacingDirRef.current;
-  }, []);
+      const desiredLeft = dx < 0;
+      if (desiredLeft !== lastFacingDirRef.current) {
+        const now = performance.now();
+        if (now - lastFacingFlipAtRef.current >= FACING_FLIP_HYST_MS) {
+          lastFacingFlipAtRef.current = now;
+          lastFacingDirRef.current = desiredLeft;
+        }
+      }
+      return lastFacingDirRef.current;
+    },
+    [],
+  );
 
-  const startMiningAnimation = useCallback(() => playSheetAnimation("mining"), [playSheetAnimation]);
+  const startMiningAnimation = useCallback(
+    () => playSheetAnimation("mining"),
+    [playSheetAnimation],
+  );
 
   const startWalkingAnimation = useCallback(() => {
     const onStep = () => {
@@ -3695,7 +4526,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             const wrapWidth = Math.max(1, wrapBox.width);
             const wrapHeight = Math.max(1, wrapBox.height);
             const collected: Array<number> = [];
-            const collectedPulls: Array<{ name: MaterialName; rect: MaterialPullRect }> = [];
+            const collectedPulls: Array<{
+              name: MaterialName;
+              rect: MaterialPullRect;
+            }> = [];
             for (let i = 0; i < materialDropsRef.current.length; i++) {
               const m = materialDropsRef.current[i];
               if (!m.el.isConnected) {
@@ -3707,8 +4541,14 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               const right = (eb.right - wrapBox.left) / wrapWidth;
               const top = (eb.top - wrapBox.top) / wrapHeight;
               const bottom = (eb.bottom - wrapBox.top) / wrapHeight;
-              const area = Math.max(0, right - left) * Math.max(0, bottom - top);
-              const overlap = computeOverlapArea(dudeB, { left, top, right, bottom });
+              const area =
+                Math.max(0, right - left) * Math.max(0, bottom - top);
+              const overlap = computeOverlapArea(dudeB, {
+                left,
+                top,
+                right,
+                bottom,
+              });
               const frac = area > 0 ? overlap / area : 0;
               if (frac > 0.55) {
                 collected.push(i);
@@ -3716,7 +4556,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 const absTop = eb.top;
                 const width = eb.width;
                 const height = eb.height;
-                collectedPulls.push({ name: m.name, rect: { left: absLeft, top: absTop, width, height } });
+                collectedPulls.push({
+                  name: m.name,
+                  rect: { left: absLeft, top: absTop, width, height },
+                });
               }
             }
             if (collected.length > 0) {
@@ -3754,9 +4597,17 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       }
     };
     playSheetAnimation("walking", { onStep });
-  }, [playSheetAnimation, computeOverlapArea, getDudeBounds, queueMaterialPull]);
+  }, [
+    playSheetAnimation,
+    computeOverlapArea,
+    getDudeBounds,
+    queueMaterialPull,
+  ]);
 
-  const startPettingAnimation = useCallback(() => playSheetAnimation("petting"), [playSheetAnimation]);
+  const startPettingAnimation = useCallback(
+    () => playSheetAnimation("petting"),
+    [playSheetAnimation],
+  );
 
   useEffect(() => {
     startPettingAnimationRef.current = startPettingAnimation;
@@ -3785,16 +4636,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const dist = Math.sqrt(dx * dx + dy * dy);
       const speed = Math.max(60, Math.min(220, h * 0.45));
       const duration = (dist / speed) * 1000;
-      moveAnimRef.current = { start: now, from, to, duration: Math.max(200, duration) };
+      moveAnimRef.current = {
+        start: now,
+        from,
+        to,
+        duration: Math.max(200, duration),
+      };
       if (currentAnimKindRef.current !== "walking") startWalkingAnimation();
       if (!rafRef.current) {
         const step = () => {
           if (!moveAnimRef.current) return;
           const n = performance.now();
-          const t2 = Math.min(1, (n - moveAnimRef.current.start) / moveAnimRef.current.duration);
+          const t2 = Math.min(
+            1,
+            (n - moveAnimRef.current.start) / moveAnimRef.current.duration,
+          );
           const e2 = 1 - Math.pow(1 - t2, 3);
-          const nx = moveAnimRef.current.from.x + (moveAnimRef.current.to.x - moveAnimRef.current.from.x) * e2;
-          const ny = moveAnimRef.current.from.y + (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * e2;
+          const nx =
+            moveAnimRef.current.from.x +
+            (moveAnimRef.current.to.x - moveAnimRef.current.from.x) * e2;
+          const ny =
+            moveAnimRef.current.from.y +
+            (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * e2;
           let nextX = nx;
           let nextY = ny;
           setDudePos({ x: nextX, y: nextY });
@@ -3804,7 +4667,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             let triggeredArrival = false;
             const targetMeta = moveTargetMetaRef.current;
             if (targetMeta) {
-              const closeEnough = Math.hypot(nextX - targetMeta.x, nextY - targetMeta.y) < 0.012;
+              const closeEnough =
+                Math.hypot(nextX - targetMeta.x, nextY - targetMeta.y) < 0.012;
               if (closeEnough) {
                 setDudeFacingLeft(targetMeta.facingLeft);
                 try {
@@ -3818,7 +4682,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             } else {
               const initial = initialDudePosRef.current;
               if (initial) {
-                const closeEnough = Math.hypot(nextX - initial.x, nextY - initial.y) < 0.012;
+                const closeEnough =
+                  Math.hypot(nextX - initial.x, nextY - initial.y) < 0.012;
                 if (closeEnough) setDudeFacingLeft(INITIAL_DUDE_FACING_LEFT);
               }
             }
@@ -3830,7 +4695,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.w, heroSize.h, stopMoveAnim, syncDudePosFromOriginal, decideFacingWithHysteresis, startWalkingAnimation, startStandingAnimation]
+    [
+      heroSize.w,
+      heroSize.h,
+      stopMoveAnim,
+      syncDudePosFromOriginal,
+      decideFacingWithHysteresis,
+      startWalkingAnimation,
+      startStandingAnimation,
+    ],
   );
 
   const updateMoveTarget = useCallback(
@@ -3855,16 +4728,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const dist = Math.sqrt(dx * dx + dy * dy);
       const speed = Math.max(60, Math.min(220, h * 0.45));
       const duration = (dist / speed) * 1000;
-      moveAnimRef.current = { start: now, from, to, duration: Math.max(200, duration) };
+      moveAnimRef.current = {
+        start: now,
+        from,
+        to,
+        duration: Math.max(200, duration),
+      };
       if (currentAnimKindRef.current !== "walking") startWalkingAnimation();
       if (!rafRef.current) {
         const step = () => {
           if (!moveAnimRef.current) return;
           const n = performance.now();
-          const tt = Math.min(1, (n - moveAnimRef.current.start) / moveAnimRef.current.duration);
+          const tt = Math.min(
+            1,
+            (n - moveAnimRef.current.start) / moveAnimRef.current.duration,
+          );
           const e = 1 - Math.pow(1 - tt, 3);
-          const nx = moveAnimRef.current.from.x + (moveAnimRef.current.to.x - moveAnimRef.current.from.x) * e;
-          const ny = moveAnimRef.current.from.y + (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * e;
+          const nx =
+            moveAnimRef.current.from.x +
+            (moveAnimRef.current.to.x - moveAnimRef.current.from.x) * e;
+          const ny =
+            moveAnimRef.current.from.y +
+            (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * e;
           let nextX = nx;
           let nextY = ny;
           setDudePos({ x: nextX, y: nextY });
@@ -3879,38 +4764,60 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         rafRef.current = requestAnimationFrame(step);
       }
     },
-    [heroSize.h, heroSize.w, stopMoveAnim, decideFacingWithHysteresis, startWalkingAnimation, startStandingAnimation]
+    [
+      heroSize.h,
+      heroSize.w,
+      stopMoveAnim,
+      decideFacingWithHysteresis,
+      startWalkingAnimation,
+      startStandingAnimation,
+    ],
   );
 
   const handleMaterialItemTap = useCallback(
-    (name: MaterialName, _url: string | null) => (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-      if (!islandOverlayVisible || islandClosing || islandOpening) {
-        return;
-      }
-      activateMaterial(name);
-    },
-    [activateMaterial, islandClosing, islandOpening, islandOverlayVisible]
+    (name: MaterialName, _url: string | null) =>
+      (
+        event:
+          | React.MouseEvent<HTMLDivElement>
+          | React.TouchEvent<HTMLDivElement>,
+      ) => {
+        if (!islandOverlayVisible || islandClosing || islandOpening) {
+          return;
+        }
+        activateMaterial(name);
+      },
+    [activateMaterial, islandClosing, islandOpening, islandOverlayVisible],
   );
 
   const isDraggingRef = useRef(false);
 
   const handlePointerStart = useCallback(
-    (event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
+    (
+      event:
+        | React.MouseEvent<HTMLDivElement>
+        | React.TouchEvent<HTMLDivElement>,
+    ) => {
       if (!islandOverlayVisible || islandClosing || islandOpening) {
         return;
       }
       walkingDragCleanupRef.current = null;
       const eventTarget = (event.target as Node) || null;
-      const skipForProtectedUi = isMaterialTarget(eventTarget) || isSelectorSafeAreaTarget(eventTarget);
+      const skipForProtectedUi =
+        isMaterialTarget(eventTarget) || isSelectorSafeAreaTarget(eventTarget);
       const isInsideRockBox = (nx: number, ny: number) => {
         if (!rockAvailable) return false;
         const box = rockBoxRef.current;
         if (!rockReady || !box) return false;
-        return nx >= box.left && nx <= box.right && ny >= box.top && ny <= box.bottom;
+        return (
+          nx >= box.left && nx <= box.right && ny >= box.top && ny <= box.bottom
+        );
       };
       const isInsideMonBox = (nx: number, ny: number) => {
         if (!monPos) return false;
-        const widthFrac = Math.max(0.001, Math.min(1, getMonBoundsWidthFrac(monKey)));
+        const widthFrac = Math.max(
+          0.001,
+          Math.min(1, getMonBoundsWidthFrac(monKey)),
+        );
         const heightFrac = Math.max(0.001, Math.min(1, MON_HEIGHT_FRAC));
         const cx = (monPos.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT;
         const bottomY = (monPos.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
@@ -3939,16 +4846,25 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       const nxxEarly = (clientX - rect.left) / width;
       const nyyEarly = (clientY - rect.top) / height;
       const isInsideSafeAreaEarly = isInsideSafeArea(nxxEarly, nyyEarly);
-      const inside = clientX >= rect.left && clientX <= rect.right && clientY >= rect.top && clientY <= rect.bottom;
+      const inside =
+        clientX >= rect.left &&
+        clientX <= rect.right &&
+        clientY >= rect.top &&
+        clientY <= rect.bottom;
       if (!inside && !isInsideSafeAreaEarly) {
         if (!skipForProtectedUi) {
           const vw = window.innerWidth;
           const isTouchEvent = !!(anyEvent.touches && anyEvent.touches[0]);
-          const isAtScreenEdge = isTouchEvent && (clientX <= TOUCH_EDGE_DEADZONE_PX || clientX >= vw - TOUCH_EDGE_DEADZONE_PX);
+          const isAtScreenEdge =
+            isTouchEvent &&
+            (clientX <= TOUCH_EDGE_DEADZONE_PX ||
+              clientX >= vw - TOUCH_EDGE_DEADZONE_PX);
           if (isAtScreenEdge) {
             return;
           }
-          handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
+          handleIslandClose(
+            event as unknown as React.MouseEvent | React.TouchEvent,
+          );
           return;
         }
       }
@@ -3968,7 +4884,8 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return false;
       })();
 
-      const allowStarsInteraction = skipForProtectedUi || !isInAnyHotspot || skipDueToCircleGesture;
+      const allowStarsInteraction =
+        skipForProtectedUi || !isInAnyHotspot || skipDueToCircleGesture;
 
       const shouldSuppressInputNearLastRock = (px: number, py: number) => {
         const now = performance.now();
@@ -3977,7 +4894,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           if (anchor) {
             const dx = px - anchor.x;
             const dy = py - anchor.y;
-            if (dx * dx + dy * dy <= WALK_SUPPRESSION_RADIUS * WALK_SUPPRESSION_RADIUS) {
+            if (
+              dx * dx + dy * dy <=
+              WALK_SUPPRESSION_RADIUS * WALK_SUPPRESSION_RADIUS
+            ) {
               if (walkSuppressionHitsRemainingRef.current > 0) {
                 walkSuppressionHitsRemainingRef.current -= 1;
                 return true;
@@ -3990,7 +4910,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return false;
       };
 
-      const starWithinBounds = (px: number, py: number) => px >= STAR_SHINE_PENTAGON_BOUNDS.minX && px <= STAR_SHINE_PENTAGON_BOUNDS.maxX && py >= STAR_SHINE_PENTAGON_BOUNDS.minY && py <= STAR_SHINE_PENTAGON_BOUNDS.maxY && pointInPolygon(px, py, STAR_SHINE_PENTAGON);
+      const starWithinBounds = (px: number, py: number) =>
+        px >= STAR_SHINE_PENTAGON_BOUNDS.minX &&
+        px <= STAR_SHINE_PENTAGON_BOUNDS.maxX &&
+        py >= STAR_SHINE_PENTAGON_BOUNDS.minY &&
+        py <= STAR_SHINE_PENTAGON_BOUNDS.maxY &&
+        pointInPolygon(px, py, STAR_SHINE_PENTAGON);
 
       const resetStarInteractionState = () => {
         if (starsTimerRef.current) {
@@ -4096,20 +5021,37 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }
       };
 
-      if (!skipForProtectedUi && !skipDueToCircleGesture && !walkingDragActiveRef.current && isInsideRockBox(nx, ny)) {
+      if (
+        !skipForProtectedUi &&
+        !skipDueToCircleGesture &&
+        !walkingDragActiveRef.current &&
+        isInsideRockBox(nx, ny)
+      ) {
         syncDudePosFromOriginal();
         const initial = initialDudePosRef.current || latestDudePosRef.current;
-        const alternate = { x: initial.x + ALTERNATE_DUDE_X_SHIFT - INITIAL_DUDE_X_SHIFT, y: initial.y };
-        const distToInitial = Math.hypot(dudePos.x - initial.x, dudePos.y - initial.y);
-        const distToAlternate = Math.hypot(dudePos.x - alternate.x, dudePos.y - alternate.y);
+        const alternate = {
+          x: initial.x + ALTERNATE_DUDE_X_SHIFT - INITIAL_DUDE_X_SHIFT,
+          y: initial.y,
+        };
+        const distToInitial = Math.hypot(
+          dudePos.x - initial.x,
+          dudePos.y - initial.y,
+        );
+        const distToAlternate = Math.hypot(
+          dudePos.x - alternate.x,
+          dudePos.y - alternate.y,
+        );
         const targetPos = distToAlternate < distToInitial ? alternate : initial;
         const isAlternate = targetPos === alternate;
-        const atTarget = Math.hypot(dudePos.x - targetPos.x, dudePos.y - targetPos.y) < 0.015;
+        const atTarget =
+          Math.hypot(dudePos.x - targetPos.x, dudePos.y - targetPos.y) < 0.015;
         if (!atTarget) {
           moveTargetMetaRef.current = {
             x: targetPos.x,
             y: targetPos.y,
-            facingLeft: isAlternate ? !INITIAL_DUDE_FACING_LEFT : INITIAL_DUDE_FACING_LEFT,
+            facingLeft: isAlternate
+              ? !INITIAL_DUDE_FACING_LEFT
+              : INITIAL_DUDE_FACING_LEFT,
             onArrive: () => {
               startMiningAnimation();
             },
@@ -4117,7 +5059,9 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           startMoveTo(targetPos.x, targetPos.y);
           playSounds([Sound.WalkToRock]);
         } else {
-          setDudeFacingLeft(isAlternate ? !INITIAL_DUDE_FACING_LEFT : INITIAL_DUDE_FACING_LEFT);
+          setDudeFacingLeft(
+            isAlternate ? !INITIAL_DUDE_FACING_LEFT : INITIAL_DUDE_FACING_LEFT,
+          );
           try {
             walkSuppressionAnchorRef.current = { x: nx, y: ny };
             rockRef.current?.tap();
@@ -4126,7 +5070,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         if ((event as any).preventDefault) (event as any).preventDefault();
         return;
       }
-      if (!skipForProtectedUi && !skipDueToCircleGesture && isInsideMonBox(nx, ny)) {
+      if (
+        !skipForProtectedUi &&
+        !skipDueToCircleGesture &&
+        isInsideMonBox(nx, ny)
+      ) {
         if (shouldSuppressInputNearLastRock(nx, ny)) {
           if ((event as any).preventDefault) (event as any).preventDefault();
           return;
@@ -4145,7 +5093,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         let best = candidates[0];
         let bestDist = Math.hypot(dudePos.x - best.x, dudePos.y - best.y);
         for (let i = 1; i < candidates.length; i++) {
-          const d = Math.hypot(dudePos.x - candidates[i].x, dudePos.y - candidates[i].y);
+          const d = Math.hypot(
+            dudePos.x - candidates[i].x,
+            dudePos.y - candidates[i].y,
+          );
           if (d < bestDist) {
             best = candidates[i];
             bestDist = d;
@@ -4154,9 +5105,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         const fromPoint = getReferencePos();
         const insideWalk = isInsideWalkArea(best.x, best.y);
         const target = insideWalk ? best : clampWalkTarget(fromPoint, best);
-        const onLeftSide = Math.abs(best.x - leftX) <= Math.abs(best.x - rightX);
+        const onLeftSide =
+          Math.abs(best.x - leftX) <= Math.abs(best.x - rightX);
         const facingLeft = onLeftSide ? false : true;
-        const atTarget = Math.hypot(dudePos.x - target.x, dudePos.y - target.y) < 0.015;
+        const atTarget =
+          Math.hypot(dudePos.x - target.x, dudePos.y - target.y) < 0.015;
         if (!atTarget) {
           moveTargetMetaRef.current = {
             x: target.x,
@@ -4187,7 +5140,11 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         }
         return;
       }
-      if (!skipForProtectedUi && !skipDueToCircleGesture && (isInsideSmoothEllipse(nx, ny) || insideSafeAreaStart)) {
+      if (
+        !skipForProtectedUi &&
+        !skipDueToCircleGesture &&
+        (isInsideSmoothEllipse(nx, ny) || insideSafeAreaStart)
+      ) {
         if (shouldSuppressInputNearLastRock(nx, ny)) {
           return;
         }
@@ -4238,7 +5195,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             const lp = lastEllipsePointerRef.current;
             const dxp = nxx - lp.x;
             const dyp = nyy - lp.y;
-            if (dxp * dxp + dyp * dyp < SAFE_POINTER_MOVE_EPS * SAFE_POINTER_MOVE_EPS) {
+            if (
+              dxp * dxp + dyp * dyp <
+              SAFE_POINTER_MOVE_EPS * SAFE_POINTER_MOVE_EPS
+            ) {
               if ("preventDefault" in e) e.preventDefault();
               return;
             }
@@ -4246,7 +5206,10 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
             const lp = lastPointerRef.current;
             const dxp = nxx - lp.x;
             const dyp = nyy - lp.y;
-            if (dxp * dxp + dyp * dyp < SAFE_POINTER_MOVE_EPS * SAFE_POINTER_MOVE_EPS) {
+            if (
+              dxp * dxp + dyp * dyp <
+              SAFE_POINTER_MOVE_EPS * SAFE_POINTER_MOVE_EPS
+            ) {
               if ("preventDefault" in e) e.preventDefault();
               return;
             }
@@ -4264,11 +5227,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           updateMoveTarget(nextTarget.x, nextTarget.y);
           latestDudePosRef.current = moveAnimRef.current
             ? {
-                x: moveAnimRef.current.from.x + (moveAnimRef.current.to.x - moveAnimRef.current.from.x) * Math.min(1, (performance.now() - moveAnimRef.current.start) / moveAnimRef.current.duration),
-                y: moveAnimRef.current.from.y + (moveAnimRef.current.to.y - moveAnimRef.current.from.y) * Math.min(1, (performance.now() - moveAnimRef.current.start) / moveAnimRef.current.duration),
+                x:
+                  moveAnimRef.current.from.x +
+                  (moveAnimRef.current.to.x - moveAnimRef.current.from.x) *
+                    Math.min(
+                      1,
+                      (performance.now() - moveAnimRef.current.start) /
+                        moveAnimRef.current.duration,
+                    ),
+                y:
+                  moveAnimRef.current.from.y +
+                  (moveAnimRef.current.to.y - moveAnimRef.current.from.y) *
+                    Math.min(
+                      1,
+                      (performance.now() - moveAnimRef.current.start) /
+                        moveAnimRef.current.duration,
+                    ),
               }
             : latestDudePosRef.current;
-          updateCircleTracking(latestDudePosRef.current.x, latestDudePosRef.current.y);
+          updateCircleTracking(
+            latestDudePosRef.current.x,
+            latestDudePosRef.current.y,
+          );
           if ("preventDefault" in e) {
             e.preventDefault();
           }
@@ -4287,9 +5267,15 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           window.removeEventListener("touchend", handleEnd as any);
           window.removeEventListener("touchcancel", handleEnd as any);
           window.removeEventListener("blur", handleEnd as any);
-          document.removeEventListener("visibilitychange", handleVisibilityChange as any);
+          document.removeEventListener(
+            "visibilitychange",
+            handleVisibilityChange as any,
+          );
           if (!moveAnimRef.current) {
-            const wAnim = currentAnimKindRef.current === "walking" ? sheetAnimRef.current : null;
+            const wAnim =
+              currentAnimKindRef.current === "walking"
+                ? sheetAnimRef.current
+                : null;
             if (wAnim && wAnim.raf) cancelAnimationFrame(wAnim.raf);
             sheetAnimRef.current = null;
             currentAnimKindRef.current = "none";
@@ -4308,22 +5294,33 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           }
         };
 
-        window.addEventListener("mousemove", handleMove as any, { passive: false });
+        window.addEventListener("mousemove", handleMove as any, {
+          passive: false,
+        });
         window.addEventListener("mouseup", handleEnd as any);
-        window.addEventListener("touchmove", handleMove as any, { passive: false });
+        window.addEventListener("touchmove", handleMove as any, {
+          passive: false,
+        });
         window.addEventListener("touchend", handleEnd as any);
         window.addEventListener("touchcancel", handleEnd as any);
         window.addEventListener("blur", handleEnd as any);
-        document.addEventListener("visibilitychange", handleVisibilityChange as any);
+        document.addEventListener(
+          "visibilitychange",
+          handleVisibilityChange as any,
+        );
 
         if ("preventDefault" in event) {
           event.preventDefault();
         }
         return;
       }
-      const inDismissTriangle = pointInTriangle(nx, ny, DISMISS_ALLOWED_TRIANGLE_A) || pointInTriangle(nx, ny, DISMISS_ALLOWED_TRIANGLE_B);
+      const inDismissTriangle =
+        pointInTriangle(nx, ny, DISMISS_ALLOWED_TRIANGLE_A) ||
+        pointInTriangle(nx, ny, DISMISS_ALLOWED_TRIANGLE_B);
       if (!skipForProtectedUi && !skipDueToCircleGesture && inDismissTriangle) {
-        handleIslandClose(event as unknown as React.MouseEvent | React.TouchEvent);
+        handleIslandClose(
+          event as unknown as React.MouseEvent | React.TouchEvent,
+        );
         return;
       }
       const allowStarDrag = allowStarsInteraction;
@@ -4354,20 +5351,30 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
           window.removeEventListener("touchend", handleEnd as any);
           window.removeEventListener("touchcancel", handleEnd as any);
           window.removeEventListener("blur", handleEnd as any);
-          document.removeEventListener("visibilitychange", handleVisibilityChange as any);
+          document.removeEventListener(
+            "visibilitychange",
+            handleVisibilityChange as any,
+          );
         };
         const handleVisibilityChange = () => {
           if (document.visibilityState !== "visible") {
             handleEnd();
           }
         };
-        window.addEventListener("mousemove", handleMove as any, { passive: false });
+        window.addEventListener("mousemove", handleMove as any, {
+          passive: false,
+        });
         window.addEventListener("mouseup", handleEnd as any);
-        window.addEventListener("touchmove", handleMove as any, { passive: false });
+        window.addEventListener("touchmove", handleMove as any, {
+          passive: false,
+        });
         window.addEventListener("touchend", handleEnd as any);
         window.addEventListener("touchcancel", handleEnd as any);
         window.addEventListener("blur", handleEnd as any);
-        document.addEventListener("visibilitychange", handleVisibilityChange as any);
+        document.addEventListener(
+          "visibilitychange",
+          handleVisibilityChange as any,
+        );
         isDraggingRef.current = true;
         resetStarInteractionState();
         startStarInteractionAt(nx, ny);
@@ -4375,7 +5382,44 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
         return;
       }
     },
-    [handleIslandClose, pointInPolygon, startMoveTo, updateMoveTarget, rockAvailable, rockReady, dudePos, startMiningAnimation, startStandingAnimation, syncDudePosFromOriginal, monKey, monPos, petMon, scheduleTeleportOverlapCheck, updateCircleTracking, resetCircleTracking, pointInTriangle, DISMISS_ALLOWED_TRIANGLE_A, DISMISS_ALLOWED_TRIANGLE_B, STAR_SHINE_PENTAGON, STAR_SHINE_PENTAGON_BOUNDS, queueStarsCenterUpdate, cancelQueuedStarsCenterUpdate, setStarsCenterImmediate, isMaterialTarget, isSelectorSafeAreaTarget, isInsideHole, isInsideSmoothEllipse, isInsideWalkArea, clampWalkTarget, isInsideSafeArea, getReferencePos, getMonBoundsWithExpansion, islandOverlayVisible, islandClosing, islandOpening]
+    [
+      handleIslandClose,
+      pointInPolygon,
+      startMoveTo,
+      updateMoveTarget,
+      rockAvailable,
+      rockReady,
+      dudePos,
+      startMiningAnimation,
+      startStandingAnimation,
+      syncDudePosFromOriginal,
+      monKey,
+      monPos,
+      petMon,
+      scheduleTeleportOverlapCheck,
+      updateCircleTracking,
+      resetCircleTracking,
+      pointInTriangle,
+      DISMISS_ALLOWED_TRIANGLE_A,
+      DISMISS_ALLOWED_TRIANGLE_B,
+      STAR_SHINE_PENTAGON,
+      STAR_SHINE_PENTAGON_BOUNDS,
+      queueStarsCenterUpdate,
+      cancelQueuedStarsCenterUpdate,
+      setStarsCenterImmediate,
+      isMaterialTarget,
+      isSelectorSafeAreaTarget,
+      isInsideHole,
+      isInsideSmoothEllipse,
+      isInsideWalkArea,
+      clampWalkTarget,
+      isInsideSafeArea,
+      getReferencePos,
+      getMonBoundsWithExpansion,
+      islandOverlayVisible,
+      islandClosing,
+      islandOpening,
+    ],
   );
 
   const handleSafeHitboxPointerDown = useCallback(
@@ -4383,9 +5427,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!isMaterialTarget((event.target as Node) || null)) {
         return;
       }
-      handlePointerStart(event as React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>);
+      handlePointerStart(
+        event as
+          | React.MouseEvent<HTMLDivElement>
+          | React.TouchEvent<HTMLDivElement>,
+      );
     },
-    [handlePointerStart, isMaterialTarget]
+    [handlePointerStart, isMaterialTarget],
   );
 
   const handleSelectorSafeHitboxPointerDown = useCallback(
@@ -4393,9 +5441,13 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
       if (!isSelectorSafeAreaTarget((event.target as Node) || null)) {
         return;
       }
-      handlePointerStart(event as React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>);
+      handlePointerStart(
+        event as
+          | React.MouseEvent<HTMLDivElement>
+          | React.TouchEvent<HTMLDivElement>,
+      );
     },
-    [handlePointerStart, isSelectorSafeAreaTarget]
+    [handlePointerStart, isSelectorSafeAreaTarget],
   );
 
   const monTypeIconSrc = useMemo(() => {
@@ -4410,14 +5462,24 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
   const disablePrevMonType = isAtFirstMonType;
   const disableNextMonType = isAtLastMonType;
 
-  const showSparkle = rockAvailable && !islandOverlayShown && !sparkleFading && sparkleMounted;
-  const shouldPrewarmAnonSignInDrop = islandOverlayVisible && !islandClosing && !isSignedIn && !anonSignInDropState && (rockAvailable || rockBreaking);
+  const showSparkle =
+    rockAvailable && !islandOverlayShown && !sparkleFading && sparkleMounted;
+  const shouldPrewarmAnonSignInDrop =
+    islandOverlayVisible &&
+    !islandClosing &&
+    !isSignedIn &&
+    !anonSignInDropState &&
+    (rockAvailable || rockBreaking);
 
   return (
     <>
       {islandImgLoaded && (
         <ButtonWrap $hidden={islandOverlayShown}>
-          <SparkleContainer $visible={showSparkle} $fading={sparkleFading} $dimmed={dimmed}>
+          <SparkleContainer
+            $visible={showSparkle}
+            $fading={sparkleFading}
+            $dimmed={dimmed}
+          >
             <SparkleRing />
             <SparkleRays $dimmed={dimmed}>
               <SparkleRay $angle={0} $delay={0} />
@@ -4428,51 +5490,160 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
               <SparkleRay $angle={300} $delay={0.75} />
             </SparkleRays>
             <SparkleCore />
-            <SparkleParticle $x={22} $y={18} $delay={0} $duration={1.6} $dimmed={dimmed} />
-            <SparkleParticle $x={78} $y={25} $delay={0.5} $duration={1.8} $dimmed={dimmed} />
-            <SparkleParticle $x={70} $y={72} $delay={1.1} $duration={1.5} $dimmed={dimmed} />
-            <SparkleParticle $x={28} $y={80} $delay={0.3} $duration={1.9} $dimmed={dimmed} />
-            <SparkleParticle $x={85} $y={50} $delay={0.8} $duration={1.7} $dimmed={dimmed} />
+            <SparkleParticle
+              $x={22}
+              $y={18}
+              $delay={0}
+              $duration={1.6}
+              $dimmed={dimmed}
+            />
+            <SparkleParticle
+              $x={78}
+              $y={25}
+              $delay={0.5}
+              $duration={1.8}
+              $dimmed={dimmed}
+            />
+            <SparkleParticle
+              $x={70}
+              $y={72}
+              $delay={1.1}
+              $duration={1.5}
+              $dimmed={dimmed}
+            />
+            <SparkleParticle
+              $x={28}
+              $y={80}
+              $delay={0.3}
+              $duration={1.9}
+              $dimmed={dimmed}
+            />
+            <SparkleParticle
+              $x={85}
+              $y={50}
+              $delay={0.8}
+              $duration={1.7}
+              $dimmed={dimmed}
+            />
           </SparkleContainer>
-          <ButtonEl ref={islandButtonRef} $hidden={islandOverlayShown} $dimmed={dimmed} onClick={!isMobile ? handleIslandOpen : undefined} onTouchStart={isMobile ? handleIslandOpen : undefined} aria-label="Island">
-            <img ref={islandButtonImgRef} src={resolvedUrl} alt="" draggable={false} />
+          <ButtonEl
+            ref={islandButtonRef}
+            $hidden={islandOverlayShown}
+            $dimmed={dimmed}
+            onClick={!isMobile ? handleIslandOpen : undefined}
+            onTouchStart={isMobile ? handleIslandOpen : undefined}
+            aria-label="Island"
+          >
+            <img
+              ref={islandButtonImgRef}
+              src={resolvedUrl}
+              alt=""
+              draggable={false}
+            />
           </ButtonEl>
         </ButtonWrap>
       )}
       {(islandOverlayShown || islandAnimating) && (
         <>
-          <Overlay $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onClick={!isMobile ? handleIslandClose : undefined} onTouchStart={isMobile ? handleIslandClose : undefined} onTransitionEnd={handleOverlayTransitionEnd} />
-          <Layer $visible={islandOverlayVisible} $opening={islandOpening} $closing={islandClosing} onMouseDown={!isMobile ? handlePointerStart : undefined} onTouchStart={isMobile ? handlePointerStart : undefined}>
+          <Overlay
+            $visible={islandOverlayVisible}
+            $opening={islandOpening}
+            $closing={islandClosing}
+            onClick={!isMobile ? handleIslandClose : undefined}
+            onTouchStart={isMobile ? handleIslandClose : undefined}
+            onTransitionEnd={handleOverlayTransitionEnd}
+          />
+          <Layer
+            $visible={islandOverlayVisible}
+            $opening={islandOpening}
+            $closing={islandClosing}
+            onMouseDown={!isMobile ? handlePointerStart : undefined}
+            onTouchStart={isMobile ? handlePointerStart : undefined}
+          >
             <SafeBarRow>
               <SafeBarStack>
                 {FEATURE_MON_TYPE_SELECTOR && (
-                  <SelectorSafeHitbox $active={islandOverlayVisible && !islandClosing} ref={selectorSafeHitboxRef} onMouseDown={!isMobile ? handleSelectorSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSelectorSafeHitboxPointerDown : undefined}>
+                  <SelectorSafeHitbox
+                    $active={islandOverlayVisible && !islandClosing}
+                    ref={selectorSafeHitboxRef}
+                    onMouseDown={
+                      !isMobile
+                        ? handleSelectorSafeHitboxPointerDown
+                        : undefined
+                    }
+                    onTouchStart={
+                      isMobile ? handleSelectorSafeHitboxPointerDown : undefined
+                    }
+                  >
                     <SelectorSafeZone>
-                      <MonTypeSelector $visible={islandOverlayVisible && !islandClosing}>
-                        <MonTypeArrowButton type="button" aria-label="Previous mon type" onClick={handleMonTypeArrowClick("cw")} disabled={disablePrevMonType}>
+                      <MonTypeSelector
+                        $visible={islandOverlayVisible && !islandClosing}
+                      >
+                        <MonTypeArrowButton
+                          type="button"
+                          aria-label="Previous mon type"
+                          onClick={handleMonTypeArrowClick("cw")}
+                          disabled={disablePrevMonType}
+                        >
                           <FiChevronLeft size={23} />
                         </MonTypeArrowButton>
                         <MonTypeIconBadge>
-                          <MonTypeIconImg src={monTypeIconSrc} alt={`${currentMonType} icon`} draggable={false} />
+                          <MonTypeIconImg
+                            src={monTypeIconSrc}
+                            alt={`${currentMonType} icon`}
+                            draggable={false}
+                          />
                         </MonTypeIconBadge>
-                        <MonTypeArrowButton type="button" aria-label="Next mon type" onClick={handleMonTypeArrowClick("ccw")} disabled={disableNextMonType}>
+                        <MonTypeArrowButton
+                          type="button"
+                          aria-label="Next mon type"
+                          onClick={handleMonTypeArrowClick("ccw")}
+                          disabled={disableNextMonType}
+                        >
                           <FiChevronRight size={23} />
                         </MonTypeArrowButton>
                       </MonTypeSelector>
                     </SelectorSafeZone>
                   </SelectorSafeHitbox>
                 )}
-                <SafeHitbox ref={safeHitboxRef} $active={islandOverlayVisible && !islandClosing} onMouseDown={!isMobile ? handleSafeHitboxPointerDown : undefined} onTouchStart={isMobile ? handleSafeHitboxPointerDown : undefined}>
-                  <MaterialsBar ref={materialsBarRef} $visible={islandOverlayVisible && !islandClosing}>
+                <SafeHitbox
+                  ref={safeHitboxRef}
+                  $active={islandOverlayVisible && !islandClosing}
+                  onMouseDown={
+                    !isMobile ? handleSafeHitboxPointerDown : undefined
+                  }
+                  onTouchStart={
+                    isMobile ? handleSafeHitboxPointerDown : undefined
+                  }
+                >
+                  <MaterialsBar
+                    ref={materialsBarRef}
+                    $visible={islandOverlayVisible && !islandClosing}
+                  >
                     {MATERIALS.map((name) => (
                       <MaterialItem
                         ref={(el) => {
                           materialItemRefs.current[name] = el;
                         }}
                         key={name}
-                        onMouseDown={!isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}
-                        onTouchStart={isMobile ? handleMaterialItemTap(name, materialUrls[name]) : undefined}>
-                        {materialUrls[name] && <MaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
+                        onMouseDown={
+                          !isMobile
+                            ? handleMaterialItemTap(name, materialUrls[name])
+                            : undefined
+                        }
+                        onTouchStart={
+                          isMobile
+                            ? handleMaterialItemTap(name, materialUrls[name])
+                            : undefined
+                        }
+                      >
+                        {materialUrls[name] && (
+                          <MaterialIcon
+                            src={materialUrls[name] || ""}
+                            alt=""
+                            draggable={false}
+                          />
+                        )}
                         <MaterialAmount>{materialAmounts[name]}</MaterialAmount>
                       </MaterialItem>
                     ))}
@@ -4480,44 +5651,92 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 </SafeHitbox>
               </SafeBarStack>
             </SafeBarRow>
-            <Animator $tx={islandTranslate.x} $ty={islandTranslate.y} $sx={islandScale.x} $sy={islandScale.y} onTransitionEnd={handleIslandTransitionEnd}>
+            <Animator
+              $tx={islandTranslate.x}
+              $ty={islandTranslate.y}
+              $sx={islandScale.x}
+              $sy={islandScale.y}
+              onTransitionEnd={handleIslandTransitionEnd}
+            >
               <HeroWrap ref={heroWrapRef}>
-                <Hero ref={islandHeroImgRef} src={resolvedUrl} alt="" draggable={false} />
+                <Hero
+                  ref={islandHeroImgRef}
+                  src={resolvedUrl}
+                  alt=""
+                  draggable={false}
+                />
                 <WalkOverlay />
                 {islandOverlayVisible && !islandClosing && (
                   <HotspotOverlay ref={editorOverlayRef}>
-                    <MaskedArea $cx={starsMaskCenter.xPct} $cy={starsMaskCenter.yPct} $visible={starsHold || starsVisible}>
-                      <StarsOverlayImage ref={starsImgRef} src={STARS_URL} alt="" draggable={false} $visible={starsVisible} $hold={starsHold} />
+                    <MaskedArea
+                      $cx={starsMaskCenter.xPct}
+                      $cy={starsMaskCenter.yPct}
+                      $visible={starsHold || starsVisible}
+                    >
+                      <StarsOverlayImage
+                        ref={starsImgRef}
+                        src={STARS_URL}
+                        alt=""
+                        draggable={false}
+                        $visible={starsVisible}
+                        $hold={starsHold}
+                      />
                     </MaskedArea>
                     {FEATURE_GLOWS_ON_HOTSPOT &&
                       ISLAND_HOTSPOTS.map((c, i) => {
                         const left = (c.cxPct - c.dPct / 2) * 100;
                         const top = (c.cyPct - c.dPct / 2) * 100;
                         const size = c.dPct * 100;
-                        return <HotspotCircle key={`glow-${i}`} $visible={hotspotVisible[i]} style={{ left: `${left}%`, top: `${top}%`, width: `${size}%`, height: `${size}%` }} />;
+                        return (
+                          <HotspotCircle
+                            key={`glow-${i}`}
+                            $visible={hotspotVisible[i]}
+                            style={{
+                              left: `${left}%`,
+                              top: `${top}%`,
+                              width: `${size}%`,
+                              height: `${size}%`,
+                            }}
+                          />
+                        );
                       })}
                   </HotspotOverlay>
                 )}
                 {shouldPrewarmAnonSignInDrop && (
                   <>
                     <RockSignInShadow $hidden $settled />
-                    <RockSignInButton type="button" $hidden $isConnected={false} $settled aria-hidden="true" tabIndex={-1}>
+                    <RockSignInButton
+                      type="button"
+                      $hidden
+                      $isConnected={false}
+                      $settled
+                      aria-hidden="true"
+                      tabIndex={-1}
+                    >
                       Sign In
                     </RockSignInButton>
                   </>
                 )}
                 {anonSignInDropState && !islandClosing && (
                   <>
-                    <RockSignInShadow key={`shadow-${anonSignInDropState.key}`} $settled={anonSignInDropState.settled} />
+                    <RockSignInShadow
+                      key={`shadow-${anonSignInDropState.key}`}
+                      $settled={anonSignInDropState.settled}
+                    />
                     <RockSignInButton
                       key={anonSignInDropState.key}
                       type="button"
                       $isConnected={false}
                       $settled={anonSignInDropState.settled}
                       onClick={handleAnonSignInDropClick}
-                      onMouseDown={!isMobile ? handleAnonSignInDropPress : undefined}
-                      onTouchStart={isMobile ? handleAnonSignInDropPress : undefined}
-                      aria-label="Sign in">
+                      onMouseDown={
+                        !isMobile ? handleAnonSignInDropPress : undefined
+                      }
+                      onTouchStart={
+                        isMobile ? handleAnonSignInDropPress : undefined
+                      }
+                      aria-label="Sign in"
+                    >
                       Sign In
                     </RockSignInButton>
                   </>
@@ -4525,8 +5744,24 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                 {(() => {
                   const widthPct = DUDE_BOUNDS_WIDTH_FRAC * 1.3 * 100;
                   const topOffsetFrac = 0.0135;
-                  const topFrac = Math.max(0, Math.min(1, dudePos.y - topOffsetFrac));
-                  return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${dudePos.x * 100}%`, top: `${topFrac * 100}%`, width: `${widthPct}%`, height: "auto", opacity: dudeVisible ? 0.23 : 0 }} />;
+                  const topFrac = Math.max(
+                    0,
+                    Math.min(1, dudePos.y - topOffsetFrac),
+                  );
+                  return (
+                    <ShadowImg
+                      src={`data:image/png;base64,${islandMonsShadow}`}
+                      alt=""
+                      draggable={false}
+                      style={{
+                        left: `${dudePos.x * 100}%`,
+                        top: `${topFrac * 100}%`,
+                        width: `${widthPct}%`,
+                        height: "auto",
+                        opacity: dudeVisible ? 0.23 : 0,
+                      }}
+                    />
+                  );
                 })()}
                 <DudeSpriteWrap
                   ref={dudeWrapRef}
@@ -4535,9 +5770,18 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                     top: `${dudePos.y * 100}%`,
                     opacity: dudeVisible ? 1 : 0,
                     zIndex: computeEntityZIndex(dudePos.y),
-                  }}>
-                  <DudeSpriteFrame $facingLeft={dudeFacingLeft} ref={miningFrameWrapRef as any}>
-                    <DudeSpriteStrip ref={miningStripImgRef as any} src={`data:image/png;base64,${islandMonsMining}`} alt="" draggable={false} />
+                  }}
+                >
+                  <DudeSpriteFrame
+                    $facingLeft={dudeFacingLeft}
+                    ref={miningFrameWrapRef as any}
+                  >
+                    <DudeSpriteStrip
+                      ref={miningStripImgRef as any}
+                      src={`data:image/png;base64,${islandMonsMining}`}
+                      alt=""
+                      draggable={false}
+                    />
                   </DudeSpriteFrame>
                 </DudeSpriteWrap>
                 {decorMounted && (
@@ -4545,21 +5789,47 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                     {monPos &&
                       monSpriteData &&
                       (() => {
-                        const monBaselineY = (monPos ? monPos.y : MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+                        const monBaselineY =
+                          (monPos ? monPos.y : MON_REL_Y) +
+                          MON_BASELINE_Y_OFFSET;
                         const monZIndex = computeEntityZIndex(monBaselineY);
                         return (
                           <MonLayer
                             $visible={decorVisible && !islandClosing}
                             style={{
                               zIndex: monZIndex,
-                            }}>
+                            }}
+                          >
                             {(() => {
-                              const widthPct = getMonBoundsWidthFrac(monKey) * 1.3 * 100;
-                              const cx = ((monPos?.x ?? MON_REL_X) + MON_BOUNDS_X_SHIFT) * 100;
-                              const bottomY = (monPos?.y ?? MON_REL_Y) + MON_BASELINE_Y_OFFSET;
+                              const widthPct =
+                                getMonBoundsWidthFrac(monKey) * 1.3 * 100;
+                              const cx =
+                                ((monPos?.x ?? MON_REL_X) +
+                                  MON_BOUNDS_X_SHIFT) *
+                                100;
+                              const bottomY =
+                                (monPos?.y ?? MON_REL_Y) +
+                                MON_BASELINE_Y_OFFSET;
                               const topOffsetFrac = 0.0075;
-                              const topFrac = Math.max(0, Math.min(1, bottomY - topOffsetFrac));
-                              return <ShadowImg src={`data:image/png;base64,${islandMonsShadow}`} alt="" draggable={false} style={{ left: `${cx}%`, top: `${topFrac * 100}%`, width: `${widthPct}%`, height: "auto", opacity: monVisible && !monTeleporting ? 0.23 : 0 }} />;
+                              const topFrac = Math.max(
+                                0,
+                                Math.min(1, bottomY - topOffsetFrac),
+                              );
+                              return (
+                                <ShadowImg
+                                  src={`data:image/png;base64,${islandMonsShadow}`}
+                                  alt=""
+                                  draggable={false}
+                                  style={{
+                                    left: `${cx}%`,
+                                    top: `${topFrac * 100}%`,
+                                    width: `${widthPct}%`,
+                                    height: "auto",
+                                    opacity:
+                                      monVisible && !monTeleporting ? 0.23 : 0,
+                                  }}
+                                />
+                              );
                             })()}
                             <MonSpriteWrap
                               ref={monWrapRef}
@@ -4569,15 +5839,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                                 opacity: monVisible && !monTeleporting ? 1 : 0,
                                 transition: "opacity 260ms ease",
                                 zIndex: monZIndex,
-                              }}>
-                              <MonSpriteFrame $facingLeft={monFacingLeft} ref={monFrameWrapRef as any}>
-                                <MonSpriteStrip ref={monStripImgRef as any} src={`data:image/webp;base64,${monSpriteData}`} alt="" draggable={false} />
+                              }}
+                            >
+                              <MonSpriteFrame
+                                $facingLeft={monFacingLeft}
+                                ref={monFrameWrapRef as any}
+                              >
+                                <MonSpriteStrip
+                                  ref={monStripImgRef as any}
+                                  src={`data:image/webp;base64,${monSpriteData}`}
+                                  alt=""
+                                  draggable={false}
+                                />
                               </MonSpriteFrame>
                             </MonSpriteWrap>
                           </MonLayer>
                         );
                       })()}
-                    <RockLayer ref={rockLayerRef} $visible={decorVisible && (rockAvailable || rockBreaking)} style={{ zIndex: ROCK_LAYER_Z_INDEX }}>
+                    <RockLayer
+                      ref={rockLayerRef}
+                      $visible={decorVisible && (rockAvailable || rockBreaking)}
+                      style={{ zIndex: ROCK_LAYER_Z_INDEX }}
+                    >
                       <Rock
                         key={rockRenderKey}
                         ref={rockRef as any}
@@ -4598,8 +5881,12 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                           }
                           const { drops } = rocksMiningService.didBreakRock();
                           requestAnimationFrame(() => {
-                            walkSuppressedUntilRef.current = Math.max(walkSuppressedUntilRef.current, performance.now() + 777);
-                            walkSuppressionHitsRemainingRef.current = WALK_SUPPRESSION_HIT_COUNT;
+                            walkSuppressedUntilRef.current = Math.max(
+                              walkSuppressedUntilRef.current,
+                              performance.now() + 777,
+                            );
+                            walkSuppressionHitsRemainingRef.current =
+                              WALK_SUPPRESSION_HIT_COUNT;
                             const count = drops.length;
                             if (count === 0) {
                               if (storage.getProfileId("") === "") {
@@ -4610,15 +5897,28 @@ export function IslandButton({ imageUrl = DEFAULT_URL, dimmed = false }: Props) 
                             const now = performance.now();
                             const rect = lastRockRectRef.current;
                             const fallBase = rect ? rect.height * 0.15 : 24;
-                            const baseCommon = { duration1: 520, spread: 56, lift: 22, fall: 12 + fallBase, start: now + 30 } as const;
+                            const baseCommon = {
+                              duration1: 520,
+                              spread: 56,
+                              lift: 22,
+                              fall: 12 + fallBase,
+                              start: now + 30,
+                            } as const;
                             const angleSpan = Math.PI * 0.5;
-                            const promises = drops.map((name: MaterialName, i: number) => {
-                              const t = count > 1 ? i / (count - 1) : 0.5;
-                              const baseAngle = -angleSpan / 2 + t * angleSpan;
-                              const jitter = (Math.random() - 0.5) * (Math.PI * 0.06);
-                              const angle = baseAngle + jitter;
-                              return spawnMaterialDrop(name, 0, { ...baseCommon, angle } as any);
-                            });
+                            const promises = drops.map(
+                              (name: MaterialName, i: number) => {
+                                const t = count > 1 ? i / (count - 1) : 0.5;
+                                const baseAngle =
+                                  -angleSpan / 2 + t * angleSpan;
+                                const jitter =
+                                  (Math.random() - 0.5) * (Math.PI * 0.06);
+                                const angle = baseAngle + jitter;
+                                return spawnMaterialDrop(name, 0, {
+                                  ...baseCommon,
+                                  angle,
+                                } as any);
+                              },
+                            );
                             Promise.all(promises).then(() => {});
                           });
                         }}

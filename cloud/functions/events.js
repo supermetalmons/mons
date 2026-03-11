@@ -1,19 +1,31 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { getProfileByLoginId, getDisplayNameFromAddress, batchReadWithRetry } = require("./utils");
+const {
+  getProfileByLoginId,
+  getDisplayNameFromAddress,
+  batchReadWithRetry,
+} = require("./utils");
 const { resolveMatchWinner } = require("./matchOutcome");
 
 const CONTROLLER_VERSION = 2;
-const INITIAL_FEN = "0 0 w 0 0 0 0 0 1 n03y0xs0xd0xa0xe0xn03/n11/n11/n04xxmn01xxmn04/n03xxmn01xxmn01xxmn03/xxQn04xxUn04xxQ/n03xxMn01xxMn01xxMn03/n04xxMn01xxMn04/n11/n11/n03E0xA0xD0xS0xY0xn03";
+const INITIAL_FEN =
+  "0 0 w 0 0 0 0 0 1 n03y0xs0xd0xa0xe0xn03/n11/n11/n04xxmn01xxmn04/n03xxmn01xxmn01xxmn03/xxQn04xxUn04xxQ/n03xxMn01xxMn01xxMn03/n04xxMn01xxMn04/n11/n11/n03E0xA0xD0xS0xY0xn03";
 const EVENT_SCHEMA_VERSION = 1;
 const EVENT_LOCK_TTL_MS = 30 * 1000;
 const EVENT_LOCK_REFRESH_INTERVAL_MS = 10 * 1000;
 const EVENT_MATCH_RESOLVE_CONCURRENCY = 12;
 const MIN_STARTS_IN_MINUTES = 1;
 const MAX_STARTS_IN_MINUTES = 7 * 24 * 60;
-const PREFERRED_FIRST_ROUND_BYE_USERNAMES = new Set(["obi", "meinong", "ivan", "bosch", "monsol"]);
+const PREFERRED_FIRST_ROUND_BYE_USERNAMES = new Set([
+  "obi",
+  "meinong",
+  "ivan",
+  "bosch",
+  "monsol",
+]);
 
-const normalizeString = (value) => (typeof value === "string" && value.trim() !== "" ? value.trim() : "");
+const normalizeString = (value) =>
+  typeof value === "string" && value.trim() !== "" ? value.trim() : "";
 const normalizeUsername = (value) => normalizeString(value).toLowerCase();
 const getNowMs = () => Date.now();
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -29,11 +41,19 @@ const toFiniteInteger = (value, fallback = 0) => {
 const cloneValue = (value) => JSON.parse(JSON.stringify(value));
 
 const buildEventDisplayName = (profile) => {
-  return getDisplayNameFromAddress(profile.username ?? "", profile.eth ?? "", profile.sol ?? "", 0, profile.emoji ?? "", false);
+  return getDisplayNameFromAddress(
+    profile.username ?? "",
+    profile.eth ?? "",
+    profile.sol ?? "",
+    0,
+    profile.emoji ?? "",
+    false,
+  );
 };
 
 const randomString = (length) => {
-  const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const letters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let result = "";
   for (let i = 0; i < length; i += 1) {
     result += letters.charAt(Math.floor(Math.random() * letters.length));
@@ -55,8 +75,14 @@ const shuffle = (items) => {
 };
 
 const getParticipantIds = (event) => {
-  const participants = event && event.participants && typeof event.participants === "object" ? event.participants : {};
-  return Object.keys(participants).filter((profileId) => participants[profileId] && typeof participants[profileId] === "object");
+  const participants =
+    event && event.participants && typeof event.participants === "object"
+      ? event.participants
+      : {};
+  return Object.keys(participants).filter(
+    (profileId) =>
+      participants[profileId] && typeof participants[profileId] === "object",
+  );
 };
 
 const buildParticipantSnapshot = (profile, loginUid, joinedAtMs) => {
@@ -67,7 +93,10 @@ const buildParticipantSnapshot = (profile, loginUid, joinedAtMs) => {
     loginUid,
     username,
     displayName: buildEventDisplayName(profile),
-    emojiId: typeof profile.emoji === "number" ? Math.floor(profile.emoji) : Number(profile.emoji) || 0,
+    emojiId:
+      typeof profile.emoji === "number"
+        ? Math.floor(profile.emoji)
+        : Number(profile.emoji) || 0,
     aura: normalizeString(profile.aura),
     joinedAtMs,
     state: "active",
@@ -81,10 +110,16 @@ const ensureIvanCreator = async (uid) => {
   const username = normalizeUsername(profile.username);
   const profileId = normalizeString(profile.profileId);
   if (!profileId) {
-    throw new HttpsError("failed-precondition", "Event creation requires a signed-in profile.");
+    throw new HttpsError(
+      "failed-precondition",
+      "Event creation requires a signed-in profile.",
+    );
   }
   if (username !== "ivan") {
-    throw new HttpsError("permission-denied", "Only ivan can create pilot events.");
+    throw new HttpsError(
+      "permission-denied",
+      "Only ivan can create pilot events.",
+    );
   }
   return profile;
 };
@@ -93,7 +128,10 @@ const ensureNonAnonProfile = async (uid) => {
   const profile = await getProfileByLoginId(uid);
   const profileId = normalizeString(profile.profileId);
   if (!profileId) {
-    throw new HttpsError("failed-precondition", "Please sign in to join this event.");
+    throw new HttpsError(
+      "failed-precondition",
+      "Please sign in to join this event.",
+    );
   }
   return profile;
 };
@@ -107,13 +145,18 @@ const pickPreferredFirstRoundBye = (participantsById, participantIds) => {
     }
     const username = normalizeUsername(participant.username);
     const displayName = normalizeUsername(participant.displayName);
-    return PREFERRED_FIRST_ROUND_BYE_USERNAMES.has(username) || PREFERRED_FIRST_ROUND_BYE_USERNAMES.has(displayName);
+    return (
+      PREFERRED_FIRST_ROUND_BYE_USERNAMES.has(username) ||
+      PREFERRED_FIRST_ROUND_BYE_USERNAMES.has(displayName)
+    );
   });
   if (preferred) {
     return {
       byeProfileId: preferred,
       byeReason: "preferred",
-      orderedParticipantIds: shuffled.filter((profileId) => profileId !== preferred),
+      orderedParticipantIds: shuffled.filter(
+        (profileId) => profileId !== preferred,
+      ),
     };
   }
   const [randomByeProfileId, ...rest] = shuffled;
@@ -157,9 +200,20 @@ const createMatchRecord = (color, emojiId, aura) => ({
   timer: "",
 });
 
-const buildRoundState = ({ eventId, roundIndex, participantIds, participantsById, nowMs, isFirstRound }) => {
+const buildRoundState = ({
+  eventId,
+  roundIndex,
+  participantIds,
+  participantsById,
+  nowMs,
+  isFirstRound,
+}) => {
   const roundKey = String(roundIndex);
-  const { byeProfileId, byeReason, orderedParticipantIds } = pickRoundBye(participantIds, participantsById, isFirstRound);
+  const { byeProfileId, byeReason, orderedParticipantIds } = pickRoundBye(
+    participantIds,
+    participantsById,
+    isFirstRound,
+  );
   const round = {
     roundIndex,
     status: "active",
@@ -214,8 +268,18 @@ const buildRoundState = ({ eventId, roundIndex, participantIds, participantsById
       eventMatchKey: matchKey,
       eventOwned: true,
     };
-    updates[`players/${hostParticipant.loginUid}/matches/${inviteId}`] = createMatchRecord(hostColor, hostParticipant.emojiId, hostParticipant.aura);
-    updates[`players/${guestParticipant.loginUid}/matches/${inviteId}`] = createMatchRecord(guestColor, guestParticipant.emojiId, guestParticipant.aura);
+    updates[`players/${hostParticipant.loginUid}/matches/${inviteId}`] =
+      createMatchRecord(
+        hostColor,
+        hostParticipant.emojiId,
+        hostParticipant.aura,
+      );
+    updates[`players/${guestParticipant.loginUid}/matches/${inviteId}`] =
+      createMatchRecord(
+        guestColor,
+        guestParticipant.emojiId,
+        guestParticipant.aura,
+      );
   }
 
   updates[`events/${eventId}/rounds/${roundKey}`] = round;
@@ -319,7 +383,10 @@ const resolveRoundMatchesWithConcurrency = async (matchesByKey) => {
   }
 
   const results = new Array(entries.length);
-  const concurrency = Math.max(1, Math.min(EVENT_MATCH_RESOLVE_CONCURRENCY, entries.length));
+  const concurrency = Math.max(
+    1,
+    Math.min(EVENT_MATCH_RESOLVE_CONCURRENCY, entries.length),
+  );
   let nextIndex = 0;
 
   const worker = async () => {
@@ -343,8 +410,18 @@ const resolveRoundMatchesWithConcurrency = async (matchesByKey) => {
   return results;
 };
 
-const createBaseEventRecord = ({ eventId, creatorProfile, creatorUid, startAtMs, createdAtMs }) => {
-  const creatorParticipant = buildParticipantSnapshot(creatorProfile, creatorUid, createdAtMs);
+const createBaseEventRecord = ({
+  eventId,
+  creatorProfile,
+  creatorUid,
+  startAtMs,
+  createdAtMs,
+}) => {
+  const creatorParticipant = buildParticipantSnapshot(
+    creatorProfile,
+    creatorUid,
+    createdAtMs,
+  );
   return {
     schemaVersion: EVENT_SCHEMA_VERSION,
     eventId,
@@ -372,7 +449,11 @@ const acquireEventLock = async (eventId, ownerUid) => {
   const lockId = randomString(16);
   const result = await lockRef.transaction((current) => {
     const nowMs = getNowMs();
-    if (current && typeof current.expiresAtMs === "number" && current.expiresAtMs > nowMs) {
+    if (
+      current &&
+      typeof current.expiresAtMs === "number" &&
+      current.expiresAtMs > nowMs
+    ) {
       return;
     }
     return {
@@ -438,7 +519,11 @@ const startEventLockHeartbeat = (lockHandle) => {
     const refreshedAtMs = getNowMs();
     void lockHandle.ref
       .transaction((current) => {
-        if (!current || current.ownerUid !== lockHandle.ownerUid || current.lockId !== lockHandle.lockId) {
+        if (
+          !current ||
+          current.ownerUid !== lockHandle.ownerUid ||
+          current.lockId !== lockHandle.lockId
+        ) {
           return;
         }
         return {
@@ -448,7 +533,10 @@ const startEventLockHeartbeat = (lockHandle) => {
         };
       })
       .catch((error) => {
-        console.error("event:lock:heartbeat:error", error && error.message ? error.message : error);
+        console.error(
+          "event:lock:heartbeat:error",
+          error && error.message ? error.message : error,
+        );
       });
   }, EVENT_LOCK_REFRESH_INTERVAL_MS);
 
@@ -469,23 +557,39 @@ const releaseEventLock = async (lockHandle) => {
   try {
     const snapshot = await lockHandle.ref.once("value");
     const current = snapshot.val();
-    if (current && current.ownerUid === lockHandle.ownerUid && current.lockId === lockHandle.lockId) {
+    if (
+      current &&
+      current.ownerUid === lockHandle.ownerUid &&
+      current.lockId === lockHandle.lockId
+    ) {
       await lockHandle.ref.remove();
     }
   } catch (error) {
-    console.error("event:lock:release:error", error && error.message ? error.message : error);
+    console.error(
+      "event:lock:release:error",
+      error && error.message ? error.message : error,
+    );
   }
 };
 
 exports.createEvent = onCall(async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
 
   const creatorProfile = await ensureIvanCreator(request.auth.uid);
-  const rawStartsInMinutes = toFiniteInteger(request.data && request.data.startsInMinutes, 0);
+  const rawStartsInMinutes = toFiniteInteger(
+    request.data && request.data.startsInMinutes,
+    0,
+  );
   if (rawStartsInMinutes < MIN_STARTS_IN_MINUTES) {
-    throw new HttpsError("invalid-argument", `Event must start at least ${MIN_STARTS_IN_MINUTES} minute from now.`);
+    throw new HttpsError(
+      "invalid-argument",
+      `Event must start at least ${MIN_STARTS_IN_MINUTES} minute from now.`,
+    );
   }
   const startsInMinutes = Math.min(MAX_STARTS_IN_MINUTES, rawStartsInMinutes);
   const createdAtMs = getNowMs();
@@ -510,7 +614,10 @@ exports.createEvent = onCall(async (request) => {
 
 exports.joinEvent = onCall(async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
 
   const eventId = normalizeString(request.data && request.data.eventId);
@@ -520,12 +627,19 @@ exports.joinEvent = onCall(async (request) => {
 
   const profile = await ensureNonAnonProfile(request.auth.uid);
   const profileId = normalizeString(profile.profileId);
-  const lockHandle = await acquireEventLockWithRetry(eventId, request.auth.uid, {
-    attempts: 40,
-    delayMs: 100,
-  });
+  const lockHandle = await acquireEventLockWithRetry(
+    eventId,
+    request.auth.uid,
+    {
+      attempts: 40,
+      delayMs: 100,
+    },
+  );
   if (!lockHandle) {
-    throw new HttpsError("unavailable", "Event is busy. Please try joining again.");
+    throw new HttpsError(
+      "unavailable",
+      "Event is busy. Please try joining again.",
+    );
   }
   const stopLockHeartbeat = startEventLockHeartbeat(lockHandle);
 
@@ -539,19 +653,41 @@ exports.joinEvent = onCall(async (request) => {
     const event = cloneValue(eventSnapshot.val() || {});
     const nowMs = getNowMs();
     if (event.status !== "scheduled") {
-      throw new HttpsError("failed-precondition", "This event has already started.");
+      throw new HttpsError(
+        "failed-precondition",
+        "This event has already started.",
+      );
     }
     if (typeof event.startAtMs === "number" && nowMs >= event.startAtMs) {
-      const dueTransition = buildScheduledEventDueUpdates({ eventId, event, nowMs });
+      const dueTransition = buildScheduledEventDueUpdates({
+        eventId,
+        event,
+        nowMs,
+      });
       if (dueTransition.didChange) {
         await admin.database().ref().update(dueTransition.updates);
       }
-      throw new HttpsError("failed-precondition", "This event is no longer accepting participants.");
+      throw new HttpsError(
+        "failed-precondition",
+        "This event is no longer accepting participants.",
+      );
     }
 
-    const existingParticipant = event.participants && event.participants[profileId] ? event.participants[profileId] : null;
-    const participant = buildParticipantSnapshot(profile, request.auth.uid, existingParticipant && typeof existingParticipant.joinedAtMs === "number" ? existingParticipant.joinedAtMs : nowMs);
-    const nextParticipants = event.participants && typeof event.participants === "object" ? event.participants : {};
+    const existingParticipant =
+      event.participants && event.participants[profileId]
+        ? event.participants[profileId]
+        : null;
+    const participant = buildParticipantSnapshot(
+      profile,
+      request.auth.uid,
+      existingParticipant && typeof existingParticipant.joinedAtMs === "number"
+        ? existingParticipant.joinedAtMs
+        : nowMs,
+    );
+    const nextParticipants =
+      event.participants && typeof event.participants === "object"
+        ? event.participants
+        : {};
     nextParticipants[profileId] = participant;
     event.participants = nextParticipants;
     event.updatedAtMs = nowMs;
@@ -560,13 +696,20 @@ exports.joinEvent = onCall(async (request) => {
       [`events/${eventId}/updatedAtMs`]: nowMs,
     };
     const settleNowMs = getNowMs();
-    const dueTransition = buildScheduledEventDueUpdates({ eventId, event, nowMs: settleNowMs });
+    const dueTransition = buildScheduledEventDueUpdates({
+      eventId,
+      event,
+      nowMs: settleNowMs,
+    });
     if (dueTransition.didChange) {
       Object.assign(updates, dueTransition.updates);
     }
     const lockOwned = await isEventLockStillOwned(lockHandle);
     if (!lockOwned) {
-      throw new HttpsError("unavailable", "Event is busy. Please try joining again.");
+      throw new HttpsError(
+        "unavailable",
+        "Event is busy. Please try joining again.",
+      );
     }
     await admin.database().ref().update(updates);
 
@@ -583,7 +726,10 @@ exports.joinEvent = onCall(async (request) => {
 
 exports.syncEventState = onCall(async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
 
   const eventId = normalizeString(request.data && request.data.eventId);
@@ -591,17 +737,24 @@ exports.syncEventState = onCall(async (request) => {
     throw new HttpsError("invalid-argument", "eventId is required.");
   }
 
-  const lockHandle = await acquireEventLockWithRetry(eventId, request.auth.uid, {
-    attempts: 10,
-    delayMs: 100,
-  });
+  const lockHandle = await acquireEventLockWithRetry(
+    eventId,
+    request.auth.uid,
+    {
+      attempts: 10,
+      delayMs: 100,
+    },
+  );
   if (!lockHandle) {
     return { ok: true, eventId, skipped: true, reason: "locked" };
   }
   const stopLockHeartbeat = startEventLockHeartbeat(lockHandle);
 
   try {
-    const eventSnapshot = await admin.database().ref(`events/${eventId}`).once("value");
+    const eventSnapshot = await admin
+      .database()
+      .ref(`events/${eventId}`)
+      .once("value");
     if (!eventSnapshot.exists()) {
       throw new HttpsError("not-found", "Event not found.");
     }
@@ -611,22 +764,36 @@ exports.syncEventState = onCall(async (request) => {
     let didChange = false;
 
     if (event.status === "scheduled") {
-      const dueTransition = buildScheduledEventDueUpdates({ eventId, event, nowMs });
+      const dueTransition = buildScheduledEventDueUpdates({
+        eventId,
+        event,
+        nowMs,
+      });
       Object.assign(updates, dueTransition.updates);
       didChange = dueTransition.didChange;
     } else if (event.status === "active") {
       const currentRoundIndex = toFiniteInteger(event.currentRoundIndex, -1);
       const roundKey = String(currentRoundIndex);
-      const rounds = event.rounds && typeof event.rounds === "object" ? event.rounds : {};
+      const rounds =
+        event.rounds && typeof event.rounds === "object" ? event.rounds : {};
       const currentRound = rounds[roundKey];
-      const participants = event.participants && typeof event.participants === "object" ? event.participants : {};
+      const participants =
+        event.participants && typeof event.participants === "object"
+          ? event.participants
+          : {};
 
-      if (currentRound && currentRound.matches && typeof currentRound.matches === "object") {
+      if (
+        currentRound &&
+        currentRound.matches &&
+        typeof currentRound.matches === "object"
+      ) {
         const resolvedWinners = [];
         let allResolved = true;
         let roundChanged = false;
         const nextRound = cloneValue(currentRound);
-        const resolvedEntries = await resolveRoundMatchesWithConcurrency(currentRound.matches);
+        const resolvedEntries = await resolveRoundMatchesWithConcurrency(
+          currentRound.matches,
+        );
 
         for (const entry of resolvedEntries) {
           const { matchKey, matchRecord, resolved } = entry;
@@ -636,7 +803,11 @@ exports.syncEventState = onCall(async (request) => {
           }
           resolvedWinners.push(resolved.winnerProfileId);
           const existingStatus = normalizeString(matchRecord.status);
-          if (existingStatus !== resolved.status || normalizeString(matchRecord.winnerProfileId) !== resolved.winnerProfileId) {
+          if (
+            existingStatus !== resolved.status ||
+            normalizeString(matchRecord.winnerProfileId) !==
+              resolved.winnerProfileId
+          ) {
             nextRound.matches[matchKey] = {
               ...matchRecord,
               status: resolved.status,
@@ -671,7 +842,11 @@ exports.syncEventState = onCall(async (request) => {
         }
 
         if (allResolved && resolvedWinners.length > 0) {
-          const uniqueWinnerIds = Array.from(new Set(resolvedWinners.filter((value) => normalizeString(value) !== "")));
+          const uniqueWinnerIds = Array.from(
+            new Set(
+              resolvedWinners.filter((value) => normalizeString(value) !== ""),
+            ),
+          );
           nextRound.status = "completed";
           nextRound.completedAtMs = nowMs;
           updates[`events/${eventId}/rounds/${roundKey}`] = nextRound;
@@ -680,7 +855,9 @@ exports.syncEventState = onCall(async (request) => {
 
           if (uniqueWinnerIds.length <= 1) {
             const winnerProfileId = uniqueWinnerIds[0] || null;
-            const winnerParticipant = winnerProfileId ? participants[winnerProfileId] : null;
+            const winnerParticipant = winnerProfileId
+              ? participants[winnerProfileId]
+              : null;
             if (winnerProfileId && winnerParticipant) {
               participants[winnerProfileId] = {
                 ...winnerParticipant,
@@ -691,7 +868,9 @@ exports.syncEventState = onCall(async (request) => {
             updates[`events/${eventId}/status`] = "ended";
             updates[`events/${eventId}/endedAtMs`] = nowMs;
             updates[`events/${eventId}/winnerProfileId`] = winnerProfileId;
-            updates[`events/${eventId}/winnerDisplayName`] = winnerParticipant ? winnerParticipant.displayName : null;
+            updates[`events/${eventId}/winnerDisplayName`] = winnerParticipant
+              ? winnerParticipant.displayName
+              : null;
             didChange = true;
           } else {
             const { updates: roundUpdates } = buildRoundState({
@@ -703,7 +882,8 @@ exports.syncEventState = onCall(async (request) => {
               isFirstRound: false,
             });
             Object.assign(updates, roundUpdates);
-            updates[`events/${eventId}/currentRoundIndex`] = currentRoundIndex + 1;
+            updates[`events/${eventId}/currentRoundIndex`] =
+              currentRoundIndex + 1;
             didChange = true;
           }
         }
@@ -713,7 +893,10 @@ exports.syncEventState = onCall(async (request) => {
     if (didChange) {
       const lockOwned = await isEventLockStillOwned(lockHandle);
       if (!lockOwned) {
-        const latestSnapshot = await admin.database().ref(`events/${eventId}`).once("value");
+        const latestSnapshot = await admin
+          .database()
+          .ref(`events/${eventId}`)
+          .once("value");
         return {
           ok: true,
           eventId,
@@ -725,7 +908,10 @@ exports.syncEventState = onCall(async (request) => {
       await admin.database().ref().update(updates);
     }
 
-    const refreshedSnapshot = await admin.database().ref(`events/${eventId}`).once("value");
+    const refreshedSnapshot = await admin
+      .database()
+      .ref(`events/${eventId}`)
+      .once("value");
     return {
       ok: true,
       eventId,

@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { isMobile } from "../utils/misc";
-import { ModalOverlay, ModalPopup, ModalTitle, ButtonsContainer, CancelButton, SaveButton } from "./SharedModalComponents";
+import {
+  ModalOverlay,
+  ModalPopup,
+  ModalTitle,
+  ButtonsContainer,
+  CancelButton,
+  SaveButton,
+} from "./SharedModalComponents";
 import { connection } from "../connection/connection";
 
 const NameEditOverlay = styled(ModalOverlay)`
@@ -22,23 +29,34 @@ const NameInput = styled.input<{ isValid: boolean }>`
   width: 100%;
   padding: 12px;
   border-radius: 8px;
-  border: 1px solid ${(props) => (props.isValid ? "var(--color-gray-dd)" : "var(--dangerButtonBackground)")};
+  border: 1px solid
+    ${(props) =>
+      props.isValid ? "var(--color-gray-dd)" : "var(--dangerButtonBackground)"};
   font-size: 1rem;
   margin-bottom: 4px;
   box-sizing: border-box;
 
   &:focus {
-    border-color: ${(props) => (props.isValid ? "var(--color-blue-primary)" : "var(--dangerButtonBackground)")};
+    border-color: ${(props) =>
+      props.isValid
+        ? "var(--color-blue-primary)"
+        : "var(--dangerButtonBackground)"};
     outline: none;
   }
 
   @media (prefers-color-scheme: dark) {
     background-color: var(--color-gray-33);
     color: var(--color-gray-f5);
-    border-color: ${(props) => (props.isValid ? "var(--color-gray-44)" : "var(--dangerButtonBackgroundDark)")};
+    border-color: ${(props) =>
+      props.isValid
+        ? "var(--color-gray-44)"
+        : "var(--dangerButtonBackgroundDark)"};
 
     &:focus {
-      border-color: ${(props) => (props.isValid ? "var(--color-blue-primary-dark)" : "var(--dangerButtonBackgroundDark)")};
+      border-color: ${(props) =>
+        props.isValid
+          ? "var(--color-blue-primary-dark)"
+          : "var(--dangerButtonBackgroundDark)"};
     }
   }
 `;
@@ -62,7 +80,11 @@ export interface NameEditModalProps {
   onCancel: () => void;
 }
 
-export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSave, onCancel }) => {
+export const NameEditModal: React.FC<NameEditModalProps> = ({
+  initialName,
+  onSave,
+  onCancel,
+}) => {
   const [customDisplayName, setCustomDisplayName] = useState(initialName);
   const [errorMessage, setErrorMessage] = useState("");
   const [isValid, setIsValid] = useState(true);
@@ -155,7 +177,28 @@ export const NameEditModal: React.FC<NameEditModalProps> = ({ initialName, onSav
     <NameEditOverlay onClick={onCancel}>
       <NameEditPopup onClick={(e) => e.stopPropagation()}>
         <NameEditTitle>{initialName ? "Edit Name" : "Set Name"}</NameEditTitle>
-        <NameInput ref={inputRef} type="text" value={customDisplayName} onChange={(e) => setCustomDisplayName(e.target.value)} placeholder="Enter name" autoFocus onKeyDown={handleKeyDown} spellCheck="false" autoCorrect="off" autoCapitalize="off" autoComplete="off" data-form-type="other" data-lpignore="true" inputMode="text" enterKeyHint="done" aria-autocomplete="none" aria-haspopup="false" aria-expanded="false" isValid={isValid} disabled={isSubmitting} />
+        <NameInput
+          ref={inputRef}
+          type="text"
+          value={customDisplayName}
+          onChange={(e) => setCustomDisplayName(e.target.value)}
+          placeholder="Enter name"
+          autoFocus
+          onKeyDown={handleKeyDown}
+          spellCheck="false"
+          autoCorrect="off"
+          autoCapitalize="off"
+          autoComplete="off"
+          data-form-type="other"
+          data-lpignore="true"
+          inputMode="text"
+          enterKeyHint="done"
+          aria-autocomplete="none"
+          aria-haspopup="false"
+          aria-expanded="false"
+          isValid={isValid}
+          disabled={isSubmitting}
+        />
         <ErrorMessage>{errorMessage}</ErrorMessage>
         <ButtonsContainer>
           <CancelButton onClick={onCancel} disabled={isSubmitting}>

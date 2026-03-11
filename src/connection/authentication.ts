@@ -3,26 +3,41 @@ import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
 import { connection } from "./connection";
 import { handleLoginSuccess } from "./loginSuccess";
-import { clearConsumedAppleRedirectResult, consumeAppleRedirectResult } from "./appleConnection";
-import { clearConsumedXRedirectResult, consumeXRedirectResult } from "./xConnection";
+import {
+  clearConsumedAppleRedirectResult,
+  consumeAppleRedirectResult,
+} from "./appleConnection";
+import {
+  clearConsumedXRedirectResult,
+  consumeXRedirectResult,
+} from "./xConnection";
 import { formatAuthCooldownErrorMessage } from "./authCooldownErrors";
 import { formatXAuthErrorMessage } from "./xAuthErrors";
 import { publishXAuthUiFeedback } from "./xAuthUiFeedback";
 import { storage } from "../utils/storage";
 import { setupLoggedInPlayerProfile } from "../game/board";
 import { didAttemptAuthentication } from "../game/gameController";
-import { setSignInInlineAuthError, updateProfileDisplayName } from "../ui/ProfileSignIn";
+import {
+  setSignInInlineAuthError,
+  updateProfileDisplayName,
+} from "../ui/ProfileSignIn";
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
 let globalSetAuthStatus: ((status: AuthStatus) => void) | null = null;
 const ETH_INTENT_STORAGE_KEY = "ethIntentByNonceV1";
 const ETH_INTENT_MAX_ITEMS = 200;
 const ETH_INTENT_MAX_AGE_MS = 10 * 60 * 1000;
-type AppleRedirectResult = NonNullable<ReturnType<typeof consumeAppleRedirectResult>>;
+type AppleRedirectResult = NonNullable<
+  ReturnType<typeof consumeAppleRedirectResult>
+>;
 type XRedirectResult = NonNullable<ReturnType<typeof consumeXRedirectResult>>;
 
-let inFlightAppleRedirectVerification: { key: string; promise: Promise<any> } | null = null;
-let inFlightXRedirectCompletion: { key: string; promise: Promise<any> } | null = null;
+let inFlightAppleRedirectVerification: {
+  key: string;
+  promise: Promise<any>;
+} | null = null;
+let inFlightXRedirectCompletion: { key: string; promise: Promise<any> } | null =
+  null;
 
 type EthIntentRecord = {
   nonce: string;
@@ -30,19 +45,33 @@ type EthIntentRecord = {
   createdAtMs: number;
 };
 
-const ethIntentIdByNonce = new Map<string, { intentId: string; createdAtMs: number }>();
+const ethIntentIdByNonce = new Map<
+  string,
+  { intentId: string; createdAtMs: number }
+>();
 
-const getAppleRedirectVerificationKey = (redirectResult: AppleRedirectResult): string => {
+const getAppleRedirectVerificationKey = (
+  redirectResult: AppleRedirectResult,
+): string => {
   return `${redirectResult.intentId}::${redirectResult.idToken}::${redirectResult.consentSource}`;
 };
 
-const verifyAppleRedirectResultOnce = (redirectResult: AppleRedirectResult): Promise<any> => {
+const verifyAppleRedirectResultOnce = (
+  redirectResult: AppleRedirectResult,
+): Promise<any> => {
   const key = getAppleRedirectVerificationKey(redirectResult);
-  if (inFlightAppleRedirectVerification && inFlightAppleRedirectVerification.key === key) {
+  if (
+    inFlightAppleRedirectVerification &&
+    inFlightAppleRedirectVerification.key === key
+  ) {
     return inFlightAppleRedirectVerification.promise;
   }
   const promise = connection
-    .verifyAppleToken(redirectResult.intentId, redirectResult.idToken, redirectResult.consentSource)
+    .verifyAppleToken(
+      redirectResult.intentId,
+      redirectResult.idToken,
+      redirectResult.consentSource,
+    )
     .finally(() => {
       if (inFlightAppleRedirectVerification?.key === key) {
         inFlightAppleRedirectVerification = null;
@@ -56,7 +85,9 @@ const getXRedirectCompletionKey = (redirectResult: XRedirectResult): string => {
   return `${redirectResult.flowId}::${redirectResult.status}::${redirectResult.errorCode}::${redirectResult.consentSource}`;
 };
 
-const completeXRedirectResultOnce = (redirectResult: XRedirectResult): Promise<any> => {
+const completeXRedirectResultOnce = (
+  redirectResult: XRedirectResult,
+): Promise<any> => {
   const key = getXRedirectCompletionKey(redirectResult);
   if (inFlightXRedirectCompletion && inFlightXRedirectCompletion.key === key) {
     return inFlightXRedirectCompletion.promise;
@@ -72,11 +103,16 @@ const completeXRedirectResultOnce = (redirectResult: XRedirectResult): Promise<a
   return promise;
 };
 
-const getXAuthAction = (consentSource: "signin" | "settings"): "signin" | "link" => {
+const getXAuthAction = (
+  consentSource: "signin" | "settings",
+): "signin" | "link" => {
   return consentSource === "settings" ? "link" : "signin";
 };
 
-const publishXAuthErrorFeedback = (consentSource: "signin" | "settings", message: string): void => {
+const publishXAuthErrorFeedback = (
+  consentSource: "signin" | "settings",
+  message: string,
+): void => {
   publishXAuthUiFeedback({
     target: consentSource,
     kind: "error",
@@ -101,8 +137,12 @@ const readStoredEthIntentRecords = (): EthIntentRecord[] => {
     return parsed
       .map((item) => {
         const nonce = typeof item?.nonce === "string" ? item.nonce : "";
-        const intentId = typeof item?.intentId === "string" ? item.intentId : "";
-        const createdAtMs = typeof item?.createdAtMs === "number" ? item.createdAtMs : Number(item?.createdAtMs);
+        const intentId =
+          typeof item?.intentId === "string" ? item.intentId : "";
+        const createdAtMs =
+          typeof item?.createdAtMs === "number"
+            ? item.createdAtMs
+            : Number(item?.createdAtMs);
         if (!nonce || !intentId || !Number.isFinite(createdAtMs)) {
           return null;
         }
@@ -130,7 +170,10 @@ const writeStoredEthIntentRecords = (records: EthIntentRecord[]): void => {
       window.sessionStorage.removeItem(ETH_INTENT_STORAGE_KEY);
       return;
     }
-    window.sessionStorage.setItem(ETH_INTENT_STORAGE_KEY, JSON.stringify(records));
+    window.sessionStorage.setItem(
+      ETH_INTENT_STORAGE_KEY,
+      JSON.stringify(records),
+    );
   } catch {}
 };
 
@@ -143,7 +186,11 @@ const pruneAndPersistEthIntentRecords = (): void => {
       createdAtMs: value.createdAtMs,
     }))
     .filter((record) => {
-      return record.nonce !== "" && record.intentId !== "" && nowMs - record.createdAtMs <= ETH_INTENT_MAX_AGE_MS;
+      return (
+        record.nonce !== "" &&
+        record.intentId !== "" &&
+        nowMs - record.createdAtMs <= ETH_INTENT_MAX_AGE_MS
+      );
     })
     .sort((left, right) => left.createdAtMs - right.createdAtMs)
     .slice(-ETH_INTENT_MAX_ITEMS);
@@ -219,7 +266,11 @@ export function useAuthStatus() {
     const storedSolAddress = storage.getSolAddress("");
     const storedUsername = storage.getUsername("");
     if (profileId !== "" && storedLoginId !== "") {
-      updateProfileDisplayName(storedUsername, storedEthAddress, storedSolAddress);
+      updateProfileDisplayName(
+        storedUsername,
+        storedEthAddress,
+        storedSolAddress,
+      );
       return "authenticated";
     }
     return "unauthenticated";
@@ -247,7 +298,8 @@ export function useAuthStatus() {
       if (!redirectResult) {
         return;
       }
-      const shouldForceUnauthenticatedOnFailure = redirectResult.consentSource === "signin";
+      const shouldForceUnauthenticatedOnFailure =
+        redirectResult.consentSource === "signin";
       try {
         const res = await verifyAppleRedirectResultOnce(redirectResult);
         if (isCancelled) {
@@ -294,12 +346,19 @@ export function useAuthStatus() {
       if (!redirectResult) {
         return;
       }
-      const shouldForceUnauthenticatedOnFailure = redirectResult.consentSource === "signin";
+      const shouldForceUnauthenticatedOnFailure =
+        redirectResult.consentSource === "signin";
       if (redirectResult.status === "failed") {
-        console.error("X redirect sign in callback failed:", redirectResult.errorCode || "unknown");
+        console.error(
+          "X redirect sign in callback failed:",
+          redirectResult.errorCode || "unknown",
+        );
         publishXAuthErrorFeedback(
           redirectResult.consentSource,
-          formatXAuthErrorMessage(redirectResult.errorCode, getXAuthAction(redirectResult.consentSource))
+          formatXAuthErrorMessage(
+            redirectResult.errorCode,
+            getXAuthAction(redirectResult.consentSource),
+          ),
         );
         clearConsumedXRedirectResult();
         if (shouldForceUnauthenticatedOnFailure) {
@@ -334,11 +393,17 @@ export function useAuthStatus() {
         console.error("X redirect verify error:", error);
         const cooldownMessage = formatAuthCooldownErrorMessage(error);
         if (cooldownMessage) {
-          publishXAuthErrorFeedback(redirectResult.consentSource, cooldownMessage);
+          publishXAuthErrorFeedback(
+            redirectResult.consentSource,
+            cooldownMessage,
+          );
         } else {
           publishXAuthErrorFeedback(
             redirectResult.consentSource,
-            formatXAuthErrorMessage(error, getXAuthAction(redirectResult.consentSource))
+            formatXAuthErrorMessage(
+              error,
+              getXAuthAction(redirectResult.consentSource),
+            ),
           );
         }
         clearConsumedXRedirectResult();
@@ -376,7 +441,8 @@ export function useAuthStatus() {
       }
       authChangeVersionRef.current += 1;
       const authChangeVersion = authChangeVersionRef.current;
-      const isCurrentAuthChange = () => authChangeVersionRef.current === authChangeVersion;
+      const isCurrentAuthChange = () =>
+        authChangeVersionRef.current === authChangeVersion;
       if (uid === null) {
         setAuthStatus("unauthenticated");
         scheduleDidAttemptAuthentication();
@@ -397,16 +463,25 @@ export function useAuthStatus() {
       connection.refreshTokenIfNeeded();
       const sessionGuard = connection.createSessionGuard();
       void (async () => {
-        const isStillValid = () => !isCancelled && sessionGuard() && isCurrentAuthChange();
+        const isStillValid = () =>
+          !isCancelled && sessionGuard() && isCurrentAuthChange();
         let resolvedProfileId = profileId;
         let resolvedUsername = storedUsername;
         let resolvedEthAddress = storedEthAddress;
         let resolvedSolAddress = storedSolAddress;
-        const storedEmojiRaw = Number.parseInt(storage.getPlayerEmojiId("1"), 10);
-        let resolvedEmoji = Number.isFinite(storedEmojiRaw) && storedEmojiRaw > 0 ? storedEmojiRaw : 1;
+        const storedEmojiRaw = Number.parseInt(
+          storage.getPlayerEmojiId("1"),
+          10,
+        );
+        let resolvedEmoji =
+          Number.isFinite(storedEmojiRaw) && storedEmojiRaw > 0
+            ? storedEmojiRaw
+            : 1;
         let resolvedAura = storage.getPlayerEmojiAura("");
         let isIdentityVerified = false;
-        const resetResolvedIdentityToFallback = (nextProfileId: string): void => {
+        const resetResolvedIdentityToFallback = (
+          nextProfileId: string,
+        ): void => {
           resolvedProfileId = nextProfileId;
           resolvedUsername = "";
           resolvedEthAddress = "";
@@ -420,8 +495,13 @@ export function useAuthStatus() {
           storage.setPlayerEmojiId("1");
           storage.setPlayerEmojiAura("");
         };
-        const applyAuthoritativeProfile = (authoritativeProfile: any): boolean => {
-          const authoritativeProfileId = typeof authoritativeProfile?.id === "string" ? authoritativeProfile.id : "";
+        const applyAuthoritativeProfile = (
+          authoritativeProfile: any,
+        ): boolean => {
+          const authoritativeProfileId =
+            typeof authoritativeProfile?.id === "string"
+              ? authoritativeProfile.id
+              : "";
           if (!authoritativeProfileId) {
             return false;
           }
@@ -430,7 +510,10 @@ export function useAuthStatus() {
           resolvedEthAddress = authoritativeProfile.eth ?? "";
           resolvedSolAddress = authoritativeProfile.sol ?? "";
           const authoritativeEmoji =
-            Number.isFinite(authoritativeProfile.emoji) && authoritativeProfile.emoji > 0 ? Math.floor(authoritativeProfile.emoji) : resolvedEmoji;
+            Number.isFinite(authoritativeProfile.emoji) &&
+            authoritativeProfile.emoji > 0
+              ? Math.floor(authoritativeProfile.emoji)
+              : resolvedEmoji;
           resolvedEmoji = authoritativeEmoji;
           resolvedAura = authoritativeProfile.aura ?? "";
           storage.setProfileId(resolvedProfileId);
@@ -447,7 +530,10 @@ export function useAuthStatus() {
           if (!isStillValid()) {
             return;
           }
-          const syncedProfileId = typeof claimSyncResult?.profileId === "string" ? claimSyncResult.profileId : "";
+          const syncedProfileId =
+            typeof claimSyncResult?.profileId === "string"
+              ? claimSyncResult.profileId
+              : "";
           if (!syncedProfileId) {
             setAuthStatus("unauthenticated");
             scheduleDidAttemptAuthentication();
@@ -456,7 +542,8 @@ export function useAuthStatus() {
           if (syncedProfileId !== profileId) {
             resetResolvedIdentityToFallback(syncedProfileId);
             try {
-              const authoritativeProfile = await connection.getProfileByLoginId(uid);
+              const authoritativeProfile =
+                await connection.getProfileByLoginId(uid);
               if (!isStillValid()) {
                 return;
               }
@@ -473,16 +560,19 @@ export function useAuthStatus() {
             return;
           }
           try {
-            const authoritativeProfile = await connection.getProfileByLoginId(uid);
+            const authoritativeProfile =
+              await connection.getProfileByLoginId(uid);
             if (!isStillValid()) {
               return;
             }
-            isIdentityVerified = applyAuthoritativeProfile(authoritativeProfile);
+            isIdentityVerified =
+              applyAuthoritativeProfile(authoritativeProfile);
           } catch {
             if (!isStillValid()) {
               return;
             }
-            const claimedProfileId = await connection.getCurrentProfileClaimId();
+            const claimedProfileId =
+              await connection.getCurrentProfileClaimId();
             if (!isStillValid()) {
               return;
             }
@@ -518,7 +608,11 @@ export function useAuthStatus() {
           completedProblemIds: undefined,
           isTutorialCompleted: undefined,
         };
-        updateProfileDisplayName(resolvedUsername, resolvedEthAddress, resolvedSolAddress);
+        updateProfileDisplayName(
+          resolvedUsername,
+          resolvedEthAddress,
+          resolvedSolAddress,
+        );
         const resolvedLoginUid = connection.getSameProfilePlayerUid() ?? uid;
         setupLoggedInPlayerProfile(profile, resolvedLoginUid);
         setAuthStatus("authenticated");
@@ -539,7 +633,9 @@ export function useAuthStatus() {
   return { authStatus, setAuthStatus };
 }
 
-export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) => void) => {
+export const createEthereumAuthAdapter = (
+  setAuthStatus: (status: AuthStatus) => void,
+) => {
   return createAuthenticationAdapter({
     getNonce: async () => {
       const intent = await connection.beginAuthIntent("eth");
@@ -572,7 +668,11 @@ export const createEthereumAuthAdapter = (setAuthStatus: (status: AuthStatus) =>
       }
       setSignInInlineAuthError(null);
       try {
-        const res = await connection.verifyEthAddress(message, signature, intentId);
+        const res = await connection.verifyEthAddress(
+          message,
+          signature,
+          intentId,
+        );
         if (res && res.ok === true) {
           setSignInInlineAuthError(null);
           handleLoginSuccess(res, "eth");

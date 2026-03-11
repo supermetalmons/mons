@@ -3,11 +3,17 @@ import { getIsMuted } from "../index";
 import { Reaction } from "../connection/connectionModels";
 import { soundPlayer } from "../utils/SoundPlayer";
 
-export function directlyPlaySoundNamed(name: string, volumeMultiplier: number = 1) {
+export function directlyPlaySoundNamed(
+  name: string,
+  volumeMultiplier: number = 1,
+) {
   if (getIsMuted()) {
     return;
   }
-  soundPlayer.playSound("https://assets.mons.link/sounds/" + name + ".mp3", volumeMultiplier);
+  soundPlayer.playSound(
+    "https://assets.mons.link/sounds/" + name + ".mp3",
+    volumeMultiplier,
+  );
 }
 
 function playSound(path: string, volumeMultiplier: number = 1) {
@@ -159,22 +165,28 @@ export async function playReaction(reaction: Reaction) {
 }
 
 export function newStickerReaction(id: number): Reaction {
-  const uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0,
-      v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
+  const uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+    /[xy]/g,
+    function (c) {
+      const r = (Math.random() * 16) | 0,
+        v = c === "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    },
+  );
   let variation = id;
   let kind = "sticker";
   return { uuid, variation, kind };
 }
 
 export function newReactionOfKind(kind: string): Reaction {
-  const uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
-    const r = (Math.random() * 16) | 0,
-      v = c === "x" ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
+  const uuid = "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(
+    /[xy]/g,
+    function (c) {
+      const r = (Math.random() * 16) | 0,
+        v = c === "x" ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    },
+  );
   let variation = 1;
   switch (kind) {
     case "yo":
@@ -197,8 +209,13 @@ export async function playSounds(sounds: Sound[]) {
     return;
   }
 
-  const maxSoundPriority = Math.max(...sounds.map((sound) => getSoundPriority(sound)));
-  sounds = sounds.filter((sound) => getSoundPriority(sound) === maxSoundPriority || sound === Sound.EndTurn);
+  const maxSoundPriority = Math.max(
+    ...sounds.map((sound) => getSoundPriority(sound)),
+  );
+  sounds = sounds.filter(
+    (sound) =>
+      getSoundPriority(sound) === maxSoundPriority || sound === Sound.EndTurn,
+  );
 
   for (const sound of sounds) {
     const resolved = resolveSoundName(sound);
@@ -219,7 +236,9 @@ export async function preloadSounds(sounds: Sound[]) {
     seen.add(url);
     uniqueUrls.push(url);
   }
-  await Promise.all(uniqueUrls.map((url) => soundPlayer.preloadSound(url).catch(() => {})));
+  await Promise.all(
+    uniqueUrls.map((url) => soundPlayer.preloadSound(url).catch(() => {})),
+  );
 }
 
 export enum RockSound {

@@ -1,12 +1,25 @@
 import { storage } from "../utils/storage";
-import { setupLoggedInPlayerProfile, updateEmojiAndAuraIfNeeded } from "../game/board";
+import {
+  setupLoggedInPlayerProfile,
+  updateEmojiAndAuraIfNeeded,
+} from "../game/board";
 import { connection } from "./connection";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
-import { handleFreshlySignedInProfileInGameIfNeeded, isWatchOnly } from "../game/gameController";
-import { PlayerMiningData, PlayerProfile } from "../connection/connectionModels";
+import {
+  handleFreshlySignedInProfileInGameIfNeeded,
+  isWatchOnly,
+} from "../game/gameController";
+import {
+  PlayerMiningData,
+  PlayerProfile,
+} from "../connection/connectionModels";
 import { syncTutorialProgress } from "../content/problems";
 import { rocksMiningService } from "../services/rocksMiningService";
-import { clearPendingLogoutWipeAfterSignIn, enforcePendingLogoutWipeIfNeeded, notifyOtherTabsAboutSignIn } from "../session/logoutOrchestrator";
+import {
+  clearPendingLogoutWipeAfterSignIn,
+  enforcePendingLogoutWipeIfNeeded,
+  notifyOtherTabsAboutSignIn,
+} from "../session/logoutOrchestrator";
 
 export type AddressKind = "eth" | "sol" | "apple" | "x";
 
@@ -34,12 +47,17 @@ interface VerifyResponse {
   mining?: PlayerMiningData;
 }
 
-export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind): void {
+export function handleLoginSuccess(
+  res: VerifyResponse,
+  addressKind: AddressKind,
+): void {
   enforcePendingLogoutWipeIfNeeded();
   const { emoji, profileId } = res;
   const username = res.username ?? "";
-  const resolvedEth = res.eth ?? (addressKind === "eth" ? res.address ?? null : null);
-  const resolvedSol = res.sol ?? (addressKind === "sol" ? res.address ?? null : null);
+  const resolvedEth =
+    res.eth ?? (addressKind === "eth" ? (res.address ?? null) : null);
+  const resolvedSol =
+    res.sol ?? (addressKind === "sol" ? (res.address ?? null) : null);
 
   const profile: PlayerProfile = {
     id: profileId,
@@ -62,14 +80,21 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
 
   if (res.rating !== undefined) profile.rating = res.rating;
   if (res.nonce !== undefined) profile.nonce = res.nonce;
-  if (res.totalManaPoints !== undefined) (profile as any).totalManaPoints = res.totalManaPoints;
-  if (res.cardBackgroundId !== undefined) profile.cardBackgroundId = res.cardBackgroundId;
+  if (res.totalManaPoints !== undefined)
+    (profile as any).totalManaPoints = res.totalManaPoints;
+  if (res.cardBackgroundId !== undefined)
+    profile.cardBackgroundId = res.cardBackgroundId;
   if (res.cardStickers !== undefined) profile.cardStickers = res.cardStickers;
-  if (res.cardSubtitleId !== undefined) profile.cardSubtitleId = res.cardSubtitleId;
-  if (res.profileCounter !== undefined) profile.profileCounter = res.profileCounter;
+  if (res.cardSubtitleId !== undefined)
+    profile.cardSubtitleId = res.cardSubtitleId;
+  if (res.profileCounter !== undefined)
+    profile.profileCounter = res.profileCounter;
   if (res.profileMons !== undefined) profile.profileMons = res.profileMons;
 
-  syncTutorialProgress(res.completedProblems ?? [], res.tutorialCompleted ?? false);
+  syncTutorialProgress(
+    res.completedProblems ?? [],
+    res.tutorialCompleted ?? false,
+  );
   const resolvedLoginUid = connection.getSameProfilePlayerUid() ?? res.uid;
   setupLoggedInPlayerProfile(profile, resolvedLoginUid);
 
@@ -84,11 +109,15 @@ export function handleLoginSuccess(res: VerifyResponse, addressKind: AddressKind
 
   if (res.rating !== undefined) storage.setPlayerRating(res.rating);
   if (res.nonce !== undefined) storage.setPlayerNonce(res.nonce);
-  if (res.totalManaPoints !== undefined) storage.setPlayerTotalManaPoints(res.totalManaPoints);
-  if (res.cardBackgroundId !== undefined) storage.setCardBackgroundId(res.cardBackgroundId);
+  if (res.totalManaPoints !== undefined)
+    storage.setPlayerTotalManaPoints(res.totalManaPoints);
+  if (res.cardBackgroundId !== undefined)
+    storage.setCardBackgroundId(res.cardBackgroundId);
   if (res.cardStickers !== undefined) storage.setCardStickers(res.cardStickers);
-  if (res.cardSubtitleId !== undefined) storage.setCardSubtitleId(res.cardSubtitleId);
-  if (res.profileCounter !== undefined) storage.setProfileCounter(res.profileCounter);
+  if (res.cardSubtitleId !== undefined)
+    storage.setCardSubtitleId(res.cardSubtitleId);
+  if (res.profileCounter !== undefined)
+    storage.setProfileCounter(res.profileCounter);
   if (res.profileMons !== undefined) storage.setProfileMons(res.profileMons);
   if (res.mining) {
     storage.setMiningLastRockDate(res.mining.lastRockDate ?? null);

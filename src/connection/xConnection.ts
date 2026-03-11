@@ -23,14 +23,20 @@ const X_REDIRECT_CALLBACK_PARAM_KEYS = [
 
 let pendingXRedirectResult: XRedirectResult | null = null;
 let didConsumeInitialXRedirectSnapshot = false;
-const pendingXRedirectResultListeners = new Set<(result: XRedirectResult | null) => void>();
+const pendingXRedirectResultListeners = new Set<
+  (result: XRedirectResult | null) => void
+>();
 
 const initialXRedirectSnapshot =
   typeof window === "undefined"
     ? null
     : {
-        hashRaw: window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash,
-        searchRaw: window.location.search.startsWith("?") ? window.location.search.slice(1) : window.location.search,
+        hashRaw: window.location.hash.startsWith("#")
+          ? window.location.hash.slice(1)
+          : window.location.hash,
+        searchRaw: window.location.search.startsWith("?")
+          ? window.location.search.slice(1)
+          : window.location.search,
       };
 
 const normalizeConsentSource = (value: unknown): "signin" | "settings" => {
@@ -43,7 +49,9 @@ const parseXRedirectParamsFromRaw = (raw: string): XRedirectResult | null => {
   }
   const params = new URLSearchParams(raw);
   const flowId = (params.get(X_REDIRECT_PARAM_FLOW) || "").trim();
-  const statusRaw = (params.get(X_REDIRECT_PARAM_STATUS) || "").trim().toLowerCase();
+  const statusRaw = (params.get(X_REDIRECT_PARAM_STATUS) || "")
+    .trim()
+    .toLowerCase();
   if (!flowId || (statusRaw !== "ready" && statusRaw !== "failed")) {
     return null;
   }
@@ -51,7 +59,9 @@ const parseXRedirectParamsFromRaw = (raw: string): XRedirectResult | null => {
     flowId,
     status: statusRaw as XRedirectStatus,
     errorCode: (params.get(X_REDIRECT_PARAM_ERROR) || "").trim(),
-    consentSource: normalizeConsentSource(params.get(X_REDIRECT_PARAM_CONSENT_SOURCE)),
+    consentSource: normalizeConsentSource(
+      params.get(X_REDIRECT_PARAM_CONSENT_SOURCE),
+    ),
   };
 };
 
@@ -59,8 +69,12 @@ const readXRedirectParams = (): XRedirectResult | null => {
   if (typeof window === "undefined") {
     return null;
   }
-  const searchRaw = window.location.search.startsWith("?") ? window.location.search.slice(1) : window.location.search;
-  const hashRaw = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
+  const searchRaw = window.location.search.startsWith("?")
+    ? window.location.search.slice(1)
+    : window.location.search;
+  const hashRaw = window.location.hash.startsWith("#")
+    ? window.location.hash.slice(1)
+    : window.location.hash;
   const fromSearch = parseXRedirectParamsFromRaw(searchRaw);
   if (fromSearch) {
     return fromSearch;
@@ -71,11 +85,15 @@ const readXRedirectParams = (): XRedirectResult | null => {
   }
   if (!didConsumeInitialXRedirectSnapshot && initialXRedirectSnapshot) {
     didConsumeInitialXRedirectSnapshot = true;
-    const fromInitialSearch = parseXRedirectParamsFromRaw(initialXRedirectSnapshot.searchRaw);
+    const fromInitialSearch = parseXRedirectParamsFromRaw(
+      initialXRedirectSnapshot.searchRaw,
+    );
     if (fromInitialSearch) {
       return fromInitialSearch;
     }
-    const fromInitialHash = parseXRedirectParamsFromRaw(initialXRedirectSnapshot.hashRaw);
+    const fromInitialHash = parseXRedirectParamsFromRaw(
+      initialXRedirectSnapshot.hashRaw,
+    );
     if (fromInitialHash) {
       return fromInitialHash;
     }
@@ -90,8 +108,12 @@ export const peekXRedirectResult = (): XRedirectResult | null => {
   if (typeof window === "undefined") {
     return null;
   }
-  const searchRaw = window.location.search.startsWith("?") ? window.location.search.slice(1) : window.location.search;
-  const hashRaw = window.location.hash.startsWith("#") ? window.location.hash.slice(1) : window.location.hash;
+  const searchRaw = window.location.search.startsWith("?")
+    ? window.location.search.slice(1)
+    : window.location.search;
+  const hashRaw = window.location.hash.startsWith("#")
+    ? window.location.hash.slice(1)
+    : window.location.hash;
   const fromSearch = parseXRedirectParamsFromRaw(searchRaw);
   if (fromSearch) {
     return fromSearch;
@@ -103,7 +125,10 @@ export const peekXRedirectResult = (): XRedirectResult | null => {
   if (didConsumeInitialXRedirectSnapshot || !initialXRedirectSnapshot) {
     return null;
   }
-  return parseXRedirectParamsFromRaw(initialXRedirectSnapshot.searchRaw) || parseXRedirectParamsFromRaw(initialXRedirectSnapshot.hashRaw);
+  return (
+    parseXRedirectParamsFromRaw(initialXRedirectSnapshot.searchRaw) ||
+    parseXRedirectParamsFromRaw(initialXRedirectSnapshot.hashRaw)
+  );
 };
 
 const notifyPendingXRedirectResultListeners = (): void => {
@@ -114,7 +139,9 @@ const notifyPendingXRedirectResultListeners = (): void => {
   });
 };
 
-export const subscribeToPendingXRedirectResult = (listener: (result: XRedirectResult | null) => void): (() => void) => {
+export const subscribeToPendingXRedirectResult = (
+  listener: (result: XRedirectResult | null) => void,
+): (() => void) => {
   pendingXRedirectResultListeners.add(listener);
   try {
     listener(pendingXRedirectResult || peekXRedirectResult());
@@ -137,7 +164,9 @@ const clearXRedirectParams = (): void => {
     }
   });
   if (currentUrl.hash) {
-    const hashRaw = currentUrl.hash.startsWith("#") ? currentUrl.hash.slice(1) : currentUrl.hash;
+    const hashRaw = currentUrl.hash.startsWith("#")
+      ? currentUrl.hash.slice(1)
+      : currentUrl.hash;
     const hashParams = new URLSearchParams(hashRaw);
     let hashChanged = false;
     X_REDIRECT_CALLBACK_PARAM_KEYS.forEach((key) => {
@@ -203,12 +232,14 @@ export async function startXRedirectAuth(params: {
     consentSource: params.consentSource || "signin",
     returnUrl: params.returnUrl || window.location.href,
   });
-  const authUrl = typeof response?.authUrl === "string" ? response.authUrl.trim() : "";
+  const authUrl =
+    typeof response?.authUrl === "string" ? response.authUrl.trim() : "";
   if (!authUrl) {
     throw new Error("X redirect sign in is unavailable.");
   }
   window.location.assign(authUrl);
   const redirectError = new Error("X redirect sign in started.");
-  (redirectError as Error & { code?: XRedirectErrorCode }).code = "x-sign-in-redirect-started";
+  (redirectError as Error & { code?: XRedirectErrorCode }).code =
+    "x-sign-in-redirect-started";
   throw redirectError;
 }

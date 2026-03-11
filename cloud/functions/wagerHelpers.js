@@ -11,7 +11,11 @@ const normalizeCount = (value) => {
 };
 
 const computeAvailableCount = (total, frozen, material) => {
-  return Math.max(0, (total && total[material] ? total[material] : 0) - (frozen && frozen[material] ? frozen[material] : 0));
+  return Math.max(
+    0,
+    (total && total[material] ? total[material] : 0) -
+      (frozen && frozen[material] ? frozen[material] : 0),
+  );
 };
 
 const applyMaterialDeltas = (source, deltas) => {
@@ -58,7 +62,11 @@ const reserveFrozenMaterials = async (uid, material, count, totalMaterials) => {
   const frozenRef = admin.database().ref(`players/${uid}/mining/frozen`);
   const result = await frozenRef.transaction((current) => {
     const normalized = normalizeMaterials(current);
-    const available = computeAvailableCount(totalMaterials, normalized, material);
+    const available = computeAvailableCount(
+      totalMaterials,
+      normalized,
+      material,
+    );
     const nextCount = Math.min(count, available);
     if (nextCount <= 0) {
       reservedCount = 0;
@@ -74,12 +82,19 @@ const reserveFrozenMaterials = async (uid, material, count, totalMaterials) => {
   return reservedCount;
 };
 
-const reserveAcceptedMaterials = async (uid, material, proposedCount, ownProposal, totalMaterials) => {
+const reserveAcceptedMaterials = async (
+  uid,
+  material,
+  proposedCount,
+  ownProposal,
+  totalMaterials,
+) => {
   let acceptedCount = 0;
   let appliedDelta = null;
   const frozenRef = admin.database().ref(`players/${uid}/mining/frozen`);
   const caps = normalizeMaterials(totalMaterials);
-  const ownMaterial = ownProposal && ownProposal.material ? ownProposal.material : null;
+  const ownMaterial =
+    ownProposal && ownProposal.material ? ownProposal.material : null;
   const ownCount = ownProposal ? normalizeCount(ownProposal.count) : 0;
   const result = await frozenRef.transaction((current) => {
     const normalized = normalizeMaterials(current);
@@ -113,7 +128,10 @@ const reserveAcceptedMaterials = async (uid, material, proposedCount, ownProposa
 };
 
 const readFrozenMaterials = async (uid) => {
-  const snap = await admin.database().ref(`players/${uid}/mining/frozen`).once("value");
+  const snap = await admin
+    .database()
+    .ref(`players/${uid}/mining/frozen`)
+    .once("value");
   return normalizeMaterials(snap.val());
 };
 
@@ -146,11 +164,19 @@ const resolveWagerParticipants = async (inviteData, auth) => {
   }
   const authUid = auth.uid;
   const authProfileId = auth.token && auth.token.profileId;
-  const hasProfileClaim = typeof authProfileId === "string" && authProfileId !== "";
-  const isHost = authUid === hostId || (hasProfileClaim && authProfileId === hostProfile.profileId);
-  const isGuest = authUid === guestId || (hasProfileClaim && authProfileId === guestProfile.profileId);
+  const hasProfileClaim =
+    typeof authProfileId === "string" && authProfileId !== "";
+  const isHost =
+    authUid === hostId ||
+    (hasProfileClaim && authProfileId === hostProfile.profileId);
+  const isGuest =
+    authUid === guestId ||
+    (hasProfileClaim && authProfileId === guestProfile.profileId);
   if (!isHost && !isGuest) {
-    throw new HttpsError("permission-denied", "You don't have permission to manage this wager.");
+    throw new HttpsError(
+      "permission-denied",
+      "You don't have permission to manage this wager.",
+    );
   }
   return {
     playerUid: isHost ? hostId : guestId,
@@ -160,8 +186,15 @@ const resolveWagerParticipants = async (inviteData, auth) => {
   };
 };
 
-const removeWagerProposalWithRetry = async (inviteId, matchId, proposalUid, attempts = 2) => {
-  const wagerRef = admin.database().ref(`invites/${inviteId}/wagers/${matchId}`);
+const removeWagerProposalWithRetry = async (
+  inviteId,
+  matchId,
+  proposalUid,
+  attempts = 2,
+) => {
+  const wagerRef = admin
+    .database()
+    .ref(`invites/${inviteId}/wagers/${matchId}`);
   let lastDebug = null;
   for (let attempt = 1; attempt <= attempts; attempt += 1) {
     const beforeSnap = await wagerRef.once("value");
@@ -171,13 +204,22 @@ const removeWagerProposalWithRetry = async (inviteId, matchId, proposalUid, atte
       return { ok: false, debug: lastDebug };
     }
     if (beforeData.resolved || beforeData.agreed) {
-      lastDebug = { attempt, step: "already-resolved", resolved: !!beforeData.resolved, agreed: !!beforeData.agreed };
+      lastDebug = {
+        attempt,
+        step: "already-resolved",
+        resolved: !!beforeData.resolved,
+        agreed: !!beforeData.agreed,
+      };
       return { ok: false, debug: lastDebug };
     }
     const proposals = beforeData.proposals || {};
     const proposal = proposals[proposalUid];
     if (!proposal) {
-      lastDebug = { attempt, step: "proposal-missing", proposalKeys: Object.keys(proposals) };
+      lastDebug = {
+        attempt,
+        step: "proposal-missing",
+        proposalKeys: Object.keys(proposals),
+      };
       if (attempt < attempts) {
         await new Promise((resolve) => setTimeout(resolve, 160));
         continue;
@@ -198,7 +240,12 @@ const removeWagerProposalWithRetry = async (inviteId, matchId, proposalUid, atte
       latestResolved: !!afterData.resolved,
     };
     if (!stillExists) {
-      return { ok: true, removedProposal: proposal, canUnfreeze, debug: lastDebug };
+      return {
+        ok: true,
+        removedProposal: proposal,
+        canUnfreeze,
+        debug: lastDebug,
+      };
     }
     if (attempt < attempts) {
       await new Promise((resolve) => setTimeout(resolve, 160));

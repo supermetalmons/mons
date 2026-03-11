@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 const { initAdmin, admin } = require("./_admin");
 
-const toCleanString = (value) => (typeof value === "string" && value.trim() !== "" ? value.trim() : "");
+const toCleanString = (value) =>
+  typeof value === "string" && value.trim() !== "" ? value.trim() : "";
 const toUsernameLookupKey = (username) => toCleanString(username).toLowerCase();
 const isSafeFirestoreDocIdSegment = (value) => {
   const cleaned = toCleanString(value);
@@ -34,7 +35,10 @@ async function main() {
 
   let lastDoc = null;
   while (true) {
-    let query = firestore.collection("users").orderBy(admin.firestore.FieldPath.documentId()).limit(pageSize);
+    let query = firestore
+      .collection("users")
+      .orderBy(admin.firestore.FieldPath.documentId())
+      .limit(pageSize);
     if (lastDoc) {
       query = query.startAfter(lastDoc);
     }
@@ -58,7 +62,7 @@ async function main() {
               {
                 usernameLookupKey: admin.firestore.FieldValue.delete(),
               },
-              { merge: true }
+              { merge: true },
             );
           }
         }
@@ -84,7 +88,7 @@ async function main() {
             {
               usernameLookupKey: usernameKey,
             },
-            { merge: true }
+            { merge: true },
           );
         }
       }
@@ -142,14 +146,25 @@ async function main() {
       const indexedUsername = toCleanString(indexData.username);
       const indexedLookupKey = toCleanString(indexData.lookupKey);
       if (!indexedProfileId || indexedProfileId === owner.profileId) {
-        if (!indexedProfileId || indexedUsername !== owner.username || indexedLookupKey !== usernameKey) {
+        if (
+          !indexedProfileId ||
+          indexedUsername !== owner.username ||
+          indexedLookupKey !== usernameKey
+        ) {
           repairedIndexes += 1;
           needsWrite = true;
         }
       } else {
-        const indexedProfileSnapshot = await firestore.collection("users").doc(indexedProfileId).get();
-        const indexedProfileData = indexedProfileSnapshot.exists ? indexedProfileSnapshot.data() || {} : {};
-        const indexedUsernameKey = toUsernameLookupKey(indexedProfileData.username);
+        const indexedProfileSnapshot = await firestore
+          .collection("users")
+          .doc(indexedProfileId)
+          .get();
+        const indexedProfileData = indexedProfileSnapshot.exists
+          ? indexedProfileSnapshot.data() || {}
+          : {};
+        const indexedUsernameKey = toUsernameLookupKey(
+          indexedProfileData.username,
+        );
         if (indexedUsernameKey === usernameKey) {
           indexConflicts.push({
             key: usernameKey,
@@ -172,12 +187,16 @@ async function main() {
           lookupKey: usernameKey,
           updatedAtMs: Date.now(),
         },
-        { merge: true }
+        { merge: true },
       );
     }
 
     const legacyDocId = toCleanString(owner.username);
-    if (legacyDocId && legacyDocId !== usernameKey && isSafeFirestoreDocIdSegment(legacyDocId)) {
+    if (
+      legacyDocId &&
+      legacyDocId !== usernameKey &&
+      isSafeFirestoreDocIdSegment(legacyDocId)
+    ) {
       const legacyRef = firestore.collection("usernameIndex").doc(legacyDocId);
       const legacySnapshot = await legacyRef.get();
       if (legacySnapshot.exists) {
@@ -206,7 +225,10 @@ async function main() {
     deletedLegacyIndexes,
     indexConflicts: indexConflicts.length,
     skippedDueToConflicts,
-    strictUniquenessReady: collisionsByKey.size === 0 && indexConflicts.length === 0 && malformedUsernames === 0,
+    strictUniquenessReady:
+      collisionsByKey.size === 0 &&
+      indexConflicts.length === 0 &&
+      malformedUsernames === 0,
   };
 
   console.log("Username index case-insensitive backfill summary:");
@@ -233,8 +255,15 @@ async function main() {
     });
   }
 
-  if (!dryRun && (collisionsByKey.size > 0 || indexConflicts.length > 0 || malformedUsernames > 0)) {
-    throw new Error("Backfill completed with unresolved username collisions/conflicts/malformed entries. Resolve them before enabling strict case-insensitive uniqueness.");
+  if (
+    !dryRun &&
+    (collisionsByKey.size > 0 ||
+      indexConflicts.length > 0 ||
+      malformedUsernames > 0)
+  ) {
+    throw new Error(
+      "Backfill completed with unresolved username collisions/conflicts/malformed entries. Resolve them before enabling strict case-insensitive uniqueness.",
+    );
   }
 }
 

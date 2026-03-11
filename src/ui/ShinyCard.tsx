@@ -1,20 +1,51 @@
 import { connection } from "../connection/connection";
-import { emojipackSize, emojis, getIncrementedEmojiId, swagpackStart } from "../content/emojis";
+import {
+  emojipackSize,
+  emojis,
+  getIncrementedEmojiId,
+  swagpackStart,
+} from "../content/emojis";
 import { asciimojisCount, getAsciimojiAtIndex } from "../utils/asciimoji";
 import { isMobile, getStableRandomIdForProfileId } from "../utils/misc";
 import { isLocalHost } from "../utils/localDev";
 import { storage } from "../utils/storage";
 import { handleEditDisplayName } from "./ProfileSignIn";
-import { didClickAndChangePlayerEmoji, didUpdateIdCardMons } from "../game/board";
+import {
+  didClickAndChangePlayerEmoji,
+  didUpdateIdCardMons,
+} from "../game/board";
 import { STICKER_ADD_PROMPTS_FRAMES, STICKER_PATHS } from "../utils/stickers";
 import { PlayerProfile } from "../connection/connectionModels";
-import { MonType, getMonId, mysticTypes, spiritTypes, demonTypes, angelTypes, drainerTypes, getMonsIndexes, royalAguapwoshiDrainerIndex } from "../utils/namedMons";
-import { attachRainbowAura, setRainbowAuraMask, showRainbowAura, hideRainbowAura } from "./rainbowAura";
+import {
+  MonType,
+  getMonId,
+  mysticTypes,
+  spiritTypes,
+  demonTypes,
+  angelTypes,
+  drainerTypes,
+  getMonsIndexes,
+  royalAguapwoshiDrainerIndex,
+} from "../utils/namedMons";
+import {
+  attachRainbowAura,
+  setRainbowAuraMask,
+  showRainbowAura,
+  hideRainbowAura,
+} from "./rainbowAura";
 
-const CARD_BACKGROUND_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
-const IDLE_SHINE_GRADIENT = "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
-const HOVER_SHINE_GRADIENT = (percentX: number, percentY: number) => `radial-gradient(circle at ${percentX}% ${percentY}%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%)`;
-const TRANSITION_SHINE_GRADIENT = (lastShineX: number, lastShineY: number, radialOpacity: number, linearOpacity: number) =>
+const CARD_BACKGROUND_GRADIENT =
+  "linear-gradient(135deg, rgba(255,255,255,0.4) 0%, rgba(255,255,255,0.1) 100%)";
+const IDLE_SHINE_GRADIENT =
+  "linear-gradient(135deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 50%, rgba(255,255,255,0) 100%)";
+const HOVER_SHINE_GRADIENT = (percentX: number, percentY: number) =>
+  `radial-gradient(circle at ${percentX}% ${percentY}%, rgba(255,255,255,0.8) 0%, rgba(255,255,255,0) 60%)`;
+const TRANSITION_SHINE_GRADIENT = (
+  lastShineX: number,
+  lastShineY: number,
+  radialOpacity: number,
+  linearOpacity: number,
+) =>
   `radial-gradient(circle at ${lastShineX}% ${lastShineY}%, 
     rgba(255,255,255,${radialOpacity}) 0%, 
     rgba(255,255,255,0) 60%),
@@ -66,7 +97,10 @@ let cardResizeObserver: ResizeObserver | null = null;
 let textElements: Array<{ element: HTMLElement; card: HTMLElement }> = [];
 let stickerElements: Record<string, HTMLImageElement> = {};
 let stickerHitAreas: Record<string, HTMLDivElement> = {};
-let dynamicallyRoundedElements: Array<{ element: HTMLElement; radius: number }> = [];
+let dynamicallyRoundedElements: Array<{
+  element: HTMLElement;
+  radius: number;
+}> = [];
 let resizeListener: (() => void) | null = null;
 let enterEditingMode: (() => void) | null = null;
 let handlePointerLeave: (() => void) | null = null;
@@ -88,13 +122,19 @@ const INVENTORY_ONLY_STICKER_TYPE = "big-mon-top-right";
 const INVENTORY_ONLY_STICKER_NAME = "gate";
 type UpdateSource = "default" | "inventory";
 
-const isInventoryOnlyEmojiId = (emojiId: string | number | undefined): boolean => {
+const isInventoryOnlyEmojiId = (
+  emojiId: string | number | undefined,
+): boolean => {
   const parsed = Number.parseInt(`${emojiId ?? ""}`, 10);
   return Number.isFinite(parsed) && parsed >= swagpackStart;
 };
 
 const getNextRegularCardBackgroundId = (currentBgId: number): number => {
-  if (!Number.isFinite(currentBgId) || currentBgId < 0 || currentBgId >= totalCardBgsCount) {
+  if (
+    !Number.isFinite(currentBgId) ||
+    currentBgId < 0 ||
+    currentBgId >= totalCardBgsCount
+  ) {
     return 0;
   }
   return (currentBgId + 1) % totalCardBgsCount;
@@ -105,7 +145,11 @@ const getNextRegularDrainerId = (currentDrainerId: number): number => {
   if (regularDrainerCount <= 0) {
     return 0;
   }
-  if (!Number.isFinite(currentDrainerId) || currentDrainerId < 0 || currentDrainerId >= regularDrainerCount) {
+  if (
+    !Number.isFinite(currentDrainerId) ||
+    currentDrainerId < 0 ||
+    currentDrainerId >= regularDrainerCount
+  ) {
     return 0;
   }
   return (currentDrainerId + 1) % regularDrainerCount;
@@ -121,7 +165,9 @@ const getUndoUpdateSource = (contentType: string, oldId: any): UpdateSource => {
     case "bg":
       return Number(oldId) === INVENTORY_ONLY_BG_ID ? "inventory" : "default";
     case "drainer":
-      return Number(oldId) === royalAguapwoshiDrainerIndex ? "inventory" : "default";
+      return Number(oldId) === royalAguapwoshiDrainerIndex
+        ? "inventory"
+        : "default";
     case INVENTORY_ONLY_STICKER_TYPE:
       return oldId === INVENTORY_ONLY_STICKER_NAME ? "inventory" : "default";
     default:
@@ -163,10 +209,16 @@ const cancelShinyCardDownload = () => {
   if (!isLocalHost()) {
     return;
   }
-  void loadShinyCardCapture().then((capture) => capture?.cancelShinyCardDownload?.());
+  void loadShinyCardCapture().then((capture) =>
+    capture?.cancelShinyCardDownload?.(),
+  );
 };
 
-const scheduleShinyCardDownload = (card: HTMLElement, displayName: string, readyPromise?: Promise<void>): Promise<void> => {
+const scheduleShinyCardDownload = (
+  card: HTMLElement,
+  displayName: string,
+  readyPromise?: Promise<void>,
+): Promise<void> => {
   if (!isLocalHost()) {
     return Promise.resolve();
   }
@@ -178,13 +230,21 @@ const scheduleShinyCardDownload = (card: HTMLElement, displayName: string, ready
       card,
       fileName: getShinyCardDownloadFileName(displayName),
       readyPromise,
-      scale: SHINY_CARD_CAPTURE_SCALE
+      scale: SHINY_CARD_CAPTURE_SCALE,
     });
   });
 };
 
-export const showShinyCard = async (profile: PlayerProfile | null, displayName: string, isOtherPlayer: boolean, shouldDownload = false): Promise<void> => {
-  const alreadyShowsSameOtherPlayerProfile = isOtherPlayer && profile !== null && displayedOtherPlayerProfile === profile;
+export const showShinyCard = async (
+  profile: PlayerProfile | null,
+  displayName: string,
+  isOtherPlayer: boolean,
+  shouldDownload = false,
+): Promise<void> => {
+  const alreadyShowsSameOtherPlayerProfile =
+    isOtherPlayer &&
+    profile !== null &&
+    displayedOtherPlayerProfile === profile;
 
   if (alreadyShowsSameOtherPlayerProfile) {
     hideShinyCard();
@@ -197,7 +257,12 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
 
   if (showsShinyCardSomewhere) {
     if (isOtherPlayer && displayedOtherPlayerProfile) {
-      return updateExistingCardForAnotherProfile(profile, displayName, isOtherPlayer, shouldDownload);
+      return updateExistingCardForAnotherProfile(
+        profile,
+        displayName,
+        isOtherPlayer,
+        shouldDownload,
+      );
     } else {
       hideShinyCard();
     }
@@ -244,7 +309,10 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   cardContainer.style.aspectRatio = `${borderedCardAspectRatio}`;
 
   const updateCardWidth = () => {
-    const calculatedWidth = isOtherPlayer && isMobile ? window.innerWidth * 0.69 : Math.min(window.innerWidth * 0.8, 350);
+    const calculatedWidth =
+      isOtherPlayer && isMobile
+        ? window.innerWidth * 0.69
+        : Math.min(window.innerWidth * 0.8, 350);
     cardContainer.style.width = `${calculatedWidth}px`;
     const calculatedHeight = calculatedWidth / borderedCardAspectRatio;
     const maxHeight = window.innerHeight * 0.42;
@@ -278,7 +346,10 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   card.style.userSelect = "none";
   card.style.overflow = "hidden";
   card.style.backdropFilter = "blur(3px)";
-  card.setAttribute("style", card.getAttribute("style") + "-webkit-backdrop-filter: blur(3px);");
+  card.setAttribute(
+    "style",
+    card.getAttribute("style") + "-webkit-backdrop-filter: blur(3px);",
+  );
 
   const cardContentsLayer = document.createElement("div");
   cardContentsLayer.style.position = "relative";
@@ -326,7 +397,10 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   emojiContainer.style.userSelect = "none";
   emojiContainer.style.cursor = "pointer";
   emojiContainer.style.outline = "none";
-  emojiContainer.style.setProperty("-webkit-tap-highlight-color", "transparent");
+  emojiContainer.style.setProperty(
+    "-webkit-tap-highlight-color",
+    "transparent",
+  );
   emojiContainer.style.setProperty("-webkit-touch-callout", "none");
   emojiContainer.style.transition = "transform 0.13s ease-out";
 
@@ -385,7 +459,9 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     emojiPlaceholder.style.visibility = "hidden";
     if (rainbowAuraInner) setRainbowAuraMask(rainbowAuraInner, emojiImg.src);
     if (rainbowAuraBackground) {
-      const currentAura = isOtherPlayer ? profile?.aura ?? "" : storage.getPlayerEmojiAura("");
+      const currentAura = isOtherPlayer
+        ? (profile?.aura ?? "")
+        : storage.getPlayerEmojiAura("");
       if (currentAura === "rainbow") {
         showRainbowAura(rainbowAuraBackground);
       } else {
@@ -427,7 +503,11 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     const oldEmojiId = storage.getPlayerEmojiId("1");
     const oldAura = storage.getPlayerEmojiAura("");
     const playerEmojiId = getIncrementedEmojiId(oldEmojiId);
-    updateContent("emojiAndAura", { emojiId: playerEmojiId, aura: "" }, { emojiId: oldEmojiId, aura: oldAura });
+    updateContent(
+      "emojiAndAura",
+      { emojiId: playerEmojiId, aura: "" },
+      { emojiId: oldEmojiId, aura: oldAura },
+    );
   });
   ownEmojiImg = emojiImg;
 
@@ -518,7 +598,12 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
       const dispersedX = 50 + (startX - 50) * (1 - easedProgress);
       const dispersedY = 50 + (startY - 50) * (1 - easedProgress);
       const opacity = 1 - easedProgress;
-      shinyOverlay.style.background = TRANSITION_SHINE_GRADIENT(dispersedX, dispersedY, opacity * 0.8, opacity * 0.3);
+      shinyOverlay.style.background = TRANSITION_SHINE_GRADIENT(
+        dispersedX,
+        dispersedY,
+        opacity * 0.8,
+        opacity * 0.3,
+      );
       if (progress < 1) {
         requestAnimationFrame(animateDisperse);
       } else {
@@ -572,14 +657,23 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     undoBtn.className = "shiny-card-undo-button";
     undoBtn.disabled = undoQueue.length === 0;
 
-    const undoSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    const undoSvg = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "svg",
+    );
     undoSvg.setAttribute("viewBox", "0 0 512 512");
     undoSvg.style.width = "14px";
     undoSvg.style.height = "14px";
     undoSvg.style.fill = "currentColor";
 
-    const undoPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-    undoPath.setAttribute("d", "M125.7 160H176c17.7 0 32 14.3 32 32s-14.3 32-32 32H48c-17.7 0-32-14.3-32-32V64c0-17.7 14.3-32 32-32s32 14.3 32 32v51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z");
+    const undoPath = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path",
+    );
+    undoPath.setAttribute(
+      "d",
+      "M125.7 160H176c17.7 0 32 14.3 32 32s-14.3 32-32 32H48c-17.7 0-32-14.3-32-32V64c0-17.7 14.3-32 32-32s32 14.3 32 32v51.2L97.6 97.6c87.5-87.5 229.3-87.5 316.8 0s87.5 229.3 0 316.8s-229.3 87.5-316.8 0c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0c62.5 62.5 163.8 62.5 226.3 0s62.5-163.8 0-226.3s-163.8-62.5-226.3 0L125.7 160z",
+    );
 
     undoSvg.appendChild(undoPath);
     undoBtn.appendChild(undoSvg);
@@ -672,8 +766,13 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
       const naturalRotateY = Math.cos(time * 0.8) * 3 * animationIntensity;
 
       if (transitioningFromMouse) {
-        const transitionDuration = isEditingMode ? 50 : standardTransitionDuration;
-        transitionProgress = Math.min(transitionProgress + 1, transitionDuration);
+        const transitionDuration = isEditingMode
+          ? 50
+          : standardTransitionDuration;
+        transitionProgress = Math.min(
+          transitionProgress + 1,
+          transitionDuration,
+        );
         const t = transitionProgress / transitionDuration;
 
         const easeOutCubic = (x: number) => 1 - Math.pow(1 - x, 3);
@@ -689,7 +788,12 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
           const linearOpacity = easedT * 0.3;
 
           if (!isEditingMode) {
-            shinyOverlay.style.background = TRANSITION_SHINE_GRADIENT(lastShineX, lastShineY, radialOpacity, linearOpacity);
+            shinyOverlay.style.background = TRANSITION_SHINE_GRADIENT(
+              lastShineX,
+              lastShineY,
+              radialOpacity,
+              linearOpacity,
+            );
           }
         } else {
           if (!isEditingMode) {
@@ -763,8 +867,12 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   };
 
   if (isMobile) {
-    cardContainer.addEventListener("touchmove", handlePointerMove, { passive: true });
-    cardContainer.addEventListener("touchstart", handlePointerMove, { passive: true });
+    cardContainer.addEventListener("touchmove", handlePointerMove, {
+      passive: true,
+    });
+    cardContainer.addEventListener("touchstart", handlePointerMove, {
+      passive: true,
+    });
     cardContainer.addEventListener("touchend", handlePointerLeave);
     cardContainer.addEventListener("touchcancel", handlePointerLeave);
   } else {
@@ -799,36 +907,81 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   }
 
   const textBubbleHeight = "8.6%";
-  nameElement = addTextBubble(cardContentsLayer, displayName, "34.3%", "26%", textBubbleHeight, handlePointerLeave, () => {
-    if (isOtherPlayer) {
-      const eth = profile?.eth;
-      const sol = profile?.sol;
-      if (eth) {
-        window.open(`https://etherscan.io/address/${eth}`, "_blank", "noopener,noreferrer");
-      } else if (sol) {
-        window.open(`https://explorer.solana.com/address/${sol}`, "_blank", "noopener,noreferrer");
+  nameElement = addTextBubble(
+    cardContentsLayer,
+    displayName,
+    "34.3%",
+    "26%",
+    textBubbleHeight,
+    handlePointerLeave,
+    () => {
+      if (isOtherPlayer) {
+        const eth = profile?.eth;
+        const sol = profile?.sol;
+        if (eth) {
+          window.open(
+            `https://etherscan.io/address/${eth}`,
+            "_blank",
+            "noopener,noreferrer",
+          );
+        } else if (sol) {
+          window.open(
+            `https://explorer.solana.com/address/${sol}`,
+            "_blank",
+            "noopener,noreferrer",
+          );
+        }
+      } else {
+        handleEditDisplayName();
       }
-    } else {
-      handleEditDisplayName();
-    }
-  });
+    },
+  );
 
-  const ratingText = isOtherPlayer ? (profile?.rating ?? 1500).toString() : storage.getPlayerRating(1500).toString();
-  addTextBubble(cardContentsLayer, ratingText, "34.3%", "36.6%", textBubbleHeight, handlePointerLeave);
+  const ratingText = isOtherPlayer
+    ? (profile?.rating ?? 1500).toString()
+    : storage.getPlayerRating(1500).toString();
+  addTextBubble(
+    cardContentsLayer,
+    ratingText,
+    "34.3%",
+    "36.6%",
+    textBubbleHeight,
+    handlePointerLeave,
+  );
 
-  const subtitleText = getAsciimojiAtIndex(isOtherPlayer ? getSubtitleIdForProfile(profile) : asciimojiIndex);
-  ownSubtitleElement = addTextBubble(cardContentsLayer, subtitleText, "7.4%", "47.5%", textBubbleHeight, handlePointerLeave, () => {
-    if (isOtherPlayer) {
-      return;
-    }
-    updateContent("subtitle", (asciimojiIndex + 1) % asciimojisCount, asciimojiIndex);
-  });
+  const subtitleText = getAsciimojiAtIndex(
+    isOtherPlayer ? getSubtitleIdForProfile(profile) : asciimojiIndex,
+  );
+  ownSubtitleElement = addTextBubble(
+    cardContentsLayer,
+    subtitleText,
+    "7.4%",
+    "47.5%",
+    textBubbleHeight,
+    handlePointerLeave,
+    () => {
+      if (isOtherPlayer) {
+        return;
+      }
+      updateContent(
+        "subtitle",
+        (asciimojiIndex + 1) % asciimojisCount,
+        asciimojiIndex,
+      );
+    },
+  );
 
-  const gpValue = (isOtherPlayer ? profile?.nonce ?? -1 : storage.getPlayerNonce(-1)) + 1;
-  const mpValue = isOtherPlayer ? profile?.totalManaPoints ?? 0 : storage.getPlayerTotalManaPoints(0);
+  const gpValue =
+    (isOtherPlayer ? (profile?.nonce ?? -1) : storage.getPlayerNonce(-1)) + 1;
+  const mpValue = isOtherPlayer
+    ? (profile?.totalManaPoints ?? 0)
+    : storage.getPlayerTotalManaPoints(0);
 
-  const profileCounter = isOtherPlayer ? profile?.profileCounter ?? "gp" : storage.getProfileCounter("gp");
-  const counterText = profileCounter === "mp" ? `mp: ${mpValue}` : `gp: ${gpValue}`;
+  const profileCounter = isOtherPlayer
+    ? (profile?.profileCounter ?? "gp")
+    : storage.getProfileCounter("gp");
+  const counterText =
+    profileCounter === "mp" ? `mp: ${mpValue}` : `gp: ${gpValue}`;
 
   let currentViewCounter = profileCounter;
 
@@ -842,7 +995,8 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
     () => {
       if (isOtherPlayer) {
         currentViewCounter = currentViewCounter === "gp" ? "mp" : "gp";
-        const newCounterText = currentViewCounter === "mp" ? `mp: ${mpValue}` : `gp: ${gpValue}`;
+        const newCounterText =
+          currentViewCounter === "mp" ? `mp: ${mpValue}` : `gp: ${gpValue}`;
         if (ownCounterElement) {
           ownCounterElement.textContent = newCounterText;
         }
@@ -852,7 +1006,7 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
       const newCounter = currentCounter === "gp" ? "mp" : "gp";
       updateContent("profileCounter", newCounter, currentCounter);
     },
-    isOtherPlayer
+    isOtherPlayer,
   );
 
   cardContainer.appendChild(card);
@@ -873,12 +1027,19 @@ export const showShinyCard = async (profile: PlayerProfile | null, displayName: 
   });
 
   observer.observe(document.body, { childList: true });
-  const monsReady = showMons(cardContentsLayer, handlePointerLeave, isOtherPlayer, profile).catch(() => {});
+  const monsReady = showMons(
+    cardContentsLayer,
+    handlePointerLeave,
+    isOtherPlayer,
+    profile,
+  ).catch(() => {});
   if (!showsShinyCardSomewhere || !card.isConnected) {
     return;
   }
 
-  const stickersJson = isOtherPlayer ? profile?.cardStickers ?? "" : storage.getCardStickers("");
+  const stickersJson = isOtherPlayer
+    ? (profile?.cardStickers ?? "")
+    : storage.getCardStickers("");
   displayStickers(cardContentsLayer, stickersJson);
   updateUndoButton();
   if (shouldDownload) {
@@ -902,7 +1063,10 @@ function showHiddenWaitingStickers() {
   });
 }
 
-export function didUpdateSticker(stickerType: string, nextSticker: string | undefined) {
+export function didUpdateSticker(
+  stickerType: string,
+  nextSticker: string | undefined,
+) {
   if (nextSticker) {
     const element = stickerElements[stickerType];
     if (element) {
@@ -943,7 +1107,11 @@ function showHitAreasForStickersThatAreNotSet() {
   });
 }
 
-function setupHitAreaForStickerType(stickerType: string, visible: boolean, animated: boolean): HTMLDivElement {
+function setupHitAreaForStickerType(
+  stickerType: string,
+  visible: boolean,
+  animated: boolean,
+): HTMLDivElement {
   let hitArea = stickerHitAreas[stickerType];
   if (!hitArea) {
     hitArea = document.createElement("div");
@@ -992,7 +1160,11 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean, anima
           }
           setTimeout(() => {
             const rect = hitArea.getBoundingClientRect();
-            const isPointerInside = e.clientX >= rect.left && e.clientX <= rect.right && e.clientY >= rect.top && e.clientY <= rect.bottom;
+            const isPointerInside =
+              e.clientX >= rect.left &&
+              e.clientX <= rect.right &&
+              e.clientY >= rect.top &&
+              e.clientY <= rect.bottom;
             if (!isPointerInside) {
               hitArea.style.transform = "scale(1)";
               if (element) {
@@ -1015,7 +1187,8 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean, anima
       }
     };
     if (ownCardContentsLayer) {
-      hitArea.style.transition = "opacity 0.2s ease-out, transform 0.13s ease-out";
+      hitArea.style.transition =
+        "opacity 0.2s ease-out, transform 0.13s ease-out";
       if (visible && animated) {
         hitArea.style.opacity = "0";
         ownCardContentsLayer.appendChild(hitArea);
@@ -1047,7 +1220,10 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean, anima
       hitArea.style.top = `${frame.y * 100 - height * 0.5}%`;
       hitArea.style.boxShadow = "0 0 1px 1px rgba(0, 0, 0, 0.1)";
 
-      const plusSvg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      const plusSvg = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "svg",
+      );
       plusSvg.setAttribute("viewBox", "0 0 24 24");
       plusSvg.style.position = "absolute";
       plusSvg.style.left = "50%";
@@ -1056,7 +1232,10 @@ function setupHitAreaForStickerType(stickerType: string, visible: boolean, anima
       plusSvg.style.width = "50%";
       plusSvg.style.height = "50%";
       plusSvg.style.fill = blue;
-      const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
+      const path = document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "path",
+      );
       path.setAttribute("d", "M19 13h-6v6h-2v-6H5v-2h6V5h2v6h6v2z");
       path.style.strokeWidth = "3";
       path.style.stroke = blue;
@@ -1098,7 +1277,9 @@ function handleStickerClick(type: string) {
   if (!currentSticker) {
     nextSticker = stickersForType[0]?.name;
   } else {
-    const currentIndex = stickersForType.findIndex((s) => s.name === currentSticker);
+    const currentIndex = stickersForType.findIndex(
+      (s) => s.name === currentSticker,
+    );
     if (currentIndex === stickersForType.length - 1 || currentIndex === -1) {
       nextSticker = undefined;
     } else {
@@ -1128,8 +1309,15 @@ function appendStickerLayer(to: HTMLElement, type: string, name: string) {
   stickerElements[type] = stickers;
 }
 
-function applyStickerFrame(hitArea: HTMLElement, type: string, name: string, stickerElement: HTMLElement) {
-  const stickerPath = STICKER_PATHS[type]?.find((sticker) => sticker.name === name);
+function applyStickerFrame(
+  hitArea: HTMLElement,
+  type: string,
+  name: string,
+  stickerElement: HTMLElement,
+) {
+  const stickerPath = STICKER_PATHS[type]?.find(
+    (sticker) => sticker.name === name,
+  );
   if (!stickerPath) return;
   const { x, y, w, h } = stickerPath;
   hitArea.style.left = `${x * 100}%`;
@@ -1142,7 +1330,16 @@ function applyStickerFrame(hitArea: HTMLElement, type: string, name: string, sti
   stickerElement.style.transformOrigin = `${centerX * 100}% ${centerY * 100}%`;
 }
 
-const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, topPosition: string, imageData: string, alpha: number, monType: string = "", handlePointerLeave: any, isOtherPlayer: boolean): HTMLElement => {
+const addImageToCard = (
+  cardContentsLayer: HTMLElement,
+  leftPosition: string,
+  topPosition: string,
+  imageData: string,
+  alpha: number,
+  monType: string = "",
+  handlePointerLeave: any,
+  isOtherPlayer: boolean,
+): HTMLElement => {
   const imageContainer = document.createElement("div");
   imageContainer.style.position = "absolute";
   imageContainer.style.left = leftPosition;
@@ -1155,7 +1352,11 @@ const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, to
   imageContainer.style.overflow = "hidden";
   imageContainer.style.userSelect = "none";
   imageContainer.style.pointerEvents = monType ? "auto" : "none";
-  imageContainer.setAttribute("style", imageContainer.getAttribute("style") + "-webkit-tap-highlight-color: transparent; outline: none; -webkit-touch-callout: none;");
+  imageContainer.setAttribute(
+    "style",
+    imageContainer.getAttribute("style") +
+      "-webkit-tap-highlight-color: transparent; outline: none; -webkit-touch-callout: none;",
+  );
 
   if (imageData) {
     const img = document.createElement("img");
@@ -1169,7 +1370,10 @@ const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, to
     img.style.opacity = alpha.toString();
     img.style.userSelect = "none";
     img.style.pointerEvents = "none";
-    img.setAttribute("style", img.getAttribute("style") + "-webkit-tap-highlight-color: transparent;");
+    img.setAttribute(
+      "style",
+      img.getAttribute("style") + "-webkit-tap-highlight-color: transparent;",
+    );
     img.draggable = false;
     img.src = `data:image/webp;base64,${imageData}`;
     img.onerror = () => {
@@ -1251,7 +1455,16 @@ const addImageToCard = (cardContentsLayer: HTMLElement, leftPosition: string, to
   return imageContainer;
 };
 
-const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: string, top: string, height: string, handlePointerLeave: any, onClick?: () => void, skipEditingModeCheck?: boolean): HTMLElement => {
+const addTextBubble = (
+  cardContentsLayer: HTMLElement,
+  text: string,
+  left: string,
+  top: string,
+  height: string,
+  handlePointerLeave: any,
+  onClick?: () => void,
+  skipEditingModeCheck?: boolean,
+): HTMLElement => {
   const container = document.createElement("div");
   container.style.position = "absolute";
   container.style.left = left;
@@ -1269,7 +1482,11 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
   container.style.userSelect = "none";
   container.style.pointerEvents = "auto";
   container.style.boxShadow = "0 0 1px 1px rgba(0, 0, 0, 0.1)";
-  container.setAttribute("style", container.getAttribute("style") + "-webkit-tap-highlight-color: transparent; outline: none; -webkit-touch-callout: none;");
+  container.setAttribute(
+    "style",
+    container.getAttribute("style") +
+      "-webkit-tap-highlight-color: transparent; outline: none; -webkit-touch-callout: none;",
+  );
 
   const updateTextContainerScale = (event: MouseEvent) => {
     if (!isMobile) {
@@ -1330,7 +1547,11 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
           container.style.transform = "scale(1.035)";
           setTimeout(() => {
             const rect = container.getBoundingClientRect();
-            const isPointerInside = event.clientX >= rect.left && event.clientX <= rect.right && event.clientY >= rect.top && event.clientY <= rect.bottom;
+            const isPointerInside =
+              event.clientX >= rect.left &&
+              event.clientX <= rect.right &&
+              event.clientY >= rect.top &&
+              event.clientY <= rect.bottom;
             if (!isPointerInside) {
               container.style.transform = "scale(1)";
             }
@@ -1345,7 +1566,10 @@ const addTextBubble = (cardContentsLayer: HTMLElement, text: string, left: strin
   return textElement;
 };
 
-const createOverlayStickersImage = (type: string, name: string): HTMLImageElement => {
+const createOverlayStickersImage = (
+  type: string,
+  name: string,
+): HTMLImageElement => {
   const url = `https://assets.mons.link/cards/stickers/${type}/${name}.webp`;
   const overlayImg = document.createElement("img");
   overlayImg.crossOrigin = "anonymous";
@@ -1413,25 +1637,97 @@ function getBgIdForProfile(profile: PlayerProfile | null): number {
 }
 
 function getEmojiIdForProfile(profile: PlayerProfile | null): number {
-  return profile?.emoji ?? getStableRandomIdForProfileId(profile?.id ?? "", emojipackSize);
+  return (
+    profile?.emoji ??
+    getStableRandomIdForProfileId(profile?.id ?? "", emojipackSize)
+  );
 }
 
 function getSubtitleIdForProfile(profile: PlayerProfile | null): number {
   return profile?.cardSubtitleId ?? defaultSubtitleIndex;
 }
 
-async function showMons(cardContentsLayer: HTMLElement, handlePointerLeave: any, isOtherPlayer: boolean, profile: PlayerProfile | null) {
+async function showMons(
+  cardContentsLayer: HTMLElement,
+  handlePointerLeave: any,
+  isOtherPlayer: boolean,
+  profile: PlayerProfile | null,
+) {
   const alpha = 1;
-  [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] = getMonsIndexes(isOtherPlayer, profile);
+  [demonIndex, angelIndex, drainerIndex, spiritIndex, mysticIndex] =
+    getMonsIndexes(isOtherPlayer, profile);
   const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
   const y = "74.37%";
-  addImageToCard(cardContentsLayer, "32.13%", y, getSpriteByKey(getMonId(MonType.DEMON, demonIndex)), alpha, "demon", handlePointerLeave, isOtherPlayer);
-  addImageToCard(cardContentsLayer, "44.35%", y, getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), alpha, "angel", handlePointerLeave, isOtherPlayer);
-  addImageToCard(cardContentsLayer, "32.13%", y, getSpriteByKey(getMonId(MonType.DEMON, demonIndex)), alpha, "demon", handlePointerLeave, isOtherPlayer);
-  addImageToCard(cardContentsLayer, "44.35%", y, getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)), alpha, "angel", handlePointerLeave, isOtherPlayer);
-  addImageToCard(cardContentsLayer, "56.85%", y, getSpriteByKey(getMonId(MonType.DRAINER, drainerIndex)), alpha, "drainer", handlePointerLeave, isOtherPlayer);
-  addImageToCard(cardContentsLayer, "69.2%", y, getSpriteByKey(getMonId(MonType.SPIRIT, spiritIndex)), alpha, "spirit", handlePointerLeave, isOtherPlayer);
-  addImageToCard(cardContentsLayer, "81.5%", y, getSpriteByKey(getMonId(MonType.MYSTIC, mysticIndex)), alpha, "mystic", handlePointerLeave, isOtherPlayer);
+  addImageToCard(
+    cardContentsLayer,
+    "32.13%",
+    y,
+    getSpriteByKey(getMonId(MonType.DEMON, demonIndex)),
+    alpha,
+    "demon",
+    handlePointerLeave,
+    isOtherPlayer,
+  );
+  addImageToCard(
+    cardContentsLayer,
+    "44.35%",
+    y,
+    getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)),
+    alpha,
+    "angel",
+    handlePointerLeave,
+    isOtherPlayer,
+  );
+  addImageToCard(
+    cardContentsLayer,
+    "32.13%",
+    y,
+    getSpriteByKey(getMonId(MonType.DEMON, demonIndex)),
+    alpha,
+    "demon",
+    handlePointerLeave,
+    isOtherPlayer,
+  );
+  addImageToCard(
+    cardContentsLayer,
+    "44.35%",
+    y,
+    getSpriteByKey(getMonId(MonType.ANGEL, angelIndex)),
+    alpha,
+    "angel",
+    handlePointerLeave,
+    isOtherPlayer,
+  );
+  addImageToCard(
+    cardContentsLayer,
+    "56.85%",
+    y,
+    getSpriteByKey(getMonId(MonType.DRAINER, drainerIndex)),
+    alpha,
+    "drainer",
+    handlePointerLeave,
+    isOtherPlayer,
+  );
+  addImageToCard(
+    cardContentsLayer,
+    "69.2%",
+    y,
+    getSpriteByKey(getMonId(MonType.SPIRIT, spiritIndex)),
+    alpha,
+    "spirit",
+    handlePointerLeave,
+    isOtherPlayer,
+  );
+  addImageToCard(
+    cardContentsLayer,
+    "81.5%",
+    y,
+    getSpriteByKey(getMonId(MonType.MYSTIC, mysticIndex)),
+    alpha,
+    "mystic",
+    handlePointerLeave,
+    isOtherPlayer,
+  );
 }
 
 async function didClickMonImage(monType: string) {
@@ -1443,19 +1739,36 @@ async function didClickMonImage(monType: string) {
       updateContent(monType, (angelIndex + 1) % angelTypes.length, angelIndex);
       break;
     case "drainer":
-      updateContent(monType, getNextRegularDrainerId(drainerIndex), drainerIndex);
+      updateContent(
+        monType,
+        getNextRegularDrainerId(drainerIndex),
+        drainerIndex,
+      );
       break;
     case "spirit":
-      updateContent(monType, (spiritIndex + 1) % spiritTypes.length, spiritIndex);
+      updateContent(
+        monType,
+        (spiritIndex + 1) % spiritTypes.length,
+        spiritIndex,
+      );
       break;
     case "mystic":
-      updateContent(monType, (mysticIndex + 1) % mysticTypes.length, mysticIndex);
+      updateContent(
+        monType,
+        (mysticIndex + 1) % mysticTypes.length,
+        mysticIndex,
+      );
       break;
   }
   didUpdateIdCardMons();
 }
 
-async function updateContent(contentType: string, newId: any, oldId: any | null, source: UpdateSource = "default") {
+async function updateContent(
+  contentType: string,
+  newId: any,
+  oldId: any | null,
+  source: UpdateSource = "default",
+) {
   switch (contentType) {
     case "profileCounter":
       const newCounter = newId;
@@ -1463,7 +1776,8 @@ async function updateContent(contentType: string, newId: any, oldId: any | null,
       connection.updateProfileCounter(newCounter);
       const gpValue = storage.getPlayerNonce(-1) + 1;
       const mpValue = storage.getPlayerTotalManaPoints(0);
-      const newCounterText = newCounter === "mp" ? `mp: ${mpValue}` : `gp: ${gpValue}`;
+      const newCounterText =
+        newCounter === "mp" ? `mp: ${mpValue}` : `gp: ${gpValue}`;
       if (ownCounterElement) {
         ownCounterElement.textContent = newCounterText;
       }
@@ -1471,7 +1785,10 @@ async function updateContent(contentType: string, newId: any, oldId: any | null,
     case "emojiAndAura":
       const nextEmojiId = newId?.emojiId;
       const nextAura = newId?.aura ?? "";
-      if (source !== "inventory" && (isInventoryOnlyEmojiId(nextEmojiId) || nextAura === "rainbow")) {
+      if (
+        source !== "inventory" &&
+        (isInventoryOnlyEmojiId(nextEmojiId) || nextAura === "rainbow")
+      ) {
         return;
       }
       const nextSmallEmojiUrl = emojis.getEmojiUrl(nextEmojiId);
@@ -1481,7 +1798,10 @@ async function updateContent(contentType: string, newId: any, oldId: any | null,
         ownEmojiImg.src = `https://assets.mons.link/emojipack_hq/${nextEmojiId}.webp`;
       }
       if (ownEmojiAuraInner) {
-        setRainbowAuraMask(ownEmojiAuraInner, `https://assets.mons.link/emojipack_hq/${nextEmojiId}.webp`);
+        setRainbowAuraMask(
+          ownEmojiAuraInner,
+          `https://assets.mons.link/emojipack_hq/${nextEmojiId}.webp`,
+        );
       }
       if (ownEmojiAuraBackground) {
         if (nextAura === "rainbow") {
@@ -1513,12 +1833,17 @@ async function updateContent(contentType: string, newId: any, oldId: any | null,
     case "drainer":
     case "spirit":
     case "mystic":
-      if (contentType === "drainer" && source !== "inventory" && newId === royalAguapwoshiDrainerIndex) {
+      if (
+        contentType === "drainer" &&
+        source !== "inventory" &&
+        newId === royalAguapwoshiDrainerIndex
+      ) {
         return;
       }
       let newImageData = "";
       let img: HTMLImageElement | null;
-      const getSpriteByKey = (await import(`../assets/monsSprites`)).getSpriteByKey;
+      const getSpriteByKey = (await import(`../assets/monsSprites`))
+        .getSpriteByKey;
       switch (contentType) {
         case "demon":
           demonIndex = newId;
@@ -1561,7 +1886,11 @@ async function updateContent(contentType: string, newId: any, oldId: any | null,
     case "type-logo":
       const nextSticker = newId;
       const type = contentType;
-      if (source !== "inventory" && type === INVENTORY_ONLY_STICKER_TYPE && nextSticker === INVENTORY_ONLY_STICKER_NAME) {
+      if (
+        source !== "inventory" &&
+        type === INVENTORY_ONLY_STICKER_TYPE &&
+        nextSticker === INVENTORY_ONLY_STICKER_NAME
+      ) {
         return;
       }
 
@@ -1589,7 +1918,12 @@ async function updateContent(contentType: string, newId: any, oldId: any | null,
   updateUndoButton();
 }
 
-function updateExistingCardForAnotherProfile(profile: PlayerProfile | null, displayName: string, isOtherPlayer: boolean, shouldDownload: boolean): Promise<void> {
+function updateExistingCardForAnotherProfile(
+  profile: PlayerProfile | null,
+  displayName: string,
+  isOtherPlayer: boolean,
+  shouldDownload: boolean,
+): Promise<void> {
   hideShinyCard();
   return showShinyCard(profile, displayName, isOtherPlayer, shouldDownload);
 }
@@ -1606,7 +1940,12 @@ export function setOwnershipVerifiedSpecialItem(id: number) {
       if (royalAguapwoshiDrainerIndex < 0) {
         break;
       }
-      updateContent("drainer", royalAguapwoshiDrainerIndex, drainerIndex, "inventory");
+      updateContent(
+        "drainer",
+        royalAguapwoshiDrainerIndex,
+        drainerIndex,
+        "inventory",
+      );
       didUpdateIdCardMons();
       break;
     case 1:
@@ -1615,7 +1954,12 @@ export function setOwnershipVerifiedSpecialItem(id: number) {
     case 2:
       const type = INVENTORY_ONLY_STICKER_TYPE;
       const currentSticker = currentlySelectedStickers[type];
-      updateContent(type, INVENTORY_ONLY_STICKER_NAME, currentSticker, "inventory");
+      updateContent(
+        type,
+        INVENTORY_ONLY_STICKER_NAME,
+        currentSticker,
+        "inventory",
+      );
       break;
   }
 }
@@ -1626,13 +1970,23 @@ export function setOwnershipVerifiedIdCardEmoji(id: number, aura: string) {
   }
   const oldEmojiId = storage.getPlayerEmojiId("1");
   const oldAura = storage.getPlayerEmojiAura("");
-  updateContent("emojiAndAura", { emojiId: id, aura: aura === "rainbow" ? "rainbow" : "" }, { emojiId: oldEmojiId, aura: oldAura }, "inventory");
+  updateContent(
+    "emojiAndAura",
+    { emojiId: id, aura: aura === "rainbow" ? "rainbow" : "" },
+    { emojiId: oldEmojiId, aura: oldAura },
+    "inventory",
+  );
 }
 
 async function didClickIdCardEditUndoButton() {
   if (undoQueue.length > 0) {
     const [contentType, oldId] = undoQueue.pop()!;
-    updateContent(contentType, oldId, null, getUndoUpdateSource(contentType, oldId));
+    updateContent(
+      contentType,
+      oldId,
+      null,
+      getUndoUpdateSource(contentType, oldId),
+    );
     updateUndoButton();
   }
 }

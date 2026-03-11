@@ -1,4 +1,8 @@
-import { NavigationItem, NavigationEventItem, NavigationItemStatus } from "../connection/connectionModels";
+import {
+  NavigationItem,
+  NavigationEventItem,
+  NavigationItemStatus,
+} from "../connection/connectionModels";
 
 type NavigationGamesScopeKind = "profile" | "login";
 
@@ -24,17 +28,30 @@ export interface NavigationGamesCacheSnapshot {
   pagedGames: NavigationItem[];
 }
 
-export const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_TTL_MS = 365 * 24 * 60 * 60 * 1000;
+export const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_TTL_MS =
+  365 * 24 * 60 * 60 * 1000;
 const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_VERSION = 3;
-const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_KEY_PREFIX = "navigationGamesTopCache:v3:";
+const NAVIGATION_GAMES_PERSISTED_TOP_CACHE_KEY_PREFIX =
+  "navigationGamesTopCache:v3:";
 const NAVIGATION_GAMES_MAX_RUNTIME_ITEMS_PER_SECTION = 500;
 
 const runtimeCacheByScope = new Map<string, NavigationGamesRuntimeEntry>();
 
-const NAVIGATION_ITEM_STATUS_VALUES: NavigationItemStatus[] = ["pending", "waiting", "active", "ended", "dismissed"];
+const NAVIGATION_ITEM_STATUS_VALUES: NavigationItemStatus[] = [
+  "pending",
+  "waiting",
+  "active",
+  "ended",
+  "dismissed",
+];
 
-const isNavigationItemStatus = (value: unknown): value is NavigationItemStatus => {
-  return typeof value === "string" && NAVIGATION_ITEM_STATUS_VALUES.includes(value as NavigationItemStatus);
+const isNavigationItemStatus = (
+  value: unknown,
+): value is NavigationItemStatus => {
+  return (
+    typeof value === "string" &&
+    NAVIGATION_ITEM_STATUS_VALUES.includes(value as NavigationItemStatus)
+  );
 };
 
 const getNormalizedStringOrNull = (value: unknown): string | null => {
@@ -48,7 +65,9 @@ const getNormalizedNumberOrNull = (value: unknown): number | null => {
   return null;
 };
 
-const getNormalizedBooleanOrUndefined = (value: unknown): boolean | undefined => {
+const getNormalizedBooleanOrUndefined = (
+  value: unknown,
+): boolean | undefined => {
   if (typeof value === "boolean") {
     return value;
   }
@@ -69,12 +88,21 @@ const sanitizeNavigationGameItem = (value: unknown): NavigationItem | null => {
     if (eventId === "") {
       return null;
     }
-    const status = isNavigationItemStatus(raw.status) && raw.status !== "pending" ? raw.status : null;
+    const status =
+      isNavigationItemStatus(raw.status) && raw.status !== "pending"
+        ? raw.status
+        : null;
     if (!status) {
       return null;
     }
-    const sortBucket = typeof raw.sortBucket === "number" && Number.isFinite(raw.sortBucket) ? Math.floor(raw.sortBucket) : 0;
-    const listSortAtMs = typeof raw.listSortAtMs === "number" && Number.isFinite(raw.listSortAtMs) ? Math.floor(raw.listSortAtMs) : 0;
+    const sortBucket =
+      typeof raw.sortBucket === "number" && Number.isFinite(raw.sortBucket)
+        ? Math.floor(raw.sortBucket)
+        : 0;
+    const listSortAtMs =
+      typeof raw.listSortAtMs === "number" && Number.isFinite(raw.listSortAtMs)
+        ? Math.floor(raw.listSortAtMs)
+        : 0;
     const participantPreview = Array.isArray(raw.participantPreview)
       ? raw.participantPreview
           .map((participant) => {
@@ -89,7 +117,13 @@ const sanitizeNavigationGameItem = (value: unknown): NavigationItem | null => {
               aura: getNormalizedStringOrNull(preview.aura),
             };
           })
-          .filter((participant): participant is NonNullable<NavigationEventItem["participantPreview"][number]> => !!participant)
+          .filter(
+            (
+              participant,
+            ): participant is NonNullable<
+              NavigationEventItem["participantPreview"][number]
+            > => !!participant,
+          )
       : [];
 
     return {
@@ -102,7 +136,9 @@ const sanitizeNavigationGameItem = (value: unknown): NavigationItem | null => {
       startAtMs: getNormalizedNumberOrNull(raw.startAtMs),
       updatedAtMs: getNormalizedNumberOrNull(raw.updatedAtMs),
       endedAtMs: getNormalizedNumberOrNull(raw.endedAtMs),
-      participantCount: getNormalizedNumberOrNull(raw.participantCount) ?? participantPreview.length,
+      participantCount:
+        getNormalizedNumberOrNull(raw.participantCount) ??
+        participantPreview.length,
       participantPreview,
       winnerDisplayName: getNormalizedStringOrNull(raw.winnerDisplayName),
       isFallback: getNormalizedBooleanOrUndefined(raw.isFallback),
@@ -120,16 +156,30 @@ const sanitizeNavigationGameItem = (value: unknown): NavigationItem | null => {
     return null;
   }
 
-  const status = isNavigationItemStatus(raw.status) && raw.status !== "dismissed" ? raw.status : null;
+  const status =
+    isNavigationItemStatus(raw.status) && raw.status !== "dismissed"
+      ? raw.status
+      : null;
   if (!status) {
     return null;
   }
 
-  const sortBucket = typeof raw.sortBucket === "number" && Number.isFinite(raw.sortBucket) ? Math.floor(raw.sortBucket) : 0;
-  const listSortAtMs = typeof raw.listSortAtMs === "number" && Number.isFinite(raw.listSortAtMs) ? Math.floor(raw.listSortAtMs) : 0;
+  const sortBucket =
+    typeof raw.sortBucket === "number" && Number.isFinite(raw.sortBucket)
+      ? Math.floor(raw.sortBucket)
+      : 0;
+  const listSortAtMs =
+    typeof raw.listSortAtMs === "number" && Number.isFinite(raw.listSortAtMs)
+      ? Math.floor(raw.listSortAtMs)
+      : 0;
   const opponentEmoji = getNormalizedNumberOrNull(raw.opponentEmoji);
   const rawAutomatchHint = raw.automatchStateHint;
-  const automatchStateHint = rawAutomatchHint === "pending" || rawAutomatchHint === "matched" || rawAutomatchHint === "canceled" ? rawAutomatchHint : null;
+  const automatchStateHint =
+    rawAutomatchHint === "pending" ||
+    rawAutomatchHint === "matched" ||
+    rawAutomatchHint === "canceled"
+      ? rawAutomatchHint
+      : null;
 
   return {
     id: id ?? inviteId,
@@ -145,13 +195,19 @@ const sanitizeNavigationGameItem = (value: unknown): NavigationItem | null => {
     opponentName: getNormalizedStringOrNull(raw.opponentName),
     opponentEmoji,
     automatchStateHint,
-    isPendingAutomatch: typeof raw.isPendingAutomatch === "boolean" ? raw.isPendingAutomatch : status === "pending",
+    isPendingAutomatch:
+      typeof raw.isPendingAutomatch === "boolean"
+        ? raw.isPendingAutomatch
+        : status === "pending",
     isFallback: getNormalizedBooleanOrUndefined(raw.isFallback),
     isOptimistic: getNormalizedBooleanOrUndefined(raw.isOptimistic),
   };
 };
 
-const sanitizeNavigationGames = (games: unknown, options?: { maxItems?: number; excludeOptimistic?: boolean }): NavigationItem[] => {
+const sanitizeNavigationGames = (
+  games: unknown,
+  options?: { maxItems?: number; excludeOptimistic?: boolean },
+): NavigationItem[] => {
   if (!Array.isArray(games)) {
     return [];
   }
@@ -178,11 +234,16 @@ const sanitizeNavigationGames = (games: unknown, options?: { maxItems?: number; 
   return Array.from(uniqueById.values());
 };
 
-const getPersistedTopCacheStorageKey = (scope: NavigationGamesCacheScope): string => {
+const getPersistedTopCacheStorageKey = (
+  scope: NavigationGamesCacheScope,
+): string => {
   return `${NAVIGATION_GAMES_PERSISTED_TOP_CACHE_KEY_PREFIX}${scope.scopeKey}`;
 };
 
-export const resolveNavigationGamesCacheScope = (profileId: string, loginId: string): NavigationGamesCacheScope | null => {
+export const resolveNavigationGamesCacheScope = (
+  profileId: string,
+  loginId: string,
+): NavigationGamesCacheScope | null => {
   if (typeof profileId === "string" && profileId !== "") {
     return {
       kind: "profile",
@@ -202,7 +263,9 @@ export const resolveNavigationGamesCacheScope = (profileId: string, loginId: str
   return null;
 };
 
-const readPersistedTopCache = (scope: NavigationGamesCacheScope): NavigationItem[] => {
+const readPersistedTopCache = (
+  scope: NavigationGamesCacheScope,
+): NavigationItem[] => {
   const storageKey = getPersistedTopCacheStorageKey(scope);
   try {
     const raw = localStorage.getItem(storageKey);
@@ -221,8 +284,15 @@ const readPersistedTopCache = (scope: NavigationGamesCacheScope): NavigationItem
       return [];
     }
 
-    const updatedAtMs = typeof parsed.updatedAtMs === "number" && Number.isFinite(parsed.updatedAtMs) ? Math.floor(parsed.updatedAtMs) : 0;
-    if (updatedAtMs <= 0 || Date.now() - updatedAtMs > NAVIGATION_GAMES_PERSISTED_TOP_CACHE_TTL_MS) {
+    const updatedAtMs =
+      typeof parsed.updatedAtMs === "number" &&
+      Number.isFinite(parsed.updatedAtMs)
+        ? Math.floor(parsed.updatedAtMs)
+        : 0;
+    if (
+      updatedAtMs <= 0 ||
+      Date.now() - updatedAtMs > NAVIGATION_GAMES_PERSISTED_TOP_CACHE_TTL_MS
+    ) {
       localStorage.removeItem(storageKey);
       return [];
     }
@@ -239,7 +309,9 @@ const readPersistedTopCache = (scope: NavigationGamesCacheScope): NavigationItem
   }
 };
 
-export const readNavigationGamesCacheSnapshot = (scope: NavigationGamesCacheScope | null): NavigationGamesCacheSnapshot => {
+export const readNavigationGamesCacheSnapshot = (
+  scope: NavigationGamesCacheScope | null,
+): NavigationGamesCacheSnapshot => {
   if (!scope) {
     return {
       topGames: [],
@@ -264,23 +336,32 @@ export const readNavigationGamesCacheSnapshot = (scope: NavigationGamesCacheScop
 export const writeNavigationGamesRuntimeCache = (
   scope: NavigationGamesCacheScope | null,
   topGames: NavigationItem[],
-  pagedGames: NavigationItem[]
+  pagedGames: NavigationItem[],
 ): void => {
   if (!scope) {
     return;
   }
   runtimeCacheByScope.set(scope.scopeKey, {
-    topGames: sanitizeNavigationGames(topGames, { maxItems: NAVIGATION_GAMES_MAX_RUNTIME_ITEMS_PER_SECTION }),
-    pagedGames: sanitizeNavigationGames(pagedGames, { maxItems: NAVIGATION_GAMES_MAX_RUNTIME_ITEMS_PER_SECTION }),
+    topGames: sanitizeNavigationGames(topGames, {
+      maxItems: NAVIGATION_GAMES_MAX_RUNTIME_ITEMS_PER_SECTION,
+    }),
+    pagedGames: sanitizeNavigationGames(pagedGames, {
+      maxItems: NAVIGATION_GAMES_MAX_RUNTIME_ITEMS_PER_SECTION,
+    }),
   });
 };
 
-export const writeNavigationGamesPersistedTopCache = (scope: NavigationGamesCacheScope | null, topGames: NavigationItem[], maxItems: number): void => {
+export const writeNavigationGamesPersistedTopCache = (
+  scope: NavigationGamesCacheScope | null,
+  topGames: NavigationItem[],
+  maxItems: number,
+): void => {
   if (!scope) {
     return;
   }
 
-  const boundedMaxItems = Number.isFinite(maxItems) && maxItems > 0 ? Math.floor(maxItems) : 80;
+  const boundedMaxItems =
+    Number.isFinite(maxItems) && maxItems > 0 ? Math.floor(maxItems) : 80;
   const payload: PersistedTopGamesPayload = {
     version: NAVIGATION_GAMES_PERSISTED_TOP_CACHE_VERSION,
     updatedAtMs: Date.now(),
@@ -291,11 +372,16 @@ export const writeNavigationGamesPersistedTopCache = (scope: NavigationGamesCach
   };
 
   try {
-    localStorage.setItem(getPersistedTopCacheStorageKey(scope), JSON.stringify(payload));
+    localStorage.setItem(
+      getPersistedTopCacheStorageKey(scope),
+      JSON.stringify(payload),
+    );
   } catch {}
 };
 
-export const clearNavigationGamesRuntimeCacheScope = (scopeKey: string): void => {
+export const clearNavigationGamesRuntimeCacheScope = (
+  scopeKey: string,
+): void => {
   if (scopeKey === "") {
     return;
   }

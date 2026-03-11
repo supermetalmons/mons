@@ -1,11 +1,24 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { AssetsSet, BoardStyleSet, ColorSetKey, setBoardColorSet, getCurrentColorSetKey, colorSets, getCurrentAssetsSet, getCurrentBoardStyleSet, subscribeToAssetsSetChanges, subscribeToBoardColorSetChanges, subscribeToBoardStyleSetChanges } from "../content/boardStyles";
+import {
+  AssetsSet,
+  BoardStyleSet,
+  ColorSetKey,
+  setBoardColorSet,
+  getCurrentColorSetKey,
+  colorSets,
+  getCurrentAssetsSet,
+  getCurrentBoardStyleSet,
+  subscribeToAssetsSetChanges,
+  subscribeToBoardColorSetChanges,
+  subscribeToBoardStyleSetChanges,
+} from "../content/boardStyles";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
 import { isMobile } from "../utils/misc";
 import { setBoardStyleSet, setItemsStyleSet } from "../game/board";
 
-const PANGCHIU_PREVIEW_URL = "https://assets.mons.link/board/bg/thumb/Pangchiu.jpg";
+const PANGCHIU_PREVIEW_URL =
+  "https://assets.mons.link/board/bg/thumb/Pangchiu.jpg";
 
 let pangchiuImagePromise: Promise<string | null> | null = null;
 let pangchiuImageUrl: string | null = null;
@@ -20,7 +33,9 @@ const EMPTY_ITEM_STYLE_PREVIEWS: ItemStylePreviewUrls = {
   [AssetsSet.Pangchiu]: null,
 };
 
-const getItemStylePreviewUrl = async (assetsSet: AssetsSet): Promise<string | null> => {
+const getItemStylePreviewUrl = async (
+  assetsSet: AssetsSet,
+): Promise<string | null> => {
   try {
     const module = await import(`../assets/gameAssets${assetsSet}`);
     return `url(data:image/webp;base64,${module.gameAssets.supermana})`;
@@ -60,7 +75,11 @@ const getPangchiuImageUrl = () => {
 };
 
 export const preloadPangchiuBoardPreview = () => {
-  if (pangchiuImageUrl || pangchiuImageFailed || typeof window === "undefined") {
+  if (
+    pangchiuImageUrl ||
+    pangchiuImageFailed ||
+    typeof window === "undefined"
+  ) {
     return;
   }
   getPangchiuImageUrl()
@@ -69,7 +88,8 @@ export const preloadPangchiuBoardPreview = () => {
       const img = new Image();
       img.src = url;
       if (typeof img.decode === "function") {
-        img.decode()
+        img
+          .decode()
           .then(() => {
             pangchiuImageDecoded = true;
           })
@@ -188,7 +208,6 @@ const OptionButton = styled.button<{ isSelected?: boolean }>`
       `}
     }
   }
-
 `;
 
 export const ColorSquare = styled(OptionButton)`
@@ -221,11 +240,20 @@ const ItemStyleButton = styled.button<{ isSelected?: boolean }>`
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   opacity: ${(props) => (props.isSelected ? 1 : 0.45)};
-  filter: ${(props) => (props.isSelected ? "drop-shadow(0 0 4px rgba(59, 130, 246, 0.95))" : "none")};
-  transition: transform 0.1s ease, filter 0.2s ease, opacity 0.2s ease;
+  filter: ${(props) =>
+    props.isSelected
+      ? "drop-shadow(0 0 4px rgba(59, 130, 246, 0.95))"
+      : "none"};
+  transition:
+    transform 0.1s ease,
+    filter 0.2s ease,
+    opacity 0.2s ease;
 
   @media (prefers-color-scheme: dark) {
-    filter: ${(props) => (props.isSelected ? "drop-shadow(0 0 4px rgba(100, 165, 255, 0.95))" : "none")};
+    filter: ${(props) =>
+      props.isSelected
+        ? "drop-shadow(0 0 4px rgba(100, 165, 255, 0.95))"
+        : "none"};
   }
 
   @media (hover: hover) and (pointer: fine) {
@@ -239,7 +267,10 @@ const ItemStyleButton = styled.button<{ isSelected?: boolean }>`
   }
 `;
 
-const ItemStylePreview = styled.div<{ itemSet: AssetsSet; previewUrl: string | null }>`
+const ItemStylePreview = styled.div<{
+  itemSet: AssetsSet;
+  previewUrl: string | null;
+}>`
   width: 100%;
   height: 100%;
   background-image: ${(props) => props.previewUrl ?? "none"};
@@ -286,14 +317,22 @@ export const ImagePlaceholderBg = styled.div`
 `;
 
 const BoardStylePickerComponent: React.FC = () => {
-  const [currentColorSetKey, setCurrentColorSetKey] = useState<ColorSetKey>(getCurrentColorSetKey());
-  const [selectedBoardStyleSet, setSelectedBoardStyleSet] = useState<BoardStyleSet>(getCurrentBoardStyleSet());
-  const [selectedItemsStyleSet, setSelectedItemsStyleSet] = useState<AssetsSet>(getCurrentAssetsSet());
-  const [itemStylePreviewUrls, setItemStylePreviewUrls] = useState<ItemStylePreviewUrls>(EMPTY_ITEM_STYLE_PREVIEWS);
+  const [currentColorSetKey, setCurrentColorSetKey] = useState<ColorSetKey>(
+    getCurrentColorSetKey(),
+  );
+  const [selectedBoardStyleSet, setSelectedBoardStyleSet] =
+    useState<BoardStyleSet>(getCurrentBoardStyleSet());
+  const [selectedItemsStyleSet, setSelectedItemsStyleSet] = useState<AssetsSet>(
+    getCurrentAssetsSet(),
+  );
+  const [itemStylePreviewUrls, setItemStylePreviewUrls] =
+    useState<ItemStylePreviewUrls>(EMPTY_ITEM_STYLE_PREVIEWS);
 
   const [imageLoadFailed, setImageLoadFailed] = useState(pangchiuImageFailed);
   const [imageLoaded, setImageLoaded] = useState(pangchiuImageDecoded);
-  const [pangchiuSrc, setPangchiuSrc] = useState<string | null>(pangchiuImageUrl);
+  const [pangchiuSrc, setPangchiuSrc] = useState<string | null>(
+    pangchiuImageUrl,
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -340,11 +379,18 @@ const BoardStylePickerComponent: React.FC = () => {
 
   useEffect(() => {
     let cancelled = false;
-    Promise.all(Object.values(AssetsSet).map(async (assetsSet) => [assetsSet, await getItemStylePreviewUrl(assetsSet)] as const)).then((entries) => {
+    Promise.all(
+      Object.values(AssetsSet).map(
+        async (assetsSet) =>
+          [assetsSet, await getItemStylePreviewUrl(assetsSet)] as const,
+      ),
+    ).then((entries) => {
       if (cancelled) {
         return;
       }
-      const nextPreviewUrls: ItemStylePreviewUrls = { ...EMPTY_ITEM_STYLE_PREVIEWS };
+      const nextPreviewUrls: ItemStylePreviewUrls = {
+        ...EMPTY_ITEM_STYLE_PREVIEWS,
+      };
       entries.forEach(([assetsSet, previewUrl]) => {
         nextPreviewUrls[assetsSet] = previewUrl;
       });
@@ -372,28 +418,45 @@ const BoardStylePickerComponent: React.FC = () => {
     };
   }, []);
 
-  const handleColorSetChange = (colorSetKey: ColorSetKey) => (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    setBoardColorSet(colorSetKey);
-    setBoardStyleSet(BoardStyleSet.Grid);
-    setCurrentColorSetKey(getCurrentColorSetKey());
-    setSelectedBoardStyleSet(getCurrentBoardStyleSet());
-  };
+  const handleColorSetChange =
+    (colorSetKey: ColorSetKey) =>
+    (
+      event:
+        | React.MouseEvent<HTMLButtonElement>
+        | React.TouchEvent<HTMLButtonElement>,
+    ) => {
+      event.preventDefault();
+      setBoardColorSet(colorSetKey);
+      setBoardStyleSet(BoardStyleSet.Grid);
+      setCurrentColorSetKey(getCurrentColorSetKey());
+      setSelectedBoardStyleSet(getCurrentBoardStyleSet());
+    };
 
-  const handlePangchiuBoardSelected = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+  const handlePangchiuBoardSelected = (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.TouchEvent<HTMLButtonElement>,
+  ) => {
     event.preventDefault();
     setBoardStyleSet(BoardStyleSet.Pangchiu);
     setSelectedBoardStyleSet(getCurrentBoardStyleSet());
   };
 
-  const handleItemsStyleSetChange = (assetsSet: AssetsSet) => (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
-    event.preventDefault();
-    setItemsStyleSet(assetsSet);
-    setSelectedItemsStyleSet(getCurrentAssetsSet());
-  };
+  const handleItemsStyleSetChange =
+    (assetsSet: AssetsSet) =>
+    (
+      event:
+        | React.MouseEvent<HTMLButtonElement>
+        | React.TouchEvent<HTMLButtonElement>,
+    ) => {
+      event.preventDefault();
+      setItemsStyleSet(assetsSet);
+      setSelectedItemsStyleSet(getCurrentAssetsSet());
+    };
 
   const renderColorSquares = (colorSet: "light" | "dark") => {
-    const colors = colorSet === "light" ? colorSets.default : colorSets.darkAndYellow;
+    const colors =
+      colorSet === "light" ? colorSets.default : colorSets.darkAndYellow;
     const boardSize = 11;
     const cellSize = 38 / boardSize;
     return (
@@ -414,26 +477,89 @@ const BoardStylePickerComponent: React.FC = () => {
   return (
     <BoardStylePicker>
       <SectionRow>
-        <ColorSquare isSelected={isGridBoardSelected && currentColorSetKey === "default"} onClick={!isMobile ? handleColorSetChange("default") : undefined} onTouchStart={isMobile ? handleColorSetChange("default") : undefined} aria-label="Light board theme">
+        <ColorSquare
+          isSelected={isGridBoardSelected && currentColorSetKey === "default"}
+          onClick={!isMobile ? handleColorSetChange("default") : undefined}
+          onTouchStart={isMobile ? handleColorSetChange("default") : undefined}
+          aria-label="Light board theme"
+        >
           {renderColorSquares("light")}
         </ColorSquare>
-        <ColorSquare isSelected={isGridBoardSelected && currentColorSetKey === "darkAndYellow"} onClick={!isMobile ? handleColorSetChange("darkAndYellow") : undefined} onTouchStart={isMobile ? handleColorSetChange("darkAndYellow") : undefined} aria-label="Dark board theme">
+        <ColorSquare
+          isSelected={
+            isGridBoardSelected && currentColorSetKey === "darkAndYellow"
+          }
+          onClick={
+            !isMobile ? handleColorSetChange("darkAndYellow") : undefined
+          }
+          onTouchStart={
+            isMobile ? handleColorSetChange("darkAndYellow") : undefined
+          }
+          aria-label="Dark board theme"
+        >
           {renderColorSquares("dark")}
         </ColorSquare>
-        <ColorSquare isSelected={selectedBoardStyleSet === BoardStyleSet.Pangchiu} onClick={!isMobile ? handlePangchiuBoardSelected : undefined} onTouchStart={isMobile ? handlePangchiuBoardSelected : undefined} aria-label="Pangchiu board theme">
+        <ColorSquare
+          isSelected={selectedBoardStyleSet === BoardStyleSet.Pangchiu}
+          onClick={!isMobile ? handlePangchiuBoardSelected : undefined}
+          onTouchStart={isMobile ? handlePangchiuBoardSelected : undefined}
+          aria-label="Pangchiu board theme"
+        >
           {!imageLoaded && <ImagePlaceholderBg />}
-          {!imageLoadFailed && pangchiuSrc && <PlaceholderImage src={pangchiuSrc} alt="" />}
+          {!imageLoadFailed && pangchiuSrc && (
+            <PlaceholderImage src={pangchiuSrc} alt="" />
+          )}
         </ColorSquare>
       </SectionRow>
       <SectionRow>
-        <ItemStyleButton isSelected={selectedItemsStyleSet === AssetsSet.Pixel} onClick={!isMobile ? handleItemsStyleSetChange(AssetsSet.Pixel) : undefined} onTouchStart={isMobile ? handleItemsStyleSetChange(AssetsSet.Pixel) : undefined} aria-label="Pixel item style">
-          <ItemStylePreview itemSet={AssetsSet.Pixel} previewUrl={itemStylePreviewUrls[AssetsSet.Pixel]} />
+        <ItemStyleButton
+          isSelected={selectedItemsStyleSet === AssetsSet.Pixel}
+          onClick={
+            !isMobile ? handleItemsStyleSetChange(AssetsSet.Pixel) : undefined
+          }
+          onTouchStart={
+            isMobile ? handleItemsStyleSetChange(AssetsSet.Pixel) : undefined
+          }
+          aria-label="Pixel item style"
+        >
+          <ItemStylePreview
+            itemSet={AssetsSet.Pixel}
+            previewUrl={itemStylePreviewUrls[AssetsSet.Pixel]}
+          />
         </ItemStyleButton>
-        <ItemStyleButton isSelected={selectedItemsStyleSet === AssetsSet.Original} onClick={!isMobile ? handleItemsStyleSetChange(AssetsSet.Original) : undefined} onTouchStart={isMobile ? handleItemsStyleSetChange(AssetsSet.Original) : undefined} aria-label="Original item style">
-          <ItemStylePreview itemSet={AssetsSet.Original} previewUrl={itemStylePreviewUrls[AssetsSet.Original]} />
+        <ItemStyleButton
+          isSelected={selectedItemsStyleSet === AssetsSet.Original}
+          onClick={
+            !isMobile
+              ? handleItemsStyleSetChange(AssetsSet.Original)
+              : undefined
+          }
+          onTouchStart={
+            isMobile ? handleItemsStyleSetChange(AssetsSet.Original) : undefined
+          }
+          aria-label="Original item style"
+        >
+          <ItemStylePreview
+            itemSet={AssetsSet.Original}
+            previewUrl={itemStylePreviewUrls[AssetsSet.Original]}
+          />
         </ItemStyleButton>
-        <ItemStyleButton isSelected={selectedItemsStyleSet === AssetsSet.Pangchiu} onClick={!isMobile ? handleItemsStyleSetChange(AssetsSet.Pangchiu) : undefined} onTouchStart={isMobile ? handleItemsStyleSetChange(AssetsSet.Pangchiu) : undefined} aria-label="Pangchiu item style">
-          <ItemStylePreview itemSet={AssetsSet.Pangchiu} previewUrl={itemStylePreviewUrls[AssetsSet.Pangchiu]} />
+        <ItemStyleButton
+          isSelected={selectedItemsStyleSet === AssetsSet.Pangchiu}
+          onClick={
+            !isMobile
+              ? handleItemsStyleSetChange(AssetsSet.Pangchiu)
+              : undefined
+          }
+          onTouchStart={
+            isMobile ? handleItemsStyleSetChange(AssetsSet.Pangchiu) : undefined
+          }
+          aria-label="Pangchiu item style"
+        >
+          <ItemStylePreview
+            itemSet={AssetsSet.Pangchiu}
+            previewUrl={itemStylePreviewUrls[AssetsSet.Pangchiu]}
+          />
         </ItemStyleButton>
       </SectionRow>
     </BoardStylePicker>

@@ -21,11 +21,17 @@ const counters: LifecycleCounters = {
   uiTimeouts: 0,
 };
 
-export const incrementLifecycleCounter = (counter: LifecycleCounterName, amount = 1) => {
+export const incrementLifecycleCounter = (
+  counter: LifecycleCounterName,
+  amount = 1,
+) => {
   counters[counter] += amount;
 };
 
-export const decrementLifecycleCounter = (counter: LifecycleCounterName, amount = 1) => {
+export const decrementLifecycleCounter = (
+  counter: LifecycleCounterName,
+  amount = 1,
+) => {
   counters[counter] -= amount;
   if (process.env.NODE_ENV !== "production" && counters[counter] < 0) {
     console.warn("lifecycle-counter-negative", {
@@ -35,7 +41,10 @@ export const decrementLifecycleCounter = (counter: LifecycleCounterName, amount 
   }
 };
 
-export const setLifecycleCounter = (counter: LifecycleCounterName, value: number) => {
+export const setLifecycleCounter = (
+  counter: LifecycleCounterName,
+  value: number,
+) => {
   counters[counter] = value;
 };
 
@@ -48,4 +57,3 @@ export const resetLifecycleCounters = () => {
 export const getLifecycleCounters = (): LifecycleCounters => {
   return { ...counters };
 };
-

@@ -63,7 +63,10 @@ async function main() {
   let totalProfiles = 0;
   let lastDoc = null;
   while (true) {
-    let query = firestore.collection("users").orderBy(admin.firestore.FieldPath.documentId()).limit(pageSize);
+    let query = firestore
+      .collection("users")
+      .orderBy(admin.firestore.FieldPath.documentId())
+      .limit(pageSize);
     if (lastDoc) {
       query = query.startAfter(lastDoc);
     }
@@ -78,7 +81,8 @@ async function main() {
 
       const rawEth = typeof data.eth === "string" ? data.eth.trim() : "";
       const rawSol = typeof data.sol === "string" ? data.sol.trim() : "";
-      const rawApple = typeof data.appleSub === "string" ? data.appleSub.trim() : "";
+      const rawApple =
+        typeof data.appleSub === "string" ? data.appleSub.trim() : "";
       const rawX = typeof data.xUserId === "string" ? data.xUserId.trim() : "";
 
       if (rawEth) {
@@ -175,14 +179,19 @@ async function main() {
   const loginProfileLinkMismatches = [];
   const loginUids = Array.from(loginToProfiles.keys());
   for (const loginUid of loginUids) {
-    const expectedProfiles = Array.from(new Set(loginToProfiles.get(loginUid) || []));
-    const expectedProfile = expectedProfiles.length === 1 ? expectedProfiles[0] : null;
+    const expectedProfiles = Array.from(
+      new Set(loginToProfiles.get(loginUid) || []),
+    );
+    const expectedProfile =
+      expectedProfiles.length === 1 ? expectedProfiles[0] : null;
     if (!expectedProfile) {
       continue;
     }
     let rtdbProfile = null;
     try {
-      const snapshot = await db.ref(`players/${loginUid}/profile`).once("value");
+      const snapshot = await db
+        .ref(`players/${loginUid}/profile`)
+        .once("value");
       const value = snapshot.val();
       if (typeof value === "string" && value.trim() !== "") {
         rtdbProfile = value.trim();
@@ -224,20 +233,26 @@ async function main() {
   };
 
   console.log("Auth preflight audit summary:");
-  console.log(JSON.stringify({
-    totalProfiles: report.totalProfiles,
-    totalLogins: report.totalLogins,
-    malformedEthCount: report.malformedEthCount,
-    malformedSolCount: report.malformedSolCount,
-    malformedAppleCount: report.malformedAppleCount,
-    malformedXCount: report.malformedXCount,
-    duplicateEthCount: report.duplicateEthCount,
-    duplicateSolCount: report.duplicateSolCount,
-    duplicateAppleCount: report.duplicateAppleCount,
-    duplicateXCount: report.duplicateXCount,
-    conflictingLoginsCount: report.conflictingLoginsCount,
-    loginProfileLinkMismatchesCount: report.loginProfileLinkMismatchesCount,
-  }, null, 2));
+  console.log(
+    JSON.stringify(
+      {
+        totalProfiles: report.totalProfiles,
+        totalLogins: report.totalLogins,
+        malformedEthCount: report.malformedEthCount,
+        malformedSolCount: report.malformedSolCount,
+        malformedAppleCount: report.malformedAppleCount,
+        malformedXCount: report.malformedXCount,
+        duplicateEthCount: report.duplicateEthCount,
+        duplicateSolCount: report.duplicateSolCount,
+        duplicateAppleCount: report.duplicateAppleCount,
+        duplicateXCount: report.duplicateXCount,
+        conflictingLoginsCount: report.conflictingLoginsCount,
+        loginProfileLinkMismatchesCount: report.loginProfileLinkMismatchesCount,
+      },
+      null,
+      2,
+    ),
+  );
 
   if (outPath) {
     fs.writeFileSync(outPath, JSON.stringify(report, null, 2));

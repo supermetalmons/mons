@@ -10,10 +10,14 @@ const SORT_BUCKETS = {
 const MAX_BATCH_WRITES = 450;
 const MAX_TIMESTAMP_MS = 253402300799999;
 
-const normalizeString = (value) => (typeof value === "string" && value.trim() !== "" ? value.trim() : null);
+const normalizeString = (value) =>
+  typeof value === "string" && value.trim() !== "" ? value.trim() : null;
 
 const toTimestamp = (millis) => {
-  const normalized = typeof millis === "number" && Number.isFinite(millis) ? Math.floor(millis) : Date.now();
+  const normalized =
+    typeof millis === "number" && Number.isFinite(millis)
+      ? Math.floor(millis)
+      : Date.now();
   return admin.firestore.Timestamp.fromMillis(Math.max(1, normalized));
 };
 
@@ -32,15 +36,28 @@ const mapEventStatusToNavigationStatus = (status) => {
 
 const getListSortAtMs = (eventData, status) => {
   if (status === "active") {
-    return typeof eventData.updatedAtMs === "number" ? Math.floor(eventData.updatedAtMs) : Date.now();
+    return typeof eventData.updatedAtMs === "number"
+      ? Math.floor(eventData.updatedAtMs)
+      : Date.now();
   }
   if (status === "ended") {
-    return typeof eventData.endedAtMs === "number" ? Math.floor(eventData.endedAtMs) : typeof eventData.updatedAtMs === "number" ? Math.floor(eventData.updatedAtMs) : Date.now();
+    return typeof eventData.endedAtMs === "number"
+      ? Math.floor(eventData.endedAtMs)
+      : typeof eventData.updatedAtMs === "number"
+        ? Math.floor(eventData.updatedAtMs)
+        : Date.now();
   }
   if (status === "dismissed") {
-    return typeof eventData.endedAtMs === "number" ? Math.floor(eventData.endedAtMs) : typeof eventData.updatedAtMs === "number" ? Math.floor(eventData.updatedAtMs) : Date.now();
+    return typeof eventData.endedAtMs === "number"
+      ? Math.floor(eventData.endedAtMs)
+      : typeof eventData.updatedAtMs === "number"
+        ? Math.floor(eventData.updatedAtMs)
+        : Date.now();
   }
-  const startAtMs = typeof eventData.startAtMs === "number" ? Math.floor(eventData.startAtMs) : null;
+  const startAtMs =
+    typeof eventData.startAtMs === "number"
+      ? Math.floor(eventData.startAtMs)
+      : null;
   if (startAtMs === null || !Number.isFinite(startAtMs) || startAtMs <= 0) {
     return Date.now();
   }
@@ -53,14 +70,20 @@ const buildPreviewParticipants = (participants) => {
   return Object.values(participants || {})
     .filter((participant) => participant && typeof participant === "object")
     .sort((left, right) => {
-      const leftJoined = typeof left.joinedAtMs === "number" ? left.joinedAtMs : 0;
-      const rightJoined = typeof right.joinedAtMs === "number" ? right.joinedAtMs : 0;
+      const leftJoined =
+        typeof left.joinedAtMs === "number" ? left.joinedAtMs : 0;
+      const rightJoined =
+        typeof right.joinedAtMs === "number" ? right.joinedAtMs : 0;
       return leftJoined - rightJoined;
     })
     .map((participant) => ({
       profileId: normalizeString(participant.profileId),
       displayName: normalizeString(participant.displayName),
-      emojiId: typeof participant.emojiId === "number" && Number.isFinite(participant.emojiId) ? Math.floor(participant.emojiId) : null,
+      emojiId:
+        typeof participant.emojiId === "number" &&
+        Number.isFinite(participant.emojiId)
+          ? Math.floor(participant.emojiId)
+          : null,
       aura: normalizeString(participant.aura),
     }));
 };
@@ -69,21 +92,37 @@ const getOwnerProfileIds = (participants) => {
   return Array.from(
     new Set(
       Object.values(participants || {})
-        .map((participant) => normalizeString(participant && participant.profileId))
-        .filter((value) => !!value)
-    )
+        .map((participant) =>
+          normalizeString(participant && participant.profileId),
+        )
+        .filter((value) => !!value),
+    ),
   );
 };
 
 async function projectEvent(eventId, beforeData, afterData) {
   const firestore = admin.firestore();
   const docId = `event_${eventId}`;
-  const beforeParticipants = beforeData && beforeData.participants && typeof beforeData.participants === "object" ? beforeData.participants : {};
-  const afterParticipants = afterData && afterData.participants && typeof afterData.participants === "object" ? afterData.participants : {};
+  const beforeParticipants =
+    beforeData &&
+    beforeData.participants &&
+    typeof beforeData.participants === "object"
+      ? beforeData.participants
+      : {};
+  const afterParticipants =
+    afterData &&
+    afterData.participants &&
+    typeof afterData.participants === "object"
+      ? afterData.participants
+      : {};
   const beforeOwnerProfileIds = getOwnerProfileIds(beforeParticipants);
   const afterOwnerProfileIds = getOwnerProfileIds(afterParticipants);
-  const allOwnerProfileIds = Array.from(new Set([...beforeOwnerProfileIds, ...afterOwnerProfileIds]));
-  const status = mapEventStatusToNavigationStatus(normalizeString(afterData && afterData.status));
+  const allOwnerProfileIds = Array.from(
+    new Set([...beforeOwnerProfileIds, ...afterOwnerProfileIds]),
+  );
+  const status = mapEventStatusToNavigationStatus(
+    normalizeString(afterData && afterData.status),
+  );
   const previewParticipants = buildPreviewParticipants(afterParticipants);
 
   let batch = firestore.batch();
@@ -101,7 +140,11 @@ async function projectEvent(eventId, beforeData, afterData) {
   };
 
   for (const ownerProfileId of allOwnerProfileIds) {
-    const ref = firestore.collection("users").doc(ownerProfileId).collection("games").doc(docId);
+    const ref = firestore
+      .collection("users")
+      .doc(ownerProfileId)
+      .collection("games")
+      .doc(docId);
     if (!afterData || !afterOwnerProfileIds.includes(ownerProfileId)) {
       batch.delete(ref);
       writesCount += 1;
@@ -119,9 +162,19 @@ async function projectEvent(eventId, beforeData, afterData) {
       sortBucket: SORT_BUCKETS[status],
       listSortAt: toTimestamp(getListSortAtMs(afterData, status)),
       ownerProfileId,
-      startAt: typeof afterData.startAtMs === "number" ? toTimestamp(afterData.startAtMs) : null,
-      updatedAt: toTimestamp(typeof afterData.updatedAtMs === "number" ? afterData.updatedAtMs : Date.now()),
-      endedAt: typeof afterData.endedAtMs === "number" ? toTimestamp(afterData.endedAtMs) : null,
+      startAt:
+        typeof afterData.startAtMs === "number"
+          ? toTimestamp(afterData.startAtMs)
+          : null,
+      updatedAt: toTimestamp(
+        typeof afterData.updatedAtMs === "number"
+          ? afterData.updatedAtMs
+          : Date.now(),
+      ),
+      endedAt:
+        typeof afterData.endedAtMs === "number"
+          ? toTimestamp(afterData.endedAtMs)
+          : null,
       participantCount: previewParticipants.length,
       participantPreview: previewParticipants.slice(0, 4),
       winnerDisplayName: normalizeString(afterData.winnerDisplayName),
@@ -140,7 +193,9 @@ const onEventWritten = onValueWritten("/events/{eventId}", async (event) => {
   if (!eventId) {
     return;
   }
-  const beforeData = event.data.before.exists() ? event.data.before.val() : null;
+  const beforeData = event.data.before.exists()
+    ? event.data.before.val()
+    : null;
   const afterData = event.data.after.exists() ? event.data.after.val() : null;
   await projectEvent(eventId, beforeData, afterData);
 });

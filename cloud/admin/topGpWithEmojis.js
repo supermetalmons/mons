@@ -3,7 +3,10 @@ const fs = require("fs");
 const path = require("path");
 const admin = require("firebase-admin");
 const { initAdmin } = require("./_admin");
-const { getDisplayNameFromAddress, sendBotMessage } = require("../functions/utils");
+const {
+  getDisplayNameFromAddress,
+  sendBotMessage,
+} = require("../functions/utils");
 
 try {
   const envPath = path.resolve(__dirname, "../functions/.env");
@@ -16,7 +19,10 @@ try {
       if (idx === -1) continue;
       const key = trimmed.slice(0, idx).trim();
       let value = trimmed.slice(idx + 1).trim();
-      if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+      if (
+        (value.startsWith('"') && value.endsWith('"')) ||
+        (value.startsWith("'") && value.endsWith("'"))
+      ) {
         value = value.slice(1, -1);
       }
       if (!process.env[key]) process.env[key] = value;
@@ -29,7 +35,11 @@ async function logTopGpWithEmojis(limit = 15) {
   if (initialized) {
     try {
       const firestore = admin.firestore();
-      const snap = await firestore.collection("users").orderBy("nonce", "desc").limit(limit).get();
+      const snap = await firestore
+        .collection("users")
+        .orderBy("nonce", "desc")
+        .limit(limit)
+        .get();
       let output = "<b>top 15 gp</b>\n\n";
       let rank = 1;
       for (const doc of snap.docs) {
@@ -38,7 +48,10 @@ async function logTopGpWithEmojis(limit = 15) {
         const eth = data.eth || "";
         const sol = data.sol || "";
         const gp = data.nonce + 1;
-        const emoji = data.custom && data.custom.emoji !== undefined ? data.custom.emoji : data.emoji ?? "";
+        const emoji =
+          data.custom && data.custom.emoji !== undefined
+            ? data.custom.emoji
+            : (data.emoji ?? "");
         const name = getDisplayNameFromAddress(username, eth, sol, 0, emoji);
         output += `${rank}. ${name} ${gp}\n\n`;
         rank += 1;
@@ -52,7 +65,9 @@ async function logTopGpWithEmojis(limit = 15) {
       } catch {}
     }
   }
-  throw new Error("Failed to initialize Admin SDK with Application Default Credentials. Run gcloud auth application-default login.");
+  throw new Error(
+    "Failed to initialize Admin SDK with Application Default Credentials. Run gcloud auth application-default login.",
+  );
 }
 
 async function main() {

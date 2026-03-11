@@ -11,7 +11,12 @@ import {
 } from "../game/gameController";
 import { useGameAssets } from "../hooks/useGameAssets";
 import { useEmojis } from "../hooks/useEmojis";
-import type { MoveHistoryEntry, MoveHistorySegment, MoveHistoryToken, MoveHistorySegmentRole } from "../game/moveEventStrings";
+import type {
+  MoveHistoryEntry,
+  MoveHistorySegment,
+  MoveHistoryToken,
+  MoveHistorySegmentRole,
+} from "../game/moveEventStrings";
 import { colors } from "../content/boardStyles";
 
 const moveHistoryReloadListeners = new Set<() => void>();
@@ -46,7 +51,10 @@ const VISIBLE_ITEMS = 7;
 const PADDING_ITEMS = Math.floor(VISIBLE_ITEMS / 2);
 const PICKER_HEIGHT = ITEM_HEIGHT * VISIBLE_ITEMS;
 const PLACEHOLDER_LABEL = "";
-const PADDING_INDICES = Array.from({ length: PADDING_ITEMS }, (_, index) => index);
+const PADDING_INDICES = Array.from(
+  { length: PADDING_ITEMS },
+  (_, index) => index,
+);
 
 const MoveHistoryPopupContainer = styled.div`
   position: fixed;
@@ -167,7 +175,11 @@ const ScrollWheel = styled.div`
   }
 `;
 
-const WheelItem = styled.div<{ $isSelected: boolean; $distance: number; $isPlaceholder?: boolean }>`
+const WheelItem = styled.div<{
+  $isSelected: boolean;
+  $distance: number;
+  $isPlaceholder?: boolean;
+}>`
   height: ${ITEM_HEIGHT}px;
   display: flex;
   align-items: center;
@@ -180,7 +192,9 @@ const WheelItem = styled.div<{ $isSelected: boolean; $distance: number; $isPlace
   cursor: ${(props) => (props.$isPlaceholder ? "default" : "pointer")};
   pointer-events: ${(props) => (props.$isPlaceholder ? "none" : "auto")};
   user-select: none;
-  transition: opacity 0.15s ease, transform 0.15s ease;
+  transition:
+    opacity 0.15s ease,
+    transform 0.15s ease;
   color: var(--color-gray-33);
   opacity: ${(props) => {
     let opacity = 0.15;
@@ -298,7 +312,6 @@ const EventText = styled.span`
   line-height: 1;
 `;
 
-
 const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   const { assets } = useGameAssets();
   const { emojis } = useEmojis();
@@ -391,20 +404,27 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
   const lastClickedIndexRef = React.useRef(-1);
   const [snapshotIndex, setSnapshotIndex] = React.useState<number | null>(null);
 
-  const handleSnapshotOpen = React.useCallback((e: React.MouseEvent, index: number) => {
-    e.stopPropagation();
-    const fen = getFenForMoveHistoryIndex(index);
-    if (fen) {
-      const link = window.location.origin + "/snapshot/" + encodeURIComponent(fen);
-      window.open(link, "_blank", "noopener,noreferrer");
-    }
-    setSnapshotIndex(null);
-  }, []);
+  const handleSnapshotOpen = React.useCallback(
+    (e: React.MouseEvent, index: number) => {
+      e.stopPropagation();
+      const fen = getFenForMoveHistoryIndex(index);
+      if (fen) {
+        const link =
+          window.location.origin + "/snapshot/" + encodeURIComponent(fen);
+        window.open(link, "_blank", "noopener,noreferrer");
+      }
+      setSnapshotIndex(null);
+    },
+    [],
+  );
 
-  const handleFlipBoard = React.useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
-    e.stopPropagation();
-    didToggleMoveHistoryBoardFlip(selectedIndexRef.current);
-  }, []);
+  const handleFlipBoard = React.useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.stopPropagation();
+      didToggleMoveHistoryBoardFlip(selectedIndexRef.current);
+    },
+    [],
+  );
 
   // Click on item to select it
   const handleItemClick = React.useCallback(
@@ -417,7 +437,10 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       }
 
       const now = Date.now();
-      if (index === lastClickedIndexRef.current && now - lastClickTimeRef.current < 500) {
+      if (
+        index === lastClickedIndexRef.current &&
+        now - lastClickTimeRef.current < 500
+      ) {
         clickCountRef.current += 1;
       } else {
         clickCountRef.current = 1;
@@ -440,7 +463,7 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       }
       didSelectVerboseTrackingEntity(index);
     },
-    [items.length, snapshotIndex]
+    [items.length, snapshotIndex],
   );
 
   React.useEffect(() => {
@@ -481,20 +504,22 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       }
     });
 
-    const unsubscribeSelectionReset = subscribeMoveHistoryPopupSelectionReset(() => {
-      let newItems: MoveHistoryEntry[];
-      try {
-        newItems = getVerboseTrackingEntities();
-      } catch {
-        newItems = [{ segments: [] }];
-      }
-      const newLatest = Math.max(0, newItems.length - 1);
-      _popupIsFollowingLatest = true;
-      selectedIndexRef.current = newLatest;
-      pendingScrollIndexRef.current = newLatest;
-      setSelectedIndex(newLatest);
-      setVersion((v) => v + 1);
-    });
+    const unsubscribeSelectionReset = subscribeMoveHistoryPopupSelectionReset(
+      () => {
+        let newItems: MoveHistoryEntry[];
+        try {
+          newItems = getVerboseTrackingEntities();
+        } catch {
+          newItems = [{ segments: [] }];
+        }
+        const newLatest = Math.max(0, newItems.length - 1);
+        _popupIsFollowingLatest = true;
+        selectedIndexRef.current = newLatest;
+        pendingScrollIndexRef.current = newLatest;
+        setSelectedIndex(newLatest);
+        setVersion((v) => v + 1);
+      },
+    );
 
     return () => {
       unsubscribe();
@@ -517,32 +542,65 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
       }
       return `data:image/png;base64,${assets[iconName]}`;
     },
-    [assets]
+    [assets],
   );
 
   const renderToken = React.useCallback(
-    (token: MoveHistoryToken, tokenIndex: number, segmentRole?: MoveHistorySegmentRole) => {
+    (
+      token: MoveHistoryToken,
+      tokenIndex: number,
+      segmentRole?: MoveHistorySegmentRole,
+    ) => {
       if (token.type === "icon") {
-        const isRegularManaIcon = token.icon === "mana" || token.icon === "manaB";
+        const isRegularManaIcon =
+          token.icon === "mana" || token.icon === "manaB";
         const iconStyle = isRegularManaIcon
           ? ({
               marginLeft: segmentRole === "destination" ? "-4px" : "-2px",
               marginRight: segmentRole === "destination" ? "-4px" : "-2px",
             } as React.CSSProperties)
           : undefined;
-        return <EventIcon key={`icon-${tokenIndex}`} src={getIconImage(token.icon)} alt={token.alt} style={iconStyle} />;
+        return (
+          <EventIcon
+            key={`icon-${tokenIndex}`}
+            src={getIconImage(token.icon)}
+            alt={token.alt}
+            style={iconStyle}
+          />
+        );
       }
       if (token.type === "emoji") {
         const src = emojis?.[token.emoji]
           ? `data:image/png;base64,${emojis[token.emoji]}`
           : "data:image/svg+xml,%3Csvg width='20' height='20' viewBox='0 0 20 20' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='10' cy='10' r='8' fill='%23cccccc' fill-opacity='0.5'/%3E%3C/svg%3E";
-        const EmojiComponent = token.emoji === "statusAction" || token.emoji === "statusPotion" ? ActionEmojiIcon : EmojiIcon;
-        return <EmojiComponent key={`emoji-${tokenIndex}`} src={src} alt={token.alt} />;
+        const EmojiComponent =
+          token.emoji === "statusAction" || token.emoji === "statusPotion"
+            ? ActionEmojiIcon
+            : EmojiIcon;
+        return (
+          <EmojiComponent
+            key={`emoji-${tokenIndex}`}
+            src={src}
+            alt={token.alt}
+          />
+        );
       }
       if (token.type === "square") {
         return (
-          <SquareIcon key={`square-${tokenIndex}`} viewBox="0 0 12 12" aria-label={token.alt}>
-            <rect x="0" y="0" width="12" height="12" fill={token.color} rx="1" ry="1" />
+          <SquareIcon
+            key={`square-${tokenIndex}`}
+            viewBox="0 0 12 12"
+            aria-label={token.alt}
+          >
+            <rect
+              x="0"
+              y="0"
+              width="12"
+              height="12"
+              fill={token.color}
+              rx="1"
+              ry="1"
+            />
           </SquareIcon>
         );
       }
@@ -566,28 +624,37 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
                   "--overlay-size": "93%",
                 } as React.CSSProperties);
         return (
-          <CompositeIcon key={`composite-${tokenIndex}`} style={overlayStyle} aria-label={token.alt}>
+          <CompositeIcon
+            key={`composite-${tokenIndex}`}
+            style={overlayStyle}
+            aria-label={token.alt}
+          >
             <CompositeBase src={getIconImage(token.baseIcon)} alt={token.alt} />
-            <CompositeOverlay src={getIconImage(token.overlayIcon)} alt={token.overlayAlt} />
+            <CompositeOverlay
+              src={getIconImage(token.overlayIcon)}
+              alt={token.overlayAlt}
+            />
           </CompositeIcon>
         );
       }
-      return (
-        <EventText key={`text-${tokenIndex}`}>
-          {token.text}
-        </EventText>
-      );
+      return <EventText key={`text-${tokenIndex}`}>{token.text}</EventText>;
     },
-    [getIconImage, emojis]
+    [getIconImage, emojis],
   );
 
   const renderSegment = React.useCallback(
-    (segment: MoveHistorySegment, segmentIndex: number, role?: MoveHistorySegmentRole) => (
+    (
+      segment: MoveHistorySegment,
+      segmentIndex: number,
+      role?: MoveHistorySegmentRole,
+    ) => (
       <EventSegment key={`segment-${segmentIndex}`}>
-        {segment.map((token, tokenIndex) => renderToken(token, tokenIndex, role))}
+        {segment.map((token, tokenIndex) =>
+          renderToken(token, tokenIndex, role),
+        )}
       </EventSegment>
     ),
-    [renderToken]
+    [renderToken],
   );
 
   return (
@@ -602,7 +669,11 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
           </TopActions>
         )}
         <SelectionIndicator />
-        <ScrollWheel ref={scrollRef} onScroll={handleScroll} onMouseDown={handleMouseDown}>
+        <ScrollWheel
+          ref={scrollRef}
+          onScroll={handleScroll}
+          onMouseDown={handleMouseDown}
+        >
           {PADDING_INDICES.map((offset) => {
             const virtualIndex = offset - PADDING_ITEMS;
             return (
@@ -626,10 +697,16 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
             >
               {snapshotIndex === index ? (
                 <ItemContent
-                  style={{ justifyContent: "center", pointerEvents: "auto", cursor: "pointer" }}
+                  style={{
+                    justifyContent: "center",
+                    pointerEvents: "auto",
+                    cursor: "pointer",
+                  }}
                   onClick={(e) => handleSnapshotOpen(e, index)}
                 >
-                  <EventText style={{ fontSize: 11, opacity: 0.85 }}>Open in new tab</EventText>
+                  <EventText style={{ fontSize: 11, opacity: 0.85 }}>
+                    Open in new tab
+                  </EventText>
                 </ItemContent>
               ) : (
                 <ItemContent>
@@ -637,11 +714,23 @@ const MoveHistoryPopup = React.forwardRef<HTMLDivElement>((_, ref) => {
                   <EventRow>
                     {entry.segments.length > 0 ? (
                       entry.segments.map((segment, segmentIndex) =>
-                        renderSegment(segment, segmentIndex, entry.segmentRoles?.[segmentIndex])
+                        renderSegment(
+                          segment,
+                          segmentIndex,
+                          entry.segmentRoles?.[segmentIndex],
+                        ),
                       )
                     ) : index === 0 ? (
                       <SquareIcon viewBox="0 0 12 12" aria-label="score">
-                        <rect x="0" y="0" width="12" height="12" fill={colors.manaPool} rx="1" ry="1" />
+                        <rect
+                          x="0"
+                          y="0"
+                          width="12"
+                          height="12"
+                          fill={colors.manaPool}
+                          rx="1"
+                          ry="1"
+                        />
                       </SquareIcon>
                     ) : (
                       <EventText>{PLACEHOLDER_LABEL}</EventText>

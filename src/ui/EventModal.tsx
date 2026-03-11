@@ -1,14 +1,33 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import styled from "styled-components";
 import { FaCheck, FaLink, FaTimes } from "react-icons/fa";
 import { connection } from "../connection/connection";
-import { EventMatch, EventParticipant, EventRecord, EventRound } from "../connection/connectionModels";
-import { closeEventModal, EVENT_MODAL_Z_INDEX, getEventModalState, subscribeToEventModalState } from "./eventModalController";
+import {
+  EventMatch,
+  EventParticipant,
+  EventRecord,
+  EventRound,
+} from "../connection/connectionModels";
+import {
+  closeEventModal,
+  EVENT_MODAL_Z_INDEX,
+  getEventModalState,
+  subscribeToEventModalState,
+} from "./eventModalController";
 import { emojis } from "../content/emojis";
 import { storage } from "../utils/storage";
 import { openProfileSignInPopup } from "./ProfileSignIn";
 import { getCurrentRouteState } from "../navigation/routeState";
-import { didDismissSomethingWithOutsideTapJustNow, didNotDismissAnythingWithOutsideTapJustNow } from "./BottomControls";
+import {
+  didDismissSomethingWithOutsideTapJustNow,
+  didNotDismissAnythingWithOutsideTapJustNow,
+} from "./BottomControls";
 import { showShinyCard, showsShinyCardSomewhere } from "./ShinyCard";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 
@@ -246,7 +265,8 @@ const RoundTitle = styled.div`
 const MatchButton = styled.button<{ $highlighted?: boolean }>`
   border: none;
   border-radius: 12px;
-  background: ${(props) => (props.$highlighted ? "rgba(0, 122, 255, 0.06)" : "var(--color-white)")};
+  background: ${(props) =>
+    props.$highlighted ? "rgba(0, 122, 255, 0.06)" : "var(--color-white)"};
   padding: 10px 12px;
   display: flex;
   flex-direction: column;
@@ -257,15 +277,20 @@ const MatchButton = styled.button<{ $highlighted?: boolean }>`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: ${(props) => (props.$highlighted ? "rgba(0, 122, 255, 0.1)" : "var(--color-gray-f5)")};
+      background: ${(props) =>
+        props.$highlighted ? "rgba(0, 122, 255, 0.1)" : "var(--color-gray-f5)"};
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background: ${(props) => (props.$highlighted ? "rgba(11, 132, 255, 0.12)" : "var(--color-gray-23)")};
+    background: ${(props) =>
+      props.$highlighted ? "rgba(11, 132, 255, 0.12)" : "var(--color-gray-23)"};
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background: ${(props) => (props.$highlighted ? "rgba(11, 132, 255, 0.18)" : "var(--color-gray-33)")};
+        background: ${(props) =>
+          props.$highlighted
+            ? "rgba(11, 132, 255, 0.18)"
+            : "var(--color-gray-33)"};
       }
     }
   }
@@ -323,32 +348,48 @@ const FooterButton = styled.button<{ $primary?: boolean }>`
   user-select: none;
   -webkit-tap-highlight-color: transparent;
   transition: background-color 0.2s ease;
-  background: ${(props) => (props.$primary ? "var(--color-blue-primary)" : "var(--color-gray-f0)")};
+  background: ${(props) =>
+    props.$primary ? "var(--color-blue-primary)" : "var(--color-gray-f0)"};
   color: ${(props) => (props.$primary ? "white" : "var(--color-gray-33)")};
   opacity: ${(props) => (props.disabled ? 0.56 : 1)};
 
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) {
-      background: ${(props) => (props.$primary ? "var(--bottomButtonBackgroundHover)" : "var(--color-gray-e0)")};
+      background: ${(props) =>
+        props.$primary
+          ? "var(--bottomButtonBackgroundHover)"
+          : "var(--color-gray-e0)"};
     }
   }
 
   &:active:not(:disabled) {
-    background: ${(props) => (props.$primary ? "var(--bottomButtonBackgroundActive)" : "var(--color-gray-d0)")};
+    background: ${(props) =>
+      props.$primary
+        ? "var(--bottomButtonBackgroundActive)"
+        : "var(--color-gray-d0)"};
   }
 
   @media (prefers-color-scheme: dark) {
-    background: ${(props) => (props.$primary ? "var(--color-blue-primary-dark)" : "var(--color-gray-33)")};
+    background: ${(props) =>
+      props.$primary
+        ? "var(--color-blue-primary-dark)"
+        : "var(--color-gray-33)"};
     color: ${(props) => (props.$primary ? "white" : "var(--color-gray-f0)")};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover:not(:disabled) {
-        background: ${(props) => (props.$primary ? "var(--bottomButtonBackgroundHoverDark)" : "var(--color-gray-44)")};
+        background: ${(props) =>
+          props.$primary
+            ? "var(--bottomButtonBackgroundHoverDark)"
+            : "var(--color-gray-44)"};
       }
     }
 
     &:active:not(:disabled) {
-      background: ${(props) => (props.$primary ? "var(--bottomButtonBackgroundActiveDark)" : "var(--color-gray-55)")};
+      background: ${(props) =>
+        props.$primary
+          ? "var(--bottomButtonBackgroundActiveDark)"
+          : "var(--color-gray-55)"};
     }
   }
 `;
@@ -368,7 +409,10 @@ type EventUiState = {
 const PENDING_JOIN_POLL_INTERVAL_MS = 350;
 const PENDING_JOIN_POLL_TIMEOUT_MS = 60_000;
 
-const formatRelativeStart = (event: EventRecord | null, nowMs: number): string => {
+const formatRelativeStart = (
+  event: EventRecord | null,
+  nowMs: number,
+): string => {
   if (!event) {
     return "loading";
   }
@@ -376,7 +420,9 @@ const formatRelativeStart = (event: EventRecord | null, nowMs: number): string =
     return "dismissed: not enough players";
   }
   if (event.status === "ended") {
-    return event.winnerDisplayName ? `${event.winnerDisplayName} won` : "event ended";
+    return event.winnerDisplayName
+      ? `${event.winnerDisplayName} won`
+      : "event ended";
   }
   if (event.status === "active") {
     return "live";
@@ -390,21 +436,30 @@ const formatRelativeStart = (event: EventRecord | null, nowMs: number): string =
   return `in ${minutes} minute${minutes === 1 ? "" : "s"}`;
 };
 
-const getSortedParticipants = (event: EventRecord | null): EventParticipant[] => {
+const getSortedParticipants = (
+  event: EventRecord | null,
+): EventParticipant[] => {
   if (!event) {
     return [];
   }
-  return Object.values(event.participants).sort((left, right) => left.joinedAtMs - right.joinedAtMs);
+  return Object.values(event.participants).sort(
+    (left, right) => left.joinedAtMs - right.joinedAtMs,
+  );
 };
 
 const getSortedRounds = (event: EventRecord | null): EventRound[] => {
   if (!event) {
     return [];
   }
-  return Object.values(event.rounds).sort((left, right) => left.roundIndex - right.roundIndex);
+  return Object.values(event.rounds).sort(
+    (left, right) => left.roundIndex - right.roundIndex,
+  );
 };
 
-const getCurrentUiState = (event: EventRecord | null, profileId: string): EventUiState => {
+const getCurrentUiState = (
+  event: EventRecord | null,
+  profileId: string,
+): EventUiState => {
   if (!event || !profileId) {
     return {
       isJoined: false,
@@ -433,32 +488,57 @@ const getCurrentUiState = (event: EventRecord | null, profileId: string): EventU
     };
   }
 
-  const roundKey = event.currentRoundIndex !== null ? String(event.currentRoundIndex) : null;
+  const roundKey =
+    event.currentRoundIndex !== null ? String(event.currentRoundIndex) : null;
   const currentRound = roundKey ? event.rounds[roundKey] : null;
   const matches = currentRound ? Object.values(currentRound.matches) : [];
-  const playableMatch = matches.find((match) => match.status === "pending" && (match.hostProfileId === profileId || match.guestProfileId === profileId)) ?? null;
+  const playableMatch =
+    matches.find(
+      (match) =>
+        match.status === "pending" &&
+        (match.hostProfileId === profileId ||
+          match.guestProfileId === profileId),
+    ) ?? null;
   const hasBye = currentRound?.byeProfileId === profileId;
-  const hasWonCurrentRound = matches.some((match) => match.winnerProfileId === profileId);
+  const hasWonCurrentRound = matches.some(
+    (match) => match.winnerProfileId === profileId,
+  );
 
   return {
     isJoined: true,
     isEliminated: false,
     playableMatch,
-    waitingForNext: event.status === "active" && !playableMatch && (hasBye || hasWonCurrentRound),
+    waitingForNext:
+      event.status === "active" &&
+      !playableMatch &&
+      (hasBye || hasWonCurrentRound),
   };
 };
 
 const formatEventError = (error: unknown): string => {
-  if (error && typeof error === "object" && "message" in error && typeof (error as { message?: unknown }).message === "string") {
+  if (
+    error &&
+    typeof error === "object" &&
+    "message" in error &&
+    typeof (error as { message?: unknown }).message === "string"
+  ) {
     const message = (error as { message: string }).message;
     return message.replace(/^Firebase:\s*/i, "");
   }
   return "Something went wrong.";
 };
 
-const EventAvatar: React.FC<{ emojiId?: number | null; displayName?: string | null }> = ({ emojiId, displayName }) => {
+const EventAvatar: React.FC<{
+  emojiId?: number | null;
+  displayName?: string | null;
+}> = ({ emojiId, displayName }) => {
   if (typeof emojiId === "number" && Number.isFinite(emojiId)) {
-    return <Avatar src={emojis.getEmojiUrl(emojiId.toString())} alt={displayName ?? ""} />;
+    return (
+      <Avatar
+        src={emojis.getEmojiUrl(emojiId.toString())}
+        alt={displayName ?? ""}
+      />
+    );
   }
   return <AvatarFallback aria-hidden="true" />;
 };
@@ -482,9 +562,13 @@ const EventModal: React.FC = () => {
   const [inlineError, setInlineError] = useState<string | null>(null);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
   const [nowMs, setNowMs] = useState(() => Date.now());
-  const [pendingJoinEventId, setPendingJoinEventId] = useState<string | null>(null);
+  const [pendingJoinEventId, setPendingJoinEventId] = useState<string | null>(
+    null,
+  );
   const [pendingJoinRequestedAtMs, setPendingJoinRequestedAtMs] = useState(0);
-  const [openingParticipantId, setOpeningParticipantId] = useState<string | null>(null);
+  const [openingParticipantId, setOpeningParticipantId] = useState<
+    string | null
+  >(null);
   const openingParticipantIdRef = useRef<string | null>(null);
   const participantLookupSessionRef = useRef(0);
   const ignoreNextBackdropClickRef = useRef(false);
@@ -523,7 +607,7 @@ const EventModal: React.FC = () => {
       },
       () => {
         setIsLoading(false);
-      }
+      },
     );
 
     void connection.syncEventState(modalState.eventId).catch(() => {});
@@ -544,13 +628,20 @@ const EventModal: React.FC = () => {
   }, [modalState.isOpen]);
 
   useEffect(() => {
-    if (!modalState.isOpen || !modalState.eventId || !eventRecord || eventRecord.status !== "scheduled") {
+    if (
+      !modalState.isOpen ||
+      !modalState.eventId ||
+      !eventRecord ||
+      eventRecord.status !== "scheduled"
+    ) {
       return;
     }
     const delayMs = Math.max(0, eventRecord.startAtMs - Date.now() + 300);
     const timeoutId = window.setTimeout(() => {
       setNowMs(Date.now());
-      void connection.syncEventState(modalState.eventId as string).catch(() => {});
+      void connection
+        .syncEventState(modalState.eventId as string)
+        .catch(() => {});
     }, delayMs);
     return () => {
       window.clearTimeout(timeoutId);
@@ -558,10 +649,15 @@ const EventModal: React.FC = () => {
   }, [eventRecord, modalState.eventId, modalState.isOpen]);
 
   useEffect(() => {
-    if (!modalState.isOpen || !modalState.eventId || pendingJoinEventId !== modalState.eventId) {
+    if (
+      !modalState.isOpen ||
+      !modalState.eventId ||
+      pendingJoinEventId !== modalState.eventId
+    ) {
       return;
     }
-    const requestedAtMs = pendingJoinRequestedAtMs > 0 ? pendingJoinRequestedAtMs : Date.now();
+    const requestedAtMs =
+      pendingJoinRequestedAtMs > 0 ? pendingJoinRequestedAtMs : Date.now();
     const intervalId = window.setInterval(() => {
       if (Date.now() - requestedAtMs >= PENDING_JOIN_POLL_TIMEOUT_MS) {
         setPendingJoinEventId(null);
@@ -595,28 +691,52 @@ const EventModal: React.FC = () => {
     return () => {
       window.clearInterval(intervalId);
     };
-  }, [modalState.eventId, modalState.isOpen, pendingJoinEventId, pendingJoinRequestedAtMs]);
+  }, [
+    modalState.eventId,
+    modalState.isOpen,
+    pendingJoinEventId,
+    pendingJoinRequestedAtMs,
+  ]);
 
-  const participants = useMemo(() => getSortedParticipants(eventRecord), [eventRecord]);
+  const participants = useMemo(
+    () => getSortedParticipants(eventRecord),
+    [eventRecord],
+  );
   const rounds = useMemo(() => getSortedRounds(eventRecord), [eventRecord]);
   const currentProfileId = storage.getProfileId("");
-  const eventUiState = useMemo(() => getCurrentUiState(eventRecord, currentProfileId), [currentProfileId, eventRecord]);
+  const eventUiState = useMemo(
+    () => getCurrentUiState(eventRecord, currentProfileId),
+    [currentProfileId, eventRecord],
+  );
   const currentRoute = getCurrentRouteState();
-  const isJoinWindowOpen = !!eventRecord && eventRecord.status === "scheduled" && nowMs < eventRecord.startAtMs;
+  const isJoinWindowOpen =
+    !!eventRecord &&
+    eventRecord.status === "scheduled" &&
+    nowMs < eventRecord.startAtMs;
 
-  const handleBackdropPointerDown = useCallback((event: React.MouseEvent<HTMLDivElement> | React.TouchEvent<HTMLDivElement>) => {
-    if (event.target !== event.currentTarget) {
-      return;
-    }
-    ignoreNextBackdropClickRef.current = showsShinyCardSomewhere;
-  }, []);
+  const handleBackdropPointerDown = useCallback(
+    (
+      event:
+        | React.MouseEvent<HTMLDivElement>
+        | React.TouchEvent<HTMLDivElement>,
+    ) => {
+      if (event.target !== event.currentTarget) {
+        return;
+      }
+      ignoreNextBackdropClickRef.current = showsShinyCardSomewhere;
+    },
+    [],
+  );
 
   const handleBackdropClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       if (event.target !== event.currentTarget) {
         return;
       }
-      const shouldKeepVisibleForOutsideDismiss = ignoreNextBackdropClickRef.current || showsShinyCardSomewhere || !didNotDismissAnythingWithOutsideTapJustNow();
+      const shouldKeepVisibleForOutsideDismiss =
+        ignoreNextBackdropClickRef.current ||
+        showsShinyCardSomewhere ||
+        !didNotDismissAnythingWithOutsideTapJustNow();
       ignoreNextBackdropClickRef.current = false;
       if (shouldKeepVisibleForOutsideDismiss) {
         return;
@@ -624,7 +744,7 @@ const EventModal: React.FC = () => {
       didDismissSomethingWithOutsideTapJustNow();
       void closeEventModal();
     },
-    []
+    [],
   );
 
   const handleCopyClick = useCallback(() => {
@@ -666,70 +786,99 @@ const EventModal: React.FC = () => {
       });
   }, [modalState.eventId]);
 
-  const openMatch = useCallback(async (inviteId: string) => {
-    if (!inviteId) {
-      return;
-    }
-    await closeEventModal({ skipHomeTransition: true, reason: "launch_game" });
-    if (currentRoute.mode === "invite" && currentRoute.inviteId === inviteId) {
-      return;
-    }
-    connection.connectToInvite(inviteId);
-  }, [currentRoute.inviteId, currentRoute.mode]);
+  const openMatch = useCallback(
+    async (inviteId: string) => {
+      if (!inviteId) {
+        return;
+      }
+      await closeEventModal({
+        skipHomeTransition: true,
+        reason: "launch_game",
+      });
+      if (
+        currentRoute.mode === "invite" &&
+        currentRoute.inviteId === inviteId
+      ) {
+        return;
+      }
+      connection.connectToInvite(inviteId);
+    },
+    [currentRoute.inviteId, currentRoute.mode],
+  );
 
-  const resolveParticipantProfile = useCallback(async (participant: EventParticipant) => {
-    const cachedProfile = participant.loginUid ? getStashedPlayerProfile(participant.loginUid) : undefined;
-    if (cachedProfile && cachedProfile.id === participant.profileId) {
-      return cachedProfile;
-    }
-    if (!participant.loginUid) {
-      return null;
-    }
-    const exactProfile = await connection.getProfileByLoginId(participant.loginUid);
-    return exactProfile ?? null;
-  }, []);
+  const resolveParticipantProfile = useCallback(
+    async (participant: EventParticipant) => {
+      const cachedProfile = participant.loginUid
+        ? getStashedPlayerProfile(participant.loginUid)
+        : undefined;
+      if (cachedProfile && cachedProfile.id === participant.profileId) {
+        return cachedProfile;
+      }
+      if (!participant.loginUid) {
+        return null;
+      }
+      const exactProfile = await connection.getProfileByLoginId(
+        participant.loginUid,
+      );
+      return exactProfile ?? null;
+    },
+    [],
+  );
 
-  const handleParticipantClick = useCallback(async (participant: EventParticipant) => {
-    const participantKey = participant.profileId || participant.loginUid;
-    if (!participantKey || openingParticipantIdRef.current) {
-      return;
-    }
-    const lookupSession = participantLookupSessionRef.current;
-    openingParticipantIdRef.current = participantKey;
-    setOpeningParticipantId(participantKey);
-    setInlineError(null);
-    try {
-      const profile = await resolveParticipantProfile(participant);
-      if (participantLookupSessionRef.current !== lookupSession) {
+  const handleParticipantClick = useCallback(
+    async (participant: EventParticipant) => {
+      const participantKey = participant.profileId || participant.loginUid;
+      if (!participantKey || openingParticipantIdRef.current) {
         return;
       }
-      if (!profile) {
-        setInlineError("Unable to load player profile.");
-        return;
+      const lookupSession = participantLookupSessionRef.current;
+      openingParticipantIdRef.current = participantKey;
+      setOpeningParticipantId(participantKey);
+      setInlineError(null);
+      try {
+        const profile = await resolveParticipantProfile(participant);
+        if (participantLookupSessionRef.current !== lookupSession) {
+          return;
+        }
+        if (!profile) {
+          setInlineError("Unable to load player profile.");
+          return;
+        }
+        await showShinyCard(
+          profile,
+          getParticipantDisplayName(participant),
+          true,
+        );
+      } catch (error) {
+        if (participantLookupSessionRef.current !== lookupSession) {
+          return;
+        }
+        setInlineError(formatEventError(error));
+      } finally {
+        if (participantLookupSessionRef.current !== lookupSession) {
+          return;
+        }
+        if (openingParticipantIdRef.current === participantKey) {
+          openingParticipantIdRef.current = null;
+        }
+        setOpeningParticipantId((current) =>
+          current === participantKey ? null : current,
+        );
       }
-      await showShinyCard(profile, getParticipantDisplayName(participant), true);
-    } catch (error) {
-      if (participantLookupSessionRef.current !== lookupSession) {
-        return;
-      }
-      setInlineError(formatEventError(error));
-    } finally {
-      if (participantLookupSessionRef.current !== lookupSession) {
-        return;
-      }
-      if (openingParticipantIdRef.current === participantKey) {
-        openingParticipantIdRef.current = null;
-      }
-      setOpeningParticipantId((current) => (current === participantKey ? null : current));
-    }
-  }, [resolveParticipantProfile]);
+    },
+    [resolveParticipantProfile],
+  );
 
   if (!modalState.isOpen || !modalState.eventId) {
     return null;
   }
 
   return (
-    <Overlay onMouseDown={handleBackdropPointerDown} onTouchStart={handleBackdropPointerDown} onClick={handleBackdropClick}>
+    <Overlay
+      onMouseDown={handleBackdropPointerDown}
+      onTouchStart={handleBackdropPointerDown}
+      onClick={handleBackdropClick}
+    >
       <ModalCard onClick={(event) => event.stopPropagation()}>
         <ModalScroll>
           <HeaderRow>
@@ -737,10 +886,18 @@ const EventModal: React.FC = () => {
               <Title>{formatRelativeStart(eventRecord, nowMs)}</Title>
             </HeaderText>
             <HeaderButtons>
-              <HeaderIconButton type="button" onClick={handleCopyClick} aria-label="Copy event link">
+              <HeaderIconButton
+                type="button"
+                onClick={handleCopyClick}
+                aria-label="Copy event link"
+              >
                 {copyState === "copied" ? <FaCheck /> : <FaLink />}
               </HeaderIconButton>
-              <HeaderIconButton type="button" onClick={() => void closeEventModal()} aria-label="Close event">
+              <HeaderIconButton
+                type="button"
+                onClick={() => void closeEventModal()}
+                aria-label="Close event"
+              >
                 <FaTimes />
               </HeaderIconButton>
             </HeaderButtons>
@@ -748,52 +905,94 @@ const EventModal: React.FC = () => {
 
           {inlineError && <InlineError>{inlineError}</InlineError>}
 
-          {eventRecord?.status !== "active" && eventRecord?.status !== "ended" && (
-            <CardSection>
-              <ParticipantsList>
-                {participants.map((participant) => (
-                  <ParticipantRow
-                    key={participant.profileId}
-                    type="button"
-                    onClick={() => void handleParticipantClick(participant)}
-                    disabled={openingParticipantId !== null}
-                  >
-                    <EventAvatar emojiId={participant.emojiId} displayName={participant.displayName} />
-                    <ParticipantName>{getParticipantDisplayName(participant)}</ParticipantName>
-                    <ParticipantState>
-                      {openingParticipantId === (participant.profileId || participant.loginUid)
-                        ? "loading"
-                        : participant.state === "winner"
-                          ? "winner"
-                          : participant.state === "eliminated"
-                            ? "out"
-                            : ""}
-                    </ParticipantState>
-                  </ParticipantRow>
-                ))}
-                {!participants.length && <FooterNote>{isLoading ? "loading players..." : "no players yet"}</FooterNote>}
-              </ParticipantsList>
-            </CardSection>
-          )}
+          {eventRecord?.status !== "active" &&
+            eventRecord?.status !== "ended" && (
+              <CardSection>
+                <ParticipantsList>
+                  {participants.map((participant) => (
+                    <ParticipantRow
+                      key={participant.profileId}
+                      type="button"
+                      onClick={() => void handleParticipantClick(participant)}
+                      disabled={openingParticipantId !== null}
+                    >
+                      <EventAvatar
+                        emojiId={participant.emojiId}
+                        displayName={participant.displayName}
+                      />
+                      <ParticipantName>
+                        {getParticipantDisplayName(participant)}
+                      </ParticipantName>
+                      <ParticipantState>
+                        {openingParticipantId ===
+                        (participant.profileId || participant.loginUid)
+                          ? "loading"
+                          : participant.state === "winner"
+                            ? "winner"
+                            : participant.state === "eliminated"
+                              ? "out"
+                              : ""}
+                      </ParticipantState>
+                    </ParticipantRow>
+                  ))}
+                  {!participants.length && (
+                    <FooterNote>
+                      {isLoading ? "loading players..." : "no players yet"}
+                    </FooterNote>
+                  )}
+                </ParticipantsList>
+              </CardSection>
+            )}
 
-          {(eventRecord?.status === "active" || eventRecord?.status === "ended") && (
+          {(eventRecord?.status === "active" ||
+            eventRecord?.status === "ended") && (
             <RoundsGroup>
               {rounds.map((round) => (
                 <RoundSection key={round.roundIndex}>
-                  {rounds.length > 1 && <RoundTitle>{`Round ${round.roundIndex + 1}`}</RoundTitle>}
+                  {rounds.length > 1 && (
+                    <RoundTitle>{`Round ${round.roundIndex + 1}`}</RoundTitle>
+                  )}
                   <CardSection>
                     <MatchesList>
                       {Object.values(round.matches).map((match) => {
-                        const isPlayable = eventUiState.playableMatch?.inviteId === match.inviteId;
+                        const isPlayable =
+                          eventUiState.playableMatch?.inviteId ===
+                          match.inviteId;
                         return (
-                          <MatchButton key={match.matchKey} type="button" $highlighted={isPlayable || currentRoute.inviteId === match.inviteId} onClick={() => void openMatch(match.inviteId)}>
+                          <MatchButton
+                            key={match.matchKey}
+                            type="button"
+                            $highlighted={
+                              isPlayable ||
+                              currentRoute.inviteId === match.inviteId
+                            }
+                            onClick={() => void openMatch(match.inviteId)}
+                          >
                             <MatchPlayerLine>
-                              <EventAvatar emojiId={match.hostEmojiId} displayName={match.hostDisplayName} />
-                              <MatchPlayerName $bold={match.winnerProfileId === match.hostProfileId}>{match.hostDisplayName || "anon"}</MatchPlayerName>
+                              <EventAvatar
+                                emojiId={match.hostEmojiId}
+                                displayName={match.hostDisplayName}
+                              />
+                              <MatchPlayerName
+                                $bold={
+                                  match.winnerProfileId === match.hostProfileId
+                                }
+                              >
+                                {match.hostDisplayName || "anon"}
+                              </MatchPlayerName>
                             </MatchPlayerLine>
                             <MatchPlayerLine>
-                              <EventAvatar emojiId={match.guestEmojiId} displayName={match.guestDisplayName} />
-                              <MatchPlayerName $bold={match.winnerProfileId === match.guestProfileId}>{match.guestDisplayName || "anon"}</MatchPlayerName>
+                              <EventAvatar
+                                emojiId={match.guestEmojiId}
+                                displayName={match.guestDisplayName}
+                              />
+                              <MatchPlayerName
+                                $bold={
+                                  match.winnerProfileId === match.guestProfileId
+                                }
+                              >
+                                {match.guestDisplayName || "anon"}
+                              </MatchPlayerName>
                             </MatchPlayerLine>
                           </MatchButton>
                         );
@@ -802,17 +1001,31 @@ const EventModal: React.FC = () => {
                   </CardSection>
                 </RoundSection>
               ))}
-              {!rounds.length && <FooterNote>{eventRecord?.status === "active" ? "building bracket..." : "no bracket yet"}</FooterNote>}
+              {!rounds.length && (
+                <FooterNote>
+                  {eventRecord?.status === "active"
+                    ? "building bracket..."
+                    : "no bracket yet"}
+                </FooterNote>
+              )}
             </RoundsGroup>
           )}
 
           <Footer>
             {!eventUiState.isJoined && isJoinWindowOpen && (
               <>
-                <FooterButton type="button" $primary={true} onClick={handleJoinClick} disabled={isLoading}>
+                <FooterButton
+                  type="button"
+                  $primary={true}
+                  onClick={handleJoinClick}
+                  disabled={isLoading}
+                >
                   Join
                 </FooterButton>
-                <FooterButton type="button" onClick={() => void closeEventModal()}>
+                <FooterButton
+                  type="button"
+                  onClick={() => void closeEventModal()}
+                >
                   Skip
                 </FooterButton>
               </>
@@ -823,31 +1036,44 @@ const EventModal: React.FC = () => {
                 <FooterButton type="button" $primary={true} disabled={true}>
                   Play
                 </FooterButton>
-                {nowMs >= eventRecord.startAtMs && <FooterNote>waiting for more players</FooterNote>}
+                {nowMs >= eventRecord.startAtMs && (
+                  <FooterNote>waiting for more players</FooterNote>
+                )}
               </>
             )}
 
             {eventRecord?.status === "active" && eventUiState.playableMatch && (
-              <FooterButton type="button" $primary={true} onClick={() => void openMatch(eventUiState.playableMatch!.inviteId)}>
+              <FooterButton
+                type="button"
+                $primary={true}
+                onClick={() =>
+                  void openMatch(eventUiState.playableMatch!.inviteId)
+                }
+              >
                 Play
               </FooterButton>
             )}
 
-            {eventRecord?.status === "active" && !eventUiState.playableMatch && eventUiState.waitingForNext && (
-              <>
-                <FooterButton type="button" $primary={true} disabled={true}>
-                  Play Next
-                </FooterButton>
-                <FooterNote>waiting for the next round</FooterNote>
-              </>
-            )}
+            {eventRecord?.status === "active" &&
+              !eventUiState.playableMatch &&
+              eventUiState.waitingForNext && (
+                <>
+                  <FooterButton type="button" $primary={true} disabled={true}>
+                    Play Next
+                  </FooterButton>
+                  <FooterNote>waiting for the next round</FooterNote>
+                </>
+              )}
 
-            {!eventUiState.isJoined && eventRecord?.status === "scheduled" && !isJoinWindowOpen && (
-              <FooterNote>
-                {Object.keys(eventRecord.participants ?? {}).length < 2 ? "waiting for more players" : "event is no longer accepting players"}
-              </FooterNote>
-            )}
-
+            {!eventUiState.isJoined &&
+              eventRecord?.status === "scheduled" &&
+              !isJoinWindowOpen && (
+                <FooterNote>
+                  {Object.keys(eventRecord.participants ?? {}).length < 2
+                    ? "waiting for more players"
+                    : "event is no longer accepting players"}
+                </FooterNote>
+              )}
           </Footer>
         </ModalScroll>
       </ModalCard>

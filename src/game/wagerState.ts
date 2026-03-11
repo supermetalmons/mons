@@ -23,7 +23,10 @@ export const setCurrentWagerMatch = (matchId: string | null) => {
   notify();
 };
 
-export const setWagerState = (matchId: string | null, state: MatchWagerState | null) => {
+export const setWagerState = (
+  matchId: string | null,
+  state: MatchWagerState | null,
+) => {
   if (!matchId || (currentMatchId && matchId !== currentMatchId)) {
     return;
   }
@@ -32,7 +35,10 @@ export const setWagerState = (matchId: string | null, state: MatchWagerState | n
   notify();
 };
 
-export const syncCurrentWagerMatchState = (matchId: string | null, state: MatchWagerState | null) => {
+export const syncCurrentWagerMatchState = (
+  matchId: string | null,
+  state: MatchWagerState | null,
+) => {
   currentMatchId = matchId;
   if (!matchId) {
     currentState = null;

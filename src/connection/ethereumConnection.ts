@@ -8,7 +8,12 @@ declare global {
   }
 }
 
-export async function connectToEthereumAndSign(): Promise<{ message: string; signature: string; intentId: string; address: string }> {
+export async function connectToEthereumAndSign(): Promise<{
+  message: string;
+  signature: string;
+  intentId: string;
+  address: string;
+}> {
   if (!window.ethereum) {
     throw new Error("not found");
   }

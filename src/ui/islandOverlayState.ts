@@ -25,4 +25,3 @@ export function resetIslandOverlayState() {
 export function hasIslandOverlayVisible() {
   return state.visible || state.opening || state.closing;
 }
-

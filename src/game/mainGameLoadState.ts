@@ -41,4 +41,3 @@ export function resetMainGameLoadedState() {
     listeners.length = 0;
   }
 }
-

@@ -17,7 +17,11 @@ const toCleanString = (value: unknown): string => {
 };
 
 const normalizeTarget = (value: unknown): XAuthUiFeedbackTarget | null => {
-  return value === "settings" ? "settings" : value === "signin" ? "signin" : null;
+  return value === "settings"
+    ? "settings"
+    : value === "signin"
+      ? "signin"
+      : null;
 };
 
 const normalizeKind = (value: unknown): XAuthUiFeedbackKind | null => {
@@ -59,7 +63,9 @@ const readPersistedFeedback = (): XAuthUiFeedback | null => {
     return null;
   }
   try {
-    return normalizeFeedback(JSON.parse(window.sessionStorage.getItem(STORAGE_KEY) || "null"));
+    return normalizeFeedback(
+      JSON.parse(window.sessionStorage.getItem(STORAGE_KEY) || "null"),
+    );
   } catch {
     return null;
   }
@@ -91,7 +97,9 @@ export const consumePendingXAuthUiFeedback = (): XAuthUiFeedback | null => {
   return nextFeedback;
 };
 
-export const subscribeToXAuthUiFeedback = (listener: (feedback: XAuthUiFeedback) => void): (() => void) => {
+export const subscribeToXAuthUiFeedback = (
+  listener: (feedback: XAuthUiFeedback) => void,
+): (() => void) => {
   listeners.add(listener);
   return () => {
     listeners.delete(listener);

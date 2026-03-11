@@ -1,9 +1,55 @@
-import React, { useRef, useEffect, useState, useCallback, useMemo } from "react";
-import { FaUndo, FaFlag, FaCommentAlt, FaTrophy, FaHome, FaRobot, FaStar, FaEnvelope, FaLink, FaShareAlt, FaPaintBrush, FaScroll, FaHourglassHalf, FaUsers } from "react-icons/fa";
+import React, {
+  useRef,
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+} from "react";
+import {
+  FaUndo,
+  FaFlag,
+  FaCommentAlt,
+  FaTrophy,
+  FaHome,
+  FaRobot,
+  FaStar,
+  FaEnvelope,
+  FaLink,
+  FaShareAlt,
+  FaPaintBrush,
+  FaScroll,
+  FaHourglassHalf,
+  FaUsers,
+} from "react-icons/fa";
 import { IoSparklesSharp } from "react-icons/io5";
 import styled from "styled-components";
 import AnimatedHourglassButton from "./AnimatedHourglassButton";
-import { canHandleUndo, didClickUndoButton, didClickStartTimerButton, didClickClaimVictoryByTimerButton, didClickPrimaryActionButton, didClickHomeButton, didClickInviteActionButtonBeforeThereIsInviteReady, didClickAutomoveButton, didClickAutomatchButton, didClickStartBotGameButton, didClickEndMatchButton, didClickConfirmResignButton, isGameWithBot, puzzleMode, playSameCompletedPuzzleAgain, isOnlineGame, isWatchOnly, isMatchOver, getBoardViewMode, getRematchSeriesNavigatorItems, didSelectRematchSeriesMatch, preloadRematchSeriesScores, getSelectedPuzzleId, didSelectPuzzle } from "../game/gameController";
+import {
+  canHandleUndo,
+  didClickUndoButton,
+  didClickStartTimerButton,
+  didClickClaimVictoryByTimerButton,
+  didClickPrimaryActionButton,
+  didClickHomeButton,
+  didClickInviteActionButtonBeforeThereIsInviteReady,
+  didClickAutomoveButton,
+  didClickAutomatchButton,
+  didClickStartBotGameButton,
+  didClickEndMatchButton,
+  didClickConfirmResignButton,
+  isGameWithBot,
+  puzzleMode,
+  playSameCompletedPuzzleAgain,
+  isOnlineGame,
+  isWatchOnly,
+  isMatchOver,
+  getBoardViewMode,
+  getRematchSeriesNavigatorItems,
+  didSelectRematchSeriesMatch,
+  preloadRematchSeriesScores,
+  getSelectedPuzzleId,
+  didSelectPuzzle,
+} from "../game/gameController";
 import type { RematchSeriesNavigatorItem } from "../game/gameController";
 import { connection } from "../connection/connection";
 import type { NavigationGamesPageCursor } from "../connection/connection";
@@ -11,28 +57,82 @@ import { defaultEarlyInputEventName, isMobile } from "../utils/misc";
 import { soundPlayer } from "../utils/SoundPlayer";
 import { playReaction, playSounds } from "../content/sounds";
 import { newReactionOfKind, newStickerReaction } from "../content/sounds";
-import { showVoiceReactionText, opponentSideMetadata, playerSideMetadata, isMetadataSideDisplayedAtOpponentSlot } from "../game/board";
+import {
+  showVoiceReactionText,
+  opponentSideMetadata,
+  playerSideMetadata,
+  isMetadataSideDisplayedAtOpponentSlot,
+} from "../game/board";
 import NavigationPicker from "./NavigationPicker";
-import { ControlsContainer, BrushButton, NavigationListButton, NavigationBadge, ControlButton, BottomPillButton, ResignButton, ResignConfirmation, ReactionPillsContainer, ReactionPill, StickerPill, WagerBetButton, WagerMaterialsGrid, WagerMaterialItem, WagerMaterialIcon, WagerMaterialAmount, WagerButtonBadge, WagerButtonIcon, WagerButtonAmount } from "./BottomControlsStyles";
+import {
+  ControlsContainer,
+  BrushButton,
+  NavigationListButton,
+  NavigationBadge,
+  ControlButton,
+  BottomPillButton,
+  ResignButton,
+  ResignConfirmation,
+  ReactionPillsContainer,
+  ReactionPill,
+  StickerPill,
+  WagerBetButton,
+  WagerMaterialsGrid,
+  WagerMaterialItem,
+  WagerMaterialIcon,
+  WagerMaterialAmount,
+  WagerButtonBadge,
+  WagerButtonIcon,
+  WagerButtonAmount,
+} from "./BottomControlsStyles";
 import { fetchNftsForStoredAddresses } from "../services/nftService";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
 import { showVideoReaction } from "./BoardComponent";
-import BoardStylePickerComponent, { preloadPangchiuBoardPreview } from "./BoardStylePicker";
+import BoardStylePickerComponent, {
+  preloadPangchiuBoardPreview,
+} from "./BoardStylePicker";
 import { Sound } from "../utils/gameModels";
-import MoveHistoryPopup, { subscribeMoveHistoryPopupReload, triggerMoveHistoryPopupSelectionReset } from "./MoveHistoryPopup";
-import { MATERIALS, MaterialName, rocksMiningService } from "../services/rocksMiningService";
-import { MatchWagerState, NavigationGameItem, NavigationGameStatus, NavigationItem } from "../connection/connectionModels";
+import MoveHistoryPopup, {
+  subscribeMoveHistoryPopupReload,
+  triggerMoveHistoryPopupSelectionReset,
+} from "./MoveHistoryPopup";
+import {
+  MATERIALS,
+  MaterialName,
+  rocksMiningService,
+} from "../services/rocksMiningService";
+import {
+  MatchWagerState,
+  NavigationGameItem,
+  NavigationGameStatus,
+  NavigationItem,
+} from "../connection/connectionModels";
 import { compareNavigationItems as compareNavigationItemsByDisplayOrder } from "../services/navigationItemOrdering";
 import { subscribeToWagerState } from "../game/wagerState";
-import { computeAvailableMaterials, getFrozenMaterials, subscribeToFrozenMaterials } from "../services/wagerMaterialsService";
+import {
+  computeAvailableMaterials,
+  getFrozenMaterials,
+  subscribeToFrozenMaterials,
+} from "../services/wagerMaterialsService";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 import { storage } from "../utils/storage";
-import { getCurrentTarget, isTransitionInProgress, transitionToHome } from "../session/AppSessionManager";
+import {
+  getCurrentTarget,
+  isTransitionInProgress,
+  transitionToHome,
+} from "../session/AppSessionManager";
 import { getCurrentRouteState } from "../navigation/routeState";
 import { registerBottomControlsTransientUiHandler } from "./uiSession";
-import { decrementLifecycleCounter, incrementLifecycleCounter } from "../lifecycle/lifecycleDiagnostics";
+import {
+  decrementLifecycleCounter,
+  incrementLifecycleCounter,
+} from "../lifecycle/lifecycleDiagnostics";
 import { problems } from "../content/problems";
-import { getEventModalState, openEventModal, subscribeToEventModalState } from "./eventModalController";
+import {
+  getEventModalState,
+  openEventModal,
+  subscribeToEventModalState,
+} from "./eventModalController";
 import {
   NavigationGamesCacheScope,
   clearNavigationGamesRuntimeCacheScope,
@@ -44,7 +144,8 @@ import {
 
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 const EVENT_MODAL_NAV_AUTOCLOSE_SUPPRESS_MS = 10000;
-const rematchSeriesDigitsFontFamily = 'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace';
+const rematchSeriesDigitsFontFamily =
+  'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace';
 
 export enum PrimaryActionType {
   None = "none",
@@ -62,10 +163,14 @@ type CloseNavigationAndAppearancePopupOptions = {
   preserveNavigationSelection?: boolean;
 };
 
-let closeNavigationAndAppearancePopupIfAnyImpl: (options?: CloseNavigationAndAppearancePopupOptions) => void = () => {};
+let closeNavigationAndAppearancePopupIfAnyImpl: (
+  options?: CloseNavigationAndAppearancePopupOptions,
+) => void = () => {};
 let setNavigationListButtonVisibleImpl: (visible: boolean) => void = () => {};
 
-export const closeNavigationAndAppearancePopupIfAny = (options?: CloseNavigationAndAppearancePopupOptions) => {
+export const closeNavigationAndAppearancePopupIfAny = (
+  options?: CloseNavigationAndAppearancePopupOptions,
+) => {
   closeNavigationAndAppearancePopupIfAnyImpl(options);
 };
 
@@ -85,13 +190,17 @@ export function didNotDismissAnythingWithOutsideTapJustNow(): boolean {
 }
 
 let isWagerPanelVisible: () => boolean = () => false;
-let handleWagerPanelOutsideTap: ((event: TouchEvent | MouseEvent) => boolean) | null = null;
+let handleWagerPanelOutsideTap:
+  | ((event: TouchEvent | MouseEvent) => boolean)
+  | null = null;
 
 export function setWagerPanelVisibilityChecker(checker: () => boolean) {
   isWagerPanelVisible = checker;
 }
 
-export function setWagerPanelOutsideTapHandler(handler: ((event: TouchEvent | MouseEvent) => boolean) | null) {
+export function setWagerPanelOutsideTapHandler(
+  handler: ((event: TouchEvent | MouseEvent) => boolean) | null,
+) {
   handleWagerPanelOutsideTap = handler;
 }
 
@@ -126,7 +235,11 @@ let setUndoEnabled: (enabled: boolean) => void = () => {};
 let disableAndHideUndoResignAndTimerControls: () => void = () => {};
 let setIsReadyToCopyExistingInviteLink: () => void = () => {};
 let hideTimerButtons: () => void = () => {};
-let showTimerButtonProgressing: (currentProgress: number, target: number, enableWhenTargetReached: boolean) => void = () => {};
+let showTimerButtonProgressing: (
+  currentProgress: number,
+  target: number,
+  enableWhenTargetReached: boolean,
+) => void = () => {};
 let toggleReactionPicker: () => void = () => {};
 let enableTimerVictoryClaim: () => void = () => {};
 let showPrimaryAction: (action: PrimaryActionType) => void = () => {};
@@ -137,8 +250,18 @@ let pendingDelayedCancelAutomatchIntentExpiresAtMs = 0;
 let pendingDelayedCancelAutomatchRevealAtMs = 0;
 let pendingFreshAutomatchCancelRevealAtMs = 0;
 
-const STICKER_ID_WHITELIST: number[] = [9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163, 168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246, 250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318, 325, 328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430, 444, 465, 466, 900316, 900101, 900393, 90063, 900109, 900228, 900245, 900267, 900374, 900347, 900382, 900429, 900225, 900999, 900189];
-const FIXED_STICKER_IDS: number[] = [900316, 900101, 900393, 90063, 900109, 900228, 900245, 900189, 900267, 900374, 900347, 900382, 900429, 900225, 900999];
+const STICKER_ID_WHITELIST: number[] = [
+  9, 17, 20, 26, 30, 31, 40, 50, 54, 61, 63, 74, 101, 109, 132, 146, 148, 163,
+  168, 173, 180, 189, 209, 210, 217, 224, 225, 228, 232, 236, 243, 245, 246,
+  250, 256, 257, 258, 267, 271, 281, 283, 289, 302, 303, 313, 316, 318, 325,
+  328, 338, 347, 356, 374, 382, 389, 393, 396, 401, 403, 405, 407, 429, 430,
+  444, 465, 466, 900316, 900101, 900393, 90063, 900109, 900228, 900245, 900267,
+  900374, 900347, 900382, 900429, 900225, 900999, 900189,
+];
+const FIXED_STICKER_IDS: number[] = [
+  900316, 900101, 900393, 90063, 900109, 900228, 900245, 900189, 900267, 900374,
+  900347, 900382, 900429, 900225, 900999,
+];
 const MATERIAL_IMAGE_BASE_URL = "https://assets.mons.link/rocks/materials";
 const STICKER_IMAGE_BASE_URL = "https://assets.mons.link/swagpack/64";
 const STATUS_ICON_BASE_URL = "https://assets.mons.link/icons";
@@ -153,9 +276,15 @@ const NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE = 50;
 const CANCEL_AUTOMATCH_REVEAL_DELAY_MS = 10000;
 const NAVIGATION_PENDING_CANCEL_INTENT_TTL_MS = 60000;
 type StatusIconName = keyof typeof STATUS_ICON_URLS;
-const materialImagePromises: Map<MaterialName, Promise<string | null>> = new Map();
+const materialImagePromises: Map<
+  MaterialName,
+  Promise<string | null>
+> = new Map();
 const stickerImagePromises: Map<number, Promise<string | null>> = new Map();
-const statusIconPromises: Map<StatusIconName, Promise<string | null>> = new Map();
+const statusIconPromises: Map<
+  StatusIconName,
+  Promise<string | null>
+> = new Map();
 
 const fetchImageUrl = (url: string): Promise<string | null> =>
   fetch(url)
@@ -166,16 +295,31 @@ const fetchImageUrl = (url: string): Promise<string | null> =>
     .then((blob) => URL.createObjectURL(blob))
     .catch(() => null);
 
-const getCachedImageUrl = <T extends string | number>(cache: Map<T, Promise<string | null>>, key: T, url: string) => {
+const getCachedImageUrl = <T extends string | number>(
+  cache: Map<T, Promise<string | null>>,
+  key: T,
+  url: string,
+) => {
   if (!cache.has(key)) {
     cache.set(key, fetchImageUrl(url));
   }
   return cache.get(key)!;
 };
 
-const getMaterialImageUrl = (name: MaterialName) => getCachedImageUrl(materialImagePromises, name, `${MATERIAL_IMAGE_BASE_URL}/${name}.webp`);
-const getStickerImageUrl = (id: number) => getCachedImageUrl(stickerImagePromises, id, `${STICKER_IMAGE_BASE_URL}/${id}.webp`);
-const getStatusIconUrl = (name: StatusIconName) => getCachedImageUrl(statusIconPromises, name, STATUS_ICON_URLS[name]);
+const getMaterialImageUrl = (name: MaterialName) =>
+  getCachedImageUrl(
+    materialImagePromises,
+    name,
+    `${MATERIAL_IMAGE_BASE_URL}/${name}.webp`,
+  );
+const getStickerImageUrl = (id: number) =>
+  getCachedImageUrl(
+    stickerImagePromises,
+    id,
+    `${STICKER_IMAGE_BASE_URL}/${id}.webp`,
+  );
+const getStatusIconUrl = (name: StatusIconName) =>
+  getCachedImageUrl(statusIconPromises, name, STATUS_ICON_URLS[name]);
 
 const clearPendingImmediateCancelAutomatchIntent = () => {
   pendingImmediateCancelAutomatchInviteId = null;
@@ -188,7 +332,8 @@ const requestPendingImmediateCancelAutomatchIntent = (inviteId: string) => {
     return;
   }
   pendingImmediateCancelAutomatchInviteId = inviteId;
-  pendingImmediateCancelAutomatchIntentExpiresAtMs = Date.now() + NAVIGATION_PENDING_CANCEL_INTENT_TTL_MS;
+  pendingImmediateCancelAutomatchIntentExpiresAtMs =
+    Date.now() + NAVIGATION_PENDING_CANCEL_INTENT_TTL_MS;
 };
 
 const consumePendingImmediateCancelAutomatchIntent = (): boolean => {
@@ -201,7 +346,10 @@ const consumePendingImmediateCancelAutomatchIntent = (): boolean => {
     return false;
   }
   const routeState = getCurrentRouteState();
-  const currentInviteId = routeState.mode === "invite" && routeState.inviteId ? routeState.inviteId : "";
+  const currentInviteId =
+    routeState.mode === "invite" && routeState.inviteId
+      ? routeState.inviteId
+      : "";
   if (currentInviteId === pendingInviteId) {
     clearPendingImmediateCancelAutomatchIntent();
     return true;
@@ -215,14 +363,21 @@ const clearPendingDelayedCancelAutomatchIntent = () => {
   pendingDelayedCancelAutomatchRevealAtMs = 0;
 };
 
-const requestPendingDelayedCancelAutomatchIntent = (inviteId: string, revealAtMs: number) => {
+const requestPendingDelayedCancelAutomatchIntent = (
+  inviteId: string,
+  revealAtMs: number,
+) => {
   if (!inviteId) {
     clearPendingDelayedCancelAutomatchIntent();
     return;
   }
   pendingDelayedCancelAutomatchInviteId = inviteId;
-  pendingDelayedCancelAutomatchIntentExpiresAtMs = Date.now() + NAVIGATION_PENDING_CANCEL_INTENT_TTL_MS;
-  pendingDelayedCancelAutomatchRevealAtMs = revealAtMs > 0 ? Math.floor(revealAtMs) : Date.now() + CANCEL_AUTOMATCH_REVEAL_DELAY_MS;
+  pendingDelayedCancelAutomatchIntentExpiresAtMs =
+    Date.now() + NAVIGATION_PENDING_CANCEL_INTENT_TTL_MS;
+  pendingDelayedCancelAutomatchRevealAtMs =
+    revealAtMs > 0
+      ? Math.floor(revealAtMs)
+      : Date.now() + CANCEL_AUTOMATCH_REVEAL_DELAY_MS;
 };
 
 const consumePendingDelayedCancelAutomatchIntent = (): number | null => {
@@ -235,7 +390,10 @@ const consumePendingDelayedCancelAutomatchIntent = (): number | null => {
     return null;
   }
   const routeState = getCurrentRouteState();
-  const currentInviteId = routeState.mode === "invite" && routeState.inviteId ? routeState.inviteId : "";
+  const currentInviteId =
+    routeState.mode === "invite" && routeState.inviteId
+      ? routeState.inviteId
+      : "";
   if (currentInviteId === pendingInviteId) {
     const revealAtMs = pendingDelayedCancelAutomatchRevealAtMs;
     clearPendingDelayedCancelAutomatchIntent();
@@ -277,7 +435,9 @@ const areStickerIdArraysEqual = (left: number[], right: number[]): boolean => {
 };
 
 const getInitialStickerIds = (): number[] => {
-  const cachedExtraIds = normalizeStickerIds(storage.getReactionExtraStickerIds([]));
+  const cachedExtraIds = normalizeStickerIds(
+    storage.getReactionExtraStickerIds([]),
+  );
   return mergeStickerIds(FIXED_STICKER_IDS, cachedExtraIds);
 };
 
@@ -384,10 +544,14 @@ const RematchScoreOpponent = styled.span<{ $isSelected: boolean }>`
   font-weight: 400;
   position: relative;
   z-index: 1;
-  color: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.18)")};
+  color: ${(props) =>
+    props.$isSelected ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.18)"};
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.$isSelected ? "rgba(255, 255, 255, 0.34)" : "rgba(255, 255, 255, 0.18)")};
+    color: ${(props) =>
+      props.$isSelected
+        ? "rgba(255, 255, 255, 0.34)"
+        : "rgba(255, 255, 255, 0.18)"};
   }
 `;
 
@@ -397,10 +561,14 @@ const RematchScorePlayer = styled.span<{ $isSelected: boolean }>`
   font-weight: 400;
   position: relative;
   z-index: 1;
-  color: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.18)")};
+  color: ${(props) =>
+    props.$isSelected ? "rgba(0, 0, 0, 0.3)" : "rgba(0, 0, 0, 0.18)"};
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.$isSelected ? "rgba(255, 255, 255, 0.34)" : "rgba(255, 255, 255, 0.18)")};
+    color: ${(props) =>
+      props.$isSelected
+        ? "rgba(255, 255, 255, 0.34)"
+        : "rgba(255, 255, 255, 0.18)"};
   }
 `;
 
@@ -424,10 +592,14 @@ const RematchWaitingIcon = styled.span<{ $isSelected: boolean }>`
   font-size: 10px;
   position: relative;
   z-index: 1;
-  color: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.35)" : "rgba(0, 0, 0, 0.18)")};
+  color: ${(props) =>
+    props.$isSelected ? "rgba(0, 0, 0, 0.35)" : "rgba(0, 0, 0, 0.18)"};
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.$isSelected ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.18)")};
+    color: ${(props) =>
+      props.$isSelected
+        ? "rgba(255, 255, 255, 0.4)"
+        : "rgba(255, 255, 255, 0.18)"};
   }
 `;
 
@@ -437,95 +609,156 @@ const RematchLoadingDots = styled.span<{ $isSelected: boolean }>`
   letter-spacing: 1px;
   position: relative;
   z-index: 1;
-  color: ${(props) => (props.$isSelected ? "rgba(0, 0, 0, 0.35)" : "rgba(0, 0, 0, 0.15)")};
+  color: ${(props) =>
+    props.$isSelected ? "rgba(0, 0, 0, 0.35)" : "rgba(0, 0, 0, 0.15)"};
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.$isSelected ? "rgba(255, 255, 255, 0.4)" : "rgba(255, 255, 255, 0.15)")};
+    color: ${(props) =>
+      props.$isSelected
+        ? "rgba(255, 255, 255, 0.4)"
+        : "rgba(255, 255, 255, 0.15)"};
   }
 `;
 
 const BottomControls: React.FC = () => {
   const [isEndMatchButtonVisible, setIsEndMatchButtonVisible] = useState(false);
   const [isEndMatchConfirmed, setIsEndMatchConfirmed] = useState(false);
-  const [isInviteLinkButtonVisible, setIsInviteLinkButtonVisible] = useState(false);
+  const [isInviteLinkButtonVisible, setIsInviteLinkButtonVisible] =
+    useState(false);
   const [isBotGameButtonVisible, setIsBotGameButtonVisible] = useState(false);
-  const [isAutomatchButtonVisible, setIsAutomatchButtonVisible] = useState(false);
-  const [isAutomatchButtonEnabled, setIsAutomatchButtonEnabled] = useState(true);
-  const [isWatchOnlyIndicatorVisible, setIsWatchOnlyIndicatorVisible] = useState(false);
+  const [isAutomatchButtonVisible, setIsAutomatchButtonVisible] =
+    useState(false);
+  const [isAutomatchButtonEnabled, setIsAutomatchButtonEnabled] =
+    useState(true);
+  const [isWatchOnlyIndicatorVisible, setIsWatchOnlyIndicatorVisible] =
+    useState(false);
   const [isDeepHomeButtonVisible, setIsDeepHomeButtonVisible] = useState(false);
   const [isInviteLoading, setIsInviteLoading] = useState(false);
   const [didCreateInvite, setDidCreateInvite] = useState(false);
   const [automatchButtonTmpState, setAutomatchButtonTmpState] = useState(false);
   const [inviteCopiedTmpState, setInviteCopiedTmpState] = useState(false);
   const [isVoiceReactionDisabled, setIsVoiceReactionDisabled] = useState(false);
-  const [isNavigationButtonDimmed, setIsNavigationButtonDimmed] = useState(false);
+  const [isNavigationButtonDimmed, setIsNavigationButtonDimmed] =
+    useState(false);
   const [isBrushButtonDimmed, setIsBrushButtonDimmed] = useState(false);
   const [, setIsNavigationListButtonVisible] = useState(false);
-  const [isNavigationPopupVisible, setIsNavigationPopupVisible] = useState(false);
-  const [isBoardStylePickerVisible, setIsBoardStylePickerVisible] = useState(false);
+  const [isNavigationPopupVisible, setIsNavigationPopupVisible] =
+    useState(false);
+  const [isBoardStylePickerVisible, setIsBoardStylePickerVisible] =
+    useState(false);
   const [isBadgeVisible, setIsBadgeVisible] = useState(false);
-  const [navigationProjectedGames, setNavigationProjectedGames] = useState<NavigationItem[]>([]);
-  const [navigationPagedGames, setNavigationPagedGames] = useState<NavigationItem[]>([]);
-  const [isNavigationGamesLoading, setIsNavigationGamesLoading] = useState(false);
-  const [isNavigationGamesLoadingMore, setIsNavigationGamesLoadingMore] = useState(false);
+  const [navigationProjectedGames, setNavigationProjectedGames] = useState<
+    NavigationItem[]
+  >([]);
+  const [navigationPagedGames, setNavigationPagedGames] = useState<
+    NavigationItem[]
+  >([]);
+  const [isNavigationGamesLoading, setIsNavigationGamesLoading] =
+    useState(false);
+  const [isNavigationGamesLoadingMore, setIsNavigationGamesLoadingMore] =
+    useState(false);
   const [navigationHasMoreGames, setNavigationHasMoreGames] = useState(false);
-  const [navigationGamesCursor, setNavigationGamesCursor] = useState<NavigationGamesPageCursor>(null);
-  const [navigationFallbackLimit, setNavigationFallbackLimit] = useState(NAVIGATION_GAMES_PAGE_SIZE);
-  const [optimisticPendingAutomatchItem, setOptimisticPendingAutomatchItem] = useState<NavigationGameItem | null>(null);
-  const [isNavigationFallbackScope, setIsNavigationFallbackScope] = useState(false);
-  const [navigationRemovingInviteIds, setNavigationRemovingInviteIds] = useState<Set<string>>(new Set());
+  const [navigationGamesCursor, setNavigationGamesCursor] =
+    useState<NavigationGamesPageCursor>(null);
+  const [navigationFallbackLimit, setNavigationFallbackLimit] = useState(
+    NAVIGATION_GAMES_PAGE_SIZE,
+  );
+  const [optimisticPendingAutomatchItem, setOptimisticPendingAutomatchItem] =
+    useState<NavigationGameItem | null>(null);
+  const [isNavigationFallbackScope, setIsNavigationFallbackScope] =
+    useState(false);
+  const [navigationRemovingInviteIds, setNavigationRemovingInviteIds] =
+    useState<Set<string>>(new Set());
   const initialEventModalState = getEventModalState();
   const pendingNavigationOpenedEventModalRequestedAtMsRef = useRef(0);
   const pendingNavigationOpenedEventModalRequestSeqRef = useRef(0);
-  const wasEventModalVisibleRef = useRef(initialEventModalState.isOpen && !!initialEventModalState.eventId);
-  const [selectedEventModalId, setSelectedEventModalId] = useState<string | null>(initialEventModalState.isOpen ? initialEventModalState.eventId : null);
+  const wasEventModalVisibleRef = useRef(
+    initialEventModalState.isOpen && !!initialEventModalState.eventId,
+  );
+  const [selectedEventModalId, setSelectedEventModalId] = useState<
+    string | null
+  >(initialEventModalState.isOpen ? initialEventModalState.eventId : null);
 
   const [isUndoDisabled, setIsUndoDisabled] = useState(true);
   const [waitingStateText, setWaitingStateText] = useState("");
   const [isStartTimerVisible, setIsStartTimerVisible] = useState(false);
-  const [primaryAction, setPrimaryAction] = useState<PrimaryActionType>(PrimaryActionType.None);
+  const [primaryAction, setPrimaryAction] = useState<PrimaryActionType>(
+    PrimaryActionType.None,
+  );
   const [isUndoButtonVisible, setIsUndoButtonVisible] = useState(false);
   const [isAutomoveButtonEnabled, setIsAutomoveButtonEnabled] = useState(true);
   const [isAutomoveButtonVisible, setIsAutomoveButtonVisible] = useState(false);
   const [isResignButtonVisible, setIsResignButtonVisible] = useState(false);
-  const [isVoiceReactionButtonVisible, setIsVoiceReactionButtonVisible] = useState(false);
+  const [isVoiceReactionButtonVisible, setIsVoiceReactionButtonVisible] =
+    useState(false);
   const [isReactionPickerVisible, setIsReactionPickerVisible] = useState(false);
-  const [isMoveHistoryButtonVisible, setIsMoveHistoryButtonVisible] = useState(false);
-  const [isMoveHistoryPopupVisible, setIsMoveHistoryPopupVisible] = useState(false);
-  const [isRematchSeriesSelectionInFlight, setIsRematchSeriesSelectionInFlight] = useState(false);
+  const [isMoveHistoryButtonVisible, setIsMoveHistoryButtonVisible] =
+    useState(false);
+  const [isMoveHistoryPopupVisible, setIsMoveHistoryPopupVisible] =
+    useState(false);
+  const [
+    isRematchSeriesSelectionInFlight,
+    setIsRematchSeriesSelectionInFlight,
+  ] = useState(false);
   const [historyUiVersion, setHistoryUiVersion] = useState(0);
   const [isResignConfirmVisible, setIsResignConfirmVisible] = useState(false);
   const [isTimerConfirmVisible, setIsTimerConfirmVisible] = useState(false);
-  const [isClaimVictoryConfirmVisible, setIsClaimVictoryConfirmVisible] = useState(false);
+  const [isClaimVictoryConfirmVisible, setIsClaimVictoryConfirmVisible] =
+    useState(false);
   const [isTimerButtonDisabled, setIsTimerButtonDisabled] = useState(true);
   const [isClaimVictoryVisible, setIsClaimVictoryVisible] = useState(false);
-  const [isSamePuzzleAgainVisible, setIsSamePuzzleAgainVisible] = useState(false);
-  const [isEndMatchTemporarilyDisabled, setIsEndMatchTemporarilyDisabled] = useState(false);
+  const [isSamePuzzleAgainVisible, setIsSamePuzzleAgainVisible] =
+    useState(false);
+  const [isEndMatchTemporarilyDisabled, setIsEndMatchTemporarilyDisabled] =
+    useState(false);
 
-  const [isCancelAutomatchVisible, setIsCancelAutomatchVisible] = useState(false);
-  const [isCancelAutomatchDisabled, setIsCancelAutomatchDisabled] = useState(false);
-  const [cancelAutomatchRevealVersion, setCancelAutomatchRevealVersion] = useState(0);
+  const [isCancelAutomatchVisible, setIsCancelAutomatchVisible] =
+    useState(false);
+  const [isCancelAutomatchDisabled, setIsCancelAutomatchDisabled] =
+    useState(false);
+  const [cancelAutomatchRevealVersion, setCancelAutomatchRevealVersion] =
+    useState(0);
 
-  const [isClaimVictoryButtonDisabled, setIsClaimVictoryButtonDisabled] = useState(false);
-  const [timerConfig, setTimerConfig] = useState({ duration: 90, progress: 0, requestDate: Date.now() });
-  const [stickerIds, setStickerIds] = useState<number[]>(() => getInitialStickerIds());
-  const [pickerMaxHeight, setPickerMaxHeight] = useState<number | undefined>(undefined);
+  const [isClaimVictoryButtonDisabled, setIsClaimVictoryButtonDisabled] =
+    useState(false);
+  const [timerConfig, setTimerConfig] = useState({
+    duration: 90,
+    progress: 0,
+    requestDate: Date.now(),
+  });
+  const [stickerIds, setStickerIds] = useState<number[]>(() =>
+    getInitialStickerIds(),
+  );
+  const [pickerMaxHeight, setPickerMaxHeight] = useState<number | undefined>(
+    undefined,
+  );
   const [timerConfirmLeft, setTimerConfirmLeft] = useState<number | null>(null);
-  const [claimVictoryConfirmLeft, setClaimVictoryConfirmLeft] = useState<number | null>(null);
+  const [claimVictoryConfirmLeft, setClaimVictoryConfirmLeft] = useState<
+    number | null
+  >(null);
 
   const [isWagerMode, setIsWagerMode] = useState(false);
-  const [wagerSelection, setWagerSelection] = useState<{ name: MaterialName | null; count: number }>({ name: null, count: 0 });
-  const [materialUrls, setMaterialUrls] = useState<Record<MaterialName, string | null>>(() => {
+  const [wagerSelection, setWagerSelection] = useState<{
+    name: MaterialName | null;
+    count: number;
+  }>({ name: null, count: 0 });
+  const [materialUrls, setMaterialUrls] = useState<
+    Record<MaterialName, string | null>
+  >(() => {
     const initial: Partial<Record<MaterialName, string | null>> = {};
     MATERIALS.forEach((n) => (initial[n] = null));
     return initial as Record<MaterialName, string | null>;
   });
-  const [materialAmounts, setMaterialAmounts] = useState<Record<MaterialName, number>>(() => {
+  const [materialAmounts, setMaterialAmounts] = useState<
+    Record<MaterialName, number>
+  >(() => {
     const initial: Partial<Record<MaterialName, number>> = {};
     MATERIALS.forEach((n) => (initial[n] = 0));
     return initial as Record<MaterialName, number>;
   });
-  const [statusIconUrls, setStatusIconUrls] = useState<Record<StatusIconName, string | null>>({
+  const [statusIconUrls, setStatusIconUrls] = useState<
+    Record<StatusIconName, string | null>
+  >({
     cloud: null,
     spectating: null,
     automatch: null,
@@ -534,14 +767,27 @@ const BottomControls: React.FC = () => {
   const navigationHasPagedGamesRef = useRef(false);
   const navigationLoadMoreInFlightRef = useRef(false);
   const topNavigationItemIdsRef = useRef<Set<string>>(new Set());
-  const navigationCacheScopeRef = useRef<NavigationGamesCacheScope | null>(null);
+  const navigationCacheScopeRef = useRef<NavigationGamesCacheScope | null>(
+    null,
+  );
   const navigationPopupEpochRef = useRef(0);
   const navigationSelectionEpochRef = useRef(0);
-  const beginInviteFlowRef = useRef<(options?: { skipSoundInit?: boolean }) => void>(() => {});
-  const [stickerUrls, setStickerUrls] = useState<Record<number, string | null>>({});
+  const beginInviteFlowRef = useRef<
+    (options?: { skipSoundInit?: boolean }) => void
+  >(() => {});
+  const [stickerUrls, setStickerUrls] = useState<Record<number, string | null>>(
+    {},
+  );
   const [wagerState, setWagerState] = useState<MatchWagerState | null>(null);
-  const frozenMaterialsRef = useRef<Record<MaterialName, number>>(getFrozenMaterials());
-  const latestServiceMaterialsRef = useRef<Record<MaterialName, number>>({ dust: 0, slime: 0, gum: 0, metal: 0, ice: 0 });
+  const frozenMaterialsRef =
+    useRef<Record<MaterialName, number>>(getFrozenMaterials());
+  const latestServiceMaterialsRef = useRef<Record<MaterialName, number>>({
+    dust: 0,
+    slime: 0,
+    gum: 0,
+    metal: 0,
+    ice: 0,
+  });
 
   const pickerRef = useRef<HTMLDivElement>(null);
   const controlsContainerRef = useRef<HTMLDivElement>(null);
@@ -561,7 +807,9 @@ const BottomControls: React.FC = () => {
   const cancelAutomatchRevealDeadlineRef = useRef<number | null>(null);
   const pendingCancelAutomatchRevealAtMsRef = useRef<number | null>(null);
   const forceImmediateCancelAutomatchRevealRef = useRef(false);
-  const automatchCancelRevealModeRef = useRef<"unset" | "immediate" | "delayed">("unset");
+  const automatchCancelRevealModeRef = useRef<
+    "unset" | "immediate" | "delayed"
+  >("unset");
   const automatchCancelRevealModeDeadlineRef = useRef<number | null>(null);
   const matchScopedTimeoutIdsRef = useRef<Set<number>>(new Set());
   const navigationPopupRef = useRef<HTMLDivElement>(null);
@@ -572,51 +820,61 @@ const BottomControls: React.FC = () => {
   const rematchSeriesSelectionLockRef = useRef(false);
   const endMatchGracePeriodTimeoutRef = useRef<number | null>(null);
 
-  const clearTrackedMatchScopedTimeout = useCallback((timeoutId: number | null) => {
-    if (timeoutId === null) {
-      return;
-    }
-    if (matchScopedTimeoutIdsRef.current.has(timeoutId)) {
-      matchScopedTimeoutIdsRef.current.delete(timeoutId);
-      decrementLifecycleCounter("uiTimeouts");
-    }
-    clearTimeout(timeoutId);
-  }, []);
+  const clearTrackedMatchScopedTimeout = useCallback(
+    (timeoutId: number | null) => {
+      if (timeoutId === null) {
+        return;
+      }
+      if (matchScopedTimeoutIdsRef.current.has(timeoutId)) {
+        matchScopedTimeoutIdsRef.current.delete(timeoutId);
+        decrementLifecycleCounter("uiTimeouts");
+      }
+      clearTimeout(timeoutId);
+    },
+    [],
+  );
 
   const isEventModalVisible = useCallback(() => {
     const modalState = getEventModalState();
     return modalState.isOpen && !!modalState.eventId;
   }, []);
 
-  const shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal = useCallback(() => {
-    if (isEventModalVisible()) {
-      return true;
-    }
-    const requestedAtMs = pendingNavigationOpenedEventModalRequestedAtMsRef.current;
-    if (requestedAtMs <= 0) {
-      return false;
-    }
-    if (Date.now() - requestedAtMs > EVENT_MODAL_NAV_AUTOCLOSE_SUPPRESS_MS) {
-      return false;
-    }
-    return isTransitionInProgress() || getCurrentRouteState().mode === "event";
-  }, [isEventModalVisible]);
+  const shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal =
+    useCallback(() => {
+      if (isEventModalVisible()) {
+        return true;
+      }
+      const requestedAtMs =
+        pendingNavigationOpenedEventModalRequestedAtMsRef.current;
+      if (requestedAtMs <= 0) {
+        return false;
+      }
+      if (Date.now() - requestedAtMs > EVENT_MODAL_NAV_AUTOCLOSE_SUPPRESS_MS) {
+        return false;
+      }
+      return (
+        isTransitionInProgress() || getCurrentRouteState().mode === "event"
+      );
+    }, [isEventModalVisible]);
 
-  const setMatchScopedTimeout = useCallback((callback: () => void, delay: number, guard?: () => boolean): number => {
-    const timeoutId = window.setTimeout(() => {
-      if (matchScopedTimeoutIdsRef.current.has(timeoutId)) {
-        matchScopedTimeoutIdsRef.current.delete(timeoutId);
-        decrementLifecycleCounter("uiTimeouts");
-      }
-      if (guard && !guard()) {
-        return;
-      }
-      callback();
-    }, delay);
-    matchScopedTimeoutIdsRef.current.add(timeoutId);
-    incrementLifecycleCounter("uiTimeouts");
-    return timeoutId;
-  }, []);
+  const setMatchScopedTimeout = useCallback(
+    (callback: () => void, delay: number, guard?: () => boolean): number => {
+      const timeoutId = window.setTimeout(() => {
+        if (matchScopedTimeoutIdsRef.current.has(timeoutId)) {
+          matchScopedTimeoutIdsRef.current.delete(timeoutId);
+          decrementLifecycleCounter("uiTimeouts");
+        }
+        if (guard && !guard()) {
+          return;
+        }
+        callback();
+      }, delay);
+      matchScopedTimeoutIdsRef.current.add(timeoutId);
+      incrementLifecycleCounter("uiTimeouts");
+      return timeoutId;
+    },
+    [],
+  );
 
   const clearAllMatchScopedTimeouts = useCallback(() => {
     matchScopedTimeoutIdsRef.current.forEach((timeoutId) => {
@@ -676,7 +934,11 @@ const BottomControls: React.FC = () => {
     if (automatchButtonTmpState && isAutomatchButtonVisible) {
       setIsCancelAutomatchVisible(true);
     }
-  }, [automatchButtonTmpState, clearTrackedMatchScopedTimeout, isAutomatchButtonVisible]);
+  }, [
+    automatchButtonTmpState,
+    clearTrackedMatchScopedTimeout,
+    isAutomatchButtonVisible,
+  ]);
 
   useEffect(() => {
     const handleTimerDeadlineCheck = () => {
@@ -690,7 +952,10 @@ const BottomControls: React.FC = () => {
     window.addEventListener("focus", handleTimerDeadlineCheck);
     window.addEventListener("pageshow", handleTimerDeadlineCheck);
     return () => {
-      document.removeEventListener("visibilitychange", handleTimerDeadlineCheck);
+      document.removeEventListener(
+        "visibilitychange",
+        handleTimerDeadlineCheck,
+      );
       window.removeEventListener("focus", handleTimerDeadlineCheck);
       window.removeEventListener("pageshow", handleTimerDeadlineCheck);
     };
@@ -704,13 +969,22 @@ const BottomControls: React.FC = () => {
       tryRevealCancelAutomatchFromDeadline();
     };
     handleCancelAutomatchDeadlineCheck();
-    document.addEventListener("visibilitychange", handleCancelAutomatchDeadlineCheck);
+    document.addEventListener(
+      "visibilitychange",
+      handleCancelAutomatchDeadlineCheck,
+    );
     window.addEventListener("focus", handleCancelAutomatchDeadlineCheck);
     window.addEventListener("pageshow", handleCancelAutomatchDeadlineCheck);
     return () => {
-      document.removeEventListener("visibilitychange", handleCancelAutomatchDeadlineCheck);
+      document.removeEventListener(
+        "visibilitychange",
+        handleCancelAutomatchDeadlineCheck,
+      );
       window.removeEventListener("focus", handleCancelAutomatchDeadlineCheck);
-      window.removeEventListener("pageshow", handleCancelAutomatchDeadlineCheck);
+      window.removeEventListener(
+        "pageshow",
+        handleCancelAutomatchDeadlineCheck,
+      );
     };
   }, [tryRevealCancelAutomatchFromDeadline]);
 
@@ -718,10 +992,18 @@ const BottomControls: React.FC = () => {
     const handleClickOutside = (event: TouchEvent | MouseEvent) => {
       event.stopPropagation();
       if (
-        (pickerRef.current && !pickerRef.current.contains(event.target as Node) && !voiceReactionButtonRef.current?.contains(event.target as Node)) ||
-        (resignConfirmRef.current && !resignConfirmRef.current.contains(event.target as Node) && !resignButtonRef.current?.contains(event.target as Node)) ||
-        (timerConfirmRef.current && !timerConfirmRef.current.contains(event.target as Node) && !timerButtonRef.current?.contains(event.target as Node)) ||
-        (claimVictoryConfirmRef.current && !claimVictoryConfirmRef.current.contains(event.target as Node) && !claimVictoryButtonRef.current?.contains(event.target as Node))
+        (pickerRef.current &&
+          !pickerRef.current.contains(event.target as Node) &&
+          !voiceReactionButtonRef.current?.contains(event.target as Node)) ||
+        (resignConfirmRef.current &&
+          !resignConfirmRef.current.contains(event.target as Node) &&
+          !resignButtonRef.current?.contains(event.target as Node)) ||
+        (timerConfirmRef.current &&
+          !timerConfirmRef.current.contains(event.target as Node) &&
+          !timerButtonRef.current?.contains(event.target as Node)) ||
+        (claimVictoryConfirmRef.current &&
+          !claimVictoryConfirmRef.current.contains(event.target as Node) &&
+          !claimVictoryButtonRef.current?.contains(event.target as Node))
       ) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsReactionPickerVisible(false);
@@ -730,12 +1012,20 @@ const BottomControls: React.FC = () => {
         setIsClaimVictoryConfirmVisible(false);
       }
 
-      if (moveHistoryPopupRef.current && !moveHistoryPopupRef.current.contains(event.target as Node) && !moveHistoryButtonRef.current?.contains(event.target as Node)) {
+      if (
+        moveHistoryPopupRef.current &&
+        !moveHistoryPopupRef.current.contains(event.target as Node) &&
+        !moveHistoryButtonRef.current?.contains(event.target as Node)
+      ) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsMoveHistoryPopupVisible(false);
       }
 
-      if (navigationPopupRef.current && !navigationPopupRef.current.contains(event.target as Node) && !navigationButtonRef.current?.contains(event.target as Node)) {
+      if (
+        navigationPopupRef.current &&
+        !navigationPopupRef.current.contains(event.target as Node) &&
+        !navigationButtonRef.current?.contains(event.target as Node)
+      ) {
         if (!isEventModalVisible()) {
           didDismissSomethingWithOutsideTapJustNow();
           navigationSelectionEpochRef.current += 1;
@@ -743,7 +1033,11 @@ const BottomControls: React.FC = () => {
         }
       }
 
-      if (boardStylePickerRef.current && !boardStylePickerRef.current.contains(event.target as Node) && !brushButtonRef.current?.contains(event.target as Node)) {
+      if (
+        boardStylePickerRef.current &&
+        !boardStylePickerRef.current.contains(event.target as Node) &&
+        !brushButtonRef.current?.contains(event.target as Node)
+      ) {
         didDismissSomethingWithOutsideTapJustNow();
         setIsBoardStylePickerVisible(false);
       }
@@ -755,7 +1049,10 @@ const BottomControls: React.FC = () => {
 
     document.addEventListener(defaultEarlyInputEventName, handleClickOutside);
     return () => {
-      document.removeEventListener(defaultEarlyInputEventName, handleClickOutside);
+      document.removeEventListener(
+        defaultEarlyInputEventName,
+        handleClickOutside,
+      );
     };
   }, [isEventModalVisible]);
 
@@ -774,7 +1071,8 @@ const BottomControls: React.FC = () => {
           if (!cancelled) fn();
         });
         return () => {
-          if (typeof win.cancelIdleCallback === "function") win.cancelIdleCallback(id);
+          if (typeof win.cancelIdleCallback === "function")
+            win.cancelIdleCallback(id);
         };
       }
       const t = setTimeout(() => {
@@ -796,7 +1094,9 @@ const BottomControls: React.FC = () => {
   useEffect(() => {
     if (!isReactionPickerVisible) return;
     const nextStickerIds = getInitialStickerIds();
-    setStickerIds((prev) => (areStickerIdArraysEqual(prev, nextStickerIds) ? prev : nextStickerIds));
+    setStickerIds((prev) =>
+      areStickerIdArraysEqual(prev, nextStickerIds) ? prev : nextStickerIds,
+    );
   }, [isReactionPickerVisible]);
 
   useEffect(() => {
@@ -827,7 +1127,10 @@ const BottomControls: React.FC = () => {
     const containerRect = controlsContainerRef.current.getBoundingClientRect();
     const center = buttonRect.left + buttonRect.width / 2 - containerRect.left;
     const padding = 16;
-    const clampedCenter = Math.min(containerRect.width - padding, Math.max(padding, center));
+    const clampedCenter = Math.min(
+      containerRect.width - padding,
+      Math.max(padding, center),
+    );
     setTimerConfirmLeft(clampedCenter);
   }, []);
 
@@ -837,7 +1140,10 @@ const BottomControls: React.FC = () => {
     const containerRect = controlsContainerRef.current.getBoundingClientRect();
     const center = buttonRect.left + buttonRect.width / 2 - containerRect.left;
     const padding = 16;
-    const clampedCenter = Math.min(containerRect.width - padding, Math.max(padding, center));
+    const clampedCenter = Math.min(
+      containerRect.width - padding,
+      Math.max(padding, center),
+    );
     setClaimVictoryConfirmLeft(clampedCenter);
   }, []);
 
@@ -867,11 +1173,17 @@ const BottomControls: React.FC = () => {
     const fetchReactions = async () => {
       try {
         const data = await fetchNftsForStoredAddresses();
-        const extraIds = getSwagpackReactionStickerIds(data?.swagpack_reactions);
+        const extraIds = getSwagpackReactionStickerIds(
+          data?.swagpack_reactions,
+        );
         if (isCancelled) return;
         const nextStickerIds = mergeStickerIds(FIXED_STICKER_IDS, extraIds);
-        setStickerIds((prev) => (areStickerIdArraysEqual(prev, nextStickerIds) ? prev : nextStickerIds));
-        const cachedExtraIds = normalizeStickerIds(storage.getReactionExtraStickerIds([]));
+        setStickerIds((prev) =>
+          areStickerIdArraysEqual(prev, nextStickerIds) ? prev : nextStickerIds,
+        );
+        const cachedExtraIds = normalizeStickerIds(
+          storage.getReactionExtraStickerIds([]),
+        );
         if (!areStickerIdArraysEqual(cachedExtraIds, extraIds)) {
           storage.setReactionExtraStickerIds(extraIds);
         }
@@ -901,7 +1213,10 @@ const BottomControls: React.FC = () => {
     const unsubscribe = rocksMiningService.subscribe((snapshot) => {
       const next = { ...snapshot.materials };
       latestServiceMaterialsRef.current = next;
-      const available = computeAvailableMaterials(next, frozenMaterialsRef.current);
+      const available = computeAvailableMaterials(
+        next,
+        frozenMaterialsRef.current,
+      );
       setMaterialAmounts(available);
     });
     return unsubscribe;
@@ -910,7 +1225,10 @@ const BottomControls: React.FC = () => {
   useEffect(() => {
     const unsubscribe = subscribeToFrozenMaterials((materials) => {
       frozenMaterialsRef.current = materials;
-      const available = computeAvailableMaterials(latestServiceMaterialsRef.current, materials);
+      const available = computeAvailableMaterials(
+        latestServiceMaterialsRef.current,
+        materials,
+      );
       setMaterialAmounts(available);
     });
     return unsubscribe;
@@ -969,8 +1287,12 @@ const BottomControls: React.FC = () => {
 
       if (wasVisible && !isVisible) {
         pendingNavigationOpenedEventModalRequestSeqRef.current += 1;
-        if (state.lastCloseReason === "dismiss" && getCurrentRouteState().mode === "event") {
-          pendingNavigationOpenedEventModalRequestedAtMsRef.current = Date.now();
+        if (
+          state.lastCloseReason === "dismiss" &&
+          getCurrentRouteState().mode === "event"
+        ) {
+          pendingNavigationOpenedEventModalRequestedAtMsRef.current =
+            Date.now();
         } else {
           pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
         }
@@ -984,19 +1306,31 @@ const BottomControls: React.FC = () => {
   }, []);
 
   const isNavigationGameBeingRemoved = useCallback(
-    (item: NavigationItem) => item.entityType === "game" && item.status === "waiting" && navigationRemovingInviteIds.has(item.inviteId),
-    [navigationRemovingInviteIds]
+    (item: NavigationItem) =>
+      item.entityType === "game" &&
+      item.status === "waiting" &&
+      navigationRemovingInviteIds.has(item.inviteId),
+    [navigationRemovingInviteIds],
   );
 
   const topNavigationGames = useMemo(() => {
     const merged = navigationProjectedGames.slice();
-    if (optimisticPendingAutomatchItem && !merged.some((item) => item.id === optimisticPendingAutomatchItem.id)) {
+    if (
+      optimisticPendingAutomatchItem &&
+      !merged.some((item) => item.id === optimisticPendingAutomatchItem.id)
+    ) {
       merged.push(optimisticPendingAutomatchItem);
     }
-    const visibleItems = merged.filter((item) => !isNavigationGameBeingRemoved(item));
+    const visibleItems = merged.filter(
+      (item) => !isNavigationGameBeingRemoved(item),
+    );
     visibleItems.sort(compareNavigationItemsByDisplayOrder);
     return visibleItems;
-  }, [isNavigationGameBeingRemoved, navigationProjectedGames, optimisticPendingAutomatchItem]);
+  }, [
+    isNavigationGameBeingRemoved,
+    navigationProjectedGames,
+    optimisticPendingAutomatchItem,
+  ]);
 
   const topNavigationItemIds = useMemo(() => {
     return new Set(topNavigationGames.map((item) => item.id));
@@ -1009,10 +1343,16 @@ const BottomControls: React.FC = () => {
         uniqueById.set(pagedItem.id, pagedItem);
       }
     });
-    const visibleItems = Array.from(uniqueById.values()).filter((item) => !isNavigationGameBeingRemoved(item));
+    const visibleItems = Array.from(uniqueById.values()).filter(
+      (item) => !isNavigationGameBeingRemoved(item),
+    );
     visibleItems.sort(compareNavigationItemsByDisplayOrder);
     return visibleItems;
-  }, [isNavigationGameBeingRemoved, navigationPagedGames, topNavigationItemIds]);
+  }, [
+    isNavigationGameBeingRemoved,
+    navigationPagedGames,
+    topNavigationItemIds,
+  ]);
 
   useEffect(() => {
     topNavigationItemIdsRef.current = topNavigationItemIds;
@@ -1024,23 +1364,48 @@ const BottomControls: React.FC = () => {
     if (!scope) {
       return;
     }
-    writeNavigationGamesRuntimeCache(scope, topNavigationGames, pagedNavigationGames);
-    writeNavigationGamesPersistedTopCache(scope, topNavigationGames, NAVIGATION_GAMES_PAGE_SIZE);
+    writeNavigationGamesRuntimeCache(
+      scope,
+      topNavigationGames,
+      pagedNavigationGames,
+    );
+    writeNavigationGamesPersistedTopCache(
+      scope,
+      topNavigationGames,
+      NAVIGATION_GAMES_PAGE_SIZE,
+    );
   }, [topNavigationGames, pagedNavigationGames]);
 
   useEffect(() => {
     if (!optimisticPendingAutomatchItem) {
       return;
     }
-    if (navigationProjectedGames.some((item) => item.id === optimisticPendingAutomatchItem.id) || navigationPagedGames.some((item) => item.id === optimisticPendingAutomatchItem.id)) {
+    if (
+      navigationProjectedGames.some(
+        (item) => item.id === optimisticPendingAutomatchItem.id,
+      ) ||
+      navigationPagedGames.some(
+        (item) => item.id === optimisticPendingAutomatchItem.id,
+      )
+    ) {
       setOptimisticPendingAutomatchItem(null);
     }
-  }, [navigationProjectedGames, navigationPagedGames, optimisticPendingAutomatchItem]);
+  }, [
+    navigationProjectedGames,
+    navigationPagedGames,
+    optimisticPendingAutomatchItem,
+  ]);
 
   const hydrateNavigationGamesFromCache = useCallback(() => {
-    const cacheScope = resolveNavigationGamesCacheScope(storage.getProfileId(""), storage.getLoginId(""));
+    const cacheScope = resolveNavigationGamesCacheScope(
+      storage.getProfileId(""),
+      storage.getLoginId(""),
+    );
     const previousCacheScope = navigationCacheScopeRef.current;
-    if (previousCacheScope && (!cacheScope || previousCacheScope.scopeKey !== cacheScope.scopeKey)) {
+    if (
+      previousCacheScope &&
+      (!cacheScope || previousCacheScope.scopeKey !== cacheScope.scopeKey)
+    ) {
       clearNavigationGamesRuntimeCacheScope(previousCacheScope.scopeKey);
     }
     navigationCacheScopeRef.current = cacheScope;
@@ -1067,7 +1432,8 @@ const BottomControls: React.FC = () => {
     const popupEpoch = navigationPopupEpochRef.current + 1;
     navigationPopupEpochRef.current = popupEpoch;
     const sessionGuard = connection.createSessionGuard();
-    const isPopupEpochActive = () => !disposed && navigationPopupEpochRef.current === popupEpoch;
+    const isPopupEpochActive = () =>
+      !disposed && navigationPopupEpochRef.current === popupEpoch;
     const stopNavigationInitialLoading = () => {
       setIsNavigationGamesLoading(false);
     };
@@ -1138,7 +1504,8 @@ const BottomControls: React.FC = () => {
       };
     }
 
-    const { localProfileId, hasHydratedPagedGames } = hydrateNavigationGamesFromCache();
+    const { localProfileId, hasHydratedPagedGames } =
+      hydrateNavigationGamesFromCache();
     let didAttemptWarmPagedRefresh = false;
 
     const maybeWarmRefreshPagedGames = (cursor: NavigationGamesPageCursor) => {
@@ -1152,7 +1519,10 @@ const BottomControls: React.FC = () => {
       navigationLoadMoreInFlightRef.current = true;
 
       void connection
-        .getProfileGamesFirestorePage(NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE, cursor)
+        .getProfileGamesFirestorePage(
+          NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE,
+          cursor,
+        )
         .then((page) => {
           if (!isPopupEpochActive()) {
             return;
@@ -1172,14 +1542,19 @@ const BottomControls: React.FC = () => {
 
             if (page.hasMore) {
               previousItems.forEach((item) => {
-                if (!topNavigationItemIdsRef.current.has(item.id) && !uniqueById.has(item.id)) {
+                if (
+                  !topNavigationItemIdsRef.current.has(item.id) &&
+                  !uniqueById.has(item.id)
+                ) {
                   uniqueById.set(item.id, item);
                 }
               });
             }
 
             const mergedItems = Array.from(uniqueById.values());
-            navigationHasPagedGamesRef.current = mergedItems.some((item) => !topNavigationItemIdsRef.current.has(item.id));
+            navigationHasPagedGamesRef.current = mergedItems.some(
+              (item) => !topNavigationItemIdsRef.current.has(item.id),
+            );
             return mergedItems;
           });
 
@@ -1250,14 +1625,16 @@ const BottomControls: React.FC = () => {
             setNavigationGamesCursor(pageMeta.nextCursor);
             setNavigationHasMoreGames(false);
           } else {
-            setNavigationGamesCursor((previousCursor) => previousCursor ?? pageMeta.nextCursor);
+            setNavigationGamesCursor(
+              (previousCursor) => previousCursor ?? pageMeta.nextCursor,
+            );
             setNavigationHasMoreGames(true);
           }
 
           if (pageMeta.hasMore && pageMeta.nextCursor) {
             maybeWarmRefreshPagedGames(pageMeta.nextCursor);
           }
-        }
+        },
       );
     } else {
       setNavigationFallbackLimit(NAVIGATION_GAMES_PAGE_SIZE);
@@ -1307,17 +1684,23 @@ const BottomControls: React.FC = () => {
         const now = Date.now();
         const pendingRevealAtMs = pendingCancelAutomatchRevealAtMsRef.current;
         pendingCancelAutomatchRevealAtMsRef.current = null;
-        const deadline = pendingRevealAtMs !== null ? pendingRevealAtMs : now + CANCEL_AUTOMATCH_REVEAL_DELAY_MS;
+        const deadline =
+          pendingRevealAtMs !== null
+            ? pendingRevealAtMs
+            : now + CANCEL_AUTOMATCH_REVEAL_DELAY_MS;
         if (deadline <= now) {
           setIsCancelAutomatchVisible(true);
         } else {
           setIsCancelAutomatchVisible(false);
           cancelAutomatchRevealDeadlineRef.current = deadline;
-          cancelAutomatchRevealTimeoutRef.current = setMatchScopedTimeout(() => {
-            cancelAutomatchRevealTimeoutRef.current = null;
-            cancelAutomatchRevealDeadlineRef.current = null;
-            setIsCancelAutomatchVisible(true);
-          }, deadline - now);
+          cancelAutomatchRevealTimeoutRef.current = setMatchScopedTimeout(
+            () => {
+              cancelAutomatchRevealTimeoutRef.current = null;
+              cancelAutomatchRevealDeadlineRef.current = null;
+              setIsCancelAutomatchVisible(true);
+            },
+            deadline - now,
+          );
           tryRevealCancelAutomatchFromDeadline();
         }
       }
@@ -1336,7 +1719,14 @@ const BottomControls: React.FC = () => {
       }
       cancelAutomatchRevealDeadlineRef.current = null;
     };
-  }, [automatchButtonTmpState, cancelAutomatchRevealVersion, clearTrackedMatchScopedTimeout, isAutomatchButtonVisible, setMatchScopedTimeout, tryRevealCancelAutomatchFromDeadline]);
+  }, [
+    automatchButtonTmpState,
+    cancelAutomatchRevealVersion,
+    clearTrackedMatchScopedTimeout,
+    isAutomatchButtonVisible,
+    setMatchScopedTimeout,
+    tryRevealCancelAutomatchFromDeadline,
+  ]);
 
   useEffect(() => {
     return subscribeMoveHistoryPopupReload(() => {
@@ -1354,7 +1744,9 @@ const BottomControls: React.FC = () => {
   })();
 
   const hasRematchSeriesNavigation = rematchSeriesItems.length > 0;
-  const rematchSeriesMatchesKey = rematchSeriesItems.map((item) => item.matchId).join("|");
+  const rematchSeriesMatchesKey = rematchSeriesItems
+    .map((item) => item.matchId)
+    .join("|");
 
   useEffect(() => {
     if (rematchSeriesMatchesKey === "") {
@@ -1365,7 +1757,12 @@ const BottomControls: React.FC = () => {
     let retryCount = 0;
 
     const hasMissingHistoricalScores = (items: RematchSeriesNavigatorItem[]) =>
-      items.some((item) => !item.isActiveMatch && !item.isPendingResponse && (item.whiteScore === null || item.blackScore === null));
+      items.some(
+        (item) =>
+          !item.isActiveMatch &&
+          !item.isPendingResponse &&
+          (item.whiteScore === null || item.blackScore === null),
+      );
 
     const runPreload = async () => {
       let didChange = false;
@@ -1406,31 +1803,46 @@ const BottomControls: React.FC = () => {
         clearTrackedMatchScopedTimeout(retryTimeoutId);
       }
     };
-  }, [clearTrackedMatchScopedTimeout, rematchSeriesMatchesKey, setMatchScopedTimeout]);
+  }, [
+    clearTrackedMatchScopedTimeout,
+    rematchSeriesMatchesKey,
+    setMatchScopedTimeout,
+  ]);
 
-  const closeNavigationAndAppearancePopupIfAnyHandler = useCallback((options?: CloseNavigationAndAppearancePopupOptions) => {
-    if (!options?.preserveNavigationSelection) {
-      navigationSelectionEpochRef.current += 1;
-    }
-    const shouldSuppressNavigationAutoClose =
-      options?.preserveNavigationSelection === true && shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal();
-    if (!shouldSuppressNavigationAutoClose) {
-      setIsNavigationPopupVisible(false);
-    }
-    setIsBoardStylePickerVisible(false);
-    setIsMoveHistoryPopupVisible(false);
-    setIsReactionPickerVisible(false);
-    setIsResignConfirmVisible(false);
-    setIsTimerConfirmVisible(false);
-    setIsClaimVictoryConfirmVisible(false);
-    setIsWagerMode(false);
-  }, [shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal]);
+  const closeNavigationAndAppearancePopupIfAnyHandler = useCallback(
+    (options?: CloseNavigationAndAppearancePopupOptions) => {
+      if (!options?.preserveNavigationSelection) {
+        navigationSelectionEpochRef.current += 1;
+      }
+      const shouldSuppressNavigationAutoClose =
+        options?.preserveNavigationSelection === true &&
+        shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal();
+      if (!shouldSuppressNavigationAutoClose) {
+        setIsNavigationPopupVisible(false);
+      }
+      setIsBoardStylePickerVisible(false);
+      setIsMoveHistoryPopupVisible(false);
+      setIsReactionPickerVisible(false);
+      setIsResignConfirmVisible(false);
+      setIsTimerConfirmVisible(false);
+      setIsClaimVictoryConfirmVisible(false);
+      setIsWagerMode(false);
+    },
+    [shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal],
+  );
 
-  closeNavigationAndAppearancePopupIfAnyImpl = closeNavigationAndAppearancePopupIfAnyHandler;
+  closeNavigationAndAppearancePopupIfAnyImpl =
+    closeNavigationAndAppearancePopupIfAnyHandler;
 
   useEffect(() => {
-    return registerBottomControlsTransientUiHandler(closeNavigationAndAppearancePopupIfAnyHandler, clearAllMatchScopedTimeouts);
-  }, [clearAllMatchScopedTimeouts, closeNavigationAndAppearancePopupIfAnyHandler]);
+    return registerBottomControlsTransientUiHandler(
+      closeNavigationAndAppearancePopupIfAnyHandler,
+      clearAllMatchScopedTimeouts,
+    );
+  }, [
+    clearAllMatchScopedTimeouts,
+    closeNavigationAndAppearancePopupIfAnyHandler,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -1507,7 +1919,10 @@ const BottomControls: React.FC = () => {
 
   setNavigationListButtonVisibleImpl = (visible: boolean) => {
     setIsNavigationListButtonVisible(visible);
-    if (!visible && !shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal()) {
+    if (
+      !visible &&
+      !shouldSuppressNavigationPopupProgrammaticAutoCloseForEventModal()
+    ) {
       setIsNavigationPopupVisible(false);
     }
   };
@@ -1557,7 +1972,11 @@ const BottomControls: React.FC = () => {
     setIsClaimVictoryConfirmVisible(false);
   };
 
-  showTimerButtonProgressing = (currentProgress: number, target: number, enableWhenTargetReached: boolean) => {
+  showTimerButtonProgressing = (
+    currentProgress: number,
+    target: number,
+    enableWhenTargetReached: boolean,
+  ) => {
     if (hourglassEnableTimeoutRef.current) {
       clearTrackedMatchScopedTimeout(hourglassEnableTimeoutRef.current);
       hourglassEnableTimeoutRef.current = null;
@@ -1571,7 +1990,11 @@ const BottomControls: React.FC = () => {
     setIsClaimVictoryVisible(false);
     setIsTimerConfirmVisible(false);
     setIsClaimVictoryConfirmVisible(false);
-    setTimerConfig({ duration: target, progress: currentProgress, requestDate: Date.now() });
+    setTimerConfig({
+      duration: target,
+      progress: currentProgress,
+      requestDate: Date.now(),
+    });
 
     if (enableWhenTargetReached) {
       const timeUntilTarget = Math.max(0, (target - currentProgress) * 1000);
@@ -1590,7 +2013,15 @@ const BottomControls: React.FC = () => {
   };
 
   hasBottomPopupsVisible = () => {
-    return isReactionPickerVisible || isMoveHistoryPopupVisible || isResignConfirmVisible || isTimerConfirmVisible || isClaimVictoryConfirmVisible || isBoardStylePickerVisible || isWagerPanelVisible();
+    return (
+      isReactionPickerVisible ||
+      isMoveHistoryPopupVisible ||
+      isResignConfirmVisible ||
+      isTimerConfirmVisible ||
+      isClaimVictoryConfirmVisible ||
+      isBoardStylePickerVisible ||
+      isWagerPanelVisible()
+    );
   };
 
   enableTimerVictoryClaim = () => {
@@ -1634,26 +2065,36 @@ const BottomControls: React.FC = () => {
       let revealDeadline = automatchCancelRevealModeDeadlineRef.current;
 
       if (revealMode === "unset") {
-        const shouldRevealImmediatelyFromNavigation = consumePendingImmediateCancelAutomatchIntent();
+        const shouldRevealImmediatelyFromNavigation =
+          consumePendingImmediateCancelAutomatchIntent();
         const delayedRevealAtMs = consumePendingDelayedCancelAutomatchIntent();
         const now = Date.now();
-        const shouldDelayReveal = !shouldRevealImmediatelyFromNavigation && delayedRevealAtMs !== null && delayedRevealAtMs > now;
+        const shouldDelayReveal =
+          !shouldRevealImmediatelyFromNavigation &&
+          delayedRevealAtMs !== null &&
+          delayedRevealAtMs > now;
         revealMode = shouldDelayReveal ? "delayed" : "immediate";
         revealDeadline = shouldDelayReveal ? delayedRevealAtMs : null;
         automatchCancelRevealModeRef.current = revealMode;
         automatchCancelRevealModeDeadlineRef.current = revealDeadline;
       }
 
-      if (revealMode === "delayed" && (revealDeadline === null || revealDeadline <= Date.now())) {
+      if (
+        revealMode === "delayed" &&
+        (revealDeadline === null || revealDeadline <= Date.now())
+      ) {
         revealMode = "immediate";
         revealDeadline = null;
         automatchCancelRevealModeRef.current = revealMode;
         automatchCancelRevealModeDeadlineRef.current = null;
       }
 
-      const shouldDelayReveal = revealMode === "delayed" && revealDeadline !== null;
+      const shouldDelayReveal =
+        revealMode === "delayed" && revealDeadline !== null;
       forceImmediateCancelAutomatchRevealRef.current = !shouldDelayReveal;
-      pendingCancelAutomatchRevealAtMsRef.current = shouldDelayReveal ? revealDeadline : null;
+      pendingCancelAutomatchRevealAtMsRef.current = shouldDelayReveal
+        ? revealDeadline
+        : null;
       setAutomatchVisible(true);
       setIsAutomatchButtonEnabled(false);
       setAutomatchButtonTmpState(true);
@@ -1740,7 +2181,11 @@ const BottomControls: React.FC = () => {
     setIsReactionPickerVisible((prev) => !prev);
   };
 
-  const toggleMoveHistoryPopup = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+  const toggleMoveHistoryPopup = (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.TouchEvent<HTMLButtonElement>,
+  ) => {
     if (!isMoveHistoryPopupVisible) {
       closeMenuAndInfoIfAny();
       setIsResignConfirmVisible(false);
@@ -1770,28 +2215,45 @@ const BottomControls: React.FC = () => {
     }
   }, []);
 
-  const renderRematchSeriesChipContent = useCallback((item: RematchSeriesNavigatorItem) => {
-    if (item.isPendingResponse) {
+  const renderRematchSeriesChipContent = useCallback(
+    (item: RematchSeriesNavigatorItem) => {
+      if (item.isPendingResponse) {
+        return (
+          <RematchWaitingIcon $isSelected={item.isSelected}>
+            <FaHourglassHalf />
+          </RematchWaitingIcon>
+        );
+      }
+      if (item.whiteScore !== null && item.blackScore !== null) {
+        const opponentScore = item.playerIsWhite
+          ? item.blackScore
+          : item.whiteScore;
+        const playerScore = item.playerIsWhite
+          ? item.whiteScore
+          : item.blackScore;
+        return (
+          <>
+            <RematchScoreOpponent $isSelected={item.isSelected}>
+              {opponentScore}
+            </RematchScoreOpponent>
+            <RematchScorePlayer $isSelected={item.isSelected}>
+              {playerScore}
+            </RematchScorePlayer>
+          </>
+        );
+      }
       return (
-        <RematchWaitingIcon $isSelected={item.isSelected}>
-          <FaHourglassHalf />
-        </RematchWaitingIcon>
+        <RematchLoadingDots $isSelected={item.isSelected}>·</RematchLoadingDots>
       );
-    }
-    if (item.whiteScore !== null && item.blackScore !== null) {
-      const opponentScore = item.playerIsWhite ? item.blackScore : item.whiteScore;
-      const playerScore = item.playerIsWhite ? item.whiteScore : item.blackScore;
-      return (
-        <>
-          <RematchScoreOpponent $isSelected={item.isSelected}>{opponentScore}</RematchScoreOpponent>
-          <RematchScorePlayer $isSelected={item.isSelected}>{playerScore}</RematchScorePlayer>
-        </>
-      );
-    }
-    return <RematchLoadingDots $isSelected={item.isSelected}>·</RematchLoadingDots>;
-  }, []);
+    },
+    [],
+  );
 
-  const handleBrushClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+  const handleBrushClick = (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.TouchEvent<HTMLButtonElement>,
+  ) => {
     if (!isBoardStylePickerVisible) {
       closeMenuAndInfoIfAny();
       setIsResignConfirmVisible(false);
@@ -1831,13 +2293,19 @@ const BottomControls: React.FC = () => {
     didClickHomeButton();
   };
 
-  const handleAutomoveClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+  const handleAutomoveClick = (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.TouchEvent<HTMLButtonElement>,
+  ) => {
     if (!isAutomoveButtonEnabled) return;
     setAutomoveActionEnabled(false);
     didClickAutomoveButton();
   };
 
-  const handleClaimVictoryClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleClaimVictoryClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.stopPropagation();
     if (!isClaimVictoryConfirmVisible) {
       closeMenuAndInfoIfAny();
@@ -1848,14 +2316,18 @@ const BottomControls: React.FC = () => {
     setIsClaimVictoryConfirmVisible(!isClaimVictoryConfirmVisible);
   };
 
-  const handleConfirmStartTimer = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleConfirmStartTimer = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.stopPropagation();
     setIsTimerConfirmVisible(false);
     didClickStartTimerButton();
     setIsTimerButtonDisabled(true);
   };
 
-  const handleConfirmClaimVictory = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleConfirmClaimVictory = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.stopPropagation();
     setIsClaimVictoryConfirmVisible(false);
     didClickClaimVictoryByTimerButton();
@@ -1867,77 +2339,116 @@ const BottomControls: React.FC = () => {
     didClickEndMatchButton();
   };
 
-  const handleStickerSelect = useCallback((stickerId: number) => {
-    if (!isVoiceReactionButtonVisible) {
+  const handleStickerSelect = useCallback(
+    (stickerId: number) => {
+      if (!isVoiceReactionButtonVisible) {
+        setIsReactionPickerVisible(false);
+        return;
+      }
       setIsReactionPickerVisible(false);
-      return;
-    }
-    setIsReactionPickerVisible(false);
-    showVideoReaction(isMetadataSideDisplayedAtOpponentSlot(false), stickerId);
-    playSounds([Sound.EmoteSent]);
-    if (isGameWithBot) {
-      const sessionGuard = connection.createSessionGuard();
-      const responseStickerId = STICKER_ID_WHITELIST[Math.floor(Math.random() * STICKER_ID_WHITELIST.length)];
-      setMatchScopedTimeout(() => {
-        if (!sessionGuard()) {
-          return;
-        }
-        showVideoReaction(isMetadataSideDisplayedAtOpponentSlot(true), responseStickerId);
-        playSounds([Sound.EmoteReceived]);
-      }, 5000);
-    } else if (!puzzleMode) {
-      connection.sendVoiceReaction(newStickerReaction(stickerId));
-      setIsVoiceReactionDisabled(true);
-      setMatchScopedTimeout(() => {
-        setIsVoiceReactionDisabled(false);
-      }, 9999);
-    }
-  }, [isVoiceReactionButtonVisible, setMatchScopedTimeout]);
+      showVideoReaction(
+        isMetadataSideDisplayedAtOpponentSlot(false),
+        stickerId,
+      );
+      playSounds([Sound.EmoteSent]);
+      if (isGameWithBot) {
+        const sessionGuard = connection.createSessionGuard();
+        const responseStickerId =
+          STICKER_ID_WHITELIST[
+            Math.floor(Math.random() * STICKER_ID_WHITELIST.length)
+          ];
+        setMatchScopedTimeout(() => {
+          if (!sessionGuard()) {
+            return;
+          }
+          showVideoReaction(
+            isMetadataSideDisplayedAtOpponentSlot(true),
+            responseStickerId,
+          );
+          playSounds([Sound.EmoteReceived]);
+        }, 5000);
+      } else if (!puzzleMode) {
+        connection.sendVoiceReaction(newStickerReaction(stickerId));
+        setIsVoiceReactionDisabled(true);
+        setMatchScopedTimeout(() => {
+          setIsVoiceReactionDisabled(false);
+        }, 9999);
+      }
+    },
+    [isVoiceReactionButtonVisible, setMatchScopedTimeout],
+  );
 
-  const handleReactionSelect = useCallback((reaction: string) => {
-    if (!isVoiceReactionButtonVisible) {
+  const handleReactionSelect = useCallback(
+    (reaction: string) => {
+      if (!isVoiceReactionButtonVisible) {
+        setIsReactionPickerVisible(false);
+        return;
+      }
       setIsReactionPickerVisible(false);
-      return;
-    }
-    setIsReactionPickerVisible(false);
-    const reactionObj = newReactionOfKind(reaction);
-    playReaction(reactionObj);
-    showVoiceReactionText(reaction, false);
+      const reactionObj = newReactionOfKind(reaction);
+      playReaction(reactionObj);
+      showVoiceReactionText(reaction, false);
 
-    if (isGameWithBot) {
-      const sessionGuard = connection.createSessionGuard();
-      const responseReaction = reaction;
-      const responseReactionObj = newReactionOfKind(responseReaction);
-      setMatchScopedTimeout(() => {
-        if (!sessionGuard()) {
-          return;
-        }
-        playReaction(responseReactionObj);
-        showVoiceReactionText(reaction, true);
-      }, 2000);
-    } else if (!puzzleMode) {
-      connection.sendVoiceReaction(reactionObj);
-      setIsVoiceReactionDisabled(true);
-      setMatchScopedTimeout(() => {
-        setIsVoiceReactionDisabled(false);
-      }, 9999);
-    }
-  }, [isVoiceReactionButtonVisible, setMatchScopedTimeout]);
+      if (isGameWithBot) {
+        const sessionGuard = connection.createSessionGuard();
+        const responseReaction = reaction;
+        const responseReactionObj = newReactionOfKind(responseReaction);
+        setMatchScopedTimeout(() => {
+          if (!sessionGuard()) {
+            return;
+          }
+          playReaction(responseReactionObj);
+          showVoiceReactionText(reaction, true);
+        }, 2000);
+      } else if (!puzzleMode) {
+        connection.sendVoiceReaction(reactionObj);
+        setIsVoiceReactionDisabled(true);
+        setMatchScopedTimeout(() => {
+          setIsVoiceReactionDisabled(false);
+        }, 9999);
+      }
+    },
+    [isVoiceReactionButtonVisible, setMatchScopedTimeout],
+  );
 
   const playerUid = playerSideMetadata.uid;
   const opponentUid = opponentSideMetadata.uid;
-  const opponentProfile = opponentUid ? getStashedPlayerProfile(opponentUid) : undefined;
+  const opponentProfile = opponentUid
+    ? getStashedPlayerProfile(opponentUid)
+    : undefined;
   const playerHasProfile = storage.getProfileId("") !== "";
   const opponentHasProfile = !!(opponentProfile && opponentProfile.id);
   const hasAgreedWager = !!wagerState?.agreed;
   const hasResolvedWager = !!wagerState?.resolved;
-  const playerHasProposed = !!(playerUid && wagerState?.proposedBy && wagerState.proposedBy[playerUid]) || !!(playerUid && wagerState?.proposals && wagerState.proposals[playerUid]);
+  const playerHasProposed =
+    !!(
+      playerUid &&
+      wagerState?.proposedBy &&
+      wagerState.proposedBy[playerUid]
+    ) ||
+    !!(playerUid && wagerState?.proposals && wagerState.proposals[playerUid]);
   const hasPlayers = !!playerUid && !!opponentUid;
-  const isEligibleForWager = isOnlineGame && !isWatchOnly && !isGameWithBot && getBoardViewMode() === "activeLive" && !isMatchOver() && playerHasProfile && opponentHasProfile && hasPlayers;
-  const isWatchOnlyMatchFinished = isWatchOnly && isMatchOver() && !!connection.rematchSeriesEndIsIndicated();
-  const isEndMatchPillVisible = (isEndMatchButtonVisible && !isEndMatchTemporarilyDisabled) || isWatchOnlyMatchFinished;
-  const isEndMatchPillFinished = isEndMatchConfirmed || isWatchOnlyMatchFinished;
-  const canSubmitWager = isEligibleForWager && !hasAgreedWager && !hasResolvedWager && !playerHasProposed;
+  const isEligibleForWager =
+    isOnlineGame &&
+    !isWatchOnly &&
+    !isGameWithBot &&
+    getBoardViewMode() === "activeLive" &&
+    !isMatchOver() &&
+    playerHasProfile &&
+    opponentHasProfile &&
+    hasPlayers;
+  const isWatchOnlyMatchFinished =
+    isWatchOnly && isMatchOver() && !!connection.rematchSeriesEndIsIndicated();
+  const isEndMatchPillVisible =
+    (isEndMatchButtonVisible && !isEndMatchTemporarilyDisabled) ||
+    isWatchOnlyMatchFinished;
+  const isEndMatchPillFinished =
+    isEndMatchConfirmed || isWatchOnlyMatchFinished;
+  const canSubmitWager =
+    isEligibleForWager &&
+    !hasAgreedWager &&
+    !hasResolvedWager &&
+    !playerHasProposed;
   const wagerMaterial = wagerSelection.name;
   const wagerCount = wagerSelection.count;
   const wagerReady = canSubmitWager && !!wagerMaterial && wagerCount > 0;
@@ -1946,18 +2457,21 @@ const BottomControls: React.FC = () => {
     setIsWagerMode(true);
   }, []);
 
-  const handleMaterialSelect = useCallback((name: MaterialName) => {
-    const total = materialAmounts[name] ?? 0;
-    if (total <= 0) return;
-    setWagerSelection((prev) => {
-      if (prev.name === name) {
-        const nextCount = Math.min(total, prev.count + 1);
-        if (nextCount === prev.count) return prev;
-        return { name, count: nextCount };
-      }
-      return { name, count: 1 };
-    });
-  }, [materialAmounts]);
+  const handleMaterialSelect = useCallback(
+    (name: MaterialName) => {
+      const total = materialAmounts[name] ?? 0;
+      if (total <= 0) return;
+      setWagerSelection((prev) => {
+        if (prev.name === name) {
+          const nextCount = Math.min(total, prev.count + 1);
+          if (nextCount === prev.count) return prev;
+          return { name, count: nextCount };
+        }
+        return { name, count: 1 };
+      });
+    },
+    [materialAmounts],
+  );
 
   const handleWagerSubmit = useCallback(() => {
     if (!wagerMaterial || wagerCount === 0 || !canSubmitWager) {
@@ -1969,7 +2483,11 @@ const BottomControls: React.FC = () => {
     connection.sendWagerProposal(material, count).catch(() => {});
   }, [canSubmitWager, wagerCount, wagerMaterial]);
 
-  const handleUndo = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+  const handleUndo = (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.TouchEvent<HTMLButtonElement>,
+  ) => {
     if ((event.target as HTMLButtonElement).disabled) return;
     didClickUndoButton();
     setIsUndoDisabled(!canHandleUndo());
@@ -1981,12 +2499,16 @@ const BottomControls: React.FC = () => {
     didClickConfirmResignButton();
   };
 
-  const handleSamePuzzleAgainClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleSamePuzzleAgainClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.stopPropagation();
     playSameCompletedPuzzleAgain();
   };
 
-  const handlePrimaryActionClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handlePrimaryActionClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.stopPropagation();
     soundPlayer.initializeOnUserInteraction(false);
     if (primaryAction === PrimaryActionType.Rematch) {
@@ -2009,43 +2531,59 @@ const BottomControls: React.FC = () => {
     didClickStartBotGameButton();
   };
 
-  const beginAutomatchFlow = useCallback((options?: { skipSoundInit?: boolean }) => {
-    clearPendingImmediateCancelAutomatchIntent();
-    clearPendingDelayedCancelAutomatchIntent();
-    pendingFreshAutomatchCancelRevealAtMs = Date.now() + CANCEL_AUTOMATCH_REVEAL_DELAY_MS;
-    pendingCancelAutomatchRevealAtMsRef.current = pendingFreshAutomatchCancelRevealAtMs;
-    forceImmediateCancelAutomatchRevealRef.current = false;
-    automatchCancelRevealModeRef.current = "unset";
-    automatchCancelRevealModeDeadlineRef.current = null;
-    if (!options?.skipSoundInit) {
-      soundPlayer.initializeOnUserInteraction(false);
-    }
-    didClickAutomatchButton((response) => {
-      const inviteId = response && typeof response.inviteId === "string" ? response.inviteId : "";
-      const mode = response && typeof response.mode === "string" ? response.mode : "";
-      if (mode === "pending" && inviteId) {
-        requestPendingDelayedCancelAutomatchIntent(inviteId, pendingFreshAutomatchCancelRevealAtMs);
-        setOptimisticPendingAutomatchItem(connection.createOptimisticPendingAutomatchItem(inviteId));
-      } else if (mode === "matched") {
-        clearPendingDelayedCancelAutomatchIntent();
-        setOptimisticPendingAutomatchItem(null);
-      } else {
-        clearPendingDelayedCancelAutomatchIntent();
+  const beginAutomatchFlow = useCallback(
+    (options?: { skipSoundInit?: boolean }) => {
+      clearPendingImmediateCancelAutomatchIntent();
+      clearPendingDelayedCancelAutomatchIntent();
+      pendingFreshAutomatchCancelRevealAtMs =
+        Date.now() + CANCEL_AUTOMATCH_REVEAL_DELAY_MS;
+      pendingCancelAutomatchRevealAtMsRef.current =
+        pendingFreshAutomatchCancelRevealAtMs;
+      forceImmediateCancelAutomatchRevealRef.current = false;
+      automatchCancelRevealModeRef.current = "unset";
+      automatchCancelRevealModeDeadlineRef.current = null;
+      if (!options?.skipSoundInit) {
+        soundPlayer.initializeOnUserInteraction(false);
       }
-      pendingFreshAutomatchCancelRevealAtMs = 0;
-    });
-    setIsAutomatchButtonEnabled(false);
-    setAutomatchButtonTmpState(true);
-    setIsCancelAutomatchDisabled(false);
-    setCancelAutomatchRevealVersion((value) => value + 1);
-  }, []);
+      didClickAutomatchButton((response) => {
+        const inviteId =
+          response && typeof response.inviteId === "string"
+            ? response.inviteId
+            : "";
+        const mode =
+          response && typeof response.mode === "string" ? response.mode : "";
+        if (mode === "pending" && inviteId) {
+          requestPendingDelayedCancelAutomatchIntent(
+            inviteId,
+            pendingFreshAutomatchCancelRevealAtMs,
+          );
+          setOptimisticPendingAutomatchItem(
+            connection.createOptimisticPendingAutomatchItem(inviteId),
+          );
+        } else if (mode === "matched") {
+          clearPendingDelayedCancelAutomatchIntent();
+          setOptimisticPendingAutomatchItem(null);
+        } else {
+          clearPendingDelayedCancelAutomatchIntent();
+        }
+        pendingFreshAutomatchCancelRevealAtMs = 0;
+      });
+      setIsAutomatchButtonEnabled(false);
+      setAutomatchButtonTmpState(true);
+      setIsCancelAutomatchDisabled(false);
+      setCancelAutomatchRevealVersion((value) => value + 1);
+    },
+    [],
+  );
 
   const handleAutomatchClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     event.stopPropagation();
     beginAutomatchFlow();
   };
 
-  const handleCancelAutomatchClick = async (event: React.MouseEvent<HTMLButtonElement>) => {
+  const handleCancelAutomatchClick = async (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
     event.stopPropagation();
     if (isCancelAutomatchDisabled) return;
     const sessionGuard = connection.createSessionGuard();
@@ -2080,7 +2618,11 @@ const BottomControls: React.FC = () => {
     }
   };
 
-  const handleNavigationButtonClick = (event: React.MouseEvent<HTMLButtonElement> | React.TouchEvent<HTMLButtonElement>) => {
+  const handleNavigationButtonClick = (
+    event:
+      | React.MouseEvent<HTMLButtonElement>
+      | React.TouchEvent<HTMLButtonElement>,
+  ) => {
     if (!isNavigationPopupVisible) {
       closeMenuAndInfoIfAny();
       hydrateNavigationGamesFromCache();
@@ -2090,15 +2632,21 @@ const BottomControls: React.FC = () => {
     setIsNavigationPopupVisible(!isNavigationPopupVisible);
   };
 
-  const handleNavigationGameSelect = (item: NavigationItem, options?: { status?: NavigationGameStatus }) => {
+  const handleNavigationGameSelect = (
+    item: NavigationItem,
+    options?: { status?: NavigationGameStatus },
+  ) => {
     navigationSelectionEpochRef.current += 1;
     setIsBoardStylePickerVisible(false);
     if (item.entityType === "event") {
-      const requestSeq = pendingNavigationOpenedEventModalRequestSeqRef.current + 1;
+      const requestSeq =
+        pendingNavigationOpenedEventModalRequestSeqRef.current + 1;
       pendingNavigationOpenedEventModalRequestSeqRef.current = requestSeq;
       pendingNavigationOpenedEventModalRequestedAtMsRef.current = Date.now();
       openEventModal(item.eventId, { restoreHomeOnClose: false });
-      if (pendingNavigationOpenedEventModalRequestSeqRef.current === requestSeq) {
+      if (
+        pendingNavigationOpenedEventModalRequestSeqRef.current === requestSeq
+      ) {
         pendingNavigationOpenedEventModalRequestedAtMsRef.current = 0;
         pendingNavigationOpenedEventModalRequestSeqRef.current += 1;
       }
@@ -2172,8 +2720,26 @@ const BottomControls: React.FC = () => {
           }
 
           if (result && result.ok && !result.skipped) {
-            setNavigationProjectedGames((prev) => prev.filter((item) => !(item.entityType === "game" && item.inviteId === inviteId && item.status === "waiting")));
-            setNavigationPagedGames((prev) => prev.filter((item) => !(item.entityType === "game" && item.inviteId === inviteId && item.status === "waiting")));
+            setNavigationProjectedGames((prev) =>
+              prev.filter(
+                (item) =>
+                  !(
+                    item.entityType === "game" &&
+                    item.inviteId === inviteId &&
+                    item.status === "waiting"
+                  ),
+              ),
+            );
+            setNavigationPagedGames((prev) =>
+              prev.filter(
+                (item) =>
+                  !(
+                    item.entityType === "game" &&
+                    item.inviteId === inviteId &&
+                    item.status === "waiting"
+                  ),
+              ),
+            );
           }
 
           clearRemovingFlag();
@@ -2185,7 +2751,7 @@ const BottomControls: React.FC = () => {
           clearRemovingFlag();
         });
     },
-    [isNavigationFallbackScope, navigationRemovingInviteIds]
+    [isNavigationFallbackScope, navigationRemovingInviteIds],
   );
 
   const handleNavigationProblemSelect = (problemId: string) => {
@@ -2213,7 +2779,13 @@ const BottomControls: React.FC = () => {
   };
 
   const handleNavigationLoadMoreGames = () => {
-    if (!isNavigationPopupVisible || !navigationHasMoreGames || isNavigationGamesLoading || isNavigationGamesLoadingMore || navigationLoadMoreInFlightRef.current) {
+    if (
+      !isNavigationPopupVisible ||
+      !navigationHasMoreGames ||
+      isNavigationGamesLoading ||
+      isNavigationGamesLoadingMore ||
+      navigationLoadMoreInFlightRef.current
+    ) {
       return;
     }
 
@@ -2222,7 +2794,8 @@ const BottomControls: React.FC = () => {
     const localProfileId = storage.getProfileId("");
     const sessionGuard = connection.createSessionGuard();
     const popupEpoch = navigationPopupEpochRef.current;
-    const isCallbackActive = () => navigationPopupEpochRef.current === popupEpoch;
+    const isCallbackActive = () =>
+      navigationPopupEpochRef.current === popupEpoch;
     const stopLoadMore = () => {
       navigationLoadMoreInFlightRef.current = false;
       setIsNavigationGamesLoadingMore(false);
@@ -2237,7 +2810,10 @@ const BottomControls: React.FC = () => {
       }
 
       void connection
-        .getProfileGamesFirestorePage(NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE, nextCursor)
+        .getProfileGamesFirestorePage(
+          NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE,
+          nextCursor,
+        )
         .then((page) => {
           if (!isCallbackActive()) {
             stopLoadMore();
@@ -2252,7 +2828,9 @@ const BottomControls: React.FC = () => {
             previousItems.forEach((item) => uniqueById.set(item.id, item));
             page.items.forEach((item) => uniqueById.set(item.id, item));
             const mergedItems = Array.from(uniqueById.values());
-            navigationHasPagedGamesRef.current = mergedItems.some((item) => !topNavigationItemIdsRef.current.has(item.id));
+            navigationHasPagedGamesRef.current = mergedItems.some(
+              (item) => !topNavigationItemIdsRef.current.has(item.id),
+            );
             return mergedItems;
           });
           setNavigationGamesCursor(page.nextCursor);
@@ -2274,7 +2852,8 @@ const BottomControls: React.FC = () => {
       return;
     }
 
-    const nextFallbackLimit = navigationFallbackLimit + NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE;
+    const nextFallbackLimit =
+      navigationFallbackLimit + NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE;
     const requestedLimit = nextFallbackLimit + 1;
     setNavigationFallbackLimit(nextFallbackLimit);
     void connection
@@ -2289,16 +2868,25 @@ const BottomControls: React.FC = () => {
           return;
         }
         const hasMore = items.length > nextFallbackLimit;
-        const visibleItems = hasMore ? items.slice(0, nextFallbackLimit) : items;
-        const nextProjectedItems = visibleItems.slice(0, NAVIGATION_GAMES_PAGE_SIZE);
+        const visibleItems = hasMore
+          ? items.slice(0, nextFallbackLimit)
+          : items;
+        const nextProjectedItems = visibleItems.slice(
+          0,
+          NAVIGATION_GAMES_PAGE_SIZE,
+        );
         const nextPagedItems = visibleItems.slice(NAVIGATION_GAMES_PAGE_SIZE);
         setNavigationProjectedGames(nextProjectedItems);
         setNavigationPagedGames(nextPagedItems);
-        const nextTopItemIds = new Set(nextProjectedItems.map((item) => item.id));
+        const nextTopItemIds = new Set(
+          nextProjectedItems.map((item) => item.id),
+        );
         if (optimisticPendingAutomatchItem) {
           nextTopItemIds.add(optimisticPendingAutomatchItem.id);
         }
-        navigationHasPagedGamesRef.current = nextPagedItems.some((item) => !nextTopItemIds.has(item.id));
+        navigationHasPagedGamesRef.current = nextPagedItems.some(
+          (item) => !nextTopItemIds.has(item.id),
+        );
         setNavigationHasMoreGames(hasMore);
         stopLoadMore();
       })
@@ -2326,21 +2914,32 @@ const BottomControls: React.FC = () => {
   };
 
   const routeState = getCurrentRouteState();
-  const selectedProblemId = routeState.mode === "home" || routeState.mode === "event" ? getSelectedPuzzleId() : null;
-  const selectedNavigationItemId =
-    selectedEventModalId
-      ? `event_${selectedEventModalId}`
-      : routeState.mode === "event" && routeState.eventId
-        ? `event_${routeState.eventId}`
-        : routeState.mode === "invite"
-          ? routeState.inviteId
-          : null;
+  const selectedProblemId =
+    routeState.mode === "home" || routeState.mode === "event"
+      ? getSelectedPuzzleId()
+      : null;
+  const selectedNavigationItemId = selectedEventModalId
+    ? `event_${selectedEventModalId}`
+    : routeState.mode === "event" && routeState.eventId
+      ? `event_${routeState.eventId}`
+      : routeState.mode === "invite"
+        ? routeState.inviteId
+        : null;
   const currentInviteEventId = connection.getCurrentInviteEventId();
-  const isEventGameButtonVisible = isOnlineGame && connection.isCurrentInviteEventOwned() && !!currentInviteEventId;
+  const isEventGameButtonVisible =
+    isOnlineGame &&
+    connection.isCurrentInviteEventOwned() &&
+    !!currentInviteEventId;
 
   return (
     <>
-      <BrushButton ref={brushButtonRef} dimmed={isBrushButtonDimmed} onClick={!isMobile ? handleBrushClick : undefined} onTouchStart={isMobile ? handleBrushClick : undefined} aria-label="Appearance">
+      <BrushButton
+        ref={brushButtonRef}
+        dimmed={isBrushButtonDimmed}
+        onClick={!isMobile ? handleBrushClick : undefined}
+        onTouchStart={isMobile ? handleBrushClick : undefined}
+        aria-label="Appearance"
+      >
         <FaPaintBrush />
       </BrushButton>
       {isBoardStylePickerVisible && (
@@ -2361,14 +2960,20 @@ const BottomControls: React.FC = () => {
             isLoadingMoreGames={isNavigationGamesLoadingMore}
             hasMoreGames={navigationHasMoreGames}
             onSelectGame={handleNavigationGameSelect}
-            onRemoveGame={!isNavigationFallbackScope ? handleNavigationGameRemove : undefined}
+            onRemoveGame={
+              !isNavigationFallbackScope
+                ? handleNavigationGameRemove
+                : undefined
+            }
             removingGameInviteIds={navigationRemovingInviteIds}
             onSelectProblem={handleNavigationProblemSelect}
             onLoadMoreGames={handleNavigationLoadMoreGames}
           />
         </div>
       )}
-      {isMoveHistoryPopupVisible && <MoveHistoryPopup ref={moveHistoryPopupRef} />}
+      {isMoveHistoryPopupVisible && (
+        <MoveHistoryPopup ref={moveHistoryPopupRef} />
+      )}
       <ControlsContainer ref={controlsContainerRef}>
         {hasRematchSeriesNavigation && (
           <RematchSeriesInlineControl>
@@ -2379,11 +2984,15 @@ const BottomControls: React.FC = () => {
                     <RematchSeriesChip
                       $isSelected={seriesItem.isSelected}
                       disabled={isRematchSeriesSelectionInFlight}
-                      onClick={() => void handleRematchSeriesChipClick(seriesItem.matchId)}
+                      onClick={() =>
+                        void handleRematchSeriesChipClick(seriesItem.matchId)
+                      }
                     >
                       {renderRematchSeriesChipContent(seriesItem)}
                     </RematchSeriesChip>
-                    {idx < arr.length - 1 && <RematchSeriesSeparator $hidden={false} />}
+                    {idx < arr.length - 1 && (
+                      <RematchSeriesSeparator $hidden={false} />
+                    )}
                   </React.Fragment>
                 ))}
               </RematchSeriesTrack>
@@ -2391,30 +3000,65 @@ const BottomControls: React.FC = () => {
           </RematchSeriesInlineControl>
         )}
         {isEndMatchPillVisible && (
-          <BottomPillButton onClick={!isEndMatchPillFinished ? handleEndMatchClick : undefined} isBlue={!isEndMatchPillFinished} disabled={isEndMatchPillFinished} isViewOnly={isEndMatchPillFinished}>
+          <BottomPillButton
+            onClick={!isEndMatchPillFinished ? handleEndMatchClick : undefined}
+            isBlue={!isEndMatchPillFinished}
+            disabled={isEndMatchPillFinished}
+            isViewOnly={isEndMatchPillFinished}
+          >
             {isEndMatchPillFinished ? (
               <>
-                {statusIconUrls.cloud ? <BottomPillInlineIcon src={statusIconUrls.cloud} alt="" draggable={false} /> : "💨 "}
+                {statusIconUrls.cloud ? (
+                  <BottomPillInlineIcon
+                    src={statusIconUrls.cloud}
+                    alt=""
+                    draggable={false}
+                  />
+                ) : (
+                  "💨 "
+                )}
                 {"Finished"}
               </>
             ) : (
               <>
-                {statusIconUrls.finish ? <BottomPillInlineIcon src={statusIconUrls.finish} alt="" draggable={false} /> : "🏁 "}
+                {statusIconUrls.finish ? (
+                  <BottomPillInlineIcon
+                    src={statusIconUrls.finish}
+                    alt=""
+                    draggable={false}
+                  />
+                ) : (
+                  "🏁 "
+                )}
                 {"End Match"}
               </>
             )}
           </BottomPillButton>
         )}
-        {isWatchOnlyIndicatorVisible && !isWatchOnlyMatchFinished && !isEndMatchConfirmed && (
-          <BottomPillButton isViewOnly={true} disabled={true}>
-            <>
-              {statusIconUrls.spectating ? <BottomPillInlineIcon src={statusIconUrls.spectating} alt="" draggable={false} /> : "📺 "}
-              {"Watching"}
-            </>
-          </BottomPillButton>
-        )}
+        {isWatchOnlyIndicatorVisible &&
+          !isWatchOnlyMatchFinished &&
+          !isEndMatchConfirmed && (
+            <BottomPillButton isViewOnly={true} disabled={true}>
+              <>
+                {statusIconUrls.spectating ? (
+                  <BottomPillInlineIcon
+                    src={statusIconUrls.spectating}
+                    alt=""
+                    draggable={false}
+                  />
+                ) : (
+                  "📺 "
+                )}
+                {"Watching"}
+              </>
+            </BottomPillButton>
+          )}
         {isInviteLinkButtonVisible && !didCreateInvite && (
-          <BottomPillButton onClick={handleInviteClick} isBlue={true} disabled={isInviteLoading}>
+          <BottomPillButton
+            onClick={handleInviteClick}
+            isBlue={true}
+            disabled={isInviteLoading}
+          >
             {isInviteLoading ? (
               "Creating a Link..."
             ) : (
@@ -2426,10 +3070,23 @@ const BottomControls: React.FC = () => {
           </BottomPillButton>
         )}
         {isAutomatchButtonVisible && (
-          <BottomPillButton onClick={handleAutomatchClick} isBlue={true} isViewOnly={automatchButtonTmpState} disabled={!isAutomatchButtonEnabled}>
+          <BottomPillButton
+            onClick={handleAutomatchClick}
+            isBlue={true}
+            isViewOnly={automatchButtonTmpState}
+            disabled={!isAutomatchButtonEnabled}
+          >
             {automatchButtonTmpState ? (
               <>
-                {statusIconUrls.automatch ? <BottomPillInlineIcon src={statusIconUrls.automatch} alt="" draggable={false} /> : "🥁 "}
+                {statusIconUrls.automatch ? (
+                  <BottomPillInlineIcon
+                    src={statusIconUrls.automatch}
+                    alt=""
+                    draggable={false}
+                  />
+                ) : (
+                  "🥁 "
+                )}
                 {"Automatching..."}
               </>
             ) : (
@@ -2441,7 +3098,12 @@ const BottomControls: React.FC = () => {
           </BottomPillButton>
         )}
         {isCancelAutomatchVisible && (
-          <BottomPillButton onClick={handleCancelAutomatchClick} isBlue={true} disabled={isCancelAutomatchDisabled} isViewOnly={isCancelAutomatchDisabled}>
+          <BottomPillButton
+            onClick={handleCancelAutomatchClick}
+            isBlue={true}
+            disabled={isCancelAutomatchDisabled}
+            isViewOnly={isCancelAutomatchDisabled}
+          >
             {isCancelAutomatchDisabled ? "Canceling..." : "Cancel"}
           </BottomPillButton>
         )}
@@ -2485,64 +3147,139 @@ const BottomControls: React.FC = () => {
           </BottomPillButton>
         )}
         {isClaimVictoryVisible && (
-          <ControlButton ref={claimVictoryButtonRef} onClick={handleClaimVictoryClick} aria-label="Claim Victory" disabled={isClaimVictoryButtonDisabled}>
+          <ControlButton
+            ref={claimVictoryButtonRef}
+            onClick={handleClaimVictoryClick}
+            aria-label="Claim Victory"
+            disabled={isClaimVictoryButtonDisabled}
+          >
             <FaTrophy />
           </ControlButton>
         )}
-        {isStartTimerVisible && <AnimatedHourglassButton ref={timerButtonRef} config={timerConfig} onClick={handleTimerClick} disabled={isTimerButtonDisabled} />}
+        {isStartTimerVisible && (
+          <AnimatedHourglassButton
+            ref={timerButtonRef}
+            config={timerConfig}
+            onClick={handleTimerClick}
+            disabled={isTimerButtonDisabled}
+          />
+        )}
         {isUndoButtonVisible && (
-          <ControlButton onClick={!isMobile ? handleUndo : undefined} onTouchStart={isMobile ? handleUndo : undefined} aria-label="Undo" disabled={isUndoDisabled}>
+          <ControlButton
+            onClick={!isMobile ? handleUndo : undefined}
+            onTouchStart={isMobile ? handleUndo : undefined}
+            aria-label="Undo"
+            disabled={isUndoDisabled}
+          >
             <FaUndo />
           </ControlButton>
         )}
         {isAutomoveButtonVisible && (
-          <ControlButton onClick={!isMobile ? handleAutomoveClick : undefined} onTouchStart={isMobile ? handleAutomoveClick : undefined} aria-label="Bot" disabled={!isAutomoveButtonEnabled}>
+          <ControlButton
+            onClick={!isMobile ? handleAutomoveClick : undefined}
+            onTouchStart={isMobile ? handleAutomoveClick : undefined}
+            aria-label="Bot"
+            disabled={!isAutomoveButtonEnabled}
+          >
             <IoSparklesSharp />
           </ControlButton>
         )}
         {isMoveHistoryButtonVisible && (
-          <ControlButton onClick={!isMobile ? toggleMoveHistoryPopup : undefined} onTouchStart={isMobile ? toggleMoveHistoryPopup : undefined} aria-label="Move History" ref={moveHistoryButtonRef}>
+          <ControlButton
+            onClick={!isMobile ? toggleMoveHistoryPopup : undefined}
+            onTouchStart={isMobile ? toggleMoveHistoryPopup : undefined}
+            aria-label="Move History"
+            ref={moveHistoryButtonRef}
+          >
             <FaScroll />
           </ControlButton>
         )}
         {isVoiceReactionButtonVisible && (
-          <ControlButton onClick={!isMobile ? toggleReactionPicker : undefined} onTouchStart={isMobile ? toggleReactionPicker : undefined} aria-label="Voice Reaction" ref={voiceReactionButtonRef} disabled={isVoiceReactionDisabled}>
+          <ControlButton
+            onClick={!isMobile ? toggleReactionPicker : undefined}
+            onTouchStart={isMobile ? toggleReactionPicker : undefined}
+            aria-label="Voice Reaction"
+            ref={voiceReactionButtonRef}
+            disabled={isVoiceReactionDisabled}
+          >
             <FaCommentAlt />
           </ControlButton>
         )}
         {isResignButtonVisible && (
-          <ControlButton onClick={handleResignClick} aria-label="Resign" ref={resignButtonRef} disabled={false}>
+          <ControlButton
+            onClick={handleResignClick}
+            aria-label="Resign"
+            ref={resignButtonRef}
+            disabled={false}
+          >
             <FaFlag />
           </ControlButton>
         )}
         {isEventGameButtonVisible && (
           <ControlButton
-            onClick={!isMobile ? () => openEventModal(currentInviteEventId as string, { restoreHomeOnClose: false }) : undefined}
-            onTouchStart={isMobile ? () => openEventModal(currentInviteEventId as string, { restoreHomeOnClose: false }) : undefined}
+            onClick={
+              !isMobile
+                ? () =>
+                    openEventModal(currentInviteEventId as string, {
+                      restoreHomeOnClose: false,
+                    })
+                : undefined
+            }
+            onTouchStart={
+              isMobile
+                ? () =>
+                    openEventModal(currentInviteEventId as string, {
+                      restoreHomeOnClose: false,
+                    })
+                : undefined
+            }
             aria-label="Event"
           >
             <FaUsers />
           </ControlButton>
         )}
-        <NavigationListButton ref={navigationButtonRef} dimmed={isNavigationButtonDimmed} onClick={!isMobile ? handleNavigationButtonClick : undefined} onTouchStart={isMobile ? handleNavigationButtonClick : undefined} aria-label="Navigation">
+        <NavigationListButton
+          ref={navigationButtonRef}
+          dimmed={isNavigationButtonDimmed}
+          onClick={!isMobile ? handleNavigationButtonClick : undefined}
+          onTouchStart={isMobile ? handleNavigationButtonClick : undefined}
+          aria-label="Navigation"
+        >
           {isBadgeVisible && <NavigationBadge />}
           <FaHome />
         </NavigationListButton>
         {isReactionPickerVisible && (
-          <ReactionPillsContainer ref={pickerRef} animatedMaxHeight={pickerMaxHeight}>
+          <ReactionPillsContainer
+            ref={pickerRef}
+            animatedMaxHeight={pickerMaxHeight}
+          >
             {isWagerMode ? (
               <>
                 <WagerBetButton
                   $ready={wagerReady}
-                  onClick={wagerReady && !isMobile ? handleWagerSubmit : undefined}
-                  onTouchStart={wagerReady && isMobile ? handleWagerSubmit : undefined}
+                  onClick={
+                    wagerReady && !isMobile ? handleWagerSubmit : undefined
+                  }
+                  onTouchStart={
+                    wagerReady && isMobile ? handleWagerSubmit : undefined
+                  }
                   disabled={!wagerReady}
-                  style={{ cursor: wagerReady ? "pointer" : "default", opacity: wagerReady ? 1 : 0.6 }}>
+                  style={{
+                    cursor: wagerReady ? "pointer" : "default",
+                    opacity: wagerReady ? 1 : 0.6,
+                  }}
+                >
                   {wagerMaterial && wagerCount > 0 ? (
                     <>
                       <span>Propose</span>
                       <WagerButtonBadge>
-                        {materialUrls[wagerMaterial] && <WagerButtonIcon src={materialUrls[wagerMaterial] || ""} alt="" draggable={false} />}
+                        {materialUrls[wagerMaterial] && (
+                          <WagerButtonIcon
+                            src={materialUrls[wagerMaterial] || ""}
+                            alt=""
+                            draggable={false}
+                          />
+                        )}
                         <WagerButtonAmount>{wagerCount}</WagerButtonAmount>
                       </WagerButtonBadge>
                     </>
@@ -2552,9 +3289,27 @@ const BottomControls: React.FC = () => {
                 </WagerBetButton>
                 <WagerMaterialsGrid>
                   {MATERIALS.map((name) => (
-                    <WagerMaterialItem key={name} onClick={!isMobile ? () => handleMaterialSelect(name) : undefined} onTouchStart={isMobile ? () => handleMaterialSelect(name) : undefined} disabled={materialAmounts[name] <= 0} style={{ opacity: materialAmounts[name] > 0 ? 1 : 0.4 }}>
-                      {materialUrls[name] && <WagerMaterialIcon src={materialUrls[name] || ""} alt="" draggable={false} />}
-                      <WagerMaterialAmount>{materialAmounts[name]}</WagerMaterialAmount>
+                    <WagerMaterialItem
+                      key={name}
+                      onClick={
+                        !isMobile ? () => handleMaterialSelect(name) : undefined
+                      }
+                      onTouchStart={
+                        isMobile ? () => handleMaterialSelect(name) : undefined
+                      }
+                      disabled={materialAmounts[name] <= 0}
+                      style={{ opacity: materialAmounts[name] > 0 ? 1 : 0.4 }}
+                    >
+                      {materialUrls[name] && (
+                        <WagerMaterialIcon
+                          src={materialUrls[name] || ""}
+                          alt=""
+                          draggable={false}
+                        />
+                      )}
+                      <WagerMaterialAmount>
+                        {materialAmounts[name]}
+                      </WagerMaterialAmount>
                     </WagerMaterialItem>
                   ))}
                 </WagerMaterialsGrid>
@@ -2562,18 +3317,43 @@ const BottomControls: React.FC = () => {
             ) : (
               <>
                 {canSubmitWager && (
-                  <WagerBetButton $ready={true} onClick={!isMobile ? handleWagerModeToggle : undefined} onTouchStart={isMobile ? handleWagerModeToggle : undefined}>
+                  <WagerBetButton
+                    $ready={true}
+                    onClick={!isMobile ? handleWagerModeToggle : undefined}
+                    onTouchStart={isMobile ? handleWagerModeToggle : undefined}
+                  >
                     Propose a Wager
                   </WagerBetButton>
                 )}
-                <ReactionPill onClick={() => handleReactionSelect("yo")}>yo</ReactionPill>
-                <ReactionPill onClick={() => handleReactionSelect("wahoo")}>wahoo</ReactionPill>
-                <ReactionPill onClick={() => handleReactionSelect("drop")}>drop</ReactionPill>
-                <ReactionPill onClick={() => handleReactionSelect("slurp")}>slurp</ReactionPill>
-                <ReactionPill onClick={() => handleReactionSelect("gg")}>gg</ReactionPill>
+                <ReactionPill onClick={() => handleReactionSelect("yo")}>
+                  yo
+                </ReactionPill>
+                <ReactionPill onClick={() => handleReactionSelect("wahoo")}>
+                  wahoo
+                </ReactionPill>
+                <ReactionPill onClick={() => handleReactionSelect("drop")}>
+                  drop
+                </ReactionPill>
+                <ReactionPill onClick={() => handleReactionSelect("slurp")}>
+                  slurp
+                </ReactionPill>
+                <ReactionPill onClick={() => handleReactionSelect("gg")}>
+                  gg
+                </ReactionPill>
                 {stickerIds.map((id) => (
-                  <StickerPill key={id} onClick={() => handleStickerSelect(id)} aria-label={`Sticker ${id}`}>
-                    <img src={stickerUrls[id] || `${STICKER_IMAGE_BASE_URL}/${id}.webp`} alt="" loading="lazy" />
+                  <StickerPill
+                    key={id}
+                    onClick={() => handleStickerSelect(id)}
+                    aria-label={`Sticker ${id}`}
+                  >
+                    <img
+                      src={
+                        stickerUrls[id] ||
+                        `${STICKER_IMAGE_BASE_URL}/${id}.webp`
+                      }
+                      alt=""
+                      loading="lazy"
+                    />
                   </StickerPill>
                 ))}
               </>
@@ -2583,17 +3363,37 @@ const BottomControls: React.FC = () => {
         {isTimerConfirmVisible && (
           <ResignConfirmation
             ref={timerConfirmRef}
-            style={timerConfirmLeft !== null ? { left: `${timerConfirmLeft}px`, right: "auto", transform: "translateX(-50%)" } : undefined}
+            style={
+              timerConfirmLeft !== null
+                ? {
+                    left: `${timerConfirmLeft}px`,
+                    right: "auto",
+                    transform: "translateX(-50%)",
+                  }
+                : undefined
+            }
           >
-            <ReactionPill onClick={handleConfirmStartTimer}>Start a Timer</ReactionPill>
+            <ReactionPill onClick={handleConfirmStartTimer}>
+              Start a Timer
+            </ReactionPill>
           </ResignConfirmation>
         )}
         {isClaimVictoryConfirmVisible && (
           <ResignConfirmation
             ref={claimVictoryConfirmRef}
-            style={claimVictoryConfirmLeft !== null ? { left: `${claimVictoryConfirmLeft}px`, right: "auto", transform: "translateX(-50%)" } : undefined}
+            style={
+              claimVictoryConfirmLeft !== null
+                ? {
+                    left: `${claimVictoryConfirmLeft}px`,
+                    right: "auto",
+                    transform: "translateX(-50%)",
+                  }
+                : undefined
+            }
           >
-            <ReactionPill onClick={handleConfirmClaimVictory}>Claim Victory</ReactionPill>
+            <ReactionPill onClick={handleConfirmClaimVictory}>
+              Claim Victory
+            </ReactionPill>
           </ResignConfirmation>
         )}
         {isResignConfirmVisible && (
@@ -2606,4 +3406,33 @@ const BottomControls: React.FC = () => {
   );
 };
 
-export { BottomControls as default, setBrushAndNavigationButtonDimmed, setPlaySamePuzzleAgainButtonVisible, showWaitingStateText, setEndMatchConfirmed, setEndMatchVisible, setBotGameOptionVisible, setAutomatchWaitingState, setAutomatchEnabled, hasBottomPopupsVisible, setWatchOnlyVisible, setAutomoveActionEnabled, setAutomoveActionVisible, setIsReadyToCopyExistingInviteLink, showVoiceReactionButton, showMoveHistoryButton, setInviteLinkActionVisible, setAutomatchVisible, showResignButton, setUndoEnabled, setUndoVisible, setHomeVisible, hideTimerButtons, showTimerButtonProgressing, disableAndHideUndoResignAndTimerControls, enableTimerVictoryClaim, showPrimaryAction, setBadgeVisible };
+export {
+  BottomControls as default,
+  setBrushAndNavigationButtonDimmed,
+  setPlaySamePuzzleAgainButtonVisible,
+  showWaitingStateText,
+  setEndMatchConfirmed,
+  setEndMatchVisible,
+  setBotGameOptionVisible,
+  setAutomatchWaitingState,
+  setAutomatchEnabled,
+  hasBottomPopupsVisible,
+  setWatchOnlyVisible,
+  setAutomoveActionEnabled,
+  setAutomoveActionVisible,
+  setIsReadyToCopyExistingInviteLink,
+  showVoiceReactionButton,
+  showMoveHistoryButton,
+  setInviteLinkActionVisible,
+  setAutomatchVisible,
+  showResignButton,
+  setUndoEnabled,
+  setUndoVisible,
+  setHomeVisible,
+  hideTimerButtons,
+  showTimerButtonProgressing,
+  disableAndHideUndoResignAndTimerControls,
+  enableTimerVictoryClaim,
+  showPrimaryAction,
+  setBadgeVisible,
+};

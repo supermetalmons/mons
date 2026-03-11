@@ -1,22 +1,39 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const nacl = require("tweetnacl");
 const bs58 = require("bs58");
-const { consumeAuthIntent, normalizeMethodValue, linkVerifiedMethod, peekAuthOpReplay } = require("./authIdentity");
+const {
+  consumeAuthIntent,
+  normalizeMethodValue,
+  linkVerifiedMethod,
+  peekAuthOpReplay,
+} = require("./authIdentity");
 
 exports.verifySolanaAddress = onCall(async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
 
-  const requestData = request && request.data && typeof request.data === "object" ? request.data : {};
-  const address = typeof requestData.address === "string" ? requestData.address : "";
-  const signatureStr = typeof requestData.signature === "string" ? requestData.signature : "";
+  const requestData =
+    request && request.data && typeof request.data === "object"
+      ? request.data
+      : {};
+  const address =
+    typeof requestData.address === "string" ? requestData.address : "";
+  const signatureStr =
+    typeof requestData.signature === "string" ? requestData.signature : "";
   const requestEmoji = requestData.emoji ?? 1;
   const requestAura = requestData.aura ?? null;
-  const intentId = typeof requestData.intentId === "string" ? requestData.intentId : "";
+  const intentId =
+    typeof requestData.intentId === "string" ? requestData.intentId : "";
   const opId = requestData.opId;
   if (!address || !signatureStr) {
-    throw new HttpsError("invalid-argument", "address and signature are required.");
+    throw new HttpsError(
+      "invalid-argument",
+      "address and signature are required.",
+    );
   }
   if (!intentId) {
     throw new HttpsError("invalid-argument", "intentId is required.");
@@ -37,7 +54,8 @@ exports.verifySolanaAddress = onCall(async (request) => {
     method: "sol",
     intentId,
   });
-  const expectedNonce = intent && typeof intent.nonce === "string" ? intent.nonce : "";
+  const expectedNonce =
+    intent && typeof intent.nonce === "string" ? intent.nonce : "";
   if (!expectedNonce) {
     throw new HttpsError("failed-precondition", "intent-invalid");
   }
@@ -51,7 +69,11 @@ exports.verifySolanaAddress = onCall(async (request) => {
     throw new HttpsError("invalid-argument", "Invalid Solana address.");
   }
   const messageBytes = new TextEncoder().encode(targetMessage);
-  const matchingSignature = nacl.sign.detached.verify(messageBytes, signatureBytes, publicKeyBytes);
+  const matchingSignature = nacl.sign.detached.verify(
+    messageBytes,
+    signatureBytes,
+    publicKeyBytes,
+  );
 
   if (!matchingSignature) {
     return { ok: false };

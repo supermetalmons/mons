@@ -1,7 +1,13 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const glicko2 = require("glicko2");
 const admin = require("firebase-admin");
-const { batchReadWithRetry, getProfileByLoginId, appendAutomatchBotMessageText, getDisplayNameFromAddress, getTelegramEmojiTag } = require("./utils");
+const {
+  batchReadWithRetry,
+  getProfileByLoginId,
+  appendAutomatchBotMessageText,
+  getDisplayNameFromAddress,
+  getTelegramEmojiTag,
+} = require("./utils");
 const { resolveMatchWinner } = require("./matchOutcome");
 
 const materialTelegramEmojiIds = {
@@ -44,7 +50,9 @@ const updateFebruaryUniqueOpponents = async (profileId, opponentProfileId) => {
         return;
       }
       const data = snap.data() || {};
-      const existingOpponents = Array.isArray(data.feb2026UniqueOpponents) ? data.feb2026UniqueOpponents : [];
+      const existingOpponents = Array.isArray(data.feb2026UniqueOpponents)
+        ? data.feb2026UniqueOpponents
+        : [];
       if (existingOpponents.includes(opponentProfileId)) {
         return;
       }
@@ -66,7 +74,10 @@ const createLeaseToken = (ownerUid) => {
 };
 
 const getRatingUpdateRef = (inviteId, matchId) => {
-  return admin.firestore().collection("ratingUpdates").doc(`${inviteId}__${matchId}`);
+  return admin
+    .firestore()
+    .collection("ratingUpdates")
+    .doc(`${inviteId}__${matchId}`);
 };
 
 const ensureRatingUpdateCompletionMarker = async (completionRef) => {
@@ -86,7 +97,15 @@ const readRatingUpdateData = async (ratingUpdateRef) => {
   return snapshot.data() || null;
 };
 
-const tryAcquireRatingUpdateLease = async ({ ratingUpdateRef, ownerUid, ownerToken, inviteId, matchId, playerId, opponentId }) => {
+const tryAcquireRatingUpdateLease = async ({
+  ratingUpdateRef,
+  ownerUid,
+  ownerToken,
+  inviteId,
+  matchId,
+  playerId,
+  opponentId,
+}) => {
   const nowMs = Date.now();
   let claim = { status: "busy", data: null };
 
@@ -99,8 +118,14 @@ const tryAcquireRatingUpdateLease = async ({ ratingUpdateRef, ownerUid, ownerTok
       return;
     }
 
-    const leaseExpiresAtMs = typeof data.leaseExpiresAtMs === "number" ? data.leaseExpiresAtMs : 0;
-    if (data.status === "processing" && leaseExpiresAtMs > nowMs && data.ownerToken && data.ownerToken !== ownerToken) {
+    const leaseExpiresAtMs =
+      typeof data.leaseExpiresAtMs === "number" ? data.leaseExpiresAtMs : 0;
+    if (
+      data.status === "processing" &&
+      leaseExpiresAtMs > nowMs &&
+      data.ownerToken &&
+      data.ownerToken !== ownerToken
+    ) {
       claim = { status: "busy", data };
       return;
     }
@@ -115,11 +140,12 @@ const tryAcquireRatingUpdateLease = async ({ ratingUpdateRef, ownerUid, ownerTok
         ownerUid,
         ownerToken,
         status: "processing",
-        startedAtMs: typeof data.startedAtMs === "number" ? data.startedAtMs : nowMs,
+        startedAtMs:
+          typeof data.startedAtMs === "number" ? data.startedAtMs : nowMs,
         updatedAtMs: nowMs,
         leaseExpiresAtMs: nowMs + RATING_UPDATE_LEASE_MS,
       },
-      { merge: true }
+      { merge: true },
     );
     claim = { status: "acquired", data };
   });
@@ -127,10 +153,22 @@ const tryAcquireRatingUpdateLease = async ({ ratingUpdateRef, ownerUid, ownerTok
   return claim;
 };
 
-const acquireRatingUpdateLease = async ({ completionRef, ratingUpdateRef, ownerUid, inviteId, matchId, playerId, opponentId }) => {
+const acquireRatingUpdateLease = async ({
+  completionRef,
+  ratingUpdateRef,
+  ownerUid,
+  inviteId,
+  matchId,
+  playerId,
+  opponentId,
+}) => {
   const ownerToken = createLeaseToken(ownerUid);
 
-  for (let attempt = 0; attempt < RATING_UPDATE_ACQUIRE_MAX_ATTEMPTS; attempt += 1) {
+  for (
+    let attempt = 0;
+    attempt < RATING_UPDATE_ACQUIRE_MAX_ATTEMPTS;
+    attempt += 1
+  ) {
     const completionSnapshot = await completionRef.once("value");
     if (completionSnapshot.val() === true) {
       return {
@@ -193,11 +231,14 @@ const startRatingUpdateLeaseHeartbeat = ({ ratingUpdateRef, ownerToken }) => {
             updatedAtMs: nowMs,
             leaseExpiresAtMs: nowMs + RATING_UPDATE_LEASE_MS,
           },
-          { merge: true }
+          { merge: true },
         );
       })
       .catch((error) => {
-        console.error("ratingUpdate:leaseHeartbeat:error", error && error.message ? error.message : error);
+        console.error(
+          "ratingUpdate:leaseHeartbeat:error",
+          error && error.message ? error.message : error,
+        );
       });
   }, RATING_UPDATE_HEARTBEAT_INTERVAL_MS);
 
@@ -219,7 +260,11 @@ const tryAcquireBotMessageLease = async ({ ratingUpdateRef, ownerToken }) => {
     const snapshot = await transaction.get(ratingUpdateRef);
     const data = snapshot.exists ? snapshot.data() || {} : {};
 
-    if (data.status !== "done" || typeof data.updateRatingMessage !== "string" || data.updateRatingMessage === "") {
+    if (
+      data.status !== "done" ||
+      typeof data.updateRatingMessage !== "string" ||
+      data.updateRatingMessage === ""
+    ) {
       claim = { status: "skip", data };
       return;
     }
@@ -229,8 +274,16 @@ const tryAcquireBotMessageLease = async ({ ratingUpdateRef, ownerToken }) => {
       return;
     }
 
-    const leaseExpiresAtMs = typeof data.botMessageLeaseExpiresAtMs === "number" ? data.botMessageLeaseExpiresAtMs : 0;
-    if (data.botMessageStatus === "processing" && leaseExpiresAtMs > nowMs && data.botMessageOwnerToken && data.botMessageOwnerToken !== ownerToken) {
+    const leaseExpiresAtMs =
+      typeof data.botMessageLeaseExpiresAtMs === "number"
+        ? data.botMessageLeaseExpiresAtMs
+        : 0;
+    if (
+      data.botMessageStatus === "processing" &&
+      leaseExpiresAtMs > nowMs &&
+      data.botMessageOwnerToken &&
+      data.botMessageOwnerToken !== ownerToken
+    ) {
       claim = { status: "busy", data };
       return;
     }
@@ -243,7 +296,7 @@ const tryAcquireBotMessageLease = async ({ ratingUpdateRef, ownerToken }) => {
         botMessageUpdatedAtMs: nowMs,
         botMessageLeaseExpiresAtMs: nowMs + BOT_MESSAGE_LEASE_MS,
       },
-      { merge: true }
+      { merge: true },
     );
     claim = { status: "acquired", data };
   });
@@ -260,40 +313,66 @@ const finalizeBotMessageLease = async ({ ratingUpdateRef, didSucceed }) => {
       botMessageCompletedAtMs: nowMs,
       botMessageLeaseExpiresAtMs: nowMs,
     },
-    { merge: true }
+    { merge: true },
   );
 };
 
-const maybeAppendStoredRatingUpdateMessage = async ({ ratingUpdateRef, inviteId, ownerToken }) => {
+const maybeAppendStoredRatingUpdateMessage = async ({
+  ratingUpdateRef,
+  inviteId,
+  ownerToken,
+}) => {
   try {
-    const claim = await tryAcquireBotMessageLease({ ratingUpdateRef, ownerToken });
+    const claim = await tryAcquireBotMessageLease({
+      ratingUpdateRef,
+      ownerToken,
+    });
     if (claim.status !== "acquired") {
       return claim.status === "skip";
     }
 
     const data = await readRatingUpdateData(ratingUpdateRef);
-    const updateRatingMessage = data && typeof data.updateRatingMessage === "string" ? data.updateRatingMessage : "";
+    const updateRatingMessage =
+      data && typeof data.updateRatingMessage === "string"
+        ? data.updateRatingMessage
+        : "";
     if (!updateRatingMessage) {
       await finalizeBotMessageLease({ ratingUpdateRef, didSucceed: true });
       return true;
     }
 
-    const didAppend = await appendAutomatchBotMessageText(inviteId, updateRatingMessage, true);
+    const didAppend = await appendAutomatchBotMessageText(
+      inviteId,
+      updateRatingMessage,
+      true,
+    );
     await finalizeBotMessageLease({ ratingUpdateRef, didSucceed: didAppend });
     return didAppend;
   } catch (error) {
-    console.error("ratingUpdate:botMessage:error", { inviteId, error: error && error.message ? error.message : error });
+    console.error("ratingUpdate:botMessage:error", {
+      inviteId,
+      error: error && error.message ? error.message : error,
+    });
     return false;
   }
 };
 
 const maybeApplyStoredFebruaryChallengeUpdate = async (ratingUpdateData) => {
-  if (!ratingUpdateData || ratingUpdateData.shouldUpdateFebruaryChallenge !== true) {
+  if (
+    !ratingUpdateData ||
+    ratingUpdateData.shouldUpdateFebruaryChallenge !== true
+  ) {
     return false;
   }
 
-  const playerProfileId = typeof ratingUpdateData.playerProfileId === "string" ? ratingUpdateData.playerProfileId : "";
-  const opponentProfileId = typeof ratingUpdateData.opponentProfileId === "string" ? ratingUpdateData.opponentProfileId : "";
+  const playerProfileId =
+    typeof ratingUpdateData.playerProfileId === "string"
+      ? ratingUpdateData.playerProfileId
+      : "";
+  const opponentProfileId =
+    typeof ratingUpdateData.opponentProfileId === "string"
+      ? ratingUpdateData.opponentProfileId
+      : "";
   if (!playerProfileId || !opponentProfileId) {
     return false;
   }
@@ -306,9 +385,17 @@ const maybeApplyStoredFebruaryChallengeUpdate = async (ratingUpdateData) => {
 };
 
 const getWagerSuffix = (inviteData, matchId) => {
-  const wagerData = inviteData && inviteData.wagers && inviteData.wagers[matchId] ? inviteData.wagers[matchId] : null;
+  const wagerData =
+    inviteData && inviteData.wagers && inviteData.wagers[matchId]
+      ? inviteData.wagers[matchId]
+      : null;
   const agreed = wagerData && wagerData.agreed ? wagerData.agreed : null;
-  if (!agreed || !agreed.material || agreed.count === undefined || agreed.count === null) {
+  if (
+    !agreed ||
+    !agreed.material ||
+    agreed.count === undefined ||
+    agreed.count === null
+  ) {
     return "";
   }
   const material = typeof agreed.material === "string" ? agreed.material : "";
@@ -326,7 +413,10 @@ const getWagerSuffix = (inviteData, matchId) => {
 
 exports.updateRatings = onCall(async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
 
   const uid = request.auth.uid;
@@ -339,25 +429,45 @@ exports.updateRatings = onCall(async (request) => {
     return { ok: false };
   }
 
-  const matchRef = admin.database().ref(`players/${playerId}/matches/${matchId}`);
+  const matchRef = admin
+    .database()
+    .ref(`players/${playerId}/matches/${matchId}`);
   const inviteRef = admin.database().ref(`invites/${inviteId}`);
-  const opponentMatchRef = admin.database().ref(`players/${opponentId}/matches/${matchId}`);
+  const opponentMatchRef = admin
+    .database()
+    .ref(`players/${opponentId}/matches/${matchId}`);
 
-  const [matchSnapshot, inviteSnapshot, opponentMatchSnapshot] = await batchReadWithRetry([matchRef, inviteRef, opponentMatchRef]);
+  const [matchSnapshot, inviteSnapshot, opponentMatchSnapshot] =
+    await batchReadWithRetry([matchRef, inviteRef, opponentMatchRef]);
 
   const matchData = matchSnapshot.val();
   const inviteData = inviteSnapshot.val();
   const opponentMatchData = opponentMatchSnapshot.val();
   const authPlayerProfile = await getProfileByLoginId(playerId);
 
-  if (!((inviteData.hostId === playerId && inviteData.guestId === opponentId) || (inviteData.hostId === opponentId && inviteData.guestId === playerId))) {
-    throw new HttpsError("permission-denied", "Players don't match invite data");
+  if (
+    !(
+      (inviteData.hostId === playerId && inviteData.guestId === opponentId) ||
+      (inviteData.hostId === opponentId && inviteData.guestId === playerId)
+    )
+  ) {
+    throw new HttpsError(
+      "permission-denied",
+      "Players don't match invite data",
+    );
   }
 
   if (uid !== playerId) {
     const customClaims = request.auth.token || {};
-    if (authPlayerProfile.profileId && (!customClaims.profileId || customClaims.profileId !== authPlayerProfile.profileId)) {
-      throw new HttpsError("permission-denied", "You don't have permission to perform this action for this player.");
+    if (
+      authPlayerProfile.profileId &&
+      (!customClaims.profileId ||
+        customClaims.profileId !== authPlayerProfile.profileId)
+    ) {
+      throw new HttpsError(
+        "permission-denied",
+        "You don't have permission to perform this action for this player.",
+      );
     }
   }
 
@@ -373,7 +483,9 @@ exports.updateRatings = onCall(async (request) => {
     throw new HttpsError("internal", "Could not confirm victory.");
   }
 
-  const ratingUpdateFlagRef = admin.database().ref(`invites/${inviteId}/matchesRatingUpdates/${matchId}`);
+  const ratingUpdateFlagRef = admin
+    .database()
+    .ref(`invites/${inviteId}/matchesRatingUpdates/${matchId}`);
   const ratingUpdateRef = getRatingUpdateRef(inviteId, matchId);
   const lease = await acquireRatingUpdateLease({
     completionRef: ratingUpdateFlagRef,
@@ -418,19 +530,45 @@ exports.updateRatings = onCall(async (request) => {
     if (!gameForScore.is_later_than(opponentMatchData.fen)) {
       gameForScore = mons.MonsGameModel.from_fen(opponentMatchData.fen);
     }
-    const playerManaPoints = matchData.color === "white" ? gameForScore.white_score() : gameForScore.black_score();
-    const opponentManaPoints = opponentMatchData.color === "white" ? gameForScore.white_score() : gameForScore.black_score();
+    const playerManaPoints =
+      matchData.color === "white"
+        ? gameForScore.white_score()
+        : gameForScore.black_score();
+    const opponentManaPoints =
+      opponentMatchData.color === "white"
+        ? gameForScore.white_score()
+        : gameForScore.black_score();
     const playerHasProfile = playerProfile.profileId !== "";
     const opponentHasProfile = opponentProfile.profileId !== "";
     const canUpdateRatings = playerHasProfile && opponentHasProfile;
 
-    const playerEmoji = playerProfile.emoji === "" ? matchData.emojiId : playerProfile.emoji;
-    const opponentEmoji = opponentProfile.emoji === "" ? opponentMatchData.emojiId : opponentProfile.emoji;
-    const playerProfileDisplayName = getDisplayNameFromAddress(playerProfile.username, playerProfile.eth, playerProfile.sol, 0, playerEmoji, false);
-    const opponentProfileDisplayName = getDisplayNameFromAddress(opponentProfile.username, opponentProfile.eth, opponentProfile.sol, 0, opponentEmoji, false);
+    const playerEmoji =
+      playerProfile.emoji === "" ? matchData.emojiId : playerProfile.emoji;
+    const opponentEmoji =
+      opponentProfile.emoji === ""
+        ? opponentMatchData.emojiId
+        : opponentProfile.emoji;
+    const playerProfileDisplayName = getDisplayNameFromAddress(
+      playerProfile.username,
+      playerProfile.eth,
+      playerProfile.sol,
+      0,
+      playerEmoji,
+      false,
+    );
+    const opponentProfileDisplayName = getDisplayNameFromAddress(
+      opponentProfile.username,
+      opponentProfile.eth,
+      opponentProfile.sol,
+      0,
+      opponentEmoji,
+      false,
+    );
 
-    let winnerDisplayName = result === "win" ? playerProfileDisplayName : opponentProfileDisplayName;
-    let loserDisplayName = result === "win" ? opponentProfileDisplayName : playerProfileDisplayName;
+    let winnerDisplayName =
+      result === "win" ? playerProfileDisplayName : opponentProfileDisplayName;
+    let loserDisplayName =
+      result === "win" ? opponentProfileDisplayName : playerProfileDisplayName;
 
     let winnerNewRating = 0;
     let loserNewRating = 0;
@@ -439,18 +577,33 @@ exports.updateRatings = onCall(async (request) => {
     let shouldUpdateFebruaryChallenge = false;
 
     if (canUpdateRatings) {
-      const hasMoves = (data) => typeof data.flatMovesString === "string" && data.flatMovesString.length > 0;
-      const bothPlayersMoved = hasMoves(matchData) && hasMoves(opponentMatchData);
-      const newPlayerManaTotal = (playerProfile.totalManaPoints ?? 0) + playerManaPoints;
-      const newOpponentManaTotal = (opponentProfile.totalManaPoints ?? 0) + opponentManaPoints;
+      const hasMoves = (data) =>
+        typeof data.flatMovesString === "string" &&
+        data.flatMovesString.length > 0;
+      const bothPlayersMoved =
+        hasMoves(matchData) && hasMoves(opponentMatchData);
+      const newPlayerManaTotal =
+        (playerProfile.totalManaPoints ?? 0) + playerManaPoints;
+      const newOpponentManaTotal =
+        (opponentProfile.totalManaPoints ?? 0) + opponentManaPoints;
       const newNonce1 = playerProfile.nonce + 1;
       const newNonce2 = opponentProfile.nonce + 1;
-      const updatedPlayerNonce = bothPlayersMoved ? newNonce1 : playerProfile.nonce;
-      const updatedOpponentNonce = bothPlayersMoved ? newNonce2 : opponentProfile.nonce;
-      shouldUpdateFebruaryChallenge = bothPlayersMoved && isFebruaryChallengeActive();
+      const updatedPlayerNonce = bothPlayersMoved
+        ? newNonce1
+        : playerProfile.nonce;
+      const updatedOpponentNonce = bothPlayersMoved
+        ? newNonce2
+        : opponentProfile.nonce;
+      shouldUpdateFebruaryChallenge =
+        bothPlayersMoved && isFebruaryChallengeActive();
 
       if (result === "win") {
-        const [newWinnerRating, newLoserRating] = updateRating(playerProfile.rating, newNonce1, opponentProfile.rating, newNonce2);
+        const [newWinnerRating, newLoserRating] = updateRating(
+          playerProfile.rating,
+          newNonce1,
+          opponentProfile.rating,
+          newNonce2,
+        );
         winnerNewRating = newWinnerRating;
         loserNewRating = newLoserRating;
         playerRatingUpdate = {
@@ -466,7 +619,12 @@ exports.updateRatings = onCall(async (request) => {
           totalManaPoints: newOpponentManaTotal,
         };
       } else {
-        const [newWinnerRating, newLoserRating] = updateRating(opponentProfile.rating, newNonce2, playerProfile.rating, newNonce1);
+        const [newWinnerRating, newLoserRating] = updateRating(
+          opponentProfile.rating,
+          newNonce2,
+          playerProfile.rating,
+          newNonce1,
+        );
         winnerNewRating = newWinnerRating;
         loserNewRating = newLoserRating;
         playerRatingUpdate = {
@@ -484,10 +642,14 @@ exports.updateRatings = onCall(async (request) => {
       }
     }
 
-    const winnerScore = result === "win" ? playerManaPoints : opponentManaPoints;
+    const winnerScore =
+      result === "win" ? playerManaPoints : opponentManaPoints;
     const loserScore = result === "win" ? opponentManaPoints : playerManaPoints;
     let suffix = ` (${winnerScore} - ${loserScore})`;
-    if (matchData.status === "surrendered" || opponentMatchData.status === "surrendered") {
+    if (
+      matchData.status === "surrendered" ||
+      opponentMatchData.status === "surrendered"
+    ) {
       const icon = getTelegramEmojiTag(matchStatusTelegramEmojiIds.whiteFlag);
       if (icon) suffix += ` ${icon}`;
     } else if (matchData.timer === "gg" || opponentMatchData.timer === "gg") {
@@ -498,7 +660,9 @@ exports.updateRatings = onCall(async (request) => {
     if (wagerSuffix) {
       suffix += ` ${wagerSuffix}`;
     }
-    const updateRatingMessage = canUpdateRatings ? `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓${suffix}` : `${winnerDisplayName} ↑ ${loserDisplayName}${suffix}`;
+    const updateRatingMessage = canUpdateRatings
+      ? `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓${suffix}`
+      : `${winnerDisplayName} ↑ ${loserDisplayName}${suffix}`;
 
     const firestore = admin.firestore();
     const batch = firestore.batch();
@@ -506,8 +670,14 @@ exports.updateRatings = onCall(async (request) => {
     // Persist the durable result alongside the profile writes so retries can repair
     // the RTDB projection marker without ever applying ratings twice.
     if (canUpdateRatings && playerRatingUpdate && opponentRatingUpdate) {
-      batch.update(firestore.collection("users").doc(playerProfile.profileId), playerRatingUpdate);
-      batch.update(firestore.collection("users").doc(opponentProfile.profileId), opponentRatingUpdate);
+      batch.update(
+        firestore.collection("users").doc(playerProfile.profileId),
+        playerRatingUpdate,
+      );
+      batch.update(
+        firestore.collection("users").doc(opponentProfile.profileId),
+        opponentRatingUpdate,
+      );
     }
     batch.set(
       ratingUpdateRef,
@@ -534,7 +704,7 @@ exports.updateRatings = onCall(async (request) => {
         leaseExpiresAtMs: completedAtMs,
         botMessageStatus: updateRatingMessage ? "pending" : "skipped",
       },
-      { merge: true }
+      { merge: true },
     );
     await batch.commit();
 
@@ -558,7 +728,12 @@ exports.updateRatings = onCall(async (request) => {
   };
 });
 
-const updateRating = (winRating, winPlayerGamesCount, lossRating, lossPlayerGamesCount) => {
+const updateRating = (
+  winRating,
+  winPlayerGamesCount,
+  lossRating,
+  lossPlayerGamesCount,
+) => {
   const settings = {
     tau: 0.75,
     rating: 1500,
@@ -568,8 +743,16 @@ const updateRating = (winRating, winPlayerGamesCount, lossRating, lossPlayerGame
 
   const ranking = new glicko2.Glicko2(settings);
   const adjustRd = (gamesCount) => Math.max(60, 350 - gamesCount);
-  const winner = ranking.makePlayer(winRating, adjustRd(winPlayerGamesCount), 0.06);
-  const loser = ranking.makePlayer(lossRating, adjustRd(lossPlayerGamesCount), 0.06);
+  const winner = ranking.makePlayer(
+    winRating,
+    adjustRd(winPlayerGamesCount),
+    0.06,
+  );
+  const loser = ranking.makePlayer(
+    lossRating,
+    adjustRd(lossPlayerGamesCount),
+    0.06,
+  );
   const matches = [[winner, loser, 1]];
   ranking.updateRatings(matches);
 

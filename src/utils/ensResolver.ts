@@ -12,7 +12,9 @@ export async function resolveENS(address: string): Promise<string | null> {
   }
 
   try {
-    const response = await fetch(`https://api.ensideas.com/ens/resolve/${address}`);
+    const response = await fetch(
+      `https://api.ensideas.com/ens/resolve/${address}`,
+    );
     if (!response.ok) {
       if (requestGeneration === cacheGeneration) {
         ensCache[address] = null;

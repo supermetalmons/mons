@@ -3,7 +3,8 @@ import { storage } from "../utils/storage";
 const LOGOUT_SYNC_CHANNEL = "mons-link-logout-sync";
 const LOGOUT_SYNC_STORAGE_KEY = "__mons_link_logout_sync__";
 const LOGOUT_PENDING_WIPE_STORAGE_KEY = "__mons_link_logout_pending_wipe__";
-const LOGOUT_PENDING_WIPE_TAB_ACK_SESSION_KEY = "__mons_link_logout_pending_wipe_ack__";
+const LOGOUT_PENDING_WIPE_TAB_ACK_SESSION_KEY =
+  "__mons_link_logout_pending_wipe_ack__";
 // Keep the marker briefly after logout so recently backgrounded tabs still have a fallback trigger.
 const LOGOUT_PENDING_WIPE_UNAUTH_RETENTION_MS = 60 * 1000;
 const LOGOUT_PENDING_WIPE_MAX_AGE_MS = 10 * 60 * 1000;
@@ -63,11 +64,19 @@ const parseLogoutSignal = (value: unknown): LogoutSignal | null => {
     return null;
   }
   try {
-    const parsed = JSON.parse(value) as { id?: unknown; cleanupMode?: unknown } | null;
+    const parsed = JSON.parse(value) as {
+      id?: unknown;
+      cleanupMode?: unknown;
+    } | null;
     if (!parsed || typeof parsed.id !== "string" || parsed.id === "") {
       return null;
     }
-    const cleanupMode = parsed.cleanupMode === "thorough" ? "thorough" : parsed.cleanupMode === "fast" ? "fast" : undefined;
+    const cleanupMode =
+      parsed.cleanupMode === "thorough"
+        ? "thorough"
+        : parsed.cleanupMode === "fast"
+          ? "fast"
+          : undefined;
     return { id: parsed.id, cleanupMode };
   } catch {
     return null;
@@ -79,7 +88,12 @@ const parseSignInSignal = (value: unknown): SignInSignal | null => {
     return null;
   }
   try {
-    const parsed = JSON.parse(value) as { id?: unknown; tabId?: unknown; profileId?: unknown; loginId?: unknown } | null;
+    const parsed = JSON.parse(value) as {
+      id?: unknown;
+      tabId?: unknown;
+      profileId?: unknown;
+      loginId?: unknown;
+    } | null;
     if (
       !parsed ||
       typeof parsed.id !== "string" ||
@@ -104,20 +118,30 @@ const parseSignInSignal = (value: unknown): SignInSignal | null => {
   }
 };
 
-const parsePendingLogoutWipeMarker = (value: unknown): PendingLogoutWipeMarker | null => {
+const parsePendingLogoutWipeMarker = (
+  value: unknown,
+): PendingLogoutWipeMarker | null => {
   if (typeof value !== "string" || value === "") {
     return null;
   }
   try {
-    const parsed = JSON.parse(value) as { id?: unknown; createdAtMs?: unknown; cleanupMode?: unknown } | null;
+    const parsed = JSON.parse(value) as {
+      id?: unknown;
+      createdAtMs?: unknown;
+      cleanupMode?: unknown;
+    } | null;
     if (!parsed || typeof parsed.id !== "string" || parsed.id === "") {
       return null;
     }
-    const createdAtMs = typeof parsed.createdAtMs === "number" ? parsed.createdAtMs : Number(parsed.createdAtMs);
+    const createdAtMs =
+      typeof parsed.createdAtMs === "number"
+        ? parsed.createdAtMs
+        : Number(parsed.createdAtMs);
     if (!Number.isFinite(createdAtMs)) {
       return null;
     }
-    const cleanupMode: LogoutCleanupMode = parsed.cleanupMode === "thorough" ? "thorough" : "fast";
+    const cleanupMode: LogoutCleanupMode =
+      parsed.cleanupMode === "thorough" ? "thorough" : "fast";
     return {
       id: parsed.id,
       createdAtMs: Math.floor(createdAtMs),
@@ -137,11 +161,20 @@ const getPendingLogoutWipeMarker = (): PendingLogoutWipeMarker | null => {
   }
 };
 
-const doesPendingLogoutWipeMarkerMatch = (left: PendingLogoutWipeMarker, right: PendingLogoutWipeMarker): boolean => {
-  return left.id === right.id && left.createdAtMs === right.createdAtMs && left.cleanupMode === right.cleanupMode;
+const doesPendingLogoutWipeMarkerMatch = (
+  left: PendingLogoutWipeMarker,
+  right: PendingLogoutWipeMarker,
+): boolean => {
+  return (
+    left.id === right.id &&
+    left.createdAtMs === right.createdAtMs &&
+    left.cleanupMode === right.cleanupMode
+  );
 };
 
-const isPendingLogoutWipeMarkerExpired = (marker: PendingLogoutWipeMarker): boolean => {
+const isPendingLogoutWipeMarkerExpired = (
+  marker: PendingLogoutWipeMarker,
+): boolean => {
   const ageMs = Date.now() - marker.createdAtMs;
   if (!Number.isFinite(ageMs)) {
     return true;
@@ -151,7 +184,9 @@ const isPendingLogoutWipeMarkerExpired = (marker: PendingLogoutWipeMarker): bool
 
 const getHandledPendingLogoutWipeIdForTab = (): string => {
   try {
-    return sessionStorage.getItem(LOGOUT_PENDING_WIPE_TAB_ACK_SESSION_KEY) ?? "";
+    return (
+      sessionStorage.getItem(LOGOUT_PENDING_WIPE_TAB_ACK_SESSION_KEY) ?? ""
+    );
   } catch {
     return "";
   }
@@ -182,12 +217,19 @@ const clearPendingLogoutWipeHandledForTab = () => {
   } catch {}
 };
 
-const armPendingLogoutWipe = (signalId: string, cleanupMode: LogoutCleanupMode) => {
+const armPendingLogoutWipe = (
+  signalId: string,
+  cleanupMode: LogoutCleanupMode,
+) => {
   if (!signalId) {
     return;
   }
   const existingMarker = getPendingLogoutWipeMarker();
-  if (existingMarker && existingMarker.id === signalId && existingMarker.cleanupMode === cleanupMode) {
+  if (
+    existingMarker &&
+    existingMarker.id === signalId &&
+    existingMarker.cleanupMode === cleanupMode
+  ) {
     return;
   }
   const payload = JSON.stringify({
@@ -222,8 +264,11 @@ const getLocalStorageKeys = (): string[] => {
   }
 };
 
-const clearLocalStorageForLogout = (options?: { preservePendingLogoutWipe?: boolean }) => {
-  const preservePendingLogoutWipe = options?.preservePendingLogoutWipe !== false;
+const clearLocalStorageForLogout = (options?: {
+  preservePendingLogoutWipe?: boolean;
+}) => {
+  const preservePendingLogoutWipe =
+    options?.preservePendingLogoutWipe !== false;
   getLocalStorageKeys().forEach((key) => {
     if (key === LOGOUT_SYNC_STORAGE_KEY) {
       return;
@@ -243,8 +288,11 @@ const clearSessionStorageForLogout = () => {
   } catch {}
 };
 
-const clearCriticalClientPersistenceForLogout = (options?: { preservePendingLogoutWipe?: boolean }) => {
-  const preservePendingLogoutWipe = options?.preservePendingLogoutWipe !== false;
+const clearCriticalClientPersistenceForLogout = (options?: {
+  preservePendingLogoutWipe?: boolean;
+}) => {
+  const preservePendingLogoutWipe =
+    options?.preservePendingLogoutWipe !== false;
   try {
     storage.signOut();
   } catch {}
@@ -287,7 +335,9 @@ const clearIndexedDbForLogout = async () => {
     const databases = await factory.databases();
     const names = databases
       .map((database) => database.name)
-      .filter((name): name is string => typeof name === "string" && name.length > 0);
+      .filter(
+        (name): name is string => typeof name === "string" && name.length > 0,
+      );
     await Promise.all(names.map((name) => deleteIndexedDbDatabase(name)));
   } catch {}
 };
@@ -308,13 +358,18 @@ const waitFor = (ms: number): Promise<void> => {
   });
 };
 
-const clearClientPersistenceForLogout = async (cleanupMode: LogoutCleanupMode = "fast") => {
+const clearClientPersistenceForLogout = async (
+  cleanupMode: LogoutCleanupMode = "fast",
+) => {
   clearCriticalClientPersistenceForLogout({ preservePendingLogoutWipe: true });
   const heavyCleanupPromise = Promise.all([
     clearIndexedDbForLogout().catch(() => {}),
     clearCacheStorageForLogout().catch(() => {}),
   ]);
-  const preReloadBudgetMs = cleanupMode === "thorough" ? THOROUGH_PRE_RELOAD_CLEANUP_MS : FAST_PRE_RELOAD_CLEANUP_MS;
+  const preReloadBudgetMs =
+    cleanupMode === "thorough"
+      ? THOROUGH_PRE_RELOAD_CLEANUP_MS
+      : FAST_PRE_RELOAD_CLEANUP_MS;
   // Keep reload snappy by bounding pre-reload cleanup time.
   await Promise.race([heavyCleanupPromise, waitFor(preReloadBudgetMs)]);
 };
@@ -331,7 +386,10 @@ export const enforcePendingLogoutWipeIfNeeded = () => {
   if (!hasPersistedAuthenticatedIdentity()) {
     // Avoid wiping anon-mode local state after logout cleanup has already removed auth identity.
     const ageMs = Date.now() - marker.createdAtMs;
-    if (!Number.isFinite(ageMs) || ageMs >= LOGOUT_PENDING_WIPE_UNAUTH_RETENTION_MS) {
+    if (
+      !Number.isFinite(ageMs) ||
+      ageMs >= LOGOUT_PENDING_WIPE_UNAUTH_RETENTION_MS
+    ) {
       clearPendingLogoutWipe();
     }
     return;
@@ -358,7 +416,10 @@ const reloadAfterLogout = () => {
   }, SAFARI_RELOAD_FALLBACK_DELAY_MS);
 };
 
-const handleLogoutSignal = (signal: LogoutSignal, options?: { source?: "logout-signal" | "pending-wipe-marker" }) => {
+const handleLogoutSignal = (
+  signal: LogoutSignal,
+  options?: { source?: "logout-signal" | "pending-wipe-marker" },
+) => {
   if (!signal.id || signal.id === lastHandledSignalId || isHandlingSignal) {
     return;
   }
@@ -379,7 +440,11 @@ const handleLogoutSignal = (signal: LogoutSignal, options?: { source?: "logout-s
 };
 
 const handleSignInSignal = (signal: SignInSignal) => {
-  if (!signal.id || signal.tabId === tabId || signal.id === lastHandledSignInSignalId) {
+  if (
+    !signal.id ||
+    signal.tabId === tabId ||
+    signal.id === lastHandledSignInSignalId
+  ) {
     return;
   }
   lastHandledSignInSignalId = signal.id;
@@ -408,7 +473,10 @@ const getSignInBroadcastChannel = (): BroadcastChannel | null => {
   return signInBroadcastChannel;
 };
 
-const broadcastLogoutSignal = (signalId: string, cleanupMode: LogoutCleanupMode) => {
+const broadcastLogoutSignal = (
+  signalId: string,
+  cleanupMode: LogoutCleanupMode,
+) => {
   const payload = serializeLogoutSignal({ id: signalId, cleanupMode });
   try {
     localStorage.setItem(LOGOUT_SYNC_STORAGE_KEY, payload);
@@ -450,7 +518,10 @@ export const installLogoutSync = () => {
         return;
       }
       const currentMarker = getPendingLogoutWipeMarker();
-      if (!currentMarker || !doesPendingLogoutWipeMarkerMatch(marker, currentMarker)) {
+      if (
+        !currentMarker ||
+        !doesPendingLogoutWipeMarkerMatch(marker, currentMarker)
+      ) {
         // Ignore stale/reordered events that no longer represent current marker state.
         return;
       }
@@ -458,7 +529,10 @@ export const installLogoutSync = () => {
         clearPendingLogoutWipe();
         return;
       }
-      handleLogoutSignal({ id: marker.id, cleanupMode: marker.cleanupMode }, { source: "pending-wipe-marker" });
+      handleLogoutSignal(
+        { id: marker.id, cleanupMode: marker.cleanupMode },
+        { source: "pending-wipe-marker" },
+      );
       return;
     }
     if (event.key === LOGOUT_SYNC_STORAGE_KEY) {
@@ -500,7 +574,9 @@ export const installLogoutSync = () => {
   }
 };
 
-export const performLogoutCleanupAndReload = async (options?: { cleanupMode?: LogoutCleanupMode }) => {
+export const performLogoutCleanupAndReload = async (options?: {
+  cleanupMode?: LogoutCleanupMode;
+}) => {
   const cleanupMode = options?.cleanupMode ?? "fast";
   const signalId = createSignalId();
   lastHandledSignalId = signalId;
@@ -513,7 +589,10 @@ export const performLogoutCleanupAndReload = async (options?: { cleanupMode?: Lo
   }
 };
 
-export const notifyOtherTabsAboutSignIn = (profileId: string, loginId: string) => {
+export const notifyOtherTabsAboutSignIn = (
+  profileId: string,
+  loginId: string,
+) => {
   if (!profileId || !loginId) {
     return;
   }

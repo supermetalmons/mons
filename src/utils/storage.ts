@@ -37,17 +37,28 @@ const STORAGE_KEYS = {
 
 type StorageKey = (typeof STORAGE_KEYS)[keyof typeof STORAGE_KEYS];
 
-const EXTERNAL_USER_STORAGE_KEY_PREFIXES = ["wagmi", "wc@", "walletconnect", "rainbow", "rk-"];
+const EXTERNAL_USER_STORAGE_KEY_PREFIXES = [
+  "wagmi",
+  "wc@",
+  "walletconnect",
+  "rainbow",
+  "rk-",
+];
 const EXTERNAL_USER_STORAGE_KEY_EXACT = ["WALLETCONNECT_DEEPLINK_CHOICE"];
 
 const shouldClearExternalUserStorageKey = (key: string): boolean => {
   if (EXTERNAL_USER_STORAGE_KEY_EXACT.includes(key)) {
     return true;
   }
-  return EXTERNAL_USER_STORAGE_KEY_PREFIXES.some((prefix) => key.startsWith(prefix));
+  return EXTERNAL_USER_STORAGE_KEY_PREFIXES.some((prefix) =>
+    key.startsWith(prefix),
+  );
 };
 
-const removeMatchingStorageKeys = (store: Storage, predicate: (key: string) => boolean): void => {
+const removeMatchingStorageKeys = (
+  store: Storage,
+  predicate: (key: string) => boolean,
+): void => {
   const keysToRemove: string[] = [];
   for (let i = 0; i < store.length; i += 1) {
     const key = store.key(i);
@@ -73,7 +84,10 @@ function setItem<T>(key: StorageKey | string, value: T): void {
     localStorage.removeItem(key);
     return;
   }
-  localStorage.setItem(key, typeof value === "string" ? value : JSON.stringify(value));
+  localStorage.setItem(
+    key,
+    typeof value === "string" ? value : JSON.stringify(value),
+  );
 }
 
 export const storage = {
@@ -93,7 +107,9 @@ export const storage = {
     setItem(STORAGE_KEYS.PREFERRED_ASSETS_SET, value);
   },
 
-  getBoardStyleSet: (defaultValue: BoardStyleSet | null): BoardStyleSet | null => {
+  getBoardStyleSet: (
+    defaultValue: BoardStyleSet | null,
+  ): BoardStyleSet | null => {
     return getItem(STORAGE_KEYS.BOARD_STYLE_SET, defaultValue);
   },
 
@@ -109,11 +125,17 @@ export const storage = {
     setItem(STORAGE_KEYS.BOARD_COLOR_SET, value);
   },
 
-  getBoardColorSetsByTheme: (defaultValue: { light: string | null; dark: string | null }): { light: string | null; dark: string | null } => {
+  getBoardColorSetsByTheme: (defaultValue: {
+    light: string | null;
+    dark: string | null;
+  }): { light: string | null; dark: string | null } => {
     return getItem(STORAGE_KEYS.BOARD_COLOR_SETS_BY_THEME, defaultValue);
   },
 
-  setBoardColorSetsByTheme: (value: { light: string | null; dark: string | null }): void => {
+  setBoardColorSetsByTheme: (value: {
+    light: string | null;
+    dark: string | null;
+  }): void => {
     setItem(STORAGE_KEYS.BOARD_COLOR_SETS_BY_THEME, value);
   },
 
@@ -205,7 +227,9 @@ export const storage = {
     setItem(STORAGE_KEYS.PLAYER_MINING_LAST_ROCK_DATE, value);
   },
 
-  getMiningMaterials: (defaultValue: Record<string, number>): Record<string, number> => {
+  getMiningMaterials: (
+    defaultValue: Record<string, number>,
+  ): Record<string, number> => {
     return getItem(STORAGE_KEYS.PLAYER_MINING_MATERIALS, defaultValue);
   },
 
@@ -330,6 +354,9 @@ export const storage = {
       localStorage.removeItem(key);
     });
     removeMatchingStorageKeys(localStorage, shouldClearExternalUserStorageKey);
-    removeMatchingStorageKeys(sessionStorage, shouldClearExternalUserStorageKey);
+    removeMatchingStorageKeys(
+      sessionStorage,
+      shouldClearExternalUserStorageKey,
+    );
   },
 };

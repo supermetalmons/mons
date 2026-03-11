@@ -1,14 +1,24 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { updateFrozenMaterials, resolveWagerParticipants, removeWagerProposalWithRetry } = require("./wagerHelpers");
+const {
+  updateFrozenMaterials,
+  resolveWagerParticipants,
+  removeWagerProposalWithRetry,
+} = require("./wagerHelpers");
 
 exports.cancelWagerProposal = onCall(async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
 
   const authUid = request.auth.uid;
-  const authProfileId = request.auth.token && request.auth.token.profileId ? request.auth.token.profileId : null;
+  const authProfileId =
+    request.auth.token && request.auth.token.profileId
+      ? request.auth.token.profileId
+      : null;
   const inviteId = request.data && request.data.inviteId;
   const matchId = request.data && request.data.matchId;
   const baseDebug = { authUid, authProfileId, inviteId, matchId };
@@ -17,12 +27,19 @@ exports.cancelWagerProposal = onCall(async (request) => {
     return { ok: false, reason: "invalid-argument", debug: baseDebug };
   }
 
-  const inviteSnap = await admin.database().ref(`invites/${inviteId}`).once("value");
+  const inviteSnap = await admin
+    .database()
+    .ref(`invites/${inviteId}`)
+    .once("value");
   const inviteData = inviteSnap.val();
   if (!inviteData) {
     return { ok: false, reason: "invite-not-found", debug: baseDebug };
   }
-  const inviteDebug = { ...baseDebug, hostId: inviteData.hostId || null, guestId: inviteData.guestId || null };
+  const inviteDebug = {
+    ...baseDebug,
+    hostId: inviteData.hostId || null,
+    guestId: inviteData.guestId || null,
+  };
   if (!inviteData.guestId) {
     return { ok: false, reason: "missing-opponent", debug: inviteDebug };
   }
@@ -33,13 +50,31 @@ exports.cancelWagerProposal = onCall(async (request) => {
   const { playerUid } = resolved;
   const resolvedDebug = { ...inviteDebug, playerUid };
 
-  const removal = await removeWagerProposalWithRetry(inviteId, matchId, playerUid);
+  const removal = await removeWagerProposalWithRetry(
+    inviteId,
+    matchId,
+    playerUid,
+  );
   if (!removal.ok || !removal.removedProposal) {
-    return { ok: false, reason: "proposal-missing", debug: { ...resolvedDebug, removalDebug: removal.debug } };
+    return {
+      ok: false,
+      reason: "proposal-missing",
+      debug: { ...resolvedDebug, removalDebug: removal.debug },
+    };
   }
 
   if (removal.canUnfreeze) {
-    await updateFrozenMaterials(playerUid, { [removal.removedProposal.material]: -removal.removedProposal.count });
+    await updateFrozenMaterials(playerUid, {
+      [removal.removedProposal.material]: -removal.removedProposal.count,
+    });
   }
-  return { ok: true, debug: { ...resolvedDebug, removedProposal: removal.removedProposal, removalDebug: removal.debug, canUnfreeze: removal.canUnfreeze } };
+  return {
+    ok: true,
+    debug: {
+      ...resolvedDebug,
+      removedProposal: removal.removedProposal,
+      removalDebug: removal.debug,
+      canUnfreeze: removal.canUnfreeze,
+    },
+  };
 });

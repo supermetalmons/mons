@@ -1,7 +1,8 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 
-const normalizeString = (value) => (typeof value === "string" && value.trim() !== "" ? value.trim() : null);
+const normalizeString = (value) =>
+  typeof value === "string" && value.trim() !== "" ? value.trim() : null;
 
 const resolveProfileIdForLogin = async (loginUid) => {
   const normalizedLoginUid = normalizeString(loginUid);
@@ -10,7 +11,10 @@ const resolveProfileIdForLogin = async (loginUid) => {
   }
 
   try {
-    const profileSnapshot = await admin.database().ref(`players/${normalizedLoginUid}/profile`).once("value");
+    const profileSnapshot = await admin
+      .database()
+      .ref(`players/${normalizedLoginUid}/profile`)
+      .once("value");
     const profileId = normalizeString(profileSnapshot.val());
     if (profileId) {
       return profileId;
@@ -33,10 +37,13 @@ const resolveProfileIdForLogin = async (loginUid) => {
       return usersSnapshot.docs[0].id;
     }
   } catch (error) {
-    console.error("removeNavigationGame:profile-resolve:firestore-read-failed", {
-      loginUid: normalizedLoginUid,
-      error: error && error.message ? error.message : error,
-    });
+    console.error(
+      "removeNavigationGame:profile-resolve:firestore-read-failed",
+      {
+        loginUid: normalizedLoginUid,
+        error: error && error.message ? error.message : error,
+      },
+    );
   }
 
   return null;
@@ -52,12 +59,18 @@ const getAutomatchStateHint = (inviteId, inviteData, automatchData) => {
   if (normalizeString(inviteData ? inviteData.guestId : null)) {
     return "matched";
   }
-  const marker = normalizeString(inviteData ? inviteData.automatchStateHint : null);
+  const marker = normalizeString(
+    inviteData ? inviteData.automatchStateHint : null,
+  );
   if (marker === "pending" || marker === "matched" || marker === "canceled") {
     return marker;
   }
   const canceledAt = inviteData ? inviteData.automatchCanceledAt : null;
-  if (typeof canceledAt === "number" && Number.isFinite(canceledAt) && canceledAt > 0) {
+  if (
+    typeof canceledAt === "number" &&
+    Number.isFinite(canceledAt) &&
+    canceledAt > 0
+  ) {
     return "canceled";
   }
   return "canceled";
@@ -65,7 +78,10 @@ const getAutomatchStateHint = (inviteId, inviteData, automatchData) => {
 
 exports.removeNavigationGame = onCall(async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
 
   const inviteId = normalizeString(request.data ? request.data.inviteId : null);
@@ -113,8 +129,14 @@ exports.removeNavigationGame = onCall(async (request) => {
     };
   }
 
-  const automatchData = automatchSnapshot.exists() ? automatchSnapshot.val() : null;
-  const automatchStateHint = getAutomatchStateHint(inviteId, inviteData, automatchData);
+  const automatchData = automatchSnapshot.exists()
+    ? automatchSnapshot.val()
+    : null;
+  const automatchStateHint = getAutomatchStateHint(
+    inviteId,
+    inviteData,
+    automatchData,
+  );
   if (automatchStateHint === "pending") {
     return {
       ok: true,
@@ -124,7 +146,12 @@ exports.removeNavigationGame = onCall(async (request) => {
     };
   }
 
-  const gameDocRef = admin.firestore().collection("users").doc(profileId).collection("games").doc(inviteId);
+  const gameDocRef = admin
+    .firestore()
+    .collection("users")
+    .doc(profileId)
+    .collection("games")
+    .doc(inviteId);
 
   let deleted = false;
   let skipReason = "not-found";

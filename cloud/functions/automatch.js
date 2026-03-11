@@ -1,10 +1,19 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
-const { getProfileByLoginId, replaceAutomatchBotMessageByDeletingOriginal, getDisplayNameFromAddress, sendAutomatchBotMessage, getTelegramEmojiTag } = require("./utils");
+const {
+  getProfileByLoginId,
+  replaceAutomatchBotMessageByDeletingOriginal,
+  getDisplayNameFromAddress,
+  sendAutomatchBotMessage,
+  getTelegramEmojiTag,
+} = require("./utils");
 
 exports.automatch = onCall(async (request) => {
   if (!request.auth) {
-    throw new HttpsError("unauthenticated", "The function must be called while authenticated.");
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
   }
 
   const uid = request.auth.uid;
@@ -17,16 +26,50 @@ exports.automatch = onCall(async (request) => {
   const rating = profile.rating ?? 0;
   const hasProfile = profileId !== "";
   const emojiId = hasProfile ? (profile.emoji ?? "") : request.data.emojiId;
-  const name = getDisplayNameFromAddress(username, ethAddress, solAddress, rating, emojiId);
-  const aura = hasProfile ? (profile.aura || null) : (request.data.aura || null);
+  const name = getDisplayNameFromAddress(
+    username,
+    ethAddress,
+    solAddress,
+    rating,
+    emojiId,
+  );
+  const aura = hasProfile ? profile.aura || null : request.data.aura || null;
 
-  console.log("auto:fn:params", { rating, profileId, name, emojiId, aura: aura ? true : false });
-  const automatchAttemptResult = await attemptAutomatch(uid, rating, username, ethAddress, solAddress, profileId, name, emojiId, aura, 0);
+  console.log("auto:fn:params", {
+    rating,
+    profileId,
+    name,
+    emojiId,
+    aura: aura ? true : false,
+  });
+  const automatchAttemptResult = await attemptAutomatch(
+    uid,
+    rating,
+    username,
+    ethAddress,
+    solAddress,
+    profileId,
+    name,
+    emojiId,
+    aura,
+    0,
+  );
   console.log("auto:fn:result", automatchAttemptResult);
   return automatchAttemptResult;
 });
 
-async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, profileId, name, emojiId, aura, retryCount) {
+async function attemptAutomatch(
+  uid,
+  rating,
+  username,
+  ethAddress,
+  solAddress,
+  profileId,
+  name,
+  emojiId,
+  aura,
+  retryCount,
+) {
   const maxRetryCount = 3;
   if (retryCount > maxRetryCount) {
     return { ok: false };
@@ -39,9 +82,22 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
   if (snapshot.exists()) {
     const firstAutomatchId = Object.keys(snapshot.val())[0];
     const existingAutomatchData = snapshot.val()[firstAutomatchId];
-    if (existingAutomatchData.uid !== uid && (profileId === "" || profileId !== existingAutomatchData.profileId)) {
-      console.log("auto:attempt:foundExisting", { inviteId: firstAutomatchId, existingUid: existingAutomatchData.uid, hostColor: existingAutomatchData.hostColor });
-      const existingPlayerName = getDisplayNameFromAddress(existingAutomatchData.username, existingAutomatchData.ethAddress, existingAutomatchData.solAddress, existingAutomatchData.rating, existingAutomatchData.emojiId);
+    if (
+      existingAutomatchData.uid !== uid &&
+      (profileId === "" || profileId !== existingAutomatchData.profileId)
+    ) {
+      console.log("auto:attempt:foundExisting", {
+        inviteId: firstAutomatchId,
+        existingUid: existingAutomatchData.uid,
+        hostColor: existingAutomatchData.hostColor,
+      });
+      const existingPlayerName = getDisplayNameFromAddress(
+        existingAutomatchData.username,
+        existingAutomatchData.ethAddress,
+        existingAutomatchData.solAddress,
+        existingAutomatchData.rating,
+        existingAutomatchData.emojiId,
+      );
 
       const invite = {
         version: controllerVersion,
@@ -63,16 +119,31 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
       };
 
       try {
-        const success = await acceptInvite(firstAutomatchId, invite, match, uid);
-        console.log("auto:accept:done", { inviteId: firstAutomatchId, success });
+        const success = await acceptInvite(
+          firstAutomatchId,
+          invite,
+          match,
+          uid,
+        );
+        console.log("auto:accept:done", {
+          inviteId: firstAutomatchId,
+          success,
+        });
         if (success) {
           const matchLink = `https://mons.link/${firstAutomatchId}`;
           const matchMessage = `${existingPlayerName} vs. ${name} ${matchLink}`;
           try {
             console.log("auto:edit:trigger", { inviteId: firstAutomatchId });
-            replaceAutomatchBotMessageByDeletingOriginal(firstAutomatchId, matchMessage, true);
+            replaceAutomatchBotMessageByDeletingOriginal(
+              firstAutomatchId,
+              matchMessage,
+              true,
+            );
           } catch (e) {
-            console.error("auto:edit:trigger:error", { inviteId: firstAutomatchId, error: e && e.message ? e.message : e });
+            console.error("auto:edit:trigger:error", {
+              inviteId: firstAutomatchId,
+              error: e && e.message ? e.message : e,
+            });
           }
           return {
             ok: true,
@@ -81,11 +152,36 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
             matchedImmediately: true,
           };
         } else {
-          return await attemptAutomatch(uid, rating, username, ethAddress, solAddress, profileId, name, emojiId, aura, retryCount + 1);
+          return await attemptAutomatch(
+            uid,
+            rating,
+            username,
+            ethAddress,
+            solAddress,
+            profileId,
+            name,
+            emojiId,
+            aura,
+            retryCount + 1,
+          );
         }
       } catch (error) {
-        console.error("auto:accept:error", { inviteId: firstAutomatchId, error: error && error.message ? error.message : error });
-        return await attemptAutomatch(uid, rating, username, ethAddress, solAddress, profileId, name, emojiId, aura, retryCount + 1);
+        console.error("auto:accept:error", {
+          inviteId: firstAutomatchId,
+          error: error && error.message ? error.message : error,
+        });
+        return await attemptAutomatch(
+          uid,
+          rating,
+          username,
+          ethAddress,
+          solAddress,
+          profileId,
+          name,
+          emojiId,
+          aura,
+          retryCount + 1,
+        );
       }
     }
     return {
@@ -122,7 +218,18 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
 
     const updates = {};
     updates[`players/${uid}/matches/${inviteId}`] = match;
-    updates[`automatch/${inviteId}`] = { uid: uid, rating: rating, timestamp: admin.database.ServerValue.TIMESTAMP, username: username, ethAddress: ethAddress, solAddress: solAddress, profileId: profileId, hostColor: hostColor, password: password, emojiId: emojiId };
+    updates[`automatch/${inviteId}`] = {
+      uid: uid,
+      rating: rating,
+      timestamp: admin.database.ServerValue.TIMESTAMP,
+      username: username,
+      ethAddress: ethAddress,
+      solAddress: solAddress,
+      profileId: profileId,
+      hostColor: hostColor,
+      password: password,
+      emojiId: emojiId,
+    };
     updates[`invites/${inviteId}`] = invite;
     await admin.database().ref().update(updates);
     console.log("auto:create:db:ok", { inviteId });
@@ -133,7 +240,10 @@ async function attemptAutomatch(uid, rating, username, ethAddress, solAddress, p
       console.log("auto:send:trigger", { inviteId });
       sendAutomatchBotMessage(inviteId, message, false, true, name);
     } catch (e) {
-      console.error("auto:send:trigger:error", { inviteId, error: e && e.message ? e.message : e });
+      console.error("auto:send:trigger:error", {
+        inviteId,
+        error: e && e.message ? e.message : e,
+      });
     }
 
     return {
@@ -155,14 +265,17 @@ async function acceptInvite(firstAutomatchId, invite, match, uid) {
   };
   updates[`players/${uid}/matches/${firstAutomatchId}`] = match;
   await admin.database().ref().update(updates);
-  const guestIdRef = admin.database().ref(`invites/${firstAutomatchId}/guestId`);
+  const guestIdRef = admin
+    .database()
+    .ref(`invites/${firstAutomatchId}/guestId`);
   const guestIdSnapshot = await guestIdRef.once("value");
   const finalGuestId = guestIdSnapshot.val();
   return finalGuestId === uid;
 }
 
 function generateRandomString(length) {
-  const letters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+  const letters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
   let result = "";
   for (let i = 0; i < length; i++) {
     result += letters.charAt(Math.floor(Math.random() * letters.length));
@@ -176,4 +289,5 @@ function generateInviteId() {
 
 const hostColor = Math.random() < 0.5 ? "white" : "black";
 const controllerVersion = 2;
-const initialFen = "0 0 w 0 0 0 0 0 1 n03y0xs0xd0xa0xe0xn03/n11/n11/n04xxmn01xxmn04/n03xxmn01xxmn01xxmn03/xxQn04xxUn04xxQ/n03xxMn01xxMn01xxMn03/n04xxMn01xxMn04/n11/n11/n03E0xA0xD0xS0xY0xn03";
+const initialFen =
+  "0 0 w 0 0 0 0 0 1 n03y0xs0xd0xa0xe0xn03/n11/n11/n04xxmn01xxmn04/n03xxmn01xxmn01xxmn03/xxQn04xxUn04xxQ/n03xxMn01xxMn01xxMn03/n04xxMn01xxMn04/n11/n11/n03E0xA0xD0xS0xY0xn03";

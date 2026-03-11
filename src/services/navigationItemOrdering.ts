@@ -1,4 +1,7 @@
-import { NavigationItem, NavigationItemStatus } from "../connection/connectionModels";
+import {
+  NavigationItem,
+  NavigationItemStatus,
+} from "../connection/connectionModels";
 
 const getNavigationStatusPriority = (status: NavigationItemStatus): number => {
   if (status === "pending") {
@@ -13,7 +16,10 @@ const getNavigationStatusPriority = (status: NavigationItemStatus): number => {
   return 3;
 };
 
-export const compareNavigationItems = (left: NavigationItem, right: NavigationItem): number => {
+export const compareNavigationItems = (
+  left: NavigationItem,
+  right: NavigationItem,
+): number => {
   const leftPriority = getNavigationStatusPriority(left.status);
   const rightPriority = getNavigationStatusPriority(right.status);
   if (leftPriority !== rightPriority) {

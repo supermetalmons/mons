@@ -49,9 +49,18 @@ export interface HistoricalMatchPair {
   guestMatch: Match | null;
 }
 
-export type NavigationItemStatus = "pending" | "waiting" | "active" | "ended" | "dismissed";
+export type NavigationItemStatus =
+  | "pending"
+  | "waiting"
+  | "active"
+  | "ended"
+  | "dismissed";
 export type NavigationGameStatus = "pending" | "waiting" | "active" | "ended";
-export type NavigationEventStatus = "waiting" | "active" | "ended" | "dismissed";
+export type NavigationEventStatus =
+  | "waiting"
+  | "active"
+  | "ended"
+  | "dismissed";
 export type EventStatus = "scheduled" | "active" | "ended" | "dismissed";
 export type EventParticipantState = "active" | "eliminated" | "winner";
 export type EventMatchStatus = "pending" | "host" | "guest";
@@ -173,7 +182,13 @@ export interface InviteReaction extends Reaction {
   matchId: string;
 }
 
-export const MINING_MATERIAL_NAMES = ["dust", "slime", "gum", "metal", "ice"] as const;
+export const MINING_MATERIAL_NAMES = [
+  "dust",
+  "slime",
+  "gum",
+  "metal",
+  "ice",
+] as const;
 
 export type MiningMaterialName = (typeof MINING_MATERIAL_NAMES)[number];
 

@@ -3,7 +3,12 @@ import styled from "styled-components";
 import { problems, getCompletedProblemIds } from "../content/problems";
 import { useGameAssets } from "../hooks/useGameAssets";
 import { FaCheck, FaCircle } from "react-icons/fa";
-import { NavigationGameItem, NavigationGameStatus, NavigationItem, NavigationEventItem } from "../connection/connectionModels";
+import {
+  NavigationGameItem,
+  NavigationGameStatus,
+  NavigationItem,
+  NavigationEventItem,
+} from "../connection/connectionModels";
 import { emojis } from "../content/emojis";
 
 interface NavigationPickerProps {
@@ -16,7 +21,10 @@ interface NavigationPickerProps {
   isGamesLoading?: boolean;
   isLoadingMoreGames?: boolean;
   hasMoreGames?: boolean;
-  onSelectGame?: (item: NavigationItem, options?: { status?: NavigationGameStatus }) => void;
+  onSelectGame?: (
+    item: NavigationItem,
+    options?: { status?: NavigationGameStatus },
+  ) => void;
   onRemoveGame?: (inviteId: string) => void;
   removingGameInviteIds?: Set<string>;
   onSelectProblem: (problemId: string) => void;
@@ -76,7 +84,8 @@ const SectionSeparator = styled.div`
 `;
 
 const NavigationPickerButton = styled.button<{ $isSelected?: boolean }>`
-  background: ${(props) => (props.$isSelected ? "rgba(117, 187, 255, 0.22)" : "transparent")};
+  background: ${(props) =>
+    props.$isSelected ? "rgba(117, 187, 255, 0.22)" : "transparent"};
   border-radius: 0;
   font-size: 0.8rem;
   border: none;
@@ -92,31 +101,46 @@ const NavigationPickerButton = styled.button<{ $isSelected?: boolean }>`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.$isSelected ? "rgba(117, 187, 255, 0.30)" : "var(--interactiveHoverBackgroundLight)")};
+      background-color: ${(props) =>
+        props.$isSelected
+          ? "rgba(117, 187, 255, 0.30)"
+          : "var(--interactiveHoverBackgroundLight)"};
     }
   }
 
   &:active {
-    background-color: ${(props) => (props.$isSelected ? "rgba(117, 187, 255, 0.38)" : "var(--interactiveActiveBackgroundLight)")};
+    background-color: ${(props) =>
+      props.$isSelected
+        ? "rgba(117, 187, 255, 0.38)"
+        : "var(--interactiveActiveBackgroundLight)"};
   }
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-gray-f0);
-    background: ${(props) => (props.$isSelected ? "rgba(75, 150, 255, 0.24)" : "transparent")};
+    background: ${(props) =>
+      props.$isSelected ? "rgba(75, 150, 255, 0.24)" : "transparent"};
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.$isSelected ? "rgba(75, 150, 255, 0.34)" : "var(--interactiveHoverBackgroundDark)")};
+        background-color: ${(props) =>
+          props.$isSelected
+            ? "rgba(75, 150, 255, 0.34)"
+            : "var(--interactiveHoverBackgroundDark)"};
       }
     }
 
     &:active {
-      background-color: ${(props) => (props.$isSelected ? "rgba(75, 150, 255, 0.42)" : "var(--interactiveActiveBackgroundDark)")};
+      background-color: ${(props) =>
+        props.$isSelected
+          ? "rgba(75, 150, 255, 0.42)"
+          : "var(--interactiveActiveBackgroundDark)"};
     }
   }
 `;
 
-const GameRow = styled(NavigationPickerButton)<{ $hasTrailingAction?: boolean }>`
+const GameRow = styled(NavigationPickerButton)<{
+  $hasTrailingAction?: boolean;
+}>`
   width: 100%;
   min-width: 0;
   padding-right: ${(props) => (props.$hasTrailingAction ? "32px" : "12px")};
@@ -230,11 +254,17 @@ const QueuePrimaryContent = styled.span`
 const GameStatus = styled.span<{ $isSelected?: boolean }>`
   margin-left: auto;
   font-size: 0.52rem;
-  color: ${(props) => (props.$isSelected ? "var(--color-blue-primary)" : "var(--navigationTextMuted)")};
+  color: ${(props) =>
+    props.$isSelected
+      ? "var(--color-blue-primary)"
+      : "var(--navigationTextMuted)"};
   text-transform: uppercase;
 
   @media (prefers-color-scheme: dark) {
-    color: ${(props) => (props.$isSelected ? "var(--color-blue-primary-dark)" : "var(--navigationTextMuted)")};
+    color: ${(props) =>
+      props.$isSelected
+        ? "var(--color-blue-primary-dark)"
+        : "var(--navigationTextMuted)"};
   }
 `;
 
@@ -263,13 +293,19 @@ const GameRemoveButton = styled.button<{ $isDisabled?: boolean }>`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background-color: ${(props) => (props.$isDisabled ? "transparent" : "var(--interactiveHoverBackgroundLight)")};
+      background-color: ${(props) =>
+        props.$isDisabled
+          ? "transparent"
+          : "var(--interactiveHoverBackgroundLight)"};
       color: var(--color-gray-33);
     }
   }
 
   &:active {
-    background-color: ${(props) => (props.$isDisabled ? "transparent" : "var(--interactiveActiveBackgroundLight)")};
+    background-color: ${(props) =>
+      props.$isDisabled
+        ? "transparent"
+        : "var(--interactiveActiveBackgroundLight)"};
   }
 
   @media (prefers-color-scheme: dark) {
@@ -277,13 +313,19 @@ const GameRemoveButton = styled.button<{ $isDisabled?: boolean }>`
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background-color: ${(props) => (props.$isDisabled ? "transparent" : "var(--interactiveHoverBackgroundDark)")};
+        background-color: ${(props) =>
+          props.$isDisabled
+            ? "transparent"
+            : "var(--interactiveHoverBackgroundDark)"};
         color: var(--color-gray-f0);
       }
     }
 
     &:active {
-      background-color: ${(props) => (props.$isDisabled ? "transparent" : "var(--interactiveActiveBackgroundDark)")};
+      background-color: ${(props) =>
+        props.$isDisabled
+          ? "transparent"
+          : "var(--interactiveActiveBackgroundDark)"};
     }
   }
 `;
@@ -399,47 +441,68 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     navigateHome?.(e);
   };
 
-  const maybeLoadMoreGames = useCallback((container: HTMLDivElement | null, source: "scroll" | "effect") => {
-    if (!container || !onLoadMoreGames || !hasMoreGames || isGamesLoading || isLoadingMoreGames || isAutoLoadPendingRef.current) {
-      return;
-    }
+  const maybeLoadMoreGames = useCallback(
+    (container: HTMLDivElement | null, source: "scroll" | "effect") => {
+      if (
+        !container ||
+        !onLoadMoreGames ||
+        !hasMoreGames ||
+        isGamesLoading ||
+        isLoadingMoreGames ||
+        isAutoLoadPendingRef.current
+      ) {
+        return;
+      }
 
-    const isScrollable = container.scrollHeight > container.clientHeight + 1;
-    if (!hasUserScrolledRef.current && isScrollable) {
-      return;
-    }
+      const isScrollable = container.scrollHeight > container.clientHeight + 1;
+      if (!hasUserScrolledRef.current && isScrollable) {
+        return;
+      }
 
-    if (hasUserScrolledRef.current && source === "effect" && !canRunOneFollowUpLoadRef.current) {
-      return;
-    }
+      if (
+        hasUserScrolledRef.current &&
+        source === "effect" &&
+        !canRunOneFollowUpLoadRef.current
+      ) {
+        return;
+      }
 
-    const thresholdPx = Math.max(MIN_AUTO_LOAD_NEXT_PAGE_THRESHOLD_PX, container.clientHeight * 2);
-    const remainingScroll = container.scrollHeight - container.scrollTop - container.clientHeight;
-    if (remainingScroll > thresholdPx) {
-      return;
-    }
+      const thresholdPx = Math.max(
+        MIN_AUTO_LOAD_NEXT_PAGE_THRESHOLD_PX,
+        container.clientHeight * 2,
+      );
+      const remainingScroll =
+        container.scrollHeight - container.scrollTop - container.clientHeight;
+      if (remainingScroll > thresholdPx) {
+        return;
+      }
 
-    if (source === "scroll" && hasUserScrolledRef.current) {
-      canRunOneFollowUpLoadRef.current = true;
-    } else if (source === "effect") {
-      canRunOneFollowUpLoadRef.current = false;
-    }
+      if (source === "scroll" && hasUserScrolledRef.current) {
+        canRunOneFollowUpLoadRef.current = true;
+      } else if (source === "effect") {
+        canRunOneFollowUpLoadRef.current = false;
+      }
 
-    isAutoLoadPendingRef.current = true;
-    onLoadMoreGames();
-  }, [hasMoreGames, isGamesLoading, isLoadingMoreGames, onLoadMoreGames]);
+      isAutoLoadPendingRef.current = true;
+      onLoadMoreGames();
+    },
+    [hasMoreGames, isGamesLoading, isLoadingMoreGames, onLoadMoreGames],
+  );
 
-  const handleScrollableListScroll = useCallback((event: React.UIEvent<HTMLDivElement>) => {
-    if (isIgnoringInitialProgrammaticScrollRef.current) {
-      isIgnoringInitialProgrammaticScrollRef.current = false;
-      return;
-    }
+  const handleScrollableListScroll = useCallback(
+    (event: React.UIEvent<HTMLDivElement>) => {
+      if (isIgnoringInitialProgrammaticScrollRef.current) {
+        isIgnoringInitialProgrammaticScrollRef.current = false;
+        return;
+      }
 
-    if (event.currentTarget.scrollTop > 0) {
-      hasUserScrolledRef.current = true;
-    }
-    maybeLoadMoreGames(event.currentTarget, "scroll");
-  }, [maybeLoadMoreGames]);
+      if (event.currentTarget.scrollTop > 0) {
+        hasUserScrolledRef.current = true;
+      }
+      maybeLoadMoreGames(event.currentTarget, "scroll");
+    },
+    [maybeLoadMoreGames],
+  );
 
   useEffect(() => {
     if (!isLoadingMoreGames) {
@@ -464,9 +527,12 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
       return;
     }
 
-    const selectedElement = container.querySelector<HTMLElement>("[data-navigation-selected-primary='true']")
-      ?? container.querySelector<HTMLElement>("[data-navigation-active='true']")
-      ?? container.querySelector<HTMLElement>("[data-navigation-selected='true']");
+    const selectedElement =
+      container.querySelector<HTMLElement>(
+        "[data-navigation-selected-primary='true']",
+      ) ??
+      container.querySelector<HTMLElement>("[data-navigation-active='true']") ??
+      container.querySelector<HTMLElement>("[data-navigation-selected='true']");
     if (!selectedElement) {
       return;
     }
@@ -476,7 +542,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
 
     let nextScrollTop = container.scrollTop;
     const topLimit = containerRect.top + SELECTED_ITEM_VISIBILITY_MARGIN_PX;
-    const bottomLimit = containerRect.bottom - SELECTED_ITEM_VISIBILITY_MARGIN_PX;
+    const bottomLimit =
+      containerRect.bottom - SELECTED_ITEM_VISIBILITY_MARGIN_PX;
 
     if (selectedRect.top < topLimit) {
       nextScrollTop -= topLimit - selectedRect.top;
@@ -486,7 +553,10 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
       return;
     }
 
-    const maxScrollTop = Math.max(0, container.scrollHeight - container.clientHeight);
+    const maxScrollTop = Math.max(
+      0,
+      container.scrollHeight - container.clientHeight,
+    );
     const clampedScrollTop = Math.max(0, Math.min(nextScrollTop, maxScrollTop));
     if (Math.abs(clampedScrollTop - container.scrollTop) < 1) {
       return;
@@ -519,7 +589,9 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
       return "active";
     }
     if (game.status === "ended") {
-      const lastUpdateMs = Number.isFinite(game.listSortAtMs) ? Math.floor(game.listSortAtMs) : 0;
+      const lastUpdateMs = Number.isFinite(game.listSortAtMs)
+        ? Math.floor(game.listSortAtMs)
+        : 0;
       if (lastUpdateMs < MIN_REASONABLE_EPOCH_MS) {
         return "long ago";
       }
@@ -549,7 +621,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
 
   const getEventStatusLabel = (event: NavigationEventItem): string => {
     if (event.status === "ended" || event.status === "dismissed") {
-      const sourceMs = event.endedAtMs ?? event.updatedAtMs ?? event.listSortAtMs;
+      const sourceMs =
+        event.endedAtMs ?? event.updatedAtMs ?? event.listSortAtMs;
       if (!Number.isFinite(sourceMs) || sourceMs < MIN_REASONABLE_EPOCH_MS) {
         return "long ago";
       }
@@ -575,19 +648,29 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   };
 
   const completedProblemsSet = getCompletedProblemIds();
-  const firstUncompletedIndex = problems.findIndex((problem) => !completedProblemsSet.has(problem.id));
+  const firstUncompletedIndex = problems.findIndex(
+    (problem) => !completedProblemsSet.has(problem.id),
+  );
 
-  const visibleTopGames = topGames.filter((item) => !(item.entityType === "event" && item.status === "dismissed"));
-  const visiblePagedGames = pagedGames.filter((item) => !(item.entityType === "event" && item.status === "dismissed"));
+  const visibleTopGames = topGames.filter(
+    (item) => !(item.entityType === "event" && item.status === "dismissed"),
+  );
+  const visiblePagedGames = pagedGames.filter(
+    (item) => !(item.entityType === "event" && item.status === "dismissed"),
+  );
 
   const shouldRenderTopGamesSection = visibleTopGames.length > 0;
   const shouldRenderPagedGamesSection = visiblePagedGames.length > 0;
   const shouldRenderLearnSection = true;
-  const hasScrollableContent = shouldRenderLearnSection || shouldRenderTopGamesSection || shouldRenderPagedGamesSection;
+  const hasScrollableContent =
+    shouldRenderLearnSection ||
+    shouldRenderTopGamesSection ||
+    shouldRenderPagedGamesSection;
 
   const renderEventPreview = (event: NavigationEventItem) => {
-    const validParticipants = event.participantPreview
-      .filter((participant) => typeof participant.emojiId === "number");
+    const validParticipants = event.participantPreview.filter(
+      (participant) => typeof participant.emojiId === "number",
+    );
     const showBadge = event.participantCount > 6;
     const maxVisible = showBadge ? 5 : 6;
     const preview = validParticipants.slice(0, maxVisible);
@@ -601,7 +684,9 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
             alt=""
           />
         ))}
-        {showBadge && overflow > 0 && <EventOverflowBadge>+{overflow}</EventOverflowBadge>}
+        {showBadge && overflow > 0 && (
+          <EventOverflowBadge>+{overflow}</EventOverflowBadge>
+        )}
       </EventAvatarStack>
     );
   };
@@ -614,10 +699,14 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
         const isSelected = isGame && isActiveItem;
         const game = isGame ? item : null;
         const event = item.entityType === "event" ? item : null;
-        const isQueueStatus = !!game && (game.status === "waiting" || game.status === "pending");
+        const isQueueStatus =
+          !!game && (game.status === "waiting" || game.status === "pending");
         const canRemove = !!game && game.status === "waiting" && !!onRemoveGame;
-        const isRemoving = !!game && !!removingGameInviteIds?.has(game.inviteId);
-        const handleRemoveClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        const isRemoving =
+          !!game && !!removingGameInviteIds?.has(game.inviteId);
+        const handleRemoveClick = (
+          event: React.MouseEvent<HTMLButtonElement>,
+        ) => {
           event.preventDefault();
           event.stopPropagation();
           if (!isRemoving && game) {
@@ -632,34 +721,61 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
               data-navigation-active={isActiveItem ? "true" : undefined}
               data-navigation-selected={isSelected ? "true" : undefined}
               data-navigation-selected-primary={isSelected ? "true" : undefined}
-              onClick={() => onSelectGame?.(item, isGame ? { status: item.status } : undefined)}
+              onClick={() =>
+                onSelectGame?.(
+                  item,
+                  isGame ? { status: item.status } : undefined,
+                )
+              }
             >
               {isQueueStatus && game ? (
                 <>
                   <QueueManaCluster aria-hidden="true">
                     {QUEUE_MANA_SLOTS.map((slot) => (
-                      <QueueManaIcon key={slot} $slot={slot} src={queueManaImage} alt="" />
+                      <QueueManaIcon
+                        key={slot}
+                        $slot={slot}
+                        src={queueManaImage}
+                        alt=""
+                      />
                     ))}
                   </QueueManaCluster>
-                  <QueuePrimaryContent>{getQueuePrimaryLabel(game)}</QueuePrimaryContent>
+                  <QueuePrimaryContent>
+                    {getQueuePrimaryLabel(game)}
+                  </QueuePrimaryContent>
                 </>
               ) : event ? (
                 <>
                   {renderEventPreview(event)}
-                  {event.status === "active" ? <UncompletedIcon /> : <GameStatus $isSelected={isSelected}>{getEventStatusLabel(event)}</GameStatus>}
+                  {event.status === "active" ? (
+                    <UncompletedIcon />
+                  ) : (
+                    <GameStatus $isSelected={isSelected}>
+                      {getEventStatusLabel(event)}
+                    </GameStatus>
+                  )}
                 </>
               ) : game ? (
                 <>
                   {typeof game.opponentEmoji === "number" ? (
-                    <GameEmojiImage src={emojis.getEmojiUrl(game.opponentEmoji.toString())} alt="" />
+                    <GameEmojiImage
+                      src={emojis.getEmojiUrl(game.opponentEmoji.toString())}
+                      alt=""
+                    />
                   ) : (
                     <GameEmojiPlaceholder />
                   )}
-                  <GameText>{game.opponentName && game.opponentName !== "" ? game.opponentName : "anon"}</GameText>
+                  <GameText>
+                    {game.opponentName && game.opponentName !== ""
+                      ? game.opponentName
+                      : "anon"}
+                  </GameText>
                   {game.status === "active" ? (
                     <UncompletedIcon />
                   ) : (
-                    <GameStatus $isSelected={isSelected}>{getGameStatusLabel(game)}</GameStatus>
+                    <GameStatus $isSelected={isSelected}>
+                      {getGameStatusLabel(game)}
+                    </GameStatus>
                   )}
                 </>
               ) : null}
@@ -690,13 +806,16 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
             key={item.id}
             $isSelected={isSelected}
             data-navigation-selected={isSelected ? "true" : undefined}
-            data-navigation-selected-primary={!selectedNavigationItemId && isSelected ? "true" : undefined}
+            data-navigation-selected-primary={
+              !selectedNavigationItemId && isSelected ? "true" : undefined
+            }
             onClick={() => handleNavigationSelect(item.id)}
           >
             <PlaceholderImage src={getIconImage(item.icon)} alt="" />
             {item.label}
             {completedProblemsSet.has(item.id) && <CompletedIcon />}
-            {!completedProblemsSet.has(item.id) && index === firstUncompletedIndex && <UncompletedIcon />}
+            {!completedProblemsSet.has(item.id) &&
+              index === firstUncompletedIndex && <UncompletedIcon />}
           </NavigationPickerButton>
         );
       })}
@@ -704,18 +823,31 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   );
 
   return (
-    <NavigationPickerContainer ref={navigationPickerRef} onTouchMove={preventScroll}>
+    <NavigationPickerContainer
+      ref={navigationPickerRef}
+      onTouchMove={preventScroll}
+    >
       {hasScrollableContent && (
-        <ScrollableList ref={scrollableListRef} onScroll={handleScrollableListScroll}>
+        <ScrollableList
+          ref={scrollableListRef}
+          onScroll={handleScrollableListScroll}
+        >
           {shouldRenderTopGamesSection && renderGameRows(visibleTopGames)}
-          {shouldRenderLearnSection && shouldRenderTopGamesSection && <SectionSeparator />}
+          {shouldRenderLearnSection && shouldRenderTopGamesSection && (
+            <SectionSeparator />
+          )}
           {shouldRenderLearnSection && renderLearnSection()}
-          {shouldRenderLearnSection && shouldRenderPagedGamesSection && <SectionSeparator />}
+          {shouldRenderLearnSection && shouldRenderPagedGamesSection && (
+            <SectionSeparator />
+          )}
           {shouldRenderPagedGamesSection && renderGameRows(visiblePagedGames)}
         </ScrollableList>
       )}
       {showsHomeNavigation && (
-        <HomeBoardButton onClick={handleHomeClick} $withTopBorder={hasScrollableContent}>
+        <HomeBoardButton
+          onClick={handleHomeClick}
+          $withTopBorder={hasScrollableContent}
+        >
           Home Board →
         </HomeBoardButton>
       )}
