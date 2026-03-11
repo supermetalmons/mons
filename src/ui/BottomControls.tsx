@@ -470,6 +470,20 @@ const RematchSeriesInlineControl = styled.div`
   -webkit-mask-image: linear-gradient(to left, transparent 0px, black 6px);
 `;
 
+const LeftCornerInlineControls = styled.div`
+  flex: 1 1 0;
+  min-width: 0;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+
+  > * {
+    pointer-events: auto;
+  }
+`;
+
 const RematchSeriesScroll = styled.div`
   width: 100%;
   height: 100%;
@@ -3143,10 +3157,9 @@ const BottomControls: React.FC = () => {
         if (disposed) {
           return;
         }
-        const nextAvatars = mapEventRecordToNavigationPreview(eventRecord).slice(
-          0,
-          6,
-        );
+        const nextAvatars = mapEventRecordToNavigationPreview(
+          eventRecord,
+        ).slice(0, 6);
         setLiveEventCloudAvatars((previousAvatars) =>
           areEventPreviewParticipantsEqual(previousAvatars, nextAvatars)
             ? previousAvatars
@@ -3238,29 +3251,103 @@ const BottomControls: React.FC = () => {
         <MoveHistoryPopup ref={moveHistoryPopupRef} />
       )}
       <ControlsContainer ref={controlsContainerRef}>
-        {hasRematchSeriesNavigation && (
-          <RematchSeriesInlineControl>
-            <RematchSeriesScroll>
-              <RematchSeriesTrack>
-                {rematchSeriesItems.map((seriesItem, idx, arr) => (
-                  <React.Fragment key={seriesItem.matchId}>
-                    <RematchSeriesChip
-                      $isSelected={seriesItem.isSelected}
-                      disabled={isRematchSeriesSelectionInFlight}
-                      onClick={() =>
-                        void handleRematchSeriesChipClick(seriesItem.matchId)
-                      }
-                    >
-                      {renderRematchSeriesChipContent(seriesItem)}
-                    </RematchSeriesChip>
-                    {idx < arr.length - 1 && (
-                      <RematchSeriesSeparator $hidden={false} />
-                    )}
-                  </React.Fragment>
-                ))}
-              </RematchSeriesTrack>
-            </RematchSeriesScroll>
-          </RematchSeriesInlineControl>
+        {(isEventGameButtonVisible || hasRematchSeriesNavigation) && (
+          <LeftCornerInlineControls>
+            {isEventGameButtonVisible && (
+              <EventCloudButtonOuter
+                onClick={
+                  !isMobile
+                    ? () =>
+                        openEventModal(currentInviteEventId as string, {
+                          restoreHomeOnClose: false,
+                        })
+                    : undefined
+                }
+                onTouchStart={
+                  isMobile
+                    ? () =>
+                        openEventModal(currentInviteEventId as string, {
+                          restoreHomeOnClose: false,
+                        })
+                    : undefined
+                }
+                aria-label="Event"
+              >
+                <svg
+                  width={CLOUD_VISUAL_SIZE}
+                  height={CLOUD_VISUAL_SIZE}
+                  viewBox={`0 0 ${CLOUD_VISUAL_SIZE} ${CLOUD_VISUAL_SIZE}`}
+                  style={{
+                    position: "absolute",
+                    top: "50%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    overflow: "visible",
+                    pointerEvents: "none",
+                  }}
+                  aria-hidden="true"
+                >
+                  <EventCloudShape d={EVENT_CLOUD_PATH} />
+                </svg>
+                {(
+                  CLOUD_AVATAR_LAYOUTS[Math.min(eventCloudAvatars.length, 6)] ??
+                  CLOUD_AVATAR_LAYOUTS[0]
+                ).map((slot, i) => {
+                  const participant = eventCloudAvatars[i];
+                  const emojiId =
+                    participant?.emojiId != null
+                      ? Number(participant.emojiId)
+                      : NaN;
+                  const posStyle = {
+                    width: CLOUD_AVATAR_SIZE,
+                    height: CLOUD_AVATAR_SIZE,
+                    left: slot.x - CLOUD_AVATAR_SIZE / 2 + CLOUD_INSET,
+                    top: slot.y - CLOUD_AVATAR_SIZE / 2 + CLOUD_INSET,
+                    transform: `rotate(${slot.r}deg)`,
+                  };
+                  if (Number.isFinite(emojiId) && emojiId > 0) {
+                    return (
+                      <EventCloudAvatar
+                        key={i}
+                        src={emojis.getEmojiUrl(Math.trunc(emojiId).toString())}
+                        alt=""
+                        style={posStyle}
+                      />
+                    );
+                  }
+                  return (
+                    <EventCloudAvatarPlaceholder key={i} style={posStyle} />
+                  );
+                })}
+              </EventCloudButtonOuter>
+            )}
+            {hasRematchSeriesNavigation && (
+              <RematchSeriesInlineControl>
+                <RematchSeriesScroll>
+                  <RematchSeriesTrack>
+                    {rematchSeriesItems.map((seriesItem, idx, arr) => (
+                      <React.Fragment key={seriesItem.matchId}>
+                        <RematchSeriesChip
+                          $isSelected={seriesItem.isSelected}
+                          disabled={isRematchSeriesSelectionInFlight}
+                          onClick={() =>
+                            void handleRematchSeriesChipClick(
+                              seriesItem.matchId,
+                            )
+                          }
+                        >
+                          {renderRematchSeriesChipContent(seriesItem)}
+                        </RematchSeriesChip>
+                        {idx < arr.length - 1 && (
+                          <RematchSeriesSeparator $hidden={false} />
+                        )}
+                      </React.Fragment>
+                    ))}
+                  </RematchSeriesTrack>
+                </RematchSeriesScroll>
+              </RematchSeriesInlineControl>
+            )}
+          </LeftCornerInlineControls>
         )}
         {isEndMatchPillVisible && (
           <BottomPillButton
@@ -3477,78 +3564,6 @@ const BottomControls: React.FC = () => {
           >
             <FaFlag />
           </ControlButton>
-        )}
-        {isEventGameButtonVisible && (
-          <EventCloudButtonOuter
-            onClick={
-              !isMobile
-                ? () =>
-                    openEventModal(currentInviteEventId as string, {
-                      restoreHomeOnClose: false,
-                    })
-                : undefined
-            }
-            onTouchStart={
-              isMobile
-                ? () =>
-                    openEventModal(currentInviteEventId as string, {
-                      restoreHomeOnClose: false,
-                    })
-                : undefined
-            }
-            aria-label="Event"
-          >
-            <svg
-              width={CLOUD_VISUAL_SIZE}
-              height={CLOUD_VISUAL_SIZE}
-              viewBox={`0 0 ${CLOUD_VISUAL_SIZE} ${CLOUD_VISUAL_SIZE}`}
-              style={{
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-                overflow: "visible",
-                pointerEvents: "none",
-              }}
-              aria-hidden="true"
-            >
-              <EventCloudShape d={EVENT_CLOUD_PATH} />
-            </svg>
-            {(
-              CLOUD_AVATAR_LAYOUTS[
-                Math.min(eventCloudAvatars.length, 6)
-              ] ?? CLOUD_AVATAR_LAYOUTS[0]
-            ).map((slot, i) => {
-              const participant = eventCloudAvatars[i];
-              const emojiId =
-                participant?.emojiId != null
-                  ? Number(participant.emojiId)
-                  : NaN;
-              const posStyle = {
-                width: CLOUD_AVATAR_SIZE,
-                height: CLOUD_AVATAR_SIZE,
-                left: slot.x - CLOUD_AVATAR_SIZE / 2 + CLOUD_INSET,
-                top: slot.y - CLOUD_AVATAR_SIZE / 2 + CLOUD_INSET,
-                transform: `rotate(${slot.r}deg)`,
-              };
-              if (Number.isFinite(emojiId) && emojiId > 0) {
-                return (
-                  <EventCloudAvatar
-                    key={i}
-                    src={emojis.getEmojiUrl(Math.trunc(emojiId).toString())}
-                    alt=""
-                    style={posStyle}
-                  />
-                );
-              }
-              return (
-                <EventCloudAvatarPlaceholder
-                  key={i}
-                  style={posStyle}
-                />
-              );
-            })}
-          </EventCloudButtonOuter>
         )}
         <NavigationListButton
           ref={navigationButtonRef}
