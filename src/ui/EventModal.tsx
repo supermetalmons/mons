@@ -39,12 +39,16 @@ const Overlay = styled.div`
   align-items: center;
   justify-content: center;
   padding: 20px;
-  background: var(--modalOverlayBackground);
+  background: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
 
-  @media (prefers-color-scheme: dark) {
-    background: var(--modalOverlayBackgroundDark);
+  @media (prefers-color-scheme: dark) and (hover: none) and (pointer: coarse) {
+    background: rgba(15, 15, 15, 0.11);
+  }
+
+  @media (prefers-color-scheme: light) {
+    background: rgba(0, 0, 0, 0.01);
   }
 `;
 
@@ -54,7 +58,6 @@ const ModalCard = styled.div`
   overflow: hidden;
   border-radius: 16px;
   background: var(--color-white);
-  box-shadow: 0 6px 20px var(--standardBoxShadow);
 
   @media (prefers-color-scheme: dark) {
     background: var(--color-deep-gray);
