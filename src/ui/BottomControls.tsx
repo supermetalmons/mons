@@ -638,8 +638,8 @@ const RematchLoadingDots = styled.span<{ $isSelected: boolean }>`
 
 const EventCloudButtonOuter = styled.button`
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: 36px;
+  height: 36px;
   border: none;
   background: transparent;
   padding: 0;
@@ -687,9 +687,12 @@ const EventCloudAvatarPlaceholder = styled.div`
 
 type CloudAvatarSlot = { x: number; y: number; r: number };
 
-const CLOUD_VISUAL_SIZE = 38;
-const CLOUD_INSET = (32 - CLOUD_VISUAL_SIZE) / 2;
+const CLOUD_VISUAL_SIZE = 48;
+const CLOUD_INSET = (36 - CLOUD_VISUAL_SIZE) / 2;
 const EVENT_CLOUD_MAX_AVATARS = 4;
+const CLOUD_AVATAR_LAYOUT_BASE_SIZE = 38;
+const CLOUD_AVATAR_LAYOUT_CENTER_OFFSET =
+  CLOUD_VISUAL_SIZE / 2 - CLOUD_AVATAR_LAYOUT_BASE_SIZE / 2;
 
 const CLOUD_AVATAR_LAYOUTS: CloudAvatarSlot[][] = [
   [],
@@ -732,11 +735,11 @@ function buildEventCloudPath(): string {
   const sz = CLOUD_VISUAL_SIZE;
   const cx = sz / 2;
   const cy = sz / 2;
-  const rx = 14;
-  const ry = 14;
+  const rx = 16;
+  const ry = 16;
   const n = 8;
   const step = (Math.PI * 2) / n;
-  const bumps = [4.5, 3.2, 5.2, 3.8, 5.0, 3.0, 5.5, 3.5];
+  const bumps = [5.4, 3.8, 6.2, 4.6, 6.0, 3.6, 6.6, 4.2];
   const parts: string[] = [];
   for (let i = 0; i < n; i++) {
     const a = i * step;
@@ -3299,8 +3302,16 @@ const BottomControls: React.FC = () => {
                   const posStyle = {
                     width: CLOUD_AVATAR_SIZE,
                     height: CLOUD_AVATAR_SIZE,
-                    left: slot.x - CLOUD_AVATAR_SIZE / 2 + CLOUD_INSET,
-                    top: slot.y - CLOUD_AVATAR_SIZE / 2 + CLOUD_INSET,
+                    left:
+                      slot.x +
+                      CLOUD_AVATAR_LAYOUT_CENTER_OFFSET -
+                      CLOUD_AVATAR_SIZE / 2 +
+                      CLOUD_INSET,
+                    top:
+                      slot.y +
+                      CLOUD_AVATAR_LAYOUT_CENTER_OFFSET -
+                      CLOUD_AVATAR_SIZE / 2 +
+                      CLOUD_INSET,
                     transform: `rotate(${slot.r}deg)`,
                   };
                   if (Number.isFinite(emojiId) && emojiId > 0) {
