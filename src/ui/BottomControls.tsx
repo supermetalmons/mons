@@ -85,6 +85,7 @@ import {
   WagerButtonBadge,
   WagerButtonIcon,
   WagerButtonAmount,
+  ShimmerText,
 } from "./BottomControlsStyles";
 import { fetchNftsForStoredAddresses } from "../services/nftService";
 import { closeMenuAndInfoIfAny } from "./MainMenu";
@@ -3452,7 +3453,7 @@ const BottomControls: React.FC = () => {
             disabled={!isAutomatchButtonEnabled}
           >
             {automatchButtonTmpState ? (
-              "Automatching"
+              <ShimmerText>Automatching</ShimmerText>
             ) : (
               <>
                 <FaStar style={{ marginRight: "6px", fontSize: "0.9em" }} />
@@ -3468,7 +3469,7 @@ const BottomControls: React.FC = () => {
             disabled={isCancelAutomatchDisabled}
             isViewOnly={isCancelAutomatchDisabled}
           >
-            {isCancelAutomatchDisabled ? "Canceling" : "Cancel"}
+            {isCancelAutomatchDisabled ? <ShimmerText>Canceling</ShimmerText> : "Cancel"}
           </BottomPillButton>
         )}
         {isBotGameButtonVisible && (
