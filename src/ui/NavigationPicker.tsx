@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 import { problems, getCompletedProblemIds } from "../content/problems";
 import { useGameAssets } from "../hooks/useGameAssets";
-import { FaCircle } from "react-icons/fa";
 import { FiCheck } from "react-icons/fi";
 import {
   NavigationGameItem,
@@ -385,20 +384,34 @@ const QueuePrimaryContent = styled.span`
 const GameStatus = styled.span<{
   $isSelected?: boolean;
   $highlightSelected?: boolean;
+  $isLive?: boolean;
 }>`
   margin-left: auto;
   font-size: 0.52rem;
+  font-weight: ${(props) => (props.$isLive ? 700 : "inherit")};
   color: ${(props) =>
-    props.$isSelected && props.$highlightSelected
-      ? "var(--color-blue-primary)"
-      : "var(--navigationTextMuted)"};
+    props.$isLive
+      ? "var(--badgeBackgroundColor)"
+      : props.$isSelected && props.$highlightSelected
+        ? "var(--color-blue-primary)"
+        : "var(--navigationTextMuted)"};
+  text-shadow: ${(props) =>
+    props.$isLive
+      ? "0 0 6px rgba(231, 76, 60, 0.35), 0 0 10px rgba(231, 76, 60, 0.18)"
+      : "none"};
   text-transform: uppercase;
 
   @media (prefers-color-scheme: dark) {
     color: ${(props) =>
-      props.$isSelected && props.$highlightSelected
-        ? "var(--color-blue-primary-dark)"
-        : "var(--navigationTextMuted)"};
+      props.$isLive
+        ? "var(--badgeBackgroundColor)"
+        : props.$isSelected && props.$highlightSelected
+          ? "var(--color-blue-primary-dark)"
+          : "var(--navigationTextMuted)"};
+    text-shadow: ${(props) =>
+      props.$isLive
+        ? "0 0 7px rgba(231, 76, 60, 0.42), 0 0 12px rgba(231, 76, 60, 0.24)"
+        : "none"};
   }
 `;
 
@@ -498,15 +511,6 @@ const CompletedIcon = styled(FiCheck)`
   & path {
     fill: none;
   }
-`;
-
-const UncompletedIcon = styled(FaCircle)`
-  color: var(--color-blue-primary);
-  font-size: 0.4rem;
-  margin-left: auto;
-  flex-shrink: 0;
-  padding-left: 4px;
-  overflow: visible;
 `;
 
 const PlaceholderImage = styled.img`
@@ -886,10 +890,6 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
   };
 
   const completedProblemsSet = getCompletedProblemIds();
-  const firstUncompletedIndex = problems.findIndex(
-    (problem) => !completedProblemsSet.has(problem.id),
-  );
-
   const visibleTopGames = topGames.filter(
     (item) => !(item.entityType === "event" && item.status === "dismissed"),
   );
@@ -1037,13 +1037,15 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                   <QueuePrimaryContent>
                     {getQueuePrimaryLabel(game)}
                   </QueuePrimaryContent>
-                  {game.status === "pending" ? <GameStatus>NOW</GameStatus> : null}
+                  {game.status === "pending" ? (
+                    <GameStatus>NOW</GameStatus>
+                  ) : null}
                 </>
               ) : event ? (
                 <>
                   {renderEventPreview(event)}
                   {event.status === "active" ? (
-                    <UncompletedIcon />
+                    <GameStatus $isLive>LIVE</GameStatus>
                   ) : (
                     <GameStatus
                       $isSelected={isSelected}
@@ -1069,7 +1071,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                       : "anon"}
                   </GameText>
                   {game.status === "active" ? (
-                    <UncompletedIcon />
+                    <GameStatus $isLive>LIVE</GameStatus>
                   ) : (
                     <GameStatus $isSelected={isSelected}>
                       {getGameStatusLabel(game)}
@@ -1095,7 +1097,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
 
   const renderLearnSection = () => (
     <>
-      {problems.map((item, index) => {
+      {problems.map((item) => {
         const isSelected = selectedProblemId === item.id;
         return (
           <NavigationPickerButton
@@ -1110,8 +1112,6 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
             <PlaceholderImage src={getIconImage(item.icon)} alt="" />
             {item.label}
             {completedProblemsSet.has(item.id) && <CompletedIcon />}
-            {!completedProblemsSet.has(item.id) &&
-              index === firstUncompletedIndex && <UncompletedIcon />}
           </NavigationPickerButton>
         );
       })}
