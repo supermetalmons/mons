@@ -10,6 +10,7 @@ import {
   FaFlag,
   FaCommentAlt,
   FaTrophy,
+  FaFlagCheckered,
   FaHome,
   FaRobot,
   FaStar,
@@ -269,27 +270,15 @@ const FIXED_STICKER_IDS: number[] = [
 ];
 const MATERIAL_IMAGE_BASE_URL = "https://assets.mons.link/rocks/materials";
 const STICKER_IMAGE_BASE_URL = "https://assets.mons.link/swagpack/64";
-const STATUS_ICON_BASE_URL = "https://assets.mons.link/icons";
-const STATUS_ICON_URLS = {
-  cloud: `${STATUS_ICON_BASE_URL}/cloud.webp`,
-  spectating: `${STATUS_ICON_BASE_URL}/spectating.webp`,
-  automatch: `${STATUS_ICON_BASE_URL}/automatch_1.webp`,
-  finish: `${STATUS_ICON_BASE_URL}/finish.webp`,
-} as const;
 const NAVIGATION_GAMES_PAGE_SIZE = 80;
 const NAVIGATION_GAMES_LOAD_MORE_PAGE_SIZE = 50;
 const CANCEL_AUTOMATCH_REVEAL_DELAY_MS = 10000;
 const NAVIGATION_PENDING_CANCEL_INTENT_TTL_MS = 60000;
-type StatusIconName = keyof typeof STATUS_ICON_URLS;
 const materialImagePromises: Map<
   MaterialName,
   Promise<string | null>
 > = new Map();
 const stickerImagePromises: Map<number, Promise<string | null>> = new Map();
-const statusIconPromises: Map<
-  StatusIconName,
-  Promise<string | null>
-> = new Map();
 
 const fetchImageUrl = (url: string): Promise<string | null> =>
   fetch(url)
@@ -323,8 +312,6 @@ const getStickerImageUrl = (id: number) =>
     id,
     `${STICKER_IMAGE_BASE_URL}/${id}.webp`,
   );
-const getStatusIconUrl = (name: StatusIconName) =>
-  getCachedImageUrl(statusIconPromises, name, STATUS_ICON_URLS[name]);
 
 const clearPendingImmediateCancelAutomatchIntent = () => {
   pendingImmediateCancelAutomatchInviteId = null;
@@ -446,14 +433,21 @@ const getInitialStickerIds = (): number[] => {
   return mergeStickerIds(FIXED_STICKER_IDS, cachedExtraIds);
 };
 
-const BottomPillInlineIcon = styled.img`
+const BottomPillInlineIcon = styled.span`
   width: 1.42em;
   height: 1.42em;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   margin-left: -4px;
   margin-right: 4px;
   flex-shrink: 0;
-  -webkit-user-drag: none;
-  user-drag: none;
+
+  & > svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+  }
 
   @media screen and (max-width: 359px) {
     margin-left: -3px;
@@ -959,14 +953,6 @@ const BottomControls: React.FC = () => {
     const initial: Partial<Record<MaterialName, number>> = {};
     MATERIALS.forEach((n) => (initial[n] = 0));
     return initial as Record<MaterialName, number>;
-  });
-  const [statusIconUrls, setStatusIconUrls] = useState<
-    Record<StatusIconName, string | null>
-  >({
-    cloud: null,
-    spectating: null,
-    automatch: null,
-    finish: null,
   });
   const navigationHasPagedGamesRef = useRef(false);
   const navigationLoadMoreInFlightRef = useRef(false);
@@ -1494,22 +1480,6 @@ const BottomControls: React.FC = () => {
       getMaterialImageUrl(name).then((url) => {
         if (!mounted) return;
         setMaterialUrls((prev) => ({ ...prev, [name]: url }));
-      });
-    });
-    return () => {
-      mounted = false;
-    };
-  }, []);
-
-  useEffect(() => {
-    let mounted = true;
-    (Object.keys(STATUS_ICON_URLS) as StatusIconName[]).forEach((name) => {
-      getStatusIconUrl(name).then((url) => {
-        if (!mounted) return;
-        setStatusIconUrls((prev) => {
-          if (prev[name] === url) return prev;
-          return { ...prev, [name]: url };
-        });
       });
     });
     return () => {
@@ -2701,6 +2671,10 @@ const BottomControls: React.FC = () => {
     isWatchOnlyMatchFinished;
   const isEndMatchPillFinished =
     isEndMatchConfirmed || isWatchOnlyMatchFinished;
+  const isCancelAutomatchInFlight =
+    isCancelAutomatchVisible && isCancelAutomatchDisabled;
+  const isAutomatchPillVisible =
+    isAutomatchButtonVisible && !isCancelAutomatchInFlight;
   const canSubmitWager =
     isEligibleForWager &&
     !hasAgreedWager &&
@@ -3460,29 +3434,12 @@ const BottomControls: React.FC = () => {
             isViewOnly={isEndMatchPillFinished}
           >
             {isEndMatchPillFinished ? (
-              <>
-                {statusIconUrls.cloud ? (
-                  <BottomPillInlineIcon
-                    src={statusIconUrls.cloud}
-                    alt=""
-                    draggable={false}
-                  />
-                ) : (
-                  "💨 "
-                )}
-                {"Finished"}
-              </>
+              "Finished"
             ) : (
               <>
-                {statusIconUrls.finish ? (
-                  <BottomPillInlineIcon
-                    src={statusIconUrls.finish}
-                    alt=""
-                    draggable={false}
-                  />
-                ) : (
-                  "🏁 "
-                )}
+                <BottomPillInlineIcon aria-hidden="true">
+                  <FaFlagCheckered />
+                </BottomPillInlineIcon>
                 {"End Match"}
               </>
             )}
@@ -3492,18 +3449,7 @@ const BottomControls: React.FC = () => {
           !isWatchOnlyMatchFinished &&
           !isEndMatchConfirmed && (
             <BottomPillButton isViewOnly={true} disabled={true}>
-              <>
-                {statusIconUrls.spectating ? (
-                  <BottomPillInlineIcon
-                    src={statusIconUrls.spectating}
-                    alt=""
-                    draggable={false}
-                  />
-                ) : (
-                  "📺 "
-                )}
-                {"Watching"}
-              </>
+              {"Watching"}
             </BottomPillButton>
           )}
         {isInviteLinkButtonVisible && !didCreateInvite && (
@@ -3522,7 +3468,7 @@ const BottomControls: React.FC = () => {
             )}
           </BottomPillButton>
         )}
-        {isAutomatchButtonVisible && (
+        {isAutomatchPillVisible && (
           <BottomPillButton
             onClick={handleAutomatchClick}
             isBlue={true}
@@ -3530,18 +3476,7 @@ const BottomControls: React.FC = () => {
             disabled={!isAutomatchButtonEnabled}
           >
             {automatchButtonTmpState ? (
-              <>
-                {statusIconUrls.automatch ? (
-                  <BottomPillInlineIcon
-                    src={statusIconUrls.automatch}
-                    alt=""
-                    draggable={false}
-                  />
-                ) : (
-                  "🥁 "
-                )}
-                {"Automatching..."}
-              </>
+              "Automatching"
             ) : (
               <>
                 <FaStar style={{ marginRight: "6px", fontSize: "0.9em" }} />
@@ -3557,7 +3492,7 @@ const BottomControls: React.FC = () => {
             disabled={isCancelAutomatchDisabled}
             isViewOnly={isCancelAutomatchDisabled}
           >
-            {isCancelAutomatchDisabled ? "Canceling..." : "Cancel"}
+            {isCancelAutomatchDisabled ? "Canceling" : "Cancel"}
           </BottomPillButton>
         )}
         {isBotGameButtonVisible && (
