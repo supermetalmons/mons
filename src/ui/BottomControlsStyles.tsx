@@ -290,6 +290,40 @@ export const BottomPillButton = styled.button<{
                 : "var(--bottomButtonBackgroundActiveDark)"};
     }
   }
+
+  ${(props) =>
+    props.isViewOnly &&
+    `
+    font-weight: 600;
+    letter-spacing: 0.015em;
+    background-color: rgba(0, 0, 0, 0.04);
+    color: #aaa;
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background-color: rgba(0, 0, 0, 0.04);
+      }
+    }
+
+    &:active {
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      background-color: rgba(255, 255, 255, 0.06);
+      color: #606060;
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          background-color: rgba(255, 255, 255, 0.06);
+        }
+      }
+
+      &:active {
+        background-color: rgba(255, 255, 255, 0.06);
+      }
+    }
+  `}
 `;
 
 export const NavigationListButton = styled.button<{
