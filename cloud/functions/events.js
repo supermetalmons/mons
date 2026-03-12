@@ -17,13 +17,14 @@ const EVENT_MATCH_RESOLVE_CONCURRENCY = 12;
 const MIN_STARTS_IN_MINUTES = 1;
 const MAX_STARTS_IN_MINUTES = 7 * 24 * 60;
 const MAX_EVENT_PARTICIPANTS = 32;
-const PILOT_EVENT_CREATOR_USERNAMES = new Set([
+const MONS_LINK_ADMINS = new Set([
   "ivan",
   "meinong",
   "obi",
   "bosch",
   "monsol",
   "bosch2",
+  "trinket",
 ]);
 
 const normalizeString = (value) =>
@@ -118,7 +119,7 @@ const ensurePilotEventCreator = async (uid) => {
       "Event creation requires a signed-in profile.",
     );
   }
-  if (!PILOT_EVENT_CREATOR_USERNAMES.has(username)) {
+  if (!MONS_LINK_ADMINS.has(username)) {
     throw new HttpsError(
       "permission-denied",
       "Only approved pilot users can create pilot events.",
@@ -178,6 +179,82 @@ const buildSeedOrder = (bracketSize) => {
     next.push(bracketSize + 1 - seed);
   }
   return next;
+};
+
+const getFirstRoundByeSeeds = (participantCount, bracketSize, seedOrder) => {
+  if (participantCount <= 0 || participantCount >= bracketSize) {
+    return [];
+  }
+
+  const byeSeeds = [];
+  const firstRoundMatchCount = bracketSize / 2;
+  for (let matchIndex = 0; matchIndex < firstRoundMatchCount; matchIndex += 1) {
+    const hostSeed = seedOrder[matchIndex * 2];
+    const guestSeed = seedOrder[matchIndex * 2 + 1];
+    const hostHasParticipant = hostSeed <= participantCount;
+    const guestHasParticipant = guestSeed <= participantCount;
+    if (hostHasParticipant === guestHasParticipant) {
+      continue;
+    }
+    byeSeeds.push(hostHasParticipant ? hostSeed : guestSeed);
+  }
+  return byeSeeds;
+};
+
+const buildSeedToProfileId = ({
+  participantIds,
+  participantsById,
+  bracketSize,
+  seedOrder,
+}) => {
+  const participantCount = participantIds.length;
+  const adminParticipantIds = [];
+  const nonAdminParticipantIds = [];
+
+  for (const profileId of participantIds) {
+    const participant = participantsById[profileId];
+    const username = normalizeUsername(participant && participant.username);
+    if (MONS_LINK_ADMINS.has(username)) {
+      adminParticipantIds.push(profileId);
+    } else {
+      nonAdminParticipantIds.push(profileId);
+    }
+  }
+
+  const shuffledAdminParticipantIds = shuffle(adminParticipantIds);
+  const shuffledNonAdminParticipantIds = shuffle(nonAdminParticipantIds);
+  const byeSeeds = shuffle(
+    getFirstRoundByeSeeds(participantCount, bracketSize, seedOrder),
+  );
+  const seedToProfileId = new Map();
+
+  while (byeSeeds.length > 0 && shuffledAdminParticipantIds.length > 0) {
+    const byeSeed = byeSeeds.pop();
+    const profileId = shuffledAdminParticipantIds.pop();
+    if (!byeSeed || !profileId) {
+      break;
+    }
+    seedToProfileId.set(byeSeed, profileId);
+  }
+
+  const remainingProfileIds = shuffle([
+    ...shuffledAdminParticipantIds,
+    ...shuffledNonAdminParticipantIds,
+  ]);
+  let remainingIndex = 0;
+  for (let seed = 1; seed <= participantCount; seed += 1) {
+    if (seedToProfileId.has(seed)) {
+      continue;
+    }
+    const profileId = remainingProfileIds[remainingIndex];
+    remainingIndex += 1;
+    if (!profileId) {
+      break;
+    }
+    seedToProfileId.set(seed, profileId);
+  }
+
+  return seedToProfileId;
 };
 
 const createEmptyEventMatch = (matchKey) => ({
@@ -432,16 +509,16 @@ const buildFixedBracketState = ({
   participantsById,
   nowMs,
 }) => {
-  const orderedParticipantIds = shuffle(participantIds);
-  const bracketSize = getBracketSize(orderedParticipantIds.length);
+  const bracketSize = getBracketSize(participantIds.length);
   const roundCount = Math.max(1, Math.round(Math.log2(bracketSize)));
   const seedOrder = buildSeedOrder(bracketSize);
   const inviteUpdates = {};
   const rounds = {};
-  const seedToProfileId = new Map();
-
-  orderedParticipantIds.forEach((profileId, index) => {
-    seedToProfileId.set(index + 1, profileId);
+  const seedToProfileId = buildSeedToProfileId({
+    participantIds,
+    participantsById,
+    bracketSize,
+    seedOrder,
   });
 
   for (let roundIndex = 0; roundIndex < roundCount; roundIndex += 1) {

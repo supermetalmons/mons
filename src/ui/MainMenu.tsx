@@ -58,13 +58,14 @@ const MATERIAL_TYPES: MiningMaterialName[] = [
   "dust",
 ];
 type LeaderboardSpecialType = keyof typeof LEADERBOARD_TYPE_ICON_URLS;
-const PILOT_EVENT_CREATOR_USERNAMES = new Set([
+const MONS_LINK_ADMINS = new Set([
   "ivan",
   "meinong",
   "obi",
   "bosch",
   "monsol",
   "bosch2",
+  "trinket",
 ]);
 
 const materialImagePromises: Map<
@@ -1119,7 +1120,7 @@ const MainMenu: React.FC = () => {
   }, [isMusicOpen]);
 
   const showTotalAsIcons = MATERIAL_TYPES.every((name) => !!materialUrls[name]);
-  const canCreatePilotEvents = PILOT_EVENT_CREATOR_USERNAMES.has(
+  const canCreatePilotEvents = MONS_LINK_ADMINS.has(
     storage.getUsername("").trim().toLowerCase(),
   );
 
