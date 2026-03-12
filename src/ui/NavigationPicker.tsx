@@ -264,8 +264,8 @@ const EventAvatarQuestionSlot = styled(EventAvatarPlaceholder)`
   height: 16px;
   margin-left: 2px;
   border-radius: 999px;
-  background: rgba(120, 120, 120, 0.18);
-  color: rgba(74, 74, 74, 0.58);
+  background: rgba(120, 120, 120, 0.12);
+  color: rgba(74, 74, 74, 0.48);
 
   &::before,
   &::after {
@@ -289,8 +289,8 @@ const EventAvatarQuestionSlot = styled(EventAvatarPlaceholder)`
   }
 
   @media (prefers-color-scheme: dark) {
-    background: rgba(255, 255, 255, 0.1);
-    color: rgba(220, 220, 220, 0.56);
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(220, 220, 220, 0.34);
   }
 `;
 
