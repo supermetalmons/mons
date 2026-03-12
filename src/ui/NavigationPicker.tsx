@@ -897,11 +897,27 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     (item) => !(item.entityType === "event" && item.status === "dismissed"),
   );
 
-  const shouldRenderTopGamesSection = visibleTopGames.length > 0;
-  const shouldRenderPagedGamesSection = visiblePagedGames.length > 0;
+  const isWaitingForOpponentGame = (item: NavigationItem) =>
+    item.entityType === "game" && item.status === "waiting";
+
+  const waitingForOpponentGames = [
+    ...visibleTopGames.filter(isWaitingForOpponentGame),
+    ...visiblePagedGames.filter(isWaitingForOpponentGame),
+  ];
+  const nonWaitingTopGames = visibleTopGames.filter(
+    (item) => !isWaitingForOpponentGame(item),
+  );
+  const nonWaitingPagedGames = visiblePagedGames.filter(
+    (item) => !isWaitingForOpponentGame(item),
+  );
+
+  const shouldRenderWaitingGamesSection = waitingForOpponentGames.length > 0;
+  const shouldRenderTopGamesSection = nonWaitingTopGames.length > 0;
+  const shouldRenderPagedGamesSection = nonWaitingPagedGames.length > 0;
   const shouldRenderLearnSection = true;
   const hasScrollableContent =
     shouldRenderLearnSection ||
+    shouldRenderWaitingGamesSection ||
     shouldRenderTopGamesSection ||
     shouldRenderPagedGamesSection;
 
@@ -1114,7 +1130,9 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
           ref={scrollableListRef}
           onScroll={handleScrollableListScroll}
         >
-          {shouldRenderTopGamesSection && renderGameRows(visibleTopGames)}
+          {shouldRenderWaitingGamesSection &&
+            renderGameRows(waitingForOpponentGames)}
+          {shouldRenderTopGamesSection && renderGameRows(nonWaitingTopGames)}
           {shouldRenderLearnSection && shouldRenderTopGamesSection && (
             <SectionSeparator />
           )}
@@ -1122,7 +1140,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
           {shouldRenderLearnSection && shouldRenderPagedGamesSection && (
             <SectionSeparator />
           )}
-          {shouldRenderPagedGamesSection && renderGameRows(visiblePagedGames)}
+          {shouldRenderPagedGamesSection && renderGameRows(nonWaitingPagedGames)}
         </ScrollableList>
       )}
       {showsHomeNavigation && (
