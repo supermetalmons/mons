@@ -23,6 +23,14 @@ const PREFERRED_FIRST_ROUND_BYE_USERNAMES = new Set([
   "bosch",
   "monsol",
 ]);
+const PILOT_EVENT_CREATOR_USERNAMES = new Set([
+  "ivan",
+  "meinong",
+  "obi",
+  "bosch",
+  "monsol",
+  "bosch2",
+]);
 
 const normalizeString = (value) =>
   typeof value === "string" && value.trim() !== "" ? value.trim() : "";
@@ -105,7 +113,7 @@ const buildParticipantSnapshot = (profile, loginUid, joinedAtMs) => {
   };
 };
 
-const ensureIvanCreator = async (uid) => {
+const ensurePilotEventCreator = async (uid) => {
   const profile = await getProfileByLoginId(uid);
   const username = normalizeUsername(profile.username);
   const profileId = normalizeString(profile.profileId);
@@ -115,10 +123,10 @@ const ensureIvanCreator = async (uid) => {
       "Event creation requires a signed-in profile.",
     );
   }
-  if (username !== "ivan") {
+  if (!PILOT_EVENT_CREATOR_USERNAMES.has(username)) {
     throw new HttpsError(
       "permission-denied",
-      "Only ivan can create pilot events.",
+      "Only approved pilot users can create pilot events.",
     );
   }
   return profile;
@@ -580,7 +588,7 @@ exports.createEvent = onCall(async (request) => {
     );
   }
 
-  const creatorProfile = await ensureIvanCreator(request.auth.uid);
+  const creatorProfile = await ensurePilotEventCreator(request.auth.uid);
   const rawStartsInMinutes = toFiniteInteger(
     request.data && request.data.startsInMinutes,
     0,

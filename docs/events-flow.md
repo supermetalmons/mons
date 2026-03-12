@@ -17,7 +17,7 @@ It describes:
 
 Current pilot rules:
 
-- only user `ivan` can create events
+- only users `ivan`, `meinong`, `obi`, `bosch`, `monsol`, and `bosch2` can create events
 - any signed-in non-anon user can join before the event starts
 - event matches are rated
 - event matches are single-game only
@@ -44,7 +44,7 @@ Closing the modal from an `/event/<id>` route:
 
 Creation is exposed only in the experimental menu, and only when:
 
-- `storage.getUsername("").toLowerCase() === "ivan"`
+- `storage.getUsername("").trim().toLowerCase()` is one of `ivan`, `meinong`, `obi`, `bosch`, `monsol`, `bosch2`
 
 Create input:
 
