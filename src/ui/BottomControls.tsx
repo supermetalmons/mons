@@ -147,6 +147,7 @@ import {
 const deltaTimeOutsideTap = isMobile ? 42 : 420;
 const EVENT_MODAL_NAV_AUTOCLOSE_SUPPRESS_MS = 10000;
 const EVENT_GAME_BUTTON_STICKY_DURATION_MS = 2500;
+const HOME_NAVIGATION_BADGE_ENABLED = false;
 const rematchSeriesDigitsFontFamily =
   'ui-monospace, SFMono-Regular, SF Mono, Menlo, Consolas, "Liberation Mono", "Courier New", monospace';
 
@@ -2183,7 +2184,7 @@ const BottomControls: React.FC = () => {
   };
 
   setBadgeVisible = (visible: boolean) => {
-    setIsBadgeVisible(visible);
+    setIsBadgeVisible(HOME_NAVIGATION_BADGE_ENABLED && visible);
   };
 
   setBrushAndNavigationButtonDimmed = (dimmed: boolean) => {
@@ -3671,7 +3672,9 @@ const BottomControls: React.FC = () => {
           onTouchStart={isMobile ? handleNavigationButtonClick : undefined}
           aria-label="Navigation"
         >
-          {isBadgeVisible && <NavigationBadge />}
+          {HOME_NAVIGATION_BADGE_ENABLED && isBadgeVisible && (
+            <NavigationBadge />
+          )}
           <FaHome />
         </NavigationListButton>
         {isReactionPickerVisible && (
