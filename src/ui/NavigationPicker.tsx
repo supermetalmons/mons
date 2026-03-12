@@ -2,7 +2,8 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 import { problems, getCompletedProblemIds } from "../content/problems";
 import { useGameAssets } from "../hooks/useGameAssets";
-import { FaCheck, FaCircle } from "react-icons/fa";
+import { FaCircle } from "react-icons/fa";
+import { FiCheck } from "react-icons/fi";
 import {
   NavigationGameItem,
   NavigationGameStatus,
@@ -446,12 +447,19 @@ const GameRemoveButton = styled.button<{ $isDisabled?: boolean }>`
   }
 `;
 
-const CompletedIcon = styled(FaCheck)`
+const CompletedIcon = styled(FiCheck)`
   color: var(--navigationTextMuted);
-  font-size: 0.5rem;
+  width: 0.63rem;
+  height: 0.63rem;
   margin-left: auto;
   flex-shrink: 0;
   padding-left: 4px;
+  stroke-width: 1.5;
+  stroke: currentColor;
+
+  & path {
+    fill: none;
+  }
 `;
 
 const UncompletedIcon = styled(FaCircle)`
