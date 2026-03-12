@@ -372,14 +372,7 @@ const FightCloudBadge = styled.span`
   }
 `;
 
-const QueuePrimaryContent = styled.span`
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  font-weight: inherit;
-  letter-spacing: 0.01em;
-  color: var(--navigationTextMuted);
-`;
+const QueuePrimaryContent = styled(GameText)``;
 
 const GameStatus = styled.span<{
   $isSelected?: boolean;
@@ -854,7 +847,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
 
   const getQueuePrimaryLabel = (game: NavigationGameItem): string => {
     if (game.status === "pending") {
-      return "Automatching...";
+      return "Automatching";
     }
     return "Waiting for opponent";
   };
