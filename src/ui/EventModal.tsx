@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import styled from "styled-components";
-import { FaCheck, FaLink } from "react-icons/fa";
+import { FaLink } from "react-icons/fa";
 import { connection } from "../connection/connection";
 import {
   EventMatch,
@@ -74,7 +74,7 @@ const TopBar = styled.div`
   right: 0;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   padding: 16px 20px;
   pointer-events: none;
   z-index: ${EVENT_MODAL_Z_INDEX + 1};
@@ -86,54 +86,15 @@ const TopBar = styled.div`
 `;
 
 const TopBarTitle = styled.div`
-  font-size: 0.8rem;
+  font-size: 1rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  text-align: center;
   color: var(--color-gray-33);
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-gray-f0);
-  }
-`;
-
-const TopBarIconButton = styled.button`
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  border: none;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  line-height: 0;
-  background: rgba(128, 128, 128, 0.12);
-  color: var(--color-gray-33);
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  -webkit-tap-highlight-color: transparent;
-
-  svg {
-    width: 14px;
-    height: 14px;
-    overflow: visible;
-    flex-shrink: 0;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover {
-      background: rgba(128, 128, 128, 0.2);
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    color: var(--color-gray-f0);
-    background: rgba(128, 128, 128, 0.18);
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        background: rgba(128, 128, 128, 0.3);
-      }
-    }
   }
 `;
 
@@ -411,6 +372,39 @@ const FooterNote = styled.div`
   color: var(--navigationTextMuted);
 `;
 
+const OverlayStatus = styled.div`
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--navigationTextMuted);
+  background: rgba(255, 255, 255, 0.82);
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  pointer-events: none;
+  text-align: center;
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(12, 12, 12, 0.82);
+    border-color: rgba(255, 255, 255, 0.12);
+  }
+`;
+
+const FooterButtonContent = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+
+  svg {
+    width: 12px;
+    height: 12px;
+    flex-shrink: 0;
+  }
+`;
+
 type EventUiState = {
   isJoined: boolean;
   isEliminated: boolean;
@@ -420,13 +414,14 @@ type EventUiState = {
 
 const PENDING_JOIN_POLL_INTERVAL_MS = 350;
 const PENDING_JOIN_POLL_TIMEOUT_MS = 60_000;
+const EVENT_SYNC_RETRY_DELAYS_MS = [500, 1500, 3000];
 
 const formatRelativeStart = (
   event: EventRecord | null,
   nowMs: number,
 ): string => {
   if (!event) {
-    return "loading";
+    return "";
   }
   if (event.status === "dismissed") {
     return "dismissed: not enough players";
@@ -818,20 +813,66 @@ const EventModal: React.FC = () => {
     }
 
     setIsLoading(true);
+    let isDisposed = false;
+    let hasReceivedEvent = false;
+    let retryCount = 0;
+    let retryTimeoutId: number | null = null;
+
+    const clearRetryTimeout = () => {
+      if (retryTimeoutId === null) {
+        return;
+      }
+      window.clearTimeout(retryTimeoutId);
+      retryTimeoutId = null;
+    };
+
+    function scheduleSyncRetry() {
+      if (isDisposed || hasReceivedEvent || retryTimeoutId !== null) {
+        return;
+      }
+      if (retryCount >= EVENT_SYNC_RETRY_DELAYS_MS.length) {
+        setIsLoading(false);
+        return;
+      }
+      const delayMs = EVENT_SYNC_RETRY_DELAYS_MS[retryCount];
+      retryCount += 1;
+      retryTimeoutId = window.setTimeout(() => {
+        retryTimeoutId = null;
+        void attemptSync();
+      }, delayMs);
+    }
+
+    async function attemptSync() {
+      if (isDisposed || !modalState.eventId || hasReceivedEvent) {
+        return;
+      }
+      try {
+        await connection.syncEventState(modalState.eventId);
+      } catch {
+        scheduleSyncRetry();
+      }
+    }
+
     const unsubscribe = connection.subscribeToEvent(
       modalState.eventId,
       (nextEvent) => {
+        hasReceivedEvent = true;
+        clearRetryTimeout();
         setEventRecord(nextEvent);
         setIsLoading(false);
       },
       () => {
-        setIsLoading(false);
+        scheduleSyncRetry();
       },
     );
 
-    void connection.syncEventState(modalState.eventId).catch(() => {});
+    void attemptSync();
 
-    return unsubscribe;
+    return () => {
+      isDisposed = true;
+      clearRetryTimeout();
+      unsubscribe();
+    };
   }, [modalState.eventId, modalState.isOpen]);
 
   useEffect(() => {
@@ -1136,6 +1177,20 @@ const EventModal: React.FC = () => {
   const hasBracket =
     (eventRecord?.status === "active" || eventRecord?.status === "ended") &&
     bracketLayout !== null;
+  const isBracketStatus =
+    eventRecord?.status === "active" || eventRecord?.status === "ended";
+  const showParticipantsPanel = !!eventRecord && !isBracketStatus;
+  const overlayStatusText = !eventRecord
+    ? isLoading
+      ? "LOADING"
+      : null
+    : !hasBracket
+      ? eventRecord.status === "active"
+        ? "building bracket..."
+        : eventRecord.status === "ended"
+          ? "no bracket yet"
+          : null
+      : null;
 
   return (
     <Overlay
@@ -1145,14 +1200,9 @@ const EventModal: React.FC = () => {
     >
       <TopBar>
         <TopBarTitle>{formatRelativeStart(eventRecord, nowMs)}</TopBarTitle>
-        <TopBarIconButton
-          type="button"
-          onClick={handleCopyClick}
-          aria-label="Copy event link"
-        >
-          {copyState === "copied" ? <FaCheck /> : <FaLink />}
-        </TopBarIconButton>
       </TopBar>
+
+      {overlayStatusText && <OverlayStatus>{overlayStatusText}</OverlayStatus>}
 
       {hasBracket && bracketLayout && (
         <BracketContainer
@@ -1160,35 +1210,56 @@ const EventModal: React.FC = () => {
           $h={bracketLayout.height}
           $scale={bracketScale}
         >
-          {bracketLayout.positions.map((mp) => (
-            <MatchCard
-              key={mp.key}
-              type="button"
-              $x={mp.x}
-              $y={mp.y}
-              disabled={!mp.match.inviteId}
-              onClick={() =>
-                mp.match.inviteId
-                  ? void openMatch(mp.match.inviteId)
-                  : undefined
-              }
-            >
-              <MatchAvatarSlot>
-                <EventAvatar
-                  size={BRACKET_AVATAR_PX}
-                  emojiId={mp.match.hostEmojiId}
-                  displayName={mp.match.hostDisplayName}
-                />
-              </MatchAvatarSlot>
-              <MatchAvatarSlot>
-                <EventAvatar
-                  size={BRACKET_AVATAR_PX}
-                  emojiId={mp.match.guestEmojiId}
-                  displayName={mp.match.guestDisplayName}
-                />
-              </MatchAvatarSlot>
-            </MatchCard>
-          ))}
+          {bracketLayout.positions.map((mp) => {
+            const isByeMatch = mp.match.status === "bye";
+            const byeParticipantIsHost =
+              !!mp.match.hostProfileId ||
+              !!mp.match.hostDisplayName ||
+              mp.match.hostEmojiId !== null;
+            return (
+              <MatchCard
+                key={mp.key}
+                type="button"
+                $x={mp.x}
+                $y={mp.y}
+                disabled={!mp.match.inviteId}
+                onClick={() =>
+                  mp.match.inviteId
+                    ? void openMatch(mp.match.inviteId)
+                    : undefined
+                }
+              >
+                <MatchAvatarSlot>
+                  <EventAvatar
+                    size={BRACKET_AVATAR_PX}
+                    emojiId={
+                      isByeMatch
+                        ? byeParticipantIsHost
+                          ? mp.match.hostEmojiId
+                          : mp.match.guestEmojiId
+                        : mp.match.hostEmojiId
+                    }
+                    displayName={
+                      isByeMatch
+                        ? byeParticipantIsHost
+                          ? mp.match.hostDisplayName
+                          : mp.match.guestDisplayName
+                        : mp.match.hostDisplayName
+                    }
+                  />
+                </MatchAvatarSlot>
+                {!isByeMatch && (
+                  <MatchAvatarSlot>
+                    <EventAvatar
+                      size={BRACKET_AVATAR_PX}
+                      emojiId={mp.match.guestEmojiId}
+                      displayName={mp.match.guestDisplayName}
+                    />
+                  </MatchAvatarSlot>
+                )}
+              </MatchCard>
+            );
+          })}
           <ConnectorSvg
             width={bracketLayout.width}
             height={bracketLayout.height}
@@ -1201,59 +1272,54 @@ const EventModal: React.FC = () => {
         </BracketContainer>
       )}
 
-      {(eventRecord?.status === "active" || eventRecord?.status === "ended") &&
-        !bracketLayout && (
-          <ContentArea>
-            <FooterNote>
-              {eventRecord?.status === "active"
-                ? "building bracket..."
-                : "no bracket yet"}
-            </FooterNote>
-          </ContentArea>
-        )}
-
-      {eventRecord?.status !== "active" &&
-        eventRecord?.status !== "ended" && (
-          <ContentArea>
-            <ParticipantsList>
-              {participants.map((participant) => (
-                <ParticipantRow
-                  key={participant.profileId}
-                  type="button"
-                  onClick={() => void handleParticipantClick(participant)}
-                  disabled={openingParticipantId !== null}
-                >
-                  <EventAvatar
-                    emojiId={participant.emojiId}
-                    displayName={participant.displayName}
-                  />
-                  <ParticipantName>
-                    {getParticipantDisplayName(participant)}
-                  </ParticipantName>
-                  <ParticipantState>
-                    {openingParticipantId ===
-                    (participant.profileId || participant.loginUid)
-                      ? "loading"
-                      : participant.state === "winner"
-                        ? "winner"
-                        : participant.state === "eliminated"
-                          ? "out"
-                          : ""}
-                  </ParticipantState>
-                </ParticipantRow>
-              ))}
-              {!participants.length && (
-                <FooterNote>
-                  {isLoading ? "loading players..." : "no players yet"}
-                </FooterNote>
-              )}
-            </ParticipantsList>
-          </ContentArea>
-        )}
+      {showParticipantsPanel && (
+        <ContentArea>
+          <ParticipantsList>
+            {participants.map((participant) => (
+              <ParticipantRow
+                key={participant.profileId}
+                type="button"
+                onClick={() => void handleParticipantClick(participant)}
+                disabled={openingParticipantId !== null}
+              >
+                <EventAvatar
+                  emojiId={participant.emojiId}
+                  displayName={participant.displayName}
+                />
+                <ParticipantName>
+                  {getParticipantDisplayName(participant)}
+                </ParticipantName>
+                <ParticipantState>
+                  {openingParticipantId ===
+                  (participant.profileId || participant.loginUid)
+                    ? "loading"
+                    : participant.state === "winner"
+                      ? "winner"
+                      : participant.state === "eliminated"
+                        ? "out"
+                        : ""}
+                </ParticipantState>
+              </ParticipantRow>
+            ))}
+            {!participants.length && (
+              <FooterNote>
+                {isLoading ? "loading players..." : "no players yet"}
+              </FooterNote>
+            )}
+          </ParticipantsList>
+        </ContentArea>
+      )}
 
       <BottomBar>
         {inlineError && <InlineError>{inlineError}</InlineError>}
         <ButtonRow>
+          <FooterButton type="button" onClick={handleCopyClick}>
+            <FooterButtonContent>
+              {copyState !== "copied" && <FaLink />}
+              {copyState === "copied" ? "Link is copied" : "Copy Link"}
+            </FooterButtonContent>
+          </FooterButton>
+
           {!eventUiState.isJoined && isJoinWindowOpen && (
             <>
               <FooterButton
@@ -1263,12 +1329,6 @@ const EventModal: React.FC = () => {
                 disabled={isLoading}
               >
                 Join
-              </FooterButton>
-              <FooterButton
-                type="button"
-                onClick={() => void closeEventModal()}
-              >
-                Skip
               </FooterButton>
             </>
           )}
