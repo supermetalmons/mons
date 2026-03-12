@@ -256,6 +256,7 @@ const EventAvatarPlaceholder = styled(GameEmojiPlaceholder)`
   background: transparent;
 `;
 const EventAvatarQuestionSlot = styled(EventAvatarPlaceholder)`
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -266,11 +267,25 @@ const EventAvatarQuestionSlot = styled(EventAvatarPlaceholder)`
   background: rgba(120, 120, 120, 0.18);
   color: rgba(74, 74, 74, 0.58);
 
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-radius: 999px;
+    background: currentColor;
+    transform: translate(-50%, -50%);
+  }
+
   &::before {
-    content: "+";
-    font-size: 10px;
-    font-weight: 500;
-    line-height: 1;
+    width: 7px;
+    height: 1.5px;
+  }
+
+  &::after {
+    width: 1.5px;
+    height: 7px;
   }
 
   @media (prefers-color-scheme: dark) {
