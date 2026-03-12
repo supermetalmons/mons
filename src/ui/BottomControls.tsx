@@ -433,28 +433,6 @@ const getInitialStickerIds = (): number[] => {
   return mergeStickerIds(FIXED_STICKER_IDS, cachedExtraIds);
 };
 
-const BottomPillInlineIcon = styled.span`
-  width: 1.42em;
-  height: 1.42em;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: -4px;
-  margin-right: 4px;
-  flex-shrink: 0;
-
-  & > svg {
-    width: 100%;
-    height: 100%;
-    display: block;
-  }
-
-  @media screen and (max-width: 359px) {
-    margin-left: -3px;
-    margin-right: 3px;
-  }
-`;
-
 const RematchSeriesInlineControl = styled.div`
   flex: 1 1 0;
   min-width: 0;
@@ -3437,9 +3415,7 @@ const BottomControls: React.FC = () => {
               "Finished"
             ) : (
               <>
-                <BottomPillInlineIcon aria-hidden="true">
-                  <FaFlagCheckered />
-                </BottomPillInlineIcon>
+                <FaFlagCheckered />
                 {"End Match"}
               </>
             )}
