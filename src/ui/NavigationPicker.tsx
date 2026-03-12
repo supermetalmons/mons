@@ -397,16 +397,35 @@ const GameRemoveButton = styled.button<{ $isDisabled?: boolean }>`
   align-items: center;
   justify-content: center;
   border-radius: 999px;
-  font-size: 0.7rem;
-  line-height: 1;
   border: none;
   padding: 0;
-  background: transparent;
+  background: rgba(128, 128, 128, 0.1);
   color: var(--navigationTextMuted);
   opacity: ${(props) => (props.$isDisabled ? 0.55 : 0.9)};
   cursor: ${(props) => (props.$isDisabled ? "default" : "pointer")};
   user-select: none;
   flex-shrink: 0;
+
+  &::before,
+  &::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    width: 8px;
+    height: 1.25px;
+    border-radius: 999px;
+    background: currentColor;
+    transform-origin: center;
+  }
+
+  &::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+  }
+
+  &::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+  }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -426,6 +445,7 @@ const GameRemoveButton = styled.button<{ $isDisabled?: boolean }>`
   }
 
   @media (prefers-color-scheme: dark) {
+    background: rgba(255, 255, 255, 0.08);
     color: var(--navigationTextMuted);
 
     @media (hover: hover) and (pointer: fine) {
@@ -1009,9 +1029,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                 $isDisabled={!!isRemoving}
                 disabled={!!isRemoving}
                 onClick={handleRemoveClick}
-              >
-                ×
-              </GameRemoveButton>
+              />
             )}
           </GameRowContainer>
         );
