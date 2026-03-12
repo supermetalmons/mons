@@ -1,6 +1,7 @@
 import React, {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
@@ -37,6 +38,8 @@ const BRACKET_AVATAR_PX = 28;
 const BRACKET_SLOT_PITCH = 88;
 const BRACKET_CONNECTOR_W = 40;
 const BRACKET_COL_STEP = BRACKET_MATCH_W + BRACKET_CONNECTOR_W;
+const BRACKET_EDGE_PADDING_X = 24;
+const BRACKET_EDGE_PADDING_Y = 16;
 
 const getViewportSize = (): { width: number; height: number } => {
   if (typeof window === "undefined") {
@@ -194,11 +197,17 @@ const BracketContainer = styled.div<{
   $scale: number;
 }>`
   position: relative;
+  flex: 0 0 auto;
   width: ${(p) => p.$w}px;
   height: ${(p) => p.$h}px;
   cursor: default;
   transform: scale(${(p) => p.$scale});
   transform-origin: center center;
+`;
+
+const BracketPlacement = styled.div<{ $offsetY: number }>`
+  position: relative;
+  transform: translateY(${(p) => p.$offsetY}px);
 `;
 
 const ConnectorSvg = styled.svg`
@@ -909,6 +918,7 @@ const EventModal: React.FC = () => {
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
   const [nowMs, setNowMs] = useState(() => Date.now());
   const [viewportSize, setViewportSize] = useState(getViewportSize);
+  const [bracketInsets, setBracketInsets] = useState({ top: 0, bottom: 0 });
   const [pendingJoinEventId, setPendingJoinEventId] = useState<string | null>(
     null,
   );
@@ -919,6 +929,21 @@ const EventModal: React.FC = () => {
   const openingParticipantIdRef = useRef<string | null>(null);
   const participantLookupSessionRef = useRef(0);
   const ignoreNextBackdropClickRef = useRef(false);
+  const topBarRef = useRef<HTMLDivElement | null>(null);
+  const bottomBarRef = useRef<HTMLDivElement | null>(null);
+  const measureBracketInsets = useCallback(() => {
+    const nextTop = Math.round(
+      topBarRef.current?.getBoundingClientRect().height ?? 0,
+    );
+    const nextBottom = Math.round(
+      bottomBarRef.current?.getBoundingClientRect().height ?? 0,
+    );
+    setBracketInsets((current) =>
+      current.top === nextTop && current.bottom === nextBottom
+        ? current
+        : { top: nextTop, bottom: nextBottom },
+    );
+  }, []);
 
   useEffect(() => {
     return subscribeToEventModalState((nextState) => {
@@ -1046,6 +1071,61 @@ const EventModal: React.FC = () => {
     };
   }, [modalState.isOpen]);
 
+  useLayoutEffect(() => {
+    if (!modalState.isOpen || typeof window === "undefined") {
+      return;
+    }
+    measureBracketInsets();
+  });
+
+  useEffect(() => {
+    if (!modalState.isOpen || typeof window === "undefined") {
+      return;
+    }
+
+    let rafId = 0;
+    const scheduleMeasureInsets = () => {
+      if (rafId !== 0) {
+        return;
+      }
+      rafId = window.requestAnimationFrame(() => {
+        rafId = 0;
+        measureBracketInsets();
+      });
+    };
+
+    const resizeObserver =
+      typeof ResizeObserver === "undefined"
+        ? null
+        : new ResizeObserver(() => {
+            scheduleMeasureInsets();
+          });
+
+    if (resizeObserver) {
+      if (topBarRef.current) {
+        resizeObserver.observe(topBarRef.current);
+      }
+      if (bottomBarRef.current) {
+        resizeObserver.observe(bottomBarRef.current);
+      }
+    }
+
+    window.addEventListener("resize", scheduleMeasureInsets);
+    window.visualViewport?.addEventListener("resize", scheduleMeasureInsets);
+
+    return () => {
+      if (rafId !== 0) {
+        window.cancelAnimationFrame(rafId);
+      }
+      resizeObserver?.disconnect();
+      window.removeEventListener("resize", scheduleMeasureInsets);
+      window.visualViewport?.removeEventListener(
+        "resize",
+        scheduleMeasureInsets,
+      );
+    };
+  }, [measureBracketInsets, modalState.isOpen]);
+
   useEffect(() => {
     if (
       !modalState.isOpen ||
@@ -1169,15 +1249,27 @@ const EventModal: React.FC = () => {
 
   const bracketScale = useMemo(() => {
     if (!bracketLayout) return 1;
-    const padX = 48;
-    const padY = 160;
-    const availW = Math.max(1, viewportSize.width - padX);
-    const availH = Math.max(1, viewportSize.height - padY);
+    const reservedTop = bracketInsets.top + BRACKET_EDGE_PADDING_Y;
+    const reservedBottom = bracketInsets.bottom + BRACKET_EDGE_PADDING_Y;
+    const availW = Math.max(1, viewportSize.width - BRACKET_EDGE_PADDING_X * 2);
+    const availH = Math.max(
+      1,
+      viewportSize.height - reservedTop - reservedBottom,
+    );
     const sx = availW / bracketLayout.width;
     const sy = availH / bracketLayout.height;
     const scale = Math.min(1, sx, sy);
     return Number.isFinite(scale) ? Math.max(0, scale) : 1;
-  }, [bracketLayout, viewportSize.height, viewportSize.width]);
+  }, [
+    bracketInsets.bottom,
+    bracketInsets.top,
+    bracketLayout,
+    viewportSize.height,
+    viewportSize.width,
+  ]);
+  const bracketOffsetY = Math.round(
+    (bracketInsets.top - bracketInsets.bottom) / 2,
+  );
 
   const isJoinWindowOpen =
     !!eventRecord &&
@@ -1369,78 +1461,80 @@ const EventModal: React.FC = () => {
       onTouchStart={handleBackdropPointerDown}
       onClick={handleBackdropClick}
     >
-      <TopBar>
+      <TopBar ref={topBarRef}>
         <TopBarTitle>{formatRelativeStart(eventRecord, nowMs)}</TopBarTitle>
       </TopBar>
 
       {overlayStatusText && <OverlayStatus>{overlayStatusText}</OverlayStatus>}
 
       {hasBracket && bracketLayout && (
-        <BracketContainer
-          $w={bracketLayout.width}
-          $h={bracketLayout.height}
-          $scale={bracketScale}
-        >
-          {bracketLayout.positions.map((mp) => {
-            const isByeMatch = mp.match.status === "bye";
-            const byeParticipantIsHost =
-              !!mp.match.hostProfileId ||
-              !!mp.match.hostDisplayName ||
-              mp.match.hostEmojiId !== null;
-            return (
-              <MatchCard
-                key={mp.key}
-                type="button"
-                $x={mp.x}
-                $y={mp.y}
-                disabled={!mp.match.inviteId}
-                onClick={() =>
-                  mp.match.inviteId
-                    ? void openMatch(mp.match.inviteId)
-                    : undefined
-                }
-              >
-                <MatchAvatarSlot>
-                  <EventAvatar
-                    size={BRACKET_AVATAR_PX}
-                    emojiId={
-                      isByeMatch
-                        ? byeParticipantIsHost
-                          ? mp.match.hostEmojiId
-                          : mp.match.guestEmojiId
-                        : mp.match.hostEmojiId
-                    }
-                    displayName={
-                      isByeMatch
-                        ? byeParticipantIsHost
-                          ? mp.match.hostDisplayName
-                          : mp.match.guestDisplayName
-                        : mp.match.hostDisplayName
-                    }
-                  />
-                </MatchAvatarSlot>
-                {!isByeMatch && (
+        <BracketPlacement $offsetY={bracketOffsetY}>
+          <BracketContainer
+            $w={bracketLayout.width}
+            $h={bracketLayout.height}
+            $scale={bracketScale}
+          >
+            {bracketLayout.positions.map((mp) => {
+              const isByeMatch = mp.match.status === "bye";
+              const byeParticipantIsHost =
+                !!mp.match.hostProfileId ||
+                !!mp.match.hostDisplayName ||
+                mp.match.hostEmojiId !== null;
+              return (
+                <MatchCard
+                  key={mp.key}
+                  type="button"
+                  $x={mp.x}
+                  $y={mp.y}
+                  disabled={!mp.match.inviteId}
+                  onClick={() =>
+                    mp.match.inviteId
+                      ? void openMatch(mp.match.inviteId)
+                      : undefined
+                  }
+                >
                   <MatchAvatarSlot>
                     <EventAvatar
                       size={BRACKET_AVATAR_PX}
-                      emojiId={mp.match.guestEmojiId}
-                      displayName={mp.match.guestDisplayName}
+                      emojiId={
+                        isByeMatch
+                          ? byeParticipantIsHost
+                            ? mp.match.hostEmojiId
+                            : mp.match.guestEmojiId
+                          : mp.match.hostEmojiId
+                      }
+                      displayName={
+                        isByeMatch
+                          ? byeParticipantIsHost
+                            ? mp.match.hostDisplayName
+                            : mp.match.guestDisplayName
+                          : mp.match.hostDisplayName
+                      }
                     />
                   </MatchAvatarSlot>
-                )}
-              </MatchCard>
-            );
-          })}
-          <ConnectorSvg
-            width={bracketLayout.width}
-            height={bracketLayout.height}
-            viewBox={`0 0 ${bracketLayout.width} ${bracketLayout.height}`}
-          >
-            {bracketLayout.connectors.map((d, i) => (
-              <path key={i} d={d} />
-            ))}
-          </ConnectorSvg>
-        </BracketContainer>
+                  {!isByeMatch && (
+                    <MatchAvatarSlot>
+                      <EventAvatar
+                        size={BRACKET_AVATAR_PX}
+                        emojiId={mp.match.guestEmojiId}
+                        displayName={mp.match.guestDisplayName}
+                      />
+                    </MatchAvatarSlot>
+                  )}
+                </MatchCard>
+              );
+            })}
+            <ConnectorSvg
+              width={bracketLayout.width}
+              height={bracketLayout.height}
+              viewBox={`0 0 ${bracketLayout.width} ${bracketLayout.height}`}
+            >
+              {bracketLayout.connectors.map((d, i) => (
+                <path key={i} d={d} />
+              ))}
+            </ConnectorSvg>
+          </BracketContainer>
+        </BracketPlacement>
       )}
 
       {showBracketFallbackGrid && (
@@ -1543,7 +1637,7 @@ const EventModal: React.FC = () => {
         </ContentArea>
       )}
 
-      <BottomBar>
+      <BottomBar ref={bottomBarRef}>
         {inlineError && <InlineError>{inlineError}</InlineError>}
         <ButtonRow>
           <FooterButton type="button" onClick={handleCopyClick}>
