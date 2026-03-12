@@ -332,29 +332,51 @@ const shimmer = keyframes`
 `;
 
 export const ShimmerText = styled.span`
-  background: linear-gradient(
-    90deg,
-    #aaa 0%,
-    #aaa 40%,
-    #666 50%,
-    #aaa 60%,
-    #aaa 100%
-  );
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  animation: ${shimmer} 2s ease-in-out infinite;
+  color: #aaa;
+
+  @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+    background: linear-gradient(
+      90deg,
+      #aaa 0%,
+      #aaa 40%,
+      #666 50%,
+      #aaa 60%,
+      #aaa 100%
+    );
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: ${shimmer} 2s ease-in-out infinite;
+  }
 
   @media (prefers-color-scheme: dark) {
-    background-image: linear-gradient(
-      90deg,
-      #606060 0%,
-      #606060 40%,
-      #999 50%,
-      #606060 60%,
-      #606060 100%
-    );
+    color: #606060;
+
+    @supports ((-webkit-background-clip: text) or (background-clip: text)) {
+      color: transparent;
+      -webkit-text-fill-color: transparent;
+      background-image: linear-gradient(
+        90deg,
+        #606060 0%,
+        #606060 40%,
+        #999 50%,
+        #606060 60%,
+        #606060 100%
+      );
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+
+  @media (forced-colors: active) {
+    background: none;
+    animation: none;
+    color: ButtonText;
+    -webkit-text-fill-color: ButtonText;
   }
 `;
 
