@@ -389,9 +389,11 @@ const GameStatus = styled.span<{
         ? "var(--color-blue-primary)"
         : "var(--navigationTextMuted)"};
   text-shadow: ${(props) =>
-    props.$isLive
-      ? "0 0 6px rgba(231, 76, 60, 0.35), 0 0 10px rgba(231, 76, 60, 0.18)"
-      : "none"};
+    !props.$isLive
+      ? "none"
+      : props.$isSelected
+        ? "0 0 5px rgba(231, 76, 60, 0.38), 0 0 9px rgba(255, 140, 92, 0.18)"
+        : "0 0 6px rgba(231, 76, 60, 0.35), 0 0 10px rgba(231, 76, 60, 0.18)"};
   text-transform: uppercase;
 
   @media (prefers-color-scheme: dark) {
@@ -402,9 +404,11 @@ const GameStatus = styled.span<{
           ? "var(--color-blue-primary-dark)"
           : "var(--navigationTextMuted)"};
     text-shadow: ${(props) =>
-      props.$isLive
-        ? "0 0 7px rgba(231, 76, 60, 0.42), 0 0 12px rgba(231, 76, 60, 0.24)"
-        : "none"};
+      !props.$isLive
+        ? "none"
+        : props.$isSelected
+          ? "0 0 6px rgba(231, 76, 60, 0.44), 0 0 10px rgba(255, 140, 92, 0.22)"
+          : "0 0 7px rgba(231, 76, 60, 0.42), 0 0 12px rgba(231, 76, 60, 0.24)"};
   }
 `;
 
@@ -1084,7 +1088,9 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                       : "anon"}
                   </GameText>
                   {game.status === "active" ? (
-                    <GameStatus $isLive>LIVE</GameStatus>
+                    <GameStatus $isLive $isSelected={isSelected}>
+                      LIVE
+                    </GameStatus>
                   ) : (
                     <GameStatus $isSelected={isSelected}>
                       {getGameStatusLabel(game)}
@@ -1152,7 +1158,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
           {shouldRenderLearnSection && shouldRenderPagedGamesSection && (
             <SectionSeparator />
           )}
-          {shouldRenderPagedGamesSection && renderGameRows(nonWaitingPagedGames)}
+          {shouldRenderPagedGamesSection &&
+            renderGameRows(nonWaitingPagedGames)}
         </ScrollableList>
       )}
       {showsHomeNavigation && (
