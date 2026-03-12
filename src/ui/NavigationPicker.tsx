@@ -71,17 +71,7 @@ const ScrollableList = styled.div`
   }
 `;
 
-const SectionSeparator = styled.div`
-  height: 1px;
-  background-color: var(--navigationTextMuted);
-  opacity: 0.12;
-  margin: 0;
-
-  @media (prefers-color-scheme: dark) {
-    background-color: var(--color-gray-a0);
-    opacity: 0.15;
-  }
-`;
+const SectionSeparator = () => null;
 
 const NavigationPickerButton = styled.button<{ $isSelected?: boolean }>`
   background: ${(props) =>
