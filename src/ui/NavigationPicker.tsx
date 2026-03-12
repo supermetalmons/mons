@@ -367,18 +367,21 @@ const QueuePrimaryContent = styled.span`
   color: var(--navigationTextMuted);
 `;
 
-const GameStatus = styled.span<{ $isSelected?: boolean }>`
+const GameStatus = styled.span<{
+  $isSelected?: boolean;
+  $highlightSelected?: boolean;
+}>`
   margin-left: auto;
   font-size: 0.52rem;
   color: ${(props) =>
-    props.$isSelected
+    props.$isSelected && props.$highlightSelected
       ? "var(--color-blue-primary)"
       : "var(--navigationTextMuted)"};
   text-transform: uppercase;
 
   @media (prefers-color-scheme: dark) {
     color: ${(props) =>
-      props.$isSelected
+      props.$isSelected && props.$highlightSelected
         ? "var(--color-blue-primary-dark)"
         : "var(--navigationTextMuted)"};
   }
@@ -978,6 +981,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
         const canRemove = !!game && game.status === "waiting" && !!onRemoveGame;
         const isRemoving =
           !!game && !!removingGameInviteIds?.has(game.inviteId);
+        const shouldHighlightSelectedStatus = event?.status === "waiting";
         const handleRemoveClick = (
           event: React.MouseEvent<HTMLButtonElement>,
         ) => {
@@ -1018,6 +1022,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                   <QueuePrimaryContent>
                     {getQueuePrimaryLabel(game)}
                   </QueuePrimaryContent>
+                  {game.status === "pending" ? <GameStatus>NOW</GameStatus> : null}
                 </>
               ) : event ? (
                 <>
@@ -1025,7 +1030,10 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                   {event.status === "active" ? (
                     <UncompletedIcon />
                   ) : (
-                    <GameStatus $isSelected={isSelected}>
+                    <GameStatus
+                      $isSelected={isSelected}
+                      $highlightSelected={shouldHighlightSelectedStatus}
+                    >
                       {getEventStatusLabel(event)}
                     </GameStatus>
                   )}
