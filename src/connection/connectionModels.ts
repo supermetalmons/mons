@@ -63,8 +63,13 @@ export type NavigationEventStatus =
   | "dismissed";
 export type EventStatus = "scheduled" | "active" | "ended" | "dismissed";
 export type EventParticipantState = "active" | "eliminated" | "winner";
-export type EventMatchStatus = "pending" | "host" | "guest";
-export type EventRoundStatus = "active" | "completed";
+export type EventMatchStatus =
+  | "upcoming"
+  | "pending"
+  | "host"
+  | "guest"
+  | "bye";
+export type EventRoundStatus = "upcoming" | "active" | "completed";
 
 export interface NavigationGameItem {
   id: string;
@@ -126,21 +131,21 @@ export interface EventParticipant {
 
 export interface EventMatch {
   matchKey: string;
-  inviteId: string;
+  inviteId: string | null;
   status: EventMatchStatus;
   resolvedAtMs: number | null;
   winnerProfileId: string | null;
   loserProfileId: string | null;
-  hostProfileId: string;
-  hostLoginUid: string;
-  hostDisplayName: string;
-  hostEmojiId: number;
-  hostAura: string;
-  guestProfileId: string;
-  guestLoginUid: string;
-  guestDisplayName: string;
-  guestEmojiId: number;
-  guestAura: string;
+  hostProfileId: string | null;
+  hostLoginUid: string | null;
+  hostDisplayName: string | null;
+  hostEmojiId: number | null;
+  hostAura: string | null;
+  guestProfileId: string | null;
+  guestLoginUid: string | null;
+  guestDisplayName: string | null;
+  guestEmojiId: number | null;
+  guestAura: string | null;
 }
 
 export interface EventRound {
@@ -148,8 +153,6 @@ export interface EventRound {
   status: EventRoundStatus;
   createdAtMs: number;
   completedAtMs: number | null;
-  byeProfileId: string | null;
-  byeReason: "preferred" | "random" | null;
   matches: Record<string, EventMatch>;
 }
 
@@ -168,6 +171,8 @@ export interface EventRecord {
   winnerProfileId: string | null;
   winnerDisplayName: string | null;
   currentRoundIndex: number | null;
+  bracketSize: number;
+  roundCount: number;
   participants: Record<string, EventParticipant>;
   rounds: Record<string, EventRound>;
 }

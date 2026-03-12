@@ -2703,9 +2703,12 @@ class Connection {
   ): EventMatch {
     return {
       matchKey: this.normalizeString(rawData.matchKey) || fallbackMatchKey,
-      inviteId: this.normalizeString(rawData.inviteId),
+      inviteId: this.normalizeStringOrNull(rawData.inviteId),
       status:
-        rawData.status === "host" || rawData.status === "guest"
+        rawData.status === "upcoming" ||
+        rawData.status === "host" ||
+        rawData.status === "guest" ||
+        rawData.status === "bye"
           ? rawData.status
           : "pending",
       resolvedAtMs: Number.isFinite(
@@ -2715,16 +2718,24 @@ class Connection {
         : null,
       winnerProfileId: this.normalizeStringOrNull(rawData.winnerProfileId),
       loserProfileId: this.normalizeStringOrNull(rawData.loserProfileId),
-      hostProfileId: this.normalizeString(rawData.hostProfileId),
-      hostLoginUid: this.normalizeString(rawData.hostLoginUid),
-      hostDisplayName: this.normalizeString(rawData.hostDisplayName),
-      hostEmojiId: this.normalizeFiniteNumber(rawData.hostEmojiId, 0),
-      hostAura: this.normalizeString(rawData.hostAura),
-      guestProfileId: this.normalizeString(rawData.guestProfileId),
-      guestLoginUid: this.normalizeString(rawData.guestLoginUid),
-      guestDisplayName: this.normalizeString(rawData.guestDisplayName),
-      guestEmojiId: this.normalizeFiniteNumber(rawData.guestEmojiId, 0),
-      guestAura: this.normalizeString(rawData.guestAura),
+      hostProfileId: this.normalizeStringOrNull(rawData.hostProfileId),
+      hostLoginUid: this.normalizeStringOrNull(rawData.hostLoginUid),
+      hostDisplayName: this.normalizeStringOrNull(rawData.hostDisplayName),
+      hostEmojiId: Number.isFinite(
+        this.normalizeFiniteNumber(rawData.hostEmojiId, NaN),
+      )
+        ? this.normalizeFiniteNumber(rawData.hostEmojiId, NaN)
+        : null,
+      hostAura: this.normalizeStringOrNull(rawData.hostAura),
+      guestProfileId: this.normalizeStringOrNull(rawData.guestProfileId),
+      guestLoginUid: this.normalizeStringOrNull(rawData.guestLoginUid),
+      guestDisplayName: this.normalizeStringOrNull(rawData.guestDisplayName),
+      guestEmojiId: Number.isFinite(
+        this.normalizeFiniteNumber(rawData.guestEmojiId, NaN),
+      )
+        ? this.normalizeFiniteNumber(rawData.guestEmojiId, NaN)
+        : null,
+      guestAura: this.normalizeStringOrNull(rawData.guestAura),
     };
   }
 
@@ -2756,14 +2767,12 @@ class Connection {
         rawData.roundIndex,
         fallbackRoundIndex,
       ),
-      status: rawData.status === "completed" ? "completed" : "active",
+      status:
+        rawData.status === "completed" || rawData.status === "upcoming"
+          ? rawData.status
+          : "active",
       createdAtMs: this.normalizeFiniteNumber(rawData.createdAtMs, 0),
       completedAtMs: Number.isFinite(completedAtMs) ? completedAtMs : null,
-      byeProfileId: this.normalizeStringOrNull(rawData.byeProfileId),
-      byeReason:
-        rawData.byeReason === "preferred" || rawData.byeReason === "random"
-          ? rawData.byeReason
-          : null,
       matches,
     };
   }
@@ -2845,6 +2854,8 @@ class Connection {
       )
         ? this.normalizeFiniteNumber(rawData.currentRoundIndex, NaN)
         : null,
+      bracketSize: this.normalizeFiniteNumber(rawData.bracketSize, 0),
+      roundCount: this.normalizeFiniteNumber(rawData.roundCount, 0),
       participants,
       rounds,
     };

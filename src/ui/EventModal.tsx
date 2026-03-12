@@ -31,6 +31,12 @@ import {
 import { showShinyCard, showsShinyCardSomewhere } from "./ShinyCard";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 
+const BRACKET_MATCH_HEIGHT_PX = 34;
+const BRACKET_SLOT_PITCH_PX = 40;
+const BRACKET_ROUND_WIDTH_PX = 126;
+const BRACKET_ROUND_GAP_PX = 16;
+const BRACKET_TRACK_LABEL_HEIGHT_PX = 20;
+
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
@@ -53,8 +59,8 @@ const Overlay = styled.div`
 `;
 
 const ModalCard = styled.div`
-  width: min(540px, calc(100vw - 24px));
-  max-height: min(720px, calc(100vh - 24px));
+  width: min(980px, calc(100vw - 24px));
+  max-height: min(760px, calc(100vh - 24px));
   overflow: hidden;
   border-radius: 16px;
   background: var(--color-white);
@@ -201,17 +207,19 @@ const ParticipantRow = styled.button`
   }
 `;
 
-const Avatar = styled.img`
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
+const Avatar = styled.img<{ $size?: number }>`
+  width: ${(props) => props.$size ?? 24}px;
+  height: ${(props) => props.$size ?? 24}px;
+  border-radius: ${(props) =>
+    Math.max(4, Math.round((props.$size ?? 24) / 4))}px;
   flex-shrink: 0;
 `;
 
-const AvatarFallback = styled.div`
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
+const AvatarFallback = styled.div<{ $size?: number }>`
+  width: ${(props) => props.$size ?? 24}px;
+  height: ${(props) => props.$size ?? 24}px;
+  border-radius: ${(props) =>
+    Math.max(4, Math.round((props.$size ?? 24) / 4))}px;
   background: rgba(128, 128, 128, 0.18);
   flex-shrink: 0;
 `;
@@ -235,83 +243,134 @@ const ParticipantState = styled.div`
   color: var(--navigationTextMuted);
 `;
 
-const RoundsGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
+const BracketSection = styled(CardSection)`
+  padding: 14px;
 `;
 
-const RoundSection = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+const BracketScroller = styled.div`
+  overflow-x: auto;
+  overflow-y: hidden;
+  margin: 0 -2px;
+  padding: 2px;
 `;
 
-const MatchesList = styled.div`
+const BracketCanvas = styled.div`
+  display: flex;
+  gap: ${BRACKET_ROUND_GAP_PX}px;
+  min-width: max-content;
+  align-items: flex-start;
+`;
+
+const BracketRoundColumn = styled.div`
+  width: ${BRACKET_ROUND_WIDTH_PX}px;
+  flex: 0 0 ${BRACKET_ROUND_WIDTH_PX}px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 `;
 
-const RoundTitle = styled.div`
-  font-size: 0.8rem;
+const BracketRoundTitle = styled.div`
+  height: ${BRACKET_TRACK_LABEL_HEIGHT_PX}px;
+  font-size: 0.67rem;
   font-weight: 700;
-  text-align: left;
-  padding-left: 2px;
-  color: var(--color-gray-33);
-
-  @media (prefers-color-scheme: dark) {
-    color: var(--color-gray-f0);
-  }
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--navigationTextMuted);
 `;
 
-const MatchButton = styled.button<{ $highlighted?: boolean }>`
+const BracketRoundTrack = styled.div<{ $height: number }>`
+  position: relative;
+  height: ${(props) => props.$height}px;
+`;
+
+const BracketMatchButton = styled.button<{
+  $top: number;
+  $highlighted?: boolean;
+}>`
+  position: absolute;
+  top: ${(props) => props.$top}px;
+  left: 0;
+  width: ${BRACKET_ROUND_WIDTH_PX}px;
+  min-height: ${BRACKET_MATCH_HEIGHT_PX}px;
   border: none;
-  border-radius: 12px;
-  background: ${(props) =>
-    props.$highlighted ? "rgba(0, 122, 255, 0.06)" : "var(--color-white)"};
-  padding: 10px 12px;
+  border-radius: 10px;
+  padding: 7px 8px;
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 5px;
   text-align: left;
+  background: ${(props) =>
+    props.$highlighted ? "rgba(0, 122, 255, 0.1)" : "var(--color-white)"};
+  box-shadow: inset 0 0 0 1px
+    ${(props) =>
+      props.$highlighted ? "rgba(0, 122, 255, 0.22)" : "rgba(0, 0, 0, 0.06)"};
   cursor: pointer;
-  transition: background-color 0.15s ease;
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    opacity 0.15s ease;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.96;
+  }
 
   @media (hover: hover) and (pointer: fine) {
-    &:hover {
+    &:hover:not(:disabled) {
       background: ${(props) =>
-        props.$highlighted ? "rgba(0, 122, 255, 0.1)" : "var(--color-gray-f5)"};
+        props.$highlighted
+          ? "rgba(0, 122, 255, 0.14)"
+          : "var(--color-gray-f5)"};
     }
   }
 
   @media (prefers-color-scheme: dark) {
     background: ${(props) =>
-      props.$highlighted ? "rgba(11, 132, 255, 0.12)" : "var(--color-gray-23)"};
+      props.$highlighted ? "rgba(11, 132, 255, 0.16)" : "var(--color-gray-23)"};
+    box-shadow: inset 0 0 0 1px
+      ${(props) =>
+        props.$highlighted
+          ? "rgba(11, 132, 255, 0.28)"
+          : "rgba(255, 255, 255, 0.05)"};
+
     @media (hover: hover) and (pointer: fine) {
-      &:hover {
+      &:hover:not(:disabled) {
         background: ${(props) =>
           props.$highlighted
-            ? "rgba(11, 132, 255, 0.18)"
+            ? "rgba(11, 132, 255, 0.22)"
             : "var(--color-gray-33)"};
       }
     }
   }
 `;
 
-const MatchPlayerLine = styled.div`
+const BracketMatchHeader = styled.div`
+  display: flex;
+  justify-content: flex-end;
+`;
+
+const BracketMatchLabel = styled.div`
+  font-size: 0.55rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--navigationTextMuted);
+`;
+
+const BracketPlayerLine = styled.div`
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   min-width: 0;
 `;
 
-const MatchPlayerName = styled.div<{ $bold?: boolean }>`
+const BracketPlayerName = styled.div<{ $bold?: boolean }>`
   min-width: 0;
-  font-weight: ${(props) => (props.$bold ? 700 : "normal")};
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 0.67rem;
+  line-height: 1.1;
+  font-weight: ${(props) => (props.$bold ? 700 : 500)};
   color: var(--color-gray-25);
 
   @media (prefers-color-scheme: dark) {
@@ -459,6 +518,17 @@ const getSortedRounds = (event: EventRecord | null): EventRound[] => {
   );
 };
 
+const getSortedMatches = (round: EventRound | null): EventMatch[] => {
+  if (!round) {
+    return [];
+  }
+  return Object.values(round.matches).sort((left, right) => {
+    const leftIndex = Number(left.matchKey.split("_")[1] ?? 0);
+    const rightIndex = Number(right.matchKey.split("_")[1] ?? 0);
+    return leftIndex - rightIndex;
+  });
+};
+
 const getCurrentUiState = (
   event: EventRecord | null,
   profileId: string,
@@ -494,15 +564,15 @@ const getCurrentUiState = (
   const roundKey =
     event.currentRoundIndex !== null ? String(event.currentRoundIndex) : null;
   const currentRound = roundKey ? event.rounds[roundKey] : null;
-  const matches = currentRound ? Object.values(currentRound.matches) : [];
+  const matches = getSortedMatches(currentRound);
   const playableMatch =
     matches.find(
       (match) =>
         match.status === "pending" &&
+        match.inviteId &&
         (match.hostProfileId === profileId ||
           match.guestProfileId === profileId),
     ) ?? null;
-  const hasBye = currentRound?.byeProfileId === profileId;
   const hasWonCurrentRound = matches.some(
     (match) => match.winnerProfileId === profileId,
   );
@@ -512,10 +582,87 @@ const getCurrentUiState = (
     isEliminated: false,
     playableMatch,
     waitingForNext:
-      event.status === "active" &&
-      !playableMatch &&
-      (hasBye || hasWonCurrentRound),
+      event.status === "active" && !playableMatch && hasWonCurrentRound,
   };
+};
+
+const getBracketRoundTitle = (
+  roundIndex: number,
+  totalRounds: number,
+): string => {
+  if (roundIndex === totalRounds - 1) {
+    return "Final";
+  }
+  if (roundIndex === totalRounds - 2) {
+    return "Semis";
+  }
+  if (roundIndex === totalRounds - 3) {
+    return "Quarters";
+  }
+  return `Round ${roundIndex + 1}`;
+};
+
+const getBracketTrackHeight = (rounds: EventRound[]): number => {
+  const firstRoundMatchCount =
+    rounds.length > 0 ? getSortedMatches(rounds[0]).length : 0;
+  if (firstRoundMatchCount <= 0) {
+    return BRACKET_MATCH_HEIGHT_PX;
+  }
+  return (
+    (firstRoundMatchCount - 1) * BRACKET_SLOT_PITCH_PX + BRACKET_MATCH_HEIGHT_PX
+  );
+};
+
+const getBracketMatchTop = (roundIndex: number, matchIndex: number): number => {
+  const slotSpan = BRACKET_SLOT_PITCH_PX * Math.pow(2, roundIndex);
+  return Math.round(
+    (slotSpan - BRACKET_MATCH_HEIGHT_PX) / 2 + matchIndex * slotSpan,
+  );
+};
+
+const getBracketMatchLabel = (match: EventMatch): string => {
+  if (match.status === "pending") {
+    return "live";
+  }
+  if (match.status === "bye") {
+    return "bye";
+  }
+  if (match.status === "host" || match.status === "guest") {
+    return "done";
+  }
+  if (match.hostProfileId || match.guestProfileId) {
+    return "locked";
+  }
+  return "tbd";
+};
+
+const getMatchSlotProfileId = (
+  match: EventMatch,
+  slot: "host" | "guest",
+): string | null => {
+  return slot === "host" ? match.hostProfileId : match.guestProfileId;
+};
+
+const getMatchSlotDisplayName = (
+  match: EventMatch,
+  slot: "host" | "guest",
+): string => {
+  const displayName =
+    slot === "host"
+      ? match.hostDisplayName?.trim()
+      : match.guestDisplayName?.trim();
+  if (displayName) {
+    return displayName;
+  }
+
+  const slotProfileId = getMatchSlotProfileId(match, slot);
+  if (slotProfileId) {
+    return "anon";
+  }
+  if (match.status === "bye") {
+    return "BYE";
+  }
+  return "TBD";
 };
 
 const formatEventError = (error: unknown): string => {
@@ -534,16 +681,18 @@ const formatEventError = (error: unknown): string => {
 const EventAvatar: React.FC<{
   emojiId?: number | null;
   displayName?: string | null;
-}> = ({ emojiId, displayName }) => {
+  size?: number;
+}> = ({ emojiId, displayName, size }) => {
   if (typeof emojiId === "number" && Number.isFinite(emojiId)) {
     return (
       <Avatar
+        $size={size}
         src={emojis.getEmojiUrl(emojiId.toString())}
         alt={displayName ?? ""}
       />
     );
   }
-  return <AvatarFallback aria-hidden="true" />;
+  return <AvatarFallback $size={size} aria-hidden="true" />;
 };
 
 const getParticipantDisplayName = (participant: EventParticipant): string => {
@@ -706,6 +855,10 @@ const EventModal: React.FC = () => {
     [eventRecord],
   );
   const rounds = useMemo(() => getSortedRounds(eventRecord), [eventRecord]);
+  const bracketTrackHeight = useMemo(
+    () => getBracketTrackHeight(rounds),
+    [rounds],
+  );
   const currentProfileId = storage.getProfileId("");
   const eventUiState = useMemo(
     () => getCurrentUiState(eventRecord, currentProfileId),
@@ -949,69 +1102,95 @@ const EventModal: React.FC = () => {
 
           {(eventRecord?.status === "active" ||
             eventRecord?.status === "ended") && (
-            <RoundsGroup>
-              {rounds.map((round) => (
-                <RoundSection key={round.roundIndex}>
-                  {rounds.length > 1 && (
-                    <RoundTitle>{`Round ${round.roundIndex + 1}`}</RoundTitle>
-                  )}
-                  <CardSection>
-                    <MatchesList>
-                      {Object.values(round.matches).map((match) => {
-                        const isPlayable =
-                          eventUiState.playableMatch?.inviteId ===
-                          match.inviteId;
-                        return (
-                          <MatchButton
-                            key={match.matchKey}
-                            type="button"
-                            $highlighted={
-                              isPlayable ||
-                              currentRoute.inviteId === match.inviteId
-                            }
-                            onClick={() => void openMatch(match.inviteId)}
-                          >
-                            <MatchPlayerLine>
-                              <EventAvatar
-                                emojiId={match.hostEmojiId}
-                                displayName={match.hostDisplayName}
-                              />
-                              <MatchPlayerName
-                                $bold={
-                                  match.winnerProfileId === match.hostProfileId
+            <BracketSection>
+              {rounds.length > 0 ? (
+                <BracketScroller>
+                  <BracketCanvas>
+                    {rounds.map((round) => (
+                      <BracketRoundColumn key={round.roundIndex}>
+                        <BracketRoundTitle>
+                          {getBracketRoundTitle(
+                            round.roundIndex,
+                            rounds.length,
+                          )}
+                        </BracketRoundTitle>
+                        <BracketRoundTrack $height={bracketTrackHeight}>
+                          {getSortedMatches(round).map((match, matchIndex) => {
+                            const inviteId = match.inviteId;
+                            const isPlayable =
+                              eventUiState.playableMatch?.inviteId === inviteId;
+                            const isCurrentRoute =
+                              !!inviteId && currentRoute.inviteId === inviteId;
+                            const isHighlighted = isPlayable || isCurrentRoute;
+                            return (
+                              <BracketMatchButton
+                                key={match.matchKey}
+                                type="button"
+                                $top={getBracketMatchTop(
+                                  round.roundIndex,
+                                  matchIndex,
+                                )}
+                                $highlighted={isHighlighted}
+                                disabled={!inviteId}
+                                onClick={() =>
+                                  inviteId
+                                    ? void openMatch(inviteId)
+                                    : undefined
                                 }
                               >
-                                {match.hostDisplayName || "anon"}
-                              </MatchPlayerName>
-                            </MatchPlayerLine>
-                            <MatchPlayerLine>
-                              <EventAvatar
-                                emojiId={match.guestEmojiId}
-                                displayName={match.guestDisplayName}
-                              />
-                              <MatchPlayerName
-                                $bold={
-                                  match.winnerProfileId === match.guestProfileId
-                                }
-                              >
-                                {match.guestDisplayName || "anon"}
-                              </MatchPlayerName>
-                            </MatchPlayerLine>
-                          </MatchButton>
-                        );
-                      })}
-                    </MatchesList>
-                  </CardSection>
-                </RoundSection>
-              ))}
-              {!rounds.length && (
+                                <BracketMatchHeader>
+                                  <BracketMatchLabel>
+                                    {getBracketMatchLabel(match)}
+                                  </BracketMatchLabel>
+                                </BracketMatchHeader>
+                                <BracketPlayerLine>
+                                  <EventAvatar
+                                    size={14}
+                                    emojiId={match.hostEmojiId}
+                                    displayName={match.hostDisplayName}
+                                  />
+                                  <BracketPlayerName
+                                    $bold={
+                                      match.winnerProfileId ===
+                                        match.hostProfileId &&
+                                      match.hostProfileId !== null
+                                    }
+                                  >
+                                    {getMatchSlotDisplayName(match, "host")}
+                                  </BracketPlayerName>
+                                </BracketPlayerLine>
+                                <BracketPlayerLine>
+                                  <EventAvatar
+                                    size={14}
+                                    emojiId={match.guestEmojiId}
+                                    displayName={match.guestDisplayName}
+                                  />
+                                  <BracketPlayerName
+                                    $bold={
+                                      match.winnerProfileId ===
+                                        match.guestProfileId &&
+                                      match.guestProfileId !== null
+                                    }
+                                  >
+                                    {getMatchSlotDisplayName(match, "guest")}
+                                  </BracketPlayerName>
+                                </BracketPlayerLine>
+                              </BracketMatchButton>
+                            );
+                          })}
+                        </BracketRoundTrack>
+                      </BracketRoundColumn>
+                    ))}
+                  </BracketCanvas>
+                </BracketScroller>
+              ) : (
                 <FooterNote>
                   {eventRecord?.status === "active"
                     ? "building bracket..."
                     : "no bracket yet"}
                 </FooterNote>
               )}
-            </RoundsGroup>
+            </BracketSection>
           )}
 
           <Footer>
@@ -1050,7 +1229,7 @@ const EventModal: React.FC = () => {
                 type="button"
                 $primary={true}
                 onClick={() =>
-                  void openMatch(eventUiState.playableMatch!.inviteId)
+                  void openMatch(eventUiState.playableMatch!.inviteId as string)
                 }
               >
                 Play

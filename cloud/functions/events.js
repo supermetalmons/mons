@@ -10,19 +10,13 @@ const { resolveMatchWinner } = require("./matchOutcome");
 const CONTROLLER_VERSION = 2;
 const INITIAL_FEN =
   "0 0 w 0 0 0 0 0 1 n03y0xs0xd0xa0xe0xn03/n11/n11/n04xxmn01xxmn04/n03xxmn01xxmn01xxmn03/xxQn04xxUn04xxQ/n03xxMn01xxMn01xxMn03/n04xxMn01xxMn04/n11/n11/n03E0xA0xD0xS0xY0xn03";
-const EVENT_SCHEMA_VERSION = 1;
+const EVENT_SCHEMA_VERSION = 2;
 const EVENT_LOCK_TTL_MS = 30 * 1000;
 const EVENT_LOCK_REFRESH_INTERVAL_MS = 10 * 1000;
 const EVENT_MATCH_RESOLVE_CONCURRENCY = 12;
 const MIN_STARTS_IN_MINUTES = 1;
 const MAX_STARTS_IN_MINUTES = 7 * 24 * 60;
-const PREFERRED_FIRST_ROUND_BYE_USERNAMES = new Set([
-  "obi",
-  "meinong",
-  "ivan",
-  "bosch",
-  "monsol",
-]);
+const MAX_EVENT_PARTICIPANTS = 32;
 const PILOT_EVENT_CREATOR_USERNAMES = new Set([
   "ivan",
   "meinong",
@@ -34,6 +28,7 @@ const PILOT_EVENT_CREATOR_USERNAMES = new Set([
 
 const normalizeString = (value) =>
   typeof value === "string" && value.trim() !== "" ? value.trim() : "";
+const normalizeStringOrNull = (value) => normalizeString(value) || null;
 const normalizeUsername = (value) => normalizeString(value).toLowerCase();
 const getNowMs = () => Date.now();
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -144,156 +139,395 @@ const ensureNonAnonProfile = async (uid) => {
   return profile;
 };
 
-const pickPreferredFirstRoundBye = (participantsById, participantIds) => {
-  const shuffled = shuffle(participantIds);
-  const preferred = shuffled.find((profileId) => {
-    const participant = participantsById[profileId];
-    if (!participant) {
-      return false;
-    }
-    const username = normalizeUsername(participant.username);
-    const displayName = normalizeUsername(participant.displayName);
-    return (
-      PREFERRED_FIRST_ROUND_BYE_USERNAMES.has(username) ||
-      PREFERRED_FIRST_ROUND_BYE_USERNAMES.has(displayName)
-    );
-  });
-  if (preferred) {
-    return {
-      byeProfileId: preferred,
-      byeReason: "preferred",
-      orderedParticipantIds: shuffled.filter(
-        (profileId) => profileId !== preferred,
-      ),
-    };
-  }
-  const [randomByeProfileId, ...rest] = shuffled;
-  return {
-    byeProfileId: randomByeProfileId || null,
-    byeReason: randomByeProfileId ? "random" : null,
-    orderedParticipantIds: rest,
-  };
-};
-
-const pickRoundBye = (participantIds, participantsById, isFirstRound) => {
-  if (participantIds.length % 2 === 0) {
-    return {
-      byeProfileId: null,
-      byeReason: null,
-      orderedParticipantIds: shuffle(participantIds),
-    };
-  }
-
-  if (isFirstRound) {
-    return pickPreferredFirstRoundBye(participantsById, participantIds);
-  }
-
-  const shuffled = shuffle(participantIds);
-  const [byeProfileId, ...rest] = shuffled;
-  return {
-    byeProfileId: byeProfileId || null,
-    byeReason: byeProfileId ? "random" : null,
-    orderedParticipantIds: rest,
-  };
-};
-
 const createMatchRecord = (color, emojiId, aura) => ({
   version: CONTROLLER_VERSION,
   color,
-  emojiId,
-  aura: aura || null,
+  emojiId: typeof emojiId === "number" ? Math.floor(emojiId) : 0,
+  aura: normalizeString(aura) || null,
   fen: INITIAL_FEN,
   status: "",
   flatMovesString: "",
   timer: "",
 });
 
-const buildRoundState = ({
+const getMatchKey = (roundIndex, matchIndex) => `${roundIndex}_${matchIndex}`;
+const getMatchIndexFromKey = (matchKey) => {
+  const parts = normalizeString(matchKey).split("_");
+  return toFiniteInteger(parts[1], 0);
+};
+
+const getBracketSize = (participantCount) => {
+  let bracketSize = 2;
+  while (
+    bracketSize < participantCount &&
+    bracketSize < MAX_EVENT_PARTICIPANTS
+  ) {
+    bracketSize *= 2;
+  }
+  return bracketSize;
+};
+
+const buildSeedOrder = (bracketSize) => {
+  if (bracketSize <= 1) {
+    return [1];
+  }
+  const previous = buildSeedOrder(bracketSize / 2);
+  const next = [];
+  for (const seed of previous) {
+    next.push(seed);
+    next.push(bracketSize + 1 - seed);
+  }
+  return next;
+};
+
+const createEmptyEventMatch = (matchKey) => ({
+  matchKey,
+  inviteId: null,
+  status: "upcoming",
+  resolvedAtMs: null,
+  winnerProfileId: null,
+  loserProfileId: null,
+  hostProfileId: null,
+  hostLoginUid: null,
+  hostDisplayName: null,
+  hostEmojiId: null,
+  hostAura: null,
+  guestProfileId: null,
+  guestLoginUid: null,
+  guestDisplayName: null,
+  guestEmojiId: null,
+  guestAura: null,
+});
+
+const setMatchSlotParticipant = (match, slot, participant) => {
+  const prefix = slot === "guest" ? "guest" : "host";
+  const nextProfileId = participant ? participant.profileId : null;
+  const nextLoginUid = participant ? participant.loginUid : null;
+  const nextDisplayName = participant ? participant.displayName : null;
+  const nextEmojiId = participant ? participant.emojiId : null;
+  const nextAura = participant ? participant.aura || null : null;
+  let didChange = false;
+
+  if (match[`${prefix}ProfileId`] !== nextProfileId) {
+    match[`${prefix}ProfileId`] = nextProfileId;
+    didChange = true;
+  }
+  if (match[`${prefix}LoginUid`] !== nextLoginUid) {
+    match[`${prefix}LoginUid`] = nextLoginUid;
+    didChange = true;
+  }
+  if (match[`${prefix}DisplayName`] !== nextDisplayName) {
+    match[`${prefix}DisplayName`] = nextDisplayName;
+    didChange = true;
+  }
+  if (match[`${prefix}EmojiId`] !== nextEmojiId) {
+    match[`${prefix}EmojiId`] = nextEmojiId;
+    didChange = true;
+  }
+  if (match[`${prefix}Aura`] !== nextAura) {
+    match[`${prefix}Aura`] = nextAura;
+    didChange = true;
+  }
+
+  return didChange;
+};
+
+const applyMatchResolution = (match, resolved, nowMs) => {
+  if (!match || !resolved) {
+    return false;
+  }
+  let didChange = false;
+
+  if (match.status !== resolved.status) {
+    match.status = resolved.status;
+    didChange = true;
+  }
+  if (
+    normalizeStringOrNull(match.winnerProfileId) !== resolved.winnerProfileId
+  ) {
+    match.winnerProfileId = resolved.winnerProfileId;
+    didChange = true;
+  }
+  if (normalizeStringOrNull(match.loserProfileId) !== resolved.loserProfileId) {
+    match.loserProfileId = resolved.loserProfileId;
+    didChange = true;
+  }
+  if (typeof match.resolvedAtMs !== "number") {
+    match.resolvedAtMs = nowMs;
+    didChange = true;
+  }
+
+  return didChange;
+};
+
+const assignWinnerToNextRound = ({
+  rounds,
+  roundIndex,
+  matchIndex,
+  winnerProfileId,
+  participantsById,
+}) => {
+  const normalizedWinnerProfileId = normalizeString(winnerProfileId);
+  if (!normalizedWinnerProfileId) {
+    return false;
+  }
+
+  const nextRound = rounds[String(roundIndex + 1)];
+  if (
+    !nextRound ||
+    !nextRound.matches ||
+    typeof nextRound.matches !== "object"
+  ) {
+    return false;
+  }
+
+  const nextMatchIndex = Math.floor(matchIndex / 2);
+  const nextMatchKey = getMatchKey(roundIndex + 1, nextMatchIndex);
+  const nextMatch = nextRound.matches[nextMatchKey];
+  if (!nextMatch) {
+    return false;
+  }
+
+  const slot = matchIndex % 2 === 0 ? "host" : "guest";
+  return setMatchSlotParticipant(
+    nextMatch,
+    slot,
+    participantsById[normalizedWinnerProfileId] || null,
+  );
+};
+
+const createInviteForMatch = ({
   eventId,
   roundIndex,
-  participantIds,
-  participantsById,
+  matchKey,
+  match,
+  inviteUpdates,
+}) => {
+  const hostLoginUid = normalizeString(match.hostLoginUid);
+  const guestLoginUid = normalizeString(match.guestLoginUid);
+  if (!hostLoginUid || !guestLoginUid || normalizeString(match.inviteId)) {
+    return false;
+  }
+
+  const inviteId = generateEventInviteId();
+  const hostColor = pickHostColor();
+  const guestColor = hostColor === "white" ? "black" : "white";
+
+  match.inviteId = inviteId;
+  match.status = "pending";
+
+  inviteUpdates[`invites/${inviteId}`] = {
+    version: CONTROLLER_VERSION,
+    hostId: hostLoginUid,
+    hostColor,
+    guestId: guestLoginUid,
+    eventId,
+    eventRoundIndex: roundIndex,
+    eventMatchKey: matchKey,
+    eventOwned: true,
+  };
+  inviteUpdates[`players/${hostLoginUid}/matches/${inviteId}`] =
+    createMatchRecord(hostColor, match.hostEmojiId, match.hostAura);
+  inviteUpdates[`players/${guestLoginUid}/matches/${inviteId}`] =
+    createMatchRecord(guestColor, match.guestEmojiId, match.guestAura);
+
+  return true;
+};
+
+const activateRound = ({
+  eventId,
+  roundIndex,
+  rounds,
   nowMs,
-  isFirstRound,
+  participantsById,
+  inviteUpdates,
 }) => {
   const roundKey = String(roundIndex);
-  const { byeProfileId, byeReason, orderedParticipantIds } = pickRoundBye(
-    participantIds,
-    participantsById,
-    isFirstRound,
-  );
-  const round = {
-    roundIndex,
-    status: "active",
-    createdAtMs: nowMs,
-    completedAtMs: null,
-    byeProfileId,
-    byeReason,
-    matches: {},
-  };
-  const updates = {};
+  const round = rounds[roundKey];
+  if (!round || !round.matches || typeof round.matches !== "object") {
+    return false;
+  }
 
-  for (let index = 0; index < orderedParticipantIds.length; index += 2) {
-    const hostProfileId = orderedParticipantIds[index];
-    const guestProfileId = orderedParticipantIds[index + 1];
-    const hostParticipant = participantsById[hostProfileId];
-    const guestParticipant = participantsById[guestProfileId];
-    if (!hostParticipant || !guestParticipant) {
+  let didChange = false;
+  if (round.status !== "active") {
+    round.status = "active";
+    round.completedAtMs = null;
+    didChange = true;
+  }
+
+  const matchKeys = Object.keys(round.matches).sort(
+    (left, right) => getMatchIndexFromKey(left) - getMatchIndexFromKey(right),
+  );
+
+  for (const matchKey of matchKeys) {
+    const match = round.matches[matchKey];
+    if (!match || typeof match !== "object") {
       continue;
     }
 
-    const inviteId = generateEventInviteId();
-    const matchKey = `${roundIndex}_${Math.floor(index / 2)}`;
-    const hostColor = pickHostColor();
-    const guestColor = hostColor === "white" ? "black" : "white";
+    const hostProfileId = normalizeString(match.hostProfileId);
+    const guestProfileId = normalizeString(match.guestProfileId);
+    const status = normalizeString(match.status);
 
-    round.matches[matchKey] = {
-      matchKey,
-      inviteId,
-      status: "pending",
-      resolvedAtMs: null,
-      winnerProfileId: null,
-      loserProfileId: null,
-      hostProfileId,
-      hostLoginUid: hostParticipant.loginUid,
-      hostDisplayName: hostParticipant.displayName,
-      hostEmojiId: hostParticipant.emojiId,
-      hostAura: hostParticipant.aura || "",
-      guestProfileId,
-      guestLoginUid: guestParticipant.loginUid,
-      guestDisplayName: guestParticipant.displayName,
-      guestEmojiId: guestParticipant.emojiId,
-      guestAura: guestParticipant.aura || "",
-    };
+    if (status === "host" || status === "guest" || status === "bye") {
+      continue;
+    }
 
-    updates[`invites/${inviteId}`] = {
-      version: CONTROLLER_VERSION,
-      hostId: hostParticipant.loginUid,
-      hostColor,
-      guestId: guestParticipant.loginUid,
-      eventId,
-      eventRoundIndex: roundIndex,
-      eventMatchKey: matchKey,
-      eventOwned: true,
-    };
-    updates[`players/${hostParticipant.loginUid}/matches/${inviteId}`] =
-      createMatchRecord(
-        hostColor,
-        hostParticipant.emojiId,
-        hostParticipant.aura,
-      );
-    updates[`players/${guestParticipant.loginUid}/matches/${inviteId}`] =
-      createMatchRecord(
-        guestColor,
-        guestParticipant.emojiId,
-        guestParticipant.aura,
-      );
+    if (hostProfileId && guestProfileId) {
+      if (
+        createInviteForMatch({
+          eventId,
+          roundIndex,
+          matchKey,
+          match,
+          inviteUpdates,
+        })
+      ) {
+        didChange = true;
+      }
+      continue;
+    }
+
+    if (hostProfileId || guestProfileId) {
+      const winnerProfileId = hostProfileId || guestProfileId;
+      if (
+        applyMatchResolution(
+          match,
+          {
+            status: "bye",
+            winnerProfileId,
+            loserProfileId: null,
+          },
+          nowMs,
+        )
+      ) {
+        didChange = true;
+      }
+      if (
+        assignWinnerToNextRound({
+          rounds,
+          roundIndex,
+          matchIndex: getMatchIndexFromKey(matchKey),
+          winnerProfileId,
+          participantsById,
+        })
+      ) {
+        didChange = true;
+      }
+      continue;
+    }
+
+    if (status !== "upcoming") {
+      match.status = "upcoming";
+      didChange = true;
+    }
   }
 
-  updates[`events/${eventId}/rounds/${roundKey}`] = round;
+  return didChange;
+};
+
+const buildFixedBracketState = ({
+  eventId,
+  participantIds,
+  participantsById,
+  nowMs,
+}) => {
+  const orderedParticipantIds = shuffle(participantIds);
+  const bracketSize = getBracketSize(orderedParticipantIds.length);
+  const roundCount = Math.max(1, Math.round(Math.log2(bracketSize)));
+  const seedOrder = buildSeedOrder(bracketSize);
+  const inviteUpdates = {};
+  const rounds = {};
+  const seedToProfileId = new Map();
+
+  orderedParticipantIds.forEach((profileId, index) => {
+    seedToProfileId.set(index + 1, profileId);
+  });
+
+  for (let roundIndex = 0; roundIndex < roundCount; roundIndex += 1) {
+    const round = {
+      roundIndex,
+      status: roundIndex === 0 ? "active" : "upcoming",
+      createdAtMs: nowMs,
+      completedAtMs: null,
+      matches: {},
+    };
+    const matchCount = bracketSize / Math.pow(2, roundIndex + 1);
+
+    for (let matchIndex = 0; matchIndex < matchCount; matchIndex += 1) {
+      const matchKey = getMatchKey(roundIndex, matchIndex);
+      const match = createEmptyEventMatch(matchKey);
+
+      if (roundIndex === 0) {
+        const hostSeed = seedOrder[matchIndex * 2];
+        const guestSeed = seedOrder[matchIndex * 2 + 1];
+        const hostProfileId = seedToProfileId.get(hostSeed) || null;
+        const guestProfileId = seedToProfileId.get(guestSeed) || null;
+
+        setMatchSlotParticipant(
+          match,
+          "host",
+          participantsById[hostProfileId] || null,
+        );
+        setMatchSlotParticipant(
+          match,
+          "guest",
+          participantsById[guestProfileId] || null,
+        );
+
+        if (hostProfileId && guestProfileId) {
+          createInviteForMatch({
+            eventId,
+            roundIndex,
+            matchKey,
+            match,
+            inviteUpdates,
+          });
+        } else if (hostProfileId || guestProfileId) {
+          applyMatchResolution(
+            match,
+            {
+              status: "bye",
+              winnerProfileId: hostProfileId || guestProfileId,
+              loserProfileId: null,
+            },
+            nowMs,
+          );
+        }
+      }
+
+      round.matches[matchKey] = match;
+    }
+
+    rounds[String(roundIndex)] = round;
+  }
+
+  for (let roundIndex = 0; roundIndex < roundCount - 1; roundIndex += 1) {
+    const round = rounds[String(roundIndex)];
+    const matchKeys = Object.keys(round.matches).sort(
+      (left, right) => getMatchIndexFromKey(left) - getMatchIndexFromKey(right),
+    );
+    for (const matchKey of matchKeys) {
+      const match = round.matches[matchKey];
+      const winnerProfileId = normalizeString(match.winnerProfileId);
+      if (!winnerProfileId) {
+        continue;
+      }
+      assignWinnerToNextRound({
+        rounds,
+        roundIndex,
+        matchIndex: getMatchIndexFromKey(matchKey),
+        winnerProfileId,
+        participantsById,
+      });
+    }
+  }
+
   return {
-    round,
-    updates,
+    bracketSize,
+    roundCount,
+    rounds,
+    inviteUpdates,
   };
 };
 
@@ -308,26 +542,31 @@ const buildScheduledEventDueUpdates = ({ eventId, event, nowMs }) => {
   const participantIds = getParticipantIds(event);
   if (participantIds.length >= 2) {
     const participantsById = event.participants || {};
-    const { updates: roundUpdates } = buildRoundState({
+    const bracket = buildFixedBracketState({
       eventId,
-      roundIndex: 0,
       participantIds,
       participantsById,
       nowMs,
-      isFirstRound: true,
     });
+
     event.status = "active";
     event.startedAtMs = nowMs;
     event.updatedAtMs = nowMs;
     event.currentRoundIndex = 0;
+    event.bracketSize = bracket.bracketSize;
+    event.roundCount = bracket.roundCount;
+
     return {
       didChange: true,
       updates: {
-        ...roundUpdates,
+        ...bracket.inviteUpdates,
         [`events/${eventId}/status`]: event.status,
         [`events/${eventId}/startedAtMs`]: event.startedAtMs,
         [`events/${eventId}/updatedAtMs`]: event.updatedAtMs,
         [`events/${eventId}/currentRoundIndex`]: event.currentRoundIndex,
+        [`events/${eventId}/bracketSize`]: event.bracketSize,
+        [`events/${eventId}/roundCount`]: event.roundCount,
+        [`events/${eventId}/rounds`]: bracket.rounds,
       },
     };
   }
@@ -353,6 +592,41 @@ const resolveRoundMatchState = async (matchRecord) => {
   if (!matchRecord || typeof matchRecord !== "object") {
     return null;
   }
+
+  const existingStatus = normalizeString(matchRecord.status);
+  if (existingStatus === "bye") {
+    const winnerProfileId = normalizeString(matchRecord.winnerProfileId);
+    if (!winnerProfileId) {
+      return null;
+    }
+    return {
+      status: "bye",
+      winnerProfileId,
+      loserProfileId: null,
+    };
+  }
+
+  if (existingStatus === "host" || existingStatus === "guest") {
+    const winnerProfileId =
+      normalizeString(matchRecord.winnerProfileId) ||
+      (existingStatus === "host"
+        ? normalizeString(matchRecord.hostProfileId)
+        : normalizeString(matchRecord.guestProfileId));
+    const loserProfileId =
+      normalizeString(matchRecord.loserProfileId) ||
+      (existingStatus === "host"
+        ? normalizeString(matchRecord.guestProfileId)
+        : normalizeString(matchRecord.hostProfileId));
+    if (!winnerProfileId) {
+      return null;
+    }
+    return {
+      status: existingStatus,
+      winnerProfileId,
+      loserProfileId: loserProfileId || null,
+    };
+  }
+
   const hostLoginUid = normalizeString(matchRecord.hostLoginUid);
   const guestLoginUid = normalizeString(matchRecord.guestLoginUid);
   const inviteId = normalizeString(matchRecord.inviteId);
@@ -371,14 +645,14 @@ const resolveRoundMatchState = async (matchRecord) => {
     return {
       status: "host",
       winnerProfileId: normalizeString(matchRecord.hostProfileId),
-      loserProfileId: normalizeString(matchRecord.guestProfileId),
+      loserProfileId: normalizeStringOrNull(matchRecord.guestProfileId),
     };
   }
   if (outcome.winner === "opponent") {
     return {
       status: "guest",
       winnerProfileId: normalizeString(matchRecord.guestProfileId),
-      loserProfileId: normalizeString(matchRecord.hostProfileId),
+      loserProfileId: normalizeStringOrNull(matchRecord.hostProfileId),
     };
   }
   return null;
@@ -445,6 +719,8 @@ const createBaseEventRecord = ({
     winnerProfileId: null,
     winnerDisplayName: null,
     currentRoundIndex: null,
+    bracketSize: 0,
+    roundCount: 0,
     participants: {
       [creatorParticipant.profileId]: creatorParticipant,
     },
@@ -685,6 +961,17 @@ exports.joinEvent = onCall(async (request) => {
       event.participants && event.participants[profileId]
         ? event.participants[profileId]
         : null;
+    const currentParticipantCount = getParticipantIds(event).length;
+    if (
+      !existingParticipant &&
+      currentParticipantCount >= MAX_EVENT_PARTICIPANTS
+    ) {
+      throw new HttpsError(
+        "failed-precondition",
+        `This event is full (${MAX_EVENT_PARTICIPANTS} players max).`,
+      );
+    }
+
     const participant = buildParticipantSnapshot(
       profile,
       request.auth.uid,
@@ -780,28 +1067,43 @@ exports.syncEventState = onCall(async (request) => {
       Object.assign(updates, dueTransition.updates);
       didChange = dueTransition.didChange;
     } else if (event.status === "active") {
-      const currentRoundIndex = toFiniteInteger(event.currentRoundIndex, -1);
-      const roundKey = String(currentRoundIndex);
-      const rounds =
-        event.rounds && typeof event.rounds === "object" ? event.rounds : {};
-      const currentRound = rounds[roundKey];
-      const participants =
+      const originalCurrentRoundIndex = toFiniteInteger(
+        event.currentRoundIndex,
+        -1,
+      );
+      let currentRoundIndex = originalCurrentRoundIndex;
+      const rounds = cloneValue(
+        event.rounds && typeof event.rounds === "object" ? event.rounds : {},
+      );
+      const participants = cloneValue(
         event.participants && typeof event.participants === "object"
           ? event.participants
-          : {};
+          : {},
+      );
+      const inviteUpdates = {};
+      let roundsChanged = false;
+      let participantsChanged = false;
+      let eventChanged = false;
+      let shouldContinue = currentRoundIndex >= 0;
 
-      if (
-        currentRound &&
-        currentRound.matches &&
-        typeof currentRound.matches === "object"
-      ) {
-        const resolvedWinners = [];
-        let allResolved = true;
-        let roundChanged = false;
-        const nextRound = cloneValue(currentRound);
+      while (shouldContinue) {
+        shouldContinue = false;
+        const roundKey = String(currentRoundIndex);
+        const currentRound = rounds[roundKey];
+        if (
+          !currentRound ||
+          !currentRound.matches ||
+          typeof currentRound.matches !== "object"
+        ) {
+          break;
+        }
+
         const resolvedEntries = await resolveRoundMatchesWithConcurrency(
           currentRound.matches,
         );
+        let allResolved = true;
+        let roundChanged = false;
+        const roundWinners = [];
 
         for (const entry of resolvedEntries) {
           const { matchKey, matchRecord, resolved } = entry;
@@ -809,92 +1111,131 @@ exports.syncEventState = onCall(async (request) => {
             allResolved = false;
             continue;
           }
-          resolvedWinners.push(resolved.winnerProfileId);
-          const existingStatus = normalizeString(matchRecord.status);
-          if (
-            existingStatus !== resolved.status ||
-            normalizeString(matchRecord.winnerProfileId) !==
-              resolved.winnerProfileId
-          ) {
-            nextRound.matches[matchKey] = {
-              ...matchRecord,
-              status: resolved.status,
-              winnerProfileId: resolved.winnerProfileId,
-              loserProfileId: resolved.loserProfileId,
-              resolvedAtMs: matchRecord.resolvedAtMs || nowMs,
-            };
+
+          roundWinners.push(resolved.winnerProfileId);
+          if (applyMatchResolution(matchRecord, resolved, nowMs)) {
             roundChanged = true;
           }
+          if (
+            assignWinnerToNextRound({
+              rounds,
+              roundIndex: currentRoundIndex,
+              matchIndex: getMatchIndexFromKey(matchKey),
+              winnerProfileId: resolved.winnerProfileId,
+              participantsById: participants,
+            })
+          ) {
+            roundsChanged = true;
+          }
 
-          const loserParticipant = participants[resolved.loserProfileId];
+          const loserProfileId = normalizeString(resolved.loserProfileId);
+          const loserParticipant = participants[loserProfileId];
           if (loserParticipant && loserParticipant.state !== "eliminated") {
-            participants[resolved.loserProfileId] = {
+            participants[loserProfileId] = {
               ...loserParticipant,
               state: "eliminated",
               eliminatedRoundIndex: currentRoundIndex,
               eliminatedByProfileId: resolved.winnerProfileId,
             };
-            roundChanged = true;
+            participantsChanged = true;
           }
-        }
-
-        if (currentRound.byeProfileId) {
-          resolvedWinners.push(currentRound.byeProfileId);
         }
 
         if (roundChanged) {
-          updates[`events/${eventId}/rounds/${roundKey}`] = nextRound;
-          updates[`events/${eventId}/participants`] = participants;
-          updates[`events/${eventId}/updatedAtMs`] = nowMs;
-          didChange = true;
+          roundsChanged = true;
         }
 
-        if (allResolved && resolvedWinners.length > 0) {
-          const uniqueWinnerIds = Array.from(
-            new Set(
-              resolvedWinners.filter((value) => normalizeString(value) !== ""),
-            ),
-          );
-          nextRound.status = "completed";
-          nextRound.completedAtMs = nowMs;
-          updates[`events/${eventId}/rounds/${roundKey}`] = nextRound;
-          updates[`events/${eventId}/updatedAtMs`] = nowMs;
-          didChange = true;
+        if (!allResolved) {
+          break;
+        }
 
-          if (uniqueWinnerIds.length <= 1) {
-            const winnerProfileId = uniqueWinnerIds[0] || null;
-            const winnerParticipant = winnerProfileId
-              ? participants[winnerProfileId]
-              : null;
-            if (winnerProfileId && winnerParticipant) {
-              participants[winnerProfileId] = {
-                ...winnerParticipant,
-                state: "winner",
-              };
-            }
-            updates[`events/${eventId}/participants`] = participants;
-            updates[`events/${eventId}/status`] = "ended";
-            updates[`events/${eventId}/endedAtMs`] = nowMs;
-            updates[`events/${eventId}/winnerProfileId`] = winnerProfileId;
-            updates[`events/${eventId}/winnerDisplayName`] = winnerParticipant
-              ? winnerParticipant.displayName
-              : null;
-            didChange = true;
-          } else {
-            const { updates: roundUpdates } = buildRoundState({
-              eventId,
-              roundIndex: currentRoundIndex + 1,
-              participantIds: uniqueWinnerIds,
-              participantsById: participants,
-              nowMs,
-              isFirstRound: false,
-            });
-            Object.assign(updates, roundUpdates);
-            updates[`events/${eventId}/currentRoundIndex`] =
-              currentRoundIndex + 1;
-            didChange = true;
+        currentRound.status = "completed";
+        currentRound.completedAtMs = nowMs;
+        roundsChanged = true;
+
+        const uniqueWinnerIds = Array.from(
+          new Set(
+            roundWinners.filter((value) => normalizeString(value) !== ""),
+          ),
+        );
+
+        if (uniqueWinnerIds.length <= 1) {
+          const winnerProfileId = uniqueWinnerIds[0] || null;
+          const winnerParticipant = winnerProfileId
+            ? participants[winnerProfileId]
+            : null;
+          if (
+            winnerProfileId &&
+            winnerParticipant &&
+            winnerParticipant.state !== "winner"
+          ) {
+            participants[winnerProfileId] = {
+              ...winnerParticipant,
+              state: "winner",
+            };
+            participantsChanged = true;
           }
+          event.status = "ended";
+          event.endedAtMs = nowMs;
+          event.winnerProfileId = winnerProfileId;
+          event.winnerDisplayName = winnerParticipant
+            ? winnerParticipant.displayName
+            : null;
+          eventChanged = true;
+          break;
         }
+
+        const nextRoundIndex = currentRoundIndex + 1;
+        if (
+          activateRound({
+            eventId,
+            roundIndex: nextRoundIndex,
+            rounds,
+            nowMs,
+            participantsById: participants,
+            inviteUpdates,
+          })
+        ) {
+          roundsChanged = true;
+        }
+        if (currentRoundIndex !== nextRoundIndex) {
+          currentRoundIndex = nextRoundIndex;
+          event.currentRoundIndex = nextRoundIndex;
+          eventChanged = true;
+        }
+        shouldContinue = true;
+      }
+
+      if (roundsChanged) {
+        updates[`events/${eventId}/rounds`] = rounds;
+      }
+      if (participantsChanged) {
+        updates[`events/${eventId}/participants`] = participants;
+      }
+      if (Object.keys(inviteUpdates).length > 0) {
+        Object.assign(updates, inviteUpdates);
+      }
+      if (eventChanged) {
+        if (event.status === "ended") {
+          updates[`events/${eventId}/status`] = "ended";
+          updates[`events/${eventId}/endedAtMs`] = event.endedAtMs;
+          updates[`events/${eventId}/winnerProfileId`] = event.winnerProfileId;
+          updates[`events/${eventId}/winnerDisplayName`] =
+            event.winnerDisplayName;
+        }
+        if (event.currentRoundIndex !== originalCurrentRoundIndex) {
+          updates[`events/${eventId}/currentRoundIndex`] =
+            event.currentRoundIndex;
+        }
+      }
+      if (
+        roundsChanged ||
+        participantsChanged ||
+        Object.keys(inviteUpdates).length > 0 ||
+        eventChanged
+      ) {
+        updates[`events/${eventId}/updatedAtMs`] = nowMs;
+        didChange = true;
       }
     }
 
