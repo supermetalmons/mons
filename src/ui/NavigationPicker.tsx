@@ -911,15 +911,29 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
       : 0;
     const showBadge = normalizedParticipantCount > 6;
     const maxVisible = showBadge ? 5 : 6;
-    const participantSlots = Math.min(normalizedParticipantCount, maxVisible);
+    const previewEmojiIds = event.participantPreview.reduce<number[]>(
+      (result, participant) => {
+        if (result.length >= maxVisible) {
+          return result;
+        }
+        const normalizedEmojiId =
+          participant.emojiId == null ? NaN : Number(participant.emojiId);
+        if (Number.isFinite(normalizedEmojiId) && normalizedEmojiId > 0) {
+          result.push(Math.trunc(normalizedEmojiId));
+        }
+        return result;
+      },
+      [],
+    );
     const shouldShowUnknownOpponentSlot =
       event.status === "waiting" && normalizedParticipantCount === 1;
-    const renderedParticipantSlots = shouldShowUnknownOpponentSlot
-      ? Math.max(2, participantSlots)
-      : participantSlots;
-    const preview = event.participantPreview.slice(0, participantSlots);
-    const overflow = Math.max(0, normalizedParticipantCount - participantSlots);
-    const hasBadge = overflow > 0;
+    const renderedParticipantSlots =
+      previewEmojiIds.length + (shouldShowUnknownOpponentSlot ? 1 : 0);
+    const overflow = Math.max(
+      0,
+      normalizedParticipantCount - previewEmojiIds.length,
+    );
+    const hasBadge = showBadge && overflow > 0;
     const itemCount = renderedParticipantSlots + (hasBadge ? 1 : 0);
 
     if (itemCount === 0) return null;
@@ -939,44 +953,16 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
           <CloudShape d={cloud} />
         </FightCloudCanvas>
         <FightCloudInner>
-          {Array.from({ length: renderedParticipantSlots }, (_, index) => {
-            if (shouldShowUnknownOpponentSlot && index === participantSlots) {
-              return (
-                <EventAvatarQuestionSlot
-                  key={`slot_${index}`}
-                  aria-hidden="true"
-                />
-              );
-            }
-            const participant = preview[index];
-            if (!participant) {
-              return (
-                <EventAvatarPlaceholder
-                  key={`slot_${index}`}
-                  aria-hidden="true"
-                />
-              );
-            }
-            const normalizedEmojiId =
-              participant.emojiId == null ? NaN : Number(participant.emojiId);
-            if (Number.isFinite(normalizedEmojiId) && normalizedEmojiId > 0) {
-              return (
-                <EventAvatarImage
-                  key={`slot_${index}`}
-                  src={emojis.getEmojiUrl(
-                    Math.trunc(normalizedEmojiId).toString(),
-                  )}
-                  alt=""
-                />
-              );
-            }
-            return (
-              <EventAvatarPlaceholder
-                key={`slot_${index}`}
-                aria-hidden="true"
-              />
-            );
-          })}
+          {previewEmojiIds.map((emojiId, index) => (
+            <EventAvatarImage
+              key={`slot_${index}`}
+              src={emojis.getEmojiUrl(emojiId.toString())}
+              alt=""
+            />
+          ))}
+          {shouldShowUnknownOpponentSlot && (
+            <EventAvatarQuestionSlot aria-hidden="true" />
+          )}
           {hasBadge && <FightCloudBadge>+{overflow}</FightCloudBadge>}
         </FightCloudInner>
       </FightCloudWrap>
