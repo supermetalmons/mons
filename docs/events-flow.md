@@ -109,11 +109,19 @@ Later rounds:
 
 - odd-player bye is random only
 
-When all matches in the current round resolve:
+`syncEventState` now reconciles the whole bracket in one pass:
 
-- `syncEventState` marks winners/losers
-- either creates the next round
-- or ends the event with a final winner
+- resolves any finished matches across all rounds
+- immediately propagates winners into downstream slots
+- creates a match invite as soon as both players of that match are known
+- auto-resolves byes only for first-round single-player matches
+- ends the event when the final-round match resolves
+
+Round status behavior:
+
+- multiple rounds can be `active` at the same time
+- `currentRoundIndex` is the earliest unresolved round
+- a round is `completed` only when all matches in that round are resolved
 
 ---
 
@@ -134,8 +142,8 @@ Footer states:
 
 - not joined + scheduled: `Join` and `Skip`
 - joined + scheduled: disabled `Play` with note
-- active + current match available: enabled `Play`
-- active + bye / already advanced: disabled `Play Next`
+- active + pending match in any round: enabled `Play`
+- active + alive but no pending invite: disabled `Play` with `waiting for your next match`
 - eliminated: no play button
 
 Match card behavior:

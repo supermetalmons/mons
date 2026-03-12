@@ -597,28 +597,28 @@ const getCurrentUiState = (
     };
   }
 
-  const roundKey =
-    event.currentRoundIndex !== null ? String(event.currentRoundIndex) : null;
-  const currentRound = roundKey ? event.rounds[roundKey] : null;
-  const matches = getSortedMatches(currentRound);
-  const playableMatch =
-    matches.find(
-      (match) =>
-        match.status === "pending" &&
-        match.inviteId &&
-        (match.hostProfileId === profileId ||
-          match.guestProfileId === profileId),
-    ) ?? null;
-  const hasWonCurrentRound = matches.some(
-    (match) => match.winnerProfileId === profileId,
-  );
+  const rounds = getSortedRounds(event);
+  let playableMatch: EventMatch | null = null;
+  for (const round of rounds) {
+    const candidate =
+      getSortedMatches(round).find(
+        (match) =>
+          match.status === "pending" &&
+          match.inviteId &&
+          (match.hostProfileId === profileId ||
+            match.guestProfileId === profileId),
+      ) ?? null;
+    if (candidate) {
+      playableMatch = candidate;
+      break;
+    }
+  }
 
   return {
     isJoined: true,
     isEliminated: false,
     playableMatch,
-    waitingForNext:
-      event.status === "active" && !playableMatch && hasWonCurrentRound,
+    waitingForNext: event.status === "active" && !playableMatch,
   };
 };
 
@@ -1594,9 +1594,9 @@ const EventModal: React.FC = () => {
             eventUiState.waitingForNext && (
               <>
                 <FooterButton type="button" $primary={true} disabled={true}>
-                  Play Next
+                  Play
                 </FooterButton>
-                <FooterNote>waiting for the next round</FooterNote>
+                <FooterNote>waiting for your next match</FooterNote>
               </>
             )}
 
