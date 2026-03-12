@@ -39,6 +39,7 @@ import {
   isGameWithBot,
   puzzleMode,
   playSameCompletedPuzzleAgain,
+  dismissPendingAutomatchTransition,
   isOnlineGame,
   isWatchOnly,
   isMatchOver,
@@ -2851,6 +2852,7 @@ const BottomControls: React.FC = () => {
       }
       if (result && result.ok) {
         setOptimisticPendingAutomatchItem(null);
+        dismissPendingAutomatchTransition();
         await transitionToHome({ forceMatchScopeReset: true });
       } else {
         setIsCancelAutomatchDisabled(false);
@@ -3019,6 +3021,7 @@ const BottomControls: React.FC = () => {
     navigationSelectionEpochRef.current = selectionEpoch;
     setIsNavigationPopupVisible(false);
     setIsBoardStylePickerVisible(false);
+    dismissPendingAutomatchTransition();
     void (async () => {
       try {
         await transitionToHome({ forceMatchScopeReset: true });

@@ -2615,7 +2615,7 @@ export function didClickAutomatchButton(
   connection
     .automatch()
     .then((response) => {
-      if (!sessionGuard()) {
+      if (!sessionGuard() || !pendingAutomatchTransition) {
         return;
       }
       onAutomatchResponse?.(response);
@@ -2627,12 +2627,22 @@ export function didClickAutomatchButton(
       }
     })
     .catch(() => {
-      if (!sessionGuard()) {
+      if (!sessionGuard() || !pendingAutomatchTransition) {
         return;
       }
       pendingAutomatchTransition = false;
       setAutomatchEnabled(true);
     });
+}
+
+export function dismissPendingAutomatchTransition() {
+  if (!pendingAutomatchTransition) {
+    return;
+  }
+  pendingAutomatchTransition = false;
+  isWaitingForInviteToGetAccepted = false;
+  setAutomatchWaitingState(false);
+  setAutomatchEnabled(true);
 }
 
 function showRematchInterface() {
@@ -2966,6 +2976,7 @@ export function didClickClaimVictoryByTimerButton() {
 }
 
 export function didClickHomeButton() {
+  dismissPendingAutomatchTransition();
   void transitionToHome({ forceMatchScopeReset: true });
 }
 
