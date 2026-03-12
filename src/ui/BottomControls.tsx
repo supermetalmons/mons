@@ -644,6 +644,7 @@ const EventCloudButtonOuter = styled.button`
   border: none;
   background: transparent;
   padding: 0;
+  margin-left: -1px;
   cursor: pointer;
   display: flex;
   align-items: center;
