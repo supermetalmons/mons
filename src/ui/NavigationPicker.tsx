@@ -549,33 +549,63 @@ const SELECTED_ITEM_VISIBILITY_MARGIN_PX = 8;
 const QUEUE_MANA_SLOTS: QueueManaSlot[] = ["top", "right", "bottom", "left"];
 
 function buildFightCloudPath(w: number, h: number): string {
-  const cx = w / 2;
-  const cy = h / 2;
-  const rx = w / 2 - 1;
-  const ry = h / 2 - 2;
-  const halfH = h / 2;
-  const n = Math.max(7, Math.min(10, Math.round(w / 10)));
-  const step = (Math.PI * 2) / n;
   const parts: string[] = [];
-  for (let i = 0; i < n; i++) {
-    const a = i * step;
-    const aM = a + step / 2;
-    const aE = a + step;
-    const x0 = cx + rx * Math.cos(a);
-    const y0 = cy + ry * Math.sin(a);
-    const baseBump = 4.5 + 2.5 * Math.sin(i * 3.7 + 1.2);
-    const sinAbs = Math.abs(Math.sin(aM));
-    const vertMax = sinAbs > 0.01 ? (halfH + 1) / sinAbs - ry : baseBump;
-    const bump = Math.min(baseBump, Math.max(0, vertMax));
-    const cpx = cx + (rx + bump) * Math.cos(aM);
-    const cpy = cy + (ry + bump) * Math.sin(aM);
-    const x1 = cx + rx * Math.cos(aE);
-    const y1 = cy + ry * Math.sin(aE);
-    if (i === 0) parts.push(`M${x0.toFixed(1)},${y0.toFixed(1)}`);
+  const insetX = 2.2;
+  const insetY = 3.8;
+  const left = insetX;
+  const right = w - insetX;
+  const top = insetY;
+  const bottom = h - insetY;
+  const midY = h / 2;
+  const sideInset = Math.min(6.2, Math.max(4.6, w * 0.11));
+  const topStartX = left + sideInset;
+  const topEndX = right - sideInset;
+  const topPuffCount = Math.max(
+    3,
+    Math.min(5, Math.round((topEndX - topStartX) / 21)),
+  );
+  const topStep = (topEndX - topStartX) / topPuffCount;
+  const topAmp = Math.min(4.6, Math.max(3.3, (bottom - top) * 0.22));
+  const bottomAmp = Math.min(4.2, Math.max(3.0, (bottom - top) * 0.2));
+  const sideAmp = Math.min(3.6, Math.max(2.8, w * 0.045));
+  const sidePeakOffsetY = (bottom - top) * 0.09;
+
+  const startY = top + 0.45;
+  parts.push(`M${topStartX.toFixed(1)},${startY.toFixed(1)}`);
+
+  for (let i = 0; i < topPuffCount; i++) {
+    const nextX = topStartX + (i + 1) * topStep;
+    const peakX =
+      topStartX +
+      i * topStep +
+      topStep * (0.5 + Math.sin(i * 1.17 + 0.45) * 0.06);
+    const peakY = top - topAmp * (0.92 + Math.cos(i * 0.93 - 0.4) * 0.12);
+    const valleyY = top + 0.4 + Math.sin((i + 1) * 1.21 + 0.3) * 0.28;
+
     parts.push(
-      `Q${cpx.toFixed(1)},${cpy.toFixed(1)},${x1.toFixed(1)},${y1.toFixed(1)}`,
+      `Q${peakX.toFixed(1)},${peakY.toFixed(1)},${nextX.toFixed(1)},${valleyY.toFixed(1)}`,
     );
   }
+
+  parts.push(
+    `Q${(right + sideAmp).toFixed(1)},${(midY - sidePeakOffsetY).toFixed(1)},${(topEndX - 0.1).toFixed(1)},${(bottom - 0.45).toFixed(1)}`,
+  );
+
+  for (let i = 0; i < topPuffCount; i++) {
+    const nextX = topEndX - (i + 1) * topStep;
+    const peakX =
+      topEndX - i * topStep - topStep * (0.5 + Math.sin(i * 1.11 + 0.8) * 0.06);
+    const peakY = bottom + bottomAmp * (0.9 + Math.cos(i * 0.98 + 0.2) * 0.12);
+    const valleyY = bottom - 0.42 - Math.sin((i + 1) * 1.17 + 0.55) * 0.26;
+
+    parts.push(
+      `Q${peakX.toFixed(1)},${peakY.toFixed(1)},${nextX.toFixed(1)},${valleyY.toFixed(1)}`,
+    );
+  }
+
+  parts.push(
+    `Q${(left - sideAmp).toFixed(1)},${(midY + sidePeakOffsetY).toFixed(1)},${topStartX.toFixed(1)},${startY.toFixed(1)}`,
+  );
   parts.push("Z");
   return parts.join("");
 }
@@ -592,7 +622,7 @@ function getFightCloudPath(w: number, h: number) {
 }
 
 const FIGHT_CLOUD_PAD_X = 10;
-const FIGHT_CLOUD_H = 32;
+const FIGHT_CLOUD_H = 28;
 
 const NavigationPicker: React.FC<NavigationPickerProps> = ({
   showsHomeNavigation,
@@ -894,7 +924,10 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
           {Array.from({ length: renderedParticipantSlots }, (_, index) => {
             if (shouldShowUnknownOpponentSlot && index === participantSlots) {
               return (
-                <EventAvatarQuestionSlot key={`slot_${index}`} aria-hidden="true" />
+                <EventAvatarQuestionSlot
+                  key={`slot_${index}`}
+                  aria-hidden="true"
+                />
               );
             }
             const participant = preview[index];
