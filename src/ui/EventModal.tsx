@@ -6,7 +6,7 @@ import React, {
   useState,
 } from "react";
 import styled from "styled-components";
-import { FaCheck, FaLink, FaTimes } from "react-icons/fa";
+import { FaCheck, FaLink } from "react-icons/fa";
 import { connection } from "../connection/connection";
 import {
   EventMatch,
@@ -31,11 +31,19 @@ import {
 import { showShinyCard, showsShinyCardSomewhere } from "./ShinyCard";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 
-const BRACKET_MATCH_HEIGHT_PX = 34;
-const BRACKET_SLOT_PITCH_PX = 40;
-const BRACKET_ROUND_WIDTH_PX = 126;
-const BRACKET_ROUND_GAP_PX = 16;
-const BRACKET_TRACK_LABEL_HEIGHT_PX = 20;
+const BRACKET_MATCH_W = 72;
+const BRACKET_MATCH_H = 40;
+const BRACKET_AVATAR_PX = 28;
+const BRACKET_SLOT_PITCH = 88;
+const BRACKET_CONNECTOR_W = 40;
+const BRACKET_COL_STEP = BRACKET_MATCH_W + BRACKET_CONNECTOR_W;
+
+const getViewportSize = (): { width: number; height: number } => {
+  if (typeof window === "undefined") {
+    return { width: 1024, height: 768 };
+  }
+  return { width: window.innerWidth, height: window.innerHeight };
+};
 
 const Overlay = styled.div`
   position: fixed;
@@ -44,10 +52,11 @@ const Overlay = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 20px;
   background: rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 
   @media (prefers-color-scheme: dark) and (hover: none) and (pointer: coarse) {
     background: rgba(15, 15, 15, 0.11);
@@ -58,42 +67,27 @@ const Overlay = styled.div`
   }
 `;
 
-const ModalCard = styled.div`
-  width: min(980px, calc(100vw - 24px));
-  max-height: min(760px, calc(100vh - 24px));
-  overflow: hidden;
-  border-radius: 16px;
-  background: var(--color-white);
+const TopBar = styled.div`
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  pointer-events: none;
+  z-index: ${EVENT_MODAL_Z_INDEX + 1};
 
-  @media (prefers-color-scheme: dark) {
-    background: var(--color-deep-gray);
+  & > * {
+    pointer-events: auto;
+    cursor: default;
   }
 `;
 
-const ModalScroll = styled.div`
-  max-height: inherit;
-  overflow-y: auto;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`;
-
-const HeaderRow = styled.div`
-  display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 12px;
-`;
-
-const HeaderText = styled.div`
-  min-width: 0;
-`;
-
-const Title = styled.h2`
-  margin: 0;
-  font-size: 1.1rem;
-  line-height: 1.15;
+const TopBarTitle = styled.div`
+  font-size: 0.8rem;
+  font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--color-gray-33);
@@ -103,14 +97,7 @@ const Title = styled.h2`
   }
 `;
 
-const HeaderButtons = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
-`;
-
-const HeaderIconButton = styled.button`
+const TopBarIconButton = styled.button`
   width: 32px;
   height: 32px;
   border-radius: 50%;
@@ -119,7 +106,7 @@ const HeaderIconButton = styled.button`
   align-items: center;
   justify-content: center;
   line-height: 0;
-  background: var(--color-gray-f0);
+  background: rgba(128, 128, 128, 0.12);
   color: var(--color-gray-33);
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -134,37 +121,34 @@ const HeaderIconButton = styled.button`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      background: var(--color-gray-e0);
+      background: rgba(128, 128, 128, 0.2);
     }
-  }
-
-  &:active {
-    background: var(--color-gray-d0);
   }
 
   @media (prefers-color-scheme: dark) {
-    background: var(--color-gray-33);
     color: var(--color-gray-f0);
+    background: rgba(128, 128, 128, 0.18);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        background: var(--color-gray-44);
+        background: rgba(128, 128, 128, 0.3);
       }
-    }
-
-    &:active {
-      background: var(--color-gray-55);
     }
   }
 `;
 
-const CardSection = styled.div`
+const ContentArea = styled.div`
+  width: min(400px, calc(100vw - 48px));
+  max-height: min(560px, calc(100vh - 96px));
+  max-height: min(560px, calc(100dvh - 96px));
+  overflow-y: auto;
   padding: 16px;
-  border-radius: 12px;
-  background: var(--color-gray-f9);
+  border-radius: 16px;
+  background: var(--color-white);
+  cursor: default;
 
   @media (prefers-color-scheme: dark) {
-    background: var(--color-gray-27);
+    background: var(--color-deep-gray);
   }
 `;
 
@@ -243,139 +227,84 @@ const ParticipantState = styled.div`
   color: var(--navigationTextMuted);
 `;
 
-const BracketSection = styled(CardSection)`
-  padding: 14px;
-`;
-
-const BracketScroller = styled.div`
-  overflow-x: auto;
-  overflow-y: hidden;
-  margin: 0 -2px;
-  padding: 2px;
-`;
-
-const BracketCanvas = styled.div`
-  display: flex;
-  gap: ${BRACKET_ROUND_GAP_PX}px;
-  min-width: max-content;
-  align-items: flex-start;
-`;
-
-const BracketRoundColumn = styled.div`
-  width: ${BRACKET_ROUND_WIDTH_PX}px;
-  flex: 0 0 ${BRACKET_ROUND_WIDTH_PX}px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
-const BracketRoundTitle = styled.div`
-  height: ${BRACKET_TRACK_LABEL_HEIGHT_PX}px;
-  font-size: 0.67rem;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--navigationTextMuted);
-`;
-
-const BracketRoundTrack = styled.div<{ $height: number }>`
+const BracketContainer = styled.div<{
+  $w: number;
+  $h: number;
+  $scale: number;
+}>`
   position: relative;
-  height: ${(props) => props.$height}px;
+  width: ${(p) => p.$w}px;
+  height: ${(p) => p.$h}px;
+  cursor: default;
+  transform: scale(${(p) => p.$scale});
+  transform-origin: center center;
 `;
 
-const BracketMatchButton = styled.button<{
-  $top: number;
-  $highlighted?: boolean;
+const ConnectorSvg = styled.svg`
+  position: absolute;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 1;
+
+  path {
+    fill: none;
+    stroke: #999999;
+    stroke-width: 2.5;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    path {
+      stroke: #777777;
+    }
+  }
+`;
+
+const MatchCard = styled.button<{
+  $x: number;
+  $y: number;
 }>`
   position: absolute;
-  top: ${(props) => props.$top}px;
-  left: 0;
-  width: ${BRACKET_ROUND_WIDTH_PX}px;
-  min-height: ${BRACKET_MATCH_HEIGHT_PX}px;
+  left: ${(p) => p.$x}px;
+  top: ${(p) => p.$y}px;
+  width: ${BRACKET_MATCH_W}px;
+  height: ${BRACKET_MATCH_H}px;
   border: none;
-  border-radius: 10px;
-  padding: 7px 8px;
+  border-radius: 12px;
+  padding: 0;
   display: flex;
-  flex-direction: column;
-  gap: 5px;
-  text-align: left;
-  background: ${(props) =>
-    props.$highlighted ? "rgba(0, 122, 255, 0.1)" : "var(--color-white)"};
-  box-shadow: inset 0 0 0 1px
-    ${(props) =>
-      props.$highlighted ? "rgba(0, 122, 255, 0.22)" : "rgba(0, 0, 0, 0.06)"};
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
   cursor: pointer;
-  transition:
-    background-color 0.15s ease,
-    box-shadow 0.15s ease,
-    opacity 0.15s ease;
+  -webkit-tap-highlight-color: transparent;
+  background: var(--color-gray-f0);
+  transition: background-color 0.15s ease;
 
   &:disabled {
     cursor: default;
-    opacity: 0.96;
   }
 
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) {
-      background: ${(props) =>
-        props.$highlighted
-          ? "rgba(0, 122, 255, 0.14)"
-          : "var(--color-gray-f5)"};
+      background: var(--color-gray-e0);
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    background: ${(props) =>
-      props.$highlighted ? "rgba(11, 132, 255, 0.16)" : "var(--color-gray-23)"};
-    box-shadow: inset 0 0 0 1px
-      ${(props) =>
-        props.$highlighted
-          ? "rgba(11, 132, 255, 0.28)"
-          : "rgba(255, 255, 255, 0.05)"};
+    background: var(--color-gray-27);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover:not(:disabled) {
-        background: ${(props) =>
-          props.$highlighted
-            ? "rgba(11, 132, 255, 0.22)"
-            : "var(--color-gray-33)"};
+        background: var(--color-gray-33);
       }
     }
   }
 `;
 
-const BracketMatchHeader = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const BracketMatchLabel = styled.div`
-  font-size: 0.55rem;
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-  color: var(--navigationTextMuted);
-`;
-
-const BracketPlayerLine = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  min-width: 0;
-`;
-
-const BracketPlayerName = styled.div<{ $bold?: boolean }>`
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-  font-size: 0.67rem;
-  line-height: 1.1;
-  font-weight: ${(props) => (props.$bold ? 700 : 500)};
-  color: var(--color-gray-25);
-
-  @media (prefers-color-scheme: dark) {
-    color: var(--color-gray-f5);
-  }
+const MatchAvatarSlot = styled.div`
+  line-height: 0;
 `;
 
 const InlineError = styled.div`
@@ -392,11 +321,32 @@ const InlineError = styled.div`
   }
 `;
 
-const Footer = styled.div`
+const BottomBar = styled.div`
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 16px 20px;
+  pointer-events: none;
+  z-index: ${EVENT_MODAL_Z_INDEX + 1};
+
+  & > * {
+    pointer-events: auto;
+    cursor: default;
+  }
+`;
+
+const ButtonRow = styled.div`
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
   flex-wrap: wrap;
+  max-width: min(560px, calc(100vw - 40px));
 `;
 
 const FooterButton = styled.button<{ $primary?: boolean }>`
@@ -586,83 +536,199 @@ const getCurrentUiState = (
   };
 };
 
-const getBracketRoundTitle = (
-  roundIndex: number,
-  totalRounds: number,
-): string => {
-  if (roundIndex === totalRounds - 1) {
-    return "Final";
-  }
-  if (roundIndex === totalRounds - 2) {
-    return "Semis";
-  }
-  if (roundIndex === totalRounds - 3) {
-    return "Quarters";
-  }
-  return `Round ${roundIndex + 1}`;
-};
-
-const getBracketTrackHeight = (rounds: EventRound[]): number => {
-  const firstRoundMatchCount =
-    rounds.length > 0 ? getSortedMatches(rounds[0]).length : 0;
-  if (firstRoundMatchCount <= 0) {
-    return BRACKET_MATCH_HEIGHT_PX;
-  }
-  return (
-    (firstRoundMatchCount - 1) * BRACKET_SLOT_PITCH_PX + BRACKET_MATCH_HEIGHT_PX
-  );
-};
-
 const getBracketMatchTop = (roundIndex: number, matchIndex: number): number => {
-  const slotSpan = BRACKET_SLOT_PITCH_PX * Math.pow(2, roundIndex);
+  const slotSpan = BRACKET_SLOT_PITCH * Math.pow(2, roundIndex);
   return Math.round(
-    (slotSpan - BRACKET_MATCH_HEIGHT_PX) / 2 + matchIndex * slotSpan,
+    (slotSpan - BRACKET_MATCH_H) / 2 + matchIndex * slotSpan,
   );
 };
 
-const getBracketMatchLabel = (match: EventMatch): string => {
-  if (match.status === "pending") {
-    return "live";
-  }
-  if (match.status === "bye") {
-    return "bye";
-  }
-  if (match.status === "host" || match.status === "guest") {
-    return "done";
-  }
-  if (match.hostProfileId || match.guestProfileId) {
-    return "locked";
-  }
-  return "tbd";
+type BracketMatchPosition = {
+  x: number;
+  y: number;
+  key: string;
+  match: EventMatch;
 };
 
-const getMatchSlotProfileId = (
-  match: EventMatch,
-  slot: "host" | "guest",
-): string | null => {
-  return slot === "host" ? match.hostProfileId : match.guestProfileId;
-};
-
-const getMatchSlotDisplayName = (
-  match: EventMatch,
-  slot: "host" | "guest",
-): string => {
-  const displayName =
-    slot === "host"
-      ? match.hostDisplayName?.trim()
-      : match.guestDisplayName?.trim();
-  if (displayName) {
-    return displayName;
+const computeSymmetricalBracket = (
+  rounds: EventRound[],
+): {
+  width: number;
+  height: number;
+  positions: BracketMatchPosition[];
+  connectors: string[];
+} | null => {
+  if (rounds.length === 0) {
+    return null;
   }
 
-  const slotProfileId = getMatchSlotProfileId(match, slot);
-  if (slotProfileId) {
-    return "anon";
+  const totalRounds = rounds.length;
+  const sideRounds = totalRounds - 1;
+  const firstRoundMatches = getSortedMatches(rounds[0]).length;
+
+  if (sideRounds === 0) {
+    const match = getSortedMatches(rounds[0])[0];
+    if (!match) return null;
+    return {
+      width: BRACKET_MATCH_W,
+      height: BRACKET_MATCH_H,
+      positions: [
+        {
+          x: 0,
+          y: 0,
+          key: "FINAL",
+          match,
+        },
+      ],
+      connectors: [],
+    };
   }
-  if (match.status === "bye") {
-    return "BYE";
+
+  const sideFirstRoundMatches = Math.ceil(firstRoundMatches / 2);
+  const totalCols = 2 * sideRounds + 1;
+  const width = (totalCols - 1) * BRACKET_COL_STEP + BRACKET_MATCH_W;
+  const height =
+    sideFirstRoundMatches <= 0
+      ? BRACKET_MATCH_H
+      : getBracketMatchTop(0, sideFirstRoundMatches - 1) + BRACKET_MATCH_H;
+
+  const positions: BracketMatchPosition[] = [];
+  const connectors: string[] = [];
+
+  const colX = (col: number): number => col * BRACKET_COL_STEP;
+
+  // Left side: columns 0 to sideRounds-1
+  for (let r = 0; r < sideRounds; r++) {
+    const x = colX(r);
+    const roundMatches = getSortedMatches(rounds[r]);
+    const perSideCount = Math.ceil(roundMatches.length / 2);
+
+    for (let m = 0; m < perSideCount; m++) {
+      const match = roundMatches[m];
+      const y = getBracketMatchTop(r, m);
+      positions.push({
+        x,
+        y,
+        key: `L${r}_${m}`,
+        match,
+      });
+    }
+
+    // Connectors from this round to the next (inward)
+    if (r < sideRounds - 1) {
+      const nextX = colX(r + 1);
+      const nextPerSideCount = Math.ceil(
+        getSortedMatches(rounds[r + 1]).length / 2,
+      );
+      for (let j = 0; j < nextPerSideCount; j++) {
+        const srcA = 2 * j;
+        const srcB = 2 * j + 1;
+        if (srcA >= perSideCount) {
+          continue;
+        }
+        const y1 = getBracketMatchTop(r, 2 * j) + BRACKET_MATCH_H / 2;
+        const yDst = getBracketMatchTop(r + 1, j) + BRACKET_MATCH_H / 2;
+        const sx = x + BRACKET_MATCH_W;
+        const mx = sx + BRACKET_CONNECTOR_W / 2;
+        const ex = nextX;
+        if (srcB < perSideCount) {
+          const y2 = getBracketMatchTop(r, srcB) + BRACKET_MATCH_H / 2;
+          connectors.push(
+            `M${sx},${y1}H${mx}M${sx},${y2}H${mx}M${mx},${y1}V${y2}M${mx},${yDst}H${ex}`,
+          );
+        } else {
+          connectors.push(`M${sx},${y1}H${mx}V${yDst}H${ex}`);
+        }
+      }
+    }
+
+    // Connector from last side round to center final
+    if (r === sideRounds - 1) {
+      const y = getBracketMatchTop(r, 0) + BRACKET_MATCH_H / 2;
+      const sx = x + BRACKET_MATCH_W;
+      const ex = colX(sideRounds);
+      connectors.push(`M${sx},${y}H${ex}`);
+    }
   }
-  return "TBD";
+
+  // Final: center column
+  {
+    const x = colX(sideRounds);
+    const finalRound = rounds[totalRounds - 1];
+    const finalMatches = getSortedMatches(finalRound);
+    const match = finalMatches[0];
+    if (match) {
+      const y = getBracketMatchTop(sideRounds - 1, 0);
+      positions.push({
+        x,
+        y,
+        key: "FINAL",
+        match,
+      });
+    }
+  }
+
+  // Right side: columns sideRounds+1 to 2*sideRounds
+  for (let r = 0; r < sideRounds; r++) {
+    const col = 2 * sideRounds - r;
+    const x = colX(col);
+    const roundMatches = getSortedMatches(rounds[r]);
+    const totalCount = roundMatches.length;
+    const perSideCount = Math.ceil(totalCount / 2);
+    const offset = perSideCount;
+
+    for (let m = 0; m < totalCount - perSideCount; m++) {
+      const match = roundMatches[offset + m];
+      const y = getBracketMatchTop(r, m);
+      positions.push({
+        x,
+        y,
+        key: `R${r}_${m}`,
+        match,
+      });
+    }
+
+    // Connectors (going leftward toward center)
+    if (r < sideRounds - 1) {
+      const innerCol = 2 * sideRounds - (r + 1);
+      const innerX = colX(innerCol);
+      const nextRoundMatches = getSortedMatches(rounds[r + 1]);
+      const nextTotalCount = nextRoundMatches.length;
+      const nextPerSide = Math.ceil(nextTotalCount / 2);
+      const innerMatchCount = nextTotalCount - nextPerSide;
+      const currentSideCount = totalCount - perSideCount;
+      for (let j = 0; j < innerMatchCount; j++) {
+        const srcA = 2 * j;
+        const srcB = 2 * j + 1;
+        if (srcA >= currentSideCount) {
+          continue;
+        }
+        const y1 = getBracketMatchTop(r, srcA) + BRACKET_MATCH_H / 2;
+        const yDst = getBracketMatchTop(r + 1, j) + BRACKET_MATCH_H / 2;
+        const sx = x;
+        const mx = sx - BRACKET_CONNECTOR_W / 2;
+        const ex = innerX + BRACKET_MATCH_W;
+        if (srcB < currentSideCount) {
+          const y2 = getBracketMatchTop(r, srcB) + BRACKET_MATCH_H / 2;
+          connectors.push(
+            `M${sx},${y1}H${mx}M${sx},${y2}H${mx}M${mx},${y1}V${y2}M${mx},${yDst}H${ex}`,
+          );
+        } else {
+          connectors.push(`M${sx},${y1}H${mx}V${yDst}H${ex}`);
+        }
+      }
+    }
+
+    // Connector from right semi to center final
+    if (r === sideRounds - 1) {
+      const y = getBracketMatchTop(r, 0) + BRACKET_MATCH_H / 2;
+      const sx = x;
+      const ex = colX(sideRounds) + BRACKET_MATCH_W;
+      connectors.push(`M${sx},${y}H${ex}`);
+    }
+  }
+
+  return { width, height, positions, connectors };
 };
 
 const formatEventError = (error: unknown): string => {
@@ -714,6 +780,7 @@ const EventModal: React.FC = () => {
   const [inlineError, setInlineError] = useState<string | null>(null);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
   const [nowMs, setNowMs] = useState(() => Date.now());
+  const [viewportSize, setViewportSize] = useState(getViewportSize);
   const [pendingJoinEventId, setPendingJoinEventId] = useState<string | null>(
     null,
   );
@@ -776,6 +843,29 @@ const EventModal: React.FC = () => {
     }, 30000);
     return () => {
       window.clearInterval(intervalId);
+    };
+  }, [modalState.isOpen]);
+
+  useEffect(() => {
+    if (!modalState.isOpen || typeof window === "undefined") {
+      return;
+    }
+
+    const handleViewportResize = () => {
+      const next = getViewportSize();
+      setViewportSize((current) =>
+        current.width === next.width && current.height === next.height
+          ? current
+          : next,
+      );
+    };
+
+    handleViewportResize();
+    window.addEventListener("resize", handleViewportResize);
+    window.visualViewport?.addEventListener("resize", handleViewportResize);
+    return () => {
+      window.removeEventListener("resize", handleViewportResize);
+      window.visualViewport?.removeEventListener("resize", handleViewportResize);
     };
   }, [modalState.isOpen]);
 
@@ -855,16 +945,30 @@ const EventModal: React.FC = () => {
     [eventRecord],
   );
   const rounds = useMemo(() => getSortedRounds(eventRecord), [eventRecord]);
-  const bracketTrackHeight = useMemo(
-    () => getBracketTrackHeight(rounds),
-    [rounds],
-  );
   const currentProfileId = storage.getProfileId("");
   const eventUiState = useMemo(
     () => getCurrentUiState(eventRecord, currentProfileId),
     [currentProfileId, eventRecord],
   );
   const currentRoute = getCurrentRouteState();
+
+  const bracketLayout = useMemo(() => {
+    if (rounds.length === 0) return null;
+    return computeSymmetricalBracket(rounds);
+  }, [rounds]);
+
+  const bracketScale = useMemo(() => {
+    if (!bracketLayout) return 1;
+    const padX = 48;
+    const padY = 160;
+    const availW = Math.max(1, viewportSize.width - padX);
+    const availH = Math.max(1, viewportSize.height - padY);
+    const sx = availW / bracketLayout.width;
+    const sy = availH / bracketLayout.height;
+    const scale = Math.min(1, sx, sy);
+    return Number.isFinite(scale) ? Math.max(0, scale) : 1;
+  }, [bracketLayout, viewportSize.height, viewportSize.width]);
+
   const isJoinWindowOpen =
     !!eventRecord &&
     eventRecord.status === "scheduled" &&
@@ -1029,236 +1133,194 @@ const EventModal: React.FC = () => {
     return null;
   }
 
+  const hasBracket =
+    (eventRecord?.status === "active" || eventRecord?.status === "ended") &&
+    bracketLayout !== null;
+
   return (
     <Overlay
       onMouseDown={handleBackdropPointerDown}
       onTouchStart={handleBackdropPointerDown}
       onClick={handleBackdropClick}
     >
-      <ModalCard onClick={(event) => event.stopPropagation()}>
-        <ModalScroll>
-          <HeaderRow>
-            <HeaderText>
-              <Title>{formatRelativeStart(eventRecord, nowMs)}</Title>
-            </HeaderText>
-            <HeaderButtons>
-              <HeaderIconButton
-                type="button"
-                onClick={handleCopyClick}
-                aria-label="Copy event link"
-              >
-                {copyState === "copied" ? <FaCheck /> : <FaLink />}
-              </HeaderIconButton>
-              <HeaderIconButton
-                type="button"
-                onClick={() => void closeEventModal()}
-                aria-label="Close event"
-              >
-                <FaTimes />
-              </HeaderIconButton>
-            </HeaderButtons>
-          </HeaderRow>
+      <TopBar>
+        <TopBarTitle>{formatRelativeStart(eventRecord, nowMs)}</TopBarTitle>
+        <TopBarIconButton
+          type="button"
+          onClick={handleCopyClick}
+          aria-label="Copy event link"
+        >
+          {copyState === "copied" ? <FaCheck /> : <FaLink />}
+        </TopBarIconButton>
+      </TopBar>
 
-          {inlineError && <InlineError>{inlineError}</InlineError>}
+      {hasBracket && bracketLayout && (
+        <BracketContainer
+          $w={bracketLayout.width}
+          $h={bracketLayout.height}
+          $scale={bracketScale}
+        >
+          {bracketLayout.positions.map((mp) => (
+            <MatchCard
+              key={mp.key}
+              type="button"
+              $x={mp.x}
+              $y={mp.y}
+              disabled={!mp.match.inviteId}
+              onClick={() =>
+                mp.match.inviteId
+                  ? void openMatch(mp.match.inviteId)
+                  : undefined
+              }
+            >
+              <MatchAvatarSlot>
+                <EventAvatar
+                  size={BRACKET_AVATAR_PX}
+                  emojiId={mp.match.hostEmojiId}
+                  displayName={mp.match.hostDisplayName}
+                />
+              </MatchAvatarSlot>
+              <MatchAvatarSlot>
+                <EventAvatar
+                  size={BRACKET_AVATAR_PX}
+                  emojiId={mp.match.guestEmojiId}
+                  displayName={mp.match.guestDisplayName}
+                />
+              </MatchAvatarSlot>
+            </MatchCard>
+          ))}
+          <ConnectorSvg
+            width={bracketLayout.width}
+            height={bracketLayout.height}
+            viewBox={`0 0 ${bracketLayout.width} ${bracketLayout.height}`}
+          >
+            {bracketLayout.connectors.map((d, i) => (
+              <path key={i} d={d} />
+            ))}
+          </ConnectorSvg>
+        </BracketContainer>
+      )}
 
-          {eventRecord?.status !== "active" &&
-            eventRecord?.status !== "ended" && (
-              <CardSection>
-                <ParticipantsList>
-                  {participants.map((participant) => (
-                    <ParticipantRow
-                      key={participant.profileId}
-                      type="button"
-                      onClick={() => void handleParticipantClick(participant)}
-                      disabled={openingParticipantId !== null}
-                    >
-                      <EventAvatar
-                        emojiId={participant.emojiId}
-                        displayName={participant.displayName}
-                      />
-                      <ParticipantName>
-                        {getParticipantDisplayName(participant)}
-                      </ParticipantName>
-                      <ParticipantState>
-                        {openingParticipantId ===
-                        (participant.profileId || participant.loginUid)
-                          ? "loading"
-                          : participant.state === "winner"
-                            ? "winner"
-                            : participant.state === "eliminated"
-                              ? "out"
-                              : ""}
-                      </ParticipantState>
-                    </ParticipantRow>
-                  ))}
-                  {!participants.length && (
-                    <FooterNote>
-                      {isLoading ? "loading players..." : "no players yet"}
-                    </FooterNote>
-                  )}
-                </ParticipantsList>
-              </CardSection>
-            )}
+      {(eventRecord?.status === "active" || eventRecord?.status === "ended") &&
+        !bracketLayout && (
+          <ContentArea>
+            <FooterNote>
+              {eventRecord?.status === "active"
+                ? "building bracket..."
+                : "no bracket yet"}
+            </FooterNote>
+          </ContentArea>
+        )}
 
-          {(eventRecord?.status === "active" ||
-            eventRecord?.status === "ended") && (
-            <BracketSection>
-              {rounds.length > 0 ? (
-                <BracketScroller>
-                  <BracketCanvas>
-                    {rounds.map((round) => (
-                      <BracketRoundColumn key={round.roundIndex}>
-                        <BracketRoundTitle>
-                          {getBracketRoundTitle(
-                            round.roundIndex,
-                            rounds.length,
-                          )}
-                        </BracketRoundTitle>
-                        <BracketRoundTrack $height={bracketTrackHeight}>
-                          {getSortedMatches(round).map((match, matchIndex) => {
-                            const inviteId = match.inviteId;
-                            const isPlayable =
-                              eventUiState.playableMatch?.inviteId === inviteId;
-                            const isCurrentRoute =
-                              !!inviteId && currentRoute.inviteId === inviteId;
-                            const isHighlighted = isPlayable || isCurrentRoute;
-                            return (
-                              <BracketMatchButton
-                                key={match.matchKey}
-                                type="button"
-                                $top={getBracketMatchTop(
-                                  round.roundIndex,
-                                  matchIndex,
-                                )}
-                                $highlighted={isHighlighted}
-                                disabled={!inviteId}
-                                onClick={() =>
-                                  inviteId
-                                    ? void openMatch(inviteId)
-                                    : undefined
-                                }
-                              >
-                                <BracketMatchHeader>
-                                  <BracketMatchLabel>
-                                    {getBracketMatchLabel(match)}
-                                  </BracketMatchLabel>
-                                </BracketMatchHeader>
-                                <BracketPlayerLine>
-                                  <EventAvatar
-                                    size={14}
-                                    emojiId={match.hostEmojiId}
-                                    displayName={match.hostDisplayName}
-                                  />
-                                  <BracketPlayerName
-                                    $bold={
-                                      match.winnerProfileId ===
-                                        match.hostProfileId &&
-                                      match.hostProfileId !== null
-                                    }
-                                  >
-                                    {getMatchSlotDisplayName(match, "host")}
-                                  </BracketPlayerName>
-                                </BracketPlayerLine>
-                                <BracketPlayerLine>
-                                  <EventAvatar
-                                    size={14}
-                                    emojiId={match.guestEmojiId}
-                                    displayName={match.guestDisplayName}
-                                  />
-                                  <BracketPlayerName
-                                    $bold={
-                                      match.winnerProfileId ===
-                                        match.guestProfileId &&
-                                      match.guestProfileId !== null
-                                    }
-                                  >
-                                    {getMatchSlotDisplayName(match, "guest")}
-                                  </BracketPlayerName>
-                                </BracketPlayerLine>
-                              </BracketMatchButton>
-                            );
-                          })}
-                        </BracketRoundTrack>
-                      </BracketRoundColumn>
-                    ))}
-                  </BracketCanvas>
-                </BracketScroller>
-              ) : (
+      {eventRecord?.status !== "active" &&
+        eventRecord?.status !== "ended" && (
+          <ContentArea>
+            <ParticipantsList>
+              {participants.map((participant) => (
+                <ParticipantRow
+                  key={participant.profileId}
+                  type="button"
+                  onClick={() => void handleParticipantClick(participant)}
+                  disabled={openingParticipantId !== null}
+                >
+                  <EventAvatar
+                    emojiId={participant.emojiId}
+                    displayName={participant.displayName}
+                  />
+                  <ParticipantName>
+                    {getParticipantDisplayName(participant)}
+                  </ParticipantName>
+                  <ParticipantState>
+                    {openingParticipantId ===
+                    (participant.profileId || participant.loginUid)
+                      ? "loading"
+                      : participant.state === "winner"
+                        ? "winner"
+                        : participant.state === "eliminated"
+                          ? "out"
+                          : ""}
+                  </ParticipantState>
+                </ParticipantRow>
+              ))}
+              {!participants.length && (
                 <FooterNote>
-                  {eventRecord?.status === "active"
-                    ? "building bracket..."
-                    : "no bracket yet"}
+                  {isLoading ? "loading players..." : "no players yet"}
                 </FooterNote>
               )}
-            </BracketSection>
+            </ParticipantsList>
+          </ContentArea>
+        )}
+
+      <BottomBar>
+        {inlineError && <InlineError>{inlineError}</InlineError>}
+        <ButtonRow>
+          {!eventUiState.isJoined && isJoinWindowOpen && (
+            <>
+              <FooterButton
+                type="button"
+                $primary={true}
+                onClick={handleJoinClick}
+                disabled={isLoading}
+              >
+                Join
+              </FooterButton>
+              <FooterButton
+                type="button"
+                onClick={() => void closeEventModal()}
+              >
+                Skip
+              </FooterButton>
+            </>
           )}
 
-          <Footer>
-            {!eventUiState.isJoined && isJoinWindowOpen && (
-              <>
-                <FooterButton
-                  type="button"
-                  $primary={true}
-                  onClick={handleJoinClick}
-                  disabled={isLoading}
-                >
-                  Join
-                </FooterButton>
-                <FooterButton
-                  type="button"
-                  onClick={() => void closeEventModal()}
-                >
-                  Skip
-                </FooterButton>
-              </>
-            )}
+          {eventUiState.isJoined && eventRecord?.status === "scheduled" && (
+            <>
+              <FooterButton type="button" $primary={true} disabled={true}>
+                Play
+              </FooterButton>
+              {nowMs >= eventRecord.startAtMs && (
+                <FooterNote>waiting for more players</FooterNote>
+              )}
+            </>
+          )}
 
-            {eventUiState.isJoined && eventRecord?.status === "scheduled" && (
-              <>
-                <FooterButton type="button" $primary={true} disabled={true}>
-                  Play
-                </FooterButton>
-                {nowMs >= eventRecord.startAtMs && (
-                  <FooterNote>waiting for more players</FooterNote>
-                )}
-              </>
-            )}
-
-            {eventRecord?.status === "active" && eventUiState.playableMatch && (
+          {eventRecord?.status === "active" &&
+            eventUiState.playableMatch && (
               <FooterButton
                 type="button"
                 $primary={true}
                 onClick={() =>
-                  void openMatch(eventUiState.playableMatch!.inviteId as string)
+                  void openMatch(
+                    eventUiState.playableMatch!.inviteId as string,
+                  )
                 }
               >
                 Play
               </FooterButton>
             )}
 
-            {eventRecord?.status === "active" &&
-              !eventUiState.playableMatch &&
-              eventUiState.waitingForNext && (
-                <>
-                  <FooterButton type="button" $primary={true} disabled={true}>
-                    Play Next
-                  </FooterButton>
-                  <FooterNote>waiting for the next round</FooterNote>
-                </>
-              )}
+          {eventRecord?.status === "active" &&
+            !eventUiState.playableMatch &&
+            eventUiState.waitingForNext && (
+              <>
+                <FooterButton type="button" $primary={true} disabled={true}>
+                  Play Next
+                </FooterButton>
+                <FooterNote>waiting for the next round</FooterNote>
+              </>
+            )}
 
-            {!eventUiState.isJoined &&
-              eventRecord?.status === "scheduled" &&
-              !isJoinWindowOpen && (
-                <FooterNote>
-                  {Object.keys(eventRecord.participants ?? {}).length < 2
-                    ? "waiting for more players"
-                    : "event is no longer accepting players"}
-                </FooterNote>
-              )}
-          </Footer>
-        </ModalScroll>
-      </ModalCard>
+          {!eventUiState.isJoined &&
+            eventRecord?.status === "scheduled" &&
+            !isJoinWindowOpen && (
+              <FooterNote>
+                {Object.keys(eventRecord.participants ?? {}).length < 2
+                  ? "waiting for more players"
+                  : "event is no longer accepting players"}
+              </FooterNote>
+            )}
+        </ButtonRow>
+      </BottomBar>
     </Overlay>
   );
 };
