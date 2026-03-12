@@ -268,6 +268,68 @@ const MatchAvatarSlot = styled.div`
   line-height: 0;
 `;
 
+const BracketFallbackPanel = styled(ContentArea)`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+`;
+
+const BracketFallbackRound = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+`;
+
+const BracketFallbackRoundTitle = styled.div`
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--navigationTextMuted);
+`;
+
+const BracketFallbackGrid = styled.div`
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(82px, 1fr));
+  gap: 8px;
+`;
+
+const BracketFallbackMatchCard = styled.button`
+  min-height: ${BRACKET_MATCH_H}px;
+  border: none;
+  border-radius: 12px;
+  padding: 6px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  background: var(--color-gray-f0);
+  transition: background-color 0.15s ease;
+
+  &:disabled {
+    cursor: default;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled) {
+      background: var(--color-gray-e0);
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--color-gray-27);
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover:not(:disabled) {
+        background: var(--color-gray-33);
+      }
+    }
+  }
+`;
+
 const InlineError = styled.div`
   padding: 8px 10px;
   border-radius: 8px;
@@ -463,14 +525,43 @@ const getSortedRounds = (event: EventRecord | null): EventRound[] => {
   );
 };
 
+const parseBracketMatchKey = (
+  matchKey: string,
+): { roundIndex: number; matchIndex: number } | null => {
+  const trimmedMatchKey = matchKey.trim();
+  const parts = /^(\d+)_(\d+)$/.exec(trimmedMatchKey);
+  if (!parts) {
+    return null;
+  }
+  const roundIndex = Number(parts[1]);
+  const matchIndex = Number(parts[2]);
+  if (!Number.isFinite(roundIndex) || !Number.isFinite(matchIndex)) {
+    return null;
+  }
+  return { roundIndex, matchIndex };
+};
+
+const getMatchKeyIndex = (matchKey: string): number | null => {
+  return parseBracketMatchKey(matchKey)?.matchIndex ?? null;
+};
+
 const getSortedMatches = (round: EventRound | null): EventMatch[] => {
   if (!round) {
     return [];
   }
   return Object.values(round.matches).sort((left, right) => {
-    const leftIndex = Number(left.matchKey.split("_")[1] ?? 0);
-    const rightIndex = Number(right.matchKey.split("_")[1] ?? 0);
-    return leftIndex - rightIndex;
+    const leftIndex = getMatchKeyIndex(left.matchKey);
+    const rightIndex = getMatchKeyIndex(right.matchKey);
+    if (leftIndex !== null && rightIndex !== null) {
+      return leftIndex - rightIndex;
+    }
+    if (leftIndex !== null) {
+      return -1;
+    }
+    if (rightIndex !== null) {
+      return 1;
+    }
+    return left.matchKey.localeCompare(right.matchKey);
   });
 };
 
@@ -533,9 +624,7 @@ const getCurrentUiState = (
 
 const getBracketMatchTop = (roundIndex: number, matchIndex: number): number => {
   const slotSpan = BRACKET_SLOT_PITCH * Math.pow(2, roundIndex);
-  return Math.round(
-    (slotSpan - BRACKET_MATCH_H) / 2 + matchIndex * slotSpan,
-  );
+  return Math.round((slotSpan - BRACKET_MATCH_H) / 2 + matchIndex * slotSpan);
 };
 
 type BracketMatchPosition = {
@@ -543,6 +632,50 @@ type BracketMatchPosition = {
   y: number;
   key: string;
   match: EventMatch;
+};
+
+const canRenderSymmetricalBracket = (rounds: EventRound[]): boolean => {
+  if (rounds.length === 0) {
+    return false;
+  }
+
+  const matchCounts = rounds.map((round) => getSortedMatches(round).length);
+  if (matchCounts.some((count) => count <= 0)) {
+    return false;
+  }
+
+  const hasCanonicalMatchKeys = rounds.every((round) => {
+    const matches = getSortedMatches(round);
+    for (let i = 0; i < matches.length; i += 1) {
+      const parsed = parseBracketMatchKey(matches[i].matchKey);
+      if (!parsed || parsed.roundIndex !== round.roundIndex) {
+        return false;
+      }
+      if (parsed.matchIndex !== i) {
+        return false;
+      }
+    }
+    return true;
+  });
+  if (!hasCanonicalMatchKeys) {
+    return false;
+  }
+
+  if (rounds.length === 1) {
+    return matchCounts[0] === 1;
+  }
+
+  if (matchCounts[rounds.length - 1] !== 1) {
+    return false;
+  }
+
+  for (let i = 0; i < rounds.length - 1; i += 1) {
+    if (matchCounts[i] !== matchCounts[i + 1] * 2) {
+      return false;
+    }
+  }
+
+  return true;
 };
 
 const computeSymmetricalBracket = (
@@ -906,7 +1039,10 @@ const EventModal: React.FC = () => {
     window.visualViewport?.addEventListener("resize", handleViewportResize);
     return () => {
       window.removeEventListener("resize", handleViewportResize);
-      window.visualViewport?.removeEventListener("resize", handleViewportResize);
+      window.visualViewport?.removeEventListener(
+        "resize",
+        handleViewportResize,
+      );
     };
   }, [modalState.isOpen]);
 
@@ -995,7 +1131,40 @@ const EventModal: React.FC = () => {
 
   const bracketLayout = useMemo(() => {
     if (rounds.length === 0) return null;
+    if (!canRenderSymmetricalBracket(rounds)) {
+      return null;
+    }
     return computeSymmetricalBracket(rounds);
+  }, [rounds]);
+
+  const bracketFallbackRounds = useMemo(() => {
+    return rounds
+      .map((round, roundOffset) => {
+        const matches = getSortedMatches(round);
+        if (matches.length === 0) {
+          return null;
+        }
+        const label =
+          rounds.length === 1
+            ? "match"
+            : roundOffset === rounds.length - 1
+              ? "final"
+              : `round ${roundOffset + 1}`;
+        return {
+          key: `round_${round.roundIndex}_${roundOffset}`,
+          label,
+          matches,
+        };
+      })
+      .filter(
+        (
+          item,
+        ): item is {
+          key: string;
+          label: string;
+          matches: EventMatch[];
+        } => item !== null,
+      );
   }, [rounds]);
 
   const bracketScale = useMemo(() => {
@@ -1179,12 +1348,14 @@ const EventModal: React.FC = () => {
     bracketLayout !== null;
   const isBracketStatus =
     eventRecord?.status === "active" || eventRecord?.status === "ended";
+  const showBracketFallbackGrid =
+    isBracketStatus && !hasBracket && bracketFallbackRounds.length > 0;
   const showParticipantsPanel = !!eventRecord && !isBracketStatus;
   const overlayStatusText = !eventRecord
     ? isLoading
       ? "LOADING"
       : null
-    : !hasBracket
+    : !hasBracket && !showBracketFallbackGrid
       ? eventRecord.status === "active"
         ? "building bracket..."
         : eventRecord.status === "ended"
@@ -1272,6 +1443,68 @@ const EventModal: React.FC = () => {
         </BracketContainer>
       )}
 
+      {showBracketFallbackGrid && (
+        <BracketFallbackPanel>
+          {bracketFallbackRounds.map((round) => (
+            <BracketFallbackRound key={round.key}>
+              <BracketFallbackRoundTitle>
+                {round.label}
+              </BracketFallbackRoundTitle>
+              <BracketFallbackGrid>
+                {round.matches.map((match, index) => {
+                  const isByeMatch = match.status === "bye";
+                  const byeParticipantIsHost =
+                    !!match.hostProfileId ||
+                    !!match.hostDisplayName ||
+                    match.hostEmojiId !== null;
+                  return (
+                    <BracketFallbackMatchCard
+                      key={`${round.key}_${match.matchKey}_${index}`}
+                      type="button"
+                      disabled={!match.inviteId}
+                      onClick={() =>
+                        match.inviteId
+                          ? void openMatch(match.inviteId)
+                          : undefined
+                      }
+                    >
+                      <MatchAvatarSlot>
+                        <EventAvatar
+                          size={BRACKET_AVATAR_PX}
+                          emojiId={
+                            isByeMatch
+                              ? byeParticipantIsHost
+                                ? match.hostEmojiId
+                                : match.guestEmojiId
+                              : match.hostEmojiId
+                          }
+                          displayName={
+                            isByeMatch
+                              ? byeParticipantIsHost
+                                ? match.hostDisplayName
+                                : match.guestDisplayName
+                              : match.hostDisplayName
+                          }
+                        />
+                      </MatchAvatarSlot>
+                      {!isByeMatch && (
+                        <MatchAvatarSlot>
+                          <EventAvatar
+                            size={BRACKET_AVATAR_PX}
+                            emojiId={match.guestEmojiId}
+                            displayName={match.guestDisplayName}
+                          />
+                        </MatchAvatarSlot>
+                      )}
+                    </BracketFallbackMatchCard>
+                  );
+                })}
+              </BracketFallbackGrid>
+            </BracketFallbackRound>
+          ))}
+        </BracketFallbackPanel>
+      )}
+
       {showParticipantsPanel && (
         <ContentArea>
           <ParticipantsList>
@@ -1344,20 +1577,17 @@ const EventModal: React.FC = () => {
             </>
           )}
 
-          {eventRecord?.status === "active" &&
-            eventUiState.playableMatch && (
-              <FooterButton
-                type="button"
-                $primary={true}
-                onClick={() =>
-                  void openMatch(
-                    eventUiState.playableMatch!.inviteId as string,
-                  )
-                }
-              >
-                Play
-              </FooterButton>
-            )}
+          {eventRecord?.status === "active" && eventUiState.playableMatch && (
+            <FooterButton
+              type="button"
+              $primary={true}
+              onClick={() =>
+                void openMatch(eventUiState.playableMatch!.inviteId as string)
+              }
+            >
+              Play
+            </FooterButton>
+          )}
 
           {eventRecord?.status === "active" &&
             !eventUiState.playableMatch &&
