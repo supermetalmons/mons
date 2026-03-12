@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 import { problems, getCompletedProblemIds } from "../content/problems";
 import { useGameAssets } from "../hooks/useGameAssets";
-import { FiCheck } from "react-icons/fi";
+import { FiCheck, FiCircle } from "react-icons/fi";
 import {
   NavigationGameItem,
   NavigationGameStatus,
@@ -500,6 +500,24 @@ const CompletedIcon = styled(FiCheck)`
   padding-left: 4px;
   stroke-width: 1.5;
   stroke: currentColor;
+
+  & path {
+    fill: none;
+  }
+`;
+
+const IncompleteIcon = styled(FiCircle)`
+  color: var(--navigationTextMuted);
+  width: 0.63rem;
+  height: 0.63rem;
+  margin-left: auto;
+  flex-shrink: 0;
+  padding-left: 4px;
+  stroke-width: 1.5;
+  stroke: currentColor;
+  transform: scale(0.8);
+  transform-origin: center;
+  overflow: visible;
 
   & path {
     fill: none;
@@ -1094,6 +1112,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     <>
       {problems.map((item) => {
         const isSelected = selectedProblemId === item.id;
+        const isCompleted = completedProblemsSet.has(item.id);
         return (
           <NavigationPickerButton
             key={item.id}
@@ -1106,7 +1125,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
           >
             <PlaceholderImage src={getIconImage(item.icon)} alt="" />
             {item.label}
-            {completedProblemsSet.has(item.id) && <CompletedIcon />}
+            {isCompleted ? <CompletedIcon /> : <IncompleteIcon />}
           </NavigationPickerButton>
         );
       })}
