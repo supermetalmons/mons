@@ -37,7 +37,7 @@ const NavigationPickerContainer = styled.div`
   right: 8px;
   height: 480px;
   max-height: calc(100dvh - 120px - env(safe-area-inset-bottom));
-  width: 148pt;
+  width: 150pt;
   display: flex;
   flex-direction: column;
   background-color: var(--panel-light-90);
@@ -386,7 +386,7 @@ const GameStatus = styled.span<{ $isSelected?: boolean }>`
 const GameRemoveButton = styled.button<{ $isDisabled?: boolean }>`
   position: absolute;
   top: 50%;
-  right: 6px;
+  right: 8px;
   transform: translateY(-50%);
   z-index: 2;
   pointer-events: auto;
