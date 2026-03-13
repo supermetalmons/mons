@@ -367,38 +367,33 @@ const QueuePrimaryContent = styled(GameText)``;
 const GameStatus = styled.span<{
   $isSelected?: boolean;
   $highlightSelected?: boolean;
-  $isLive?: boolean;
 }>`
   margin-left: auto;
   font-size: 0.52rem;
-  font-weight: ${(props) => (props.$isLive ? 700 : "inherit")};
   color: ${(props) =>
-    props.$isLive
-      ? "var(--badgeBackgroundColor)"
-      : props.$isSelected && props.$highlightSelected
-        ? "var(--color-blue-primary)"
-        : "var(--navigationTextMuted)"};
-  text-shadow: ${(props) =>
-    !props.$isLive
-      ? "none"
-      : props.$isSelected
-        ? "0 0 5px rgba(231, 76, 60, 0.38), 0 0 9px rgba(255, 140, 92, 0.18)"
-        : "0 0 6px rgba(231, 76, 60, 0.35), 0 0 10px rgba(231, 76, 60, 0.18)"};
+    props.$isSelected && props.$highlightSelected
+      ? "var(--color-blue-primary)"
+      : "var(--navigationTextMuted)"};
   text-transform: uppercase;
 
   @media (prefers-color-scheme: dark) {
     color: ${(props) =>
-      props.$isLive
-        ? "var(--badgeBackgroundColor)"
-        : props.$isSelected && props.$highlightSelected
-          ? "var(--color-blue-primary-dark)"
-          : "var(--navigationTextMuted)"};
-    text-shadow: ${(props) =>
-      !props.$isLive
-        ? "none"
-        : props.$isSelected
-          ? "0 0 6px rgba(231, 76, 60, 0.44), 0 0 10px rgba(255, 140, 92, 0.22)"
-          : "0 0 7px rgba(231, 76, 60, 0.42), 0 0 12px rgba(231, 76, 60, 0.24)"};
+      props.$isSelected && props.$highlightSelected
+        ? "var(--color-blue-primary-dark)"
+        : "var(--navigationTextMuted)"};
+  }
+`;
+
+const LiveDot = styled.span`
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background-color: var(--color-blue-primary);
+  margin-left: auto;
+  flex-shrink: 0;
+
+  @media (prefers-color-scheme: dark) {
+    background-color: var(--color-blue-primary-dark);
   }
 `;
 
@@ -1052,7 +1047,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                 <>
                   {renderEventPreview(event)}
                   {event.status === "active" ? (
-                    <GameStatus $isLive>LIVE</GameStatus>
+                    <LiveDot />
                   ) : (
                     <GameStatus
                       $isSelected={isSelected}
@@ -1078,9 +1073,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                       : "anon"}
                   </GameText>
                   {game.status === "active" ? (
-                    <GameStatus $isLive $isSelected={isSelected}>
-                      LIVE
-                    </GameStatus>
+                    <LiveDot />
                   ) : (
                     <GameStatus $isSelected={isSelected}>
                       {getGameStatusLabel(game)}
