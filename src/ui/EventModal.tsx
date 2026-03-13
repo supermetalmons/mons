@@ -37,7 +37,7 @@ const BRACKET_MATCH_H = 40;
 const BRACKET_AVATAR_PX = 28;
 const BRACKET_SLOT_PITCH = 88;
 const BRACKET_CONNECTOR_W = 40;
-const BRACKET_COL_STEP = BRACKET_MATCH_W + BRACKET_CONNECTOR_W;
+const BRACKET_COMPACT_CONNECTOR_W = 18;
 const BRACKET_EDGE_PADDING_X = 24;
 const BRACKET_EDGE_PADDING_Y = 16;
 const BRACKET_CORNER_R = 10;
@@ -346,15 +346,18 @@ const ClassicConnectorSvg = styled.svg`
 const ClassicMatchCard = styled.button<{
   $x: number;
   $y: number;
+  $w: number;
+  $h: number;
 }>`
   position: absolute;
   left: ${(p) => p.$x}px;
   top: ${(p) => p.$y}px;
-  width: ${BRACKET_MATCH_W}px;
-  height: ${BRACKET_MATCH_H}px;
+  width: ${(p) => p.$w}px;
+  height: ${(p) => p.$h}px;
   border: none;
-  border-radius: ${BRACKET_MATCH_H / 2}px;
-  padding: 0;
+  border-radius: ${(p) => Math.round(Math.min(p.$w, p.$h) / 2)}px;
+  padding: 4px;
+  box-sizing: border-box;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -749,6 +752,8 @@ type ClassicBracketMatchPosition = {
   y: number;
   key: string;
   match: EventMatch;
+  width: number;
+  height: number;
 };
 
 type ClassicBracketLayout = {
@@ -758,9 +763,44 @@ type ClassicBracketLayout = {
   connectors: string[];
 };
 
-const getBracketMatchTop = (roundIndex: number, matchIndex: number): number => {
-  const slotSpan = BRACKET_SLOT_PITCH * Math.pow(2, roundIndex);
-  return Math.round((slotSpan - BRACKET_MATCH_H) / 2 + matchIndex * slotSpan);
+type BracketMatchLayout = {
+  width: number;
+  height: number;
+  useCompactEntry: boolean;
+};
+
+const getBracketMatchLayout = (
+  roundIndex: number,
+  totalRounds: number,
+): BracketMatchLayout => {
+  return {
+    width: BRACKET_MATCH_W,
+    height: BRACKET_MATCH_H,
+    useCompactEntry: roundIndex < totalRounds - 1,
+  };
+};
+
+const getBracketMatchTop = (
+  depthIndex: number,
+  matchIndex: number,
+  matchHeight: number,
+): number => {
+  const slotSpan = BRACKET_SLOT_PITCH * Math.pow(2, depthIndex);
+  return Math.round((slotSpan - matchHeight) / 2 + matchIndex * slotSpan);
+};
+
+const getBracketMatchCenterY = (
+  depthIndex: number,
+  matchIndex: number,
+  matchHeight: number,
+): number => {
+  return (
+    getBracketMatchTop(depthIndex, matchIndex, matchHeight) + matchHeight / 2
+  );
+};
+
+const getClassicConnectorMidX = (x1: number, x2: number): number => {
+  return x1 + (x2 - x1) / 2;
 };
 
 const buildClassicElbowConnectorPath = (
@@ -770,7 +810,7 @@ const buildClassicElbowConnectorPath = (
   y2: number,
 ): string => {
   const direction = x2 >= x1 ? 1 : -1;
-  const mx = x1 + direction * (BRACKET_CONNECTOR_W / 2);
+  const mx = getClassicConnectorMidX(x1, x2);
   const dy = y2 - y1;
   if (Math.abs(dy) < 1) {
     return `M${x1},${y1}H${x2}`;
@@ -795,36 +835,28 @@ const buildClassicElbowConnectorPath = (
   ].join("");
 };
 
-const buildClassicForkConnectorPath = (
+const buildClassicTopBottomEntryConnectorPath = (
   x1: number,
   y1: number,
-  y2: number,
   x2: number,
-  yDst: number,
+  y2: number,
 ): string => {
   const direction = x2 >= x1 ? 1 : -1;
-  const mx = x1 + direction * (BRACKET_CONNECTOR_W / 2);
-  const dyTop = Math.abs(yDst - y1);
-  const dyBot = Math.abs(y2 - yDst);
-  const r = Math.min(BRACKET_CORNER_R, dyTop, dyBot, Math.abs(mx - x1));
-  if (r < 1) {
-    return `M${x1},${y1}H${mx}M${x1},${y2}H${mx}M${mx},${y1}V${y2}M${mx},${yDst}H${x2}`;
+  const dy = y2 - y1;
+  if (Math.abs(dy) < 1) {
+    return `M${x1},${y1}H${x2}`;
   }
-  const signYtop = yDst >= y1 ? 1 : -1;
-  const signYbot = yDst <= y2 ? -1 : 1;
-  const topArm = [
+  const signY = dy > 0 ? 1 : -1;
+  const r = Math.min(BRACKET_CORNER_R, Math.abs(dy), Math.abs(x2 - x1));
+  if (r < 1) {
+    return `M${x1},${y1}H${x2}V${y2}`;
+  }
+  return [
     `M${x1},${y1}`,
-    `H${mx - direction * r}`,
-    `Q${mx},${y1} ${mx},${y1 + signYtop * r}`,
-    `V${yDst}`,
+    `H${x2 - direction * r}`,
+    `Q${x2},${y1} ${x2},${y1 + signY * r}`,
+    `V${y2}`,
   ].join("");
-  const botArm = [
-    `M${x1},${y2}`,
-    `H${mx - direction * r}`,
-    `Q${mx},${y2} ${mx},${y2 + signYbot * r}`,
-    `V${yDst}`,
-  ].join("");
-  return `${topArm}${botArm}M${mx},${yDst}H${x2}`;
 };
 
 const canRenderSymmetricalBracket = (rounds: EventRound[]): boolean => {
@@ -880,59 +912,110 @@ const computeSymmetricalBracket = (
 
   const totalRounds = rounds.length;
   const sideRounds = totalRounds - 1;
-  const firstRoundMatches = getSortedMatches(rounds[0]).length;
+  const roundLayouts = rounds.map((_, roundIndex) =>
+    getBracketMatchLayout(roundIndex, totalRounds),
+  );
+  const finalLayout = roundLayouts[totalRounds - 1];
 
   if (sideRounds === 0) {
     const match = getSortedMatches(rounds[0])[0];
     if (!match) return null;
     return {
-      width: BRACKET_MATCH_W,
-      height: BRACKET_MATCH_H,
+      width: finalLayout.width,
+      height: finalLayout.height,
       positions: [
         {
           x: 0,
           y: 0,
           key: "FINAL",
           match,
+          width: finalLayout.width,
+          height: finalLayout.height,
         },
       ],
       connectors: [],
     };
   }
 
-  const sideFirstRoundMatches = Math.ceil(firstRoundMatches / 2);
   const totalCols = 2 * sideRounds + 1;
-  const width = (totalCols - 1) * BRACKET_COL_STEP + BRACKET_MATCH_W;
-  const height =
-    sideFirstRoundMatches <= 0
-      ? BRACKET_MATCH_H
-      : getBracketMatchTop(0, sideFirstRoundMatches - 1) + BRACKET_MATCH_H;
+  const columnRoundIndices = [
+    ...Array.from({ length: sideRounds }, (_, roundIndex) => roundIndex),
+    totalRounds - 1,
+    ...Array.from(
+      { length: sideRounds },
+      (_, offset) => sideRounds - 1 - offset,
+    ),
+  ];
+  const columnWidths = [
+    ...roundLayouts.slice(0, sideRounds).map((layout) => layout.width),
+    finalLayout.width,
+    ...roundLayouts
+      .slice(0, sideRounds)
+      .reverse()
+      .map((layout) => layout.width),
+  ];
+  const gapAfterColumn = Array.from(
+    { length: Math.max(0, totalCols - 1) },
+    (_, colIndex) => {
+      const inwardColumnIndex = colIndex < sideRounds ? colIndex + 1 : colIndex;
+      if (inwardColumnIndex === sideRounds) {
+        return BRACKET_CONNECTOR_W;
+      }
+      const inwardRoundIndex = columnRoundIndices[inwardColumnIndex];
+      return roundLayouts[inwardRoundIndex]?.useCompactEntry
+        ? BRACKET_COMPACT_CONNECTOR_W
+        : BRACKET_CONNECTOR_W;
+    },
+  );
+  const columnX: number[] = [];
+  let currentX = 0;
+  for (let i = 0; i < totalCols; i += 1) {
+    columnX.push(currentX);
+    currentX += columnWidths[i] + (gapAfterColumn[i] ?? 0);
+  }
+  const width =
+    totalCols === 0 ? 0 : columnX[totalCols - 1] + columnWidths[totalCols - 1];
 
   const positions: ClassicBracketMatchPosition[] = [];
   const connectors: string[] = [];
+  let maxBottom = 0;
 
-  const colX = (col: number): number => col * BRACKET_COL_STEP;
+  const colX = (col: number): number => columnX[col] ?? 0;
+  const pushPosition = (
+    x: number,
+    y: number,
+    key: string,
+    match: EventMatch,
+    layout: BracketMatchLayout,
+  ): void => {
+    positions.push({
+      x,
+      y,
+      key,
+      match,
+      width: layout.width,
+      height: layout.height,
+    });
+    maxBottom = Math.max(maxBottom, y + layout.height);
+  };
 
   // Left side: columns 0 to sideRounds-1
   for (let r = 0; r < sideRounds; r++) {
+    const layout = roundLayouts[r];
     const x = colX(r);
     const roundMatches = getSortedMatches(rounds[r]);
     const perSideCount = Math.ceil(roundMatches.length / 2);
 
     for (let m = 0; m < perSideCount; m++) {
       const match = roundMatches[m];
-      const y = getBracketMatchTop(r, m);
-      positions.push({
-        x,
-        y,
-        key: `L${r}_${m}`,
-        match,
-      });
+      const y = getBracketMatchTop(r, m, layout.height);
+      pushPosition(x, y, `L${r}_${m}`, match, layout);
     }
 
     // Connectors from this round to the next (inward)
     if (r < sideRounds - 1) {
       const nextX = colX(r + 1);
+      const nextLayout = roundLayouts[r + 1];
       const nextPerSideCount = Math.ceil(
         getSortedMatches(rounds[r + 1]).length / 2,
       );
@@ -942,25 +1025,41 @@ const computeSymmetricalBracket = (
         if (srcA >= perSideCount) {
           continue;
         }
-        const y1 = getBracketMatchTop(r, srcA) + BRACKET_MATCH_H / 2;
-        const yDst = getBracketMatchTop(r + 1, j) + BRACKET_MATCH_H / 2;
-        const sx = x + BRACKET_MATCH_W;
-        const ex = nextX;
-        if (srcB < perSideCount) {
-          const y2 = getBracketMatchTop(r, srcB) + BRACKET_MATCH_H / 2;
-          connectors.push(buildClassicForkConnectorPath(sx, y1, y2, ex, yDst));
-        } else {
-          connectors.push(buildClassicElbowConnectorPath(sx, y1, ex, yDst));
+        const y1 = getBracketMatchCenterY(r, srcA, layout.height);
+        const nextMatchTop = getBracketMatchTop(r + 1, j, nextLayout.height);
+        const sx = x + layout.width;
+        if (nextLayout.useCompactEntry) {
+          const entryX = nextX + nextLayout.width / 2;
+          connectors.push(
+            buildClassicTopBottomEntryConnectorPath(
+              sx,
+              y1,
+              entryX,
+              nextMatchTop,
+            ),
+          );
+          if (srcB < perSideCount) {
+            const y2 = getBracketMatchCenterY(r, srcB, layout.height);
+            connectors.push(
+              buildClassicTopBottomEntryConnectorPath(
+                sx,
+                y2,
+                entryX,
+                nextMatchTop + nextLayout.height,
+              ),
+            );
+          }
         }
       }
     }
 
     // Connector from last side round to center final
     if (r === sideRounds - 1) {
-      const y = getBracketMatchTop(r, 0) + BRACKET_MATCH_H / 2;
-      const sx = x + BRACKET_MATCH_W;
+      const y = getBracketMatchCenterY(r, 0, layout.height);
+      const sx = x + layout.width;
       const ex = colX(sideRounds);
-      connectors.push(`M${sx},${y}H${ex}`);
+      const finalY = getBracketMatchCenterY(r, 0, finalLayout.height);
+      connectors.push(buildClassicElbowConnectorPath(sx, y, ex, finalY));
     }
   }
 
@@ -971,18 +1070,14 @@ const computeSymmetricalBracket = (
     const finalMatches = getSortedMatches(finalRound);
     const match = finalMatches[0];
     if (match) {
-      const y = getBracketMatchTop(sideRounds - 1, 0);
-      positions.push({
-        x,
-        y,
-        key: "FINAL",
-        match,
-      });
+      const y = getBracketMatchTop(sideRounds - 1, 0, finalLayout.height);
+      pushPosition(x, y, "FINAL", match, finalLayout);
     }
   }
 
   // Right side: columns sideRounds+1 to 2*sideRounds
   for (let r = 0; r < sideRounds; r++) {
+    const layout = roundLayouts[r];
     const col = 2 * sideRounds - r;
     const x = colX(col);
     const roundMatches = getSortedMatches(rounds[r]);
@@ -992,19 +1087,15 @@ const computeSymmetricalBracket = (
 
     for (let m = 0; m < totalCount - perSideCount; m++) {
       const match = roundMatches[offset + m];
-      const y = getBracketMatchTop(r, m);
-      positions.push({
-        x,
-        y,
-        key: `R${r}_${m}`,
-        match,
-      });
+      const y = getBracketMatchTop(r, m, layout.height);
+      pushPosition(x, y, `R${r}_${m}`, match, layout);
     }
 
     // Connectors (going leftward toward center)
     if (r < sideRounds - 1) {
       const innerCol = 2 * sideRounds - (r + 1);
       const innerX = colX(innerCol);
+      const nextLayout = roundLayouts[r + 1];
       const nextRoundMatches = getSortedMatches(rounds[r + 1]);
       const nextTotalCount = nextRoundMatches.length;
       const nextPerSide = Math.ceil(nextTotalCount / 2);
@@ -1016,29 +1107,50 @@ const computeSymmetricalBracket = (
         if (srcA >= currentSideCount) {
           continue;
         }
-        const y1 = getBracketMatchTop(r, srcA) + BRACKET_MATCH_H / 2;
-        const yDst = getBracketMatchTop(r + 1, j) + BRACKET_MATCH_H / 2;
+        const y1 = getBracketMatchCenterY(r, srcA, layout.height);
+        const nextMatchTop = getBracketMatchTop(r + 1, j, nextLayout.height);
         const sx = x;
-        const ex = innerX + BRACKET_MATCH_W;
-        if (srcB < currentSideCount) {
-          const y2 = getBracketMatchTop(r, srcB) + BRACKET_MATCH_H / 2;
-          connectors.push(buildClassicForkConnectorPath(sx, y1, y2, ex, yDst));
-        } else {
-          connectors.push(buildClassicElbowConnectorPath(sx, y1, ex, yDst));
+        if (nextLayout.useCompactEntry) {
+          const entryX = innerX + nextLayout.width / 2;
+          connectors.push(
+            buildClassicTopBottomEntryConnectorPath(
+              sx,
+              y1,
+              entryX,
+              nextMatchTop,
+            ),
+          );
+          if (srcB < currentSideCount) {
+            const y2 = getBracketMatchCenterY(r, srcB, layout.height);
+            connectors.push(
+              buildClassicTopBottomEntryConnectorPath(
+                sx,
+                y2,
+                entryX,
+                nextMatchTop + nextLayout.height,
+              ),
+            );
+          }
         }
       }
     }
 
     // Connector from right semi to center final
     if (r === sideRounds - 1) {
-      const y = getBracketMatchTop(r, 0) + BRACKET_MATCH_H / 2;
+      const y = getBracketMatchCenterY(r, 0, layout.height);
       const sx = x;
-      const ex = colX(sideRounds) + BRACKET_MATCH_W;
-      connectors.push(`M${sx},${y}H${ex}`);
+      const ex = colX(sideRounds) + finalLayout.width;
+      const finalY = getBracketMatchCenterY(r, 0, finalLayout.height);
+      connectors.push(buildClassicElbowConnectorPath(sx, y, ex, finalY));
     }
   }
 
-  return { width, height, positions, connectors };
+  return {
+    width,
+    height: Math.max(maxBottom, finalLayout.height),
+    positions,
+    connectors,
+  };
 };
 
 const formatEventError = (error: unknown): string => {
@@ -1068,7 +1180,11 @@ const EventAvatar: React.FC<{
       />
     );
   }
-  return <AvatarFallback $size={size} aria-hidden="true">?</AvatarFallback>;
+  return (
+    <AvatarFallback $size={size} aria-hidden="true">
+      ?
+    </AvatarFallback>
+  );
 };
 
 const getParticipantDisplayName = (participant: EventParticipant): string => {
@@ -1971,6 +2087,8 @@ const EventModal: React.FC = () => {
                   type="button"
                   $x={mp.x}
                   $y={mp.y}
+                  $w={mp.width}
+                  $h={mp.height}
                   disabled={!mp.match.inviteId}
                   onClick={() =>
                     mp.match.inviteId
