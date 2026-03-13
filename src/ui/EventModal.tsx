@@ -40,6 +40,7 @@ const BRACKET_CONNECTOR_W = 40;
 const BRACKET_COL_STEP = BRACKET_MATCH_W + BRACKET_CONNECTOR_W;
 const BRACKET_EDGE_PADDING_X = 24;
 const BRACKET_EDGE_PADDING_Y = 16;
+const BRACKET_CORNER_R = 10;
 
 const FALLBACK_MATCH_H = 40;
 const FALLBACK_AVATAR_PX = 28;
@@ -770,7 +771,28 @@ const buildClassicElbowConnectorPath = (
 ): string => {
   const direction = x2 >= x1 ? 1 : -1;
   const mx = x1 + direction * (BRACKET_CONNECTOR_W / 2);
-  return `M${x1},${y1}H${mx}V${y2}H${x2}`;
+  const dy = y2 - y1;
+  if (Math.abs(dy) < 1) {
+    return `M${x1},${y1}H${x2}`;
+  }
+  const signY = dy > 0 ? 1 : -1;
+  const r = Math.min(
+    BRACKET_CORNER_R,
+    Math.abs(dy) / 2,
+    Math.abs(mx - x1),
+    Math.abs(x2 - mx),
+  );
+  if (r < 1) {
+    return `M${x1},${y1}H${mx}V${y2}H${x2}`;
+  }
+  return [
+    `M${x1},${y1}`,
+    `H${mx - direction * r}`,
+    `Q${mx},${y1} ${mx},${y1 + signY * r}`,
+    `V${y2 - signY * r}`,
+    `Q${mx},${y2} ${mx + direction * r},${y2}`,
+    `H${x2}`,
+  ].join("");
 };
 
 const buildClassicForkConnectorPath = (
@@ -782,7 +804,27 @@ const buildClassicForkConnectorPath = (
 ): string => {
   const direction = x2 >= x1 ? 1 : -1;
   const mx = x1 + direction * (BRACKET_CONNECTOR_W / 2);
-  return `M${x1},${y1}H${mx}M${x1},${y2}H${mx}M${mx},${y1}V${y2}M${mx},${yDst}H${x2}`;
+  const dyTop = Math.abs(yDst - y1);
+  const dyBot = Math.abs(y2 - yDst);
+  const r = Math.min(BRACKET_CORNER_R, dyTop, dyBot, Math.abs(mx - x1));
+  if (r < 1) {
+    return `M${x1},${y1}H${mx}M${x1},${y2}H${mx}M${mx},${y1}V${y2}M${mx},${yDst}H${x2}`;
+  }
+  const signYtop = yDst >= y1 ? 1 : -1;
+  const signYbot = yDst <= y2 ? -1 : 1;
+  const topArm = [
+    `M${x1},${y1}`,
+    `H${mx - direction * r}`,
+    `Q${mx},${y1} ${mx},${y1 + signYtop * r}`,
+    `V${yDst}`,
+  ].join("");
+  const botArm = [
+    `M${x1},${y2}`,
+    `H${mx - direction * r}`,
+    `Q${mx},${y2} ${mx},${y2 + signYbot * r}`,
+    `V${yDst}`,
+  ].join("");
+  return `${topArm}${botArm}M${mx},${yDst}H${x2}`;
 };
 
 const canRenderSymmetricalBracket = (rounds: EventRound[]): boolean => {
