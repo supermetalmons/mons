@@ -352,7 +352,7 @@ const ClassicMatchCard = styled.button<{
   width: ${BRACKET_MATCH_W}px;
   height: ${BRACKET_MATCH_H}px;
   border: none;
-  border-radius: 12px;
+  border-radius: ${BRACKET_MATCH_H / 2}px;
   padding: 0;
   display: flex;
   flex-direction: row;
@@ -418,7 +418,7 @@ const BracketFallbackGrid = styled.div`
 const BracketFallbackMatchCard = styled.button`
   min-height: ${FALLBACK_MATCH_H}px;
   border: none;
-  border-radius: 12px;
+  border-radius: ${FALLBACK_MATCH_H / 2}px;
   padding: 6px;
   display: flex;
   flex-direction: row;
