@@ -51,9 +51,20 @@ const mapEventStatusToNavigationStatus = (status) => {
 
 const getListSortAtMs = (eventData, status) => {
   if (status === "active") {
-    return typeof eventData.updatedAtMs === "number"
-      ? Math.floor(eventData.updatedAtMs)
-      : Date.now();
+    const startedAtMs =
+      typeof eventData.startedAtMs === "number"
+        ? Math.floor(eventData.startedAtMs)
+        : typeof eventData.startAtMs === "number"
+          ? Math.floor(eventData.startAtMs)
+          : typeof eventData.createdAtMs === "number"
+            ? Math.floor(eventData.createdAtMs)
+            : null;
+    if (startedAtMs && Number.isFinite(startedAtMs) && startedAtMs > 0) {
+      // Keep active events stably ordered by event start time. This avoids
+      // reordering when sync touches `updatedAtMs` without user-visible changes.
+      return startedAtMs;
+    }
+    return 1;
   }
   if (status === "ended") {
     return typeof eventData.endedAtMs === "number"
