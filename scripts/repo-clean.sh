@@ -123,6 +123,12 @@ done < <(git worktree list --porcelain)
 
 git worktree prune --verbose || true
 
+echo "[repo-clean] Clearing stashes..."
+if ! git stash clear; then
+  echo "[repo-clean] Failed to clear stashes." >&2
+  had_errors=1
+fi
+
 echo "[repo-clean] Deleting local branches..."
 while IFS= read -r branch; do
   [[ -n "$branch" ]] || continue
