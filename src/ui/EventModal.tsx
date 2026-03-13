@@ -264,12 +264,24 @@ const Avatar = styled.img<{ $size?: number }>`
 `;
 
 const AvatarFallback = styled.div<{ $size?: number }>`
-  width: ${(props) => props.$size ?? 24}px;
-  height: ${(props) => props.$size ?? 24}px;
-  border-radius: ${(props) =>
-    Math.max(4, Math.round((props.$size ?? 24) / 4))}px;
-  background: rgba(128, 128, 128, 0.18);
+  width: ${(props) => Math.round((props.$size ?? 24) * 0.7)}px;
+  height: ${(props) => Math.round((props.$size ?? 24) * 0.7)}px;
+  border-radius: 50%;
+  background: rgba(128, 128, 128, 0.13);
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: ${(props) => Math.round((props.$size ?? 24) * 0.38)}px;
+  font-weight: 600;
+  color: rgba(128, 128, 128, 0.55);
+  line-height: 1;
+  user-select: none;
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.3);
+  }
 `;
 
 const ParticipantName = styled.div`
@@ -1014,7 +1026,7 @@ const EventAvatar: React.FC<{
       />
     );
   }
-  return <AvatarFallback $size={size} aria-hidden="true" />;
+  return <AvatarFallback $size={size} aria-hidden="true">?</AvatarFallback>;
 };
 
 const getParticipantDisplayName = (participant: EventParticipant): string => {
