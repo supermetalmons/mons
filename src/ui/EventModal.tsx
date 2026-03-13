@@ -41,13 +41,6 @@ const BRACKET_COL_STEP = BRACKET_MATCH_W + BRACKET_CONNECTOR_W;
 const BRACKET_EDGE_PADDING_X = 24;
 const BRACKET_EDGE_PADDING_Y = 16;
 
-const PYRAMID_BASE_W = 72;
-const PYRAMID_BASE_H = 40;
-const PYRAMID_BASE_AVATAR = 28;
-const PYRAMID_H_GAP_RATIO = 0.18;
-const PYRAMID_V_GAP = 52;
-const PYRAMID_EDGE_PAD_X = 20;
-const PYRAMID_EDGE_PAD_Y = 16;
 const FALLBACK_MATCH_H = 40;
 const FALLBACK_AVATAR_PX = 28;
 
@@ -128,25 +121,25 @@ const DevHelperToggle = styled.button`
   border-radius: 999px;
   border: none;
   background: transparent;
-  color: rgba(0, 0, 0, 0.28);
+  color: rgba(0, 0, 0, 0.16);
   font-size: 0.95rem;
   font-weight: 600;
   line-height: 1;
   cursor: pointer;
-  opacity: 0.72;
+  opacity: 0.38;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      opacity: 1;
+      opacity: 0.72;
     }
   }
 
   @media (prefers-color-scheme: dark) {
-    color: rgba(255, 255, 255, 0.42);
+    color: rgba(255, 255, 255, 0.24);
 
     @media (hover: hover) and (pointer: fine) {
       &:hover {
-        opacity: 1;
+        opacity: 0.72;
       }
     }
   }
@@ -337,26 +330,6 @@ const ClassicConnectorSvg = styled.svg`
   }
 `;
 
-const PyramidConnectorSvg = styled.svg`
-  position: absolute;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-
-  path {
-    fill: none;
-    stroke: rgba(160, 160, 160, 0.5);
-    stroke-width: 2;
-    stroke-linecap: round;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    path {
-      stroke: rgba(140, 140, 140, 0.4);
-    }
-  }
-`;
-
 const ClassicMatchCard = styled.button<{
   $x: number;
   $y: number;
@@ -378,53 +351,6 @@ const ClassicMatchCard = styled.button<{
   -webkit-tap-highlight-color: transparent;
   background: var(--color-gray-f0);
   transition: background-color 0.15s ease;
-
-  &:disabled {
-    cursor: default;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover:not(:disabled) {
-      background: var(--color-gray-e0);
-    }
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: var(--color-gray-27);
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover:not(:disabled) {
-        background: var(--color-gray-33);
-      }
-    }
-  }
-`;
-
-const PyramidMatchCard = styled.button<{
-  $x: number;
-  $y: number;
-  $w: number;
-  $h: number;
-  $r: number;
-}>`
-  position: absolute;
-  left: ${(p) => p.$x}px;
-  top: ${(p) => p.$y}px;
-  width: ${(p) => p.$w}px;
-  height: ${(p) => p.$h}px;
-  border: none;
-  border-radius: ${(p) => p.$r}px;
-  padding: 0;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  gap: 4px;
-  cursor: pointer;
-  -webkit-tap-highlight-color: transparent;
-  background: var(--color-gray-f0);
-  transition: background-color 0.15s ease;
-  z-index: 1;
 
   &:disabled {
     cursor: default;
@@ -657,8 +583,6 @@ type EventUiState = {
   waitingForNext: boolean;
 };
 
-type BracketStyle = "classic" | "pyramid";
-
 const PENDING_JOIN_POLL_INTERVAL_MS = 350;
 const PENDING_JOIN_POLL_TIMEOUT_MS = 60_000;
 const EVENT_SYNC_RETRY_DELAYS_MS = [500, 1500, 3000];
@@ -814,17 +738,6 @@ type ClassicBracketMatchPosition = {
   match: EventMatch;
 };
 
-type PyramidBracketMatchPosition = {
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  avatarPx: number;
-  borderRadius: number;
-  key: string;
-  match: EventMatch;
-};
-
 type ClassicBracketLayout = {
   width: number;
   height: number;
@@ -832,16 +745,32 @@ type ClassicBracketLayout = {
   connectors: string[];
 };
 
-type PyramidBracketLayout = {
-  width: number;
-  height: number;
-  positions: PyramidBracketMatchPosition[];
-  connectors: string[];
-};
-
 const getBracketMatchTop = (roundIndex: number, matchIndex: number): number => {
   const slotSpan = BRACKET_SLOT_PITCH * Math.pow(2, roundIndex);
   return Math.round((slotSpan - BRACKET_MATCH_H) / 2 + matchIndex * slotSpan);
+};
+
+const buildClassicElbowConnectorPath = (
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+): string => {
+  const direction = x2 >= x1 ? 1 : -1;
+  const mx = x1 + direction * (BRACKET_CONNECTOR_W / 2);
+  return `M${x1},${y1}H${mx}V${y2}H${x2}`;
+};
+
+const buildClassicForkConnectorPath = (
+  x1: number,
+  y1: number,
+  y2: number,
+  x2: number,
+  yDst: number,
+): string => {
+  const direction = x2 >= x1 ? 1 : -1;
+  const mx = x1 + direction * (BRACKET_CONNECTOR_W / 2);
+  return `M${x1},${y1}H${mx}M${x1},${y2}H${mx}M${mx},${y1}V${y2}M${mx},${yDst}H${x2}`;
 };
 
 const canRenderSymmetricalBracket = (rounds: EventRound[]): boolean => {
@@ -959,18 +888,15 @@ const computeSymmetricalBracket = (
         if (srcA >= perSideCount) {
           continue;
         }
-        const y1 = getBracketMatchTop(r, 2 * j) + BRACKET_MATCH_H / 2;
+        const y1 = getBracketMatchTop(r, srcA) + BRACKET_MATCH_H / 2;
         const yDst = getBracketMatchTop(r + 1, j) + BRACKET_MATCH_H / 2;
         const sx = x + BRACKET_MATCH_W;
-        const mx = sx + BRACKET_CONNECTOR_W / 2;
         const ex = nextX;
         if (srcB < perSideCount) {
           const y2 = getBracketMatchTop(r, srcB) + BRACKET_MATCH_H / 2;
-          connectors.push(
-            `M${sx},${y1}H${mx}M${sx},${y2}H${mx}M${mx},${y1}V${y2}M${mx},${yDst}H${ex}`,
-          );
+          connectors.push(buildClassicForkConnectorPath(sx, y1, y2, ex, yDst));
         } else {
-          connectors.push(`M${sx},${y1}H${mx}V${yDst}H${ex}`);
+          connectors.push(buildClassicElbowConnectorPath(sx, y1, ex, yDst));
         }
       }
     }
@@ -1039,15 +965,12 @@ const computeSymmetricalBracket = (
         const y1 = getBracketMatchTop(r, srcA) + BRACKET_MATCH_H / 2;
         const yDst = getBracketMatchTop(r + 1, j) + BRACKET_MATCH_H / 2;
         const sx = x;
-        const mx = sx - BRACKET_CONNECTOR_W / 2;
         const ex = innerX + BRACKET_MATCH_W;
         if (srcB < currentSideCount) {
           const y2 = getBracketMatchTop(r, srcB) + BRACKET_MATCH_H / 2;
-          connectors.push(
-            `M${sx},${y1}H${mx}M${sx},${y2}H${mx}M${mx},${y1}V${y2}M${mx},${yDst}H${ex}`,
-          );
+          connectors.push(buildClassicForkConnectorPath(sx, y1, y2, ex, yDst));
         } else {
-          connectors.push(`M${sx},${y1}H${mx}V${yDst}H${ex}`);
+          connectors.push(buildClassicElbowConnectorPath(sx, y1, ex, yDst));
         }
       }
     }
@@ -1062,150 +985,6 @@ const computeSymmetricalBracket = (
   }
 
   return { width, height, positions, connectors };
-};
-
-const computePyramidBracket = (
-  rounds: EventRound[],
-): PyramidBracketLayout | null => {
-  const totalRounds = rounds.length;
-  if (totalRounds === 0) return null;
-
-  const growthPerRound = totalRounds <= 1 ? 0 : 0.6 / (totalRounds - 1);
-
-  const dims = rounds.map((_, rIdx) => {
-    const s = 1 + rIdx * growthPerRound;
-    const w = Math.round(PYRAMID_BASE_W * s);
-    const h = Math.round(PYRAMID_BASE_H * s);
-    return {
-      w,
-      h,
-      avatarPx: Math.round(PYRAMID_BASE_AVATAR * s),
-      borderRadius: Math.max(8, Math.round(12 * s)),
-      gap: Math.max(6, Math.round(w * PYRAMID_H_GAP_RATIO)),
-    };
-  });
-
-  const matchCounts = rounds.map((r) => getSortedMatches(r).length);
-
-  if (totalRounds === 1 && matchCounts[0] === 1) {
-    const match = getSortedMatches(rounds[0])[0];
-    if (!match) return null;
-    const { w, h, avatarPx, borderRadius } = dims[0];
-    return {
-      width: w,
-      height: h,
-      positions: [
-        { x: 0, y: 0, w, h, avatarPx, borderRadius, key: "FINAL", match },
-      ],
-      connectors: [],
-    };
-  }
-
-  const rowWidths = matchCounts.map((count, rIdx) => {
-    return count * dims[rIdx].w + Math.max(0, count - 1) * dims[rIdx].gap;
-  });
-  const totalWidth = Math.max(...rowWidths);
-
-  const rowYs: number[] = new Array(totalRounds);
-  let cursorY = 0;
-  for (let displayRow = 0; displayRow < totalRounds; displayRow++) {
-    const rIdx = totalRounds - 1 - displayRow;
-    rowYs[rIdx] = cursorY;
-    cursorY += dims[rIdx].h + PYRAMID_V_GAP;
-  }
-  const totalHeight = cursorY - PYRAMID_V_GAP;
-
-  const positions: PyramidBracketMatchPosition[] = [];
-  const centers = new Map<
-    string,
-    { cx: number; topY: number; bottomY: number }
-  >();
-
-  for (let rIdx = 0; rIdx < totalRounds; rIdx++) {
-    const matches = getSortedMatches(rounds[rIdx]);
-    const { w, h, avatarPx, borderRadius, gap } = dims[rIdx];
-    const rowY = rowYs[rIdx];
-
-    if (rIdx === 0) {
-      const rowW = matches.length * w + Math.max(0, matches.length - 1) * gap;
-      const startX = (totalWidth - rowW) / 2;
-      matches.forEach((match, mIdx) => {
-        const x = startX + mIdx * (w + gap);
-        positions.push({
-          x,
-          y: rowY,
-          w,
-          h,
-          avatarPx,
-          borderRadius,
-          key: `R0_${mIdx}`,
-          match,
-        });
-        centers.set(`0_${mIdx}`, {
-          cx: x + w / 2,
-          topY: rowY,
-          bottomY: rowY + h,
-        });
-      });
-    } else {
-      matches.forEach((match, mIdx) => {
-        const childA = centers.get(`${rIdx - 1}_${mIdx * 2}`);
-        const childB = centers.get(`${rIdx - 1}_${mIdx * 2 + 1}`);
-        let cx: number;
-        if (childA && childB) {
-          cx = (childA.cx + childB.cx) / 2;
-        } else if (childA) {
-          cx = childA.cx;
-        } else {
-          const rowW =
-            matches.length * w + Math.max(0, matches.length - 1) * gap;
-          cx = (totalWidth - rowW) / 2 + mIdx * (w + gap) + w / 2;
-        }
-
-        const x = cx - w / 2;
-        const isFinal = rIdx === totalRounds - 1 && matches.length === 1;
-        positions.push({
-          x,
-          y: rowY,
-          w,
-          h,
-          avatarPx,
-          borderRadius,
-          key: isFinal ? "FINAL" : `R${rIdx}_${mIdx}`,
-          match,
-        });
-        centers.set(`${rIdx}_${mIdx}`, {
-          cx,
-          topY: rowY,
-          bottomY: rowY + h,
-        });
-      });
-    }
-  }
-
-  const connectors: string[] = [];
-  for (let rIdx = 1; rIdx < totalRounds; rIdx++) {
-    const matches = getSortedMatches(rounds[rIdx]);
-    matches.forEach((_, mIdx) => {
-      const parent = centers.get(`${rIdx}_${mIdx}`);
-      if (!parent) return;
-      [mIdx * 2, mIdx * 2 + 1].forEach((childMIdx) => {
-        const child = centers.get(`${rIdx - 1}_${childMIdx}`);
-        if (!child) return;
-        const x1 = child.cx;
-        const y1 = child.topY;
-        const x2 = parent.cx;
-        const y2 = parent.bottomY;
-        const dy = Math.abs(y1 - y2);
-        const cp = dy * 0.42;
-        connectors.push(
-          `M${x1},${y1}C${x1},${y1 - cp},${x2},${y2 + cp},${x2},${y2}`,
-        );
-      });
-    });
-  }
-
-  return { width: totalWidth, height: totalHeight, positions, connectors };
 };
 
 const formatEventError = (error: unknown): string => {
@@ -1484,7 +1263,6 @@ const EventModal: React.FC = () => {
   const [devStubPlayerCount, setDevStubPlayerCount] = useState(
     DEV_STUB_DEFAULT_PLAYERS,
   );
-  const [bracketStyle, setBracketStyle] = useState<BracketStyle>("classic");
   const [isLoading, setIsLoading] = useState(false);
   const [inlineError, setInlineError] = useState<string | null>(null);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
@@ -1532,7 +1310,6 @@ const EventModal: React.FC = () => {
   useEffect(() => {
     setDevStubRecord(null);
     setShowDevHelperPanel(false);
-    setBracketStyle("classic");
   }, [modalState.eventId, modalState.isOpen]);
 
   useEffect(() => {
@@ -1795,20 +1572,12 @@ const EventModal: React.FC = () => {
     () => canRenderSymmetricalBracket(rounds),
     [rounds],
   );
-  const classicBracketLayout = useMemo(() => {
+  const bracketLayout = useMemo(() => {
     if (!canRenderBracket) {
       return null;
     }
     return computeSymmetricalBracket(rounds);
   }, [canRenderBracket, rounds]);
-  const pyramidBracketLayout = useMemo(() => {
-    if (!canRenderBracket) {
-      return null;
-    }
-    return computePyramidBracket(rounds);
-  }, [canRenderBracket, rounds]);
-  const activeBracketLayout =
-    bracketStyle === "classic" ? classicBracketLayout : pyramidBracketLayout;
 
   const bracketFallbackRounds = useMemo(() => {
     return rounds
@@ -1841,41 +1610,23 @@ const EventModal: React.FC = () => {
   }, [rounds]);
 
   const bracketScale = useMemo(() => {
-    if (!activeBracketLayout) return 1;
+    if (!bracketLayout) return 1;
 
-    if (bracketStyle === "classic") {
-      const reservedTop = bracketInsets.top + BRACKET_EDGE_PADDING_Y;
-      const reservedBottom = bracketInsets.bottom + BRACKET_EDGE_PADDING_Y;
-      const availW = Math.max(
-        1,
-        viewportSize.width - BRACKET_EDGE_PADDING_X * 2,
-      );
-      const availH = Math.max(
-        1,
-        viewportSize.height - reservedTop - reservedBottom,
-      );
-      const sx = availW / activeBracketLayout.width;
-      const sy = availH / activeBracketLayout.height;
-      const scale = Math.min(1, sx, sy);
-      return Number.isFinite(scale) ? Math.max(0, scale) : 1;
-    }
-
-    const reservedTop = bracketInsets.top + PYRAMID_EDGE_PAD_Y;
-    const reservedBottom = bracketInsets.bottom + PYRAMID_EDGE_PAD_Y;
-    const availW = Math.max(1, viewportSize.width - PYRAMID_EDGE_PAD_X * 2);
+    const reservedTop = bracketInsets.top + BRACKET_EDGE_PADDING_Y;
+    const reservedBottom = bracketInsets.bottom + BRACKET_EDGE_PADDING_Y;
+    const availW = Math.max(1, viewportSize.width - BRACKET_EDGE_PADDING_X * 2);
     const availH = Math.max(
       1,
       viewportSize.height - reservedTop - reservedBottom,
     );
-    const sx = availW / activeBracketLayout.width;
-    const sy = availH / activeBracketLayout.height;
-    const scale = Math.min(1.6, sx, sy);
-    return Number.isFinite(scale) ? Math.max(0.1, scale) : 1;
+    const sx = availW / bracketLayout.width;
+    const sy = availH / bracketLayout.height;
+    const scale = Math.min(1, sx, sy);
+    return Number.isFinite(scale) ? Math.max(0, scale) : 1;
   }, [
-    activeBracketLayout,
+    bracketLayout,
     bracketInsets.bottom,
     bracketInsets.top,
-    bracketStyle,
     viewportSize.height,
     viewportSize.width,
   ]);
@@ -2064,12 +1815,6 @@ const EventModal: React.FC = () => {
     setDevStubRecord(null);
   }, []);
 
-  const handleToggleBracketStyle = useCallback(() => {
-    setBracketStyle((current) =>
-      current === "classic" ? "pyramid" : "classic",
-    );
-  }, []);
-
   if (!modalState.isOpen || !modalState.eventId) {
     return null;
   }
@@ -2077,7 +1822,7 @@ const EventModal: React.FC = () => {
   const hasBracket =
     (displayedEventRecord?.status === "active" ||
       displayedEventRecord?.status === "ended") &&
-    activeBracketLayout !== null;
+    bracketLayout !== null;
   const isBracketStatus =
     displayedEventRecord?.status === "active" ||
     displayedEventRecord?.status === "ended";
@@ -2134,9 +1879,6 @@ const EventModal: React.FC = () => {
             <DevHelperAction type="button" onClick={handleCreateStubBracket}>
               Generate
             </DevHelperAction>
-            <DevHelperAction type="button" onClick={handleToggleBracketStyle}>
-              {bracketStyle === "classic" ? "Style: Classic" : "Style: New"}
-            </DevHelperAction>
             {devStubRecord && (
               <DevHelperAction type="button" onClick={handleResetStubBracket}>
                 Live
@@ -2156,142 +1898,72 @@ const EventModal: React.FC = () => {
 
       {overlayStatusText && <OverlayStatus>{overlayStatusText}</OverlayStatus>}
 
-      {hasBracket && activeBracketLayout && (
+      {hasBracket && bracketLayout && (
         <BracketPlacement $offsetY={bracketOffsetY}>
           <BracketContainer
-            $w={activeBracketLayout.width}
-            $h={activeBracketLayout.height}
+            $w={bracketLayout.width}
+            $h={bracketLayout.height}
             $scale={bracketScale}
           >
-            {bracketStyle === "classic" && classicBracketLayout && (
-              <>
-                {classicBracketLayout.positions.map((mp) => {
-                  const isByeMatch = mp.match.status === "bye";
-                  const byeParticipantIsHost =
-                    !!mp.match.hostProfileId ||
-                    !!mp.match.hostDisplayName ||
-                    mp.match.hostEmojiId !== null;
-                  return (
-                    <ClassicMatchCard
-                      key={mp.key}
-                      type="button"
-                      $x={mp.x}
-                      $y={mp.y}
-                      disabled={!mp.match.inviteId}
-                      onClick={() =>
-                        mp.match.inviteId
-                          ? void openMatch(mp.match.inviteId)
-                          : undefined
-                      }
-                    >
-                      <MatchAvatarSlot>
-                        <EventAvatar
-                          size={BRACKET_AVATAR_PX}
-                          emojiId={
-                            isByeMatch
-                              ? byeParticipantIsHost
-                                ? mp.match.hostEmojiId
-                                : mp.match.guestEmojiId
-                              : mp.match.hostEmojiId
-                          }
-                          displayName={
-                            isByeMatch
-                              ? byeParticipantIsHost
-                                ? mp.match.hostDisplayName
-                                : mp.match.guestDisplayName
-                              : mp.match.hostDisplayName
-                          }
-                        />
-                      </MatchAvatarSlot>
-                      {!isByeMatch && (
-                        <MatchAvatarSlot>
-                          <EventAvatar
-                            size={BRACKET_AVATAR_PX}
-                            emojiId={mp.match.guestEmojiId}
-                            displayName={mp.match.guestDisplayName}
-                          />
-                        </MatchAvatarSlot>
-                      )}
-                    </ClassicMatchCard>
-                  );
-                })}
-                <ClassicConnectorSvg
-                  width={classicBracketLayout.width}
-                  height={classicBracketLayout.height}
-                  viewBox={`0 0 ${classicBracketLayout.width} ${classicBracketLayout.height}`}
+            {bracketLayout.positions.map((mp) => {
+              const isByeMatch = mp.match.status === "bye";
+              const byeParticipantIsHost =
+                !!mp.match.hostProfileId ||
+                !!mp.match.hostDisplayName ||
+                mp.match.hostEmojiId !== null;
+              return (
+                <ClassicMatchCard
+                  key={mp.key}
+                  type="button"
+                  $x={mp.x}
+                  $y={mp.y}
+                  disabled={!mp.match.inviteId}
+                  onClick={() =>
+                    mp.match.inviteId
+                      ? void openMatch(mp.match.inviteId)
+                      : undefined
+                  }
                 >
-                  {classicBracketLayout.connectors.map((d, i) => (
-                    <path key={i} d={d} />
-                  ))}
-                </ClassicConnectorSvg>
-              </>
-            )}
-            {bracketStyle === "pyramid" && pyramidBracketLayout && (
-              <>
-                <PyramidConnectorSvg
-                  width={pyramidBracketLayout.width}
-                  height={pyramidBracketLayout.height}
-                  viewBox={`0 0 ${pyramidBracketLayout.width} ${pyramidBracketLayout.height}`}
-                >
-                  {pyramidBracketLayout.connectors.map((d, i) => (
-                    <path key={i} d={d} />
-                  ))}
-                </PyramidConnectorSvg>
-                {pyramidBracketLayout.positions.map((mp) => {
-                  const isByeMatch = mp.match.status === "bye";
-                  const byeParticipantIsHost =
-                    !!mp.match.hostProfileId ||
-                    !!mp.match.hostDisplayName ||
-                    mp.match.hostEmojiId !== null;
-                  return (
-                    <PyramidMatchCard
-                      key={mp.key}
-                      type="button"
-                      $x={mp.x}
-                      $y={mp.y}
-                      $w={mp.w}
-                      $h={mp.h}
-                      $r={mp.borderRadius}
-                      disabled={!mp.match.inviteId}
-                      onClick={() =>
-                        mp.match.inviteId
-                          ? void openMatch(mp.match.inviteId)
-                          : undefined
+                  <MatchAvatarSlot>
+                    <EventAvatar
+                      size={BRACKET_AVATAR_PX}
+                      emojiId={
+                        isByeMatch
+                          ? byeParticipantIsHost
+                            ? mp.match.hostEmojiId
+                            : mp.match.guestEmojiId
+                          : mp.match.hostEmojiId
                       }
-                    >
-                      <MatchAvatarSlot>
-                        <EventAvatar
-                          size={mp.avatarPx}
-                          emojiId={
-                            isByeMatch
-                              ? byeParticipantIsHost
-                                ? mp.match.hostEmojiId
-                                : mp.match.guestEmojiId
-                              : mp.match.hostEmojiId
-                          }
-                          displayName={
-                            isByeMatch
-                              ? byeParticipantIsHost
-                                ? mp.match.hostDisplayName
-                                : mp.match.guestDisplayName
-                              : mp.match.hostDisplayName
-                          }
-                        />
-                      </MatchAvatarSlot>
-                      {!isByeMatch && (
-                        <MatchAvatarSlot>
-                          <EventAvatar
-                            size={mp.avatarPx}
-                            emojiId={mp.match.guestEmojiId}
-                            displayName={mp.match.guestDisplayName}
-                          />
-                        </MatchAvatarSlot>
-                      )}
-                    </PyramidMatchCard>
-                  );
-                })}
-              </>
-            )}
+                      displayName={
+                        isByeMatch
+                          ? byeParticipantIsHost
+                            ? mp.match.hostDisplayName
+                            : mp.match.guestDisplayName
+                          : mp.match.hostDisplayName
+                      }
+                    />
+                  </MatchAvatarSlot>
+                  {!isByeMatch && (
+                    <MatchAvatarSlot>
+                      <EventAvatar
+                        size={BRACKET_AVATAR_PX}
+                        emojiId={mp.match.guestEmojiId}
+                        displayName={mp.match.guestDisplayName}
+                      />
+                    </MatchAvatarSlot>
+                  )}
+                </ClassicMatchCard>
+              );
+            })}
+            <ClassicConnectorSvg
+              width={bracketLayout.width}
+              height={bracketLayout.height}
+              viewBox={`0 0 ${bracketLayout.width} ${bracketLayout.height}`}
+            >
+              {bracketLayout.connectors.map((d, i) => (
+                <path key={i} d={d} />
+              ))}
+            </ClassicConnectorSvg>
           </BracketContainer>
         </BracketPlacement>
       )}
