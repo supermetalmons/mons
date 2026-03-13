@@ -1632,6 +1632,11 @@ const EventModal: React.FC = () => {
       if (event.target !== event.currentTarget) {
         return;
       }
+      if (showDevHelperPanel) {
+        ignoreNextBackdropClickRef.current = false;
+        setShowDevHelperPanel(false);
+        return;
+      }
       const shouldKeepVisibleForOutsideDismiss =
         ignoreNextBackdropClickRef.current ||
         showsShinyCardSomewhere ||
@@ -1643,7 +1648,7 @@ const EventModal: React.FC = () => {
       didDismissSomethingWithOutsideTapJustNow();
       void closeEventModal();
     },
-    [],
+    [showDevHelperPanel],
   );
 
   const handleCopyClick = useCallback(() => {
