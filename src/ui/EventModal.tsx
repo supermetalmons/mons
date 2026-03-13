@@ -619,7 +619,7 @@ const formatRelativeStart = (
       : "event ended";
   }
   if (event.status === "active") {
-    return "live";
+    return "";
   }
   const deltaMs = event.startAtMs - nowMs;
   if (deltaMs <= 0) {
@@ -2061,7 +2061,7 @@ const EventModal: React.FC = () => {
       <TopBar ref={topBarRef}>
         <TopBarTitle>
           {devStubRecord
-            ? "LIVE"
+            ? ""
             : formatRelativeStart(displayedEventRecord, nowMs)}
         </TopBarTitle>
       </TopBar>
