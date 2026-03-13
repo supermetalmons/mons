@@ -326,13 +326,13 @@ const ClassicConnectorSvg = styled.svg`
 
   path {
     fill: none;
-    stroke: #999999;
-    stroke-width: 2.5;
+    stroke: rgba(160, 160, 160, 0.5);
+    stroke-width: 2;
   }
 
   @media (prefers-color-scheme: dark) {
     path {
-      stroke: #777777;
+      stroke: rgba(140, 140, 140, 0.4);
     }
   }
 `;
