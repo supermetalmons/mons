@@ -101,6 +101,103 @@ const TopBarTitle = styled.div`
   }
 `;
 
+const DevBracketHelper = styled.div`
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: ${EVENT_MODAL_Z_INDEX + 2};
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+`;
+
+const DevHelperToggle = styled.button`
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border-radius: 999px;
+  border: none;
+  background: transparent;
+  color: rgba(0, 0, 0, 0.28);
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0.72;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    color: rgba(255, 255, 255, 0.42);
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+`;
+
+const DevHelperPanel = styled.div`
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.92);
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(20, 20, 20, 0.92);
+  }
+`;
+
+const DevHelperSelect = styled.select`
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  padding: 0 8px;
+  font-size: 0.78rem;
+  background: var(--color-gray-f0);
+  color: var(--color-gray-25);
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--color-gray-33);
+    color: var(--color-gray-f0);
+  }
+`;
+
+const DevHelperAction = styled.button`
+  height: 28px;
+  padding: 0 10px;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  background: var(--color-blue-primary);
+  color: white;
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      background: var(--bottomButtonBackgroundHover);
+    }
+  }
+
+  @media (prefers-color-scheme: dark) {
+    background: var(--color-blue-primary-dark);
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover {
+        background: var(--bottomButtonBackgroundHoverDark);
+      }
+    }
+  }
+`;
+
 const ContentArea = styled.div`
   width: min(400px, calc(100vw - 48px));
   max-height: min(560px, calc(100vh - 96px));
@@ -910,9 +1007,240 @@ const getParticipantDisplayName = (participant: EventParticipant): string => {
   return "anon";
 };
 
+const DEV_STUB_MIN_PLAYERS = 2;
+const DEV_STUB_MAX_PLAYERS = 32;
+const DEV_STUB_DEFAULT_PLAYERS = 8;
+
+const clampDevStubPlayerCount = (value: number): number => {
+  if (!Number.isFinite(value)) {
+    return DEV_STUB_MIN_PLAYERS;
+  }
+  return Math.min(
+    DEV_STUB_MAX_PLAYERS,
+    Math.max(DEV_STUB_MIN_PLAYERS, Math.round(value)),
+  );
+};
+
+const getStubBracketSize = (playerCount: number): number => {
+  let bracketSize = DEV_STUB_MIN_PLAYERS;
+  while (bracketSize < playerCount && bracketSize < DEV_STUB_MAX_PLAYERS) {
+    bracketSize *= 2;
+  }
+  return bracketSize;
+};
+
+const buildSeedOrder = (bracketSize: number): number[] => {
+  if (bracketSize <= 1) {
+    return [1];
+  }
+  const previous = buildSeedOrder(Math.floor(bracketSize / 2));
+  const next: number[] = [];
+  for (const seed of previous) {
+    next.push(seed);
+    next.push(bracketSize + 1 - seed);
+  }
+  return next;
+};
+
+const shuffleArray = <T,>(values: T[]): T[] => {
+  const next = [...values];
+  for (let i = next.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    const temp = next[i];
+    next[i] = next[j];
+    next[j] = temp;
+  }
+  return next;
+};
+
+const createStubEventRecord = ({
+  source,
+  playerCount,
+  fallbackEventId,
+}: {
+  source: EventRecord | null;
+  playerCount: number;
+  fallbackEventId?: string | null;
+}): EventRecord => {
+  const normalizedPlayerCount = clampDevStubPlayerCount(playerCount);
+  const bracketSize = getStubBracketSize(normalizedPlayerCount);
+  const roundCount = Math.max(1, Math.round(Math.log2(bracketSize)));
+  const nowMs = Date.now();
+  const participants = shuffleArray(
+    Array.from({ length: normalizedPlayerCount }, (_, index) => {
+      const profileId = `dev_stub_profile_${index + 1}`;
+      const [emojiIdString] = emojis.getRandomEmojiUrl(true);
+      const emojiId = Number(emojiIdString);
+      return {
+        profileId,
+        loginUid: `dev_stub_login_${index + 1}`,
+        username: `stub_${index + 1}`,
+        displayName: `Stub ${index + 1}`,
+        emojiId: Number.isFinite(emojiId) ? emojiId : 1,
+        aura: "",
+        joinedAtMs: nowMs - (normalizedPlayerCount - index) * 3000,
+        state: "active",
+        eliminatedRoundIndex: null,
+        eliminatedByProfileId: null,
+      } satisfies EventParticipant;
+    }),
+  );
+  const participantsById: Record<string, EventParticipant> = {};
+  for (const participant of participants) {
+    participantsById[participant.profileId] = participant;
+  }
+
+  const seedOrder = buildSeedOrder(bracketSize);
+  const seedToSlotIndex = new Map<number, number>();
+  seedOrder.forEach((seed, slotIndex) => {
+    seedToSlotIndex.set(seed, slotIndex);
+  });
+
+  let roundEntrants: Array<EventParticipant | null> = Array.from(
+    { length: bracketSize },
+    () => null,
+  );
+  for (let seed = 1; seed <= normalizedPlayerCount; seed += 1) {
+    const slotIndex = seedToSlotIndex.get(seed);
+    const participant = participants[seed - 1];
+    if (slotIndex === undefined || !participant) {
+      continue;
+    }
+    roundEntrants[slotIndex] = participant;
+  }
+
+  const eliminationsByProfileId: Record<
+    string,
+    { eliminatedRoundIndex: number; eliminatedByProfileId: string | null }
+  > = {};
+  const rounds: Record<string, EventRound> = {};
+
+  for (let roundIndex = 0; roundIndex < roundCount; roundIndex += 1) {
+    const matchCount = Math.max(1, Math.floor(roundEntrants.length / 2));
+    const nextRoundEntrants: Array<EventParticipant | null> = Array.from(
+      { length: matchCount },
+      () => null,
+    );
+    const matches: Record<string, EventMatch> = {};
+
+    for (let matchIndex = 0; matchIndex < matchCount; matchIndex += 1) {
+      const host = roundEntrants[matchIndex * 2] ?? null;
+      const guest = roundEntrants[matchIndex * 2 + 1] ?? null;
+      const matchKey = `${roundIndex}_${matchIndex}`;
+      let status: EventMatch["status"] = "upcoming";
+      let winner: EventParticipant | null = null;
+      let loser: EventParticipant | null = null;
+
+      if (host && guest) {
+        const hostWon = Math.random() >= 0.5;
+        winner = hostWon ? host : guest;
+        loser = hostWon ? guest : host;
+        status = hostWon ? "host" : "guest";
+      } else if (host || guest) {
+        winner = host ?? guest;
+        status = "bye";
+      }
+
+      nextRoundEntrants[matchIndex] = winner;
+      if (winner && loser) {
+        eliminationsByProfileId[loser.profileId] = {
+          eliminatedRoundIndex: roundIndex,
+          eliminatedByProfileId: winner.profileId,
+        };
+      }
+
+      const resolvedAtMs =
+        winner !== null
+          ? nowMs - (roundCount - roundIndex) * 60_000 - matchIndex * 250
+          : null;
+
+      matches[matchKey] = {
+        matchKey,
+        inviteId: null,
+        status,
+        resolvedAtMs,
+        winnerProfileId: winner?.profileId ?? null,
+        loserProfileId: loser?.profileId ?? null,
+        hostProfileId: host?.profileId ?? null,
+        hostLoginUid: host?.loginUid ?? null,
+        hostDisplayName: host?.displayName ?? null,
+        hostEmojiId: host?.emojiId ?? null,
+        hostAura: host?.aura ?? null,
+        guestProfileId: guest?.profileId ?? null,
+        guestLoginUid: guest?.loginUid ?? null,
+        guestDisplayName: guest?.displayName ?? null,
+        guestEmojiId: guest?.emojiId ?? null,
+        guestAura: guest?.aura ?? null,
+      };
+    }
+
+    rounds[String(roundIndex)] = {
+      roundIndex,
+      status: "completed",
+      createdAtMs: nowMs - (roundCount - roundIndex + 1) * 60_000,
+      completedAtMs: nowMs - (roundCount - roundIndex) * 60_000,
+      matches,
+    };
+    roundEntrants = nextRoundEntrants;
+  }
+
+  const winner = roundEntrants[0] ?? participants[0] ?? null;
+  for (const participant of participants) {
+    const elimination = eliminationsByProfileId[participant.profileId];
+    if (winner && participant.profileId === winner.profileId) {
+      participantsById[participant.profileId] = {
+        ...participant,
+        state: "winner",
+        eliminatedRoundIndex: null,
+        eliminatedByProfileId: null,
+      };
+      continue;
+    }
+    participantsById[participant.profileId] = {
+      ...participant,
+      state: "eliminated",
+      eliminatedRoundIndex:
+        elimination?.eliminatedRoundIndex ?? Math.max(0, roundCount - 1),
+      eliminatedByProfileId:
+        elimination?.eliminatedByProfileId ?? winner?.profileId ?? null,
+    };
+  }
+
+  const sourceCreator = participants[0] ?? winner;
+  const sourceEventId = source?.eventId?.trim();
+  return {
+    schemaVersion: source?.schemaVersion ?? 1,
+    eventId: sourceEventId || fallbackEventId?.trim() || "dev_stub_event",
+    status: "ended",
+    createdAtMs: source?.createdAtMs ?? nowMs - (roundCount + 3) * 60_000,
+    updatedAtMs: nowMs,
+    startAtMs: source?.startAtMs ?? nowMs - (roundCount + 2) * 60_000,
+    startedAtMs: source?.startedAtMs ?? nowMs - (roundCount + 2) * 60_000,
+    endedAtMs: nowMs - 10_000,
+    createdByProfileId:
+      source?.createdByProfileId ?? sourceCreator?.profileId ?? "dev_stub",
+    createdByLoginUid:
+      source?.createdByLoginUid ?? sourceCreator?.loginUid ?? "dev_stub",
+    createdByUsername:
+      source?.createdByUsername ?? sourceCreator?.username ?? "dev_stub",
+    winnerProfileId: winner?.profileId ?? null,
+    winnerDisplayName: winner?.displayName ?? null,
+    currentRoundIndex: Math.max(0, roundCount - 1),
+    bracketSize,
+    roundCount,
+    participants: participantsById,
+    rounds,
+  };
+};
+
 const EventModal: React.FC = () => {
   const [modalState, setModalState] = useState(() => getEventModalState());
   const [eventRecord, setEventRecord] = useState<EventRecord | null>(null);
+  const [devStubRecord, setDevStubRecord] = useState<EventRecord | null>(null);
+  const [showDevHelperPanel, setShowDevHelperPanel] = useState(false);
+  const [devStubPlayerCount, setDevStubPlayerCount] = useState(
+    DEV_STUB_DEFAULT_PLAYERS,
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [inlineError, setInlineError] = useState<string | null>(null);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
@@ -955,6 +1283,11 @@ const EventModal: React.FC = () => {
     participantLookupSessionRef.current += 1;
     openingParticipantIdRef.current = null;
     setOpeningParticipantId(null);
+  }, [modalState.eventId, modalState.isOpen]);
+
+  useEffect(() => {
+    setDevStubRecord(null);
+    setShowDevHelperPanel(false);
   }, [modalState.eventId, modalState.isOpen]);
 
   useEffect(() => {
@@ -1197,15 +1530,19 @@ const EventModal: React.FC = () => {
     pendingJoinRequestedAtMs,
   ]);
 
+  const displayedEventRecord = devStubRecord ?? eventRecord;
   const participants = useMemo(
-    () => getSortedParticipants(eventRecord),
-    [eventRecord],
+    () => getSortedParticipants(displayedEventRecord),
+    [displayedEventRecord],
   );
-  const rounds = useMemo(() => getSortedRounds(eventRecord), [eventRecord]);
+  const rounds = useMemo(
+    () => getSortedRounds(displayedEventRecord),
+    [displayedEventRecord],
+  );
   const currentProfileId = storage.getProfileId("");
   const eventUiState = useMemo(
-    () => getCurrentUiState(eventRecord, currentProfileId),
-    [currentProfileId, eventRecord],
+    () => getCurrentUiState(displayedEventRecord, currentProfileId),
+    [currentProfileId, displayedEventRecord],
   );
   const currentRoute = getCurrentRouteState();
 
@@ -1272,9 +1609,9 @@ const EventModal: React.FC = () => {
   );
 
   const isJoinWindowOpen =
-    !!eventRecord &&
-    eventRecord.status === "scheduled" &&
-    nowMs < eventRecord.startAtMs;
+    !!displayedEventRecord &&
+    displayedEventRecord.status === "scheduled" &&
+    nowMs < displayedEventRecord.startAtMs;
 
   const handleBackdropPointerDown = useCallback(
     (
@@ -1431,26 +1768,44 @@ const EventModal: React.FC = () => {
     [resolveParticipantProfile],
   );
 
+  const handleCreateStubBracket = useCallback(() => {
+    const normalizedPlayerCount = clampDevStubPlayerCount(devStubPlayerCount);
+    setDevStubPlayerCount(normalizedPlayerCount);
+    setDevStubRecord(
+      createStubEventRecord({
+        source: eventRecord,
+        playerCount: normalizedPlayerCount,
+        fallbackEventId: modalState.eventId,
+      }),
+    );
+  }, [devStubPlayerCount, eventRecord, modalState.eventId]);
+
+  const handleResetStubBracket = useCallback(() => {
+    setDevStubRecord(null);
+  }, []);
+
   if (!modalState.isOpen || !modalState.eventId) {
     return null;
   }
 
   const hasBracket =
-    (eventRecord?.status === "active" || eventRecord?.status === "ended") &&
+    (displayedEventRecord?.status === "active" ||
+      displayedEventRecord?.status === "ended") &&
     bracketLayout !== null;
   const isBracketStatus =
-    eventRecord?.status === "active" || eventRecord?.status === "ended";
+    displayedEventRecord?.status === "active" ||
+    displayedEventRecord?.status === "ended";
   const showBracketFallbackGrid =
     isBracketStatus && !hasBracket && bracketFallbackRounds.length > 0;
-  const showParticipantsPanel = !!eventRecord && !isBracketStatus;
-  const overlayStatusText = !eventRecord
+  const showParticipantsPanel = !!displayedEventRecord && !isBracketStatus;
+  const overlayStatusText = !displayedEventRecord
     ? isLoading
       ? "LOADING"
       : null
     : !hasBracket && !showBracketFallbackGrid
-      ? eventRecord.status === "active"
+      ? displayedEventRecord.status === "active"
         ? "building bracket..."
-        : eventRecord.status === "ended"
+        : displayedEventRecord.status === "ended"
           ? "no bracket yet"
           : null
       : null;
@@ -1461,8 +1816,53 @@ const EventModal: React.FC = () => {
       onTouchStart={handleBackdropPointerDown}
       onClick={handleBackdropClick}
     >
+      <DevBracketHelper>
+        <DevHelperToggle
+          type="button"
+          aria-label="Bracket stub helper"
+          onClick={() => setShowDevHelperPanel((current) => !current)}
+        >
+          *
+        </DevHelperToggle>
+        {showDevHelperPanel && (
+          <DevHelperPanel>
+            <DevHelperSelect
+              value={devStubPlayerCount}
+              onChange={(event) =>
+                setDevStubPlayerCount(
+                  clampDevStubPlayerCount(Number(event.target.value)),
+                )
+              }
+            >
+              {Array.from(
+                {
+                  length: DEV_STUB_MAX_PLAYERS - DEV_STUB_MIN_PLAYERS + 1,
+                },
+                (_, index) => DEV_STUB_MIN_PLAYERS + index,
+              ).map((count) => (
+                <option key={count} value={count}>
+                  {count} players
+                </option>
+              ))}
+            </DevHelperSelect>
+            <DevHelperAction type="button" onClick={handleCreateStubBracket}>
+              Generate
+            </DevHelperAction>
+            {devStubRecord && (
+              <DevHelperAction type="button" onClick={handleResetStubBracket}>
+                Live
+              </DevHelperAction>
+            )}
+          </DevHelperPanel>
+        )}
+      </DevBracketHelper>
+
       <TopBar ref={topBarRef}>
-        <TopBarTitle>{formatRelativeStart(eventRecord, nowMs)}</TopBarTitle>
+        <TopBarTitle>
+          {devStubRecord
+            ? "LIVE"
+            : formatRelativeStart(displayedEventRecord, nowMs)}
+        </TopBarTitle>
       </TopBar>
 
       {overlayStatusText && <OverlayStatus>{overlayStatusText}</OverlayStatus>}
@@ -1660,18 +2060,20 @@ const EventModal: React.FC = () => {
             </>
           )}
 
-          {eventUiState.isJoined && eventRecord?.status === "scheduled" && (
+          {eventUiState.isJoined &&
+            displayedEventRecord?.status === "scheduled" && (
             <>
               <FooterButton type="button" $primary={true} disabled={true}>
                 Play
               </FooterButton>
-              {nowMs >= eventRecord.startAtMs && (
+              {nowMs >= displayedEventRecord.startAtMs && (
                 <FooterNote>waiting for more players</FooterNote>
               )}
             </>
           )}
 
-          {eventRecord?.status === "active" && eventUiState.playableMatch && (
+          {displayedEventRecord?.status === "active" &&
+            eventUiState.playableMatch && (
             <FooterButton
               type="button"
               $primary={true}
@@ -1683,7 +2085,7 @@ const EventModal: React.FC = () => {
             </FooterButton>
           )}
 
-          {eventRecord?.status === "active" &&
+          {displayedEventRecord?.status === "active" &&
             !eventUiState.playableMatch &&
             eventUiState.waitingForNext && (
               <>
@@ -1695,10 +2097,10 @@ const EventModal: React.FC = () => {
             )}
 
           {!eventUiState.isJoined &&
-            eventRecord?.status === "scheduled" &&
+            displayedEventRecord?.status === "scheduled" &&
             !isJoinWindowOpen && (
               <FooterNote>
-                {Object.keys(eventRecord.participants ?? {}).length < 2
+                {Object.keys(displayedEventRecord.participants ?? {}).length < 2
                   ? "waiting for more players"
                   : "event is no longer accepting players"}
               </FooterNote>
