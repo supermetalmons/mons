@@ -66,6 +66,14 @@ const Overlay = styled.div`
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
 
+  img {
+    user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+    -webkit-user-drag: none;
+    pointer-events: none;
+  }
+
   @media (prefers-color-scheme: dark) and (hover: none) and (pointer: coarse) {
     background: rgba(15, 15, 15, 0.11);
   }
@@ -257,7 +265,14 @@ const ParticipantRow = styled.button`
   }
 `;
 
-const Avatar = styled.img<{ $size?: number }>`
+const Avatar = styled.img.attrs({
+  draggable: false,
+})<{ $size?: number }>`
+  user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-drag: none;
+  pointer-events: none;
   width: ${(props) => props.$size ?? 24}px;
   height: ${(props) => props.$size ?? 24}px;
   border-radius: ${(props) =>
