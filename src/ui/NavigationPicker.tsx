@@ -68,6 +68,8 @@ const ScrollableList = styled.div`
   flex-grow: 1;
   padding: 6px 0 8px;
   scrollbar-width: none;
+  user-select: none;
+  -webkit-user-select: none;
 
   &::-webkit-scrollbar {
     display: none;
@@ -91,6 +93,8 @@ const NavigationPickerButton = styled.button<{ $isSelected?: boolean }>`
   align-items: center;
   gap: 5px;
   font-weight: 400;
+  user-select: none;
+  -webkit-user-select: none;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
@@ -177,11 +181,14 @@ const GameRowContainer = styled.div`
   min-width: 0;
 `;
 
-const GameEmojiImage = styled.img`
+const GameEmojiImage = styled.img.attrs({ draggable: false })`
   width: 20px;
   height: 20px;
   border-radius: 2px;
   flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
 `;
 
 const GameEmojiPlaceholder = styled.div`
@@ -536,10 +543,13 @@ const IncompleteIcon = styled(FiCircle)`
   }
 `;
 
-const PlaceholderImage = styled.img`
+const PlaceholderImage = styled.img.attrs({ draggable: false })`
   width: 20px;
   height: 20px;
   flex-shrink: 0;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-user-drag: none;
 `;
 
 const HomeBoardButton = styled.button<{ $withTopBorder?: boolean }>`
