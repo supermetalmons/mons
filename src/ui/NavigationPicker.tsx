@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useLayoutEffect, useRef } from "react";
 import styled from "styled-components";
 import { problems, getCompletedProblemIds } from "../content/problems";
 import { useGameAssets } from "../hooks/useGameAssets";
-import { FiCheck, FiCircle } from "react-icons/fi";
+import { FiCheck, FiCircle, FiPlus } from "react-icons/fi";
 import {
   NavigationGameItem,
   NavigationGameStatus,
@@ -269,31 +269,16 @@ const EventAvatarQuestionSlot = styled(EventAvatarPlaceholder)`
   background: rgba(120, 120, 120, 0.12);
   color: rgba(74, 74, 74, 0.48);
 
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    border-radius: 999px;
-    background: currentColor;
-    transform: translate(-50%, -50%);
-  }
-
-  &::before {
-    width: 7px;
-    height: 1.5px;
-  }
-
-  &::after {
-    width: 1.5px;
-    height: 7px;
-  }
-
   @media (prefers-color-scheme: dark) {
     background: rgba(255, 255, 255, 0.05);
     color: rgba(220, 220, 220, 0.34);
   }
+`;
+
+const EventAvatarQuestionIcon = styled(FiPlus)`
+  width: 11px;
+  height: 11px;
+  stroke-width: 2.3;
 `;
 
 const FightCloudCanvas = styled.svg`
@@ -1029,7 +1014,9 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                 />
               ))}
               {shouldShowUnknownOpponentSlot && (
-                <EventAvatarQuestionSlot aria-hidden="true" />
+                <EventAvatarQuestionSlot aria-hidden="true">
+                  <EventAvatarQuestionIcon />
+                </EventAvatarQuestionSlot>
               )}
               {hasBadge && <FightCloudBadge>+{overflow}</FightCloudBadge>}
             </EventPreviewGroup>
