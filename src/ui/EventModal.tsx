@@ -456,20 +456,6 @@ const BracketFallbackMatchCard = styled.button`
   }
 `;
 
-const InlineError = styled.div`
-  padding: 8px 10px;
-  border-radius: 8px;
-  background: rgba(220, 53, 69, 0.08);
-  color: var(--dangerButtonBackground);
-  font-size: 0.75rem;
-  line-height: 1.35;
-
-  @media (prefers-color-scheme: dark) {
-    background: rgba(220, 53, 69, 0.22);
-    color: var(--dangerButtonBackgroundDark);
-  }
-`;
-
 const BottomBar = styled.div`
   position: fixed;
   bottom: 0;
@@ -533,6 +519,7 @@ type EventUiState = {
 
 const PENDING_JOIN_POLL_INTERVAL_MS = 350;
 const PENDING_JOIN_POLL_TIMEOUT_MS = 60_000;
+const JOIN_SIGN_IN_LABEL_TIMEOUT_MS = 1200;
 const EVENT_SYNC_RETRY_DELAYS_MS = [500, 1500, 3000];
 
 const formatRelativeStart = (
@@ -1085,19 +1072,6 @@ const computeSymmetricalBracket = (
   };
 };
 
-const formatEventError = (error: unknown): string => {
-  if (
-    error &&
-    typeof error === "object" &&
-    "message" in error &&
-    typeof (error as { message?: unknown }).message === "string"
-  ) {
-    const message = (error as { message: string }).message;
-    return message.replace(/^Firebase:\s*/i, "");
-  }
-  return "Something went wrong.";
-};
-
 const EventAvatar: React.FC<{
   emojiId?: number | null;
   displayName?: string | null;
@@ -1366,8 +1340,10 @@ const EventModal: React.FC = () => {
     DEV_STUB_DEFAULT_PLAYERS,
   );
   const [isLoading, setIsLoading] = useState(false);
-  const [inlineError, setInlineError] = useState<string | null>(null);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
+  const [joinButtonState, setJoinButtonState] = useState<"idle" | "sign_in">(
+    "idle",
+  );
   const [nowMs, setNowMs] = useState(() => Date.now());
   const [viewportSize, setViewportSize] = useState(getViewportSize);
   const [bracketInsets, setBracketInsets] = useState({ top: 0, bottom: 0 });
@@ -1382,6 +1358,7 @@ const EventModal: React.FC = () => {
   const participantLookupSessionRef = useRef(0);
   const ignoreNextBackdropClickRef = useRef(false);
   const copyResetTimeoutRef = useRef<number | null>(null);
+  const joinButtonResetTimeoutRef = useRef<number | null>(null);
   const topBarRef = useRef<HTMLDivElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
   const measureBracketInsets = useCallback(() => {
@@ -1421,9 +1398,13 @@ const EventModal: React.FC = () => {
         window.clearTimeout(copyResetTimeoutRef.current);
         copyResetTimeoutRef.current = null;
       }
+      if (joinButtonResetTimeoutRef.current !== null) {
+        window.clearTimeout(joinButtonResetTimeoutRef.current);
+        joinButtonResetTimeoutRef.current = null;
+      }
       setEventRecord(null);
-      setInlineError(null);
       setCopyState("idle");
+      setJoinButtonState("idle");
       setPendingJoinEventId(null);
       setPendingJoinRequestedAtMs(0);
       setOpeningParticipantId(null);
@@ -1500,6 +1481,10 @@ const EventModal: React.FC = () => {
       if (copyResetTimeoutRef.current !== null) {
         window.clearTimeout(copyResetTimeoutRef.current);
         copyResetTimeoutRef.current = null;
+      }
+      if (joinButtonResetTimeoutRef.current !== null) {
+        window.clearTimeout(joinButtonResetTimeoutRef.current);
+        joinButtonResetTimeoutRef.current = null;
       }
     };
   }, []);
@@ -1632,7 +1617,7 @@ const EventModal: React.FC = () => {
       if (Date.now() - requestedAtMs >= PENDING_JOIN_POLL_TIMEOUT_MS) {
         setPendingJoinEventId(null);
         setPendingJoinRequestedAtMs(0);
-        setInlineError("Sign-in timed out. Tap Join to try again.");
+        setJoinButtonState("idle");
         return;
       }
       if (storage.getProfileId("") === "") {
@@ -1644,16 +1629,15 @@ const EventModal: React.FC = () => {
       if (!eventId) {
         return;
       }
-      setInlineError(null);
+      if (joinButtonResetTimeoutRef.current !== null) {
+        window.clearTimeout(joinButtonResetTimeoutRef.current);
+        joinButtonResetTimeoutRef.current = null;
+      }
+      setJoinButtonState("idle");
       setIsLoading(true);
       void connection
         .joinEvent(eventId)
-        .then(() => {
-          setInlineError(null);
-        })
-        .catch((error) => {
-          setInlineError(formatEventError(error));
-        })
+        .catch(() => {})
         .finally(() => {
           setIsLoading(false);
         });
@@ -1678,6 +1662,8 @@ const EventModal: React.FC = () => {
     [displayedEventRecord],
   );
   const currentProfileId = storage.getProfileId("");
+  const joinButtonLabel =
+    joinButtonState === "sign_in" ? "Please Sign In" : "Join";
   const eventUiState = useMemo(
     () => getCurrentUiState(displayedEventRecord, currentProfileId),
     [currentProfileId, displayedEventRecord],
@@ -1861,22 +1847,28 @@ const EventModal: React.FC = () => {
     if (storage.getProfileId("") === "") {
       setPendingJoinEventId(modalState.eventId);
       setPendingJoinRequestedAtMs(Date.now());
-      setInlineError("Please sign in to join.");
+      setJoinButtonState("sign_in");
+      if (joinButtonResetTimeoutRef.current !== null) {
+        window.clearTimeout(joinButtonResetTimeoutRef.current);
+      }
+      joinButtonResetTimeoutRef.current = window.setTimeout(() => {
+        joinButtonResetTimeoutRef.current = null;
+        setJoinButtonState("idle");
+      }, JOIN_SIGN_IN_LABEL_TIMEOUT_MS);
       openProfileSignInPopup();
       return;
     }
+    if (joinButtonResetTimeoutRef.current !== null) {
+      window.clearTimeout(joinButtonResetTimeoutRef.current);
+      joinButtonResetTimeoutRef.current = null;
+    }
+    setJoinButtonState("idle");
     setPendingJoinEventId(null);
     setPendingJoinRequestedAtMs(0);
-    setInlineError(null);
     setIsLoading(true);
     void connection
       .joinEvent(modalState.eventId)
-      .then(() => {
-        setInlineError(null);
-      })
-      .catch((error) => {
-        setInlineError(formatEventError(error));
-      })
+      .catch(() => {})
       .finally(() => {
         setIsLoading(false);
       });
@@ -1930,14 +1922,12 @@ const EventModal: React.FC = () => {
       const lookupSession = participantLookupSessionRef.current;
       openingParticipantIdRef.current = participantKey;
       setOpeningParticipantId(participantKey);
-      setInlineError(null);
       try {
         const profile = await resolveParticipantProfile(participant);
         if (participantLookupSessionRef.current !== lookupSession) {
           return;
         }
         if (!profile) {
-          setInlineError("Unable to load player profile.");
           return;
         }
         await showShinyCard(
@@ -1945,11 +1935,10 @@ const EventModal: React.FC = () => {
           getParticipantDisplayName(participant),
           true,
         );
-      } catch (error) {
+      } catch {
         if (participantLookupSessionRef.current !== lookupSession) {
           return;
         }
-        setInlineError(formatEventError(error));
       } finally {
         if (participantLookupSessionRef.current !== lookupSession) {
           return;
@@ -2237,34 +2226,43 @@ const EventModal: React.FC = () => {
       )}
 
       <BottomBar ref={bottomBarRef}>
-        {inlineError && <InlineError>{inlineError}</InlineError>}
         <ButtonRow>
-          <BottomPillButton type="button" isBlue={true} onClick={handleCopyClick}>
+          <BottomPillButton
+            type="button"
+            isBlue={true}
+            onClick={handleCopyClick}
+          >
             {copyState !== "copied" && <FaLink />}
             {copyState === "copied" ? "Link is copied" : "Copy Link"}
           </BottomPillButton>
-          <BottomPillButton type="button" isBlue={true} onClick={handleShareClick}>
+          <BottomPillButton
+            type="button"
+            isBlue={true}
+            onClick={handleShareClick}
+          >
             <FaShareAlt />
             Share
           </BottomPillButton>
 
           {!eventUiState.isJoined && isJoinWindowOpen && (
-            <>
-              <BottomPillButton
-                type="button"
-                onClick={handleJoinClick}
-                disabled={isLoading}
-                isViewOnly={isLoading}
-              >
-                Join
-              </BottomPillButton>
-            </>
+            <BottomPillButton
+              type="button"
+              onClick={handleJoinClick}
+              disabled={isLoading}
+              isViewOnly={isLoading}
+            >
+              {joinButtonLabel}
+            </BottomPillButton>
           )}
 
           {eventUiState.isJoined &&
             displayedEventRecord?.status === "scheduled" && (
               <>
-                <BottomPillButton type="button" disabled={true} isViewOnly={true}>
+                <BottomPillButton
+                  type="button"
+                  disabled={true}
+                  isViewOnly={true}
+                >
                   Play
                 </BottomPillButton>
                 {nowMs >= displayedEventRecord.startAtMs && (
@@ -2289,7 +2287,11 @@ const EventModal: React.FC = () => {
             !eventUiState.playableMatch &&
             eventUiState.waitingForNext && (
               <>
-                <BottomPillButton type="button" disabled={true} isViewOnly={true}>
+                <BottomPillButton
+                  type="button"
+                  disabled={true}
+                  isViewOnly={true}
+                >
                   Play
                 </BottomPillButton>
                 <FooterNote>waiting for your next match</FooterNote>
