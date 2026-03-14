@@ -31,6 +31,9 @@ interface NavigationPickerProps {
   onLoadMoreGames?: () => void;
 }
 
+// Flip to `false` to restore the old event-cell cloud behavior.
+const ENABLE_EXPANDED_EVENT_CELL_CLOUD = true;
+
 const NavigationPickerContainer = styled.div`
   position: fixed;
   bottom: max(50px, calc(env(safe-area-inset-bottom) + 44px));
@@ -235,9 +238,19 @@ const FightCloudWrap = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  ${
+    ENABLE_EXPANDED_EVENT_CELL_CLOUD
+      ? `
+  width: 100%;
+  min-width: 0;
+  flex: 1;
+  `
+      : `
   justify-content: center;
   flex-shrink: 0;
   margin-left: 2px;
+  `
+  }
 `;
 
 const EventAvatarImage = styled(GameEmojiImage)``;
@@ -286,8 +299,19 @@ const EventAvatarQuestionSlot = styled(EventAvatarPlaceholder)`
 const FightCloudCanvas = styled.svg`
   position: absolute;
   top: 50%;
+  ${
+    ENABLE_EXPANDED_EVENT_CELL_CLOUD
+      ? `
+  left: -8px;
+  transform: translateY(-50%);
+  width: calc(100% + 18px);
+  height: 28px;
+  `
+      : `
   left: 50%;
   transform: translate(-50%, -50%);
+  `
+  }
   overflow: visible;
   pointer-events: none;
 `;
@@ -336,8 +360,22 @@ const FightCloudInner = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  gap: 1px;
+  gap: ${ENABLE_EXPANDED_EVENT_CELL_CLOUD ? "5px" : "1px"};
+  ${ENABLE_EXPANDED_EVENT_CELL_CLOUD
+    ? `
+  width: 100%;
+  min-width: 0;
+  `
+    : ""}
   z-index: 1;
+`;
+
+const EventPreviewGroup = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 1px;
+  flex-shrink: 0;
+  margin-left: ${ENABLE_EXPANDED_EVENT_CELL_CLOUD ? "2px" : "0"};
 `;
 
 const FightCloudBadge = styled.span`
@@ -643,8 +681,9 @@ function getFightCloudPath(w: number, h: number) {
   return v;
 }
 
-const FIGHT_CLOUD_PAD_X = 10;
+const FIGHT_CLOUD_BASE_W = 160;
 const FIGHT_CLOUD_H = 28;
+const FIGHT_CLOUD_PAD_X = 10;
 
 const NavigationPicker: React.FC<NavigationPickerProps> = ({
   showsHomeNavigation,
@@ -921,7 +960,10 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     shouldRenderTopGamesSection ||
     shouldRenderPagedGamesSection;
 
-  const renderEventPreview = (event: NavigationEventItem) => {
+  const renderEventPreview = (
+    event: NavigationEventItem,
+    trailingContent?: React.ReactNode,
+  ) => {
     const normalizedParticipantCount = Number.isFinite(event.participantCount)
       ? Math.max(0, Math.trunc(event.participantCount))
       : 0;
@@ -943,19 +985,24 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
     );
     const shouldShowUnknownOpponentSlot =
       event.status === "waiting" && normalizedParticipantCount === 1;
-    const renderedParticipantSlots =
-      previewEmojiIds.length + (shouldShowUnknownOpponentSlot ? 1 : 0);
     const overflow = Math.max(
       0,
       normalizedParticipantCount - previewEmojiIds.length,
     );
     const hasBadge = showBadge && overflow > 0;
+    const hasPreviewContent =
+      previewEmojiIds.length > 0 || shouldShowUnknownOpponentSlot || hasBadge;
+    const renderedParticipantSlots =
+      previewEmojiIds.length + (shouldShowUnknownOpponentSlot ? 1 : 0);
     const itemCount = renderedParticipantSlots + (hasBadge ? 1 : 0);
 
-    if (itemCount === 0) return null;
+    if (!ENABLE_EXPANDED_EVENT_CELL_CLOUD && itemCount === 0) {
+      return null;
+    }
 
-    const contentW = itemCount * 21 - 1;
-    const cloudW = contentW + FIGHT_CLOUD_PAD_X * 2;
+    const cloudW = ENABLE_EXPANDED_EVENT_CELL_CLOUD
+      ? FIGHT_CLOUD_BASE_W
+      : itemCount * 21 - 1 + FIGHT_CLOUD_PAD_X * 2;
     const cloud = getFightCloudPath(cloudW, FIGHT_CLOUD_H);
 
     return (
@@ -964,22 +1011,30 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
           width={cloudW}
           height={FIGHT_CLOUD_H}
           viewBox={`0 0 ${cloudW} ${FIGHT_CLOUD_H}`}
+          preserveAspectRatio={
+            ENABLE_EXPANDED_EVENT_CELL_CLOUD ? "none" : undefined
+          }
           aria-hidden="true"
         >
           <CloudShape d={cloud} />
         </FightCloudCanvas>
         <FightCloudInner>
-          {previewEmojiIds.map((emojiId, index) => (
-            <EventAvatarImage
-              key={`slot_${index}`}
-              src={emojis.getEmojiUrl(emojiId.toString())}
-              alt=""
-            />
-          ))}
-          {shouldShowUnknownOpponentSlot && (
-            <EventAvatarQuestionSlot aria-hidden="true" />
+          {hasPreviewContent && (
+            <EventPreviewGroup>
+              {previewEmojiIds.map((emojiId, index) => (
+                <EventAvatarImage
+                  key={`slot_${index}`}
+                  src={emojis.getEmojiUrl(emojiId.toString())}
+                  alt=""
+                />
+              ))}
+              {shouldShowUnknownOpponentSlot && (
+                <EventAvatarQuestionSlot aria-hidden="true" />
+              )}
+              {hasBadge && <FightCloudBadge>+{overflow}</FightCloudBadge>}
+            </EventPreviewGroup>
           )}
-          {hasBadge && <FightCloudBadge>+{overflow}</FightCloudBadge>}
+          {ENABLE_EXPANDED_EVENT_CELL_CLOUD ? trailingContent : null}
         </FightCloudInner>
       </FightCloudWrap>
     );
@@ -999,6 +1054,17 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
         const isRemoving =
           !!game && !!removingGameInviteIds?.has(game.inviteId);
         const shouldHighlightSelectedStatus = event?.status === "waiting";
+        const eventTrailingContent =
+          event == null ? null : event.status === "active" ? (
+            <LiveDot />
+          ) : (
+            <GameStatus
+              $isSelected={isSelected}
+              $highlightSelected={shouldHighlightSelectedStatus}
+            >
+              {getEventStatusLabel(event)}
+            </GameStatus>
+          );
         const handleRemoveClick = (
           event: React.MouseEvent<HTMLButtonElement>,
         ) => {
@@ -1045,17 +1111,8 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                 </>
               ) : event ? (
                 <>
-                  {renderEventPreview(event)}
-                  {event.status === "active" ? (
-                    <LiveDot />
-                  ) : (
-                    <GameStatus
-                      $isSelected={isSelected}
-                      $highlightSelected={shouldHighlightSelectedStatus}
-                    >
-                      {getEventStatusLabel(event)}
-                    </GameStatus>
-                  )}
+                  {renderEventPreview(event, eventTrailingContent)}
+                  {!ENABLE_EXPANDED_EVENT_CELL_CLOUD ? eventTrailingContent : null}
                 </>
               ) : game ? (
                 <>
