@@ -90,7 +90,7 @@ const NavigationPickerButton = styled.button<{ $isSelected?: boolean }>`
   display: flex;
   align-items: center;
   gap: 5px;
-  font-weight: ${(props) => (props.$isSelected ? 550 : 400)};
+  font-weight: 400;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
