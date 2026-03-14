@@ -3559,7 +3559,7 @@ const BottomControls: React.FC = () => {
             <FaScroll />
           </ControlButton>
         )}
-        {isVoiceReactionButtonVisible && (
+        {isVoiceReactionButtonVisible && !puzzleMode && (
           <ControlButton
             onClick={!isMobile ? toggleReactionPicker : undefined}
             onTouchStart={isMobile ? toggleReactionPicker : undefined}
