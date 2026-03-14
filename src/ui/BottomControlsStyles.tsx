@@ -184,9 +184,7 @@ export const BottomPillButton = styled.button<{
   }
 
   cursor: ${(props) =>
-    props.isViewOnly || (props.isPink && props.disabled)
-      ? "default"
-      : "pointer"};
+    props.disabled || props.isViewOnly ? "default" : "pointer"};
   transition: background-color 0.3s ease;
   text-align: center;
   display: flex;
@@ -214,7 +212,7 @@ export const BottomPillButton = styled.button<{
   border: none;
 
   @media (hover: hover) and (pointer: fine) {
-    &:hover {
+    &:hover:not(:disabled) {
       background-color: ${(props) =>
         props.isViewOnly
           ? "var(--color-gray-f0)"
@@ -228,7 +226,7 @@ export const BottomPillButton = styled.button<{
     }
   }
 
-  &:active {
+  &:active:not(:disabled) {
     background-color: ${(props) =>
       props.isViewOnly
         ? "var(--color-gray-f0)"
@@ -263,7 +261,7 @@ export const BottomPillButton = styled.button<{
               : "var(--color-blue-primary-dark)"};
 
     @media (hover: hover) and (pointer: fine) {
-      &:hover {
+      &:hover:not(:disabled) {
         background-color: ${(props) =>
           props.isViewOnly
             ? "var(--color-gray-33)"
@@ -277,7 +275,7 @@ export const BottomPillButton = styled.button<{
       }
     }
 
-    &:active {
+    &:active:not(:disabled) {
       background-color: ${(props) =>
         props.isViewOnly
           ? "var(--color-gray-33)"

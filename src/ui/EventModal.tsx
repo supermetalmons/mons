@@ -7,7 +7,7 @@ import React, {
   useState,
 } from "react";
 import styled from "styled-components";
-import { FaLink } from "react-icons/fa";
+import { FaLink, FaShareAlt } from "react-icons/fa";
 import { connection } from "../connection/connection";
 import {
   EventMatch,
@@ -31,6 +31,7 @@ import {
 } from "./BottomControls";
 import { showShinyCard, showsShinyCardSomewhere } from "./ShinyCard";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
+import { BottomPillButton } from "./BottomControlsStyles";
 
 const BRACKET_MATCH_W = 72;
 const BRACKET_MATCH_H = 40;
@@ -492,66 +493,9 @@ const ButtonRow = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 12px;
+  gap: 8px;
   flex-wrap: wrap;
   max-width: min(560px, calc(100vw - 40px));
-`;
-
-const FooterButton = styled.button<{ $primary?: boolean }>`
-  height: 42px;
-  padding: 0 20px;
-  border-radius: 20px;
-  border: none;
-  cursor: pointer;
-  font-weight: 700;
-  font-size: 0.9rem;
-  user-select: none;
-  -webkit-tap-highlight-color: transparent;
-  transition: background-color 0.2s ease;
-  background: ${(props) =>
-    props.$primary ? "var(--color-blue-primary)" : "var(--color-gray-f0)"};
-  color: ${(props) => (props.$primary ? "white" : "var(--color-gray-33)")};
-  opacity: ${(props) => (props.disabled ? 0.56 : 1)};
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover:not(:disabled) {
-      background: ${(props) =>
-        props.$primary
-          ? "var(--bottomButtonBackgroundHover)"
-          : "var(--color-gray-e0)"};
-    }
-  }
-
-  &:active:not(:disabled) {
-    background: ${(props) =>
-      props.$primary
-        ? "var(--bottomButtonBackgroundActive)"
-        : "var(--color-gray-d0)"};
-  }
-
-  @media (prefers-color-scheme: dark) {
-    background: ${(props) =>
-      props.$primary
-        ? "var(--color-blue-primary-dark)"
-        : "var(--color-gray-33)"};
-    color: ${(props) => (props.$primary ? "white" : "var(--color-gray-f0)")};
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover:not(:disabled) {
-        background: ${(props) =>
-          props.$primary
-            ? "var(--bottomButtonBackgroundHoverDark)"
-            : "var(--color-gray-44)"};
-      }
-    }
-
-    &:active:not(:disabled) {
-      background: ${(props) =>
-        props.$primary
-          ? "var(--bottomButtonBackgroundActiveDark)"
-          : "var(--color-gray-55)"};
-    }
-  }
 `;
 
 const FooterNote = styled.div`
@@ -577,18 +521,6 @@ const OverlayStatus = styled.div`
   @media (prefers-color-scheme: dark) {
     background: rgba(12, 12, 12, 0.82);
     border-color: rgba(255, 255, 255, 0.12);
-  }
-`;
-
-const FooterButtonContent = styled.span`
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-
-  svg {
-    width: 12px;
-    height: 12px;
-    flex-shrink: 0;
   }
 `;
 
@@ -1449,6 +1381,7 @@ const EventModal: React.FC = () => {
   const openingParticipantIdRef = useRef<string | null>(null);
   const participantLookupSessionRef = useRef(0);
   const ignoreNextBackdropClickRef = useRef(false);
+  const copyResetTimeoutRef = useRef<number | null>(null);
   const topBarRef = useRef<HTMLDivElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
   const measureBracketInsets = useCallback(() => {
@@ -1484,6 +1417,10 @@ const EventModal: React.FC = () => {
 
   useEffect(() => {
     if (!modalState.isOpen || !modalState.eventId) {
+      if (copyResetTimeoutRef.current !== null) {
+        window.clearTimeout(copyResetTimeoutRef.current);
+        copyResetTimeoutRef.current = null;
+      }
       setEventRecord(null);
       setInlineError(null);
       setCopyState("idle");
@@ -1557,6 +1494,15 @@ const EventModal: React.FC = () => {
       unsubscribe();
     };
   }, [modalState.eventId, modalState.isOpen]);
+
+  useEffect(() => {
+    return () => {
+      if (copyResetTimeoutRef.current !== null) {
+        window.clearTimeout(copyResetTimeoutRef.current);
+        copyResetTimeoutRef.current = null;
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!modalState.isOpen) {
@@ -1847,16 +1793,66 @@ const EventModal: React.FC = () => {
     [showDevHelperPanel],
   );
 
-  const handleCopyClick = useCallback(() => {
-    if (!modalState.eventId) {
+  const copyEventLinkToClipboard = useCallback(() => {
+    if (!modalState.eventId || typeof window === "undefined") {
       return;
     }
     connection.writeEventLinkToClipboard(modalState.eventId);
     setCopyState("copied");
-    window.setTimeout(() => {
+    if (copyResetTimeoutRef.current !== null) {
+      window.clearTimeout(copyResetTimeoutRef.current);
+    }
+    copyResetTimeoutRef.current = window.setTimeout(() => {
+      copyResetTimeoutRef.current = null;
       setCopyState("idle");
     }, 1200);
   }, [modalState.eventId]);
+
+  const handleCopyClick = useCallback(() => {
+    copyEventLinkToClipboard();
+  }, [copyEventLinkToClipboard]);
+
+  const handleShareClick = useCallback(async () => {
+    if (!modalState.eventId || typeof window === "undefined") {
+      return;
+    }
+    const link = `${window.location.origin}/event/${modalState.eventId}`;
+    const shareData = {
+      url: link,
+      title: "Play Mons",
+    };
+    if (typeof navigator.share !== "function") {
+      copyEventLinkToClipboard();
+      return;
+    }
+    if (typeof navigator.canShare === "function") {
+      let canShareData = false;
+      try {
+        canShareData = navigator.canShare(shareData);
+      } catch {
+        canShareData = false;
+      }
+      if (!canShareData) {
+        copyEventLinkToClipboard();
+        return;
+      }
+    }
+    try {
+      await navigator.share(shareData);
+    } catch (error) {
+      const errorName =
+        typeof error === "object" &&
+        error !== null &&
+        "name" in error &&
+        typeof (error as { name?: unknown }).name === "string"
+          ? (error as { name: string }).name
+          : "";
+      if (errorName === "AbortError") {
+        return;
+      }
+      copyEventLinkToClipboard();
+    }
+  }, [copyEventLinkToClipboard, modalState.eventId]);
 
   const handleJoinClick = useCallback(() => {
     if (!modalState.eventId) {
@@ -2243,32 +2239,34 @@ const EventModal: React.FC = () => {
       <BottomBar ref={bottomBarRef}>
         {inlineError && <InlineError>{inlineError}</InlineError>}
         <ButtonRow>
-          <FooterButton type="button" onClick={handleCopyClick}>
-            <FooterButtonContent>
-              {copyState !== "copied" && <FaLink />}
-              {copyState === "copied" ? "Link is copied" : "Copy Link"}
-            </FooterButtonContent>
-          </FooterButton>
+          <BottomPillButton type="button" isBlue={true} onClick={handleCopyClick}>
+            {copyState !== "copied" && <FaLink />}
+            {copyState === "copied" ? "Link is copied" : "Copy Link"}
+          </BottomPillButton>
+          <BottomPillButton type="button" isBlue={true} onClick={handleShareClick}>
+            <FaShareAlt />
+            Share
+          </BottomPillButton>
 
           {!eventUiState.isJoined && isJoinWindowOpen && (
             <>
-              <FooterButton
+              <BottomPillButton
                 type="button"
-                $primary={true}
                 onClick={handleJoinClick}
                 disabled={isLoading}
+                isViewOnly={isLoading}
               >
                 Join
-              </FooterButton>
+              </BottomPillButton>
             </>
           )}
 
           {eventUiState.isJoined &&
             displayedEventRecord?.status === "scheduled" && (
               <>
-                <FooterButton type="button" $primary={true} disabled={true}>
+                <BottomPillButton type="button" disabled={true} isViewOnly={true}>
                   Play
-                </FooterButton>
+                </BottomPillButton>
                 {nowMs >= displayedEventRecord.startAtMs && (
                   <FooterNote>waiting for more players</FooterNote>
                 )}
@@ -2277,24 +2275,23 @@ const EventModal: React.FC = () => {
 
           {displayedEventRecord?.status === "active" &&
             eventUiState.playableMatch && (
-              <FooterButton
+              <BottomPillButton
                 type="button"
-                $primary={true}
                 onClick={() =>
                   void openMatch(eventUiState.playableMatch!.inviteId as string)
                 }
               >
                 Play
-              </FooterButton>
+              </BottomPillButton>
             )}
 
           {displayedEventRecord?.status === "active" &&
             !eventUiState.playableMatch &&
             eventUiState.waitingForNext && (
               <>
-                <FooterButton type="button" $primary={true} disabled={true}>
+                <BottomPillButton type="button" disabled={true} isViewOnly={true}>
                   Play
-                </FooterButton>
+                </BottomPillButton>
                 <FooterNote>waiting for your next match</FooterNote>
               </>
             )}
