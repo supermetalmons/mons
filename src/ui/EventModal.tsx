@@ -629,7 +629,7 @@ const formatRelativeStart = (
     return "";
   }
   if (event.status === "ended") {
-    return event.winnerDisplayName ? "" : "event ended";
+    return event.winnerDisplayName ? "" : "";
   }
   if (event.status === "active") {
     return "";
