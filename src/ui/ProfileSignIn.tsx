@@ -8,8 +8,6 @@ import {
   ModalOverlay,
   ModalPopup,
   ModalTitle,
-  ButtonsContainer,
-  CancelButton,
 } from "./SharedModalComponents";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import {
@@ -217,12 +215,20 @@ const EventSignInOverlay = styled(ModalOverlay)`
 
 const EventSignInPopup = styled(ModalPopup)`
   max-width: 320px;
-  padding: 20px;
+  padding: 20px 20px 14px;
   outline: none;
+  box-shadow: none;
+`;
+
+const EventConnectButtonWrapper = styled(ConnectButtonWrapper)`
+  box-shadow: none;
+  background-color: transparent;
+  padding: 0;
+  transform: translateY(-6px);
 `;
 
 const EventSignInTitle = styled(ModalTitle)`
-  margin-bottom: 10px;
+  margin-bottom: 16px;
   text-align: left;
 `;
 
@@ -1622,12 +1628,9 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({
               onClick={(event) => event.stopPropagation()}
             >
               <EventSignInTitle>Sign In</EventSignInTitle>
-              <ConnectButtonWrapper>{signInOptions}</ConnectButtonWrapper>
-              <ButtonsContainer>
-                <CancelButton type="button" onClick={closeProfilePopupInternal}>
-                  Cancel
-                </CancelButton>
-              </ButtonsContainer>
+              <EventConnectButtonWrapper>
+                {signInOptions}
+              </EventConnectButtonWrapper>
             </EventSignInPopup>
           </EventSignInOverlay>
         )}
