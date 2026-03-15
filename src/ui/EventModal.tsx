@@ -515,7 +515,7 @@ const OverlayStatus = styled.div`
   font-weight: 600;
   color: var(--navigationTextMuted);
   background: rgba(255, 255, 255, 0.82);
-  border: 1px solid rgba(0, 0, 0, 0.06);
+  border: none;
   pointer-events: none;
   text-align: center;
 
