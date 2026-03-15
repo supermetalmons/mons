@@ -37,7 +37,12 @@ import { InfoPopover } from "./InfoPopover";
 import { MiningMaterialName } from "../connection/connectionModels";
 import { registerMainMenuTransientUiHandler } from "./uiSession";
 import { connection } from "../connection/connection";
-import { openEventModal } from "./eventModalController";
+import {
+  getEventModalState,
+  openEventModal,
+  openEventModalPendingCreate,
+  setEventModalPendingCreateError,
+} from "./eventModalController";
 
 const LEADERBOARD_TYPES: LeaderboardType[] = [
   "rating",
@@ -963,15 +968,20 @@ const MainMenu: React.FC = () => {
     const startsInMinutes = parsedStartsInMinutes;
     setEventCreateError("");
     setIsCreatingEvent(true);
+    setIsMenuOpen(false);
+    setShowExperimental(false);
+    openEventModalPendingCreate({ restoreHomeOnClose: false });
     void connection
       .createEvent(startsInMinutes)
       .then((result) => {
         if (!result.ok || !result.eventId) {
-          setEventCreateError("Failed to create event.");
+          setEventModalPendingCreateError("Failed to create event.");
           return;
         }
-        setIsMenuOpen(false);
-        setShowExperimental(false);
+        const modalState = getEventModalState();
+        if (!modalState.isOpen || !modalState.isPendingCreate) {
+          return;
+        }
         openEventModal(result.eventId, { restoreHomeOnClose: false });
       })
       .catch((error) => {
@@ -985,7 +995,7 @@ const MainMenu: React.FC = () => {
                 "",
               )
             : "Failed to create event.";
-        setEventCreateError(message);
+        setEventModalPendingCreateError(message);
       })
       .finally(() => {
         setIsCreatingEvent(false);

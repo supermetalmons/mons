@@ -5,6 +5,8 @@ export type EventModalState = {
   eventId: string | null;
   restoreHomeOnClose: boolean;
   lastCloseReason: EventModalCloseReason | null;
+  isPendingCreate: boolean;
+  pendingCreateError: string | null;
 };
 
 export const EVENT_MODAL_Z_INDEX = 100100;
@@ -17,6 +19,8 @@ let state: EventModalState = {
   eventId: null,
   restoreHomeOnClose: false,
   lastCloseReason: null,
+  isPendingCreate: false,
+  pendingCreateError: null,
 };
 
 const listeners = new Set<EventModalListener>();
@@ -56,6 +60,34 @@ export const openEventModal = (
     eventId: normalizedEventId,
     restoreHomeOnClose: options?.restoreHomeOnClose === true,
     lastCloseReason: null,
+    isPendingCreate: false,
+    pendingCreateError: null,
+  };
+  emit();
+};
+
+export const openEventModalPendingCreate = (options?: {
+  restoreHomeOnClose?: boolean;
+}): void => {
+  state = {
+    isOpen: true,
+    eventId: null,
+    restoreHomeOnClose: options?.restoreHomeOnClose === true,
+    lastCloseReason: null,
+    isPendingCreate: true,
+    pendingCreateError: null,
+  };
+  emit();
+};
+
+export const setEventModalPendingCreateError = (message: string): void => {
+  if (!state.isOpen || !state.isPendingCreate) {
+    return;
+  }
+  const normalizedMessage = message.trim();
+  state = {
+    ...state,
+    pendingCreateError: normalizedMessage || "Failed to create event.",
   };
   emit();
 };
@@ -74,6 +106,8 @@ export const closeEventModal = async (options?: {
     eventId: null,
     restoreHomeOnClose: false,
     lastCloseReason: closeReason,
+    isPendingCreate: false,
+    pendingCreateError: null,
   };
   emit();
   if (!shouldRestoreHome) {
@@ -84,5 +118,5 @@ export const closeEventModal = async (options?: {
 };
 
 export const hasEventModalVisible = (): boolean => {
-  return state.isOpen && !!state.eventId;
+  return state.isOpen;
 };

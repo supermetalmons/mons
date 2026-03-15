@@ -1420,6 +1420,7 @@ const EventModal: React.FC = () => {
       setEventRecord(null);
       setCopyState("idle");
       setJoinButtonState("idle");
+      setIsLoading(false);
       setPendingJoinEventId(null);
       setPendingJoinRequestedAtMs(0);
       setOpeningParticipantId(null);
@@ -1985,7 +1986,7 @@ const EventModal: React.FC = () => {
     setDevStubRecord(null);
   }, []);
 
-  if (!modalState.isOpen || !modalState.eventId) {
+  if (!modalState.isOpen) {
     return null;
   }
 
@@ -1999,10 +2000,16 @@ const EventModal: React.FC = () => {
   const showBracketFallbackGrid =
     isBracketStatus && !hasBracket && bracketFallbackRounds.length > 0;
   const showParticipantsPanel = !!displayedEventRecord && !isBracketStatus;
-  const overlayStatusText = !displayedEventRecord
-    ? isLoading
-      ? "LOADING"
-      : null
+  const pendingCreateStatusText =
+    modalState.isPendingCreate && !modalState.eventId
+      ? modalState.pendingCreateError || "LOADING"
+      : null;
+  const overlayStatusText = pendingCreateStatusText
+    ? pendingCreateStatusText
+    : !displayedEventRecord
+      ? isLoading
+        ? "LOADING"
+        : null
     : !hasBracket && !showBracketFallbackGrid
       ? displayedEventRecord.status === "active"
         ? "building bracket..."
@@ -2017,46 +2024,48 @@ const EventModal: React.FC = () => {
       onTouchStart={handleBackdropPointerDown}
       onClick={handleBackdropClick}
     >
-      <DevBracketHelper>
-        <DevHelperToggle
-          type="button"
-          aria-label="Bracket stub helper"
-          onClick={() => setShowDevHelperPanel((current) => !current)}
-        >
-          *
-        </DevHelperToggle>
-        {showDevHelperPanel && (
-          <DevHelperPanel>
-            <DevHelperSelect
-              value={devStubPlayerCount}
-              onChange={(event) =>
-                setDevStubPlayerCount(
-                  clampDevStubPlayerCount(Number(event.target.value)),
-                )
-              }
-            >
-              {Array.from(
-                {
-                  length: DEV_STUB_MAX_PLAYERS - DEV_STUB_MIN_PLAYERS + 1,
-                },
-                (_, index) => DEV_STUB_MIN_PLAYERS + index,
-              ).map((count) => (
-                <option key={count} value={count}>
-                  {count} players
-                </option>
-              ))}
-            </DevHelperSelect>
-            <DevHelperAction type="button" onClick={handleCreateStubBracket}>
-              Generate
-            </DevHelperAction>
-            {devStubRecord && (
-              <DevHelperAction type="button" onClick={handleResetStubBracket}>
-                Live
+      {modalState.eventId && (
+        <DevBracketHelper>
+          <DevHelperToggle
+            type="button"
+            aria-label="Bracket stub helper"
+            onClick={() => setShowDevHelperPanel((current) => !current)}
+          >
+            *
+          </DevHelperToggle>
+          {showDevHelperPanel && (
+            <DevHelperPanel>
+              <DevHelperSelect
+                value={devStubPlayerCount}
+                onChange={(event) =>
+                  setDevStubPlayerCount(
+                    clampDevStubPlayerCount(Number(event.target.value)),
+                  )
+                }
+              >
+                {Array.from(
+                  {
+                    length: DEV_STUB_MAX_PLAYERS - DEV_STUB_MIN_PLAYERS + 1,
+                  },
+                  (_, index) => DEV_STUB_MIN_PLAYERS + index,
+                ).map((count) => (
+                  <option key={count} value={count}>
+                    {count} players
+                  </option>
+                ))}
+              </DevHelperSelect>
+              <DevHelperAction type="button" onClick={handleCreateStubBracket}>
+                Generate
               </DevHelperAction>
-            )}
-          </DevHelperPanel>
-        )}
-      </DevBracketHelper>
+              {devStubRecord && (
+                <DevHelperAction type="button" onClick={handleResetStubBracket}>
+                  Live
+                </DevHelperAction>
+              )}
+            </DevHelperPanel>
+          )}
+        </DevBracketHelper>
+      )}
 
       <TopBar ref={topBarRef}>
         <TopBarTitle>
@@ -2240,90 +2249,95 @@ const EventModal: React.FC = () => {
         </ContentArea>
       )}
 
-      <BottomBar ref={bottomBarRef}>
-        <ButtonRow>
-          <BottomPillButton
-            type="button"
-            isBlue={true}
-            onClick={handleCopyClick}
-          >
-            {copyState !== "copied" && <FaLink />}
-            {copyState === "copied" ? "Link is copied" : "Copy Link"}
-          </BottomPillButton>
-          <BottomPillButton
-            type="button"
-            isBlue={true}
-            onClick={handleShareClick}
-          >
-            <FaShareAlt />
-            Share
-          </BottomPillButton>
-
-          {!eventUiState.isJoined && isJoinWindowOpen && (
+      {modalState.eventId && (
+        <BottomBar ref={bottomBarRef}>
+          <ButtonRow>
             <BottomPillButton
               type="button"
-              onClick={handleJoinClick}
-              disabled={isLoading}
-              isViewOnly={isLoading}
+              isBlue={true}
+              onClick={handleCopyClick}
             >
-              {joinButtonLabel}
+              {copyState !== "copied" && <FaLink />}
+              {copyState === "copied" ? "Link is copied" : "Copy Link"}
             </BottomPillButton>
-          )}
+            <BottomPillButton
+              type="button"
+              isBlue={true}
+              onClick={handleShareClick}
+            >
+              <FaShareAlt />
+              Share
+            </BottomPillButton>
 
-          {eventUiState.isJoined &&
-            displayedEventRecord?.status === "scheduled" && (
-              <>
-                <BottomPillButton
-                  type="button"
-                  disabled={true}
-                  isViewOnly={true}
-                >
-                  Play
-                </BottomPillButton>
-                {nowMs >= displayedEventRecord.startAtMs && (
-                  <FooterNote>waiting for more players</FooterNote>
-                )}
-              </>
-            )}
-
-          {displayedEventRecord?.status === "active" &&
-            eventUiState.playableMatch && (
+            {!eventUiState.isJoined && isJoinWindowOpen && (
               <BottomPillButton
                 type="button"
-                onClick={() =>
-                  void openMatch(eventUiState.playableMatch!.inviteId as string)
-                }
+                onClick={handleJoinClick}
+                disabled={isLoading}
+                isViewOnly={isLoading}
               >
-                Play
+                {joinButtonLabel}
               </BottomPillButton>
             )}
 
-          {displayedEventRecord?.status === "active" &&
-            !eventUiState.playableMatch &&
-            eventUiState.waitingForNext && (
-              <>
+            {eventUiState.isJoined &&
+              displayedEventRecord?.status === "scheduled" && (
+                <>
+                  <BottomPillButton
+                    type="button"
+                    disabled={true}
+                    isViewOnly={true}
+                  >
+                    Play
+                  </BottomPillButton>
+                  {nowMs >= displayedEventRecord.startAtMs && (
+                    <FooterNote>waiting for more players</FooterNote>
+                  )}
+                </>
+              )}
+
+            {displayedEventRecord?.status === "active" &&
+              eventUiState.playableMatch && (
                 <BottomPillButton
                   type="button"
-                  disabled={true}
-                  isViewOnly={true}
+                  onClick={() =>
+                    void openMatch(
+                      eventUiState.playableMatch!.inviteId as string,
+                    )
+                  }
                 >
                   Play
                 </BottomPillButton>
-                <FooterNote>waiting for your next match</FooterNote>
-              </>
-            )}
+              )}
 
-          {!eventUiState.isJoined &&
-            displayedEventRecord?.status === "scheduled" &&
-            !isJoinWindowOpen && (
-              <FooterNote>
-                {Object.keys(displayedEventRecord.participants ?? {}).length < 2
-                  ? "waiting for more players"
-                  : "event is no longer accepting players"}
-              </FooterNote>
-            )}
-        </ButtonRow>
-      </BottomBar>
+            {displayedEventRecord?.status === "active" &&
+              !eventUiState.playableMatch &&
+              eventUiState.waitingForNext && (
+                <>
+                  <BottomPillButton
+                    type="button"
+                    disabled={true}
+                    isViewOnly={true}
+                  >
+                    Play
+                  </BottomPillButton>
+                  <FooterNote>waiting for your next match</FooterNote>
+                </>
+              )}
+
+            {!eventUiState.isJoined &&
+              displayedEventRecord?.status === "scheduled" &&
+              !isJoinWindowOpen && (
+                <FooterNote>
+                  {Object.keys(displayedEventRecord.participants ?? {}).length <
+                  2
+                    ? "waiting for more players"
+                    : "event is no longer accepting players"}
+                </FooterNote>
+              )}
+          </ButtonRow>
+        </BottomBar>
+      )}
     </Overlay>
   );
 };
