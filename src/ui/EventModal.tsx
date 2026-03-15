@@ -2629,14 +2629,11 @@ const EventModal: React.FC = () => {
                   {getParticipantDisplayName(participant)}
                 </ParticipantName>
                 <ParticipantState>
-                  {openingParticipantId ===
-                  (participant.profileId || participant.loginUid)
-                    ? "loading"
-                    : participant.state === "winner"
-                      ? "winner"
-                      : participant.state === "eliminated"
-                        ? "out"
-                        : ""}
+                  {participant.state === "winner"
+                    ? "winner"
+                    : participant.state === "eliminated"
+                      ? "out"
+                      : ""}
                 </ParticipantState>
               </ParticipantRow>
             ))}
