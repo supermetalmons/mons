@@ -555,11 +555,6 @@ const ButtonRow = styled.div`
   max-width: min(560px, calc(100vw - 40px));
 `;
 
-const FooterNote = styled.div`
-  font-size: 0.8rem;
-  color: var(--navigationTextMuted);
-`;
-
 const OverlayStatus = styled.div`
   position: fixed;
   left: 50%;
@@ -824,6 +819,150 @@ const getBracketMatchAction = (
   };
 };
 
+type IndexedEventMatch = {
+  roundIndex: number;
+  matchIndex: number;
+  match: EventMatch;
+};
+
+const getEventMatchInviteId = (match: EventMatch): string => {
+  return match.inviteId?.trim() ?? "";
+};
+
+const isResolvedEventMatch = (match: EventMatch): boolean => {
+  return (
+    match.status === "host" || match.status === "guest" || match.status === "bye"
+  );
+};
+
+const isPendingInviteEventMatch = (match: EventMatch): boolean => {
+  return match.status === "pending" && getEventMatchInviteId(match) !== "";
+};
+
+const getIndexedMatchesForRound = (round: EventRound): IndexedEventMatch[] => {
+  return getSortedMatches(round).map((match, sortedIndex) => ({
+    roundIndex: round.roundIndex,
+    matchIndex: parseBracketMatchKey(match.matchKey)?.matchIndex ?? sortedIndex,
+    match,
+  }));
+};
+
+const getFirstPendingInviteMatch = (event: EventRecord | null): EventMatch | null => {
+  if (!event) {
+    return null;
+  }
+  const rounds = getSortedRounds(event);
+  for (const round of rounds) {
+    const indexedMatches = getIndexedMatchesForRound(round);
+    for (const indexedMatch of indexedMatches) {
+      if (isPendingInviteEventMatch(indexedMatch.match)) {
+        return indexedMatch.match;
+      }
+    }
+  }
+  return null;
+};
+
+const getRoundMatchByIndex = (
+  round: EventRound,
+  matchIndex: number,
+): EventMatch | null => {
+  const directMatch = round.matches[`${round.roundIndex}_${matchIndex}`];
+  if (directMatch) {
+    return directMatch;
+  }
+  const fallbackMatch =
+    getSortedMatches(round).find((candidate) => {
+      const parsed = parseBracketMatchKey(candidate.matchKey);
+      return parsed?.matchIndex === matchIndex;
+    }) ?? null;
+  return fallbackMatch;
+};
+
+const findPendingInviteMatchInBranch = (
+  roundsByIndex: Map<number, EventRound>,
+  roundIndex: number,
+  matchIndex: number,
+): EventMatch | null => {
+  if (roundIndex < 0 || !Number.isFinite(matchIndex) || matchIndex < 0) {
+    return null;
+  }
+  const round = roundsByIndex.get(roundIndex);
+  if (!round) {
+    return null;
+  }
+  const match = getRoundMatchByIndex(round, matchIndex);
+  if (!match) {
+    return null;
+  }
+  if (isPendingInviteEventMatch(match)) {
+    return match;
+  }
+  if (isResolvedEventMatch(match) || roundIndex === 0) {
+    return null;
+  }
+  const leftBranchMatch = findPendingInviteMatchInBranch(
+    roundsByIndex,
+    roundIndex - 1,
+    matchIndex * 2,
+  );
+  if (leftBranchMatch) {
+    return leftBranchMatch;
+  }
+  return findPendingInviteMatchInBranch(
+    roundsByIndex,
+    roundIndex - 1,
+    matchIndex * 2 + 1,
+  );
+};
+
+const getAwaitedPendingInviteMatchForParticipant = (
+  event: EventRecord | null,
+  profileId: string,
+): EventMatch | null => {
+  if (!event || !profileId) {
+    return null;
+  }
+  const rounds = getSortedRounds(event);
+  const roundsByIndex = new Map<number, EventRound>();
+  for (const round of rounds) {
+    roundsByIndex.set(round.roundIndex, round);
+  }
+
+  for (const round of rounds) {
+    const indexedMatches = getIndexedMatchesForRound(round);
+    for (const indexedMatch of indexedMatches) {
+      const match = indexedMatch.match;
+      const participantSide: MatchSide | null =
+        match.hostProfileId === profileId
+          ? "host"
+          : match.guestProfileId === profileId
+            ? "guest"
+            : null;
+      if (!participantSide) {
+        continue;
+      }
+      if (isResolvedEventMatch(match) || isPendingInviteEventMatch(match)) {
+        continue;
+      }
+      if (indexedMatch.roundIndex <= 0) {
+        continue;
+      }
+      const awaitedMatchIndex =
+        indexedMatch.matchIndex * 2 + (participantSide === "host" ? 1 : 0);
+      const awaitedMatch = findPendingInviteMatchInBranch(
+        roundsByIndex,
+        indexedMatch.roundIndex - 1,
+        awaitedMatchIndex,
+      );
+      if (awaitedMatch) {
+        return awaitedMatch;
+      }
+    }
+  }
+  return null;
+};
+
 const getCurrentUiState = (
   event: EventRecord | null,
   profileId: string,
@@ -879,6 +1018,30 @@ const getCurrentUiState = (
     playableMatch,
     waitingForNext: event.status === "active" && !playableMatch,
   };
+};
+
+const getWatchableMatch = (
+  event: EventRecord | null,
+  profileId: string,
+  eventUiState: EventUiState,
+): EventMatch | null => {
+  if (!event || event.status !== "active" || eventUiState.playableMatch) {
+    return null;
+  }
+  if (
+    eventUiState.isJoined &&
+    !eventUiState.isEliminated &&
+    eventUiState.waitingForNext
+  ) {
+    const awaitedMatch = getAwaitedPendingInviteMatchForParticipant(
+      event,
+      profileId,
+    );
+    if (awaitedMatch) {
+      return awaitedMatch;
+    }
+  }
+  return getFirstPendingInviteMatch(event);
 };
 
 type ClassicBracketMatchPosition = {
@@ -1885,6 +2048,10 @@ const EventModal: React.FC = () => {
     () => getCurrentUiState(displayedEventRecord, currentProfileId),
     [currentProfileId, displayedEventRecord],
   );
+  const watchableMatch = useMemo(
+    () => getWatchableMatch(displayedEventRecord, currentProfileId, eventUiState),
+    [currentProfileId, displayedEventRecord, eventUiState],
+  );
   const currentRoute = getCurrentRouteState();
 
   useEffect(() => {
@@ -2473,11 +2640,6 @@ const EventModal: React.FC = () => {
                 </ParticipantState>
               </ParticipantRow>
             ))}
-            {!participants.length && (
-              <FooterNote>
-                {isLoading ? "loading players..." : "no players yet"}
-              </FooterNote>
-            )}
           </ParticipantsList>
         </ContentArea>
       )}
@@ -2513,12 +2675,6 @@ const EventModal: React.FC = () => {
               </BottomPillButton>
             )}
 
-            {eventUiState.isJoined &&
-              displayedEventRecord?.status === "scheduled" &&
-              nowMs >= displayedEventRecord.startAtMs && (
-                <FooterNote>waiting for more players</FooterNote>
-              )}
-
             {displayedEventRecord?.status === "active" &&
               eventUiState.playableMatch && (
                 <BottomPillButton
@@ -2535,19 +2691,13 @@ const EventModal: React.FC = () => {
 
             {displayedEventRecord?.status === "active" &&
               !eventUiState.playableMatch &&
-              eventUiState.waitingForNext && (
-                <FooterNote>waiting for your next match</FooterNote>
-              )}
-
-            {!eventUiState.isJoined &&
-              displayedEventRecord?.status === "scheduled" &&
-              !isJoinWindowOpen && (
-                <FooterNote>
-                  {Object.keys(displayedEventRecord.participants ?? {}).length <
-                  2
-                    ? "waiting for more players"
-                    : "event is no longer accepting players"}
-                </FooterNote>
+              watchableMatch && (
+                <BottomPillButton
+                  type="button"
+                  onClick={() => void openMatch(getEventMatchInviteId(watchableMatch))}
+                >
+                  Watch
+                </BottomPillButton>
               )}
           </ButtonRow>
         </BottomBar>
