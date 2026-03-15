@@ -545,12 +545,10 @@ const formatRelativeStart = (
     return "";
   }
   if (event.status === "dismissed") {
-    return "dismissed: not enough players";
+    return "";
   }
   if (event.status === "ended") {
-    return event.winnerDisplayName
-      ? `${event.winnerDisplayName} won`
-      : "event ended";
+    return event.winnerDisplayName ? "" : "event ended";
   }
   if (event.status === "active") {
     return "";
@@ -558,7 +556,7 @@ const formatRelativeStart = (
   const deltaMs = event.startAtMs - nowMs;
   if (deltaMs <= 0) {
     const participantCount = Object.keys(event.participants).length;
-    return participantCount < 2 ? "not enough players yet" : "starting now";
+    return participantCount < 2 ? "" : "starting now";
   }
   const minutes = Math.max(1, Math.ceil(deltaMs / 60000));
   return `in ${minutes} minute${minutes === 1 ? "" : "s"}`;
@@ -1686,6 +1684,12 @@ const EventModal: React.FC = () => {
   );
   const currentRoute = getCurrentRouteState();
 
+  useEffect(() => {
+    if (displayedEventRecord?.status === "dismissed") {
+      setShowDevHelperPanel(false);
+    }
+  }, [displayedEventRecord]);
+
   const canRenderBracket = useMemo(
     () => canRenderSymmetricalBracket(rounds),
     [rounds],
@@ -1994,18 +1998,34 @@ const EventModal: React.FC = () => {
     (displayedEventRecord?.status === "active" ||
       displayedEventRecord?.status === "ended") &&
     bracketLayout !== null;
+  const isDismissedState = displayedEventRecord?.status === "dismissed";
+  const displayedParticipantCount = displayedEventRecord
+    ? Object.keys(displayedEventRecord.participants ?? {}).length
+    : 0;
+  const isPendingDismissState =
+    displayedEventRecord?.status === "scheduled" &&
+    Date.now() >= displayedEventRecord.startAtMs &&
+    displayedParticipantCount < 2;
   const isBracketStatus =
     displayedEventRecord?.status === "active" ||
     displayedEventRecord?.status === "ended";
   const showBracketFallbackGrid =
     isBracketStatus && !hasBracket && bracketFallbackRounds.length > 0;
-  const showParticipantsPanel = !!displayedEventRecord && !isBracketStatus;
+  const showParticipantsPanel =
+    !!displayedEventRecord &&
+    !isBracketStatus &&
+    !isDismissedState &&
+    !isPendingDismissState;
   const pendingCreateStatusText =
     modalState.isPendingCreate && !modalState.eventId
-      ? modalState.pendingCreateError || "LOADING"
+      ? modalState.pendingCreateError || "CREATING"
       : null;
   const overlayStatusText = pendingCreateStatusText
     ? pendingCreateStatusText
+    : isDismissedState
+      ? "EVENT DISMISSED"
+    : isPendingDismissState
+      ? "LOADING"
     : !displayedEventRecord
       ? isLoading
         ? "LOADING"
@@ -2024,7 +2044,7 @@ const EventModal: React.FC = () => {
       onTouchStart={handleBackdropPointerDown}
       onClick={handleBackdropClick}
     >
-      {modalState.eventId && (
+      {modalState.eventId && !isDismissedState && (
         <DevBracketHelper>
           <DevHelperToggle
             type="button"
@@ -2067,13 +2087,15 @@ const EventModal: React.FC = () => {
         </DevBracketHelper>
       )}
 
-      <TopBar ref={topBarRef}>
-        <TopBarTitle>
-          {devStubRecord
-            ? ""
-            : formatRelativeStart(displayedEventRecord, nowMs)}
-        </TopBarTitle>
-      </TopBar>
+      {!isDismissedState && (
+        <TopBar ref={topBarRef}>
+          <TopBarTitle>
+            {devStubRecord
+              ? ""
+              : formatRelativeStart(displayedEventRecord, nowMs)}
+          </TopBarTitle>
+        </TopBar>
+      )}
 
       {overlayStatusText && <OverlayStatus>{overlayStatusText}</OverlayStatus>}
 
@@ -2249,7 +2271,7 @@ const EventModal: React.FC = () => {
         </ContentArea>
       )}
 
-      {modalState.eventId && (
+      {modalState.eventId && !isDismissedState && (
         <BottomBar ref={bottomBarRef}>
           <ButtonRow>
             <BottomPillButton
@@ -2281,19 +2303,9 @@ const EventModal: React.FC = () => {
             )}
 
             {eventUiState.isJoined &&
-              displayedEventRecord?.status === "scheduled" && (
-                <>
-                  <BottomPillButton
-                    type="button"
-                    disabled={true}
-                    isViewOnly={true}
-                  >
-                    Play
-                  </BottomPillButton>
-                  {nowMs >= displayedEventRecord.startAtMs && (
-                    <FooterNote>waiting for more players</FooterNote>
-                  )}
-                </>
+              displayedEventRecord?.status === "scheduled" &&
+              nowMs >= displayedEventRecord.startAtMs && (
+                <FooterNote>waiting for more players</FooterNote>
               )}
 
             {displayedEventRecord?.status === "active" &&
@@ -2313,16 +2325,7 @@ const EventModal: React.FC = () => {
             {displayedEventRecord?.status === "active" &&
               !eventUiState.playableMatch &&
               eventUiState.waitingForNext && (
-                <>
-                  <BottomPillButton
-                    type="button"
-                    disabled={true}
-                    isViewOnly={true}
-                  >
-                    Play
-                  </BottomPillButton>
-                  <FooterNote>waiting for your next match</FooterNote>
-                </>
+                <FooterNote>waiting for your next match</FooterNote>
               )}
 
             {!eventUiState.isJoined &&
