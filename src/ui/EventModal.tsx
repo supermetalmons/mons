@@ -103,17 +103,24 @@ const TopBar = styled.div`
   }
 `;
 
-const TopBarTitle = styled.div`
-  font-size: 1rem;
-  font-weight: 700;
+const statusPillStyles = css`
+  padding: 6px 12px;
+  border-radius: 999px;
+  font-size: 0.9rem;
+  font-weight: 600;
   letter-spacing: 0.06em;
   text-transform: uppercase;
+  color: var(--navigationTextMuted);
+  background: rgba(255, 255, 255, 0.82);
   text-align: center;
-  color: var(--color-gray-33);
 
   @media (prefers-color-scheme: dark) {
-    color: var(--color-gray-f0);
+    background: rgba(12, 12, 12, 0.82);
   }
+`;
+
+const TopBarTitle = styled.div`
+  ${statusPillStyles}
 `;
 
 const DevBracketHelper = styled.div`
@@ -554,20 +561,8 @@ const OverlayStatus = styled.div`
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  padding: 6px 12px;
-  border-radius: 999px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  color: var(--navigationTextMuted);
-  background: rgba(255, 255, 255, 0.82);
-  border: none;
+  ${statusPillStyles}
   pointer-events: none;
-  text-align: center;
-
-  @media (prefers-color-scheme: dark) {
-    background: rgba(12, 12, 12, 0.82);
-    border-color: rgba(255, 255, 255, 0.12);
-  }
 `;
 
 type EventUiState = {
@@ -2351,6 +2346,9 @@ const EventModal: React.FC = () => {
     !isBracketStatus &&
     !isDismissedState &&
     !isPendingDismissState;
+  const topBarTitleText = devStubRecord
+    ? ""
+    : formatRelativeStart(displayedEventRecord, nowMs);
   const pendingCreateStatusText =
     modalState.isPendingCreate && !modalState.eventId
       ? modalState.pendingCreateError || "CREATING"
@@ -2422,13 +2420,9 @@ const EventModal: React.FC = () => {
         </DevBracketHelper>
       )}
 
-      {!isDismissedState && (
+      {!isDismissedState && topBarTitleText && (
         <TopBar ref={topBarRef}>
-          <TopBarTitle>
-            {devStubRecord
-              ? ""
-              : formatRelativeStart(displayedEventRecord, nowMs)}
-          </TopBarTitle>
+          <TopBarTitle>{topBarTitleText}</TopBarTitle>
         </TopBar>
       )}
 
