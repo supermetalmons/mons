@@ -138,22 +138,16 @@ const DevHelperToggle = styled.button`
   font-weight: 600;
   line-height: 1;
   cursor: pointer;
-  opacity: 0.38;
+  opacity: 0;
 
   @media (hover: hover) and (pointer: fine) {
     &:hover {
-      opacity: 0.72;
+      opacity: 0;
     }
   }
 
   @media (prefers-color-scheme: dark) {
     color: rgba(255, 255, 255, 0.24);
-
-    @media (hover: hover) and (pointer: fine) {
-      &:hover {
-        opacity: 0.72;
-      }
-    }
   }
 `;
 
