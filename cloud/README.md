@@ -45,3 +45,5 @@ Detailed rollout sequence and checks: `../docs/auth-rollout.md`
 X provider setup and deploy checklist: `../docs/x-auth-deploy.md`
 
 Username migration note: run `backfillUsernameIndexCaseInsensitive.js --write` to backfill `usernameIndex` + `users.usernameLookupKey`, then confirm `strictUniquenessReady: true` before relying on strict case-insensitive username uniqueness.
+
+Cloud Monitoring reliability alerts setup: `../docs/cloud-monitoring-alerts.md`

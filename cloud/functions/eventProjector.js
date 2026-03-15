@@ -69,27 +69,63 @@ const getListSortAtMs = (eventData, status) => {
   if (status === "ended") {
     return typeof eventData.endedAtMs === "number"
       ? Math.floor(eventData.endedAtMs)
-      : typeof eventData.updatedAtMs === "number"
-        ? Math.floor(eventData.updatedAtMs)
-        : Date.now();
+      : typeof eventData.startAtMs === "number"
+        ? Math.floor(eventData.startAtMs)
+        : typeof eventData.createdAtMs === "number"
+          ? Math.floor(eventData.createdAtMs)
+          : 1;
   }
   if (status === "dismissed") {
     return typeof eventData.endedAtMs === "number"
       ? Math.floor(eventData.endedAtMs)
-      : typeof eventData.updatedAtMs === "number"
-        ? Math.floor(eventData.updatedAtMs)
-        : Date.now();
+      : typeof eventData.startAtMs === "number"
+        ? Math.floor(eventData.startAtMs)
+        : typeof eventData.createdAtMs === "number"
+          ? Math.floor(eventData.createdAtMs)
+          : 1;
   }
   const startAtMs =
     typeof eventData.startAtMs === "number"
       ? Math.floor(eventData.startAtMs)
       : null;
   if (startAtMs === null || !Number.isFinite(startAtMs) || startAtMs <= 0) {
-    return Date.now();
+    return typeof eventData.createdAtMs === "number"
+      ? Math.floor(eventData.createdAtMs)
+      : 1;
   }
   // Firestore pagination is listSortAt DESC. Map upcoming start times so sooner events
   // receive larger listSortAt values, keeping paging and in-app ordering aligned.
   return Math.min(MAX_TIMESTAMP_MS, Math.max(1, MAX_TIMESTAMP_MS - startAtMs));
+};
+
+const buildProjectionFingerprint = (eventData) => {
+  if (!eventData || typeof eventData !== "object") {
+    return "null";
+  }
+  const participants =
+    eventData.participants && typeof eventData.participants === "object"
+      ? eventData.participants
+      : {};
+  const status = mapEventStatusToNavigationStatus(
+    normalizeString(eventData.status),
+  );
+  const fullPreviewParticipants = buildPreviewParticipants(participants);
+  const participantPreview = fullPreviewParticipants.slice(
+    0,
+    NAVIGATION_PARTICIPANT_PREVIEW_LIMIT,
+  );
+  const ownerProfileIds = getOwnerProfileIds(participants).sort();
+  return JSON.stringify({
+    status,
+    sortBucket: SORT_BUCKETS[status],
+    listSortAtMs: getListSortAtMs(eventData, status),
+    startAtMs: normalizeFiniteNumberOrNull(eventData.startAtMs),
+    endedAtMs: normalizeFiniteNumberOrNull(eventData.endedAtMs),
+    winnerDisplayName: normalizeString(eventData.winnerDisplayName),
+    participantCount: fullPreviewParticipants.length,
+    participantPreview,
+    ownerProfileIds,
+  });
 };
 
 const buildPreviewParticipants = (participants) => {
@@ -213,17 +249,31 @@ async function projectEvent(eventId, beforeData, afterData) {
   await commitBatchIfNeeded(true);
 }
 
-const onEventWritten = onValueWritten("/events/{eventId}", async (event) => {
-  const eventId = normalizeString(event.params.eventId);
-  if (!eventId) {
-    return;
-  }
-  const beforeData = event.data.before.exists()
-    ? event.data.before.val()
-    : null;
-  const afterData = event.data.after.exists() ? event.data.after.val() : null;
-  await projectEvent(eventId, beforeData, afterData);
-});
+const onEventWritten = onValueWritten(
+  {
+    ref: "/events/{eventId}",
+    maxInstances: 10,
+    concurrency: 40,
+    memory: "256MiB",
+    cpu: 1,
+  },
+  async (event) => {
+    const eventId = normalizeString(event.params.eventId);
+    if (!eventId) {
+      return;
+    }
+    const beforeData = event.data.before.exists()
+      ? event.data.before.val()
+      : null;
+    const afterData = event.data.after.exists() ? event.data.after.val() : null;
+    const beforeFingerprint = buildProjectionFingerprint(beforeData);
+    const afterFingerprint = buildProjectionFingerprint(afterData);
+    if (beforeFingerprint === afterFingerprint) {
+      return;
+    }
+    await projectEvent(eventId, beforeData, afterData);
+  },
+);
 
 module.exports = {
   onEventWritten,

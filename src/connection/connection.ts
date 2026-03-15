@@ -137,6 +137,11 @@ const normalizeMiningData = (source: any): PlayerMiningData => {
 const controllerVersion = 2;
 const LEADERBOARD_ENTRY_LIMIT = 99;
 const wagerDebugLogsEnabled = process.env.NODE_ENV !== "production";
+const EVENT_SYNC_COOLDOWN_ACTIVE_MS = 700;
+const EVENT_SYNC_COOLDOWN_SCHEDULED_MS = 1500;
+const EVENT_SYNC_PARTICIPANT_CACHE_TTL_MS = 3000;
+const EVENT_SYNC_PARTICIPANT_NEGATIVE_CACHE_TTL_MS = 800;
+const EVENT_SYNC_RETRY_DELAYS_MS = [150, 300] as const;
 
 export type NavigationGamesPageCursor =
   QueryDocumentSnapshot<DocumentData> | null;
@@ -159,6 +164,27 @@ type MatchRuntimeContext = {
   role: InviteRole;
   canWrite: boolean;
   createdAtMs: number;
+};
+
+type EventSyncSkipReason = "locked" | "rate-limited" | "not-participant";
+
+type EventSyncResponse = {
+  ok: boolean;
+  didChange?: boolean;
+  skipped?: boolean;
+  reason?: EventSyncSkipReason;
+  event?: EventRecord | null;
+};
+
+type EventSyncParticipantMembershipCacheEntry = {
+  profileId: string;
+  checkedAtMs: number;
+  isParticipant: boolean;
+};
+
+type EventSyncCooldownCacheEntry = {
+  responseAtMs: number;
+  response: EventSyncResponse;
 };
 
 const getRouteStateSnapshot = () => getCurrentRouteState();
@@ -235,15 +261,17 @@ class Connection {
     inviteId: string;
     promise: Promise<boolean>;
   } | null = null;
-  private inFlightEventSyncById = new Map<
+  private inFlightEventSyncById = new Map<string, Promise<EventSyncResponse>>();
+  private eventSyncParticipantCacheById = new Map<
     string,
-    Promise<{
-      ok: boolean;
-      didChange?: boolean;
-      skipped?: boolean;
-      event?: EventRecord | null;
-    }>
+    EventSyncParticipantMembershipCacheEntry
   >();
+  private eventSyncCooldownCacheById = new Map<
+    string,
+    EventSyncCooldownCacheEntry
+  >();
+  private latestObservedEventById = new Map<string, EventRecord | null>();
+  private activeEventSubscriptionsById = new Map<string, number>();
   private moveSendRequestId = 0;
   private readonly moveSendRetryWindowMs = 60000;
   private readonly moveSendAttemptMaxTimeoutMs = 20000;
@@ -1081,6 +1109,7 @@ class Connection {
     this.didCreateNewGameInvite = false;
     this.newInviteId = "";
     this.optimisticResolvedMatchIds.clear();
+    this.clearEventSyncCaches();
     setCurrentWagerMatch(null);
   }
 
@@ -1090,6 +1119,7 @@ class Connection {
     this.observeMiningFrozen(null);
     this.materialLeaderboardCache.clear();
     this.materialLeaderboardCacheTime = 0;
+    this.clearEventSyncCaches();
   }
 
   public async getProfileByLoginId(loginId: string): Promise<PlayerProfile> {
@@ -2339,15 +2369,19 @@ class Connection {
     }
   }
 
-  public async syncEventState(eventId: string): Promise<{
-    ok: boolean;
-    didChange?: boolean;
-    skipped?: boolean;
-    event?: EventRecord | null;
-  }> {
+  public async syncEventState(eventId: string): Promise<EventSyncResponse> {
     const normalizedEventId = this.normalizeString(eventId).trim();
     if (!normalizedEventId) {
       return { ok: false, skipped: true, event: null };
+    }
+
+    const nowMs = Date.now();
+    const cachedSyncResponse = this.readCachedEventSyncResponse(
+      normalizedEventId,
+      nowMs,
+    );
+    if (cachedSyncResponse) {
+      return cachedSyncResponse;
     }
 
     const existingSync = this.inFlightEventSyncById.get(normalizedEventId);
@@ -2362,8 +2396,19 @@ class Connection {
           this.functions,
           "syncEventState",
         );
-        const maxAttempts = 6;
+        const isParticipant =
+          await this.isLocalProfileEventParticipant(normalizedEventId);
+        if (!isParticipant) {
+          return this.commitEventSyncResponse(normalizedEventId, {
+            ok: true,
+            skipped: true,
+            reason: "not-participant",
+            event: this.latestObservedEventById.get(normalizedEventId) ?? null,
+          });
+        }
 
+        const maxRetries = EVENT_SYNC_RETRY_DELAYS_MS.length;
+        const maxAttempts = maxRetries + 1;
         for (let attempt = 0; attempt < maxAttempts; attempt += 1) {
           const response = await syncEventStateFunction({
             eventId: normalizedEventId,
@@ -2372,26 +2417,37 @@ class Connection {
             ok?: boolean;
             didChange?: unknown;
             skipped?: unknown;
+            reason?: unknown;
             event?: unknown;
           };
+          const reason = this.normalizeEventSyncSkipReason(data?.reason);
           const parsed = {
             ok: data?.ok === true,
             didChange:
               typeof data?.didChange === "boolean" ? data.didChange : undefined,
             skipped:
               typeof data?.skipped === "boolean" ? data.skipped : undefined,
+            reason,
             event: this.mapDatabaseEventRecord(
               data?.event ?? null,
               normalizedEventId,
             ),
           };
-          if (!parsed.skipped || attempt >= maxAttempts - 1) {
-            return parsed;
+          if (
+            !parsed.skipped ||
+            !this.shouldRetryEventSync(parsed.reason) ||
+            attempt >= maxAttempts - 1
+          ) {
+            return this.commitEventSyncResponse(normalizedEventId, parsed);
           }
-          await this.delay(140 * (attempt + 1));
+          await this.delay(EVENT_SYNC_RETRY_DELAYS_MS[attempt] || 300);
         }
 
-        return { ok: false, skipped: true, event: null };
+        return this.commitEventSyncResponse(normalizedEventId, {
+          ok: false,
+          skipped: true,
+          event: null,
+        });
       } catch (error) {
         console.error("Error syncing event state:", error);
         throw error;
@@ -2402,6 +2458,165 @@ class Connection {
 
     this.inFlightEventSyncById.set(normalizedEventId, syncPromise);
     return syncPromise;
+  }
+
+  private shouldRetryEventSync(
+    reason: EventSyncSkipReason | undefined,
+  ): boolean {
+    return reason === "locked" || reason === "rate-limited";
+  }
+
+  private normalizeEventSyncSkipReason(
+    value: unknown,
+  ): EventSyncSkipReason | undefined {
+    if (value === "lock-lost") {
+      return "locked";
+    }
+    if (
+      value === "locked" ||
+      value === "rate-limited" ||
+      value === "not-participant"
+    ) {
+      return value;
+    }
+    return undefined;
+  }
+
+  private isParticipantInEventRecord(
+    eventRecord: EventRecord | null,
+    profileId: string,
+  ): boolean {
+    if (!eventRecord || !eventRecord.participants) {
+      return false;
+    }
+    return !!eventRecord.participants[profileId];
+  }
+
+  private getEventSyncCooldownMs(eventRecord: EventRecord | null): number {
+    if (!eventRecord || eventRecord.status === "scheduled") {
+      return EVENT_SYNC_COOLDOWN_SCHEDULED_MS;
+    }
+    return EVENT_SYNC_COOLDOWN_ACTIVE_MS;
+  }
+
+  private readCachedEventSyncResponse(
+    eventId: string,
+    nowMs: number,
+  ): EventSyncResponse | null {
+    const cacheEntry = this.eventSyncCooldownCacheById.get(eventId);
+    if (!cacheEntry) {
+      return null;
+    }
+    const eventRecord =
+      cacheEntry.response.event ??
+      this.latestObservedEventById.get(eventId) ??
+      null;
+    const cooldownMs = this.getEventSyncCooldownMs(eventRecord);
+    if (nowMs - cacheEntry.responseAtMs >= cooldownMs) {
+      return null;
+    }
+    return cacheEntry.response;
+  }
+
+  private commitEventSyncResponse(
+    eventId: string,
+    response: EventSyncResponse,
+  ): EventSyncResponse {
+    this.eventSyncCooldownCacheById.set(eventId, {
+      responseAtMs: Date.now(),
+      response,
+    });
+    if (response.event !== undefined) {
+      this.latestObservedEventById.set(eventId, response.event ?? null);
+    }
+    return response;
+  }
+
+  private async isLocalProfileEventParticipant(
+    eventId: string,
+  ): Promise<boolean> {
+    const profileId = this.getLocalProfileId();
+    if (!profileId) {
+      // Fail-open when local profile resolution is unavailable; server enforces
+      // participant checks and this avoids suppressing legitimate participant syncs.
+      return true;
+    }
+
+    const cachedMembership = this.eventSyncParticipantCacheById.get(eventId);
+    const nowMs = Date.now();
+    const cacheTtlMs =
+      cachedMembership && cachedMembership.isParticipant
+        ? EVENT_SYNC_PARTICIPANT_CACHE_TTL_MS
+        : EVENT_SYNC_PARTICIPANT_NEGATIVE_CACHE_TTL_MS;
+    if (
+      cachedMembership &&
+      cachedMembership.profileId === profileId &&
+      nowMs - cachedMembership.checkedAtMs <= cacheTtlMs
+    ) {
+      return cachedMembership.isParticipant;
+    }
+
+    const observedEvent = this.latestObservedEventById.get(eventId) ?? null;
+    if (this.isParticipantInEventRecord(observedEvent, profileId)) {
+      this.eventSyncParticipantCacheById.set(eventId, {
+        profileId,
+        checkedAtMs: nowMs,
+        isParticipant: true,
+      });
+      return true;
+    }
+
+    try {
+      const participantSnapshot = await get(
+        ref(this.db, `events/${eventId}/participants/${profileId}`),
+      );
+      const isParticipant = participantSnapshot.exists();
+      const observedEvent = this.latestObservedEventById.get(eventId) ?? null;
+      if (!isParticipant && !observedEvent) {
+        // Fail-open when we do not have an observed event snapshot yet. This
+        // avoids client-side false negatives from stale local profile ids.
+        return true;
+      }
+      this.eventSyncParticipantCacheById.set(eventId, {
+        profileId,
+        checkedAtMs: nowMs,
+        isParticipant,
+      });
+      return isParticipant;
+    } catch {
+      // Fail-open on transient read errors; server-side gate remains authoritative.
+      return true;
+    }
+  }
+
+  private clearEventSyncCaches(): void {
+    this.inFlightEventSyncById.clear();
+    this.eventSyncParticipantCacheById.clear();
+    this.eventSyncCooldownCacheById.clear();
+    this.latestObservedEventById.clear();
+    this.activeEventSubscriptionsById.clear();
+  }
+
+  private clearEventSyncCacheForId(eventId: string): void {
+    this.inFlightEventSyncById.delete(eventId);
+    this.eventSyncParticipantCacheById.delete(eventId);
+    this.eventSyncCooldownCacheById.delete(eventId);
+    this.latestObservedEventById.delete(eventId);
+  }
+
+  private retainEventSubscription(eventId: string): void {
+    const nextCount = (this.activeEventSubscriptionsById.get(eventId) || 0) + 1;
+    this.activeEventSubscriptionsById.set(eventId, nextCount);
+  }
+
+  private releaseEventSubscription(eventId: string): void {
+    const currentCount = this.activeEventSubscriptionsById.get(eventId) || 0;
+    if (currentCount <= 1) {
+      this.activeEventSubscriptionsById.delete(eventId);
+      this.clearEventSyncCacheForId(eventId);
+      return;
+    }
+    this.activeEventSubscriptionsById.set(eventId, currentCount - 1);
   }
 
   public subscribeToEvent(
@@ -2418,6 +2633,7 @@ class Connection {
     let disposed = false;
     let unsubscribe: (() => void) | null = null;
     const sessionGuard = this.createSessionGuard();
+    this.retainEventSubscription(normalizedEventId);
 
     void this.ensureAuthenticated()
       .then(() => {
@@ -2431,12 +2647,16 @@ class Connection {
               return;
             }
             if (!snapshot.exists()) {
+              this.latestObservedEventById.set(normalizedEventId, null);
               onUpdate(null);
               return;
             }
-            onUpdate(
-              this.mapDatabaseEventRecord(snapshot.val(), normalizedEventId),
+            const mappedEvent = this.mapDatabaseEventRecord(
+              snapshot.val(),
+              normalizedEventId,
             );
+            this.latestObservedEventById.set(normalizedEventId, mappedEvent);
+            onUpdate(mappedEvent);
           },
           (error) => {
             if (disposed || !sessionGuard()) {
@@ -2456,6 +2676,7 @@ class Connection {
     return () => {
       disposed = true;
       unsubscribe?.();
+      this.releaseEventSubscription(normalizedEventId);
     };
   }
 

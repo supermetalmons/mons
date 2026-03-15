@@ -3223,8 +3223,6 @@ const BottomControls: React.FC = () => {
       },
     );
 
-    void connection.syncEventState(effectiveInviteEventId).catch(() => {});
-
     return () => {
       disposed = true;
       unsubscribe();
@@ -3469,7 +3467,11 @@ const BottomControls: React.FC = () => {
             disabled={isCancelAutomatchDisabled}
             isViewOnly={isCancelAutomatchDisabled}
           >
-            {isCancelAutomatchDisabled ? <ShimmerText>Canceling</ShimmerText> : "Cancel"}
+            {isCancelAutomatchDisabled ? (
+              <ShimmerText>Canceling</ShimmerText>
+            ) : (
+              "Cancel"
+            )}
           </BottomPillButton>
         )}
         {isBotGameButtonVisible && (
