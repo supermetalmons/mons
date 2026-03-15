@@ -579,7 +579,7 @@ type EventUiState = {
 
 const PENDING_JOIN_POLL_INTERVAL_MS = 350;
 const PENDING_JOIN_POLL_TIMEOUT_MS = 60_000;
-const EVENT_SYNC_RETRY_DELAYS_MS = [500, 1500, 3000];
+const EVENT_SUBSCRIBE_RETRY_DELAYS_MS = [600, 1600, 3200] as const;
 
 const formatRelativeStart = (
   event: EventRecord | null,
@@ -1761,7 +1761,8 @@ const EventModal: React.FC = () => {
   }, [modalState.eventId, modalState.isOpen]);
 
   useEffect(() => {
-    if (!modalState.isOpen || !modalState.eventId) {
+    const eventId = modalState.eventId;
+    if (!modalState.isOpen || !eventId) {
       if (copyResetTimeoutRef.current !== null) {
         window.clearTimeout(copyResetTimeoutRef.current);
         copyResetTimeoutRef.current = null;
@@ -1779,9 +1780,9 @@ const EventModal: React.FC = () => {
 
     setIsLoading(true);
     let isDisposed = false;
-    let hasReceivedEvent = false;
-    let retryCount = 0;
+    let retryAttempt = 0;
     let retryTimeoutId: number | null = null;
+    let unsubscribe: (() => void) | null = null;
 
     const clearRetryTimeout = () => {
       if (retryTimeoutId === null) {
@@ -1791,52 +1792,47 @@ const EventModal: React.FC = () => {
       retryTimeoutId = null;
     };
 
-    function scheduleSyncRetry() {
-      if (isDisposed || hasReceivedEvent || retryTimeoutId !== null) {
+    const attachSubscription = () => {
+      if (isDisposed) {
         return;
       }
-      if (retryCount >= EVENT_SYNC_RETRY_DELAYS_MS.length) {
-        setIsLoading(false);
-        return;
-      }
-      const delayMs = EVENT_SYNC_RETRY_DELAYS_MS[retryCount];
-      retryCount += 1;
-      retryTimeoutId = window.setTimeout(() => {
-        retryTimeoutId = null;
-        void attemptSync();
-      }, delayMs);
-    }
+      unsubscribe?.();
+      unsubscribe = connection.subscribeToEvent(
+        eventId,
+        (nextEvent) => {
+          setEventRecord(nextEvent);
+          setIsLoading(false);
+          retryAttempt = 0;
+          clearRetryTimeout();
+        },
+        () => {
+          if (isDisposed) {
+            return;
+          }
+          setIsLoading(false);
+          if (
+            retryTimeoutId !== null ||
+            retryAttempt >= EVENT_SUBSCRIBE_RETRY_DELAYS_MS.length
+          ) {
+            return;
+          }
+          const delayMs = EVENT_SUBSCRIBE_RETRY_DELAYS_MS[retryAttempt];
+          retryAttempt += 1;
+          retryTimeoutId = window.setTimeout(() => {
+            retryTimeoutId = null;
+            setIsLoading(true);
+            attachSubscription();
+          }, delayMs);
+        },
+      );
+    };
 
-    async function attemptSync() {
-      if (isDisposed || !modalState.eventId || hasReceivedEvent) {
-        return;
-      }
-      try {
-        await connection.syncEventState(modalState.eventId);
-      } catch {
-        scheduleSyncRetry();
-      }
-    }
-
-    const unsubscribe = connection.subscribeToEvent(
-      modalState.eventId,
-      (nextEvent) => {
-        hasReceivedEvent = true;
-        clearRetryTimeout();
-        setEventRecord(nextEvent);
-        setIsLoading(false);
-      },
-      () => {
-        scheduleSyncRetry();
-      },
-    );
-
-    void attemptSync();
+    attachSubscription();
 
     return () => {
       isDisposed = true;
       clearRetryTimeout();
-      unsubscribe();
+      unsubscribe?.();
     };
   }, [modalState.eventId, modalState.isOpen]);
 
@@ -1941,27 +1937,6 @@ const EventModal: React.FC = () => {
       );
     };
   }, [measureBracketInsets, modalState.isOpen]);
-
-  useEffect(() => {
-    if (
-      !modalState.isOpen ||
-      !modalState.eventId ||
-      !eventRecord ||
-      eventRecord.status !== "scheduled"
-    ) {
-      return;
-    }
-    const delayMs = Math.max(0, eventRecord.startAtMs - Date.now() + 300);
-    const timeoutId = window.setTimeout(() => {
-      setNowMs(Date.now());
-      void connection
-        .syncEventState(modalState.eventId as string)
-        .catch(() => {});
-    }, delayMs);
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [eventRecord, modalState.eventId, modalState.isOpen]);
 
   useEffect(() => {
     if (

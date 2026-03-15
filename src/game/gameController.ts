@@ -2646,10 +2646,6 @@ export function dismissPendingAutomatchTransition() {
 }
 
 function showRematchInterface() {
-  const eventId = connection.getCurrentInviteEventId();
-  if (eventId) {
-    void connection.syncEventState(eventId).catch(() => {});
-  }
   if (connection.isCurrentInviteEventOwned()) {
     didReceiveRematchesSeriesEndIndicator();
     return;

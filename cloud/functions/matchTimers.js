@@ -1,6 +1,45 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 const { batchReadWithRetry } = require("./utils");
+const { requestEventProgress } = require("./eventProgressTasks");
+
+const normalizeString = (value) =>
+  typeof value === "string" && value.trim() !== "" ? value.trim() : "";
+
+const maybeEnqueueEventProgressFromInvite = async ({
+  inviteData,
+  inviteId,
+  matchId,
+}) => {
+  const eventId = normalizeString(inviteData && inviteData.eventId);
+  if (!eventId || inviteData?.eventOwned !== true) {
+    return;
+  }
+  try {
+    const result = await requestEventProgress({
+      eventId,
+      sourceKey: `timer:${inviteId}:${matchId}`,
+      reason: "timer-claimed",
+    });
+    if (result && result.fallbackPersisted) {
+      console.warn("event:progress:fallback:queued", {
+        eventId,
+        inviteId,
+        matchId,
+        reason: "timer-claimed",
+        fallbackSignalId: result.fallbackSignalId || null,
+      });
+    }
+  } catch (error) {
+    console.error("event:progress:enqueue:error", {
+      eventId,
+      inviteId,
+      matchId,
+      reason: "timer-claimed",
+      error: error && error.message ? error.message : error,
+    });
+  }
+};
 
 exports.startMatchTimer = onCall(async (request) => {
   const uid = request.auth.uid;
@@ -202,6 +241,11 @@ exports.claimMatchVictoryByTimer = onCall(async (request) => {
       const sameTurn = game.turn_number() === turnNumber;
       if (sameTurn && timeDelta <= 0) {
         await matchRef.child("timer").set("gg");
+        await maybeEnqueueEventProgressFromInvite({
+          inviteData,
+          inviteId,
+          matchId,
+        });
         return { ok: true };
       } else if (!sameTurn) {
         throw new HttpsError(

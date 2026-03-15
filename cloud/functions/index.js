@@ -28,7 +28,13 @@ const { cancelWagerProposal } = require("./cancelWagerProposal");
 const { declineWagerProposal } = require("./declineWagerProposal");
 const { acceptWagerProposal } = require("./acceptWagerProposal");
 const { resolveWagerOutcome } = require("./resolveWagerOutcome");
-const { createEvent, joinEvent, syncEventState } = require("./events");
+const {
+  createEvent,
+  joinEvent,
+  syncEventState,
+  processEventProgress,
+  processEventProgressFallback,
+} = require("./events");
 const {
   onInviteCreated,
   onInviteGuestIdChanged,
@@ -70,6 +76,8 @@ exports.resolveWagerOutcome = resolveWagerOutcome;
 exports.createEvent = createEvent;
 exports.joinEvent = joinEvent;
 exports.syncEventState = syncEventState;
+exports.processEventProgress = processEventProgress;
+exports.processEventProgressFallback = processEventProgressFallback;
 exports.projectProfileGamesOnInviteCreated = onInviteCreated;
 exports.projectProfileGamesOnInviteGuestIdChanged = onInviteGuestIdChanged;
 exports.projectProfileGamesOnInviteHostRematchesChanged =

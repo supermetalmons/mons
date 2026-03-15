@@ -3676,12 +3676,6 @@ class Connection {
       if (!writableContext) {
         return { ok: false };
       }
-      const inviteEventId =
-        this.inviteId === writableContext.inviteId &&
-        typeof this.latestInvite?.eventId === "string" &&
-        this.latestInvite.eventId !== ""
-          ? this.latestInvite.eventId
-          : null;
       const updateRatingsFunction = httpsCallable(
         this.functions,
         "updateRatings",
@@ -3693,14 +3687,6 @@ class Connection {
         matchId: writableContext.matchId,
         opponentId,
       });
-      const resolvedEventId =
-        inviteEventId ||
-        (this.inviteId === writableContext.inviteId
-          ? this.getCurrentInviteEventId()
-          : null);
-      if (resolvedEventId) {
-        void this.syncEventState(resolvedEventId).catch(() => {});
-      }
       const data = response.data as { mining?: PlayerMiningData } | null;
       if (
         data &&

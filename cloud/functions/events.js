@@ -1,4 +1,6 @@
 const { onCall, HttpsError } = require("firebase-functions/v2/https");
+const { onValueWritten } = require("firebase-functions/v2/database");
+const { onTaskDispatched } = require("firebase-functions/v2/tasks");
 const admin = require("firebase-admin");
 const {
   getProfileByLoginId,
@@ -6,6 +8,7 @@ const {
   batchReadWithRetry,
 } = require("./utils");
 const { resolveMatchWinner } = require("./matchOutcome");
+const { enqueueEventProgressTask } = require("./eventProgressTasks");
 
 const CONTROLLER_VERSION = 2;
 const INITIAL_FEN =
@@ -18,6 +21,7 @@ const EVENT_SYNC_THROTTLE_WINDOW_MS = 500;
 const MIN_STARTS_IN_MINUTES = 1;
 const MAX_STARTS_IN_MINUTES = 7 * 24 * 60;
 const MAX_EVENT_PARTICIPANTS = 32;
+const EVENT_PROGRESS_WORKER_UID = "event-progress-worker";
 const MONS_LINK_ADMINS = new Set([
   "ivan",
   "meinong",
@@ -1240,6 +1244,37 @@ const logSyncEventStateResult = (payload) => {
   }
 };
 
+const createSyncLog = ({ eventId, requesterUid, mode }) => ({
+  mode,
+  eventId,
+  requesterUid: requesterUid || null,
+  requesterProfileId: null,
+  skipped: false,
+  reason: null,
+  didChange: false,
+  durationMs: 0,
+});
+
+const clearEventProgressFallbackSignal = async (eventId, signalId) => {
+  const normalizedEventId = normalizeString(eventId);
+  const normalizedSignalId = normalizeString(signalId);
+  if (!normalizedEventId || !normalizedSignalId) {
+    return;
+  }
+  try {
+    await admin
+      .database()
+      .ref(`eventProgressFallback/${normalizedEventId}/${normalizedSignalId}`)
+      .remove();
+  } catch (error) {
+    console.error("event:progress:fallback:clear:error", {
+      eventId: normalizedEventId,
+      signalId: normalizedSignalId,
+      error: error && error.message ? error.message : error,
+    });
+  }
+};
+
 exports.createEvent = onCall(async (request) => {
   if (!request.auth) {
     throw new HttpsError(
@@ -1270,6 +1305,26 @@ exports.createEvent = onCall(async (request) => {
     startAtMs,
     createdAtMs,
   });
+
+  try {
+    await enqueueEventProgressTask({
+      eventId,
+      sourceKey: `start:${eventId}`,
+      reason: "scheduled-start",
+      scheduleTimeMs: startAtMs,
+    });
+  } catch (error) {
+    console.error("event:progress:enqueue:error", {
+      eventId,
+      sourceKey: `start:${eventId}`,
+      reason: "scheduled-start",
+      error: error && error.message ? error.message : error,
+    });
+    throw new HttpsError(
+      "unavailable",
+      "Could not schedule event start. Please try again.",
+    );
+  }
 
   await admin.database().ref(`events/${eventId}`).set(event);
 
@@ -1403,6 +1458,333 @@ exports.joinEvent = onCall(async (request) => {
   }
 });
 
+const buildSkippedSyncResponse = ({ eventId, reason, event }) => ({
+  ok: true,
+  eventId,
+  skipped: true,
+  reason,
+  ...(event !== undefined ? { event } : {}),
+});
+
+const runEventSyncState = async ({
+  eventId,
+  requesterUid,
+  auth,
+  enforceParticipantGate,
+  enforceThrottle,
+  syncLog,
+}) => {
+  let lockHandle = null;
+  let stopLockHeartbeat = () => {};
+
+  try {
+    const eventSnapshot = await admin
+      .database()
+      .ref(`events/${eventId}`)
+      .once("value");
+    if (!eventSnapshot.exists()) {
+      throw new HttpsError("not-found", "Event not found.");
+    }
+    const initialEvent = cloneValue(eventSnapshot.val() || {});
+
+    if (enforceParticipantGate) {
+      const requesterParticipation = resolveRequesterParticipation(
+        initialEvent,
+        auth,
+      );
+      syncLog.requesterProfileId = requesterParticipation.profileId;
+      if (!requesterParticipation.isParticipant) {
+        syncLog.skipped = true;
+        syncLog.reason = "not-participant";
+        return buildSkippedSyncResponse({
+          eventId,
+          reason: "not-participant",
+        });
+      }
+    }
+
+    if (enforceThrottle) {
+      const syncThrottle = await tryAcquireEventSyncThrottle(
+        eventId,
+        requesterUid,
+      );
+      if (!syncThrottle) {
+        syncLog.skipped = true;
+        syncLog.reason = "rate-limited";
+        return buildSkippedSyncResponse({
+          eventId,
+          reason: "rate-limited",
+        });
+      }
+    }
+
+    lockHandle = await acquireEventLockWithRetry(eventId, requesterUid, {
+      attempts: 10,
+      delayMs: 100,
+    });
+    if (!lockHandle) {
+      syncLog.skipped = true;
+      syncLog.reason = "locked";
+      return buildSkippedSyncResponse({
+        eventId,
+        reason: "locked",
+      });
+    }
+    stopLockHeartbeat = startEventLockHeartbeat(lockHandle);
+
+    const lockedEventSnapshot = await admin
+      .database()
+      .ref(`events/${eventId}`)
+      .once("value");
+    if (!lockedEventSnapshot.exists()) {
+      throw new HttpsError("not-found", "Event not found.");
+    }
+    const event = cloneValue(lockedEventSnapshot.val() || {});
+    if (enforceParticipantGate) {
+      const lockedRequesterParticipation = resolveRequesterParticipation(
+        event,
+        auth,
+      );
+      syncLog.requesterProfileId = lockedRequesterParticipation.profileId;
+      if (!lockedRequesterParticipation.isParticipant) {
+        syncLog.skipped = true;
+        syncLog.reason = "not-participant";
+        return buildSkippedSyncResponse({
+          eventId,
+          reason: "not-participant",
+        });
+      }
+    }
+    const nowMs = getNowMs();
+    const updates = {};
+    let didChange = false;
+
+    if (event.status === "scheduled") {
+      const dueTransition = buildScheduledEventDueUpdates({
+        eventId,
+        event,
+        nowMs,
+      });
+      Object.assign(updates, dueTransition.updates);
+      didChange = dueTransition.didChange;
+    } else if (event.status === "active") {
+      const normalizedOriginalCurrentRoundIndex = toFiniteInteger(
+        event.currentRoundIndex,
+        NaN,
+      );
+      const originalCurrentRoundIndex = Number.isFinite(
+        normalizedOriginalCurrentRoundIndex,
+      )
+        ? normalizedOriginalCurrentRoundIndex
+        : null;
+      const originalStatus = normalizeString(event.status) || "active";
+      const originalEndedAtMs =
+        typeof event.endedAtMs === "number" ? Math.floor(event.endedAtMs) : null;
+      const originalWinnerProfileId = normalizeStringOrNull(
+        event.winnerProfileId,
+      );
+      const originalWinnerDisplayName = normalizeStringOrNull(
+        event.winnerDisplayName,
+      );
+      const rounds = cloneValue(
+        event.rounds && typeof event.rounds === "object" ? event.rounds : {},
+      );
+      let participants = cloneValue(
+        event.participants && typeof event.participants === "object"
+          ? event.participants
+          : {},
+      );
+      const inviteUpdates = {};
+      let roundsChanged = false;
+      let participantsChanged = false;
+      const sortedRoundIndexes = getSortedRoundIndexes(rounds);
+      for (const roundIndex of sortedRoundIndexes) {
+        const round = rounds[String(roundIndex)];
+        if (!round || !round.matches || typeof round.matches !== "object") {
+          continue;
+        }
+        const resolvedEntries = await resolveRoundMatchesWithConcurrency(
+          round.matches,
+        );
+        for (const entry of resolvedEntries) {
+          const { matchRecord, resolved } = entry;
+          if (!resolved) {
+            continue;
+          }
+          if (applyMatchResolution(matchRecord, resolved, nowMs)) {
+            roundsChanged = true;
+          }
+        }
+      }
+
+      if (
+        reconcileBracketMatchReadiness({
+          eventId,
+          rounds,
+          nowMs,
+          participantsById: participants,
+          inviteUpdates,
+        })
+      ) {
+        roundsChanged = true;
+      }
+
+      const {
+        didChange: roundStatusChanged,
+        finalRoundIndex,
+        earliestUnresolvedRoundIndex,
+        finalRoundWinnerProfileId,
+      } = recomputeRoundStatuses({
+        rounds,
+        nowMs,
+      });
+      if (roundStatusChanged) {
+        roundsChanged = true;
+      }
+
+      const eventShouldEnd = normalizeString(finalRoundWinnerProfileId) !== "";
+      const winnerProfileId = eventShouldEnd ? finalRoundWinnerProfileId : null;
+      const nextCurrentRoundIndex =
+        earliestUnresolvedRoundIndex !== null
+          ? earliestUnresolvedRoundIndex
+          : finalRoundIndex;
+      event.currentRoundIndex = nextCurrentRoundIndex;
+
+      const participantStateResult = rebuildParticipantStatesFromRounds({
+        participantsById: participants,
+        rounds,
+        winnerProfileId,
+        eventEnded: eventShouldEnd,
+      });
+      if (participantStateResult.didChange) {
+        participants = participantStateResult.participantsById;
+        participantsChanged = true;
+      }
+
+      if (eventShouldEnd) {
+        const winnerParticipant =
+          (winnerProfileId && participants[winnerProfileId]) || null;
+        event.status = "ended";
+        if (typeof event.endedAtMs !== "number") {
+          event.endedAtMs = nowMs;
+        }
+        event.winnerProfileId = winnerProfileId;
+        event.winnerDisplayName = winnerParticipant
+          ? winnerParticipant.displayName
+          : null;
+      } else {
+        event.status = "active";
+        event.endedAtMs = null;
+        event.winnerProfileId = null;
+        event.winnerDisplayName = null;
+      }
+
+      let eventChanged = false;
+      const normalizedCurrentRoundIndex =
+        typeof event.currentRoundIndex === "number"
+          ? Math.floor(event.currentRoundIndex)
+          : null;
+      if (normalizedCurrentRoundIndex !== originalCurrentRoundIndex) {
+        updates[`events/${eventId}/currentRoundIndex`] =
+          normalizedCurrentRoundIndex;
+        eventChanged = true;
+      }
+
+      const normalizedStatus = normalizeString(event.status) || "active";
+      if (normalizedStatus !== originalStatus) {
+        updates[`events/${eventId}/status`] = normalizedStatus;
+        eventChanged = true;
+      }
+
+      const normalizedEndedAtMs =
+        typeof event.endedAtMs === "number" ? Math.floor(event.endedAtMs) : null;
+      if (normalizedEndedAtMs !== originalEndedAtMs) {
+        updates[`events/${eventId}/endedAtMs`] = normalizedEndedAtMs;
+        eventChanged = true;
+      }
+
+      const normalizedWinnerProfileId = normalizeStringOrNull(
+        event.winnerProfileId,
+      );
+      if (normalizedWinnerProfileId !== originalWinnerProfileId) {
+        updates[`events/${eventId}/winnerProfileId`] = normalizedWinnerProfileId;
+        eventChanged = true;
+      }
+
+      const normalizedWinnerDisplayName = normalizeStringOrNull(
+        event.winnerDisplayName,
+      );
+      if (normalizedWinnerDisplayName !== originalWinnerDisplayName) {
+        updates[`events/${eventId}/winnerDisplayName`] =
+          normalizedWinnerDisplayName;
+        eventChanged = true;
+      }
+
+      if (roundsChanged) {
+        updates[`events/${eventId}/rounds`] = rounds;
+      }
+      if (participantsChanged) {
+        updates[`events/${eventId}/participants`] = participants;
+      }
+      if (Object.keys(inviteUpdates).length > 0) {
+        Object.assign(updates, inviteUpdates);
+      }
+      if (
+        roundsChanged ||
+        participantsChanged ||
+        Object.keys(inviteUpdates).length > 0 ||
+        eventChanged
+      ) {
+        updates[`events/${eventId}/updatedAtMs`] = nowMs;
+        didChange = true;
+      }
+    }
+
+    if (didChange) {
+      const lockOwned = await isEventLockStillOwned(lockHandle);
+      if (!lockOwned) {
+        const latestSnapshot = await admin
+          .database()
+          .ref(`events/${eventId}`)
+          .once("value");
+        syncLog.skipped = true;
+        syncLog.reason = "locked";
+        return buildSkippedSyncResponse({
+          eventId,
+          reason: "locked",
+          event: latestSnapshot.val(),
+        });
+      }
+      await admin.database().ref().update(updates);
+    }
+
+    const refreshedSnapshot = await admin
+      .database()
+      .ref(`events/${eventId}`)
+      .once("value");
+    syncLog.didChange = didChange;
+    return {
+      ok: true,
+      eventId,
+      didChange,
+      event: refreshedSnapshot.val(),
+    };
+  } catch (error) {
+    if (!syncLog.reason) {
+      syncLog.reason =
+        error && typeof error === "object" && "code" in error
+          ? String(error.code)
+          : "error";
+    }
+    throw error;
+  } finally {
+    if (lockHandle) {
+      stopLockHeartbeat();
+      await releaseEventLock(lockHandle);
+    }
+  }
+};
+
 exports.syncEventState = onCall(
   {
     maxInstances: 20,
@@ -1412,19 +1794,12 @@ exports.syncEventState = onCall(
   },
   async (request) => {
     const startedAtMs = getNowMs();
-    const syncLog = {
-      eventId: null,
+    const eventId = normalizeString(request.data && request.data.eventId);
+    const syncLog = createSyncLog({
+      eventId: eventId || null,
       requesterUid: request && request.auth ? request.auth.uid : null,
-      requesterProfileId: null,
-      skipped: false,
-      reason: null,
-      didChange: false,
-      durationMs: 0,
-    };
-
-    let lockHandle = null;
-    let stopLockHeartbeat = () => {};
-
+      mode: "callable",
+    });
     try {
       if (!request.auth) {
         throw new HttpsError(
@@ -1432,324 +1807,161 @@ exports.syncEventState = onCall(
           "The function must be called while authenticated.",
         );
       }
-
-      const eventId = normalizeString(request.data && request.data.eventId);
       if (!eventId) {
         throw new HttpsError("invalid-argument", "eventId is required.");
       }
-      syncLog.eventId = eventId;
-
-      const eventSnapshot = await admin
-        .database()
-        .ref(`events/${eventId}`)
-        .once("value");
-      if (!eventSnapshot.exists()) {
-        throw new HttpsError("not-found", "Event not found.");
-      }
-      const initialEvent = cloneValue(eventSnapshot.val() || {});
-
-      const requesterParticipation = resolveRequesterParticipation(
-        initialEvent,
-        request.auth,
-      );
-      syncLog.requesterProfileId = requesterParticipation.profileId;
-      if (!requesterParticipation.isParticipant) {
-        syncLog.skipped = true;
-        syncLog.reason = "not-participant";
-        return {
-          ok: true,
-          eventId,
-          skipped: true,
-          reason: "not-participant",
-        };
-      }
-
-      const syncThrottle = await tryAcquireEventSyncThrottle(
+      return await runEventSyncState({
         eventId,
-        request.auth.uid,
-      );
-      if (!syncThrottle) {
-        syncLog.skipped = true;
-        syncLog.reason = "rate-limited";
-        return {
-          ok: true,
-          eventId,
-          skipped: true,
-          reason: "rate-limited",
-        };
-      }
-
-      lockHandle = await acquireEventLockWithRetry(eventId, request.auth.uid, {
-        attempts: 10,
-        delayMs: 100,
+        requesterUid: request.auth.uid,
+        auth: request.auth,
+        enforceParticipantGate: true,
+        enforceThrottle: true,
+        syncLog,
       });
-      if (!lockHandle) {
-        syncLog.skipped = true;
-        syncLog.reason = "locked";
-        return { ok: true, eventId, skipped: true, reason: "locked" };
-      }
-      stopLockHeartbeat = startEventLockHeartbeat(lockHandle);
+    } finally {
+      syncLog.durationMs = getNowMs() - startedAtMs;
+      logSyncEventStateResult(syncLog);
+    }
+  },
+);
 
-      const lockedEventSnapshot = await admin
-        .database()
-        .ref(`events/${eventId}`)
-        .once("value");
-      if (!lockedEventSnapshot.exists()) {
-        throw new HttpsError("not-found", "Event not found.");
-      }
-      const event = cloneValue(lockedEventSnapshot.val() || {});
-      const lockedRequesterParticipation = resolveRequesterParticipation(
-        event,
-        request.auth,
-      );
-      syncLog.requesterProfileId = lockedRequesterParticipation.profileId;
-      if (!lockedRequesterParticipation.isParticipant) {
-        syncLog.skipped = true;
-        syncLog.reason = "not-participant";
-        return {
-          ok: true,
-          eventId,
-          skipped: true,
-          reason: "not-participant",
-        };
-      }
-      const nowMs = getNowMs();
-      const updates = {};
-      let didChange = false;
+exports.processEventProgress = onTaskDispatched(
+  {
+    invoker: "private",
+    maxInstances: 20,
+    concurrency: 20,
+    memory: "512MiB",
+    timeoutSeconds: 30,
+    retryConfig: {
+      maxAttempts: 12,
+      minBackoffSeconds: 1,
+      maxBackoffSeconds: 30,
+      maxDoublings: 5,
+    },
+  },
+  async (request) => {
+    const payload = request && request.data ? request.data : {};
+    const eventId = normalizeString(payload.eventId);
+    const sourceKey = normalizeString(payload.sourceKey);
+    const reason = normalizeString(payload.reason) || "progress";
+    if (!eventId) {
+      console.error("event:progress:task:invalid-payload", {
+        sourceKey,
+        reason,
+      });
+      return;
+    }
 
-      if (event.status === "scheduled") {
-        const dueTransition = buildScheduledEventDueUpdates({
-          eventId,
-          event,
-          nowMs,
-        });
-        Object.assign(updates, dueTransition.updates);
-        didChange = dueTransition.didChange;
-      } else if (event.status === "active") {
-        const normalizedOriginalCurrentRoundIndex = toFiniteInteger(
-          event.currentRoundIndex,
-          NaN,
-        );
-        const originalCurrentRoundIndex = Number.isFinite(
-          normalizedOriginalCurrentRoundIndex,
-        )
-          ? normalizedOriginalCurrentRoundIndex
-          : null;
-        const originalStatus = normalizeString(event.status) || "active";
-        const originalEndedAtMs =
-          typeof event.endedAtMs === "number"
-            ? Math.floor(event.endedAtMs)
-            : null;
-        const originalWinnerProfileId = normalizeStringOrNull(
-          event.winnerProfileId,
-        );
-        const originalWinnerDisplayName = normalizeStringOrNull(
-          event.winnerDisplayName,
-        );
-        const rounds = cloneValue(
-          event.rounds && typeof event.rounds === "object" ? event.rounds : {},
-        );
-        let participants = cloneValue(
-          event.participants && typeof event.participants === "object"
-            ? event.participants
-            : {},
-        );
-        const inviteUpdates = {};
-        let roundsChanged = false;
-        let participantsChanged = false;
-        const sortedRoundIndexes = getSortedRoundIndexes(rounds);
-        for (const roundIndex of sortedRoundIndexes) {
-          const round = rounds[String(roundIndex)];
-          if (!round || !round.matches || typeof round.matches !== "object") {
-            continue;
-          }
-          const resolvedEntries = await resolveRoundMatchesWithConcurrency(
-            round.matches,
-          );
-          for (const entry of resolvedEntries) {
-            const { matchRecord, resolved } = entry;
-            if (!resolved) {
-              continue;
-            }
-            if (applyMatchResolution(matchRecord, resolved, nowMs)) {
-              roundsChanged = true;
-            }
-          }
-        }
+    const startedAtMs = getNowMs();
+    const syncLog = createSyncLog({
+      eventId,
+      requesterUid: EVENT_PROGRESS_WORKER_UID,
+      mode: "worker",
+    });
+    syncLog.sourceKey = sourceKey || null;
+    syncLog.triggerReason = reason;
+    syncLog.taskId = request && request.id ? request.id : null;
 
-        if (
-          reconcileBracketMatchReadiness({
-            eventId,
-            rounds,
-            nowMs,
-            participantsById: participants,
-            inviteUpdates,
-          })
-        ) {
-          roundsChanged = true;
-        }
-
-        const {
-          didChange: roundStatusChanged,
-          finalRoundIndex,
-          earliestUnresolvedRoundIndex,
-          finalRoundWinnerProfileId,
-        } = recomputeRoundStatuses({
-          rounds,
-          nowMs,
-        });
-        if (roundStatusChanged) {
-          roundsChanged = true;
-        }
-
-        const eventShouldEnd =
-          normalizeString(finalRoundWinnerProfileId) !== "";
-        const winnerProfileId = eventShouldEnd
-          ? finalRoundWinnerProfileId
-          : null;
-        const nextCurrentRoundIndex =
-          earliestUnresolvedRoundIndex !== null
-            ? earliestUnresolvedRoundIndex
-            : finalRoundIndex;
-        event.currentRoundIndex = nextCurrentRoundIndex;
-
-        const participantStateResult = rebuildParticipantStatesFromRounds({
-          participantsById: participants,
-          rounds,
-          winnerProfileId,
-          eventEnded: eventShouldEnd,
-        });
-        if (participantStateResult.didChange) {
-          participants = participantStateResult.participantsById;
-          participantsChanged = true;
-        }
-
-        if (eventShouldEnd) {
-          const winnerParticipant =
-            (winnerProfileId && participants[winnerProfileId]) || null;
-          event.status = "ended";
-          if (typeof event.endedAtMs !== "number") {
-            event.endedAtMs = nowMs;
-          }
-          event.winnerProfileId = winnerProfileId;
-          event.winnerDisplayName = winnerParticipant
-            ? winnerParticipant.displayName
-            : null;
-        } else {
-          event.status = "active";
-          event.endedAtMs = null;
-          event.winnerProfileId = null;
-          event.winnerDisplayName = null;
-        }
-
-        let eventChanged = false;
-        const normalizedCurrentRoundIndex =
-          typeof event.currentRoundIndex === "number"
-            ? Math.floor(event.currentRoundIndex)
-            : null;
-        if (normalizedCurrentRoundIndex !== originalCurrentRoundIndex) {
-          updates[`events/${eventId}/currentRoundIndex`] =
-            normalizedCurrentRoundIndex;
-          eventChanged = true;
-        }
-
-        const normalizedStatus = normalizeString(event.status) || "active";
-        if (normalizedStatus !== originalStatus) {
-          updates[`events/${eventId}/status`] = normalizedStatus;
-          eventChanged = true;
-        }
-
-        const normalizedEndedAtMs =
-          typeof event.endedAtMs === "number"
-            ? Math.floor(event.endedAtMs)
-            : null;
-        if (normalizedEndedAtMs !== originalEndedAtMs) {
-          updates[`events/${eventId}/endedAtMs`] = normalizedEndedAtMs;
-          eventChanged = true;
-        }
-
-        const normalizedWinnerProfileId = normalizeStringOrNull(
-          event.winnerProfileId,
-        );
-        if (normalizedWinnerProfileId !== originalWinnerProfileId) {
-          updates[`events/${eventId}/winnerProfileId`] =
-            normalizedWinnerProfileId;
-          eventChanged = true;
-        }
-
-        const normalizedWinnerDisplayName = normalizeStringOrNull(
-          event.winnerDisplayName,
-        );
-        if (normalizedWinnerDisplayName !== originalWinnerDisplayName) {
-          updates[`events/${eventId}/winnerDisplayName`] =
-            normalizedWinnerDisplayName;
-          eventChanged = true;
-        }
-
-        if (roundsChanged) {
-          updates[`events/${eventId}/rounds`] = rounds;
-        }
-        if (participantsChanged) {
-          updates[`events/${eventId}/participants`] = participants;
-        }
-        if (Object.keys(inviteUpdates).length > 0) {
-          Object.assign(updates, inviteUpdates);
-        }
-        if (
-          roundsChanged ||
-          participantsChanged ||
-          Object.keys(inviteUpdates).length > 0 ||
-          eventChanged
-        ) {
-          updates[`events/${eventId}/updatedAtMs`] = nowMs;
-          didChange = true;
-        }
-      }
-
-      if (didChange) {
-        const lockOwned = await isEventLockStillOwned(lockHandle);
-        if (!lockOwned) {
-          const latestSnapshot = await admin
-            .database()
-            .ref(`events/${eventId}`)
-            .once("value");
-          syncLog.skipped = true;
-          syncLog.reason = "locked";
-          return {
-            ok: true,
-            eventId,
-            skipped: true,
-            reason: "locked",
-            event: latestSnapshot.val(),
-          };
-        }
-        await admin.database().ref().update(updates);
-      }
-
-      const refreshedSnapshot = await admin
-        .database()
-        .ref(`events/${eventId}`)
-        .once("value");
-      syncLog.didChange = didChange;
-      return {
-        ok: true,
+    try {
+      const result = await runEventSyncState({
         eventId,
-        didChange,
-        event: refreshedSnapshot.val(),
-      };
+        requesterUid: EVENT_PROGRESS_WORKER_UID,
+        auth: null,
+        enforceParticipantGate: false,
+        enforceThrottle: false,
+        syncLog,
+      });
+      if (result && result.skipped && result.reason === "locked") {
+        const lockedError = new Error("locked");
+        lockedError.code = "locked";
+        throw lockedError;
+      }
     } catch (error) {
-      if (!syncLog.reason) {
-        syncLog.reason =
-          error && typeof error === "object" && "code" in error
-            ? String(error.code)
-            : "error";
+      const errorCode =
+        error && typeof error === "object" && "code" in error
+          ? String(error.code)
+          : "error";
+      syncLog.reason = syncLog.reason || errorCode;
+      if (errorCode === "not-found") {
+        syncLog.skipped = true;
+        return;
       }
       throw error;
     } finally {
-      if (lockHandle) {
-        stopLockHeartbeat();
-        await releaseEventLock(lockHandle);
+      syncLog.durationMs = getNowMs() - startedAtMs;
+      logSyncEventStateResult(syncLog);
+    }
+  },
+);
+
+exports.processEventProgressFallback = onValueWritten(
+  {
+    ref: "/eventProgressFallback/{eventId}/{signalId}",
+    maxInstances: 20,
+    concurrency: 20,
+    memory: "512MiB",
+    timeoutSeconds: 30,
+    retry: true,
+  },
+  async (event) => {
+    const eventId = normalizeString(event.params.eventId);
+    const signalId = normalizeString(event.params.signalId);
+    if (!eventId || !signalId || !event.data.after.exists()) {
+      return;
+    }
+
+    const signalRef = admin
+      .database()
+      .ref(`eventProgressFallback/${eventId}/${signalId}`);
+    const liveSignalSnapshot = await signalRef.once("value");
+    if (!liveSignalSnapshot.exists()) {
+      return;
+    }
+    const payload =
+      liveSignalSnapshot.val() && typeof liveSignalSnapshot.val() === "object"
+        ? liveSignalSnapshot.val()
+        : {};
+    const sourceKey = normalizeString(payload.sourceKey) || signalId;
+    const reason = normalizeString(payload.reason) || "fallback";
+
+    const startedAtMs = getNowMs();
+    const syncLog = createSyncLog({
+      eventId,
+      requesterUid: `${EVENT_PROGRESS_WORKER_UID}-fallback`,
+      mode: "worker-fallback",
+    });
+    syncLog.sourceKey = sourceKey;
+    syncLog.triggerReason = reason;
+    syncLog.signalId = signalId;
+
+    try {
+      const result = await runEventSyncState({
+        eventId,
+        requesterUid: `${EVENT_PROGRESS_WORKER_UID}-fallback`,
+        auth: null,
+        enforceParticipantGate: false,
+        enforceThrottle: false,
+        syncLog,
+      });
+      if (result && result.skipped && result.reason === "locked") {
+        const lockedError = new Error("locked");
+        lockedError.code = "locked";
+        throw lockedError;
       }
+      await clearEventProgressFallbackSignal(eventId, signalId);
+    } catch (error) {
+      const errorCode =
+        error && typeof error === "object" && "code" in error
+          ? String(error.code)
+          : "error";
+      syncLog.reason = syncLog.reason || errorCode;
+      if (errorCode === "not-found") {
+        syncLog.skipped = true;
+        await clearEventProgressFallbackSignal(eventId, signalId);
+        return;
+      }
+      throw error;
+    } finally {
       syncLog.durationMs = getNowMs() - startedAtMs;
       logSyncEventStateResult(syncLog);
     }

@@ -9,6 +9,7 @@ const {
   getTelegramEmojiTag,
 } = require("./utils");
 const { resolveMatchWinner } = require("./matchOutcome");
+const { requestEventProgress } = require("./eventProgressTasks");
 
 const materialTelegramEmojiIds = {
   dust: "5235835141238063097",
@@ -411,6 +412,44 @@ const getWagerSuffix = (inviteData, matchId) => {
   return `${icon} ${normalizedCount}`;
 };
 
+const normalizeString = (value) =>
+  typeof value === "string" && value.trim() !== "" ? value.trim() : "";
+
+const maybeEnqueueEventProgressFromInvite = async ({
+  inviteData,
+  inviteId,
+  matchId,
+}) => {
+  const eventId = normalizeString(inviteData && inviteData.eventId);
+  if (!eventId || inviteData?.eventOwned !== true) {
+    return;
+  }
+  try {
+    const result = await requestEventProgress({
+      eventId,
+      sourceKey: `rating:${inviteId}:${matchId}`,
+      reason: "match-rating-updated",
+    });
+    if (result && result.fallbackPersisted) {
+      console.warn("event:progress:fallback:queued", {
+        eventId,
+        inviteId,
+        matchId,
+        reason: "match-rating-updated",
+        fallbackSignalId: result.fallbackSignalId || null,
+      });
+    }
+  } catch (error) {
+    console.error("event:progress:enqueue:error", {
+      eventId,
+      inviteId,
+      matchId,
+      reason: "match-rating-updated",
+      error: error && error.message ? error.message : error,
+    });
+  }
+};
+
 exports.updateRatings = onCall(async (request) => {
   if (!request.auth) {
     throw new HttpsError(
@@ -504,6 +543,11 @@ exports.updateRatings = onCall(async (request) => {
       ratingUpdateRef,
       inviteId,
       ownerToken: lease.ownerToken,
+    });
+    await maybeEnqueueEventProgressFromInvite({
+      inviteData,
+      inviteId,
+      matchId,
     });
     return {
       ok: true,
@@ -718,6 +762,11 @@ exports.updateRatings = onCall(async (request) => {
       ratingUpdateRef,
       inviteId,
       ownerToken: lease.ownerToken,
+    });
+    await maybeEnqueueEventProgressFromInvite({
+      inviteData,
+      inviteId,
+      matchId,
     });
   } finally {
     stopRatingUpdateLeaseHeartbeat();
