@@ -1725,6 +1725,7 @@ const EventModal: React.FC = () => {
   const openingParticipantIdRef = useRef<string | null>(null);
   const participantLookupSessionRef = useRef(0);
   const ignoreNextBackdropClickRef = useRef(false);
+  const ignoreBackdropMouseDownUntilMsRef = useRef(0);
   const copyResetTimeoutRef = useRef<number | null>(null);
   const topBarRef = useRef<HTMLDivElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
@@ -2112,7 +2113,24 @@ const EventModal: React.FC = () => {
       if (event.target !== event.currentTarget) {
         return;
       }
-      ignoreNextBackdropClickRef.current = showsShinyCardSomewhere;
+      const nowMs = Date.now();
+      if (event.type === "touchstart") {
+        // Mobile browsers may fire an emulated mousedown after touchstart.
+        // Ignore that synthetic mousedown so it cannot overwrite this gesture's latch.
+        ignoreBackdropMouseDownUntilMsRef.current = nowMs + 1200;
+      } else if (
+        event.type === "mousedown" &&
+        nowMs <= ignoreBackdropMouseDownUntilMsRef.current
+      ) {
+        return;
+      }
+      const hasShinyCardElement =
+        typeof document !== "undefined" &&
+        document.querySelector('[data-shiny-card="true"]') !== null;
+      ignoreNextBackdropClickRef.current =
+        showsShinyCardSomewhere ||
+        hasShinyCardElement ||
+        !didNotDismissAnythingWithOutsideTapJustNow();
     },
     [],
   );
@@ -2382,8 +2400,8 @@ const EventModal: React.FC = () => {
 
   return (
     <Overlay
-      onMouseDown={handleBackdropPointerDown}
-      onTouchStart={handleBackdropPointerDown}
+      onMouseDownCapture={handleBackdropPointerDown}
+      onTouchStartCapture={handleBackdropPointerDown}
       onClick={handleBackdropClick}
     >
       {modalState.eventId && !isDismissedState && (
