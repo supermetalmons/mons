@@ -134,13 +134,16 @@ export interface EventMatch {
   inviteId: string | null;
   status: EventMatchStatus;
   resolvedAtMs: number | null;
+  winnerDisqualified: boolean;
   winnerProfileId: string | null;
   loserProfileId: string | null;
+  hostSlotBlocked: boolean;
   hostProfileId: string | null;
   hostLoginUid: string | null;
   hostDisplayName: string | null;
   hostEmojiId: number | null;
   hostAura: string | null;
+  guestSlotBlocked: boolean;
   guestProfileId: string | null;
   guestLoginUid: string | null;
   guestDisplayName: string | null;

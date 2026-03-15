@@ -208,10 +208,31 @@ const createMatchRecord = (color, emojiId, aura) => ({
 });
 
 const getMatchKey = (roundIndex, matchIndex) => `${roundIndex}_${matchIndex}`;
-const getMatchIndexFromKey = (matchKey) => {
+const parseMatchKey = (matchKey) => {
   const parts = normalizeString(matchKey).split("_");
-  return toFiniteInteger(parts[1], 0);
+  if (parts.length !== 2) {
+    return null;
+  }
+  if (!/^\d+$/.test(parts[0]) || !/^\d+$/.test(parts[1])) {
+    return null;
+  }
+  const roundIndex = toFiniteInteger(parts[0], NaN);
+  const matchIndex = toFiniteInteger(parts[1], NaN);
+  if (
+    !Number.isFinite(roundIndex) ||
+    roundIndex < 0 ||
+    !Number.isFinite(matchIndex) ||
+    matchIndex < 0
+  ) {
+    return null;
+  }
+  return {
+    roundIndex,
+    matchIndex,
+  };
 };
+const getMatchIndexFromKey = (matchKey) =>
+  parseMatchKey(matchKey)?.matchIndex ?? 0;
 const getSortedMatchKeys = (matchesByKey) =>
   Object.keys(matchesByKey || {}).sort(
     (left, right) => getMatchIndexFromKey(left) - getMatchIndexFromKey(right),
@@ -231,9 +252,29 @@ const getSortedRoundIndexes = (roundsByKey) => {
 };
 const isResolvedMatchStatus = (status) =>
   status === "host" || status === "guest" || status === "bye";
-const isMatchResolved = (match) =>
-  isResolvedMatchStatus(normalizeString(match && match.status)) &&
-  normalizeString(match && match.winnerProfileId) !== "";
+const isMatchResolved = (match) => {
+  if (isMatchWinnerDisqualified(match)) {
+    return true;
+  }
+  const status = normalizeString(match && match.status);
+  if (status === "bye") {
+    return true;
+  }
+  return (
+    (status === "host" || status === "guest") &&
+    normalizeString(match && match.winnerProfileId) !== ""
+  );
+};
+const isMatchWinnerDisqualified = (match) =>
+  !!(match && match.winnerDisqualified === true);
+const isMatchSlotBlocked = (match, slot) => {
+  if (!match) {
+    return false;
+  }
+  return slot === "guest"
+    ? match.guestSlotBlocked === true
+    : match.hostSlotBlocked === true;
+};
 
 const getBracketSize = (participantCount) => {
   let bracketSize = 2;
@@ -340,19 +381,32 @@ const createEmptyEventMatch = (matchKey) => ({
   inviteId: null,
   status: "upcoming",
   resolvedAtMs: null,
+  winnerDisqualified: false,
   winnerProfileId: null,
   loserProfileId: null,
+  hostSlotBlocked: false,
   hostProfileId: null,
   hostLoginUid: null,
   hostDisplayName: null,
   hostEmojiId: null,
   hostAura: null,
+  guestSlotBlocked: false,
   guestProfileId: null,
   guestLoginUid: null,
   guestDisplayName: null,
   guestEmojiId: null,
   guestAura: null,
 });
+
+const setMatchSlotBlocked = (match, slot, blocked) => {
+  const field = slot === "guest" ? "guestSlotBlocked" : "hostSlotBlocked";
+  const nextValue = blocked === true;
+  if (match[field] === nextValue) {
+    return false;
+  }
+  match[field] = nextValue;
+  return true;
+};
 
 const setMatchSlotParticipant = (match, slot, participant) => {
   const prefix = slot === "guest" ? "guest" : "host";
@@ -381,6 +435,9 @@ const setMatchSlotParticipant = (match, slot, participant) => {
   }
   if (match[`${prefix}Aura`] !== nextAura) {
     match[`${prefix}Aura`] = nextAura;
+    didChange = true;
+  }
+  if (participant && setMatchSlotBlocked(match, slot, false)) {
     didChange = true;
   }
 
@@ -421,12 +478,8 @@ const assignWinnerToNextRound = ({
   matchIndex,
   winnerProfileId,
   participantsById,
+  winnerDisqualified = false,
 }) => {
-  const normalizedWinnerProfileId = normalizeString(winnerProfileId);
-  if (!normalizedWinnerProfileId) {
-    return false;
-  }
-
   const nextRound = rounds[String(roundIndex + 1)];
   if (
     !nextRound ||
@@ -444,11 +497,26 @@ const assignWinnerToNextRound = ({
   }
 
   const slot = matchIndex % 2 === 0 ? "host" : "guest";
-  return setMatchSlotParticipant(
+  if (winnerDisqualified) {
+    const didClearParticipant = setMatchSlotParticipant(nextMatch, slot, null);
+    const didSetBlocked = setMatchSlotBlocked(nextMatch, slot, true);
+    return didClearParticipant || didSetBlocked;
+  }
+
+  const normalizedWinnerProfileId = normalizeString(winnerProfileId);
+  if (!normalizedWinnerProfileId) {
+    const didClearParticipant = setMatchSlotParticipant(nextMatch, slot, null);
+    const didClearBlocked = setMatchSlotBlocked(nextMatch, slot, false);
+    return didClearParticipant || didClearBlocked;
+  }
+
+  const didSetParticipant = setMatchSlotParticipant(
     nextMatch,
     slot,
     participantsById[normalizedWinnerProfileId] || null,
   );
+  const didClearBlocked = setMatchSlotBlocked(nextMatch, slot, false);
+  return didSetParticipant || didClearBlocked;
 };
 
 const createInviteForMatch = ({
@@ -458,6 +526,9 @@ const createInviteForMatch = ({
   match,
   inviteUpdates,
 }) => {
+  if (isMatchSlotBlocked(match, "host") || isMatchSlotBlocked(match, "guest")) {
+    return false;
+  }
   const hostLoginUid = normalizeString(match.hostLoginUid);
   const guestLoginUid = normalizeString(match.guestLoginUid);
   if (!hostLoginUid || !guestLoginUid || normalizeString(match.inviteId)) {
@@ -525,15 +596,40 @@ const reconcileBracketMatchReadiness = ({
         const status = normalizeString(match.status);
         const hostProfileId = normalizeString(match.hostProfileId);
         const guestProfileId = normalizeString(match.guestProfileId);
+        const winnerDisqualified = isMatchWinnerDisqualified(match);
+        const hostSlotBlocked = isMatchSlotBlocked(match, "host");
+        const guestSlotBlocked = isMatchSlotBlocked(match, "guest");
+        const matchIndex = getMatchIndexFromKey(matchKey);
 
-        if (isResolvedMatchStatus(status)) {
+        if (winnerDisqualified && !isResolvedMatchStatus(status)) {
           if (
             assignWinnerToNextRound({
               rounds,
               roundIndex,
-              matchIndex: getMatchIndexFromKey(matchKey),
-              winnerProfileId: match.winnerProfileId,
+              matchIndex,
+              winnerProfileId: null,
               participantsById,
+              winnerDisqualified: true,
+            })
+          ) {
+            didChange = true;
+            passChanged = true;
+          }
+          continue;
+        }
+
+        if (isResolvedMatchStatus(status)) {
+          const resolvedWinnerProfileId = normalizeString(match.winnerProfileId);
+          const shouldBlockDownstream =
+            winnerDisqualified || resolvedWinnerProfileId === "";
+          if (
+            assignWinnerToNextRound({
+              rounds,
+              roundIndex,
+              matchIndex,
+              winnerProfileId: resolvedWinnerProfileId,
+              participantsById,
+              winnerDisqualified: shouldBlockDownstream,
             })
           ) {
             didChange = true;
@@ -558,7 +654,11 @@ const reconcileBracketMatchReadiness = ({
           continue;
         }
 
-        if (roundIndex === 0 && (hostProfileId || guestProfileId)) {
+        const hasSingleParticipant = !!hostProfileId !== !!guestProfileId;
+        if (
+          hasSingleParticipant &&
+          (roundIndex === 0 || hostSlotBlocked || guestSlotBlocked)
+        ) {
           const winnerProfileId = hostProfileId || guestProfileId;
           if (
             applyMatchResolution(
@@ -578,9 +678,46 @@ const reconcileBracketMatchReadiness = ({
             assignWinnerToNextRound({
               rounds,
               roundIndex,
-              matchIndex: getMatchIndexFromKey(matchKey),
+              matchIndex,
               winnerProfileId,
               participantsById,
+              winnerDisqualified,
+            })
+          ) {
+            didChange = true;
+            passChanged = true;
+          }
+          continue;
+        }
+
+        if (
+          !hostProfileId &&
+          !guestProfileId &&
+          hostSlotBlocked &&
+          guestSlotBlocked
+        ) {
+          if (
+            applyMatchResolution(
+              match,
+              {
+                status: "bye",
+                winnerProfileId: null,
+                loserProfileId: null,
+              },
+              nowMs,
+            )
+          ) {
+            didChange = true;
+            passChanged = true;
+          }
+          if (
+            assignWinnerToNextRound({
+              rounds,
+              roundIndex,
+              matchIndex,
+              winnerProfileId: null,
+              participantsById,
+              winnerDisqualified: true,
             })
           ) {
             didChange = true;
@@ -632,7 +769,13 @@ const recomputeRoundStatuses = ({ rounds, nowMs }) => {
       const status = normalizeString(match.status);
       const hostProfileId = normalizeString(match.hostProfileId);
       const guestProfileId = normalizeString(match.guestProfileId);
-      if (status !== "upcoming" || hostProfileId || guestProfileId) {
+      if (
+        status !== "upcoming" ||
+        hostProfileId ||
+        guestProfileId ||
+        isMatchSlotBlocked(match, "host") ||
+        isMatchSlotBlocked(match, "guest")
+      ) {
         hasStarted = true;
       }
 
@@ -641,7 +784,7 @@ const recomputeRoundStatuses = ({ rounds, nowMs }) => {
         continue;
       }
       const winnerProfileId = normalizeString(match.winnerProfileId);
-      if (winnerProfileId) {
+      if (winnerProfileId && !isMatchWinnerDisqualified(match)) {
         roundWinnerProfileIds.add(winnerProfileId);
       }
     }
@@ -706,6 +849,10 @@ const rebuildParticipantStatesFromRounds = ({
     const matchKeys = getSortedMatchKeys(round.matches);
     for (const matchKey of matchKeys) {
       const match = round.matches[matchKey];
+      if (!match || typeof match !== "object") {
+        continue;
+      }
+
       if (!isMatchResolved(match)) {
         continue;
       }
@@ -1458,6 +1605,163 @@ exports.joinEvent = onCall(async (request) => {
   }
 });
 
+exports.disqualifyEventMatchWinners = onCall(async (request) => {
+  const startedAtMs = getNowMs();
+  const eventId = normalizeString(request.data && request.data.eventId);
+  const matchKeyInput = normalizeString(request.data && request.data.matchKey);
+  const syncLog = createSyncLog({
+    eventId: eventId || null,
+    requesterUid: request && request.auth ? request.auth.uid : null,
+    mode: "callable-disqualify",
+  });
+  syncLog.targetMatchKey = matchKeyInput || null;
+  let lockHandle = null;
+  let stopLockHeartbeat = () => {};
+
+  try {
+    if (!request.auth) {
+      throw new HttpsError(
+        "unauthenticated",
+        "The function must be called while authenticated.",
+      );
+    }
+    await ensurePilotEventCreator(request.auth.uid);
+
+    if (!eventId) {
+      throw new HttpsError("invalid-argument", "eventId is required.");
+    }
+    const parsedMatchKey = parseMatchKey(matchKeyInput);
+    if (!parsedMatchKey) {
+      throw new HttpsError("invalid-argument", "matchKey is invalid.");
+    }
+
+    lockHandle = await acquireEventLockWithRetry(eventId, request.auth.uid, {
+      attempts: 40,
+      delayMs: 100,
+    });
+    if (!lockHandle) {
+      throw new HttpsError(
+        "unavailable",
+        "Event is busy. Please try disqualifying again.",
+      );
+    }
+    stopLockHeartbeat = startEventLockHeartbeat(lockHandle);
+
+    let didDisqualify = false;
+    let resolvedMatchKey = matchKeyInput;
+    try {
+      const eventSnapshot = await admin
+        .database()
+        .ref(`events/${eventId}`)
+        .once("value");
+      if (!eventSnapshot.exists()) {
+        throw new HttpsError("not-found", "Event not found.");
+      }
+      const event = cloneValue(eventSnapshot.val() || {});
+      if (normalizeString(event.status) !== "active") {
+        throw new HttpsError(
+          "failed-precondition",
+          "Only active events can be updated.",
+        );
+      }
+
+      const round =
+        event.rounds && typeof event.rounds === "object"
+          ? event.rounds[String(parsedMatchKey.roundIndex)]
+          : null;
+      if (!round || !round.matches || typeof round.matches !== "object") {
+        throw new HttpsError("failed-precondition", "Selected match not found.");
+      }
+
+      let targetMatch = round.matches[resolvedMatchKey];
+      if (!targetMatch || typeof targetMatch !== "object") {
+        const fallbackEntry =
+          Object.entries(round.matches).find(([candidateMatchKey]) => {
+            const parsedCandidate = parseMatchKey(candidateMatchKey);
+            return parsedCandidate?.matchIndex === parsedMatchKey.matchIndex;
+          }) || null;
+        if (fallbackEntry) {
+          [resolvedMatchKey, targetMatch] = fallbackEntry;
+        }
+      }
+      if (!targetMatch || typeof targetMatch !== "object") {
+        throw new HttpsError("failed-precondition", "Selected match not found.");
+      }
+
+      if (
+        normalizeString(targetMatch.status) !== "pending" ||
+        !normalizeString(targetMatch.inviteId)
+      ) {
+        throw new HttpsError(
+          "failed-precondition",
+          "Only active matches can be disqualified.",
+        );
+      }
+      if (
+        !normalizeString(targetMatch.hostProfileId) ||
+        !normalizeString(targetMatch.guestProfileId)
+      ) {
+        throw new HttpsError(
+          "failed-precondition",
+          "Selected match must have two participants.",
+        );
+      }
+
+      didDisqualify = !isMatchWinnerDisqualified(targetMatch);
+      if (didDisqualify) {
+        const lockOwned = await isEventLockStillOwned(lockHandle);
+        if (!lockOwned) {
+          throw new HttpsError(
+            "unavailable",
+            "Event is busy. Please try disqualifying again.",
+          );
+        }
+        await admin.database().ref().update({
+          [`events/${eventId}/rounds/${parsedMatchKey.roundIndex}/matches/${resolvedMatchKey}/winnerDisqualified`]:
+            true,
+          [`events/${eventId}/updatedAtMs`]: getNowMs(),
+        });
+      }
+    } finally {
+      stopLockHeartbeat();
+      stopLockHeartbeat = () => {};
+      await releaseEventLock(lockHandle);
+      lockHandle = null;
+    }
+
+    let syncResult = null;
+    for (let attempt = 0; attempt < 4; attempt += 1) {
+      syncLog.skipped = false;
+      syncLog.reason = null;
+      syncResult = await runEventSyncState({
+        eventId,
+        requesterUid: request.auth.uid,
+        auth: request.auth,
+        enforceParticipantGate: false,
+        enforceThrottle: false,
+        syncLog,
+      });
+      if (!(syncResult && syncResult.skipped && syncResult.reason === "locked")) {
+        break;
+      }
+      await sleep(80);
+    }
+
+    return {
+      ...syncResult,
+      didDisqualify,
+      matchKey: resolvedMatchKey,
+    };
+  } finally {
+    stopLockHeartbeat();
+    if (lockHandle) {
+      await releaseEventLock(lockHandle);
+    }
+    syncLog.durationMs = getNowMs() - startedAtMs;
+    logSyncEventStateResult(syncLog);
+  }
+});
+
 const buildSkippedSyncResponse = ({ eventId, reason, event }) => ({
   ok: true,
   eventId,
@@ -1642,8 +1946,10 @@ const runEventSyncState = async ({
         roundsChanged = true;
       }
 
-      const eventShouldEnd = normalizeString(finalRoundWinnerProfileId) !== "";
-      const winnerProfileId = eventShouldEnd ? finalRoundWinnerProfileId : null;
+      const finalRoundCompleted =
+        finalRoundIndex !== null && earliestUnresolvedRoundIndex === null;
+      const eventShouldEnd = finalRoundCompleted;
+      const winnerProfileId = normalizeString(finalRoundWinnerProfileId) || null;
       const nextCurrentRoundIndex =
         earliestUnresolvedRoundIndex !== null
           ? earliestUnresolvedRoundIndex
@@ -1735,6 +2041,35 @@ const runEventSyncState = async ({
         Object.keys(inviteUpdates).length > 0 ||
         eventChanged
       ) {
+        updates[`events/${eventId}/updatedAtMs`] = nowMs;
+        didChange = true;
+      }
+    } else if (event.status === "ended") {
+      const rounds = cloneValue(
+        event.rounds && typeof event.rounds === "object" ? event.rounds : {},
+      );
+      let roundsChanged = false;
+      const sortedRoundIndexes = getSortedRoundIndexes(rounds);
+      for (const roundIndex of sortedRoundIndexes) {
+        const round = rounds[String(roundIndex)];
+        if (!round || !round.matches || typeof round.matches !== "object") {
+          continue;
+        }
+        const resolvedEntries = await resolveRoundMatchesWithConcurrency(
+          round.matches,
+        );
+        for (const entry of resolvedEntries) {
+          const { matchRecord, resolved } = entry;
+          if (!resolved) {
+            continue;
+          }
+          if (applyMatchResolution(matchRecord, resolved, nowMs)) {
+            roundsChanged = true;
+          }
+        }
+      }
+      if (roundsChanged) {
+        updates[`events/${eventId}/rounds`] = rounds;
         updates[`events/${eventId}/updatedAtMs`] = nowMs;
         didChange = true;
       }

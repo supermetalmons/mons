@@ -45,6 +45,15 @@ const BRACKET_CORNER_R = 10;
 
 const FALLBACK_MATCH_H = 40;
 const FALLBACK_AVATAR_PX = 28;
+const MONS_LINK_ADMINS = new Set([
+  "ivan",
+  "meinong",
+  "obi",
+  "bosch",
+  "monsol",
+  "bosch2",
+  "trinket",
+]);
 
 type BracketCardInteraction = "none" | "game" | "participant";
 
@@ -197,8 +206,13 @@ const DevHelperAction = styled.button`
   background: var(--color-blue-primary);
   color: white;
 
+  &:disabled {
+    cursor: default;
+    opacity: 0.55;
+  }
+
   @media (hover: hover) and (pointer: fine) {
-    &:hover {
+    &:hover:not(:disabled) {
       background: var(--bottomButtonBackgroundHover);
     }
   }
@@ -207,7 +221,7 @@ const DevHelperAction = styled.button`
     background: var(--color-blue-primary-dark);
 
     @media (hover: hover) and (pointer: fine) {
-      &:hover {
+      &:hover:not(:disabled) {
         background: var(--bottomButtonBackgroundHoverDark);
       }
     }
@@ -364,9 +378,27 @@ const ClassicConnectorSvg = styled.svg`
     stroke-width: 2;
   }
 
+  path[data-blocked="true"] {
+    stroke: rgba(170, 110, 110, 0.55);
+  }
+
+  line {
+    stroke: rgba(170, 110, 110, 0.65);
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
   @media (prefers-color-scheme: dark) {
     path {
       stroke: rgba(140, 140, 140, 0.4);
+    }
+
+    path[data-blocked="true"] {
+      stroke: rgba(175, 120, 120, 0.5);
+    }
+
+    line {
+      stroke: rgba(190, 135, 135, 0.58);
     }
   }
 `;
@@ -735,6 +767,36 @@ const getDisplayedByeSide = (match: EventMatch): MatchSide => {
   return isKnownMatchSide(getMatchSideData(match, "host")) ? "host" : "guest";
 };
 
+const isMatchSideBlocked = (match: EventMatch, side: MatchSide): boolean => {
+  return side === "host" ? match.hostSlotBlocked : match.guestSlotBlocked;
+};
+
+const getDisplayedMatchSides = (match: EventMatch): MatchSide[] => {
+  if (match.winnerDisqualified === true) {
+    return ["host", "guest"];
+  }
+  if (isMatchSideBlocked(match, "host") || isMatchSideBlocked(match, "guest")) {
+    return ["host", "guest"];
+  }
+  if (match.status === "bye") {
+    return [getDisplayedByeSide(match)];
+  }
+  return ["host", "guest"];
+};
+
+const getMatchSideLabel = (match: EventMatch, side: MatchSide): string => {
+  const sideData = getMatchSideData(match, side);
+  const displayName = sideData.displayName?.trim();
+  if (displayName) {
+    return displayName;
+  }
+  const loginUid = sideData.loginUid?.trim();
+  if (loginUid) {
+    return loginUid;
+  }
+  return side === "host" ? "host" : "guest";
+};
+
 const buildParticipantFromMatchSide = (
   match: EventMatch,
   side: MatchSide,
@@ -837,6 +899,10 @@ const isPendingInviteEventMatch = (match: EventMatch): boolean => {
   return match.status === "pending" && getEventMatchInviteId(match) !== "";
 };
 
+const isActionablePendingInviteEventMatch = (match: EventMatch): boolean => {
+  return isPendingInviteEventMatch(match) && match.winnerDisqualified !== true;
+};
+
 const getIndexedMatchesForRound = (round: EventRound): IndexedEventMatch[] => {
   return getSortedMatches(round).map((match, sortedIndex) => ({
     roundIndex: round.roundIndex,
@@ -853,12 +919,34 @@ const getFirstPendingInviteMatch = (event: EventRecord | null): EventMatch | nul
   for (const round of rounds) {
     const indexedMatches = getIndexedMatchesForRound(round);
     for (const indexedMatch of indexedMatches) {
-      if (isPendingInviteEventMatch(indexedMatch.match)) {
+      if (isActionablePendingInviteEventMatch(indexedMatch.match)) {
         return indexedMatch.match;
       }
     }
   }
   return null;
+};
+
+const getActivePendingMatches = (
+  event: EventRecord | null,
+): Array<{ roundIndex: number; match: EventMatch }> => {
+  if (!event || event.status !== "active") {
+    return [];
+  }
+  const matches: Array<{ roundIndex: number; match: EventMatch }> = [];
+  const rounds = getSortedRounds(event);
+  for (const round of rounds) {
+    const roundMatches = getSortedMatches(round);
+    for (const match of roundMatches) {
+      if (isActionablePendingInviteEventMatch(match)) {
+        matches.push({
+          roundIndex: round.roundIndex,
+          match,
+        });
+      }
+    }
+  }
+  return matches;
 };
 
 const getRoundMatchByIndex = (
@@ -893,7 +981,7 @@ const findPendingInviteMatchInBranch = (
   if (!match) {
     return null;
   }
-  if (isPendingInviteEventMatch(match)) {
+  if (isActionablePendingInviteEventMatch(match)) {
     return match;
   }
   if (isResolvedEventMatch(match) || roundIndex === 0) {
@@ -999,8 +1087,7 @@ const getCurrentUiState = (
     const candidate =
       getSortedMatches(round).find(
         (match) =>
-          match.status === "pending" &&
-          match.inviteId &&
+          isActionablePendingInviteEventMatch(match) &&
           (match.hostProfileId === profileId ||
             match.guestProfileId === profileId),
       ) ?? null;
@@ -1051,11 +1138,18 @@ type ClassicBracketMatchPosition = {
   height: number;
 };
 
+type ClassicBracketConnector = {
+  d: string;
+  isBlocked: boolean;
+  crossX: number | null;
+  crossY: number | null;
+};
+
 type ClassicBracketLayout = {
   width: number;
   height: number;
   positions: ClassicBracketMatchPosition[];
-  connectors: string[];
+  connectors: ClassicBracketConnector[];
 };
 
 type BracketMatchLayout = {
@@ -1272,7 +1366,7 @@ const computeSymmetricalBracket = (
     totalCols === 0 ? 0 : columnX[totalCols - 1] + columnWidths[totalCols - 1];
 
   const positions: ClassicBracketMatchPosition[] = [];
-  const connectors: string[] = [];
+  const connectors: ClassicBracketConnector[] = [];
   let maxBottom = 0;
 
   const colX = (col: number): number => columnX[col] ?? 0;
@@ -1292,6 +1386,21 @@ const computeSymmetricalBracket = (
       height: layout.height,
     });
     maxBottom = Math.max(maxBottom, y + layout.height);
+  };
+  const pushConnector = (
+    d: string,
+    x1: number,
+    y1: number,
+    x2: number,
+    y2: number,
+    isBlocked: boolean,
+  ): void => {
+    connectors.push({
+      d,
+      isBlocked,
+      crossX: isBlocked ? (x1 + x2) / 2 : null,
+      crossY: isBlocked ? (y1 + y2) / 2 : null,
+    });
   };
 
   // Left side: columns 0 to sideRounds-1
@@ -1323,25 +1432,32 @@ const computeSymmetricalBracket = (
         const y1 = getBracketMatchCenterY(r, srcA, layout.height);
         const nextMatchTop = getBracketMatchTop(r + 1, j, nextLayout.height);
         const sx = x + layout.width;
+        const sourceMatchA = roundMatches[srcA];
         if (nextLayout.useCompactEntry) {
           const entryX = nextX + nextLayout.width / 2;
-          connectors.push(
-            buildClassicTopBottomEntryConnectorPath(
-              sx,
-              y1,
-              entryX,
-              nextMatchTop,
-            ),
+          pushConnector(
+            buildClassicTopBottomEntryConnectorPath(sx, y1, entryX, nextMatchTop),
+            sx,
+            y1,
+            entryX,
+            nextMatchTop,
+            sourceMatchA?.winnerDisqualified === true,
           );
           if (srcB < perSideCount) {
             const y2 = getBracketMatchCenterY(r, srcB, layout.height);
-            connectors.push(
+            const sourceMatchB = roundMatches[srcB];
+            pushConnector(
               buildClassicTopBottomEntryConnectorPath(
                 sx,
                 y2,
                 entryX,
                 nextMatchTop + nextLayout.height,
               ),
+              sx,
+              y2,
+              entryX,
+              nextMatchTop + nextLayout.height,
+              sourceMatchB?.winnerDisqualified === true,
             );
           }
         }
@@ -1354,7 +1470,14 @@ const computeSymmetricalBracket = (
       const sx = x + layout.width;
       const ex = colX(sideRounds);
       const finalY = getBracketMatchCenterY(r, 0, finalLayout.height);
-      connectors.push(buildClassicElbowConnectorPath(sx, y, ex, finalY));
+      pushConnector(
+        buildClassicElbowConnectorPath(sx, y, ex, finalY),
+        sx,
+        y,
+        ex,
+        finalY,
+        roundMatches[0]?.winnerDisqualified === true,
+      );
     }
   }
 
@@ -1405,25 +1528,32 @@ const computeSymmetricalBracket = (
         const y1 = getBracketMatchCenterY(r, srcA, layout.height);
         const nextMatchTop = getBracketMatchTop(r + 1, j, nextLayout.height);
         const sx = x;
+        const sourceMatchA = roundMatches[offset + srcA];
         if (nextLayout.useCompactEntry) {
           const entryX = innerX + nextLayout.width / 2;
-          connectors.push(
-            buildClassicTopBottomEntryConnectorPath(
-              sx,
-              y1,
-              entryX,
-              nextMatchTop,
-            ),
+          pushConnector(
+            buildClassicTopBottomEntryConnectorPath(sx, y1, entryX, nextMatchTop),
+            sx,
+            y1,
+            entryX,
+            nextMatchTop,
+            sourceMatchA?.winnerDisqualified === true,
           );
           if (srcB < currentSideCount) {
             const y2 = getBracketMatchCenterY(r, srcB, layout.height);
-            connectors.push(
+            const sourceMatchB = roundMatches[offset + srcB];
+            pushConnector(
               buildClassicTopBottomEntryConnectorPath(
                 sx,
                 y2,
                 entryX,
                 nextMatchTop + nextLayout.height,
               ),
+              sx,
+              y2,
+              entryX,
+              nextMatchTop + nextLayout.height,
+              sourceMatchB?.winnerDisqualified === true,
             );
           }
         }
@@ -1436,7 +1566,14 @@ const computeSymmetricalBracket = (
       const sx = x;
       const ex = colX(sideRounds) + finalLayout.width;
       const finalY = getBracketMatchCenterY(r, 0, finalLayout.height);
-      connectors.push(buildClassicElbowConnectorPath(sx, y, ex, finalY));
+      pushConnector(
+        buildClassicElbowConnectorPath(sx, y, ex, finalY),
+        sx,
+        y,
+        ex,
+        finalY,
+        roundMatches[offset]?.winnerDisqualified === true,
+      );
     }
   }
 
@@ -1452,7 +1589,15 @@ const EventAvatar: React.FC<{
   emojiId?: number | null;
   displayName?: string | null;
   size?: number;
-}> = ({ emojiId, displayName, size }) => {
+  isBlocked?: boolean;
+}> = ({ emojiId, displayName, size, isBlocked }) => {
+  if (isBlocked) {
+    return (
+      <AvatarFallback $size={size} aria-hidden="true">
+        ∅
+      </AvatarFallback>
+    );
+  }
   if (typeof emojiId === "number" && Number.isFinite(emojiId)) {
     return (
       <Avatar
@@ -1690,13 +1835,16 @@ const createStubEventRecord = ({
         inviteId: null,
         status,
         resolvedAtMs,
+        winnerDisqualified: false,
         winnerProfileId: winner?.profileId ?? null,
         loserProfileId: loser?.profileId ?? null,
+        hostSlotBlocked: false,
         hostProfileId: host?.profileId ?? null,
         hostLoginUid: host?.loginUid ?? null,
         hostDisplayName: host?.displayName ?? null,
         hostEmojiId: host?.emojiId ?? null,
         hostAura: host?.aura ?? null,
+        guestSlotBlocked: false,
         guestProfileId: guest?.profileId ?? null,
         guestLoginUid: guest?.loginUid ?? null,
         guestDisplayName: guest?.displayName ?? null,
@@ -1780,6 +1928,7 @@ const EventModal: React.FC = () => {
     DEV_STUB_DEFAULT_PLAYERS,
   );
   const [isLoading, setIsLoading] = useState(false);
+  const [isDisqualifying, setIsDisqualifying] = useState(false);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
   const [nowMs, setNowMs] = useState(() => Date.now());
   const [viewportSize, setViewportSize] = useState(getViewportSize);
@@ -1841,6 +1990,7 @@ const EventModal: React.FC = () => {
       setEventRecord(null);
       setCopyState("idle");
       setIsLoading(false);
+      setIsDisqualifying(false);
       setPendingJoinEventId(null);
       setPendingJoinRequestedAtMs(0);
       setOpeningParticipantId(null);
@@ -2100,6 +2250,12 @@ const EventModal: React.FC = () => {
   const watchableMatch = useMemo(
     () => getWatchableMatch(displayedEventRecord, currentProfileId, eventUiState),
     [currentProfileId, displayedEventRecord, eventUiState],
+  );
+  const currentUsername = storage.getUsername("").trim().toLowerCase();
+  const canManageDisqualifications = MONS_LINK_ADMINS.has(currentUsername);
+  const livePendingMatches = useMemo(
+    () => getActivePendingMatches(eventRecord),
+    [eventRecord],
   );
   const currentRoute = getCurrentRouteState();
 
@@ -2410,6 +2566,76 @@ const EventModal: React.FC = () => {
     [handleParticipantClick, openMatch],
   );
 
+  const handleDisqualifyClick = useCallback(() => {
+    if (
+      !canManageDisqualifications ||
+      !modalState.eventId ||
+      !eventRecord ||
+      eventRecord.status !== "active" ||
+      devStubRecord ||
+      isDisqualifying
+    ) {
+      return;
+    }
+
+    const activeMatches = getActivePendingMatches(eventRecord);
+    if (activeMatches.length <= 0) {
+      return;
+    }
+
+    const selectionLines = activeMatches.map(({ roundIndex, match }, index) => {
+      const hostLabel = getMatchSideLabel(match, "host");
+      const guestLabel = getMatchSideLabel(match, "guest");
+      return `${index + 1}. Round ${roundIndex + 1}: ${hostLabel} vs ${guestLabel}`;
+    });
+    const rawSelection = window.prompt(
+      `Select active game to disqualify:\n${selectionLines.join("\n")}`,
+      "1",
+    );
+    if (!rawSelection) {
+      return;
+    }
+    const selectedIndex = Math.floor(Number(rawSelection)) - 1;
+    const selected = activeMatches[selectedIndex];
+    if (!selected) {
+      return;
+    }
+
+    const hostLabel = getMatchSideLabel(selected.match, "host");
+    const guestLabel = getMatchSideLabel(selected.match, "guest");
+    const didConfirm = window.confirm(
+      `disqualify ${hostLabel} and ${guestLabel}?`,
+    );
+    if (!didConfirm) {
+      return;
+    }
+
+    setIsDisqualifying(true);
+    void connection
+      .disqualifyEventMatchWinners(modalState.eventId, selected.match.matchKey)
+      .catch((error) => {
+        const rawMessage =
+          typeof error === "object" &&
+          error !== null &&
+          "message" in error &&
+          typeof (error as { message?: unknown }).message === "string"
+            ? (error as { message: string }).message.trim()
+            : "";
+        window.alert(
+          rawMessage || "Failed to disqualify selected match. Please try again.",
+        );
+      })
+      .finally(() => {
+        setIsDisqualifying(false);
+      });
+  }, [
+    canManageDisqualifications,
+    devStubRecord,
+    eventRecord,
+    isDisqualifying,
+    modalState.eventId,
+  ]);
+
   const handleCreateStubBracket = useCallback(() => {
     const normalizedPlayerCount = clampDevStubPlayerCount(devStubPlayerCount);
     setDevStubPlayerCount(normalizedPlayerCount);
@@ -2452,6 +2678,12 @@ const EventModal: React.FC = () => {
     !isBracketStatus &&
     !isDismissedState &&
     !isPendingDismissState;
+  const canDisqualifyFromLiveBracket =
+    canManageDisqualifications &&
+    !devStubRecord &&
+    eventRecord?.status === "active";
+  const disableDisqualifyButton =
+    isDisqualifying || livePendingMatches.length <= 0;
   const topBarTitleText = devStubRecord
     ? ""
     : formatRelativeStart(displayedEventRecord, nowMs);
@@ -2516,6 +2748,15 @@ const EventModal: React.FC = () => {
               <DevHelperAction type="button" onClick={handleCreateStubBracket}>
                 Generate
               </DevHelperAction>
+              {canDisqualifyFromLiveBracket && (
+                <DevHelperAction
+                  type="button"
+                  onClick={handleDisqualifyClick}
+                  disabled={disableDisqualifyButton}
+                >
+                  {isDisqualifying ? "..." : "Disqualify"}
+                </DevHelperAction>
+              )}
               {devStubRecord && (
                 <DevHelperAction type="button" onClick={handleResetStubBracket}>
                   Live
@@ -2551,10 +2792,7 @@ const EventModal: React.FC = () => {
                     : "none";
               const hostSideData = getMatchSideData(mp.match, "host");
               const guestSideData = getMatchSideData(mp.match, "guest");
-              const displayedSides: MatchSide[] =
-                mp.match.status === "bye"
-                  ? [getDisplayedByeSide(mp.match)]
-                  : ["host", "guest"];
+              const displayedSides = getDisplayedMatchSides(mp.match);
               return (
                 <ClassicMatchCard
                   key={mp.key}
@@ -2583,6 +2821,7 @@ const EventModal: React.FC = () => {
                           size={BRACKET_AVATAR_PX}
                           emojiId={sideData.emojiId}
                           displayName={sideData.displayName}
+                          isBlocked={isMatchSideBlocked(mp.match, side)}
                         />
                       </MatchAvatarSlot>
                     );
@@ -2595,8 +2834,31 @@ const EventModal: React.FC = () => {
               height={bracketLayout.height}
               viewBox={`0 0 ${bracketLayout.width} ${bracketLayout.height}`}
             >
-              {bracketLayout.connectors.map((d, i) => (
-                <path key={i} d={d} />
+              {bracketLayout.connectors.map((connector, i) => (
+                <React.Fragment key={i}>
+                  <path
+                    d={connector.d}
+                    data-blocked={connector.isBlocked ? "true" : "false"}
+                  />
+                  {connector.isBlocked &&
+                    connector.crossX !== null &&
+                    connector.crossY !== null && (
+                      <>
+                        <line
+                          x1={connector.crossX - 5}
+                          y1={connector.crossY - 5}
+                          x2={connector.crossX + 5}
+                          y2={connector.crossY + 5}
+                        />
+                        <line
+                          x1={connector.crossX - 5}
+                          y1={connector.crossY + 5}
+                          x2={connector.crossX + 5}
+                          y2={connector.crossY - 5}
+                        />
+                      </>
+                    )}
+                </React.Fragment>
               ))}
             </ClassicConnectorSvg>
           </BracketContainer>
@@ -2621,10 +2883,7 @@ const EventModal: React.FC = () => {
                         : "none";
                   const hostSideData = getMatchSideData(match, "host");
                   const guestSideData = getMatchSideData(match, "guest");
-                  const displayedSides: MatchSide[] =
-                    match.status === "bye"
-                      ? [getDisplayedByeSide(match)]
-                      : ["host", "guest"];
+                  const displayedSides = getDisplayedMatchSides(match);
                   return (
                     <BracketFallbackMatchCard
                       key={`${round.key}_${match.matchKey}_${index}`}
@@ -2650,6 +2909,7 @@ const EventModal: React.FC = () => {
                               size={FALLBACK_AVATAR_PX}
                               emojiId={sideData.emojiId}
                               displayName={sideData.displayName}
+                              isBlocked={isMatchSideBlocked(match, side)}
                             />
                           </MatchAvatarSlot>
                         );
@@ -2721,19 +2981,16 @@ const EventModal: React.FC = () => {
               </BottomPillButton>
             )}
 
-            {displayedEventRecord?.status === "active" &&
-              eventUiState.playableMatch && (
-                <BottomPillButton
-                  type="button"
-                  onClick={() =>
-                    void openMatch(
-                      eventUiState.playableMatch!.inviteId as string,
-                    )
-                  }
-                >
-                  Play
-                </BottomPillButton>
-              )}
+            {eventUiState.playableMatch && (
+              <BottomPillButton
+                type="button"
+                onClick={() =>
+                  void openMatch(eventUiState.playableMatch!.inviteId as string)
+                }
+              >
+                Play
+              </BottomPillButton>
+            )}
 
             {displayedEventRecord?.status === "active" &&
               !eventUiState.playableMatch &&

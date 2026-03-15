@@ -2369,6 +2369,54 @@ class Connection {
     }
   }
 
+  public async disqualifyEventMatchWinners(
+    eventId: string,
+    matchKey: string,
+  ): Promise<{
+    ok: boolean;
+    eventId?: string;
+    event?: EventRecord | null;
+    didDisqualify?: boolean;
+    matchKey?: string;
+  }> {
+    try {
+      await this.ensureAuthenticated();
+      const disqualifyEventMatchWinnersFunction = httpsCallable(
+        this.functions,
+        "disqualifyEventMatchWinners",
+      );
+      const response = await disqualifyEventMatchWinnersFunction({
+        eventId,
+        matchKey,
+      });
+      const data = response.data as {
+        ok?: boolean;
+        eventId?: unknown;
+        event?: unknown;
+        didDisqualify?: unknown;
+        matchKey?: unknown;
+      };
+      const normalizedEventId =
+        typeof data?.eventId === "string" ? data.eventId : "";
+      return {
+        ok: data?.ok === true,
+        eventId: normalizedEventId || undefined,
+        event: this.mapDatabaseEventRecord(
+          data?.event ?? null,
+          normalizedEventId,
+        ),
+        didDisqualify:
+          typeof data?.didDisqualify === "boolean"
+            ? data.didDisqualify
+            : undefined,
+        matchKey: typeof data?.matchKey === "string" ? data.matchKey : undefined,
+      };
+    } catch (error) {
+      console.error("Error disqualifying event match winners:", error);
+      throw error;
+    }
+  }
+
   public async syncEventState(eventId: string): Promise<EventSyncResponse> {
     const normalizedEventId = this.normalizeString(eventId).trim();
     if (!normalizedEventId) {
@@ -2937,8 +2985,10 @@ class Connection {
       )
         ? this.normalizeFiniteNumber(rawData.resolvedAtMs, NaN)
         : null,
+      winnerDisqualified: rawData.winnerDisqualified === true,
       winnerProfileId: this.normalizeStringOrNull(rawData.winnerProfileId),
       loserProfileId: this.normalizeStringOrNull(rawData.loserProfileId),
+      hostSlotBlocked: rawData.hostSlotBlocked === true,
       hostProfileId: this.normalizeStringOrNull(rawData.hostProfileId),
       hostLoginUid: this.normalizeStringOrNull(rawData.hostLoginUid),
       hostDisplayName: this.normalizeStringOrNull(rawData.hostDisplayName),
@@ -2957,6 +3007,7 @@ class Connection {
         ? this.normalizeFiniteNumber(rawData.guestEmojiId, NaN)
         : null,
       guestAura: this.normalizeStringOrNull(rawData.guestAura),
+      guestSlotBlocked: rawData.guestSlotBlocked === true,
     };
   }
 

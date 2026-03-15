@@ -27,6 +27,7 @@ const { resolveWagerOutcome } = require("./resolveWagerOutcome");
 const {
   createEvent,
   joinEvent,
+  disqualifyEventMatchWinners,
   syncEventState,
   processEventProgress,
   processEventProgressFallback,
@@ -71,6 +72,7 @@ exports.acceptWagerProposal = acceptWagerProposal;
 exports.resolveWagerOutcome = resolveWagerOutcome;
 exports.createEvent = createEvent;
 exports.joinEvent = joinEvent;
+exports.disqualifyEventMatchWinners = disqualifyEventMatchWinners;
 exports.syncEventState = syncEventState;
 exports.processEventProgress = processEventProgress;
 exports.processEventProgressFallback = processEventProgressFallback;
