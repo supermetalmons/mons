@@ -237,6 +237,7 @@ const ParticipantsCloud = styled.div<{ $scale: number }>`
   justify-content: center;
   gap: 10px;
   padding: 8px 16px;
+  pointer-events: none;
   transform: scale(${(p) => p.$scale});
   transform-origin: center center;
 `;
@@ -251,6 +252,7 @@ const ParticipantPill = styled.button`
   align-items: center;
   gap: 8px;
   cursor: pointer;
+  pointer-events: auto;
   -webkit-tap-highlight-color: transparent;
   background: var(--color-gray-f0);
   transition: background-color 0.15s ease;
@@ -338,12 +340,14 @@ const BracketContainer = styled.div<{
   width: ${(p) => p.$w}px;
   height: ${(p) => p.$h}px;
   cursor: default;
+  pointer-events: none;
   transform: scale(${(p) => p.$scale});
   transform-origin: center center;
 `;
 
 const BracketPlacement = styled.div<{ $offsetY: number }>`
   position: relative;
+  pointer-events: none;
   transform: translateY(${(p) => p.$offsetY}px);
 `;
 
@@ -389,6 +393,7 @@ const ClassicMatchCard = styled.button<{
   justify-content: center;
   gap: 4px;
   cursor: ${(p) => (p.$interaction === "none" ? "default" : "pointer")};
+  pointer-events: auto;
   -webkit-tap-highlight-color: transparent;
   background: var(--color-gray-f0);
   transition: background-color 0.15s ease;
