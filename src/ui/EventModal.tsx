@@ -229,24 +229,32 @@ const ContentArea = styled.div`
   }
 `;
 
-const ParticipantsList = styled.div`
+const ParticipantsCloud = styled.div`
+  width: min(520px, calc(100vw - 24px));
+  max-height: min(420px, calc(100vh - 192px));
+  max-height: min(420px, calc(100dvh - 192px));
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  justify-content: center;
+  gap: 10px;
+  padding: 8px 12px;
+  overflow-y: auto;
 `;
 
-const ParticipantRow = styled.button`
-  display: flex;
+const ParticipantPill = styled.button`
+  min-height: ${FALLBACK_MATCH_H}px;
+  max-width: 100%;
+  border: none;
+  border-radius: ${FALLBACK_MATCH_H / 2}px;
+  padding: 6px 12px 6px 6px;
+  display: inline-flex;
   align-items: center;
   gap: 8px;
-  min-width: 0;
-  width: 100%;
-  border: none;
-  background: transparent;
-  padding: 6px 8px;
-  border-radius: 10px;
-  text-align: left;
   cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  background: var(--color-gray-f0);
+  transition: background-color 0.15s ease;
 
   &:disabled {
     cursor: default;
@@ -255,14 +263,16 @@ const ParticipantRow = styled.button`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) {
-      background: rgba(0, 0, 0, 0.04);
+      background: var(--color-gray-e0);
     }
   }
 
   @media (prefers-color-scheme: dark) {
+    background: var(--color-gray-27);
+
     @media (hover: hover) and (pointer: fine) {
       &:hover:not(:disabled) {
-        background: rgba(255, 255, 255, 0.06);
+        background: var(--color-gray-33);
       }
     }
   }
@@ -304,23 +314,19 @@ const AvatarFallback = styled.div<{ $size?: number }>`
   }
 `;
 
-const ParticipantName = styled.div`
+const ParticipantPillName = styled.div`
   min-width: 0;
+  max-width: min(44vw, 180px);
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-size: 0.92rem;
+  font-weight: 600;
   color: var(--color-gray-25);
 
   @media (prefers-color-scheme: dark) {
     color: var(--color-gray-f5);
   }
-`;
-
-const ParticipantState = styled.div`
-  margin-left: auto;
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  color: var(--navigationTextMuted);
 `;
 
 const BracketContainer = styled.div<{
@@ -1474,6 +1480,8 @@ const getParticipantDisplayName = (participant: EventParticipant): string => {
 const DEV_STUB_MIN_PLAYERS = 2;
 const DEV_STUB_MAX_PLAYERS = 32;
 const DEV_STUB_DEFAULT_PLAYERS = 8;
+const DEV_STUB_NAME_LENGTH = 9;
+const DEV_STUB_NAME_ALPHABET = "abcdefghijklmnopqrstuvwxyz";
 
 const clampDevStubPlayerCount = (value: number): number => {
   if (!Number.isFinite(value)) {
@@ -1517,6 +1525,47 @@ const shuffleArray = <T,>(values: T[]): T[] => {
   return next;
 };
 
+const createRandomStubName = (): string => {
+  let name = "";
+  for (let index = 0; index < DEV_STUB_NAME_LENGTH; index += 1) {
+    const letterIndex = Math.floor(
+      Math.random() * DEV_STUB_NAME_ALPHABET.length,
+    );
+    name += DEV_STUB_NAME_ALPHABET[letterIndex];
+  }
+  return `${name.charAt(0).toUpperCase()}${name.slice(1)}`;
+};
+
+const createStubParticipants = (
+  playerCount: number,
+  nowMs: number,
+): EventParticipant[] => {
+  const displayNames = new Set<string>();
+  while (displayNames.size < playerCount) {
+    displayNames.add(createRandomStubName());
+  }
+
+  return shuffleArray(
+    Array.from(displayNames, (displayName, index) => {
+      const profileId = `dev_stub_profile_${index + 1}`;
+      const [emojiIdString] = emojis.getRandomEmojiUrl(true);
+      const emojiId = Number(emojiIdString);
+      return {
+        profileId,
+        loginUid: `dev_stub_login_${index + 1}`,
+        username: displayName.toLowerCase(),
+        displayName,
+        emojiId: Number.isFinite(emojiId) ? emojiId : 1,
+        aura: "",
+        joinedAtMs: nowMs - (playerCount - index) * 3000,
+        state: "active",
+        eliminatedRoundIndex: null,
+        eliminatedByProfileId: null,
+      } satisfies EventParticipant;
+    }),
+  );
+};
+
 const createStubEventRecord = ({
   source,
   playerCount,
@@ -1530,28 +1579,42 @@ const createStubEventRecord = ({
   const bracketSize = getStubBracketSize(normalizedPlayerCount);
   const roundCount = Math.max(1, Math.round(Math.log2(bracketSize)));
   const nowMs = Date.now();
-  const participants = shuffleArray(
-    Array.from({ length: normalizedPlayerCount }, (_, index) => {
-      const profileId = `dev_stub_profile_${index + 1}`;
-      const [emojiIdString] = emojis.getRandomEmojiUrl(true);
-      const emojiId = Number(emojiIdString);
-      return {
-        profileId,
-        loginUid: `dev_stub_login_${index + 1}`,
-        username: `stub_${index + 1}`,
-        displayName: `Stub ${index + 1}`,
-        emojiId: Number.isFinite(emojiId) ? emojiId : 1,
-        aura: "",
-        joinedAtMs: nowMs - (normalizedPlayerCount - index) * 3000,
-        state: "active",
-        eliminatedRoundIndex: null,
-        eliminatedByProfileId: null,
-      } satisfies EventParticipant;
-    }),
-  );
+  const participants = createStubParticipants(normalizedPlayerCount, nowMs);
   const participantsById: Record<string, EventParticipant> = {};
   for (const participant of participants) {
     participantsById[participant.profileId] = participant;
+  }
+  const sourceCreator = participants[0] ?? null;
+  const sourceEventId = source?.eventId?.trim();
+
+  if (source?.status === "scheduled") {
+    const scheduledStartAtMs =
+      typeof source.startAtMs === "number" && source.startAtMs > nowMs
+        ? source.startAtMs
+        : nowMs + 15 * 60_000;
+    return {
+      schemaVersion: source?.schemaVersion ?? 1,
+      eventId: sourceEventId || fallbackEventId?.trim() || "dev_stub_event",
+      status: "scheduled",
+      createdAtMs: source?.createdAtMs ?? nowMs - 60_000,
+      updatedAtMs: nowMs,
+      startAtMs: scheduledStartAtMs,
+      startedAtMs: null,
+      endedAtMs: null,
+      createdByProfileId:
+        source?.createdByProfileId ?? sourceCreator?.profileId ?? "dev_stub",
+      createdByLoginUid:
+        source?.createdByLoginUid ?? sourceCreator?.loginUid ?? "dev_stub",
+      createdByUsername:
+        source?.createdByUsername ?? sourceCreator?.username ?? "dev_stub",
+      winnerProfileId: null,
+      winnerDisplayName: null,
+      currentRoundIndex: null,
+      bracketSize,
+      roundCount: 0,
+      participants: participantsById,
+      rounds: {},
+    };
   }
 
   const seedOrder = buildSeedOrder(bracketSize);
@@ -1670,8 +1733,6 @@ const createStubEventRecord = ({
     };
   }
 
-  const sourceCreator = participants[0] ?? winner;
-  const sourceEventId = source?.eventId?.trim();
   return {
     schemaVersion: source?.schemaVersion ?? 1,
     eventId: sourceEventId || fallbackEventId?.trim() || "dev_stub_event",
@@ -1682,11 +1743,20 @@ const createStubEventRecord = ({
     startedAtMs: source?.startedAtMs ?? nowMs - (roundCount + 2) * 60_000,
     endedAtMs: nowMs - 10_000,
     createdByProfileId:
-      source?.createdByProfileId ?? sourceCreator?.profileId ?? "dev_stub",
+      source?.createdByProfileId ??
+      sourceCreator?.profileId ??
+      winner?.profileId ??
+      "dev_stub",
     createdByLoginUid:
-      source?.createdByLoginUid ?? sourceCreator?.loginUid ?? "dev_stub",
+      source?.createdByLoginUid ??
+      sourceCreator?.loginUid ??
+      winner?.loginUid ??
+      "dev_stub",
     createdByUsername:
-      source?.createdByUsername ?? sourceCreator?.username ?? "dev_stub",
+      source?.createdByUsername ??
+      sourceCreator?.username ??
+      winner?.username ??
+      "dev_stub",
     winnerProfileId: winner?.profileId ?? null,
     winnerDisplayName: winner?.displayName ?? null,
     currentRoundIndex: Math.max(0, roundCount - 1),
@@ -2558,33 +2628,25 @@ const EventModal: React.FC = () => {
       )}
 
       {showParticipantsPanel && (
-        <ContentArea>
-          <ParticipantsList>
-            {participants.map((participant) => (
-              <ParticipantRow
-                key={participant.profileId}
-                type="button"
-                onClick={() => void handleParticipantClick(participant)}
-                disabled={openingParticipantId !== null}
-              >
-                <EventAvatar
-                  emojiId={participant.emojiId}
-                  displayName={participant.displayName}
-                />
-                <ParticipantName>
-                  {getParticipantDisplayName(participant)}
-                </ParticipantName>
-                <ParticipantState>
-                  {participant.state === "winner"
-                    ? "winner"
-                    : participant.state === "eliminated"
-                      ? "out"
-                      : ""}
-                </ParticipantState>
-              </ParticipantRow>
-            ))}
-          </ParticipantsList>
-        </ContentArea>
+        <ParticipantsCloud>
+          {participants.map((participant) => (
+            <ParticipantPill
+              key={participant.profileId}
+              type="button"
+              onClick={() => void handleParticipantClick(participant)}
+              disabled={openingParticipantId !== null}
+            >
+              <EventAvatar
+                emojiId={participant.emojiId}
+                displayName={participant.displayName}
+                size={FALLBACK_AVATAR_PX}
+              />
+              <ParticipantPillName>
+                {getParticipantDisplayName(participant)}
+              </ParticipantPillName>
+            </ParticipantPill>
+          ))}
+        </ParticipantsCloud>
       )}
 
       {modalState.eventId && !isDismissedState && (
