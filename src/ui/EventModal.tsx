@@ -229,17 +229,16 @@ const ContentArea = styled.div`
   }
 `;
 
-const ParticipantsCloud = styled.div`
-  width: min(520px, calc(100vw - 24px));
-  max-height: min(420px, calc(100vh - 192px));
-  max-height: min(420px, calc(100dvh - 192px));
+const ParticipantsCloud = styled.div<{ $scale: number }>`
+  width: min(880px, calc(100vw - 48px));
   display: flex;
   flex-wrap: wrap;
-  align-content: flex-start;
+  align-content: center;
   justify-content: center;
   gap: 10px;
-  padding: 8px 12px;
-  overflow-y: auto;
+  padding: 8px 16px;
+  transform: scale(${(p) => p.$scale});
+  transform-origin: center center;
 `;
 
 const ParticipantPill = styled.button`
@@ -1780,6 +1779,7 @@ const EventModal: React.FC = () => {
   const [nowMs, setNowMs] = useState(() => Date.now());
   const [viewportSize, setViewportSize] = useState(getViewportSize);
   const [bracketInsets, setBracketInsets] = useState({ top: 0, bottom: 0 });
+  const [participantsScale, setParticipantsScale] = useState(1);
   const [pendingJoinEventId, setPendingJoinEventId] = useState<string | null>(
     null,
   );
@@ -1794,6 +1794,7 @@ const EventModal: React.FC = () => {
   const copyResetTimeoutRef = useRef<number | null>(null);
   const topBarRef = useRef<HTMLDivElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
+  const participantsCloudRef = useRef<HTMLDivElement | null>(null);
   const measureBracketInsets = useCallback(() => {
     const nextTop = Math.round(
       topBarRef.current?.getBoundingClientRect().height ?? 0,
@@ -1953,6 +1954,36 @@ const EventModal: React.FC = () => {
       return;
     }
     measureBracketInsets();
+  });
+
+  useLayoutEffect(() => {
+    const el = participantsCloudRef.current;
+    if (!el) {
+      return;
+    }
+    const naturalW = el.scrollWidth;
+    const naturalH = el.scrollHeight;
+    if (naturalW <= 0 || naturalH <= 0) {
+      return;
+    }
+    const reservedTop = bracketInsets.top + BRACKET_EDGE_PADDING_Y;
+    const reservedBottom = bracketInsets.bottom + BRACKET_EDGE_PADDING_Y;
+    const availW = Math.max(
+      1,
+      viewportSize.width - BRACKET_EDGE_PADDING_X * 2,
+    );
+    const availH = Math.max(
+      1,
+      viewportSize.height - reservedTop - reservedBottom,
+    );
+    const sx = availW / naturalW;
+    const sy = availH / naturalH;
+    let scale = Math.min(1, sx, sy);
+    if (!Number.isFinite(scale)) scale = 1;
+    scale = Math.max(0.4, scale);
+    setParticipantsScale((prev) =>
+      Math.abs(prev - scale) < 0.002 ? prev : scale,
+    );
   });
 
   useEffect(() => {
@@ -2628,25 +2659,30 @@ const EventModal: React.FC = () => {
       )}
 
       {showParticipantsPanel && (
-        <ParticipantsCloud>
-          {participants.map((participant) => (
-            <ParticipantPill
-              key={participant.profileId}
-              type="button"
-              onClick={() => void handleParticipantClick(participant)}
-              disabled={openingParticipantId !== null}
-            >
-              <EventAvatar
-                emojiId={participant.emojiId}
-                displayName={participant.displayName}
-                size={FALLBACK_AVATAR_PX}
-              />
-              <ParticipantPillName>
-                {getParticipantDisplayName(participant)}
-              </ParticipantPillName>
-            </ParticipantPill>
-          ))}
-        </ParticipantsCloud>
+        <BracketPlacement $offsetY={bracketOffsetY}>
+          <ParticipantsCloud
+            ref={participantsCloudRef}
+            $scale={participantsScale}
+          >
+            {participants.map((participant) => (
+              <ParticipantPill
+                key={participant.profileId}
+                type="button"
+                onClick={() => void handleParticipantClick(participant)}
+                disabled={openingParticipantId !== null}
+              >
+                <EventAvatar
+                  emojiId={participant.emojiId}
+                  displayName={participant.displayName}
+                  size={FALLBACK_AVATAR_PX}
+                />
+                <ParticipantPillName>
+                  {getParticipantDisplayName(participant)}
+                </ParticipantPillName>
+              </ParticipantPill>
+            ))}
+          </ParticipantsCloud>
+        </BracketPlacement>
       )}
 
       {modalState.eventId && !isDismissedState && (
