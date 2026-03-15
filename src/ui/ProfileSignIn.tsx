@@ -4,6 +4,13 @@ import { flushSync } from "react-dom";
 import styled, { css } from "styled-components";
 import { storage } from "../utils/storage";
 import { connection } from "../connection/connection";
+import {
+  ModalOverlay,
+  ModalPopup,
+  ModalTitle,
+  ButtonsContainer,
+  CancelButton,
+} from "./SharedModalComponents";
 import { didDismissSomethingWithOutsideTapJustNow } from "./BottomControls";
 import {
   closeMenuAndInfoIfAllowedForEvent,
@@ -52,7 +59,7 @@ import { performLogoutCleanupAndReload } from "../session/logoutOrchestrator";
 const Container = styled.div<{ $liftAboveEventModal?: boolean }>`
   position: relative;
   z-index: ${(props) =>
-    props.$liftAboveEventModal ? EVENT_MODAL_AUTH_Z_INDEX : "auto"};
+    props.$liftAboveEventModal ? EVENT_MODAL_AUTH_Z_INDEX + 3 : "auto"};
 `;
 
 const BaseButton = styled.button`
@@ -204,6 +211,21 @@ const InlineAuthError = styled.div`
   }
 `;
 
+const EventSignInOverlay = styled(ModalOverlay)`
+  z-index: ${EVENT_MODAL_AUTH_Z_INDEX + 2};
+`;
+
+const EventSignInPopup = styled(ModalPopup)`
+  max-width: 320px;
+  padding: 20px;
+  outline: none;
+`;
+
+const EventSignInTitle = styled(ModalTitle)`
+  margin-bottom: 10px;
+  text-align: left;
+`;
+
 let getIsProfilePopupOpen: () => boolean = () => false;
 let getIsEditingPopupOpen: () => boolean = () => false;
 let getIsInventoryPopupOpen: () => boolean = () => false;
@@ -222,7 +244,8 @@ let showNotificationBannerImpl: (
   successHandler: () => void,
 ) => void = () => {};
 let setSignInInlineAuthErrorImpl: (message: string | null) => void = () => {};
-let openProfileSignInPopupImpl: () => void = () => {};
+type ProfileSignInPopupMode = "inline" | "event";
+let openProfileSignInPopupImpl: (mode?: ProfileSignInPopupMode) => void = () => {};
 let pendingSignInInlineAuthError: string | null | undefined = undefined;
 
 export const closeProfilePopupIfAny = () => {
@@ -264,7 +287,11 @@ export const setSignInInlineAuthError = (message: string | null) => {
 };
 
 export const openProfileSignInPopup = () => {
-  openProfileSignInPopupImpl();
+  openProfileSignInPopupImpl("inline");
+};
+
+export const openProfileSignInPopupForEvent = () => {
+  openProfileSignInPopupImpl("event");
 };
 
 export function hasProfilePopupVisible(): boolean {
@@ -485,6 +512,8 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({
   authStatus,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [popupMode, setPopupMode] =
+    useState<ProfileSignInPopupMode>("inline");
   const [isEventModalVisible, setIsEventModalVisible] = useState(() => {
     const eventModalState = getEventModalState();
     return eventModalState.isOpen && !!eventModalState.eventId;
@@ -553,14 +582,38 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({
   const isXBusy = xButtonState === "connecting";
   const isPendingXSignInRedirectBlockingUi =
     isPendingXSignInRedirect && !isPendingXSignInRedirectStale;
-  const shouldLiftAboveEventModal =
-    isEventModalVisible && authStatus !== "authenticated";
+  const shouldLiftAboveEventModal = isOpen && popupMode === "event";
+  const isEventSignInPopup = isOpen && popupMode === "event";
 
   useEffect(() => {
     return subscribeToEventModalState((nextState) => {
       setIsEventModalVisible(nextState.isOpen && !!nextState.eventId);
     });
   }, []);
+
+  useEffect(() => {
+    if (popupMode !== "event") {
+      return;
+    }
+    const eventModalState = getEventModalState();
+    if (eventModalState.isOpen && !!eventModalState.eventId) {
+      return;
+    }
+    if (isOpen) {
+      setIsOpen(false);
+    }
+    setPopupMode("inline");
+  }, [isEventModalVisible, isOpen, popupMode]);
+
+  useEffect(() => {
+    if (authStatus !== "authenticated" || popupMode !== "event") {
+      return;
+    }
+    if (isOpen) {
+      setIsOpen(false);
+    }
+    setPopupMode("inline");
+  }, [authStatus, isOpen, popupMode]);
 
   const clearAppleConfirmExpiryTimeout = useCallback(() => {
     if (appleConfirmExpiryTimeoutRef.current) {
@@ -964,6 +1017,7 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({
   const closeProfilePopupInternal = useCallback(() => {
     didDismissSomethingWithOutsideTapJustNow();
     setIsOpen(false);
+    setPopupMode("inline");
     setIsInventoryOpen(false);
     setIsLogoutConfirmOpen(false);
     setIsSettingsOpen(false);
@@ -997,26 +1051,42 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({
     );
   }, [clearPendingXSignInStaleTimeout]);
 
-  const openProfileSignInPopupInternal = useCallback(() => {
-    if (
-      authStatus === "authenticated" ||
-      isOpen ||
-      isPendingXSignInRedirectBlockingUi
-    ) {
-      return;
-    }
-    if (isPendingXSignInRedirect) {
-      recoverFromStalePendingXSignInRedirect();
-    }
-    closeMenuAndInfoIfAny();
-    setIsOpen(true);
-  }, [
-    authStatus,
-    isOpen,
-    isPendingXSignInRedirect,
-    isPendingXSignInRedirectBlockingUi,
-    recoverFromStalePendingXSignInRedirect,
-  ]);
+  const openProfileSignInPopupInternal = useCallback(
+    (mode: ProfileSignInPopupMode = "inline") => {
+      if (
+        authStatus === "authenticated" ||
+        isPendingXSignInRedirectBlockingUi
+      ) {
+        return;
+      }
+      if (mode === "event") {
+        const eventModalState = getEventModalState();
+        if (!eventModalState.isOpen || !eventModalState.eventId) {
+          return;
+        }
+      }
+      if (isOpen) {
+        if (popupMode !== mode) {
+          setPopupMode(mode);
+        }
+        return;
+      }
+      if (isPendingXSignInRedirect) {
+        recoverFromStalePendingXSignInRedirect();
+      }
+      closeMenuAndInfoIfAny();
+      setPopupMode(mode);
+      setIsOpen(true);
+    },
+    [
+      authStatus,
+      isOpen,
+      isPendingXSignInRedirect,
+      isPendingXSignInRedirectBlockingUi,
+      popupMode,
+      recoverFromStalePendingXSignInRedirect,
+    ],
+  );
 
   closeProfilePopupIfAnyImpl = closeProfilePopupInternal;
   openProfileSignInPopupImpl = openProfileSignInPopupInternal;
@@ -1061,7 +1131,13 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({
         return;
       }
       if (feedback.target === "signin") {
+        const eventModalState = getEventModalState();
+        const nextMode: ProfileSignInPopupMode =
+          eventModalState.isOpen && !!eventModalState.eventId
+            ? "event"
+            : "inline";
         closeMenuAndInfoIfAny();
+        setPopupMode(nextMode);
         setInlineAuthError(feedback.message);
         setIsOpen(true);
         return;
@@ -1095,6 +1171,9 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({
   }, [isOpen]);
 
   const handleSignInClick = () => {
+    if (isEventSignInPopup) {
+      return;
+    }
     if (isPendingXSignInRedirectBlockingUi) {
       return;
     }
@@ -1434,66 +1513,123 @@ export const ProfileSignIn: React.FC<{ authStatus?: string }> = ({
     setIsNotificationVisible(false);
   };
 
+  const signInOptions = (
+    <>
+      <ConnectButton.Custom>
+        {({ openConnectModal }) => {
+          ethereumConnectModalRef.current = openConnectModal ?? null;
+          return (
+            <CustomConnectButton
+              onClick={!isMobile ? handleEthereumClick : undefined}
+              onTouchStart={isMobile ? handleEthereumClick : undefined}
+            >
+              Ethereum
+            </CustomConnectButton>
+          );
+        }}
+      </ConnectButton.Custom>
+      <CustomConnectButton
+        onClick={!isMobile ? handleSolanaClick : undefined}
+        onTouchStart={isMobile ? handleSolanaClick : undefined}
+      >
+        {solanaText}
+      </CustomConnectButton>
+      <CustomConnectButton onClick={handleAppleClick}>
+        {appleText}
+      </CustomConnectButton>
+      <CustomConnectButton disabled={isXBusy} onClick={handleXClick}>
+        {xText}
+      </CustomConnectButton>
+      {inlineAuthError ? (
+        <InlineAuthError>{inlineAuthError}</InlineAuthError>
+      ) : null}
+    </>
+  );
+
+  const handleEventSignInBackdropPointerDown = useCallback(
+    (
+      event:
+        | React.MouseEvent<HTMLDivElement>
+        | React.TouchEvent<HTMLDivElement>,
+    ) => {
+      if (event.target !== event.currentTarget) {
+        return;
+      }
+      event.stopPropagation();
+    },
+    [],
+  );
+
+  const handleEventSignInBackdropClick = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if (event.target !== event.currentTarget) {
+        return;
+      }
+      event.stopPropagation();
+      closeProfilePopupInternal();
+    },
+    [closeProfilePopupInternal],
+  );
+
   return (
     <Container
       ref={popoverRef}
       $liftAboveEventModal={shouldLiftAboveEventModal}
     >
-      <SignInButton
-        disabled={isPendingXSignInRedirectBlockingUi}
-        aria-busy={isPendingXSignInRedirectBlockingUi}
-        onClick={!isMobile ? handleSignInClick : undefined}
-        onTouchStart={isMobile ? handleSignInClick : undefined}
-        $isConnected={authStatus === "authenticated"}
-        $isPending={isPendingXSignInRedirectBlockingUi}
-      >
-        {authStatus === "authenticated"
-          ? profileDisplayName || "Connected"
-          : isPendingXSignInRedirectBlockingUi
-            ? "Verifying..."
-            : isPendingXSignInRedirect
-              ? "Try Again"
-              : "Sign In"}
-      </SignInButton>
+      {!isEventSignInPopup && (
+        <SignInButton
+          disabled={isPendingXSignInRedirectBlockingUi}
+          aria-busy={isPendingXSignInRedirectBlockingUi}
+          onClick={!isMobile ? handleSignInClick : undefined}
+          onTouchStart={isMobile ? handleSignInClick : undefined}
+          $isConnected={authStatus === "authenticated"}
+          $isPending={isPendingXSignInRedirectBlockingUi}
+        >
+          {authStatus === "authenticated"
+            ? profileDisplayName || "Connected"
+            : isPendingXSignInRedirectBlockingUi
+              ? "Verifying..."
+              : isPendingXSignInRedirect
+                ? "Try Again"
+                : "Sign In"}
+        </SignInButton>
+      )}
       {isOpen &&
         authStatus !== "authenticated" &&
+        !isEventSignInPopup &&
         !isPendingXSignInRedirectBlockingUi && (
           <ConnectButtonPopover>
             <ConnectButtonWrapper>
-              <>
-                <ConnectButton.Custom>
-                  {({ openConnectModal }) => {
-                    ethereumConnectModalRef.current = openConnectModal ?? null;
-                    return (
-                      <CustomConnectButton
-                        onClick={!isMobile ? handleEthereumClick : undefined}
-                        onTouchStart={
-                          isMobile ? handleEthereumClick : undefined
-                        }
-                      >
-                        Ethereum
-                      </CustomConnectButton>
-                    );
-                  }}
-                </ConnectButton.Custom>
-                <CustomConnectButton
-                  onClick={!isMobile ? handleSolanaClick : undefined}
-                  onTouchStart={isMobile ? handleSolanaClick : undefined}
-                >
-                  {solanaText}
-                </CustomConnectButton>
-                <CustomConnectButton onClick={handleAppleClick}>
-                  {appleText}
-                </CustomConnectButton>
-                <CustomConnectButton disabled={isXBusy} onClick={handleXClick}>
-                  {xText}
-                </CustomConnectButton>
-                {inlineAuthError ? (
-                  <InlineAuthError>{inlineAuthError}</InlineAuthError>
-                ) : null}
-              </>
+              {signInOptions}
             </ConnectButtonWrapper>
           </ConnectButtonPopover>
+        )}
+      {isOpen &&
+        isEventModalVisible &&
+        authStatus !== "authenticated" &&
+        isEventSignInPopup &&
+        !isPendingXSignInRedirectBlockingUi && (
+          <EventSignInOverlay
+            onMouseDown={handleEventSignInBackdropPointerDown}
+            onTouchStart={handleEventSignInBackdropPointerDown}
+            onClick={handleEventSignInBackdropClick}
+          >
+            <EventSignInPopup
+              role="dialog"
+              aria-label="Sign In"
+              onMouseDown={(event) => event.stopPropagation()}
+              onTouchStart={(event) => event.stopPropagation()}
+              onClick={(event) => event.stopPropagation()}
+            >
+              <EventSignInTitle>Sign In</EventSignInTitle>
+              <ConnectButtonWrapper>{signInOptions}</ConnectButtonWrapper>
+              <ButtonsContainer>
+                <CancelButton type="button" onClick={closeProfilePopupInternal}>
+                  Cancel
+                </CancelButton>
+              </ButtonsContainer>
+            </EventSignInPopup>
+          </EventSignInOverlay>
         )}
       {NotificationComponent && isNotificationMounted && notificationState && (
         <NotificationComponent

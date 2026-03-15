@@ -23,7 +23,7 @@ import {
 } from "./eventModalController";
 import { emojis } from "../content/emojis";
 import { storage } from "../utils/storage";
-import { openProfileSignInPopup } from "./ProfileSignIn";
+import { openProfileSignInPopupForEvent } from "./ProfileSignIn";
 import { getCurrentRouteState } from "../navigation/routeState";
 import {
   didDismissSomethingWithOutsideTapJustNow,
@@ -579,7 +579,6 @@ type EventUiState = {
 
 const PENDING_JOIN_POLL_INTERVAL_MS = 350;
 const PENDING_JOIN_POLL_TIMEOUT_MS = 60_000;
-const JOIN_SIGN_IN_LABEL_TIMEOUT_MS = 1200;
 const EVENT_SYNC_RETRY_DELAYS_MS = [500, 1500, 3000];
 
 const formatRelativeStart = (
@@ -1713,9 +1712,6 @@ const EventModal: React.FC = () => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
-  const [joinButtonState, setJoinButtonState] = useState<"idle" | "sign_in">(
-    "idle",
-  );
   const [nowMs, setNowMs] = useState(() => Date.now());
   const [viewportSize, setViewportSize] = useState(getViewportSize);
   const [bracketInsets, setBracketInsets] = useState({ top: 0, bottom: 0 });
@@ -1730,7 +1726,6 @@ const EventModal: React.FC = () => {
   const participantLookupSessionRef = useRef(0);
   const ignoreNextBackdropClickRef = useRef(false);
   const copyResetTimeoutRef = useRef<number | null>(null);
-  const joinButtonResetTimeoutRef = useRef<number | null>(null);
   const topBarRef = useRef<HTMLDivElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
   const measureBracketInsets = useCallback(() => {
@@ -1770,13 +1765,8 @@ const EventModal: React.FC = () => {
         window.clearTimeout(copyResetTimeoutRef.current);
         copyResetTimeoutRef.current = null;
       }
-      if (joinButtonResetTimeoutRef.current !== null) {
-        window.clearTimeout(joinButtonResetTimeoutRef.current);
-        joinButtonResetTimeoutRef.current = null;
-      }
       setEventRecord(null);
       setCopyState("idle");
-      setJoinButtonState("idle");
       setIsLoading(false);
       setPendingJoinEventId(null);
       setPendingJoinRequestedAtMs(0);
@@ -1854,10 +1844,6 @@ const EventModal: React.FC = () => {
       if (copyResetTimeoutRef.current !== null) {
         window.clearTimeout(copyResetTimeoutRef.current);
         copyResetTimeoutRef.current = null;
-      }
-      if (joinButtonResetTimeoutRef.current !== null) {
-        window.clearTimeout(joinButtonResetTimeoutRef.current);
-        joinButtonResetTimeoutRef.current = null;
       }
     };
   }, []);
@@ -1990,7 +1976,6 @@ const EventModal: React.FC = () => {
       if (Date.now() - requestedAtMs >= PENDING_JOIN_POLL_TIMEOUT_MS) {
         setPendingJoinEventId(null);
         setPendingJoinRequestedAtMs(0);
-        setJoinButtonState("idle");
         return;
       }
       if (storage.getProfileId("") === "") {
@@ -2002,11 +1987,6 @@ const EventModal: React.FC = () => {
       if (!eventId) {
         return;
       }
-      if (joinButtonResetTimeoutRef.current !== null) {
-        window.clearTimeout(joinButtonResetTimeoutRef.current);
-        joinButtonResetTimeoutRef.current = null;
-      }
-      setJoinButtonState("idle");
       setIsLoading(true);
       void connection
         .joinEvent(eventId)
@@ -2036,8 +2016,6 @@ const EventModal: React.FC = () => {
     [displayedEventRecord],
   );
   const currentProfileId = storage.getProfileId("");
-  const joinButtonLabel =
-    joinButtonState === "sign_in" ? "Please Sign In" : "Join";
   const eventUiState = useMemo(
     () => getCurrentUiState(displayedEventRecord, currentProfileId),
     [currentProfileId, displayedEventRecord],
@@ -2231,22 +2209,9 @@ const EventModal: React.FC = () => {
     if (storage.getProfileId("") === "") {
       setPendingJoinEventId(modalState.eventId);
       setPendingJoinRequestedAtMs(Date.now());
-      setJoinButtonState("sign_in");
-      if (joinButtonResetTimeoutRef.current !== null) {
-        window.clearTimeout(joinButtonResetTimeoutRef.current);
-      }
-      joinButtonResetTimeoutRef.current = window.setTimeout(() => {
-        joinButtonResetTimeoutRef.current = null;
-        setJoinButtonState("idle");
-      }, JOIN_SIGN_IN_LABEL_TIMEOUT_MS);
-      openProfileSignInPopup();
+      openProfileSignInPopupForEvent();
       return;
     }
-    if (joinButtonResetTimeoutRef.current !== null) {
-      window.clearTimeout(joinButtonResetTimeoutRef.current);
-      joinButtonResetTimeoutRef.current = null;
-    }
-    setJoinButtonState("idle");
     setPendingJoinEventId(null);
     setPendingJoinRequestedAtMs(0);
     setIsLoading(true);
@@ -2662,7 +2627,7 @@ const EventModal: React.FC = () => {
                 disabled={isLoading}
                 isViewOnly={isLoading}
               >
-                {joinButtonLabel}
+                Join
               </BottomPillButton>
             )}
 
