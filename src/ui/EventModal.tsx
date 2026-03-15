@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 import { FaLink, FaShareAlt } from "react-icons/fa";
 import { connection } from "../connection/connection";
 import {
@@ -45,6 +45,8 @@ const BRACKET_CORNER_R = 10;
 
 const FALLBACK_MATCH_H = 40;
 const FALLBACK_AVATAR_PX = 28;
+
+type BracketCardInteraction = "none" | "game" | "participant";
 
 const getViewportSize = (): { width: number; height: number } => {
   if (typeof window === "undefined") {
@@ -364,6 +366,7 @@ const ClassicMatchCard = styled.button<{
   $y: number;
   $w: number;
   $h: number;
+  $interaction: BracketCardInteraction;
 }>`
   position: absolute;
   left: ${(p) => p.$x}px;
@@ -379,34 +382,60 @@ const ClassicMatchCard = styled.button<{
   align-items: center;
   justify-content: center;
   gap: 4px;
-  cursor: pointer;
+  cursor: ${(p) => (p.$interaction === "none" ? "default" : "pointer")};
   -webkit-tap-highlight-color: transparent;
   background: var(--color-gray-f0);
   transition: background-color 0.15s ease;
-
-  &:disabled {
-    cursor: default;
-  }
+  overflow: visible;
 
   @media (hover: hover) and (pointer: fine) {
-    &:hover:not(:disabled) {
-      background: var(--color-gray-e0);
-    }
+    ${(p) =>
+      p.$interaction === "game"
+        ? css`
+            &:hover:not(:disabled) {
+              background: var(--color-gray-e0);
+            }
+          `
+        : ""}
+
+    ${(p) =>
+      p.$interaction === "participant"
+        ? css`
+            &:hover [data-avatar-slot][data-single-known="true"] {
+              transform: scale(1.08);
+            }
+          `
+        : ""}
   }
 
   @media (prefers-color-scheme: dark) {
     background: var(--color-gray-27);
 
     @media (hover: hover) and (pointer: fine) {
-      &:hover:not(:disabled) {
-        background: var(--color-gray-33);
-      }
+      ${(p) =>
+        p.$interaction === "game"
+          ? css`
+              &:hover:not(:disabled) {
+                background: var(--color-gray-33);
+              }
+            `
+          : ""}
+
+      ${(p) =>
+        p.$interaction === "participant"
+          ? css`
+              &:hover [data-avatar-slot][data-single-known="true"] {
+                transform: scale(1.08);
+              }
+            `
+          : ""}
     }
   }
 `;
 
 const MatchAvatarSlot = styled.div`
   line-height: 0;
+  transition: transform 0.15s ease;
 `;
 
 const BracketFallbackPanel = styled(ContentArea)`
@@ -435,7 +464,9 @@ const BracketFallbackGrid = styled.div`
   gap: 8px;
 `;
 
-const BracketFallbackMatchCard = styled.button`
+const BracketFallbackMatchCard = styled.button<{
+  $interaction: BracketCardInteraction;
+}>`
   min-height: ${FALLBACK_MATCH_H}px;
   border: none;
   border-radius: ${FALLBACK_MATCH_H / 2}px;
@@ -445,28 +476,53 @@ const BracketFallbackMatchCard = styled.button`
   align-items: center;
   justify-content: center;
   gap: 4px;
-  cursor: pointer;
+  cursor: ${(p) => (p.$interaction === "none" ? "default" : "pointer")};
   -webkit-tap-highlight-color: transparent;
   background: var(--color-gray-f0);
   transition: background-color 0.15s ease;
-
-  &:disabled {
-    cursor: default;
-  }
+  overflow: visible;
 
   @media (hover: hover) and (pointer: fine) {
-    &:hover:not(:disabled) {
-      background: var(--color-gray-e0);
-    }
+    ${(p) =>
+      p.$interaction === "game"
+        ? css`
+            &:hover:not(:disabled) {
+              background: var(--color-gray-e0);
+            }
+          `
+        : ""}
+
+    ${(p) =>
+      p.$interaction === "participant"
+        ? css`
+            &:hover [data-avatar-slot][data-single-known="true"] {
+              transform: scale(1.08);
+            }
+          `
+        : ""}
   }
 
   @media (prefers-color-scheme: dark) {
     background: var(--color-gray-27);
 
     @media (hover: hover) and (pointer: fine) {
-      &:hover:not(:disabled) {
-        background: var(--color-gray-33);
-      }
+      ${(p) =>
+        p.$interaction === "game"
+          ? css`
+              &:hover:not(:disabled) {
+                background: var(--color-gray-33);
+              }
+            `
+          : ""}
+
+      ${(p) =>
+        p.$interaction === "participant"
+          ? css`
+              &:hover [data-avatar-slot][data-single-known="true"] {
+                transform: scale(1.08);
+              }
+            `
+          : ""}
     }
   }
 `;
@@ -620,6 +676,152 @@ const getSortedMatches = (round: EventRound | null): EventMatch[] => {
     }
     return left.matchKey.localeCompare(right.matchKey);
   });
+};
+
+type MatchSide = "host" | "guest";
+
+type MatchSideData = {
+  profileId: string | null;
+  loginUid: string | null;
+  displayName: string | null;
+  emojiId: number | null;
+  aura: string | null;
+};
+
+type BracketMatchAction =
+  | { kind: "none" }
+  | { kind: "game"; inviteId: string }
+  | {
+      kind: "participant";
+      participant: EventParticipant;
+      side: MatchSide;
+    };
+
+const getMatchSideData = (
+  match: EventMatch,
+  side: MatchSide,
+): MatchSideData => {
+  if (side === "host") {
+    return {
+      profileId: match.hostProfileId,
+      loginUid: match.hostLoginUid,
+      displayName: match.hostDisplayName,
+      emojiId: match.hostEmojiId,
+      aura: match.hostAura,
+    };
+  }
+  return {
+    profileId: match.guestProfileId,
+    loginUid: match.guestLoginUid,
+    displayName: match.guestDisplayName,
+    emojiId: match.guestEmojiId,
+    aura: match.guestAura,
+  };
+};
+
+const isKnownMatchSide = (side: MatchSideData): boolean => {
+  const displayName = side.displayName?.trim();
+  return (
+    !!side.profileId ||
+    !!side.loginUid ||
+    !!displayName ||
+    (typeof side.emojiId === "number" && Number.isFinite(side.emojiId))
+  );
+};
+
+const getSingleKnownMatchSide = (match: EventMatch): MatchSide | null => {
+  const hostKnown = isKnownMatchSide(getMatchSideData(match, "host"));
+  const guestKnown = isKnownMatchSide(getMatchSideData(match, "guest"));
+  if (hostKnown === guestKnown) {
+    return null;
+  }
+  return hostKnown ? "host" : "guest";
+};
+
+const getDisplayedByeSide = (match: EventMatch): MatchSide => {
+  return isKnownMatchSide(getMatchSideData(match, "host")) ? "host" : "guest";
+};
+
+const buildParticipantFromMatchSide = (
+  match: EventMatch,
+  side: MatchSide,
+  participantsById: Record<string, EventParticipant>,
+): EventParticipant | null => {
+  const sideData = getMatchSideData(match, side);
+  const sideProfileId = sideData.profileId?.trim() ?? "";
+  if (sideProfileId) {
+    const participant = participantsById[sideProfileId];
+    if (participant) {
+      const participantLoginUid = participant.loginUid?.trim() ?? "";
+      if (participantLoginUid) {
+        return participant;
+      }
+      const sideLoginUid = sideData.loginUid?.trim() ?? "";
+      if (sideLoginUid) {
+        return {
+          ...participant,
+          loginUid: sideLoginUid,
+        };
+      }
+    }
+  }
+
+  const loginUid = sideData.loginUid?.trim() ?? "";
+  if (!loginUid) {
+    return null;
+  }
+
+  const displayName = sideData.displayName?.trim() ?? "";
+  const emojiId =
+    typeof sideData.emojiId === "number" && Number.isFinite(sideData.emojiId)
+      ? sideData.emojiId
+      : 0;
+
+  return {
+    profileId: sideProfileId || loginUid,
+    loginUid,
+    username: displayName,
+    displayName,
+    emojiId,
+    aura: sideData.aura ?? "",
+    joinedAtMs: 0,
+    state: "active",
+    eliminatedRoundIndex: null,
+    eliminatedByProfileId: null,
+  };
+};
+
+const getBracketMatchAction = (
+  match: EventMatch,
+  participantsById: Record<string, EventParticipant>,
+): BracketMatchAction => {
+  const inviteId = match.inviteId?.trim() ?? "";
+  if (inviteId) {
+    return {
+      kind: "game",
+      inviteId,
+    };
+  }
+
+  const singleKnownSide = getSingleKnownMatchSide(match);
+  if (!singleKnownSide) {
+    return { kind: "none" };
+  }
+
+  const participant = buildParticipantFromMatchSide(
+    match,
+    singleKnownSide,
+    participantsById,
+  );
+  if (!participant) {
+    return { kind: "none" };
+  }
+
+  return {
+    kind: "participant",
+    participant,
+    side: singleKnownSide,
+  };
 };
 
 const getCurrentUiState = (
@@ -1667,6 +1869,7 @@ const EventModal: React.FC = () => {
   ]);
 
   const displayedEventRecord = devStubRecord ?? eventRecord;
+  const participantsById = displayedEventRecord?.participants ?? {};
   const participants = useMemo(
     () => getSortedParticipants(displayedEventRecord),
     [displayedEventRecord],
@@ -1974,6 +2177,19 @@ const EventModal: React.FC = () => {
     [resolveParticipantProfile],
   );
 
+  const handleBracketMatchAction = useCallback(
+    (action: BracketMatchAction) => {
+      if (action.kind === "game") {
+        void openMatch(action.inviteId);
+        return;
+      }
+      if (action.kind === "participant") {
+        void handleParticipantClick(action.participant);
+      }
+    },
+    [handleParticipantClick, openMatch],
+  );
+
   const handleCreateStubBracket = useCallback(() => {
     const normalizedPlayerCount = clampDevStubPlayerCount(devStubPlayerCount);
     setDevStubPlayerCount(normalizedPlayerCount);
@@ -2107,11 +2323,19 @@ const EventModal: React.FC = () => {
             $scale={bracketScale}
           >
             {bracketLayout.positions.map((mp) => {
-              const isByeMatch = mp.match.status === "bye";
-              const byeParticipantIsHost =
-                !!mp.match.hostProfileId ||
-                !!mp.match.hostDisplayName ||
-                mp.match.hostEmojiId !== null;
+              const action = getBracketMatchAction(mp.match, participantsById);
+              const interaction: BracketCardInteraction =
+                action.kind === "game"
+                  ? "game"
+                  : action.kind === "participant"
+                    ? "participant"
+                    : "none";
+              const hostSideData = getMatchSideData(mp.match, "host");
+              const guestSideData = getMatchSideData(mp.match, "guest");
+              const displayedSides: MatchSide[] =
+                mp.match.status === "bye"
+                  ? [getDisplayedByeSide(mp.match)]
+                  : ["host", "guest"];
               return (
                 <ClassicMatchCard
                   key={mp.key}
@@ -2120,41 +2344,30 @@ const EventModal: React.FC = () => {
                   $y={mp.y}
                   $w={mp.width}
                   $h={mp.height}
-                  disabled={!mp.match.inviteId}
-                  onClick={() =>
-                    mp.match.inviteId
-                      ? void openMatch(mp.match.inviteId)
-                      : undefined
-                  }
+                  $interaction={interaction}
+                  disabled={action.kind === "none"}
+                  onClick={() => handleBracketMatchAction(action)}
                 >
-                  <MatchAvatarSlot>
-                    <EventAvatar
-                      size={BRACKET_AVATAR_PX}
-                      emojiId={
-                        isByeMatch
-                          ? byeParticipantIsHost
-                            ? mp.match.hostEmojiId
-                            : mp.match.guestEmojiId
-                          : mp.match.hostEmojiId
-                      }
-                      displayName={
-                        isByeMatch
-                          ? byeParticipantIsHost
-                            ? mp.match.hostDisplayName
-                            : mp.match.guestDisplayName
-                          : mp.match.hostDisplayName
-                      }
-                    />
-                  </MatchAvatarSlot>
-                  {!isByeMatch && (
-                    <MatchAvatarSlot>
-                      <EventAvatar
-                        size={BRACKET_AVATAR_PX}
-                        emojiId={mp.match.guestEmojiId}
-                        displayName={mp.match.guestDisplayName}
-                      />
-                    </MatchAvatarSlot>
-                  )}
+                  {displayedSides.map((side) => {
+                    const sideData = side === "host" ? hostSideData : guestSideData;
+                    return (
+                      <MatchAvatarSlot
+                        key={side}
+                        data-avatar-slot
+                        data-single-known={
+                          action.kind === "participant" && action.side === side
+                            ? "true"
+                            : undefined
+                        }
+                      >
+                        <EventAvatar
+                          size={BRACKET_AVATAR_PX}
+                          emojiId={sideData.emojiId}
+                          displayName={sideData.displayName}
+                        />
+                      </MatchAvatarSlot>
+                    );
+                  })}
                 </ClassicMatchCard>
               );
             })}
@@ -2180,50 +2393,48 @@ const EventModal: React.FC = () => {
               </BracketFallbackRoundTitle>
               <BracketFallbackGrid>
                 {round.matches.map((match, index) => {
-                  const isByeMatch = match.status === "bye";
-                  const byeParticipantIsHost =
-                    !!match.hostProfileId ||
-                    !!match.hostDisplayName ||
-                    match.hostEmojiId !== null;
+                  const action = getBracketMatchAction(match, participantsById);
+                  const interaction: BracketCardInteraction =
+                    action.kind === "game"
+                      ? "game"
+                      : action.kind === "participant"
+                        ? "participant"
+                        : "none";
+                  const hostSideData = getMatchSideData(match, "host");
+                  const guestSideData = getMatchSideData(match, "guest");
+                  const displayedSides: MatchSide[] =
+                    match.status === "bye"
+                      ? [getDisplayedByeSide(match)]
+                      : ["host", "guest"];
                   return (
                     <BracketFallbackMatchCard
                       key={`${round.key}_${match.matchKey}_${index}`}
                       type="button"
-                      disabled={!match.inviteId}
-                      onClick={() =>
-                        match.inviteId
-                          ? void openMatch(match.inviteId)
-                          : undefined
-                      }
+                      $interaction={interaction}
+                      disabled={action.kind === "none"}
+                      onClick={() => handleBracketMatchAction(action)}
                     >
-                      <MatchAvatarSlot>
-                        <EventAvatar
-                          size={FALLBACK_AVATAR_PX}
-                          emojiId={
-                            isByeMatch
-                              ? byeParticipantIsHost
-                                ? match.hostEmojiId
-                                : match.guestEmojiId
-                              : match.hostEmojiId
-                          }
-                          displayName={
-                            isByeMatch
-                              ? byeParticipantIsHost
-                                ? match.hostDisplayName
-                                : match.guestDisplayName
-                              : match.hostDisplayName
-                          }
-                        />
-                      </MatchAvatarSlot>
-                      {!isByeMatch && (
-                        <MatchAvatarSlot>
-                          <EventAvatar
-                            size={FALLBACK_AVATAR_PX}
-                            emojiId={match.guestEmojiId}
-                            displayName={match.guestDisplayName}
-                          />
-                        </MatchAvatarSlot>
-                      )}
+                      {displayedSides.map((side) => {
+                        const sideData =
+                          side === "host" ? hostSideData : guestSideData;
+                        return (
+                          <MatchAvatarSlot
+                            key={side}
+                            data-avatar-slot
+                            data-single-known={
+                              action.kind === "participant" && action.side === side
+                                ? "true"
+                                : undefined
+                            }
+                          >
+                            <EventAvatar
+                              size={FALLBACK_AVATAR_PX}
+                              emojiId={sideData.emojiId}
+                              displayName={sideData.displayName}
+                            />
+                          </MatchAvatarSlot>
+                        );
+                      })}
                     </BracketFallbackMatchCard>
                   );
                 })}
