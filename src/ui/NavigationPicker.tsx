@@ -392,6 +392,14 @@ const FightCloudBadge = styled.span`
   }
 `;
 
+const EventTrailingContent = styled.span`
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-left: 6px;
+  flex-shrink: 0;
+`;
+
 const QueuePrimaryContent = styled(GameText)``;
 
 const GameStatus = styled.span<{
@@ -957,8 +965,7 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
 
   const renderEventPreview = (
     event: NavigationEventItem,
-    trailingContent?: React.ReactNode,
-  ) => {
+  ): { preview: React.ReactNode; badge: React.ReactNode | null } | null => {
     const normalizedParticipantCount = Number.isFinite(event.participantCount)
       ? Math.max(0, Math.trunc(event.participantCount))
       : 0;
@@ -1000,41 +1007,43 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
       : itemCount * 21 - 1 + FIGHT_CLOUD_PAD_X * 2;
     const cloud = getFightCloudPath(cloudW, FIGHT_CLOUD_H);
 
-    return (
-      <FightCloudWrap>
-        <FightCloudCanvas
-          width={cloudW}
-          height={FIGHT_CLOUD_H}
-          viewBox={`0 0 ${cloudW} ${FIGHT_CLOUD_H}`}
-          preserveAspectRatio={
-            ENABLE_EXPANDED_EVENT_CELL_CLOUD ? "none" : undefined
-          }
-          aria-hidden="true"
-        >
-          <CloudShape d={cloud} />
-        </FightCloudCanvas>
-        <FightCloudInner>
-          {hasPreviewContent && (
-            <EventPreviewGroup>
-              {previewEmojiIds.map((emojiId, index) => (
-                <EventAvatarImage
-                  key={`slot_${index}`}
-                  src={emojis.getEmojiUrl(emojiId.toString())}
-                  alt=""
-                />
-              ))}
-              {shouldShowUnknownOpponentSlot && (
-                <EventAvatarQuestionSlot aria-hidden="true">
-                  <EventAvatarQuestionIcon />
-                </EventAvatarQuestionSlot>
-              )}
-              {hasBadge && <FightCloudBadge>+{overflow}</FightCloudBadge>}
-            </EventPreviewGroup>
-          )}
-          {ENABLE_EXPANDED_EVENT_CELL_CLOUD ? trailingContent : null}
-        </FightCloudInner>
-      </FightCloudWrap>
-    );
+    return {
+      preview: (
+        <FightCloudWrap>
+          <FightCloudCanvas
+            width={cloudW}
+            height={FIGHT_CLOUD_H}
+            viewBox={`0 0 ${cloudW} ${FIGHT_CLOUD_H}`}
+            preserveAspectRatio={
+              ENABLE_EXPANDED_EVENT_CELL_CLOUD ? "none" : undefined
+            }
+            aria-hidden="true"
+          >
+            <CloudShape d={cloud} />
+          </FightCloudCanvas>
+          <FightCloudInner>
+            {hasPreviewContent && (
+              <EventPreviewGroup>
+                {previewEmojiIds.map((emojiId, index) => (
+                  <EventAvatarImage
+                    key={`slot_${index}`}
+                    src={emojis.getEmojiUrl(emojiId.toString())}
+                    alt=""
+                  />
+                ))}
+                {shouldShowUnknownOpponentSlot && (
+                  <EventAvatarQuestionSlot aria-hidden="true">
+                    <EventAvatarQuestionIcon />
+                  </EventAvatarQuestionSlot>
+                )}
+              </EventPreviewGroup>
+            )}
+          </FightCloudInner>
+        </FightCloudWrap>
+      ),
+      badge:
+        hasBadge && <FightCloudBadge>+{overflow}</FightCloudBadge>,
+    };
   };
 
   const renderGameRows = (gamesToRender: NavigationItem[]) => (
@@ -1108,8 +1117,22 @@ const NavigationPicker: React.FC<NavigationPickerProps> = ({
                 </>
               ) : event ? (
                 <>
-                  {renderEventPreview(event, eventTrailingContent)}
-                  {!ENABLE_EXPANDED_EVENT_CELL_CLOUD ? eventTrailingContent : null}
+                  {(() => {
+                    const previewData = renderEventPreview(event);
+                    const { preview, badge } = previewData ?? {
+                      preview: null,
+                      badge: null,
+                    };
+                    return (
+                      <>
+                        {preview}
+                        <EventTrailingContent>
+                          {badge}
+                          {eventTrailingContent}
+                        </EventTrailingContent>
+                      </>
+                    );
+                  })()}
                 </>
               ) : game ? (
                 <>
