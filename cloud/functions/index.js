@@ -1,9 +1,5 @@
 const admin = require("firebase-admin");
-const { setGlobalOptions } = require("firebase-functions/v2/options");
 admin.initializeApp();
-setGlobalOptions({
-  invoker: "public",
-});
 
 const { verifySolanaAddress } = require("./verifySolanaAddress");
 const { verifyEthAddress } = require("./verifyEthAddress");

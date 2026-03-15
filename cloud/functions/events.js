@@ -1827,7 +1827,6 @@ exports.syncEventState = onCall(
 
 exports.processEventProgress = onTaskDispatched(
   {
-    invoker: "private",
     maxInstances: 20,
     concurrency: 20,
     memory: "512MiB",
