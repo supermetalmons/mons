@@ -891,6 +891,7 @@ const WALK_SUPPRESSION_HIT_COUNT = 3;
 const WALK_SUPPRESSION_RADIUS = 0.03;
 const FACING_DX_EPS = 0.006;
 const FACING_FLIP_HYST_MS = 160;
+const KEYBOARD_WALK_MAX_FRAME_DELTA_MS = 48;
 const DudeSpriteWrap = styled.div`
   position: absolute;
   height: ${DUDE_SPRITE_HEIGHT_FRAC * 100}%;
@@ -1899,6 +1900,20 @@ export function IslandButton({
     duration: number;
   } | null>(null);
   const rafRef = useRef<number | null>(null);
+  const keyboardWalkRafRef = useRef<number | null>(null);
+  const keyboardWalkLastTsRef = useRef<number | null>(null);
+  const keyboardWalkingRef = useRef<boolean>(false);
+  const pressedWalkKeysRef = useRef<{
+    up: boolean;
+    down: boolean;
+    left: boolean;
+    right: boolean;
+  }>({
+    up: false,
+    down: false,
+    left: false,
+    right: false,
+  });
 
   const [miningPlaying, setMiningPlaying] = useState(false);
   const miningFrameWrapRef = useRef<HTMLDivElement | null>(null);
@@ -4773,6 +4788,251 @@ export function IslandButton({
       startStandingAnimation,
     ],
   );
+
+  useEffect(() => {
+    const clearPressedWalkKeys = () => {
+      const keys = pressedWalkKeysRef.current;
+      keys.up = false;
+      keys.down = false;
+      keys.left = false;
+      keys.right = false;
+    };
+
+    const hasPressedWalkKeys = () => {
+      const keys = pressedWalkKeysRef.current;
+      return keys.up || keys.down || keys.left || keys.right;
+    };
+
+    const stopKeyboardWalking = () => {
+      keyboardWalkLastTsRef.current = null;
+      if (keyboardWalkRafRef.current !== null) {
+        cancelAnimationFrame(keyboardWalkRafRef.current);
+        keyboardWalkRafRef.current = null;
+      }
+      if (keyboardWalkingRef.current) {
+        keyboardWalkingRef.current = false;
+        moveTargetMetaRef.current = null;
+        stopMoveAnim();
+        if (islandOverlayVisible && !islandClosing) {
+          startStandingAnimation();
+        }
+      }
+    };
+
+    const mapWalkKey = (
+      key: string,
+    ): "up" | "down" | "left" | "right" | null => {
+      switch (key.toLowerCase()) {
+        case "w":
+        case "arrowup":
+          return "up";
+        case "a":
+        case "arrowleft":
+          return "left";
+        case "s":
+        case "arrowdown":
+          return "down";
+        case "d":
+        case "arrowright":
+          return "right";
+        default:
+          return null;
+      }
+    };
+
+    const isEditableTarget = (target: EventTarget | null) => {
+      const element = target as HTMLElement | null;
+      if (!element) return false;
+      if (element.isContentEditable) return true;
+      const tag = element.tagName;
+      return tag === "INPUT" || tag === "TEXTAREA" || tag === "SELECT";
+    };
+
+    const step = (ts: number) => {
+      keyboardWalkRafRef.current = null;
+      if (
+        !islandOverlayVisible ||
+        islandClosing ||
+        islandOpening ||
+        !hasPressedWalkKeys()
+      ) {
+        stopKeyboardWalking();
+        return;
+      }
+
+      const hasTargetedMoveInFlight =
+        !!moveTargetMetaRef.current &&
+        !!moveAnimRef.current &&
+        rafRef.current !== null;
+      if (hasTargetedMoveInFlight) {
+        if (keyboardWalkingRef.current) {
+          keyboardWalkingRef.current = false;
+        }
+        clearPressedWalkKeys();
+        stopKeyboardWalking();
+        return;
+      }
+      if (moveTargetMetaRef.current && !moveAnimRef.current) {
+        moveTargetMetaRef.current = null;
+      }
+
+      if (walkingDragActiveRef.current) {
+        if (keyboardWalkingRef.current) {
+          keyboardWalkingRef.current = false;
+        }
+        clearPressedWalkKeys();
+        stopKeyboardWalking();
+        return;
+      }
+
+      const keys = pressedWalkKeysRef.current;
+      let axisX = 0;
+      let axisY = 0;
+      if (keys.left) axisX -= 1;
+      if (keys.right) axisX += 1;
+      if (keys.up) axisY -= 1;
+      if (keys.down) axisY += 1;
+      const axisLength = Math.hypot(axisX, axisY);
+      if (axisLength < 1e-6) {
+        stopKeyboardWalking();
+        return;
+      }
+
+      const lastTs = keyboardWalkLastTsRef.current;
+      keyboardWalkLastTsRef.current = ts;
+      const elapsedMs = lastTs === null ? 16 : ts - lastTs;
+      const clampedElapsedMs = Math.max(
+        0,
+        Math.min(KEYBOARD_WALK_MAX_FRAME_DELTA_MS, elapsedMs),
+      );
+      const dtSec = clampedElapsedMs > 0 ? clampedElapsedMs / 1000 : 1 / 60;
+      const h = Math.max(1, heroSize.h);
+      const w = Math.max(1, heroSize.w);
+      const walkSpeedPxPerSec = Math.max(60, Math.min(220, h * 0.45));
+      const unitX = axisX / axisLength;
+      const unitY = axisY / axisLength;
+
+      const refPos = latestDudePosRef.current;
+      const hasValidRefPos =
+        refPos &&
+        Number.isFinite(refPos.x) &&
+        Number.isFinite(refPos.y) &&
+        !(refPos.x === 0 && refPos.y === 0);
+      const fallback = initialDudePosRef.current ?? {
+        x: DEFAULT_DUDE_CENTER_X + INITIAL_DUDE_X_SHIFT,
+        y: DEFAULT_DUDE_BOTTOM_Y + INITIAL_DUDE_Y_SHIFT,
+      };
+      const from = hasValidRefPos ? refPos : fallback;
+      const desired = {
+        x: from.x + (unitX * walkSpeedPxPerSec * dtSec) / w,
+        y: from.y + (unitY * walkSpeedPxPerSec * dtSec) / h,
+      };
+      const target = clampWalkTarget(from, desired);
+      const movedEnough =
+        Math.hypot(target.x - from.x, target.y - from.y) > 1e-5;
+
+      if (!movedEnough) {
+        if (keyboardWalkingRef.current) {
+          keyboardWalkingRef.current = false;
+          moveTargetMetaRef.current = null;
+          stopMoveAnim();
+          startStandingAnimation();
+        }
+        keyboardWalkRafRef.current = requestAnimationFrame(step);
+        return;
+      }
+
+      if (!keyboardWalkingRef.current) {
+        keyboardWalkingRef.current = true;
+        moveTargetMetaRef.current = null;
+        if (rafRef.current !== null) {
+          cancelAnimationFrame(rafRef.current);
+          rafRef.current = null;
+        }
+        moveAnimRef.current = null;
+      }
+
+      if (currentAnimKindRef.current !== "walking") {
+        startWalkingAnimation();
+      }
+      setDudeFacingLeft(decideFacingWithHysteresis(from, target));
+      latestDudePosRef.current = target;
+      setDudePos(target);
+      updateCircleTracking(target.x, target.y);
+      keyboardWalkRafRef.current = requestAnimationFrame(step);
+    };
+
+    const startKeyboardWalkLoop = () => {
+      if (keyboardWalkRafRef.current !== null) return;
+      keyboardWalkLastTsRef.current = null;
+      keyboardWalkRafRef.current = requestAnimationFrame(step);
+    };
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (!islandOverlayVisible || islandClosing || islandOpening) return;
+      if (event.metaKey || event.ctrlKey || event.altKey) return;
+      if (isEditableTarget(event.target)) return;
+      const dir = mapWalkKey(event.key);
+      if (!dir) return;
+      pressedWalkKeysRef.current[dir] = true;
+      event.preventDefault();
+      startKeyboardWalkLoop();
+    };
+
+    const onKeyUp = (event: KeyboardEvent) => {
+      const dir = mapWalkKey(event.key);
+      if (!dir) return;
+      const wasPressed = pressedWalkKeysRef.current[dir];
+      if (!wasPressed) return;
+      pressedWalkKeysRef.current[dir] = false;
+      event.preventDefault();
+      if (!hasPressedWalkKeys()) {
+        stopKeyboardWalking();
+      }
+    };
+
+    const onBlur = () => {
+      clearPressedWalkKeys();
+      stopKeyboardWalking();
+    };
+
+    const onVisibilityChange = () => {
+      if (document.visibilityState === "visible") return;
+      clearPressedWalkKeys();
+      stopKeyboardWalking();
+    };
+
+    window.addEventListener("keydown", onKeyDown, true);
+    window.addEventListener("keyup", onKeyUp, true);
+    window.addEventListener("blur", onBlur);
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
+    if (!islandOverlayVisible || islandClosing || islandOpening) {
+      clearPressedWalkKeys();
+      stopKeyboardWalking();
+    }
+
+    return () => {
+      window.removeEventListener("keydown", onKeyDown, true);
+      window.removeEventListener("keyup", onKeyUp, true);
+      window.removeEventListener("blur", onBlur);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
+      clearPressedWalkKeys();
+      stopKeyboardWalking();
+    };
+  }, [
+    islandOverlayVisible,
+    islandClosing,
+    islandOpening,
+    heroSize.h,
+    heroSize.w,
+    clampWalkTarget,
+    decideFacingWithHysteresis,
+    startStandingAnimation,
+    startWalkingAnimation,
+    stopMoveAnim,
+    updateCircleTracking,
+  ]);
 
   const handleMaterialItemTap = useCallback(
     (name: MaterialName, _url: string | null) =>
