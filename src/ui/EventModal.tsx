@@ -58,10 +58,9 @@ const WINNER_PODIUM_COLUMN_W = 70;
 const WINNER_PODIUM_COLUMN_GAP = 10;
 const WINNER_PODIUM_PRIMARY_BAR_H = 38;
 const WINNER_PODIUM_SECONDARY_BAR_H = 28;
-const WINNER_PODIUM_AVATAR_OVERLAP = 12;
+const WINNER_PODIUM_TERTIARY_BAR_H = 26;
+const WINNER_PODIUM_AVATAR_OVERLAP = 10;
 const WINNER_PODIUM_GAP_FROM_BRACKET = 10;
-const WINNER_PODIUM_WIDTH =
-  WINNER_PODIUM_COLUMN_W * 2 + WINNER_PODIUM_COLUMN_GAP;
 const WINNER_PODIUM_HEIGHT =
   WINNER_PODIUM_PRIMARY_BAR_H +
   WINNER_PODIUM_AVATAR_PX -
@@ -80,6 +79,25 @@ const MONS_LINK_ADMINS = new Set([
 ]);
 
 type BracketCardInteraction = "none" | "game" | "participant";
+type WinnerPodiumPlace = 1 | 2 | 3;
+
+const getWinnerPodiumBarHeight = (place: WinnerPodiumPlace): number => {
+  if (place === 1) {
+    return WINNER_PODIUM_PRIMARY_BAR_H;
+  }
+  if (place === 2) {
+    return WINNER_PODIUM_SECONDARY_BAR_H;
+  }
+  return WINNER_PODIUM_TERTIARY_BAR_H;
+};
+
+const getWinnerPodiumWidth = (entryCount: number): number => {
+  const normalizedEntryCount = Math.max(1, Math.round(entryCount));
+  return (
+    WINNER_PODIUM_COLUMN_W * normalizedEntryCount +
+    WINNER_PODIUM_COLUMN_GAP * Math.max(0, normalizedEntryCount - 1)
+  );
+};
 
 const getViewportSize = (): { width: number; height: number } => {
   if (typeof window === "undefined") {
@@ -392,11 +410,12 @@ const BracketPlacement = styled.div<{ $offsetY: number }>`
 const WinnerPodium = styled.div<{
   $x: number;
   $y: number;
+  $width: number;
 }>`
   position: absolute;
   left: ${(p) => p.$x}px;
   top: ${(p) => p.$y}px;
-  width: ${WINNER_PODIUM_WIDTH}px;
+  width: ${(p) => p.$width}px;
   height: ${WINNER_PODIUM_HEIGHT}px;
   display: flex;
   align-items: flex-end;
@@ -405,20 +424,18 @@ const WinnerPodium = styled.div<{
   pointer-events: none;
 `;
 
-const WinnerPodiumColumn = styled.div<{ $place: 1 | 2 }>`
+const WinnerPodiumColumn = styled.div<{ $place: WinnerPodiumPlace }>`
   position: relative;
   isolation: isolate;
   width: ${WINNER_PODIUM_COLUMN_W}px;
   height: ${(p) =>
-    (p.$place === 1
-      ? WINNER_PODIUM_PRIMARY_BAR_H
-      : WINNER_PODIUM_SECONDARY_BAR_H) +
+    getWinnerPodiumBarHeight(p.$place) +
     WINNER_PODIUM_AVATAR_PX -
     WINNER_PODIUM_AVATAR_OVERLAP}px;
   flex: 0 0 auto;
 `;
 
-const WinnerPodiumBar = styled.div<{ $place: 1 | 2 }>`
+const WinnerPodiumBar = styled.div<{ $place: WinnerPodiumPlace }>`
   position: absolute;
   z-index: 1;
   left: 0;
@@ -1888,8 +1905,111 @@ const getParticipantDisplayName = (participant: EventParticipant): string => {
 };
 
 type WinnerPodiumEntry = {
-  place: 1 | 2;
+  place: WinnerPodiumPlace;
   participant: EventParticipant;
+};
+
+const getParticipantIdentityKey = (
+  participant: EventParticipant | null | undefined,
+): string => {
+  return participant?.profileId?.trim() || participant?.loginUid?.trim() || "";
+};
+
+const getDisqualifiedParticipantIdentityKeys = (
+  event: EventRecord | null,
+  rounds: EventRound[],
+): Set<string> => {
+  const disqualifiedKeys = new Set<string>();
+  const addMatchParticipantKeys = (match: EventMatch | null | undefined) => {
+    if (!match || match.winnerDisqualified !== true) {
+      return;
+    }
+    const hostProfileId = match.hostProfileId?.trim() ?? "";
+    const hostLoginUid = match.hostLoginUid?.trim() ?? "";
+    const guestProfileId = match.guestProfileId?.trim() ?? "";
+    const guestLoginUid = match.guestLoginUid?.trim() ?? "";
+    if (hostProfileId) {
+      disqualifiedKeys.add(hostProfileId);
+    }
+    if (hostLoginUid) {
+      disqualifiedKeys.add(hostLoginUid);
+    }
+    if (guestProfileId) {
+      disqualifiedKeys.add(guestProfileId);
+    }
+    if (guestLoginUid) {
+      disqualifiedKeys.add(guestLoginUid);
+    }
+  };
+
+  for (const round of rounds) {
+    for (const match of getSortedMatches(round)) {
+      addMatchParticipantKeys(match);
+    }
+  }
+  addMatchParticipantKeys(getThirdPlaceMatch(event));
+  return disqualifiedKeys;
+};
+
+const isParticipantDisqualified = (
+  participant: EventParticipant | null | undefined,
+  disqualifiedIdentityKeys: Set<string>,
+): boolean => {
+  if (!participant) {
+    return false;
+  }
+  const profileId = participant.profileId?.trim() ?? "";
+  if (profileId && disqualifiedIdentityKeys.has(profileId)) {
+    return true;
+  }
+  const loginUid = participant.loginUid?.trim() ?? "";
+  if (loginUid && disqualifiedIdentityKeys.has(loginUid)) {
+    return true;
+  }
+  return false;
+};
+
+const addParticipantIdentityKeys = (
+  identityKeys: Set<string>,
+  participant: EventParticipant | null | undefined,
+): void => {
+  if (!participant) {
+    return;
+  }
+  const profileId = participant.profileId?.trim() ?? "";
+  if (profileId) {
+    identityKeys.add(profileId);
+  }
+  const loginUid = participant.loginUid?.trim() ?? "";
+  if (loginUid) {
+    identityKeys.add(loginUid);
+  }
+  const primaryIdentityKey = getParticipantIdentityKey(participant);
+  if (primaryIdentityKey) {
+    identityKeys.add(primaryIdentityKey);
+  }
+};
+
+const hasAnyParticipantIdentityKey = (
+  identityKeys: Set<string>,
+  participant: EventParticipant | null | undefined,
+): boolean => {
+  if (!participant) {
+    return false;
+  }
+  const profileId = participant.profileId?.trim() ?? "";
+  if (profileId && identityKeys.has(profileId)) {
+    return true;
+  }
+  const loginUid = participant.loginUid?.trim() ?? "";
+  if (loginUid && identityKeys.has(loginUid)) {
+    return true;
+  }
+  const primaryIdentityKey = getParticipantIdentityKey(participant);
+  if (primaryIdentityKey && identityKeys.has(primaryIdentityKey)) {
+    return true;
+  }
+  return false;
 };
 
 const getMatchSideForProfileId = (
@@ -1909,7 +2029,7 @@ const getMatchSideForProfileId = (
   return null;
 };
 
-const resolveFinalMatchParticipant = (
+const resolveMatchParticipant = (
   match: EventMatch,
   participantsById: Record<string, EventParticipant>,
   profileId: string | null | undefined,
@@ -1929,6 +2049,19 @@ const resolveFinalMatchParticipant = (
   return buildParticipantFromMatchSide(match, side, participantsById);
 };
 
+const getResolvedMatchWinnerSide = (match: EventMatch): MatchSide | null => {
+  if (match.status === "host") {
+    return "host";
+  }
+  if (match.status === "guest") {
+    return "guest";
+  }
+  if (match.status === "bye") {
+    return getDisplayedByeSide(match);
+  }
+  return null;
+};
+
 const getEndedEventWinnerPodiumEntries = (
   event: EventRecord | null,
   rounds: EventRound[],
@@ -1942,22 +2075,19 @@ const getEndedEventWinnerPodiumEntries = (
   if (!finalMatch) {
     return [];
   }
+  const disqualifiedParticipantIdentityKeys =
+    getDisqualifiedParticipantIdentityKeys(event, rounds);
+  const participantList = Object.values(event.participants ?? {});
+  const shouldShowTopThree = participantList.length >= 3;
 
-  const winnerSide: MatchSide | null =
-    finalMatch.status === "host"
-      ? "host"
-      : finalMatch.status === "guest"
-        ? "guest"
-        : finalMatch.status === "bye"
-          ? getDisplayedByeSide(finalMatch)
-          : null;
+  const winnerSide = getResolvedMatchWinnerSide(finalMatch);
   const winner =
-    resolveFinalMatchParticipant(
+    resolveMatchParticipant(
       finalMatch,
       participantsById,
       event.winnerProfileId,
     ) ??
-    resolveFinalMatchParticipant(
+    resolveMatchParticipant(
       finalMatch,
       participantsById,
       finalMatch.winnerProfileId,
@@ -1969,7 +2099,7 @@ const getEndedEventWinnerPodiumEntries = (
   const runnerUpSide: MatchSide | null =
     winnerSide === "host" ? "guest" : winnerSide === "guest" ? "host" : null;
   const runnerUp =
-    resolveFinalMatchParticipant(
+    resolveMatchParticipant(
       finalMatch,
       participantsById,
       finalMatch.loserProfileId,
@@ -1982,30 +2112,108 @@ const getEndedEventWinnerPodiumEntries = (
         )
       : null);
 
-  const winnerKey = winner?.profileId || winner?.loginUid;
-  const runnerKey = runnerUp?.profileId || runnerUp?.loginUid;
-  if (!winner || !winnerKey) {
+  const winnerKey = getParticipantIdentityKey(winner);
+  if (
+    !winner ||
+    !winnerKey ||
+    isParticipantDisqualified(winner, disqualifiedParticipantIdentityKeys)
+  ) {
     return [];
   }
-  if (!runnerUp || !runnerKey || winnerKey === runnerKey) {
-    return [
-      {
-        place: 1,
-        participant: winner,
-      },
-    ];
+
+  const entriesByPlace = new Map<WinnerPodiumPlace, EventParticipant>();
+  entriesByPlace.set(1, winner);
+  const reservedParticipantKeys = new Set<string>();
+  addParticipantIdentityKeys(reservedParticipantKeys, winner);
+  const placementCandidates: EventParticipant[] = [];
+  const pushPlacementCandidate = (
+    participant: EventParticipant | null | undefined,
+  ) => {
+    if (!participant) {
+      return;
+    }
+    if (
+      hasAnyParticipantIdentityKey(reservedParticipantKeys, participant) ||
+      isParticipantDisqualified(
+        participant,
+        disqualifiedParticipantIdentityKeys,
+      )
+    ) {
+      return;
+    }
+    addParticipantIdentityKeys(reservedParticipantKeys, participant);
+    placementCandidates.push(participant);
+  };
+  pushPlacementCandidate(runnerUp);
+
+  if (shouldShowTopThree) {
+    const thirdPlaceMatch = getThirdPlaceMatch(event);
+    const thirdPlaceWinnerSide = thirdPlaceMatch
+      ? getResolvedMatchWinnerSide(thirdPlaceMatch)
+      : null;
+    const thirdPlaceMatchWinner =
+      thirdPlaceMatch &&
+      (resolveMatchParticipant(
+        thirdPlaceMatch,
+        participantsById,
+        thirdPlaceMatch.winnerProfileId,
+      ) ??
+        (thirdPlaceWinnerSide
+          ? buildParticipantFromMatchSide(
+              thirdPlaceMatch,
+              thirdPlaceWinnerSide,
+              participantsById,
+            )
+          : null));
+    pushPlacementCandidate(thirdPlaceMatchWinner);
   }
 
-  return [
-    {
-      place: 2,
-      participant: runnerUp,
-    },
-    {
-      place: 1,
-      participant: winner,
-    },
-  ];
+  const fallbackPlacementCandidates = participantList
+    .filter((participant) => {
+      return !isParticipantDisqualified(
+        participant,
+        disqualifiedParticipantIdentityKeys,
+      );
+    })
+    .sort((left, right) => {
+      const leftEliminationRound = left.eliminatedRoundIndex ?? -1;
+      const rightEliminationRound = right.eliminatedRoundIndex ?? -1;
+      if (leftEliminationRound !== rightEliminationRound) {
+        return rightEliminationRound - leftEliminationRound;
+      }
+      if (left.joinedAtMs !== right.joinedAtMs) {
+        return left.joinedAtMs - right.joinedAtMs;
+      }
+      return left.profileId.localeCompare(right.profileId);
+    });
+  for (const candidate of fallbackPlacementCandidates) {
+    pushPlacementCandidate(candidate);
+  }
+
+  const runnerUpPlacement = placementCandidates[0] ?? null;
+  if (runnerUpPlacement) {
+    entriesByPlace.set(2, runnerUpPlacement);
+  }
+  const thirdPlacePlacement =
+    shouldShowTopThree && placementCandidates.length > 1
+      ? placementCandidates[1]
+      : null;
+  if (thirdPlacePlacement) {
+    entriesByPlace.set(3, thirdPlacePlacement);
+  }
+
+  return ([2, 1, 3] as WinnerPodiumPlace[]).flatMap((place) => {
+    const participant = entriesByPlace.get(place);
+    if (!participant) {
+      return [];
+    }
+    return [
+      {
+        place,
+        participant,
+      },
+    ];
+  });
 };
 
 const DEV_STUB_MIN_PLAYERS = 2;
@@ -2717,11 +2925,12 @@ const EventModal: React.FC = () => {
     displayedEventRecord?.status === "ended" &&
     winnerPodiumEntries.length > 0
   );
+  const winnerPodiumWidth = getWinnerPodiumWidth(winnerPodiumEntries.length);
   const bracketContentHeight = bracketLayout
     ? Math.max(bracketLayout.height, thirdPlaceLayout?.bottom ?? 0)
     : 0;
   const bracketFrameWidth = bracketLayout
-    ? Math.max(bracketLayout.width, showWinnerPodium ? WINNER_PODIUM_WIDTH : 0)
+    ? Math.max(bracketLayout.width, showWinnerPodium ? winnerPodiumWidth : 0)
     : 0;
   const bracketFrameHeight = bracketLayout
     ? bracketContentHeight +
@@ -2736,7 +2945,7 @@ const EventModal: React.FC = () => {
     ? WINNER_PODIUM_HEIGHT + WINNER_PODIUM_GAP_FROM_BRACKET
     : 0;
   const winnerPodiumOffsetX = Math.round(
-    (bracketFrameWidth - WINNER_PODIUM_WIDTH) / 2,
+    (bracketFrameWidth - winnerPodiumWidth) / 2,
   );
 
   const bracketFallbackRounds = useMemo(() => {
@@ -3383,7 +3592,11 @@ const EventModal: React.FC = () => {
             $scale={bracketScale}
           >
             {showWinnerPodium && (
-              <WinnerPodium $x={winnerPodiumOffsetX} $y={0}>
+              <WinnerPodium
+                $x={winnerPodiumOffsetX}
+                $y={0}
+                $width={winnerPodiumWidth}
+              >
                 {winnerPodiumEntries.map((entry) => {
                   const participantKey =
                     entry.participant.profileId ||
