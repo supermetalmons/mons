@@ -173,6 +173,19 @@ const statusPillStyles = css`
 
 const TopBarTitle = styled.div`
   ${statusPillStyles}
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1px;
+  padding: 6px 14px;
+`;
+
+const TopBarSubtitle = styled.div`
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.03em;
+  text-transform: none;
+  opacity: 0.7;
 `;
 
 const DevBracketHelper = styled.div`
@@ -792,6 +805,20 @@ const formatRelativeStart = (
   }
   const minutes = Math.max(1, Math.ceil(deltaMs / 60000));
   return `in ${minutes} minute${minutes === 1 ? "" : "s"}`;
+};
+
+const formatAbsoluteStart = (event: EventRecord | null): string => {
+  if (!event || event.status !== "scheduled") {
+    return "";
+  }
+  const d = new Date(event.startAtMs);
+  const time = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  const date = d.toLocaleDateString([], {
+    weekday: "short",
+    month: "short",
+    day: "numeric",
+  });
+  return `${time} · ${date}`;
 };
 
 const getEventNowRefreshDelayMs = (
@@ -3574,6 +3601,9 @@ const EventModal: React.FC = () => {
   const topBarTitleText = devStubRecord
     ? ""
     : formatRelativeStart(displayedEventRecord, nowMs);
+  const topBarSubtitleText = devStubRecord
+    ? ""
+    : formatAbsoluteStart(displayedEventRecord);
   const pendingCreateStatusText =
     modalState.isPendingCreate && !modalState.eventId
       ? modalState.pendingCreateError || "CREATING"
@@ -3658,7 +3688,12 @@ const EventModal: React.FC = () => {
 
       {!isDismissedState && topBarTitleText && (
         <TopBar ref={topBarRef}>
-          <TopBarTitle>{topBarTitleText}</TopBarTitle>
+          <TopBarTitle>
+            <div>{topBarTitleText}</div>
+            {topBarSubtitleText && (
+              <TopBarSubtitle>{topBarSubtitleText}</TopBarSubtitle>
+            )}
+          </TopBarTitle>
         </TopBar>
       )}
 
