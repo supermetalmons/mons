@@ -61,7 +61,8 @@ const WINNER_PODIUM_SECONDARY_BAR_H = 30;
 const WINNER_PODIUM_TERTIARY_BAR_H = 24;
 const WINNER_PODIUM_AVATAR_OVERLAP = 10;
 const WINNER_PODIUM_GAP_FROM_BRACKET = 10;
-const WINNER_PODIUM_THIRD_PLACE_AVATAR_UPLIFT_PX = 2;
+const WINNER_PODIUM_AVATAR_UPLIFT_PX = 3;
+const WINNER_PODIUM_THIRD_PLACE_AVATAR_UPLIFT_PX = 5;
 const WINNER_PODIUM_HEIGHT =
   WINNER_PODIUM_PRIMARY_BAR_H +
   WINNER_PODIUM_AVATAR_PX -
@@ -463,10 +464,10 @@ const WinnerPodiumColumn = styled.button<{ $place: WinnerPodiumPlace }>`
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) [data-avatar-slot][data-single-known="true"] {
       transform: translate(
-          -50%,
-          ${(p) => (p.$place === 3 ? `-${WINNER_PODIUM_THIRD_PLACE_AVATAR_UPLIFT_PX}px` : "0px")}
-        )
-        scale(1.06);
+        -50%,
+        ${(p) =>
+          `-${p.$place === 3 ? WINNER_PODIUM_THIRD_PLACE_AVATAR_UPLIFT_PX : WINNER_PODIUM_AVATAR_UPLIFT_PX}px`}
+      ) scale(1.06);
     }
   }
 `;
@@ -480,9 +481,9 @@ const WinnerPodiumBar = styled.div<{ $place: WinnerPodiumPlace }>`
   top: ${WINNER_PODIUM_AVATAR_PX - WINNER_PODIUM_AVATAR_OVERLAP}px;
   border-radius: 11px;
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
-  padding-bottom: ${(p) => (p.$place === 1 ? 8 : p.$place === 2 ? 5 : 4)}px;
+  padding: 0;
   box-sizing: border-box;
   font-size: 0.68rem;
   font-weight: 700;
@@ -501,7 +502,8 @@ const WinnerPodiumAvatarSlot = styled.div<{ $place: WinnerPodiumPlace }>`
   left: 50%;
   transform: translate(
     -50%,
-    ${(p) => (p.$place === 3 ? `-${WINNER_PODIUM_THIRD_PLACE_AVATAR_UPLIFT_PX}px` : "0px")}
+    ${(p) =>
+      `-${p.$place === 3 ? WINNER_PODIUM_THIRD_PLACE_AVATAR_UPLIFT_PX : WINNER_PODIUM_AVATAR_UPLIFT_PX}px`}
   );
   width: ${WINNER_PODIUM_AVATAR_PX}px;
   height: ${WINNER_PODIUM_AVATAR_PX}px;
