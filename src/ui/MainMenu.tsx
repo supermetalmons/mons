@@ -625,14 +625,6 @@ const ToggleRow = styled.label`
   }
 `;
 
-const ExperimentalSectionTitle = styled.div`
-  font-size: 12px;
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--navigationTextMuted);
-`;
-
 const ScheduleModeToggle = styled.div`
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -692,21 +684,12 @@ const ExperimentalSelect = styled.select`
   }
 `;
 
-const ExperimentalHint = styled.div`
-  margin-top: -6px;
-  font-size: 11px;
-  color: var(--navigationTextMuted);
-
-  @media (prefers-color-scheme: dark) {
-    color: var(--navigationTextMuted);
-  }
-`;
-
 const ExperimentalActionButton = styled.button`
   height: 40px;
   border: none;
   border-radius: 999px;
   padding: 0 14px;
+  margin-bottom: 24px;
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
@@ -1291,8 +1274,6 @@ const MainMenu: React.FC = () => {
   const canCreatePilotEvents = MONS_LINK_ADMINS.has(
     storage.getUsername("").trim().toLowerCase(),
   );
-  const isEventScheduledDateToday =
-    eventScheduledDate === formatLocalDateInputValue(new Date());
 
   return (
     <>
@@ -1521,19 +1502,8 @@ const MainMenu: React.FC = () => {
                 </LinksContainer>
                 {showExperimental && (
                   <ExperimentalMenu>
-                    <ToggleRow>
-                      <input
-                        type="checkbox"
-                        checked={areAnimatedMonsEnabled}
-                        onChange={handleAnimatedMonsToggle}
-                      />
-                      animated mons
-                    </ToggleRow>
                     {canCreatePilotEvents && (
                       <>
-                        <ExperimentalSectionTitle>
-                          Event Schedule
-                        </ExperimentalSectionTitle>
                         <ScheduleModeToggle>
                           <ScheduleModeButton
                             type="button"
@@ -1578,11 +1548,6 @@ const MainMenu: React.FC = () => {
                                 setEventCreateError("");
                               }}
                             />
-                            <ExperimentalHint>
-                              {isEventScheduledDateToday
-                                ? "Selected date: Today"
-                                : "Selected date: custom"}
-                            </ExperimentalHint>
                             <ExperimentalInput
                               type="time"
                               step="60"
@@ -1625,6 +1590,14 @@ const MainMenu: React.FC = () => {
                         {eventCreateError}
                       </ExperimentalInlineError>
                     )}
+                    <ToggleRow>
+                      <input
+                        type="checkbox"
+                        checked={areAnimatedMonsEnabled}
+                        onChange={handleAnimatedMonsToggle}
+                      />
+                      animated mons
+                    </ToggleRow>
                     <BuildInfo>{getBuildInfo()}</BuildInfo>
                   </ExperimentalMenu>
                 )}
