@@ -43,6 +43,19 @@ const BRACKET_COMPACT_CONNECTOR_W = 18;
 const BRACKET_EDGE_PADDING_X = 24;
 const BRACKET_EDGE_PADDING_Y = 16;
 const BRACKET_CORNER_R = 10;
+const WINNER_PODIUM_AVATAR_PX = 34;
+const WINNER_PODIUM_COLUMN_W = 70;
+const WINNER_PODIUM_COLUMN_GAP = 10;
+const WINNER_PODIUM_PRIMARY_BAR_H = 38;
+const WINNER_PODIUM_SECONDARY_BAR_H = 28;
+const WINNER_PODIUM_AVATAR_OVERLAP = 12;
+const WINNER_PODIUM_GAP_FROM_BRACKET = 10;
+const WINNER_PODIUM_WIDTH =
+  WINNER_PODIUM_COLUMN_W * 2 + WINNER_PODIUM_COLUMN_GAP;
+const WINNER_PODIUM_HEIGHT =
+  WINNER_PODIUM_PRIMARY_BAR_H +
+  WINNER_PODIUM_AVATAR_PX -
+  WINNER_PODIUM_AVATAR_OVERLAP;
 
 const FALLBACK_MATCH_H = 40;
 const FALLBACK_AVATAR_PX = 28;
@@ -364,6 +377,91 @@ const BracketPlacement = styled.div<{ $offsetY: number }>`
   position: relative;
   pointer-events: none;
   transform: translateY(${(p) => p.$offsetY}px);
+`;
+
+const WinnerPodium = styled.div<{
+  $x: number;
+  $y: number;
+}>`
+  position: absolute;
+  left: ${(p) => p.$x}px;
+  top: ${(p) => p.$y}px;
+  width: ${WINNER_PODIUM_WIDTH}px;
+  height: ${WINNER_PODIUM_HEIGHT}px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: ${WINNER_PODIUM_COLUMN_GAP}px;
+  pointer-events: none;
+`;
+
+const WinnerPodiumColumn = styled.div<{ $place: 1 | 2 }>`
+  position: relative;
+  isolation: isolate;
+  width: ${WINNER_PODIUM_COLUMN_W}px;
+  height: ${(p) =>
+    (p.$place === 1
+      ? WINNER_PODIUM_PRIMARY_BAR_H
+      : WINNER_PODIUM_SECONDARY_BAR_H) +
+    WINNER_PODIUM_AVATAR_PX -
+    WINNER_PODIUM_AVATAR_OVERLAP}px;
+  flex: 0 0 auto;
+`;
+
+const WinnerPodiumBar = styled.div<{ $place: 1 | 2 }>`
+  position: absolute;
+  z-index: 1;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: ${WINNER_PODIUM_AVATAR_PX - WINNER_PODIUM_AVATAR_OVERLAP}px;
+  border-radius: 11px;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  padding-bottom: 4px;
+  box-sizing: border-box;
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: var(--navigationTextMuted);
+  background: ${(p) =>
+    p.$place === 1 ? "var(--color-gray-e0)" : "var(--color-gray-f0)"};
+
+  @media (prefers-color-scheme: dark) {
+    background: ${(p) =>
+      p.$place === 1 ? "var(--color-gray-33)" : "var(--color-gray-27)"};
+  }
+`;
+
+const WinnerPodiumAvatarButton = styled.button`
+  position: absolute;
+  z-index: 2;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: ${WINNER_PODIUM_AVATAR_PX}px;
+  height: ${WINNER_PODIUM_AVATAR_PX}px;
+  border: none;
+  border-radius: 999px;
+  margin: 0;
+  padding: 0;
+  line-height: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.15s ease;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.72;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled) {
+      transform: translateX(-50%) scale(1.06);
+    }
+  }
 `;
 
 const ClassicConnectorSvg = styled.svg`
@@ -1712,6 +1810,123 @@ const getParticipantDisplayName = (participant: EventParticipant): string => {
   return "anon";
 };
 
+type WinnerPodiumEntry = {
+  place: 1 | 2;
+  participant: EventParticipant;
+};
+
+const getMatchSideForProfileId = (
+  match: EventMatch,
+  profileId: string | null | undefined,
+): MatchSide | null => {
+  const normalizedProfileId = profileId?.trim() ?? "";
+  if (!normalizedProfileId) {
+    return null;
+  }
+  if (match.hostProfileId === normalizedProfileId) {
+    return "host";
+  }
+  if (match.guestProfileId === normalizedProfileId) {
+    return "guest";
+  }
+  return null;
+};
+
+const resolveFinalMatchParticipant = (
+  match: EventMatch,
+  participantsById: Record<string, EventParticipant>,
+  profileId: string | null | undefined,
+): EventParticipant | null => {
+  const normalizedProfileId = profileId?.trim() ?? "";
+  if (!normalizedProfileId) {
+    return null;
+  }
+  const knownParticipant = participantsById[normalizedProfileId];
+  if (knownParticipant) {
+    return knownParticipant;
+  }
+  const side = getMatchSideForProfileId(match, normalizedProfileId);
+  if (!side) {
+    return null;
+  }
+  return buildParticipantFromMatchSide(match, side, participantsById);
+};
+
+const getEndedEventWinnerPodiumEntries = (
+  event: EventRecord | null,
+  rounds: EventRound[],
+  participantsById: Record<string, EventParticipant>,
+): WinnerPodiumEntry[] => {
+  if (!event || event.status !== "ended" || rounds.length === 0) {
+    return [];
+  }
+  const finalRound = rounds[rounds.length - 1];
+  const finalMatch = getSortedMatches(finalRound)[0];
+  if (!finalMatch) {
+    return [];
+  }
+
+  const winnerSide: MatchSide | null =
+    finalMatch.status === "host"
+      ? "host"
+      : finalMatch.status === "guest"
+        ? "guest"
+        : finalMatch.status === "bye"
+          ? getDisplayedByeSide(finalMatch)
+          : null;
+  const winner =
+    resolveFinalMatchParticipant(
+      finalMatch,
+      participantsById,
+      event.winnerProfileId,
+    ) ??
+    resolveFinalMatchParticipant(
+      finalMatch,
+      participantsById,
+      finalMatch.winnerProfileId,
+    ) ??
+    (winnerSide
+      ? buildParticipantFromMatchSide(finalMatch, winnerSide, participantsById)
+      : null);
+
+  const runnerUpSide: MatchSide | null =
+    winnerSide === "host" ? "guest" : winnerSide === "guest" ? "host" : null;
+  const runnerUp =
+    resolveFinalMatchParticipant(
+      finalMatch,
+      participantsById,
+      finalMatch.loserProfileId,
+    ) ??
+    (runnerUpSide
+      ? buildParticipantFromMatchSide(finalMatch, runnerUpSide, participantsById)
+      : null);
+
+  const winnerKey = winner?.profileId || winner?.loginUid;
+  const runnerKey = runnerUp?.profileId || runnerUp?.loginUid;
+  if (!winner || !winnerKey) {
+    return [];
+  }
+  if (!runnerUp || !runnerKey || winnerKey === runnerKey) {
+    return [
+      {
+        place: 1,
+        participant: winner,
+      },
+    ];
+  }
+
+  return [
+    {
+      place: 2,
+      participant: runnerUp,
+    },
+    {
+      place: 1,
+      participant: winner,
+    },
+  ];
+};
+
 const DEV_STUB_MIN_PLAYERS = 2;
 const DEV_STUB_MAX_PLAYERS = 32;
 const DEV_STUB_DEFAULT_PLAYERS = 8;
@@ -2366,6 +2581,38 @@ const EventModal: React.FC = () => {
     }
     return computeSymmetricalBracket(rounds);
   }, [canRenderBracket, rounds]);
+  const winnerPodiumEntries = useMemo(
+    () =>
+      getEndedEventWinnerPodiumEntries(
+        displayedEventRecord,
+        rounds,
+        participantsById,
+      ),
+    [displayedEventRecord, rounds, participantsById],
+  );
+  const showWinnerPodium = !!(
+    bracketLayout &&
+    displayedEventRecord?.status === "ended" &&
+    winnerPodiumEntries.length > 0
+  );
+  const bracketFrameWidth = bracketLayout
+    ? Math.max(bracketLayout.width, showWinnerPodium ? WINNER_PODIUM_WIDTH : 0)
+    : 0;
+  const bracketFrameHeight = bracketLayout
+    ? bracketLayout.height +
+      (showWinnerPodium
+        ? WINNER_PODIUM_HEIGHT + WINNER_PODIUM_GAP_FROM_BRACKET
+        : 0)
+    : 0;
+  const bracketContentOffsetX = bracketLayout
+    ? Math.round((bracketFrameWidth - bracketLayout.width) / 2)
+    : 0;
+  const bracketContentOffsetY = showWinnerPodium
+    ? WINNER_PODIUM_HEIGHT + WINNER_PODIUM_GAP_FROM_BRACKET
+    : 0;
+  const winnerPodiumOffsetX = Math.round(
+    (bracketFrameWidth - WINNER_PODIUM_WIDTH) / 2,
+  );
 
   const bracketFallbackRounds = useMemo(() => {
     return rounds
@@ -2407,11 +2654,13 @@ const EventModal: React.FC = () => {
       1,
       viewportSize.height - reservedTop - reservedBottom,
     );
-    const sx = availW / bracketLayout.width;
-    const sy = availH / bracketLayout.height;
+    const sx = availW / Math.max(1, bracketFrameWidth);
+    const sy = availH / Math.max(1, bracketFrameHeight);
     const scale = Math.min(1, sx, sy);
     return Number.isFinite(scale) ? Math.max(0, scale) : 1;
   }, [
+    bracketFrameHeight,
+    bracketFrameWidth,
     bracketLayout,
     bracketInsets.bottom,
     bracketInsets.top,
@@ -2891,10 +3140,39 @@ const EventModal: React.FC = () => {
       {hasBracket && bracketLayout && (
         <BracketPlacement $offsetY={bracketOffsetY}>
           <BracketContainer
-            $w={bracketLayout.width}
-            $h={bracketLayout.height}
+            $w={bracketFrameWidth}
+            $h={bracketFrameHeight}
             $scale={bracketScale}
           >
+            {showWinnerPodium && (
+              <WinnerPodium $x={winnerPodiumOffsetX} $y={0}>
+                {winnerPodiumEntries.map((entry) => {
+                  const participantKey =
+                    entry.participant.profileId ||
+                    entry.participant.loginUid ||
+                    `winner_podium_${entry.place}`;
+                  return (
+                    <WinnerPodiumColumn key={participantKey} $place={entry.place}>
+                      <WinnerPodiumAvatarButton
+                        type="button"
+                        onClick={() => void handleParticipantClick(entry.participant)}
+                        disabled={openingParticipantId !== null}
+                        aria-label={`Open ${getParticipantDisplayName(entry.participant)}`}
+                      >
+                        <EventAvatar
+                          size={WINNER_PODIUM_AVATAR_PX}
+                          emojiId={entry.participant.emojiId}
+                          displayName={entry.participant.displayName}
+                        />
+                      </WinnerPodiumAvatarButton>
+                      <WinnerPodiumBar $place={entry.place}>
+                        {entry.place}
+                      </WinnerPodiumBar>
+                    </WinnerPodiumColumn>
+                  );
+                })}
+              </WinnerPodium>
+            )}
             {bracketLayout.positions.map((mp) => {
               const action = getBracketMatchAction(mp.match, participantsById);
               const interaction: BracketCardInteraction =
@@ -2910,8 +3188,8 @@ const EventModal: React.FC = () => {
                 <ClassicMatchCard
                   key={mp.key}
                   type="button"
-                  $x={mp.x}
-                  $y={mp.y}
+                  $x={mp.x + bracketContentOffsetX}
+                  $y={mp.y + bracketContentOffsetY}
                   $w={mp.width}
                   $h={mp.height}
                   $interaction={interaction}
@@ -2943,6 +3221,10 @@ const EventModal: React.FC = () => {
               );
             })}
             <ClassicConnectorSvg
+              style={{
+                left: bracketContentOffsetX,
+                top: bracketContentOffsetY,
+              }}
               width={bracketLayout.width}
               height={bracketLayout.height}
               viewBox={`0 0 ${bracketLayout.width} ${bracketLayout.height}`}
