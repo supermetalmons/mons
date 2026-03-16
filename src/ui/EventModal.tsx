@@ -29,6 +29,7 @@ import {
   didDismissSomethingWithOutsideTapJustNow,
   didNotDismissAnythingWithOutsideTapJustNow,
 } from "./BottomControls";
+import { isMobile } from "../utils/misc";
 import { showShinyCard, showsShinyCardSomewhere } from "./ShinyCard";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 import { BottomPillButton } from "./BottomControlsStyles";
@@ -2823,9 +2824,9 @@ const EventModal: React.FC = () => {
 
   return (
     <Overlay
-      onMouseDownCapture={handleBackdropPointerDown}
-      onTouchStartCapture={handleBackdropPointerDown}
-      onClick={handleBackdropClick}
+      onMouseDownCapture={!isMobile ? handleBackdropPointerDown : undefined}
+      onTouchStartCapture={isMobile ? handleBackdropPointerDown : undefined}
+      onClick={!isMobile ? handleBackdropClick : undefined}
     >
       {modalState.eventId && !isDismissedState && (
         <DevBracketHelper>
