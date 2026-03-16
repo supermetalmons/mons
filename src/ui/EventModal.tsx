@@ -2426,6 +2426,17 @@ const EventModal: React.FC = () => {
     displayedEventRecord.status === "scheduled" &&
     nowMs < displayedEventRecord.startAtMs;
 
+  const shouldKeepVisibleForOutsideDismiss = useCallback(() => {
+    const hasShinyCardElement =
+      typeof document !== "undefined" &&
+      document.querySelector('[data-shiny-card="true"]') !== null;
+    return (
+      showsShinyCardSomewhere ||
+      hasShinyCardElement ||
+      !didNotDismissAnythingWithOutsideTapJustNow()
+    );
+  }, []);
+
   const handleBackdropPointerDown = useCallback(
     (
       event:
@@ -2446,15 +2457,27 @@ const EventModal: React.FC = () => {
       ) {
         return;
       }
-      const hasShinyCardElement =
-        typeof document !== "undefined" &&
-        document.querySelector('[data-shiny-card="true"]') !== null;
-      ignoreNextBackdropClickRef.current =
-        showsShinyCardSomewhere ||
-        hasShinyCardElement ||
-        !didNotDismissAnythingWithOutsideTapJustNow();
+      const shouldKeepVisible = shouldKeepVisibleForOutsideDismiss();
+      ignoreNextBackdropClickRef.current = shouldKeepVisible;
+      if (event.type !== "touchstart") {
+        return;
+      }
+      if (showDevHelperPanel) {
+        ignoreNextBackdropClickRef.current = false;
+        setShowDevHelperPanel(false);
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      if (shouldKeepVisible) {
+        return;
+      }
+      event.preventDefault();
+      event.stopPropagation();
+      didDismissSomethingWithOutsideTapJustNow();
+      void closeEventModal();
     },
-    [],
+    [showDevHelperPanel, shouldKeepVisibleForOutsideDismiss],
   );
 
   const handleBackdropClick = useCallback(
@@ -2467,18 +2490,17 @@ const EventModal: React.FC = () => {
         setShowDevHelperPanel(false);
         return;
       }
-      const shouldKeepVisibleForOutsideDismiss =
+      const shouldKeepVisibleForOutsideDismissNow =
         ignoreNextBackdropClickRef.current ||
-        showsShinyCardSomewhere ||
-        !didNotDismissAnythingWithOutsideTapJustNow();
+        shouldKeepVisibleForOutsideDismiss();
       ignoreNextBackdropClickRef.current = false;
-      if (shouldKeepVisibleForOutsideDismiss) {
+      if (shouldKeepVisibleForOutsideDismissNow) {
         return;
       }
       didDismissSomethingWithOutsideTapJustNow();
       void closeEventModal();
     },
-    [showDevHelperPanel],
+    [showDevHelperPanel, shouldKeepVisibleForOutsideDismiss],
   );
 
   const copyEventLinkToClipboard = useCallback(() => {
