@@ -819,7 +819,11 @@ const formatAbsoluteStart = (event: EventRecord | null): string => {
   }
   const d = new Date(event.startAtMs);
   const now = new Date();
-  const time = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  const time = d.toLocaleTimeString([], {
+    hour: "numeric",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
   const isToday =
     d.getFullYear() === now.getFullYear() &&
     d.getMonth() === now.getMonth() &&

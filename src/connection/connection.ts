@@ -143,6 +143,15 @@ const EVENT_SYNC_PARTICIPANT_CACHE_TTL_MS = 3000;
 const EVENT_SYNC_PARTICIPANT_NEGATIVE_CACHE_TTL_MS = 800;
 const EVENT_SYNC_RETRY_DELAYS_MS = [150, 300] as const;
 
+export type EventScheduleTimezone = "local" | "ET" | "PT" | "CT";
+
+export type EventCreateDateTimePayload = {
+  scheduledDate: string;
+  scheduledTime: string;
+  scheduledTimezone: EventScheduleTimezone;
+  localTimezoneIana?: string;
+};
+
 export type NavigationGamesPageCursor =
   QueryDocumentSnapshot<DocumentData> | null;
 
@@ -2324,14 +2333,31 @@ class Connection {
   }
 
   public async createEvent(
-    startsInMinutes: number,
+    schedule: number | EventCreateDateTimePayload,
   ): Promise<{ ok: boolean; eventId?: string; event?: EventRecord | null }> {
     try {
       await this.ensureAuthenticated();
       const createEventFunction = httpsCallable(this.functions, "createEvent");
-      const response = await createEventFunction({
-        startsInMinutes: this.normalizeFiniteNumber(startsInMinutes, 0),
-      });
+      const requestPayload =
+        typeof schedule === "number"
+          ? {
+              startsInMinutes: this.normalizeFiniteNumber(schedule, 0),
+            }
+          : {
+              scheduledDate: this.normalizeString(schedule.scheduledDate),
+              scheduledTime: this.normalizeString(schedule.scheduledTime),
+              scheduledTimezone: this.normalizeString(
+                schedule.scheduledTimezone,
+              ),
+              ...(this.normalizeString(schedule.localTimezoneIana || "") !== ""
+                ? {
+                    localTimezoneIana: this.normalizeString(
+                      schedule.localTimezoneIana || "",
+                    ),
+                  }
+                : {}),
+            };
+      const response = await createEventFunction(requestPayload);
       const data = response.data as {
         ok?: boolean;
         eventId?: unknown;

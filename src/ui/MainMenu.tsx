@@ -37,6 +37,10 @@ import { InfoPopover } from "./InfoPopover";
 import { MiningMaterialName } from "../connection/connectionModels";
 import { registerMainMenuTransientUiHandler } from "./uiSession";
 import { connection } from "../connection/connection";
+import type {
+  EventCreateDateTimePayload,
+  EventScheduleTimezone,
+} from "../connection/connection";
 import {
   getEventModalState,
   openEventModal,
@@ -72,6 +76,47 @@ const MONS_LINK_ADMINS = new Set([
   "bosch2",
   "trinket",
 ]);
+const EVENT_SCHEDULE_TIMEZONE_OPTIONS: Array<{
+  value: EventScheduleTimezone;
+  label: string;
+}> = [
+  { value: "local", label: "Local" },
+  { value: "ET", label: "ET" },
+  { value: "PT", label: "PT" },
+  { value: "CT", label: "CT" },
+];
+
+type EventScheduleMode = "minutes" | "datetime";
+
+const pad2 = (value: number): string => String(value).padStart(2, "0");
+
+const formatLocalDateInputValue = (date: Date): string =>
+  `${date.getFullYear()}-${pad2(date.getMonth() + 1)}-${pad2(date.getDate())}`;
+
+const formatLocalTimeInputValue = (date: Date): string =>
+  `${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
+
+const getRoundedUpDateToNextFiveMinute = (source: Date): Date => {
+  const rounded = new Date(source.getTime());
+  const hasSubMinute =
+    rounded.getSeconds() !== 0 || rounded.getMilliseconds() !== 0;
+  rounded.setSeconds(0, 0);
+  const minuteRemainder = rounded.getMinutes() % 5;
+  if (minuteRemainder !== 0) {
+    rounded.setMinutes(rounded.getMinutes() + (5 - minuteRemainder));
+  } else if (hasSubMinute) {
+    rounded.setMinutes(rounded.getMinutes() + 5);
+  }
+  return rounded;
+};
+
+const getDefaultScheduledDateTimeInput = (): { date: string; time: string } => {
+  const rounded = getRoundedUpDateToNextFiveMinute(new Date());
+  return {
+    date: formatLocalDateInputValue(rounded),
+    time: formatLocalTimeInputValue(rounded),
+  };
+};
 
 const materialImagePromises: Map<
   MiningMaterialName,
@@ -580,6 +625,41 @@ const ToggleRow = styled.label`
   }
 `;
 
+const ExperimentalSectionTitle = styled.div`
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--navigationTextMuted);
+`;
+
+const ScheduleModeToggle = styled.div`
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+`;
+
+const ScheduleModeButton = styled.button<{ $active: boolean }>`
+  height: 34px;
+  border: none;
+  border-radius: 999px;
+  padding: 0 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  color: ${(props) => (props.$active ? "white" : "var(--color-gray-33)")};
+  background: ${(props) =>
+    props.$active ? "var(--color-blue-primary)" : "rgba(111, 126, 141, 0.2)"};
+
+  @media (prefers-color-scheme: dark) {
+    color: ${(props) => (props.$active ? "white" : "var(--color-gray-f5)")};
+    background: ${(props) =>
+      props.$active
+        ? "var(--color-blue-primary-dark)"
+        : "rgba(255, 255, 255, 0.12)"};
+  }
+`;
+
 const ExperimentalInput = styled.input`
   width: 100%;
   box-sizing: border-box;
@@ -593,6 +673,32 @@ const ExperimentalInput = styled.input`
   @media (prefers-color-scheme: dark) {
     background: rgba(255, 255, 255, 0.08);
     color: var(--color-gray-f5);
+  }
+`;
+
+const ExperimentalSelect = styled.select`
+  width: 100%;
+  box-sizing: border-box;
+  border: none;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-size: 14px;
+  background: rgba(111, 126, 141, 0.12);
+  color: var(--color-gray-25);
+
+  @media (prefers-color-scheme: dark) {
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--color-gray-f5);
+  }
+`;
+
+const ExperimentalHint = styled.div`
+  margin-top: -6px;
+  font-size: 11px;
+  color: var(--navigationTextMuted);
+
+  @media (prefers-color-scheme: dark) {
+    color: var(--navigationTextMuted);
   }
 `;
 
@@ -765,6 +871,19 @@ const MainMenu: React.FC = () => {
   const [clickCount, setClickCount] = useState(0);
   const [showExperimental, setShowExperimental] = useState(false);
   const [eventStartsInMinutes, setEventStartsInMinutes] = useState("5");
+  const initialScheduledDateTimeRef = useRef(
+    getDefaultScheduledDateTimeInput(),
+  );
+  const [eventScheduleMode, setEventScheduleMode] =
+    useState<EventScheduleMode>("minutes");
+  const [eventScheduledDate, setEventScheduledDate] = useState(
+    () => initialScheduledDateTimeRef.current.date,
+  );
+  const [eventScheduledTime, setEventScheduledTime] = useState(
+    () => initialScheduledDateTimeRef.current.time,
+  );
+  const [eventScheduledTimezone, setEventScheduledTimezone] =
+    useState<EventScheduleTimezone>("local");
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [eventCreateError, setEventCreateError] = useState("");
 
@@ -938,7 +1057,13 @@ const MainMenu: React.FC = () => {
   };
 
   const showExperimentalFeaturesSelection = () => {
+    const defaults = getDefaultScheduledDateTimeInput();
     setShowExperimental(true);
+    setEventScheduleMode("minutes");
+    setEventScheduledDate(defaults.date);
+    setEventScheduledTime(defaults.time);
+    setEventScheduledTimezone("local");
+    setEventCreateError("");
   };
 
   const handleMusicPlaybackToggle = () => {
@@ -960,19 +1085,46 @@ const MainMenu: React.FC = () => {
   };
 
   const handleCreateEvent = useCallback(() => {
-    const parsedStartsInMinutes = Math.floor(Number(eventStartsInMinutes));
-    if (!Number.isFinite(parsedStartsInMinutes) || parsedStartsInMinutes < 1) {
-      setEventCreateError("Enter at least 1 minute.");
-      return;
+    let createRequest: number | EventCreateDateTimePayload;
+    if (eventScheduleMode === "minutes") {
+      const parsedStartsInMinutes = Math.floor(Number(eventStartsInMinutes));
+      if (
+        !Number.isFinite(parsedStartsInMinutes) ||
+        parsedStartsInMinutes < 1
+      ) {
+        setEventCreateError("Enter at least 1 minute.");
+        return;
+      }
+      createRequest = parsedStartsInMinutes;
+    } else {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(eventScheduledDate)) {
+        setEventCreateError("Enter a valid date.");
+        return;
+      }
+      if (!/^([01]\d|2[0-3]):[0-5]\d$/.test(eventScheduledTime)) {
+        setEventCreateError("Enter a valid time.");
+        return;
+      }
+      const localTimezoneIana =
+        Intl.DateTimeFormat().resolvedOptions().timeZone;
+      if (eventScheduledTimezone === "local" && !localTimezoneIana) {
+        setEventCreateError("Could not detect local timezone.");
+        return;
+      }
+      createRequest = {
+        scheduledDate: eventScheduledDate,
+        scheduledTime: eventScheduledTime,
+        scheduledTimezone: eventScheduledTimezone,
+        ...(eventScheduledTimezone === "local" ? { localTimezoneIana } : {}),
+      };
     }
-    const startsInMinutes = parsedStartsInMinutes;
     setEventCreateError("");
     setIsCreatingEvent(true);
     setIsMenuOpen(false);
     setShowExperimental(false);
     openEventModalPendingCreate({ restoreHomeOnClose: false });
     void connection
-      .createEvent(startsInMinutes)
+      .createEvent(createRequest)
       .then((result) => {
         if (!result.ok || !result.eventId) {
           setEventModalPendingCreateError("Failed to create event.");
@@ -1000,7 +1152,13 @@ const MainMenu: React.FC = () => {
       .finally(() => {
         setIsCreatingEvent(false);
       });
-  }, [eventStartsInMinutes]);
+  }, [
+    eventScheduleMode,
+    eventStartsInMinutes,
+    eventScheduledDate,
+    eventScheduledTime,
+    eventScheduledTimezone,
+  ]);
 
   toggleInfoVisibilityImpl = () => {
     if (!isInfoOpen) {
@@ -1133,6 +1291,8 @@ const MainMenu: React.FC = () => {
   const canCreatePilotEvents = MONS_LINK_ADMINS.has(
     storage.getUsername("").trim().toLowerCase(),
   );
+  const isEventScheduledDateToday =
+    eventScheduledDate === formatLocalDateInputValue(new Date());
 
   return (
     <>
@@ -1371,17 +1531,84 @@ const MainMenu: React.FC = () => {
                     </ToggleRow>
                     {canCreatePilotEvents && (
                       <>
-                        <ExperimentalInput
-                          type="number"
-                          min="1"
-                          step="1"
-                          value={eventStartsInMinutes}
-                          onChange={(event) => {
-                            setEventStartsInMinutes(event.target.value);
-                            setEventCreateError("");
-                          }}
-                          placeholder="minutes from now"
-                        />
+                        <ExperimentalSectionTitle>
+                          Event Schedule
+                        </ExperimentalSectionTitle>
+                        <ScheduleModeToggle>
+                          <ScheduleModeButton
+                            type="button"
+                            $active={eventScheduleMode === "minutes"}
+                            onClick={() => {
+                              setEventScheduleMode("minutes");
+                              setEventCreateError("");
+                            }}
+                          >
+                            In minutes
+                          </ScheduleModeButton>
+                          <ScheduleModeButton
+                            type="button"
+                            $active={eventScheduleMode === "datetime"}
+                            onClick={() => {
+                              setEventScheduleMode("datetime");
+                              setEventCreateError("");
+                            }}
+                          >
+                            Date & time
+                          </ScheduleModeButton>
+                        </ScheduleModeToggle>
+                        {eventScheduleMode === "minutes" ? (
+                          <ExperimentalInput
+                            type="number"
+                            min="1"
+                            step="1"
+                            value={eventStartsInMinutes}
+                            onChange={(event) => {
+                              setEventStartsInMinutes(event.target.value);
+                              setEventCreateError("");
+                            }}
+                            placeholder="minutes from now"
+                          />
+                        ) : (
+                          <>
+                            <ExperimentalInput
+                              type="date"
+                              value={eventScheduledDate}
+                              onChange={(event) => {
+                                setEventScheduledDate(event.target.value);
+                                setEventCreateError("");
+                              }}
+                            />
+                            <ExperimentalHint>
+                              {isEventScheduledDateToday
+                                ? "Selected date: Today"
+                                : "Selected date: custom"}
+                            </ExperimentalHint>
+                            <ExperimentalInput
+                              type="time"
+                              step="60"
+                              value={eventScheduledTime}
+                              onChange={(event) => {
+                                setEventScheduledTime(event.target.value);
+                                setEventCreateError("");
+                              }}
+                            />
+                            <ExperimentalSelect
+                              value={eventScheduledTimezone}
+                              onChange={(event) => {
+                                setEventScheduledTimezone(
+                                  event.target.value as EventScheduleTimezone,
+                                );
+                                setEventCreateError("");
+                              }}
+                            >
+                              {EVENT_SCHEDULE_TIMEZONE_OPTIONS.map((option) => (
+                                <option key={option.value} value={option.value}>
+                                  {option.label}
+                                </option>
+                              ))}
+                            </ExperimentalSelect>
+                          </>
+                        )}
                         <ExperimentalActionButton
                           type="button"
                           onClick={handleCreateEvent}
