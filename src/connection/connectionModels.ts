@@ -176,6 +176,7 @@ export interface EventRecord {
   currentRoundIndex: number | null;
   bracketSize: number;
   roundCount: number;
+  thirdPlaceMatch?: EventMatch | null;
   participants: Record<string, EventParticipant>;
   rounds: Record<string, EventRound>;
 }

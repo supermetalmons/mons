@@ -2409,7 +2409,8 @@ class Connection {
           typeof data?.didDisqualify === "boolean"
             ? data.didDisqualify
             : undefined,
-        matchKey: typeof data?.matchKey === "string" ? data.matchKey : undefined,
+        matchKey:
+          typeof data?.matchKey === "string" ? data.matchKey : undefined,
       };
     } catch (error) {
       console.error("Error disqualifying event match winners:", error);
@@ -3069,6 +3070,10 @@ class Connection {
       rawData.rounds && typeof rawData.rounds === "object"
         ? (rawData.rounds as Record<string, unknown>)
         : {};
+    const thirdPlaceMatchInput =
+      rawData.thirdPlaceMatch && typeof rawData.thirdPlaceMatch === "object"
+        ? (rawData.thirdPlaceMatch as Record<string, unknown>)
+        : null;
     const participants: Record<string, EventParticipant> = {};
     const rounds: Record<string, EventRound> = {};
 
@@ -3128,6 +3133,9 @@ class Connection {
         : null,
       bracketSize: this.normalizeFiniteNumber(rawData.bracketSize, 0),
       roundCount: this.normalizeFiniteNumber(rawData.roundCount, 0),
+      thirdPlaceMatch: thirdPlaceMatchInput
+        ? this.mapEventMatch(thirdPlaceMatchInput, "third_place")
+        : null,
       participants,
       rounds,
     };

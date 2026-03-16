@@ -36,6 +36,17 @@ import { BottomPillButton } from "./BottomControlsStyles";
 const BRACKET_MATCH_W = 72;
 const BRACKET_MATCH_H = 40;
 const BRACKET_AVATAR_PX = 28;
+const BRACKET_THIRD_PLACE_SCALE = 0.86;
+const BRACKET_THIRD_PLACE_MATCH_W = Math.round(
+  BRACKET_MATCH_W * BRACKET_THIRD_PLACE_SCALE,
+);
+const BRACKET_THIRD_PLACE_MATCH_H = Math.round(
+  BRACKET_MATCH_H * BRACKET_THIRD_PLACE_SCALE,
+);
+const BRACKET_THIRD_PLACE_AVATAR_PX = Math.round(
+  BRACKET_AVATAR_PX * BRACKET_THIRD_PLACE_SCALE,
+);
+const BRACKET_THIRD_PLACE_GAP = 10;
 const BRACKET_SLOT_PITCH = 88;
 const BRACKET_CONNECTOR_W = 40;
 const BRACKET_COMPACT_CONNECTOR_W = 18;
@@ -753,6 +764,22 @@ const getSortedRounds = (event: EventRecord | null): EventRound[] => {
   );
 };
 
+const getThirdPlaceMatch = (event: EventRecord | null): EventMatch | null => {
+  if (!event || !event.thirdPlaceMatch) {
+    return null;
+  }
+  return event.thirdPlaceMatch;
+};
+
+const isProfileParticipatingInMatch = (
+  match: EventMatch,
+  profileId: string,
+): boolean => {
+  return (
+    match.hostProfileId === profileId || match.guestProfileId === profileId
+  );
+};
+
 const parseBracketMatchKey = (
   matchKey: string,
 ): { roundIndex: number; matchIndex: number } | null => {
@@ -993,7 +1020,9 @@ const getEventMatchInviteId = (match: EventMatch): string => {
 
 const isResolvedEventMatch = (match: EventMatch): boolean => {
   return (
-    match.status === "host" || match.status === "guest" || match.status === "bye"
+    match.status === "host" ||
+    match.status === "guest" ||
+    match.status === "bye"
   );
 };
 
@@ -1013,7 +1042,9 @@ const getIndexedMatchesForRound = (round: EventRound): IndexedEventMatch[] => {
   }));
 };
 
-const getFirstPendingInviteMatch = (event: EventRecord | null): EventMatch | null => {
+const getFirstPendingInviteMatch = (
+  event: EventRecord | null,
+): EventMatch | null => {
   if (!event) {
     return null;
   }
@@ -1026,16 +1057,24 @@ const getFirstPendingInviteMatch = (event: EventRecord | null): EventMatch | nul
       }
     }
   }
+  const thirdPlaceMatch = getThirdPlaceMatch(event);
+  if (thirdPlaceMatch && isActionablePendingInviteEventMatch(thirdPlaceMatch)) {
+    return thirdPlaceMatch;
+  }
   return null;
 };
 
 const getActivePendingMatches = (
   event: EventRecord | null,
-): Array<{ roundIndex: number; match: EventMatch }> => {
+): Array<{ roundIndex: number | null; label: string; match: EventMatch }> => {
   if (!event || event.status !== "active") {
     return [];
   }
-  const matches: Array<{ roundIndex: number; match: EventMatch }> = [];
+  const matches: Array<{
+    roundIndex: number | null;
+    label: string;
+    match: EventMatch;
+  }> = [];
   const rounds = getSortedRounds(event);
   for (const round of rounds) {
     const roundMatches = getSortedMatches(round);
@@ -1043,10 +1082,19 @@ const getActivePendingMatches = (
       if (isActionablePendingInviteEventMatch(match)) {
         matches.push({
           roundIndex: round.roundIndex,
+          label: `Round ${round.roundIndex + 1}`,
           match,
         });
       }
     }
+  }
+  const thirdPlaceMatch = getThirdPlaceMatch(event);
+  if (thirdPlaceMatch && isActionablePendingInviteEventMatch(thirdPlaceMatch)) {
+    matches.push({
+      roundIndex: null,
+      label: "Third place",
+      match: thirdPlaceMatch,
+    });
   }
   return matches;
 };
@@ -1174,7 +1222,15 @@ const getCurrentUiState = (
     };
   }
 
-  if (participant.state === "eliminated") {
+  const thirdPlaceMatch = getThirdPlaceMatch(event);
+  const thirdPlacePlayableMatch =
+    thirdPlaceMatch &&
+    isActionablePendingInviteEventMatch(thirdPlaceMatch) &&
+    isProfileParticipatingInMatch(thirdPlaceMatch, profileId)
+      ? thirdPlaceMatch
+      : null;
+
+  if (participant.state === "eliminated" && !thirdPlacePlayableMatch) {
     return {
       isJoined: true,
       isEliminated: true,
@@ -1184,8 +1240,11 @@ const getCurrentUiState = (
   }
 
   const rounds = getSortedRounds(event);
-  let playableMatch: EventMatch | null = null;
+  let playableMatch: EventMatch | null = thirdPlacePlayableMatch;
   for (const round of rounds) {
+    if (playableMatch) {
+      break;
+    }
     const candidate =
       getSortedMatches(round).find(
         (match) =>
@@ -1201,7 +1260,7 @@ const getCurrentUiState = (
 
   return {
     isJoined: true,
-    isEliminated: false,
+    isEliminated: participant.state === "eliminated",
     playableMatch,
     waitingForNext: event.status === "active" && !playableMatch,
   };
@@ -1252,6 +1311,15 @@ type ClassicBracketLayout = {
   height: number;
   positions: ClassicBracketMatchPosition[];
   connectors: ClassicBracketConnector[];
+};
+
+type ThirdPlaceMatchLayout = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  bottom: number;
+  match: EventMatch;
 };
 
 type BracketMatchLayout = {
@@ -1593,7 +1661,12 @@ const computeSymmetricalBracket = (
         if (nextLayout.useCompactEntry) {
           const entryX = nextX + nextLayout.width / 2;
           pushConnector(
-            buildClassicTopBottomEntryConnectorPath(sx, y1, entryX, nextMatchTop),
+            buildClassicTopBottomEntryConnectorPath(
+              sx,
+              y1,
+              entryX,
+              nextMatchTop,
+            ),
             sx,
             y1,
             entryX,
@@ -1702,7 +1775,12 @@ const computeSymmetricalBracket = (
         if (nextLayout.useCompactEntry) {
           const entryX = innerX + nextLayout.width / 2;
           pushConnector(
-            buildClassicTopBottomEntryConnectorPath(sx, y1, entryX, nextMatchTop),
+            buildClassicTopBottomEntryConnectorPath(
+              sx,
+              y1,
+              entryX,
+              nextMatchTop,
+            ),
             sx,
             y1,
             entryX,
@@ -1897,7 +1975,11 @@ const getEndedEventWinnerPodiumEntries = (
       finalMatch.loserProfileId,
     ) ??
     (runnerUpSide
-      ? buildParticipantFromMatchSide(finalMatch, runnerUpSide, participantsById)
+      ? buildParticipantFromMatchSide(
+          finalMatch,
+          runnerUpSide,
+          participantsById,
+        )
       : null);
 
   const winnerKey = winner?.profileId || winner?.loginUid;
@@ -2434,10 +2516,7 @@ const EventModal: React.FC = () => {
     }
     const reservedTop = bracketInsets.top + BRACKET_EDGE_PADDING_Y;
     const reservedBottom = bracketInsets.bottom + BRACKET_EDGE_PADDING_Y;
-    const availW = Math.max(
-      1,
-      viewportSize.width - BRACKET_EDGE_PADDING_X * 2,
-    );
+    const availW = Math.max(1, viewportSize.width - BRACKET_EDGE_PADDING_X * 2);
     const availH = Math.max(
       1,
       viewportSize.height - reservedTop - reservedBottom,
@@ -2567,7 +2646,8 @@ const EventModal: React.FC = () => {
     [currentProfileId, displayedEventRecord],
   );
   const watchableMatch = useMemo(
-    () => getWatchableMatch(displayedEventRecord, currentProfileId, eventUiState),
+    () =>
+      getWatchableMatch(displayedEventRecord, currentProfileId, eventUiState),
     [currentProfileId, displayedEventRecord, eventUiState],
   );
   const currentUsername = storage.getUsername("").trim().toLowerCase();
@@ -2594,6 +2674,35 @@ const EventModal: React.FC = () => {
     }
     return computeSymmetricalBracket(rounds);
   }, [canRenderBracket, rounds]);
+  const thirdPlaceMatch = useMemo(
+    () => getThirdPlaceMatch(displayedEventRecord),
+    [displayedEventRecord],
+  );
+  const thirdPlaceLayout = useMemo<ThirdPlaceMatchLayout | null>(() => {
+    if (!bracketLayout || !thirdPlaceMatch) {
+      return null;
+    }
+    const finalPosition =
+      bracketLayout.positions.find((position) => position.key === "FINAL") ??
+      null;
+    if (!finalPosition) {
+      return null;
+    }
+
+    const width = BRACKET_THIRD_PLACE_MATCH_W;
+    const height = BRACKET_THIRD_PLACE_MATCH_H;
+    const x = Math.round(finalPosition.x + (finalPosition.width - width) / 2);
+    const y = finalPosition.y + finalPosition.height + BRACKET_THIRD_PLACE_GAP;
+
+    return {
+      x,
+      y,
+      width,
+      height,
+      bottom: y + height,
+      match: thirdPlaceMatch,
+    };
+  }, [bracketLayout, thirdPlaceMatch]);
   const winnerPodiumEntries = useMemo(
     () =>
       getEndedEventWinnerPodiumEntries(
@@ -2608,11 +2717,14 @@ const EventModal: React.FC = () => {
     displayedEventRecord?.status === "ended" &&
     winnerPodiumEntries.length > 0
   );
+  const bracketContentHeight = bracketLayout
+    ? Math.max(bracketLayout.height, thirdPlaceLayout?.bottom ?? 0)
+    : 0;
   const bracketFrameWidth = bracketLayout
     ? Math.max(bracketLayout.width, showWinnerPodium ? WINNER_PODIUM_WIDTH : 0)
     : 0;
   const bracketFrameHeight = bracketLayout
-    ? bracketLayout.height +
+    ? bracketContentHeight +
       (showWinnerPodium
         ? WINNER_PODIUM_HEIGHT + WINNER_PODIUM_GAP_FROM_BRACKET
         : 0)
@@ -2700,41 +2812,44 @@ const EventModal: React.FC = () => {
     );
   }, []);
 
-  const guardBackdropGhostClick = useCallback((clientX: number, clientY: number) => {
-    if (typeof document === "undefined" || typeof window === "undefined") {
-      return;
-    }
-    backdropGhostClickGuardCleanupRef.current?.();
-    const guardStartedAtMs = Date.now();
-    const maxGuardMs = 320;
-    const maxDistancePx = 28;
-    const maxDistanceSq = maxDistancePx * maxDistancePx;
-    let timeoutId: number | null = null;
-    const cleanup = () => {
-      document.removeEventListener("click", handleClickGuard, true);
-      if (timeoutId !== null) {
-        window.clearTimeout(timeoutId);
-        timeoutId = null;
+  const guardBackdropGhostClick = useCallback(
+    (clientX: number, clientY: number) => {
+      if (typeof document === "undefined" || typeof window === "undefined") {
+        return;
       }
-      if (backdropGhostClickGuardCleanupRef.current === cleanup) {
-        backdropGhostClickGuardCleanupRef.current = null;
-      }
-    };
-    const handleClickGuard = (event: MouseEvent) => {
-      const elapsedMs = Date.now() - guardStartedAtMs;
-      const dx = event.clientX - clientX;
-      const dy = event.clientY - clientY;
-      if (elapsedMs <= maxGuardMs && dx * dx + dy * dy <= maxDistanceSq) {
-        event.preventDefault();
-        event.stopPropagation();
-        event.stopImmediatePropagation();
-      }
-      cleanup();
-    };
-    backdropGhostClickGuardCleanupRef.current = cleanup;
-    document.addEventListener("click", handleClickGuard, true);
-    timeoutId = window.setTimeout(cleanup, maxGuardMs);
-  }, []);
+      backdropGhostClickGuardCleanupRef.current?.();
+      const guardStartedAtMs = Date.now();
+      const maxGuardMs = 320;
+      const maxDistancePx = 28;
+      const maxDistanceSq = maxDistancePx * maxDistancePx;
+      let timeoutId: number | null = null;
+      const cleanup = () => {
+        document.removeEventListener("click", handleClickGuard, true);
+        if (timeoutId !== null) {
+          window.clearTimeout(timeoutId);
+          timeoutId = null;
+        }
+        if (backdropGhostClickGuardCleanupRef.current === cleanup) {
+          backdropGhostClickGuardCleanupRef.current = null;
+        }
+      };
+      const handleClickGuard = (event: MouseEvent) => {
+        const elapsedMs = Date.now() - guardStartedAtMs;
+        const dx = event.clientX - clientX;
+        const dy = event.clientY - clientY;
+        if (elapsedMs <= maxGuardMs && dx * dx + dy * dy <= maxDistanceSq) {
+          event.preventDefault();
+          event.stopPropagation();
+          event.stopImmediatePropagation();
+        }
+        cleanup();
+      };
+      backdropGhostClickGuardCleanupRef.current = cleanup;
+      document.addEventListener("click", handleClickGuard, true);
+      timeoutId = window.setTimeout(cleanup, maxGuardMs);
+    },
+    [],
+  );
 
   const handleBackdropPointerDown = useCallback(
     (
@@ -3065,10 +3180,10 @@ const EventModal: React.FC = () => {
       return;
     }
 
-    const selectionLines = activeMatches.map(({ roundIndex, match }, index) => {
+    const selectionLines = activeMatches.map(({ label, match }, index) => {
       const hostLabel = getMatchSideLabel(match, "host");
       const guestLabel = getMatchSideLabel(match, "guest");
-      return `${index + 1}. Round ${roundIndex + 1}: ${hostLabel} vs ${guestLabel}`;
+      return `${index + 1}. ${label}: ${hostLabel} vs ${guestLabel}`;
     });
     const rawSelection = window.prompt(
       `Select active game to disqualify:\n${selectionLines.join("\n")}`,
@@ -3104,7 +3219,8 @@ const EventModal: React.FC = () => {
             ? (error as { message: string }).message.trim()
             : "";
         window.alert(
-          rawMessage || "Failed to disqualify selected match. Please try again.",
+          rawMessage ||
+            "Failed to disqualify selected match. Please try again.",
         );
       })
       .finally(() => {
@@ -3177,19 +3293,19 @@ const EventModal: React.FC = () => {
     ? pendingCreateStatusText
     : isDismissedState
       ? "EVENT DISMISSED"
-    : isPendingDismissState
-      ? "LOADING"
-    : !displayedEventRecord
-      ? isLoading
+      : isPendingDismissState
         ? "LOADING"
-        : null
-    : !hasBracket && !showBracketFallbackGrid
-      ? displayedEventRecord.status === "active"
-        ? "building bracket..."
-        : displayedEventRecord.status === "ended"
-          ? "no bracket yet"
-          : null
-      : null;
+        : !displayedEventRecord
+          ? isLoading
+            ? "LOADING"
+            : null
+          : !hasBracket && !showBracketFallbackGrid
+            ? displayedEventRecord.status === "active"
+              ? "building bracket..."
+              : displayedEventRecord.status === "ended"
+                ? "no bracket yet"
+                : null
+            : null;
 
   return (
     <Overlay
@@ -3274,10 +3390,15 @@ const EventModal: React.FC = () => {
                     entry.participant.loginUid ||
                     `winner_podium_${entry.place}`;
                   return (
-                    <WinnerPodiumColumn key={participantKey} $place={entry.place}>
+                    <WinnerPodiumColumn
+                      key={participantKey}
+                      $place={entry.place}
+                    >
                       <WinnerPodiumAvatarButton
                         type="button"
-                        onClick={() => void handleParticipantClick(entry.participant)}
+                        onClick={() =>
+                          void handleParticipantClick(entry.participant)
+                        }
                         disabled={openingParticipantId !== null}
                         aria-label={`Open ${getParticipantDisplayName(entry.participant)}`}
                       >
@@ -3319,7 +3440,8 @@ const EventModal: React.FC = () => {
                   onClick={() => handleBracketMatchAction(action)}
                 >
                   {displayedSides.map((side) => {
-                    const sideData = side === "host" ? hostSideData : guestSideData;
+                    const sideData =
+                      side === "host" ? hostSideData : guestSideData;
                     return (
                       <MatchAvatarSlot
                         key={side}
@@ -3342,6 +3464,64 @@ const EventModal: React.FC = () => {
                 </ClassicMatchCard>
               );
             })}
+            {thirdPlaceLayout &&
+              (() => {
+                const action = getBracketMatchAction(
+                  thirdPlaceLayout.match,
+                  participantsById,
+                );
+                const interaction: BracketCardInteraction =
+                  action.kind === "game"
+                    ? "game"
+                    : action.kind === "participant"
+                      ? "participant"
+                      : "none";
+                const displayedSides = getDisplayedMatchSides(
+                  thirdPlaceLayout.match,
+                );
+                return (
+                  <ClassicMatchCard
+                    key="THIRD_PLACE"
+                    type="button"
+                    $x={thirdPlaceLayout.x + bracketContentOffsetX}
+                    $y={thirdPlaceLayout.y + bracketContentOffsetY}
+                    $w={thirdPlaceLayout.width}
+                    $h={thirdPlaceLayout.height}
+                    $interaction={interaction}
+                    disabled={action.kind === "none"}
+                    onClick={() => handleBracketMatchAction(action)}
+                  >
+                    {displayedSides.map((side) => {
+                      const sideData = getMatchSideData(
+                        thirdPlaceLayout.match,
+                        side,
+                      );
+                      return (
+                        <MatchAvatarSlot
+                          key={side}
+                          data-avatar-slot
+                          data-single-known={
+                            action.kind === "participant" &&
+                            action.side === side
+                              ? "true"
+                              : undefined
+                          }
+                        >
+                          <EventAvatar
+                            size={BRACKET_THIRD_PLACE_AVATAR_PX}
+                            emojiId={sideData.emojiId}
+                            displayName={sideData.displayName}
+                            isBlocked={isMatchSideBlocked(
+                              thirdPlaceLayout.match,
+                              side,
+                            )}
+                          />
+                        </MatchAvatarSlot>
+                      );
+                    })}
+                  </ClassicMatchCard>
+                );
+              })()}
             <ClassicConnectorSvg
               style={{
                 left: bracketContentOffsetX,
@@ -3417,7 +3597,8 @@ const EventModal: React.FC = () => {
                             key={side}
                             data-avatar-slot
                             data-single-known={
-                              action.kind === "participant" && action.side === side
+                              action.kind === "participant" &&
+                              action.side === side
                                 ? "true"
                                 : undefined
                             }
@@ -3514,7 +3695,9 @@ const EventModal: React.FC = () => {
               watchableMatch && (
                 <BottomPillButton
                   type="button"
-                  onClick={() => void openMatch(getEventMatchInviteId(watchableMatch))}
+                  onClick={() =>
+                    void openMatch(getEventMatchInviteId(watchableMatch))
+                  }
                 >
                   Watch
                 </BottomPillButton>
