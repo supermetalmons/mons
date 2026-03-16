@@ -378,12 +378,8 @@ const ClassicConnectorSvg = styled.svg`
     stroke-width: 2;
   }
 
-  path[data-blocked="true"] {
-    stroke: rgba(170, 110, 110, 0.55);
-  }
-
   line {
-    stroke: rgba(170, 110, 110, 0.65);
+    stroke: rgba(160, 160, 160, 0.5);
     stroke-width: 2;
     stroke-linecap: round;
   }
@@ -393,12 +389,8 @@ const ClassicConnectorSvg = styled.svg`
       stroke: rgba(140, 140, 140, 0.4);
     }
 
-    path[data-blocked="true"] {
-      stroke: rgba(175, 120, 120, 0.5);
-    }
-
     line {
-      stroke: rgba(190, 135, 135, 0.58);
+      stroke: rgba(140, 140, 140, 0.4);
     }
   }
 `;
@@ -1248,6 +1240,60 @@ const buildClassicTopBottomEntryConnectorPath = (
   ].join("");
 };
 
+const getClassicElbowConnectorCrossPoint = (
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+): { x: number; y: number } => {
+  const dy = y2 - y1;
+  if (Math.abs(dy) < 1) {
+    return {
+      x: getClassicConnectorMidX(x1, x2),
+      y: y1,
+    };
+  }
+
+  const direction = x2 >= x1 ? 1 : -1;
+  const mx = getClassicConnectorMidX(x1, x2);
+  const r = Math.min(
+    BRACKET_CORNER_R,
+    Math.abs(dy) / 2,
+    Math.abs(mx - x1),
+    Math.abs(x2 - mx),
+  );
+  const horizontalEndX = r < 1 ? mx : mx - direction * r;
+
+  return {
+    x: getClassicConnectorMidX(x1, horizontalEndX),
+    y: y1,
+  };
+};
+
+const getClassicTopBottomEntryConnectorCrossPoint = (
+  x1: number,
+  y1: number,
+  x2: number,
+  y2: number,
+): { x: number; y: number } => {
+  const dy = y2 - y1;
+  if (Math.abs(dy) < 1) {
+    return {
+      x: getClassicConnectorMidX(x1, x2),
+      y: y1,
+    };
+  }
+
+  const direction = x2 >= x1 ? 1 : -1;
+  const r = Math.min(BRACKET_CORNER_R, Math.abs(dy), Math.abs(x2 - x1));
+  const horizontalEndX = r < 1 ? x2 : x2 - direction * r;
+
+  return {
+    x: getClassicConnectorMidX(x1, horizontalEndX),
+    y: y1,
+  };
+};
+
 const canRenderSymmetricalBracket = (rounds: EventRound[]): boolean => {
   if (rounds.length === 0) {
     return false;
@@ -1394,12 +1440,13 @@ const computeSymmetricalBracket = (
     x2: number,
     y2: number,
     isBlocked: boolean,
+    crossPoint?: { x: number; y: number },
   ): void => {
     connectors.push({
       d,
       isBlocked,
-      crossX: isBlocked ? (x1 + x2) / 2 : null,
-      crossY: isBlocked ? (y1 + y2) / 2 : null,
+      crossX: isBlocked ? (crossPoint?.x ?? (x1 + x2) / 2) : null,
+      crossY: isBlocked ? (crossPoint?.y ?? (y1 + y2) / 2) : null,
     });
   };
 
@@ -1442,6 +1489,12 @@ const computeSymmetricalBracket = (
             entryX,
             nextMatchTop,
             sourceMatchA?.winnerDisqualified === true,
+            getClassicTopBottomEntryConnectorCrossPoint(
+              sx,
+              y1,
+              entryX,
+              nextMatchTop,
+            ),
           );
           if (srcB < perSideCount) {
             const y2 = getBracketMatchCenterY(r, srcB, layout.height);
@@ -1458,6 +1511,12 @@ const computeSymmetricalBracket = (
               entryX,
               nextMatchTop + nextLayout.height,
               sourceMatchB?.winnerDisqualified === true,
+              getClassicTopBottomEntryConnectorCrossPoint(
+                sx,
+                y2,
+                entryX,
+                nextMatchTop + nextLayout.height,
+              ),
             );
           }
         }
@@ -1477,6 +1536,7 @@ const computeSymmetricalBracket = (
         ex,
         finalY,
         roundMatches[0]?.winnerDisqualified === true,
+        getClassicElbowConnectorCrossPoint(sx, y, ex, finalY),
       );
     }
   }
@@ -1538,6 +1598,12 @@ const computeSymmetricalBracket = (
             entryX,
             nextMatchTop,
             sourceMatchA?.winnerDisqualified === true,
+            getClassicTopBottomEntryConnectorCrossPoint(
+              sx,
+              y1,
+              entryX,
+              nextMatchTop,
+            ),
           );
           if (srcB < currentSideCount) {
             const y2 = getBracketMatchCenterY(r, srcB, layout.height);
@@ -1554,6 +1620,12 @@ const computeSymmetricalBracket = (
               entryX,
               nextMatchTop + nextLayout.height,
               sourceMatchB?.winnerDisqualified === true,
+              getClassicTopBottomEntryConnectorCrossPoint(
+                sx,
+                y2,
+                entryX,
+                nextMatchTop + nextLayout.height,
+              ),
             );
           }
         }
@@ -1573,6 +1645,7 @@ const computeSymmetricalBracket = (
         ex,
         finalY,
         roundMatches[offset]?.winnerDisqualified === true,
+        getClassicElbowConnectorCrossPoint(sx, y, ex, finalY),
       );
     }
   }
