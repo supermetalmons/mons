@@ -812,7 +812,15 @@ const formatAbsoluteStart = (event: EventRecord | null): string => {
     return "";
   }
   const d = new Date(event.startAtMs);
+  const now = new Date();
   const time = d.toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+  const isToday =
+    d.getFullYear() === now.getFullYear() &&
+    d.getMonth() === now.getMonth() &&
+    d.getDate() === now.getDate();
+  if (isToday) {
+    return time;
+  }
   const date = d.toLocaleDateString([], {
     weekday: "short",
     month: "short",
