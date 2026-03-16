@@ -61,6 +61,7 @@ const WINNER_PODIUM_SECONDARY_BAR_H = 30;
 const WINNER_PODIUM_TERTIARY_BAR_H = 24;
 const WINNER_PODIUM_AVATAR_OVERLAP = 10;
 const WINNER_PODIUM_GAP_FROM_BRACKET = 10;
+const WINNER_PODIUM_THIRD_PLACE_AVATAR_UPLIFT_PX = 2;
 const WINNER_PODIUM_HEIGHT =
   WINNER_PODIUM_PRIMARY_BAR_H +
   WINNER_PODIUM_AVATAR_PX -
@@ -448,7 +449,11 @@ const WinnerPodiumColumn = styled.button<{ $place: WinnerPodiumPlace }>`
 
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) [data-avatar-slot][data-single-known="true"] {
-      transform: translateX(-50%) scale(1.06);
+      transform: translate(
+          -50%,
+          ${(p) => (p.$place === 3 ? `-${WINNER_PODIUM_THIRD_PLACE_AVATAR_UPLIFT_PX}px` : "0px")}
+        )
+        scale(1.06);
     }
   }
 `;
@@ -476,12 +481,15 @@ const WinnerPodiumBar = styled.div<{ $place: WinnerPodiumPlace }>`
   }
 `;
 
-const WinnerPodiumAvatarSlot = styled.div`
+const WinnerPodiumAvatarSlot = styled.div<{ $place: WinnerPodiumPlace }>`
   position: absolute;
   z-index: 2;
   top: 0;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(
+    -50%,
+    ${(p) => (p.$place === 3 ? `-${WINNER_PODIUM_THIRD_PLACE_AVATAR_UPLIFT_PX}px` : "0px")}
+  );
   width: ${WINNER_PODIUM_AVATAR_PX}px;
   height: ${WINNER_PODIUM_AVATAR_PX}px;
   border: none;
@@ -3687,6 +3695,7 @@ const EventModal: React.FC = () => {
                       <WinnerPodiumAvatarSlot
                         data-avatar-slot
                         data-single-known="true"
+                        $place={entry.place}
                       >
                         <EventAvatar
                           size={WINNER_PODIUM_AVATAR_PX}
