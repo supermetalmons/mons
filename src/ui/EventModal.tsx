@@ -56,9 +56,9 @@ const BRACKET_CORNER_R = 10;
 const WINNER_PODIUM_AVATAR_PX = 34;
 const WINNER_PODIUM_COLUMN_W = 70;
 const WINNER_PODIUM_COLUMN_GAP = 10;
-const WINNER_PODIUM_PRIMARY_BAR_H = 38;
-const WINNER_PODIUM_SECONDARY_BAR_H = 28;
-const WINNER_PODIUM_TERTIARY_BAR_H = 26;
+const WINNER_PODIUM_PRIMARY_BAR_H = 36;
+const WINNER_PODIUM_SECONDARY_BAR_H = 30;
+const WINNER_PODIUM_TERTIARY_BAR_H = 24;
 const WINNER_PODIUM_AVATAR_OVERLAP = 10;
 const WINNER_PODIUM_GAP_FROM_BRACKET = 10;
 const WINNER_PODIUM_HEIGHT =
@@ -464,7 +464,7 @@ const WinnerPodiumBar = styled.div<{ $place: WinnerPodiumPlace }>`
   display: flex;
   align-items: flex-end;
   justify-content: center;
-  padding-bottom: 4px;
+  padding-bottom: ${(p) => (p.$place === 1 ? 8 : p.$place === 2 ? 5 : 4)}px;
   box-sizing: border-box;
   font-size: 0.68rem;
   font-weight: 700;
