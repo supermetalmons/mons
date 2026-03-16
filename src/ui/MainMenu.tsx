@@ -96,22 +96,16 @@ const formatLocalDateInputValue = (date: Date): string =>
 const formatLocalTimeInputValue = (date: Date): string =>
   `${pad2(date.getHours())}:${pad2(date.getMinutes())}`;
 
-const getRoundedUpDateToNextFiveMinute = (source: Date): Date => {
-  const rounded = new Date(source.getTime());
-  const hasSubMinute =
-    rounded.getSeconds() !== 0 || rounded.getMilliseconds() !== 0;
-  rounded.setSeconds(0, 0);
-  const minuteRemainder = rounded.getMinutes() % 5;
-  if (minuteRemainder !== 0) {
-    rounded.setMinutes(rounded.getMinutes() + (5 - minuteRemainder));
-  } else if (hasSubMinute) {
-    rounded.setMinutes(rounded.getMinutes() + 5);
-  }
-  return rounded;
-};
+const DEFAULT_EVENT_SCHEDULE_LEAD_MINUTES = 30;
 
 const getDefaultScheduledDateTimeInput = (): { date: string; time: string } => {
-  const rounded = getRoundedUpDateToNextFiveMinute(new Date());
+  const minimumStartMs =
+    Date.now() + DEFAULT_EVENT_SCHEDULE_LEAD_MINUTES * 60 * 1000;
+  const rounded = new Date(minimumStartMs);
+  rounded.setMinutes(0, 0, 0);
+  if (rounded.getTime() < minimumStartMs) {
+    rounded.setHours(rounded.getHours() + 1);
+  }
   return {
     date: formatLocalDateInputValue(rounded),
     time: formatLocalTimeInputValue(rounded),
