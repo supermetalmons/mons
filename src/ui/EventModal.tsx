@@ -29,7 +29,6 @@ import {
   didDismissSomethingWithOutsideTapJustNow,
   didNotDismissAnythingWithOutsideTapJustNow,
 } from "./BottomControls";
-import { isMobile } from "../utils/misc";
 import { showShinyCard, showsShinyCardSomewhere } from "./ShinyCard";
 import { getStashedPlayerProfile } from "../utils/playerMetadata";
 import { BottomPillButton } from "./BottomControlsStyles";
@@ -2246,6 +2245,8 @@ const EventModal: React.FC = () => {
   const participantLookupSessionRef = useRef(0);
   const ignoreNextBackdropClickRef = useRef(false);
   const ignoreBackdropMouseDownUntilMsRef = useRef(0);
+  const pendingBackdropTouchDismissTouchIdRef = useRef<number | null>(null);
+  const backdropGhostClickGuardCleanupRef = useRef<(() => void) | null>(null);
   const copyResetTimeoutRef = useRef<number | null>(null);
   const topBarRef = useRef<HTMLDivElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
@@ -2262,6 +2263,13 @@ const EventModal: React.FC = () => {
         ? current
         : { top: nextTop, bottom: nextBottom },
     );
+  }, []);
+
+  useEffect(() => {
+    return () => {
+      backdropGhostClickGuardCleanupRef.current?.();
+      backdropGhostClickGuardCleanupRef.current = null;
+    };
   }, []);
 
   useEffect(() => {
@@ -2297,6 +2305,8 @@ const EventModal: React.FC = () => {
       setOpeningParticipantId(null);
       openingParticipantIdRef.current = null;
       ignoreNextBackdropClickRef.current = false;
+      ignoreBackdropMouseDownUntilMsRef.current = 0;
+      pendingBackdropTouchDismissTouchIdRef.current = null;
       return;
     }
 
@@ -2687,6 +2697,42 @@ const EventModal: React.FC = () => {
     );
   }, []);
 
+  const guardBackdropGhostClick = useCallback((clientX: number, clientY: number) => {
+    if (typeof document === "undefined" || typeof window === "undefined") {
+      return;
+    }
+    backdropGhostClickGuardCleanupRef.current?.();
+    const guardStartedAtMs = Date.now();
+    const maxGuardMs = 320;
+    const maxDistancePx = 28;
+    const maxDistanceSq = maxDistancePx * maxDistancePx;
+    let timeoutId: number | null = null;
+    const cleanup = () => {
+      document.removeEventListener("click", handleClickGuard, true);
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+        timeoutId = null;
+      }
+      if (backdropGhostClickGuardCleanupRef.current === cleanup) {
+        backdropGhostClickGuardCleanupRef.current = null;
+      }
+    };
+    const handleClickGuard = (event: MouseEvent) => {
+      const elapsedMs = Date.now() - guardStartedAtMs;
+      const dx = event.clientX - clientX;
+      const dy = event.clientY - clientY;
+      if (elapsedMs <= maxGuardMs && dx * dx + dy * dy <= maxDistanceSq) {
+        event.preventDefault();
+        event.stopPropagation();
+        event.stopImmediatePropagation();
+      }
+      cleanup();
+    };
+    backdropGhostClickGuardCleanupRef.current = cleanup;
+    document.addEventListener("click", handleClickGuard, true);
+    timeoutId = window.setTimeout(cleanup, maxGuardMs);
+  }, []);
+
   const handleBackdropPointerDown = useCallback(
     (
       event:
@@ -2701,38 +2747,109 @@ const EventModal: React.FC = () => {
         // Mobile browsers may fire an emulated mousedown after touchstart.
         // Ignore that synthetic mousedown so it cannot overwrite this gesture's latch.
         ignoreBackdropMouseDownUntilMsRef.current = nowMs + 1200;
-      } else if (
+        const shouldKeepVisible = shouldKeepVisibleForOutsideDismiss();
+        ignoreNextBackdropClickRef.current = shouldKeepVisible;
+        if (showDevHelperPanel) {
+          pendingBackdropTouchDismissTouchIdRef.current = null;
+          ignoreNextBackdropClickRef.current = false;
+          setShowDevHelperPanel(false);
+          event.preventDefault();
+          event.stopPropagation();
+          return;
+        }
+        if (shouldKeepVisible) {
+          pendingBackdropTouchDismissTouchIdRef.current = null;
+          return;
+        }
+        const touchEvent = event as React.TouchEvent<HTMLDivElement>;
+        const dismissTouch =
+          touchEvent.changedTouches[0] || touchEvent.touches[0];
+        pendingBackdropTouchDismissTouchIdRef.current =
+          typeof dismissTouch?.identifier === "number"
+            ? dismissTouch.identifier
+            : -1;
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
+      if (
         event.type === "mousedown" &&
         nowMs <= ignoreBackdropMouseDownUntilMsRef.current
       ) {
         return;
       }
-      const shouldKeepVisible = shouldKeepVisibleForOutsideDismiss();
-      ignoreNextBackdropClickRef.current = shouldKeepVisible;
-      if (event.type !== "touchstart") {
+      ignoreNextBackdropClickRef.current = shouldKeepVisibleForOutsideDismiss();
+    },
+    [showDevHelperPanel, shouldKeepVisibleForOutsideDismiss],
+  );
+
+  const handleBackdropTouchEnd = useCallback(
+    (event: React.TouchEvent<HTMLDivElement>) => {
+      const pendingTouchId = pendingBackdropTouchDismissTouchIdRef.current;
+      if (pendingTouchId === null) {
         return;
       }
-      if (showDevHelperPanel) {
-        ignoreNextBackdropClickRef.current = false;
-        setShowDevHelperPanel(false);
-        event.preventDefault();
-        event.stopPropagation();
+      let matchedTouchPoint: { clientX: number; clientY: number } | null = null;
+      if (pendingTouchId === -1) {
+        const touch = event.changedTouches[0];
+        matchedTouchPoint = touch
+          ? { clientX: touch.clientX, clientY: touch.clientY }
+          : null;
+      } else {
+        for (let i = 0; i < event.changedTouches.length; i++) {
+          const touch = event.changedTouches[i];
+          if (touch.identifier === pendingTouchId) {
+            matchedTouchPoint = {
+              clientX: touch.clientX,
+              clientY: touch.clientY,
+            };
+            break;
+          }
+        }
+      }
+      if (!matchedTouchPoint) {
         return;
       }
-      if (shouldKeepVisible) {
-        return;
-      }
+      pendingBackdropTouchDismissTouchIdRef.current = null;
       event.preventDefault();
       event.stopPropagation();
+      guardBackdropGhostClick(
+        matchedTouchPoint.clientX,
+        matchedTouchPoint.clientY,
+      );
       didDismissSomethingWithOutsideTapJustNow();
       void closeEventModal();
     },
-    [showDevHelperPanel, shouldKeepVisibleForOutsideDismiss],
+    [guardBackdropGhostClick],
+  );
+
+  const handleBackdropTouchCancel = useCallback(
+    (event: React.TouchEvent<HTMLDivElement>) => {
+      const pendingTouchId = pendingBackdropTouchDismissTouchIdRef.current;
+      if (pendingTouchId === null) {
+        return;
+      }
+      if (pendingTouchId === -1) {
+        pendingBackdropTouchDismissTouchIdRef.current = null;
+        return;
+      }
+      for (let i = 0; i < event.changedTouches.length; i++) {
+        if (event.changedTouches[i].identifier === pendingTouchId) {
+          pendingBackdropTouchDismissTouchIdRef.current = null;
+          break;
+        }
+      }
+    },
+    [],
   );
 
   const handleBackdropClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
       if (event.target !== event.currentTarget) {
+        return;
+      }
+      if (Date.now() <= ignoreBackdropMouseDownUntilMsRef.current) {
+        ignoreNextBackdropClickRef.current = false;
         return;
       }
       if (showDevHelperPanel) {
@@ -3073,9 +3190,11 @@ const EventModal: React.FC = () => {
 
   return (
     <Overlay
-      onMouseDownCapture={!isMobile ? handleBackdropPointerDown : undefined}
-      onTouchStartCapture={isMobile ? handleBackdropPointerDown : undefined}
-      onClick={!isMobile ? handleBackdropClick : undefined}
+      onMouseDownCapture={handleBackdropPointerDown}
+      onTouchStartCapture={handleBackdropPointerDown}
+      onTouchEndCapture={handleBackdropTouchEnd}
+      onTouchCancelCapture={handleBackdropTouchCancel}
+      onClick={handleBackdropClick}
     >
       {modalState.eventId && !isDismissedState && (
         <DevBracketHelper>
