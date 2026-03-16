@@ -2549,7 +2549,10 @@ const EventModal: React.FC = () => {
   ]);
 
   const displayedEventRecord = devStubRecord ?? eventRecord;
-  const participantsById = displayedEventRecord?.participants ?? {};
+  const participantsById = useMemo(
+    () => displayedEventRecord?.participants ?? {},
+    [displayedEventRecord],
+  );
   const participants = useMemo(
     () => getSortedParticipants(displayedEventRecord),
     [displayedEventRecord],
