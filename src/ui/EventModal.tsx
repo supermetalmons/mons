@@ -424,7 +424,7 @@ const WinnerPodium = styled.div<{
   pointer-events: none;
 `;
 
-const WinnerPodiumColumn = styled.div<{ $place: WinnerPodiumPlace }>`
+const WinnerPodiumColumn = styled.button<{ $place: WinnerPodiumPlace }>`
   position: relative;
   isolation: isolate;
   width: ${WINNER_PODIUM_COLUMN_W}px;
@@ -433,6 +433,24 @@ const WinnerPodiumColumn = styled.div<{ $place: WinnerPodiumPlace }>`
     WINNER_PODIUM_AVATAR_PX -
     WINNER_PODIUM_AVATAR_OVERLAP}px;
   flex: 0 0 auto;
+  border: none;
+  margin: 0;
+  padding: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  -webkit-tap-highlight-color: transparent;
+
+  &:disabled {
+    cursor: default;
+    opacity: 0.72;
+  }
+
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled) [data-avatar-slot][data-single-known="true"] {
+      transform: translateX(-50%) scale(1.06);
+    }
+  }
 `;
 
 const WinnerPodiumBar = styled.div<{ $place: WinnerPodiumPlace }>`
@@ -460,7 +478,7 @@ const WinnerPodiumBar = styled.div<{ $place: WinnerPodiumPlace }>`
   }
 `;
 
-const WinnerPodiumAvatarButton = styled.button`
+const WinnerPodiumAvatarSlot = styled.div`
   position: absolute;
   z-index: 2;
   top: 0;
@@ -474,21 +492,8 @@ const WinnerPodiumAvatarButton = styled.button`
   padding: 0;
   line-height: 0;
   background: transparent;
-  cursor: pointer;
-  pointer-events: auto;
-  -webkit-tap-highlight-color: transparent;
+  pointer-events: none;
   transition: transform 0.15s ease;
-
-  &:disabled {
-    cursor: default;
-    opacity: 0.72;
-  }
-
-  @media (hover: hover) and (pointer: fine) {
-    &:hover:not(:disabled) {
-      transform: translateX(-50%) scale(1.06);
-    }
-  }
 `;
 
 const ClassicConnectorSvg = styled.svg`
@@ -3605,22 +3610,24 @@ const EventModal: React.FC = () => {
                   return (
                     <WinnerPodiumColumn
                       key={participantKey}
+                      type="button"
                       $place={entry.place}
+                      onClick={() =>
+                        void handleParticipantClick(entry.participant)
+                      }
+                      disabled={openingParticipantId !== null}
+                      aria-label={`Open ${getParticipantDisplayName(entry.participant)}`}
                     >
-                      <WinnerPodiumAvatarButton
-                        type="button"
-                        onClick={() =>
-                          void handleParticipantClick(entry.participant)
-                        }
-                        disabled={openingParticipantId !== null}
-                        aria-label={`Open ${getParticipantDisplayName(entry.participant)}`}
+                      <WinnerPodiumAvatarSlot
+                        data-avatar-slot
+                        data-single-known="true"
                       >
                         <EventAvatar
                           size={WINNER_PODIUM_AVATAR_PX}
                           emojiId={entry.participant.emojiId}
                           displayName={entry.participant.displayName}
                         />
-                      </WinnerPodiumAvatarButton>
+                      </WinnerPodiumAvatarSlot>
                       <WinnerPodiumBar $place={entry.place}>
                         {entry.place}
                       </WinnerPodiumBar>
