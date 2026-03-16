@@ -2139,7 +2139,12 @@ const EventModal: React.FC = () => {
     setParticipantsScale((prev) =>
       Math.abs(prev - scale) < 0.002 ? prev : scale,
     );
-  });
+  }, [
+    bracketInsets.top,
+    bracketInsets.bottom,
+    viewportSize.width,
+    viewportSize.height,
+  ]);
 
   useEffect(() => {
     if (!modalState.isOpen || typeof window === "undefined") {
