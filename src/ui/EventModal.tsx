@@ -822,7 +822,6 @@ const formatAbsoluteStart = (event: EventRecord | null): string => {
   const time = d.toLocaleTimeString([], {
     hour: "numeric",
     minute: "2-digit",
-    timeZoneName: "short",
   });
   const isToday =
     d.getFullYear() === now.getFullYear() &&
