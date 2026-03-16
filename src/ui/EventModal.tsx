@@ -469,12 +469,10 @@ const WinnerPodiumBar = styled.div<{ $place: WinnerPodiumPlace }>`
   font-size: 0.68rem;
   font-weight: 700;
   color: var(--navigationTextMuted);
-  background: ${(p) =>
-    p.$place === 1 ? "var(--color-gray-e0)" : "var(--color-gray-f0)"};
+  background: var(--color-gray-f0);
 
   @media (prefers-color-scheme: dark) {
-    background: ${(p) =>
-      p.$place === 1 ? "var(--color-gray-33)" : "var(--color-gray-27)"};
+    background: var(--color-gray-27);
   }
 `;
 
@@ -2533,9 +2531,6 @@ const EventModal: React.FC = () => {
     null,
   );
   const [pendingJoinRequestedAtMs, setPendingJoinRequestedAtMs] = useState(0);
-  const [openingParticipantId, setOpeningParticipantId] = useState<
-    string | null
-  >(null);
   const openingParticipantIdRef = useRef<string | null>(null);
   const participantLookupSessionRef = useRef(0);
   const ignoreNextBackdropClickRef = useRef(false);
@@ -2576,7 +2571,6 @@ const EventModal: React.FC = () => {
   useEffect(() => {
     participantLookupSessionRef.current += 1;
     openingParticipantIdRef.current = null;
-    setOpeningParticipantId(null);
   }, [modalState.eventId, modalState.isOpen]);
 
   useEffect(() => {
@@ -2597,7 +2591,6 @@ const EventModal: React.FC = () => {
       setIsDisqualifying(false);
       setPendingJoinEventId(null);
       setPendingJoinRequestedAtMs(0);
-      setOpeningParticipantId(null);
       openingParticipantIdRef.current = null;
       ignoreNextBackdropClickRef.current = false;
       ignoreBackdropMouseDownUntilMsRef.current = 0;
@@ -3331,7 +3324,6 @@ const EventModal: React.FC = () => {
       }
       const lookupSession = participantLookupSessionRef.current;
       openingParticipantIdRef.current = participantKey;
-      setOpeningParticipantId(participantKey);
       try {
         const profile = await resolveParticipantProfile(participant);
         if (participantLookupSessionRef.current !== lookupSession) {
@@ -3356,9 +3348,6 @@ const EventModal: React.FC = () => {
         if (openingParticipantIdRef.current === participantKey) {
           openingParticipantIdRef.current = null;
         }
-        setOpeningParticipantId((current) =>
-          current === participantKey ? null : current,
-        );
       }
     },
     [resolveParticipantProfile],
@@ -3615,7 +3604,6 @@ const EventModal: React.FC = () => {
                       onClick={() =>
                         void handleParticipantClick(entry.participant)
                       }
-                      disabled={openingParticipantId !== null}
                       aria-label={`Open ${getParticipantDisplayName(entry.participant)}`}
                     >
                       <WinnerPodiumAvatarSlot
@@ -3852,7 +3840,6 @@ const EventModal: React.FC = () => {
                 key={participant.profileId}
                 type="button"
                 onClick={() => void handleParticipantClick(participant)}
-                disabled={openingParticipantId !== null}
               >
                 <EventAvatar
                   emojiId={participant.emojiId}
