@@ -738,6 +738,10 @@ type EventUiState = {
 const PENDING_JOIN_POLL_INTERVAL_MS = 350;
 const PENDING_JOIN_POLL_TIMEOUT_MS = 60_000;
 const EVENT_SUBSCRIBE_RETRY_DELAYS_MS = [600, 1600, 3200] as const;
+const DEFAULT_NOW_REFRESH_MS = 30_000;
+const POST_START_NOW_REFRESH_MS = 5_000;
+const MAX_NOW_REFRESH_MS = 60_000;
+const NOW_REFRESH_BOUNDARY_FUDGE_MS = 50;
 
 const formatRelativeStart = (
   event: EventRecord | null,
@@ -762,6 +766,34 @@ const formatRelativeStart = (
   }
   const minutes = Math.max(1, Math.ceil(deltaMs / 60000));
   return `in ${minutes} minute${minutes === 1 ? "" : "s"}`;
+};
+
+const getEventNowRefreshDelayMs = (
+  eventStatus: EventRecord["status"] | null,
+  eventStartAtMs: number | null,
+  nowMs: number,
+): number => {
+  if (
+    eventStatus !== "scheduled" ||
+    typeof eventStartAtMs !== "number" ||
+    !Number.isFinite(eventStartAtMs)
+  ) {
+    return DEFAULT_NOW_REFRESH_MS;
+  }
+
+  const deltaMs = eventStartAtMs - nowMs;
+  if (deltaMs <= 0) {
+    return POST_START_NOW_REFRESH_MS;
+  }
+
+  const minuteRemainderMs = deltaMs % 60_000;
+  const untilNextMinuteBoundaryMs =
+    minuteRemainderMs === 0 ? 60_000 : minuteRemainderMs;
+
+  return Math.min(
+    MAX_NOW_REFRESH_MS,
+    untilNextMinuteBoundaryMs + NOW_REFRESH_BOUNDARY_FUDGE_MS,
+  );
 };
 
 const getSortedParticipants = (
@@ -2541,6 +2573,7 @@ const EventModal: React.FC = () => {
   const topBarRef = useRef<HTMLDivElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
   const participantsCloudRef = useRef<HTMLDivElement | null>(null);
+  const displayedEventRecord = devStubRecord ?? eventRecord;
   const measureBracketInsets = useCallback(() => {
     const nextTop = Math.round(
       topBarRef.current?.getBoundingClientRect().height ?? 0,
@@ -2666,16 +2699,44 @@ const EventModal: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!modalState.isOpen) {
+    if (!modalState.isOpen || typeof window === "undefined") {
       return;
     }
-    const intervalId = window.setInterval(() => {
-      setNowMs(Date.now());
-    }, 30000);
-    return () => {
-      window.clearInterval(intervalId);
+
+    let isDisposed = false;
+    let timeoutId: number | null = null;
+
+    const scheduleNextTick = () => {
+      if (isDisposed) {
+        return;
+      }
+      const currentNowMs = Date.now();
+      setNowMs(currentNowMs);
+      timeoutId = window.setTimeout(
+        scheduleNextTick,
+        getEventNowRefreshDelayMs(
+          displayedEventRecord?.status ?? null,
+          displayedEventRecord?.startAtMs ?? null,
+          currentNowMs,
+        ),
+      );
     };
-  }, [modalState.isOpen]);
+
+    scheduleNextTick();
+
+    return () => {
+      isDisposed = true;
+      if (timeoutId !== null) {
+        window.clearTimeout(timeoutId);
+      }
+    };
+  }, [
+    displayedEventRecord?.eventId,
+    displayedEventRecord?.startAtMs,
+    displayedEventRecord?.status,
+    modalState.eventId,
+    modalState.isOpen,
+  ]);
 
   useEffect(() => {
     if (!modalState.isOpen || typeof window === "undefined") {
@@ -2833,7 +2894,6 @@ const EventModal: React.FC = () => {
     pendingJoinRequestedAtMs,
   ]);
 
-  const displayedEventRecord = devStubRecord ?? eventRecord;
   const participantsById = useMemo(
     () => displayedEventRecord?.participants ?? {},
     [displayedEventRecord],
@@ -3467,7 +3527,7 @@ const EventModal: React.FC = () => {
     : 0;
   const isPendingDismissState =
     displayedEventRecord?.status === "scheduled" &&
-    Date.now() >= displayedEventRecord.startAtMs &&
+    nowMs >= displayedEventRecord.startAtMs &&
     displayedParticipantCount < 2;
   const isBracketStatus =
     displayedEventRecord?.status === "active" ||
