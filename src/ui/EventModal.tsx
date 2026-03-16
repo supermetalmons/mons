@@ -764,10 +764,22 @@ const isMatchSideBlocked = (match: EventMatch, side: MatchSide): boolean => {
 };
 
 const getDisplayedMatchSides = (match: EventMatch): MatchSide[] => {
+  const hostBlocked = isMatchSideBlocked(match, "host");
+  const guestBlocked = isMatchSideBlocked(match, "guest");
+  const singleKnownSide = getSingleKnownMatchSide(match);
+
+  if (hostBlocked && guestBlocked) {
+    return [singleKnownSide ?? "host"];
+  }
+
+  if (hostBlocked !== guestBlocked && singleKnownSide) {
+    return [singleKnownSide];
+  }
+
   if (match.winnerDisqualified === true) {
     return ["host", "guest"];
   }
-  if (isMatchSideBlocked(match, "host") || isMatchSideBlocked(match, "guest")) {
+  if (hostBlocked || guestBlocked) {
     return ["host", "guest"];
   }
   if (match.status === "bye") {
