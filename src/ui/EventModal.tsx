@@ -517,6 +517,10 @@ const WinnerPodiumAvatarSlot = styled.div<{ $place: WinnerPodiumPlace }>`
   transition: transform 0.15s ease;
 `;
 
+const WinnerPodiumPlaceLabel = styled.span`
+  opacity: 0.82;
+`;
+
 const ClassicConnectorSvg = styled.svg`
   position: absolute;
   top: 0;
@@ -3749,7 +3753,7 @@ const EventModal: React.FC = () => {
                         />
                       </WinnerPodiumAvatarSlot>
                       <WinnerPodiumBar $place={entry.place}>
-                        {entry.place}
+                        <WinnerPodiumPlaceLabel>{entry.place}</WinnerPodiumPlaceLabel>
                       </WinnerPodiumBar>
                     </WinnerPodiumColumn>
                   );
