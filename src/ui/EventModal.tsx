@@ -513,6 +513,15 @@ const ClassicConnectorSvg = styled.svg`
     stroke-linecap: round;
   }
 
+  g[data-blocked-connector="true"] {
+    opacity: 0.5;
+  }
+
+  g[data-blocked-connector="true"] path,
+  g[data-blocked-connector="true"] line {
+    stroke: rgb(160, 160, 160);
+  }
+
   @media (prefers-color-scheme: dark) {
     path {
       stroke: rgba(140, 140, 140, 0.4);
@@ -520,6 +529,15 @@ const ClassicConnectorSvg = styled.svg`
 
     line {
       stroke: rgba(140, 140, 140, 0.4);
+    }
+
+    g[data-blocked-connector="true"] {
+      opacity: 0.4;
+    }
+
+    g[data-blocked-connector="true"] path,
+    g[data-blocked-connector="true"] line {
+      stroke: rgb(140, 140, 140);
     }
   }
 `;
@@ -3799,32 +3817,32 @@ const EventModal: React.FC = () => {
               height={bracketLayout.height}
               viewBox={`0 0 ${bracketLayout.width} ${bracketLayout.height}`}
             >
-              {bracketLayout.connectors.map((connector, i) => (
-                <React.Fragment key={i}>
-                  <path
-                    d={connector.d}
-                    data-blocked={connector.isBlocked ? "true" : "false"}
-                  />
-                  {connector.isBlocked &&
-                    connector.crossX !== null &&
-                    connector.crossY !== null && (
-                      <>
-                        <line
-                          x1={connector.crossX - 5}
-                          y1={connector.crossY - 5}
-                          x2={connector.crossX + 5}
-                          y2={connector.crossY + 5}
-                        />
-                        <line
-                          x1={connector.crossX - 5}
-                          y1={connector.crossY + 5}
-                          x2={connector.crossX + 5}
-                          y2={connector.crossY - 5}
-                        />
-                      </>
-                    )}
-                </React.Fragment>
-              ))}
+              {bracketLayout.connectors.map((connector, i) => {
+                if (connector.isBlocked) {
+                  return (
+                    <g key={i} data-blocked-connector="true">
+                      <path d={connector.d} data-blocked="true" />
+                      {connector.crossX !== null && connector.crossY !== null && (
+                        <>
+                          <line
+                            x1={connector.crossX - 5}
+                            y1={connector.crossY - 5}
+                            x2={connector.crossX + 5}
+                            y2={connector.crossY + 5}
+                          />
+                          <line
+                            x1={connector.crossX - 5}
+                            y1={connector.crossY + 5}
+                            x2={connector.crossX + 5}
+                            y2={connector.crossY - 5}
+                          />
+                        </>
+                      )}
+                    </g>
+                  );
+                }
+                return <path key={i} d={connector.d} data-blocked="false" />;
+              })}
             </ClassicConnectorSvg>
           </BracketContainer>
         </BracketPlacement>
