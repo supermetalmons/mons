@@ -2813,9 +2813,7 @@ const resolveAutomoveFromMainThread = async (
   gameModel: MonsWeb.MonsGameModel,
   preference: AutomovePreference,
 ): Promise<ResolvedAutomoveOutput> => {
-  const output = (await gameModel.smartAutomoveAsync(
-    preference,
-  )) as MonsWeb.OutputModel;
+  const output = gameModel.smartAutomove(preference) as MonsWeb.OutputModel;
   try {
     if (output.kind === MonsWeb.OutputModelKind.Events) {
       return {

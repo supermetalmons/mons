@@ -34,9 +34,7 @@ const resolveWorkerAutomove = async (
 
   let output: MonsWeb.OutputModel | null = null;
   try {
-    output = (await gameFromFen.smartAutomoveAsync(
-      preference,
-    )) as MonsWeb.OutputModel;
+    output = gameFromFen.smartAutomove(preference) as MonsWeb.OutputModel;
     if (output.kind === MonsWeb.OutputModelKind.Events) {
       return {
         kind: "events",
