@@ -1,4 +1,6 @@
 import initMonsWeb, * as MonsWeb from "mons-web";
+import { requestSmartAutomoveFromWorker } from "./automoveWorkerClient";
+import type { WorkerAutomoveResult } from "./automoveWorkerProtocol";
 import * as Board from "./board";
 import {
   tokensForSingleMoveEvents,
@@ -135,6 +137,25 @@ const normalizeBotAutomoveMode = (
 let botAutomoveMode: BotAutomoveMode = normalizeBotAutomoveMode(
   storage.getBotAutomoveMode("normal"),
 );
+const offMainThreadAutomoveRetryDelayMs = 15_000;
+let offMainThreadAutomoveDisabledUntilMs = 0;
+const automoveInFlightGames = new WeakSet<MonsWeb.MonsGameModel>();
+const automoveAlreadyInProgressErrorMessage =
+  "smart automove already in progress";
+const isAutomoveDebugLoggingEnabled = process.env.NODE_ENV !== "production";
+const debugAutomove = (
+  message: string,
+  details?: Record<string, unknown>,
+): void => {
+  if (!isAutomoveDebugLoggingEnabled) {
+    return;
+  }
+  if (details) {
+    console.debug(`[automove] ${message}`, details);
+    return;
+  }
+  console.debug(`[automove] ${message}`);
+};
 
 let currentWagerState: MatchWagerState | null = null;
 let wagerOutcomeShown = false;
@@ -2786,6 +2807,97 @@ export function didUpdateRematchSeriesMetadata() {
   triggerMoveHistoryPopupReload();
 }
 
+type ResolvedAutomoveOutput = WorkerAutomoveResult;
+
+const resolveAutomoveFromMainThread = async (
+  gameModel: MonsWeb.MonsGameModel,
+  preference: AutomovePreference,
+): Promise<ResolvedAutomoveOutput> => {
+  const output = (await gameModel.smartAutomoveAsync(
+    preference,
+  )) as MonsWeb.OutputModel;
+  try {
+    if (output.kind === MonsWeb.OutputModelKind.Events) {
+      return {
+        kind: "events",
+        inputFen: output.input_fen(),
+      };
+    }
+    return { kind: "other" };
+  } finally {
+    output.free();
+  }
+};
+
+const resolveAutomoveOutput = async (
+  gameModel: MonsWeb.MonsGameModel,
+  fen: string,
+  preference: AutomovePreference,
+): Promise<ResolvedAutomoveOutput> => {
+  if (automoveInFlightGames.has(gameModel)) {
+    debugAutomove("ignoring concurrent automove request", {
+      preference,
+      fenLength: fen.length,
+    });
+    throw new Error(automoveAlreadyInProgressErrorMessage);
+  }
+  automoveInFlightGames.add(gameModel);
+  try {
+    const now = Date.now();
+    if (now >= offMainThreadAutomoveDisabledUntilMs) {
+      const workerStartedAtMs = Date.now();
+      debugAutomove("requesting worker automove", {
+        preference,
+        fenLength: fen.length,
+      });
+      try {
+        const result = await requestSmartAutomoveFromWorker(fen, preference);
+        offMainThreadAutomoveDisabledUntilMs = 0;
+        debugAutomove("worker automove resolved", {
+          preference,
+          resultKind: result.kind,
+          durationMs: Date.now() - workerStartedAtMs,
+        });
+        return result;
+      } catch (error) {
+        offMainThreadAutomoveDisabledUntilMs =
+          Date.now() + offMainThreadAutomoveRetryDelayMs;
+        debugAutomove("worker automove failed; using temporary fallback", {
+          preference,
+          retryDelayMs: offMainThreadAutomoveRetryDelayMs,
+          disabledUntilMs: offMainThreadAutomoveDisabledUntilMs,
+          errorMessage: error instanceof Error ? error.message : String(error),
+        });
+        console.warn(
+          "[automove] worker path failed, falling back to main-thread automove temporarily",
+          error,
+        );
+      }
+    } else {
+      debugAutomove("worker automove temporarily disabled; using fallback", {
+        preference,
+        retryInMs: Math.max(0, offMainThreadAutomoveDisabledUntilMs - now),
+      });
+    }
+    const fallbackStartedAtMs = Date.now();
+    debugAutomove("requesting main-thread automove", {
+      preference,
+    });
+    const fallbackResult = await resolveAutomoveFromMainThread(
+      gameModel,
+      preference,
+    );
+    debugAutomove("main-thread automove resolved", {
+      preference,
+      resultKind: fallbackResult.kind,
+      durationMs: Date.now() - fallbackStartedAtMs,
+    });
+    return fallbackResult;
+  } finally {
+    automoveInFlightGames.delete(gameModel);
+  }
+};
+
 function automove(onAutomoveButtonClick: boolean = false) {
   const sessionGuard = getSessionGuard();
   const shouldUseSelectedBotMode =
@@ -2801,8 +2913,9 @@ function automove(onAutomoveButtonClick: boolean = false) {
   }
   const shouldEnforceBotMovePacing =
     isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
-  const fenBeforeAutomove = game.fen();
-  const inputColorBeforeAutomove = game.active_color();
+  const gameBeforeAutomove = game;
+  const fenBeforeAutomove = gameBeforeAutomove.fen();
+  const inputColorBeforeAutomove = gameBeforeAutomove.active_color();
   const syncAutomoveActionState = () => {
     if (isBotsRoute()) {
       return;
@@ -2813,13 +2926,12 @@ function automove(onAutomoveButtonClick: boolean = false) {
       setAutomoveActionEnabled(false);
     }
   };
-  game
-    .smartAutomoveAsync(preference)
-    .then((output: MonsWeb.OutputModel) => {
+  resolveAutomoveOutput(gameBeforeAutomove, fenBeforeAutomove, preference)
+    .then((output: ResolvedAutomoveOutput) => {
       if (!sessionGuard()) {
         return;
       }
-      if (output.kind === MonsWeb.OutputModelKind.Events) {
+      if (output.kind === "events") {
         const applyOutputWhenReady = () => {
           if (!sessionGuard()) {
             return;
@@ -2832,7 +2944,7 @@ function automove(onAutomoveButtonClick: boolean = false) {
             if (shouldEnforceBotMovePacing) {
               lastBotMoveTimestamp = Date.now();
             }
-            const appliedOutput = game.process_input_fen(output.input_fen());
+            const appliedOutput = game.process_input_fen(output.inputFen);
             applyOutput(
               [],
               "",
@@ -2871,7 +2983,7 @@ function automove(onAutomoveButtonClick: boolean = false) {
       Board.hideItemSelectionOrConfirmationOverlay();
     })
     .catch((e: unknown) => {
-      if (String(e).includes("smart automove already in progress")) {
+      if (String(e).includes(automoveAlreadyInProgressErrorMessage)) {
         return;
       }
       throw e;
