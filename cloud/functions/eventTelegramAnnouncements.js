@@ -7,6 +7,7 @@ const { customTelegramEmojis, getTelegramEmojiTag } = require("./utils");
 
 const EVENT_TELEGRAM_STATE_ROOT = "eventTelegramMessages";
 const EVENT_TELEGRAM_LOCK_ROOT = "eventTelegramLocks";
+const EVENT_TELEGRAM_STARTED_SENT_ROOT = "eventTelegramStartedSent";
 const EVENT_TELEGRAM_LOCK_TTL_MS = 2 * 60 * 1000;
 const EVENT_TELEGRAM_LOCK_ATTEMPTS = 3;
 const EVENT_TELEGRAM_LOCK_RETRY_DELAY_MS = 120;
@@ -28,6 +29,9 @@ const EVENT_URL_ROOT = "https://mons.link/event";
 const TELEGRAM_API_URL = "https://api.telegram.org";
 
 const EVENT_STATUS_SCHEDULED = "scheduled";
+const EVENT_STATUS_ACTIVE = "active";
+const EVENT_STATUS_ENDED = "ended";
+const EVENT_STATUS_DISMISSED = "dismissed";
 
 const normalizeString = (value) =>
   typeof value === "string" && value.trim() !== "" ? value.trim() : "";
@@ -278,6 +282,9 @@ const buildEventSignature = (eventData, nowMs = Date.now()) => {
     return "skip";
   }
   const status = normalizeString(eventData.status) || EVENT_STATUS_SCHEDULED;
+  if (status === EVENT_STATUS_ENDED || status === EVENT_STATUS_DISMISSED) {
+    return "skip";
+  }
   const startAtMs = normalizePositiveNumberOrNull(eventData.startAtMs);
   const participantRenderKey = buildParticipantRenderKey(eventData);
   const upcomingSignature =
@@ -336,6 +343,50 @@ const renderStartedMessage = (eventId, matchLines) => {
     lines.push("", ...matchLines);
   }
   return lines.join("\n");
+};
+
+const markStartedAnnouncementSentIfFirst = async (eventId, nowMs) => {
+  const normalizedEventId = normalizeString(eventId);
+  if (!normalizedEventId) {
+    return false;
+  }
+  const sentRef = admin
+    .database()
+    .ref(`${EVENT_TELEGRAM_STARTED_SENT_ROOT}/${normalizedEventId}`);
+  const result = await sentRef.transaction((current) => {
+    const currentValue = current && typeof current === "object" ? current : null;
+    const sentAtMs =
+      currentValue && typeof currentValue.sentAtMs === "number"
+        ? currentValue.sentAtMs
+        : 0;
+    if (sentAtMs > 0) {
+      return;
+    }
+    return { sentAtMs: nowMs };
+  });
+  return result && result.committed === true;
+};
+
+const sendStartedStatusAnnouncementIfNeeded = async ({
+  eventId,
+  eventData,
+  nowMs = Date.now(),
+}) => {
+  if (!eventId || !eventData || eventData.announceOnTelegram !== true) {
+    return;
+  }
+  if (normalizeString(eventData.status) !== EVENT_STATUS_ACTIVE) {
+    return;
+  }
+  const chatId = normalizeString(process.env.TELEGRAM_CHAT_ID_IVAN);
+  if (!chatId) {
+    return;
+  }
+  const didMark = await markStartedAnnouncementSentIfFirst(eventId, nowMs);
+  if (!didMark) {
+    return;
+  }
+  await sendTelegramHtmlMessage(chatId, renderStartedMessage(eventId, []));
 };
 
 const buildStartedState = (eventId, eventData, state) => {
@@ -771,6 +822,27 @@ const onEventTelegramUpdated = onValueUpdated(
       return;
     }
     const nowMs = Date.now();
+    const beforeStatus =
+      normalizeString(beforeData && beforeData.status) || EVENT_STATUS_SCHEDULED;
+    const afterStatus =
+      normalizeString(afterData.status) || EVENT_STATUS_SCHEDULED;
+    if (
+      beforeStatus === EVENT_STATUS_SCHEDULED &&
+      afterStatus === EVENT_STATUS_ACTIVE
+    ) {
+      try {
+        await sendStartedStatusAnnouncementIfNeeded({
+          eventId,
+          eventData: afterData,
+          nowMs,
+        });
+      } catch (error) {
+        console.error("event:tg:start-status:error", {
+          eventId,
+          error: error && error.message ? error.message : error,
+        });
+      }
+    }
     const beforeSignature = buildEventSignature(beforeData, nowMs);
     const afterSignature = buildEventSignature(afterData, nowMs);
     if (beforeSignature === afterSignature) {
