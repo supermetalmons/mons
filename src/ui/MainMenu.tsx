@@ -861,6 +861,7 @@ const MainMenu: React.FC = () => {
   );
   const [eventScheduledTimezone, setEventScheduledTimezone] =
     useState<EventScheduleTimezone>("local");
+  const [eventAnnounceOnTelegram, setEventAnnounceOnTelegram] = useState(false);
   const [isCreatingEvent, setIsCreatingEvent] = useState(false);
   const [eventCreateError, setEventCreateError] = useState("");
 
@@ -1040,6 +1041,7 @@ const MainMenu: React.FC = () => {
     setEventScheduledDate(defaults.date);
     setEventScheduledTime(defaults.time);
     setEventScheduledTimezone("local");
+    setEventAnnounceOnTelegram(false);
     setEventCreateError("");
   };
 
@@ -1101,7 +1103,9 @@ const MainMenu: React.FC = () => {
     setShowExperimental(false);
     openEventModalPendingCreate({ restoreHomeOnClose: false });
     void connection
-      .createEvent(createRequest)
+      .createEvent(createRequest, {
+        announceOnTelegram: eventAnnounceOnTelegram,
+      })
       .then((result) => {
         if (!result.ok || !result.eventId) {
           setEventModalPendingCreateError("Failed to create event.");
@@ -1135,6 +1139,7 @@ const MainMenu: React.FC = () => {
     eventScheduledDate,
     eventScheduledTime,
     eventScheduledTimezone,
+    eventAnnounceOnTelegram,
   ]);
 
   toggleInfoVisibilityImpl = () => {
@@ -1577,6 +1582,16 @@ const MainMenu: React.FC = () => {
                             ? "Creating Event..."
                             : "Create Event"}
                         </ExperimentalActionButton>
+                        <ToggleRow>
+                          <input
+                            type="checkbox"
+                            checked={eventAnnounceOnTelegram}
+                            onChange={(event) => {
+                              setEventAnnounceOnTelegram(event.target.checked);
+                            }}
+                          />
+                          announce on telegram
+                        </ToggleRow>
                       </>
                     )}
                     {eventCreateError !== "" && (

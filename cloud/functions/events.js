@@ -1748,6 +1748,7 @@ const createBaseEventRecord = ({
   creatorUid,
   startAtMs,
   createdAtMs,
+  announceOnTelegram,
 }) => {
   const creatorParticipant = buildParticipantSnapshot(
     creatorProfile,
@@ -1761,6 +1762,7 @@ const createBaseEventRecord = ({
     createdAtMs,
     updatedAtMs: createdAtMs,
     startAtMs,
+    announceOnTelegram: announceOnTelegram === true,
     startedAtMs: null,
     endedAtMs: null,
     createdByProfileId: creatorParticipant.profileId,
@@ -1993,6 +1995,7 @@ exports.createEvent = onCall(async (request) => {
   const createdAtMs = getNowMs();
   const requestData =
     request.data && typeof request.data === "object" ? request.data : {};
+  const announceOnTelegram = requestData.announceOnTelegram === true;
   let startAtMs = 0;
 
   if (hasDateTimeScheduleRequest(requestData)) {
@@ -2017,6 +2020,7 @@ exports.createEvent = onCall(async (request) => {
     creatorUid: request.auth.uid,
     startAtMs,
     createdAtMs,
+    announceOnTelegram,
   });
 
   try {

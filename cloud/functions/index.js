@@ -45,6 +45,10 @@ const {
   onProfileDeleted,
 } = require("./profileGamesProjector");
 const { onEventWritten } = require("./eventProjector");
+const {
+  onEventTelegramCreated,
+  onEventTelegramUpdated,
+} = require("./eventTelegramAnnouncements");
 
 exports.verifySolanaAddress = verifySolanaAddress;
 exports.verifyEthAddress = verifyEthAddress;
@@ -90,3 +94,5 @@ exports.projectProfileGamesOnProfileLinkCreated = onProfileLinkCreated;
 exports.projectProfileGamesOnProfileLinkWritten = onProfileLinkWritten;
 exports.projectProfileGamesOnProfileDeleted = onProfileDeleted;
 exports.projectProfileGamesOnEventWritten = onEventWritten;
+exports.projectEventTelegramOnCreated = onEventTelegramCreated;
+exports.projectEventTelegramOnUpdated = onEventTelegramUpdated;

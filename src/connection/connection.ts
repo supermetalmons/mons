@@ -152,6 +152,10 @@ export type EventCreateDateTimePayload = {
   localTimezoneIana?: string;
 };
 
+export type EventCreateOptions = {
+  announceOnTelegram?: boolean;
+};
+
 export type NavigationGamesPageCursor =
   QueryDocumentSnapshot<DocumentData> | null;
 
@@ -2334,11 +2338,12 @@ class Connection {
 
   public async createEvent(
     schedule: number | EventCreateDateTimePayload,
+    options: EventCreateOptions = {},
   ): Promise<{ ok: boolean; eventId?: string; event?: EventRecord | null }> {
     try {
       await this.ensureAuthenticated();
       const createEventFunction = httpsCallable(this.functions, "createEvent");
-      const requestPayload =
+      const requestPayloadBase =
         typeof schedule === "number"
           ? {
               startsInMinutes: this.normalizeFiniteNumber(schedule, 0),
@@ -2357,6 +2362,10 @@ class Connection {
                   }
                 : {}),
             };
+      const requestPayload = {
+        ...requestPayloadBase,
+        announceOnTelegram: options.announceOnTelegram === true,
+      };
       const response = await createEventFunction(requestPayload);
       const data = response.data as {
         ok?: boolean;
