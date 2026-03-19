@@ -34,7 +34,10 @@ import {
   playNextTrack,
 } from "../content/music";
 import { InfoPopover } from "./InfoPopover";
-import { MiningMaterialName } from "../connection/connectionModels";
+import {
+  MINING_MATERIAL_NAMES,
+  MiningMaterialName,
+} from "../connection/connectionModels";
 import { registerMainMenuTransientUiHandler } from "./uiSession";
 import { connection } from "../connection/connection";
 import type {
@@ -48,24 +51,14 @@ import {
   setEventModalPendingCreateError,
 } from "./eventModalController";
 
+const MATERIAL_TYPES: MiningMaterialName[] = [...MINING_MATERIAL_NAMES];
 const LEADERBOARD_TYPES: LeaderboardType[] = [
   "rating",
-  "ice",
-  "metal",
-  "gum",
-  "slime",
-  "dust",
+  ...MATERIAL_TYPES,
   "total",
   "mp",
 ];
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
-const MATERIAL_TYPES: MiningMaterialName[] = [
-  "ice",
-  "metal",
-  "gum",
-  "slime",
-  "dust",
-];
 type LeaderboardSpecialType = keyof typeof LEADERBOARD_TYPE_ICON_URLS;
 const MONS_LINK_ADMINS = new Set([
   "ivan",
