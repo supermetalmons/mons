@@ -415,6 +415,15 @@ const getWagerSuffix = (inviteData, matchId) => {
 const normalizeString = (value) =>
   typeof value === "string" && value.trim() !== "" ? value.trim() : "";
 
+const isEventOwnedInvite = (inviteData) => {
+  if (!inviteData || typeof inviteData !== "object") {
+    return false;
+  }
+  return (
+    inviteData.eventOwned === true || normalizeString(inviteData.eventId) !== ""
+  );
+};
+
 const maybeEnqueueEventProgressFromInvite = async ({
   inviteData,
   inviteId,
@@ -585,6 +594,8 @@ exports.updateRatings = onCall(async (request) => {
     const playerHasProfile = playerProfile.profileId !== "";
     const opponentHasProfile = opponentProfile.profileId !== "";
     const canUpdateRatings = playerHasProfile && opponentHasProfile;
+    const isEventMatch = isEventOwnedInvite(inviteData);
+    const shouldApplyRatingDelta = canUpdateRatings && !isEventMatch;
 
     const playerEmoji =
       playerProfile.emoji === "" ? matchData.emojiId : playerProfile.emoji;
@@ -619,6 +630,7 @@ exports.updateRatings = onCall(async (request) => {
     let playerRatingUpdate = null;
     let opponentRatingUpdate = null;
     let shouldUpdateFebruaryChallenge = false;
+    let didApplyRatingDelta = false;
 
     if (canUpdateRatings) {
       const hasMoves = (data) =>
@@ -639,46 +651,75 @@ exports.updateRatings = onCall(async (request) => {
         ? newNonce2
         : opponentProfile.nonce;
       shouldUpdateFebruaryChallenge =
-        bothPlayersMoved && isFebruaryChallengeActive();
+        bothPlayersMoved && !isEventMatch && isFebruaryChallengeActive();
 
-      if (result === "win") {
-        const [newWinnerRating, newLoserRating] = updateRating(
-          playerProfile.rating,
-          newNonce1,
-          opponentProfile.rating,
-          newNonce2,
-        );
-        winnerNewRating = newWinnerRating;
-        loserNewRating = newLoserRating;
+      if (shouldApplyRatingDelta) {
+        didApplyRatingDelta = true;
+        if (result === "win") {
+          const [newWinnerRating, newLoserRating] = updateRating(
+            playerProfile.rating,
+            newNonce1,
+            opponentProfile.rating,
+            newNonce2,
+          );
+          winnerNewRating = newWinnerRating;
+          loserNewRating = newLoserRating;
+          playerRatingUpdate = {
+            rating: newWinnerRating,
+            nonce: updatedPlayerNonce,
+            win: true,
+            totalManaPoints: newPlayerManaTotal,
+          };
+          opponentRatingUpdate = {
+            rating: newLoserRating,
+            nonce: updatedOpponentNonce,
+            win: false,
+            totalManaPoints: newOpponentManaTotal,
+          };
+        } else {
+          const [newWinnerRating, newLoserRating] = updateRating(
+            opponentProfile.rating,
+            newNonce2,
+            playerProfile.rating,
+            newNonce1,
+          );
+          winnerNewRating = newWinnerRating;
+          loserNewRating = newLoserRating;
+          playerRatingUpdate = {
+            rating: newLoserRating,
+            nonce: updatedPlayerNonce,
+            win: false,
+            totalManaPoints: newPlayerManaTotal,
+          };
+          opponentRatingUpdate = {
+            rating: newWinnerRating,
+            nonce: updatedOpponentNonce,
+            win: true,
+            totalManaPoints: newOpponentManaTotal,
+          };
+        }
+      } else if (result === "win") {
+        winnerNewRating = playerProfile.rating;
+        loserNewRating = opponentProfile.rating;
         playerRatingUpdate = {
-          rating: newWinnerRating,
           nonce: updatedPlayerNonce,
           win: true,
           totalManaPoints: newPlayerManaTotal,
         };
         opponentRatingUpdate = {
-          rating: newLoserRating,
           nonce: updatedOpponentNonce,
           win: false,
           totalManaPoints: newOpponentManaTotal,
         };
       } else {
-        const [newWinnerRating, newLoserRating] = updateRating(
-          opponentProfile.rating,
-          newNonce2,
-          playerProfile.rating,
-          newNonce1,
-        );
-        winnerNewRating = newWinnerRating;
-        loserNewRating = newLoserRating;
+        winnerNewRating = opponentProfile.rating;
+        loserNewRating = playerProfile.rating;
         playerRatingUpdate = {
-          rating: newLoserRating,
           nonce: updatedPlayerNonce,
           win: false,
           totalManaPoints: newPlayerManaTotal,
         };
         opponentRatingUpdate = {
-          rating: newWinnerRating,
           nonce: updatedOpponentNonce,
           win: true,
           totalManaPoints: newOpponentManaTotal,
@@ -704,7 +745,7 @@ exports.updateRatings = onCall(async (request) => {
     if (wagerSuffix) {
       suffix += ` ${wagerSuffix}`;
     }
-    const updateRatingMessage = canUpdateRatings
+    const updateRatingMessage = didApplyRatingDelta
       ? `${winnerDisplayName} ${winnerNewRating}↑ ${loserDisplayName} ${loserNewRating}↓${suffix}`
       : `${winnerDisplayName} ↑ ${loserDisplayName}${suffix}`;
 
@@ -713,7 +754,7 @@ exports.updateRatings = onCall(async (request) => {
     const completedAtMs = Date.now();
     // Persist the durable result alongside the profile writes so retries can repair
     // the RTDB projection marker without ever applying ratings twice.
-    if (canUpdateRatings && playerRatingUpdate && opponentRatingUpdate) {
+    if (playerRatingUpdate && opponentRatingUpdate) {
       batch.update(
         firestore.collection("users").doc(playerProfile.profileId),
         playerRatingUpdate,
@@ -733,10 +774,11 @@ exports.updateRatings = onCall(async (request) => {
         status: "done",
         result,
         canUpdateRatings,
+        didApplyRatingDelta,
         winnerDisplayName,
         loserDisplayName,
-        winnerNewRating: canUpdateRatings ? winnerNewRating : null,
-        loserNewRating: canUpdateRatings ? loserNewRating : null,
+        winnerNewRating: didApplyRatingDelta ? winnerNewRating : null,
+        loserNewRating: didApplyRatingDelta ? loserNewRating : null,
         playerManaPoints,
         opponentManaPoints,
         shouldUpdateFebruaryChallenge,

@@ -3947,6 +3947,13 @@ function updateRatings(isWin: boolean) {
 
   connection.updateRatings();
 
+  const isEventGame =
+    connection.isCurrentInviteEventOwned() ||
+    !!connection.getCurrentInviteEventId();
+  if (isEventGame) {
+    return;
+  }
+
   if (!hasBothEthOrSolAddresses()) {
     return;
   }
