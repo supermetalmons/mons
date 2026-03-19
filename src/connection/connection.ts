@@ -2576,6 +2576,32 @@ class Connection {
     return !!eventRecord.participants[profileId];
   }
 
+  private isLocalCreatorInEventRecord(
+    eventRecord: EventRecord | null,
+    profileId: string | null,
+  ): boolean {
+    if (!eventRecord) {
+      return false;
+    }
+    const normalizedProfileId = this.normalizeStringOrNull(profileId);
+    if (
+      normalizedProfileId &&
+      this.normalizeString(eventRecord.createdByProfileId) ===
+        normalizedProfileId
+    ) {
+      return true;
+    }
+    const localLoginUid = this.normalizeString(
+      this.auth.currentUser?.uid || this.currentUid || "",
+    );
+    if (!localLoginUid) {
+      return false;
+    }
+    return (
+      this.normalizeString(eventRecord.createdByLoginUid) === localLoginUid
+    );
+  }
+
   private getEventSyncCooldownMs(eventRecord: EventRecord | null): number {
     if (!eventRecord || eventRecord.status === "scheduled") {
       return EVENT_SYNC_COOLDOWN_SCHEDULED_MS;
@@ -2626,8 +2652,18 @@ class Connection {
       return true;
     }
 
-    const cachedMembership = this.eventSyncParticipantCacheById.get(eventId);
     const nowMs = Date.now();
+    const observedEvent = this.latestObservedEventById.get(eventId) ?? null;
+    if (this.isLocalCreatorInEventRecord(observedEvent, profileId)) {
+      this.eventSyncParticipantCacheById.set(eventId, {
+        profileId,
+        checkedAtMs: nowMs,
+        isParticipant: true,
+      });
+      return true;
+    }
+
+    const cachedMembership = this.eventSyncParticipantCacheById.get(eventId);
     const cacheTtlMs =
       cachedMembership && cachedMembership.isParticipant
         ? EVENT_SYNC_PARTICIPANT_CACHE_TTL_MS
@@ -2640,7 +2676,6 @@ class Connection {
       return cachedMembership.isParticipant;
     }
 
-    const observedEvent = this.latestObservedEventById.get(eventId) ?? null;
     if (this.isParticipantInEventRecord(observedEvent, profileId)) {
       this.eventSyncParticipantCacheById.set(eventId, {
         profileId,

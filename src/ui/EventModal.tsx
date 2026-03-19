@@ -464,10 +464,11 @@ const WinnerPodiumColumn = styled.button<{ $place: WinnerPodiumPlace }>`
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) [data-avatar-slot][data-single-known="true"] {
       transform: translate(
-        -50%,
-        ${(p) =>
-          `-${p.$place === 3 ? WINNER_PODIUM_THIRD_PLACE_AVATAR_UPLIFT_PX : WINNER_PODIUM_AVATAR_UPLIFT_PX}px`}
-      ) scale(1.06);
+          -50%,
+          ${(p) =>
+            `-${p.$place === 3 ? WINNER_PODIUM_THIRD_PLACE_AVATAR_UPLIFT_PX : WINNER_PODIUM_AVATAR_UPLIFT_PX}px`}
+        )
+        scale(1.06);
     }
   }
 `;
@@ -780,6 +781,12 @@ type EventUiState = {
   waitingForNext: boolean;
 };
 
+type EventAutoRecoveryReason =
+  | "start-overdue"
+  | "active-no-rounds"
+  | "active-pending-without-invite"
+  | "active-should-end";
+
 const PENDING_JOIN_POLL_INTERVAL_MS = 350;
 const PENDING_JOIN_POLL_TIMEOUT_MS = 60_000;
 const EVENT_SUBSCRIBE_RETRY_DELAYS_MS = [600, 1600, 3200] as const;
@@ -787,6 +794,9 @@ const DEFAULT_NOW_REFRESH_MS = 30_000;
 const POST_START_NOW_REFRESH_MS = 5_000;
 const MAX_NOW_REFRESH_MS = 60_000;
 const NOW_REFRESH_BOUNDARY_FUDGE_MS = 50;
+const EVENT_AUTO_RECOVERY_DELAY_MS = 1_000;
+const EVENT_AUTO_RECOVERY_MIN_GAP_MS = 6_000;
+const EVENT_AUTO_RECOVERY_MAX_ATTEMPTS_PER_REASON = 2;
 
 const formatRelativeStart = (
   event: EventRecord | null,
@@ -866,6 +876,32 @@ const getEventNowRefreshDelayMs = (
   );
 };
 
+const getParticipantCount = (event: EventRecord | null): number => {
+  if (!event || !event.participants) {
+    return 0;
+  }
+  return Object.keys(event.participants).length;
+};
+
+const isLocalEventCreator = (event: EventRecord | null): boolean => {
+  if (!event) {
+    return false;
+  }
+  const localLoginUid = storage.getLoginId("").trim();
+  const localProfileId = storage.getProfileId("").trim();
+  const creatorLoginUid = event.createdByLoginUid?.trim() ?? "";
+  const creatorProfileId = event.createdByProfileId?.trim() ?? "";
+
+  return (
+    (localLoginUid !== "" &&
+      creatorLoginUid !== "" &&
+      localLoginUid === creatorLoginUid) ||
+    (localProfileId !== "" &&
+      creatorProfileId !== "" &&
+      localProfileId === creatorProfileId)
+  );
+};
+
 const getSortedParticipants = (
   event: EventRecord | null,
 ): EventParticipant[] => {
@@ -891,6 +927,60 @@ const getThirdPlaceMatch = (event: EventRecord | null): EventMatch | null => {
     return null;
   }
   return event.thirdPlaceMatch;
+};
+
+const getEventAutoRecoveryReason = (
+  event: EventRecord | null,
+  nowMs: number,
+): EventAutoRecoveryReason | null => {
+  if (!event) {
+    return null;
+  }
+
+  if (event.status === "scheduled") {
+    if (nowMs >= event.startAtMs && getParticipantCount(event) >= 2) {
+      return "start-overdue";
+    }
+    return null;
+  }
+
+  if (event.status !== "active") {
+    return null;
+  }
+
+  const rounds = getSortedRounds(event);
+  if (rounds.length === 0) {
+    return "active-no-rounds";
+  }
+
+  for (const round of rounds) {
+    for (const match of getSortedMatches(round)) {
+      if (match.status === "pending" && getEventMatchInviteId(match) === "") {
+        return "active-pending-without-invite";
+      }
+    }
+  }
+
+  const finalRound = rounds[rounds.length - 1] ?? null;
+  if (!finalRound) {
+    return null;
+  }
+  const finalRoundMatches = getSortedMatches(finalRound);
+  if (finalRoundMatches.length <= 0) {
+    return null;
+  }
+  const isFinalRoundResolved = finalRoundMatches.every((match) =>
+    isResolvedEventMatch(match),
+  );
+  if (!isFinalRoundResolved) {
+    return null;
+  }
+  const thirdPlaceMatch = getThirdPlaceMatch(event);
+  if (thirdPlaceMatch && !isResolvedEventMatch(thirdPlaceMatch)) {
+    return null;
+  }
+
+  return "active-should-end";
 };
 
 const isProfileParticipatingInMatch = (
@@ -2640,6 +2730,12 @@ const EventModal: React.FC = () => {
   const pendingBackdropTouchDismissTouchIdRef = useRef<number | null>(null);
   const backdropGhostClickGuardCleanupRef = useRef<(() => void) | null>(null);
   const copyResetTimeoutRef = useRef<number | null>(null);
+  const eventAutoRecoveryTimeoutRef = useRef<number | null>(null);
+  const eventAutoRecoveryAttemptsRef = useRef<Record<string, number>>({});
+  const eventAutoRecoveryLastAttemptAtMsRef = useRef<Record<string, number>>(
+    {},
+  );
+  const eventAutoRecoveryInFlightRef = useRef<Set<string>>(new Set());
   const topBarRef = useRef<HTMLDivElement | null>(null);
   const bottomBarRef = useRef<HTMLDivElement | null>(null);
   const participantsCloudRef = useRef<HTMLDivElement | null>(null);
@@ -2662,6 +2758,11 @@ const EventModal: React.FC = () => {
     return () => {
       backdropGhostClickGuardCleanupRef.current?.();
       backdropGhostClickGuardCleanupRef.current = null;
+      if (eventAutoRecoveryTimeoutRef.current !== null) {
+        window.clearTimeout(eventAutoRecoveryTimeoutRef.current);
+        eventAutoRecoveryTimeoutRef.current = null;
+      }
+      eventAutoRecoveryInFlightRef.current.clear();
     };
   }, []);
 
@@ -2674,6 +2775,16 @@ const EventModal: React.FC = () => {
   useEffect(() => {
     participantLookupSessionRef.current += 1;
     openingParticipantIdRef.current = null;
+  }, [modalState.eventId, modalState.isOpen]);
+
+  useEffect(() => {
+    if (eventAutoRecoveryTimeoutRef.current !== null) {
+      window.clearTimeout(eventAutoRecoveryTimeoutRef.current);
+      eventAutoRecoveryTimeoutRef.current = null;
+    }
+    eventAutoRecoveryAttemptsRef.current = {};
+    eventAutoRecoveryLastAttemptAtMsRef.current = {};
+    eventAutoRecoveryInFlightRef.current.clear();
   }, [modalState.eventId, modalState.isOpen]);
 
   useEffect(() => {
@@ -2806,6 +2917,92 @@ const EventModal: React.FC = () => {
     displayedEventRecord?.status,
     modalState.eventId,
     modalState.isOpen,
+  ]);
+
+  useEffect(() => {
+    if (!modalState.isOpen || typeof window === "undefined") {
+      return;
+    }
+    if (!modalState.eventId || !eventRecord || devStubRecord) {
+      if (eventAutoRecoveryTimeoutRef.current !== null) {
+        window.clearTimeout(eventAutoRecoveryTimeoutRef.current);
+        eventAutoRecoveryTimeoutRef.current = null;
+      }
+      return;
+    }
+    if (eventRecord.eventId !== modalState.eventId) {
+      return;
+    }
+    if (!isLocalEventCreator(eventRecord)) {
+      return;
+    }
+
+    const autoRecoveryReason = getEventAutoRecoveryReason(eventRecord, nowMs);
+    if (!autoRecoveryReason) {
+      if (eventAutoRecoveryTimeoutRef.current !== null) {
+        window.clearTimeout(eventAutoRecoveryTimeoutRef.current);
+        eventAutoRecoveryTimeoutRef.current = null;
+      }
+      return;
+    }
+
+    const attemptKey = `${eventRecord.eventId}:${autoRecoveryReason}`;
+    const attempts = eventAutoRecoveryAttemptsRef.current[attemptKey] ?? 0;
+    if (attempts >= EVENT_AUTO_RECOVERY_MAX_ATTEMPTS_PER_REASON) {
+      return;
+    }
+    if (eventAutoRecoveryInFlightRef.current.has(attemptKey)) {
+      return;
+    }
+    const lastAttemptAtMs =
+      eventAutoRecoveryLastAttemptAtMsRef.current[attemptKey] ?? 0;
+    if (Date.now() - lastAttemptAtMs < EVENT_AUTO_RECOVERY_MIN_GAP_MS) {
+      return;
+    }
+
+    if (eventAutoRecoveryTimeoutRef.current !== null) {
+      window.clearTimeout(eventAutoRecoveryTimeoutRef.current);
+    }
+
+    const targetEventId = eventRecord.eventId;
+    eventAutoRecoveryTimeoutRef.current = window.setTimeout(() => {
+      eventAutoRecoveryTimeoutRef.current = null;
+
+      const inFlightSet = eventAutoRecoveryInFlightRef.current;
+      if (inFlightSet.has(attemptKey)) {
+        return;
+      }
+
+      const currentAttempts =
+        eventAutoRecoveryAttemptsRef.current[attemptKey] ?? 0;
+      if (currentAttempts >= EVENT_AUTO_RECOVERY_MAX_ATTEMPTS_PER_REASON) {
+        return;
+      }
+
+      eventAutoRecoveryAttemptsRef.current[attemptKey] = currentAttempts + 1;
+      eventAutoRecoveryLastAttemptAtMsRef.current[attemptKey] = Date.now();
+      inFlightSet.add(attemptKey);
+
+      void connection
+        .syncEventState(targetEventId)
+        .catch(() => {})
+        .finally(() => {
+          inFlightSet.delete(attemptKey);
+        });
+    }, EVENT_AUTO_RECOVERY_DELAY_MS);
+
+    return () => {
+      if (eventAutoRecoveryTimeoutRef.current !== null) {
+        window.clearTimeout(eventAutoRecoveryTimeoutRef.current);
+        eventAutoRecoveryTimeoutRef.current = null;
+      }
+    };
+  }, [
+    devStubRecord,
+    eventRecord,
+    modalState.eventId,
+    modalState.isOpen,
+    nowMs,
   ]);
 
   useEffect(() => {
@@ -3756,7 +3953,9 @@ const EventModal: React.FC = () => {
                         />
                       </WinnerPodiumAvatarSlot>
                       <WinnerPodiumBar $place={entry.place}>
-                        <WinnerPodiumPlaceLabel>{entry.place}</WinnerPodiumPlaceLabel>
+                        <WinnerPodiumPlaceLabel>
+                          {entry.place}
+                        </WinnerPodiumPlaceLabel>
                       </WinnerPodiumBar>
                     </WinnerPodiumColumn>
                   );
@@ -3883,22 +4082,23 @@ const EventModal: React.FC = () => {
                   return (
                     <g key={i} data-blocked-connector="true">
                       <path d={connector.d} data-blocked="true" />
-                      {connector.crossX !== null && connector.crossY !== null && (
-                        <>
-                          <line
-                            x1={connector.crossX - 5}
-                            y1={connector.crossY - 5}
-                            x2={connector.crossX + 5}
-                            y2={connector.crossY + 5}
-                          />
-                          <line
-                            x1={connector.crossX - 5}
-                            y1={connector.crossY + 5}
-                            x2={connector.crossX + 5}
-                            y2={connector.crossY - 5}
-                          />
-                        </>
-                      )}
+                      {connector.crossX !== null &&
+                        connector.crossY !== null && (
+                          <>
+                            <line
+                              x1={connector.crossX - 5}
+                              y1={connector.crossY - 5}
+                              x2={connector.crossX + 5}
+                              y2={connector.crossY + 5}
+                            />
+                            <line
+                              x1={connector.crossX - 5}
+                              y1={connector.crossY + 5}
+                              x2={connector.crossX + 5}
+                              y2={connector.crossY - 5}
+                            />
+                          </>
+                        )}
                     </g>
                   );
                 }
