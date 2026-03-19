@@ -797,6 +797,20 @@ const NOW_REFRESH_BOUNDARY_FUDGE_MS = 50;
 const EVENT_AUTO_RECOVERY_DELAY_MS = 1_000;
 const EVENT_AUTO_RECOVERY_MIN_GAP_MS = 6_000;
 const EVENT_AUTO_RECOVERY_MAX_ATTEMPTS_PER_REASON = 2;
+const MINUTE_MS = 60_000;
+const HOUR_MS = 60 * MINUTE_MS;
+const DAY_MS = 24 * HOUR_MS;
+
+const formatRelativeStartUnit = (value: number, unit: string): string =>
+  `${value} ${unit}${value === 1 ? "" : "s"}`;
+
+const formatRelativeStartCompactHoursAndMinutes = (
+  totalMinutes: number,
+): string => {
+  const hours = Math.floor(totalMinutes / 60);
+  const minutes = totalMinutes % 60;
+  return `in ${hours}h${minutes === 0 ? "" : `${minutes}m`}`;
+};
 
 const formatRelativeStart = (
   event: EventRecord | null,
@@ -819,7 +833,24 @@ const formatRelativeStart = (
     const participantCount = Object.keys(event.participants).length;
     return participantCount < 2 ? "" : "starting now";
   }
-  const minutes = Math.max(1, Math.ceil(deltaMs / 60000));
+
+  const roundedMinutes = Math.max(1, Math.ceil(deltaMs / MINUTE_MS));
+  if (deltaMs >= DAY_MS) {
+    const days = Math.floor(deltaMs / DAY_MS);
+    const hours = Math.floor((deltaMs % DAY_MS) / HOUR_MS);
+    if (hours === 0) {
+      return formatRelativeStartCompactHoursAndMinutes(roundedMinutes);
+    }
+    return `in ${formatRelativeStartUnit(days, "day")} ${formatRelativeStartUnit(hours, "hour")}`;
+  }
+
+  if (deltaMs >= HOUR_MS) {
+    const hours = Math.floor(roundedMinutes / 60);
+    const minutes = roundedMinutes % 60;
+    return `in ${formatRelativeStartUnit(hours, "hour")} ${formatRelativeStartUnit(minutes, "minute")}`;
+  }
+
+  const minutes = roundedMinutes;
   return `in ${minutes} minute${minutes === 1 ? "" : "s"}`;
 };
 
@@ -866,9 +897,9 @@ const getEventNowRefreshDelayMs = (
     return POST_START_NOW_REFRESH_MS;
   }
 
-  const minuteRemainderMs = deltaMs % 60_000;
+  const minuteRemainderMs = deltaMs % MINUTE_MS;
   const untilNextMinuteBoundaryMs =
-    minuteRemainderMs === 0 ? 60_000 : minuteRemainderMs;
+    minuteRemainderMs === 0 ? MINUTE_MS : minuteRemainderMs;
 
   return Math.min(
     MAX_NOW_REFRESH_MS,
