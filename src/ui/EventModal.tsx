@@ -2755,6 +2755,7 @@ const EventModal: React.FC = () => {
   }, []);
 
   useEffect(() => {
+    const eventAutoRecoveryInFlightSet = eventAutoRecoveryInFlightRef.current;
     return () => {
       backdropGhostClickGuardCleanupRef.current?.();
       backdropGhostClickGuardCleanupRef.current = null;
@@ -2762,7 +2763,7 @@ const EventModal: React.FC = () => {
         window.clearTimeout(eventAutoRecoveryTimeoutRef.current);
         eventAutoRecoveryTimeoutRef.current = null;
       }
-      eventAutoRecoveryInFlightRef.current.clear();
+      eventAutoRecoveryInFlightSet.clear();
     };
   }, []);
 
