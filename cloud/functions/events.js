@@ -2327,6 +2327,171 @@ exports.postponeEventStart = onCall(async (request) => {
   }
 });
 
+exports.removeEventParticipant = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
+  }
+
+  const eventId = normalizeString(request.data && request.data.eventId);
+  if (!eventId) {
+    throw new HttpsError("invalid-argument", "eventId is required.");
+  }
+  const participantProfileId = normalizeString(
+    request.data && request.data.participantProfileId,
+  );
+  if (!participantProfileId) {
+    throw new HttpsError(
+      "invalid-argument",
+      "participantProfileId is required.",
+    );
+  }
+
+  const profile = await ensureNonAnonProfile(request.auth.uid);
+  const profileId = normalizeString(profile.profileId);
+  const lockHandle = await acquireEventLockWithRetry(
+    eventId,
+    request.auth.uid,
+    {
+      attempts: 40,
+      delayMs: 100,
+    },
+  );
+  if (!lockHandle) {
+    throw new HttpsError(
+      "unavailable",
+      "Event is busy. Please try removing again.",
+    );
+  }
+  const stopLockHeartbeat = startEventLockHeartbeat(lockHandle);
+
+  try {
+    const eventSnapshot = await admin
+      .database()
+      .ref(`events/${eventId}`)
+      .once("value");
+    if (!eventSnapshot.exists()) {
+      throw new HttpsError("not-found", "Event not found.");
+    }
+    const event = cloneValue(eventSnapshot.val() || {});
+    const creatorLoginUid = normalizeString(event.createdByLoginUid);
+    const creatorProfileId = normalizeString(event.createdByProfileId);
+    if (
+      request.auth.uid !== creatorLoginUid &&
+      profileId !== creatorProfileId
+    ) {
+      throw new HttpsError(
+        "permission-denied",
+        "Only the event creator can remove participants.",
+      );
+    }
+    if (normalizeString(event.status) !== "scheduled") {
+      throw new HttpsError(
+        "failed-precondition",
+        "Only scheduled events can remove participants.",
+      );
+    }
+
+    const nowMs = getNowMs();
+    if (
+      typeof event.startAtMs !== "number" ||
+      !Number.isFinite(event.startAtMs)
+    ) {
+      throw new HttpsError(
+        "failed-precondition",
+        "This event cannot be updated right now.",
+      );
+    }
+    if (nowMs >= event.startAtMs) {
+      const dueTransition = buildScheduledEventDueUpdates({
+        eventId,
+        event,
+        nowMs,
+      });
+      if (dueTransition.didChange) {
+        await admin.database().ref().update(dueTransition.updates);
+      }
+      throw new HttpsError(
+        "failed-precondition",
+        "This event can no longer remove participants.",
+      );
+    }
+
+    const nextParticipants =
+      event.participants && typeof event.participants === "object"
+        ? event.participants
+        : {};
+    const targetParticipant =
+      nextParticipants[participantProfileId] &&
+      typeof nextParticipants[participantProfileId] === "object"
+        ? nextParticipants[participantProfileId]
+        : null;
+    if (!targetParticipant) {
+      throw new HttpsError(
+        "failed-precondition",
+        "Selected participant was not found.",
+      );
+    }
+    if (
+      participantProfileId === creatorProfileId ||
+      normalizeString(targetParticipant.loginUid) === creatorLoginUid
+    ) {
+      throw new HttpsError(
+        "failed-precondition",
+        "Event creator cannot be removed.",
+      );
+    }
+
+    const lockOwned = await isEventLockStillOwned(lockHandle);
+    if (!lockOwned) {
+      throw new HttpsError(
+        "unavailable",
+        "Event is busy. Please try removing again.",
+      );
+    }
+
+    const commitNowMs = getNowMs();
+    if (commitNowMs >= event.startAtMs) {
+      const dueTransition = buildScheduledEventDueUpdates({
+        eventId,
+        event,
+        nowMs: commitNowMs,
+      });
+      if (dueTransition.didChange) {
+        await admin.database().ref().update(dueTransition.updates);
+      }
+      throw new HttpsError(
+        "failed-precondition",
+        "This event can no longer remove participants.",
+      );
+    }
+
+    delete nextParticipants[participantProfileId];
+    event.participants = nextParticipants;
+    event.updatedAtMs = commitNowMs;
+
+    await admin
+      .database()
+      .ref()
+      .update({
+        [`events/${eventId}/participants/${participantProfileId}`]: null,
+        [`events/${eventId}/updatedAtMs`]: commitNowMs,
+      });
+
+    return {
+      ok: true,
+      eventId,
+      event,
+      removedProfileId: participantProfileId,
+    };
+  } finally {
+    stopLockHeartbeat();
+    await releaseEventLock(lockHandle);
+  }
+});
+
 exports.disqualifyEventMatchWinners = onCall(async (request) => {
   const startedAtMs = getNowMs();
   const eventId = normalizeString(request.data && request.data.eventId);

@@ -2461,6 +2461,50 @@ class Connection {
     }
   }
 
+  public async removeEventParticipant(
+    eventId: string,
+    participantProfileId: string,
+  ): Promise<{
+    ok: boolean;
+    eventId?: string;
+    event?: EventRecord | null;
+    removedProfileId?: string;
+  }> {
+    try {
+      await this.ensureAuthenticated();
+      const removeEventParticipantFunction = httpsCallable(
+        this.functions,
+        "removeEventParticipant",
+      );
+      const response = await removeEventParticipantFunction({
+        eventId,
+        participantProfileId,
+      });
+      const data = response.data as {
+        ok?: boolean;
+        eventId?: unknown;
+        event?: unknown;
+        removedProfileId?: unknown;
+      };
+      const normalizedEventId =
+        typeof data?.eventId === "string" ? data.eventId : "";
+      const normalizedRemovedProfileId =
+        typeof data?.removedProfileId === "string" ? data.removedProfileId : "";
+      return {
+        ok: data?.ok === true,
+        eventId: normalizedEventId || undefined,
+        event: this.mapDatabaseEventRecord(
+          data?.event ?? null,
+          normalizedEventId,
+        ),
+        removedProfileId: normalizedRemovedProfileId || undefined,
+      };
+    } catch (error) {
+      console.error("Error removing event participant:", error);
+      throw error;
+    }
+  }
+
   public async disqualifyEventMatchWinners(
     eventId: string,
     matchKey: string,

@@ -2747,6 +2747,7 @@ const EventModal: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isDisqualifying, setIsDisqualifying] = useState(false);
   const [isPostponing, setIsPostponing] = useState(false);
+  const [isRemovingParticipant, setIsRemovingParticipant] = useState(false);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
   const [nowMs, setNowMs] = useState(() => Date.now());
   const [viewportSize, setViewportSize] = useState(getViewportSize);
@@ -2828,6 +2829,7 @@ const EventModal: React.FC = () => {
 
   useEffect(() => {
     setIsPostponing(false);
+    setIsRemovingParticipant(false);
   }, [modalState.eventId, modalState.isOpen]);
 
   useEffect(() => {
@@ -2842,6 +2844,7 @@ const EventModal: React.FC = () => {
       setIsLoading(false);
       setIsDisqualifying(false);
       setIsPostponing(false);
+      setIsRemovingParticipant(false);
       setPendingJoinEventId(null);
       setPendingJoinRequestedAtMs(0);
       openingParticipantIdRef.current = null;
@@ -3208,6 +3211,30 @@ const EventModal: React.FC = () => {
     () => getSortedParticipants(displayedEventRecord),
     [displayedEventRecord],
   );
+  const removableScheduledParticipants = useMemo(() => {
+    if (!eventRecord || eventRecord.status !== "scheduled") {
+      return [];
+    }
+    if (nowMs >= eventRecord.startAtMs || !isLocalEventCreator(eventRecord)) {
+      return [];
+    }
+    const creatorProfileId = eventRecord.createdByProfileId?.trim() ?? "";
+    const creatorLoginUid = eventRecord.createdByLoginUid?.trim() ?? "";
+    return getSortedParticipants(eventRecord).filter((participant) => {
+      const profileId = participant.profileId?.trim() ?? "";
+      const loginUid = participant.loginUid?.trim() ?? "";
+      if (!profileId) {
+        return false;
+      }
+      if (creatorProfileId && profileId === creatorProfileId) {
+        return false;
+      }
+      if (creatorLoginUid && loginUid === creatorLoginUid) {
+        return false;
+      }
+      return true;
+    });
+  }, [eventRecord, nowMs]);
   const rounds = useMemo(
     () => getSortedRounds(displayedEventRecord),
     [displayedEventRecord],
@@ -3855,6 +3882,70 @@ const EventModal: React.FC = () => {
       });
   }, [devStubRecord, eventRecord, isPostponing, modalState.eventId, nowMs]);
 
+  const handleRemoveParticipantClick = useCallback(() => {
+    if (
+      !modalState.eventId ||
+      !eventRecord ||
+      devStubRecord ||
+      eventRecord.status !== "scheduled" ||
+      nowMs >= eventRecord.startAtMs ||
+      !isLocalEventCreator(eventRecord) ||
+      isRemovingParticipant ||
+      removableScheduledParticipants.length <= 0
+    ) {
+      return;
+    }
+    const selectionLines = removableScheduledParticipants.map(
+      (participant, index) =>
+        `${index + 1}. ${getParticipantDisplayName(participant)}`,
+    );
+    const rawSelection = window.prompt(
+      `Select participant to remove:\n${selectionLines.join("\n")}`,
+      "1",
+    );
+    if (!rawSelection) {
+      return;
+    }
+    const selectedIndex = Math.floor(Number(rawSelection)) - 1;
+    const selectedParticipant = removableScheduledParticipants[selectedIndex];
+    if (!selectedParticipant || !selectedParticipant.profileId) {
+      return;
+    }
+    const didConfirm = window.confirm(
+      `remove ${getParticipantDisplayName(selectedParticipant)} from this event?`,
+    );
+    if (!didConfirm) {
+      return;
+    }
+
+    setIsRemovingParticipant(true);
+    void connection
+      .removeEventParticipant(modalState.eventId, selectedParticipant.profileId)
+      .catch((error) => {
+        const rawMessage =
+          typeof error === "object" &&
+          error !== null &&
+          "message" in error &&
+          typeof (error as { message?: unknown }).message === "string"
+            ? (error as { message: string }).message.trim()
+            : "";
+        window.alert(
+          rawMessage ||
+            "Failed to remove selected participant. Please try again.",
+        );
+      })
+      .finally(() => {
+        setIsRemovingParticipant(false);
+      });
+  }, [
+    devStubRecord,
+    eventRecord,
+    isRemovingParticipant,
+    modalState.eventId,
+    nowMs,
+    removableScheduledParticipants,
+  ]);
+
   const handleCreateStubBracket = useCallback(() => {
     const normalizedPlayerCount = clampDevStubPlayerCount(devStubPlayerCount);
     setDevStubPlayerCount(normalizedPlayerCount);
@@ -3906,6 +3997,8 @@ const EventModal: React.FC = () => {
     eventRecord?.status === "scheduled" &&
     nowMs < eventRecord.startAtMs &&
     isLocalEventCreator(eventRecord);
+  const canRemoveScheduledParticipant =
+    !devStubRecord && removableScheduledParticipants.length > 0;
   const disableDisqualifyButton =
     isDisqualifying || livePendingMatches.length <= 0;
   const topBarTitleText = devStubRecord
@@ -3984,6 +4077,15 @@ const EventModal: React.FC = () => {
                   disabled={isPostponing}
                 >
                   {isPostponing ? "..." : "Postpone"}
+                </DevHelperAction>
+              )}
+              {canRemoveScheduledParticipant && (
+                <DevHelperAction
+                  type="button"
+                  onClick={handleRemoveParticipantClick}
+                  disabled={isRemovingParticipant}
+                >
+                  {isRemovingParticipant ? "..." : "Remove Participant"}
                 </DevHelperAction>
               )}
               {canDisqualifyFromLiveBracket && (

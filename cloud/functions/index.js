@@ -28,6 +28,7 @@ const {
   createEvent,
   joinEvent,
   postponeEventStart,
+  removeEventParticipant,
   disqualifyEventMatchWinners,
   syncEventState,
   processEventProgress,
@@ -78,6 +79,7 @@ exports.resolveWagerOutcome = resolveWagerOutcome;
 exports.createEvent = createEvent;
 exports.joinEvent = joinEvent;
 exports.postponeEventStart = postponeEventStart;
+exports.removeEventParticipant = removeEventParticipant;
 exports.disqualifyEventMatchWinners = disqualifyEventMatchWinners;
 exports.syncEventState = syncEventState;
 exports.processEventProgress = processEventProgress;
