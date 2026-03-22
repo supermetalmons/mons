@@ -43,7 +43,7 @@
     "deploy:indexes": "cd cloud && firebase deploy --only firestore:indexes",
     "deploy:backend": "npm --prefix cloud/functions install && cd cloud && firebase deploy --only functions,firestore:rules,firestore:indexes,database",
     "deploy:wagers": "npm --prefix cloud/functions install && cd cloud && firebase deploy --only functions:sendWagerProposal,functions:acceptWagerProposal,functions:cancelWagerProposal,functions:declineWagerProposal,functions:resolveWagerOutcome",
-    "deploy": "npm run deploy:backend",
+    "deploy": "node --experimental-strip-types scripts/deploy-amplify.ts",
     "latest:root": "npx --yes npm-check-updates@latest -u --peer --reject wagmi,@rainbow-me/rainbowkit && npm install --legacy-peer-deps",
     "latest:functions": "npx --yes npm-check-updates@latest -u --peer --packageFile cloud/functions/package.json && npm install --prefix cloud/functions",
     "latest:admin": "npx --yes npm-check-updates@latest -u --peer --packageFile cloud/admin/package.json && npm install --prefix cloud/admin",
