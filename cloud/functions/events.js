@@ -2175,6 +2175,158 @@ exports.joinEvent = onCall(async (request) => {
   }
 });
 
+exports.postponeEventStart = onCall(async (request) => {
+  if (!request.auth) {
+    throw new HttpsError(
+      "unauthenticated",
+      "The function must be called while authenticated.",
+    );
+  }
+
+  const eventId = normalizeString(request.data && request.data.eventId);
+  if (!eventId) {
+    throw new HttpsError("invalid-argument", "eventId is required.");
+  }
+  const postponeByMinutes = toFiniteInteger(
+    request.data && request.data.postponeByMinutes,
+    0,
+  );
+  if (
+    postponeByMinutes !== 5 &&
+    postponeByMinutes !== 10 &&
+    postponeByMinutes !== 15
+  ) {
+    throw new HttpsError(
+      "invalid-argument",
+      "postponeByMinutes must be one of: 5, 10, 15.",
+    );
+  }
+
+  const profile = await ensureNonAnonProfile(request.auth.uid);
+  const profileId = normalizeString(profile.profileId);
+  const lockHandle = await acquireEventLockWithRetry(
+    eventId,
+    request.auth.uid,
+    {
+      attempts: 40,
+      delayMs: 100,
+    },
+  );
+  if (!lockHandle) {
+    throw new HttpsError(
+      "unavailable",
+      "Event is busy. Please try postponing again.",
+    );
+  }
+  const stopLockHeartbeat = startEventLockHeartbeat(lockHandle);
+
+  try {
+    const eventSnapshot = await admin
+      .database()
+      .ref(`events/${eventId}`)
+      .once("value");
+    if (!eventSnapshot.exists()) {
+      throw new HttpsError("not-found", "Event not found.");
+    }
+    const event = cloneValue(eventSnapshot.val() || {});
+    const creatorLoginUid = normalizeString(event.createdByLoginUid);
+    const creatorProfileId = normalizeString(event.createdByProfileId);
+    if (
+      request.auth.uid !== creatorLoginUid &&
+      profileId !== creatorProfileId
+    ) {
+      throw new HttpsError(
+        "permission-denied",
+        "Only the event creator can postpone this event.",
+      );
+    }
+    if (normalizeString(event.status) !== "scheduled") {
+      throw new HttpsError(
+        "failed-precondition",
+        "Only scheduled events can be postponed.",
+      );
+    }
+
+    const nowMs = getNowMs();
+    if (
+      typeof event.startAtMs !== "number" ||
+      !Number.isFinite(event.startAtMs)
+    ) {
+      throw new HttpsError(
+        "failed-precondition",
+        "This event cannot be postponed right now.",
+      );
+    }
+    if (nowMs >= event.startAtMs) {
+      const dueTransition = buildScheduledEventDueUpdates({
+        eventId,
+        event,
+        nowMs,
+      });
+      if (dueTransition.didChange) {
+        await admin.database().ref().update(dueTransition.updates);
+      }
+      throw new HttpsError(
+        "failed-precondition",
+        "This event can no longer be postponed.",
+      );
+    }
+
+    const nextStartAtMs =
+      Math.floor(event.startAtMs) + postponeByMinutes * 60 * 1000;
+    assertScheduledStartWindow(nextStartAtMs, nowMs);
+    const sourceKey = `start:${eventId}:${nextStartAtMs}`;
+    try {
+      await enqueueEventProgressTask({
+        eventId,
+        sourceKey,
+        reason: "scheduled-start-postpone",
+        scheduleTimeMs: nextStartAtMs,
+      });
+    } catch (error) {
+      console.error("event:progress:enqueue:error", {
+        eventId,
+        sourceKey,
+        reason: "scheduled-start-postpone",
+        error: error && error.message ? error.message : error,
+      });
+      throw new HttpsError(
+        "unavailable",
+        "Could not schedule postponed event start. Please try again.",
+      );
+    }
+
+    const lockOwned = await isEventLockStillOwned(lockHandle);
+    if (!lockOwned) {
+      throw new HttpsError(
+        "unavailable",
+        "Event is busy. Please try postponing again.",
+      );
+    }
+
+    event.startAtMs = nextStartAtMs;
+    event.updatedAtMs = nowMs;
+    await admin
+      .database()
+      .ref()
+      .update({
+        [`events/${eventId}/startAtMs`]: nextStartAtMs,
+        [`events/${eventId}/updatedAtMs`]: nowMs,
+      });
+
+    return {
+      ok: true,
+      eventId,
+      event,
+      postponeByMinutes,
+      startAtMs: nextStartAtMs,
+    };
+  } finally {
+    stopLockHeartbeat();
+    await releaseEventLock(lockHandle);
+  }
+});
+
 exports.disqualifyEventMatchWinners = onCall(async (request) => {
   const startedAtMs = getNowMs();
   const eventId = normalizeString(request.data && request.data.eventId);

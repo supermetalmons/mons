@@ -79,6 +79,7 @@ const MONS_LINK_ADMINS = new Set([
   "bosch2",
   "trinket",
 ]);
+const EVENT_POSTPONE_OPTIONS_MINUTES = [5, 10, 15] as const;
 
 type BracketCardInteraction = "none" | "game" | "participant";
 type WinnerPodiumPlace = 1 | 2 | 3;
@@ -2745,6 +2746,7 @@ const EventModal: React.FC = () => {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [isDisqualifying, setIsDisqualifying] = useState(false);
+  const [isPostponing, setIsPostponing] = useState(false);
   const [copyState, setCopyState] = useState<"idle" | "copied">("idle");
   const [nowMs, setNowMs] = useState(() => Date.now());
   const [viewportSize, setViewportSize] = useState(getViewportSize);
@@ -2825,6 +2827,10 @@ const EventModal: React.FC = () => {
   }, [modalState.eventId, modalState.isOpen]);
 
   useEffect(() => {
+    setIsPostponing(false);
+  }, [modalState.eventId, modalState.isOpen]);
+
+  useEffect(() => {
     const eventId = modalState.eventId;
     if (!modalState.isOpen || !eventId) {
       if (copyResetTimeoutRef.current !== null) {
@@ -2835,6 +2841,7 @@ const EventModal: React.FC = () => {
       setCopyState("idle");
       setIsLoading(false);
       setIsDisqualifying(false);
+      setIsPostponing(false);
       setPendingJoinEventId(null);
       setPendingJoinRequestedAtMs(0);
       openingParticipantIdRef.current = null;
@@ -3796,6 +3803,58 @@ const EventModal: React.FC = () => {
     modalState.eventId,
   ]);
 
+  const handlePostponeClick = useCallback(() => {
+    if (
+      !modalState.eventId ||
+      !eventRecord ||
+      devStubRecord ||
+      eventRecord.status !== "scheduled" ||
+      nowMs >= eventRecord.startAtMs ||
+      !isLocalEventCreator(eventRecord) ||
+      isPostponing
+    ) {
+      return;
+    }
+    const rawSelection = window.prompt(
+      `Postpone by how many minutes?\n${EVENT_POSTPONE_OPTIONS_MINUTES.join(" / ")}`,
+      "5",
+    );
+    if (!rawSelection) {
+      return;
+    }
+    const selectedMinutes = Math.floor(Number(rawSelection.trim()));
+    if (
+      !EVENT_POSTPONE_OPTIONS_MINUTES.includes(selectedMinutes as 5 | 10 | 15)
+    ) {
+      window.alert("Please enter 5, 10, or 15.");
+      return;
+    }
+    const didConfirm = window.confirm(
+      `postpone event by ${selectedMinutes} minutes?`,
+    );
+    if (!didConfirm) {
+      return;
+    }
+    setIsPostponing(true);
+    void connection
+      .postponeEventStart(modalState.eventId, selectedMinutes)
+      .catch((error) => {
+        const rawMessage =
+          typeof error === "object" &&
+          error !== null &&
+          "message" in error &&
+          typeof (error as { message?: unknown }).message === "string"
+            ? (error as { message: string }).message.trim()
+            : "";
+        window.alert(
+          rawMessage || "Failed to postpone event start. Please try again.",
+        );
+      })
+      .finally(() => {
+        setIsPostponing(false);
+      });
+  }, [devStubRecord, eventRecord, isPostponing, modalState.eventId, nowMs]);
+
   const handleCreateStubBracket = useCallback(() => {
     const normalizedPlayerCount = clampDevStubPlayerCount(devStubPlayerCount);
     setDevStubPlayerCount(normalizedPlayerCount);
@@ -3842,6 +3901,11 @@ const EventModal: React.FC = () => {
     canManageDisqualifications &&
     !devStubRecord &&
     eventRecord?.status === "active";
+  const canPostponeScheduledEvent =
+    !devStubRecord &&
+    eventRecord?.status === "scheduled" &&
+    nowMs < eventRecord.startAtMs &&
+    isLocalEventCreator(eventRecord);
   const disableDisqualifyButton =
     isDisqualifying || livePendingMatches.length <= 0;
   const topBarTitleText = devStubRecord
@@ -3913,6 +3977,15 @@ const EventModal: React.FC = () => {
               <DevHelperAction type="button" onClick={handleCreateStubBracket}>
                 Generate
               </DevHelperAction>
+              {canPostponeScheduledEvent && (
+                <DevHelperAction
+                  type="button"
+                  onClick={handlePostponeClick}
+                  disabled={isPostponing}
+                >
+                  {isPostponing ? "..." : "Postpone"}
+                </DevHelperAction>
+              )}
               {canDisqualifyFromLiveBracket && (
                 <DevHelperAction
                   type="button"

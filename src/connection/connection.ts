@@ -2404,6 +2404,63 @@ class Connection {
     }
   }
 
+  public async postponeEventStart(
+    eventId: string,
+    postponeByMinutes: number,
+  ): Promise<{
+    ok: boolean;
+    eventId?: string;
+    event?: EventRecord | null;
+    postponeByMinutes?: number;
+    startAtMs?: number;
+  }> {
+    try {
+      await this.ensureAuthenticated();
+      const postponeEventStartFunction = httpsCallable(
+        this.functions,
+        "postponeEventStart",
+      );
+      const response = await postponeEventStartFunction({
+        eventId,
+        postponeByMinutes,
+      });
+      const data = response.data as {
+        ok?: boolean;
+        eventId?: unknown;
+        event?: unknown;
+        postponeByMinutes?: unknown;
+        startAtMs?: unknown;
+      };
+      const normalizedEventId =
+        typeof data?.eventId === "string" ? data.eventId : "";
+      const normalizedPostponeByMinutes = this.normalizeFiniteNumber(
+        data?.postponeByMinutes,
+        NaN,
+      );
+      const normalizedStartAtMs = this.normalizeFiniteNumber(
+        data?.startAtMs,
+        NaN,
+      );
+      return {
+        ok: data?.ok === true,
+        eventId: normalizedEventId || undefined,
+        event: this.mapDatabaseEventRecord(
+          data?.event ?? null,
+          normalizedEventId,
+        ),
+        postponeByMinutes: Number.isFinite(normalizedPostponeByMinutes)
+          ? normalizedPostponeByMinutes
+          : undefined,
+        startAtMs: Number.isFinite(normalizedStartAtMs)
+          ? normalizedStartAtMs
+          : undefined,
+      };
+    } catch (error) {
+      console.error("Error postponing event start:", error);
+      throw error;
+    }
+  }
+
   public async disqualifyEventMatchWinners(
     eventId: string,
     matchKey: string,
