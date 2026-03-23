@@ -15,7 +15,7 @@ had_errors=0
 is_local_kept_branch() {
   local branch="$1"
   case "$branch" in
-    main | production | keep/*) return 0 ;;
+    main | keep/*) return 0 ;;
     *) return 1 ;;
   esac
 }
@@ -23,7 +23,7 @@ is_local_kept_branch() {
 is_remote_kept_branch() {
   local branch="$1"
   case "$branch" in
-    main | production | assets | keep/*) return 0 ;;
+    main | assets | keep/*) return 0 ;;
     *) return 1 ;;
   esac
 }
@@ -47,7 +47,7 @@ find_remote_branch_by_name() {
 current_branch="$(git symbolic-ref --quiet --short HEAD || true)"
 if [[ -n "$current_branch" ]] && ! is_local_kept_branch "$current_branch"; then
   fallback_branch=""
-  for candidate in main production; do
+  for candidate in main; do
     if git show-ref --verify --quiet "refs/heads/$candidate"; then
       fallback_branch="$candidate"
       break
@@ -66,7 +66,7 @@ if [[ -n "$current_branch" ]] && ! is_local_kept_branch "$current_branch"; then
   if [[ -z "$fallback_branch" ]]; then
     fallback_seed_remote=""
     fallback_seed_branch=""
-    for candidate in main production; do
+    for candidate in main; do
       if fallback_seed_remote="$(find_remote_branch_by_name "$candidate")"; then
         fallback_seed_branch="$candidate"
         break
