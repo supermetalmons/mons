@@ -918,9 +918,18 @@ const BoardComponent: React.FC = () => {
         return { width: rect.width, height: rect.height };
       });
     };
+    const layer = wagerPilesLayerRef.current;
+    const resizeObserver =
+      layer && typeof ResizeObserver !== "undefined"
+        ? new ResizeObserver(updateSize)
+        : null;
     updateSize();
+    if (resizeObserver && layer) {
+      resizeObserver.observe(layer);
+    }
     window.addEventListener("resize", updateSize);
     return () => {
+      resizeObserver?.disconnect();
       window.removeEventListener("resize", updateSize);
     };
   }, [isGridVisible]);
@@ -1913,6 +1922,7 @@ const BoardComponent: React.FC = () => {
     }
     didClickBotStrengthControlButton();
   };
+  const boardClassName = `board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`;
 
   return (
     <>
@@ -1974,489 +1984,508 @@ const BoardComponent: React.FC = () => {
         </div>
       </div>
 
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}
-        viewBox="0 0 1100 1410"
-        shapeRendering="crispEdges"
-        overflow="visible"
-      >
-        {isGridVisible ? (
-          <g id="boardBackgroundLayer">
-            {generateBoardPattern({
-              colorSet: currentColorSet,
-              size: 1100,
-              cellSize: 100,
-              offsetY: 100,
-              keyPrefix: "board",
-            })}
-          </g>
-        ) : (
-          <g id="boardBackgroundLayer">
-            <rect
-              x="1"
-              y="101"
-              height="1161"
-              width="1098"
-              fill={
-                prefersDarkMode
-                  ? "var(--color-gray-23)"
-                  : "var(--boardBackgroundLight)"
-              }
-            />
-            {shouldIncludePangchiuImage && (
-              <image
-                href="https://assets.mons.link/board/bg/Pangchiu.jpg"
-                x="0"
-                y="100"
-                width="1100"
-                style={{
-                  backgroundColor: prefersDarkMode
-                    ? "var(--color-gray-23)"
-                    : "var(--boardBackgroundLight)",
-                  display: isGridVisible ? "none" : "block",
-                }}
-              />
-            )}
-          </g>
-        )}
-        <g
-          id="monsboard"
-          transform={
-            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
-          }
-        ></g>
-        <g
-          id="highlightsLayer"
-          transform={
-            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
-          }
-        ></g>
-        <g
-          id="itemsLayer"
-          transform={
-            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
-          }
-        ></g>
-        <g id="controlsLayer"></g>
-        <g
-          id="effectsLayer"
-          transform={
-            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
-          }
-        ></g>
-        {botStrengthControlOverlay.visible &&
-          botStrengthControlOverlay.size > 0 && (
-            <g
-              transform={`translate(${botStrengthXpx} ${botStrengthYpx})`}
-              style={{ pointerEvents: "all", cursor: "pointer" }}
-              role="button"
-              aria-label={`Bot strength: ${botStrengthModeLabel}`}
-              onMouseEnter={handleBotStrengthMouseEnter}
-              onMouseLeave={handleBotStrengthPointerLeave}
-              onMouseDown={handleBotStrengthPointerDown}
-              onMouseUp={handleBotStrengthPointerUp}
-              onTouchStart={handleBotStrengthPointerDown}
-              onTouchEnd={handleBotStrengthPointerUp}
-              onTouchCancel={handleBotStrengthTouchCancel}
-              onClick={!isMobile ? handleBotStrengthControlClick : undefined}
-              onTouchEndCapture={
-                isMobile ? handleBotStrengthControlClick : undefined
-              }
-            >
-              <rect
-                x={0}
-                y={0}
-                width={botStrengthSizePx}
-                height={botStrengthSizePx}
-                rx={botStrengthSizePx / 2}
-                ry={botStrengthSizePx / 2}
-                fill={botStrengthFill}
-                stroke="none"
-              />
-              <g
-                transform={`translate(${botStrengthIconOffsetPx} ${botStrengthIconOffsetPx}) scale(${botStrengthIconScale})`}
-                fill="none"
-                stroke={botStrengthColor}
-                strokeWidth={botStrengthStroke}
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              >
-                <path d="M12 5v13" />
-                <path d="M17.6 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.6 1.5" />
-                <path d="M18 5.1a4 4 0 0 1 2.5 5.8" />
-                <path d="M18 18a4 4 0 0 0 2-7.5" />
-                <path d="M6 5.1a4 4 0 0 0-2.5 5.8" />
-                <path d="M6 18a4 4 0 0 1-2-7.5" />
-                <path d="M20 17.5A4 4 0 1 1 12 18a4 4 0 1 1-8-.5" />
-                {botStrengthVisibleGyrusCount >= 1 && (
-                  <path d="M12 8c1.5-1 3.5-1 5 0 M12 12.5c-1.5.8-3.5.8-5 0" />
-                )}
-                {botStrengthVisibleGyrusCount >= 2 && (
-                  <path d="M12 9.5c-1.5-.8-3.5-.8-5 0 M12 14c2 .8 4 .8 5.5 0" />
-                )}
-                {botStrengthVisibleGyrusCount >= 3 && (
-                  <path d="M12 11c2-.7 4-.7 5.5 0 M12 15.5c-1.5.7-3 .7-4.5 0" />
-                )}
-              </g>
-            </g>
-          )}
-      </svg>
-
       <div
-        className={`board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`}
+        className={boardClassName}
         style={{
           aspectRatio: "110 / 141",
-          pointerEvents: "none",
         }}
       >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          viewBox="0 0 1100 1410"
+          shapeRendering="crispEdges"
+          overflow="visible"
+          style={{
+            position: "absolute",
+            inset: 0,
+            width: "100%",
+            height: "100%",
+          }}
+        >
+          {isGridVisible ? (
+            <g id="boardBackgroundLayer">
+              {generateBoardPattern({
+                colorSet: currentColorSet,
+                size: 1100,
+                cellSize: 100,
+                offsetY: 100,
+                keyPrefix: "board",
+              })}
+            </g>
+          ) : (
+            <g id="boardBackgroundLayer">
+              <rect
+                x="1"
+                y="101"
+                height="1161"
+                width="1098"
+                fill={
+                  prefersDarkMode
+                    ? "var(--color-gray-23)"
+                    : "var(--boardBackgroundLight)"
+                }
+              />
+              {shouldIncludePangchiuImage && (
+                <image
+                  href="https://assets.mons.link/board/bg/Pangchiu.jpg"
+                  x="0"
+                  y="100"
+                  width="1100"
+                  style={{
+                    backgroundColor: prefersDarkMode
+                      ? "var(--color-gray-23)"
+                      : "var(--boardBackgroundLight)",
+                    display: isGridVisible ? "none" : "block",
+                  }}
+                />
+              )}
+            </g>
+          )}
+          <g
+            id="monsboard"
+            transform={
+              isGridVisible ? standardBoardTransform : pangchiuBoardTransform
+            }
+          ></g>
+          <g
+            id="highlightsLayer"
+            transform={
+              isGridVisible ? standardBoardTransform : pangchiuBoardTransform
+            }
+          ></g>
+          <g
+            id="itemsLayer"
+            transform={
+              isGridVisible ? standardBoardTransform : pangchiuBoardTransform
+            }
+          ></g>
+          <g id="controlsLayer"></g>
+          <g
+            id="effectsLayer"
+            transform={
+              isGridVisible ? standardBoardTransform : pangchiuBoardTransform
+            }
+          ></g>
+          {botStrengthControlOverlay.visible &&
+            botStrengthControlOverlay.size > 0 && (
+              <g
+                transform={`translate(${botStrengthXpx} ${botStrengthYpx})`}
+                style={{ pointerEvents: "all", cursor: "pointer" }}
+                role="button"
+                aria-label={`Bot strength: ${botStrengthModeLabel}`}
+                onMouseEnter={handleBotStrengthMouseEnter}
+                onMouseLeave={handleBotStrengthPointerLeave}
+                onMouseDown={handleBotStrengthPointerDown}
+                onMouseUp={handleBotStrengthPointerUp}
+                onTouchStart={handleBotStrengthPointerDown}
+                onTouchEnd={handleBotStrengthPointerUp}
+                onTouchCancel={handleBotStrengthTouchCancel}
+                onClick={!isMobile ? handleBotStrengthControlClick : undefined}
+                onTouchEndCapture={
+                  isMobile ? handleBotStrengthControlClick : undefined
+                }
+              >
+                <rect
+                  x={0}
+                  y={0}
+                  width={botStrengthSizePx}
+                  height={botStrengthSizePx}
+                  rx={botStrengthSizePx / 2}
+                  ry={botStrengthSizePx / 2}
+                  fill={botStrengthFill}
+                  stroke="none"
+                />
+                <g
+                  transform={`translate(${botStrengthIconOffsetPx} ${botStrengthIconOffsetPx}) scale(${botStrengthIconScale})`}
+                  fill="none"
+                  stroke={botStrengthColor}
+                  strokeWidth={botStrengthStroke}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M12 5v13" />
+                  <path d="M17.6 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.6 1.5" />
+                  <path d="M18 5.1a4 4 0 0 1 2.5 5.8" />
+                  <path d="M18 18a4 4 0 0 0 2-7.5" />
+                  <path d="M6 5.1a4 4 0 0 0-2.5 5.8" />
+                  <path d="M6 18a4 4 0 0 1-2-7.5" />
+                  <path d="M20 17.5A4 4 0 1 1 12 18a4 4 0 1 1-8-.5" />
+                  {botStrengthVisibleGyrusCount >= 1 && (
+                    <path d="M12 8c1.5-1 3.5-1 5 0 M12 12.5c-1.5.8-3.5.8-5 0" />
+                  )}
+                  {botStrengthVisibleGyrusCount >= 2 && (
+                    <path d="M12 9.5c-1.5-.8-3.5-.8-5 0 M12 14c2 .8 4 .8 5.5 0" />
+                  )}
+                  {botStrengthVisibleGyrusCount >= 3 && (
+                    <path d="M12 11c2-.7 4-.7 5.5 0 M12 15.5c-1.5.7-3 .7-4.5 0" />
+                  )}
+                </g>
+              </g>
+            )}
+        </svg>
+
         <div
           style={{
             position: "absolute",
             inset: 0,
             pointerEvents: "none",
-            zIndex: 0,
           }}
         >
-          {wagerPanelLayout && (
-            <div
-              data-wager-panel="true"
-              style={{
-                position: "absolute",
-                left: `${toPercentX(wagerPanelLayout.x)}%`,
-                top: `${toPercentY(wagerPanelLayout.y)}%`,
-                width: `${toPercentX(wagerPanelLayout.width)}%`,
-                height: `${toPercentY(wagerPanelLayout.height)}%`,
-                display: "grid",
-                gridTemplateRows: wagerPanelLayout.gridRows,
-                paddingLeft: `${wagerPanelLayout.paddingXPx}px`,
-                paddingRight: `${wagerPanelLayout.paddingXPx}px`,
-                boxSizing: "border-box",
-                background: wagerPanelTheme.background,
-                border: `1px solid ${wagerPanelTheme.border}`,
-                boxShadow: wagerPanelTheme.shadow,
-                borderRadius: "16px",
-                backdropFilter: "blur(6px)",
-                WebkitBackdropFilter: "blur(6px)",
-                overflow: "visible",
-                pointerEvents: "auto",
-                userSelect: "none",
-                zIndex: 2,
-              }}
-            >
-              {wagerCountLayout && (
-                <div
-                  aria-hidden="true"
-                  style={{
-                    position: "absolute",
-                    left: `${wagerCountLayout.leftPct}%`,
-                    top: `${wagerCountLayout.topPct}%`,
-                    transform: "translate(0, -50%)",
-                    fontSize: "0.72em",
-                    fontWeight: 500,
-                    letterSpacing: "0.02em",
-                    color: prefersDarkMode
-                      ? "rgba(240, 240, 240, 0.6)"
-                      : "rgba(40, 40, 40, 0.52)",
-                    pointerEvents: "none",
-                    userSelect: "none",
-                    whiteSpace: "nowrap",
-                  }}
-                >
-                  ({activeWagerPanelCount})
-                </div>
-              )}
-              <div
-                aria-hidden="true"
-                style={{ gridRow: wagerPanelLayout.pileRow }}
-              />
-              {wagerPanelHasActions && (
-                <div
-                  data-wager-panel="true"
-                  style={{
-                    gridRow: wagerPanelLayout.buttonRow,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: `${wagerPanelLayout.buttonGapPx}px`,
-                    height: "100%",
-                    width: "100%",
-                    overflow: "visible",
-                  }}
-                >
-                  {showOpponentActions && (
-                    <>
-                      <button
-                        data-wager-panel="true"
-                        type="button"
-                        onClick={!isMobile ? handleWagerDecline : undefined}
-                        onTouchStart={isMobile ? handleWagerDecline : undefined}
-                        style={{
-                          ...wagerPanelButtonStyle,
-                          flex: "1 0 auto",
-                          minWidth: `${wagerPanelLayout.declineButtonMinWidthPx}px`,
-                          paddingLeft: `${wagerPanelLayout.buttonPaddingXPx}px`,
-                          paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
-                        }}
-                      >
-                        Decline
-                      </button>
-                      <button
-                        data-wager-panel="true"
-                        type="button"
-                        disabled={!canAccept}
-                        onClick={!isMobile ? handleWagerAccept : undefined}
-                        onTouchStart={isMobile ? handleWagerAccept : undefined}
-                        style={{
-                          ...wagerPanelButtonStyle,
-                          flex: "1 0 auto",
-                          minWidth: `${wagerPanelLayout.acceptButtonMinWidthPx}px`,
-                          paddingLeft: `${wagerPanelLayout.buttonPaddingXPx}px`,
-                          paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
-                          opacity: canAccept ? 1 : 0.5,
-                          cursor: "pointer",
-                        }}
-                      >
-                        {acceptLabel}
-                      </button>
-                    </>
-                  )}
-                  {showPlayerActions && (
-                    <button
-                      data-wager-panel="true"
-                      type="button"
-                      onClick={!isMobile ? handleWagerCancel : undefined}
-                      onTouchStart={isMobile ? handleWagerCancel : undefined}
-                      style={{
-                        ...wagerPanelButtonStyle,
-                        flexShrink: 0,
-                        minWidth: `${wagerPanelLayout.playerButtonMinWidthPx}px`,
-                        paddingLeft: `${wagerPanelLayout.buttonPaddingXPx}px`,
-                        paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
-                      }}
-                    >
-                      Cancel Proposal
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-          )}
           <div
-            ref={wagerPilesLayerRef}
             style={{
               position: "absolute",
               inset: 0,
               pointerEvents: "none",
-              zIndex: 3,
-            }}
-          />
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            transform: "translate(-50%, -100%)",
-            top: isGridVisible ? "7.02%" : "7.05%",
-            height: isGridVisible
-              ? VIDEO_CONTAINER_HEIGHT_GRID
-              : VIDEO_CONTAINER_HEIGHT_IMAGE,
-            maxHeight: VIDEO_CONTAINER_MAX_HEIGHT,
-            aspectRatio: VIDEO_CONTAINER_ASPECT_RATIO,
-            zIndex: VIDEO_CONTAINER_Z_INDEX,
-            pointerEvents: "none",
-            touchAction: "none",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "100%",
-              height: "100%",
-              pointerEvents: "none",
-            }}
-          />
-          {opponentVideoVisible && opponentVideoId !== null && (
-            <video
-              key={opponentVideoId}
-              style={{
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                transform: opponentVideoAppearing
-                  ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)"
-                  : opponentVideoFading
-                    ? "translate(-50%, -50%) scale(0.8) rotate(0deg)"
-                    : "translate(-50%, -50%) scale(1) rotate(0deg)",
-                width: "100%",
-                height: "100%",
-                opacity: opponentVideoAppearing
-                  ? 0
-                  : opponentVideoFading
-                    ? 0
-                    : 1,
-                transition: opponentVideoAppearing
-                  ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)"
-                  : opponentVideoFading
-                    ? "opacity 0.2s ease-in, transform 0.2s ease-in"
-                    : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
-              }}
-              autoPlay
-              muted
-              playsInline
-              onEnded={() => {
-                dismissOpponentVideo(200);
-              }}
-            >
-              <source
-                src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.mov`}
-                type='video/quicktime; codecs="hvc1"'
-              />
-              <source
-                src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.webm`}
-                type="video/webm"
-              />
-            </video>
-          )}
-        </div>
-        <div
-          style={{
-            position: "absolute",
-            left: "50%",
-            transform: "translateX(-50%)",
-            top: isGridVisible ? "85.22%" : "89.65%",
-            height: isGridVisible
-              ? VIDEO_CONTAINER_HEIGHT_GRID
-              : VIDEO_CONTAINER_HEIGHT_IMAGE,
-            maxHeight: VIDEO_CONTAINER_MAX_HEIGHT,
-            aspectRatio: VIDEO_CONTAINER_ASPECT_RATIO,
-            zIndex: VIDEO_CONTAINER_Z_INDEX,
-            pointerEvents: "none",
-            touchAction: "none",
-          }}
-        >
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              transform: "translate(-50%, -50%)",
-              width: "100%",
-              height: "100%",
-              pointerEvents: "none",
-            }}
-          />
-          {playerVideoVisible && playerVideoId !== null && (
-            <video
-              key={playerVideoId}
-              style={{
-                position: "absolute",
-                left: "50%",
-                top: "50%",
-                transform: playerVideoAppearing
-                  ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)"
-                  : playerVideoFading
-                    ? "translate(-50%, -50%) scale(0.8) rotate(0deg)"
-                    : "translate(-50%, -50%) scale(1) rotate(0deg)",
-                width: "100%",
-                height: "100%",
-                opacity: playerVideoAppearing ? 0 : playerVideoFading ? 0 : 1,
-                transition: playerVideoAppearing
-                  ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)"
-                  : playerVideoFading
-                    ? "opacity 0.2s ease-in, transform 0.2s ease-in"
-                    : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
-              }}
-              autoPlay
-              muted
-              playsInline
-              onEnded={() => {
-                dismissPlayerVideo(200);
-              }}
-            >
-              <source
-                src={`https://assets.mons.link/swagpack/video/${playerVideoId}.mov`}
-                type='video/quicktime; codecs="hvc1"'
-              />
-              <source
-                src={`https://assets.mons.link/swagpack/video/${playerVideoId}.webm`}
-                type="video/webm"
-              />
-            </video>
-          )}
-        </div>
-        {overlayState.svgElement && (
-          <div
-            style={{
-              position: "absolute",
-              left: "50%",
-              transform: "translateX(-50%)",
-              top: isGridVisible ? "7.02%" : "7.05%",
-              pointerEvents: "all",
-              height: isGridVisible ? "78.2%" : "82.6%",
-              aspectRatio: isGridVisible ? "1" : "1524/1612",
-              ...(overlayState.blurry
-                ? {
-                    backdropFilter: "blur(3px)",
-                    WebkitBackdropFilter: "blur(3px)",
-                  }
-                : {}),
-              overflow: "hidden",
-              border: "none",
-            }}
-            ref={(div) => {
-              if (div && overlayState.svgElement) {
-                div.innerHTML = "";
-                const wrapperSvg = document.createElementNS(
-                  "http://www.w3.org/2000/svg",
-                  "svg",
-                );
-                wrapperSvg.style.position = "absolute";
-                wrapperSvg.style.top = "0";
-                wrapperSvg.style.left = "0";
-                wrapperSvg.style.width = "100%";
-                wrapperSvg.style.height = "100%";
-                wrapperSvg.setAttribute("viewBox", "0 0 1100 1100");
-                wrapperSvg.setAttribute("preserveAspectRatio", "xMidYMid meet");
-                wrapperSvg.appendChild(overlayState.svgElement);
-                div.appendChild(wrapperSvg);
-              }
-            }}
-          />
-        )}
-        {overlayState.withConfirmAndCancelButtons && (
-          <div
-            style={{
-              position: "absolute",
-              bottom: "30.5%",
-              left: "50%",
-              transform: "translateX(-50%)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "27%",
-              height: "10.8%",
-              aspectRatio: "3.75",
-              pointerEvents: "all",
+              zIndex: 0,
             }}
           >
-            <CircularButton
-              onClick={!isMobile ? handleCancelClick : undefined}
-              onTouchStart={isMobile ? handleCancelClick : undefined}
-            >
-              <FaTimes />
-            </CircularButton>
-            <CircularButton
-              onClick={!isMobile ? handleConfirmClick : undefined}
-              onTouchStart={isMobile ? handleConfirmClick : undefined}
-            >
-              <FaCheck />
-            </CircularButton>
+            {wagerPanelLayout && (
+              <div
+                data-wager-panel="true"
+                style={{
+                  position: "absolute",
+                  left: `${toPercentX(wagerPanelLayout.x)}%`,
+                  top: `${toPercentY(wagerPanelLayout.y)}%`,
+                  width: `${toPercentX(wagerPanelLayout.width)}%`,
+                  height: `${toPercentY(wagerPanelLayout.height)}%`,
+                  display: "grid",
+                  gridTemplateRows: wagerPanelLayout.gridRows,
+                  paddingLeft: `${wagerPanelLayout.paddingXPx}px`,
+                  paddingRight: `${wagerPanelLayout.paddingXPx}px`,
+                  boxSizing: "border-box",
+                  background: wagerPanelTheme.background,
+                  border: `1px solid ${wagerPanelTheme.border}`,
+                  boxShadow: wagerPanelTheme.shadow,
+                  borderRadius: "16px",
+                  backdropFilter: "blur(6px)",
+                  WebkitBackdropFilter: "blur(6px)",
+                  overflow: "visible",
+                  pointerEvents: "auto",
+                  userSelect: "none",
+                  zIndex: 2,
+                }}
+              >
+                {wagerCountLayout && (
+                  <div
+                    aria-hidden="true"
+                    style={{
+                      position: "absolute",
+                      left: `${wagerCountLayout.leftPct}%`,
+                      top: `${wagerCountLayout.topPct}%`,
+                      transform: "translate(0, -50%)",
+                      fontSize: "0.72em",
+                      fontWeight: 500,
+                      letterSpacing: "0.02em",
+                      color: prefersDarkMode
+                        ? "rgba(240, 240, 240, 0.6)"
+                        : "rgba(40, 40, 40, 0.52)",
+                      pointerEvents: "none",
+                      userSelect: "none",
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    ({activeWagerPanelCount})
+                  </div>
+                )}
+                <div
+                  aria-hidden="true"
+                  style={{ gridRow: wagerPanelLayout.pileRow }}
+                />
+                {wagerPanelHasActions && (
+                  <div
+                    data-wager-panel="true"
+                    style={{
+                      gridRow: wagerPanelLayout.buttonRow,
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: `${wagerPanelLayout.buttonGapPx}px`,
+                      height: "100%",
+                      width: "100%",
+                      overflow: "visible",
+                    }}
+                  >
+                    {showOpponentActions && (
+                      <>
+                        <button
+                          data-wager-panel="true"
+                          type="button"
+                          onClick={!isMobile ? handleWagerDecline : undefined}
+                          onTouchStart={
+                            isMobile ? handleWagerDecline : undefined
+                          }
+                          style={{
+                            ...wagerPanelButtonStyle,
+                            flex: "1 0 auto",
+                            minWidth: `${wagerPanelLayout.declineButtonMinWidthPx}px`,
+                            paddingLeft: `${wagerPanelLayout.buttonPaddingXPx}px`,
+                            paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
+                          }}
+                        >
+                          Decline
+                        </button>
+                        <button
+                          data-wager-panel="true"
+                          type="button"
+                          disabled={!canAccept}
+                          onClick={!isMobile ? handleWagerAccept : undefined}
+                          onTouchStart={
+                            isMobile ? handleWagerAccept : undefined
+                          }
+                          style={{
+                            ...wagerPanelButtonStyle,
+                            flex: "1 0 auto",
+                            minWidth: `${wagerPanelLayout.acceptButtonMinWidthPx}px`,
+                            paddingLeft: `${wagerPanelLayout.buttonPaddingXPx}px`,
+                            paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
+                            opacity: canAccept ? 1 : 0.5,
+                            cursor: "pointer",
+                          }}
+                        >
+                          {acceptLabel}
+                        </button>
+                      </>
+                    )}
+                    {showPlayerActions && (
+                      <button
+                        data-wager-panel="true"
+                        type="button"
+                        onClick={!isMobile ? handleWagerCancel : undefined}
+                        onTouchStart={isMobile ? handleWagerCancel : undefined}
+                        style={{
+                          ...wagerPanelButtonStyle,
+                          flexShrink: 0,
+                          minWidth: `${wagerPanelLayout.playerButtonMinWidthPx}px`,
+                          paddingLeft: `${wagerPanelLayout.buttonPaddingXPx}px`,
+                          paddingRight: `${wagerPanelLayout.buttonPaddingXPx}px`,
+                        }}
+                      >
+                        Cancel Proposal
+                      </button>
+                    )}
+                  </div>
+                )}
+              </div>
+            )}
+            <div
+              ref={wagerPilesLayerRef}
+              style={{
+                position: "absolute",
+                inset: 0,
+                pointerEvents: "none",
+                zIndex: 3,
+              }}
+            />
           </div>
-        )}
+          <div
+            style={{
+              position: "absolute",
+              left: "50%",
+              transform: "translate(-50%, -100%)",
+              top: isGridVisible ? "7.02%" : "7.05%",
+              height: isGridVisible
+                ? VIDEO_CONTAINER_HEIGHT_GRID
+                : VIDEO_CONTAINER_HEIGHT_IMAGE,
+              maxHeight: VIDEO_CONTAINER_MAX_HEIGHT,
+              aspectRatio: VIDEO_CONTAINER_ASPECT_RATIO,
+              zIndex: VIDEO_CONTAINER_Z_INDEX,
+              pointerEvents: "none",
+              touchAction: "none",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "100%",
+                height: "100%",
+                pointerEvents: "none",
+              }}
+            />
+            {opponentVideoVisible && opponentVideoId !== null && (
+              <video
+                key={opponentVideoId}
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                  transform: opponentVideoAppearing
+                    ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)"
+                    : opponentVideoFading
+                      ? "translate(-50%, -50%) scale(0.8) rotate(0deg)"
+                      : "translate(-50%, -50%) scale(1) rotate(0deg)",
+                  width: "100%",
+                  height: "100%",
+                  opacity: opponentVideoAppearing
+                    ? 0
+                    : opponentVideoFading
+                      ? 0
+                      : 1,
+                  transition: opponentVideoAppearing
+                    ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+                    : opponentVideoFading
+                      ? "opacity 0.2s ease-in, transform 0.2s ease-in"
+                      : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+                }}
+                autoPlay
+                muted
+                playsInline
+                onEnded={() => {
+                  dismissOpponentVideo(200);
+                }}
+              >
+                <source
+                  src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.mov`}
+                  type='video/quicktime; codecs="hvc1"'
+                />
+                <source
+                  src={`https://assets.mons.link/swagpack/video/${opponentVideoId}.webm`}
+                  type="video/webm"
+                />
+              </video>
+            )}
+          </div>
+          <div
+            style={{
+              position: "absolute",
+              left: "50%",
+              transform: "translateX(-50%)",
+              top: isGridVisible ? "85.22%" : "89.65%",
+              height: isGridVisible
+                ? VIDEO_CONTAINER_HEIGHT_GRID
+                : VIDEO_CONTAINER_HEIGHT_IMAGE,
+              maxHeight: VIDEO_CONTAINER_MAX_HEIGHT,
+              aspectRatio: VIDEO_CONTAINER_ASPECT_RATIO,
+              zIndex: VIDEO_CONTAINER_Z_INDEX,
+              pointerEvents: "none",
+              touchAction: "none",
+            }}
+          >
+            <div
+              style={{
+                position: "absolute",
+                left: "50%",
+                top: "50%",
+                transform: "translate(-50%, -50%)",
+                width: "100%",
+                height: "100%",
+                pointerEvents: "none",
+              }}
+            />
+            {playerVideoVisible && playerVideoId !== null && (
+              <video
+                key={playerVideoId}
+                style={{
+                  position: "absolute",
+                  left: "50%",
+                  top: "50%",
+                  transform: playerVideoAppearing
+                    ? "translate(-50%, -50%) scale(0.3) rotate(-10deg)"
+                    : playerVideoFading
+                      ? "translate(-50%, -50%) scale(0.8) rotate(0deg)"
+                      : "translate(-50%, -50%) scale(1) rotate(0deg)",
+                  width: "100%",
+                  height: "100%",
+                  opacity: playerVideoAppearing ? 0 : playerVideoFading ? 0 : 1,
+                  transition: playerVideoAppearing
+                    ? "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+                    : playerVideoFading
+                      ? "opacity 0.2s ease-in, transform 0.2s ease-in"
+                      : "opacity 0.3s ease-out, transform 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+                }}
+                autoPlay
+                muted
+                playsInline
+                onEnded={() => {
+                  dismissPlayerVideo(200);
+                }}
+              >
+                <source
+                  src={`https://assets.mons.link/swagpack/video/${playerVideoId}.mov`}
+                  type='video/quicktime; codecs="hvc1"'
+                />
+                <source
+                  src={`https://assets.mons.link/swagpack/video/${playerVideoId}.webm`}
+                  type="video/webm"
+                />
+              </video>
+            )}
+          </div>
+          {overlayState.svgElement && (
+            <div
+              style={{
+                position: "absolute",
+                left: "50%",
+                transform: "translateX(-50%)",
+                top: isGridVisible ? "7.02%" : "7.05%",
+                pointerEvents: "all",
+                height: isGridVisible ? "78.2%" : "82.6%",
+                aspectRatio: isGridVisible ? "1" : "1524/1612",
+                ...(overlayState.blurry
+                  ? {
+                      backdropFilter: "blur(3px)",
+                      WebkitBackdropFilter: "blur(3px)",
+                    }
+                  : {}),
+                overflow: "hidden",
+                border: "none",
+              }}
+              ref={(div) => {
+                if (div && overlayState.svgElement) {
+                  div.innerHTML = "";
+                  const wrapperSvg = document.createElementNS(
+                    "http://www.w3.org/2000/svg",
+                    "svg",
+                  );
+                  wrapperSvg.style.position = "absolute";
+                  wrapperSvg.style.top = "0";
+                  wrapperSvg.style.left = "0";
+                  wrapperSvg.style.width = "100%";
+                  wrapperSvg.style.height = "100%";
+                  wrapperSvg.setAttribute("viewBox", "0 0 1100 1100");
+                  wrapperSvg.setAttribute(
+                    "preserveAspectRatio",
+                    "xMidYMid meet",
+                  );
+                  wrapperSvg.appendChild(overlayState.svgElement);
+                  div.appendChild(wrapperSvg);
+                }
+              }}
+            />
+          )}
+          {overlayState.withConfirmAndCancelButtons && (
+            <div
+              style={{
+                position: "absolute",
+                bottom: "30.5%",
+                left: "50%",
+                transform: "translateX(-50%)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "27%",
+                height: "10.8%",
+                aspectRatio: "3.75",
+                pointerEvents: "all",
+              }}
+            >
+              <CircularButton
+                onClick={!isMobile ? handleCancelClick : undefined}
+                onTouchStart={isMobile ? handleCancelClick : undefined}
+              >
+                <FaTimes />
+              </CircularButton>
+              <CircularButton
+                onClick={!isMobile ? handleConfirmClick : undefined}
+                onTouchStart={isMobile ? handleConfirmClick : undefined}
+              >
+                <FaCheck />
+              </CircularButton>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );
