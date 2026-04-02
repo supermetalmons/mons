@@ -444,6 +444,13 @@ const BoardComponent: React.FC = () => {
     width: number;
     height: number;
   } | null>(null);
+  const [boardViewportRect, setBoardViewportRect] = useState<{
+    left: number;
+    top: number;
+    width: number;
+    height: number;
+  } | null>(null);
+  const boardSvgRef = useRef<SVGSVGElement | null>(null);
   const wagerPilesLayerRef = useRef<HTMLDivElement | null>(null);
   const wagerPileElementsRef = useRef<WagerPileElements | null>(null);
   const wagerRenderStateRef = useRef<WagerRenderState | null>(null);
@@ -903,11 +910,11 @@ const BoardComponent: React.FC = () => {
 
   useLayoutEffect(() => {
     const updateSize = () => {
-      const layer = wagerPilesLayerRef.current;
-      if (!layer) {
+      const svg = boardSvgRef.current;
+      if (!svg) {
         return;
       }
-      const rect = layer.getBoundingClientRect();
+      const rect = svg.getBoundingClientRect();
       if (!rect.width || !rect.height) {
         return;
       }
@@ -917,20 +924,40 @@ const BoardComponent: React.FC = () => {
         }
         return { width: rect.width, height: rect.height };
       });
+      setBoardViewportRect((prev) => {
+        if (
+          prev &&
+          prev.left === rect.left &&
+          prev.top === rect.top &&
+          prev.width === rect.width &&
+          prev.height === rect.height
+        ) {
+          return prev;
+        }
+        return {
+          left: rect.left,
+          top: rect.top,
+          width: rect.width,
+          height: rect.height,
+        };
+      });
     };
-    const layer = wagerPilesLayerRef.current;
+    const svg = boardSvgRef.current;
     const resizeObserver =
-      layer && typeof ResizeObserver !== "undefined"
+      svg && typeof ResizeObserver !== "undefined"
         ? new ResizeObserver(updateSize)
         : null;
+    const visualViewport = window.visualViewport;
     updateSize();
-    if (resizeObserver && layer) {
-      resizeObserver.observe(layer);
+    if (resizeObserver && svg) {
+      resizeObserver.observe(svg);
     }
     window.addEventListener("resize", updateSize);
+    visualViewport?.addEventListener("resize", updateSize);
     return () => {
       resizeObserver?.disconnect();
       window.removeEventListener("resize", updateSize);
+      visualViewport?.removeEventListener("resize", updateSize);
     };
   }, [isGridVisible]);
 
@@ -1984,150 +2011,144 @@ const BoardComponent: React.FC = () => {
         </div>
       </div>
 
-      <div
+      <svg
+        ref={boardSvgRef}
+        xmlns="http://www.w3.org/2000/svg"
         className={boardClassName}
-        style={{
-          aspectRatio: "110 / 141",
-        }}
+        viewBox="0 0 1100 1410"
+        shapeRendering="crispEdges"
+        overflow="visible"
       >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 1100 1410"
-          shapeRendering="crispEdges"
-          overflow="visible"
-          style={{
-            position: "absolute",
-            inset: 0,
-            width: "100%",
-            height: "100%",
-          }}
-        >
-          {isGridVisible ? (
-            <g id="boardBackgroundLayer">
-              {generateBoardPattern({
-                colorSet: currentColorSet,
-                size: 1100,
-                cellSize: 100,
-                offsetY: 100,
-                keyPrefix: "board",
-              })}
-            </g>
-          ) : (
-            <g id="boardBackgroundLayer">
-              <rect
-                x="1"
-                y="101"
-                height="1161"
-                width="1098"
-                fill={
-                  prefersDarkMode
+        {isGridVisible ? (
+          <g id="boardBackgroundLayer">
+            {generateBoardPattern({
+              colorSet: currentColorSet,
+              size: 1100,
+              cellSize: 100,
+              offsetY: 100,
+              keyPrefix: "board",
+            })}
+          </g>
+        ) : (
+          <g id="boardBackgroundLayer">
+            <rect
+              x="1"
+              y="101"
+              height="1161"
+              width="1098"
+              fill={
+                prefersDarkMode
+                  ? "var(--color-gray-23)"
+                  : "var(--boardBackgroundLight)"
+              }
+            />
+            {shouldIncludePangchiuImage && (
+              <image
+                href="https://assets.mons.link/board/bg/Pangchiu.jpg"
+                x="0"
+                y="100"
+                width="1100"
+                style={{
+                  backgroundColor: prefersDarkMode
                     ? "var(--color-gray-23)"
-                    : "var(--boardBackgroundLight)"
-                }
+                    : "var(--boardBackgroundLight)",
+                  display: isGridVisible ? "none" : "block",
+                }}
               />
-              {shouldIncludePangchiuImage && (
-                <image
-                  href="https://assets.mons.link/board/bg/Pangchiu.jpg"
-                  x="0"
-                  y="100"
-                  width="1100"
-                  style={{
-                    backgroundColor: prefersDarkMode
-                      ? "var(--color-gray-23)"
-                      : "var(--boardBackgroundLight)",
-                    display: isGridVisible ? "none" : "block",
-                  }}
-                />
-              )}
+            )}
+          </g>
+        )}
+        <g
+          id="monsboard"
+          transform={
+            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
+          }
+        ></g>
+        <g
+          id="highlightsLayer"
+          transform={
+            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
+          }
+        ></g>
+        <g
+          id="itemsLayer"
+          transform={
+            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
+          }
+        ></g>
+        <g id="controlsLayer"></g>
+        <g
+          id="effectsLayer"
+          transform={
+            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
+          }
+        ></g>
+        {botStrengthControlOverlay.visible &&
+          botStrengthControlOverlay.size > 0 && (
+            <g
+              transform={`translate(${botStrengthXpx} ${botStrengthYpx})`}
+              style={{ pointerEvents: "all", cursor: "pointer" }}
+              role="button"
+              aria-label={`Bot strength: ${botStrengthModeLabel}`}
+              onMouseEnter={handleBotStrengthMouseEnter}
+              onMouseLeave={handleBotStrengthPointerLeave}
+              onMouseDown={handleBotStrengthPointerDown}
+              onMouseUp={handleBotStrengthPointerUp}
+              onTouchStart={handleBotStrengthPointerDown}
+              onTouchEnd={handleBotStrengthPointerUp}
+              onTouchCancel={handleBotStrengthTouchCancel}
+              onClick={!isMobile ? handleBotStrengthControlClick : undefined}
+              onTouchEndCapture={
+                isMobile ? handleBotStrengthControlClick : undefined
+              }
+            >
+              <rect
+                x={0}
+                y={0}
+                width={botStrengthSizePx}
+                height={botStrengthSizePx}
+                rx={botStrengthSizePx / 2}
+                ry={botStrengthSizePx / 2}
+                fill={botStrengthFill}
+                stroke="none"
+              />
+              <g
+                transform={`translate(${botStrengthIconOffsetPx} ${botStrengthIconOffsetPx}) scale(${botStrengthIconScale})`}
+                fill="none"
+                stroke={botStrengthColor}
+                strokeWidth={botStrengthStroke}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M12 5v13" />
+                <path d="M17.6 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.6 1.5" />
+                <path d="M18 5.1a4 4 0 0 1 2.5 5.8" />
+                <path d="M18 18a4 4 0 0 0 2-7.5" />
+                <path d="M6 5.1a4 4 0 0 0-2.5 5.8" />
+                <path d="M6 18a4 4 0 0 1-2-7.5" />
+                <path d="M20 17.5A4 4 0 1 1 12 18a4 4 0 1 1-8-.5" />
+                {botStrengthVisibleGyrusCount >= 1 && (
+                  <path d="M12 8c1.5-1 3.5-1 5 0 M12 12.5c-1.5.8-3.5.8-5 0" />
+                )}
+                {botStrengthVisibleGyrusCount >= 2 && (
+                  <path d="M12 9.5c-1.5-.8-3.5-.8-5 0 M12 14c2 .8 4 .8 5.5 0" />
+                )}
+                {botStrengthVisibleGyrusCount >= 3 && (
+                  <path d="M12 11c2-.7 4-.7 5.5 0 M12 15.5c-1.5.7-3 .7-4.5 0" />
+                )}
+              </g>
             </g>
           )}
-          <g
-            id="monsboard"
-            transform={
-              isGridVisible ? standardBoardTransform : pangchiuBoardTransform
-            }
-          ></g>
-          <g
-            id="highlightsLayer"
-            transform={
-              isGridVisible ? standardBoardTransform : pangchiuBoardTransform
-            }
-          ></g>
-          <g
-            id="itemsLayer"
-            transform={
-              isGridVisible ? standardBoardTransform : pangchiuBoardTransform
-            }
-          ></g>
-          <g id="controlsLayer"></g>
-          <g
-            id="effectsLayer"
-            transform={
-              isGridVisible ? standardBoardTransform : pangchiuBoardTransform
-            }
-          ></g>
-          {botStrengthControlOverlay.visible &&
-            botStrengthControlOverlay.size > 0 && (
-              <g
-                transform={`translate(${botStrengthXpx} ${botStrengthYpx})`}
-                style={{ pointerEvents: "all", cursor: "pointer" }}
-                role="button"
-                aria-label={`Bot strength: ${botStrengthModeLabel}`}
-                onMouseEnter={handleBotStrengthMouseEnter}
-                onMouseLeave={handleBotStrengthPointerLeave}
-                onMouseDown={handleBotStrengthPointerDown}
-                onMouseUp={handleBotStrengthPointerUp}
-                onTouchStart={handleBotStrengthPointerDown}
-                onTouchEnd={handleBotStrengthPointerUp}
-                onTouchCancel={handleBotStrengthTouchCancel}
-                onClick={!isMobile ? handleBotStrengthControlClick : undefined}
-                onTouchEndCapture={
-                  isMobile ? handleBotStrengthControlClick : undefined
-                }
-              >
-                <rect
-                  x={0}
-                  y={0}
-                  width={botStrengthSizePx}
-                  height={botStrengthSizePx}
-                  rx={botStrengthSizePx / 2}
-                  ry={botStrengthSizePx / 2}
-                  fill={botStrengthFill}
-                  stroke="none"
-                />
-                <g
-                  transform={`translate(${botStrengthIconOffsetPx} ${botStrengthIconOffsetPx}) scale(${botStrengthIconScale})`}
-                  fill="none"
-                  stroke={botStrengthColor}
-                  strokeWidth={botStrengthStroke}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M12 5v13" />
-                  <path d="M17.6 6.5A3 3 0 1 0 12 5a3 3 0 1 0-5.6 1.5" />
-                  <path d="M18 5.1a4 4 0 0 1 2.5 5.8" />
-                  <path d="M18 18a4 4 0 0 0 2-7.5" />
-                  <path d="M6 5.1a4 4 0 0 0-2.5 5.8" />
-                  <path d="M6 18a4 4 0 0 1-2-7.5" />
-                  <path d="M20 17.5A4 4 0 1 1 12 18a4 4 0 1 1-8-.5" />
-                  {botStrengthVisibleGyrusCount >= 1 && (
-                    <path d="M12 8c1.5-1 3.5-1 5 0 M12 12.5c-1.5.8-3.5.8-5 0" />
-                  )}
-                  {botStrengthVisibleGyrusCount >= 2 && (
-                    <path d="M12 9.5c-1.5-.8-3.5-.8-5 0 M12 14c2 .8 4 .8 5.5 0" />
-                  )}
-                  {botStrengthVisibleGyrusCount >= 3 && (
-                    <path d="M12 11c2-.7 4-.7 5.5 0 M12 15.5c-1.5.7-3 .7-4.5 0" />
-                  )}
-                </g>
-              </g>
-            )}
-        </svg>
+      </svg>
 
+      {boardViewportRect && (
         <div
           style={{
-            position: "absolute",
-            inset: 0,
+            position: "fixed",
+            left: `${boardViewportRect.left}px`,
+            top: `${boardViewportRect.top}px`,
+            width: `${boardViewportRect.width}px`,
+            height: `${boardViewportRect.height}px`,
             pointerEvents: "none",
           }}
         >
@@ -2486,7 +2507,7 @@ const BoardComponent: React.FC = () => {
             </div>
           )}
         </div>
-      </div>
+      )}
     </>
   );
 };
