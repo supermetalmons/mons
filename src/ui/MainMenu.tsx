@@ -1610,7 +1610,7 @@ const MainMenu: React.FC = () => {
         <RockButton
           {...(isMobile
             ? {
-                onTouchStart: (e) => {
+                onTouchStart: () => {
                   if (!isMenuOpen) {
                     closeProfilePopupIfAny();
                     closeNavigationAndAppearancePopupIfAny();
@@ -1621,7 +1621,7 @@ const MainMenu: React.FC = () => {
                 },
               }
             : {
-                onClick: (e) => {
+                onClick: (e: React.MouseEvent<HTMLButtonElement>) => {
                   e.preventDefault();
                   e.stopPropagation();
                   toggleMenu();
