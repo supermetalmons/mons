@@ -5,7 +5,7 @@
   "dependencies": {
     "@rainbow-me/rainbowkit": "^2.2.4",
     "@solana/wallet-adapter-base": "^0.9.27",
-    "@tanstack/react-query": "^5.97.0",
+    "@tanstack/react-query": "^5.99.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
@@ -16,7 +16,7 @@
     "ethers": "^6.16.0",
     "firebase": "^12.12.0",
     "glicko2": "^1.2.1",
-    "mons-web": "^0.1.124",
+    "mons-web": "^0.1.125",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-icons": "^5.6.0",
@@ -25,7 +25,7 @@
     "solana-connect": "^0.1.11",
     "styled-components": "^6.4.0",
     "typescript": "^5.9.3",
-    "viem": "^2.47.12",
+    "viem": "^2.47.18",
     "wagmi": "^2.15.6",
     "web-vitals": "^5.2.0"
   },
@@ -83,6 +83,6 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "prettier": "^3.8.2"
+    "prettier": "^3.8.3"
   }
 }
