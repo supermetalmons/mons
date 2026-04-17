@@ -1,0 +1,139 @@
+{
+  "name": "Poncho Drifella #65 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/65.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/65.mp4",
+  "external_url": "https://mons.shop",
+  "id": 65,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/65.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/65.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "dragonite delivery"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "water cube"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "fireworks dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "sasuke"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "rainbow stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "trigram"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "aura key"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe wicked"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "mean pills"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dratini sprite"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "drifella evolution chart"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross celaeno"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "pixel gold sparkle"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "none"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword compassionate"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "drif sprites"
+    },
+    {
+      "trait_type": "body",
+      "value": "shadow violet"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note silver blue bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "lax"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "monster nrg"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "overlays",
+      "value": "sylv aura"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

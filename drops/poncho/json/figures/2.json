@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #2",
+  "description": "poncho drifella cards · redeem physical on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/items/2.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/2.mp4",
+  "external_url": "https://mons.shop",
+  "id": 2,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/items/2.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/2.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "image"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "card base",
+      "value": "erikas dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "water cube"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dragonite e reader"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sparkles black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "mystery blocks"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword benevolent"
+    },
+    {
+      "trait_type": "body",
+      "value": "painted"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note ginger bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "blank"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "studded leather"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    }
+  ]
+}

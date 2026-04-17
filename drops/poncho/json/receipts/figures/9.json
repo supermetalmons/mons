@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #9 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/9.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/9.mp4",
+  "external_url": "https://mons.shop",
+  "id": 9,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/9.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/9.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "erikas dragonair"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gold star regice"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "drowzee"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe compassionate"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword benevolent"
+    },
+    {
+      "trait_type": "body",
+      "value": "dark gray"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mangekyo sharingan"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "slime vamp"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "fuzzy moo"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

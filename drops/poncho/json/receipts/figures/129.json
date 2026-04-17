@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #129 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/129.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/129.mp4",
+  "external_url": "https://mons.shop",
+  "id": 129,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/129.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/129.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "white"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gaara"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "some girl"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sparkles black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross celaeno"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "bladee"
+    },
+    {
+      "trait_type": "body",
+      "value": "light gray"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note pink bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "normal"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "black lace roses"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose big"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "pink"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

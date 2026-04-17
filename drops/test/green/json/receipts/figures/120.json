@@ -1,0 +1,50 @@
+{
+  "id": 120,
+  "name": "Green Test Figure 21 Receipt",
+  "description": "Redeemed receipt metadata fixture for green test figure 21, edition 4 of 5.",
+  "image": "https://assets.mons.link/drops/test/green/receipts/20.png",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Green Test Figure Receipt"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Figure Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Green"
+    },
+    {
+      "trait_type": "Drop",
+      "value": "Test"
+    },
+    {
+      "trait_type": "Figure Number",
+      "value": 21
+    },
+    {
+      "trait_type": "Edition",
+      "value": 4
+    },
+    {
+      "trait_type": "Source Asset",
+      "value": "20.png"
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": true
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/test/green/receipts/20.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

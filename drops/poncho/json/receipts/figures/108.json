@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #108 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/108.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/108.mp4",
+  "external_url": "https://mons.shop",
+  "id": 108,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/108.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/108.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "light dragonair"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "destroyed yugioh back"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "mew e reader"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "pen glitter"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dragonair"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword benevolent"
+    },
+    {
+      "trait_type": "body",
+      "value": "light gray"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note drif 3 bloody bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "venom"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "pink jester"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "pink"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,91 @@
+{
+  "name": "Poncho Drifella #163 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/163.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/163.mp4",
+  "external_url": "https://mons.shop",
+  "id": 163,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/163.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/163.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "light dragonair"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "drowzee"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dratini e reader"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "pen glitter"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dratini evolution line"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sparkles black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "yoshis"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg druid"
+    },
+    {
+      "trait_type": "body",
+      "value": "pale yellow"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mew"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "lax"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "plaid"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "cyan"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "name": "Poncho Drifella #92 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/92.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/92.mp4",
+  "external_url": "https://mons.shop",
+  "id": 92,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/92.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/92.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "rockets dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "articuno prism"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "shiny stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sparkles white"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "border"
+    },
+    {
+      "trait_type": "body",
+      "value": "star foil"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note crying blood"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "creepy tongue"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "veins"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

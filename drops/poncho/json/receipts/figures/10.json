@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #10 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/10.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/10.mp4",
+  "external_url": "https://mons.shop",
+  "id": 10,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/10.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/10.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "dragonite e reader"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "bottom mew"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dragonite e reader"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sparkles black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "pen glitter"
+    },
+    {
+      "trait_type": "body",
+      "value": "red"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mew"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "blowing bubble"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "spiderman"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "pink"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

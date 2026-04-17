@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #179 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/179.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/179.mp4",
+  "external_url": "https://mons.shop",
+  "id": 179,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/179.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/179.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "clay dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gold star metagross"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "red drifella"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "item"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword celaeno"
+    },
+    {
+      "trait_type": "body",
+      "value": "shadow violet"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note silver blue bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "pika 2"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "knit plush"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "red"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

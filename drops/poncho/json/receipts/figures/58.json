@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #58 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/58.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/58.mp4",
+  "external_url": "https://mons.shop",
+  "id": 58,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/58.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/58.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "eevee"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "water cube"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "red drifella"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sparkles white"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe devilish"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross psychic"
+    },
+    {
+      "trait_type": "body",
+      "value": "light gray"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note pink bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "entei"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "venom"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #21 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/21.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/21.mp4",
+  "external_url": "https://mons.shop",
+  "id": 21,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/21.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/21.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "white"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "fireworks pika"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "bottom mew"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "bladee"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword cursed"
+    },
+    {
+      "trait_type": "body",
+      "value": "blue"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note silver blue bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "hxh"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "samurai armor"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose big"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

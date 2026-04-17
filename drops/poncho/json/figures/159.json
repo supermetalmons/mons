@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #159",
+  "description": "poncho drifella cards · redeem physical on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/items/159.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/159.mp4",
+  "external_url": "https://mons.shop",
+  "id": 159,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/items/159.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/159.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "image"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "card base",
+      "value": "clay dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "fireworks pika"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "crystal lugia"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "shiny stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "drifella evolution chart"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "shiny stars"
+    },
+    {
+      "trait_type": "body",
+      "value": "zomboid"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note bloody bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "slime vamp"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "black lace roses"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose big"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "cyan"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    }
+  ]
+}

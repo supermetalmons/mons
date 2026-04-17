@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #118 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/118.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/118.mp4",
+  "external_url": "https://mons.shop",
+  "id": 118,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/118.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/118.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "clay dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "bottom mew"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "japanese charizard"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "rainbow stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe dark magician"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe charlie"
+    },
+    {
+      "trait_type": "body",
+      "value": "dark gray"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note crying blood"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "nara side tooth"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "alien"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

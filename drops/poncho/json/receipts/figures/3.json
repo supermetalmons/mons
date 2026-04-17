@@ -1,0 +1,151 @@
+{
+  "name": "Poncho Drifella #3 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/3.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/3.mp4",
+  "external_url": "https://mons.shop",
+  "id": 3,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/3.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/3.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "mew energy"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "articuno prism"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "destroyed yugioh back"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "fireworks dratini"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "pen glitter"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "bonez"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg bright"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "flame sprites"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe charlie"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "skull teapot notkin"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "tms"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "none"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sketch stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe compassionate"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "graceful dice"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "mystery blocks"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sparkles white"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "drif sprites"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "item"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dragonair"
+    },
+    {
+      "trait_type": "body",
+      "value": "light gray"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note ginger bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "shocked fang"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "samurai armor"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #162 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/162.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/162.mp4",
+  "external_url": "https://mons.shop",
+  "id": 162,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/162.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/162.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "clay dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "vaporeon shattered"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gold star mew"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg bright"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "drifella evolution chart"
+    },
+    {
+      "trait_type": "body",
+      "value": "blue"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "itachi"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "digi fangs"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "pastel sporty"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose big"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "cyan"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #38 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/38.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/38.mp4",
+  "external_url": "https://mons.shop",
+  "id": 38,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/38.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/38.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "white"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "no data"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "jirachi"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "colored stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe young thug"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "stars"
+    },
+    {
+      "trait_type": "body",
+      "value": "dark gray"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "itachi"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "sharp teeth"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "rain coat"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "red"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

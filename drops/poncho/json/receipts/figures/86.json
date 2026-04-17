@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #86 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/86.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/86.mp4",
+  "external_url": "https://mons.shop",
+  "id": 86,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/86.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/86.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "dragonite delivery"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "atricuno pokemon snap"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "drowzee"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "pen glitter"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "body",
+      "value": "blue"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note crying "
+    },
+    {
+      "trait_type": "mouth",
+      "value": "vamp"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "digital camo"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "blush"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "pink"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

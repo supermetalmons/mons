@@ -1,0 +1,24 @@
+{
+  "name": "lsw cobalt figure hoodie 26",
+  "symbol": "hoodie",
+  "description": "little swag world hoodie · redeem physical on mons.shop",
+  "image": "https://assets.mons.link/drops/hoodie/hoodie.webp",
+  "external_url": "https://mons.shop",
+  "seller_fee_basis_points": 500,
+  "attributes": [],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/hoodie/hoodie.webp",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "8wtxG6HMg4sdYGixfEvJ9eAATheyYsAU3Y7pTmqeA5nM",
+        "share": 100
+      }
+    ]
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #19",
+  "description": "poncho drifella cards · redeem physical on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/items/19.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/19.mp4",
+  "external_url": "https://mons.shop",
+  "id": 19,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/items/19.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/19.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "image"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "card base",
+      "value": "umbreon"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "mew sparkle"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gold star latios"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "shiny stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross elegant"
+    },
+    {
+      "trait_type": "body",
+      "value": "pale yellow"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note crying "
+    },
+    {
+      "trait_type": "mouth",
+      "value": "batman grin"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "denim clouds pointed hood"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "blush"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    }
+  ]
+}

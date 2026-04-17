@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #90 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/90.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/90.mp4",
+  "external_url": "https://mons.shop",
+  "id": 90,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/90.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/90.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "eevee"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "fireworks pika"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dragonite e reader"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "colored stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe wicked"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "bladee"
+    },
+    {
+      "trait_type": "body",
+      "value": "dark gray"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note bloody bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "blowing bubble"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "diamond plate"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "blush"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "cyan"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

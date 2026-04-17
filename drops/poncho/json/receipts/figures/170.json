@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #170 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/170.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/170.mp4",
+  "external_url": "https://mons.shop",
+  "id": 170,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/170.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/170.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "eevee"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gaara"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "fossil dragonite"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "none"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dratini sprite"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe charlie"
+    },
+    {
+      "trait_type": "body",
+      "value": "pale yellow"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note crying demon "
+    },
+    {
+      "trait_type": "mouth",
+      "value": "entei"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "blue"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "cyan"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

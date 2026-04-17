@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #142 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/142.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/142.mp4",
+  "external_url": "https://mons.shop",
+  "id": 142,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/142.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/142.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "clay dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "mew dark gen"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "raboot"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "rainbow stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe charlie"
+    },
+    {
+      "trait_type": "body",
+      "value": "shadow violet"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mew"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "entei"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "blue holo jester"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

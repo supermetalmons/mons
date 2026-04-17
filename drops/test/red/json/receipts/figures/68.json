@@ -1,0 +1,50 @@
+{
+  "id": 68,
+  "name": "Red Test Figure 2 Receipt",
+  "description": "Redeemed receipt metadata fixture for red test figure 2, edition 3 of 5.",
+  "image": "https://assets.mons.link/drops/test/red/receipts/1.png",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Red Test Figure Receipt"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Figure Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Red"
+    },
+    {
+      "trait_type": "Drop",
+      "value": "Test"
+    },
+    {
+      "trait_type": "Figure Number",
+      "value": 2
+    },
+    {
+      "trait_type": "Edition",
+      "value": 3
+    },
+    {
+      "trait_type": "Source Asset",
+      "value": "1.png"
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": true
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/test/red/receipts/1.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

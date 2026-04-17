@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #166",
+  "description": "poncho drifella cards · redeem physical on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/items/166.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/166.mp4",
+  "external_url": "https://mons.shop",
+  "id": 166,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/items/166.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/166.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "image"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "card base",
+      "value": "erikas dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "jirachi"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dragonair fractal"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sparkles white"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg druid"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "yoshis"
+    },
+    {
+      "trait_type": "body",
+      "value": "dark gray"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "itachi"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "venom"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "alien"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "red"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    }
+  ]
+}

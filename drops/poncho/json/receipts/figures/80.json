@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #80 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/80.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/80.mp4",
+  "external_url": "https://mons.shop",
+  "id": 80,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/80.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/80.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "dragonite e reader"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gold star mudkip"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dark dragonair"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross celaeno"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross compassionate"
+    },
+    {
+      "trait_type": "body",
+      "value": "shadow violet"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note tired"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "joint"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "chains"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "cyan"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

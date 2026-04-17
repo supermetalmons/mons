@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #57 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/57.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/57.mp4",
+  "external_url": "https://mons.shop",
+  "id": 57,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/57.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/57.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "white"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "fossil dragonite"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "japanese charizard"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "none"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "yoshis"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe young thug"
+    },
+    {
+      "trait_type": "body",
+      "value": "zomboid"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note joker"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "nara side tooth"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "pastel sporty two"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #133 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/133.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/133.mp4",
+  "external_url": "https://mons.shop",
+  "id": 133,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/133.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/133.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "erikas dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dark charizard"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dragonite e reader"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "none"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross vengeful"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "shiny stars"
+    },
+    {
+      "trait_type": "body",
+      "value": "shadow violet"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "itachi"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "holo grill"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "samurai armor"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "gray"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

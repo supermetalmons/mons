@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #16 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/16.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/16.mp4",
+  "external_url": "https://mons.shop",
+  "id": 16,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/16.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/16.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "dragonite delivery"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "raboot"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dark dragonair"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "colored stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross psychic"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "drifella evolution chart"
+    },
+    {
+      "trait_type": "body",
+      "value": "pink"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note joker"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "nara side tooth"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "pink jester"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "gray"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

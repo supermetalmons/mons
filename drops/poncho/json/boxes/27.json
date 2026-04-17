@@ -1,0 +1,26 @@
+{
+  "id": 27,
+  "name": "Pack #27",
+  "description": "poncho drifella · 1 card pack · redeem physical on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/pack.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "1 card pack"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/pack.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

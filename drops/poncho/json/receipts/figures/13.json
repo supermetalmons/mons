@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #13 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/13.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/13.mp4",
+  "external_url": "https://mons.shop",
+  "id": 13,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/13.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/13.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "clay dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "japanese charizard"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "no data"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg emo"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dratini evolution line"
+    },
+    {
+      "trait_type": "body",
+      "value": "light gray"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note drif 3 bloody bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "digi fangs"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "pastel sporty two"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

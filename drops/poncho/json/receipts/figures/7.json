@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #7 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/7.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/7.mp4",
+  "external_url": "https://mons.shop",
+  "id": 7,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/7.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/7.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "erikas dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "mew sparkle"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gold star regice"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "bladee"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword devilish"
+    },
+    {
+      "trait_type": "body",
+      "value": "blue"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note pink bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "bullet bill"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "bloody"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "red"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "name": "red test",
+  "symbol": "red",
+  "description": "red test mons.shop drop",
+  "image": "https://assets.mons.link/drops/test/red/box/default.png",
+  "external_url": "https://mons.shop",
+  "seller_fee_basis_points": 500,
+  "attributes": [],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/test/red/box/default.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "8wtxG6HMg4sdYGixfEvJ9eAATheyYsAU3Y7pTmqeA5nM",
+        "share": 100
+      }
+    ]
+  }
+}

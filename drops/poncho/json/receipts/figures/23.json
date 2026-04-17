@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #23 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/23.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/23.mp4",
+  "external_url": "https://mons.shop",
+  "id": 23,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/23.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/23.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "erikas dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "mew light gen"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "raboot"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dragonair"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg druid"
+    },
+    {
+      "trait_type": "body",
+      "value": "blue"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note crying blood"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "shocked fang"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "black and cream jester patched"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

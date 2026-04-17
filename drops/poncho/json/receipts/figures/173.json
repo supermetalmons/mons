@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #173 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/173.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/173.mp4",
+  "external_url": "https://mons.shop",
+  "id": 173,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/173.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/173.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "erikas dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "yugioh glitz"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gold star metagross"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "pen glitter"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dratini sheet"
+    },
+    {
+      "trait_type": "body",
+      "value": "pale yellow"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note joker"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "batman grin"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "plaid"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

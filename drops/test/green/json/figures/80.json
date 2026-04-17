@@ -1,0 +1,50 @@
+{
+  "id": 80,
+  "name": "Green Test Figure 14",
+  "description": "Figure metadata fixture for green test figure 14, edition 3 of 5.",
+  "image": "https://assets.mons.link/drops/test/green/figures/13.png",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Green Test Figure"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Figure"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Green"
+    },
+    {
+      "trait_type": "Drop",
+      "value": "Test"
+    },
+    {
+      "trait_type": "Figure Number",
+      "value": 14
+    },
+    {
+      "trait_type": "Edition",
+      "value": 3
+    },
+    {
+      "trait_type": "Source Asset",
+      "value": "13.png"
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": false
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/test/green/figures/13.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

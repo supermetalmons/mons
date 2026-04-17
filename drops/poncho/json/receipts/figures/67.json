@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #67 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/67.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/67.mp4",
+  "external_url": "https://mons.shop",
+  "id": 67,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/67.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/67.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "rockets dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "imposter professor oak"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "mew light gen"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword celaeno"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword devilish"
+    },
+    {
+      "trait_type": "body",
+      "value": "green"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note ginger bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "lax"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "fuzzy moo"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

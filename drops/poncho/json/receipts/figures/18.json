@@ -1,0 +1,171 @@
+{
+  "name": "Poncho Drifella #18 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/18.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/18.mp4",
+  "external_url": "https://mons.shop",
+  "id": 18,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/18.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/18.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "white"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "time diamonds"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "red drifella"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "vaporeon shattered"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sparkles black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "skull dice"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe charlie"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross arizona"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg devilled"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "pixel gold sparkle"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "none"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross celaeno"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg emo"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe dark magician"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword devilish"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "aura key"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross dark red"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "ghost sprite"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe devilish"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "rainbow gates"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "pixel black sparkle"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dratini sheet"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword compassionate"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "item"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg druid"
+    },
+    {
+      "trait_type": "body",
+      "value": "green"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note joker"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "shocked fang"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "camo tear"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose big"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "cyan"
+    },
+    {
+      "trait_type": "overlays",
+      "value": "red"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

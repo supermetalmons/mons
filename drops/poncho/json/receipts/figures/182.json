@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #182 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/182.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/182.mp4",
+  "external_url": "https://mons.shop",
+  "id": 182,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/182.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/182.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "clay dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "poncho rayquaza"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "water cube"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "pen glitter"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "yoshis"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg vengeful"
+    },
+    {
+      "trait_type": "body",
+      "value": "blue"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note crying demon "
+    },
+    {
+      "trait_type": "mouth",
+      "value": "slime content"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "blue holo jester"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #81 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/81.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/81.mp4",
+  "external_url": "https://mons.shop",
+  "id": 81,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/81.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/81.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "erikas dragonair"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "mew dark gen"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "reshiram zekrom gx"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "shiny stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe dark magician"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "mystery blocks"
+    },
+    {
+      "trait_type": "body",
+      "value": "pink"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note silver blue bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "slime content"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "black and cream jester patched"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

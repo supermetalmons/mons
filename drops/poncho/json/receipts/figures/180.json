@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #180 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/180.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/180.mp4",
+  "external_url": "https://mons.shop",
+  "id": 180,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/180.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/180.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "grand party"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "crystal lugia"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "mew dark gen"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "pen glitter"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg bright"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "magic the gathering pikachu"
+    },
+    {
+      "trait_type": "body",
+      "value": "red"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "go go angry"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "pika joy"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "carnage evolved"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #44 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/44.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/44.mp4",
+  "external_url": "https://mons.shop",
+  "id": 44,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/44.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/44.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "clay dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "eevee heart holo"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "coro coro mew"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "rainbow stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg devilled"
+    },
+    {
+      "trait_type": "body",
+      "value": "pale yellow"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "itachi"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "sharp teeth"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "pink tree camo"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "blush"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "cyan"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

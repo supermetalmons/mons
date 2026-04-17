@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #70",
+  "description": "poncho drifella cards · redeem physical on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/items/70.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/70.mp4",
+  "external_url": "https://mons.shop",
+  "id": 70,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/items/70.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/70.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "image"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "card base",
+      "value": "erikas dragonair"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "radiant eevee"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "fireworks dratini"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "none"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "mystery blocks"
+    },
+    {
+      "trait_type": "body",
+      "value": "light gray"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note crying demon "
+    },
+    {
+      "trait_type": "mouth",
+      "value": "go go"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "carnage evolved"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "cyan"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    }
+  ]
+}

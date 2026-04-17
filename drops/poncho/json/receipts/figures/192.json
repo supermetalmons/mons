@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #192 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/192.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/192.mp4",
+  "external_url": "https://mons.shop",
+  "id": 192,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/192.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/192.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "umbreon"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "togetic"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "bottom mew"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "pen glitter"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sketch stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe dark magician"
+    },
+    {
+      "trait_type": "body",
+      "value": "zomboid"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note drif 3 bloody bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "normal"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "carnage evolved"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose big"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "pink"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #61 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/61.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/61.mp4",
+  "external_url": "https://mons.shop",
+  "id": 61,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/61.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/61.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "light dragonair"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "radiant eevee"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "bottom mew"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "colored stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dratini sheet"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword cursed"
+    },
+    {
+      "trait_type": "body",
+      "value": "magenta"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mangekyo sharingan"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "pika joy"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "dirty american"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "id": 3,
+  "name": "Blue Test Box 3",
+  "description": "Box metadata fixture 3 for the blue test drop.",
+  "image": "https://assets.mons.link/drops/test/blue/box/default.png",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Blue Test Box"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Box"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "Drop",
+      "value": "Test"
+    },
+    {
+      "trait_type": "Box Number",
+      "value": 3
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": false
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/test/blue/box/default.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

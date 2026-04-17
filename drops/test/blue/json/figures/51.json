@@ -1,0 +1,50 @@
+{
+  "id": 51,
+  "name": "Blue Test Figure 18",
+  "description": "Figure metadata fixture for blue test figure 18, edition 2 of 5.",
+  "image": "https://assets.mons.link/drops/test/blue/figures/17.png",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Blue Test Figure"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Figure"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "Drop",
+      "value": "Test"
+    },
+    {
+      "trait_type": "Figure Number",
+      "value": 18
+    },
+    {
+      "trait_type": "Edition",
+      "value": 2
+    },
+    {
+      "trait_type": "Source Asset",
+      "value": "17.png"
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": false
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/test/blue/figures/17.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

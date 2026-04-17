@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #138 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/138.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/138.mp4",
+  "external_url": "https://mons.shop",
+  "id": 138,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/138.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/138.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "white"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gold star charizard"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gold star metagross"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sparkles black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword compassionate"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "rainbow stars"
+    },
+    {
+      "trait_type": "body",
+      "value": "pale yellow"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "go go angry"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "slime content"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "floral denim"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "pink"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

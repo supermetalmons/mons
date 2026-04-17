@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #151 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/151.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/151.mp4",
+  "external_url": "https://mons.shop",
+  "id": 151,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/151.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/151.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "erikas dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "vaporeon shattered"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "potion"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sans drifella collector"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword cursed"
+    },
+    {
+      "trait_type": "body",
+      "value": "zomboid"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note crying blood"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "geng"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "pastel moo"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose big"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

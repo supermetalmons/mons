@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #154 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/154.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/154.mp4",
+  "external_url": "https://mons.shop",
+  "id": 154,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/154.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/154.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "white"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "cmyk diamonds"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "no data"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "rainbow stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword devilish"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "body",
+      "value": "green"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note bloody bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "venom"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "diamond plate"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose big"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

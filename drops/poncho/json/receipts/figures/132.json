@@ -1,0 +1,79 @@
+{
+  "name": "Poncho Drifella #132 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/132.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/132.mp4",
+  "external_url": "https://mons.shop",
+  "id": 132,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/132.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/132.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "rockets dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "ancient mew"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "time diamonds"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sans drifella collector"
+    },
+    {
+      "trait_type": "body",
+      "value": "green"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mew"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "real"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "denim clouds pointed hood"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "blush"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "cyan"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

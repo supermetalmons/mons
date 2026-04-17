@@ -1,0 +1,42 @@
+{
+  "id": 2,
+  "name": "Blue Test Box 2 Receipt",
+  "description": "Redeemed receipt metadata fixture 2 for the blue test drop.",
+  "image": "https://assets.mons.link/drops/test/blue/receipts/box.png",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Blue Test Box Receipt"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Box Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "Drop",
+      "value": "Test"
+    },
+    {
+      "trait_type": "Box Number",
+      "value": 2
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": true
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/test/blue/receipts/box.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

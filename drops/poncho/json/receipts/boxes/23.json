@@ -1,0 +1,26 @@
+{
+  "id": 23,
+  "name": "Pack #23 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/pack_receipt.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "pack receipt"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/pack_receipt.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}

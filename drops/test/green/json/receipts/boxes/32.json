@@ -1,0 +1,42 @@
+{
+  "id": 32,
+  "name": "Green Test Box 32 Receipt",
+  "description": "Redeemed receipt metadata fixture 32 for the green test drop.",
+  "image": "https://assets.mons.link/drops/test/green/receipts/box.png",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Green Test Box Receipt"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Box Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Green"
+    },
+    {
+      "trait_type": "Drop",
+      "value": "Test"
+    },
+    {
+      "trait_type": "Box Number",
+      "value": 32
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": true
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/test/green/receipts/box.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

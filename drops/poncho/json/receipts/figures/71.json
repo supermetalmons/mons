@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #71 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/71.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/71.mp4",
+  "external_url": "https://mons.shop",
+  "id": 71,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/71.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/71.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "white"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "mew e reader"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "reshiram zekrom gx"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "rainbow stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg bright"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "magic the gathering pikachu"
+    },
+    {
+      "trait_type": "body",
+      "value": "pale yellow"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mew"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "slime content"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "wings"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

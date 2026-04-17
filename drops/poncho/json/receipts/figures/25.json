@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #25 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/25.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/25.mp4",
+  "external_url": "https://mons.shop",
+  "id": 25,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/25.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/25.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "dragonite e reader"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "pocket monsters holo"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "tyranitar e reader"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "pen glitter"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "item"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword benevolent"
+    },
+    {
+      "trait_type": "body",
+      "value": "zomboid"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mangekyo sharingan"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "slime content"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "iridescent black and gold trim bug armor"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "blush"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "red"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

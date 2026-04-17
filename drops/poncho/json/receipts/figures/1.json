@@ -1,0 +1,155 @@
+{
+  "name": "Poncho Drifella #1 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/1.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/1.mp4",
+  "external_url": "https://mons.shop",
+  "id": 1,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/1.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/1.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "dragonite delivery"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dark espeon"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "articuno prism"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "pocket monsters holo"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "colored stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "pixel gold sparkle"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "blue flame"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "shiny stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg regal"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sans drifella collector"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sparkles white"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "trigram"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "bladee"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "mystery blocks"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "none"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dratini evolution line"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross compassionate"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "magic the gathering pikachu"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe dark magician"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg emo"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross vengeful"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sparkles black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "skull teapot notkin"
+    },
+    {
+      "trait_type": "body",
+      "value": "magenta"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note joker"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "nara side tooth"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "chains"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "red"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

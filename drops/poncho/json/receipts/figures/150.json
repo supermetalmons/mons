@@ -1,0 +1,159 @@
+{
+  "name": "Poncho Drifella #150 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/150.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/150.mp4",
+  "external_url": "https://mons.shop",
+  "id": 150,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/150.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/150.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "rockets dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gold star charizard"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "mew dark gen"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dark espeon"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "none"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sketch stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe wicked"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg devilled"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "rainbow gates"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "colored stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "bladee"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "blue flame"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "skull teapot notkin"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "aura key"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross arizona"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "mean pills"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross psychic"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg emo"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross wise"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sparkles white"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "bonez"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe young thug"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "pixel black sparkle"
+    },
+    {
+      "trait_type": "body",
+      "value": "light gray"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note crying blood"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "bullet bill"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "camo tear"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "blush"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "overlays",
+      "value": "red"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,139 @@
+{
+  "name": "Poncho Drifella #72",
+  "description": "poncho drifella cards · redeem physical on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/items/72.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/72.mp4",
+  "external_url": "https://mons.shop",
+  "id": 72,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/items/72.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/72.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "image"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "card base",
+      "value": "dragonite delivery"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "mew sparkle"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "fireworks blastoise"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "radiant eevee"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sparkles white"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword young thug"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe charlie"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "ghost sprite"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword devilish"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "flame sprites"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross elegant"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "skull dice"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "drifella evolution chart"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "bonez"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "tms"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross vengeful"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "angel sprite"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dragonair"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "bladee"
+    },
+    {
+      "trait_type": "body",
+      "value": "green"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note ginger bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "slime vamp"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "black lace floral"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "overlays",
+      "value": "sylv aura"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #6 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/6.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/6.mp4",
+  "external_url": "https://mons.shop",
+  "id": 6,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/6.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/6.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "umbreon"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gaara"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "articuno prism"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "pen glitter"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dratini evolution line"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg wise"
+    },
+    {
+      "trait_type": "body",
+      "value": "magenta"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note crying "
+    },
+    {
+      "trait_type": "mouth",
+      "value": "pika 2"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "holographic jester"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose sketch"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

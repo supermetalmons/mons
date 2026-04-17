@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #116 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/116.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/116.mp4",
+  "external_url": "https://mons.shop",
+  "id": 116,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/116.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/116.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "dragonite e reader"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gold star regice"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dragonite sketch"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sparkles white"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dratini sheet"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword cursed"
+    },
+    {
+      "trait_type": "body",
+      "value": "shadow violet"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note crying demon "
+    },
+    {
+      "trait_type": "mouth",
+      "value": "luffy"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "camo tear"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "blush"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "cyan"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

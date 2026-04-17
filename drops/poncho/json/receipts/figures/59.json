@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #59 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/59.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/59.mp4",
+  "external_url": "https://mons.shop",
+  "id": 59,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/59.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/59.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "dragonite delivery"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "crystal lugia"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dark espeon"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "rainbow stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross vengeful"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe charlie"
+    },
+    {
+      "trait_type": "body",
+      "value": "star foil"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "go go angry"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "real"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "eva fractal globe"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

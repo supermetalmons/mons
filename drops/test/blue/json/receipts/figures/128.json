@@ -1,0 +1,50 @@
+{
+  "id": 128,
+  "name": "Blue Test Figure 29 Receipt",
+  "description": "Redeemed receipt metadata fixture for blue test figure 29, edition 4 of 5.",
+  "image": "https://assets.mons.link/drops/test/blue/receipts/28.png",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Blue Test Figure Receipt"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Figure Receipt"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Blue"
+    },
+    {
+      "trait_type": "Drop",
+      "value": "Test"
+    },
+    {
+      "trait_type": "Figure Number",
+      "value": 29
+    },
+    {
+      "trait_type": "Edition",
+      "value": 4
+    },
+    {
+      "trait_type": "Source Asset",
+      "value": "28.png"
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": true
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/test/blue/receipts/28.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

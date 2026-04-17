@@ -1,0 +1,163 @@
+{
+  "name": "Poncho Drifella #195",
+  "description": "poncho drifella cards · redeem physical on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/items/195.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/195.mp4",
+  "external_url": "https://mons.shop",
+  "id": 195,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/items/195.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/195.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "image"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "card base",
+      "value": "dragonite e reader"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "mew light gen"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "fireworks dratini"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dark espeon"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "none"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "pixel sparkle"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sans drifella collector"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "shiny stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe wicked"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg devilled"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "mystery blocks"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "tms"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg vengeful"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe compassionate"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "aura key"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe charlie"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross dark red"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "trigram"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "drif 3 star sketch"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "yoshis"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross compassionate"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "border"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword compassionate"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "angel sprite"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "bladee"
+    },
+    {
+      "trait_type": "body",
+      "value": "shadow violet"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note joker"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "hxh"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "black and cream jester bloody"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose big"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    }
+  ]
+}

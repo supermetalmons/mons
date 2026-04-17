@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #189 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/189.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/189.mp4",
+  "external_url": "https://mons.shop",
+  "id": 189,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/189.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/189.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "dragonite delivery"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "luffy rainbow"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "gold star charizard"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "colored stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "magic the gathering pikachu"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dratini sheet"
+    },
+    {
+      "trait_type": "body",
+      "value": "painted"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note joker"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "holo grill"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "pink jester"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "green"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #34 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/34.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/34.mp4",
+  "external_url": "https://mons.shop",
+  "id": 34,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/34.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/34.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "eevee"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "pocket monsters holo"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "dark dragonair"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sparkles black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe compassionate"
+    },
+    {
+      "trait_type": "body",
+      "value": "star foil"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "impmon"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "lax"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "iridescent black and gold trim bug armor"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose big"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "blue"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

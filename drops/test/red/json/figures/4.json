@@ -1,0 +1,50 @@
+{
+  "id": 4,
+  "name": "Red Test Figure 4",
+  "description": "Figure metadata fixture for red test figure 4, edition 1 of 5.",
+  "image": "https://assets.mons.link/drops/test/red/figures/3.png",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Red Test Figure"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Figure"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Red"
+    },
+    {
+      "trait_type": "Drop",
+      "value": "Test"
+    },
+    {
+      "trait_type": "Figure Number",
+      "value": 4
+    },
+    {
+      "trait_type": "Edition",
+      "value": 1
+    },
+    {
+      "trait_type": "Source Asset",
+      "value": "3.png"
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": false
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/test/red/figures/3.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "id": 1,
+  "name": "Green Test Box 1",
+  "description": "Box metadata fixture 1 for the green test drop.",
+  "image": "https://assets.mons.link/drops/test/green/box/default.png",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Green Test Box"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Box"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Green"
+    },
+    {
+      "trait_type": "Drop",
+      "value": "Test"
+    },
+    {
+      "trait_type": "Box Number",
+      "value": 1
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": false
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/test/green/box/default.png",
+        "type": "image/png"
+      }
+    ],
+    "category": "image"
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #161 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/161.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/161.mp4",
+  "external_url": "https://mons.shop",
+  "id": 161,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/161.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/161.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "light dragonair"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "injection hearts"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "coro coro mew"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg devilled"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sparkles black"
+    },
+    {
+      "trait_type": "body",
+      "value": "pink"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note crying demon "
+    },
+    {
+      "trait_type": "mouth",
+      "value": "shocked fang"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "torched pointed hood"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "blush"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "gray"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

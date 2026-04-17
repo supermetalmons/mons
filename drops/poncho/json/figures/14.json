@@ -1,0 +1,83 @@
+{
+  "name": "Poncho Drifella #14",
+  "description": "poncho drifella cards · redeem physical on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/items/14.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/14.mp4",
+  "external_url": "https://mons.shop",
+  "id": 14,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/items/14.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/14.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "image"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "card base",
+      "value": "dragonite e reader"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "yugioh glitz"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "atricuno pokemon snap"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword young thug"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "body",
+      "value": "magenta"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mi note ginger bandage"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "digi fangs"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "studded leather"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "smile"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "red nose big"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "cyan"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    }
+  ]
+}

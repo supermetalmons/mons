@@ -1,0 +1,159 @@
+{
+  "name": "Poncho Drifella #89 Receipt",
+  "description": "redeemed on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/receipts/89.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/89.mp4",
+  "external_url": "https://mons.shop",
+  "id": 89,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/receipts/89.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeiamzyimzf77yvlmz5qevbk2looxjmmswyjxzvxqdnooihuderjvkq/89.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "video"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "card base",
+      "value": "light dragonair"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "fireworks pika"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "mew light gen"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "sasuke"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "none"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "graceful dice"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "yellow shimmer stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dratini sprite"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "border"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "skull teapot notkin"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg druid"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sketch stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "pen glitter"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "shiny stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "bonez"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg bright"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword young thug"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword compassionate"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "paint ball splatter"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross vengeful"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "yoshis"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg electric samurai"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe charlie"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe dark magician"
+    },
+    {
+      "trait_type": "body",
+      "value": "shadow violet"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "mangekyo sharingan"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "lax"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "purple"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "blush"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "pink"
+    },
+    {
+      "trait_type": "overlays",
+      "value": "sylv aura"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ]
+}

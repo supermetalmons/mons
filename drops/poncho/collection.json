@@ -1,0 +1,24 @@
+{
+  "name": "Poncho Drifella",
+  "symbol": "poncho",
+  "description": "poncho drifella cards · redeem physical on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/pack.webp",
+  "external_url": "https://mons.shop",
+  "seller_fee_basis_points": 500,
+  "attributes": [],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/pack.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image",
+    "creators": [
+      {
+        "address": "AmzcjtuzXkSziYHRqmavPiTsbJveW13wiRhCTRnuheiq",
+        "share": 100
+      }
+    ]
+  }
+}

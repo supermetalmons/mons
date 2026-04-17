@@ -1,0 +1,159 @@
+{
+  "name": "Poncho Drifella #197",
+  "description": "poncho drifella cards · redeem physical on mons.shop",
+  "image": "https://assets.mons.link/drops/poncho/items/197.webp",
+  "animation_url": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/197.mp4",
+  "external_url": "https://mons.shop",
+  "id": 197,
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/poncho/items/197.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://ipfs.io/ipfs/bafybeihhtllco3nhn2vau3ezqu7zpzfjij4x7n7tcxz63k6fkq55jljram/197.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "image"
+  },
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card"
+    },
+    {
+      "trait_type": "card base",
+      "value": "mew energy"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "potion"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "rockets snorlax ex"
+    },
+    {
+      "trait_type": "card base plus",
+      "value": "drowzee"
+    },
+    {
+      "trait_type": "sparkles",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "drif 3 star sketch"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dratini sheet"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "pen glitter"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "border"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "bonez"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword young thug"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "drifella bodies"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "dragonair"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "scythe wicked"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "mean pills"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "yellow shimmer stars"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "graceful dice"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "drifella evolution chart"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "drif sprites"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sketch stars black"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross dark red"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "sword compassionate"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "egg bright"
+    },
+    {
+      "trait_type": "card additives",
+      "value": "cross psychic"
+    },
+    {
+      "trait_type": "body",
+      "value": "painted"
+    },
+    {
+      "trait_type": "eyes",
+      "value": "impmon"
+    },
+    {
+      "trait_type": "mouth",
+      "value": "impmon tooth"
+    },
+    {
+      "trait_type": "poncho",
+      "value": "hologram plate"
+    },
+    {
+      "trait_type": "drifella smile",
+      "value": "none"
+    },
+    {
+      "trait_type": "drifella nose",
+      "value": "bandage"
+    },
+    {
+      "trait_type": "drifella eyes",
+      "value": "pink"
+    },
+    {
+      "trait_type": "overlays",
+      "value": "none"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": false
+    }
+  ]
+}
