@@ -1,0 +1,43 @@
+{
+  "id": 411,
+  "name": "Impmon",
+  "description": "",
+  "image": "https://assets.mons.link/drops/lsb/figures/78.webp",
+  "animation_url": "https://assets.mons.link/drops/lsb/figures/78.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Impmon"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Figure"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Purple Gunmetal"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "None"
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": false
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/lsb/figures/78.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://assets.mons.link/drops/lsb/figures/78.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "image"
+  }
+}

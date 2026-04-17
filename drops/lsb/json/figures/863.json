@@ -1,0 +1,43 @@
+{
+  "id": 863,
+  "name": "Ventilator",
+  "description": "",
+  "image": "https://assets.mons.link/drops/lsb/figures/197.webp",
+  "animation_url": "https://assets.mons.link/drops/lsb/figures/197.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Ventilator"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Figure"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Flesh"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": false
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/lsb/figures/197.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://assets.mons.link/drops/lsb/figures/197.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "image"
+  }
+}

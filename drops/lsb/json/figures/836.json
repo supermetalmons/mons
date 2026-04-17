@@ -1,0 +1,43 @@
+{
+  "id": 836,
+  "name": "Dog",
+  "description": "",
+  "image": "https://assets.mons.link/drops/lsb/figures/170.webp",
+  "animation_url": "https://assets.mons.link/drops/lsb/figures/170.mp4",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Dog"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Figure"
+    },
+    {
+      "trait_type": "Color",
+      "value": "Transparent Gray"
+    },
+    {
+      "trait_type": "Extra Finish",
+      "value": "Paint Splatter"
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": false
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/lsb/figures/170.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "https://assets.mons.link/drops/lsb/figures/170.mp4",
+        "type": "video/mp4"
+      }
+    ],
+    "category": "image"
+  }
+}

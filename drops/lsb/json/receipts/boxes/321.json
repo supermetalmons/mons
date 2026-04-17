@@ -1,0 +1,30 @@
+{
+  "id": 321,
+  "name": "Box 321 Receipt",
+  "description": "",
+  "image": "https://assets.mons.link/drops/lsb/receipts/box.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "Name",
+      "value": "Box Receipt"
+    },
+    {
+      "trait_type": "Type",
+      "value": "Box Receipt"
+    },
+    {
+      "trait_type": "Redeemed",
+      "value": true
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/lsb/receipts/box.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}
