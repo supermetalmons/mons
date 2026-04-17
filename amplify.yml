@@ -1,0 +1,19 @@
+version: 1
+frontend:
+  artifacts:
+    baseDirectory: /
+    files:
+      - 'gen2/**/*'
+      - 'music/**/*'
+      - 'emojipack/**/*'
+      - 'emojipack_hq/**/*'
+      - 'cards/**'
+      - 'board/**'
+      - 'swagpack/**'
+      - 'sounds/**'
+      - 'reactions/**'
+      - 'drops/**'
+      - 'shop/**'
+      - 'docs/**'
+      - 'rocks/**'
+      - 'icons/**'
