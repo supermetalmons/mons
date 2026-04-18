@@ -37,6 +37,7 @@ import { isDesktopSafari, defaultInputEventName } from "../utils/misc";
 import { playSounds } from "../content/sounds";
 import {
   hasNavigationPopupVisible,
+  didDismissSomethingWithOutsideTapJustNow,
   didNotDismissAnythingWithOutsideTapJustNow,
   hasBottomPopupsVisible,
   resetOutsideTapDismissTimeout,
@@ -268,6 +269,8 @@ let talkingDudeTextDiv: HTMLElement | null;
 let instructionsContainerElement: SVGElement | undefined;
 let instructionsCloudBg: SVGPathElement | null = null;
 let talkingDudeIsTalking = true;
+let suppressBoardInputUntilMs = 0;
+const boardInputSuppressAfterOverlayDismissMs = 180;
 
 let assets: any;
 let drainer: SVGElement;
@@ -2605,10 +2608,14 @@ export function updateScore(
 
 export function hideItemSelectionOrConfirmationOverlay() {
   if (showsItemSelectionOrConfirmationOverlay) {
-    showsItemSelectionOrConfirmationOverlay = false;
-    setTopBoardOverlayVisible(false, null, false);
+    closeItemSelectionOrConfirmationOverlay();
     removeHighlights();
   }
+}
+
+function closeItemSelectionOrConfirmationOverlay() {
+  showsItemSelectionOrConfirmationOverlay = false;
+  setTopBoardOverlayVisible(false, null, false);
 }
 
 export function showEndTurnConfirmationOverlay(
@@ -2623,18 +2630,21 @@ export function showEndTurnConfirmationOverlay(
   overlay.appendChild(background);
 
   const onCancel = () => {
-    setTopBoardOverlayVisible(false, null, false);
+    closeItemSelectionOrConfirmationOverlay();
     cancel();
   };
 
   const onOk = () => {
-    setTopBoardOverlayVisible(false, null, false);
+    closeItemSelectionOrConfirmationOverlay();
     ok();
   };
 
   background.addEventListener(defaultInputEventName, (event) => {
     preventTouchstartIfNeeded(event);
     event.stopPropagation();
+    suppressBoardInputUntilMs =
+      Date.now() + boardInputSuppressAfterOverlayDismissMs;
+    didDismissSomethingWithOutsideTapJustNow();
     onCancel();
   });
 
@@ -2751,7 +2761,7 @@ function createItemButton(
     }
 
     completion();
-    setTopBoardOverlayVisible(false, null, false);
+    closeItemSelectionOrConfirmationOverlay();
   });
   overlay.appendChild(touchTarget);
 }
@@ -2772,7 +2782,7 @@ export function showItemSelection(): void {
     preventTouchstartIfNeeded(event);
     event.stopPropagation();
     didSelectInputModifier(InputModifier.Cancel);
-    setTopBoardOverlayVisible(false, null, false);
+    closeItemSelectionOrConfirmationOverlay();
   });
 
   showsItemSelectionOrConfirmationOverlay = true;
@@ -4464,6 +4474,9 @@ export function setupBoard() {
   const skipLayerRecreation =
     shouldPreserveAnimation && !!itemsLayer?.querySelector(".board-rect");
   boardInputHandler = (event: Event) => {
+    if (Date.now() < suppressBoardInputUntilMs) {
+      return;
+    }
     const hasVisiblePopups =
       hasIslandOverlayVisible() ||
       hasMainMenuPopupsVisible() ||
@@ -4498,6 +4511,14 @@ export function setupBoard() {
     } else if (
       !target.closest("a, button, select, [data-notification-banner='true']")
     ) {
+      if (showsItemSelectionOrConfirmationOverlay) {
+        didDismissSomethingWithOutsideTapJustNow();
+        hideItemSelectionOrConfirmationOverlay();
+        cleanupCurrentInputs();
+        event.preventDefault();
+        event.stopPropagation();
+        return;
+      }
       hideItemSelectionOrConfirmationOverlay();
       didClickSquare(new Location(-1, -1));
       event.preventDefault();

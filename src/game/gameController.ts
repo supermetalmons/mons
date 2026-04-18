@@ -2913,6 +2913,7 @@ function automove(onAutomoveButtonClick: boolean = false) {
     isBotsRoute() || (isGameWithBot && game.active_color() === botPlayerColor);
   const gameBeforeAutomove = game;
   const fenBeforeAutomove = gameBeforeAutomove.fen();
+  const takebacksBeforeAutomove = gameBeforeAutomove.takeback_fens();
   const inputColorBeforeAutomove = gameBeforeAutomove.active_color();
   const syncAutomoveActionState = () => {
     if (isBotsRoute()) {
@@ -2926,6 +2927,7 @@ function automove(onAutomoveButtonClick: boolean = false) {
   };
   resolveAutomoveOutput(gameBeforeAutomove, fenBeforeAutomove, preference)
     .then((output: ResolvedAutomoveOutput) => {
+      let showedEndTurnConfirmation = false;
       if (!sessionGuard()) {
         return;
       }
@@ -2943,9 +2945,18 @@ function automove(onAutomoveButtonClick: boolean = false) {
               lastBotMoveTimestamp = Date.now();
             }
             const appliedOutput = game.process_input_fen(output.inputFen);
-            applyOutput(
-              [],
-              "",
+            const takebacksBeforeMove = onAutomoveButtonClick
+              ? takebacksBeforeAutomove
+              : [];
+            const fenBeforeMove = onAutomoveButtonClick
+              ? fenBeforeAutomove
+              : "";
+            const forceTurnConfirmation =
+              onAutomoveButtonClick &&
+              shouldConfirmAutomoveManaEndTurn(appliedOutput.events());
+            showedEndTurnConfirmation = applyOutput(
+              takebacksBeforeMove,
+              fenBeforeMove,
               appliedOutput,
               false,
               true,
@@ -2953,6 +2964,7 @@ function automove(onAutomoveButtonClick: boolean = false) {
               undefined,
               inputColorBeforeAutomove,
               expectedMatchId,
+              forceTurnConfirmation,
             );
           }
           syncAutomoveActionState();
@@ -2978,7 +2990,9 @@ function automove(onAutomoveButtonClick: boolean = false) {
         syncAutomoveActionState();
       }
 
-      Board.hideItemSelectionOrConfirmationOverlay();
+      if (!showedEndTurnConfirmation) {
+        Board.hideItemSelectionOrConfirmationOverlay();
+      }
     })
     .catch((e: unknown) => {
       if (String(e).includes(automoveAlreadyInProgressErrorMessage)) {
@@ -3264,36 +3278,141 @@ function turnShouldBeConfirmedForOutputEvents(
     return false;
   }
 
-  const gameBeforeMove = MonsWeb.MonsGameModel.from_fen(fenBeforeMove)!;
-  const moveKinds = gameBeforeMove.available_move_kinds();
-  const monMovesCount = moveKinds[0];
-  const actionsCount = moveKinds[2];
-  const hasMoves = monMovesCount > 0;
-  let actuallyHasPossibleAction = false;
-  if (!hasMoves && actionsCount > 0) {
-    const output = gameBeforeMove.process_input([]);
-    if (output.kind === MonsWeb.OutputModelKind.LocationsToStartFrom) {
-      const startLocations = output.locations();
-      for (const loc of startLocations) {
-        const nextOutput = gameBeforeMove.process_input([loc]);
-        if (nextOutput.kind === MonsWeb.OutputModelKind.NextInputOptions) {
-          const nextInputs = nextOutput.next_inputs();
-          if (
-            nextInputs.some(
-              (input) =>
-                input.kind === MonsWeb.NextInputKind.MysticAction ||
-                input.kind === MonsWeb.NextInputKind.DemonAction ||
-                input.kind === MonsWeb.NextInputKind.SpiritTargetCapture,
-            )
-          ) {
-            actuallyHasPossibleAction = true;
-            break;
+  const gameBeforeMove = MonsWeb.MonsGameModel.from_fen(fenBeforeMove);
+  if (!gameBeforeMove) {
+    return false;
+  }
+
+  try {
+    const moveKinds = gameBeforeMove.available_move_kinds();
+    const monMovesCount = moveKinds[0];
+    const actionsCount = moveKinds[2];
+    const hasMoves = monMovesCount > 0;
+    let actuallyHasPossibleAction = false;
+    if (!hasMoves && actionsCount > 0) {
+      const output = gameBeforeMove.process_input([]);
+      try {
+        if (output.kind === MonsWeb.OutputModelKind.LocationsToStartFrom) {
+          const startLocations = output.locations();
+          for (const loc of startLocations) {
+            const nextOutput = gameBeforeMove.process_input([loc]);
+            try {
+              if (nextOutput.kind === MonsWeb.OutputModelKind.NextInputOptions) {
+                const nextInputs = nextOutput.next_inputs();
+                if (
+                  nextInputs.some(
+                    (input) =>
+                      input.kind === MonsWeb.NextInputKind.MysticAction ||
+                      input.kind === MonsWeb.NextInputKind.DemonAction ||
+                      input.kind === MonsWeb.NextInputKind.SpiritTargetCapture,
+                  )
+                ) {
+                  actuallyHasPossibleAction = true;
+                  break;
+                }
+              }
+            } finally {
+              nextOutput.free();
+            }
           }
         }
+      } finally {
+        output.free();
       }
     }
+
+    return hasMoves || actuallyHasPossibleAction;
+  } finally {
+    gameBeforeMove.free();
   }
-  return hasMoves || actuallyHasPossibleAction;
+}
+
+function getTurnConfirmationFinishLocation(
+  events: MonsWeb.EventModel[],
+): Location | undefined {
+  for (let index = events.length - 1; index >= 0; index -= 1) {
+    const event = events[index];
+    if (event.kind === MonsWeb.EventModelKind.ManaMove && event.loc2) {
+      return location(event.loc2);
+    }
+  }
+  return undefined;
+}
+
+function getTurnConfirmationStartLocation(
+  events: MonsWeb.EventModel[],
+): Location | undefined {
+  for (const event of events) {
+    if (event.kind === MonsWeb.EventModelKind.ManaMove && event.loc1) {
+      return location(event.loc1);
+    }
+  }
+  return undefined;
+}
+
+function applyTurnConfirmationSourceHighlight(
+  fenBeforeMove: string,
+  events: MonsWeb.EventModel[],
+  isBotInput: boolean,
+  inputColorBeforeMove?: MonsWeb.Color,
+  expectedMatchId: string | null = null,
+): void {
+  const startLocation = getTurnConfirmationStartLocation(events);
+  if (!startLocation) {
+    return;
+  }
+
+  const gameBeforeMove = MonsWeb.MonsGameModel.from_fen(fenBeforeMove);
+  if (!gameBeforeMove) {
+    return;
+  }
+
+  let previewOutput: MonsWeb.OutputModel | null = null;
+  const previewBaseGame = game;
+  try {
+    previewOutput = gameBeforeMove.process_input([
+      new MonsWeb.Location(startLocation.i, startLocation.j),
+    ]);
+    if (previewOutput.kind !== MonsWeb.OutputModelKind.NextInputOptions) {
+      return;
+    }
+
+    game = gameBeforeMove;
+    currentInputs = [startLocation];
+    applyOutput(
+      [],
+      "",
+      previewOutput,
+      false,
+      isBotInput,
+      AssistedInputKind.None,
+      startLocation,
+      inputColorBeforeMove,
+      expectedMatchId,
+      false,
+    );
+  } finally {
+    game = previewBaseGame;
+    previewOutput?.free();
+    gameBeforeMove.free();
+  }
+}
+
+function shouldConfirmAutomoveManaEndTurn(
+  events: MonsWeb.EventModel[],
+): boolean {
+  const hasManaMove = events.some(
+    (event) => event.kind === MonsWeb.EventModelKind.ManaMove,
+  );
+  if (!hasManaMove) {
+    return false;
+  }
+
+  return events.some(
+    (event) =>
+      event.kind === MonsWeb.EventModelKind.NextTurn ||
+      event.kind === MonsWeb.EventModelKind.GameOver,
+  );
 }
 
 function applyOutput(
@@ -3306,7 +3425,8 @@ function applyOutput(
   inputLocation?: Location,
   inputColorBeforeMove?: MonsWeb.Color,
   expectedMatchId: string | null = null,
-) {
+  forceTurnConfirmation: boolean = false,
+): boolean {
   switch (output.kind) {
     case MonsWeb.OutputModelKind.InvalidInput:
       const shouldTryToReselect =
@@ -3353,7 +3473,7 @@ function applyOutput(
         Board.removeHighlights();
         playSounds([Sound.ChoosePickup]);
         Board.showItemSelection();
-        return;
+        return false;
       }
 
       const nextInputHighlights = nextInputs.flatMap((input) => {
@@ -3440,7 +3560,7 @@ function applyOutput(
       break;
     case MonsWeb.OutputModelKind.Events:
       if (!isRemoteInput && handleStaleOnlineLocalOutput(expectedMatchId)) {
-        return;
+        return false;
       }
       const moveFen = output.input_fen();
       const gameFen = game.fen();
@@ -3450,40 +3570,55 @@ function applyOutput(
       if (
         !isRemoteInput &&
         fenBeforeMove !== "" &&
-        turnShouldBeConfirmedForOutputEvents(events, fenBeforeMove)
+        (forceTurnConfirmation ||
+          turnShouldBeConfirmedForOutputEvents(events, fenBeforeMove))
       ) {
-        const targetGameToConfirm = game;
-        game = game.without_last_turn(takebackFensBeforeMove)!;
-        const latestLocation = currentInputs[currentInputs.length - 1];
+        if (forceTurnConfirmation) {
+          applyTurnConfirmationSourceHighlight(
+            fenBeforeMove,
+            events,
+            isBotInput,
+            inputColorBeforeMove,
+            expectedMatchId,
+          );
+        }
+        const finishLocation =
+          getTurnConfirmationFinishLocation(events) ??
+          currentInputs[currentInputs.length - 1];
+        if (finishLocation) {
+          const targetGameToConfirm = game;
+          game = game.without_last_turn(takebackFensBeforeMove)!;
 
-        playSounds([Sound.ConfirmEarlyEndTurn]);
+          playSounds([Sound.ConfirmEarlyEndTurn]);
 
-        Board.showEndTurnConfirmationOverlay(
-          game.active_color() === MonsWeb.Color.Black,
-          latestLocation,
-          () => {
-            if (handleStaleOnlineLocalOutput(expectedMatchId)) {
-              return;
-            }
-            game = targetGameToConfirm;
-            applyOutput(
-              [],
-              "",
-              output,
-              isRemoteInput,
-              isBotInput,
-              assistedInputKind,
-              inputLocation,
-              inputColorBeforeMove,
-              expectedMatchId,
-            );
-          },
-          () => {
-            currentInputs = [];
-            Board.removeHighlights();
-          },
-        );
-        return;
+          Board.showEndTurnConfirmationOverlay(
+            game.active_color() === MonsWeb.Color.Black,
+            finishLocation,
+            () => {
+              if (handleStaleOnlineLocalOutput(expectedMatchId)) {
+                return;
+              }
+              game = targetGameToConfirm;
+              applyOutput(
+                [],
+                "",
+                output,
+                isRemoteInput,
+                isBotInput,
+                assistedInputKind,
+                inputLocation,
+                inputColorBeforeMove,
+                expectedMatchId,
+                false,
+              );
+            },
+            () => {
+              currentInputs = [];
+              Board.removeHighlights();
+            },
+          );
+          return true;
+        }
       }
 
       if (isOnlineGame && !isRemoteInput) {
@@ -3681,7 +3816,7 @@ function applyOutput(
             if (puzzleMode && game.winner_color() === undefined) {
               resetToTheStartOfThePuzzle();
               Board.flashPuzzleFailure();
-              return;
+              return false;
             }
 
             sounds.push(Sound.EndTurn);
@@ -3724,7 +3859,7 @@ function applyOutput(
             updateUndoButtonBasedOnGameState();
             syncInviteBotIntoLocalGameButton();
             triggerMoveHistoryPopupReload();
-            return;
+            return false;
           case MonsWeb.EventModelKind.GameOver:
             const isVictory = !isOnlineGame || event.color === playerSideColor;
 
@@ -3862,6 +3997,8 @@ function applyOutput(
 
       break;
   }
+
+  return false;
 }
 
 export function playSameCompletedPuzzleAgain() {
