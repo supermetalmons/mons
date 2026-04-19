@@ -4984,9 +4984,17 @@ class Connection {
           if (currentFlatMovesString !== previousFlatMovesString) {
             return currentMatch;
           }
+          const nextGameVariant =
+            typeof currentMatch.gameVariant === "string" &&
+            currentMatch.gameVariant !== ""
+              ? currentMatch.gameVariant
+              : typeof matchToPersist.gameVariant === "string" &&
+                  matchToPersist.gameVariant !== ""
+                ? matchToPersist.gameVariant
+                : undefined;
           return {
             ...currentMatch,
-            gameVariant: currentMatch.gameVariant ?? matchToPersist.gameVariant,
+            ...(nextGameVariant ? { gameVariant: nextGameVariant } : {}),
             fen: expectedFen,
             flatMovesString: expectedFlatMovesString,
           } as Match;
