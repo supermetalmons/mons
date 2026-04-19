@@ -140,6 +140,9 @@ let botAutomoveMode: BotAutomoveMode = normalizeBotAutomoveMode(
 const offMainThreadAutomoveRetryDelayMs = 15_000;
 let offMainThreadAutomoveDisabledUntilMs = 0;
 const automoveInFlightGames = new WeakSet<MonsWeb.MonsGameModel>();
+
+const defaultGameVariant = MonsWeb.GameVariant.Classic;
+
 const automoveAlreadyInProgressErrorMessage =
   "smart automove already in progress";
 const isAutomoveDebugLoggingEnabled = process.env.NODE_ENV !== "production";
@@ -1169,7 +1172,7 @@ function buildGameFromMoveStreams(
   whiteMovesString: string,
   blackMovesString: string,
 ): MonsWeb.MonsGameModel | null {
-  const gameFromMoves = MonsWeb.MonsGameModel.new();
+  const gameFromMoves = MonsWeb.MonsGameModel.new(defaultGameVariant);
   const whiteMoves = movesArrayFromFlatString(whiteMovesString);
   const blackMoves = movesArrayFromFlatString(blackMovesString);
   let whiteIndex = 0;
@@ -2124,7 +2127,7 @@ export async function go(routeStateOverride?: RouteState) {
   await initMonsWeb();
 
   playerSideColor = MonsWeb.Color.White;
-  game = MonsWeb.MonsGameModel.new();
+  game = MonsWeb.MonsGameModel.new(defaultGameVariant);
   initialFen = game.fen();
 
   if (isBotsRoute()) {
@@ -2324,7 +2327,7 @@ export function failedToCreateRematchProposal() {
 
 function rematchInLoopMode() {
   isGameOver = false;
-  game = MonsWeb.MonsGameModel.new();
+  game = MonsWeb.MonsGameModel.new(defaultGameVariant);
   Board.toggleBoardFlipped();
   playerSideColor =
     playerSideColor === MonsWeb.Color.White
@@ -2389,7 +2392,7 @@ function startFreshLocalMatch() {
   showWaitingStateText("");
   Board.setBoardFlipped(activeBoardShouldBeFlipped());
   Board.resetForNewGame();
-  game = MonsWeb.MonsGameModel.new();
+  game = MonsWeb.MonsGameModel.new(defaultGameVariant);
   setNewBoard(false);
   updateUndoButtonBasedOnGameState();
   syncInviteBotIntoLocalGameButton();
@@ -2436,7 +2439,7 @@ function startBotMatch(botColor: MonsWeb.Color) {
   Board.setBoardFlipped(botColor === MonsWeb.Color.White);
   Board.showOpponentAsBotPlayer();
   Board.resetForNewGame();
-  game = MonsWeb.MonsGameModel.new();
+  game = MonsWeb.MonsGameModel.new(defaultGameVariant);
   setNewBoard(false);
   botPlayerColor = botColor;
   playerSideColor =
@@ -2490,7 +2493,7 @@ export function didJustCreateRematchProposalSuccessfully(
   whiteFlatMovesString = null;
   blackFlatMovesString = null;
   playerSideColor = MonsWeb.Color.White;
-  game = MonsWeb.MonsGameModel.new();
+  game = MonsWeb.MonsGameModel.new(defaultGameVariant);
 
   resignedColor = undefined;
   winnerByTimerColor = undefined;
