@@ -9,10 +9,9 @@ const {
 } = require("./utils");
 const { resolveMatchWinner } = require("./matchOutcome");
 const { enqueueEventProgressTask } = require("./eventProgressTasks");
+const { buildRandomGameSeed } = require("./gameVariants");
 
 const CONTROLLER_VERSION = 2;
-const INITIAL_FEN =
-  "0 0 w 0 0 0 0 0 1 n03y0xs0xd0xa0xe0xn03/n11/n11/n04xxmn01xxmn04/n03xxmn01xxmn01xxmn03/xxQn04xxUn04xxQ/n03xxMn01xxMn01xxMn03/n04xxMn01xxMn04/n11/n11/n03E0xA0xD0xS0xY0xn03";
 const EVENT_SCHEMA_VERSION = 2;
 const EVENT_LOCK_TTL_MS = 30 * 1000;
 const EVENT_LOCK_REFRESH_INTERVAL_MS = 10 * 1000;
@@ -493,12 +492,13 @@ const ensureNonAnonProfile = async (uid) => {
   return profile;
 };
 
-const createMatchRecord = (color, emojiId, aura) => ({
+const createMatchRecord = (color, emojiId, aura, gameSeed) => ({
   version: CONTROLLER_VERSION,
   color,
   emojiId: typeof emojiId === "number" ? Math.floor(emojiId) : 0,
   aura: normalizeString(aura) || null,
-  fen: INITIAL_FEN,
+  gameVariant: gameSeed.gameVariant,
+  fen: gameSeed.fen,
   status: "",
   flatMovesString: "",
   timer: "",
@@ -843,6 +843,7 @@ const createInviteForMatch = ({
   const inviteId = generateEventInviteId();
   const hostColor = pickHostColor();
   const guestColor = hostColor === "white" ? "black" : "white";
+  const gameSeed = buildRandomGameSeed();
 
   match.inviteId = inviteId;
   match.status = "pending";
@@ -858,9 +859,14 @@ const createInviteForMatch = ({
     eventOwned: true,
   };
   inviteUpdates[`players/${hostLoginUid}/matches/${inviteId}`] =
-    createMatchRecord(hostColor, match.hostEmojiId, match.hostAura);
+    createMatchRecord(hostColor, match.hostEmojiId, match.hostAura, gameSeed);
   inviteUpdates[`players/${guestLoginUid}/matches/${inviteId}`] =
-    createMatchRecord(guestColor, match.guestEmojiId, match.guestAura);
+    createMatchRecord(
+      guestColor,
+      match.guestEmojiId,
+      match.guestAura,
+      gameSeed,
+    );
 
   return true;
 };

@@ -38,7 +38,7 @@ import {
   didReceiveInviteReactionUpdate,
   didReceiveMatchUpdate,
   didRecoverInviteReactions,
-  initialFen,
+  getCurrentNewMatchSeed,
   didRecoverMyMatch,
   enterWatchOnlyMode,
   didFindYourOwnInviteThatNobodyJoined,
@@ -78,6 +78,11 @@ import {
   EventRound,
   EventMatch,
 } from "./connectionModels";
+import {
+  buildDeterministicGameSeed,
+  buildGameSeedForStoredVariant,
+  getStoredGameVariantForPersistence,
+} from "../game/gameVariants";
 import { storage } from "../utils/storage";
 import { generateNewInviteId } from "../utils/misc";
 import {
@@ -108,6 +113,11 @@ const createEmptyMiningMaterials = (): PlayerMiningMaterials => ({
   ice: 0,
 });
 
+type MatchSeedRecord = {
+  gameVariant: string;
+  fen: string;
+};
+
 const normalizeMiningData = (source: any): PlayerMiningData => {
   const materialsInput =
     source && typeof source === "object"
@@ -135,6 +145,64 @@ const normalizeMiningData = (source: any): PlayerMiningData => {
 };
 
 const controllerVersion = 2;
+
+const buildFreshMatch = ({
+  color,
+  emojiId,
+  aura,
+  seed,
+}: {
+  color: string;
+  emojiId: number;
+  aura?: string;
+  seed: MatchSeedRecord;
+}): Match => ({
+  version: controllerVersion,
+  color,
+  emojiId,
+  aura,
+  gameVariant: seed.gameVariant,
+  fen: seed.fen,
+  status: "",
+  flatMovesString: "",
+  timer: "",
+});
+
+const getSeedFromPersistedMatch = (
+  match: Match | null | undefined,
+): MatchSeedRecord | null => {
+  if (!match || typeof match.fen !== "string" || match.fen === "") {
+    return null;
+  }
+  return {
+    gameVariant: getStoredGameVariantForPersistence(match.gameVariant),
+    fen: match.fen,
+  };
+};
+
+const buildMirroredMatchFromHost = ({
+  color,
+  emojiId,
+  aura,
+  hostMatch,
+}: {
+  color: string;
+  emojiId: number;
+  aura?: string;
+  hostMatch: Match;
+}): Match => ({
+  ...buildFreshMatch({
+    color,
+    emojiId,
+    aura,
+    seed:
+      getSeedFromPersistedMatch(hostMatch) ??
+      buildGameSeedForStoredVariant(hostMatch.gameVariant),
+  }),
+  status: hostMatch.status ?? "",
+  flatMovesString: hostMatch.flatMovesString ?? "",
+  timer: hostMatch.timer ?? "",
+});
 const LEADERBOARD_ENTRY_LIMIT = 99;
 const wagerDebugLogsEnabled = process.env.NODE_ENV !== "production";
 const EVENT_SYNC_COOLDOWN_ACTIVE_MS = 700;
@@ -1810,80 +1878,88 @@ class Connection {
       : proposingAsHost
         ? initialGuestColor
         : this.latestInvite.hostColor;
-    let newRematchesProposalsString = "";
-
+    const currentHostRematches = this.latestInvite.hostRematches;
+    const currentGuestRematches = this.latestInvite.guestRematches;
     const inviteId = writableContext.inviteId;
     const nextMatchId = inviteId + newRematchProposalIndex;
-    const nextMatch: Match = {
-      version: controllerVersion,
-      color: newColor,
-      emojiId,
-      aura: storage.getPlayerEmojiAura(""),
-      fen: initialFen,
-      status: "",
-      flatMovesString: "",
-      timer: "",
-    };
+    const opponentId = this.getOpponentId(writableContext.actorUid) || null;
 
-    const updates: { [key: string]: any } = {};
-    updates[`players/${writableContext.actorUid}/matches/${nextMatchId}`] =
-      nextMatch;
+    void (async () => {
+      const nextMatchSeed = await this.resolveRematchSeed(
+        nextMatchId,
+        opponentId,
+      );
+      if (!sessionGuard()) {
+        return;
+      }
 
-    if (proposingAsHost) {
-      newRematchesProposalsString = this.latestInvite.hostRematches
-        ? this.latestInvite.hostRematches + ";" + newRematchProposalIndex
-        : newRematchProposalIndex;
-      updates[`invites/${inviteId}/hostRematches`] =
-        newRematchesProposalsString;
-    } else {
-      newRematchesProposalsString = this.latestInvite?.guestRematches
-        ? this.latestInvite.guestRematches + ";" + newRematchProposalIndex
-        : newRematchProposalIndex;
-      updates[`invites/${inviteId}/guestRematches`] =
-        newRematchesProposalsString;
-    }
-
-    update(ref(this.db), updates)
-      .then(() => {
-        if (!sessionGuard()) {
-          return;
-        }
-        this.myMatch = nextMatch;
-        const rematchContext = this.buildRuntimeContext(
-          inviteId,
-          nextMatchId,
-          writableContext.loginUid,
-          writableContext.actorUid,
-          writableContext.role,
-          true,
-          this.sessionEpoch,
-        );
-        this.activateContext(rematchContext, "rematch-proposed");
-        this.updateWagerStateForCurrentMatch();
-        this.observeInviteReactions(rematchContext);
-        this.observeRematchOrEndMatchIndicators(rematchContext);
-        this.observeWagers(rematchContext);
-        if (this.latestInvite) {
-          if (proposingAsHost) {
-            this.latestInvite.hostRematches = newRematchesProposalsString;
-          } else {
-            this.latestInvite.guestRematches = newRematchesProposalsString;
-          }
-        }
-        console.log("Successfully updated match and rematches");
-        didJustCreateRematchProposalSuccessfully(
-          inviteId,
-          previousMatchId,
-          previousMatchPair,
-        );
-      })
-      .catch((error) => {
-        if (!sessionGuard()) {
-          return;
-        }
-        console.error("Error updating match and rematches:", error);
-        failedToCreateRematchProposal();
+      const nextMatch = buildFreshMatch({
+        color: newColor,
+        emojiId,
+        aura: storage.getPlayerEmojiAura(""),
+        seed: nextMatchSeed,
       });
+
+      let newRematchesProposalsString = "";
+      const updates: { [key: string]: any } = {};
+      updates[`players/${writableContext.actorUid}/matches/${nextMatchId}`] =
+        nextMatch;
+
+      if (proposingAsHost) {
+        newRematchesProposalsString = currentHostRematches
+          ? currentHostRematches + ";" + newRematchProposalIndex
+          : newRematchProposalIndex;
+        updates[`invites/${inviteId}/hostRematches`] =
+          newRematchesProposalsString;
+      } else {
+        newRematchesProposalsString = currentGuestRematches
+          ? currentGuestRematches + ";" + newRematchProposalIndex
+          : newRematchProposalIndex;
+        updates[`invites/${inviteId}/guestRematches`] =
+          newRematchesProposalsString;
+      }
+
+      await update(ref(this.db), updates);
+      if (!sessionGuard()) {
+        return;
+      }
+
+      this.myMatch = nextMatch;
+      const rematchContext = this.buildRuntimeContext(
+        inviteId,
+        nextMatchId,
+        writableContext.loginUid,
+        writableContext.actorUid,
+        writableContext.role,
+        true,
+        this.sessionEpoch,
+      );
+      this.activateContext(rematchContext, "rematch-proposed");
+      this.updateWagerStateForCurrentMatch();
+      this.observeInviteReactions(rematchContext);
+      this.observeRematchOrEndMatchIndicators(rematchContext);
+      this.observeWagers(rematchContext);
+      if (this.latestInvite) {
+        if (proposingAsHost) {
+          this.latestInvite.hostRematches = newRematchesProposalsString;
+        } else {
+          this.latestInvite.guestRematches = newRematchesProposalsString;
+        }
+      }
+      console.log("Successfully updated match and rematches");
+      didJustCreateRematchProposalSuccessfully(
+        inviteId,
+        nextMatch,
+        previousMatchId,
+        previousMatchPair,
+      );
+    })().catch((error) => {
+      if (!sessionGuard()) {
+        return;
+      }
+      console.error("Error updating match and rematches:", error);
+      failedToCreateRematchProposal();
+    });
   }
 
   public rematchSeriesEndIsIndicated(): boolean | null {
@@ -4910,6 +4986,7 @@ class Connection {
           }
           return {
             ...currentMatch,
+            gameVariant: currentMatch.gameVariant ?? matchToPersist.gameVariant,
             fen: expectedFen,
             flatMovesString: expectedFlatMovesString,
           } as Match;
@@ -5533,21 +5610,43 @@ class Connection {
     if (!opponentsMatch) {
       return null;
     }
-    const match: Match = {
-      version: controllerVersion,
-      color: opponentsMatch.color === "black" ? "white" : "black",
+    const match = buildMirroredMatchFromHost({
+      color: this.oppositeColor(opponentsMatch.color) ?? "black",
       emojiId: getPlayersEmojiId(),
       aura: storage.getPlayerEmojiAura(""),
-      fen: initialFen,
-      status: "",
-      flatMovesString: "",
-      timer: "",
-    };
+      hostMatch: opponentsMatch,
+    });
     await set(ref(this.db, `players/${guestId}/matches/${matchId}`), match);
     if (!this.isConnectAttemptActive(connectAttemptId, epoch)) {
       return null;
     }
     return match;
+  }
+
+  private async resolveRematchSeed(
+    nextMatchId: string,
+    opponentId: string | null,
+  ): Promise<MatchSeedRecord> {
+    if (opponentId) {
+      try {
+        const existingMatchSnapshot = await get(
+          ref(this.db, `players/${opponentId}/matches/${nextMatchId}`),
+        );
+        const existingSeed = getSeedFromPersistedMatch(
+          existingMatchSnapshot.val() as Match | null,
+        );
+        if (existingSeed) {
+          return existingSeed;
+        }
+      } catch (error) {
+        console.warn("Failed to load existing rematch seed", {
+          nextMatchId,
+          opponentId,
+          error: error instanceof Error ? error.message : String(error),
+        });
+      }
+    }
+    return buildDeterministicGameSeed(`rematch:${nextMatchId}`);
   }
 
   public connectToGame(uid: string, inviteId: string, autojoin: boolean): void {
@@ -5823,6 +5922,7 @@ class Connection {
   public async createInvite(uid: string, inviteId: string): Promise<boolean> {
     const hostColor = Math.random() < 0.5 ? "white" : "black";
     const emojiId = getPlayersEmojiId();
+    const matchSeed = getCurrentNewMatchSeed();
 
     const invite: Invite = {
       version: controllerVersion,
@@ -5832,16 +5932,12 @@ class Connection {
       wagers: {},
     };
 
-    const match: Match = {
-      version: controllerVersion,
+    const match = buildFreshMatch({
       color: hostColor,
       emojiId,
       aura: storage.getPlayerEmojiAura(""),
-      fen: initialFen,
-      status: "",
-      flatMovesString: "",
-      timer: "",
-    };
+      seed: matchSeed,
+    });
 
     const updates: { [key: string]: any } = {};
     updates[`players/${uid}/matches/${inviteId}`] = match;

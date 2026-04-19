@@ -7,6 +7,10 @@ const {
   sendAutomatchBotMessage,
   getTelegramEmojiTag,
 } = require("./utils");
+const {
+  buildGameSeedForStoredVariant,
+  buildRandomGameSeed,
+} = require("./gameVariants");
 
 exports.automatch = onCall(async (request) => {
   if (!request.auth) {
@@ -82,14 +86,31 @@ async function attemptAutomatch(
   if (snapshot.exists()) {
     const firstAutomatchId = Object.keys(snapshot.val())[0];
     const existingAutomatchData = snapshot.val()[firstAutomatchId];
+    const retryAutomatch = () =>
+      attemptAutomatch(
+        uid,
+        rating,
+        username,
+        ethAddress,
+        solAddress,
+        profileId,
+        name,
+        emojiId,
+        aura,
+        retryCount + 1,
+      );
     if (
       existingAutomatchData.uid !== uid &&
       (profileId === "" || profileId !== existingAutomatchData.profileId)
     ) {
+      const matchSeed = buildGameSeedForStoredVariant(
+        existingAutomatchData.gameVariant,
+      );
       console.log("auto:attempt:foundExisting", {
         inviteId: firstAutomatchId,
         existingUid: existingAutomatchData.uid,
         hostColor: existingAutomatchData.hostColor,
+        gameVariant: matchSeed.gameVariant,
       });
       const existingPlayerName = getDisplayNameFromAddress(
         existingAutomatchData.username,
@@ -107,16 +128,12 @@ async function attemptAutomatch(
         password: existingAutomatchData.password,
       };
 
-      const match = {
-        version: controllerVersion,
-        color: existingAutomatchData.hostColor === "white" ? "black" : "white",
-        emojiId: emojiId,
-        aura: aura,
-        fen: initialFen,
-        status: "",
-        flatMovesString: "",
-        timer: "",
-      };
+      const match = createMatchRecord(
+        existingAutomatchData.hostColor === "white" ? "black" : "white",
+        emojiId,
+        aura,
+        matchSeed,
+      );
 
       try {
         const success = await acceptInvite(
@@ -151,37 +168,14 @@ async function attemptAutomatch(
             mode: "matched",
             matchedImmediately: true,
           };
-        } else {
-          return await attemptAutomatch(
-            uid,
-            rating,
-            username,
-            ethAddress,
-            solAddress,
-            profileId,
-            name,
-            emojiId,
-            aura,
-            retryCount + 1,
-          );
         }
+        return await retryAutomatch();
       } catch (error) {
         console.error("auto:accept:error", {
           inviteId: firstAutomatchId,
           error: error && error.message ? error.message : error,
         });
-        return await attemptAutomatch(
-          uid,
-          rating,
-          username,
-          ethAddress,
-          solAddress,
-          profileId,
-          name,
-          emojiId,
-          aura,
-          retryCount + 1,
-        );
+        return await retryAutomatch();
       }
     }
     return {
@@ -194,41 +188,35 @@ async function attemptAutomatch(
     console.log("auto:attempt:createInvite");
     const inviteId = generateInviteId();
     const password = generateRandomString(15);
+    const hostColor = pickHostColor();
+    const matchSeed = buildRandomGameSeed();
 
     const invite = {
       version: controllerVersion,
       hostId: uid,
-      hostColor: hostColor,
+      hostColor,
       guestId: null,
-      password: password,
+      password,
       automatchStateHint: "pending",
       automatchCanceledAt: null,
     };
 
-    const match = {
-      version: controllerVersion,
-      color: hostColor,
-      emojiId: emojiId,
-      aura: aura,
-      fen: initialFen,
-      status: "",
-      flatMovesString: "",
-      timer: "",
-    };
+    const match = createMatchRecord(hostColor, emojiId, aura, matchSeed);
 
     const updates = {};
     updates[`players/${uid}/matches/${inviteId}`] = match;
     updates[`automatch/${inviteId}`] = {
-      uid: uid,
-      rating: rating,
+      uid,
+      rating,
       timestamp: admin.database.ServerValue.TIMESTAMP,
-      username: username,
-      ethAddress: ethAddress,
-      solAddress: solAddress,
-      profileId: profileId,
-      hostColor: hostColor,
-      password: password,
-      emojiId: emojiId,
+      username,
+      ethAddress,
+      solAddress,
+      profileId,
+      hostColor,
+      password,
+      emojiId,
+      gameVariant: matchSeed.gameVariant,
     };
     updates[`invites/${inviteId}`] = invite;
     await admin.database().ref().update(updates);
@@ -248,11 +236,25 @@ async function attemptAutomatch(
 
     return {
       ok: true,
-      inviteId: inviteId,
+      inviteId,
       mode: "pending",
       matchedImmediately: false,
     };
   }
+}
+
+function createMatchRecord(color, emojiId, aura, gameSeed) {
+  return {
+    version: controllerVersion,
+    color,
+    emojiId,
+    aura,
+    gameVariant: gameSeed.gameVariant,
+    fen: gameSeed.fen,
+    status: "",
+    flatMovesString: "",
+    timer: "",
+  };
 }
 
 async function acceptInvite(firstAutomatchId, invite, match, uid) {
@@ -287,7 +289,8 @@ function generateInviteId() {
   return "auto_" + generateRandomString(11);
 }
 
-const hostColor = Math.random() < 0.5 ? "white" : "black";
+function pickHostColor() {
+  return Math.random() < 0.5 ? "white" : "black";
+}
+
 const controllerVersion = 2;
-const initialFen =
-  "0 0 w 0 0 0 0 0 1 n03y0xs0xd0xa0xe0xn03/n11/n11/n04xxmn01xxmn04/n03xxmn01xxmn01xxmn03/xxQn04xxUn04xxQ/n03xxMn01xxMn01xxMn03/n04xxMn01xxMn04/n11/n11/n03E0xA0xD0xS0xY0xn03";

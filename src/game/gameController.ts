@@ -94,6 +94,15 @@ import { getSessionGuard } from "./matchSession";
 import { RouteState, getCurrentRouteState } from "../navigation/routeState";
 import { INVALID_SNAPSHOT_ROUTE_ERROR } from "../session/sessionErrors";
 import { closeEventModal, openEventModal } from "../ui/eventModalController";
+import {
+  buildGameSeedForStoredVariant,
+  buildRandomGameSeed,
+  createGameModelForStoredVariant,
+  GameSeed,
+  legacyDefaultGameVariant,
+  normalizeStoredGameVariant,
+  StoredGameVariant,
+} from "./gameVariants";
 
 export let initialFen = "";
 export let isWatchOnly = false;
@@ -140,8 +149,6 @@ let botAutomoveMode: BotAutomoveMode = normalizeBotAutomoveMode(
 const offMainThreadAutomoveRetryDelayMs = 15_000;
 let offMainThreadAutomoveDisabledUntilMs = 0;
 const automoveInFlightGames = new WeakSet<MonsWeb.MonsGameModel>();
-
-const defaultGameVariant = MonsWeb.GameVariant.Classic;
 
 const automoveAlreadyInProgressErrorMessage =
   "smart automove already in progress";
@@ -208,6 +215,47 @@ const getRandomReactionVariation = (variations: number[]): number => {
   return variations[variationIndex];
 };
 
+const setCurrentHomeSeed = (seed: GameSeed): GameSeed => {
+  currentHomeGameSeed = { ...seed };
+  initialFen = seed.fen;
+  return { ...currentHomeGameSeed };
+};
+
+export function getCurrentNewMatchSeed(): GameSeed {
+  if (!currentHomeGameSeed) {
+    return setCurrentHomeSeed(buildRandomGameSeed());
+  }
+  return { ...currentHomeGameSeed };
+}
+
+const setCurrentVariant = (gameVariant: unknown): StoredGameVariant => {
+  const normalizedVariant = normalizeStoredGameVariant(gameVariant);
+  currentGameVariant = normalizedVariant;
+  return normalizedVariant;
+};
+
+const applyGameSeedToCurrentGame = (seed: GameSeed): MonsWeb.MonsGameModel => {
+  setCurrentVariant(seed.gameVariant);
+  initialFen = seed.fen;
+  game = createGameModelForStoredVariant(seed.gameVariant);
+  return game;
+};
+
+const applyHomeBoardSeed = (seed: GameSeed): MonsWeb.MonsGameModel => {
+  setCurrentHomeSeed(seed);
+  return applyGameSeedToCurrentGame(seed);
+};
+
+const loadCurrentGameFromFen = (fen: string, gameVariant: unknown): boolean => {
+  const gameFromFen = MonsWeb.MonsGameModel.from_fen(fen);
+  if (!gameFromFen) {
+    return false;
+  }
+  setCurrentVariant(gameVariant);
+  game = gameFromFen;
+  return true;
+};
+
 var currentInputs: Location[] = [];
 
 let blackTimerStash: string | null = null;
@@ -226,6 +274,8 @@ let viewedRematchMatchId: string | null = null;
 let viewedRematchGame: MonsWeb.MonsGameModel | null = null;
 let viewedRematchPair: HistoricalMatchPair | null = null;
 let viewedRematchRequestToken = 0;
+let currentHomeGameSeed: GameSeed | null = null;
+let currentGameVariant: StoredGameVariant = legacyDefaultGameVariant;
 type BoardViewMode = "activeLive" | "waitingLive" | "historicalView";
 let boardViewMode: BoardViewMode = "activeLive";
 let isMoveHistoryPopupOpen = false;
@@ -310,6 +360,7 @@ export type RematchSeriesNavigatorItem = {
 type LocalRematchSnapshot = {
   matchId: string;
   index: number;
+  gameVariant: StoredGameVariant;
   gameModel: MonsWeb.MonsGameModel;
   fen: string;
   whiteScore: number;
@@ -921,6 +972,7 @@ function buildLocalHistoricalPair(
     version: 1,
     color: resignedColor ?? "white",
     emojiId: 0,
+    gameVariant: snapshot.gameVariant,
     fen: snapshot.fen,
     status: resignedColor ? "surrendered" : "finished",
     flatMovesString: "",
@@ -950,6 +1002,7 @@ function snapshotCurrentLocalMatchForHistory() {
   const snapshot: LocalRematchSnapshot = {
     matchId: localActiveRematchMatchId,
     index: matchIndex,
+    gameVariant: currentGameVariant,
     gameModel: game,
     fen: game.fen(),
     whiteScore: game.white_score(),
@@ -1169,10 +1222,11 @@ function movesArrayFromFlatString(flatMovesString: string | null): string[] {
 }
 
 function buildGameFromMoveStreams(
+  gameVariant: unknown,
   whiteMovesString: string,
   blackMovesString: string,
 ): MonsWeb.MonsGameModel | null {
-  const gameFromMoves = MonsWeb.MonsGameModel.new(defaultGameVariant);
+  const gameFromMoves = createGameModelForStoredVariant(gameVariant);
   const whiteMoves = movesArrayFromFlatString(whiteMovesString);
   const blackMoves = movesArrayFromFlatString(blackMovesString);
   let whiteIndex = 0;
@@ -1204,6 +1258,14 @@ function buildGameFromMoveStreams(
   return gameFromMoves;
 }
 
+function getHistoricalPairGameVariant(
+  pair: HistoricalMatchPair,
+): StoredGameVariant {
+  return normalizeStoredGameVariant(
+    pair.hostMatch?.gameVariant ?? pair.guestMatch?.gameVariant,
+  );
+}
+
 function getReconstructedGameFromPair(
   matchId: string,
   pair: HistoricalMatchPair,
@@ -1212,7 +1274,11 @@ function getReconstructedGameFromPair(
   if (whiteMoves === null || blackMoves === null) {
     return null;
   }
-  return buildGameFromMoveStreams(whiteMoves, blackMoves);
+  return buildGameFromMoveStreams(
+    getHistoricalPairGameVariant(pair),
+    whiteMoves,
+    blackMoves,
+  );
 }
 
 function moveHistoryEntitiesCount(gameModel: MonsWeb.MonsGameModel): number {
@@ -2127,8 +2193,14 @@ export async function go(routeStateOverride?: RouteState) {
   await initMonsWeb();
 
   playerSideColor = MonsWeb.Color.White;
-  game = MonsWeb.MonsGameModel.new(defaultGameVariant);
-  initialFen = game.fen();
+  currentHomeGameSeed = null;
+  if (isCreateInviteRoute()) {
+    applyHomeBoardSeed(buildRandomGameSeed());
+  } else {
+    applyGameSeedToCurrentGame(
+      buildGameSeedForStoredVariant(legacyDefaultGameVariant),
+    );
+  }
 
   if (isBotsRoute()) {
     game.locations_with_content().forEach((loc) => {
@@ -2151,11 +2223,9 @@ export async function go(routeStateOverride?: RouteState) {
     automove();
   } else if (isSnapshotRoute()) {
     const snapshot = routeState.snapshotId ?? "";
-    const gameFromFen = MonsWeb.MonsGameModel.from_fen(snapshot);
-    if (!gameFromFen) {
+    if (!loadCurrentGameFromFen(snapshot, legacyDefaultGameVariant)) {
       throw new Error(INVALID_SNAPSHOT_ROUTE_ERROR);
     }
-    game = gameFromFen;
     game.locations_with_content().forEach((loc) => {
       const location = new Location(loc.i, loc.j);
       updateLocation(location);
@@ -2273,6 +2343,8 @@ export function disposeGameSession() {
   lastBotMoveTimestamp = 0;
   processedVoiceReactions.clear();
   currentInputs = [];
+  currentHomeGameSeed = null;
+  currentGameVariant = legacyDefaultGameVariant;
   resetTimerStateForMatch(null);
   setCurrentWagerMatch(null);
   connection.setWagerViewMatchId(null);
@@ -2327,7 +2399,7 @@ export function failedToCreateRematchProposal() {
 
 function rematchInLoopMode() {
   isGameOver = false;
-  game = MonsWeb.MonsGameModel.new(defaultGameVariant);
+  applyGameSeedToCurrentGame(buildRandomGameSeed());
   Board.toggleBoardFlipped();
   playerSideColor =
     playerSideColor === MonsWeb.Color.White
@@ -2392,7 +2464,7 @@ function startFreshLocalMatch() {
   showWaitingStateText("");
   Board.setBoardFlipped(activeBoardShouldBeFlipped());
   Board.resetForNewGame();
-  game = MonsWeb.MonsGameModel.new(defaultGameVariant);
+  applyGameSeedToCurrentGame(buildRandomGameSeed());
   setNewBoard(false);
   updateUndoButtonBasedOnGameState();
   syncInviteBotIntoLocalGameButton();
@@ -2400,6 +2472,14 @@ function startFreshLocalMatch() {
 }
 
 function startBotMatch(botColor: MonsWeb.Color) {
+  const shouldReuseDisplayedHomeSeed =
+    isCreateInviteRoute() &&
+    !didStartLocalGame &&
+    !isGameWithBot &&
+    !isOnlineGame;
+  const nextSeed = shouldReuseDisplayedHomeSeed
+    ? getCurrentNewMatchSeed()
+    : buildRandomGameSeed();
   ensureLocalRematchSeriesInitialized();
   prepareForNewLocalLiveMatch();
   resetBotScoreReactionState();
@@ -2439,7 +2519,7 @@ function startBotMatch(botColor: MonsWeb.Color) {
   Board.setBoardFlipped(botColor === MonsWeb.Color.White);
   Board.showOpponentAsBotPlayer();
   Board.resetForNewGame();
-  game = MonsWeb.MonsGameModel.new(defaultGameVariant);
+  applyGameSeedToCurrentGame(nextSeed);
   setNewBoard(false);
   botPlayerColor = botColor;
   playerSideColor =
@@ -2457,6 +2537,7 @@ function startBotMatch(botColor: MonsWeb.Color) {
 
 export function didJustCreateRematchProposalSuccessfully(
   inviteId: string,
+  nextMatch: Match,
   previousMatchId: string | null,
   previousMatchPair: HistoricalMatchPair | null,
 ) {
@@ -2492,8 +2573,13 @@ export function didJustCreateRematchProposalSuccessfully(
   currentGameModelMatchId = null;
   whiteFlatMovesString = null;
   blackFlatMovesString = null;
-  playerSideColor = MonsWeb.Color.White;
-  game = MonsWeb.MonsGameModel.new(defaultGameVariant);
+  playerSideColor =
+    nextMatch.color === "black" ? MonsWeb.Color.Black : MonsWeb.Color.White;
+  if (!loadCurrentGameFromFen(nextMatch.fen, nextMatch.gameVariant)) {
+    applyGameSeedToCurrentGame(
+      buildGameSeedForStoredVariant(nextMatch.gameVariant),
+    );
+  }
 
   resignedColor = undefined;
   winnerByTimerColor = undefined;
@@ -3300,7 +3386,9 @@ function turnShouldBeConfirmedForOutputEvents(
           for (const loc of startLocations) {
             const nextOutput = gameBeforeMove.process_input([loc]);
             try {
-              if (nextOutput.kind === MonsWeb.OutputModelKind.NextInputOptions) {
+              if (
+                nextOutput.kind === MonsWeb.OutputModelKind.NextInputOptions
+              ) {
                 const nextInputs = nextOutput.next_inputs();
                 if (
                   nextInputs.some(
@@ -4011,9 +4099,9 @@ export function playSameCompletedPuzzleAgain() {
 }
 
 export function resetToTheStartOfThePuzzle() {
-  const gameFromFen = MonsWeb.MonsGameModel.from_fen(selectedProblem!.fen);
-  if (!gameFromFen) return;
-  game = gameFromFen;
+  if (!loadCurrentGameFromFen(selectedProblem!.fen, legacyDefaultGameVariant)) {
+    return;
+  }
   setNewBoard(false);
   playSounds([Sound.Undo]);
   Board.removeHighlights();
@@ -4608,9 +4696,7 @@ function didConnectTo(match: Match, matchPlayerUid: string, matchId: string) {
     (isReconnect && !game.is_later_than(match.fen)) ||
     isWatchOnly
   ) {
-    const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
-    if (!gameFromFen) return;
-    game = gameFromFen;
+    if (!loadCurrentGameFromFen(match.fen, match.gameVariant)) return;
     if (game.winner_color() !== undefined) {
       disableAndHideUndoResignAndTimerControls();
       Board.hideTimerCountdownDigits();
@@ -5106,11 +5192,9 @@ export function didSelectPuzzle(
   isGameOver = false;
   currentInputs = [];
 
-  const gameFromFen = MonsWeb.MonsGameModel.from_fen(problem.fen);
-  if (!gameFromFen) return;
+  if (!loadCurrentGameFromFen(problem.fen, legacyDefaultGameVariant)) return;
   clearMoveHistoryFlipOverrideForCurrentSession();
   flashbackMode = false;
-  game = gameFromFen;
   didStartLocalGame = true;
   setHomeVisible(true);
   setIslandButtonDimmed(true);
@@ -5305,9 +5389,7 @@ export function didReceiveMatchUpdate(
   ) {
     didNotHaveBothMatchesSetupBeforeThisUpdate = true;
     if (!game.is_later_than(match.fen)) {
-      const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
-      if (!gameFromFen) return;
-      game = gameFromFen;
+      if (!loadCurrentGameFromFen(match.fen, match.gameVariant)) return;
       if (game.winner_color() !== undefined) {
         disableAndHideUndoResignAndTimerControls();
         Board.hideTimerCountdownDigits();
@@ -5336,9 +5418,7 @@ export function didReceiveMatchUpdate(
         const moveFen = movesFens[i];
         const output = game.process_input_fen(moveFen);
         if (output.kind === MonsWeb.OutputModelKind.InvalidInput) {
-          const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
-          if (gameFromFen) {
-            game = gameFromFen;
+          if (loadCurrentGameFromFen(match.fen, match.gameVariant)) {
             nextProcessedMovesCount = movesCount;
           }
           break;
@@ -5402,9 +5482,7 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
 
   playerSideColor =
     match.color === "white" ? MonsWeb.Color.White : MonsWeb.Color.Black;
-  const gameFromFen = MonsWeb.MonsGameModel.from_fen(match.fen);
-  if (!gameFromFen) return;
-  game = gameFromFen;
+  if (!loadCurrentGameFromFen(match.fen, match.gameVariant)) return;
   if (shouldRenderLiveBoard) {
     Board.setBoardFlipped(activeBoardShouldBeFlipped());
   }

@@ -3,6 +3,7 @@ export interface Match {
   color: string;
   emojiId: number;
   aura?: string;
+  gameVariant?: string;
   fen: string;
   status: string;
   flatMovesString: string;
