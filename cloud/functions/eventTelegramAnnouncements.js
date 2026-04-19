@@ -11,7 +11,7 @@ const EVENT_TELEGRAM_LOCK_TTL_MS = 2 * 60 * 1000;
 const EVENT_TELEGRAM_LOCK_ATTEMPTS = 3;
 const EVENT_TELEGRAM_LOCK_RETRY_DELAY_MS = 120;
 const EVENT_TELEGRAM_TRIGGER_BASE_OPTIONS = {
-  maxInstances: 5,
+  maxInstances: 3,
   concurrency: 20,
   memory: "256MiB",
   cpu: 1,

@@ -252,7 +252,7 @@ async function projectEvent(eventId, beforeData, afterData) {
 const onEventWritten = onValueWritten(
   {
     ref: "/events/{eventId}",
-    maxInstances: 10,
+    maxInstances: 3,
     concurrency: 40,
     memory: "256MiB",
     cpu: 1,

@@ -1,4 +1,9 @@
+const { setGlobalOptions } = require("firebase-functions/v2");
 const admin = require("firebase-admin");
+
+// Use 1st gen CPU sizing for low-memory v2 functions to stay within regional CPU quota.
+setGlobalOptions({ cpu: "gcf_gen1" });
+
 admin.initializeApp();
 
 const { verifySolanaAddress } = require("./verifySolanaAddress");

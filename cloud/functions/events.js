@@ -3134,9 +3134,10 @@ const runEventSyncState = async ({
 
 exports.syncEventState = onCall(
   {
-    maxInstances: 20,
+    maxInstances: 3,
     concurrency: 20,
     memory: "512MiB",
+    cpu: 1,
     timeoutSeconds: 30,
   },
   async (request) => {
@@ -3174,9 +3175,10 @@ exports.syncEventState = onCall(
 
 exports.processEventProgress = onTaskDispatched(
   {
-    maxInstances: 20,
+    maxInstances: 3,
     concurrency: 20,
     memory: "512MiB",
+    cpu: 1,
     timeoutSeconds: 30,
     retryConfig: {
       maxAttempts: 12,
@@ -3243,9 +3245,10 @@ exports.processEventProgress = onTaskDispatched(
 exports.processEventProgressFallback = onValueWritten(
   {
     ref: "/eventProgressFallback/{eventId}/{signalId}",
-    maxInstances: 20,
+    maxInstances: 3,
     concurrency: 20,
     memory: "512MiB",
+    cpu: 1,
     timeoutSeconds: 30,
     retry: true,
   },
