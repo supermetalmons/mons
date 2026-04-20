@@ -130,4 +130,27 @@ describe("generateBoardPattern", () => {
     );
     expect(getFillFor(pattern, "legacy", 3, 3)).toBe(testColorSet.lightSquare);
   });
+
+  test("keeps the initial live-board fallback free of mana-base highlights", () => {
+    const pattern = generateBoardPattern({
+      colorSet: testColorSet,
+      size: 11,
+      cellSize: 1,
+      keyPrefix: "initial-live",
+      squareTypes: null,
+    });
+
+    expect(getFillFor(pattern, "initial-live", 0, 0)).toBe(
+      testColorSet.manaPool,
+    );
+    expect(getFillFor(pattern, "initial-live", 5, 0)).toBe(
+      testColorSet.pickupItemSquare,
+    );
+    expect(getFillFor(pattern, "initial-live", 5, 5)).toBe(
+      testColorSet.manaPool,
+    );
+    expect(getFillFor(pattern, "initial-live", 3, 4)).toBe(
+      testColorSet.darkSquare,
+    );
+  });
 });

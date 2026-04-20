@@ -1,7 +1,9 @@
 import React from "react";
 import type { ColorSet } from "../content/boardStyles";
 import {
+  getDisplayedBoardSquareType,
   getLegacyBoardSquareType,
+  type BoardSquareType,
   type BoardSquareTypeGrid,
 } from "../game/boardSquareTypes";
 
@@ -24,9 +26,17 @@ const getBoardPatternSquareFill = (
 ): string => {
   const isLightTile = (row + col) % 2 === 0;
   const defaultFill = isLightTile ? colorSet.lightSquare : colorSet.darkSquare;
-  const squareType = squareTypes
-    ? (squareTypes[row]?.[col] ?? "regular")
-    : getLegacyBoardSquareType(row, col);
+  let squareType: BoardSquareType;
+  if (squareTypes === undefined) {
+    squareType = getLegacyBoardSquareType(row, col);
+  } else if (squareTypes === null) {
+    squareType = getDisplayedBoardSquareType(
+      getLegacyBoardSquareType(row, col),
+      false,
+    );
+  } else {
+    squareType = squareTypes[row]?.[col] ?? "regular";
+  }
 
   switch (squareType) {
     case "manaBase":
