@@ -8,6 +8,9 @@ const STORAGE_KEYS = {
   BOARD_COLOR_SET: "boardColorSet",
   BOARD_COLOR_SETS_BY_THEME: "boardColorSetsByTheme",
   IS_EXPERIMENTING_WITH_SPRITES: "isExperimentingWithSprites",
+  KEEP_ORIGINAL_BOARD_TILE_COLORING: "keepOriginalBoardTileColoring",
+  HIGHLIGHT_NON_CLASSIC_MANA_BASES: "highlightNonClassicManaBases",
+  USE_LIGHT_TILE_MANA_BASE_SHADE: "useLightTileManaBaseShade",
 
   PLAYER_EMOJI_ID: "playerEmojiId",
   PLAYER_EMOJI_AURA: "playerEmojiAura",
@@ -145,6 +148,33 @@ export const storage = {
 
   setIsExperimentingWithSprites: (value: boolean): void => {
     setItem(STORAGE_KEYS.IS_EXPERIMENTING_WITH_SPRITES, value);
+  },
+
+  getKeepOriginalBoardTileColoring: (defaultValue: boolean): boolean => {
+    return getItem(
+      STORAGE_KEYS.KEEP_ORIGINAL_BOARD_TILE_COLORING,
+      defaultValue,
+    );
+  },
+
+  setKeepOriginalBoardTileColoring: (value: boolean): void => {
+    setItem(STORAGE_KEYS.KEEP_ORIGINAL_BOARD_TILE_COLORING, value);
+  },
+
+  getHighlightNonClassicManaBases: (defaultValue: boolean): boolean => {
+    return getItem(STORAGE_KEYS.HIGHLIGHT_NON_CLASSIC_MANA_BASES, defaultValue);
+  },
+
+  setHighlightNonClassicManaBases: (value: boolean): void => {
+    setItem(STORAGE_KEYS.HIGHLIGHT_NON_CLASSIC_MANA_BASES, value);
+  },
+
+  getUseLightTileManaBaseShade: (defaultValue: boolean): boolean => {
+    return getItem(STORAGE_KEYS.USE_LIGHT_TILE_MANA_BASE_SHADE, defaultValue);
+  },
+
+  setUseLightTileManaBaseShade: (value: boolean): void => {
+    setItem(STORAGE_KEYS.USE_LIGHT_TILE_MANA_BASE_SHADE, value);
   },
 
   getPlayerEmojiId: (defaultValue: string): string => {

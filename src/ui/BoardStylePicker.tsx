@@ -428,8 +428,6 @@ const BoardStylePickerComponent: React.FC = () => {
       event.preventDefault();
       setBoardColorSet(colorSetKey);
       setBoardStyleSet(BoardStyleSet.Grid);
-      setCurrentColorSetKey(getCurrentColorSetKey());
-      setSelectedBoardStyleSet(getCurrentBoardStyleSet());
     };
 
   const handlePangchiuBoardSelected = (
@@ -439,7 +437,6 @@ const BoardStylePickerComponent: React.FC = () => {
   ) => {
     event.preventDefault();
     setBoardStyleSet(BoardStyleSet.Pangchiu);
-    setSelectedBoardStyleSet(getCurrentBoardStyleSet());
   };
 
   const handleItemsStyleSetChange =
@@ -451,20 +448,24 @@ const BoardStylePickerComponent: React.FC = () => {
     ) => {
       event.preventDefault();
       setItemsStyleSet(assetsSet);
-      setSelectedItemsStyleSet(getCurrentAssetsSet());
     };
 
   const renderColorSquares = (colorSet: "light" | "dark") => {
     const colors =
       colorSet === "light" ? colorSets.default : colorSets.darkAndYellow;
-    const boardSize = 11;
-    const cellSize = 38 / boardSize;
+    const previewBoardSize = 1100;
+    const previewCellSize = 100;
     return (
-      <svg viewBox="0 0 38 38" width="38" height="38">
+      <svg
+        viewBox={`0 0 ${previewBoardSize} ${previewBoardSize}`}
+        width="38"
+        height="38"
+        shapeRendering="crispEdges"
+      >
         {generateBoardPattern({
           colorSet: colors,
-          size: 38,
-          cellSize: cellSize,
+          size: previewBoardSize,
+          cellSize: previewCellSize,
           offsetY: 0,
           keyPrefix: `preview-${colorSet}`,
         })}

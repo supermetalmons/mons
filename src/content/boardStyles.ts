@@ -160,6 +160,7 @@ export type ColorSet = {
   manaPool: string;
   pickupItemSquare: string;
   simpleManaSquare: string;
+  simpleManaSquareOnLightTile: string;
   wave1: string;
   wave2: string;
 };
@@ -171,6 +172,7 @@ export const colorSets = {
     manaPool: "#030DF4",
     pickupItemSquare: "#4F4F4F",
     simpleManaSquare: "#88A8F8",
+    simpleManaSquareOnLightTile: "#D0E0FF",
     wave1: "#6666FF",
     wave2: "#00FCFF",
   },
@@ -180,6 +182,7 @@ export const colorSets = {
     manaPool: "#FDF30B",
     pickupItemSquare: "#BAB8B9",
     simpleManaSquare: "#816306",
+    simpleManaSquareOnLightTile: "#816306",
     wave1: "#D39F00",
     wave2: "#DBCF03",
   },

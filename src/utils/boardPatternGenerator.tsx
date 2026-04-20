@@ -1,5 +1,9 @@
 import React from "react";
-import { ColorSet } from "../content/boardStyles";
+import type { ColorSet } from "../content/boardStyles";
+import {
+  getLegacyBoardSquareType,
+  type BoardSquareTypeGrid,
+} from "../game/boardSquareTypes";
 
 export interface BoardPatternProps {
   colorSet: ColorSet;
@@ -7,7 +11,39 @@ export interface BoardPatternProps {
   cellSize: number;
   offsetY?: number;
   keyPrefix?: string;
+  squareTypes?: BoardSquareTypeGrid | null;
+  useLightTileManaBaseShade?: boolean;
 }
+
+const getBoardPatternSquareFill = (
+  row: number,
+  col: number,
+  colorSet: ColorSet,
+  squareTypes?: BoardSquareTypeGrid | null,
+  useLightTileManaBaseShade: boolean = false,
+): string => {
+  const isLightTile = (row + col) % 2 === 0;
+  const defaultFill = isLightTile ? colorSet.lightSquare : colorSet.darkSquare;
+  const squareType = squareTypes
+    ? (squareTypes[row]?.[col] ?? "regular")
+    : getLegacyBoardSquareType(row, col);
+
+  switch (squareType) {
+    case "manaBase":
+      return useLightTileManaBaseShade && isLightTile
+        ? colorSet.simpleManaSquareOnLightTile
+        : colorSet.simpleManaSquare;
+    case "supermanaBase":
+    case "manaPool":
+      return colorSet.manaPool;
+    case "consumableBase":
+      return colorSet.pickupItemSquare;
+    case "monBase":
+    case "regular":
+    default:
+      return defaultFill;
+  }
+};
 
 export const generateBoardPattern = ({
   colorSet,
@@ -15,108 +51,34 @@ export const generateBoardPattern = ({
   cellSize,
   offsetY = 0,
   keyPrefix = "square",
+  squareTypes,
+  useLightTileManaBaseShade = false,
 }: BoardPatternProps): React.JSX.Element[] => {
   const elements: React.JSX.Element[] = [];
+  const boardSize = Math.round(size / cellSize);
 
-  elements.push(
-    <rect
-      key={`${keyPrefix}-background`}
-      y={offsetY}
-      width={size}
-      height={size}
-      fill={colorSet.lightSquare}
-    />,
-  );
-
-  for (let row = 0; row < 11; row++) {
-    for (let col = 0; col < 11; col++) {
-      if ((row + col) % 2 === 1) {
-        const x = col * cellSize;
-        const y = row * cellSize + offsetY;
-        elements.push(
-          <rect
-            key={`${keyPrefix}-${row}-${col}`}
-            x={x}
-            y={y}
-            width={cellSize}
-            height={cellSize}
-            fill={colorSet.darkSquare}
-          />,
-        );
-      }
+  for (let row = 0; row < boardSize; row += 1) {
+    for (let col = 0; col < boardSize; col += 1) {
+      const x = col * cellSize;
+      const y = row * cellSize + offsetY;
+      elements.push(
+        <rect
+          key={`${keyPrefix}-${row}-${col}`}
+          x={x}
+          y={y}
+          width={cellSize}
+          height={cellSize}
+          fill={getBoardPatternSquareFill(
+            row,
+            col,
+            colorSet,
+            squareTypes,
+            useLightTileManaBaseShade,
+          )}
+        />,
+      );
     }
   }
-
-  const manaPoolPositions = [
-    [5, 5],
-    [0, 0],
-    [10, 10],
-    [10, 0],
-    [0, 10],
-  ];
-
-  manaPoolPositions.forEach(([col, row], i) => {
-    const x = col * cellSize;
-    const y = row * cellSize + offsetY;
-    elements.push(
-      <rect
-        key={`${keyPrefix}-mana-pool-${i}`}
-        x={x}
-        y={y}
-        width={cellSize}
-        height={cellSize}
-        fill={colorSet.manaPool}
-      />,
-    );
-  });
-
-  const pickupPositions = [
-    [0, 5],
-    [10, 5],
-  ];
-
-  pickupPositions.forEach(([col, row], i) => {
-    const x = col * cellSize;
-    const y = row * cellSize + offsetY;
-    elements.push(
-      <rect
-        key={`${keyPrefix}-pickup-${i}`}
-        x={x}
-        y={y}
-        width={cellSize}
-        height={cellSize}
-        fill={colorSet.pickupItemSquare}
-      />,
-    );
-  });
-
-  const simpleManaPositions = [
-    [4, 3],
-    [6, 3],
-    [4, 7],
-    [6, 7],
-    [3, 4],
-    [5, 4],
-    [7, 4],
-    [3, 6],
-    [5, 6],
-    [7, 6],
-  ];
-
-  simpleManaPositions.forEach(([col, row], i) => {
-    const x = col * cellSize;
-    const y = row * cellSize + offsetY;
-    elements.push(
-      <rect
-        key={`${keyPrefix}-simple-mana-${i}`}
-        x={x}
-        y={y}
-        width={cellSize}
-        height={cellSize}
-        fill={colorSet.simpleManaSquare}
-      />,
-    );
-  });
 
   return elements;
 };

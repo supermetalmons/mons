@@ -11,13 +11,20 @@ import {
   isWatchOnly,
   subscribeToWatchOnly,
   didClickBotStrengthControlButton,
+  getCurrentDisplayedBoardSquareTypes,
+  subscribeToDisplayedBoardSquareTypes,
 } from "../game/gameController";
+import type { BoardSquareTypeGrid } from "../game/boardSquareTypes";
 import {
   ColorSet,
   getCurrentColorSet,
   isCustomPictureBoardEnabled,
   subscribeToBoardColorSetChanges,
 } from "../content/boardStyles";
+import {
+  getUseLightTileManaBaseShade,
+  subscribeToBoardPatternSettings,
+} from "../content/boardPatternSettings";
 import { defaultInputEventName, isMobile } from "../utils/misc";
 import { generateBoardPattern } from "../utils/boardPatternGenerator";
 import {
@@ -398,6 +405,12 @@ const BoardComponent: React.FC = () => {
   const [shouldIncludePangchiuImage, setShouldIncludePangchiuImage] = useState(
     isCustomPictureBoardEnabled(),
   );
+  const [displayedBoardSquareTypes, setDisplayedBoardSquareTypes] =
+    useState<BoardSquareTypeGrid | null>(() =>
+      getCurrentDisplayedBoardSquareTypes(),
+    );
+  const [useLightTileManaBaseShade, setUseLightTileManaBaseShade] =
+    useState<boolean>(getUseLightTileManaBaseShade);
   const [overlayState, setOverlayState] = useState<{
     blurry: boolean;
     svgElement: SVGElement | null;
@@ -799,6 +812,19 @@ const BoardComponent: React.FC = () => {
     return () => {
       unsubscribe();
     };
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToDisplayedBoardSquareTypes(
+      setDisplayedBoardSquareTypes,
+    );
+    return () => {
+      unsubscribe();
+    };
+  }, []);
+
+  useEffect(() => {
+    return subscribeToBoardPatternSettings(setUseLightTileManaBaseShade);
   }, []);
 
   useEffect(() => {
@@ -2027,6 +2053,8 @@ const BoardComponent: React.FC = () => {
               cellSize: 100,
               offsetY: 100,
               keyPrefix: "board",
+              squareTypes: displayedBoardSquareTypes,
+              useLightTileManaBaseShade: useLightTileManaBaseShade,
             })}
           </g>
         ) : (
