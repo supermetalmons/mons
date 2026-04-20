@@ -130,9 +130,9 @@ let pendingOnlineReconnectInviteId: string | null = null;
 let lastOnlineReconnectRequestedAtMs = 0;
 const onlineReconnectRequestCooldownMs = 3000;
 let shouldKeepOriginalBoardTileColoring =
-  storage.getKeepOriginalBoardTileColoring(true);
+  storage.getKeepOriginalBoardTileColoring(false);
 let shouldHighlightManaBasesOnNonClassicVariants =
-  storage.getHighlightNonClassicManaBases(false);
+  storage.getHighlightNonClassicManaBases(true);
 
 const watchOnlyListeners = new Set<(value: boolean) => void>();
 const displayedBoardSquareTypeListeners = new Set<

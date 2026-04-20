@@ -6,7 +6,7 @@ type BoardPatternSettingsListener = (
 
 const listeners = new Set<BoardPatternSettingsListener>();
 
-let useLightTileManaBaseShade = storage.getUseLightTileManaBaseShade(false);
+let useLightTileManaBaseShade = storage.getUseLightTileManaBaseShade(true);
 
 const notifyListeners = () => {
   const snapshot = useLightTileManaBaseShade;
