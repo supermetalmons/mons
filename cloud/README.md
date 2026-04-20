@@ -4,7 +4,11 @@
 
 `firebase deploy --only functions`
 
+`cd functions && npm run deploy:safe`
+
 `firebase deploy --only functions:verifyEthAddress`
+
+`cd functions && npm run deploy:safe -- --batch-size 5`
 
 `firebase auth:export users.json --format=json`
 
