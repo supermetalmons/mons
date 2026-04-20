@@ -129,10 +129,8 @@ let pendingAutomatchTransition = false;
 let pendingOnlineReconnectInviteId: string | null = null;
 let lastOnlineReconnectRequestedAtMs = 0;
 const onlineReconnectRequestCooldownMs = 3000;
-let shouldKeepOriginalBoardTileColoring =
-  storage.getKeepOriginalBoardTileColoring(false);
-let shouldHighlightManaBasesOnNonClassicVariants =
-  storage.getHighlightNonClassicManaBases(true);
+const shouldKeepOriginalBoardTileColoring = false;
+const shouldHighlightManaBasesOnNonClassicVariants = true;
 
 const watchOnlyListeners = new Set<(value: boolean) => void>();
 const displayedBoardSquareTypeListeners = new Set<
@@ -294,30 +292,6 @@ const refreshDisplayedBoardSquareTypes = (
 
 export const getCurrentDisplayedBoardSquareTypes = () =>
   displayedBoardSquareTypes;
-
-export const getKeepOriginalBoardTileColoring = () =>
-  shouldKeepOriginalBoardTileColoring;
-
-export const getHighlightNonClassicManaBases = () =>
-  shouldHighlightManaBasesOnNonClassicVariants;
-
-export const setKeepOriginalBoardTileColoring = (enabled: boolean) => {
-  if (shouldKeepOriginalBoardTileColoring === enabled) {
-    return;
-  }
-  shouldKeepOriginalBoardTileColoring = enabled;
-  storage.setKeepOriginalBoardTileColoring(enabled);
-  refreshDisplayedBoardSquareTypes();
-};
-
-export const setHighlightNonClassicManaBases = (enabled: boolean) => {
-  if (shouldHighlightManaBasesOnNonClassicVariants === enabled) {
-    return;
-  }
-  shouldHighlightManaBasesOnNonClassicVariants = enabled;
-  storage.setHighlightNonClassicManaBases(enabled);
-  refreshDisplayedBoardSquareTypes();
-};
 
 export const subscribeToDisplayedBoardSquareTypes = (
   listener: (squareTypes: BoardSquareTypeGrid | null) => void,

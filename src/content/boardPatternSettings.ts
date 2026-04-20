@@ -1,35 +1,4 @@
-import { storage } from "../utils/storage";
+const USE_LIGHT_TILE_MANA_BASE_SHADE = true;
 
-type BoardPatternSettingsListener = (
-  useLightTileManaBaseShade: boolean,
-) => void;
-
-const listeners = new Set<BoardPatternSettingsListener>();
-
-let useLightTileManaBaseShade = storage.getUseLightTileManaBaseShade(true);
-
-const notifyListeners = () => {
-  const snapshot = useLightTileManaBaseShade;
-  listeners.forEach((listener) => listener(snapshot));
-};
-
-export const getUseLightTileManaBaseShade = () => useLightTileManaBaseShade;
-
-export const setUseLightTileManaBaseShade = (enabled: boolean) => {
-  if (useLightTileManaBaseShade === enabled) {
-    return;
-  }
-  useLightTileManaBaseShade = enabled;
-  storage.setUseLightTileManaBaseShade(enabled);
-  notifyListeners();
-};
-
-export const subscribeToBoardPatternSettings = (
-  listener: BoardPatternSettingsListener,
-) => {
-  listeners.add(listener);
-  listener(useLightTileManaBaseShade);
-  return () => {
-    listeners.delete(listener);
-  };
-};
+export const getUseLightTileManaBaseShade = () =>
+  USE_LIGHT_TILE_MANA_BASE_SHADE;

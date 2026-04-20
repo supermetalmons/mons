@@ -40,16 +40,6 @@ import {
 } from "../connection/connectionModels";
 import { registerMainMenuTransientUiHandler } from "./uiSession";
 import { connection } from "../connection/connection";
-import {
-  getKeepOriginalBoardTileColoring,
-  getHighlightNonClassicManaBases,
-  setKeepOriginalBoardTileColoring,
-  setHighlightNonClassicManaBases,
-} from "../game/gameController";
-import {
-  getUseLightTileManaBaseShade,
-  setUseLightTileManaBaseShade,
-} from "../content/boardPatternSettings";
 import type {
   EventCreateDateTimePayload,
   EventScheduleTimezone,
@@ -871,14 +861,6 @@ const MainMenu: React.FC = () => {
   const [areAnimatedMonsEnabled, setAreAnimatedMonsEnabled] = useState<boolean>(
     storage.getIsExperimentingWithSprites(false),
   );
-  const [keepsOriginalBoardTileColoring, setKeepsOriginalBoardTileColoring] =
-    useState<boolean>(() => getKeepOriginalBoardTileColoring());
-  const [
-    areNonClassicManaBasesHighlighted,
-    setAreNonClassicManaBasesHighlighted,
-  ] = useState<boolean>(() => getHighlightNonClassicManaBases());
-  const [usesLightTileManaBaseShade, setUsesLightTileManaBaseShade] =
-    useState<boolean>(() => getUseLightTileManaBaseShade());
   const [leaderboardType, setLeaderboardType] = useState<LeaderboardType>(
     () => {
       const stored = storage.getLeaderboardType("rating");
@@ -1082,21 +1064,6 @@ const MainMenu: React.FC = () => {
     (checked) => {
       setAnimatedMonsEnabled(checked, false);
     },
-  );
-
-  const handleNonClassicManaBaseToggle = handleBooleanToggle(
-    setAreNonClassicManaBasesHighlighted,
-    setHighlightNonClassicManaBases,
-  );
-
-  const handleKeepOriginalBoardTileColoringToggle = handleBooleanToggle(
-    setKeepsOriginalBoardTileColoring,
-    setKeepOriginalBoardTileColoring,
-  );
-
-  const handleLightTileManaBaseShadeToggle = handleBooleanToggle(
-    setUsesLightTileManaBaseShade,
-    setUseLightTileManaBaseShade,
   );
 
   const handleCreateEvent = useCallback(() => {
@@ -1642,30 +1609,6 @@ const MainMenu: React.FC = () => {
                         onChange={handleAnimatedMonsToggle}
                       />
                       animated mons
-                    </ToggleRow>
-                    <ToggleRow>
-                      <input
-                        type="checkbox"
-                        checked={keepsOriginalBoardTileColoring}
-                        onChange={handleKeepOriginalBoardTileColoringToggle}
-                      />
-                      keep original board coloring on all variants
-                    </ToggleRow>
-                    <ToggleRow>
-                      <input
-                        type="checkbox"
-                        checked={areNonClassicManaBasesHighlighted}
-                        onChange={handleNonClassicManaBaseToggle}
-                      />
-                      highlight mana bases on non-classic variants
-                    </ToggleRow>
-                    <ToggleRow>
-                      <input
-                        type="checkbox"
-                        checked={usesLightTileManaBaseShade}
-                        onChange={handleLightTileManaBaseShadeToggle}
-                      />
-                      lighter mana bases on light tiles
                     </ToggleRow>
                     <BuildInfo>{getBuildInfo()}</BuildInfo>
                   </ExperimentalMenu>
