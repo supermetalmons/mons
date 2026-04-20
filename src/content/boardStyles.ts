@@ -182,7 +182,7 @@ export const colorSets = {
     manaPool: "#FDF30B",
     pickupItemSquare: "#BAB8B9",
     simpleManaSquare: "#816306",
-    simpleManaSquareOnLightTile: "#816306",
+    simpleManaSquareOnLightTile: "#C9970A",
     wave1: "#D39F00",
     wave2: "#DBCF03",
   },
