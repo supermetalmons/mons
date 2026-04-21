@@ -91,6 +91,7 @@ import {
   incrementLifecycleCounter,
 } from "../lifecycle/lifecycleDiagnostics";
 import { getSessionGuard } from "./matchSession";
+import { syncOwnProfileMiningState } from "../services/ownProfileMiningHydration";
 import { RouteState, getCurrentRouteState } from "../navigation/routeState";
 import { INVALID_SNAPSHOT_ROUTE_ERROR } from "../session/sessionErrors";
 import { closeEventModal, openEventModal } from "../ui/eventModalController";
@@ -5673,6 +5674,33 @@ export function didRecoverMyMatch(match: Match, matchId: string) {
 export function enterWatchOnlyMode() {
   setWatchOnlyState(true);
   setWatchOnlyVisible(true);
+  const storedLoginId = storage.getLoginId("");
+  const storedProfileId = storage.getProfileId("");
+  if (storedLoginId === "" || storedProfileId === "") {
+    return;
+  }
+  const sessionGuard = getSessionGuard();
+  // Spectator sessions do not hydrate the local player through the regular
+  // in-game profile path, so pull the signed-in profile once to restore
+  // mining state for the island button.
+  connection
+    .getProfileByLoginId(storedLoginId)
+    .then((profile) => {
+      if (!sessionGuard()) {
+        return;
+      }
+      if (
+        storage.getLoginId("") !== storedLoginId ||
+        storage.getProfileId("") !== storedProfileId
+      ) {
+        return;
+      }
+      if (profile.id !== storedProfileId) {
+        return;
+      }
+      syncOwnProfileMiningState(profile);
+    })
+    .catch(() => {});
 }
 
 function movesFensArray(match: Match): string[] {

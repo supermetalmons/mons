@@ -6,7 +6,10 @@ import { updateEmojiAndAuraIfNeeded } from "../game/board";
 import { isWatchOnly } from "../game/gameController";
 import { updateProfileDisplayName } from "../ui/ProfileSignIn";
 import { syncTutorialProgress } from "../content/problems";
-import { rocksMiningService } from "../services/rocksMiningService";
+import {
+  resetPendingOwnProfileMiningState,
+  syncOwnProfileMiningState,
+} from "../services/ownProfileMiningHydration";
 
 export type PlayerMetadata = {
   uid: string;
@@ -142,6 +145,9 @@ export function updatePlayerMetadataWithProfile(
 
   if (profile.rating !== undefined && profile.nonce !== undefined) {
     allProfilesDict[loginId] = profile;
+    if (own) {
+      syncOwnProfileMiningState(profile);
+    }
     onSuccess();
   } else {
     connection
@@ -187,13 +193,7 @@ export function updatePlayerMetadataWithProfile(
             storage.setProfileMons(profile.profileMons);
           }
 
-          if (profile.mining) {
-            storage.setMiningLastRockDate(profile.mining.lastRockDate ?? null);
-            storage.setMiningMaterials(profile.mining.materials);
-            rocksMiningService.setFromServer(profile.mining, {
-              persist: false,
-            });
-          }
+          syncOwnProfileMiningState(profile);
 
           updateProfileDisplayName(
             profile.username ?? "",
@@ -292,4 +292,5 @@ export function resetPlayerMetadataCaches() {
   );
   Object.keys(ensDict).forEach((key) => delete ensDict[key]);
   Object.keys(allProfilesDict).forEach((key) => delete allProfilesDict[key]);
+  resetPendingOwnProfileMiningState();
 }

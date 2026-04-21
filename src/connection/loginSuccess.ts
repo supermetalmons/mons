@@ -14,12 +14,15 @@ import {
   PlayerProfile,
 } from "../connection/connectionModels";
 import { syncTutorialProgress } from "../content/problems";
-import { rocksMiningService } from "../services/rocksMiningService";
 import {
   clearPendingLogoutWipeAfterSignIn,
   enforcePendingLogoutWipeIfNeeded,
   notifyOtherTabsAboutSignIn,
 } from "../session/logoutOrchestrator";
+import {
+  flushPendingOwnProfileMiningState,
+  syncOwnProfileMiningState,
+} from "../services/ownProfileMiningHydration";
 
 export type AddressKind = "eth" | "sol" | "apple" | "x";
 
@@ -76,6 +79,7 @@ export function handleLoginSuccess(
     isTutorialCompleted: undefined,
     eth: resolvedEth ?? null,
     sol: resolvedSol ?? null,
+    mining: res.mining,
   };
 
   if (res.rating !== undefined) profile.rating = res.rating;
@@ -105,6 +109,8 @@ export function handleLoginSuccess(
   storage.setLoginId(res.uid);
   storage.setEthAddress(resolvedEth ?? "");
   storage.setSolAddress(resolvedSol ?? "");
+  syncOwnProfileMiningState(profile);
+  flushPendingOwnProfileMiningState();
   updateProfileDisplayName(username, resolvedEth ?? null, resolvedSol ?? null);
 
   if (res.rating !== undefined) storage.setPlayerRating(res.rating);
@@ -119,11 +125,6 @@ export function handleLoginSuccess(
   if (res.profileCounter !== undefined)
     storage.setProfileCounter(res.profileCounter);
   if (res.profileMons !== undefined) storage.setProfileMons(res.profileMons);
-  if (res.mining) {
-    storage.setMiningLastRockDate(res.mining.lastRockDate ?? null);
-    storage.setMiningMaterials(res.mining.materials);
-    rocksMiningService.setFromServer(res.mining, { persist: false });
-  }
 
   notifyOtherTabsAboutSignIn(profileId, res.uid);
   clearPendingLogoutWipeAfterSignIn();

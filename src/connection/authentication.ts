@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { createAuthenticationAdapter } from "@rainbow-me/rainbowkit";
 import { SiweMessage } from "siwe";
+import type { PlayerProfile } from "./connectionModels";
 import { connection } from "./connection";
 import { handleLoginSuccess } from "./loginSuccess";
 import {
@@ -16,11 +17,15 @@ import { formatXAuthErrorMessage } from "./xAuthErrors";
 import { publishXAuthUiFeedback } from "./xAuthUiFeedback";
 import { storage } from "../utils/storage";
 import { setupLoggedInPlayerProfile } from "../game/board";
-import { didAttemptAuthentication } from "../game/gameController";
+import { didAttemptAuthentication, isWatchOnly } from "../game/gameController";
 import {
   setSignInInlineAuthError,
   updateProfileDisplayName,
 } from "../ui/ProfileSignIn";
+import {
+  flushPendingOwnProfileMiningState,
+  syncOwnProfileMiningState,
+} from "../services/ownProfileMiningHydration";
 export type AuthStatus = "loading" | "unauthenticated" | "authenticated";
 
 let globalSetAuthStatus: ((status: AuthStatus) => void) | null = null;
@@ -479,6 +484,7 @@ export function useAuthStatus() {
             : 1;
         let resolvedAura = storage.getPlayerEmojiAura("");
         let isIdentityVerified = false;
+        let didLoadAuthoritativeProfile = false;
         const resetResolvedIdentityToFallback = (
           nextProfileId: string,
         ): void => {
@@ -494,9 +500,10 @@ export function useAuthStatus() {
           storage.setSolAddress("");
           storage.setPlayerEmojiId("1");
           storage.setPlayerEmojiAura("");
+          flushPendingOwnProfileMiningState();
         };
         const applyAuthoritativeProfile = (
-          authoritativeProfile: any,
+          authoritativeProfile: PlayerProfile,
         ): boolean => {
           const authoritativeProfileId =
             typeof authoritativeProfile?.id === "string"
@@ -522,8 +529,30 @@ export function useAuthStatus() {
           storage.setSolAddress(resolvedSolAddress);
           storage.setPlayerEmojiId(resolvedEmoji.toString());
           storage.setPlayerEmojiAura(resolvedAura);
+          didLoadAuthoritativeProfile = true;
+          if (authoritativeProfile?.mining) {
+            syncOwnProfileMiningState(authoritativeProfile);
+          } else {
+            flushPendingOwnProfileMiningState();
+          }
           return true;
         };
+        const loadAuthoritativeProfile =
+          async (): Promise<PlayerProfile | null> => {
+            try {
+              const authoritativeProfile =
+                await connection.getProfileByLoginId(uid);
+              if (!isStillValid()) {
+                return null;
+              }
+              return authoritativeProfile;
+            } catch {
+              if (!isStillValid()) {
+                return null;
+              }
+              return null;
+            }
+          };
 
         try {
           const claimSyncResult = await connection.syncProfileClaim();
@@ -541,17 +570,12 @@ export function useAuthStatus() {
           }
           if (syncedProfileId !== profileId) {
             resetResolvedIdentityToFallback(syncedProfileId);
-            try {
-              const authoritativeProfile =
-                await connection.getProfileByLoginId(uid);
-              if (!isStillValid()) {
-                return;
-              }
+            const authoritativeProfile = await loadAuthoritativeProfile();
+            if (!isStillValid()) {
+              return;
+            }
+            if (authoritativeProfile) {
               applyAuthoritativeProfile(authoritativeProfile);
-            } catch {
-              if (!isStillValid()) {
-                return;
-              }
             }
           }
           isIdentityVerified = true;
@@ -559,18 +583,14 @@ export function useAuthStatus() {
           if (!isStillValid()) {
             return;
           }
-          try {
-            const authoritativeProfile =
-              await connection.getProfileByLoginId(uid);
-            if (!isStillValid()) {
-              return;
-            }
+          const authoritativeProfile = await loadAuthoritativeProfile();
+          if (!isStillValid()) {
+            return;
+          }
+          if (authoritativeProfile) {
             isIdentityVerified =
               applyAuthoritativeProfile(authoritativeProfile);
-          } catch {
-            if (!isStillValid()) {
-              return;
-            }
+          } else {
             const claimedProfileId =
               await connection.getCurrentProfileClaimId();
             if (!isStillValid()) {
@@ -589,6 +609,17 @@ export function useAuthStatus() {
           setAuthStatus("unauthenticated");
           scheduleDidAttemptAuthentication();
           return;
+        }
+        // Watch-only bootstrap skips the normal own-profile hydration path, so
+        // fetch the full profile here to restore mining state for the island.
+        if (isWatchOnly && !didLoadAuthoritativeProfile) {
+          const authoritativeProfile = await loadAuthoritativeProfile();
+          if (!isStillValid()) {
+            return;
+          }
+          if (authoritativeProfile) {
+            applyAuthoritativeProfile(authoritativeProfile);
+          }
         }
         const profile = {
           id: resolvedProfileId,
