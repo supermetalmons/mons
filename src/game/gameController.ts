@@ -104,6 +104,7 @@ import {
   normalizeStoredGameVariant,
   StoredGameVariant,
 } from "./gameVariants";
+import { buildInitialRouteGameSeed } from "./gameSeedSelection";
 import {
   BOARD_GRID_SIZE,
   BoardSquareType,
@@ -2344,12 +2345,11 @@ export async function go(routeStateOverride?: RouteState) {
 
   playerSideColor = MonsWeb.Color.White;
   currentHomeGameSeed = null;
+  const initialRouteGameSeed = buildInitialRouteGameSeed(routeState);
   if (isCreateInviteRoute()) {
-    applyHomeBoardSeed(buildRandomGameSeed());
+    applyHomeBoardSeed(initialRouteGameSeed);
   } else {
-    applyGameSeedToCurrentGame(
-      buildGameSeedForStoredVariant(legacyDefaultGameVariant),
-    );
+    applyGameSeedToCurrentGame(initialRouteGameSeed);
   }
 
   if (isBotsRoute()) {

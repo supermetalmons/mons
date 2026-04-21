@@ -24,8 +24,5 @@
     "siwe": "^3.0.0",
     "tweetnacl": "^1.0.3"
   },
-  "devDependencies": {
-    "firebase-functions-test": "^3.4.1"
-  },
   "private": true
 }
