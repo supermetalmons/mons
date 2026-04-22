@@ -2,15 +2,15 @@
   "name": "Little Swag Hoodies",
   "symbol": "hoodie",
   "description": "lsw cobalt blue figure hoodie · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/hoodie/hoodie.webp",
+  "image": "ipfs://bafybeiegstwuc3a6qzcztylkrchlgrrd46ibakoplmupqgsy473wcdo5gy/hoodie.webp",
   "external_url": "https://mons.shop",
   "seller_fee_basis_points": 500,
   "attributes": [],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/hoodie/hoodie.webp",
-        "type": "image/png"
+        "uri": "ipfs://bafybeiegstwuc3a6qzcztylkrchlgrrd46ibakoplmupqgsy473wcdo5gy/hoodie.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image",
