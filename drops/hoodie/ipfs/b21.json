@@ -2,7 +2,7 @@
   "id": 21,
   "name": "Hoodie 21",
   "description": "lsw cobalt blue figure hoodie · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/hoodie/hoodie.webp",
+  "image": "ipfs://bafybeiegstwuc3a6qzcztylkrchlgrrd46ibakoplmupqgsy473wcdo5gy/hoodie.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/hoodie/hoodie.webp",
+        "uri": "ipfs://bafybeiegstwuc3a6qzcztylkrchlgrrd46ibakoplmupqgsy473wcdo5gy/hoodie.webp",
         "type": "image/png"
       }
     ],
