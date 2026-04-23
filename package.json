@@ -5,7 +5,7 @@
   "dependencies": {
     "@rainbow-me/rainbowkit": "^2.2.4",
     "@solana/wallet-adapter-base": "^0.9.27",
-    "@tanstack/react-query": "^5.99.2",
+    "@tanstack/react-query": "^5.100.0",
     "@types/node": "^25.6.0",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
@@ -15,7 +15,7 @@
     "ethers": "^6.16.0",
     "firebase": "^12.12.1",
     "glicko2": "^1.2.1",
-    "mons-web": "^0.1.130",
+    "mons-web": "^0.1.131",
     "react": "^19.2.5",
     "react-dom": "^19.2.5",
     "react-icons": "^5.6.0",
@@ -24,7 +24,7 @@
     "solana-connect": "^0.1.11",
     "styled-components": "^6.4.1",
     "typescript": "^5.9.3",
-    "viem": "^2.48.2",
+    "viem": "^2.48.4",
     "wagmi": "^2.15.6",
     "web-vitals": "^5.2.0"
   },
