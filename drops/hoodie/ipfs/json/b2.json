@@ -23,6 +23,14 @@
       {
         "uri": "ipfs://bafybeiaka2o45fhcmufpvthgp53xslhnblmqzeg4dri2rqozd7yqndjck4/hoodie.webp",
         "type": "image/png"
+      },
+      {
+        "uri": "ipfs://bafybeiaka2o45fhcmufpvthgp53xslhnblmqzeg4dri2rqozd7yqndjck4/hoodie_back.webp",
+        "type": "image/webp"
+      },
+      {
+        "uri": "ipfs://bafybeiaka2o45fhcmufpvthgp53xslhnblmqzeg4dri2rqozd7yqndjck4/hoodie_sleeve.webp",
+        "type": "image/webp"
       }
     ],
     "category": "image"
