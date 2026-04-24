@@ -2,7 +2,7 @@
   "id": 17,
   "name": "Hoodie 17 Receipt",
   "description": "redeemed on mons dot shop",
-  "image": "ipfs://bafybeiegstwuc3a6qzcztylkrchlgrrd46ibakoplmupqgsy473wcdo5gy/hoodie_receipt.webp",
+  "image": "ipfs://bafybeiaka2o45fhcmufpvthgp53xslhnblmqzeg4dri2rqozd7yqndjck4/hoodie_receipt.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -21,7 +21,7 @@
   "properties": {
     "files": [
       {
-        "uri": "ipfs://bafybeiegstwuc3a6qzcztylkrchlgrrd46ibakoplmupqgsy473wcdo5gy/hoodie_receipt.webp",
+        "uri": "ipfs://bafybeiaka2o45fhcmufpvthgp53xslhnblmqzeg4dri2rqozd7yqndjck4/hoodie_receipt.webp",
         "type": "image/png"
       }
     ],
