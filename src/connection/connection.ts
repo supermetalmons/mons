@@ -38,7 +38,6 @@ import {
   didReceiveInviteReactionUpdate,
   didReceiveMatchUpdate,
   didRecoverInviteReactions,
-  getCurrentNewMatchSeed,
   didRecoverMyMatch,
   enterWatchOnlyMode,
   didFindYourOwnInviteThatNobodyJoined,
@@ -81,6 +80,7 @@ import {
 import {
   buildDeterministicGameSeed,
   buildGameSeedForStoredVariant,
+  buildRandomGameSeed,
   getStoredGameVariantForPersistence,
 } from "../game/gameVariants";
 import { storage } from "../utils/storage";
@@ -5930,7 +5930,7 @@ class Connection {
   public async createInvite(uid: string, inviteId: string): Promise<boolean> {
     const hostColor = Math.random() < 0.5 ? "white" : "black";
     const emojiId = getPlayersEmojiId();
-    const matchSeed = getCurrentNewMatchSeed();
+    const matchSeed = buildRandomGameSeed();
 
     const invite: Invite = {
       version: controllerVersion,

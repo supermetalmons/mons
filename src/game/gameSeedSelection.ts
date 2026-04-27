@@ -9,11 +9,7 @@ import {
 const routeUsesRandomInitialSeed = (
   routeState: Pick<RouteState, "mode">,
 ): boolean => {
-  return (
-    routeState.mode === "home" ||
-    routeState.mode === "event" ||
-    routeState.mode === "watch"
-  );
+  return routeState.mode === "watch";
 };
 
 export const buildInitialRouteGameSeed = (

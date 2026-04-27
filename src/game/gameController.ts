@@ -353,19 +353,6 @@ const getRandomReactionVariation = (variations: number[]): number => {
   return variations[variationIndex];
 };
 
-const setCurrentHomeSeed = (seed: GameSeed): GameSeed => {
-  currentHomeGameSeed = { ...seed };
-  initialFen = seed.fen;
-  return { ...currentHomeGameSeed };
-};
-
-export function getCurrentNewMatchSeed(): GameSeed {
-  if (!currentHomeGameSeed) {
-    return setCurrentHomeSeed(buildRandomGameSeed());
-  }
-  return { ...currentHomeGameSeed };
-}
-
 const setCurrentVariant = (gameVariant: unknown): StoredGameVariant => {
   const normalizedVariant = normalizeStoredGameVariant(gameVariant);
   currentGameVariant = normalizedVariant;
@@ -390,11 +377,6 @@ const applyGameSeedToCurrentGame = (seed: GameSeed): MonsWeb.MonsGameModel => {
   initialFen = seed.fen;
   game = createGameModelForStoredVariant(seed.gameVariant);
   return game;
-};
-
-const applyHomeBoardSeed = (seed: GameSeed): MonsWeb.MonsGameModel => {
-  setCurrentHomeSeed(seed);
-  return applyGameSeedToCurrentGame(seed);
 };
 
 const loadCurrentGameFromFen = (fen: string): boolean => {
@@ -425,7 +407,6 @@ let viewedRematchMatchId: string | null = null;
 let viewedRematchGame: MonsWeb.MonsGameModel | null = null;
 let viewedRematchPair: HistoricalMatchPair | null = null;
 let viewedRematchRequestToken = 0;
-let currentHomeGameSeed: GameSeed | null = null;
 let currentGameVariant: StoredGameVariant = legacyDefaultGameVariant;
 type BoardViewMode = "activeLive" | "waitingLive" | "historicalView";
 let boardViewMode: BoardViewMode = "activeLive";
@@ -2344,13 +2325,8 @@ export async function go(routeStateOverride?: RouteState) {
   await initMonsWeb();
 
   playerSideColor = MonsWeb.Color.White;
-  currentHomeGameSeed = null;
   const initialRouteGameSeed = buildInitialRouteGameSeed(routeState);
-  if (isCreateInviteRoute()) {
-    applyHomeBoardSeed(initialRouteGameSeed);
-  } else {
-    applyGameSeedToCurrentGame(initialRouteGameSeed);
-  }
+  applyGameSeedToCurrentGame(initialRouteGameSeed);
 
   if (isBotsRoute()) {
     game.locations_with_content().forEach((loc) => {
@@ -2496,7 +2472,6 @@ export function disposeGameSession() {
   lastBotMoveTimestamp = 0;
   processedVoiceReactions.clear();
   currentInputs = [];
-  currentHomeGameSeed = null;
   currentGameVariant = legacyDefaultGameVariant;
   updateDisplayedBoardSquareTypes(null);
   resetTimerStateForMatch(null);
@@ -2618,7 +2593,9 @@ function startFreshLocalMatch() {
   showWaitingStateText("");
   Board.setBoardFlipped(activeBoardShouldBeFlipped());
   Board.resetForNewGame();
-  applyGameSeedToCurrentGame(buildRandomGameSeed());
+  applyGameSeedToCurrentGame(
+    buildGameSeedForStoredVariant(legacyDefaultGameVariant),
+  );
   setNewBoard(false);
   updateUndoButtonBasedOnGameState();
   syncInviteBotIntoLocalGameButton();
@@ -2626,14 +2603,7 @@ function startFreshLocalMatch() {
 }
 
 function startBotMatch(botColor: MonsWeb.Color) {
-  const shouldReuseDisplayedHomeSeed =
-    isCreateInviteRoute() &&
-    !didStartLocalGame &&
-    !isGameWithBot &&
-    !isOnlineGame;
-  const nextSeed = shouldReuseDisplayedHomeSeed
-    ? getCurrentNewMatchSeed()
-    : buildRandomGameSeed();
+  const nextSeed = buildRandomGameSeed();
   ensureLocalRematchSeriesInitialized();
   prepareForNewLocalLiveMatch();
   resetBotScoreReactionState();
