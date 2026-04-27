@@ -2,6 +2,7 @@ import React, {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
@@ -17,8 +18,10 @@ import {
 import type { BoardSquareTypeGrid } from "../game/boardSquareTypes";
 import {
   ColorSet,
+  colors,
   getCurrentColorSet,
   isCustomPictureBoardEnabled,
+  isPangchiuBoard,
   subscribeToBoardColorSetChanges,
 } from "../content/boardStyles";
 import { getUseLightTileManaBaseShade } from "../content/boardPatternSettings";
@@ -33,10 +36,12 @@ import {
 import {
   playerSideMetadata,
   opponentSideMetadata,
+  openBoardPlayerInfoProfile,
   setWagerRenderHandler,
   WagerPileSide,
   WagerRenderState,
   WagerPileRenderState,
+  applyInviteBotButtonLayout,
 } from "../game/board";
 import {
   setWagerPanelOutsideTapHandler,
@@ -120,6 +125,83 @@ export const updateBoardComponentForBoardStyleChange = () => {
   listeners.forEach((listener) => listener());
 };
 
+export type BoardEndOfGameMarker = "none" | "victory" | "resign";
+export type BoardTimerColor = "green" | "orange" | "red";
+type BotStrengthControlMode = "fast" | "normal" | "pro";
+
+export type BoardInviteBotButtonLayout = {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  fontSizePx: number;
+  horizontalPaddingPx: number;
+};
+
+export type BoardPlayerInfoSlotState = {
+  visible: boolean;
+  nameVisible: boolean;
+  scoreText: string;
+  nameText: string;
+  timerText: string;
+  timerVisible: boolean;
+  timerColor: BoardTimerColor;
+  endOfGameMarker: BoardEndOfGameMarker;
+  profileMetadataIsOpponent: boolean | null;
+};
+
+export type BoardPlayerInfoOverlayState = {
+  player: BoardPlayerInfoSlotState;
+  opponent: BoardPlayerInfoSlotState;
+  topControlSlot: WagerPileSide;
+  botStrengthControlVisible: boolean;
+  botStrengthControlMode: BotStrengthControlMode;
+};
+
+const createEmptyPlayerInfoSlotState = (): BoardPlayerInfoSlotState => ({
+  visible: false,
+  nameVisible: false,
+  scoreText: "",
+  nameText: "",
+  timerText: "",
+  timerVisible: false,
+  timerColor: "green",
+  endOfGameMarker: "none",
+  profileMetadataIsOpponent: null,
+});
+
+const createEmptyPlayerInfoOverlayState = (): BoardPlayerInfoOverlayState => ({
+  player: createEmptyPlayerInfoSlotState(),
+  opponent: createEmptyPlayerInfoSlotState(),
+  topControlSlot: "opponent",
+  botStrengthControlVisible: false,
+  botStrengthControlMode: "normal",
+});
+
+const playerInfoSlotStatesEqual = (
+  a: BoardPlayerInfoSlotState,
+  b: BoardPlayerInfoSlotState,
+) =>
+  a.visible === b.visible &&
+  a.nameVisible === b.nameVisible &&
+  a.scoreText === b.scoreText &&
+  a.nameText === b.nameText &&
+  a.timerText === b.timerText &&
+  a.timerVisible === b.timerVisible &&
+  a.timerColor === b.timerColor &&
+  a.endOfGameMarker === b.endOfGameMarker &&
+  a.profileMetadataIsOpponent === b.profileMetadataIsOpponent;
+
+const playerInfoOverlayStatesEqual = (
+  a: BoardPlayerInfoOverlayState,
+  b: BoardPlayerInfoOverlayState,
+) =>
+  playerInfoSlotStatesEqual(a.player, b.player) &&
+  playerInfoSlotStatesEqual(a.opponent, b.opponent) &&
+  a.topControlSlot === b.topControlSlot &&
+  a.botStrengthControlVisible === b.botStrengthControlVisible &&
+  a.botStrengthControlMode === b.botStrengthControlMode;
+
 let setTopBoardOverlayVisibleImpl: (
   blurry: boolean,
   svgElement: SVGElement | null,
@@ -145,7 +227,6 @@ let updateWagerPlayerUidsImpl: (
   opponentUid: string,
 ) => void = () => {};
 let clearBoardTransientUiImpl: (fadeOutVideos?: boolean) => void = () => {};
-type BotStrengthControlMode = "fast" | "normal" | "pro";
 type BotStrengthControlOverlayState = {
   visible: boolean;
   mode: BotStrengthControlMode;
@@ -153,8 +234,8 @@ type BotStrengthControlOverlayState = {
   y: number;
   size: number;
 };
-let setBotStrengthControlOverlayStateImpl: (
-  state: BotStrengthControlOverlayState,
+let setBoardPlayerInfoOverlayStateImpl: (
+  state: BoardPlayerInfoOverlayState,
 ) => void = () => {};
 
 export const setTopBoardOverlayVisible = (
@@ -203,10 +284,10 @@ export const clearBoardTransientUi = (fadeOutVideos?: boolean) => {
   clearBoardTransientUiImpl(fadeOutVideos);
 };
 
-export const setBotStrengthControlOverlayState = (
-  state: BotStrengthControlOverlayState,
+export const setBoardPlayerInfoOverlayState = (
+  state: BoardPlayerInfoOverlayState,
 ) => {
-  setBotStrengthControlOverlayStateImpl(state);
+  setBoardPlayerInfoOverlayStateImpl(state);
 };
 
 const VIDEO_CONTAINER_HEIGHT_GRID = "12.5%";
@@ -223,6 +304,8 @@ const VIDEO_REACTION_MAX_LIFETIME_MS = 12000;
 const VIDEO_REACTION_END_GRACE_MS = 700;
 const BOARD_WIDTH_UNITS = 11;
 const BOARD_HEIGHT_UNITS = 14.1;
+const BOARD_VIEWBOX_WIDTH = BOARD_WIDTH_UNITS * 100;
+const BOARD_VIEWBOX_HEIGHT = BOARD_HEIGHT_UNITS * 100;
 const WAGER_PANEL_PADDING_X_FRAC = 0.2;
 const WAGER_PANEL_PADDING_Y_FRAC = 0.2;
 const WAGER_PANEL_BUTTON_HEIGHT_FRAC = 0.4;
@@ -240,6 +323,32 @@ const WAGER_PANEL_COUNT_MIN_WIDTH_PX = 32;
 const WAGER_PANEL_COUNT_Y_OFFSET_FRAC = 0.04;
 const wagerUiDebugLogsEnabled = process.env.NODE_ENV !== "production";
 const BOT_STRENGTH_IGNORE_MOUSE_AFTER_TOUCH_MS = 700;
+const MIN_HORIZONTAL_OFFSET = 0.21;
+const END_OF_GAME_ICON_BASE_URL = "https://assets.mons.link/icons";
+const END_OF_GAME_ICON_URLS = {
+  victory: `${END_OF_GAME_ICON_BASE_URL}/victory.webp`,
+  resign: `${END_OF_GAME_ICON_BASE_URL}/resign_1.webp`,
+} as const;
+type EndOfGameIconName = keyof typeof END_OF_GAME_ICON_URLS;
+const END_OF_GAME_ICON_OPACITY = 0.69;
+const END_OF_GAME_ICON_SIZE_MULTIPLIER = 0.53;
+const END_OF_GAME_ICON_GAP_MULTIPLIER = 0.06;
+const END_OF_GAME_NAME_OFFSET_MULTIPLIER = 0.54;
+const SCORE_TEXT_FONT_SIZE_MULTIPLIER = 50;
+const INVITE_BOT_BUTTON_FONT_TO_SCORE_RATIO = 0.68;
+const INVITE_BOT_BUTTON_X_GAP_MULTIPLIER = 0.18;
+const INVITE_BOT_BUTTON_HEIGHT_TO_FONT_RATIO = 2.1;
+const INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX = 12;
+const INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO = 0.9;
+const INVITE_BOT_BUTTON_TEXT_WIDTH_TO_FONT_RATIO = 5.5;
+const BOT_STRENGTH_BUTTON_SCALE = 1.23;
+const BOT_STRENGTH_BUTTON_SIZE_TO_INVITE_HEIGHT =
+  0.82 * BOT_STRENGTH_BUTTON_SCALE;
+const BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER =
+  0.12 * BOT_STRENGTH_BUTTON_SCALE;
+const BOT_STRENGTH_VOICE_REACTION_EXTRA_GAP_MULTIPLIER =
+  0.08 * BOT_STRENGTH_BUTTON_SCALE;
+const BOT_STRENGTH_BUTTON_LEFT_SHIFT_MULTIPLIER = 0.045;
 
 const PENDING_PULSE_KEYFRAMES_NAME = "wagerPilePendingPulse";
 const PENDING_PULSE_ANIMATION = `${PENDING_PULSE_KEYFRAMES_NAME} 1.4s ease-in-out infinite`;
@@ -283,6 +392,52 @@ const getErrorName = (error: unknown) =>
   error && typeof error === "object" && "name" in error
     ? String((error as { name?: unknown }).name)
     : "";
+
+const endOfGameIconPromises: Map<
+  EndOfGameIconName,
+  Promise<string | null>
+> = new Map();
+const endOfGameIconResolvedUrls: Partial<Record<EndOfGameIconName, string>> =
+  {};
+type EndOfGameIconHrefs = Record<EndOfGameIconName, string>;
+
+const getEndOfGameIconHrefs = (): EndOfGameIconHrefs => ({
+  victory: endOfGameIconResolvedUrls.victory || END_OF_GAME_ICON_URLS.victory,
+  resign: endOfGameIconResolvedUrls.resign || END_OF_GAME_ICON_URLS.resign,
+});
+
+const fetchCachedImageUrl = (url: string): Promise<string | null> =>
+  fetch(url)
+    .then((res) => {
+      if (!res.ok) throw new Error("Failed to fetch image");
+      return res.blob();
+    })
+    .then((blob) => URL.createObjectURL(blob))
+    .catch(() => null);
+
+const getEndOfGameIconCachedUrl = (
+  name: EndOfGameIconName,
+): Promise<string | null> => {
+  if (!endOfGameIconPromises.has(name)) {
+    const promise = fetchCachedImageUrl(END_OF_GAME_ICON_URLS[name]).then(
+      (resolvedUrl) => {
+        if (resolvedUrl) {
+          endOfGameIconResolvedUrls[name] = resolvedUrl;
+        } else {
+          endOfGameIconPromises.delete(name);
+        }
+        return resolvedUrl;
+      },
+    );
+    endOfGameIconPromises.set(name, promise);
+  }
+  return endOfGameIconPromises.get(name)!;
+};
+
+const preloadEndOfGameIcons = () =>
+  (Object.keys(END_OF_GAME_ICON_URLS) as EndOfGameIconName[]).map((name) =>
+    getEndOfGameIconCachedUrl(name),
+  );
 
 const playVideoReactionElement = (
   videoElement: HTMLVideoElement | null,
@@ -533,6 +688,446 @@ type WagerPileElements = {
 const toPercentX = (value: number) => (value / BOARD_WIDTH_UNITS) * 100;
 const toPercentY = (value: number) => (value / BOARD_HEIGHT_UNITS) * 100;
 
+const getRenderedBoardViewportRect = (svg: SVGSVGElement) => {
+  const matrix = svg.getScreenCTM?.();
+  if (!matrix) {
+    return null;
+  }
+  const point = svg.createSVGPoint();
+  point.x = 0;
+  point.y = 0;
+  const topLeft = point.matrixTransform(matrix);
+  point.x = BOARD_VIEWBOX_WIDTH;
+  point.y = BOARD_VIEWBOX_HEIGHT;
+  const bottomRight = point.matrixTransform(matrix);
+  const left = Math.min(topLeft.x, bottomRight.x);
+  const top = Math.min(topLeft.y, bottomRight.y);
+  const width = Math.abs(bottomRight.x - topLeft.x);
+  const height = Math.abs(bottomRight.y - topLeft.y);
+  if (
+    !Number.isFinite(left) ||
+    !Number.isFinite(top) ||
+    !Number.isFinite(width) ||
+    !Number.isFinite(height) ||
+    width <= 0 ||
+    height <= 0
+  ) {
+    return null;
+  }
+  return { left, top, width, height };
+};
+
+type BoardTextMeasurement = {
+  width: number;
+  bounds: { y: number; height: number } | null;
+};
+
+type BoardPlayerInfoMeasurements = {
+  playerScore: BoardTextMeasurement;
+  opponentScore: BoardTextMeasurement;
+  playerTimer: BoardTextMeasurement;
+  opponentTimer: BoardTextMeasurement;
+};
+
+type BoardPlayerInfoSlotLayout = {
+  scoreX: number;
+  scoreY: number;
+  timerX: number;
+  timerY: number;
+  nameX: number;
+  nameY: number;
+  scoreFontSize: number;
+  nameFontSize: number;
+  endOfGameIcon: {
+    visible: boolean;
+    href: string;
+    x: number;
+    y: number;
+    size: number;
+  };
+};
+
+type BoardPlayerInfoLayout = {
+  player: BoardPlayerInfoSlotLayout;
+  opponent: BoardPlayerInfoSlotLayout;
+  inviteBotButtonLayout: BoardInviteBotButtonLayout | null;
+  botStrengthControlOverlay: BotStrengthControlOverlayState;
+};
+
+const emptyTextMeasurement: BoardTextMeasurement = {
+  width: 0,
+  bounds: null,
+};
+
+const measureSvgText = (
+  element: SVGTextElement | null,
+): BoardTextMeasurement => {
+  if (!element || element.getAttribute("display") === "none") {
+    return emptyTextMeasurement;
+  }
+  let width = 0;
+  try {
+    width = element.getComputedTextLength
+      ? element.getComputedTextLength() / 100
+      : 0;
+  } catch {}
+  let bounds: BoardTextMeasurement["bounds"] = null;
+  try {
+    const bbox = element.getBBox ? element.getBBox() : null;
+    if (bbox) {
+      if (!Number.isFinite(width) || width <= 0) {
+        width = Number.isFinite(bbox.width) ? bbox.width / 100 : 0;
+      }
+      if (Number.isFinite(bbox.y) && Number.isFinite(bbox.height)) {
+        bounds = { y: bbox.y / 100, height: bbox.height / 100 };
+      }
+    }
+  } catch {}
+  return {
+    width: Number.isFinite(width) && width > 0 ? width : 0,
+    bounds,
+  };
+};
+
+const textMeasurementsEqual = (
+  a: BoardTextMeasurement,
+  b: BoardTextMeasurement,
+) =>
+  a.width === b.width &&
+  a.bounds?.y === b.bounds?.y &&
+  a.bounds?.height === b.bounds?.height;
+
+const playerInfoMeasurementsEqual = (
+  a: BoardPlayerInfoMeasurements,
+  b: BoardPlayerInfoMeasurements,
+) =>
+  textMeasurementsEqual(a.playerScore, b.playerScore) &&
+  textMeasurementsEqual(a.opponentScore, b.opponentScore) &&
+  textMeasurementsEqual(a.playerTimer, b.playerTimer) &&
+  textMeasurementsEqual(a.opponentTimer, b.opponentTimer);
+
+const seeIfShouldOffsetFromBorders = () =>
+  window.innerWidth / window.innerHeight < 0.72;
+
+const getOuterElementsMultiplicator = (
+  boardPixelSize: { width: number; height: number } | null,
+) => Math.min(420 / (boardPixelSize?.width || 420), 1);
+
+const getAvatarSize = (
+  boardPixelSize: { width: number; height: number } | null,
+) => 0.777 * getOuterElementsMultiplicator(boardPixelSize);
+
+const getInviteBotButtonLayout = (
+  scoreX: number,
+  scoreY: number,
+  scoreWidth: number,
+  multiplicator: number,
+  avatarSize: number,
+): BoardInviteBotButtonLayout => {
+  const scoreFontBoardUnits =
+    (SCORE_TEXT_FONT_SIZE_MULTIPLIER * multiplicator) / 100;
+  const fontSizePx = Math.max(
+    INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX,
+    Math.round(
+      SCORE_TEXT_FONT_SIZE_MULTIPLIER *
+        multiplicator *
+        INVITE_BOT_BUTTON_FONT_TO_SCORE_RATIO,
+    ),
+  );
+  const fontBoardUnits = fontSizePx / 100;
+  const height = Math.min(
+    fontBoardUnits * INVITE_BOT_BUTTON_HEIGHT_TO_FONT_RATIO,
+    avatarSize * 0.88,
+  );
+  const x =
+    scoreX + scoreWidth + INVITE_BOT_BUTTON_X_GAP_MULTIPLIER * multiplicator;
+  const horizontalPaddingPx = Math.max(
+    6,
+    Math.round(fontSizePx * INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO),
+  );
+  const width =
+    (fontSizePx * INVITE_BOT_BUTTON_TEXT_WIDTH_TO_FONT_RATIO +
+      2 * horizontalPaddingPx) /
+    100;
+  const scoreCenterY = scoreY - scoreFontBoardUnits * 0.35;
+  const y = scoreCenterY - height / 2 - 0.023 * multiplicator;
+  return { x, y, width, height, fontSizePx, horizontalPaddingPx };
+};
+
+const getBotStrengthControlLayout = (
+  inviteLayout: BoardInviteBotButtonLayout,
+  multiplicator: number,
+): { x: number; y: number; size: number } => {
+  const size = inviteLayout.height * BOT_STRENGTH_BUTTON_SIZE_TO_INVITE_HEIGHT;
+  const x =
+    inviteLayout.x - BOT_STRENGTH_BUTTON_LEFT_SHIFT_MULTIPLIER * multiplicator;
+  const y = inviteLayout.y + (inviteLayout.height - size) / 2;
+  return { x, y, size };
+};
+
+const getEndOfGameIconHref = (
+  marker: BoardEndOfGameMarker,
+  iconHrefs: EndOfGameIconHrefs,
+) => {
+  if (marker === "none") {
+    return "";
+  }
+  return iconHrefs[marker];
+};
+
+const getDynamicNameDelta = ({
+  initialX,
+  scoreX,
+  scoreWidth,
+  timerX,
+  timerWidth,
+  showsTimer,
+  endOfGameIcon,
+  showsEndOfGameMarker,
+  multiplicator,
+  extraSpacing = 0,
+}: {
+  initialX: number;
+  scoreX: number;
+  scoreWidth: number;
+  timerX: number;
+  timerWidth: number;
+  showsTimer: boolean;
+  endOfGameIcon: BoardPlayerInfoSlotLayout["endOfGameIcon"];
+  showsEndOfGameMarker: boolean;
+  multiplicator: number;
+  extraSpacing?: number;
+}) => {
+  const spacing = 0.14 * multiplicator + extraSpacing;
+  const scoreRight = scoreX + scoreWidth;
+  let minNameX = scoreRight + spacing;
+  if (showsEndOfGameMarker && endOfGameIcon.visible) {
+    minNameX = Math.max(
+      minNameX,
+      endOfGameIcon.x + endOfGameIcon.size + spacing,
+    );
+  } else if (showsEndOfGameMarker) {
+    minNameX = Math.max(
+      minNameX,
+      scoreRight +
+        END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator +
+        END_OF_GAME_ICON_SIZE_MULTIPLIER * multiplicator +
+        spacing,
+    );
+  }
+  if (showsTimer) {
+    minNameX = Math.max(minNameX, timerX + timerWidth + spacing);
+  }
+  return Math.max(0, minNameX - initialX);
+};
+
+const getBoardPlayerInfoLayout = (
+  state: BoardPlayerInfoOverlayState,
+  measurements: BoardPlayerInfoMeasurements,
+  iconHrefs: EndOfGameIconHrefs,
+  boardPixelSize: { width: number; height: number } | null,
+  shouldOffsetFromBorders: boolean,
+  isPangchiuBoardLayout: boolean,
+): BoardPlayerInfoLayout => {
+  const multiplicator = getOuterElementsMultiplicator(boardPixelSize);
+  const avatarSize = getAvatarSize(boardPixelSize);
+  const scoreFontSize = SCORE_TEXT_FONT_SIZE_MULTIPLIER * multiplicator;
+  const nameFontSize = 32 * multiplicator;
+  const offsetX = shouldOffsetFromBorders ? MIN_HORIZONTAL_OFFSET : 0;
+  const iconSize = END_OF_GAME_ICON_SIZE_MULTIPLIER * multiplicator;
+  const iconGap = END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator;
+
+  const baseForSlot = (
+    slot: WagerPileSide,
+    scoreMeasurement: BoardTextMeasurement,
+  ) => {
+    const isOpponent = slot === "opponent";
+    const y = isOpponent
+      ? 1 - avatarSize * 1.203
+      : isPangchiuBoardLayout
+        ? 12.75
+        : 12.16;
+    const scoreX = offsetX + avatarSize * 1.21;
+    const scoreY = y + avatarSize * 0.73;
+    const timerX = offsetX + avatarSize * 1.85;
+    const timerY = scoreY;
+    const nameY = y + avatarSize * 0.65;
+    const inviteLayout = getInviteBotButtonLayout(
+      scoreX,
+      scoreY,
+      scoreMeasurement.width,
+      multiplicator,
+      avatarSize,
+    );
+    const botLayout = getBotStrengthControlLayout(inviteLayout, multiplicator);
+    return {
+      scoreX,
+      scoreY,
+      timerX,
+      timerY,
+      nameY,
+      inviteLayout,
+      botLayout,
+    };
+  };
+
+  const playerBase = baseForSlot("player", measurements.playerScore);
+  const opponentBase = baseForSlot("opponent", measurements.opponentScore);
+  const topBase = state.topControlSlot === "player" ? playerBase : opponentBase;
+  const topBotLayout = topBase.botLayout;
+  const inviteBotButtonLayout = topBase.inviteLayout;
+
+  const getIconLayout = (
+    slotState: BoardPlayerInfoSlotState,
+    base: ReturnType<typeof baseForSlot>,
+    scoreMeasurement: BoardTextMeasurement,
+    isTopControlSlot: boolean,
+  ): BoardPlayerInfoSlotLayout["endOfGameIcon"] => {
+    const visible =
+      slotState.visible &&
+      slotState.endOfGameMarker !== "none" &&
+      slotState.scoreText !== "";
+    if (!visible) {
+      return {
+        visible: false,
+        href: "",
+        x: 0,
+        y: 0,
+        size: iconSize,
+      };
+    }
+    let iconX = base.scoreX + scoreMeasurement.width + iconGap;
+    if (isTopControlSlot && state.botStrengthControlVisible) {
+      iconX = Math.max(iconX, topBotLayout.x + topBotLayout.size + iconGap);
+    }
+    let iconY = base.scoreY - iconSize * 0.8;
+    if (scoreMeasurement.bounds) {
+      iconY =
+        scoreMeasurement.bounds.y +
+        (scoreMeasurement.bounds.height - iconSize) / 2;
+    }
+    return {
+      visible: true,
+      href: getEndOfGameIconHref(slotState.endOfGameMarker, iconHrefs),
+      x: iconX,
+      y: iconY,
+      size: iconSize,
+    };
+  };
+
+  const playerIcon = getIconLayout(
+    state.player,
+    playerBase,
+    measurements.playerScore,
+    state.topControlSlot === "player",
+  );
+  const opponentIcon = getIconLayout(
+    state.opponent,
+    opponentBase,
+    measurements.opponentScore,
+    state.topControlSlot === "opponent",
+  );
+
+  const initialX = offsetX + 1.45 * multiplicator + 0.1;
+  const timerDelta = 0.95 * multiplicator;
+  const statusDelta = END_OF_GAME_NAME_OFFSET_MULTIPLIER * multiplicator;
+  const playerHasEndOfGameMarker = state.player.endOfGameMarker !== "none";
+  const opponentHasEndOfGameMarker = state.opponent.endOfGameMarker !== "none";
+  const topControlSlotState =
+    state.topControlSlot === "player" ? state.player : state.opponent;
+  const topControlSlotHasEndOfGameMarker =
+    topControlSlotState.endOfGameMarker !== "none";
+  const topControlHasVoiceReaction =
+    topControlSlotState.nameText.includes("~ ");
+  const topVoiceReactionExtraSpacing =
+    state.botStrengthControlVisible &&
+    topControlSlotHasEndOfGameMarker &&
+    topControlHasVoiceReaction
+      ? BOT_STRENGTH_VOICE_REACTION_EXTRA_GAP_MULTIPLIER * multiplicator
+      : 0;
+
+  const playerStaticDelta =
+    (playerHasEndOfGameMarker ? statusDelta : 0) +
+    (state.player.timerVisible ? timerDelta : 0);
+  const opponentStaticDelta =
+    (opponentHasEndOfGameMarker ? statusDelta : 0) +
+    (state.opponent.timerVisible ? timerDelta : 0);
+  const playerDynamicDelta = getDynamicNameDelta({
+    initialX,
+    scoreX: playerBase.scoreX,
+    scoreWidth: measurements.playerScore.width,
+    timerX: playerBase.timerX,
+    timerWidth: measurements.playerTimer.width,
+    showsTimer: state.player.timerVisible,
+    endOfGameIcon: playerIcon,
+    showsEndOfGameMarker: playerHasEndOfGameMarker,
+    multiplicator,
+    extraSpacing:
+      state.topControlSlot === "player" ? topVoiceReactionExtraSpacing : 0,
+  });
+  const opponentDynamicDelta = getDynamicNameDelta({
+    initialX,
+    scoreX: opponentBase.scoreX,
+    scoreWidth: measurements.opponentScore.width,
+    timerX: opponentBase.timerX,
+    timerWidth: measurements.opponentTimer.width,
+    showsTimer: state.opponent.timerVisible,
+    endOfGameIcon: opponentIcon,
+    showsEndOfGameMarker: opponentHasEndOfGameMarker,
+    multiplicator,
+    extraSpacing:
+      state.topControlSlot === "opponent" ? topVoiceReactionExtraSpacing : 0,
+  });
+
+  let playerBotStrengthDelta = 0;
+  let opponentBotStrengthDelta = 0;
+  if (state.botStrengthControlVisible) {
+    const minNameX =
+      topBotLayout.x +
+      topBotLayout.size +
+      BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER * multiplicator;
+    const delta = Math.max(0, minNameX - initialX);
+    if (state.topControlSlot === "player") {
+      playerBotStrengthDelta = delta;
+    } else {
+      opponentBotStrengthDelta = delta;
+    }
+  }
+
+  return {
+    player: {
+      ...playerBase,
+      nameX:
+        initialX +
+        Math.max(playerStaticDelta, playerDynamicDelta, playerBotStrengthDelta),
+      scoreFontSize,
+      nameFontSize,
+      endOfGameIcon: playerIcon,
+    },
+    opponent: {
+      ...opponentBase,
+      nameX:
+        initialX +
+        Math.max(
+          opponentStaticDelta,
+          opponentDynamicDelta,
+          opponentBotStrengthDelta,
+        ),
+      scoreFontSize,
+      nameFontSize,
+      endOfGameIcon: opponentIcon,
+    },
+    inviteBotButtonLayout,
+    botStrengthControlOverlay: {
+      visible: state.botStrengthControlVisible && topBotLayout.size > 0,
+      mode: state.botStrengthControlMode,
+      x: topBotLayout.x,
+      y: topBotLayout.y,
+      size: topBotLayout.size,
+    },
+  };
+};
+
 const getWagerPanelLayout = (
   rect: { x: number; y: number; w: number; h: number },
   isOpponent: boolean,
@@ -641,12 +1236,18 @@ const BoardComponent: React.FC = () => {
   const transitionTimeoutIdsRef = useRef<Set<number>>(new Set());
   const [currentColorSet, setCurrentColorSet] =
     useState<ColorSet>(getCurrentColorSet());
+  const [playerInfoOverlayState, setPlayerInfoOverlayState] =
+    useState<BoardPlayerInfoOverlayState>(createEmptyPlayerInfoOverlayState);
+  const [endOfGameIconHrefs, setEndOfGameIconHrefs] =
+    useState<EndOfGameIconHrefs>(getEndOfGameIconHrefs);
   const [prefersDarkMode, setPrefersDarkMode] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
   );
   const [isGridVisible, setIsGridVisible] = useState(
     !isCustomPictureBoardEnabled(),
   );
+  const [isPangchiuBoardLayout, setIsPangchiuBoardLayout] =
+    useState(isPangchiuBoard());
   const [shouldIncludePangchiuImage, setShouldIncludePangchiuImage] = useState(
     isCustomPictureBoardEnabled(),
   );
@@ -687,14 +1288,6 @@ const BoardComponent: React.FC = () => {
   const [activeWagerPanelCount, setActiveWagerPanelCount] = useState<
     number | null
   >(null);
-  const [botStrengthControlOverlay, setBotStrengthControlOverlay] =
-    useState<BotStrengthControlOverlayState>({
-      visible: false,
-      mode: "normal",
-      x: 0,
-      y: 0,
-      size: 0,
-    });
   const [botStrengthHovered, setBotStrengthHovered] = useState(false);
   const [botStrengthPressed, setBotStrengthPressed] = useState(false);
   const [boardPixelSize, setBoardPixelSize] = useState<{
@@ -707,6 +1300,9 @@ const BoardComponent: React.FC = () => {
     width: number;
     height: number;
   } | null>(null);
+  const [isNarrowBoardViewport, setIsNarrowBoardViewport] = useState(
+    seeIfShouldOffsetFromBorders(),
+  );
   const boardSvgRef = useRef<SVGSVGElement | null>(null);
   const wagerPilesLayerRef = useRef<HTMLDivElement | null>(null);
   const wagerPileElementsRef = useRef<WagerPileElements | null>(null);
@@ -762,6 +1358,29 @@ const BoardComponent: React.FC = () => {
   const opponentWrapperRef = useRef<HTMLDivElement | null>(null);
   const playerWrapperRef = useRef<HTMLDivElement | null>(null);
   const botStrengthIgnoreMouseUntilRef = useRef(0);
+  const playerScoreTextRef = useRef<SVGTextElement | null>(null);
+  const opponentScoreTextRef = useRef<SVGTextElement | null>(null);
+  const playerTimerTextRef = useRef<SVGTextElement | null>(null);
+  const opponentTimerTextRef = useRef<SVGTextElement | null>(null);
+  const [playerInfoMeasurements, setPlayerInfoMeasurements] =
+    useState<BoardPlayerInfoMeasurements>({
+      playerScore: emptyTextMeasurement,
+      opponentScore: emptyTextMeasurement,
+      playerTimer: emptyTextMeasurement,
+      opponentTimer: emptyTextMeasurement,
+    });
+  const [hoveredPlayerInfoSlot, setHoveredPlayerInfoSlot] =
+    useState<WagerPileSide | null>(null);
+
+  setBoardPlayerInfoOverlayStateImpl = (
+    nextState: BoardPlayerInfoOverlayState,
+  ) => {
+    setPlayerInfoOverlayState((prevState) =>
+      playerInfoOverlayStatesEqual(prevState, nextState)
+        ? prevState
+        : nextState,
+    );
+  };
 
   updateWagerPlayerUidsImpl = (
     nextPlayerUid: string,
@@ -808,23 +1427,6 @@ const BoardComponent: React.FC = () => {
         hideAuraDom(targets.current.background);
       }
     }
-  };
-
-  setBotStrengthControlOverlayStateImpl = (
-    nextState: BotStrengthControlOverlayState,
-  ) => {
-    setBotStrengthControlOverlay((prevState) => {
-      if (
-        prevState.visible === nextState.visible &&
-        prevState.mode === nextState.mode &&
-        prevState.x === nextState.x &&
-        prevState.y === nextState.y &&
-        prevState.size === nextState.size
-      ) {
-        return prevState;
-      }
-      return nextState;
-    });
   };
 
   const handleConfirmClick = () => {
@@ -1066,6 +1668,7 @@ const BoardComponent: React.FC = () => {
       setCurrentColorSet(getCurrentColorSet());
       const newIsGridVisible = !isCustomPictureBoardEnabled();
       setIsGridVisible(newIsGridVisible);
+      setIsPangchiuBoardLayout(isPangchiuBoard());
       if (!newIsGridVisible) {
         setShouldIncludePangchiuImage(true);
       }
@@ -1117,13 +1720,6 @@ const BoardComponent: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (!botStrengthControlOverlay.visible) {
-      setBotStrengthHovered(false);
-      setBotStrengthPressed(false);
-    }
-  }, [botStrengthControlOverlay.visible]);
-
-  useEffect(() => {
     if (!botStrengthPressed) {
       return;
     }
@@ -1156,10 +1752,15 @@ const BoardComponent: React.FC = () => {
       if (!svg) {
         return;
       }
-      const rect = svg.getBoundingClientRect();
+      const rect =
+        getRenderedBoardViewportRect(svg) ?? svg.getBoundingClientRect();
       if (!rect.width || !rect.height) {
         return;
       }
+      const nextIsNarrowBoardViewport = seeIfShouldOffsetFromBorders();
+      setIsNarrowBoardViewport((prev) =>
+        prev === nextIsNarrowBoardViewport ? prev : nextIsNarrowBoardViewport,
+      );
       setBoardPixelSize((prev) => {
         if (prev && prev.width === rect.width && prev.height === rect.height) {
           return prev;
@@ -1203,6 +1804,34 @@ const BoardComponent: React.FC = () => {
     };
   }, [isGridVisible]);
 
+  useEffect(() => {
+    let cancelled = false;
+    preloadEndOfGameIcons().forEach((promise) => {
+      void promise.then((resolvedUrl) => {
+        if (!cancelled && resolvedUrl) {
+          setEndOfGameIconHrefs(getEndOfGameIconHrefs());
+        }
+      });
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  useLayoutEffect(() => {
+    const nextMeasurements: BoardPlayerInfoMeasurements = {
+      playerScore: measureSvgText(playerScoreTextRef.current),
+      opponentScore: measureSvgText(opponentScoreTextRef.current),
+      playerTimer: measureSvgText(playerTimerTextRef.current),
+      opponentTimer: measureSvgText(opponentTimerTextRef.current),
+    };
+    setPlayerInfoMeasurements((prevMeasurements) =>
+      playerInfoMeasurementsEqual(prevMeasurements, nextMeasurements)
+        ? prevMeasurements
+        : nextMeasurements,
+    );
+  }, [boardPixelSize, isGridVisible, playerInfoOverlayState]);
+
   const clearWagerPanel = useCallback(() => {
     activeWagerPanelSideRef.current = null;
     activeWagerPanelRectRef.current = null;
@@ -1240,7 +1869,8 @@ const BoardComponent: React.FC = () => {
       updateAuraForAvatarElementImpl = () => {};
       updateWagerPlayerUidsImpl = () => {};
       clearBoardTransientUiImpl = () => {};
-      setBotStrengthControlOverlayStateImpl = () => {};
+      setBoardPlayerInfoOverlayStateImpl = () => {};
+      applyInviteBotButtonLayout(null);
     };
   }, [clearPendingWagerTransitionState]);
 
@@ -1994,6 +2624,36 @@ const BoardComponent: React.FC = () => {
     };
   }, [clearWagerPanel]);
 
+  const playerInfoLayout = useMemo(() => {
+    return getBoardPlayerInfoLayout(
+      playerInfoOverlayState,
+      playerInfoMeasurements,
+      endOfGameIconHrefs,
+      boardPixelSize,
+      isNarrowBoardViewport,
+      isPangchiuBoardLayout,
+    );
+  }, [
+    boardPixelSize,
+    endOfGameIconHrefs,
+    isPangchiuBoardLayout,
+    isNarrowBoardViewport,
+    playerInfoMeasurements,
+    playerInfoOverlayState,
+  ]);
+  const botStrengthControlOverlay = playerInfoLayout.botStrengthControlOverlay;
+
+  useLayoutEffect(() => {
+    applyInviteBotButtonLayout(playerInfoLayout.inviteBotButtonLayout);
+  }, [playerInfoLayout.inviteBotButtonLayout]);
+
+  useEffect(() => {
+    if (!botStrengthControlOverlay.visible) {
+      setBotStrengthHovered(false);
+      setBotStrengthPressed(false);
+    }
+  }, [botStrengthControlOverlay.visible]);
+
   const standardBoardTransform = "translate(0,100)";
   const pangchiuBoardTransform = "translate(83,184) scale(0.85892388)";
   const activeWagerPileRect = activeWagerPanelSide
@@ -2189,6 +2849,106 @@ const BoardComponent: React.FC = () => {
     }
     didClickBotStrengthControlButton();
   };
+  const handlePlayerInfoNameClick = (
+    event: React.SyntheticEvent,
+    slot: BoardPlayerInfoSlotState,
+  ) => {
+    event.stopPropagation();
+    if (slot.profileMetadataIsOpponent !== null) {
+      openBoardPlayerInfoProfile(slot.profileMetadataIsOpponent);
+    }
+  };
+  const handlePlayerInfoNameMouseEnter = (
+    side: WagerPileSide,
+    slot: BoardPlayerInfoSlotState,
+  ) => {
+    if (slot.profileMetadataIsOpponent !== null) {
+      setHoveredPlayerInfoSlot(side);
+    }
+  };
+  const handlePlayerInfoNameMouseLeave = (side: WagerPileSide) => {
+    setHoveredPlayerInfoSlot((currentSide) =>
+      currentSide === side ? null : currentSide,
+    );
+  };
+  const handlePlayerInfoNameTouchEnd = (side: WagerPileSide) => {
+    setTrackedTimeout(() => {
+      handlePlayerInfoNameMouseLeave(side);
+    }, 100);
+  };
+  const renderPlayerInfoSlot = (
+    side: WagerPileSide,
+    slot: BoardPlayerInfoSlotState,
+    layout: BoardPlayerInfoSlotLayout,
+  ) => {
+    const scoreRef =
+      side === "player" ? playerScoreTextRef : opponentScoreTextRef;
+    const timerRef =
+      side === "player" ? playerTimerTextRef : opponentTimerTextRef;
+    const canOpenProfile = slot.profileMetadataIsOpponent !== null;
+    const isNameHovered = hoveredPlayerInfoSlot === side && canOpenProfile;
+    const nameFill = isNameHovered ? "#0071F9" : colors.scoreText;
+    return (
+      <g key={side}>
+        <text
+          ref={scoreRef}
+          x={layout.scoreX * 100}
+          y={layout.scoreY * 100}
+          fill={colors.scoreText}
+          opacity={0.69}
+          fontWeight={600}
+          fontSize={layout.scoreFontSize}
+          overflow="visible"
+          display={slot.visible ? undefined : "none"}
+        >
+          {slot.scoreText}
+        </text>
+        <text
+          ref={timerRef}
+          x={layout.timerX * 100}
+          y={layout.timerY * 100}
+          fill={slot.timerColor}
+          opacity={0.69}
+          fontWeight={600}
+          fontSize={layout.scoreFontSize}
+          overflow="visible"
+          display={slot.visible && slot.timerVisible ? undefined : "none"}
+        >
+          {slot.timerText}
+        </text>
+        {layout.endOfGameIcon.visible && (
+          <image
+            href={layout.endOfGameIcon.href}
+            x={layout.endOfGameIcon.x * 100}
+            y={layout.endOfGameIcon.y * 100}
+            width={layout.endOfGameIcon.size * 100}
+            height={layout.endOfGameIcon.size * 100}
+            opacity={END_OF_GAME_ICON_OPACITY}
+            overflow="visible"
+            pointerEvents="none"
+          />
+        )}
+        <text
+          x={layout.nameX * 100}
+          y={layout.nameY * 100}
+          fill={nameFill}
+          opacity={0.69}
+          fontWeight={270}
+          fontStyle="italic"
+          fontSize={layout.nameFontSize}
+          overflow="visible"
+          display={slot.nameVisible ? undefined : "none"}
+          style={{ cursor: "pointer" }}
+          onClick={(event) => handlePlayerInfoNameClick(event, slot)}
+          onMouseEnter={() => handlePlayerInfoNameMouseEnter(side, slot)}
+          onMouseLeave={() => handlePlayerInfoNameMouseLeave(side)}
+          onTouchEnd={() => handlePlayerInfoNameTouchEnd(side)}
+        >
+          {slot.nameText}
+        </text>
+      </g>
+    );
+  };
   const boardClassName = `board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`;
 
   return (
@@ -2255,7 +3015,7 @@ const BoardComponent: React.FC = () => {
         ref={boardSvgRef}
         xmlns="http://www.w3.org/2000/svg"
         className={boardClassName}
-        viewBox="0 0 1100 1410"
+        viewBox={`0 0 ${BOARD_VIEWBOX_WIDTH} ${BOARD_VIEWBOX_HEIGHT}`}
         shapeRendering="crispEdges"
         overflow="visible"
       >
@@ -2318,6 +3078,18 @@ const BoardComponent: React.FC = () => {
             isGridVisible ? standardBoardTransform : pangchiuBoardTransform
           }
         ></g>
+        <g id="playerInfoLayer">
+          {renderPlayerInfoSlot(
+            "opponent",
+            playerInfoOverlayState.opponent,
+            playerInfoLayout.opponent,
+          )}
+          {renderPlayerInfoSlot(
+            "player",
+            playerInfoOverlayState.player,
+            playerInfoLayout.player,
+          )}
+        </g>
         <g id="controlsLayer"></g>
         <g
           id="effectsLayer"

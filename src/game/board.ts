@@ -61,7 +61,13 @@ import {
   showRaibowAura,
   updateAuraForAvatarElement,
   updateWagerPlayerUids,
-  setBotStrengthControlOverlayState,
+  setBoardPlayerInfoOverlayState,
+} from "../ui/BoardComponent";
+import type {
+  BoardInviteBotButtonLayout,
+  BoardPlayerInfoOverlayState,
+  BoardPlayerInfoSlotState,
+  BoardTimerColor,
 } from "../ui/BoardComponent";
 import { storage } from "../utils/storage";
 import { PlayerProfile } from "../connection/connectionModels";
@@ -241,10 +247,6 @@ const rotatedItemImageCache: Map<ItemKind, string> = new Map();
 const minHorizontalOffset = 0.21;
 let showsItemSelectionOrConfirmationOverlay = false;
 let dimmingOverlay: SVGElement | undefined;
-let opponentNameText: SVGElement | undefined;
-let playerNameText: SVGElement | undefined;
-let opponentScoreText: SVGElement | undefined;
-let opponentEndOfGameIcon: SVGElement | undefined;
 let inviteBotButtonContainer: SVGElement | undefined;
 let inviteBotButtonElement: HTMLButtonElement | undefined;
 let cleanupInviteBotButtonThemeListener: (() => void) | null = null;
@@ -252,10 +254,16 @@ type BotAutomoveMode = "fast" | "normal" | "pro";
 let botStrengthControlMode: BotAutomoveMode = "normal";
 let botStrengthControlVisible = false;
 
-let playerScoreText: SVGElement | undefined;
-let playerEndOfGameIcon: SVGElement | undefined;
-let opponentTimer: SVGElement | undefined;
-let playerTimer: SVGElement | undefined;
+let playerScoreDisplayText = "";
+let opponentScoreDisplayText = "";
+let playerTimerDisplayText = "";
+let opponentTimerDisplayText = "";
+let playerTimerColor: BoardTimerColor = "green";
+let opponentTimerColor: BoardTimerColor = "green";
+let playerInfoPlayerVisible = false;
+let playerInfoOpponentVisible = false;
+let playerInfoPlayerNameVisible = false;
+let playerInfoOpponentNameVisible = false;
 let opponentAvatar: SVGElement | undefined;
 let playerAvatar: SVGElement | undefined;
 let opponentAvatarPlaceholder: SVGElement | undefined;
@@ -263,7 +271,6 @@ let playerAvatarPlaceholder: SVGElement | undefined;
 let doNotShowPlayerAvatarPlaceholderAgain = false;
 let doNotShowOpponentAvatarPlaceholderAgain = false;
 let localHumanSeriesOpponentEmojiId: string | null = null;
-let activeTimer: SVGElement | null = null;
 let talkingDude: SVGElement | null = null;
 let talkingDudeTextDiv: HTMLElement | null;
 let instructionsContainerElement: SVGElement | undefined;
@@ -291,37 +298,6 @@ let supermana: SVGElement;
 let supermanaSimple: SVGElement;
 
 const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
-const END_OF_GAME_ICON_BASE_URL = "https://assets.mons.link/icons";
-const END_OF_GAME_ICON_URLS = {
-  victory: `${END_OF_GAME_ICON_BASE_URL}/victory.webp`,
-  resign: `${END_OF_GAME_ICON_BASE_URL}/resign_1.webp`,
-} as const;
-type EndOfGameIconName = keyof typeof END_OF_GAME_ICON_URLS;
-const endOfGameIconPromises: Map<
-  EndOfGameIconName,
-  Promise<string | null>
-> = new Map();
-const endOfGameIconResolvedUrls: Partial<Record<EndOfGameIconName, string>> =
-  {};
-const END_OF_GAME_ICON_OPACITY = 0.69;
-const END_OF_GAME_ICON_SIZE_MULTIPLIER = 0.53;
-const END_OF_GAME_ICON_GAP_MULTIPLIER = 0.06;
-const END_OF_GAME_NAME_OFFSET_MULTIPLIER = 0.54;
-const SCORE_TEXT_FONT_SIZE_MULTIPLIER = 50;
-const INVITE_BOT_BUTTON_FONT_TO_SCORE_RATIO = 0.68;
-const INVITE_BOT_BUTTON_X_GAP_MULTIPLIER = 0.18;
-const INVITE_BOT_BUTTON_HEIGHT_TO_FONT_RATIO = 2.1;
-const INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX = 12;
-const INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO = 0.9;
-const INVITE_BOT_BUTTON_TEXT_WIDTH_TO_FONT_RATIO = 5.5;
-const BOT_STRENGTH_BUTTON_SCALE = 1.23;
-const BOT_STRENGTH_BUTTON_SIZE_TO_INVITE_HEIGHT =
-  0.82 * BOT_STRENGTH_BUTTON_SCALE;
-const BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER =
-  0.12 * BOT_STRENGTH_BUTTON_SCALE;
-const BOT_STRENGTH_VOICE_REACTION_EXTRA_GAP_MULTIPLIER =
-  0.08 * BOT_STRENGTH_BUTTON_SCALE;
-const BOT_STRENGTH_BUTTON_LEFT_SHIFT_MULTIPLIER = 0.045;
 const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
 const WAGER_PILE_SCALE = 1;
@@ -354,142 +330,6 @@ const applyInviteBotButtonColors = (
     }
     button.style.color = "var(--color-blue-primary)";
   }
-};
-
-type InviteBotButtonLayout = {
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  fontSizePx: number;
-  horizontalPaddingPx: number;
-};
-
-type BotStrengthControlLayout = {
-  x: number;
-  y: number;
-  size: number;
-};
-
-const getInviteBotButtonLayout = (
-  scoreText: SVGElement,
-  multiplicator: number,
-  avatarSize: number,
-): InviteBotButtonLayout => {
-  const scoreX = parseFloat(scoreText.getAttribute("x") || "0") / 100;
-  const scoreY = parseFloat(scoreText.getAttribute("y") || "0") / 100;
-  const scoreWidth = getSvgTextWidthInBoardUnits(scoreText);
-  const scoreFontBoardUnits =
-    (SCORE_TEXT_FONT_SIZE_MULTIPLIER * multiplicator) / 100;
-  const fontSizePx = Math.max(
-    INVITE_BOT_BUTTON_MIN_FONT_SIZE_PX,
-    Math.round(
-      SCORE_TEXT_FONT_SIZE_MULTIPLIER *
-        multiplicator *
-        INVITE_BOT_BUTTON_FONT_TO_SCORE_RATIO,
-    ),
-  );
-  const fontBoardUnits = fontSizePx / 100;
-  const height = Math.min(
-    fontBoardUnits * INVITE_BOT_BUTTON_HEIGHT_TO_FONT_RATIO,
-    avatarSize * 0.88,
-  );
-  const x =
-    scoreX + scoreWidth + INVITE_BOT_BUTTON_X_GAP_MULTIPLIER * multiplicator;
-  const horizontalPaddingPx = Math.max(
-    6,
-    Math.round(fontSizePx * INVITE_BOT_BUTTON_PADDING_TO_FONT_RATIO),
-  );
-  const width =
-    (fontSizePx * INVITE_BOT_BUTTON_TEXT_WIDTH_TO_FONT_RATIO +
-      2 * horizontalPaddingPx) /
-    100;
-  const scoreCenterY = scoreY - scoreFontBoardUnits * 0.35;
-  const y = scoreCenterY - height / 2 - 0.023 * multiplicator;
-  return { x, y, width, height, fontSizePx, horizontalPaddingPx };
-};
-
-const getBotStrengthControlLayout = (
-  scoreText: SVGElement,
-  multiplicator: number,
-  avatarSize: number,
-): BotStrengthControlLayout => {
-  const inviteLayout = getInviteBotButtonLayout(
-    scoreText,
-    multiplicator,
-    avatarSize,
-  );
-  const size = inviteLayout.height * BOT_STRENGTH_BUTTON_SIZE_TO_INVITE_HEIGHT;
-  const x =
-    inviteLayout.x - BOT_STRENGTH_BUTTON_LEFT_SHIFT_MULTIPLIER * multiplicator;
-  const y = inviteLayout.y + (inviteLayout.height - size) / 2;
-  return { x, y, size };
-};
-
-const syncBotStrengthControlOverlay = (
-  layout: BotStrengthControlLayout | null = null,
-) => {
-  let resolvedLayout = layout;
-  if (
-    !resolvedLayout &&
-    boardBackgroundLayer &&
-    playerScoreText &&
-    opponentScoreText
-  ) {
-    const topControlAnchorScoreText = isMetadataDisplaySwapped
-      ? playerScoreText
-      : opponentScoreText;
-    const multiplicator = getOuterElementsMultiplicator();
-    const avatarSize = getAvatarSize();
-    resolvedLayout = getBotStrengthControlLayout(
-      topControlAnchorScoreText,
-      multiplicator,
-      avatarSize,
-    );
-  }
-  setBotStrengthControlOverlayState({
-    visible: botStrengthControlVisible && !!resolvedLayout,
-    mode: botStrengthControlMode,
-    x: resolvedLayout?.x ?? 0,
-    y: resolvedLayout?.y ?? 0,
-    size: resolvedLayout?.size ?? 0,
-  });
-};
-
-const fetchCachedImageUrl = (url: string): Promise<string | null> =>
-  fetch(url)
-    .then((res) => {
-      if (!res.ok) throw new Error("Failed to fetch image");
-      return res.blob();
-    })
-    .then((blob) => URL.createObjectURL(blob))
-    .catch(() => null);
-
-const getEndOfGameIconCachedUrl = (
-  name: EndOfGameIconName,
-): Promise<string | null> => {
-  if (!endOfGameIconPromises.has(name)) {
-    const p = fetchCachedImageUrl(END_OF_GAME_ICON_URLS[name]).then(
-      (resolvedUrl) => {
-        if (resolvedUrl) {
-          endOfGameIconResolvedUrls[name] = resolvedUrl;
-        } else {
-          endOfGameIconPromises.delete(name);
-        }
-        return resolvedUrl;
-      },
-    );
-    endOfGameIconPromises.set(name, p);
-  }
-  return endOfGameIconPromises.get(name)!;
-};
-
-const preloadEndOfGameIcons = () => {
-  (Object.keys(END_OF_GAME_ICON_URLS) as EndOfGameIconName[]).forEach(
-    (name) => {
-      void getEndOfGameIconCachedUrl(name);
-    },
-  );
 };
 
 type WagerPile = {
@@ -567,9 +407,6 @@ const logBoardWagerDebug = (
   }
   console.log("wager-debug", { source: "board", event, ...payload });
 };
-
-preloadEndOfGameIcons();
-
 export function setWagerRenderHandler(
   handler: ((state: WagerRenderState) => void) | null,
 ) {
@@ -896,16 +733,12 @@ export function showInstructionsText(text: string) {
 
   startTextAnimation(text);
 
-  if (
-    opponentAvatar &&
-    opponentAvatarPlaceholder &&
-    opponentScoreText &&
-    opponentNameText
-  ) {
+  if (opponentAvatar && opponentAvatarPlaceholder) {
     SVG.setHidden(opponentAvatar, true);
     SVG.setHidden(opponentAvatarPlaceholder, true);
-    SVG.setHidden(opponentScoreText, true);
-    SVG.setHidden(opponentNameText, true);
+    playerInfoOpponentVisible = false;
+    playerInfoOpponentNameVisible = false;
+    emitBoardPlayerInfoOverlayState();
   }
   setInviteBotButtonVisible(false);
   setBotStrengthControlVisible(false);
@@ -1421,23 +1254,13 @@ export function hideBoardPlayersInfo() {
     SVG.setHidden(opponentAvatarPlaceholder, true);
   }
 
-  if (playerScoreText && opponentScoreText) {
-    playerScoreText.textContent = "";
-    opponentScoreText.textContent = "";
-  }
+  playerScoreDisplayText = "";
+  opponentScoreDisplayText = "";
   playerEndOfGameMarker = "none";
   opponentEndOfGameMarker = "none";
-  if (playerEndOfGameIcon) {
-    SVG.setHidden(playerEndOfGameIcon, true);
-  }
-  if (opponentEndOfGameIcon) {
-    SVG.setHidden(opponentEndOfGameIcon, true);
-  }
-
-  if (playerNameText && opponentNameText) {
-    playerNameText.textContent = "";
-    opponentNameText.textContent = "";
-  }
+  playerInfoPlayerVisible = false;
+  playerInfoOpponentVisible = false;
+  emitBoardPlayerInfoOverlayState();
   setInviteBotButtonVisible(false);
   setBotStrengthControlVisible(false);
 }
@@ -1607,6 +1430,10 @@ function syncAvatarForCurrentMetadata(
 export function showBoardPlayersInfo() {
   syncAvatarForCurrentMetadata(false, true);
   syncAvatarForCurrentMetadata(true, true);
+  playerInfoPlayerVisible = true;
+  playerInfoOpponentVisible = true;
+  playerInfoPlayerNameVisible = true;
+  playerInfoOpponentNameVisible = true;
   renderPlayersNamesLabels();
 }
 
@@ -1630,17 +1457,15 @@ export function resetPlayersMetadataForSession() {
 export function resetForNewGame() {
   playerEndOfGameMarker = "none";
   opponentEndOfGameMarker = "none";
-  if (playerEndOfGameIcon) {
-    SVG.setHidden(playerEndOfGameIcon, true);
-  }
-  if (opponentEndOfGameIcon) {
-    SVG.setHidden(opponentEndOfGameIcon, true);
-  }
   clearVoiceReactionState();
   if (isWatchOnly) {
     playerSideMetadata = newEmptyPlayerMetadata();
   }
   opponentSideMetadata = newEmptyPlayerMetadata();
+  playerInfoPlayerVisible = true;
+  playerInfoOpponentVisible = true;
+  playerInfoPlayerNameVisible = true;
+  playerInfoOpponentNameVisible = true;
   renderPlayersNamesLabels();
   setInviteBotButtonVisible(false);
   setBotStrengthControlVisible(false);
@@ -1875,15 +1700,33 @@ export function setInviteBotButtonVisible(visible: boolean) {
   }
 }
 
+export function applyInviteBotButtonLayout(
+  layout: BoardInviteBotButtonLayout | null,
+) {
+  if (!layout || !inviteBotButtonContainer || !inviteBotButtonElement) {
+    return;
+  }
+  SVG.setFrame(
+    inviteBotButtonContainer,
+    layout.x,
+    layout.y,
+    layout.width,
+    layout.height,
+  );
+  inviteBotButtonElement.style.fontSize = `${layout.fontSizePx}px`;
+  inviteBotButtonElement.style.borderRadius = "999px";
+  inviteBotButtonElement.style.paddingLeft = `${layout.horizontalPaddingPx}px`;
+  inviteBotButtonElement.style.paddingRight = `${layout.horizontalPaddingPx}px`;
+}
+
 export function setBotStrengthControlMode(mode: BotAutomoveMode) {
   botStrengthControlMode = mode;
-  syncBotStrengthControlOverlay();
+  emitBoardPlayerInfoOverlayState();
 }
 
 export function setBotStrengthControlVisible(visible: boolean) {
   botStrengthControlVisible = visible;
-  syncBotStrengthControlOverlay();
-  updateNamesX();
+  emitBoardPlayerInfoOverlayState();
 }
 
 export function runMonsBoardAsDisplayWaitingHeartsAnimation() {
@@ -2168,9 +2011,7 @@ export function didGetPlayerProfile(
   } catch {}
 }
 
-function renderPlayersNamesLabels() {
-  if (!playerNameText || !opponentNameText) return;
-
+function getPlayerInfoNameTexts(): { player: string; opponent: string } {
   const playerMetadata = metadataSideIsOpponentForSlot(false)
     ? opponentSideMetadata
     : playerSideMetadata;
@@ -2187,15 +2028,16 @@ function renderPlayersNamesLabels() {
     opponentMetadata.voiceReactionDate !== undefined &&
     currentTime - opponentMetadata.voiceReactionDate < thresholdDelta;
 
-  if (isWaitingForRematchResponse || playerScoreText?.textContent === "") {
+  if (isWaitingForRematchResponse || playerScoreDisplayText === "") {
     const prefix = "~ ";
-    playerNameText.textContent = hasPlayerReaction
-      ? prefix + playerMetadata.voiceReactionText
-      : "";
-    opponentNameText.textContent = hasOpponentReaction
-      ? prefix + opponentMetadata.voiceReactionText
-      : "";
-    return;
+    return {
+      player: hasPlayerReaction
+        ? prefix + playerMetadata.voiceReactionText
+        : "",
+      opponent: hasOpponentReaction
+        ? prefix + opponentMetadata.voiceReactionText
+        : "",
+    };
   }
   let playerNameString = "";
   let opponentNameString = "";
@@ -2234,8 +2076,59 @@ function renderPlayersNamesLabels() {
     opponentNameString += reactionPrefix + opponentMetadata.voiceReactionText;
   }
 
-  playerNameText.textContent = playerNameString;
-  opponentNameText.textContent = opponentNameString;
+  return { player: playerNameString, opponent: opponentNameString };
+}
+
+function getPlayerInfoProfileMetadataSide(
+  metadataIsOpponent: boolean,
+): boolean | null {
+  if (!metadataIsOpponent && !isWatchOnly) {
+    return null;
+  }
+  if (!canRedirectToExplorer(metadataIsOpponent)) {
+    return null;
+  }
+  return metadataIsOpponent;
+}
+
+function getPlayerInfoSlotState(
+  slotIsOpponent: boolean,
+  nameText: string,
+): BoardPlayerInfoSlotState {
+  const metadataIsOpponent = metadataSideIsOpponentForSlot(slotIsOpponent);
+  const isPlayerSlot = !slotIsOpponent;
+  return {
+    visible: isPlayerSlot ? playerInfoPlayerVisible : playerInfoOpponentVisible,
+    nameVisible: isPlayerSlot
+      ? playerInfoPlayerNameVisible
+      : playerInfoOpponentNameVisible,
+    scoreText: isPlayerSlot ? playerScoreDisplayText : opponentScoreDisplayText,
+    nameText,
+    timerText: isPlayerSlot ? playerTimerDisplayText : opponentTimerDisplayText,
+    timerVisible: isPlayerSlot ? showsPlayerTimer : showsOpponentTimer,
+    timerColor: isPlayerSlot ? playerTimerColor : opponentTimerColor,
+    endOfGameMarker: isPlayerSlot
+      ? playerEndOfGameMarker
+      : opponentEndOfGameMarker,
+    profileMetadataIsOpponent:
+      getPlayerInfoProfileMetadataSide(metadataIsOpponent),
+  };
+}
+
+function emitBoardPlayerInfoOverlayState() {
+  const names = getPlayerInfoNameTexts();
+  const state: BoardPlayerInfoOverlayState = {
+    player: getPlayerInfoSlotState(false, names.player),
+    opponent: getPlayerInfoSlotState(true, names.opponent),
+    topControlSlot: isMetadataDisplaySwapped ? "player" : "opponent",
+    botStrengthControlVisible,
+    botStrengthControlMode,
+  };
+  setBoardPlayerInfoOverlayState(state);
+}
+
+function renderPlayersNamesLabels() {
+  emitBoardPlayerInfoOverlayState();
 }
 
 export function setupLoggedInPlayerProfile(
@@ -2395,6 +2288,15 @@ function redirectToAddressOnExplorer(opponent: boolean) {
   }
 }
 
+export function openBoardPlayerInfoProfile(metadataIsOpponent: boolean) {
+  if (
+    canRedirectToExplorer(metadataIsOpponent) &&
+    didNotDismissAnythingWithOutsideTapJustNow()
+  ) {
+    redirectToAddressOnExplorer(metadataIsOpponent);
+  }
+}
+
 export function removeItemsNotPresentIn(locations: Location[]) {
   const locationSet = new Set(
     locations.map((location) => inBoardCoordinates(location).toString()),
@@ -2485,8 +2387,7 @@ export function removeItem(location: Location) {
 
 export function showTimer(color: string, remainingSeconds: number) {
   const playerSideTimer = isFlipped ? color === "white" : color === "black";
-  const timerElement = playerSideTimer ? playerTimer : opponentTimer;
-  if (!timerElement) return;
+  const timerSide = playerSideTimer ? "player" : "opponent";
 
   if (countdownInterval) {
     clearInterval(countdownInterval);
@@ -2494,24 +2395,9 @@ export function showTimer(color: string, remainingSeconds: number) {
     decrementLifecycleCounter("boardIntervals");
   }
 
-  if (activeTimer && activeTimer !== timerElement) {
-    SVG.setHidden(activeTimer, true);
-    if (playerSideTimer) {
-      showsOpponentTimer = false;
-    } else {
-      showsPlayerTimer = false;
-    }
-  }
-
-  activeTimer = timerElement;
-  updateTimerDisplay(timerElement, remainingSeconds);
-  SVG.setHidden(timerElement, false);
-
-  if (playerSideTimer) {
-    showsPlayerTimer = true;
-  } else {
-    showsOpponentTimer = true;
-  }
+  showsPlayerTimer = playerSideTimer;
+  showsOpponentTimer = !playerSideTimer;
+  updateTimerDisplay(timerSide, remainingSeconds);
 
   const endTime = Date.now() + remainingSeconds * 1000;
 
@@ -2523,23 +2409,27 @@ export function showTimer(color: string, remainingSeconds: number) {
       countdownInterval = null;
       decrementLifecycleCounter("boardIntervals");
     }
-    updateTimerDisplay(timerElement, remainingSeconds);
+    updateTimerDisplay(timerSide, remainingSeconds);
   }, 1000);
   incrementLifecycleCounter("boardIntervals");
-
-  updateNamesX();
 }
 
-function updateTimerDisplay(timerElement: SVGElement, seconds: number) {
+function updateTimerDisplay(timerSide: "player" | "opponent", seconds: number) {
   const displayValue = Math.max(0, seconds);
+  let color: BoardTimerColor = "green";
   if (displayValue <= 10) {
-    SVG.setFill(timerElement, "red");
+    color = "red";
   } else if (displayValue <= 30) {
-    SVG.setFill(timerElement, "orange");
-  } else {
-    SVG.setFill(timerElement, "green");
+    color = "orange";
   }
-  timerElement.textContent = `${displayValue}s`;
+  if (timerSide === "player") {
+    playerTimerColor = color;
+    playerTimerDisplayText = `${displayValue}s`;
+  } else {
+    opponentTimerColor = color;
+    opponentTimerDisplayText = `${displayValue}s`;
+  }
+  emitBoardPlayerInfoOverlayState();
 }
 
 export function hideTimerCountdownDigits() {
@@ -2551,12 +2441,7 @@ export function hideTimerCountdownDigits() {
     countdownInterval = null;
     decrementLifecycleCounter("boardIntervals");
   }
-  if (playerTimer && opponentTimer) {
-    SVG.setHidden(playerTimer, true);
-    SVG.setHidden(opponentTimer, true);
-  }
-  activeTimer = null;
-  updateNamesX();
+  emitBoardPlayerInfoOverlayState();
 }
 
 export function updateScore(
@@ -2595,14 +2480,11 @@ export function updateScore(
   const playerMarker = isFlipped ? blackMarker : whiteMarker;
   const opponentMarker = isFlipped ? whiteMarker : blackMarker;
 
-  if (playerScoreText && opponentScoreText) {
-    playerScoreText.textContent = playerScore.toString();
-    opponentScoreText.textContent = opponentScore.toString();
-  }
+  playerScoreDisplayText = playerScore.toString();
+  opponentScoreDisplayText = opponentScore.toString();
 
   playerEndOfGameMarker = playerMarker;
   opponentEndOfGameMarker = opponentMarker;
-  updateNamesX();
   renderPlayersNamesLabels();
 }
 
@@ -3603,276 +3485,9 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
   return true;
 }
 
-function getSvgTextWidthInBoardUnits(element: SVGElement | undefined): number {
-  if (!element) {
-    return 0;
-  }
-  try {
-    const textElement = element as unknown as SVGTextContentElement;
-    const width = textElement.getComputedTextLength
-      ? textElement.getComputedTextLength()
-      : 0;
-    if (Number.isFinite(width) && width > 0) {
-      return width / 100;
-    }
-  } catch {}
-  try {
-    const graphicElement = element as unknown as SVGGraphicsElement;
-    const bbox = graphicElement.getBBox ? graphicElement.getBBox() : null;
-    if (bbox && Number.isFinite(bbox.width) && bbox.width > 0) {
-      return bbox.width / 100;
-    }
-  } catch {}
-  return 0;
-}
-
-function getDynamicNameDelta(
-  initialX: number,
-  scoreText: SVGElement | undefined,
-  timerText: SVGElement | undefined,
-  showsTimer: boolean,
-  endOfGameIcon: SVGElement | undefined,
-  showsEndOfGameMarker: boolean,
-  multiplicator: number,
-  extraSpacing: number = 0,
-): number {
-  if (!scoreText) {
-    return 0;
-  }
-  const spacing = 0.14 * multiplicator + extraSpacing;
-  const scoreX = parseFloat(scoreText.getAttribute("x") || "0") / 100;
-  const scoreRight = scoreX + getSvgTextWidthInBoardUnits(scoreText);
-  let minNameX = scoreRight + spacing;
-  if (showsEndOfGameMarker && endOfGameIcon) {
-    const iconX = parseFloat(endOfGameIcon.getAttribute("x") || "0") / 100;
-    const measuredIconWidth =
-      parseFloat(endOfGameIcon.getAttribute("width") || "0") / 100;
-    const fallbackIconWidth = END_OF_GAME_ICON_SIZE_MULTIPLIER * multiplicator;
-    const iconWidth =
-      Number.isFinite(measuredIconWidth) && measuredIconWidth > 0
-        ? measuredIconWidth
-        : fallbackIconWidth;
-    const iconHidden = endOfGameIcon.getAttribute("display") === "none";
-    const iconRight =
-      !iconHidden || iconX > 0
-        ? iconX + iconWidth
-        : scoreRight +
-          END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator +
-          iconWidth;
-    minNameX = Math.max(minNameX, iconRight + spacing);
-  } else if (showsEndOfGameMarker) {
-    minNameX = Math.max(
-      minNameX,
-      scoreRight +
-        END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator +
-        END_OF_GAME_ICON_SIZE_MULTIPLIER * multiplicator +
-        spacing,
-    );
-  }
-  if (showsTimer && timerText) {
-    const timerX = parseFloat(timerText.getAttribute("x") || "0") / 100;
-    const timerRight = timerX + getSvgTextWidthInBoardUnits(timerText);
-    minNameX = Math.max(minNameX, timerRight + spacing);
-  }
-  return Math.max(0, minNameX - initialX);
-}
-
-function updateEndOfGameIcons(multiplicator: number) {
-  const iconSize = END_OF_GAME_ICON_SIZE_MULTIPLIER * multiplicator;
-  const iconGap = END_OF_GAME_ICON_GAP_MULTIPLIER * multiplicator;
-  const topControlAnchorScoreText = isMetadataDisplaySwapped
-    ? playerScoreText
-    : opponentScoreText;
-  const topControlLayout =
-    botStrengthControlVisible && topControlAnchorScoreText
-      ? getBotStrengthControlLayout(
-          topControlAnchorScoreText,
-          multiplicator,
-          getAvatarSize(),
-        )
-      : null;
-  const updateSingleIcon = (
-    scoreText: SVGElement | undefined,
-    icon: SVGElement | undefined,
-    marker: EndOfGameMarker,
-    isTopControlSide: boolean,
-  ) => {
-    if (
-      !scoreText ||
-      !icon ||
-      marker === "none" ||
-      (scoreText.textContent ?? "") === ""
-    ) {
-      if (icon) {
-        SVG.setHidden(icon, true);
-      }
-      return;
-    }
-    const iconName: EndOfGameIconName =
-      marker === "victory" ? "victory" : "resign";
-    const resolvedUrl = endOfGameIconResolvedUrls[iconName];
-    if (icon.getAttribute("data-marker") !== marker) {
-      icon.setAttribute("data-marker", marker);
-      void SVG.setImageUrl(
-        icon,
-        resolvedUrl || END_OF_GAME_ICON_URLS[iconName],
-      );
-    }
-    if (!resolvedUrl) {
-      void getEndOfGameIconCachedUrl(iconName).then((url) => {
-        if (!url) {
-          return;
-        }
-        if (icon.getAttribute("data-marker") === marker) {
-          void SVG.setImageUrl(icon, url);
-        }
-      });
-    }
-    const scoreX = parseFloat(scoreText.getAttribute("x") || "0") / 100;
-    const scoreWidth = getSvgTextWidthInBoardUnits(scoreText);
-    let iconX = scoreX + scoreWidth + iconGap;
-    if (isTopControlSide && topControlLayout) {
-      iconX = Math.max(
-        iconX,
-        topControlLayout.x + topControlLayout.size + iconGap,
-      );
-    }
-    let iconY =
-      parseFloat(scoreText.getAttribute("y") || "0") / 100 - iconSize * 0.8;
-    try {
-      const scoreBounds = (scoreText as unknown as SVGGraphicsElement).getBBox
-        ? (scoreText as unknown as SVGGraphicsElement).getBBox()
-        : null;
-      if (
-        scoreBounds &&
-        Number.isFinite(scoreBounds.y) &&
-        Number.isFinite(scoreBounds.height)
-      ) {
-        iconY = scoreBounds.y / 100 + (scoreBounds.height / 100 - iconSize) / 2;
-      }
-    } catch {}
-    SVG.setFrame(icon, iconX, iconY, iconSize, iconSize);
-    SVG.setHidden(icon, false);
-  };
-
-  updateSingleIcon(
-    playerScoreText,
-    playerEndOfGameIcon,
-    playerEndOfGameMarker,
-    topControlAnchorScoreText === playerScoreText,
-  );
-  updateSingleIcon(
-    opponentScoreText,
-    opponentEndOfGameIcon,
-    opponentEndOfGameMarker,
-    topControlAnchorScoreText === opponentScoreText,
-  );
-}
-
-function updateNamesX() {
-  if (playerNameText === undefined || opponentNameText === undefined) {
-    return;
-  }
-  const multiplicator = getOuterElementsMultiplicator();
-  updateEndOfGameIcons(multiplicator);
-  const offsetX = seeIfShouldOffsetFromBorders() ? minHorizontalOffset : 0;
-  const initialX = offsetX + 1.45 * multiplicator + 0.1;
-  const timerDelta = 0.95 * multiplicator;
-  const statusDelta = END_OF_GAME_NAME_OFFSET_MULTIPLIER * multiplicator;
-  const playerHasEndOfGameMarker = playerEndOfGameMarker !== "none";
-  const opponentHasEndOfGameMarker = opponentEndOfGameMarker !== "none";
-
-  const playerStaticDelta =
-    (playerHasEndOfGameMarker ? statusDelta : 0) +
-    (showsPlayerTimer ? timerDelta : 0);
-  const opponentStaticDelta =
-    (opponentHasEndOfGameMarker ? statusDelta : 0) +
-    (showsOpponentTimer ? timerDelta : 0);
-  const topControlSlotHasEndOfGameMarker = isMetadataDisplaySwapped
-    ? playerHasEndOfGameMarker
-    : opponentHasEndOfGameMarker;
-  const topControlNameText = isMetadataDisplaySwapped
-    ? playerNameText
-    : opponentNameText;
-  const topControlHasVoiceReaction = (
-    topControlNameText?.textContent ?? ""
-  ).includes("~ ");
-  const topVoiceReactionExtraSpacing =
-    botStrengthControlVisible &&
-    topControlSlotHasEndOfGameMarker &&
-    topControlHasVoiceReaction
-      ? BOT_STRENGTH_VOICE_REACTION_EXTRA_GAP_MULTIPLIER * multiplicator
-      : 0;
-  const playerDynamicDelta = getDynamicNameDelta(
-    initialX,
-    playerScoreText,
-    playerTimer,
-    showsPlayerTimer,
-    playerEndOfGameIcon,
-    playerHasEndOfGameMarker,
-    multiplicator,
-    isMetadataDisplaySwapped ? topVoiceReactionExtraSpacing : 0,
-  );
-  const opponentDynamicDelta = getDynamicNameDelta(
-    initialX,
-    opponentScoreText,
-    opponentTimer,
-    showsOpponentTimer,
-    opponentEndOfGameIcon,
-    opponentHasEndOfGameMarker,
-    multiplicator,
-    isMetadataDisplaySwapped ? 0 : topVoiceReactionExtraSpacing,
-  );
-
-  let playerBotStrengthDelta = 0;
-  let opponentBotStrengthDelta = 0;
-  const topControlAnchorScoreText = isMetadataDisplaySwapped
-    ? playerScoreText
-    : opponentScoreText;
-  if (botStrengthControlVisible && topControlAnchorScoreText) {
-    const avatarSize = getAvatarSize();
-    const botLayout = getBotStrengthControlLayout(
-      topControlAnchorScoreText,
-      multiplicator,
-      avatarSize,
-    );
-    const minNameX =
-      botLayout.x +
-      botLayout.size +
-      BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER * multiplicator;
-    const delta = Math.max(0, minNameX - initialX);
-    if (isMetadataDisplaySwapped) {
-      playerBotStrengthDelta = delta;
-    } else {
-      opponentBotStrengthDelta = delta;
-    }
-  }
-
-  SVG.setX(
-    playerNameText,
-    initialX +
-      Math.max(playerStaticDelta, playerDynamicDelta, playerBotStrengthDelta),
-  );
-  SVG.setX(
-    opponentNameText,
-    initialX +
-      Math.max(
-        opponentStaticDelta,
-        opponentDynamicDelta,
-        opponentBotStrengthDelta,
-      ),
-  );
-}
-
 const updateLayout = () => {
   if (
     !hasSetupBoardRuntime ||
-    !opponentScoreText ||
-    !playerScoreText ||
-    !opponentTimer ||
-    !playerTimer ||
-    !opponentNameText ||
-    !playerNameText ||
     !opponentAvatar ||
     !playerAvatar ||
     !opponentAvatarPlaceholder ||
@@ -3883,38 +3498,18 @@ const updateLayout = () => {
     return;
   }
   const multiplicator = getOuterElementsMultiplicator();
-  const scoreFontSize = SCORE_TEXT_FONT_SIZE_MULTIPLIER * multiplicator;
 
   let shouldOffsetFromBorders = seeIfShouldOffsetFromBorders();
   const offsetX = shouldOffsetFromBorders ? minHorizontalOffset : 0;
 
   for (const isOpponent of [true, false]) {
     const avatarSize = getAvatarSize();
-    const numberText = isOpponent ? opponentScoreText : playerScoreText;
-    const timerText = isOpponent ? opponentTimer : playerTimer;
-    const nameText = isOpponent ? opponentNameText : playerNameText;
 
     const y = isOpponent
       ? 1 - avatarSize * 1.203
       : isPangchiuBoard()
         ? 12.75
         : 12.16;
-
-    SVG.setOrigin(
-      numberText,
-      offsetX + avatarSize * 1.21,
-      y + avatarSize * 0.73,
-    );
-    SVG.setOrigin(
-      timerText,
-      offsetX + avatarSize * 1.85,
-      y + avatarSize * 0.73,
-    );
-    SVG.setOrigin(nameText, 0, y + avatarSize * 0.65);
-
-    numberText.setAttribute("font-size", scoreFontSize.toString());
-    timerText.setAttribute("font-size", scoreFontSize.toString());
-    nameText.setAttribute("font-size", (32 * multiplicator).toString());
 
     const statusItemsOffsetX = shouldOffsetFromBorders
       ? 0.21 * multiplicator
@@ -3952,43 +3547,7 @@ const updateLayout = () => {
     );
   }
 
-  const topControlAnchorScoreText = isMetadataDisplaySwapped
-    ? playerScoreText
-    : opponentScoreText;
-  if (
-    inviteBotButtonContainer &&
-    inviteBotButtonElement &&
-    topControlAnchorScoreText
-  ) {
-    const avatarSize = getAvatarSize();
-    const layout = getInviteBotButtonLayout(
-      topControlAnchorScoreText,
-      multiplicator,
-      avatarSize,
-    );
-    SVG.setFrame(
-      inviteBotButtonContainer,
-      layout.x,
-      layout.y,
-      layout.width,
-      layout.height,
-    );
-    inviteBotButtonElement.style.fontSize = `${layout.fontSizePx}px`;
-    inviteBotButtonElement.style.borderRadius = "999px";
-    inviteBotButtonElement.style.paddingLeft = `${layout.horizontalPaddingPx}px`;
-    inviteBotButtonElement.style.paddingRight = `${layout.horizontalPaddingPx}px`;
-  }
-  if (topControlAnchorScoreText) {
-    const avatarSize = getAvatarSize();
-    const layout = getBotStrengthControlLayout(
-      topControlAnchorScoreText,
-      multiplicator,
-      avatarSize,
-    );
-    syncBotStrengthControlOverlay(layout);
-  } else {
-    syncBotStrengthControlOverlay(null);
-  }
+  emitBoardPlayerInfoOverlayState();
 
   if (instructionsContainerElement && talkingDude) {
     const dudeBaseI = -0.3;
@@ -4030,7 +3589,7 @@ const updateLayout = () => {
   }
 
   updateWagerLayout();
-  updateNamesX();
+  emitBoardPlayerInfoOverlayState();
 };
 
 export function showDebugWagerPiles(
@@ -4202,7 +3761,6 @@ function doNotShowAvatarPlaceholderAgain(opponent: boolean) {
 export async function setupGameInfoElements(allHiddenInitially: boolean) {
   const runtimeToken = boardRuntimeToken;
   const statusMove = loadImage(emojis.statusMove, "statusMoveEmoji");
-  preloadEndOfGameIcons();
   if (!didRegisterResizeHandler) {
     window.addEventListener("resize", updateLayout);
     didRegisterResizeHandler = true;
@@ -4223,98 +3781,20 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
 
   playerSideMetadata.emojiId = playerEmojiId;
   opponentSideMetadata.emojiId = opponentEmojiId;
+  playerScoreDisplayText = allHiddenInitially ? "" : "0";
+  opponentScoreDisplayText = allHiddenInitially ? "" : "0";
+  playerTimerDisplayText = "";
+  opponentTimerDisplayText = "";
+  playerTimerColor = "green";
+  opponentTimerColor = "green";
+  showsPlayerTimer = false;
+  showsOpponentTimer = false;
+  playerInfoPlayerVisible = !allHiddenInitially;
+  playerInfoOpponentVisible = !allHiddenInitially;
+  playerInfoPlayerNameVisible = true;
+  playerInfoOpponentNameVisible = true;
 
   for (const isOpponent of [true, false]) {
-    const numberText = document.createElementNS(SVG.ns, "text");
-    SVG.setFill(numberText, colors.scoreText);
-    SVG.setOpacity(numberText, 0.69);
-    numberText.setAttribute("font-weight", "600");
-    numberText.setAttribute("overflow", "visible");
-    numberText.textContent = allHiddenInitially ? "" : "0";
-    controlsLayer?.append(numberText);
-    if (isOpponent) {
-      opponentScoreText = numberText;
-    } else {
-      playerScoreText = numberText;
-    }
-
-    const endOfGameIcon = document.createElementNS(SVG.ns, "image");
-    SVG.setHidden(endOfGameIcon, true);
-    SVG.setOpacity(endOfGameIcon, END_OF_GAME_ICON_OPACITY);
-    endOfGameIcon.setAttribute("overflow", "visible");
-    endOfGameIcon.setAttribute("pointer-events", "none");
-    controlsLayer?.append(endOfGameIcon);
-    if (isOpponent) {
-      opponentEndOfGameIcon = endOfGameIcon;
-    } else {
-      playerEndOfGameIcon = endOfGameIcon;
-    }
-
-    const timerText = document.createElementNS(SVG.ns, "text");
-    SVG.setFill(timerText, "green");
-    SVG.setOpacity(timerText, 0.69);
-    timerText.setAttribute("font-weight", "600");
-    timerText.textContent = "";
-    timerText.setAttribute("overflow", "visible");
-    controlsLayer?.append(timerText);
-    if (isOpponent) {
-      opponentTimer = timerText;
-    } else {
-      playerTimer = timerText;
-    }
-
-    const nameText = document.createElementNS(SVG.ns, "text");
-    SVG.setFill(nameText, colors.scoreText);
-    SVG.setOpacity(nameText, 0.69);
-    nameText.setAttribute("font-weight", "270");
-    nameText.setAttribute("font-style", "italic");
-    nameText.style.cursor = "pointer";
-    nameText.setAttribute("overflow", "visible");
-    controlsLayer?.append(nameText);
-
-    nameText.addEventListener("click", (event) => {
-      event.stopPropagation();
-      const metadataIsOpponent = metadataSideIsOpponentForSlot(isOpponent);
-      if (!metadataIsOpponent && !isWatchOnly) {
-        return;
-      }
-
-      if (
-        canRedirectToExplorer(metadataIsOpponent) &&
-        didNotDismissAnythingWithOutsideTapJustNow()
-      ) {
-        redirectToAddressOnExplorer(metadataIsOpponent);
-        SVG.setFill(nameText, colors.scoreText);
-      }
-    });
-
-    nameText.addEventListener("mouseenter", () => {
-      const metadataIsOpponent = metadataSideIsOpponentForSlot(isOpponent);
-      if (!metadataIsOpponent && !isWatchOnly) {
-        return;
-      }
-
-      if (canRedirectToExplorer(metadataIsOpponent)) {
-        SVG.setFill(nameText, "#0071F9");
-      }
-    });
-
-    nameText.addEventListener("mouseleave", () => {
-      SVG.setFill(nameText, colors.scoreText);
-    });
-
-    nameText.addEventListener("touchend", () => {
-      setManagedBoardTimeout(() => {
-        SVG.setFill(nameText, colors.scoreText);
-      }, 100);
-    });
-
-    if (isOpponent) {
-      opponentNameText = nameText;
-    } else {
-      playerNameText = nameText;
-    }
-
     for (let x = 0; x < 9; x++) {
       const img = statusMove.cloneNode() as SVGElement;
       controlsLayer?.appendChild(img);
@@ -4398,10 +3878,7 @@ export async function setupGameInfoElements(allHiddenInitially: boolean) {
 
   setupInviteBotButton();
   updateLayout();
-
-  if (!allHiddenInitially) {
-    renderPlayersNamesLabels();
-  }
+  renderPlayersNamesLabels();
 }
 
 function pickAndDisplayDifferentEmoji(metadataIsOpponent: boolean) {
@@ -4591,13 +4068,6 @@ export function disposeBoardRuntime() {
     cleanupInviteBotButtonThemeListener();
     cleanupInviteBotButtonThemeListener = null;
   }
-  setBotStrengthControlOverlayState({
-    visible: false,
-    mode: botStrengthControlMode,
-    x: 0,
-    y: 0,
-    size: 0,
-  });
   if (didRegisterResizeHandler) {
     window.removeEventListener("resize", updateLayout);
     didRegisterResizeHandler = false;
@@ -4646,19 +4116,22 @@ export function disposeBoardRuntime() {
   playerAvatar = undefined;
   opponentAvatarPlaceholder = undefined;
   playerAvatarPlaceholder = undefined;
-  opponentScoreText = undefined;
   inviteBotButtonContainer = undefined;
   inviteBotButtonElement = undefined;
   botStrengthControlVisible = false;
-  playerScoreText = undefined;
-  opponentEndOfGameIcon = undefined;
-  playerEndOfGameIcon = undefined;
+  playerScoreDisplayText = "";
+  opponentScoreDisplayText = "";
+  playerTimerDisplayText = "";
+  opponentTimerDisplayText = "";
+  playerTimerColor = "green";
+  opponentTimerColor = "green";
+  playerInfoPlayerVisible = false;
+  playerInfoOpponentVisible = false;
+  playerInfoPlayerNameVisible = false;
+  playerInfoOpponentNameVisible = false;
   opponentEndOfGameMarker = "none";
   playerEndOfGameMarker = "none";
-  opponentNameText = undefined;
-  playerNameText = undefined;
-  opponentTimer = undefined;
-  playerTimer = undefined;
+  emitBoardPlayerInfoOverlayState();
   controlsLayer = null;
   itemsLayer = null;
   effectsLayer = null;
