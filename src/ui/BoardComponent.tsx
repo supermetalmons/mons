@@ -214,6 +214,13 @@ const VIDEO_CONTAINER_HEIGHT_IMAGE = "13.5%";
 const VIDEO_CONTAINER_MAX_HEIGHT = "min(20vh, 180px)";
 const VIDEO_CONTAINER_ASPECT_RATIO = "1";
 const VIDEO_CONTAINER_Z_INDEX = 10000;
+const VIDEO_REACTION_APPEAR_MS = 400;
+const VIDEO_REACTION_FADE_OUT_MS = 200;
+const VIDEO_REACTION_CLEAR_FADE_OUT_MS = 120;
+const VIDEO_REACTION_DEFAULT_LIFETIME_MS = 7000;
+const VIDEO_REACTION_MIN_LIFETIME_MS = 1000;
+const VIDEO_REACTION_MAX_LIFETIME_MS = 12000;
+const VIDEO_REACTION_END_GRACE_MS = 700;
 const BOARD_WIDTH_UNITS = 11;
 const BOARD_HEIGHT_UNITS = 14.1;
 const WAGER_PANEL_PADDING_X_FRAC = 0.2;
@@ -255,6 +262,260 @@ const injectPendingPulseKeyframes = (() => {
     document.head.appendChild(style);
   };
 })();
+
+const getVideoReactionPlaybackLifetimeMs = (videoElement: HTMLVideoElement) => {
+  const currentTimeSeconds =
+    Number.isFinite(videoElement.currentTime) && videoElement.currentTime > 0
+      ? videoElement.currentTime
+      : 0;
+  const durationMs =
+    Number.isFinite(videoElement.duration) && videoElement.duration > 0
+      ? Math.max(0, videoElement.duration - currentTimeSeconds) * 1000 +
+        VIDEO_REACTION_END_GRACE_MS
+      : VIDEO_REACTION_DEFAULT_LIFETIME_MS;
+  return Math.min(
+    VIDEO_REACTION_MAX_LIFETIME_MS,
+    Math.max(VIDEO_REACTION_MIN_LIFETIME_MS, durationMs),
+  );
+};
+
+const getErrorName = (error: unknown) =>
+  error && typeof error === "object" && "name" in error
+    ? String((error as { name?: unknown }).name)
+    : "";
+
+const playVideoReactionElement = (
+  videoElement: HTMLVideoElement | null,
+  onCannotPlay: () => void,
+) => {
+  if (!videoElement || document.visibilityState !== "visible") {
+    return;
+  }
+
+  const playPromise = videoElement.play() as Promise<void> | undefined;
+  void playPromise?.catch((error: unknown) => {
+    const errorName = getErrorName(error);
+    if (
+      errorName === "AbortError" ||
+      document.visibilityState !== "visible" ||
+      !videoElement.isConnected ||
+      videoElement.ended
+    ) {
+      return;
+    }
+    onCannotPlay();
+  });
+};
+
+const startVideoReactionElement = (
+  videoElement: HTMLVideoElement | null,
+  onCannotPlay: () => void,
+) => {
+  if (!videoElement) {
+    return;
+  }
+  videoElement.muted = true;
+  videoElement.playsInline = true;
+  try {
+    videoElement.currentTime = 0;
+  } catch {
+    // Some browsers throw before media metadata is ready; playback can still start.
+  }
+  playVideoReactionElement(videoElement, onCannotPlay);
+};
+
+const useVideoReactionSlot = (
+  setTrackedTimeout: (callback: () => void, delay: number) => number,
+  clearTrackedTimeout: (timeoutId: number | null) => void,
+) => {
+  const [id, setId] = useState<number | null>(null);
+  const [visible, setVisible] = useState(false);
+  const [fading, setFading] = useState(false);
+  const [appearing, setAppearing] = useState(false);
+  const [instance, setInstance] = useState(0);
+  const dismissTimeoutRef = useRef<number | null>(null);
+  const dismissDeadlineRef = useRef<number | null>(null);
+  const appearingTimeoutRef = useRef<number | null>(null);
+  const lifetimeTimeoutRef = useRef<number | null>(null);
+  const lifetimeDeadlineRef = useRef<number | null>(null);
+  const instanceRef = useRef(0);
+  const videoElementRef = useRef<HTMLVideoElement | null>(null);
+
+  const clearDismissTimeout = useCallback(() => {
+    clearTrackedTimeout(dismissTimeoutRef.current);
+    dismissTimeoutRef.current = null;
+    dismissDeadlineRef.current = null;
+  }, [clearTrackedTimeout]);
+
+  const clearAppearingTimeout = useCallback(() => {
+    clearTrackedTimeout(appearingTimeoutRef.current);
+    appearingTimeoutRef.current = null;
+  }, [clearTrackedTimeout]);
+
+  const clearLifetimeTimeout = useCallback(() => {
+    clearTrackedTimeout(lifetimeTimeoutRef.current);
+    lifetimeTimeoutRef.current = null;
+    lifetimeDeadlineRef.current = null;
+  }, [clearTrackedTimeout]);
+
+  const dismiss = useCallback(
+    (durationMs: number) => {
+      clearDismissTimeout();
+      clearLifetimeTimeout();
+      setAppearing(false);
+      setFading(true);
+      dismissDeadlineRef.current = Date.now() + durationMs;
+      dismissTimeoutRef.current = setTrackedTimeout(() => {
+        setVisible(false);
+        setFading(false);
+        setId(null);
+        dismissTimeoutRef.current = null;
+        dismissDeadlineRef.current = null;
+      }, durationMs);
+    },
+    [clearDismissTimeout, clearLifetimeTimeout, setTrackedTimeout],
+  );
+
+  const fadeOut = useCallback(() => {
+    dismiss(VIDEO_REACTION_FADE_OUT_MS);
+  }, [dismiss]);
+
+  const fadeOutInstance = useCallback(
+    (targetInstance: number) => {
+      if (instanceRef.current !== targetInstance) {
+        return;
+      }
+      fadeOut();
+    },
+    [fadeOut],
+  );
+
+  const scheduleLifetimeTimeout = useCallback(
+    (durationMs: number, targetInstance: number) => {
+      if (
+        instanceRef.current !== targetInstance ||
+        dismissTimeoutRef.current !== null
+      ) {
+        return;
+      }
+      clearLifetimeTimeout();
+      lifetimeDeadlineRef.current = Date.now() + durationMs;
+      lifetimeTimeoutRef.current = setTrackedTimeout(() => {
+        if (instanceRef.current !== targetInstance) {
+          return;
+        }
+        lifetimeTimeoutRef.current = null;
+        lifetimeDeadlineRef.current = null;
+        fadeOut();
+      }, durationMs);
+    },
+    [clearLifetimeTimeout, fadeOut, setTrackedTimeout],
+  );
+
+  const show = useCallback(
+    (stickerId: number) => {
+      const nextInstance = instanceRef.current + 1;
+      instanceRef.current = nextInstance;
+      clearDismissTimeout();
+      clearAppearingTimeout();
+      setId(stickerId);
+      setInstance(nextInstance);
+      setVisible(true);
+      setFading(false);
+      setAppearing(true);
+      scheduleLifetimeTimeout(VIDEO_REACTION_DEFAULT_LIFETIME_MS, nextInstance);
+      appearingTimeoutRef.current = setTrackedTimeout(() => {
+        setAppearing(false);
+        appearingTimeoutRef.current = null;
+      }, VIDEO_REACTION_APPEAR_MS);
+    },
+    [
+      clearAppearingTimeout,
+      clearDismissTimeout,
+      scheduleLifetimeTimeout,
+      setTrackedTimeout,
+    ],
+  );
+
+  const clearNow = useCallback(() => {
+    clearDismissTimeout();
+    clearAppearingTimeout();
+    clearLifetimeTimeout();
+    setVisible(false);
+    setFading(false);
+    setAppearing(false);
+    setId(null);
+  }, [clearAppearingTimeout, clearDismissTimeout, clearLifetimeTimeout]);
+
+  const setElementRef = useCallback(
+    (videoElement: HTMLVideoElement | null) => {
+      videoElementRef.current = videoElement;
+      startVideoReactionElement(videoElement, () => {
+        fadeOutInstance(instance);
+      });
+    },
+    [fadeOutInstance, instance],
+  );
+
+  const syncAfterPageResume = useCallback(
+    (now: number) => {
+      if (!visible) {
+        return;
+      }
+
+      if (fading) {
+        const dismissDeadline = dismissDeadlineRef.current;
+        if (dismissDeadline !== null && now >= dismissDeadline) {
+          clearDismissTimeout();
+          setVisible(false);
+          setFading(false);
+          setAppearing(false);
+          setId(null);
+        }
+        return;
+      }
+
+      const videoElement = videoElementRef.current;
+      const deadline = lifetimeDeadlineRef.current;
+      if (
+        (deadline !== null && now >= deadline) ||
+        videoElement?.ended === true
+      ) {
+        dismiss(VIDEO_REACTION_CLEAR_FADE_OUT_MS);
+        return;
+      }
+
+      playVideoReactionElement(videoElement, () => {
+        dismiss(VIDEO_REACTION_CLEAR_FADE_OUT_MS);
+      });
+    },
+    [clearDismissTimeout, dismiss, fading, visible],
+  );
+
+  const resetTimeoutRefs = useCallback(() => {
+    dismissTimeoutRef.current = null;
+    dismissDeadlineRef.current = null;
+    appearingTimeoutRef.current = null;
+    lifetimeTimeoutRef.current = null;
+    lifetimeDeadlineRef.current = null;
+  }, []);
+
+  return {
+    appearing,
+    clearNow,
+    dismiss,
+    fadeOutInstance,
+    fading,
+    id,
+    instance,
+    resetTimeoutRefs,
+    scheduleLifetimeTimeout,
+    setElementRef,
+    show,
+    syncAfterPageResume,
+    visible,
+  };
+};
 
 type WagerPileElements = {
   player: HTMLDivElement;
@@ -377,19 +638,6 @@ const getWagerPanelLayout = (
 const BoardComponent: React.FC = () => {
   injectPendingPulseKeyframes();
 
-  const [opponentVideoId, setOpponentVideoId] = useState<number | null>(null);
-  const [opponentVideoVisible, setOpponentVideoVisible] = useState(false);
-  const [opponentVideoFading, setOpponentVideoFading] = useState(false);
-  const [opponentVideoAppearing, setOpponentVideoAppearing] = useState(false);
-
-  const [playerVideoId, setPlayerVideoId] = useState<number | null>(null);
-  const [playerVideoVisible, setPlayerVideoVisible] = useState(false);
-  const [playerVideoFading, setPlayerVideoFading] = useState(false);
-  const [playerVideoAppearing, setPlayerVideoAppearing] = useState(false);
-  const opponentVideoDismissTimeoutRef = useRef<number | null>(null);
-  const playerVideoDismissTimeoutRef = useRef<number | null>(null);
-  const opponentVideoAppearingTimeoutRef = useRef<number | null>(null);
-  const playerVideoAppearingTimeoutRef = useRef<number | null>(null);
   const transitionTimeoutIdsRef = useRef<Set<number>>(new Set());
   const [currentColorSet, setCurrentColorSet] =
     useState<ColorSet>(getCurrentColorSet());
@@ -618,101 +866,77 @@ const BoardComponent: React.FC = () => {
     transitionTimeoutIdsRef.current.clear();
   }, []);
 
-  const clearOpponentVideoDismissTimeout = useCallback(() => {
-    clearTrackedTimeout(opponentVideoDismissTimeoutRef.current);
-    opponentVideoDismissTimeoutRef.current = null;
-  }, [clearTrackedTimeout]);
+  const {
+    appearing: opponentVideoAppearing,
+    clearNow: clearOpponentVideoNow,
+    dismiss: dismissOpponentVideo,
+    fadeOutInstance: fadeOutOpponentVideoInstance,
+    fading: opponentVideoFading,
+    id: opponentVideoId,
+    instance: opponentVideoInstance,
+    resetTimeoutRefs: resetOpponentVideoTimeoutRefs,
+    scheduleLifetimeTimeout: scheduleOpponentVideoLifetimeTimeout,
+    setElementRef: setOpponentVideoElementRef,
+    show: showOpponentVideoReaction,
+    syncAfterPageResume: syncOpponentVideoAfterPageResume,
+    visible: opponentVideoVisible,
+  } = useVideoReactionSlot(setTrackedTimeout, clearTrackedTimeout);
 
-  const clearPlayerVideoDismissTimeout = useCallback(() => {
-    clearTrackedTimeout(playerVideoDismissTimeoutRef.current);
-    playerVideoDismissTimeoutRef.current = null;
-  }, [clearTrackedTimeout]);
-
-  const clearOpponentVideoAppearingTimeout = useCallback(() => {
-    clearTrackedTimeout(opponentVideoAppearingTimeoutRef.current);
-    opponentVideoAppearingTimeoutRef.current = null;
-  }, [clearTrackedTimeout]);
-
-  const clearPlayerVideoAppearingTimeout = useCallback(() => {
-    clearTrackedTimeout(playerVideoAppearingTimeoutRef.current);
-    playerVideoAppearingTimeoutRef.current = null;
-  }, [clearTrackedTimeout]);
-
-  const dismissOpponentVideo = useCallback(
-    (durationMs: number) => {
-      clearOpponentVideoDismissTimeout();
-      setOpponentVideoAppearing(false);
-      setOpponentVideoFading(true);
-      opponentVideoDismissTimeoutRef.current = setTrackedTimeout(() => {
-        setOpponentVideoVisible(false);
-        setOpponentVideoFading(false);
-        setOpponentVideoId(null);
-        opponentVideoDismissTimeoutRef.current = null;
-      }, durationMs);
-    },
-    [clearOpponentVideoDismissTimeout, setTrackedTimeout],
-  );
-
-  const dismissPlayerVideo = useCallback(
-    (durationMs: number) => {
-      clearPlayerVideoDismissTimeout();
-      setPlayerVideoAppearing(false);
-      setPlayerVideoFading(true);
-      playerVideoDismissTimeoutRef.current = setTrackedTimeout(() => {
-        setPlayerVideoVisible(false);
-        setPlayerVideoFading(false);
-        setPlayerVideoId(null);
-        playerVideoDismissTimeoutRef.current = null;
-      }, durationMs);
-    },
-    [clearPlayerVideoDismissTimeout, setTrackedTimeout],
-  );
+  const {
+    appearing: playerVideoAppearing,
+    clearNow: clearPlayerVideoNow,
+    dismiss: dismissPlayerVideo,
+    fadeOutInstance: fadeOutPlayerVideoInstance,
+    fading: playerVideoFading,
+    id: playerVideoId,
+    instance: playerVideoInstance,
+    resetTimeoutRefs: resetPlayerVideoTimeoutRefs,
+    scheduleLifetimeTimeout: schedulePlayerVideoLifetimeTimeout,
+    setElementRef: setPlayerVideoElementRef,
+    show: showPlayerVideoReaction,
+    syncAfterPageResume: syncPlayerVideoAfterPageResume,
+    visible: playerVideoVisible,
+  } = useVideoReactionSlot(setTrackedTimeout, clearTrackedTimeout);
 
   const clearVideoReactionsNow = useCallback(() => {
-    clearOpponentVideoDismissTimeout();
-    clearPlayerVideoDismissTimeout();
-    clearOpponentVideoAppearingTimeout();
-    clearPlayerVideoAppearingTimeout();
-    setOpponentVideoVisible(false);
-    setOpponentVideoFading(false);
-    setOpponentVideoAppearing(false);
-    setOpponentVideoId(null);
-    setPlayerVideoVisible(false);
-    setPlayerVideoFading(false);
-    setPlayerVideoAppearing(false);
-    setPlayerVideoId(null);
-  }, [
-    clearOpponentVideoAppearingTimeout,
-    clearOpponentVideoDismissTimeout,
-    clearPlayerVideoAppearingTimeout,
-    clearPlayerVideoDismissTimeout,
-  ]);
+    clearOpponentVideoNow();
+    clearPlayerVideoNow();
+  }, [clearOpponentVideoNow, clearPlayerVideoNow]);
 
   showVideoReactionImpl = (opponent: boolean, stickerId: number) => {
     if (opponent) {
-      clearOpponentVideoDismissTimeout();
-      clearOpponentVideoAppearingTimeout();
-      setOpponentVideoId(stickerId);
-      setOpponentVideoVisible(true);
-      setOpponentVideoFading(false);
-      setOpponentVideoAppearing(true);
-      opponentVideoAppearingTimeoutRef.current = setTrackedTimeout(() => {
-        setOpponentVideoAppearing(false);
-        opponentVideoAppearingTimeoutRef.current = null;
-      }, 400);
+      showOpponentVideoReaction(stickerId);
     } else {
-      clearPlayerVideoDismissTimeout();
-      clearPlayerVideoAppearingTimeout();
-      setPlayerVideoId(stickerId);
-      setPlayerVideoVisible(true);
-      setPlayerVideoFading(false);
-      setPlayerVideoAppearing(true);
-      playerVideoAppearingTimeoutRef.current = setTrackedTimeout(() => {
-        setPlayerVideoAppearing(false);
-        playerVideoAppearingTimeoutRef.current = null;
-      }, 400);
+      showPlayerVideoReaction(stickerId);
     }
   };
+
+  const syncVideoReactionsAfterPageResume = useCallback(() => {
+    if (document.visibilityState === "hidden") {
+      return;
+    }
+
+    const now = Date.now();
+    syncOpponentVideoAfterPageResume(now);
+    syncPlayerVideoAfterPageResume(now);
+  }, [syncOpponentVideoAfterPageResume, syncPlayerVideoAfterPageResume]);
+
+  useEffect(() => {
+    document.addEventListener(
+      "visibilitychange",
+      syncVideoReactionsAfterPageResume,
+    );
+    window.addEventListener("focus", syncVideoReactionsAfterPageResume);
+    window.addEventListener("pageshow", syncVideoReactionsAfterPageResume);
+    return () => {
+      document.removeEventListener(
+        "visibilitychange",
+        syncVideoReactionsAfterPageResume,
+      );
+      window.removeEventListener("focus", syncVideoReactionsAfterPageResume);
+      window.removeEventListener("pageshow", syncVideoReactionsAfterPageResume);
+    };
+  }, [syncVideoReactionsAfterPageResume]);
 
   setTopBoardOverlayVisibleImpl = (
     blurry: boolean,
@@ -999,11 +1223,13 @@ const BoardComponent: React.FC = () => {
       );
       materialChangeOldIconsRef.current[sideKey] = [];
     });
-    opponentVideoDismissTimeoutRef.current = null;
-    playerVideoDismissTimeoutRef.current = null;
-    opponentVideoAppearingTimeoutRef.current = null;
-    playerVideoAppearingTimeoutRef.current = null;
-  }, [clearAllTrackedTimeouts]);
+    resetOpponentVideoTimeoutRefs();
+    resetPlayerVideoTimeoutRefs();
+  }, [
+    clearAllTrackedTimeouts,
+    resetOpponentVideoTimeoutRefs,
+    resetPlayerVideoTimeoutRefs,
+  ]);
 
   useEffect(() => {
     return () => {
@@ -1038,24 +1264,20 @@ const BoardComponent: React.FC = () => {
         return;
       }
       if (opponentVideoVisible) {
-        dismissOpponentVideo(120);
+        dismissOpponentVideo(VIDEO_REACTION_CLEAR_FADE_OUT_MS);
       } else {
-        setOpponentVideoVisible(false);
-        setOpponentVideoFading(false);
-        setOpponentVideoAppearing(false);
-        setOpponentVideoId(null);
+        clearOpponentVideoNow();
       }
       if (playerVideoVisible) {
-        dismissPlayerVideo(120);
+        dismissPlayerVideo(VIDEO_REACTION_CLEAR_FADE_OUT_MS);
       } else {
-        setPlayerVideoVisible(false);
-        setPlayerVideoFading(false);
-        setPlayerVideoAppearing(false);
-        setPlayerVideoId(null);
+        clearPlayerVideoNow();
       }
     },
     [
       clearPendingWagerTransitionState,
+      clearOpponentVideoNow,
+      clearPlayerVideoNow,
       clearVideoReactionsNow,
       clearWagerPanel,
       dismissOpponentVideo,
@@ -2347,7 +2569,8 @@ const BoardComponent: React.FC = () => {
             />
             {opponentVideoVisible && opponentVideoId !== null && (
               <video
-                key={opponentVideoId}
+                key={`${opponentVideoId}-${opponentVideoInstance}`}
+                ref={setOpponentVideoElementRef}
                 style={{
                   position: "absolute",
                   left: "50%",
@@ -2372,9 +2595,19 @@ const BoardComponent: React.FC = () => {
                 }}
                 autoPlay
                 muted
+                preload="auto"
                 playsInline
                 onEnded={() => {
-                  dismissOpponentVideo(200);
+                  fadeOutOpponentVideoInstance(opponentVideoInstance);
+                }}
+                onError={() => {
+                  fadeOutOpponentVideoInstance(opponentVideoInstance);
+                }}
+                onPlaying={(event) => {
+                  scheduleOpponentVideoLifetimeTimeout(
+                    getVideoReactionPlaybackLifetimeMs(event.currentTarget),
+                    opponentVideoInstance,
+                  );
                 }}
               >
                 <source
@@ -2417,7 +2650,8 @@ const BoardComponent: React.FC = () => {
             />
             {playerVideoVisible && playerVideoId !== null && (
               <video
-                key={playerVideoId}
+                key={`${playerVideoId}-${playerVideoInstance}`}
+                ref={setPlayerVideoElementRef}
                 style={{
                   position: "absolute",
                   left: "50%",
@@ -2438,9 +2672,19 @@ const BoardComponent: React.FC = () => {
                 }}
                 autoPlay
                 muted
+                preload="auto"
                 playsInline
                 onEnded={() => {
-                  dismissPlayerVideo(200);
+                  fadeOutPlayerVideoInstance(playerVideoInstance);
+                }}
+                onError={() => {
+                  fadeOutPlayerVideoInstance(playerVideoInstance);
+                }}
+                onPlaying={(event) => {
+                  schedulePlayerVideoLifetimeTimeout(
+                    getVideoReactionPlaybackLifetimeMs(event.currentTarget),
+                    playerVideoInstance,
+                  );
                 }}
               >
                 <source
