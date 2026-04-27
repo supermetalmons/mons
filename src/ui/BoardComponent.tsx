@@ -479,6 +479,10 @@ const startVideoReactionElement = (
   playVideoReactionElement(videoElement, onCannotPlay);
 };
 
+const isVideoReactionElementError = (
+  event: React.SyntheticEvent<HTMLVideoElement>,
+) => event.currentTarget === event.target;
+
 const useVideoReactionSlot = (
   setTrackedTimeout: (callback: () => void, delay: number) => number,
   clearTrackedTimeout: (timeoutId: number | null) => void,
@@ -3372,8 +3376,10 @@ const BoardComponent: React.FC = () => {
                 onEnded={() => {
                   fadeOutOpponentVideoInstance(opponentVideoInstance);
                 }}
-                onError={() => {
-                  fadeOutOpponentVideoInstance(opponentVideoInstance);
+                onError={(event) => {
+                  if (isVideoReactionElementError(event)) {
+                    fadeOutOpponentVideoInstance(opponentVideoInstance);
+                  }
                 }}
                 onPlaying={(event) => {
                   scheduleOpponentVideoLifetimeTimeout(
@@ -3449,8 +3455,10 @@ const BoardComponent: React.FC = () => {
                 onEnded={() => {
                   fadeOutPlayerVideoInstance(playerVideoInstance);
                 }}
-                onError={() => {
-                  fadeOutPlayerVideoInstance(playerVideoInstance);
+                onError={(event) => {
+                  if (isVideoReactionElementError(event)) {
+                    fadeOutPlayerVideoInstance(playerVideoInstance);
+                  }
                 }}
                 onPlaying={(event) => {
                   schedulePlayerVideoLifetimeTimeout(
