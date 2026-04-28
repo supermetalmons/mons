@@ -3874,6 +3874,7 @@ class Connection {
   public async getCurrentLoginFallbackGames(
     maxItems: number,
   ): Promise<NavigationGameItem[]> {
+    console.log("⚠️ getCurrentLoginFallbackGames");
     await this.ensureAuthenticated();
     const currentLoginUid = this.auth.currentUser?.uid;
     if (!currentLoginUid) {
