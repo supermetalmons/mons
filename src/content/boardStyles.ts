@@ -10,6 +10,7 @@ export enum AssetsSet {
 export enum BoardStyleSet {
   Grid = "Grid",
   Pangchiu = "Pangchiu",
+  White = "White",
 }
 
 const isAssetsSet = (value: unknown): value is AssetsSet => {
@@ -95,7 +96,8 @@ export function setCurrentBoardStyleSet(set: BoardStyleSet) {
 
 export const isPangchiuBoard = () =>
   currentBoardStyleSet === BoardStyleSet.Pangchiu;
-export const isCustomPictureBoardEnabled = () => isPangchiuBoard();
+export const isCustomPictureBoardEnabled = () =>
+  currentBoardStyleSet !== BoardStyleSet.Grid;
 
 export const colors = {
   attackTarget: "#941651",

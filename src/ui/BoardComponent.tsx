@@ -17,9 +17,11 @@ import {
 } from "../game/gameController";
 import type { BoardSquareTypeGrid } from "../game/boardSquareTypes";
 import {
+  BoardStyleSet,
   ColorSet,
   colors,
   getCurrentColorSet,
+  getCurrentBoardStyleSet,
   isCustomPictureBoardEnabled,
   isPangchiuBoard,
   subscribeToBoardColorSetChanges,
@@ -61,6 +63,11 @@ import {
   subscribeToFrozenMaterials,
 } from "../services/wagerMaterialsService";
 import { registerBoardTransientUiHandler } from "./uiSession";
+
+const PANGCHIU_BOARD_BACKGROUND_URL =
+  "https://assets.mons.link/board/bg/Pangchiu.jpg";
+const WHITE_BOARD_BACKGROUND_URL =
+  "https://assets.mons.link/board/bg/white.webp";
 
 const CircularButton = styled.button`
   width: 50%;
@@ -1380,14 +1387,19 @@ const BoardComponent: React.FC = () => {
   const [prefersDarkMode, setPrefersDarkMode] = useState(
     window.matchMedia("(prefers-color-scheme: dark)").matches,
   );
+  const [currentBoardStyleSet, setCurrentBoardStyleSet] = useState(
+    getCurrentBoardStyleSet(),
+  );
   const [isGridVisible, setIsGridVisible] = useState(
     !isCustomPictureBoardEnabled(),
   );
   const [isPangchiuBoardLayout, setIsPangchiuBoardLayout] =
     useState(isPangchiuBoard());
-  const [shouldIncludePangchiuImage, setShouldIncludePangchiuImage] = useState(
-    isCustomPictureBoardEnabled(),
-  );
+  const [shouldIncludePictureBoardImage, setShouldIncludePictureBoardImage] =
+    useState(isCustomPictureBoardEnabled());
+  const [loadedPictureBoardUrls, setLoadedPictureBoardUrls] = useState<
+    Record<string, true>
+  >({});
   const [displayedBoardSquareTypes, setDisplayedBoardSquareTypes] =
     useState<BoardSquareTypeGrid | null>(() =>
       getCurrentDisplayedBoardSquareTypes(),
@@ -1812,11 +1824,12 @@ const BoardComponent: React.FC = () => {
   useEffect(() => {
     const updateColorSetAndGrid = () => {
       setCurrentColorSet(getCurrentColorSet());
+      setCurrentBoardStyleSet(getCurrentBoardStyleSet());
       const newIsGridVisible = !isCustomPictureBoardEnabled();
       setIsGridVisible(newIsGridVisible);
       setIsPangchiuBoardLayout(isPangchiuBoard());
       if (!newIsGridVisible) {
-        setShouldIncludePangchiuImage(true);
+        setShouldIncludePictureBoardImage(true);
       }
     };
 
@@ -2888,6 +2901,44 @@ const BoardComponent: React.FC = () => {
 
   const standardBoardTransform = "translate(0,100)";
   const pangchiuBoardTransform = "translate(83,184) scale(0.85892388)";
+  const isWhiteBoardStyle = currentBoardStyleSet === BoardStyleSet.White;
+  const whiteBoardInset = 55.5;
+  const whiteBoardScale = (1100 - whiteBoardInset * 2) / 1100;
+  const whiteBoardTransform = `translate(${whiteBoardInset}, ${
+    100 + whiteBoardInset
+  }) scale(${whiteBoardScale})`;
+  const activeBoardTransform = isPangchiuBoardLayout
+    ? pangchiuBoardTransform
+    : isWhiteBoardStyle
+      ? whiteBoardTransform
+      : standardBoardTransform;
+  const pictureBoardBackgroundUrl =
+    isWhiteBoardStyle
+      ? WHITE_BOARD_BACKGROUND_URL
+      : PANGCHIU_BOARD_BACKGROUND_URL;
+  const isPictureBoardImageLoaded = !!loadedPictureBoardUrls[
+    pictureBoardBackgroundUrl
+  ];
+  const boardClassName = `board-svg ${
+    isPangchiuBoardLayout ? "grid-hidden" : "grid-visible"
+  }`;
+  const topVideoReactionStyle = {
+    top: isPangchiuBoardLayout ? "7.05%" : "7.02%",
+    height: isPangchiuBoardLayout
+      ? VIDEO_CONTAINER_HEIGHT_IMAGE
+      : VIDEO_CONTAINER_HEIGHT_GRID,
+  };
+  const bottomVideoReactionStyle = {
+    top: isPangchiuBoardLayout ? "89.65%" : "85.22%",
+    height: isPangchiuBoardLayout
+      ? VIDEO_CONTAINER_HEIGHT_IMAGE
+      : VIDEO_CONTAINER_HEIGHT_GRID,
+  };
+  const boardOverlayStyle = {
+    top: isPangchiuBoardLayout ? "7.05%" : "7.02%",
+    height: isPangchiuBoardLayout ? "82.6%" : "78.2%",
+    aspectRatio: isPangchiuBoardLayout ? "1524/1612" : "1",
+  };
   const activeWagerPileRect = activeWagerPanelSide
     ? activeWagerPanelRect
     : null;
@@ -3209,8 +3260,6 @@ const BoardComponent: React.FC = () => {
       </g>
     );
   };
-  const boardClassName = `board-svg ${isGridVisible ? "grid-visible" : "grid-hidden"}`;
-
   return (
     <>
       <div
@@ -3294,22 +3343,32 @@ const BoardComponent: React.FC = () => {
         ) : (
           <g id="boardBackgroundLayer">
             <rect
-              x="1"
-              y="101"
-              height="1161"
-              width="1098"
+              x={isWhiteBoardStyle ? "0" : "1"}
+              y={isWhiteBoardStyle ? "100" : "101"}
+              height={isWhiteBoardStyle ? "1100" : "1161"}
+              width={isWhiteBoardStyle ? "1100" : "1098"}
               fill={
-                prefersDarkMode
+                isPictureBoardImageLoaded
+                  ? "transparent"
+                  : prefersDarkMode
                   ? "var(--color-gray-23)"
                   : "var(--boardBackgroundLight)"
               }
             />
-            {shouldIncludePangchiuImage && (
+            {shouldIncludePictureBoardImage && (
               <image
-                href="https://assets.mons.link/board/bg/Pangchiu.jpg"
+                href={pictureBoardBackgroundUrl}
                 x="0"
                 y="100"
                 width="1100"
+                height={isWhiteBoardStyle ? "1100" : undefined}
+                onLoad={() => {
+                  setLoadedPictureBoardUrls((prevUrls) =>
+                    prevUrls[pictureBoardBackgroundUrl]
+                      ? prevUrls
+                      : { ...prevUrls, [pictureBoardBackgroundUrl]: true },
+                  );
+                }}
                 style={{
                   backgroundColor: prefersDarkMode
                     ? "var(--color-gray-23)"
@@ -3322,21 +3381,15 @@ const BoardComponent: React.FC = () => {
         )}
         <g
           id="monsboard"
-          transform={
-            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
-          }
+          transform={activeBoardTransform}
         ></g>
         <g
           id="highlightsLayer"
-          transform={
-            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
-          }
+          transform={activeBoardTransform}
         ></g>
         <g
           id="itemsLayer"
-          transform={
-            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
-          }
+          transform={activeBoardTransform}
         ></g>
         <g id="playerInfoLayer">
           {renderPlayerInfoSlot(
@@ -3353,9 +3406,7 @@ const BoardComponent: React.FC = () => {
         <g id="controlsLayer"></g>
         <g
           id="effectsLayer"
-          transform={
-            isGridVisible ? standardBoardTransform : pangchiuBoardTransform
-          }
+          transform={activeBoardTransform}
         ></g>
         {botStrengthControlOverlay.visible &&
           botStrengthControlOverlay.size > 0 && (
@@ -3577,10 +3628,7 @@ const BoardComponent: React.FC = () => {
               position: "absolute",
               left: "50%",
               transform: "translate(-50%, -100%)",
-              top: isGridVisible ? "7.02%" : "7.05%",
-              height: isGridVisible
-                ? VIDEO_CONTAINER_HEIGHT_GRID
-                : VIDEO_CONTAINER_HEIGHT_IMAGE,
+              ...topVideoReactionStyle,
               maxHeight: VIDEO_CONTAINER_MAX_HEIGHT,
               aspectRatio: VIDEO_CONTAINER_ASPECT_RATIO,
               zIndex: VIDEO_CONTAINER_Z_INDEX,
@@ -3660,10 +3708,7 @@ const BoardComponent: React.FC = () => {
               position: "absolute",
               left: "50%",
               transform: "translateX(-50%)",
-              top: isGridVisible ? "85.22%" : "89.65%",
-              height: isGridVisible
-                ? VIDEO_CONTAINER_HEIGHT_GRID
-                : VIDEO_CONTAINER_HEIGHT_IMAGE,
+              ...bottomVideoReactionStyle,
               maxHeight: VIDEO_CONTAINER_MAX_HEIGHT,
               aspectRatio: VIDEO_CONTAINER_ASPECT_RATIO,
               zIndex: VIDEO_CONTAINER_Z_INDEX,
@@ -3740,10 +3785,10 @@ const BoardComponent: React.FC = () => {
                 position: "absolute",
                 left: "50%",
                 transform: "translateX(-50%)",
-                top: isGridVisible ? "7.02%" : "7.05%",
+                top: boardOverlayStyle.top,
                 pointerEvents: "all",
-                height: isGridVisible ? "78.2%" : "82.6%",
-                aspectRatio: isGridVisible ? "1" : "1524/1612",
+                height: boardOverlayStyle.height,
+                aspectRatio: boardOverlayStyle.aspectRatio,
                 ...(overlayState.blurry
                   ? {
                       backdropFilter: "blur(3px)",

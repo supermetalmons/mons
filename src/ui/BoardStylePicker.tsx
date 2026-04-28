@@ -17,13 +17,53 @@ import { generateBoardPattern } from "../utils/boardPatternGenerator";
 import { isMobile } from "../utils/misc";
 import { setBoardStyleSet, setItemsStyleSet } from "../game/board";
 
-const PANGCHIU_PREVIEW_URL =
-  "https://assets.mons.link/board/bg/thumb/Pangchiu.jpg";
+const PICTURE_BOARD_STYLE_SETS = [
+  BoardStyleSet.Pangchiu,
+] as const;
+type PictureBoardStyleSet = (typeof PICTURE_BOARD_STYLE_SETS)[number];
 
-let pangchiuImagePromise: Promise<string | null> | null = null;
-let pangchiuImageUrl: string | null = null;
-let pangchiuImageFailed = false;
-let pangchiuImageDecoded = false;
+const BOARD_PREVIEW_URLS: Record<PictureBoardStyleSet, string> = {
+  [BoardStyleSet.Pangchiu]:
+    "https://assets.mons.link/board/bg/thumb/Pangchiu.jpg",
+};
+
+type BoardPreviewCache = {
+  promise: Promise<string | null> | null;
+  url: string | null;
+  failed: boolean;
+  decoded: boolean;
+};
+
+const createBoardPreviewCache = (): BoardPreviewCache => ({
+  promise: null,
+  url: null,
+  failed: false,
+  decoded: false,
+});
+
+const boardPreviewCaches: Record<PictureBoardStyleSet, BoardPreviewCache> = {
+  [BoardStyleSet.Pangchiu]: createBoardPreviewCache(),
+};
+
+type BoardPreviewDisplayState = Record<
+  PictureBoardStyleSet,
+  {
+    src: string | null;
+    loaded: boolean;
+    failed: boolean;
+  }
+>;
+
+const createBoardPreviewDisplayState = (): BoardPreviewDisplayState =>
+  PICTURE_BOARD_STYLE_SETS.reduce((state, styleSet) => {
+    const cache = boardPreviewCaches[styleSet];
+    state[styleSet] = {
+      src: cache.url,
+      loaded: cache.decoded,
+      failed: cache.failed,
+    };
+    return state;
+  }, {} as BoardPreviewDisplayState);
 
 type ItemStylePreviewUrls = Record<AssetsSet, string | null>;
 
@@ -44,63 +84,72 @@ const getItemStylePreviewUrl = async (
   }
 };
 
-const getPangchiuImageUrl = () => {
-  if (pangchiuImageUrl) {
-    return Promise.resolve(pangchiuImageUrl);
+const getBoardPreviewUrl = (styleSet: PictureBoardStyleSet) => {
+  const cache = boardPreviewCaches[styleSet];
+  if (cache.url) {
+    return Promise.resolve(cache.url);
   }
-  if (pangchiuImageFailed) {
+  if (cache.failed) {
     return Promise.resolve(null);
   }
-  if (!pangchiuImagePromise) {
-    pangchiuImagePromise = fetch(PANGCHIU_PREVIEW_URL)
+  if (!cache.promise) {
+    cache.promise = fetch(BOARD_PREVIEW_URLS[styleSet])
       .then((res) => {
         if (!res.ok) throw new Error("Failed to fetch image");
         return res.blob();
       })
       .then((blob) => {
-        pangchiuImageUrl = URL.createObjectURL(blob);
-        return pangchiuImageUrl;
+        cache.url = URL.createObjectURL(blob);
+        return cache.url;
       })
       .catch(() => {
-        pangchiuImageFailed = true;
+        cache.failed = true;
         return null;
       });
   }
-  return pangchiuImagePromise.then((url) => {
+  return cache.promise.then((url) => {
     if (!url) {
-      pangchiuImageFailed = true;
+      cache.failed = true;
     }
     return url;
   });
 };
 
-export const preloadPangchiuBoardPreview = () => {
-  if (
-    pangchiuImageUrl ||
-    pangchiuImageFailed ||
-    typeof window === "undefined"
-  ) {
+const decodeBoardPreview = (styleSet: PictureBoardStyleSet, url: string) => {
+  const cache = boardPreviewCaches[styleSet];
+  if (cache.decoded || typeof Image === "undefined") {
+    cache.decoded = true;
+    return Promise.resolve();
+  }
+  const img = new Image();
+  img.src = url;
+  const decodePromise =
+    typeof img.decode === "function"
+      ? img.decode()
+      : new Promise<void>((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject();
+        });
+  return decodePromise.then(() => {
+    cache.decoded = true;
+  });
+};
+
+const preloadBoardPreview = (styleSet: PictureBoardStyleSet) => {
+  const cache = boardPreviewCaches[styleSet];
+  if (cache.url || cache.failed || typeof window === "undefined") {
     return;
   }
-  getPangchiuImageUrl()
+  getBoardPreviewUrl(styleSet)
     .then((url) => {
-      if (!url || typeof Image === "undefined") return;
-      const img = new Image();
-      img.src = url;
-      if (typeof img.decode === "function") {
-        img
-          .decode()
-          .then(() => {
-            pangchiuImageDecoded = true;
-          })
-          .catch(() => {});
-      } else {
-        img.onload = () => {
-          pangchiuImageDecoded = true;
-        };
-      }
+      if (!url) return;
+      return decodeBoardPreview(styleSet, url);
     })
     .catch(() => {});
+};
+
+export const preloadPangchiuBoardPreview = () => {
+  PICTURE_BOARD_STYLE_SETS.forEach(preloadBoardPreview);
 };
 
 export const BoardStylePicker = styled.div`
@@ -328,49 +377,57 @@ const BoardStylePickerComponent: React.FC = () => {
   const [itemStylePreviewUrls, setItemStylePreviewUrls] =
     useState<ItemStylePreviewUrls>(EMPTY_ITEM_STYLE_PREVIEWS);
 
-  const [imageLoadFailed, setImageLoadFailed] = useState(pangchiuImageFailed);
-  const [imageLoaded, setImageLoaded] = useState(pangchiuImageDecoded);
-  const [pangchiuSrc, setPangchiuSrc] = useState<string | null>(
-    pangchiuImageUrl,
+  const [boardPreviewDisplayState, setBoardPreviewDisplayState] = useState(
+    createBoardPreviewDisplayState,
   );
 
   useEffect(() => {
     let cancelled = false;
-    getPangchiuImageUrl().then((url) => {
-      if (cancelled) return;
-      if (url) {
-        setPangchiuSrc(url);
-        if (pangchiuImageDecoded) {
-          setImageLoaded(true);
+    PICTURE_BOARD_STYLE_SETS.forEach((styleSet) => {
+      getBoardPreviewUrl(styleSet).then((url) => {
+        if (cancelled) return;
+        if (!url) {
+          setBoardPreviewDisplayState((prevState) => ({
+            ...prevState,
+            [styleSet]: {
+              ...prevState[styleSet],
+              failed: true,
+            },
+          }));
           return;
         }
-        if (typeof Image === "undefined") {
-          setImageLoaded(true);
-          return;
-        }
-        const img = new Image();
-        img.src = url;
-        const decodePromise =
-          typeof img.decode === "function"
-            ? img.decode()
-            : new Promise<void>((resolve, reject) => {
-                img.onload = () => resolve();
-                img.onerror = () => reject();
-              });
-        decodePromise
+        const cache = boardPreviewCaches[styleSet];
+        setBoardPreviewDisplayState((prevState) => ({
+          ...prevState,
+          [styleSet]: {
+            ...prevState[styleSet],
+            src: url,
+            loaded: cache.decoded,
+            failed: false,
+          },
+        }));
+        decodeBoardPreview(styleSet, url)
           .then(() => {
             if (cancelled) return;
-            pangchiuImageDecoded = true;
-            setImageLoaded(true);
+            setBoardPreviewDisplayState((prevState) => ({
+              ...prevState,
+              [styleSet]: {
+                ...prevState[styleSet],
+                loaded: true,
+              },
+            }));
           })
           .catch(() => {
-            if (!cancelled) {
-              setImageLoadFailed(true);
-            }
+            if (cancelled) return;
+            setBoardPreviewDisplayState((prevState) => ({
+              ...prevState,
+              [styleSet]: {
+                ...prevState[styleSet],
+                failed: true,
+              },
+            }));
           });
-      } else {
-        setImageLoadFailed(true);
-      }
+      });
     });
     return () => {
       cancelled = true;
@@ -430,14 +487,16 @@ const BoardStylePickerComponent: React.FC = () => {
       setBoardStyleSet(BoardStyleSet.Grid);
     };
 
-  const handlePangchiuBoardSelected = (
-    event:
-      | React.MouseEvent<HTMLButtonElement>
-      | React.TouchEvent<HTMLButtonElement>,
-  ) => {
-    event.preventDefault();
-    setBoardStyleSet(BoardStyleSet.Pangchiu);
-  };
+  const handlePictureBoardSelected =
+    (styleSet: PictureBoardStyleSet) =>
+    (
+      event:
+        | React.MouseEvent<HTMLButtonElement>
+        | React.TouchEvent<HTMLButtonElement>,
+    ) => {
+      event.preventDefault();
+      setBoardStyleSet(styleSet);
+    };
 
   const handleItemsStyleSetChange =
     (assetsSet: AssetsSet) =>
@@ -500,17 +559,24 @@ const BoardStylePickerComponent: React.FC = () => {
         >
           {renderColorSquares("dark")}
         </ColorSquare>
-        <ColorSquare
-          isSelected={selectedBoardStyleSet === BoardStyleSet.Pangchiu}
-          onClick={!isMobile ? handlePangchiuBoardSelected : undefined}
-          onTouchStart={isMobile ? handlePangchiuBoardSelected : undefined}
-          aria-label="Pangchiu board theme"
-        >
-          {!imageLoaded && <ImagePlaceholderBg />}
-          {!imageLoadFailed && pangchiuSrc && (
-            <PlaceholderImage src={pangchiuSrc} alt="" />
-          )}
-        </ColorSquare>
+        {PICTURE_BOARD_STYLE_SETS.map((styleSet) => {
+          const previewState = boardPreviewDisplayState[styleSet];
+          const selectPictureBoard = handlePictureBoardSelected(styleSet);
+          return (
+            <ColorSquare
+              key={styleSet}
+              isSelected={selectedBoardStyleSet === styleSet}
+              onClick={!isMobile ? selectPictureBoard : undefined}
+              onTouchStart={isMobile ? selectPictureBoard : undefined}
+              aria-label={`${styleSet} board theme`}
+            >
+              {!previewState.loaded && <ImagePlaceholderBg />}
+              {!previewState.failed && previewState.src && (
+                <PlaceholderImage src={previewState.src} alt="" />
+              )}
+            </ColorSquare>
+          );
+        })}
       </SectionRow>
       <SectionRow>
         <ItemStyleButton
