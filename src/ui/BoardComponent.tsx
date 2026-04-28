@@ -366,6 +366,7 @@ const BOT_STRENGTH_VOICE_REACTION_EXTRA_GAP_MULTIPLIER =
 const BOT_STRENGTH_BUTTON_LEFT_SHIFT_MULTIPLIER = 0.045;
 const WAGER_STACK_NAME_GAP_MULTIPLIER = 0.13;
 const WAGER_STACK_REACTION_GAP_MULTIPLIER = 0.08;
+const NAME_REACTION_GAP_MULTIPLIER = 0.0777;
 const WAGER_STACK_WIDTH_MULTIPLIER = 0.88;
 const WAGER_STACK_HEIGHT_MULTIPLIER = 0.92;
 
@@ -3181,7 +3182,9 @@ const BoardComponent: React.FC = () => {
       wagerStackRightEdge > 0
         ? wagerStackRightEdge +
           WAGER_STACK_REACTION_GAP_MULTIPLIER * multiplicator
-        : layout.nameX + nameMeasurement.width;
+        : layout.nameX +
+          nameMeasurement.width +
+          NAME_REACTION_GAP_MULTIPLIER * multiplicator;
     const canOpenProfile = slot.profileMetadataIsOpponent !== null;
     const isNameHovered = hoveredPlayerInfoSlot === side && canOpenProfile;
     const nameFill = isNameHovered ? "#0071F9" : colors.scoreText;
