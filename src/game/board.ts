@@ -54,6 +54,7 @@ import {
   getStashedUsername,
   getStashedPlayerProfile,
 } from "../utils/playerMetadata";
+import type { PlayerMetadata } from "../utils/playerMetadata";
 import { preventTouchstartIfNeeded } from "..";
 import {
   setTopBoardOverlayVisible,
@@ -301,7 +302,7 @@ const MATERIAL_BASE_URL = "https://assets.mons.link/rocks/materials";
 const MAX_WAGER_PILE_ITEMS = 13;
 const MAX_WAGER_WIN_PILE_ITEMS = 32;
 const WAGER_PILE_SCALE = 1;
-const WAGER_WIN_PILE_SCALE = 1.3333;
+export const WAGER_WIN_PILE_SCALE = 1.3333;
 const WAGER_ICON_SIZE_MULTIPLIER = 0.669;
 const WAGER_ICON_PADDING_FRAC = 0.15;
 const WAGER_WIN_ANIM_DURATION_MS = 800;
@@ -344,7 +345,25 @@ type WagerPile = {
 };
 
 export type WagerPileSide = "player" | "opponent";
-type WagerPileRect = { x: number; y: number; w: number; h: number };
+export type WagerPileRect = { x: number; y: number; w: number; h: number };
+export type WagerSlotLayout = {
+  pile: WagerPileRect;
+  winner: WagerPileRect;
+};
+const PLAYER_INFO_REACTION_ONLY_PREFIX = "~ ";
+const PLAYER_INFO_REACTION_PREFIX = " ~ ";
+type PlayerInfoNameTexts = {
+  nameText: string;
+  nameReactionText: string;
+};
+type PlayerMetadataDisplaySnapshot = {
+  username: string | undefined;
+  ethAddress: string | undefined;
+  solAddress: string | undefined;
+  ens: string | undefined;
+  displayName: string | undefined;
+};
+type WagerSlotLayoutMap = Partial<Record<WagerPileSide, WagerSlotLayout>>;
 export type WagerPileAnimation = "none" | "appear" | "disappear";
 export type WagerPileRenderState = {
   side: WagerPileSide | "winner";
@@ -396,6 +415,7 @@ let disappearingPileTimers: { player: number | null; opponent: number | null } =
 const WAGER_DISAPPEAR_ANIMATION_MS = 280;
 let playerPilePending = false;
 let opponentPilePending = false;
+let wagerSlotLayouts: WagerSlotLayoutMap | null = null;
 const boardWagerDebugLogsEnabled = process.env.NODE_ENV !== "production";
 let lastWagerEmitSignature = "";
 const logBoardWagerDebug = (
@@ -414,6 +434,38 @@ export function setWagerRenderHandler(
   if (handler) {
     emitWagerRenderState();
   }
+}
+
+const wagerRectsEqual = (a?: WagerPileRect, b?: WagerPileRect) =>
+  a === b ||
+  (!!a && !!b && a.x === b.x && a.y === b.y && a.w === b.w && a.h === b.h);
+
+const wagerRectIsVisible = (
+  rect: WagerPileRect | null | undefined,
+): rect is WagerPileRect => !!rect && rect.w > 0 && rect.h > 0;
+
+const wagerPileHiddenByLayout = (pile: WagerPile | null) =>
+  !!pile && pile.count > 0 && !!pile.rect && !wagerRectIsVisible(pile.rect);
+
+const wagerSlotLayoutEqual = (a?: WagerSlotLayout, b?: WagerSlotLayout) =>
+  wagerRectsEqual(a?.pile, b?.pile) && wagerRectsEqual(a?.winner, b?.winner);
+
+const wagerSlotLayoutsEqual = (
+  a: WagerSlotLayoutMap | null,
+  b: WagerSlotLayoutMap | null,
+) =>
+  a === b ||
+  (!!a &&
+    !!b &&
+    wagerSlotLayoutEqual(a.player, b.player) &&
+    wagerSlotLayoutEqual(a.opponent, b.opponent));
+
+export function setWagerSlotLayouts(layouts: WagerSlotLayoutMap | null) {
+  if (wagerSlotLayoutsEqual(wagerSlotLayouts, layouts)) {
+    return;
+  }
+  wagerSlotLayouts = layouts;
+  updateWagerLayout({ emitWithoutHandler: false });
 }
 
 const emojis = (await import("../content/emojis")).emojis;
@@ -2011,7 +2063,13 @@ export function didGetPlayerProfile(
   } catch {}
 }
 
-function getPlayerInfoNameTexts(): { player: string; opponent: string } {
+function getPlayerInfoNameTexts(): {
+  player: PlayerInfoNameTexts;
+  opponent: PlayerInfoNameTexts;
+} {
+  refreshPlayerMetadataDisplayFields(playerSideMetadata);
+  refreshPlayerMetadataDisplayFields(opponentSideMetadata);
+
   const playerMetadata = metadataSideIsOpponentForSlot(false)
     ? opponentSideMetadata
     : playerSideMetadata;
@@ -2029,14 +2087,23 @@ function getPlayerInfoNameTexts(): { player: string; opponent: string } {
     currentTime - opponentMetadata.voiceReactionDate < thresholdDelta;
 
   if (isWaitingForRematchResponse || playerScoreDisplayText === "") {
-    const prefix = "~ ";
     return {
-      player: hasPlayerReaction
-        ? prefix + playerMetadata.voiceReactionText
-        : "",
-      opponent: hasOpponentReaction
-        ? prefix + opponentMetadata.voiceReactionText
-        : "",
+      player: {
+        nameText: "",
+        nameReactionText: getPlayerInfoReactionText(
+          hasPlayerReaction,
+          playerMetadata.voiceReactionText,
+          PLAYER_INFO_REACTION_ONLY_PREFIX,
+        ),
+      },
+      opponent: {
+        nameText: "",
+        nameReactionText: getPlayerInfoReactionText(
+          hasOpponentReaction,
+          opponentMetadata.voiceReactionText,
+          PLAYER_INFO_REACTION_ONLY_PREFIX,
+        ),
+      },
     };
   }
   let playerNameString = "";
@@ -2066,17 +2133,24 @@ function getPlayerInfoNameTexts(): { player: string; opponent: string } {
     }
   }
 
-  const reactionPrefix = " ~ ";
-
-  if (hasPlayerReaction) {
-    playerNameString += reactionPrefix + playerMetadata.voiceReactionText;
-  }
-
-  if (hasOpponentReaction) {
-    opponentNameString += reactionPrefix + opponentMetadata.voiceReactionText;
-  }
-
-  return { player: playerNameString, opponent: opponentNameString };
+  return {
+    player: {
+      nameText: playerNameString,
+      nameReactionText: getPlayerInfoReactionText(
+        hasPlayerReaction,
+        playerMetadata.voiceReactionText,
+        PLAYER_INFO_REACTION_PREFIX,
+      ),
+    },
+    opponent: {
+      nameText: opponentNameString,
+      nameReactionText: getPlayerInfoReactionText(
+        hasOpponentReaction,
+        opponentMetadata.voiceReactionText,
+        PLAYER_INFO_REACTION_PREFIX,
+      ),
+    },
+  };
 }
 
 function getPlayerInfoProfileMetadataSide(
@@ -2093,7 +2167,7 @@ function getPlayerInfoProfileMetadataSide(
 
 function getPlayerInfoSlotState(
   slotIsOpponent: boolean,
-  nameText: string,
+  nameTexts: PlayerInfoNameTexts,
 ): BoardPlayerInfoSlotState {
   const metadataIsOpponent = metadataSideIsOpponentForSlot(slotIsOpponent);
   const isPlayerSlot = !slotIsOpponent;
@@ -2103,7 +2177,8 @@ function getPlayerInfoSlotState(
       ? playerInfoPlayerNameVisible
       : playerInfoOpponentNameVisible,
     scoreText: isPlayerSlot ? playerScoreDisplayText : opponentScoreDisplayText,
-    nameText,
+    nameText: nameTexts.nameText,
+    nameReactionText: nameTexts.nameReactionText,
     timerText: isPlayerSlot ? playerTimerDisplayText : opponentTimerDisplayText,
     timerVisible: isPlayerSlot ? showsPlayerTimer : showsOpponentTimer,
     timerColor: isPlayerSlot ? playerTimerColor : opponentTimerColor,
@@ -2131,6 +2206,92 @@ function renderPlayersNamesLabels() {
   emitBoardPlayerInfoOverlayState();
 }
 
+const croppedAddress = (address: string) =>
+  address.slice(0, 4) + "..." + address.slice(-4);
+
+const metadataValue = (value: string | null | undefined) => value || undefined;
+
+const getPlayerInfoReactionText = (
+  hasReaction: boolean,
+  reactionText: string,
+  prefix: string,
+) => (hasReaction ? prefix + reactionText : "");
+
+function getPlayerMetadataDisplaySnapshot(
+  metadata: PlayerMetadata,
+): PlayerMetadataDisplaySnapshot | null {
+  if (!metadata.uid) {
+    return null;
+  }
+
+  const profile = getStashedPlayerProfile(metadata.uid);
+  const stashedUsername = getStashedUsername(metadata.uid);
+  const username =
+    stashedUsername !== undefined
+      ? stashedUsername
+      : (profile?.username ?? metadata.username ?? "");
+  const ethAddress =
+    getStashedPlayerEthAddress(metadata.uid) ??
+    profile?.eth ??
+    metadata.ethAddress;
+  const solAddress =
+    getStashedPlayerSolAddress(metadata.uid) ??
+    profile?.sol ??
+    metadata.solAddress;
+  const ens = username
+    ? metadata.ens
+    : (metadata.ens ?? getEnsNameForUid(metadata.uid));
+  const normalizedUsername = metadataValue(username);
+  const normalizedEthAddress = metadataValue(ethAddress);
+  const normalizedSolAddress = metadataValue(solAddress);
+
+  let displayName = metadata.displayName;
+
+  if (normalizedUsername) {
+    displayName = normalizedUsername;
+  } else if (normalizedEthAddress) {
+    displayName = croppedAddress(normalizedEthAddress);
+  } else if (normalizedSolAddress) {
+    displayName = croppedAddress(normalizedSolAddress);
+  } else if (ens !== undefined) {
+    displayName = ens;
+  }
+
+  return {
+    username: normalizedUsername,
+    ethAddress: normalizedEthAddress,
+    solAddress: normalizedSolAddress,
+    ens,
+    displayName,
+  };
+}
+
+function playerMetadataDisplaySnapshotIsDirty(
+  metadata: PlayerMetadata,
+  snapshot: PlayerMetadataDisplaySnapshot,
+) {
+  return (
+    metadata.username !== snapshot.username ||
+    metadata.ethAddress !== snapshot.ethAddress ||
+    metadata.solAddress !== snapshot.solAddress ||
+    metadata.ens !== snapshot.ens ||
+    metadata.displayName !== snapshot.displayName
+  );
+}
+
+function refreshPlayerMetadataDisplayFields(metadata: PlayerMetadata) {
+  const snapshot = getPlayerMetadataDisplaySnapshot(metadata);
+  if (!snapshot || !playerMetadataDisplaySnapshotIsDirty(metadata, snapshot)) {
+    return;
+  }
+
+  metadata.username = snapshot.username;
+  metadata.ethAddress = snapshot.ethAddress;
+  metadata.solAddress = snapshot.solAddress;
+  metadata.ens = snapshot.ens;
+  metadata.displayName = snapshot.displayName;
+}
+
 export function setupLoggedInPlayerProfile(
   profile: PlayerProfile,
   loginId: string,
@@ -2142,67 +2303,8 @@ export function setupLoggedInPlayerProfile(
 }
 
 export function recalculateDisplayNames() {
-  if (playerSideMetadata.displayName === undefined) {
-    const username = getStashedUsername(playerSideMetadata.uid);
-    const ethAddress = getStashedPlayerEthAddress(playerSideMetadata.uid);
-    const solAddress = getStashedPlayerSolAddress(playerSideMetadata.uid);
-    if (ethAddress) {
-      const cropped = ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4);
-      playerSideMetadata.displayName = cropped;
-      playerSideMetadata.ethAddress = ethAddress;
-    } else if (solAddress) {
-      const cropped = solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
-      playerSideMetadata.displayName = cropped;
-      playerSideMetadata.solAddress = solAddress;
-    }
-
-    if (username) {
-      playerSideMetadata.username = username;
-      playerSideMetadata.displayName = username;
-    }
-  }
-
-  if (opponentSideMetadata.displayName === undefined) {
-    const username = getStashedUsername(opponentSideMetadata.uid);
-    const ethAddress = getStashedPlayerEthAddress(opponentSideMetadata.uid);
-    const solAddress = getStashedPlayerSolAddress(opponentSideMetadata.uid);
-    if (ethAddress) {
-      const cropped = ethAddress.slice(0, 4) + "..." + ethAddress.slice(-4);
-      opponentSideMetadata.displayName = cropped;
-      opponentSideMetadata.ethAddress = ethAddress;
-    } else if (solAddress) {
-      const cropped = solAddress.slice(0, 4) + "..." + solAddress.slice(-4);
-      opponentSideMetadata.displayName = cropped;
-      opponentSideMetadata.solAddress = solAddress;
-    }
-
-    if (username) {
-      opponentSideMetadata.username = username;
-      opponentSideMetadata.displayName = username;
-    }
-  }
-
-  if (
-    playerSideMetadata.ens === undefined &&
-    playerSideMetadata.username === undefined
-  ) {
-    const ens = getEnsNameForUid(playerSideMetadata.uid);
-    if (ens !== undefined) {
-      playerSideMetadata.ens = ens;
-      playerSideMetadata.displayName = ens;
-    }
-  }
-
-  if (
-    opponentSideMetadata.ens === undefined &&
-    opponentSideMetadata.username === undefined
-  ) {
-    const ens = getEnsNameForUid(opponentSideMetadata.uid);
-    if (ens !== undefined) {
-      opponentSideMetadata.ens = ens;
-      opponentSideMetadata.displayName = ens;
-    }
-  }
+  refreshPlayerMetadataDisplayFields(playerSideMetadata);
+  refreshPlayerMetadataDisplayFields(opponentSideMetadata);
 
   const playerRating = getRatingForUid(playerSideMetadata.uid);
   if (playerRating !== undefined) {
@@ -2922,23 +3024,37 @@ function generateWagerPositions(
   count: number,
 ): Array<{ u: number; v: number }> {
   if (count <= 0) return [];
-  const grid = Math.max(1, Math.ceil(Math.sqrt(count)));
-  const cell = 1 / grid;
+  const columns = getWagerStackColumnCount(count);
+  const rows = Math.max(1, Math.ceil(count / columns));
   const positions: Array<{ u: number; v: number }> = [];
-  for (let row = 0; row < grid; row += 1) {
-    for (let col = 0; col < grid; col += 1) {
-      const jitterX = 0.2 + Math.random() * 0.6;
-      const jitterY = 0.2 + Math.random() * 0.6;
-      positions.push({ u: (col + jitterX) * cell, v: (row + jitterY) * cell });
-    }
+  const clampStackCoord = (value: number) =>
+    Math.max(0.14, Math.min(0.86, value));
+  for (let index = 0; index < count; index += 1) {
+    const row = Math.floor(index / columns);
+    const col = index % columns;
+    const itemsInRow = Math.min(columns, count - row * columns);
+    const rowOffset = (columns - itemsInRow) / 2;
+    const rowZigzagOffset = row % 2 === 0 ? -1 : 1;
+    const baseU = columns === 1 ? 0.5 : (col + rowOffset + 0.5) / columns;
+    const u =
+      columns === 1
+        ? baseU + rowZigzagOffset * 0.025
+        : baseU + rowZigzagOffset * 0.015;
+    const centeredColumn = col - (itemsInRow - 1) / 2;
+    const v = 1 - (row + 0.58) / rows + centeredColumn * 0.035;
+    positions.push({ u: clampStackCoord(u), v: clampStackCoord(v) });
   }
-  for (let i = positions.length - 1; i > 0; i -= 1) {
-    const j = Math.floor(Math.random() * (i + 1));
-    const temp = positions[i];
-    positions[i] = positions[j];
-    positions[j] = temp;
+  return positions;
+}
+
+function getWagerStackColumnCount(count: number): number {
+  if (count <= 4) {
+    return 1;
   }
-  return positions.slice(0, count);
+  if (count <= 8) {
+    return 2;
+  }
+  return 3;
 }
 
 function syncWagerPileIcons(
@@ -2961,15 +3077,9 @@ function syncWagerPileIcons(
   if (!reusePositions) {
     if (visibleCount <= 0) {
       pile.positions = [];
-    } else if (sameMaterial && pile.positions.length > 0) {
-      const nextPositions = pile.positions.slice(0, visibleCount);
-      if (nextPositions.length < visibleCount) {
-        nextPositions.push(
-          ...generateWagerPositions(visibleCount - nextPositions.length),
-        );
-      }
-      pile.positions = nextPositions;
     } else {
+      // Stack coordinates depend on the total visible count, so changing count
+      // needs a full regeneration to keep the deterministic pile balanced.
       pile.positions = generateWagerPositions(visibleCount);
     }
   }
@@ -2982,7 +3092,7 @@ function getWagerPileRect(isOpponent: boolean): {
   w: number;
   h: number;
 } {
-  return getWagerRectForScale(isOpponent, WAGER_PILE_SCALE);
+  return getWagerSlotRect(isOpponent, "pile", WAGER_PILE_SCALE);
 }
 
 function getWagerWinnerRect(isOpponent: boolean): {
@@ -2991,7 +3101,22 @@ function getWagerWinnerRect(isOpponent: boolean): {
   w: number;
   h: number;
 } {
-  return getWagerRectForScale(isOpponent, WAGER_WIN_PILE_SCALE);
+  return getWagerSlotRect(isOpponent, "winner", WAGER_WIN_PILE_SCALE);
+}
+
+function getWagerSlotRect(
+  isOpponent: boolean,
+  layoutKey: keyof WagerSlotLayout,
+  fallbackScale: number,
+): WagerPileRect {
+  const slot = slotIsOpponentForMetadataSide(isOpponent)
+    ? "opponent"
+    : "player";
+  const layout = wagerSlotLayouts?.[slot]?.[layoutKey];
+  if (layout) {
+    return { ...layout };
+  }
+  return getWagerRectForScale(isOpponent, fallbackScale);
 }
 
 function getWagerIconLayout(
@@ -3025,7 +3150,9 @@ function updateWagerPileLayout(
   }
 }
 
-function updateWagerLayout() {
+function updateWagerLayout({
+  emitWithoutHandler = true,
+}: { emitWithoutHandler?: boolean } = {}) {
   if (!playerWagerPile && !opponentWagerPile && !winnerWagerPile) {
     return;
   }
@@ -3047,7 +3174,9 @@ function updateWagerLayout() {
       getWagerWinnerRect(lastWagerWinnerIsOpponent),
     );
   }
-  emitWagerRenderState();
+  if (handleWagerRenderState || emitWithoutHandler) {
+    emitWagerRenderState();
+  }
 }
 
 function buildWagerRenderState(
@@ -3056,7 +3185,7 @@ function buildWagerRenderState(
   animation: WagerPileAnimation,
   isPending: boolean,
 ): WagerPileRenderState | null {
-  if (!pile || pile.count === 0 || !pile.rect) {
+  if (!pile || pile.count === 0 || !wagerRectIsVisible(pile.rect)) {
     return null;
   }
   const materialUrl =
@@ -3097,14 +3226,13 @@ function clearDisappearingPile(side: "player" | "opponent") {
 }
 
 function emitWagerRenderState() {
-  const showWinner = Boolean(
-    winnerPileActive &&
-    winnerWagerPile &&
-    winnerWagerPile.count > 0 &&
-    winnerWagerPile.rect,
+  // Winner mode suppresses side piles even when the winner pile itself is
+  // hidden by layout; buildWagerRenderState decides actual visibility.
+  const winnerModeActive = Boolean(
+    winnerPileActive && winnerWagerPile && winnerWagerPile.count > 0,
   );
 
-  const currentPlayerState = showWinner
+  const currentPlayerState = winnerModeActive
     ? null
     : buildWagerRenderState(
         playerWagerPile,
@@ -3112,7 +3240,7 @@ function emitWagerRenderState() {
         "none",
         playerPilePending,
       );
-  const currentOpponentState = showWinner
+  const currentOpponentState = winnerModeActive
     ? null
     : buildWagerRenderState(
         opponentWagerPile,
@@ -3122,6 +3250,8 @@ function emitWagerRenderState() {
       );
   const currentPlayerVisible = !!currentPlayerState;
   const currentOpponentVisible = !!currentOpponentState;
+  const playerHiddenByLayout = wagerPileHiddenByLayout(playerWagerPile);
+  const opponentHiddenByLayout = wagerPileHiddenByLayout(opponentWagerPile);
 
   let playerAnimation: WagerPileAnimation = "none";
   let opponentAnimation: WagerPileAnimation = "none";
@@ -3129,11 +3259,13 @@ function emitWagerRenderState() {
   if (
     wagerAnimationsReady &&
     !wagerWinAnimActive &&
-    !showWinner &&
+    !winnerModeActive &&
     !suppressNextWagerPileTransition
   ) {
     if (currentPlayerVisible && !previousPlayerPileVisible) {
       playerAnimation = "appear";
+      clearDisappearingPile("player");
+    } else if (playerHiddenByLayout) {
       clearDisappearingPile("player");
     } else if (
       !currentPlayerVisible &&
@@ -3157,6 +3289,8 @@ function emitWagerRenderState() {
 
     if (currentOpponentVisible && !previousOpponentPileVisible) {
       opponentAnimation = "appear";
+      clearDisappearingPile("opponent");
+    } else if (opponentHiddenByLayout) {
       clearDisappearingPile("opponent");
     } else if (
       !currentOpponentVisible &&
@@ -3200,7 +3334,7 @@ function emitWagerRenderState() {
   const opponentRenderState = currentOpponentState
     ? { ...currentOpponentState, animation: opponentAnimation }
     : null;
-  const winnerRenderState = showWinner
+  const winnerRenderState = winnerModeActive
     ? buildWagerRenderState(winnerWagerPile, "winner", "none", false)
     : null;
 
@@ -3227,7 +3361,7 @@ function emitWagerRenderState() {
   if (signature !== lastWagerEmitSignature) {
     lastWagerEmitSignature = signature;
     logBoardWagerDebug("emit-render-state", {
-      showWinner,
+      showWinner: winnerModeActive,
       signature,
       playerRect: state.player?.rect ?? null,
       opponentRect: state.opponent?.rect ?? null,
@@ -3324,7 +3458,6 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
   if (visibleCount === 0) {
     return false;
   }
-  winnerPileActive = true;
 
   const winnerVisible = Math.min(visibleCount, displayWinnerCount);
   const loserVisible = visibleCount - winnerVisible;
@@ -3332,6 +3465,14 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
   const winnerSourceRect = getWagerPileRect(winnerIsOpponent);
   const loserRect = getWagerPileRect(!winnerIsOpponent);
   const winnerRect = getWagerWinnerRect(winnerIsOpponent);
+  if (
+    !wagerRectIsVisible(winnerSourceRect) ||
+    !wagerRectIsVisible(loserRect) ||
+    !wagerRectIsVisible(winnerRect)
+  ) {
+    return false;
+  }
+  winnerPileActive = true;
 
   const iconSize = getWagerIconLayout(winnerSourceRect).iconSize;
   const winnerLayout = getWagerIconLayout(winnerRect, iconSize);
@@ -3348,14 +3489,14 @@ function startWagerWinAnimation(winnerIsOpponent: boolean): boolean {
     winnerSource.positions,
     winnerAnchoredCount,
   );
-  const winnerExtraCount = winnerVisible - winnerAnchoredCount;
-  const extraPositions = generateWagerPositions(
-    winnerExtraCount + loserVisible,
+  const targetPositions = generateWagerPositions(visibleCount);
+  const winnerExtraPositions = targetPositions.slice(
+    winnerAnchoredCount,
+    winnerVisible,
   );
-  const winnerExtraPositions = extraPositions.slice(0, winnerExtraCount);
-  const loserPositions = extraPositions.slice(
-    winnerExtraCount,
-    winnerExtraCount + loserVisible,
+  const loserPositions = targetPositions.slice(
+    winnerVisible,
+    winnerVisible + loserVisible,
   );
 
   const clamp01 = (value: number) => Math.max(0, Math.min(1, value));

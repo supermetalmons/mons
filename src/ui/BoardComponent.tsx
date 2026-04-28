@@ -38,7 +38,11 @@ import {
   opponentSideMetadata,
   openBoardPlayerInfoProfile,
   setWagerRenderHandler,
+  setWagerSlotLayouts,
+  WAGER_WIN_PILE_SCALE as WAGER_WIN_STACK_SCALE,
   WagerPileSide,
+  WagerPileRect,
+  WagerSlotLayout,
   WagerRenderState,
   WagerPileRenderState,
   applyInviteBotButtonLayout,
@@ -143,6 +147,7 @@ export type BoardPlayerInfoSlotState = {
   nameVisible: boolean;
   scoreText: string;
   nameText: string;
+  nameReactionText: string;
   timerText: string;
   timerVisible: boolean;
   timerColor: BoardTimerColor;
@@ -163,6 +168,7 @@ const createEmptyPlayerInfoSlotState = (): BoardPlayerInfoSlotState => ({
   nameVisible: false,
   scoreText: "",
   nameText: "",
+  nameReactionText: "",
   timerText: "",
   timerVisible: false,
   timerColor: "green",
@@ -186,6 +192,7 @@ const playerInfoSlotStatesEqual = (
   a.nameVisible === b.nameVisible &&
   a.scoreText === b.scoreText &&
   a.nameText === b.nameText &&
+  a.nameReactionText === b.nameReactionText &&
   a.timerText === b.timerText &&
   a.timerVisible === b.timerVisible &&
   a.timerColor === b.timerColor &&
@@ -304,6 +311,7 @@ const VIDEO_REACTION_MAX_LIFETIME_MS = 12000;
 const VIDEO_REACTION_END_GRACE_MS = 700;
 const BOARD_WIDTH_UNITS = 11;
 const BOARD_HEIGHT_UNITS = 14.1;
+const BOARD_MID_Y_UNITS = BOARD_HEIGHT_UNITS * 0.5;
 const BOARD_VIEWBOX_WIDTH = BOARD_WIDTH_UNITS * 100;
 const BOARD_VIEWBOX_HEIGHT = BOARD_HEIGHT_UNITS * 100;
 const WAGER_PANEL_PADDING_X_FRAC = 0.2;
@@ -349,6 +357,10 @@ const BOT_STRENGTH_BUTTON_NAME_GAP_MULTIPLIER =
 const BOT_STRENGTH_VOICE_REACTION_EXTRA_GAP_MULTIPLIER =
   0.08 * BOT_STRENGTH_BUTTON_SCALE;
 const BOT_STRENGTH_BUTTON_LEFT_SHIFT_MULTIPLIER = 0.045;
+const WAGER_STACK_NAME_GAP_MULTIPLIER = 0.13;
+const WAGER_STACK_REACTION_GAP_MULTIPLIER = 0.08;
+const WAGER_STACK_WIDTH_MULTIPLIER = 0.88;
+const WAGER_STACK_HEIGHT_MULTIPLIER = 0.92;
 
 const PENDING_PULSE_KEYFRAMES_NAME = "wagerPilePendingPulse";
 const PENDING_PULSE_ANIMATION = `${PENDING_PULSE_KEYFRAMES_NAME} 1.4s ease-in-out infinite`;
@@ -731,6 +743,8 @@ type BoardPlayerInfoMeasurements = {
   opponentScore: BoardTextMeasurement;
   playerTimer: BoardTextMeasurement;
   opponentTimer: BoardTextMeasurement;
+  playerName: BoardTextMeasurement;
+  opponentName: BoardTextMeasurement;
 };
 
 type BoardPlayerInfoSlotLayout = {
@@ -808,7 +822,19 @@ const playerInfoMeasurementsEqual = (
   textMeasurementsEqual(a.playerScore, b.playerScore) &&
   textMeasurementsEqual(a.opponentScore, b.opponentScore) &&
   textMeasurementsEqual(a.playerTimer, b.playerTimer) &&
-  textMeasurementsEqual(a.opponentTimer, b.opponentTimer);
+  textMeasurementsEqual(a.opponentTimer, b.opponentTimer) &&
+  textMeasurementsEqual(a.playerName, b.playerName) &&
+  textMeasurementsEqual(a.opponentName, b.opponentName);
+
+const mergePlayerInfoMeasurements = (
+  prevMeasurements: BoardPlayerInfoMeasurements,
+  measurements: Partial<BoardPlayerInfoMeasurements>,
+) => {
+  const nextMeasurements = { ...prevMeasurements, ...measurements };
+  return playerInfoMeasurementsEqual(prevMeasurements, nextMeasurements)
+    ? prevMeasurements
+    : nextMeasurements;
+};
 
 const seeIfShouldOffsetFromBorders = () =>
   window.innerWidth / window.innerHeight < 0.72;
@@ -820,6 +846,113 @@ const getOuterElementsMultiplicator = (
 const getAvatarSize = (
   boardPixelSize: { width: number; height: number } | null,
 ) => 0.777 * getOuterElementsMultiplicator(boardPixelSize);
+
+type WagerStackRightEdges = Record<WagerPileSide, number>;
+type WagerSlotLayoutBySide = Record<WagerPileSide, WagerSlotLayout>;
+
+const emptyWagerStackRightEdges: WagerStackRightEdges = {
+  player: 0,
+  opponent: 0,
+};
+
+const hiddenWagerRect: WagerPileRect = { x: 0, y: 0, w: 0, h: 0 };
+const hiddenWagerSlotLayout: WagerSlotLayout = {
+  pile: hiddenWagerRect,
+  winner: hiddenWagerRect,
+};
+
+const clampBoardRect = (
+  x: number,
+  y: number,
+  w: number,
+  h: number,
+): { x: number; y: number; w: number; h: number } => ({
+  x: Math.max(0, Math.min(BOARD_WIDTH_UNITS - w, x)),
+  y: Math.max(0, Math.min(BOARD_HEIGHT_UNITS - h, y)),
+  w,
+  h,
+});
+
+const getWagerStackRectForName = (
+  slotLayout: BoardPlayerInfoSlotLayout,
+  nameMeasurement: BoardTextMeasurement,
+  boardPixelSize: { width: number; height: number } | null,
+  scale: number,
+) => {
+  const multiplicator = getOuterElementsMultiplicator(boardPixelSize);
+  const avatarSize = getAvatarSize(boardPixelSize);
+  const w = avatarSize * WAGER_STACK_WIDTH_MULTIPLIER * scale;
+  const h = avatarSize * WAGER_STACK_HEIGHT_MULTIPLIER * scale;
+  const x =
+    slotLayout.nameX +
+    nameMeasurement.width +
+    WAGER_STACK_NAME_GAP_MULTIPLIER * multiplicator;
+  const y = slotLayout.nameY - h * 0.68;
+  return clampBoardRect(x, y, w, h);
+};
+
+const getWagerSlotLayoutForName = (
+  slotLayout: BoardPlayerInfoSlotLayout,
+  nameMeasurement: BoardTextMeasurement,
+  boardPixelSize: { width: number; height: number } | null,
+  hasVisibleName: boolean,
+): WagerSlotLayout => {
+  if (!hasVisibleName) {
+    return hiddenWagerSlotLayout;
+  }
+  return {
+    pile: getWagerStackRectForName(
+      slotLayout,
+      nameMeasurement,
+      boardPixelSize,
+      1,
+    ),
+    winner: getWagerStackRectForName(
+      slotLayout,
+      nameMeasurement,
+      boardPixelSize,
+      WAGER_WIN_STACK_SCALE,
+    ),
+  };
+};
+
+const playerInfoSlotHasVisibleName = (slot: BoardPlayerInfoSlotState) => {
+  // Wager stacks anchor to the name label; reaction-only rows intentionally
+  // hide stacks because there is no visible name to attach them to.
+  return slot.nameVisible && slot.nameText !== "";
+};
+
+const playerInfoSlotHasNameReaction = (slot: BoardPlayerInfoSlotState) =>
+  slot.nameReactionText !== "";
+
+const getWagerSideForBoardRect = (
+  rect: Pick<WagerPileRect, "y">,
+): WagerPileSide =>
+  rect.y < BOARD_MID_Y_UNITS ? "opponent" : "player";
+
+const getWagerPileVisualSlot = (pile: WagerPileRenderState): WagerPileSide => {
+  if (pile.side === "player" || pile.side === "opponent") {
+    return pile.side;
+  }
+  return getWagerSideForBoardRect(pile.rect);
+};
+
+const addWagerStackRightEdgeForPile = (
+  rightEdges: WagerStackRightEdges,
+  pile: WagerPileRenderState | null,
+) => {
+  if (!pile) {
+    return;
+  }
+  const slot = getWagerPileVisualSlot(pile);
+  rightEdges[slot] = Math.max(rightEdges[slot], pile.rect.x + pile.rect.w);
+};
+
+const wagerStackRightEdgesEqual = (
+  a: WagerStackRightEdges,
+  b: WagerStackRightEdges,
+) =>
+  a.player === b.player && a.opponent === b.opponent;
 
 const getInviteBotButtonLayout = (
   scoreX: number,
@@ -1042,7 +1175,7 @@ const getBoardPlayerInfoLayout = (
   const topControlSlotHasEndOfGameMarker =
     topControlSlotState.endOfGameMarker !== "none";
   const topControlHasVoiceReaction =
-    topControlSlotState.nameText.includes("~ ");
+    playerInfoSlotHasNameReaction(topControlSlotState);
   const topVoiceReactionExtraSpacing =
     state.botStrengthControlVisible &&
     topControlSlotHasEndOfGameMarker &&
@@ -1366,13 +1499,22 @@ const BoardComponent: React.FC = () => {
   const opponentScoreTextRef = useRef<SVGTextElement | null>(null);
   const playerTimerTextRef = useRef<SVGTextElement | null>(null);
   const opponentTimerTextRef = useRef<SVGTextElement | null>(null);
+  const playerNameTextRef = useRef<SVGTextElement | null>(null);
+  const opponentNameTextRef = useRef<SVGTextElement | null>(null);
   const [playerInfoMeasurements, setPlayerInfoMeasurements] =
     useState<BoardPlayerInfoMeasurements>({
       playerScore: emptyTextMeasurement,
       opponentScore: emptyTextMeasurement,
       playerTimer: emptyTextMeasurement,
       opponentTimer: emptyTextMeasurement,
+      playerName: emptyTextMeasurement,
+      opponentName: emptyTextMeasurement,
     });
+  const [wagerStackRightEdges, setWagerStackRightEdges] =
+    useState<WagerStackRightEdges>(emptyWagerStackRightEdges);
+  const wagerStackRightEdgesRef = useRef<WagerStackRightEdges>(
+    emptyWagerStackRightEdges,
+  );
   const [hoveredPlayerInfoSlot, setHoveredPlayerInfoSlot] =
     useState<WagerPileSide | null>(null);
 
@@ -1823,18 +1965,44 @@ const BoardComponent: React.FC = () => {
   }, []);
 
   useLayoutEffect(() => {
-    const nextMeasurements: BoardPlayerInfoMeasurements = {
+    const scoreAndTimerMeasurements = {
       playerScore: measureSvgText(playerScoreTextRef.current),
       opponentScore: measureSvgText(opponentScoreTextRef.current),
       playerTimer: measureSvgText(playerTimerTextRef.current),
       opponentTimer: measureSvgText(opponentTimerTextRef.current),
     };
     setPlayerInfoMeasurements((prevMeasurements) =>
-      playerInfoMeasurementsEqual(prevMeasurements, nextMeasurements)
-        ? prevMeasurements
-        : nextMeasurements,
+      mergePlayerInfoMeasurements(prevMeasurements, scoreAndTimerMeasurements),
     );
-  }, [boardPixelSize, isGridVisible, playerInfoOverlayState]);
+  }, [
+    boardPixelSize,
+    isGridVisible,
+    playerInfoOverlayState.opponent.scoreText,
+    playerInfoOverlayState.opponent.timerText,
+    playerInfoOverlayState.opponent.timerVisible,
+    playerInfoOverlayState.opponent.visible,
+    playerInfoOverlayState.player.scoreText,
+    playerInfoOverlayState.player.timerText,
+    playerInfoOverlayState.player.timerVisible,
+    playerInfoOverlayState.player.visible,
+  ]);
+
+  useLayoutEffect(() => {
+    const nameMeasurements = {
+      playerName: measureSvgText(playerNameTextRef.current),
+      opponentName: measureSvgText(opponentNameTextRef.current),
+    };
+    setPlayerInfoMeasurements((prevMeasurements) =>
+      mergePlayerInfoMeasurements(prevMeasurements, nameMeasurements),
+    );
+  }, [
+    boardPixelSize,
+    isGridVisible,
+    playerInfoOverlayState.opponent.nameText,
+    playerInfoOverlayState.opponent.nameVisible,
+    playerInfoOverlayState.player.nameText,
+    playerInfoOverlayState.player.nameVisible,
+  ]);
 
   const clearWagerPanel = useCallback(() => {
     activeWagerPanelSideRef.current = null;
@@ -2114,6 +2282,29 @@ const BoardComponent: React.FC = () => {
   const applyWagerRenderState = useCallback(
     (state: WagerRenderState) => {
       wagerRenderStateRef.current = state;
+      const nextStackRightEdges: WagerStackRightEdges = {
+        ...emptyWagerStackRightEdges,
+      };
+      addWagerStackRightEdgeForPile(nextStackRightEdges, state.player);
+      addWagerStackRightEdgeForPile(nextStackRightEdges, state.opponent);
+      addWagerStackRightEdgeForPile(
+        nextStackRightEdges,
+        state.playerDisappearing,
+      );
+      addWagerStackRightEdgeForPile(
+        nextStackRightEdges,
+        state.opponentDisappearing,
+      );
+      addWagerStackRightEdgeForPile(nextStackRightEdges, state.winner);
+      if (
+        !wagerStackRightEdgesEqual(
+          wagerStackRightEdgesRef.current,
+          nextStackRightEdges,
+        )
+      ) {
+        wagerStackRightEdgesRef.current = nextStackRightEdges;
+        setWagerStackRightEdges(nextStackRightEdges);
+      }
       const signature = [
         state.player
           ? `${state.player.count}:${state.player.isPending ? 1 : 0}:${state.player.animation}`
@@ -2594,15 +2785,7 @@ const BoardComponent: React.FC = () => {
       setTrackedTimeout,
     ],
   );
-
-  useEffect(() => {
-    setWagerRenderHandler((state) => {
-      applyWagerRenderState(state);
-    });
-    return () => {
-      setWagerRenderHandler(null);
-    };
-  }, [applyWagerRenderState]);
+  const applyWagerRenderStateRef = useRef(applyWagerRenderState);
 
   useEffect(() => {
     setWagerPanelVisibilityChecker(
@@ -2645,11 +2828,56 @@ const BoardComponent: React.FC = () => {
     playerInfoMeasurements,
     playerInfoOverlayState,
   ]);
+  const computedWagerSlotLayouts: WagerSlotLayoutBySide = useMemo(
+    () => ({
+      player: getWagerSlotLayoutForName(
+        playerInfoLayout.player,
+        playerInfoMeasurements.playerName,
+        boardPixelSize,
+        playerInfoSlotHasVisibleName(playerInfoOverlayState.player),
+      ),
+      opponent: getWagerSlotLayoutForName(
+        playerInfoLayout.opponent,
+        playerInfoMeasurements.opponentName,
+        boardPixelSize,
+        playerInfoSlotHasVisibleName(playerInfoOverlayState.opponent),
+      ),
+    }),
+    [
+      boardPixelSize,
+      playerInfoLayout.opponent,
+      playerInfoLayout.player,
+      playerInfoMeasurements.opponentName,
+      playerInfoMeasurements.playerName,
+      playerInfoOverlayState.opponent,
+      playerInfoOverlayState.player,
+    ],
+  );
   const botStrengthControlOverlay = playerInfoLayout.botStrengthControlOverlay;
 
   useLayoutEffect(() => {
     applyInviteBotButtonLayout(playerInfoLayout.inviteBotButtonLayout);
   }, [playerInfoLayout.inviteBotButtonLayout]);
+
+  useLayoutEffect(() => {
+    applyWagerRenderStateRef.current = applyWagerRenderState;
+  }, [applyWagerRenderState]);
+
+  useLayoutEffect(() => {
+    setWagerSlotLayouts(computedWagerSlotLayouts);
+  }, [computedWagerSlotLayouts]);
+
+  useLayoutEffect(() => {
+    // setWagerRenderHandler emits immediately, so register after slot layouts
+    // have reached board.ts and the first state uses the measured name layout.
+    setWagerRenderHandler((state) => {
+      applyWagerRenderStateRef.current(state);
+    });
+    return () => {
+      setWagerRenderHandler(null);
+      setWagerSlotLayouts(null);
+    };
+  }, []);
 
   useEffect(() => {
     if (!botStrengthControlOverlay.visible) {
@@ -2669,7 +2897,7 @@ const BoardComponent: React.FC = () => {
       : activeWagerPanelSide === "player"
         ? false
         : activeWagerPileRect
-          ? activeWagerPileRect.y < BOARD_HEIGHT_UNITS * 0.5
+          ? getWagerSideForBoardRect(activeWagerPileRect) === "opponent"
           : false;
   const wagerPanelLayout =
     activeWagerPanelSide && activeWagerPileRect
@@ -2889,9 +3117,36 @@ const BoardComponent: React.FC = () => {
       side === "player" ? playerScoreTextRef : opponentScoreTextRef;
     const timerRef =
       side === "player" ? playerTimerTextRef : opponentTimerTextRef;
+    const nameRef = side === "player" ? playerNameTextRef : opponentNameTextRef;
+    const nameMeasurement =
+      side === "player"
+        ? playerInfoMeasurements.playerName
+        : playerInfoMeasurements.opponentName;
+    const hasVisibleName = playerInfoSlotHasVisibleName(slot);
+    const hasNameReaction = playerInfoSlotHasNameReaction(slot);
+    const wagerStackRightEdge = wagerStackRightEdges[side];
+    const multiplicator = getOuterElementsMultiplicator(boardPixelSize);
+    const reactionX =
+      wagerStackRightEdge > 0
+        ? wagerStackRightEdge +
+          WAGER_STACK_REACTION_GAP_MULTIPLIER * multiplicator
+        : layout.nameX + nameMeasurement.width;
     const canOpenProfile = slot.profileMetadataIsOpponent !== null;
     const isNameHovered = hoveredPlayerInfoSlot === side && canOpenProfile;
     const nameFill = isNameHovered ? "#0071F9" : colors.scoreText;
+    const nameTextProps: React.SVGProps<SVGTextElement> = {
+      fill: nameFill,
+      opacity: 0.69,
+      fontWeight: 270,
+      fontStyle: "italic",
+      fontSize: layout.nameFontSize,
+      overflow: "visible",
+      style: { cursor: "pointer" },
+      onClick: (event) => handlePlayerInfoNameClick(event, slot),
+      onMouseEnter: () => handlePlayerInfoNameMouseEnter(side, slot),
+      onMouseLeave: () => handlePlayerInfoNameMouseLeave(side),
+      onTouchEnd: () => handlePlayerInfoNameTouchEnd(side),
+    };
     return (
       <g key={side}>
         <text
@@ -2933,23 +3188,24 @@ const BoardComponent: React.FC = () => {
           />
         )}
         <text
+          {...nameTextProps}
+          ref={nameRef}
           x={layout.nameX * 100}
           y={layout.nameY * 100}
-          fill={nameFill}
-          opacity={0.69}
-          fontWeight={270}
-          fontStyle="italic"
-          fontSize={layout.nameFontSize}
-          overflow="visible"
-          display={slot.nameVisible ? undefined : "none"}
-          style={{ cursor: "pointer" }}
-          onClick={(event) => handlePlayerInfoNameClick(event, slot)}
-          onMouseEnter={() => handlePlayerInfoNameMouseEnter(side, slot)}
-          onMouseLeave={() => handlePlayerInfoNameMouseLeave(side)}
-          onTouchEnd={() => handlePlayerInfoNameTouchEnd(side)}
+          display={hasVisibleName ? undefined : "none"}
         >
           {slot.nameText}
         </text>
+        {hasNameReaction && (
+          <text
+            {...nameTextProps}
+            x={reactionX * 100}
+            y={layout.nameY * 100}
+            display={slot.nameVisible ? undefined : "none"}
+          >
+            {slot.nameReactionText}
+          </text>
+        )}
       </g>
     );
   };
