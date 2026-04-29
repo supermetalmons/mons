@@ -346,6 +346,7 @@ const END_OF_GAME_ICON_URLS = {
 } as const;
 type EndOfGameIconName = keyof typeof END_OF_GAME_ICON_URLS;
 const END_OF_GAME_ICON_OPACITY = 0.69;
+const PLAYER_INFO_TEXT_OPACITY = 0.69;
 const END_OF_GAME_ICON_SIZE_MULTIPLIER = 0.53;
 const END_OF_GAME_ICON_GAP_MULTIPLIER = 0.06;
 const END_OF_GAME_NAME_OFFSET_MULTIPLIER = 0.54;
@@ -711,6 +712,10 @@ type WagerPileElements = {
 
 const toPercentX = (value: number) => (value / BOARD_WIDTH_UNITS) * 100;
 const toPercentY = (value: number) => (value / BOARD_HEIGHT_UNITS) * 100;
+const toOverlayFontSizePx = (
+  svgFontSize: number,
+  boardViewportRect: BoardViewportRect,
+) => (svgFontSize / BOARD_VIEWBOX_WIDTH) * boardViewportRect.width;
 
 const getRenderedBoardViewportRect = (svg: SVGSVGElement) => {
   const matrix = svg.getScreenCTM?.();
@@ -744,6 +749,13 @@ const getRenderedBoardViewportRect = (svg: SVGSVGElement) => {
 type BoardTextMeasurement = {
   width: number;
   bounds: { y: number; height: number } | null;
+};
+
+type BoardViewportRect = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
 };
 
 type BoardPlayerInfoMeasurements = {
@@ -785,34 +797,160 @@ const emptyTextMeasurement: BoardTextMeasurement = {
   bounds: null,
 };
 
-const measureSvgText = (
-  element: SVGTextElement | null,
+const measureBoardText = (
+  element: HTMLElement | null,
+  boardViewportRect: BoardViewportRect | null,
 ): BoardTextMeasurement => {
-  if (!element || element.getAttribute("display") === "none") {
+  if (
+    !element ||
+    !boardViewportRect ||
+    boardViewportRect.width <= 0 ||
+    boardViewportRect.height <= 0 ||
+    element.getClientRects().length === 0
+  ) {
     return emptyTextMeasurement;
   }
-  let width = 0;
-  try {
-    width = element.getComputedTextLength
-      ? element.getComputedTextLength() / 100
-      : 0;
-  } catch {}
-  let bounds: BoardTextMeasurement["bounds"] = null;
-  try {
-    const bbox = element.getBBox ? element.getBBox() : null;
-    if (bbox) {
-      if (!Number.isFinite(width) || width <= 0) {
-        width = Number.isFinite(bbox.width) ? bbox.width / 100 : 0;
-      }
-      if (Number.isFinite(bbox.y) && Number.isFinite(bbox.height)) {
-        bounds = { y: bbox.y / 100, height: bbox.height / 100 };
-      }
-    }
-  } catch {}
+  const rect = element.getBoundingClientRect();
+  const width = (rect.width / boardViewportRect.width) * BOARD_WIDTH_UNITS;
+  const bounds =
+    Number.isFinite(rect.top) && Number.isFinite(rect.height)
+      ? {
+          y:
+            ((rect.top - boardViewportRect.top) / boardViewportRect.height) *
+            BOARD_HEIGHT_UNITS,
+          height: (rect.height / boardViewportRect.height) * BOARD_HEIGHT_UNITS,
+        }
+      : null;
   return {
     width: Number.isFinite(width) && width > 0 ? width : 0,
     bounds,
   };
+};
+
+type BoardPlayerInfoTextProps = {
+  elementRef?: { current: HTMLSpanElement | null };
+  x: number;
+  y: number;
+  fontSizePx: number;
+  color: string;
+  opacity: number;
+  fontWeight: React.CSSProperties["fontWeight"];
+  fontStyle?: React.CSSProperties["fontStyle"];
+  visible: boolean;
+  interactive?: boolean;
+  children: string;
+  onClick?: React.MouseEventHandler<HTMLSpanElement>;
+  onMouseEnter?: React.MouseEventHandler<HTMLSpanElement>;
+  onMouseLeave?: React.MouseEventHandler<HTMLSpanElement>;
+  onTouchEnd?: React.TouchEventHandler<HTMLSpanElement>;
+  onBaselineChange?: () => void;
+};
+
+const BoardPlayerInfoText: React.FC<BoardPlayerInfoTextProps> = ({
+  elementRef,
+  x,
+  y,
+  fontSizePx,
+  color,
+  opacity,
+  fontWeight,
+  fontStyle,
+  visible,
+  interactive = false,
+  children,
+  onClick,
+  onMouseEnter,
+  onMouseLeave,
+  onTouchEnd,
+  onBaselineChange,
+}) => {
+  const textRef = useRef<HTMLSpanElement | null>(null);
+  const baselineMarkerRef = useRef<HTMLSpanElement | null>(null);
+  const baselineOffsetRef = useRef<number | null>(null);
+  const setTextElement = useCallback(
+    (element: HTMLSpanElement | null) => {
+      textRef.current = element;
+      if (elementRef) {
+        elementRef.current = element;
+      }
+    },
+    [elementRef],
+  );
+
+  useLayoutEffect(() => {
+    const textElement = textRef.current;
+    const baselineMarker = baselineMarkerRef.current;
+    if (!textElement || !baselineMarker || !visible) {
+      return;
+    }
+    const textRect = textElement.getBoundingClientRect();
+    const markerRect = baselineMarker.getBoundingClientRect();
+    const baselineOffset = markerRect.top - textRect.top;
+    if (
+      Number.isFinite(baselineOffset) &&
+      (baselineOffsetRef.current === null ||
+        Math.abs(baselineOffsetRef.current - baselineOffset) > 0.01)
+    ) {
+      baselineOffsetRef.current = baselineOffset;
+      textElement.style.setProperty(
+        "--board-player-info-baseline-offset",
+        `${baselineOffset}px`,
+      );
+      onBaselineChange?.();
+    }
+  }, [
+    children,
+    fontSizePx,
+    fontStyle,
+    fontWeight,
+    onBaselineChange,
+    visible,
+  ]);
+
+  return (
+    <span
+      ref={setTextElement}
+      style={{
+        position: "absolute",
+        left: `${toPercentX(x)}%`,
+        top: `${toPercentY(y)}%`,
+        display: visible ? "inline-block" : "none",
+        transform:
+          "translateY(calc(-1 * var(--board-player-info-baseline-offset, 0px)))",
+        transformOrigin: "left top",
+        color,
+        opacity,
+        fontSize: `${fontSizePx}px`,
+        fontWeight,
+        fontStyle,
+        lineHeight: 1,
+        whiteSpace: "nowrap",
+        overflow: "visible",
+        pointerEvents: interactive ? "auto" : "none",
+        cursor: interactive ? "pointer" : "inherit",
+        userSelect: "none",
+        WebkitUserSelect: "none",
+        touchAction: "none",
+      }}
+      onClick={onClick}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onTouchEnd={onTouchEnd}
+    >
+      <span
+        ref={baselineMarkerRef}
+        aria-hidden="true"
+        style={{
+          display: "inline-block",
+          width: 0,
+          height: 0,
+          overflow: "hidden",
+          verticalAlign: "baseline",
+        }}
+      />
+      {children}
+    </span>
+  );
 };
 
 const textMeasurementsEqual = (
@@ -1444,12 +1582,8 @@ const BoardComponent: React.FC = () => {
     width: number;
     height: number;
   } | null>(null);
-  const [boardViewportRect, setBoardViewportRect] = useState<{
-    left: number;
-    top: number;
-    width: number;
-    height: number;
-  } | null>(null);
+  const [boardViewportRect, setBoardViewportRect] =
+    useState<BoardViewportRect | null>(null);
   const [isNarrowBoardViewport, setIsNarrowBoardViewport] = useState(
     seeIfShouldOffsetFromBorders(),
   );
@@ -1508,12 +1642,12 @@ const BoardComponent: React.FC = () => {
   const opponentWrapperRef = useRef<HTMLDivElement | null>(null);
   const playerWrapperRef = useRef<HTMLDivElement | null>(null);
   const botStrengthIgnoreMouseUntilRef = useRef(0);
-  const playerScoreTextRef = useRef<SVGTextElement | null>(null);
-  const opponentScoreTextRef = useRef<SVGTextElement | null>(null);
-  const playerTimerTextRef = useRef<SVGTextElement | null>(null);
-  const opponentTimerTextRef = useRef<SVGTextElement | null>(null);
-  const playerNameTextRef = useRef<SVGTextElement | null>(null);
-  const opponentNameTextRef = useRef<SVGTextElement | null>(null);
+  const playerScoreTextRef = useRef<HTMLSpanElement | null>(null);
+  const opponentScoreTextRef = useRef<HTMLSpanElement | null>(null);
+  const playerTimerTextRef = useRef<HTMLSpanElement | null>(null);
+  const opponentTimerTextRef = useRef<HTMLSpanElement | null>(null);
+  const playerNameTextRef = useRef<HTMLSpanElement | null>(null);
+  const opponentNameTextRef = useRef<HTMLSpanElement | null>(null);
   const [playerInfoMeasurements, setPlayerInfoMeasurements] =
     useState<BoardPlayerInfoMeasurements>({
       playerScore: emptyTextMeasurement,
@@ -1530,6 +1664,8 @@ const BoardComponent: React.FC = () => {
   );
   const [hoveredPlayerInfoSlot, setHoveredPlayerInfoSlot] =
     useState<WagerPileSide | null>(null);
+  const [playerInfoTextLayoutVersion, setPlayerInfoTextLayoutVersion] =
+    useState(0);
 
   setBoardPlayerInfoOverlayStateImpl = (
     nextState: BoardPlayerInfoOverlayState,
@@ -1980,21 +2116,35 @@ const BoardComponent: React.FC = () => {
 
   useLayoutEffect(() => {
     const scoreAndTimerMeasurements = {
-      playerScore: measureSvgText(playerScoreTextRef.current),
-      opponentScore: measureSvgText(opponentScoreTextRef.current),
-      playerTimer: measureSvgText(playerTimerTextRef.current),
-      opponentTimer: measureSvgText(opponentTimerTextRef.current),
+      playerScore: measureBoardText(
+        playerScoreTextRef.current,
+        boardViewportRect,
+      ),
+      opponentScore: measureBoardText(
+        opponentScoreTextRef.current,
+        boardViewportRect,
+      ),
+      playerTimer: measureBoardText(
+        playerTimerTextRef.current,
+        boardViewportRect,
+      ),
+      opponentTimer: measureBoardText(
+        opponentTimerTextRef.current,
+        boardViewportRect,
+      ),
     };
     setPlayerInfoMeasurements((prevMeasurements) =>
       mergePlayerInfoMeasurements(prevMeasurements, scoreAndTimerMeasurements),
     );
   }, [
     boardPixelSize,
+    boardViewportRect,
     isGridVisible,
     playerInfoOverlayState.opponent.scoreText,
     playerInfoOverlayState.opponent.timerText,
     playerInfoOverlayState.opponent.timerVisible,
     playerInfoOverlayState.opponent.visible,
+    playerInfoTextLayoutVersion,
     playerInfoOverlayState.player.scoreText,
     playerInfoOverlayState.player.timerText,
     playerInfoOverlayState.player.timerVisible,
@@ -2003,17 +2153,25 @@ const BoardComponent: React.FC = () => {
 
   useLayoutEffect(() => {
     const nameMeasurements = {
-      playerName: measureSvgText(playerNameTextRef.current),
-      opponentName: measureSvgText(opponentNameTextRef.current),
+      playerName: measureBoardText(
+        playerNameTextRef.current,
+        boardViewportRect,
+      ),
+      opponentName: measureBoardText(
+        opponentNameTextRef.current,
+        boardViewportRect,
+      ),
     };
     setPlayerInfoMeasurements((prevMeasurements) =>
       mergePlayerInfoMeasurements(prevMeasurements, nameMeasurements),
     );
   }, [
     boardPixelSize,
+    boardViewportRect,
     isGridVisible,
     playerInfoOverlayState.opponent.nameText,
     playerInfoOverlayState.opponent.nameVisible,
+    playerInfoTextLayoutVersion,
     playerInfoOverlayState.player.nameText,
     playerInfoOverlayState.player.nameVisible,
   ]);
@@ -3160,10 +3318,29 @@ const BoardComponent: React.FC = () => {
       handlePlayerInfoNameMouseLeave(side);
     }, 100);
   };
-  const renderPlayerInfoSlot = (
+  const handlePlayerInfoTextBaselineChange = useCallback(() => {
+    setPlayerInfoTextLayoutVersion((version) => version + 1);
+  }, []);
+  const renderPlayerInfoSlotIcon = (layout: BoardPlayerInfoSlotLayout) =>
+    layout.endOfGameIcon.visible ? (
+      <g>
+        <image
+          href={layout.endOfGameIcon.href}
+          x={layout.endOfGameIcon.x * 100}
+          y={layout.endOfGameIcon.y * 100}
+          width={layout.endOfGameIcon.size * 100}
+          height={layout.endOfGameIcon.size * 100}
+          opacity={END_OF_GAME_ICON_OPACITY}
+          overflow="visible"
+          pointerEvents="none"
+        />
+      </g>
+    ) : null;
+  const renderPlayerInfoSlotText = (
     side: WagerPileSide,
     slot: BoardPlayerInfoSlotState,
     layout: BoardPlayerInfoSlotLayout,
+    viewportRect: BoardViewportRect,
   ) => {
     const scoreRef =
       side === "player" ? playerScoreTextRef : opponentScoreTextRef;
@@ -3187,80 +3364,77 @@ const BoardComponent: React.FC = () => {
           NAME_REACTION_GAP_MULTIPLIER * multiplicator;
     const canOpenProfile = slot.profileMetadataIsOpponent !== null;
     const isNameHovered = hoveredPlayerInfoSlot === side && canOpenProfile;
-    const nameFill = isNameHovered ? "#0071F9" : colors.scoreText;
-    const nameTextProps: React.SVGProps<SVGTextElement> = {
-      fill: nameFill,
-      opacity: 0.69,
+    const nameColor = isNameHovered ? "#0071F9" : colors.scoreText;
+    const scoreFontSizePx = toOverlayFontSizePx(
+      layout.scoreFontSize,
+      viewportRect,
+    );
+    const nameFontSizePx = toOverlayFontSizePx(
+      layout.nameFontSize,
+      viewportRect,
+    );
+    const nameTextProps = {
+      color: nameColor,
+      opacity: PLAYER_INFO_TEXT_OPACITY,
       fontWeight: 270,
-      fontStyle: "italic",
-      fontSize: layout.nameFontSize,
-      overflow: "visible",
-      style: { cursor: "pointer" },
-      onClick: (event) => handlePlayerInfoNameClick(event, slot),
+      fontStyle: "italic" as const,
+      fontSizePx: nameFontSizePx,
+      interactive: true,
+      onBaselineChange: handlePlayerInfoTextBaselineChange,
+      onClick: (event: React.MouseEvent<HTMLSpanElement>) =>
+        handlePlayerInfoNameClick(event, slot),
       onMouseEnter: () => handlePlayerInfoNameMouseEnter(side, slot),
       onMouseLeave: () => handlePlayerInfoNameMouseLeave(side),
       onTouchEnd: () => handlePlayerInfoNameTouchEnd(side),
     };
     return (
-      <g key={side}>
-        <text
-          ref={scoreRef}
-          x={layout.scoreX * 100}
-          y={layout.scoreY * 100}
-          fill={colors.scoreText}
-          opacity={0.69}
+      <React.Fragment key={side}>
+        <BoardPlayerInfoText
+          elementRef={scoreRef}
+          x={layout.scoreX}
+          y={layout.scoreY}
+          color={colors.scoreText}
+          opacity={PLAYER_INFO_TEXT_OPACITY}
           fontWeight={600}
-          fontSize={layout.scoreFontSize}
-          overflow="visible"
-          display={slot.visible ? undefined : "none"}
+          fontSizePx={scoreFontSizePx}
+          visible={slot.visible}
+          onBaselineChange={handlePlayerInfoTextBaselineChange}
         >
           {slot.scoreText}
-        </text>
-        <text
-          ref={timerRef}
-          x={layout.timerX * 100}
-          y={layout.timerY * 100}
-          fill={slot.timerColor}
-          opacity={0.69}
+        </BoardPlayerInfoText>
+        <BoardPlayerInfoText
+          elementRef={timerRef}
+          x={layout.timerX}
+          y={layout.timerY}
+          color={slot.timerColor}
+          opacity={PLAYER_INFO_TEXT_OPACITY}
           fontWeight={600}
-          fontSize={layout.scoreFontSize}
-          overflow="visible"
-          display={slot.visible && slot.timerVisible ? undefined : "none"}
+          fontSizePx={scoreFontSizePx}
+          visible={slot.visible && slot.timerVisible}
+          onBaselineChange={handlePlayerInfoTextBaselineChange}
         >
           {slot.timerText}
-        </text>
-        {layout.endOfGameIcon.visible && (
-          <image
-            href={layout.endOfGameIcon.href}
-            x={layout.endOfGameIcon.x * 100}
-            y={layout.endOfGameIcon.y * 100}
-            width={layout.endOfGameIcon.size * 100}
-            height={layout.endOfGameIcon.size * 100}
-            opacity={END_OF_GAME_ICON_OPACITY}
-            overflow="visible"
-            pointerEvents="none"
-          />
-        )}
-        <text
+        </BoardPlayerInfoText>
+        <BoardPlayerInfoText
           {...nameTextProps}
-          ref={nameRef}
-          x={layout.nameX * 100}
-          y={layout.nameY * 100}
-          display={hasVisibleName ? undefined : "none"}
+          elementRef={nameRef}
+          x={layout.nameX}
+          y={layout.nameY}
+          visible={hasVisibleName}
         >
           {slot.nameText}
-        </text>
+        </BoardPlayerInfoText>
         {hasNameReaction && (
-          <text
+          <BoardPlayerInfoText
             {...nameTextProps}
-            x={reactionX * 100}
-            y={layout.nameY * 100}
-            display={slot.nameVisible ? undefined : "none"}
+            x={reactionX}
+            y={layout.nameY}
+            visible={slot.nameVisible}
           >
             {slot.nameReactionText}
-          </text>
+          </BoardPlayerInfoText>
         )}
-      </g>
+      </React.Fragment>
     );
   };
   return (
@@ -3395,16 +3569,8 @@ const BoardComponent: React.FC = () => {
           transform={activeBoardTransform}
         ></g>
         <g id="playerInfoLayer">
-          {renderPlayerInfoSlot(
-            "opponent",
-            playerInfoOverlayState.opponent,
-            playerInfoLayout.opponent,
-          )}
-          {renderPlayerInfoSlot(
-            "player",
-            playerInfoOverlayState.player,
-            playerInfoLayout.player,
-          )}
+          {renderPlayerInfoSlotIcon(playerInfoLayout.opponent)}
+          {renderPlayerInfoSlotIcon(playerInfoLayout.player)}
         </g>
         <g id="controlsLayer"></g>
         <g
@@ -3488,6 +3654,28 @@ const BoardComponent: React.FC = () => {
               zIndex: 0,
             }}
           >
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                pointerEvents: "none",
+                overflow: "visible",
+                zIndex: 1,
+              }}
+            >
+              {renderPlayerInfoSlotText(
+                "opponent",
+                playerInfoOverlayState.opponent,
+                playerInfoLayout.opponent,
+                boardViewportRect,
+              )}
+              {renderPlayerInfoSlotText(
+                "player",
+                playerInfoOverlayState.player,
+                playerInfoLayout.player,
+                boardViewportRect,
+              )}
+            </div>
             {wagerPanelLayout && (
               <div
                 data-wager-panel="true"
