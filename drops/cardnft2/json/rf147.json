@@ -2,7 +2,7 @@
   "id": 147,
   "name": "Card #147 Receipt",
   "description": "redeemed on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/img/receipt_card_tmp.webp",
+  "image": "https://assets.mons.link/drops/cardnft2/img/receipt_card_147.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -17,7 +17,7 @@
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/img/receipt_card_tmp.webp",
+        "uri": "https://assets.mons.link/drops/cardnft2/img/receipt_card_147.webp",
         "type": "image/webp"
       }
     ],
