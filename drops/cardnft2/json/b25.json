@@ -2,7 +2,7 @@
   "id": 25,
   "name": "Pack #25",
   "description": "card nft 2 · 3 card pack · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/pack_tmp_1.webp",
+  "image": "https://assets.mons.link/drops/cardnft2/img/pack_tmp_1.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -17,7 +17,7 @@
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/pack_tmp_1.webp",
+        "uri": "https://assets.mons.link/drops/cardnft2/img/pack_tmp_1.webp",
         "type": "image/webp"
       }
     ],

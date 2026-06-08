@@ -2,7 +2,7 @@
   "id": 163,
   "name": "Card #163",
   "description": "card nft 2 cards · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/card_tmp.webp",
+  "image": "https://assets.mons.link/drops/cardnft2/img/card_tmp.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -17,7 +17,7 @@
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/card_tmp.webp",
+        "uri": "https://assets.mons.link/drops/cardnft2/img/card_tmp.webp",
         "type": "image/webp"
       }
     ],

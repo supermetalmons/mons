@@ -2,7 +2,7 @@
   "id": 18,
   "name": "Pack #18 Receipt",
   "description": "redeemed on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/receipt_pack_tmp.webp",
+  "image": "https://assets.mons.link/drops/cardnft2/img/receipt_pack_tmp.webp",
   "external_url": "https://mons.shop",
   "attributes": [
     {
@@ -17,7 +17,7 @@
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/receipt_pack_tmp.webp",
+        "uri": "https://assets.mons.link/drops/cardnft2/img/receipt_pack_tmp.webp",
         "type": "image/webp"
       }
     ],

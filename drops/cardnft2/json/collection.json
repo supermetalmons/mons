@@ -2,14 +2,14 @@
   "name": "Card NFT 2",
   "symbol": "cardnft2",
   "description": "card nft 2 · physical on mons dot shop",
-  "image": "https://assets.mons.link/drops/cardnft2/cover_tmp.webp",
+  "image": "https://assets.mons.link/drops/cardnft2/img/cover_tmp.webp",
   "external_url": "https://mons.shop",
   "seller_fee_basis_points": 500,
   "attributes": [],
   "properties": {
     "files": [
       {
-        "uri": "https://assets.mons.link/drops/cardnft2/cover_tmp.webp",
+        "uri": "https://assets.mons.link/drops/cardnft2/img/cover_tmp.webp",
         "type": "image/webp"
       }
     ],
