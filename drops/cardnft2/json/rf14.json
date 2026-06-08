@@ -1,0 +1,26 @@
+{
+  "id": 14,
+  "name": "Card #14 Receipt",
+  "description": "redeemed on mons dot shop",
+  "image": "https://assets.mons.link/drops/cardnft2/receipt_card_tmp.webp",
+  "external_url": "https://mons.shop",
+  "attributes": [
+    {
+      "trait_type": "type",
+      "value": "card receipt"
+    },
+    {
+      "trait_type": "redeemed",
+      "value": true
+    }
+  ],
+  "properties": {
+    "files": [
+      {
+        "uri": "https://assets.mons.link/drops/cardnft2/receipt_card_tmp.webp",
+        "type": "image/webp"
+      }
+    ],
+    "category": "image"
+  }
+}
